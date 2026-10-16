@@ -679,7 +679,22 @@ body.auth-only .foot { display: none; }
 .pay-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 #plans-extend { margin-top: 4px; }
 
-.studio-credits { margin: 10px 2px 0; font-size: 0.8rem; color: rgba(255, 255, 255, 0.85); text-align: center; }
+/* What the next transcription costs: a quiet chip, and the why behind (i), only when it costs something. */
+.studio-cost { display: grid; justify-items: center; gap: 6px; margin: 14px 0 0; }
+.cost-line { display: inline-flex; align-items: center; gap: 4px; }
+.cost-chip { display: inline-flex; align-items: center; min-height: 26px; padding: 3px 10px; border-radius: 999px; background: var(--wash); color: var(--muted); font-size: 0.78rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cost-chip.is-out { background: var(--amber-soft); color: var(--ink); }
+.cost-info { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--muted); cursor: pointer; }
+.cost-info .ic { width: 16px; height: 16px; }
+.cost-info:hover, .cost-info[aria-expanded=true] { color: var(--ink); background: var(--wash); }
+.cost-info:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.cost-pop { max-width: 440px; margin: 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-size: 0.8rem; line-height: 1.5; text-align: left; }
+.cost-pop[hidden] { display: none; }
+.link-upload-row { margin: 6px 0 0; text-align: center; font-size: 0.85rem; }
+.link-upload-row .btn-link { display: inline-flex; align-items: center; gap: 6px; }
+.link-upload-row .ic { width: 15px; height: 15px; }
+.usage-note { margin-top: 6px; font-size: 0.75rem; color: var(--muted); }
+.usage-note:empty { display: none; }
 
 /* ── Back from checkout: a quiet note while the payment confirms, then the welcome ── */
 .pay-toast { position: fixed; right: 20px; bottom: 20px; z-index: 45; display: flex; align-items: center; gap: 12px; width: min(380px, calc(100vw - 32px)); padding: 12px 12px 12px 14px; background: var(--surface); border: 1px solid #f3dd96; border-radius: 16px; box-shadow: 0 18px 48px rgba(15, 23, 42, 0.16); animation: pay-toast-in 0.35s cubic-bezier(0.22, 1, 0.36, 1); }

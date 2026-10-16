@@ -1,0 +1,128 @@
+{
+  "title": "O Lord, How Shall I Meet Thee",
+  "tune": "wie-soll-ich-dich-empfange",
+  "text": [
+    {
+      "name": "Paul Gerhardt",
+      "born": 1607,
+      "died": 1676,
+      "role": "Words (1653)"
+    },
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Translated (1884)"
+    }
+  ],
+  "textPublished": 1884,
+  "description": "O Lord, How Shall I Meet Thee in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Paul Gerhardt, first published in 1653. The tune, WIE SOLL ICH DICH EMPFANGE, is by Johann Crüger (1653). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O Lord, how shall I meet Thee, How wel-come Thee a-right? All na-tions long to see Thee, My Hope, my heart's De-light! O kin-dle, Lord, most ho-ly, Thy lamp with-in my breast, To do in spir-it low-ly All that may please Thee best.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, how shall I meet Thee,",
+        "How welcome Thee aright?",
+        "All nations long to see Thee,",
+        "My Hope, my heart's Delight!",
+        "O kindle, Lord, most holy,",
+        "Thy lamp within my breast,",
+        "To do in spirit lowly",
+        "All that may please Thee best."
+      ]
+    },
+    {
+      "lines": [
+        "Thy Zion palms is strewing,",
+        "And branches fresh and fair;",
+        "My heart, its pow'rs renewing,",
+        "An anthem shall prepare.",
+        "My soul puts off her sadness",
+        "Thy glories to proclaim;",
+        "With all her strength and gladness",
+        "She fain would serve Thy Name."
+      ]
+    },
+    {
+      "lines": [
+        "What hast Thou left ungranted",
+        "To give me glad relief?",
+        "When soul and body panted",
+        "In utmost depth of grief,",
+        "In deepest degradation,",
+        "Devoid of joy and peace,",
+        "Then, Thou, my soul's Salvation,",
+        "Didst come to bring release."
+      ]
+    },
+    {
+      "lines": [
+        "I lay in fetters groaning,",
+        "Thou com'st to set me free;",
+        "I stood, my shame bemoaning,",
+        "Thou com'st to honor me.",
+        "A glory Thou dost give me,",
+        "A treasure safe on high,",
+        "That will not fail nor leave me",
+        "As earthly riches fly."
+      ]
+    },
+    {
+      "lines": [
+        "Love caused Thine incarnation",
+        "Love brought Thee down to me;",
+        "Thy thirst for my salvation",
+        "Procured my liberty.",
+        "O love beyond all telling,",
+        "That led Thee to embrace,",
+        "In love all love excelling,",
+        "Our lost and fallen race!"
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Anticipation",
+    "Assurance",
+    "Christmas/Advent",
+    "Comfort",
+    "Compassion",
+    "Consolation",
+    "Courage in Affliction",
+    "Faithfulness",
+    "Fear of the Lord",
+    "Forgiveness",
+    "God, Mercy of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Gratitude",
+    "Hope",
+    "Humility",
+    "Jesus",
+    "Joy",
+    "Judgment",
+    "Kindness, God's",
+    "Light",
+    "Love",
+    "Peace",
+    "Presence",
+    "Promises (see also Gospel)",
+    "Salvation",
+    "Second Coming",
+    "Security",
+    "Service",
+    "Sinners",
+    "Trust",
+    "Victory"
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Lord_How_Shall_I_Meet_Thee-Wie_Soll_Ich_Dich_Empfange.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "O_Lord_How_Shall_I_Meet_Thee-Wie_Soll_Ich_Dich_Empfange"
+}

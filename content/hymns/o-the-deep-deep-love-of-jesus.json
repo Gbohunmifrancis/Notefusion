@@ -1,0 +1,79 @@
+{
+  "title": "O the Deep, Deep Love of Jesus",
+  "tune": "ebenezer-o-the-deep-deep-love-of-jesus",
+  "text": [
+    {
+      "name": "Samuel Trevor Francis",
+      "born": 1834,
+      "died": 1925,
+      "role": "Words (1875)"
+    }
+  ],
+  "textPublished": 1875,
+  "description": "O the Deep, Deep Love of Jesus in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Samuel Trevor Francis, first published in 1875. The tune, EBENEZER, is by Thomas J. Williams (1890). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O the__ deep, deep love of__ Je_-sus, vast, un__-meas_-ured, bound_-less, free! Rol-ling__ as a might-y__ o_-cean in its__ full_-ness ov_-er me! Un-der__-neath me, all ar__-ound me, is the__ cur-rent of Thy__ love Lead-ing__ on-ward, lead-ing__ home_-ward to Thy__ glor_-ious rest_ a-bove!",
+  "verses": [
+    {
+      "lines": [
+        "O the deep, deep love of Jesus,",
+        "vast, unmeasured, boundless, free!",
+        "Rolling as a mighty ocean",
+        "in its fullness over me!",
+        "Underneath me, all around me,",
+        "is the current of Thy love",
+        "Leading onward, leading homeward",
+        "to Thy glorious rest above!"
+      ]
+    },
+    {
+      "lines": [
+        "O the deep, deep love of Jesus,",
+        "spread His praise from shore to shore!",
+        "How He loveth, ever loveth,",
+        "changeth never, nevermore!",
+        "How He watches o'er His loved ones,",
+        "died to call them all His own;",
+        "How for them He intercedeth,",
+        "watcheth o'er them from the throne!"
+      ]
+    },
+    {
+      "lines": [
+        "O the deep, deep love of Jesus,",
+        "love of every love the best!",
+        "'Tis an ocean full of blessing,",
+        "'tis a haven giving rest!",
+        "O the deep, deep love of Jesus,",
+        "'tis a heav'n of heav'ns to me;",
+        "And it lifts me up to glory,",
+        "for it lifts me up to Thee!"
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "Courage in Affliction",
+    "Fear of the Lord",
+    "God, Love of",
+    "God, Majesty &amp; Power of",
+    "Grace",
+    "Jesus",
+    "Kindness, God's",
+    "Love",
+    "Praise, Son",
+    "Speech"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_The_Deep_Deep_Love_Of_Jesus-Ebenezer-Ton_Y_Botel.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "O_The_Deep_Deep_Love_Of_Jesus-Ebenezer-Ton_Y_Botel",
+  "reviewNotes": "Held back: the score has triplets, which the importer does not render; bar 1 has 9 beats, more than 8; bar 2 has 9 beats, more than 8; bar 3 has 9 beats, more than 8; bar 5 has 9 beats, more than 8; bar 6 has 9 beats, more than 8; bar 7 has 9 beats, more than 8; bar 9 has 9 beats, more than 8; bar 10 has 9 beats, more than 8; bar 11 has 9 beats, more than 8; bar 12 has 9 beats, more than 8; bar 13 has 9 beats, more than 8; bar 14 has 9 beats, more than 8; bar 15 has 9 beats, more than 8; the melody does not parse: bar 1 has 9 beats, not 8."
+}

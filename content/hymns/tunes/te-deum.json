@@ -1,0 +1,23 @@
+{
+  "name": "TE DEUM",
+  "music": [
+    {
+      "name": "From Katholisches Gesangbuch, Maria Theresa, 1774",
+      "traditional": true,
+      "role": "Melody (1774)"
+    }
+  ],
+  "musicPublished": 1774,
+  "key": "F major",
+  "time": "3/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "F4:2 F4:1 | F4:1 E4:1 F4:1 | G4:1 A4:1 G4:1 | F4:3 | A4:2 A4:1 | A4:1 G4:1 A4:1 | C5:1 Bb4:1 A4:1 | A4:1 G4:2 | F4:2 F4:1 | F4:1 E4:1 F4:1 | G4:1 A4:1 G4:1 | F4:3 | A4:2 A4:1 | A4:1 G4:1 A4:1 | C5:1 Bb4:1 A4:1 | A4:1 G4:2 | G4:2 A4:.5 C5:.5 | Bb4:1 A4:1 G4:1 | A4:2 Bb4:.5 D5:.5 | C5:3 | D5:2 D5:1 | C5:1 Bb4:1 A4:1 | Bb4:1 A4:1 G4:1 | F4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Holy_God_We_Praise_Thy_Name-Te_Deum-Hursley.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The Open Hymnal's own source: \"Hymns Ancient and Modern\", 1869 Hymn 11"
+}

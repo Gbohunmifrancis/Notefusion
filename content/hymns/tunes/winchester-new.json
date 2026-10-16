@@ -1,0 +1,23 @@
+{
+  "name": "WINCHESTER NEW",
+  "music": [
+    {
+      "name": "From \"Musikalisches Handbuch\", Hamburg, 1690",
+      "traditional": true,
+      "role": "Melody (1690)"
+    }
+  ],
+  "musicPublished": 1690,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "G4:1 | C5:1 G4:1 A4:1 A4:1 | G4:1 F4:1 E4:1 E4:1 | F4:1 E4:1 D4:1 G4:1 | G4:1 F#4:1 G4:1 G4:1 | C5:1 D5:1 E5:1 C5:1 | F5:1 E5:1 D5:1 E5:1 | C5:1 A4:1 G4:1 C5:1 | C5:1 B4:1 C5:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Lord_My_Soul_Convicted-Winchester_New.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: not provably public domain: James Maxwell: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: sometimes wrongly attr. to John Rippon (1751-1836) because it is in a book \"Selection of Hymns, from the best authors\" by Rippon, hymn 50, (original in 1787, I found the 1850 reprint). Music source: The Church Hymnal, 1896 Hymn 197. Ed. Charles Lewis Hutchins Setting somewhat diff from \"hymns ancient and modern\", 1869"
+}

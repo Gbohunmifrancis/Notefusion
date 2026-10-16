@@ -1,0 +1,24 @@
+{
+  "name": "RESCUE THE PERISHING",
+  "music": [
+    {
+      "name": "William Howard Doane",
+      "born": 1832,
+      "died": 1915,
+      "role": "Music (1870)"
+    }
+  ],
+  "musicPublished": 1870,
+  "key": "Bb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1 D4:.5 Eb4:.5 F4:.5 F4:.5 F4:1 | Bb4:1 A4:.5 G4:.5 G4:1 F4:1 | F4:1 G4:.5 A4:.5 Bb4:1 C5:.5 D5:.5 | C5:1 Bb4:.5 G4:.5 F4:1 r:1 | F4:1 D4:.5 Eb4:.5 F4:.5 F4:.5 F4:1 | Bb4:1 A4:.5 G4:.5 G4:1 F4:1 | F4:1 G4:.5 A4:.5 Bb4:1 C5:.5 D5:.5 | C5:1 Bb4:.5 A4:.5 Bb4:2 | C5:1 Bb4:.5 C5:.5 D5:.75 C5:.25 Bb4:1 | C5:1 Bb4:.5 C5:.5 D5:1 Bb4:1 | Bb4:1 A4:.5 G4:.5 F4:.5 Bb4:.5 D5:1 | C5:1 Bb4:.5 A4:.5 Bb4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Rescue_the_Perishing-Rescue_the_Perishing.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The Open Hymnal's own source: \"Songs of Devotion\", 1870 page 258 Hymn 642. Lyrics, same source."
+}

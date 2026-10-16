@@ -1,0 +1,79 @@
+{
+  "title": "Gabriel's Message",
+  "alsoKnownAs": [
+    "The Angel Gabriel from Heaven Came"
+  ],
+  "tune": "gabriel",
+  "text": [
+    {
+      "name": "Traditional Basque",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "Sabine Baring Gould",
+      "born": 1834,
+      "died": 1924,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "Gabriel's Message in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous. The English translation is by Sabine Baring Gould. The tune, GABRIEL, is Traditional Basque. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The an-gel Ga-bri-el from hea-ven came, his wings as drift-ed snow, his eyes as flame; \"All hail,\" said he, \"thou low-ly mai-den, Ma_-ry,_ most high-ly fa-vored la-dy,\" Glo_____-ri-a!",
+  "verses": [
+    {
+      "lines": [
+        "The angel Gabriel from heaven came, his wings as drifted snow, his eyes as flame;",
+        "\"All hail,\" said he, \"thou lowly maiden,",
+        "Mary,"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "most highly favored lady,\"",
+        "Gloria!"
+      ]
+    },
+    {
+      "lines": [
+        "\"For know a blessed Mother thou shalt be,",
+        "all generations laud and honor thee,",
+        "thy Son shall be Emmanuel, by seers foretold,"
+      ]
+    },
+    {
+      "lines": [
+        "Then gentle Mary meekly bowed her head,",
+        "\"To me be as it pleaseth God,\" she said,",
+        "\"my soul shall laud and magnify His holy Name.\""
+      ]
+    },
+    {
+      "lines": [
+        "Of her, Emmanuel, the Christ was born",
+        "in Bethlehem, all on a Christmas morn,",
+        "and Christian folk throughout the world will ever say"
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Angels",
+    "Christmas/Advent",
+    "Fire"
+  ],
+  "metre": "10 10 12 7 3",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Gabriels_Message-Gabriel.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Gabriels_Message-Gabriel",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929."
+}

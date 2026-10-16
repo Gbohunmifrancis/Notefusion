@@ -1,0 +1,134 @@
+{
+  "title": "Sing, O Sing, This Blessed Morn",
+  "tune": "nativity",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words (1865)"
+    }
+  ],
+  "textPublished": 1865,
+  "description": "Sing, O Sing, This Blessed Morn in Tonic Solfa: the solfa line by line with the words, staff notation, all 12 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christopher Wordsworth, first published in 1865. The tune, NATIVITY, is by William Henry Monk (1865). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Sing, O sing, this bless-ed morn, Un-to us a Child is born, Un-to us a Son is giv'n, God Him-self comes down from Heav'n. Sing, O sing, this bless-ed morn, Je-sus Christ to-day is born.",
+  "verses": [
+    {
+      "lines": [
+        "Sing, O sing, this blessed morn,",
+        "Unto us a Child is born,",
+        "Unto us a Son is giv'n,",
+        "God Himself comes down from Heav'n."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Sing, O sing, this blessed morn,",
+        "Jesus Christ today is born."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus Christ, the King of kings,",
+        "Maker of all worldly things,",
+        "Now descends from Heav'n to Earth,",
+        "To restore us by His birth;"
+      ]
+    },
+    {
+      "lines": [
+        "God of God, and Light of Light,",
+        "Comes with mercies infinite;",
+        "Joining in a wondrous plan",
+        "Heav'n to earth and God to Man;"
+      ]
+    },
+    {
+      "lines": [
+        "God with us, Emmanuel,",
+        "Deigns for ever now to dwell;",
+        "He on Adam's fallen race",
+        "Sheds the fullness of His Grace;"
+      ]
+    },
+    {
+      "lines": [
+        "Truth and Mercy show their face,",
+        "And with loving kiss embrace;",
+        "Righteousness looks down from Heav'n,",
+        "God is pleased and Man forgiv'n;"
+      ]
+    },
+    {
+      "lines": [
+        "God comes down that man may rise, Lifted far above the skies",
+        "He is Son of Man, that we Sons of God in Him may be;"
+      ]
+    },
+    {
+      "lines": [
+        "Human flesh is now become Christ's abode, the Godhead's home;",
+        "Royal Palace, sacred shrine For the Majesty Divine;"
+      ]
+    },
+    {
+      "lines": [
+        "Now we rise, from prison free; On we march to victory,",
+        "Joyful banners are unfurled; 'Tis the Birthday of the World;"
+      ]
+    },
+    {
+      "lines": [
+        "Now behold the rising Sun Hath His glorious race begun;",
+        "Now the Bridegroom from above Weds the Bride, with heavenly love;"
+      ]
+    },
+    {
+      "lines": [
+        "O renew us, Lord, we pray, With Thy Spirit day by day;",
+        "That we ever one may be With the Father, and with Thee;"
+      ]
+    },
+    {
+      "lines": [
+        "D Sing, O sing this blessed Morn, Jesus Christ to-day is born;",
+        "Glory to the Father give, Praise the Son in whom we live;",
+        "Glory to the Spirit be, Godhead One, and Persons Three."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Adam (first/second - see also Guidance, Invitation [ours to God], Repentance)",
+    "Art and Music",
+    "Bride/Bridegroom",
+    "Christmas/Advent",
+    "Forgiveness",
+    "God, As King",
+    "God, Mercy of",
+    "Grace",
+    "Heaven",
+    "Holy Spirit",
+    "Jesus",
+    "Joy",
+    "Light",
+    "Love",
+    "Praise, Son",
+    "Presence",
+    "Salvation",
+    "Worship"
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Sing_O_Sing_This_Blessed_Morn-Nativity.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Sing_O_Sing_This_Blessed_Morn-Nativity"
+}

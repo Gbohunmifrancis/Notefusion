@@ -24,7 +24,7 @@ import { SITE_DIR, ORIGIN, PAGE_SIZE, INDEXNOW_KEY } from "./lib/site.mjs";
 import { loadAll } from "./lib/content.mjs";
 import { writeFile } from "./lib/util.mjs";
 import { preparePosts, renderPost, renderBlogIndex, renderTag, renderAuthor, renderHomeStrip, blogPagePath, HOME_START, HOME_END } from "./lib/render-blog.mjs";
-import { prepareHymn, renderHymn, renderHymnIndex } from "./lib/render-hymns.mjs";
+import { prepareHymn, renderHymn, renderHymnIndex, renderHymnCredits } from "./lib/render-hymns.mjs";
 import { handWrittenEntries, sitemapXml, feedXml } from "./lib/sitemap-feed.mjs";
 import { DEFAULT_API_URL, fetchPublished, postsFromApi } from "./lib/api-posts.mjs";
 import { catalogueJson, sitePages } from "./lib/catalogue.mjs";
@@ -55,7 +55,9 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
 
   // Blog
   const pages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
-  for (let n = 1; n <= pages; n++) put(blogPagePath(n), renderBlogIndex(posts, { pageNo: n, pages, hymns }));
+  // The blog's hymnal teaser leads with the hymns encoded and checked by hand, then the imported ones.
+  const hymnal = [...hymns.filter((h) => !h.importedFrom), ...hymns.filter((h) => h.importedFrom)];
+  for (let n = 1; n <= pages; n++) put(blogPagePath(n), renderBlogIndex(posts, { pageNo: n, pages, hymns: hymnal }));
   for (const p of posts) put(p.url, renderPost(p, { posts, authors, hymnsBySlug }));
   const tags = [...new Set(posts.flatMap((p) => p.tags))].sort();
   for (const t of tags) put(`/blog/tag/${t}`, renderTag(t, posts.filter((p) => p.tags.includes(t)), { allPosts: posts }));
@@ -64,6 +66,7 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
 
   // Hymns
   put("/hymns", renderHymnIndex(hymns));
+  put("/hymns/credits", renderHymnCredits(hymns));
   for (const h of hymns) put(`/hymns/${h.slug}`, renderHymn(h, { hymns, posts }));
 
   // Sitemap: what was there by hand, then the blog and the hymns.
@@ -73,6 +76,7 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
     ...posts.map((p) => ({ loc: ORIGIN + p.url, lastmod: p.modified, changefreq: "monthly", priority: "0.7" })),
     ...Object.values(authors).map((a) => ({ loc: ORIGIN + a.url, lastmod: newest(posts.filter((p) => p.author === a.id).map((p) => p.modified)), changefreq: "monthly", priority: "0.3" })),
     { loc: ORIGIN + "/hymns", lastmod: newest(hymns.map((h) => h.updated)), changefreq: "weekly", priority: "0.8" },
+    { loc: ORIGIN + "/hymns/credits", lastmod: newest(hymns.map((h) => h.updated)), changefreq: "monthly", priority: "0.3" },
     ...hymns.map((h) => ({ loc: `${ORIGIN}/hymns/${h.slug}`, lastmod: h.updated, changefreq: "monthly", priority: "0.7" })),
   ];
   const sitemapPath = path.join(siteDir, "sitemap.xml");

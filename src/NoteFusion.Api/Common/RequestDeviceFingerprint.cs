@@ -48,17 +48,26 @@ public sealed class RequestDeviceFingerprint : IDeviceFingerprint
             if (context is null)
                 return null; // no request in flight (a background job, a test)
 
-            var claimed = context.Request.Headers[HeaderName].ToString().Trim();
-
-            // 8 is shorter than anything a real platform hands out (an SSAID is 16 hex chars, an iOS
-            // vendor id 36), and 200 is far past it — both bounds exist to reject junk, not to validate.
-            if (claimed.Length is < 8 or > 200)
-                return null;
-
-            if (Placeholders.Contains(claimed, StringComparer.OrdinalIgnoreCase))
-                return null;
-
-            return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(claimed)));
+            return Hash(context.Request.Headers[HeaderName].ToString());
         }
+    }
+
+    /// <summary>
+    /// The hash a claimed device id is stored as, or null for junk. Public for the analytics beacon, which
+    /// cannot set a header and carries the id in its body instead.
+    /// </summary>
+    public static string? Hash(string? value)
+    {
+        var claimed = (value ?? string.Empty).Trim();
+
+        // 8 is shorter than anything a real platform hands out (an SSAID is 16 hex chars, an iOS
+        // vendor id 36), and 200 is far past it — both bounds exist to reject junk, not to validate.
+        if (claimed.Length is < 8 or > 200)
+            return null;
+
+        if (Placeholders.Contains(claimed, StringComparer.OrdinalIgnoreCase))
+            return null;
+
+        return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(claimed)));
     }
 }

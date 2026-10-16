@@ -1,0 +1,24 @@
+{
+  "name": "BOYLSTON",
+  "music": [
+    {
+      "name": "Lowell Mason",
+      "born": 1792,
+      "died": 1872,
+      "role": "Music (1832)"
+    }
+  ],
+  "musicPublished": 1832,
+  "key": "C major",
+  "time": "3/4",
+  "tempo": 90,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "G4:1 | E4:.5 F4:.5 G4:1 A4:1 | G4:2 C5:1 | C5:.5 B4:.5 A4:1 A4:1 | G4:2 G4:1 | E4:.5 F4:.5 G4:1 G4:1 | A4:.5 B4:.5 C5:1 B4:1 | C5:.5 A4:.5 G4:1 G4:1 | G4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Blest_Be_The_Tie_That_Binds-Boylston.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last verse is printed after the score in the source, not under the notes. The tune ends on G, not on the key note: it may be modal. The Open Hymnal's own source: \"The Psaltry\" 1845 by Lowell Mason Page 151. In The Psaltry, the Tenor carries the melody. It is moved to the Soprano. The Soprano is then lowered one octave and made the Tenor part. Lyrics from \"A collection of hymns for the use of the tabernacles in Scotland\" 1800 Hymn 140 page 127"
+}

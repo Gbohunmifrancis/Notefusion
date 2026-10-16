@@ -1,0 +1,89 @@
+{
+  "title": "The First Noel",
+  "tune": "the-first-noel",
+  "text": [
+    {
+      "name": "Traditional English",
+      "traditional": true,
+      "role": "Words (1300)"
+    }
+  ],
+  "textPublished": 1300,
+  "description": "The First Noel in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 1300. The tune, THE FIRST NOEL, is Traditional English. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The_ first_ No_-el the_ an-gel did say Was to cer-tain poor shep-herds in fields as they lay; In_ fields_ where_ they lay_ tend-ing their sheep, On a cold win-ter's night_ that was_ so deep. No_-el,_ No_-el, No_-el, No-el,_ Born is the King_ of Is_-ra-el.",
+  "verses": [
+    {
+      "lines": [
+        "The first Noel the angel did say",
+        "Was to certain poor shepherds in fields as they lay;",
+        "In fields where they lay tending their sheep,",
+        "On a cold winter's night that was so deep."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Noel, Noel,",
+        "Noel, Noel,",
+        "Born is the King of Israel."
+      ]
+    },
+    {
+      "lines": [
+        "They lookèd up and saw a star",
+        "Shining in the east, beyond them far;",
+        "And to the earth it gave great light,",
+        "And so it continued both day and night."
+      ]
+    },
+    {
+      "lines": [
+        "And by the light of that same star",
+        "Three Wise Men came from country far;",
+        "To seek for a King was their intent,",
+        "And to follow the star wherever it went."
+      ]
+    },
+    {
+      "lines": [
+        "This star drew nigh to the northwest,",
+        "Over Bethlehem it took its rest;",
+        "And there it did both stop and stay,",
+        "Right over the place where Jesus lay."
+      ]
+    },
+    {
+      "lines": [
+        "Then did they know assuredly",
+        "Within that house the King did lie;",
+        "One entered it them for to see,",
+        "And found the Babe in poverty."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Christmas/Advent",
+    "God, As King",
+    "Israel",
+    "Jesus",
+    "Knowledge",
+    "Light",
+    "Praise, Son",
+    "Presence",
+    "Reverence",
+    "Seasons"
+  ],
+  "metre": "Irregular",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_First_Noel-The_First_Noel.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_First_Noel-The_First_Noel"
+}

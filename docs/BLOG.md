@@ -20,9 +20,11 @@ tools/blog/
   indexnow.mjs              pings IndexNow after a deploy
   lib/api-posts.mjs         reads GET /api/blog/published at deploy time
   lib/catalogue.mjs         writes /blog/catalogue.json (hymns, pages, authors) for the API's checks
+  import/                   the Open Hymnal Project importer (abc.mjs reads ABC, ohp.mjs converts, run.mjs writes)
 web-site/assets/blog.css    styles for the generated pages (light and dark)
 web-site/assets/blog.js     read counts from the API and "Copy link" on blog pages
 web-site/assets/hymn.js     staff (OSMD) and piano on hymn pages; the solfa itself needs no JavaScript
+web-site/assets/hymns-index.js  the filter box on /hymns (the list itself needs no JavaScript)
 src/NoteFusion.*/Blog       the API: posts, topics, Gemini drafting, publishing, site rebuilds
 web-admin/src/app/(console)/blog   the console: posts, editor, topics, "Generate with Gemini"
 ```
@@ -90,10 +92,12 @@ statistics, studies, quotes, testimonials or anecdotes; must link only to pages 
 describe only the NoteFusion features it is given; and must never mention prices.
 
 **Solfa is never written by the model.** The prompt carries a catalogue of examples written by
-NoteFusion's engine — each published hymn's opening line exactly as the engine writes it (from the
-site's `/blog/catalogue.json`), and the scales — and the model can only cite them as
-` ```solfa ` blocks, which the build renders with the engine. A run of hand-written solfa in the
-prose fails the checks.
+NoteFusion's engine (from the site's `/blog/catalogue.json`): the opening line exactly as the engine
+writes it of each hymn encoded by hand (`imported: false`) and of any imported hymn the topic must
+link to, and the scales. The model can only cite them as ` ```solfa ` blocks, which the build renders
+with the engine. (The 248 imported Open Hymnal Project hymns would double the prompt if every first line
+were spelled out; every hymn page stays in the list of pages the post may link to.) A run of
+hand-written solfa in the prose fails the checks.
 
 ### Model, key and cost
 
@@ -101,6 +105,7 @@ prose fails the checks.
 |---|---|---|
 | `Gemini__ApiKey` (**required** for drafting) | the API's environment; the deploy passes the `GEMINI_API_KEY` repository secret | — |
 | `Gemini__Model` | the API's environment; the deploy passes the `GEMINI_MODEL` repository variable | `gemini-3.8-flash` |
+| `Gemini__FallbackModels` | the API's environment; the deploy passes the `GEMINI_FALLBACK_MODELS` repository variable | `gemini-flash-latest,gemini-flash-lite-latest` |
 | `Gemini__MaxOutputTokens` | the API's environment | `16384` |
 | `Blog__AutoDraftEnabled`, `…Days`, `…TimeUtc`, `…Count` | the API's environment (`BLOG_AUTODRAFT_*` variables) | on, `Mon,Thu`, `05:30`, `1` |
 
@@ -110,10 +115,18 @@ quality set `GEMINI_MODEL` to a Pro model — at the time of writing `gemini-3.1
 
 The call is `generateContent` at `https://generativelanguage.googleapis.com/v1beta/models/<model>`
 with the key in the `x-goog-api-key` header, `responseMimeType: application/json` and a
-`responseSchema`, temperature 0.7, through the API's `OutboundResilience` (a four-minute limit per call,
-a circuit breaker). A rate limit, a server error or no answer is tried once more after 15 seconds;
-a refused key or unknown model stops the batch with the API's own message. Thinking tokens count
-against the output limit; a draft cut off by it fails rather than half-writes.
+`responseSchema`, temperature 0.7, through the API's `OutboundResilience` (a four-minute limit per
+attempt; no retries or circuit breaker of its own — the drafter paces itself, see below). A 429, a 5xx
+or a dropped connection is tried up to five times with a growing pause (15, 30, 60, 60 s; a
+`Retry-After` the API sends wins): Gemini's "high demand" 503s can last minutes. If the model is still
+overloaded or rate-limited after that (or its id is gone, a 404), the draft falls back to
+`gemini-flash-latest`, then `gemini-flash-lite-latest`, two tries each (`Gemini__FallbackModels`, a
+comma-separated list, changes it; `none` turns it off). A refused key (401/403), a blocked prompt or any
+other refusal never falls back: it stops the batch with the API's own message. The revision goes to
+the model that wrote the draft, and the draft and its batch record that model. If every model is
+unavailable, the batch stops (it would only fail the same way) and says why in the run. Thinking
+tokens count against the output limit, which is why it is 16,384 rather than 8,192; a draft cut off by
+the limit fails rather than half-writes.
 
 **Cost:** each call's `usageMetadata` (prompt, output, thinking, cached and total tokens) is saved
 with the draft and shown in the console (per draft and per batch). Multiply by the rates on Google's
@@ -232,6 +245,47 @@ Do not add hymns whose words or tune are still in copyright (for example the Eng
 *How Great Thou Art*, *Great Is Thy Faithfulness*, or modern worship songs); note that a modern
 arrangement or translation of an old hymn can still be protected.
 
+### Importing from the Open Hymnal Project
+
+Most hymns come from the [Open Hymnal Project](http://openhymnal.org/) (edited by Brian J. Dumont),
+which publishes its hymns as ABC scores and states each hymn's copyright in the score; its
+[copying page](http://openhymnal.org/copying.html) puts the project's own editing and data in the
+public domain. Every imported page credits it with a link to the hymn's page there, and
+`/hymns/credits` lists the sources, the licences and every hymn's writers.
+
+```bash
+mkdir -p /tmp/ohp && cd /tmp/ohp && curl -O http://openhymnal.org/OpenHymnal2014.06-abc.zip   # or the single /Abc/<name>.abc files
+unzip -d abc OpenHymnal2014.06-abc.zip                                                     # the scores are data: never run anything from them
+node tools/blog/import/run.mjs --src /tmp/ohp/abc --date 2026-10-16    # --dry-run to see the counts only
+node tools/blog/build.mjs && node tools/blog/check.mjs
+```
+
+The importer reads only the melody voice (the soprano; the top note of a chord), every `w:` verse
+and the `W:` verses after the score, and the score's own metadata (`%OHCOMPOSER`, `%OHAUTHOR`,
+`%OHTRANSLATOR` with their dates; the years in its `C:` lines; `%OHCATEGORY` and `%OHTOPICS` as the
+index's seasons and topics). It never writes solfa: the build runs the engine on the notes. For each
+score:
+
+- **Not imported at all** (nothing copied, listed in `tools/blog/import/ohp-report.json`): a licence
+  other than plain public domain (a hymn whose only the harmony is licensed is fine — the harmony is
+  not used), or anyone named living or dead in 1955 or later, or first published after 1928.
+- **Already on the site** (same title, other title or opening words, and the same tune): ours is kept.
+  If ours is a words-only draft, its melody is filled in from the score and our first verse is fitted
+  to the score's syllables (`has`/`hath`, `Savior`/`Saviour` allowed); the same words to another
+  tune become a page of their own, the tune in the title ("When I Survey the Wondrous Cross (Hamburg)").
+- **New**: published only when every gate passes — the melody parses (a metre; no triplets, repeats,
+  key or metre changes; bars that add up; notes on the quarter-beat grid), the first verse has one
+  syllable or held note per note, a singable range (G3–A5, at most a twelfth), and the public-domain
+  rule above from the score's own dates. Otherwise it is a draft whose `reviewNotes` say why
+  (`"Held back: …"`); nothing is guessed or looked up elsewhere.
+
+Every imported hymn is `"reviewed": false` with `"confidence": "imported, unchecked: …"`, carries
+`source`, `sourceUrl`, `licence`, `credits` and `importedFrom`, and its tune's `reviewNotes` say what
+to check. Running the importer again rewrites only the files it wrote (and removes those it no longer
+produces); hand-written hymns are never touched except to fill a words-only draft. Line breaks in the
+verses come from the metre (`%OHMETRICAL`) when the syllables add up, else from punctuation — check
+them when you review a hymn.
+
 ### Status of the seeded hymns
 
 Every hymn is `"reviewed": false` until you have checked the melody against a hymn book you trust;
@@ -247,11 +301,11 @@ change it to `true` when you have. Published now (melodies encoded by hand; plea
 | Silent Night | STILLE NACHT | Bb | High for the notes; check the word underlay of the last two lines. |
 | Good King Wenceslas | TEMPUS ADEST FLORIDUM | G | High for the notes; check the underlay of the final "fuel". |
 
-Seeded as **drafts** (words and credits in place, **no melody yet**, so not published):
-Holy, Holy, Holy (NICAEA), Abide with Me (EVENTIDE), What a Friend We Have in Jesus (CONVERSE),
-It Is Well with My Soul (VILLE DU HAVRE), Blessed Assurance (ASSURANCE). Their melodies were not
-encoded because they could not be written down from memory with enough confidence; add them from
-your hymn book as below, then set `"draft": false`.
+The words-only drafts that waited for a quarter-beat grid (To God Be the Glory, Blessed Assurance,
+Pass Me Not, Come Thou Fount, When the Roll Is Called Up Yonder, A Mighty Fortress) now have their
+melodies from the Open Hymnal Project; their tunes' `reviewNotes` say so. Love Divine (BLAENWERN)
+and The Lord's My Shepherd (CRIMOND) are still words-only drafts: the hymnal does not carry those
+tunes.
 
 ### Adding or correcting a hymn
 
@@ -277,8 +331,12 @@ your hymn book as below, then set `"draft": false`.
    C), beats in crotchets (`1` a crotchet, `.5` a quaver, `1.5` a dotted crotchet, `3` a dotted
    minim), `r:1` a rest, and a trailing `~` ties a note into the next one of the same pitch (a note
    held over a bar line). Every bar must add up; a `pickup` bar holds that many beats and the last
-   bar the rest of a bar. Notes must fall on the half-beat grid the solfa layout uses, so tunes
-   with semiquavers or dotted-quaver rhythms cannot be shown yet. `lineBars` is how many bars go on
+   bar the rest of a bar. Notes fall on the quarter-beat grid: `.25` is a semiquaver and `.75` a
+   dotted quaver. A tune on the half-beat grid is laid out by the engine's own `hymnRows`; a tune
+   with quarter-beat notes splits a half-beat cell into its two quarters, joined by the tonic solfa
+   quarter-beat comma: `d -,r` is a dotted quaver and a semiquaver, `d,r` two semiquavers. On the
+   page the octave marks (`s,` `d'`) are drawn small and low or high against their letter, so they
+   never read as that comma; copied text is exactly the engine's. `lineBars` is how many bars go on
    a line of the solfa grid (a number, or a list such as `[2, 2, 2, 3]`); two suits 4/4 tunes.
 
    A quick way to get the notes: sing or play the tune into NoteFusion and copy the pitches from
@@ -305,7 +363,11 @@ your hymn book as below, then set `"draft": false`.
    `underlay` is the first verse split into one syllable per note: hyphens join the syllables of a
    word (`A-maz-ing`), and `_` after a syllable carries it over one more note (`ing_` is sung on two
    notes). The build fails if the syllables and notes do not match one for one. Optional:
-   `"shortTitle"` (used in the page title), `"note"` on a verse.
+   `"shortTitle"` (used in the page title), `"note"` on a verse, `"alsoKnownAs"`, `"category"` (a
+   season or occasion, offered as a filter button on /hymns) and `"topics"`, and for a hymn taken
+   from a collection `"source"`, `"sourceUrl"`, `"licence"` and `"credits"` (shown in its credit
+   line). A person may have `"lived": "5th century"` when the source dates them only roughly. A
+   draft may wait for its facts; the public-domain rule is enforced when it is published.
 
 3. Rebuild, check, preview, commit: `node tools/blog/build.mjs && node tools/blog/check.mjs`.
 

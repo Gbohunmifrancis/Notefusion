@@ -1,0 +1,95 @@
+{
+  "title": "Jesus Came, the Heavens Adoring",
+  "tune": "sieh-hier-bin-ich-ehrenkoenig",
+  "text": [
+    {
+      "name": "Godfrey Thring",
+      "born": 1823,
+      "died": 1903,
+      "role": "Words (1864)"
+    }
+  ],
+  "textPublished": 1864,
+  "description": "Jesus Came, the Heavens Adoring in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Godfrey Thring, first published in 1864. The tune, SIEH, HIER BIN ICH, EHRENKOENIG, is from Geistreiches Gesangbuch Darmstadt, 1698. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Je-sus came, the heav'ns a-dor-ing, Came with peace from realms on high; Je-sus came for man's re-demp-tion, Low-ly came on earth to die. Al-le-lu-ia!_ Al-le-lu-ia! Came in_ deep hu-mil-i-ty.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus came, the heav'ns adoring,",
+        "Came with peace from realms on high;",
+        "Jesus came for man's redemption,",
+        "Lowly came on earth to die.",
+        "Alleluia! Alleluia!",
+        "Came in deep humility."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus comes again in mercy,",
+        "When our hearts are bowed with care;",
+        "Jesus comes again in answer",
+        "To an earnest, heartfelt prayer;",
+        "Alleluia! Alleluia!",
+        "Comes to save us from despair."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus comes to hearts rejoicing,",
+        "Bringing news of sins forgiv'n;",
+        "Jesus comes in sounds of gladness,",
+        "Leading souls redeemed to Heav'n;",
+        "Alleluia! Alleluia!",
+        "Now the gate of death is riv'n."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus comes in joy and sorrow,",
+        "Shares alike our hopes and fears;",
+        "Jesus comes, whate'er befalls us,",
+        "Glads our hearts, and dries our tears;",
+        "Alleluia! Alleluia!",
+        "Cheering e'en our failing years."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus comes on clouds triumphant,",
+        "When the heav'ns shall pass away;",
+        "Jesus comes again in glory;",
+        "Let us then our homage pay,",
+        "Alleluia! Alleluia!",
+        "Till the dawn of endless day."
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Atonement",
+    "Christmas/Advent",
+    "Cloud",
+    "Comfort",
+    "Courage in Affliction",
+    "Forgiveness",
+    "God, Love of",
+    "Heaven",
+    "Humility",
+    "Jesus",
+    "Joy",
+    "Salvation",
+    "Second Coming"
+  ],
+  "metre": "8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_Came_The_Heavens_Adoring-Sieh_hier_bin_ich_Ehrenkoenig.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Jesus_Came_The_Heavens_Adoring-Sieh_hier_bin_ich_Ehrenkoenig"
+}

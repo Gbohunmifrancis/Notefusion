@@ -1,0 +1,24 @@
+{
+  "name": "ST. ALBAN",
+  "music": [
+    {
+      "name": "Franz Joseph Haydn",
+      "born": 1732,
+      "died": 1809,
+      "role": "Music (1774)"
+    }
+  ],
+  "musicPublished": 1774,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "B4:1 B4:1 A4:1 A4:1 | G4:2 D4:2 | D5:1 D5:1 E5:1 E5:1 | A4:4 | C5:1 C5:1 B4:1 B4:1 | A4:2 E4:2 | G4:1 G4:1 A4:1 A4:1 | G4:4 | D5:1 D5:1 C5:1 C5:1 | B4:2 E4:2 | C5:1 C5:1 E5:1 E5:1 | G4:2 F#4:2 | C5:1 C5:1 A4:1 A4:1 | D5:2 B4:2 | A4:1 A4:1 F#4:1 F#4:1 | G4:4 | B4:1 B4:1 A4:1 A4:1 | G4:2 D4:2 | D5:1 D5:1 E5:1 E5:1 | A4:4 | C5:1 C5:1 B4:1 B4:1 | A4:2 E4:2 | G4:1 G4:1 A4:1 A4:1 | G4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_King_Of_Glory-St_Alban.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The last verse is printed after the score in the source, not under the notes. The Open Hymnal's own source: 'The Evangelical Hymnal' 1921, Hymn 346."
+}

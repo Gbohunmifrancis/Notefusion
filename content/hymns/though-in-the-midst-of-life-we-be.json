@@ -1,0 +1,110 @@
+{
+  "title": "Though in the Midst of Life We Be",
+  "tune": "mitten-wir-im-leben-sind",
+  "text": [
+    {
+      "name": "Medieval",
+      "traditional": true,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "Though in the Midst of Life We Be in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The English translation is by Richard Massie (1854). The tune, MITTEN WIR IM LEBEN SIND, is by Martin Luther (1524). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Though in midst of life we be,_ Snares of death sur-round__ us; Where shall we for suc-cor flee,_ Lest our foes con-found__ us? To Thee a-lone, our Sa_-vior. We mourn our grie-vous sin which hath_ Stirr'd the fire of Thy_ fierce wrath. Ho-ly and gra-cious God! Ho-ly and might-y God! Ho-ly and all‑ mer-ci-ful Sa_-vior! Thou e-ter-nal God! Save us, Lord, from sink_-ing In the deep and bit-ter flood. Ky-ri-e e-lei-son.",
+  "verses": [
+    {
+      "lines": [
+        "Though in midst of life we be,",
+        "Snares of death surround us;",
+        "Where shall we for succor flee,",
+        "Lest our foes confound us?",
+        "To Thee alone, our Savior.",
+        "We mourn our grievous sin which hath",
+        "Stirr'd the fire of Thy fierce wrath.",
+        "Holy and gracious God!",
+        "Holy and mighty God!",
+        "Holy and all—merciful Savior!",
+        "Thou eternal God!",
+        "Save us, Lord, from sinking",
+        "In the deep and bitter flood.",
+        "Kyrie eleison."
+      ]
+    },
+    {
+      "lines": [
+        "Whilst in midst of death we be,",
+        "Hell's grim jaws o'ertake us;",
+        "Who from such distress will free.",
+        "Who secure will make us?",
+        "Thou only, Lord, canst do it!",
+        "It moves Thy tender heart to see",
+        "Our great sin and misery.",
+        "Holy and gracious God!",
+        "Holy and mighty God!",
+        "Holy and all—merciful Savior!",
+        "Thou eternal God!",
+        "Let not hell dismay us",
+        "With its deep and burning flood.",
+        "Kyrie eleison."
+      ]
+    },
+    {
+      "lines": [
+        "Into hell's fierce agony",
+        "Sin doth headlong drive us:",
+        "Where shall we for succor flee,",
+        "Who, O, who will hide us?",
+        "Thou only, blessed Saviour.",
+        "Thy precious blood was shed to win",
+        "Peace and pardon for our sin.",
+        "Holy and gracious God!",
+        "Holy and mighty God!",
+        "Holy and all—merciful Savior!",
+        "Let us not, we pray,",
+        "From the true faith's comfort",
+        "Fall in our last need away.",
+        "Kyrie eleison."
+      ]
+    }
+  ],
+  "category": "Funeral",
+  "topics": [
+    "Blood",
+    "Conscience",
+    "Courage in Affliction",
+    "God, Care of",
+    "God, Goodness of",
+    "God, Mercy of",
+    "Grace",
+    "Holiness",
+    "Jesus",
+    "Peace",
+    "Salvation",
+    "Security",
+    "Victory"
+  ],
+  "metre": "Peculiar",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Though_In_The_Midst_Of_Life_We_Be-Mitten_Wir_Im_Leben_Sind.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Though_In_The_Midst_Of_Life_We_Be-Mitten_Wir_Im_Leben_Sind"
+}

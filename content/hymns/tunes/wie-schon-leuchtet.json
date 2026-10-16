@@ -1,0 +1,24 @@
+{
+  "name": "WIE SCHÖN LEUCHTET",
+  "music": [
+    {
+      "name": "Phillipp Nicolai",
+      "born": 1556,
+      "died": 1608,
+      "role": "Music (1599)"
+    }
+  ],
+  "musicPublished": 1599,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "Eb4:2 | Bb4:2 G4:2 | Eb4:2 Bb4:2 | C5:1 C5:1 Bb4:2 | r:1 Bb4:1 C5:1 D5:1 | Eb5:1 D5:1 C5:1 C5:1 | Bb4:2 r:1 Bb4:1 | C5:2 Bb4:2 | Ab4:1 G4:1 F4:2 | Eb4:4 | r:2 Eb4:2 | Bb4:2 G4:2 | Eb4:2 Bb4:2 | C5:1 C5:1 Bb4:2 | r:1 Bb4:1 C5:1 D5:1 | Eb5:1 D5:1 C5:1 C5:1 | Bb4:2 r:1 Bb4:1 | C5:2 Bb4:2 | Ab4:1 G4:1 F4:2 | Eb4:4 | Bb4:2 G4:2 | Bb4:2 G4:2 | G4:1 G4:1 F4:1 F4:1 | G4:1 G4:1 F4:1 F4:1 | G4:1 G4:1 F4:1 Eb4:1 | Eb5:2 Bb4:2 | C5:2 Bb4:2 | Ab4:1 G4:1 F4:2 | Eb4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Holy_Spirit_Enter_In-Wie_Schon_Leuchtet.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 3 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: \"Mehrstimmiges ChoralBuch\", 1906 Hymn #184, page 145 Ed. Karl Brauer. Text source \"Evangelical Lutheran Hymn-Book\", 1931."
+}

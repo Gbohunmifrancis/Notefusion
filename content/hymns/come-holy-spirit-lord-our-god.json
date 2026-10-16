@@ -1,0 +1,112 @@
+{
+  "title": "Come Holy Spirit, Lord Our God",
+  "alsoKnownAs": [
+    "Come Holy Ghost, God and Lord"
+  ],
+  "tune": "komm-heiliger-geist-herre-gott",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Arthur Tozel Russell",
+      "born": 1806,
+      "died": 1874,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "Come Holy Spirit, Lord Our God in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The English translation is by Arthur Tozel Russell. The tune, KOMM HEILIGER GEIST, HERRE GOTT, is Traditional Latin. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Come, Ho-ly Spi_-rit, Lord__ our God, And pour Thy_ gifts_ of_ grace___ a-broad; Thy faith_-ful peo_-ple fill_ with_ bles-sing, Love's fire their hearts_ po-ssess__-ing. O Lord, Thou by_ Thy heav'n__-ly Light Dost ga-ther_ and_ in_ faith___ u-nite Through all_ the world_ a ho_-ly_ na-tion To sing to Thee_ with ex-ul-ta_-tion, Hal-le_-lu__-jah! Hal-le_-lu__-jah!",
+  "verses": [
+    {
+      "lines": [
+        "Come, Holy Spirit,",
+        "Lord our God, And pour Thy gifts of grace abroad;",
+        "Thy faithful people fill with blessing,",
+        "Love's fire their hearts possessing.",
+        "O Lord, Thou by Thy heav'nly",
+        "Light Dost gather and in faith unite",
+        "Through all the world a holy nation",
+        "To sing to Thee with exultation,"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Hallelujah!",
+        "Hallelujah!"
+      ]
+    },
+    {
+      "lines": [
+        "O, holiest Light!",
+        "O Rock adored!",
+        "Give us Thy light,",
+        "Thy living Word,",
+        "To God Himself our spirits leading,",
+        "With Him as children pleading.",
+        "From error, Lord, our souls defend,",
+        "That they on Christ alone attend;",
+        "In Him with faith unfeigned abiding,",
+        "In Him with all their might confiding."
+      ]
+    },
+    {
+      "lines": [
+        "O holiest Fire!",
+        "O Source of rest!",
+        "Grant that with joy and hope possest,",
+        "And in Thy service kept forever,",
+        "Naught us from Thee may sever.",
+        "Lord, may Thy pow'r prepare each heart;",
+        "To our weak nature strength impart,",
+        "Onward to press, our foes defying,",
+        "To Thee, through living and through dying."
+      ]
+    }
+  ],
+  "category": "Pentecost",
+  "topics": [
+    "Aspiration",
+    "Children (see also God's Children - the Faithful)",
+    "Christian Life",
+    "Discipleship",
+    "Faith",
+    "Fire",
+    "God, Care of",
+    "God, Providence of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Guidance",
+    "Holiness",
+    "Holy Spirit",
+    "Invitation (Faithful's to God)",
+    "Light",
+    "Missions",
+    "People of the World",
+    "Praise, Holy Spirit",
+    "Presence",
+    "Rest"
+  ],
+  "metre": "8 8 9 7 8 8 9 9 Alleluia8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Come_Holy_Spirit_Lord_Our_God-Komm_Heiliger_Geist_Herre_Gott.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Come_Holy_Spirit_Lord_Our_God-Komm_Heiliger_Geist_Herre_Gott",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929."
+}

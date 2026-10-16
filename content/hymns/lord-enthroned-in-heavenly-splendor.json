@@ -1,0 +1,122 @@
+{
+  "title": "Lord, Enthroned in Heavenly Splendor",
+  "tune": "bryn-calfaria",
+  "text": [
+    {
+      "name": "George Hugh Bourne",
+      "born": 1840,
+      "died": 1925,
+      "role": "Words (1874)"
+    }
+  ],
+  "textPublished": 1874,
+  "description": "Lord, Enthroned in Heavenly Splendor in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by George Hugh Bourne, first published in 1874. The tune, BRYN CALFARIA, is by William Owen (1852). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lord, en-throned in heav'n-ly splen-dor, First be-gott-en_ from the dead, You a-lone, our strong De-fend-er, Now lift up Your_ peo-ple's head. Al-le-lu-ia! Al-le-lu-ia! Al-le-lu-ia!_ Je_-sus, true_ and li_-ving_ Bread! Je-sus, true and_ li-ving Bread!",
+  "verses": [
+    {
+      "lines": [
+        "Lord, enthroned in heav'nly splendor,",
+        "First begotten from the dead,",
+        "You alone, our strong Defender,",
+        "Now lift up Your people's head.",
+        "Alleluia!",
+        "Alleluia!",
+        "Alleluia!",
+        "Jesus, true and living",
+        "Bread! Jesus, true and living",
+        "Bread!"
+      ]
+    },
+    {
+      "lines": [
+        "Here our humblest homage pay we,",
+        "Here in loving reference bow;",
+        "Here for faith's discernment pray we,",
+        "Lest we fail to know You now.",
+        "Alleluia!",
+        "Alleluia!",
+        "Alleluia!",
+        "Thou art here, we ask not how.",
+        "Thou art here, we ask not how."
+      ]
+    },
+    {
+      "lines": [
+        "Though the lowliest form doth veil Thee",
+        "As of old in Bethlehem,",
+        "Here as there Thine angels hail Thee,",
+        "Branch and Flow'r of Jesse's stem.",
+        "Alleluia!",
+        "Alleluia!",
+        "Alleluia!",
+        "We in worship join with them.",
+        "We in worship join with them."
+      ]
+    },
+    {
+      "lines": [
+        "Paschal Lamb, Your offering finished",
+        "Once for all when You were slain,",
+        "In its fullness undiminished",
+        "Shall forevermore remain.",
+        "Alleluia!",
+        "Alleluia!",
+        "Alleluia!",
+        "Cleansing souls from every stain.",
+        "Cleansing souls from every stain."
+      ]
+    },
+    {
+      "lines": [
+        "Great High Priest of our profession,",
+        "Through the veil Thou wentest in,",
+        "By Thy mighty intercession,",
+        "Grace and peace for us to win.",
+        "Alleluia!",
+        "Alleluia!",
+        "Alleluia!",
+        "Jesus, true and living",
+        "Bread! Jesus, true and living",
+        "Bread!"
+      ]
+    },
+    {
+      "lines": [
+        "Life imparting heavenly Manna,",
+        "Smitten Rock with streaming side,",
+        "Heaven and earth with loud hosanna",
+        "Worship You, the Lamb Who died.",
+        "Alleluia! Alleluia! Alleluia!",
+        "Risen, Ascended, Glorified!"
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "Atonement",
+    "Bread (of Life/Daily Bread)",
+    "Faith",
+    "God, Majesty &amp; Power of",
+    "Grace",
+    "Gratitude",
+    "Jesus",
+    "Lord's Supper",
+    "Praise, Son",
+    "Presence",
+    "Priest/Priestly Roles",
+    "Throne (also see God - As King)",
+    "Worship"
+  ],
+  "metre": "8 7 8 7 Alleluia12 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lord_Enthroned_In_Heavenly_Splendor-Bryn_Calfaria.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Lord_Enthroned_In_Heavenly_Splendor-Bryn_Calfaria"
+}

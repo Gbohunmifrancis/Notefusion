@@ -76,7 +76,15 @@ test("the deploy build publishes the catalogue the API checks posts against", ()
     const { files } = buildSite({ siteDir: dir, api: API });
     const cat = JSON.parse(files.get("blog/catalogue.json"));
     assert.deepEqual(cat.authors, ["francis"]);
+    // Every published hymn, the imported library flagged so the drafter spells out only the hand-made ones.
+    const { hymns } = loadAll();
+    assert.equal(cat.hymns.length, hymns.length);
+    assert.ok(hymns.length >= 248, `${hymns.length} hymns`);
+    assert.ok(cat.hymns.some((h) => h.imported) && cat.hymns.some((h) => !h.imported));
+    for (const h of hymns) assert.ok(files.has(`hymns/${h.slug}/index.html`), h.slug);
+    assert.match(files.get("blog/how-to-read-tonic-solfa/index.html"), /<script src="\/assets\/blog-track\.js\?v=\d+" defer><\/script>/);
     const grace = cat.hymns.find((h) => h.slug === "amazing-grace");
+    assert.equal(grace.imported, false);
     assert.equal(grace.header, "Doh is G");
     assert.equal(grace.firstLine.solfa, "| s, - | d - - - m d | m - - - r - | d - - - l, - | s, - - - s, - |");
     assert.ok(grace.bars >= grace.firstLine.bars);

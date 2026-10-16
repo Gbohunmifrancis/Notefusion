@@ -1,0 +1,94 @@
+{
+  "title": "God, Whose Almighty Word",
+  "tune": "italian-hymn",
+  "text": [
+    {
+      "name": "John Marriott",
+      "born": 1780,
+      "died": 1825,
+      "role": "Words (1813)"
+    }
+  ],
+  "textPublished": 1813,
+  "description": "God, Whose Almighty Word in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by John Marriott, first published in 1813. The tune, ITALIAN HYMN, is by Felice de Giardini (1769). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "God, whose al-might_-y word Cha-os and dark__-ness heard And took their flight: Hear us, we hum-ble pray, And where the Gos-pel day Sheds not its glor-ious ray, Let there be light!",
+  "verses": [
+    {
+      "lines": [
+        "God, whose almighty word",
+        "Chaos and darkness heard",
+        "And took their flight:",
+        "Hear us, we humble pray,",
+        "And where the Gospel day",
+        "Sheds not its glorious ray,",
+        "Let there be light!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, who once came to bring,",
+        "On your redeeming wing,",
+        "Healing and sight,",
+        "Health to the sick in mind,",
+        "Sight to the inly blind:",
+        "Oh, now to humankind",
+        "Let there be light!"
+      ]
+    },
+    {
+      "lines": [
+        "Spirit of truth and love,",
+        "Life giving, holy dove,",
+        "Speed forth your flight;",
+        "Move on the water's face,",
+        "Bearing the lamp of grace,",
+        "And in earth's darkest place",
+        "Let there be light!"
+      ]
+    },
+    {
+      "lines": [
+        "Holy and blessed three,",
+        "Glorious Trinity,",
+        "Wisdom, love, might!",
+        "Boundless as ocean's tide,",
+        "Rolling in fullest pride,",
+        "Through the earth, far and wide,",
+        "Let there be light!"
+      ]
+    }
+  ],
+  "category": "Missions",
+  "topics": [
+    "Darkness, Spiritual",
+    "Father",
+    "God, Creator",
+    "God, Eternity of",
+    "God, Majesty &amp; Power of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Gospel",
+    "Healing",
+    "Holiness",
+    "Holy Spirit",
+    "Jesus",
+    "Light",
+    "People of the World",
+    "Pride (see also Humility)",
+    "Speech",
+    "Trinity",
+    "Truth",
+    "Wisdom"
+  ],
+  "metre": "6 6 4 6 6 6 4",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/God_Whose_Almighty_Word-Italian_Hymn.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "God_Whose_Almighty_Word-Italian_Hymn"
+}

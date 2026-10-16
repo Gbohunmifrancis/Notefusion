@@ -2,21 +2,55 @@
   "title": "When the Roll Is Called Up Yonder",
   "tune": "roll-call",
   "text": [
-    {"name": "James Milton Black", "born": 1856, "died": 1938, "role": "Words (1893)"}
+    {
+      "name": "James Milton Black",
+      "born": 1856,
+      "died": 1938,
+      "role": "Words (1893)"
+    }
   ],
   "textPublished": 1893,
   "description": "When the Roll Is Called Up Yonder in Tonic Solfa: the solfa with the words, staff notation, all three verses with the refrain, and a piano.",
   "about": [
     "James Milton Black, a Methodist Sunday-school teacher in Pennsylvania, wrote both the words and the tune in 1893."
   ],
-  "underlay": "",
+  "underlay": "When the trum-pet of the Lord shall sound, and time shall be no more, And the morn-ing breaks, e-ter-nal, bright and fair; When the saved of earth shall ga-ther ov-er on the o-ther shore, And the roll is called up yon-der, I’ll be there. When the roll is called up yon-der, When the roll is called up yon-der, When the roll is called up yon-der, When the roll is called up yon-der, I’ll be there.",
   "verses": [
-    {"lines": ["When the trumpet of the Lord shall sound, and time shall be no more,", "And the morning breaks, eternal, bright and fair;", "When the saved of earth shall gather over on the other shore,", "And the roll is called up yonder, I’ll be there."]},
-    {"label": "Refrain", "lines": ["When the roll is called up yonder,", "When the roll is called up yonder,", "When the roll is called up yonder,", "When the roll is called up yonder, I’ll be there."]},
-    {"lines": ["On that bright and cloudless morning when the dead in Christ shall rise,", "And the glory of His resurrection share;", "When His chosen ones shall gather to their home beyond the skies,", "And the roll is called up yonder, I’ll be there."]},
-    {"lines": ["Let us labour for the Master from the dawn till setting sun;", "Let us talk of all His wondrous love and care;", "Then when all of life is over, and our work on earth is done,", "And the roll is called up yonder, I’ll be there."]}
+    {
+      "lines": [
+        "When the trumpet of the Lord shall sound, and time shall be no more,",
+        "And the morning breaks, eternal, bright and fair;",
+        "When the saved of earth shall gather over on the other shore,",
+        "And the roll is called up yonder, I’ll be there."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "When the roll is called up yonder,",
+        "When the roll is called up yonder,",
+        "When the roll is called up yonder,",
+        "When the roll is called up yonder, I’ll be there."
+      ]
+    },
+    {
+      "lines": [
+        "On that bright and cloudless morning when the dead in Christ shall rise,",
+        "And the glory of His resurrection share;",
+        "When His chosen ones shall gather to their home beyond the skies,",
+        "And the roll is called up yonder, I’ll be there."
+      ]
+    },
+    {
+      "lines": [
+        "Let us labour for the Master from the dawn till setting sun;",
+        "Let us talk of all His wondrous love and care;",
+        "Then when all of life is over, and our work on earth is done,",
+        "And the roll is called up yonder, I’ll be there."
+      ]
+    }
   ],
   "updated": "2026-10-16",
   "reviewed": false,
-  "draft": true
+  "draft": false
 }

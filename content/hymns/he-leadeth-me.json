@@ -1,0 +1,91 @@
+{
+  "title": "He Leadeth Me",
+  "tune": "he-leadeth-me",
+  "text": [
+    {
+      "name": "Joseph Henry Gilmore",
+      "born": 1834,
+      "died": 1918,
+      "role": "Words (1862)"
+    }
+  ],
+  "textPublished": 1862,
+  "description": "He Leadeth Me in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Joseph Henry Gilmore, first published in 1862. The tune, HE LEADETH ME, is by William Batchelder Bradbury (1864). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "He lead-eth me, O bless-èd thought! O words with heav'n-ly_ com-fort fraught! What-e'er I do, wher-e'er I be Still_ 'tis God's hand_ that_ lead-eth me. He lead-eth me, He lead-eth_ me, By His own hand_ He_ lead-eth me; His faith-ful fol-low'r I would_ be, For by His hand_ He_ lead-eth me.",
+  "verses": [
+    {
+      "lines": [
+        "He leadeth me, O blessèd thought!",
+        "O words with heav'nly comfort fraught!",
+        "Whate'er I do, where'er I be",
+        "Still 'tis God's hand that leadeth me."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "He leadeth me, He leadeth me,",
+        "By His own hand He leadeth me;",
+        "His faithful follow'r I would be,",
+        "For by His hand He leadeth me."
+      ]
+    },
+    {
+      "lines": [
+        "Sometimes mid scenes of deepest gloom,",
+        "Sometimes where Eden's bowers bloom,",
+        "By waters still, ov'r troubled sea,",
+        "Still 'tis His hand that leadeth me."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, I would place my hand in Thine,",
+        "Nor ever murmur nor repine;",
+        "Content, whatever lot I see,",
+        "Since 'tis my God that leadeth me."
+      ]
+    },
+    {
+      "lines": [
+        "And when my task on earth is done,",
+        "When by Thy grace the vict'ry's won,",
+        "E'en death's cold wave I will not flee,",
+        "Since God through Jordan leadeth me."
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Anticipation",
+    "Calmness",
+    "Christian Life",
+    "Comfort",
+    "Consecration",
+    "Courage in Affliction",
+    "Discipleship",
+    "Eternal Life",
+    "Faithfulness",
+    "Following Jesus, In Faith",
+    "Following Jesus, Sanctification",
+    "God, Care of",
+    "God, Faithfulness of",
+    "God, Providence of",
+    "Guidance",
+    "Leadership",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Trust"
+  ],
+  "metre": "8 8 8 8 8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/He_Leadeth_Me-He_Leadeth_Me.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "He_Leadeth_Me-He_Leadeth_Me"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "ES IST GEWISSLICH AN DER ZEIT",
+  "music": [
+    {
+      "name": "From Klug's Geistliche Lieder, Wittenberg, 1533",
+      "traditional": true,
+      "role": "Melody (1533)"
+    }
+  ],
+  "musicPublished": 1533,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 3,
+  "lineBars": 2,
+  "melody": "G4:1 G4:1 B4:1 | A4:1 G4:1 A4:1 A4:1 | B4:2 G4:2 | B4:1 C5:1 D5:1 B4:1 | A4:2 G4:2 | r:1 G4:1 G4:1 B4:1 | A4:1 G4:1 A4:1 A4:1 | B4:2 G4:2 | B4:1 C5:1 D5:1 B4:1 | A4:2 G4:2 | r:1 B4:1 B4:1 A4:1 | G4:1 F#4:1 G4:1 E4:1 | D4:3 D4:1 | G4:1 G4:1 G4:1 F#4:1 | G4:1 A4:1 B4:2 | G4:2 B4:1 C5:1 | D5:1 B4:1 A4:2 | G4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Day_Is_Surely_Drawing_Near-Es_ist_Gewisslich_an_der_Zett.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: The Evangelical Lutheran Hymn-book, 1931, Hymn 552."
+}

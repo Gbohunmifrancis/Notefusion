@@ -1,0 +1,89 @@
+{
+  "title": "Joy to the World",
+  "tune": "antioch",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Joy to the World in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Isaac Watts, first published in 1719. The tune, ANTIOCH, is by George Frederick Handel (1741). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Joy to the world, the Lord is come! Let earth re-ceive her King; Let ev_-'ry_ heart__ pre-pare_ Him_ room,__ And Heav'n and na-ture_ sing, And_ Heav'n and na-ture_ sing, And_ Heav'n,_ and Heav'n,__ and na-ture sing.",
+  "verses": [
+    {
+      "lines": [
+        "Joy to the world, the Lord is come!",
+        "Let earth receive her King;",
+        "Let ev'ry heart prepare Him room,",
+        "And Heav'n and nature sing,",
+        "And Heav'n and nature sing,",
+        "And Heav'n, and Heav'n, and nature sing."
+      ]
+    },
+    {
+      "lines": [
+        "Joy to the earth, the Savior reigns!",
+        "Let men their songs employ;",
+        "While fields and floods, rocks, hills and plains",
+        "Repeat the sounding joy,",
+        "Repeat the sounding joy,",
+        "Repeat, repeat, the sounding joy."
+      ]
+    },
+    {
+      "lines": [
+        "No more let sins and sorrows grow,",
+        "Nor thorns infest the ground;",
+        "He comes to make His blessings flow",
+        "Far as the curse is found,",
+        "Far as the curse is found,",
+        "Far as, far as, the curse is found."
+      ]
+    },
+    {
+      "lines": [
+        "He rules the world with truth and grace,",
+        "And makes the nations prove",
+        "The glories of His righteousness,",
+        "And wonders of His love,",
+        "And wonders of His love,",
+        "And wonders, wonders, of His love."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Anticipation",
+    "Brotherhood",
+    "Christmas/Advent",
+    "Fellowship",
+    "God, As King",
+    "God, Goodness of",
+    "God, Love of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Grace",
+    "Jesus",
+    "Joy",
+    "People of the World",
+    "Praise, Son",
+    "Presence",
+    "Sinners",
+    "Truth",
+    "Worship"
+  ],
+  "metre": "8 6 8 6 6 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Joy_To_The_World-Antioch.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Joy_To_The_World-Antioch"
+}

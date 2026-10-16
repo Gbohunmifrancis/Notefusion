@@ -223,7 +223,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 .studio-opt input[type=checkbox] { accent-color: var(--blue); }
 .studio-opt select { color: var(--ink); border-color: var(--input-line); background-color: var(--wash); }
 .studio-opt select option { color: initial; background: initial; }
-.studio-credits, .studio-status { color: var(--muted); }
+.studio-status { color: var(--muted); }
 
 /* Record: one round button, flat blue, a hairline ring around it, the microphone sized to fill it. */
 .studio-rec-stage { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 22px 0 8px; }

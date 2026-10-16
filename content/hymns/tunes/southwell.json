@@ -1,0 +1,23 @@
+{
+  "name": "SOUTHWELL",
+  "music": [
+    {
+      "name": "From William Daman's Psalter, 1579",
+      "traditional": true,
+      "role": "Melody (1579)"
+    }
+  ],
+  "musicPublished": 1579,
+  "key": "F minor",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:1 | Ab4:1 Ab4:1 G4:1 G4:1 | F4:3 Ab4:1 | Ab4:1 Ab4:1 Bb4:1 Bb4:1 | C5:3 C5:1 | Eb5:1 Eb5:1 Db5:1 Db5:1 | C5:1 C5:1 Bb4:1 C5:1 | Bb4:1 Ab4:1 G4:1 G4:1 | F4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lord_Jesus_Think_On_Me-Southwell.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 2 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: Common Service Book (ULCA), 1917. Hymn 320."
+}

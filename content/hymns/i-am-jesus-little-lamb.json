@@ -1,0 +1,84 @@
+{
+  "title": "I Am Jesus' Little Lamb",
+  "tune": "weil-ich-jesu-schaflein-bin",
+  "text": [
+    {
+      "name": "Henrietta Luise von Hayn",
+      "born": 1724,
+      "died": 1782,
+      "role": "Words (1778)"
+    },
+    {
+      "name": "Several translators (composite)",
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "I Am Jesus' Little Lamb in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Henrietta Luise von Hayn, first published in 1778. The tune, WEIL ICH JESU SCHÄFLEIN BIN, is from Bruder Choral-Buch, 1784. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "I am Je-sus' lit-tle lamb, Ev-er glad at heart I am; For my Shep-herd gen-tly_ guides_ me, Knows my need, and well pro_-vides_ me, Loves me ev-'ry day the same, Ev-en calls me by my name.",
+  "verses": [
+    {
+      "lines": [
+        "I am Jesus' little lamb,",
+        "Ever glad at heart I am;",
+        "For my Shepherd gently guides me,",
+        "Knows my need, and well provides me,",
+        "Loves me ev'ry day the same,",
+        "Even calls me by my name."
+      ]
+    },
+    {
+      "lines": [
+        "Day by day, at home, away,",
+        "Jesus is my Staff and Stay.",
+        "When I hunger, Jesus feeds me,",
+        "Into pleasant pastures leads me;",
+        "When I thirst, He bids me go",
+        "Where the quiet waters flow."
+      ]
+    },
+    {
+      "lines": [
+        "Who so happy as I am,",
+        "Even now the Shepherd's lamb?",
+        "And when my short life is ended,",
+        "By His angel host attended,",
+        "He shall fold me to His breast,",
+        "There within His arms to rest."
+      ]
+    }
+  ],
+  "category": "Trust",
+  "topics": [
+    "Assurance",
+    "Calmness",
+    "Consecration",
+    "Day",
+    "Discipleship",
+    "Following Jesus, In Faith",
+    "God, Care of",
+    "Gratitude",
+    "Jesus",
+    "Joy",
+    "Leadership",
+    "Love",
+    "Loyalty",
+    "Presence",
+    "Shepherd/Lamb",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Trust"
+  ],
+  "metre": "7 7 8 8 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/I_Am_Jesus_Little_Lamb-Weil_Ich_Jesu_Schaflein_Bin.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "I_Am_Jesus_Little_Lamb-Weil_Ich_Jesu_Schaflein_Bin",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929."
+}

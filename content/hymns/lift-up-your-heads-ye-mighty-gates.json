@@ -1,0 +1,122 @@
+{
+  "title": "Lift Up Your Heads, Ye Mighty Gates",
+  "tune": "milwaukee",
+  "text": [
+    {
+      "name": "Georg Weissel",
+      "born": 1590,
+      "died": 1635,
+      "role": "Words (1642)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1855)"
+    }
+  ],
+  "textPublished": 1855,
+  "description": "Lift Up Your Heads, Ye Mighty Gates in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Georg Weissel, first published in 1642. The English translation is by Catherine Winkworth (1855). The tune, MILWAUKEE, is by August Lemke (1849). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lift up your heads,_ ye might-y gates! Be-hold,_ the King of glo-ry waits; The King_ of kings_ is draw_-ing near, The Sa-vior of the world is here; Life and sal-va-tion doth He bring, Where-fore_ re-joice_ and glad-ly sing: We praise Thee, Fa-ther, now! Cre-a_-tor, wise art Thou!",
+  "verses": [
+    {
+      "lines": [
+        "Lift up your heads, ye mighty gates!",
+        "Behold, the King of glory waits;",
+        "The King of kings is drawing near,",
+        "The Savior of the world is here;",
+        "Life and salvation doth He bring,",
+        "Wherefore rejoice and gladly sing:",
+        "We praise Thee, Father, now!",
+        "Creator, wise art Thou!"
+      ]
+    },
+    {
+      "lines": [
+        "The Lord is just, a Helper tried,",
+        "Mercy is ever at His side,",
+        "His kingly crown is holiness,",
+        "His scepter, pity in distress,",
+        "The end of all our woe He brings;",
+        "Wherefore the earth is glad and sings:",
+        "We praise Thee, Savior, now!",
+        "Mighty in deed art Thou!"
+      ]
+    },
+    {
+      "lines": [
+        "O blest the land, the city blest,",
+        "Where Christ the Ruler is confessed!",
+        "O happy hearts and happy homes",
+        "To whom this King in triumph comes!",
+        "The cloudless Sun of joy He is,",
+        "Who bringeth pure delight and bliss.",
+        "O Comforter divine,",
+        "What boundless grace is Thine!"
+      ]
+    },
+    {
+      "lines": [
+        "Fling wide the portals of your heart;",
+        "Make it a temple, set apart",
+        "From earthly use for heav'ns employ,",
+        "Adorned with prayer and love and joy;",
+        "So shall your Sovereign enter in,",
+        "and new and nobler life begin;",
+        "To Thee, O God, be praise,",
+        "For Word, and deed, and grace!"
+      ]
+    },
+    {
+      "lines": [
+        "Redeemer, come! I open wide",
+        "My heart to Thee; here, Lord, abide!",
+        "Let me Thy inner presence feel,",
+        "Thy grace and love in me reveal.",
+        "Thy Holy Spirit guide us on,",
+        "Until our glorious goal be won!",
+        "Eternal praise and fame",
+        "We offer to Thy Name."
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Anticipation",
+    "Art and Music",
+    "Christian Home/Family",
+    "Christmas/Advent",
+    "Consecration",
+    "Crown",
+    "Father",
+    "God, As King",
+    "God, Creator",
+    "God, Goodness of",
+    "God, Mercy of",
+    "Grace",
+    "Gratitude",
+    "Holy Spirit",
+    "Inner Life",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Kindness, God's",
+    "Light",
+    "Presence",
+    "Salvation",
+    "Second Coming",
+    "Trinity",
+    "Worship"
+  ],
+  "metre": "8 8 8 8 8 8 6 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lift_Up_Your_Heads_Ye_Mighty_Gates-Milwaukee-Macht_Hoch_die_Tuer_Lemke.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Lift_Up_Your_Heads_Ye_Mighty_Gates-Milwaukee-Macht_Hoch_die_Tuer_Lemke"
+}

@@ -1,0 +1,116 @@
+{
+  "title": "Hark the Sound of Holy Voices",
+  "tune": "o-durchbrecher",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words (1862)"
+    }
+  ],
+  "textPublished": 1862,
+  "description": "Hark the Sound of Holy Voices in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christopher Wordsworth, first published in 1862. The tune, O DURCHBRECHER, is by Johann Anastasius Freylinghausen (1704). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Hark the sound of ho-ly voi-ces, chan-ting at the crys-tal sea Hal-le-lu-ia! Hal-le-lu-ia! Hal-le-lu-ia! Lord to Thee. Mul-ti-tude which none can num-ber, like the stars in glo-ry stand Clothed in white ap-pa-rel, hol-ding palms of vic-t'ry in their hand.",
+  "verses": [
+    {
+      "lines": [
+        "Hark the sound of holy voices,",
+        "chanting at the crystal sea",
+        "Halleluia! Halleluia!",
+        "Halleluia! Lord to Thee.",
+        "Multitude which none can number,",
+        "like the stars in glory stand",
+        "Clothed in white apparel, holding",
+        "palms of vict'ry in their hand."
+      ]
+    },
+    {
+      "lines": [
+        "Patriarch and holy prophet,",
+        "who prepared the way for Christ,",
+        "King, Apostle, Saint, and Martyr",
+        "Confessor, Evangelist,",
+        "Saintly Maiden, godly Matron,",
+        "Widows who have watched to prayer,",
+        "Joined in holy concert singing",
+        "to the Lord of all are there."
+      ]
+    },
+    {
+      "lines": [
+        "They have come from tribulation,",
+        "and have washed their robes in Blood,",
+        "Washed them in the Blood of Jesus;",
+        "tried they were, and firm they stood;",
+        "Mocked, imprisoned, stoned, tormented,",
+        "sawn asunder, slain with sword,",
+        "They have conquered Death and Satan,",
+        "by the might of Christ the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Marching with Thy Cross their banner",
+        "they have triumphed following",
+        "Thee the Captain of Salvation,",
+        "Thee their Savior and their King;",
+        "Gladly, Lord, with Thee they suffered;",
+        "gladly, Lord, with Thee they died;",
+        "And by death to Life immortal",
+        "they were born, and glorified."
+      ]
+    },
+    {
+      "lines": [
+        "Now they reign in heav'nly glory,",
+        "now they walk in golden light,",
+        "Now they drink, as from a river,",
+        "holy bliss and infinite;",
+        "Love and Peace they taste forever,",
+        "and all Truth and Knowledge see",
+        "In the beatific vision",
+        "of the Blessèd Trinity."
+      ]
+    },
+    {
+      "lines": [
+        "D God of God, the One-begotten, Light of Light, Emmanuel,",
+        "In whose Body joined together all the saints forever dwell,",
+        "Pour upon us of Thy fullness, that we may forevermore",
+        "God the Father, God the Son, and God the Holy Ghost adore."
+      ]
+    }
+  ],
+  "category": "Communion of Saints",
+  "topics": [
+    "Art and Music",
+    "Blood",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Cross",
+    "Eternal Life",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Heaven",
+    "Jesus",
+    "Martyrs",
+    "Praise, Son",
+    "Presence",
+    "Saints (all Faithful)",
+    "Salvation",
+    "Trinity",
+    "Victory",
+    "Worship"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Hark_the_Sound_of_Holy_Voices-O_Durchbrecher_aller_Bande.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Hark_the_Sound_of_Holy_Voices-O_Durchbrecher_aller_Bande"
+}

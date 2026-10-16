@@ -1,0 +1,24 @@
+{
+  "name": "CONSOLATOR (WEBBE)",
+  "music": [
+    {
+      "name": "Samuel Webbe",
+      "born": 1740,
+      "died": 1816,
+      "role": "Music (1792)"
+    }
+  ],
+  "musicPublished": 1792,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 E4:1 C4:1 | A4:1.5 G4:.5 G4:2 | F4:1.5 G4:.5 A4:1 B4:1 | C5:2 G4:1 r:1 | E4:2 E4:1 E4:1 | F4:1.5 F4:.5 A4:2 | G4:2 F#4:1 F#4:1 | G4:2 r:2 | C5:2 B4:1 A4:1 | G4:1.5 F4:.5 E4:2 | C5:2 D5:.5 C5:.5 B4:.5 A4:.5 | G4:2 E4:1 r:1 | G4:1 E5:1 E5:1 C5:1 | C5:1 A4:2 F4:1 | E4:2 D4:1.5 C4:.5 | C4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Come_Ye_Disconsolate-Consolator_Webbe.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and lyrics source: \"The Church Hymnal, Revised and Enlarged\" (Episcopal), 1896 Ed. Charles Hutchins Hymn 637."
+}

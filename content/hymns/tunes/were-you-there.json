@@ -1,0 +1,23 @@
+{
+  "name": "WERE YOU THERE",
+  "music": [
+    {
+      "name": "Traditional African-American",
+      "traditional": true,
+      "role": "Melody (1899)"
+    }
+  ],
+  "musicPublished": 1899,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Were_You_There-Were_You_There.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 12 does not add up to 4 beats; bar 14 does not add up to 4 beats. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The last verse is printed after the score in the source, not under the notes. The Open Hymnal's own source: The Hymnal (Episcopal), 1940 hymn 80 listed without copyright. Although the setting is usually attributed to Douglas, who as on the 1940 hymnal committee, no credit or copyright is called out in the hymnal as it is onother hymns. The 1940 copyright on this hymnal was never renewed."
+}

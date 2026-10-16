@@ -1,0 +1,80 @@
+{
+  "title": "Lord While for All Mankind We Pray",
+  "tune": "nox-praecessit",
+  "text": [
+    {
+      "name": "John Reynell Wreford",
+      "born": 1800,
+      "died": 1891,
+      "role": "Words (1837)"
+    }
+  ],
+  "textPublished": 1837,
+  "description": "Lord While for All Mankind We Pray in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by John Reynell Wreford, first published in 1837. The tune, NOX PRAECESSIT, is by John Baptiste Calkin (1873). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lord, while for all man-kind we pray, Of e-very clime and coast, Oh, hear us for our na-tive land, The land we love the most.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, while for all mankind we pray,",
+        "Of every clime and coast,",
+        "Oh, hear us for our native land,",
+        "The land we love the most."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, guard our shores from every foe,",
+        "With peace our borders bless,",
+        "With prosp'rous times our cities crown,",
+        "Our fields with plenteousness."
+      ]
+    },
+    {
+      "lines": [
+        "Unite us in the sacred love",
+        "Of knowledge, truth and Thee;",
+        "And let our hills and valleys shout",
+        "The songs of liberty."
+      ]
+    },
+    {
+      "lines": [
+        "Here may religion, pure and mild,",
+        "Smile on our Sabbath hours;",
+        "And piety and virtue bless",
+        "The home of us and ours."
+      ]
+    },
+    {
+      "lines": [
+        "Lord of the nations, Thus to Thee",
+        "Our country we commend;",
+        "Be Thou her Refuge and her Trust,",
+        "Her everlasting Friend."
+      ]
+    }
+  ],
+  "category": "National Prayer",
+  "topics": [
+    "God, Care of",
+    "God, Providence of",
+    "Harvest",
+    "Knowledge",
+    "Peace",
+    "Sabbath",
+    "Security",
+    "Truth"
+  ],
+  "metre": "8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lord_While_For_All_Mankind_We_Pray-Nox_Praecessit.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Lord_While_For_All_Mankind_We_Pray-Nox_Praecessit"
+}

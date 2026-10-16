@@ -1,0 +1,73 @@
+{
+  "title": "Lord, Who at Cana's Wedding Feast",
+  "tune": "st-ursula",
+  "text": [
+    {
+      "name": "Adelaide Thrupp",
+      "born": 1831,
+      "died": 1908,
+      "role": "Words (1853)"
+    }
+  ],
+  "textPublished": 1853,
+  "description": "Lord, Who at Cana's Wedding Feast in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Adelaide Thrupp, first published in 1853. The tune, ST. URSULA, is by Frederick Westlake (1863). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lord, who at Ca-na's wed-ding feast Didst as a Guest ap-pear, Thou dear-er far than_ earth-ly guest, Vouch-safe Thy pre-sence here. For ho-ly Thou in-deed dost prove The mar-riage vow to be, Pro-claim-ing it a type of love Be-tween the Church and Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, who at Cana's wedding feast",
+        "Didst as a Guest appear,",
+        "Thou dearer far than earthly guest,",
+        "Vouchsafe Thy presence here.",
+        "For holy Thou indeed dost prove",
+        "The marriage vow to be,",
+        "Proclaiming it a type of love",
+        "Between the Church and Thee."
+      ]
+    },
+    {
+      "lines": [
+        "The holiest vow that man can make,",
+        "The golden thread in life,",
+        "The bond that none may dare to break,",
+        "That bindeth man and wife,",
+        "Which, blest by Thee, whate'er betide,",
+        "No evil shall destroy,",
+        "Through careworn days each care divides",
+        "And doubles every joy."
+      ]
+    },
+    {
+      "lines": [
+        "On those who at Thine altar kneel,",
+        "O Lord, Thy blessing pour,",
+        "That each may wake the other's zeal",
+        "To love Thee more and more.",
+        "Oh, grant them here in peace to live,",
+        "In purity and love,",
+        "And, this world leaving, to receive",
+        "A crown of life above."
+      ]
+    }
+  ],
+  "category": "Christian Home",
+  "topics": [
+    "Bride/Bridegroom",
+    "Christian Home/Family",
+    "Commitment",
+    "Love",
+    "Zeal"
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lord_Who_At_Canas_Wedding_Feast-St_Ursula.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Lord_Who_At_Canas_Wedding_Feast-St_Ursula"
+}

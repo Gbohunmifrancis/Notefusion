@@ -1,0 +1,118 @@
+{
+  "title": "To Jordan Came Our Lord, the Christ",
+  "tune": "christ-unser-herr",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1541)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "To Jordan Came Our Lord, the Christ in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1541. The English translation is by Richard Massie (1854). The tune, CHRIST, UNSER HERR, is by Johann Walther (1524). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "To Jor-dan came our Lord the Christ, To do God's plea-sure will_-ing, And there was by Saint John bap-tized, All right-eous-ness ful-fill_-ing; There did He con-se-crate a bath To wash a-way trans-gres__-sion, And quench the bit-ter-ness of death By His own blood and pas__-sion; He would a new life give_ us.",
+  "verses": [
+    {
+      "lines": [
+        "To Jordan came our Lord the Christ,",
+        "To do God's pleasure willing,",
+        "And there was by Saint John baptized,",
+        "All righteousness fulfilling;",
+        "There did He consecrate a bath",
+        "To wash away transgression,",
+        "And quench the bitterness of death",
+        "By His own blood and passion;",
+        "He would a new life give us."
+      ]
+    },
+    {
+      "lines": [
+        "So hear ye all, and well perceive",
+        "What God doth call baptism,",
+        "And what a Christian should believe",
+        "Who error shuns and schism:",
+        "That we should water use, the Lord",
+        "Declareth it His pleasure;",
+        "Not simple water, but the Word",
+        "And Spirit without measure;",
+        "He is the true Baptizer."
+      ]
+    },
+    {
+      "lines": [
+        "To show us this, He hath His Word",
+        "With signs and symbols given;",
+        "On Jordan's banks was plainly heard",
+        "The Father's voice from Heaven:",
+        "\"This is My well—beloved Son,",
+        "In whom My soul delighteth;",
+        "Hear Him.\" Yea, hear Him every one",
+        "Whom He Himself inviteth,",
+        "Hear and obey His teaching."
+      ]
+    },
+    {
+      "lines": [
+        "In tender manhood Jesus straight",
+        "To holy Jordan wendeth;",
+        "The Holy Ghost from Heaven's gate",
+        "In dovelike shape descendeth;",
+        "That thus the truth be not denied,",
+        "Nor should our faith e'er waver,",
+        "That the Three Persons all preside,",
+        "At baptism's holy laver,",
+        "And dwell with the believer."
+      ]
+    },
+    {
+      "lines": [
+        "Thus Jesus His disciples sent:",
+        "Go teach ye every nation,",
+        "That lost in sin they must repent;",
+        "And flee from condemnation:",
+        "He that believes and is baptized,",
+        "Obtains a mighty blessing;",
+        "A newborn man, no more he dies,",
+        "Eternal life possessing,",
+        "A joyful heir of Heaven."
+      ]
+    }
+  ],
+  "category": "Epiphany",
+  "topics": [
+    "Adam (first/second - see also Guidance, Invitation [ours to God], Repentance)",
+    "Baptism",
+    "Blood",
+    "Eternal Life",
+    "Faith",
+    "Father",
+    "Fire",
+    "Following Jesus, Sanctification",
+    "Heaven",
+    "Holy Spirit",
+    "Jesus",
+    "Joy",
+    "Presence",
+    "Promises (see also Gospel)",
+    "Salvation"
+  ],
+  "metre": "8 7 8 7 8 7 8 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/To_Jordan_Came_Our_Lord_The_Christ-Christ_Unser_Herr.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "To_Jordan_Came_Our_Lord_The_Christ-Christ_Unser_Herr"
+}

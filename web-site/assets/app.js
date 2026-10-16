@@ -758,9 +758,10 @@
         open.addEventListener("click", function () { openSaved(it.id); });
         var del = document.createElement("button"); del.className = "btn btn-ghost btn-sm btn-danger"; del.type = "button"; label(del, "trash", "Delete");
         del.addEventListener("click", function () {
-          if (!confirm("Delete \u201c" + (it.title || "Untitled") + "\u201d from your library? This cannot be undone.")) return;
+          if (!confirm("Delete \u201c" + (it.title || "Untitled") + "\u201d from your library? This cannot be undone." +
+            (isPro() ? " Deleting won't give back a song it used." : " Deleting won't give back the free transcription it used."))) return;
           del.disabled = true;
-          request("/api/library/" + it.id, { method: "DELETE" }).then(function () { libraryCache = null; loadLibrary(true); })
+          request("/api/library/" + it.id, { method: "DELETE" }).then(function () { libraryCache = null; loadLibrary(true); refreshUsage(); })
             .catch(function (err) { alertIn($("app-alert"), "danger", "Could not delete: " + (err.message || err)); del.disabled = false; });
         });
         a.appendChild(open); a.appendChild(file);
@@ -882,7 +883,7 @@
     var badge = $("acct-badge"); badge.textContent = isPro() ? "Pro" : "Free"; badge.className = "pill " + (isPro() ? "pill-pro" : "pill-free");
     var u = usage();
     $("acct-usage-label").textContent = u ? u.label : "This month";
-    $("acct-credits").textContent = u ? u.left + " of " + u.total + " left" : "—";
+    $("acct-credits").textContent = u ? u.left + " of " + u.total + " left" + (isPro() ? " · resets " + resetDay() : "") : "—";
     fillMeter($("acct-usage-fill"), u);
     $("acct-sub-note").textContent = isPro()
       ? periodLine() + (sub && (sub.isLifetime || sub.isGift) ? "" : " Nothing renews by itself; add time whenever you like.")
@@ -1068,7 +1069,7 @@
     if (!when) return "Your membership is active.";
     return "Pro until " + when + ".";
   }
-  function creditsLine() { return sub ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left this month" : "—"; }
+  function creditsLine() { return sub ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left · resets " + resetDay() : "—"; }
   /** The plans dialog for a member: the membership, with nothing for sale. */
   function renderMembership() {
     $("upgrade-title-text").textContent = "Your Pro membership";
@@ -1117,6 +1118,9 @@
       // The total includes every song bought, so once one is bought the count is no longer only "free".
       : { label: sub.boughtTranscriptionsTotal > 0 ? "Transcriptions" : "Free transcriptions", left: sub.trialGenerationsRemaining, total: sub.trialGenerationsTotal, unit: "left" };
   }
+  /** Pro's songs come back on the first of the month (UTC, as the API counts them): "1 Nov". */
+  function resetDate() { var now = new Date(); return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1)); }
+  function resetDay(month) { return resetDate().toLocaleDateString(undefined, { day: "numeric", month: month || "short", timeZone: "UTC" }); }
   /** A free account's bought songs not yet used: each one can be a whole linked song. */
   function boughtLeft() { return !isPro() && sub ? (sub.boughtTranscriptionsRemaining || 0) : 0; }
   function fillMeter(el, u) { el.style.width = u && u.total > 0 ? Math.max(0, Math.min(100, (u.left / u.total) * 100)) + "%" : "0%"; }
@@ -1125,7 +1129,7 @@
     ["topbar-avatar-img", "chip-avatar", "menu-avatar"].forEach(function (id) { setAvatar($(id), me); });
     $("chip-name").textContent = me ? ((me.fullName || "").trim().split(/\s+/)[0] || me.email || "") : "";
     $("greeting").textContent = greeting(me && me.fullName);
-    $("home-sub").textContent = isPro() ? "Thanks for being a Pro member. What are we writing out today?" : "What are we writing out today?";
+    $("home-sub").textContent = "What are we writing out today?";
     document.body.classList.toggle("is-pro", isPro());
     isPro() ? show($("greeting-pro")) : hide($("greeting-pro"));
     $("menu-plans-label").textContent = isPro() ? "My membership" : "Plans & billing";
@@ -1137,10 +1141,31 @@
     plan.textContent = isPro() ? "Pro" : "Free";
     // The sidebar's foot: one quiet line and a bar, not a card.
     var u = usage();
-    $("usage-plan").textContent = isPro() ? "Pro · this month" : "Free plan";
+    $("usage-plan").textContent = u ? u.label : isPro() ? "Pro" : "Free plan";
     $("usage-left").textContent = u ? u.left + " of " + u.total + " left" : "";
+    $("usage-note").textContent = isPro() ? "Resets " + resetDay() : "";
     fillMeter($("usage-fill"), u);
   }
+
+  /**
+   * Asks again what is left: when a job is accepted (a running song holds its place), when it
+   * finishes or fails (a failed one gives the place back), after a delete, and when the tab comes
+   * back into view (a song may have finished elsewhere, or the month turned).
+   */
+  var usageAskedAt = 0;
+  function refreshUsage() {
+    if (guest || !tokens()) return;
+    usageAskedAt = Date.now();
+    var at = epoch;
+    request("/api/billing/my-subscription").then(function (s) {
+      if (at !== epoch || !s) return;
+      sub = s; renderWho();
+      if (!$("view-account").classList.contains("hidden")) renderAccount();
+    }).catch(function () { /* the meter keeps what it showed; the next ask corrects it */ });
+  }
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible" && sub && Date.now() - usageAskedAt > 30000) refreshUsage();
+  });
 
   function loadAccount() {
     return Promise.all([
@@ -1193,7 +1218,18 @@
   }
 
   // ── Submitting ───────────────────────────────────────────────────────────
-  function linkHint(text) { $("link-hint").textContent = text; }
+  function linkHint(text) {
+    $("link-hint").textContent = text;
+    (/upload/i.test(text || "") ? show : hide)($("link-upload-row"));
+  }
+  $("link-upload").addEventListener("click", function () { linkHint(""); selectSource("upload", true); });
+  /** "Switch to Upload" beside an alert that says a link could not be fetched. */
+  function addUploadInstead(alertEl) {
+    var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm";
+    label(b, "upload", "Switch to Upload");
+    b.addEventListener("click", function () { hide(alertEl); setView("transcribe"); selectSource("upload", true); });
+    alertEl.appendChild(b);
+  }
   // As soon as the box holds a song link, the API is asked what it is and how long it runs, and a
   // card under the form lets the person pick the part to transcribe (assets/rangepicker.js). The
   // selection is sent with the link; with no card (length unknown, lookup failed) the song is
@@ -1278,7 +1314,11 @@
         if (!again) { clearLinkCard(); $("link-url").value = ""; }
         startJob(job, guest ? "preview" : "link", "link", function () { sendLink(body, true); });
       })
-      .catch(function (err) { if (following) resetRetry(); explain(err); })
+      .catch(function (err) {
+        if (following) resetRetry();
+        explain(err);
+        if (/upload/i.test(err.message || "")) addUploadInstead($("app-alert"));
+      })
       .finally(function () { linkInfo.sending = false; syncLinkSubmit(); });
   }
 
@@ -1317,17 +1357,61 @@
       r.addEventListener("change", function () { store(KIND_KEY, r.value); renderKindOptions(); renderStudioCredits(); });
     });
   })();
-  /** What a song costs, said before it is spent: a link or a song with instruments uses one credit. */
-  function renderStudioCredits() {
-    var el = $("studio-credits");
-    if (!el) return;
-    if (!sub || !isPro()) { hide(el); return; }
-    var left = sub.songCreditsRemaining, total = sub.songCreditsTotal;
-    el.textContent = left > 0
-      ? "A link or a recording with instruments uses 1 of your " + left + " songs left this month. Hummed tunes, chords and unaccompanied choirs are free."
-      : "You've used all " + total + " songs this month. Hummed tunes, chords and unaccompanied choirs are still free; songs come back next month.";
-    show(el);
+  /**
+   * What the next transcription from the tab showing costs, or null when it costs nothing: a chip
+   * beside the work ("Uses 1 song · 16 of 20 left") and, behind (i), why. A Pro song is a link or a
+   * recording with instruments; on a free account every recording is one of the free ones, and a link
+   * is the one short preview or a bought song.
+   */
+  function studioCost() {
+    if (!sub || guest) return null;
+    var tab = document.querySelector(".source-tab[aria-selected=true]");
+    var link = !!tab && tab.getAttribute("data-source") === "link", kind = checkedKind();
+    var kept = ", and deleting its sheet doesn't give it back.";
+    if (isPro()) {
+      if (!link && kind !== "song" && !(kind === "choir" && $("choir-band").checked)) return null;
+      var left = sub.songCreditsRemaining, total = sub.songCreditsTotal;
+      return {
+        text: left > 0 ? "Uses 1 song \u00b7 " + left + " of " + total + " left" : "No songs left until " + resetDay(),
+        out: left <= 0,
+        why: "Song links and recordings with instruments use one of your " + total + " songs a month. A song is used only when it finishes: one that fails costs nothing" + kept +
+          " Hummed tunes, chords and unaccompanied choirs are free. Your songs reset on " + resetDay("long") + "."
+      };
+    }
+    if (link) {
+      var bought = boughtLeft();
+      if (bought > 0) return { text: "Uses 1 bought song \u00b7 " + bought + " left", why: "A bought song transcribes up to six minutes of a linked song and never expires. It's used only when the song finishes: one that fails costs nothing" + kept };
+      return sub.songCreditsRemaining > 0
+        ? { text: "Free 1-minute preview", why: "A free account can try one song link: a preview of one minute of the song. It's used only when the preview finishes, so a link that fails costs nothing. Pro transcribes whole songs." }
+        : { text: "Free preview used", out: true, why: "Your one free song-link preview has been used. Pro, or one bought song, transcribes whole songs; recordings and uploads use your free transcriptions." };
+    }
+    var u = usage();
+    return {
+      text: u.left > 0 ? "Uses 1 transcription \u00b7 " + u.left + " of " + u.total + " left" : "No free transcriptions left",
+      out: u.left <= 0,
+      why: "Your account comes with " + (u.total - (sub.boughtTranscriptionsTotal || 0)) + " free transcriptions" +
+        (sub.boughtTranscriptionsTotal > 0 ? ", plus the ones you bought, which never expire" : "") + ". One is used only when a transcription finishes: one that fails costs nothing" + kept
+    };
   }
+  function renderStudioCredits() {
+    var row = $("studio-cost");
+    if (!row) return;
+    var cost = studioCost();
+    if (!cost) { hide(row); setCostInfo(false); return; }
+    $("cost-chip").textContent = cost.text;
+    $("cost-chip").classList.toggle("is-out", !!cost.out);
+    $("cost-pop").textContent = cost.why;
+    show(row);
+  }
+  function setCostInfo(open) {
+    $("cost-pop").hidden = !open;
+    $("cost-info").setAttribute("aria-expanded", String(open));
+  }
+  $("cost-info").addEventListener("click", function (e) { e.stopPropagation(); setCostInfo($("cost-pop").hidden); });
+  document.addEventListener("click", function (e) { if (!$("cost-pop").hidden && !$("studio-cost").contains(e.target)) setCostInfo(false); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !$("cost-pop").hidden) { setCostInfo(false); $("cost-info").focus(); }
+  });
   function submitAudio(file, name, fromMic, again) {
     // One recording goes up at a time: a second drop or take while the first is uploading is ignored.
     if (submitting) return Promise.resolve();
@@ -1393,6 +1477,9 @@
     });
     // What is in the recording matters for a recording or a file, not for a link.
     $("kind-block").hidden = name === "link";
+    // Until someone picks, the picker shows what this tab sends: a take as a voice, a file as a song.
+    if (!chosenKind() && name !== "link") selectKind(name === "record" ? "hum" : "song");
+    renderStudioCredits();
     try { localStorage.setItem(SOURCE_KEY, name); } catch (e) { /* private mode */ }
     if (focus) $("src-tab-" + name).focus();
   }
@@ -1502,6 +1589,8 @@
     if (current.preview) previewId = job.jobId;
     setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
     poll();
+    // A song (or a free transcription) still running holds its place in the count: the meter shows it at once.
+    if (!guest && kind !== "preview") refreshUsage();
   }
   function stopPolling() { if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; } }
 
@@ -1572,7 +1661,14 @@
         stopPolling();
         hide($("progress"));
         sfx.play("error");
-        alertIn($("app-alert"), "danger", job.error && !TECHNICAL.test(job.error) ? job.error : "That could not be transcribed. Try a cleaner recording or a different link.");
+        var failed = job.error && !TECHNICAL.test(job.error) ? job.error
+          : current.from === "link" ? "That link could not be transcribed." : "That could not be transcribed. Try a cleaner recording or a different link.";
+        // A link that fails is most often a download YouTube refused: the way round is the file itself.
+        if (current.from === "link" && !/upload/i.test(failed)) failed += " YouTube sometimes blocks our downloads; upload the audio file instead.";
+        alertIn($("app-alert"), "danger", failed);
+        if (/upload/i.test(failed)) addUploadInstead($("app-alert"));
+        // A failed job costs nothing: the place it held comes back.
+        if (!guest) refreshUsage();
         return;
       }
       reviewWait();

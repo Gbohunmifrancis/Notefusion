@@ -1,0 +1,24 @@
+{
+  "name": "JESAIA DEM PROPHETEN DAS GESCHAH",
+  "music": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Music (1526)"
+    }
+  ],
+  "musicPublished": 1526,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Bb4:2 Bb4:1 G4:1 | Eb4:1 G4:1 Bb4:1 Bb4:1 | C5:1 C5:1 Bb4:2 | Bb4:2 Bb4:1 Ab4:1 | Bb4:1 Eb4:1 Ab4:1 G4:1 | F4:1 F4:1 Eb4:2 | Bb4:2 Bb4:1 Bb4:1 | Eb5:1 Eb5:1 Eb5:1 Bb4:1 | C5:1 Bb4:1 G4:2 | G4:2 Ab4:1 Bb4:1 | G4:1 Ab4:1 G4:1 Eb4:1 | F4:1 F4:1 Eb4:2 | Eb4:2 G4:1 F4:1 | G4:1 A4:1 Bb4:1 Bb4:1 | G4:1 A4:1 Bb4:2 | Eb5:2 Eb5:1 D5:1 | C5:1 Bb4:1 Bb4:1 Ab4:1 | Bb4:1 Ab4:1 G4:2 | F4:2 G4:1 Ab4:1 | Bb4:1 Bb4:1 C5:1 Bb4:1 | C5:1 D5:1 Eb5:2 | Bb4:2 Bb4:1 Ab4:1 | G4:1 Ab4:1 Bb4:1 Eb4:1 | G4:1 F4:1 Eb4:2 | G4:2 Ab4:1 Bb4:1 | C5:1 Bb4:1 Bb4:1 C5:1 | D5:1 C5:1 Bb4:2 | Eb5:2 D5:1 C5:1 | F5:1 F5:1 D5:1 Bb4:1 | C5:1 D5:1 Eb5:2 | Eb5:2 D5:1 C5:1 | Bb4:1 C5:1 D5:1 Bb4:1 | Ab4:1 Bb4:1 G4:2 | Eb5:2 D5:1 C5:1 | Bb4:1 C5:1 D5:1 Bb4:1 | Ab4:1 Bb4:1 G4:2 | Eb5:2 D5:1 C5:1 | Bb4:1 C5:1 D5:1 Bb4:1 | Ab4:1 Bb4:1 G4:2 | C5:2 Bb4:1 Ab4:1 | Bb4:1 Eb4:1 Ab4:1 G4:1 | F4:1 F4:1 Eb4:2 | Eb4:2 Bb4:1 Bb4:1 | G4:1 Ab4:1 Bb4:1 C5:1 | C5:1 Bb4:1 Bb4:2 | Bb4:2 Ab4:1 G4:1 | Ab4:1 F4:1 G4:1 F4:1 | Eb4:1 D4:1 Eb4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Isaiah_Mighty_Seer_In_Days_Of_Old-Jesaia_Dem_Propheten_das_Geschah.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Translation is public domain per Project Wittenberg: http://www.iclnet.org/pub/resources/text/wittenberg/hymns/isaiah.txt"
+}

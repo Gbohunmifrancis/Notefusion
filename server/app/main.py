@@ -166,6 +166,10 @@ async def lifespan(_app: FastAPI):
     _require_api_key()
     _ensure_apt_path()
     _sweep_stale_temp_files()
+    # yt-dlp goes stale within weeks of a YouTube change: the newest release is installed beside
+    # the image's in the background (app.ingest.ytdlp_update), so startup does not wait for it.
+    from app.ingest import ytdlp_update
+    ytdlp_update.start_background()
 
     import structlog
     logger = structlog.get_logger("app.main")

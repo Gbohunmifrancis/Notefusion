@@ -1,0 +1,23 @@
+{
+  "name": "GOTT DER VATER, WOHN UNS BEI",
+  "music": [
+    {
+      "name": "From Walter's Geistliche Gesangbüchlein, 1524",
+      "traditional": true,
+      "role": "Melody (1524)"
+    }
+  ],
+  "musicPublished": 1524,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/God_The_Father_Be_Our_Stay-Gott_Der_Vater_Wohn_uns_bei.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; the score has a change of metre, which the importer does not render; bar 10 has 6 beats, more than 4; bar 11 has 6 beats, more than 4; bar 13 has 6 beats, more than 4; bar 15 does not add up to 4 beats; bar 16 has 6 beats, more than 4; bar 17 has 6 beats, more than 4; bar 19 has 6 beats, more than 4; bar 21 does not add up to 4 beats; bar 22 has 6 beats, more than 4; the words contain verse numbers or editor's notes. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book."
+}

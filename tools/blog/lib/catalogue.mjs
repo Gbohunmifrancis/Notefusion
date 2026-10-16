@@ -39,6 +39,9 @@ export function catalogueJson({ hymns, authors, pages }) {
         slug: h.slug,
         title: h.title,
         shortTitle: h.shortTitle || null,
+        // Imported from the Open Hymnal Project rather than encoded by hand: the drafter spells out only the
+        // hand-made hymns (and any the topic links to), so the prompt does not grow with the library.
+        imported: !!h.importedFrom,
         key: h.view.key,
         header: h.view.header,
         time: h.view.time,

@@ -1,0 +1,24 @@
+{
+  "name": "ITALIAN HYMN",
+  "music": [
+    {
+      "name": "Felice de Giardini",
+      "born": 1716,
+      "died": 1796,
+      "role": "Music (1769)"
+    }
+  ],
+  "musicPublished": 1769,
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "D5:1 B4:1 G4:1 | A4:1 G4:1 F#4:1 | G4:3 | G4:1 A4:1 B4:1 | C5:.5 D5:.5 C5:1 B4:1 | A4:3 | D5:1 B4:1 G4:1 | D4:3 | A4:1 B4:1 C5:1 | B4:1.5 A4:.5 G4:1 | A4:1 B4:1 C5:1 | B4:1.5 A4:.5 G4:1 | G4:1 B4:1 D5:1 | D5:1.5 E5:.5 D5:1 | C5:1 B4:1 A4:1 | G4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/God_Whose_Almighty_Word-Italian_Hymn.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: 'The Methodist Sunday School Hymnal', 1911 Hymn 1."
+}

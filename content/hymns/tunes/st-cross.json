@@ -1,0 +1,24 @@
+{
+  "name": "ST. CROSS",
+  "music": [
+    {
+      "name": "John Bacchus Dykes",
+      "born": 1823,
+      "died": 1876,
+      "role": "Music (1861)"
+    }
+  ],
+  "musicPublished": 1861,
+  "key": "D minor",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:2 F4:1 G4:1 | A4:3 D5:1 | C5:2 Bb4:2 | A4:4 | A4:2 A4:1 Bb4:1 | C5:2 F4:2 | A4:2 G4:2 | F4:3 A4:1 | F4:3 A4:1 | G4:2 A4:2 | F4:2 G4:2 | E4:4 | D4:2 D4:1 D4:1 | A4:3 G4:1 | F4:2 E#4:2 | D4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Tis_Midnight_and_On_Olives_Brow-St_Cross.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Hymns Ancient and Modern\", 1869 Hymn 100, composed for this hymnal. Can find the text in Gems of sacred poetry By William Bingham Tappan, 1860 edition"
+}

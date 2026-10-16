@@ -1,0 +1,142 @@
+{
+  "title": "Jesus Christ, Our Blessed Savior (Jesus Christus Unser Heiland, Der Von Uns, Walter)",
+  "tune": "jesus-christus-unser-heiland-der-von-uns-walter",
+  "text": [
+    {
+      "name": "John Hus",
+      "born": 1369,
+      "died": 1415,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated"
+    },
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "Jesus Christ, Our Blessed Savior in Tonic Solfa: the solfa line by line with the words, staff notation, all 10 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by John Hus and Martin Luther, first published in 1524. The English translation is by Richard Massie. The tune, JESUS CHRISTUS UNSER HEILAND, DER VON UNS (WALTER), is from Walter's Geistliche Gesangbüchlein, 1524. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Je-sus Christ,__ our Bless-ed Sav_-ior, Turned a-way God's wrath for-ev___-er; Suf-f'ring pains no tongue can tell,__ He saved us__ from the pains__ of hell.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus Christ, our Blessed Savior,",
+        "Turned away God's wrath forever;",
+        "Suff'ring pains no tongue can tell,",
+        "He saved us from the pains of hell."
+      ]
+    },
+    {
+      "lines": [
+        "To remind us that, to save us",
+        "He hath died, His flesh He gave us",
+        "With this bread, a quick'ning food,",
+        "And with this wine, His precious blood."
+      ]
+    },
+    {
+      "lines": [
+        "Whoso to this board repaireth,",
+        "Take good heed how He prepareth;",
+        "Death instead of life shall He",
+        "Receive who comes unworthily."
+      ]
+    },
+    {
+      "lines": [
+        "Praise the Father, God in heaven,",
+        "Who such dainty food hath given,",
+        "And for misdeeds thou hast done",
+        "Gave to die His beloved Son."
+      ]
+    },
+    {
+      "lines": [
+        "Thou shalt hold with faith unshaken,",
+        "That this food is to be taken",
+        "By the sick who are distressed,",
+        "By those whose heart is sin—oppressed."
+      ]
+    },
+    {
+      "lines": [
+        "To such grace and mercy turneth",
+        "Every soul that truly mourneth;",
+        "Art thou well? Avoid this board,",
+        "Else thou reapest an ill reward."
+      ]
+    },
+    {
+      "lines": [
+        "Christ says: \"Come ye heavy-laden,",
+        "I your weary hearts will gladden;",
+        "They that are yet strong  and well,",
+        "Despise the best physician's skill."
+      ]
+    },
+    {
+      "lines": [
+        "Couldst thou earn thine own salvation,",
+        "Useless were my death and passion;",
+        "This feast is not spread for thee,",
+        "If thine own helper thou wilt be."
+      ]
+    },
+    {
+      "lines": [
+        "If thou this believest truly,",
+        "And confession makest duly,",
+        "Thou a welcome guest art here,",
+        "This heavenly food thy soul shall cheer."
+      ]
+    },
+    {
+      "lines": [
+        "But the fruits must not be missing,",
+        "Love thy neighbor without ceasing,",
+        "That true love let him receive,",
+        "Which here to thee thy God doth give."
+      ]
+    }
+  ],
+  "category": "Lord’s Supper",
+  "topics": [
+    "Activity",
+    "Assurance",
+    "Atonement",
+    "Blood",
+    "Bread (of Life/Daily Bread)",
+    "Comfort",
+    "God, Care of",
+    "Healing",
+    "Invitation (God's to Us)",
+    "Jesus",
+    "Lord's Supper",
+    "Presence"
+  ],
+  "metre": "8 8 7 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_Christ_Our_Blessed_Savior-Jesus_Christus_Unser_Heiland_Der_Von_Uns_1524.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Jesus_Christ_Our_Blessed_Savior-Jesus_Christus_Unser_Heiland_Der_Von_Uns_1524",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929."
+}

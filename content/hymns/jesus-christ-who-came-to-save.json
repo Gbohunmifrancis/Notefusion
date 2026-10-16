@@ -1,0 +1,71 @@
+{
+  "title": "Jesus Christ Who Came to Save",
+  "tune": "jesus-christus-unser-heiland-der-den-tod-klug",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Leonard Woolsey Bacon",
+      "born": 1830,
+      "died": 1907,
+      "role": "Translated (1883)"
+    }
+  ],
+  "textPublished": 1883,
+  "description": "Jesus Christ Who Came to Save in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The English translation is by Leonard Woolsey Bacon (1883). The tune, JESUS CHRISTUS UNSER HEILAND, DER DEN TOD (KLUG), is from Klug's Geistliche Lieder, Wittenberg, 1533. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Je-sus Christ, who came to save,__ And o-ver-came the grave, Is now_ a-ris_-en, And sin hath bound in pri_-son. Ky-ri' e-lei_-son.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus Christ, who came to save,",
+        "And overcame the grave,",
+        "Is now arisen,",
+        "And sin hath bound in prison.",
+        "Kyri' eleison."
+      ]
+    },
+    {
+      "lines": [
+        "Who withouten sin was found,",
+        "Bore our transgression's wound.",
+        "He is our Savior,",
+        "And brings us to God's favor."
+      ]
+    },
+    {
+      "lines": [
+        "Life and mercy, sin and death,",
+        "All in His hands He hath;",
+        "Them He'll deliver,",
+        "Who trust in Him forever."
+      ]
+    }
+  ],
+  "category": "Easter",
+  "topics": [
+    "Assurance",
+    "Atonement",
+    "God, Mercy of",
+    "Jesus",
+    "Resurrection",
+    "Salvation",
+    "Sinners",
+    "Victory"
+  ],
+  "metre": "7 6 5 7 5",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_Christ_Who_Came_To_Save-Jesus_Christus_Unser_Heiland_Der_Den_Tod_Klug_1535.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Jesus_Christ_Who_Came_To_Save-Jesus_Christus_Unser_Heiland_Der_Den_Tod_Klug_1535"
+}

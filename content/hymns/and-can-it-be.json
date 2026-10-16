@@ -1,0 +1,110 @@
+{
+  "title": "And Can It Be",
+  "tune": "fillmore",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1738)"
+    }
+  ],
+  "textPublished": 1738,
+  "description": "And Can It Be in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Charles Wesley, first published in 1738. The tune, FILLMORE, is by Jeremiah Ingalls. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "And can_ it be that I should gain An in-terest in_ the Sa-vior's blood? Died He for me,_ who caused His pain? For me, who Him_ to death pur-sued?_ A-ma_-zing love! How can it be, That Thou, my God,_ shouldst die for me?",
+  "verses": [
+    {
+      "lines": [
+        "And can it be that I should gain",
+        "An interest in the Savior's blood?",
+        "Died He for me, who caused His pain?",
+        "For me, who Him to death pursued?",
+        "Amazing love! How can it be,",
+        "That Thou, my God, shouldst die for me?"
+      ]
+    },
+    {
+      "lines": [
+        "'Tis mystery all: th'Immortal dies:",
+        "Who can explore His strange design?",
+        "In vain the firstborn seraph tries",
+        "To sound the depths of love divine.",
+        "'Tis mercy all! Let earth adore,",
+        "Let angel minds inquire no more."
+      ]
+    },
+    {
+      "lines": [
+        "He left His Father's throne above",
+        "So free, so infinite His grace?",
+        "Emptied Himself of all but love,",
+        "And bled for Adam's helpless race:",
+        "'Tis mercy all, immense and free,",
+        "For O my God, it found out me!"
+      ]
+    },
+    {
+      "lines": [
+        "Long my imprisoned spirit lay,",
+        "Fast bound in sin and nature's night;",
+        "Thine eye diffused a quick'ning ray?",
+        "I woke, the dungeon flamed with light;",
+        "My chains fell off, my heart was free,",
+        "I rose, went forth, and followed Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Still the small inward voice I hear,",
+        "That whispers all my sins forgiv'n;",
+        "Still the atoning blood is near,",
+        "That quenched the wrath of hostile Heav'n.",
+        "I feel the life His wounds impart;",
+        "I feel the Savior in my heart."
+      ]
+    },
+    {
+      "lines": [
+        "No condemnation now I dread; Jesus, and all in Him, is mine;",
+        "Alive in Him, my living Head, And clothed in righteousness divine,",
+        "Bold I approach th'eternal throne, And claim the crown, through Christ my own."
+      ]
+    }
+  ],
+  "category": "Thanksgiving",
+  "topics": [
+    "Angels",
+    "Atonement",
+    "Blood",
+    "Christian Life",
+    "Comfort",
+    "Contrition",
+    "Fear of the Lord",
+    "Following Jesus, In Faith",
+    "Forgiveness",
+    "God, Goodness of",
+    "God, Love of",
+    "God, Mercy of",
+    "Gospel",
+    "Grace",
+    "Gratitude",
+    "Humility",
+    "Jesus",
+    "Love",
+    "Reverence",
+    "Salvation",
+    "Throne (also see God - As King)"
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/And_Can_It_Be-Fillmore.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "And_Can_It_Be-Fillmore"
+}

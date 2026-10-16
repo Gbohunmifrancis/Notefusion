@@ -1,0 +1,24 @@
+{
+  "name": "MELITA",
+  "music": [
+    {
+      "name": "John Bacchus Dykes",
+      "born": 1823,
+      "died": 1876,
+      "role": "Music (1861)"
+    }
+  ],
+  "musicPublished": 1861,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "C4:1 | E4:1.5 E4:.5 G4:1 G4:1 | A4:1 A4:1 G4:1 G4:1 | C5:1 D5:1 B4:1 G4:1 | G4:1 F#4:1 G4:1 D4:1 | F4:1.5 F4:.5 E4:1 E4:1 | G4:1.5 G4:.5 F#4:1 B4:1 | G4:1 F#4:1 E4:1 A4:1 | G4:1 F#4:1 E4:1 E4:1 | E4:1.5 E4:.5 F4:1 F4:1 | F#4:1.5 F#4:.5 G4:1 G4:1 | G4:1 A4:1 G4:1 E4:1 | D4:1.5 C4:.5 C4:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/My_Hope_Is_Built-Melita.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The Open Hymnal's own source: Hymns Ancient and Modern, 1869 hymn 222. Tune from Hymns Ancient and Modern, 1861. %OHARRANGER unknown assumed Dykes, John Bacchus (1823-1876) words found in \"The service of song for Baptist churches\", 1876 Hymn 1070"
+}

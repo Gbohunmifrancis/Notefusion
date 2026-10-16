@@ -1,3 +1,4 @@
+using System.Text.Json;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,5 +43,37 @@ public sealed class WebEventsController : ApiControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// The same batch sent with <c>navigator.sendBeacon</c> as the page is left: the one request a browser keeps
+    /// through a navigation or a closed tab. A beacon cannot set headers, so the body is JSON sent as
+    /// <c>text/plain</c> (which needs no CORS preflight) and carries the device id itself; it carries no token,
+    /// so these events are a visitor's (track.js sends a signed-in browser's last batch the usual way instead).
+    /// 204 whatever was in it, malformed JSON included.
+    /// </summary>
+    [HttpPost("events/beacon")]
+    [EnableRateLimiting(AuthRateLimiting.WebEvents)]
+    [RequestSizeLimit(MaxBodyBytes)]
+    public async Task<IActionResult> Beacon(CancellationToken ct)
+    {
+        BeaconRequest? request = null;
+        try
+        {
+            request = await JsonSerializer.DeserializeAsync<BeaconRequest>(Request.Body, BeaconJson, ct);
+        }
+        catch (JsonException)
+        {
+            // Not the tracker: nothing to keep.
+        }
+        if (request is not null)
+            await _sender.Send(new RecordWebEventsCommand(
+                request.VisitorId, request.SessionId, request.Events ?? [], RequestDeviceFingerprint.Hash(request.DeviceId)), ct);
+        return NoContent();
+    }
+
+    private static readonly JsonSerializerOptions BeaconJson = new(JsonSerializerDefaults.Web);
+
     public sealed record WebEventsRequest(string? VisitorId, string? SessionId, IReadOnlyList<WebEventInput>? Events);
+
+    /// <summary>A beacon's body: the batch plus the device id the headers would have carried.</summary>
+    public sealed record BeaconRequest(string? VisitorId, string? SessionId, string? DeviceId, IReadOnlyList<WebEventInput>? Events);
 }

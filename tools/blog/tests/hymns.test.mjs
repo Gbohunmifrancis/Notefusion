@@ -61,8 +61,9 @@ for (const [slug, count, book, engine, doh] of OPENINGS) {
   });
 }
 
-test("a draft whose tune already has a melody has one syllable per note, ready to publish", () => {
-  const ready = allHymns.filter((h) => h.draft && h.tuneData.parsed && h.underlay);
+test("a hand-made draft whose tune already has a melody has one syllable per note, ready to publish", () => {
+  // (An imported draft may be held back for exactly this; its reasons are in its reviewNotes.)
+  const ready = allHymns.filter((h) => h.draft && !h.importedFrom && h.tuneData.parsed && h.underlay);
   assert.ok(ready.length >= 1, "Rock of Ages is a draft with its melody");
   for (const h of ready) assert.equal(N.syllabify(h.underlay).length, h.tuneData.parsed.notes.length, h.slug);
 });

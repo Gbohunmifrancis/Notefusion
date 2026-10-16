@@ -1,0 +1,24 @@
+{
+  "name": "LASSET UNS MIT JESU ZIEHEN (BOLTZE)",
+  "music": [
+    {
+      "name": "Gabriel Gottlieb Boltze",
+      "born": 1721,
+      "died": 1794,
+      "role": "Music (1788)"
+    }
+  ],
+  "musicPublished": 1788,
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1 D4:1 E4:1 F#4:1 | G4:1 F#4:1 E4:1 E4:1 | D4:1 E4:1 F#4:1 G4:1 | F#4:1 E4:1 D4:2 | A4:1 D4:1 E4:1 F#4:1 | G4:1 F#4:1 E4:1 E4:1 | D4:1 E4:1 F#4:1 G4:1 | F#4:1 E4:1 D4:2 | A4:1 A4:1 D5:1 C#5:1 | B4:1 B4:1 C#5:1 A4:1 | B4:1 A4:1 G4:1 F#4:1 | E4:1 D4:1 E4:2 | A4:1 F#4:1 B4:1 A4:1 | G4:1 F#4:1 E4:2 | A4:1 A4:1 D5:1 C#5:1 | B4:1 B4:1 C#5:1 A4:1 | B4:1 A4:1 G4:1 F#4:1 | E4:1 D4:1 E4:2 | D4:1 E4:1 F#4:1 G4:1 | F#4:1 E4:1 D4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Let_Us_Ever_Walk_With_Jesus-Lasset_Uns_Mit_Jesu_Ziehen_Boltze-Walk_With_Jesus-Let_Us_Ever_Walk_With_Jesus.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"The American Lutheran Hymnal\", 1930 Hymn 220 Lyrics source: from The Handbook to the Lutheran Hymnal, 1942 https://www.projectwittenberg.org/etext/hymnals/tlh/ever_walk.txt Note that the text of this hymn from the Handbook to the Lutheran Hymnal is available on Project Wittenberg, operated by the Walther Library of Concordia Theological Seminary Fort Wayne and the text is listed as public domain."
+}

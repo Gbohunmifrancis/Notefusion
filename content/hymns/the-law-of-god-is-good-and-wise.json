@@ -1,0 +1,88 @@
+{
+  "title": "The Law of God Is Good and Wise",
+  "tune": "erhalt-uns-herr-bei-deinem-wort-the-law-of-god-is-good-and-wise",
+  "text": [
+    {
+      "name": "Matthias Loy",
+      "born": 1828,
+      "died": 1915,
+      "role": "Words (1863)"
+    }
+  ],
+  "textPublished": 1863,
+  "description": "The Law of God Is Good and Wise in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Matthias Loy, first published in 1863. The tune, ERHALT UNS, HERR, BEI DEINEM WORT, is from Klug's Geistliche Lieder auffs new gebessert, Wittenberg, 1543. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The law of God is good and wise, And sets His will be-fore our eyes, Shows us the way of right-eous-ness, And dooms to death when we trans-gress.",
+  "verses": [
+    {
+      "lines": [
+        "The law of God is good and wise,",
+        "And sets His will before our eyes,",
+        "Shows us the way of righteousness,",
+        "And dooms to death when we transgress."
+      ]
+    },
+    {
+      "lines": [
+        "Its light of holiness imparts",
+        "The knowledge of our sinful hearts,",
+        "That we may see our lost estate",
+        "And seek deliv'rance ere too late."
+      ]
+    },
+    {
+      "lines": [
+        "To those who help in Christ have found",
+        "And would in works of love abound",
+        "It shows what deeds are His delight",
+        "And should be done as good and right."
+      ]
+    },
+    {
+      "lines": [
+        "When men the offered help disdain",
+        "And willfully in sin remain,",
+        "Its terror in their ear resounds",
+        "And keeps their wickedness in bounds."
+      ]
+    },
+    {
+      "lines": [
+        "The law is good, but since the fall",
+        "Its holiness condemns us all;",
+        "It dooms us for our sin to die",
+        "And has no pow'r to justify."
+      ]
+    }
+  ],
+  "category": "Word of God",
+  "topics": [
+    "Atonement",
+    "Contrition",
+    "Faith",
+    "Following Jesus, Sanctification",
+    "God, As King",
+    "Grace",
+    "Jesus",
+    "Judgment",
+    "Knowledge",
+    "Law",
+    "Light",
+    "Obedience",
+    "Repentance",
+    "Self Control (see also Law)",
+    "Sinners",
+    "Throne (also see God - As King)"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Law_Of_God_Is_Good_And_Wise-Erhalt_Uns_Herr.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_Law_Of_God_Is_Good_And_Wise-Erhalt_Uns_Herr"
+}

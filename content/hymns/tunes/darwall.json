@@ -1,0 +1,24 @@
+{
+  "name": "DARWALL",
+  "music": [
+    {
+      "name": "John Darwall",
+      "born": 1731,
+      "died": 1789,
+      "role": "Music (1770)"
+    }
+  ],
+  "musicPublished": 1770,
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D4:1 | F#4:1 D4:1 A4:1 F#4:1 | D5:3 C#5:1 | B4:1 A4:1 G4:1 F#4:1 | E4:3 E4:1 | F#4:1 D4:1 B4:1 A4:1 | G#4:1 E4:1 E5:1 D5:1 | C#5:2 B4:2 | A4:3 A4:1 | B4:2 C#5:2 | D5:3 D4:1 | E4:1 F#4:1 G4:1 A4:1 | B4:1 C#5:1 D5:1 E5:1 | D5:2 C#5:2 | D5:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/On_What_Has_Now_Been_Sown-Darwalls_148th.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: 'Common Service Book with Hymnal', ULCA 1918 Hymn 68. Lyrics from Evangelical Lutheran Hymn-Book, 1931 Hymn 11."
+}

@@ -1,0 +1,23 @@
+{
+  "name": "DEN STORE HVIDE FLOK",
+  "music": [
+    {
+      "name": "Traditional Norwegian",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": 1907,
+  "key": "Eb major",
+  "time": "6/4",
+  "tempo": 120,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Eb4:.5 G4:.5 | Bb4:2 Bb4:1 C5:2 Bb4:1 | G4:1.5 Eb4:.5 G4:.5 Bb4:.5 F4:2 F4:.5 G4:.5 | Ab4:2 F4:1 Eb4:1.5 F4:.5 G4:.5 Ab4:.5 | Bb4:2 D4:1 Eb4:2 G4:.5 Ab4:.5 | Bb4:1.5 G4:.5 C5:.5 Bb4:.5 Bb4:2 C5:1 | Bb4:1.5 F4:.5 Ab4:1 G4:2 Eb4:.5 F4:.5 | G4:1.5 Ab4:.5 G4:1 F4:1.5 G4:.5 F4:1 | Eb4:3~ Eb4:2 Eb4:.5 G4:.5 | Bb4:2 Bb4:1 C5:2 Bb4:1 | G4:1.5 Eb4:.5 G4:.5 Bb4:.5 F4:2 F4:.5 G4:.5 | Ab4:2 F4:1 Eb4:1.5 F4:.5 G4:.5 Ab4:.5 | Bb4:2 D4:1 Eb4:2 G4:.5 Ab4:.5 | Bb4:1.5 G4:.5 C5:.5 Bb4:.5 Bb4:2 C5:1 | Bb4:1.5 F4:.5 Ab4:1 G4:2 Eb4:.5 F4:.5 | G4:1.5 Ab4:.5 G4:1 F4:1.5 G4:.5 F4:1 | Eb4:3~ Eb4:2 Eb4:.5 G4:.5 | C5:2 C5:1 C5:2 Bb4:1 | G4:1.5 Eb4:.5 G4:.5 Bb4:.5 F4:2 F4:.5 G4:.5 | Ab4:2 F4:1 Eb4:1.5 F4:.5 G4:.5 Ab4:.5 | Bb4:2 D4:1 Eb4:2 G4:.5 Ab4:.5 | Bb4:1.5 G4:.5 C5:1 Bb4:2 C5:1 | Bb4:1.5 F4:.5 Ab4:1 G4:2 Eb4:.5 F4:.5 | G4:1.5 Ab4:.5 G4:1 F4:1.5 G4:.5 F4:1 | Eb4:3~ Eb4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Behold_A_Host_Arrayed_In_White-Den_Store_Hvide_Flok-Great_White_Host.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score gives no year for the tune; it was in print by 1907, the year of the setting the Open Hymnal copied. The Open Hymnal's own source: Translation is public domain per Project Wittenberg: http://www.ccel.org/a/anonymous/luth_hymnal/tlh656.htm - also in Lutheran Hymnary"
+}

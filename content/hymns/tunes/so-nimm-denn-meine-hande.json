@@ -1,0 +1,24 @@
+{
+  "name": "SO NIMM DENN MEINE HÄNDE",
+  "music": [
+    {
+      "name": "Friedrich Silcher",
+      "born": 1789,
+      "died": 1860,
+      "role": "Music (1842)"
+    }
+  ],
+  "musicPublished": 1842,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "C5:1 | D5:1 C5:1 Bb4:1 A4:1 | A4:2 G4:1 A4:1 | Bb4:2 C5:2 | A4:3 C5:1 | D5:1 C5:1 Bb4:1 A4:1 | A4:2 G4:1 A4:1 | Bb4:2 C5:2 | A4:3 A4:1 | G4:1 C5:1 B4:1 D5:1 | C5:1.5 D5:.5 E5:1 F5:1 | E5:2 D5:2 | C5:3 C5:1 | F5:1 E5:.5 D5:.5 C5:1 C5:1 | D5:2 C5:1 Bb4:1 | A4:1 Bb4:2 G4:1 | F4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Take_Thou_My_Hand-So_Nimm_Denn_Meine_Hande.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: St Paul Music Library, Royal Oak, MI. Donna Snell, a former congregant, wrote many of the arrangements in the library. Translation from \"Select Songs for School and Home\", published by Concordia Publishing House in 1922. Translation also found in \"Sunday School Hymnal\" American Lutheran Publication Board, 1901 #429. Translation attribution from \"Christian Hymns\" Eden Publishing House, 1908 #83."
+}

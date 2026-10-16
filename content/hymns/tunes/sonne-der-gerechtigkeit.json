@@ -1,0 +1,23 @@
+{
+  "name": "SONNE DER GERECHTIGKEIT",
+  "music": [
+    {
+      "name": "Traditional Czech, Kirchengeseng, 1566",
+      "traditional": true,
+      "role": "Melody (1566)"
+    }
+  ],
+  "musicPublished": 1566,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "C4:1 C4:1 | G4:1 C5:1 B4:.5 A4:.25 G4:.25 A4:.5 A4:.5 | G4:2 A4:1 A4:1 | B4:1 A4:1 G4:.5 A4:.5 G4:.5 F4:.5 | E4:2 E4:.5 D4:.5 E4:.5 F4:.5 | G4:.5 G4:.5 C4:1 E4:.5 D4:.5 E4:.5 C4:.5 | B3:.5 C4:.5 D4:.5 F4:.5 E4:1 D4:1 | C4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/At_The_Lambs_High_Feast-Sonne_Der_Gerechtigkeit.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The source's harmony (its setting) is under its own licence; only the melody and the words, which it marks public domain, are used here. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The last 3 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: tune found in many places, arrangement by BJD"
+}

@@ -1,0 +1,114 @@
+{
+  "title": "Now Praise We Christ, the Holy One",
+  "alsoKnownAs": [
+    "Jesus We Now Must Laud and Sing",
+    "From East to West"
+  ],
+  "tune": "christum-wir-sollen-loben-schon",
+  "text": [
+    {
+      "name": "Coelius Sedulius",
+      "died": 500,
+      "lived": "5th century",
+      "role": "Words (450)"
+    },
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Translated (1524)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1524)"
+    }
+  ],
+  "textPublished": 1524,
+  "description": "Now Praise We Christ, the Holy One in Tonic Solfa: the solfa line by line with the words, staff notation, all 8 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Coelius Sedulius, first published in 450. The English translation is by Martin Luther and Richard Massie (1524). The tune, CHRISTUM WIR SOLLEN LOBEN SCHON, is Traditional Latin and from Erfurt Enchiridion, 1524. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Now praise we Christ, the Ho-ly One, The spot-less vir-gin Ma-ry's Son, Far as the bless-éd sun doth shine E'en to the world's re-mote__ con-fine",
+  "verses": [
+    {
+      "lines": [
+        "Now praise we Christ, the Holy One,",
+        "The spotless virgin Mary's Son,",
+        "Far as the blesséd sun doth shine",
+        "E'en to the world's remote confine"
+      ]
+    },
+    {
+      "lines": [
+        "He, who Himself all things did make,",
+        "A servant's form vouchsafed to take,",
+        "That He as man mankind might win,",
+        "And save His creatures from their sin."
+      ]
+    },
+    {
+      "lines": [
+        "The grace of God, th'Almighty Lord,",
+        "On the chaste mother was outpoured",
+        "a virgin pure and undefiled",
+        "In wondrous wise conceived a child."
+      ]
+    },
+    {
+      "lines": [
+        "The holy maid became th'abode",
+        "And temple of the living God;",
+        "And she, who knew not man, was blest",
+        "With God's own Word made manifest."
+      ]
+    },
+    {
+      "lines": [
+        "The noble mother bare a Son,",
+        "For so did Gabriel's promise run,",
+        "Whom John confessed and leapt with joy,",
+        "Ere yet the mother knew her boy."
+      ]
+    },
+    {
+      "lines": [
+        "In a rude manger, stretched on hay, In poverty content He lay;",
+        "With milk was fed the Lord of all, Who feeds the ravens when they call."
+      ]
+    },
+    {
+      "lines": [
+        "Th' angelic choir rejoice, and raise Their voice to God in songs of praise;",
+        "To humble shepherds is proclaimed The Shepherd who the world hath framed."
+      ]
+    },
+    {
+      "lines": [
+        "D Honor to Thee, O Christ, be paid, Pure offspring of a holy maid,",
+        "With Father and with Holy Ghost, Till time in time's abyss be lost."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Christmas/Advent",
+    "God, Creator",
+    "Jesus",
+    "Missions",
+    "Praise, Son",
+    "Presence",
+    "Shepherd/Lamb"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Now_Praise_We_Christ_The_Holy_One-Christum_Wir_Sollen_Loben_Schon.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Now_Praise_We_Christ_The_Holy_One-Christum_Wir_Sollen_Loben_Schon"
+}

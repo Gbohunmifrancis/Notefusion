@@ -1,0 +1,74 @@
+{
+  "title": "Christ Arose",
+  "tune": "christ-arose",
+  "text": [
+    {
+      "name": "Robert Lowry",
+      "born": 1826,
+      "died": 1899,
+      "role": "Words (1874)"
+    }
+  ],
+  "textPublished": 1874,
+  "description": "Christ Arose in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Robert Lowry, first published in 1874. The tune, CHRIST AROSE, is by Robert Lowry (1874). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Low in the grave He lay Je-sus my Sa-vior! Wait-ing the co-ming day‑ Je-sus my Lord! Up from the grave He a-rose, With a might-y tri-umph o'er His foes; He a-rose a Vic-tor from the dark do-main, And He lives for-ev-er with His saints to reign. He a-rose! He a-rose! Hal-le-lu-jah! Christ a-rose!",
+  "verses": [
+    {
+      "lines": [
+        "Low in the grave He lay Jesus my Savior!",
+        "Waiting the coming day— Jesus my Lord!",
+        "Up from the grave He arose,",
+        "With a mighty triumph o'er His"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "foes; He arose a Victor from the dark domain,",
+        "And He lives forever with His saints to reign.",
+        "He arose! He arose!",
+        "Hallelujah!",
+        "Christ arose!"
+      ]
+    },
+    {
+      "lines": [
+        "Vainly they watch His bed— Jesus my Savior!",
+        "Vainly they seal the dead— Jesus my Lord!"
+      ]
+    },
+    {
+      "lines": [
+        "Death cannot keep his prey— Jesus my Savior!",
+        "He tore the bars away— Jesus my Lord!"
+      ]
+    }
+  ],
+  "category": "Easter",
+  "topics": [
+    "Comfort",
+    "Easter",
+    "Eternal Life",
+    "God, As King",
+    "God, Majesty &amp; Power of",
+    "Jesus",
+    "Joy",
+    "Praise, Son",
+    "Reverence",
+    "Saints (all Faithful)",
+    "Salvation",
+    "Victory"
+  ],
+  "metre": "Irregular",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Christ_Arose-Christ_Arose.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Christ_Arose-Christ_Arose"
+}

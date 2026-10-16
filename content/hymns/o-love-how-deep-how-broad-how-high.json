@@ -1,0 +1,129 @@
+{
+  "title": "O Love, How Deep, How Broad, How High",
+  "tune": "deo-gracias",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words (1500)"
+    },
+    {
+      "name": "Benjamin Webb",
+      "born": 1819,
+      "died": 1885,
+      "role": "Translated (1852)"
+    }
+  ],
+  "textPublished": 1852,
+  "description": "O Love, How Deep, How Broad, How High in Tonic Solfa: the solfa line by line with the words, staff notation, all 8 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 1500. The English translation is by Benjamin Webb (1852). The tune, DEO GRACIAS, is Traditional English. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O love, how deep, how broad, how high, How pass_-ing thought_ and_ fan-ta-sy, That God, the Son_ of God, should take Our mor-tal form for mor-tals' sake!",
+  "verses": [
+    {
+      "lines": [
+        "O love, how deep, how broad, how high,",
+        "How passing thought and fantasy,",
+        "That God, the Son of God, should take",
+        "Our mortal form for mortals' sake!"
+      ]
+    },
+    {
+      "lines": [
+        "He sent no angel to our race",
+        "Of higher or of lower place,",
+        "But wore the robe of human frame",
+        "And He Himself, to this world came."
+      ]
+    },
+    {
+      "lines": [
+        "Nor willed He only to appear;",
+        "His pleasure was to tarry here;",
+        "And God and Man with man would be",
+        "The space of thirty years and three."
+      ]
+    },
+    {
+      "lines": [
+        "For us baptized, for us He bore",
+        "His holy fast and hungered sore,",
+        "For us temptations sharp He knew;",
+        "For us the tempter overthrew."
+      ]
+    },
+    {
+      "lines": [
+        "For us He prayed; for us He taught;",
+        "For us His daily works He wrought;",
+        "By words and signs and actions thus",
+        "Still seeking not Himself, but us."
+      ]
+    },
+    {
+      "lines": [
+        "For us to wicked men betrayed,",
+        "Scourged, mocked, in crown of thorns arrayed,",
+        "For us He bore the cross's death,",
+        "For us at length gave up His breath."
+      ]
+    },
+    {
+      "lines": [
+        "For us He rose from death again;",
+        "For us He went on high to reign;",
+        "For us He sent His Spirit here,",
+        "To guide, to strengthen, and to cheer."
+      ]
+    },
+    {
+      "lines": [
+        "D All honor, laud, and glory be,",
+        "O Jesus, virgin-born to Thee!",
+        "All glory, as is ever meet",
+        "To Father and to Paraclete."
+      ]
+    }
+  ],
+  "category": "Justification",
+  "topics": [
+    "Angels",
+    "Atonement",
+    "Baptism",
+    "Cross",
+    "Easter",
+    "Easter Week / Passion",
+    "Example, Christ's",
+    "Faithfulness",
+    "Father",
+    "Forgiveness",
+    "God, Care of",
+    "God, Faithfulness of",
+    "God, Goodness of",
+    "God, Love of",
+    "God, Mercy of",
+    "Gospel",
+    "Grace",
+    "Gratitude",
+    "Holy Spirit",
+    "Jesus",
+    "Kindness, God's",
+    "Prayer",
+    "Presence",
+    "Resurrection",
+    "Sacrifice",
+    "Salvation",
+    "Service",
+    "Trinity"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Love_How_Deep-Deo_Gracias-Agincourt.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "O_Love_How_Deep-Deo_Gracias-Agincourt"
+}

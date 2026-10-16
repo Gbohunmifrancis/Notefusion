@@ -1,0 +1,97 @@
+{
+  "title": "May God Bestow on Us His Grace",
+  "alsoKnownAs": [
+    "May God unto Us Gracious Be",
+    "Would That the Lord Would Grant Us Grace"
+  ],
+  "tune": "es-wollt-uns-gott-gen-dig",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "May God Bestow on Us His Grace in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The English translation is by Richard Massie (1854). The tune, ES WOLLT UNS GOTT GENÆDIG, is by Martin Luther (1524). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "May God be-stow on us__ His grace, With bless-ings rich pro-vide___ us, And may the bright-ness of__ His face To life e-ter-nal guide___ us That we His sa-ving health may know, His gra-cious will and plea-sure, And al-so to the hea-then show Christ's rich-es with-out mea-sure And un-to God con-vert_ them.",
+  "verses": [
+    {
+      "lines": [
+        "May God bestow on us His grace,",
+        "With blessings rich provide us,",
+        "And may the brightness of His face",
+        "To life eternal guide us",
+        "That we His saving health may know,",
+        "His gracious will and pleasure,",
+        "And also to the heathen show",
+        "Christ's riches without measure",
+        "And unto God convert them."
+      ]
+    },
+    {
+      "lines": [
+        "Thine over all shall be the praise",
+        "And thanks of every nation,",
+        "And all the world with joy shall raise",
+        "The voice of exultation;",
+        "For Thou shalt judge the earth, O Lord,",
+        "Nor suffer sin to flourish;",
+        "Thy people's pasture is Thy Word",
+        "Their souls to feed and nourish,",
+        "In righteous paths to keep them."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, let the people praise Thy worth,",
+        "In all good works increasing;",
+        "The land shall plenteous fruit bring forth,",
+        "Thy Word is rich in blessing.",
+        "May God the Father, God the Son,",
+        "And God the Spirit bless us!",
+        "Let all the world praise Him alone,",
+        "Let solemn awe possess us.",
+        "Now let our hearts say, Amen."
+      ]
+    }
+  ],
+  "category": "Missions",
+  "topics": [
+    "Activity",
+    "Anticipation",
+    "Conversion",
+    "God, Care of",
+    "God, Goodness of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Grace",
+    "Gratitude",
+    "Kindness, God's",
+    "People of the World",
+    "Praise, Father",
+    "Praise, Son",
+    "Praise, Holy Spirit",
+    "Scripture",
+    "Trust",
+    "Worship"
+  ],
+  "metre": "8 7 8 7 8 7 8 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/May_God_Bestow_On_Us_His_Grace-Es_Wollt_uns_Gott_Genaedig.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "May_God_Bestow_On_Us_His_Grace-Es_Wollt_uns_Gott_Genaedig"
+}

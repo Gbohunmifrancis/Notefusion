@@ -1,0 +1,217 @@
+{
+  "title": "O for a Thousand Tongues",
+  "tune": "azmon",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1740)"
+    }
+  ],
+  "textPublished": 1740,
+  "description": "O for a Thousand Tongues in Tonic Solfa: the solfa line by line with the words, staff notation, all 19 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Charles Wesley, first published in 1740. The tune, AZMON, is by Carl Gotthelf Gläser (1828). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O for a thou-sand tongues to sing My great Re-deem-er's praise, The glo-ries of my God and King, The_ tri-umphs of His grace!",
+  "verses": [
+    {
+      "lines": [
+        "O for a thousand tongues to sing",
+        "My great Redeemer's praise,",
+        "The glories of my God and King,",
+        "The triumphs of His grace!"
+      ]
+    },
+    {
+      "lines": [
+        "My gracious Master and my God,",
+        "Assist me to proclaim,",
+        "To spread through all the earth abroad",
+        "The honors of Thy name."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus! the name that charms our fears,",
+        "That bids our sorrows cease;",
+        "'Tis music in the sinner's ears,",
+        "'Tis life, and health, and peace."
+      ]
+    },
+    {
+      "lines": [
+        "He breaks the pow'r of canceled sin,",
+        "He sets the prisoner free;",
+        "His blood can make the foulest clean,",
+        "His blood availed for me."
+      ]
+    },
+    {
+      "lines": [
+        "He speaks, and, listening to His voice,",
+        "New life the dead receive,",
+        "The mournful, broken hearts rejoice,",
+        "The humble poor believe."
+      ]
+    },
+    {
+      "lines": [
+        "Hear Him, ye deaf; His praise, ye dumb,",
+        "Your loosened tongues employ;",
+        "Ye blind, behold your Savior come,",
+        "And leap, ye lame, for joy."
+      ]
+    },
+    {
+      "lines": [
+        "In Christ your Head, you then shall know,",
+        "Shall feel your sins forgiven;",
+        "Anticipate your heaven below,",
+        "And own that love is heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to God, and praise and love",
+        "Be ever, ever given,",
+        "By saints below and saints above,",
+        "The church in earth and heaven."
+      ]
+    },
+    {
+      "lines": [
+        "On this glad day the glorious Sun",
+        "Of Righteousness arose;",
+        "On my benighted soul He shone",
+        "And filled it with repose."
+      ]
+    },
+    {
+      "lines": [
+        "Sudden expired the legal strife,",
+        "'Twas then I ceased to grieve;",
+        "My second, real, living life",
+        "I then began to live."
+      ]
+    },
+    {
+      "lines": [
+        "Then with my heart I first believed,",
+        "Believed with faith divine,",
+        "Power with the Holy Ghost received",
+        "To call the Savior mine."
+      ]
+    },
+    {
+      "lines": [
+        "I felt my Lord's atoning blood",
+        "Close to my soul applied;",
+        "Me, me He loved, the Son of God,",
+        "For me, for me He died!"
+      ]
+    },
+    {
+      "lines": [
+        "I found and owned His promise true,",
+        "Ascertained of my part,",
+        "My pardon passed in heaven I knew",
+        "When written on my heart."
+      ]
+    },
+    {
+      "lines": [
+        "Look unto Him, ye nations, own",
+        "Your God, ye fallen race;",
+        "Look, and be saved through faith alone,",
+        "Be justified by grace."
+      ]
+    },
+    {
+      "lines": [
+        "See all your sins on Jesus laid:",
+        "The Lamb of God was slain,",
+        "His soul was once an offering made",
+        "For every soul of man."
+      ]
+    },
+    {
+      "lines": [
+        "Awake from guilty nature's sleep,",
+        "And Christ shall give you light,",
+        "Cast all your sins into the deep,",
+        "And wash the Æthiop white."
+      ]
+    },
+    {
+      "lines": [
+        "Harlots and publicans and thieves",
+        "In holy triumph join!",
+        "Saved is the sinner that believes",
+        "From crimes as great as mine."
+      ]
+    },
+    {
+      "lines": [
+        "Murderers and all ye hellish crew,",
+        "Ye sons of lust and pride,",
+        "Believe the Savior died for you;",
+        "For me the Savior died."
+      ]
+    },
+    {
+      "lines": [
+        "With me, your chief, ye then shall know,",
+        "Shall feel your sins forgiven;",
+        "Anticipate your heaven below,",
+        "And own that love is heaven."
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "Assurance",
+    "Atonement",
+    "Blood",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Church on Earth (Church Militant)",
+    "Comfort",
+    "Compassion",
+    "Conversion",
+    "Day",
+    "Easter",
+    "Faith",
+    "Forgiveness",
+    "God, As King",
+    "God, Mercy of",
+    "Gospel",
+    "Grace",
+    "Gratitude",
+    "Healing",
+    "Heaven",
+    "Jesus",
+    "Knowledge",
+    "Light",
+    "Love",
+    "Missions",
+    "Praise, Son",
+    "Promises (see also Gospel)",
+    "Sacrifice",
+    "Saints (all Faithful)",
+    "Salvation",
+    "Sinners",
+    "Testimony",
+    "Truth",
+    "Worship"
+  ],
+  "metre": "8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_For_A_Thousand_Tongues-Azmon.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "O_For_A_Thousand_Tongues-Azmon"
+}

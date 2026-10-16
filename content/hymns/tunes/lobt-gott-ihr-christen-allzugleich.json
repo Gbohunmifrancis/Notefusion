@@ -1,0 +1,24 @@
+{
+  "name": "LOBT GOTT, IHR CHRISTEN ALLZUGLEICH",
+  "music": [
+    {
+      "name": "Nikolaus Hermann",
+      "born": 1500,
+      "died": 1561,
+      "role": "Music (1554)"
+    }
+  ],
+  "musicPublished": 1554,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:1 | C5:1 C5:1 C5:1 C5:1 | D5:1 C5:.5 Bb4:.5 A4:1 A4:1 | Bb4:1 C5:1 D5:1 D5:1 | C5:3 C5:1 | C5:1 C5:1 C5:1 A4:1 | C5:1 Bb4:.5 A4:.5 G4:1 C5:1 | A4:1 F4:1 G4:1 G4:1 | F4:2 A4:2 | C5:1 F4:1 G4:1 G4:1 | F4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_People_That_in_Darkness_Sat-Lobt_Gott_Ihr_Christen_Allzugleich.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 2 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: The Evangelical Lutheran Hymn Book, 1931 Hymn 157. Lyric source: Project Wittenberg Arrangement slightly modified from \"Kern des Deutschen Kirchengesangs\", 1855 ed. Dr. Fridrich Layriz hymn 78"
+}

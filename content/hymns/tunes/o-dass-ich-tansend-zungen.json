@@ -1,0 +1,24 @@
+{
+  "name": "O DASS ICH TANSEND ZUNGEN",
+  "music": [
+    {
+      "name": "Johann Balthasar König",
+      "born": 1691,
+      "died": 1758,
+      "role": "Music (1738)"
+    }
+  ],
+  "musicPublished": 1738,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 3,
+  "lineBars": 2,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/By_Grace_Im_Saved-O_Dass_Ich_Tansend_Zungen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929; the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 4 does not add up to 4 beats; bar 5 does not add up to 4 beats; bar 8 does not add up to 4 beats; bar 9 does not add up to 4 beats; bar 11 does not add up to 4 beats. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 5 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: 'The Evangelical Lutheran Hymnal' (Ohio Synod), 1908 Hymn 311."
+}

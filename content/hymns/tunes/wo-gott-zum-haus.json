@@ -1,0 +1,23 @@
+{
+  "name": "WO GOTT ZUM HAUS",
+  "music": [
+    {
+      "name": "From Klug's Geistliche Lieder, Wittenberg, 1533",
+      "traditional": true,
+      "role": "Melody (1533)"
+    }
+  ],
+  "musicPublished": 1533,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Eb4:2 Bb4:1 Bb4:1 | G4:1 F4:1 G4:1 A4:1 | Bb4:1.5 Bb4:.5 G4:1 Bb4:1 | Ab4:1 Bb4:1 G4:1 F4:1 | Eb4:1.5 Bb4:.5 C5:1 C5:1 | G4:1 Bb4:1 Ab4:1 Ab4:1 | G4:1.5 Eb5:.5 D5:1 C5:1 | Bb4:1 C5:1 Ab4:.5 G4:.5 F4:1 | Eb4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Happy_The_Man_Who_Feareth_God-Wo_Gott_Zum_Haus_1533.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true."
+}

@@ -1,0 +1,127 @@
+{
+  "title": "All Creatures of Our God and King",
+  "tune": "lasst-uns-erfreuen",
+  "text": [
+    {
+      "name": "Francis of Assisi",
+      "born": 1181,
+      "died": 1226,
+      "role": "Words (1225)"
+    },
+    {
+      "name": "William Henry Draper",
+      "born": 1855,
+      "died": 1933,
+      "role": "Translated (1919)"
+    }
+  ],
+  "textPublished": 1919,
+  "description": "All Creatures of Our God and King in Tonic Solfa: the solfa line by line with the words, staff notation, all 8 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Francis of Assisi, first published in 1225. The English translation is by William Henry Draper (1919). The tune, LASST UNS ERFREUEN, is from Geistliche Kirchengesäng, Köln, 1623. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "All crea-tures of our God and King Lift up your voice and with us sing, A-lle-lu-ia! A-lle-lu-ia! Thou burn-ing sun with gol-den beam, Thou sil-ver moon with soft-er gleam! O_ praise Him! O_ praise Him! A-lle-lu-ia! A-lle-lu-ia! A-lle-lu-ia!",
+  "verses": [
+    {
+      "lines": [
+        "All creatures of our God and King",
+        "Lift up your voice and with us sing,",
+        "Alleluia!",
+        "Alleluia!",
+        "Thou burning sun with golden beam,",
+        "Thou silver moon with softer gleam!",
+        "O praise Him!"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "O praise Him! Alleluia!",
+        "Alleluia!",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou rushing wind that art so strong",
+        "Ye clouds that sail in Heaven along,",
+        "O praise Him! Alleluia!",
+        "Thou rising moon, in praise rejoice,",
+        "Ye lights of evening, find a voice!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou flowing water, pure and clear,",
+        "Make music for thy Lord to hear,",
+        "O praise Him! Alleluia!",
+        "Thou fire so masterful and bright,",
+        "That givest man both warmth and light."
+      ]
+    },
+    {
+      "lines": [
+        "Dear mother earth, who day by day",
+        "Unfoldest blessings on our way,",
+        "O praise Him! Alleluia!",
+        "The flowers and fruits that in thee grow,",
+        "Let them His glory also show."
+      ]
+    },
+    {
+      "lines": [
+        "And all ye men of tender heart,",
+        "Forgiving others, take your part,",
+        "O sing ye! Alleluia!",
+        "Ye who long pain and sorrow bear,",
+        "Praise God and on Him cast your care!"
+      ]
+    },
+    {
+      "lines": [
+        "And thou most kind and gentle Death,",
+        "Waiting to hush our latest breath,",
+        "O praise Him! Alleluia!",
+        "Thou leadest home the child of God,",
+        "And Christ our Lord the way hath trod."
+      ]
+    },
+    {
+      "lines": [
+        "D Let all things their Creator bless,",
+        "And worship Him in humbleness,",
+        "O praise Him! Alleluia!",
+        "Praise, praise the Father, praise the Son,",
+        "And praise the Spirit, Three in One!"
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Brevity of Life",
+    "Cloud",
+    "Eternal Life",
+    "Father",
+    "Fellowship",
+    "God, As King",
+    "God, Creator",
+    "Humility",
+    "Judging",
+    "Nature",
+    "Praise, Father",
+    "Praise, Son",
+    "Praise, Holy Spirit",
+    "Reverence",
+    "Trinity",
+    "Worship"
+  ],
+  "metre": "8 8 8 8 8 8 with Alleluias",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/All_Creatures_Of_Our_God_And_King-Lasst_Uns_Erfreuen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "All_Creatures_Of_Our_God_And_King-Lasst_Uns_Erfreuen"
+}

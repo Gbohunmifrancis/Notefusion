@@ -1,0 +1,72 @@
+{
+  "title": "All Who Believe and Are Baptized",
+  "alsoKnownAs": [
+    "He That Believes and Is Baptized"
+  ],
+  "tune": "es-ist-das-heil-uns-kommen-her",
+  "text": [
+    {
+      "name": "Thomas Hansen Kingo",
+      "born": 1634,
+      "died": 1703,
+      "role": "Words (1689)"
+    },
+    {
+      "name": "George Alfred Taylor Rygh",
+      "born": 1860,
+      "died": 1942,
+      "role": "Translated (1909)"
+    }
+  ],
+  "textPublished": 1909,
+  "description": "All Who Believe and Are Baptized in Tonic Solfa: the solfa line by line with the words, staff notation, all 2 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Hansen Kingo, first published in 1689. The English translation is by George Alfred Taylor Rygh (1909). The tune, ES IST DAS HEIL UNS KOMMEN HER, is from Etlich Christlich Lider, Wittenberg, 1524. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "All who be-lieve and are bap-tized shall see the Lord's sal-va_-tion; bap-tized in-to the death of Christ, they are a new cre-a_-tion. through Christ's re-demp-tion they shall stand a-mong the glor-ious heav'n-ly band of ev-ery tribe and na_-tion.",
+  "verses": [
+    {
+      "lines": [
+        "All who believe and are baptized",
+        "shall see the Lord's salvation;",
+        "baptized into the death of Christ,",
+        "they are a new creation.",
+        "through Christ's redemption they shall stand",
+        "among the glorious heav'nly band",
+        "of every tribe and nation."
+      ]
+    },
+    {
+      "lines": [
+        "With one accord, O God, we pray:",
+        "grant us thy Holy Spirit;",
+        "look thou on our infirmity",
+        "through Jesus' blood and merit.",
+        "Grant us to grow in grace each day",
+        "that by this sacrament we may",
+        "eternal life inherit."
+      ]
+    }
+  ],
+  "category": "Baptismal Life",
+  "topics": [
+    "Assurance",
+    "Atonement",
+    "Baptism",
+    "Blood",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Eternal Life",
+    "Grace",
+    "Jesus",
+    "Salvation"
+  ],
+  "metre": "8 7 8 7 8 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/All_Who_Believe_And_Are_Baptized-Es_ist_das_Heil_uns_Kommen_her.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "All_Who_Believe_And_Are_Baptized-Es_ist_das_Heil_uns_Kommen_her"
+}

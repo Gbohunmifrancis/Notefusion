@@ -1,0 +1,23 @@
+{
+  "name": "SIEH, HIER BIN ICH, EHRENKOENIG",
+  "music": [
+    {
+      "name": "From Geistreiches Gesangbuch Darmstadt, 1698",
+      "traditional": true,
+      "role": "Melody (1698)"
+    }
+  ],
+  "musicPublished": 1698,
+  "key": "B minor",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F#4:1 F#4:1 B4:1 B4:1 | A4:1.5 G4:.5 F#4:1 D4:1 | A4:1 F#4:1 B4:1 A4:1 | G4:1 G4:1 F#4:2 | E4:1 E4:1 E4:1 C#4:1 | D4:1 E4:1 F#4:1 F#4:1 | F#4:1 G#4:1 A4:1 B4:1 | A4:1 G4:1 F#4:2 | C#5:1 C#5:1 D5:1 C#5:.5 B4:.5 | A#4:1 B4:1 C#5:1 F#4:1 | D5:1 C#5:.5 B4:.5 A#4:1 B4:1 | B4:1 A#4:1 B4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_Came_The_Heavens_Adoring-Sieh_hier_bin_ich_Ehrenkoenig.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Evangelical Lutheran Hymn Book (LCMS), Edition of 1931 Hymn 131."
+}

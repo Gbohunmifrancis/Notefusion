@@ -1,0 +1,73 @@
+{
+  "title": "I Sing the Mighty Power of God",
+  "tune": "ellacombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1709)"
+    }
+  ],
+  "textPublished": 1709,
+  "description": "I Sing the Mighty Power of God in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Isaac Watts, first published in 1709. The tune, ELLACOMBE, is from Gesangbuch der Herzogl. Hofkapelle, Wurttemberg, 1784. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "I sing the_ migh-ty pow'r of God, That made_ the moun-tains rise; That spread the_ flow-ing seas a-broad, And built_ the lof-ty skies. I_ sing the wis-dom that or_-dained The_ sun to rule the day: The moon shines_ full at His com-mand, And all_ the stars o-bey.",
+  "verses": [
+    {
+      "lines": [
+        "I sing the mighty pow'r of God,",
+        "That made the mountains rise;",
+        "That spread the flowing seas abroad,",
+        "And built the lofty skies.",
+        "I sing the wisdom that ordained",
+        "The sun to rule the day:",
+        "The moon shines full at His command,",
+        "And all the stars obey."
+      ]
+    },
+    {
+      "lines": [
+        "I sing the goodness of the Lord,",
+        "That filled the earth with food:",
+        "He formed the creatures with His word,",
+        "And then pronounced them good.",
+        "Lord, how Thy wonders are displayed,",
+        "Where'er I turn my eye;",
+        "If I survey the ground I tread,",
+        "Or gaze upon the sky."
+      ]
+    },
+    {
+      "lines": [
+        "There's not a plant or flow'r below,",
+        "But makes Thy glories known;",
+        "And clouds arise and tempests blow,",
+        "By order from Thy throne.",
+        "Creatures that borrow life from Thee",
+        "Are subject to Thy care:",
+        "There's not a place where we can flee,",
+        "But God is present there."
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "God, Creator",
+    "God, Goodness of",
+    "Nature",
+    "Praise, Father",
+    "Worship"
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/I_Sing_The_Mighty_Power_Of_God-Ellacombe.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "I_Sing_The_Mighty_Power_Of_God-Ellacombe"
+}

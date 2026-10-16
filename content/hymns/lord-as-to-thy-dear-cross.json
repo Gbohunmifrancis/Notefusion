@@ -1,0 +1,83 @@
+{
+  "title": "Lord as to Thy Dear Cross",
+  "tune": "st-bernard-richardson",
+  "text": [
+    {
+      "name": "John Hampden Gurney",
+      "born": 1802,
+      "died": 1862,
+      "role": "Words (1838)"
+    }
+  ],
+  "textPublished": 1838,
+  "description": "Lord as to Thy Dear Cross in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by John Hampden Gurney, first published in 1838. The tune, ST. BERNARD (RICHARDSON), is Traditional German. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lord, as to Thy dear_ cross we flee, And plead to be for-giv'n, So let Thy life our pat-tern be, And form our souls for heav'n.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, as to Thy dear cross we flee,",
+        "And plead to be forgiv'n,",
+        "So let Thy life our pattern be,",
+        "And form our souls for heav'n."
+      ]
+    },
+    {
+      "lines": [
+        "Help us, through good report and ill,",
+        "Our daily cross to bear:",
+        "Like Thee, to do our Father's will,",
+        "Our brethren's grief to share."
+      ]
+    },
+    {
+      "lines": [
+        "Let grace our selfishness expel,",
+        "Our earthliness refine;",
+        "And kindness in our bosoms dwell,",
+        "As free and true as Thine."
+      ]
+    },
+    {
+      "lines": [
+        "If joy shall at Thy bidding fly,",
+        "And grief's dark day come on,",
+        "We in our turn would meekly cry,",
+        "\"Father, Thy will be done.\""
+      ]
+    },
+    {
+      "lines": [
+        "Kept peaceful in the midst of strife,",
+        "Forgiving and forgiv'n,",
+        "O may we lead the pilgrim's life",
+        "And follow Thee to heav'n."
+      ]
+    }
+  ],
+  "category": "Lent",
+  "topics": [
+    "Consecration",
+    "Contrition",
+    "Courage in Affliction",
+    "Cross",
+    "Example, Christ's",
+    "Following Jesus, Sanctification",
+    "Forgiveness",
+    "Guidance",
+    "Heaven",
+    "Repentance",
+    "Submission (see also Following Jesus, God - Providence of, Trust)"
+  ],
+  "metre": "8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lord_As_To_Thy_Dear_Cross-St_Bernard_Richardson.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Lord_As_To_Thy_Dear_Cross-St_Bernard_Richardson"
+}

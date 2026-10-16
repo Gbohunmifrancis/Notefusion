@@ -1,0 +1,111 @@
+{
+  "title": "Built on the Rock",
+  "tune": "kirken-den-er-et-gammelt-hus",
+  "text": [
+    {
+      "name": "Nikolai Frederik Severin Grundtvig",
+      "born": 1783,
+      "died": 1872,
+      "role": "Words (1857)"
+    },
+    {
+      "name": "Carl Døving",
+      "born": 1867,
+      "died": 1937,
+      "role": "Translated (1909)"
+    }
+  ],
+  "textPublished": 1909,
+  "description": "Built on the Rock in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Nikolai Frederik Severin Grundtvig, first published in 1857. The English translation is by Carl Døving (1909). The tune, KIRKEN DEN ER ET GAMMELT HUS, is by Ludvig Mathias Lindeman (1840). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Built on the Rock the church doth stand, E-ven when stee-ples are fall-ing; Crum-bled have spires in e-very land, Bells still are chim-ing and cal-ling; Cal-ling the young and old to rest, But a-bove all the soul dis-tressed, Long-ing for rest ev-er-last-ing.",
+  "verses": [
+    {
+      "lines": [
+        "Built on the Rock the church doth stand,",
+        "Even when steeples are falling;",
+        "Crumbled have spires in every land,",
+        "Bells still are chiming and calling;",
+        "Calling the young and old to rest,",
+        "But above all the soul distressed,",
+        "Longing for rest everlasting."
+      ]
+    },
+    {
+      "lines": [
+        "Surely in temples made with hands,",
+        "God, the Most High, is not dwelling;",
+        "High above earth His temple stands,",
+        "All earthly temples excelling;",
+        "Yet He whom heav'ns cannot contain",
+        "Chose to abide on earth with men,",
+        "Built in our bodies His temple."
+      ]
+    },
+    {
+      "lines": [
+        "We are God's house of living stones,",
+        "Built for His own habitation;",
+        "He through baptismal grace us owns,",
+        "Heirs of His wondrous salvation;",
+        "Were we but two His Name to tell,",
+        "Yet He would deign with us to dwell,",
+        "With all His grace and His favor."
+      ]
+    },
+    {
+      "lines": [
+        "Now we may gather with our King;",
+        "Ev'n in the lowliest dwelling:",
+        "Praises to Him we there may bring,",
+        "His wondrous mercy foretelling;",
+        "Jesus His grace to us accords,",
+        "Spirit and life are all His words,",
+        "His truth doth hallow the temple."
+      ]
+    },
+    {
+      "lines": [
+        "Still we our earthly temples rear,",
+        "That we may herald His praises;",
+        "They are the homes where He draws near",
+        "And little children embraces,",
+        "Beautiful things in them are said,",
+        "God there with us His cov'nant made,",
+        "Making us heirs of His kingdom."
+      ]
+    }
+  ],
+  "category": "Communion of Saints",
+  "topics": [
+    "Assurance",
+    "Baptism",
+    "Children (see also God's Children - the Faithful)",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Church on Earth (Church Militant)",
+    "Consecration",
+    "Cornerstone",
+    "Discipleship",
+    "God, As King",
+    "God, Majesty &amp; Power of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Grace",
+    "Jesus",
+    "Leadership",
+    "Lord's Supper",
+    "Peace",
+    "Presence",
+    "Truth"
+  ],
+  "metre": "8 8 8 8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Built_On_The_Rock-Kirken_Den_Er_Et_Gammelt_Hus.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Built_On_The_Rock-Kirken_Den_Er_Et_Gammelt_Hus"
+}

@@ -1,0 +1,105 @@
+{
+  "title": "All Praise to Thee, My God, This Night",
+  "tune": "tallis",
+  "text": [
+    {
+      "name": "Thomas Ken",
+      "born": 1637,
+      "died": 1711,
+      "role": "Words (1674)"
+    }
+  ],
+  "textPublished": 1674,
+  "description": "All Praise to Thee, My God, This Night in Tonic Solfa: the solfa line by line with the words, staff notation, all 7 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Ken, first published in 1674. The tune, TALLIS, is by Thomas Tallis (1567). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "All praise to Thee, my God, this night, For all the bless-ings of the light! Keep me, O keep me, King of kings, Be-neath Thine own al-migh-ty wings.",
+  "verses": [
+    {
+      "lines": [
+        "All praise to Thee, my God, this night,",
+        "For all the blessings of the light!",
+        "Keep me, O keep me, King of kings,",
+        "Beneath Thine own almighty wings."
+      ]
+    },
+    {
+      "lines": [
+        "Forgive me, Lord, for Thy dear Son,",
+        "The ill that I this day have done,",
+        "That with the world, myself, and Thee,",
+        "I, ere I sleep, at peace may be."
+      ]
+    },
+    {
+      "lines": [
+        "Teach me to live, that I may dread",
+        "The grave as little as my bed.",
+        "Teach me to die, that so I may",
+        "Rise glorious at the judgment day."
+      ]
+    },
+    {
+      "lines": [
+        "O may my soul on Thee repose,",
+        "And with sweet sleep mine eyelids close,",
+        "Sleep that may me more vig'rous make",
+        "To serve my God when I awake."
+      ]
+    },
+    {
+      "lines": [
+        "When in the night I sleepless lie,",
+        "My soul with heav'nly thoughts supply;",
+        "Let no ill dreams disturb my rest,",
+        "No pow'rs of darkness me molest."
+      ]
+    },
+    {
+      "lines": [
+        "O when shall I, in endless day,",
+        "For ever chase dark sleep away,",
+        "And hymns divine with angels sing,",
+        "All praise to thee, eternal King?"
+      ]
+    },
+    {
+      "lines": [
+        "D Praise God, from Whom all blessings flow;",
+        "Praise Him, all creatures here below;",
+        "Praise Him above, ye heavenly host;",
+        "Praise Father, Son, and Holy Ghost."
+      ]
+    }
+  ],
+  "category": "Evening",
+  "topics": [
+    "Activity",
+    "Angels",
+    "Art and Music",
+    "Brevity of Life",
+    "Calmness",
+    "Darkness, Spiritual",
+    "Evening",
+    "Forgiveness",
+    "God, Care of",
+    "Heaven",
+    "Invitation (Faithful's to God)",
+    "Light",
+    "Praise, Father",
+    "Praise, Son",
+    "Praise, Holy Spirit",
+    "Presence",
+    "Trinity"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/All_Praise_To_Thee_My_God_This_Night-Tallis_Canon.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "All_Praise_To_Thee_My_God_This_Night-Tallis_Canon"
+}

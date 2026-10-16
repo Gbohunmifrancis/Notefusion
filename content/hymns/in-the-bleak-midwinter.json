@@ -1,0 +1,92 @@
+{
+  "title": "In the Bleak MidWinter",
+  "tune": "cranham",
+  "text": [
+    {
+      "name": "Christina Georgina Rossetti",
+      "born": 1830,
+      "died": 1894,
+      "role": "Words (1872)"
+    }
+  ],
+  "textPublished": 1872,
+  "description": "In the Bleak MidWinter in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christina Georgina Rossetti, first published in 1872. The tune, CRANHAM, is by Gustav Theodore Holst (1906). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "In the bleak mid-win_-ter, frost-y wind made moan, Earth stood hard as i_-ron,_ wa-ter like a stone;_ Snow had fall-en, snow on snow,_ snow on snow on snow, In the bleak mid-win-ter, long__ a-go.",
+  "verses": [
+    {
+      "lines": [
+        "In the bleak midwinter, frosty wind made moan,",
+        "Earth stood hard as iron, water like a stone;",
+        "Snow had fallen, snow on snow, snow on snow on snow,",
+        "In the bleak midwinter, long ago."
+      ]
+    },
+    {
+      "lines": [
+        "Our God, Heav'n cannot hold Him, nor earth sustain;",
+        "Heav'n and earth shall flee away when He comes to reign.",
+        "In the bleak midwinter a stable place sufficed",
+        "The Lord God Almighty,",
+        "Jesus Christ."
+      ]
+    },
+    {
+      "lines": [
+        "Enough for Him, whom cherubim, worship night and day,",
+        "Breastful of milk, and a mangerful of hay;",
+        "Enough for Him, whom angels fall down before,",
+        "Ox and ass and camel which adore."
+      ]
+    },
+    {
+      "lines": [
+        "Angels and archangels may have gathered there,",
+        "Cherubim and seraphim thronged the air;",
+        "But His mother only, in her maiden bliss,",
+        "Worshiped the beloved with a kiss."
+      ]
+    },
+    {
+      "lines": [
+        "What can I give Him, poor as I am?",
+        "If I were a shepherd,",
+        "I would bring a lamb;",
+        "If I were a Wise Man,",
+        "I would do my part;",
+        "Yet what can I give Him:",
+        "give my heart."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Christmas/Advent",
+    "God, As King",
+    "God, Eternity of",
+    "God, Love of",
+    "God, Majesty &amp; Power of",
+    "Grace",
+    "Following Jesus, In Faith",
+    "Following Jesus, Sanctification",
+    "Humility",
+    "Jesus",
+    "Law",
+    "Praise, Son",
+    "Presence",
+    "Sinners"
+  ],
+  "metre": "Irregular",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/In_The_Bleak_MidWinter-Cranham.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "In_The_Bleak_MidWinter-Cranham",
+  "reviewNotes": "Held back: the first note has no word under it; the first verse has 50 syllables (counting each “_”) for 51 notes."
+}

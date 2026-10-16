@@ -1,0 +1,66 @@
+{
+  "title": "Breathe on Me, Breath of God",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Edwin Hatch",
+      "born": 1835,
+      "died": 1889,
+      "role": "Words (1878)"
+    }
+  ],
+  "textPublished": 1878,
+  "description": "Breathe on Me, Breath of God in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Edwin Hatch, first published in 1878. The tune, AYLESBURY, is from John Chetham's Psalmody, 1718. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Breathe on me, breath of God, Fill me with life a-new, That I may love what Thou dost love, And do what Thou wouldst do.",
+  "verses": [
+    {
+      "lines": [
+        "Breathe on me, breath of God,",
+        "Fill me with life anew,",
+        "That I may love what Thou dost love,",
+        "And do what Thou wouldst do."
+      ]
+    },
+    {
+      "lines": [
+        "Breathe on me, breath of God,",
+        "Until my heart is pure,",
+        "Until with Thee I will one will,",
+        "To do and to endure."
+      ]
+    },
+    {
+      "lines": [
+        "Breathe on me, breath of God,",
+        "So shall I never die,",
+        "But live with Thee the perfect life",
+        "Of Thine eternity."
+      ]
+    }
+  ],
+  "category": "Pentecost",
+  "topics": [
+    "Aspiration",
+    "Discipleship",
+    "Eternal Life",
+    "Following Jesus, In Faith",
+    "Following Jesus, In Action",
+    "Following Jesus, Sanctification",
+    "Holiness",
+    "Holy Spirit",
+    "Invitation (Faithful's to God)",
+    "Love"
+  ],
+  "metre": "6 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Breathe_On_Me_Breath_Of_God-Aylesbury-Wirksworth.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Breathe_On_Me_Breath_Of_God-Aylesbury-Wirksworth"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "ES WOLLT UNS GOTT GENÆDIG",
+  "music": [
+    {
+      "name": "Traditional German",
+      "traditional": true,
+      "role": "Melody (1524)"
+    },
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Music (1524)"
+    }
+  ],
+  "musicPublished": 1524,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "B4:2 | C5:1 B4:1 A4:1 B4:1 | D5:1.5 E5:.5 D5:1 C5:1 | B4:2 D5:2 | C5:1 B4:1 C5:1 A4:1 | G4:1 D4:1 F4:1 G4:1 | E4:4 | r:2 B4:2 | C5:1 B4:1 A4:1 B4:1 | D5:1.5 E5:.5 D5:1 C5:1 | B4:2 D5:2 | C5:1 B4:1 C5:1 A4:1 | G4:1 D4:1 F4:1 G4:1 | E4:4 | G4:2 F4:1 E4:1 | D4:1 E4:1 C4:1 D4:1 | E4:2 B4:2 | C5:1 A4:1 G4:1 A4:1 | C5:2 B4:2 | E5:2 D5:1 B4:1 | D5:1 A4:1 G4:1 F4:1 | E4:2 G4:2 | A4:1 G4:1 C5:1 D5:1 | B4:2 A4:2 | r:1 C5:1 B4:1 A4:1 | G4:1 D4:1 F4:1 G4:1 | E4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/May_God_Bestow_On_Us_His_Grace-Es_Wollt_uns_Gott_Genaedig.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The tune ends on E, not on the key note: it may be modal. The Open Hymnal's own source: Concordia Kinderchöre, 1908 Hymn 128 page 152."
+}

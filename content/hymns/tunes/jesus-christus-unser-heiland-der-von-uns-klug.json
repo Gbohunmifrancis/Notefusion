@@ -1,0 +1,23 @@
+{
+  "name": "JESUS CHRISTUS UNSER HEILAND, DER VON UNS (KLUG)",
+  "music": [
+    {
+      "name": "From Klug's Geistliche Lieder, Wittenberg, 1533",
+      "traditional": true,
+      "role": "Melody (1533)"
+    }
+  ],
+  "musicPublished": 1533,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:2 C5:2 | A4:1 F4:1 G4:1 A4:1 | Bb4:2 A4:2 | F4:1 C5:1 A4:1 D5:1 | C5:1 Bb4:1 C5:2 | A4:4 | C5:1 C5:1 Bb4:1 A4:1 | A4:1 G4:1 F4:2 | C5:2 A4:1 F4:1 | C5:1 Bb4:1 A4:1 G4:1 | A4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_Christ_Our_Blessed_Savior-Jesus_Christus_Unser_Heiland_Der_Von_Uns_1533.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 5 verses are printed after the score in the source, not under the notes. The tune ends on A, not on the key note: it may be modal."
+}

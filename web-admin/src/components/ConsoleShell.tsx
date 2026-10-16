@@ -2,6 +2,7 @@
 
 import {
   Activity,
+  BookOpenText,
   ChevronDown,
   HeartPulse,
   Inbox,
@@ -52,11 +53,12 @@ import { useAuth } from "@/lib/auth";
 const PRIMARY_NAV = [
   { to: "/", label: "Overview", icon: LayoutDashboard },
   { to: "/insights", label: "Insights", icon: ChartNoAxesCombined },
+  { to: "/blog", label: "Blog posts", icon: Newspaper },
+  { to: "/blog-analytics", label: "Blog analytics", icon: BookOpenText },
   { to: "/users", label: "Users", icon: Users2 },
   { to: "/transcriptions", label: "Transcriptions", icon: Music2 },
   { to: "/activity", label: "Activity", icon: Activity },
   { to: "/feedback", label: "Feedback", icon: MessageSquareHeart },
-  { to: "/blog", label: "Blog", icon: Newspaper },
   { to: "/health", label: "System Health", icon: HeartPulse },
   { to: "/audit-log", label: "Settings", icon: Settings },
 ] as const;

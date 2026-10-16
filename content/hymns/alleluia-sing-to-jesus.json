@@ -1,0 +1,104 @@
+{
+  "title": "Alleluia, Sing to Jesus!",
+  "tune": "hyfrydol",
+  "text": [
+    {
+      "name": "William Chatterton Dix",
+      "born": 1837,
+      "died": 1865,
+      "role": "Words (1867)"
+    }
+  ],
+  "textPublished": 1867,
+  "description": "Alleluia, Sing to Jesus! in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by William Chatterton Dix, first published in 1867. The tune, HYFRYDOL, is by Rowland H. Prichard (1830). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Al-le-lu_-ia! sing to Je_-sus! His the scep-ter, His_ the throne. Al-le-lu_-ia! His the tri_-umph, His the vic-to-ry_ a-lone. Hark! the songs_ of peace-ful Zi_-on thun-der like_ a might_-y flood. Je_-sus out_ of ev_-ery na___-tion has re-deemed_ us by His blood.",
+  "verses": [
+    {
+      "lines": [
+        "Alleluia! sing to Jesus!",
+        "His the scepter, His the throne.",
+        "Alleluia! His the triumph,",
+        "His the victory alone.",
+        "Hark! the songs of peaceful Zion",
+        "thunder like a mighty flood.",
+        "Jesus out of every nation",
+        "has redeemed us by His blood."
+      ]
+    },
+    {
+      "lines": [
+        "Alleluia! not as orphans",
+        "are we left in sorrow now;",
+        "Alleluia! He is near us,",
+        "faith believes, nor questions how;",
+        "Though the cloud from sight received Him",
+        "when the forty days were o'er",
+        "Shall our hearts forget His promise,",
+        "\"I am with you evermore\"?"
+      ]
+    },
+    {
+      "lines": [
+        "Alleluia! bread of angels,",
+        "Thou on earth our food, our stay;",
+        "Alleluia! here the sinful",
+        "flee to Thee from day to day:",
+        "Intercessor, Friend of sinners,",
+        "Earth's Redeemer, plead for me,",
+        "Where the songs of all the sinless",
+        "sweep across the crystal sea."
+      ]
+    },
+    {
+      "lines": [
+        "Alleluia!",
+        "King eternal,",
+        "Thee the Lord of lords we own;",
+        "Alleluia! born of Mary,",
+        "Earth Thy footstool,",
+        "Heaven Thy throne:",
+        "Thou within the veil hast entered, robed in flesh our great",
+        "High Priest; Thou on earth both priest and victim in the",
+        "Eucharistic feast."
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "Atonement",
+    "Blood",
+    "Bread (of Life/Daily Bread)",
+    "Cloud",
+    "Easter",
+    "Friendship",
+    "God, As King",
+    "God, Faithfulness of",
+    "God, Love of",
+    "Gospel",
+    "Gratitude",
+    "Jesus",
+    "Lord's Supper",
+    "Praise, Son",
+    "Priest/Priestly Roles",
+    "Promises (see also Gospel)",
+    "Sacrifice",
+    "Salvation",
+    "Sinners",
+    "Solitude (with God even when alone)",
+    "Throne (also see God - As King)",
+    "Victory",
+    "Worship"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Alleluia_Sing_To_Jesus-Hyfrydol.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Alleluia_Sing_To_Jesus-Hyfrydol"
+}

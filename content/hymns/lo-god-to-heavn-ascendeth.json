@@ -1,0 +1,112 @@
+{
+  "title": "Lo, God to Heav'n Ascendeth",
+  "tune": "von-gott-will-ich-nicht-lazen",
+  "text": [
+    {
+      "name": "Gottfried Wilhelm Sacer",
+      "born": 1635,
+      "died": 1699,
+      "role": "Words (1661)"
+    },
+    {
+      "name": "Frances Elizabeth Cox",
+      "born": 1812,
+      "died": 1897,
+      "role": "Translated (1841)"
+    }
+  ],
+  "textPublished": 1841,
+  "description": "Lo, God to Heav'n Ascendeth in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Gottfried Wilhelm Sacer, first published in 1661. The English translation is by Frances Elizabeth Cox (1841). The tune, VON GOTT WILL ICH NICHT LAZEN, is by Johann Crüger (1640). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lo, God to Heav'n as-cen-deth! Through-out its re-gions vast With shouts tri-um-phant blend-eth the trum-pet's thrill-ing blast: Sing praise to Christ the Lord; sing praise with ex-ul-ta-tion, King of each hea-then na-tion, the God of Hosts a-dored!",
+  "verses": [
+    {
+      "lines": [
+        "Lo, God to Heav'n ascendeth!",
+        "Throughout its regions vast",
+        "With shouts triumphant blendeth",
+        "the trumpet's thrilling blast:",
+        "Sing praise to Christ the Lord;",
+        "sing praise with exultation,",
+        "King of each heathen nation,",
+        "the God of Hosts adored!"
+      ]
+    },
+    {
+      "lines": [
+        "With joy is Heav'n resounding",
+        "Christ's glad return to see;",
+        "Behold the saints surrounding",
+        "the Lord who set them free.",
+        "Bright myriads, thronging, come;",
+        "the cherub band rejoices,",
+        "And loud seraphic voices",
+        "Welcome Messiah home."
+      ]
+    },
+    {
+      "lines": [
+        "No more the way is hidden,",
+        "Since Christ our Head arose:",
+        "No more to man forbidden",
+        "The road to Heav'n that goes.",
+        "Our Lord is gone before;",
+        "yet here He will not leave us,",
+        "And soon in Heav'n receive us",
+        "and open wide the door."
+      ]
+    },
+    {
+      "lines": [
+        "Christ is our place preparing;",
+        "to Heav'n we, too, shall rise,",
+        "And, joys angelic sharing,",
+        "Be where our treasure lies:",
+        "There may each heart be found!",
+        "Where Jesus Christ has entered,",
+        "There let our Hope be centered;",
+        "Our course still heav'nward bound."
+      ]
+    },
+    {
+      "lines": [
+        "May we, His servants, thither",
+        "In heart and mind ascend,",
+        "And let us sing together:",
+        "\"We seek Thee, Christ, our friend,",
+        "Thee, God's exalted Son,",
+        "our Life, and Way to Heaven,",
+        "To whom all pow'r is given,",
+        "our Joy and Hope and Crown.\""
+      ]
+    }
+  ],
+  "category": "Ascension",
+  "topics": [
+    "Assurance",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "God, As King",
+    "God, Eternity of",
+    "God, Majesty &amp; Power of",
+    "Guidance",
+    "Heaven",
+    "Jesus",
+    "Joy",
+    "Praise, Son",
+    "Presence",
+    "Second Coming",
+    "Victory",
+    "Worship"
+  ],
+  "metre": "7 6 7 6 6 7 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lo_God_To_Heavn_Ascendeth-Von_Gott_will_ich_Nicht_Lazen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Lo_God_To_Heavn_Ascendeth-Von_Gott_will_ich_Nicht_Lazen"
+}

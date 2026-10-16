@@ -1,0 +1,61 @@
+{
+  "title": "On My Heart Imprint Thine Image",
+  "tune": "der-am-kreuz",
+  "text": [
+    {
+      "name": "Thomas Hansen Kingo",
+      "born": 1634,
+      "died": 1703,
+      "role": "Words (1689)"
+    },
+    {
+      "name": "Peer Olsen Strømme",
+      "born": 1856,
+      "died": 1921,
+      "role": "Translated (1898)"
+    }
+  ],
+  "textPublished": 1898,
+  "description": "On My Heart Imprint Thine Image in Tonic Solfa: the solfa line by line with the words, staff notation, the words, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Hansen Kingo, first published in 1689. The English translation is by Peer Olsen Strømme (1898). The tune, DER AM KREUZ, is by Johann Balthasar König (1738). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "On my heart im-print Thine_ i-mage, Bles-sed Je-sus, King of Grace That life's ri-ches, cares, and_ plea-sures, Have no pow'r to Thee ef-face; This the su-per-scrip-tion be: Je-sus cru-ci-fied for me, Is my life, my hope's foun-da-tion, And my glo-ry and sal-va-tion.",
+  "verses": [
+    {
+      "lines": [
+        "On my heart imprint Thine image,",
+        "Blessed Jesus, King of Grace",
+        "That life's riches, cares, and pleasures,",
+        "Have no pow'r to Thee efface;",
+        "This the superscription be:",
+        "Jesus crucified for me,",
+        "Is my life, my hope's foundation,",
+        "And my glory and salvation."
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Consecration",
+    "Cross",
+    "Following Jesus, In Faith",
+    "Following Jesus, Sanctification",
+    "Grace",
+    "Guidance",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Leadership",
+    "Obedience",
+    "Salvation"
+  ],
+  "metre": "8 7 8 7 7 7 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/On_My_Heart_Imprint_Thine_Image-Der_Am_Kreuz.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "On_My_Heart_Imprint_Thine_Image-Der_Am_Kreuz"
+}

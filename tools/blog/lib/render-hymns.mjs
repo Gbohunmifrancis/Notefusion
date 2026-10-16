@@ -9,9 +9,45 @@ import { melodyToMusicXml } from "./musicxml.mjs";
 import { PD_DIED_BEFORE, PD_PUBLISHED_BEFORE } from "./content.mjs";
 
 const DIATONIC = ["d", "r", "m", "f", "s", "l", "t"];
-const TIME_WORDS = { "2/4": "two crotchet beats", "3/4": "three crotchet beats", "4/4": "four crotchet beats", "6/8": "two dotted-crotchet beats (six quavers)", "3/2": "three minim beats", "9/8": "three dotted-crotchet beats (nine quavers)", "12/8": "four dotted-crotchet beats (twelve quavers)" };
+const TIME_WORDS = { "2/4": "two crotchet beats", "3/4": "three crotchet beats", "4/4": "four crotchet beats", "6/8": "two dotted-crotchet beats (six quavers)", "3/2": "three minim beats", "9/8": "three dotted-crotchet beats (nine quavers)", "12/8": "four dotted-crotchet beats (twelve quavers)", "2/2": "two minim beats", "6/4": "six crotchet beats (two dotted minims)", "8/4": "eight crotchet beats", "9/4": "nine crotchet beats (three dotted minims)" };
 
-function years(p) { return p.traditional ? "" : p.born ? ` (${p.born}–${p.died})` : ` (died ${p.died})`; }
+/** A person's dates as the source gives them: "(1725–1807)", "(died 1604)", "(5th century)", "(fl. c. 1400)". */
+function years(p) { return p.traditional ? "" : p.lived ? ` (${p.lived})` : p.born ? ` (${p.born}–${p.died})` : ` (died ${p.died})`; }
+/** "died in 1807", or for a writer the source dates only roughly, "lived in the 5th century". */
+function diedPhrase(p) { return p.lived ? (/^fl\./.test(p.lived) ? `${p.name} lived around ${p.lived.replace(/^fl\.\s*c\.\s*/, "")}` : `${p.name} lived in the ${p.lived}`) : `${p.name} died in ${p.died}`; }
+
+export const OHP = { name: "Open Hymnal Project", url: "http://openhymnal.org/", copying: "http://openhymnal.org/copying.html", editor: "Brian J. Dumont" };
+
+/** "Joseph Mohr (1792–1848)" for each person, joined with "and". */
+function peopleText(people) {
+  const ps = people.map((p) => `${p.name}${years(p)}`);
+  return ps.length > 1 ? `${ps.slice(0, -1).join(", ")} and ${ps[ps.length - 1]}` : ps[0] || "";
+}
+
+/**
+ * The credit line under a hymn's title: where the melody and words came from (and their licence),
+ * then the tune and its composer, the words and their writers. Plain text, and HTML with the source linked.
+ */
+export function creditLine(h) {
+  const t = h.tuneData;
+  const authors = h.text.filter((p) => !/^Translated/.test(p.role)), translators = h.text.filter((p) => /^Translated/.test(p.role));
+  const parts = [];
+  const tuneCredit = `tune ${t.name} ${t.music.some((p) => !p.traditional) ? `by ${peopleText(t.music.filter((p) => !p.traditional))}` : `(${t.music.map((p) => p.name.replace(/^Traditional /, "traditional ")).join(", ")})`}`;
+  parts.push(tuneCredit);
+  parts.push(`words by ${peopleText(authors)}`);
+  if (translators.length) parts.push(`translated by ${peopleText(translators)}`);
+  let lead = "", leadHtml = "";
+  const what = h.source === OHP.name ? "Melody and words" : t.source === OHP.name ? "Melody" : null;
+  if (what) {
+    lead = `${what} from the ${OHP.name} (public domain), edited by ${OHP.editor}; `;
+    const url = (h.source === OHP.name ? h.sourceUrl : t.sourceUrl) || OHP.url;
+    leadHtml = `${what} from the <a href="${escapeHtml(url)}" rel="noopener">${OHP.name}</a> (public domain), edited by ${OHP.editor}; `;
+  }
+  const rest = parts.join("; ") + ".";
+  const text = (lead + rest).replace(/^./, (c) => c.toUpperCase());
+  const html = (leadHtml + escapeHtml(rest)).replace(/^./, (c) => c.toUpperCase());
+  return { text, html };
+}
 function names(people) { return people.filter((p) => !p.traditional).map((p) => p.name); }
 
 /** Everything about a hymn that is computed from its data: the grid, the score, facts for the page. */
@@ -38,6 +74,8 @@ export function prepareHymn(h) {
     pickupWord: t.pickup ? pickupWords(h.underlay) : null,
     musicXml: melodyToMusicXml(t.parsed, { key: t.key, title: h.title, underlay: h.underlay }),
     notes: g.notes.map((n) => ({ pitchMidi: n.pitchMidi, startBeat: n.startBeat, durBeats: n.durBeats })),
+    quarters: g.bars.some((bar) => bar.some((c) => c.parts)),
+    credit: creditLine(h),
   };
   return h;
 }
@@ -64,7 +102,7 @@ function faqFor(h) {
   return [
     { q: `What is the doh of ${n}?`, a: `In this version, in ${v.key}, doh is ${v.doh}. If your choir sings it in another key, doh moves to the new key note and every solfa syllable stays the same — that is what movable doh means.` },
     { q: `What note does ${n} start on?`, a: `It starts on ${v.first.solfa} (${v.first.letter} in ${v.key})${v.pickupWord ? `, a pickup on ${v.pickupWord} before the first full bar` : ""}. Find doh first, then sing up or down to ${v.first.solfa}.` },
-    { q: `Is ${n} in the public domain?`, a: `Yes. ${pdPeople.length ? `${pdPeople.map((p) => `${p.name} died in ${p.died}`).join(", ")}; ` : ""}the words were first published in ${h.textPublished} and the music in ${h.tuneData.musicPublished}. Everyone named died before ${PD_DIED_BEFORE} and both were published before ${PD_PUBLISHED_BEFORE}, so the hymn is out of copyright in Nigeria, the UK, the EU and the United States. Modern arrangements and translations can still be under copyright.` },
+    { q: `Is ${n} in the public domain?`, a: `Yes. ${pdPeople.length ? `${pdPeople.map(diedPhrase).join(", ")}; ` : ""}the words were first published in ${h.textPublished} and the music in ${h.tuneData.musicPublished}. Everyone named died before ${PD_DIED_BEFORE} and both were published before ${PD_PUBLISHED_BEFORE}, so the hymn is out of copyright in Nigeria, the UK, the EU and the United States. Modern arrangements and translations can still be under copyright.` },
   ];
 }
 
@@ -72,7 +110,8 @@ export function renderHymn(h, { hymns, posts }) {
   const v = h.view, t = h.tuneData, n = hymnName(h);
   const path = `/hymns/${h.slug}`;
   const crumbs = [["/", "Home"], ["/hymns", "Hymns"], [path, n]];
-  const sameTune = hymns.filter((o) => o !== h && o.tune === h.tune);
+  const tuneKey = (x) => x.tuneData.name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const sameTune = hymns.filter((o) => o !== h && (o.tune === h.tune || (tuneKey(o) === tuneKey(h) && o.tuneData.melody === h.tuneData.melody)));
   const usedIn = posts.filter((p) => p.hymnsUsed.includes(h.slug));
   const faq = faqFor(h);
   const verse1 = h.verses[0].lines.join("\n");
@@ -85,7 +124,7 @@ export function renderHymn(h, { hymns, posts }) {
   const tips = [
     `<li><strong>Find doh first.</strong> Play or hum ${escapeHtml(v.doh)} and sing <em>d r m f s</em> up from it, so the whole choir has the key in their ears before you start.</li>`,
     `<li><strong>Pitch the first note.</strong> The tune starts on <strong>${escapeHtml(v.first.solfa)}</strong> (${escapeHtml(v.first.letter)})${v.pickupWord ? `, on ${escapeHtml(v.pickupWord)}, as a pickup before the first full bar` : ""}.</li>`,
-    `<li><strong>Count the time.</strong> ${escapeHtml(v.time)} means ${TIME_WORDS[v.time] || `${escapeHtml(v.time)} time`} in each bar. In the grid every cell is half a crotchet: a dash (–) holds the note before it, and _ is a rest.</li>`,
+    `<li><strong>Count the time.</strong> ${escapeHtml(v.time)} means ${TIME_WORDS[v.time] || `${escapeHtml(v.time)} time`} in each bar. In the grid every cell is half a crotchet: a dash (–) holds the note before it, and _ is a rest.${v.quarters ? " A cell split by a comma holds two quarter beats: <em>d -,r</em> is a dotted quaver and a semiquaver, <em>d,r</em> two semiquavers. That comma sits between two syllables; an octave mark sits small and low against its own letter (s,)." : ""}</li>`,
     `<li><strong>Know the notes.</strong> The tune uses ${v.usedOrdered.map((s) => `<em>${s}</em>`).join(" ")}${v.chromatic.length ? ` and the chromatic ${v.chromatic.map((s) => `<em>${s}</em>`).join(" ")}` : ""}${v.usedOrdered.length <= 5 && !v.chromatic.length ? ` — only ${v.usedOrdered.length} different notes, so it is a good one for a choir new to solfa` : ""}. A comma after a note (s,) is the octave below; an apostrophe (d') is the octave above.</li>`,
   ];
   const verses = h.verses.map((vv, i) => `<div class="verse">${vv.label ? `<p class="verse-label">${escapeHtml(vv.label)}</p>` : ""}<p>${vv.lines.map(escapeHtml).join("<br>")}</p>${vv.note ? `<p class="verse-note">${escapeHtml(vv.note)}</p>` : ""}</div>`);
@@ -102,6 +141,7 @@ export function renderHymn(h, { hymns, posts }) {
 <dl class="facts">
 ${facts.map(([k, val]) => `  <div><dt>${k}</dt><dd>${escapeHtml(val)}</dd></div>`).join("\n")}
 </dl>
+<p class="credit-line">${v.credit.html} <a href="/hymns/credits">Sources and licences</a>.</p>
 
 <section aria-labelledby="solfa-title" class="card">
   <h2 id="solfa-title">The solfa with the words</h2>
@@ -152,6 +192,7 @@ ${(h.about || []).map((p) => `  <p>${escapeHtml(p)}</p>`).join("\n")}
   <ul class="credits">
 ${credits.join("\n")}
   </ul>
+${h.source || t.source ? `  <p class="source-note">${v.credit.html} ${h.source === OHP.name || t.source === OHP.name ? `The Open Hymnal Project publishes ${h.source === OHP.name ? "this hymn" : "this tune"} as public domain; NoteFusion's engine wrote the solfa from its notes. The melody has not yet been checked against a printed hymn book.` : ""}</p>` : ""}
 ${sameTune.length ? `  <p>Sung to the same tune: ${sameTune.map((o) => `<a href="/hymns/${o.slug}">${escapeHtml(o.title)}</a>`).join(", ")}.</p>` : ""}
 </section>
 
@@ -166,7 +207,7 @@ ${usedIn.length ? `<section class="side-list" aria-labelledby="posts-title"><h2 
 <p class="back-link"><a href="/hymns">← All hymns in Tonic Solfa</a></p>
 <script type="application/json" id="hymn-data">${jsonForScript({ key: v.key, time: v.time, tempo: v.tempo, notes: v.notes, musicXml: v.musicXml, osmd: OSMD })}</script>`;
 
-  const composers = t.music.filter((p) => !p.traditional).map((p) => ({ "@type": "Person", name: p.name, ...(p.born ? { birthDate: String(p.born) } : {}), deathDate: String(p.died) }));
+  const composers = t.music.filter((p) => !p.traditional).map((p) => ({ "@type": "Person", name: p.name, ...(p.born && !p.lived ? { birthDate: String(p.born) } : {}), ...(p.lived ? {} : { deathDate: String(p.died) }) }));
   const ld = [
     {
       "@context": "https://schema.org",
@@ -177,9 +218,13 @@ ${usedIn.length ? `<section class="side-list" aria-labelledby="posts-title"><h2 
       inLanguage: "en",
       musicalKey: v.key,
       ...(composers.length ? { composer: composers } : {}),
-      lyricist: h.text.map((p) => ({ "@type": "Person", name: p.name, ...(p.born ? { birthDate: String(p.born) } : {}), deathDate: String(p.died) })),
+      lyricist: h.text.filter((p) => !p.traditional).map((p) => ({ "@type": "Person", name: p.name, ...(p.born && !p.lived ? { birthDate: String(p.born) } : {}), ...(p.lived ? {} : { deathDate: String(p.died) }) })),
       lyrics: { "@type": "CreativeWork", text: verse1 },
       license: "https://creativecommons.org/publicdomain/mark/1.0/",
+      ...(h.source === OHP.name || t.source === OHP.name ? {
+        isBasedOn: { "@type": "CreativeWork", name: `${h.title} (${OHP.name})`, url: (h.source === OHP.name ? h.sourceUrl : t.sourceUrl) || OHP.url, publisher: { "@type": "Organization", name: OHP.name, url: OHP.url }, license: "https://creativecommons.org/publicdomain/mark/1.0/" },
+        creditText: v.credit.text,
+      } : {}),
     },
     breadcrumbLd(crumbs),
     { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
@@ -189,29 +234,129 @@ ${usedIn.length ? `<section class="side-list" aria-labelledby="posts-title"><h2 
   return page({ path, title: hymnPageTitle(h), description: h.description, jsonLd: ld, body, active: "/hymns", scripts });
 }
 
+/** The letter a title is filed under: its first letter, past quotation marks ("'Tis" under T). */
+export function indexLetter(title) {
+  const m = /\p{L}/u.exec(String(title).normalize("NFKD"));
+  return m ? m[0].toUpperCase() : "#";
+}
+
+/** What the index's filter box matches for a hymn: titles, first line, tune, writers, season and topics. */
+function searchText(h) {
+  const t = h.tuneData;
+  return [h.title, ...(h.alsoKnownAs || []), h.verses[0].lines[0], t.name, ...h.text.map((p) => p.name), ...t.music.map((p) => p.name), h.category || "", ...(h.topics || []), h.view.header]
+    .join(" ").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+/** Seasons and occasions the filter offers as buttons, when some hymn is filed under them. */
+const SEASONS = ["Advent", "Christmas", "Epiphany", "Lent", "Palm Sunday", "Good Friday", "Easter", "Ascension", "Pentecost", "Trinity", "Thanksgiving", "Communion", "Evening", "Funeral"];
+
 export function renderHymnIndex(hymns) {
   const crumbs = [["/", "Home"], ["/hymns", "Hymns"]];
-  const items = hymns.map((h) => `  <li class="hymn-item">
-    <h2><a href="/hymns/${h.slug}">${escapeHtml(h.title)}</a></h2>
-    <p class="first-line">${escapeHtml(h.verses[0].lines[0])}</p>
-    <p class="story-meta"><span>${escapeHtml(h.view.header)}</span><span>${escapeHtml(h.view.time)}</span><span>Tune: ${escapeHtml(h.tuneData.name)}</span></p>
-  </li>`).join("\n");
+  const groups = new Map();
+  for (const h of hymns) {
+    const L = indexLetter(h.title);
+    if (!groups.has(L)) groups.set(L, []);
+    groups.get(L).push(h);
+  }
+  const letters = [...groups.keys()].sort();
+  const item = (h) => `    <li class="hymn-item" data-search="${escapeHtml(searchText(h))}">
+      <h3><a href="/hymns/${h.slug}">${escapeHtml(h.title)}</a></h3>
+      <p class="first-line">${escapeHtml(h.verses[0].lines[0])}</p>
+      <p class="story-meta"><span>${escapeHtml(h.view.header)}</span><span>${escapeHtml(h.view.time)}</span><span>Tune: ${escapeHtml(h.tuneData.name)}</span>${h.category ? `<span>${escapeHtml(h.category)}</span>` : ""}</p>
+    </li>`;
+  const sections = letters.map((L) => `<section class="hymn-letter" id="letter-${L}" aria-labelledby="letter-${L}-title">
+  <h2 id="letter-${L}-title">${L}</h2>
+  <ul class="hymn-list">
+${groups.get(L).map(item).join("\n")}
+  </ul>
+</section>`).join("\n");
+  const present = new Set(hymns.map((h) => (h.category || "").toLowerCase()).concat(hymns.flatMap((h) => (h.topics || []).map((x) => x.toLowerCase()))));
+  const seasons = SEASONS.filter((x) => present.has(x.toLowerCase()) || hymns.some((h) => searchText(h).includes(x.toLowerCase())));
   const body = `${breadcrumbs(crumbs)}
 <header class="masthead">
   <p class="kicker">The hymnal</p>
   <h1>Hymns in Tonic Solfa</h1>
-  <p class="masthead-dek">Public-domain hymns with the solfa written out under the words, the staff notation, and a piano to sing along with. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
+  <p class="masthead-dek">${hymns.length} public-domain hymns with the solfa written out under the words, the staff notation, and a piano to sing along with. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
 </header>
-<ul class="hymn-list">
-${items}
-</ul>
-<p class="note">Every hymn here is out of copyright: everyone who wrote it died before ${PD_DIED_BEFORE}, and it was first published before ${PD_PUBLISHED_BEFORE}. Want a song that is not here? <a href="/app">Transcribe it with NoteFusion</a>.</p>
+<div class="hymn-find" id="hymn-find" hidden>
+  <label for="hymn-filter">Find a hymn</label>
+  <input type="search" id="hymn-filter" placeholder="Title, first line, tune or writer" autocomplete="off" spellcheck="false">
+  ${seasons.length ? `<p class="hymn-seasons" aria-label="Seasons and occasions">${seasons.map((x) => `<button type="button" data-filter="${escapeHtml(x.toLowerCase())}">${escapeHtml(x)}</button>`).join("")}</p>` : ""}
+  <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
+</div>
+<nav class="az" aria-label="Hymns by first letter">${letters.map((L) => `<a href="#letter-${L}">${L}</a>`).join("")}</nav>
+<div class="hymn-index" id="hymn-index">
+${sections}
+</div>
+<p class="hymn-none" id="hymn-none" hidden>No hymn matches that. Try fewer words, or <a href="/app">transcribe the song with NoteFusion</a>.</p>
+<p class="note">Every hymn here is out of copyright: everyone who wrote it died before ${PD_DIED_BEFORE}, and it was first published before ${PD_PUBLISHED_BEFORE}. Most come from the ${OHP.name}; see <a href="/hymns/credits">sources and licences</a>. Want a song that is not here? <a href="/app">Transcribe it with NoteFusion</a>.</p>
 ${ctaBox("hymns")}`;
   return page({
     path: "/hymns", title: "Hymns in Tonic Solfa: solfa, words and staff | NoteFusion",
-    description: "Public-domain hymns in Tonic Solfa: the doh, the solfa line by line under the words, staff notation and a piano to sing along with.",
+    description: `${hymns.length} public-domain hymns in Tonic Solfa: the doh, the solfa line by line under the words, staff notation and a piano to sing along with.`,
     body, active: "/hymns",
-    jsonLd: [{ "@context": "https://schema.org", "@type": "ItemList", name: "Hymns in Tonic Solfa", itemListElement: hymns.map((h, i) => ({ "@type": "ListItem", position: i + 1, url: `${ORIGIN}/hymns/${h.slug}`, name: h.title })) }, breadcrumbLd(crumbs)],
+    scripts: `<script src="/assets/hymns-index.js?v=${ASSET_VERSION.hymnsIndexJs}" defer></script>`,
+    jsonLd: [{ "@context": "https://schema.org", "@type": "ItemList", name: "Hymns in Tonic Solfa", numberOfItems: hymns.length, itemListElement: hymns.map((h, i) => ({ "@type": "ListItem", position: i + 1, url: `${ORIGIN}/hymns/${h.slug}`, name: h.title })) }, breadcrumbLd(crumbs)],
+  });
+}
+
+/** /hymns/credits: where the hymns come from, under what terms, and who wrote each one. */
+export function renderHymnCredits(hymns) {
+  const path = "/hymns/credits";
+  const crumbs = [["/", "Home"], ["/hymns", "Hymns"], [path, "Sources and licences"]];
+  const fromOhp = hymns.filter((h) => h.source === OHP.name);
+  const melodyOnly = hymns.filter((h) => h.source !== OHP.name && h.tuneData.source === OHP.name);
+  const byHand = hymns.filter((h) => h.source !== OHP.name && h.tuneData.source !== OHP.name);
+  const row = (h) => {
+    const c = creditLine(h);
+    return `    <tr><td><a href="/hymns/${h.slug}">${escapeHtml(h.title)}</a></td><td>${c.html}</td></tr>`;
+  };
+  const table = (list) => `<table class="credits-table">
+  <thead><tr><th scope="col">Hymn</th><th scope="col">Credits</th></tr></thead>
+  <tbody>
+${list.map(row).join("\n")}
+  </tbody>
+</table>`;
+  const body = `${breadcrumbs(crumbs)}
+<article class="hymn-page credits-page">
+<header class="post-header">
+  <p class="kicker"><a href="/hymns">Hymns in Tonic Solfa</a></p>
+  <h1>Sources and licences</h1>
+  <p class="post-lede">Where the hymns on NoteFusion come from, why each one is free to use, and who wrote it.</p>
+</header>
+
+<section aria-labelledby="ohp-title">
+  <h2 id="ohp-title">The Open Hymnal Project</h2>
+  <p>${fromOhp.length + melodyOnly.length} of the ${hymns.length} hymns here come from the <a href="${OHP.url}" rel="noopener">Open Hymnal Project</a>, a freely distributable hymnal of public-domain hymns edited by ${OHP.editor}, published as scores in the ABC music format. We read the melody and every verse from each hymn's score, and NoteFusion's own solfa engine writes the Tonic Solfa from the notes; each hymn page links to the hymn's page at the Open Hymnal.</p>
+  <p>The Open Hymnal states the copyright of every hymn in its score. We take only hymns it marks as public domain (a few whose harmony is under its own licence give us only their public-domain melody and words), and of those only the ones that also pass our own rule below. Its <a href="${OHP.copying}" rel="noopener">copying page</a> places the project's own editing, indexes and data files in the public domain.</p>
+  <p>Imported hymns have not yet been checked note by note against a printed hymn book; each one says so on its page. If you find a wrong note or word, tell us and we will correct it.</p>
+</section>
+
+<section aria-labelledby="rule-title">
+  <h2 id="rule-title">Our public-domain rule</h2>
+  <p>A hymn is published here only if everyone named — composer, arranger, author and translator — died before ${PD_DIED_BEFORE} (or the source is anonymous or traditional), and both the words and the music were first published before ${PD_PUBLISHED_BEFORE}. That keeps every page out of copyright in Nigeria and the UK and EU (the writer's life plus 70 years) and in the United States (published before ${PD_PUBLISHED_BEFORE}). Hymns whose dates the source does not give are held back until they are checked, and hymns still in copyright anywhere are not copied at all.</p>
+  <p>Modern arrangements and translations of old hymns can still be under copyright, so a hymn book's version may differ from the one here.</p>
+</section>
+
+<section aria-labelledby="hand-title">
+  <h2 id="hand-title">Encoded by NoteFusion</h2>
+  <p>${byHand.length} hymns were encoded by hand from public-domain scores and checked against other public sources; ${melodyOnly.length ? `${melodyOnly.length} more have our words with the Open Hymnal's melody. ` : ""}Each page says what was checked.</p>
+</section>
+
+<section aria-labelledby="list-title">
+  <h2 id="list-title">Every hymn and its credits</h2>
+${table(hymns)}
+</section>
+</article>
+<p class="back-link"><a href="/hymns">← All hymns in Tonic Solfa</a></p>`;
+  return page({
+    path, title: "Hymn sources and licences | NoteFusion",
+    description: `Where NoteFusion's ${hymns.length} public-domain hymns in Tonic Solfa come from — most from the Open Hymnal Project — and who wrote each one.`,
+    body, active: "/hymns",
+    jsonLd: [
+      { "@context": "https://schema.org", "@type": "WebPage", name: "Hymn sources and licences", url: ORIGIN + path, citation: { "@type": "CreativeWork", name: OHP.name, url: OHP.url, editor: { "@type": "Person", name: OHP.editor } } },
+      breadcrumbLd(crumbs),
+    ],
   });
 }
 

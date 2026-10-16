@@ -1,0 +1,98 @@
+{
+  "title": "O Lord We Praise Thee",
+  "alsoKnownAs": [
+    "May God Be Praised Henceforth and Blest Forever",
+    "Let God Be Blest"
+  ],
+  "tune": "gott-sei-gelobet-und-gebenedeiet",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Several translators (composite)",
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "O Lord We Praise Thee in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The tune, GOTT SEI GELOBET UND GEBENEDEIET, is Traditional German. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O Lord, we praise Thee, bless Thee, and a-dore Thee, In thanks-giv-ing bow be-fore_ Thee Thou with Thy bo-dy and Thy blood didst nou-rish Our weak souls that they may flou_-rish: O Lord, have mer__-cy! May Thy bo-dy, Lord, born of Ma-ry, That our sins and sor_-rows did car_-ry, And Thy blood for us plead In all tri-al, fear, and need: O Lord, have mer__-cy!",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, we praise Thee, bless Thee, and adore Thee,",
+        "In thanksgiving bow before Thee",
+        "Thou with Thy body and Thy blood didst nourish",
+        "Our weak souls that they may flourish:",
+        "O Lord, have mercy!",
+        "May Thy body, Lord, born of Mary,",
+        "That our sins and sorrows did carry,",
+        "And Thy blood for us plead",
+        "In all trial, fear, and need:",
+        "O Lord, have mercy!"
+      ]
+    },
+    {
+      "lines": [
+        "Thy holy body into death was given,",
+        "Life to win for us in heaven.",
+        "No greater love than this to Thee could bind us;",
+        "May this feast thereof remind us!",
+        "O Lord, have mercy!",
+        "Lord, Thy kindness did so constrain Thee",
+        "That Thy blood should bless and sustain me.",
+        "All our debt Thou hast paid;",
+        "Peace with God once more is made:",
+        "O Lord, have mercy."
+      ]
+    },
+    {
+      "lines": [
+        "May God bestow on us His grace and favor",
+        "To please Him with our behavior",
+        "And live as brethren here in love and union",
+        "Nor repent this blest Communion!",
+        "O Lord, have mercy!",
+        "Let not Thy good Spirit forsake us;",
+        "Grant that heav'nly—minded He make us;",
+        "Give Thy Church, Lord, to see",
+        "Days of peace and unity:",
+        "O Lord, have mercy!"
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Atonement",
+    "Blood",
+    "Fellowship",
+    "Following Jesus, In Action",
+    "Following Jesus, Sanctification",
+    "God, Care of",
+    "God, Mercy of",
+    "Gratitude",
+    "Heaven",
+    "Jesus",
+    "Lord's Supper",
+    "Peace",
+    "Praise, Son",
+    "Salvation",
+    "Worship"
+  ],
+  "metre": "11 8 11 8 5 9 9 6 7 5",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Lord_We_Praise_Thee-Gott_Sei_Gelobet_Und_Gebenedeiet.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "O_Lord_We_Praise_Thee-Gott_Sei_Gelobet_Und_Gebenedeiet",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929."
+}

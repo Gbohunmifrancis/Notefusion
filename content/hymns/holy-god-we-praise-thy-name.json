@@ -1,0 +1,91 @@
+{
+  "title": "Holy God, We Praise Thy Name",
+  "tune": "te-deum",
+  "text": [
+    {
+      "name": "Ignaz Franz",
+      "born": 1719,
+      "died": 1790,
+      "role": "Words (1774)"
+    },
+    {
+      "name": "Clarence Alphonsus Walworth",
+      "born": 1820,
+      "died": 1900,
+      "role": "Translated (1858)"
+    }
+  ],
+  "textPublished": 1858,
+  "description": "Holy God, We Praise Thy Name in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Ignaz Franz, first published in 1774. The English translation is by Clarence Alphonsus Walworth (1858). The tune, TE DEUM, is from Katholisches Gesangbuch, Maria Theresa, 1774. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Ho-ly God,_ we praise_ Thy Name; Lord of all,_ we bow_ be-fore Thee! All on earth_ Thy scep_-ter claim, All in Hea-ven a-bove_ a-dore Thee; In-fin_-ite_ Thy vast do_-main, Ev-er-last_-ing is_ Thy reign.",
+  "verses": [
+    {
+      "lines": [
+        "Holy God, we praise Thy Name;",
+        "Lord of all, we bow before Thee!",
+        "All on earth Thy scepter claim,",
+        "All in Heaven above adore Thee;",
+        "Infinite Thy vast domain,",
+        "Everlasting is Thy reign."
+      ]
+    },
+    {
+      "lines": [
+        "Hark! the loud celestial hymn",
+        "Angel choirs above are raising,",
+        "Cherubim and seraphim,",
+        "In unceasing chorus praising;",
+        "Fill the heavens with sweet accord:",
+        "Holy, holy, holy,",
+        "Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Lo! the apostolic train",
+        "Join the sacred Name to hallow;",
+        "Prophets swell the loud refrain,",
+        "And the white robed martyrs follow;",
+        "And from morn to set of sun,",
+        "Through the Church the song goes on."
+      ]
+    },
+    {
+      "lines": [
+        "Holy Father, Holy Son,",
+        "Holy Spirit, Three we name Thee;",
+        "While in essence only One,",
+        "Undivided God we claim Thee;",
+        "And adoring bend the knee,",
+        "While we own the mystery."
+      ]
+    }
+  ],
+  "category": "Trinity",
+  "topics": [
+    "Anticipation",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "God, Eternity of",
+    "God, Majesty &amp; Power of",
+    "Heaven",
+    "Holiness",
+    "Martyrs",
+    "Praise, Father",
+    "Praise, Son",
+    "Praise, Holy Spirit",
+    "Trinity",
+    "Worship"
+  ],
+  "metre": "7 8 7 8 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Holy_God_We_Praise_Thy_Name-Te_Deum-Hursley.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Holy_God_We_Praise_Thy_Name-Te_Deum-Hursley"
+}

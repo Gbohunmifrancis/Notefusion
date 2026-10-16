@@ -1,0 +1,120 @@
+{
+  "title": "The God of Abraham Praise",
+  "tune": "yigdal",
+  "text": [
+    {
+      "name": "Daniel ben Judah",
+      "died": 1500,
+      "lived": "fl. c. 1400",
+      "role": "Words (1400)"
+    },
+    {
+      "name": "Thomas Olivers",
+      "born": 1725,
+      "died": 1799,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "The God of Abraham Praise in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Daniel ben Judah, first published in 1400. The English translation is by Thomas Olivers. The tune, YIGDAL, is Traditional Hebrew. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The God of Ab-r'ham praise, Who reigns en-throned a-bove; An-cient of e-ver-last-ing days, and God of Love; Je-ho-vah, great I AM! by_ earth_ and_ Heav'n con-fessed;_ I bow and bless the sa-cred_ Name for_-ev-er blessed.",
+  "verses": [
+    {
+      "lines": [
+        "The God of Abr'ham praise,",
+        "Who reigns enthroned above;",
+        "Ancient of everlasting days, and God of Love;",
+        "Jehovah, great I AM!",
+        "by earth and Heav'n confessed;",
+        "I bow and bless the sacred Name forever blessed."
+      ]
+    },
+    {
+      "lines": [
+        "The God of Abr'ham praise,",
+        "at Whose supreme command",
+        "From earth I rise and seek the joys at His right hand;",
+        "I all on earth forsake,",
+        "its wisdom, fame, and pow'r;",
+        "And Him my only Portion make, my Shield and Tow'r."
+      ]
+    },
+    {
+      "lines": [
+        "The God of Abr'ham praise,",
+        "Whose all sufficient grace",
+        "Shall guide me all my happy days, in all my ways.",
+        "He calls a worm His friend,",
+        "He calls Himself my God!",
+        "And He shall save me to the end, thro' Jesus' blood."
+      ]
+    },
+    {
+      "lines": [
+        "He by Himself has sworn;",
+        "I on His oath depend,",
+        "I shall, on eagle wings upborne, to Heav'n ascend.",
+        "I shall behold His face;",
+        "I shall His pow'r adore,",
+        "And sing the wonders of His grace forevermore."
+      ]
+    },
+    {
+      "lines": [
+        "Tho' nature's strength decay,",
+        "and earth and hell withstand,",
+        "To Canaan's bounds I urge my way, at His command.",
+        "The wat'ry deep I pass,",
+        "with Jesus in my view;",
+        "And thro' the howling wilderness my way pursue."
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Angels",
+    "Assurance",
+    "Blood",
+    "Bride/Bridegroom",
+    "Courage in Affliction",
+    "Discipleship",
+    "Eternal Life",
+    "Faithfulness",
+    "Father",
+    "Fire",
+    "God, As King",
+    "God, Care of",
+    "God, Eternity of",
+    "God, Goodness of",
+    "God, Love of",
+    "God, Majesty &amp; Power of",
+    "Gratitude",
+    "Heaven",
+    "Holy Spirit",
+    "Jesus",
+    "Joy",
+    "Light",
+    "Praise, Father",
+    "Praise, Son",
+    "Praise, Holy Spirit",
+    "Presence",
+    "Rest",
+    "Saints (all Faithful)",
+    "Trinity",
+    "Worship",
+    "Zeal"
+  ],
+  "metre": "6 6 12 6 6 12",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_God_Of_Abraham_Praise-Yigdal-Leoni.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "The_God_Of_Abraham_Praise-Yigdal-Leoni",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929."
+}

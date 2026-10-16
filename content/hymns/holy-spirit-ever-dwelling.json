@@ -1,0 +1,80 @@
+{
+  "title": "Holy Spirit, Ever Dwelling",
+  "tune": "ebenezer",
+  "text": [
+    {
+      "name": "Timothy Rees",
+      "born": 1874,
+      "died": 1939,
+      "role": "Words (1922)"
+    }
+  ],
+  "textPublished": 1922,
+  "description": "Holy Spirit, Ever Dwelling in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Timothy Rees, first published in 1922. The tune, EBENEZER, is by Thomas J. Williams (1890). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Ho-ly__ Spir-it, ev-er__ dwel_-ling in the__ ho_-liest realms_ of light Ho-ly__ Spir-it, ev-er__ brood_-ing o'er a__ world_ of gloom_ and blight Ho-ly__ Spir-it, ev-er__ rais-ing earth-bound__ souls to glo-ry__ high Liv__-ing, life‑ im-part-ing__ Spir_-it you we__ praise_ and mag_-ni-fy.",
+  "verses": [
+    {
+      "lines": [
+        "Holy Spirit, ever dwelling",
+        "in the holiest realms of light",
+        "Holy Spirit, ever brooding",
+        "o'er a world of gloom and blight",
+        "Holy Spirit, ever raising",
+        "earthbound souls to glory high",
+        "Living, life—imparting Spirit",
+        "you we praise and magnify."
+      ]
+    },
+    {
+      "lines": [
+        "Holy Spirit, ever breathing",
+        "on the church the breath of life",
+        "Holy Spirit, ever striving",
+        "through your people's ceaseless strife",
+        "Holy Spirit, ever forming",
+        "in the church the mind of Christ",
+        "In our worship we will praise you",
+        "for your fruit and gifts unpriced."
+      ]
+    },
+    {
+      "lines": [
+        "Holy Spirit, ever working",
+        "through the church's ministry",
+        "Quick'ning, strength'ning, and absolving",
+        "setting captive sinners free",
+        "Holy Spirit, ever binding",
+        "age to age and soul to soul",
+        "In community unending",
+        "you we worship and extol."
+      ]
+    }
+  ],
+  "category": "Pentecost",
+  "topics": [
+    "Church on Earth (Church Militant)",
+    "Consecration",
+    "Eternal Life",
+    "Forgiveness",
+    "God, Providence of",
+    "Guidance",
+    "Holy Spirit",
+    "Inspiration",
+    "Leadership",
+    "Light",
+    "Praise, Holy Spirit"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Holy_Spirit_Ever_Dwelling-Ebenezer-Ton_Y_Botel.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Holy_Spirit_Ever_Dwelling-Ebenezer-Ton_Y_Botel",
+  "reviewNotes": "Held back: the score has triplets, which the importer does not render; bar 1 has 9 beats, more than 8; bar 2 has 9 beats, more than 8; bar 3 has 9 beats, more than 8; bar 5 has 9 beats, more than 8; bar 6 has 9 beats, more than 8; bar 7 has 9 beats, more than 8; bar 9 has 9 beats, more than 8; bar 10 has 9 beats, more than 8; bar 11 has 9 beats, more than 8; bar 12 has 9 beats, more than 8; bar 13 has 9 beats, more than 8; bar 14 has 9 beats, more than 8; bar 15 has 9 beats, more than 8; the melody does not parse: bar 1 has 9 beats, not 8."
+}

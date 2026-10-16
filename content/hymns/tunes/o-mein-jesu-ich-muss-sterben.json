@@ -1,0 +1,23 @@
+{
+  "name": "O MEIN JESU, ICH MUSS STERBEN",
+  "music": [
+    {
+      "name": "From Geistliches Volkslied, 1850",
+      "traditional": true,
+      "role": "Melody (1850)"
+    }
+  ],
+  "musicPublished": 1850,
+  "key": "G minor",
+  "time": "6/4",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "G4:1 A4:1 | Bb4:2 Bb4:2 C5:1 Bb4:1 | A4:2 A4:2 Bb4:1 A4:1 | G4:2 A4:2 G4:1 F#4:1 | G4:4 G4:1 A4:1 | Bb4:2 Bb4:2 C5:1 Bb4:1 | A4:2 A4:2 Bb4:1 A4:1 | G4:2 A4:2 G4:1 F#4:1 | G4:4 Bb4:1 C5:1 | D5:2 D5:2 Eb5:1 D5:1 | C5:2 C5:2 D5:1 C5:1 | Bb4:2 Bb4:2 C5:1 Bb4:1 | A4:4 G4:1 F#4:1 | G4:2 Bb4:2 A4:1 G4:1 | A4:2 A4:2 Bb4:1 A4:1 | G4:2 A4:2 G4:1 F#4:1 | G4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Stricken_Smitten_And_Afflicted-O_Mein_Jesu_Ich_Muss_Sterben-Wo_Ist_Jesus_Mein_Verlangen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Evangelical Lutheran Hymn-Book, 1931 Hymn 209."
+}

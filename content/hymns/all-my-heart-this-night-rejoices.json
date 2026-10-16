@@ -1,0 +1,156 @@
+{
+  "title": "All My Heart This Night Rejoices",
+  "alsoKnownAs": [
+    "All My Heart Again Rejoices"
+  ],
+  "tune": "ebeling",
+  "text": [
+    {
+      "name": "Paul Gerhardt",
+      "born": 1607,
+      "died": 1676,
+      "role": "Words (1656)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1858)"
+    }
+  ],
+  "textPublished": 1858,
+  "description": "All My Heart This Night Rejoices in Tonic Solfa: the solfa line by line with the words, staff notation, all 10 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Paul Gerhardt, first published in 1656. The English translation is by Catherine Winkworth (1858). The tune, EBELING, is by Johann Georg Ebeling (1666). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "All my heart this night re-joi-ces, As I hear, Far and near, Sweet-est an-gel voi-ces; \"Christ is born,\" their choirs are sing-ing, Till the air Ev'r-y-where Now with joy is ring-ing.",
+  "verses": [
+    {
+      "lines": [
+        "All my heart this night rejoices,",
+        "As I hear,",
+        "Far and near,",
+        "Sweetest angel voices;",
+        "\"Christ is born,\" their choirs are singing,",
+        "Till the air",
+        "Ev'rywhere",
+        "Now with joy is ringing."
+      ]
+    },
+    {
+      "lines": [
+        "For it dawns—the promised morrow",
+        "Of His birth",
+        "Who the earth",
+        "Rescues from her sorrow.",
+        "God to wear our form descendeth,",
+        "Of His grace",
+        "To our race",
+        "Here His Son He lendeth:"
+      ]
+    },
+    {
+      "lines": [
+        "Yea, so truly for us careth,",
+        "That His Son",
+        "All we've done",
+        "As our off'ring beareth;",
+        "As our Lamb who, dying for us,",
+        "Bears our load,",
+        "And to God",
+        "Doth in peace restore us."
+      ]
+    },
+    {
+      "lines": [
+        "Hark! a voice from yonder manger,",
+        "Soft and sweet,",
+        "Doth entreat,",
+        "\"Flee from woe and danger;",
+        "Brethren come, from all doth grieve you",
+        "You are freed,",
+        "All you need",
+        "I will surely give you.\""
+      ]
+    },
+    {
+      "lines": [
+        "Come then, let us hasten yonder;",
+        "Here let all,",
+        "Great and small,",
+        "Kneel in awe and wonder.",
+        "Love Him who with love is yearning;",
+        "Hail the Star",
+        "That from far",
+        "Bright with hope is burning!"
+      ]
+    },
+    {
+      "lines": [
+        "Ye who pine in weary sadness, Weep no more, For the door",
+        "Now is found of gladness. Cling to Him for He will guide you",
+        "Where no cross, Pain or loss, Can again betide you."
+      ]
+    },
+    {
+      "lines": [
+        "Hither come, ye heavy\\- hearted, Who for sin Deep within,",
+        "Long and sore have smarted; For the poison'd wounds you're feeling",
+        "Help is near, One is here Mighty for their healing!"
+      ]
+    },
+    {
+      "lines": [
+        "Hither come, ye poor and wretched; Know His will Is to fill",
+        "Every hand outstretched; Here are riches without measure,",
+        "Here forget All regret, Fill your hearts with treasure."
+      ]
+    },
+    {
+      "lines": [
+        "Blessed Savior, let me find Thee! Keep Thou me Close to Thee,",
+        "Cast me not behind Thee! Life of life, my heart Thou stillest,",
+        "Calm I rest On Thy breast, All this void Thou fillest."
+      ]
+    },
+    {
+      "lines": [
+        "Thee, dear Lord, with heed I'll cherish, Live to Thee, And with Thee",
+        "Dying, shall not perish; But shall dwell with Thee for ever,",
+        "Far on high In the joy That can alter never."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Christmas/Advent",
+    "Compassion",
+    "Father",
+    "God, Care of",
+    "God, Goodness of",
+    "God, Love of",
+    "God, Mercy of",
+    "Gospel",
+    "Grace",
+    "Healing",
+    "Jesus",
+    "Joy",
+    "Kindness, God's",
+    "Love",
+    "People of the World",
+    "Presence",
+    "Salvation",
+    "Sinners",
+    "Worship"
+  ],
+  "metre": "8 3 3 6 8 3 3 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/All_My_Heart_This_Night_Rejoices-Ebeling-Bonn-Warum_Sollt_Ich-All_My_Heart_This_Night.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "All_My_Heart_This_Night_Rejoices-Ebeling-Bonn-Warum_Sollt_Ich-All_My_Heart_This_Night"
+}

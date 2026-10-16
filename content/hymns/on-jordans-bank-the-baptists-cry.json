@@ -1,0 +1,92 @@
+{
+  "title": "On Jordan's Bank the Baptist's Cry",
+  "tune": "puer-nobis-nascitur",
+  "text": [
+    {
+      "name": "Charles (or Carolo or Carolus) Coffin",
+      "born": 1676,
+      "died": 1749,
+      "role": "Words (1736)"
+    },
+    {
+      "name": "John Chandler",
+      "born": 1806,
+      "died": 1876,
+      "role": "Translated (1837)"
+    }
+  ],
+  "textPublished": 1837,
+  "description": "On Jordan's Bank the Baptist's Cry in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Charles (or Carolo or Carolus) Coffin, first published in 1736. The English translation is by John Chandler (1837). The tune, PUER NOBIS NASCITUR, is by Michael Praetorius (1609). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "On Jor-dan's bank the Bap-tist's cry An-noun-ces that_ the Lord is nigh; Come, then, and hear-ken, for he brings Glad ti-dings from the King of kings!",
+  "verses": [
+    {
+      "lines": [
+        "On Jordan's bank the Baptist's cry",
+        "Announces that the Lord is nigh;",
+        "Come, then, and hearken, for he brings",
+        "Glad tidings from the King of kings!"
+      ]
+    },
+    {
+      "lines": [
+        "Then cleansed be every breast from sin;",
+        "Make straight the way for God within;",
+        "Prepare we in our hearts a home,",
+        "Where such a mighty Guest may come."
+      ]
+    },
+    {
+      "lines": [
+        "For Thou art our Salvation, Lord,",
+        "Our Refuge, and our great Reward.",
+        "Without Thy grace our souls must fade",
+        "And wither like a flow'r decayed."
+      ]
+    },
+    {
+      "lines": [
+        "Stretch forth Thine hand, to heal our sore,",
+        "And make us rise and fall no more;",
+        "Once more upon Thy people shine,",
+        "And fill the world with love divine."
+      ]
+    },
+    {
+      "lines": [
+        "To Him Who left the throne of Heav'n",
+        "To save mankind, all praise be giv'n;",
+        "Like praise be to the Father done,",
+        "And Holy Spirit, Three in One."
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Baptism",
+    "Father",
+    "God, As King",
+    "God, Care of",
+    "Healing",
+    "Holy Spirit",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Presence",
+    "Repentance",
+    "Salvation",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Temperance &amp; Moral Reform (see also Law)",
+    "Trinity"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/On_Jordans_Bank_The_Baptists_Cry-Puer_Nobis_Nascitur.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "On_Jordans_Bank_The_Baptists_Cry-Puer_Nobis_Nascitur"
+}

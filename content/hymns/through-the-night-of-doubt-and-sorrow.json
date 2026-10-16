@@ -1,0 +1,108 @@
+{
+  "title": "Through the Night of Doubt and Sorrow",
+  "tune": "rex-gloriae",
+  "text": [
+    {
+      "name": "Bernhardt Severin Ingemann",
+      "born": 1789,
+      "died": 1862,
+      "role": "Words (1826)"
+    },
+    {
+      "name": "Sabine Baring Gould",
+      "born": 1834,
+      "died": 1924,
+      "role": "Translated (1867)"
+    }
+  ],
+  "textPublished": 1867,
+  "description": "Through the Night of Doubt and Sorrow in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Bernhardt Severin Ingemann, first published in 1826. The English translation is by Sabine Baring Gould (1867). The tune, REX GLORIAE, is by Henry Thomas Smart (1868). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Through the night of doubt and sor-row On-ward goes the_ pil-grim band, Sing-ing songs of ex-pec-ta-tion, March-ing to the Pro-mised Land. Clear be-fore us through the dark-ness Gleams and burns_ the gui-ding light: Bro-ther clasps the hand of bro-ther, Step-ping fear-less through the night.",
+  "verses": [
+    {
+      "lines": [
+        "Through the night of doubt and sorrow",
+        "Onward goes the pilgrim band,",
+        "Singing songs of expectation,",
+        "Marching to the Promised Land.",
+        "Clear before us through the darkness",
+        "Gleams and burns the guiding light:",
+        "Brother clasps the hand of brother,",
+        "Stepping fearless through the night."
+      ]
+    },
+    {
+      "lines": [
+        "One the light of God's own presence,",
+        "O'er His ransomed people shed,",
+        "Chasing far the gloom and terror,",
+        "Bright'ning all the path we tread:",
+        "One the object of our journey,",
+        "One the faith which never tires,",
+        "One the earnest looking forward,",
+        "One the hope our God inspires."
+      ]
+    },
+    {
+      "lines": [
+        "One the strain that lips of thousands",
+        "Lift as from the heart of one;",
+        "One the conflict, one the peril",
+        "One the march in God begun:",
+        "One the gladness of rejoicing",
+        "On the far eternal shore,",
+        "Where the One Almighty Father",
+        "Reigns in love for evermore."
+      ]
+    },
+    {
+      "lines": [
+        "Onward, therefore, pilgrim brothers,",
+        "Onward, with the cross our aid!",
+        "Bear its shame, and fight its battle,",
+        "Till we rest beneath its shade.",
+        "Soon shall come the great awaking,",
+        "Soon the rending of the tomb;",
+        "Then the scatt'ring of all shadows,",
+        "And the end of toil and gloom."
+      ]
+    }
+  ],
+  "category": "Communion of Saints",
+  "topics": [
+    "Anticipation",
+    "Art and Music",
+    "Assurance",
+    "Atonement",
+    "Brotherhood",
+    "Christian Life",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Church on Earth (Church Militant)",
+    "Comfort",
+    "Consolation",
+    "Cross",
+    "Faith",
+    "Father",
+    "Heaven",
+    "Holiness",
+    "Hope",
+    "Light",
+    "Presence",
+    "Rest",
+    "Saints (all Faithful)",
+    "Salvation",
+    "Trust"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Through_The_Night_of_Doubt_and_Sorrow-Rex_Gloriae.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Through_The_Night_of_Doubt_and_Sorrow-Rex_Gloriae"
+}

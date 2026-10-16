@@ -1,0 +1,24 @@
+{
+  "name": "ST. CHRISTOPHER",
+  "music": [
+    {
+      "name": "Frederick C. Maker",
+      "born": 1844,
+      "died": 1927,
+      "role": "Music (1881)"
+    }
+  ],
+  "musicPublished": 1881,
+  "key": "Db major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Ab4:1 | Ab4:1.5 Ab4:.5 G4:1 Bb4:1 | Ab4:2 F4:1 Db4:1 | Eb4:1.5 F4:.5 Gb4:1 Gb4:1 | F4:3 F4:1 | Db5:1.5 Db5:.5 Db5:1 C5:1 | Bb4:1 Ab4:1 Gb4:1 F4:1 | Eb4:1.5 Eb4:.5 E4:1 E4:1 | F4:3 F4:1 | F4:1.5 Eb4:.5 Db4:1 Eb4:1 | F4:1 Gb4:1 Ab4:1 Ab4:1 | Bb4:1.5 Bb4:.5 Bb4:1 F4:1 | Gb4:3 Gb4:.5 Gb4:.5 | C5:1.5 Bb4:.5 Ab4:1 Gb4:1 | F4:1 F4:1 Ab4:1 Gb4:.5 Gb4:.5 | F4:1.5 Db4:.5 F4:1 Eb4:1 | Db4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Beneath_The_Cross_Of_Jesus-St_Christopher.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The Open Hymnal's own source: Bristol Tune-Book, 1891, tune 782. Indicates it was in the 1881 edition, but I have no copy of that."
+}

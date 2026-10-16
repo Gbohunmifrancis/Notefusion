@@ -1,0 +1,24 @@
+{
+  "name": "WORDS ON THE CROSS - THE LITANY",
+  "music": [
+    {
+      "name": "William Henry Monk",
+      "born": 1823,
+      "died": 1889,
+      "role": "Music (1889)"
+    }
+  ],
+  "musicPublished": 1889,
+  "key": "D minor",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1 F4:1 G4:1 F4:1 | E4:1.5 D4:.5 D4:2 | D4:1 F4:1 E4:1 D4:1 | G4:1 F4:1 E4:2 | E4:1 A4:1 C5:1 A4:1 | C5:1 Bb4:1 A4:2 | A4:1 A4:1 A4:1 F4:1 | E4:2 D4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_In_Thy_Dying_Woes-Words_On_The_Cross_The_Litany.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Episcopal Hymnal, 1916, Hymn 164."
+}

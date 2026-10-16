@@ -1,0 +1,99 @@
+{
+  "title": "Comfort, Comfort Ye My People",
+  "tune": "freu-dich-sehr-o-meine-seele",
+  "text": [
+    {
+      "name": "Johann Olearius (Oelschlaeger)",
+      "born": 1611,
+      "died": 1684,
+      "role": "Words (1671)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1862)"
+    }
+  ],
+  "textPublished": 1862,
+  "description": "Comfort, Comfort Ye My People in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Johann Olearius (Oelschlaeger), first published in 1671. The English translation is by Catherine Winkworth (1862). The tune, FREU DICH SEHR, O MEINE SEELE, is from Trente Quatre Pseaumes de David, Geneva, 1551. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Com-fort, com-fort ye My peo-ple, Speak ye peace, thus saith our God; Com-fort those who sit in dark-ness, Mourn-ing 'neath their sor-row's load; Speak ye to Je-ru-sa-lem Of the peace that waits for them; Tell her that her sins I co-ver, And her war-fare now is o-ver.",
+  "verses": [
+    {
+      "lines": [
+        "Comfort, comfort ye My people,",
+        "Speak ye peace, thus saith our God;",
+        "Comfort those who sit in darkness,",
+        "Mourning 'neath their sorrow's load;",
+        "Speak ye to Jerusalem",
+        "Of the peace that waits for them;",
+        "Tell her that her sins I cover,",
+        "And her warfare now is over."
+      ]
+    },
+    {
+      "lines": [
+        "For the herald's voice is crying",
+        "In the desert far and near,",
+        "Bidding all men to repentance,",
+        "Since the kingdom now is here.",
+        "O that warning cry obey!",
+        "Now prepare for God a way!",
+        "Let the valleys rise to meet Him,",
+        "And the hills bow down to greet Him."
+      ]
+    },
+    {
+      "lines": [
+        "Yea, her sins our God will pardon,",
+        "Blotting out each dark misdeed;",
+        "All that well deserved His anger",
+        "He will no more see nor heed.",
+        "She has suffered many a day,",
+        "Now her griefs have passed away,",
+        "God will change her pining sadness",
+        "Into ever springing gladness."
+      ]
+    },
+    {
+      "lines": [
+        "Make ye straight what long was crooked,",
+        "Make the rougher places plain:",
+        "Let your hearts be true and humble,",
+        "As befits His holy reign,",
+        "For the glory of the Lord",
+        "O'er the earth is shed abroad,",
+        "And all flesh shall see the token",
+        "That His Word is never broken."
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Atonement",
+    "Christmas/Advent",
+    "Comfort",
+    "Darkness, Spiritual",
+    "Following Jesus, Sanctification",
+    "God, As King",
+    "God, Love of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Gospel",
+    "Grace",
+    "Presence",
+    "Promises (see also Gospel)",
+    "Salvation"
+  ],
+  "metre": "8 7 8 7 7 7 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Comfort_Comfort_Ye_My_People-Freu_dich_sehr_o_meine_Seele.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Comfort_Comfort_Ye_My_People-Freu_dich_sehr_o_meine_Seele"
+}

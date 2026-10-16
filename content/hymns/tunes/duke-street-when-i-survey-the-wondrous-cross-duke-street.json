@@ -1,0 +1,24 @@
+{
+  "name": "DUKE STREET",
+  "music": [
+    {
+      "name": "John Hatton",
+      "born": 1710,
+      "died": 1793,
+      "role": "Music (1793)"
+    }
+  ],
+  "musicPublished": 1793,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 130,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Eb4:2 G4:1 Ab4:1 | Bb4:2 C5:1 D5:1 | Eb5:2 D5:1 C5:1 | Bb4:4 | Bb4:2 Bb4:1 Bb4:1 | C5:2 Bb4:2 | Ab4:2 G4:2 | F4:4 | G4:2 G4:1 F4:1 | Eb4:1 G4:1 Bb4:1 Eb5:1 | C5:1 Bb4:1 Ab4:1 G4:1 | F4:4 | Bb4:2 C5:1 D5:1 | Eb5:3 Ab4:1 | G4:2 F4:2 | Eb4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/When_I_Survey_The_Wondrous_Cross-Duke_Street.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Finest of the Wheat No. 3\" Hymnal, 1904 Hymn 257. ABC file contributed to the Open Hymnal by Tobin Strong, 20 Dec 2013. composite from \"The Anglican hymn Book\", 1871 hymn 127 and \"Hymns Ancient and Modern\", 1869 Hymn 101."
+}

@@ -1,0 +1,99 @@
+{
+  "title": "A Great and Mighty Wonder",
+  "tune": "es-ist-ein-ros-entsprungen-rhythmic",
+  "text": [
+    {
+      "name": "Germanus of Constantinople",
+      "born": 634,
+      "died": 734,
+      "role": "Words"
+    },
+    {
+      "name": "John Mason Neale",
+      "born": 1818,
+      "died": 1866,
+      "role": "Translated (1862)"
+    }
+  ],
+  "textPublished": null,
+  "description": "A Great and Mighty Wonder in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Germanus of Constantinople. The English translation is by John Mason Neale (1862). The tune, ES IST EIN ROS ENTSPRUNGEN (RHYTHMIC), is from Altes Catholische Geistliche Kirchengeseng, Köln, 1599. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "A great and might-y won-der, a full and ho-ly cure: The vir-gin bears the In-fant with vir-gin hon-or pure! Re-peat the hymn a-gain: \"To God on high be glo-ry And peace on earth to men!\"",
+  "verses": [
+    {
+      "lines": [
+        "A great and mighty wonder,",
+        "a full and holy cure:",
+        "The virgin bears the Infant",
+        "with virgin honor pure!"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Repeat the hymn again:",
+        "\"To God on high be glory",
+        "And peace on earth to men!\""
+      ]
+    },
+    {
+      "lines": [
+        "The Word becomes incarnate",
+        "and yet remains on high,",
+        "And cherubim sing anthems",
+        "to shepherds from the sky."
+      ]
+    },
+    {
+      "lines": [
+        "While thus they sing your Monarch,",
+        "those bright angelic bands,",
+        "Rejoice, ye vales and mountains,",
+        "ye oceans, clap your hands."
+      ]
+    },
+    {
+      "lines": [
+        "Since all He comes to ransom,",
+        "by all be He adored,",
+        "The Infant born in Bethl'em,",
+        "the Savior and the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "And idol forms shall perish,",
+        "and error shall decay,",
+        "And Christ shall wield His scepter,",
+        "our Lord and God for aye."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Art and Music",
+    "Atonement",
+    "Christmas/Advent",
+    "God, As King",
+    "Healing",
+    "Jesus",
+    "Joy",
+    "Nature",
+    "Peace",
+    "Praise, Son",
+    "Presence"
+  ],
+  "metre": "7 6 7 6 6 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/A_Great_And_Mighty_Wonder-Es_Ist_Ein_Ros_Entsprungen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "A_Great_And_Mighty_Wonder-Es_Ist_Ein_Ros_Entsprungen",
+  "reviewNotes": "Held back: the score gives no year for the words; not provably public domain: \"textPublished\" must be a year before 1929; the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 3 has 6 beats, more than 4; bar 4 has 6 beats, more than 4; bar 5 has 5 beats, more than 4; bar 7 has 6 beats, more than 4; bar 8 has 6 beats, more than 4; bar 13 has 6 beats, more than 4; bar 14 has 6 beats, more than 4."
+}

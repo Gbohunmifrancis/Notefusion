@@ -1,0 +1,23 @@
+{
+  "name": "MÜDE BIN ICH, GEH ZUR RUH",
+  "music": [
+    {
+      "name": "From Liederbuch für Kleinkinder-Schulen, 1842",
+      "traditional": true,
+      "role": "Melody (1842)"
+    }
+  ],
+  "musicPublished": 1842,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1.5 F4:.5 F4:1 F4:1 | E4:1 F4:1 G4:2 | G4:1 G4:1 G4:1 G4:1 | F4:1 G4:1 A4:2 | A4:1.5 A4:.5 A4:1 A4:1 | G4:1 F4:1 D5:2 | C5:1 A4:1 C5:1 Bb4:1 | D4:1 E4:1 F4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Now_The_Light_Has_Gone_Away-Mude_Bin_Ich_Geh_Zur_Ruh.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true."
+}
