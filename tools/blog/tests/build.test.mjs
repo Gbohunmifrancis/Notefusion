@@ -81,6 +81,8 @@ test("a post's header: kicker, title, dek, then the byline with the read-count s
   // Theme before paint, read counts and the tracker after; no inline script that runs.
   assert.match(html, /<meta name="viewport"[^>]*>\n<script src="\/assets\/theme-boot\.js\?v=\d+" data-default="system"><\/script>/);
   assert.match(html, /<script src="\/assets\/blog\.js\?v=\d+" defer><\/script>/);
+  // The reading analytics run on track.js, so they load right after it.
+  assert.match(html, /<script src="\/assets\/track\.js\?v=\d+" defer><\/script>\n<script src="\/assets\/blog-track\.js\?v=\d+" defer><\/script>/);
   assert.equal([...html.matchAll(/<script(?![^>]*\bsrc=)(?![^>]*type="application\/(?:ld\+)?json")[^>]*>/g)].length, 0);
   const posting = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1])).find((d) => d["@type"] === "BlogPosting");
   assert.deepEqual(posting.author, { "@type": "Person", name: "Francis", jobTitle: "founder of NoteFusion", url: "https://notefusion.studio/blog/author/francis" });

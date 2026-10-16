@@ -40,6 +40,7 @@ public class EdgeProtectionTests
 
     [Theory]
     [InlineData(typeof(WebEventsController), nameof(WebEventsController.Record), AuthRateLimiting.WebEvents)]
+    [InlineData(typeof(WebEventsController), nameof(WebEventsController.Beacon), AuthRateLimiting.WebEvents)]
     [InlineData(typeof(AuthController), nameof(AuthController.Refresh), AuthRateLimiting.TokenRefresh)]
     [InlineData(typeof(BlogController), nameof(BlogController.Reads), AuthRateLimiting.BlogReads)]
     public void Anonymous_write_routes_carry_their_rate_limit(Type controller, string action, string policy)

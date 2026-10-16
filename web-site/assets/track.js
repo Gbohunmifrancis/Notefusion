@@ -13,7 +13,13 @@
    window.nfTrack("Checkout failed", "HTTP 502") to record one with a detail. Before leaving the page
    on purpose (the checkout), call window.nfTrackNow(name, detail).then(go): it sends at once and
    settles when the batch is delivered or after a short wait, so the event is not lost to the
-   navigation. */
+   navigation.
+
+   When the page is hidden or left, the queue goes with navigator.sendBeacon (the one request a browser
+   keeps through a navigation or a closed tab) to POST /api/web/events/beacon, as text/plain JSON so no
+   preflight is needed; a signed-in browser's batch goes the usual way, since a beacon cannot carry its
+   token. A script with final figures to add (blog-track.js's time on the page) registers
+   window.nfTrackOnLeave(fn): fn runs just before that batch is sent. */
 (function () {
   "use strict";
   if (window.self !== window.top) return;
@@ -53,16 +59,27 @@
 
   var queue = [], timer = null, firstPage = true;
 
-  /** Sends the queue. The promise settles when the batch is delivered (or fails); never rejects. */
-  function flush() {
+  /**
+   * Sends the queue. The promise settles when the batch is delivered (or fails); never rejects.
+   * `leaving`: the page is being hidden or left, so an anonymous batch goes as a beacon.
+   */
+  function flush(leaving) {
     if (timer) { clearTimeout(timer); timer = null; }
     if (!queue.length) return Promise.resolve();
     var now = Date.now();
     var batch = queue.splice(0, 50).map(function (e) { e.ageMs = now - e.at; delete e.at; return e; });
+    var t = token();
+    if (leaving === true && !t && navigator.sendBeacon) {
+      try {
+        var payload = JSON.stringify({ visitorId: visitorId, sessionId: sessionId, deviceId: deviceId, events: batch });
+        if (navigator.sendBeacon(API + "/api/web/events/beacon", new Blob([payload], { type: "text/plain;charset=UTF-8" }))) {
+          return queue.length ? flush(true) : Promise.resolve();
+        }
+      } catch (e) { /* fall through to the usual request */ }
+    }
     var body = JSON.stringify({ visitorId: visitorId, sessionId: sessionId, events: batch });
     var headers = { "Content-Type": "application/json" };
     if (deviceId) headers["X-Device-Id"] = deviceId;
-    var t = token();
     if (t) headers.Authorization = "Bearer " + t;
     try {
       return fetch(API + "/api/web/events", { method: "POST", headers: headers, body: body, keepalive: true, mode: "cors", credentials: "omit" })
@@ -102,8 +119,16 @@
   });
   window.addEventListener("popstate", urlChanged);
 
-  window.addEventListener("pagehide", flush);
-  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") flush(); });
+  var leaveHooks = [];
+  function leave() {
+    leaveHooks.forEach(function (fn) { try { fn(); } catch (e) { /* a hook never blocks the batch */ } });
+    flush(true);
+  }
+  window.addEventListener("pagehide", leave);
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") leave(); });
+
+  /** Runs `fn` each time the page is hidden or left, just before the batch is sent, so it can add final figures. */
+  window.nfTrackOnLeave = function (fn) { if (typeof fn === "function") leaveHooks.push(fn); };
 
   window.nfTrack = function (name, detail) {
     if (name) push("action", String(name).slice(0, 120), null, detail == null ? null : String(detail).slice(0, 300));
