@@ -4,6 +4,9 @@
   "music": [
     {
       "name": "Ann B. Spratt",
+      "born": 1829,
+      "died": 1934,
+      "lived": "19th century",
       "role": "Music (1866)"
     }
   ],
@@ -18,13 +21,13 @@
   "incipit": "mmmmrr|fffm|sfmrmm",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0001/x000173.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0001/000173a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000173; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Ann B. Spratt: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000173 (the melody read from 000173a.mid, checked against the page's do-re-mi incipit, 1 note off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000173a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000173 (the melody read from 000173a.mid, checked against the page's do-re-mi incipit, 1 note off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ann B. Spratt's dates are uncertain, so the page says only that they lived in the 19th century; they died by 1934 (https://hymnary.org/hymn/BH1956/206 (Ann B. Spratt, 1829-?; KEDRON, 1866); https://hymnary.org/tune/kedron_spratt. No source gives her death year: born in 1829, she died before 1934 (the pre-1850 rule's 105 years), long before 1955.). CCEH's page gives only the year 1866. The bar lines are those of CCEH's Noteworthy score (000173a.nwc).",
   "importedFrom": "cceh:000173",
   "updated": "2026-10-16"
 }

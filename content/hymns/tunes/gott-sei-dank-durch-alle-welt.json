@@ -1,0 +1,32 @@
+{
+  "name": "GOTT SEI DANK DURCH ALLE WELT",
+  "title": "Gott Sei Dank Durch Alle Welt",
+  "music": [
+    {
+      "name": "J. A. Freylinghausen",
+      "born": 1670,
+      "died": 1739,
+      "role": "Music (Gesangbuch, 1704)"
+    }
+  ],
+  "musicPublished": 1704,
+  "metre": "7 7 7 7",
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "C4:.5 D4:.5 E4:.5 F4:.5 G4:1 G4:1 | A4:1 B4:1 C5:2 | B4:.5 C5:.5 D5:1 G4:.5 A4:.5 B4:1 | A4:1 A4:1 G4:2 | G4:1 C5:.5 B4:.5 A4:1 G4:1 | F4:1 E4:1 D4:2 | G4:1 C4:1 F4:1 E4:1 | D4:1 D4:1 C4:2",
+  "incipit": "drmfssltd|tdrsltlls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0002/x000284.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0002/000284a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000284; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000284 (the melody read from 000284a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. J. A. Freylinghausen's dates (1670–1739) are from our page for the tune O DURCHBRECHER (content/hymns/tunes/o-durchbrecher.json); CCEH's page gives only the year 1704. The bar lines are those of CCEH's Noteworthy score (000284a.nwc).",
+  "importedFrom": "cceh:000284",
+  "updated": "2026-10-16"
+}

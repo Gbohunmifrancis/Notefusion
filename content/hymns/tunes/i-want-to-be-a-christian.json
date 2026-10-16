@@ -1,0 +1,42 @@
+{
+  "name": "I WANT TO BE A CHRISTIAN",
+  "title": "I Want to Be a Christian",
+  "music": [
+    {
+      "name": "Negro Spiritual",
+      "traditional": true,
+      "role": "Melody"
+    },
+    {
+      "name": "John W. Work, Jr.",
+      "born": 1871,
+      "died": 1925,
+      "role": "Music (1907)"
+    },
+    {
+      "name": "Frederick J. Work",
+      "died": 1942,
+      "role": "Music (1907)"
+    }
+  ],
+  "musicPublished": 1907,
+  "metre": "8 3 3 8 3 + 3 3 8 3",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "Eb4:1 Eb4:1 | G4:1.5 G4:.5 Bb4:1 G4:1 | F4:1 Eb4:1 Eb4:.5 Eb4:.5 Eb4:1 | G4:2 Bb4:.5 Bb4:.5 C5:1 | Bb4:1 G4:1 Eb4:1 Eb4:1 | G4:1.5 G4:.5 Bb4:1 G4:1 | F4:1 Eb4:1 C4:.5 C4:.5 Eb4:1 | Eb4:4 | Eb4:2 Eb5:.5 Eb5:.5 Eb5:1 | C5:4 | Eb5:2 Eb5:.5 Eb5:.5 C5:1 | Bb4:4 | C5:2 Eb4:1 Eb4:1 | G4:1.5 G4:.5 Bb4:1 G4:1 | F4:1 Eb4:1 C4:.5 C4:.5 Eb4:1 | Eb4:2",
+  "incipit": "ddmmsmrd|dddmssls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000322.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000322a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000322; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000322 (the melody read from 000322a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. John W. Work, Jr.'s dates (1871–1925) are from https://en.wikipedia.org/wiki/John_Wesley_Work_Jr.; CCEH's page gives only the year 1907. Frederick J. Work's dates (died 1942) are from https://en.wikipedia.org/wiki/Frederick_Jerome_Work (c. 1879 - 1942); CCEH's page gives only the year 1907. The bar lines are those of CCEH's Noteworthy score (000322a.nwc).",
+  "importedFrom": "cceh:000322",
+  "updated": "2026-10-16"
+}

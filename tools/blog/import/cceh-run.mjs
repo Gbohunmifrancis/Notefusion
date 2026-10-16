@@ -79,8 +79,8 @@ export function sameMelody(a, b) {
  * {"John Bacchus Dykes": {"born": 1823, "died": 1876, "source": "where the dates were checked"}}. Every
  * entry needs its source; the report's `undatedPeople` lists who would unlock the most tunes. Optional:
  * "correctName" prints the person as the sources spell them where CCEH misspells the name, and "lived"
- * ("19th century") is printed instead of the years when the sources disagree on who the person was, with
- * "died" then the latest year any of the candidates could have died.
+ * ("19th century") is printed instead of the years when the sources disagree on who the person was or give no
+ * death year, with "died" then the latest year they could have died.
  */
 export const DATES_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), "cceh-dates.json");
 export function readCheckedDates(file = DATES_PATH) {

@@ -1,0 +1,32 @@
+{
+  "name": "PURER IN HEART",
+  "title": "Purer in Heart",
+  "music": [
+    {
+      "name": "James H. Fillmore",
+      "born": 1849,
+      "died": 1936,
+      "role": "Music (1877)"
+    }
+  ],
+  "musicPublished": 1877,
+  "metre": "6 4 6 4 6 6 4 4",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "B4:2 C5:1 B4:1 | B4:1.5 A4:.5 G4:2 | G4:2 F#4:1 E4:1 | D4:4 | A4:2 A4:1 A4:1 | B4:1.5 C5:.5 D5:2 | D5:2 C#5:1 C#5:1 | D5:4 | D5:2 C5:1 B4:1 | B4:1.5 A4:.5 G4:2 | G4:2 F#4:1 E4:1 | E4:1.5 D4:.5 D4:2 | A4:2 A4:1 A4:1 | B4:4 | C5:2 B4:1 A4:1 | G4:4",
+  "incipit": "mfmmrd|dtls|rrrmfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000323.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000323a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000323; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000323 (the melody read from 000323a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. James H. Fillmore's dates (1849–1936) are from https://viaf.org/viaf/36514322 (Fillmore, James Henry, 1849-1936); CCEH's page gives only the year 1877. The bar lines are those of CCEH's Noteworthy score (000323a.nwc).",
+  "importedFrom": "cceh:000323",
+  "updated": "2026-10-16"
+}

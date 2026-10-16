@@ -241,12 +241,24 @@
       "number": "000166"
     },
     {
+      "slug": "mcconnell",
+      "number": "000169"
+    },
+    {
+      "slug": "sewell",
+      "number": "000170"
+    },
+    {
       "slug": "wellesley",
       "number": "000171"
     },
     {
       "slug": "martyn",
       "number": "000172"
+    },
+    {
+      "slug": "kedron-spratt",
+      "number": "000173"
     },
     {
       "slug": "coming-home",
@@ -283,6 +295,10 @@
     {
       "slug": "calling-today",
       "number": "000188"
+    },
+    {
+      "slug": "dunbar",
+      "number": "000189"
     },
     {
       "slug": "thompson",
@@ -419,6 +435,66 @@
     {
       "slug": "limpsfield",
       "number": "000278"
+    },
+    {
+      "slug": "gott-sei-dank-durch-alle-welt",
+      "number": "000284"
+    },
+    {
+      "slug": "innocents",
+      "number": "000291"
+    },
+    {
+      "slug": "germany",
+      "number": "000301"
+    },
+    {
+      "slug": "serug",
+      "number": "000303"
+    },
+    {
+      "slug": "mccabe",
+      "number": "000304"
+    },
+    {
+      "slug": "gute-baume-bringen",
+      "number": "000309"
+    },
+    {
+      "slug": "o-lamm-gottes",
+      "number": "000311"
+    },
+    {
+      "slug": "mendon",
+      "number": "000315"
+    },
+    {
+      "slug": "salvation-320",
+      "number": "000320"
+    },
+    {
+      "slug": "i-want-to-be-a-christian",
+      "number": "000322"
+    },
+    {
+      "slug": "purer-in-heart",
+      "number": "000323"
+    },
+    {
+      "slug": "higher-ground",
+      "number": "000324"
+    },
+    {
+      "slug": "footsteps",
+      "number": "000325"
+    },
+    {
+      "slug": "jesu-meines-lebens-leben",
+      "number": "000326"
+    },
+    {
+      "slug": "sweney",
+      "number": "000327"
     }
   ],
   "drafts": [
@@ -537,34 +613,6 @@
       ]
     },
     {
-      "slug": "mcconnell",
-      "number": "000169",
-      "reasons": [
-        "not provably public domain: J. Edwin McConnell: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "sewell",
-      "number": "000170",
-      "reasons": [
-        "not provably public domain: Hampton H. Sewell: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "kedron-spratt",
-      "number": "000173",
-      "reasons": [
-        "not provably public domain: Ann B. Spratt: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "dunbar",
-      "number": "000189",
-      "reasons": [
-        "not provably public domain: C. R. Dunbar: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
       "slug": "vigil",
       "number": "000201",
       "reasons": [
@@ -628,6 +676,63 @@
       "number": "000275",
       "reasons": [
         "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "rotterdam",
+      "number": "000289",
+      "reasons": [
+        "not provably public domain: Berthold Tours: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "schuler",
+      "number": "000290",
+      "reasons": [
+        "not provably public domain: George S. Schuler: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "hanover",
+      "number": "000292",
+      "reasons": [
+        "not provably public domain: Harvey Grace: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the key signature (doh G) and the incipit's doh (Ab) disagree"
+      ]
+    },
+    {
+      "slug": "tidings",
+      "number": "000295",
+      "reasons": [
+        "not provably public domain: James Walsh: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "ring-the-bells",
+      "number": "000300",
+      "reasons": [
+        "not provably public domain: George F. Root: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "trentham",
+      "number": "000317",
+      "reasons": [
+        "not provably public domain: Robert Jackson: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "serenity",
+      "number": "000329",
+      "reasons": [
+        "not provably public domain: William Vincent Wallace: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "camacha",
+      "number": "000330",
+      "reasons": [
+        "not provably public domain: B. Mansell Ramsey: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     }
   ],
@@ -1233,6 +1338,15 @@
       "oursSource": "Open Hymnal Project",
       "hymn": "rescue-the-perishing",
       "edits": 0
+    },
+    {
+      "number": "000307",
+      "name": "St. Edmund (Sullivan)",
+      "url": "https://www.ccel.org/cceh/0003/x000307.htm",
+      "ours": "st-edmund-sullivan",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "im-but-a-stranger-here",
+      "edits": 0
     }
   ],
   "refused": [
@@ -1649,6 +1763,138 @@
       "name": "Toronto",
       "url": "https://www.ccel.org/cceh/0002/x000280.htm",
       "reason": "the page marks John W. Peterson's tune as copyright (“John W. Peterson, ©1954”)"
+    },
+    {
+      "number": "000285",
+      "name": "Sullivan",
+      "url": "https://www.ccel.org/cceh/0002/x000285.htm",
+      "reason": "the page marks William J. Reynolds's tune as copyright (“William J. Reynolds, ©1973”)"
+    },
+    {
+      "number": "000286",
+      "name": "Shere",
+      "url": "https://www.ccel.org/cceh/0002/x000286.htm",
+      "reason": "the page marks Eric H. Thiman's tune as copyright (“Eric H. Thiman, ©1930”)"
+    },
+    {
+      "number": "000287",
+      "name": "Pass It On",
+      "url": "https://www.ccel.org/cceh/0002/x000287.htm",
+      "reason": "the page marks Kurt Kaiser's tune as copyright (“Kurt Kaiser, ©1969”)"
+    },
+    {
+      "number": "000288",
+      "name": "Rhea",
+      "url": "https://www.ccel.org/cceh/0002/x000288.htm",
+      "reason": "the page marks Gene Bartlett's tune as copyright (“Gene Bartlett, ©1968”)"
+    },
+    {
+      "number": "000293",
+      "name": "Surabaja",
+      "url": "https://www.ccel.org/cceh/0002/x000293.htm",
+      "reason": "the page marks James Bigelow's arrangement as copyright (“arr., James Bigelow, ©1956”)"
+    },
+    {
+      "number": "000294",
+      "name": "Coleman",
+      "url": "https://www.ccel.org/cceh/0002/x000294.htm",
+      "reason": "the page marks B. B. McKinney's tune as copyright (“B. B. McKinney, ©1924”)"
+    },
+    {
+      "number": "000296",
+      "name": "Denny",
+      "url": "https://www.ccel.org/cceh/0002/x000296.htm",
+      "reason": "the page marks William J. Reynolds's tune as copyright (“William J. Reynolds, ©1968”)"
+    },
+    {
+      "number": "000298",
+      "name": "Leila",
+      "url": "https://www.ccel.org/cceh/0002/x000298.htm",
+      "reason": "the page marks B. B. McKinney's tune as copyright (“B. B. McKinney, ©1940”)"
+    },
+    {
+      "number": "000299",
+      "name": "McNeely",
+      "url": "https://www.ccel.org/cceh/0002/x000299.htm",
+      "reason": "the page marks William J. Reynolds's tune as copyright (“William J. Reynolds, ©1958”)"
+    },
+    {
+      "number": "000302",
+      "name": "Scales",
+      "url": "https://www.ccel.org/cceh/0003/x000302.htm",
+      "reason": "the page marks Gene Bartlett's tune as copyright (“Gene Bartlett, ©1965”)"
+    },
+    {
+      "number": "000306",
+      "name": "Leach",
+      "url": "https://www.ccel.org/cceh/0003/x000306.htm",
+      "reason": "the page marks Buryl Red's tune as copyright (“Buryl Red, ©1963”)"
+    },
+    {
+      "number": "000308",
+      "name": "Washburn",
+      "url": "https://www.ccel.org/cceh/0003/x000308.htm",
+      "reason": "the page marks William J. Reynolds's tune as copyright (“William J. Reynolds, ©1971”)"
+    },
+    {
+      "number": "000310",
+      "name": "Pax Iam",
+      "url": "https://www.ccel.org/cceh/0003/x000310.htm",
+      "reason": "the page marks Milburn Price's tune as copyright (“Milburn Price, ©1971”)"
+    },
+    {
+      "number": "000312",
+      "name": "Hunter's Glen",
+      "url": "https://www.ccel.org/cceh/0003/x000312.htm",
+      "reason": "the page marks James D. Cram's tune as copyright (“James D. Cram, ©1970”)"
+    },
+    {
+      "number": "000313",
+      "name": "Liberty",
+      "url": "https://www.ccel.org/cceh/0003/x000313.htm",
+      "reason": "the page marks Don Riddle's arrangement as copyright (“arr., Don Riddle, ©1975”)"
+    },
+    {
+      "number": "000314",
+      "name": "Reach Out",
+      "url": "https://www.ccel.org/cceh/0003/x000314.htm",
+      "reason": "the page marks Charles F. Brown's tune as copyright (“Charles F. Brown, ©1971”)"
+    },
+    {
+      "number": "000316",
+      "name": "Cates",
+      "url": "https://www.ccel.org/cceh/0003/x000316.htm",
+      "reason": "the page marks Bill Cates's tune as copyright (“Bill Cates, ©1967”)"
+    },
+    {
+      "number": "000318",
+      "name": "Woodland",
+      "url": "https://www.ccel.org/cceh/0003/x000318.htm",
+      "reason": "the page marks Buryl Red's tune as copyright (“Buryl Red, ©1969”)"
+    },
+    {
+      "number": "000319",
+      "name": "King's Weston",
+      "url": "https://www.ccel.org/cceh/0003/x000319.htm",
+      "reason": "the page marks Ralph Vaughan Williams's tune as copyright (“Ralph Vaughan Williams, ©1925”)"
+    },
+    {
+      "number": "000321",
+      "name": "Massachusetts",
+      "url": "https://www.ccel.org/cceh/0003/x000321.htm",
+      "reason": "the page marks Katherine K. Davis's tune as copyright (“Katherine K. Davis, ©1964”)"
+    },
+    {
+      "number": "000328",
+      "name": "St. Leonards (Barham-Gould)",
+      "url": "https://www.ccel.org/cceh/0003/x000328.htm",
+      "reason": "the page marks A. Cyril Barham-Gould's tune as copyright (“A. Cyril Barham-Gould, ©1925”)"
+    },
+    {
+      "number": "000331",
+      "name": "Chislehurst",
+      "url": "https://www.ccel.org/cceh/0003/x000331.htm",
+      "reason": "the page marks William L. Hooper's tune as copyright (“William L. Hooper, ©1970”)"
     }
   ],
   "rejected": [
@@ -1735,9 +1981,28 @@
       "name": "Message",
       "url": "https://www.ccel.org/cceh/0002/x000281.htm",
       "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 4 notes off in 19)"
+    },
+    {
+      "number": "000297",
+      "name": "Pange Lingua",
+      "url": "https://www.ccel.org/cceh/0002/x000297.htm",
+      "reason": "the MIDI file has no time signature"
+    },
+    {
+      "number": "000305",
+      "name": "Grace Church",
+      "url": "https://www.ccel.org/cceh/0003/x000305.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 6 notes off in 16)"
     }
   ],
-  "sameNameDifferentTune": [],
+  "sameNameDifferentTune": [
+    {
+      "number": "000320",
+      "name": "Salvation",
+      "url": "https://www.ccel.org/cceh/0003/x000320.htm",
+      "ours": "salvation"
+    }
+  ],
   "fillCandidates": [
     {
       "number": "000108",
@@ -1758,28 +2023,46 @@
   ],
   "undatedPeople": [
     {
-      "name": "Ann B. Spratt",
-      "tunes": 1,
+      "name": "James Walsh",
+      "tunes": 2,
       "onlyForWantOfDates": 1,
-      "earliestYear": 1866
+      "earliestYear": 1875
     },
     {
-      "name": "C. R. Dunbar",
+      "name": "B. Mansell Ramsey",
       "tunes": 1,
       "onlyForWantOfDates": 1,
-      "earliestYear": 1882
+      "earliestYear": 1919
     },
     {
-      "name": "Hampton H. Sewell",
+      "name": "Berthold Tours",
       "tunes": 1,
       "onlyForWantOfDates": 1,
-      "earliestYear": 1909
+      "earliestYear": 1875
     },
     {
-      "name": "J. Edwin McConnell",
+      "name": "George F. Root",
       "tunes": 1,
       "onlyForWantOfDates": 1,
-      "earliestYear": 1914
+      "earliestYear": 1875
+    },
+    {
+      "name": "George S. Schuler",
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1924
+    },
+    {
+      "name": "Robert Jackson",
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1888
+    },
+    {
+      "name": "William Vincent Wallace",
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1856
     },
     {
       "name": "A. P. Bland",
@@ -1794,7 +2077,7 @@
       "earliestYear": null
     },
     {
-      "name": "James Walsh",
+      "name": "Harvey Grace",
       "tunes": 1,
       "onlyForWantOfDates": 0,
       "earliestYear": null
@@ -1807,13 +2090,13 @@
     }
   ],
   "counts": {
-    "published": 104,
-    "drafts": 29,
-    "duplicates": 67,
-    "refused": 69,
-    "rejected": 14,
-    "pages": 283,
-    "notYetCrawled": 1115,
+    "published": 123,
+    "drafts": 33,
+    "duplicates": 68,
+    "refused": 91,
+    "rejected": 16,
+    "pages": 331,
+    "notYetCrawled": 1067,
     "tunesInIndex": 1398
   }
 }

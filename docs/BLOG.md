@@ -340,8 +340,9 @@ For each tune the importer (`tools/blog/import/cceh*.mjs`; the files are data, r
   takes dates checked by hand, each with its source (`{"John Zundel": {"born": 1815, "died": 1882,
   "source": "…"}}`); the report's `undatedPeople` lists who would unlock the most tunes. `"correctName"`
   prints a name CCEH misspells as the sources spell it (William F. Sherman → Sherwin), and `"lived"`
-  ("19th century") stands in for the years when the sources disagree on who someone was, with `"died"` the
-  latest year any candidate could have died (MONKLAND's John Bernard Wilkes; founder's decision, 2026-10-16).
+  ("19th century") stands in for the years when the sources disagree on who someone was, or give a birth year
+  but no death, with `"died"` the latest year they could have died (MONKLAND's John Bernard Wilkes; founder's
+  decision, 2026-10-16; KEDRON's Ann B. Spratt, born 1829, by the pre-1850 rule's 105 years).
 - **Already on the site**: the same melody as a tune we hold (compared by its intervals, so the key
   does not matter), or as an earlier CCEH tune: ours is kept and nothing is written.
 
