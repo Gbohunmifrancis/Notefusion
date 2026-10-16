@@ -57,7 +57,7 @@
       if (p && paths.indexOf(p) < 0) paths.push(p);
     });
     paths = paths.slice(0, 50);
-    var ctl = root.AbortController ? new AbortController() : null;
+    var ctl = root.AbortController ? new root.AbortController() : null;
     var timer = ctl ? setTimeout(function () { ctl.abort(); }, 8000) : null;
     root.fetch(API + "/api/blog/reads?paths=" + encodeURIComponent(paths.join(",")), {
       mode: "cors", credentials: "omit", signal: ctl ? ctl.signal : undefined

@@ -63,6 +63,38 @@ test("a post: one h1, canonical, Open Graph, BlogPosting + BreadcrumbList + FAQP
   assert.match(html, /href="\/app\?utm_source=blog"/);
 });
 
+test("a post's header: kicker, title, dek, then the byline with the read-count slot, before the body", () => {
+  const html = read("blog/how-to-read-tonic-solfa/index.html");
+  const header = html.slice(html.indexOf('<header class="post-header">'), html.indexOf("</header>", html.indexOf('<header class="post-header">')));
+  assert.match(header, /<p class="kicker"><a href="\/blog\/tag\/tonic-solfa">Tonic Solfa<\/a><\/p>/);
+  assert.match(header, /<p class="post-lede">Everything a new singer needs/);
+  assert.match(header, /By <a href="\/blog\/author\/francis" rel="author">Francis<\/a>/);
+  assert.match(header, /<span class="avatar avatar-initials avatar-48" aria-hidden="true">F<\/span>/);
+  assert.match(header, /<span class="meta-reads" data-reads-path="\/blog\/how-to-read-tonic-solfa" aria-hidden="true"><\/span>/);
+  assert.ok(html.indexOf('class="post-header"') < html.indexOf('class="post-body"'));
+  // Shares as plain links, WhatsApp first; no third-party script.
+  const share = html.slice(html.indexOf('class="share"'), html.indexOf("</section>", html.indexOf('class="share"')));
+  assert.deepEqual([...share.matchAll(/data-track="Share: ([^"]+)"/g)].map((m) => m[1]), ["WhatsApp", "X", "Facebook", "copy link"]);
+  assert.match(share, /href="https:\/\/wa\.me\/\?text=How%20to%20Read%20Tonic%20Solfa/);
+  const external = [...html.matchAll(/<script[^>]+src="(https?:[^"]+)"/g)].map((m) => new URL(m[1]).hostname);
+  assert.deepEqual(external, ["pagead2.googlesyndication.com"]);
+  // Theme before paint, read counts and the tracker after; no inline script that runs.
+  assert.match(html, /<meta name="viewport"[^>]*>\n<script src="\/assets\/theme-boot\.js\?v=\d+" data-default="system"><\/script>/);
+  assert.match(html, /<script src="\/assets\/blog\.js\?v=\d+" defer><\/script>/);
+  assert.equal([...html.matchAll(/<script(?![^>]*\bsrc=)(?![^>]*type="application\/(?:ld\+)?json")[^>]*>/g)].length, 0);
+  const posting = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1])).find((d) => d["@type"] === "BlogPosting");
+  assert.deepEqual(posting.author, { "@type": "Person", name: "Francis", jobTitle: "founder of NoteFusion", url: "https://notefusion.studio/blog/author/francis" });
+});
+
+test("the blog's front page: the newest post set large, the rest beside it, topics, the hymnal", () => {
+  const html = read("blog/index.html");
+  assert.match(html, /<article class="feature" aria-labelledby="feature-title">[\s\S]*?href="\/blog\/how-to-read-tonic-solfa"/);
+  assert.match(html, /<section class="front-side"[\s\S]*?href="\/blog\/how-to-find-the-doh-of-a-song"/);
+  assert.match(html, /<nav class="topics" aria-label="Topics"><a href="\/blog" aria-current="page">All<\/a>/);
+  assert.match(html, /data-reads-path="\/blog\/how-to-find-the-doh-of-a-song" data-reads-format="compact"/);
+  assert.match(html, /<section class="hymnal"[\s\S]*?href="\/hymns\/amazing-grace"/);
+});
+
 test("a hymn page: the engine's solfa as text, MusicComposition JSON-LD, the score as data", () => {
   const html = read("hymns/amazing-grace/index.html");
   assert.match(html, /<title>Amazing Grace — Tonic Solfa &amp; Sheet Music \(Doh is G\)<\/title>/);
