@@ -1,10 +1,15 @@
 name: Blog & hymn pages
 
-# The blog and hymn pages under web-site/blog and web-site/hymns are generated from content/ by
+# The hymn pages (and the blog's shell) under web-site/ are generated from content/ by
 # tools/blog/build.mjs and committed. This fails a pull request when the committed pages are stale
 # (someone edited content/ without rebuilding, or edited a generated page by hand), when a link is
 # broken, or when JSON-LD, the sitemap or the feed is malformed. It also runs the web tests, which
 # the main CI skips for web-site/ changes. See docs/BLOG.md.
+#
+# Blog posts are not committed: they live in the API's database and are rendered at deploy time
+# (deploy-web.yml runs build.mjs --api). So the committed output, and this check, are built from
+# content/ alone; the generator tests build the posts from a stub of the API's answer
+# (tools/blog/tests/fixtures/published.json) to check that path without the network.
 on:
   pull_request:
     paths:
