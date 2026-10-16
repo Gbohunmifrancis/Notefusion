@@ -333,12 +333,15 @@ For each tune the importer (`tools/blog/import/cceh*.mjs`; the files are data, r
 - **Refused** (nothing copied): a © on the page or in the MIDI file, anyone named who died in 1955 or
   later (from the page's dates, or `KNOWN_IN_COPYRIGHT` in `import/cceh.mjs` for composers CCEH
   names without dates), a year of 1929 or later for the tune or an arrangement of it.
-- **Pre-1850 rule** (founder's decision, 2026-10-16): someone with no death year whose work CCEH dates before 1850 is taken to have died before 1955 (they would have been over 105). It is recorded as `"activeBy": <year>` on the person, never as a death year, and the page credits them as "(fl. <year>)".
+- **Pre-1850 rule** (founder's decision, 2026-10-16): someone with no death year whose work CCEH dates before 1850 is taken to have died before 1955 (they would have been over 105). It is recorded as `"activeBy": <year>` on the person, never as a death year, and the page credits them as "(fl. <year>)". A composer CCEH credits without a year of their own, above the book that dates the tune ("attr., William Moore" / "Columbian Harmony, 1825"), takes the book's year; an arranger never does.
 - **Draft**: anyone named (composer, arranger, harmoniser) without a death year and with no work dated before 1850. The importer uses
   the page's own dates, else the dates our other pages already give the same person (hand-made hymns,
   the Open Hymnal import, other CCEH pages) — nothing is guessed. `tools/blog/import/cceh-dates.json`
   takes dates checked by hand, each with its source (`{"John Zundel": {"born": 1815, "died": 1882,
-  "source": "…"}}`); the report's `undatedPeople` lists who would unlock the most tunes.
+  "source": "…"}}`); the report's `undatedPeople` lists who would unlock the most tunes. `"correctName"`
+  prints a name CCEH misspells as the sources spell it (William F. Sherman → Sherwin), and `"lived"`
+  ("19th century") stands in for the years when the sources disagree on who someone was, with `"died"` the
+  latest year any candidate could have died (MONKLAND's John Bernard Wilkes; founder's decision, 2026-10-16).
 - **Already on the site**: the same melody as a tune we hold (compared by its intervals, so the key
   does not matter), or as an earlier CCEH tune: ours is kept and nothing is written.
 

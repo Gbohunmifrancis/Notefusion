@@ -9,7 +9,8 @@
     },
     {
       "name": "Alexander Galloway",
-      "role": "Music"
+      "role": "Music",
+      "activeBy": 1562
     }
   ],
   "musicPublished": 1562,
@@ -29,7 +30,7 @@
   "scoreUrl": "https://www.ccel.org/cceh/0002/000230a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000230; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Alexander Galloway: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; the score has bars of another length (bar 10, 13), which the solfa grid does not draw. Imported from CCEH tune 000230 (the melody read from 000230a.mid, checked against the page's do-re-mi incipit, 2 notes off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000230a.nwc).",
+  "reviewNotes": "Held back: the score has bars of another length (bar 10, 13), which the solfa grid does not draw. Imported from CCEH tune 000230 (the melody read from 000230a.mid, checked against the page's do-re-mi incipit, 2 notes off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Alexander Galloway has no death year on CCEH's page or ours; the tune was in print by 1562, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000230a.nwc).",
   "importedFrom": "cceh:000230",
   "updated": "2026-10-16"
 }

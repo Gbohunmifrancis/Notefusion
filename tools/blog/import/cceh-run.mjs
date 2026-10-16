@@ -77,7 +77,10 @@ export function sameMelody(a, b) {
 /**
  * Dates checked by hand for people CCEH's pages name without them (tools/blog/import/cceh-dates.json):
  * {"John Bacchus Dykes": {"born": 1823, "died": 1876, "source": "where the dates were checked"}}. Every
- * entry needs its source; the report's `undatedPeople` lists who would unlock the most tunes.
+ * entry needs its source; the report's `undatedPeople` lists who would unlock the most tunes. Optional:
+ * "correctName" prints the person as the sources spell them where CCEH misspells the name, and "lived"
+ * ("19th century") is printed instead of the years when the sources disagree on who the person was, with
+ * "died" then the latest year any of the candidates could have died.
  */
 export const DATES_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), "cceh-dates.json");
 export function readCheckedDates(file = DATES_PATH) {
@@ -85,6 +88,7 @@ export function readCheckedDates(file = DATES_PATH) {
   const data = readJson(file);
   for (const [name, d] of Object.entries(data)) {
     if (!Number.isInteger(d.died) || typeof d.source !== "string" || !d.source.trim()) throw new Error(`cceh-dates.json: ${name} needs a "died" year and a "source"`);
+    for (const f of ["correctName", "lived"]) if (d[f] != null && (typeof d[f] !== "string" || !d[f].trim())) throw new Error(`cceh-dates.json: ${name}: "${f}" is text`);
   }
   return data;
 }
@@ -92,7 +96,7 @@ export function readCheckedDates(file = DATES_PATH) {
 /** The people our pages already give dates for (hymns and tunes, from their own sources), CCEH's pages that print a life, and the dates checked by hand. */
 export function buildDates({ hymns, tunes, pages, checked = readCheckedDates() }) {
   const dates = datesTable();
-  for (const [name, d] of Object.entries(checked)) dates.add(name, { born: d.born, died: d.died, from: d.source });
+  for (const [name, d] of Object.entries(checked)) dates.add(name, { born: d.born, died: d.died, lived: d.lived, correctName: d.correctName, from: d.source });
   for (const [slug, t] of tunes) if (t.source !== SOURCE_NAME) for (const p of t.music || []) if (!p.traditional) dates.add(p.name, { born: p.born, died: p.died, lived: p.lived, from: `our page for the tune ${t.name} (content/hymns/tunes/${slug}.json)` });
   for (const [slug, h] of hymns) for (const p of h.text || []) if (!p.traditional) dates.add(p.name, { born: p.born, died: p.died, lived: p.lived, from: `our page for ${h.title} (content/hymns/${slug}.json)` });
   for (const { number, html } of pages) {

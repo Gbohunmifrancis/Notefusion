@@ -1,0 +1,31 @@
+{
+  "name": "CANONBURY",
+  "title": "Canonbury",
+  "music": [
+    {
+      "name": "Robert Schumann",
+      "activeBy": 1839,
+      "role": "Music (1839)"
+    }
+  ],
+  "musicPublished": 1839,
+  "metre": "8 8 8 8",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D4:1 | B4:1 B4:1 B4:1 C5:.5 B4:.5 | A4:1 G4:.5 A4:.5 B4:1 D4:1 | E4:1 F#4:1 G4:1 A4:1 | F#4:1 E4:1 D4:1 D4:1 | B4:1 B4:1 B4:1 C5:.5 B4:.5 | A4:1 G4:.5 A4:.5 B4:1 D4:1 | E4:1 F#4:1 G4:1 B4:.5 A4:.5 | G4:1 F#4:1 G4:1",
+  "incipit": "smmmfmrdrm|sltdrtls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0002/x000276.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0002/000276a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000276; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000276 (the melody read from 000276a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Robert Schumann has no death year on CCEH's page or ours; their work is dated 1839, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000276a.nwc).",
+  "importedFrom": "cceh:000276",
+  "updated": "2026-10-16"
+}

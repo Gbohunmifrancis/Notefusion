@@ -1,0 +1,30 @@
+{
+  "name": "EAGLEY",
+  "title": "Eagley",
+  "music": [
+    {
+      "name": "James Walsh",
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 6 8 6",
+  "key": "Bb major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "F4:1 G4:1 A4:1 | Bb4:1 C5:1 D5:1 | D5:2 C5:1 | Bb4:3 | G4:1 G4:1 Bb4:1 | Eb5:2 G4:1 | F4:3 | F4:1 G4:1 A4:1 | Bb4:1 C5:1 D5:1 | D5:2 C5:1 | Bb4:3 | G4:1 Eb5:1 G4:1 | F4:1 Bb4:1 A4:1 | Bb4:3",
+  "incipit": "sltdrmmrd|lldfls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0002/x000246.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0002/000246a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000246; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; not provably public domain: James Walsh: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000246 (the melody read from 000246a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000246a.nwc).",
+  "importedFrom": "cceh:000246",
+  "updated": "2026-10-16"
+}

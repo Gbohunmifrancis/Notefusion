@@ -187,6 +187,33 @@ test("gate: work in print before 1850 counts as a death before 1955 (activeBy), 
   assert.match(JSON.stringify(r.tune), /dated 1769, before 1850/, "the tune records why");
 });
 
+test("gate: a composer with no year of their own, above a book dated before 1850, takes the book's year (activeBy)", () => {
+  // HOLY MANNA as CCEH credits it: "attr., William Moore" then "Columbian Harmony, 1825".
+  const r = ital(ITALIAN.page.replace("Felice de Giardini, 1769", "attr., William Moore</dd><dd>Columbian Harmony, 1825"), datesTable());
+  assert.equal(r.refused, null);
+  assert.ok(!r.problems.some((p) => /William Moore/.test(p)), r.problems.join(" | "));
+  const moore = r.tune.music.find((p) => p.name === "William Moore");
+  assert.equal(moore.activeBy, 1825);
+  assert.equal(moore.died, undefined);
+  // An arranger's missing year is never filled from the tune's.
+  const arr = ital(ITALIAN.page.replace("Felice de Giardini, 1769", "Felice de Giardini, 1769</dd><dd>arr., Someone Undated"), datesTable());
+  assert.equal(arr.tune.music.find((p) => p.name === "Someone Undated").activeBy, undefined);
+});
+
+test("gate: checked dates can correct a misspelt name, and give a disputed person a century instead of years", () => {
+  const dates = datesTable();
+  dates.add("Felice de Giardini", { born: 1716, died: 1796, correctName: "Felice Giardini", from: "a test" });
+  const r = ital(ITALIAN.page, dates);
+  assert.deepEqual(r.tune.music.map((p) => p.name), ["Felice Giardini"]);
+  assert.match(r.tune.reviewNotes, /spells Felice Giardini as “Felice de Giardini”/);
+  const disputed = datesTable();
+  disputed.add("Felice de Giardini", { died: 1928, lived: "18th century", from: "a test" });
+  const d = ital(ITALIAN.page.replace("Felice de Giardini, 1769", "Felice de Giardini, 1869"), disputed);
+  assert.equal(d.tune.draft, false, d.problems.join(" | "));
+  assert.equal(d.tune.music[0].lived, "18th century");
+  assert.match(d.tune.reviewNotes, /identity is disputed/);
+});
+
 test("gate: Vaughan Williams, a death in 1955 or later, a © or a year after 1928 — refused, nothing copied", () => {
   // KINGSFOLD and SINE NOMINE as CCEH credits them: no dates on the page, but a known death in 1958.
   const rvw = ital(ITALIAN.page.replace("Felice de Giardini, 1769", "Traditional English melody</dd><dd>arr., Ralph Vaughan Williams, 1906"));
@@ -231,12 +258,14 @@ test("run: ours is kept where we have the tune, the new one written as a tune pa
     const rep = run();
     assert.equal(rep.counts.duplicates, 1);
     assert.equal(rep.duplicates[0].ours, "italian-hymn");
-    assert.equal(rep.counts.drafts, 1, "OLD HUNDREDTH: Louis Bourgeois has no dates in this library");
-    assert.equal(rep.drafts[0].slug, "old-hundredth");
-    assert.ok(rep.undatedPeople.some((p) => p.name === "Louis Bourgeois"));
+    // OLD HUNDREDTH: Louis Bourgeois has no dates in this library, but the Genevan Psalter of 1551 the page
+    // dates the tune by is before 1850, so it publishes with him active by 1551.
+    assert.equal(rep.counts.drafts, 0, JSON.stringify(rep.drafts));
+    assert.ok(!rep.undatedPeople.some((p) => p.name === "Louis Bourgeois"));
     const t = JSON.parse(fs.readFileSync(path.join(tunesDir, "old-hundredth.json"), "utf8"));
     assert.equal(t.importedFrom, "cceh:000006");
-    assert.equal(t.draft, true);
+    assert.equal(t.draft, false);
+    assert.equal(t.music.find((p) => p.name === "Louis Bourgeois").activeBy, 1551);
     assert.equal(JSON.parse(fs.readFileSync(reportPath, "utf8")).counts.pages, 2);
     // Running again changes nothing.
     const before = fs.readFileSync(path.join(tunesDir, "old-hundredth.json"), "utf8");

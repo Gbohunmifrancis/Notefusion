@@ -1,0 +1,32 @@
+{
+  "name": "EUCLID",
+  "title": "Euclid",
+  "music": [
+    {
+      "name": "Harper G. Smyth",
+      "born": 1873,
+      "died": 1945,
+      "role": "Music (1903)"
+    }
+  ],
+  "musicPublished": 1903,
+  "metre": "Irregular",
+  "key": "Ab major",
+  "time": "6/8",
+  "tempo": 100,
+  "pickup": 0.5,
+  "lineBars": 4,
+  "melody": "Eb4:.25 Eb4:.25 | Ab4:1 Ab4:.5 Ab4:.5 G4:.5 Ab4:.5 | Bb4:1.5 F4:1 F4:.25 F4:.25 | G4:.75 G4:.25 G4:.5 G4:.5 F4:.5 Eb4:.5 | Ab4:2.5 Eb4:.25 Eb4:.25 | Ab4:.75 Ab4:.25 Ab4:.5 Ab4:.5 G4:.5 Ab4:.5 | Bb4:1.5 F4:1 F4:.25 F4:.25 | G4:.75 G4:.25 G4:.5 Eb4:.5 F4:.5 G4:.5 | Ab4:3 | Eb4:.5 F4:.5 G4:.5 Ab4:.5 C5:.5 Bb4:.5 | Ab4:.5 G4:.75 F4:.25 G4:1.5 | F4:.5 G4:.5 Ab4:.5 Eb4:.5 Ab4:.5 C5:.5 | C5:.5 Bb4:.5 F4:.5 Bb4:1.5 | C5:.5 C#5:.5 C5:.5 Bb4:.5 F4:1 | G4:.5 Ab4:.5 Bb4:.5 Ab4:.5 Eb4:1 | F4:.5 G4:.5 Ab4:.5 Eb4:.5 C#5:.5 C5:.5 | Bb4:.5 F4:.5 G4:.5 Ab4:1.5",
+  "incipit": "ssdddtdrl|llttttlsd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0002/x000262.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0002/000262a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000262; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000262 (the melody read from 000262a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Harper G. Smyth's dates (1873–1945) are from https://hymnary.org/person/Smyth_Harper (Harper G. Smyth, 1873-1945; EUCLID, 'Make me a channel of blessing', 1903); CCEH's page gives only the year 1903. The bar lines are those of CCEH's Noteworthy score (000262a.nwc).",
+  "importedFrom": "cceh:000262",
+  "updated": "2026-10-16"
+}
