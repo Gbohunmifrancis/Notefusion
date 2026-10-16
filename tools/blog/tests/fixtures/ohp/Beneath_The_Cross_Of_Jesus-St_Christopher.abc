@@ -1,0 +1,55 @@
+%OHSCRIP Pr 14:26, 1Cor 1:17-18, Gal 6:14
+%OHTOPICS {Atonement}, {Cross}, {Darkness, Spiritual [3]}, {Easter Week / Passion}, {God, Justness of [2]}, {God, Love of [2]}, {God, Mercy of [4]}, {Gospel}, {Grace [4]}, {Heaven [2]}, {Jesus}, {Salvation}, {Sinners}, {Trust}
+%OHCATEGORY CROSS AND COMFORT
+%OHMETRICAL 7 6 8 6 8 6 8 6
+%OHCOMPLEXITY 1
+%OHCOMPOSER Maker, Frederick C. (1844-1927)
+%OHARRANGER unknown
+%OHAUTHOR Clephane, Elizabeth Cecelia Douglas (1830-1869)
+%OHTRANSLATOR none
+
+X: 1
+T: Beneath The Cross Of Jesus
+C: Words: Elizabeth C. Clephane, 1868. 
+C: Music: 'St. Christopher' Frederick C. Maker, 1881.  Setting: "Bristol Tune-Book", 1891.
+C: copyright: public domain.  This score is a part of the Open Hymnal Project, 2008 Revision.
+S: Music source: Bristol Tune-Book, 1891, tune 782.  Indicates it was in the 1881 edition, but I have no copy of that.
+M: 4/4 % time signature
+L: 1/4 % default length
+%%staves (S1V1 S1V2) | (S2V1 S2V2) 
+V: S1V1 clef=treble 
+V: S1V2 
+V: S2V1 clef=bass 
+V: S2V2 
+K: Db % key signature
+%
+%
+% 1
+[V: S1V1] [Q:1/4=100] A | A3/2 A/ =G B | A2 F D | E3/2 F/ G G | F3
+w: 1.~Be- neath the cross of Je- sus I fain would take my stand, 
+w: 2.~O safe and happ- y shel- ter, O re- fuge tried and sweet, 
+w: 3.~There lies be- neath its sha- dow but on the fur- ther side 
+w: 4.~U- pon that cross of Je- sus mine eye at times can see 
+w: 5.~I take, O cross, thy sha- dow for my a- bid- ing place; 
+% 5
+[V: S1V1]  F | d3/2 d/ d c | B A G F | E3/2 E/ =E E | F3
+w: The sha- dow of a might- y rock with- in a wear- y land; 
+w: O tryst- ing place where Hea- ven's love and Hea- ven's jus- tice meet! 
+w: The dark- ness of an aw- ful grave that gapes both deep and wide 
+w: The ver- y dy- ing form of One Who suf- fered there for me; 
+w: I ask no o- ther sun- shine than the sun- shine of His face; 
+% 9
+[V: S1V1]  F | F3/2 E/ D E | F G A A | B3/2 B/ B F | G3
+w: A home with- in the wild- er- ness, a rest u- pon the way, 
+w: As to the ho- ly pa- tri- arch that won- drous dream was giv'n, 
+w: And there be- tween us stands the cross two arms out- stretched to save 
+w: And from my strick- en heart with tears two won- ders I con- fess; 
+w: Con- tent to let the world go by to know no gain or loss, 
+% 13
+[V: S1V1]  G/.-G/ | c3/2 B/ A G | F F A G/.-G/ | !sintro!F3/2 D/ F E | D3 !eintro!|]
+w: From the burn- ing of the noon- tide heat, and the bur- den of the day. 
+w: So * seems my Sa- vior's cross to me, a * lad- der up to heav'n. 
+w: A * watch- man set to guard the way from * that e- ter- nal grave. 
+w: The * won- ders of re- deem- ing love and * my un- worth- i- ness. 
+w: My * sin- ful self my on- ly shame, my * glor- y all the cross. 
+% 19

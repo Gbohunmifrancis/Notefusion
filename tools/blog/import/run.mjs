@@ -18,6 +18,7 @@
 // The run ends with tools/blog/import/ohp-report.json.
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { CONTENT_DIR } from "../lib/site.mjs";
 import { slugify } from "../lib/util.mjs";
 import { decodeAbc } from "./abc.mjs";
@@ -26,7 +27,7 @@ import { parseMelody } from "../lib/solfa.mjs";
 
 const HYMNS_DIR = path.join(CONTENT_DIR, "hymns");
 const TUNES_DIR = path.join(HYMNS_DIR, "tunes");
-export const REPORT_PATH = path.join(path.dirname(new URL(import.meta.url).pathname), "ohp-report.json");
+export const REPORT_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), "ohp-report.json");
 
 const readJson = (f) => JSON.parse(fs.readFileSync(f, "utf8"));
 const jsonText = (x) => JSON.stringify(x, null, 2) + "\n";
@@ -65,7 +66,7 @@ const firstLineKeys = (h) => {
   return [w.slice(0, 5).join(" "), "~" + w.slice(1, 6).join(" ")];
 };
 
-export function runImport({ src, today, dryRun = false, hymnsDir = HYMNS_DIR, tunesDir = TUNES_DIR, log = console.log }) {
+export function runImport({ src, today, dryRun = false, hymnsDir = HYMNS_DIR, tunesDir = TUNES_DIR, reportPath = REPORT_PATH, log = console.log }) {
   const hymns = loadDir(hymnsDir), tunes = loadDir(tunesDir);
   const hand = [...hymns].filter(([, h]) => !h.importedFrom);
   const handKeys = new Map();
@@ -170,12 +171,12 @@ export function runImport({ src, today, dryRun = false, hymnsDir = HYMNS_DIR, tu
 
   report.counts = Object.fromEntries(["published", "drafts", "filled", "alreadyOnSite", "notImported", "unreadable"].map((k) => [k, report[k].length]));
   report.counts.scores = files.length;
-  if (!dryRun) fs.writeFileSync(REPORT_PATH, jsonText(report));
+  if (!dryRun) fs.writeFileSync(reportPath, jsonText(report));
   log(`${files.length} scores: ${report.counts.published} published, ${report.counts.drafts} drafts, ${report.counts.filled} filled in, ${report.counts.alreadyOnSite} already on the site, ${report.counts.notImported} not imported (copyright), ${report.counts.unreadable} unreadable. ${written} files written, ${removed} removed${dryRun ? " (dry run: nothing written)" : ""}.`);
   return report;
 }
 
-if (import.meta.url === new URL(`file://${process.argv[1]}`).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = process.argv.slice(2);
   const get = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : null; };
   const src = get("--src");

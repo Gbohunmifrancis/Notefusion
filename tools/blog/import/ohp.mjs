@@ -394,11 +394,17 @@ export function convertScore(text, { base, today }) {
         if (k >= ns.length) { if (tok.text) problems.push(`verse ${v + 1} has more syllables than notes in line ${si + 1}`); break; }
         if (tok.text) {
           let t = tok.text;
-          if (first && kind === "verse") t = t.replace(/^\d+\.\s*/, "");
+          if (first && kind === "verse") t = t.replace(/^\d+[.,]\s*/, "");
           first = false;
           if (t) out.set(ns[k], { text: t, joins: tok.joins });
         }
         k++;
+      }
+      // Notes left over at the end of a line with no syllable (and not held over by a tie): the first
+      // verse is short of words there, which a held "_" would hide.
+      if (v === 0) {
+        const left = ns.slice(k).filter((n, i) => { const prev = ns[k + i - 1]; return !(prev && prev.tie && prev.midi === n.midi); });
+        if (left.length) problems.push(`the first verse has fewer syllables than notes in line ${si + 1}`);
       }
     });
     return out;

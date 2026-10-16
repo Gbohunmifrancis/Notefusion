@@ -1588,6 +1588,10 @@
       "slug": "come-thou-fount-of-every-blessing"
     },
     {
+      "score": "Pass_Me_Not_O_Gentle_Savior-Pass_Me_Not_O_Gentle_Savior",
+      "slug": "pass-me-not-o-gentle-saviour"
+    },
+    {
       "score": "To_God_Be_the_Glory-To_God_Be_the_Glory",
       "slug": "to-god-be-the-glory"
     },
@@ -1685,11 +1689,6 @@
     {
       "score": "Our_God_Our_Help_In_Ages_Past-St_Anne",
       "slug": "o-god-our-help-in-ages-past"
-    },
-    {
-      "score": "Pass_Me_Not_O_Gentle_Savior-Pass_Me_Not_O_Gentle_Savior",
-      "slug": "pass-me-not-o-gentle-saviour",
-      "reason": "ours has no melody, but the score did not pass: the words contain verse numbers or editor's notes"
     },
     {
       "score": "Praise_To_The_Lord_The_Almighty-Lobe_Den_Herren",
@@ -1932,8 +1931,8 @@
   "counts": {
     "published": 210,
     "drafts": 65,
-    "filled": 5,
-    "alreadyOnSite": 29,
+    "filled": 6,
+    "alreadyOnSite": 28,
     "notImported": 41,
     "unreadable": 1,
     "scores": 351
