@@ -6,7 +6,9 @@
   ],
   "music": [
     {
-      "name": "James Walsh",
+      "name": "James Walch",
+      "born": 1837,
+      "died": 1901,
       "role": "Music (1875)"
     }
   ],
@@ -21,13 +23,13 @@
   "incipit": "dmfsssdmrrd|dtlsstlsfm",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0002/x000295.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0002/000295a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000295; public domain.",
-  "reviewNotes": "Held back: not provably public domain: James Walsh: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000295 (the melody read from 000295a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000295a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000295 (the melody read from 000295a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells James Walch as “James Walsh”; the name is printed as the sources spell it. James Walch's dates (1837–1901) are from https://hymnary.org/tune/eagley_walch (James Walch, b. near Bolton 1837, d. Llandudno Junction, August 1901; EAGLEY and TIDINGS, 1875; CCEH spells him Walsh); CCEH's page gives only the year 1875. The bar lines are those of CCEH's Noteworthy score (000295a.nwc).",
   "importedFrom": "cceh:000295",
   "updated": "2026-10-16"
 }
