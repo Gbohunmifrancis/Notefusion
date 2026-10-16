@@ -29,6 +29,15 @@ internal sealed class BlogSiteWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        using (var scope = _scopes.CreateScope())
+        {
+            var github = scope.ServiceProvider.GetRequiredService<IGitHubActions>();
+            if (github.IsConfigured)
+                _logger.LogInformation("Blog site rebuilds are on: {Target}.", github.Target);
+            else
+                _logger.LogWarning("Blog site rebuilds are off: GitHub__Token is not set. Posts still publish; the website shows them at its next deploy.");
+        }
+
         while (!stoppingToken.IsCancellationRequested)
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();

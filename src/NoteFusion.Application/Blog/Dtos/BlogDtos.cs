@@ -9,7 +9,7 @@ public sealed record BlogFaqDto(string Question, string Answer);
 public sealed record BlogCoverDto(string Src, string Alt, int Width, int Height);
 
 /// <summary>A row of the console's posts table.</summary>
-public sealed record BlogPostRowDto(
+public sealed record BlogPostListRowDto(
     Guid Id,
     string Slug,
     string Title,

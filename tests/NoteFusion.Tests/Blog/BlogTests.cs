@@ -24,7 +24,7 @@ public class BlogTests
         public FakeCatalogue Catalogue { get; } = new();
         public FakeGitHub GitHub { get; } = new();
         public FakeGemini Gemini { get; } = new();
-        public BlogSettings Settings { get; } = new() { GeminiRetryDelay = TimeSpan.Zero };
+        public BlogSettings Settings { get; } = new() { GeminiRetryDelays = [TimeSpan.Zero] };
         public User Admin { get; }
 
         public Fixture()
@@ -439,7 +439,8 @@ public class BlogTests
         Assert.Equal(["choir-rehearsal-tips", "how-to-teach-a-choir-a-new-song"], drafts.Select(p => p.Slug));
         Assert.All(drafts, p => Assert.Equal(BlogPostStatus.Draft, p.Status)); // never published by itself
         var teach = drafts.Single(p => p.Slug == "how-to-teach-a-choir-a-new-song");
-        Assert.Equal("gemini-test-001", teach.GenerationModel);
+        Assert.Equal(BlogSettings.DefaultModel, teach.GenerationModel);
+        Assert.Equal(BlogSettings.DefaultModel, run.Model);
         Assert.Equal(new BlogTokenUsage("Draft", 1000, 2000, 500, 0, 3500), Assert.Single(teach.GenerationUsage));
         Assert.Equal("keyword for how-to-teach-a-choir-a-new-song", teach.Keyword);
         Assert.Equal(t1.Id, teach.TopicId);
@@ -521,8 +522,8 @@ public class BlogTests
         using var f = new Fixture();
         await Topic(f, "how-to-teach-a-choir-a-new-song", 10);
         await Topic(f, "choir-rehearsal-tips", 20);
-        f.Gemini.Fail(Error.Network("GEMINI_RATE_LIMITED", "429")).Answer(BlogSamples.GoodDraft())
-            .Fail(Error.Failure("GEMINI_ERROR", "Gemini API error 403: bad key"));
+        f.Gemini.Fail(Error.Network("GEMINI_RATE_LIMITED", "429"), 429).Answer(BlogSamples.GoodDraft())
+            .Fail(Error.Failure("GEMINI_ERROR", "Gemini API error 403: bad key"), 403);
 
         await Generate(f, 2);
         await f.Runner().RunNextAsync(default);

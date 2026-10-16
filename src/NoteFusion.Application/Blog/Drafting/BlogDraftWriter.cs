@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using NoteFusion.Application.Common.Errors;
+using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
 using NoteFusion.Shared.Results;
 
@@ -27,26 +27,48 @@ public sealed record DraftFields(string Title, string Description, string Slug, 
     }
 }
 
-/// <summary>How one draft came out: the post's fields (null when no answer came), what still fails, the calls' tokens.</summary>
+/// <summary>
+/// How one draft came out: the post's fields (null when no answer came), what still fails, the calls' tokens, the
+/// model that wrote it (or the last one tried), and the error that stopped it, if any.
+/// </summary>
 public sealed record DraftOutcome(DraftFields? Draft, IReadOnlyList<string> Problems, IReadOnlyList<BlogTokenUsage> Usage, string Model, Error? Error);
 
 /// <summary>
 /// Drafts one post, as <c>tools/blog/draft.mjs</c> did: the system instruction and the topic's prompt, the model's
-/// JSON, the checks, and — if anything fails — one revision with the list of problems. A rate limit, a server
-/// error or no answer is tried once more after a pause (the call has no side effects, only a cost).
+/// JSON, the checks, and — if anything fails — one revision with the list of problems. A call has no side effects,
+/// only a cost, so the drafter paces its own retries (the HTTP pipeline repeats nothing):
+/// <list type="bullet">
+///   <item>a 429, a 5xx or a dropped connection is tried up to <see cref="BlogSettings.GeminiAttempts"/> times,
+///   <see cref="BlogSettings.GeminiRetryDelays"/> apart (15/30/60/60 s), a <c>Retry-After</c> winning;</item>
+///   <item>a model still unavailable after that (429, 5xx, or a 404 for an id that is gone) hands the draft to the
+///   next of <see cref="BlogSettings.GeminiFallbackModels"/>, <see cref="BlogSettings.GeminiFallbackAttempts"/>
+///   tries each; a refused key, a bad request or a blocked prompt never falls back;</item>
+///   <item>the revision goes to the model that wrote the draft (it continues that model's turn);</item>
+///   <item>our own breaker open (<see cref="IProviderHealth"/>) stops at once, with a sentence that says so.</item>
+/// </list>
 /// </summary>
 public sealed class BlogDraftWriter
 {
     private readonly IGeminiClient _gemini;
     private readonly BlogSettings _settings;
+    private readonly IProviderHealth _health;
     private readonly ILogger<BlogDraftWriter> _logger;
 
-    public BlogDraftWriter(IGeminiClient gemini, BlogSettings settings, ILogger<BlogDraftWriter> logger)
+    public BlogDraftWriter(IGeminiClient gemini, BlogSettings settings, ILogger<BlogDraftWriter> logger, IProviderHealth? health = null)
     {
         _gemini = gemini;
         _settings = settings;
         _logger = logger;
+        _health = health ?? ProviderHealth.AlwaysAvailable;
     }
+
+    /// <summary>How a pause is waited out; tests replace it to record the pauses instead.</summary>
+    public Func<TimeSpan, CancellationToken, Task> Delay { get; set; } = Task.Delay;
+
+    /// <summary>The chosen model, then the fallbacks, each once.</summary>
+    public IReadOnlyList<string> Models
+        => new[] { _settings.GeminiModel }.Concat(_settings.GeminiFallbackModels)
+            .Where(m => !string.IsNullOrWhiteSpace(m)).Select(m => m.Trim()).Distinct(StringComparer.Ordinal).ToList();
 
     public async Task<DraftOutcome> WriteAsync(
         DraftTopic topic, BlogCatalogue catalogue, IReadOnlyList<LivePost> livePosts, ISet<string> takenSlugs, CancellationToken ct)
@@ -60,23 +82,22 @@ public sealed class BlogDraftWriter
 
         var contents = new List<GeminiTurn> { GeminiTurn.User(user) };
         var usage = new List<BlogTokenUsage>();
-        var model = _settings.GeminiModel;
 
-        var first = await CallAsync(contents, "Draft", usage, ct);
-        if (first.IsFailure)
-            return new DraftOutcome(null, [], usage, model, first.Error);
-        model = first.Value.ModelVersion;
-        var (draft, problems) = Assess(first.Value, topic, ctx, takenSlugs);
+        var first = await CallAsync(contents, "Draft", Models, usage, ct);
+        if (first.Reply is null)
+            return new DraftOutcome(null, [], usage, first.Model, first.Failure!.Error);
+        var model = first.Model;
+        var (draft, problems) = Assess(first.Reply, topic, ctx, takenSlugs);
 
         if (problems.Count > 0)
         {
-            _logger.LogInformation("Blog draft {Slug} needs fixing ({Count} problems); asking for one revision.", topic.Slug, problems.Count);
-            contents.Add(first.Value.ModelTurn);
+            _logger.LogInformation("Blog draft {Slug} needs fixing ({Count} problems); asking {Model} for one revision.", topic.Slug, problems.Count, model);
+            contents.Add(first.Reply.ModelTurn);
             contents.Add(GeminiTurn.User(BlogPrompt.Revision(problems)));
-            var second = await CallAsync(contents, "Revision", usage, ct);
-            if (second.IsFailure)
-                return new DraftOutcome(draft, problems, usage, model, second.Error);
-            (draft, problems) = Assess(second.Value, topic, ctx, takenSlugs);
+            var second = await CallAsync(contents, "Revision", [model], usage, ct);
+            if (second.Reply is null)
+                return new DraftOutcome(draft, problems, usage, model, second.Failure!.Error);
+            (draft, problems) = Assess(second.Reply, topic, ctx, takenSlugs);
         }
 
         return new DraftOutcome(draft, problems, usage, model, null);
@@ -100,24 +121,51 @@ public sealed class BlogDraftWriter
         return (draft, BlogChecks.CheckDraft(input, ctx, takenSlugs));
     }
 
-    private async Task<Result<GeminiReply>> CallAsync(List<GeminiTurn> contents, string label, List<BlogTokenUsage> usage, CancellationToken ct)
+    private sealed record Call(GeminiReply? Reply, GeminiFailure? Failure, string Model);
+
+    /// <summary>The first of <paramref name="models"/> that answers, with the retries and pauses above.</summary>
+    private async Task<Call> CallAsync(
+        List<GeminiTurn> contents, string label, IReadOnlyList<string> models, List<BlogTokenUsage> usage, CancellationToken ct)
     {
-        var request = new GeminiRequest(_settings.GeminiModel, BlogPrompt.System, contents.ToList(), BlogPrompt.DraftSchemaJson,
-            _settings.GeminiTemperature, _settings.GeminiMaxOutputTokens);
-        var result = await _gemini.GenerateAsync(request, ct);
-        if (result.IsFailure && result.Error.Type == Shared.Results.ErrorType.Network && !ProviderErrors.IsUnavailable(result.Error))
+        GeminiFailure? failure = null;
+        for (var m = 0; m < models.Count; m++)
         {
-            _logger.LogWarning("Gemini: {Message} Trying once more in {Seconds} s.", result.Error.Message, _settings.GeminiRetryDelay.TotalSeconds);
-            await Task.Delay(_settings.GeminiRetryDelay, ct);
-            result = await _gemini.GenerateAsync(request, ct);
+            var model = models[m];
+            var attempts = Math.Max(1, m == 0 ? _settings.GeminiAttempts : _settings.GeminiFallbackAttempts);
+            var request = new GeminiRequest(model, BlogPrompt.System, contents.ToList(), BlogPrompt.DraftSchemaJson,
+                _settings.GeminiTemperature, _settings.GeminiMaxOutputTokens);
+            for (var attempt = 1; attempt <= attempts; attempt++)
+            {
+                if (_health.IsUnavailable(OutboundProviders.Gemini))
+                    return new Call(null, new GeminiFailure(GeminiErrors.BreakerOpen, BreakerOpen: true), model);
+
+                var response = await _gemini.GenerateAsync(request, ct);
+                if (response.Reply is { } reply)
+                {
+                    var u = reply.Usage;
+                    usage.Add(new BlogTokenUsage(label, u.Prompt, u.Output, u.Thinking, u.Cached, u.Total));
+                    _logger.LogInformation(
+                        "Gemini usage ({Call}, {Model}): prompt {Prompt} (cached {Cached}), output {Output}, thinking {Thinking}, total {Total}",
+                        label, model, u.Prompt, u.Cached, u.Output, u.Thinking, u.Total);
+                    return new Call(reply, null, model);
+                }
+
+                failure = response.Failure!;
+                if (!failure.Retryable || attempt == attempts)
+                    break;
+                var delays = _settings.GeminiRetryDelays;
+                var wait = failure.RetryAfter ?? (delays.Count == 0 ? TimeSpan.Zero : delays[Math.Min(attempt - 1, delays.Count - 1)]);
+                if (wait > _settings.GeminiMaxRetryWait)
+                    wait = _settings.GeminiMaxRetryWait;
+                _logger.LogWarning("Gemini ({Model}): {Message} Trying again in {Seconds} s (attempt {Next} of {Attempts}).",
+                    model, failure.Error.Message, (int)wait.TotalSeconds, attempt + 1, attempts);
+                await Delay(wait, ct);
+            }
+
+            if (failure is null || !failure.ModelUnavailable || m == models.Count - 1)
+                return new Call(null, failure, model);
+            _logger.LogWarning("Gemini: {Model} is unavailable ({Message}); trying {Next}.", model, failure.Error.Message, models[m + 1]);
         }
-        if (result.IsSuccess)
-        {
-            var u = result.Value.Usage;
-            usage.Add(new BlogTokenUsage(label, u.Prompt, u.Output, u.Thinking, u.Cached, u.Total));
-            _logger.LogInformation("Gemini usage ({Call}): prompt {Prompt} (cached {Cached}), output {Output}, thinking {Thinking}, total {Total}",
-                label, u.Prompt, u.Cached, u.Output, u.Thinking, u.Total);
-        }
-        return result;
+        return new Call(null, failure ?? new GeminiFailure(GeminiErrors.NotConfigured), models.LastOrDefault() ?? _settings.GeminiModel);
     }
 }

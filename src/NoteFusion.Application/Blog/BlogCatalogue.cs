@@ -5,7 +5,10 @@ namespace NoteFusion.Application.Blog;
 /// <summary>A hymn's opening line exactly as the site's engine writes it, for the drafter's prompt.</summary>
 public sealed record CatalogueLine(int Bars, string Solfa, string Words);
 
-/// <summary>A published hymn the posts may cite in a ```solfa block.</summary>
+/// <summary>
+/// A published hymn the posts may cite in a ```solfa block. <c>Imported</c>: from the Open Hymnal Project
+/// library rather than encoded and checked by hand.
+/// </summary>
 public sealed record CatalogueHymn(
     string Slug,
     string Title,
@@ -14,7 +17,8 @@ public sealed record CatalogueHymn(
     string Header,
     string Time,
     int Bars,
-    CatalogueLine FirstLine);
+    CatalogueLine FirstLine,
+    bool Imported = false);
 
 /// <summary>
 /// What the live website holds, as its build published it at <c>/blog/catalogue.json</c>

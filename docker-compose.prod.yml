@@ -179,6 +179,7 @@ services:
       # GitHub__Token. Without the key or the token that part is off and the console says so. Blank = default.
       Gemini__ApiKey: ${Gemini__ApiKey:-}
       Gemini__Model: ${Gemini__Model:-}
+      Gemini__FallbackModels: ${Gemini__FallbackModels:-}
       GitHub__Token: ${GitHub__Token:-}
       GitHub__Repo: ${GitHub__Repo:-Gbohunmifrancis/Notefusion}
       Blog__SiteUrl: ${Blog__SiteUrl:-https://notefusion.studio}

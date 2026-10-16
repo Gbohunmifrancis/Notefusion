@@ -21,6 +21,7 @@ public sealed class BlogGenerationRunner
     private readonly BlogSettings _settings;
     private readonly IDateTimeProvider _clock;
     private readonly ILogger<BlogGenerationRunner> _logger;
+    private readonly IProviderHealth _health;
 
     public BlogGenerationRunner(
         IApplicationDbContext db,
@@ -29,8 +30,10 @@ public sealed class BlogGenerationRunner
         BlogDraftWriter writer,
         BlogSettings settings,
         IDateTimeProvider clock,
-        ILogger<BlogGenerationRunner> logger)
+        ILogger<BlogGenerationRunner> logger,
+        IProviderHealth? health = null)
     {
+        _health = health ?? ProviderHealth.AlwaysAvailable;
         _db = db;
         _gemini = gemini;
         _catalogue = catalogue;
@@ -140,11 +143,17 @@ public sealed class BlogGenerationRunner
         foreach (var topic in topics)
         {
             ct.ThrowIfCancellationRequested();
+            if (_health.IsUnavailable(OutboundProviders.Gemini))
+            {
+                // Our breaker opened after repeated failures: every call would be refused unsent.
+                stopped = GeminiErrors.BreakerOpen.Message;
+                break;
+            }
             var outcome = await _writer.WriteAsync(topic, catalogue.Value, live, takenSlugs, ct);
             if (outcome.Draft is null)
             {
                 run.Add(new BlogGenerationItem(topic.Slug, topic.Keyword, topic.TopicId, null, null, false, outcome.Problems,
-                    outcome.Error?.Message ?? "The model did not return a usable post.", outcome.Usage));
+                    outcome.Error?.Message ?? "The model did not return a usable post.", outcome.Usage, outcome.Model));
                 await _db.SaveChangesAsync(ct);
                 if (outcome.Error is { } e)
                 {
@@ -159,7 +168,7 @@ public sealed class BlogGenerationRunner
             var post = SaveDraft(topic, outcome);
             takenSlugs.Add(post.Slug);
             run.Add(new BlogGenerationItem(topic.Slug, topic.Keyword, topic.TopicId, post.Id, post.Title,
-                outcome.Problems.Count == 0 && outcome.Error is null, outcome.Problems, outcome.Error?.Message, outcome.Usage));
+                outcome.Problems.Count == 0 && outcome.Error is null, outcome.Problems, outcome.Error?.Message, outcome.Usage, outcome.Model));
             await _db.SaveChangesAsync(ct);
             _logger.LogInformation("Saved blog draft {Slug} ({Problems} problems left, {Tokens} tokens).",
                 post.Slug, outcome.Problems.Count, outcome.Usage.Sum(u => u.Total));

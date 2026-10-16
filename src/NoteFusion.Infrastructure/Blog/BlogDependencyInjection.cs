@@ -44,6 +44,7 @@ public static class BlogDependencyInjection
             SiteUrl = Text(blog["SiteUrl"]) ?? d.SiteUrl,
             GeminiModel = Text(gemini["Model"]) ?? d.GeminiModel,
             GeminiMaxOutputTokens = int.TryParse(gemini["MaxOutputTokens"], out var max) && max > 0 ? max : d.GeminiMaxOutputTokens,
+            GeminiFallbackModels = Models(gemini["FallbackModels"]) ?? d.GeminiFallbackModels,
             AutoDraftEnabled = bool.TryParse(blog["AutoDraftEnabled"], out var on) ? on : d.AutoDraftEnabled,
             AutoDraftDays = Days(blog["AutoDraftDays"]) ?? d.AutoDraftDays,
             AutoDraftTimeUtc = TimeOnly.TryParseExact(Text(blog["AutoDraftTimeUtc"]) ?? string.Empty, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var at)
@@ -69,6 +70,17 @@ public static class BlogDependencyInjection
             Workflow = Text(section["Workflow"]) ?? d.Workflow,
             Ref = Text(section["Ref"]) ?? d.Ref,
         };
+    }
+
+    /// <summary>"gemini-flash-latest, gemini-flash-lite-latest" → the models; "none" → no fallback; empty → the default.</summary>
+    internal static IReadOnlyList<string>? Models(string? value)
+    {
+        var text = Text(value);
+        if (text is null)
+            return null;
+        if (text.Equals("none", StringComparison.OrdinalIgnoreCase))
+            return [];
+        return text.Split([',', ' ', ';'], StringSplitOptions.RemoveEmptyEntries).Distinct(StringComparer.Ordinal).ToList();
     }
 
     /// <summary>"Mon,Thu" or "Monday, Thursday" → the days; "none" → no days; empty → the default.</summary>

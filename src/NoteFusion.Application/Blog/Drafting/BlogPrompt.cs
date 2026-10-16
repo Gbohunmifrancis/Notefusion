@@ -60,10 +60,25 @@ FORMAT:
 }
 """;
 
-    /// <summary>The solfa catalogue: for each hymn, the engine's first line, and the scales that can be shown.</summary>
-    public static string Catalogue(BlogCatalogue catalogue)
+    /// <summary>
+    /// The hymns whose bars the prompt spells out (prompt.mjs <c>catalogueHymns</c>): the ones encoded by hand,
+    /// plus any imported one the topic must link to. The imported library (hundreds of hymns) stays linkable —
+    /// every hymn page is in the page list — but spelling out every first line would double each call's prompt.
+    /// </summary>
+    public static IReadOnlyList<CatalogueHymn> CatalogueHymns(BlogCatalogue catalogue, IReadOnlyList<string> requiredLinks)
     {
-        var lines = catalogue.Hymns.Select(h =>
+        var linked = requiredLinks
+            .Select(l => l.Split('?', '#')[0].TrimEnd('/'))
+            .Where(l => l.StartsWith("/hymns/", StringComparison.Ordinal))
+            .Select(l => l["/hymns/".Length..])
+            .ToHashSet(StringComparer.Ordinal);
+        return catalogue.Hymns.Where(h => !h.Imported || linked.Contains(h.Slug)).ToList();
+    }
+
+    /// <summary>The solfa catalogue: for each hymn spelled out, the engine's first line, and the scales that can be shown.</summary>
+    public static string Catalogue(BlogCatalogue catalogue, IReadOnlyList<string>? requiredLinks = null)
+    {
+        var lines = CatalogueHymns(catalogue, requiredLinks ?? []).Select(h =>
             $"- hymn: {h.Slug} — \"{h.Title}\" — {h.Key}, {h.Header}, {h.Time}, {h.Bars} bars. First {h.FirstLine.Bars} bars (bars: 1-{h.FirstLine.Bars}) render as:\n    {h.FirstLine.Solfa}\n    words: {h.FirstLine.Words}");
         return $"""
 Hymn excerpts (choose bars within the hymn's bar count; add "key: F major" to show the same bars in another key, or "words: false" to hide the words):
@@ -103,7 +118,7 @@ Pages you may link to:
 Existing tags: {(tags.Count > 0 ? string.Join(", ", tags) : "(none yet)")}
 
 Solfa catalogue — the only solfa you may show, as ```solfa blocks:
-{Catalogue(catalogue)}
+{Catalogue(catalogue, topic.Links)}
 Use one to three solfa blocks where they make the explanation concrete. Return the JSON object described by the schema.
 """;
     }

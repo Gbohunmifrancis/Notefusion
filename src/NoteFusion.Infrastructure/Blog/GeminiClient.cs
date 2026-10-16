@@ -38,10 +38,10 @@ internal sealed class GeminiClient : IGeminiClient
 
     public bool IsConfigured => _settings.IsConfigured;
 
-    public async Task<Result<GeminiReply>> GenerateAsync(GeminiRequest request, CancellationToken ct)
+    public async Task<GeminiResponse> GenerateAsync(GeminiRequest request, CancellationToken ct)
     {
         if (!IsConfigured)
-            return GeminiErrors.NotConfigured;
+            return GeminiResponse.Fail(GeminiErrors.NotConfigured);
 
         var body = new JsonObject
         {
@@ -75,12 +75,14 @@ internal sealed class GeminiClient : IGeminiClient
         catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, ct))
         {
             _logger.LogWarning("Gemini did not answer: {Kind}.", ex.GetType().Name);
-            return OutboundFailure.ToError(ex, "GEMINI_UNAVAILABLE", "The Gemini API");
+            return OutboundFailure.IsBreakerOpen(ex)
+                ? GeminiResponse.Fail(new GeminiFailure(GeminiErrors.BreakerOpen, BreakerOpen: true))
+                : GeminiResponse.Fail(Error.Network("GEMINI_UNAVAILABLE", "The Gemini API did not answer in time."));
         }
         catch (HttpRequestException ex)
         {
             _logger.LogWarning("Could not reach the Gemini API: {Message}", ex.Message);
-            return Error.Network("GEMINI_UNAVAILABLE", "Could not reach the Gemini API.");
+            return GeminiResponse.Fail(Error.Network("GEMINI_UNAVAILABLE", "Could not reach the Gemini API."));
         }
 
         using (response)
@@ -97,11 +99,33 @@ internal sealed class GeminiClient : IGeminiClient
             }
 
             if (!response.IsSuccessStatusCode)
-                return Refusal(response.StatusCode, (json as JsonObject)?["error"]?["message"]?.GetValue<string>() ?? response.ReasonPhrase, request.Model);
+            {
+                var status = (int)response.StatusCode;
+                _logger.LogWarning("Gemini ({Model}) answered {Status}.", request.Model, status);
+                return GeminiResponse.Fail(
+                    Refusal(response.StatusCode, (json as JsonObject)?["error"]?["message"]?.GetValue<string>() ?? response.ReasonPhrase, request.Model),
+                    status,
+                    RetryAfter(response));
+            }
             if (json is null)
-                return Error.Failure("GEMINI_BAD_RESPONSE", "The Gemini API returned a response that is not JSON.");
-            return Read(json, request.Model);
+                return GeminiResponse.Fail(Error.Failure("GEMINI_BAD_RESPONSE", "The Gemini API returned a response that is not JSON."));
+            var read = Read(json, request.Model);
+            return read.IsSuccess ? GeminiResponse.Ok(read.Value) : GeminiResponse.Fail(read.Error);
         }
+    }
+
+    /// <summary>The <c>Retry-After</c> the API sent, in seconds or as a date; null when it sent none.</summary>
+    private static TimeSpan? RetryAfter(HttpResponseMessage response)
+    {
+        var header = response.Headers.RetryAfter;
+        if (header?.Delta is { } delta)
+            return delta;
+        if (header?.Date is { } date)
+        {
+            var wait = date - DateTimeOffset.UtcNow;
+            return wait > TimeSpan.Zero ? wait : TimeSpan.Zero;
+        }
+        return null;
     }
 
     private static Error Refusal(HttpStatusCode status, string? message, string model)

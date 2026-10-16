@@ -13,15 +13,15 @@ namespace NoteFusion.Application.Blog.Queries;
 
 /// <summary>The console's posts table: filtered by status and source, searched by title, slug or keyword, newest change first.</summary>
 public sealed record ListBlogPostsQuery(string? Status, string? Source, string? Search, int Page = 1, int PageSize = 50)
-    : IRequest<Result<PagedResultDto<BlogPostRowDto>>>;
+    : IRequest<Result<PagedResultDto<BlogPostListRowDto>>>;
 
-public sealed class ListBlogPostsQueryHandler : IRequestHandler<ListBlogPostsQuery, Result<PagedResultDto<BlogPostRowDto>>>
+public sealed class ListBlogPostsQueryHandler : IRequestHandler<ListBlogPostsQuery, Result<PagedResultDto<BlogPostListRowDto>>>
 {
     private readonly IApplicationDbContext _db;
 
     public ListBlogPostsQueryHandler(IApplicationDbContext db) => _db = db;
 
-    public async Task<Result<PagedResultDto<BlogPostRowDto>>> Handle(ListBlogPostsQuery request, CancellationToken ct)
+    public async Task<Result<PagedResultDto<BlogPostListRowDto>>> Handle(ListBlogPostsQuery request, CancellationToken ct)
     {
         var query = _db.BlogPosts.AsNoTracking();
         if (!string.IsNullOrWhiteSpace(request.Status))
@@ -49,11 +49,11 @@ public sealed class ListBlogPostsQueryHandler : IRequestHandler<ListBlogPostsQue
             .Skip((page - 1) * pageSize).Take(pageSize)
             .ToListAsync(ct);
 
-        var rows = posts.Select(p => new BlogPostRowDto(
+        var rows = posts.Select(p => new BlogPostListRowDto(
             p.Id, p.Slug, p.Title, p.Status.ToString(), p.Source.ToString(), p.Tags, p.PublishAtUtc, p.PublishedAtUtc,
             p.UpdatedAtUtc, p.CreatedAtUtc, BlogChecks.CountWords(BlogChecks.StripFences(p.Body)), p.ReviewNotes.Count,
             p.GenerationModel, p.GenerationUsage.Sum(u => u.Total), BlogMapping.PathOf(p.Slug))).ToList();
-        return new PagedResultDto<BlogPostRowDto>(rows, page, pageSize, total);
+        return new PagedResultDto<BlogPostListRowDto>(rows, page, pageSize, total);
     }
 }
 

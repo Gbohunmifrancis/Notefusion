@@ -328,6 +328,7 @@ without either, that half is off and the console says so:
 |-------------------|---------------|---------|-------|
 | `GEMINI_API_KEY` (secret, **already exists** — the old PR drafter used it) | `Gemini__ApiKey` | — | From [Google AI Studio](https://aistudio.google.com/apikey). Without it drafting is off. |
 | `GEMINI_MODEL` (variable, optional) | `Gemini__Model` | `gemini-3.8-flash` | A Pro model drafts better and costs more. |
+| `GEMINI_FALLBACK_MODELS` (variable, optional) | `Gemini__FallbackModels` | `gemini-flash-latest,gemini-flash-lite-latest` | Tried in order (two tries each) when the chosen model stays overloaded (429/5xx after five tries, 15/30/60/60 s apart) or its id is gone (404). `none` turns fallback off. Never used for a refused key. |
 | — | `Gemini__MaxOutputTokens` | `16384` | Thinking tokens count against it. |
 | `GH_DEPLOY_TOKEN` (secret, **new**) | `GitHub__Token` | — | A **fine-grained personal access token**: Resource owner = the repository's owner, Repository access = *Only select repositories* → this repository, Permissions → **Actions: Read and write** (Metadata: read is added automatically). Nothing else. Without it, published posts reach the site only at the next deploy of `web-site/`. |
 | — (the deploy passes `github.repository`) | `GitHub__Repo` | `Gbohunmifrancis/Notefusion` | `owner/name`. |

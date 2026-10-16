@@ -95,7 +95,8 @@ function SiteCard() {
             <div className="space-y-2 text-xs">
               {!s.rebuildsEnabled && (
                 <p className="rounded-md bg-warning/10 px-3 py-2 text-warning-deep">
-                  Rebuilds are off: set <code>GitHub__Token</code> on the API. Published posts reach the site at the next deploy.
+                  Site rebuilds are off: <code>GitHub__Token</code> is not set on the API. Publishing still works, but
+                  published posts only reach notefusion.studio at the website&apos;s next deploy.
                 </p>
               )}
               {!s.draftingEnabled && (
@@ -192,9 +193,9 @@ export function BlogView() {
   return (
     <div className="animate-fade-in space-y-5">
       <PageHeader
-        title="Blog"
+        title="Blog posts"
         subtitle="Write, check and publish the posts on notefusion.studio/blog. Drafts never go live by themselves."
-        breadcrumb={["Dashboard", "Blog"]}
+        breadcrumb={["Dashboard", "Blog posts"]}
         actions={
           <>
             <Button asChild variant="outline" size="sm">

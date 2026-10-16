@@ -14,7 +14,8 @@ public sealed record BlogGenerationItem(
     bool PassedChecks,
     IReadOnlyList<string> Problems,
     string? Error,
-    IReadOnlyList<BlogTokenUsage> Usage);
+    IReadOnlyList<BlogTokenUsage> Usage,
+    string? Model = null);
 
 /// <summary>
 /// A batch of drafts asked of the Gemini API, by the founder ("Generate") or by the twice-weekly schedule.
@@ -80,7 +81,17 @@ public class BlogGenerationRun : BaseEntity
         StartedAtUtc = utcNow;
     }
 
-    public void Add(BlogGenerationItem item) => Items = [.. Items, item];
+    /// <summary>
+    /// Records a draft. <see cref="Model"/> becomes the model(s) that wrote the saved drafts — a fallback model when
+    /// the chosen one was overloaded — rather than the one configured.
+    /// </summary>
+    public void Add(BlogGenerationItem item)
+    {
+        Items = [.. Items, item];
+        var wrote = string.Join(", ", Items.Where(i => i.PostId is not null && i.Model is not null).Select(i => i.Model).Distinct());
+        if (wrote.Length > 0)
+            Model = wrote.Length > BlogPost.ModelMaxLength ? wrote[..BlogPost.ModelMaxLength] : wrote;
+    }
 
     /// <summary>Ends the run; its status follows from the drafts it saved.</summary>
     public void Finish(DateTime utcNow, string? error = null)

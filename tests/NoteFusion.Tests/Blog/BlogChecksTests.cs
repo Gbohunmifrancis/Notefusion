@@ -167,10 +167,13 @@ Visit https://example.com for more.
         var request = new GeminiRequest("x", "sys", [GeminiTurn.User("hi")], BlogPrompt.DraftSchemaJson, 0.7, 100);
 
         var limited = await client.GenerateAsync(request, default);
-        Assert.Equal("GEMINI_RATE_LIMITED", limited.Error.Code);
-        Assert.Equal(NoteFusion.Shared.Results.ErrorType.Network, limited.Error.Type);
+        Assert.Equal("GEMINI_RATE_LIMITED", limited.Failure!.Error.Code);
+        Assert.Equal(429, limited.Failure.Status);
+        Assert.True(limited.Failure.Retryable);
         var missing = await client.GenerateAsync(request, default);
-        Assert.Contains("is Gemini__Model \"x\" a current model id?", missing.Error.Message);
+        Assert.Contains("is Gemini__Model \"x\" a current model id?", missing.Failure!.Error.Message);
+        Assert.False(missing.Failure.Retryable);
+        Assert.True(missing.Failure.ModelUnavailable);
 
         var sent = stub.Requests[0];
         Assert.Equal("secret-key", sent.Headers["x-goog-api-key"]);
@@ -237,5 +240,32 @@ Visit https://example.com for more.
             Assert.Empty(BlogChecks.Check(input, new BlogCheckContext(null, [], [])).Blockers);
             Assert.NotEmpty(SolfaBlocks.HymnsCited(p.Body));
         }
+    }
+    [Fact]
+    public void The_prompt_spells_out_only_hand_made_hymns_and_the_ones_the_topic_links_to_but_lists_every_hymn_page()
+    {
+        CatalogueHymn Hymn(string slug, bool imported) => new(slug, slug, null, "G major", "Doh is G", "4/4", 8,
+            new CatalogueLine(2, $"| {slug}-solfa |", "words"), imported);
+        var catalogue = new BlogCatalogue(
+            [Hymn("amazing-grace", false), Hymn("imported-one", true), Hymn("imported-two", true)],
+            ["/", "/app", "/hymns", "/hymns/amazing-grace", "/hymns/imported-one", "/hymns/imported-two"], ["francis"]);
+        var topic = new NoteFusion.Application.Blog.Drafting.DraftTopic(null, "a-topic", "kw", "intent", "angle", ["/hymns/imported-two"]);
+
+        var prompt = NoteFusion.Application.Blog.Drafting.BlogPrompt.User(topic, [], catalogue, []);
+
+        Assert.Contains("| amazing-grace-solfa |", prompt);
+        Assert.Contains("| imported-two-solfa |", prompt);       // the topic links to it
+        Assert.DoesNotContain("| imported-one-solfa |", prompt); // imported, not linked: not spelled out…
+        Assert.Contains("- /hymns/imported-one — imported-one in Tonic Solfa", prompt); // …but still linkable
+        Assert.Equal(["amazing-grace"], NoteFusion.Application.Blog.Drafting.BlogPrompt.CatalogueHymns(catalogue, []).Select(h => h.Slug));
+    }
+
+    [Fact]
+    public void The_catalogue_reads_the_imported_flag_and_defaults_it_to_hand_made()
+    {
+        var json = """{"hymns":[{"slug":"a","title":"A","key":"G major","header":"Doh is G","time":"4/4","bars":4,"firstLine":{"bars":2,"solfa":"| d |","words":"w"},"imported":true},{"slug":"b","title":"B","key":"G major","header":"Doh is G","time":"4/4","bars":4,"firstLine":{"bars":2,"solfa":"| d |","words":"w"}}],"pages":["/"],"authors":["francis"]}""";
+        var cat = System.Text.Json.JsonSerializer.Deserialize<BlogCatalogue>(json, new System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults.Web))!;
+        Assert.True(cat.Hymns[0].Imported);
+        Assert.False(cat.Hymns[1].Imported);
     }
 }

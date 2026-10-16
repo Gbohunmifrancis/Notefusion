@@ -49,7 +49,7 @@ public sealed class FakeGitHub : IGitHubActions
 /// <summary>Gemini, answering from a script; records every request.</summary>
 public sealed class FakeGemini : IGeminiClient
 {
-    private readonly Queue<Result<GeminiReply>> _answers = new();
+    private readonly Queue<GeminiResponse> _answers = new();
 
     public bool IsConfigured { get; set; } = true;
     public List<GeminiRequest> Requests { get; } = [];
@@ -57,21 +57,21 @@ public sealed class FakeGemini : IGeminiClient
     public FakeGemini Answer(object post, int prompt = 1000, int output = 2000, int thinking = 500)
     {
         var json = JsonSerializer.Serialize(post);
-        _answers.Enqueue(new GeminiReply(json, new GeminiUsage(prompt, output, thinking, 0, prompt + output + thinking), "gemini-test-001",
-            new GeminiTurn("model", JsonSerializer.Serialize(new[] { new { text = json } }))));
+        _answers.Enqueue(GeminiResponse.Ok(new GeminiReply(json, new GeminiUsage(prompt, output, thinking, 0, prompt + output + thinking), "gemini-test-001",
+            new GeminiTurn("model", JsonSerializer.Serialize(new[] { new { text = json } })))));
         return this;
     }
 
-    public FakeGemini Fail(Error error)
+    public FakeGemini Fail(Error error, int? status = null)
     {
-        _answers.Enqueue(Result.Failure<GeminiReply>(error));
+        _answers.Enqueue(GeminiResponse.Fail(error, status));
         return this;
     }
 
-    public Task<Result<GeminiReply>> GenerateAsync(GeminiRequest request, CancellationToken ct)
+    public Task<GeminiResponse> GenerateAsync(GeminiRequest request, CancellationToken ct)
     {
         Requests.Add(request);
-        return Task.FromResult(_answers.Count > 0 ? _answers.Dequeue() : Result.Failure<GeminiReply>(Error.Failure("NO_SCRIPT", "No answer scripted.")));
+        return Task.FromResult(_answers.Count > 0 ? _answers.Dequeue() : GeminiResponse.Fail(Error.Failure("NO_SCRIPT", "No answer scripted.")));
     }
 }
 

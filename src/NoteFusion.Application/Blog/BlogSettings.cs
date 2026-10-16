@@ -18,8 +18,24 @@ public sealed class BlogSettings
 
     public double GeminiTemperature { get; init; } = 0.7;
 
-    /// <summary>A rate limit or server error is tried once more after this pause (draft.mjs waited 15 s).</summary>
-    public TimeSpan GeminiRetryDelay { get; init; } = TimeSpan.FromSeconds(15);
+    /// <summary>
+    /// Tried in order when <see cref="GeminiModel"/> stays overloaded, rate-limited or gone (Google's own
+    /// "latest" aliases, so they do not go stale). <c>Gemini__FallbackModels</c>, comma-separated; "none" for none.
+    /// </summary>
+    public IReadOnlyList<string> GeminiFallbackModels { get; init; } = ["gemini-flash-latest", "gemini-flash-lite-latest"];
+
+    /// <summary>Tries of the chosen model for a rate limit, a server error or a dropped connection.</summary>
+    public int GeminiAttempts { get; init; } = 5;
+
+    /// <summary>Tries of each fallback model: a bad day costs minutes, not the whole batch.</summary>
+    public int GeminiFallbackAttempts { get; init; } = 2;
+
+    /// <summary>The pause before the second, third, fourth and fifth try; a <c>Retry-After</c> the API sends wins.</summary>
+    public IReadOnlyList<TimeSpan> GeminiRetryDelays { get; init; } =
+        [TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(60)];
+
+    /// <summary>The longest pause, whatever <c>Retry-After</c> says.</summary>
+    public TimeSpan GeminiMaxRetryWait { get; init; } = TimeSpan.FromSeconds(60);
 
     /// <summary>Drafts one batch on <see cref="AutoDraftDays"/> at <see cref="AutoDraftTimeUtc"/>; never publishes.</summary>
     public bool AutoDraftEnabled { get; init; } = true;

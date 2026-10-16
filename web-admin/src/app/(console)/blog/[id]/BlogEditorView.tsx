@@ -28,6 +28,7 @@ import {
   deleteBlogPost,
   duplicateBlogPost,
   getBlogPost,
+  getBlogSiteStatus,
   publishBlogPost,
   scheduleBlogPost,
   unpublishBlogPost,
@@ -211,6 +212,12 @@ export function BlogEditorView({ id }: { id: string | null }) {
   const offset = getReportingOffset();
 
   const loaded = useQuery({ queryKey: ["blog-post", id], queryFn: ({ signal }) => getBlogPost(id!, signal), enabled: id !== null });
+  const site = useQuery({ queryKey: ["blog-site"], queryFn: ({ signal }) => getBlogSiteStatus(signal) });
+  /** Publishing still works without GitHub__Token; the site just does not rebuild until its next deploy. */
+  const rebuildsOff = site.data?.rebuildsEnabled === false;
+  const rebuildNote = rebuildsOff
+    ? " The site rebuild is off (GitHub__Token is not set on the API), so the website shows this at its next deploy."
+    : " The site is being rebuilt; the change is live in a few minutes.";
   const [post, setPost] = useState<BlogPost | null>(null);
   const [form, setForm] = useState<Form>(EMPTY);
   const [saved, setSaved] = useState<string>(JSON.stringify(toInput(EMPTY)));
@@ -294,14 +301,15 @@ export function BlogEditorView({ id }: { id: string | null }) {
   const onSave = () =>
     run("save", async () => {
       await save();
-      toast.success(post?.status === "Published" ? "Saved. The site will be rebuilt with the change." : "Saved.");
+      toast.success(post?.status === "Published" ? `Saved.${rebuildNote}` : "Saved.");
     });
 
   const onPublish = () =>
     run("publish", async () => {
       const current = await save();
       adopt(await publishBlogPost(current.id));
-      toast.success("Published. The site is being rebuilt; the post is live in a few minutes.");
+      if (rebuildsOff) toast.warning(`Published.${rebuildNote}`);
+      else toast.success(`Published.${rebuildNote}`);
     });
 
   const onSchedule = () =>
@@ -584,6 +592,12 @@ export function BlogEditorView({ id }: { id: string | null }) {
           {post && (
             <Card title="Publishing">
               <div className="space-y-3 text-xs">
+                {rebuildsOff && (
+                  <p className="rounded-md bg-warning/10 px-3 py-2 text-warning-deep">
+                    Site rebuilds are off: <code>GitHub__Token</code> is not set on the API. Publishing still works, but
+                    notefusion.studio only shows the change at its next deploy.
+                  </p>
+                )}
                 <p className="text-muted-foreground">
                   {status === "Published" && post.publishedAtUtc && `Live since ${formatInstantDateTime(post.publishedAtUtc, offset)}. `}
                   {status === "Scheduled" && post.publishAtUtc && `Goes live ${formatInstantDateTime(post.publishAtUtc, offset)}. `}
