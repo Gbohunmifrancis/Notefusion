@@ -437,8 +437,10 @@ export function ResultScreen({ route, navigation }: Props) {
               draft.notes.length) *
               1000,
           ) / 1000
-        : result.overallConfidence,
-    [draft.notes, edited, result.overallConfidence],
+        : hymnSource
+          ? 1 // the hymnbook version: published notes, nothing in doubt
+          : result.overallConfidence,
+    [draft.notes, edited, result.overallConfidence, hymnSource],
   );
 
   async function save() {

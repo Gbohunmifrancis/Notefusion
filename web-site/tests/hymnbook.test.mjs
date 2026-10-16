@@ -58,6 +58,7 @@ test("Yes swaps notes, rhythm, time signature, key, score and solfa, and drops w
   assert.equal(next.tempo, 72);
   assert.equal(next.musicXml, "<hymn/>");
   assert.deepEqual(next.notes.map((n) => [n.pitchMidi, n.startBeat, n.durBeats]), [[64, 2, 1], [69, 3, 2], [73, 5, 0.5], [69, 5.5, 0.5]]);
+  assert.equal(next.overallConfidence, 1, "published notes carry no doubt");
   assert.equal(next.chords, null);
   assert.equal(next.keyAlternatives, null);
   assert.equal(next.backingAudioBase64, "");

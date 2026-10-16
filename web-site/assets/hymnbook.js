@@ -43,6 +43,8 @@
       notes: match.notes.map(function (n) { return Object.assign({}, n); }),
       solfaLines: match.solfaLines || [],
       musicXml: match.musicXml,
+      // Published notes, not a reading: nothing on the sheet is in doubt.
+      overallConfidence: 1,
       chords: null,
       chordsSource: null,
       keyAlternatives: null,
