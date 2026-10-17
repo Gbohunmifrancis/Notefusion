@@ -326,6 +326,11 @@ textarea { resize: vertical; line-height: 1.5; }
 .p-slow { margin: 8px 0 0; color: var(--color-warning-600); }
 .p-offline { margin: 8px 0 0; color: var(--danger); }
 .p-retry { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 12px 0 0; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--wash); color: var(--copy); }
+/* "Notify me when it's ready": one quiet button under the note, asked from a click (assets/notify.js). */
+.p-notify { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 16px 0 0; }
+.p-notify-status { margin: 8px 0 0; }
+.p-notify-status:empty { margin: 0; }
+.acct-notify-note { margin: 0; }
 
 /* ── Result ──────────────────────────────────────────────────────────────── */
 .result-head { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; margin-bottom: 14px; }
@@ -663,18 +668,25 @@ body.auth-only .foot { display: none; }
 .pay-perks .ic { color: var(--success); width: 16px; height: 16px; flex: none; margin-top: 2px; }
 @media (max-width: 520px) { .pay-perks { grid-template-columns: minmax(0, 1fr); } }
 .plans.plan-picker { display: block; margin-top: 4px; }
-.plan-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-.plan-opt { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; padding: 14px 14px 14px 40px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); font: inherit; cursor: pointer; transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease; }
+.plan-options { display: flex; flex-direction: column; gap: 8px; }
+/* One plan per row, at every width: the radio, the name and its note on the left, the price on the right
+   (below the name on a phone). Columns side by side left ~120px for each plan in the dialog. */
+.plan-group { margin: 12px 0 0; }
+.plan-opt { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "top price" "note price"; align-items: center; column-gap: 16px; row-gap: 2px; width: 100%; text-align: left; padding: 12px 14px 12px 42px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font: inherit; color: inherit; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
 .plan-opt:hover { border-color: var(--line-strong); }
-.plan-opt.on { border-color: var(--blue); background: var(--blue-tint); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
-.plan-opt-dot { position: absolute; left: 14px; top: 16px; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--line-strong); background: var(--surface); }
+.plan-opt.on { border-color: var(--blue); background: var(--blue-tint); box-shadow: 0 0 0 1px var(--blue); }
+.plan-opt-dot { position: absolute; left: 14px; top: 50%; margin-top: -8px; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--line-strong); background: var(--surface); }
 .plan-opt.on .plan-opt-dot { border-color: var(--blue); box-shadow: inset 0 0 0 4px var(--surface); background: var(--blue); }
-.plan-opt-top { display: flex; align-items: center; gap: 8px; width: 100%; }
-.plan-opt-name { font-weight: 700; font-size: 0.9rem; color: var(--ink); }
-.plan-opt-tag { margin-left: auto; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: #065f46; background: #d1fae5; border-radius: 8px; padding: 2px 8px; }
-.plan-opt-price { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); line-height: 1.2; margin-top: 2px; }
-.plan-opt-price small { font-size: 0.8rem; font-weight: 600; color: var(--muted); letter-spacing: 0; }
-.plan-opt-note { font-size: 0.78rem; color: var(--muted); }
+.plan-opt-top { grid-area: top; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-width: 0; }
+.plan-opt-name { font-weight: 600; font-size: 0.95rem; color: var(--ink); }
+.plan-opt-tag { white-space: nowrap; font-size: 0.72rem; font-weight: 600; color: #065f46; background: #d1fae5; border-radius: 6px; padding: 1px 6px; }
+.plan-opt-price { grid-area: price; justify-self: end; white-space: nowrap; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); line-height: 1.2; font-variant-numeric: tabular-nums; }
+.plan-opt-price small { font-size: 0.78rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+.plan-opt-note { grid-area: note; font-size: 0.8rem; color: var(--muted); }
+@media (max-width: 420px) {
+  .plan-opt { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "price" "note"; }
+  .plan-opt-price { justify-self: start; }
+}
 .btn-pay { width: 100%; margin-top: 14px; min-height: 48px; font-size: 1rem; gap: 8px; }
 .btn-pay .ic { width: 20px; height: 20px; }
 .pay-fine { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 10px 0 0; font-size: 0.78rem; color: var(--muted); text-align: center; }

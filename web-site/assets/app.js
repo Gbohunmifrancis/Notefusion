@@ -251,6 +251,15 @@
           error: function () { s.tone(220, t, 0.25, 0.1, "triangle"); }
         })[name]();
       } catch (e) { /* a sound is a nicety */ }
+    },
+    /** Makes (or wakes) the context from a click, whatever the switch says, so a cue can play later from a hidden tab. */
+    prime: function () {
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        this.ctx = this.ctx || new AC();
+        if (this.ctx.state === "suspended") this.ctx.resume();
+      } catch (e) { /* a sound is a nicety */ }
     }
   };
   /** The account menu's switch and the settings page's switch say the same thing. */
@@ -323,6 +332,7 @@
   var N = window.NfChords;
   var H = window.NfHymnbook;
   var P = window.NfParts;
+  var NF = window.NfNotify;
   var guest = false;      // a visitor with a preview and no account
   var previewId = new URLSearchParams(location.search).get("preview");
   var player = null;      // the rehearsal player, made once the first result shows
@@ -392,7 +402,7 @@
   function leaveAuth() { document.body.classList.remove("auth-only"); hide($("view-auth")); }
   var AUTH_COPY = {
     login: ["Welcome back", "Sign in to open your sheets on any device."],
-    register: ["Create your account", "Free to start — 3 transcriptions on us."],
+    register: ["Create your account", "Free to start: 3 transcriptions in total."],
     verify: ["Check your email", "One code and you're in."]
   };
   function showAuthForm(name) {
@@ -876,6 +886,7 @@
   }
 
   function renderAccount() {
+    renderNotifySettings();
     $("acct-name").textContent = me ? (me.fullName || "—") : "—";
     setAvatar($("acct-avatar"), me);
     (me && me.profilePictureUrl) ? show($("acct-photo-remove")) : hide($("acct-photo-remove"));
@@ -1309,6 +1320,7 @@
   }
   /** The link as it was sent, kept so "Try again" on a job that never finishes can send the same again (`again`). */
   function sendLink(body, again) {
+    sfx.prime(); // from the click that sent it: the chime for a job that finishes out of sight can play
     linkInfo.sending = true; syncLinkSubmit(); hide($("app-alert"));
     track(guest ? "Preview started (link)" : "Song link transcribed");
     if (!again && window.NfMeter) track(window.NfMeter.eventName(body.timeSignature));
@@ -1423,6 +1435,7 @@
   function submitAudio(file, name, fromMic, again, meter) {
     // One recording goes up at a time: a second drop or take while the first is uploading is ignored.
     if (submitting) return Promise.resolve();
+    sfx.prime(); // from the click that sent it: the chime for a job that finishes out of sight can play
     // Read once: "Try again" sends the meter this recording went with, not what the box says now.
     if (!again) meter = chosenMeter();
     var kind = uploadKind(fromMic), song = kind === "song" || (kind === "choir" && $("choir-band").checked);
@@ -1460,7 +1473,7 @@
         submitting = false;
         if (again && doneMeanwhile(before)) return;
         if (!again) resetMeter();
-        startJob(Object.assign({}, job, { stage: job.stage || "queued" }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic, true, meter); });
+        startJob(Object.assign({}, job, { stage: job.stage || "queued", fileName: fromMic ? null : name }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic, true, meter); });
       })
       .catch(function (err) {
         if (at !== epoch) return;
@@ -1550,6 +1563,108 @@
     alertIn($("app-alert"), "danger", text);
   }
 
+  // ── A job that finishes out of sight: a notification, a chime, the tab's title (assets/notify.js) ──
+  function prefStore() { try { return window.localStorage; } catch (e) { return null; } }
+  function trackPermission(answer) { track("Notify permission", answer === "default" ? "dismissed" : answer); }
+
+  /**
+   * A job settled. Someone looking at the page gets its own sound; someone in another tab or window gets the
+   * chime (unless muted), "(1) Sheet ready" on the tab until they look, and a notification when that is on.
+   */
+  function announce(outcome, error) {
+    var p = NF.prefs(prefStore());
+    var todo = NF.plan({ away: NF.isAway(document), permission: NF.permission(window), notifyPref: p.notify, sound: p.sound });
+    if (!todo.cue) { sfx.play(outcome === "failed" ? "error" : "ready"); return; }
+    if (todo.chime) NF.chime(sfx.ctx, outcome);
+    NF.cue(document, outcome);
+    if (!todo.notify) return;
+    var jobId = current.jobId, words = NF.message(outcome, NF.nameOf(current.source, current.fileName), error);
+    var note = NF.show(window, {
+      title: words.title, body: words.body, tag: NF.tag(jobId),
+      onOpen: function () {
+        track("Notification opened", outcome);
+        // The sheet (or why it failed) is on the studio's page, unless another job has started since.
+        if (current && current.jobId === jobId && $("view-transcribe").classList.contains("hidden")) setView("transcribe");
+      }
+    });
+    if (note) { NF.holdNote(note); track("Notified", outcome); }
+  }
+  // Looking at the tab again puts its own title and icon back (and closes a notification still showing).
+  function backInView() { if (NF.cued() && !NF.isAway(document)) NF.clearCue(document); }
+  document.addEventListener("visibilitychange", backInView);
+  window.addEventListener("focus", backInView);
+
+  /**
+   * The chime plays on the page's AudioContext, which a browser lets start only from a click: the submit
+   * made it; a guest who arrived from the home page has not clicked here yet, so the next click does.
+   */
+  function primeAudio() {
+    sfx.prime();
+    if (!sfx.ctx || sfx.ctx.state === "running") return;
+    function once() {
+      sfx.prime();
+      document.removeEventListener("pointerdown", once, true);
+      document.removeEventListener("keydown", once, true);
+    }
+    document.addEventListener("pointerdown", once, true);
+    document.addEventListener("keydown", once, true);
+  }
+
+  /** The browser's answer, remembered: on when allowed, off when blocked; a prompt closed unanswered leaves it unasked. */
+  function rememberAnswer(answer) {
+    if (answer === "unsupported") return;
+    trackPermission(answer);
+    if (answer === "granted" || answer === "denied") NF.setNotify(prefStore(), answer === "granted");
+    renderNotifySettings();
+  }
+  // "Notify me when it's ready" on the progress card: the browser asks from this click, never on page load.
+  $("p-notify-btn").addEventListener("click", function () {
+    var btn = $("p-notify-btn");
+    sfx.prime();
+    btn.disabled = true;
+    NF.request(window).then(function (answer) {
+      btn.disabled = false;
+      rememberAnswer(answer);
+      $("p-notify").hidden = true;
+      $("p-notify-status").textContent = answer === "granted" ? "We'll send you a notification when it's ready."
+        : answer === "denied" ? "Notifications are blocked for this site in your browser. We'll still play a sound and mark this tab."
+        : "";
+    });
+  });
+  $("p-notify-no").addEventListener("click", function () {
+    NF.setNotify(prefStore(), false);
+    $("p-notify").hidden = true;
+    $("p-notify-status").textContent = guest ? "" : "You can turn this on in Account & settings.";
+    renderNotifySettings();
+  });
+
+  /** Account & settings: the notification switch says what the browser allows, the sound switch what was chosen. */
+  function renderNotifySettings() {
+    var perm = NF.permission(window), p = NF.prefs(prefStore()), sw = $("acct-notify");
+    sw.setAttribute("aria-checked", String(NF.notifyOn(perm, p.notify)));
+    sw.disabled = perm === "unsupported";
+    $("acct-notify-sound").setAttribute("aria-checked", String(p.sound));
+    var text = perm === "unsupported" ? "This browser can't show notifications. The sound and the tab's title still tell you when it's ready."
+      : perm === "denied" ? "Notifications are blocked for this site in your browser's settings. Allow them there to turn this on; the sound and the tab's title still work."
+      : "For a transcription that finishes while you're in another tab or window.";
+    // The note is aria-live: written only when it changes.
+    if ($("acct-notify-note").textContent !== text) $("acct-notify-note").textContent = text;
+  }
+  $("acct-notify").addEventListener("click", function () {
+    var perm = NF.permission(window), p = NF.prefs(prefStore());
+    if (NF.notifyOn(perm, p.notify)) NF.setNotify(prefStore(), false);
+    else if (perm === "granted") NF.setNotify(prefStore(), true);
+    else if (perm === "default") { sfx.prime(); NF.request(window).then(rememberAnswer); return; }
+    renderNotifySettings(); // blocked: the note says where to allow it
+  });
+  $("acct-notify-sound").addEventListener("click", function () {
+    var on = !NF.prefs(prefStore()).sound;
+    NF.setSound(prefStore(), on);
+    renderNotifySettings();
+    if (on) { sfx.prime(); NF.chime(sfx.ctx, "ready"); } // what it will sound like
+  });
+  renderNotifySettings();
+
   // ── Polling ──────────────────────────────────────────────────────────────
   // The card says where the job really is: the recording going up, its place in the worker's
   // line, then the worker's own stages with a percentage. When nothing moves for a while it says
@@ -1572,6 +1687,8 @@
     $("p-status").textContent = "";
     hide($("p-slow")); hide($("p-offline")); hide($("p-retry"));
     resetRetry();
+    $("p-notify").hidden = !NF.shouldAsk(NF.permission(window), NF.prefs(prefStore()).notify);
+    $("p-notify-status").textContent = "";
   }
   function resetRetry() { $("p-retry-btn").textContent = "Try again"; $("p-retry-btn").disabled = false; }
   /**
@@ -1596,11 +1713,12 @@
    */
   function startJob(job, kind, from, retry) {
     stopPolling();
-    current = { jobId: job.jobId, kind: kind, from: from || null, retry: retry || null, source: job.source || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0, failures: 0, seen: "", seenAt: Date.now() };
+    current = { jobId: job.jobId, kind: kind, from: from || null, retry: retry || null, source: job.source || null, fileName: job.fileName || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0, failures: 0, seen: "", seenAt: Date.now() };
     openProgress(kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : "Transcribing your recording…");
     current.preview = kind === "preview";
     if (current.preview) previewId = job.jobId;
     setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
+    primeAudio();
     poll();
     // A song (or a free transcription) still running holds its place in the count: the meter shows it at once.
     if (!guest && kind !== "preview") refreshUsage();
@@ -1663,7 +1781,7 @@
         stopPolling();
         current.result = job.result;
         hide($("progress"));
-        sfx.play("ready");
+        announce("ready");
         track(current && current.kind === "preview" ? "Preview ready" : "Sheet ready");
         showResult(job.result);
         keepClaimedPreview();
@@ -1673,11 +1791,11 @@
       if (status === "failed") {
         stopPolling();
         hide($("progress"));
-        sfx.play("error");
         var failed = job.error && !TECHNICAL.test(job.error) ? job.error
           : current.from === "link" ? "That link could not be transcribed." : "That could not be transcribed. Try a cleaner recording or a different link.";
         // A link that fails is most often a download YouTube refused: the way round is the file itself.
         if (current.from === "link" && !/upload/i.test(failed)) failed += " YouTube sometimes blocks our downloads; upload the audio file instead.";
+        announce("failed", failed);
         alertIn($("app-alert"), "danger", failed);
         if (/upload/i.test(failed)) addUploadInstead($("app-alert"));
         // A failed job costs nothing: the place it held comes back.

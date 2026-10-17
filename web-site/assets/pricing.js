@@ -152,13 +152,13 @@
 
     var blurb = document.createElement("p");
     blurb.className = "blurb";
-    blurb.textContent = "Hum a tune, preview a song, keep the sheet. No card needed.";
+    blurb.textContent = trialCount + " transcriptions in total. No card needed.";
     card.appendChild(blurb);
 
     card.appendChild(
       featureList([
-        "One song preview from a link (the first minute)",
-        "Hummed and sung tunes, " + trialCount + " to start",
+        trialCount + " transcriptions in total: hum, record, upload or a song link",
+        "A song link gives you its first minute",
         "Tonic Solfa and staff notation, all 24 keys",
         "Rehearsal playback, lyrics, transpose and a share link",
       ]),
