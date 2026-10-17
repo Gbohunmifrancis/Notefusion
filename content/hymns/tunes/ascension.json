@@ -1,0 +1,32 @@
+{
+  "name": "ASCENSION",
+  "title": "Ascension",
+  "music": [
+    {
+      "name": "William Henry Monk",
+      "born": 1823,
+      "died": 1889,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "7 4 7 4",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "B4:1 D5:1 | G4:1 G4:1 A4:1 C5:1 | B4:2 B4:2 | D5:1 G4:1 A4:2 | G4:2 B4:1 D5:1 | G4:1 G4:1 A4:1 C5:1 | B4:2 B4:2 | D5:1 G4:1 A4:2 | G4:2 A4:1 B4:1 | G4:1 A4:1 F#4:1 A4:1 | E4:2 F#4:2 | A4:1 D4:1 E4:2 | D4:2 D4:1 E4:.5 F#4:.5 | G4:1 A4:1 B4:1 C5:1 | D5:2 B4:2 | D5:1 G4:1 A4:2 | G4:2",
+  "incipit": "msddrfm|msdrd|msddrfm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0005/x000530.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0005/000530a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000530; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score. Imported from CCEH tune 000530 (the melody read from 000530a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William Henry Monk's dates (1823–1889) are from our page for the tune DIX (content/hymns/tunes/dix.json); CCEH's page gives none.",
+  "importedFrom": "cceh:000530",
+  "updated": "2026-10-17"
+}

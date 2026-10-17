@@ -1,0 +1,32 @@
+{
+  "name": "TALLIS' ORDINAL",
+  "title": "Tallis' Ordinal",
+  "music": [
+    {
+      "name": "Thomas Tallis",
+      "born": 1505,
+      "died": 1585,
+      "role": "Music (1561)"
+    }
+  ],
+  "musicPublished": 1561,
+  "metre": "8 6 8 6",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Eb4:1 | G4:1 Ab4:1 Bb4:1 Bb4:1 | C5:1 C5:1 Bb4:1 Bb4:1 | Eb5:1 D5:1 C5:1 C5:1 | Bb4:3 Eb4:1 | G4:1 Ab4:1 Bb4:1 Bb4:1 | C5:1 C5:1 Bb4:1 Eb4:1 | Ab4:1 G4:1 F4:1 F4:1 | Eb4:3",
+  "incipit": "dmfsslls|sdtlls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0004/x000402.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0004/000402a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000402; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000402 (the melody read from 000402a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Thomas Tallis's dates (1505–1585) are from our page for the tune TALLIS (content/hymns/tunes/tallis.json); CCEH's page gives only the year 1561. The bar lines are those of CCEH's Noteworthy score (000402a.nwc).",
+  "importedFrom": "cceh:000402",
+  "updated": "2026-10-17"
+}

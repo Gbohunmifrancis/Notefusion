@@ -1,0 +1,38 @@
+{
+  "name": "MELCOMBE",
+  "title": "Melcombe",
+  "alsoKnownAs": [
+    "Benediction",
+    "Granton",
+    "Nazareth",
+    "St. Philips"
+  ],
+  "music": [
+    {
+      "name": "Samuel Webbe",
+      "born": 1740,
+      "died": 1816,
+      "role": "Music (1782)"
+    }
+  ],
+  "musicPublished": 1782,
+  "metre": "8 8 8 8",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 3,
+  "lineBars": 2,
+  "melody": "Bb4:1 Bb4:1 Ab4:1 | G4:1 F4:1 Eb4:1 C5:1 | Bb4:1 Bb4:1 Eb5:1 D5:1 | C5:1 Bb4:1 Bb4:1 A4:1 | Bb4:1 G4:1 G4:1 Ab4:1 | Bb4:1 G4:1 F4:1 G4:1 | Ab4:1 Ab4:1 G4:1 F4:1 | Bb4:1 Ab4:1 G4:1 F4:1 | Eb4:1",
+  "incipit": "ssfmrdls|sdtlssfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0005/x000590.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0005/000590a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000590; public domain.",
+  "reviewNotes": "Held back: where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score. Imported from CCEH tune 000590 (the melody read from 000590a.mid, checked against the page's do-re-mi incipit, 1 note off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Samuel Webbe's dates (1740–1816) are from our page for the tune CONSOLATOR (WEBBE) (content/hymns/tunes/consolator-webbe.json); CCEH's page gives only the year 1782.",
+  "importedFrom": "cceh:000590",
+  "updated": "2026-10-17"
+}

@@ -1,0 +1,43 @@
+{
+  "name": "SALVATIONIST",
+  "title": "Salvationist",
+  "music": [
+    {
+      "name": "English Melody",
+      "traditional": true,
+      "role": "Melody"
+    },
+    {
+      "name": "Will S. Hays",
+      "born": 1837,
+      "died": 1907,
+      "role": "Music (1871)"
+    },
+    {
+      "name": "Charles W. Fry",
+      "born": 1838,
+      "died": 1882,
+      "role": "Music (1881)"
+    }
+  ],
+  "musicPublished": 1871,
+  "metre": "8 6 11 8 6 11 7 6 10 + 8 6 11",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "A4:.5 Bb4:.5 | C5:.5 C5:.5 D5:.5 C5:.5 C5:.5 A4:1 F4:.5 | G4:.5 F4:.5 F4:.5 D4:.5 C4:1 F4:.5 G4:.5 | A4:.5 A4:.5 A4:.5 A4:.5 D5:.5 C5:.5 C5:.5 A4:.5 | G4:3 A4:.5 Bb4:.5 | C5:.5 C5:.5 D5:.5 C5:.5 C5:.5 A4:1 F4:.5 | G4:.5 F4:.5 F4:.5 D4:.5 C4:1 F4:.5 G4:.5 | A4:.5 C5:.5 A4:.5 F4:.5 G4:.5 Bb4:.5 A4:.5 G4:.5 | F4:3 F4:1 | Bb4:.5 Bb4:.5 Bb4:.5 Bb4:.5 Bb4:.5 D5:1 D5:.5 | D5:.5 C5:.5 C5:.5 A4:.5 C5:1 A4:.5 G4:.5 | F4:.5 F4:.5 F4:.5 F4:.5 D5:.5 C5:.5 C5:.5 A4:.5 | G4:3 A4:.5 Bb4:.5 | C5:.5 C5:.5 D5:.5 C5:.5 C5:.5 A4:1 F4:.5 | G4:.5 F4:.5 F4:.5 D4:.5 C4:1 F4:.5 G4:.5 | A4:.5 C5:.5 A4:.5 F4:.5 G4:.5 Bb4:.5 A4:.5 G4:.5 | F4:3",
+  "incipit": "mfsslssm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0004/x000459.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0004/000459a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000459; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000459 (the melody read from 000459a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells Will S. Hays as “William S. Hayes”; the name is printed as the sources spell it. Will S. Hays's dates (1837–1907) are from https://hymnary.org/person/Hays_WS (Hays, Will S. (William Shakespeare), 1837-1907; SALVATIONIST, 1871; CCEH spells him Hayes); https://en.wikipedia.org/wiki/Will_S._Hays agrees; CCEH's page gives only the year 1871. Charles W. Fry's dates (1838–1882) are from our page for The Lily of the Valley (content/hymns/the-lily-of-the-valley.json); CCEH's page gives only the year 1881. The bar lines are those of CCEH's Noteworthy score (000459a.nwc).",
+  "importedFrom": "cceh:000459",
+  "updated": "2026-10-17"
+}

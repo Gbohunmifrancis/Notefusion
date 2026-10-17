@@ -1,0 +1,35 @@
+{
+  "name": "SHEPHERD",
+  "title": "Shepherd",
+  "alsoKnownAs": [
+    "Wandering Ones"
+  ],
+  "music": [
+    {
+      "name": "William A. Ogden",
+      "born": 1841,
+      "died": 1897,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 8 8 8 + 3 3 8 3 3 8",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "Eb4:1 Eb4:.75 F4:.25 | Eb4:1 C5:1 C5:1 Bb4:1 | Bb4:1.5 r:.5 Eb4:1 Eb4:.75 F4:.25 | Eb4:1 Bb4:1 Bb4:1 Ab4:1 | Ab4:2 Eb4:1 Eb4:.75 F4:.25 | Eb4:1 C5:1 C5:1 Bb4:1 | C#5:1.5 r:.5 C#5:1 C5:.75 Bb4:.25 | Ab4:1 Eb4:1 C5:1.5 Bb4:.5 | Ab4:2 C5:1 Eb4:1 | C5:2 C#5:1 F4:1 | C#5:2 C5:1 C5:1 | C5:.5 Bb4:.5 Ab4:.5 C5:.5 Bb4:1 Bb4:1 | Bb4:2 C5:1 Eb4:1 | C5:2 C#5:1 F4:1 | C#5:2 C5:1 C5:1 | C5:.5 Bb4:.5 Ab4:.5 C5:.5 Bb4:2 | Ab4:2",
+  "incipit": "sslsmmrr|sslsrrdd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0005/x000522.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0005/000522a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000522; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000522 (the melody read from 000522a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William A. Ogden's dates (1841–1897) are from https://hymnary.org/person/Ogden_WA (William Augustine Ogden, 1841-1897); CCEH's page gives none.",
+  "importedFrom": "cceh:000522",
+  "updated": "2026-10-17"
+}

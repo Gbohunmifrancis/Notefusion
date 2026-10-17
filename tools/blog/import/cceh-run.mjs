@@ -162,6 +162,9 @@ export function runImport({ cache, today, dryRun = false, tunesDir = TUNES_DIR, 
     if (dup) { report.duplicates.push({ ...label, ours: dup.o.slug, oursSource: dup.o.t.source || "NoteFusion", hymn: hymnFor(dup.o.slug), edits: dup.d }); continue; }
     const dupCceh = imported.find((x) => sameMelody(x.parsed.notes, r.parsed.notes) !== null);
     if (dupCceh) { report.duplicates.push({ ...label, ours: dupCceh.slug, oursSource: SOURCE_NAME, edits: sameMelody(dupCceh.parsed.notes, r.parsed.notes) }); continue; }
+    // A tune page that names no one for the music cannot be a page of ours, not even a draft: the content
+    // gate needs someone credited, and we never invent one.
+    if (!r.tune.music?.length) { report.rejected.push({ ...label, reason: "the page names no composer or source for the tune" }); continue; }
     const names = [r.baseName, ...(r.tune.alsoKnownAs || [])].map(normName);
     const sameName = ours.filter((o) => o.names.some((n) => names.includes(n)));
     for (const o of sameName) {
@@ -219,7 +222,7 @@ export function runImport({ cache, today, dryRun = false, tunesDir = TUNES_DIR, 
   report.counts.tunesInIndex = index.length;
   delete report.notYetCrawled;
   if (!dryRun) fs.writeFileSync(reportPath, jsonText(report));
-  log(`${processed.size} of ${index.length} CCEH tunes read: ${report.counts.published} published, ${report.counts.drafts} drafts, ${report.counts.duplicates} already on the site, ${report.counts.refused} refused (copyright), ${report.counts.rejected} rejected (no melody we could verify); ${report.counts.notYetCrawled} not crawled yet. ${written} files written, ${removed} removed${dryRun ? " (dry run: nothing written)" : ""}.`);
+  log(`${processed.size} of ${index.length} CCEH tunes read: ${report.counts.published} published, ${report.counts.drafts} drafts, ${report.counts.duplicates} already on the site, ${report.counts.refused} refused (copyright), ${report.counts.rejected} rejected (no melody we could verify, or no one named for the music); ${report.counts.notYetCrawled} not crawled yet. ${written} files written, ${removed} removed${dryRun ? " (dry run: nothing written)" : ""}.`);
   return report;
 }
 

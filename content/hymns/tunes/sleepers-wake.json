@@ -1,0 +1,38 @@
+{
+  "name": "SLEEPERS, WAKE",
+  "title": "Sleepers, Wake",
+  "music": [
+    {
+      "name": "Philipp Nicolai",
+      "born": 1556,
+      "died": 1608,
+      "role": "Music (1599)"
+    },
+    {
+      "name": "Johann Sebastian Bach",
+      "born": 1685,
+      "died": 1750,
+      "role": "Harmony"
+    }
+  ],
+  "musicPublished": 1599,
+  "metre": "Irregular",
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "C4:1 E4:1 G4:1.5 G4:.5 | G4:1 G4:1 A4:2 | G4:3 G4:1 | C5:1 G4:1 C5:.5 D5:.5 E5:1 | D5:1 C5:1 B4:1 A4:1 | G4:2 r:1 G4:1 | C5:1 G4:1 A4:1 E4:1 | F4:.5 E4:.5 D4:1 C4:2 | C4:1 E4:1 G4:1.5 G4:.5 | G4:1 G4:1 A4:2 | G4:3 G4:1 | C5:1 G4:1 C5:.5 D5:.5 E5:1 | D5:1 C5:1 B4:1 A4:1 | G4:2 r:1 G4:1 | C5:1 G4:1 A4:1 E4:1 | F4:.5 E4:.5 D4:1 C4:2 | G4:1 G4:1.5 F4:.5 E4:1 | D4:1 C4:2 r:1 | G4:1 G4:1.5 F4:.5 E4:1 | D4:1 C4:2 D4:1 | E4:1 F4:2 E4:1 | G4:1 A4:1 B4:1 C5:1 | C5:.5 D5:.5 E5:1 D5:1 C5:1 | G4:1 C5:1 G4:1 A4:1 | E4:1 F4:.5 E4:.5 D4:1 C4:1~ | C4:1 r:3",
+  "incipit": "dmssssls|sdsdrmrdtls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0006/x000641.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0006/000641a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000641; public domain.",
+  "reviewNotes": "Held back: the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000641 (the melody read from 000641a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Philipp Nicolai's dates (1556–1608) are from our page for the tune WACHET AUF (content/hymns/tunes/wachet-auf.json); CCEH's page gives only the year 1599. Johann Sebastian Bach's dates (1685–1750) are from our page for the tune POTSDAM (content/hymns/tunes/potsdam.json); CCEH's page gives none.",
+  "importedFrom": "cceh:000641",
+  "updated": "2026-10-17"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "ARE YOU COMING",
+  "title": "Are You Coming",
+  "music": [
+    {
+      "name": "J. E. Hawes",
+      "role": "Music (1917)"
+    }
+  ],
+  "musicPublished": 1917,
+  "metre": "8 8 8 9 + 9 9 8 9",
+  "key": "E major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0.5,
+  "lineBars": 2,
+  "melody": "B4:.5 | B4:1 Ab4:.5 F#4:.5 E4:1 Ab4:.5 C#5:.5 | B4:3.5 B4:.5 | B4:1 Ab4:.5 F#4:.5 E4:1 Ab4:.5 Ab4:.5 | F#4:3.5 B4:.5 | B4:1 Ab4:.5 F#4:.5 E4:1 Ab4:.5 B4:.5 | C#5:3 C#5:.75 C#5:.25 | B4:.5 B4:1 B4:.5 Ab4:1 F#4:.75 E4:.25 | E4:3 B4:.75 B4:.25 | B4:1 Ab4:.5 F#4:.5 E4:1 Ab4:.5 C#5:.5 | B4:3 B4:.75 B4:.25 | B4:1 Ab4:.5 F#4:.5 E4:1 Ab4:.75 Ab4:.25 | F#4:3 r:.5 B4:.5 | B4:1 Ab4:.5 F#4:.5 E4:1 Ab4:.5 B4:.5 | C#5:2 E5:1 Eb5:.75 C#5:.25 | B4:.5 B4:1 B4:.5 Ab4:1 F#4:.75 E4:.25 | E4:3.5",
+  "incipit": "ssmrdmls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0005/x000575.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0005/000575a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000575; public domain.",
+  "reviewNotes": "Held back: not provably public domain: J. E. Hawes: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000575 (the melody read from 000575a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true.",
+  "importedFrom": "cceh:000575",
+  "updated": "2026-10-17"
+}

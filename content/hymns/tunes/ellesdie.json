@@ -1,0 +1,41 @@
+{
+  "name": "ELLESDIE",
+  "title": "Ellesdie",
+  "music": [
+    {
+      "name": "Wolfgang Amadeus Mozart",
+      "born": 1756,
+      "died": 1791,
+      "role": "Music, attributed"
+    },
+    {
+      "name": "Joshua Leavitt",
+      "activeBy": 1831,
+      "role": "Music (Christian Lyre, 1831)"
+    },
+    {
+      "name": "Hubert P. Main",
+      "role": "Arranged (1872)"
+    }
+  ],
+  "musicPublished": 1831,
+  "metre": "8 7 8 7",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 125,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Ab4:1.5 Ab4:.5 Ab4:1 Ab4:1 | C5:1.5 Bb4:.5 Bb4:.5 Ab4:.5 Ab4:1 | Bb4:1.5 Bb4:.5 Bb4:1 Bb4:1 | C#5:1.5 C5:.5 C5:1 Bb4:1 | Ab4:1.5 Ab4:.5 Ab4:1 Ab4:1 | C5:1.5 Bb4:.5 Bb4:.5 Ab4:.5 Ab4:1 | Bb4:1 Bb4:1 Bb4:.5 C#5:.5 C5:.5 Bb4:.5 | Ab4:1 G4:1 Ab4:2 | Bb4:1.5 Bb4:.5 Bb4:1 Bb4:1 | Bb4:1.5 Ab4:.5 Ab4:.5 G4:.5 G4:1 | C5:1.5 C5:.5 C5:1 C5:1 | C#5:1.5 C5:.5 C5:1 Bb4:1 | Ab4:1.5 Ab4:.5 Ab4:1 Ab4:1 | C5:1.5 Bb4:.5 Bb4:.5 Ab4:.5 Ab4:1 | Bb4:1 Bb4:1 Bb4:.5 C#5:.5 C5:.5 Bb4:.5 | Ab4:1 G4:1 Ab4:2",
+  "incipit": "ddddmrrdd|rrrrfmmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0005/x000581.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0005/000581a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000581; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Hubert P. Main: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000581 (the melody read from 000581a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Wolfgang Amadeus Mozart's dates (1756–1791) are from our page for the tune MOZART (content/hymns/tunes/mozart.json); CCEH's page gives none. Joshua Leavitt has no death year on CCEH's page or ours; their work is dated 1831, before 1850, so they died before 1955 (they would have been over 105).",
+  "importedFrom": "cceh:000581",
+  "updated": "2026-10-17"
+}

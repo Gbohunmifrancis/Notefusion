@@ -1,0 +1,35 @@
+{
+  "name": "GRAFENBERG",
+  "title": "Grafenberg",
+  "alsoKnownAs": [
+    "Nun Danket All' Und Bringet Ehr"
+  ],
+  "music": [
+    {
+      "name": "Johann Cruger",
+      "born": 1598,
+      "died": 1662,
+      "role": "Music (Praxis Pietatis Melica, 1647)"
+    }
+  ],
+  "musicPublished": 1647,
+  "metre": "8 6 8 6",
+  "key": "F major",
+  "time": "2/2",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:2 D4:1 C4:1 | F4:2 G4:2 | A4:1 A4:1 G4:2~ | G4:1 A4:1 C5:1 Bb4:1 | A4:2 G4:2 | F4:4 | C5:2 A4:1 C5:1 | D5:2 C5:2 | Bb4:1 A4:1 G4:2~ | G4:1 C5:1 F4:1 Bb4:1 | A4:2 G4:2 | F4:4",
+  "incipit": "dlsdrmmr|msfmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000357.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000357a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000357; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000357 (the melody read from 000357a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Johann Cruger's dates (1598–1662) are from our page for the tune AUF, AUF, MEIN HERZ MIT FREUDEN (content/hymns/tunes/auf-auf-mein-herz-mit-freuden.json); CCEH's page gives only the year 1647. The bar lines are those of CCEH's Noteworthy score (000357a.nwc).",
+  "importedFrom": "cceh:000357",
+  "updated": "2026-10-17"
+}

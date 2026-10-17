@@ -1,7 +1,7 @@
 {
   "source": "Christian Classics Ethereal Hymnary (CCEH)",
   "sourceUrl": "https://www.ccel.org/cceh/index.htm",
-  "date": "2026-10-16",
+  "date": "2026-10-17",
   "rule": "Our public-domain rule (lib/content.mjs): everyone named died before 1955 and the tune was first published before 1929; missing dates make a draft; a © or anyone who died in 1955 or later means not imported.",
   "published": [
     {
@@ -519,6 +519,282 @@
     {
       "slug": "camacha",
       "number": "000330"
+    },
+    {
+      "slug": "promises",
+      "number": "000335"
+    },
+    {
+      "slug": "solid-rock",
+      "number": "000337"
+    },
+    {
+      "slug": "surrender",
+      "number": "000347"
+    },
+    {
+      "slug": "adelaide",
+      "number": "000349"
+    },
+    {
+      "slug": "duncannon",
+      "number": "000350"
+    },
+    {
+      "slug": "near-the-cross",
+      "number": "000351"
+    },
+    {
+      "slug": "i-am-thine",
+      "number": "000352"
+    },
+    {
+      "slug": "mcafee",
+      "number": "000354"
+    },
+    {
+      "slug": "grafenberg",
+      "number": "000357"
+    },
+    {
+      "slug": "scott",
+      "number": "000358"
+    },
+    {
+      "slug": "swedish-litany",
+      "number": "000362"
+    },
+    {
+      "slug": "perfect-love",
+      "number": "000364"
+    },
+    {
+      "slug": "angels-story",
+      "number": "000365"
+    },
+    {
+      "slug": "galilee-jude",
+      "number": "000367"
+    },
+    {
+      "slug": "st-margaret",
+      "number": "000368"
+    },
+    {
+      "slug": "stabat-mater-mainz",
+      "number": "000369"
+    },
+    {
+      "slug": "davis",
+      "number": "000372"
+    },
+    {
+      "slug": "trust-in-jesus",
+      "number": "000375"
+    },
+    {
+      "slug": "faith-is-the-victory",
+      "number": "000377"
+    },
+    {
+      "slug": "landas",
+      "number": "000380"
+    },
+    {
+      "slug": "st-dunstans-douglas",
+      "number": "000384"
+    },
+    {
+      "slug": "hayn",
+      "number": "000386"
+    },
+    {
+      "slug": "royal-banner",
+      "number": "000387"
+    },
+    {
+      "slug": "geibel",
+      "number": "000389"
+    },
+    {
+      "slug": "kilmarnock",
+      "number": "000390"
+    },
+    {
+      "slug": "st-james",
+      "number": "000392"
+    },
+    {
+      "slug": "bemerton",
+      "number": "000393"
+    },
+    {
+      "slug": "pentecost-boyd",
+      "number": "000394"
+    },
+    {
+      "slug": "st-petersburg",
+      "number": "000396"
+    },
+    {
+      "slug": "sweet-hour",
+      "number": "000401"
+    },
+    {
+      "slug": "tallis-ordinal",
+      "number": "000402"
+    },
+    {
+      "slug": "dayton-lorenz",
+      "number": "000404"
+    },
+    {
+      "slug": "moab",
+      "number": "000405"
+    },
+    {
+      "slug": "o-mensch-sieh",
+      "number": "000406"
+    },
+    {
+      "slug": "trust-and-obey",
+      "number": "000409"
+    },
+    {
+      "slug": "st-bride",
+      "number": "000410"
+    },
+    {
+      "slug": "kenosis",
+      "number": "000417"
+    },
+    {
+      "slug": "something-for-jesus",
+      "number": "000418"
+    },
+    {
+      "slug": "glasgow",
+      "number": "000419"
+    },
+    {
+      "slug": "hebron-mason",
+      "number": "000420"
+    },
+    {
+      "slug": "friend",
+      "number": "000423"
+    },
+    {
+      "slug": "he-lifted-me",
+      "number": "000426"
+    },
+    {
+      "slug": "garden",
+      "number": "000428"
+    },
+    {
+      "slug": "new-orleans",
+      "number": "000432"
+    },
+    {
+      "slug": "dundee-french",
+      "number": "000439"
+    },
+    {
+      "slug": "trusting-jesus",
+      "number": "000441"
+    },
+    {
+      "slug": "othello",
+      "number": "000442"
+    },
+    {
+      "slug": "st-crispin",
+      "number": "000445"
+    },
+    {
+      "slug": "redeemed",
+      "number": "000446"
+    },
+    {
+      "slug": "precious-to-me",
+      "number": "000449"
+    },
+    {
+      "slug": "kirkpatrick",
+      "number": "000451"
+    },
+    {
+      "slug": "glory-to-his-name",
+      "number": "000454"
+    },
+    {
+      "slug": "wareham",
+      "number": "000456"
+    },
+    {
+      "slug": "happy-day",
+      "number": "000457"
+    },
+    {
+      "slug": "salvationist",
+      "number": "000459"
+    },
+    {
+      "slug": "safety",
+      "number": "000462"
+    },
+    {
+      "slug": "kedron-chapin",
+      "number": "000470"
+    },
+    {
+      "slug": "sunlight",
+      "number": "000472"
+    },
+    {
+      "slug": "precious-name",
+      "number": "000473"
+    },
+    {
+      "slug": "festal-song",
+      "number": "000476"
+    },
+    {
+      "slug": "deliverance",
+      "number": "000479"
+    },
+    {
+      "slug": "all-for-jesus",
+      "number": "000485"
+    },
+    {
+      "slug": "mcdaniel",
+      "number": "000487"
+    },
+    {
+      "slug": "face-to-face",
+      "number": "000489"
+    },
+    {
+      "slug": "heaven",
+      "number": "000491"
+    },
+    {
+      "slug": "glory-song",
+      "number": "000493"
+    },
+    {
+      "slug": "maitland",
+      "number": "000494"
+    },
+    {
+      "slug": "hanson-place",
+      "number": "000496"
+    },
+    {
+      "slug": "by-and-by",
+      "number": "000499"
     }
   ],
   "drafts": [
@@ -714,6 +990,1094 @@
       "number": "000332",
       "reasons": [
         "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "haven-of-rest",
+      "number": "000338",
+      "reasons": [
+        "not provably public domain: George D. Moore: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "everlasting-love",
+      "number": "000342",
+      "reasons": [
+        "the score has a bar of another length (bar 16), which the solfa grid does not draw"
+      ]
+    },
+    {
+      "slug": "wedlock",
+      "number": "000343",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the score has a bar of another length (bar 12), which the solfa grid does not draw"
+      ]
+    },
+    {
+      "slug": "satisfied-hudson",
+      "number": "000345",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "living",
+      "number": "000348",
+      "reasons": [
+        "not provably public domain: C. Harold Lowden: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score",
+        "the range (MIDI 62–86) is outside what a congregation sings"
+      ]
+    },
+    {
+      "slug": "wigan",
+      "number": "000363",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "gorton",
+      "number": "000373",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the score has bars of another length (bar 4, 5), which the solfa grid does not draw"
+      ]
+    },
+    {
+      "slug": "yarbrough",
+      "number": "000374",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "andernach",
+      "number": "000385",
+      "reasons": [
+        "the score has bars of another length (bar 9, 11), which the solfa grid does not draw"
+      ]
+    },
+    {
+      "slug": "andre",
+      "number": "000388",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "konig",
+      "number": "000415",
+      "reasons": [
+        "the score has bars of another length (bar 4, 5), which the solfa grid does not draw"
+      ]
+    },
+    {
+      "slug": "greenwell",
+      "number": "000433",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "shout-on",
+      "number": "000436",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "story-of-jesus",
+      "number": "000437",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "golden-chain",
+      "number": "000440",
+      "reasons": [
+        "where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "farrant",
+      "number": "000450",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Richard Farrant: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "unafraid",
+      "number": "000452",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "peace-like-a-river",
+      "number": "000458",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "hankey",
+      "number": "000461",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "harts",
+      "number": "000466",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "new-born-again",
+      "number": "000474",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "somebodys-knocking",
+      "number": "000480",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "whitfield",
+      "number": "000483",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "irish",
+      "number": "000492",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "schmucke-dich",
+      "number": "000497",
+      "reasons": [
+        "the score has bars of another length (bar 7, 9), which the solfa grid does not draw"
+      ]
+    },
+    {
+      "slug": "rochelle",
+      "number": "000500",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "marching-to-zion",
+      "number": "000505",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "wie-lieblich-ist-der-maien",
+      "number": "000507",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "materna",
+      "number": "000508",
+      "reasons": [
+        "not provably public domain: Samuel A. Ward: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "zion",
+      "number": "000513",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "acclaim",
+      "number": "000514",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "alford",
+      "number": "000515",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "all-saints-new",
+      "number": "000516",
+      "reasons": [
+        "not provably public domain: Henry Stephen Cutler: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "amesbury",
+      "number": "000517",
+      "reasons": [
+        "not provably public domain: Uzziah Christopher Burnap: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "ariel",
+      "number": "000519",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "shepherd",
+      "number": "000522",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "harveys-chant",
+      "number": "000523",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "northfield",
+      "number": "000524",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "ukraine",
+      "number": "000525",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "sandon",
+      "number": "000526",
+      "reasons": [
+        "not provably public domain: Charles Henry Purday: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "resignation",
+      "number": "000527",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "christmas",
+      "number": "000528",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "ash-grove",
+      "number": "000529",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "ascension",
+      "number": "000530",
+      "reasons": [
+        "the page gives no year for the tune",
+        "where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "constancy",
+      "number": "000532",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "arthurs-seat",
+      "number": "000533",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "autumn",
+      "number": "000534",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "armageddon",
+      "number": "000535",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "barnard",
+      "number": "000536",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Charlotte A. Barnard: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "beatitudo",
+      "number": "000537",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "benton-harbor",
+      "number": "000539",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "beulah-land-miles",
+      "number": "000540",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "beulah-land-sweney",
+      "number": "000541",
+      "reasons": [
+        "the page gives no year for the tune",
+        "where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "blairgowrie",
+      "number": "000543",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "almost-persuaded",
+      "number": "000545",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "city-bright",
+      "number": "000546",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: James Sherman Tyler: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "bonner",
+      "number": "000547",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Carey Bonner: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "bullinger",
+      "number": "000548",
+      "reasons": [
+        "not provably public domain: Ethelbert W. Bullinger: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "ballerma",
+      "number": "000551",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Francois Hippolytus Barthelemon: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "not provably public domain: Robert Simpson: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "brown",
+      "number": "000552",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "chautauqua",
+      "number": "000553",
+      "reasons": [
+        "not provably public domain: William Fiske Sherwin: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "breslau",
+      "number": "000554",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "bishopgarth",
+      "number": "000555",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "caithness",
+      "number": "000556",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "carlisle",
+      "number": "000557",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "sagina",
+      "number": "000558",
+      "reasons": [
+        "not provably public domain: Campbell, Thomas: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "praetorius",
+      "number": "000559",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Harmonia Hymnorum Scholae Gerlicensis: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "anywhere-with-jesus",
+      "number": "000560",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "lenox",
+      "number": "000561",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "creation",
+      "number": "000562",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "manoah",
+      "number": "000565",
+      "reasons": [
+        "not provably public domain: ascr. to, Gioacchinno A. Rossini: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "not provably public domain: ascr. to, Franz Joseph Haydn: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "albany",
+      "number": "000568",
+      "reasons": [
+        "not provably public domain: John Albert Jeffery: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "come-unto-me-jones",
+      "number": "000569",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Charles P. Jones: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "christ-liveth",
+      "number": "000570",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "close-to-thee",
+      "number": "000572",
+      "reasons": [
+        "not provably public domain: Silas Jones Vail: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "abide-with-me-tis-eventide",
+      "number": "000573",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Harrison Millard: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "are-you-coming",
+      "number": "000575",
+      "reasons": [
+        "not provably public domain: J. E. Hawes: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "shelter",
+      "number": "000576",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "lanier",
+      "number": "000578",
+      "reasons": [
+        "not provably public domain: Peter C. Lutkin: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "cushman",
+      "number": "000579",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "ellesdie",
+      "number": "000581",
+      "reasons": [
+        "not provably public domain: Hubert P. Main: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "eucharistic-hymn",
+      "number": "000582",
+      "reasons": [
+        "not provably public domain: John S. B. Hodges: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "ermuntre-dich-mein-schwacher",
+      "number": "000583",
+      "reasons": [
+        "where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "es-ist-ein-ros",
+      "number": "000584",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "evangel-doane",
+      "number": "000585",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "evening-prayer-gabriel",
+      "number": "000586",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "evening-prayer-stebbins",
+      "number": "000587",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "melcombe",
+      "number": "000590",
+      "reasons": [
+        "where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "morning-hymn",
+      "number": "000591",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "haydn",
+      "number": "000592",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "carman",
+      "number": "000593",
+      "reasons": [
+        "not provably public domain: Peter C. Lutkin: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "ratisbon-werner",
+      "number": "000594",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "st-timothy",
+      "number": "000595",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "pixham",
+      "number": "000596",
+      "reasons": [
+        "not provably public domain: Horatio W. Parker: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "ludborough",
+      "number": "000597",
+      "reasons": [
+        "where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "bromley",
+      "number": "000600",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "st-gabriel",
+      "number": "000603",
+      "reasons": [
+        "not provably public domain: Frederick A. Gore Ouseley: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "seymour",
+      "number": "000607",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "hursley",
+      "number": "000608",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "warrington",
+      "number": "000609",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "st-leonard-hiles",
+      "number": "000612",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "vesper-hymn-bortniansky",
+      "number": "000614",
+      "reasons": [
+        "where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "st-clement",
+      "number": "000618",
+      "reasons": [
+        "not provably public domain: Clement Cotterill Scholefield: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "capetown",
+      "number": "000624",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "alsace",
+      "number": "000625",
+      "reasons": [
+        "not provably public domain: Alfred Judson: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "st-oswald",
+      "number": "000627",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "swabia",
+      "number": "000630",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "heathlands",
+      "number": "000631",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "sicilian-mariners",
+      "number": "000633",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "hosanna",
+      "number": "000635",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "st-thomas-wade",
+      "number": "000638",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "ravenshaw",
+      "number": "000639",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "sleepers-wake",
+      "number": "000641",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "merton-monk",
+      "number": "000642",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "beverley",
+      "number": "000646",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "pearsall",
+      "number": "000647",
+      "reasons": [
+        "not provably public domain: Robert L. de Pearsall: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "st-alphege",
+      "number": "000648",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "st-stephen-jones",
+      "number": "000649",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "avison",
+      "number": "000650",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Charles Avison: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "lyte",
+      "number": "000652",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "margaret",
+      "number": "000657",
+      "reasons": [
+        "not provably public domain: Timothy Richard Matthews: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "eisenach",
+      "number": "000658",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "laudate-dominum",
+      "number": "000659",
+      "reasons": [
+        "not provably public domain: Charles Hubert Hastings Parry: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "st-bees",
+      "number": "000662",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "pleading-savior",
+      "number": "000663",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "jerusalem-shaker",
+      "number": "000665",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "mcanally",
+      "number": "000667",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: R. M. McAnally: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "hanford-gabriel",
+      "number": "000668",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "arfon",
+      "number": "000669",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "allein-gott-in-der-hoh",
+      "number": "000670",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "ives-plymouth-collection",
+      "number": "000671",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "far-and-near",
+      "number": "000672",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: J. B. O. Clemm, 19th cent.: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "flemming",
+      "number": "000674",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Freidrich F. Flemming: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "work-song",
+      "number": "000675",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "woodstock",
+      "number": "000676",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "wesley-mason",
+      "number": "000677",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "name-of-jesus-lorenz",
+      "number": "000678",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "naomi",
+      "number": "000679",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "nearer-the-cross",
+      "number": "000680",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Mrs. Joseph F. (Phoebe) Knapp: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "grafton",
+      "number": "000681",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "was-lebet-was-schwebet",
+      "number": "000682",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "gartan",
+      "number": "000685",
+      "reasons": [
+        "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "gate-ajar",
+      "number": "000686",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Silas Jones Vail: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "give-me-thy-heart",
+      "number": "000687",
+      "reasons": [
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
       ]
     }
   ],
@@ -1346,6 +2710,285 @@
       "oursSource": "Open Hymnal Project",
       "hymn": "blessed-assurance",
       "edits": 0
+    },
+    {
+      "number": "000336",
+      "name": "China",
+      "url": "https://www.ccel.org/cceh/0003/x000336.htm",
+      "ours": "jesus-loves-me",
+      "oursSource": "Open Hymnal Project ABC score (Bradbury's Golden Chain and Shower, 1866); the opening agrees with hymnary.org's incipit.",
+      "hymn": "jesus-loves-me",
+      "edits": 0
+    },
+    {
+      "number": "000339",
+      "name": "Ville du Havre",
+      "url": "https://www.ccel.org/cceh/0003/x000339.htm",
+      "ours": "ville-du-havre",
+      "oursSource": "Open Hymnal Project ABC score (The Evangelical Hymnal, 1921); the opening agrees with hymnary.org's incipit.",
+      "hymn": "it-is-well-with-my-soul",
+      "edits": 0
+    },
+    {
+      "number": "000344",
+      "name": "El Nathan",
+      "url": "https://www.ccel.org/cceh/0003/x000344.htm",
+      "ours": "i-know-whom-i-have-believed",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "i-know-whom-i-have-believed",
+      "edits": 0
+    },
+    {
+      "number": "000360",
+      "name": "St. Christopher",
+      "url": "https://www.ccel.org/cceh/0003/x000360.htm",
+      "ours": "st-christopher",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "beneath-the-cross-of-jesus",
+      "edits": 0
+    },
+    {
+      "number": "000371",
+      "name": "Norris",
+      "url": "https://www.ccel.org/cceh/0003/x000371.htm",
+      "ours": "blandy",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "where-he-leads-me",
+      "edits": 0
+    },
+    {
+      "number": "000379",
+      "name": "Need (Lowry)",
+      "url": "https://www.ccel.org/cceh/0003/x000379.htm",
+      "ours": "need",
+      "oursSource": "Open Hymnal Project ABC score (Pentecostal Hymns No. 2, 1898); the opening agrees with hymnary.org's incipit.",
+      "hymn": "i-need-thee-every-hour",
+      "edits": 0
+    },
+    {
+      "number": "000382",
+      "name": "Olivet",
+      "url": "https://www.ccel.org/cceh/0003/x000382.htm",
+      "ours": "olivet",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "my-faith-looks-up-to-thee",
+      "edits": 0
+    },
+    {
+      "number": "000383",
+      "name": "Foundation (Union Harmony)",
+      "url": "https://www.ccel.org/cceh/0003/x000383.htm",
+      "ours": "foundation-funk",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "how-firm-a-foundation",
+      "edits": 0
+    },
+    {
+      "number": "000403",
+      "name": "Erie",
+      "url": "https://www.ccel.org/cceh/0004/x000403.htm",
+      "ours": "converse",
+      "oursSource": "Open Hymnal Project ABC score (Presbyterian Book of Hymns and Tunes, 1874); the opening agrees with hymnary.org's incipit.",
+      "hymn": "what-a-friend-we-have-in-jesus",
+      "edits": 0
+    },
+    {
+      "number": "000413",
+      "name": "Morning Song",
+      "url": "https://www.ccel.org/cceh/0004/x000413.htm",
+      "ours": "consolation",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "the-king-shall-come",
+      "edits": 0
+    },
+    {
+      "number": "000424",
+      "name": "Elizabeth",
+      "url": "https://www.ccel.org/cceh/0004/x000424.htm",
+      "ours": "jesus-is-all-the-world-to-me",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "jesus-is-all-the-world-to-me",
+      "edits": 0
+    },
+    {
+      "number": "000431",
+      "name": "Nicolaus",
+      "url": "https://www.ccel.org/cceh/0004/x000431.htm",
+      "ours": "lobt-gott-ihr-christen-allzugleich",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "the-people-that-in-darkness-sat",
+      "edits": 3
+    },
+    {
+      "number": "000435",
+      "name": "Sweetest Name",
+      "url": "https://www.ccel.org/cceh/0004/x000435.htm",
+      "ours": "he-keeps-me-singing",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "he-keeps-me-singing",
+      "edits": 0
+    },
+    {
+      "number": "000443",
+      "name": "Tallis' Canon",
+      "url": "https://www.ccel.org/cceh/0004/x000443.htm",
+      "ours": "tallis",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "all-praise-to-thee-my-god-this-night",
+      "edits": 0
+    },
+    {
+      "number": "000468",
+      "name": "Evan",
+      "url": "https://www.ccel.org/cceh/0004/x000468.htm",
+      "ours": "evan",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "o-that-the-lord-would-guide-my-ways",
+      "edits": 0
+    },
+    {
+      "number": "000478",
+      "name": "Harper Memorial",
+      "url": "https://www.ccel.org/cceh/0004/x000478.htm",
+      "ours": "no-not-one",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "no-not-one",
+      "edits": 0
+    },
+    {
+      "number": "000484",
+      "name": "More Love to Thee",
+      "url": "https://www.ccel.org/cceh/0004/x000484.htm",
+      "ours": "more-love-to-thee",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "more-love-to-thee",
+      "edits": 0
+    },
+    {
+      "number": "000495",
+      "name": "Sweet By and By",
+      "url": "https://www.ccel.org/cceh/0004/x000495.htm",
+      "ours": "roll-call",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "when-the-roll-is-called-up-yonder",
+      "edits": 2
+    },
+    {
+      "number": "000502",
+      "name": "Lauda Anima (Goss)",
+      "url": "https://www.ccel.org/cceh/0005/x000502.htm",
+      "ours": "praise-my-soul",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "praise-my-soul-the-king-of-heaven",
+      "edits": 0
+    },
+    {
+      "number": "000503",
+      "name": "Roll Call",
+      "url": "https://www.ccel.org/cceh/0005/x000503.htm",
+      "ours": "roll-call",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "when-the-roll-is-called-up-yonder",
+      "edits": 0
+    },
+    {
+      "number": "000518",
+      "name": "Ar Hyd Y Nos",
+      "url": "https://www.ccel.org/cceh/0005/x000518.htm",
+      "ours": "ar-hyd-y-nos",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "god-that-madest-earth-and-heaven",
+      "edits": 0
+    },
+    {
+      "number": "000520",
+      "name": "Mozart",
+      "url": "https://www.ccel.org/cceh/0005/x000520.htm",
+      "ours": "mozart",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "take-my-life-and-let-it-be",
+      "edits": 2
+    },
+    {
+      "number": "000521",
+      "name": "Boylston",
+      "url": "https://www.ccel.org/cceh/0005/x000521.htm",
+      "ours": "boylston",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "blest-be-the-tie-that-binds-boylston",
+      "edits": 0
+    },
+    {
+      "number": "000542",
+      "name": "Binghamton",
+      "url": "https://www.ccel.org/cceh/0005/x000542.htm",
+      "ours": "binghamton",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "a-child-of-the-king",
+      "edits": 0
+    },
+    {
+      "number": "000550",
+      "name": "Blessed Be the Name",
+      "url": "https://www.ccel.org/cceh/0005/x000550.htm",
+      "ours": "evan",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "o-that-the-lord-would-guide-my-ways",
+      "edits": 2
+    },
+    {
+      "number": "000566",
+      "name": "Belmont",
+      "url": "https://www.ccel.org/cceh/0005/x000566.htm",
+      "ours": "belmont",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "the-grave-itself-a-garden-is",
+      "edits": 0
+    },
+    {
+      "number": "000580",
+      "name": "Ellacombe",
+      "url": "https://www.ccel.org/cceh/0005/x000580.htm",
+      "ours": "ellacombe",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "hosanna-loud-hosanna",
+      "edits": 0
+    },
+    {
+      "number": "000588",
+      "name": "Ewing",
+      "url": "https://www.ccel.org/cceh/0005/x000588.htm",
+      "ours": "ewing",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "jerusalem-the-golden",
+      "edits": 0
+    },
+    {
+      "number": "000637",
+      "name": "St. Flavian",
+      "url": "https://www.ccel.org/cceh/0006/x000637.htm",
+      "ours": "st-flavian",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "lord-who-throughout-these-forty-days",
+      "edits": 0
+    },
+    {
+      "number": "000643",
+      "name": "Luther's Hymn",
+      "url": "https://www.ccel.org/cceh/0006/x000643.htm",
+      "ours": "es-ist-gewisslich-an-der-zeit-the-day-is-surely-drawing-near",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "the-day-is-surely-drawing-near",
+      "edits": 0
+    },
+    {
+      "number": "000660",
+      "name": "Franconia",
+      "url": "https://www.ccel.org/cceh/0006/x000660.htm",
+      "ours": "franconia",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "within-the-fathers-house",
+      "edits": 0
     }
   ],
   "refused": [
@@ -1900,6 +3543,276 @@
       "name": "Chislehurst",
       "url": "https://www.ccel.org/cceh/0003/x000331.htm",
       "reason": "the page marks William L. Hooper's tune as copyright (“William L. Hooper, ©1970”)"
+    },
+    {
+      "number": "000346",
+      "name": "Loriann",
+      "url": "https://www.ccel.org/cceh/0003/x000346.htm",
+      "reason": "the page marks Richard D. Baker's tune as copyright (“Richard D. Baker, ©1966”)"
+    },
+    {
+      "number": "000353",
+      "name": "Lordship of Christ",
+      "url": "https://www.ccel.org/cceh/0003/x000353.htm",
+      "reason": "the page marks LeRoy McClard's tune as copyright (“LeRoy McClard, ©1966”)"
+    },
+    {
+      "number": "000355",
+      "name": "Holcomb",
+      "url": "https://www.ccel.org/cceh/0003/x000355.htm",
+      "reason": "the page marks B. B. McKinney's tune as copyright (“B. B. McKinney, ©1927”)"
+    },
+    {
+      "number": "000356",
+      "name": "Mission Seventy",
+      "url": "https://www.ccel.org/cceh/0003/x000356.htm",
+      "reason": "the page marks Gene Bartlett's tune as copyright (“Gene Bartlett, ©1969”)"
+    },
+    {
+      "number": "000359",
+      "name": "El Dorado",
+      "url": "https://www.ccel.org/cceh/0003/x000359.htm",
+      "reason": "the page marks William J. Reynolds's tune as copyright (“William J. Reynolds, ©1966”)"
+    },
+    {
+      "number": "000361",
+      "name": "Falls Creek",
+      "url": "https://www.ccel.org/cceh/0003/x000361.htm",
+      "reason": "the page marks B. B. McKinney's tune as copyright (“B. B. McKinney, ©1936”)"
+    },
+    {
+      "number": "000366",
+      "name": "Langley",
+      "url": "https://www.ccel.org/cceh/0003/x000366.htm",
+      "reason": "the page marks R. Maines Rawls's tune as copyright (“R. Maines Rawls, ©1968”)"
+    },
+    {
+      "number": "000376",
+      "name": "Muskogee",
+      "url": "https://www.ccel.org/cceh/0003/x000376.htm",
+      "reason": "the page marks B. B. McKinney's tune as copyright (“B. B. McKinney, ©1934”)"
+    },
+    {
+      "number": "000378",
+      "name": "Du, Herr, Heisst Uns Hoffen",
+      "url": "https://www.ccel.org/cceh/0003/x000378.htm",
+      "reason": "the page marks Otmar Schulz's tune as copyright (“Otmar Schulz, ©1967”)"
+    },
+    {
+      "number": "000381",
+      "name": "Whittle",
+      "url": "https://www.ccel.org/cceh/0003/x000381.htm",
+      "reason": "May Whittle Moody died in 1963, so the tune is still in copyright in Nigeria, the UK and the EU"
+    },
+    {
+      "number": "000391",
+      "name": "This Endris Nyght",
+      "url": "https://www.ccel.org/cceh/0003/x000391.htm",
+      "reason": "Ralph Vaughan Williams died in 1958, so the arrangement is still in copyright in Nigeria, the UK and the EU"
+    },
+    {
+      "number": "000397",
+      "name": "Christian Home",
+      "url": "https://www.ccel.org/cceh/0003/x000397.htm",
+      "reason": "the page marks B. B. McKinney's tune as copyright (“B. B. McKinney, ©1949”)"
+    },
+    {
+      "number": "000398",
+      "name": "Xavier",
+      "url": "https://www.ccel.org/cceh/0003/x000398.htm",
+      "reason": "the page marks J. R. Tipton's tune as copyright (“J. R. Tipton, ©1974”)"
+    },
+    {
+      "number": "000399",
+      "name": "Reitz",
+      "url": "https://www.ccel.org/cceh/0003/x000399.htm",
+      "reason": "the page marks Albert Reitz's tune as copyright (“Albert Reitz, ©1925”)"
+    },
+    {
+      "number": "000400",
+      "name": "Oremus",
+      "url": "https://www.ccel.org/cceh/0004/x000400.htm",
+      "reason": "the page marks Donald P. Hustad's tune as copyright (“Donald P. Hustad, ©1975”)"
+    },
+    {
+      "number": "000407",
+      "name": "Keegan",
+      "url": "https://www.ccel.org/cceh/0004/x000407.htm",
+      "reason": "the page marks William J. Reynolds's tune as copyright (“William J. Reynolds, ©1956”)"
+    },
+    {
+      "number": "000411",
+      "name": "Lee",
+      "url": "https://www.ccel.org/cceh/0004/x000411.htm",
+      "reason": "the page marks B. B. McKinney's tune as copyright (“B. B. McKinney, ©1930”)"
+    },
+    {
+      "number": "000412",
+      "name": "Vermont",
+      "url": "https://www.ccel.org/cceh/0004/x000412.htm",
+      "reason": "the page marks David H. Williams's tune as copyright (“David H. Williams, ©1964”)"
+    },
+    {
+      "number": "000414",
+      "name": "Seminary",
+      "url": "https://www.ccel.org/cceh/0004/x000414.htm",
+      "reason": "the page marks Phillip Landgrave's tune as copyright (“Phillip Landgrave, ©1975”)"
+    },
+    {
+      "number": "000416",
+      "name": "Tabor",
+      "url": "https://www.ccel.org/cceh/0004/x000416.htm",
+      "reason": "the page marks Gene Bartlett's tune as copyright (“Gene Bartlett, ©1969”)"
+    },
+    {
+      "number": "000421",
+      "name": "Jacob's Vision",
+      "url": "https://www.ccel.org/cceh/0004/x000421.htm",
+      "reason": "Stephen Hutcheson's arrangement is dated 2000, after 1928"
+    },
+    {
+      "number": "000425",
+      "name": "Heaven Came Down",
+      "url": "https://www.ccel.org/cceh/0004/x000425.htm",
+      "reason": "the page marks John W. Peterson's tune as copyright (“John W. Peterson, ©1961”)"
+    },
+    {
+      "number": "000430",
+      "name": "Old Rugged Cross",
+      "url": "https://www.ccel.org/cceh/0004/x000430.htm",
+      "reason": "George Bennard died in 1958, so the tune is still in copyright in Nigeria, the UK and the EU"
+    },
+    {
+      "number": "000434",
+      "name": "Harris",
+      "url": "https://www.ccel.org/cceh/0004/x000434.htm",
+      "reason": "the page marks Thoro Harris's tune as copyright (“Thoro Harris, ©1931”)"
+    },
+    {
+      "number": "000438",
+      "name": "Ackley",
+      "url": "https://www.ccel.org/cceh/0004/x000438.htm",
+      "reason": "the page marks Alfred H. Ackley's tune as copyright (“Alfred H. Ackley, ©1933”)"
+    },
+    {
+      "number": "000444",
+      "name": "Ada",
+      "url": "https://www.ccel.org/cceh/0004/x000444.htm",
+      "reason": "the page marks A. L. Butler's tune as copyright (“A. L. Butler, ©1967”)"
+    },
+    {
+      "number": "000448",
+      "name": "Resurrection (Gaither)",
+      "url": "https://www.ccel.org/cceh/0004/x000448.htm",
+      "reason": "the page marks William J. Gaither's tune as copyright (“William J. Gaither, ©1971”)"
+    },
+    {
+      "number": "000455",
+      "name": "Routh",
+      "url": "https://www.ccel.org/cceh/0004/x000455.htm",
+      "reason": "the page marks B. B. McKinney's tune as copyright (“B. B. McKinney, ©1926”)"
+    },
+    {
+      "number": "000460",
+      "name": "Richmond",
+      "url": "https://www.ccel.org/cceh/0004/x000460.htm",
+      "reason": "Martin Shaw died in 1958, so the arrangement is still in copyright in Nigeria, the UK and the EU"
+    },
+    {
+      "number": "000463",
+      "name": "Woodland Hills",
+      "url": "https://www.ccel.org/cceh/0004/x000463.htm",
+      "reason": "the page marks Ralph Carmichael's tune as copyright (“Ralph Carmichael, ©1964”)"
+    },
+    {
+      "number": "000467",
+      "name": "Cobbs",
+      "url": "https://www.ccel.org/cceh/0004/x000467.htm",
+      "reason": "the page marks Ralph H. Good Pasteur's tune as copyright (“Ralph H. Good Pasteur, ©1955”)"
+    },
+    {
+      "number": "000469",
+      "name": "Times Like These",
+      "url": "https://www.ccel.org/cceh/0004/x000469.htm",
+      "reason": "the page marks Ruth Caye Jones's tune as copyright (“Ruth Caye Jones, ©1944”)"
+    },
+    {
+      "number": "000471",
+      "name": "Redeeming Love",
+      "url": "https://www.ccel.org/cceh/0004/x000471.htm",
+      "reason": "the page marks Albert C. Fisher's tune as copyright (“Albert C. Fisher, ©1956”)"
+    },
+    {
+      "number": "000475",
+      "name": "Hartford",
+      "url": "https://www.ccel.org/cceh/0004/x000475.htm",
+      "reason": "the page marks E. M. Bartlett's tune as copyright (“E. M. Bartlett, ©1939”)"
+    },
+    {
+      "number": "000477",
+      "name": "Ellsworth",
+      "url": "https://www.ccel.org/cceh/0004/x000477.htm",
+      "reason": "the page marks Norman J. Clayton's tune as copyright (“Norman J. Clayton, ©1943”)"
+    },
+    {
+      "number": "000482",
+      "name": "Halifax",
+      "url": "https://www.ccel.org/cceh/0004/x000482.htm",
+      "reason": "C. Winfred Douglas's arrangement is dated 1941, after 1928"
+    },
+    {
+      "number": "000486",
+      "name": "Robertson",
+      "url": "https://www.ccel.org/cceh/0004/x000486.htm",
+      "reason": "the page marks James Bigelow's tune as copyright (“James Bigelow, ©1962”)"
+    },
+    {
+      "number": "000488",
+      "name": "Land of Rest (American)",
+      "url": "https://www.ccel.org/cceh/0004/x000488.htm",
+      "reason": "Stephen Hutcheson's arrangement is dated 1999, after 1928"
+    },
+    {
+      "number": "000498",
+      "name": "Sims (abr.)",
+      "url": "https://www.ccel.org/cceh/0004/x000498.htm",
+      "reason": "the page marks William J. Reynolds's arrangement as copyright (“arr., William J. Reynolds, ©1965”)"
+    },
+    {
+      "number": "000509",
+      "name": "Purpose",
+      "url": "https://www.ccel.org/cceh/0005/x000509.htm",
+      "reason": "the page marks Martin Shaw's tune as copyright (“Martin Shaw, ©1931”)"
+    },
+    {
+      "number": "000567",
+      "name": "Montrose",
+      "url": "https://www.ccel.org/cceh/0005/x000567.htm",
+      "reason": "the page marks John W. Peterson's tune as copyright (“John W. Peterson, ©1968”)"
+    },
+    {
+      "number": "000574",
+      "name": "Security",
+      "url": "https://www.ccel.org/cceh/0005/x000574.htm",
+      "reason": "the page marks Kurt Kaiser's tune as copyright (“Kurt Kaiser, ©1986”)"
+    },
+    {
+      "number": "000589",
+      "name": "Campmeeting",
+      "url": "https://www.ccel.org/cceh/0005/x000589.htm",
+      "reason": "Robert G. McCutchan died in 1958, so the arrangement is still in copyright in Nigeria, the UK and the EU"
+    },
+    {
+      "number": "000683",
+      "name": "Vision (Mason)",
+      "url": "https://www.ccel.org/cceh/0006/x000683.htm",
+      "reason": "the page marks S. Mason's tune as copyright (“S. Mason, ©1925”)"
+    },
+    {
+      "number": "000684",
+      "name": "Ain't Got Time to Die",
+      "url": "https://www.ccel.org/cceh/0006/x000684.htm",
+      "reason": "the page marks Hall Johnson's tune as copyright (“Hall Johnson, ©1955”)"
     }
   ],
   "rejected": [
@@ -1998,6 +3911,384 @@
       "name": "Grace Church",
       "url": "https://www.ccel.org/cceh/0003/x000305.htm",
       "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 6 notes off in 16)"
+    },
+    {
+      "number": "000340",
+      "name": "Ebenezer",
+      "url": "https://www.ccel.org/cceh/0003/x000340.htm",
+      "reason": "a note starts off the semiquaver grid (a triplet or a grace note), which the solfa grid does not draw"
+    },
+    {
+      "number": "000341",
+      "name": "Crimond",
+      "url": "https://www.ccel.org/cceh/0003/x000341.htm",
+      "reason": "the page names no composer or source for the tune"
+    },
+    {
+      "number": "000370",
+      "name": "O Traurigkeit",
+      "url": "https://www.ccel.org/cceh/0003/x000370.htm",
+      "reason": "the MIDI file has no time signature"
+    },
+    {
+      "number": "000395",
+      "name": "Old Hundred Seventh",
+      "url": "https://www.ccel.org/cceh/0003/x000395.htm",
+      "reason": "the time signature changes (3/2, 2/2), which the solfa grid does not bar"
+    },
+    {
+      "number": "000408",
+      "name": "Tillman",
+      "url": "https://www.ccel.org/cceh/0004/x000408.htm",
+      "reason": "the time signature changes (9/8, 6/8), which the solfa grid does not bar"
+    },
+    {
+      "number": "000422",
+      "name": "Alleluia (unknown)",
+      "url": "https://www.ccel.org/cceh/0004/x000422.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000427",
+      "name": "Song Twenty-Four",
+      "url": "https://www.ccel.org/cceh/0004/x000427.htm",
+      "reason": "the MIDI file has no time signature"
+    },
+    {
+      "number": "000429",
+      "name": "Ketchum",
+      "url": "https://www.ccel.org/cceh/0004/x000429.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000447",
+      "name": "Sunshine",
+      "url": "https://www.ccel.org/cceh/0004/x000447.htm",
+      "reason": "a note starts off the semiquaver grid (a triplet or a grace note), which the solfa grid does not draw"
+    },
+    {
+      "number": "000453",
+      "name": "Fisher",
+      "url": "https://www.ccel.org/cceh/0004/x000453.htm",
+      "reason": "the time signature changes (4/4, 3/4), which the solfa grid does not bar"
+    },
+    {
+      "number": "000464",
+      "name": "Cheshire",
+      "url": "https://www.ccel.org/cceh/0004/x000464.htm",
+      "reason": "the MIDI file has no time signature"
+    },
+    {
+      "number": "000465",
+      "name": "My Redeemer",
+      "url": "https://www.ccel.org/cceh/0004/x000465.htm",
+      "reason": "the time signature changes (9/8, 12/8), which the solfa grid does not bar"
+    },
+    {
+      "number": "000481",
+      "name": "Closer Walk",
+      "url": "https://www.ccel.org/cceh/0004/x000481.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000490",
+      "name": "Promised Land",
+      "url": "https://www.ccel.org/cceh/0004/x000490.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 4 notes off in 13)"
+    },
+    {
+      "number": "000501",
+      "name": "Valley",
+      "url": "https://www.ccel.org/cceh/0005/x000501.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000504",
+      "name": "Twenty-Fourth",
+      "url": "https://www.ccel.org/cceh/0005/x000504.htm",
+      "reason": "the MIDI file has no time signature"
+    },
+    {
+      "number": "000506",
+      "name": "Heavy Load",
+      "url": "https://www.ccel.org/cceh/0005/x000506.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000510",
+      "name": "Battle Hymn",
+      "url": "https://www.ccel.org/cceh/0005/x000510.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 4 notes off in 13)"
+    },
+    {
+      "number": "000511",
+      "name": "America",
+      "url": "https://www.ccel.org/cceh/0005/x000511.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000512",
+      "name": "National Anthem",
+      "url": "https://www.ccel.org/cceh/0005/x000512.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000531",
+      "name": "Cranbrook",
+      "url": "https://www.ccel.org/cceh/0005/x000531.htm",
+      "reason": "the page names no composer or source for the tune"
+    },
+    {
+      "number": "000538",
+      "name": "Beacon Hill",
+      "url": "https://www.ccel.org/cceh/0005/x000538.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 3 notes off in 15)"
+    },
+    {
+      "number": "000544",
+      "name": "Beautiful Life",
+      "url": "https://www.ccel.org/cceh/0005/x000544.htm",
+      "reason": "the page names no composer or source for the tune"
+    },
+    {
+      "number": "000549",
+      "name": "Burlington",
+      "url": "https://www.ccel.org/cceh/0005/x000549.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 4 notes off in 18)"
+    },
+    {
+      "number": "000563",
+      "name": "Crucifer (Nicholson)",
+      "url": "https://www.ccel.org/cceh/0005/x000563.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 4 notes off in 21)"
+    },
+    {
+      "number": "000564",
+      "name": "Crimson",
+      "url": "https://www.ccel.org/cceh/0005/x000564.htm",
+      "reason": "a note starts off the semiquaver grid (a triplet or a grace note), which the solfa grid does not draw"
+    },
+    {
+      "number": "000571",
+      "name": "Christ Returneth",
+      "url": "https://www.ccel.org/cceh/0005/x000571.htm",
+      "reason": "the time signature changes (3/4, 4/4), which the solfa grid does not bar"
+    },
+    {
+      "number": "000577",
+      "name": "A New Name",
+      "url": "https://www.ccel.org/cceh/0005/x000577.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 2 notes off in 8)"
+    },
+    {
+      "number": "000598",
+      "name": "Bedford",
+      "url": "https://www.ccel.org/cceh/0005/x000598.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000599",
+      "name": "O Lux Beata Trinitas",
+      "url": "https://www.ccel.org/cceh/0005/x000599.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000601",
+      "name": "St. Nicholas (Scholefield)",
+      "url": "https://www.ccel.org/cceh/0006/x000601.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000602",
+      "name": "Nachtlied",
+      "url": "https://www.ccel.org/cceh/0006/x000602.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000604",
+      "name": "Repose (Stainer)",
+      "url": "https://www.ccel.org/cceh/0006/x000604.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000605",
+      "name": "Vesper (Stainer)",
+      "url": "https://www.ccel.org/cceh/0006/x000605.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000606",
+      "name": "St. Columba (Irons)",
+      "url": "https://www.ccel.org/cceh/0006/x000606.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000610",
+      "name": "Garden City",
+      "url": "https://www.ccel.org/cceh/0006/x000610.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000611",
+      "name": "In Memoriam (Sullivan)",
+      "url": "https://www.ccel.org/cceh/0006/x000611.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000613",
+      "name": "St. Anatolius (Brown)",
+      "url": "https://www.ccel.org/cceh/0006/x000613.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000615",
+      "name": "Nutfield",
+      "url": "https://www.ccel.org/cceh/0006/x000615.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000616",
+      "name": "Oneonta",
+      "url": "https://www.ccel.org/cceh/0006/x000616.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000617",
+      "name": "Jam Lucis",
+      "url": "https://www.ccel.org/cceh/0006/x000617.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000619",
+      "name": "Holy Trinity",
+      "url": "https://www.ccel.org/cceh/0006/x000619.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000620",
+      "name": "L'Emmanuello",
+      "url": "https://www.ccel.org/cceh/0006/x000620.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000621",
+      "name": "St. Paul's (Erskine)",
+      "url": "https://www.ccel.org/cceh/0006/x000621.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000622",
+      "name": "Devotion",
+      "url": "https://www.ccel.org/cceh/0006/x000622.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000623",
+      "name": "Raymond",
+      "url": "https://www.ccel.org/cceh/0006/x000623.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000626",
+      "name": "St. Matthias (Monk)",
+      "url": "https://www.ccel.org/cceh/0006/x000626.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000629",
+      "name": "St. Anselm",
+      "url": "https://www.ccel.org/cceh/0006/x000629.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000632",
+      "name": "Lubeck",
+      "url": "https://www.ccel.org/cceh/0006/x000632.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000634",
+      "name": "Intercession (Dykes)",
+      "url": "https://www.ccel.org/cceh/0006/x000634.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000636",
+      "name": "Bristol (Hodges)",
+      "url": "https://www.ccel.org/cceh/0006/x000636.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000640",
+      "name": "Nox Praecissit",
+      "url": "https://www.ccel.org/cceh/0006/x000640.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000644",
+      "name": "Dies Irae (Dykes)",
+      "url": "https://www.ccel.org/cceh/0006/x000644.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000645",
+      "name": "Dies Irae (Plainsong)",
+      "url": "https://www.ccel.org/cceh/0006/x000645.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000651",
+      "name": "Cecil",
+      "url": "https://www.ccel.org/cceh/0006/x000651.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000653",
+      "name": "St. Athanasius",
+      "url": "https://www.ccel.org/cceh/0006/x000653.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000654",
+      "name": "St. Ursula",
+      "url": "https://www.ccel.org/cceh/0006/x000654.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000655",
+      "name": "Sebastian (Hodges)",
+      "url": "https://www.ccel.org/cceh/0006/x000655.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000656",
+      "name": "Rosa Mystica",
+      "url": "https://www.ccel.org/cceh/0006/x000656.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000661",
+      "name": "Oriel",
+      "url": "https://www.ccel.org/cceh/0006/x000661.htm",
+      "reason": "CCEH has no MIDI file for this tune"
+    },
+    {
+      "number": "000664",
+      "name": "Fear Not",
+      "url": "https://www.ccel.org/cceh/0006/x000664.htm",
+      "reason": "the time signature changes (3/4, 4/4), which the solfa grid does not bar"
+    },
+    {
+      "number": "000666",
+      "name": "I Will Go",
+      "url": "https://www.ccel.org/cceh/0006/x000666.htm",
+      "reason": "the MIDI file has no time signature"
+    },
+    {
+      "number": "000673",
+      "name": "Flee as a Bird",
+      "url": "https://www.ccel.org/cceh/0006/x000673.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 5 notes off in 19)"
     }
   ],
   "sameNameDifferentTune": [
@@ -2006,6 +4297,12 @@
       "name": "Salvation",
       "url": "https://www.ccel.org/cceh/0003/x000320.htm",
       "ours": "salvation"
+    },
+    {
+      "number": "000608",
+      "name": "Hursley",
+      "url": "https://www.ccel.org/cceh/0006/x000608.htm",
+      "ours": "te-deum"
     }
   ],
   "fillCandidates": [
@@ -2028,7 +4325,91 @@
   ],
   "undatedPeople": [
     {
+      "name": "George D. Moore",
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1890
+    },
+    {
+      "name": "Peter C. Lutkin",
+      "tunes": 2,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1895
+    },
+    {
+      "name": "Silas Jones Vail",
+      "tunes": 2,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1874
+    },
+    {
       "name": "A. P. Bland",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Alfred Judson",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1923
+    },
+    {
+      "name": "ascr. to, Franz Joseph Haydn",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "ascr. to, Gioacchinno A. Rossini",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "C. Harold Lowden",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1915
+    },
+    {
+      "name": "Campbell, Thomas",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1865
+    },
+    {
+      "name": "Carey Bonner",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Charles Avison",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Charles Henry Purday",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1860
+    },
+    {
+      "name": "Charles Hubert Hastings Parry",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1915
+    },
+    {
+      "name": "Charles P. Jones",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Charlotte A. Barnard",
       "tunes": 1,
       "onlyForWantOfDates": 0,
       "earliestYear": null
@@ -2040,7 +4421,103 @@
       "earliestYear": null
     },
     {
+      "name": "Clement Cotterill Scholefield",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1874
+    },
+    {
+      "name": "Ethelbert W. Bullinger",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1874
+    },
+    {
+      "name": "Francois Hippolytus Barthelemon",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Frederick A. Gore Ouseley",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1868
+    },
+    {
+      "name": "Freidrich F. Flemming",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Harmonia Hymnorum Scholae Gerlicensis",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Harrison Millard",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
       "name": "Harvey Grace",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Henry Stephen Cutler",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1872
+    },
+    {
+      "name": "Horatio W. Parker",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1901
+    },
+    {
+      "name": "Hubert P. Main",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1872
+    },
+    {
+      "name": "J. B. O. Clemm, 19th cent.",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "J. E. Hawes",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1917
+    },
+    {
+      "name": "James Sherman Tyler",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "John Albert Jeffery",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1886
+    },
+    {
+      "name": "John S. B. Hodges",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1868
+    },
+    {
+      "name": "Mrs. Joseph F. (Phoebe) Knapp",
       "tunes": 1,
       "onlyForWantOfDates": 0,
       "earliestYear": null
@@ -2050,16 +4527,64 @@
       "tunes": 1,
       "onlyForWantOfDates": 0,
       "earliestYear": null
+    },
+    {
+      "name": "R. M. McAnally",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Richard Farrant",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Robert L. de Pearsall",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1863
+    },
+    {
+      "name": "Robert Simpson",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Samuel A. Ward",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1882
+    },
+    {
+      "name": "Timothy Richard Matthews",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1876
+    },
+    {
+      "name": "Uzziah Christopher Burnap",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1895
+    },
+    {
+      "name": "William Fiske Sherwin",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1877
     }
   ],
   "counts": {
-    "published": 129,
-    "drafts": 27,
-    "duplicates": 70,
-    "refused": 92,
-    "rejected": 16,
-    "pages": 334,
-    "notYetCrawled": 1064,
+    "published": 198,
+    "drafts": 171,
+    "duplicates": 101,
+    "refused": 137,
+    "rejected": 79,
+    "pages": 686,
+    "notYetCrawled": 712,
     "tunesInIndex": 1398
   }
 }

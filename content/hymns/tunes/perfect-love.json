@@ -1,0 +1,36 @@
+{
+  "name": "PERFECT LOVE",
+  "title": "Perfect Love",
+  "alsoKnownAs": [
+    "O Perfect Love",
+    "Sandringham"
+  ],
+  "music": [
+    {
+      "name": "Joseph Barnby",
+      "born": 1838,
+      "died": 1896,
+      "role": "Music (1889)"
+    }
+  ],
+  "musicPublished": 1889,
+  "metre": "11 10 11 10",
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "D4:2 F#4:1 A4:1 | A4:2 A4:2 | A4:1 A4:1 D5:1 C#5:1 | C#5:2 B4:2 | E4:2 F#4:1 G4:1 | A4:2 F#4:2 | D4:1 D4:1 F#4:1 E4:1 | C#4:4 | D4:2 F#4:1 A4:1 | A4:2 A4:2 | A4:1 A4:1 D5:1 C#5:1 | C#5:2 B4:2 | B4:2 A4:1 G4:1 | F#4:1 A4:1 G4:1 E4:1 | B3:2 C#4:2 | D4:4",
+  "incipit": "dmsssssdttl",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000364.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000364a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000364; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000364 (the melody read from 000364a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Joseph Barnby's dates (1838–1896) are from our page for the tune GALILEAN (content/hymns/tunes/galilean.json); CCEH's page gives only the year 1889. The bar lines are those of CCEH's Noteworthy score (000364a.nwc).",
+  "importedFrom": "cceh:000364",
+  "updated": "2026-10-17"
+}

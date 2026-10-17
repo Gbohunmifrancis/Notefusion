@@ -1,0 +1,32 @@
+{
+  "name": "TRUSTING JESUS",
+  "title": "Trusting Jesus",
+  "music": [
+    {
+      "name": "Ira David Sankey",
+      "born": 1840,
+      "died": 1908,
+      "role": "Music (1876)"
+    }
+  ],
+  "musicPublished": 1876,
+  "metre": "7 7 7 7",
+  "key": "G major",
+  "time": "6/8",
+  "tempo": 110,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "B4:1 A4:.5 C5:1 B4:.5 | B4:1 A4:.5 G4:1.5 | G4:1 E4:.5 G4:1 E4:.5 | D4:.5 G4:.5 B4:.5 A4:1.5 | B4:1 A4:.5 C5:1 B4:.5 | A4:1 G4:.5 E4:1.5 | D4:.5 G4:.5 B4:.5 D5:1 B4:.5 | B4:1 A4:.5 G4:1.5 | D5:1 B4:.5 D5:1 B4:.5 | B4:1 A4:.5 A4:1.5 | B4:1 F#4:.5 G4:1 G4:.5 | A4:1 E4:.5 F#4:1.5 | G4:1 G4:.5 A4:1 A4:.5 | B4:1 B4:.5 C5:1.5 | D5:1 E5:.5 D5:.5 B4:.5 G4:.5 | B4:1 A4:.5 G4:1.5",
+  "incipit": "mrfmmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0004/x000441.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0004/000441a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000441; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000441 (the melody read from 000441a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ira David Sankey's dates (1840–1908) are from our page for the tune UNDER HIS WINGS (content/hymns/tunes/under-his-wings.json); CCEH's page gives only the year 1876. The bar lines are those of CCEH's Noteworthy score (000441a.nwc).",
+  "importedFrom": "cceh:000441",
+  "updated": "2026-10-17"
+}

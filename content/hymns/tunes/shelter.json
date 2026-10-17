@@ -1,0 +1,32 @@
+{
+  "name": "SHELTER",
+  "title": "Shelter",
+  "music": [
+    {
+      "name": "Ira David Sankey",
+      "born": 1840,
+      "died": 1908,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 8 8 8 + i",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "C4:1 | F4:1 F4:1 F4:1 G4:1 | A4:1 Bb4:1 C5:1.5 A4:.5 | A4:.75 A4:.25 A4:.75 A4:.25 Bb4:1 A4:1 | G4:3 C4:1 | F4:1 F4:1 F4:1 G4:1 | A4:1 Bb4:1 C5:1.5 F4:.5 | A4:.75 A4:.25 A4:.5 F4:.5 G4:1 G4:1 | F4:3 C5:1 | D5:.75 D5:.25 D5:.75 D5:.25 D5:1 E5:.75 D5:.25 | C5:1 C5:1 C5:1.5 A4:.5 | Bb4:1 Bb4:1 Bb4:1.5 C5:.5 | A4:1 A4:1 A4:1 C5:1 | D5:.75 D5:.25 D5:.75 D5:.25 D5:1 E5:.75 D5:.25 | C5:1 C5:1 C5:1.5 F4:.5 | A4:.75 A4:.25 A4:.5 F4:.5 G4:1 G4:1 | F4:3",
+  "incipit": "sdddrmfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0005/x000576.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0005/000576a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000576; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000576 (the melody read from 000576a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ira David Sankey's dates (1840–1908) are from our page for the tune UNDER HIS WINGS (content/hymns/tunes/under-his-wings.json); CCEH's page gives none.",
+  "importedFrom": "cceh:000576",
+  "updated": "2026-10-17"
+}

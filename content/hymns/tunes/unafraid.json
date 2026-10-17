@@ -1,0 +1,31 @@
+{
+  "name": "UNAFRAID",
+  "title": "Unafraid",
+  "music": [
+    {
+      "name": "Anon.",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "5 5 5 5 5",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Eb4:1 Eb4:1.5 F4:.5 Eb4:.5 C#4:.5 | C4:4 | Eb4:1 Eb4:1.5 F4:.5 Eb4:.5 C#4:.5 | C4:2.5 C4:.5 C#4:.5 Eb4:.5 | F4:1 F4:1.5 G4:.5 Ab4:.5 Bb4:.5 | C5:1 C5:2 Ab4:1 | C5:1 C5:2 Bb4:1 | Ab4:4",
+  "incipit": "sslsfm|sslsfm|mfslltdrmm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0004/x000452.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0004/000452a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000452; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000452 (the melody read from 000452a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000452a.nwc).",
+  "importedFrom": "cceh:000452",
+  "updated": "2026-10-17"
+}

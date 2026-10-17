@@ -1,0 +1,33 @@
+{
+  "name": "CHAUTAUQUA",
+  "title": "Chautauqua",
+  "alsoKnownAs": [
+    "Evening Praise"
+  ],
+  "music": [
+    {
+      "name": "William Fiske Sherwin",
+      "role": "Music (1877)"
+    }
+  ],
+  "musicPublished": 1877,
+  "metre": "7 7 7 7 4 + i",
+  "key": "G major",
+  "time": "6/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 G4:1 G4:2 E4:1 | D4:2 C#4:1 D4:3 | G4:2 G4:1 G4:2 E4:1 | D4:2 C#4:1 D4:3 | F#4:2 F#4:1 G4:2 G4:1 | A4:1 G4:1 A4:1 B4:3 | C5:2 C5:1 B4:2 B4:1 | C#5:1 B4:1 C#5:1 D5:2 B4:1 | A4:3 A4:3 | D4:6 | G4:2 D4:1 G4:2 D4:1 | B4:3 G4:3 | D5:3 C5:2 A4:1 | G4:6 | G4:2 F#4:1 G4:2 E4:1 | D4:2 G4:1 B4:3 | A4:2 Ab4:1 A4:2 F#4:1 | G4:2 B4:1 D5:2 E5:1 | D5:3 F#4:3 | G4:6",
+  "incipit": "dddlsfs|dddlsfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0005/x000553.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0005/000553a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000553; public domain.",
+  "reviewNotes": "Held back: not provably public domain: William Fiske Sherwin: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000553 (the melody read from 000553a.mid, checked against the page's do-re-mi incipit, 2 notes off in 14); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true.",
+  "importedFrom": "cceh:000553",
+  "updated": "2026-10-17"
+}

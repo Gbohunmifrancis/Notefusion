@@ -1,0 +1,32 @@
+{
+  "name": "HE LIFTED ME",
+  "title": "He Lifted Me",
+  "music": [
+    {
+      "name": "Charles Hutchinson Gabriel",
+      "born": 1856,
+      "died": 1932,
+      "role": "Music (1905)"
+    }
+  ],
+  "musicPublished": 1905,
+  "metre": "8 8 8 6 + 8 8 8 8",
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 115,
+  "pickup": 0.5,
+  "lineBars": 4,
+  "melody": "D4:.5 | D4:.5 E4:.5 E4:1.5 D4:.5 | B4:.5 B4:.5 C5:1.5 B4:.5 | B4:.5 A4:.5 D4:1.5 A4:.5 | A4:.5 G4:.5 G4:1.5 D4:.5 | D4:.5 E4:.5 E4:1.5 D4:.5 | B4:.5 B4:.5 C5:1.5 B4:.5 | B4:.5 A4:.5 A4:1 E4:1 | A4:2.5 D4:.5 | D4:.5 G4:.5 B4:1.5 D5:.5 | D5:.5 F#4:.5 F#4:1.5 D4:.5 | F#4:.5 A4:.5 C5:1.5 E5:.5 | E5:.5 D5:.5 D5:1.5 D4:.5 | G4:.5 B4:.5 D5:1.5 D5:.5 | E5:.5 D5:.5 C5:1.5 C5:.5 | G4:.5 G4:.5 B4:.5 D5:.5 B4:1 | A4:1 G4:1.5",
+  "incipit": "ssllsmmf",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0004/x000426.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0004/000426a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000426; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000426 (the melody read from 000426a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Charles Hutchinson Gabriel's dates (1856–1932) are from our page for the tune MY SAVIOR (content/hymns/tunes/my-savior.json); CCEH's page gives only the year 1905. The bar lines are those of CCEH's Noteworthy score (000426a.nwc).",
+  "importedFrom": "cceh:000426",
+  "updated": "2026-10-17"
+}

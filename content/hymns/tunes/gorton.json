@@ -1,0 +1,32 @@
+{
+  "name": "GORTON",
+  "title": "Gorton",
+  "music": [
+    {
+      "name": "Ludwig von Beethoven",
+      "born": 1770,
+      "died": 1827,
+      "role": "Arranged"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "6 6 8 6",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Eb4:1 | Eb4:1 Eb4:1 F4:1 F4:1 | Eb4:3 Eb4:1 | Eb4:1 Eb4:1 Ab4:1 Ab4:1 | Bb4:3 Bb4:1 | C5:1 C5:1 Ab4:1 Ab4:1 | Bb4:1 Bb4:1 Ab4:1 Ab4:1 | Ab4:1 Ab4:1 Ab4:1 G4:1 | Ab4:3",
+  "incipit": "ssslls|sssddr|rmmddrrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000373.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000373a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000373; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; the score has bars of another length (bar 4, 5), which the solfa grid does not draw. Imported from CCEH tune 000373 (the melody read from 000373a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ludwig von Beethoven's dates (1770–1827) are from our page for the tune HYMN TO JOY (content/hymns/tunes/hymn-to-joy.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000373a.nwc).",
+  "importedFrom": "cceh:000373",
+  "updated": "2026-10-17"
+}

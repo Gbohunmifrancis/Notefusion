@@ -1,0 +1,32 @@
+{
+  "name": "DAYTON (LORENZ)",
+  "title": "Dayton (Lorenz)",
+  "music": [
+    {
+      "name": "Edmund S. Lorenz",
+      "born": 1854,
+      "died": 1942,
+      "role": "Music (1888)"
+    }
+  ],
+  "musicPublished": 1888,
+  "metre": "10 10 10 7 + i",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 128,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:1 B4:1 B4:1 A4:1 | G4:.75 A4:.25 G4:.5 E4:.5 D4:1 G4:1 | A4:1 A4:.75 B4:.25 A4:1 D4:1 | B4:1 B4:.75 C5:.25 B4:1 G4:1 | G4:1 B4:1 B4:1 A4:1 | G4:.75 A4:.25 G4:.5 E4:.5 D4:1 G4:1 | A4:1 A4:.75 B4:.25 A4:1 D4:.5 A4:.5 | G4:4 | A4:1 A4:.75 B4:.25 A4:1 D4:1 | B4:1 B4:.75 C5:.25 B4:1 G4:1 | C5:1 C5:.5 C5:.5 B4:1 A4:.5 G4:.5 | A4:4 | G4:1 B4:1 B4:1 A4:1 | G4:.75 A4:.25 G4:.5 E4:.5 D4:1 G4:1 | A4:1 A4:.75 B4:.25 A4:1 D4:.5 A4:.5 | G4:4",
+  "incipit": "dmmrdrdlsd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0004/x000404.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0004/000404a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000404; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000404 (the melody read from 000404a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Edmund S. Lorenz's dates (1854–1942) are from https://hymnary.org/person/Lorenz_ES (Lorenz, Edmund S. (Edmund Simon), 1854-1942); CCEH's page gives only the year 1888. The bar lines are those of CCEH's Noteworthy score (000404a.nwc).",
+  "importedFrom": "cceh:000404",
+  "updated": "2026-10-17"
+}

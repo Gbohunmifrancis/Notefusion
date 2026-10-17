@@ -1,0 +1,35 @@
+{
+  "name": "ANGEL'S STORY",
+  "title": "Angel's Story",
+  "alsoKnownAs": [
+    "Watermouth"
+  ],
+  "music": [
+    {
+      "name": "Arthur Henry Mann",
+      "born": 1850,
+      "died": 1929,
+      "role": "Music (1881)"
+    }
+  ],
+  "musicPublished": 1881,
+  "metre": "7 6 7 6",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "B4:1 | B4:1.5 B4:.5 A4:1 G4:1 | G4:2 F#4:1 D4:1 | C5:1.5 C5:.5 B4:1 A4:1 | B4:3 B4:1 | D5:1.5 D5:.5 C5:1 B4:1 | B4:2 C5:1 B4:1 | A4:1.5 G4:.5 F#4:1 G4:1 | A4:3 Bb4:1 | B4:1.5 B4:.5 A4:1 G4:1 | G4:2 F#4:1 D4:1 | C5:1.5 C5:.5 B4:1 A4:1 | B4:3 B4:1 | E5:1.5 D5:.5 C5:1 B4:1 | D5:2 C5:1 E4:1 | G4:1.5 F#4:.5 E4:1 F#4:1 | G4:3",
+  "incipit": "mmmrddt|sffmrm|mddfmmf",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000365.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000365a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000365; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000365 (the melody read from 000365a.mid, checked against the page's do-re-mi incipit, 2 notes off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Arthur Henry Mann's dates (1850–1929) are from https://hymnary.org/person/Mann_AH (Mann, A. H. (Arthur Henry), 1850-1929); CCEH's page gives only the year 1881. The bar lines are those of CCEH's Noteworthy score (000365a.nwc).",
+  "importedFrom": "cceh:000365",
+  "updated": "2026-10-17"
+}

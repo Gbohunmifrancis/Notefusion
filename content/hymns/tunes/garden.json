@@ -1,0 +1,35 @@
+{
+  "name": "GARDEN",
+  "title": "Garden",
+  "alsoKnownAs": [
+    "In the Garden"
+  ],
+  "music": [
+    {
+      "name": "C. Austin Miles",
+      "born": 1868,
+      "died": 1946,
+      "role": "Music (1912)"
+    }
+  ],
+  "musicPublished": 1912,
+  "metre": "Irregular",
+  "key": "Ab major",
+  "time": "6/8",
+  "tempo": 95,
+  "pickup": 0.5,
+  "lineBars": 4,
+  "melody": "Eb4:.5 | Eb4:.5 C4:.5 C#4:.5 Eb4:.5 Ab4:.5 Bb4:.5 | C5:2 Bb4:.5 Ab4:.5 | Ab4:1 Ab4:.5 Bb4:.5 Ab4:.5 F4:.5 | Ab4:1.5 Eb4:1 G4:.25 Ab4:.25 | Bb4:1 Bb4:.5 G4:1 F4:.25 G4:.25 | Ab4:1 Bb4:.5 C5:1 C5:.5 | Bb4:1 C5:.5 Bb4:1 Ab4:.5 | G4:1 Ab4:.5 Bb4:.5 C5:.75 Bb4:.25 | Ab4:1 Ab4:.5 Ab4:.5 G4:.5 F4:.5 | G4:1 G4:.5 G4:1 Eb4:.25 Eb4:.25 | C#5:1 C#5:.5 C#5:.5 C5:.5 B4:.5 | C5:2.5 Ab4:.25 Bb4:.25 | C5:1 C5:.5 Bb4:.5 Bb4:.5 G4:.5 | Ab4:1 Ab4:.5 Ab4:1 F4:.5 | Eb4:.25 Ab4:.75 Ab4:.5 G4:.25 Bb4:1.25 | Ab4:2.5",
+  "incipit": "ssmfsdrm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0004/x000428.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0004/000428a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000428; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000428 (the melody read from 000428a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. C. Austin Miles's dates (1868–1946) are from https://hymnary.org/person/Miles_CA (Miles, C. Austin (Charles Austin), 1868-1946); https://en.wikipedia.org/wiki/C._Austin_Miles agrees; CCEH's page gives only the year 1912. The bar lines are those of CCEH's Noteworthy score (000428a.nwc).",
+  "importedFrom": "cceh:000428",
+  "updated": "2026-10-17"
+}

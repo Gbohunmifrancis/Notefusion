@@ -1,0 +1,32 @@
+{
+  "name": "PROMISES",
+  "title": "Promises",
+  "music": [
+    {
+      "name": "R. Kelso Carter",
+      "born": 1849,
+      "died": 1928,
+      "role": "Music (1886)"
+    }
+  ],
+  "musicPublished": 1886,
+  "metre": "11 11 11 9 + i",
+  "key": "Bb major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:.75 F4:.25 F4:.75 G4:.25 F4:.75 Eb4:.25 D4:.75 Eb4:.25 | F4:1 Bb4:1 Bb4:2 | G4:.75 G4:.25 G4:.75 A4:.25 Bb4:.75 Bb4:.25 A4:.75 G4:.25 | G4:1 F4:1 F4:2 | F4:.75 F4:.25 F4:.75 G4:.25 F4:.75 Eb4:.25 D4:.75 Eb4:.25 | F4:1 Bb4:1 Bb4:2 | D5:.75 D5:.25 Bb4:.75 Bb4:.25 C5:.75 C5:.25 A4:.75 A4:.25 | Bb4:4 | D5:1.75 F4:.25 Bb4:2 | G4:1.75 Eb4:.25 Bb4:2 | C5:.75 C5:.25 C5:.75 C5:.25 C5:.75 C5:.25 Bb4:.75 C5:.25 | D5:1 Bb4:1 G4:1 Bb4:1 | D5:1.75 F4:.25 Bb4:2 | G4:1.75 Eb4:.25 Eb5:1.5 C5:.5 | Bb4:.75 Bb4:.25 Bb4:.75 C5:.25 D5:.75 D5:.25 C5:.75 C5:.25 | Bb4:4",
+  "incipit": "ssslsfmfsdd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000335.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000335a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000335; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000335 (the melody read from 000335a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. R. Kelso Carter's dates (1849–1928) are from https://en.wikipedia.org/wiki/Russell_Kelso_Carter (Nov 18, 1849 - Aug 23, 1928); CCEH's page gives only the year 1886. The bar lines are those of CCEH's Noteworthy score (000335a.nwc).",
+  "importedFrom": "cceh:000335",
+  "updated": "2026-10-17"
+}

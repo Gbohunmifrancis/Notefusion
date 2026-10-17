@@ -1,0 +1,32 @@
+{
+  "name": "ADELAIDE",
+  "title": "Adelaide",
+  "music": [
+    {
+      "name": "George C. Stebbins",
+      "born": 1846,
+      "died": 1945,
+      "role": "Music (1907)"
+    }
+  ],
+  "musicPublished": 1907,
+  "metre": "5 4 5 4",
+  "key": "Eb major",
+  "time": "9/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 1,
+  "melody": "G4:1 F4:1 G4:1 Ab4:3 G4:3 | Eb4:1 D4:1 Eb4:1 F4:6 | F4:1 E4:1 F4:1 G4:3 F4:3 | F4:1 Eb4:1 D4:1 Eb4:6 | G4:1 F4:1 G4:1 Ab4:3 G4:3 | Bb4:1 A4:1 Bb4:1 C5:6 | C5:1 D5:1 C5:1 Bb4:3 G4:3 | F4:1 Eb4:1 F4:1 Eb4:6",
+  "incipit": "mrmfmdtdr|rdrmrrdtd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000349.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000349a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000349; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000349 (the melody read from 000349a.mid, checked against the page's do-re-mi incipit, 1 note off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. George C. Stebbins's dates (1846–1945) are from https://en.wikipedia.org/wiki/George_Coles_Stebbins; CCEH's page gives only the year 1907. The bar lines are those of CCEH's Noteworthy score (000349a.nwc).",
+  "importedFrom": "cceh:000349",
+  "updated": "2026-10-17"
+}

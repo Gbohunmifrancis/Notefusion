@@ -1,0 +1,34 @@
+{
+  "name": "DAVIS",
+  "title": "Davis",
+  "alsoKnownAs": [
+    "Meditation"
+  ],
+  "music": [
+    {
+      "name": "Freeman Lewis",
+      "activeBy": 1813,
+      "role": "Music (1813)"
+    }
+  ],
+  "musicPublished": 1813,
+  "metre": "11 8 11 8",
+  "key": "Db major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "C#4:1 | C#4:1.5 Eb4:.5 F4:1 F#4:1 | Ab4:1.5 Bb4:.5 Ab4:1 F#4:1 | F4:2 Eb4:1 Eb4:1 | C#4:3 Ab4:1 | C#5:2 C#5:1 Eb5:1 | C#5:2 Bb4:1 Bb4:1 | Ab4:3 Ab4:1 | C#5:2 C#5:1 Ab4:1 | Bb4:1 Ab4:1 F4:1 Ab4:1 | Bb4:2 Ab4:1 F4:1 | Eb4:2 C#4:1 F4:1 | Ab4:1.5 Bb4:.5 Ab4:1 C#4:1 | F4:2 Eb4:1 Eb4:1 | C#4:3",
+  "incipit": "ddrmfslsfmrrd|sddrdlls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000372.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000372a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000372; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000372 (the melody read from 000372a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Freeman Lewis has no death year on CCEH's page or ours; their work is dated 1813, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000372a.nwc).",
+  "importedFrom": "cceh:000372",
+  "updated": "2026-10-17"
+}

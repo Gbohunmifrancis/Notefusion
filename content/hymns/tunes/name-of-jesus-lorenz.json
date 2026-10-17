@@ -1,0 +1,32 @@
+{
+  "name": "NAME OF JESUS (LORENZ)",
+  "title": "Name of Jesus (Lorenz)",
+  "music": [
+    {
+      "name": "Edmund S. Lorenz",
+      "born": 1854,
+      "died": 1942,
+      "role": "Music (1901)"
+    }
+  ],
+  "musicPublished": 1901,
+  "metre": "8 8 8 7 + 7 7 7 7",
+  "key": "C major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 2,
+  "lineBars": 4,
+  "melody": "G4:1 C5:.5 B4:.5 | A4:1.5 E4:.5 G4:.5 F#4:.5 | F4:1 B4:1 D5:.5 C5:.5 | B4:1.5 F4:.5 A4:.5 G4:.5 | G4:1 C5:1 E5:.5 D5:.5 | C5:1.5 B4:.5 B4:.5 A4:.5 | A4:.5 A4:.5 B4:.5 C5:.5 D5:1~ | D5:1 E5:1 D5:1 | G4:1.5 r:.5 C5:1 | G4:1 A4:.5 G4:.5 G4:.5 F4:.5 | F4:1 r:1 D5:1 | B4:1 C5:.5 B4:.5 A4:.5 G4:.5 | G4:1 r:1 E5:1 | C5:1 D5:.5 C5:.5 B4:.5 A4:.5 | A4:.5 A4:.5 B4:.5 C5:.5 E5:1~ | E5:1 C5:1 D5:1 | C5:1",
+  "incipit": "sdtlmsff|trdtflss",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0006/x000678.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0006/000678a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000678; public domain.",
+  "reviewNotes": "Held back: the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000678 (the melody read from 000678a.mid, checked against the page's do-re-mi incipit, 1 note off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Edmund S. Lorenz's dates (1854–1942) are from https://hymnary.org/person/Lorenz_ES (Lorenz, Edmund S. (Edmund Simon), 1854-1942); CCEH's page gives only the year 1901.",
+  "importedFrom": "cceh:000678",
+  "updated": "2026-10-17"
+}

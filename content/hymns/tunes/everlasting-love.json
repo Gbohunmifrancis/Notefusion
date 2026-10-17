@@ -1,0 +1,32 @@
+{
+  "name": "EVERLASTING LOVE",
+  "title": "Everlasting Love",
+  "music": [
+    {
+      "name": "James Mountain",
+      "born": 1844,
+      "died": 1933,
+      "role": "Music (1890)"
+    }
+  ],
+  "musicPublished": 1890,
+  "metre": "7 7 7 7",
+  "key": "D major",
+  "time": "3/2",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "D4:1 E4:1 | F#4:3 F#4:1 G4:1 G4:1 | F#4:4 F#4:1 G4:1 | A4:3 A4:1 G4:1 F#4:1 | E4:4 D4:1 E4:1 | F#4:3 F#4:1 G4:1 G4:1 | F#4:4 A4:1 A4:1 | A4:3 Ab4:1 F#4:1 Ab4:1 | A4:4 A4:1 G4:1 | F#4:3 F#4:1 G4:1 F#4:1 | B4:4 B4:1 B4:1 | A4:3 A4:1 G4:1 F#4:1 | E4:4 F#4:1 G4:1 | A4:3 A4:1 B4:1 C#5:1 | D5:4 C#5:1 B4:1 | A4:3 A4:1 G4:1 E4:1 | F#4:4 F#4:1 G4:1 | A4:3 A4:1 B4:1 C#5:1 | D5:4 C#5:1 B4:1 | A4:3 A4:1 G4:1 E4:1 | D4:4",
+  "incipit": "drmmffm|mfssfmr|drmmffm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000342.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000342a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000342; public domain.",
+  "reviewNotes": "Held back: the score has a bar of another length (bar 16), which the solfa grid does not draw. Imported from CCEH tune 000342 (the melody read from 000342a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. James Mountain's dates (1844–1933) are from https://praise.org.uk/?p=28948; https://songsandhymns.org/people/detail/James-Mountain; CCEH's page gives only the year 1890. The bar lines are those of CCEH's Noteworthy score (000342a.nwc).",
+  "importedFrom": "cceh:000342",
+  "updated": "2026-10-17"
+}

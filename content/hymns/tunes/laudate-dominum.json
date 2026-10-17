@@ -1,0 +1,30 @@
+{
+  "name": "LAUDATE DOMINUM",
+  "title": "Laudate Dominum",
+  "music": [
+    {
+      "name": "Charles Hubert Hastings Parry",
+      "role": "Music (1915)"
+    }
+  ],
+  "musicPublished": 1915,
+  "metre": "10 10 11 11",
+  "key": "Bb major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "F4:1 | D5:1 Bb4:1 C5:1 | F4:2 Bb4:1 | G4:1 F4:1 Eb4:1 | D4:2 F4:1 | D5:1 C5:1 F4:1 | Bb4:2 A4:1 | C5:1 Bb4:1 G4:1 | F4:2 F4:1 | Bb4:1 Bb4:1 Bb4:1 | Bb4:1 A4:.5 G4:.5 A4:.5 Bb4:.5 | C5:1 Bb4:1 C5:1 | F4:2 A4:1 | D5:1 D5:1 D5:1 | Bb4:.5 A4:.5 G4:1 Eb5:1 | D5:1 Bb4:1 C5:1 | Bb4:2",
+  "incipit": "smdrsdlsfm|smrsdtrdls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0006/x000659.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0006/000659a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000659; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Charles Hubert Hastings Parry: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000659 (the melody read from 000659a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true.",
+  "importedFrom": "cceh:000659",
+  "updated": "2026-10-17"
+}

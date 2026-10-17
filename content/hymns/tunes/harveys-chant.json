@@ -1,0 +1,32 @@
+{
+  "name": "HARVEY'S CHANT",
+  "title": "Harvey's Chant",
+  "music": [
+    {
+      "name": "William Batchelder Bradbury",
+      "born": 1816,
+      "died": 1868,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 6 8 6",
+  "key": "G major",
+  "time": "3/2",
+  "tempo": 96,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "G4:2 | G4:1 G4:1 G4:1 G4:1 F#4:1 G4:1 | A4:4 A4:2 | A4:1 A4:1 A4:2 A4:2 | B4:4 B4:2 | B4:1 B4:1 B4:1 B4:1 A4:1 B4:1 | C5:4 A4:2 | B4:1 A4:1 G4:2 F#4:2 | G4:4 D4:2 | E4:1 G4:1 D4:2 D4:2 | D4:4",
+  "incipit": "ddddtdr|rrrrrm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0005/x000523.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0005/000523a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000523; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000523 (the melody read from 000523a.mid, checked against the page's do-re-mi incipit, 2 notes off in 13); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William Batchelder Bradbury's dates (1816–1868) are from our page for the tune BRADBURY (content/hymns/tunes/bradbury.json); CCEH's page gives none. The tune ends on D, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "importedFrom": "cceh:000523",
+  "updated": "2026-10-17"
+}

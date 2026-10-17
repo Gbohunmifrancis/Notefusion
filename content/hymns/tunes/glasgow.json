@@ -1,0 +1,31 @@
+{
+  "name": "GLASGOW",
+  "title": "Glasgow",
+  "music": [
+    {
+      "name": "Psalm Singer's Pocket Companion, Moore",
+      "traditional": true,
+      "role": "Melody (1756)"
+    }
+  ],
+  "musicPublished": 1756,
+  "metre": "8 6 8 6",
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "D4:1 | G4:2 A4:1 | B4:.75 A4:.25 G4:1 B4:1 | D5:.75 E5:.25 D5:1 C5:1 | B4:2 B4:1 | A4:2 C5:1 | B4:.75 A4:.25 G4:1 F#4:1 | G4:2 D5:1 | D5:2 B4:1 | C5:2 E5:1 | D5:1 C5:1 B4:1 | A4:2 D5:1 | G4:1 A4:1 B4:1 | C5:1 B4:1 A4:1 | G4:2",
+  "incipit": "sdrmrdmslsfm|mrfmrdtd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0004/x000419.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0004/000419a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000419; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000419 (the melody read from 000419a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000419a.nwc).",
+  "importedFrom": "cceh:000419",
+  "updated": "2026-10-17"
+}
