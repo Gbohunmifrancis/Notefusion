@@ -27,6 +27,9 @@ jobs:
             # stored result of the newest finished jobs (key, tempo, meter, confidence, the first notes
             # as pitch@beat x length, the solfa lines). Metadata only: no audio, no names, no addresses.
             cd /opt/notefusion
+            echo "== backups: the latest run of each kind (docs/BACKUP_AND_MIGRATION.md)"
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT DISTINCT ON (\"Kind\") \"Kind\" AS kind, to_char(\"FinishedAtUtc\",'MM-DD HH24:MI') AS at, \"Ok\" AS ok, \"Verified\" AS verified, pg_size_pretty(\"SizeBytes\") AS size, left(\"Detail\",150) AS detail FROM backup_runs ORDER BY \"Kind\", \"FinishedAtUtc\" DESC;" || true
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT archived_count, last_archived_wal, last_archived_time, failed_count FROM pg_stat_archiver;" || true
             echo "== blog: drafting runs and posts (newest first)"
             docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT to_char(\"CreatedAtUtc\",'MM-DD HH24:MI') AS at, \"Count\" AS n, \"Status\" AS status, \"Model\" AS model, left(\"Error\",160) AS error, jsonb_array_length(items_json::jsonb) AS items FROM blog_generation_runs ORDER BY \"CreatedAtUtc\" DESC LIMIT 6;" || true
             docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT i->>'slug' AS slug, i->>'passedChecks' AS ok, left(coalesce(i->>'error',''),80) AS error, left(coalesce(i->'problems'->>0,''),120) AS first_problem FROM (SELECT jsonb_array_elements(items_json::jsonb) AS i FROM blog_generation_runs ORDER BY \"CreatedAtUtc\" DESC LIMIT 3) x;" || true

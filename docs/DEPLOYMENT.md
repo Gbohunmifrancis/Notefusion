@@ -714,3 +714,14 @@ deliberately to upgrade.
 ```
 
 Using both asks for two passwords; one is enough.
+
+## Backups
+
+The `backup` service (ops/backup) makes encrypted, provider-neutral backups into its own bucket: a
+`pg_dump` every 6 hours, WAL-G point-in-time recovery to the minute, and the photos, JWT key and Caddyfile
+daily; a weekly GitHub Actions drill restores them for real. It needs five settings
+(`BACKUP_S3_ENDPOINT`, `BACKUP_S3_BUCKET`, `BACKUP_S3_ACCESS_KEY_ID`, `BACKUP_S3_SECRET_ACCESS_KEY`,
+`BACKUP_ENCRYPTION_PASSWORD`); without them it logs what is missing and waits. Setup, restores and a
+zero-data-loss move to another provider: [BACKUP_AND_MIGRATION.md](BACKUP_AND_MIGRATION.md).
+`Maintenance__ReadOnly=true` (repository variable `MAINTENANCE_READ_ONLY`) makes the API refuse writes
+with a plain 503 while reads keep working, for that move.

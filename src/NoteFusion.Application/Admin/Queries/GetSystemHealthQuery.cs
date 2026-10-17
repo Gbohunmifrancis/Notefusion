@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Admin.Dtos;
+using NoteFusion.Application.Admin.Services;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities.Billing;
@@ -84,6 +85,10 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
             ? new SubscriptionHealthDto(0, 0, 0, 0)
             : await CountSubscriptions(now, ct);
 
+        var backups = database.Status == "down"
+            ? null
+            : (await BackupHealth.ReadAsync(_db, now, ct)).Status;
+
         var panels = new[] { database, worker, backlog };
         var status = panels.Any(p => p.Status == "down") ? "down"
             : panels.Any(p => p.Status == "degraded") ? "degraded"
@@ -94,7 +99,7 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
             .ToList() ?? (IReadOnlyList<WorkerHeartbeatDto>)Array.Empty<WorkerHeartbeatDto>();
 
         return new SystemHealthDto(
-            status, now, database, worker, backlog, activity, subscriptions, NotMonitored, heartbeatDtos);
+            status, now, database, worker, backlog, activity, subscriptions, NotMonitored, heartbeatDtos, backups);
     }
 
     private async Task<HealthPanelDto> CheckDatabase(CancellationToken ct)

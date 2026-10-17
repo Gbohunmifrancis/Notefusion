@@ -1,0 +1,189 @@
+name: Backup restore drill
+
+# Proves every week that the backups restore — not that they exist (docs/BACKUP_AND_MIGRATION.md).
+#  1. The newest logical dump is restored into a throwaway PostgreSQL 16 (the Debian/glibc image, a
+#     different platform from production's Alpine one, so portability is tested too) and must match its
+#     manifest row for row; then the invariants in ops/backup/drill-checks.sql (every foreign key holds,
+#     the ledger agrees with its payments, an admin exists) and the EF migrations against this repository.
+#  2. Point-in-time recovery: the newest base backup plus the archived WAL, replayed to 20 minutes ago.
+#  3. The result goes to the backup bucket (status/restore-drill.json); the backup service brings it into
+#     the admin console's System Health page within the hour, and a failure there alerts the admins.
+# A failed drill fails this workflow, which GitHub emails about. Nothing here touches production: the
+# drill reads the bucket with the backup credentials and restores only into this runner.
+
+on:
+  schedule:
+    # Sundays 04:41 UTC (05:41 in Lagos), after the night's base backup and the 00:17 dump.
+    - cron: "41 4 * * 0"
+  workflow_dispatch:
+    inputs:
+      pitr:
+        description: "Also test point-in-time recovery (base backup + WAL)"
+        type: boolean
+        default: true
+
+concurrency:
+  group: backup-restore-drill
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  drill:
+    name: Restore the latest backups
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    services:
+      target:
+        image: postgres:16
+        env:
+          POSTGRES_USER: drill
+          POSTGRES_PASSWORD: drill
+          POSTGRES_DB: notefusion
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U drill -d notefusion"
+          --health-interval 5s --health-timeout 5s --health-retries 30
+    env:
+      BACKUP_IMAGE: ghcr.io/gbohunmifrancis/notefusion-backup:latest
+      TARGET_URL: postgres://drill:drill@127.0.0.1:5432/notefusion
+      BACKUP_S3_ENDPOINT: ${{ vars.BACKUP_S3_ENDPOINT || secrets.BACKUP_S3_ENDPOINT }}
+      BACKUP_S3_BUCKET: ${{ vars.BACKUP_S3_BUCKET || secrets.BACKUP_S3_BUCKET }}
+      BACKUP_S3_REGION: ${{ vars.BACKUP_S3_REGION || 'auto' }}
+      BACKUP_S3_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY_ID }}
+      BACKUP_S3_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_ACCESS_KEY }}
+      BACKUP_ENCRYPTION_PASSWORD: ${{ secrets.BACKUP_ENCRYPTION_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The migrations' history decides whether a dump that is one migration behind is just early.
+          fetch-depth: 0
+
+      - name: Are backups configured?
+        id: cfg
+        run: |
+          missing=""
+          for v in BACKUP_S3_ENDPOINT BACKUP_S3_BUCKET BACKUP_S3_ACCESS_KEY_ID BACKUP_S3_SECRET_ACCESS_KEY BACKUP_ENCRYPTION_PASSWORD; do
+            [ -n "${!v}" ] || missing="$missing $v"
+          done
+          if [ -n "$missing" ]; then
+            echo "::warning::Backups are not configured (missing:$missing); there is nothing to restore. See docs/BACKUP_AND_MIGRATION.md."
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GHCR
+        if: steps.cfg.outputs.configured == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull the backup image
+        if: steps.cfg.outputs.configured == 'true'
+        run: |
+          docker pull "$BACKUP_IMAGE"
+          # The settings for docker run, readable by this job alone (values are taken literally).
+          umask 077
+          {
+            echo "BACKUP_S3_ENDPOINT=$BACKUP_S3_ENDPOINT"
+            echo "BACKUP_S3_BUCKET=$BACKUP_S3_BUCKET"
+            echo "BACKUP_S3_REGION=$BACKUP_S3_REGION"
+            echo "BACKUP_S3_ACCESS_KEY_ID=$BACKUP_S3_ACCESS_KEY_ID"
+            echo "BACKUP_S3_SECRET_ACCESS_KEY=$BACKUP_S3_SECRET_ACCESS_KEY"
+            echo "BACKUP_ENCRYPTION_PASSWORD=$BACKUP_ENCRYPTION_PASSWORD"
+            echo "NF_WORK=/tmp/nf-work"
+          } > "$RUNNER_TEMP/backup.env"
+          mkdir -p "$RUNNER_TEMP/out"
+
+      - name: Restore the latest dump and compare it with its manifest
+        id: logical
+        if: steps.cfg.outputs.configured == 'true'
+        run: |
+          docker run --rm --network host --user "$(id -u):$(id -g)" \
+            --env-file "$RUNNER_TEMP/backup.env" -v "$RUNNER_TEMP/out:/out" "$BACKUP_IMAGE" \
+            restore.sh --target-url "$TARGET_URL" --jobs 4 --report /out/report.json
+          jq . "$RUNNER_TEMP/out/report.json"
+
+      - name: Invariants (foreign keys, ledger, accounts)
+        id: invariants
+        if: steps.logical.outcome == 'success'
+        run: |
+          docker run --rm --network host -v "$PWD/ops/backup/drill-checks.sql:/checks.sql:ro" "$BACKUP_IMAGE" \
+            psql "$TARGET_URL" -X -q -v ON_ERROR_STOP=1 -f /checks.sql
+
+      - name: EF migrations match this repository
+        id: migrations
+        if: steps.logical.outcome == 'success'
+        run: |
+          dir=src/NoteFusion.Infrastructure/Persistence/Migrations
+          repo_latest=$(find "$dir" -maxdepth 1 -name '2*.cs' ! -name '*.Designer.cs' -printf '%f\n' | sed 's/\.cs$//' | sort | tail -1)
+          restored=$(jq -r '.migrations_restored' "$RUNNER_TEMP/out/report.json")
+          snapshot=$(jq -r '.snapshot_time' "$RUNNER_TEMP/out/report.json")
+          echo "repository: $repo_latest · backup: $restored (taken $snapshot)"
+          if [ "$restored" = "$repo_latest" ]; then
+            echo "The backup has every migration in the repository."
+            exit 0
+          fi
+          if [ ! -f "$dir/$restored.cs" ]; then
+            echo "::error::The backup's latest migration $restored is not in this repository: it came from another branch or database."
+            exit 1
+          fi
+          # Behind: fine when the newer migration reached main after the dump (it ships with the next
+          # deploy and the next dump); not when it had been on main for hours before the dump was taken.
+          landed=$(git log -1 --format=%cI -- "$dir/$repo_latest.cs")
+          if [ "$(date -u -d "$landed" +%s)" -lt "$(( $(date -u -d "$snapshot" +%s) - 6 * 3600 ))" ]; then
+            echo "::error::Production's backup is missing migration $repo_latest, which reached main at $landed, well before the dump ($snapshot). Was it deployed?"
+            exit 1
+          fi
+          echo "::warning::The backup is at $restored; $repo_latest reached main at $landed, after this dump. The next dump will have it."
+
+      - name: Point-in-time recovery to 20 minutes ago
+        id: pitr
+        if: steps.cfg.outputs.configured == 'true' && (github.event_name == 'schedule' || inputs.pitr)
+        run: |
+          target=$(date -u -d '-20 minutes' '+%Y-%m-%d %H:%M:%S+00')
+          echo "target: $target"
+          docker volume create nf-pitr >/dev/null
+          docker run --rm --env-file "$RUNNER_TEMP/backup.env" -v nf-pitr:/restore "$BACKUP_IMAGE" \
+            pitr-restore.sh --data-dir /restore/pgdata --target-time "$target" \
+            --check-sql "SELECT (SELECT count(*) FROM users) AS users, (SELECT max(\"MigrationId\") FROM \"__EFMigrationsHistory\") AS latest_migration"
+          docker volume rm nf-pitr >/dev/null
+
+      - name: Report the result
+        if: always() && steps.cfg.outputs.configured == 'true'
+        env:
+          LOGICAL: ${{ steps.logical.outcome }}
+          INVARIANTS: ${{ steps.invariants.outcome }}
+          MIGRATIONS: ${{ steps.migrations.outcome }}
+          PITR: ${{ steps.pitr.outcome }}
+          STARTED_AT: ${{ steps.cfg.outputs.started_at }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          ok=true
+          for o in "$LOGICAL" "$INVARIANTS" "$MIGRATIONS"; do [ "$o" = success ] || ok=false; done
+          case "$PITR" in success | skipped | "") ;; *) ok=false ;; esac
+          rows="?"
+          [ -f "$RUNNER_TEMP/out/report.json" ] && rows=$(jq -r '"\(.tables_restored) tables, \(.rows_restored) rows"' "$RUNNER_TEMP/out/report.json")
+          summary="logical restore: $LOGICAL ($rows) · invariants: $INVARIANTS · migrations: $MIGRATIONS · point-in-time: ${PITR:-skipped}"
+          jq -n --argjson ok "$ok" --arg started "$STARTED_AT" --arg finished "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg summary "$summary" --arg url "$RUN_URL" \
+            '{ok: $ok, started_at: $started, finished_at: $finished, summary: $summary, run_url: $url}' > "$RUNNER_TEMP/drill.json"
+          cat "$RUNNER_TEMP/drill.json"
+          docker run --rm -i --env-file "$RUNNER_TEMP/backup.env" "$BACKUP_IMAGE" \
+            nf-backup-env rclone rcat "backup:$BACKUP_S3_BUCKET/status/restore-drill.json" < "$RUNNER_TEMP/drill.json" \
+            || echo "::warning::Could not leave the result in the bucket; the console will not show this drill."
+          {
+            echo "## Backup restore drill: $([ "$ok" = true ] && echo passed || echo FAILED)"
+            echo
+            echo "$summary"
+          } >> "$GITHUB_STEP_SUMMARY"
+          rm -f "$RUNNER_TEMP/backup.env"
+          [ "$ok" = true ]

@@ -770,6 +770,42 @@ export interface SystemHealth {
    */
   notMonitored: string[];
   workerHeartbeats?: WorkerHeartbeat[];
+  /** Outside the rollup above. Null when the database (where the backups record their runs) is down. */
+  backups?: BackupStatus | null;
+}
+
+/**
+ * The backups (ops/backup, docs/BACKUP_AND_MIGRATION.md), as `BackupHealth` reads the rows the backup
+ * container writes. `off` means never run here, or a missing setting (the summary names it).
+ */
+export type BackupHealthStatus = HealthStatus | "off";
+
+export interface BackupRun {
+  finishedAtUtc: string;
+  ok: boolean;
+  sizeBytes: number | null;
+  /** A dump read back from the bucket and matched; a drill that passed every check. */
+  verified: boolean;
+  detail: string | null;
+}
+
+export interface BackupStatus {
+  status: BackupHealthStatus;
+  /** "Last database backup 3 h ago · 412 MB · verified", or what is wrong. */
+  summary: string;
+  lastDump: BackupRun | null;
+  lastVerifiedDump: BackupRun | null;
+  lastBaseBackup: BackupRun | null;
+  /** When a WAL segment last reached the bucket: the edge of point-in-time recovery. */
+  walArchivedAtUtc: string | null;
+  lastWalReport: BackupRun | null;
+  lastFiles: BackupRun | null;
+  lastCheck: BackupRun | null;
+  lastMirror: BackupRun | null;
+  lastDrill: BackupRun | null;
+  drillUrl: string | null;
+  /** Plain sentences, worst first; the same list the backup alert sends. */
+  problems: string[];
 }
 
 /* ── Mutation bodies ──────────────────────────────────────────────────────── */

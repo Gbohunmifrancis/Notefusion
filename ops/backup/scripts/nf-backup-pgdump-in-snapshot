@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Called by nf-backup-dump from inside its open snapshot transaction (psql's \!). Dumps that exact
+# snapshot, so the dump and the row counts taken a moment earlier describe the same instant. Its exit
+# status goes to a file because psql does not pass a shell command's status back.
+set -uo pipefail
+: "${NF_STAGE:?}" "${NF_SNAPSHOT:?}"
+pg_dump --snapshot="$NF_SNAPSHOT" --format=custom --compress=0 \
+  --file="$NF_STAGE/notefusion.dump" 2>"$NF_STAGE/.pg_dump.err"
+echo $? >"$NF_STAGE/.pg_dump.status"

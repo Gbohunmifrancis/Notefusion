@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+# The portable layer: a logical dump of the whole database every six hours, restorable with plain
+# pg_restore onto any PostgreSQL 16 or newer, anywhere.
+#
+#  1. One read-only REPEATABLE READ transaction exports its snapshot, counts every table's rows and reads
+#     the EF migrations inside it, then pg_dump runs on that same snapshot — so the manifest's row counts
+#     are exactly what the dump holds, and a restore can be checked against them to the row.
+#  2. pg_dump --format=custom, uncompressed (restic compresses and deduplicates; an uncompressed dump
+#     dedups well between runs), plus pg_dumpall --globals-only for roles (without password hashes).
+#  3. Verified before upload: pg_dump's exit status, pg_restore --list reads the archive, and every counted
+#     table has its TABLE DATA entry. manifest.json records sizes, SHA-256s, counts and migrations.
+#  4. restic backup (encrypted client-side) into the bucket, then verified after upload: the dump is read
+#     back out of the repository and must hash to what was written.
+#  5. The run is recorded in backup_runs for the admin console.
+set -Eeuo pipefail
+# shellcheck source=nf-backup-lib.sh
+. /usr/local/bin/nf-backup-lib.sh
+export NF_JOB=dump
+nf_export_tool_env
+
+stage=$NF_WORK/db
+started=$(nf_now)
+fail() {
+  trap - ERR
+  log "FAILED: $*"
+  nf_record dump false "$started" "$(nf_now)" "" false "" "$*"
+  rm -f "$stage/notefusion.dump"
+  exit 1
+}
+trap 'fail "unexpected error at line $LINENO"' ERR
+
+rm -rf "$stage"
+mkdir -p "$stage"
+export NF_STAGE=$stage
+
+db_bytes=$(psql -X -Atq -c "SELECT pg_database_size(current_database())") || fail "cannot reach the database as ${PGUSER:-?}@${PGHOST:-?}"
+free=$(nf_free_bytes "$NF_WORK")
+# The uncompressed dump is roughly the table data without indexes, so the database's own size plus a
+# margin is a safe upper bound; refusing is better than filling the host's disk under the database.
+need=$((db_bytes + 512 * 1024 * 1024))
+if [ "$free" -lt "$need" ]; then
+  fail "not enough free disk for the dump: $(nf_human_bytes "$free") free, want $(nf_human_bytes "$need")"
+fi
+
+log "dumping $PGDATABASE ($(nf_human_bytes "$db_bytes") on disk)"
+psql -X -q -v ON_ERROR_STOP=1 \
+  -v NF_STAGE_TABLES="$stage/tables.json" -v NF_STAGE_MIGRATIONS="$stage/migrations.json" -v NF_STAGE_META="$stage/meta.json" \
+  -f - >"$stage/.psql.out" 2>"$stage/.psql.err" <<'SQL' || fail "snapshot session failed: $(tail -c 600 "$stage/.psql.err" | tr '\n' ' ')"
+BEGIN ISOLATION LEVEL REPEATABLE READ, READ ONLY;
+SELECT pg_export_snapshot() AS snap, to_char(now() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS snap_time \gset
+\setenv NF_SNAPSHOT :snap
+\pset tuples_only on
+\pset format unaligned
+\o :NF_STAGE_TABLES
+SELECT coalesce(json_object_agg(t.name, t.n ORDER BY t.name), '{}')
+FROM (
+  SELECT format('%s.%s', n.nspname, c.relname) AS name,
+         (xpath('/row/c/text()', query_to_xml(format('SELECT count(*) AS c FROM %I.%I', n.nspname, c.relname), false, true, '')))[1]::text::bigint AS n
+  FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE c.relkind IN ('r', 'p')
+    AND n.nspname NOT IN ('pg_catalog', 'information_schema')
+    AND n.nspname NOT LIKE 'pg\_toast%'
+    AND n.nspname NOT LIKE 'pg\_temp%'
+) t;
+\o
+SELECT to_regclass('public."__EFMigrationsHistory"') IS NOT NULL AS has_ef \gset
+\o :NF_STAGE_MIGRATIONS
+\if :has_ef
+SELECT coalesce(json_agg("MigrationId" ORDER BY "MigrationId"), '[]') FROM "__EFMigrationsHistory";
+\else
+SELECT '[]';
+\endif
+\o :NF_STAGE_META
+SELECT json_build_object(
+  'snapshot_time', :'snap_time',
+  'server_version', current_setting('server_version'),
+  'server_version_num', current_setting('server_version_num')::int,
+  'database', current_database(),
+  'database_size_bytes', pg_database_size(current_database()),
+  'encoding', pg_encoding_to_char(encoding),
+  'collate', datcollate,
+  'ctype', datctype)
+FROM pg_database WHERE datname = current_database();
+\o
+\! nf-backup-pgdump-in-snapshot
+COMMIT;
+SQL
+
+status=$(cat "$stage/.pg_dump.status" 2>/dev/null || echo missing)
+[ "$status" = 0 ] || fail "pg_dump failed (status $status): $(tail -c 600 "$stage/.pg_dump.err" 2>/dev/null | tr '\n' ' ')"
+
+pg_dumpall --globals-only --no-role-passwords -l "$PGDATABASE" -f "$stage/globals.sql" 2>"$stage/.globals.err" \
+  || fail "pg_dumpall --globals-only failed: $(tail -c 600 "$stage/.globals.err" | tr '\n' ' ')"
+
+# Verify the archive before it goes anywhere.
+pg_restore --list "$stage/notefusion.dump" >"$stage/toc.txt" 2>"$stage/.toc.err" \
+  || fail "pg_restore cannot read the dump: $(tail -c 600 "$stage/.toc.err" | tr '\n' ' ')"
+table_count=$(jq 'length' "$stage/tables.json")
+missing_data=$(jq -r 'keys[]' "$stage/tables.json" | while IFS=. read -r schema table; do
+  grep -qE "TABLE DATA ${schema} ${table} " "$stage/toc.txt" || printf '%s.%s ' "$schema" "$table"
+done)
+[ -z "$missing_data" ] || fail "the dump has no data entry for: $missing_data"
+[ "$table_count" -gt 0 ] || fail "the database has no tables to back up"
+
+dump_bytes=$(stat -c %s "$stage/notefusion.dump")
+dump_sha=$(sha256sum "$stage/notefusion.dump" | cut -d' ' -f1)
+globals_sha=$(sha256sum "$stage/globals.sql" | cut -d' ' -f1)
+rows=$(jq '[.[]] | add // 0' "$stage/tables.json")
+
+jq -n \
+  --slurpfile meta "$stage/meta.json" \
+  --slurpfile tables "$stage/tables.json" \
+  --slurpfile migrations "$stage/migrations.json" \
+  --arg created "$(nf_now)" \
+  --arg dump_sha "$dump_sha" --argjson dump_bytes "$dump_bytes" \
+  --arg globals_sha "$globals_sha" --argjson globals_bytes "$(stat -c %s "$stage/globals.sql")" \
+  --argjson toc_entries "$(grep -cv '^;' "$stage/toc.txt")" \
+  --arg pg_dump_version "$(pg_dump --version)" \
+  '{
+     format: "notefusion-logical-backup/1",
+     created_at: $created,
+     source: $meta[0],
+     pg_dump_version: $pg_dump_version,
+     dump: { file: "notefusion.dump", format: "custom", bytes: $dump_bytes, sha256: $dump_sha, toc_entries: $toc_entries },
+     globals: { file: "globals.sql", bytes: $globals_bytes, sha256: $globals_sha, note: "roles without password hashes" },
+     table_count: ($tables[0] | length),
+     total_rows: ([$tables[0][]] | add // 0),
+     tables: $tables[0],
+     ef_migrations: { count: ($migrations[0] | length), latest: ($migrations[0] | last), applied: $migrations[0] },
+     restore: "restore.sh --target-url postgres://USER:PASS@HOST:5432/DB (docs/BACKUP_AND_MIGRATION.md)"
+   }' >"$stage/manifest.json"
+rm -f "$stage"/.p* "$stage"/.g* "$stage"/.t* "$stage/tables.json" "$stage/migrations.json" "$stage/meta.json"
+
+log "uploading $(nf_human_bytes "$dump_bytes") ($table_count tables, $rows rows)"
+nf_restic backup --host notefusion --tag db --tag logical --json --quiet "$stage" >"$NF_STATE/dump-backup.json" 2>"$NF_STATE/dump-backup.err" \
+  || fail "restic backup failed: $(tail -c 600 "$NF_STATE/dump-backup.err" | tr '\n' ' ')"
+snap=$(jq -r 'select(.message_type == "summary") | .snapshot_id' "$NF_STATE/dump-backup.json" | tail -1)
+if [ -z "$snap" ] || [ "$snap" = null ]; then fail "restic reported no snapshot id"; fi
+
+# Verified after upload: read the dump back out of the repository; it must hash to what was written.
+back_sha=$(nf_restic dump "$snap" "$stage/notefusion.dump" 2>"$NF_STATE/dump-verify.err" | sha256sum | cut -d' ' -f1)
+[ "$back_sha" = "$dump_sha" ] || fail "the uploaded dump does not match (snapshot ${snap:0:8}): $(tail -c 300 "$NF_STATE/dump-verify.err" | tr '\n' ' ')"
+nf_restic dump "$snap" "$stage/manifest.json" | jq -e '.dump.sha256' >/dev/null || fail "the uploaded manifest is unreadable"
+
+cp "$stage/manifest.json" "$NF_STATE/last-dump-manifest.json"
+rm -rf "$stage"
+trap - ERR
+
+version=$(jq -r '.source.server_version' "$NF_STATE/last-dump-manifest.json")
+nf_record dump true "$started" "$(nf_now)" "$dump_bytes" true "" \
+  "snapshot ${snap:0:8} · $table_count tables · $rows rows · PostgreSQL $version · verified (pg_restore --list, read back sha256)"
+log "done: snapshot ${snap:0:8}, $(nf_human_bytes "$dump_bytes"), verified"

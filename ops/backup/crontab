@@ -1,0 +1,18 @@
+# The backup schedule, run by supercronic inside the backup container. Times are UTC (Lagos is UTC+1);
+# the heavy jobs sit in the quiet hours and share one lock, so they never overlap. Each job records its
+# result in the backup_runs table, which the admin console's System Health page reads.
+#
+# Seven fields (with seconds) for the WAL shipper: every 20 seconds.
+*/20 * * * * * *  nf-backup-run wal-push
+# Logical dump of the whole database (portable to any PostgreSQL 16+), every 6 hours.
+17 */6 * * *      nf-backup-run dump
+# Physical base backup for point-in-time recovery, daily.
+37 2 * * *        nf-backup-run base
+# Profile photos, the JWT key, the Caddyfile and the settings list, daily.
+47 3 * * *        nf-backup-run files
+# Retention and the repository integrity check, daily.
+7 4 * * *         nf-backup-run maintain
+# Optional second copy at another provider (BACKUP_MIRROR), daily.
+27 5 * * *        nf-backup-run mirror
+# The weekly restore drill's result, from the bucket into the console, hourly.
+23 * * * *        nf-backup-run drill-status

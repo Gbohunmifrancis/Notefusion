@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+# Every 20 seconds: ships the WAL segments the database has finished (archive_command gzips each into the
+# spool) to the bucket with wal-g, oldest first, and removes each one only after wal-g has stored it. With
+# archive_timeout=60 that keeps the point-in-time recovery window within about a minute and a half of now.
+#
+# It records a "wal" row every two minutes while segments are moving (every ten when idle, and at once
+# when the state changes): when a segment last reached the bucket, how many wait and the oldest's age.
+# The row is healthy while nothing has waited longer than BACKUP_WAL_MAX_LAG_SECONDS (15 minutes) and the
+# database dropped none (it drops segments only when the spool outgrows its cap, to keep the disk from
+# filling while the bucket is unreachable).
+set -uo pipefail
+# shellcheck source=nf-backup-lib.sh
+. /usr/local/bin/nf-backup-lib.sh
+export NF_JOB=wal-push
+nf_export_tool_env
+
+max_lag=${BACKUP_WAL_MAX_LAG_SECONDS:-900}
+report_idle=${BACKUP_WAL_REPORT_SECONDS:-600}
+report_busy=120
+tmp=$NF_WORK/wal-tmp
+mkdir -p "$tmp" "$NF_STATE"
+now=$(date -u +%s)
+
+# A managed database archives its own WAL (nf-backup-base explains): just say so every ten minutes.
+if [ "${BACKUP_PHYSICAL:-on}" = off ]; then
+  if [ $((now - $(cat "$NF_STATE/wal-last-report" 2>/dev/null || echo 0))) -ge "$report_idle" ]; then
+    stamp=$(nf_now)
+    nf_record wal true "$stamp" "$stamp" "" false "$stamp" "WAL is archived by the database provider (BACKUP_PHYSICAL=off)"
+    echo "$now" >"$NF_STATE/wal-last-report"
+  fi
+  exit 0
+fi
+[ -d "$NF_SPOOL" ] || exit 0
+
+# wal-g keeps a little bookkeeping beside the segment (archive_status/) and under $PGDATA/pg_wal; the real
+# data directory is mounted read-only here, so both go in this job's own scratch space.
+mkdir -p "$tmp/archive_status" "$NF_WORK/wal-pgdata/pg_wal"
+export PGDATA=$NF_WORK/wal-pgdata
+
+# Half-written copies a crash left behind; the database archives that segment again.
+find "$NF_SPOOL" -maxdepth 1 -name '*.tmp' -mmin +10 -delete 2>/dev/null || true
+
+error=""
+pushed=0
+shopt -s nullglob
+for f in "$NF_SPOOL"/*.gz; do
+  name=$(basename "$f" .gz)
+  if ! gzip -dc "$f" >"$tmp/$name" 2>"$NF_STATE/wal.err"; then
+    error="cannot read spooled $name: $(head -c 200 "$NF_STATE/wal.err")"
+    break
+  fi
+  if wal-g wal-push "$tmp/$name" >/dev/null 2>"$NF_STATE/wal.err"; then
+    rm -f "$f" "$tmp/$name"
+    pushed=$((pushed + 1))
+    date -u +%Y-%m-%dT%H:%M:%SZ >"$NF_STATE/wal-last-archived"
+  else
+    rm -f "$tmp/$name"
+    error="wal-g wal-push $name failed: $(grep -v '^INFO' "$NF_STATE/wal.err" | tail -c 300 | tr '\n' ' ')"
+    break
+  fi
+done
+
+# Markers the database left for segments it had to drop (spool over its cap).
+dropped=0
+for m in "$NF_SPOOL"/dropped-*; do
+  dropped=$((dropped + 1))
+  rm -f "$m"
+done
+if [ "$dropped" -gt 0 ]; then
+  echo $(($(cat "$NF_STATE/wal-dropped" 2>/dev/null || echo 0) + dropped)) >"$NF_STATE/wal-dropped"
+  log "the database dropped $dropped WAL segment(s): the spool was full. Point-in-time recovery has a gap until the next base backup."
+fi
+
+waiting=( "$NF_SPOOL"/*.gz )
+pending=${#waiting[@]}
+oldest_age=0
+if [ "$pending" -gt 0 ]; then
+  oldest_age=$((now - $(stat -c %Y "${waiting[0]}")))
+fi
+total_dropped=$(cat "$NF_STATE/wal-dropped" 2>/dev/null || echo 0)
+last_archived=$(cat "$NF_STATE/wal-last-archived" 2>/dev/null || true)
+
+ok=true
+[ -z "$error" ] || ok=false
+[ "$oldest_age" -le "$max_lag" ] || ok=false
+[ "$total_dropped" -eq 0 ] || ok=false
+
+[ "$pushed" -eq 0 ] || log "archived $pushed segment(s); $pending waiting"
+[ -z "$error" ] || log "$error"
+
+last_report=$(cat "$NF_STATE/wal-last-report" 2>/dev/null || echo 0)
+last_ok=$(cat "$NF_STATE/wal-last-ok" 2>/dev/null || echo none)
+moved=$(($(cat "$NF_STATE/wal-pushed-since-report" 2>/dev/null || echo 0) + pushed))
+echo "$moved" >"$NF_STATE/wal-pushed-since-report"
+every=$report_idle
+[ "$moved" -eq 0 ] || every=$report_busy
+if [ $((now - last_report)) -ge "$every" ] || [ "$ok" != "$last_ok" ]; then
+  detail="$pending waiting"
+  [ "$pending" -eq 0 ] || detail="$detail · oldest ${oldest_age}s"
+  [ "$total_dropped" -eq 0 ] || detail="$detail · $total_dropped dropped since the last base backup (spool full)"
+  [ -z "$error" ] || detail="$detail · $error"
+  stamp=$(nf_now)
+  nf_record wal "$ok" "$stamp" "$stamp" "" false "$last_archived" "$detail"
+  echo "$now" >"$NF_STATE/wal-last-report"
+  echo "$ok" >"$NF_STATE/wal-last-ok"
+  echo 0 >"$NF_STATE/wal-pushed-since-report"
+fi
+
+[ "$ok" = true ] || [ -z "$error" ] || exit 1
+exit 0

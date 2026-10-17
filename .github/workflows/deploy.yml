@@ -9,6 +9,7 @@ on:
       - "server/**"
       - "Dockerfile"
       - "docker-compose.prod.yml"
+      - "ops/backup/**"
       - "NoteFusion.slnx"
       - "Directory.Build.props"
       - ".github/workflows/deploy.yml"
@@ -29,6 +30,7 @@ env:
   REGISTRY: ghcr.io
   API_IMAGE_NAME: ghcr.io/gbohunmifrancis/notefusion-api
   TRANSCRIBER_IMAGE_NAME: ghcr.io/gbohunmifrancis/notefusion-transcriber
+  BACKUP_IMAGE_NAME: ghcr.io/gbohunmifrancis/notefusion-backup
 
 jobs:
   build-and-push:
@@ -111,6 +113,29 @@ jobs:
           build-args: |
             YTDLP_REFRESH=${{ github.run_id }}-${{ github.run_attempt }}
 
+      # The backup service (ops/backup, docs/BACKUP_AND_MIGRATION.md). Every tool in it is pinned by
+      # checksum or commit; the weekly restore drill pulls the "latest" tag.
+      - name: Extract metadata for Backup
+        id: meta-backup
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.BACKUP_IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-,format=long
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push Backup
+        uses: docker/build-push-action@v6
+        with:
+          context: ops/backup
+          file: ops/backup/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta-backup.outputs.tags }}
+          labels: ${{ steps.meta-backup.outputs.labels }}
+          cache-from: type=gha,scope=backup
+          cache-to: type=gha,mode=max,scope=backup
+
   deploy:
     name: Deploy to EC2
     needs: build-and-push
@@ -125,7 +150,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "docker-compose.prod.yml"
+          # db-role.sql lands at /opt/notefusion/ops/backup/: the backup service's database login.
+          source: "docker-compose.prod.yml,ops/backup/db-role.sql"
           target: "/opt/notefusion/"
 
       - name: Deploy
@@ -133,6 +159,7 @@ jobs:
         env:
           API_IMAGE: ${{ env.API_IMAGE_NAME }}:sha-${{ github.sha }}
           TRANSCRIBER_IMAGE: ${{ env.TRANSCRIBER_IMAGE_NAME }}:sha-${{ github.sha }}
+          BACKUP_IMAGE: ${{ env.BACKUP_IMAGE_NAME }}:sha-${{ github.sha }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_USER: ${{ github.actor }}
           # ── Core infrastructure ──────────────────────────────────────────────
@@ -228,6 +255,20 @@ jobs:
           # ── Dozzle (/logs) sign-in, optional: both or neither (docs/DEPLOYMENT.md, "Logs") ──
           DOZZLE_USER: ${{ secrets.DOZZLE_USER }}
           DOZZLE_PASSWORD_HASH: ${{ secrets.DOZZLE_PASSWORD_HASH }}
+          # ── Backups (docs/BACKUP_AND_MIGRATION.md): a bucket of their own (not the photo bucket) with a
+          # token scoped to it. Without all five the backup service logs what is missing and idles. ──
+          BACKUP_S3_ENDPOINT: ${{ vars.BACKUP_S3_ENDPOINT || secrets.BACKUP_S3_ENDPOINT }}
+          BACKUP_S3_BUCKET: ${{ vars.BACKUP_S3_BUCKET || secrets.BACKUP_S3_BUCKET }}
+          BACKUP_S3_REGION: ${{ vars.BACKUP_S3_REGION }}
+          BACKUP_S3_ACCESS_KEY_ID: ${{ secrets.BACKUP_S3_ACCESS_KEY_ID }}
+          BACKUP_S3_SECRET_ACCESS_KEY: ${{ secrets.BACKUP_S3_SECRET_ACCESS_KEY }}
+          BACKUP_ENCRYPTION_PASSWORD: ${{ secrets.BACKUP_ENCRYPTION_PASSWORD }}
+          # Optional: a second destination at another provider (an rclone connection string).
+          BACKUP_MIRROR: ${{ secrets.BACKUP_MIRROR }}
+          # Only after restoring from a logical dump (a new cluster): a fresh WAL-G prefix, e.g. s3://notefusion-backups/wal-g-2027-01.
+          BACKUP_WALG_PREFIX: ${{ vars.BACKUP_WALG_PREFIX }}
+          # A planned move (docs/BACKUP_AND_MIGRATION.md, "Moving to another cloud"): true refuses writes.
+          MAINTENANCE_READ_ONLY: ${{ vars.MAINTENANCE_READ_ONLY }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
@@ -250,7 +291,9 @@ jobs:
             OUTREACH_ENABLED,OUTREACH_FOUNDER_NAME,OUTREACH_REPLY_TO,OUTREACH_BATCH_SIZE,OUTREACH_INTERVAL_MINUTES,
             GEMINI_API_KEY,GEMINI_MODEL,GEMINI_FALLBACK_MODELS,GH_DEPLOY_TOKEN,GH_REPOSITORY,
             BLOG_AUTODRAFT_ENABLED,BLOG_AUTOPUBLISH_DRAFTS,BLOG_AUTODRAFT_DAYS,BLOG_AUTODRAFT_TIME_UTC,BLOG_AUTODRAFT_COUNT,
-            DOZZLE_USER,DOZZLE_PASSWORD_HASH
+            DOZZLE_USER,DOZZLE_PASSWORD_HASH,
+            BACKUP_IMAGE,BACKUP_S3_ENDPOINT,BACKUP_S3_BUCKET,BACKUP_S3_REGION,BACKUP_S3_ACCESS_KEY_ID,BACKUP_S3_SECRET_ACCESS_KEY,
+            BACKUP_ENCRYPTION_PASSWORD,BACKUP_MIRROR,BACKUP_WALG_PREFIX,MAINTENANCE_READ_ONLY
           script: |
             set -euo pipefail
             # The transcriber refuses to start without its key; stop here rather than crash-loop it.
@@ -315,6 +358,11 @@ jobs:
               echo "::warning::DOZZLE_USER / DOZZLE_PASSWORD_HASH not set; /logs is served without a sign-in"
               rm -f dozzle-users.yml
             fi
+
+            # The backup service's own database login (ops/backup/db-role.sql). Its password is derived from
+            # the database password, so there is no extra secret to keep, and the backup container never
+            # sees the superuser's.
+            BACKUP_DB_PASSWORD=$(printf 'notefusion-backup-role:%s' "$POSTGRES_PASSWORD" | sha256sum | cut -c1-48)
 
             echo "─── Writing .env ───"
             cat > .env <<EOF
@@ -382,8 +430,27 @@ jobs:
             Blog__AutoDraftDays="${BLOG_AUTODRAFT_DAYS}"
             Blog__AutoDraftTimeUtc="${BLOG_AUTODRAFT_TIME_UTC}"
             Blog__AutoDraftCount="${BLOG_AUTODRAFT_COUNT}"
+            Maintenance__ReadOnly="${MAINTENANCE_READ_ONLY:-false}"
+            BACKUP_IMAGE="${BACKUP_IMAGE}"
+            BACKUP_DB_PASSWORD="${BACKUP_DB_PASSWORD}"
+            BACKUP_ENV_NAMES_HOST="/opt/notefusion/env-names.txt"
+            BACKUP_S3_ENDPOINT='${BACKUP_S3_ENDPOINT}'
+            BACKUP_S3_BUCKET='${BACKUP_S3_BUCKET}'
+            BACKUP_S3_REGION='${BACKUP_S3_REGION:-auto}'
+            BACKUP_S3_ACCESS_KEY_ID='${BACKUP_S3_ACCESS_KEY_ID}'
+            BACKUP_S3_SECRET_ACCESS_KEY='${BACKUP_S3_SECRET_ACCESS_KEY}'
+            BACKUP_ENCRYPTION_PASSWORD='${BACKUP_ENCRYPTION_PASSWORD}'
+            BACKUP_MIRROR='${BACKUP_MIRROR}'
+            BACKUP_WALG_PREFIX='${BACKUP_WALG_PREFIX}'
             EOF
             chmod 600 .env
+
+            # The names of every setting and whether each is set, never a value. The backup service keeps
+            # it with the JWT key, so a rebuild elsewhere knows what to carry over.
+            while IFS='=' read -r name value; do
+              case "$value" in '""' | "''" | '') state=unset ;; *) state=set ;; esac
+              printf '%s %s\n' "$name" "$state"
+            done < .env > env-names.txt
 
             # The root volume is 8 GB.  The transcriber image is the biggest thing on it, and
             # since the link-ingest and vocal-isolation work it no longer fits beside its own
@@ -405,11 +472,28 @@ jobs:
 
             echo "─── API: pull, swap, prune ───"
             docker compose -f docker-compose.prod.yml pull api
+            # The first deploy with WAL archiving restarts the database once (a few seconds): its flags changed.
             docker compose -f docker-compose.prod.yml up -d --no-deps db
+
+            echo "─── Backup database login ───"
+            for _ in $(seq 1 30); do
+              docker compose -f docker-compose.prod.yml exec -T db pg_isready -U notefusion -d notefusion >/dev/null 2>&1 && break
+              sleep 2
+            done
+            { printf '\\set backup_pw %s\n' "$BACKUP_DB_PASSWORD"; cat ops/backup/db-role.sql; } \
+              | docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -q -v ON_ERROR_STOP=1 \
+              || echo "::warning::Could not set up the notefusion_backup login; backups cannot record their runs (docs/BACKUP_AND_MIGRATION.md)"
+
             docker compose -f docker-compose.prod.yml up -d --no-deps api
             # Dozzle is recreated whenever its image, socket mount or sign-in changed.
             docker compose -f docker-compose.prod.yml up -d --no-deps dozzle
             docker compose -f docker-compose.prod.yml up -d --no-deps caddy
+
+            echo "─── Backups: pull, start ───"
+            # Never holds up the deploy: without its settings the service only logs what is missing.
+            docker compose -f docker-compose.prod.yml pull backup \
+              && docker compose -f docker-compose.prod.yml up -d --no-deps backup \
+              || echo "::warning::The backup service did not start; see 'docker compose logs backup'"
             docker image prune -af || true
 
             echo "─── Disk after deploy ───"

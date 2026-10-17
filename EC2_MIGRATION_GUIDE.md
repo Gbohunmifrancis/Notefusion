@@ -2,7 +2,7 @@
 
 I've set up the exact same robust pipeline we used on Cupel. It leverages GitHub Container Registry for immutable image builds and securely deploys to EC2 via SSH.
 
-To ensure you never lose data again, I added a db-backup sidecar container directly into docker-compose.prod.yml. It runs every night at midnight, dumps the PostgreSQL database, and securely ships it to your AWS S3 bucket.
+Backups are the `backup` service in docker-compose.prod.yml: encrypted database dumps every 6 hours, point-in-time recovery to the minute, and the photos and JWT key daily, into a bucket of their own (Cloudflare R2 or any S3-compatible store). Setting them up, restoring and moving to another provider: [docs/BACKUP_AND_MIGRATION.md](docs/BACKUP_AND_MIGRATION.md). (The `AWS_*` / `S3_*` secrets below were for an older sidecar that no longer exists; they are not used.)
 
 ## Step 1: Initial EC2 Setup
 
@@ -60,4 +60,4 @@ otefusion.app
 3. Select **Deploy to EC2** on the left.
 4. Click **Run workflow**!
 
-Once the workflow finishes, your stack will be live and securely backed up to S3!
+Once the workflow finishes, your stack will be live. Set up the backups next (docs/BACKUP_AND_MIGRATION.md, "Setting it up").

@@ -331,6 +331,30 @@ public class SystemHealthTests
 
     // ----------------------------------------------------------------- fixtures
 
+    [Fact]
+    public async Task The_backups_ride_along_without_changing_the_rollup()
+    {
+        using var h = new TestHarness(Now);
+        // A dump three days old: the backups are down, the product is not.
+        h.Db.BackupRuns.Add(BackupRun.Record("dump", true, Now.AddDays(-3), Now.AddDays(-3), 1000, verified: true));
+        await h.Db.SaveChangesAsync();
+
+        var health = await Check(h);
+
+        Assert.Equal("healthy", health.Status);
+        Assert.Equal("down", health.Backups!.Status);
+    }
+
+    [Fact]
+    public async Task With_no_backup_service_the_page_says_backups_are_off()
+    {
+        using var h = new TestHarness(Now);
+
+        var health = await Check(h);
+
+        Assert.Equal("off", health.Backups!.Status);
+    }
+
     private static async Task<SystemHealthDto> Check(
         TestHarness h, StubDatabaseHealth? db = null, StubTranscriptionApi? api = null)
     {
