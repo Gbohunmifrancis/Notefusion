@@ -2,6 +2,7 @@
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { getEngagement } from "@/api/endpoints";
@@ -165,6 +166,45 @@ export function EngagementTab() {
   );
 }
 
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+/** The Activity page's Most active tab: the whole leaderboard and nothing else, for the window the
+ *  overview's "View all" was showing (its `from`/`to` ride in the address), else the last 30 days. */
+export function MostActiveTab() {
+  const params = useSearchParams();
+  const offset = getReportingOffset();
+  const today = reportingToday(offset);
+  const from = params.get("from");
+  const to = params.get("to");
+  const [range, setRange] = useState<Range>(
+    from && to && ISO_DAY.test(from) && ISO_DAY.test(to) && from <= to ? { from, to } : { from: addDays(today, -29), to: today },
+  );
+  const state = useQuery({
+    queryKey: ["engagement", range.from, range.to, 50],
+    queryFn: ({ signal }) => getEngagement(range.from, range.to, 50, signal),
+    placeholderData: keepPreviousData,
+  });
+  return (
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="max-w-2xl text-[13px] text-muted-foreground">
+          Ranked by transcriptions ×3 + active days ×2 + saved sheets in the window. Open a name for that user&apos;s journey.
+        </p>
+        <RangePicker value={range} offsetMinutes={offset} onChange={setRange} />
+      </div>
+      <Card
+        title="Most active users"
+        hint={state.data ? `Top ${state.data.topUsers.length} of ${state.data.activeUsers} active` : "Top 50 in this window"}
+        bleed
+      >
+        <StateView state={state} loadingLabel="Loading most active users">
+          {(e) => <Leaderboard users={e.topUsers} />}
+        </StateView>
+      </Card>
+    </div>
+  );
+}
+
 /** The overview's top-5 card, for the same window as the overview. */
 export function MostActiveUsersCard({ from, to }: { from?: string | undefined; to?: string | undefined }) {
   const state = useQuery({
@@ -177,7 +217,10 @@ export function MostActiveUsersCard({ from, to }: { from?: string | undefined; t
       title="Most active users"
       hint={state.data ? `${state.data.activeUsers} active · ${state.data.mau} monthly active` : "In this window"}
       action={
-        <Link href="/activity?tab=engagement" className="text-xs font-medium text-brand hover:underline">
+        <Link
+          href={`/activity?tab=most-active${from && to ? `&from=${from}&to=${to}` : ""}`}
+          className="text-xs font-medium text-brand hover:underline"
+        >
           View all
         </Link>
       }
