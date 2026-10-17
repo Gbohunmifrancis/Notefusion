@@ -8,7 +8,7 @@ import os from "node:os";
 import path from "node:path";
 import { SITE_DIR, INDEXNOW_KEY } from "../lib/site.mjs";
 import { writeSite } from "../build.mjs";
-import { checkSite, staleFiles, xmlError, resolveSitePath } from "../check.mjs";
+import { checkSite, checkPdfs, staleFiles, xmlError, resolveSitePath } from "../check.mjs";
 import { handWrittenEntries } from "../lib/sitemap-feed.mjs";
 import { melodyToMusicXml } from "../lib/musicxml.mjs";
 import { parseMelody } from "../lib/solfa.mjs";
@@ -17,13 +17,13 @@ const API = JSON.parse(fs.readFileSync(new URL("./fixtures/published.json", impo
 
 let dir, offline;
 const read = (rel) => fs.readFileSync(path.join(dir, rel), "utf8");
-before(() => {
+before(async () => {
   dir = fs.mkdtempSync(path.join(os.tmpdir(), "nf-build-"));
   fs.cpSync(SITE_DIR, dir, { recursive: true });
-  writeSite({ siteDir: dir, api: API });
+  await writeSite({ siteDir: dir, api: API });
   offline = fs.mkdtempSync(path.join(os.tmpdir(), "nf-build-offline-"));
   fs.cpSync(SITE_DIR, offline, { recursive: true });
-  writeSite({ siteDir: offline });
+  await writeSite({ siteDir: offline });
 });
 after(() => {
   fs.rmSync(dir, { recursive: true, force: true });
@@ -127,6 +127,48 @@ test("a hymn page: the engine's solfa as text, MusicComposition JSON-LD, the sco
   const data = JSON.parse(/<script type="application\/json" id="hymn-data">([\s\S]*?)<\/script>/.exec(html)[1]);
   assert.equal(xmlError(data.musicXml), null);
   assert.equal(data.notes.length, 32);
+});
+
+test("a hymn page names its PDF (button, <link rel=alternate>, JSON-LD) and links its writers and seasons", () => {
+  const html = read("hymns/amazing-grace/index.html");
+  assert.match(html, /<link rel="alternate" type="application\/pdf" href="\/hymns\/amazing-grace\/amazing-grace-tonic-solfa\.pdf" title="Amazing Grace in Tonic Solfa \(PDF\)">/);
+  assert.match(html, /<a class="pdf-button" href="\/hymns\/amazing-grace\/amazing-grace-tonic-solfa\.pdf" type="application\/pdf" data-track="Hymn: download PDF"><svg class="ic" aria-hidden="true"><use href="\/assets\/icons\.svg#i-download"\/><\/svg>Download the solfa \(PDF\)<\/a>/);
+  assert.match(html, /<dt>Words<\/dt><dd><a href="\/hymns\/people\/john-newton">John Newton<\/a><\/dd>/);
+  assert.match(html, /<h2 id="more-by-john-newton">More by John Newton<\/h2>/);
+  const comp = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1])).find((d) => d["@type"] === "MusicComposition");
+  assert.equal(comp.associatedMedia.contentUrl, "https://notefusion.studio/hymns/amazing-grace/amazing-grace-tonic-solfa.pdf");
+  assert.equal(comp.lyricist[0].url, "https://notefusion.studio/hymns/people/john-newton");
+  assert.ok(fs.statSync(path.join(dir, "hymns/amazing-grace/amazing-grace-tonic-solfa.pdf")).size > 10000);
+  assert.match(read("hymns/silent-night/index.html"), /<h2 id="more-christmas">More Christmas hymns<\/h2>/);
+});
+
+test("the hymn index links every season's page (no buttons to wait for), the people and the first lines", () => {
+  const html = read("hymns/index.html");
+  assert.match(html, /<nav class="hymn-browse" aria-label="Browse the hymns"><a href="\/hymns" aria-current="page">All hymns A–Z<\/a><a href="\/hymns\/occasions">Seasons and occasions<\/a><a href="\/hymns\/people">Writers and composers<\/a><a href="\/hymns\/first-lines">First lines<\/a><\/nav>/);
+  assert.match(html, /<nav class="hymn-seasons" aria-label="Seasons and occasions"><a href="\/hymns\/occasions\/advent"/);
+  assert.ok(!html.includes("data-filter="), "the seasons are links now, not filter buttons");
+});
+
+test("the built PDFs pass the checker, and every new page is in the sitemap", async () => {
+  assert.deepEqual(await checkPdfs(dir), []);
+  const xml = read("sitemap.xml");
+  for (const p of ["/hymns/occasions", "/hymns/occasions/christmas", "/hymns/people", "/hymns/people/fanny-crosby", "/hymns/first-lines"]) {
+    assert.match(xml, new RegExp(`<loc>https://notefusion\\.studio${p.replace(/\//g, "\\/")}</loc>\\n\\s*<lastmod>\\d{4}-\\d{2}-\\d{2}</lastmod>`), p);
+  }
+  assert.ok(!xml.includes(".pdf<"), "the PDFs are found through the pages that link them, not the sitemap");
+  // The PDFs are never committed: the staleness check leaves them out.
+  assert.ok(!staleFiles(offline, SITE_DIR).some((f) => f.endsWith(".pdf")));
+});
+
+test("the checker catches a PDF that is missing or does not print its page's solfa", async () => {
+  const copy = fs.mkdtempSync(path.join(os.tmpdir(), "nf-pdf-"));
+  fs.cpSync(path.join(dir, "hymns"), path.join(copy, "hymns"), { recursive: true });
+  fs.rmSync(path.join(copy, "hymns/amazing-grace/amazing-grace-tonic-solfa.pdf"));
+  fs.copyFileSync(path.join(dir, "hymns/silent-night/silent-night-tonic-solfa.pdf"), path.join(copy, "hymns/abide-with-me/abide-with-me-tonic-solfa.pdf"));
+  const errors = await checkPdfs(copy);
+  assert.ok(errors.some((e) => e.includes("hymns/amazing-grace/index.html: its PDF /hymns/amazing-grace/amazing-grace-tonic-solfa.pdf was not built")), errors.join("\n"));
+  assert.ok(errors.some((e) => e.startsWith("hymns/abide-with-me/abide-with-me-tonic-solfa.pdf: its first line of solfa is not the page's")), errors.join("\n"));
+  fs.rmSync(copy, { recursive: true, force: true });
 });
 
 test("the hum-to-find page: a WebApplication with its FAQ, the recorder and the finder's script, linked and in the sitemap", () => {

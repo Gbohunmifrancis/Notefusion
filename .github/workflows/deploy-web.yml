@@ -72,7 +72,7 @@ jobs:
         working-directory: .
         run: curl -fsS --max-time 20 https://notefusion.studio/sitemap.xml -o "$RUNNER_TEMP/live-sitemap.xml" || echo "No live sitemap; IndexNow will be told about every page."
 
-      # The live posts from the API into web-site/ (blog, hymn pages, sitemap, feed, home-page strip,
+      # The live posts from the API into web-site/ (blog, hymn pages and their PDFs, sitemap, feed, home-page strip,
       # /blog/catalogue.json). Fails the deploy when the API cannot be read.
       - name: Build the blog from the API
         working-directory: .
@@ -105,7 +105,7 @@ jobs:
         working-directory: .
         run: |
           sleep 10
-          for path in / /app /app/sheet /assets/app.js /assets/choir.js /assets/preview.js /blog /blog/feed.xml /blog/catalogue.json /hymns /sitemap.xml; do
+          for path in / /app /app/sheet /assets/app.js /assets/choir.js /assets/preview.js /blog /blog/feed.xml /blog/catalogue.json /hymns /hymns/occasions /hymns/people /hymns/first-lines /hymns/amazing-grace/amazing-grace-tonic-solfa.pdf /sitemap.xml; do
             code=$(curl -sS -o /dev/null -w "%{http_code}" "https://notefusion.studio${path}")
             echo "${code}  ${path}"
             case "$code" in 200|308) ;; *) echo "::error::${path} returned ${code}"; exit 1;; esac

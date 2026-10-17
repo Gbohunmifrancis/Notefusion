@@ -20,6 +20,8 @@ tools/blog/
   indexnow.mjs              pings IndexNow after a deploy
   lib/api-posts.mjs         reads GET /api/blog/published at deploy time
   lib/catalogue.mjs         writes /blog/catalogue.json (hymns, pages, authors) for the API's checks
+  lib/render-pdf.mjs        each hymn's and tune's printable solfa PDF (fonts and mark in pdf-assets/)
+  lib/collections.mjs       seasons and occasions, writers and composers, first lines (render-collections.mjs: their pages)
   import/                   the Open Hymnal Project importer (abc.mjs reads ABC, ohp.mjs converts, run.mjs writes)
                             and the CCEH tune importer (cceh-crawl.py, midi.mjs, nwc.mjs, cceh*.mjs)
 web-site/assets/blog.css    styles for the generated pages (light and dark)
@@ -213,7 +215,7 @@ use Search Console's *Performance* report to reorder the queue.
 ```bash
 cd tools/blog && npm ci         # once
 node tools/blog/build.mjs       # from the repo root: what is committed (content/ only: hymns, no posts)
-node tools/blog/check.mjs       # what CI runs: staleness, links, JSON-LD, sitemap, feed
+node tools/blog/check.mjs       # what CI runs: staleness, links, JSON-LD, sitemap, feed, PDFs
 cd tools/blog && npm test       # generator tests (the API path from tests/fixtures/published.json)
 node tools/blog/build.mjs --api --site /tmp/site   # a preview with the live posts, into a copy
 python3 -m http.server -d /tmp/site 8000            # then http://localhost:8000/blog/
@@ -240,6 +242,51 @@ questions with answers, and `MusicComposition` + `BreadcrumbList` + `FAQPage` JS
 **All solfa comes from the engine.** The hymn files hold pitches and durations; the build runs
 `web-site/assets/choir.js` — the web mirror of `src/NoteFusion.Core/Solfa` — on them. Correct a
 hymn by correcting its notes, never by typing solfa.
+
+### Printable PDFs
+
+Every hymn and tune page has a free A4 PDF beside it, `/hymns/<slug>/<slug>-tonic-solfa.pdf`
+(`/hymns/tunes/<slug>/<slug>-tonic-solfa.pdf`), linked by a *Download the solfa (PDF)* button, a link in
+"The solfa line by line", `<link rel="alternate" type="application/pdf">` and the page's
+`MusicComposition.associatedMedia`. It prints the title, the doh and time, the solfa line by line with the
+words of the first verse under each bar — the same bars and characters the page prints (h.view.lines;
+`lib/render-pdf.mjs` lays them out, it never writes a syllable) — the other verses in balanced columns,
+the credits and a footer with the page's address and the NoteFusion wordmark. One page for most hymns,
+two for a long one; a verse that would need a third page is left to the hymn's page and the PDF says so.
+No staff: the staff is drawn by OSMD in the browser, and the solfa is what the searches ask for.
+
+- **Generator:** `pdf-lib` + `@pdf-lib/fontkit` (pinned), with the site's fonts embedded and subset —
+  JetBrains Mono for the solfa, Geist for the words, Source Serif 4 for the title — from
+  `tools/blog/pdf-assets/fonts` (SIL Open Font Licence, the licences beside them; embedding is allowed).
+  About 25–40 KB each. Deterministic: dates come from the hymn's `updated`, so a rebuild changes nothing.
+- **Built, never committed.** `build.mjs` writes the PDFs with the pages, locally (`web-site/.gitignore`
+  keeps them out of git), in `check.mjs` and in the deploy. A few hundred binary files that all change
+  when a font or the layout does would grow the repository with every edit; a PDF is built from the same
+  content and code as its page, so it cannot go stale. `check.mjs` builds and checks every one: each hymn
+  and tune page names its PDF and the PDF exists; it opens, is titled "… in Tonic Solfa" by NoteFusion,
+  has at most two pages and stays under 80 KB; and its first line of solfa is the page's, bar for bar.
+- **Not in the sitemap.** Google finds a PDF through the page that links it (every hymn page is in the
+  sitemap); listing them would double the sitemap with files whose `lastmod` is their page's.
+
+### Seasons and occasions, writers and composers, first lines
+
+- **`/hymns/occasions/<slug>`** (hub `/hymns/occasions`): Advent, Christmas, Epiphany, Lent, Holy Week,
+  Good Friday, Easter, Ascension, Thanksgiving, Holy Communion, Evening, Funeral — every occasion in
+  `OCCASIONS` (`lib/collections.mjs`) with at least four hymns; the others (Pentecost, Trinity, Harvest,
+  Morning, Baptism, Wedding, New Year) appear on their own once the hymnal has four for them. A hymn is
+  filed by its `category` (the Open Hymnal's own) or by its `"occasions"` list (`["Christmas"]`; the
+  hand-encoded hymns, which have no category, use it; the build refuses an unknown name). The Open
+  Hymnal's `topics` are not used: they name what a hymn mentions, not when it is sung. The occasion
+  links on `/hymns` replace the old filter buttons; the filter box still finds a season by name.
+- **`/hymns/people/<slug>`** (hub `/hymns/people`): everyone credited with words, a translation, music
+  or an arrangement on at least two hymns and tune pages, with the dates the hymn pages print (the most
+  common, when two files disagree) and their hymns and tunes. One person credited two ways (same surname,
+  first name and years: "Fanny Crosby" / "Fanny Jane Crosby") is one page. No biography: only what the
+  hymn files say. Names on hymn and tune pages link to these pages.
+- **`/hymns/first-lines`**: every hymn's first line and every refrain's, A–Z (quotation marks and accents
+  ignored), with an A–Z bar.
+- Hymn pages end with "More Christmas hymns" and "More by John Newton" (at most three lists, five links
+  each, the hymns after this one so each page links to different ones).
 
 ### Public domain, strictly
 
@@ -433,8 +480,9 @@ tunes.
    `underlay` is the first verse split into one syllable per note: hyphens join the syllables of a
    word (`A-maz-ing`), and `_` after a syllable carries it over one more note (`ing_` is sung on two
    notes). The build fails if the syllables and notes do not match one for one. Optional:
-   `"shortTitle"` (used in the page title), `"note"` on a verse, `"alsoKnownAs"`, `"category"` (a
-   season or occasion, offered as a filter button on /hymns) and `"topics"`, and for a hymn taken
+   `"shortTitle"` (used in the page title), `"note"` on a verse, `"alsoKnownAs"`, `"category"` (the
+   source's season or occasion), `"occasions"` (the seasons and occasions it is sung at, from
+   `OCCASIONS` in `lib/collections.mjs`, for a hymn without a category) and `"topics"`, and for a hymn taken
    from a collection `"source"`, `"sourceUrl"`, `"licence"` and `"credits"` (shown in its credit
    line). A person may have `"lived": "5th century"` when the source dates them only roughly. A
    draft may wait for its facts; the public-domain rule is enforced when it is published.

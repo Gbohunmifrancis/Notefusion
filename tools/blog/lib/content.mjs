@@ -6,6 +6,7 @@ import YAML from "yaml";
 import { CONTENT_DIR } from "./site.mjs";
 import { isIsoDate, slugify } from "./util.mjs";
 import { loadEngine, parseMelody } from "./solfa.mjs";
+import { OCCASION_NAMES } from "./collections.mjs";
 
 export function parseFrontMatter(src, file = "") {
   const m = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/.exec(src);
@@ -197,6 +198,8 @@ export function loadHymns({ tunes, dir = path.join(CONTENT_DIR, "hymns"), includ
     checkSource(file, h);
     for (const k of ["alsoKnownAs", "topics"]) if (h[k] != null && (!Array.isArray(h[k]) || h[k].some((x) => typeof x !== "string" || !x.trim()))) fail(file, `"${k}" must be a list of text`);
     if (h.category != null && (typeof h.category !== "string" || !h.category.trim())) fail(file, `"category" must be text`);
+    // The seasons and occasions a hymn without a category is sung at (lib/collections.mjs OCCASIONS).
+    if (h.occasions != null && (!Array.isArray(h.occasions) || h.occasions.some((x) => !OCCASION_NAMES.includes(x)))) fail(file, `"occasions" must be a list of: ${OCCASION_NAMES.join(", ")}`);
     if (!Array.isArray(h.verses) || !h.verses.length || h.verses.some((v) => !Array.isArray(v.lines) || !v.lines.length)) fail(file, `"verses" must be a list of {lines: [...]}`);
     if (!h.draft) {
       // Public domain, strictly, for everything published; a draft may still be waiting for its facts.
