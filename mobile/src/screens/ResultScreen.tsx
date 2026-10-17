@@ -55,6 +55,9 @@ import { stopAudition } from "../lib/audition";
 import { sectionOf } from "../lib/clipRange";
 import { choosePart, defaultRange, levels, partsOf, practiceTempo, speedsFor, type Balance } from "../lib/practice";
 import { logAnalyticsEvent } from "../lib/analytics";
+import { isNetworkCode } from "../lib/reachability";
+import { setSheetPinned, useOfflineLibrary } from "../lib/offlineLibrary";
+import { transposeLocally } from "../lib/localTranspose";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { rating } from "../lib/rating";
 import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
@@ -197,6 +200,23 @@ export function ResultScreen({ route, navigation }: Props) {
   );
   const [committedTitle, setCommittedTitle] = useState(initialTitle);
   const [savedId, setSavedId] = useState<string | undefined>(initialSavedId);
+  /**
+   * Set when a saved sheet was transposed on the phone while offline: the screen then shows notes the
+   * server does not have, so note corrections and parts are not saved from it (they would store
+   * moved pitches under the old key). Opening the sheet again, or transposing it online, clears it.
+   */
+  const movedOffline = useRef(false);
+  function blockedByLocalTranspose(): boolean {
+    if (!movedOffline.current) return false;
+    showDialog({
+      title: "Shown transposed on this phone",
+      message: "This sheet was transposed while you were offline, so changes to it here aren't saved. Open it again from your Library to edit it.",
+      icon: "cloud-offline-outline",
+    });
+    return true;
+  }
+  /** Which saved sheets are kept on the phone ("Keep offline", or keep-all in Settings). */
+  const offlineCopies = useOfflineLibrary();
   const [saving, setSaving] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [exportingType, setExportingType] = useState<"musicxml" | "solfa" | "midi" | "pdf" | null>(null);
@@ -607,6 +627,16 @@ export function ResultScreen({ route, navigation }: Props) {
     try {
       await libraryApi.updateKey(savedId, next);
     } catch (e) {
+      if (isNetworkCode(toApiError(e).code)) {
+        // Offline: solfa is movable-do, so reading it in another doh needs nothing from the server.
+        // The relabel stays on screen; the saved sheet keeps its key until this is done online.
+        showDialog({
+          title: "You're offline",
+          message: `Showing it with doh in ${next} for now. The saved sheet stays in ${previous} — change the key again when you're online to keep it.`,
+          icon: "cloud-offline-outline",
+        });
+        return;
+      }
       setKey(previous); // the label would otherwise disagree with the server
       showDialog({
         title: "Could not change key",
@@ -816,6 +846,7 @@ export function ResultScreen({ route, navigation }: Props) {
    */
   async function commitNotes(target: Draft) {
     if (!savedId) return; // unsaved: corrections travel with the save payload
+    if (blockedByLocalTranspose()) return;
     if (target.notes === persisted.current.notes) return;
 
     const rollback = persisted.current;
@@ -859,6 +890,7 @@ export function ResultScreen({ route, navigation }: Props) {
    */
   async function writeParts() {
     if (harmonising || view.notes.length === 0) return;
+    if (savedId && blockedByLocalTranspose()) return;
     setHarmonising(true);
     try {
       const written = await transcriptionsApi.harmonise({ key, tempoBpm: Math.round(tempo), timeSignature, notes: view.notes });
@@ -934,12 +966,49 @@ export function ResultScreen({ route, navigation }: Props) {
       setSemitones(0);
       setPickingKey(false);
       setDoubt([]);
+      // The server moved the saved sheet and the screen now shows exactly that.
+      movedOffline.current = false;
       haptics.play("success");
     } catch (e) {
+      if (isNetworkCode(toApiError(e).code)) {
+        transposeOffline();
+        return;
+      }
       showDialog({ title: "Could not transpose", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
     } finally {
       setTransposing(false);
     }
+  }
+
+  /**
+   * "Transpose for my choir" with no connection: every note, part and chord moved on the phone
+   * (lib/localTranspose), so a saved copy can be sung from in another key offline. The view only —
+   * the saved sheet is moved when this is done online.
+   */
+  function transposeOffline() {
+    if (savedId) movedOffline.current = true;
+    const moved = transposeLocally({ key, notes: view.notes, parts: parts as Parts | null, chords }, semitones);
+    const relabelled = deriveSolfa(moved.notes, moved.key, timeSignature, result.chromaticSpelling ?? "direction");
+    setBaseline({ notes: relabelled.notes, key: moved.key, solfaLines: relabelled.solfaLines });
+    setDraft(pristine(relabelled.notes));
+    persisted.current = pristine(relabelled.notes);
+    setKey(moved.key);
+    setParts((moved.parts as Parts | null) ?? null);
+    // The engraved parts score was in the old key; the stave is drawn from the notes either way.
+    setPartsMusicXml("");
+    setChords(moved.chords?.length ? moved.chords : null);
+    setPreview(synthesizeMelodyWavBase64(relabelled.notes, tempo));
+    setSemitones(0);
+    setPickingKey(false);
+    setDoubt([]);
+    void logAnalyticsEvent("offline_transpose", { semitones });
+    showDialog({
+      title: "Transposed on this phone",
+      message: savedId
+        ? `You're offline, so this is shown in ${moved.key} for now; the saved sheet is unchanged. Transpose again when you're online to keep it.`
+        : `You're offline, so this was moved on the phone, to ${moved.key}.`,
+      icon: "cloud-offline-outline",
+    });
   }
 
   /** Lyrics are saved when the field loses focus, so typing never races the server. */
@@ -1180,6 +1249,23 @@ export function ResultScreen({ route, navigation }: Props) {
       });
     }
     if (savedId) {
+      const kept = offlineCopies.keepAll || offlineCopies.pinned.has(savedId);
+      actions.push({
+        label: offlineCopies.keepAll ? "Kept offline (all sheets)" : kept ? "Don't keep offline" : "Keep offline",
+        icon: kept ? "cloud-done-outline" : "cloud-download-outline",
+        onPress: offlineCopies.keepAll
+          ? undefined
+          : () =>
+              void setSheetPinned(savedId, !kept).then(
+                () => haptics.play("success"),
+                (e) =>
+                  showDialog({
+                    title: "Couldn't keep it offline",
+                    message: isNetworkCode(toApiError(e).code) ? "You're offline. Try again when you're back online." : toApiError(e).message,
+                    icon: "cloud-offline-outline",
+                  }),
+              ),
+      });
       actions.push({
         label: "Delete from Library",
         style: "destructive",

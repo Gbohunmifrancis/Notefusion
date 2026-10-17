@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'ax
 import Constants from 'expo-constants';
 import { getDeviceId } from '../lib/deviceId';
 import { tokenStore } from '../lib/tokenStore';
+import { reportReachable } from '../lib/reachability';
 import type { ApiError, TokenPairResponse } from './types';
 
 /**
@@ -133,8 +134,14 @@ export function onSessionExpired(fn: Listener): () => void {
 }
 
 api.interceptors.response.use(
-  (r) => r,
+  (r) => {
+    // Any answer at all means the API is reachable: the offline library and the send queue listen.
+    reportReachable(true);
+    return r;
+  },
   async (error: AxiosError<ApiError>) => {
+    // No answer (no network, DNS, a dropped connection, a timeout) is "offline"; any answer is not.
+    if (!axios.isCancel(error)) reportReachable(!!error.response);
     const original = error.config as (InternalAxiosRequestConfig & { _retried?: boolean }) | undefined;
     const status = error.response?.status;
 

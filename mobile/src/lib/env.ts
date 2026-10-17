@@ -72,4 +72,7 @@ export const siteUrls = {
   terms: `${SITE_ORIGIN}/terms`,
   /** A choir's invite link: the web app signs the singer in (or up) and joins them. */
   choirJoin: (code: string) => `${SITE_ORIGIN}/app?join=${encodeURIComponent(code)}`,
+  /** The offline hymn pack and its ~130-byte version file (tools/blog/lib/hymn-pack.mjs). */
+  hymnPack: `${SITE_ORIGIN}/hymns/pack.json`,
+  hymnPackVersion: `${SITE_ORIGIN}/hymns/pack-version.json`,
 } as const;

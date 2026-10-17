@@ -12,6 +12,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Touchable } from './Touchable';
 import { fonts, gradients, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles } from '../lib/theme';
+import { useDataSaver } from '../lib/dataSaver';
+import { loadsImages } from '../lib/dataPolicy';
 
 /**
  * Derives up to two initials from a display name. Exported because the same
@@ -61,6 +63,9 @@ export function Avatar({
   style?: StyleProp<ViewStyle>;
 }) {
   const styles = useThemedStyles(makeStyles);
+  // Data saver: initials instead of a downloaded photo, except where the photo is being managed.
+  const dataSaver = useDataSaver();
+  const showPhoto = !!uri && (editable || loadsImages(dataSaver));
 
   // A URL that will not load (a dead storage link, an expired Google photo) falls back to the
   // initials rather than painting an empty circle. Reset per URL so a new photo gets its chance.
@@ -77,9 +82,9 @@ export function Avatar({
 
   const face = (
     <View style={[styles.face, { width: inner, height: inner, borderRadius: inner / 2 }]}>
-      {uri && !failed ? (
+      {showPhoto && !failed ? (
         <Image
-          source={{ uri }}
+          source={{ uri: uri! }}
           style={{ width: inner, height: inner, borderRadius: inner / 2 }}
           resizeMode="cover"
           accessibilityIgnoresInvertColors
