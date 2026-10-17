@@ -1,0 +1,32 @@
+{
+  "name": "BENTLEY",
+  "title": "Bentley",
+  "music": [
+    {
+      "name": "John Hullah",
+      "born": 1812,
+      "died": 1884,
+      "role": "Music (1867)"
+    }
+  ],
+  "musicPublished": 1867,
+  "metre": "7 6 7 6",
+  "key": "Db major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:1 | Eb4:1 F4:1 F#4:1 Bb4:1 | Bb4:2 Ab4:1 C#5:1 | C5:1 Ab4:1 F#4:1 Bb4:1 | Ab4:3 F4:1 | F4:1 Eb4:1 C#4:1 Ab4:1 | Ab4:2 F#4:1 F4:1 | F4:1 F#4:1 C#4:1 Eb4:1 | F4:3 F4:1 | Eb4:1 F4:1 F#4:1 Bb4:1 | Bb4:2 Ab4:1 C#5:1 | C5:1 Ab4:1 Bb4:1.5 C5:.5 | Ab4:3 Ab4:1 | F5:1 C#5:1 C5:1 Ab4:1 | C#5:2 C#4:1 Ab4:1 | Ab4:1 F#4:1 F4:1 Eb4:1 | C#4:3",
+  "incipit": "mrmflls|dtsfls|mmrdssf",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000807.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000807a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000807; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000807 (the melody read from 000807a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. John Hullah's dates (1812–1884) are from our page for the tune SELLINGE (content/hymns/tunes/sellinge.json); CCEH's page gives only the year 1867. The bar lines are those of CCEH's Noteworthy score (000807a.nwc).",
+  "importedFrom": "cceh:000807",
+  "updated": "2026-10-17"
+}

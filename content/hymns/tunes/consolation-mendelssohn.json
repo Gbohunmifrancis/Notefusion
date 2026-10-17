@@ -1,0 +1,36 @@
+{
+  "name": "CONSOLATION (MENDELSSOHN)",
+  "title": "Consolation (Mendelssohn)",
+  "alsoKnownAs": [
+    "Felix",
+    "Raynolds"
+  ],
+  "music": [
+    {
+      "name": "Felix Mendelssohn",
+      "born": 1809,
+      "died": 1847,
+      "role": "Arranged"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "11 10 11 10",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 F4:1 Eb4:1 | Bb4:1 Ab4:2 G4:1 | F4:1 Eb4:1 D4:1 Eb4:1 | G4:2 F4:2 | F4:2 F4:1 G4:1 | Ab4:3 F4:1 | C4:1 D4:1 G4:1.5 F4:.5 | Eb4:4 | G4:2 F4:1 Eb4:1 | Eb5:3 D5:1 | C5:1 Bb4:1 Ab4:1 G4:1 | C5:2 F4:2 | F4:2 F4:1 G4:1 | Ab4:3 F4:1 | C4:1 D4:1 G4:1.5 F4:.5 | Eb4:4",
+  "incipit": "mrdsfmrdtdmr|rrmfrltmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000797.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000797a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000797; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000797 (the melody read from 000797a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Felix Mendelssohn's dates (1809–1847) are from our page for the tune MENDELSSOHN (content/hymns/tunes/mendelssohn.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000797a.nwc).",
+  "importedFrom": "cceh:000797",
+  "updated": "2026-10-17"
+}

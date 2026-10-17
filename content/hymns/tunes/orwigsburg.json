@@ -1,0 +1,32 @@
+{
+  "name": "ORWIGSBURG",
+  "title": "Orwigsburg",
+  "music": [
+    {
+      "name": "Elisha A. Hoffman",
+      "born": 1839,
+      "died": 1929,
+      "role": "Music (1894)"
+    }
+  ],
+  "musicPublished": 1894,
+  "metre": "10 9 10 9",
+  "key": "Eb major",
+  "time": "9/8",
+  "tempo": 132,
+  "pickup": 1.5,
+  "lineBars": 2,
+  "melody": "Eb4:.5 F4:.5 G4:.5 | Bb4:1.5 Bb4:1.5 Eb4:.5 F4:.5 G4:.5 | F4:1.5 Eb4:1.5 Eb4:.5 F4:.5 G4:.5 | Bb4:1.5 Bb4:1.5 Eb4:.5 F4:.5 G4:.5 | F4:3 Eb4:.5 F4:.5 G4:.5 | Bb4:1.5 Bb4:1.5 Eb4:.5 F4:.5 G4:.5 | F4:1.5 Eb4:1.5 Eb5:.5 Eb5:.5 Eb5:.5 | Bb4:1.5 G4:1.5 Eb4:.5 G4:.5 F4:.5 | Eb4:3 Eb5:.5 Eb5:.5 Eb5:.5 | Eb5:1.5 Bb4:1.5 Eb5:.5 Eb5:.5 Eb5:.5 | Eb5:1.5 C5:1.5 Ab4:.5 Bb4:.5 C5:.5 | Bb4:1.5 Bb4:1.5 Bb4:.5 Ab4:.5 G4:.5 | F4:3 Eb4:.5 F4:.5 G4:.5 | Bb4:1.5 Bb4:1.5 Eb4:.5 F4:.5 G4:.5 | F4:1.5 Eb4:1.5 Eb5:.5 Eb5:.5 Eb5:.5 | Bb4:1.5 G4:1.5 Eb4:.5 G4:.5 F4:.5 | Eb4:3",
+  "incipit": "drmssdrmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000764.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000764a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000764; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000764 (the melody read from 000764a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Elisha A. Hoffman's dates (1839–1929) are from https://en.wikipedia.org/wiki/Elisha_Hoffman; https://www.hymnologyarchive.com/elisha-hoffman; CCEH's page gives only the year 1894. The bar lines are those of CCEH's Noteworthy score (000764a.nwc).",
+  "importedFrom": "cceh:000764",
+  "updated": "2026-10-17"
+}

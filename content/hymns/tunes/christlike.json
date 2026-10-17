@@ -1,0 +1,35 @@
+{
+  "name": "CHRISTLIKE",
+  "title": "Christlike",
+  "alsoKnownAs": [
+    "Rondinella"
+  ],
+  "music": [
+    {
+      "name": "William James Kirkpatrick",
+      "born": 1838,
+      "died": 1921,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "10 9 10 9",
+  "key": "D major",
+  "time": "9/8",
+  "tempo": 132,
+  "pickup": 1.5,
+  "lineBars": 2,
+  "melody": "D4:.5 F#4:.5 A4:.5 | A4:1.5 A4:1.5 B4:.5 C#5:.5 D5:.5 | A4:1.5 F#4:1.5 D4:.5 F#4:.5 A4:.5 | A4:1.5 F#4:1.5 F#4:.5 G4:.5 F#4:.5 | E4:3 D4:.5 F#4:.5 A4:.5 | A4:1.5 A4:1.5 B4:.5 C#5:.5 D5:.5 | A4:1.5 F#4:1.5 A4:.5 G4:.5 F#4:.5 | E4:1.5 D5:1.5 D5:.5 C#5:.5 B4:.5 | A4:1.5 G4:1.5 A4:.5 Ab4:.5 A4:.5 | B4:1.5 G4:1.5 D5:.5 C#5:.5 B4:.5 | B4:1.5 A4:1.5 A4:.5 G4:.5 F#4:.5 | G4:1.5 G4:1.5 B4:.5 A4:.5 G4:.5 | F#4:3 A4:.5 Ab4:.5 A4:.5 | B4:1.5 G4:1.5 D5:.5 C#5:.5 B4:.5 | B4:1.5 A4:1.5 D4:.5 F#4:.5 A4:.5 | A4:1.5 F#4:1.5 F#4:.5 D4:.5 E4:.5 | D4:3",
+  "incipit": "dmsssltdsm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000761.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000761a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000761; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000761 (the melody read from 000761a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William James Kirkpatrick's dates (1838–1921) are from our page for the tune THE COMFORTER HAS COME (content/hymns/tunes/the-comforter-has-come.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000761a.nwc).",
+  "importedFrom": "cceh:000761",
+  "updated": "2026-10-17"
+}

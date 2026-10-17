@@ -1,0 +1,37 @@
+{
+  "name": "RUTHERFORD",
+  "title": "Rutherford",
+  "music": [
+    {
+      "name": "Chretien Urban",
+      "activeBy": 1834,
+      "role": "Music (1834)"
+    },
+    {
+      "name": "Edward F. Rimbault",
+      "born": 1816,
+      "died": 1876,
+      "role": "Arranged (1867)"
+    }
+  ],
+  "musicPublished": 1834,
+  "metre": "7 6 7 6",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "A4:1 | A4:1 A4:1 G4:1.5 G4:.5 | F4:2 F4:1 F4:1 | Bb4:1.5 Bb4:.5 A4:1 Bb4:1 | G4:3 G4:1 | C5:1.5 C5:.5 Bb4:1 Bb4:1 | A4:2 G4:1 G4:1 | F4:1 F4:1 E4:.5 F4:.5 G4:.5 E4:.5 | F4:3 F4:1 | F4:1.5 F4:.5 F4:1 G4:1 | A4:2 A4:1 F4:1 | F4:1.5 F4:.5 F4:1 G4:1 | A4:3 A4:.5 Bb4:.5 | C5:1 C5:1 D5:1.5 C5:.5 | C5:2 Bb4:1 Bb4:1 | A4:1 A4:1 G4:1.5 F4:.5 | F4:3",
+  "incipit": "mmmrrdd|dffmfr|rssffmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000758.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000758a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000758; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000758 (the melody read from 000758a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Chretien Urban has no death year on CCEH's page or ours; their work is dated 1834, before 1850, so they died before 1955 (they would have been over 105). Edward F. Rimbault's dates (1816–1876) are from https://hymnary.org/person/Rimbault_EF (Rimbault, Edward F. (Edward Francis), 1816-1876); CCEH's page gives only the year 1867. The bar lines are those of CCEH's Noteworthy score (000758a.nwc).",
+  "importedFrom": "cceh:000758",
+  "updated": "2026-10-17"
+}

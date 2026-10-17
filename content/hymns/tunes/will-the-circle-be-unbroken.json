@@ -1,0 +1,32 @@
+{
+  "name": "WILL THE CIRCLE BE UNBROKEN",
+  "title": "Will the Circle Be Unbroken",
+  "music": [
+    {
+      "name": "Charles Hutchinson Gabriel",
+      "born": 1856,
+      "died": 1932,
+      "role": "Music (1907)"
+    }
+  ],
+  "musicPublished": 1907,
+  "metre": "8 7 8 7 + 8 6 8 6",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "C4:.75 C#4:.25 | Eb4:1 Eb4:2 Ab4:.75 Bb4:.25 | C5:1 C5:2 C5:.75 Bb4:.25 | Ab4:1.5 Bb4:.5 Ab4:1 F4:1 | Eb4:3 C4:.75 C#4:.25 | Eb4:1 Eb4:2 Ab4:.75 Bb4:.25 | C5:1 C5:2 Ab4:.75 Ab4:.25 | Bb4:1.5 Bb4:.5 Bb4:1 C5:1 | Bb4:3 Ab4:.75 Bb4:.25 | C5:1 Eb5:2 C5:.75 Bb4:.25 | Ab4:1 C5:2 Ab4:.75 G4:.25 | F4:1.5 Bb4:.5 Ab4:1 F4:1 | Eb4:3 Eb4:.75 Eb4:.25 | F4:1 Ab4:2 Ab4:.75 Bb4:.25 | C5:1 C5:2 C5:.75 C#5:.25 | Eb5:3 C5:.75 Bb4:.25 | Ab4:3",
+  "incipit": "mfssdrmm|mrdrdls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000741.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000741a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000741; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000741 (the melody read from 000741a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Charles Hutchinson Gabriel's dates (1856–1932) are from our page for the tune MY SAVIOR (content/hymns/tunes/my-savior.json); CCEH's page gives only the year 1907. The bar lines are those of CCEH's Noteworthy score (000741a.nwc).",
+  "importedFrom": "cceh:000741",
+  "updated": "2026-10-17"
+}

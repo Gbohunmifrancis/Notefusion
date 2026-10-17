@@ -1,0 +1,31 @@
+{
+  "name": "RUSSIAN HYMN",
+  "title": "Russian Hymn",
+  "music": [
+    {
+      "name": "Alexis F. Lvov",
+      "activeBy": 1833,
+      "role": "Music (1833)"
+    }
+  ],
+  "musicPublished": 1833,
+  "metre": "11 10 11 9",
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:2 B4:1 B4:1 | A4:1.5 F#4:.5 D4:2 | D5:2 C#5:1 B4:1 | A4:2 B4:2 | G4:2 A4:1 A4:1 | F#4:2 F#4:1 Ab4:1 | A4:2 Ab4:1 Ab4:1 | F#4:4 | G4:2 F#4:1 E4:1 | F#4:2 F#4:1 F#4:1 | D5:1.5 C#5:.5 B4:1 Bb4:1 | B4:2 A4:2 | D5:2 C#5:1 B4:1 | A4:2 A4:1 G4:1 | F#4:2 E4:2 | D4:4",
+  "incipit": "sllsmddtlsl|fssmmfsffm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000780.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000780a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000780; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000780 (the melody read from 000780a.mid, checked against the page's do-re-mi incipit, 3 notes off in 21); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Alexis F. Lvov has no death year on CCEH's page or ours; their work is dated 1833, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000780a.nwc).",
+  "importedFrom": "cceh:000780",
+  "updated": "2026-10-17"
+}

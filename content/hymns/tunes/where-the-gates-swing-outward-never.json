@@ -1,0 +1,32 @@
+{
+  "name": "WHERE THE GATES SWING OUTWARD NEVER",
+  "title": "Where the Gates Swing Outward Never",
+  "music": [
+    {
+      "name": "Charles Hutchinson Gabriel",
+      "born": 1856,
+      "died": 1932,
+      "role": "Music (1917)"
+    }
+  ],
+  "musicPublished": 1917,
+  "metre": "10 8 10 8",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 130,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Eb4:.75 Eb4:.25 | Ab4:1 Ab4:1 Ab4:1 Ab4:.75 Bb4:.25 | C5:1 C5:1 C5:1 C5:.75 Bb4:.25 | Ab4:1.5 Bb4:.5 Ab4:1 F4:1 | F4:1 Eb4:2 Ab4:.75 Ab4:.25 | G4:1 Bb4:1 Bb4:1 Bb4:.75 Bb4:.25 | Ab4:1 C5:1 C5:1 C5:.75 C5:.25 | Bb4:1 Bb4:1 C5:1 D5:1 | Eb5:2 Eb5:1 Eb5:.75 C#5:.25 | C5:1 C5:1 C5:1 C5:.75 Bb4:.25 | Ab4:1 Ab4:1 Ab4:1 G4:.75 F4:.25 | Eb4:1 Eb4:1 Ab4:1 C5:1 | C5:1 Bb4:2 Eb5:.75 C#5:.25 | C5:1 C5:1 C5:1 C5:.75 Bb4:.25 | Ab4:1 Ab4:1 Ab4:1 G4:.75 F4:.25 | Eb4:1 Eb4:1 Ab4:1 C5:1 | Bb4:2 Ab4:1",
+  "incipit": "ssddddrmmm|mrdrdlls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000738.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000738a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000738; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000738 (the melody read from 000738a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Charles Hutchinson Gabriel's dates (1856–1932) are from our page for the tune MY SAVIOR (content/hymns/tunes/my-savior.json); CCEH's page gives only the year 1917. The bar lines are those of CCEH's Noteworthy score (000738a.nwc).",
+  "importedFrom": "cceh:000738",
+  "updated": "2026-10-17"
+}

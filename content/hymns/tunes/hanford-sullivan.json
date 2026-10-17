@@ -1,0 +1,32 @@
+{
+  "name": "HANFORD (SULLIVAN)",
+  "title": "Hanford (Sullivan)",
+  "music": [
+    {
+      "name": "Arthur Seymour Sullivan",
+      "born": 1842,
+      "died": 1900,
+      "role": "Music (1874)"
+    }
+  ],
+  "musicPublished": 1874,
+  "metre": "8 8 8 4",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Bb4:2 Bb4:1 Bb4:1 | Bb4:3 Bb4:1 | Ab4:2 G4:2 | F4:4 | C5:2 C5:1 C5:1 | C5:3 C5:1 | Bb4:2 Ab4:2 | G4:3 Eb5:1 | Eb5:3 Eb5:1 | Eb5:2 D5:2 | C5:2 Bb4:2 | Ab4:4 | G4:4 | Ab4:2 F4:2 | Eb4:4",
+  "incipit": "sssssfmr|lllllsfm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000753.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000753a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000753; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000753 (the melody read from 000753a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Arthur Seymour Sullivan's dates (1842–1900) are from our page for the tune ST. EDMUND (SULLIVAN) (content/hymns/tunes/st-edmund-sullivan.json); CCEH's page gives only the year 1874. The bar lines are those of CCEH's Noteworthy score (000753a.nwc).",
+  "importedFrom": "cceh:000753",
+  "updated": "2026-10-17"
+}
