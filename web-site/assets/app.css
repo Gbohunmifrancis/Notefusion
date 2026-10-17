@@ -171,6 +171,13 @@ body.guest .topbar { display: flex; }
 .home-mark { display: block; width: 64px; height: 64px; margin: 0 auto 16px; background: var(--brand-gradient); -webkit-mask: url(/assets/mark-mask.png) center / contain no-repeat; mask: url(/assets/mark-mask.png) center / contain no-repeat; }
 .greeting { font-size: clamp(1.7rem, 3.4vw, 2.3rem); margin: 0 0 4px; }
 .home-sub { margin: 0; }
+/* Practice: the streak and XP under the greeting, a tap from today's drill (the view is assets/practice-view.css). */
+.practice-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 14px; padding: 6px 16px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font: inherit; font-size: 0.9rem; font-weight: 600; font-variant-numeric: tabular-nums; cursor: pointer; }
+.practice-chip .ic { width: 18px; height: 18px; color: var(--muted); }
+.practice-chip.is-on .ic { color: var(--premium, #f59e0b); }
+.practice-chip i { width: 1px; height: 16px; background: var(--line-strong); }
+.practice-chip:hover { border-color: var(--blue); }
+.practice-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .studio { position: relative; background: var(--studio-gradient); color: #fff; border-radius: 12px; padding: 22px; box-shadow: 0 18px 48px rgba(29, 78, 216, 0.28); margin-bottom: 24px; overflow: hidden; }
 .studio::before { content: ""; position: absolute; inset: -40% -20% auto auto; width: 60%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 65%); pointer-events: none; }
 .studio > * { position: relative; }

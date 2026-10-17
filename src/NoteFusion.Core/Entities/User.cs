@@ -185,6 +185,14 @@ public class User : BaseEntity
     }
 
     /// <summary>
+    /// How this account likes to practise (<c>Application/Practice</c>): null until the singer picks one on the
+    /// Practice screen, and changeable any time. A style, not an age.
+    /// </summary>
+    public PracticeTrack? PracticeTrack { get; private set; }
+
+    public void ChoosePracticeTrack(PracticeTrack track) => PracticeTrack = track;
+
+    /// <summary>
     /// When this free account used its one four-part harmony: the taste of the Pro feature that most
     /// often sends people to the plans. Null while it is still available. Pro accounts never spend it.
     /// </summary>

@@ -23,6 +23,14 @@
       return id;
     } catch (e) { return "anonymous"; }
   }
+  /** The browser's IANA time zone, sent as X-Time-Zone so practice days (streaks, the daily drill) are the singer's own. */
+  var TIME_ZONE = (function () { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) { return ""; } })();
+  /** The headers every API call carries: the device, and the time zone when the browser names one. */
+  function baseHeaders() {
+    var h = { "X-Device-Id": deviceId() };
+    if (TIME_ZONE) h["X-Time-Zone"] = TIME_ZONE;
+    return h;
+  }
 
   // ── Session ──────────────────────────────────────────────────────────────
   function tokens() {
@@ -100,7 +108,7 @@
   function request(path, opts) {
     opts = opts || {};
     function send() {
-      var headers = { "X-Device-Id": deviceId() };
+      var headers = baseHeaders();
       var body;
       if (opts.form) { body = opts.form; }
       else if (opts.body !== undefined) { headers["Content-Type"] = "application/json"; body = JSON.stringify(opts.body); }
@@ -138,7 +146,8 @@
       return new Promise(function (resolve, reject) {
         var xhr = new XMLHttpRequest();
         xhr.open("POST", API + path);
-        xhr.setRequestHeader("X-Device-Id", deviceId());
+        var base = baseHeaders();
+        Object.keys(base).forEach(function (k) { xhr.setRequestHeader(k, base[k]); });
         if (!opts.anonymous) {
           var t = tokens();
           if (t && t.accessToken) xhr.setRequestHeader("Authorization", "Bearer " + t.accessToken);
@@ -382,6 +391,7 @@
     me = null; sub = null; libraryCache = null; libFolder = null; choir = null;
     stopPaymentWatch(); hide($("top-nav")); document.body.classList.remove("is-pro");
     $("recents-list").innerHTML = "";
+    hide($("practice-chip")); if (window.NfPracticeView) window.NfPracticeView.reset();
   }
   /** The API refused the refresh token: back to the sign-in screen. */
   function sessionEnded() { clearTokens(); forgetAccount(); showAuth(); }
@@ -620,14 +630,16 @@
     forgetAccount(); showAuth();
   });
 
-  // ── Views: transcribe / library / account ───────────────────────────────
+  // ── Views: transcribe / library / practice / account ────────────────────
   function setView(name) {
     var focusSearch = name === "search";
     if (focusSearch) name = "library";
-    ["transcribe", "library", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
+    if (name === "practice" && (guest || !tokens())) name = "transcribe"; // practice is for a signed-in account
+    ["transcribe", "library", "practice", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
     document.querySelectorAll("#top-nav .top-link").forEach(function (b) { b.classList.toggle("on", b.dataset.view === name); });
     if (name === "library") loadLibrary().then(function () { if (focusSearch) $("lib-search").focus(); });
     if (name === "account") renderAccount();
+    name === "practice" ? openPracticeView() : leavePracticeView();
     closeDrawer(); closeUserMenu();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -662,6 +674,67 @@
   $("menu-how").addEventListener("click", function (e) { e.preventDefault(); closeUserMenu(); closeDrawer(); openOnb(); });
   $("topbar-signin").addEventListener("click", function () { openAuth("login"); });
   $("recents-all").addEventListener("click", function () { setView("library"); });
+
+  // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
+  // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
+  // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=2", "/assets/practice-progress.js?v=1", "/assets/practice-track.js?v=1", "/assets/practice-view.js?v=2"];
+  var assetLoads = {};
+  /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
+  function loadAsset(url) {
+    if (!assetLoads[url]) {
+      assetLoads[url] = new Promise(function (resolve, reject) {
+        var css = /\.css(\?|$)/.test(url), tag = document.createElement(css ? "link" : "script");
+        if (css) { tag.rel = "stylesheet"; tag.href = url; } else { tag.src = url; tag.async = false; }
+        tag.onload = resolve;
+        tag.onerror = function () { tag.remove(); delete assetLoads[url]; reject(new Error("failed " + url)); };
+        document.head.appendChild(tag);
+      });
+    }
+    return assetLoads[url];
+  }
+  var practiceViewOpen = false;
+  function openPracticeView() {
+    practiceViewOpen = true;
+    var at = epoch, root = $("practice-root");
+    var go = function () {
+      if (at !== epoch || !practiceViewOpen) return;
+      window.NfPracticeView.open(root, { request: request, track: track, choir: C, onProgress: renderPracticeChip });
+    };
+    if (window.NfPracticeView) { go(); return; }
+    Promise.all(PRACTICE_ASSETS.map(loadAsset)).then(go, function () {
+      if (at !== epoch || !practiceViewOpen) return;
+      root.innerHTML = "";
+      var card = document.createElement("div"); card.className = "card";
+      var p = document.createElement("p"); p.textContent = "Practice didn't load. Check your connection and try again.";
+      var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost"; label(b, "restart", "Try again");
+      b.addEventListener("click", openPracticeView);
+      card.appendChild(p); card.appendChild(b); root.appendChild(card);
+    });
+  }
+  function leavePracticeView() {
+    practiceViewOpen = false;
+    if (window.NfPracticeView) window.NfPracticeView.leave();
+  }
+  /** The home chip: the streak and the XP, a tap from today's drill (the phone's Home chip). */
+  function renderPracticeChip(p) {
+    var chip = $("practice-chip");
+    if (!p || !p.streak || !p.level) { hide(chip); return; }
+    chip.classList.toggle("is-on", p.streak.current > 0);
+    $("practice-chip-streak").textContent = p.streak.current;
+    $("practice-chip-xp").textContent = p.xp + " XP";
+    chip.setAttribute("aria-label", "Practice: " + p.streak.current + "-day streak, " + p.xp + " XP, level " + p.level.name);
+    show(chip);
+  }
+  function loadPracticeChip() {
+    var at = epoch;
+    var go = function () {
+      if (at !== epoch || guest || !tokens()) return;
+      request("/api/practice/progress").then(function (p) { if (at === epoch) renderPracticeChip(p); }, function () { /* no chip; the menu still leads there */ });
+    };
+    if (window.requestIdleCallback) window.requestIdleCallback(go, { timeout: 3000 }); else setTimeout(go, 1200);
+  }
+  $("practice-chip").addEventListener("click", function () { track("Practice chip"); setView("practice"); });
 
   /** The saved sheets, fetched once and shared by the library, the account view and the sidebar. */
   function fetchLibrary(force) {
@@ -1239,6 +1312,9 @@
       // A notification's link (/app?job=<id>): the finished sheet, or why it failed.
       var jobToOpen = new URLSearchParams(location.search).get("job");
       if (jobToOpen) { dropParam("job"); openJob(jobToOpen); }
+      // A link to the Practice view (/app?view=practice): the drill, once signed in.
+      if (new URLSearchParams(location.search).get("view") === "practice") { dropParam("view"); setView("practice"); }
+      loadPracticeChip();
       syncPush();
       if (previewId) {
         // The preview that brought this person here is now theirs: the funnel's conversion.

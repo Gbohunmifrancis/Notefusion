@@ -1594,6 +1594,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
+                    b.Property<string>("PracticeTrack")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
                     b.Property<string>("ProfilePictureUrl")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");

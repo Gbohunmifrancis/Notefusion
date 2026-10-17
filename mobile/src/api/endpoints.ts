@@ -29,6 +29,7 @@ import type {
   PaymentOpsSummary,
   Plan,
   PracticeProgress,
+  PracticeTrack,
   RegistrationResponse,
   SavedTranscription,
   ShareLink,
@@ -363,8 +364,11 @@ export const practiceApi = {
     return api.post<GradeResult>("/api/practice/drills/grade", form, { timeout: 60_000 }).then((r) => r.data);
   },
 
-  /** XP, level, streak, weekly goal, badges and the last seven days. */
+  /** XP, level, streak, weekly goal, badges, the last seven days and the track (null until chosen). */
   progress: () => api.get<PracticeProgress>("/api/practice/progress").then((r) => r.data),
+
+  /** Sets how the singer likes to practise; answers with the progress. Today's drill becomes the track's own. */
+  setTrack: (track: PracticeTrack) => api.put<PracticeProgress>("/api/practice/track", { track }).then((r) => r.data),
 };
 
 export const libraryApi = {

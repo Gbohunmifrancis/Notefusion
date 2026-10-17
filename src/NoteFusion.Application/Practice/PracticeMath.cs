@@ -84,12 +84,16 @@ public static class PracticeMath
             facts.Count(f => f.Kind == PracticeKind.Part && f.WholePart && f.Score >= PracticeRules.GoodScore),
             Streak(facts.Select(f => f.LocalDate), today).Best);
 
-    /// <summary>Everything the Practice screen shows, as of <paramref name="today"/>.</summary>
+    /// <summary>
+    /// Everything the Practice screen shows, as of <paramref name="today"/>. The <paramref name="track"/> is passed
+    /// through for the client to draw by; no number here reads it.
+    /// </summary>
     public static PracticeProgressDto Progress(
         IReadOnlyCollection<PracticeFact> facts,
         IReadOnlyDictionary<string, DateTime> earned,
         DateOnly today,
-        DrillAllowanceDto drills)
+        DrillAllowanceDto drills,
+        PracticeTrack? track = null)
     {
         var xpByDay = XpByDay(facts);
         var xp = xpByDay.Values.Sum();
@@ -128,6 +132,7 @@ public static class PracticeMath
             new WeeklyGoalDto(weekDays, PracticeRules.WeeklyGoalDays, weekStart),
             PracticeBadges.Describe(stats, earned),
             lastSeven,
-            drills);
+            drills,
+            track);
     }
 }
