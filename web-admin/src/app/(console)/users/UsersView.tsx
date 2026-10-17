@@ -288,7 +288,7 @@ export function UsersView() {
             variant="outline"
             size="sm"
             onClick={handleExport}
-            className="h-9 gap-1.5 rounded-lg border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs hover:bg-slate-50 dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200 dark:hover:bg-zinc-900"
+            className="h-9 gap-1.5 rounded-lg border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs hover:bg-slate-50 dark:border-zinc-800 dark:bg-input dark:text-zinc-200 dark:hover:bg-zinc-900"
           >
             <Download size={14} />
             Export
@@ -321,7 +321,7 @@ export function UsersView() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by name or email..."
-            className="h-9 w-full rounded-lg border border-slate-200/90 bg-white pl-9 text-xs shadow-xs placeholder:text-slate-400 focus:border-[#2563EB] dark:border-zinc-800 dark:bg-[#09090b] dark:text-white"
+            className="h-9 w-full rounded-lg border border-slate-200/90 bg-white pl-9 text-xs shadow-xs placeholder:text-slate-400 focus:border-[#2563EB] dark:border-zinc-800 dark:bg-input dark:text-white"
           />
         </div>
 
@@ -329,7 +329,7 @@ export function UsersView() {
           <select
             value={planFilter}
             onChange={(e) => setPlanFilter(e.target.value)}
-            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-input dark:text-zinc-200"
           >
             <option value="all">All plans</option>
             <option value="pro">Pro</option>
@@ -339,7 +339,7 @@ export function UsersView() {
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as StatusFilter)}
-            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-input dark:text-zinc-200"
           >
             <option value="all">All status</option>
             <option value="active">Active</option>
@@ -350,7 +350,7 @@ export function UsersView() {
             value={lastSeen}
             onChange={(e) => setLastSeen(e.target.value as LastSeenFilter)}
             aria-label="Filter by last seen"
-            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-input dark:text-zinc-200"
           >
             {LAST_SEEN_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
@@ -363,13 +363,13 @@ export function UsersView() {
             value={sort}
             onChange={(e) => setSort(e.target.value as "newest" | "lastSeen")}
             aria-label="Sort users"
-            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-input dark:text-zinc-200"
           >
             <option value="newest">Newest accounts</option>
             <option value="lastSeen">Recently seen</option>
           </select>
 
-          <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200">
+          <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs dark:border-zinc-800 dark:bg-input dark:text-zinc-200">
             <input
               type="checkbox"
               checked={showTeam}
@@ -382,7 +382,7 @@ export function UsersView() {
       </div>
 
       {/* TABLE CARD MATCHING MOCKUP */}
-      <div className="rounded-xl border border-slate-200/80 bg-white shadow-xs dark:border-zinc-800 dark:bg-[#09090b] overflow-hidden">
+      <div className="nf-panel overflow-hidden">
         <StateView
           state={state}
           isEmpty={() => items.length === 0}

@@ -444,7 +444,7 @@ export function InboxView() {
 
       {error && <ErrorBanner message={error} />}
 
-      <div className="flex min-h-[600px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#0d1726]">
+      <div className="flex min-h-[600px] overflow-hidden nf-panel">
         {/* left panel — list */}
         <div className="flex w-80 shrink-0 flex-col border-r border-slate-200 dark:border-white/10">
           <div className="border-b border-slate-100 px-4 py-3 dark:border-white/10">

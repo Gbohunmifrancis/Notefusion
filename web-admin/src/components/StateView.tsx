@@ -1,8 +1,10 @@
 import { AlertTriangle, Inbox, Loader2 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { ApiError } from "@/api/client";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 /**
  * The three non-success states, in one place so every panel reports them the same way.
@@ -23,11 +25,35 @@ export function LoadingView({ label = "Loading" }: { label?: string }) {
   );
 }
 
-export function EmptyView({ message, hint }: { message: string; hint?: string }) {
+/**
+ * "Nothing here yet", said kindly: the icon in a lit chip, the message, and a line on what will
+ * fill the space. `compact` drops the padding for a panel that is short to begin with.
+ */
+export function EmptyView({
+  message,
+  hint,
+  icon: Icon = Inbox,
+  compact = false,
+}: {
+  message: string;
+  hint?: string;
+  icon?: LucideIcon;
+  compact?: boolean;
+}) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-      <Inbox size={26} className="text-faint" aria-hidden="true" />
-      <p className="text-sm font-medium text-foreground">{message}</p>
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center gap-2 text-center",
+        compact ? "py-6" : "py-12",
+      )}
+    >
+      <span
+        aria-hidden="true"
+        className="mb-1 grid size-12 place-items-center rounded-[14px] border border-brand/20 bg-brand/10 text-brand shadow-glow"
+      >
+        <Icon size={22} />
+      </span>
+      <p className="text-sm font-bold text-foreground">{message}</p>
       {hint && <p className="max-w-sm text-xs text-muted-foreground">{hint}</p>}
     </div>
   );
@@ -52,8 +78,13 @@ export function ErrorView({
       className="flex flex-col items-center justify-center gap-2 py-12 text-center"
       role="alert"
     >
-      <AlertTriangle size={26} className="text-danger" aria-hidden="true" />
-      <p className="text-sm font-medium text-foreground">{error.message}</p>
+      <span
+        aria-hidden="true"
+        className="mb-1 grid size-12 place-items-center rounded-[14px] border border-danger/25 bg-danger/10 text-danger"
+      >
+        <AlertTriangle size={22} />
+      </span>
+      <p className="text-sm font-bold text-foreground">{error.message}</p>
       {code && (
         <p className="font-mono text-xs text-muted-foreground">
           {code}

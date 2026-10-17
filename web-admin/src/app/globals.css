@@ -7,7 +7,7 @@
 /* ── Theme tokens ─────────────────────────────────────────────────────────────
    Every colour that differs between light and dark lives here, and the whole app —
    including every component shadcn generates — reads it through the `@theme inline`
-   block below. Light is the default, matching the app.
+   block below.
 
    The vocabulary is shadcn's (`background`, `card`, `muted-foreground`, `primary`)
    rather than the console's old one (`bg`, `surface`, `muted`, `accent`). That is a
@@ -15,7 +15,8 @@
    `muted` was a *text* colour, and its `--accent` is a hover tint while ours was brand
    blue. Keeping both vocabularies would mean every generated component picked up brand
    blue for its hover states. NoteFusion-only ideas that shadcn has no name for — `faint`,
-   `premium`, `navy`, the `badge-*` fills — keep theirs.
+   `premium`, `ice`, `mint`, `navy`, the `badge-*` fills, the `panel-*` and `canvas-*`
+   dressing — keep theirs.
 
    The raw custom properties also keep shadcn's *names*, not a private `--c-` prefix, because
    several generated components reach past Tailwind and read them directly: `sonner.tsx` sets
@@ -24,15 +25,16 @@
    utilities instead of emitting them as variables, so those escape hatches only resolve if the
    raw layer answers to the name shadcn expects.
 
-   Values are copied from the app (mobile/src/design/theme.ts), not reinterpreted. Where
-   this file departs from the app's value the comment says why; the reason is always
-   contrast at dashboard body size, which is smaller than the app's.
+   Values are the app's (mobile/src/design/theme.ts): Day is `colors`, Night is `darkColors` /
+   `night` — the near-black cool canvas (#07090E / #0E121A / #151A24), one blue (#2F7BFF, with
+   #2563EB as the fill that carries white text), premium amber, mint and red for the signals.
+   web-site/assets/night.css carries the same palette for the web app.
 
-   Dark values are the app's own `darkColors`. They are not re-tuned: measured against
-   these surfaces the app's dark text ramp is already stronger than this dashboard's light
-   one — muted reads 5.9:1 against the lightest dark surface where light muted reads 4.9:1,
-   and faint reads 3.6:1 where light faint reads 2.4:1. The semantic colours do flip,
-   because the light ones do not survive the swap: #dc2626 measures 3.5:1 on dark. */
+   Night is the console's showcase and its default (src/app/providers.tsx). Contrast, measured
+   against the lightest surface each text sits on (#151A24 night, #EEF3FB day): foreground
+   16.1 / 16.0, muted-foreground 5.8 / 4.9, faint 5.0 / 4.6. White on the fill blue (#2563EB) is
+   5.2:1 (and 4.6 at the light end of "The Fusion"); white on #2F7BFF is only 3.9:1, which is why
+   #2F7BFF is used for marks, glows and the canvas light but never under text. */
 :root {
   /* Brand */
   --nf-primary: #2563eb;
@@ -40,16 +42,16 @@
   --nf-primary-light: #dbeafe;
   --nf-primary-foreground: #ffffff;
 
-  /* Light theme */
-  --nf-background: #fafafa;
+  /* Day: the app's light palette — Mist canvas, white cards, a faint blue tint for nested rows. */
+  --nf-background: #f4f7fc;
   --nf-surface: #ffffff;
-  --nf-surface-muted: #f8fafc;
-  --nf-surface-subtle: #f1f5f9;
+  --nf-surface-muted: #f6f9fe;
+  --nf-surface-subtle: #eef3fb;
   --nf-foreground: #0f172a;
-  --nf-foreground-muted: #64748b;
-  --nf-foreground-subtle: #94a3b8;
+  --nf-foreground-muted: #5b6b82;
+  --nf-foreground-subtle: #606f86;
   --nf-border: #e2e8f0;
-  --nf-border-subtle: #f1f5f9;
+  --nf-border-subtle: #eff3f9;
   --nf-sidebar: #ffffff;
   --nf-input: #ffffff;
 
@@ -108,8 +110,11 @@
   --border-light: var(--nf-border-subtle);
   --input: var(--nf-input);
 
+  /* `brand` is blue as a mark or as text on a surface; `brand-deep` is the same read as text on
+     a brand tint (a badge). `ice` is the blue that names things — eyebrows, the signed-in name. */
   --brand: var(--nf-primary);
   --brand-deep: var(--nf-primary-hover);
+  --ice: #1d4ed8;
   --ring: var(--nf-primary);
 
   --sky: #0ea5e9;
@@ -118,6 +123,10 @@
 
   --premium: #f59e0b;
   --premium-deep: #b45309;
+  /* Text on an amber or mint fill (the coloured quick-job buttons): 6.4:1 and more. */
+  --premium-ink: #3b2a00;
+  --mint: #22c55e;
+  --mint-ink: #052e16;
 
   --success: var(--nf-success);
   --warning: var(--nf-warning);
@@ -150,42 +159,68 @@
   --s-card: 0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
   --s-lift: 0 8px 24px rgba(15, 23, 42, 0.08);
   --s-glow: 0 0 0 3px rgba(37, 99, 235, 0.16);
+
+  /* ── Panel dressing ─────────────────────────────────────────────────────
+     A panel is a card with a blue-tinted hairline, a faint wash of brand light across its top
+     and a soft blue glow under it — lit from the stage rather than floating on grey. `.nf-panel`
+     below puts the four together; `Card`, `StatTile` and the Overview's panels wear it. */
+  --panel-line: rgba(37, 99, 235, 0.14);
+  --panel-line-hover: rgba(37, 99, 235, 0.3);
+  --panel-sheen: rgba(37, 99, 235, 0.045);
+  --panel-glow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 32px -18px rgba(37, 99, 235, 0.28);
+  --panel-glow-hover: 0 1px 2px rgba(15, 23, 42, 0.05), 0 18px 40px -18px rgba(37, 99, 235, 0.38);
+  --panel-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  /* The canvas: two soft lights (brand blue top left, amber top right) over manuscript paper —
+     staves, note heads and the solfa syllables d r m f s l t. The ink stays under 10% so it is
+     texture, never content. */
+  --canvas-light-1: rgba(37, 99, 235, 0.1);
+  --canvas-light-2: rgba(245, 158, 11, 0.08);
+  --canvas-staff: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='260'%3E%3Cg stroke='%232563EB' stroke-opacity='0.07' fill='none'%3E%3Cpath d='M0 40.5h420M0 48.5h420M0 56.5h420M0 64.5h420M0 72.5h420M0 170.5h420M0 178.5h420M0 186.5h420M0 194.5h420M0 202.5h420'/%3E%3C/g%3E%3Cg fill='%232563EB' fill-opacity='0.08' stroke='%232563EB' stroke-opacity='0.08' stroke-width='1.4'%3E%3Cellipse cx='60' cy='68' rx='5' ry='3.6' transform='rotate(-20 60 68)'/%3E%3Cpath d='M64.5 68V44'/%3E%3Cellipse cx='150' cy='56' rx='5' ry='3.6' transform='rotate(-20 150 56)'/%3E%3Cpath d='M154.5 56V32'/%3E%3Cellipse cx='240' cy='44' rx='5' ry='3.6' transform='rotate(-20 240 44)'/%3E%3Cpath d='M244.5 44V20'/%3E%3Cellipse cx='330' cy='60' rx='5' ry='3.6' transform='rotate(-20 330 60)'/%3E%3Cpath d='M334.5 60V36'/%3E%3Cellipse cx='110' cy='190' rx='5' ry='3.6' transform='rotate(-20 110 190)'/%3E%3Cpath d='M114.5 190V166'/%3E%3Cellipse cx='200' cy='178' rx='5' ry='3.6' transform='rotate(-20 200 178)'/%3E%3Cpath d='M204.5 178V154'/%3E%3Cellipse cx='290' cy='198' rx='5' ry='3.6' transform='rotate(-20 290 198)'/%3E%3Cpath d='M294.5 198V174'/%3E%3C/g%3E%3Cg fill='%232563EB' fill-opacity='0.09' font-family='ui-monospace,monospace' font-size='12' font-weight='600' text-anchor='middle'%3E%3Ctext x='60' y='96'%3Ed%3C/text%3E%3Ctext x='150' y='96'%3Em%3C/text%3E%3Ctext x='240' y='96'%3Es%3C/text%3E%3Ctext x='330' y='96'%3Ef%3C/text%3E%3Ctext x='110' y='226'%3Er%3C/text%3E%3Ctext x='200' y='226'%3El%3C/text%3E%3Ctext x='290' y='226'%3Et%3C/text%3E%3C/g%3E%3C/svg%3E");
+
+  /* "The Fusion": the brand gradient on primary buttons and the active nav item. Every stop
+     carries white text at 4.5:1 or more. */
+  --fusion: linear-gradient(135deg, #2e6cf0 0%, #2563eb 45%, #1d4ed8 100%);
+  --fusion-glow: 0 8px 22px -8px rgba(37, 99, 235, 0.55);
+  /* The strip across the top of the sidebar: blue, sky, mint, amber — the app's colours in a row. */
+  --brand-strip: linear-gradient(90deg, #2563eb 0 30%, #0ea5e9 30% 55%, #16a34a 55% 78%, #f59e0b 78% 100%);
 }
 
 .dark {
-  /* Truly dark theme tokens (OLED / Pitch Black SaaS Admin) */
-  --nf-background: #000000;
-  --nf-surface: #09090b;
-  --nf-surface-muted: #121214;
-  --nf-surface-subtle: #18181b;
-  --nf-foreground: #fafafa;
-  --nf-foreground-muted: #a1a1aa;
-  --nf-foreground-subtle: #71717a;
-  --nf-border: #27272a;
-  --nf-border-subtle: #18181b;
-  --nf-sidebar: #050505;
-  --nf-input: #0c0c0e;
+  /* Night: the app's `darkColors` and the night redesign. */
+  --nf-background: #07090e;
+  --nf-surface: #0e121a;
+  --nf-surface-muted: #121722;
+  --nf-surface-subtle: #151a24;
+  --nf-foreground: #f3f6fb;
+  --nf-foreground-muted: #8b95aa;
+  --nf-foreground-subtle: #8089a0;
+  --nf-border: #1e2533;
+  --nf-border-subtle: #141922;
+  --nf-sidebar: #05070b;
+  --nf-input: #0b0f16;
 
-  --nf-chart-1: #3b82f6;
-  --nf-chart-2: #0ea5e9;
-  --nf-chart-3: #6366f1;
-  --nf-chart-4: #71717a;
-  --nf-chart-5: #f59e0b;
-  --nf-chart-grid: #18181b;
+  --nf-chart-1: #4d8dff;
+  --nf-chart-2: #38bdf8;
+  --nf-chart-3: #818cf8;
+  --nf-chart-4: #8089a0;
+  --nf-chart-5: #f5b544;
+  --nf-chart-grid: #161b25;
 
   --background: var(--nf-background);
   --foreground: var(--nf-foreground);
   --card: var(--nf-surface);
   --card-foreground: var(--nf-foreground);
-  --popover: var(--nf-surface);
+  --popover: var(--nf-surface-subtle);
   --popover-foreground: var(--nf-foreground);
 
-  --primary: var(--nf-primary);
-  --primary-foreground: var(--nf-primary-foreground);
-  --primary-deep: var(--nf-primary-hover);
-  --primary-bright: #3b82f6;
+  /* The fill blue stays #2563EB: white on the app's #2F7BFF is under 4.5:1. */
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --primary-deep: #1b5fe0;
+  --primary-bright: #2f7bff;
 
-  --muted: var(--nf-surface-muted);
+  --muted: var(--nf-surface-subtle);
   --secondary: var(--nf-surface-muted);
   --accent: var(--nf-surface-subtle);
   --secondary-foreground: var(--nf-foreground);
@@ -198,35 +233,42 @@
   --border-light: var(--nf-border-subtle);
   --input: var(--nf-input);
 
-  --brand: #3b82f6;
-  --brand-deep: #2563eb;
-  --ring: #3b82f6;
+  /* The app's lifted `accent` for marks and links, and its "ice" for text on a tint: the fill
+     weight goes muddy on the night canvas. */
+  --brand: #5c9bff;
+  --brand-deep: #9cc2ff;
+  --ice: #9cc2ff;
+  --ring: #5c9bff;
 
   --sky: #38bdf8;
-  --navy: #050505;
+  --navy: #05070b;
   --navy-deep: #000000;
 
-  --premium: #fbbf24;
-  --premium-deep: #f59e0b;
+  --premium: #f5b544;
+  --premium-deep: #f5b544;
+  --premium-ink: #1f1600;
+  --mint: #3ddc97;
+  --mint-ink: #04241a;
 
-  --success: #22c55e;
-  --warning: #f59e0b;
-  --danger: #ef4444;
-  --destructive: #ef4444;
+  --success: #3ddc97;
+  --warning: #f5b544;
+  --danger: #ff4d5e;
+  /* A fill under white text: the app's #FF4D5E is too light to carry it. */
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
 
-  --success-deep: #22c55e;
-  --warning-deep: #f59e0b;
-  --danger-deep: #ef4444;
+  --success-deep: #3ddc97;
+  --warning-deep: #f5b544;
+  --danger-deep: #ff7a86;
 
   --sidebar: var(--nf-sidebar);
   --sidebar-foreground: var(--nf-foreground);
-  --sidebar-primary: var(--nf-primary);
-  --sidebar-primary-foreground: var(--nf-primary-foreground);
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: var(--nf-surface-subtle);
   --sidebar-accent-foreground: var(--nf-foreground);
   --sidebar-border: var(--nf-border);
-  --sidebar-ring: var(--nf-primary);
+  --sidebar-ring: #5c9bff;
 
   --chart-1: var(--nf-chart-1);
   --chart-2: var(--nf-chart-2);
@@ -234,10 +276,46 @@
   --chart-4: var(--nf-chart-4);
   --chart-5: var(--nf-chart-5);
 
-  --s-hairline: 0 1px 2px rgba(0, 0, 0, 0.8);
-  --s-card: 0 2px 10px rgba(0, 0, 0, 0.9);
-  --s-lift: 0 12px 32px rgba(0, 0, 0, 0.95);
-  --s-glow: 0 8px 20px rgba(37, 99, 235, 0.3);
+  --s-hairline: 0 1px 2px rgba(0, 0, 0, 0.6);
+  --s-card: 0 2px 10px rgba(0, 0, 0, 0.6);
+  --s-lift: 0 14px 32px rgba(0, 0, 0, 0.55);
+  --s-glow: 0 8px 20px rgba(47, 123, 255, 0.3);
+
+  --panel-line: rgba(92, 155, 255, 0.16);
+  --panel-line-hover: rgba(92, 155, 255, 0.34);
+  --panel-sheen: rgba(47, 123, 255, 0.075);
+  --panel-glow: 0 1px 0 rgba(0, 0, 0, 0.4), 0 18px 44px -22px rgba(47, 123, 255, 0.35);
+  --panel-glow-hover: 0 1px 0 rgba(0, 0, 0, 0.4), 0 22px 50px -20px rgba(47, 123, 255, 0.5);
+  --panel-inset: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+
+  --canvas-light-1: rgba(47, 123, 255, 0.16);
+  --canvas-light-2: rgba(245, 181, 68, 0.07);
+  --canvas-staff: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='260'%3E%3Cg stroke='%239CC2FF' stroke-opacity='0.06' fill='none'%3E%3Cpath d='M0 40.5h420M0 48.5h420M0 56.5h420M0 64.5h420M0 72.5h420M0 170.5h420M0 178.5h420M0 186.5h420M0 194.5h420M0 202.5h420'/%3E%3C/g%3E%3Cg fill='%239CC2FF' fill-opacity='0.07' stroke='%239CC2FF' stroke-opacity='0.07' stroke-width='1.4'%3E%3Cellipse cx='60' cy='68' rx='5' ry='3.6' transform='rotate(-20 60 68)'/%3E%3Cpath d='M64.5 68V44'/%3E%3Cellipse cx='150' cy='56' rx='5' ry='3.6' transform='rotate(-20 150 56)'/%3E%3Cpath d='M154.5 56V32'/%3E%3Cellipse cx='240' cy='44' rx='5' ry='3.6' transform='rotate(-20 240 44)'/%3E%3Cpath d='M244.5 44V20'/%3E%3Cellipse cx='330' cy='60' rx='5' ry='3.6' transform='rotate(-20 330 60)'/%3E%3Cpath d='M334.5 60V36'/%3E%3Cellipse cx='110' cy='190' rx='5' ry='3.6' transform='rotate(-20 110 190)'/%3E%3Cpath d='M114.5 190V166'/%3E%3Cellipse cx='200' cy='178' rx='5' ry='3.6' transform='rotate(-20 200 178)'/%3E%3Cpath d='M204.5 178V154'/%3E%3Cellipse cx='290' cy='198' rx='5' ry='3.6' transform='rotate(-20 290 198)'/%3E%3Cpath d='M294.5 198V174'/%3E%3C/g%3E%3Cg fill='%239CC2FF' fill-opacity='0.08' font-family='ui-monospace,monospace' font-size='12' font-weight='600' text-anchor='middle'%3E%3Ctext x='60' y='96'%3Ed%3C/text%3E%3Ctext x='150' y='96'%3Em%3C/text%3E%3Ctext x='240' y='96'%3Es%3C/text%3E%3Ctext x='330' y='96'%3Ef%3C/text%3E%3Ctext x='110' y='226'%3Er%3C/text%3E%3Ctext x='200' y='226'%3El%3C/text%3E%3Ctext x='290' y='226'%3Et%3C/text%3E%3C/g%3E%3C/svg%3E");
+
+  --fusion: linear-gradient(135deg, #2e6cf0 0%, #2563eb 40%, #1b5fe0 100%);
+  --fusion-glow: 0 10px 26px -8px rgba(47, 123, 255, 0.6);
+  --brand-strip: linear-gradient(90deg, #2f7bff 0 30%, #38bdf8 30% 55%, #3ddc97 55% 78%, #f5b544 78% 100%);
+}
+
+/* ── The neutral ramp in Night ─────────────────────────────────────────────
+   Several pages still name Tailwind's `zinc` for their dark surfaces and text
+   (`dark:border-zinc-800`, `dark:text-zinc-400`); `zinc` appears nowhere outside a `dark:`
+   variant. Pointing the ramp at the night palette moves those pages onto the brand's cool,
+   blue-cast neutrals without editing each one — zinc's own warm greys read as a different
+   product beside the panels. 400 and 500 are the app's muted and faint text (5.9 and 5.0:1 on
+   #151A24); 800 is the panel hairline. */
+@theme {
+  --color-zinc-50: #f3f6fb;
+  --color-zinc-100: #e6ebf3;
+  --color-zinc-200: #dde3ec;
+  --color-zinc-300: #c9d1df;
+  --color-zinc-400: #8b95aa;
+  --color-zinc-500: #8089a0;
+  --color-zinc-600: #5a6478;
+  --color-zinc-700: #2a3242;
+  --color-zinc-800: #1e2533;
+  --color-zinc-900: #151a24;
+  --color-zinc-950: #0b0f16;
 }
 
 @theme inline {
@@ -287,6 +365,7 @@
 
   --color-brand: var(--brand);
   --color-brand-deep: var(--brand-deep);
+  --color-ice: var(--ice);
   --color-primary-deep: var(--primary-deep);
   --color-primary-bright: var(--primary-bright);
   --color-sky: var(--sky);
@@ -295,6 +374,9 @@
 
   --color-premium: var(--premium);
   --color-premium-deep: var(--premium-deep);
+  --color-premium-ink: var(--premium-ink);
+  --color-mint: var(--mint);
+  --color-mint-ink: var(--mint-ink);
   --color-success: var(--success);
   --color-success-deep: var(--success-deep);
   --color-warning: var(--warning);
@@ -302,19 +384,20 @@
   --color-danger: var(--danger);
   --color-danger-deep: var(--danger-deep);
 
-  /* KPI icon badges. These do not flip, for the reason `primary` does not: each is a
+  /* KPI icon chips. These do not flip, for the reason `primary` does not: each is a
      saturated fill carrying a *white* glyph, and a value dark enough to hold white text is
      already too dark to brighten. Every one clears 3:1 against white, the floor WCAG
-     1.4.11 sets for a graphical mark — read back out of the rendered page, not eyeballed:
-     indigo 7.9, violet 5.7, emerald 3.77, cyan 3.68, orange 3.56.
-
-     The reference dashboard's amber and lime are absent on purpose: amber lands at 3.1 and
-     lime fails outright, and a badge whose glyph disappears is a coloured square. */
+     1.4.11 sets for a graphical mark: blue 5.2, indigo 7.9, violet 5.7, emerald 3.77,
+     cyan 3.68, orange 3.56, rose 4.7. `amber` is the exception that proves it — its glyph is
+     the dark premium ink (7.6:1 and more), because a white one on amber lands at 1.8. */
+  --color-badge-blue: #2563eb;
   --color-badge-indigo: #4338ca;
   --color-badge-violet: #7c3aed;
   --color-badge-emerald: #059669;
   --color-badge-cyan: #0891b2;
   --color-badge-orange: #ea580c;
+  --color-badge-rose: #e11d48;
+  --color-badge-amber: #f5b544;
 
   /* Recharts styles through props, not classes, so the chart palette is also exported as
      tokens for the shadcn <ChartContainer>, which sets series colours from CSS variables.
@@ -349,13 +432,16 @@
   --text-caption--letter-spacing: 0.2px;
   --text-mono: 17px;
 
-  /* Poppins, loaded and self-hosted by next/font in src/app/layout.tsx. */
-  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  /* Geist, the app's and the web app's interface face, and Nunito Black for the wordmark only
+     (mobile `nightFonts.wordmark`). Both are self-hosted by next/font in src/app/layout.tsx. */
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-wordmark: var(--font-nunito), var(--font-geist), ui-sans-serif, system-ui, sans-serif;
 
   --shadow-hairline: var(--s-hairline);
   --shadow-card: var(--s-card);
   --shadow-lift: var(--s-lift);
   --shadow-glow: var(--s-glow);
+  --shadow-fusion: var(--fusion-glow);
 
   --animate-fade-in: fade-in 0.25s ease-out;
 
@@ -383,6 +469,16 @@
     @apply bg-background font-sans text-foreground antialiased;
   }
 
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: rgba(47, 123, 255, 0.35);
+  }
+
   ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -399,5 +495,118 @@
      keyboard-hostile. */
   :focus-visible {
     @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Motion is decoration here — a lift on hover, a tile rising in, a number counting up. Someone
+     who asked their system for less gets none of it; the count-up checks the same query. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ── The console's dressing ──────────────────────────────────────────────────
+   Plain classes in the components layer, so a utility at the call site (`rounded-none`,
+   `p-0`) still wins over them. */
+@layer components {
+  /* The page behind the panels: brand light from the top corners over a faint staff, fading as
+     the page runs on so long tables sit on a quiet ground. Drawn on a pseudo-element under the
+     content (`isolation` keeps it inside this box), so nothing has to opt in. */
+  .nf-canvas {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--background);
+  }
+  .nf-canvas::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      radial-gradient(900px 420px at 0% 0%, var(--canvas-light-1), transparent 70%),
+      radial-gradient(760px 380px at 100% 0%, var(--canvas-light-2), transparent 70%),
+      var(--canvas-staff);
+    background-repeat: no-repeat, no-repeat, repeat;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0, rgba(0, 0, 0, 0.55) 1100px, rgba(0, 0, 0, 0.3) 100%);
+    mask-image: linear-gradient(to bottom, #000 0, rgba(0, 0, 0, 0.55) 1100px, rgba(0, 0, 0, 0.3) 100%);
+  }
+
+  /* The one surface: tinted hairline, a wash of brand light across the top, a soft glow under. */
+  .nf-panel {
+    position: relative;
+    min-width: 0;
+    border: 1px solid var(--panel-line);
+    border-radius: 18px;
+    background:
+      linear-gradient(180deg, var(--panel-sheen), transparent 150px),
+      var(--card);
+    box-shadow: var(--panel-inset), var(--panel-glow);
+    transition:
+      box-shadow 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+  /* For a panel that is itself a link or a tile worth pointing at. */
+  .nf-panel-hover:hover {
+    border-color: var(--panel-line-hover);
+    box-shadow: var(--panel-inset), var(--panel-glow-hover);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .nf-panel-hover:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  /* An inset well inside a panel — an empty state, a nested list. */
+  .nf-well {
+    border: 1px dashed var(--panel-line);
+    border-radius: 14px;
+    background: color-mix(in oklab, var(--muted) 55%, transparent);
+  }
+
+  /* The small uppercase line above a title: where you are, said in brand ink. */
+  .nf-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ice);
+  }
+
+  /* A row of tiles rising in one after another on first paint (none under reduced motion, by
+     the base rule above). */
+  .nf-stagger > * {
+    animation: nf-rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  .nf-stagger > :nth-child(2) { animation-delay: 50ms; }
+  .nf-stagger > :nth-child(3) { animation-delay: 100ms; }
+  .nf-stagger > :nth-child(4) { animation-delay: 150ms; }
+  .nf-stagger > :nth-child(5) { animation-delay: 200ms; }
+  .nf-stagger > :nth-child(n + 6) { animation-delay: 250ms; }
+}
+
+/* "The Fusion" fill: primary buttons, the active nav item, the selected segment. A utility rather
+   than a component class so it takes variants (`data-[state=on]:nf-fusion`). */
+@utility nf-fusion {
+  background: var(--fusion);
+  color: #ffffff;
+  box-shadow: var(--fusion-glow);
+}
+
+@keyframes nf-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

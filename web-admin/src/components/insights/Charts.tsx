@@ -252,7 +252,7 @@ export function MetricRow({
   className?: string;
 }) {
   return (
-    <div className={`grid grid-cols-2 divide-border overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs sm:grid-cols-3 ${className ?? ""}`}>
+    <div className={`grid grid-cols-2 divide-border overflow-hidden nf-panel sm:grid-cols-3 ${className ?? ""}`}>
       {items.map((m) => (
         <div key={m.label} className="border-b border-r border-border/70 p-4" title={m.hint}>
           <div className="text-xs text-muted-foreground">{m.label}</div>
