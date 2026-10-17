@@ -797,6 +797,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
 
+                    b.Property<bool>("ServerReminders")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -965,6 +968,76 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("passkeys", (string)null);
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.PracticeReminder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Devices")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Error")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)");
+
+                    b.Property<DateOnly>("LocalDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("SentAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Slot")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<bool>("Sound")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<int>("Streak")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAtUtc");
+
+                    b.HasIndex("LocalDate");
+
+                    b.HasIndex("UserId", "LocalDate", "Slot")
+                        .IsUnique();
+
+                    b.ToTable("practice_reminders", (string)null);
                 });
 
             modelBuilder.Entity("NoteFusion.Core.Entities.PracticeSession", b =>
@@ -1594,6 +1667,18 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
+                    b.Property<int?>("PracticeReminderHour")
+                        .HasColumnType("integer");
+
+                    b.Property<bool?>("PracticeReminderSound")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("PracticeRemindersOn")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("PracticeRemindersSinceUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("PracticeTrack")
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
@@ -1611,6 +1696,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)")
                         .HasColumnName("signup_source");
+
+                    b.Property<string>("TimeZone")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.HasKey("Id");
 
@@ -1909,6 +1998,15 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                 });
 
             modelBuilder.Entity("NoteFusion.Core.Entities.Passkey", b =>
+                {
+                    b.HasOne("NoteFusion.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.PracticeReminder", b =>
                 {
                     b.HasOne("NoteFusion.Core.Entities.User", null)
                         .WithMany()

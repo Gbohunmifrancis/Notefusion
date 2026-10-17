@@ -45,7 +45,8 @@ public sealed class SetPracticeTrackCommandHandler : IRequestHandler<SetPractice
 
         if (user.PracticeTrack != track)
         {
-            user.ChoosePracticeTrack(track);
+            // The first choice also starts the practice reminders' schedule (on by default from here).
+            user.ChoosePracticeTrack(track, _clock.UtcNow);
             await _db.SaveChangesAsync(cancellationToken);
         }
 

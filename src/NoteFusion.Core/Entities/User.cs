@@ -190,7 +190,58 @@ public class User : BaseEntity
     /// </summary>
     public PracticeTrack? PracticeTrack { get; private set; }
 
-    public void ChoosePracticeTrack(PracticeTrack track) => PracticeTrack = track;
+    /// <param name="track">The style chosen.</param>
+    /// <param name="utcNow">
+    /// When; the first choice starts the practice reminders' schedule (<see cref="PracticeRemindersSinceUtc"/>), since
+    /// choosing a track turns them on for someone who has not practised yet.
+    /// </param>
+    public void ChoosePracticeTrack(PracticeTrack track, DateTime? utcNow = null)
+    {
+        if (PracticeTrack is null && utcNow is { } now)
+            PracticeRemindersSinceUtc ??= now;
+        PracticeTrack = track;
+    }
+
+    // ── Practice reminders (Application/Practice/Reminders) ─────────────────
+
+    /// <summary>
+    /// The IANA zone (or fixed offset) the account's clients last sent as <c>X-Time-Zone</c>, written when it
+    /// changes. The practice reminder sweep reads the singer's day and hour in it; null reads as Africa/Lagos.
+    /// </summary>
+    public string? TimeZone { get; private set; }
+
+    /// <summary>
+    /// The practice reminder switch as the singer set it; null when they never touched it, which means on once
+    /// they have practised or chosen a track (<c>PracticeReminderRules.IsOn</c>).
+    /// </summary>
+    public bool? PracticeRemindersOn { get; private set; }
+
+    /// <summary>The local hour of the day's reminder, 8–21; null means the default, 19:00.</summary>
+    public int? PracticeReminderHour { get; private set; }
+
+    /// <summary>The phone app's notification sound switch, synced; null means on. Off sends reminders silently.</summary>
+    public bool? PracticeReminderSound { get; private set; }
+
+    /// <summary>
+    /// When reminders were last started: switched on, or a track first chosen. A lapsed (or never started) singer's
+    /// decaying schedule counts from this or their last practice, whichever is later.
+    /// </summary>
+    public DateTime? PracticeRemindersSinceUtc { get; private set; }
+
+    /// <summary>Changes what is given, leaves the rest. Switching reminders on restarts their schedule.</summary>
+    public void SetPracticeReminders(bool? enabled, int? hour, bool? sound, DateTime utcNow)
+    {
+        if (enabled is { } on)
+        {
+            if (on && PracticeRemindersOn != true)
+                PracticeRemindersSinceUtc = utcNow;
+            PracticeRemindersOn = on;
+        }
+        if (hour is { } h)
+            PracticeReminderHour = h;
+        if (sound is { } s)
+            PracticeReminderSound = s;
+    }
 
     /// <summary>
     /// When this free account used its one four-part harmony: the taste of the Pro feature that most
@@ -551,16 +602,20 @@ public class User : BaseEntity
     /// The build this device is running. Re-registration is how the server learns a device has
     /// updated, so this is recorded on the refresh path too, not only on first registration.
     /// </param>
-    public void RegisterDeviceToken(string tokenValue, string platform, int appBuild, DateTime utcNow)
+    /// <param name="serverReminders">
+    /// Whether the app's code on this device takes its practice reminders from the server (and has stopped
+    /// scheduling its own); see <see cref="DeviceToken.ServerReminders"/>.
+    /// </param>
+    public void RegisterDeviceToken(string tokenValue, string platform, int appBuild, DateTime utcNow, bool serverReminders = false)
     {
         var existing = _deviceTokens.FirstOrDefault(t => t.Token == tokenValue);
         if (existing is not null)
         {
-            existing.ReportBuild(appBuild, utcNow);
+            existing.ReportBuild(appBuild, utcNow, serverReminders);
             return;
         }
 
-        _deviceTokens.Add(DeviceToken.Create(Id, tokenValue, platform, appBuild, utcNow));
+        _deviceTokens.Add(DeviceToken.Create(Id, tokenValue, platform, appBuild, utcNow, serverReminders));
     }
 
     /// <summary>

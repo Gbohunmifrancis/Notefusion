@@ -48,6 +48,28 @@ public static partial class PracticeTime
         return TimeZoneInfo.TryFindSystemTimeZoneById(v, out var zone) ? zone : DefaultZone;
     }
 
+    /// <summary>
+    /// <paramref name="value"/> trimmed, when it names a zone <see cref="Resolve"/> knows (an IANA name this host
+    /// has, or a valid offset); null otherwise. What is stored as the account's time zone, so a garbled header
+    /// never replaces a good one.
+    /// </summary>
+    public static string? Known(string? value)
+    {
+        var v = value?.Trim();
+        if (string.IsNullOrEmpty(v) || v.Length > MaxZoneLength)
+            return null;
+
+        var offset = OffsetPattern().Match(v);
+        if (offset.Success)
+        {
+            var hours = int.Parse(offset.Groups[2].Value, CultureInfo.InvariantCulture);
+            var minutes = offset.Groups[3].Success ? int.Parse(offset.Groups[3].Value, CultureInfo.InvariantCulture) : 0;
+            return hours > 14 || minutes >= 60 ? null : v;
+        }
+
+        return TimeZoneInfo.TryFindSystemTimeZoneById(v, out _) || v == DefaultZoneId ? v : null;
+    }
+
     /// <summary>The calendar day <paramref name="utc"/> falls on in <paramref name="zone"/>.</summary>
     public static DateOnly LocalDate(DateTime utc, TimeZoneInfo zone)
         => DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utc, DateTimeKind.Utc), zone));

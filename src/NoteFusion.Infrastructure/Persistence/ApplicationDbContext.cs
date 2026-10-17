@@ -50,6 +50,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<PracticeSession> PracticeSessions => Set<PracticeSession>();
     public DbSet<Achievement> Achievements => Set<Achievement>();
+    public DbSet<PracticeReminder> PracticeReminders => Set<PracticeReminder>();
     public DbSet<BackupRun> BackupRuns => Set<BackupRun>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

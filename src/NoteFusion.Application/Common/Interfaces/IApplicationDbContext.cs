@@ -99,6 +99,9 @@ public interface IApplicationDbContext
     /// <summary>Badges earned, one row per account and badge.</summary>
     DbSet<Achievement> Achievements { get; }
 
+    /// <summary>Practice reminder pushes: the sweep's claim per account, local day and slot, and their audit trail.</summary>
+    DbSet<PracticeReminder> PracticeReminders { get; }
+
     /// <summary>What the backup service did and when (written by the backup container; ops/backup).</summary>
     DbSet<BackupRun> BackupRuns { get; }
 

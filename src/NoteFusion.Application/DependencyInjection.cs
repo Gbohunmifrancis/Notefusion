@@ -29,6 +29,7 @@ public static class DependencyInjection
         services.AddScoped<Activity.ActivityRecorder>();
         services.AddScoped<Outreach.OutreachService>();
         services.AddScoped<Practice.PracticeRecorder>();
+        services.AddScoped<Practice.Reminders.PracticeReminderService>();
         services.AddScoped<Blog.Drafting.BlogDraftWriter>();
         services.AddScoped<Blog.Drafting.BlogGenerationRunner>();
         services.AddScoped<Blog.Publishing.BlogSitePublisher>();

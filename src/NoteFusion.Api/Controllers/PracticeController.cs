@@ -69,4 +69,23 @@ public sealed class PracticeController : ApiControllerBase
     [HttpPut("track")]
     public async Task<IActionResult> SetTrack(SetPracticeTrackRequest body, CancellationToken ct)
         => HandleResult(await _sender.Send(new SetPracticeTrackCommand(body.Track), ct));
+
+    /// <summary>
+    /// The caller's practice reminders (sent to their phones): <c>{enabled, hour, sound}</c>. On by default once
+    /// they have practised or chosen a track; the hour is local (8–21, 19 by default).
+    /// </summary>
+    [HttpGet("reminders")]
+    public async Task<IActionResult> Reminders(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetPracticeRemindersQuery(), ct));
+
+    /// <summary>
+    /// Changes any of <c>enabled</c>, <c>hour</c> (8–21; 422 <c>PRACTICE_REMINDER_HOUR</c> otherwise) and <c>sound</c>,
+    /// leaving the rest. Answers with the reminders as they now stand.
+    /// </summary>
+    [HttpPut("reminders")]
+    public async Task<IActionResult> SetReminders(SetPracticeRemindersRequest body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new SetPracticeRemindersCommand(body.Enabled, body.Hour, body.Sound), ct));
 }
+
+/// <summary>JSON body of <c>PUT reminders</c>: any of the three; what is left out stays as it is.</summary>
+public sealed record SetPracticeRemindersRequest(bool? Enabled, int? Hour, bool? Sound);

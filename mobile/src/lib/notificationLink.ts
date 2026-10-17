@@ -94,15 +94,16 @@ const LINKS: Record<string, () => void> = {
    * nested form — `navigate('Record')` would find no such route and silently do nothing.
    */
   Record: () => navigationRef.navigate('Tabs', { screen: 'Record' }),
-  /** The practice reminder on a day the streak is at risk: today's drill. */
+  /** Every practice reminder the server pushes (C# `PracticeReminderService.Message`): today's drill. */
   Practice: () => navigationRef.navigate('Practice'),
 };
 
 /**
  * A tap waiting for the authenticated stack. `job` carries a job id and costs an API call to resolve;
- * `screen` is a name from {@link LINKS}.
+ * `screen` is a name from {@link LINKS}. `id` is the notification's own, so two taps on two notifications
+ * that name the same place (the evening reminder, then the last chance) are both followed.
  */
-type PendingTap = { kind: 'job' | 'screen'; value: string };
+type PendingTap = { kind: 'job' | 'screen'; value: string; id?: string };
 
 /**
  * Wires notification taps to the screens they refer to.
@@ -125,15 +126,15 @@ export function useNotificationDeepLink(ready: boolean): void {
     const Notifications = require('expo-notifications') as typeof import('expo-notifications');
 
     const tapOf = (response: unknown): PendingTap | null => {
-      const data = (response as { notification?: { request?: { content?: { data?: unknown } } } })
-        ?.notification?.request?.content?.data as
-        | { jobId?: unknown; screen?: unknown }
-        | undefined;
+      const request = (response as { notification?: { request?: { identifier?: unknown; content?: { data?: unknown } } } })
+        ?.notification?.request;
+      const data = request?.content?.data as { jobId?: unknown; screen?: unknown } | undefined;
+      const id = typeof request?.identifier === 'string' ? request.identifier : undefined;
 
       // A job id first: it names a specific result, where `screen` only names a place.
-      if (typeof data?.jobId === 'string') return { kind: 'job', value: data.jobId };
+      if (typeof data?.jobId === 'string') return { kind: 'job', value: data.jobId, id };
       if (typeof data?.screen === 'string' && data.screen in LINKS)
-        return { kind: 'screen', value: data.screen };
+        return { kind: 'screen', value: data.screen, id };
       return null;
     };
 
@@ -163,7 +164,7 @@ export function useNotificationDeepLink(ready: boolean): void {
   useEffect(() => {
     if (!ready || !pending) return;
 
-    const key = `${pending.kind}:${pending.value}`;
+    const key = `${pending.kind}:${pending.value}:${pending.id ?? ''}`;
     if (handled.current === key) return;
     handled.current = key;
     setPending(null);
