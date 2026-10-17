@@ -326,6 +326,11 @@ textarea { resize: vertical; line-height: 1.5; }
 .p-slow { margin: 8px 0 0; color: var(--color-warning-600); }
 .p-offline { margin: 8px 0 0; color: var(--danger); }
 .p-retry { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 12px 0 0; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--wash); color: var(--copy); }
+/* "Notify me when it's ready": one quiet button under the note, asked from a click (assets/notify.js). */
+.p-notify { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 16px 0 0; }
+.p-notify-status { margin: 8px 0 0; }
+.p-notify-status:empty { margin: 0; }
+.acct-notify-note { margin: 0; }
 
 /* ── Result ──────────────────────────────────────────────────────────────── */
 .result-head { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; margin-bottom: 14px; }
