@@ -8,6 +8,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { inflateSync } from "node:zlib";
 import { parseMidi } from "../import/midi.mjs";
 import { readNwc, scoreBars } from "../import/nwc.mjs";
 import { parseTunePage, parseCredit } from "../import/cceh-page.mjs";
@@ -23,6 +24,9 @@ const FIX = path.join(here, "fixtures", "cceh");
 const read = (rel) => fs.readFileSync(path.join(FIX, rel));
 const ITALIAN = { page: read("pages/x000002.htm").toString("latin1"), midi: read("files/000002a.mid"), nwc: read("nwc/000002a.nwc") };
 const OLD100 = { page: read("pages/x000006.htm").toString("latin1"), midi: read("files/000006e.mid"), nwc: read("nwc/000006e.nwc") };
+// Two scores saved by NoteWorthy Composer 1.70: GREENWELL (with its page and MIDI file) and ES IST EIN ROS.
+const GREENWELL = { page: read("pages/x000433.htm").toString("latin1"), midi: read("files/000433a.mid"), nwc: read("nwc/000433a.nwc") };
+const ROS = read("nwc/000584a.nwc");
 const N = loadEngine();
 const solfa = (melody, key, time, pickup) => Array.from(N.label(parseMelody(melody, { time, pickup }).notes, key), (n) => n.solfa);
 
@@ -56,6 +60,50 @@ test("nwc: the Noteworthy score's bar lines, dots and time signature, which the 
   assert.equal(`${old.num}/${old.den}`, "2/2");
   assert.equal(old.pickup, 2); // a minim before the first bar line
   assert.equal(readNwc(Buffer.from("not a score")), null);
+});
+
+test("nwc 1.70: a later NoteWorthy layout read the same way — staves, bar lines, pickup, and notes where the MIDI file has them", () => {
+  const staves = readNwc(GREENWELL.nwc);
+  assert.deepEqual(staves.map((s) => s.name), ["Unnamed-000", "Unnamed-001"]);
+  const g = scoreBars(GREENWELL.nwc);
+  assert.equal(`${g.num}/${g.den}`, "3/4");
+  assert.equal(g.pickup, 1); // one crotchet before the first bar line
+  assert.deepEqual(g.bars, [1, 3, 3, 3, 3, 3, 3, 3, 2]);
+  assert.deepEqual(g.irregular, []);
+  assert.equal(g.timeChanges, false);
+  // Every staff's notes start where the MIDI file's do (dotted quavers and semiquavers included), and end with it.
+  const m = parseMidi(GREENWELL.midi);
+  const tracks = m.tracks.filter((t) => t.notes.length);
+  staves.forEach((s, i) => {
+    let t = 0;
+    const onsets = [];
+    for (const e of s.events) { if (e.type === "note") onsets.push(t); if (e.dur) t += e.dur; }
+    assert.deepEqual(onsets, [...new Set(tracks[i].notes.map((n) => n.start / m.division))].sort((a, b) => a - b), `staff ${i}`);
+    assert.equal(t, 24);
+  });
+  // ES IST EIN ROS opens on a repeat sign and a full bar: no pickup, every bar whole but the last.
+  const r = scoreBars(ROS);
+  assert.equal(`${r.num}/${r.den}`, "4/4");
+  assert.equal(r.pickup, 0);
+  assert.deepEqual(r.bars, [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3]);
+  assert.deepEqual(r.irregular, []);
+});
+
+test("nwc 1.70: a damaged score is refused (null), never half read", () => {
+  const plain = new Uint8Array(inflateSync(GREENWELL.nwc.subarray(6)));
+  assert.equal(plain[45], 70);
+  assert.ok(readNwc(plain), "the inflated score reads as the compressed one does");
+  const changed = (f) => { const b = Uint8Array.from(plain); f(b); return b; };
+  assert.equal(readNwc(plain.subarray(0, plain.length - 5)), null, "cut short");
+  assert.equal(readNwc(plain.subarray(0, 600)), null, "cut short in the first staff");
+  assert.equal(readNwc(GREENWELL.nwc.subarray(0, 300)), null, "compressed, cut short");
+  assert.equal(readNwc(Buffer.concat([plain, Buffer.from([2, 0, 0, 0, 0])])), null, "bytes after the last staff");
+  // A record type this reader does not know: the first staff's first record, a clef, made type 99.
+  const first = Buffer.from(plain).indexOf("Standard\0", 0, "latin1") + 9 + 36;
+  assert.deepEqual([plain[first], plain[first + 1]], [0, 0]);
+  assert.equal(readNwc(changed((b) => { b[first] = 99; })), null, "an unknown record");
+  assert.equal(readNwc(changed((b) => { b[first - 2] += 1; })), null, "one record too many counted");
+  assert.equal(readNwc(changed((b) => { b[45] = 75; })), null, "another version (1.75)");
 });
 
 test("page: the tune's names, metre, incipits, credits and files are read as the page gives them", () => {
@@ -141,6 +189,21 @@ test("melody: without the score the bar lines are read off the rhythm, and the t
   assert.equal(mel.barsFrom, "rhythm");
   assert.equal(mel.pickup, 0);
   assert.ok(mel.problems.some((p) => /read off the rhythm/.test(p.text)));
+});
+
+test("melody: a 1.70 score bars GREENWELL as CCEH prints it — a one-beat pickup, where the rhythm alone guessed two", () => {
+  const dates = datesTable();
+  dates.add("William James Kirkpatrick", { born: 1838, died: 1921, from: "a test" });
+  const r = convertTune({ page: GREENWELL.page, midi: GREENWELL.midi, midiHref: "000433a.mid", nwc: GREENWELL.nwc, nwcHref: "000433a.nwc", dates });
+  assert.deepEqual(r.problems, []);
+  assert.equal(r.tune.draft, false);
+  assert.equal(r.tune.time, "3/4");
+  assert.equal(r.tune.pickup, 1);
+  assert.match(r.tune.melody, /^E4:1 \| Ab4:\.5 Ab4:\.5 Ab4:1 B4:1 \| B4:\.5 A4:\.5 A4:1 Ab4:1 \|/);
+  assert.match(r.tune.reviewNotes, /bar lines are those of CCEH's Noteworthy score \(000433a\.nwc\)/);
+  const m = parseMidi(GREENWELL.midi);
+  const ch = chooseMelody(m, incipitDegrees(r.incipit.doremi));
+  assert.equal(lineToMelody(ch.line, m, { doh: ch.match.doh, allLines: ch.candidates }).pickup, 2);
 });
 
 // ── The public-domain gate ──────────────────────────────────────────────────

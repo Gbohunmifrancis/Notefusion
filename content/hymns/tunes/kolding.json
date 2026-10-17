@@ -1,0 +1,30 @@
+{
+  "name": "KOLDING",
+  "title": "Kolding",
+  "music": [
+    {
+      "name": "Peter C. Lutkin",
+      "role": "Music (1905)"
+    }
+  ],
+  "musicPublished": 1905,
+  "metre": "6 6 6 6 12 12",
+  "key": "Bb major",
+  "time": "4/4",
+  "tempo": 105,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D5:.5 D5:.5 | D5:1 C5:.5 Bb4:.5 D5:1 C5:.5 C5:.5 | C5:1 Bb4:.5 D4:.5 A4:1 G4:.5 G4:.5 | G4:1 F4:.5 Eb4:.5 G4:1 F4:.5 F4:.5 | F4:1 Eb4:.5 D4:.5 F4:1 F4:.5 F4:.5 | F#4:1 F#4:.5 A4:.5 D5:1 C5:.5 C5:.5 | C5:1 Bb4:.5 A4:.5 Bb4:1 C5:.5 C5:.5 | D5:1 Eb5:.5 E5:.5 F5:.75 D5:.25 Bb4:1 | C5:.5 C5:1 D5:.5 Bb4:1",
+  "incipit": "mmmrdm|rrrdmt|lllsfl|sssfms",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000715.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000715a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000715; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Peter C. Lutkin: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000715 (the melody read from 000715a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000715a.nwc).",
+  "importedFrom": "cceh:000715",
+  "updated": "2026-10-17"
+}

@@ -8,7 +8,7 @@ import path from "node:path";
 import { loadAll, loadTunes, loadHymns } from "../lib/content.mjs";
 import { prepareHymn } from "../lib/render-hymns.mjs";
 import { prepareTune } from "../lib/render-tunes.mjs";
-import { OCCASIONS, MIN_OCCASION, inOccasion, occasionPages, collectPeople, personKey, surname, firstLineEntries, firstLineSortKey, cleanFirstLine } from "../lib/collections.mjs";
+import { OCCASIONS, MIN_OCCASION, inOccasion, occasionPages, collectPeople, peopleAddresses, personKey, surname, firstLineEntries, firstLineSortKey, cleanFirstLine } from "../lib/collections.mjs";
 import { renderOccasion, renderOccasionsHub, renderPerson, renderPeopleHub, renderFirstLines, neighbours, moreLinks, occasionTitle } from "../lib/render-collections.mjs";
 
 const { hymns, tunes } = loadAll();
@@ -102,6 +102,16 @@ test("people: credited on two hymns or tunes (words or music) or more; tradition
   const bliss = out.find((p) => p.slug === "philip-paul-bliss");
   assert.deepEqual(bliss.works.map((w) => w.kind), ["hymn", "tune"]);
   assert.equal(bliss.role, "Composer");
+  // A page keeps its address when more credits come to use another name: two more "Philip P. Bliss" credits
+  // outvote "Philip Paul Bliss" for the page's name, never its URL.
+  const more = [...hs, fake("g", [], [P("Philip P. Bliss", 1838, 1876, "Music")]), fake("h", [], [P("Philip P. Bliss", 1838, 1876, "Music")])];
+  const addresses = peopleAddresses(out);
+  assert.equal(addresses["Philip P. Bliss"], "philip-paul-bliss");
+  const moved = collectPeople(more, tunes, { addresses }).find((p) => p.name === "Philip P. Bliss");
+  assert.equal(moved.url, "/hymns/people/philip-paul-bliss");
+  assert.equal(collectPeople(more, tunes).find((p) => p.name === "Philip P. Bliss").slug, "philip-p-bliss", "without the record it would move");
+  // A name already recorded keeps its address; a new name is added.
+  assert.deepEqual(peopleAddresses([{ names: ["A B", "A C"], slug: "new" }], { "A B": "old" }), { "A B": "old", "A C": "new" });
   // Words and music on one hymn is one work; with min 1 the role reads both.
   const mason = collectPeople(hs, [], { min: 1 }).find((p) => p.name === "Lowell Mason");
   assert.equal(mason.works.length, 1);

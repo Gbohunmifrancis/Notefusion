@@ -36,7 +36,7 @@ import { preparePosts, renderPost, renderBlogIndex, renderTag, renderAuthor, ren
 import { prepareHymn, renderHymn, renderHymnIndex, renderHymnCredits, hymnName } from "./lib/render-hymns.mjs";
 import { prepareTune, renderTune } from "./lib/render-tunes.mjs";
 import { renderIdentify, IDENTIFY_PATH, IDENTIFY_UPDATED } from "./lib/render-identify.mjs";
-import { occasionPages, collectPeople, firstLineEntries } from "./lib/collections.mjs";
+import { occasionPages, collectPeople, peopleAddresses, PEOPLE_ADDRESSES_PATH, firstLineEntries } from "./lib/collections.mjs";
 import { renderOccasion, renderOccasionsHub, renderPerson, renderPeopleHub, renderFirstLines, OCCASIONS_PATH, PEOPLE_PATH, FIRST_LINES_PATH } from "./lib/render-collections.mjs";
 import { buildSolfaPdf, hymnPdfItem, tunePdfItem, pdfPath } from "./lib/render-pdf.mjs";
 import { handWrittenEntries, sitemapXml, feedXml } from "./lib/sitemap-feed.mjs";
@@ -90,7 +90,11 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
 
   // Hymns, and the ways into them: seasons and occasions, writers and composers, first lines.
   const occasions = occasionPages(hymns);
-  const people = collectPeople(hymns, tunePages);
+  // Each person's page stays where it was first published (lib/collections.mjs collectPeople).
+  const addressesPath = path.join(siteDir, PEOPLE_ADDRESSES_PATH);
+  const addresses = fs.existsSync(addressesPath) ? JSON.parse(fs.readFileSync(addressesPath, "utf8")) : {};
+  const people = collectPeople(hymns, tunePages, { addresses });
+  files.set(PEOPLE_ADDRESSES_PATH, JSON.stringify(peopleAddresses(people, addresses), null, 2) + "\n");
   const personByKey = new Map(people.map((p) => [p.key, p]));
   const firstLines = firstLineEntries(hymns);
   for (const h of hymns) if (RESERVED_HYMN_PATHS.includes(`/hymns/${h.slug}`)) throw new Error(`the hymn ${h.slug} clashes with the page /hymns/${h.slug}`);

@@ -29,13 +29,13 @@
   "incipit": "ddrmfssfs|mfmrmrd",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0005/x000583.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0005/000583a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000583; public domain.",
-  "reviewNotes": "Held back: where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score. Imported from CCEH tune 000583 (the melody read from 000583a.mid, checked against the page's do-re-mi incipit, 2 notes off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Johann Schop's dates (1590–1664) are from our page for the tune JESUS BLEIBET MEINE FREUDE (content/hymns/tunes/jesus-bleibet-meine-freude.json); CCEH's page gives only the year 1641. Johann Sebastian Bach's dates (1685–1750) are from our page for the tune POTSDAM (content/hymns/tunes/potsdam.json); CCEH's page gives only the year 1734.",
+  "reviewNotes": "Imported from CCEH tune 000583 (the melody read from 000583a.mid, checked against the page's do-re-mi incipit, 2 notes off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Johann Schop's dates (1590–1664) are from our page for the tune JESUS BLEIBET MEINE FREUDE (content/hymns/tunes/jesus-bleibet-meine-freude.json); CCEH's page gives only the year 1641. Johann Sebastian Bach's dates (1685–1750) are from our page for the tune POTSDAM (content/hymns/tunes/potsdam.json); CCEH's page gives only the year 1734. The bar lines are those of CCEH's Noteworthy score (000583a.nwc).",
   "importedFrom": "cceh:000583",
   "updated": "2026-10-17"
 }

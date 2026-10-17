@@ -26,7 +26,7 @@
   "scoreUrl": "https://www.ccel.org/cceh/0006/000676a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000676; public domain.",
-  "reviewNotes": "Held back: the page gives no year for the tune; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000676 (the melody read from 000676a.mid, checked against the page's do-re-mi incipit, 1 note off in 17); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William H. Doane's dates (1832–1915) are from our page for the tune MORE LOVE TO THEE (content/hymns/tunes/more-love-to-thee.json); CCEH's page gives none.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000676 (the melody read from 000676a.mid, checked against the page's do-re-mi incipit, 1 note off in 17); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William H. Doane's dates (1832–1915) are from our page for the tune MORE LOVE TO THEE (content/hymns/tunes/more-love-to-thee.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000676a.nwc).",
   "importedFrom": "cceh:000676",
   "updated": "2026-10-17"
 }
