@@ -45,6 +45,32 @@ public sealed record PathPlace(int Position, int Slot, int Misses, int Lap, int 
 /// <summary>A milestone reached by one marked take.</summary>
 public sealed record PathMilestone(Guid SessionId, MilestoneKind Kind, PathUnit Unit, PracticeTrack? Track);
 
+/// <summary>
+/// One marked take that moved a track's path: the unit it was sung in, and the place before and after it. What
+/// <see cref="PracticePath.Read"/> hands an observer, for the admin console's path analytics; the outcomes below are
+/// read off <see cref="PracticePath.Advance"/>'s result, so they cannot disagree with the path.
+/// </summary>
+public sealed record PathStep(PathTake Take, PracticeTrack? Track, PathUnit Unit, PathPlace Before, PathPlace After)
+{
+    /// <summary>Marked <see cref="PracticeRules.PassScore"/> or more: the drill passed.</summary>
+    public bool Passed => Take.Score >= PracticeRules.PassScore;
+
+    /// <summary>Sung at a drill already missed: the same drill once more, or an easier variant of it.</summary>
+    public bool Retry => Before.Misses > 0;
+
+    /// <summary>
+    /// The second take under <see cref="PracticeRules.StepBackScore"/> in a row that day, which stepped back: the
+    /// run of poor takes is the only thing <see cref="PracticePath.Advance"/> resets to zero after such a take.
+    /// </summary>
+    public bool SteppedBack => Take.Score < PracticeRules.StepBackScore && After.ColdRun == 0;
+
+    /// <summary>The second very good take in a row that day, which skipped the unit's next drill.</summary>
+    public bool SkippedAhead => After.Move == DrillAdjustment.Harder;
+
+    /// <summary>The take finished its unit: the path moved to the next unit, or past the end into review.</summary>
+    public bool FinishedUnit => After.Position != Before.Position || After.Lap != Before.Lap;
+}
+
 /// <summary>The drill a track's path offers next, and where on the path it is.</summary>
 public sealed record PathStop(PracticeTrack? Track, PathUnit Unit, PathPlace Place, Drill Drill)
 {
@@ -166,9 +192,11 @@ public static class PracticePath
     /// <summary>
     /// Reads every track's path off an account's marked drills, oldest first. <paramref name="levelBefore"/> gives the
     /// level the account had reached before a moment: a track's path starts at the grade for the level held when its
-    /// first take was sung.
+    /// first take was sung. <paramref name="observe"/>, when given, is handed every take that moved a track's path, in
+    /// order (the admin console's path analytics); it changes nothing about the reading.
     /// </summary>
-    public static PathReading Read(Guid userId, IEnumerable<PathTake> takes, Func<DateTime, int> levelBefore)
+    public static PathReading Read(
+        Guid userId, IEnumerable<PathTake> takes, Func<DateTime, int> levelBefore, Action<PathStep>? observe = null)
     {
         var places = new PathPlace?[Tracks.Length];
         var milestones = new List<PathMilestone>();
@@ -194,6 +222,7 @@ public static class PracticePath
                 var units = UnitsFor(track);
                 var finished = new List<int>();
                 places[t] = Advance(place, take.Score, take.LocalDate, units, finished);
+                observe?.Invoke(new PathStep(take, track, units[place.Position], place, places[t]!));
                 foreach (var position in finished)
                 {
                     var unit = units[position];

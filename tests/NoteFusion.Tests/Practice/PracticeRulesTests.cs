@@ -121,6 +121,17 @@ public class PracticeRulesTests
     }
 
     [Fact]
+    public void A_break_is_dated_the_first_missed_day_no_freeze_bridged_and_today_never_breaks_one()
+    {
+        // Mon, Tue, (Wed frozen), (Thu ends a 2-day run); next Mon, (next Tue frozen), next Wed is today, still open.
+        var breaks = PracticeMath.StreakBreaks([Monday, Monday.AddDays(1), Monday.AddDays(7)], today: Monday.AddDays(9));
+
+        Assert.Equal([new StreakBreak(Monday.AddDays(3), 2)], breaks);
+        // The same walk as the streak itself: a missed day it bridges is not a break.
+        Assert.Empty(PracticeMath.StreakBreaks([Monday, Monday.AddDays(2)], today: Monday.AddDays(3)));
+    }
+
+    [Fact]
     public void A_new_iso_week_brings_a_new_freeze()
     {
         // Mon, (Tue frozen), Wed..Sun, next Mon, (next Tue frozen with next week's freeze), next Wed.

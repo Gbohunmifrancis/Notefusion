@@ -193,22 +193,10 @@ public sealed class GetInsightsQueryHandler : IRequestHandler<GetInsightsQuery, 
                 new CountryRowDto("Other", rest.Sum(r => r.Accounts), rest.Sum(r => r.Active), rest.Sum(r => r.Transcriptions), rest.Sum(r => r.Pro))];
         }
 
-        // Met the paywall: every free transcription of some week spent, counted as TrialUsage counts them —
-        // charged jobs on the account, or on a handset the account submitted from (the gate refuses either),
-        // in the free week they were submitted in (FreeTier.WeekStart). Any week ever, not only in the window,
-        // like every other step.
-        var charged = allJobs.Where(j => j.Charged).ToList();
-        var devicesOf = allJobs.Where(j => j.DeviceFingerprint != null)
-            .GroupBy(j => j.UserId)
-            .ToDictionary(g => g.Key, g => g.Select(j => j.DeviceFingerprint!).ToHashSet(StringComparer.Ordinal));
-        bool ReachedFreeLimit(Guid id)
-        {
-            var devices = devicesOf.GetValueOrDefault(id);
-            return charged
-                .Where(j => j.UserId == id || (j.DeviceFingerprint != null && devices?.Contains(j.DeviceFingerprint) == true))
-                .GroupBy(j => FreeTier.WeekStart(j.CreatedAtUtc))
-                .Any(week => week.Count() >= FreeTier.TrialGenerations);
-        }
+        // Met the paywall: every free transcription of some week spent (FreeLimitReach, shared with Growth's
+        // free-to-paid by price set). Any week ever, not only in the window, like every other step.
+        var reachedFreeLimit = FreeLimitReach.Over(
+            [.. allJobs.Select(j => new FreeLimitReach.JobTrace(j.UserId, j.CreatedAtUtc, j.Charged, j.DeviceFingerprint))]);
 
         // The path to paying, for the accounts that signed up in the window.
         var cohort = people.Values.Where(p => In(p.CreatedAt)).Select(p => p.Id).ToHashSet();
@@ -218,7 +206,7 @@ public sealed class GetInsightsQueryHandler : IRequestHandler<GetInsightsQuery, 
             new("Transcribed", jobs.Where(j => j.Done && cohort.Contains(j.UserId)).Select(j => j.UserId).Distinct().Count()),
             new("Transcribed twice", jobs.Where(j => j.Done && cohort.Contains(j.UserId)).GroupBy(j => j.UserId).Count(g => g.Count() >= 2)),
             new("Kept a sheet", sheets.Where(t => cohort.Contains(t.UserId)).Select(t => t.UserId).Distinct().Count()),
-            new(ReachedFreeLimitStep, cohort.Count(ReachedFreeLimit)),
+            new(ReachedFreeLimitStep, cohort.Count(reachedFreeLimit)),
             new("Opened checkout", payments.Where(p => p.Opened && cohort.Contains(p.UserId)).Select(p => p.UserId).Distinct().Count()),
             new("Paid", paidSubs.Where(s => cohort.Contains(s.UserId)).Select(s => s.UserId).Distinct().Count()),
         };

@@ -80,6 +80,24 @@ public static class AnalyticsScope
         return db.TranscriptionLogs.Where(l => l.UserId == null || !internalIds.Contains(l.UserId.Value));
     }
 
+    public static IQueryable<PracticeSession> RealPracticeSessions(this IApplicationDbContext db)
+    {
+        var internalIds = db.InternalUserIds();
+        return db.PracticeSessions.Where(s => !internalIds.Contains(s.UserId));
+    }
+
+    public static IQueryable<Achievement> RealAchievements(this IApplicationDbContext db)
+    {
+        var internalIds = db.InternalUserIds();
+        return db.Achievements.Where(a => !internalIds.Contains(a.UserId));
+    }
+
+    public static IQueryable<PracticeReminder> RealPracticeReminders(this IApplicationDbContext db)
+    {
+        var internalIds = db.InternalUserIds();
+        return db.PracticeReminders.Where(r => !internalIds.Contains(r.UserId));
+    }
+
     /// <summary>Browsers that were ever signed in as an internal account.</summary>
     public static IQueryable<string> InternalVisitors(this IApplicationDbContext db)
     {

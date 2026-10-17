@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   LogOut,
   MessageSquareHeart,
+  MicVocal,
   Moon,
   Music2,
   Newspaper,
@@ -19,6 +20,7 @@ import {
   Settings,
   Sparkles,
   Sun,
+  TrendingUp,
   Users2,
   Webhook,
 } from "lucide-react";
@@ -53,6 +55,8 @@ import { cn } from "@/lib/utils";
 const PRIMARY_NAV = [
   { to: "/", label: "Overview", icon: LayoutDashboard },
   { to: "/insights", label: "Insights", icon: ChartNoAxesCombined },
+  { to: "/growth", label: "Growth", icon: TrendingUp },
+  { to: "/practice", label: "Practice", icon: MicVocal },
   { to: "/blog", label: "Blog posts", icon: Newspaper },
   { to: "/blog-analytics", label: "Blog analytics", icon: BookOpenText },
   { to: "/users", label: "Users", icon: Users2 },

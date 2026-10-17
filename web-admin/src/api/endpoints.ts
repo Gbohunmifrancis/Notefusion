@@ -21,6 +21,9 @@ import type {
   FeedbackSummary,
   FeedItem,
   FeedKind,
+  Growth,
+  PracticeAnalytics,
+  PracticeReminderOverview,
   Journey,
   JourneySubject,
   AuditAction,
@@ -432,8 +435,22 @@ export const getCheckoutFunnel = (from?: string, to?: string, signal?: AbortSign
 
 /* ── Engagement and feedback ─────────────────────────────────────────────── */
 
+/* ── Practice and Growth ─────────────────────────────────────────────────── */
+
+/** The Practice page: practisers, retention, streaks, the path, the drill allowance, reminders and badges. */
+export const getPracticeAnalytics = (from?: string, to?: string, signal?: AbortSignal) =>
+  request<PracticeAnalytics>(`/api/admin/analytics/practice${query({ from, to })}`, signal ? { signal } : {});
+
+/** The reminder sweep's switch and its newest claim rows (what each reminder said, and how its send went). */
+export const getPracticeReminderLog = (take = 30, signal?: AbortSignal) =>
+  request<PracticeReminderOverview>(`/api/admin/practice-reminders${query({ take })}`, signal ? { signal } : {});
+
+/** The Growth page: renewals, free-to-paid by price set, transcription failures by kind, app versions. */
+export const getGrowth = (from?: string, to?: string, signal?: AbortSignal) =>
+  request<Growth>(`/api/admin/analytics/growth${query({ from, to })}`, signal ? { signal } : {});
+
 /** The most active accounts and how engaged users were over a window. */
-export const getEngagement = (from?: string, to?: string, top = 20, signal?: AbortSignal) =>
+export const getEngagement =(from?: string, to?: string, top = 20, signal?: AbortSignal) =>
   request<Engagement>(`/api/admin/analytics/engagement${query({ from, to, top })}`, signal ? { signal } : {});
 
 export const getFeedbackSummary = (signal?: AbortSignal) =>

@@ -9,6 +9,9 @@ public sealed record PracticeFact(PracticeKind Kind, int Score, bool WholePart, 
 /// <summary>The streak as of one day, with the days its freezes bridged.</summary>
 public sealed record StreakState(int Current, int Best, bool TodayDone, bool FreezeAvailable, IReadOnlySet<DateOnly> Frozen);
 
+/// <summary>A streak that ended: the first missed day no freeze bridged, and how many days it had run.</summary>
+public sealed record StreakBreak(DateOnly Day, int Length);
+
 /// <summary>
 /// The counts badges are judged on. <c>WeekDays</c> is the days practised in today's Monday–Sunday week (to today);
 /// <c>BestWeekDays</c> the most practised in any one such week.
@@ -44,6 +47,20 @@ public static class PracticeMath
     /// missed that week while a streak is running — and a bridged day keeps the streak without adding to it.
     /// </summary>
     public static StreakState Streak(IEnumerable<DateOnly> practisedDays, DateOnly today)
+        => Walk(practisedDays, today, breaks: null);
+
+    /// <summary>
+    /// Every streak that ended before <paramref name="today"/>, by the same rules as <see cref="Streak"/>: the day it
+    /// ended is the first missed day the week's freeze did not bridge. For the admin console's streak analytics.
+    /// </summary>
+    public static IReadOnlyList<StreakBreak> StreakBreaks(IEnumerable<DateOnly> practisedDays, DateOnly today)
+    {
+        var breaks = new List<StreakBreak>();
+        Walk(practisedDays, today, breaks);
+        return breaks;
+    }
+
+    private static StreakState Walk(IEnumerable<DateOnly> practisedDays, DateOnly today, List<StreakBreak>? breaks)
     {
         var days = practisedDays.ToHashSet();
         var frozen = new HashSet<DateOnly>();
@@ -70,6 +87,8 @@ public static class PracticeMath
                 }
                 else
                 {
+                    if (run > 0)
+                        breaks?.Add(new StreakBreak(d, run));
                     run = 0;
                 }
             }

@@ -20,6 +20,8 @@ public sealed class PracticeSessionConfiguration : IEntityTypeConfiguration<Prac
 
         // The daily drill count and every progress read: one user's rows, by day.
         builder.HasIndex(s => new { s.UserId, s.LocalDate });
+        // The console's Practice analytics: every singer's takes over a window of days.
+        builder.HasIndex(s => s.LocalDate);
 
         builder.HasOne<User>().WithMany().HasForeignKey(s => s.UserId).OnDelete(DeleteBehavior.Cascade);
     }

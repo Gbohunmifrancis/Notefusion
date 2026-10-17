@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { Card } from "@/components/Card";
+import { InfoHint } from "@/components/InfoHint";
 import { Segmented } from "@/components/Segmented";
 import { useChartPalette } from "@/lib/chart";
 import { formatCount, formatDayLong, formatDayShort, formatPercent } from "@/lib/format";
@@ -248,7 +249,15 @@ export function MetricRow({
   items,
   className,
 }: {
-  items: { label: string; value: string; note?: string | null | undefined; hint?: string | undefined; tone?: "up" | "down" | undefined }[];
+  items: {
+    label: string;
+    value: string;
+    note?: string | null | undefined;
+    hint?: string | undefined;
+    /** What the figure counts, behind an ⓘ beside the label (readable on touch, unlike `hint`). */
+    info?: string | undefined;
+    tone?: "up" | "down" | undefined;
+  }[];
   className?: string;
 }) {
   return (
@@ -257,8 +266,11 @@ export function MetricRow({
     <div className={`nf-panel overflow-hidden ${className ?? ""}`}>
       <div className="-mb-px -mr-px grid grid-cols-2 sm:grid-cols-3">
         {items.map((m) => (
-          <div key={m.label} className="border-b border-r border-border p-4" title={m.hint}>
-            <div className="text-xs text-muted-foreground">{m.label}</div>
+          <div key={m.label} className="min-w-0 border-b border-r border-border p-4" title={m.hint}>
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <span className="truncate">{m.label}</span>
+              {m.info && <InfoHint text={m.info} size={12} />}
+            </div>
             <div className="mt-1.5 text-xl font-semibold tracking-[-0.01em] text-foreground tabular-nums">{m.value}</div>
             {m.note && (
               <div
