@@ -6,10 +6,11 @@
 .nf-rec[hidden], .nf-rec [hidden] { display: none; }
 html.nf-rec-open, html.nf-rec-open body { overflow: hidden; }
 .nf-rec-card { position: relative; width: min(520px, 100%); background: var(--color-surface-base, #fff); color: var(--color-ink-950, #0b1220); border: 1px solid var(--color-border-default, #e5e7eb); border-radius: 12px; padding: 32px 24px 24px; box-shadow: 0 16px 48px rgba(11, 18, 32, 0.18); animation: nf-rec-in 0.2s ease-out; max-height: calc(100vh - 32px); overflow: auto; text-align: center; font-family: var(--font-sans, "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif); line-height: 1.55; }
+.nf-rec-card { max-height: calc(100dvh - 32px); }  /* the part of the screen a phone's browser really shows */
 @keyframes nf-rec-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 /* The brand mark in a plain disc while the microphone is open; a tick when the take is done. */
 .nf-rec-orb { width: 72px; height: 72px; margin: 0 auto 16px; border-radius: 50%; background: var(--color-surface-subtle, #f6f7f9); border: 1px solid var(--color-border-default, #e5e7eb); display: flex; align-items: center; justify-content: center; }
-.nf-rec-mark { width: 36px; height: 40px; background: var(--color-brand-500, #2563eb); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; }
+.nf-rec-mark { width: 36px; height: 40px; background: var(--color-brand-500, #2563eb); -webkit-mask: url(/assets/mark-mask.png) center / contain no-repeat; mask: url(/assets/mark-mask.png) center / contain no-repeat; }
 .nf-rec-orb .nf-rec-ic { width: 24px; height: 24px; color: var(--color-brand-500, #2563eb); }
 .nf-rec-orb.done { background: var(--color-surface-subtle, #f6f7f9); }
 @keyframes nf-rec-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }

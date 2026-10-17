@@ -8,7 +8,24 @@
  *   shape   8px controls, 12px panels; 1px hairlines; one quiet shadow, used sparingly; no gradients or glows
  *   colour  neutrals carry the page; brand blue for primary actions, links and focus; amber only for Pro
  *   icons   Lucide, from /assets/icons.svg (tools/blog/icons.mjs): stroke 1.75, 16 / 20 / 24 px, currentColor
+ *   phones  first: base sizes are a phone's (44 px targets, 16 px field text), min-width queries go upward
  * The theme is set on <html> by theme-boot.js before the first paint (data-theme="light" | "dark"). */
+/* Fonts, self-hosted (assets/fonts/, OFL: assets/fonts/LICENSE.txt): Google's latin, latin-ext and vietnamese
+ * subsets, variable weight. A face downloads only when text on the page uses it; latin-ext and vietnamese
+ * only for characters in their range. No request to fonts.googleapis.com, so nothing render-blocking from a
+ * third origin on a phone's first visit. The web app's theme.css carries the same faces (less the serif). */
+@font-face { font-family: "Geist"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/assets/fonts/geist-v5-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Geist"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/assets/fonts/geist-v5-latin-ext.woff2") format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Geist"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/assets/fonts/geist-v5-vietnamese.woff2") format("woff2"); unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB; }
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 500 600; font-display: swap; src: url("/assets/fonts/jetbrains-mono-v24-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 500 600; font-display: swap; src: url("/assets/fonts/jetbrains-mono-v24-latin-ext.woff2") format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 500 600; font-display: swap; src: url("/assets/fonts/jetbrains-mono-v24-vietnamese.woff2") format("woff2"); unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB; }
+@font-face { font-family: "Source Serif 4"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/assets/fonts/source-serif-4-v15-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Source Serif 4"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/assets/fonts/source-serif-4-v15-latin-ext.woff2") format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Source Serif 4"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("/assets/fonts/source-serif-4-v15-vietnamese.woff2") format("woff2"); unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB; }
+@font-face { font-family: "Source Serif 4"; font-style: italic; font-weight: 400; font-display: swap; src: url("/assets/fonts/source-serif-4-v15-italic-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Source Serif 4"; font-style: italic; font-weight: 400; font-display: swap; src: url("/assets/fonts/source-serif-4-v15-italic-latin-ext.woff2") format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Source Serif 4"; font-style: italic; font-weight: 400; font-display: swap; src: url("/assets/fonts/source-serif-4-v15-italic-vietnamese.woff2") format("woff2"); unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB; }
 :root {
   --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-serif: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
@@ -118,8 +135,8 @@
 /* ── Header ─────────────────────────────────────────────────────────────── */
 .site-header { position: sticky; z-index: 100; top: 0; background: var(--page-header-bg); border-bottom: 1px solid var(--page-header-line); }
 .site-shell-inner { position: relative; width: min(100% - 48px, 1200px); min-height: 64px; margin: 0 auto; display: flex; align-items: center; gap: 32px; }
-.site-brand { display: inline-flex; align-items: center; gap: 8px; flex: 0 0 auto; color: var(--page-navy); text-decoration: none; }
-.site-brand-mark { display: block; width: 24px; height: 32px; flex: 0 0 24px; background: var(--page-mark); -webkit-mask: url("/assets/mark.png") center / contain no-repeat; mask: url("/assets/mark.png") center / contain no-repeat; }
+.site-brand { display: inline-flex; min-height: 44px; align-items: center; gap: 8px; flex: 0 0 auto; color: var(--page-navy); text-decoration: none; }
+.site-brand-mark { display: block; width: 24px; height: 32px; flex: 0 0 24px; background: var(--page-mark); -webkit-mask: url("/assets/mark-mask.png") center / contain no-repeat; mask: url("/assets/mark-mask.png") center / contain no-repeat; }
 .site-document .site-brand-name { color: var(--page-navy); font-size: 18px; line-height: 1; font-weight: 700; letter-spacing: -.03em; }
 .site-shell-links { display: flex; align-items: center; gap: 4px; margin-right: auto; }
 .site-document .site-shell-links a, .site-document .site-shell-panel a { color: var(--page-text-2); font-size: 14px; font-weight: 500; text-decoration: none; white-space: nowrap; }
@@ -137,7 +154,7 @@
 
 /* The colour-theme toggle (site-theme.js). Shown only once theme-boot.js has run, since without script it could
    not do anything; the icon for the current choice is picked by CSS, so nothing moves as it loads. */
-.theme-toggle { display: none; width: 36px; height: 36px; flex: 0 0 36px; align-items: center; justify-content: center; padding: 0; border: 1px solid transparent; border-radius: var(--r-sm); background: transparent; color: var(--page-text-2); cursor: pointer; }
+.theme-toggle { display: none; width: 44px; height: 44px; flex: 0 0 44px; align-items: center; justify-content: center; padding: 0; border: 1px solid transparent; border-radius: var(--r-sm); background: transparent; color: var(--page-text-2); cursor: pointer; }
 :root[data-theme-choice] .theme-toggle { display: inline-flex; }
 .theme-toggle:hover { color: var(--page-navy); background: var(--page-wash); }
 .theme-toggle svg { display: none; width: 20px; height: 20px; }
@@ -197,8 +214,8 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .site-document footer.wrap p { margin: 0 0 8px; color: var(--page-muted); font-size: 14px; }
 .site-document footer.wrap a { color: var(--page-text-2); text-decoration: none; }
 .site-document footer.wrap a:hover { color: var(--page-navy); text-decoration: underline; }
-.site-footer-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 8px; }
-.site-footer-links a { white-space: nowrap; }
+.site-footer-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 0 24px; margin-bottom: 8px; }
+.site-footer-links a { display: inline-flex; min-height: 44px; align-items: center; white-space: nowrap; }  /* a thumb's width apart on a phone */
 
 @media (max-width: 960px) {
   .site-shell-inner { gap: 16px; }
@@ -209,12 +226,12 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
   .site-shell-links, .site-shell-actions > .site-shell-cta, .site-shell-actions > .site-shell-signin { display: none !important; }
   .site-shell-actions { margin-left: auto; }
   .site-shell-mobile { display: block; position: relative; }
-  .site-shell-mobile summary { display: flex; width: 36px; height: 36px; align-items: center; justify-content: center; border: 1px solid var(--page-line-strong); border-radius: var(--r-sm); background: var(--page-surface); color: var(--page-navy); list-style: none; cursor: pointer; }
+  .site-shell-mobile summary { display: flex; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1px solid var(--page-line-strong); border-radius: var(--r-sm); background: var(--page-surface); color: var(--page-navy); list-style: none; cursor: pointer; }
   .site-shell-mobile summary::-webkit-details-marker { display: none; }
   .site-shell-mobile summary .ic-close, .site-shell-mobile[open] summary .ic-open { display: none; }
   .site-shell-mobile[open] summary .ic-close { display: inline-block; }
   .site-shell-mobile[open] summary { border-color: var(--page-blue); }
-  .site-shell-panel { position: absolute; top: 44px; right: 0; z-index: 110; display: grid; width: min(calc(100vw - 32px), 320px); gap: 0; padding: 8px; border: 1px solid var(--page-line); border-radius: var(--r-md); background: var(--page-surface); box-shadow: var(--page-panel-shadow); }
+  .site-shell-panel { position: absolute; top: 52px; right: 0; z-index: 110; display: grid; width: min(calc(100vw - 32px), 320px); gap: 0; padding: 8px; border: 1px solid var(--page-line); border-radius: var(--r-md); background: var(--page-surface); box-shadow: var(--page-panel-shadow); }
   .site-document .site-shell-panel a { padding: 12px; border-radius: var(--r-sm); font-size: 15px; }
   .site-document .site-shell-panel a:hover { background: var(--page-wash); color: var(--page-navy); }
   .site-document .site-shell-panel .site-shell-cta, .site-document .site-shell-panel .site-shell-signin { min-height: 44px; margin-top: 8px; }
@@ -228,6 +245,13 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
   .site-page-main .card { padding: 24px 16px; }
   .site-page-main .in-app-steps { padding: 16px; }
   .site-document footer.wrap { padding-inline: 16px; }
+}
+/* Phones first: the sizes above are a phone's (44 px targets); a mouse on a wide screen gets the compact header
+   and footer back. */
+@media (min-width: 801px) and (hover: hover) and (pointer: fine) {
+  .theme-toggle { width: 36px; height: 36px; flex-basis: 36px; }
+  .site-footer-links { row-gap: 8px; }
+  .site-footer-links a { min-height: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .site-document *, .site-document *::before, .site-document *::after { transition-duration: 0s !important; animation-duration: 0s !important; scroll-behavior: auto !important; }

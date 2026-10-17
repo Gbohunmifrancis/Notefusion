@@ -21,6 +21,14 @@ All outputs are derived and safe to delete and rebuild:
   icon-192.png / icon-512.png / apple-touch-icon.png
                 the same tile at the sizes Android home screens, the web
                 manifest and iOS "Add to Home Screen" ask for.
+  mark-mask.png the brand mark at 145x192 for the CSS masks (header, recorder,
+                app logo): only its alpha matters, so it is a white palette PNG
+                with exact alpha, ~8 KB instead of mark.png's 42 KB on every
+                page. mark.png stays the full-size source (and the watermark).
+  shot-sheet-{light,dark}-{640,960,1200}.{avif,webp}, -960.jpg
+                the home page's web-app screenshots for phones first: the
+                2400x1600 shot-sheet-*.jpg retakes are the source (and the 2x
+                JPEG fallback); a phone gets a ~20 KB AVIF instead of 190 KB.
 
 Both hero sources already have the black device frame rendered into them, so
 the page must NOT wrap them in a bezel of its own — .device only rounds the
@@ -167,7 +175,31 @@ def build_og_card():
     print(f"og-card.jpg   {os.path.getsize(out):>7,} bytes  {W}x{H}")
 
 
+def build_web_images():
+    """The mark mask and the phone-first screenshot variants (see the module docstring)."""
+    alpha = Image.open(os.path.join(ASSETS, "mark.png")).getchannel("A")
+    h = 192
+    small = alpha.resize((round(alpha.width * h / alpha.height), h), Image.LANCZOS).point(lambda v: 0 if v < 8 else v)
+    mask = Image.frombytes("P", small.size, small.tobytes())
+    mask.putpalette([255, 255, 255] * 256)
+    out = os.path.join(ASSETS, "mark-mask.png")
+    mask.save(out, "PNG", optimize=True, transparency=bytes(range(256)))
+    print(f"mark-mask.png {os.path.getsize(out):>7,} bytes  {small.width}x{small.height}")
+    for theme in ("light", "dark"):
+        src = Image.open(os.path.join(ASSETS, f"shot-sheet-{theme}.jpg")).convert("RGB")
+        for w in (640, 960, 1200):
+            im = src.resize((w, round(src.height * w / src.width)), Image.LANCZOS)
+            outs = [("avif", "AVIF", {"quality": 60, "speed": 4}), ("webp", "WEBP", {"quality": 78, "method": 6})]
+            if w == 960:
+                outs.append(("jpg", "JPEG", {"quality": 80, "optimize": True, "progressive": True}))
+            for ext, fmt, kw in outs:
+                name = f"shot-sheet-{theme}-{w}.{ext}"
+                im.save(os.path.join(ASSETS, name), fmt, **kw)
+                print(f"{name:<28} {os.path.getsize(os.path.join(ASSETS, name)):>7,} bytes  {im.width}x{im.height}")
+
+
 if __name__ == "__main__":
     build_hero()
     build_favicons()
     build_og_card()
+    build_web_images()

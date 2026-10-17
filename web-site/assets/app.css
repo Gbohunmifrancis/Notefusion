@@ -58,7 +58,7 @@ p { margin: 0 0 12px; }
 
 /* ── Brand mark, and its heartbeat while the microphone is open ─────────── */
 .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; color: var(--ink); text-decoration: none; letter-spacing: -0.02em; }
-.brand-mark { width: 30px; height: 30px; flex: none; background: var(--brand-gradient); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; }
+.brand-mark { width: 30px; height: 30px; flex: none; background: var(--brand-gradient); -webkit-mask: url(/assets/mark-mask.png) center / contain no-repeat; mask: url(/assets/mark-mask.png) center / contain no-repeat; }
 .brand small { font-weight: 600; color: var(--muted); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; margin-left: 2px; }
 @keyframes heartbeat {
   0%, 100% { transform: scale(1); }
@@ -168,7 +168,7 @@ body.guest .topbar { display: flex; }
 
 /* ── Home: the greeting and the studio card ──────────────────────────────── */
 .home { text-align: center; padding: clamp(12px, 5vh, 48px) 0 22px; }
-.home-mark { display: block; width: 64px; height: 64px; margin: 0 auto 16px; background: var(--brand-gradient); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; }
+.home-mark { display: block; width: 64px; height: 64px; margin: 0 auto 16px; background: var(--brand-gradient); -webkit-mask: url(/assets/mark-mask.png) center / contain no-repeat; mask: url(/assets/mark-mask.png) center / contain no-repeat; }
 .greeting { font-size: clamp(1.7rem, 3.4vw, 2.3rem); margin: 0 0 4px; }
 .home-sub { margin: 0; }
 .studio { position: relative; background: var(--studio-gradient); color: #fff; border-radius: 12px; padding: 22px; box-shadow: 0 18px 48px rgba(29, 78, 216, 0.28); margin-bottom: 24px; overflow: hidden; }
