@@ -1,18 +1,30 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  CONFETTI_ART,
   THREE_STAR_SCORE,
   TRACK_OPTIONS,
+  badgeArt,
   buddyLine,
   celebrationFor,
+  flameArt,
+  levelArt,
+  mascotArt,
+  mascotLine,
+  mascotMood,
   playfulRewardLine,
+  rewardArt,
   starHint,
   starWord,
+  starsArt,
   starsFor,
   stickerTilt,
+  trackArt,
   trackTitle,
   tuningLine,
+  type MascotScene,
 } from "./practiceTrack.ts";
+import { ART } from "../components/practice/art/svgs.ts";
 import type { PracticeLevel, PracticeReward, PracticeStreak } from "../api/types";
 
 const ray: PracticeLevel = { index: 1, name: "Ray", minXp: 100, nextLevelXp: 250, nextName: "Me", xpForNext: 100 };
@@ -118,8 +130,94 @@ test("the buddy speaks to today and the streak first, else the day's encourageme
 
 test("a sticker's tilt is fixed per badge and stays within six degrees", () => {
   assert.equal(stickerTilt("first_drill"), stickerTilt("first_drill"));
-  for (const code of ["first_drill", "streak_3", "first_100", "drills_10", "first_part", "streak_7", "whole_part_80", "streak_30"]) {
+  for (const code of ["first_drill", "streak_3", "first_100", "drills_10", "first_part", "week_goal", "streak_7", "whole_part_80", "streak_30"]) {
     const t = stickerTilt(code);
     assert.ok(Number.isInteger(t) && t >= -6 && t <= 6, `${code}: ${t}`);
   }
+});
+
+test("a path milestone is a burst on Playful and a toast otherwise, even when it earned no XP", () => {
+  assert.equal(celebrationFor("playful", 85, reward({ xpGained: 0 }), true), "burst");
+  assert.equal(celebrationFor(null, 85, reward({ xpGained: 0 }), true), "toast");
+  assert.equal(celebrationFor("focused", 85, reward(), true), "toast");
+  assert.equal(celebrationFor("focused", 85, reward(), false), "quiet");
+});
+
+// ── The art ──────────────────────────────────────────────────────────────────
+
+const CODES = ["first_drill", "streak_3", "first_100", "drills_10", "first_part", "week_goal", "streak_7", "whole_part_80", "streak_30"];
+const week = (daysDone: number) => ({ daysDone, target: 5, weekStart: "2026-10-12" });
+const scene = (over: Partial<MascotScene> = {}): MascotScene => ({ picking: false, recording: false, grade: null, hasDrill: true, drillsLeft: 3, ...over });
+const progress = (over: { streak?: Partial<PracticeStreak>; days?: number } = {}) => ({
+  today: "2026-10-17",
+  streak: streak(over.streak ?? {}),
+  weeklyGoal: week(over.days ?? 2),
+});
+
+test("Doh's mood: hand-off in the picker, singing while recording, cheering a level or the goal met", () => {
+  assert.equal(mascotMood(progress(), scene({ picking: true, recording: true })), "handoff");
+  assert.equal(mascotMood(progress(), scene({ recording: true, grade: { score: 60, reward: null } })), "sing");
+  assert.equal(mascotMood(progress(), scene({ grade: { score: 40, reward: reward({ levelUp: true }) } })), "cheer");
+  assert.equal(mascotMood(progress({ streak: { current: 5, todayDone: true }, days: 5 }), scene()), "cheer");
+  // the goal met but today not sung yet: the streak comes first
+  assert.equal(mascotMood(progress({ streak: { current: 5, atRisk: true }, days: 5 }), scene()), "worried");
+});
+
+test("Doh's mood: encouraging a near miss, sleepy with no drill or none left, worried for the streak, else waving", () => {
+  assert.equal(mascotMood(progress(), scene({ grade: { score: 65, reward: reward() } })), "encourage");
+  assert.equal(mascotMood(progress(), scene({ grade: { score: 90, reward: reward() } })), "wave");
+  assert.equal(mascotMood(progress(), scene({ grade: { score: 20, reward: reward() } })), "wave");
+  assert.equal(mascotMood(progress(), scene({ hasDrill: false })), "sleepy");
+  assert.equal(mascotMood(progress({ streak: { current: 2, todayDone: true } }), scene({ drillsLeft: 0 })), "sleepy");
+  assert.equal(mascotMood(progress({ streak: { current: 3, atRisk: true } }), scene()), "worried");
+  assert.equal(mascotMood(progress(), scene({ drillsLeft: null })), "wave");
+});
+
+test("Doh's lines follow the mood, and the waving Doh says the day's buddy line", () => {
+  const p = progress({ streak: { current: 4, atRisk: true } });
+  assert.equal(mascotLine("worried", p, scene()), "Sing today to keep your 4-day streak going!");
+  assert.equal(mascotLine("cheer", p, scene({ grade: { score: 90, reward: reward({ levelUp: true }) } })), "Hooray! You've reached Ray!");
+  assert.equal(mascotLine("cheer", progress({ days: 5 }), scene()), "5 days this week. Weekly goal met!");
+  assert.equal(mascotLine("sleepy", p, scene({ hasDrill: false })), "No drill yet. Try again in a moment.");
+  assert.equal(mascotLine("sleepy", p, scene({ drillsLeft: 0 })), "All sung for today. See you tomorrow!");
+  assert.equal(mascotLine("wave", p, scene()), buddyLine(p));
+  for (const line of ["sing", "encourage", "handoff"].map((m) => mascotLine(m as never, p, scene()))) assert.ok(line.length > 0);
+});
+
+test("every badge has a sticker and a locked one; Seven in a row and A week of practice have their own", () => {
+  for (const code of CODES) {
+    assert.ok(badgeArt(code, true) in ART, code);
+    assert.ok(badgeArt(code, false) in ART, `${code} locked`);
+    assert.equal(badgeArt(code, false), `${badgeArt(code, true)}-locked`);
+  }
+  assert.equal(new Set(CODES.map((c) => badgeArt(c, true))).size, CODES.length);
+  assert.equal(badgeArt("streak_7", true), "badge-seven-in-a-row");
+  assert.equal(badgeArt("week_goal", true), "badge-week-goal");
+  assert.equal(badgeArt("a_badge_from_the_future", true), "badge-first-drill");
+});
+
+test("levels, flames, stars, moods, tracks and confetti all name art that exists", () => {
+  for (let i = 0; i < 8; i++) assert.ok(levelArt(i) in ART, String(i));
+  assert.equal(levelArt(7), "level-8-choir-ready");
+  assert.equal(levelArt(-1), "level-1-doh");
+  assert.equal(levelArt(42), "level-8-choir-ready");
+  assert.equal(flameArt({ current: 0, atRisk: false }), "flame-out");
+  assert.equal(flameArt({ current: 4, atRisk: true }), "flame-at-risk");
+  assert.equal(flameArt({ current: 4, atRisk: false }), "flame-active");
+  for (const s of [1, 2, 3] as const) assert.ok(starsArt(s) in ART);
+  for (const m of ["wave", "sing", "cheer", "encourage", "worried", "sleepy", "handoff"] as const) assert.ok(mascotArt(m) in ART, m);
+  assert.ok(trackArt("playful") in ART && trackArt("focused") in ART);
+  assert.equal(CONFETTI_ART.length, 8);
+  for (const c of CONFETTI_ART) assert.ok(c in ART, c);
+  for (const n of ["doh-avatar", "freeze", "empty-no-drill", "empty-offline"]) assert.ok(n in ART, n);
+  // Art.tsx sizes each picture from this viewBox (single-quoted in the phone's copy).
+  for (const [n, xml] of Object.entries(ART)) assert.match(xml, /^<svg viewBox='0 0 [\d.]+ [\d.]+'>/, n);
+});
+
+test("a reward's picture: the new level's emblem, else the new badge's sticker, else none", () => {
+  const te = { ...ray, index: 6, name: "Te" };
+  assert.equal(rewardArt(reward({ levelUp: true, level: te, newBadges: [sticker] })), "level-7-te");
+  assert.equal(rewardArt(reward({ newBadges: [sticker] })), "badge-ten-drills");
+  assert.equal(rewardArt(reward()), null);
+  assert.equal(rewardArt(null), null);
 });

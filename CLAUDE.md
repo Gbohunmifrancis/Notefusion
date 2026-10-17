@@ -241,9 +241,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `GET /api/billing/plans/choir` (shipped apps render every plan in the main list as Pro); the admin overview
   counts a choir as one paid member at its plan price and its singers apart.
 - Practice is gamified, transcription is not (`Application/Practice`, numbers in `PracticeRules`): every graded take
-  (free daily drill `POST /api/practice/drills/grade`, 5/day, Pro 20; Pro `…/transcriptions/grade`) is a server-written
+  (the free lesson path `POST /api/practice/drills/grade`, 10/day, Pro 20; Pro `…/transcriptions/grade`) is a server-written
   `PracticeSession` on the singer's day (`X-Time-Zone`, else Lagos); XP, levels, streaks (1 freeze/ISO week), badges are
-  read off those rows, never client-reported. Drills: `DrillCatalogue`, labelled by the solfa engine; mobile `PracticeScreen`.
+  read off those rows, never client-reported. Drills: `DrillCatalogue`/`DrillSyllabus`, labelled by the solfa engine: ten
+  grades × 5 units drawn from ABRSM, Trinity, Kodály and Curwen (`docs/PRACTICE_CURRICULUM.md`). It is a path, not a drill
+  of the day (`PracticePath`, replayed from the session rows; `GET …/drills/next`, `/today` its alias): 80+ moves on, under
+  that the drill once more then an easier variant, two 90+ skip a drill, two under 50 step back; unit and grade milestones
+  are derived, each once. Mobile `PracticeScreen`.
 - Practice reminders are server pushes to phones only (`Application/Practice/Reminders`, `PracticeReminderWorker` every
   10 min, `PracticeReminders__Enabled`): never web push. The singer's clock is `users.TimeZone` (written by
   `ClientTimeZoneMiddleware` when `X-Time-Zone` changes; null = Lagos). `PracticeReminderRules`: at their hour (8–21, default
@@ -259,10 +263,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Web: the `/app` Practice view (`?view=practice`, a nav entry and the home streak/XP chip) mirrors it — `assets/practice-view.js`
   + `.css` and the pure `practice-progress.js` / `practice-track.js` (mobile `lib/practiceProgress.ts`/`take.ts`/`practiceTrack.ts`,
   tracks included), loaded only when opened; the web app sends `X-Time-Zone` on every API call.
-  Tracks, chosen by style never age (`users.PracticeTrack`, null until picked; `PUT /api/practice/track`): Playful (3–5-note
-  drills from tiers ≤4 at a gentler pace, id `…~gentle`; stars, stickers, confetti) and Focused (two tiers ahead, into the
-  Focused-only tiers 8–9: sixths, sevenths, minor through se, 8–12-note sight-singing; exact score, cents, replay). Each
-  track has its own drill of the day; a mid-day switch shows the new track's at once. XP and every rule are the same on both.
+  Tracks, chosen by style never age (`users.PracticeTrack`, null until picked; `PUT /api/practice/track`): Playful (Grades
+  1–7, three units each, gentle patterns, slower, id `…~gentle`; stars, stickers, confetti) and Focused (two grades ahead,
+  on into Advanced 1–2: wide leaps and 8–16-note sight-singing; exact score, cents, replay). Each track keeps its own place
+  on the path. XP and every rule are the same on both.
+  Art (our own SVG): `design/practice-art/build.mjs` draws it into `web-site/assets/practice-art/` and mobile `components/practice/art/svgs.ts`; Doh lives in Practice only, and no gold (Pro's alone).
 - Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read),
   the opening eight notes as `preview` on every read (list rows show them in solfa), an
   optional folder name (`PUT /api/library/{id}/folder`; a folder is just the name its sheets share) and

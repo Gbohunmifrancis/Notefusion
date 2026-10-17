@@ -104,8 +104,8 @@ test("the seven days are dots with their weekday letter, by the calendar alone",
 
 test("the allowance line counts down and says when the day's drills are done", () => {
   assert.equal(P.allowanceLine({ used: 1, limit: 5 }), "4 of 5 marked drills left today");
-  assert.equal(P.allowanceLine({ used: 5, limit: 5 }), "That's today's marked drills done. Come back tomorrow.");
-  assert.equal(P.allowanceLine({ used: 7, limit: 5 }), "That's today's marked drills done. Come back tomorrow.");
+  assert.equal(P.allowanceLine({ used: 5, limit: 5 }), "That's all 5 of today's drills. Well sung! More tomorrow.");
+  assert.equal(P.allowanceLine({ used: 7, limit: 5 }), "That's all 5 of today's drills. Well sung! More tomorrow.");
   assert.equal(P.allowanceLine(null), "");
   assert.equal(P.drillsLeft({ used: 3, limit: 20 }), 17);
 });
@@ -144,4 +144,40 @@ test("failures read as plain sentences", () => {
   assert.match(P.micError({ name: "Unsupported" }), /can't record/);
   assert.match(P.micError({ name: "NotSupportedError" }), /can't record/);
   assert.match(P.micError(null), /couldn't open the microphone/);
+});
+
+// ── The practice path (mobile practiceProgress.test.ts has the same cases) ──
+const place = (over = {}) => ({ grade: "Grade 2", unitIndex: 3, drillIndex: 4, drillCount: 6, adjustment: "steady", ...over });
+
+test("the path line names the grade, the unit and the drill, and says when the last take moved it", () => {
+  assert.equal(P.pathLine(place()), "Grade 2 · Unit 3 · 4 of 6");
+  assert.equal(P.pathLine(place({ adjustment: "easier" })), "Grade 2 · Unit 3 · 4 of 6 · Easier");
+  assert.equal(P.pathLine(place({ adjustment: "harder", grade: "Advanced 1" })), "Advanced 1 · Unit 3 · 4 of 6 · Harder");
+  assert.equal(P.pathLine(place({ grade: "" })), null);
+  assert.equal(P.pathLine({ id: "steps-up@60" }), null); // an older server's drill: no line
+});
+
+test("the unit bar fills with the drills behind the singer", () => {
+  assert.equal(P.unitFraction(place({ drillIndex: 1, drillCount: 4 })), 0);
+  assert.equal(P.unitFraction(place({ drillIndex: 3, drillCount: 4 })), 0.5);
+  assert.equal(P.unitFraction(place({ drillIndex: 9, drillCount: 4 })), 1);
+  assert.equal(P.unitFraction(place({ drillCount: 0 })), 0);
+});
+
+test("the main button moves on, or says try again when the path brings the same drill back", () => {
+  same(P.nextAction({ id: "a@60" }, { id: "b@62" }, null), { label: "Next drill", same: false });
+  same(P.nextAction({ id: "a@60" }, { id: "a@60" }, "focused"), { label: "Try it again", same: true });
+  same(P.nextAction({ id: "a@60" }, null, "playful"), { label: "Next one!", same: false });
+  same(P.nextAction({ id: "a@60~gentle" }, { id: "a@60~gentle" }, "playful"), { label: "Try again!", same: true });
+});
+
+test("the allowance counts down, then says warmly when more come, on the device's clock", () => {
+  const lagosMidnight = "2026-10-17T23:00:00Z";
+  assert.equal(P.allowanceLine({ used: 3, limit: 10, resetsAtUtc: lagosMidnight }, -60), "7 of 10 marked drills left today");
+  assert.equal(P.allowanceLine({ used: 10, limit: 10, resetsAtUtc: lagosMidnight }, -60), "That's all 10 of today's drills. Well sung! More from midnight.");
+  assert.equal(P.resetTime(lagosMidnight, 0), "11:00 pm");
+  assert.equal(P.resetTime("2026-10-18T00:30:00Z", 0), "12:30 am");
+  assert.equal(P.resetTime("2026-10-18T13:05:00Z", 0), "1:05 pm");
+  assert.equal(P.allowanceLine({ used: 12, limit: 10 }), "That's all 10 of today's drills. Well sung! More tomorrow.");
+  assert.equal(P.resetTime("not a time"), null);
 });

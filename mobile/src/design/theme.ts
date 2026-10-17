@@ -77,6 +77,14 @@ export const colors = {
   premiumSoft: "rgba(245, 158, 11, 0.12)",
   premiumBorder: "rgba(245, 158, 11, 0.35)",
 
+  // ── Play (Practice's warm accent) ───────────────────────────────────────
+  /** Practice's Playful track and the streak flame: a warm orange, never the
+   *  Pro amber above. `play` is safe as text (4.6:1 and more on every Day
+   *  surface); the soft fill and border are for the game card and chips. */
+  play: "#C2410C",
+  playSoft: "rgba(249, 115, 22, 0.08)",
+  playBorder: "rgba(249, 115, 22, 0.35)",
+
   // ── Typography ──────────────────────────────────────────────────────────
   text: "#0F172A", // Ink Navy   — primary text
   textMuted: "#64748B", // Slate      — secondary / subtitles
@@ -151,6 +159,10 @@ export const darkColors: Palette = {
   premiumDeep: "#D99A2B",
   premiumSoft: "rgba(245, 181, 68, 0.14)",
   premiumBorder: "rgba(245, 181, 68, 0.40)",
+
+  play: "#FB923C",
+  playSoft: "rgba(251, 146, 60, 0.12)",
+  playBorder: "rgba(251, 146, 60, 0.40)",
 
   text: "#F3F6FB",
   textMuted: "#8B95AA",

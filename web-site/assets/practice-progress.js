@@ -102,11 +102,44 @@
   /** Drills still to be marked today, or null when the allowance is unknown. */
   function drillsLeft(allowance) { return allowance ? Math.max(0, allowance.limit - allowance.used) : null; }
 
-  /** "4 of 5 marked drills left today", or the day's last word once they are used. */
-  function allowanceLine(allowance) {
+  /**
+   * "midnight", "1:30 am": when the drill allowance starts again, on this device's clock. `offsetMinutes` is
+   * Date.getTimezoneOffset() at that moment (minutes behind UTC), passed in by the tests.
+   */
+  function resetTime(resetsAtUtc, offsetMinutes) {
+    var t = resetsAtUtc ? Date.parse(resetsAtUtc) : NaN;
+    if (!isFinite(t)) return null;
+    var offset = typeof offsetMinutes === "number" ? offsetMinutes : new Date(t).getTimezoneOffset();
+    var local = new Date(t - offset * 60000), h = local.getUTCHours(), m = local.getUTCMinutes();
+    if (h === 0 && m === 0) return "midnight";
+    return (h % 12 === 0 ? 12 : h % 12) + ":" + (m < 10 ? "0" : "") + m + " " + (h < 12 ? "am" : "pm");
+  }
+
+  /** "7 of 10 marked drills left today", or, once they are sung, a warm last word with when more come. */
+  function allowanceLine(allowance, offsetMinutes) {
     var left = drillsLeft(allowance);
     if (left == null) return "";
-    return left === 0 ? "That's today's marked drills done. Come back tomorrow." : left + " of " + allowance.limit + " marked drills left today";
+    if (left > 0) return left + " of " + allowance.limit + " marked drills left today";
+    var when = resetTime(allowance.resetsAtUtc, offsetMinutes);
+    return "That's all " + allowance.limit + " of today's drills. Well sung! " + (when ? "More from " + when + "." : "More tomorrow.");
+  }
+
+  // ── The practice path (the server's: grades → units → drills; mobile lib/practiceProgress.ts) ──
+  /** "Grade 2 · Unit 3 · 4 of 6", with "· Harder" or "· Easier" when the last take moved it; null without a place. */
+  function pathLine(drill) {
+    if (!drill || !drill.grade || !(drill.unitIndex > 0) || !(drill.drillCount > 0)) return null;
+    var moved = drill.adjustment === "harder" ? " · Harder" : drill.adjustment === "easier" ? " · Easier" : "";
+    return drill.grade + " · Unit " + drill.unitIndex + " · " + drill.drillIndex + " of " + drill.drillCount + moved;
+  }
+
+  /** How much of the unit is behind the singer, 0–1: the thin bar under the path line. */
+  function unitFraction(drill) { return drill && drill.drillCount > 0 ? clamp01((drill.drillIndex - 1) / drill.drillCount) : 0; }
+
+  /** The result's main button: on to the next drill, or the same one again when the path brings it back after a miss. */
+  function nextAction(current, next, track) {
+    var same = !!next && !!current && next.id === current.id;
+    if (track === "playful") return { label: same ? "Try again!" : "Next one!", same: same };
+    return { label: same ? "Try it again" : "Next drill", same: same };
   }
 
   function beatsPerBar(ts) { var p = String(ts || "4/4").split("/").map(Number); return p[0] && p[1] ? (p[0] * 4) / p[1] : 4; }
@@ -182,7 +215,8 @@
     levelFraction: levelFraction, weeklyFraction: weeklyFraction, nextLevelLine: nextLevelLine,
     streakLabel: streakLabel, streakLine: streakLine, freezeLine: freezeLine,
     sortBadges: sortBadges, badgeFraction: badgeFraction, rewardMoment: rewardMoment, rewardEvents: rewardEvents,
-    weekdayLetter: weekdayLetter, dayDots: dayDots, drillsLeft: drillsLeft, allowanceLine: allowanceLine,
+    weekdayLetter: weekdayLetter, dayDots: dayDots, drillsLeft: drillsLeft, allowanceLine: allowanceLine, resetTime: resetTime,
+    pathLine: pathLine, unitFraction: unitFraction, nextAction: nextAction,
     leadIn: leadIn, partSeconds: partSeconds, takeSeconds: takeSeconds, noteDueAt: noteDueAt,
     gradeError: gradeError, micError: micError
   };

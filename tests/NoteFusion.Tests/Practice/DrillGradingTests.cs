@@ -23,7 +23,7 @@ using NoteFusion.Tests.Support;
 namespace NoteFusion.Tests.Practice;
 
 /// <summary>
-/// The free daily drill end to end through its handlers: the server's own notes are graded, the take is recorded as
+/// Practice drills end to end through their handlers: the server's own notes are graded, the take is recorded as
 /// practice on the singer's calendar, the day's allowance holds, badges come once, and progress reads it all back.
 /// </summary>
 public class DrillGradingTests
@@ -40,11 +40,11 @@ public class DrillGradingTests
 
         var drill = (await Today_(h, user).Handle(new GetTodayDrillQuery(), default)).Value;
 
-        Assert.Equal(DrillCatalogue.ForDay(user.Id, Today, 0).Id, drill.Id);
+        Assert.Equal(FirstDrill(user.Id).Id, drill.Id);
         Assert.Equal(0, drill.Level);
         Assert.Equal("Doh", drill.LevelName);
         Assert.Equal(Today, drill.Date);
-        Assert.Equal(new(0, PracticeRules.FreeDrillGradesPerDay), drill.Allowance);
+        Assert.Equal((0, PracticeRules.FreeDrillGradesPerDay), (drill.Allowance.Used, drill.Allowance.Limit));
         Assert.Equal(DrillCatalogue.LeadInBeats, drill.LeadInBeats);
         Assert.Equal("4/4", drill.TimeSignature);
     }
@@ -55,7 +55,7 @@ public class DrillGradingTests
         using var h = new TestHarness(Now);
         var user = Seed(h);
         var api = new RecordingApi(score: 100);
-        var drill = DrillCatalogue.ForDay(user.Id, Today, 0);
+        var drill = FirstDrill(user.Id);
 
         var result = await Grade(h, user, api).Handle(new GradeDrillCommand(Stream.Null, "take.m4a", drill.Id), default);
 
@@ -84,7 +84,7 @@ public class DrillGradingTests
     {
         using var h = new TestHarness(new DateTime(2026, 10, 18, 1, 0, 0, DateTimeKind.Utc)); // Saturday 21:00 in New York
         var user = Seed(h);
-        var drill = DrillCatalogue.ForDay(user.Id, Today, 0);
+        var drill = FirstDrill(user.Id);
 
         await Grade(h, user, new RecordingApi(70), zone: "America/New_York").Handle(new GradeDrillCommand(Stream.Null, "take.m4a", drill.Id), default);
 
@@ -106,12 +106,12 @@ public class DrillGradingTests
     }
 
     [Fact]
-    public async Task A_free_account_gets_five_marked_drills_a_day_then_a_plain_sentence()
+    public async Task A_free_account_gets_ten_marked_drills_a_day_then_a_warm_sentence()
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
         var api = new RecordingApi(60);
-        var drill = DrillCatalogue.ForDay(user.Id, Today, 0);
+        var drill = FirstDrill(user.Id);
 
         for (var i = 0; i < PracticeRules.FreeDrillGradesPerDay; i++)
             Assert.True((await Grade(h, user, api).Handle(new GradeDrillCommand(Stream.Null, "take.m4a", drill.Id), default)).IsSuccess);
@@ -121,9 +121,10 @@ public class DrillGradingTests
 
         Assert.Equal("PRACTICE_DAILY_LIMIT", refused.Error.Code);
         Assert.Equal(ErrorType.Forbidden, refused.Error.Type);
-        Assert.Contains("Come back tomorrow", refused.Error.Message);
+        Assert.Equal("That's all 10 of today's marked drills. Well sung! More from midnight.", refused.Error.Message);
         Assert.Equal(0, api.Calls);
-        Assert.Equal(5, h.Db.PracticeSessions.Count());
+        Assert.Equal(10, PracticeRules.FreeDrillGradesPerDay);
+        Assert.Equal(10, h.Db.PracticeSessions.Count());
 
         // Tomorrow (Lagos) the allowance is back.
         h.Clock.UtcNow = Now.AddHours(7);
@@ -137,7 +138,7 @@ public class DrillGradingTests
         var user = Seed(h);
         GoPro(h, user);
         var api = new RecordingApi(60);
-        var drill = DrillCatalogue.ForDay(user.Id, Today, 0);
+        var drill = FirstDrill(user.Id);
 
         for (var i = 0; i < PracticeRules.ProDrillGradesPerDay; i++)
             Assert.True((await Grade(h, user, api).Handle(new GradeDrillCommand(Stream.Null, "take.m4a", drill.Id), default)).IsSuccess);
@@ -155,7 +156,7 @@ public class DrillGradingTests
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
-        var drill = DrillCatalogue.ForDay(user.Id, Today, 0);
+        var drill = FirstDrill(user.Id);
 
         var result = await Grade(h, user, new RecordingApi(0) { Refuse = true }).Handle(new GradeDrillCommand(Stream.Null, "take.m4a", drill.Id), default);
 
@@ -169,7 +170,7 @@ public class DrillGradingTests
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
-        var drill = DrillCatalogue.ForDay(user.Id, Today, 0);
+        var drill = FirstDrill(user.Id);
 
         var first = await Grade(h, user, new RecordingApi(50)).Handle(new GradeDrillCommand(Stream.Null, "take.m4a", drill.Id), default);
         var second = await Grade(h, user, new RecordingApi(50)).Handle(new GradeDrillCommand(Stream.Null, "take.m4a", drill.Id), default);
@@ -190,7 +191,7 @@ public class DrillGradingTests
         for (var day = 0; day < 3; day++)
         {
             h.Clock.UtcNow = Now.AddDays(day);
-            var drill = DrillCatalogue.ForDay(user.Id, Today.AddDays(day), 0);
+            var drill = FirstDrill(user.Id);
             for (var i = 0; i < 4; i++)
             {
                 var result = await Grade(h, user, api).Handle(new GradeDrillCommand(Stream.Null, "take.m4a", drill.Id), default);
@@ -203,20 +204,20 @@ public class DrillGradingTests
     }
 
     [Fact]
-    public async Task Crossing_a_level_is_a_level_up_and_tomorrows_drill_comes_from_it()
+    public async Task Crossing_a_level_is_a_level_up_and_the_path_not_the_level_picks_the_drill()
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
         var api = new RecordingApi(100); // 20 XP a drill
 
-        // Four days of five perfect drills: 100 XP a day.
+        // Four days of five perfect drills, each the path's next: 100 XP a day.
         var levelUps = 0;
         for (var day = 0; day < 4; day++)
         {
-            h.Clock.UtcNow = Now.AddDays(day);
-            var drill = (await Today_(h, user).Handle(new GetTodayDrillQuery(), default)).Value;
             for (var i = 0; i < 5; i++)
             {
+                h.Clock.UtcNow = Now.AddDays(day).AddMinutes(i);
+                var drill = (await Today_(h, user).Handle(new GetTodayDrillQuery(), default)).Value;
                 var reward = (await Grade(h, user, api).Handle(new GradeDrillCommand(Stream.Null, "take.m4a", drill.Id), default)).Value.Reward!;
                 if (reward.LevelUp) levelUps++;
             }
@@ -224,17 +225,21 @@ public class DrillGradingTests
 
         var progress = await Progress(h, user);
         Assert.Equal(400, progress.Xp);
-        Assert.Equal("Me", progress.Level.Name); // 250 ≤ 400 < 500
+        Assert.Equal("Me", progress.Level.Name); // 250 <= 400 < 500
         Assert.Equal(2, levelUps); // Ray on day 1, Me on day 3
 
+        // Twenty perfect takes (pairs of 90+ skipping ahead) have finished Grade 1 and moved into Grade 2: where the
+        // singer is comes from the takes, not the level.
         h.Clock.UtcNow = Now.AddDays(4);
         var next = (await Today_(h, user).Handle(new GetTodayDrillQuery(), default)).Value;
         Assert.Equal(2, next.Level);
-        Assert.Equal(2, DrillCatalogue.Find(next.Id)!.Pattern.Tier);
+        Assert.Equal("Grade 2", next.Grade);
+        Assert.Equal(1, DrillCatalogue.Find(next.Id)!.Pattern.Tier);
+        Assert.Equal(1, progress.Path!.GradesComplete);
     }
 
     [Fact]
-    public async Task Todays_drill_does_not_change_when_the_singer_levels_up_during_the_day()
+    public async Task Levelling_up_part_way_through_a_unit_does_not_move_the_singer_to_another_grade()
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
@@ -249,8 +254,9 @@ public class DrillGradingTests
         var after = (await Today_(h, user).Handle(new GetTodayDrillQuery(), default)).Value;
 
         Assert.Equal("Ray", (await Progress(h, user)).Level.Name);
-        Assert.Equal(before.Id, after.Id);
-        Assert.Equal(0, after.Level);
+        Assert.Equal(1, after.Level);
+        Assert.NotEqual(before.Id, after.Id); // passed: on to the unit's second drill
+        Assert.Equal(("Grade 1", 1, 2), (after.Grade, after.UnitIndex, after.DrillIndex));
     }
 
     [Fact]
@@ -258,7 +264,7 @@ public class DrillGradingTests
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
-        var drill = DrillCatalogue.ForDay(user.Id, Today, 0);
+        var drill = FirstDrill(user.Id);
         h.Db.PracticeSessions.Add(PracticeSession.Record(user.Id, PracticeKind.Drill, 70, 3, 0, 0, 0, 3, Now.AddDays(-1), Today.AddDays(-1)));
         h.Db.SaveChanges();
 
@@ -276,7 +282,7 @@ public class DrillGradingTests
         Assert.True(after.Streak.TodayDone);
         Assert.False(after.Streak.AtRisk);
         Assert.Equal(2, after.WeeklyGoal.DaysDone); // Friday and Saturday
-        Assert.Equal(new(1, 5), after.Drills);
+        Assert.Equal((1, PracticeRules.FreeDrillGradesPerDay), (after.Drills.Used, after.Drills.Limit));
         Assert.True(after.Badges.Single(b => b.Code == "first_drill").Earned);
         Assert.Equal(2, after.Badges.Single(b => b.Code == "streak_3").Progress);
         Assert.Equal("done", after.LastSevenDays[^1].Status);
@@ -353,6 +359,10 @@ public class DrillGradingTests
 
     private static GradeDrillCommandHandler Grade(TestHarness h, User user, ITranscriptionApi api, string? zone = null)
         => new(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubClientTimeZone(zone), h.QuotaGate, new PracticeRecorder(h.Db));
+
+    /// <summary>A new singer's first drill on the path (no track).</summary>
+    private static Drill FirstDrill(Guid userId)
+        => PracticePath.Next(userId, null, PracticePath.Read(userId, [], _ => 0), 0).Drill;
 
     private static GetTodayDrillQueryHandler Today_(TestHarness h, User user)
         => new(h.Db, new StubCurrentUser(user.Id), h.Clock, new StubClientTimeZone());

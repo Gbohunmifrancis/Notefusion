@@ -18,8 +18,8 @@ using NoteFusion.Tests.Support;
 namespace NoteFusion.Tests.Practice;
 
 /// <summary>
-/// Practice tracks: Playful and Focused choose the day's drill and how a take is shown, never the numbers. The slices
-/// of the catalogue each offers, the Focused-only tiers, the gentle pace, PUT /api/practice/track, the mid-day switch,
+/// Practice tracks: Playful and Focused choose the path's drills and how a take is shown, never the numbers. The slices
+/// of the catalogue each offers, the Focused-only grades, the gentle pace, PUT /api/practice/track, the mid-day switch,
 /// and XP, levels, streaks and badges being the same whichever track a singer is on.
 /// </summary>
 public class PracticeTrackTests
@@ -31,37 +31,39 @@ public class PracticeTrackTests
     // ── The slices ──────────────────────────────────────────────────────────
 
     [Fact]
-    public void Playful_offers_short_major_drills_from_the_lower_tiers_at_every_level()
+    public void Playful_offers_short_plain_major_drills_and_no_chromatics_until_grade_seven()
     {
-        for (var level = 0; level < 12; level++)
+        var playful = DrillCatalogue.Patterns.Where(DrillCatalogue.IsPlayful).ToList();
+
+        Assert.All(playful, p =>
         {
-            var slice = DrillCatalogue.PatternsFor(PracticeTrack.Playful, level);
-
-            Assert.NotEmpty(slice);
-            Assert.All(slice, p =>
-            {
-                Assert.Equal(Math.Min(level, PracticeRules.PlayfulTopTier), p.Tier);
-                Assert.InRange(p.Tokens.Count, 3, PracticeRules.PlayfulMaxNotes);
-                Assert.Equal(KeyMode.Major, p.Mode);
+            Assert.InRange(p.Tier, 0, PracticeRules.PlayfulTopTier);
+            Assert.InRange(p.Step, 1, PracticeRules.PlayfulTopStep);
+            Assert.InRange(p.Tokens.Count, 3, PracticeRules.PlayfulMaxNotes);
+            Assert.Equal(KeyMode.Major, p.Mode);
+            Assert.True((DrillCatalogue.RhythmOf(p) & ~DrillRhythm.Minims) == 0, p.Code);
+            if (p.Tier < PracticeRules.PlayfulChromaticTier)
                 Assert.DoesNotContain(p.Tokens, t => t.TrimEnd('\'', ',') is "de" or "fe" or "ta" or "se");
-            });
-        }
+        });
+        Assert.Contains(playful, p => p.Tier == PracticeRules.PlayfulChromaticTier && DrillCatalogue.IsChromatic(p));
+        for (var tier = 0; tier <= PracticeRules.PlayfulTopTier; tier++)
+            Assert.True(playful.Count(p => p.Tier == tier) >= 3, $"Playful has few drills in grade {tier + 1}");
 
+        // Playful starts at the level's grade and never climbs past Grade 7.
+        for (var level = 0; level < 12; level++)
+            Assert.Equal(Math.Min(level, PracticeRules.PlayfulTopTier), DrillCatalogue.TierFor(PracticeTrack.Playful, level));
         Assert.Equal(5, PracticeRules.PlayfulMaxNotes);
-        Assert.Equal(4, PracticeRules.PlayfulTopTier);
+        Assert.Equal(6, PracticeRules.PlayfulTopTier);
     }
 
     [Fact]
-    public void Focused_starts_two_tiers_ahead_and_reaches_tiers_no_other_track_offers()
+    public void Focused_starts_two_grades_ahead_and_reaches_grades_no_other_track_offers()
     {
         for (var level = 0; level < 12; level++)
         {
-            var slice = DrillCatalogue.PatternsFor(PracticeTrack.Focused, level);
-            Assert.NotEmpty(slice);
-            Assert.All(slice, p => Assert.Equal(Math.Min(level + PracticeRules.FocusedTierLead, DrillCatalogue.TopTier), p.Tier));
-
-            // Without a track the ladder is as it was: the level's own tier, never above Choir-ready.
-            Assert.All(DrillCatalogue.PatternsFor(null, level), p => Assert.Equal(Math.Min(level, DrillCatalogue.LadderTopTier), p.Tier));
+            Assert.Equal(Math.Min(level + PracticeRules.FocusedTierLead, DrillCatalogue.TopTier), DrillCatalogue.TierFor(PracticeTrack.Focused, level));
+            // Without a track the ladder is as it was: the level's own grade, never above Grade 8.
+            Assert.Equal(Math.Min(level, DrillCatalogue.LadderTopTier), DrillCatalogue.TierFor(null, level));
         }
 
         Assert.Equal(PracticeRules.Levels.Count - 1 + 2, DrillCatalogue.TopTier);
@@ -69,6 +71,8 @@ public class PracticeTrackTests
         Assert.Equal(DrillCatalogue.TopTier, DrillCatalogue.TierFor(PracticeTrack.Focused, 7));
         Assert.Equal(2, DrillCatalogue.TierFor(PracticeTrack.Focused, 0)); // a beginner who wants the work starts on scales
         Assert.Equal(0, DrillCatalogue.TierFor(PracticeTrack.Playful, -3));
+        Assert.DoesNotContain(PracticePath.UnitsFor(null), u => u.Tier > DrillCatalogue.LadderTopTier);
+        Assert.Contains(PracticePath.UnitsFor(PracticeTrack.Focused), u => u.Tier == DrillCatalogue.TopTier);
     }
 
     [Fact]
@@ -149,31 +153,32 @@ public class PracticeTrackTests
     [InlineData(PracticeTrack.Playful)]
     [InlineData(PracticeTrack.Focused)]
     [InlineData(null)]
-    public void Each_tracks_drill_of_the_day_is_the_same_all_day_and_comes_from_its_slice(PracticeTrack? track)
+    public void Each_tracks_next_drill_is_the_same_on_every_read_and_comes_from_its_slice(PracticeTrack? track)
     {
         var user = Guid.Parse("8f1c2a8e-5b8a-4a51-9f60-1d2b3c4d5e6f");
         for (var level = 0; level <= 9; level++)
         {
-            var drill = DrillCatalogue.ForDay(user, Today, level, track);
+            var drill = First(user, track, level);
 
-            Assert.Equal(drill.Id, DrillCatalogue.ForDay(user, Today, level, track).Id);
-            Assert.Contains(drill.Pattern, DrillCatalogue.PatternsFor(track, level));
+            Assert.Equal(drill.Id, First(user, track, level).Id);
+            Assert.True(DrillCatalogue.OnTrack(drill.Pattern, track));
+            Assert.Equal(DrillCatalogue.TierFor(track, level), drill.Pattern.Tier);
             Assert.Equal(track == PracticeTrack.Playful, drill.Id.EndsWith("~gentle"));
             Assert.NotNull(DrillCatalogue.Find(drill.Id));
         }
 
-        var fortnight = Enumerable.Range(0, 14).Select(i => DrillCatalogue.ForDay(user, Today.AddDays(i), 0, track).Id).Distinct().Count();
-        Assert.True(fortnight > 3, $"only {fortnight} different drills in a fortnight");
+        // Singers start on different drills.
+        var starts = Enumerable.Range(0, 14).Select(i => First(Guid.NewGuid(), track, 0).Id).Distinct().Count();
+        Assert.True(starts > 3, $"only {starts} different first drills for fourteen singers");
     }
 
     [Fact]
-    public void No_track_is_the_ladder_as_it_was()
+    public void No_track_is_the_ladder_at_the_levels_own_grade_and_tempo()
     {
         var user = Guid.NewGuid();
         for (var level = 0; level <= 7; level++)
         {
-            var drill = DrillCatalogue.ForDay(user, Today, level);
-            Assert.Equal(drill.Id, DrillCatalogue.ForDay(user, Today, level, null).Id);
+            var drill = First(user, null, level);
             Assert.Equal(level, drill.Pattern.Tier);
             Assert.Equal(DrillCatalogue.TempoFor(level), drill.TempoBpm);
         }
@@ -199,7 +204,7 @@ public class PracticeTrackTests
 
         var drill = await TodayDrill(h, user);
         Assert.Equal(PracticeTrack.Playful, drill.Track);
-        Assert.Equal(DrillCatalogue.ForDay(user.Id, Today, 0, PracticeTrack.Playful).Id, drill.Id);
+        Assert.Equal(First(user.Id, PracticeTrack.Playful, 0).Id, drill.Id);
 
         Assert.Equal(PracticeTrack.Focused, (await SetTrack(h, user, "  FOCUSED ")).Value.Track);
     }
@@ -229,7 +234,7 @@ public class PracticeTrackTests
     }
 
     [Fact]
-    public async Task Switching_mid_day_shows_the_new_tracks_drill_and_switching_back_brings_the_first_one_back()
+    public async Task Switching_track_shows_that_tracks_next_drill_and_switching_back_brings_the_first_one_back()
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
@@ -241,7 +246,7 @@ public class PracticeTrackTests
         await SetTrack(h, user, "playful");
         var back = await TodayDrill(h, user);
 
-        Assert.Equal(DrillCatalogue.ForDay(user.Id, Today, 0, PracticeTrack.Focused).Id, focused.Id);
+        Assert.Equal(First(user.Id, PracticeTrack.Focused, 0).Id, focused.Id);
         Assert.NotEqual(playful.Id, focused.Id);
         Assert.Equal(playful.Id, back.Id);
 
@@ -342,6 +347,10 @@ public class PracticeTrackTests
     }
 
     // ── Harness ─────────────────────────────────────────────────────────────
+
+    /// <summary>A singer's first drill on a track's path, before any take.</summary>
+    private static Drill First(Guid userId, PracticeTrack? track, int level)
+        => PracticePath.Next(userId, track, PracticePath.Read(userId, [], _ => level), level).Drill;
 
     private static Task<Result<PracticeProgressDto>> SetTrack(TestHarness h, User user, string? track)
         => new SetPracticeTrackCommandHandler(h.Db, new StubCurrentUser(user.Id), h.Clock, new StubClientTimeZone())

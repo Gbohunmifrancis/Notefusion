@@ -192,6 +192,7 @@ the one-time switch-over below. The deploy builds and pushes the backup image, c
 Then check, on the server:
 
 ```bash
+cd /opt/notefusion      # the compose file lives here, not in your home folder
 docker compose -f docker-compose.prod.yml logs --tail 20 backup
 #   [startup] Backups are ON: notefusion-backups at <account>.r2.cloudflarestorage.com; schedule …
 

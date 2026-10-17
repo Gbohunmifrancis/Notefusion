@@ -303,7 +303,7 @@ export function HomeScreen({ navigation }: Props) {
                     <Ionicons
                       name={practice.streak.current > 0 ? 'flame' : 'flame-outline'}
                       size={15}
-                      color={practice.streak.current > 0 ? colors.premium : colors.textMuted}
+                      color={practice.streak.current > 0 ? colors.play : colors.textMuted}
                     />
                     <Text style={styles.practiceChipText}>{practice.streak.current}</Text>
                     <View style={styles.practiceChipDivider} />

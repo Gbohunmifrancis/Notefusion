@@ -5,7 +5,16 @@
  * (C# Application/Practice); nothing here scores a take.
  */
 
-import type { PracticeBadge, PracticeLevel, PracticeProgress, PracticeReward, WeeklyGoal } from "../api/types";
+import type {
+  Drill,
+  DrillAllowance,
+  PracticeBadge,
+  PracticeLevel,
+  PracticeProgress,
+  PracticeReward,
+  PracticeTrack,
+  WeeklyGoal,
+} from "../api/types";
 
 /** How far through the current level `xp` is, 0–1 (full at the top level). */
 export function levelFraction(level: PracticeLevel, xp: number): number {
@@ -68,6 +77,58 @@ export function rewardEvents(reward: PracticeReward | null | undefined): { name:
   if (reward.levelUp) events.push({ name: "level_up", params: { level: reward.level.name, index: reward.level.index } });
   for (const b of reward.newBadges) events.push({ name: "badge_earned", params: { badge: b.code } });
   return events;
+}
+
+// ── The practice path ─────────────────────────────────────────────────────────
+// The server's path (C# PracticePath): grades → units → drills. The same words on the web: assets/practice-progress.js.
+
+/** "Grade 2 · Unit 3 · 4 of 6", with "· Harder" or "· Easier" when the last take moved it; null without a place. */
+export function pathLine(drill: Pick<Drill, "grade" | "unitIndex" | "drillIndex" | "drillCount" | "adjustment">): string | null {
+  if (!drill.grade || !(drill.unitIndex > 0) || !(drill.drillCount > 0)) return null;
+  const moved = drill.adjustment === "harder" ? " · Harder" : drill.adjustment === "easier" ? " · Easier" : "";
+  return `${drill.grade} · Unit ${drill.unitIndex} · ${drill.drillIndex} of ${drill.drillCount}${moved}`;
+}
+
+/** How much of the unit is behind the singer, 0–1: the thin bar under the path line. */
+export function unitFraction(drill: Pick<Drill, "drillIndex" | "drillCount">): number {
+  return drill.drillCount > 0 ? clamp01((drill.drillIndex - 1) / drill.drillCount) : 0;
+}
+
+/**
+ * The result's main button: on to the next drill, or — when the path brings the same drill back after a miss —
+ * the same one again. `next` is null while it is still loading (the button says "Next drill" and loads it).
+ */
+export function nextAction(
+  current: Pick<Drill, "id">,
+  next: Pick<Drill, "id"> | null,
+  track: PracticeTrack | null,
+): { label: string; same: boolean } {
+  const same = !!next && next.id === current.id;
+  if (track === "playful") return { label: same ? "Try again!" : "Next one!", same };
+  return { label: same ? "Try it again" : "Next drill", same };
+}
+
+/**
+ * "midnight", "1:30 am": when the drill allowance starts again, on the phone's clock. `offsetMinutes` is
+ * `Date.getTimezoneOffset()` at that moment (minutes behind UTC), passed in so the wording is testable.
+ */
+export function resetTime(resetsAtUtc: string | null | undefined, offsetMinutes?: number): string | null {
+  const t = resetsAtUtc ? Date.parse(resetsAtUtc) : NaN;
+  if (!Number.isFinite(t)) return null;
+  const offset = offsetMinutes ?? new Date(t).getTimezoneOffset();
+  const local = new Date(t - offset * 60_000);
+  const h = local.getUTCHours();
+  const m = local.getUTCMinutes();
+  if (h === 0 && m === 0) return "midnight";
+  return `${h % 12 === 0 ? 12 : h % 12}:${`${m}`.padStart(2, "0")} ${h < 12 ? "am" : "pm"}`;
+}
+
+/** "7 of 10 marked drills left today", or, once they are sung, a warm last word with when more come. */
+export function allowanceLine(allowance: DrillAllowance, offsetMinutes?: number): string {
+  const left = Math.max(0, allowance.limit - allowance.used);
+  if (left > 0) return `${left} of ${allowance.limit} marked drills left today`;
+  const when = resetTime(allowance.resetsAtUtc, offsetMinutes);
+  return `That's all ${allowance.limit} of today's drills. Well sung! ${when ? `More from ${when}.` : "More tomorrow."}`;
 }
 
 // ── Streak reminders ──────────────────────────────────────────────────────────

@@ -278,6 +278,8 @@ export interface GradeResult {
   notes: GradeNote[];
   /** What the take earned as practice (XP, level, streak, badges); set by the API for a signed-in singer. */
   reward?: PracticeReward | null;
+  /** A practice-path milestone this drill just reached (a unit or a grade finished); null for most takes. */
+  milestone?: PracticeMilestone | null;
 }
 
 // ── Practice (C# Application/Practice/Dtos/PracticeDtos.cs) ─────────────────
@@ -338,7 +340,38 @@ export interface PracticeDay {
 export interface DrillAllowance {
   used: number;
   limit: number;
+  /** When the allowance starts again: the singer's next local midnight, ISO UTC. */
+  resetsAtUtc: string | null;
 }
+
+/**
+ * Where the singer is on their track's practice path (C# `PracticePathDto`): the grade ("Grade 2", "Advanced 1"), the
+ * unit's title, its number of the grade's (1-based) and the drill's of the unit's (1-based), and units/grades finished.
+ */
+export interface PracticePath {
+  grade: string;
+  unit: string;
+  unitIndex: number;
+  unitCount: number;
+  drillIndex: number;
+  drillCount: number;
+  unitsComplete: number;
+  gradesComplete: number;
+}
+
+/** A milestone a marked drill just reached (C# `PracticeMilestoneDto`): "Unit 3 of Grade 2 complete", "Grade 2 complete". */
+export interface PracticeMilestone {
+  kind: "unit" | "grade";
+  title: string;
+  /** One line of what was learned ("You can now …" for a grade). */
+  description: string;
+  grade: string;
+  unitIndex: number;
+  unitCount: number;
+}
+
+/** How the next drill was moved by the last take (C# `DrillAdjustment`): after a skip ahead, an easier variant or a step back. */
+export type DrillAdjustment = "steady" | "harder" | "easier";
 
 /**
  * How a singer likes to practise (C# `Core.Enums.PracticeTrack`): a style, never an age. It picks the day's drill
@@ -361,6 +394,8 @@ export interface PracticeProgress {
   drills: DrillAllowance;
   /** Null until the singer picks one; the screen asks then. */
   track: PracticeTrack | null;
+  /** The singer's place on their track's path. */
+  path: PracticePath | null;
 }
 
 /** What a marked take earned, returned with its grade. */
@@ -373,7 +408,11 @@ export interface PracticeReward {
   newBadges: PracticeBadge[];
 }
 
-/** GET /api/practice/drills/today: a short solfa pattern, the same all day. */
+/**
+ * GET /api/practice/drills/next (old name /drills/today): the next drill on the singer's practice path, the same until
+ * a take of it is marked. Where it sits: `grade`, `unit`, `unitIndex`/`unitCount` and `drillIndex`/`drillCount`
+ * (1-based), `difficulty` (its unit in its own grade, 1–5) and `adjustment`.
+ */
 export interface Drill {
   id: string;
   title: string;
@@ -393,8 +432,18 @@ export interface Drill {
   /** yyyy-mm-dd on the singer's calendar. */
   date: string;
   allowance: DrillAllowance;
-  /** The track this drill was picked for (null with none chosen): each track has its own drill of the day. */
+  /** The track this drill was picked for (null with none chosen): each track has its own path. */
   track: PracticeTrack | null;
+  /** "Grade 2", "Advanced 1". */
+  grade: string;
+  /** The unit's title, e.g. "The doh chord". */
+  unit: string;
+  unitIndex: number;
+  unitCount: number;
+  drillIndex: number;
+  drillCount: number;
+  difficulty: number;
+  adjustment: DrillAdjustment;
 }
 
 /**

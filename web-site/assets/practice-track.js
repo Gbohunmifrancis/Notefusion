@@ -5,7 +5,8 @@
  * A track is a style, never an age: nothing here asks how old anyone is.
  * The mobile copy is mobile/src/lib/practiceTrack.ts (tests: practiceTrack.test.ts) — keep them in step.
  *
- * Plain functions; assets/practice-view.js draws the view. Loaded with it, on demand.
+ * Plain functions, and which picture of the Practice art goes where; assets/practice-view.js draws the view.
+ * Loaded with it, on demand.
  */
 (function () {
   "use strict";
@@ -42,12 +43,12 @@
 
   // ── Celebrations ─────────────────────────────────────────────────────────
   /**
-   * How big a marked take's moment is: a confetti "burst" (Playful's three stars, a level or a badge), a "toast"
-   * line, or "quiet". Focused shows its marks and keeps the toast for a level or a badge. The view drops the burst
-   * when the reader asks for reduced motion.
+   * How big a marked take's moment is: a confetti "burst" (Playful's three stars, a level, a badge or a path
+   * milestone), a "toast" line, or "quiet". Focused shows its marks and keeps the toast for a level, a badge or a
+   * milestone. The view drops the burst when the reader asks for reduced motion.
    */
-  function celebrationFor(track, score, reward) {
-    var big = !!reward && (reward.levelUp || (reward.newBadges || []).length > 0);
+  function celebrationFor(track, score, reward, milestone) {
+    var big = !!milestone || (!!reward && (reward.levelUp || (reward.newBadges || []).length > 0));
     var earned = !!reward && reward.xpGained > 0;
     if (track === "playful") return big || starsFor(score) === 3 ? "burst" : earned ? "toast" : "quiet";
     if (track === "focused") return big ? "toast" : "quiet";
@@ -104,9 +105,81 @@
     return (h % 13) - 6;
   }
 
+  // ── The art (assets/practice-art, drawn by design/practice-art) ──────────
+  /**
+   * Doh the doh bird's mood: handing over in the picker, singing along while a take records, cheering a level-up or
+   * the weekly goal met, encouraging a near miss (two stars), sleepy with no drill or the day's drills all sung,
+   * worried while the streak is at risk, else waving hello. Doh lives inside Practice only; Focused shows no buddy.
+   * scene: { picking, recording, grade ({ score, reward } or null), hasDrill, drillsLeft (null: not known) }
+   */
+  function mascotMood(progress, scene) {
+    if (scene.picking) return "handoff";
+    if (scene.recording) return "sing";
+    if ((scene.grade && scene.grade.reward && scene.grade.reward.levelUp) || goalMetToday(progress)) return "cheer";
+    if (scene.grade && starsFor(scene.grade.score) === 2) return "encourage";
+    if (!scene.hasDrill || scene.drillsLeft === 0) return "sleepy";
+    if (progress.streak.atRisk) return "worried";
+    return "wave";
+  }
+
+  function goalMetToday(progress) {
+    var g = progress.weeklyGoal;
+    return !!progress.streak.todayDone && g.target > 0 && g.daysDone >= g.target;
+  }
+
+  /** Doh's line for a mood; the waving Doh says the day's buddyLine. */
+  function mascotLine(mood, progress, scene) {
+    switch (mood) {
+      case "sing": return "I'm listening. Sing out!";
+      case "cheer":
+        return scene.grade && scene.grade.reward && scene.grade.reward.levelUp
+          ? "Hooray! You've reached " + scene.grade.reward.level.name + "!"
+          : progress.weeklyGoal.daysDone + " days this week. Weekly goal met!";
+      case "encourage": return "Nearly there! Listen once more and have another go.";
+      case "sleepy": return scene.hasDrill ? "All sung for today. See you tomorrow!" : "No drill yet. Try again in a moment.";
+      case "worried": return "Sing today to keep your " + progress.streak.current + "-day streak going!";
+      case "handoff": return TRACK_QUESTION;
+      default: return buddyLine(progress);
+    }
+  }
+
+  function mascotArt(mood) { return "doh-" + mood; }
+
+  var LEVEL_ART = ["level-1-doh", "level-2-ray", "level-3-me", "level-4-fah", "level-5-soh", "level-6-lah", "level-7-te", "level-8-choir-ready"];
+  /** A level's emblem, by its 0-based index (C# PracticeRules.Levels). */
+  function levelArt(index) { return LEVEL_ART[Math.max(0, Math.min(LEVEL_ART.length - 1, Math.trunc(index) || 0))]; }
+
+  var BADGE_ART = {
+    first_drill: "first-drill", streak_3: "three-in-a-row", first_100: "spot-on", drills_10: "ten-drills", first_part: "first-part",
+    week_goal: "week-goal", streak_7: "seven-in-a-row", whole_part_80: "part-learned", streak_30: "month"
+  };
+  /** A badge's sticker, or its locked one; a code this build does not know shows the first drill's. */
+  function badgeArt(code, earned) {
+    return "badge-" + (Object.prototype.hasOwnProperty.call(BADGE_ART, code) ? BADGE_ART[code] : "first-drill") + (earned ? "" : "-locked");
+  }
+
+  /** The streak flame: out with no streak, at risk until today is sung, else lit. */
+  function flameArt(streak) { return streak.current <= 0 ? "flame-out" : streak.atRisk ? "flame-at-risk" : "flame-active"; }
+
+  /** The picture beside a reward's line: the new level's emblem, else the first new badge's sticker, else none. */
+  function rewardArt(reward) {
+    if (!reward) return null;
+    if (reward.levelUp) return levelArt(reward.level.index);
+    var badge = (reward.newBadges || [])[0];
+    return badge ? badgeArt(badge.code, true) : null;
+  }
+
+  function starsArt(stars) { return "stars-" + stars; }
+  function trackArt(track) { return track === "playful" ? "track-playful" : "track-focused"; }
+
+  /** The burst's paper bits, in turn. */
+  var CONFETTI_ART = ["confetti-quaver", "confetti-sparkle", "confetti-beamed", "confetti-dot", "confetti-sharp", "confetti-ribbon", "confetti-flat", "confetti-tri"];
+
   window.NfPracticeTrack = {
     TRACK_OPTIONS: TRACK_OPTIONS, TRACK_QUESTION: TRACK_QUESTION, THREE_STAR_SCORE: THREE_STAR_SCORE, TWO_STAR_SCORE: TWO_STAR_SCORE,
     trackTitle: trackTitle, starsFor: starsFor, starWord: starWord, starHint: starHint, celebrationFor: celebrationFor,
-    playfulRewardLine: playfulRewardLine, tuningLine: tuningLine, buddyLine: buddyLine, stickerTilt: stickerTilt
+    playfulRewardLine: playfulRewardLine, tuningLine: tuningLine, buddyLine: buddyLine, stickerTilt: stickerTilt,
+    mascotMood: mascotMood, mascotLine: mascotLine, mascotArt: mascotArt, levelArt: levelArt, badgeArt: badgeArt,
+    flameArt: flameArt, rewardArt: rewardArt, starsArt: starsArt, trackArt: trackArt, CONFETTI_ART: CONFETTI_ART
   };
 })();
