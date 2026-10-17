@@ -150,6 +150,19 @@ public static class DependencyInjection
         {
             services.AddScoped<IPushSender, LoggingPushSender>();
         }
+
+        // Web push for the web app: the VAPID pair is configured or derived from the JWT signing key
+        // (see VapidKeys), so it needs no setup; WebPush__Enabled=false turns it off.
+        var webPush = configuration.GetSection("WebPush").Get<WebPushSettings>() ?? new WebPushSettings();
+        services.AddSingleton(sp => VapidKeys.Resolve(
+            webPush,
+            sp.GetRequiredService<RsaKeyProvider>(),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(VapidKeys))));
+        services.AddSingleton<IWebPushKeys>(sp => sp.GetRequiredService<VapidKeys>());
+        services.AddHttpClient<IWebPushSender, WebPushSender>()
+            // The default request log line carries the URL, and an endpoint is a browser's private address.
+            .RemoveAllLoggers()
+            .AddOutboundResilience(OutboundResilience.WebPush);
     }
 
     private static void AddEmail(this IServiceCollection services, IConfiguration configuration)

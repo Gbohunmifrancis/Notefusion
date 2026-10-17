@@ -46,6 +46,12 @@ internal sealed record OutboundResilienceOptions
     /// </summary>
     public bool BusyCountsAsFailure { get; init; } = true;
 
+    /// <summary>
+    /// One breaker (and pipeline) per host rather than one for the provider, for a client that calls several
+    /// independent services (web push: FCM, Mozilla, Apple, WNS), so one being down does not stop the others.
+    /// </summary>
+    public bool PerAuthority { get; init; }
+
     public double FailureRatio { get; init; } = 0.5;
     public int MinimumThroughput { get; init; } = 5;
     public TimeSpan SamplingDuration { get; init; } = TimeSpan.FromSeconds(60);
@@ -101,6 +107,18 @@ internal static class OutboundResilience
         Provider = OutboundProviders.Push,
         AttemptTimeout = TimeSpan.FromSeconds(5),
         TotalTimeout = TimeSpan.FromSeconds(10),
+    };
+
+    /// <summary>
+    /// Web push (RFC 8030): one POST per browser, not repeatable (a retry could notify twice), with a breaker
+    /// per push service.
+    /// </summary>
+    public static readonly OutboundResilienceOptions WebPush = new()
+    {
+        Provider = OutboundProviders.WebPush,
+        AttemptTimeout = TimeSpan.FromSeconds(5),
+        TotalTimeout = TimeSpan.FromSeconds(10),
+        PerAuthority = true,
     };
 
     /// <summary>
@@ -175,8 +193,10 @@ internal static class OutboundResilience
     {
         builder.Services.AddProviderHealth();
         builder.ConfigureHttpClient(client => client.Timeout = Timeout.InfiniteTimeSpan);
-        builder.AddResilienceHandler(options.Provider, (pipeline, context) =>
+        var handler = builder.AddResilienceHandler(options.Provider, (pipeline, context) =>
             Configure(pipeline, options, context.ServiceProvider.GetRequiredService<CircuitProviderHealth>()));
+        if (options.PerAuthority)
+            handler.SelectPipelineByAuthority();
         // Inside the pipeline, so it sees each attempt that actually left: see OutboundFailure.NothingSent.
         builder.AddHttpMessageHandler(() => new AttemptMarker());
         return builder;

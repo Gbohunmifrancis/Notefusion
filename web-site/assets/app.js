@@ -590,12 +590,17 @@
     var t = tokens();
     var told = t && t.refreshToken
       ? Promise.race([
-          request("/api/auth/logout", { method: "POST", body: { refreshToken: t.refreshToken } }).catch(function () { /* best effort */ }),
+          Promise.all([
+            // Before the session goes: this browser stops getting this account's notifications.
+            NF.pushOff(window, request, true),
+            request("/api/auth/logout", { method: "POST", body: { refreshToken: t.refreshToken } }).catch(function () { /* best effort */ })
+          ]),
           new Promise(function (resolve) { setTimeout(resolve, 3000); })
         ])
       : Promise.resolve();
     told.then(function () {
       signingOut = false;
+      pushAskedFor = null;
       clearTokens(); forgetAccount(); clearCheckout(); showAuth();
     });
   });
@@ -1211,6 +1216,10 @@
       // Only the provider's return says a payment was made; otherwise the check runs out of sight.
       var paidReturn = !!new URLSearchParams(location.search).get("paid");
       if (paidReturn || readCheckout()) watchPayment(!paidReturn);
+      // A notification's link (/app?job=<id>): the finished sheet, or why it failed.
+      var jobToOpen = new URLSearchParams(location.search).get("job");
+      if (jobToOpen) { dropParam("job"); openJob(jobToOpen); }
+      syncPush();
       if (previewId) {
         // The preview that brought this person here is now theirs: the funnel's conversion.
         request("/api/preview/jobs/" + encodeURIComponent(previewId) + "/claim", { method: "POST" }).catch(function () { /* best effort */ });
@@ -1579,15 +1588,68 @@
     NF.cue(document, outcome);
     if (!todo.notify) return;
     var jobId = current.jobId, words = NF.message(outcome, NF.nameOf(current.source, current.fileName), error);
-    var note = NF.show(window, {
-      title: words.title, body: words.body, tag: NF.tag(jobId),
-      onOpen: function () {
-        track("Notification opened", outcome);
-        // The sheet (or why it failed) is on the studio's page, unless another job has started since.
-        if (current && current.jobId === jobId && $("view-transcribe").classList.contains("hidden")) setView("transcribe");
-      }
+    // Through the push worker when there is one, under the job's tag: a push for this job that got here
+    // first is replaced, not doubled. Its click comes back as an "nf-open" message (below).
+    NF.showVia(window, {
+      title: words.title, body: words.body, tag: NF.tag(jobId), jobId: jobId, kind: outcome === "failed" ? "failed" : "ready",
+      url: "/app?job=" + encodeURIComponent(jobId),
+      onOpen: function () { openedFromNotification(jobId, outcome); }
+    }).then(function (note) {
+      if (!note) return;
+      track("Notified", outcome);
+      // Looking at the tab closes it; if they already came back while it was being shown, it goes now.
+      if (NF.cued()) NF.holdNote(note); else note.close();
     });
-    if (note) { NF.holdNote(note); track("Notified", outcome); }
+  }
+  /** The sheet (or why it failed) is on the studio's page, unless another job has started since. */
+  function openedFromNotification(jobId, outcome) {
+    track("Notification opened", outcome);
+    if (current && current.jobId === jobId) { if ($("view-transcribe").classList.contains("hidden")) setView("transcribe"); }
+    else openJob(jobId);
+  }
+
+  // ── Web push: the notification when the tab is closed (assets/notify.js, /sw.js) ──
+  var pushAskedFor = null; // the account this page has already saved its subscription for
+  /** Notifications are on for a signed-in account: (re)subscribe this browser and tell the API, once per page and account. */
+  function syncPush() {
+    if (guest || !me || !tokens() || !NF.notifyOn(NF.permission(window), NF.prefs(prefStore()).notify)) return;
+    var who = me.id || me.email || "me";
+    if (pushAskedFor === who) return;
+    pushAskedFor = who;
+    NF.pushOn(window, request).then(function (state) { if (state !== "on") pushAskedFor = null; });
+  }
+  NF.onWorkerMessage(window, function (msg) {
+    if (msg.type === "nf-open") { openedFromNotification(msg.jobId, msg.kind); return; }
+    // A push while this page is in front: the job on the card is collected by asking now rather than at the next poll.
+    if (current && current.jobId === msg.jobId) { if (pollTimer) { stopPolling(); poll(); } return; }
+    if (!msg.jobId || guest || !tokens()) return;
+    var said = msg.body && !TECHNICAL.test(msg.body) ? msg.body : msg.kind === "failed" ? "That could not be transcribed." : "Open it in NoteFusion.";
+    alertIn($("app-alert"), msg.kind === "failed" ? "danger" : "info", msg.title + ". " + said);
+    if (msg.kind !== "failed") {
+      var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm";
+      b.textContent = "Open it";
+      b.addEventListener("click", function () { hide($("app-alert")); openJob(msg.jobId); });
+      $("app-alert").appendChild(b);
+    }
+  });
+
+  /**
+   * Opens a job by its id, as a notification's click and /app?job=<id> do: the result if it finished, its
+   * progress if not. Signed out, the id waits in the address until boot() can open it.
+   */
+  function openJob(jobId) {
+    if (!jobId) return;
+    if (guest || !tokens()) {
+      try { var u = new URL(location.href); u.searchParams.set("job", jobId); history.replaceState(history.state, "", u.pathname + u.search + u.hash); } catch (e) { /* nothing depends on it */ }
+      return;
+    }
+    if (current && current.jobId === jobId) { setView("transcribe"); return; }
+    setView("transcribe");
+    request("/api/transcriptions/jobs/" + encodeURIComponent(jobId)).then(function (job) {
+      startJob({ jobId: jobId, stage: job && job.stage, queuePosition: job && job.queuePosition, source: job && job.source }, "job");
+    }, function (err) {
+      alertIn($("app-alert"), "info", err.status === 404 ? "That transcription isn't available any more." : err.message);
+    });
   }
   // Looking at the tab again puts its own title and icon back (and closes a notification still showing).
   function backInView() { if (NF.cued() && !NF.isAway(document)) NF.clearCue(document); }
@@ -1615,6 +1677,7 @@
     if (answer === "unsupported") return;
     trackPermission(answer);
     if (answer === "granted" || answer === "denied") NF.setNotify(prefStore(), answer === "granted");
+    if (answer === "granted") { pushAskedFor = null; syncPush(); }
     renderNotifySettings();
   }
   // "Notify me when it's ready" on the progress card: the browser asks from this click, never on page load.
@@ -1644,16 +1707,19 @@
     sw.setAttribute("aria-checked", String(NF.notifyOn(perm, p.notify)));
     sw.disabled = perm === "unsupported";
     $("acct-notify-sound").setAttribute("aria-checked", String(p.sound));
-    var text = perm === "unsupported" ? "This browser can't show notifications. The sound and the tab's title still tell you when it's ready."
+    var support = NF.pushSupport(window);
+    var text = support === "home-screen" ? "On iPhone and iPad, add NoteFusion to your Home Screen to get these (Share, then Add to Home Screen). Here, the sound and the tab's title tell you when it's ready."
+      : perm === "unsupported" ? "This browser can't show notifications. The sound and the tab's title still tell you when it's ready."
       : perm === "denied" ? "Notifications are blocked for this site in your browser's settings. Allow them there to turn this on; the sound and the tab's title still work."
+      : support === "push" ? "For a transcription that finishes in another tab or window, or after you've closed this one."
       : "For a transcription that finishes while you're in another tab or window.";
     // The note is aria-live: written only when it changes.
     if ($("acct-notify-note").textContent !== text) $("acct-notify-note").textContent = text;
   }
   $("acct-notify").addEventListener("click", function () {
     var perm = NF.permission(window), p = NF.prefs(prefStore());
-    if (NF.notifyOn(perm, p.notify)) NF.setNotify(prefStore(), false);
-    else if (perm === "granted") NF.setNotify(prefStore(), true);
+    if (NF.notifyOn(perm, p.notify)) { NF.setNotify(prefStore(), false); pushAskedFor = null; NF.pushOff(window, request); }
+    else if (perm === "granted") { NF.setNotify(prefStore(), true); pushAskedFor = null; syncPush(); }
     else if (perm === "default") { sfx.prime(); NF.request(window).then(rememberAnswer); return; }
     renderNotifySettings(); // blocked: the note says where to allow it
   });

@@ -133,3 +133,135 @@ test("asking: the browser's answer, from a promise or (older Safari) a callback;
   const old = { Notification: { permission: "default", requestPermission: (cb) => { cb("denied"); } } };
   assert.equal(await N.request(old), "denied");
 });
+
+// ── Web push (the notification with the tab closed) ──────────────────────────
+
+const pushWin = (over = {}) => ({
+  navigator: { userAgent: "Mozilla/5.0 (X11; Linux x86_64) Chrome/141.0", serviceWorker: {}, ...over.navigator },
+  PushManager: function () {},
+  Notification: { permission: "granted", requestPermission() {} },
+  matchMedia: () => ({ matches: false }),
+  ...over.win,
+});
+
+test("push support: a browser with a service worker, PushManager and Notification; iPhone Safari only from the Home Screen", () => {
+  assert.equal(N.pushSupport(pushWin()), "push");
+  assert.equal(N.pushSupport(pushWin({ win: { PushManager: undefined } })), "none");
+  assert.equal(N.pushSupport(pushWin({ navigator: { serviceWorker: undefined } })), "none");
+  assert.equal(N.pushSupport({}), "none");
+  const iphone = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1";
+  assert.equal(N.pushSupport(pushWin({ navigator: { userAgent: iphone }, win: { PushManager: undefined, Notification: undefined } })), "home-screen");
+  assert.equal(N.pushSupport(pushWin({ navigator: { userAgent: iphone, standalone: true } })), "push");
+  assert.equal(N.pushSupport(pushWin({ navigator: { userAgent: iphone }, win: { matchMedia: () => ({ matches: true }) } })), "push");
+  // iPadOS says it is a Mac; the touch points give it away.
+  const ipad = pushWin({ navigator: { userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/605.1.15", platform: "MacIntel", maxTouchPoints: 5 } });
+  assert.equal(N.pushSupport(ipad), "home-screen");
+  const mac = pushWin({ navigator: { userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/605.1.15", platform: "MacIntel", maxTouchPoints: 0 } });
+  assert.equal(N.pushSupport(mac), "push");
+});
+
+test("the API's base64url key becomes the bytes applicationServerKey takes, and is compared with a subscription's", () => {
+  const bytes = Array.from({ length: 65 }, (_, i) => (i * 37 + 4) % 256);
+  const key = Buffer.from(bytes).toString("base64url");
+  assert.deepEqual(Array.from(N.keyBytes(key)), bytes);
+  assert.deepEqual(Array.from(N.keyBytes(Buffer.from(bytes).toString("base64"))), bytes); // padded standard base64 too
+  assert.equal(N.keyBytes(""), null);
+  assert.equal(N.keyBytes("not a key!"), null);
+  assert.equal(N.sameKey(new Uint8Array(bytes).buffer, key), true);
+  const other = bytes.slice(); other[10] ^= 1;
+  assert.equal(N.sameKey(new Uint8Array(other).buffer, key), false);
+  assert.equal(N.sameKey(null, key), true, "a browser that does not say is not churned");
+});
+
+test("the subscription the API is sent: the endpoint and its two keys, nothing else", () => {
+  same(N.subscriptionBody({ endpoint: "https://fcm.googleapis.com/fcm/send/x", expirationTime: null, keys: { p256dh: "BP", auth: "au" } }),
+    { endpoint: "https://fcm.googleapis.com/fcm/send/x", keys: { p256dh: "BP", auth: "au" } });
+  assert.equal(N.subscriptionBody({ endpoint: "https://x" }), null);
+  assert.equal(N.subscriptionBody(null), null);
+});
+
+/** A browser with a push worker: what the page registers, subscribes and tells the API. */
+function fakeBrowser({ existingKey = null, permission = "granted" } = {}) {
+  const calls = [];
+  const key = Buffer.from(Array.from({ length: 65 }, (_, i) => i)).toString("base64url");
+  let sub = existingKey ? fakeSub("https://fcm.googleapis.com/fcm/send/old", existingKey) : null;
+  function fakeSub(endpoint, k) {
+    return {
+      endpoint, options: { applicationServerKey: new Uint8Array(Buffer.from(k, "base64url")).buffer },
+      toJSON: () => ({ endpoint, keys: { p256dh: "BPkey", auth: "authkey" } }),
+      unsubscribe: () => { calls.push(["unsubscribe", endpoint]); sub = null; return Promise.resolve(true); },
+    };
+  }
+  const reg = {
+    active: {},
+    pushManager: {
+      getSubscription: () => Promise.resolve(sub),
+      subscribe: (o) => {
+        calls.push(["subscribe", o.userVisibleOnly, Buffer.from(o.applicationServerKey).toString("base64url")]);
+        sub = fakeSub("https://fcm.googleapis.com/fcm/send/new", key);
+        return Promise.resolve(sub);
+      },
+    },
+  };
+  const win = pushWin({
+    navigator: { serviceWorker: {
+      register: (url, o) => { calls.push(["register", url, o.scope]); return Promise.resolve(reg); },
+      getRegistration: (scope) => Promise.resolve(scope === "/app/" ? reg : undefined),
+    } },
+    win: { Notification: { permission, requestPermission() {} } },
+  });
+  const api = (path, opts = {}) => {
+    calls.push([opts.method || "GET", path, opts.body || null]);
+    return Promise.resolve(path.endsWith("/key") ? { publicKey: key } : null);
+  };
+  return { win, api, calls, key };
+}
+
+test("turning push on registers the /app/ worker, subscribes with the API's key and saves the subscription", async () => {
+  const b = fakeBrowser();
+  assert.equal(await N.pushOn(b.win, b.api), "on");
+  same(b.calls, [
+    ["GET", "/api/push/web/key", null],
+    ["register", "/sw.js", "/app/"],
+    ["subscribe", true, b.key],
+    ["POST", "/api/push/web/subscriptions", { endpoint: "https://fcm.googleapis.com/fcm/send/new", keys: { p256dh: "BPkey", auth: "authkey" } }],
+  ]);
+});
+
+test("a subscription made with an old key is replaced; one made with this key is only saved again", async () => {
+  const stale = fakeBrowser({ existingKey: Buffer.from([4, 1, 2]).toString("base64url") });
+  assert.equal(await N.pushOn(stale.win, stale.api), "on");
+  assert.ok(stale.calls.some((c) => c[0] === "unsubscribe" && c[1].endsWith("/old")));
+  assert.ok(stale.calls.some((c) => c[0] === "DELETE" && c[2].endpoint.endsWith("/old")));
+  assert.ok(stale.calls.some((c) => c[0] === "subscribe"));
+
+  const again = fakeBrowser({ existingKey: fakeBrowser().key });
+  assert.equal(await N.pushOn(again.win, again.api), "on");
+  assert.ok(!again.calls.some((c) => c[0] === "subscribe" || c[0] === "unsubscribe"));
+  assert.ok(again.calls.some((c) => c[0] === "POST" && c[2].endpoint.endsWith("/old")));
+});
+
+test("push stays off without permission, support or a key, and never throws", async () => {
+  const blocked = fakeBrowser({ permission: "denied" });
+  assert.equal(await N.pushOn(blocked.win, blocked.api), "unsupported");
+  assert.equal(blocked.calls.length, 0);
+  assert.equal(await N.pushOn({}, () => Promise.resolve(null)), "unsupported");
+  const b = fakeBrowser();
+  assert.equal(await N.pushOn(b.win, () => Promise.reject(new Error("WEBPUSH_OFF"))), "failed");
+});
+
+test("turning push off tells the API, then unsubscribes; signing out tells the API and keeps the browser's subscription", async () => {
+  const old = "https://fcm.googleapis.com/fcm/send/old";
+  const off = fakeBrowser({ existingKey: "BA" });
+  await N.pushOff(off.win, off.api);
+  same(off.calls, [["DELETE", "/api/push/web/subscriptions", { endpoint: old }], ["unsubscribe", old]]);
+
+  const out = fakeBrowser({ existingKey: "BA" });
+  await N.pushOff(out.win, out.api, true);
+  same(out.calls, [["DELETE", "/api/push/web/subscriptions", { endpoint: old }]]);
+
+  const none = fakeBrowser();
+  await N.pushOff(none.win, none.api);
+  assert.equal(none.calls.length, 0);
+  await N.pushOff({}, none.api); // no support: nothing, and no throw
+});

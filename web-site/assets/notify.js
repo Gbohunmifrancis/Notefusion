@@ -167,10 +167,164 @@
   function holdNote(n) { if (held && n) held.note = n; }
   function cued() { return !!held; }
 
+  // ── Web push: the same notification when the tab is closed (web-site/sw.js) ──
+  // With notifications on and a signed-in account, the browser is subscribed to push (a service worker scoped
+  // to /app/ that does nothing else) and the API sends a finished or failed job to it. The tab's own
+  // notification then goes through the same worker, under the same tag, so a push and the tab never show one
+  // job twice. Anything missing (no service worker, no PushManager, no key from the API) leaves the in-tab
+  // behaviour above exactly as it was.
+
+  var SW_URL = "/sw.js", SW_SCOPE = "/app/", BADGE = "/assets/mark.png";
+  function noop() { /* best effort */ }
+
+  function isIos(nav) {
+    if (!nav) return false;
+    return /iPad|iPhone|iPod/.test(nav.userAgent || "") || (nav.platform === "MacIntel" && nav.maxTouchPoints > 1);
+  }
+  function isStandalone(win) {
+    try {
+      return !!(win.navigator && win.navigator.standalone) || !!(win.matchMedia && win.matchMedia("(display-mode: standalone)").matches);
+    } catch (e) { return false; }
+  }
+  /**
+   * What this browser can do: "push" (notifications reach it with the tab closed), "home-screen" (iPhone or
+   * iPad Safari, which has push only for a site added to the Home Screen), or "none".
+   */
+  function pushSupport(win) {
+    var nav = win && win.navigator;
+    if (!nav) return "none";
+    if (isIos(nav) && !isStandalone(win)) return "home-screen";
+    return nav.serviceWorker && win.PushManager && win.Notification ? "push" : "none";
+  }
+
+  var B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  /** A base64url key (what the API hands out) as the bytes applicationServerKey takes; null when it is not one. */
+  function keyBytes(text) {
+    var s = String(text || "").replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
+    if (!s || /[^A-Za-z0-9_-]/.test(s) || s.length % 4 === 1) return null;
+    var out = new Uint8Array(Math.floor(s.length * 3 / 4)), bits = 0, acc = 0, n = 0;
+    for (var i = 0; i < s.length; i++) {
+      acc = (acc << 6) | B64.indexOf(s.charAt(i)); bits += 6;
+      if (bits >= 8) { bits -= 8; out[n++] = (acc >> bits) & 255; }
+    }
+    return out;
+  }
+  /** The subscription was made with this key. Unknown (an older browser does not say) counts as the same. */
+  function sameKey(buffer, text) {
+    if (!buffer) return true;
+    var a = new Uint8Array(buffer), b = keyBytes(text);
+    if (!b || a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+    return true;
+  }
+  /** What the API takes from a subscription's toJSON(): the endpoint and its two keys; null when any is missing. */
+  function subscriptionBody(json) {
+    var k = json && json.keys;
+    if (!json || !json.endpoint || !k || !k.p256dh || !k.auth) return null;
+    return { endpoint: String(json.endpoint), keys: { p256dh: String(k.p256dh), auth: String(k.auth) } };
+  }
+
+  /** The worker's registration, once active (subscribe() needs an active worker). */
+  function register(win) {
+    return win.navigator.serviceWorker.register(SW_URL, { scope: SW_SCOPE }).then(function (reg) {
+      var w = reg.installing || reg.waiting;
+      if (reg.active || !w) return reg;
+      return new Promise(function (resolve, reject) {
+        w.addEventListener("statechange", function () {
+          if (w.state === "activated") resolve(reg);
+          else if (w.state === "redundant") reject(new Error("The service worker did not install."));
+        });
+      });
+    });
+  }
+  function registration(win) {
+    if (pushSupport(win) !== "push") return Promise.resolve(null);
+    return win.navigator.serviceWorker.getRegistration(SW_SCOPE).then(function (r) { return r || null; }, function () { return null; });
+  }
+
+  /**
+   * Turns push on for the signed-in account: registers the worker, subscribes with the API's key (again when
+   * the key has changed) and saves the subscription. `api(path, opts)` is the app's request(). Resolves
+   * "on", "unsupported" or "failed"; never rejects, so the in-tab notification is never in its way.
+   */
+  function pushOn(win, api) {
+    if (pushSupport(win) !== "push" || permission(win) !== "granted") return Promise.resolve("unsupported");
+    var key;
+    return api("/api/push/web/key", { anonymous: true }).then(function (k) {
+      key = k && k.publicKey;
+      if (!keyBytes(key)) throw new Error("No push key.");
+      return register(win);
+    }).then(function (reg) {
+      return reg.pushManager.getSubscription().then(function (existing) {
+        if (existing && !sameKey(existing.options && existing.options.applicationServerKey, key)) {
+          // Made with a key the API no longer signs with: it can never be delivered to again.
+          var old = existing.endpoint;
+          return existing.unsubscribe().then(function () {
+            api("/api/push/web/subscriptions", { method: "DELETE", body: { endpoint: old } }).catch(noop);
+            return null;
+          }, function () { return null; });
+        }
+        return existing;
+      }).then(function (existing) {
+        return existing || reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(key) });
+      });
+    }).then(function (sub) {
+      var body = subscriptionBody(sub && sub.toJSON());
+      if (!body) throw new Error("The subscription has no keys.");
+      return api("/api/push/web/subscriptions", { method: "POST", body: body });
+    }).then(function () { return "on"; }, function () { return "failed"; });
+  }
+
+  /**
+   * Stops pushes to this browser for the signed-in account. The API is told first (it needs the session, so
+   * signing out awaits this); then, unless `keepBrowser` (signing out: the next account to switch it on reuses
+   * it), the browser unsubscribes too. Never rejects.
+   */
+  function pushOff(win, api, keepBrowser) {
+    return registration(win).then(function (reg) {
+      return reg ? reg.pushManager.getSubscription() : null;
+    }).then(function (sub) {
+      if (!sub) return;
+      return api("/api/push/web/subscriptions", { method: "DELETE", body: { endpoint: sub.endpoint } }).catch(noop).then(function () {
+        if (!keepBrowser) return sub.unsubscribe();
+      });
+    }).catch(noop);
+  }
+
+  /**
+   * The tab's notification, through the worker when there is one (under the push's tag, so either replaces the
+   * other) and from the page otherwise. Resolves the Notification (for holdNote) or null. A click on a worker's
+   * notification comes back as an "nf-open" message (onWorkerMessage), not as opts.onOpen.
+   */
+  function showVia(win, opts) {
+    return registration(win).then(function (reg) {
+      if (!reg || !reg.active) return show(win, opts);
+      return reg.showNotification(opts.title, {
+        body: opts.body, icon: ICON, badge: BADGE, tag: opts.tag,
+        data: { url: opts.url || "/app", jobId: opts.jobId || null, kind: opts.kind || null }
+      }).then(function () {
+        return reg.getNotifications({ tag: opts.tag });
+      }).then(function (list) { return (list && list[0]) || null; });
+    }).catch(function () { return show(win, opts); });
+  }
+
+  /** The worker's messages to the page: "nf-push" (a push arrived while this page is in front) and "nf-open" (a click). */
+  function onWorkerMessage(win, handler) {
+    var sw = win && win.navigator && win.navigator.serviceWorker;
+    if (!sw || !sw.addEventListener) return;
+    sw.addEventListener("message", function (e) {
+      var d = e && e.data;
+      if (d && (d.type === "nf-push" || d.type === "nf-open")) handler(d);
+    });
+    if (sw.startMessages) sw.startMessages();
+  }
+
   window.NfNotify = {
     permission: permission, prefs: prefs, setNotify: setNotify, setSound: setSound,
     notifyOn: notifyOn, shouldAsk: shouldAsk, isAway: isAway, plan: plan,
     nameOf: nameOf, message: message, tabTitle: tabTitle, tag: tag,
-    chime: chime, request: request, show: show, cue: cue, clearCue: clearCue, holdNote: holdNote, cued: cued
+    chime: chime, request: request, show: show, cue: cue, clearCue: clearCue, holdNote: holdNote, cued: cued,
+    pushSupport: pushSupport, keyBytes: keyBytes, sameKey: sameKey, subscriptionBody: subscriptionBody,
+    pushOn: pushOn, pushOff: pushOff, showVia: showVia, onWorkerMessage: onWorkerMessage
   };
 })();

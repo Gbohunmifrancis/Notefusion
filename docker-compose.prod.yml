@@ -127,6 +127,12 @@ services:
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD}
       # Push goes out through Expo in production; set the PUSH__USEEXPO secret to false to only log it.
       Push__UseExpo: ${Push__UseExpo:-true}
+      # Web push for the web app (notifications with the tab closed). All optional: without a key pair the
+      # VAPID keys are derived from the JWT signing key (stable across deploys); false turns it off.
+      WebPush__Enabled: ${WebPush__Enabled:-true}
+      WebPush__PublicKey: ${WebPush__PublicKey:-}
+      WebPush__PrivateKey: ${WebPush__PrivateKey:-}
+      WebPush__Subject: ${WebPush__Subject:-mailto:hello@notefusion.studio}
       Security__RequireHttps: "false"
       Swagger__Enabled: "false"
       RateLimit__TrustedProxyHops: "1" 

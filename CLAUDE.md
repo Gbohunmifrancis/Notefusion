@@ -19,6 +19,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Admin registers one, and a passkey sign-in returns the password login's token pair to an Admin only; challenges are
   single-use, 5 min, in memory (`InMemoryPasskeyChallengeStore`, single instance). RP: `Passkeys__RpId`
   (`notefusion.studio`; `localhost` in Development) and `Passkeys__Origins` (`https://admin.notefusion.studio`).
+  Web push (the web app with its tab closed): `WebPushSubscription` rows (unique endpoint, known push services only,
+  `/api/push/web/key|subscriptions`), sent beside the Expo push by `NotifyTranscriptionReadyCommand` via `WebPushSender`
+  (Lib.Net.Http.WebPush over `OutboundResilience.WebPush`, a breaker per push service; 404/410 deletes the row, 5 refusals
+  drop it). VAPID pair from `WebPush__PublicKey`/`__PrivateKey`, else derived from the JWT signing key (`VapidKeys`, no
+  setup); `WebPush__Enabled=false` turns it off. `web-site/sw.js` (scope `/app/`, push only) shows it under the tab's
+  `nf-job-<id>` tag and a click opens `/app?job=<id>`.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off

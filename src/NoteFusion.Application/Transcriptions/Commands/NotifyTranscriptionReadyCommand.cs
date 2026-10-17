@@ -58,15 +58,18 @@ public sealed class NotifyTranscriptionReadyCommandHandler
     private readonly IDateTimeProvider _clock;
     private readonly IPushSender _push;
     private readonly ITranscriptionNotifier _notifier;
+    private readonly IWebPushSender _webPush;
 
     public NotifyTranscriptionReadyCommandHandler(
-        IApplicationDbContext db, ITranscriptionApi api, IDateTimeProvider clock, IPushSender push, ITranscriptionNotifier notifier)
+        IApplicationDbContext db, ITranscriptionApi api, IDateTimeProvider clock, IPushSender push,
+        ITranscriptionNotifier notifier, IWebPushSender webPush)
     {
         _db = db;
         _api = api;
         _clock = clock;
         _push = push;
         _notifier = notifier;
+        _webPush = webPush;
     }
 
     public async Task<Result> Handle(NotifyTranscriptionReadyCommand request, CancellationToken ct)
@@ -163,6 +166,10 @@ public sealed class NotifyTranscriptionReadyCommandHandler
                 new Dictionary<string, string> { ["jobId"] = job.JobId }),
             ct);
 
+        // The web app's browsers, for a tab that was closed (an open one collected it by its poll first).
+        await _webPush.SendAsync(
+            job.UserId, Push.WebPush.Ready(job.JobId, result.Source?.Title ?? await JobNameAsync(job.JobId, ct)), ct);
+
         return Result.Success();
     }
 
@@ -192,17 +199,30 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         var firstName = user?.FullName?.Split(' ')[0];
         if (string.IsNullOrWhiteSpace(firstName)) firstName = "there";
 
+        var sentence = string.IsNullOrWhiteSpace(reason)
+            ? "Something went wrong on our side. Try recording it again."
+            : reason;
         await _push.SendAsync(
             [job.UserId],
             new PushMessage(
                 $"Sorry {firstName}, the transcription failed",
-                string.IsNullOrWhiteSpace(reason)
-                    ? "Something went wrong on our side. Try recording it again."
-                    : reason,
+                sentence,
                 new Dictionary<string, string> { ["jobId"] = job.JobId }),
             ct);
 
+        await _webPush.SendAsync(job.UserId, Push.WebPush.Failed(job.JobId, await JobNameAsync(job.JobId, ct), sentence), ct);
+
         return Result.Success();
+    }
+
+    /// <summary>What the job is called on screen (the song's title or the file's name), from the activity log.</summary>
+    private async Task<string?> JobNameAsync(string jobId, CancellationToken ct)
+    {
+        var log = await _db.TranscriptionLogs
+            .Where(l => l.JobId == jobId)
+            .Select(l => new { l.SongTitle, l.FileName })
+            .FirstOrDefaultAsync(ct);
+        return log is null ? null : Push.WebPush.NameOf(log.SongTitle, log.FileName);
     }
 
     private Task<bool> IsProAsync(Guid userId, CancellationToken ct) => Common.ProStatus.IsProAsync(_db, _clock, userId, ct);
