@@ -22,6 +22,30 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.Achievement", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("AwardedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "Code")
+                        .IsUnique();
+
+                    b.ToTable("achievements", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.AdminAuditLog", b =>
                 {
                     b.Property<Guid>("Id")
@@ -901,6 +925,62 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("passkeys", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.PracticeSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DrillId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<double>("DurationSec")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("Hits")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Kind")
+                        .HasColumnType("integer");
+
+                    b.Property<DateOnly>("LocalDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("Missed")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Near")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Part")
+                        .HasMaxLength(1)
+                        .HasColumnType("character varying(1)");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("TranscriptionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("WholePart")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Wrong")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "LocalDate");
+
+                    b.ToTable("practice_sessions", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.PreviewJob", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1714,6 +1794,15 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("web_push_subscriptions", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.Achievement", b =>
+                {
+                    b.HasOne("NoteFusion.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.BlogTopic", b =>
                 {
                     b.HasOne("NoteFusion.Core.Entities.BlogPost", null)
@@ -1774,6 +1863,15 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                 });
 
             modelBuilder.Entity("NoteFusion.Core.Entities.Passkey", b =>
+                {
+                    b.HasOne("NoteFusion.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.PracticeSession", b =>
                 {
                     b.HasOne("NoteFusion.Core.Entities.User", null)
                         .WithMany()

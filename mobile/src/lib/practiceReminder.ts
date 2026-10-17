@@ -3,6 +3,7 @@ import { AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isExpoGo } from './env';
 import { ensureRemindersChannel, getPushPermission, REMINDER_CHANNEL_ID } from './push';
+import { reminderSlot, type StreakSnapshot } from './practiceProgress';
 
 /**
  * The daily "come and practise" nudge.
@@ -24,6 +25,12 @@ import { ensureRemindersChannel, getPushPermission, REMINDER_CHANNEL_ID } from '
  * behaviour — a fortnight of ignored nudges is what earns an uninstall — but it is a real
  * difference from a server-driven reminder, and the reason to revisit this if retention asks.
  *
+ * ── The streak ───────────────────────────────────────────────────────────────
+ * On the day a practice streak is at risk (`rememberStreak`, from the last progress read or marked take),
+ * that day's one reminder is about it instead — "Keep your 4-day streak — today's drill takes 2 minutes"
+ * — in the evening (the chosen hour or 19:00, whichever is later), and a tap opens Practice. Still one
+ * a day, still only when the switch is on, and practising cancels it like any other day's.
+ *
  * Android schedules these inexactly (`SCHEDULE_EXACT_ALARM` is not declared, and declaring it
  * is a native change plus a Play policy justification), so under Doze the delivery can drift
  * by minutes. Fine for a nudge.
@@ -32,6 +39,7 @@ import { ensureRemindersChannel, getPushPermission, REMINDER_CHANNEL_ID } from '
 const ENABLED_KEY = '@notefusion_reminder';
 const TIME_KEY = '@notefusion_reminder_time';
 const PRACTISED_KEY = '@notefusion_practised_on';
+const STREAK_KEY = '@notefusion_streak';
 
 /** Identifier prefix, so the window can be found and cancelled without touching anything else. */
 const ID_PREFIX = 'nf.practice.';
@@ -139,6 +147,32 @@ export async function markPractisedToday(): Promise<void> {
   }
 }
 
+/**
+ * Remembers the practice streak for tomorrow's (or tonight's) reminder and re-arms the window, so the day it
+ * is at risk gets the streak copy. Called after a progress read and after a marked take.
+ */
+export async function rememberStreak(snapshot: StreakSnapshot): Promise<void> {
+  const json = JSON.stringify(snapshot);
+  // Home reads progress on every focus; only a changed streak is worth a re-arm.
+  if (json === lastStreakJson) return;
+  lastStreakJson = json;
+  await AsyncStorage.setItem(STREAK_KEY, json).catch(() => undefined);
+  await armReminders();
+}
+
+let lastStreakJson: string | null = null;
+
+async function streakSnapshot(): Promise<StreakSnapshot | null> {
+  try {
+    const raw = await AsyncStorage.getItem(STREAK_KEY);
+    const parsed = raw ? (JSON.parse(raw) as Partial<StreakSnapshot>) : null;
+    if (!parsed || typeof parsed.streak !== 'number') return null;
+    return { streak: parsed.streak, riskDay: typeof parsed.riskDay === 'string' ? parsed.riskDay : null };
+  } catch {
+    return null;
+  }
+}
+
 async function practisedToday(): Promise<boolean> {
   try {
     return (await AsyncStorage.getItem(PRACTISED_KEY)) === dayKey(new Date());
@@ -174,26 +208,27 @@ export async function armReminders(): Promise<void> {
 
   const hour = reminderHour();
   const skipToday = await practisedToday();
+  const streak = await streakSnapshot();
   const now = new Date();
 
   for (let offset = 0; offset < WINDOW_DAYS; offset += 1) {
     const when = new Date(now);
     when.setDate(when.getDate() + offset);
-    when.setHours(hour, 0, 0, 0);
+    const slot = reminderSlot(dayKey(when), hour, streak, COPY[offset % COPY.length]!);
+    when.setHours(slot.hour, 0, 0, 0);
 
     // Today's slot has already passed, or today is already done. Either way there is nothing
     // to say — scheduling a past date would fire it immediately, which is the opposite.
     if (when.getTime() <= now.getTime()) continue;
     if (offset === 0 && skipToday) continue;
 
-    const copy = COPY[offset % COPY.length];
     try {
       await Notifications.scheduleNotificationAsync({
         identifier: `${ID_PREFIX}${dayKey(when)}`,
         content: {
-          title: copy.title,
-          body: copy.body,
-          data: { screen: 'Record' },
+          title: slot.title,
+          body: slot.body,
+          data: { screen: slot.screen },
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.DATE,

@@ -65,6 +65,15 @@ const AUTH_FREE = [
  */
 const BUSINESS_401 = new Set(['AUTH_REAUTHENTICATION_REQUIRED', 'AUTH_INVALID_CREDENTIALS']);
 
+/** The device's IANA zone, read once; undefined where Intl cannot say (the server then assumes Lagos). */
+const timeZone: string | undefined = (() => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || undefined;
+  } catch {
+    return undefined;
+  }
+})();
+
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   if (config.data instanceof FormData) {
     config.headers.delete('Content-Type');
@@ -74,6 +83,8 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   // shows matches the count it enforces. Memoised, so this is one native read per launch.
   const deviceId = await getDeviceId();
   if (deviceId) config.headers.set('X-Device-Id', deviceId);
+  // The phone's time zone, so practice streaks run on the singer's own calendar (Africa/Lagos when absent).
+  if (timeZone) config.headers.set('X-Time-Zone', timeZone);
 
   if (!AUTH_FREE.some((p) => config.url?.startsWith(p))) {
     const token = await tokenStore.getAccess();

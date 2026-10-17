@@ -4,7 +4,8 @@
  * The chorister picks the voice, hears the starting note for a bar and a bar of
  * clicks, sings while the solfa scrolls past, and the server grades the take: every
  * note green (in tune), amber (close), red (wrong) or grey (not sung), with the
- * cents off, plus an overall score and a one-line verdict. Nothing is stored.
+ * cents off, plus an overall score and a one-line verdict. The audio is not stored; the server records
+ * the mark as part practice (XP, streak) and says what it earned.
  */
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -29,7 +30,8 @@ import { fonts, radii, spacing, typography, type Palette } from "../design/theme
 import { useColors, useThemedStyles } from "../lib/theme";
 import { leadInFor, noteDueAt, partSeconds, targetFor } from "../lib/take";
 import { VOICES, type VoiceName } from "../lib/choir";
-import * as haptics from "../lib/haptics";
+import { acknowledgeGrade } from "../lib/practiceReward";
+import { GradeMarks } from "./GradeMarks";
 
 interface Props {
   melody: readonly NoteEvent[];
@@ -39,6 +41,8 @@ interface Props {
   isPro: boolean;
   /** Called when a free account taps in; the caller shows its upgrade dialog. */
   onRequirePro: () => void;
+  /** The saved sheet this is, so the practice is recorded against it; absent for an unsaved result. */
+  sheetId?: string;
 }
 
 type Phase = "idle" | "leadin" | "singing" | "grading" | "done";
@@ -47,7 +51,7 @@ const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberO
 /** Recording continues this long after the last note, so a held ending is not cut. */
 const TAIL_SEC = 1.0;
 
-export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onRequirePro }: Props) {
+export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onRequirePro, sheetId }: Props) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const recorder = useAudioRecorder(RECORDING);
@@ -131,10 +135,13 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
       await setAudioModeAsync({ allowsRecording: false, playsInSilentMode: true });
       const uri = recorder.uri;
       if (!uri) throw new Error("The recording was lost.");
-      const result = await transcriptionsApi.grade(uri, "take.m4a", targetFor(notes, tempoBpm, leadIn.current));
+      const result = await transcriptionsApi.grade(uri, "take.m4a", targetFor(notes, tempoBpm, leadIn.current), {
+        transcriptionId: sheetId,
+        part: voice,
+      });
       setGrade(result);
       setPhase("done");
-      haptics.play(result.score >= 80 ? "success" : "medium");
+      acknowledgeGrade(result);
     } catch (e) {
       setPhase("idle");
       setError(toApiError(e).message);
@@ -150,9 +157,6 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
 
   const due = phase === "singing" ? noteDueAt(notes, tempoBpm, leadIn.current, elapsed) : -1;
   const countdown = Math.max(0, Math.ceil(leadIn.current - elapsed));
-
-  const statusColor = (s: string) =>
-    s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.danger : colors.textFaint;
 
   return (
     <View style={styles.block}>
@@ -205,34 +209,7 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
-      {grade ? (
-        <View style={styles.result}>
-          <View style={styles.scoreRow}>
-            <Text style={[styles.score, { color: grade.score >= 80 ? colors.success : grade.score >= 50 ? colors.warning : colors.danger }]}>{grade.score}</Text>
-            <View style={styles.scoreText}>
-              <Text style={styles.summary}>{grade.summary}</Text>
-              {grade.octaveShift !== 0 ? (
-                <Text style={styles.meta}>Sung {grade.octaveShift > 0 ? "an octave up" : "an octave down"} — that's fine.</Text>
-              ) : null}
-            </View>
-          </View>
-          <View style={styles.marks}>
-            {grade.notes.map((g) => {
-              const n = notes[g.index];
-              if (!n) return null;
-              return (
-                <View key={g.index} style={[styles.mark, { borderColor: statusColor(g.status) }]}>
-                  <Text style={[styles.markSolfa, { color: statusColor(g.status) }]}>{n.solfa}{n.octaveMark}</Text>
-                  <Text style={styles.markCents}>
-                    {g.status === "missed" ? "—" : g.cents == null ? "" : `${g.cents > 0 ? "+" : ""}${Math.round(g.cents)}`}
-                  </Text>
-                </View>
-              );
-            })}
-          </View>
-          <Text style={styles.legend}>Green in tune · amber close · red wrong note · grey not sung. Numbers are cents off.</Text>
-        </View>
-      ) : null}
+      {grade ? <GradeMarks grade={grade} notes={notes} /> : null}
     </View>
   );
 }
@@ -254,15 +231,4 @@ const makeStyles = (c: Palette) =>
     liveLabel: { ...typography.label, color: c.textMuted },
     liveNote: { ...typography.hero, color: c.accent },
     error: { ...typography.caption, color: c.danger },
-    result: { marginTop: spacing.xs, backgroundColor: c.surfaceAlt, borderRadius: radii.md, padding: spacing.md, gap: spacing.sm },
-    scoreRow: { flexDirection: "row", alignItems: "center", gap: spacing.md },
-    score: { ...typography.display, minWidth: 64, textAlign: "center" },
-    scoreText: { flex: 1 },
-    summary: { ...typography.body, color: c.text, lineHeight: 20 },
-    meta: { ...typography.caption, color: c.textMuted, marginTop: 2 },
-    marks: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
-    mark: { minWidth: 40, alignItems: "center", paddingVertical: 4, paddingHorizontal: 6, borderRadius: radii.sm, borderWidth: 1.5, backgroundColor: c.surface },
-    markSolfa: { ...typography.mono, fontSize: 15, fontWeight: "700" },
-    markCents: { ...typography.caption, color: c.textFaint, fontSize: 10 },
-    legend: { ...typography.caption, color: c.textFaint, lineHeight: 16 },
   });

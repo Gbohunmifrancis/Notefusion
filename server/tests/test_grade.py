@@ -101,3 +101,25 @@ def test_the_grade_route_round_trips(monkeypatch):
 
         bad = client.post("/v1/grade", files={"audio": ("take.wav", BytesIO(buf.getvalue()), "audio/wav")}, data={"target": "{"})
         assert bad.status_code == 422
+
+
+def test_a_drill_take_is_cut_at_its_cap_not_refused():
+    """``maxSec`` cuts a take that runs on (a singer who left the microphone open) rather than refusing it."""
+    import json
+
+    from app.main import app
+
+    take = _take(TUNE[:3])
+    tail = np.zeros(int(SR * 8.0), dtype=np.float32)  # eight seconds of the room after the last note
+    buf = BytesIO()
+    sf.write(buf, np.concatenate([take, tail]), SR, format="WAV")
+    notes = [{"pitchMidi": t.pitch_midi, "startBeat": t.start_beat, "durBeats": t.dur_beats} for t in TUNE[:3]]
+    with TestClient(app) as client:
+        r = client.post("/v1/grade", files={"audio": ("take.wav", BytesIO(buf.getvalue()), "audio/wav")},
+                        data={"target": json.dumps({"notes": notes, "tempoBpm": TEMPO, "leadInSec": 0.0, "maxSec": 4.0})})
+        assert r.status_code == 200, r.text
+        assert r.json()["score"] == 100
+
+        bad = client.post("/v1/grade", files={"audio": ("take.wav", BytesIO(buf.getvalue()), "audio/wav")},
+                          data={"target": json.dumps({"notes": notes, "tempoBpm": TEMPO, "maxSec": 0})})
+        assert bad.status_code == 422

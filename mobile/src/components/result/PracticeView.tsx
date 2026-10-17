@@ -34,6 +34,8 @@ import type { VoiceName } from "../../lib/choir";
 import { leadInFor, noteDueAt } from "../../lib/take";
 import { logAnalyticsEvent } from "../../lib/analytics";
 import * as haptics from "../../lib/haptics";
+import { acknowledgeGrade } from "../../lib/practiceReward";
+import { rewardMoment } from "../../lib/practiceProgress";
 import {
   bars as barStrip,
   gradeTarget,
@@ -119,6 +121,7 @@ export function PracticeView({
   barCount,
   isPro,
   onRequirePro,
+  sheetId,
 }: {
   onClose: () => void;
   practice: Practice;
@@ -138,6 +141,8 @@ export function PracticeView({
   barCount: number;
   isPro: boolean;
   onRequirePro: () => void;
+  /** The saved sheet this is, so the practice is recorded against it; absent for an unsaved result. */
+  sheetId?: string;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -269,11 +274,14 @@ export function PracticeView({
       await setAudioModeAsync({ allowsRecording: false, playsInSilentMode: true });
       const uri = recorder.uri;
       if (!uri) throw new Error("The recording was lost.");
-      const grade = await transcriptionsApi.grade(uri, "take.m4a", gradeTarget(t.slice, tempo, speed, t.leadIn));
+      const grade = await transcriptionsApi.grade(uri, "take.m4a", gradeTarget(t.slice, tempo, speed, t.leadIn), {
+        transcriptionId: sheetId,
+        part,
+      });
       if (!live.current) return;
       setGraded({ grade, marks: marksByNote(grade, t.slice), key: rangeKey });
       setPhase("idle");
-      haptics.play(grade.score >= 80 ? "success" : "medium");
+      acknowledgeGrade(grade);
       void logAnalyticsEvent("practice_take_marked", { part, score: grade.score });
     } catch (e) {
       if (!live.current) return;
@@ -432,6 +440,9 @@ export function PracticeView({
                 </View>
               </View>
               <Text style={styles.meta}>Marked on your part above: green in tune · amber close · red wrong note · grey not sung.</Text>
+              {rewardMoment(graded.grade.reward) ? (
+                <Text style={styles.earned}>{rewardMoment(graded.grade.reward)!.line}</Text>
+              ) : null}
               <Button label="Try again" icon="refresh" onPress={() => void sing()} disabled={busy} style={styles.again} />
             </View>
           ) : null}
@@ -506,6 +517,7 @@ const makeStyles = (c: Palette) =>
     scoreText: { flex: 1 },
     summary: { ...typography.body, color: c.text, lineHeight: 20 },
     meta: { ...typography.caption, color: c.textMuted, lineHeight: 17 },
+    earned: { ...typography.label, color: c.accent },
     again: { alignSelf: "flex-start" },
     foot: { fontFamily: fonts.regular, fontSize: 12, color: c.textFaint, marginTop: spacing.lg, lineHeight: 17 },
   });

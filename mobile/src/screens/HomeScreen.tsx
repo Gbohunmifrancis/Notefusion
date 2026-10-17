@@ -22,7 +22,7 @@ import { AppDrawer } from '../components/AppDrawer';
 import { Touchable } from '../components/Touchable';
 import { Skeleton } from '../components/Skeleton';
 import { Mark, Wordmark } from '../components/night/NightUI';
-import { meApi } from '../api/endpoints';
+import { meApi, practiceApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { dohLetter } from '../lib/solfa';
 import { loadLibraryList, loadSheet } from '../lib/offlineLibrary';
@@ -32,7 +32,9 @@ import { showDialog } from '../lib/dialog';
 import { useSubscription } from '../lib/subscription';
 import { confidenceColor, fonts, motion, radii, spacing, typography, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles, useColors } from '../lib/theme';
-import type { SavedTranscription } from '../api/types';
+import type { PracticeProgress, SavedTranscription } from '../api/types';
+import { streakSnapshot } from '../lib/practiceProgress';
+import { rememberStreak } from '../lib/practiceReminder';
 import type { RootStackParams, TabParams } from '../navigation/types';
 import { solfaOpening } from '../lib/solfaOpening';
 import { confidenceA11y, confidenceLevel } from '../lib/confidence';
@@ -64,6 +66,8 @@ export function HomeScreen({ navigation }: Props) {
   const [pictureUrl, setPictureUrl] = useState<string | null>(null);
   const [greeting, setGreeting] = useState(currentGreeting);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  /** The streak/XP chip's numbers; null hides the chip (not loaded, or the read failed). */
+  const [practice, setPractice] = useState<PracticeProgress | null>(null);
   const styles = useThemedStyles(makeStyles);
   const colors = useColors();
 
@@ -219,6 +223,14 @@ export function HomeScreen({ navigation }: Props) {
           if (active) setPictureUrl(p.profilePictureUrl);
         })
         .catch(() => undefined);
+      practiceApi
+        .progress()
+        .then((p) => {
+          if (!active) return;
+          setPractice(p);
+          void rememberStreak(streakSnapshot(p));
+        })
+        .catch(() => undefined);
       setLoadingRecent(true);
       loadLibraryList()
         .then(({ items: all }) => {
@@ -280,6 +292,24 @@ export function HomeScreen({ navigation }: Props) {
               </View>
 
               <View style={styles.headerActions}>
+                {/* Practice: the streak and XP, a tap from today's drill. */}
+                {practice ? (
+                  <Touchable
+                    onPress={() => rootNav.navigate('Practice')}
+                    style={styles.practiceChip}
+                    radius={radii.pill}
+                    accessibilityLabel={`Practice: ${practice.streak.current}-day streak, ${practice.xp} XP, level ${practice.level.name}`}
+                  >
+                    <Ionicons
+                      name={practice.streak.current > 0 ? 'flame' : 'flame-outline'}
+                      size={15}
+                      color={practice.streak.current > 0 ? colors.premium : colors.textMuted}
+                    />
+                    <Text style={styles.practiceChipText}>{practice.streak.current}</Text>
+                    <View style={styles.practiceChipDivider} />
+                    <Text style={styles.practiceChipText}>{practice.xp} XP</Text>
+                  </Touchable>
+                ) : null}
                 {/* The gold ring is `Avatar`'s own `premium` prop, so Home and Profile
                     cannot disagree about who is paying. It opens the account side bar;
                     the profile is one row inside it. */}
@@ -572,6 +602,28 @@ const makeStyles = (c: Palette, s: Shadows) =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: spacing.md,
+    },
+    practiceChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 5,
+      height: 32,
+      paddingHorizontal: spacing.md,
+      borderRadius: radii.pill,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    practiceChipText: {
+      ...typography.caption,
+      fontFamily: fonts.semibold,
+      color: c.text,
+    },
+    practiceChipDivider: {
+      width: 1,
+      height: 12,
+      backgroundColor: c.border,
+      marginHorizontal: 2,
     },
 
     // ── The question ──────────────────────────────────────────────────────────

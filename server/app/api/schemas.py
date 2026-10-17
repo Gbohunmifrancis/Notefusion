@@ -204,6 +204,9 @@ class GradeTargetDto(ApiModel):
     notes: list[GradeTargetNoteDto]
     tempo_bpm: float
     lead_in_sec: float = 0.0
+    #: When set, the take is cut to this many seconds instead of refused past ``GRADE_MAX_SECONDS``:
+    #: a practice drill is a few seconds long, and a singer who keeps the microphone open is not wrong.
+    max_sec: float | None = None
 
 
 class HarmoniseNoteDto(ApiModel):
