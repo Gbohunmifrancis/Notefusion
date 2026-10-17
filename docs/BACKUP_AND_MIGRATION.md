@@ -79,7 +79,7 @@ repeats once a day while anything is still wrong, and a push says when it is fix
  └─ db-data volume ─────── read-only ───────►├─ daily       files: photos + JWT key + Caddyfile → restic
                                              ├─ daily       maintain: retention + restic check (5% re-read)
                                              ├─ daily       mirror: restic repo → second provider (optional)
-                                             └─ hourly      drill-status: status/restore-drill.json → console
+                                             └─ every 10 min drill-status: status/restore-drill.json → console
 ```
 
 - **Tools (pinned, verified at build):** restic 0.18.1, rclone 1.71.1 and supercronic 0.2.34 by SHA-256;

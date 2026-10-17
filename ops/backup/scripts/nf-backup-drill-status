@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Hourly: brings the weekly restore drill's result into the admin console. The drill runs in GitHub
+# Every 10 minutes: brings the restore drill's result into the admin console. The drill runs in GitHub
 # Actions (.github/workflows/backup-restore-drill.yml) and leaves status/restore-drill.json in the backup
 # bucket; this records each new result once as a "drill" row. Nothing reaches the API from outside, and
 # the drill needs no database credentials for production.

@@ -14,5 +14,6 @@
 7 4 * * *         nf-backup-run maintain
 # Optional second copy at another provider (BACKUP_MIRROR), daily.
 27 5 * * *        nf-backup-run mirror
-# The weekly restore drill's result, from the bucket into the console, hourly.
-23 * * * *        nf-backup-run drill-status
+# The restore drill's result, from the bucket into the console, within ten minutes of the run (one small
+# read each time; a result is recorded once).
+*/10 * * * *      nf-backup-run drill-status
