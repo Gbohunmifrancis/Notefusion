@@ -15,6 +15,7 @@ import { showDialog } from './dialog';
 import * as haptics from './haptics';
 import { ProWelcomeModal, type ProWelcome } from '../components/ProWelcomeModal';
 import type { Subscription } from '../api/types';
+import { FREE_RESET_FALLBACK, freeWeek } from './freeWeek';
 
 /**
  * What the account looked like the moment a checkout opened. A payment has landed when the server's
@@ -66,13 +67,20 @@ interface SubscriptionState {
   known: boolean;
   loading: boolean;
   /**
-   * Free transcriptions left, from the server. Falls back to the full allowance while
-   * unknown, for the same fail-open reason as `known`: a dropped billing request must
-   * not read as "0 left" and block the microphone. Gates pair it with `known`.
+   * Transcriptions left for a hum or recording: this week's free ones plus the bought ones,
+   * from the server. Falls back to the full allowance while unknown, for the same fail-open
+   * reason as `known`: a dropped billing request must not read as "0 left" and block the
+   * microphone. Gates pair it with `known`.
    */
   trialRemaining: number;
-  /** The free allowance plus any bought, so copy can say "2 of 5" without repeating the 5. */
+  /** The week's free allowance plus any bought, so copy can say "2 of 5" without repeating the 5. */
   trialTotal: number;
+  /** This week's free hums and recordings left, bought ones apart (fails open like `trialRemaining`). */
+  freeRemaining: number;
+  /** Free hums and recordings a week (3). */
+  freePerWeek: number;
+  /** When this week's free ones come back, in the phone's time ("Friday 6pm"). */
+  freeBack: string;
   /** Bought transcriptions not yet used (0 on Pro): each can be a whole linked song. */
   boughtRemaining: number;
   /** Transcriptions ever bought, so copy can tell the free ones from the bought ones. */
@@ -106,7 +114,7 @@ const SubscriptionContext = createContext<SubscriptionState | undefined>(undefin
 
 /**
  * Only used before the server has answered. The real number always comes from the
- * server (`FreeTier.TrialGenerationsFor`, three everywhere); this matches it so the
+ * server (`FreeTier.TrialGenerationsFor`, three a week everywhere); this matches it so the
  * pill does not change under the user when the answer lands, and keeps a dropped
  * request from looking like an exhausted trial.
  */
@@ -527,6 +535,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     return () => sub.remove();
   }, [userId, load, watchPayment, stopWatching]);
 
+  const week = useMemo(() => freeWeek(subscription), [subscription]);
   const value = useMemo<SubscriptionState>(
     () => ({
       subscription,
@@ -536,6 +545,9 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       loading,
       trialRemaining: subscription?.trialGenerationsRemaining ?? DEFAULT_TRIAL_TOTAL,
       trialTotal: subscription?.trialGenerationsTotal ?? DEFAULT_TRIAL_TOTAL,
+      freeRemaining: week?.left ?? DEFAULT_TRIAL_TOTAL,
+      freePerWeek: week?.total ?? DEFAULT_TRIAL_TOTAL,
+      freeBack: week?.back ?? FREE_RESET_FALLBACK,
       boughtRemaining: subscription?.isActive ? 0 : subscription?.boughtTranscriptionsRemaining ?? 0,
       boughtTotal: subscription?.boughtTranscriptionsTotal ?? 0,
       refresh: (reconcile = true) => load(reconcile),
@@ -547,6 +559,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     }),
     [
       subscription,
+      week,
       known,
       loading,
       load,

@@ -137,7 +137,11 @@
     return wrapper;
   }
 
-  function freeCard(trialCount) {
+  /**
+   * The free plan: hums and recordings every week (back Friday 18:00 WAT, FreeTier in the API), one short
+   * song-link preview, and songs for Pro or one at a time at the region's one-song price when the API sent it.
+   */
+  function freeCard(trialCount, single) {
     var card = document.createElement("div");
     card.className = "plan";
 
@@ -152,13 +156,16 @@
 
     var blurb = document.createElement("p");
     blurb.className = "blurb";
-    blurb.textContent = trialCount + " transcriptions in total. No card needed.";
+    blurb.textContent = trialCount + " hummed or recorded transcriptions every week, back every Friday evening. No card needed.";
     card.appendChild(blurb);
 
     card.appendChild(
       featureList([
-        trialCount + " transcriptions in total: hum, record, upload or a song link",
-        "A song link gives you its first minute",
+        trialCount + " hums or recordings a week, back every Friday at 6pm (West Africa Time)",
+        "One free preview of a song link: its first minute",
+        single
+          ? "Song links and whole songs: Pro, or " + formatPrice(single) + " a song"
+          : "Song links and whole songs: Pro, or buy just one song",
         "Tonic Solfa and staff notation, all 24 keys",
         "Rehearsal playback, lyrics, transpose and a share link",
       ]),
@@ -345,7 +352,14 @@
     container.className = "plans reveal is-visible" + (isNigeria ? " plans--nigeria" : "");
     container.setAttribute("aria-busy", "false");
     container.replaceChildren();
-    container.appendChild(freeCard(3));
+    var single =
+      payload.single &&
+      payload.single.currency === expectedCurrency &&
+      Number.isFinite(payload.single.amountMinor) &&
+      payload.single.amountMinor > 0
+        ? payload.single
+        : null;
+    container.appendChild(freeCard(3, single));
     if (monthly) container.appendChild(paidCard(monthly, !yearly, saving));
     if (yearly) container.appendChild(paidCard(yearly, true, saving));
 

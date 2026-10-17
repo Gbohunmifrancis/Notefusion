@@ -41,7 +41,7 @@ public class MailboxQuotaTests
 
         Assert.True(result.IsFailure);
         Assert.Equal("BILLING_FREE_TIER_LIMIT", result.Error.Code);
-        Assert.Equal("You have used all 3 of your free transcriptions. Buy just this song, or upgrade to Pro for unlimited transcriptions.",
+        Assert.Equal("You've used this week's 3 free transcriptions. They come back on Friday at 6pm (West Africa Time). Buy just this song, or upgrade to Pro for unlimited transcriptions.",
             result.Error.Message);
         Assert.Equal(0, await Remaining(h, b, "private-window"));
     }
@@ -212,8 +212,8 @@ public class MailboxQuotaTests
     {
         for (var i = 0; i < count; i++)
         {
-            var job = TranscriptionJob.Record($"spent-{user.Id}-{i}", user.Id, Now.AddDays(-10), device);
-            job.ConsumeTrial(Now.AddDays(-10));
+            var job = TranscriptionJob.Record($"spent-{user.Id}-{i}", user.Id, Now.AddDays(-1), device); // earlier this free week
+            job.ConsumeTrial(Now.AddDays(-1));
             h.Db.TranscriptionJobs.Add(job);
         }
 

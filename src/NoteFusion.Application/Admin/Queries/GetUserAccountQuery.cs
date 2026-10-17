@@ -50,8 +50,11 @@ public sealed class GetUserAccountQueryHandler : IRequestHandler<GetUserAccountQ
         // console shows must be the number that gates the user.
         // Free ones only: a job paid for with a bought transcription is charged on the same column, and
         // counting it here read as "5 of 3" for someone who bought two.
+        // This week's only, as the gate counts them: the free ones come back every Friday evening.
+        var week = FreeTier.WeekStart(_clock.UtcNow);
         var trialUsed = await _db.TranscriptionJobs.AsNoTracking()
-            .CountAsync(j => j.UserId == request.UserId && j.TrialConsumedAtUtc != null && !j.PaidByCredit, ct);
+            .CountAsync(j => j.UserId == request.UserId && j.Kind == TranscriptionJobKind.Upload
+                             && j.TrialConsumedAtUtc != null && !j.PaidByCredit && j.CreatedAtUtc >= week, ct);
         var boughtTotal = await TrialUsage.CountBoughtAsync(_db, request.UserId, ct);
         var boughtUsed = await TrialUsage.CountBoughtSpentAsync(_db, request.UserId, _clock.UtcNow, ct);
         var previewsUsed = await _db.TranscriptionJobs.AsNoTracking()

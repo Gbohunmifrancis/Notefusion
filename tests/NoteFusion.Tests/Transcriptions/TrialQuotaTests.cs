@@ -14,7 +14,7 @@ namespace NoteFusion.Tests.Transcriptions;
 
 /// <summary>
 /// The free transcriptions: what spends one, what does not, who is metered at all, and how many they get —
-/// three, everywhere.
+/// three a week (back every Friday at 18:00 West Africa Time), everywhere.
 /// <para>
 /// The count is kept on <c>TranscriptionJobs</c> rather than on saved <c>Transcriptions</c>, and that is
 /// the regression these tests exist to pin. Counting saved rows meant deleting a transcription handed the
@@ -394,6 +394,131 @@ public class TrialQuotaTests
         Assert.True((await Submit(h, paid, device: "phone-a")).IsSuccess);
     }
 
+    // ---------------------------------------------------------------- three a week, back Friday 18:00 WAT
+
+    /// <summary>The week <see cref="Now"/> (Wed 19 Aug 2026) falls in ends on Fri 21 Aug at 18:00 WAT, 17:00 UTC.</summary>
+    private static readonly DateTime Reset = new(2026, 8, 21, 17, 0, 0, DateTimeKind.Utc);
+
+    [Fact]
+    public async Task The_free_three_come_back_on_friday_at_six_west_africa_time()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        Spend(h, user, 3);
+
+        h.Clock.UtcNow = Reset.AddMinutes(-1); // 17:59 WAT
+        Assert.Equal(0, await Remaining(h, user));
+        Assert.Equal("BILLING_FREE_TIER_LIMIT", (await Submit(h, user)).Error.Code);
+
+        h.Clock.UtcNow = Reset; // 18:00 WAT
+        Assert.Equal(3, await Remaining(h, user));
+        Assert.True((await Submit(h, user)).IsSuccess);
+    }
+
+    [Fact]
+    public async Task Last_weeks_transcriptions_do_not_count_this_week()
+    {
+        // An account that used its three before the change, or last week, simply has three this week.
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var lastWeek = Reset.AddDays(-7).AddMinutes(-1); // Fri 14 Aug, 17:59 WAT
+        for (var i = 0; i < 3; i++)
+            SpendAt(h, user, lastWeek, $"old-{i}");
+        SpendAt(h, user, Reset.AddDays(-7), "this-week"); // Fri 14 Aug, 18:00 WAT: this week's first
+
+        Assert.Equal(2, await Remaining(h, user));
+        Assert.Equal(2, (await Shown(h, user)).FreeTranscriptionsRemaining);
+    }
+
+    [Fact]
+    public async Task A_job_started_before_the_reset_counts_in_the_week_it_was_started()
+    {
+        // Counted in the week whose gate let it through: running across six o'clock it does not hold a place in
+        // the new week, and charged after six it is still last week's.
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        Spend(h, user, 2);
+        var api = new FakeTranscriptionApi();
+        h.Clock.UtcNow = Reset.AddMinutes(-30);
+        var jobId = (await Submit(h, user, api)).Value;
+        Assert.Equal(0, await Remaining(h, user));
+
+        h.Clock.UtcNow = Reset.AddMinutes(5);
+        Assert.Equal(3, await Remaining(h, user));
+        api.Status = TranscriptionStatus.Done;
+        await Poll(h, user, jobId, api);
+
+        Assert.NotNull(h.Db.TranscriptionJobs.Single(j => j.JobId == jobId).TrialConsumedAtUtc);
+        Assert.Equal(3, await Remaining(h, user));
+    }
+
+    [Fact]
+    public async Task The_inbox_and_the_handset_share_this_weeks_three_but_not_last_weeks()
+    {
+        using var h = new TestHarness(Now);
+        var first = Seed(h);
+        var alias = Seed(h, "free+choir@example.com");
+        var flatmate = Seed(h, "flatmate@example.com");
+        for (var i = 0; i < 3; i++)
+            SpendAt(h, first, Reset.AddDays(-7).AddHours(-1), $"old-{i}", "phone-a");
+
+        Assert.Equal(3, await Remaining(h, alias, "phone-b"));
+        Assert.Equal(3, await Remaining(h, flatmate, "phone-a"));
+
+        Spend(h, first, 3, "phone-a");
+
+        Assert.Equal(0, await Remaining(h, alias, "phone-b")); // same inbox, another phone
+        Assert.Equal(0, await Remaining(h, flatmate, "phone-a")); // another inbox, same phone
+        Assert.Equal("BILLING_FREE_TIER_LIMIT", (await Submit(h, alias, device: "phone-b")).Error.Code);
+        Assert.Equal("BILLING_FREE_TIER_LIMIT", (await Submit(h, flatmate, device: "phone-a")).Error.Code);
+    }
+
+    [Theory]
+    [InlineData(TranscriptionMode.Melody)]
+    [InlineData(TranscriptionMode.Chords)]
+    [InlineData(TranscriptionMode.Choir)]
+    public async Task Hums_chord_takes_and_choir_recordings_are_all_free_ones(TranscriptionMode mode)
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+
+        Assert.True((await Submit(h, user, mode: mode)).IsSuccess);
+
+        Assert.False(h.Db.TranscriptionJobs.Single().PaidByCredit);
+        Assert.Equal(2, (await Shown(h, user)).FreeTranscriptionsRemaining);
+    }
+
+    [Fact]
+    public async Task The_app_is_told_this_weeks_count_and_when_it_comes_back()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        Spend(h, user, 1);
+
+        var shown = await Shown(h, user);
+
+        Assert.Equal(2, shown.FreeTranscriptionsRemaining);
+        Assert.Equal(3, shown.FreeTranscriptionsPerWeek);
+        Assert.Equal(Reset, shown.FreeResetsAtUtc);
+        // The fields older apps read keep their meaning: free ones left plus bought ones, out of three plus bought.
+        Assert.Equal(2, shown.TrialGenerationsRemaining);
+        Assert.Equal(3, shown.TrialGenerationsTotal);
+    }
+
+    [Fact]
+    public async Task The_refusal_says_the_free_ones_come_back_on_friday_evening()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        Spend(h, user, 3);
+
+        var refused = await Submit(h, user);
+
+        Assert.Equal("BILLING_FREE_TIER_LIMIT", refused.Error.Code);
+        Assert.Contains("this week's 3 free transcriptions", refused.Error.Message);
+        Assert.Contains("Friday at 6pm (West Africa Time)", refused.Error.Message);
+    }
+
     // ---------------------------------------------------------------- where the handset is
 
     [Fact]
@@ -480,21 +605,31 @@ public class TrialQuotaTests
     {
         for (var i = 0; i < count; i++)
         {
-            var job = TranscriptionJob.Record($"spent-{user.Id}-{i}", user.Id, Now.AddDays(-10), device);
-            job.ConsumeTrial(Now.AddDays(-10));
+            var job = TranscriptionJob.Record($"spent-{user.Id}-{i}", user.Id, Now.AddDays(-1), device); // earlier this free week
+            job.ConsumeTrial(Now.AddDays(-1));
             h.Db.TranscriptionJobs.Add(job);
         }
 
         h.Db.SaveChanges();
     }
 
+    /// <summary>One charged free transcription submitted (and charged) at <paramref name="at"/>.</summary>
+    private static void SpendAt(TestHarness h, User user, DateTime at, string jobId, string? device = null)
+    {
+        var job = TranscriptionJob.Record($"{jobId}-{user.Id}", user.Id, at, device);
+        job.ConsumeTrial(at.AddMinutes(1));
+        h.Db.TranscriptionJobs.Add(job);
+        h.Db.SaveChanges();
+    }
+
     private static Task<Result<string>> Submit(
-        TestHarness h, User user, FakeTranscriptionApi? api = null, string? device = null)
+        TestHarness h, User user, FakeTranscriptionApi? api = null, string? device = null,
+        TranscriptionMode mode = TranscriptionMode.Melody)
         => new SubmitTranscriptionCommandHandler(
                 api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock,
                 new StubDeviceFingerprint(device), h.DeviceRegister, h.Activity(user.Id), h.QuotaGate)
             .Handle(
-                new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "clip.m4a", TranscriptionMode.Melody, null, null),
+                new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "clip.m4a", mode, null, null),
                 CancellationToken.None);
 
     /// <summary>

@@ -77,6 +77,22 @@ public class LinkTranscriptionTests
     }
 
     [Fact]
+    public async Task The_free_preview_is_once_ever_not_once_a_week()
+    {
+        // The free weekly three are hums and recordings; the one song-link preview does not come back on Friday.
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        SpendSongs(h, user, 1, pro: false, at: Now.AddDays(-60));
+
+        var result = await SubmitLink(h, user);
+
+        Assert.Equal("BILLING_SONG_PREVIEW_USED", result.Error.Code);
+        var shown = await Shown(h, user);
+        Assert.Equal(0, shown.SongCreditsRemaining);
+        Assert.Equal(3, shown.FreeTranscriptionsRemaining); // a preview never spends a free one
+    }
+
+    [Fact]
     public async Task Two_links_sent_at_once_are_not_both_the_free_preview()
     {
         using var h = new TestHarness(Now);
@@ -363,21 +379,22 @@ public class LinkTranscriptionTests
     }
 
     [Fact]
-    public async Task A_free_accounts_song_upload_stays_a_trial_generation()
+    public async Task A_free_accounts_song_upload_is_not_one_of_the_free_weekly_ones()
     {
+        // The free weekly three are hums and recordings. A song with the voice isolated takes a bought
+        // transcription or Pro, like a whole linked song; with neither it is refused before the worker is asked.
         using var h = new TestHarness(Now);
         var user = Seed(h);
         var api = new FakeTranscriptionApi();
 
         var submitted = await SubmitUpload(h, user, api, separate: true);
-        api.Status = TranscriptionStatus.Done;
-        await Poll(h, user, submitted.Value, api);
 
-        var job = h.Db.TranscriptionJobs.Single();
-        Assert.Equal(TranscriptionJobKind.Upload, job.Kind);
-        Assert.Null(job.SongCreditConsumedAtUtc);
-        Assert.Equal(Now, job.TrialConsumedAtUtc);
-        Assert.Equal(1, (await Shown(h, user)).SongCreditsRemaining); // the one link preview is untouched
+        Assert.Equal("BILLING_SONG_NOT_FREE", submitted.Error.Code);
+        Assert.Empty(h.Db.TranscriptionJobs);
+        var shown = await Shown(h, user);
+        Assert.Equal(3, shown.FreeTranscriptionsRemaining); // the week's free ones are untouched
+        Assert.Equal(1, shown.SongCreditsRemaining); // and so is the one link preview
+        Assert.True((await SubmitUpload(h, user, api, separate: false)).IsSuccess); // a hum still goes
     }
 
     // ---------------------------------------------------------------- input

@@ -98,15 +98,24 @@ public static class BillingErrors
             "You have used your free song preview. Buy just this song, or upgrade to Pro to transcribe full songs from a link.");
 
     /// <summary>
-    /// The free tier is spent, bought transcriptions included. Takes both numbers that were actually
-    /// enforced, so the refusal agrees with the count the app had been showing.
+    /// This week's free transcriptions are spent, bought transcriptions included. Takes both numbers that were
+    /// actually enforced, so the refusal agrees with the count the app had been showing, and says when the free
+    /// ones come back (<see cref="FreeTier.NextReset"/>; the app shows that moment in the user's own time).
     /// </summary>
     public static Error FreeTierLimitReached(int free, int bought = 0) =>
         Error.Forbidden("BILLING_FREE_TIER_LIMIT",
             (bought > 0
-                ? $"You have used all {free} of your free transcriptions and the {bought} you bought. "
-                : $"You have used all {free} of your free transcriptions. ")
+                ? $"You've used this week's {free} free transcriptions and the {bought} you bought. The free ones come back on Friday at 6pm (West Africa Time). "
+                : $"You've used this week's {free} free transcriptions. They come back on Friday at 6pm (West Africa Time). ")
             + "Buy just this song, or upgrade to Pro for unlimited transcriptions.");
+
+    /// <summary>
+    /// A free account with no bought transcription left asked for a song with the voice isolated. The free
+    /// weekly ones cover hums and recordings only; a song takes a bought transcription, a choir seat or Pro.
+    /// </summary>
+    public static readonly Error SongNotFree =
+        Error.Forbidden("BILLING_SONG_NOT_FREE",
+            "Songs with instruments aren't part of the free weekly transcriptions, which cover hums and recordings. Buy just this song, or upgrade to Pro for full songs.");
 
     /// <summary>
     /// A Pro member asked for a one-song purchase. Pro already includes every transcription, so the
