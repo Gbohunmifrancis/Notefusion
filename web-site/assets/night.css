@@ -652,3 +652,47 @@ body.has-free-harmony .act[data-tool="harmony"] { border-color: var(--line); }
 /* An icon beside its text, not in a tinted tile. */
 .try-row-ic { width: 24px; height: 24px; background: none; }
 
+/* ── Phones first: touch targets and field text ─────────────────────────────
+   Most people use the web app on a phone. The base sizes below are the phone's: every control at least
+   44 x 44 px, every field's text 16 px (iOS zooms the page into anything smaller), nothing wider than the
+   screen. A mouse on a wider screen gets the compact desktop sizes back in the min-width block after it. */
+.btn-icon { width: 44px; min-height: 44px; }
+.btn-sm { min-height: 44px; }
+.brand { min-height: 44px; }
+#voices .btn, .part-mix-voices .btn { min-width: 44px; }
+.pw-eye { right: 3px; width: 44px; height: 44px; }
+#forgot { padding: 12px 0; margin: -12px 0; }
+.tab, .source-tab, .recent-item, .act { min-height: 44px; }
+.recents-all { display: inline-flex; align-items: center; min-height: 44px; margin-top: 0; }
+.theme-switch button { width: 44px; height: 44px; }
+.theme-seg button { min-height: 44px; }
+.cost-info { width: 44px; height: 44px; }
+.switch::before { content: ""; position: absolute; inset: -10px -2px; }
+.pr-seg button { min-height: 44px; }
+.studio-opt select, .player select, .player input[type=number] { min-height: 44px; font-size: 16px; }
+/* "Beats in a bar" keeps to one line; the select gives way instead. */
+.studio-meter .studio-opt { max-width: 100%; white-space: nowrap; }
+.studio-meter .studio-opt select { flex: 0 1 auto; min-width: 0; }
+/* The sheet's view tabs and the full-screen button share one row on a 360 px phone, Four parts included. */
+.result-views .tabs { min-width: 0; }
+.result-views .tab { min-width: 0; padding-inline: 8px; overflow: hidden; text-overflow: ellipsis; }
+/* A dialog fits the screen the browser actually shows (its URL bar takes part of 100vh on a phone), so its
+   last button can always be reached. */
+.onb-card, .modal-card { max-height: calc(100dvh - 40px); }
+@media (min-width: 641px) and (hover: hover) and (pointer: fine) {
+  .btn-icon { width: 40px; min-height: 40px; }
+  .btn-sm { min-height: 38px; }
+  #voices .btn, .part-mix-voices .btn { min-width: 0; }
+  .pw-eye { right: 6px; width: 38px; height: 38px; }
+  .tab, .recent-item { min-height: 0; }
+  .source-tab, .act { min-height: 42px; }
+  .recents-all { display: inline-block; min-height: 0; margin-top: 6px; }
+  .theme-switch button { width: 32px; height: 28px; }
+  .theme-seg button { min-height: 0; }
+  .cost-info { width: 28px; height: 28px; }
+  .pr-seg button { min-height: 36px; }
+  .studio-opt select { min-height: 32px; font-size: 0.85rem; }
+  .player select, .player input[type=number] { min-height: 32px; font-size: 0.875rem; }
+  .result-views .tab { padding-inline: 14px; }
+}
+
