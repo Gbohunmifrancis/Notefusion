@@ -1136,3 +1136,333 @@ export interface Insights {
   retention: RetentionRow[];
   jobDurations: JobDuration[];
 }
+
+/* ── Practice (GET /api/admin/analytics/practice) ───────────────────────────
+ * Mirrors the C# PracticeAnalyticsDtos. Takes and reminders are counted on the singer's own calendar day
+ * ("YYYY-MM-DD"); badges on the reporting day. Every rate is 0–1 and null when its denominator is empty. */
+
+export interface PracticeHeadline {
+  /** Singers with at least one marked take on a day in the window. */
+  practisers: number;
+  practisersPrevious: number;
+  /** Of them, singers whose first marked take ever was in the window. */
+  newPractisers: number;
+  /** Practisers on the window's last day, its last 7 days and its last 30 days. */
+  dau: number;
+  wau: number;
+  mau: number;
+  averageDau: number;
+  takes: number;
+  takesPrevious: number;
+  drills: number;
+  parts: number;
+  practiserDays: number;
+  takesPerPractiserDay: number | null;
+  averageScore: number | null;
+  /** XP earned, each singer's day held to the daily cap. */
+  xpEarned: number;
+  /** "Playful", "Focused", "Not chosen": the window's practisers by the track chosen now. */
+  practisersByTrack: CategoryCount[];
+}
+
+export interface PracticeDaily {
+  date: string;
+  practisers: number;
+  drills: number;
+  parts: number;
+  xp: number;
+  unitsCompleted: number;
+  gradesCompleted: number;
+  badgesEarned: number;
+  /** Streaks of two days or more that ended this day. */
+  streaksBroken: number;
+  freezesUsed: number;
+}
+
+export interface PracticeCohort {
+  /** Monday of the week of the singers' first marked take. */
+  weekStart: string;
+  singers: number;
+  d1: number | null;
+  d7: number | null;
+  d30: number | null;
+  eligibleD1: number;
+  eligibleD7: number;
+  eligibleD30: number;
+}
+
+export interface WeeklyReturn {
+  weekStart: string;
+  practisersActive: number;
+  practisersBack: number;
+  othersActive: number;
+  othersBack: number;
+}
+
+export interface PracticeRetention {
+  cohorts: PracticeCohort[];
+  weeks: WeeklyReturn[];
+  practiserWeeks: number;
+  practiserWeeksBack: number;
+  practiserRate: number | null;
+  otherWeeks: number;
+  otherWeeksBack: number;
+  otherRate: number | null;
+}
+
+export interface StreakLeader {
+  userId: string;
+  fullName: string;
+  email: string;
+  current: number;
+  best: number;
+  lastPractised: string;
+}
+
+export interface PracticeStreaks {
+  asOf: string;
+  /** Labels "0", "1", "2–3", "4–7", "8–29", "30+". */
+  current: CategoryCount[];
+  freezesUsed: number;
+  streaksBroken: number;
+  longest: StreakLeader[];
+}
+
+export interface PathUnitStat {
+  code: string;
+  unitNumber: number;
+  title: string;
+  reached: number;
+  completed: number;
+  takes: number;
+  passRate: number | null;
+  retryRate: number | null;
+  stepBackRate: number | null;
+  averageScore: number | null;
+}
+
+export interface PathGradeStat {
+  tier: number;
+  label: string;
+  reached: number;
+  completed: number;
+  takes: number;
+  averageScore: number | null;
+  units: PathUnitStat[];
+}
+
+export type PracticeTrackName = "none" | "playful" | "focused";
+
+export interface PathTrackStat {
+  track: PracticeTrackName;
+  singers: number;
+  takes: number;
+  grades: PathGradeStat[];
+}
+
+export interface PracticeAllowance {
+  freeLimit: number;
+  proLimit: number;
+  drillSingers: number;
+  hitLimit: number;
+  hitFreeLimit: number;
+  hitProLimit: number;
+  limitDays: number;
+  freeHitters: number;
+  freeHittersDecided: number;
+  bought: number;
+  boughtMembership: number;
+  boughtSingle: number;
+  conversionRate: number | null;
+}
+
+/** The C# PracticeReminderKind, camelCase on the wire like every enum. */
+export type PracticeReminderKindName =
+  | "ordinary"
+  | "streakAtRisk"
+  | "freezeReady"
+  | "lastChance"
+  | "streakLost"
+  | "learningWaiting"
+  | "final";
+
+export interface ReminderKindStat {
+  kind: PracticeReminderKindName;
+  sent: number;
+  failed: number;
+  practisedWithin2h: number;
+  practisedSameDay: number;
+  within2hRate: number | null;
+  sameDayRate: number | null;
+}
+
+export interface ReminderDay {
+  date: string;
+  ordinary: number;
+  streakAtRisk: number;
+  freezeReady: number;
+  lastChance: number;
+  streakLost: number;
+  learningWaiting: number;
+  final: number;
+  failed: number;
+}
+
+export interface PracticeRemindersAnalytics {
+  sent: number;
+  failed: number;
+  pending: number;
+  accountsReminded: number;
+  practisedWithin2h: number;
+  practisedSameDay: number;
+  kinds: ReminderKindStat[];
+  daily: ReminderDay[];
+  /** A snapshot of now: the switch keeps no history. */
+  remindersOff: number;
+  remindersApplicable: number;
+  finalSent: number;
+  finalCameBack: number;
+  phones: number;
+  phonesOnServerReminders: number;
+}
+
+export interface PracticeBadgeStat {
+  code: string;
+  title: string;
+  earnedInWindow: number;
+  earnedAllTime: number;
+}
+
+export interface PracticeAnalytics {
+  fromUtc: string;
+  toUtc: string;
+  reportingOffsetMinutes: number;
+  firstDay: string;
+  lastDay: string;
+  headline: PracticeHeadline;
+  daily: PracticeDaily[];
+  retention: PracticeRetention;
+  streaks: PracticeStreaks;
+  path: PathTrackStat[];
+  allowance: PracticeAllowance;
+  reminders: PracticeRemindersAnalytics;
+  badges: PracticeBadgeStat[];
+}
+
+/* ── Practice reminder log (GET /api/admin/practice-reminders) ──────────────
+ * Mirrors the C# PracticeReminderOverviewDto: whether the sweep is sending, and its newest claim rows. */
+
+export interface PracticeReminderRow {
+  id: string;
+  userId: string;
+  fullName: string | null;
+  email: string | null;
+  localDate: string;
+  slot: "daily" | "lastChance";
+  kind: PracticeReminderKindName;
+  streak: number;
+  title: string;
+  body: string;
+  sound: boolean;
+  status: "pending" | "sent" | "failed";
+  devices: number;
+  attempts: number;
+  error: string | null;
+  createdAtUtc: string;
+  sentAtUtc: string | null;
+}
+
+export interface PracticeReminderOverview {
+  enabled: boolean;
+  sentLast24Hours: number;
+  accountsLast7Days: number;
+  kinds: { kind: PracticeReminderKindName; sent: number; failed: number }[];
+  recent: PracticeReminderRow[];
+}
+
+/* ── Growth (GET /api/admin/analytics/growth) ───────────────────────────────
+ * Mirrors the C# GrowthDtos. */
+
+export interface EndingMembership {
+  userId: string;
+  fullName: string;
+  email: string;
+  kind: "pro" | "choir";
+  plan: string;
+  /** False for a Pro gift from the console. */
+  paid: boolean;
+  endsAtUtc: string;
+}
+
+export interface Renewals {
+  graceDays: number;
+  endingIn7Days: number;
+  endingIn30Days: number;
+  /** "Pro, paid", "Pro, gift", "Choir". */
+  endingIn30DaysByKind: CategoryCount[];
+  endingSoon: EndingMembership[];
+  dueInWindow: number;
+  renewedEarly: number;
+  renewedLate: number;
+  lapsed: number;
+  deciding: number;
+  renewalRate: number | null;
+}
+
+export type PriceSetName = "naira" | "regional" | "standard" | "unknown";
+
+export interface PriceSetFunnel {
+  set: PriceSetName;
+  signedUp: number;
+  transcribed: number;
+  reachedFreeLimit: number;
+  startedCheckout: number;
+  paid: number;
+  paidRate: number | null;
+  medianDaysToPay: number | null;
+}
+
+export interface KindHealth {
+  kind: "recording" | "song" | "link" | "preview";
+  started: number;
+  succeeded: number;
+  failed: number;
+  running: number;
+  failureRate: number | null;
+}
+
+export interface TranscriptionHealth {
+  byKind: KindHealth[];
+  linkAttempts: number;
+  linkRefused: number;
+  linkFailed: number;
+  linkProblems: CategoryCount[];
+}
+
+export interface AppBuildRow {
+  build: number;
+  phones: number;
+  recent: number;
+  android: number;
+  ios: number;
+  serverReminders: number;
+}
+
+export interface AppVersions {
+  latestBuild: number;
+  phones: number;
+  recent: number;
+  onLatestBuild: number;
+  serverReminders: number;
+  builds: AppBuildRow[];
+}
+
+export interface Growth {
+  fromUtc: string;
+  toUtc: string;
+  reportingOffsetMinutes: number;
+  renewals: Renewals;
+  freeToPaid: PriceSetFunnel[];
+  transcriptions: TranscriptionHealth;
+  appVersions: AppVersions;
+}

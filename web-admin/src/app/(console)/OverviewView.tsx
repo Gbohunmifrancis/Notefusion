@@ -509,6 +509,13 @@ function MembershipPanel({ membership }: { membership: AnalyticsOverview["member
         />
         <RankedList title="Members by plan" rows={m.membersByPlan} empty="No Pro members yet" />
       </div>
+      <p className="text-xs text-muted-foreground">
+        Memberships ending soon and the renewal rate are on{" "}
+        <Link href="/growth#renewals" className="font-medium text-brand hover:underline">
+          Growth
+        </Link>
+        .
+      </p>
     </div>
   );
 }

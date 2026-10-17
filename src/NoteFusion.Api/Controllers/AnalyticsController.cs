@@ -68,6 +68,23 @@ public sealed class AnalyticsController : ApiControllerBase
         CancellationToken ct = default)
         => HandleResult(await _sender.Send(new GetInsightsQuery(from, to, country, platform, plan), ct));
 
+    /// <summary>
+    /// The Practice page: practisers, takes, scores and XP; retention (first-practice cohorts, and whether practising
+    /// brings people back); streaks; the path funnel by track; the daily drill allowance; reminders; badges. Takes and
+    /// reminders are counted on the singer's own calendar day (see <see cref="GetPracticeAnalyticsQuery"/>).
+    /// </summary>
+    [HttpGet("practice")]
+    public async Task<IActionResult> Practice([FromQuery] DateTime? from, [FromQuery] DateTime? to, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetPracticeAnalyticsQuery(from, to), ct));
+
+    /// <summary>
+    /// The Growth page: renewals (memberships ending soon, the renewal rate of those that ended in the window),
+    /// free-to-paid by price set, transcription failures by kind, and app versions on phones.
+    /// </summary>
+    [HttpGet("growth")]
+    public async Task<IActionResult> Growth([FromQuery] DateTime? from, [FromQuery] DateTime? to, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetGrowthQuery(from, to), ct));
+
     /// <summary>Who is online now and which transcriptions just started, for the console's live notices.</summary>
     [HttpGet("live")]
     public async Task<IActionResult> Live(CancellationToken ct = default)

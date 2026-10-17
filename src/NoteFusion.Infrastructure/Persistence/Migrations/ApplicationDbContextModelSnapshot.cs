@@ -1091,6 +1091,8 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LocalDate");
+
                     b.HasIndex("UserId", "LocalDate");
 
                     b.ToTable("practice_sessions", (string)null);

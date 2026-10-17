@@ -268,6 +268,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   on into Advanced 1–2: wide leaps and 8–16-note sight-singing; exact score, cents, replay). Each track keeps its own place
   on the path. XP and every rule are the same on both.
   Art (our own SVG): `design/practice-art/build.mjs` draws it into `web-site/assets/practice-art/` and mobile `components/practice/art/svgs.ts`; Doh lives in Practice only, and no gold (Pro's alone).
+  Console: `GET /api/admin/analytics/practice` (`GetPracticeAnalyticsQuery`, web-admin `/practice`; takes and reminders on the singer's
+  day, paths replayed through `PracticePath.Read`'s observer, streak breaks from `PracticeMath.StreakBreaks`) and `…/analytics/growth`
+  (`GetGrowthQuery`, `/growth`: renewals rebuilt from membership charges, free-to-paid by price set via the shared `FreeLimitReach`, failures by kind, phones by build).
 - Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read),
   the opening eight notes as `preview` on every read (list rows show them in solfa), an
   optional folder name (`PUT /api/library/{id}/folder`; a folder is just the name its sheets share) and

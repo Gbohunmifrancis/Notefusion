@@ -172,6 +172,34 @@ public class PracticePathTests
     }
 
     [Fact]
+    public void An_observer_sees_each_take_that_moved_the_path_with_its_outcome_and_the_reading_is_unchanged()
+    {
+        var s = new Singer();
+        for (var i = 0; i < PracticeRules.DrillsPerUnit; i++)
+            s.Sing(85);
+        s.Sing(60);   // a miss
+        s.Sing(85);   // the retry, passed
+        s.Sing(30);
+        s.Sing(25);   // the second under 50 in a row: a step back
+        s.SingId("steps-down@60", 100); // not the offered drill: moves nothing, so not observed
+        var t = new Singer();
+        t.Sing(95);
+        t.Sing(92);   // the second 90+ in a row: a skip ahead
+
+        var steps = s.Steps;
+        Assert.Equal(8, steps.Count);
+        Assert.All(steps, step => Assert.Null(step.Track));
+        Assert.Equal([false, false, false, true, false, false, false, false], steps.Select(x => x.FinishedUnit));
+        Assert.Equal([true, true, true, true, false, true, false, false], steps.Select(x => x.Passed));
+        Assert.Equal([false, false, false, false, false, true, false, true], steps.Select(x => x.Retry));
+        Assert.Equal([false, false, false, false, false, false, false, true], steps.Select(x => x.SteppedBack));
+        Assert.Equal([0, 0, 0, 0, 1, 1, 1, 1], steps.Select(x => x.Unit.Position));
+        Assert.Equal([false, true], t.Steps.Select(x => x.SkippedAhead));
+        // Observing reads the same path: the place after the last step is where the next drill is offered.
+        Assert.Equal(s.Next.Place, steps[^1].After);
+    }
+
+    [Fact]
     public void A_skip_never_skips_a_new_units_first_drill()
     {
         var s = new Singer();
@@ -400,6 +428,17 @@ public class PracticePathTests
 
         /// <summary>The path read off the takes; each take's level is the one the singer had when it was sung.</summary>
         public PathReading Reading => PracticePath.Read(UserId, _takes, at => _levelAt[at]);
+
+        /// <summary>The takes that moved a path, as an observer of the same reading sees them.</summary>
+        public List<PathStep> Steps
+        {
+            get
+            {
+                var steps = new List<PathStep>();
+                PracticePath.Read(UserId, _takes, at => _levelAt[at], steps.Add);
+                return steps;
+            }
+        }
         public PathStop Next => PracticePath.Next(UserId, Track, Reading, Level);
         public Guid LastSessionId => _takes[^1].SessionId;
 
