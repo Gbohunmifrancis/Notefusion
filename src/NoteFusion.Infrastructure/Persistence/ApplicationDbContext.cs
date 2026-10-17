@@ -48,6 +48,9 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<Passkey> Passkeys => Set<Passkey>();
 
+    public DbSet<PracticeSession> PracticeSessions => Set<PracticeSession>();
+    public DbSet<Achievement> Achievements => Set<Achievement>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

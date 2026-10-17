@@ -29,7 +29,12 @@ internal sealed record IdentifiedHymn(string Slug, string Title, string? Tune, s
 
 internal sealed record GradeTargetNote(int PitchMidi, double StartBeat, double DurBeats);
 
-internal sealed record GradeTarget(IReadOnlyList<GradeTargetNote> Notes, double TempoBpm, double LeadInSec);
+/// <summary>POST /v1/grade's target. <c>MaxSec</c> (a drill's cap) is left off the wire when unset, as before it existed.</summary>
+internal sealed record GradeTarget(
+    IReadOnlyList<GradeTargetNote> Notes,
+    double TempoBpm,
+    double LeadInSec,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] double? MaxSec = null);
 
 internal sealed record HarmoniseNote(int PitchMidi, double StartBeat, double DurBeats, double Conf);
 

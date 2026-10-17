@@ -230,6 +230,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   leaves the library when its owner leaves or is removed. Choir plans are listed only at
   `GET /api/billing/plans/choir` (shipped apps render every plan in the main list as Pro); the admin overview
   counts a choir as one paid member at its plan price and its singers apart.
+- Practice is gamified, transcription is not (`Application/Practice`, numbers in `PracticeRules`): every graded take
+  (free daily drill `POST /api/practice/drills/grade`, 5/day, Pro 20; Pro `…/transcriptions/grade`) is a server-written
+  `PracticeSession` on the singer's day (`X-Time-Zone`, else Lagos); XP, levels, streaks (1 freeze/ISO week), badges are
+  read off those rows, never client-reported. Drills: `DrillCatalogue`, labelled by the solfa engine; mobile `PracticeScreen`.
 - Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read),
   the opening eight notes as `preview` on every read (list rows show them in solfa), an
   optional folder name (`PUT /api/library/{id}/folder`; a folder is just the name its sheets share) and

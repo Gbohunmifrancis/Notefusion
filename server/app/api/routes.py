@@ -491,6 +491,8 @@ async def grade_take(
         raise HTTPException(422, f"leadInSec must be between 0 and {GRADE_MAX_LEAD_IN_SECONDS:g}.")
     if not _notes_are_valid(spec.notes):
         raise HTTPException(422, _NOTES_INVALID)
+    if spec.max_sec is not None and not (math.isfinite(spec.max_sec) and 1 <= spec.max_sec <= GRADE_MAX_SECONDS):
+        raise HTTPException(422, f"maxSec must be between 1 and {GRADE_MAX_SECONDS:g}.")
 
     suffix = Path(audio.filename or "take.wav").suffix.lower()
     if suffix not in GRADE_SUFFIXES:
@@ -522,11 +524,13 @@ async def grade_take(
 
 def _grade_file(path: Path, spec: GradeTargetDto):
     """Decode a take (at most a second past ``GRADE_MAX_SECONDS`` of it, so a take too long
-    is told so without the rest ever being read) and grade it against ``spec``."""
+    is told so without the rest ever being read) and grade it against ``spec``. A target with
+    ``max_sec`` (a practice drill) has its take cut there instead: nothing past it is read."""
     from app.pipeline import grade as grading
     from app.pipeline.transcriber import _ensure_wav_path
 
-    bound = GRADE_MAX_SECONDS + 1.0
+    cut = spec.max_sec is not None
+    bound = float(spec.max_sec) if cut else GRADE_MAX_SECONDS + 1.0
     wav_path, converted = path, False
     try:
         try:
@@ -535,7 +539,7 @@ def _grade_file(path: Path, spec: GradeTargetDto):
         except Exception as ex:  # noqa: BLE001 - an undecodable take is a client input error
             logger.info("Grade take unreadable: %s", ex)
             raise HTTPException(422, "The take could not be read. Record it again and resend it.")
-        if duration > GRADE_MAX_SECONDS:
+        if not cut and duration > GRADE_MAX_SECONDS:
             raise HTTPException(413, f"A take is at most {GRADE_MAX_SECONDS:.0f}s long.")
         y, sr = librosa.load(str(wav_path), sr=grading.vocal.SAMPLE_RATE, mono=True, duration=bound)
         return grading.grade(

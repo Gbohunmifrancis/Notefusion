@@ -22,6 +22,7 @@ import { ChoirScreen } from '../screens/ChoirScreen';
 import { HymnsScreen } from '../screens/HymnsScreen';
 import { useOutboxRunner } from '../lib/outbox';
 import { autoRefreshPack } from '../lib/hymnPackStore';
+import { PracticeScreen } from '../screens/PracticeScreen';
 import { AdminHomeScreen } from '../screens/admin/AdminHomeScreen';
 import { AdminPaymentsScreen } from '../screens/admin/AdminPaymentsScreen';
 import { AdminUserScreen } from '../screens/admin/AdminUserScreen';
@@ -161,6 +162,11 @@ export function RootNavigator() {
             <Stack.Screen
               name="Hymns"
               component={HymnsScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="Practice"
+              component={PracticeScreen}
               options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen

@@ -13,6 +13,7 @@ import type {
   BillingInterval,
   CheckoutSession,
   Choir,
+  Drill,
   ChoirMember,
   ChoirSheet,
   ChordSymbol,
@@ -27,6 +28,7 @@ import type {
   PagedResult,
   PaymentOpsSummary,
   Plan,
+  PracticeProgress,
   RegistrationResponse,
   SavedTranscription,
   ShareLink,
@@ -265,11 +267,21 @@ export const transcriptionsApi = {
       .then((r) => r.data);
   },
 
-  /** Sing-along grading (Pro): the recorded take and the part it was sung to. */
-  grade: (fileUri: string, fileName: string, target: GradeTarget) => {
+  /**
+   * Sing-along grading (Pro): the recorded take and the part it was sung to. `practised` names the saved
+   * sheet and part when known, so the practice the server records (and its XP) is tied to them.
+   */
+  grade: (
+    fileUri: string,
+    fileName: string,
+    target: GradeTarget,
+    practised?: { transcriptionId?: string; part?: string },
+  ) => {
     const form = new FormData();
     form.append("audio", { uri: fileUri, name: fileName, type: "audio/m4a" } as unknown as Blob);
     form.append("target", JSON.stringify(target));
+    if (practised?.transcriptionId) form.append("transcriptionId", practised.transcriptionId);
+    if (practised?.part) form.append("part", practised.part);
     return api.post<GradeResult>("/api/transcriptions/grade", form, { timeout: 90_000 }).then((r) => r.data);
   },
 
@@ -333,6 +345,26 @@ export const transcriptionsApi = {
         { timeout: 30_000 },
       )
       .then((r) => r.data),
+};
+
+/**
+ * Practice: the free daily solfa drill and the XP, level, streak and badges every marked take earns. The
+ * server records practice when it grades a take; nothing here reports a score.
+ */
+export const practiceApi = {
+  /** Today's drill, the same all day. */
+  todayDrill: () => api.get<Drill>("/api/practice/drills/today").then((r) => r.data),
+
+  /** Marks a sung drill (free, a few a day) and returns the marks with what the take earned. */
+  gradeDrill: (fileUri: string, drillId: string) => {
+    const form = new FormData();
+    form.append("audio", { uri: fileUri, name: "drill.m4a", type: "audio/m4a" } as unknown as Blob);
+    form.append("drillId", drillId);
+    return api.post<GradeResult>("/api/practice/drills/grade", form, { timeout: 60_000 }).then((r) => r.data);
+  },
+
+  /** XP, level, streak, weekly goal, badges and the last seven days. */
+  progress: () => api.get<PracticeProgress>("/api/practice/progress").then((r) => r.data),
 };
 
 export const libraryApi = {

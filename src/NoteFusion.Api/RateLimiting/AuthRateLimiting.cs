@@ -67,6 +67,8 @@ public static class AuthRateLimiting
         // "Hum to find a hymn" counts per address AND per device, by the minute and by the day: four buckets
         // where a policy has one, so it is a filter of its own (HymnIdentifyRateLimiting.cs).
         services.AddSingleton<HymnIdentifyLimiter>();
+        // Marking a daily drill: per device and per address, beside the account's own day allowance.
+        services.AddSingleton<PracticeDrillLimiter>();
 
         services.AddRateLimiter(options =>
         {
@@ -292,6 +294,19 @@ public sealed class RateLimitSettings
 
     public int HymnIdentifyDailyWindowSeconds { get; set; } = 86_400;
 
+    /// <summary>
+    /// Daily drills marked from one device: a few a minute (a retry, a second go) and a day's ceiling above Pro's
+    /// twenty, so a family sharing a phone is never the one refused. Every try is a second of the worker's CPU.
+    /// </summary>
+    public int PracticeDrillPermits { get; set; } = 6;
+
+    public int PracticeDrillWindowSeconds { get; set; } = 60;
+
+    public int PracticeDrillDeviceDailyPermits { get; set; } = 40;
+
+    /// <summary>Daily drills marked from one address, loose because a mobile carrier puts many phones behind one.</summary>
+    public int PracticeDrillAddressDailyPermits { get; set; } = 200;
+
     /// <summary>A copy with every limit effectively removed, used when <see cref="Enabled"/> is false.</summary>
     internal RateLimitSettings Disabled() => new()
     {
@@ -306,5 +321,8 @@ public sealed class RateLimitSettings
         PasskeyPermits = int.MaxValue,
         HymnIdentifyPermits = int.MaxValue,
         HymnIdentifyDailyPermits = int.MaxValue,
+        PracticeDrillPermits = int.MaxValue,
+        PracticeDrillDeviceDailyPermits = int.MaxValue,
+        PracticeDrillAddressDailyPermits = int.MaxValue,
     };
 }

@@ -214,6 +214,14 @@ export function AppDrawer({ open, onClose, pictureUrl }: Props) {
         />
 
         <Row
+          icon="flame-outline"
+          label="Practice"
+          onPress={() => go(() => nav.navigate('Practice'))}
+          styles={styles}
+          color={colors.text}
+        />
+
+        <Row
           icon="settings-outline"
           label="Settings and privacy"
           onPress={() => go(() => nav.navigate('Settings'))}

@@ -93,5 +93,11 @@ public interface IApplicationDbContext
     /// <summary>WebAuthn credentials (passkeys) admins sign in to the console with.</summary>
     DbSet<Passkey> Passkeys { get; }
 
+    /// <summary>Every graded practice (drills and parts); XP, streaks and levels are read off these.</summary>
+    DbSet<PracticeSession> PracticeSessions { get; }
+
+    /// <summary>Badges earned, one row per account and badge.</summary>
+    DbSet<Achievement> Achievements { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

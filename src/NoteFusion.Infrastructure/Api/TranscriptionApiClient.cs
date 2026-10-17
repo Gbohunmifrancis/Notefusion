@@ -122,6 +122,7 @@ internal sealed class TranscriptionApiClient(
         Stream audio,
         string fileName,
         GradeTargetDto target,
+        double? maxTakeSeconds = null,
         CancellationToken cancellationToken = default)
     {
         try
@@ -133,7 +134,7 @@ internal sealed class TranscriptionApiClient(
             form.Add(audioContent, "audio", safeName);
             var wireTarget = new GradeTarget(
                 target.Notes.Select(n => new GradeTargetNote(n.PitchMidi, n.StartBeat, n.DurBeats)).ToList(),
-                target.TempoBpm, target.LeadInSec);
+                target.TempoBpm, target.LeadInSec, maxTakeSeconds);
             form.Add(new StringContent(System.Text.Json.JsonSerializer.Serialize(wireTarget, ApiJsonContext.Default.GradeTarget)), "target");
 
             using var response = await http.PostAsync("v1/grade", form, cancellationToken);

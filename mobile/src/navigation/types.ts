@@ -73,6 +73,12 @@ export type RootStackParams = {
   Choir: { code?: string } | undefined;
   /** The hymns the website publishes, from the offline pack: browse, search, open as a sheet. */
   Hymns: undefined;
+  /**
+   * Practice: today's free solfa drill, the streak, XP and level, the weekly goal and badges. A pushed
+   * route rather than a tab — the bar's five cells keep the mic centred — reached from Home's streak
+   * chip, the side bar and the streak reminder.
+   */
+  Practice: undefined;
 
   /**
    * Admin-only screens, reached from the side bar's Admin row and nowhere else.
