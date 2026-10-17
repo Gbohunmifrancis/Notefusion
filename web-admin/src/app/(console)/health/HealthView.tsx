@@ -9,6 +9,7 @@ import {
   ArrowRight,
   CheckCircle2,
   Database,
+  DatabaseBackup,
   HeartPulse,
   Layers,
   RefreshCw,
@@ -18,13 +19,20 @@ import {
 } from "lucide-react";
 
 import { getAuditLog, getHealth, getWebhooks } from "@/api/endpoints";
-import type { HealthPanel, HealthStatus, SystemHealth } from "@/api/types";
+import type {
+  BackupHealthStatus,
+  BackupRun,
+  BackupStatus,
+  HealthPanel,
+  HealthStatus,
+  SystemHealth,
+} from "@/api/types";
 import { Card } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
 import { StatCard } from "@/components/StatCard";
 import { StateView } from "@/components/StateView";
 import { Button } from "@/components/ui/button";
-import { formatCount, formatInstantDateTime, formatRelative } from "@/lib/format";
+import { formatBytes, formatCount, formatInstantDateTime, formatRelative } from "@/lib/format";
 import { getReportingOffset } from "@/lib/reporting";
 
 const STATUS_LABELS: Record<HealthStatus, string> = {
@@ -107,6 +115,129 @@ function TierPanel({ panel, icon: Icon }: { panel: HealthPanel; icon: LucideIcon
           {/* Null means there is nothing to report, which is not the same as reporting "OK". */}
           {panel.detail ?? "Nothing to report."}
         </p>
+      </div>
+    </Card>
+  );
+}
+
+const BACKUP_SKINS: Record<BackupHealthStatus, { dot: string; text: string }> = {
+  ...STATUS_SKINS,
+  off: { dot: "bg-faint", text: "text-muted-foreground" },
+};
+
+const BACKUP_LABELS: Record<BackupHealthStatus, string> = {
+  ...STATUS_LABELS,
+  off: "Not set up",
+};
+
+/** "Sunday" within the last week (how a weekly drill is talked about), else "3w ago". */
+function dayOrRelative(iso: string, nowMs: number): string {
+  const age = nowMs - new Date(iso).getTime();
+  if (age >= 0 && age < 7 * 24 * 3600 * 1000) {
+    return new Date(iso).toLocaleDateString("en-GB", { weekday: "long" });
+  }
+  return formatRelative(iso, nowMs);
+}
+
+/** "3h ago" for a run that worked, "Failed 3h ago" for one that did not, "Never" for none. */
+function runLine(run: BackupRun | null, nowMs: number): string {
+  if (!run) return "Never";
+  const when = formatRelative(run.finishedAtUtc, nowMs);
+  return run.ok ? when : `Failed ${when}`;
+}
+
+/**
+ * The backups (docs/BACKUP_AND_MIGRATION.md): what the backup container last recorded for each job.
+ * Outside the page's rollup — a late backup does not stop the product — but with its own status, and
+ * the problems listed here are the ones the backup alert pushes and emails.
+ */
+function BackupsCard({ backups, nowMs }: { backups: BackupStatus; nowMs: number }) {
+  const skin = BACKUP_SKINS[backups.status];
+  const dump = backups.lastVerifiedDump;
+  const dumpSize = dump?.sizeBytes == null ? "size unknown" : formatBytes(dump.sizeBytes);
+  const rows: { label: string; value: string; bad: boolean }[] = [
+    {
+      label: "Last database backup",
+      value: dump ? `${formatRelative(dump.finishedAtUtc, nowMs)} · ${dumpSize} · verified` : "None verified yet",
+      bad: !dump,
+    },
+    {
+      label: "WAL archived",
+      value: backups.walArchivedAtUtc ? formatRelative(backups.walArchivedAtUtc, nowMs) : "Not yet",
+      bad: !backups.lastWalReport?.ok,
+    },
+    { label: "Base backup", value: runLine(backups.lastBaseBackup, nowMs), bad: backups.lastBaseBackup?.ok === false },
+    { label: "Photos and keys", value: runLine(backups.lastFiles, nowMs), bad: backups.lastFiles?.ok === false },
+    { label: "Repository check", value: runLine(backups.lastCheck, nowMs), bad: backups.lastCheck?.ok === false },
+  ];
+  if (backups.lastMirror) {
+    rows.push({ label: "Second copy", value: runLine(backups.lastMirror, nowMs), bad: !backups.lastMirror.ok });
+  }
+  const drill = backups.lastDrill;
+  rows.push({
+    label: "Last restore drill",
+    value: drill
+      ? `${drill.ok ? "Passed" : "FAILED"} ${dayOrRelative(drill.finishedAtUtc, nowMs)}`
+      : "Not run yet (weekly, GitHub Actions)",
+    bad: drill ? !drill.ok : false,
+  });
+
+  return (
+    <Card
+      title="Backups"
+      hint="Encrypted copies kept off this server, as the backup service last recorded them."
+      action={
+        <span className={`flex items-center gap-1.5 text-xs font-semibold ${skin.text}`}>
+          <span className={`h-2 w-2 rounded-full ${skin.dot}`} aria-hidden="true" />
+          {BACKUP_LABELS[backups.status]}
+        </span>
+      }
+    >
+      <div className="space-y-4">
+        <p className="flex items-start gap-2 text-[13px] font-medium text-foreground">
+          <DatabaseBackup size={16} className="mt-0.5 shrink-0 text-faint" aria-hidden="true" />
+          <span className="min-w-0 break-words">{backups.summary}</span>
+        </p>
+
+        {backups.status !== "off" && (
+          <dl className="grid gap-x-6 gap-y-2.5 sm:grid-cols-2">
+            {rows.map((row) => (
+              <div key={row.label} className="flex min-w-0 items-baseline justify-between gap-3">
+                <dt className="shrink-0 text-xs text-muted-foreground">{row.label}</dt>
+                <dd
+                  className={`min-w-0 truncate text-right text-xs font-semibold tabular-nums ${
+                    row.bad ? "text-danger-deep" : "text-foreground"
+                  }`}
+                >
+                  {row.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
+
+        {backups.problems.length > 0 && (
+          <ul className="space-y-1.5 rounded-[8px] border border-warning/30 bg-warning/10 px-3.5 py-3 text-[12px] leading-relaxed text-warning-deep">
+            {backups.problems.map((problem) => (
+              <li key={problem} className="flex gap-2">
+                <AlertCircle size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
+                <span className="min-w-0 break-words">{problem}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {backups.drillUrl && (
+          <a
+            href={backups.drillUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] dark:text-blue-400"
+          >
+            Restore drill run in GitHub
+            <ArrowRight size={14} aria-hidden="true" />
+          </a>
+        )}
       </div>
     </Card>
   );
@@ -490,6 +621,8 @@ export function HealthView() {
               <TierPanel panel={health.transcriptionWorker} icon={Server} />
               <TierPanel panel={health.webhookBacklog} icon={Webhook} />
             </div>
+
+            {health.backups && <BackupsCard backups={health.backups} nowMs={nowMs} />}
 
             <div className="grid gap-5 lg:grid-cols-2">
               <Card

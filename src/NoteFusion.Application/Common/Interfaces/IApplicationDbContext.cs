@@ -99,5 +99,8 @@ public interface IApplicationDbContext
     /// <summary>Badges earned, one row per account and badge.</summary>
     DbSet<Achievement> Achievements { get; }
 
+    /// <summary>What the backup service did and when (written by the backup container; ops/backup).</summary>
+    DbSet<BackupRun> BackupRuns { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

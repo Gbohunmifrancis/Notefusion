@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Daily: retention and an integrity check of the restic repository.
+#   Database dumps: every dump of the last 2 days (4 a day), then one a day for 14 days, one a week for
+#   8 weeks and one a month for 12 months.   Files: one a day for 30 days, 8 weekly, 12 monthly.
+#   Then `restic check`, which reads back BACKUP_CHECK_SUBSET (5%) of the stored data each day, so the
+#   whole repository is re-read every few weeks and silent corruption in the bucket is found.
+set -Eeuo pipefail
+# shellcheck source=nf-backup-lib.sh
+. /usr/local/bin/nf-backup-lib.sh
+export NF_JOB=maintain
+nf_export_tool_env
+
+started=$(nf_now)
+fail() {
+  trap - ERR
+  log "FAILED: $*"
+  nf_record check false "$started" "$(nf_now)" "" false "" "$*"
+  exit 1
+}
+trap 'fail "unexpected error at line $LINENO"' ERR
+
+# Only locks whose owner is gone; a live backup's lock is left alone.
+nf_restic unlock >/dev/null 2>&1 || true
+
+nf_restic forget --host notefusion --tag db --group-by host,tags \
+  --keep-within 2d --keep-daily 14 --keep-weekly 8 --keep-monthly 12 --prune --quiet \
+  >"$NF_STATE/forget.out" 2>&1 || fail "restic forget (dumps) failed: $(tail -c 400 "$NF_STATE/forget.out" | tr '\n' ' ')"
+nf_restic forget --host notefusion --tag files --group-by host,tags \
+  --keep-daily 30 --keep-weekly 8 --keep-monthly 12 --prune --quiet \
+  >>"$NF_STATE/forget.out" 2>&1 || fail "restic forget (files) failed: $(tail -c 400 "$NF_STATE/forget.out" | tr '\n' ' ')"
+
+subset=${BACKUP_CHECK_SUBSET:-5%}
+nf_restic check --read-data-subset="$subset" >"$NF_STATE/check.out" 2>&1 \
+  || fail "restic check found a problem: $(grep -iv '^\(using\|load\|check\|read\)' "$NF_STATE/check.out" | tail -c 500 | tr '\n' ' ')"
+
+snapshots=$(nf_restic snapshots --json 2>/dev/null | jq 'length')
+size=$(nf_restic stats --mode raw-data --json 2>/dev/null | jq -r '.total_size // empty' || true)
+
+trap - ERR
+nf_record check true "$started" "$(nf_now)" "$size" true "" \
+  "retention applied · repository check passed (read $subset of the data) · $snapshots snapshots kept"
+log "done: $snapshots snapshots, check passed"

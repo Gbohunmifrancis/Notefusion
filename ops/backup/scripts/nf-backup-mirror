@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Daily, optional: a second copy of the restic repository at another provider, so no single company holds
+# every copy. Off unless BACKUP_MIRROR is set to an rclone destination, written as one connection string,
+# for example
+#   :b2,account=<keyID>,key=<applicationKey>:notefusion-backup-mirror/restic
+#   :s3,provider=Other,endpoint='https://s3.example.com',access_key_id=..,secret_access_key=..:bucket/restic
+# (a value with a colon in it, like an endpoint URL, goes in single quotes)
+# The copy only adds files and never deletes, so the server cannot erase it: give it a key without
+# delete rights (Backblaze B2 can) and it is append-only. It is a complete restic repository in its own
+# right — the same password opens it (docs/BACKUP_AND_MIGRATION.md, "If R2 itself is gone").
+set -Eeuo pipefail
+# shellcheck source=nf-backup-lib.sh
+. /usr/local/bin/nf-backup-lib.sh
+export NF_JOB=mirror
+[ -n "${BACKUP_MIRROR:-}" ] || exit 0
+nf_export_tool_env
+
+started=$(nf_now)
+if rclone copy "backup:$BACKUP_S3_BUCKET/restic" "$BACKUP_MIRROR" --transfers 4 --checkers 8 \
+    --stats-one-line --stats 0 >"$NF_STATE/mirror.out" 2>&1; then
+  bytes=$(rclone size "$BACKUP_MIRROR" --json 2>/dev/null | jq -r '.bytes // empty' || true)
+  nf_record mirror true "$started" "$(nf_now)" "$bytes" false "" "restic repository copied to the second destination"
+  log "done"
+else
+  nf_record mirror false "$started" "$(nf_now)" "" false "" \
+    "copy to the second destination failed: $(grep -i error "$NF_STATE/mirror.out" | tail -c 400 | tr '\n' ' ')"
+  log "FAILED: $(tail -c 400 "$NF_STATE/mirror.out")"
+  exit 1
+fi

@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Daily physical base backup for point-in-time recovery: wal-g reads the data directory (the db-data
+# volume, mounted read-only here) between pg_backup_start and pg_backup_stop, compresses, encrypts and
+# uploads it. Then old base backups and the WAL only they needed are deleted, keeping BACKUP_BASE_KEEP
+# (8) — a week of recovery points with a day's margin — and the WAL chain is checked for gaps.
+set -Eeuo pipefail
+# shellcheck source=nf-backup-lib.sh
+. /usr/local/bin/nf-backup-lib.sh
+export NF_JOB=base
+nf_export_tool_env
+
+keep=${BACKUP_BASE_KEEP:-8}
+started=$(nf_now)
+fail() {
+  trap - ERR
+  log "FAILED: $*"
+  nf_record base false "$started" "$(nf_now)" "" false "" "$*"
+  exit 1
+}
+trap 'fail "unexpected error at line $LINENO"' ERR
+
+# On a managed database (RDS, Cloud SQL, Azure, Neon, Supabase…) there is no data directory to copy and
+# no archive_command to set: the provider's own point-in-time recovery takes this layer's place, and the
+# logical dumps carry on as before.
+if [ "${BACKUP_PHYSICAL:-on}" = off ]; then
+  trap - ERR
+  nf_record base true "$started" "$(nf_now)" "" false "" "point-in-time recovery is the database provider's (BACKUP_PHYSICAL=off)"
+  exit 0
+fi
+
+[ -f "$NF_PGDATA/PG_VERSION" ] || fail "the database's data directory is not mounted at $NF_PGDATA"
+
+log "base backup of $NF_PGDATA"
+wal-g backup-push "$NF_PGDATA" >"$NF_STATE/base.out" 2>&1 \
+  || fail "wal-g backup-push failed: $(grep -v '^INFO' "$NF_STATE/base.out" | tail -c 600 | tr '\n' ' ')"
+
+# A completed base backup is a fresh starting point: any WAL the database dropped earlier no longer matters.
+rm -f "$NF_STATE/wal-dropped"
+
+wal-g backup-list --detail --json >"$NF_STATE/base-list.json" 2>"$NF_STATE/base-list.err" \
+  || fail "wal-g backup-list failed: $(tail -c 300 "$NF_STATE/base-list.err" | tr '\n' ' ')"
+latest=$(jq -c 'sort_by(.finish_time) | last' "$NF_STATE/base-list.json")
+name=$(jq -r '.backup_name' <<<"$latest")
+size=$(jq -r '.compressed_size // 0' <<<"$latest")
+count=$(jq 'length' "$NF_STATE/base-list.json")
+
+if [ "$count" -gt "$keep" ]; then
+  wal-g delete retain FULL "$keep" --confirm >"$NF_STATE/base-delete.out" 2>&1 \
+    || log "retention clean-up failed (kept everything): $(grep -v '^INFO' "$NF_STATE/base-delete.out" | tail -c 300 | tr '\n' ' ')"
+fi
+
+# Is every WAL segment from the oldest kept base backup to now in the bucket? Segments still on their
+# way (the last minute or two) are a warning, not a gap.
+chain="WAL chain not checked"
+if wal-g wal-verify integrity --json >"$NF_STATE/wal-verify.json" 2>"$NF_STATE/wal-verify.err"; then
+  status=$(jq -r '.integrity.status // "UNKNOWN"' "$NF_STATE/wal-verify.json" 2>/dev/null || echo UNKNOWN)
+  case "$status" in
+    OK | WARNING) chain="WAL chain complete" ;;
+    *) trap - ERR; nf_record base false "$started" "$(nf_now)" "$size" false "" \
+         "base backup $name stored, but the WAL chain has a gap (wal-verify: $status): point-in-time recovery is limited to after the gap"
+       exit 1 ;;
+  esac
+else
+  chain="WAL chain check failed: $(tail -c 200 "$NF_STATE/wal-verify.err" | tr '\n' ' ')"
+fi
+
+trap - ERR
+kept=$((count > keep ? keep : count))
+nf_record base true "$started" "$(nf_now)" "$size" false "" "$name · $(nf_human_bytes "$size") compressed · $kept kept · $chain"
+log "done: $name, $(nf_human_bytes "$size") compressed, $chain"

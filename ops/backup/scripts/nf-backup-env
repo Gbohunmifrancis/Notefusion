@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Runs any command with the backup tools configured from the BACKUP_* settings, e.g.
+#   docker compose -f docker-compose.prod.yml exec backup nf-backup-env restic snapshots
+#   docker compose -f docker-compose.prod.yml exec backup nf-backup-env wal-g backup-list
+#   nf-backup-env rclone lsf backup:notefusion-backups/status
+set -euo pipefail
+# shellcheck source=nf-backup-lib.sh
+. /usr/local/bin/nf-backup-lib.sh
+missing=$(nf_missing_config | paste -sd ' ' -)
+[ -z "$missing" ] || die "these settings are empty: $missing"
+nf_export_tool_env
+if [ "${1:-}" = restic ]; then
+  shift
+  exec restic -o s3.bucket-lookup=path "$@"
+fi
+exec "$@"
