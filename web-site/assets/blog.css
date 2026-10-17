@@ -383,6 +383,29 @@
   .blog-page .hymn-page .card, .blog-page .solfa-example, .blog-page .solfa-text { padding-left: 12px; padding-right: 12px; }
   .blog-page .solfa-bar code { font-size: 14px; }
 }
+/* ── Phones first: links and controls a thumb can hit ──────────────────────
+   Most readers are on phones. These are the phone's sizes: 44 px tall targets (an inline link keeps its line
+   and grows its hit area with padding the negative margin gives back), 16 px text in fields. A mouse on a wide
+   screen gets the compact sizes back in the min-width block below. */
+.blog-page .crumbs a, .blog-page .kicker a, .blog-page .back-link a, .blog-page .hymnal-all a, .blog-page .pager a, .blog-page .side-list li a { display: inline-block; padding-block: 12px; margin-block: -12px; }
+.blog-page .toc li { margin: 0; }
+.blog-page .toc a { display: block; padding: 12px 0; }
+.blog-page .share-links { row-gap: 0; }
+.blog-page .share-links a { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; }
+.blog-page .topics a { padding: 12px 0; }
+.blog-page .player select { min-height: 44px; font-size: 16px; }
+.blog-page .hymn-seasons button { min-height: 44px; }
+.blog-page .az a { min-width: 44px; min-height: 44px; }
+@media (min-width: 801px) and (hover: hover) and (pointer: fine) {
+  .blog-page .toc li { margin: 0 0 5px; }
+  .blog-page .toc a { display: inline; padding: 0; }
+  .blog-page .share-links { row-gap: 6px; }
+  .blog-page .share-links a { display: inline; min-width: 0; min-height: 0; }
+  .blog-page .topics a { padding: 4px 0; }
+  .blog-page .player select { min-height: 40px; font-size: 14px; }
+  .blog-page .hymn-seasons button { min-height: 36px; }
+  .blog-page .az a { min-width: 36px; min-height: 36px; }
+}
 @media print {
   .blog-page .site-header, .blog-page footer, .blog-page .cta-box, .blog-page .player, .blog-page .crumbs, .blog-page .related, .blog-page .side-list, .blog-page .share, .blog-page .theme-toggle { display: none !important; }
 }

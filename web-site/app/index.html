@@ -10,14 +10,13 @@
 <link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/theme.css?v=6">
+<!-- The interface font, fetched alongside the CSS rather than after it: the first screen's text is set in it. -->
+<link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/theme.css?v=7">
 <link rel="stylesheet" href="/assets/rangepicker.css?v=2">
-<link rel="stylesheet" href="/assets/app.css?v=26">
-<link rel="stylesheet" href="/assets/recorder.css?v=2">
-<link rel="stylesheet" href="/assets/night.css?v=10">
+<link rel="stylesheet" href="/assets/app.css?v=27">
+<link rel="stylesheet" href="/assets/recorder.css?v=3">
+<link rel="stylesheet" href="/assets/night.css?v=11">
 <!-- The theme before the first paint: blocking on purpose (no async/defer). -->
 <script src="/assets/theme-boot.js?v=1"></script>
 </head>
@@ -930,11 +929,11 @@
 <!-- Hidden engraving surface for the PDF export: OSMD paginates to A4 on canvas here. -->
 <div id="pdf-stage" aria-hidden="true" style="position:absolute; left:-10000px; top:0; width:794px;"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous" defer></script>
 <!-- Sign in with Google. app.js renders the button once this has loaded (it listens for this tag's load
      event); without it the forms still work. Google serves it unversioned, so it cannot carry an integrity hash. -->
 <script src="https://accounts.google.com/gsi/client" id="gsi-client" async defer></script>
-<!-- The engraver is loaded by app.js from one pinned, integrity-checked CDN URL. -->
+<!-- The engraver (once the app is open) and the PDF library (on the first PDF) are loaded by app.js from pinned,
+     integrity-checked CDN URLs. -->
 <script src="/assets/choir.js?v=5" defer></script>
 <script src="/assets/chords.js?v=1" defer></script>
 <script src="/assets/songlink.js?v=2" defer></script>
@@ -947,7 +946,7 @@
 <script src="/assets/parts.js?v=1" defer></script>
 <script src="/assets/practice.js?v=1" defer></script>
 <script src="/assets/notify.js?v=1" defer></script>
-<script src="/assets/app.js?v=39" defer></script>
+<script src="/assets/app.js?v=40" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>
 </html>

@@ -504,12 +504,20 @@
         google.accounts.id.renderButton(slot, { theme: "outline", size: "large", shape: "rectangular", text: "continue_with", width: width, logo_alignment: "center" });
         slot.closest("form").classList.add("has-google");
       });
-    } catch (e) { /* the forms work without it */ }
+    } catch (e) { googleRow(false); /* the forms work without it */ }
   }
   // The GSI tag is async: it either ran before this file (then google.accounts is here already) or its
   // load event is still to come. A listener, not an onload="" attribute, so the CSP needs no inline script.
   var gsiTag = document.getElementById("gsi-client");
-  if (gsiTag) gsiTag.addEventListener("load", initGoogle);
+  // The button's row is kept from the start, so the email fields do not jump down when Google's script arrives
+  // (seconds later on a phone on 3G); it folds away only if that script cannot load or draw.
+  function googleRow(on) { ["form-login", "form-register"].forEach(function (id) { $(id).classList.toggle("has-google", on); }); }
+  if (gsiTag) {
+    googleRow(true);
+    gsiTag.addEventListener("load", initGoogle);
+    // The page's load event waits for the async tag, so by then the script has either run or failed (blocked, offline).
+    window.addEventListener("load", function () { if (!(window.google && google.accounts && google.accounts.id)) googleRow(false); });
+  }
   if (window.google && google.accounts) initGoogle();
 
   $("form-login").addEventListener("submit", function (e) {
@@ -1199,6 +1207,7 @@
       var wasGuest = guest;
       guest = false;
       hide($("boot-skel")); leaveAuth(); hide($("guest-bar")); show($("view-app")); show($("top-nav")); showAccountUi(true); setView("transcribe"); libraryCache = null;
+      warmEngraver();
       document.body.classList.remove("guest"); hide($("topbar-signin")); show($("recents"));
       fetchLibrary().catch(function () { return []; });
       // Signed in from a choir invite (or already signed in when it was opened): join now.
@@ -1225,6 +1234,7 @@
   function startGuest() {
     guest = true;
     hide($("boot-skel")); leaveAuth(); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); showAccountUi(false); setView("transcribe");
+    warmEngraver();
     document.body.classList.add("guest"); show($("topbar-signin"));
     $("greeting").textContent = greeting(""); $("home-sub").textContent = "Your free preview is on its way. Create a free account to keep transcribing.";
     startJob({ jobId: previewId, stage: "transcribing" }, "preview");
@@ -2970,7 +2980,32 @@
     }).catch(function (err) { osmdLoading = null; throw err; });
     return osmdLoading;
   }
-  ensureOsmd().catch(function () { /* reported where the sheet is drawn */ });
+  /** The engraver is ~320 KB: never on the sign-in screen (most first visits, on a phone). Once the app itself
+   *  is open it loads while the phone is idle, so a sheet opened later is drawn at once. */
+  var osmdWarmed = false;
+  function warmEngraver() {
+    if (osmdWarmed) return;
+    osmdWarmed = true;
+    var go = function () { ensureOsmd().catch(function () { /* reported where the sheet is drawn */ }); };
+    if (window.requestIdleCallback) window.requestIdleCallback(go, { timeout: 4000 }); else setTimeout(go, 1500);
+  }
+
+  /** jsPDF 2.5.1 (~95 KB) only when a PDF is asked for: one pinned URL with its SRI hash (the CSP allows it). */
+  var JSPDF_URL = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+  var JSPDF_SRI = "sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk";
+  var jspdfLoading = null;
+  function ensureJsPdf() {
+    if (window.jspdf) return Promise.resolve();
+    if (jspdfLoading) return jspdfLoading;
+    jspdfLoading = new Promise(function (resolve, reject) {
+      var tag = document.createElement("script");
+      tag.src = JSPDF_URL; tag.async = true;
+      tag.integrity = JSPDF_SRI; tag.crossOrigin = "anonymous";
+      tag.onload = resolve; tag.onerror = function () { tag.remove(); reject(new Error("the PDF library did not load; check your connection and try again")); };
+      document.head.appendChild(tag);
+    }).catch(function (err) { jspdfLoading = null; throw err; });
+    return jspdfLoading;
+  }
 
   function engrave(xml) {
     // The engraver takes a moment on a long sheet (and longer the first time, while it
@@ -3066,7 +3101,7 @@
   }
   function renderPdf(result, watermark) {
     if (!window.opensheetmusicdisplay) return ensureOsmd().then(function () { return renderPdf(result, watermark); });
-    if (!window.jspdf) return Promise.reject(new Error("the PDF library did not load; check your connection and reload"));
+    if (!window.jspdf) return ensureJsPdf().then(function () { return renderPdf(result, watermark); });
     var stage = $("pdf-stage");
     stage.innerHTML = "";
     var src = result.source || current.source;

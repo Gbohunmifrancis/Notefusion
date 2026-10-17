@@ -285,6 +285,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).
   The same image runs in dev and compose with only env changes.
+- **Mobile first, always**: most users arrive on phones. Design, layout and performance are judged at 360–414 px on a
+  mid-range Android over 3G/4G first (Lighthouse mobile; budget and how to measure in `web-site/README.md`), desktop
+  second. CSS base styles are the phone's, `min-width` queries go upward; tap targets ≥ 44 px, inputs ≥ 16 px, no
+  horizontal scroll, dialogs fit `100dvh`; images sized for phones (AVIF/WebP `srcset`), fonts self-hosted
+  (`assets/fonts/`), heavy libraries (OSMD, jsPDF, the piano) loaded only when needed; a changed CSS/JS file gets a new `?v=`.
 
 ## Commands
 

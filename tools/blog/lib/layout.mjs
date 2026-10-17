@@ -93,9 +93,8 @@ export function page({ path, title, description, ogType = "website", image = DEF
     `<link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192">`,
     `<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">`,
     `<link rel="alternate" type="application/rss+xml" title="NoteFusion blog" href="/blog/feed.xml">`,
-    `<link rel="preconnect" href="https://fonts.googleapis.com">`,
-    `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>`,
-    `<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">`,
+    // The reading font, fetched alongside the CSS rather than after it: the first screen's text is set in it.
+    `<link rel="preload" href="/assets/fonts/source-serif-4-v15-latin.woff2" as="font" type="font/woff2" crossorigin>`,
     `<link rel="stylesheet" href="/assets/site-pages.css?v=${ASSET_VERSION.sitePagesCss}">`,
     `<link rel="stylesheet" href="/assets/blog.css?v=${ASSET_VERSION.blogCss}">`,
     head,
