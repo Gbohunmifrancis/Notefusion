@@ -397,7 +397,8 @@
       $("auth-join").textContent = "You're invited to join a choir on NoteFusion. Sign in, or create a free account, and you'll join it straight after.";
       show($("auth-join"));
     } else hide($("auth-join"));
-    window.scrollTo(0, 0);
+    // Not on taking over the first paint (assets/app-boot.js): whoever scrolled down to the password stays there.
+    if (!document.documentElement.classList.contains("nf-boot")) window.scrollTo(0, 0);
   }
   function leaveAuth() { document.body.classList.remove("auth-only"); hide($("view-auth")); }
   var AUTH_COPY = {
@@ -1215,7 +1216,7 @@
       if (previewId) { startGuest(); return Promise.resolve(); }
       showAuth(); return Promise.resolve();
     }
-    show($("boot-skel"));
+    leaveAuth(); show($("boot-skel"));
     return loadAccount().then(function () {
       // The API refused the session while the account loaded: the sign-in screen is already up.
       if (!tokens()) { showAuth(); return; }
@@ -3611,4 +3612,9 @@
   window.addEventListener("pageshow", function (e) { if (e.persisted && me && readCheckout()) watchPayment(true); });
 
   boot();
+  // The first paint was the page's own HTML (assets/app-boot.js); the screen boot() just set is the same one, so
+  // app.css can stop drawing it from the boot classes. A form sent before this file arrived goes now.
+  document.documentElement.classList.remove("nf-boot");
+  var sentEarly = window.NfBoot && window.NfBoot.takeSubmit();
+  if (sentEarly && sentEarly.requestSubmit) sentEarly.requestSubmit();
 })();

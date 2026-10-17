@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-GB">
+<html lang="en-GB" class="nf-boot">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -11,15 +11,16 @@
 <link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
+<!-- Before the first paint, blocking on purpose (no async/defer), and ahead of the CSS so they need not wait for it:
+     the theme, and which screen the HTML below shows (the sign-in form, or the app's shell with a session stored). -->
+<script src="/assets/theme-boot.js?v=1"></script>
+<script src="/assets/app-boot.js?v=1"></script>
 <!-- The interface font, fetched alongside the CSS rather than after it: the first screen's text is set in it. -->
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
+<!-- Only what the first screen needs; the range picker's and the recorder's styles load at the end of the body. -->
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/rangepicker.css?v=2">
-<link rel="stylesheet" href="/assets/app.css?v=27">
-<link rel="stylesheet" href="/assets/recorder.css?v=3">
+<link rel="stylesheet" href="/assets/app.css?v=28">
 <link rel="stylesheet" href="/assets/night.css?v=11">
-<!-- The theme before the first paint: blocking on purpose (no async/defer). -->
-<script src="/assets/theme-boot.js?v=1"></script>
 </head>
 <body class="guest">
 
@@ -107,7 +108,8 @@
     </button>
   </div>
   <main>
-  <!-- Shown while the account and the first result load, so the page is never blank. -->
+  <!-- Shown while the account and the first result load, so the page is never blank (from the first paint when a
+       session is stored: assets/app-boot.js). -->
   <section id="boot-skel" aria-hidden="true">
     <div class="card">
       <div class="skel skel-title"></div>
@@ -122,7 +124,8 @@
   </section>
 
   <!-- ── Signed out: sign in or create an account, then try it first ──── -->
-  <section id="view-auth" class="auth-page hidden">
+  <!-- Real HTML, painted before any script: app.css shows it until app.js takes over (assets/app-boot.js). -->
+  <section id="view-auth" class="auth-page">
     <!-- Wide screens: what NoteFusion does, beside the form. -->
     <aside class="auth-aside" aria-hidden="true">
       <span class="brand"><span class="brand-mark"></span>NoteFusion</span>
@@ -134,7 +137,7 @@
         <div class="auth-sample">
           <div class="auth-sample-head"><span>Amazing Grace</span><span>Doh is G · 3/4</span></div>
           <div class="auth-sample-solfa">| s, - | d - - - m d | m - - - r - | d - - - l, - | s, - - - s, - |</div>
-          <div class="auth-sample-staff"><img src="/assets/sample-staff.svg" width="613" height="236" alt=""></div>
+          <div class="auth-sample-staff"><img src="/assets/sample-staff.svg" width="613" height="236" alt="" loading="lazy"></div>
         </div>
       </div>
       <p class="auth-aside-foot">One account across the web and the Android app.</p>
@@ -143,22 +146,23 @@
     <div class="auth-main">
       <div class="auth-top">
         <a class="brand auth-top-brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion</a>
-        <button class="btn btn-ghost btn-icon theme-toggle" id="auth-theme" type="button" aria-label="Switch to dark mode"><svg class="ic"><use href="/assets/icons.svg#i-moon"/></svg></button>
+        <button class="btn btn-ghost btn-icon theme-toggle" id="auth-theme" type="button" aria-label="Switch theme"><svg class="ic boot-moon"><use href="/assets/icons.svg#i-moon"/></svg><svg class="ic boot-sun"><use href="/assets/icons.svg#i-sun"/></svg></button>
       </div>
 
       <div class="auth-card">
         <button class="btn-link auth-back hidden" id="auth-back" type="button"><svg class="ic"><use href="/assets/icons.svg#i-back"/></svg>Back to your preview</button>
-        <h1 class="auth-title" id="auth-title">Welcome back</h1>
-        <p class="auth-sub" id="auth-sub">Sign in to open your sheets on any device.</p>
+        <!-- Both openings until app.js writes the one it shows: /app?signup=1 paints Create account (app.js AUTH_COPY). -->
+        <h1 class="auth-title" id="auth-title"><span class="boot-login">Welcome back</span><span class="boot-signup">Create your account</span></h1>
+        <p class="auth-sub" id="auth-sub"><span class="boot-login">Sign in to open your sheets on any device.</span><span class="boot-signup">Free to start: 3 hummed or recorded transcriptions every week.</span></p>
         <div class="tabs fill auth-tabs" id="auth-tabs" role="tablist" aria-label="Sign in or create an account">
           <button class="tab" type="button" role="tab" data-tab="login" aria-selected="true">Sign in</button>
           <button class="tab" type="button" role="tab" data-tab="register" aria-selected="false">Create account</button>
         </div>
         <div id="auth-alert" class="alert alert-danger hidden" role="alert"></div>
         <!-- Opened from a choir invite (/app?join=CODE): the join happens once signed in. -->
-        <div id="auth-join" class="alert alert-info hidden" role="status"></div>
+        <div id="auth-join" class="alert alert-info hidden" role="status">You're invited to join a choir on NoteFusion. Sign in, or create a free account, and you'll join it straight after.</div>
 
-        <form id="form-login" class="auth-form" novalidate>
+        <form id="form-login" class="auth-form has-google" novalidate>
           <div class="google-slot" id="google-btn-login"></div>
           <div class="or">or with email</div>
           <div class="field">
@@ -182,7 +186,7 @@
           <p class="auth-switch">Didn't get it? <button class="btn-link" id="verify-resend" type="button">Send it again</button></p>
         </form>
 
-        <form id="form-register" class="auth-form hidden" novalidate>
+        <form id="form-register" class="auth-form has-google hidden" novalidate>
           <div class="google-slot" id="google-btn-register"></div>
           <div class="or">or with email</div>
           <div class="field">
@@ -907,7 +911,7 @@
             <h2 class="group-title" id="acct-app-title">Get the app</h2>
             <div class="list-card">
               <div class="lrow"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-phone"/></svg>Record at rehearsal, keep your library offline and get practice reminders. The web and the app share one account.</span></div>
-              <div class="lrow"><a class="store-badge" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="app_panel"><img src="/assets/google-play-badge.png" width="646" height="250" alt="Get it on Google Play"></a></div>
+              <div class="lrow"><a class="store-badge" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="app_panel"><img src="/assets/google-play-badge.png" width="646" height="250" alt="Get it on Google Play" loading="lazy"></a></div>
             </div>
           </section>
 
@@ -926,6 +930,10 @@
   </main>
   </div>
 </div>
+
+<!-- Not needed for the first screen, so not in <head>: a stylesheet here holds back no paint. -->
+<link rel="stylesheet" href="/assets/rangepicker.css?v=2">
+<link rel="stylesheet" href="/assets/recorder.css?v=3">
 
 <!-- Hidden engraving surface for the PDF export: OSMD paginates to A4 on canvas here. -->
 <div id="pdf-stage" aria-hidden="true" style="position:absolute; left:-10000px; top:0; width:794px;"></div>
@@ -948,7 +956,7 @@
 <script src="/assets/practice.js?v=1" defer></script>
 <script src="/assets/notify.js?v=2" defer></script>
 <script src="/assets/freeweek.js?v=1" defer></script>
-<script src="/assets/app.js?v=42" defer></script>
+<script src="/assets/app.js?v=43" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>
 </html>
