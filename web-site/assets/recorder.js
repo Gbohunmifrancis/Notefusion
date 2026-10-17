@@ -14,15 +14,11 @@
   var panel = null, els = {}, meterBars = [];
   var rec = { recorder: null, chunks: [], timer: null, stopAt: null, started: 0, stream: null, audioCtx: null, analyser: null, raf: null, blob: null, name: "", url: null, discard: false, opts: null, opening: false, opener: null };
 
-  function icon(d) {
-    return '<svg class="nf-rec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + "</svg>";
+  /** An icon from the site's sprite (Lucide, /assets/icons.svg). */
+  function icon(id) {
+    return '<svg class="nf-rec-ic" aria-hidden="true"><use href="/assets/icons.svg#i-' + id + '"/></svg>';
   }
-  var ICONS = {
-    stop: icon('<rect x="6" y="6" width="12" height="12" rx="2"/>'),
-    check: icon('<path d="M20 6 9 17l-5-5"/>'),
-    restart: icon('<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>'),
-    wave: icon('<path d="M2 12h2l2-7 3 14 3-10 2 6 2-3h6"/>')
-  };
+  var ICONS = { stop: icon("stop"), check: icon("check"), restart: icon("restart"), wave: icon("wave") };
   function fmtClock(sec) { sec = Math.max(0, Math.floor(sec)); return Math.floor(sec / 60) + ":" + String(sec % 60).padStart(2, "0"); }
 
   function build() {

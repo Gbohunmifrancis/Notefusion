@@ -10,6 +10,7 @@
     "test": "node --test tests/*.test.mjs"
   },
   "devDependencies": {
+    "lucide-static": "1.48.0",
     "marked": "18.0.14",
     "yaml": "2.9.1"
   }

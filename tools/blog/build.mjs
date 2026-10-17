@@ -3,8 +3,9 @@
 //   web-site/blog/**, web-site/hymns/**   (wholly generated: rebuilt from scratch every time; tune pages at /hymns/tunes/<slug>,
 //                                          the hum-to-find page at /hymns/identify)
 //   web-site/sitemap.xml                  (blog and hymn entries rebuilt, hand-written ones kept)
-//   web-site/index.html                   (only the "Latest from the blog" block between its markers)
+//   web-site/index.html                   (only the sample sheet and "Latest from the blog" blocks between their markers)
 //   web-site/<IndexNow key>.txt
+//   web-site/assets/icons.svg             (the Lucide icon sprite every page uses; icons.mjs, + its licence)
 //   web-site/blog/catalogue.json          (--api only: hymns, pages and authors for the API's checks)
 //   server/app/data/hymn_index.json       (the worker's hymn matcher: every published hymn's melody; only
 //                                          when building web-site/ itself, never a --site copy)
@@ -34,6 +35,8 @@ import { handWrittenEntries, sitemapXml, feedXml } from "./lib/sitemap-feed.mjs"
 import { DEFAULT_API_URL, fetchPublished, postsFromApi } from "./lib/api-posts.mjs";
 import { catalogueJson, sitePages } from "./lib/catalogue.mjs";
 import { hymnIndexJson, HYMN_INDEX_PATH } from "./lib/hymn-index.mjs";
+import { spriteSvg, licenseText } from "./icons.mjs";
+import { renderHomeSheet, SHEET_START, SHEET_END, SAMPLE_HYMN } from "./lib/render-home.mjs";
 
 /** Newest first; a tie goes to the slug, so the order never depends on where a post came from. */
 function byDate(a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : a.slug.localeCompare(b.slug); }
@@ -97,14 +100,23 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
   const kept = fs.existsSync(sitemapPath) ? handWrittenEntries(fs.readFileSync(sitemapPath, "utf8")) : [];
   files.set("sitemap.xml", sitemapXml([...kept, ...generated]));
 
-  // The home page's strip of newest posts.
+  // The home page's strip of newest posts and its sample sheet.
   const homePath = path.join(siteDir, "index.html");
-  const home = fs.readFileSync(homePath, "utf8");
-  const a = home.indexOf(HOME_START), b = home.indexOf(HOME_END);
-  if (a < 0 || b < a) throw new Error(`web-site/index.html has no ${HOME_START} … ${HOME_END} block for the latest posts`);
-  files.set("index.html", home.slice(0, a) + renderHomeStrip(posts) + home.slice(b + HOME_END.length));
+  const between = (html, start, end, block, what) => {
+    const a = html.indexOf(start), b = html.indexOf(end);
+    if (a < 0 || b < a) throw new Error(`web-site/index.html has no ${start} … ${end} block for ${what}`);
+    return html.slice(0, a) + block + html.slice(b + end.length);
+  };
+  const sample = hymnsBySlug.get(SAMPLE_HYMN);
+  if (!sample) throw new Error(`the home page's sample sheet needs the hymn ${SAMPLE_HYMN}`);
+  let home = fs.readFileSync(homePath, "utf8");
+  home = between(home, HOME_START, HOME_END, renderHomeStrip(posts), "the latest posts");
+  home = between(home, SHEET_START, SHEET_END, renderHomeSheet(sample), "the sample sheet");
+  files.set("index.html", home);
 
   files.set(`${INDEXNOW_KEY}.txt`, INDEXNOW_KEY + "\n");
+  files.set("assets/icons.svg", spriteSvg());
+  files.set("assets/icons-LICENSE.txt", licenseText());
   if (api) files.set("blog/catalogue.json", catalogueJson({ hymns, authors, pages: sitePages(siteDir, [...files.keys()]) }));
   // The worker's hymn index: published hymns, then published tune pages (tunes without words), then incipits.
   const indexTunes = tunePages.filter((t) => !t.draft);

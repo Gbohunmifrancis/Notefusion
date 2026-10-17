@@ -135,7 +135,6 @@ export function renderHymn(h, { hymns, posts }) {
   const body = `${breadcrumbs(crumbs)}
 <article class="hymn-page">
 <header class="post-header">
-  <p class="kicker"><a href="/hymns">Hymns in Tonic Solfa</a></p>
   <h1>${escapeHtml(h.title)} in Tonic Solfa</h1>
   <p class="post-lede">${escapeHtml(h.description)}</p>
 </header>
@@ -279,7 +278,6 @@ ${groups.get(L).map((e) => e.html()).join("\n")}
   const seasons = SEASONS.filter((x) => present.has(x.toLowerCase()) || hymns.some((h) => searchText(h).includes(x.toLowerCase())));
   const body = `${breadcrumbs(crumbs)}
 <header class="masthead">
-  <p class="kicker">The hymnal</p>
   <h1>Hymns in Tonic Solfa</h1>
   <p class="masthead-dek">${hymns.length} public-domain hymns with the solfa written out under the words${tunes.length ? `, and ${tunes.length} more hymn tunes on their own,` : ""} with the staff notation and a piano to sing along with. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
   ${identifyCallout()}
@@ -328,7 +326,6 @@ ${list.map(row).join("\n")}
   const body = `${breadcrumbs(crumbs)}
 <article class="hymn-page credits-page">
 <header class="post-header">
-  <p class="kicker"><a href="/hymns">Hymns in Tonic Solfa</a></p>
   <h1>Sources and licences</h1>
   <p class="post-lede">Where the hymns on NoteFusion come from, why each one is free to use, and who wrote it.</p>
 </header>

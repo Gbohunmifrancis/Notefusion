@@ -189,7 +189,7 @@
     return out;
   }
   /** A button's content: an icon from the page's sprite and a label. */
-  function label(btn, icon, text) { btn.innerHTML = '<svg class="ic"><use href="#i-' + icon + '"/></svg>' + text; }
+  function label(btn, icon, text) { btn.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + icon + '"/></svg>' + text; }
   function initial(name) { return (name || "?").trim().charAt(0).toUpperCase() || "?"; }
   /** "Good morning, Francis" — the time of day, and the first name when there is one. */
   function greeting(name) {
@@ -292,7 +292,7 @@
       b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on));
     });
     var t = $("auth-theme");
-    t.innerHTML = '<svg class="ic"><use href="#i-' + (dark ? "sun" : "moon") + '"/></svg>';
+    t.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + (dark ? "sun" : "moon") + '"/></svg>';
     t.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
   }
   function setThemePref(pref) {
@@ -416,13 +416,13 @@
   var ONB = [
     { title: "Paste a link, hum, or upload",
       body: "A YouTube, Spotify or Apple Music link, a tune you hum into the mic, or a recording from your device. The first 30 seconds are free, no account.",
-      art: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>' },
+      art: '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-mic"/></svg>' },
     { title: "Solfa, staff, and the four parts",
       body: "The lead vocal is isolated and written out as movable-do solfa and staff notation. Pro adds alto, tenor and bass under the tune, the way a hymn arranger would.",
-      art: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>' },
+      art: '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-music"/></svg>' },
     { title: "Rehearse, transpose, share",
       body: "Play it back, loop a few bars, mute your part and sing against the others. Move the key to fit your singers, then share a link the choir can open.",
-      art: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' }
+      art: '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg>' }
   ];
   var onbIndex = 0;
   function onbSeen() { try { return !!localStorage.getItem(ONB_KEY); } catch (e) { return true; } }
@@ -457,7 +457,7 @@
     b.addEventListener("click", function () {
       var input = $(b.dataset.eye), showing = input.type === "text";
       input.type = showing ? "password" : "text";
-      b.innerHTML = '<svg class="ic"><use href="#i-' + (showing ? "eye" : "eye-off") + '"/></svg>';
+      b.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + (showing ? "eye" : "eye-off") + '"/></svg>';
       b.setAttribute("aria-label", showing ? "Show password" : "Hide password");
     });
   });
@@ -1760,7 +1760,7 @@
     if ($("r-staff").classList.contains("hidden") && $("r-solfa").classList.contains("hidden")) document.querySelector('.result-tabs [data-view="staff"]').click();
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
       var text = b.textContent.trim();
-      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock"><use href="#i-lock"/></svg>');
+      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="/assets/icons.svg#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock"><use href="/assets/icons.svg#i-lock"/></svg>');
     });
 
     // A guest reads and rehearses; saving, sharing, transposing, singing and downloads are the account's.
@@ -2010,7 +2010,7 @@
         // The same voice on the four-parts view: on/off, and Solo to hear it alone.
         var item = document.createElement("span"); item.className = "mix-voice"; item.setAttribute("data-voice", v.name);
         var on = document.createElement("button"); on.type = "button"; on.className = "mix-on"; on.setAttribute("aria-label", name);
-        on.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg><span></span>';
+        on.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-volume"/></svg><span></span>';
         on.querySelector("span").textContent = name;
         on.addEventListener("click", function () { mix = P.toggle(mix, v.name); applyMix(); });
         var solo = document.createElement("button"); solo.type = "button"; solo.className = "mix-solo"; solo.textContent = "Solo";
@@ -2039,7 +2039,7 @@
       var name = item.getAttribute("data-voice"), on = !!mix[name];
       var t = item.querySelector(".mix-on"), s = item.querySelector(".mix-solo");
       item.classList.toggle("is-off", !on);
-      t.querySelector("use").setAttribute("href", on ? "#i-volume" : "#i-x");
+      t.querySelector("use").setAttribute("href", on ? "/assets/icons.svg#i-volume" : "/assets/icons.svg#i-x");
       t.setAttribute("aria-pressed", String(on)); t.title = on ? "Playing: press to mute " + name : "Muted: press to hear " + name;
       s.classList.toggle("on", alone === name); s.setAttribute("aria-pressed", String(alone === name));
     });
@@ -2774,7 +2774,7 @@
   /** The harmony card's label and note: "free once" for a free account that still has it. */
   function renderHarmonyOffer() {
     var free = freeHarmonyLeft();
-    $("harmony-add").innerHTML = '<svg class="ic"><use href="#i-plus"/></svg>' + (free ? "Write the four parts (1 free)" : "Write the four parts");
+    $("harmony-add").innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-plus"/></svg>' + (free ? "Write the four parts (1 free)" : "Write the four parts");
     $("harmony-free-note").classList.toggle("hidden", !free);
     // The "Four parts" action shows no lock while the free one is left.
     document.body.classList.toggle("has-free-harmony", free);
@@ -3089,13 +3089,13 @@
       function per(plan) { return isSinglePlan(plan) || isLifetimePlan(plan) ? "once" : isYearly(plan) ? "a year" : "a month"; }
       var fine = document.createElement("p"); fine.className = "pay-fine";
       function renderCta() {
-        cta.innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
+        cta.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>';
         cta.appendChild(document.createTextNode(isSinglePlan(chosen)
           ? "Buy this song — " + money(chosen)
           : isChoirPlan(chosen)
             ? (leadsChoir() ? "Add choir time — " : "Start your choir — ") + money(chosen) + " " + per(chosen)
             : "Continue — " + money(chosen) + " " + per(chosen)));
-        fine.innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
+        fine.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>';
         fine.appendChild(document.createTextNode(isSinglePlan(chosen)
           ? "Secure checkout. One payment, one transcription that never expires. No subscription."
           : isChoirPlan(chosen)
