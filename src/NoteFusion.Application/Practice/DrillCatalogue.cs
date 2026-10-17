@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using NoteFusion.Application.Transcriptions.Dtos;
+using NoteFusion.Core.Enums;
 using NoteFusion.Core.Solfa;
 
 namespace NoteFusion.Application.Practice;
@@ -44,9 +45,16 @@ public sealed record Drill(string Id, DrillPattern Pattern, MusicalKey Key, int 
 /// engine (<see cref="SolfaMapper"/>), and a pattern whose labels would not round-trip is a programmer error.
 /// </summary>
 /// <remarks>
-/// A drill is named by its id (<c>code@dohMidi</c>) and rebuilt from it on grading, so the notes a take is judged
-/// against are always the server's, never the client's. Today's drill is chosen from the user id and the local date
-/// alone, at the level the account started the day on, so it is the same drill all day.
+/// A drill is named by its id (<c>code@dohMidi</c>, or <c>code@dohMidi~gentle</c> at Playful's slower pace) and rebuilt
+/// from it on grading, so the notes a take is judged against are always the server's, never the client's. Today's
+/// drill is chosen from the user id and the local date alone, at the level the account started the day on, from the
+/// slice of the catalogue its track offers (<see cref="PatternsFor"/>): the same drill all day on each track. A singer
+/// who switches track mid-day is shown that track's drill of the day at once, and switching back brings the first one
+/// back; a take of either is still marked, and the day's marked-drill allowance is one for both.
+/// <para>
+/// Tiers 0–7 are the ladder every track climbs (one per level). Tiers above it are Focused-only: wide leaps (sixths,
+/// sevenths, minor lines through se) and sight-singing phrases of 8–12 notes, some modulating.
+/// </para>
 /// </remarks>
 public static class DrillCatalogue
 {
@@ -55,6 +63,13 @@ public static class DrillCatalogue
 
     public const string TimeSignature = "4/4";
 
+    /// <summary>The fewest and most notes a drill has: the longest are Focused's sight-singing phrases.</summary>
+    public const int MinNotes = 3;
+    public const int MaxNotes = 12;
+
+    /// <summary>The drill-id suffix for a pattern at Playful's slower pace.</summary>
+    public const string GentleSuffix = "~gentle";
+
     /// <summary>The comfortable range every placed drill keeps to: A3 to D5.</summary>
     public const int LowestMidi = 57;
     public const int HighestMidi = 74;
@@ -62,8 +77,11 @@ public static class DrillCatalogue
     /// <summary>The dohs a drill is placed on: C, D, Eb, F, G, A, Bb (minor drills: their relative minors).</summary>
     public static readonly IReadOnlyList<int> DohPitchClasses = [0, 2, 3, 5, 7, 9, 10];
 
-    /// <summary>Tempo per tier: unhurried for the first steps, a little quicker by the chromatics.</summary>
-    private static readonly int[] TierTempo = [72, 72, 80, 80, 84, 84, 88, 92];
+    /// <summary>
+    /// Tempo per tier: unhurried for the first steps, a little quicker by the chromatics; Focused's wide leaps and
+    /// long phrases a touch steadier again. Playful takes <see cref="PracticeRules.PlayfulTempoDrop"/> off.
+    /// </summary>
+    private static readonly int[] TierTempo = [72, 72, 80, 80, 84, 84, 88, 92, 84, 88];
 
     public static readonly IReadOnlyList<DrillPattern> Patterns =
     [
@@ -125,9 +143,58 @@ public static class DrillCatalogue
         new("choir-ta-fe", 7, "ta and fe on the way down", KeyMode.Major, "d' t l ta l s fe s"),
         new("choir-melodic-minor", 7, "Minor: the melodic scale", KeyMode.Minor, "l, t, d r m fe se l"),
         new("choir-de-line", 7, "A line through de", KeyMode.Major, "m de r t, d"),
+
+        // Focused only — wide leaps: sixths and sevenths, and minor lines that leap to and from se.
+        new("sixth-ray-te", 8, "Sixths: doh to lah, ray to te", KeyMode.Major, "d l s r t l s"),
+        new("sixth-minor-me", 8, "A minor sixth: me to the top doh", KeyMode.Major, "m d' t l s m"),
+        new("seventh-te", 8, "A seventh: doh up to te", KeyMode.Major, "d t d' s m d"),
+        new("seventh-fah", 8, "A seventh: low soh up to fah", KeyMode.Major, "s, f m r d"),
+        new("seventh-down", 8, "Falling a seventh: top doh to ray", KeyMode.Major, "d' r m f m r d"),
+        new("minor-se-leap", 8, "Minor: me down to se", KeyMode.Minor, "l, d m se, l,"),
+        new("minor-harmonic", 8, "Minor: the harmonic scale", KeyMode.Minor, "l, t, d r m f se l"),
+        new("minor-se-sixth", 8, "Minor: se up to me", KeyMode.Minor, "l, se, m d t, l,"),
+
+        // Focused only — sight-singing: phrases of 8 to 12 notes, two of them turning to a new key and back.
+        new("sight-hymn-line", 9, "A hymn line", KeyMode.Major, "d m s l s m r d t, d"),
+        new("sight-to-soh", 9, "Turning to soh through fe", KeyMode.Major, "d m r f m s fe s l t l s"),
+        new("sight-to-fah", 9, "Turning to fah through ta", KeyMode.Major, "d m s ta l f s m f"),
+        new("sight-minor-line", 9, "Minor: a line through se", KeyMode.Minor, "l, d m l se l m d t, l,"),
+        new("sight-sixths-line", 9, "Sixths in a long line", KeyMode.Major, "s, m r d l s f m r d t, d"),
+        new("sight-chromatic-line", 9, "Up through de and fe", KeyMode.Major, "d de r m fe s l s f m r d"),
     ];
 
+    /// <summary>The top of the ladder every track climbs: one tier per level, Doh to Choir-ready.</summary>
+    public static int LadderTopTier => PracticeRules.Levels.Count - 1;
+
+    /// <summary>The top of the catalogue: the Focused-only tiers above the ladder.</summary>
     public static int TopTier => Patterns.Max(p => p.Tier);
+
+    /// <summary>A pattern Playful may offer: short, and from the lower tiers.</summary>
+    public static bool IsPlayful(DrillPattern pattern)
+        => pattern.Tier <= PracticeRules.PlayfulTopTier && pattern.Tokens.Count <= PracticeRules.PlayfulMaxNotes;
+
+    /// <summary>
+    /// The tier a track's day is drawn from at <paramref name="levelIndex"/>: the level's own (the ladder's top beyond
+    /// it) with no track chosen; held to <see cref="PracticeRules.PlayfulTopTier"/> on Playful; and
+    /// <see cref="PracticeRules.FocusedTierLead"/> ahead on Focused, into the tiers only Focused sees.
+    /// </summary>
+    public static int TierFor(PracticeTrack? track, int levelIndex)
+    {
+        var level = Math.Max(0, levelIndex);
+        return track switch
+        {
+            PracticeTrack.Playful => Math.Min(level, PracticeRules.PlayfulTopTier),
+            PracticeTrack.Focused => Math.Min(level + PracticeRules.FocusedTierLead, TopTier),
+            _ => Math.Min(level, LadderTopTier)
+        };
+    }
+
+    /// <summary>The patterns a track offers a singer at <paramref name="levelIndex"/>: today's drill is one of these.</summary>
+    public static IReadOnlyList<DrillPattern> PatternsFor(PracticeTrack? track, int levelIndex)
+    {
+        var tier = TierFor(track, levelIndex);
+        return Patterns.Where(p => p.Tier == tier && (track != PracticeTrack.Playful || IsPlayful(p))).ToList();
+    }
 
     public static int TempoFor(int tier) => TierTempo[Math.Clamp(tier, 0, TierTempo.Length - 1)];
 
@@ -151,7 +218,7 @@ public static class DrillCatalogue
     /// The pattern placed with its unmarked doh on <paramref name="dohMidi"/>: pitches from the syllables, labels
     /// from the solfa engine. Throws when the engine would label it differently — a catalogue mistake.
     /// </summary>
-    public static Drill Build(DrillPattern pattern, int dohMidi)
+    public static Drill Build(DrillPattern pattern, int dohMidi, bool gentle = false)
     {
         var dohPc = dohMidi % 12;
         var key = pattern.Mode == KeyMode.Major
@@ -177,35 +244,40 @@ public static class DrillCatalogue
             throw new InvalidOperationException(
                 $"Drill '{pattern.Code}' on {dohMidi} is labelled \"{labels}\" by the solfa engine, not \"{pattern.Solfa}\".");
 
-        return new Drill($"{pattern.Code}@{dohMidi}", pattern, key, dohMidi, TempoFor(pattern.Tier), notes);
-    }
-
-    /// <summary>The drill an id names, or null when it names none (an old id, a typo, a range it may not use).</summary>
-    public static Drill? Find(string? id)
-    {
-        var parts = id?.Split('@');
-        if (parts is not { Length: 2 } || !int.TryParse(parts[1], out var doh))
-            return null;
-        var pattern = Patterns.FirstOrDefault(p => p.Code == parts[0]);
-        if (pattern is null || !Placements(pattern).Contains(doh))
-            return null;
-        return Build(pattern, doh);
+        return gentle
+            ? new Drill($"{pattern.Code}@{dohMidi}{GentleSuffix}", pattern, key, dohMidi, TempoFor(pattern.Tier) - PracticeRules.PlayfulTempoDrop, notes)
+            : new Drill($"{pattern.Code}@{dohMidi}", pattern, key, dohMidi, TempoFor(pattern.Tier), notes);
     }
 
     /// <summary>
-    /// Today's drill for an account at <paramref name="levelIndex"/>: a pattern of that level's tier (the top tier
-    /// beyond it) in one of its keys, both picked from a hash of the user and the date — the same all day, a different
-    /// one most days.
+    /// The drill an id names, or null when it names none (an old id, a typo, a range it may not use, the gentle pace
+    /// on a pattern Playful never offers). Any track's drill is found, so a take sung before a switch is still marked.
     /// </summary>
-    public static Drill ForDay(Guid userId, DateOnly date, int levelIndex)
+    public static Drill? Find(string? id)
     {
-        var tier = Math.Clamp(levelIndex, 0, TopTier);
-        var choices = Patterns.Where(p => p.Tier == tier).ToList();
+        var gentle = id?.EndsWith(GentleSuffix, StringComparison.Ordinal) == true;
+        var parts = (gentle ? id![..^GentleSuffix.Length] : id)?.Split('@');
+        if (parts is not { Length: 2 } || !int.TryParse(parts[1], out var doh))
+            return null;
+        var pattern = Patterns.FirstOrDefault(p => p.Code == parts[0]);
+        if (pattern is null || !Placements(pattern).Contains(doh) || (gentle && !IsPlayful(pattern)))
+            return null;
+        return Build(pattern, doh, gentle);
+    }
+
+    /// <summary>
+    /// Today's drill for an account at <paramref name="levelIndex"/> on <paramref name="track"/>: a pattern of the
+    /// track's slice (<see cref="PatternsFor"/>) in one of its keys, both picked from a hash of the user and the date —
+    /// the same all day, a different one most days. Playful's is at the gentle pace.
+    /// </summary>
+    public static Drill ForDay(Guid userId, DateOnly date, int levelIndex, PracticeTrack? track = null)
+    {
+        var choices = PatternsFor(track, levelIndex);
         var seed = Seed(userId, date);
         var pattern = choices[(int)(seed % (ulong)choices.Count)];
         var placements = Placements(pattern);
         var doh = placements[(int)(seed / (ulong)choices.Count % (ulong)placements.Count)];
-        return Build(pattern, doh);
+        return Build(pattern, doh, gentle: track == PracticeTrack.Playful);
     }
 
     /// <summary>A stable hash (unlike <c>GetHashCode</c>, which changes every process).</summary>

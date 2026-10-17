@@ -1,4 +1,5 @@
 using NoteFusion.Application.Transcriptions.Dtos;
+using NoteFusion.Core.Enums;
 
 namespace NoteFusion.Application.Practice.Dtos;
 
@@ -37,7 +38,11 @@ public sealed record PracticeDayDto(DateOnly Date, string Status, int Xp);
 /// <summary>Drills marked today and the most this account may have marked in a day.</summary>
 public sealed record DrillAllowanceDto(int Used, int Limit);
 
-/// <summary>GET /api/practice/progress: everything the Practice screen draws, read off the account's graded practice.</summary>
+/// <summary>
+/// GET /api/practice/progress (and PUT /api/practice/track's answer): everything the Practice screen draws, read off the
+/// account's graded practice. <c>Track</c> is how the singer likes to practise ("playful" / "focused"), null until they
+/// pick one — the clients ask then. It changes the drills offered and how takes are shown, never the numbers here.
+/// </summary>
 public sealed record PracticeProgressDto(
     DateOnly Today,
     int Xp,
@@ -48,7 +53,8 @@ public sealed record PracticeProgressDto(
     WeeklyGoalDto WeeklyGoal,
     IReadOnlyList<BadgeDto> Badges,
     IReadOnlyList<PracticeDayDto> LastSevenDays,
-    DrillAllowanceDto Drills);
+    DrillAllowanceDto Drills,
+    PracticeTrack? Track);
 
 /// <summary>
 /// What a marked take earned, returned with its grade so the client can celebrate without a second read:
@@ -66,7 +72,8 @@ public sealed record PracticeRewardDto(
 /// <summary>
 /// GET /api/practice/drills/today: a short solfa pattern to hear and sing, the same all day. The notes are labelled
 /// by the solfa engine; the take is a count-in of <c>LeadInBeats</c> (a bar of the first note, a bar of clicks)
-/// and then the singer, cut by the worker at <c>MaxTakeSeconds</c>.
+/// and then the singer, cut by the worker at <c>MaxTakeSeconds</c>. <c>Track</c> is the track it was picked for
+/// (null when none is chosen yet): each track has its own drill of the day.
 /// </summary>
 public sealed record DrillDto(
     string Id,
@@ -81,4 +88,5 @@ public sealed record DrillDto(
     double MaxTakeSeconds,
     IReadOnlyList<NoteEventDto> Notes,
     DateOnly Date,
-    DrillAllowanceDto Allowance);
+    DrillAllowanceDto Allowance,
+    PracticeTrack? Track);

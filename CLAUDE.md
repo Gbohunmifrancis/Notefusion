@@ -244,6 +244,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (free daily drill `POST /api/practice/drills/grade`, 5/day, Pro 20; Pro `…/transcriptions/grade`) is a server-written
   `PracticeSession` on the singer's day (`X-Time-Zone`, else Lagos); XP, levels, streaks (1 freeze/ISO week), badges are
   read off those rows, never client-reported. Drills: `DrillCatalogue`, labelled by the solfa engine; mobile `PracticeScreen`.
+  Web: the `/app` Practice view (`?view=practice`, a nav entry and the home streak/XP chip) mirrors it — `assets/practice-view.js`
+  + `.css` and the pure `practice-progress.js` / `practice-track.js` (mobile `lib/practiceProgress.ts`/`take.ts`/`practiceTrack.ts`,
+  tracks included), loaded only when opened; the web app sends `X-Time-Zone` on every API call.
+  Tracks, chosen by style never age (`users.PracticeTrack`, null until picked; `PUT /api/practice/track`): Playful (3–5-note
+  drills from tiers ≤4 at a gentler pace, id `…~gentle`; stars, stickers, confetti) and Focused (two tiers ahead, into the
+  Focused-only tiers 8–9: sixths, sevenths, minor through se, 8–12-note sight-singing; exact score, cents, replay). Each
+  track has its own drill of the day; a mid-day switch shows the new track's at once. XP and every rule are the same on both.
 - Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read),
   the opening eight notes as `preview` on every read (list rows show them in solfa), an
   optional folder name (`PUT /api/library/{id}/folder`; a folder is just the name its sheets share) and

@@ -19,7 +19,7 @@
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Only what the first screen needs; the range picker's and the recorder's styles load at the end of the body. -->
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/app.css?v=28">
+<link rel="stylesheet" href="/assets/app.css?v=29">
 <link rel="stylesheet" href="/assets/night.css?v=11">
 </head>
 <body class="guest">
@@ -52,6 +52,7 @@
     <nav class="side-nav top-nav hidden" id="top-nav" aria-label="App sections">
       <button class="nav-item nav-new top-link on" type="button" data-view="transcribe"><svg class="ic"><use href="/assets/icons.svg#i-plus"/></svg><span>New transcription</span></button>
       <button class="nav-item top-link" type="button" data-view="library"><svg class="ic"><use href="/assets/icons.svg#i-music"/></svg><span>Transcriptions</span></button>
+      <button class="nav-item top-link" type="button" data-view="practice"><svg class="ic"><use href="/assets/icons.svg#i-sing"/></svg><span>Practice</span></button>
       <button class="nav-item top-link" type="button" data-view="search"><svg class="ic"><use href="/assets/icons.svg#i-search"/></svg><span>Search</span></button>
       <button class="nav-item top-link" type="button" data-view="account"><svg class="ic"><use href="/assets/icons.svg#i-gear"/></svg><span>Account &amp; settings</span></button>
     </nav>
@@ -335,6 +336,8 @@
       <span class="home-mark" aria-hidden="true"></span>
       <h1 class="greeting" id="greeting">Good afternoon</h1><span class="pill pill-pro greeting-pro hidden" id="greeting-pro">Pro member</span>
       <p class="muted home-sub" id="home-sub">What are we writing out today?</p>
+      <!-- Practice: the streak and XP, a tap from today's drill (filled by app.js once the numbers come). -->
+      <button class="practice-chip hidden" id="practice-chip" type="button"><svg class="ic"><use href="/assets/icons.svg#i-flame"/></svg><span id="practice-chip-streak">0</span><i aria-hidden="true"></i><span id="practice-chip-xp">0 XP</span></button>
     </div>
     <div id="app-alert" class="alert hidden" role="alert"></div>
 
@@ -803,6 +806,15 @@
       </div>
     </div>
 
+    <!-- ── Practice: the daily drill, the streak, XP and badges (assets/practice-view.js, loaded when opened) ── -->
+    <div id="view-practice" class="hidden">
+      <div class="page-head">
+        <h1>Practice</h1>
+        <p>A short solfa drill a day: hear it, sing it, and see every note marked. Keep your streak going.</p>
+      </div>
+      <div id="practice-root"></div>
+    </div>
+
     <!-- ── Account ──────────────────────────────────────────────────── -->
     <div id="view-account" class="hidden">
       <div class="page-head">
@@ -956,7 +968,7 @@
 <script src="/assets/practice.js?v=1" defer></script>
 <script src="/assets/notify.js?v=2" defer></script>
 <script src="/assets/freeweek.js?v=1" defer></script>
-<script src="/assets/app.js?v=43" defer></script>
+<script src="/assets/app.js?v=45" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>
 </html>

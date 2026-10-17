@@ -4,7 +4,12 @@
  *
  * Every number here is the server's (`GET /api/practice/progress`), read off the takes it has marked; the
  * phone never reports a score. A marked take comes back with what it earned, which is celebrated with one
- * line and a tap — quietly, and without motion when the system asks for reduced motion.
+ * line and a tap — and without motion when the system asks for reduced motion.
+ *
+ * Two tracks, chosen by style (never by age) on the first visit and changeable any time (`lib/practiceTrack`):
+ * Playful — stars and a friendly word instead of the number, a practice buddy, stickers, a confetti burst; and
+ * Focused — the exact score and cents, the take's overall tuning, "Replay my take", and less fuss. The server picks
+ * each track's drills; XP, levels, streaks and badges are the same on both.
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -29,9 +34,12 @@ import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
 import { GradeMarks } from "../components/GradeMarks";
+import { TrackPicker } from "../components/practice/TrackPicker";
+import { StarGrade } from "../components/practice/StarGrade";
+import { Confetti } from "../components/practice/Confetti";
 import { practiceApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import type { Drill, GradeResult, PracticeBadge, PracticeDay, PracticeProgress } from "../api/types";
+import type { Drill, GradeResult, PracticeBadge, PracticeDay, PracticeProgress, PracticeTrack } from "../api/types";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { leadInFor, noteDueAt, partSeconds } from "../lib/take";
@@ -48,6 +56,14 @@ import {
   weekdayLetter,
   weeklyFraction,
 } from "../lib/practiceProgress";
+import {
+  buddyLine,
+  celebrationFor,
+  playfulRewardLine,
+  stickerTilt,
+  trackTitle,
+  tuningLine,
+} from "../lib/practiceTrack";
 import type { RootStackParams } from "../navigation/types";
 
 type Props = NativeStackScreenProps<RootStackParams, "Practice">;
@@ -86,6 +102,12 @@ export function PracticeScreen({ navigation }: Props) {
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [grade, setGrade] = useState<GradeResult | null>(null);
+
+  const [picking, setPicking] = useState(false);
+  const [savingTrack, setSavingTrack] = useState<PracticeTrack | null>(null);
+  const [trackError, setTrackError] = useState<string | null>(null);
+  const [burst, setBurst] = useState(0);
+  const [takeUri, setTakeUri] = useState<string | null>(null);
 
   const [toast, setToast] = useState<string | null>(null);
   const toastAnim = useRef(new Animated.Value(0)).current;
@@ -168,11 +190,48 @@ export function PracticeScreen({ navigation }: Props) {
     }
   }
 
+  /** Saves the track, then loads the drill it offers today (each track has its own drill of the day). */
+  async function chooseTrack(next: PracticeTrack) {
+    if (phase !== "idle") return;
+    setSavingTrack(next);
+    setTrackError(null);
+    try {
+      const p = await practiceApi.setTrack(next);
+      const d = await practiceApi.todayDrill();
+      if (!live.current) return;
+      setProgress(p);
+      setDrill(d);
+      setGrade(null);
+      setTakeUri(null);
+      setPicking(false);
+      void logAnalyticsEvent("practice_track_chosen", { track: next });
+    } catch (e) {
+      if (live.current) setTrackError(toApiError(e).message);
+    } finally {
+      if (live.current) setSavingTrack(null);
+    }
+  }
+
+  /** Focused: plays the singer's own take back, from the recording just marked. */
+  function replay() {
+    if (!takeUri || phase !== "idle") return;
+    cleanup();
+    try {
+      void setAudioModeAsync({ allowsRecording: false, playsInSilentMode: true });
+      player.current = createAudioPlayer({ uri: takeUri });
+      player.current.play();
+    } catch (e) {
+      if (__DEV__) console.warn("[practice] replay failed", e);
+      setError("Could not play your take back.");
+    }
+  }
+
   async function sing() {
     if (!drill || phase !== "idle") return;
     cleanup();
     setError(null);
     setGrade(null);
+    setTakeUri(null);
     try {
       const perm = await requestRecordingPermissionsAsync();
       if (!perm.granted) { setError("Microphone permission is needed to sing the drill."); return; }
@@ -216,10 +275,14 @@ export function PracticeScreen({ navigation }: Props) {
       const result = await practiceApi.gradeDrill(uri, sung.id);
       if (!live.current) return;
       setGrade(result);
+      setTakeUri(uri);
       setPhase("idle");
       void logAnalyticsEvent("drill_completed", { drill: sung.id, score: result.score, xp: result.reward?.xpGained ?? 0 });
       const moment = acknowledgeGrade(result);
-      if (moment) showToast(moment.line);
+      const how = celebrationFor(sung.track, result.score, result.reward);
+      if (how === "burst") setBurst((b) => b + 1);
+      const line = sung.track === "playful" ? playfulRewardLine(result.reward) : moment?.line;
+      if (how !== "quiet" && line) showToast(line);
       const fresh = await practiceApi.progress().catch(() => null);
       if (fresh && live.current) {
         setProgress(fresh);
@@ -250,6 +313,10 @@ export function PracticeScreen({ navigation }: Props) {
   const countdown = Math.max(0, Math.ceil(leadIn.current - elapsed));
   const allowance = progress?.drills ?? drill?.allowance ?? null;
   const left = allowance ? Math.max(0, allowance.limit - allowance.used) : null;
+  const track = progress?.track ?? null;
+  const playful = track === "playful";
+  const focused = track === "focused";
+  const showPicker = !!progress && (track == null || picking);
 
   return (
     <View style={styles.flex}>
@@ -273,6 +340,20 @@ export function PracticeScreen({ navigation }: Props) {
             <Text style={styles.titleLabel}>Daily practice</Text>
             <Text style={styles.titleMain}>Practice</Text>
           </View>
+          {track && !showPicker && !busy ? (
+            <Touchable
+              onPress={() => { setTrackError(null); setPicking(true); }}
+              accessibilityRole="button"
+              accessibilityLabel={`Practice style: ${trackTitle(track)}. Change it`}
+              radius={radii.pill}
+            >
+              <View style={[styles.trackPill, playful && styles.trackPillPlayful]}>
+                <Ionicons name={playful ? "happy" : "musical-notes"} size={15} color={playful ? colors.premium : colors.accent} />
+                <Text style={styles.trackPillText}>{trackTitle(track)}</Text>
+                <Ionicons name="swap-horizontal" size={14} color={colors.textMuted} />
+              </View>
+            </Touchable>
+          ) : null}
         </View>
 
         {loading && !progress ? (
@@ -284,6 +365,27 @@ export function PracticeScreen({ navigation }: Props) {
           </Card>
         ) : progress ? (
           <>
+            {showPicker ? (
+              <TrackPicker
+                current={track}
+                saving={savingTrack}
+                error={trackError}
+                onPick={(t) => void chooseTrack(t)}
+                onCancel={track ? () => setPicking(false) : undefined}
+              />
+            ) : null}
+
+            {playful && !showPicker ? (
+              <View style={styles.buddy} accessible accessibilityLabel={`Your practice buddy says: ${buddyLine(progress)}`}>
+                <View style={styles.buddyFace}>
+                  <Ionicons name="happy" size={26} color={colors.premium} />
+                </View>
+                <View style={styles.buddyBubble}>
+                  <Text style={styles.buddyText}>{buddyLine(progress)}</Text>
+                </View>
+              </View>
+            ) : null}
+
             {/* ── Streak and level ─────────────────────────────────────────── */}
             <View style={styles.statsRow}>
               <Card style={styles.statCard}>
@@ -327,16 +429,22 @@ export function PracticeScreen({ navigation }: Props) {
             </View>
 
             {/* ── Today's drill ────────────────────────────────────────────── */}
-            {drill ? (
-              <Card style={styles.card}>
-                <Text style={styles.eyebrow}>Today's drill · {drill.levelName}</Text>
-                <Text style={styles.cardTitle}>{drill.title}</Text>
-                <Text style={styles.meta}>{drill.dohHeader} · {drill.key} · {drill.tempoBpm} BPM</Text>
+            {drill && !showPicker ? (
+              <Card style={playful ? { ...styles.card, ...styles.cardPlayful } : styles.card}>
+                <Text style={[styles.eyebrow, playful && styles.eyebrowPlayful]}>
+                  {playful ? "Today's singing game" : `Today's drill · ${drill.levelName}`}
+                </Text>
+                <Text style={[styles.cardTitle, playful && styles.cardTitlePlayful]}>{drill.title}</Text>
+                <Text style={styles.meta}>
+                  {playful
+                    ? `${drill.dohHeader} · ${drill.notes.length} notes`
+                    : `${drill.dohHeader} · ${drill.key} · ${drill.tempoBpm} BPM${focused ? ` · ${drill.notes.length} notes` : ""}`}
+                </Text>
 
                 <View style={styles.solfaRow} accessible accessibilityLabel={`Sing: ${drill.notes.map((n) => n.solfa + n.octaveMark).join(" ")}`}>
                   {drill.notes.map((n, i) => (
-                    <View key={i} style={[styles.solfaChip, due === i && styles.solfaChipOn]}>
-                      <Text style={[styles.solfa, due === i && styles.solfaOn]}>{n.solfa}{n.octaveMark}</Text>
+                    <View key={i} style={[styles.solfaChip, playful && styles.solfaChipPlayful, due === i && styles.solfaChipOn]}>
+                      <Text style={[styles.solfa, playful && styles.solfaPlayful, due === i && styles.solfaOn]}>{n.solfa}{n.octaveMark}</Text>
                     </View>
                   ))}
                 </View>
@@ -350,9 +458,9 @@ export function PracticeScreen({ navigation }: Props) {
                   <Button label="Marking your take…" icon="hourglass-outline" loading />
                 ) : (
                   <View style={styles.actions}>
-                    <Button label="Hear it" icon="volume-high-outline" variant="secondary" onPress={hear} style={styles.action} />
+                    <Button label={playful ? "Listen" : "Hear it"} icon="volume-high-outline" variant="secondary" onPress={hear} style={styles.action} />
                     <Button
-                      label={grade ? "Sing it again" : "Sing it"}
+                      label={playful ? (grade ? "Again!" : "Sing it!") : grade ? "Sing it again" : "Sing it"}
                       icon="mic"
                       onPress={() => void sing()}
                       disabled={left === 0}
@@ -369,7 +477,16 @@ export function PracticeScreen({ navigation }: Props) {
                   </Text>
                 ) : null}
                 {error ? <Text style={styles.error}>{error}</Text> : null}
-                {grade ? <GradeMarks grade={grade} notes={drill.notes} /> : null}
+                {grade && playful ? <StarGrade grade={grade} notes={drill.notes} /> : null}
+                {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} /> : null}
+                {grade && focused ? (
+                  <View style={styles.focusRow}>
+                    <Text style={styles.focusTuning}>{tuningLine(grade.tuningCents)}</Text>
+                    {takeUri ? (
+                      <Button label="Replay my take" icon="play" variant="secondary" onPress={replay} disabled={busy} />
+                    ) : null}
+                  </View>
+                ) : null}
               </Card>
             ) : null}
 
@@ -396,20 +513,38 @@ export function PracticeScreen({ navigation }: Props) {
               </Text>
             </Card>
 
-            {/* ── Badges ───────────────────────────────────────────────────── */}
-            <Text style={styles.sectionTitle}>Badges</Text>
-            <View style={styles.badgeGrid}>
-              {sortBadges(progress.badges).map((b) => (
-                <BadgeTile key={b.code} badge={b} styles={styles} colors={colors} />
-              ))}
-            </View>
+            {/* ── Badges: stickers on Playful, a plain list on Focused ──────── */}
+            <Text style={styles.sectionTitle}>{playful ? "My stickers" : "Badges"}</Text>
+            {playful ? (
+              <View style={styles.stickerGrid}>
+                {sortBadges(progress.badges).map((b, i) => (
+                  <Sticker key={b.code} badge={b} index={i} styles={styles} colors={colors} />
+                ))}
+              </View>
+            ) : focused ? (
+              <Card style={styles.badgeList} padded={false}>
+                {sortBadges(progress.badges).map((b, i) => (
+                  <BadgeRow key={b.code} badge={b} first={i === 0} styles={styles} colors={colors} />
+                ))}
+              </Card>
+            ) : (
+              <View style={styles.badgeGrid}>
+                {sortBadges(progress.badges).map((b) => (
+                  <BadgeTile key={b.code} badge={b} styles={styles} colors={colors} />
+                ))}
+              </View>
+            )}
 
             <Text style={styles.foot}>
-              Practice counts when a take is marked: the daily drill, Sing it, or Learn my part. Up to {progress.dailyXpCap} XP a day.
+              {playful
+                ? `Every singing game earns XP and stars. Up to ${progress.dailyXpCap} XP a day.`
+                : `Practice counts when a take is marked: the daily drill, Sing it, or Learn my part. Up to ${progress.dailyXpCap} XP a day.`}
             </Text>
           </>
         ) : null}
       </Screen>
+
+      <Confetti burst={burst} reduceMotion={reduceMotion} />
 
       {toast ? (
         <Animated.View
@@ -513,6 +648,50 @@ function BadgeTile({ badge, styles, colors }: { badge: PracticeBadge; styles: St
   );
 }
 
+/** Playful's sticker fills, in turn: deep enough for the white icon and edge in Night and Day alike. */
+const STICKER_FILLS = ["ink", "premiumDeep", "danger", "purpleDark"] as const;
+
+function Sticker({ badge, index, styles, colors }: { badge: PracticeBadge; index: number; styles: Styles; colors: Palette }) {
+  const icon = BADGE_ICONS[badge.code] ?? "ribbon";
+  return (
+    <View
+      style={styles.sticker}
+      accessible
+      accessibilityLabel={`${badge.title} sticker. ${badge.description} ${badge.earned ? "Earned." : `${badge.progress} of ${badge.target}.`}`}
+    >
+      {badge.earned ? (
+        <View style={[styles.stickerDisc, { backgroundColor: colors[STICKER_FILLS[index % STICKER_FILLS.length]!], transform: [{ rotate: `${stickerTilt(badge.code)}deg` }] }]}>
+          <Ionicons name={icon} size={30} color={colors.onInk} />
+        </View>
+      ) : (
+        <View style={styles.stickerSlot}>
+          <Ionicons name={`${icon}-outline` as IconName} size={26} color={colors.textFaint} />
+        </View>
+      )}
+      <Text style={styles.stickerTitle} numberOfLines={2}>{badge.title}</Text>
+      {!badge.earned ? <Text style={styles.badgeCount}>{badge.progress}/{badge.target}</Text> : null}
+    </View>
+  );
+}
+
+function BadgeRow({ badge, first, styles, colors }: { badge: PracticeBadge; first: boolean; styles: Styles; colors: Palette }) {
+  const icon = BADGE_ICONS[badge.code] ?? "ribbon";
+  return (
+    <View
+      style={[styles.badgeRow, !first && styles.badgeRowRule]}
+      accessible
+      accessibilityLabel={`${badge.title}. ${badge.description} ${badge.earned ? "Earned." : `${badge.progress} of ${badge.target}.`}`}
+    >
+      <Ionicons name={badge.earned ? icon : (`${icon}-outline` as IconName)} size={18} color={badge.earned ? colors.premium : colors.textFaint} />
+      <View style={styles.badgeRowText}>
+        <Text style={[styles.badgeTitle, !badge.earned && { color: colors.textMuted }]}>{badge.title}</Text>
+        <Text style={styles.badgeDesc} numberOfLines={1}>{badge.description}</Text>
+      </View>
+      <Text style={styles.badgeRowCount}>{badge.earned ? "Earned" : `${badge.progress}/${badge.target}`}</Text>
+    </View>
+  );
+}
+
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     flex: { flex: 1, backgroundColor: c.bg },
@@ -531,8 +710,45 @@ const makeStyles = (c: Palette) =>
     titleBlock: { flex: 1, marginHorizontal: spacing.md },
     titleLabel: { ...typography.caption, color: c.textFaint, textTransform: "uppercase", letterSpacing: 1, fontSize: 10 },
     titleMain: { ...typography.title, color: c.text, fontSize: 22, letterSpacing: -0.4, marginTop: 1 },
+    trackPill: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      minHeight: 44,
+      paddingHorizontal: spacing.md,
+      borderRadius: radii.pill,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    trackPillPlayful: { borderColor: c.premiumBorder, backgroundColor: c.premiumSoft },
+    trackPillText: { ...typography.label, color: c.text, fontSize: 13 },
+
+    buddy: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginBottom: spacing.md },
+    buddyFace: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: c.premiumSoft,
+      borderWidth: 1.5,
+      borderColor: c.premiumBorder,
+    },
+    buddyBubble: {
+      flex: 1,
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+      borderRadius: radii.lg,
+      borderTopLeftRadius: 4,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    buddyText: { ...typography.label, color: c.text, lineHeight: 20 },
     loading: { marginTop: spacing.xxl },
     card: { marginBottom: spacing.md, gap: spacing.sm },
+    cardPlayful: { borderColor: c.premiumBorder, borderWidth: 1.5 },
     body: { ...typography.body, color: c.textMuted, fontSize: 13, lineHeight: 20 },
 
     statsRow: { flexDirection: "row", gap: spacing.md, marginBottom: spacing.md },
@@ -547,7 +763,9 @@ const makeStyles = (c: Palette) =>
     barFill: { height: 8, borderRadius: 4, backgroundColor: c.accent },
 
     eyebrow: { ...typography.caption, color: c.accent, textTransform: "uppercase", letterSpacing: 1, fontSize: 10 },
+    eyebrowPlayful: { color: c.premium },
     cardTitle: { ...typography.label, color: c.text, fontSize: 15, fontFamily: fonts.bold },
+    cardTitlePlayful: { ...typography.heading, fontSize: 20 },
     meta: { ...typography.caption, color: c.textMuted, lineHeight: 17 },
     solfaRow: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginVertical: spacing.xs },
     solfaChip: {
@@ -560,8 +778,18 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1.5,
       borderColor: c.border,
     },
+    solfaChipPlayful: {
+      minWidth: 56,
+      minHeight: 56,
+      justifyContent: "center",
+      borderRadius: 28,
+      borderWidth: 2,
+      borderColor: c.premiumBorder,
+      backgroundColor: c.premiumSoft,
+    },
     solfaChipOn: { borderColor: c.accent, backgroundColor: c.accentSoft },
     solfa: { ...typography.mono, color: c.text, fontSize: 20 },
+    solfaPlayful: { fontSize: 24 },
     solfaOn: { color: c.accent },
     actions: { flexDirection: "row", gap: spacing.sm },
     action: { flex: 1 },
@@ -569,6 +797,8 @@ const makeStyles = (c: Palette) =>
     liveLabel: { ...typography.label, color: c.textMuted },
     allowance: { ...typography.caption, color: c.textMuted },
     error: { ...typography.caption, color: c.danger },
+    focusRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: spacing.sm, flexWrap: "wrap" },
+    focusTuning: { ...typography.label, color: c.textMuted, fontSize: 13 },
 
     weekRow: { flexDirection: "row", alignItems: "center", gap: spacing.md },
     weekText: { flex: 1, gap: 2 },
@@ -617,6 +847,41 @@ const makeStyles = (c: Palette) =>
     badgeTrack: { flex: 1, height: 4, borderRadius: 2, backgroundColor: c.surfaceAlt, overflow: "hidden" },
     badgeFill: { height: 4, borderRadius: 2, backgroundColor: c.textMuted },
     badgeCount: { ...typography.caption, color: c.textFaint, fontSize: 10 },
+
+    stickerGrid: { flexDirection: "row", flexWrap: "wrap", rowGap: spacing.md },
+    sticker: { width: "33.33%", paddingHorizontal: spacing.xs, alignItems: "center", gap: 6 },
+    stickerDisc: {
+      width: 68,
+      height: 68,
+      borderRadius: 34,
+      alignItems: "center",
+      justifyContent: "center",
+      borderWidth: 4,
+      borderColor: "#FFFFFF", // the sticker's white peel edge, in either theme
+      shadowColor: "#000000",
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      shadowOffset: { width: 0, height: 2 },
+      elevation: 3,
+    },
+    stickerSlot: {
+      width: 68,
+      height: 68,
+      borderRadius: 34,
+      alignItems: "center",
+      justifyContent: "center",
+      borderWidth: 2,
+      borderStyle: "dashed",
+      borderColor: c.border,
+      backgroundColor: c.surfaceAlt,
+    },
+    stickerTitle: { ...typography.caption, color: c.text, textAlign: "center", fontFamily: fonts.semibold, lineHeight: 15 },
+
+    badgeList: { overflow: "hidden" },
+    badgeRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingVertical: spacing.sm, paddingHorizontal: spacing.md, minHeight: 48 },
+    badgeRowRule: { borderTopWidth: 1, borderTopColor: c.border },
+    badgeRowText: { flex: 1 },
+    badgeRowCount: { ...typography.caption, color: c.textFaint, fontFamily: fonts.medium },
 
     foot: { ...typography.caption, color: c.textFaint, lineHeight: 17, marginTop: spacing.lg },
     toast: {

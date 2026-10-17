@@ -1,0 +1,750 @@
+/* Practice on the web: the daily habit, as the phone's Practice screen has it (mobile/src/screens/PracticeScreen.tsx).
+ *
+ * Today's free solfa drill (hear it, a count-in, sing it, marked note by note), the streak, XP toward the next
+ * sol-fa level, the weekly goal, the last seven days and the badges. Every number is the server's
+ * (GET /api/practice/progress), read off the takes it has marked; the browser never reports a score. A marked
+ * take comes back with what it earned, celebrated with one short line — without motion when the reader asks
+ * for reduced motion.
+ *
+ * Two tracks, chosen by style (never by age) on the first visit and changeable any time (practice-track.js):
+ * Playful — stars and a friendly word instead of the number, a practice buddy, stickers, a confetti burst; and
+ * Focused — the exact score and cents, the take's overall tuning, "Replay my take", and less fuss. The server picks
+ * each track's drills (ids are opaque, e.g. "…~gentle"); XP, levels, streaks and badges are the same on both.
+ *
+ * Loaded by app.js the first time the view is opened (never on the app's first load), with
+ * practice-progress.js and practice-track.js (the arithmetic and wording) and practice-view.css. app.js hands over its API client,
+ * analytics and the rehearsal piano (assets/choir.js):
+ *
+ *   NfPracticeView.open(rootEl, { request, track, choir, onProgress })   — show it (loads fresh numbers)
+ *   NfPracticeView.leave()                                               — another view: stop sound and mic
+ *   NfPracticeView.reset()                                               — signed out: forget everything
+ */
+(function () {
+  "use strict";
+
+  var TOAST_MS = 3200;
+  /** The count-in waits this long at most for the piano's first load before counting in on clicks alone. */
+  var PIANO_WAIT_MS = 8000;
+  /** One picture per badge (the phone's Ionicons, drawn from the site's Lucide sprite). */
+  var BADGE_ICONS = {
+    first_drill: "/assets/icons.svg#i-music",
+    streak_3: "/assets/icons.svg#i-flame",
+    first_100: "/assets/icons.svg#i-star",
+    drills_10: "/assets/icons.svg#i-medal",
+    first_part: "/assets/icons.svg#i-choir",
+    streak_7: "/assets/icons.svg#i-flame",
+    whole_part_80: "/assets/icons.svg#i-award",
+    streak_30: "/assets/icons.svg#i-trophy"
+  };
+  var LEVELS = 8;
+
+  var ctx = null, root = null;
+  // gen moves on when the view is reset (signed out), so a reply still on its way renders nothing.
+  var s = {
+    gen: 0, progress: null, drill: null, loading: false, loadError: null, phase: "idle", grade: null, error: null,
+    picking: false, savingTrack: null, trackError: null, takeUrl: null
+  };
+  var take = null;   // the take being recorded: { stream, recorder, audio, timer, stopAt, t0, lead, cancelled }
+  var hear = null;   // the player "Hear it" uses, made on the first press
+  var replayAudio = null; // Focused's "Replay my take"
+  var toastEl = null, toastTimer = null;
+  /** Playful's sticker fills, in turn: deep enough for the white icon in Night and Day alike (mobile STICKER_FILLS). */
+  var STICKER_FILLS = ["ink", "gold", "red", "purple"];
+
+  function PP() { return window.NfPracticeProgress; }
+  function PT() { return window.NfPracticeTrack; }
+  function currentTrack() { return (s.progress && s.progress.track) || null; }
+  function showPicker() { return !!s.progress && (currentTrack() == null || s.picking); }
+  function reducedMotion() { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } }
+
+  // ── Small DOM helpers ───────────────────────────────────────────────────
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function icon(href, extra) {
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "ic" + (extra ? " " + extra : "")); svg.setAttribute("aria-hidden", "true");
+    var use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    use.setAttribute("href", href); svg.appendChild(use);
+    return svg;
+  }
+  function button(cls, href, text, onClick) {
+    var b = el("button", "btn " + cls); b.type = "button";
+    if (href) b.appendChild(icon(href));
+    b.appendChild(document.createTextNode(text));
+    b.addEventListener("click", onClick);
+    return b;
+  }
+  function bar(fraction, label) {
+    var track = el("div", "pv-bar"), fill = el("i");
+    track.setAttribute("role", "progressbar");
+    track.setAttribute("aria-valuemin", "0"); track.setAttribute("aria-valuemax", "100");
+    track.setAttribute("aria-valuenow", String(Math.round(fraction * 100)));
+    if (label) track.setAttribute("aria-label", label);
+    fill.style.width = Math.round(fraction * 100) + "%";
+    track.appendChild(fill);
+    return track;
+  }
+  function track(name, detail) { try { if (ctx && ctx.track) ctx.track(name, detail); } catch (e) { /* never in the way */ } }
+
+  // ── Loading ─────────────────────────────────────────────────────────────
+  function load() {
+    var gen = s.gen;
+    s.loading = true;
+    if (!s.progress) render();
+    return Promise.all([ctx.request("/api/practice/progress"), ctx.request("/api/practice/drills/today")]).then(function (pair) {
+      if (gen !== s.gen) return;
+      s.progress = pair[0]; s.drill = pair[1]; s.loadError = null;
+      if (ctx.onProgress) ctx.onProgress(s.progress);
+    }, function (err) {
+      if (gen !== s.gen) return;
+      s.loadError = (err && err.message) || "We couldn't load your practice. Please try again.";
+    }).then(function () {
+      if (gen !== s.gen) return;
+      s.loading = false;
+      if (s.phase === "idle") render();
+    });
+  }
+
+  /** After a marked take: the fresh numbers (streak, XP, badges, today's allowance) in the cards and the home chip. */
+  function refreshProgress() {
+    var gen = s.gen;
+    return ctx.request("/api/practice/progress").then(function (p) {
+      if (gen !== s.gen || !p) return;
+      s.progress = p;
+      if (s.drill) s.drill.allowance = p.drills;
+      if (ctx.onProgress) ctx.onProgress(p);
+      if (s.phase === "idle") render();
+    }, function () { /* the cards keep what they showed; the next open corrects them */ });
+  }
+
+  // ── Drawing ─────────────────────────────────────────────────────────────
+  function render() {
+    if (!root) return;
+    root.innerHTML = "";
+    root.setAttribute("aria-busy", String(!!(s.loading && !s.progress)));
+    if (!s.progress) {
+      if (s.loadError) {
+        var failed = el("div", "card pv-failed");
+        failed.appendChild(el("p", null, s.loadError));
+        failed.appendChild(button("btn-ghost", "/assets/icons.svg#i-restart", "Try again", function () { s.loadError = null; load(); }));
+        root.appendChild(failed);
+      } else {
+        var sk = el("div", "pv-skel");
+        for (var i = 0; i < 3; i++) sk.appendChild(el("div", "skel"));
+        root.appendChild(sk);
+      }
+      return;
+    }
+    var p = s.progress, P = PP(), T = PT(), tr = currentTrack(), playful = tr === "playful", focused = tr === "focused";
+    var box = el("div", "pv" + (playful ? " is-playful" : focused ? " is-focused" : ""));
+    // The track pill: the style chosen, a tap to change it — never while a take is on its way.
+    if (tr && !showPicker() && s.phase === "idle") {
+      var bar0 = el("div", "pv-top");
+      var pill = el("button", "pv-track-pill" + (playful ? " is-playful" : ""));
+      pill.type = "button"; pill.id = "pv-track-pill";
+      pill.setAttribute("aria-label", "Practice style: " + T.trackTitle(tr) + ". Change it");
+      pill.appendChild(icon(playful ? "/assets/icons.svg#i-smile" : "/assets/icons.svg#i-music"));
+      pill.appendChild(el("span", null, T.trackTitle(tr)));
+      pill.appendChild(icon("/assets/icons.svg#i-swap", "pv-swap"));
+      pill.addEventListener("click", function () { s.trackError = null; s.picking = true; stopHear(); render(); });
+      bar0.appendChild(pill);
+      box.appendChild(bar0);
+    }
+    box.appendChild(statsCards(p, P));
+    if (showPicker()) box.appendChild(trackPicker(tr, T));
+    if (playful && !showPicker()) box.appendChild(buddy(p, T));
+    if (s.drill && !showPicker()) box.appendChild(drillCard(s.drill, P));
+    box.appendChild(weekCard(p, P));
+    box.appendChild(el("h2", "pv-section", playful ? "My stickers" : "Badges"));
+    box.appendChild(playful ? stickers(p, P, T) : focused ? badgeList(p, P) : badgeGrid(p, P));
+    box.appendChild(el("p", "pv-note", playful
+      ? "Every singing game earns XP and stars. Up to " + p.dailyXpCap + " XP a day."
+      : "Practice counts when a take is marked: the daily drill, Sing it, or Learn my part. Up to " + p.dailyXpCap + " XP a day."));
+    root.appendChild(box);
+  }
+
+  /** "How do you like to practise?": asked on the first visit, and again from the pill. A style, never an age. */
+  function trackPicker(current, T) {
+    var card = el("section", "card pv-picker");
+    card.setAttribute("aria-labelledby", "pv-picker-q");
+    var q = el("h2", "pv-title", T.TRACK_QUESTION); q.id = "pv-picker-q";
+    card.appendChild(q);
+    card.appendChild(el("p", "pv-meta", "Your XP, streak and badges stay the same whichever you pick. Change it any time."));
+    var group = el("div", "pv-options"); group.setAttribute("role", "radiogroup"); group.setAttribute("aria-labelledby", "pv-picker-q");
+    T.TRACK_OPTIONS.forEach(function (o) {
+      var on = current === o.track, saving = s.savingTrack === o.track;
+      var b = el("button", "pv-option is-" + o.track + (on ? " on" : ""));
+      b.type = "button"; b.setAttribute("role", "radio"); b.setAttribute("aria-checked", String(on));
+      b.setAttribute("data-track", o.track);
+      if (s.savingTrack) { b.disabled = true; if (saving) b.setAttribute("aria-busy", "true"); }
+      var ic = el("span", "pv-option-icon"); ic.appendChild(icon(o.track === "playful" ? "/assets/icons.svg#i-smile" : "/assets/icons.svg#i-music"));
+      b.appendChild(ic);
+      var text = el("span", "pv-option-text");
+      text.appendChild(el("strong", null, o.title));
+      text.appendChild(el("span", null, o.blurb));
+      b.appendChild(text);
+      if (saving) b.appendChild(el("span", "pv-spin"));
+      else b.appendChild(icon(on ? "/assets/icons.svg#i-check" : "/assets/icons.svg#i-chev", "pv-option-end"));
+      b.addEventListener("click", function () { chooseTrack(o.track); });
+      group.appendChild(b);
+    });
+    card.appendChild(group);
+    if (s.trackError) { var err = el("p", "pv-error", s.trackError); err.setAttribute("role", "alert"); card.appendChild(err); }
+    if (current) {
+      var keep = el("button", "pv-keep", "Keep it as it is"); keep.type = "button";
+      keep.setAttribute("aria-label", "Keep my practice style");
+      keep.addEventListener("click", function () { s.picking = false; s.trackError = null; render(); });
+      card.appendChild(keep);
+    }
+    return card;
+  }
+
+  /** Saves the track, then loads the drill it offers today (each track has its own drill of the day). */
+  function chooseTrack(next) {
+    if (s.phase !== "idle" || s.savingTrack) return;
+    var gen = s.gen;
+    s.savingTrack = next; s.trackError = null; render();
+    ctx.request("/api/practice/track", { method: "PUT", body: { track: next } }).then(function (p) {
+      return ctx.request("/api/practice/drills/today").then(function (d) { return [p, d]; });
+    }).then(function (pair) {
+      if (gen !== s.gen) return;
+      s.progress = pair[0]; s.drill = pair[1]; s.grade = null; s.error = null; s.picking = false;
+      dropTakeUrl(); hideToast();
+      if (ctx.onProgress) ctx.onProgress(s.progress);
+      track("practice_track_chosen", "track=" + next);
+    }, function (err) {
+      if (gen !== s.gen) return;
+      s.trackError = (err && err.message) || "We couldn't save that. Please try again.";
+    }).then(function () {
+      if (gen !== s.gen) return;
+      s.savingTrack = null; render();
+    });
+  }
+
+  /** Playful's practice buddy: a face and a speech bubble. */
+  function buddy(p, T) {
+    var line = T.buddyLine(p), box = el("div", "pv-buddy");
+    box.setAttribute("role", "note"); box.setAttribute("aria-label", "Your practice buddy says: " + line);
+    var face = el("span", "pv-buddy-face"); face.appendChild(icon("/assets/icons.svg#i-smile"));
+    box.appendChild(face);
+    var bubble = el("p", "pv-buddy-bubble", line); bubble.setAttribute("aria-hidden", "true");
+    box.appendChild(bubble);
+    return box;
+  }
+
+  function statsCards(p, P) {
+    var row = el("div", "pv-stats");
+    var streak = el("section", "card pv-stat pv-streak" + (p.streak.current > 0 ? " is-on" : ""));
+    streak.setAttribute("aria-label", P.streakLabel(p.streak.current));
+    var head = el("div", "pv-stat-head");
+    head.appendChild(icon("/assets/icons.svg#i-flame"));
+    head.appendChild(el("strong", "pv-big", String(p.streak.current)));
+    streak.appendChild(head);
+    streak.appendChild(el("span", "pv-label", "day streak"));
+    streak.appendChild(el("span", "pv-sub", P.streakLine(p.streak)));
+    var freeze = el("span", "pv-foot");
+    freeze.appendChild(icon("/assets/icons.svg#i-snowflake"));
+    freeze.appendChild(document.createTextNode(P.freezeLine(p.streak)));
+    streak.appendChild(freeze);
+    row.appendChild(streak);
+
+    var level = el("section", "card pv-stat pv-level");
+    level.setAttribute("aria-label", "Level " + p.level.name);
+    level.appendChild(el("strong", "pv-level-name", p.level.name));
+    level.appendChild(el("span", "pv-label", "level " + (p.level.index + 1) + " of " + LEVELS));
+    level.appendChild(bar(P.levelFraction(p.level, p.xp), p.xp + " XP. " + P.nextLevelLine(p.level)));
+    level.appendChild(el("span", "pv-sub", p.xp + " XP"));
+    level.appendChild(el("span", "pv-foot", P.nextLevelLine(p.level)));
+    row.appendChild(level);
+    return row;
+  }
+
+  function drillCard(d, P) {
+    var tr = currentTrack(), playful = tr === "playful", focused = tr === "focused";
+    var card = el("section", "card pv-drill");
+    card.setAttribute("aria-labelledby", "pv-drill-title");
+    card.appendChild(el("p", "pv-eyebrow", playful ? "Today's singing game" : "Today's drill · " + d.levelName));
+    var h = el("h2", "pv-title", d.title); h.id = "pv-drill-title";
+    card.appendChild(h);
+    card.appendChild(el("p", "pv-meta", playful
+      ? d.dohHeader + " · " + d.notes.length + " notes"
+      : d.dohHeader + " · " + d.key + " · " + d.tempoBpm + " BPM" + (focused ? " · " + d.notes.length + " notes" : "")));
+
+    var tiles = el("ol", "pv-tiles");
+    tiles.setAttribute("aria-label", "Sing: " + d.notes.map(function (n) { return (n.solfa || "") + (n.octaveMark || ""); }).join(" "));
+    d.notes.forEach(function (n) { var li = el("li", null, (n.solfa || "") + (n.octaveMark || "")); li.setAttribute("aria-hidden", "true"); tiles.appendChild(li); });
+    card.appendChild(tiles);
+
+    var allowance = (s.progress && s.progress.drills) || d.allowance, left = P.drillsLeft(allowance);
+    var live = el("div", "pv-live"); live.setAttribute("aria-live", "polite");
+    var actions = el("div", "pv-actions");
+    if (s.phase === "starting") {
+      live.appendChild(document.createTextNode("Getting ready…"));
+      var cancel = button("btn-ghost pv-wide", "/assets/icons.svg#i-x", "Cancel", function () { cancelTake(); });
+      actions.appendChild(cancel);
+    } else if (s.phase === "leadin" || s.phase === "singing") {
+      live.appendChild(el("span", "pv-dot"));
+      live.appendChild(el("span", "pv-live-text", liveText()));
+      actions.appendChild(button("btn-ghost pv-wide", "/assets/icons.svg#i-stop", s.phase === "leadin" ? "Cancel" : "Stop and mark it", function () {
+        if (s.phase === "leadin") cancelTake(); else finishTake();
+      }));
+    } else if (s.phase === "grading") {
+      live.appendChild(document.createTextNode("Marking your take…"));
+      var wait = button("btn-primary pv-wide", "/assets/icons.svg#i-clock", "Marking your take…", function () {});
+      wait.disabled = true; actions.appendChild(wait);
+    } else {
+      live.hidden = true;
+      var hearBtn = button("btn-ghost", isHearing() ? "/assets/icons.svg#i-stop" : "/assets/icons.svg#i-volume", isHearing() ? "Stop" : playful ? "Listen" : "Hear it", toggleHear);
+      hearBtn.id = "pv-hear";
+      var singBtn = button("btn-primary", "/assets/icons.svg#i-mic", playful ? (s.grade ? "Again!" : "Sing it!") : s.grade ? "Sing it again" : "Sing it", sing);
+      singBtn.id = "pv-sing";
+      if (left === 0) singBtn.disabled = true;
+      actions.appendChild(hearBtn); actions.appendChild(singBtn);
+    }
+    card.appendChild(live);
+    card.appendChild(actions);
+    var line = P.allowanceLine(allowance);
+    if (line) card.appendChild(el("p", "pv-allow", line));
+    if (s.error) { var err = el("p", "pv-error", s.error); err.setAttribute("role", "alert"); card.appendChild(err); }
+    if (s.grade && s.phase === "idle") {
+      card.appendChild(playful ? starGrade(s.grade, d.notes, PT()) : gradeMarks(s.grade, d.notes, P));
+      if (focused) {
+        // Focused: the take's overall lean, and the take itself to listen back to.
+        var row = el("div", "pv-focus-row");
+        row.appendChild(el("span", "pv-tuning", PT().tuningLine(s.grade.tuningCents)));
+        if (s.takeUrl) {
+          var rb = button("btn-ghost", "/assets/icons.svg#i-play", "Replay my take", replay);
+          rb.id = "pv-replay";
+          row.appendChild(rb);
+        }
+        card.appendChild(row);
+      }
+    }
+    return card;
+  }
+
+  /** Playful's marked take: one to three stars and a friendly word, never the number; the notes coloured, no cents. */
+  function starGrade(g, notes, T) {
+    var stars = T.starsFor(g.score), box = el("div", "pv-stars-result");
+    var row = el("div", "pv-stars");
+    row.setAttribute("role", "img"); row.setAttribute("aria-label", stars + " of 3 stars. " + T.starWord(stars));
+    for (var i = 1; i <= 3; i++) row.appendChild(starShape("pv-star" + (i <= stars ? " on" : "") + (i === 2 ? " mid" : "")));
+    box.appendChild(row);
+    box.appendChild(el("p", "pv-star-word", T.starWord(stars)));
+    box.appendChild(el("p", "pv-star-hint", T.starHint(g, stars)));
+    if (g.octaveShift) box.appendChild(el("p", "pv-star-hint", "You sang it " + (g.octaveShift > 0 ? "higher up" : "lower down") + ". That's fine!"));
+    var marks = el("div", "marks pv-play-marks");
+    (g.notes || []).forEach(function (m) {
+      var n = notes[m.index];
+      if (!n) return;
+      var mk = el("span", "mark " + m.status, (n.solfa || "") + (n.octaveMark || ""));
+      mk.title = m.status === "hit" ? "spot on" : m.status === "near" ? "close" : m.status === "wrong" ? "try again" : "not heard";
+      marks.appendChild(mk);
+    });
+    box.appendChild(marks);
+    box.appendChild(el("p", "pv-legend", "Green spot on · amber close · red try again · grey not heard"));
+    var earned = T.playfulRewardLine(g.reward);
+    if (earned) box.appendChild(el("p", "pv-earned", earned));
+    return box;
+  }
+
+  /**
+   * One star, drawn in place rather than from the sprite: the sprite's symbols carry fill="none", which a filled
+   * (earned) star must override. The shape is Lucide's own "star", so it matches the rest of the set.
+   */
+  var STAR_PATH = "M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z";
+  function starShape(cls) {
+    var NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg"), path = document.createElementNS(NS, "path");
+    svg.setAttribute("class", cls); svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("stroke", "currentColor"); svg.setAttribute("stroke-width", "1.75"); svg.setAttribute("stroke-linejoin", "round");
+    path.setAttribute("d", STAR_PATH); svg.appendChild(path);
+    return svg;
+  }
+
+  /** Focused: the take just marked, played back from the recording. */
+  function replay() {
+    if (!s.takeUrl || s.phase !== "idle") return;
+    stopHear();
+    try {
+      if (replayAudio) replayAudio.pause();
+      replayAudio = new Audio(s.takeUrl);
+      var p = replayAudio.play();
+      if (p && p.catch) p.catch(function () { s.error = "We couldn't play your take back."; render(); });
+      track("Practice take replayed");
+    } catch (e) { s.error = "We couldn't play your take back."; render(); }
+  }
+  function stopReplay() { if (replayAudio) { try { replayAudio.pause(); } catch (e) { /* gone */ } replayAudio = null; } }
+  function dropTakeUrl() {
+    stopReplay();
+    if (s.takeUrl) { try { URL.revokeObjectURL(s.takeUrl); } catch (e) { /* gone */ } }
+    s.takeUrl = null;
+  }
+
+  /** The marked take: score, verdict, every note green/amber/red/grey with its cents off, and what it earned. */
+  function gradeMarks(g, notes, P) {
+    var box = el("div", "pv-result");
+    box.setAttribute("aria-label", "Your take, marked");
+    var row = el("div", "pv-score-row");
+    row.appendChild(el("strong", "pv-score " + (g.score >= 80 ? "good" : g.score >= 50 ? "fair" : "poor"), String(g.score)));
+    var text = el("div");
+    text.appendChild(el("p", "pv-summary", g.summary));
+    if (g.octaveShift) text.appendChild(el("p", "pv-legend", "Sung " + (g.octaveShift > 0 ? "an octave up" : "an octave down") + " — that's fine."));
+    row.appendChild(text);
+    box.appendChild(row);
+    var marks = el("div", "marks");
+    (g.notes || []).forEach(function (m) {
+      var n = notes[m.index];
+      if (!n) return;
+      var mk = el("span", "mark " + m.status, (n.solfa || "") + (n.octaveMark || ""));
+      mk.appendChild(el("small", null, m.status === "missed" ? "—" : m.cents == null ? "" : (m.cents > 0 ? "+" : "") + Math.round(m.cents)));
+      mk.title = m.status === "missed" ? "not sung" : m.status;
+      marks.appendChild(mk);
+    });
+    box.appendChild(marks);
+    box.appendChild(el("p", "pv-legend", "Green in tune · amber close · red wrong note · grey not sung. Numbers are cents off."));
+    var earned = P.rewardMoment(g.reward);
+    if (earned) {
+      var e = el("p", "pv-earned");
+      e.appendChild(icon("/assets/icons.svg#i-sparkle"));
+      e.appendChild(document.createTextNode(earned.line));
+      box.appendChild(e);
+    }
+    return box;
+  }
+
+  function weekCard(p, P) {
+    var card = el("section", "card pv-week");
+    card.setAttribute("aria-labelledby", "pv-week-title");
+    var row = el("div", "pv-week-row"), fraction = P.weeklyFraction(p.weeklyGoal);
+    row.appendChild(ring(fraction));
+    var text = el("div", "pv-week-text");
+    var h = el("h2", "pv-title", p.weeklyGoal.daysDone + " of " + p.weeklyGoal.target + " days this week"); h.id = "pv-week-title";
+    text.appendChild(h);
+    text.appendChild(el("p", "pv-meta", p.weeklyGoal.daysDone >= p.weeklyGoal.target ? "Weekly goal met." : "Practise " + p.weeklyGoal.target + " days a week to meet the goal."));
+    row.appendChild(text);
+    card.appendChild(row);
+    var days = el("ol", "pv-days");
+    days.setAttribute("aria-label", "The last seven days");
+    P.dayDots(p.lastSevenDays).forEach(function (d) {
+      var li = el("li", d.status), dot = el("span", "dot");
+      li.setAttribute("aria-label", d.label);
+      if (d.status === "done") dot.appendChild(icon("/assets/icons.svg#i-check"));
+      if (d.status === "frozen") dot.appendChild(icon("/assets/icons.svg#i-snowflake"));
+      li.appendChild(dot);
+      var letter = el("span", null, d.letter); letter.setAttribute("aria-hidden", "true");
+      li.appendChild(letter);
+      days.appendChild(li);
+    });
+    card.appendChild(days);
+    card.appendChild(el("p", "pv-meta", p.xpToday + " of " + p.dailyXpCap + " XP today"));
+    return card;
+  }
+
+  function ring(fraction) {
+    var size = 64, stroke = 7, r = (size - stroke) / 2, c = 2 * Math.PI * r, NS = "http://www.w3.org/2000/svg";
+    var box = el("div", "pv-ring");
+    box.setAttribute("role", "img");
+    box.setAttribute("aria-label", "Weekly goal " + Math.round(fraction * 100) + " percent");
+    var svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("width", size); svg.setAttribute("height", size); svg.setAttribute("viewBox", "0 0 " + size + " " + size);
+    svg.setAttribute("aria-hidden", "true");
+    [["track", 0], ["fill", c * (1 - fraction)]].forEach(function (x) {
+      var circle = document.createElementNS(NS, "circle");
+      circle.setAttribute("class", x[0]); circle.setAttribute("cx", size / 2); circle.setAttribute("cy", size / 2); circle.setAttribute("r", r);
+      if (x[0] === "fill") { circle.setAttribute("stroke-dasharray", c + " " + c); circle.setAttribute("stroke-dashoffset", x[1]); if (fraction <= 0) circle.setAttribute("stroke-opacity", "0"); }
+      svg.appendChild(circle);
+    });
+    box.appendChild(svg);
+    box.appendChild(el("span", null, Math.round(fraction * 100) + "%"));
+    return box;
+  }
+
+  function badgeGrid(p, P) {
+    var list = el("ul", "pv-badges");
+    P.sortBadges(p.badges).forEach(function (b) {
+      var li = el("li", "pv-badge " + (b.earned ? "earned" : "locked"));
+      li.setAttribute("aria-label", b.title + ". " + b.description + " " + (b.earned ? "Earned." : b.progress + " of " + b.target + "."));
+      var ic = el("span", "pv-badge-icon"); ic.appendChild(icon(BADGE_ICONS[b.code] || "/assets/icons.svg#i-award"));
+      li.appendChild(ic);
+      li.appendChild(el("strong", null, b.title));
+      li.appendChild(el("p", null, b.description));
+      if (!b.earned) {
+        var prog = el("div", "pv-badge-progress");
+        prog.setAttribute("aria-hidden", "true");
+        prog.appendChild(bar(P.badgeFraction(b)));
+        prog.appendChild(el("span", null, Math.min(b.progress, b.target) + "/" + b.target));
+        li.appendChild(prog);
+      }
+      list.appendChild(li);
+    });
+    return list;
+  }
+
+  /** Playful's badges as stickers: earned ones a tilted coloured disc, locked ones an empty dashed slot. */
+  function stickers(p, P, T) {
+    var list = el("ul", "pv-stickers");
+    P.sortBadges(p.badges).forEach(function (b, i) {
+      var li = el("li", "pv-sticker" + (b.earned ? " earned" : ""));
+      li.setAttribute("aria-label", b.title + " sticker. " + b.description + " " + (b.earned ? "Earned." : b.progress + " of " + b.target + "."));
+      var disc = el("span", b.earned ? "pv-sticker-disc fill-" + STICKER_FILLS[i % STICKER_FILLS.length] : "pv-sticker-slot");
+      if (b.earned) disc.style.transform = "rotate(" + T.stickerTilt(b.code) + "deg)";
+      disc.appendChild(icon(BADGE_ICONS[b.code] || "/assets/icons.svg#i-award"));
+      li.appendChild(disc);
+      li.appendChild(el("strong", null, b.title));
+      if (!b.earned) li.appendChild(el("small", null, Math.min(b.progress, b.target) + "/" + b.target));
+      list.appendChild(li);
+    });
+    return list;
+  }
+
+  /** Focused's badges: a plain list, earned or how far along. */
+  function badgeList(p, P) {
+    var list = el("ul", "card pv-badge-list");
+    P.sortBadges(p.badges).forEach(function (b) {
+      var li = el("li", b.earned ? "earned" : "locked");
+      li.setAttribute("aria-label", b.title + ". " + b.description + " " + (b.earned ? "Earned." : b.progress + " of " + b.target + "."));
+      li.appendChild(icon(BADGE_ICONS[b.code] || "/assets/icons.svg#i-award"));
+      var text = el("span", "pv-badge-row-text");
+      text.appendChild(el("strong", null, b.title));
+      text.appendChild(el("span", null, b.description));
+      li.appendChild(text);
+      li.appendChild(el("span", "pv-badge-row-count", b.earned ? "Earned" : Math.min(b.progress, b.target) + "/" + b.target));
+      list.appendChild(li);
+    });
+    return list;
+  }
+
+  /**
+   * Playful's burst: a couple of dozen paper bits flung from the middle and gone in about a second. CSS only (each
+   * bit's path is two custom properties), never touchable, and nothing at all for reduced motion — the stars say it.
+   */
+  function burst() {
+    if (reducedMotion()) return;
+    var layer = el("div", "pv-confetti"); layer.setAttribute("aria-hidden", "true");
+    for (var i = 0; i < 24; i++) {
+      var angle = (i / 24) * Math.PI * 2 + ((i * 37) % 11) / 20, reach = 90 + ((i * 53) % 70);
+      var bit = el("i", "c" + (i % 4) + (i % 3 === 0 ? " round" : ""));
+      bit.style.setProperty("--dx", Math.round(Math.cos(angle) * reach) + "px");
+      bit.style.setProperty("--dy", Math.round(Math.sin(angle) * reach - 40) + "px");
+      bit.style.setProperty("--r", ((i * 47) % 360) + "deg");
+      layer.appendChild(bit);
+    }
+    document.body.appendChild(layer);
+    setTimeout(function () { layer.remove(); }, 1500);
+  }
+
+  /** The tile of the note sounding (Hear it) or due (Sing it), lit. */
+  function highlight(i) {
+    if (!root) return;
+    var tiles = root.querySelectorAll(".pv-tiles li");
+    for (var k = 0; k < tiles.length; k++) tiles[k].classList.toggle("on", k === i);
+  }
+
+  // ── Hear it: the drill on the rehearsal piano, once, at its tempo ───────
+  var hearing = false;
+  function isHearing() { return hearing; }
+  function toggleHear() {
+    var d = s.drill;
+    if (!d || s.phase !== "idle") return;
+    stopReplay();
+    if (!hear) {
+      hear = ctx.choir.createPlayer();
+      hear.onTick(function (t) {
+        var i = -1;
+        if (t.playing && s.drill) s.drill.notes.forEach(function (n, k) { if (t.beat >= n.startBeat && t.beat < n.startBeat + n.durBeats) i = k; });
+        highlight(i);
+        // Only the start and the end redraw (the button's label): the tiles are lit in place.
+        if (hearing !== t.playing) { hearing = t.playing; if (s.phase === "idle") render(); }
+      });
+    }
+    if (hearing) { hear.stop(); return; }
+    hear.load({ voices: [{ name: "drill", notes: d.notes, gain: 1 }], tempoBpm: d.tempoBpm, timeSignature: d.timeSignature });
+    hear.play();
+    track("Practice drill heard", d.id);
+  }
+  function stopHear() { if (hear) hear.stop(); highlight(-1); }
+
+  // ── Sing it: a count-in, the singer alone, marked by the server ─────────
+  function liveText() {
+    if (!take) return "";
+    var t = Math.max(0, take.audio.currentTime - take.t0);
+    if (t < take.lead) return "Starting note… sing in " + Math.max(1, Math.ceil(take.lead - t));
+    return "Sing!";
+  }
+
+  /**
+   * The count-in on the audio clock: `beats` clicks (the first of each bar higher), and the first note held on the
+   * piano through the first bar as a pitch pipe. Returns when beat one of the count-in sounds.
+   */
+  function countIn(audio, lead, withPiano) {
+    var C = ctx.choir, t0 = audio.currentTime + 0.05;
+    if (withPiano) C.pianoNote(audio, C.createPianoOutput(audio), lead.pitchMidi, lead.holdBeats * lead.beatSec, t0, 0.9);
+    for (var i = 0; i < lead.beats; i++) {
+      var at = t0 + i * lead.beatSec, osc = audio.createOscillator(), g = audio.createGain();
+      osc.frequency.value = i % lead.holdBeats === 0 ? 1500 : 1000;
+      g.gain.setValueAtTime(0.4, at); g.gain.exponentialRampToValueAtTime(0.0001, at + 0.05);
+      osc.connect(g); g.connect(audio.destination); osc.start(at); osc.stop(at + 0.06);
+    }
+    return t0;
+  }
+
+  function sing() {
+    var d = s.drill, P = PP();
+    if (!d || s.phase !== "idle" || take) return;
+    var allowance = (s.progress && s.progress.drills) || d.allowance;
+    if (P.drillsLeft(allowance) === 0) return;
+    stopHear(); dropTakeUrl();
+    s.error = null; s.grade = null;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+      s.error = P.micError({ name: "Unsupported" }); render(); return;
+    }
+    var gen = s.gen, AC = window.AudioContext || window.webkitAudioContext;
+    // Made on the press, so the browser lets it play; the piano is decoded into it while the microphone opens.
+    var audio = new AC();
+    var mine = take = { audio: audio, cancelled: false, lead: P.leadIn(d).seconds };
+    s.phase = "starting"; render();
+    var piano = Promise.race([
+      ctx.choir.loadPiano(audio).then(function () { return true; }, function () { return false; }),
+      new Promise(function (resolve) { setTimeout(function () { resolve(false); }, PIANO_WAIT_MS); })
+    ]);
+    var mic = navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: true } });
+    Promise.all([mic, piano]).then(function (got) {
+      var stream = got[0];
+      if (gen !== s.gen || mine.cancelled || take !== mine) { stream.getTracks().forEach(function (t) { t.stop(); }); return; }
+      mine.stream = stream;
+      var mime = MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus"
+        : MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "";
+      // One voice at 32 kbps (the phone's data-saver rate): a drill take is tens of kilobytes on 3G, not hundreds.
+      var opts = { audioBitsPerSecond: 32000 };
+      if (mime) opts.mimeType = mime;
+      var chunks = [], rec = new MediaRecorder(stream, opts);
+      mine.recorder = rec;
+      rec.addEventListener("dataavailable", function (e) { if (e.data && e.data.size) chunks.push(e.data); });
+      rec.addEventListener("stop", function () {
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        if (gen !== s.gen || mine.cancelled) return; // cancelled: nothing is sent and no drill is spent
+        var type = rec.mimeType || mime || "audio/webm";
+        send(new Blob(chunks, { type: type }), type.indexOf("mp4") >= 0 ? "drill.m4a" : "drill.webm", d, gen);
+      });
+      if (audio.state === "suspended") audio.resume();
+      rec.start();
+      var lead = P.leadIn(d);
+      mine.t0 = countIn(audio, lead, got[1]);
+      mine.lead = lead.seconds;
+      s.phase = "leadin"; render();
+      document.body.classList.add("is-recording");
+      track("drill_started", "drill=" + d.id + ";level=" + d.level);
+      mine.timer = setInterval(function () { tick(mine, d); }, 100);
+      // A second after the last note (the server keeps no more than maxTakeSeconds anyway).
+      mine.stopAt = setTimeout(function () { if (take === mine) finishTake(); }, (P.takeSeconds(d) + 0.05) * 1000);
+    }, function (err) {
+      if (take === mine) take = null;
+      try { audio.close(); } catch (e) { /* already closed */ }
+      if (gen !== s.gen || mine.cancelled) return;
+      s.phase = "idle"; s.error = P.micError(err); render();
+    });
+  }
+
+  function tick(mine, d) {
+    if (take !== mine || !root) return;
+    var t = mine.audio.currentTime - mine.t0;
+    if (s.phase === "leadin" && t >= mine.lead) { s.phase = "singing"; render(); }
+    var text = root.querySelector(".pv-live-text");
+    if (text) text.textContent = liveText();
+    highlight(PP().noteDueAt(d.notes, d.tempoBpm, mine.lead, t));
+  }
+
+  /** Ends the recording; `cancelled` takes are dropped, the rest go to be marked. */
+  function endTake(cancelled) {
+    var mine = take;
+    if (!mine) return;
+    take = null;
+    mine.cancelled = mine.cancelled || cancelled;
+    if (mine.timer) clearInterval(mine.timer);
+    if (mine.stopAt) clearTimeout(mine.stopAt);
+    document.body.classList.remove("is-recording");
+    highlight(-1);
+    if (mine.recorder && mine.recorder.state !== "inactive") mine.recorder.stop();
+    else if (mine.stream) mine.stream.getTracks().forEach(function (t) { t.stop(); });
+    try { mine.audio.close(); } catch (e) { /* already closed */ }
+  }
+  function finishTake() { endTake(false); s.phase = "grading"; render(); }
+  function cancelTake() { var had = !!take; endTake(true); if (had) { s.phase = "idle"; render(); } }
+
+  function send(blob, name, d, gen) {
+    var P = PP(), form = new FormData();
+    form.append("audio", blob, name);
+    form.append("drillId", d.id);
+    ctx.request("/api/practice/drills/grade", { method: "POST", form: form }).then(function (g) {
+      if (gen !== s.gen) return;
+      s.grade = g; s.phase = "idle"; s.error = null;
+      track("drill_completed", "drill=" + d.id + ";score=" + g.score + ";xp=" + ((g.reward && g.reward.xpGained) || 0));
+      P.rewardEvents(g.reward).forEach(function (e) { track(e.name, e.detail); });
+      if (g.reward && s.progress) s.progress = Object.assign({}, s.progress, { xp: g.reward.xp, level: g.reward.level });
+      dropTakeUrl();
+      try { s.takeUrl = URL.createObjectURL(blob); } catch (e) { s.takeUrl = null; } // Focused's "Replay my take"
+      render();
+      // The moment, by the track the drill was sung on: a burst, a line, or nothing (practice-track.js).
+      var T = PT(), sungOn = d.track !== undefined ? d.track : currentTrack();
+      var how = T.celebrationFor(sungOn, g.score, g.reward), moment = P.rewardMoment(g.reward);
+      var line = sungOn === "playful" ? T.playfulRewardLine(g.reward) : moment && moment.line;
+      if (how === "burst") burst();
+      if (how !== "quiet" && line) toast(line);
+      refreshProgress();
+    }, function (err) {
+      if (gen !== s.gen) return;
+      s.phase = "idle"; s.error = P.gradeError(err);
+      if (err && err.code === "PRACTICE_DAILY_LIMIT" && s.progress) {
+        var a = s.progress.drills || d.allowance;
+        s.progress.drills = { used: a.limit, limit: a.limit };
+      }
+      render();
+    });
+  }
+
+  // ── The reward toast ────────────────────────────────────────────────────
+  function toast(line) {
+    if (!toastEl) {
+      toastEl = el("div", "pv-toast");
+      toastEl.setAttribute("role", "status");
+      toastEl.appendChild(icon("/assets/icons.svg#i-sparkle"));
+      toastEl.appendChild(el("span"));
+      document.body.appendChild(toastEl);
+    }
+    toastEl.lastChild.textContent = line;
+    // Re-inserted so the entrance plays again for a second reward (the CSS drops it for reduced motion).
+    toastEl.hidden = true; void toastEl.offsetWidth; toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.hidden = true; }, TOAST_MS);
+  }
+  function hideToast() { clearTimeout(toastTimer); if (toastEl) toastEl.hidden = true; }
+
+  // ── The view's way in and out ───────────────────────────────────────────
+  function open(rootEl, context) {
+    ctx = context;
+    root = rootEl;
+    render();
+    if (s.phase === "idle") load();
+  }
+  /** Another view: nothing keeps sounding or listening. */
+  function leave() {
+    stopHear(); stopReplay();
+    if (take) cancelTake();
+    hideToast();
+  }
+  /** Signed out: the next person on this browser sees none of it. */
+  function reset() {
+    s.gen++;
+    leave();
+    dropTakeUrl();
+    s.progress = null; s.drill = null; s.grade = null; s.error = null; s.loadError = null; s.loading = false; s.phase = "idle";
+    s.picking = false; s.savingTrack = null; s.trackError = null;
+    if (root) root.innerHTML = "";
+  }
+
+  window.NfPracticeView = { open: open, leave: leave, reset: reset };
+})();

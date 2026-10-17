@@ -31,6 +31,8 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Country).HasMaxLength(2).IsFixedLength();
         builder.Property(u => u.SignupSource).HasColumnName("signup_source").HasMaxLength(10);
         builder.Property(u => u.Role).HasConversion<string>().HasMaxLength(20).IsRequired();
+        // "Playful" / "Focused" by name; null until the singer picks one.
+        builder.Property(u => u.PracticeTrack).HasConversion<string>().HasMaxLength(10);
         builder.Property(u => u.CreatedAt).IsRequired();
 
         // SHA-256 hex — 64 characters, always. Nullable because most rows have no code outstanding:

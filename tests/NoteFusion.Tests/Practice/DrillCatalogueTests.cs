@@ -26,7 +26,7 @@ public class DrillCatalogueTests
         var drill = DrillCatalogue.Build(pattern, doh);
 
         Assert.Equal(pattern.Tokens, drill.Notes.Select(n => n.Solfa + n.OctaveMark));
-        Assert.InRange(drill.Notes.Count, 3, 8);
+        Assert.InRange(drill.Notes.Count, DrillCatalogue.MinNotes, DrillCatalogue.MaxNotes);
         Assert.All(drill.Notes, n => Assert.InRange(n.PitchMidi, DrillCatalogue.LowestMidi, DrillCatalogue.HighestMidi));
 
         // Independently of the catalogue's own check: each pitch, mapped by the engine in the drill's key and register,
@@ -49,7 +49,7 @@ public class DrillCatalogueTests
     [Fact]
     public void Every_level_has_drills_and_every_drill_has_a_key()
     {
-        Assert.Equal(PracticeRules.Levels.Count - 1, DrillCatalogue.TopTier);
+        Assert.Equal(PracticeRules.Levels.Count - 1, DrillCatalogue.LadderTopTier);
         foreach (var level in PracticeRules.Levels)
             Assert.NotEmpty(DrillCatalogue.Patterns.Where(p => p.Tier == level.Index));
         Assert.All(DrillCatalogue.Patterns, p => Assert.NotEmpty(DrillCatalogue.Placements(p)));
@@ -106,9 +106,9 @@ public class DrillCatalogueTests
         var user = Guid.NewGuid();
         var day = new DateOnly(2026, 10, 17);
 
-        for (var level = 0; level <= DrillCatalogue.TopTier; level++)
+        for (var level = 0; level <= DrillCatalogue.LadderTopTier; level++)
             Assert.Equal(level, DrillCatalogue.ForDay(user, day, level).Pattern.Tier);
-        Assert.Equal(DrillCatalogue.TopTier, DrillCatalogue.ForDay(user, day, 99).Pattern.Tier);
+        Assert.Equal(DrillCatalogue.LadderTopTier, DrillCatalogue.ForDay(user, day, 99).Pattern.Tier);
     }
 
     [Fact]

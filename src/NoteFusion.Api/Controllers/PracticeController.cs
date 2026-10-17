@@ -17,6 +17,9 @@ public sealed class GradeDrillRequest
     public string? DrillId { get; set; }
 }
 
+/// <summary>JSON body of <c>PUT track</c>: "playful" or "focused".</summary>
+public sealed record SetPracticeTrackRequest(string? Track);
+
 /// <summary>
 /// Practice: the free daily solfa drill, and the XP, level, streak and badges every marked take earns. Days are the
 /// singer's own (<c>X-Time-Zone</c>, Africa/Lagos when absent). Nothing here is earned by transcribing or bought.
@@ -54,8 +57,16 @@ public sealed class PracticeController : ApiControllerBase
         return HandleResult(await _sender.Send(new GradeDrillCommand(stream, request.Audio.FileName, request.DrillId ?? string.Empty), ct));
     }
 
-    /// <summary>XP, level, streak, weekly goal, badges and the last seven days.</summary>
+    /// <summary>XP, level, streak, weekly goal, badges, the last seven days, and the track (null until chosen).</summary>
     [HttpGet("progress")]
     public async Task<IActionResult> Progress(CancellationToken ct)
         => HandleResult(await _sender.Send(new GetPracticeProgressQuery(), ct));
+
+    /// <summary>
+    /// Sets how the caller likes to practise: <c>{"track":"playful"}</c> or <c>{"track":"focused"}</c> (422
+    /// <c>PRACTICE_TRACK_UNKNOWN</c> otherwise). Answers with the progress; today's drill becomes the track's own.
+    /// </summary>
+    [HttpPut("track")]
+    public async Task<IActionResult> SetTrack(SetPracticeTrackRequest body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new SetPracticeTrackCommand(body.Track), ct));
 }

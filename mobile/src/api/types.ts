@@ -340,7 +340,13 @@ export interface DrillAllowance {
   limit: number;
 }
 
-/** GET /api/practice/progress. */
+/**
+ * How a singer likes to practise (C# `Core.Enums.PracticeTrack`): a style, never an age. It picks the day's drill
+ * and how a take is shown; XP, levels, streaks and badges are the same on both.
+ */
+export type PracticeTrack = "playful" | "focused";
+
+/** GET /api/practice/progress, and the answer to PUT /api/practice/track. */
 export interface PracticeProgress {
   /** yyyy-mm-dd on the singer's calendar. */
   today: string;
@@ -353,6 +359,8 @@ export interface PracticeProgress {
   badges: PracticeBadge[];
   lastSevenDays: PracticeDay[];
   drills: DrillAllowance;
+  /** Null until the singer picks one; the screen asks then. */
+  track: PracticeTrack | null;
 }
 
 /** What a marked take earned, returned with its grade. */
@@ -385,6 +393,8 @@ export interface Drill {
   /** yyyy-mm-dd on the singer's calendar. */
   date: string;
   allowance: DrillAllowance;
+  /** The track this drill was picked for (null with none chosen): each track has its own drill of the day. */
+  track: PracticeTrack | null;
 }
 
 /** A public link to a saved sheet. */

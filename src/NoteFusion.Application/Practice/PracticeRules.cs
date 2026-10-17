@@ -61,6 +61,22 @@ public static class PracticeRules
         new(7, "Choir-ready", 3000),
     ];
 
+    // ── Tracks ──────────────────────────────────────────────────────────────
+    // A track (Core.Enums.PracticeTrack) chooses the day's drill and how a marked take is shown. Nothing above reads
+    // it: XP, the cap, the ladder, streaks and badges are the same on both, so switching never loses progress.
+
+    /// <summary>The most notes a Playful drill has (every drill has at least three).</summary>
+    public const int PlayfulMaxNotes = 5;
+
+    /// <summary>The highest tier Playful draws from: steps, the doh chord, scales, leaps and low soh — major, no chromatics.</summary>
+    public const int PlayfulTopTier = 4;
+
+    /// <summary>Beats a minute slower than the tier's own tempo for a Playful drill.</summary>
+    public const int PlayfulTempoDrop = 12;
+
+    /// <summary>Tiers above the singer's level that Focused draws from, so a beginner who wants the work starts on scales.</summary>
+    public const int FocusedTierLead = 2;
+
     /// <summary>XP for one marked take before the daily cap.</summary>
     public static int BaseXp(PracticeKind kind, int score) => kind switch
     {
