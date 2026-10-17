@@ -583,3 +583,47 @@ body.has-free-harmony .act[data-tool="harmony"] { border-color: var(--line); }
 @media (max-width: 600px) {
   .part-mix-voices { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
 }
+
+/* Learn my part: pick the part, how loud the others are and the speed, tap two bars to loop them, then
+   sing them back. The strip is the part itself, bar by bar; a marked take colours its notes in place. */
+.pr-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin: 0 0 12px; }
+.pr-label { min-width: 52px; font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.pr-seg { display: inline-flex; gap: 2px; padding: 4px; border-radius: 12px; background: var(--wash); }
+:root[data-theme="dark"] .pr-seg { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.07); }
+.pr-seg button { min-height: 36px; min-width: 40px; padding: 0 12px; border: 0; border-radius: 9px; background: none; color: var(--muted); font: inherit; font-size: 0.86rem; font-weight: 600; cursor: pointer; }
+.pr-seg button[aria-pressed=true] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(16, 24, 40, 0.12); }
+:root[data-theme="dark"] .pr-seg button[aria-pressed=true] { background: rgba(255, 255, 255, 0.10); box-shadow: none; }
+.pr-seg button:focus-visible, .pr-bar:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+.pr-bars-head { display: flex; align-items: center; gap: 12px; margin: 4px 0 2px; }
+.pr-range { font-weight: 600; color: var(--ink); font-size: 0.92rem; }
+.pr-bars-head .btn { margin-left: auto; }
+.pr-hint { margin: 0 0 8px; }
+.pr-bars { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; max-height: 232px; overflow-y: auto; padding: 2px; }
+.pr-bar { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px; padding: 6px 8px; border: 1px solid var(--line); border-radius: var(--radius-xs); background: var(--surface); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+:root[data-theme="dark"] .pr-bar { background: rgba(255, 255, 255, 0.03); }
+.pr-bar small { font-size: 0.68rem; font-weight: 600; color: var(--muted); }
+.pr-notes { font-family: var(--font-mono); font-size: 0.92rem; line-height: 1.35; word-break: break-word; }
+.pr-notes i { font-style: normal; margin-right: 0.4em; }
+.pr-bar.in { border-color: var(--blue); background: var(--blue-tint); }
+:root[data-theme="dark"] .pr-bar.in { background: var(--blue-soft); }
+.pr-bar.pending { border-style: dashed; border-width: 2px; }
+.pr-bar.now { box-shadow: inset 0 0 0 2px var(--blue); }
+.pr-notes .mk-hit { color: var(--success); font-weight: 700; }
+.pr-notes .mk-near { color: var(--amber); font-weight: 700; }
+.pr-notes .mk-wrong { color: var(--danger); font-weight: 700; text-decoration: underline wavy; }
+.pr-notes .mk-missed { color: var(--faint); text-decoration: line-through; }
+.pr-transport { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+.pr-transport .act-lock { width: 14px; height: 14px; opacity: 0.7; }
+.pr-result { margin-top: 10px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--wash); }
+:root[data-theme="dark"] .pr-result { background: rgba(255, 255, 255, 0.04); }
+.pr-result .sing-score { margin-top: 0; }
+.pr-result .btn { margin-top: 10px; }
+.pr-foot { margin: 12px 0 0; }
+@media (max-width: 600px) {
+  .pr-row { gap: 6px; }
+  .pr-row .pr-label { min-width: 100%; }
+  .pr-seg { display: flex; width: 100%; }
+  .pr-seg button { flex: 1; padding: 0 6px; }
+  .pr-bars { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); max-height: 200px; }
+  .pr-transport .btn { flex: 1; justify-content: center; }
+}

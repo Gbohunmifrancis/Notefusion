@@ -118,6 +118,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `app/pipeline/grade.py` marks a sung take against a part (`POST /v1/grade`, synchronous:
   pyin contour, offset + octave alignment, per-note cents and hit/near/wrong/missed);
   the C# `POST /api/transcriptions/grade` forwards it for Pro accounts and stores nothing.
+  "Learn my part" (web `assets/practice.js`, mobile `lib/practice.ts` + `result/PracticeView`, mirrored): the part remembered
+  per device, mine loud (others 0.25) / alone / equal, two tapped bars looped, 50–100% (synth plays slower); free with the parts.
+  Its Pro "Sing it back" grades the looped bars only (sliced, from beat 0, beats ÷ speed), count-in then the singer alone.
   `app/pipeline/chords.py` reads chords per beat (notes + chroma + bass, Viterbi, key from the chords) for
   `mode="chords"` (top line = melody) and for melody-mode songs off the backing; `keyboard_transpose` writes
   sounding pitch minus the keyboard's transpose (solfa unchanged). Bench: `python -m tests.accuracy.chords_bench`.

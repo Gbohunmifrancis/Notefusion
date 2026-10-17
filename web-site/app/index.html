@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="/assets/rangepicker.css?v=1">
 <link rel="stylesheet" href="/assets/app.css?v=24">
 <link rel="stylesheet" href="/assets/recorder.css?v=1">
-<link rel="stylesheet" href="/assets/night.css?v=8">
+<link rel="stylesheet" href="/assets/night.css?v=9">
 <!-- The theme before the first paint: blocking on purpose (no async/defer). -->
 <script src="/assets/theme-boot.js?v=1"></script>
 </head>
@@ -544,6 +544,7 @@
       <!-- Everything you can do with the sheet, one row; each opens in a pop-up. -->
       <div class="result-actions" role="toolbar" aria-label="What to do with this sheet">
         <button class="btn btn-primary" id="play" type="button"><svg class="ic"><use href="#i-play"/></svg>Play</button>
+        <button class="act" type="button" data-tool="practice"><svg class="ic"><use href="#i-choir"/></svg><span>Learn my part</span></button>
         <button class="act" type="button" data-tool="rehearse"><svg class="ic"><use href="#i-restart"/></svg><span>Rehearse</span></button>
         <button class="act" type="button" data-tool="save-section"><svg class="ic"><use href="#i-save"/></svg><span>Save &amp; share</span></button>
         <button class="act" type="button" data-tool="downloads-section"><svg class="ic"><use href="#i-download"/></svg><span>Download</span></button>
@@ -659,6 +660,48 @@
           <span class="group hidden" id="voices"><label>Voices</label></span>
           <label class="group hidden" id="backing-group" title="The song's own backing, with the solfa melody played over it in time"><input type="checkbox" id="backing-on"> Play with the song</label>
         </div>
+      </div>
+
+      <!-- Learn my part: your part loud and the others soft, a few bars looped and slowed, then sung back and marked. -->
+      <div class="section hidden" id="practice">
+        <h2><svg class="ic"><use href="#i-choir"/></svg>Learn my part</h2>
+        <div class="pr-row" role="group" aria-label="My part"><span class="pr-label">My part</span><div class="pr-seg" id="pr-parts"></div></div>
+        <div class="pr-row" role="group" aria-label="What you hear">
+          <span class="pr-label">Hear</span>
+          <div class="pr-seg" id="pr-balance">
+            <button type="button" data-balance="balance">Mine loud</button>
+            <button type="button" data-balance="alone">Mine alone</button>
+            <button type="button" data-balance="equal">All equal</button>
+          </div>
+        </div>
+        <div class="pr-row" role="group" aria-label="Speed">
+          <span class="pr-label">Speed</span>
+          <div class="pr-seg" id="pr-speed">
+            <button type="button" data-speed="0.5">50%</button>
+            <button type="button" data-speed="0.75">75%</button>
+            <button type="button" data-speed="1">100%</button>
+          </div>
+        </div>
+        <div class="pr-bars-head">
+          <span class="pr-label">Loop</span>
+          <span class="pr-range" id="pr-range" aria-live="polite"></span>
+          <button class="btn btn-ghost btn-sm" id="pr-whole" type="button">Whole tune</button>
+        </div>
+        <p class="small muted pr-hint" id="pr-hint">Tap a bar, then another, to loop the bars between them.</p>
+        <div class="pr-bars" id="pr-bars" role="group" aria-label="Bars of your part"></div>
+        <div class="pr-transport">
+          <button class="btn btn-primary" id="pr-play" type="button"><svg class="ic"><use href="#i-play"/></svg>Play</button>
+          <button class="btn btn-ghost" id="pr-sing" type="button"><svg class="ic"><use href="#i-mic"/></svg>Sing it back<svg class="ic act-lock hidden" id="pr-sing-lock" aria-hidden="true"><use href="#i-lock"/></svg></button>
+          <button class="btn btn-ghost hidden" id="pr-stop" type="button"><svg class="ic"><use href="#i-stop"/></svg>Stop</button>
+        </div>
+        <div id="pr-live" class="sing-live hidden" aria-live="polite"></div>
+        <p class="small muted" id="pr-status" aria-live="polite"></p>
+        <div class="pr-result hidden" id="pr-result">
+          <div class="sing-score"><strong id="pr-score"></strong><span id="pr-summary"></span></div>
+          <p class="muted small" style="margin:6px 0 0">Marked on your part above: green in tune · amber close · red wrong note · grey not sung.</p>
+          <button class="btn btn-primary btn-sm" id="pr-again" type="button"><svg class="ic"><use href="#i-restart"/></svg>Try again</button>
+        </div>
+        <p class="small muted pr-foot">You hear the starting note and a bar of clicks, then sing the bars on your own — the others drop out so only your voice is marked. Headphones are not needed.</p>
       </div>
 
       <div class="section" id="harmony">
@@ -928,7 +971,7 @@
      event); without it the forms still work. Google serves it unversioned, so it cannot carry an integrity hash. -->
 <script src="https://accounts.google.com/gsi/client" id="gsi-client" async defer></script>
 <!-- The engraver is loaded by app.js from one pinned, integrity-checked CDN URL. -->
-<script src="/assets/choir.js?v=4" defer></script>
+<script src="/assets/choir.js?v=5" defer></script>
 <script src="/assets/chords.js?v=1" defer></script>
 <script src="/assets/songlink.js?v=2" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>
@@ -938,7 +981,8 @@
 <script src="/assets/confidence.js?v=1" defer></script>
 <script src="/assets/hymnbook.js?v=1" defer></script>
 <script src="/assets/parts.js?v=1" defer></script>
-<script src="/assets/app.js?v=36" defer></script>
+<script src="/assets/practice.js?v=1" defer></script>
+<script src="/assets/app.js?v=37" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>
 </html>

@@ -24,6 +24,7 @@ import ScoreView, { type ScoreViewHandle } from "../components/ScoreView";
 import { SheetGrid, barOf } from "../components/result/SheetGrid";
 import { PlayerDock, DOCK_CLEARANCE } from "../components/result/PlayerDock";
 import { RehearseView } from "../components/result/RehearseView";
+import { PracticeView } from "../components/result/PracticeView";
 import { usePractice } from "../components/result/usePractice";
 import { libraryApi, transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
@@ -52,6 +53,9 @@ import { synthesizeMelodyWavBase64, synthesizeVoicesWavBase64 } from "../lib/syn
 import { hymnRows, lyricsUnderNotes, pitchName, rangeReport, shiftKeyName, VOICES, type VoiceName } from "../lib/choir";
 import { stopAudition } from "../lib/audition";
 import { sectionOf } from "../lib/clipRange";
+import { choosePart, defaultRange, levels, partsOf, practiceTempo, speedsFor, type Balance } from "../lib/practice";
+import { logAnalyticsEvent } from "../lib/analytics";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { rating } from "../lib/rating";
 import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
 import {
@@ -122,11 +126,18 @@ function partLines(
   if (part.solfaLines.length > 1) return part.solfaLines;
   const key = parseKey(keyText);
   if (!key || part.notes.length === 0) return [];
-  const dohPc = dohPitchClass(key);
-  const refDoh = referenceDoh(reference.map((n) => n.pitchMidi), dohPc, key.mode);
-  const flags = ascendingFlags(part.notes.map((n) => n.pitchMidi), dohPc);
-  const labelled = part.notes.map((n, i) => ({ ...n, ...syllable(n.pitchMidi, dohPc, refDoh, flags[i]!) }));
-  return renderSolfaLines(labelled, `${dohHeader(dohPc)} · ${name[0]!.toUpperCase()}${name.slice(1)}`, timeSignature);
+  const labelled = labelPart(part.notes, reference, keyText);
+  return renderSolfaLines(labelled, `${dohHeader(dohPitchClass(key))} · ${name[0]!.toUpperCase()}${name.slice(1)}`, timeSignature);
+}
+
+/** A part's notes, each with its syllable for the key, octave marks from the reference's doh. */
+function labelPart(notes: readonly NoteEvent[], reference: readonly NoteEvent[], keyText: string): NoteEvent[] {
+  const key = parseKey(keyText);
+  if (!key || notes.length === 0) return [...notes];
+  const pc = dohPitchClass(key);
+  const refDoh = referenceDoh(reference.map((n) => n.pitchMidi), pc, key.mode);
+  const flags = ascendingFlags(notes.map((n) => n.pitchMidi), pc);
+  return notes.map((n, i) => ({ ...n, ...syllable(n.pitchMidi, pc, refDoh, flags[i]!) }));
 }
 
 /** How many bars the tune spans — what the passage loop counts in. */
@@ -143,6 +154,9 @@ function barCountOf(notes: readonly NoteEvent[], timeSignature: string): number 
 const PROVIDERS: Record<string, string> = { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music" };
 
 type Panel = "transpose" | "lyrics" | "parts" | "sing" | "export";
+
+/** The part a singer practised last on this device; Learn my part opens on it when the sheet has it. */
+const PRACTICE_PART_KEY = "nf.practice.part";
 type SolfaStyle = "bars" | "grid" | "curwen" | "hymn";
 
 /**
@@ -241,6 +255,17 @@ export function ResultScreen({ route, navigation }: Props) {
 
   // ── Rehearsal mix ─────────────────────────────────────────────────────────
   const [voiceOn, setVoiceOn] = useState<Record<VoiceName, boolean>>({ soprano: true, alto: true, tenor: true, bass: true });
+
+  // ── Learn my part ─────────────────────────────────────────────────────────
+  // While it is open the player sounds every part at the practice levels and the practice speed
+  // (lib/practice.ts); closing it gives the player back to the mix above.
+  const [practising, setPractising] = useState(false);
+  const [practicePart, setPracticePart] = useState<VoiceName>("soprano");
+  const [practiceBalance, setPracticeBalance] = useState<Balance>("balance");
+  const [practiceSpeed, setPracticeSpeed] = useState(1);
+  /** The loop starts on its default the first time only; Rehearse's speed comes back on close. */
+  const practiceSeen = useRef(false);
+  const rateBeforePractice = useRef(1);
 
   // ── Lyrics & sharing ─────────────────────────────────────────────────────
   const [lyrics, setLyrics] = useState(result.lyrics ?? "");
@@ -361,6 +386,19 @@ export function ResultScreen({ route, navigation }: Props) {
   // any of them changes. Without parts the player keeps the melody preview above.
   useEffect(() => {
     if (!hasParts || !parts) return;
+    if (practising) {
+      // My part at its own level, the others by the balance; slower is the notes played slower.
+      const lv = levels(partsOf(parts), practicePart, practiceBalance);
+      const mix = partsOf(parts)
+        .filter((v) => lv[v]! > 0)
+        .map((v) => ({ notes: v === "soprano" ? partReference(parts, view.notes) : parts[v]!.notes, gain: (v === "soprano" ? 1 : 0.8) * lv[v]! }));
+      try {
+        setPreview(synthesizeVoicesWavBase64(mix, practiceTempo(tempo, practiceSpeed)));
+      } catch {
+        // preview synthesis is non-fatal
+      }
+      return;
+    }
     // The tune is the soprano: the parts' own when written (a man's tune sits an octave up there,
     // over the alto, tenor and bass written for it), the melody otherwise.
     const voices = [{ notes: voiceOn.soprano ? partReference(parts, view.notes) : [], gain: 1 }];
@@ -373,7 +411,7 @@ export function ResultScreen({ route, navigation }: Props) {
     } catch {
       // preview synthesis is non-fatal
     }
-  }, [hasParts, parts, voiceOn, view.notes, tempo]);
+  }, [hasParts, parts, voiceOn, view.notes, tempo, practising, practicePart, practiceBalance, practiceSpeed]);
 
   const activeSolfaLines = useMemo(() => {
     return solfaStyle === "curwen" && view.curwenLines.length > 0
@@ -406,7 +444,67 @@ export function ResultScreen({ route, navigation }: Props) {
 
   // One player for the dock and Rehearse; the note it reports drives the sheet's
   // highlight and the stave's cursor.
-  const practice = usePractice(preview, view.notes, tempo, timeSignature, barCount);
+  const practice = usePractice(
+    preview,
+    view.notes,
+    practising ? practiceTempo(tempo, practiceSpeed) : tempo,
+    timeSignature,
+    barCount,
+  );
+
+  /** The parts Learn my part offers, each labelled from the soprano's doh, as the parts panel is. */
+  const practiceParts = useMemo(() => {
+    if (!parts) return null;
+    const reference = partReference(parts, view.notes);
+    const out: Partial<Record<VoiceName, NoteEvent[]>> = {};
+    for (const v of partsOf(parts)) out[v] = labelPart(v === "soprano" ? reference : parts[v]!.notes, reference, key);
+    return out;
+  }, [parts, view.notes, key]);
+
+  async function openPractice() {
+    let remembered: string | null = null;
+    try {
+      remembered = await AsyncStorage.getItem(PRACTICE_PART_KEY);
+    } catch {
+      // unreadable: the tune is the default
+    }
+    setPracticePart(choosePart(parts ? partsOf(parts) : ["soprano"], remembered));
+    if (!practiceSeen.current) {
+      practiceSeen.current = true;
+      const range = defaultRange(barCount);
+      practice.setLoopFrom(range.from);
+      practice.setLoopTo(range.to);
+    }
+    rateBeforePractice.current = practice.rate;
+    practice.pause();
+    practice.setRate(1);
+    practice.setLoopOn(true);
+    setPractising(true);
+    void logAnalyticsEvent("practice_started");
+  }
+
+  function closePractice() {
+    practice.pause();
+    practice.setLoopOn(false);
+    practice.setRate(rateBeforePractice.current);
+    setPractising(false);
+  }
+
+  function choosePracticePart(v: VoiceName) {
+    setPracticePart(v);
+    AsyncStorage.setItem(PRACTICE_PART_KEY, v).catch(() => undefined);
+    void logAnalyticsEvent("practice_part", { part: v });
+  }
+
+  /** Marking a take is Pro, as Sing is; practising is free. */
+  function practiceUpsell() {
+    showDialog({
+      title: "Marking your singing is Pro",
+      message: "Keep practising free. With Pro, sing your part back and see every note marked: in tune, close, or off.",
+      icon: "star",
+      actions: [{ label: "See Pro plans", icon: "star", onPress: () => navigation.navigate("Upgrade") }],
+    });
+  }
   /** Note the player is sounding, −1 when stopped. */
   const playingNote = practice.currentNoteIndex;
 
@@ -1680,6 +1778,14 @@ export function ResultScreen({ route, navigation }: Props) {
                 {!isPro && !partsView && !freeHarmony ? <ProTag /> : null}
               </View>
               {partsView ? (
+                <Button
+                  label="Learn my part"
+                  icon="school-outline"
+                  onPress={() => void openPractice()}
+                  style={styles.panelButton}
+                />
+              ) : null}
+              {partsView ? (
                 partsView.map(({ name, lines }) => (
                   <View key={name} style={styles.voice}>
                     <Text style={styles.voiceName}>{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
@@ -1829,6 +1935,34 @@ export function ResultScreen({ route, navigation }: Props) {
         voices={hasParts ? VOICES.filter((v) => v === "soprano" || parts?.[v]).map((v) => ({ name: v, on: voiceOn[v] })) : undefined}
         onToggleVoice={(v) => setVoiceOn((s) => ({ ...s, [v]: !s[v] }))}
       />
+
+      {/* ── Learn my part: my part loud, a few bars looped and slowed, sung back and marked ── */}
+      {practising && parts && practiceParts ? (
+        <PracticeView
+          onClose={closePractice}
+          practice={practice}
+          names={partsOf(parts)}
+          part={practicePart}
+          onPart={choosePracticePart}
+          balance={practiceBalance}
+          onBalance={(b) => {
+            setPracticeBalance(b);
+            void logAnalyticsEvent("practice_balance", { balance: b });
+          }}
+          speed={practiceSpeed}
+          speeds={speedsFor(tempo)}
+          onSpeed={(sp) => {
+            setPracticeSpeed(sp);
+            void logAnalyticsEvent("practice_speed", { speed: sp });
+          }}
+          partNotes={practiceParts[practicePart] ?? []}
+          tempo={tempo}
+          timeSignature={timeSignature}
+          barCount={barCount}
+          isPro={isPro}
+          onRequirePro={practiceUpsell}
+        />
+      ) : null}
 
       {/* ── Tap-to-correct sheet (F-07) ─────────────────────────────────── */}
       <NoteEditor
