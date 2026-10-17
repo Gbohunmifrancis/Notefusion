@@ -49,6 +49,7 @@ public sealed class TestHarness : IDisposable
         TokenIssuer = new TokenIssuer(Jwt, Tokens, Hasher, Db, Clock, Auth);
         Email = new RecordingEmailSender();
         Push = new RecordingPushSender();
+        WebPush = new RecordingWebPushSender();
         Country = new StubCountryResolver();
         ClientIp = new StubClientIpAddress();
         Device = new StubDeviceFingerprint();
@@ -74,6 +75,9 @@ public sealed class TestHarness : IDisposable
 
     /// <summary>Same, for push. A notice that only emailed is a half-delivered notice.</summary>
     public RecordingPushSender Push { get; }
+
+    /// <summary>Same, for the web app's browsers (web push).</summary>
+    public RecordingWebPushSender WebPush { get; }
 
     /// <summary>Where the caller appears to be. Answers null until a test says otherwise.</summary>
     public StubCountryResolver Country { get; }
@@ -290,6 +294,17 @@ public sealed class RecordingEmailSender : IEmailSender
 /// An <see cref="IPushSender"/> that records calls instead of delivering. Same reasoning as
 /// <see cref="RecordingEmailSender"/>: pushes are fire-and-forget, so intent is all a handler test can see.
 /// </summary>
+public sealed class RecordingWebPushSender : IWebPushSender
+{
+    public List<(Guid UserId, WebPushNotification Notification)> Sent { get; } = [];
+
+    public Task SendAsync(Guid userId, WebPushNotification notification, CancellationToken ct = default)
+    {
+        Sent.Add((userId, notification));
+        return Task.CompletedTask;
+    }
+}
+
 public sealed class RecordingPushSender : IPushSender
 {
     public List<(IReadOnlyList<Guid> Recipients, PushMessage Message)> Sent { get; } = [];

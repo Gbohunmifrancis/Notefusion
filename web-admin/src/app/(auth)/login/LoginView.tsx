@@ -6,6 +6,7 @@ import {
   BarChart3,
   Eye,
   EyeOff,
+  KeyRound,
   Loader2,
   Lock,
   Mail,
@@ -13,7 +14,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 
 import { ApiError } from "@/api/client";
@@ -24,6 +25,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth";
 import { isAdmin } from "@/lib/session";
+import {
+  conditionalMediationAvailable,
+  isPasskeyCancel,
+  passkeyErrorMessage,
+  passkeysSupported,
+} from "@/lib/webauthn";
+
+/** How many times the autofill offer is renewed after it lapses (a timeout, an expired challenge). */
+const CONDITIONAL_RENEWALS = 5;
 
 /**
  * The console's sign-in, laid out for a desktop browser.
@@ -54,7 +64,7 @@ const POINTS = [
 ] as const;
 
 export function LoginView() {
-  const { user, signIn } = useAuth();
+  const { user, signIn, signInWithPasskey } = useAuth();
   const router = useRouter();
   const params = useSearchParams();
 
@@ -64,6 +74,78 @@ export function LoginView() {
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  // Read after mount: there is no `PublicKeyCredential` in the server render.
+  const [canUsePasskey, setCanUsePasskey] = useState(false);
+  const [passkeyPending, setPasskeyPending] = useState(false);
+
+  /*
+   * Passkeys in the email field's autofill (conditional mediation): a `navigator.credentials.get`
+   * left pending for as long as the page is open, answered when the admin picks a passkey from the
+   * field's suggestions. The button below withdraws it (one request at a time) and asks outright.
+   */
+  const rememberRef = useRef(remember);
+  useEffect(() => {
+    rememberRef.current = remember;
+  }, [remember]);
+  const conditional = useRef<AbortController | null>(null);
+  const renewals = useRef(0);
+  const renewal = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const offerInAutofill = useCallback(async () => {
+    conditional.current?.abort();
+    if (!(await conditionalMediationAvailable())) return;
+
+    const controller = new AbortController();
+    conditional.current = controller;
+    try {
+      await signInWithPasskey({
+        conditional: true,
+        signal: controller.signal,
+        remember: () => rememberRef.current,
+      });
+    } catch (cause) {
+      if (controller.signal.aborted || isPasskeyCancel(cause)) return;
+      // Only what happens after the admin picked a passkey is theirs to read: a refusal from the
+      // server (not an admin passkey, an unknown one). Fetching the offer failing, or the offer
+      // lapsing in the browser, happened without them doing anything, so it stays quiet.
+      const afterChoice =
+        cause instanceof ApiError
+          ? cause.code.startsWith("PASSKEY_") || cause.code.startsWith("AUTH_")
+          : !(cause instanceof DOMException) && !(cause instanceof TypeError);
+      if (afterChoice) setError(passkeyErrorMessage(cause, "sign-in"));
+      // Renewed after a refusal or a lapse in the browser, so the autofill keeps offering passkeys;
+      // not after the API was unreachable or busy, where asking again only adds to the load. The
+      // button still works either way.
+      const lapsed = cause instanceof DOMException;
+      if ((afterChoice || lapsed) && renewals.current++ < CONDITIONAL_RENEWALS) {
+        renewal.current = setTimeout(() => void offerInAutofill(), afterChoice ? 0 : 1000);
+      }
+    }
+  }, [signInWithPasskey]);
+
+  useEffect(() => {
+    setCanUsePasskey(passkeysSupported());
+    void offerInAutofill();
+    return () => {
+      conditional.current?.abort();
+      clearTimeout(renewal.current);
+    };
+  }, [offerInAutofill]);
+
+  async function onPasskey() {
+    conditional.current?.abort();
+    clearTimeout(renewal.current);
+    setError(null);
+    setPasskeyPending(true);
+    try {
+      await signInWithPasskey({ remember });
+      // As with the password: the effect above navigates away, so the button stays busy.
+    } catch (cause) {
+      if (!isPasskeyCancel(cause)) setError(passkeyErrorMessage(cause, "sign-in"));
+      setPasskeyPending(false);
+      void offerInAutofill();
+    }
+  }
 
   /*
    * Where the guard sent them from, if anywhere. It arrives in the query string because a client
@@ -85,6 +167,7 @@ export function LoginView() {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (passkeyPending) return;
     setError(null);
     setPending(true);
     try {
@@ -173,7 +256,8 @@ export function LoginView() {
                   <Input
                     id="email"
                     type="email"
-                    autoComplete="username"
+                    // "webauthn" lets the browser list passkeys in this field's suggestions.
+                    autoComplete="username webauthn"
                     required
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
@@ -246,7 +330,7 @@ export function LoginView() {
 
             <Button
               type="submit"
-              disabled={pending || !canSubmit}
+              disabled={pending || passkeyPending || !canSubmit}
               className="mt-6 h-11 w-full text-[13.5px] font-semibold"
             >
               {pending && <Loader2 className="animate-spin" aria-hidden="true" />}
@@ -254,6 +338,30 @@ export function LoginView() {
               {!pending && <ArrowRight aria-hidden="true" />}
             </Button>
           </form>
+
+          {canUsePasskey && (
+            <>
+              <div className="my-5 flex items-center gap-3" aria-hidden="true">
+                <span className="h-px flex-1 bg-border" />
+                <span className="text-[11px] uppercase tracking-[0.08em] text-faint">or</span>
+                <span className="h-px flex-1 bg-border" />
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => void onPasskey()}
+                disabled={pending || passkeyPending}
+                className="h-11 w-full text-[13.5px] font-medium"
+              >
+                {passkeyPending ? (
+                  <Loader2 className="animate-spin" aria-hidden="true" />
+                ) : (
+                  <KeyRound aria-hidden="true" className="text-brand" />
+                )}
+                {passkeyPending ? "Waiting for your passkey" : "Sign in with a passkey"}
+              </Button>
+            </>
+          )}
 
           <p className="mt-8 text-[11px] leading-relaxed text-faint">
             Internal analytics. Admin accounts only — access is enforced by the server on every

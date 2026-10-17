@@ -60,7 +60,7 @@ const PRIMARY_NAV = [
   { to: "/activity", label: "Activity", icon: Activity },
   { to: "/feedback", label: "Feedback", icon: MessageSquareHeart },
   { to: "/health", label: "System Health", icon: HeartPulse },
-  { to: "/audit-log", label: "Settings", icon: Settings },
+  { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
 const SECONDARY_NAV = [

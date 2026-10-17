@@ -13,6 +13,9 @@ public interface IApplicationDbContext
     DbSet<User> Users { get; }
     DbSet<RefreshToken> RefreshTokens { get; }
     DbSet<DeviceToken> DeviceTokens { get; }
+
+    /// <summary>Browsers subscribed to web push (the web app's notifications when its tab is closed).</summary>
+    DbSet<WebPushSubscription> WebPushSubscriptions { get; }
     DbSet<Transcription> Transcriptions { get; }
 
     /// <summary>
@@ -86,6 +89,9 @@ public interface IApplicationDbContext
 
     /// <summary>Requests to rebuild the website after a blog change, and the dispatch that covered them.</summary>
     DbSet<BlogSiteRebuild> BlogSiteRebuilds { get; }
+
+    /// <summary>WebAuthn credentials (passkeys) admins sign in to the console with.</summary>
+    DbSet<Passkey> Passkeys { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
