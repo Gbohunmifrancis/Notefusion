@@ -33,7 +33,20 @@ public class DeviceToken : BaseEntity
     /// </summary>
     public int NotifiedBuild { get; private set; }
 
-    public static DeviceToken Create(Guid userId, string token, string platform, int appBuild, DateTime utcNow)
+    /// <summary>
+    /// Whether the app code this device last registered with takes its practice reminders from the server. Only
+    /// these devices are sent them: older code schedules reminders of its own on the phone, and would show both.
+    /// </summary>
+    /// <remarks>
+    /// Not derivable from <see cref="AppBuild"/>: that is the native build, and the code that understands server
+    /// reminders reaches phones as an over-the-air update, which leaves the native build number as it was. So the
+    /// code says so itself when it registers (<c>serverReminders: true</c>), and a device still on older code
+    /// re-registering (which does not send it) turns it back off.
+    /// </remarks>
+    public bool ServerReminders { get; private set; }
+
+    public static DeviceToken Create(
+        Guid userId, string token, string platform, int appBuild, DateTime utcNow, bool serverReminders = false)
         => new()
         {
             Id = Guid.NewGuid(),
@@ -41,6 +54,7 @@ public class DeviceToken : BaseEntity
             Token = Guard.NotNullOrWhiteSpace(token),
             Platform = Guard.NotNullOrWhiteSpace(platform),
             AppBuild = appBuild,
+            ServerReminders = serverReminders,
             CreatedAt = utcNow,
             UpdatedAt = utcNow
         };
@@ -55,9 +69,10 @@ public class DeviceToken : BaseEntity
     /// it only has to stop the notice for a given release repeating, and the next release moves past
     /// it regardless.
     /// </remarks>
-    public void ReportBuild(int appBuild, DateTime utcNow)
+    public void ReportBuild(int appBuild, DateTime utcNow, bool serverReminders = false)
     {
         AppBuild = appBuild;
+        ServerReminders = serverReminders;
         UpdatedAt = utcNow;
     }
 

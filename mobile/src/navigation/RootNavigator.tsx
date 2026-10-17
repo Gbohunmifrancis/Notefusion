@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../lib/auth';
 import { useTheme } from '../lib/theme';
 import { useAppUpdatePrompt } from '../lib/appUpdate';
-import { useReminderWindow } from '../lib/practiceReminder';
+import { useReminderSync } from '../lib/practiceReminder';
 import { navigationRef, useNotificationDeepLink } from '../lib/notificationLink';
 import { useListenDeepLink } from '../lib/listenLink';
 import { useChoirDeepLink } from '../lib/choirLink';
@@ -83,9 +83,10 @@ export function RootNavigator() {
   // is why it is gated at all — hooks run above the early return below.)
   useAppUpdatePrompt(!initializing && !themeLoading);
 
-  // Re-tops the 14-day reminder window whenever the app comes forward. Local scheduling has no
-  // server to keep it filled, so this is the only thing that stops the window running out.
-  useReminderWindow(Boolean(user));
+  // Practice reminders are the server's pushes: whenever the app comes forward this reads the account's
+  // choice, cancels any reminder the phone scheduled itself, and tells the server this phone takes them
+  // (lib/practiceReminder; the on-device schedule is only the fallback when the server was never reached).
+  useReminderSync(Boolean(user));
 
   // Record now, send later: recordings that could not be sent go out when the API can be reached.
   useOutboxRunner(Boolean(user));

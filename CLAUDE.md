@@ -244,6 +244,18 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (free daily drill `POST /api/practice/drills/grade`, 5/day, Pro 20; Pro `…/transcriptions/grade`) is a server-written
   `PracticeSession` on the singer's day (`X-Time-Zone`, else Lagos); XP, levels, streaks (1 freeze/ISO week), badges are
   read off those rows, never client-reported. Drills: `DrillCatalogue`, labelled by the solfa engine; mobile `PracticeScreen`.
+- Practice reminders are server pushes to phones only (`Application/Practice/Reminders`, `PracticeReminderWorker` every
+  10 min, `PracticeReminders__Enabled`): never web push. The singer's clock is `users.TimeZone` (written by
+  `ClientTimeZoneMiddleware` when `X-Time-Zone` changes; null = Lagos). `PracticeReminderRules`: at their hour (8–21, default
+  19) on an unpractised day while a streak lives (the freeze day says so), a 21:30 "last chance" for a streak ≥3 the day
+  would end (≥90 min after the first), then 1/2/3/5/7/14/30 days after a lapse and one "we'll stop reminding you" at 45;
+  ≤2 a local day, never 22:00–08:00; a marked take resets it. On by default once practised or a track is chosen
+  (`GET`/`PUT /api/practice/reminders`: enabled, hour, sound). Claim row first (`PracticeReminder`, unique user+local
+  date+slot), one retry; `GET /api/admin/practice-reminders`. Words: `PracticeReminderCopy` (Doh's voice; Focused plain;
+  title ≤50, body ≤120, tested). Sent only to `DeviceToken.ServerReminders` devices (the OTA code says so on register — the
+  native `AppBuild` cannot), on the `reminders` channel with iOS "default" sound, or `reminders-quiet` when the app's sound
+  is off. Mobile `lib/practiceReminder` reads/writes it, cancels its old local schedule (kept only as the fallback when
+  the server has never answered on that install) and hands the server the old local switch/time once (a "no" stays no).
   Web: the `/app` Practice view (`?view=practice`, a nav entry and the home streak/XP chip) mirrors it — `assets/practice-view.js`
   + `.css` and the pure `practice-progress.js` / `practice-track.js` (mobile `lib/practiceProgress.ts`/`take.ts`/`practiceTrack.ts`,
   tracks included), loaded only when opened; the web app sends `X-Time-Zone` on every API call.

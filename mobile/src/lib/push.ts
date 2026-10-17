@@ -30,6 +30,13 @@ const ASKED_KEY = '@notefusion_push_asked';
 /** Android channel for the daily practice nudge. See {@link ensureRemindersChannel}. */
 export const REMINDER_CHANNEL_ID = 'reminders';
 
+/**
+ * The same reminders without a sound, for someone who switched notification sounds off: the server sends on
+ * this one then (C# `PracticeReminderService.AndroidQuietChannel`), because on Android the channel, not the
+ * message, decides whether a notification makes a noise.
+ */
+export const REMINDER_QUIET_CHANNEL_ID = 'reminders-quiet';
+
 /** Both default to on, matching the switches' initial state. */
 let pushOn = true;
 let soundOn = true;
@@ -267,12 +274,20 @@ export async function registerForPushAsync(
 }
 
 /**
- * The channel practice reminders arrive on, separate from `default`/"Transcriptions".
+ * The channels practice reminders arrive on, separate from `default`/"Transcriptions".
  *
  * Android surfaces channels individually in system settings, so this is what lets someone mute
  * a daily nudge without also muting "your transcription is ready" — which they asked for and
- * are waiting on. Exported because the reminder scheduler runs without any push registration:
- * a local notification needs no token, so it cannot rely on `registerForPushAsync` having run.
+ * are waiting on. Called from `registerForPushAsync` (the server's reminder pushes name these
+ * channels) and by the local fallback scheduler, which needs no push registration.
+ *
+ * ── Sound ────────────────────────────────────────────────────────────────────
+ * `reminders` makes a noise: DEFAULT importance is Android's "makes sound, no heads-up", and with
+ * no `sound` key expo-notifications gives the channel the system's default notification sound
+ * (`Settings.System.DEFAULT_NOTIFICATION_URI`). Passing `sound: 'default'` would instead be looked
+ * up as a bundled raw resource and log an error. `reminders-quiet` is the same with `sound: null`.
+ * A channel's sound and importance are fixed once created (only the user can change them after),
+ * which is why "silent" is a second channel rather than a change to the first.
  */
 export async function ensureRemindersChannel(): Promise<void> {
   if (isExpoGo || Platform.OS !== 'android') return;
@@ -283,8 +298,15 @@ export async function ensureRemindersChannel(): Promise<void> {
       importance: Notifications.AndroidImportance.DEFAULT,
       lightColor: colors.accent,
     });
+    await Notifications.setNotificationChannelAsync(REMINDER_QUIET_CHANNEL_ID, {
+      name: 'Practice reminders (silent)',
+      importance: Notifications.AndroidImportance.DEFAULT,
+      sound: null,
+      enableVibrate: false,
+      lightColor: colors.accent,
+    });
   } catch {
-    // No notifications module, or the OS refused. The reminder still schedules; on a device
+    // No notifications module, or the OS refused. The reminder still arrives; on a device
     // without the channel Android files it under the app's default one.
   }
 }

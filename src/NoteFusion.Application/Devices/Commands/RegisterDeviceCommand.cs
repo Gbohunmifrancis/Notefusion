@@ -13,7 +13,12 @@ namespace NoteFusion.Application.Devices.Commands;
 /// learns which devices are behind a store release — and therefore who the update notice is for.
 /// Zero from an older client, which reads as "behind".
 /// </param>
-public sealed record RegisterDeviceCommand(string Token, string Platform, int AppBuild = 0) : IRequest<Result>;
+/// <param name="ServerReminders">
+/// True from app code that takes its practice reminders from the server and no longer schedules its own on the
+/// phone; only such devices are sent them (<see cref="DeviceToken.ServerReminders"/>). Absent (false) from older code.
+/// </param>
+public sealed record RegisterDeviceCommand(string Token, string Platform, int AppBuild = 0, bool ServerReminders = false)
+    : IRequest<Result>;
 
 public sealed class RegisterDeviceCommandValidator : AbstractValidator<RegisterDeviceCommand>
 {
@@ -60,7 +65,7 @@ public sealed class RegisterDeviceCommandHandler : IRequestHandler<RegisterDevic
             .Where(t => t.Token == request.Token && t.UserId != userId)
             .ExecuteDeleteAsync(cancellationToken);
 
-        user.RegisterDeviceToken(request.Token, request.Platform, request.AppBuild, _clock.UtcNow);
+        user.RegisterDeviceToken(request.Token, request.Platform, request.AppBuild, _clock.UtcNow, request.ServerReminders);
         await _db.SaveChangesAsync(cancellationToken);
 
         return Result.Success();

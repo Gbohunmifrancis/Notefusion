@@ -33,13 +33,17 @@ import {
 } from "../lib/push";
 import {
   loadReminderPrefs,
+  refreshReminderPrefs,
   reminderEnabled,
+  reminderHour,
   reminderTime,
   setReminderEnabled,
   setReminderTime,
+  syncReminderSound,
   REMINDER_TIMES,
   type ReminderTime,
 } from "../lib/practiceReminder";
+import { describeReminder, hourFor } from "../lib/reminderPrefs";
 import { meApi } from "../api/endpoints";
 import { setDataSaver, useDataSaver } from "../lib/dataSaver";
 import { clearAutomaticCopies, setKeepAllOffline, useOfflineLibrary } from "../lib/offlineLibrary";
@@ -95,6 +99,7 @@ export function SettingsScreen({ navigation, route }: Props) {
   const [pushBusy, setPushBusy] = useState(false);
   const [reminderOn, setReminderOn] = useState(false);
   const [reminderAt, setReminderAt] = useState<ReminderTime>(reminderTime());
+  const [reminderAtHour, setReminderAtHour] = useState(reminderHour());
 
   // ── Offline & data ─────────────────────────────────────────────────────────
   const dataSaver = useDataSaver();
@@ -163,6 +168,13 @@ export function SettingsScreen({ navigation, route }: Props) {
     setHapticsOn(haptics.hapticsEnabled());
     setReminderOn(reminderEnabled());
     setReminderAt(reminderTime());
+    setReminderAtHour(reminderHour());
+    // The reminders are the server's: the cached answer paints at once, the fresh one replaces it.
+    if (await refreshReminderPrefs()) {
+      setReminderOn(reminderEnabled());
+      setReminderAt(reminderTime());
+      setReminderAtHour(reminderHour());
+    }
   }, []);
 
   useEffect(() => {
@@ -198,6 +210,8 @@ export function SettingsScreen({ navigation, route }: Props) {
   async function toggleSound(on: boolean) {
     setSoundOn(on);
     await setSoundEnabled(on);
+    // Practice reminders are pushed by the server, so it is told too: off sends them silently.
+    void syncReminderSound(on);
   }
 
   async function toggleHaptics(on: boolean) {
@@ -209,17 +223,33 @@ export function SettingsScreen({ navigation, route }: Props) {
     if (on) haptics.play("medium");
   }
 
+  /** The server keeps the reminders, so a choice it did not take is put back and said plainly. */
+  function reminderNotSaved() {
+    showDialog({
+      title: "Couldn't save that",
+      message: "Check your connection and try again.",
+      icon: "cloud-offline-outline",
+    });
+  }
+
   async function toggleReminder(on: boolean) {
     setReminderOn(on);
-    // Schedules or clears the whole 14-day window. Awaited so a fast second tap
-    // cannot interleave two re-arms over the same identifiers.
-    await setReminderEnabled(on);
+    if (!(await setReminderEnabled(on))) {
+      setReminderOn(!on);
+      reminderNotSaved();
+    }
   }
 
   async function pickReminderTime(next: ReminderTime) {
+    const before = { at: reminderAt, hour: reminderAtHour };
     setReminderAt(next);
-    await setReminderTime(next);
+    setReminderAtHour(hourFor(next));
     haptics.play("light");
+    if (!(await setReminderTime(next))) {
+      setReminderAt(before.at);
+      setReminderAtHour(before.hour);
+      reminderNotSaved();
+    }
   }
 
   /** Push state, as one thing the row can render. */
@@ -569,15 +599,15 @@ export function SettingsScreen({ navigation, route }: Props) {
 
             <View style={styles.switchText}>
               <Text style={styles.rowLabel}>Daily practice reminder</Text>
-              <Text style={styles.rowHint}>{describeReminder(reminderOn, reminderAt, pushOn)}</Text>
+              <Text style={styles.rowHint}>{describeReminder(reminderOn, reminderAtHour, pushOn)}</Text>
             </View>
 
             <Switch
               value={reminderOn}
               onValueChange={toggleReminder}
-              // Same gate as the sounds row: a local notification needs the very
-              // permission the push switch owns, so nudging someone who turned
-              // notifications off would be scheduling into a void.
+              // Same gate as the sounds row: reminders are pushes, and turning
+              // notifications off unregisters this phone, so there would be
+              // nowhere to send them.
               disabled={!pushOn}
               trackColor={{ false: colors.border, true: colors.accentGlow }}
               thumbColor={reminderOn ? colors.accent : colors.surface}
@@ -787,18 +817,6 @@ function describePush(
     actionable: false,
     warn: false,
   };
-}
-
-/**
- * The reminder row's hint. Mirrors {@link describePush}: the row says which of the three
- * reasons it is off, because "off because notifications are off" cannot be fixed here and
- * "off because you turned it off" can.
- */
-function describeReminder(on: boolean, at: ReminderTime, pushOn: boolean): string {
-  if (!pushOn) return "Needs push notifications turned on.";
-  if (!on) return "Off — nothing will nudge you to practise.";
-  const slot = REMINDER_TIMES.find((t) => t.key === at);
-  return `Every day around ${slot?.hour ?? 19}:00, unless you've already practised.`;
 }
 
 // ─── Styles ──────────────────────────────────────────────────────────────────

@@ -14,6 +14,7 @@ using NoteFusion.Infrastructure.Http;
 using NoteFusion.Infrastructure.Media;
 using NoteFusion.Infrastructure.Outreach;
 using NoteFusion.Infrastructure.Persistence;
+using NoteFusion.Infrastructure.Practice;
 using NoteFusion.Infrastructure.Push;
 using NoteFusion.Infrastructure.Push.Workers;
 using NoteFusion.Infrastructure.Security;
@@ -43,6 +44,7 @@ public static class DependencyInjection
         services.AddBilling(configuration);
         services.AddGeo(configuration);
         services.AddOutreach(configuration);
+        services.AddPracticeReminders(configuration);
         services.AddBlog(configuration);
 
         // The backups run in their own container (ops/backup); the API reads what they record, shows it on

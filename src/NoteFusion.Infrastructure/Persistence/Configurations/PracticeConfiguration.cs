@@ -41,3 +41,33 @@ public sealed class AchievementConfiguration : IEntityTypeConfiguration<Achievem
         builder.HasOne<User>().WithMany().HasForeignKey(a => a.UserId).OnDelete(DeleteBehavior.Cascade);
     }
 }
+
+/// <summary>
+/// Maps <see cref="PracticeReminder"/>. The unique (user, local date, slot) index is the claim that keeps a day to
+/// at most two reminders even when two sweeps overlap: the second insert fails. Gone with the account.
+/// </summary>
+public sealed class PracticeReminderConfiguration : IEntityTypeConfiguration<PracticeReminder>
+{
+    public void Configure(EntityTypeBuilder<PracticeReminder> builder)
+    {
+        builder.ToTable("practice_reminders");
+        builder.HasKey(r => r.Id);
+        builder.Property(r => r.Id).ValueGeneratedNever();
+
+        builder.Property(r => r.LocalDate).IsRequired();
+        builder.Property(r => r.Slot).HasConversion<string>().HasMaxLength(16).IsRequired();
+        builder.Property(r => r.Kind).HasConversion<string>().HasMaxLength(24).IsRequired();
+        builder.Property(r => r.Status).HasConversion<string>().HasMaxLength(16).IsRequired();
+        builder.Property(r => r.Title).HasMaxLength(PracticeReminder.TitleMaxLength).IsRequired();
+        builder.Property(r => r.Body).HasMaxLength(PracticeReminder.BodyMaxLength).IsRequired();
+        builder.Property(r => r.Error).HasMaxLength(PracticeReminder.ErrorMaxLength);
+        builder.Property(r => r.CreatedAtUtc).IsRequired();
+
+        builder.HasOne<User>().WithMany().HasForeignKey(r => r.UserId).OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(r => new { r.UserId, r.LocalDate, r.Slot }).IsUnique();
+        // The sweep reads the last two days' claims, the retry pass the recent failures, the console newest first.
+        builder.HasIndex(r => r.LocalDate);
+        builder.HasIndex(r => r.CreatedAtUtc);
+    }
+}

@@ -25,4 +25,18 @@ public sealed class LoggingPushSender : IPushSender
 
         return Task.CompletedTask;
     }
+
+    public Task<PushDelivery> SendToDevicesAsync(
+        IReadOnlyList<string> tokens, PushMessage message, CancellationToken ct = default)
+    {
+        _logger.LogInformation(
+            "Push notification (dev, not delivered): {Title} — {Body} → {Count} device(s), channel {Channel}, sound {Sound}",
+            message.Title,
+            message.Body,
+            tokens.Count,
+            message.ChannelId ?? "default",
+            message.Sound ?? "none");
+
+        return Task.FromResult(PushDelivery.Ok(tokens.Count));
+    }
 }

@@ -90,3 +90,11 @@ public sealed record DrillDto(
     DateOnly Date,
     DrillAllowanceDto Allowance,
     PracticeTrack? Track);
+
+/// <summary>
+/// GET/PUT /api/practice/reminders: the account's practice reminders, sent to its phones. <c>Enabled</c> is the
+/// switch as it stands (on by default once the singer has practised or chosen a track); <c>Hour</c> the local hour of
+/// the day's reminder (8–21, 19 by default); <c>Sound</c> the phone app's notification sound switch, synced (off sends
+/// them silently).
+/// </summary>
+public sealed record PracticeRemindersDto(bool Enabled, int Hour, bool Sound);

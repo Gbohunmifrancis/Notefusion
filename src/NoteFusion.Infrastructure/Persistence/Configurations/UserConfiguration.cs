@@ -33,6 +33,8 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Role).HasConversion<string>().HasMaxLength(20).IsRequired();
         // "Playful" / "Focused" by name; null until the singer picks one.
         builder.Property(u => u.PracticeTrack).HasConversion<string>().HasMaxLength(10);
+        // The client's X-Time-Zone (IANA name or offset), as PracticeTime.Known accepts it; null reads as Lagos.
+        builder.Property(u => u.TimeZone).HasMaxLength(64);
         builder.Property(u => u.CreatedAt).IsRequired();
 
         // SHA-256 hex — 64 characters, always. Nullable because most rows have no code outstanding:

@@ -287,6 +287,8 @@ app.UseAuthorization();
 
 // After authorization, so it sees who is signed in; it stamps last-seen once the response is done.
 app.UseMiddleware<LastSeenMiddleware>();
+// Likewise: the account's time zone, written when the client's X-Time-Zone changes (the practice reminders read it).
+app.UseMiddleware<ClientTimeZoneMiddleware>();
 
 app.MapControllers();
 app.MapHub<NoteFusion.Api.Hubs.TranscriptionHub>("/hubs/transcription");

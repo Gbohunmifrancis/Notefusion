@@ -29,6 +29,7 @@ import type {
   PaymentOpsSummary,
   Plan,
   PracticeProgress,
+  PracticeReminders,
   PracticeTrack,
   RegistrationResponse,
   SavedTranscription,
@@ -174,9 +175,13 @@ export const devicesApi = {
    * Registers this handset's push token, and tells the server which build it is running so
    * the update notice only goes to someone genuinely behind. `appBuild` 0 means unknown,
    * which the server reads as "behind" — the right guess for a client too old to report.
+   *
+   * `serverReminders: true` tells the server this code takes its practice reminders by push and no longer
+   * schedules its own (`lib/practiceReminder`). The native build cannot say that — the change ships over the
+   * air and leaves `appBuild` as it was — so a phone still on older code (which leaves it out) is skipped.
    */
   register: (token: string, platform: "ios" | "android" | "web", appBuild = 0) =>
-    api.post("/api/devices", { token, platform, appBuild }).then(() => undefined),
+    api.post("/api/devices", { token, platform, appBuild, serverReminders: true }).then(() => undefined),
   unregister: (token: string) =>
     api.delete("/api/devices", { data: { token } }).then(() => undefined),
 };
@@ -369,6 +374,13 @@ export const practiceApi = {
 
   /** Sets how the singer likes to practise; answers with the progress. Today's drill becomes the track's own. */
   setTrack: (track: PracticeTrack) => api.put<PracticeProgress>("/api/practice/track", { track }).then((r) => r.data),
+
+  /** The account's practice reminders: on/off, the local hour, and whether they sound. */
+  reminders: () => api.get<PracticeReminders>("/api/practice/reminders").then((r) => r.data),
+
+  /** Changes what is given (hour 8–21) and answers with the reminders as they now stand. */
+  setReminders: (change: Partial<PracticeReminders>) =>
+    api.put<PracticeReminders>("/api/practice/reminders", change).then((r) => r.data),
 };
 
 export const libraryApi = {

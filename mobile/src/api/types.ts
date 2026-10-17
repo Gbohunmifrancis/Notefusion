@@ -397,6 +397,18 @@ export interface Drill {
   track: PracticeTrack | null;
 }
 
+/**
+ * GET/PUT /api/practice/reminders (C# `PracticeRemindersDto`): the account's practice reminders, pushed to its
+ * phones by the server. On by default once the singer has practised or chosen a track.
+ */
+export interface PracticeReminders {
+  enabled: boolean;
+  /** The local hour of the day's reminder, 8–21 (19 by default). */
+  hour: number;
+  /** The app's notification sound switch, synced: off sends the reminders silently. */
+  sound: boolean;
+}
+
 /** A public link to a saved sheet. */
 export interface ShareLink {
   token: string;

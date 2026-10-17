@@ -315,6 +315,19 @@ public sealed class RecordingPushSender : IPushSender
         Sent.Add((recipientUserIds, message));
         return Task.CompletedTask;
     }
+
+    /// <summary>Sends to named devices (the practice reminders), with what each was told.</summary>
+    public List<(IReadOnlyList<string> Tokens, PushMessage Message)> DeviceSends { get; } = [];
+
+    /// <summary>When set, device sends report this: a failure, or a breaker's refusal (<see cref="PushDelivery.Unavailable"/>).</summary>
+    public PushDelivery? DeviceOutcome { get; set; }
+
+    public Task<PushDelivery> SendToDevicesAsync(
+        IReadOnlyList<string> tokens, PushMessage message, CancellationToken ct = default)
+    {
+        DeviceSends.Add((tokens, message));
+        return Task.FromResult(DeviceOutcome ?? PushDelivery.Ok(tokens.Count));
+    }
 }
 
 /// <summary>
