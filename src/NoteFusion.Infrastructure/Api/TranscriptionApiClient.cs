@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Hymns.Dtos;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Enums;
 using NoteFusion.Infrastructure.Http;
@@ -155,6 +156,67 @@ internal sealed class TranscriptionApiClient(
         catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, cancellationToken))
         {
             return Unreachable("Api.Grade", ex);
+        }
+    }
+
+    /// <summary>
+    /// Well past the worker's own bound (a look-up waits at most a few seconds for a slot, then decodes for
+    /// about one), and far short of the 100 seconds a transcription upload may take: a visitor holding a
+    /// "listening…" page should hear back within half a minute either way.
+    /// </summary>
+    internal static readonly TimeSpan IdentifyTimeout = TimeSpan.FromSeconds(30);
+
+    public async Task<Result<HymnIdentificationDto>> IdentifyHymnAsync(
+        Stream audio,
+        string fileName,
+        CancellationToken cancellationToken = default)
+    {
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(IdentifyTimeout);
+        try
+        {
+            using var form = new MultipartFormDataContent();
+            var audioContent = new StreamContent(audio);
+            var safeName = string.IsNullOrWhiteSpace(fileName) || !Path.HasExtension(fileName) ? "hum.webm" : Path.GetFileName(fileName);
+            audioContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            form.Add(audioContent, "audio", safeName);
+
+            using var response = await http.PostAsync("v1/identify", form, timeout.Token);
+            if (!response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync(timeout.Token);
+                logger.LogWarning(
+                    "Hymn identify returned {Status}: {Body}", (int)response.StatusCode, body.Length > 500 ? body[..500] : body);
+                return (int)response.StatusCode switch
+                {
+                    413 => HymnErrors.TooLarge,
+                    415 or 422 => HymnErrors.UnreadableAudio,
+                    503 or 429 => HymnErrors.Busy,
+                    _ => HymnErrors.Unavailable,
+                };
+            }
+            var payload = await response.Content.ReadFromJsonAsync(ApiJsonContext.Default.IdentifyResponse, timeout.Token);
+            if (payload is null)
+                return HymnErrors.Unavailable;
+            var match = payload.Match is { } m
+                ? new IdentifiedHymnDto(m.Slug, m.Title, m.Tune ?? "", m.Url, m.Kind, m.Confidence, m.FirstLine)
+                : null;
+            return new HymnIdentificationDto(match, payload.NotesHeard, payload.TooShort, payload.SecondsHeard);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogWarning(ex, "Hymn identify: the worker could not be reached.");
+            return HymnErrors.Unavailable;
+        }
+        catch (JsonException ex)
+        {
+            logger.LogWarning(ex, "Hymn identify: the worker's answer could not be read.");
+            return HymnErrors.Unavailable;
+        }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, cancellationToken))
+        {
+            logger.LogWarning(ex, "Hymn identify: the worker did not answer in time.");
+            return HymnErrors.Unavailable;
         }
     }
 

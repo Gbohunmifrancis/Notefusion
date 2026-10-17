@@ -1,3 +1,4 @@
+using NoteFusion.Application.Hymns.Dtos;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Shared.Results;
 
@@ -46,6 +47,15 @@ public interface ITranscriptionApi
         Stream audio,
         string fileName,
         GradeTargetDto target,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// POST /v1/identify — names the hymn a hummed clip is, or none (and whether the clip was too short to
+    /// tell). Synchronous; about a second for a 15-second hum. Failures are <see cref="Errors.HymnErrors"/>.
+    /// </summary>
+    Task<Result<HymnIdentificationDto>> IdentifyHymnAsync(
+        Stream audio,
+        string fileName,
         CancellationToken cancellationToken = default);
 
     /// <summary>

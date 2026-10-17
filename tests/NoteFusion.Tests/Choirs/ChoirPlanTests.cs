@@ -692,6 +692,8 @@ public class ChoirPlanTests
         public Task<Result<SourceDto>> ResolveLinkAsync(string url, CancellationToken ct = default)
             => Task.FromResult(Result<SourceDto>.Success(new SourceDto("youtube", url, "Way Maker", "Sinach", null)));
 
+        public Task<Result<NoteFusion.Application.Hymns.Dtos.HymnIdentificationDto>> IdentifyHymnAsync(Stream audio, string fileName, CancellationToken ct = default) => throw new NotSupportedException();
+
         public Task<Result<GradeResultDto>> GradeAsync(Stream audio, string fileName, GradeTargetDto target, CancellationToken ct = default)
             => throw new NotSupportedException();
 

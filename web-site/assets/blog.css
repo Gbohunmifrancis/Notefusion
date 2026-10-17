@@ -332,6 +332,11 @@
 .blog-page .az a:hover { border-color: var(--accent); color: var(--accent); }
 .blog-page .hymn-letter { scroll-margin-top: 90px; }
 .blog-page .hymn-letter > h2 { margin: 30px 0 0; padding-bottom: 6px; border-bottom: 2px solid var(--ink); font-family: var(--serif); font-size: 30px; font-weight: 650; color: var(--ink); }
+/* The hymn index's pointer to the hymn finder (/hymns/identify). */
+.blog-page .identify-callout { margin: 0; font-family: var(--sans); font-size: 15.5px; }
+.blog-page .identify-callout a { display: inline-flex; flex-wrap: wrap; gap: 0 6px; padding: 10px 14px; border: 1px solid var(--callout-line); border-radius: 6px; background: var(--callout); color: var(--ink); text-decoration: none; }
+.blog-page .identify-callout a:hover { border-color: var(--accent); color: var(--accent); }
+.blog-page .identify-callout strong { color: var(--accent); font-weight: 650; }
 .blog-page .hymn-none { margin: 24px 0; font-family: var(--sans); color: var(--muted); }
 .blog-page .hymn-index + .hymn-none + .note + .cta-box { max-width: var(--measure); }
 /* A hymn's credit line, under its facts; the source note under its credits; the credits page's table. */

@@ -57,6 +57,10 @@ public static class AuthRateLimiting
         var settings = configured.Enabled ? configured : configured.Disabled();
         services.AddSingleton(settings);
 
+        // "Hum to find a hymn" counts per address AND per device, by the minute and by the day: four buckets
+        // where a policy has one, so it is a filter of its own (HymnIdentifyRateLimiting.cs).
+        services.AddSingleton<HymnIdentifyLimiter>();
+
         services.AddRateLimiter(options =>
         {
             options.AddPolicy(Credentials, context => SlidingWindow(
@@ -77,36 +81,37 @@ public static class AuthRateLimiting
             options.AddPolicy(BlogReads, context => SlidingWindow(
                 context, settings, settings.BlogReadsPermits, settings.BlogReadsWindowSeconds));
 
-            options.OnRejected = async (context, cancellationToken) =>
-            {
-                context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-
-                // The window, not the time to the next free permit — the limiter does not expose the
-                // latter. Erring long is the right direction: a client that waits the whole window is
-                // certain to be let through, and one that retries early gets another 429, not a lockout.
-                var seconds = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter)
-                    ? (int)Math.Ceiling(retryAfter.TotalSeconds)
-                    : 60;
-
-                context.HttpContext.Response.Headers.RetryAfter =
-                    seconds.ToString(CultureInfo.InvariantCulture);
-
-                // Same envelope as every other failure this API returns, so a client that already knows
-                // how to read an error does not need a second code path for this one. Wording is
-                // deliberately incurious about which limit was hit: naming the policy would tell an
-                // attacker which of the policies they tripped.
-                await context.HttpContext.Response.WriteAsJsonAsync(
-                    new ApiError(
-                        "RATE_LIMITED",
-                        $"Too many attempts from this device. Try again in {Describe(seconds)}."),
-                    cancellationToken);
-            };
+            options.OnRejected = (context, cancellationToken) => new ValueTask(WriteRejectedAsync(
+                context.HttpContext, context.Lease, seconds => $"Too many attempts from this device. Try again in {Describe(seconds)}.",
+                cancellationToken));
         });
 
         return services;
     }
 
-    private static RateLimitPartition<string> SlidingWindow(
+    /// <summary>The 429 every limit here answers with: a <c>Retry-After</c> and the usual error envelope.</summary>
+    internal static async Task WriteRejectedAsync(
+        HttpContext context, RateLimitLease lease, Func<int, string> message, CancellationToken cancellationToken)
+    {
+        context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+
+        // The window, not the time to the next free permit — the limiter does not expose the
+        // latter. Erring long is the right direction: a client that waits the whole window is
+        // certain to be let through, and one that retries early gets another 429, not a lockout.
+        var seconds = lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter)
+            ? Math.Max(1, (int)Math.Ceiling(retryAfter.TotalSeconds))
+            : 60;
+
+        context.Response.Headers.RetryAfter = seconds.ToString(CultureInfo.InvariantCulture);
+
+        // Same envelope as every other failure this API returns, so a client that already knows
+        // how to read an error does not need a second code path for this one. Wording is
+        // deliberately incurious about which limit was hit: naming the policy would tell an
+        // attacker which of the policies they tripped.
+        await context.Response.WriteAsJsonAsync(new ApiError("RATE_LIMITED", message(seconds)), cancellationToken);
+    }
+
+    internal static RateLimitPartition<string> SlidingWindow(
         HttpContext context, RateLimitSettings settings, int permits, int windowSeconds)
         => RateLimitPartition.GetSlidingWindowLimiter(
             PartitionKey(context, settings.TrustedProxyHops),
@@ -144,7 +149,7 @@ public static class AuthRateLimiting
     /// only genuinely absent is pooled, under a name that says so.
     /// </para>
     /// </remarks>
-    private static string PartitionKey(HttpContext context, int trustedProxyHops)
+    internal static string PartitionKey(HttpContext context, int trustedProxyHops)
     {
         if (trustedProxyHops > 0)
         {
@@ -186,7 +191,7 @@ public static class AuthRateLimiting
         return (ip.IsIPv4MappedToIPv6 ? ip.MapToIPv4() : ip).ToString();
     }
 
-    private static string Describe(int seconds)
+    internal static string Describe(int seconds)
         => seconds < 90
             ? $"{seconds} seconds"
             : $"{(int)Math.Ceiling(seconds / 60.0)} minutes";
@@ -256,6 +261,19 @@ public sealed class RateLimitSettings
 
     public int BlogReadsWindowSeconds { get; set; } = 60;
 
+    /// <summary>
+    /// "Hum to find a hymn", per address and per device alike: a few tries a minute (a visitor humming a tune
+    /// again, more slowly, is the expected use) and a day's ceiling, since every try is a second of the
+    /// worker's CPU and the page is open to anyone.
+    /// </summary>
+    public int HymnIdentifyPermits { get; set; } = 5;
+
+    public int HymnIdentifyWindowSeconds { get; set; } = 60;
+
+    public int HymnIdentifyDailyPermits { get; set; } = 20;
+
+    public int HymnIdentifyDailyWindowSeconds { get; set; } = 86_400;
+
     /// <summary>A copy with every limit effectively removed, used when <see cref="Enabled"/> is false.</summary>
     internal RateLimitSettings Disabled() => new()
     {
@@ -267,5 +285,7 @@ public sealed class RateLimitSettings
         RefreshPermits = int.MaxValue,
         WebEventsPermits = int.MaxValue,
         BlogReadsPermits = int.MaxValue,
+        HymnIdentifyPermits = int.MaxValue,
+        HymnIdentifyDailyPermits = int.MaxValue,
     };
 }

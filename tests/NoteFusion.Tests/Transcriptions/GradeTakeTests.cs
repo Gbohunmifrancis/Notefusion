@@ -74,6 +74,8 @@ public class GradeTakeTests
         public GradeTargetDto? LastTarget { get; private set; }
         public string? LastFileName { get; private set; }
 
+        public Task<Result<NoteFusion.Application.Hymns.Dtos.HymnIdentificationDto>> IdentifyHymnAsync(Stream audio, string fileName, CancellationToken ct = default) => throw new NotSupportedException();
+
         public Task<Result<GradeResultDto>> GradeAsync(Stream audio, string fileName, GradeTargetDto target, CancellationToken ct = default)
         {
             LastTarget = target;
