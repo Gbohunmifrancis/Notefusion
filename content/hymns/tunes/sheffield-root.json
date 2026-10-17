@@ -1,0 +1,32 @@
+{
+  "name": "SHEFFIELD (ROOT)",
+  "title": "Sheffield (Root)",
+  "music": [
+    {
+      "name": "George F. Root",
+      "born": 1820,
+      "died": 1895,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "7 8 9 8 + i",
+  "key": "A major",
+  "time": "6/8",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "E4:.5 E4:.5 E4:.5 F#4:1 E4:.5 | E4:.5 A4:2 A4:.5 | B4:.5 B4:.5 B4:.5 B4:.5 A4:.5 B4:.5 | C#5:2.5 E4:.5 | E4:.5 E4:.5 E4:.5 Ab4:.5 F#4:.5 E4:.5 | E4:.5 A4:2 B4:.5 | C#5:.5 D5:.5 C#5:.5 B4:.5 F#4:.5 Ab4:.5 | A4:3 | C#5:1.5 A4:1.5 | A4:1.5 F#4:1.5 | E4:1 E4:.5 Ab4:.5 F#4:.5 E4:.5 | E4:1.5 A4:1.5 | C#5:1.5 A4:1.5 | A4:1.5 F#4:1.5 | E4:1 E4:.5 Ab4:.5 F#4:.5 E4:.5 | A4:3",
+  "incipit": "ssslssd|drrrrdrm|sssstlssd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000739.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000739a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000739; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000739 (the melody read from 000739a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. George F. Root's dates (1820–1895) are from https://en.wikipedia.org/wiki/George_Frederick_Root (30 August 1820 - 6 August 1895; RING THE BELLS, 1875); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000739a.nwc).",
+  "importedFrom": "cceh:000739",
+  "updated": "2026-10-17"
+}

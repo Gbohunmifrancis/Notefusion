@@ -1,0 +1,35 @@
+{
+  "name": "BETHANY (SMART)",
+  "title": "Bethany (Smart)",
+  "alsoKnownAs": [
+    "Crucifer"
+  ],
+  "music": [
+    {
+      "name": "Henry Thomas Smart",
+      "born": 1813,
+      "died": 1879,
+      "role": "Music (1867)"
+    }
+  ],
+  "musicPublished": 1867,
+  "metre": "8 7 8 7",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "A4:1 D5:1 | C5:1 A4:1 F4:1.5 G4:.5 | F4:1 E4:1 D4:1 C4:1 | F4:1 A4:1 C5:1 Bb4:.5 A4:.5 | G4:2 A4:1 D5:1 | C5:1 A4:1 F4:1.5 G4:.5 | F4:1 E4:1 D4:1 C4:1 | F4:1 Bb4:1 A4:1 G4:1 | F4:2 G4:1 C5:1 | C5:1 B4:1 A4:1 A4:1 | A4:1 G4:1 G4:1 E5:1 | D5:1 A4:1 C5:1 B4:1 | C5:2 E5:1 C5:1 | F5:1 C5:1 Bb4:1.5 C5:.5 | Bb4:1 A4:1 D5:1 C5:1 | Bb4:1 A4:1 G4:1 G4:1 | F4:2",
+  "incipit": "mlsmdrdt|lsdmsfmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000805.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000805a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000805; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000805 (the melody read from 000805a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Henry Thomas Smart's dates (1813–1879) are from our page for the tune REX GLORIAE (content/hymns/tunes/rex-gloriae-see-the-lord-ascends-in-triumph.json); CCEH's page gives only the year 1867. The bar lines are those of CCEH's Noteworthy score (000805a.nwc).",
+  "importedFrom": "cceh:000805",
+  "updated": "2026-10-17"
+}

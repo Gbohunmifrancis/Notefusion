@@ -1,0 +1,38 @@
+{
+  "name": "VICTORY (PALESTRINA)",
+  "title": "Victory (Palestrina)",
+  "music": [
+    {
+      "name": "Giovanni P. da Palestrina",
+      "born": 1525,
+      "died": 1594,
+      "role": "Music (1591)"
+    },
+    {
+      "name": "William Henry Monk",
+      "born": 1823,
+      "died": 1889,
+      "role": "Arranged (1861)"
+    }
+  ],
+  "musicPublished": 1591,
+  "metre": "8 8 8 4",
+  "key": "D major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "A4:1 A4:1 A4:1 | B4:2 A4:1 | A4:1 G4:1 F#4:1 | A4:3 | F#4:1 F#4:1 F#4:1 | F#4:2 F#4:1 | F#4:1 E4:1 D4:1 | E4:3 | A4:1 A4:1 A4:1 | B4:2 A4:1 | A4:1 G4:1 F#4:1 | A4:3 | r:1 A4:1 D5:1 | C#5:3 | D5:3 | r:1 F#4:1 F#4:1 | G4:3 | F#4:1 A4:1 A4:1 | B4:3 | A4:1 A4:1 D5:1 | C#5:3 | D5:3",
+  "incipit": "ssslssfms|mmmmmmrdr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000748.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000748a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000748; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000748 (the melody read from 000748a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Giovanni P. da Palestrina's dates (1525–1594) are from our page for the tune VICTORY (content/hymns/tunes/victory.json); CCEH's page gives only the year 1591. William Henry Monk's dates (1823–1889) are from our page for the tune DIX (content/hymns/tunes/dix.json); CCEH's page gives only the year 1861. The bar lines are those of CCEH's Noteworthy score (000748a.nwc).",
+  "importedFrom": "cceh:000748",
+  "updated": "2026-10-17"
+}

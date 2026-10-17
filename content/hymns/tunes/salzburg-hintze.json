@@ -1,0 +1,40 @@
+{
+  "name": "SALZBURG (HINTZE)",
+  "title": "Salzburg (Hintze)",
+  "alsoKnownAs": [
+    "Alle Menschen"
+  ],
+  "music": [
+    {
+      "name": "Jakob Hintze",
+      "activeBy": 1678,
+      "role": "Music (1678)"
+    },
+    {
+      "name": "Johann Sebastian Bach",
+      "born": 1685,
+      "died": 1750,
+      "role": "Harmony"
+    }
+  ],
+  "musicPublished": 1678,
+  "metre": "7 7 7 7",
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 105,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1 D5:1 A4:1 B4:1 | A4:1.5 G4:.5 F#4:2 | A4:1 A4:1 G4:1 F#4:1 | E4:1 E4:1 D4:2 | A4:1 D5:1 A4:1 B4:1 | A4:1.5 G4:.5 F#4:2 | A4:1 A4:1 G4:1 F#4:1 | E4:1 E4:1 D4:2 | E4:1 E4:1 F#4:.5 Ab4:.5 A4:1 | A4:1 Ab4:1 A4:2 | B4:1.5 C#5:.5 D5:1 D5:1 | C#5:1 C#5:1 B4:2 | F#4:1 F#4:1 B4:1 A4:1 | A4:1 Ab4:1 A4:2 | B4:1 A4:1 G4:1 F#4:1 | E4:1 E4:1 D4:2",
+  "incipit": "sdslsfm|ssfmrrd|sdslsfm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000774.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000774a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000774; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000774 (the melody read from 000774a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Jakob Hintze has no death year on CCEH's page or ours; their work is dated 1678, before 1850, so they died before 1955 (they would have been over 105). Johann Sebastian Bach's dates (1685–1750) are from our page for the tune POTSDAM (content/hymns/tunes/potsdam.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000774a.nwc).",
+  "importedFrom": "cceh:000774",
+  "updated": "2026-10-17"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "REST (BRADBURY)",
+  "title": "Rest (Bradbury)",
+  "music": [
+    {
+      "name": "William Batchelder Bradbury",
+      "born": 1816,
+      "died": 1868,
+      "role": "Music (1843)"
+    }
+  ],
+  "musicPublished": 1843,
+  "metre": "8 8 8 8",
+  "key": "D major",
+  "time": "3/2",
+  "tempo": 132,
+  "pickup": 3,
+  "lineBars": 2,
+  "melody": "A4:1 A4:1 A4:1 | D5:2 A4:2 A4:1 F#4:1 | E4:3 G4:1 G4:1 G4:1 | E5:2 C#5:2 B4:1 C#5:1 | D5:3 A4:1 A4:1 A4:1 | A4:2 F#4:2 G4:1 A4:1 | B4:3 B4:1 D5:1 B4:1 | A4:1 F#4:1 E4:2 G4:2 | F#4:3",
+  "incipit": "sssdssmr|fffrtltd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000781.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000781a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000781; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000781 (the melody read from 000781a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William Batchelder Bradbury's dates (1816–1868) are from our page for the tune BRADBURY (content/hymns/tunes/bradbury.json); CCEH's page gives only the year 1843. The bar lines are those of CCEH's Noteworthy score (000781a.nwc). The tune ends on F#, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "importedFrom": "cceh:000781",
+  "updated": "2026-10-17"
+}

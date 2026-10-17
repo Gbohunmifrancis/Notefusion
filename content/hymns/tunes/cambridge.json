@@ -1,0 +1,37 @@
+{
+  "name": "CAMBRIDGE",
+  "title": "Cambridge",
+  "music": [
+    {
+      "name": "Ralph Harrison",
+      "activeBy": 1784,
+      "role": "Music (1784)"
+    },
+    {
+      "name": "Samuel Sebastian Wesley",
+      "born": 1810,
+      "died": 1876,
+      "role": "Arranged"
+    }
+  ],
+  "musicPublished": 1784,
+  "metre": "6 6 8 6",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:1 B4:1 A4:.5 G4:.5 A4:1 | G4:.5 F#4:.5 G4:3 | A4:1 B4:1 D5:1 C5:1 | B4:1 A4:3 | D4:1 G4:1 G4:.5 F#4:.5 E4:1 | E4:1 A4:1 A4:.5 G4:.5 F#4:1 | D4:1 E4:1 C5:1 B4:1 | A4:1 G4:3",
+  "incipit": "dmrdrdtd|rmsfmr|sddtllrrdt",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000790.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000790a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000790; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000790 (the melody read from 000790a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ralph Harrison has no death year on CCEH's page or ours; their work is dated 1784, before 1850, so they died before 1955 (they would have been over 105). Samuel Sebastian Wesley's dates (1810–1876) are from our page for the tune AURELIA (content/hymns/tunes/aurelia.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000790a.nwc).",
+  "importedFrom": "cceh:000790",
+  "updated": "2026-10-17"
+}

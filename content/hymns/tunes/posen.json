@@ -1,0 +1,31 @@
+{
+  "name": "POSEN",
+  "title": "Posen",
+  "music": [
+    {
+      "name": "Georg C. Strattner",
+      "activeBy": 1691,
+      "role": "Music (1691)"
+    }
+  ],
+  "musicPublished": 1691,
+  "metre": "7 7 7 7",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 90,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Eb4:1 Eb4:1 Eb4:1 Eb4:1 | F4:.5 G4:.5 Ab4:1 G4:2 | Bb4:1 Bb4:1 Bb4:1 Bb4:1 | C5:.5 D5:.5 Eb5:1 D5:2 | Eb5:1 Bb4:1 C5:1 Bb4:1 | Ab4:1 G4:1 F4:2 | Bb4:1 Eb4:1 F4:.5 G4:.5 Ab4:1 | G4:1 F4:1 Eb4:2",
+  "incipit": "ddddrmfm|ssssltdt",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000777.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000777a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000777; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000777 (the melody read from 000777a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Georg C. Strattner has no death year on CCEH's page or ours; their work is dated 1691, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000777a.nwc).",
+  "importedFrom": "cceh:000777",
+  "updated": "2026-10-17"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "PENITANCE",
+  "title": "Penitance",
+  "music": [
+    {
+      "name": "Spencer Lane",
+      "born": 1843,
+      "died": 1903,
+      "role": "Music (1875)"
+    }
+  ],
+  "musicPublished": 1875,
+  "metre": "11 11 11 11",
+  "key": "Db major",
+  "time": "4/4",
+  "tempo": 105,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1 F4:1 F#4:1 F4:1 | Bb4:2 Ab4:2 | C#5:1 F4:1 Ab4:1 Eb4:1 | F4:4 | F4:1 F4:1 F#4:1 F4:1 | C5:2 Ab4:2 | G4:1 C5:1 Bb4:1 G4:1 | Ab4:2 Ab4:2 | Ab4:1 C5:1 Bb4:1 Ab4:1 | C#5:1 F4:1 Ab4:2 | Ab4:1 C5:1 Bb4:1 Ab4:1 | C#5:1 Bb4:1 Ab4:2 | Ab4:1 F5:1 Eb5:1 C#5:1 | C#5:2 Bb4:2 | Ab4:1 Ab4:1 Ab4:1 Ab4:1 | Ab4:4",
+  "incipit": "mmfmls|dmsrd|mmfmts",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000771.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000771a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000771; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000771 (the melody read from 000771a.mid, checked against the page's do-re-mi incipit, 1 note off in 17); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Spencer Lane's dates (1843–1903) are from https://hymnary.org/person/Lane_Spencer (Lane, Spencer, 1843-1903); CCEH's page gives only the year 1875. The bar lines are those of CCEH's Noteworthy score (000771a.nwc). The tune ends on Ab, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "importedFrom": "cceh:000771",
+  "updated": "2026-10-17"
+}

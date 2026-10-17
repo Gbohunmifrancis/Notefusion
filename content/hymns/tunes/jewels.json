@@ -1,0 +1,35 @@
+{
+  "name": "JEWELS",
+  "title": "Jewels",
+  "alsoKnownAs": [
+    "When He Cometh"
+  ],
+  "music": [
+    {
+      "name": "George Frederick Root",
+      "born": 1820,
+      "died": 1895,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 6 8 5 + 7 7 7 5",
+  "key": "E major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "E4:.5 F#4:.5 | Ab4:1 Ab4:1 Ab4:.5 A4:.5 | B4:1 B4:1 C#5:1 | Ab4:1 Ab4:1 F#4:1 | E4:1 E4:1 E4:.5 F#4:.5 | Ab4:1 Ab4:1 Ab4:.5 A4:.5 | B4:1 B4:1 C#5:1 | Ab4:1 Ab4:1 F#4:1 | E4:2 E5:.5 Eb5:.5 | C#5:1 C#5:1 E5:1 | B4:1 B4:1 C#5:.75 B4:.25 | E4:1 E4:1 F#4:1 | Ab4:1 B4:1 E5:.5 Eb5:.5 | C#5:1 C#5:1 E5:1 | B4:1 B4:1 C#5:1 | B4:1 E4:1 F#4:1 | E4:2",
+  "incipit": "drmmmfsslmmrdd|drmmmfsslmmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000724.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000724a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000724; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000724 (the melody read from 000724a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. George Frederick Root's dates (1820–1895) are from https://en.wikipedia.org/wiki/George_Frederick_Root (30 August 1820 - 6 August 1895; RING THE BELLS, 1875); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000724a.nwc).",
+  "importedFrom": "cceh:000724",
+  "updated": "2026-10-17"
+}

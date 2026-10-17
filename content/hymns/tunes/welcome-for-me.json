@@ -1,0 +1,32 @@
+{
+  "name": "WELCOME FOR ME",
+  "title": "Welcome for Me",
+  "music": [
+    {
+      "name": "William James Kirkpatrick",
+      "born": 1838,
+      "died": 1921,
+      "role": "Music (1896)"
+    }
+  ],
+  "musicPublished": 1896,
+  "metre": "12 9 12 9 + 8 8 8 8",
+  "key": "Bb major",
+  "time": "6/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:.75 Eb4:.25 | D4:1 F4:1 Bb4:1 D5:2 C5:.75 Bb4:.25 | C5:1 Bb4:1 G4:1 Bb4:2 G4:.75 G4:.25 | F4:1 D4:1 F4:1 Bb4:1 C5:1 D5:1 | C5:5 F4:.75 Eb4:.25 | D4:1 F4:1 Bb4:1 D5:2 C5:.75 Bb4:.25 | C5:1 Bb4:1 G4:1 Bb4:2 A4:.75 G4:.25 | F4:1 Bb4:1 D5:1 C5:1 G4:1 A4:1 | Bb4:5 r:1 | F4:1.5 F4:.5 F4:1 F4:2 r:1 | G4:1.5 A4:.5 Bb4:1 F4:2 F4:1 | Bb4:2 Bb4:.5 Bb4:.5 Bb4:1 A4:1 Bb4:1 | C5:5 r:1 | D5:1 C5:1 Bb4:1 F4:2 F4:1 | D5:1.5 C5:.5 Bb4:1 F4:2 F4:1 | G4:1.5 A4:.5 Bb4:1 C5:1 G4:1 A4:1 | Bb4:5",
+  "incipit": "sfmsdmrdrdld|llsmsdrmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000727.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000727a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000727; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000727 (the melody read from 000727a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William James Kirkpatrick's dates (1838–1921) are from our page for the tune THE COMFORTER HAS COME (content/hymns/tunes/the-comforter-has-come.json); CCEH's page gives only the year 1896. The bar lines are those of CCEH's Noteworthy score (000727a.nwc).",
+  "importedFrom": "cceh:000727",
+  "updated": "2026-10-17"
+}

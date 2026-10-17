@@ -1,0 +1,32 @@
+{
+  "name": "WHEN THEY RING THOSE GOLDEN BELLS",
+  "title": "When They Ring Those Golden Bells",
+  "music": [
+    {
+      "name": "Dion De Marbelle",
+      "born": 1818,
+      "died": 1903,
+      "role": "Music (1887)"
+    }
+  ],
+  "musicPublished": 1887,
+  "metre": "8 8 11 8 8 11",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "C5:.75 Bb4:.25 | A4:.75 Ab4:.25 A4:.75 Ab4:.25 A4:.25 C5:.75 A4:.75 F4:.25 | D4:.75 E4:.25 F4:.75 D4:.25 C4:.25 F4:.75 F4:.75 G4:.25 | A4:.75 Ab4:.25 A4:.75 Bb4:.25 C5:.75 B4:.25 D5:.75 C5:.25 | G4:3 G4:.75 A4:.25 | Bb4:.75 A4:.25 C5:.75 A4:.25 G4:.25 F4:.75 F4:.75 E4:.25 | D4:.75 E4:.25 F4:.75 D4:.25 C4:.25 F4:.75 F4:.75 G4:.25 | A4:.75 C5:.25 F5:.75 D5:.25 C5:.75 A4:.25 G4:.75 A4:.25 | F4:1.5 C#4:.5 C4:1 C5:.75 C5:.25 | D5:.75 Bb4:.25 F5:.75 D5:.25 Bb4:.25 D5:.75 F5:.75 D5:.25 | C5:.75 D5:.25 C5:.75 A4:.25 A4:.25 C5:.75 C5:.75 C5:.25 | F5:.75 E5:.25 D5:.75 C5:.25 Bb4:.75 A4:.25 G4:.75 F4:.25 | C5:3 C5:.75 Bb4:.25 | A4:.75 Ab4:.25 A4:.75 Ab4:.25 A4:.25 C5:.75 A4:.75 F4:.25 | D4:.75 E4:.25 F4:.75 D4:.25 C4:.25 F4:.75 F4:.75 G4:.25 | A4:.75 C5:.25 F5:.75 D5:.25 C5:.75 A4:.25 G4:.75 A4:.25 | F4:3",
+  "incipit": "sfmrmrms|mdltdlsd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000737.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000737a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000737; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000737 (the melody read from 000737a.mid, checked against the page's do-re-mi incipit, 2 notes off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Dion De Marbelle's dates (1818–1903) are from https://hymnary.org/person/Marbelle_DD (De Marbelle, Dion, 1818-1903); CCEH's page gives only the year 1887. The bar lines are those of CCEH's Noteworthy score (000737a.nwc).",
+  "importedFrom": "cceh:000737",
+  "updated": "2026-10-17"
+}

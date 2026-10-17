@@ -1,0 +1,32 @@
+{
+  "name": "JONES",
+  "title": "Jones",
+  "music": [
+    {
+      "name": "Lewis E. Jones",
+      "born": 1865,
+      "died": 1936,
+      "role": "Music (1906)"
+    }
+  ],
+  "musicPublished": 1906,
+  "metre": "11 7 11 7 + 7 7 11 7",
+  "key": "Db major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Ab4:.75 Bb4:.25 Ab4:.75 F#4:.25 F4:1 Ab4:1 | Ab4:.75 F#4:.25 F#4:.75 F4:.25 F#4:2 | C5:.75 B4:.25 C5:.75 Bb4:.25 Ab4:1 Bb4:1 | Ab4:3 r:1 | Ab4:.75 Bb4:.25 Ab4:.75 F#4:.25 F4:1 Ab4:1 | C#5:.75 Eb5:.25 C#5:.75 C5:.25 Bb4:2 | C5:.75 B4:.25 C5:.75 Bb4:.25 Ab4:1 Eb5:1 | C#5:3 r:1 | F4:.75 F#4:.25 Ab4:.75 Bb4:.25 Ab4:1 C#5:1 | C5:3 r:1 | Eb4:.75 F4:.25 F#4:.75 Ab4:.25 Bb4:1 C5:1 | Ab4:3 r:1 | C#5:.75 Eb5:.25 C#5:.75 Bb4:.25 Ab4:1 F4:1 | Bb4:.75 Bb4:.25 Bb4:.75 C5:.25 C#5:2 | C5:.75 B4:.25 C5:.75 Bb4:.25 Ab4:1 Eb5:1 | C#5:4",
+  "incipit": "slsfmssffmf|tltlsls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000731.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000731a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000731; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000731 (the melody read from 000731a.mid, checked against the page's do-re-mi incipit, 1 note off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Lewis E. Jones's dates (1865–1936) are from https://www.umcdiscipleship.org/resources/there-is-power-in-the-blood; https://hymndex.com/lewis-edgar-jones/; CCEH's page gives only the year 1906. The bar lines are those of CCEH's Noteworthy score (000731a.nwc).",
+  "importedFrom": "cceh:000731",
+  "updated": "2026-10-17"
+}

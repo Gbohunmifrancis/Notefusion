@@ -1,0 +1,35 @@
+{
+  "name": "CROSS OF JESUS",
+  "title": "Cross of Jesus",
+  "alsoKnownAs": [
+    "Crucifixion"
+  ],
+  "music": [
+    {
+      "name": "Sir John Stainer",
+      "born": 1840,
+      "died": 1901,
+      "role": "Music (1887)"
+    }
+  ],
+  "musicPublished": 1887,
+  "metre": "8 7 8 7",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 105,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1 F4:1 C4:1 C4:1 | C4:1 F4:1 F4:1 E4:1 | F4:1 A4:1 D4:.5 E4:.5 F4:1 | Bb4:1 A4:1 A4:1 G4:1 | F4:1 Bb4:1 Bb4:1 A4:1 | G4:1 D5:1 D5:1 C5:1 | C5:1 Bb4:1 A4:.5 G4:.5 F4:1 | F4:1 E4:1 F4:2",
+  "incipit": "mdsssddt|dmltdfmmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000751.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000751a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000751; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000751 (the melody read from 000751a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Sir John Stainer's dates (1840–1901) are from our page for the tune EVENING PRAYER (content/hymns/tunes/evening-prayer.json); CCEH's page gives only the year 1887. The bar lines are those of CCEH's Noteworthy score (000751a.nwc).",
+  "importedFrom": "cceh:000751",
+  "updated": "2026-10-17"
+}

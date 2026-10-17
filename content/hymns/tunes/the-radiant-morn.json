@@ -1,0 +1,32 @@
+{
+  "name": "THE RADIANT MORN",
+  "title": "The Radiant Morn",
+  "music": [
+    {
+      "name": "Charles Francois Gounod",
+      "born": 1818,
+      "died": 1893,
+      "role": "Music (1872)"
+    }
+  ],
+  "musicPublished": 1872,
+  "metre": "8 8 8 8",
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 105,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F#4:1 | E4:1 F#4:1 G4:1 A4:1 | G4:1 F#4:.5 E4:.5 D4:1 A4:1 | Ab4:1 A4:1 B4:1 C#5:1 | B4:1 A4:.5 Ab4:.5 A4:1 A4:1 | D5:1 C#5:1 A4:1 C#5:.5 B4:.5 | A4:1 G4:1 F#4:1 A4:1 | G4:2 F#4:1 E4:1 | D4:3",
+  "incipit": "mrmfsfmrd|sfsltlsfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000779.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000779a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000779; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000779 (the melody read from 000779a.mid, checked against the page's do-re-mi incipit, 2 notes off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Charles Francois Gounod's dates (1818–1893) are from https://en.wikipedia.org/wiki/Charles_Gounod (17 June 1818 - 18 October 1893); CCEH's page gives only the year 1872. The bar lines are those of CCEH's Noteworthy score (000779a.nwc).",
+  "importedFrom": "cceh:000779",
+  "updated": "2026-10-17"
+}

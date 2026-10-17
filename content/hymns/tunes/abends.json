@@ -1,0 +1,32 @@
+{
+  "name": "ABENDS",
+  "title": "Abends",
+  "music": [
+    {
+      "name": "Sir Herbert Stanley Oakeley",
+      "born": 1830,
+      "died": 1903,
+      "role": "Music (1874)"
+    }
+  ],
+  "musicPublished": 1874,
+  "metre": "8 8 8 8",
+  "key": "Ab major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "Eb4:1 Ab4:1 G4:1 | F4:2 F4:1 | C#5:2 C5:1 | Bb4:3 | Bb4:1 C5:1 C#5:1 | Eb5:2 Ab4:1 | G4:2 F4:1 | Eb4:3 | G4:1 Ab4:1 Bb4:1 | C#5:2 C5:1 | Bb4:2 Ab4:1 | G4:3 | Ab4:1 Bb4:1 C5:1 | Eb5:2 C#5:1 | C5:2 Bb4:1 | Ab4:3",
+  "incipit": "sdtllfmr|rmfsdtls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000787.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000787a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000787; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000787 (the melody read from 000787a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Sir Herbert Stanley Oakeley's dates (1830–1903) are from https://hymnary.org/person/Oakeley_HS (Oakeley, Herbert Stanley, Sir, 1830-1903); CCEH's page gives only the year 1874. The bar lines are those of CCEH's Noteworthy score (000787a.nwc).",
+  "importedFrom": "cceh:000787",
+  "updated": "2026-10-17"
+}
