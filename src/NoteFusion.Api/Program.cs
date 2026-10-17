@@ -268,6 +268,14 @@ app.UseRouting();
 // back instead of a 401 the browser would report as an opaque CORS failure.
 app.UseCors(AdminDashboardCorsPolicy);
 
+// Read-only while the service moves to another server or provider (Maintenance__ReadOnly). After CORS, so
+// the browser can read the 503's explanation; before everything else, so no write gets as far as a handler.
+if (MaintenanceModeMiddleware.IsEnabled(app.Configuration))
+{
+    app.Logger.LogWarning("Maintenance read-only mode is ON: every write is refused with 503 until Maintenance__ReadOnly is unset.");
+    app.UseMiddleware<MaintenanceModeMiddleware>();
+}
+
 // After CORS, for the same reason: a 429 with no CORS headers reaches the admin console as an opaque
 // network error, so the one message that explains itself — "try again in 5 minutes" — would be the one
 // message the browser refuses to hand over.

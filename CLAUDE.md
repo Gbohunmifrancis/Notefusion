@@ -158,6 +158,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   runtime, so an update can only reach builds that have its native code — anything native
   needs a store build first.
 
+- **`ops/backup/` — backups** (`docs/BACKUP_AND_MIGRATION.md`): the compose `backup` service (pinned image on the db's
+  own postgres:16-alpine) puts encrypted copies in a bucket of their own: restic (`pg_dump` every 6 h with a row-count
+  manifest, read back and SHA-checked; photos, JWT key, Caddyfile daily) and WAL-G (daily base + WAL from the db's
+  `wal-spool`, ~1 min PITR). It writes `backup_runs` via the INSERT-only `notefusion_backup` role → System Health card +
+  `BackupAlertWorker`; `backup-restore-drill.yml` restores weekly. `Maintenance__ReadOnly` 503s every write for a move.
+
 > The old native `.NET 10 for Android` head was retired in the pivot; there is no
 > `NoteFusion.App` project. Don't reintroduce Android-native or MAUI code.
 

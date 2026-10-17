@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# Daily: everything outside the database that a rebuild needs, into the same encrypted restic repository.
+#   /work/files/avatars   a mirror of the profile-photo bucket (rclone sync, incremental); restic keeps
+#                         each day's version, so a photo deleted or overwritten upstream stays recoverable
+#                         for as long as the retention keeps that day.
+#   /run/host/            mounted from the server by docker-compose.prod.yml:
+#     jwt_private_key.pem the JWT signing key; the web-push VAPID keys and the deletion secret are derived
+#                         from it, so losing it signs everyone out and breaks push. Encrypted in restic.
+#     Caddyfile           the proxy configuration, which lives only on the server.
+#     env-names.txt       the names of every setting in the server's .env and whether each is set —
+#                         never a value (written by the deploy).
+# The worker's job journal is deliberately not backed up: it holds users' uploaded audio for minutes,
+# and the product promises that audio is deleted after each job.
+set -Eeuo pipefail
+# shellcheck source=nf-backup-lib.sh
+. /usr/local/bin/nf-backup-lib.sh
+export NF_JOB=files
+nf_export_tool_env
+
+host_dir=${NF_HOST_FILES:-/run/host}
+mirror=$NF_WORK/files/avatars
+started=$(nf_now)
+fail() {
+  trap - ERR
+  log "FAILED: $*"
+  nf_record files false "$started" "$(nf_now)" "" false "" "$*"
+  exit 1
+}
+trap 'fail "unexpected error at line $LINENO"' ERR
+mkdir -p "$mirror"
+
+notes=()
+problems=()
+paths=("$NF_WORK/files")
+
+if [ -n "${FILES_S3_BUCKET:-}" ]; then
+  remote_bytes=$(rclone size "files:$FILES_S3_BUCKET" --json 2>"$NF_STATE/files.err" | jq -r '.bytes // 0') \
+    || fail "cannot read the photo bucket $FILES_S3_BUCKET: $(tail -c 300 "$NF_STATE/files.err" | tr '\n' ' ')"
+  local_bytes=$(du -sb "$mirror" | cut -f1)
+  need=$((remote_bytes - local_bytes + 256 * 1024 * 1024))
+  free=$(nf_free_bytes "$NF_WORK")
+  [ "$free" -ge "$need" ] || fail "not enough free disk to mirror the photos: $(nf_human_bytes "$free") free, want $(nf_human_bytes "$need")"
+  rclone sync "files:$FILES_S3_BUCKET" "$mirror" --checksum --transfers 4 --checkers 8 \
+    >"$NF_STATE/files-sync.out" 2>&1 \
+    || fail "rclone sync of the photo bucket failed: $(tail -c 400 "$NF_STATE/files-sync.out" | tr '\n' ' ')"
+  notes+=("$(find "$mirror" -type f | wc -l) photos")
+else
+  notes+=("no photo bucket configured")
+fi
+
+for f in jwt_private_key.pem Caddyfile env-names.txt; do
+  if [ -f "$host_dir/$f" ] && [ -s "$host_dir/$f" ]; then
+    paths+=("$host_dir/$f")
+    notes+=("$f")
+  else
+    problems+=("$f missing")
+  fi
+done
+# The JWT key is the one file here that cannot be regenerated without signing everyone out.
+grep -q 'PRIVATE KEY' "$host_dir/jwt_private_key.pem" 2>/dev/null || problems+=("JWT key not readable")
+
+nf_restic backup --host notefusion --tag files --json --quiet "${paths[@]}" >"$NF_STATE/files-backup.json" 2>"$NF_STATE/files-backup.err" \
+  || fail "restic backup failed: $(tail -c 600 "$NF_STATE/files-backup.err" | tr '\n' ' ')"
+snap=$(jq -r 'select(.message_type == "summary") | .snapshot_id' "$NF_STATE/files-backup.json" | tail -1)
+bytes=$(jq -r 'select(.message_type == "summary") | .total_bytes_processed' "$NF_STATE/files-backup.json" | tail -1)
+
+trap - ERR
+ok=true
+detail="snapshot ${snap:0:8}"
+for n in "${notes[@]}"; do detail="$detail · $n"; done
+if [ ${#problems[@]} -gt 0 ]; then
+  ok=false
+  detail="$detail · PROBLEM: ${problems[0]}"
+  for p in "${problems[@]:1}"; do detail="$detail, $p"; done
+fi
+nf_record files "$ok" "$started" "$(nf_now)" "$bytes" false "" "$detail"
+log "done: $detail"
+[ "$ok" = true ]

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Hourly: brings the weekly restore drill's result into the admin console. The drill runs in GitHub
+# Actions (.github/workflows/backup-restore-drill.yml) and leaves status/restore-drill.json in the backup
+# bucket; this records each new result once as a "drill" row. Nothing reaches the API from outside, and
+# the drill needs no database credentials for production.
+set -uo pipefail
+# shellcheck source=nf-backup-lib.sh
+. /usr/local/bin/nf-backup-lib.sh
+export NF_JOB=drill-status
+nf_export_tool_env
+
+json=$(rclone cat "backup:$BACKUP_S3_BUCKET/status/restore-drill.json" 2>/dev/null) || exit 0
+finished=$(jq -r '.finished_at // empty' <<<"$json" 2>/dev/null) || exit 0
+[ -n "$finished" ] || exit 0
+[ "$finished" != "$(cat "$NF_STATE/drill-last-seen" 2>/dev/null)" ] || exit 0
+
+ok=$(jq -r 'if .ok == true then "true" else "false" end' <<<"$json")
+started=$(jq -r '.started_at // .finished_at' <<<"$json")
+detail=$(jq -r '[.summary // "restore drill", .run_url // empty] | join(" · ")' <<<"$json")
+nf_record drill "$ok" "$started" "$finished" "" "$ok" "" "$detail"
+echo "$finished" >"$NF_STATE/drill-last-seen"
+log "restore drill of $finished recorded (ok=$ok)"

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Runs one scheduled job at low priority. The heavy jobs (dump, base, files, maintain, mirror) also take
+# one shared lock, so two of them never run at once and never contend with restic's exclusive prune lock,
+# and each is stopped after BACKUP_JOB_TIMEOUT (6h) so a hung one cannot hold the lock for ever.
+#   nf-backup-run dump|base|files|maintain|mirror|wal-push|drill-status
+set -uo pipefail
+# shellcheck source=nf-backup-lib.sh
+. /usr/local/bin/nf-backup-lib.sh
+
+job=${1:?usage: nf-backup-run JOB}
+[ -x "/usr/local/bin/nf-backup-$job" ] || die "unknown job: $job"
+[ -z "$(nf_missing_config)" ] || exit 0
+
+mkdir -p "$NF_STATE"
+
+# Lowest CPU priority, and the idle I/O class where the kernel's scheduler honours it (it falls back to
+# best-effort silently elsewhere; a refusal is not a reason to skip the backup).
+prio=(nice -n 19)
+if ionice -c 3 true 2>/dev/null; then prio+=(ionice -c 3); fi
+
+case "$job" in
+  wal-push | drill-status)
+    exec "${prio[@]}" "/usr/local/bin/nf-backup-$job"
+    ;;
+  *)
+    exec flock "$NF_STATE/heavy.lock" timeout "${BACKUP_JOB_TIMEOUT:-6h}" "${prio[@]}" "/usr/local/bin/nf-backup-$job"
+    ;;
+esac

@@ -11,15 +11,39 @@ x-logging: &default-logging
 
 services:
   db:
-    image: postgres:16-alpine
+    # Pinned (PostgreSQL 16.15, Alpine 3.24): the backup image is built on this same image, so pg_dump and
+    # the point-in-time restore run the very binaries the database does, and the two share their layers.
+    # Bump both together (ops/backup/Dockerfile, PG_IMAGE). Stay on Alpine: the data directory's text
+    # indexes are sorted by musl, and a glibc image would read them wrongly.
+    image: postgres:16-alpine@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea
     restart: always
     logging: *default-logging
+    # Continuous archiving for point-in-time recovery (docs/BACKUP_AND_MIGRATION.md). The database only
+    # gzips each finished WAL segment into the wal-spool volume, at least once a minute (archive_timeout);
+    # the backup service ships them to the bucket. It never fails the archive and never lets WAL pile up:
+    # with the spool unwritable (the backup service not started yet) or over NF_WAL_SPOOL_MAX_MB (the
+    # bucket unreachable for a long time), the segment is let go and a marker says so, which the backup
+    # service reports. Changing these flags restarts the database once (a few seconds).
+    command:
+      - postgres
+      - -c
+      - archive_mode=on
+      - -c
+      - archive_timeout=60
+      - -c
+      - >-
+        archive_command=d=/var/lib/postgresql/wal-spool;
+        if [ ! -w "$$d" ]; then echo "nf-archive: $$d not writable, %f not kept" >&2;
+        elif [ "$$(du -sm "$$d" | cut -f1)" -ge "$${NF_WAL_SPOOL_MAX_MB:-1024}" ]; then : > "$$d/dropped-%f"; echo "nf-archive: spool full, %f dropped" >&2;
+        else gzip -1 -c %p > "$$d/%f.gz.tmp" && mv "$$d/%f.gz.tmp" "$$d/%f.gz"; fi
     environment:
       POSTGRES_DB: notefusion
       POSTGRES_USER: notefusion
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      NF_WAL_SPOOL_MAX_MB: ${NF_WAL_SPOOL_MAX_MB:-1024}
     volumes:
       - db-data:/var/lib/postgresql/data
+      - wal-spool:/var/lib/postgresql/wal-spool
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U notefusion -d notefusion"]
       interval: 10s
@@ -201,6 +225,54 @@ services:
     volumes:
       - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
 
+  # Backups (docs/BACKUP_AND_MIGRATION.md, ops/backup): a logical dump every 6 hours, a daily base backup
+  # plus WAL every minute for point-in-time recovery, and the photos, JWT key and Caddyfile daily — all
+  # encrypted client-side into the backup bucket (Cloudflare R2, or any S3-compatible store). Runs at the
+  # lowest CPU and I/O priority. Without every BACKUP_* setting it logs which are missing and idles; it never
+  # crash-loops and never holds up a deploy. Its database login (notefusion_backup, ops/backup/db-role.sql)
+  # can read everything and add backup_runs rows, nothing more; the deploy derives its password.
+  backup:
+    image: ${BACKUP_IMAGE:-ghcr.io/OWNER/notefusion-backup:latest}
+    restart: always
+    init: true
+    logging: *default-logging
+    depends_on:
+      - db
+    environment:
+      PGHOST: db
+      PGDATABASE: notefusion
+      PGUSER: notefusion_backup
+      PGPASSWORD: ${BACKUP_DB_PASSWORD:-}
+      BACKUP_S3_ENDPOINT: ${BACKUP_S3_ENDPOINT:-}
+      BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}
+      BACKUP_S3_REGION: ${BACKUP_S3_REGION:-auto}
+      BACKUP_S3_ACCESS_KEY_ID: ${BACKUP_S3_ACCESS_KEY_ID:-}
+      BACKUP_S3_SECRET_ACCESS_KEY: ${BACKUP_S3_SECRET_ACCESS_KEY:-}
+      BACKUP_ENCRYPTION_PASSWORD: ${BACKUP_ENCRYPTION_PASSWORD:-}
+      # Optional second destination at another provider (an rclone connection string); off when empty.
+      BACKUP_MIRROR: ${BACKUP_MIRROR:-}
+      # Where WAL-G keeps base backups and WAL; a database restored from a logical dump is a new cluster and
+      # needs a fresh prefix (docs/BACKUP_AND_MIGRATION.md). Empty = s3://<bucket>/wal-g.
+      WALG_S3_PREFIX: ${BACKUP_WALG_PREFIX:-}
+      # "off" on a managed database, whose provider does point-in-time recovery itself.
+      BACKUP_PHYSICAL: ${BACKUP_PHYSICAL:-on}
+      # The profile-photo bucket, read with the API's own photo credentials (never the backup token).
+      # FILES_S3_ENDPOINT overrides the R2 address if the photos ever move to another S3-compatible store.
+      FILES_S3_ENDPOINT: ${FILES_S3_ENDPOINT:-https://${R2__AccountId:-}.r2.cloudflarestorage.com}
+      FILES_S3_BUCKET: ${R2__BucketName:-}
+      FILES_S3_ACCESS_KEY_ID: ${R2__AccessKeyId:-}
+      FILES_S3_SECRET_ACCESS_KEY: ${R2__SecretAccessKey:-}
+    volumes:
+      - db-data:/var/lib/postgresql/data:ro
+      - wal-spool:/var/lib/postgresql/wal-spool
+      - backup-work:/work
+      - ./jwt_private_key.pem:/run/host/jwt_private_key.pem:ro
+      - ./Caddyfile:/run/host/Caddyfile:ro
+      - ${BACKUP_ENV_NAMES_HOST:-/dev/null}:/run/host/env-names.txt:ro
+    # A soft share: full speed when the box is idle, last in line when a transcription wants the CPU.
+    cpu_shares: 128
+    mem_limit: ${NF_BACKUP_MEM_LIMIT:-768m}
+
   # Container logs at /logs (Caddy proxies it). Pinned: an image with the Docker socket must
   # not change under a restart. The socket mount is :ro, but that only stops the socket file
   # being replaced: Docker still answers every API call over it, so whoever reaches Dozzle
@@ -238,3 +310,5 @@ volumes:
   caddy-data:
   dozzle-data:
   job-data:
+  wal-spool:
+  backup-work:

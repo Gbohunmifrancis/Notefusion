@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# The backup container's PID 1 (under compose's init). With every BACKUP_* setting present it prepares the
+# repository and hands over to supercronic, which runs the schedule in /etc/nf-backup/crontab. With any
+# missing it says which, keeps the WAL spool from filling the disk, and idles: it never exits, so it never
+# crash-loops and never holds up a deploy.
+set -uo pipefail
+# shellcheck source=nf-backup-lib.sh
+. /usr/local/bin/nf-backup-lib.sh
+NF_JOB=startup
+
+mkdir -p "$NF_STATE" "$NF_WORK/cache"
+
+# The spool is where the database's archive_command drops each finished WAL segment (gzipped). The
+# postgres user (uid 70 in the Alpine image) writes it; until it can, the database drops segments rather
+# than letting them pile up, so the ownership is put right on every start.
+if [ -d "$NF_SPOOL" ]; then
+  if ! { chown 70:70 "$NF_SPOOL" && chmod 0700 "$NF_SPOOL"; }; then
+    log "could not set the WAL spool's owner"
+  fi
+fi
+
+started=$(nf_now)
+missing=$(nf_missing_config | paste -sd ' ' -)
+
+if [ -n "$missing" ]; then
+  log "Backups are OFF: these settings are empty: $missing (docs/BACKUP_AND_MIGRATION.md, 'Setting it up')."
+  nf_record config false "$started" "$(nf_now)" "" false "" "Backups are not set up: missing $missing"
+  # Not configured, so nothing can be archived: empty the spool as the database fills it (exactly what
+  # archive_mode=off would have done) and remind the log every six hours.
+  n=0
+  while true; do
+    find "$NF_SPOOL" -maxdepth 1 -type f -delete 2>/dev/null || true
+    if [ $((n % 360)) -eq 0 ] && [ "$n" -gt 0 ]; then
+      log "Backups are still OFF: missing $missing"
+    fi
+    n=$((n + 1))
+    sleep 60
+  done
+fi
+
+nf_export_tool_env
+
+# The restic repository is created on first use. Exit 10 means "no repository here"; 12 means the
+# repository exists and BACKUP_ENCRYPTION_PASSWORD does not open it, which must never be "fixed" by
+# creating a new one, so it is reported and retried (the jobs fail loudly meanwhile).
+delay=30
+while true; do
+  nf_restic cat config >/dev/null 2>"$NF_STATE/init.err"
+  rc=$?
+  if [ $rc -eq 0 ]; then
+    break
+  elif [ $rc -eq 10 ]; then
+    log "No restic repository at $RESTIC_REPOSITORY yet; creating it."
+    if nf_restic init >/dev/null 2>"$NF_STATE/init.err"; then
+      break
+    fi
+    log "restic init failed: $(tr '\n' ' ' < "$NF_STATE/init.err")"
+  elif [ $rc -eq 12 ]; then
+    log "BACKUP_ENCRYPTION_PASSWORD does not open the existing repository. Set the password it was created with."
+    nf_record config false "$started" "$(nf_now)" "" false "" "The encryption password does not open the existing backup repository."
+    delay=3600
+  else
+    log "Backup bucket not reachable yet (restic exit $rc): $(tr '\n' ' ' < "$NF_STATE/init.err" | cut -c1-300)"
+  fi
+  sleep "$delay"
+  [ "$delay" -lt 600 ] && delay=$((delay * 2))
+done
+
+nf_record config true "$started" "$(nf_now)" "" false "" "Backups configured: $BACKUP_S3_BUCKET at ${BACKUP_S3_ENDPOINT#https://}"
+log "Backups are ON: $BACKUP_S3_BUCKET at ${BACKUP_S3_ENDPOINT#https://}; schedule in /etc/nf-backup/crontab (UTC)."
+
+exec supercronic -passthrough-logs /etc/nf-backup/crontab

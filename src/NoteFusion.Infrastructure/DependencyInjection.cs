@@ -45,6 +45,11 @@ public static class DependencyInjection
         services.AddOutreach(configuration);
         services.AddBlog(configuration);
 
+        // The backups run in their own container (ops/backup); the API reads what they record, shows it on
+        // System Health and alerts the admins when they fall behind.
+        services.AddSingleton(configuration.GetSection("Backups").Get<BackupSettings>() ?? new BackupSettings());
+        services.AddHostedService<Monitoring.BackupAlertWorker>();
+
         return services;
     }
 

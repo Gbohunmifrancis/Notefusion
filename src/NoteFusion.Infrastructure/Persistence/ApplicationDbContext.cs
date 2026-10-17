@@ -48,6 +48,8 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<Passkey> Passkeys => Set<Passkey>();
 
+    public DbSet<BackupRun> BackupRuns => Set<BackupRun>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

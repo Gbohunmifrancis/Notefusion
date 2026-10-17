@@ -93,5 +93,8 @@ public interface IApplicationDbContext
     /// <summary>WebAuthn credentials (passkeys) admins sign in to the console with.</summary>
     DbSet<Passkey> Passkeys { get; }
 
+    /// <summary>What the backup service did and when (written by the backup container; ops/backup).</summary>
+    DbSet<BackupRun> BackupRuns { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

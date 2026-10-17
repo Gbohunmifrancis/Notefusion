@@ -51,7 +51,10 @@ public sealed record SystemHealthDto(
     ActivityStatsDto Activity,
     SubscriptionHealthDto Subscriptions,
     IReadOnlyList<string> NotMonitored,
-    IReadOnlyList<WorkerHeartbeatDto>? WorkerHeartbeats = null);
+    IReadOnlyList<WorkerHeartbeatDto>? WorkerHeartbeats = null,
+    // The backups (ops/backup), as the backup service recorded them. Outside the rollup above: that answers
+    // "is the product working", and a late backup does not stop it. Null when the database is unreachable.
+    BackupStatusDto? Backups = null);
 
 /// <summary>
 /// Transcription throughput. Volume only, deliberately: the API records that a job was submitted and
