@@ -102,7 +102,7 @@ ${body}
 </main>
 
 <footer class="wrap">
-  <p class="site-footer-links"><a href="/blog">Blog</a><a href="/hymns">Hymns in Tonic Solfa</a><a href="/app">Web app</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="mailto:hello@notefusion.studio">Contact</a></p>
+  <p class="site-footer-links"><a href="/blog">Blog</a><a href="/hymns">Hymns in Tonic Solfa</a><a href="/hymns/identify">Hum to find a hymn</a><a href="/app">Web app</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="mailto:hello@notefusion.studio">Contact</a></p>
   <p>NoteFusion. Hear it. See it. Notate it. &copy; 2026 NoteFusion.</p>
 </footer>
 <script src="/assets/site-theme.js?v=${ASSET_VERSION.siteTheme}" defer></script>

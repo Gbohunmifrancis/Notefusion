@@ -454,6 +454,12 @@ class Match:
     confidence: float
 
 
+def too_short(notes) -> bool:
+    """Whether ``notes`` are too few to name any hymn: fewer moves between distinct pitches than the
+    shortest match accepted (``MIN_MATCHED``). ``match`` refuses such a take without looking."""
+    return len(contour(notes).intervals) < min(MIN_MATCHED, INCIPIT_MIN_MATCHED)
+
+
 def match(notes, seconds_per_unit: float = 1.0, index: HymnIndex | None = None, explain: bool = False):
     """The hymn ``notes`` (``(pitch, start, duration)``) are a rendition of, or None.
 
@@ -464,7 +470,7 @@ def match(notes, seconds_per_unit: float = 1.0, index: HymnIndex | None = None, 
     index = index or default_index()
     q = contour(notes)
     refused = (None, None) if explain else None
-    if len(q.intervals) < min(MIN_MATCHED, INCIPIT_MIN_MATCHED):
+    if too_short(notes):
         return refused
     ids = index.prefilter(q)
     if not ids:

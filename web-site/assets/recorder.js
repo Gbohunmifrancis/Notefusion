@@ -5,6 +5,7 @@
  *
  *   NfRecorder.open({ maxSeconds: 30, onTake: function (blob, name, seconds) {…}, onError: function (text, kind) {…} })
  *
+ * `useLabel` names the button that sends the take ("Transcribe this take" when it is not given).
  * `onError` gets a plain sentence and a kind ("unsupported" | "denied" | "short"), so the page can add
  * its own way out ("Upload a file instead."). `sounds(name)` ("start" | "stop" | "error") and
  * `track(name)` are optional hooks. */
@@ -135,6 +136,7 @@
     if (rec.url) close(); // a take still under review gives way to the new one
     var maxSec = opts.maxSeconds > 0 ? opts.maxSeconds : 180;
     rec.opts = opts; rec.discard = false; rec.opening = true;
+    els.use.innerHTML = ICONS.wave; els.use.appendChild(document.createTextNode(opts.useLabel || "Transcribe this take"));
     hook(opts, "track", "Recording started");
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } }).then(function (stream) {
       rec.opening = false;

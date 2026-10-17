@@ -1,21 +1,25 @@
 """v1 endpoints (TRD par. 6):
     POST /v1/transcribe   multipart audio + options -> 202 { jobId }
     GET  /v1/jobs/{id}    -> { status, progress } | { status: done, result }
+    POST /v1/identify     multipart audio (a hummed clip) -> { match | null, notesHeard, tooShort, secondsHeard }
 """
 
 import logging
 import math
+import re
 import tempfile
+import threading
 from dataclasses import asdict
 from pathlib import Path
 
 import librosa
+import numpy as np
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
 from starlette.concurrency import run_in_threadpool
 
 from app.api.schemas import (
-    GradeResponse, GradeTargetDto, HarmoniseRequest, HarmoniseResponse, JobResponse, LinkInfoRequest, LinkInfoResponse,
-    ResultDto, SubmitResponse,
+    GradeResponse, GradeTargetDto, HarmoniseRequest, HarmoniseResponse, IdentifiedHymnDto, IdentifyResponse, JobResponse,
+    LinkInfoRequest, LinkInfoResponse, ResultDto, SubmitResponse,
 )
 from app.config import TEMP_PREFIX, settings
 from app.jobs.queue import JobQueue, QueueFull
@@ -542,6 +546,135 @@ def _grade_file(path: Path, spec: GradeTargetDto):
     finally:
         if converted:
             wav_path.unlink(missing_ok=True)
+
+
+#: A hummed clip of twenty seconds is well under a megabyte in any format a browser records; this
+#: bounds a WAV of it with room to spare, and refuses anything else before it is written to disk.
+IDENTIFY_MAX_UPLOAD_BYTES = 12 * 1024 * 1024
+IDENTIFY_BUSY_MESSAGE = "The hymn finder is busy right now. Please try again in a few seconds."
+IDENTIFY_BUSY_RETRY_SECONDS = 5
+
+#: Look-ups decoding at once (``settings.identify_concurrency``). A thread semaphore, taken in the
+#: threadpool, so it serves every event loop alike (the tests run several).
+_identify_slots = threading.BoundedSemaphore(settings.identify_concurrency)
+
+
+class _IdentifyBusy(Exception):
+    pass
+
+
+@router.post("/identify", response_model=IdentifyResponse,
+             summary="Name the hymn a hummed or sung clip is (at most NF_IDENTIFY_MAX_SECONDS of it)")
+async def identify_hymn(audio: UploadFile = File(...)) -> IdentifyResponse:
+    """Synchronous, like ``/grade``: the melody decoder alone (pyin, no Basic Pitch, no separation)
+    on at most ``identify_max_seconds`` of the clip — cut with ffmpeg ``-t`` whatever its header
+    says — and then ``hymn_match.match``, whose thresholds are the transcriptions' own. About a
+    second of one core for a 15 s hum, in the threadpool and never in the job queue; at most
+    ``identify_concurrency`` at once, and a look-up that cannot get a slot within
+    ``identify_wait_seconds`` is a 503. The audio is deleted before the response is sent."""
+    suffix = Path(audio.filename or "hum.webm").suffix.lower()
+    if suffix not in ACCEPTED_SUFFIXES:
+        raise HTTPException(415, f"Unsupported audio format '{suffix}'.")
+    with tempfile.NamedTemporaryFile(prefix=TEMP_PREFIX, suffix=suffix, delete=False) as tmp:
+        tmp_path = Path(tmp.name)
+        written = 0
+        while chunk := await audio.read(1024 * 1024):
+            written += len(chunk)
+            if written > IDENTIFY_MAX_UPLOAD_BYTES:
+                tmp.close()
+                tmp_path.unlink(missing_ok=True)
+                raise HTTPException(413, "That recording is too large. Hum for up to 20 seconds.")
+            tmp.write(chunk)
+    if written == 0:
+        tmp_path.unlink(missing_ok=True)
+        raise HTTPException(422, "Empty audio upload.")
+    try:
+        return await run_in_threadpool(_identify_file, tmp_path)
+    except _IdentifyBusy:
+        raise HTTPException(503, IDENTIFY_BUSY_MESSAGE, headers={"Retry-After": str(IDENTIFY_BUSY_RETRY_SECONDS)})
+    finally:
+        tmp_path.unlink(missing_ok=True)
+
+
+def _identify_file(path: Path) -> IdentifyResponse:
+    import time
+
+    if not _identify_slots.acquire(timeout=settings.identify_wait_seconds):
+        logger.warning("hymn_identify outcome=busy")
+        raise _IdentifyBusy()
+    started = time.perf_counter()
+    try:
+        cap = settings.identify_max_seconds
+        try:
+            wav = _trim_head(path, cap)  # deletes ``path``
+        except Exception as ex:  # noqa: BLE001 - a clip we cannot decode is a client input error
+            logger.info("hymn_identify unreadable: %s", type(ex).__name__)
+            raise HTTPException(422, "This recording could not be read. Record it again and resend it.")
+        try:
+            notes, seconds = _hummed_notes(wav, cap)
+        finally:
+            wav.unlink(missing_ok=True)
+        result = _identify_notes(notes, seconds)
+        logger.info(
+            "hymn_identify outcome=%s notes=%d seconds=%.1f elapsed=%.2f%s",
+            "found" if result.match else "too_short" if result.too_short else "none",
+            result.notes_heard, seconds, time.perf_counter() - started,
+            f" slug={result.match.slug}" if result.match else "")
+        return result
+    finally:
+        _identify_slots.release()
+
+
+def _hummed_notes(wav: Path, cap: float) -> tuple[list[tuple[int, float, float]], float]:
+    """The notes (pitch, start s, length s) the melody decoder hears in at most ``cap`` seconds."""
+    from app.pipeline import vocal
+
+    try:
+        y, sr = librosa.load(str(wav), sr=vocal.SAMPLE_RATE, mono=True, duration=cap)
+    except Exception as ex:  # noqa: BLE001 - our own WAV; unreadable only if ffmpeg wrote nothing usable
+        logger.info("hymn_identify unreadable WAV: %s", type(ex).__name__)
+        raise HTTPException(422, "This recording could not be read. Record it again and resend it.")
+    seconds = float(len(y)) / sr if sr else 0.0
+    if seconds < 0.5 or not np.any(np.abs(y) > 1e-4):
+        return [], seconds
+    try:
+        analysis = vocal.analyse(y, sr)
+    except Exception as ex:  # noqa: BLE001 - a clip pyin cannot follow is simply one with no tune heard
+        logger.info("hymn_identify decode failed: %s", ex)
+        return [], seconds
+    return [(n.pitch, n.start, n.end - n.start) for n in analysis.notes if 0 <= n.pitch <= 127], seconds
+
+
+def _identify_notes(notes: list[tuple[int, float, float]], seconds: float) -> IdentifyResponse:
+    from app.pipeline import hymn_match
+
+    heard = len(notes)
+    if hymn_match.too_short(notes):
+        return IdentifyResponse(match=None, notes_heard=heard, too_short=True, seconds_heard=round(seconds, 2))
+    m = hymn_match.match(notes, seconds_per_unit=1.0)
+    found = None
+    if m is not None:
+        e = m.entry
+        kind = "incipit" if e.kind == "incipit" else "tune" if "/hymns/tunes/" in e.url else "hymn"
+        found = IdentifiedHymnDto(slug=e.slug, title=e.title, tune=e.tune, url=e.url, kind=kind,
+                                  confidence=m.confidence, first_line=_first_line(e.lyrics))
+    return IdentifyResponse(match=found, notes_heard=heard, too_short=False, seconds_heard=round(seconds, 2))
+
+
+def _first_line(lyrics: str) -> str | None:
+    """The opening words of an entry's underlay ("A-maz-ing grace! how sweet the sound" → "Amazing grace!
+    how sweet the sound"): syllables joined, melisma marks dropped, up to the first line's punctuation."""
+    text = re.sub(r"(?<=\w)[-‑]+(?=\w)", "", lyrics or "")
+    text = re.sub(r"[_‑]+", "", text)
+    words = text.split()
+    if not words:
+        return None
+    line: list[str] = []
+    for w in words:
+        line.append(w)
+        if len(line) >= 4 and re.search(r"[,;:.!?]$", w) or len(line) >= 10:
+            break
+    return " ".join(line).rstrip(",;:")
 
 
 @router.get("/jobs/{job_id}", response_model=JobResponse,

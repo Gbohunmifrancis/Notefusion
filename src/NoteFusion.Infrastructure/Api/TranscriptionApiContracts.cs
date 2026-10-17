@@ -22,6 +22,11 @@ internal sealed record GradeResponse(
     int Score, int Hits, int Near, int Wrong, int Missed, double TuningCents, double OffsetSec, int OctaveShift,
     string Summary, IReadOnlyList<GradeNote> Notes);
 
+/// <summary>POST /v1/identify's answer: the hymn a hummed clip is (or null), and what was heard.</summary>
+internal sealed record IdentifyResponse(IdentifiedHymn? Match, int NotesHeard, bool TooShort, double SecondsHeard);
+
+internal sealed record IdentifiedHymn(string Slug, string Title, string? Tune, string Url, string Kind, double Confidence, string? FirstLine);
+
 internal sealed record GradeTargetNote(int PitchMidi, double StartBeat, double DurBeats);
 
 internal sealed record GradeTarget(IReadOnlyList<GradeTargetNote> Notes, double TempoBpm, double LeadInSec);
@@ -180,6 +185,7 @@ internal sealed record WireNoteEvent(
 [JsonSerializable(typeof(ResolveLinkRequest))]
 [JsonSerializable(typeof(GradeResponse))]
 [JsonSerializable(typeof(GradeTarget))]
+[JsonSerializable(typeof(IdentifyResponse))]
 [JsonSerializable(typeof(HarmoniseRequest))]
 [JsonSerializable(typeof(HarmoniseResponse))]
 [JsonSerializable(typeof(JobResponse))]

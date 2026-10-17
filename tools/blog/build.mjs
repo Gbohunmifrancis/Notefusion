@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Builds the blog and hymn pages into web-site/ from content/ and, with --api, from the API's posts:
-//   web-site/blog/**, web-site/hymns/**   (wholly generated: rebuilt from scratch every time; tune pages at /hymns/tunes/<slug>)
+//   web-site/blog/**, web-site/hymns/**   (wholly generated: rebuilt from scratch every time; tune pages at /hymns/tunes/<slug>,
+//                                          the hum-to-find page at /hymns/identify)
 //   web-site/sitemap.xml                  (blog and hymn entries rebuilt, hand-written ones kept)
 //   web-site/index.html                   (only the "Latest from the blog" block between its markers)
 //   web-site/<IndexNow key>.txt
@@ -28,6 +29,7 @@ import { writeFile } from "./lib/util.mjs";
 import { preparePosts, renderPost, renderBlogIndex, renderTag, renderAuthor, renderHomeStrip, blogPagePath, HOME_START, HOME_END } from "./lib/render-blog.mjs";
 import { prepareHymn, renderHymn, renderHymnIndex, renderHymnCredits } from "./lib/render-hymns.mjs";
 import { prepareTune, renderTune } from "./lib/render-tunes.mjs";
+import { renderIdentify, IDENTIFY_PATH, IDENTIFY_UPDATED } from "./lib/render-identify.mjs";
 import { handWrittenEntries, sitemapXml, feedXml } from "./lib/sitemap-feed.mjs";
 import { DEFAULT_API_URL, fetchPublished, postsFromApi } from "./lib/api-posts.mjs";
 import { catalogueJson, sitePages } from "./lib/catalogue.mjs";
@@ -74,6 +76,8 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
   // Hymns
   put("/hymns", renderHymnIndex(hymns, tunePages));
   put("/hymns/credits", renderHymnCredits(hymns, tunePages));
+  if (hymns.some((h) => `/hymns/${h.slug}` === IDENTIFY_PATH)) throw new Error(`a hymn's slug clashes with ${IDENTIFY_PATH}, the hymn finder`);
+  put(IDENTIFY_PATH, renderIdentify({ hymns, tunes: tunePages }));
   for (const h of hymns) put(`/hymns/${h.slug}`, renderHymn(h, { hymns, posts }));
   for (const t of tunePages) put(t.view.url, renderTune(t, { hymns, posts }));
 
@@ -84,6 +88,7 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
     ...posts.map((p) => ({ loc: ORIGIN + p.url, lastmod: p.modified, changefreq: "monthly", priority: "0.7" })),
     ...Object.values(authors).map((a) => ({ loc: ORIGIN + a.url, lastmod: newest(posts.filter((p) => p.author === a.id).map((p) => p.modified)), changefreq: "monthly", priority: "0.3" })),
     { loc: ORIGIN + "/hymns", lastmod: newest([...hymns.map((h) => h.updated), ...tunePages.map((t) => t.updated)]), changefreq: "weekly", priority: "0.8" },
+    { loc: ORIGIN + IDENTIFY_PATH, lastmod: IDENTIFY_UPDATED, changefreq: "monthly", priority: "0.8" },
     { loc: ORIGIN + "/hymns/credits", lastmod: newest([...hymns.map((h) => h.updated), ...tunePages.map((t) => t.updated)]), changefreq: "monthly", priority: "0.3" },
     ...hymns.map((h) => ({ loc: `${ORIGIN}/hymns/${h.slug}`, lastmod: h.updated, changefreq: "monthly", priority: "0.7" })),
     ...tunePages.map((t) => ({ loc: ORIGIN + t.view.url, lastmod: t.updated, changefreq: "monthly", priority: "0.5" })),

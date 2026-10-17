@@ -129,6 +129,22 @@ test("a hymn page: the engine's solfa as text, MusicComposition JSON-LD, the sco
   assert.equal(data.notes.length, 32);
 });
 
+test("the hum-to-find page: a WebApplication with its FAQ, the recorder and the finder's script, linked and in the sitemap", () => {
+  const html = read("hymns/identify/index.html");
+  assert.match(html, /<title>Find a Hymn by Humming It — Hum to Find a Hymn \| NoteFusion<\/title>/);
+  assert.match(html, /<link rel="canonical" href="https:\/\/notefusion\.studio\/hymns\/identify">/);
+  const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
+  const app = ld.find((d) => d["@type"] === "WebApplication");
+  assert.equal(app.url, "https://notefusion.studio/hymns/identify");
+  assert.equal(app.isAccessibleForFree, true);
+  assert.ok(ld.find((d) => d["@type"] === "FAQPage").mainEntity.length >= 3);
+  assert.match(html, /<script src="\/assets\/recorder\.js\?v=\d+" defer><\/script>\n<script src="\/assets\/hymn-identify\.js\?v=\d+" defer><\/script>/);
+  assert.match(html, /id="identify-record"[^>]*disabled/, "the button waits for the script");
+  assert.match(read("hymns/index.html"), /<a href="\/hymns\/identify"/);
+  assert.match(read("hymns/amazing-grace/index.html"), /<a href="\/hymns\/identify">Hum to find a hymn<\/a>/);
+  assert.match(read("sitemap.xml"), /<loc>https:\/\/notefusion\.studio\/hymns\/identify<\/loc>\n\s*<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/);
+});
+
 test("the home page shows the newest posts between its markers", () => {
   const html = read("index.html");
   const block = html.slice(html.indexOf("<!-- blog-latest:start -->"), html.indexOf("<!-- blog-latest:end -->"));
