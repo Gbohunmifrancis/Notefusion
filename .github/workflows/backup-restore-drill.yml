@@ -149,7 +149,23 @@ jobs:
         id: pitr
         if: steps.cfg.outputs.configured == 'true' && (github.event_name == 'schedule' || inputs.pitr)
         run: |
-          target=$(date -u -d '-20 minutes' '+%Y-%m-%d %H:%M:%S+00')
+          # 20 minutes ago, or (on a setup younger than that) 90 s after the first base backup finished;
+          # a setup only minutes old has nothing to replay yet, which is not a failure.
+          now=$(date -u +%s)
+          first=$(docker run --rm --env-file "$RUNNER_TEMP/backup.env" "$BACKUP_IMAGE" \
+            nf-backup-env wal-g backup-list --detail --json | jq -r 'sort_by(.finish_time) | first | .finish_time // empty')
+          [ -n "$first" ] || { echo "::error::No base backup in the bucket yet (nf-backup-run base)."; exit 1; }
+          at=$((now - 20 * 60))
+          first_epoch=$(date -u -d "$first" +%s)
+          if [ "$at" -le "$first_epoch" ]; then
+            at=$((first_epoch + 90))
+            if [ "$at" -gt $((now - 120)) ]; then
+              echo "::warning::The first base backup ($first) is too new to replay to a point after it; the next drill will."
+              echo "result=too new" >>"$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+          target=$(date -u -d "@$at" '+%Y-%m-%d %H:%M:%S+00')
           echo "target: $target"
           docker volume create nf-pitr >/dev/null
           docker run --rm --env-file "$RUNNER_TEMP/backup.env" -v nf-pitr:/restore "$BACKUP_IMAGE" \
@@ -163,13 +179,13 @@ jobs:
           LOGICAL: ${{ steps.logical.outcome }}
           INVARIANTS: ${{ steps.invariants.outcome }}
           MIGRATIONS: ${{ steps.migrations.outcome }}
-          PITR: ${{ steps.pitr.outcome }}
+          PITR: ${{ steps.pitr.outputs.result || steps.pitr.outcome }}
           STARTED_AT: ${{ steps.cfg.outputs.started_at }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           ok=true
           for o in "$LOGICAL" "$INVARIANTS" "$MIGRATIONS"; do [ "$o" = success ] || ok=false; done
-          case "$PITR" in success | skipped | "") ;; *) ok=false ;; esac
+          case "$PITR" in success | skipped | "too new" | "") ;; *) ok=false ;; esac
           rows="?"
           [ -f "$RUNNER_TEMP/out/report.json" ] && rows=$(jq -r '"\(.tables_restored) tables, \(.rows_restored) rows"' "$RUNNER_TEMP/out/report.json")
           summary="logical restore: $LOGICAL ($rows) · invariants: $INVARIANTS · migrations: $MIGRATIONS · point-in-time: ${PITR:-skipped}"
