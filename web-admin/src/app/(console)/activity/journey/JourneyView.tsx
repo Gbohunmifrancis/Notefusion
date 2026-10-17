@@ -81,8 +81,8 @@ export function JourneyView() {
               <div className="flex flex-wrap gap-2">
                 <Badge tone="neutral">{`${j.sessions} visits`}</Badge>
                 <Badge tone="neutral">{`${j.pageviews} pages viewed`}</Badge>
-                <Badge tone="blue">{`${j.transcriptions} transcriptions`}</Badge>
-                <Badge tone="premium">{`${j.payments} payment attempts`}</Badge>
+                <Badge tone="neutral">{`${j.transcriptions} transcriptions`}</Badge>
+                <Badge tone="neutral">{`${j.payments} payment attempts`}</Badge>
                 <Badge tone="neutral">{`${j.visitorIds.length} browsers · ${j.deviceHashes.length} devices`}</Badge>
               </div>
 

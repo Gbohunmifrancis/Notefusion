@@ -437,7 +437,7 @@
         tempo = opts.tempoBpm || 100; ts = opts.timeSignature || "4/4";
         voices = (opts.voices || []).map(function (v) {
           var g = ctx.createGain(); g.gain.value = v.gain == null ? 1 : v.gain; g.connect(master);
-          return { name: v.name, notes: v.notes || [], on: v.on !== false, gainNode: g, full: g.gain.value };
+          return { name: v.name, notes: v.notes || [], on: v.on !== false, gainNode: g, full: g.gain.value, level: 1 };
         });
         this.stop();
         rebuild();
@@ -483,7 +483,9 @@
         if (loop.end <= loop.start + 1e-6) loop = null;
         if (loop && playing) { var b = nowBeat(); if (b < loop.start || b >= loop.end) { startBeat = loop.start; startCtxTime = ctx.currentTime; cursorIdx = firstIndexAt(loop.start); } }
       },
-      setVoiceOn: function (name, on) { voices.forEach(function (v) { if (v.name === name) { v.on = on; v.gainNode.gain.setTargetAtTime(on ? v.full : 0, ctx.currentTime, 0.02); } }); },
+      setVoiceOn: function (name, on) { voices.forEach(function (v) { if (v.name === name) { v.on = on; v.gainNode.gain.setTargetAtTime(on ? v.full * v.level : 0, ctx.currentTime, 0.02); } }); },
+      /** A voice's loudness against its own (1 = as loaded, 0.25 = soft under another part), mid-note. */
+      setVoiceLevel: function (name, level) { voices.forEach(function (v) { if (v.name === name) { v.level = level; v.gainNode.gain.setTargetAtTime(v.on ? v.full * level : 0, ctx.currentTime, 0.02); } }); },
       barCount: function () { return bars; },
       onTick: function (cb) { tickCb = cb; },
       beat: function () { return nowBeat(); }

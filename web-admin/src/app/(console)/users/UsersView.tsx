@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getUsers } from "@/api/endpoints";
 import type { AdminUserRow } from "@/api/types";
 import { Avatar } from "@/components/Avatar";
+import { Badge } from "@/components/Badge";
 import { SendEmailDialog, type SendEmailTarget } from "@/components/SendEmailDialog";
 import { StateView } from "@/components/StateView";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,6 @@ import {
   formatInstantDate,
   formatInstantDateTime,
   formatRelative,
-  getFlagEmoji,
 } from "@/lib/format";
 import { getReportingOffset } from "@/lib/reporting";
 import { useClampPage } from "@/lib/useClampPage";
@@ -117,43 +117,13 @@ function LastSeenCell({
 }
 
 function PlanBadge({ user }: { user: AdminUserRow }) {
-  if (!user.hasProAccess) {
-    return (
-      <span className="inline-flex items-center rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-zinc-800 dark:text-zinc-300">
-        Free
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center rounded bg-blue-50 px-2 py-0.5 text-xs font-medium text-[#2563EB] dark:bg-blue-950/60 dark:text-blue-400">
-      Pro
-    </span>
-  );
+  return user.hasProAccess ? <Badge tone="premium">Pro</Badge> : <Badge>Free</Badge>;
 }
 
 function StatusBadge({ user, online }: { user: AdminUserRow; online: boolean }) {
-  if (online) {
-    return (
-      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-        Online
-      </span>
-    );
-  }
-  if (user.isActive) {
-    return (
-      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-        Active
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-950/50 dark:text-amber-400">
-      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-      Suspended
-    </span>
-  );
+  if (online) return <Badge tone="success">Online</Badge>;
+  if (user.isActive) return <Badge>Active</Badge>;
+  return <Badge tone="danger">Suspended</Badge>;
 }
 
 export function UsersView() {
@@ -288,7 +258,7 @@ export function UsersView() {
             variant="outline"
             size="sm"
             onClick={handleExport}
-            className="h-9 gap-1.5 rounded-lg border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs hover:bg-slate-50 dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200 dark:hover:bg-zinc-900"
+            className="h-9 gap-1.5 rounded-lg border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs hover:bg-slate-50 dark:border-zinc-800 dark:bg-input dark:text-zinc-200 dark:hover:bg-zinc-900"
           >
             <Download size={14} />
             Export
@@ -313,7 +283,7 @@ export function UsersView() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative w-full max-w-xs">
           <Search
-            size={15}
+            size={16}
             className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
           />
           <Input
@@ -321,7 +291,7 @@ export function UsersView() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by name or email..."
-            className="h-9 w-full rounded-lg border border-slate-200/90 bg-white pl-9 text-xs shadow-xs placeholder:text-slate-400 focus:border-[#2563EB] dark:border-zinc-800 dark:bg-[#09090b] dark:text-white"
+            className="h-9 w-full rounded-lg border border-slate-200/90 bg-white pl-9 text-xs shadow-xs placeholder:text-slate-400 focus:border-[#2563EB] dark:border-zinc-800 dark:bg-input dark:text-white"
           />
         </div>
 
@@ -329,7 +299,7 @@ export function UsersView() {
           <select
             value={planFilter}
             onChange={(e) => setPlanFilter(e.target.value)}
-            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-input dark:text-zinc-200"
           >
             <option value="all">All plans</option>
             <option value="pro">Pro</option>
@@ -339,7 +309,7 @@ export function UsersView() {
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as StatusFilter)}
-            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-input dark:text-zinc-200"
           >
             <option value="all">All status</option>
             <option value="active">Active</option>
@@ -350,7 +320,7 @@ export function UsersView() {
             value={lastSeen}
             onChange={(e) => setLastSeen(e.target.value as LastSeenFilter)}
             aria-label="Filter by last seen"
-            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-input dark:text-zinc-200"
           >
             {LAST_SEEN_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
@@ -363,13 +333,13 @@ export function UsersView() {
             value={sort}
             onChange={(e) => setSort(e.target.value as "newest" | "lastSeen")}
             aria-label="Sort users"
-            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-input dark:text-zinc-200"
           >
             <option value="newest">Newest accounts</option>
             <option value="lastSeen">Recently seen</option>
           </select>
 
-          <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200">
+          <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs dark:border-zinc-800 dark:bg-input dark:text-zinc-200">
             <input
               type="checkbox"
               checked={showTeam}
@@ -382,7 +352,7 @@ export function UsersView() {
       </div>
 
       {/* TABLE CARD MATCHING MOCKUP */}
-      <div className="rounded-xl border border-slate-200/80 bg-white shadow-xs dark:border-zinc-800 dark:bg-[#09090b] overflow-hidden">
+      <div className="nf-panel overflow-hidden">
         <StateView
           state={state}
           isEmpty={() => items.length === 0}
@@ -451,8 +421,13 @@ export function UsersView() {
                                   href={`/users/${user.id}`}
                                   className="truncate font-semibold text-slate-900 transition hover:text-[#2563EB] dark:text-slate-100 dark:hover:text-blue-400"
                                 >
-                                  {user.fullName} {getFlagEmoji(user.country)}
+                                  {user.fullName}
                                 </Link>
+                                {user.country && (
+                                  <span className="text-xs text-muted-foreground" title={user.country}>
+                                    {user.country.toUpperCase()}
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </td>
@@ -460,7 +435,7 @@ export function UsersView() {
                             {user.email}
                           </td>
                           <td className="px-4 py-3">
-                            <span className="inline-flex items-center gap-1.5"><PlanBadge user={user} />{user.isInternal && <span className="rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:bg-amber-950/50 dark:text-amber-400" title="Admin or team/test account: left out of analytics">Team</span>}</span>
+                            <span className="inline-flex items-center gap-1.5"><PlanBadge user={user} />{user.isInternal && <Badge title="Admin or team/test account: left out of analytics">Team</Badge>}</span>
                           </td>
                           <td className="px-4 py-3">
                             <StatusBadge user={user} online={online} />
@@ -488,7 +463,7 @@ export function UsersView() {
                                   setEmailDialogOpen(true);
                                 }}
                               >
-                                <Mail size={13} />
+                                <Mail size={14} />
                               </Button>
                               <Button
                                 asChild
@@ -498,7 +473,7 @@ export function UsersView() {
                                 title="Manage user"
                               >
                                 <Link href={`/users/${user.id}`}>
-                                  <MoreHorizontal size={15} />
+                                  <MoreHorizontal size={16} />
                                 </Link>
                               </Button>
                             </div>

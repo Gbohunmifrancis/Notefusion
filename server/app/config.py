@@ -65,6 +65,13 @@ class Settings:
     #: in memory until the TTL. Past this many megabytes of it, the oldest results the API has
     #: already been told about (and banked) lose those two fields; the notes and scores stay.
     result_audio_budget_mb: float = float(os.getenv("NF_RESULT_AUDIO_BUDGET_MB", "256"))
+    #: "Hum to find a hymn" (``POST /v1/identify``): the most of a hummed clip that is read.
+    identify_max_seconds: float = float(os.getenv("NF_IDENTIFY_MAX_SECONDS", "20"))
+    #: Hymn look-ups decoded at once (about a second of one core each for a 15 s hum, in the
+    #: threadpool, beside the job queue's workers); the rest wait ``identify_wait_seconds`` for
+    #: a slot and are then turned away with a 503, so a crowd of them cannot starve a transcription.
+    identify_concurrency: int = max(1, int(os.getenv("NF_IDENTIFY_CONCURRENCY", "2")))
+    identify_wait_seconds: float = float(os.getenv("NF_IDENTIFY_WAIT_SECONDS", "8"))
 
     @property
     def audio_limit_seconds(self) -> float:

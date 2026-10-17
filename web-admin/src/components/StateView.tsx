@@ -1,8 +1,10 @@
 import { AlertTriangle, Inbox, Loader2 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { ApiError } from "@/api/client";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 /**
  * The three non-success states, in one place so every panel reports them the same way.
@@ -17,16 +19,35 @@ export function LoadingView({ label = "Loading" }: { label?: string }) {
       className="flex items-center justify-center gap-2 py-12 text-sm text-muted-foreground"
       role="status"
     >
-      <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+      <Loader2 size={16} className="animate-spin" aria-hidden="true" />
       {label}…
     </div>
   );
 }
 
-export function EmptyView({ message, hint }: { message: string; hint?: string }) {
+/**
+ * "Nothing here yet": a quiet icon, the message, and a line on what will fill the space.
+ * `compact` drops the padding for a panel that is short to begin with.
+ */
+export function EmptyView({
+  message,
+  hint,
+  icon: Icon = Inbox,
+  compact = false,
+}: {
+  message: string;
+  hint?: string;
+  icon?: LucideIcon;
+  compact?: boolean;
+}) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-      <Inbox size={26} className="text-faint" aria-hidden="true" />
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center gap-2 text-center",
+        compact ? "py-6" : "py-12",
+      )}
+    >
+      <Icon size={20} aria-hidden="true" className="mb-1 text-faint" />
       <p className="text-sm font-medium text-foreground">{message}</p>
       {hint && <p className="max-w-sm text-xs text-muted-foreground">{hint}</p>}
     </div>
@@ -52,7 +73,7 @@ export function ErrorView({
       className="flex flex-col items-center justify-center gap-2 py-12 text-center"
       role="alert"
     >
-      <AlertTriangle size={26} className="text-danger" aria-hidden="true" />
+      <AlertTriangle size={20} aria-hidden="true" className="mb-1 text-danger" />
       <p className="text-sm font-medium text-foreground">{error.message}</p>
       {code && (
         <p className="font-mono text-xs text-muted-foreground">
@@ -67,7 +88,7 @@ export function ErrorView({
           size="sm"
           onClick={onRetry}
           disabled={retrying}
-          className="mt-2 rounded-pill text-xs font-semibold"
+          className="mt-2 text-xs"
         >
           {retrying && <Loader2 className="animate-spin" aria-hidden="true" />}
           {retrying ? "Retrying…" : "Try again"}

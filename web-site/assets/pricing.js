@@ -93,21 +93,15 @@
       .finally(function () { button.disabled = false; button.textContent = label; });
   }
 
+  /** A tick from the site's icon sprite (Lucide, /assets/icons.svg). */
   function checkIcon() {
-    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "17");
-    svg.setAttribute("height", "17");
-    svg.setAttribute("viewBox", "0 0 24 24");
-    svg.setAttribute("fill", "none");
-    svg.setAttribute("stroke", "currentColor");
-    svg.setAttribute("stroke-width", "2.6");
-    svg.setAttribute("stroke-linecap", "round");
-    svg.setAttribute("stroke-linejoin", "round");
+    var NS = "http://www.w3.org/2000/svg";
+    var svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("class", "ic ic-16");
     svg.setAttribute("aria-hidden", "true");
-
-    var tick = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    tick.setAttribute("points", "20 6 9 17 4 12");
-    svg.appendChild(tick);
+    var use = document.createElementNS(NS, "use");
+    use.setAttribute("href", "/assets/icons.svg#i-check");
+    svg.appendChild(use);
     return svg;
   }
 
@@ -126,8 +120,7 @@
 
   function action(label, featured, source, href, plan) {
     var wrapper = document.createElement("div");
-    wrapper.style.cssText = "display:flex;flex-direction:column;gap:10px;margin-top:4px;";
-    var cls = "btn " + (featured ? "btn-primary btn--primary" : "btn-ghost btn--ghost");
+    var cls = "btn " + (featured ? "btn-primary" : "btn-secondary");
     var control;
     if (plan) {
       control = document.createElement("button");
@@ -208,7 +201,7 @@
 
     var blurb = document.createElement("p");
     blurb.className = "blurb";
-    blurb.textContent = "Whole songs, four parts, every download — for the choir that rehearses every week.";
+    blurb.textContent = "Whole songs, four parts and every download, for the choir that rehearses every week.";
     card.appendChild(blurb);
 
     // One payment buys one period; nothing is charged again unless you start a new checkout.
@@ -245,7 +238,7 @@
     message.textContent =
       "We couldn't confirm your location, so we won't guess which price applies to you.";
     var retry = document.createElement("button");
-    retry.className = "btn btn--ghost";
+    retry.className = "btn btn-secondary";
     retry.type = "button";
     retry.textContent = "Try again";
     retry.addEventListener("click", load);

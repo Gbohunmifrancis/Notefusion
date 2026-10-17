@@ -107,7 +107,7 @@ export function DonutCard({
                   style={{ backgroundColor: slice.color }}
                 />
                 <span className="truncate text-muted-foreground">{slice.label}</span>
-                {slice.hint && <InfoHint text={slice.hint} size={11} />}
+                {slice.hint && <InfoHint text={slice.hint} />}
               </span>
               <span className="shrink-0 font-semibold tabular-nums text-foreground">
                 {slice.display ?? formatCount(slice.value)}

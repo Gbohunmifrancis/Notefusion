@@ -229,12 +229,3 @@ export function reportingDayStartUtc(date: string, offsetMinutes: number): strin
   const midnight = Date.UTC(parts.year, parts.month - 1, parts.day);
   return new Date(midnight - offsetMinutes * 60_000).toISOString();
 }
-
-export function getFlagEmoji(countryCode: string | null | undefined): string {
-  if (!countryCode || countryCode.length !== 2) return "";
-  const codePoints = countryCode
-    .toUpperCase()
-    .split("")
-    .map((char) => 127397 + char.charCodeAt(0));
-  return String.fromCodePoint(...codePoints);
-}

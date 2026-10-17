@@ -27,12 +27,9 @@ export function PageHeader({ title, subtitle, breadcrumb, actions }: PageHeaderP
   const last = breadcrumb.length - 1;
 
   return (
-    <header className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
+    <header className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
       <div className="min-w-0">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          {title}
-        </h1>
-        {subtitle && <p className="mt-1 text-xs sm:text-[13px] text-muted-foreground">{subtitle}</p>}
+        {/* The trail sits above the title: where you are, small and quiet, then what this page is. */}
         {/*
           No crumb is a link. The trail says where the page sits in the console rather than
           offering a way back up — "Dashboard / Overview" has no "Dashboard" page to visit — and
@@ -40,16 +37,14 @@ export function PageHeader({ title, subtitle, breadcrumb, actions }: PageHeaderP
           gets `BreadcrumbPage`, which carries `aria-current="page"`; putting that on all of them
           would announce several current pages.
         */}
-        <Breadcrumb className="mt-1.5">
-          <BreadcrumbList className="gap-1.5 text-xs text-faint sm:gap-1.5">
+        <Breadcrumb>
+          <BreadcrumbList className="gap-1.5 text-xs text-muted-foreground sm:gap-1.5">
             {breadcrumb.map((crumb, index) => (
               <Fragment key={crumb}>
-                {index > 0 && <BreadcrumbSeparator>/</BreadcrumbSeparator>}
+                {index > 0 && <BreadcrumbSeparator className="text-faint">/</BreadcrumbSeparator>}
                 <BreadcrumbItem>
                   {index === last ? (
-                    <BreadcrumbPage className="font-normal text-muted-foreground">
-                      {crumb}
-                    </BreadcrumbPage>
+                    <BreadcrumbPage className="text-muted-foreground">{crumb}</BreadcrumbPage>
                   ) : (
                     crumb
                   )}
@@ -58,6 +53,10 @@ export function PageHeader({ title, subtitle, breadcrumb, actions }: PageHeaderP
             ))}
           </BreadcrumbList>
         </Breadcrumb>
+        <h1 className="mt-1 text-2xl font-semibold leading-tight tracking-[-0.02em] text-foreground">
+          {title}
+        </h1>
+        {subtitle && <p className="mt-1 max-w-3xl text-sm text-muted-foreground">{subtitle}</p>}
       </div>
 
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}

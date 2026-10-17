@@ -29,7 +29,6 @@ import { useEffect, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 
 import { Avatar } from "@/components/Avatar";
-import { BrandMark } from "@/components/BrandMark";
 import { LiveNotices } from "@/components/LiveNotices";
 import { NotificationBell } from "@/components/NotificationBell";
 import { Button } from "@/components/ui/button";
@@ -49,6 +48,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/auth";
+import { cn } from "@/lib/utils";
 
 const PRIMARY_NAV = [
   { to: "/", label: "Overview", icon: LayoutDashboard },
@@ -83,6 +83,13 @@ function userInitials(name: string): string {
   return (parts[0][0]! + parts[parts.length - 1]![0]!).toUpperCase();
 }
 
+/**
+ * The console's frame: a sidebar (the app icon, the wordmark, an "Admin" marker, the nav, and who
+ * is signed in), a top bar, and the plain page every view sits on.
+ *
+ * Colours come from the theme tokens in src/app/globals.css, never from a hex here, so Day and
+ * Night both follow.
+ */
 export function ConsoleShell({ children }: { children: ReactNode }) {
   const { user, avatarUrl } = useAuth();
   const router = useRouter();
@@ -102,86 +109,87 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar
-        collapsible="icon"
-        className="border-r border-slate-200/80 bg-white text-slate-900 transition-colors duration-200 dark:border-zinc-800/80 dark:bg-[#050505] dark:text-white"
-      >
-        <SidebarHeader className="h-16 justify-center border-b border-slate-200/80 px-5 transition-colors duration-200 group-data-[collapsible=icon]:px-2 dark:border-zinc-800/80">
-          <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white shadow-sm">
-              <BrandMark size={18} className="text-white" />
-            </div>
-            <span className="truncate text-base font-bold tracking-tight text-slate-900 transition-colors group-data-[collapsible=icon]:hidden dark:text-white">
-              NoteFusion
+      <Sidebar collapsible="icon" className="border-r border-sidebar-border">
+        <SidebarHeader className="h-14 justify-center border-b border-sidebar-border px-3 py-0">
+          <Link
+            href="/"
+            aria-label="NoteFusion Admin — Overview"
+            className="flex items-center gap-2.5 rounded-[8px] px-1.5 py-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+          >
+            {/* The launcher icon itself (web-site/assets/icon-192.png), not a redrawing of it. A
+                plain <img>: a 14 KB local PNG at a fixed size gains nothing from next/image. */}
+            <img
+              src="/brand/app-icon-192.png"
+              alt=""
+              width={28}
+              height={28}
+              className="size-7 shrink-0 rounded-[7px]"
+            />
+            <span className="flex min-w-0 items-center gap-2 group-data-[collapsible=icon]:hidden">
+              <span className="font-wordmark text-[17px] leading-none text-foreground">NoteFusion</span>
+              <span className="rounded-[5px] border border-border px-1.5 py-px text-[11px] font-medium leading-4 text-muted-foreground">
+                Admin
+              </span>
             </span>
           </Link>
         </SidebarHeader>
 
         <ConsoleNav />
 
-        <SidebarFooter className="border-t border-slate-200/80 p-3 space-y-2 transition-colors duration-200 dark:border-zinc-800/80">
-          <div className="flex items-center gap-2.5 px-2 py-1.5 group-data-[collapsible=icon]:hidden">
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-[#2563EB] text-white text-[10px] font-bold">
-              <BrandMark size={14} className="text-white" />
-            </div>
-            <div className="min-w-0">
-              <p className="truncate text-xs font-semibold text-slate-800 dark:text-slate-200">NoteFusion</p>
-              <p className="truncate text-[10px] text-slate-400">Music transcription & solfa notation.</p>
-            </div>
-          </div>
-          <SignOutItem />
+        <SidebarFooter className="border-t border-sidebar-border p-2">
+          <SignedInCard name={user?.fullName || firstName || "Admin"} email={user?.email ?? ""} />
         </SidebarFooter>
       </Sidebar>
 
       <SidebarInset className="min-w-0 w-full overflow-x-hidden">
         {/* TOP BAR */}
-        <header className="sticky top-0 z-20 flex h-16 items-center border-b border-slate-200/80 bg-white/95 px-4 backdrop-blur-md sm:px-6 lg:px-8 dark:border-zinc-800/80 dark:bg-black/90">
+        <header className="sticky top-0 z-20 flex h-14 items-center border-b border-border bg-background px-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-7xl items-center">
-            <SidebarTrigger className="mr-3 size-9 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-zinc-900 dark:hover:text-white" />
+            <SidebarTrigger className="mr-3 size-8 rounded-[8px] text-muted-foreground hover:bg-accent hover:text-foreground" />
 
             <form onSubmit={onSearch} className="relative w-full max-w-md">
               <Search
                 size={16}
-                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                aria-hidden="true"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
               />
               <input
                 name="q"
                 type="search"
+                aria-label="Search users"
                 placeholder="Search users, transactions, or anything..."
-                className="h-9.5 w-full rounded-lg border border-slate-200/90 bg-slate-50/70 pl-10 pr-4 text-xs sm:text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#2563EB] focus:bg-white focus:ring-2 focus:ring-blue-100 dark:border-zinc-800 dark:bg-zinc-950/80 dark:text-white dark:focus:bg-black dark:focus:ring-blue-900/30"
+                className="h-8 w-full rounded-[8px] border border-border bg-card pl-9 pr-3 text-xs text-foreground outline-none transition-colors placeholder:text-faint focus:border-ring sm:text-sm"
               />
             </form>
 
-            <div className="ml-auto flex items-center gap-3">
+            <div className="ml-auto flex items-center gap-2">
               <LiveNotices />
 
               <ThemeToggle />
 
               <NotificationBell />
 
-              <div className="h-6 w-px bg-slate-200 dark:bg-zinc-800" />
+              <div className="h-6 w-px bg-border" />
 
               <div className="flex items-center gap-2.5">
                 {avatarUrl ? (
                   <Avatar name={user?.fullName || user?.email || "Admin"} src={avatarUrl} size={32} />
                 ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-[#2563EB] shadow-xs dark:bg-blue-950 dark:text-blue-300">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-medium text-foreground ring-1 ring-inset ring-border">
                     {userInitials(user?.fullName || user?.email || "Admin")}
                   </div>
                 )}
 
                 <div className="hidden sm:flex items-center gap-1.5 cursor-pointer">
-                  <span className="text-xs font-semibold text-slate-800 dark:text-slate-100">
-                    {firstName}
-                  </span>
-                  <ChevronDown size={14} className="text-slate-400" />
+                  <span className="text-[13px] font-medium text-foreground">{firstName}</span>
+                  <ChevronDown size={14} aria-hidden="true" className="text-faint" />
                 </div>
               </div>
             </div>
           </div>
         </header>
 
-        <div className="min-h-[calc(100vh-4rem)] w-full min-w-0 bg-[#FAFAFA] px-4 py-6 text-slate-900 sm:px-6 sm:py-7 lg:px-8 dark:bg-black dark:text-slate-100">
+        <div className="min-h-[calc(100vh-3.5rem)] w-full min-w-0 bg-background px-4 py-6 text-foreground sm:px-6 sm:py-8 lg:px-8">
           <div className="mx-auto w-full min-w-0 max-w-7xl space-y-6">{children}</div>
         </div>
       </SidebarInset>
@@ -189,91 +197,96 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * One nav entry. The page you are on is a neutral raised row with its icon in brand blue; the
+ * rest are quiet until pointed at.
+ */
+function NavItem({
+  to,
+  label,
+  icon: Icon,
+  active,
+}: {
+  to: string;
+  label: string;
+  icon: (typeof PRIMARY_NAV)[number]["icon"];
+  active: boolean;
+}) {
+  const { setOpenMobile } = useSidebar();
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        asChild
+        isActive={active}
+        tooltip={label}
+        className={cn(
+          "h-8 rounded-[6px] px-2.5 text-[13px] font-medium transition-colors",
+          active
+            ? "bg-sidebar-accent text-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-foreground"
+            : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground",
+        )}
+      >
+        <Link href={to} onClick={() => setOpenMobile(false)} className="flex items-center gap-2.5">
+          <Icon
+            size={16}
+            className={active ? "text-brand" : "text-faint"}
+            aria-hidden="true"
+          />
+          <span>{label}</span>
+        </Link>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  );
+}
+
 function ConsoleNav() {
   const pathname = usePathname();
-  const { setOpenMobile } = useSidebar();
 
   return (
-    <SidebarContent className="px-3 py-4 space-y-5">
+    <SidebarContent className="gap-4 px-2 py-3">
       <SidebarGroup className="p-0">
-        <SidebarMenu className="gap-1">
-          {PRIMARY_NAV.map(({ to, label, icon: Icon }) => {
-            const active = isActivePath(pathname, to);
-            return (
-              <SidebarMenuItem key={to}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={active}
-                  tooltip={label}
-                  className={`h-9.5 rounded-lg px-3 text-sm font-medium transition ${
-                    active
-                      ? "bg-[#EFF6FF] text-[#2563EB] font-semibold dark:bg-blue-950/50 dark:text-blue-400 hover:bg-[#EFF6FF] hover:text-[#2563EB]"
-                      : "text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/40 dark:hover:text-slate-100"
-                  }`}
-                >
-                  <Link href={to} onClick={() => setOpenMobile(false)} className="flex items-center gap-3">
-                    <Icon
-                      size={18}
-                      className={active ? "text-[#2563EB] dark:text-blue-400" : "text-slate-500 dark:text-slate-400"}
-                      aria-hidden="true"
-                    />
-                    <span>{label}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            );
-          })}
+        <SidebarMenu className="gap-0.5">
+          {PRIMARY_NAV.map(({ to, label, icon }) => (
+            <NavItem key={`${to}-${label}`} to={to} label={label} icon={icon} active={isActivePath(pathname, to)} />
+          ))}
         </SidebarMenu>
       </SidebarGroup>
 
-      <SidebarGroup className="p-0 pt-2 border-t border-slate-100 dark:border-slate-800/60">
-        <SidebarGroupLabel className="mb-1 px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-          Operations
-        </SidebarGroupLabel>
-        <SidebarMenu className="gap-1">
-          {SECONDARY_NAV.map(({ to, label, icon: Icon }) => {
-            const active = isActivePath(pathname, to);
-            return (
-              <SidebarMenuItem key={to}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={active}
-                  tooltip={label}
-                  className={`h-9 rounded-lg px-3 text-xs font-medium transition ${
-                    active
-                      ? "bg-[#EFF6FF] text-[#2563EB] font-semibold dark:bg-blue-950/50 dark:text-blue-400 hover:bg-[#EFF6FF] hover:text-[#2563EB]"
-                      : "text-slate-500 hover:bg-slate-100/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/40 dark:hover:text-slate-100"
-                  }`}
-                >
-                  <Link href={to} onClick={() => setOpenMobile(false)} className="flex items-center gap-2.5">
-                    <Icon
-                      size={16}
-                      className={active ? "text-[#2563EB] dark:text-blue-400" : "text-slate-400"}
-                      aria-hidden="true"
-                    />
-                    <span>{label}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            );
-          })}
+      <SidebarGroup className="p-0">
+        <SidebarGroupLabel className="h-7 px-2.5 text-xs font-medium text-faint">Operations</SidebarGroupLabel>
+        <SidebarMenu className="gap-0.5">
+          {SECONDARY_NAV.map(({ to, label, icon }) => (
+            <NavItem key={`${to}-${label}`} to={to} label={label} icon={icon} active={isActivePath(pathname, to)} />
+          ))}
         </SidebarMenu>
       </SidebarGroup>
     </SidebarContent>
   );
 }
 
-function SignOutItem() {
+/** Who is at the desk, and the way out. Collapsed to an icon, only the way out stays. */
+function SignedInCard({ name, email }: { name: string; email: string }) {
   const { signOut } = useAuth();
 
   return (
-    <button
-      onClick={() => void signOut()}
-      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-slate-500 transition hover:bg-slate-100/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/40 dark:hover:text-slate-100"
-    >
-      <LogOut size={16} aria-hidden="true" />
-      <span>Sign out</span>
-    </button>
+    <div className="flex items-center gap-2.5 rounded-[8px] px-1.5 py-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+      <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-[11px] font-medium text-foreground ring-1 ring-inset ring-border group-data-[collapsible=icon]:hidden">
+        {userInitials(name)}
+      </div>
+      <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+        <p className="truncate text-[13px] font-medium text-foreground" title={name}>{name}</p>
+        {email && <p className="truncate text-xs text-muted-foreground" title={email}>{email}</p>}
+      </div>
+      <button
+        type="button"
+        onClick={() => void signOut()}
+        aria-label="Sign out"
+        title="Sign out"
+        className="flex size-8 shrink-0 items-center justify-center rounded-[6px] text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
+      >
+        <LogOut size={16} aria-hidden="true" />
+      </button>
+    </div>
   );
 }
 
@@ -292,10 +305,10 @@ function ThemeToggle() {
       size="icon"
       onClick={() => setTheme(dark ? "light" : "dark")}
       disabled={!mounted}
-      className="size-8 shrink-0 text-slate-500 hover:text-slate-900 disabled:opacity-100 dark:text-slate-400 dark:hover:text-white"
+      className="size-8 shrink-0 text-muted-foreground hover:text-foreground disabled:opacity-100"
       {...(mounted ? { title: label, "aria-label": label } : { "aria-label": "Switch theme" })}
     >
-      {mounted ? dark ? <Sun size={17} aria-hidden="true" /> : <Moon size={17} aria-hidden="true" /> : null}
+      {mounted ? dark ? <Sun size={16} aria-hidden="true" /> : <Moon size={16} aria-hidden="true" /> : null}
     </Button>
   );
 }

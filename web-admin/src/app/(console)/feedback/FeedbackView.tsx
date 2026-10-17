@@ -125,7 +125,7 @@ function What({ row }: { row: FeedbackRow }) {
     default:
       return (
         <div>
-          <Badge tone="blue">{CATEGORIES[row.category ?? "other"] ?? row.category ?? "Other"}</Badge>
+          <Badge>{CATEGORIES[row.category ?? "other"] ?? row.category ?? "Other"}</Badge>
           <p className="mt-1 whitespace-pre-wrap text-[13px] text-foreground [overflow-wrap:anywhere]">{row.message}</p>
         </div>
       );
@@ -171,8 +171,8 @@ export function FeedbackView() {
               {s.averageRating != null && <Stars value={Math.round(s.averageRating)} />}
               <ul className="mt-4 space-y-1.5">
                 {s.ratingDistribution.map((r) => (
-                  <li key={r.label} className="grid grid-cols-[1.5rem_1fr_2rem] items-center gap-2 text-xs">
-                    <span className="text-muted-foreground">{r.label}★</span>
+                  <li key={r.label} className="grid grid-cols-[2rem_1fr_2rem] items-center gap-2 text-xs">
+                    <span className="inline-flex items-center gap-0.5 text-muted-foreground">{r.label}<Star size={14} aria-hidden="true" className="text-faint" /><span className="sr-only"> stars</span></span>
                     <span className="h-2 rounded-full bg-muted">
                       <span
                         className="block h-2 rounded-full bg-amber-400"

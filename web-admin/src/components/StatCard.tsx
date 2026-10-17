@@ -2,8 +2,8 @@ import { InfoHint } from "@/components/InfoHint";
 import { cn } from "@/lib/utils";
 
 /**
- * A single figure with a coloured spine — the tile the reference uses for the states of a
- * pipeline, where the colour carries the state and the meter carries the share.
+ * A single figure with a small status dot — for the states of a pipeline, where the dot's colour
+ * carries the state and the meter carries the share.
  *
  * For the headline row of unrelated KPIs use `StatStrip` / `StatTile` instead; this one is
  * for a set of tiles that partition the same total.
@@ -11,15 +11,15 @@ import { cn } from "@/lib/utils";
 
 type Tone = "blue" | "success" | "warning" | "danger" | "neutral";
 
-const TONES: Record<Tone, { spine: string; fill: string }> = {
-  // `brand`, not `primary`: the spine and the meter are small marks read against the card,
+const TONES: Record<Tone, { dot: string; fill: string }> = {
+  // `brand`, not `primary`: the dot and the meter are small marks read against the card,
   // and the other four tones brighten in dark mode. A fill-weight blue beside a bright
   // green would read as the odd one out rather than as the same kind of mark.
-  blue: { spine: "bg-brand", fill: "bg-brand" },
-  success: { spine: "bg-success", fill: "bg-success" },
-  warning: { spine: "bg-warning", fill: "bg-warning" },
-  danger: { spine: "bg-danger", fill: "bg-danger" },
-  neutral: { spine: "bg-faint", fill: "bg-faint" },
+  blue: { dot: "bg-brand", fill: "bg-brand" },
+  success: { dot: "bg-success", fill: "bg-success" },
+  warning: { dot: "bg-warning", fill: "bg-warning" },
+  danger: { dot: "bg-danger", fill: "bg-danger" },
+  neutral: { dot: "bg-faint", fill: "bg-faint" },
 };
 
 interface StatCardProps {
@@ -45,30 +45,26 @@ export function StatCard({
   share = null,
   unknown = false,
 }: StatCardProps) {
-  const { spine, fill } = TONES[tone];
+  const { dot, fill } = TONES[tone];
 
   return (
-    <div className="relative overflow-hidden rounded-md border border-border bg-card py-4 pl-6 pr-5 shadow-hairline">
-      <span
-        aria-hidden="true"
-        className={cn("absolute inset-y-4 left-0 w-[3px] rounded-r-pill", spine)}
-      />
-
+    <div className="nf-panel p-4">
       <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        <span aria-hidden="true" className={cn("size-1.5 shrink-0 rounded-full", dot)} />
         <span className="truncate">{label}</span>
         {hint && <InfoHint text={hint} />}
       </p>
 
       <p
         className={cn(
-          "mt-2 text-[22px] font-semibold leading-none tracking-[-0.02em] tabular-nums",
+          "mt-2 text-[24px] font-semibold leading-none tracking-[-0.02em] tabular-nums",
           unknown ? "text-faint" : "text-foreground",
         )}
       >
         {value}
       </p>
 
-      {sub && <p className="mt-2 truncate text-[11px] text-faint">{sub}</p>}
+      {sub && <p className="mt-2 truncate text-xs text-muted-foreground">{sub}</p>}
 
       {share !== null && (
         <div className="mt-2.5 flex items-center gap-2">

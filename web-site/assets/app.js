@@ -189,7 +189,7 @@
     return out;
   }
   /** A button's content: an icon from the page's sprite and a label. */
-  function label(btn, icon, text) { btn.innerHTML = '<svg class="ic"><use href="#i-' + icon + '"/></svg>' + text; }
+  function label(btn, icon, text) { btn.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + icon + '"/></svg>' + text; }
   function initial(name) { return (name || "?").trim().charAt(0).toUpperCase() || "?"; }
   /** "Good morning, Francis" — the time of day, and the first name when there is one. */
   function greeting(name) {
@@ -292,7 +292,7 @@
       b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on));
     });
     var t = $("auth-theme");
-    t.innerHTML = '<svg class="ic"><use href="#i-' + (dark ? "sun" : "moon") + '"/></svg>';
+    t.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + (dark ? "sun" : "moon") + '"/></svg>';
     t.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
   }
   function setThemePref(pref) {
@@ -360,7 +360,7 @@
     stopPolling();
     current = null; keepPreviewJob = null; submitting = false; transposing = false;
     if (player) player.stop();
-    cancelSinging();
+    cancelSinging(); cancelPracticeTake();
     closeTool(); closeFull();
     hide($("result")); hide($("progress"));
     ["lyrics", "save-title", "share-url"].forEach(function (id) { $(id).value = ""; });
@@ -416,13 +416,13 @@
   var ONB = [
     { title: "Paste a link, hum, or upload",
       body: "A YouTube, Spotify or Apple Music link, a tune you hum into the mic, or a recording from your device. The first 30 seconds are free, no account.",
-      art: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>' },
+      art: '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-mic"/></svg>' },
     { title: "Solfa, staff, and the four parts",
       body: "The lead vocal is isolated and written out as movable-do solfa and staff notation. Pro adds alto, tenor and bass under the tune, the way a hymn arranger would.",
-      art: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>' },
+      art: '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-music"/></svg>' },
     { title: "Rehearse, transpose, share",
       body: "Play it back, loop a few bars, mute your part and sing against the others. Move the key to fit your singers, then share a link the choir can open.",
-      art: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' }
+      art: '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg>' }
   ];
   var onbIndex = 0;
   function onbSeen() { try { return !!localStorage.getItem(ONB_KEY); } catch (e) { return true; } }
@@ -457,7 +457,7 @@
     b.addEventListener("click", function () {
       var input = $(b.dataset.eye), showing = input.type === "text";
       input.type = showing ? "password" : "text";
-      b.innerHTML = '<svg class="ic"><use href="#i-' + (showing ? "eye" : "eye-off") + '"/></svg>';
+      b.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + (showing ? "eye" : "eye-off") + '"/></svg>';
       b.setAttribute("aria-label", showing ? "Show password" : "Hide password");
     });
   });
@@ -1738,6 +1738,7 @@
     $("lyrics").value = current.lyrics || "";
     setupRehearsal(result);
     setupSing(result);
+    setupPractice(result);
     renderTranspose();
     renderSave();
 
@@ -1759,7 +1760,7 @@
     if ($("r-staff").classList.contains("hidden") && $("r-solfa").classList.contains("hidden")) document.querySelector('.result-tabs [data-view="staff"]').click();
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
       var text = b.textContent.trim();
-      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock"><use href="#i-lock"/></svg>');
+      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="/assets/icons.svg#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock"><use href="/assets/icons.svg#i-lock"/></svg>');
     });
 
     // A guest reads and rehearses; saving, sharing, transposing, singing and downloads are the account's.
@@ -1979,6 +1980,7 @@
         var now = -1;
         for (var i = 0; i < hymnCells.length; i++) if (hymnCells[i].beat <= t.beat + 1e-6) now = i;
         hymnCells.forEach(function (c, i) { c.el.className = t.playing && i === now ? "now" : ""; });
+        practiceTick(t);
       });
     }
     var voices = rehearsalVoices(result);
@@ -2008,7 +2010,7 @@
         // The same voice on the four-parts view: on/off, and Solo to hear it alone.
         var item = document.createElement("span"); item.className = "mix-voice"; item.setAttribute("data-voice", v.name);
         var on = document.createElement("button"); on.type = "button"; on.className = "mix-on"; on.setAttribute("aria-label", name);
-        on.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg><span></span>';
+        on.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-volume"/></svg><span></span>';
         on.querySelector("span").textContent = name;
         on.addEventListener("click", function () { mix = P.toggle(mix, v.name); applyMix(); });
         var solo = document.createElement("button"); solo.type = "button"; solo.className = "mix-solo"; solo.textContent = "Solo";
@@ -2037,7 +2039,7 @@
       var name = item.getAttribute("data-voice"), on = !!mix[name];
       var t = item.querySelector(".mix-on"), s = item.querySelector(".mix-solo");
       item.classList.toggle("is-off", !on);
-      t.querySelector("use").setAttribute("href", on ? "#i-volume" : "#i-x");
+      t.querySelector("use").setAttribute("href", on ? "/assets/icons.svg#i-volume" : "/assets/icons.svg#i-x");
       t.setAttribute("aria-pressed", String(on)); t.title = on ? "Playing: press to mute " + name : "Muted: press to hear " + name;
       s.classList.toggle("on", alone === name); s.setAttribute("aria-pressed", String(alone === name));
     });
@@ -2068,9 +2070,9 @@
     });
     hide($("sing-result")); hide($("sing-live")); $("sing-status").textContent = "";
   }
-  /** A bar of the starting note, then a bar of clicks, on the audio context's clock. Returns the lead-in length. */
-  function playLeadIn(ctx, notes, tempo, ts) {
-    var bpb = C.beatsPerBar(ts), beat = 60 / Math.max(30, tempo), t0 = ctx.currentTime + 0.05;
+  /** A bar of the starting note, then a bar of clicks, on the audio context's clock (at `rate`, 1 = the sheet's tempo). Returns the lead-in length. */
+  function playLeadIn(ctx, notes, tempo, ts, rate) {
+    var bpb = C.beatsPerBar(ts), beat = 60 / Math.max(30, tempo) / (rate || 1), t0 = ctx.currentTime + 0.05;
     var first = notes.slice().sort(function (a, b) { return a.startBeat - b.startBeat; })[0];
     // The starting note on the same piano the rehearsal player uses, held for the bar. The
     // piano is normally loaded by now (the player fetches it when the sheet is shown); if it
@@ -2160,6 +2162,244 @@
       });
       show($("sing-result"));
     }).catch(function (err) { if (at === epoch) $("sing-status").textContent = "Could not mark the take: " + (err.message || err); });
+  }
+
+  // ── Learn my part (assets/practice.js) ───────────────────────────────────
+  // One view over the rehearsal player: my part loud and the others soft, a few bars looped and
+  // slowed down, then sung back and marked. Practising is free wherever the parts show; the marking
+  // is Pro, as Sing it is. Leaving the view puts the player back the way Rehearse and Hear had it.
+  var PR = window.NfPractice;
+  var PRACTICE_PART_KEY = "nf.web.practice.part";
+  var practice = { open: false, part: "soprano", balance: "balance", speed: 1, range: { from: 1, to: 1 }, pending: null, bars: 0, marks: null, nowBar: 0 };
+  var prTake = { recorder: null, stream: null, ctx: null, timer: null, stopAt: null, cancelled: false };
+  function rememberedPart() { try { return localStorage.getItem(PRACTICE_PART_KEY); } catch (e) { return null; } }
+  function practiceNames() { return PR.partsOf(current && current.result ? current.result.parts : null); }
+  /** The part's notes, labelled as the parts view labels them: from the soprano's doh (C.partReference). */
+  function practiceNotes(name) {
+    var r = current.result, ref = C.partReference(r.parts, r.notes || []);
+    var notes = name === "soprano" ? ref : (r.parts && r.parts[name] && r.parts[name].notes) || [];
+    return C.label(notes, r.key, ref);
+  }
+  function voiceName(v) { return v === "soprano" ? "Soprano (the tune)" : v.charAt(0).toUpperCase() + v.slice(1); }
+  function setupPractice(result) {
+    var box = $("practice");
+    cancelPracticeTake();
+    if (!P.hasParts(result)) { hide(box); syncActions(); return; }
+    show(box);
+    var names = practiceNames();
+    practice.part = PR.choosePart(names, rememberedPart());
+    practice.bars = player ? player.barCount() : C.barCount(result.notes || [], result.timeSignature);
+    practice.range = PR.defaultRange(practice.bars); practice.pending = null; practice.marks = null;
+    var seg = $("pr-parts"); seg.innerHTML = "";
+    names.forEach(function (v) {
+      var b = document.createElement("button"); b.type = "button"; b.setAttribute("data-part", v);
+      b.textContent = v.charAt(0).toUpperCase(); b.setAttribute("aria-label", voiceName(v)); b.title = voiceName(v);
+      b.addEventListener("click", function () {
+        if (prTake.recorder || practice.part === v) return;
+        practice.part = v; practice.marks = null; hide($("pr-result"));
+        try { localStorage.setItem(PRACTICE_PART_KEY, v); } catch (e) { /* private mode: chosen for this visit */ }
+        track("Practice part", v);
+        renderPractice(); applyPracticeMix();
+      });
+      seg.appendChild(b);
+    });
+    hide($("pr-result")); hide($("pr-live")); $("pr-status").textContent = "";
+    isPro() ? hide($("pr-sing-lock")) : show($("pr-sing-lock")); // marking a take is Pro, as Sing it is
+    renderPractice();
+    syncActions();
+  }
+  function renderPractice() {
+    if (!current || !current.result) return;
+    $("pr-parts").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-part") === practice.part)); });
+    $("pr-balance").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-balance") === practice.balance)); });
+    $("pr-speed").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(parseFloat(b.getAttribute("data-speed")) === practice.speed)); });
+    var rg = practice.range;
+    $("pr-range").textContent = (rg.from === rg.to ? "Bar " + rg.from : "Bars " + rg.from + "–" + rg.to) + " of " + practice.bars;
+    $("pr-whole").disabled = rg.from === 1 && rg.to === practice.bars;
+    $("pr-hint").textContent = practice.pending != null ? "Now tap the last bar to loop." : "Tap a bar, then another, to loop the bars between them.";
+    var strip = $("pr-bars"); strip.innerHTML = "";
+    PR.bars(practiceNotes(practice.part), current.result.timeSignature, practice.bars).forEach(function (bar) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "pr-bar";
+      var inside = bar.bar >= rg.from && bar.bar <= rg.to;
+      if (inside) b.classList.add("in");
+      if (bar.bar === practice.pending) b.classList.add("pending");
+      if (bar.bar === practice.nowBar) b.classList.add("now");
+      b.setAttribute("data-bar", bar.bar); b.setAttribute("aria-pressed", String(inside));
+      var num = document.createElement("small"); num.textContent = bar.bar; b.appendChild(num);
+      var line = document.createElement("span"); line.className = "pr-notes";
+      if (!bar.notes.length) line.textContent = "–";
+      bar.notes.forEach(function (x) {
+        var el = document.createElement("i"); el.textContent = (x.note.solfa || "") + (x.note.octaveMark || "");
+        var m = practice.marks && practice.marks[x.i];
+        if (m) { el.className = "mk-" + m.status; el.title = m.status === "missed" ? "not sung" : m.status + (m.cents == null ? "" : " (" + (m.cents > 0 ? "+" : "") + Math.round(m.cents) + " cents)"); }
+        line.appendChild(el);
+      });
+      b.appendChild(line);
+      b.setAttribute("aria-label", "Bar " + bar.bar + (bar.notes.length ? ": " + bar.notes.map(function (x) { return (x.note.solfa || "") + (x.note.octaveMark || ""); }).join(" ") : ", rest"));
+      b.addEventListener("click", function () {
+        if (prTake.recorder) return;
+        var next = PR.tapBar(practice.pending, bar.bar);
+        practice.range = next.range; practice.pending = next.pending; practice.marks = null; hide($("pr-result"));
+        if (practice.open) player.setLoopBars(practice.range.from, practice.range.to);
+        if (next.pending == null) track("Practice loop set");
+        renderPractice();
+      });
+      strip.appendChild(b);
+    });
+  }
+  /** Every voice sounding, at the practice levels: my part at 1, the others by the balance. */
+  function applyPracticeMix() {
+    if (!player || !practice.open) return;
+    var lv = PR.levels(practiceNames(), practice.part, practice.balance);
+    Object.keys(lv).forEach(function (n) { player.setVoiceOn(n, true); player.setVoiceLevel(n, lv[n]); });
+  }
+  function enterPractice() {
+    if (!player || !current || !current.result) return;
+    practice.open = true;
+    applyPracticeMix();
+    player.setRate(practice.speed);
+    player.setLoopBars(practice.range.from, practice.range.to);
+    track("Practice started", practice.part);
+  }
+  function leavePractice() {
+    cancelPracticeTake();
+    if (!practice.open) return;
+    practice.open = false; practice.nowBar = 0;
+    if (!player) return;
+    player.pause();
+    practiceNames().forEach(function (n) { player.setVoiceLevel(n, 1); });
+    applyMix();
+    player.setRate(parseFloat($("rate").value) || 1);
+    applyLoop();
+  }
+  /** The player's tick, while the view is open: its Play button and the bar sounding. */
+  function practiceTick(t) {
+    if (!practice.open) return;
+    label($("pr-play"), t.playing ? "pause" : "play", t.playing ? "Pause" : "Play");
+    var bar = t.playing ? Math.floor(t.beat / C.beatsPerBar(current.result.timeSignature) + 1e-6) + 1 : 0;
+    if (bar === practice.nowBar) return;
+    practice.nowBar = bar;
+    $("pr-bars").querySelectorAll(".pr-bar").forEach(function (b) { b.classList.toggle("now", +b.getAttribute("data-bar") === bar); });
+  }
+  $("pr-balance").querySelectorAll("button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      practice.balance = b.getAttribute("data-balance");
+      track("Practice balance", practice.balance);
+      renderPractice(); applyPracticeMix();
+    });
+  });
+  $("pr-speed").querySelectorAll("button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      if (prTake.recorder) return;
+      practice.speed = parseFloat(b.getAttribute("data-speed")) || 1;
+      if (practice.open) player.setRate(practice.speed);
+      track("Practice speed", String(practice.speed));
+      renderPractice();
+    });
+  });
+  $("pr-whole").addEventListener("click", function () {
+    if (prTake.recorder) return;
+    practice.range = { from: 1, to: practice.bars }; practice.pending = null; practice.marks = null; hide($("pr-result"));
+    if (practice.open) player.setLoopBars(1, practice.bars);
+    renderPractice();
+  });
+  $("pr-play").addEventListener("click", function () { if (player && !prTake.recorder) player.toggle(); });
+
+  /**
+   * Sing it back: the starting note and a bar of clicks, then the singer alone while the bars go by.
+   * The others drop out for the take on purpose: grade.py follows one pitch (pyin), and a piano coming
+   * back into the microphone is a second one it would follow; it lines the take up by the count-in.
+   */
+  $("pr-sing").addEventListener("click", function () {
+    if (!current || !current.result || prTake.recorder) return;
+    if (!isPro()) { track("Practice sing (locked)"); pitchPro(); return; }
+    if (!navigator.mediaDevices || !window.MediaRecorder) { $("pr-status").textContent = "This browser cannot record audio."; return; }
+    var r = current.result, speed = practice.speed, rg = practice.range;
+    var slice = PR.sliceBars(practiceNotes(practice.part), rg.from, rg.to, r.timeSignature);
+    if (!slice.notes.length) { $("pr-status").textContent = "There is nothing to sing in these bars. Choose bars with notes in your part."; return; }
+    var leadEstimate = 2 * C.beatsPerBar(r.timeSignature) * 60 / Math.max(30, r.tempo) / speed;
+    if (PR.tooLong(slice, r.tempo, speed, leadEstimate)) { $("pr-status").textContent = "That is more than two minutes to sing. Loop fewer bars, or a faster speed, and try again."; return; }
+    if (player) player.pause();
+    hide($("pr-result"));
+    practice.marks = null; renderPractice();
+    var at = epoch;
+    prTake.cancelled = false;
+    $("pr-status").textContent = "";
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } }).then(function (stream) {
+      if (at !== epoch || prTake.cancelled) { stream.getTracks().forEach(function (t) { t.stop(); }); return; }
+      prTake.stream = stream;
+      prTake.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
+      var chunks = [], rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined), leadIn = 0;
+      prTake.recorder = rec;
+      rec.addEventListener("dataavailable", function (e) { if (e.data && e.data.size) chunks.push(e.data); });
+      rec.addEventListener("stop", function () {
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        if (at !== epoch || prTake.cancelled) return; // cancelled: nothing is sent
+        var type = rec.mimeType || mime || "audio/webm";
+        gradePractice(new Blob(chunks, { type: type }), type.indexOf("mp4") >= 0 ? "take.mp4" : "take.webm", slice, PR.gradeTarget(slice, r.tempo, speed, leadIn));
+      });
+      rec.start();
+      var startedAt = Date.now();
+      leadIn = playLeadIn(prTake.ctx, slice.notes, r.tempo, r.timeSignature, speed);
+      var beat = 60 / Math.max(30, r.tempo) / speed;
+      hide($("pr-sing")); show($("pr-stop")); show($("pr-live"));
+      $("pr-status").textContent = "Recording…";
+      track("Practice take started", practice.part);
+      prTake.timer = setInterval(function () {
+        var t = (Date.now() - startedAt) / 1000, live = $("pr-live"), first = slice.notes[0], small = document.createElement("small");
+        if (t < leadIn) {
+          live.textContent = (first.solfa || "") + (first.octaveMark || "");
+          small.textContent = "starting note… sing in " + Math.max(0, Math.ceil(leadIn - t));
+        } else {
+          var b = (t - leadIn) / beat, due = null; // in the sheet's beats: `beat` is one at this speed
+          slice.notes.forEach(function (n) { if (b >= n.startBeat && b < n.startBeat + n.durBeats) due = n; });
+          live.textContent = due ? (due.solfa || "") + (due.octaveMark || "") : "·";
+          small.textContent = "sing!";
+        }
+        live.appendChild(small);
+      }, 100);
+      prTake.stopAt = setTimeout(stopPracticeTake, (leadIn + PR.sliceSeconds(slice, r.tempo, speed) + PR.TAIL_SEC) * 1000);
+    }).catch(function () { if (at === epoch && !prTake.cancelled) $("pr-status").textContent = "Allow the microphone for this site to record a take, then try again."; });
+  });
+  /** Ends the take; it is marked unless it was cancelled. */
+  function stopPracticeTake() {
+    if (prTake.timer) clearInterval(prTake.timer);
+    if (prTake.stopAt) clearTimeout(prTake.stopAt);
+    prTake.timer = null; prTake.stopAt = null;
+    hide($("pr-live")); hide($("pr-stop")); show($("pr-sing"));
+    var rec = prTake.recorder; prTake.recorder = null;
+    if (rec && rec.state !== "inactive") { if (!prTake.cancelled) $("pr-status").textContent = "Marking your take…"; rec.stop(); }
+    else if (prTake.stream) prTake.stream.getTracks().forEach(function (t) { t.stop(); });
+    prTake.stream = null;
+    if (prTake.ctx) { prTake.ctx.close().catch(function () {}); prTake.ctx = null; }
+  }
+  /** Closing the view or signing out mid-take: the microphone is released and nothing is sent. */
+  function cancelPracticeTake() {
+    prTake.cancelled = true;
+    stopPracticeTake();
+    $("pr-status").textContent = "";
+  }
+  $("pr-stop").addEventListener("click", stopPracticeTake);
+  $("pr-again").addEventListener("click", function () { hide($("pr-result")); $("pr-sing").click(); });
+  function gradePractice(blob, name, slice, target) {
+    var at = epoch, part = practice.part, range = practice.range;
+    var form = new FormData();
+    form.append("audio", blob, name);
+    form.append("target", JSON.stringify(target));
+    request("/api/transcriptions/grade", { method: "POST", form: form }).then(function (g) {
+      if (at !== epoch) return;
+      $("pr-status").textContent = "";
+      track("Practice take marked", String(g.score));
+      // Marks belong to the part and bars they were sung against; a change meanwhile drops them.
+      if (practice.part !== part || practice.range !== range) return;
+      practice.marks = PR.marksByNote(g, slice);
+      $("pr-score").textContent = g.score;
+      $("pr-score").style.color = g.score >= 80 ? "var(--success)" : g.score >= 50 ? "var(--amber)" : "var(--danger)";
+      $("pr-summary").textContent = g.summary + (g.octaveShift ? " Sung " + (g.octaveShift > 0 ? "an octave up" : "an octave down") + " — that's fine." : "");
+      renderPractice();
+      show($("pr-result"));
+    }).catch(function (err) { if (at === epoch) $("pr-status").textContent = "Could not mark the take: " + (err.message || "please try again."); });
   }
 
   // ── Transpose for my choir ───────────────────────────────────────────────
@@ -2271,12 +2511,14 @@
     var h = panel.querySelector("h2");
     $("tool-modal").setAttribute("aria-label", h ? h.textContent.replace(/\s*Pro\s*$/, "").trim() : "Tool");
     show($("tool-modal"));
+    if (id === "practice") enterPractice();
     var first = locked ? $("tool-unlock") : panel.querySelector("button:not([disabled]), input, select, textarea");
     (first || $("tool-close")).focus();
     track("Tool: " + id + (locked ? " (locked)" : ""));
   }
   function closeTool() {
     if (!openToolId) return;
+    if (openToolId === "practice") leavePractice();
     var panel = $(openToolId);
     if (panel) $("tool-dock").appendChild(panel);
     openToolId = null;
@@ -2532,7 +2774,7 @@
   /** The harmony card's label and note: "free once" for a free account that still has it. */
   function renderHarmonyOffer() {
     var free = freeHarmonyLeft();
-    $("harmony-add").innerHTML = '<svg class="ic"><use href="#i-plus"/></svg>' + (free ? "Write the four parts (1 free)" : "Write the four parts");
+    $("harmony-add").innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-plus"/></svg>' + (free ? "Write the four parts (1 free)" : "Write the four parts");
     $("harmony-free-note").classList.toggle("hidden", !free);
     // The "Four parts" action shows no lock while the free one is left.
     document.body.classList.toggle("has-free-harmony", free);
@@ -2556,7 +2798,7 @@
         r.parts = written.parts; r.partsMusicXml = written.partsMusicXml || "";
         // The free one is spent now: the next sheet's button goes to the plans.
         if (!isPro() && sub) { sub.freeHarmonyAvailable = false; track("Used free harmony"); }
-        showParts(r); setupRehearsal(r); setupSing(r);
+        showParts(r); setupRehearsal(r); setupSing(r); setupPractice(r);
         revealParts();
         sfx.play("saved");
         if (current.savedId) {
@@ -2847,13 +3089,13 @@
       function per(plan) { return isSinglePlan(plan) || isLifetimePlan(plan) ? "once" : isYearly(plan) ? "a year" : "a month"; }
       var fine = document.createElement("p"); fine.className = "pay-fine";
       function renderCta() {
-        cta.innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
+        cta.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>';
         cta.appendChild(document.createTextNode(isSinglePlan(chosen)
           ? "Buy this song — " + money(chosen)
           : isChoirPlan(chosen)
             ? (leadsChoir() ? "Add choir time — " : "Start your choir — ") + money(chosen) + " " + per(chosen)
             : "Continue — " + money(chosen) + " " + per(chosen)));
-        fine.innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
+        fine.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>';
         fine.appendChild(document.createTextNode(isSinglePlan(chosen)
           ? "Secure checkout. One payment, one transcription that never expires. No subscription."
           : isChoirPlan(chosen)

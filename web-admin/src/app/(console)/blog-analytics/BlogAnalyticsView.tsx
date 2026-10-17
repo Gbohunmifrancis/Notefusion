@@ -72,7 +72,7 @@ function pageName(path: string): string {
 
 function Kpi({ label, value, note, hint }: { label: string; value: string; note?: string | undefined; hint?: string }) {
   return (
-    <div className="rounded-xl border border-border/80 bg-card p-4 shadow-xs" title={hint}>
+    <div className="nf-panel p-4" title={hint}>
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="mt-1 text-2xl font-bold tracking-tight text-foreground tabular-nums">{value}</div>
       {note && <div className="mt-1 text-[11px] text-muted-foreground">{note}</div>}
@@ -102,7 +102,7 @@ export function BlogAnalyticsView() {
         subtitle="Blog and hymn readers, and whether they go on to try the app, transcribe and pay."
         breadcrumb={["Dashboard", "Blog analytics"]}
       />
-      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border/80 bg-card p-3 shadow-xs">
+      <div className="flex flex-wrap items-center gap-3 nf-panel p-3">
         <RangePicker value={picker} offsetMinutes={offset} onChange={setRange} />
         {state.isFetching && <span className="text-xs text-muted-foreground">Updating…</span>}
       </div>
@@ -362,7 +362,7 @@ function PostTable({ posts }: { posts: BlogPostRow[] }) {
                       onClick={() => setSort({ key: col.key, desc: active ? !sort.desc : true })}
                     >
                       {col.label}
-                      {active && (sort.desc ? <ArrowDown className="h-3 w-3" aria-hidden /> : <ArrowUp className="h-3 w-3" aria-hidden />)}
+                      {active && (sort.desc ? <ArrowDown className="size-3.5" aria-hidden /> : <ArrowUp className="size-3.5" aria-hidden />)}
                     </button>
                   </th>
                 );
@@ -374,10 +374,10 @@ function PostTable({ posts }: { posts: BlogPostRow[] }) {
               <tr key={p.path} className="hover:bg-muted/40">
                 <td className="max-w-[320px] px-5 py-2.5">
                   <div className="flex items-center gap-2">
-                    <Badge tone={p.kind === "post" ? "blue" : p.kind === "hymn" ? "premium" : "neutral"}>{p.kind === "index" ? "list" : p.kind}</Badge>
+                    <Badge>{p.kind === "index" ? "list" : p.kind}</Badge>
                     <a href={SITE + p.path} target="_blank" rel="noopener noreferrer" className="inline-flex min-w-0 items-center gap-1 text-foreground hover:underline" title={p.path}>
                       <span className="truncate">{pageName(p.path)}</span>
-                      <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden />
+                      <ExternalLink className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
                     </a>
                   </div>
                 </td>

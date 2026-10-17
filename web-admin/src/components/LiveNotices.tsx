@@ -227,9 +227,9 @@ export function LiveNotices() {
         aria-pressed={soundOn}
         aria-label={soundOn ? "Mute live alert sounds" : "Turn on live alert sounds"}
         title={soundOn ? "Live alerts: sound on" : "Live alerts: sound off"}
-        className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-zinc-900 dark:hover:text-white"
+        className="flex size-8 items-center justify-center rounded-[8px] text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
       >
-        {soundOn ? <Volume2 size={17} /> : <VolumeX size={17} />}
+        {soundOn ? <Volume2 size={16} aria-hidden="true" /> : <VolumeX size={16} aria-hidden="true" />}
       </button>
     </div>
   );

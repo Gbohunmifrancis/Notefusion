@@ -1,6 +1,6 @@
 /**
- * The small pill toggle used for chart grouping and the range presets — a grey track with
- * the active segment filled in brand blue.
+ * The small segmented toggle used for chart grouping and the range presets — a grey track with
+ * the active segment raised as a plain card, the way Linear and Vercel mark a selected view.
  *
  * Wraps shadcn's `ToggleGroup`, which is Radix's roving-tabindex implementation: the group is
  * one tab stop and the arrow keys move between segments. The hand-rolled version this replaces
@@ -45,7 +45,7 @@ export function Segmented<T extends string>({
         if (next) onChange(next as T);
       }}
       aria-label={label}
-      className="inline-flex items-center gap-0.5 rounded-sm border border-border bg-muted/60 p-0.5"
+      className="inline-flex items-center gap-0.5 rounded-[8px] border border-border bg-muted p-0.5"
     >
       {options.map((option) => (
         <ToggleGroupItem
@@ -54,7 +54,7 @@ export function Segmented<T extends string>({
           aria-label={option.label}
           disabled={Boolean(option.disabledReason)}
           {...(option.disabledReason ? { title: option.disabledReason } : {})}
-          className="h-auto min-w-0 rounded-[6px] px-2.5 py-1 text-[11px] font-semibold text-muted-foreground transition hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+          className="h-auto min-w-0 rounded-[6px] px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-transparent hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40 data-[state=on]:bg-card data-[state=on]:text-foreground data-[state=on]:shadow-xs dark:data-[state=on]:bg-accent"
         >
           {option.label}
         </ToggleGroupItem>

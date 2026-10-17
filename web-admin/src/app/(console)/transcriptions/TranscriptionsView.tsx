@@ -75,7 +75,7 @@ export function TranscriptionsView() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative w-full max-w-xs">
           <Search
-            size={15}
+            size={16}
             className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
           />
           <Input
@@ -83,7 +83,7 @@ export function TranscriptionsView() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by title or email..."
-            className="h-9 w-full rounded-lg border border-slate-200/90 bg-white pl-9 text-xs shadow-xs placeholder:text-slate-400 focus:border-[#2563EB] dark:border-zinc-800 dark:bg-[#09090b] dark:text-white"
+            className="h-9 w-full rounded-lg border border-slate-200/90 bg-white pl-9 text-xs shadow-xs placeholder:text-slate-400 focus:border-[#2563EB] dark:border-zinc-800 dark:bg-input dark:text-white"
           />
         </div>
 
@@ -91,7 +91,7 @@ export function TranscriptionsView() {
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-input dark:text-zinc-200"
           >
             <option value="all">All status</option>
             <option value="Completed">Completed</option>
@@ -101,7 +101,7 @@ export function TranscriptionsView() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-200/80 bg-white shadow-xs dark:border-zinc-800 dark:bg-[#09090b] overflow-hidden">
+      <div className="nf-panel overflow-hidden">
         <StateView
           state={state}
           isEmpty={() => items.length === 0}
@@ -230,7 +230,7 @@ function DohAccuracy({ data }: { data: KeyCorrections }) {
       {tiles.map((t) => (
         <div
           key={t.label}
-          className="rounded-xl border border-slate-200/80 bg-white px-4 py-3 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]"
+          className="nf-panel px-4 py-3"
         >
           <div className="text-[11px] font-medium text-slate-500 dark:text-zinc-400">{t.label}</div>
           <div className="mt-1 text-xl font-semibold tabular-nums text-slate-900 dark:text-white">{t.value}</div>

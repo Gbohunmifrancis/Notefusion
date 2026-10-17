@@ -13,12 +13,12 @@
  * both ends.
  */
 
-/** Header cell: clean, readable, uppercase tracking. */
-export const TH = "px-5 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground";
+/** Header cell: small, medium weight, sentence case. */
+export const TH = "px-5 py-2.5 text-xs font-medium text-muted-foreground";
 
 /** Body cell: comfortable row height, clear text contrast. */
 export const TD = "px-5 py-3.5 text-[13px] text-slate-700 dark:text-slate-300";
 
 /** Body rows, applied once to `TableBody`: subtle hairline divider without double borders. */
-export const TBODY = "[&_tr]:border-border/40 last:[&_tr]:border-0";
+export const TBODY = "[&_tr]:border-border/60 last:[&_tr]:border-0";
 

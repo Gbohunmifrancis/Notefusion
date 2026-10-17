@@ -2,24 +2,29 @@
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
-  Activity,
-  ArrowDownRight,
-  ArrowUpRight,
   CalendarDays,
   ChevronDown,
+  ChevronRight,
   CreditCard,
-  Info,
+  HeartPulse,
+  Inbox,
+  Mail,
   MailCheck,
-  MessageSquareHeart,
+  MessageSquare,
+  MousePointerClick,
   Music2,
+  PenSquare,
+  Send,
   Share2,
+  Sparkles,
   TriangleAlert,
-  UserRound,
   UserRoundPlus,
-  Zap,
+  UserRoundSearch,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import {
   Area,
   AreaChart,
@@ -30,8 +35,10 @@ import {
   YAxis,
 } from "recharts";
 
+import { getBlogSiteStatus } from "@/api/blog";
 import { getOverview } from "@/api/endpoints";
 import type { AnalyticsOverview, CategoryCount, DailyCount } from "@/api/types";
+import { GenerateDialog } from "@/components/blog/GenerateDialog";
 import { DailyChart } from "@/components/DailyChart";
 import { ChartCard, DataTable, FunnelBars, MetricRow, RankedBars } from "@/components/insights/Charts";
 import { Segmented } from "@/components/Segmented";
@@ -42,6 +49,7 @@ import { RangePicker } from "@/components/RangePicker";
 import type { Range } from "@/components/RangePicker";
 import { EmptyView, StateView } from "@/components/StateView";
 import { SendEmailDialog } from "@/components/SendEmailDialog";
+import { StatStrip, StatTile } from "@/components/StatStrip";
 import {
   Table,
   TableBody,
@@ -68,6 +76,7 @@ import {
 } from "@/lib/format";
 import { rememberReportingOffset } from "@/lib/reporting";
 import { TBODY, TD, TH } from "@/lib/tableClasses";
+import { cn } from "@/lib/utils";
 
 function seedRange(overview: AnalyticsOverview): Range | null {
   const first = overview.signupsPerDay.at(0);
@@ -75,10 +84,9 @@ function seedRange(overview: AnalyticsOverview): Range | null {
   return first && last ? { from: first.date, to: last.date } : null;
 }
 
-function greeting(firstName?: string | null): string {
+function partOfDay(): string {
   const hour = new Date().getHours();
-  const part = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
-  return firstName ? `Good ${part}, ${firstName}` : `Good ${part}`;
+  return hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
 }
 
 type Bucket = "day" | "week" | "month";
@@ -137,64 +145,110 @@ function groupIntoDays(data: DailyCount[]): ChartGroup[] {
   }));
 }
 
+/** One headline tile: the figure and what it counts. */
 interface StatItem {
   title: string;
   value: string;
-  change?: string | null;
-  /** Direction of the change: a fall is shown falling, in red, not with the rising arrow. */
-  up?: boolean | undefined;
+  change?: { label: string; up: boolean } | null;
   description?: string | null;
   hint?: string;
-  icon: typeof UserRound;
-  iconStyle?: string;
 }
 
-function StatCard({ stat }: { stat: StatItem }) {
-  const Icon = stat.icon;
-
+/** A section's heading: the name, with a hairline above it to start the section. */
+function SectionTitle({ children }: { children: ReactNode }) {
   return (
-    <div className="h-full rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs transition-shadow duration-200 hover:shadow-sm dark:border-zinc-800 dark:bg-[#09090b]">
-      <div className="flex items-center justify-between">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-zinc-900 dark:text-slate-300">
-          <Icon size={18} strokeWidth={1.75} />
-        </div>
-        {stat.hint && (
-          <span title={stat.hint} className="inline-flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
-            <Info size={13} />
-          </span>
-        )}
-      </div>
-
-      <div className="mt-3.5">
-        <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-          {stat.title}
-        </div>
-
-        <div className="mt-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-          {stat.value}
-        </div>
-
-        {stat.change ? (
-          <div
-            className={`mt-2 flex flex-wrap items-center gap-1 text-xs font-medium ${
-              stat.up === false ? "text-rose-600 dark:text-rose-400" : "text-emerald-600 dark:text-emerald-400"
-            }`}
-          >
-            {stat.up === false ? <ArrowDownRight size={13} /> : <ArrowUpRight size={13} />}
-            <span>{stat.change}</span>
-            {stat.description && (
-              <span className="font-normal text-slate-400 dark:text-slate-500">{stat.description}</span>
-            )}
-          </div>
-        ) : stat.description ? (
-          <div className="mt-2 text-xs text-slate-400 dark:text-slate-500">{stat.description}</div>
-        ) : null}
-      </div>
-    </div>
+    <h2 className="border-t border-border pt-6 text-base font-semibold tracking-[-0.01em] text-foreground">
+      {children}
+    </h2>
   );
 }
 
+/** A panel's own heading, the same as `Card`'s. */
+const PANEL_TITLE = "text-sm font-semibold text-foreground";
+
+/**
+ * The quick jobs: the console's everyday actions as a plain list — a new post, a batch of Gemini
+ * drafts, finding an account, the founder's outreach log, the inbox, the health page.
+ *
+ * "Generate posts" opens the Blog page's own dialog here. It needs the drafting model's name, so
+ * the blog's status is asked for only once the dialog is opened, under the Blog page's query key.
+ */
+const QUICK_JOB_ROW =
+  "flex w-full items-center gap-3 rounded-[6px] px-2 py-2 text-left text-[13px] font-medium text-foreground transition-colors hover:bg-accent";
+
+function QuickJobRow({ icon: Icon, label, note }: { icon: LucideIcon; label: string; note: string }) {
+  return (
+    <>
+      <Icon size={16} aria-hidden="true" className="shrink-0 text-muted-foreground" />
+      <span className="min-w-0 flex-1">
+        <span className="block truncate">{label}</span>
+        <span className="block truncate text-xs font-normal text-muted-foreground">{note}</span>
+      </span>
+      <ChevronRight size={14} aria-hidden="true" className="shrink-0 text-faint" />
+    </>
+  );
+}
+
+const QUICK_LINKS: { label: string; note: string; href: string; icon: LucideIcon }[] = [
+  { label: "Find a user", note: "Search accounts by name or email", href: "/users", icon: UserRoundSearch },
+  { label: "Outreach log", note: "Founder notes and replies", href: "/feedback", icon: Send },
+  { label: "Inbox", note: "Messages from users", href: "/inbox", icon: Inbox },
+  { label: "System health", note: "API, database, jobs, webhooks", href: "/health", icon: HeartPulse },
+];
+
+function QuickJobs() {
+  const [generating, setGenerating] = useState(false);
+  const site = useQuery({
+    queryKey: ["blog-site"],
+    queryFn: ({ signal }) => getBlogSiteStatus(signal),
+    enabled: generating,
+  });
+
+  return (
+    <section className="nf-panel flex h-full flex-col p-5" aria-labelledby="quick-jobs">
+      <h2 id="quick-jobs" className={PANEL_TITLE}>
+        Quick jobs
+      </h2>
+      <p className="mt-0.5 text-xs text-muted-foreground">The things you come here to do.</p>
+
+      <ul className="-mx-2 mt-3 space-y-0.5">
+        <li>
+          <Link href="/blog/new" className={QUICK_JOB_ROW}>
+            <QuickJobRow icon={PenSquare} label="New post" note="Write a blog post" />
+          </Link>
+        </li>
+        <li>
+          <button type="button" onClick={() => setGenerating(true)} className={QUICK_JOB_ROW}>
+            <QuickJobRow icon={Sparkles} label="Generate posts" note="Draft a batch from the topic queue" />
+          </button>
+        </li>
+        {QUICK_LINKS.map(({ label, note, href, icon }) => (
+          <li key={href}>
+            <Link href={href} className={QUICK_JOB_ROW}>
+              <QuickJobRow icon={icon} label={label} note={note} />
+            </Link>
+          </li>
+        ))}
+      </ul>
+
+      <GenerateDialog
+        open={generating}
+        onOpenChange={setGenerating}
+        model={site.data?.model}
+        autoPublish={site.data?.autoPublishDrafts ?? true}
+      />
+    </section>
+  );
+}
+
+const BUCKETS = [
+  { value: "day", label: "Day" },
+  { value: "week", label: "Week" },
+  { value: "month", label: "Month" },
+] as const;
+
 function SignupChart({ data }: { data: DailyCount[] }) {
+  const chart = useChartPalette();
   const [bucket, setBucket] = useState<Bucket>("day");
 
   const chartData = useMemo(() => {
@@ -204,45 +258,13 @@ function SignupChart({ data }: { data: DailyCount[] }) {
   }, [data, bucket]);
 
   return (
-    <div className="flex h-full flex-col rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Signups</h2>
-
-        <div className="flex items-center gap-1 rounded-lg border border-slate-200/80 bg-slate-50/70 p-0.5 text-xs font-medium dark:border-zinc-800 dark:bg-zinc-900/60">
-          <button
-            type="button"
-            onClick={() => setBucket("day")}
-            className={`rounded-md px-2.5 py-1 text-xs transition ${
-              bucket === "day"
-                ? "bg-white font-semibold text-[#2563EB] shadow-xs dark:bg-zinc-800 dark:text-blue-400"
-                : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-            }`}
-          >
-            Day
-          </button>
-          <button
-            type="button"
-            onClick={() => setBucket("week")}
-            className={`rounded-md px-2.5 py-1 text-xs transition ${
-              bucket === "week"
-                ? "bg-white font-semibold text-[#2563EB] shadow-xs dark:bg-zinc-800 dark:text-blue-400"
-                : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-            }`}
-          >
-            Week
-          </button>
-          <button
-            type="button"
-            onClick={() => setBucket("month")}
-            className={`rounded-md px-2.5 py-1 text-xs transition ${
-              bucket === "month"
-                ? "bg-white font-semibold text-[#2563EB] shadow-xs dark:bg-zinc-800 dark:text-blue-400"
-                : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-            }`}
-          >
-            Month
-          </button>
+    <div className="nf-panel flex h-full flex-col p-5">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 className={PANEL_TITLE}>Signups</h2>
+          <p className="mt-0.5 text-xs text-muted-foreground">New accounts in this period</p>
         </div>
+        <Segmented label="Chart grouping" options={BUCKETS} value={bucket} onChange={setBucket} />
       </div>
 
       <div className="min-h-64 w-full flex-1">
@@ -250,34 +272,35 @@ function SignupChart({ data }: { data: DailyCount[] }) {
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="signupGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#2563eb" stopOpacity={0.28} />
-                <stop offset="95%" stopColor="#2563eb" stopOpacity={0.0} />
+                <stop offset="5%" stopColor={chart.series} stopOpacity={0.16} />
+                <stop offset="95%" stopColor={chart.series} stopOpacity={0.0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" opacity={0.6} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={chart.grid} />
             <XAxis
               dataKey="label"
-              stroke="#94a3b8"
+              stroke={chart.tick}
               fontSize={11}
               tickLine={false}
               axisLine={false}
               dy={6}
             />
             <YAxis
-              stroke="#94a3b8"
+              stroke={chart.tick}
               fontSize={11}
               tickLine={false}
               axisLine={false}
               dx={-4}
             />
             <Tooltip
+              cursor={{ stroke: chart.axis }}
               content={({ active, payload }) => {
                 if (!active || !payload?.[0]) return null;
                 const point = payload[0].payload as ChartGroup;
                 return (
-                  <div className="rounded-lg border border-slate-200 bg-white p-2.5 shadow-md dark:border-zinc-800 dark:bg-[#09090b]">
-                    <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">{point.title}</p>
-                    <p className="mt-0.5 text-xs font-semibold text-[#2563EB] dark:text-blue-400">
+                  <div className="rounded-[8px] border border-border bg-popover px-3 py-2 shadow-md">
+                    <p className="text-xs font-medium text-foreground">{point.title}</p>
+                    <p className="mt-0.5 text-xs tabular-nums text-muted-foreground">
                       {formatCount(point.count)} signups
                     </p>
                   </div>
@@ -287,8 +310,8 @@ function SignupChart({ data }: { data: DailyCount[] }) {
             <Area
               type="monotone"
               dataKey="count"
-              stroke="#2563eb"
-              strokeWidth={2.5}
+              stroke={chart.series}
+              strokeWidth={2}
               fillOpacity={1}
               fill="url(#signupGradient)"
             />
@@ -311,7 +334,7 @@ function WebFunnelPanel({ funnel }: { funnel: AnalyticsOverview["webFunnel"] }) 
 
   return (
     <div className="space-y-5">
-      <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Web funnel</h3>
+      <SectionTitle>Web funnel</SectionTitle>
       <MetricRow
         items={[
           { label: "Previews", value: formatCount(funnel.previews), note: previewChange?.label, tone: previewChange ? (previewChange.up ? "up" : "down") : undefined, hint: `${formatCount(funnel.previewDevices)} browsers · ${formatCount(funnel.previewsSucceeded)} reached a result` },
@@ -350,8 +373,8 @@ function WebFunnelPanel({ funnel }: { funnel: AnalyticsOverview["webFunnel"] }) 
 /** A ranked list in a card of its own (used where one list stands alone). */
 function RankedList({ title, rows, empty, className = "" }: { title: string; rows: CategoryCount[]; empty: string; className?: string }) {
   return (
-    <div className={`h-full min-w-0 rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] ${className}`}>
-      <h4 className="mb-3 text-sm font-semibold text-slate-800 dark:text-slate-200">{title}</h4>
+    <div className={`h-full min-w-0 nf-panel p-5 ${className}`}>
+      <h3 className={cn("mb-3", PANEL_TITLE)}>{title}</h3>
       <RankedBars rows={rows} empty={empty} />
     </div>
   );
@@ -389,7 +412,7 @@ function WebTrafficPanel({ traffic }: { traffic: AnalyticsOverview["webTraffic"]
 
   return (
     <div className="space-y-5">
-      <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Website traffic</h3>
+      <SectionTitle>Website traffic</SectionTitle>
       <MetricRow
         items={[
           { label: "Page views", value: formatCount(traffic.pageviews), note: viewChange?.label, tone: viewChange ? (viewChange.up ? "up" : "down") : undefined, hint: "Pages viewed on the website and in the web app" },
@@ -405,23 +428,30 @@ function WebTrafficPanel({ traffic }: { traffic: AnalyticsOverview["webTraffic"]
           <DailyChart className="h-full" title="Page views" info="Pages viewed per day, website and web app together" data={traffic.pageviewsPerDay} unit="views" color={chart.series} />
         </div>
         {/* The feed scrolls inside a card the height of the chart beside it, instead of running on below it. */}
-        <div className="flex min-h-0 flex-col rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] lg:col-span-5 lg:h-[22.5rem] xl:col-span-4">
-          <h4 className="mb-4 text-sm font-semibold text-slate-800 dark:text-slate-200">What web users do</h4>
+        <div className="flex min-h-0 flex-col nf-panel p-5 lg:col-span-5 lg:h-[22.5rem] xl:col-span-4">
+          <h3 className={cn("mb-4", PANEL_TITLE)}>What web users do</h3>
           {traffic.recentActions.length === 0 ? (
-            <p className="py-10 text-center text-xs text-slate-400">No signed-in actions in this window yet</p>
+            <div className="flex flex-1 items-center justify-center">
+              <EmptyView
+                compact
+                icon={MousePointerClick}
+                message="Quiet on the web app"
+                hint="No signed-in actions in this window yet. Saves, recordings and shares land here as they happen."
+              />
+            </div>
           ) : (
-            <ul className="-mr-2 min-h-0 flex-1 divide-y divide-slate-100 overflow-y-auto overscroll-contain pr-2 dark:divide-zinc-800">
+            <ul className="-mr-2 min-h-0 flex-1 divide-y divide-border overflow-y-auto overscroll-contain pr-2">
               {traffic.recentActions.map((item, i) => (
                 <li key={`${item.userId}-${item.occurredAtUtc}-${i}`} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] text-slate-900 dark:text-slate-100">
+                    <p className="truncate text-[13px] text-foreground">
                       <span className="font-medium">{item.action}</span>
-                      <span className="text-slate-400"> · </span>
-                      <Link href={`/users/${item.userId}`} className="text-slate-600 hover:underline dark:text-slate-300">{item.fullName}</Link>
+                      <span className="text-muted-foreground"> · </span>
+                      <Link href={`/users/${item.userId}`} className="text-muted-foreground hover:text-foreground hover:underline">{item.fullName}</Link>
                     </p>
-                    <p className="truncate text-[11px] text-slate-400">{item.email} · {item.path}</p>
+                    <p className="truncate text-[11px] text-muted-foreground">{item.email} · {item.path}</p>
                   </div>
-                  <time className="shrink-0 text-[11px] tabular-nums text-slate-400" dateTime={item.occurredAtUtc}>
+                  <time className="shrink-0 text-[11px] tabular-nums text-muted-foreground" dateTime={item.occurredAtUtc}>
                     {formatRelative(item.occurredAtUtc, now)}
                   </time>
                 </li>
@@ -457,7 +487,7 @@ function MembershipPanel({ membership }: { membership: AnalyticsOverview["member
   const lapseRate = m.activeMembers + m.lapsedMembers > 0 ? formatPercent(m.lapsedMembers / (m.activeMembers + m.lapsedMembers), 0) : UNKNOWN;
   return (
     <div className="space-y-5">
-      <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pro membership</h3>
+      <SectionTitle>Pro membership</SectionTitle>
       <div className="grid gap-5 xl:grid-cols-3">
         <MetricRow
           className="xl:col-span-2"
@@ -495,15 +525,6 @@ function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[
   );
 }
 
-function getFlagEmoji(countryCode: string | null | undefined): string {
-  if (!countryCode || countryCode.length !== 2) return "";
-  const codePoints = countryCode
-    .toUpperCase()
-    .split("")
-    .map((char) => 127397 + char.charCodeAt(0));
-  return String.fromCodePoint(...codePoints);
-}
-
 const ACTIVITY_FILTERS = [
   { value: "all", label: "All" },
   { value: "transcriptions", label: "Transcriptions" },
@@ -513,15 +534,16 @@ const ACTIVITY_FILTERS = [
 ] as const;
 type ActivityFilter = (typeof ACTIVITY_FILTERS)[number]["value"];
 
-const ACTIVITY_KINDS: Record<string, { icon: typeof UserRound; style: string; group: ActivityFilter }> = {
-  signup: { icon: UserRoundPlus, style: "bg-blue-50 text-[#2563EB] dark:bg-blue-950/60 dark:text-blue-400", group: "signups" },
-  transcription: { icon: Music2, style: "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400", group: "transcriptions" },
-  transcription_failed: { icon: TriangleAlert, style: "bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400", group: "transcriptions" },
-  payment: { icon: CreditCard, style: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400", group: "money" },
-  feedback: { icon: MessageSquareHeart, style: "bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400", group: "feedback" },
-  share: { icon: Share2, style: "bg-sky-50 text-sky-600 dark:bg-sky-950/60 dark:text-sky-400", group: "transcriptions" },
+// Monochrome glyphs; only a failure is coloured, because it is the one row that asks for attention.
+const ACTIVITY_KINDS: Record<string, { icon: LucideIcon; style: string; group: ActivityFilter }> = {
+  signup: { icon: UserRoundPlus, style: "text-muted-foreground", group: "signups" },
+  transcription: { icon: Music2, style: "text-muted-foreground", group: "transcriptions" },
+  transcription_failed: { icon: TriangleAlert, style: "text-danger", group: "transcriptions" },
+  payment: { icon: CreditCard, style: "text-muted-foreground", group: "money" },
+  feedback: { icon: MessageSquare, style: "text-muted-foreground", group: "feedback" },
+  share: { icon: Share2, style: "text-muted-foreground", group: "transcriptions" },
   /** The founder's customer-research emails (GET /api/admin/outreach lists them all). */
-  outreach: { icon: MailCheck, style: "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400", group: "feedback" },
+  outreach: { icon: MailCheck, style: "text-muted-foreground", group: "feedback" },
 };
 
 function regionName(code: string | null | undefined): string {
@@ -546,10 +568,10 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
   const shown = items.filter((i) => filter === "all" || (ACTIVITY_KINDS[i.kind]?.group ?? "all") === filter);
 
   return (
-    <div className="flex h-full min-h-0 flex-col rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] lg:max-h-[24.5rem]">
+    <div className="flex h-full min-h-0 flex-col nf-panel p-5 lg:max-h-[24.5rem]">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Recent activity</h2>
-        <Link href="/activity?tab=feed" className="text-xs font-medium text-[#2563EB] hover:underline dark:text-blue-400">
+        <h2 className={PANEL_TITLE}>Recent activity</h2>
+        <Link href="/activity?tab=feed" className="text-xs font-medium text-brand hover:underline">
           View all
         </Link>
       </div>
@@ -560,11 +582,12 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
             type="button"
             onClick={() => setFilter(f.value)}
             aria-pressed={filter === f.value}
-            className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+            className={cn(
+              "rounded-[6px] px-2 py-1 text-xs font-medium ring-1 ring-inset transition-colors",
               filter === f.value
-                ? "bg-[#2563EB] text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-zinc-900 dark:text-slate-300 dark:hover:bg-zinc-800"
-            }`}
+                ? "bg-accent text-foreground ring-border"
+                : "text-muted-foreground ring-transparent hover:text-foreground",
+            )}
           >
             {f.label}
           </button>
@@ -572,30 +595,34 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
       </div>
 
       {shown.length === 0 ? (
-        <div className="py-10 text-center text-xs text-slate-400">Nothing of this kind yet</div>
+        <div className="flex flex-1 items-center justify-center">
+          <EmptyView
+            compact
+            icon={Music2}
+            message="Nothing of this kind yet"
+            hint="It appears here the moment it happens."
+          />
+        </div>
       ) : (
         <ul className="-mr-2 min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-2">
           {shown.map((item, index) => {
             const kind = ACTIVITY_KINDS[item.kind] ?? ACTIVITY_KINDS.transcription!;
             const Icon = kind.icon;
-            const flag = getFlagEmoji(item.country);
             const at = item.occurredAtUtc;
             const exact = new Date(at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
             return (
               <li key={`${item.kind}-${at}-${index}`} className="group relative">
                 <Link
                   href={item.userId ? `/activity/journey?userId=${item.userId}` : "/activity?tab=feed"}
-                  className="flex items-start gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-slate-50 dark:hover:bg-zinc-900/60"
+                  className="flex items-start gap-3 rounded-[6px] px-2 py-2 transition-colors hover:bg-accent"
                 >
-                  <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${kind.style}`}>
-                    <Icon size={14} />
-                  </span>
+                  <Icon size={16} aria-hidden="true" className={cn("mt-0.5 shrink-0", kind.style)} />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[12.5px] leading-snug text-slate-800 dark:text-slate-100">
-                      <span className="font-semibold">{item.title}</span> {item.detail ?? item.kind}
+                    <span className="block text-[13px] leading-snug text-foreground">
+                      <span className="font-medium">{item.title}</span>{" "}
+                      <span className="text-muted-foreground">{item.detail ?? item.kind}</span>
                     </span>
-                    <span className="mt-0.5 block truncate text-[11px] text-slate-400 dark:text-slate-500">
-                      {flag && <span className="mr-1">{flag}</span>}
+                    <span className="mt-0.5 block truncate text-xs text-muted-foreground">
                       {regionName(item.country)}
                       {item.country ? " · " : ""}
                       <time dateTime={at} title={exact}>{formatRelative(at, now)}</time>
@@ -609,11 +636,11 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
                       setEmailTarget({ email: item.email!, fullName: item.title, id: item.userId! });
                       setEmailDialogOpen(true);
                     }}
-                    className="absolute right-1 top-2 rounded-md p-1 text-slate-400 opacity-0 transition-opacity hover:bg-blue-50 hover:text-blue-600 focus:opacity-100 group-hover:opacity-100 dark:hover:bg-zinc-800"
+                    className="absolute right-1 top-1.5 rounded-[6px] bg-card p-1 text-muted-foreground opacity-0 transition-opacity hover:text-foreground focus:opacity-100 group-hover:opacity-100"
                     title={`Email ${item.title}`}
                     aria-label={`Email ${item.title}`}
                   >
-                    <MailCheck size={14} />
+                    <Mail size={14} aria-hidden="true" />
                   </button>
                 )}
               </li>
@@ -673,71 +700,59 @@ export function OverviewView() {
 
   return (
     <div className="animate-fade-in space-y-6">
-      <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-            {greeting(firstName)}
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold leading-tight tracking-[-0.02em] text-foreground">
+            Good {partOfDay()}{firstName ? `, ${firstName}` : ""}
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Here&apos;s what&apos;s happening with your NoteFusion account today.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Who joined, what was transcribed and what sold in the selected dates.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-xs text-slate-400">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="mr-1 text-xs text-muted-foreground">
             Days bucketed in {formatOffset(state.data?.reportingOffsetMinutes ?? 60)}
           </span>
 
-          <div className="flex rounded-xl border border-slate-200 bg-white p-1 dark:border-zinc-800 dark:bg-[#09090b]">
-            <button
-              onClick={() => setPresetDays(7)}
-              className={`rounded-lg px-4 py-2 text-xs font-semibold transition ${
-                isPreset(7)
-                  ? "bg-[#2563EB] text-white shadow-sm"
-                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-              }`}
-            >
-              7d
-            </button>
-            <button
-              onClick={() => setPresetDays(30)}
-              className={`rounded-lg px-4 py-2 text-xs font-semibold transition ${
-                isPreset(30)
-                  ? "bg-[#2563EB] text-white shadow-sm"
-                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-              }`}
-            >
-              30d
-            </button>
-            <button
-              onClick={() => setPresetDays(90)}
-              className={`rounded-lg px-4 py-2 text-xs font-semibold transition ${
-                isPreset(90)
-                  ? "bg-[#2563EB] text-white shadow-sm"
-                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-              }`}
-            >
-              90d
-            </button>
+          <div className="flex rounded-[8px] border border-border bg-muted p-0.5" role="group" aria-label="Range presets">
+            {[7, 30, 90].map((days) => (
+              <button
+                key={days}
+                type="button"
+                onClick={() => setPresetDays(days)}
+                aria-pressed={isPreset(days)}
+                className={cn(
+                  "rounded-[6px] px-3 py-1 text-xs font-medium transition-colors",
+                  isPreset(days)
+                    ? "bg-card text-foreground shadow-xs dark:bg-accent"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {days}d
+              </button>
+            ))}
           </div>
 
           <button
+            type="button"
             onClick={() => setShowRangePicker((p) => !p)}
-            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 dark:border-zinc-800 dark:bg-[#09090b] dark:text-slate-300 dark:hover:bg-zinc-900"
+            aria-expanded={showRangePicker}
+            className="flex h-8 items-center gap-2 rounded-[8px] border border-border bg-card px-3 text-xs font-medium text-foreground shadow-xs transition-colors hover:bg-accent"
           >
-            <CalendarDays size={15} />
+            <CalendarDays size={14} aria-hidden="true" className="text-muted-foreground" />
             <span>
               {picker
-                ? `${formatDayShort(picker.from)} - ${formatDayShort(picker.to)}`
+                ? `${formatDayShort(picker.from)} – ${formatDayShort(picker.to)}`
                 : "Select dates"}
             </span>
-            <ChevronDown size={14} />
+            <ChevronDown size={14} aria-hidden="true" className="text-faint" />
           </button>
         </div>
       </div>
 
       {showRangePicker && state.data && picker && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md dark:border-zinc-800 dark:bg-[#09090b]">
+        <div className="nf-panel p-4">
           <RangePicker
             value={picker}
             offsetMinutes={state.data.reportingOffsetMinutes}
@@ -754,41 +769,51 @@ export function OverviewView() {
           const activeChange = changeAgainst(data.users.activeUsers, data.users.activeUsersPrevious);
           const txChange = changeAgainst(data.transcriptions.totalTranscribed, data.transcriptions.totalTranscribedPrevious);
 
+          const hymnsRecognised = data.transcriptions.hymnMatchesOffered ?? 0;
           const topStats: StatItem[] = [
             {
               // The total is all time; what moves with the window is how many joined, said as such.
               title: "Total users",
               value: formatCount(data.users.totalUsers),
               description: `${formatCount(data.users.newUsers)} new in this period`,
-              icon: UserRound,
               hint: "Every account, all time",
             },
             {
               title: "Active today",
               value: formatCount(data.users.activeToday ?? 0),
               description: "Seen since midnight",
-              icon: Zap,
               hint: "Accounts that used the app or the website today (reporting time): any signed-in visit, a transcription, or a sign-in",
             },
             {
               title: "Active this period",
               value: formatCount(data.users.activeUsers),
-              change: activeChange?.label ?? null,
-              up: activeChange?.up,
-              description: activeChange ? "vs. previous period" : null,
-              icon: Activity,
+              change: activeChange,
+              description: "Transcribed, visited or signed up",
               hint: "Accounts that did something in the selected dates: transcribed, used the web app, signed up, or were seen",
             },
             {
               title: "Transcriptions",
               value: formatCount(data.transcriptions.totalTranscribed),
-              change: txChange?.label ?? null,
-              up: txChange?.up,
-              description: `${formatCount(data.transcriptions.totalSaved)} kept${txChange ? " · vs. previous period" : ""}`
-                + ` · ${formatCount(data.transcriptions.hymnMatchesOffered ?? 0)} hymns recognised, ${formatCount(data.transcriptions.hymnVersionsSaved ?? 0)} hymnbook versions kept`,
-              icon: Music2,
-              hint: "Transcriptions that produced a result in this window, including free previews. Hymns recognised: results whose tune matched a hymn in the library and offered its hymnbook version; kept: sheets saved as that version",
+              change: txChange,
+              description: `${formatCount(data.transcriptions.totalSaved)} kept as sheets`,
+              hint: "Transcriptions that produced a result in this window, including free previews",
             },
+            {
+              title: "Hymns recognised",
+              value: formatCount(hymnsRecognised),
+              description: `${formatCount(data.transcriptions.hymnVersionsSaved ?? 0)} hymnbook versions kept`,
+              hint: "Results whose tune matched a hymn in the library and offered its hymnbook version; kept: sheets saved as that version",
+            },
+            ...(data.membership
+              ? [
+                  {
+                    title: "Pro members",
+                    value: formatCount(data.membership.activeMembers),
+                    description: `${formatCount(data.membership.paidMembers)} paid · ${formatCount(data.membership.giftedMembers)} gifted`,
+                    hint: "Memberships with Pro right now, each counted once. A choir counts once, for its director",
+                  },
+                ]
+              : []),
           ];
 
           const started = data.transcriptions.succeededCount + data.transcriptions.failedCount + data.transcriptions.inFlightCount;
@@ -811,53 +836,65 @@ export function OverviewView() {
 
           return (
             <div className="space-y-6">
-              {/* TOP KPI CARDS */}
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {/* TOP KPI TILES */}
+              <StatStrip className="sm:grid-cols-2 xl:grid-cols-3">
                 {topStats.map((stat) => (
-                  <StatCard key={stat.title} stat={stat} />
+                  <StatTile
+                    key={stat.title}
+                    label={stat.title}
+                    value={stat.value}
+                    change={stat.change ?? null}
+                    sub={stat.description ?? null}
+                    {...(stat.hint ? { hint: stat.hint } : {})}
+                  />
                 ))}
-              </div>
+              </StatStrip>
 
-              {/* TWO-COLUMN LAYOUT: SIGNUPS CHART & RECENT ACTIVITY */}
+              {/* SIGNUPS CHART & QUICK JOBS */}
               <div className="grid gap-6 lg:grid-cols-12">
                 <div className="lg:col-span-7 xl:col-span-8">
                   <SignupChart data={data.signupsPerDay} />
+                </div>
+                <div className="lg:col-span-5 xl:col-span-4">
+                  <QuickJobs />
+                </div>
+              </div>
+
+              {/* MOST ACTIVE USERS (the engagement leaderboard's top five) & RECENT ACTIVITY */}
+              <div className="grid gap-6 lg:grid-cols-12">
+                <div className="min-w-0 lg:col-span-7 xl:col-span-8">
+                  <MostActiveUsersCard from={range?.from} to={range?.to} />
                 </div>
                 <div className="lg:col-span-5 xl:col-span-4">
                   <RecentActivityPanel items={data.recentActivity} />
                 </div>
               </div>
 
-              {/* MOST ACTIVE USERS: the engagement leaderboard's top five for this window */}
-              <MostActiveUsersCard from={range?.from} to={range?.to} />
-
               {/* PRO MEMBERSHIP: members, joins and lapses, money, song use */}
               {data.membership && (
-                <div className="mt-8 border-t border-slate-200 pt-6 dark:border-slate-800">
+                <div className="pt-2">
                   <MembershipPanel membership={data.membership} />
                 </div>
               )}
 
               {/* WEBSITE TRAFFIC: visits, clicks, referrers, what web users do */}
-              <div className="mt-8 border-t border-slate-200 pt-6 dark:border-slate-800">
+              <div className="pt-2">
                 <WebTrafficPanel traffic={data.webTraffic} />
               </div>
 
               {/* WEB FUNNEL: previews → sign-ups → saves → shares → Pro */}
-              <div className="mt-8 border-t border-slate-200 pt-6 dark:border-slate-800">
+              <div className="pt-2">
                 <WebFunnelPanel funnel={data.webFunnel} />
               </div>
 
               {/* SECONDARY DEEP DIVE: KEYS & OUTCOMES */}
               <div className="grid gap-6 xl:grid-cols-2">
                 <MostTranscribedKeys keys={data.topKeys} />
-                <div className="flex h-full flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
+                <div className="flex h-full flex-col justify-between nf-panel p-5">
                   <div className="mb-4 flex items-center justify-between">
-                    <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                      Transcription outcomes
-                    </h4>
+                    <h3 className={PANEL_TITLE}>Transcription outcomes</h3>
                     <span
-                      className="text-xs text-slate-400"
+                      className="text-xs text-muted-foreground"
                       title="Every transcription started in this period, account jobs and free previews"
                     >
                       {data.transcriptions.successRate != null
@@ -876,18 +913,14 @@ export function OverviewView() {
               </div>
 
               {/* Telemetry, Cohorts & Signup Methods */}
-              <div className="mt-8 border-t border-slate-200 pt-6 space-y-5 dark:border-slate-800">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  Platform telemetry &amp; cohorts
-                </h3>
+              <div className="space-y-5 pt-2">
+                <SectionTitle>Platform telemetry &amp; cohorts</SectionTitle>
 
                 <div className="grid gap-5 lg:grid-cols-[1fr_1.6fr]">
-                  <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900/80">
+                  <div className="flex flex-col justify-between nf-panel p-4 sm:p-5">
                     <div className="mb-4 flex items-center justify-between">
-                      <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                        Signup methods
-                      </h4>
-                      <span className="text-xs text-slate-400">All accounts</span>
+                      <h3 className={PANEL_TITLE}>Signup methods</h3>
+                      <span className="text-xs text-muted-foreground">All accounts</span>
                     </div>
                     <DonutCard
                       slices={methods}
@@ -896,10 +929,10 @@ export function OverviewView() {
                       meters
                       emptyMessage="No accounts yet"
                     />
-                    <div className="mt-5 border-t border-slate-100 pt-4 dark:border-slate-800/60">
+                    <div className="mt-5 border-t border-border pt-4">
                       <div className="mb-3 flex items-center justify-between">
-                        <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Signed up from</h4>
-                        <span className="text-xs text-slate-400">All accounts</span>
+                        <h3 className={PANEL_TITLE}>Signed up from</h3>
+                        <span className="text-xs text-muted-foreground">All accounts</span>
                       </div>
                       <DonutCard
                         slices={data.signupSources.map((source, i) => ({ label: source.label, value: source.count, color: chart.categorical[(i + 2) % chart.categorical.length] ?? chart.faint }))}
@@ -912,12 +945,10 @@ export function OverviewView() {
                   </div>
 
                   {/* Weekly Cohorts Table - Bleed to edges of card, no double box! */}
-                  <div className="flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900/80">
+                  <div className="flex flex-col justify-between overflow-hidden nf-panel">
                     <div className="p-4 sm:p-5 pb-3">
-                      <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                        Weekly cohorts
-                      </h4>
-                      <p className="mt-0.5 text-xs text-slate-400">
+                      <h3 className={PANEL_TITLE}>Weekly cohorts</h3>
+                      <p className="mt-0.5 text-xs text-muted-foreground">
                         Share of each signup week that came back on a later day: seen, signed in, or transcribed
                       </p>
                     </div>
@@ -926,7 +957,7 @@ export function OverviewView() {
                         <EmptyView message="No signups in the last twelve weeks" />
                       </div>
                     ) : (
-                      <div className="w-full overflow-x-auto border-t border-slate-100 dark:border-slate-800/60">
+                      <div className="w-full overflow-x-auto border-t border-border">
                         <Table>
                           <TableHeader>
                             <TableRow className="hover:bg-transparent">

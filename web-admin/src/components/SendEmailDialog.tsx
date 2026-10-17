@@ -258,7 +258,7 @@ export function SendEmailDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="max-w-3xl max-h-[90vh] flex flex-col p-0 overflow-hidden sm:rounded-xl">
+      <AlertDialogContent className="max-w-3xl max-h-[90vh] flex flex-col p-0 overflow-hidden sm:rounded-[8px]">
         <form onSubmit={handleSend} className="flex flex-col h-full overflow-hidden">
           <AlertDialogHeader className="border-b border-border/60 px-6 py-4 bg-muted/20">
             <div className="flex items-center justify-between">
@@ -331,7 +331,7 @@ export function SendEmailDialog({
                           {selectedUser.fullName}
                         </span>
                         {selectedUser.role && (
-                          <Badge tone={selectedUser.role === "Admin" ? "blue" : "neutral"}>
+                          <Badge>
                             {selectedUser.role}
                           </Badge>
                         )}
@@ -513,13 +513,13 @@ export function SendEmailDialog({
                 </div>
               </div>
             ) : (
-              <div className="rounded-xl border border-border/80 bg-slate-100 dark:bg-slate-900/60 p-4 sm:p-6">
+              <div className="rounded-[8px] border border-border/80 bg-slate-100 dark:bg-slate-900/60 p-4 sm:p-6">
                 <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
                   <span className="font-mono">From: NoteFusion &lt;hello@notefusion.studio&gt;</span>
                   <span className="font-mono">To: {selectedUser?.email ?? "recipient@domain.com"}</span>
                 </div>
 
-                <div className="max-w-xl mx-auto rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100">
+                <div className="max-w-xl mx-auto rounded-[8px] border border-slate-200 bg-white overflow-hidden shadow-sm text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100">
                   {/* Email header with signature blue gradient and white logo */}
                   <div className="bg-gradient-to-br from-blue-700 to-blue-600 px-6 py-8 text-center text-white">
                     {/* eslint-disable-next-line @next/next/no-img-element */}

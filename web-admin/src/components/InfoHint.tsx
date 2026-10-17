@@ -11,10 +11,10 @@ import { Info } from "lucide-react";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-export function InfoHint({ text, size = 12 }: { text: string; size?: number }) {
+export function InfoHint({ text, size = 14 }: { text: string; size?: number }) {
   return (
     <Tooltip>
-      <TooltipTrigger type="button" className="shrink-0 cursor-help rounded-full text-faint">
+      <TooltipTrigger type="button" className="shrink-0 cursor-help rounded-full text-faint transition-colors hover:text-muted-foreground">
         <Info size={size} aria-hidden="true" />
         <span className="sr-only">{text}</span>
       </TooltipTrigger>

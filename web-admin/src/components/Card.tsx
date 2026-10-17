@@ -20,8 +20,8 @@ interface CardProps {
 /**
  * The single surface primitive. Everything on a page sits in one of these.
  *
- * Border-first: the hairline does the separating and the shadow only lifts the card off
- * the canvas, so a page of twelve cards does not read as twelve floating objects.
+ * It wears `.nf-panel` (src/app/globals.css): the card fill, a 1px hairline and a 10px corner,
+ * so every page's cards share one quiet surface without each page restyling them.
  *
  * Not built on shadcn's `Card`. That one is a five-part composition (`CardHeader`,
  * `CardTitle`, `CardAction`, …) whose own `py-6`/`gap-6` rhythm would have to be overridden
@@ -39,7 +39,7 @@ export function Card({
   children,
 }: CardProps) {
   const hasHeader = Boolean(title || action);
-  const body = bleed ? undefined : hasHeader ? "px-5 pb-5 pt-1 sm:px-6 sm:pb-6" : "p-5 sm:p-6";
+  const body = bleed ? undefined : hasHeader ? "px-5 pb-5 pt-1" : "p-5";
 
   return (
     // `min-w-0`: as a grid item a card would otherwise refuse to shrink below the min-content
@@ -47,22 +47,22 @@ export function Card({
     // phone. It is inert for a card that is not a grid or flex item.
     <section
       className={cn(
-        "min-w-0 overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs transition-shadow",
+        "nf-panel overflow-hidden",
         className
       )}
     >
       {hasHeader && (
         <header
           className={cn(
-            "flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-3.5 sm:px-6",
-            bleed && "border-b border-border/60"
+            "flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-4",
+            bleed && "border-b border-border"
           )}
         >
           <div className="min-w-0">
             {title && (
-              <h2 className="flex items-center gap-1.5 text-sm font-semibold tracking-tight text-foreground">
+              <h2 className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
                 <span className="truncate">{title}</span>
-                {info && <InfoHint text={info} size={13} />}
+                {info && <InfoHint text={info} />}
               </h2>
             )}
             {hint && <p className="mt-0.5 text-xs text-muted-foreground">{hint}</p>}

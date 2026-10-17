@@ -118,7 +118,7 @@ function tooltip(unit: string, color: string) {
     if (!active || !group?.title) return null;
 
     return (
-      <div className="rounded-sm border border-border bg-popover px-3 py-2 shadow-lift">
+      <div className="rounded-[8px] border border-border bg-popover px-3 py-2 shadow-md">
         <p className="text-[11px] font-semibold text-foreground">{group.title}</p>
         <p className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground">
           <span
@@ -211,7 +211,7 @@ export function DailyChart({
               {/* Two of these render on the overview page, and a repeated id would hand both
                   charts whichever gradient the document defined last. */}
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={fill} stopOpacity={0.28} />
+                <stop offset="0%" stopColor={fill} stopOpacity={0.16} />
                 <stop offset="100%" stopColor={fill} stopOpacity={0} />
               </linearGradient>
             </defs>

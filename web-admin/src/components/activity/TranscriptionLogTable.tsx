@@ -119,7 +119,7 @@ export function TranscriptionLogTable({
                   {formatInstantDateTime(row.createdAtUtc, offset)}
                   {row.origin === "preview" && (
                     <div className="mt-1">
-                      <Badge tone="blue" title="The website's anonymous try-it-free">Free preview</Badge>
+                      <Badge title="The website's anonymous try-it-free">Free preview</Badge>
                     </div>
                   )}
                 </td>

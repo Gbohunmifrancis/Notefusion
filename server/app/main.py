@@ -143,6 +143,9 @@ def _warmup_pipeline() -> None:
                     transcribe(path, mode="melody")
             finally:
                 path.unlink(missing_ok=True)
+            # The hymn index too, which the first look-up (``/v1/identify``) would otherwise load.
+            from app.pipeline import hymn_match
+            hymn_match.default_index()
             logger.info("pipeline warm-up done in %.1fs", time.perf_counter() - started)
         except Exception as exc:  # noqa: BLE001 - warm-up is an optimisation, never a failure
             logger.warning("pipeline warm-up skipped: %s", exc)

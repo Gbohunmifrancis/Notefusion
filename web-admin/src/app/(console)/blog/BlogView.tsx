@@ -108,7 +108,7 @@ function SiteCard() {
                 {deploy && <Badge tone={deploy.tone}>{deploy.text}</Badge>}
                 {s.latestDeploy && (
                   <a href={s.latestDeploy.url} target="_blank" rel="noopener" className="inline-flex items-center gap-1 text-brand hover:underline">
-                    {formatRelative(s.latestDeploy.createdAtUtc, Date.now())} <ExternalLink className="size-3" aria-hidden="true" />
+                    {formatRelative(s.latestDeploy.createdAtUtc, Date.now())} <ExternalLink className="size-3.5" aria-hidden="true" />
                   </a>
                 )}
                 {s.pendingRebuilds > 0 && <Badge tone="blue">{`${s.pendingRebuilds} change${s.pendingRebuilds === 1 ? "" : "s"} waiting to deploy`}</Badge>}

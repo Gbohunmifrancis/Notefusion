@@ -216,7 +216,7 @@ export function HealthView() {
             className="h-9 px-3.5 text-[13px] font-semibold rounded-lg shadow-xs hover:bg-slate-50 dark:hover:bg-zinc-900 dark:border-zinc-800"
           >
             <RefreshCw
-              size={15}
+              size={16}
               className={healthState.isFetching ? "animate-spin mr-2" : "mr-2"}
               aria-hidden="true"
             />
@@ -228,20 +228,12 @@ export function HealthView() {
       {/* 4 Top Metric KPI Cards (100% Server Scoped) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {/* API Status */}
-        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
+        <div className="nf-panel p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">API status</span>
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-              health?.status === "healthy"
-                ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400"
-                : health?.status === "degraded"
-                ? "bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400"
-                : "bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400"
-            }`}>
-              <Activity className="w-4 h-4" />
-            </div>
+            <Activity size={16} aria-hidden="true" className="text-faint" />
           </div>
-          <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+          <div className="mt-3 text-2xl font-semibold tracking-[-0.02em] tabular-nums text-foreground">
             {health ? (health.status === "healthy" ? "Operational" : health.status === "degraded" ? "Degraded" : "Offline") : "Probing..."}
           </div>
           <div className="mt-2 flex items-center text-xs">
@@ -259,14 +251,12 @@ export function HealthView() {
         </div>
 
         {/* Database */}
-        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
+        <div className="nf-panel p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Database</span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-              <Database className="w-4 h-4" />
-            </div>
+            <Database size={16} aria-hidden="true" className="text-faint" />
           </div>
-          <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+          <div className="mt-3 text-2xl font-semibold tracking-[-0.02em] tabular-nums text-foreground">
             {health ? (health.database.latencyMs !== null ? `${formatCount(health.database.latencyMs)} ms` : STATUS_LABELS[health.database.status]) : "..."}
           </div>
           <div className="mt-2 flex items-center text-xs">
@@ -280,14 +270,12 @@ export function HealthView() {
         </div>
 
         {/* Background Jobs */}
-        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
+        <div className="nf-panel p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Background jobs</span>
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-              <Layers className="w-4 h-4" />
-            </div>
+            <Layers size={16} aria-hidden="true" className="text-faint" />
           </div>
-          <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+          <div className="mt-3 text-2xl font-semibold tracking-[-0.02em] tabular-nums text-foreground">
             {health ? formatCount(health.activity.jobsLast24Hours) : "..."}
           </div>
           <div className="mt-2 flex items-center text-xs">
@@ -301,14 +289,12 @@ export function HealthView() {
         </div>
 
         {/* Webhooks */}
-        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
+        <div className="nf-panel p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Webhooks</span>
-            <div className="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-950/40 flex items-center justify-center text-violet-600 dark:text-violet-400">
-              <Webhook className="w-4 h-4" />
-            </div>
+            <Webhook size={16} aria-hidden="true" className="text-faint" />
           </div>
-          <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+          <div className="mt-3 text-2xl font-semibold tracking-[-0.02em] tabular-nums text-foreground">
             {health ? (health.webhookBacklog.status === "healthy" ? "Clear" : "Backlog") : "..."}
           </div>
           <div className="mt-2 flex items-center text-xs">
@@ -325,7 +311,7 @@ export function HealthView() {
       {/* Middle 2-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column: Recent Events Timeline (Server Scoped) */}
-        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-6 shadow-xs flex flex-col">
+        <div className="nf-panel p-6 flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Recent events</h2>
@@ -336,7 +322,7 @@ export function HealthView() {
               className="text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] dark:text-blue-400 flex items-center gap-1 group"
             >
               View all
-              <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
+              <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
 
@@ -391,7 +377,7 @@ export function HealthView() {
         </div>
 
         {/* Right Column: Webhook Delivery Overview (Server Scoped) */}
-        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-6 shadow-xs flex flex-col">
+        <div className="nf-panel p-6 flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Webhook delivery</h2>
@@ -402,7 +388,7 @@ export function HealthView() {
               className="text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] dark:text-blue-400 flex items-center gap-1 group"
             >
               View all
-              <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
+              <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
 
@@ -481,7 +467,7 @@ export function HealthView() {
         {(health) => (
           <div className="space-y-5 pt-2">
             <div
-              className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 rounded-xl border px-4 py-3.5 ${
+              className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 rounded-[8px] border px-4 py-3.5 ${
                 STATUS_SKINS[health.status].wash
               }`}
               role="status"

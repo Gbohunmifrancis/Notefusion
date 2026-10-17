@@ -170,6 +170,28 @@ class ResultDto(ApiModel):
     hymn_match: HymnMatchDto | None = None
 
 
+class IdentifiedHymnDto(ApiModel):
+    """The hymn a hummed clip was recognised as (``POST /v1/identify``)."""
+    slug: str
+    title: str
+    tune: str
+    # The hymn's page (absolute); for an incipit, wherever the incipit's source lives.
+    url: str
+    # "hymn" (a hymn page), "tune" (a tune page, no words) or "incipit" (recognition only).
+    kind: str
+    confidence: float
+    # The opening words of the first verse, plainly spelled; null for a tune without words.
+    first_line: str | None = None
+
+
+class IdentifyResponse(ApiModel):
+    match: IdentifiedHymnDto | None = None
+    # Notes the decoder heard in the clip, and whether that was too few to name any hymn.
+    notes_heard: int
+    too_short: bool
+    seconds_heard: float
+
+
 class GradeTargetNoteDto(ApiModel):
     pitch_midi: int
     start_beat: float

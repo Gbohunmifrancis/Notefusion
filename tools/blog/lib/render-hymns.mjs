@@ -8,6 +8,7 @@ import { gridHtml, textLinesHtml } from "./grid-html.mjs";
 import { melodyToMusicXml } from "./musicxml.mjs";
 import { PD_DIED_BEFORE, PD_PUBLISHED_BEFORE } from "./content.mjs";
 import { CCEH, tuneIndexItem } from "./render-tunes.mjs";
+import { identifyCallout } from "./render-identify.mjs";
 
 const DIATONIC = ["d", "r", "m", "f", "s", "l", "t"];
 const TIME_WORDS = { "2/4": "two crotchet beats", "3/4": "three crotchet beats", "4/4": "four crotchet beats", "6/8": "two dotted-crotchet beats (six quavers)", "3/2": "three minim beats", "9/8": "three dotted-crotchet beats (nine quavers)", "12/8": "four dotted-crotchet beats (twelve quavers)", "2/2": "two minim beats", "6/4": "six crotchet beats (two dotted minims)", "8/4": "eight crotchet beats", "9/4": "nine crotchet beats (three dotted minims)" };
@@ -134,7 +135,6 @@ export function renderHymn(h, { hymns, posts }) {
   const body = `${breadcrumbs(crumbs)}
 <article class="hymn-page">
 <header class="post-header">
-  <p class="kicker"><a href="/hymns">Hymns in Tonic Solfa</a></p>
   <h1>${escapeHtml(h.title)} in Tonic Solfa</h1>
   <p class="post-lede">${escapeHtml(h.description)}</p>
 </header>
@@ -278,9 +278,9 @@ ${groups.get(L).map((e) => e.html()).join("\n")}
   const seasons = SEASONS.filter((x) => present.has(x.toLowerCase()) || hymns.some((h) => searchText(h).includes(x.toLowerCase())));
   const body = `${breadcrumbs(crumbs)}
 <header class="masthead">
-  <p class="kicker">The hymnal</p>
   <h1>Hymns in Tonic Solfa</h1>
   <p class="masthead-dek">${hymns.length} public-domain hymns with the solfa written out under the words${tunes.length ? `, and ${tunes.length} more hymn tunes on their own,` : ""} with the staff notation and a piano to sing along with. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
+  ${identifyCallout()}
 </header>
 <div class="hymn-find" id="hymn-find" hidden>
   <label for="hymn-filter">Find a hymn</label>
@@ -326,7 +326,6 @@ ${list.map(row).join("\n")}
   const body = `${breadcrumbs(crumbs)}
 <article class="hymn-page credits-page">
 <header class="post-header">
-  <p class="kicker"><a href="/hymns">Hymns in Tonic Solfa</a></p>
   <h1>Sources and licences</h1>
   <p class="post-lede">Where the hymns on NoteFusion come from, why each one is free to use, and who wrote it.</p>
 </header>

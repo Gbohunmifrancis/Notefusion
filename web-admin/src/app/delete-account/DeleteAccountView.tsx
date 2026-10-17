@@ -193,7 +193,7 @@ export function DeleteAccountView() {
         {isTokenMode && (
           <section className="mb-6 rounded-2xl border border-rose-200 bg-white p-6 shadow-sm">
             <div className="flex items-center gap-3">
-              <ShieldAlert className="h-6 w-6 text-rose-600" />
+              <ShieldAlert className="size-5 text-rose-600" />
               <h2 className="font-semibold text-lg text-slate-900">Confirm Account Deletion</h2>
             </div>
 
