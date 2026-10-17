@@ -1,0 +1,1818 @@
+{
+ "key": "Ab major",
+ "keyConfidence": 1.0,
+ "tempo": 77,
+ "timeSignature": "4/4",
+ "musicXml": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE score-partwise  PUBLIC \"-//Recordare//DTD MusicXML 4.0 Partwise//EN\" \"http://www.musicxml.org/dtds/partwise.dtd\">\n<score-partwise version=\"4.0\">\n  <work>\n    <work-title />\n  </work>\n  <movement-title />\n  <identification>\n    <creator type=\"composer\" />\n    <encoding>\n      <encoding-date>2026-10-16</encoding-date>\n      <software>music21 v.10.5.0</software>\n      <supports element=\"beam\" type=\"yes\" />\n      <supports element=\"stem\" type=\"yes\" />\n      <supports element=\"accidental\" type=\"yes\" />\n    </encoding>\n  </identification>\n  <defaults>\n    <scaling>\n      <millimeters>7</millimeters>\n      <tenths>40</tenths>\n    </scaling>\n  </defaults>\n  <part-list>\n    <score-part id=\"Pf8cba450a5aad2ffc8f05690f7609a85\">\n      <part-name>Melody</part-name>\n    </score-part>\n  </part-list>\n  <!--=========================== Part 1 ===========================-->\n  <part id=\"Pf8cba450a5aad2ffc8f05690f7609a85\">\n    <!--========================= Measure 1 ==========================-->\n    <measure implicit=\"no\" number=\"1\">\n      <attributes>\n        <divisions>10080</divisions>\n        <key>\n          <fifths>-4</fifths>\n          <mode>major</mode>\n        </key>\n        <time>\n          <beats>4</beats>\n          <beat-type>4</beat-type>\n        </time>\n        <clef>\n          <sign>G</sign>\n          <line>2</line>\n        </clef>\n      </attributes>\n      <direction>\n        <direction-type>\n          <metronome parentheses=\"no\">\n            <beat-unit>quarter</beat-unit>\n            <per-minute>77</per-minute>\n          </metronome>\n        </direction-type>\n        <sound tempo=\"77\" />\n      </direction>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 2 ==========================-->\n    <measure implicit=\"no\" number=\"2\">\n      <note>\n        <pitch>\n          <step>F</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 3 ==========================-->\n    <measure implicit=\"no\" number=\"3\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 4 ==========================-->\n    <measure implicit=\"no\" number=\"4\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 5 ==========================-->\n    <measure implicit=\"no\" number=\"5\">\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 6 ==========================-->\n    <measure implicit=\"no\" number=\"6\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 7 ==========================-->\n    <measure implicit=\"no\" number=\"7\">\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>F</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 8 ==========================-->\n    <measure implicit=\"no\" number=\"8\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>5</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 9 ==========================-->\n    <measure implicit=\"no\" number=\"9\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 10 =========================-->\n    <measure implicit=\"no\" number=\"10\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <barline location=\"right\">\n        <bar-style>light-heavy</bar-style>\n      </barline>\n    </measure>\n  </part>\n</score-partwise>",
+ "notes": [
+  {
+   "pitchMidi": 68,
+   "startBeat": 0.0,
+   "durBeats": 2.0,
+   "degree": 1,
+   "solfa": "d",
+   "octaveMark": "",
+   "conf": 0.98
+  },
+  {
+   "pitchMidi": 68,
+   "startBeat": 2.0,
+   "durBeats": 1.0,
+   "degree": 1,
+   "solfa": "d",
+   "octaveMark": "",
+   "conf": 0.983
+  },
+  {
+   "pitchMidi": 67,
+   "startBeat": 3.0,
+   "durBeats": 1.0,
+   "degree": 7,
+   "solfa": "t",
+   "octaveMark": ",",
+   "conf": 0.971
+  },
+  {
+   "pitchMidi": 65,
+   "startBeat": 4.0,
+   "durBeats": 1.0,
+   "degree": 6,
+   "solfa": "l",
+   "octaveMark": ",",
+   "conf": 0.988
+  },
+  {
+   "pitchMidi": 63,
+   "startBeat": 5.0,
+   "durBeats": 1.0,
+   "degree": 5,
+   "solfa": "s",
+   "octaveMark": ",",
+   "conf": 0.987
+  },
+  {
+   "pitchMidi": 68,
+   "startBeat": 6.0,
+   "durBeats": 1.0,
+   "degree": 1,
+   "solfa": "d",
+   "octaveMark": "",
+   "conf": 0.981
+  },
+  {
+   "pitchMidi": 70,
+   "startBeat": 7.0,
+   "durBeats": 1.0,
+   "degree": 2,
+   "solfa": "r",
+   "octaveMark": "",
+   "conf": 0.982
+  },
+  {
+   "pitchMidi": 72,
+   "startBeat": 8.0,
+   "durBeats": 2.0,
+   "degree": 3,
+   "solfa": "m",
+   "octaveMark": "",
+   "conf": 0.985
+  },
+  {
+   "pitchMidi": 72,
+   "startBeat": 10.0,
+   "durBeats": 2.0,
+   "degree": 3,
+   "solfa": "m",
+   "octaveMark": "",
+   "conf": 0.986
+  },
+  {
+   "pitchMidi": 72,
+   "startBeat": 12.0,
+   "durBeats": 1.0,
+   "degree": 3,
+   "solfa": "m",
+   "octaveMark": "",
+   "conf": 0.987
+  },
+  {
+   "pitchMidi": 72,
+   "startBeat": 13.0,
+   "durBeats": 1.0,
+   "degree": 3,
+   "solfa": "m",
+   "octaveMark": "",
+   "conf": 0.986
+  },
+  {
+   "pitchMidi": 70,
+   "startBeat": 14.0,
+   "durBeats": 1.0,
+   "degree": 2,
+   "solfa": "r",
+   "octaveMark": "",
+   "conf": 0.988
+  },
+  {
+   "pitchMidi": 68,
+   "startBeat": 15.0,
+   "durBeats": 1.0,
+   "degree": 1,
+   "solfa": "d",
+   "octaveMark": "",
+   "conf": 0.988
+  },
+  {
+   "pitchMidi": 73,
+   "startBeat": 16.0,
+   "durBeats": 1.0,
+   "degree": 4,
+   "solfa": "f",
+   "octaveMark": "",
+   "conf": 0.981
+  },
+  {
+   "pitchMidi": 72,
+   "startBeat": 17.0,
+   "durBeats": 1.0,
+   "degree": 3,
+   "solfa": "m",
+   "octaveMark": "",
+   "conf": 0.98
+  },
+  {
+   "pitchMidi": 70,
+   "startBeat": 18.0,
+   "durBeats": 2.0,
+   "degree": 2,
+   "solfa": "r",
+   "octaveMark": "",
+   "conf": 0.977
+  },
+  {
+   "pitchMidi": 68,
+   "startBeat": 20.0,
+   "durBeats": 2.0,
+   "degree": 1,
+   "solfa": "d",
+   "octaveMark": "",
+   "conf": 0.988
+  },
+  {
+   "pitchMidi": 70,
+   "startBeat": 22.0,
+   "durBeats": 1.0,
+   "degree": 2,
+   "solfa": "r",
+   "octaveMark": "",
+   "conf": 0.97
+  },
+  {
+   "pitchMidi": 72,
+   "startBeat": 23.0,
+   "durBeats": 1.0,
+   "degree": 3,
+   "solfa": "m",
+   "octaveMark": "",
+   "conf": 0.984
+  },
+  {
+   "pitchMidi": 70,
+   "startBeat": 24.0,
+   "durBeats": 1.0,
+   "degree": 2,
+   "solfa": "r",
+   "octaveMark": "",
+   "conf": 0.988
+  },
+  {
+   "pitchMidi": 68,
+   "startBeat": 25.0,
+   "durBeats": 1.0,
+   "degree": 1,
+   "solfa": "d",
+   "octaveMark": "",
+   "conf": 0.976
+  },
+  {
+   "pitchMidi": 65,
+   "startBeat": 26.0,
+   "durBeats": 1.0,
+   "degree": 6,
+   "solfa": "l",
+   "octaveMark": ",",
+   "conf": 0.985
+  },
+  {
+   "pitchMidi": 67,
+   "startBeat": 27.0,
+   "durBeats": 1.0,
+   "degree": 7,
+   "solfa": "t",
+   "octaveMark": ",",
+   "conf": 0.984
+  },
+  {
+   "pitchMidi": 68,
+   "startBeat": 28.0,
+   "durBeats": 2.0,
+   "degree": 1,
+   "solfa": "d",
+   "octaveMark": "",
+   "conf": 0.979
+  },
+  {
+   "pitchMidi": 75,
+   "startBeat": 30.0,
+   "durBeats": 2.0,
+   "degree": 5,
+   "solfa": "s",
+   "octaveMark": "",
+   "conf": 0.984
+  },
+  {
+   "pitchMidi": 72,
+   "startBeat": 32.0,
+   "durBeats": 1.0,
+   "degree": 3,
+   "solfa": "m",
+   "octaveMark": "",
+   "conf": 0.986
+  },
+  {
+   "pitchMidi": 68,
+   "startBeat": 33.0,
+   "durBeats": 1.0,
+   "degree": 1,
+   "solfa": "d",
+   "octaveMark": "",
+   "conf": 0.977
+  },
+  {
+   "pitchMidi": 70,
+   "startBeat": 34.0,
+   "durBeats": 1.0,
+   "degree": 2,
+   "solfa": "r",
+   "octaveMark": "",
+   "conf": 0.983
+  },
+  {
+   "pitchMidi": 73,
+   "startBeat": 35.0,
+   "durBeats": 1.0,
+   "degree": 4,
+   "solfa": "f",
+   "octaveMark": "",
+   "conf": 0.981
+  },
+  {
+   "pitchMidi": 72,
+   "startBeat": 36.0,
+   "durBeats": 1.0,
+   "degree": 3,
+   "solfa": "m",
+   "octaveMark": "",
+   "conf": 0.981
+  },
+  {
+   "pitchMidi": 70,
+   "startBeat": 37.0,
+   "durBeats": 1.0,
+   "degree": 2,
+   "solfa": "r",
+   "octaveMark": "",
+   "conf": 0.978
+  },
+  {
+   "pitchMidi": 68,
+   "startBeat": 38.0,
+   "durBeats": 2.0,
+   "degree": 1,
+   "solfa": "d",
+   "octaveMark": "",
+   "conf": 0.988
+  }
+ ],
+ "solfaLines": [
+  "Doh is Ab",
+  "| d - - - d - t, - | l, - s, - d - r - | m - - - m - - - | m - m - r - d - |",
+  "| f - m - r - - - | d - - - r - m - | r - d - l, - t, - | d - - - s - - - |",
+  "| m - d - r - f - | m - r - d - - - |"
+ ],
+ "overallConfidence": 0.983,
+ "pitchRefined": true,
+ "chromaticSpelling": "direction",
+ "songDurationSec": 0.0,
+ "truncated": false,
+ "separated": false,
+ "partsMusicXml": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE score-partwise  PUBLIC \"-//Recordare//DTD MusicXML 4.0 Partwise//EN\" \"http://www.musicxml.org/dtds/partwise.dtd\">\n<score-partwise version=\"4.0\">\n  <work>\n    <work-title />\n  </work>\n  <movement-title />\n  <identification>\n    <creator type=\"composer\" />\n    <encoding>\n      <encoding-date>2026-10-16</encoding-date>\n      <software>music21 v.10.5.0</software>\n      <supports element=\"beam\" type=\"yes\" />\n      <supports element=\"stem\" type=\"yes\" />\n      <supports element=\"accidental\" type=\"yes\" />\n    </encoding>\n  </identification>\n  <defaults>\n    <scaling>\n      <millimeters>7</millimeters>\n      <tenths>40</tenths>\n    </scaling>\n  </defaults>\n  <part-list>\n    <score-part id=\"Pc6a0414397b01c336e1cc41713ad4c03\">\n      <part-name>Soprano</part-name>\n      <part-abbreviation>V</part-abbreviation>\n      <score-instrument id=\"I01216f6467a2e5de2d25b0fcf06bb4c8\">\n        <instrument-name>Voice</instrument-name>\n        <instrument-abbreviation>V</instrument-abbreviation>\n      </score-instrument>\n      <midi-instrument id=\"I01216f6467a2e5de2d25b0fcf06bb4c8\">\n        <midi-channel>1</midi-channel>\n        <midi-program>54</midi-program>\n      </midi-instrument>\n    </score-part>\n    <score-part id=\"P65508587a8975ad6d54aa6007d4b79c5\">\n      <part-name>Alto</part-name>\n      <part-abbreviation>V</part-abbreviation>\n      <score-instrument id=\"I27401c85d808c804f29152eb02a099eb\">\n        <instrument-name>Voice</instrument-name>\n        <instrument-abbreviation>V</instrument-abbreviation>\n      </score-instrument>\n      <midi-instrument id=\"I27401c85d808c804f29152eb02a099eb\">\n        <midi-channel>2</midi-channel>\n        <midi-program>54</midi-program>\n      </midi-instrument>\n    </score-part>\n    <score-part id=\"Pbb9c79835e5edcaba3b6e2c50f6f62f4\">\n      <part-name>Tenor</part-name>\n      <part-abbreviation>V</part-abbreviation>\n      <score-instrument id=\"I26faa9e5229716973632891c82ed5efd\">\n        <instrument-name>Voice</instrument-name>\n        <instrument-abbreviation>V</instrument-abbreviation>\n      </score-instrument>\n      <midi-instrument id=\"I26faa9e5229716973632891c82ed5efd\">\n        <midi-channel>3</midi-channel>\n        <midi-program>54</midi-program>\n      </midi-instrument>\n    </score-part>\n    <score-part id=\"P4c6342fc0cdfd427587df66bdfa5fa5b\">\n      <part-name>Bass</part-name>\n      <part-abbreviation>V</part-abbreviation>\n      <score-instrument id=\"I0a7b6d82987275e11a11c2924cea9a0e\">\n        <instrument-name>Voice</instrument-name>\n        <instrument-abbreviation>V</instrument-abbreviation>\n      </score-instrument>\n      <midi-instrument id=\"I0a7b6d82987275e11a11c2924cea9a0e\">\n        <midi-channel>4</midi-channel>\n        <midi-program>54</midi-program>\n      </midi-instrument>\n    </score-part>\n  </part-list>\n  <!--=========================== Part 1 ===========================-->\n  <part id=\"Pc6a0414397b01c336e1cc41713ad4c03\">\n    <!--========================= Measure 1 ==========================-->\n    <measure implicit=\"no\" number=\"1\">\n      <attributes>\n        <divisions>10080</divisions>\n        <key>\n          <fifths>-4</fifths>\n          <mode>major</mode>\n        </key>\n        <time>\n          <beats>4</beats>\n          <beat-type>4</beat-type>\n        </time>\n        <clef>\n          <sign>G</sign>\n          <line>2</line>\n        </clef>\n      </attributes>\n      <direction>\n        <direction-type>\n          <metronome parentheses=\"no\">\n            <beat-unit>quarter</beat-unit>\n            <per-minute>77</per-minute>\n          </metronome>\n        </direction-type>\n        <sound tempo=\"77\" />\n      </direction>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 2 ==========================-->\n    <measure implicit=\"no\" number=\"2\">\n      <note>\n        <pitch>\n          <step>F</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 3 ==========================-->\n    <measure implicit=\"no\" number=\"3\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 4 ==========================-->\n    <measure implicit=\"no\" number=\"4\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 5 ==========================-->\n    <measure implicit=\"no\" number=\"5\">\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 6 ==========================-->\n    <measure implicit=\"no\" number=\"6\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 7 ==========================-->\n    <measure implicit=\"no\" number=\"7\">\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>F</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 8 ==========================-->\n    <measure implicit=\"no\" number=\"8\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>5</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 9 ==========================-->\n    <measure implicit=\"no\" number=\"9\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 10 =========================-->\n    <measure implicit=\"no\" number=\"10\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <barline location=\"right\">\n        <bar-style>light-heavy</bar-style>\n      </barline>\n    </measure>\n  </part>\n  <!--=========================== Part 2 ===========================-->\n  <part id=\"P65508587a8975ad6d54aa6007d4b79c5\">\n    <!--========================= Measure 1 ==========================-->\n    <measure implicit=\"no\" number=\"1\">\n      <attributes>\n        <divisions>10080</divisions>\n        <key>\n          <fifths>-4</fifths>\n          <mode>major</mode>\n        </key>\n        <time>\n          <beats>4</beats>\n          <beat-type>4</beat-type>\n        </time>\n        <clef>\n          <sign>G</sign>\n          <line>2</line>\n        </clef>\n      </attributes>\n      <direction>\n        <direction-type>\n          <metronome parentheses=\"no\">\n            <beat-unit>quarter</beat-unit>\n            <per-minute>77</per-minute>\n          </metronome>\n        </direction-type>\n        <sound tempo=\"77\" />\n      </direction>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 2 ==========================-->\n    <measure implicit=\"no\" number=\"2\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 3 ==========================-->\n    <measure implicit=\"no\" number=\"3\">\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 4 ==========================-->\n    <measure implicit=\"no\" number=\"4\">\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 5 ==========================-->\n    <measure implicit=\"no\" number=\"5\">\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 6 ==========================-->\n    <measure implicit=\"no\" number=\"6\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 7 ==========================-->\n    <measure implicit=\"no\" number=\"7\">\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 8 ==========================-->\n    <measure implicit=\"no\" number=\"8\">\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 9 ==========================-->\n    <measure implicit=\"no\" number=\"9\">\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 10 =========================-->\n    <measure implicit=\"no\" number=\"10\">\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <barline location=\"right\">\n        <bar-style>light-heavy</bar-style>\n      </barline>\n    </measure>\n  </part>\n  <!--=========================== Part 3 ===========================-->\n  <part id=\"Pbb9c79835e5edcaba3b6e2c50f6f62f4\">\n    <!--========================= Measure 1 ==========================-->\n    <measure implicit=\"no\" number=\"1\">\n      <attributes>\n        <divisions>10080</divisions>\n        <key>\n          <fifths>-4</fifths>\n          <mode>major</mode>\n        </key>\n        <time>\n          <beats>4</beats>\n          <beat-type>4</beat-type>\n        </time>\n        <clef>\n          <sign>G</sign>\n          <line>2</line>\n          <clef-octave-change>-1</clef-octave-change>\n        </clef>\n      </attributes>\n      <direction>\n        <direction-type>\n          <metronome parentheses=\"no\">\n            <beat-unit>quarter</beat-unit>\n            <per-minute>77</per-minute>\n          </metronome>\n        </direction-type>\n        <sound tempo=\"77\" />\n      </direction>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 2 ==========================-->\n    <measure implicit=\"no\" number=\"2\">\n      <note>\n        <pitch>\n          <step>F</step>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 3 ==========================-->\n    <measure implicit=\"no\" number=\"3\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 4 ==========================-->\n    <measure implicit=\"no\" number=\"4\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 5 ==========================-->\n    <measure implicit=\"no\" number=\"5\">\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>3</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 6 ==========================-->\n    <measure implicit=\"no\" number=\"6\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 7 ==========================-->\n    <measure implicit=\"no\" number=\"7\">\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 8 ==========================-->\n    <measure implicit=\"no\" number=\"8\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 9 ==========================-->\n    <measure implicit=\"no\" number=\"9\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 10 =========================-->\n    <measure implicit=\"no\" number=\"10\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <barline location=\"right\">\n        <bar-style>light-heavy</bar-style>\n      </barline>\n    </measure>\n  </part>\n  <!--=========================== Part 4 ===========================-->\n  <part id=\"P4c6342fc0cdfd427587df66bdfa5fa5b\">\n    <!--========================= Measure 1 ==========================-->\n    <measure implicit=\"no\" number=\"1\">\n      <attributes>\n        <divisions>10080</divisions>\n        <key>\n          <fifths>-4</fifths>\n          <mode>major</mode>\n        </key>\n        <time>\n          <beats>4</beats>\n          <beat-type>4</beat-type>\n        </time>\n        <clef>\n          <sign>F</sign>\n          <line>4</line>\n        </clef>\n      </attributes>\n      <direction>\n        <direction-type>\n          <metronome parentheses=\"no\">\n            <beat-unit>quarter</beat-unit>\n            <per-minute>77</per-minute>\n          </metronome>\n        </direction-type>\n        <sound tempo=\"77\" />\n      </direction>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>2</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>2</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 2 ==========================-->\n    <measure implicit=\"no\" number=\"2\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 3 ==========================-->\n    <measure implicit=\"no\" number=\"3\">\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 4 ==========================-->\n    <measure implicit=\"no\" number=\"4\">\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 5 ==========================-->\n    <measure implicit=\"no\" number=\"5\">\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 6 ==========================-->\n    <measure implicit=\"no\" number=\"6\">\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 7 ==========================-->\n    <measure implicit=\"no\" number=\"7\">\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>3</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>2</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 8 ==========================-->\n    <measure implicit=\"no\" number=\"8\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>2</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>2</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 9 ==========================-->\n    <measure implicit=\"no\" number=\"9\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>2</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>2</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>2</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>2</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 10 =========================-->\n    <measure implicit=\"no\" number=\"10\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>2</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>2</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>2</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <barline location=\"right\">\n        <bar-style>light-heavy</bar-style>\n      </barline>\n    </measure>\n  </part>\n</score-partwise>",
+ "beatOriginSec": 0.3793,
+ "hymnMatch": {
+  "slug": "all-people-that-on-earth-do-dwell",
+  "title": "All People That on Earth Do Dwell",
+  "tune": "OLD HUNDREDTH",
+  "url": "https://notefusion.studio/hymns/all-people-that-on-earth-do-dwell",
+  "source": "NoteFusion",
+  "licence": "Public domain.",
+  "credit": "Tune OLD HUNDREDTH by Louis Bourgeois (1510\u20131560); words by William Kethe (died 1594).",
+  "kind": "score",
+  "confidence": 0.443,
+  "key": "Ab major",
+  "timeSignature": "4/4",
+  "tempo": 77,
+  "pickup": 0.0,
+  "notes": [
+   {
+    "pitchMidi": 68,
+    "startBeat": 0.0,
+    "durBeats": 2.0,
+    "degree": 1,
+    "solfa": "d",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 68,
+    "startBeat": 2.0,
+    "durBeats": 1.0,
+    "degree": 1,
+    "solfa": "d",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 67,
+    "startBeat": 3.0,
+    "durBeats": 1.0,
+    "degree": 7,
+    "solfa": "t",
+    "octaveMark": ",",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 65,
+    "startBeat": 4.0,
+    "durBeats": 1.0,
+    "degree": 6,
+    "solfa": "l",
+    "octaveMark": ",",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 63,
+    "startBeat": 5.0,
+    "durBeats": 1.0,
+    "degree": 5,
+    "solfa": "s",
+    "octaveMark": ",",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 68,
+    "startBeat": 6.0,
+    "durBeats": 1.0,
+    "degree": 1,
+    "solfa": "d",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 70,
+    "startBeat": 7.0,
+    "durBeats": 1.0,
+    "degree": 2,
+    "solfa": "r",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 72,
+    "startBeat": 8.0,
+    "durBeats": 2.0,
+    "degree": 3,
+    "solfa": "m",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 72,
+    "startBeat": 10.0,
+    "durBeats": 2.0,
+    "degree": 3,
+    "solfa": "m",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 72,
+    "startBeat": 12.0,
+    "durBeats": 1.0,
+    "degree": 3,
+    "solfa": "m",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 72,
+    "startBeat": 13.0,
+    "durBeats": 1.0,
+    "degree": 3,
+    "solfa": "m",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 70,
+    "startBeat": 14.0,
+    "durBeats": 1.0,
+    "degree": 2,
+    "solfa": "r",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 68,
+    "startBeat": 15.0,
+    "durBeats": 1.0,
+    "degree": 1,
+    "solfa": "d",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 73,
+    "startBeat": 16.0,
+    "durBeats": 1.0,
+    "degree": 4,
+    "solfa": "f",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 72,
+    "startBeat": 17.0,
+    "durBeats": 1.0,
+    "degree": 3,
+    "solfa": "m",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 70,
+    "startBeat": 18.0,
+    "durBeats": 2.0,
+    "degree": 2,
+    "solfa": "r",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 68,
+    "startBeat": 20.0,
+    "durBeats": 2.0,
+    "degree": 1,
+    "solfa": "d",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 70,
+    "startBeat": 22.0,
+    "durBeats": 1.0,
+    "degree": 2,
+    "solfa": "r",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 72,
+    "startBeat": 23.0,
+    "durBeats": 1.0,
+    "degree": 3,
+    "solfa": "m",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 70,
+    "startBeat": 24.0,
+    "durBeats": 1.0,
+    "degree": 2,
+    "solfa": "r",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 68,
+    "startBeat": 25.0,
+    "durBeats": 1.0,
+    "degree": 1,
+    "solfa": "d",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 65,
+    "startBeat": 26.0,
+    "durBeats": 1.0,
+    "degree": 6,
+    "solfa": "l",
+    "octaveMark": ",",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 67,
+    "startBeat": 27.0,
+    "durBeats": 1.0,
+    "degree": 7,
+    "solfa": "t",
+    "octaveMark": ",",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 68,
+    "startBeat": 28.0,
+    "durBeats": 2.0,
+    "degree": 1,
+    "solfa": "d",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 75,
+    "startBeat": 30.0,
+    "durBeats": 2.0,
+    "degree": 5,
+    "solfa": "s",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 72,
+    "startBeat": 32.0,
+    "durBeats": 1.0,
+    "degree": 3,
+    "solfa": "m",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 68,
+    "startBeat": 33.0,
+    "durBeats": 1.0,
+    "degree": 1,
+    "solfa": "d",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 70,
+    "startBeat": 34.0,
+    "durBeats": 1.0,
+    "degree": 2,
+    "solfa": "r",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 73,
+    "startBeat": 35.0,
+    "durBeats": 1.0,
+    "degree": 4,
+    "solfa": "f",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 72,
+    "startBeat": 36.0,
+    "durBeats": 1.0,
+    "degree": 3,
+    "solfa": "m",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 70,
+    "startBeat": 37.0,
+    "durBeats": 1.0,
+    "degree": 2,
+    "solfa": "r",
+    "octaveMark": "",
+    "conf": 1.0
+   },
+   {
+    "pitchMidi": 68,
+    "startBeat": 38.0,
+    "durBeats": 2.0,
+    "degree": 1,
+    "solfa": "d",
+    "octaveMark": "",
+    "conf": 1.0
+   }
+  ],
+  "solfaLines": [
+   "Doh is Ab",
+   "| d - - - d - t, - | l, - s, - d - r - | m - - - m - - - | m - m - r - d - |",
+   "| f - m - r - - - | d - - - r - m - | r - d - l, - t, - | d - - - s - - - |",
+   "| m - d - r - f - | m - r - d - - - |"
+  ],
+  "musicXml": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE score-partwise  PUBLIC \"-//Recordare//DTD MusicXML 4.0 Partwise//EN\" \"http://www.musicxml.org/dtds/partwise.dtd\">\n<score-partwise version=\"4.0\">\n  <work>\n    <work-title />\n  </work>\n  <movement-title />\n  <identification>\n    <creator type=\"composer\" />\n    <encoding>\n      <encoding-date>2026-10-16</encoding-date>\n      <software>music21 v.10.5.0</software>\n      <supports element=\"beam\" type=\"yes\" />\n      <supports element=\"stem\" type=\"yes\" />\n      <supports element=\"accidental\" type=\"yes\" />\n    </encoding>\n  </identification>\n  <defaults>\n    <scaling>\n      <millimeters>7</millimeters>\n      <tenths>40</tenths>\n    </scaling>\n  </defaults>\n  <part-list>\n    <score-part id=\"Pcd4510cb440324f3a6c19e19f60762da\">\n      <part-name>Melody</part-name>\n    </score-part>\n  </part-list>\n  <!--=========================== Part 1 ===========================-->\n  <part id=\"Pcd4510cb440324f3a6c19e19f60762da\">\n    <!--========================= Measure 1 ==========================-->\n    <measure implicit=\"no\" number=\"1\">\n      <attributes>\n        <divisions>10080</divisions>\n        <key>\n          <fifths>-4</fifths>\n          <mode>major</mode>\n        </key>\n        <time>\n          <beats>4</beats>\n          <beat-type>4</beat-type>\n        </time>\n        <clef>\n          <sign>G</sign>\n          <line>2</line>\n        </clef>\n      </attributes>\n      <direction>\n        <direction-type>\n          <metronome parentheses=\"no\">\n            <beat-unit>quarter</beat-unit>\n            <per-minute>77</per-minute>\n          </metronome>\n        </direction-type>\n        <sound tempo=\"77\" />\n      </direction>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 2 ==========================-->\n    <measure implicit=\"no\" number=\"2\">\n      <note>\n        <pitch>\n          <step>F</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 3 ==========================-->\n    <measure implicit=\"no\" number=\"3\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 4 ==========================-->\n    <measure implicit=\"no\" number=\"4\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 5 ==========================-->\n    <measure implicit=\"no\" number=\"5\">\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 6 ==========================-->\n    <measure implicit=\"no\" number=\"6\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 7 ==========================-->\n    <measure implicit=\"no\" number=\"7\">\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>F</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>G</step>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 8 ==========================-->\n    <measure implicit=\"no\" number=\"8\">\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <note>\n        <pitch>\n          <step>E</step>\n          <alter>-1</alter>\n          <octave>5</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n    </measure>\n    <!--========================= Measure 9 ==========================-->\n    <measure implicit=\"no\" number=\"9\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>D</step>\n          <alter>-1</alter>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n    </measure>\n    <!--========================= Measure 10 =========================-->\n    <measure implicit=\"no\" number=\"10\">\n      <note>\n        <pitch>\n          <step>C</step>\n          <octave>5</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>B</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>10080</duration>\n        <type>quarter</type>\n      </note>\n      <note>\n        <pitch>\n          <step>A</step>\n          <alter>-1</alter>\n          <octave>4</octave>\n        </pitch>\n        <duration>20160</duration>\n        <type>half</type>\n      </note>\n      <barline location=\"right\">\n        <bar-style>light-heavy</bar-style>\n      </barline>\n    </measure>\n  </part>\n</score-partwise>",
+  "lyrics": "All peo-ple that on earth do dwell, Sing to the Lord with cheer-ful voice; Him serve with mirth, his praise forth tell, Come ye be-fore him and re-joice."
+ },
+ "parts": {
+  "soprano": {
+   "notes": [
+    {
+     "pitchMidi": 68,
+     "startBeat": 0.0,
+     "durBeats": 2.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": "",
+     "conf": 0.98
+    },
+    {
+     "pitchMidi": 68,
+     "startBeat": 2.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": "",
+     "conf": 0.983
+    },
+    {
+     "pitchMidi": 67,
+     "startBeat": 3.0,
+     "durBeats": 1.0,
+     "degree": 7,
+     "solfa": "t",
+     "octaveMark": ",",
+     "conf": 0.971
+    },
+    {
+     "pitchMidi": 65,
+     "startBeat": 4.0,
+     "durBeats": 1.0,
+     "degree": 6,
+     "solfa": "l",
+     "octaveMark": ",",
+     "conf": 0.988
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 5.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 0.987
+    },
+    {
+     "pitchMidi": 68,
+     "startBeat": 6.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": "",
+     "conf": 0.981
+    },
+    {
+     "pitchMidi": 70,
+     "startBeat": 7.0,
+     "durBeats": 1.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": "",
+     "conf": 0.982
+    },
+    {
+     "pitchMidi": 72,
+     "startBeat": 8.0,
+     "durBeats": 2.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": "",
+     "conf": 0.985
+    },
+    {
+     "pitchMidi": 72,
+     "startBeat": 10.0,
+     "durBeats": 2.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": "",
+     "conf": 0.986
+    },
+    {
+     "pitchMidi": 72,
+     "startBeat": 12.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": "",
+     "conf": 0.987
+    },
+    {
+     "pitchMidi": 72,
+     "startBeat": 13.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": "",
+     "conf": 0.986
+    },
+    {
+     "pitchMidi": 70,
+     "startBeat": 14.0,
+     "durBeats": 1.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": "",
+     "conf": 0.988
+    },
+    {
+     "pitchMidi": 68,
+     "startBeat": 15.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": "",
+     "conf": 0.988
+    },
+    {
+     "pitchMidi": 73,
+     "startBeat": 16.0,
+     "durBeats": 1.0,
+     "degree": 4,
+     "solfa": "f",
+     "octaveMark": "",
+     "conf": 0.981
+    },
+    {
+     "pitchMidi": 72,
+     "startBeat": 17.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": "",
+     "conf": 0.98
+    },
+    {
+     "pitchMidi": 70,
+     "startBeat": 18.0,
+     "durBeats": 2.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": "",
+     "conf": 0.977
+    },
+    {
+     "pitchMidi": 68,
+     "startBeat": 20.0,
+     "durBeats": 2.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": "",
+     "conf": 0.988
+    },
+    {
+     "pitchMidi": 70,
+     "startBeat": 22.0,
+     "durBeats": 1.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": "",
+     "conf": 0.97
+    },
+    {
+     "pitchMidi": 72,
+     "startBeat": 23.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": "",
+     "conf": 0.984
+    },
+    {
+     "pitchMidi": 70,
+     "startBeat": 24.0,
+     "durBeats": 1.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": "",
+     "conf": 0.988
+    },
+    {
+     "pitchMidi": 68,
+     "startBeat": 25.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": "",
+     "conf": 0.976
+    },
+    {
+     "pitchMidi": 65,
+     "startBeat": 26.0,
+     "durBeats": 1.0,
+     "degree": 6,
+     "solfa": "l",
+     "octaveMark": ",",
+     "conf": 0.985
+    },
+    {
+     "pitchMidi": 67,
+     "startBeat": 27.0,
+     "durBeats": 1.0,
+     "degree": 7,
+     "solfa": "t",
+     "octaveMark": ",",
+     "conf": 0.984
+    },
+    {
+     "pitchMidi": 68,
+     "startBeat": 28.0,
+     "durBeats": 2.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": "",
+     "conf": 0.979
+    },
+    {
+     "pitchMidi": 75,
+     "startBeat": 30.0,
+     "durBeats": 2.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": "",
+     "conf": 0.984
+    },
+    {
+     "pitchMidi": 72,
+     "startBeat": 32.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": "",
+     "conf": 0.986
+    },
+    {
+     "pitchMidi": 68,
+     "startBeat": 33.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": "",
+     "conf": 0.977
+    },
+    {
+     "pitchMidi": 70,
+     "startBeat": 34.0,
+     "durBeats": 1.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": "",
+     "conf": 0.983
+    },
+    {
+     "pitchMidi": 73,
+     "startBeat": 35.0,
+     "durBeats": 1.0,
+     "degree": 4,
+     "solfa": "f",
+     "octaveMark": "",
+     "conf": 0.981
+    },
+    {
+     "pitchMidi": 72,
+     "startBeat": 36.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": "",
+     "conf": 0.981
+    },
+    {
+     "pitchMidi": 70,
+     "startBeat": 37.0,
+     "durBeats": 1.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": "",
+     "conf": 0.978
+    },
+    {
+     "pitchMidi": 68,
+     "startBeat": 38.0,
+     "durBeats": 2.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": "",
+     "conf": 0.988
+    }
+   ],
+   "solfaLines": [
+    "Doh is Ab \u00b7 Soprano",
+    "| d - - - d - t, - | l, - s, - d - r - | m - - - m - - - | m - m - r - d - |",
+    "| f - m - r - - - | d - - - r - m - | r - d - l, - t, - | d - - - s - - - |",
+    "| m - d - r - f - | m - r - d - - - |"
+   ]
+  },
+  "alto": {
+   "notes": [
+    {
+     "pitchMidi": 60,
+     "startBeat": 0.0,
+     "durBeats": 2.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 60,
+     "startBeat": 2.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 58,
+     "startBeat": 3.0,
+     "durBeats": 1.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 4.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 58,
+     "startBeat": 5.0,
+     "durBeats": 1.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 60,
+     "startBeat": 6.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 58,
+     "startBeat": 7.0,
+     "durBeats": 1.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 8.0,
+     "durBeats": 2.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 10.0,
+     "durBeats": 2.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 12.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 13.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 14.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 15.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 61,
+     "startBeat": 16.0,
+     "durBeats": 1.0,
+     "degree": 4,
+     "solfa": "f",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 17.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 18.0,
+     "durBeats": 2.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 60,
+     "startBeat": 20.0,
+     "durBeats": 2.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 58,
+     "startBeat": 22.0,
+     "durBeats": 1.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 23.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 24.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 25.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 61,
+     "startBeat": 26.0,
+     "durBeats": 1.0,
+     "degree": 4,
+     "solfa": "f",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 27.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 28.0,
+     "durBeats": 2.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 30.0,
+     "durBeats": 2.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 32.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 33.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 61,
+     "startBeat": 34.0,
+     "durBeats": 1.0,
+     "degree": 4,
+     "solfa": "f",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 61,
+     "startBeat": 35.0,
+     "durBeats": 1.0,
+     "degree": 4,
+     "solfa": "f",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 36.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 37.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 38.0,
+     "durBeats": 2.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    }
+   ],
+   "solfaLines": [
+    "Doh is Ab \u00b7 Alto",
+    "| m, - - - m, - r, - | d, - r, - m, - r, - | s, - - - s, - - - | s, - s, - s, - s, - |",
+    "| f, - s, - s, - - - | m, - - - r, - s, - | s, - s, - f, - s, - | s, - - - s, - - - |",
+    "| s, - s, - f, - f, - | s, - s, - s, - - - |"
+   ]
+  },
+  "tenor": {
+   "notes": [
+    {
+     "pitchMidi": 51,
+     "startBeat": 0.0,
+     "durBeats": 2.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 2.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 3.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 53,
+     "startBeat": 4.0,
+     "durBeats": 1.0,
+     "degree": 6,
+     "solfa": "l",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 55,
+     "startBeat": 5.0,
+     "durBeats": 1.0,
+     "degree": 7,
+     "solfa": "t",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 6.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 55,
+     "startBeat": 7.0,
+     "durBeats": 1.0,
+     "degree": 7,
+     "solfa": "t",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 8.0,
+     "durBeats": 2.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 10.0,
+     "durBeats": 2.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 12.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 13.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 55,
+     "startBeat": 14.0,
+     "durBeats": 1.0,
+     "degree": 7,
+     "solfa": "t",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 15.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 55,
+     "startBeat": 16.0,
+     "durBeats": 1.0,
+     "degree": 7,
+     "solfa": "t",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 17.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 55,
+     "startBeat": 18.0,
+     "durBeats": 2.0,
+     "degree": 7,
+     "solfa": "t",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 20.0,
+     "durBeats": 2.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 55,
+     "startBeat": 22.0,
+     "durBeats": 1.0,
+     "degree": 7,
+     "solfa": "t",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 23.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 55,
+     "startBeat": 24.0,
+     "durBeats": 1.0,
+     "degree": 7,
+     "solfa": "t",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 25.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 26.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 58,
+     "startBeat": 27.0,
+     "durBeats": 1.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 60,
+     "startBeat": 28.0,
+     "durBeats": 2.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 60,
+     "startBeat": 30.0,
+     "durBeats": 2.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 60,
+     "startBeat": 32.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 60,
+     "startBeat": 33.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 61,
+     "startBeat": 34.0,
+     "durBeats": 1.0,
+     "degree": 4,
+     "solfa": "f",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 61,
+     "startBeat": 35.0,
+     "durBeats": 1.0,
+     "degree": 4,
+     "solfa": "f",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 60,
+     "startBeat": 36.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 63,
+     "startBeat": 37.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 60,
+     "startBeat": 38.0,
+     "durBeats": 2.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",",
+     "conf": 1.0
+    }
+   ],
+   "solfaLines": [
+    "Doh is Ab \u00b7 Tenor",
+    "| s,, - - - s,, - s,, - | l,, - t,, - d, - t,, - | d, - - - d, - - - | d, - d, - t,, - d, - |",
+    "| t,, - d, - t,, - - - | d, - - - t,, - d, - | t,, - d, - d, - r, - | m, - - - m, - - - |",
+    "| m, - m, - f, - f, - | m, - s, - m, - - - |"
+   ]
+  },
+  "bass": {
+   "notes": [
+    {
+     "pitchMidi": 44,
+     "startBeat": 0.0,
+     "durBeats": 2.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 44,
+     "startBeat": 2.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 3.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 48,
+     "startBeat": 4.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 5.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 6.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 7.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 8.0,
+     "durBeats": 2.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 10.0,
+     "durBeats": 2.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 12.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 13.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 14.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 48,
+     "startBeat": 15.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 16.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 56,
+     "startBeat": 17.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 18.0,
+     "durBeats": 2.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 20.0,
+     "durBeats": 2.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 22.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 23.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 51,
+     "startBeat": 24.0,
+     "durBeats": 1.0,
+     "degree": 5,
+     "solfa": "s",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 48,
+     "startBeat": 25.0,
+     "durBeats": 1.0,
+     "degree": 3,
+     "solfa": "m",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 49,
+     "startBeat": 26.0,
+     "durBeats": 1.0,
+     "degree": 4,
+     "solfa": "f",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 46,
+     "startBeat": 27.0,
+     "durBeats": 1.0,
+     "degree": 2,
+     "solfa": "r",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 44,
+     "startBeat": 28.0,
+     "durBeats": 2.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 44,
+     "startBeat": 30.0,
+     "durBeats": 2.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 44,
+     "startBeat": 32.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 44,
+     "startBeat": 33.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 43,
+     "startBeat": 34.0,
+     "durBeats": 1.0,
+     "degree": 7,
+     "solfa": "t",
+     "octaveMark": ",,,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 43,
+     "startBeat": 35.0,
+     "durBeats": 1.0,
+     "degree": 7,
+     "solfa": "t",
+     "octaveMark": ",,,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 44,
+     "startBeat": 36.0,
+     "durBeats": 1.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 43,
+     "startBeat": 37.0,
+     "durBeats": 1.0,
+     "degree": 7,
+     "solfa": "t",
+     "octaveMark": ",,,",
+     "conf": 1.0
+    },
+    {
+     "pitchMidi": 44,
+     "startBeat": 38.0,
+     "durBeats": 2.0,
+     "degree": 1,
+     "solfa": "d",
+     "octaveMark": ",,",
+     "conf": 1.0
+    }
+   ],
+   "solfaLines": [
+    "Doh is Ab \u00b7 Bass",
+    "| d,, - - - d,, - s,, - | m,, - s,, - s,, - s,, - | s,, - - - s,, - - - | s,, - s,, - s,, - m,, - |",
+    "| s,, - d, - s,, - - - | s,, - - - s,, - s,, - | s,, - m,, - f,, - r,, - | d,, - - - d,, - - - |",
+    "| d,, - d,, - t,,, - t,,, - | d,, - t,,, - d,, - - - |"
+   ]
+  }
+ }
+}

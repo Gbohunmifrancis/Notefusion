@@ -1,0 +1,7 @@
+# GitGuardian / ggshield settings.
+version: 2
+secret:
+  # X's documented OAuth 1.0a example credentials (docs.x.com, "Creating a signature"), public values the
+  # signing test checks our implementation against. Not keys for any account.
+  ignored-paths:
+    - tools/social/tests/oauth1.test.mjs
