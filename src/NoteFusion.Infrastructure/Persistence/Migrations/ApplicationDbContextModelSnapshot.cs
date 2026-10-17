@@ -852,6 +852,55 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("outreach_messages", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.Passkey", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AaGuid")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte[]>("CredentialId")
+                        .IsRequired()
+                        .HasMaxLength(1023)
+                        .HasColumnType("bytea");
+
+                    b.Property<DateTime?>("LastUsedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.Property<byte[]>("PublicKey")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("bytea");
+
+                    b.Property<long>("SignCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Transports")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CredentialId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("passkeys", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.PreviewJob", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1667,6 +1716,15 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                 });
 
             modelBuilder.Entity("NoteFusion.Core.Entities.OutreachMessage", b =>
+                {
+                    b.HasOne("NoteFusion.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.Passkey", b =>
                 {
                     b.HasOne("NoteFusion.Core.Entities.User", null)
                         .WithMany()

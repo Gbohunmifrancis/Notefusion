@@ -64,6 +64,14 @@ export interface TokenPairResponse {
   expiresIn: number;
 }
 
+/** `PasskeyDto` from `/api/auth/passkeys`: one of the signed-in admin's passkeys. */
+export interface Passkey {
+  id: string;
+  name: string;
+  createdAtUtc: string;
+  lastUsedAtUtc: string | null;
+}
+
 export interface UserMetrics {
   totalUsers: number;
   newUsers: number;
@@ -375,7 +383,10 @@ export type AuditAction =
   | "UnpublishBlogPost"
   | "ArchiveBlogPost"
   | "DeleteBlogPost"
-  | "GenerateBlogDrafts";
+  | "GenerateBlogDrafts"
+  | "AddPasskey"
+  | "RemovePasskey"
+  | "PasskeySignIn";
 
 /**
  * One line of the audit trail. The emails are stored snapshots rather than joins, so a row still

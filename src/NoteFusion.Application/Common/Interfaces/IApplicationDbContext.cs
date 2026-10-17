@@ -87,5 +87,8 @@ public interface IApplicationDbContext
     /// <summary>Requests to rebuild the website after a blog change, and the dispatch that covered them.</summary>
     DbSet<BlogSiteRebuild> BlogSiteRebuilds { get; }
 
+    /// <summary>WebAuthn credentials (passkeys) admins sign in to the console with.</summary>
+    DbSet<Passkey> Passkeys { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

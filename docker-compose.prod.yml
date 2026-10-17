@@ -134,6 +134,10 @@ services:
       # The public site's signed-in web app (web-site/app) calls the API from the browser.
       Cors__AllowedOrigins__1: ${WEBSITE_ORIGIN:-https://notefusion.studio}
       Cors__AllowedOrigins__2: ${WEBSITE_WWW_ORIGIN:-https://www.notefusion.studio}
+      # Admin-console passkeys (WebAuthn): the relying party and the pages allowed to use it. The console's
+      # host must be the RP id or under it. Blank = these defaults.
+      Passkeys__RpId: ${Passkeys__RpId:-notefusion.studio}
+      Passkeys__Origins: ${Passkeys__Origins:-https://admin.notefusion.studio}
       Email__ApiKey: ${Email__ApiKey}
       Resend__From: ${Resend__From}
       Email__FromAddress: ${Email__FromAddress}

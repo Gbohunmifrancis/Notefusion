@@ -47,6 +47,20 @@ victim's machine can claim it. Compose runs Production, so it names the origin e
 config, so a missing `Cors__AllowedOrigins` cannot take the live console offline; it does **not**
 fail closed.
 
+## Passkeys
+
+Admins can sign in with a passkey as well as their password. **Settings → Passkeys** adds, renames
+and removes them (`src/components/PasskeysPanel.tsx`); the sign-in page has a "Sign in with a
+passkey" button and, where the browser supports conditional mediation, offers passkeys in the email
+field's autofill (`autocomplete="username webauthn"`). `src/lib/webauthn.ts` converts the API's
+WebAuthn JSON to and from what `navigator.credentials` takes, and turns every browser failure into a
+plain sentence. The API side is `/api/auth/passkeys/*`: registration is Admin-only, and a passkey
+sign-in returns the same token pair as the password, for an admin account only.
+
+The relying party id is `notefusion.studio`, so passkeys work on admin.notefusion.studio but not on
+Vercel preview hosts. Locally the API (Development) uses rpId `localhost` and accepts
+`http://localhost:3000` — another reason the console must run on port 3000.
+
 ## Things in here that are load-bearing
 
 **Dates are formatted the way the server bucketed them.** The API groups days in West Africa

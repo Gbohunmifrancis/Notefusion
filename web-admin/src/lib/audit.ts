@@ -31,6 +31,9 @@ export const AUDIT_ACTIONS: readonly { value: AuditAction; label: string; tone: 
   { value: "ArchiveBlogPost", label: "Archive blog post", tone: "neutral" },
   { value: "DeleteBlogPost", label: "Delete blog post", tone: "danger" },
   { value: "GenerateBlogDrafts", label: "Generate blog drafts", tone: "blue" },
+  { value: "AddPasskey", label: "Add passkey", tone: "blue" },
+  { value: "RemovePasskey", label: "Remove passkey", tone: "warning" },
+  { value: "PasskeySignIn", label: "Passkey sign-in", tone: "neutral" },
 ];
 
 const BY_VALUE = new Map(AUDIT_ACTIONS.map((entry) => [entry.value, entry]));

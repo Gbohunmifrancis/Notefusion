@@ -15,6 +15,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   rotating refresh tokens. Every outside HTTP client goes through `Infrastructure/Http/OutboundResilience`
   (total + per-attempt timeout, retry only GETs or Idempotency-Key sends, circuit breaker); an open breaker or
   timeout is the client's "unavailable" result, and batches ask `IProviderHealth` and stop for the run.
+  Admin-console passkeys (WebAuthn, Fido2NetLib `Fido2` pinned; `/api/auth/passkeys/*`, `Passkey` rows): only an
+  Admin registers one, and a passkey sign-in returns the password login's token pair to an Admin only; challenges are
+  single-use, 5 min, in memory (`InMemoryPasskeyChallengeStore`, single instance). RP: `Passkeys__RpId`
+  (`notefusion.studio`; `localhost` in Development) and `Passkeys__Origins` (`https://admin.notefusion.studio`).
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off
