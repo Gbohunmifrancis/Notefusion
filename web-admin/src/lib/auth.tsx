@@ -14,8 +14,14 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { ReactNode } from "react";
 
 import { setSessionExpiredHandler } from "@/api/client";
-import { getMyProfile, login, logout } from "@/api/endpoints";
-import type { AuthUser } from "@/api/types";
+import {
+  getMyProfile,
+  getPasskeyLoginOptions,
+  login,
+  logout,
+  passkeyLogin,
+} from "@/api/endpoints";
+import type { AuthUser, LoginResponse } from "@/api/types";
 import {
   clearSession,
   getRefreshToken,
@@ -24,6 +30,7 @@ import {
   setTokens,
   storeUser,
 } from "@/lib/session";
+import { assertionToJson, toRequestOptions } from "@/lib/webauthn";
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -40,7 +47,20 @@ interface AuthContextValue {
    */
   avatarUrl: string | null;
   signIn: (email: string, password: string, remember?: boolean) => Promise<void>;
+  /**
+   * Signs in with a passkey: asks the API for options, runs `navigator.credentials.get`, and trades
+   * the assertion for the same token pair the password returns. `conditional` runs it as the email
+   * field's autofill instead of a prompt; abort `signal` to withdraw that offer.
+   */
+  signInWithPasskey: (options?: PasskeySignInOptions) => Promise<void>;
   signOut: () => Promise<void>;
+}
+
+export interface PasskeySignInOptions {
+  conditional?: boolean;
+  signal?: AbortSignal;
+  /** "Keep me signed in". A function is read when the session is stored, not when the offer starts. */
+  remember?: boolean | (() => boolean);
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -88,9 +108,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => setSessionExpiredHandler(() => undefined);
   }, [router]);
 
-  const signIn = useCallback(async (email: string, password: string, remember = true) => {
-    const response = await login(email, password);
-
+  /** Keeps a session the API issued — for an admin only — whichever way it was earned. */
+  const accept = useCallback(async (response: LoginResponse, remember: boolean) => {
     if (!isAdmin(response.user)) {
       // Revoke the refresh token we were just issued rather than leaving a live one
       // behind for an account that will not be allowed to use it.
@@ -107,6 +126,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(response.user);
   }, []);
 
+  const signIn = useCallback(
+    async (email: string, password: string, remember = true) => {
+      await accept(await login(email, password), remember);
+    },
+    [accept],
+  );
+
+  const signInWithPasskey = useCallback(
+    async ({ conditional = false, signal, remember = true }: PasskeySignInOptions = {}) => {
+      const options = await getPasskeyLoginOptions(signal);
+      const credential = (await navigator.credentials.get({
+        publicKey: toRequestOptions(options),
+        ...(conditional ? { mediation: "conditional" as CredentialMediationRequirement } : {}),
+        ...(signal ? { signal } : {}),
+      })) as PublicKeyCredential | null;
+      if (!credential) throw new DOMException("No passkey was chosen.", "NotAllowedError");
+
+      const keep = typeof remember === "function" ? remember() : remember;
+      await accept(await passkeyLogin(assertionToJson(credential)), keep);
+    },
+    [accept],
+  );
+
   const signOut = useCallback(async () => {
     const refreshToken = getRefreshToken();
     if (refreshToken) {
@@ -122,8 +164,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [router]);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, ready, avatarUrl, signIn, signOut }),
-    [user, ready, avatarUrl, signIn, signOut],
+    () => ({ user, ready, avatarUrl, signIn, signInWithPasskey, signOut }),
+    [user, ready, avatarUrl, signIn, signInWithPasskey, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

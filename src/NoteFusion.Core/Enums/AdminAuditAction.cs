@@ -57,5 +57,14 @@ public enum AdminAuditAction
     DeleteBlogPost = 19,
 
     /// <summary>An operator asked the Gemini API for blog drafts.</summary>
-    GenerateBlogDrafts = 20
+    GenerateBlogDrafts = 20,
+
+    /// <summary>An admin added a passkey to their own account.</summary>
+    AddPasskey = 21,
+
+    /// <summary>An admin removed one of their passkeys.</summary>
+    RemovePasskey = 22,
+
+    /// <summary>An admin signed in to the console with a passkey (actor and target are the same account).</summary>
+    PasskeySignIn = 23
 }

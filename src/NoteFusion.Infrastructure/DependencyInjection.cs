@@ -17,6 +17,7 @@ using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Push;
 using NoteFusion.Infrastructure.Push.Workers;
 using NoteFusion.Infrastructure.Security;
+using NoteFusion.Infrastructure.Security.Passkeys;
 using NoteFusion.Infrastructure.Transcriptions.Workers;
 
 namespace NoteFusion.Infrastructure;
@@ -106,6 +107,25 @@ public static class DependencyInjection
         // ConfigurationManager refreshes the JWKS on its own schedule, and a per-request
         // instance would re-fetch the discovery document on every sign-in.
         services.AddSingleton<IGoogleTokenValidator, GoogleTokenValidator>();
+
+        // Passkeys for the admin console (WebAuthn, Fido2NetLib). The relying party has working defaults;
+        // Development gets rpId "localhost" and the console's dev origin.
+        services.AddSingleton(sp =>
+        {
+            var settings = PasskeySettings.Resolve(
+                configuration, sp.GetRequiredService<IHostEnvironment>().IsDevelopment());
+            foreach (var origin in settings.OriginsOutsideRpId())
+            {
+                sp.GetRequiredService<ILoggerFactory>()
+                    .CreateLogger(typeof(PasskeySettings))
+                    .LogWarning(
+                        "Passkeys__Origins lists {Origin}, which is not under Passkeys__RpId {RpId}; browsers there will refuse passkeys.",
+                        origin, settings.RpId);
+            }
+            return settings;
+        });
+        services.AddSingleton<IPasskeyCeremony, Fido2PasskeyCeremony>();
+        services.AddSingleton<IPasskeyChallengeStore, InMemoryPasskeyChallengeStore>();
     }
 
     private static void AddPush(this IServiceCollection services, IConfiguration configuration)

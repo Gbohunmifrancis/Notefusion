@@ -35,6 +35,7 @@ import type {
   LoginResponse,
   MyProfile,
   PagedResult,
+  Passkey,
   PaymentOpsSummary,
   PaymentProviderName,
   PaymentStatus,
@@ -45,6 +46,7 @@ import type {
   TranscriptionLogPage,
   WebhookStatus,
 } from "@/api/types";
+import type { WebAuthnJson } from "@/lib/webauthn";
 
 export const login = (email: string, password: string) =>
   request<LoginResponse>("/api/auth/login", {
@@ -60,6 +62,45 @@ export const logout = (refreshToken: string) =>
     body: { refreshToken },
     anonymous: true,
   });
+
+/*
+ * Passkeys (WebAuthn). Options and credentials travel as WebAuthn JSON; src/lib/webauthn.ts converts
+ * them to and from what `navigator.credentials` speaks.
+ */
+
+/** Assertion options for a passkey sign-in. Anonymous: the browser offers whichever passkey it holds. */
+export const getPasskeyLoginOptions = (signal?: AbortSignal) =>
+  request<WebAuthnJson>("/api/auth/passkeys/login/options", {
+    method: "POST",
+    anonymous: true,
+    ...(signal ? { signal } : {}),
+  });
+
+/** Signs in with a passkey: the same token pair as `login`, for admin accounts only. */
+export const passkeyLogin = (credential: WebAuthnJson) =>
+  request<LoginResponse>("/api/auth/passkeys/login", {
+    method: "POST",
+    body: { credential },
+    anonymous: true,
+  });
+
+export const getPasskeys = (signal?: AbortSignal) =>
+  request<Passkey[]>("/api/auth/passkeys", signal ? { signal } : {});
+
+export const getPasskeyRegistrationOptions = () =>
+  request<WebAuthnJson>("/api/auth/passkeys/register/options", { method: "POST" });
+
+export const registerPasskey = (credential: WebAuthnJson, name: string) =>
+  request<Passkey>("/api/auth/passkeys/register", { method: "POST", body: { credential, name } });
+
+export const renamePasskey = (id: string, name: string) =>
+  request<Passkey>(`/api/auth/passkeys/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: { name },
+  });
+
+export const deletePasskey = (id: string) =>
+  request<void>(`/api/auth/passkeys/${encodeURIComponent(id)}`, { method: "DELETE" });
 
 /**
  * The signed-in operator's own account. Not admin-gated — it is the same endpoint the app calls —

@@ -46,6 +46,13 @@ public static class AuthRateLimiting
     /// <summary>The blog's read counts: a database count anyone can ask for, cached per page.</summary>
     public const string BlogReads = "blog-reads";
 
+    /// <summary>
+    /// Passkey steps that guess at nothing: minting a challenge (the console's sign-in page asks for one on
+    /// every load, to offer passkeys in the email field's autofill) and an admin storing a passkey. Apart from
+    /// <see cref="Credentials"/> so opening the sign-in page a few times cannot use up password attempts.
+    /// </summary>
+    public const string Passkeys = "auth-passkeys";
+
     public static IServiceCollection AddNoteFusionRateLimiting(
         this IServiceCollection services, IConfiguration configuration)
     {
@@ -80,6 +87,9 @@ public static class AuthRateLimiting
 
             options.AddPolicy(BlogReads, context => SlidingWindow(
                 context, settings, settings.BlogReadsPermits, settings.BlogReadsWindowSeconds));
+
+            options.AddPolicy(Passkeys, context => SlidingWindow(
+                context, settings, settings.PasskeyPermits, settings.PasskeyWindowSeconds));
 
             options.OnRejected = (context, cancellationToken) => new ValueTask(WriteRejectedAsync(
                 context.HttpContext, context.Lease, seconds => $"Too many attempts from this device. Try again in {Describe(seconds)}.",
@@ -262,6 +272,14 @@ public sealed class RateLimitSettings
     public int BlogReadsWindowSeconds { get; set; } = 60;
 
     /// <summary>
+    /// Passkey challenges and passkey storage. Each is a few random bytes in memory or an admin's own write,
+    /// so sixty a minute is room for a shared address and a ceiling on anyone filling the challenge store.
+    /// </summary>
+    public int PasskeyPermits { get; set; } = 60;
+
+    public int PasskeyWindowSeconds { get; set; } = 60;
+
+    /// <summary>
     /// "Hum to find a hymn", per address and per device alike: a few tries a minute (a visitor humming a tune
     /// again, more slowly, is the expected use) and a day's ceiling, since every try is a second of the
     /// worker's CPU and the page is open to anyone.
@@ -285,6 +303,7 @@ public sealed class RateLimitSettings
         RefreshPermits = int.MaxValue,
         WebEventsPermits = int.MaxValue,
         BlogReadsPermits = int.MaxValue,
+        PasskeyPermits = int.MaxValue,
         HymnIdentifyPermits = int.MaxValue,
         HymnIdentifyDailyPermits = int.MaxValue,
     };

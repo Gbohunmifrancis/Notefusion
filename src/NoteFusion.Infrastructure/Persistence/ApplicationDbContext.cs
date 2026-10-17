@@ -45,6 +45,8 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<BlogGenerationRun> BlogGenerationRuns => Set<BlogGenerationRun>();
     public DbSet<BlogSiteRebuild> BlogSiteRebuilds => Set<BlogSiteRebuild>();
 
+    public DbSet<Passkey> Passkeys => Set<Passkey>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

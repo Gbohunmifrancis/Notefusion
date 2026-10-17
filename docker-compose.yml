@@ -95,6 +95,9 @@ services:
       # added automatically in Development, and this service runs Production, so the dashboard has to
       # be named explicitly; add more as __1, __2, …
       Cors__AllowedOrigins__0: ${ADMIN_DASHBOARD_ORIGIN:-http://localhost:3000}
+      # Admin-console passkeys against the local console (Production would default to notefusion.studio).
+      Passkeys__RpId: localhost
+      Passkeys__Origins: ${ADMIN_DASHBOARD_ORIGIN:-http://localhost:3000}
       # The blog (docs/BLOG.md): drafting needs a Gemini key, rebuilding the site on publish a GitHub token.
       # Both off unless set in .env; the twice-weekly drafts stay off locally.
       Gemini__ApiKey: ${GEMINI_API_KEY:-}
