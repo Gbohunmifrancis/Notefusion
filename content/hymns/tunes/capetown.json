@@ -1,0 +1,31 @@
+{
+  "name": "CAPETOWN",
+  "title": "Capetown",
+  "music": [
+    {
+      "name": "Friedrich Filitz",
+      "activeBy": 1847,
+      "role": "Music (1847)"
+    }
+  ],
+  "musicPublished": 1847,
+  "metre": "7 7 7 5",
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1 F#4:1 B4:1 A4:1 | G4:1 G4:1 F#4:2 | D5:1 C#5:1 D5:1 A4:1 | G4:1 F#4:1 E4:2 | A4:1 D5:1 C#5:1 B4:1 | A4:1 Ab4:1 A4:2 | F#4:1 F#4:1 E4:1 E4:1 | D4:4",
+  "incipit": "smlsffm|dtdlfmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0006/x000624.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0006/000624a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000624; public domain.",
+  "reviewNotes": "Held back: the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000624 (the melody read from 000624a.mid, checked against the page's do-re-mi incipit, 1 note off in 14); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Friedrich Filitz has no death year on CCEH's page or ours; their work is dated 1847, before 1850, so they died before 1955 (they would have been over 105).",
+  "importedFrom": "cceh:000624",
+  "updated": "2026-10-17"
+}

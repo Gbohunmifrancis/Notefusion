@@ -276,6 +276,28 @@ test("run: ours is kept where we have the tune, the new one written as a tune pa
   }
 });
 
+test("run: a tune page that names no one for the music is rejected, never written as a draft", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "nf-cceh-anon-"));
+  try {
+    const cache = path.join(dir, "cache");
+    fs.cpSync(FIX, cache, { recursive: true });
+    const page = path.join(cache, "pages", "x000006.htm");
+    fs.writeFileSync(page, fs.readFileSync(page, "latin1").replace(/<dt><b>Author:<\/b><\/dt><dd>[^<]*<\/dd>\s*<dd><i>Genevan Psalter<\/i>, 1551<\/dd>/, ""), "latin1");
+    const tunesDir = path.join(dir, "tunes");
+    const hymnsDir = path.join(dir, "hymns");
+    fs.mkdirSync(tunesDir);
+    fs.mkdirSync(hymnsDir);
+    const rep = runImport({ cache, today: "2026-10-17", tunesDir, hymnsDir, reportPath: path.join(dir, "report.json"), datesFile: path.join(dir, "no-dates.json"), log: () => {} });
+    const anon = rep.rejected.find((x) => x.number === "000006");
+    assert.ok(anon, JSON.stringify(rep.rejected));
+    assert.equal(anon.reason, "the page names no composer or source for the tune");
+    assert.ok(!rep.drafts.some((d) => d.number === "000006"));
+    assert.ok(!fs.existsSync(path.join(tunesDir, "old-hundredth.json")));
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 // ── The tune page and the content gate ──────────────────────────────────────
 test("content: a published tune page must pass the public-domain test; a draft may wait for its facts", () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "nf-tunes-"));

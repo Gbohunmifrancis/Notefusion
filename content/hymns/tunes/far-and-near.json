@@ -1,0 +1,30 @@
+{
+  "name": "FAR AND NEAR",
+  "title": "Far and Near",
+  "music": [
+    {
+      "name": "J. B. O. Clemm, 19th cent.",
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 7 8 7",
+  "key": "Ab major",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "C5:2 C5:1 | C5:1 Bb4:1 Ab4:1 | Ab4:2 Ab4:1 | Bb4:1 Ab4:1 F4:1 | Eb4:2 Eb4:1 | Ab4:2 Ab4:1 | C5:1.5 Bb4:.5 Ab4:1 | Bb4:3 | C5:2 C5:1 | C5:1 Bb4:1 Ab4:1 | Ab4:2 Ab4:1 | Bb4:1 Ab4:1 F4:1 | Eb4:2 Ab4:1 | C5:1 Eb5:1 C#5:1 | C5:2 Bb4:1 | Ab4:3 | Eb5:2 C5:1 | Eb5:2 C5:1 | C#5:2 C#5:1 | C#5:1.5 C5:.5 Bb4:1 | C5:2 C5:.5 C#5:.5 | Eb5:2 Eb5:1 | F5:1 Eb5:1 C5:1 | Bb4:3 | C5:2 C5:1 | C5:1 Bb4:1 Ab4:1 | Ab4:2 Ab4:1 | Bb4:1 Ab4:1 F4:1 | Eb4:2 Ab4:1 | C5:1 Eb5:1 C#5:1 | C5:2 Bb4:1 | Ab4:3",
+  "incipit": "mmmrdddrdl|ssddmrdr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0006/x000672.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0006/000672a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000672; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; not provably public domain: J. B. O. Clemm, 19th cent.: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000672 (the melody read from 000672a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true.",
+  "importedFrom": "cceh:000672",
+  "updated": "2026-10-17"
+}

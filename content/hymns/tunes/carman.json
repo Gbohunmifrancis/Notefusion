@@ -1,0 +1,30 @@
+{
+  "name": "CARMAN",
+  "title": "Carman",
+  "music": [
+    {
+      "name": "Peter C. Lutkin",
+      "role": "Music (1895)"
+    }
+  ],
+  "musicPublished": 1895,
+  "metre": "8 4 7 8 4 7",
+  "key": "Eb major",
+  "time": "3/2",
+  "tempo": 120,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "G4:1 Bb4:1 | Bb4:3 Ab4:1 F4:1 C5:1 | C5:2 Bb4:2 Bb4:1 Eb5:1 | Eb5:1 D5:1 D5:1 C5:1 Bb4:1 Ab4:1 | C5:1.5 Ab4:.5 F4:2 G4:1 Bb4:1 | Bb4:3 Ab4:1 F4:1 C5:1 | C5:2 Bb4:2 Bb4:1 Eb5:1 | Eb5:1 C5:1 Bb4:1 Ab4:1 G4:1 F4:1 | G4:1.5 F4:.5 Eb4:2",
+  "incipit": "mssfrlls|sddttlsflfr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0005/x000593.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0005/000593a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000593; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Peter C. Lutkin: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000593 (the melody read from 000593a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true.",
+  "importedFrom": "cceh:000593",
+  "updated": "2026-10-17"
+}

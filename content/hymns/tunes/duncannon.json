@@ -1,0 +1,32 @@
+{
+  "name": "DUNCANNON",
+  "title": "Duncannon",
+  "music": [
+    {
+      "name": "William James Kirkpatrick",
+      "born": 1838,
+      "died": 1921,
+      "role": "Music (1921)"
+    }
+  ],
+  "musicPublished": 1921,
+  "metre": "8 6 8 6 + 8 8 8 6",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:1 G4:.75 F4:.25 Eb4:1 Eb4:1 | Ab4:1 Ab4:1 G4:2 | G4:1 F4:.75 Eb4:.25 Bb4:1 G4:1 | F4:4 | G4:1 G4:.75 F4:.25 Eb4:1 Eb4:1 | C5:1 C5:1 Bb4:2 | Eb4:1 Eb4:.75 F4:.25 G4:1 F4:1 | Eb4:4 | F4:1 F4:.75 G4:.25 Ab4:1 C5:1 | Bb4:1.5 Ab4:.5 G4:2 | F4:1 F4:.75 G4:.25 Ab4:1 C5:1 | Bb4:1.5 Ab4:.5 G4:2 | Eb5:1 Eb5:.75 Eb5:.25 D5:1 D5:1 | C5:1 C5:1 Bb4:2 | Eb4:1 Eb4:.75 F4:.25 G4:1 F4:1 | Eb4:4",
+  "incipit": "mmrddffm|mrdsmr|mmrddlls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000350.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000350a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000350; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000350 (the melody read from 000350a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William James Kirkpatrick's dates (1838–1921) are from our page for the tune THE COMFORTER HAS COME (content/hymns/tunes/the-comforter-has-come.json); CCEH's page gives only the year 1921. The bar lines are those of CCEH's Noteworthy score (000350a.nwc).",
+  "importedFrom": "cceh:000350",
+  "updated": "2026-10-17"
+}

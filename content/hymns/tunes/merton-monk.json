@@ -1,0 +1,32 @@
+{
+  "name": "MERTON (MONK)",
+  "title": "Merton (Monk)",
+  "music": [
+    {
+      "name": "William Henry Monk",
+      "born": 1823,
+      "died": 1889,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 7 8 7",
+  "key": "E major",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "E4:1 Ab4:1 | B4:1 B4:1 A4:1 C#5:1 | C#5:1 B4:1 Ab4:1 Bb4:1 | B4:1 B4:1 C#5:1 C#5:1 | B4:2 B4:1 A4:1 | Ab4:1 B4:1 A4:1 Ab4:1 | F#4:1 E4:1 F#4:1 Ab4:1 | A4:1 Ab4:1 F#4:1 F#4:1 | E4:2",
+  "incipit": "dmssflls|mfsslls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0006/x000642.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0006/000642a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000642; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000642 (the melody read from 000642a.mid, checked against the page's do-re-mi incipit, 1 note off in 15); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William Henry Monk's dates (1823–1889) are from our page for the tune DIX (content/hymns/tunes/dix.json); CCEH's page gives none.",
+  "importedFrom": "cceh:000642",
+  "updated": "2026-10-17"
+}

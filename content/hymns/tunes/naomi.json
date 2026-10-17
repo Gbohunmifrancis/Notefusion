@@ -1,0 +1,38 @@
+{
+  "name": "NAOMI",
+  "title": "Naomi",
+  "music": [
+    {
+      "name": "Hans G. Nageli",
+      "born": 1773,
+      "died": 1836,
+      "role": "Music (1836)"
+    },
+    {
+      "name": "Lowell Mason",
+      "born": 1792,
+      "died": 1872,
+      "role": "Arranged (1863)"
+    }
+  ],
+  "musicPublished": 1836,
+  "metre": "8 6 8 6",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 G4:1 G4:1 | Bb4:2 Ab4:1 G4:1 | F4:1 G4:1 Ab4:2 | G4:3 G4:1 | C5:3 C5:1 | Bb4:2 A4:2 | Bb4:4 | G4:2 G4:1 G4:1 | Bb4:2 Ab4:1 G4:1 | F4:1 G4:1 Ab4:2 | G4:2 G4:2 | C5:3 C5:1 | Bb4:1 G4:1 F4:2 | G4:4",
+  "incipit": "mmmsfmrmfm|mllsfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0006/x000679.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0006/000679a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000679; public domain.",
+  "reviewNotes": "Held back: the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000679 (the melody read from 000679a.mid, checked against the page's do-re-mi incipit, 1 note off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Hans G. Nageli's dates (1773–1836) are from our page for the tune DENNIS (content/hymns/tunes/dennis.json); CCEH's page gives only the year 1836. Lowell Mason's dates (1792–1872) are from our page for the tune BETHANY (content/hymns/tunes/bethany.json); CCEH's page gives only the year 1863. The tune ends on G, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "importedFrom": "cceh:000679",
+  "updated": "2026-10-17"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "ROYAL BANNER",
+  "title": "Royal Banner",
+  "music": [
+    {
+      "name": "James McGranahan",
+      "born": 1840,
+      "died": 1907,
+      "role": "Music (1887)"
+    }
+  ],
+  "musicPublished": 1887,
+  "metre": "11 7 11 7 + i",
+  "key": "Bb major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D4:.75 Eb4:.25 | F4:1 F4:1 F4:1 Bb4:1 | D4:.75 Eb4:.25 F4:.75 G4:.25 F4:1 Bb4:.75 Bb4:.25 | A4:1 C5:1 G4:1 A4:1 | Bb4:3 D4:.75 Eb4:.25 | F4:1 F4:1 F4:1 Bb4:1 | D4:.75 Eb4:.25 F4:.75 G4:.25 F4:1 Bb4:.75 Bb4:.25 | A4:1 C5:1 G4:1 C5:1 | F4:3 F4:.75 A4:.25 | C5:3 D5:.75 C5:.25 | Bb4:3 Bb4:1 | Eb5:1 Eb5:1 D5:.75 C5:.25 Bb4:.75 D5:.25 | C5:3 F4:.75 F4:.25 | Bb4:1 D5:1 F5:2 | G4:1 Bb4:1 Eb5:2 | D5:1 D5:1 D5:.5 Bb4:.5 C5:.75 C5:.25 | Bb4:3",
+  "incipit": "mfsssdmfsls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000387.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000387a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000387; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000387 (the melody read from 000387a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. James McGranahan's dates (1840–1907) are from our page for the tune CHRIST RETURNETH (content/hymns/tunes/christ-returneth.json); CCEH's page gives only the year 1887. The bar lines are those of CCEH's Noteworthy score (000387a.nwc).",
+  "importedFrom": "cceh:000387",
+  "updated": "2026-10-17"
+}

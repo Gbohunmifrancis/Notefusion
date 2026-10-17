@@ -1,0 +1,32 @@
+{
+  "name": "GLORY TO HIS NAME",
+  "title": "Glory to His Name",
+  "music": [
+    {
+      "name": "John H. Stockton",
+      "born": 1813,
+      "died": 1877,
+      "role": "Music (1878)"
+    }
+  ],
+  "musicPublished": 1878,
+  "metre": "9 9 9 5 + 5 5 9 5",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "C5:1 C5:.75 Bb4:.25 Ab4:1 Ab4:.75 G4:.25 | F4:1 Ab4:1 Eb4:2 | C5:1 C5:.75 C5:.25 Eb5:1 Eb5:.75 C5:.25 | Ab4:1 C5:1 Bb4:2 | C5:1 C5:.75 Bb4:.25 Ab4:1 Ab4:.75 G4:.25 | F4:1 Ab4:1 Eb4:2 | C5:1.5 Ab4:.5 C5:1 Bb4:1 | Ab4:4 | Ab4:1.5 Ab4:.5 Ab4:1 F4:1 | Eb4:1.5 F4:.5 Ab4:2 | C5:1.5 C5:.5 C5:1 Ab4:1 | Bb4:1.5 C5:.5 Bb4:2 | C5:1 C5:.75 Bb4:.25 Ab4:1 Ab4:.75 G4:.25 | F4:1 Ab4:1 Eb4:2 | C5:1.5 Ab4:.5 C5:1 Bb4:1 | Ab4:4",
+  "incipit": "mmrddtlds",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0004/x000454.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0004/000454a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000454; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000454 (the melody read from 000454a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. John H. Stockton's dates (1813–1877) are from https://ccel.org/ccel/nutter/hymnwriters.StocktnJ.html; CCEH's page gives only the year 1878. The bar lines are those of CCEH's Noteworthy score (000454a.nwc).",
+  "importedFrom": "cceh:000454",
+  "updated": "2026-10-17"
+}

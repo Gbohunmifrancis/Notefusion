@@ -1,0 +1,32 @@
+{
+  "name": "KENOSIS",
+  "title": "Kenosis",
+  "music": [
+    {
+      "name": "Philip P. Bliss",
+      "born": 1838,
+      "died": 1876,
+      "role": "Music (1873)"
+    }
+  ],
+  "musicPublished": 1873,
+  "metre": "6 6 6 6 8 6",
+  "key": "C major",
+  "time": "6/8",
+  "tempo": 96,
+  "pickup": 0.5,
+  "lineBars": 4,
+  "melody": "G4:.5 | G4:1 G4:.5 E4:1 G4:.5 | A4:1.5 C5:.5 B4:.5 A4:.5 | G4:1 G4:.5 F4:1 G4:.5 | E4:2.5 G4:.5 | G4:1 G4:.5 E4:1 G4:.5 | A4:1.5 C5:.5 B4:.5 A4:.5 | G4:1 G4:.5 B4:.5 A4:.5 B4:.5 | C5:2.5 C5:.5 | D5:1 D5:.5 D5:.5 C5:.5 B4:.5 | C5:1 C5:.5 G4:1 C5:.5 | B4:1 B4:.5 B4:.5 A4:.5 B4:.5 | C5:2.5 C5:.5 | D5:1 D5:.5 D5:.5 C5:.5 B4:.5 | C5:1 C5:.5 G4:1 C5:.5 | B4:1 B4:.5 B4:.5 A4:.5 B4:.5 | C5:2.5",
+  "incipit": "sssmsldt|lssfsm|sssmsltd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0004/x000417.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0004/000417a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000417; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000417 (the melody read from 000417a.mid, checked against the page's do-re-mi incipit, 2 notes off in 22); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Philip P. Bliss's dates (1838–1876) are from our page for the tune BLANDY (content/hymns/tunes/blandy.json); CCEH's page gives only the year 1873. The bar lines are those of CCEH's Noteworthy score (000417a.nwc).",
+  "importedFrom": "cceh:000417",
+  "updated": "2026-10-17"
+}

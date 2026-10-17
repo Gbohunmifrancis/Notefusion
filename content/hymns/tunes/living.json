@@ -1,0 +1,30 @@
+{
+  "name": "LIVING",
+  "title": "Living",
+  "music": [
+    {
+      "name": "C. Harold Lowden",
+      "role": "Music (1915)"
+    }
+  ],
+  "musicPublished": 1915,
+  "metre": "10 10 10 10 + 7 6 7 6 7 6 8 6",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 108,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "A4:1 | Bb4:2 A4:1 C5:1 | G4:2 A4:1 Bb4:1 | F4:2 G4:1 A4:1~ | A4:2.25 r:.75 A4:1 | G4:2 A4:1 G4:1 | F4:2 E4:1 D4:1 | A4:2 G4:1 G4:1~ | G4:2.25 r:.75 A4:1 | Bb4:2 A4:1 C5:1 | G4:2 A4:1 Bb4:1 | F4:2 G4:1 A4:1~ | A4:2.25 r:.75 G4:1 | E5:2 D5:1 C5:1 | F4:2 G4:1 A4:1 | A4:2 G4:1 F4:1~ | F4:2 C5:1 C5:1 | A5:1 A5:1 G5:1 G5:1 | F5:2 D5:1 D5:1 | Bb5:1 Bb5:1 A5:1 G5:1~ | G5:2 F5:1 E5:1 | C6:1 C6:1 Bb5:1 Bb5:1 | A5:2 A5:1 A5:1 | G5:1 D5:1 A5:1 G5:1~ | G5:2 C5:1 C5:1 | A5:1 A5:1 G5:1 G5:1 | F5:2 F5:1 F5:1 | D6:1 D6:1 C6:1 Bb5:1~ | Bb5:2 D5:1 F5:1 | E5:1 F5:1 G5:1 A5:1 | A5:1 Bb5:.5 Bb5:.5 A5:1 A5:1 | G5:1 D5:1 E5:1 F5:1 | F5:1 F5:1 r:1",
+  "incipit": "mfmsrmfdrm|mrmrdtlmrr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000348.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000348b.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000348; public domain.",
+  "reviewNotes": "Held back: not provably public domain: C. Harold Lowden: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score; the range (MIDI 62–86) is outside what a congregation sings. Imported from CCEH tune 000348 (the melody read from 000348b.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true.",
+  "importedFrom": "cceh:000348",
+  "updated": "2026-10-17"
+}

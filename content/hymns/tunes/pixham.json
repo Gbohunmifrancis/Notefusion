@@ -1,0 +1,30 @@
+{
+  "name": "PIXHAM",
+  "title": "Pixham",
+  "music": [
+    {
+      "name": "Horatio W. Parker",
+      "role": "Music (1901)"
+    }
+  ],
+  "musicPublished": 1901,
+  "metre": "8 8 8 8",
+  "key": "E major",
+  "time": "3/2",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Ab4:2 A4:2 B4:2 | B4:4 B4:2 | E5:2 Eb5:2 C#5:2 | B4:4 A4:2 | Ab4:4 Ab4:2 | Ab4:2 Eb5:2 C#5:2 | B4:4 Bb4:2 | Ab4:4 Ab4:2 | F#4:2 Ab4:2 A4:2 | B4:4 B4:2 | D5:2 C#5:2 B4:2 | C#5:4 E4:2 | C#5:4 Ab4:2 | A4:2 Ab4:2 F#4:2 | E4:4 F#4:2 | E4:6",
+  "incipit": "mfsssdtls|fmmmtlsfm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0005/x000596.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0005/000596a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000596; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Horatio W. Parker: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000596 (the melody read from 000596a.mid, checked against the page's do-re-mi incipit, 1 note off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true.",
+  "importedFrom": "cceh:000596",
+  "updated": "2026-10-17"
+}

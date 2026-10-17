@@ -1,0 +1,30 @@
+{
+  "name": "LANIER",
+  "title": "Lanier",
+  "music": [
+    {
+      "name": "Peter C. Lutkin",
+      "role": "Music (1905)"
+    }
+  ],
+  "musicPublished": 1905,
+  "metre": "8 6 8 6 9 9 9 7",
+  "key": "E minor",
+  "time": "6/8",
+  "tempo": 105,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "B4:.75 B4:.25 B4:.5 B4:.5 A4:.5 G4:.5 | A4:1 E4:.5 E4:1 E4:.5 | G4:1 F#4:.5 E4:1 Eb4:.5 | E4:2.5 r:.5 | B4:.75 B4:.25 B4:.5 B4:.5 A4:.5 G4:.5 | A4:1 E4:.5 E4:1 G4:.5 | G4:1 G4:.5 F#4:.5 E4:.5 F#4:.5 | G4:2.5 D4:.25 D4:.25 | Eb4:1 Eb4:.5 Eb4:.5 E4:.5 F#4:.5 | A4:1 G4:.5 G4:1 G4:.5 | F#4:.5 F#4:.5 F#4:.5 F#4:.5 G4:.5 A4:.5 | C5:1 B4:.5 B4:1 A4:.5 | Ab4:1 Ab4:.5 Ab4:.5 A4:.5 B4:.5 | D5:1 C5:.5 C5:1 A4:.5 | G4:.5 E4:.5 F#4:.5 G4:1 F#4:.5 | E4:3",
+  "incipit": "mmmmrdrll",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0005/x000578.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0005/000578a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000578; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Peter C. Lutkin: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000578 (the melody read from 000578a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true.",
+  "importedFrom": "cceh:000578",
+  "updated": "2026-10-17"
+}

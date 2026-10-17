@@ -1,0 +1,31 @@
+{
+  "name": "LUDBOROUGH",
+  "title": "Ludborough",
+  "music": [
+    {
+      "name": "Timothy R. Matthews",
+      "activeBy": 1846,
+      "role": "Music (1846)"
+    }
+  ],
+  "musicPublished": 1846,
+  "metre": "8 8 8 8",
+  "key": "Eb major",
+  "time": "4/2",
+  "tempo": 132,
+  "pickup": 6,
+  "lineBars": 1,
+  "melody": "Eb4:2 G4:2 Ab4:2 | Bb4:2 C5:2 Bb4:2 Ab4:2 | G4:2 G4:2 G4:2 F4:2 | Eb4:2 Eb5:2 D5:2 C5:2 | Bb4:2 Bb4:2 F4:2 G4:2 | Ab4:2 G4:1 F4:1 G4:2 Ab4:2 | Bb4:2 C5:2 Eb4:2 F4:2 | G4:2 Bb4:1 Ab4:1 G4:2 F4:2 | Eb4:2",
+  "incipit": "dmfslsfm|mmrddtls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0005/x000597.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0005/000597a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000597; public domain.",
+  "reviewNotes": "Held back: where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score. Imported from CCEH tune 000597 (the melody read from 000597a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Timothy R. Matthews has no death year on CCEH's page or ours; their work is dated 1846, before 1850, so they died before 1955 (they would have been over 105).",
+  "importedFrom": "cceh:000597",
+  "updated": "2026-10-17"
+}

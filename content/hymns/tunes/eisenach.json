@@ -1,0 +1,40 @@
+{
+  "name": "EISENACH",
+  "title": "Eisenach",
+  "alsoKnownAs": [
+    "Mach's Mit Mir, Gott"
+  ],
+  "music": [
+    {
+      "name": "Johann Hermann Schein",
+      "activeBy": 1628,
+      "role": "Music (1628)"
+    },
+    {
+      "name": "Johann Sebastian Bach",
+      "born": 1685,
+      "died": 1750,
+      "role": "Adapted"
+    }
+  ],
+  "musicPublished": 1628,
+  "metre": "8 7 8 7 8 8/8 8 8 8",
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 3,
+  "lineBars": 2,
+  "melody": "D4:1 F#4:1 G4:1 | A4:1 A4:1 G4:1 F#4:1 | E4:1 A4:1 B4:1 C#5:1 | D5:1 C#5:1 B4:1 B4:1 | A4:1 D4:1 F#4:1 G4:1 | A4:1 A4:1 G4:1 F#4:1 | E4:1 A4:1 B4:1 C#5:1 | D5:1 C#5:1 B4:1 B4:1 | A4:1 A4:1 D5:1 C#5:1 | B4:1 A4:1 G4:1 F#4:1 | E4:1 A4:1 G4:1 F#4:1 | E4:.5 F#4:.5 G4:1 F#4:1 E4:1 | D4:2 r:2",
+  "incipit": "dmfssfmr|sltdtlls/drmfssfmr|sltdtlls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0006/x000658.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0006/000658a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000658; public domain.",
+  "reviewNotes": "Held back: the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000658 (the melody read from 000658a.mid, checked against the page's do-re-mi incipit, 4 notes off in 34); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Johann Hermann Schein has no death year on CCEH's page or ours; their work is dated 1628, before 1850, so they died before 1955 (they would have been over 105). Johann Sebastian Bach's dates (1685–1750) are from our page for the tune POTSDAM (content/hymns/tunes/potsdam.json); CCEH's page gives none.",
+  "importedFrom": "cceh:000658",
+  "updated": "2026-10-17"
+}

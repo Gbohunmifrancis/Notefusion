@@ -1,0 +1,36 @@
+{
+  "name": "ALSACE",
+  "title": "Alsace",
+  "music": [
+    {
+      "name": "Ludwig von Beethoven",
+      "born": 1770,
+      "died": 1827,
+      "role": "Music"
+    },
+    {
+      "name": "Alfred Judson",
+      "role": "Arranged (1923)"
+    }
+  ],
+  "musicPublished": 1923,
+  "metre": "8 8 8 8",
+  "key": "F major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "C4:1 F4:1 G4:1 | A4:2 A4:1 | A4:1 Bb4:1 A4:1 | G4:3 | C5:1 Bb4:1 A4:1 | G4:2 A4:1 | E4:2 F4:.75 D4:.25 | C4:2 C4:1 | G4:1 F4:1 G4:1 | Ab4:1 A4:1 C4:1 | A4:1 G4:1 A4:1 | A4:1 Bb4:1 Bb4:1 | Bb4:1 C5:1 D5:1 | D5:1 G4:1 A4:1 | C5:1.5 Bb4:.5 A4:.5 G4:.5 | F4:3",
+  "incipit": "sdrmmmfmr|sfmrmtdls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0006/x000625.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0006/000625a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000625; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Alfred Judson: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000625 (the melody read from 000625a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ludwig von Beethoven's dates (1770–1827) are from our page for the tune HYMN TO JOY (content/hymns/tunes/hymn-to-joy.json); CCEH's page gives none. The page gives no year for the tune itself; it was in print by 1923, the year of the arrangement.",
+  "importedFrom": "cceh:000625",
+  "updated": "2026-10-17"
+}

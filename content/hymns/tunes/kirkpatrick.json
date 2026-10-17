@@ -1,0 +1,35 @@
+{
+  "name": "KIRKPATRICK",
+  "title": "Kirkpatrick",
+  "alsoKnownAs": [
+    "He Hideth My Soul"
+  ],
+  "music": [
+    {
+      "name": "William James Kirkpatrick",
+      "born": 1838,
+      "died": 1921,
+      "role": "Music (1890)"
+    }
+  ],
+  "musicPublished": 1890,
+  "metre": "11 8 11 8",
+  "key": "D major",
+  "time": "6/8",
+  "tempo": 105,
+  "pickup": 0.5,
+  "lineBars": 4,
+  "melody": "A4:.5 | A4:.75 G4:.25 F#4:.5 F#4:.5 E4:.5 D4:.5 | B4:.75 B4:.25 B4:.5 A4:1 A4:.5 | A4:.75 G4:.25 F#4:.5 F#4:.5 G4:.5 F#4:.5 | E4:2.5 A4:.5 | A4:.75 G4:.25 F#4:.5 F#4:.5 E4:.5 D4:.5 | B4:.75 B4:.25 B4:.5 D5:1 B4:.5 | A4:.75 A4:.25 A4:.5 A4:.5 G4:.5 E4:.5 | D4:2.5 A4:.5 | C#5:.75 C#5:.25 C#5:.5 C#5:1 B4:.25 C#5:.25 | D5:.75 C#5:.25 B4:.5 A4:1 A4:.5 | G4:.5 F#4:.5 G4:.5 E4:.5 B4:.5 A4:.5 | F#4:2.5 A4:.5 | D5:.75 D5:.25 D5:.5 D5:1 D5:.25 D5:.25 | E5:.75 D5:.25 D5:.5 D5:1 B4:.5 | A4:.75 A4:.25 A4:.5 A4:.5 A4:.5 A4:.5 | A4:1.5 A4:1 B4:.5 | A4:.75 F#4:.25 D4:.5 G4:.75 C#4:.25 C#4:.5 | D4:2.5",
+  "incipit": "ssfmmrdllls|ssfmmfmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0004/x000451.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0004/000451a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000451; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000451 (the melody read from 000451a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William James Kirkpatrick's dates (1838–1921) are from our page for the tune THE COMFORTER HAS COME (content/hymns/tunes/the-comforter-has-come.json); CCEH's page gives only the year 1890. The bar lines are those of CCEH's Noteworthy score (000451a.nwc).",
+  "importedFrom": "cceh:000451",
+  "updated": "2026-10-17"
+}

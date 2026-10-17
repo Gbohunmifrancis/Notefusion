@@ -1,0 +1,32 @@
+{
+  "name": "GLORY SONG",
+  "title": "Glory Song",
+  "music": [
+    {
+      "name": "Charles Hutchinson Gabriel",
+      "born": 1856,
+      "died": 1932,
+      "role": "Music (1900)"
+    }
+  ],
+  "musicPublished": 1900,
+  "metre": "10 10 10 10 + 8 8 10 10",
+  "key": "Ab major",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "Eb4:1 Ab4:1 G4:1 | F4:1 Eb4:1 C#4:1 | C4:1 Eb4:1 Ab4:1 | C5:3 | C5:1 Bb4:1 A4:1 | C5:1 Bb4:1 G4:1 | Bb4:1 Ab4:1 F4:1 | Eb4:3 | Eb4:1 D4:1 Eb4:1 | F4:1 G4:1 Ab4:1 | G4:1 G4:1 Ab4:1 | Bb4:3 | Bb4:1 D5:1 C5:1 | Bb4:1 Ab4:1 G4:1 | Ab4:1 G4:1 F4:1 | Eb4:3 | C5:1 C5:1 C5:1 | C5:3 | C5:1 Bb4:1 C5:1 | C#5:3 | C#5:1 C#5:1 C#5:1 | C#5:3 | C#5:1 Eb5:1 Bb4:1 | C5:3 | Eb5:1 C5:1 Bb4:1 | Ab4:1 Bb4:1 C5:1 | C#5:1 F4:1 Ab4:1 | C5:3 | Bb4:1 Ab4:1 F4:1 | Eb4:1 Eb5:1 C#5:1 | C5:1 Eb4:1 Bb4:1 | Ab4:3",
+  "incipit": "sdtlsfmsdm|mrdmrtrdls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0004/x000493.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0004/000493a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000493; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000493 (the melody read from 000493a.mid, checked against the page's do-re-mi incipit, 1 note off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Charles Hutchinson Gabriel's dates (1856–1932) are from our page for the tune MY SAVIOR (content/hymns/tunes/my-savior.json); CCEH's page gives only the year 1900. The bar lines are those of CCEH's Noteworthy score (000493a.nwc).",
+  "importedFrom": "cceh:000493",
+  "updated": "2026-10-17"
+}
