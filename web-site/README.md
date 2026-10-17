@@ -12,7 +12,10 @@ assets/app.js         the web app's script (API client with token refresh, polli
 assets/preview.js     the home page's try-it-free box: link, file or a 30-second recording → an anonymous preview
 assets/choir.js       movable-do labelling, hymn-book layout, voice ranges and the Web Audio rehearsal player
 assets/sheet.js       the shared-sheet page's script
-assets/notify.js      a job that finishes while the tab is hidden: notification, two-note chime, "(1) Sheet ready" title
+assets/notify.js      a job that finishes while the tab is hidden: notification, two-note chime, "(1) Sheet ready" title;
+                      with notifications on, also subscribes the browser to web push (the API's VAPID key)
+sw.js                 the push-only service worker (scope /app/, no caching): shows a pushed "sheet is ready" with the
+                      tab closed, under the tab's own tag; a click opens /app?job=<id>. iPhone/iPad: Home Screen only
 tests/                node --test web-site/tests/*.test.mjs (not deployed: .vercelignore)
 privacy/index.html    privacy policy (unchanged from when it was hosted alone)
 terms/index.html      terms of service

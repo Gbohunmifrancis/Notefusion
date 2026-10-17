@@ -15,6 +15,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   rotating refresh tokens. Every outside HTTP client goes through `Infrastructure/Http/OutboundResilience`
   (total + per-attempt timeout, retry only GETs or Idempotency-Key sends, circuit breaker); an open breaker or
   timeout is the client's "unavailable" result, and batches ask `IProviderHealth` and stop for the run.
+  Web push (the web app with its tab closed): `WebPushSubscription` rows (unique endpoint, known push services only,
+  `/api/push/web/key|subscriptions`), sent beside the Expo push by `NotifyTranscriptionReadyCommand` via `WebPushSender`
+  (Lib.Net.Http.WebPush over `OutboundResilience.WebPush`, a breaker per push service; 404/410 deletes the row, 5 refusals
+  drop it). VAPID pair from `WebPush__PublicKey`/`__PrivateKey`, else derived from the JWT signing key (`VapidKeys`, no
+  setup); `WebPush__Enabled=false` turns it off. `web-site/sw.js` (scope `/app/`, push only) shows it under the tab's
+  `nf-job-<id>` tag and a click opens `/app?job=<id>`.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off

@@ -320,7 +320,7 @@ public class StuckJobTests
     }
 
     private static Task<Result> Notify(TestHarness h, TranscriptionJob job, Worker api)
-        => new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, new NoNotifier())
+        => new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, new NoNotifier(), h.WebPush)
             .Handle(new NotifyTranscriptionReadyCommand(job.Id), CancellationToken.None);
 
     private static Task<Result> Settle(TestHarness h, PreviewJob preview, Worker api)

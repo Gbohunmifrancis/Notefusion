@@ -16,6 +16,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<DeviceToken> DeviceTokens => Set<DeviceToken>();
+    public DbSet<WebPushSubscription> WebPushSubscriptions => Set<WebPushSubscription>();
     public DbSet<Transcription> Transcriptions => Set<Transcription>();
     public DbSet<TranscriptionJob> TranscriptionJobs => Set<TranscriptionJob>();
     public DbSet<TrialDevice> TrialDevices => Set<TrialDevice>();

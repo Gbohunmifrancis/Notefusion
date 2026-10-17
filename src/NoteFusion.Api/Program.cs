@@ -213,6 +213,8 @@ var app = builder.Build();
 // Resolved now rather than on the first sign-in, so a deploy without its own Auth__DeletionSecret says so
 // in the startup logs (see DeletionSecretFallback).
 app.Services.GetRequiredService<NoteFusion.Application.Common.Settings.AuthSettings>();
+// Likewise the web push key pair: the startup log says whether it is configured, derived or off.
+app.Services.GetRequiredService<NoteFusion.Infrastructure.Push.VapidKeys>();
 
 // Before anything reads the scheme — HSTS, the HTTPS redirect, any absolute URL. Rewrites
 // Request.Scheme from X-Forwarded-Proto (see the options above for what it deliberately does not touch).

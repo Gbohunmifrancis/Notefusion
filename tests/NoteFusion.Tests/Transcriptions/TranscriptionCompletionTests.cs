@@ -218,11 +218,101 @@ public class TranscriptionCompletionTests
         using var h = new TestHarness(Now);
 
         var result = await new NotifyTranscriptionReadyCommandHandler(
-                h.Db, new FakeMlService(), h.Clock, h.Push, new FakeTranscriptionNotifier())
+                h.Db, new FakeMlService(), h.Clock, h.Push, new FakeTranscriptionNotifier(), h.WebPush)
             .Handle(new NotifyTranscriptionReadyCommand(Guid.NewGuid()), CancellationToken.None);
 
         Assert.True(result.IsFailure);
         Assert.Equal("TRANS_JOB_NOT_FOUND", result.Error.Code);
+    }
+
+    // ---------------------------------------------------------------- the web app's browsers (web push)
+
+    [Fact]
+    public async Task A_finished_job_is_also_web_pushed_with_the_tabs_tag_and_a_link_to_the_job()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var job = Open(h, user);
+        h.Db.TranscriptionLogs.Add(TranscriptionLog.Accept(job.JobId,
+            new TranscriptionLog.Request("web", user.Id, null, "web", "upload", "melody", FileName: "Amazing Grace.m4a"), Now));
+        h.Db.SaveChanges();
+
+        await Notify(h, job, new FakeMlService { Status = TranscriptionStatus.Done });
+
+        var (to, sent) = Assert.Single(h.WebPush.Sent);
+        Assert.Equal(user.Id, to);
+        Assert.Equal("Your sheet is ready", sent.Title);
+        Assert.Equal("“Amazing Grace” is written out. Open it in NoteFusion.", sent.Body);
+        Assert.Equal("nf-job-job-1", sent.Tag); // the tag notify.js gives the open tab's own notification
+        Assert.Equal("/app?job=job-1", sent.Url);
+        Assert.Equal("ready", sent.Kind);
+    }
+
+    [Fact]
+    public async Task A_failed_job_is_web_pushed_with_the_plain_reason()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var job = Open(h, user);
+
+        await Notify(h, job, new FakeMlService { Status = TranscriptionStatus.Failed, FailureReason = "Too quiet to detect any pitches." });
+
+        var (_, sent) = Assert.Single(h.WebPush.Sent);
+        Assert.Equal("Transcription didn't finish", sent.Title);
+        Assert.Equal("Too quiet to detect any pitches.", sent.Body);
+        Assert.Equal("failed", sent.Kind);
+        Assert.Equal("nf-job-job-1", sent.Tag);
+    }
+
+    [Fact]
+    public async Task A_failure_without_a_reason_is_web_pushed_with_the_phones_sentence()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var job = Open(h, user);
+
+        await Notify(h, job, new FakeMlService { Status = TranscriptionStatus.Failed });
+
+        Assert.Equal("Something went wrong on our side. Try recording it again.", Assert.Single(h.WebPush.Sent).Notification.Body);
+    }
+
+    [Fact]
+    public async Task A_job_the_open_tab_already_collected_is_not_web_pushed()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var job = Open(h, user);
+        var api = new FakeMlService { Status = TranscriptionStatus.Done };
+        await Poll(h, user, job.JobId, api);
+
+        await Notify(h, job, api);
+
+        Assert.Empty(h.WebPush.Sent);
+    }
+
+    [Fact]
+    public async Task A_web_push_that_cannot_be_delivered_never_fails_the_completion()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var job = Open(h, user);
+        h.Db.WebPushSubscriptions.Add(WebPushSubscription.Create(
+            user.Id, "https://fcm.googleapis.com/fcm/send/abc", Push.WebPushTests.BrowserKey, Push.WebPushTests.BrowserAuth, null, Now));
+        h.Db.SaveChanges();
+        var webPush = new NoteFusion.Infrastructure.Push.WebPushSender(
+            new HttpClient(StubHttpMessageHandler.Throwing(new HttpRequestException("No route to host"))),
+            h.Db, Push.WebPushTests.Keys(h), h.Clock,
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<NoteFusion.Infrastructure.Push.WebPushSender>.Instance);
+
+        var result = await new NotifyTranscriptionReadyCommandHandler(
+                h.Db, new FakeMlService { Status = TranscriptionStatus.Done }, h.Clock, h.Push, new FakeTranscriptionNotifier(), webPush)
+            .Handle(new NotifyTranscriptionReadyCommand(job.Id), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(h.Db.TranscriptionJobs.Single().ResultJson);
+        Assert.Single(h.Push.Sent); // the phone's push went out as before
+        // An unreachable push service says nothing about the browser: the row stays, uncounted.
+        Assert.Equal(0, h.Db.WebPushSubscriptions.Single().FailureCount);
     }
 
     // ---------------------------------------------------------------- alongside the client's poll
@@ -432,7 +522,7 @@ public class TranscriptionCompletionTests
     }
 
     private static Task<Result> Notify(TestHarness h, TranscriptionJob job, FakeMlService api)
-        => new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, new FakeTranscriptionNotifier())
+        => new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, new FakeTranscriptionNotifier(), h.WebPush)
             .Handle(new NotifyTranscriptionReadyCommand(job.Id), CancellationToken.None);
 
     private static Task<Result<TranscriptionJobDto>> Poll(
