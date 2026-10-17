@@ -392,7 +392,7 @@
   function leaveAuth() { document.body.classList.remove("auth-only"); hide($("view-auth")); }
   var AUTH_COPY = {
     login: ["Welcome back", "Sign in to open your sheets on any device."],
-    register: ["Create your account", "Free to start — 3 transcriptions on us."],
+    register: ["Create your account", "Free to start: 3 transcriptions in total."],
     verify: ["Check your email", "One code and you're in."]
   };
   function showAuthForm(name) {
