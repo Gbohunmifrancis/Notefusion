@@ -104,7 +104,10 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
                 BoughtTranscriptionsTotal: allowance.Bought,
                 ChoirName: choirName,
                 ChoirRole: choirRole,
-                ChoirPeriodEndUtc: choir!.Choir.CurrentPeriodEndUtc);
+                ChoirPeriodEndUtc: choir!.Choir.CurrentPeriodEndUtc,
+                FreeTranscriptionsRemaining: allowance.FreeRemaining,
+                FreeTranscriptionsPerWeek: allowance.Free,
+                FreeResetsAtUtc: allowance.FreeResetsAtUtc);
         }
 
         if (sub is null)
@@ -116,7 +119,10 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
                 FreeHarmonyAvailable: account is { FreeHarmonyUsedAtUtc: null },
                 BoughtTranscriptionsRemaining: allowance.BoughtRemaining,
                 BoughtTranscriptionsTotal: allowance.Bought,
-                ChoirPeriodEndUtc: choir?.Choir.CurrentPeriodEndUtc);
+                ChoirPeriodEndUtc: choir?.Choir.CurrentPeriodEndUtc,
+                FreeTranscriptionsRemaining: allowance.FreeRemaining,
+                FreeTranscriptionsPerWeek: allowance.Free,
+                FreeResetsAtUtc: allowance.FreeResetsAtUtc);
 
         var plan = await _db.Plans.FirstOrDefaultAsync(p => p.Id == sub.PlanId, ct);
 
@@ -129,6 +135,9 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
             BoughtTranscriptionsTotal: allowance.Bought,
             ChoirName: choirName,
             ChoirRole: choirRole,
-            ChoirPeriodEndUtc: choir?.Choir.CurrentPeriodEndUtc);
+            ChoirPeriodEndUtc: choir?.Choir.CurrentPeriodEndUtc,
+            FreeTranscriptionsRemaining: allowance.FreeRemaining,
+            FreeTranscriptionsPerWeek: allowance.Free,
+            FreeResetsAtUtc: allowance.FreeResetsAtUtc);
     }
 }

@@ -136,24 +136,35 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 // per device as well as per account, because adding a second Google account to an Android
                 // phone is four taps and used to be worth a fresh trial. Running jobs count too: they are
                 // charged when they finish, so without them any number could be started at once.
-                // A free one while any is left, then a bought one (a song with the voice isolated included:
-                // it is a plain upload on the free tier). Each bought one is the account's own, so it is
-                // marked on the job and never spent by another account on the same phone.
+                // This week's free ones cover hums and recordings; a free one while any is left, then a bought
+                // one. A song with the voice isolated is not a free one: only a bought one pays for it (as for
+                // a whole linked song). Each bought one is the account's own, so it is marked on the job and
+                // never spent by another account on the same phone.
                 var country = await _db.Users
                     .Where(u => u.Id == userId)
                     .Select(u => u.Country)
                     .FirstOrDefaultAsync(cancellationToken);
 
                 var allowance = await TrialUsage.ReadAsync(_db, userId, fingerprint, country, _clock.UtcNow, cancellationToken);
+                var song = request.Separate && !isScore;
 
-                if (allowance.Remaining <= 0)
+                if (song)
                 {
-                    // Told the numbers that actually applied to them, not a global one: a refusal that names
-                    // a different count than the trial pill did is indistinguishable from a billing bug.
-                    return BillingErrors.FreeTierLimitReached(allowance.Free, allowance.Bought);
+                    if (allowance.BoughtRemaining <= 0)
+                        return BillingErrors.SongNotFree;
+                    paidByCredit = true;
                 }
+                else
+                {
+                    if (allowance.Remaining <= 0)
+                    {
+                        // Told the numbers that actually applied to them, not a global one: a refusal that names
+                        // a different count than the trial pill did is indistinguishable from a billing bug.
+                        return BillingErrors.FreeTierLimitReached(allowance.Free, allowance.Bought);
+                    }
 
-                paidByCredit = allowance.FreeRemaining == 0;
+                    paidByCredit = allowance.FreeRemaining == 0;
+                }
             }
             else if (request.Separate && !isScore)
             {

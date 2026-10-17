@@ -257,7 +257,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
               value={String(user.transcriptionCount)}
             />
             <Field
-              label="Free trial"
+              label="Free this week"
               value={`${user.trialGenerationsUsed} of ${user.trialGenerationsTotal} used`}
             />
           </Card>

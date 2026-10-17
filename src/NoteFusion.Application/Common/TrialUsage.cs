@@ -6,12 +6,17 @@ using NoteFusion.Core.ValueObjects;
 namespace NoteFusion.Application.Common;
 
 /// <summary>
-/// How much of the allowance <see cref="FreeTier.TrialGenerationsFor"/> grants is already gone. One query
-/// in one place, for the same reason <see cref="FreeTier"/> resolves the ceiling in one method: the submit
-/// gate and the count the app displays must never disagree, and two copies of a predicate this fiddly would
-/// eventually drift.
+/// How much of this week's allowance <see cref="FreeTier.TrialGenerationsFor"/> grants is already gone. One
+/// query in one place, for the same reason <see cref="FreeTier"/> resolves the ceiling and the week in one
+/// place: the submit gate and the count the app displays must never disagree, and two copies of a predicate
+/// this fiddly would eventually drift.
 /// </summary>
 /// <remarks>
+/// <para>
+/// The free ones are hums and recordings only: plain uploads (<see cref="TranscriptionJobKind.Upload"/>) not
+/// paid for with a bought transcription, submitted in the current free week (<see cref="FreeTier.WeekStart"/>).
+/// A job counts in the week it was submitted, the week whose gate let it through.
+/// </para>
 /// <para>
 /// The allowance is spent per account <em>and</em> per device. Per account alone was avoidable in four
 /// taps — sign out, add another Google account, five more free generations — and the device is the only
@@ -30,7 +35,7 @@ namespace NoteFusion.Application.Common;
 public static class TrialUsage
 {
     /// <summary>
-    /// Free generations charged to <paramref name="userId"/> or any account on its inbox
+    /// Free generations this week charged to <paramref name="userId"/> or any account on its inbox
     /// (<see cref="MailboxAccountsAsync"/>), or to <paramref name="deviceFingerprint"/> under any account,
     /// plus the free transcriptions still running on any of them. One predicate, so a job that matches two
     /// ways (the same alias on the same phone) is counted once. Transcriptions paid
@@ -55,13 +60,19 @@ public static class TrialUsage
     {
         // Successful generations, not saved rows. Counting Transcriptions meant deleting one handed the
         // free slot back, so the limit was avoidable by anyone who noticed.
-        var spent = db.TranscriptionJobs.Where(j => j.TrialConsumedAtUtc != null && !j.PaidByCredit);
+        // This week's only: the free ones come back every Friday evening (FreeTier.WeekStart).
+        var week = FreeTier.WeekStart(utcNow);
+        var spent = db.TranscriptionJobs.Where(
+            j => j.Kind == TranscriptionJobKind.Upload
+                 && j.TrialConsumedAtUtc != null
+                 && !j.PaidByCredit
+                 && j.CreatedAtUtc >= week);
         var accounts = await MailboxAccountsAsync(db, userId, ct);
         var charged = deviceFingerprint is null
             ? await spent.CountAsync(j => accounts.Contains(j.UserId), ct)
             : await spent.CountAsync(j => accounts.Contains(j.UserId) || j.DeviceFingerprint == deviceFingerprint, ct);
 
-        var since = utcNow - HeldFor;
+        var since = utcNow - HeldFor > week ? utcNow - HeldFor : week;
         var open = db.TranscriptionJobs.Where(
             j => j.Kind == TranscriptionJobKind.Upload
                  && !j.PaidByCredit
@@ -172,20 +183,22 @@ public static class TrialUsage
         var bought = await CountBoughtAsync(db, userId, ct);
         var boughtSpent = bought == 0 ? 0 : await CountBoughtSpentAsync(db, userId, utcNow, ct);
 
-        return new TrialAllowance(FreeTier.TrialGenerationsFor(country), used, bought, boughtSpent);
+        return new TrialAllowance(FreeTier.TrialGenerationsFor(country), used, bought, boughtSpent, FreeTier.NextReset(utcNow));
     }
 }
 
 /// <summary>
-/// One account's free-tier allowance, in two pools: <see cref="Free"/> transcriptions to start, metered per
-/// account, per inbox and per device, and one for every transcription bought (a <c>Single</c>
-/// plan), metered per account. Bought ones never expire and are spent like free ones — charged when a
-/// transcription finishes, nothing for one that fails. The submit spends a free one while any is left
-/// and a bought one after that, except that only a bought one pays for a whole linked song.
+/// One account's free-tier allowance, in two pools: <see cref="Free"/> hummed or recorded transcriptions a
+/// week, metered per account, per inbox and per device, and one for every transcription bought (a
+/// <c>Single</c> plan), metered per account. Bought ones never expire and are spent like free ones — charged
+/// when a transcription finishes, nothing for one that fails. The submit spends a free one while any is left
+/// and a bought one after that, except that only a bought one pays for a song (a whole linked song, or an
+/// upload with the voice isolated).
 /// </summary>
-/// <param name="FreeUsed">Free ones charged or running (<see cref="TrialUsage.CountUsedAsync"/>).</param>
+/// <param name="FreeUsed">Free ones charged or running this week (<see cref="TrialUsage.CountUsedAsync"/>).</param>
 /// <param name="BoughtUsed">Bought ones charged or running (<see cref="TrialUsage.CountBoughtSpentAsync"/>).</param>
-public sealed record TrialAllowance(int Free, int FreeUsed, int Bought, int BoughtUsed)
+/// <param name="FreeResetsAtUtc">When this week's free ones come back (<see cref="FreeTier.NextReset"/>).</param>
+public sealed record TrialAllowance(int Free, int FreeUsed, int Bought, int BoughtUsed, DateTime FreeResetsAtUtc)
 {
     /// <summary>Everything this account may transcribe on the free tier, bought ones included.</summary>
     public int Total => Free + Bought;

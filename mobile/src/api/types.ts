@@ -485,12 +485,12 @@ export interface Subscription {
   status: SubscriptionStatus | null;
   currentPeriodEndUtc: string | null;
   /**
-   * Free-tier transcriptions left, bought ones included. Server-authoritative and
-   * counted from successful generations, so it does not go back up when a
+   * Free-tier transcriptions left: this week's free ones plus the bought ones. Server-
+   * authoritative and counted from successful generations, so it does not go back up when a
    * transcription is deleted. Meaningless while `isActive` — Pro is unmetered.
    */
   trialGenerationsRemaining: number;
-  /** The free allowance plus every transcription bought, so the UI can say "2 of 4". */
+  /** The week's free allowance plus every transcription bought, so the UI can say "2 of 4". */
   trialGenerationsTotal: number;
   /**
    * Bought outright — there is no renewal date to show and nothing to cancel.
@@ -525,6 +525,15 @@ export interface Subscription {
   choirRole?: ChoirRole | null;
   /** The choir's period end, running or lapsed; null without a choir. */
   choirPeriodEndUtc?: string | null;
+  /**
+   * This week's free hummed or recorded transcriptions not yet used or running; bought ones
+   * not included. Already counted in `trialGenerationsRemaining`.
+   */
+  freeTranscriptionsRemaining?: number;
+  /** Free hummed or recorded transcriptions a week (3). */
+  freeTranscriptionsPerWeek?: number;
+  /** When this week's free ones come back: the next Friday 18:00 West Africa Time, UTC. */
+  freeResetsAtUtc?: string | null;
 }
 
 // --- App release --------------------------------------------------------
@@ -859,6 +868,7 @@ export interface AdminUserDetail {
   /** When a failed-login lockout lifts. Usually the real cause of "I can't log in". */
   lockoutEndAt: string | null;
   transcriptionCount: number;
+  /** Free ones this account was charged this week (since Friday 18:00 WAT); bought ones apart. */
   trialGenerationsUsed: number;
   trialGenerationsTotal: number;
   subscription: AdminSubscription | null;

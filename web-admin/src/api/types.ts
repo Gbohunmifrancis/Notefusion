@@ -489,7 +489,7 @@ export interface AdminUserDetail {
   savedTranscriptionCount: number;
   /** Transcriptions that ended without a result. */
   failedTranscriptionCount: number;
-  /** Free ones this account was charged (bought ones are counted apart). */
+  /** Free ones this account was charged this week (since Friday 18:00 WAT; bought ones are counted apart). */
   trialGenerationsUsed: number;
   trialGenerationsTotal: number;
   /** One-song purchases spent or held by a running job, and fulfilled ever. */

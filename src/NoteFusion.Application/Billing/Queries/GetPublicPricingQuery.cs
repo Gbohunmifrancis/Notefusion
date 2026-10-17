@@ -33,17 +33,19 @@ public sealed class GetPublicPricingQueryHandler : IRequestHandler<GetPublicPric
         if (string.IsNullOrWhiteSpace(country))
             return new PublicPricingDto(null, []);
 
-        var plans = await _db.Plans
+        var all = await _db.Plans
             .AsNoTracking()
-            // The choir plans and the one-song purchase are not on the public page: it renders each plan as
-            // Pro Monthly or Pro Yearly.
-            .Where(p => p.IsActive && p.ChoirSeats == null && p.Interval != BillingInterval.Single)
+            .Where(p => p.IsActive && p.ChoirSeats == null)
             .OrderBy(p => p.AmountMinor)
             .Select(p => new PlanDto(p.Id, p.Code, p.Name, p.AmountMinor, p.Currency, p.Interval))
             .ToListAsync(ct);
+        var offered = all.Where(p => PlanEligibility.IsOffered(p.Code, p.Currency, country)).ToList();
 
+        // The choir plans and the one-song purchase are not in Plans: the public page renders each plan there
+        // as Pro Monthly or Pro Yearly. The one-song price rides apart, for the free card's wording.
         return new PublicPricingDto(
             country,
-            plans.Where(p => PlanEligibility.IsOffered(p.Code, p.Currency, country)).ToList());
+            offered.Where(p => p.Interval != BillingInterval.Single).ToList(),
+            offered.FirstOrDefault(p => p.Interval == BillingInterval.Single));
     }
 }

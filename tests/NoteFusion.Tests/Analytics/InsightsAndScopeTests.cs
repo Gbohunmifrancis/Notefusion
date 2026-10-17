@@ -103,13 +103,15 @@ public class InsightsAndScopeTests
         var shared = Signup(h, "shared@example.com", "NG", "mobile", Now.AddDays(-4));
         var other = Signup(h, "other@example.com", "NG", "mobile", Now.AddDays(-50)); // signed up before the window
         var short1 = Signup(h, "short@example.com", "NG", "mobile", Now.AddDays(-3));
+        var weekly = Signup(h, "weekly@example.com", "NG", "mobile", Now.AddDays(-3));
 
-        void Job(Guid user, string device, bool charged, bool finished = true)
+        void Job(Guid user, string device, bool charged, bool finished = true, int daysAgo = 2)
         {
-            var job = TranscriptionJob.Record("j-" + Guid.NewGuid().ToString("N"), user, Now.AddDays(-2), device);
-            if (finished) job.Settle("{}", Now.AddDays(-2).AddMinutes(1));
-            else job.Settle(null, Now.AddDays(-2).AddMinutes(1));
-            if (charged) job.ConsumeTrial(Now.AddDays(-2).AddMinutes(1));
+            var at = Now.AddDays(-daysAgo);
+            var job = TranscriptionJob.Record("j-" + Guid.NewGuid().ToString("N"), user, at, device);
+            if (finished) job.Settle("{}", at.AddMinutes(1));
+            else job.Settle(null, at.AddMinutes(1));
+            if (charged) job.ConsumeTrial(at.AddMinutes(1));
             h.Db.TranscriptionJobs.Add(job);
         }
 
@@ -123,6 +125,10 @@ public class InsightsAndScopeTests
         Job(short1, "phone-c", charged: true);
         Job(short1, "phone-c", charged: true);
         Job(short1, "phone-c", charged: false, finished: false);
+        // Three charged, but one in each of three free weeks: never more than the week's three, so never refused.
+        Job(weekly, "phone-d", charged: true, daysAgo: 2);
+        Job(weekly, "phone-d", charged: true, daysAgo: 9);
+        Job(weekly, "phone-d", charged: true, daysAgo: 16);
         h.Db.SaveChanges();
 
         var step = Assert.Single((await Insights(h)).Funnel, f => f.Step == GetInsightsQueryHandler.ReachedFreeLimitStep);

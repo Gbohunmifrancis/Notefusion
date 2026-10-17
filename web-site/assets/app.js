@@ -402,7 +402,7 @@
   function leaveAuth() { document.body.classList.remove("auth-only"); hide($("view-auth")); }
   var AUTH_COPY = {
     login: ["Welcome back", "Sign in to open your sheets on any device."],
-    register: ["Create your account", "Free to start: 3 transcriptions in total."],
+    register: ["Create your account", "Free to start: 3 hummed or recorded transcriptions every week."],
     verify: ["Check your email", "One code and you're in."]
   };
   function showAuthForm(name) {
@@ -896,7 +896,7 @@
     var badge = $("acct-badge"); badge.textContent = isPro() ? "Pro" : "Free"; badge.className = "pill " + (isPro() ? "pill-pro" : "pill-free");
     var u = usage();
     $("acct-usage-label").textContent = u ? u.label : "This month";
-    $("acct-credits").textContent = u ? u.left + " of " + u.total + " left" + (isPro() ? " · resets " + resetDay() : "") : "—";
+    $("acct-credits").textContent = u ? u.left + " of " + u.total + " left · " + (isPro() ? "resets " + resetDay() : freeNote(u).replace(/^R/, "r")) : "—";
     fillMeter($("acct-usage-fill"), u);
     $("acct-sub-note").textContent = isPro()
       ? periodLine() + (sub && (sub.isLifetime || sub.isGift) ? "" : " Nothing renews by itself; add time whenever you like.")
@@ -1123,13 +1123,21 @@
   /** A free account's one four-part harmony, until it is used. The API decides; this mirrors it. */
   function freeHarmonyLeft() { return !isPro() && !!(sub && sub.freeHarmonyAvailable); }
 
-  /** What this month (Pro) or this account (free) has left, as numbers for the meters. */
+  /**
+   * What this month (Pro) or this week (free) has left, as numbers for the meters. A free account's meter is
+   * this week's free hums and recordings (back every Friday 6pm WAT, `back` in the reader's time); the songs
+   * it bought are counted apart (boughtLeft), since they never expire.
+   */
   function usage() {
     if (!sub) return null;
-    return isPro()
-      ? { label: "Songs this month", left: sub.songCreditsRemaining, total: sub.songCreditsTotal, unit: "left" }
-      // The total includes every song bought, so once one is bought the count is no longer only "free".
-      : { label: sub.boughtTranscriptionsTotal > 0 ? "Transcriptions" : "Free transcriptions", left: sub.trialGenerationsRemaining, total: sub.trialGenerationsTotal, unit: "left" };
+    if (isPro()) return { label: "Songs this month", left: sub.songCreditsRemaining, total: sub.songCreditsTotal, unit: "left" };
+    var f = window.NfFreeWeek.free(sub);
+    return { label: "Free this week", left: f.left, total: f.total, unit: "left", back: f.back };
+  }
+  /** The free meter's second line: when they come back, and any bought songs beside them. */
+  function freeNote(u) {
+    var bought = boughtLeft();
+    return "Resets " + u.back + (bought > 0 ? " · " + bought + " bought song" + (bought === 1 ? "" : "s") + " left" : "");
   }
   /** Pro's songs come back on the first of the month (UTC, as the API counts them): "1 Nov". */
   function resetDate() { var now = new Date(); return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1)); }
@@ -1146,6 +1154,8 @@
     document.body.classList.toggle("is-pro", isPro());
     isPro() ? show($("greeting-pro")) : hide($("greeting-pro"));
     $("menu-plans-label").textContent = isPro() ? "My membership" : "Plans & billing";
+    // Until a kind is picked, a file is taken for a song only where songs are open (Pro, or a bought one left).
+    if (!guest && !chosenKind()) selectKind(songsOpen() ? "song" : "hum");
     renderStudioCredits();
     $("menu-name").textContent = me ? (me.fullName || "") : "";
     $("menu-email").textContent = me ? (me.email || "") : "";
@@ -1156,7 +1166,7 @@
     var u = usage();
     $("usage-plan").textContent = u ? u.label : isPro() ? "Pro" : "Free plan";
     $("usage-left").textContent = u ? u.left + " of " + u.total + " left" : "";
-    $("usage-note").textContent = isPro() ? "Resets " + resetDay() : "";
+    $("usage-note").textContent = isPro() ? "Resets " + resetDay() : u ? freeNote(u) : "";
     fillMeter($("usage-fill"), u);
   }
 
@@ -1351,7 +1361,12 @@
   function checkedKind() { var el = document.querySelector('input[name="upload-kind"]:checked'); return el ? el.value : "song"; }
   function selectKind(kind) { var el = document.querySelector('input[name="upload-kind"][value="' + kind + '"]'); if (el) el.checked = true; renderKindOptions(); }
   /** The kind a submission goes as: the person's choice, else the default for where the audio came from. */
-  function uploadKind(fromMic) { var k = chosenKind() || (fromMic ? "hum" : "song"); selectKind(k); return k; }
+  function uploadKind(fromMic) { var k = chosenKind() || (fromMic || !songsOpen() ? "hum" : "song"); selectKind(k); return k; }
+  /**
+   * Whether a recording with instruments is open to this account: Pro, or a free account with a bought song
+   * left (the free weekly ones are hums and recordings). A guest's preview is as before.
+   */
+  function songsOpen() { return guest || !sub || isPro() || boughtLeft() > 0; }
   /** "Beats in a bar" (assets/meter.js): the meter to send, or null for Not sure. Not kept between songs. */
   function chosenMeter() { return window.NfMeter ? window.NfMeter.chosen($("meter")) : null; }
   function resetMeter() { if (window.NfMeter) window.NfMeter.reset($("meter")); }
@@ -1380,8 +1395,9 @@
   /**
    * What the next transcription from the tab showing costs, or null when it costs nothing: a chip
    * beside the work ("Uses 1 song · 16 of 20 left") and, behind (i), why. A Pro song is a link or a
-   * recording with instruments; on a free account every recording is one of the free ones, and a link
-   * is the one short preview or a bought song.
+   * recording with instruments; on a free account a hum or a recording without instruments to take out is
+   * one of the week's free ones, and a song (a link, or a recording with instruments) is the one short link
+   * preview or a bought song.
    */
   function studioCost() {
     if (!sub || guest) return null;
@@ -1403,15 +1419,20 @@
       if (bought > 0) return { text: "Uses 1 bought song \u00b7 " + bought + " left", why: "A bought song transcribes up to six minutes of a linked song and never expires. It's used only when the song finishes: one that fails costs nothing" + kept };
       return sub.songCreditsRemaining > 0
         ? { text: "Free 1-minute preview", why: "A free account can try one song link: a preview of one minute of the song. It's used only when the preview finishes, so a link that fails costs nothing. Pro transcribes whole songs." }
-        : { text: "Free preview used", out: true, why: "Your one free song-link preview has been used. Pro, or one bought song, transcribes whole songs; recordings and uploads use your free transcriptions." };
+        : { text: "Free preview used", out: true, why: "Your one free song-link preview has been used. Pro, or one bought song, transcribes whole songs; hums and recordings use your free transcriptions each week." };
     }
-    var u = usage();
-    return {
-      text: u.left > 0 ? "Uses 1 transcription \u00b7 " + u.left + " of " + u.total + " left" : "No free transcriptions left",
-      out: u.left <= 0,
-      why: "Your account comes with " + (u.total - (sub.boughtTranscriptionsTotal || 0)) + " free transcriptions" +
-        (sub.boughtTranscriptionsTotal > 0 ? ", plus the ones you bought, which never expire" : "") + ". One is used only when a transcription finishes: one that fails costs nothing" + kept
-    };
+    var u = usage(), bought = boughtLeft();
+    var weekly = "Hums and recordings use your " + u.total + " free transcriptions a week. They come back every Friday at 6pm West Africa Time" +
+      (u.back !== window.NfFreeWeek.FALLBACK && u.back !== "Friday 6pm" ? " (" + u.back + " where you are)" : "") + ".";
+    if (kind === "song" || (kind === "choir" && $("choir-band").checked)) {
+      // A recording with instruments has its voice isolated first: a song, which the free weekly ones do not cover.
+      return bought > 0
+        ? { text: "Uses 1 bought song \u00b7 " + bought + " left", why: "A recording with instruments has its voice isolated first, so it's a song: a bought song or Pro pays for it. A bought song never expires and is used only when it finishes: one that fails costs nothing" + kept }
+        : { text: "Songs need Pro or a bought song", out: true, why: "A recording with instruments has its voice isolated first, so it's a song: that takes Pro or a bought song. " + weekly + " Choose \u201cJust a voice\u201d (or untick \u201cInstruments are playing too\u201d) to use one of those." };
+    }
+    if (u.left > 0) return { text: "Uses 1 free \u00b7 " + u.left + " of " + u.total + " left this week", why: weekly + " One is used only when a transcription finishes: one that fails costs nothing" + kept };
+    if (bought > 0) return { text: "Uses 1 bought song \u00b7 " + bought + " left", why: "This week's free transcriptions are used, so this one uses a song you bought, which never expires. " + weekly };
+    return { text: "No free ones left until " + u.back, out: true, why: "You've used this week's " + u.total + " free transcriptions. " + weekly + " Buy just this song, or go Pro for unlimited." };
   }
   function renderStudioCredits() {
     var row = $("studio-cost");
@@ -1552,7 +1573,7 @@
 
   function explain(err) {
     var text = err.message || "Something went wrong.";
-    if (err.code === "BILLING_SONG_PREVIEW_USED" || err.code === "BILLING_FREE_TIER_LIMIT") {
+    if (err.code === "BILLING_SONG_PREVIEW_USED" || err.code === "BILLING_FREE_TIER_LIMIT" || err.code === "BILLING_SONG_NOT_FREE") {
       alertIn($("app-alert"), "info", text);
       openUpgrade("limit");
       return;

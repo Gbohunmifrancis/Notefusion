@@ -30,7 +30,7 @@ function shortDate(iso: string): string | null {
  * Says "Pro until", not "renews": nothing renews by itself here, a member buys again to add time.
  */
 export function MembershipCard({ onPress }: { onPress: () => void }) {
-  const { isPro, isGift, known, subscription, trialRemaining, trialTotal } = useSubscription();
+  const { isPro, isGift, known, subscription, freeRemaining, freePerWeek, freeBack, boughtRemaining } = useSubscription();
   const c = useColors();
   const styles = useThemedStyles(makeStyles);
 
@@ -60,12 +60,15 @@ export function MembershipCard({ onPress }: { onPress: () => void }) {
     }
   } else {
     period = "Free plan";
-    // The trial count falls back to the full allowance while unknown; showing that as a fact
-    // would be a guess, so the ring waits for the server's answer.
+    // The free count falls back to the full allowance while unknown; showing that as a fact
+    // would be a guess, so the ring waits for the server's answer. The ring is this week's free
+    // hums and recordings; bought songs, which never expire, ride in the caption.
     if (known) {
-      left = Math.max(0, trialRemaining);
-      total = trialTotal;
-      caption = left > 0 ? "free transcriptions left" : "Free trial used up";
+      left = Math.max(0, freeRemaining);
+      total = freePerWeek;
+      caption =
+        (left > 0 ? `free this week · back ${freeBack}` : `Free ones back ${freeBack}`) +
+        (boughtRemaining > 0 ? ` · ${boughtRemaining} bought` : "");
     } else {
       caption = "Whole songs, four-part harmony, every download";
     }
@@ -73,7 +76,7 @@ export function MembershipCard({ onPress }: { onPress: () => void }) {
 
   const a11y = isPro
     ? `Manage membership. ${period}${left !== null ? `, ${left} of ${total} songs left` : ""}${until ? `, Pro until ${until}` : ""}`
-    : `See Pro plans${left !== null ? `. ${left} of ${total} free transcriptions left` : ""}`;
+    : `See Pro plans${left !== null ? `. ${left} of ${total} free transcriptions left this week, back ${freeBack}` : ""}`;
 
   return (
     <View style={styles.glow}>
