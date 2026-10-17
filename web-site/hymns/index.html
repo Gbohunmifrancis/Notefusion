@@ -31,7 +31,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site-pages.css?v=3">
-<link rel="stylesheet" href="/assets/blog.css?v=5">
+<link rel="stylesheet" href="/assets/blog.css?v=6">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -1581,14 +1581,16 @@
 <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><span aria-current="page">Hymns</span></li></ol></nav>
 <header class="masthead">
   <h1>Hymns in Tonic Solfa</h1>
-  <p class="masthead-dek">248 public-domain hymns with the solfa written out under the words, and 129 more hymn tunes on their own, with the staff notation and a piano to sing along with. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
+  <p class="masthead-dek">248 public-domain hymns with the solfa written out under the words, and 129 more hymn tunes on their own, with the staff notation, a piano to sing along with and a free PDF of each to print. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
   <p class="identify-callout"><a href="/hymns/identify" data-track="Hymns: hum to find">Can't remember the name? <strong>Hum the tune and we'll find the hymn</strong> <svg class="ic ic-16" aria-hidden="true"><use href="/assets/icons.svg#i-arrow-right"/></svg></a></p>
 </header>
+<nav class="hymn-browse" aria-label="Browse the hymns"><a href="/hymns" aria-current="page">All hymns A–Z</a><a href="/hymns/occasions">Seasons and occasions</a><a href="/hymns/people">Writers and composers</a><a href="/hymns/first-lines">First lines</a></nav>
+<h2 class="hymn-seasons-title">Hymns for the season</h2>
+<nav class="hymn-seasons" aria-label="Seasons and occasions"><a href="/hymns/occasions/advent" data-track="Occasion: Advent">Advent</a><a href="/hymns/occasions/christmas" data-track="Occasion: Christmas">Christmas</a><a href="/hymns/occasions/epiphany" data-track="Occasion: Epiphany">Epiphany</a><a href="/hymns/occasions/lent" data-track="Occasion: Lent">Lent</a><a href="/hymns/occasions/holy-week" data-track="Occasion: Holy Week">Holy Week</a><a href="/hymns/occasions/good-friday" data-track="Occasion: Good Friday">Good Friday</a><a href="/hymns/occasions/easter" data-track="Occasion: Easter">Easter</a><a href="/hymns/occasions/ascension" data-track="Occasion: Ascension">Ascension</a><a href="/hymns/occasions/thanksgiving" data-track="Occasion: Thanksgiving">Thanksgiving</a><a href="/hymns/occasions/communion" data-track="Occasion: Holy Communion">Holy Communion</a><a href="/hymns/occasions/evening" data-track="Occasion: Evening">Evening</a><a href="/hymns/occasions/funeral" data-track="Occasion: Funeral">Funeral</a></nav>
 <div class="hymn-find" id="hymn-find" hidden>
   <label for="hymn-filter">Find a hymn</label>
-  <input type="search" id="hymn-filter" placeholder="Title, first line, tune or writer" autocomplete="off" spellcheck="false">
+  <input type="search" id="hymn-filter" placeholder="Title, first line, tune, writer or season" autocomplete="off" spellcheck="false">
   <p class="hymn-seasons" aria-label="Hymns or tunes"><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></p>
-  <p class="hymn-seasons" aria-label="Seasons and occasions"><button type="button" data-filter="advent">Advent</button><button type="button" data-filter="christmas">Christmas</button><button type="button" data-filter="epiphany">Epiphany</button><button type="button" data-filter="lent">Lent</button><button type="button" data-filter="palm sunday">Palm Sunday</button><button type="button" data-filter="good friday">Good Friday</button><button type="button" data-filter="easter">Easter</button><button type="button" data-filter="ascension">Ascension</button><button type="button" data-filter="pentecost">Pentecost</button><button type="button" data-filter="trinity">Trinity</button><button type="button" data-filter="thanksgiving">Thanksgiving</button><button type="button" data-filter="communion">Communion</button><button type="button" data-filter="evening">Evening</button><button type="button" data-filter="funeral">Funeral</button></p>
   <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
 </div>
 <nav class="az" aria-label="Hymns by first letter"><a href="#letter-A">A</a><a href="#letter-B">B</a><a href="#letter-C">C</a><a href="#letter-D">D</a><a href="#letter-E">E</a><a href="#letter-F">F</a><a href="#letter-G">G</a><a href="#letter-H">H</a><a href="#letter-I">I</a><a href="#letter-J">J</a><a href="#letter-K">K</a><a href="#letter-L">L</a><a href="#letter-M">M</a><a href="#letter-N">N</a><a href="#letter-O">O</a><a href="#letter-P">P</a><a href="#letter-Q">Q</a><a href="#letter-R">R</a><a href="#letter-S">S</a><a href="#letter-T">T</a><a href="#letter-U">U</a><a href="#letter-W">W</a><a href="#letter-Y">Y</a></nav>
@@ -1616,10 +1618,10 @@
       <p class="first-line">A Pilgrim and a stranger,</p>
       <p class="story-meta"><span>Doh is C</span><span>4/4</span><span>Tune: PASSION CHORALE</span><span>Funeral</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="abide with me abide with me fast falls the eventide eventide henry francis lyte william henry monk doh is eb">
+    <li class="hymn-item" data-kind="hymn" data-search="abide with me abide with me fast falls the eventide eventide henry francis lyte william henry monk evening funeral doh is eb">
       <h3><a href="/hymns/abide-with-me">Abide with Me</a></h3>
       <p class="first-line">Abide with me; fast falls the eventide;</p>
-      <p class="story-meta"><span>Doh is Eb</span><span>4/4</span><span>Tune: EVENTIDE</span></p>
+      <p class="story-meta"><span>Doh is Eb</span><span>4/4</span><span>Tune: EVENTIDE</span><span>Evening</span></p>
     </li>
     <li class="hymn-item" data-kind="hymn" data-search="abide o dearest jesus abide o dearest jesus christus der ist mein leben joshua stegmann august crull melchior vulpius closing songs closing songs darkness spiritual following jesus sanctification god care of grace invitation faithful s to god jesus joy light love peace presence security wisdom doh is eb">
       <h3><a href="/hymns/abide-o-dearest-jesus">Abide, O Dearest Jesus</a></h3>
@@ -1731,10 +1733,10 @@
       <p class="first-line">Angel voices, ever singing,</p>
       <p class="story-meta"><span>Doh is C</span><span>4/4</span><span>Tune: ANGEL VOICES (MONK)</span><span>Praise</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="angels from the realms of glory angels from the realms of glory regent square james montgomery henry smart doh is c">
+    <li class="hymn-item" data-kind="hymn" data-search="angels from the realms of glory angels from the realms of glory regent square james montgomery henry smart christmas doh is c">
       <h3><a href="/hymns/angels-from-the-realms-of-glory">Angels from the Realms of Glory</a></h3>
       <p class="first-line">Angels from the realms of glory,</p>
-      <p class="story-meta"><span>Doh is C</span><span>4/4</span><span>Tune: REGENT SQUARE</span></p>
+      <p class="story-meta"><span>Doh is C</span><span>4/4</span><span>Tune: REGENT SQUARE</span><span>Christmas</span></p>
     </li>
     <li class="hymn-item" data-kind="hymn" data-search="angels we have heard on high angels we have heard on high gloria traditional french james chadwick traditional french christmas angels christmas advent god as king jesus joy praise son worship doh is f">
       <h3><a href="/hymns/angels-we-have-heard-on-high">Angels We Have Heard on High</a></h3>
@@ -1776,10 +1778,10 @@
       <p class="first-line">Awake, my heart, with gladness,</p>
       <p class="story-meta"><span>Doh is Eb</span><span>3/4</span><span>Tune: AUF, AUF, MEIN HERZ MIT FREUDEN</span><span>Easter</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="away in a manger away in a manger no crib for a bed mueller anonymous john thomas mcfarland james ramsey murray doh is f">
+    <li class="hymn-item" data-kind="hymn" data-search="away in a manger away in a manger no crib for a bed mueller anonymous john thomas mcfarland james ramsey murray christmas doh is f">
       <h3><a href="/hymns/away-in-a-manger">Away in a Manger</a></h3>
       <p class="first-line">Away in a manger, no crib for a bed,</p>
-      <p class="story-meta"><span>Doh is F</span><span>3/4</span><span>Tune: MUELLER</span></p>
+      <p class="story-meta"><span>Doh is F</span><span>3/4</span><span>Tune: MUELLER</span><span>Christmas</span></p>
     </li>
   </ul>
 </section>
@@ -1921,10 +1923,10 @@
       <p class="first-line">Come, ye disconsolate, wher'er ye languish;</p>
       <p class="story-meta"><span>Doh is C</span><span>4/4</span><span>Tune: CONSOLATOR (WEBBE)</span><span>Cross and Comfort</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="come ye thankful people come come ye thankful people come st george s windsor henry alford george job elvey doh is f">
+    <li class="hymn-item" data-kind="hymn" data-search="come ye thankful people come come ye thankful people come st george s windsor henry alford george job elvey harvest thanksgiving doh is f">
       <h3><a href="/hymns/come-ye-thankful-people-come">Come, Ye Thankful People, Come</a></h3>
       <p class="first-line">Come, ye thankful people, come,</p>
-      <p class="story-meta"><span>Doh is F</span><span>4/4</span><span>Tune: ST GEORGE’S WINDSOR</span></p>
+      <p class="story-meta"><span>Doh is F</span><span>4/4</span><span>Tune: ST GEORGE’S WINDSOR</span><span>Harvest</span></p>
     </li>
     <li class="hymn-item" data-kind="hymn" data-search="comfort comfort ye my people comfort comfort ye my people freu dich sehr o meine seele johann olearius oelschlaeger catherine winkworth from trente quatre pseaumes de david geneva 1551 advent atonement christmas advent comfort darkness spiritual following jesus sanctification god as king god love of god s children the faithful see also saints people of the world gospel grace presence promises see also gospel salvation doh is f">
       <h3><a href="/hymns/comfort-comfort-ye-my-people">Comfort, Comfort Ye My People</a></h3>
@@ -2151,10 +2153,10 @@
       <p class="first-line">God, whose almighty word</p>
       <p class="story-meta"><span>Doh is G</span><span>3/4</span><span>Tune: ITALIAN HYMN</span><span>Missions</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="good king wenceslas good king wenceslas looked out tempus adest floridum john mason neale traditional spring carol doh is g">
+    <li class="hymn-item" data-kind="hymn" data-search="good king wenceslas good king wenceslas looked out tempus adest floridum john mason neale traditional spring carol christmas doh is g">
       <h3><a href="/hymns/good-king-wenceslas">Good King Wenceslas</a></h3>
       <p class="first-line">Good King Wenceslas looked out</p>
-      <p class="story-meta"><span>Doh is G</span><span>4/4</span><span>Tune: TEMPUS ADEST FLORIDUM</span></p>
+      <p class="story-meta"><span>Doh is G</span><span>4/4</span><span>Tune: TEMPUS ADEST FLORIDUM</span><span>Christmas</span></p>
     </li>
     <li class="hymn-item" data-kind="tune" data-search="gordon gordon adoniram judson gordon 11 11 11 11 11 11 11 11 doh is f tune">
       <h3><a href="/hymns/tunes/gordon">Gordon</a></h3>
@@ -2221,10 +2223,10 @@
       <p class="first-line">Hark, the voice of Jesus calling,</p>
       <p class="story-meta"><span>Doh is G</span><span>4/4</span><span>Tune: GALILEAN</span><span>Missions</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="hark the herald angels sing hark the herald angels sing mendelssohn charles wesley george whitefield felix mendelssohn william hayman cummings doh is f">
+    <li class="hymn-item" data-kind="hymn" data-search="hark the herald angels sing hark the herald angels sing mendelssohn charles wesley george whitefield felix mendelssohn william hayman cummings christmas doh is f">
       <h3><a href="/hymns/hark-the-herald-angels-sing">Hark! The Herald Angels Sing</a></h3>
       <p class="first-line">Hark! the herald angels sing</p>
-      <p class="story-meta"><span>Doh is F</span><span>4/4</span><span>Tune: MENDELSSOHN</span></p>
+      <p class="story-meta"><span>Doh is F</span><span>4/4</span><span>Tune: MENDELSSOHN</span><span>Christmas</span></p>
     </li>
     <li class="hymn-item" data-kind="hymn" data-search="he keeps me singing there s within my heart a melody he keeps me singing luther burgess bridgers hans engelmann praise art and music atonement faithfulness following jesus in faith god care of god faithfulness of grace jesus kindness god s praise son sinners doh is ab">
       <h3><a href="/hymns/he-keeps-me-singing">He Keeps Me Singing</a></h3>
@@ -2276,10 +2278,10 @@
       <p class="first-line">Hymn tune · 8.7.8.7 · William Moore, Columbian Harmony</p>
       <p class="story-meta"><span>Doh is Ab</span><span>4/4</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="holy holy holy lord god almighty holy holy holy lord god almighty nicaea reginald heber john bacchus dykes doh is d">
+    <li class="hymn-item" data-kind="hymn" data-search="holy holy holy lord god almighty holy holy holy lord god almighty nicaea reginald heber john bacchus dykes trinity doh is d">
       <h3><a href="/hymns/holy-holy-holy">Holy, Holy, Holy! Lord God Almighty</a></h3>
       <p class="first-line">Holy, holy, holy! Lord God Almighty!</p>
-      <p class="story-meta"><span>Doh is D</span><span>4/4</span><span>Tune: NICAEA</span></p>
+      <p class="story-meta"><span>Doh is D</span><span>4/4</span><span>Tune: NICAEA</span><span>Trinity</span></p>
     </li>
     <li class="hymn-item" data-kind="hymn" data-search="hosanna loud hosanna hosanna loud hosanna ellacombe jeanette threlfall from gesangbuch der herzogl hofkapelle wurttemberg 1784 palm sunday children see also god s children the faithful easter week passion eternal life god as king god love of heaven jesus kindness god s praise son presence victory worship doh is bb">
       <h3><a href="/hymns/hosanna-loud-hosanna">Hosanna, Loud Hosanna</a></h3>
@@ -2421,10 +2423,10 @@
       <p class="first-line">Jesus came, the heav'ns adoring,</p>
       <p class="story-meta"><span>Doh is D</span><span>4/4</span><span>Tune: SIEH, HIER BIN ICH, EHRENKOENIG</span><span>Advent</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="jesus christ is risen today jesus christ is risen today alleluia easter hymn latin easter carol lyra davidica charles wesley lyra davidica doh is c">
+    <li class="hymn-item" data-kind="hymn" data-search="jesus christ is risen today jesus christ is risen today alleluia easter hymn latin easter carol lyra davidica charles wesley lyra davidica easter doh is c">
       <h3><a href="/hymns/jesus-christ-is-risen-today">Jesus Christ Is Risen Today</a></h3>
       <p class="first-line">Jesus Christ is risen today, Alleluia!</p>
-      <p class="story-meta"><span>Doh is C</span><span>4/4</span><span>Tune: EASTER HYMN</span></p>
+      <p class="story-meta"><span>Doh is C</span><span>4/4</span><span>Tune: EASTER HYMN</span><span>Easter</span></p>
     </li>
     <li class="hymn-item" data-kind="hymn" data-search="jesus christ who came to save jesus christ who came to save jesus christus unser heiland der den tod klug martin luther leonard woolsey bacon from klug s geistliche lieder wittenberg 1533 easter assurance atonement god mercy of jesus resurrection salvation sinners victory doh is c">
       <h3><a href="/hymns/jesus-christ-who-came-to-save">Jesus Christ Who Came to Save</a></h3>
@@ -2846,10 +2848,10 @@
       <p class="first-line">O come, O come, Emmanuel,</p>
       <p class="story-meta"><span>Doh is G</span><span>4/4</span><span>Tune: VENI EMMANUEL</span><span>Advent</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="o come all ye faithful o come all ye faithful adeste fideles john francis wade frederick oakeley john francis wade doh is g">
+    <li class="hymn-item" data-kind="hymn" data-search="o come all ye faithful o come all ye faithful adeste fideles john francis wade frederick oakeley john francis wade christmas doh is g">
       <h3><a href="/hymns/o-come-all-ye-faithful">O Come, All Ye Faithful</a></h3>
       <p class="first-line">O come, all ye faithful,</p>
-      <p class="story-meta"><span>Doh is G</span><span>4/4</span><span>Tune: ADESTE FIDELES</span></p>
+      <p class="story-meta"><span>Doh is G</span><span>4/4</span><span>Tune: ADESTE FIDELES</span><span>Christmas</span></p>
     </li>
     <li class="hymn-item" data-kind="hymn" data-search="o day of rest and gladness o day of rest and gladness woodbird christopher wordsworth traditional german thanksgiving anticipation calmness church on earth church militant day gratitude heaven law light opening songs praise father praise son praise holy spirit rest sabbath trinity doh is g">
       <h3><a href="/hymns/o-day-of-rest-and-gladness">O Day of Rest and Gladness</a></h3>
@@ -2971,10 +2973,10 @@
       <p class="first-line">On what has now been sown</p>
       <p class="story-meta"><span>Doh is D</span><span>4/4</span><span>Tune: DARWALL</span><span>Closing Songs</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="once in royal david s city once in royal david s city irby cecil frances alexander henry john gauntlett doh is f">
+    <li class="hymn-item" data-kind="hymn" data-search="once in royal david s city once in royal david s city irby cecil frances alexander henry john gauntlett christmas doh is f">
       <h3><a href="/hymns/once-in-royal-davids-city">Once in Royal David’s City</a></h3>
       <p class="first-line">Once in royal David’s city</p>
-      <p class="story-meta"><span>Doh is F</span><span>4/4</span><span>Tune: IRBY</span></p>
+      <p class="story-meta"><span>Doh is F</span><span>4/4</span><span>Tune: IRBY</span><span>Christmas</span></p>
     </li>
     <li class="hymn-item" data-kind="hymn" data-search="open now thy gates of beauty open now thy gates of beauty unser herrscher benjamin schmolck catherine winkworth joachim neander opening songs anticipation discipleship faith harvest heaven joy light presence sowing amp reaping temptation worship doh is bb">
       <h3><a href="/hymns/open-now-thy-gates-of-beauty">Open Now Thy Gates of Beauty</a></h3>
@@ -3176,10 +3178,10 @@
       <p class="first-line">Hymn tune · 8.7.8.7 · James McGranahan</p>
       <p class="story-meta"><span>Doh is Bb</span><span>6/8</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="silent night silent night holy night stille nacht joseph mohr john freeman young franz xaver gruber doh is bb">
+    <li class="hymn-item" data-kind="hymn" data-search="silent night silent night holy night stille nacht joseph mohr john freeman young franz xaver gruber christmas doh is bb">
       <h3><a href="/hymns/silent-night">Silent Night</a></h3>
       <p class="first-line">Silent night, holy night,</p>
-      <p class="story-meta"><span>Doh is Bb</span><span>6/8</span><span>Tune: STILLE NACHT</span></p>
+      <p class="story-meta"><span>Doh is Bb</span><span>6/8</span><span>Tune: STILLE NACHT</span><span>Christmas</span></p>
     </li>
     <li class="hymn-item" data-kind="hymn" data-search="sing o sing this blessed morn sing o sing this blessed morn nativity christopher wordsworth william henry monk christmas adam first second see also guidance invitation ours to god repentance art and music bride bridegroom christmas advent forgiveness god as king god mercy of grace heaven holy spirit jesus joy light love praise son presence salvation worship doh is c">
       <h3><a href="/hymns/sing-o-sing-this-blessed-morn">Sing, O Sing, This Blessed Morn</a></h3>
@@ -3381,10 +3383,10 @@
       <p class="first-line">There's a great day coming, A great day coming,</p>
       <p class="story-meta"><span>Doh is G</span><span>4/4</span><span>Tune: THERES A GREAT DAY COMING</span><span>End Times</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="thine be the glory thine be the glory risen conquering son maccabaeus edmond louis budry richard birch hoyle george frideric handel doh is d">
+    <li class="hymn-item" data-kind="hymn" data-search="thine be the glory thine be the glory risen conquering son maccabaeus edmond louis budry richard birch hoyle george frideric handel easter doh is d">
       <h3><a href="/hymns/thine-be-the-glory">Thine Be the Glory</a></h3>
       <p class="first-line">Thine be the glory, risen, conquering Son;</p>
-      <p class="story-meta"><span>Doh is D</span><span>4/4</span><span>Tune: MACCABAEUS</span></p>
+      <p class="story-meta"><span>Doh is D</span><span>4/4</span><span>Tune: MACCABAEUS</span><span>Easter</span></p>
     </li>
     <li class="hymn-item" data-kind="tune" data-search="thompson thompson for you and for me will lamartine thompson 11 7 11 7 4 7 11 7 11 7 11 7 4 7 11 7 doh is ab tune">
       <h3><a href="/hymns/tunes/thompson">Thompson</a></h3>
@@ -3521,10 +3523,10 @@
       <p class="first-line">What wondrous love is this; O my soul! O my soul!</p>
       <p class="story-meta"><span>Doh is C</span><span>4/4</span><span>Tune: WONDROUS LOVE</span><span>Good Friday</span></p>
     </li>
-    <li class="hymn-item" data-kind="hymn" data-search="when i survey the wondrous cross when i survey the wondrous cross rockingham isaac watts edward miller doh is d">
+    <li class="hymn-item" data-kind="hymn" data-search="when i survey the wondrous cross when i survey the wondrous cross rockingham isaac watts edward miller lent good friday doh is d">
       <h3><a href="/hymns/when-i-survey-the-wondrous-cross">When I Survey the Wondrous Cross</a></h3>
       <p class="first-line">When I survey the wondrous cross</p>
-      <p class="story-meta"><span>Doh is D</span><span>3/4</span><span>Tune: ROCKINGHAM</span></p>
+      <p class="story-meta"><span>Doh is D</span><span>3/4</span><span>Tune: ROCKINGHAM</span><span>Lent</span></p>
     </li>
     <li class="hymn-item" data-kind="hymn" data-search="when i survey the wondrous cross duke street when i survey the wondrous cross duke street isaac watts john hatton lent atonement blood conscience contrition cross crown easter week passion gratitude inner life jesus pride see also humility repentance reverence sacrifice submission see also following jesus god providence of trust doh is eb">
       <h3><a href="/hymns/when-i-survey-the-wondrous-cross-duke-street">When I Survey the Wondrous Cross (Duke Street)</a></h3>
@@ -3608,7 +3610,7 @@
   <p>NoteFusion. Hear it. See it. Notate it. &copy; 2026 NoteFusion.</p>
 </footer>
 <script src="/assets/site-theme.js?v=1" defer></script>
-<script src="/assets/hymns-index.js?v=2" defer></script>
+<script src="/assets/hymns-index.js?v=3" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 <script src="/assets/blog-track.js?v=1" defer></script>
 </body>

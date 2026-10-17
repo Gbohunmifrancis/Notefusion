@@ -12,7 +12,11 @@ test("changed blog and hymn pages become URLs; tag pages, feeds and other files 
     "web-site/blog/tag/choir/index.html",
     "web-site/blog/feed.xml",
     "web-site/hymns/amazing-grace/index.html",
+    "web-site/hymns/amazing-grace/amazing-grace-tonic-solfa.pdf",
     "web-site/hymns/index.html",
+    "web-site/hymns/occasions/christmas/index.html",
+    "web-site/hymns/people/fanny-crosby/index.html",
+    "web-site/hymns/first-lines/index.html",
     "web-site/index.html",
     "web-site/assets/blog.css",
   ]);
@@ -21,6 +25,9 @@ test("changed blog and hymn pages become URLs; tag pages, feeds and other files 
     "https://notefusion.studio/blog/how-to-read-tonic-solfa",
     "https://notefusion.studio/hymns",
     "https://notefusion.studio/hymns/amazing-grace",
+    "https://notefusion.studio/hymns/first-lines",
+    "https://notefusion.studio/hymns/occasions/christmas",
+    "https://notefusion.studio/hymns/people/fanny-crosby",
   ]);
 });
 

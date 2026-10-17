@@ -19,6 +19,7 @@ terms/index.html      terms of service
 delete-account/       account/data deletion and email confirmation flow
 reset-password/       single-use password-reset flow
 blog/, hymns/         GENERATED from ../content by ../tools/blog/build.mjs — never edit; see ../docs/BLOG.md
+                      (the hymns' printable PDFs are built with them but never committed: .gitignore)
 assets/blog.css       styles for the generated blog and hymn pages
 assets/hymn.js        a hymn page's staff (OSMD, lazy) and piano player
 <key>.txt             the IndexNow key file (written by the build)

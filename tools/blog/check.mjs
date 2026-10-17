@@ -6,8 +6,12 @@
 //   2. Links: every internal href/src (and canonical, og:image) on every page resolves to a file,
 //      and every #fragment to an id on its page.
 //   3. Pages the build writes: one <h1>, a <title>, a description of at most 160 characters, a
-//      canonical URL; every JSON-LD block and the hymn data parse as JSON; the MusicXML,
-//      sitemap.xml and feed.xml are well-formed XML; every sitemap URL exists.
+//      canonical URL; every JSON-LD block and the hymn data parse as JSON; every page a JSON-LD
+//      list or breadcrumb names on this site exists; the MusicXML, sitemap.xml and feed.xml are
+//      well-formed XML; every sitemap URL exists.
+//   4. The PDFs (built with the pages, never committed): every hymn and tune page has its PDF and links
+//      to it; each one opens, is titled "… in Tonic Solfa", has at most two pages and stays under the size
+//      limit, and its first line of solfa is the page's first line of solfa, character for character.
 // The committed output is built from content/ alone (posts come from the API at deploy time); the deploy
 // runs `node check.mjs --deployed` on what `build.mjs --api` wrote, as warnings.
 import fs from "node:fs";
@@ -18,6 +22,7 @@ import { SITE_DIR, ORIGIN } from "./lib/site.mjs";
 import { writeSite } from "./build.mjs";
 import { GENERATED_NOTE } from "./lib/layout.mjs";
 import { HYMN_INDEX_PATH } from "./lib/hymn-index.mjs";
+import { pdfText, pdfInfo, PDF_MAX_BYTES, PDF_MAX_PAGES } from "./lib/render-pdf.mjs";
 
 /** A small well-formedness check: tags balance, attributes are quoted, entities are known. Returns an error or null. */
 export function xmlError(xml) {
@@ -103,6 +108,7 @@ export function checkSite(siteDir, { generatedOnly = false } = {}) {
       let data;
       try { data = JSON.parse(m[2]); } catch (e) { errors.push(`${rel}: a ${m[1]} block is not valid JSON (${e.message})`); continue; }
       if (m[1] === "ld+json" && (!data["@context"] || !data["@type"])) errors.push(`${rel}: a JSON-LD block has no @context/@type`);
+      if (m[1] === "ld+json") for (const u of ldUrls(data)) if (!resolveSitePath(siteDir, u.slice(ORIGIN.length) || "/")) errors.push(`${rel}: the JSON-LD names ${u}, which has no page`);
       if (data.musicXml) { const x = xmlError(data.musicXml); if (x) errors.push(`${rel}: the MusicXML is not well-formed (${x})`); }
     }
     for (const img of markup.matchAll(/<img\b[^>]*>/g)) {
@@ -131,9 +137,68 @@ export function checkSite(siteDir, { generatedOnly = false } = {}) {
   return errors;
 }
 
-/** Files the build writes or owns that differ between a fresh build and the committed site. */
+/** Every address on this site a JSON-LD block names (a page's url, a list's items, a breadcrumb, a PDF). */
+export function ldUrls(data, out = []) {
+  if (Array.isArray(data)) for (const x of data) ldUrls(x, out);
+  else if (data && typeof data === "object") {
+    for (const [k, v] of Object.entries(data)) {
+      if (typeof v === "string" && ["url", "item", "contentUrl"].includes(k) && v.startsWith(ORIGIN)) out.push(v);
+      else if (typeof v === "object") ldUrls(v, out);
+    }
+  }
+  return out;
+}
+
+/**
+ * The PDFs (lib/render-pdf.mjs): every hymn and tune page names its PDF (<link rel="alternate">) and the PDF
+ * is there; each one opens, is titled "… in Tonic Solfa" by NoteFusion, has at most PDF_MAX_PAGES pages and
+ * PDF_MAX_BYTES bytes, and prints the page's first line of solfa exactly as the page writes it. A PDF no page
+ * names is an error too. Asynchronous (pdf-lib reads the files).
+ */
+export async function checkPdfs(siteDir) {
+  const errors = [];
+  const dir = path.join(siteDir, "hymns");
+  if (!fs.existsSync(dir)) return errors;
+  const all = walk(dir);
+  const named = new Set();
+  for (const file of all.filter((f) => f.endsWith("index.html"))) {
+    const rel = path.relative(siteDir, file);
+    const html = fs.readFileSync(file, "utf8");
+    if (!html.includes('id="lines-title"')) continue; // only hymn and tune pages print their solfa line by line
+    const alt = /<link rel="alternate" type="application\/pdf" href="([^"]+)"/.exec(html);
+    if (!alt) { errors.push(`${rel}: no <link rel="alternate" type="application/pdf"> for its PDF`); continue; }
+    if (!html.includes(`<a class="pdf-button" href="${alt[1]}"`)) errors.push(`${rel}: no "Download the solfa (PDF)" button for ${alt[1]}`);
+    const pdf = resolveSitePath(siteDir, alt[1]);
+    if (!pdf) { errors.push(`${rel}: its PDF ${alt[1]} was not built`); continue; }
+    named.add(pdf);
+    const bytes = fs.readFileSync(pdf);
+    const where = path.relative(siteDir, pdf);
+    if (bytes.length > PDF_MAX_BYTES) errors.push(`${where}: ${Math.round(bytes.length / 1024)} KB (at most ${PDF_MAX_BYTES / 1024} KB)`);
+    if (bytes.subarray(0, 5).toString("latin1") !== "%PDF-" || !bytes.subarray(-8).toString("latin1").includes("%%EOF")) { errors.push(`${where}: not a PDF file`); continue; }
+    try {
+      const info = await pdfInfo(bytes);
+      if (!/ in Tonic Solfa$/.test(info.title || "")) errors.push(`${where}: its title "${info.title}" does not end "in Tonic Solfa"`);
+      if (info.author !== "NoteFusion") errors.push(`${where}: its author is not NoteFusion`);
+      if (info.pages > PDF_MAX_PAGES) errors.push(`${where}: ${info.pages} pages (at most ${PDF_MAX_PAGES})`);
+      // The page's first line, bar by bar; the PDF prints those bars in order (a line too wide for A4 wraps
+      // at a bar line, so a bar, never a line, is the unit compared).
+      const line = /<div class="solfa-line">([\s\S]*?)<\/div>/.exec(html);
+      const bars = line ? [...line[1].matchAll(/<code>([\s\S]*?)<\/code>/g)].map((m) => m[1].replace(/<[^>]*>/g, "").replace(/&amp;/g, "&")) : [];
+      const text = (await pdfText(bytes))[0].join("\n");
+      let at = text.indexOf(bars[0]);
+      for (const bar of bars.slice(1)) if (at >= 0) at = text.indexOf(bar.trimEnd(), at);
+      if (!bars.length || at < 0) errors.push(`${where}: its first line of solfa is not the page's ("${bars.join("")}")`);
+    } catch (e) {
+      errors.push(`${where}: cannot be read (${e.message})`);
+    }
+  }
+  for (const f of all.filter((x) => x.endsWith(".pdf") && !named.has(x))) errors.push(`${path.relative(siteDir, f)}: no page names this PDF`);
+  return errors;
+}
+
+/** Files the build writes or owns that differ between a fresh build and the committed site (PDFs are never committed). */
 export function staleFiles(freshDir, siteDir) {
-  const owned = (dir) => ["blog", "hymns"].flatMap((d) => (fs.existsSync(path.join(dir, d)) ? walk(path.join(dir, d)) : [])).map((f) => path.relative(dir, f));
+  const owned = (dir) => ["blog", "hymns"].flatMap((d) => (fs.existsSync(path.join(dir, d)) ? walk(path.join(dir, d)) : [])).filter((f) => !f.endsWith(".pdf")).map((f) => path.relative(dir, f));
   const names = new Set([...owned(freshDir), ...owned(siteDir), "sitemap.xml", "index.html", "assets/icons.svg", "assets/icons-LICENSE.txt", ...fs.readdirSync(freshDir).filter((f) => /^[0-9a-f]{32}\.txt$/.test(f))]);
   const stale = [];
   for (const rel of [...names].sort()) {
@@ -150,21 +215,21 @@ export function staleFiles(freshDir, siteDir) {
  * posts were checked by the API before they were published, so a problem here (a link to a post unpublished
  * since) is a warning in the deploy log, never a failed deploy: the rest of the site still ships.
  */
-function checkDeployed() {
-  const errors = checkSite(SITE_DIR);
+async function checkDeployed() {
+  const errors = [...checkSite(SITE_DIR), ...(await checkPdfs(SITE_DIR))];
   for (const e of errors) console.log(`::warning::${e}`);
-  console.log(errors.length ? `${errors.length} problem${errors.length === 1 ? "" : "s"} in the built site (warnings above).` : "The built site's links, JSON-LD, sitemap and feed check out.");
+  console.log(errors.length ? `${errors.length} problem${errors.length === 1 ? "" : "s"} in the built site (warnings above).` : "The built site's links, JSON-LD, sitemap, feed and PDFs check out.");
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href && process.argv.includes("--deployed")) {
-  checkDeployed();
+  await checkDeployed();
 } else if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "nf-site-"));
   let failed = false;
   try {
     fs.cpSync(SITE_DIR, tmp, { recursive: true });
     const freshIndex = path.join(tmp, ".hymn_index.json");
-    const summary = writeSite({ siteDir: tmp, indexPath: freshIndex });
+    const summary = await writeSite({ siteDir: tmp, indexPath: freshIndex });
     const stale = staleFiles(tmp, SITE_DIR);
     if (!fs.existsSync(HYMN_INDEX_PATH)) stale.push("server/app/data/hymn_index.json (missing — not committed)");
     else if (!fs.readFileSync(freshIndex).equals(fs.readFileSync(HYMN_INDEX_PATH))) stale.push("server/app/data/hymn_index.json (differs)");
@@ -172,12 +237,12 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href && process.argv.incl
       failed = true;
       console.error(`The committed pages are out of date. Run \`node tools/blog/build.mjs\` and commit the result:\n  - ${stale.join("\n  - ")}`);
     }
-    const errors = checkSite(tmp);
+    const errors = [...checkSite(tmp), ...(await checkPdfs(tmp))];
     if (errors.length) {
       failed = true;
       console.error(`${errors.length} problem${errors.length === 1 ? "" : "s"} in the built site:\n  - ${errors.join("\n  - ")}`);
     }
-    if (!failed) console.log(`OK: ${summary.posts} posts, ${summary.hymns} hymns; output up to date; links, JSON-LD, sitemap and feed check out.`);
+    if (!failed) console.log(`OK: ${summary.posts} posts, ${summary.hymns} hymns, ${summary.occasions} occasions, ${summary.people} people, ${summary.pdfs} PDFs; output up to date; links, JSON-LD, sitemap, feed and PDFs check out.`);
   } catch (e) {
     failed = true;
     console.error(`Check failed: ${e.message}`);
