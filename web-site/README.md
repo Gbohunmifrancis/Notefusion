@@ -9,6 +9,9 @@ index.html            landing page
 app/index.html        NoteFusion Web: sign in, paste a song link, read the sheet, rehearse, transpose, save, share, download on Pro
 app/sheet/index.html  a shared sheet (?s=token): anonymous, read-only, with the rehearsal player
 assets/app.js         the web app's script (API client with token refresh, polling, OSMD, PDF; guest mode for /app/?preview=<id>)
+assets/app-boot.js    /app's first paint: the sign-in screen is app/index.html's own HTML; this blocking head script marks
+                      <html> nf-in when a session is stored (the app's shell instead), nf-signup / nf-join for those
+                      links, and holds a form sent before app.js, which then takes the screen over (removes nf-boot)
 assets/preview.js     the home page's try-it-free box: link, file or a 30-second recording → an anonymous preview
 assets/choir.js       movable-do labelling, hymn-book layout, voice ranges and the Web Audio rehearsal player
 assets/sheet.js       the shared-sheet page's script
@@ -133,7 +136,10 @@ Lighthouse's mobile profile (simulated slow 4G, 4x CPU slowdown), measured on th
 | bytes before interaction, home | ≤ ~350 KB of our own (third-party ads on top) |
 
 What keeps it there: no render-blocking request to another origin (fonts are self-hosted, `display: swap`); only
-the CSS the first screen needs is in `<head>` (the recorder's and the range picker's load at the end of the body);
+the CSS the first screen needs is in `<head>` (the recorder's and the range picker's load at the end of the body, on
+the home page and in `/app`); `/app`'s sign-in screen is plain HTML and CSS that paints before any of its scripts
+(`assets/app-boot.js` shows the app's shell instead when a session is stored, so a signed-in visitor never sees the
+form flash), and app.js takes it over without moving or clearing anything;
 scripts are `defer`; the engraver (OSMD, ~320 KB) loads when a staff is near the screen or, in `/app`, once
 the app (not the sign-in screen) is open; jsPDF only on the first PDF; the piano samples only on Play; images
 are AVIF/WebP at phone widths with `width`/`height` set and `loading="lazy"` below the fold.

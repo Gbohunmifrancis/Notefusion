@@ -647,14 +647,29 @@ body.is-pro .pill-pro.gate { display: none; }
 .membership-head strong { display: block; font-size: 1.05rem; letter-spacing: -0.01em; }
 .membership-head span { color: var(--muted); font-size: 0.875rem; }
 
-/* ── Sign in / sign up: a screen of its own, the card and nothing else ───── */
-body.auth-only .topbar, body.auth-only .side, body.auth-only .drawer-backdrop { display: none !important; }
-body.auth-only .shell { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
-body.auth-only main > :not(#view-auth) { display: none !important; }
-body.auth-only main { max-width: none; min-height: 100vh; min-height: 100dvh; padding: 24px 20px 32px; }
-body.auth-only .foot { display: none; }
+/* ── Sign in / sign up: a screen of its own, the card and nothing else ─────
+ * Also the first paint of /app, before app.js: <html class="nf-boot"> without nf-in is the same screen
+ * (assets/app-boot.js says which one), so app.js taking it over changes nothing that shows. */
+body.auth-only .topbar, body.auth-only .side, body.auth-only .drawer-backdrop,
+.nf-boot:not(.nf-in) .topbar, .nf-boot:not(.nf-in) .side, .nf-boot:not(.nf-in) .drawer-backdrop { display: none !important; }
+body.auth-only .shell, .nf-boot:not(.nf-in) .shell { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+body.auth-only main > :not(#view-auth), .nf-boot:not(.nf-in) main > :not(#view-auth) { display: none !important; }
+body.auth-only main, .nf-boot:not(.nf-in) main { max-width: none; min-height: 100vh; min-height: 100dvh; padding: 24px 20px 32px; }
+body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .auth-back { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 16px; font-size: 0.875rem; }
-@media (min-width: 961px) { body.auth-only main { padding: 0; } }
+@media (min-width: 961px) { body.auth-only main, .nf-boot:not(.nf-in) main { padding: 0; } }
+/* A session is stored: the app's shell and skeleton from the first paint, never the form. */
+.nf-boot.nf-in #view-auth { display: none !important; }
+/* /app?signup=1: the Create account tab, its form and its opening (app.js writes the opening as text once in). */
+:root:not(.nf-signup) .boot-signup, .nf-boot.nf-signup .boot-login { display: none; }
+.nf-boot.nf-signup #form-login { display: none !important; }
+.nf-boot.nf-signup #form-register.hidden { display: grid !important; }
+.nf-boot.nf-signup #auth-tabs [data-tab=login] { background: none; color: var(--muted); box-shadow: none; }
+.nf-boot.nf-signup #auth-tabs [data-tab=register] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(16, 24, 40, 0.12); }
+:root[data-theme="dark"].nf-boot.nf-signup #auth-tabs [data-tab=register] { background: rgba(255, 255, 255, 0.10); box-shadow: none; }
+.nf-boot.nf-join #auth-join.hidden { display: flex !important; }
+/* The theme switch's icon before app.js draws it: the other theme's. */
+:root[data-theme="dark"] .theme-toggle .boot-moon, :root:not([data-theme="dark"]) .theme-toggle .boot-sun { display: none; }
 .auth-back .ic { width: 16px; height: 16px; }
 
 /* ── Payment card: plan picker ─────────────────────────────────────────── */
