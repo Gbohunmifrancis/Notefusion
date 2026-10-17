@@ -20,6 +20,7 @@ import { SITE_DIR } from "./lib/site.mjs";
 export const ICONS = {
   "arrow-right": "arrow-right",
   "back": "chevron-left",
+  "bell": "bell",
   "camera": "camera",
   "check": "check",
   "chev": "chevron-right",
