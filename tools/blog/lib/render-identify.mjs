@@ -4,7 +4,7 @@
 // its solfa page, or how to hum it more clearly. Free, no account; nothing about the recording is kept.
 import { ORIGIN, ASSET_VERSION } from "./site.mjs";
 import { escapeHtml } from "./util.mjs";
-import { page, breadcrumbs, breadcrumbLd, ctaBox } from "./layout.mjs";
+import { page, breadcrumbs, breadcrumbLd, ctaBox, icon } from "./layout.mjs";
 
 export const IDENTIFY_PATH = "/hymns/identify";
 /** The page's own date for the sitemap: change it when the page changes, so a rebuild stays byte-for-byte the same. */
@@ -30,16 +30,15 @@ export function renderIdentify({ hymns, tunes = [] }) {
   const questions = faq(count);
   const body = `${breadcrumbs(crumbs)}
 <header class="masthead identify-masthead">
-  <p class="kicker"><a href="/hymns">Hymns in Tonic Solfa</a></p>
   <h1>Hum a hymn, find its name</h1>
-  <p class="masthead-dek">Can't remember what a hymn is called? Hum or sing the first line or two and NoteFusion tells you which hymn it is — with its tonic solfa, words and sheet music. Free, no account needed.</p>
+  <p class="masthead-dek">Can't remember what a hymn is called? Hum or sing the first line or two and NoteFusion tells you which hymn it is, with its tonic solfa, words and sheet music. Free, no account needed.</p>
 </header>
 
 <section class="identify" id="identify" aria-labelledby="identify-title">
   <h2 id="identify-title" class="visually-hidden">Hum to find a hymn</h2>
   <div class="identify-start" id="identify-start">
     <button type="button" class="identify-record" id="identify-record" data-track="Hymn identify: record" disabled>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      ${icon("mic")}
       <span>Hum a tune</span>
     </button>
     <p class="identify-hint">Up to ${IDENTIFY_MAX_SECONDS} seconds: the first line or two, steadily and clearly. Words, la-la or humming all work.</p>
@@ -96,5 +95,5 @@ ${ctaBox("identify")}
 
 /** The line on the hymn index that points here. */
 export function identifyCallout() {
-  return `<p class="identify-callout"><a href="${IDENTIFY_PATH}" data-track="Hymns: hum to find">Can't remember the name? <strong>Hum the tune and we'll find the hymn</strong> <span aria-hidden="true">→</span></a></p>`;
+  return `<p class="identify-callout"><a href="${IDENTIFY_PATH}" data-track="Hymns: hum to find">Can't remember the name? <strong>Hum the tune and we'll find the hymn</strong> ${icon("arrow-right", "ic-16")}</a></p>`;
 }

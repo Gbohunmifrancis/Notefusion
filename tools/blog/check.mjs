@@ -134,7 +134,7 @@ export function checkSite(siteDir, { generatedOnly = false } = {}) {
 /** Files the build writes or owns that differ between a fresh build and the committed site. */
 export function staleFiles(freshDir, siteDir) {
   const owned = (dir) => ["blog", "hymns"].flatMap((d) => (fs.existsSync(path.join(dir, d)) ? walk(path.join(dir, d)) : [])).map((f) => path.relative(dir, f));
-  const names = new Set([...owned(freshDir), ...owned(siteDir), "sitemap.xml", "index.html", ...fs.readdirSync(freshDir).filter((f) => /^[0-9a-f]{32}\.txt$/.test(f))]);
+  const names = new Set([...owned(freshDir), ...owned(siteDir), "sitemap.xml", "index.html", "assets/icons.svg", "assets/icons-LICENSE.txt", ...fs.readdirSync(freshDir).filter((f) => /^[0-9a-f]{32}\.txt$/.test(f))]);
   const stale = [];
   for (const rel of [...names].sort()) {
     const a = path.join(freshDir, rel), b = path.join(siteDir, rel);

@@ -14,72 +14,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
-<link rel="stylesheet" href="/assets/rangepicker.css?v=1">
-<link rel="stylesheet" href="/assets/app.css?v=24">
-<link rel="stylesheet" href="/assets/recorder.css?v=1">
-<link rel="stylesheet" href="/assets/night.css?v=9">
+<link rel="stylesheet" href="/assets/rangepicker.css?v=2">
+<link rel="stylesheet" href="/assets/app.css?v=25">
+<link rel="stylesheet" href="/assets/recorder.css?v=2">
+<link rel="stylesheet" href="/assets/night.css?v=10">
 <!-- The theme before the first paint: blocking on purpose (no async/defer). -->
 <script src="/assets/theme-boot.js?v=1"></script>
 </head>
 <body class="guest">
 
-<!-- Icon sprite: one path set, referenced with <use> throughout the page. -->
+<!-- Interface icons are Lucide, from the site's sprite (/assets/icons.svg, written by tools/blog/icons.mjs).
+     Here only the link providers' marks, which are brand marks rather than icons. -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
-  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 12h2l2-7 3 14 3-10 2 6 2-3h6"/></symbol>
-  <symbol id="i-library" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
-  <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
-  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
-  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
-  <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v4"/></symbol>
-  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
-  <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></symbol>
-  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14"/><path d="M16 5v14"/></symbol>
-  <symbol id="i-restart" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></symbol>
-  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
-  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
-  <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></symbol>
-  <symbol id="i-shift" viewBox="0 0 24 24"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></symbol>
-  <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m16 6-4-4-4 4"/><path d="M12 2v13"/></symbol>
-  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
-  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/></symbol>
-  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
-  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
-  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
-  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
-  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
-  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3v4"/><path d="M12 17v4"/><path d="M3 12h4"/><path d="M17 12h4"/><path d="m5.6 5.6 2.8 2.8"/><path d="m15.6 15.6 2.8 2.8"/><path d="m5.6 18.4 2.8-2.8"/><path d="m15.6 8.4 2.8-2.8"/></symbol>
-  <symbol id="i-sing" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v4"/><path d="M8 23h8"/></symbol>
-  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M2 2l20 20"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M5 12.5a10 10 0 0 1 3.5-2.6"/><path d="M12 20h.01"/><path d="M1.4 8.6a16 16 0 0 1 5.3-3.4"/><path d="M19 12.5a10 10 0 0 0-3-2.2"/></symbol>
-  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
-  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol>
-  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
-  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></symbol>
-  <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></symbol>
-  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
-  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.9 17.9A10 10 0 0 1 12 19c-6.5 0-10-7-10-7a18 18 0 0 1 5.1-5.9"/><path d="M9.9 4.2A9.5 9.5 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.2 3.2"/><path d="M14.1 14.1a3 3 0 0 1-4.2-4.2"/><path d="m2 2 20 20"/></symbol>
-  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 7h3l2-3h6l2 3h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4"/></symbol>
-  <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5.5a9 9 0 0 1 0 13"/></symbol>
-  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
-  <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></symbol>
-  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></symbol>
-  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
-  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/></symbol>
-  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
-  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
-  <symbol id="i-chev-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
-  <symbol id="i-choir" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
-  <symbol id="i-crown" viewBox="0 0 24 24"><path d="m3 8 4 9h10l4-9-5 4-4-6-4 6z"/><path d="M7 21h10"/></symbol>
-  <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
-  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
-  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></symbol>
-  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
-  <symbol id="i-keys" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 20v-5"/><path d="M15 20v-5"/><path d="M7.5 4v11h3V4"/><path d="M13.5 4v11h3V4"/></symbol>
-  <symbol id="i-paste" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></symbol>
-  <!-- Provider marks, drawn as simple filled glyphs. -->
   <symbol id="p-youtube" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.5 12 31 31 0 0 0 23 7.2zM9.7 15.1V8.9L15.8 12z"/></symbol>
-  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
-  <symbol id="i-back" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
   <symbol id="p-spotify" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 1.5a10.5 10.5 0 1 0 0 21 10.5 10.5 0 0 0 0-21zm4.8 15.2a.65.65 0 0 1-.9.2c-2.5-1.5-5.6-1.9-9.3-1a.65.65 0 1 1-.3-1.3c4-.9 7.5-.5 10.3 1.2.3.2.4.6.2.9zm1.3-2.9a.8.8 0 0 1-1.1.3c-2.8-1.7-7.1-2.3-10.5-1.2a.8.8 0 1 1-.5-1.6c3.8-1.2 8.6-.6 11.9 1.4.4.2.5.7.2 1.1zm.1-3a1 1 0 0 1-1.3.3C13.5 9.1 8 8.9 4.8 9.9a1 1 0 1 1-.6-1.9c3.7-1.1 9.8-.9 13.7 1.4.4.3.6.9.3 1.4z"/></symbol>
   <symbol id="p-apple" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M16.4 12.7c0-2.5 2-3.7 2.1-3.7-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.8-1.7 0-3.2 1-4.1 2.5-1.8 3-.5 7.6 1.3 10.1.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.3.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.8-1.1-2.9-4.2zM14 5.5c.7-.9 1.2-2.1 1-3.3-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.2 1.2.1 2.4-.6 3.1-1.5z"/></symbol>
 </svg>
@@ -87,10 +34,10 @@
 <div class="shell">
   <!-- Phone top bar (and the only bar when signed out) -->
   <header class="topbar">
-    <button class="btn btn-ghost btn-icon drawer-toggle" id="drawer-toggle" type="button" aria-label="Open menu" aria-controls="side" aria-expanded="false"><svg class="ic"><use href="#i-menu"/></svg></button>
+    <button class="btn btn-ghost btn-icon drawer-toggle" id="drawer-toggle" type="button" aria-label="Open menu" aria-controls="side" aria-expanded="false"><svg class="ic"><use href="/assets/icons.svg#i-menu"/></svg></button>
     <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion <small>Web</small></a>
     <span class="side-spacer"></span>
-    <a class="side-help how-link" href="/#how" id="how-link"><svg class="ic"><use href="#i-help"/></svg>How it works</a>
+    <a class="side-help how-link" href="/#how" id="how-link"><svg class="ic"><use href="/assets/icons.svg#i-help"/></svg>How it works</a>
     <button class="btn btn-ghost btn-sm hidden" id="topbar-signin" type="button">Sign in</button>
     <button class="avatar-btn account-trigger hidden" id="topbar-avatar" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu" aria-label="Your account"><span class="who-avatar" id="topbar-avatar-img" aria-hidden="true"></span></button>
   </header>
@@ -99,13 +46,13 @@
   <aside class="side" id="side">
     <div class="side-head">
       <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion</a>
-      <button class="btn btn-ghost btn-icon drawer-close" id="drawer-close" type="button" aria-label="Close menu"><svg class="ic"><use href="#i-x"/></svg></button>
+      <button class="btn btn-ghost btn-icon drawer-close" id="drawer-close" type="button" aria-label="Close menu"><svg class="ic"><use href="/assets/icons.svg#i-x"/></svg></button>
     </div>
     <nav class="side-nav top-nav hidden" id="top-nav" aria-label="App sections">
-      <button class="nav-item nav-new top-link on" type="button" data-view="transcribe"><svg class="ic"><use href="#i-plus"/></svg><span>New transcription</span></button>
-      <button class="nav-item top-link" type="button" data-view="library"><svg class="ic"><use href="#i-music"/></svg><span>Transcriptions</span></button>
-      <button class="nav-item top-link" type="button" data-view="search"><svg class="ic"><use href="#i-search"/></svg><span>Search</span></button>
-      <button class="nav-item top-link" type="button" data-view="account"><svg class="ic"><use href="#i-gear"/></svg><span>Account &amp; settings</span></button>
+      <button class="nav-item nav-new top-link on" type="button" data-view="transcribe"><svg class="ic"><use href="/assets/icons.svg#i-plus"/></svg><span>New transcription</span></button>
+      <button class="nav-item top-link" type="button" data-view="library"><svg class="ic"><use href="/assets/icons.svg#i-music"/></svg><span>Transcriptions</span></button>
+      <button class="nav-item top-link" type="button" data-view="search"><svg class="ic"><use href="/assets/icons.svg#i-search"/></svg><span>Search</span></button>
+      <button class="nav-item top-link" type="button" data-view="account"><svg class="ic"><use href="/assets/icons.svg#i-gear"/></svg><span>Account &amp; settings</span></button>
     </nav>
     <div class="recents hidden" id="recents">
       <div class="recents-title">Recents</div>
@@ -121,9 +68,9 @@
       </div>
       <div class="theme-row"><span>Theme</span>
         <div class="theme-switch" role="radiogroup" aria-label="Theme">
-          <button type="button" role="radio" data-theme-pref="light" aria-label="Light" title="Light"><svg class="ic"><use href="#i-sun"/></svg></button>
-          <button type="button" role="radio" data-theme-pref="dark" aria-label="Dark" title="Dark"><svg class="ic"><use href="#i-moon"/></svg></button>
-          <button type="button" role="radio" data-theme-pref="system" aria-label="Same as this device" title="Same as this device"><svg class="ic"><use href="#i-monitor"/></svg></button>
+          <button type="button" role="radio" data-theme-pref="light" aria-label="Light" title="Light"><svg class="ic"><use href="/assets/icons.svg#i-sun"/></svg></button>
+          <button type="button" role="radio" data-theme-pref="dark" aria-label="Dark" title="Dark"><svg class="ic"><use href="/assets/icons.svg#i-moon"/></svg></button>
+          <button type="button" role="radio" data-theme-pref="system" aria-label="Same as this device" title="Same as this device"><svg class="ic"><use href="/assets/icons.svg#i-monitor"/></svg></button>
         </div>
       </div>
     </div>
@@ -135,28 +82,28 @@
       <div class="user-menu-id"><strong id="menu-name"></strong><span id="menu-email"></span></div>
       <span class="pill pill-free" id="menu-plan">Free</span>
     </div>
-    <button class="user-menu-item" type="button" data-view="account" role="menuitem"><svg class="ic"><use href="#i-gear"/></svg>Account settings</button>
-    <button class="user-menu-item" type="button" id="menu-plans" role="menuitem"><svg class="ic"><use href="#i-crown"/></svg><span id="menu-plans-label">View all plans</span></button>
-    <a class="user-menu-item" href="/#how" id="menu-how" role="menuitem"><svg class="ic"><use href="#i-help"/></svg>How it works</a>
+    <button class="user-menu-item" type="button" data-view="account" role="menuitem"><svg class="ic"><use href="/assets/icons.svg#i-gear"/></svg>Account settings</button>
+    <button class="user-menu-item" type="button" id="menu-plans" role="menuitem"><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg><span id="menu-plans-label">View all plans</span></button>
+    <a class="user-menu-item" href="/#how" id="menu-how" role="menuitem"><svg class="ic"><use href="/assets/icons.svg#i-help"/></svg>How it works</a>
     <div class="user-menu-sep" role="separator"></div>
-    <div class="user-menu-row"><svg class="ic"><use href="#i-sun"/></svg><span>Theme</span>
+    <div class="user-menu-row"><svg class="ic"><use href="/assets/icons.svg#i-sun"/></svg><span>Theme</span>
       <div class="theme-switch" role="radiogroup" aria-label="Theme">
-        <button type="button" role="radio" data-theme-pref="light" aria-label="Light" title="Light"><svg class="ic"><use href="#i-sun"/></svg></button>
-        <button type="button" role="radio" data-theme-pref="dark" aria-label="Dark" title="Dark"><svg class="ic"><use href="#i-moon"/></svg></button>
-        <button type="button" role="radio" data-theme-pref="system" aria-label="Same as this device" title="Same as this device"><svg class="ic"><use href="#i-monitor"/></svg></button>
+        <button type="button" role="radio" data-theme-pref="light" aria-label="Light" title="Light"><svg class="ic"><use href="/assets/icons.svg#i-sun"/></svg></button>
+        <button type="button" role="radio" data-theme-pref="dark" aria-label="Dark" title="Dark"><svg class="ic"><use href="/assets/icons.svg#i-moon"/></svg></button>
+        <button type="button" role="radio" data-theme-pref="system" aria-label="Same as this device" title="Same as this device"><svg class="ic"><use href="/assets/icons.svg#i-monitor"/></svg></button>
       </div>
     </div>
-    <button class="user-menu-item" type="button" id="menu-sounds" role="menuitemcheckbox" aria-checked="true"><svg class="ic"><use href="#i-volume"/></svg>Sounds<span class="switch" aria-hidden="true"></span></button>
+    <button class="user-menu-item" type="button" id="menu-sounds" role="menuitemcheckbox" aria-checked="true"><svg class="ic"><use href="/assets/icons.svg#i-volume"/></svg>Sounds<span class="switch" aria-hidden="true"></span></button>
     <div class="user-menu-sep" role="separator"></div>
-    <button class="user-menu-item danger" type="button" id="signout" role="menuitem"><svg class="ic"><use href="#i-logout"/></svg>Sign out</button>
+    <button class="user-menu-item danger" type="button" id="signout" role="menuitem"><svg class="ic"><use href="/assets/icons.svg#i-logout"/></svg>Sign out</button>
   </div>
 
   <div class="content">
   <!-- Wide screens: help and the account, top right. -->
   <div class="app-head hidden" id="app-head">
-    <a class="btn btn-ghost btn-sm how-link" href="/#how"><svg class="ic"><use href="#i-help"/></svg>How it works</a>
+    <a class="btn btn-ghost btn-sm how-link" href="/#how"><svg class="ic"><use href="/assets/icons.svg#i-help"/></svg>How it works</a>
     <button class="acct-chip account-trigger" id="acct-chip" type="button" data-track="Account menu" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu">
-      <span class="who-avatar" id="chip-avatar" aria-hidden="true"></span><span class="acct-chip-name" id="chip-name"></span><svg class="ic"><use href="#i-chev-down"/></svg>
+      <span class="who-avatar" id="chip-avatar" aria-hidden="true"></span><span class="acct-chip-name" id="chip-name"></span><svg class="ic"><use href="/assets/icons.svg#i-chev-down"/></svg>
     </button>
   </div>
   <main>
@@ -182,10 +129,12 @@
       <div class="auth-pitch">
         <p class="auth-pitch-title">Hum it. Read it.<br>Sing it with your choir.</p>
         <p class="auth-pitch-sub">Any tune, a recording or a song link becomes Tonic Solfa and staff notation in about a minute.</p>
+        <!-- Real output: the opening line of Amazing Grace as the engine writes it (the hymn page's text line)
+             and the same bars engraved by OSMD (/assets/sample-staff.svg, also on the home page). -->
         <div class="auth-sample">
           <div class="auth-sample-head"><span>Amazing Grace</span><span>Doh is G · 3/4</span></div>
-          <div class="auth-sample-solfa">s₁ | d : – m d | m : – r | d : – l₁ | s₁</div>
-          <svg class="auth-sample-staff" viewBox="0 0 400 64"><g stroke="currentColor" stroke-width="1" opacity="0.45"><path d="M0 8h400M0 20h400M0 32h400M0 44h400M0 56h400"/></g><g fill="currentColor"><ellipse cx="34" cy="56" rx="6" ry="4.5"/><ellipse cx="84" cy="38" rx="6" ry="4.5"/><ellipse cx="134" cy="26" rx="6" ry="4.5"/><ellipse cx="170" cy="38" rx="6" ry="4.5"/><ellipse cx="220" cy="26" rx="6" ry="4.5"/><ellipse cx="270" cy="32" rx="6" ry="4.5"/><ellipse cx="320" cy="38" rx="6" ry="4.5"/><ellipse cx="366" cy="50" rx="6" ry="4.5"/></g></svg>
+          <div class="auth-sample-solfa">| s, - | d - - - m d | m - - - r - | d - - - l, - | s, - - - s, - |</div>
+          <div class="auth-sample-staff"><img src="/assets/sample-staff.svg" width="613" height="236" alt=""></div>
         </div>
       </div>
       <p class="auth-aside-foot">One account across the web and the Android app.</p>
@@ -194,11 +143,11 @@
     <div class="auth-main">
       <div class="auth-top">
         <a class="brand auth-top-brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion</a>
-        <button class="btn btn-ghost btn-icon theme-toggle" id="auth-theme" type="button" aria-label="Switch to dark mode"><svg class="ic"><use href="#i-moon"/></svg></button>
+        <button class="btn btn-ghost btn-icon theme-toggle" id="auth-theme" type="button" aria-label="Switch to dark mode"><svg class="ic"><use href="/assets/icons.svg#i-moon"/></svg></button>
       </div>
 
       <div class="auth-card">
-        <button class="btn-link auth-back hidden" id="auth-back" type="button"><svg class="ic"><use href="#i-back"/></svg>Back to your preview</button>
+        <button class="btn-link auth-back hidden" id="auth-back" type="button"><svg class="ic"><use href="/assets/icons.svg#i-back"/></svg>Back to your preview</button>
         <h1 class="auth-title" id="auth-title">Welcome back</h1>
         <p class="auth-sub" id="auth-sub">Sign in to open your sheets on any device.</p>
         <div class="tabs fill auth-tabs" id="auth-tabs" role="tablist" aria-label="Sign in or create an account">
@@ -214,11 +163,11 @@
           <div class="or">or with email</div>
           <div class="field">
             <label for="login-email">Email</label>
-            <span class="input-wrap"><svg class="ic"><use href="#i-mail"/></svg><input id="login-email" type="email" placeholder="you@example.com" autocomplete="email" required></span>
+            <span class="input-wrap"><svg class="ic"><use href="/assets/icons.svg#i-mail"/></svg><input id="login-email" type="email" placeholder="you@example.com" autocomplete="email" required></span>
           </div>
           <div class="field">
             <div class="label-row"><label for="login-password">Password</label><button class="btn-link" id="forgot" type="button">Forgot password?</button></div>
-            <span class="input-wrap pw-wrap"><svg class="ic"><use href="#i-lock"/></svg><input id="login-password" type="password" placeholder="Your password" autocomplete="current-password" required><button class="pw-eye" type="button" data-eye="login-password" aria-label="Show password"><svg class="ic"><use href="#i-eye"/></svg></button></span>
+            <span class="input-wrap pw-wrap"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg><input id="login-password" type="password" placeholder="Your password" autocomplete="current-password" required><button class="pw-eye" type="button" data-eye="login-password" aria-label="Show password"><svg class="ic"><use href="/assets/icons.svg#i-eye"/></svg></button></span>
           </div>
           <button class="btn btn-primary btn-block" type="submit">Sign in</button>
         </form>
@@ -238,42 +187,42 @@
           <div class="or">or with email</div>
           <div class="field">
             <label for="reg-name">Full name</label>
-            <span class="input-wrap"><svg class="ic"><use href="#i-user"/></svg><input id="reg-name" type="text" placeholder="Your name" autocomplete="name" required></span>
+            <span class="input-wrap"><svg class="ic"><use href="/assets/icons.svg#i-user"/></svg><input id="reg-name" type="text" placeholder="Your name" autocomplete="name" required></span>
           </div>
           <div class="field">
             <label for="reg-email">Email</label>
-            <span class="input-wrap"><svg class="ic"><use href="#i-mail"/></svg><input id="reg-email" type="email" placeholder="you@example.com" autocomplete="email" required></span>
+            <span class="input-wrap"><svg class="ic"><use href="/assets/icons.svg#i-mail"/></svg><input id="reg-email" type="email" placeholder="you@example.com" autocomplete="email" required></span>
           </div>
           <div class="field">
             <label for="reg-password">Password</label>
-            <span class="input-wrap pw-wrap"><svg class="ic"><use href="#i-lock"/></svg><input id="reg-password" type="password" placeholder="Choose a password" autocomplete="new-password" minlength="8" required aria-describedby="reg-password-hint"><button class="pw-eye" type="button" data-eye="reg-password" aria-label="Show password"><svg class="ic"><use href="#i-eye"/></svg></button></span>
-            <p class="pw-hint" id="reg-password-hint"><svg class="ic"><use href="#i-check"/></svg>At least 8 characters</p>
+            <span class="input-wrap pw-wrap"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg><input id="reg-password" type="password" placeholder="Choose a password" autocomplete="new-password" minlength="8" required aria-describedby="reg-password-hint"><button class="pw-eye" type="button" data-eye="reg-password" aria-label="Show password"><svg class="ic"><use href="/assets/icons.svg#i-eye"/></svg></button></span>
+            <p class="pw-hint" id="reg-password-hint"><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>At least 8 characters</p>
           </div>
           <button class="btn btn-primary btn-block" type="submit">Create account</button>
         </form>
       </div>
 
       <button class="try-row" id="try-open" type="button" aria-controls="try-free" aria-expanded="false">
-        <span class="try-row-ic" aria-hidden="true"><svg class="ic"><use href="#i-mic"/></svg></span>
+        <span class="try-row-ic" aria-hidden="true"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg></span>
         <span class="try-row-text"><b>Just trying it out?</b><small>Hum 30 seconds — no account needed</small></span>
-        <svg class="ic try-row-chev"><use href="#i-chev"/></svg>
+        <svg class="ic try-row-chev"><use href="/assets/icons.svg#i-chev"/></svg>
       </button>
     <div class="card try-free hidden" id="try-free">
-      <h2><svg class="ic"><use href="#i-sparkle"/></svg>Or try it first — free, no account</h2>
+      <h2><svg class="ic"><use href="/assets/icons.svg#i-sparkle"/></svg>Or try it first — free, no account</h2>
       <p class="card-lead">A 30-second preview of a tune you hum right now, or a recording you have.</p>
       <div class="row">
-        <button class="btn btn-primary btn-rec" id="try-record" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record a tune</button>
-        <label class="btn btn-ghost try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*"><svg class="ic"><use href="#i-upload"/></svg>Upload a recording</label>
+        <button class="btn btn-primary btn-rec" id="try-record" type="button"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Record a tune</button>
+        <label class="btn btn-ghost try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*"><svg class="ic"><use href="/assets/icons.svg#i-upload"/></svg>Upload a recording</label>
       </div>
       <label class="try-meter small" for="try-meter">Beats in a bar <select id="try-meter" data-meter></select></label>
       <details class="link-more">
         <summary>Or paste a song link</summary>
         <form id="try-form" class="link-form" novalidate>
           <label class="sr-only" for="try-url">Song link</label>
-          <span class="input-wrap"><svg class="ic"><use href="#i-link"/></svg><input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false"></span>
+          <span class="input-wrap"><svg class="ic"><use href="/assets/icons.svg#i-link"/></svg><input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false"></span>
           <button class="btn btn-primary" id="try-submit" type="submit">Preview</button>
         </form>
-        <button class="btn btn-ghost btn-sm" id="try-paste" type="button" hidden><svg class="ic"><use href="#i-paste"/></svg>Paste a link</button>
+        <button class="btn btn-ghost btn-sm" id="try-paste" type="button" hidden><svg class="ic"><use href="/assets/icons.svg#i-paste"/></svg>Paste a link</button>
         <p class="small muted link-note">Links work for many songs, not all — YouTube sometimes blocks our downloads. If yours fails, upload the audio file instead.</p>
       </details>
       <div id="try-section"></div>
@@ -302,42 +251,42 @@
   <!-- ── Upgrade: the plans, in a dialog ───────────────────────────── -->
   <div class="modal hidden" id="upgrade-panel" role="dialog" aria-modal="true" aria-labelledby="upgrade-title">
     <div class="modal-card">
-      <button class="modal-close btn btn-ghost btn-icon" id="upgrade-close" type="button" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+      <button class="modal-close btn btn-ghost btn-icon" id="upgrade-close" type="button" aria-label="Close"><svg class="ic"><use href="/assets/icons.svg#i-x"/></svg></button>
       <div class="pay-head">
-        <span class="pay-badge" aria-hidden="true"><svg class="ic"><use href="#i-crown"/></svg></span>
+        <span class="pay-badge" aria-hidden="true"><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg></span>
         <h2 id="upgrade-title"><span id="upgrade-title-text">Do more with NoteFusion</span></h2>
       </div>
       <div id="upgrade-free">
         <p class="pay-lead">Whole songs, four-part harmony and every download, for the choir that rehearses every week.</p>
         <ul class="pay-perks">
-          <li><svg class="ic"><use href="#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Alto, tenor and bass, when you ask</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>PDF, MusicXML and MIDI, no watermark</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Sing a take, every note marked</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Alto, tenor and bass, when you ask</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>PDF, MusicXML and MIDI, no watermark</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Sing a take, every note marked</li>
         </ul>
         <div class="plans" id="plans-standalone"></div>
       </div>
       <!-- A member sees their membership here, never a price: there is nothing to buy. -->
       <div id="upgrade-pro" class="membership hidden">
         <div class="membership-head">
-          <span class="crown" aria-hidden="true"><svg class="ic"><use href="#i-crown"/></svg></span>
+          <span class="crown" aria-hidden="true"><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg></span>
           <div><strong id="upgrade-pro-plan">NoteFusion Pro</strong><span id="upgrade-pro-period"></span></div>
         </div>
         <p class="card-lead" style="margin:0">Thank you for supporting NoteFusion. Everything Pro includes is yours:</p>
         <ul class="perks" style="margin:0">
-          <li><svg class="ic"><use href="#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Alto, tenor and bass written under any tune, when you ask</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>PDF, MusicXML and MIDI downloads, no watermark</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Sing a take and have every note marked</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>The priority lane: never queued behind anyone</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Alto, tenor and bass written under any tune, when you ask</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>PDF, MusicXML and MIDI downloads, no watermark</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Sing a take and have every note marked</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>The priority lane: never queued behind anyone</li>
         </ul>
         <dl class="acct-rows">
-          <div><dt><svg class="ic"><use href="#i-clock"/></svg>This month</dt><dd id="upgrade-pro-credits">—</dd></div>
+          <div><dt><svg class="ic"><use href="/assets/icons.svg#i-clock"/></svg>This month</dt><dd id="upgrade-pro-credits">—</dd></div>
         </dl>
         <p class="muted small" style="margin:0">Each payment covers one period and nothing renews without you. Add more time whenever you like; it starts when your current time ends. Receipts come by email.</p>
         <div class="pay-actions">
-          <button class="btn btn-primary" id="upgrade-extend" type="button"><svg class="ic"><use href="#i-plus"/></svg>Add more Pro time</button>
-          <button class="btn btn-ghost" id="upgrade-account" type="button"><svg class="ic"><use href="#i-user"/></svg>Account settings</button>
+          <button class="btn btn-primary" id="upgrade-extend" type="button"><svg class="ic"><use href="/assets/icons.svg#i-plus"/></svg>Add more Pro time</button>
+          <button class="btn btn-ghost" id="upgrade-account" type="button"><svg class="ic"><use href="/assets/icons.svg#i-user"/></svg>Account settings</button>
         </div>
         <div class="plans hidden" id="plans-extend"></div>
       </div>
@@ -346,23 +295,23 @@
 
   <!-- ── Back from checkout: the payment confirming, while the app stays usable ── -->
   <div class="pay-toast hidden" id="pay-toast" role="status" aria-live="polite">
-    <span class="pay-toast-mark" aria-hidden="true"><span class="pay-spin"></span><svg class="ic"><use href="#i-clock"/></svg></span>
+    <span class="pay-toast-mark" aria-hidden="true"><span class="pay-spin"></span><svg class="ic"><use href="/assets/icons.svg#i-clock"/></svg></span>
     <span class="pay-toast-text"><strong id="pay-toast-title">Confirming your payment…</strong><span id="pay-toast-sub">This usually takes a few seconds.</span></span>
-    <button class="btn btn-ghost btn-icon pay-toast-close" id="pay-toast-close" type="button" aria-label="Hide this note"><svg class="ic"><use href="#i-x"/></svg></button>
+    <button class="btn btn-ghost btn-icon pay-toast-close" id="pay-toast-close" type="button" aria-label="Hide this note"><svg class="ic"><use href="/assets/icons.svg#i-x"/></svg></button>
   </div>
 
   <!-- ── The payment landed: welcome to Pro ──────────────────────────── -->
   <div class="modal pro-welcome hidden" id="pro-welcome" role="dialog" aria-modal="true" aria-labelledby="pro-welcome-title" aria-describedby="pro-welcome-plan">
     <div class="modal-card pro-welcome-card">
-      <span class="pro-welcome-mark" aria-hidden="true"><svg class="ic"><use href="#i-crown"/></svg></span>
+      <span class="pro-welcome-mark" aria-hidden="true"><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg></span>
       <h2 id="pro-welcome-title">Welcome to NoteFusion Pro</h2>
       <p class="pro-welcome-plan" id="pro-welcome-plan"></p>
       <ul class="perks pro-welcome-perks" id="pro-welcome-perks">
-        <li><svg class="ic"><use href="#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
-        <li><svg class="ic"><use href="#i-check"/></svg>Alto, tenor and bass written under any tune, when you ask</li>
-        <li><svg class="ic"><use href="#i-check"/></svg>PDF, MusicXML and MIDI downloads, no watermark</li>
-        <li><svg class="ic"><use href="#i-check"/></svg>Sing a take and have every note marked</li>
-        <li><svg class="ic"><use href="#i-check"/></svg>The priority lane: never queued behind anyone</li>
+        <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
+        <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Alto, tenor and bass written under any tune, when you ask</li>
+        <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>PDF, MusicXML and MIDI downloads, no watermark</li>
+        <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Sing a take and have every note marked</li>
+        <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>The priority lane: never queued behind anyone</li>
       </ul>
       <button class="btn btn-pro btn-pill" id="pro-welcome-go" type="button">Start using Pro</button>
     </div>
@@ -387,14 +336,14 @@
 
     <div class="studio" id="studio">
       <div class="source-tabs" role="tablist" aria-label="Where is the music?">
-        <button class="source-tab" type="button" role="tab" id="src-tab-record" data-source="record" aria-controls="src-record" aria-selected="true"><svg class="ic"><use href="#i-mic"/></svg>Record</button>
-        <button class="source-tab" type="button" role="tab" id="src-tab-upload" data-source="upload" aria-controls="src-upload" aria-selected="false" tabindex="-1"><svg class="ic"><use href="#i-upload"/></svg>Upload</button>
-        <button class="source-tab" type="button" role="tab" id="src-tab-link" data-source="link" aria-controls="src-link" aria-selected="false" tabindex="-1"><svg class="ic"><use href="#i-link"/></svg>Song link</button>
+        <button class="source-tab" type="button" role="tab" id="src-tab-record" data-source="record" aria-controls="src-record" aria-selected="true"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Record</button>
+        <button class="source-tab" type="button" role="tab" id="src-tab-upload" data-source="upload" aria-controls="src-upload" aria-selected="false" tabindex="-1"><svg class="ic"><use href="/assets/icons.svg#i-upload"/></svg>Upload</button>
+        <button class="source-tab" type="button" role="tab" id="src-tab-link" data-source="link" aria-controls="src-link" aria-selected="false" tabindex="-1"><svg class="ic"><use href="/assets/icons.svg#i-link"/></svg>Song link</button>
       </div>
 
       <div class="source-panel" id="src-record" role="tabpanel" aria-labelledby="src-tab-record">
         <div class="studio-rec-stage">
-          <button class="btn btn-rec studio-rec" id="rec-btn" type="button" aria-label="Record a tune"><svg class="ic"><use href="#i-mic"/></svg></button>
+          <button class="btn btn-rec studio-rec" id="rec-btn" type="button" aria-label="Record a tune"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg></button>
           <span class="studio-rec-label">Tap to record</span>
           <span class="studio-rec-hint">Hum, sing or play — then stop</span>
           <p id="rec-status" class="small studio-status" aria-live="polite"></p>
@@ -404,7 +353,7 @@
       <div class="source-panel" id="src-upload" role="tabpanel" aria-labelledby="src-tab-upload" hidden>
       <label class="drop" id="drop">
         <input id="file-input" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,.mp4,audio/*">
-        <svg class="ic drop-ic"><use href="#i-upload"/></svg>
+        <svg class="ic drop-ic"><use href="/assets/icons.svg#i-upload"/></svg>
         <span class="btn btn-light">Upload your audio</span>
         <span class="drop-hint" title="MP3, WAV, M4A, FLAC, OGG or WebM, up to 25 MB">or drop it here · up to 25 MB</span>
       </label>
@@ -412,10 +361,10 @@
 
       <div id="kind-block">
       <div class="upload-kind studio-kind" role="radiogroup" aria-label="What is in the recording?">
-        <label><input type="radio" name="upload-kind" value="hum"><svg class="ic"><use href="#i-mic"/></svg>Just a voice</label>
-        <label><input type="radio" name="upload-kind" value="song" checked><svg class="ic"><use href="#i-music"/></svg>Voice with instruments</label>
-        <label title="A choir singing in parts: soprano, alto, tenor and bass come back as they were sung"><input type="radio" name="upload-kind" value="choir"><svg class="ic"><use href="#i-choir"/></svg>A choir in parts</label>
-        <label title="Piano or guitar: the chords as they were played, with the top line as the tune"><input type="radio" name="upload-kind" value="chords"><svg class="ic"><use href="#i-keys"/></svg>Chords (piano, guitar)</label>
+        <label><input type="radio" name="upload-kind" value="hum"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Just a voice</label>
+        <label><input type="radio" name="upload-kind" value="song" checked><svg class="ic"><use href="/assets/icons.svg#i-music"/></svg>Voice with instruments</label>
+        <label title="A choir singing in parts: soprano, alto, tenor and bass come back as they were sung"><input type="radio" name="upload-kind" value="choir"><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg>A choir in parts</label>
+        <label title="Piano or guitar: the chords as they were played, with the top line as the tune"><input type="radio" name="upload-kind" value="chords"><svg class="ic"><use href="/assets/icons.svg#i-keys"/></svg>Chords (piano, guitar)</label>
       </div>
       <div class="studio-opts">
         <label class="studio-opt hidden" id="choir-band-row"><input type="checkbox" id="choir-band"> Instruments are playing too</label>
@@ -431,11 +380,11 @@
           <span class="provider-marks" aria-hidden="true"><svg class="ic"><use href="#p-youtube"/></svg><svg class="ic"><use href="#p-spotify"/></svg><svg class="ic"><use href="#p-apple"/></svg></span>
           <input id="link-url" type="url" placeholder="YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false" required>
         </span>
-        <button class="btn btn-glass" id="link-paste" type="button" hidden><svg class="ic"><use href="#i-paste"/></svg>Paste</button>
+        <button class="btn btn-glass" id="link-paste" type="button" hidden><svg class="ic"><use href="/assets/icons.svg#i-paste"/></svg>Paste</button>
         <button class="btn btn-light" id="link-submit" type="submit">Transcribe</button>
       </form>
       <p class="small studio-status link-hint" id="link-hint" aria-live="polite"></p>
-      <p class="link-upload-row hidden" id="link-upload-row"><button class="btn-link" id="link-upload" type="button"><svg class="ic"><use href="#i-upload"/></svg>Switch to Upload</button></p>
+      <p class="link-upload-row hidden" id="link-upload-row"><button class="btn-link" id="link-upload" type="button"><svg class="ic"><use href="/assets/icons.svg#i-upload"/></svg>Switch to Upload</button></p>
       <div id="link-section"></div>
       </div>
       <!-- Beats in a bar, on every tab: the worker cannot hear the meter yet, so a 3/4 hymn came back in 4/4. -->
@@ -445,7 +394,7 @@
       </div>
       <!-- What the next transcription costs, only when it costs something; the why behind (i). -->
       <div class="studio-cost hidden" id="studio-cost">
-        <span class="cost-line"><span class="cost-chip" id="cost-chip"></span><button class="cost-info" id="cost-info" type="button" aria-expanded="false" aria-controls="cost-pop" aria-label="How this is counted"><svg class="ic"><use href="#i-info"/></svg></button></span>
+        <span class="cost-line"><span class="cost-chip" id="cost-chip"></span><button class="cost-info" id="cost-info" type="button" aria-expanded="false" aria-controls="cost-pop" aria-label="How this is counted"><svg class="ic"><use href="/assets/icons.svg#i-info"/></svg></button></span>
         <div class="cost-pop" id="cost-pop" role="note" hidden></div>
       </div>
     </div>
@@ -488,7 +437,7 @@
     <!-- ── The sheet: one screen — the music, one row of actions, the rest in pop-ups ── -->
     <div class="card hidden" id="result">
       <div class="result-top">
-        <button class="btn btn-ghost btn-sm r-new" id="r-new" type="button"><svg class="ic"><use href="#i-back"/></svg>New transcription</button>
+        <button class="btn btn-ghost btn-sm r-new" id="r-new" type="button"><svg class="ic"><use href="/assets/icons.svg#i-back"/></svg>New transcription</button>
       </div>
       <div class="result-head">
         <div class="song">
@@ -506,7 +455,7 @@
             <button class="tab" role="tab" aria-selected="false" data-view="solfa" type="button">Tonic Solfa</button>
             <button class="tab hidden" role="tab" aria-selected="false" data-view="parts" type="button" id="tab-parts">Four parts</button>
           </div>
-          <button class="btn btn-ghost btn-icon" id="r-expand" type="button" aria-label="Show the sheet full screen" aria-pressed="false" title="Full screen"><svg class="ic"><use href="#i-expand"/></svg></button>
+          <button class="btn btn-ghost btn-icon" id="r-expand" type="button" aria-label="Show the sheet full screen" aria-pressed="false" title="Full screen"><svg class="ic"><use href="/assets/icons.svg#i-expand"/></svg></button>
         </div>
       </div>
       <div id="r-truncated" class="alert alert-info hidden"></div>
@@ -516,7 +465,7 @@
 
       <!-- The music, in a frame of its own: a long song scrolls inside it, never the whole page. -->
       <div class="sheet-stage" id="sheet-stage">
-        <button class="btn btn-ghost btn-sm sheet-stage-close" id="r-collapse" type="button"><svg class="ic"><use href="#i-x"/></svg>Close full screen</button>
+        <button class="btn btn-ghost btn-sm sheet-stage-close" id="r-collapse" type="button"><svg class="ic"><use href="/assets/icons.svg#i-x"/></svg>Close full screen</button>
         <div id="r-staff">
           <div class="sheet-wrap">
             <div class="skel skel-staff hidden" id="sheet-skel" aria-hidden="true"></div>
@@ -543,21 +492,21 @@
 
       <!-- Everything you can do with the sheet, one row; each opens in a pop-up. -->
       <div class="result-actions" role="toolbar" aria-label="What to do with this sheet">
-        <button class="btn btn-primary" id="play" type="button"><svg class="ic"><use href="#i-play"/></svg>Play</button>
-        <button class="act" type="button" data-tool="practice"><svg class="ic"><use href="#i-choir"/></svg><span>Learn my part</span></button>
-        <button class="act" type="button" data-tool="rehearse"><svg class="ic"><use href="#i-restart"/></svg><span>Rehearse</span></button>
-        <button class="act" type="button" data-tool="save-section"><svg class="ic"><use href="#i-save"/></svg><span>Save &amp; share</span></button>
-        <button class="act" type="button" data-tool="downloads-section"><svg class="ic"><use href="#i-download"/></svg><span>Download</span></button>
-        <button class="act" type="button" data-tool="transpose-section"><svg class="ic"><use href="#i-shift"/></svg><span>Transpose</span></button>
-        <button class="act" type="button" data-tool="lyrics-section"><svg class="ic"><use href="#i-text"/></svg><span>Lyrics</span></button>
-        <button class="act" type="button" data-tool="chords-card"><svg class="ic"><use href="#i-keys"/></svg><span>Chords</span></button>
-        <button class="act act-pro" type="button" data-tool="harmony" data-pro="1"><svg class="ic"><use href="#i-choir"/></svg><span>Four parts</span><svg class="ic act-lock" aria-hidden="true"><use href="#i-lock"/></svg></button>
-        <button class="act act-pro" type="button" data-tool="sing" data-pro="1"><svg class="ic"><use href="#i-sing"/></svg><span>Sing it</span><svg class="ic act-lock" aria-hidden="true"><use href="#i-lock"/></svg></button>
+        <button class="btn btn-primary" id="play" type="button"><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
+        <button class="act" type="button" data-tool="practice"><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg><span>Learn my part</span></button>
+        <button class="act" type="button" data-tool="rehearse"><svg class="ic"><use href="/assets/icons.svg#i-restart"/></svg><span>Rehearse</span></button>
+        <button class="act" type="button" data-tool="save-section"><svg class="ic"><use href="/assets/icons.svg#i-save"/></svg><span>Save &amp; share</span></button>
+        <button class="act" type="button" data-tool="downloads-section"><svg class="ic"><use href="/assets/icons.svg#i-download"/></svg><span>Download</span></button>
+        <button class="act" type="button" data-tool="transpose-section"><svg class="ic"><use href="/assets/icons.svg#i-shift"/></svg><span>Transpose</span></button>
+        <button class="act" type="button" data-tool="lyrics-section"><svg class="ic"><use href="/assets/icons.svg#i-text"/></svg><span>Lyrics</span></button>
+        <button class="act" type="button" data-tool="chords-card"><svg class="ic"><use href="/assets/icons.svg#i-keys"/></svg><span>Chords</span></button>
+        <button class="act act-pro" type="button" data-tool="harmony" data-pro="1"><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg><span>Four parts</span><svg class="ic act-lock" aria-hidden="true"><use href="/assets/icons.svg#i-lock"/></svg></button>
+        <button class="act act-pro" type="button" data-tool="sing" data-pro="1"><svg class="ic"><use href="/assets/icons.svg#i-sing"/></svg><span>Sing it</span><svg class="ic act-lock" aria-hidden="true"><use href="/assets/icons.svg#i-lock"/></svg></button>
       </div>
 
       <!-- ── Guest: what an account unlocks ───────────────────────────── -->
       <div class="section guest-cta hidden" id="guest-cta">
-        <h2><svg class="ic"><use href="#i-save"/></svg>Keep this sheet</h2>
+        <h2><svg class="ic"><use href="/assets/icons.svg#i-save"/></svg>Keep this sheet</h2>
         <p class="card-lead">Create a free account to save it to your library, share a link your choir can open, hear the whole song, and have alto, tenor and bass written under the tune.</p>
         <div class="player">
           <button class="btn btn-primary" id="guest-cta-signup" type="button">Create a free account</button>
@@ -592,8 +541,8 @@
 
       <!-- ── Pro: what it gives, in plain words, and a look at it through frosted glass ── -->
       <div class="unlock hidden" id="r-upgrade">
-        <div class="unlock-rest hidden" id="r-unlock-rest" aria-hidden="true"><span class="unlock-lock"><svg class="ic"><use href="#i-lock"/></svg><span id="r-unlock-left"></span></span></div>
-        <h2><svg class="ic"><use href="#i-crown"/></svg><span id="r-unlock-title">Take this sheet to your choir</span></h2>
+        <div class="unlock-rest hidden" id="r-unlock-rest" aria-hidden="true"><span class="unlock-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg><span id="r-unlock-left"></span></span></div>
+        <h2><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg><span id="r-unlock-title">Take this sheet to your choir</span></h2>
         <p class="unlock-lead" id="r-unlock-lead">Pro adds the alto, tenor and bass under the tune, the PDF, MusicXML and MIDI with no watermark, and whole songs up to six minutes.</p>
 
         <div class="pro-previews" role="list" aria-label="What Pro unlocks">
@@ -604,25 +553,25 @@
               <span><em>T</em>m : f | s : l | d' : – | s : m</span>
               <span><em>B</em>d, : s, | d : f, | d : – | d : d,</span>
             </span>
-            <span class="pro-lock"><svg class="ic"><use href="#i-lock"/></svg>Pro</span>
+            <span class="pro-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Pro</span>
             <strong>Alto, tenor &amp; bass</strong>
             <small>All four parts written under your tune, ready for the choir</small>
           </button>
           <button class="pro-tile" type="button" role="listitem" data-upgrade="sing">
             <span class="pro-glass pro-marks" aria-hidden="true"><i class="hit">d</i><i class="hit">r</i><i class="near">m</i><i class="hit">f</i><i class="wrong">s</i><i class="hit">l</i><i class="near">t</i><i class="hit">d'</i></span>
-            <span class="pro-lock"><svg class="ic"><use href="#i-lock"/></svg>Pro</span>
+            <span class="pro-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Pro</span>
             <strong>Sing it, get marked</strong>
             <small>Sing your part and see every note: in tune, close or off</small>
           </button>
           <button class="pro-tile" type="button" role="listitem" data-upgrade="downloads">
             <span class="pro-glass pro-pdf" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><b>PDF</b></span>
-            <span class="pro-lock"><svg class="ic"><use href="#i-lock"/></svg>Pro</span>
+            <span class="pro-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Pro</span>
             <strong>PDF, MusicXML &amp; MIDI</strong>
             <small>Print it, open it in MuseScore or Sibelius — no watermark</small>
           </button>
           <button class="pro-tile" type="button" role="listitem" data-upgrade="whole">
             <span class="pro-glass pro-long" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="pro-lock"><svg class="ic"><use href="#i-lock"/></svg>Pro</span>
+            <span class="pro-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Pro</span>
             <strong>The whole song</strong>
             <small>Up to six minutes, twenty songs a month — not just the first minute</small>
           </button>
@@ -630,12 +579,12 @@
 
         <p class="pro-plus"><strong>Everything in Free, plus:</strong></p>
         <ul class="pay-perks">
-          <li><svg class="ic"><use href="#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Alto, tenor and bass written under any tune</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Sing your part and have every note marked</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>PDF, MusicXML and MIDI, no watermark</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>The priority lane: never wait in the queue</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>One payment per period — nothing renews without you</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Alto, tenor and bass written under any tune</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Sing your part and have every note marked</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>PDF, MusicXML and MIDI, no watermark</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>The priority lane: never wait in the queue</li>
+          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>One payment per period — nothing renews without you</li>
         </ul>
         <div class="plans" id="plans"></div>
       </div>
@@ -643,16 +592,16 @@
       <!-- The tools themselves. They live here, out of sight, and open one at a time in the pop-up below. -->
       <div class="tool-dock" id="tool-dock" hidden>
       <div class="section hidden" id="chords-card">
-        <h2><svg class="ic"><use href="#i-keys"/></svg>Chords <span class="pill pill-free hidden" id="chords-heard">Heard in the recording</span></h2>
+        <h2><svg class="ic"><use href="/assets/icons.svg#i-keys"/></svg>Chords <span class="pill pill-free hidden" id="chords-heard">Heard in the recording</span></h2>
         <p class="card-lead">Each chord by its letter name, with its root in Tonic Solfa beneath. The Tonic Solfa tab shows them bar by bar over the tune, and the staff shows them above the notes.</p>
         <div class="chord-list" id="chord-list"></div>
       </div>
 
       <div class="section" id="rehearse">
-        <h2><svg class="ic"><use href="#i-play"/></svg>Rehearse</h2>
+        <h2><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Rehearse</h2>
         <p class="card-lead">Hear the tune — or, with the parts, mute your own voice and sing it against the others. Loop a few bars and slow it down. Play is on the sheet, under the music.</p>
         <div class="player" id="player">
-          <button class="btn btn-ghost btn-icon" id="restart" type="button" title="From the start" aria-label="From the start"><svg class="ic"><use href="#i-restart"/></svg></button>
+          <button class="btn btn-ghost btn-icon" id="restart" type="button" title="From the start" aria-label="From the start"><svg class="ic"><use href="/assets/icons.svg#i-restart"/></svg></button>
           <span class="group"><label for="rate">Speed</label>
             <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></span>
           <span class="group"><label><input type="checkbox" id="loop-on"> Loop bars</label>
@@ -664,7 +613,7 @@
 
       <!-- Learn my part: your part loud and the others soft, a few bars looped and slowed, then sung back and marked. -->
       <div class="section hidden" id="practice">
-        <h2><svg class="ic"><use href="#i-choir"/></svg>Learn my part</h2>
+        <h2><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg>Learn my part</h2>
         <div class="pr-row" role="group" aria-label="My part"><span class="pr-label">My part</span><div class="pr-seg" id="pr-parts"></div></div>
         <div class="pr-row" role="group" aria-label="What you hear">
           <span class="pr-label">Hear</span>
@@ -690,35 +639,35 @@
         <p class="small muted pr-hint" id="pr-hint">Tap a bar, then another, to loop the bars between them.</p>
         <div class="pr-bars" id="pr-bars" role="group" aria-label="Bars of your part"></div>
         <div class="pr-transport">
-          <button class="btn btn-primary" id="pr-play" type="button"><svg class="ic"><use href="#i-play"/></svg>Play</button>
-          <button class="btn btn-ghost" id="pr-sing" type="button"><svg class="ic"><use href="#i-mic"/></svg>Sing it back<svg class="ic act-lock hidden" id="pr-sing-lock" aria-hidden="true"><use href="#i-lock"/></svg></button>
-          <button class="btn btn-ghost hidden" id="pr-stop" type="button"><svg class="ic"><use href="#i-stop"/></svg>Stop</button>
+          <button class="btn btn-primary" id="pr-play" type="button"><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
+          <button class="btn btn-ghost" id="pr-sing" type="button"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Sing it back<svg class="ic act-lock hidden" id="pr-sing-lock" aria-hidden="true"><use href="/assets/icons.svg#i-lock"/></svg></button>
+          <button class="btn btn-ghost hidden" id="pr-stop" type="button"><svg class="ic"><use href="/assets/icons.svg#i-stop"/></svg>Stop</button>
         </div>
         <div id="pr-live" class="sing-live hidden" aria-live="polite"></div>
         <p class="small muted" id="pr-status" aria-live="polite"></p>
         <div class="pr-result hidden" id="pr-result">
           <div class="sing-score"><strong id="pr-score"></strong><span id="pr-summary"></span></div>
           <p class="muted small" style="margin:6px 0 0">Marked on your part above: green in tune · amber close · red wrong note · grey not sung.</p>
-          <button class="btn btn-primary btn-sm" id="pr-again" type="button"><svg class="ic"><use href="#i-restart"/></svg>Try again</button>
+          <button class="btn btn-primary btn-sm" id="pr-again" type="button"><svg class="ic"><use href="/assets/icons.svg#i-restart"/></svg>Try again</button>
         </div>
         <p class="small muted pr-foot">You hear the starting note and a bar of clicks, then sing the bars on your own — the others drop out so only your voice is marked. Headphones are not needed.</p>
       </div>
 
       <div class="section" id="harmony">
-        <h2><svg class="ic"><use href="#i-choir"/></svg>Four-part harmony <span class="pill pill-pro gate">Pro</span></h2>
+        <h2><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg>Four-part harmony <span class="pill pill-pro gate">Pro</span></h2>
         <p class="card-lead">The sheet shows the voice we heard. When you want a choir arrangement, alto, tenor and bass are written under it the way a hymn arranger would.</p>
-        <button class="btn btn-primary" id="harmony-add" type="button"><svg class="ic"><use href="#i-plus"/></svg>Write the four parts</button>
+        <button class="btn btn-primary" id="harmony-add" type="button"><svg class="ic"><use href="/assets/icons.svg#i-plus"/></svg>Write the four parts</button>
         <p class="small muted hidden" id="harmony-free-note">Free accounts can try this once. Pro writes parts for every sheet.</p>
         <div id="harmony-alert" class="alert hidden" role="status"></div>
       </div>
 
       <div class="section" id="sing">
-        <h2><svg class="ic"><use href="#i-sing"/></svg>Sing it <span class="pill pill-pro gate">Pro</span></h2>
+        <h2><svg class="ic"><use href="/assets/icons.svg#i-sing"/></svg>Sing it <span class="pill pill-pro gate">Pro</span></h2>
         <p class="card-lead">Pick your voice, hear the starting note and a count-in, then sing into your microphone. Every note comes back marked: in tune, close, or off. Headphones help; nothing is stored.</p>
         <div class="player">
           <span class="group" id="sing-voices"><label>Voice</label></span>
-          <button class="btn btn-primary btn-sm" id="sing-start" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record my take</button>
-          <button class="btn btn-ghost btn-sm hidden" id="sing-stop" type="button"><svg class="ic"><use href="#i-stop"/></svg>Stop</button>
+          <button class="btn btn-primary btn-sm" id="sing-start" type="button"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Record my take</button>
+          <button class="btn btn-ghost btn-sm hidden" id="sing-stop" type="button"><svg class="ic"><use href="/assets/icons.svg#i-stop"/></svg>Stop</button>
           <span id="sing-status" class="small muted"></span>
         </div>
         <div id="sing-live" class="sing-live hidden"></div>
@@ -730,28 +679,28 @@
       </div>
 
       <div class="section" id="lyrics-section">
-        <h2><svg class="ic"><use href="#i-text"/></svg>Lyrics</h2>
+        <h2><svg class="ic"><use href="/assets/icons.svg#i-text"/></svg>Lyrics</h2>
         <textarea id="lyrics" rows="5" placeholder="A-ma-zing grace, how sweet the sound…"></textarea>
         <p class="muted small" style="margin:8px 0 0">Split syllables with hyphens (a-ma-zing); each goes under the next note. Use grace_ to hold a syllable over two notes. The Tonic Solfa tab shows the hymn-book layout.</p>
       </div>
 
       <div class="section" id="transpose-section">
-        <h2><svg class="ic"><use href="#i-shift"/></svg>Transpose for my choir</h2>
+        <h2><svg class="ic"><use href="/assets/icons.svg#i-shift"/></svg>Transpose for my choir</h2>
         <p class="card-lead">Moves every note so the parts sit in your singers' range. The solfa reads exactly as before — only Doh moves.</p>
         <div class="player">
-          <button class="btn btn-ghost btn-icon" id="tr-down" type="button" aria-label="A semitone lower"><svg class="ic"><use href="#i-minus"/></svg></button>
+          <button class="btn btn-ghost btn-icon" id="tr-down" type="button" aria-label="A semitone lower"><svg class="ic"><use href="/assets/icons.svg#i-minus"/></svg></button>
           <span class="tr-readout"><strong id="tr-value">0</strong> <span class="muted small" id="tr-key"></span></span>
-          <button class="btn btn-ghost btn-icon" id="tr-up" type="button" aria-label="A semitone higher"><svg class="ic"><use href="#i-plus"/></svg></button>
+          <button class="btn btn-ghost btn-icon" id="tr-up" type="button" aria-label="A semitone higher"><svg class="ic"><use href="/assets/icons.svg#i-plus"/></svg></button>
           <button class="btn btn-primary btn-sm" id="tr-apply" type="button" disabled>Transpose</button>
         </div>
         <table class="ranges" id="ranges"></table>
       </div>
 
       <div class="section" id="save-section">
-        <h2><svg class="ic"><use href="#i-share"/></svg>Save &amp; share</h2>
+        <h2><svg class="ic"><use href="/assets/icons.svg#i-share"/></svg>Save &amp; share</h2>
         <div id="save-form" class="link-form">
           <input id="save-title" type="text" placeholder="Name this sheet" maxlength="120" aria-label="Sheet title">
-          <button class="btn btn-primary" id="save" type="button"><svg class="ic"><use href="#i-save"/></svg>Save to my library</button>
+          <button class="btn btn-primary" id="save" type="button"><svg class="ic"><use href="/assets/icons.svg#i-save"/></svg>Save to my library</button>
         </div>
         <div id="saved" class="hidden">
           <div class="alert alert-info hidden" id="app-banner">
@@ -763,7 +712,7 @@
           </div>
           <p class="small" style="margin:0 0 10px"><span class="pill pill-free">Saved</span> <strong id="saved-title"></strong></p>
           <div class="player">
-            <button class="btn btn-primary btn-sm" id="share" type="button"><svg class="ic"><use href="#i-share"/></svg>Share a link</button>
+            <button class="btn btn-primary btn-sm" id="share" type="button"><svg class="ic"><use href="/assets/icons.svg#i-share"/></svg>Share a link</button>
             <span id="share-row" class="share-row hidden">
               <input id="share-url" type="text" readonly aria-label="Share link">
               <button class="btn btn-ghost btn-sm" id="share-copy" type="button">Copy</button>
@@ -775,10 +724,10 @@
       </div>
 
       <div class="section" id="downloads-section">
-        <h2><svg class="ic"><use href="#i-download"/></svg>Download</h2>
+        <h2><svg class="ic"><use href="/assets/icons.svg#i-download"/></svg>Download</h2>
         <p class="card-lead dl-pro-note" id="dl-pro-note">Your PDF is free, with a NoteFusion mark, and so is the solfa text. Pro removes the mark and adds MusicXML and MIDI, ready to open in MuseScore or Sibelius.</p>
         <div class="downloads">
-          <button class="btn btn-primary" id="dl-pdf" type="button"><svg class="ic"><use href="#i-download"/></svg>Download PDF</button>
+          <button class="btn btn-primary" id="dl-pdf" type="button"><svg class="ic"><use href="/assets/icons.svg#i-download"/></svg>Download PDF</button>
           <button class="btn btn-ghost" id="dl-xml" type="button">MusicXML</button>
           <button class="btn btn-ghost" id="dl-midi" type="button">MIDI</button>
           <button class="btn btn-ghost" id="dl-solfa" type="button">Solfa text</button>
@@ -791,13 +740,13 @@
     <!-- ── One tool at a time: a sheet that rises from the bottom on a phone, a dialog on a desk ── -->
     <div class="modal tool-modal hidden" id="tool-modal" role="dialog" aria-modal="true" aria-label="Tool">
       <div class="modal-card tool-card">
-        <button class="modal-close btn btn-ghost btn-icon" id="tool-close" type="button" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+        <button class="modal-close btn btn-ghost btn-icon" id="tool-close" type="button" aria-label="Close"><svg class="ic"><use href="/assets/icons.svg#i-x"/></svg></button>
         <div class="tool-body" id="tool-body"></div>
         <div class="tool-lock hidden" id="tool-lock">
-          <span class="pay-badge" aria-hidden="true"><svg class="ic"><use href="#i-crown"/></svg></span>
+          <span class="pay-badge" aria-hidden="true"><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg></span>
           <strong id="tool-lock-title">A Pro feature</strong>
           <span id="tool-lock-text">Unlock it with NoteFusion Pro.</span>
-          <button class="btn btn-pro" id="tool-unlock" type="button"><svg class="ic"><use href="#i-crown"/></svg>See what Pro gives you</button>
+          <button class="btn btn-pro" id="tool-unlock" type="button"><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg>See what Pro gives you</button>
         </div>
       </div>
     </div>
@@ -810,14 +759,14 @@
         <p>Every sheet you saved, from the web or the app. Open one to rehearse, transpose, add lyrics or share it.</p>
       </div>
       <div class="card">
-        <div class="input-wrap lib-search"><svg class="ic"><use href="#i-search"/></svg><input id="lib-search" type="text" placeholder="Search your transcriptions" autocomplete="off" aria-label="Search your transcriptions"></div>
+        <div class="input-wrap lib-search"><svg class="ic"><use href="/assets/icons.svg#i-search"/></svg><input id="lib-search" type="text" placeholder="Search your transcriptions" autocomplete="off" aria-label="Search your transcriptions"></div>
         <div class="lib-folders hidden" id="lib-folders" role="tablist" aria-label="Folders" data-track-items="Folder chip"></div>
         <div class="lib-folder-bar hidden" id="lib-folder-bar">
           <div class="lib-folder-head">
             <strong id="lib-folder-name"></strong>
             <span class="lib-folder-actions">
               <button class="btn btn-ghost btn-sm" id="lib-folder-rename" type="button">Rename</button>
-              <button class="btn btn-primary btn-sm" id="lib-folder-share" type="button"><svg class="ic"><use href="#i-share"/></svg>Share the folder</button>
+              <button class="btn btn-primary btn-sm" id="lib-folder-share" type="button"><svg class="ic"><use href="/assets/icons.svg#i-share"/></svg>Share the folder</button>
             </span>
           </div>
           <div class="share-row hidden" id="lib-folder-share-row">
@@ -830,14 +779,14 @@
         <div id="lib-skel"><div class="lib-list"><div class="skel skel-plan"></div><div class="skel skel-plan"></div><div class="skel skel-plan"></div></div></div>
         <div class="lib-list hidden" id="lib-list"></div>
         <div class="empty hidden" id="lib-empty">
-          <svg class="ic"><use href="#i-music"/></svg>
+          <svg class="ic"><use href="/assets/icons.svg#i-music"/></svg>
           <p id="lib-empty-text">Nothing saved yet. Transcribe a song and press <strong>Save to my library</strong> — it will be here, and in the app.</p>
-          <button class="btn btn-primary btn-sm" id="lib-empty-go" type="button"><svg class="ic"><use href="#i-plus"/></svg>New transcription</button>
+          <button class="btn btn-primary btn-sm" id="lib-empty-go" type="button"><svg class="ic"><use href="/assets/icons.svg#i-plus"/></svg>New transcription</button>
         </div>
       </div>
       <!-- The choir's shared library, for someone in a choir whose plan is running. -->
       <div class="card choir-lib hidden" id="choir-lib">
-        <h2 class="group-title"><svg class="ic"><use href="#i-choir"/></svg>Choir library · <span id="choir-lib-name"></span></h2>
+        <h2 class="group-title"><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg>Choir library · <span id="choir-lib-name"></span></h2>
         <p class="muted small" style="margin:0 0 10px">Sheets your choir shared. Open one to rehearse; save it to keep a copy of your own.</p>
         <div class="lib-list" id="choir-lib-list"></div>
         <p class="muted small hidden" id="choir-lib-empty" style="margin:0">Nothing shared yet. Press <strong>Share with choir</strong> on any of your sheets above.</p>
@@ -854,7 +803,7 @@
         <div class="card acct-profile">
           <label class="avatar-edit" title="Change photo">
             <span class="who-avatar" id="acct-avatar" aria-hidden="true"></span>
-            <span class="avatar-badge"><svg class="ic"><use href="#i-camera"/></svg></span>
+            <span class="avatar-badge"><svg class="ic"><use href="/assets/icons.svg#i-camera"/></svg></span>
             <input id="acct-photo" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
           </label>
           <div class="name" id="acct-name">—</div>
@@ -864,7 +813,7 @@
             <span class="tag">Member since <span id="acct-since">—</span></span>
             <span class="tag"><span id="acct-saved">—</span> saved sheets</span>
           </div>
-          <label class="btn btn-ghost btn-sm acct-photo-btn" for="acct-photo"><svg class="ic"><use href="#i-camera"/></svg>Change photo</label>
+          <label class="btn btn-ghost btn-sm acct-photo-btn" for="acct-photo"><svg class="ic"><use href="/assets/icons.svg#i-camera"/></svg>Change photo</label>
           <button class="btn-link small hidden" id="acct-photo-remove" type="button">Remove photo</button>
           <span class="small muted" id="acct-photo-status" aria-live="polite"></span>
         </div>
@@ -873,13 +822,13 @@
           <section aria-labelledby="acct-plan-title">
             <h2 class="group-title" id="acct-plan-title">Plan &amp; usage</h2>
             <div class="list-card">
-              <div class="lrow"><span class="k"><svg class="ic"><use href="#i-crown"/></svg><span id="acct-plan">Free</span></span><span class="v"><span class="pill pill-active hidden" id="acct-active">Active</span></span></div>
+              <div class="lrow"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg><span id="acct-plan">Free</span></span><span class="v"><span class="pill pill-active hidden" id="acct-active">Active</span></span></div>
               <div class="lrow lrow-block">
                 <div class="usage-row"><span id="acct-usage-label">Free transcriptions</span><span id="acct-credits">—</span></div>
                 <div class="usage-bar"><i id="acct-usage-fill"></i></div>
                 <p class="lrow-note" id="acct-sub-note"></p>
               </div>
-              <button class="lrow lrow-btn" id="acct-upgrade" type="button"><span class="k link" id="acct-upgrade-label">See the plans</span><span class="v"><svg class="ic"><use href="#i-chev"/></svg></span></button>
+              <button class="lrow lrow-btn" id="acct-upgrade" type="button"><span class="k link" id="acct-upgrade-label">See the plans</span><span class="v"><svg class="ic"><use href="/assets/icons.svg#i-chev"/></svg></span></button>
             </div>
           </section>
 
@@ -895,11 +844,11 @@
                 </form>
                 <p class="small muted" id="choir-join-status" aria-live="polite" style="margin:6px 0 0"></p>
               </div>
-              <button class="lrow lrow-btn" id="choir-plan-open" type="button"><span class="k link">Lead a choir? See the choir plan</span><span class="v"><svg class="ic"><use href="#i-chev"/></svg></span></button>
+              <button class="lrow lrow-btn" id="choir-plan-open" type="button"><span class="k link">Lead a choir? See the choir plan</span><span class="v"><svg class="ic"><use href="/assets/icons.svg#i-chev"/></svg></span></button>
             </div>
             <!-- In a choir: the director manages it here; a singer sees it and can leave. -->
             <div class="list-card hidden" id="choir-card">
-              <div class="lrow"><span class="k"><svg class="ic"><use href="#i-choir"/></svg><span id="choir-title">—</span></span><span class="v"><span class="pill" id="choir-status">Active</span></span></div>
+              <div class="lrow"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg><span id="choir-title">—</span></span><span class="v"><span class="pill" id="choir-status">Active</span></span></div>
               <div class="lrow lrow-block hidden" id="choir-rename-row">
                 <form class="choir-join" id="choir-rename-form" novalidate>
                   <input id="choir-name" type="text" maxlength="80" autocomplete="off" aria-label="Choir name">
@@ -921,36 +870,36 @@
               <div class="lrow lrow-block hidden" id="choir-members-row">
                 <ul class="choir-members" id="choir-members" aria-label="Singers in your choir"></ul>
               </div>
-              <button class="lrow lrow-btn hidden" id="choir-renew" type="button"><span class="k link">Renew the choir plan</span><span class="v"><svg class="ic"><use href="#i-chev"/></svg></span></button>
-              <button class="lrow lrow-btn danger hidden" id="choir-leave" type="button"><span class="k"><svg class="ic"><use href="#i-logout"/></svg>Leave the choir</span></button>
+              <button class="lrow lrow-btn hidden" id="choir-renew" type="button"><span class="k link">Renew the choir plan</span><span class="v"><svg class="ic"><use href="/assets/icons.svg#i-chev"/></svg></span></button>
+              <button class="lrow lrow-btn danger hidden" id="choir-leave" type="button"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-logout"/></svg>Leave the choir</span></button>
             </div>
           </section>
 
           <section aria-labelledby="acct-look-title">
             <h2 class="group-title" id="acct-look-title">Appearance</h2>
             <div class="list-card">
-              <div class="lrow"><span class="k"><svg class="ic"><use href="#i-sun"/></svg>Theme</span>
+              <div class="lrow"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-sun"/></svg>Theme</span>
                 <span class="v"><span class="theme-seg" role="radiogroup" aria-label="Theme">
                   <button type="button" role="radio" data-theme-pref="light">Light</button>
                   <button type="button" role="radio" data-theme-pref="dark">Dark</button>
                   <button type="button" role="radio" data-theme-pref="system">System</button>
                 </span></span></div>
-              <div class="lrow"><span class="k"><svg class="ic"><use href="#i-volume"/></svg>Sounds</span><span class="v"><button class="switch" id="acct-sounds" type="button" role="switch" aria-checked="true" aria-label="Sounds"></button></span></div>
+              <div class="lrow"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-volume"/></svg>Sounds</span><span class="v"><button class="switch" id="acct-sounds" type="button" role="switch" aria-checked="true" aria-label="Sounds"></button></span></div>
             </div>
           </section>
 
           <section aria-labelledby="acct-app-title">
             <h2 class="group-title" id="acct-app-title">Get the app</h2>
             <div class="list-card">
-              <div class="lrow"><span class="k"><svg class="ic"><use href="#i-phone"/></svg>Record at rehearsal, keep your library offline and get practice reminders. The web and the app share one account.</span></div>
+              <div class="lrow"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-phone"/></svg>Record at rehearsal, keep your library offline and get practice reminders. The web and the app share one account.</span></div>
               <div class="lrow"><a class="store-badge" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="app_panel"><img src="/assets/google-play-badge.png" width="646" height="250" alt="Get it on Google Play"></a></div>
             </div>
           </section>
 
           <section aria-label="Sign out or delete your account">
             <div class="list-card">
-              <button class="lrow lrow-btn" id="acct-signout" type="button"><span class="k"><svg class="ic"><use href="#i-logout"/></svg>Sign out</span><span class="v"><svg class="ic"><use href="#i-chev"/></svg></span></button>
-              <a class="lrow lrow-btn danger" href="/delete-account"><span class="k"><svg class="ic"><use href="#i-trash"/></svg>Delete my account</span></a>
+              <button class="lrow lrow-btn" id="acct-signout" type="button"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-logout"/></svg>Sign out</span><span class="v"><svg class="ic"><use href="/assets/icons.svg#i-chev"/></svg></span></button>
+              <a class="lrow lrow-btn danger" href="/delete-account"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-trash"/></svg>Delete my account</span></a>
             </div>
           </section>
         </div>
@@ -975,14 +924,14 @@
 <script src="/assets/chords.js?v=1" defer></script>
 <script src="/assets/songlink.js?v=2" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>
-<script src="/assets/recorder.js?v=2" defer></script>
+<script src="/assets/recorder.js?v=3" defer></script>
 <script src="/assets/meter.js?v=1" defer></script>
 <script src="/assets/preview.js?v=11" defer></script>
 <script src="/assets/confidence.js?v=1" defer></script>
 <script src="/assets/hymnbook.js?v=1" defer></script>
 <script src="/assets/parts.js?v=1" defer></script>
 <script src="/assets/practice.js?v=1" defer></script>
-<script src="/assets/app.js?v=37" defer></script>
+<script src="/assets/app.js?v=38" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>
 </html>

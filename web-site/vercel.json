@@ -53,7 +53,7 @@
       ]
     },
     {
-      "source": "/assets/(.*)\\.(css|js)",
+      "source": "/assets/(.*)\\.(css|js|svg)",
       "headers": [
         {
           "key": "Cache-Control",

@@ -6,8 +6,8 @@
    hairline rules instead of cards, one accent colour, no gradients, no shadows. */
 .blog-page {
   --serif: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
-  --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --measure: 680px;
   --wide: 960px;
   --bg: #ffffff;
@@ -36,7 +36,7 @@
   color: var(--text);
 }
 :root[data-theme="dark"] .blog-page {
-  --bg: #0f1218;
+  --bg: #0b0d12;
   --ink: #f1f4f9;
   --text: #d3d9e3;
   --muted: #9aa3b3;
@@ -44,8 +44,8 @@
   --rule-strong: #364052;
   --accent: #9cc2ff;
   --accent-hover: #c4dbff;
-  --tint: #151a23;
-  --tint-line: #262e3b;
+  --tint: #12151c;
+  --tint-line: #232833;
   --callout: #131c2c;
   --callout-line: #28406a;
   --avatar-bg: #1c2a44;
@@ -56,12 +56,12 @@
 .blog-page .site-page-main { width: min(100% - 48px, var(--wide)); padding-top: 28px; }
 .blog-page a { color: var(--accent); }
 .blog-page a:hover { color: var(--accent-hover); }
-.blog-page .skip-link { position: absolute; left: 12px; top: -60px; z-index: 200; padding: 8px 14px; border-radius: 6px; background: var(--page-fill); color: var(--page-on-fill); }
+.blog-page .skip-link { position: absolute; left: 12px; top: -60px; z-index: 200; padding: 8px 14px; border-radius: 8px; background: var(--page-fill); color: var(--page-on-fill); }
 .blog-page .skip-link:focus { top: 12px; color: var(--page-on-fill); }
 .blog-page footer.wrap { background: var(--bg); }
 
 /* Shared pieces: kicker, meta lines with dot separators, avatars */
-.blog-page .kicker { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin: 0 0 12px; font-family: var(--sans); font-size: 12.5px; font-weight: 650; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); }
+.blog-page .kicker { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin: 0 0 12px; font-family: var(--sans); font-size: 13px; font-weight: 600; letter-spacing: 0; color: var(--accent); }
 .blog-page .kicker a { color: var(--accent); text-decoration: none; }
 .blog-page .kicker a:hover { text-decoration: underline; text-underline-offset: .2em; }
 .blog-page .kicker-latest { color: var(--muted); }
@@ -97,7 +97,7 @@
 .blog-page .byline-role { font-weight: 400; color: var(--muted); }
 .blog-page .byline-small { gap: 10px; }
 .blog-page .cover { margin: 0 0 34px; }
-.blog-page .cover img { display: block; width: 100%; height: auto; border-radius: 4px; }
+.blog-page .cover img { display: block; width: 100%; height: auto; border-radius: 8px; }
 
 .blog-page .post-body { font-family: var(--serif); font-size: 19px; line-height: 1.7; color: var(--text); }
 .blog-page .post-body p, .blog-page .post-body li { color: var(--text); font-size: inherit; line-height: inherit; }
@@ -110,28 +110,28 @@
 .blog-page .post-body a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
 .blog-page .post-body strong { color: var(--ink); font-weight: 650; }
 .blog-page .post-body hr { margin: 2.4em auto; width: 80px; border: 0; border-top: 1px solid var(--rule-strong); }
-.blog-page .post-body code, .blog-page .hymn-page code { font-family: var(--mono); font-size: .86em; background: var(--tint); border: 1px solid var(--tint-line); border-radius: 4px; padding: 1px 5px; }
-.blog-page .post-body pre { overflow-x: auto; padding: 14px 16px; border-radius: 6px; background: var(--code-bg); color: var(--code-ink); font-size: 15px; }
+.blog-page .post-body code, .blog-page .hymn-page code { font-family: var(--mono); font-size: .86em; background: var(--tint); border: 1px solid var(--tint-line); border-radius: 8px; padding: 1px 5px; }
+.blog-page .post-body pre { overflow-x: auto; padding: 14px 16px; border-radius: 8px; background: var(--code-bg); color: var(--code-ink); font-size: 15px; }
 .blog-page .post-body pre code { background: none; border: 0; color: inherit; padding: 0; }
 .blog-page .post-figure { margin: 2em 0; }
-.blog-page .post-figure img, .blog-page .post-body img { display: block; max-width: 100%; height: auto; border-radius: 4px; }
+.blog-page .post-figure img, .blog-page .post-body img { display: block; max-width: 100%; height: auto; border-radius: 8px; }
 .blog-page figcaption { margin-top: 8px; font-family: var(--sans); color: var(--muted); font-size: 13.5px; line-height: 1.5; }
 /* A pull quote: a line from the post, set large between rules. */
 .blog-page .pull-quote { margin: 1.8em 0; padding: 18px 0; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); }
 .blog-page .pull-quote p { margin: 0; font-size: 24px; line-height: 1.4; font-style: italic; color: var(--ink); }
 /* A callout ("> [!TIP]"): a quiet box in the sans, so it reads as an aside to the text. */
-.blog-page .callout { margin: 1.6em 0; padding: 16px 20px; border: 1px solid var(--callout-line); border-left: 3px solid var(--accent); border-radius: 4px; background: var(--callout); font-family: var(--sans); font-size: 16px; line-height: 1.6; }
+.blog-page .callout { margin: 1.6em 0; padding: 16px 20px; border: 1px solid var(--callout-line); border-left: 3px solid var(--accent); border-radius: 8px; background: var(--callout); font-family: var(--sans); font-size: 16px; line-height: 1.6; }
 .blog-page .post-body .callout p { margin: 0 0 .6em; font-size: 16px; line-height: 1.6; }
 .blog-page .post-body .callout p:last-child { margin-bottom: 0; }
-.blog-page .post-body .callout .callout-label { margin-bottom: 4px; font-size: 12px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); }
+.blog-page .post-body .callout .callout-label { margin-bottom: 4px; font-size: 13px; font-weight: 600; letter-spacing: 0; color: var(--accent); }
 .blog-page .table-wrap { overflow-x: auto; margin: 0 0 1.4em; }
 .blog-page .post-body table:not(.hymn) { border-collapse: collapse; width: 100%; font-family: var(--sans); font-size: 15px; line-height: 1.5; }
 .blog-page .post-body table:not(.hymn) th, .blog-page .post-body table:not(.hymn) td { border-bottom: 1px solid var(--rule); padding: 9px 10px; text-align: left; vertical-align: top; color: var(--text); }
 .blog-page .post-body table:not(.hymn) th { color: var(--ink); font-weight: 650; border-bottom: 1px solid var(--rule-strong); }
 
 /* "In this article" */
-.blog-page .toc { margin: 0 0 36px; padding: 16px 20px 14px; border: 1px solid var(--tint-line); border-radius: 4px; background: var(--tint); font-family: var(--sans); }
-.blog-page .toc p { margin: 0 0 8px; color: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.blog-page .toc { margin: 0 0 36px; padding: 16px 20px 14px; border: 1px solid var(--tint-line); border-radius: 8px; background: var(--tint); font-family: var(--sans); }
+.blog-page .toc p { margin: 0 0 8px; color: var(--ink); font-size: 13px; font-weight: 600; letter-spacing: 0; }
 .blog-page .toc ol { margin: 0; padding-left: 20px; columns: 2 260px; column-gap: 32px; }
 .blog-page .toc li { margin: 0 0 5px; font-size: 14.5px; line-height: 1.45; color: var(--muted); break-inside: avoid; }
 .blog-page .toc a { color: var(--text); text-decoration: none; }
@@ -145,23 +145,23 @@
 
 /* Share, author card, call to action */
 .blog-page .share { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin: 44px 0 0; padding: 18px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
-.blog-page .share-title { margin: 0; font-family: var(--sans); font-size: 12.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.blog-page .share-title { margin: 0; font-family: var(--sans); font-size: 13px; font-weight: 600; letter-spacing: 0; color: var(--muted); }
 .blog-page .share-links { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; }
 .blog-page .share-links li { margin: 0; font-family: var(--sans); font-size: 15px; }
 .blog-page .share-links a { font-weight: 600; text-decoration: none; }
 .blog-page .share-links a:hover { text-decoration: underline; text-underline-offset: .2em; }
 .blog-page .author-card { display: flex; gap: 18px; align-items: flex-start; margin: 30px 0 0; }
 .blog-page .author-card p { margin: 0; }
-.blog-page .author-card-kicker { font-family: var(--sans); font-size: 12px !important; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted) !important; }
+.blog-page .author-card-kicker { font-family: var(--sans); font-size: 13px !important; font-weight: 600; letter-spacing: 0; color: var(--muted) !important; }
 .blog-page .author-card-name { margin: 2px 0 6px !important; font-family: var(--serif); font-size: 20px !important; font-weight: 650; color: var(--ink) !important; }
 .blog-page .author-card-name a { color: var(--ink); text-decoration: none; }
 .blog-page .author-card-name a:hover { color: var(--accent); text-decoration: underline; }
 .blog-page .author-card-name span { font-weight: 400; color: var(--muted); }
 .blog-page .author-card-bio { font-family: var(--sans); font-size: 15px !important; line-height: 1.6; color: var(--text) !important; }
-.blog-page .cta-box { margin: 40px 0 10px; padding: 24px clamp(20px, 4vw, 30px); border: 1px solid var(--rule-strong); border-radius: 4px; background: var(--tint); }
+.blog-page .cta-box { margin: 40px 0 10px; padding: 24px clamp(20px, 4vw, 30px); border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--tint); }
 .blog-page .cta-box h2 { margin: 0 0 6px; font-family: var(--serif); font-size: 23px; font-weight: 650; letter-spacing: -.01em; color: var(--ink); }
 .blog-page .cta-box p { margin: 0 0 16px; font-family: var(--sans); font-size: 15.5px; line-height: 1.6; color: var(--text); }
-.blog-page .cta-button { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 18px; border-radius: 6px; background: var(--page-fill); color: var(--page-on-fill) !important; font-family: var(--sans); font-weight: 650; text-decoration: none; }
+.blog-page .cta-button { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 18px; border-radius: 8px; background: var(--page-fill); color: var(--page-on-fill) !important; font-family: var(--sans); font-weight: 650; text-decoration: none; }
 .blog-page .cta-button:hover { background: var(--page-fill-hover); }
 
 /* Lists under a post */
@@ -191,12 +191,12 @@
 .blog-page .front-side .story-dek { font-size: 16px; }
 .blog-page .feature { display: grid; gap: 24px; padding: 34px 0 36px; border-bottom: 1px solid var(--rule); }
 .blog-page .feature.has-cover { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; }
-.blog-page .feature-cover img { display: block; width: 100%; height: auto; border-radius: 4px; }
+.blog-page .feature-cover img { display: block; width: 100%; height: auto; border-radius: 8px; }
 .blog-page .feature-title { margin: 0 0 14px; max-width: 22ch; font-family: var(--serif); font-size: clamp(30px, 4.2vw, 44px); font-weight: 650; line-height: 1.12; letter-spacing: -.016em; text-wrap: balance; }
 .blog-page .feature-title a { color: var(--ink); text-decoration: none; }
 .blog-page .feature-title a:hover { color: var(--accent); }
 .blog-page .feature-dek { max-width: 62ch; margin: 0 0 20px; font-family: var(--serif); font-size: 19px; line-height: 1.55; color: var(--text); }
-.blog-page .section-label { margin: 34px 0 0; padding-bottom: 10px; border-bottom: 1px solid var(--rule); font-family: var(--sans); font-size: 12.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.blog-page .section-label { margin: 34px 0 0; padding-bottom: 10px; border-bottom: 1px solid var(--rule); font-family: var(--sans); font-size: 13px; font-weight: 600; letter-spacing: 0; color: var(--muted); }
 .blog-page .story-list { display: grid; }
 .blog-page .story { padding: 24px 0; border-bottom: 1px solid var(--rule); }
 .blog-page .story .kicker { margin-bottom: 8px; font-size: 12px; }
@@ -229,7 +229,7 @@
 .blog-page .author-bio p { margin: 0 0 1em; font-family: var(--serif); font-size: 18.5px; line-height: 1.65; color: var(--text); }
 
 /* ── The solfa grid: the web app's hymn layout (app.css), cells of half a beat ── */
-.blog-page .solfa-example { margin: 1.6em 0 2em; padding: 16px 18px 12px; border: 1px solid var(--tint-line); border-radius: 4px; background: var(--tint); font-family: var(--sans); }
+.blog-page .solfa-example { margin: 1.6em 0 2em; padding: 16px 18px 12px; border: 1px solid var(--tint-line); border-radius: 8px; background: var(--tint); font-family: var(--sans); }
 .blog-page .solfa-head { display: flex; gap: 14px; align-items: baseline; margin-bottom: 4px; font-family: var(--sans); font-size: 14px; }
 .blog-page .solfa-head .doh { color: var(--accent); font-weight: 700; }
 .blog-page .solfa-head .time { color: var(--muted); }
@@ -266,20 +266,20 @@
 .blog-page .hymn-page p, .blog-page .hymn-page li { font-family: var(--serif); font-size: 18px; line-height: 1.65; color: var(--text); }
 .blog-page .hymn-page .post-lede { font-size: clamp(19px, 2.3vw, 21px); color: var(--muted); }
 .blog-page .hymn-page section { margin-bottom: 8px; }
-.blog-page .hymn-page .card { margin: 0 0 18px; padding: clamp(16px, 3vw, 24px); border: 1px solid var(--tint-line); border-radius: 4px; background: var(--tint); box-shadow: none; }
+.blog-page .hymn-page .card { margin: 0 0 18px; padding: clamp(16px, 3vw, 24px); border: 1px solid var(--tint-line); border-radius: 8px; background: var(--tint); box-shadow: none; }
 .blog-page .hymn-page .card h2 { margin-top: 0; }
 .blog-page .facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0 28px; margin: 0 0 30px; border-top: 1px solid var(--rule); }
 .blog-page .facts div { padding: 10px 0; border-bottom: 1px solid var(--rule); }
-.blog-page .facts dt { color: var(--muted); font-size: 12px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+.blog-page .facts dt { color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: 0; }
 .blog-page .facts dd { margin: 2px 0 0; color: var(--ink); font-size: 15.5px; font-weight: 600; }
 .blog-page .player { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 12px; font-family: var(--sans); }
 .blog-page .player[hidden] { display: none; }
-.blog-page .play-btn { min-width: 96px; min-height: 44px; padding: 0 18px; border: 0; border-radius: 6px; background: var(--page-fill); color: var(--page-on-fill); font: inherit; font-weight: 650; cursor: pointer; }
+.blog-page .play-btn { min-width: 96px; min-height: 44px; padding: 0 18px; border: 0; border-radius: 8px; background: var(--page-fill); color: var(--page-on-fill); font: inherit; font-weight: 650; cursor: pointer; }
 .blog-page .play-btn:hover { background: var(--page-fill-hover); }
 .blog-page .player label { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; font-weight: 600; color: var(--ink); }
-.blog-page .player select { min-height: 40px; padding: 0 8px; border: 1px solid var(--page-input-line); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; font-size: 14px; }
+.blog-page .player select { min-height: 40px; padding: 0 8px; border: 1px solid var(--page-input-line); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; font-size: 14px; }
 .blog-page .hymn-page .player-note { font-family: var(--sans); color: var(--muted); font-size: 13px; }
-.blog-page .solfa-text { padding: 16px 18px; border: 1px solid var(--tint-line); border-radius: 4px; background: var(--tint); }
+.blog-page .solfa-text { padding: 16px 18px; border: 1px solid var(--tint-line); border-radius: 8px; background: var(--tint); }
 .blog-page .hymn-page .solfa-text .doh { margin: 0 0 8px; font-family: var(--sans); color: var(--accent); font-weight: 700; font-size: 15px; }
 /* The plain-text lines wrap the same way: a bar (its solfa, its words under it) is one unit. The words
    take the bar's width rather than widen it (contain: inline-size), wrapping under it if they must. */
@@ -291,11 +291,11 @@
 .blog-page .hymn-page .solfa-words { font-family: var(--sans); font-size: 13.5px; line-height: 1.45; color: var(--muted); }
 /* The staff is engraved black on a paper card in both themes: OSMD draws in black on transparent, and
    paper keeps every symbol (ties, accidentals, lyrics) legible without recolouring the SVG. */
-.blog-page .staff { position: relative; min-height: 320px; overflow: hidden; border: 1px solid var(--paper-line); border-radius: 4px; background: var(--paper); color: var(--paper-ink); color-scheme: light; }
+.blog-page .staff { position: relative; min-height: 320px; overflow: hidden; border: 1px solid var(--paper-line); border-radius: 8px; background: var(--paper); color: var(--paper-ink); color-scheme: light; }
 .blog-page .hymn-page .staff-wait { margin: 0; padding: 24px; font-family: var(--sans); color: #5b5547; font-size: 14px; }
 .blog-page .verses { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px 30px; counter-reset: verse; }
 .blog-page .hymn-page .verse p { margin: 0 0 4px; font-size: 17.5px; line-height: 1.6; }
-.blog-page .hymn-page .verse-label { font-family: var(--sans); color: var(--accent); font-size: 12.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.blog-page .hymn-page .verse-label { font-family: var(--sans); color: var(--accent); font-size: 13px; font-weight: 600; letter-spacing: 0; }
 .blog-page .hymn-page .verse-note { font-family: var(--sans); color: var(--muted); font-size: 13.5px; }
 .blog-page .verse:not(:has(.verse-label)) { counter-increment: verse; }
 .blog-page .verse:not(:has(.verse-label))::before { content: counter(verse); display: block; font-family: var(--sans); color: var(--accent); font-size: 13px; font-weight: 700; }
@@ -321,20 +321,20 @@
 .blog-page .hymn-item[hidden], .blog-page .hymn-letter[hidden], .blog-page .az[hidden], .blog-page .hymn-find[hidden], .blog-page .hymn-none[hidden] { display: none; }
 .blog-page .hymn-find { margin: 22px 0 6px; font-family: var(--sans); }
 .blog-page .hymn-find label { display: block; margin: 0 0 6px; color: var(--ink); font-size: 14px; font-weight: 650; }
-.blog-page .hymn-find input { box-sizing: border-box; width: 100%; max-width: 560px; min-height: 46px; padding: 0 14px; border: 1px solid var(--page-input-line, var(--rule-strong)); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; font-size: 16px; }
+.blog-page .hymn-find input { box-sizing: border-box; width: 100%; max-width: 560px; min-height: 46px; padding: 0 14px; border: 1px solid var(--page-input-line, var(--rule-strong)); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; font-size: 16px; }
 .blog-page .hymn-find input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .blog-page .hymn-seasons { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
-.blog-page .hymn-seasons button { min-height: 36px; padding: 0 12px; border: 1px solid var(--rule-strong); border-radius: 999px; background: transparent; color: var(--ink); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.blog-page .hymn-seasons button { min-height: 36px; padding: 0 12px; border: 1px solid var(--rule-strong); border-radius: 8px; background: transparent; color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
 .blog-page .hymn-seasons button:hover { border-color: var(--accent); color: var(--accent); }
 .blog-page .hymn-count { min-height: 1.4em; margin: 10px 0 0; color: var(--muted); font-size: 14px; }
 .blog-page .az { display: flex; flex-wrap: wrap; gap: 4px; margin: 14px 0 6px; font-family: var(--sans); }
-.blog-page .az a { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; min-height: 36px; border: 1px solid var(--rule); border-radius: 4px; color: var(--ink); font-size: 15px; font-weight: 650; text-decoration: none; }
+.blog-page .az a { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; min-height: 36px; border: 1px solid var(--rule); border-radius: 8px; color: var(--ink); font-size: 15px; font-weight: 650; text-decoration: none; }
 .blog-page .az a:hover { border-color: var(--accent); color: var(--accent); }
 .blog-page .hymn-letter { scroll-margin-top: 90px; }
 .blog-page .hymn-letter > h2 { margin: 30px 0 0; padding-bottom: 6px; border-bottom: 2px solid var(--ink); font-family: var(--serif); font-size: 30px; font-weight: 650; color: var(--ink); }
 /* The hymn index's pointer to the hymn finder (/hymns/identify). */
 .blog-page .identify-callout { margin: 0; font-family: var(--sans); font-size: 15.5px; }
-.blog-page .identify-callout a { display: inline-flex; flex-wrap: wrap; gap: 0 6px; padding: 10px 14px; border: 1px solid var(--callout-line); border-radius: 6px; background: var(--callout); color: var(--ink); text-decoration: none; }
+.blog-page .identify-callout a { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0 6px; padding: 10px 14px; border: 1px solid var(--callout-line); border-radius: 8px; background: var(--callout); color: var(--ink); text-decoration: none; }
 .blog-page .identify-callout a:hover { border-color: var(--accent); color: var(--accent); }
 .blog-page .identify-callout strong { color: var(--accent); font-weight: 650; }
 .blog-page .hymn-none { margin: 24px 0; font-family: var(--sans); color: var(--muted); }
