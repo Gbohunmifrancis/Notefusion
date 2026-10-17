@@ -252,6 +252,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (`gemini-flash-latest`, `gemini-flash-lite-latest`, 2 tries each; never on 401/403 or a block); the revision uses
   the model that wrote the draft. The prompt spells out bars only for hand-made hymns (catalogue `imported: false`)
   and hymns the topic must link to; every hymn page stays linkable.
+- The X build journal (`docs/SOCIAL.md`, `tools/social`): `x-build-journal.yml` (Mon/Wed/Fri) posts one merged PR
+  or `backlog.json` angle with a phone screenshot of the built site against demo fixtures (mocked API, never the
+  admin console), drafted by Gemini in `voice.md`'s voice and checked in code; history on the `x-journal-state`
+  branch, never main; a dry run (artifact only) unless `X_POSTING_ENABLED=true` and the four `X_*` secrets are set.
 - Billing: naira plans are charged through Paystack, dollar plans through Bachs; currency routes the
   charge (`PaymentGatewayFactory.SelectForCurrency`). Every checkout is a one-off priced from the
   `Plan` row (`Recurring: false`): Bachs subscription checkouts need a card it can save and this

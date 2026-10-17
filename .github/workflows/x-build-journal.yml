@@ -1,0 +1,172 @@
+name: X build journal
+
+# Posts the NoteFusion building journey on X, three times a week: one thing that shipped since the last post
+# (a merged pull request; ops-only ones are skipped) or an evergreen angle from tools/social/backlog.json,
+# with a real phone screenshot of the site taken against demo data (never the admin console, never real
+# users), in Francis's voice (tools/social/voice.md, written by Gemini, checked in code). See docs/SOCIAL.md.
+#
+# It never touches the production API or the live site. What was posted lives in x-history.json on the
+# orphan branch x-journal-state (never main, which would deploy).
+#
+# Off until the repository variable X_POSTING_ENABLED is "true" AND the four X secrets are set: until then
+# every run is a dry run that uploads the drafted post and the screenshot as an artifact.
+#   Secrets:   X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET (the @NoteFusion account's
+#              OAuth 1.0a keys, Read and Write), GEMINI_API_KEY (optional: without it a plain template is used)
+#   Variables: X_POSTING_ENABLED ("true" to post), GEMINI_MODEL (optional), X_INCLUDE_LINKS ("true" lets a
+#              post carry a notefusion.studio link; X charges more for a post with a link)
+
+on:
+  schedule:
+    # Mon, Wed, Fri at 16:07 UTC (17:07 in Lagos). Change this one line to change the cadence.
+    - cron: "7 16 * * 1,3,5"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: draft the post and the screenshot as an artifact, post nothing"
+        type: boolean
+        default: true
+      topic:
+        description: "Optional: a backlog id (e.g. learn-my-part), a PR (#105), or free text to write about"
+        type: string
+        required: false
+        default: ""
+  pull_request:
+    paths:
+      - "tools/social/**"
+      - ".github/workflows/x-build-journal.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Journal tests
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/social/package-lock.json
+      - name: Install
+        working-directory: tools/social
+        run: npm ci
+      - name: Test
+        working-directory: tools/social
+        run: npm test
+
+  journal:
+    name: Draft and post
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write        # x-history.json on the x-journal-state branch
+      pull-requests: read    # what was merged since the last post
+    # One run at a time, and a waiting run never cancels one that may be posting.
+    concurrency:
+      group: x-build-journal
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            tools/blog/package-lock.json
+            tools/social/package-lock.json
+
+      - name: Install
+        run: |
+          npm ci --prefix tools/blog
+          npm ci --prefix tools/social
+
+      - name: Test
+        working-directory: tools/social
+        run: npm test
+
+      - name: Post or dry run?
+        id: mode
+        env:
+          ENABLED: ${{ vars.X_POSTING_ENABLED }}
+          EVENT: ${{ github.event_name }}
+          DRY_INPUT: ${{ inputs.dry_run }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        run: |
+          mode=post; why=""
+          if [ "$ENABLED" != "true" ]; then mode=dry; why="the repository variable X_POSTING_ENABLED is not \"true\""; fi
+          if [ -z "$X_API_KEY" ] || [ -z "$X_API_SECRET" ] || [ -z "$X_ACCESS_TOKEN" ] || [ -z "$X_ACCESS_TOKEN_SECRET" ]; then mode=dry; why="${why:+$why; }an X secret is missing"; fi
+          if [ "$EVENT" = "workflow_dispatch" ] && [ "$DRY_INPUT" = "true" ]; then mode=dry; why="${why:+$why; }dry_run was ticked"; fi
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          if [ "$mode" = dry ]; then echo "::notice::Dry run: $why. The post and screenshot are in the run's artifact."; fi
+
+      # The site as content/ builds it (the committed web-site/ is the same; this keeps the shot current).
+      - name: Build the site
+        run: node tools/blog/build.mjs
+
+      - name: Install Chromium
+        working-directory: tools/social
+        run: npx playwright-core install --with-deps chromium chromium-headless-shell
+
+      - name: Check out the journal's state
+        run: |
+          if git fetch --no-tags --depth=1 origin +refs/heads/x-journal-state:refs/remotes/origin/x-journal-state; then
+            git worktree add --detach "$RUNNER_TEMP/state" origin/x-journal-state
+            git -C "$RUNNER_TEMP/state" checkout -q -B x-journal-state
+          else
+            echo "No x-journal-state branch yet: it is created on the first post."
+            git worktree add --detach "$RUNNER_TEMP/state"
+            git -C "$RUNNER_TEMP/state" checkout -q --orphan x-journal-state
+            git -C "$RUNNER_TEMP/state" rm -rfq --ignore-unmatch .
+          fi
+
+      - name: Write (and post)
+        id: run
+        env:
+          MODE: ${{ steps.mode.outputs.mode }}
+          TOPIC: ${{ inputs.topic }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          X_INCLUDE_LINKS: ${{ vars.X_INCLUDE_LINKS }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        run: |
+          args=(--out "$RUNNER_TEMP/x-journal" --history "$RUNNER_TEMP/state/x-history.json" --repo "$GITHUB_REPOSITORY")
+          if [ "$MODE" = post ]; then args+=(--post); fi
+          if [ -n "$TOPIC" ]; then args+=(--topic "$TOPIC"); fi
+          node tools/social/run.mjs "${args[@]}"
+
+      # Runs even when the post step failed: a story claimed by a run that may have posted must be recorded.
+      - name: Save the journal's state
+        if: always() && steps.run.outputs.state_changed == 'true'
+        working-directory: ${{ runner.temp }}/state
+        run: |
+          git add x-history.json
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -qm "X journal: run ${{ github.run_id }}"
+          for attempt in 1 2 3; do
+            if git push -q origin HEAD:refs/heads/x-journal-state; then exit 0; fi
+            sleep $((attempt * 5))
+          done
+          echo "::error::Could not save x-history.json to x-journal-state. Add this run's post to it by hand, or the next run may repeat the story."
+          exit 1
+
+      - name: Keep the draft and screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: x-journal-${{ github.run_id }}
+          path: ${{ runner.temp }}/x-journal
+          retention-days: 30
+          if-no-files-found: warn

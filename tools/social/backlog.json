@@ -1,0 +1,107 @@
+{
+  "_about": "Evergreen founder-journey angles for the X journal, used in this order when no new pull request is worth a post. Each is posted at most once. Facts are the only facts the writer may use: keep them true. scene: one of the names in lib/scenes.mjs. link: used only when posts may carry links (X_INCLUDE_LINKS). fallback: the post as written if Gemini is not available; it must pass the same checks.",
+  "items": [
+    {
+      "id": "why-tonic-solfa",
+      "title": "Why tonic solfa",
+      "angle": "Why I write music out in tonic solfa first and staff notation second.",
+      "facts": [
+        "Tonic solfa writes a tune as d r m f s l t, with doh moving to whatever key the song is in (movable doh).",
+        "Many church choirs learn their parts from solfa rather than from staff notation.",
+        "NoteFusion takes a sung, hummed or played tune and writes it out in tonic solfa and in staff notation.",
+        "The doh is named the way the key signature spells it, so the sheet says Doh is Bb, not A#."
+      ],
+      "scene": "app-solfa",
+      "fallback": "Most music apps write staff notation. Many choirs read tonic solfa: d r m f s l t, with doh moving to the key of the song.\n\nSo NoteFusion writes both from one recording, solfa first.\n\n#buildinpublic #tonicsolfa"
+    },
+    {
+      "id": "hum-to-find-a-hymn",
+      "title": "Hum to find a hymn",
+      "angle": "You know the tune but not the name: hum the first line and NoteFusion tells you which hymn it is.",
+      "facts": [
+        "On the hymn finder page you hum or sing the first line or two of a hymn.",
+        "NoteFusion matches the tune against the hymns it holds and names the one it heard, with its solfa, words and sheet music.",
+        "It is free and needs no account.",
+        "The recording is used only to find the tune and is deleted straight away."
+      ],
+      "scene": "identify",
+      "link": "https://notefusion.studio/hymns/identify",
+      "fallback": "You know the tune but not the hymn's name.\n\nNow you can hum the first line to NoteFusion and it tells you which hymn it is, with the solfa and the words. Free, no account.\n\n#buildinpublic"
+    },
+    {
+      "id": "building-for-choirs-in-nigeria",
+      "title": "Building for choirs in Nigeria",
+      "angle": "Who NoteFusion is for: choir directors and church musicians in Nigeria first, and what that changed in how it is built.",
+      "facts": [
+        "NoteFusion is built in Nigeria for choir directors and church musicians.",
+        "Prices are in naira in Nigeria, paid through Paystack.",
+        "A sheet can be shared with a link that the choir opens without an account.",
+        "A choir director can bring the whole choir onto one plan, and share sheets with the choir's library."
+      ],
+      "scene": "shared-sheet",
+      "fallback": "Building NoteFusion for choir directors in Nigeria first changed a lot: prices in naira, and a sheet the director shares as a link that every chorister can open without an account.\n\n#buildinpublic"
+    },
+    {
+      "id": "harmoniser-measured",
+      "title": "Measuring the four-part harmoniser against real hymn books",
+      "angle": "How I check that the alto, tenor and bass NoteFusion writes sound like a hymn book and not like a computer.",
+      "facts": [
+        "NoteFusion can write alto, tenor and bass under a tune, the way a hymn book prints them.",
+        "The harmoniser is benchmarked against published hymn book harmonisations of the same tunes.",
+        "The inner parts are written to move as lines: mostly steps, with no parallel fifths or octaves.",
+        "The tune itself is never changed: the parts are an arrangement written under it."
+      ],
+      "scene": "app-parts",
+      "fallback": "Writing alto, tenor and bass under a tune is easy. Writing parts a choir enjoys singing is not.\n\nSo NoteFusion's harmoniser is measured against real hymn book harmonisations, and the inner parts move as lines.\n\n#buildinpublic #choir"
+    },
+    {
+      "id": "learn-my-part",
+      "title": "Learn my part",
+      "angle": "Most choristers learn their part by ear in rehearsal. Learn my part plays your line loud and the others soft.",
+      "facts": [
+        "Learn my part plays your part (soprano, alto, tenor or bass) loud and the other parts soft.",
+        "You can loop a few bars and slow them down to 50% or 75%.",
+        "Then you sing the bars back and NoteFusion marks each note."
+      ],
+      "scene": "practice",
+      "fallback": "Most altos learn their part by standing next to a stronger alto.\n\nLearn my part in NoteFusion plays your line loud and the others soft, loops the bars you choose, slows them down, then listens to you sing it back.\n\n#buildinpublic #choir"
+    },
+    {
+      "id": "hymnbook-version",
+      "title": "This sounds like a hymn: use the hymnbook version?",
+      "angle": "When someone sings a hymn NoteFusion knows, it offers the published version instead of a rough transcription.",
+      "facts": [
+        "When a transcription matches a hymn in the NoteFusion library, the app asks: use the hymnbook version?",
+        "Yes swaps the sheet to the published score, in the key that was sung.",
+        "Saving it keeps the hymn's credit."
+      ],
+      "scene": "hymnbook",
+      "fallback": "Sing a hymn into NoteFusion and it now notices what you sang.\n\nIf it is a hymn in the library, it asks whether you want the hymnbook version: the published score, moved to the key you sang in.\n\n#buildinpublic"
+    },
+    {
+      "id": "bars-that-match-the-hymnbook",
+      "title": "Bar lines that match the hymnbook",
+      "angle": "Getting the notes right is half of it: the bar lines, the 3/4 and the pickup note have to match the book too.",
+      "facts": [
+        "NoteFusion decides between 3/4 and 4/4 from where the long notes fall.",
+        "An upbeat at the start is written as a pickup bar, the way a hymn book writes it.",
+        "It is measured on a corpus of hymn tunes, sung and played at different tempos and keys, scored against the published scores."
+      ],
+      "scene": "app-staff",
+      "fallback": "Getting the notes right was only half the job. Amazing Grace starts on an upbeat and is in 3/4, so the sheet has to say so.\n\nNoteFusion now reads the meter and the pickup from where the long notes fall.\n\n#buildinpublic"
+    },
+    {
+      "id": "free-hymn-pages",
+      "title": "Free hymn pages in tonic solfa",
+      "angle": "Every public-domain hymn in the library gets its own free page: solfa with the words, staff notation and a piano to sing along with.",
+      "facts": [
+        "The NoteFusion website has free hymn pages.",
+        "Each page has the tune in tonic solfa line by line with the words, the staff notation, and a piano to sing along with.",
+        "The hymns are public domain."
+      ],
+      "scene": "hymn-page",
+      "link": "https://notefusion.studio/hymns",
+      "fallback": "Every public-domain hymn in the NoteFusion library has its own free page: the tune in tonic solfa with the words under it, the staff notation, and a piano to sing along with.\n\n#buildinpublic #hymns"
+    }
+  ]
+}
