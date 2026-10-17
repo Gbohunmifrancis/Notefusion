@@ -16,7 +16,7 @@ html { scroll-padding-top: 80px; }
 :where(.home) p { margin: 0; }
 .home .lead { margin-top: 16px; max-width: 34em; color: var(--page-text-2); font-size: 20px; line-height: 1.5; }
 .home .section-lead { margin-top: 12px; max-width: 40em; color: var(--page-text-2); font-size: 16px; line-height: 1.6; }
-.home .text-link { display: inline-flex; align-items: center; gap: 4px; color: var(--page-blue-dark); font-size: 15px; font-weight: 600; text-decoration: none; }
+.home .text-link { display: inline-flex; align-items: center; gap: 4px; padding-block: 10px; margin-block: -10px; color: var(--page-blue-dark); font-size: 15px; font-weight: 600; text-decoration: none; }
 .home .text-link:hover { text-decoration: underline; }
 
 /* Buttons */
@@ -28,7 +28,7 @@ html { scroll-padding-top: 80px; }
 .home .btn-lg { min-height: 48px; padding: 0 20px; }
 .home .btn:disabled { opacity: .55; cursor: not-allowed; }
 .home .store-badge { display: inline-flex; flex: none; border-radius: var(--r-sm); }
-.home .store-badge img { width: auto; height: 40px; }
+.home .store-badge img { width: auto; height: 44px; }
 
 /* ── Hero ─────────────────────────────────────────────────────────────── */
 .hero { padding: 64px 0 96px; }
@@ -38,10 +38,10 @@ html { scroll-padding-top: 80px; }
 .try-main { display: flex; flex-wrap: wrap; gap: 8px; }
 .try-file { position: relative; }
 .try-file input { display: none; }
-.try-meter { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; color: var(--page-text-2); font-size: 14px; font-weight: 500; }
-.try-meter select { min-height: 32px; padding: 0 8px; border: 1px solid var(--page-line-strong); border-radius: var(--r-sm); background: var(--page-surface); color: var(--page-navy); font: inherit; font-size: 14px; }
+.try-meter { display: inline-flex; max-width: 100%; align-items: center; gap: 8px; margin-top: 16px; white-space: nowrap; color: var(--page-text-2); font-size: 14px; font-weight: 500; }
+.try-meter select { flex: 0 1 auto; min-width: 0; min-height: 44px; padding: 0 8px; border: 1px solid var(--page-line-strong); border-radius: var(--r-sm); background: var(--page-surface); color: var(--page-navy); font: inherit; font-size: 16px; }
 .try-link { margin-top: 16px; }
-.try-link summary { display: inline-flex; align-items: center; gap: 8px; color: var(--page-blue-dark); font-size: 14px; font-weight: 600; list-style: none; cursor: pointer; border-radius: 4px; }
+.try-link summary { display: inline-flex; align-items: center; gap: 8px; padding-block: 11px; margin-block: -11px; color: var(--page-blue-dark); font-size: 14px; font-weight: 600; list-style: none; cursor: pointer; border-radius: 4px; }
 .try-link summary::-webkit-details-marker { display: none; }
 .try-link-chev { transition: transform .15s ease-out; }
 .try-link[open] .try-link-chev { transform: rotate(180deg); }
@@ -49,7 +49,7 @@ html { scroll-padding-top: 80px; }
 .try-form input { flex: 1; min-width: 0; min-height: 44px; padding: 0 12px; border: 1px solid var(--page-input-line); border-radius: var(--r-sm); background: var(--page-input-bg); color: var(--page-navy); font: inherit; font-size: 16px; outline: none; }
 .try-form input::placeholder { color: var(--page-muted); }
 .try-form input:focus { border-color: var(--page-blue); box-shadow: 0 0 0 3px var(--page-focus); }
-.try-link .try-paste { margin-top: 8px; min-height: 36px; font-size: 14px; }
+.try-link .try-paste { margin-top: 8px; min-height: 44px; font-size: 14px; }
 .try-link-note { margin-top: 8px; color: var(--page-muted); font-size: 13px; }
 .try-status { min-height: 1.4em; margin-top: 12px; color: var(--page-text-2); font-size: 14px; }
 .try-status-error { color: var(--page-bad-fg); }
@@ -69,7 +69,7 @@ html { scroll-padding-top: 80px; }
 .sheet-staff { padding: 16px 20px; border-top: 1px solid var(--page-line); background: #fffdf8; }  /* the staff is engraved on paper in both themes, as on the hymn pages */
 .sheet-staff img { display: block; width: 100%; height: auto; }
 .sheet-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; padding: 12px 20px; border-top: 1px solid var(--page-line); color: var(--page-muted); font-size: 13px; }
-.sheet-foot a { font-weight: 600; text-decoration: none; }
+.sheet-foot a { display: inline-block; padding-block: 12px; margin-block: -12px; font-weight: 600; text-decoration: none; }
 .sheet-foot a:hover { text-decoration: underline; }
 
 /* The solfa grid (the same table.hymn / .cell markup as the hymn pages and the web app's sheet). */
@@ -102,6 +102,7 @@ html { scroll-padding-top: 80px; }
 .steps li::before { content: counter(step); position: absolute; left: 0; top: 16px; width: 24px; height: 24px; display: grid; place-items: center; border: 1px solid var(--page-line-strong); border-radius: 50%; color: var(--page-text-2); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1; }
 .steps p { margin-top: 4px; color: var(--page-text-2); font-size: 15px; line-height: 1.6; }
 .shot { margin: 0; }
+.shot picture { display: contents; }  /* AVIF / WebP / JPEG for the width on screen (tools/build-assets.py) */
 .shot img { display: block; width: 100%; height: auto; border: 1px solid var(--page-line); border-radius: var(--r-md); background: var(--page-surface-2); }
 .shot .shot-dark, :root[data-theme="dark"] .shot .shot-light { display: none; }
 :root[data-theme="dark"] .shot .shot-dark { display: block; }
@@ -115,7 +116,7 @@ html { scroll-padding-top: 80px; }
 .rekey { padding: 24px; border: 1px solid var(--page-line); border-radius: var(--r-md); background: var(--page-surface); }
 .rekey-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .segmented { display: inline-flex; padding: 2px; border: 1px solid var(--page-line); border-radius: var(--r-sm); background: var(--page-wash); }
-.segmented button { min-width: 40px; min-height: 32px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: var(--page-text-2); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.segmented button { min-width: 44px; min-height: 44px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: var(--page-text-2); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
 .segmented button:hover { color: var(--page-navy); }
 .segmented button[aria-pressed="true"] { background: var(--page-surface); color: var(--page-navy); box-shadow: 0 0 0 1px var(--page-line-strong); }
 .home .rekey-doh { margin-top: 24px; color: var(--page-blue-dark); font-size: 14px; font-weight: 600; }
@@ -181,11 +182,23 @@ html { scroll-padding-top: 80px; }
 .ph-badge { display: inline-block; margin-top: 24px; }
 .ph-badge img { width: 200px; height: auto; }
 .home .footer-head { margin: 0 0 12px; color: var(--page-navy); font-family: var(--font-sans); font-size: 14px; font-weight: 600; letter-spacing: 0; line-height: 1.4; }
-.site-footer ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-.site-footer nav a { color: var(--page-text-2); font-size: 14px; text-decoration: none; }
+.site-footer ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0; }
+.site-footer nav a { display: inline-flex; min-height: 44px; align-items: center; color: var(--page-text-2); font-size: 14px; text-decoration: none; }
 .site-footer nav a:hover { color: var(--page-navy); text-decoration: underline; }
 .footer-bottom { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--page-line); color: var(--page-muted); font-size: 13px; }
 .footer-bottom a { color: var(--page-text-2); }
+
+/* ── Phones first ─────────────────────────────────────────────────────────
+   Targets above are sized for a thumb (44 px) and the fields' text is 16 px (no iOS zoom). A mouse on a wide
+   screen gets the compact desktop sizes back here. */
+@media (min-width: 1001px) and (hover: hover) and (pointer: fine) {
+  .home .store-badge img { height: 40px; }
+  .try-meter select { min-height: 32px; font-size: 14px; }
+  .try-link .try-paste { min-height: 36px; }
+  .segmented button { min-width: 40px; min-height: 32px; }
+  .site-footer ul { gap: 8px; }
+  .site-footer nav a { display: inline; min-height: 0; }
+}
 
 /* ── Smaller screens ──────────────────────────────────────────────────── */
 @media (max-width: 1000px) {
