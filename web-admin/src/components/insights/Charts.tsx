@@ -133,7 +133,7 @@ export function StackedDaily<K extends string>({
               if (!active || !payload?.length) return null;
               const total = payload.reduce((n, p) => n + Number(p.value ?? 0), 0);
               return (
-                <div className="rounded-md border border-border bg-popover px-3 py-2 text-[11px] shadow-lift">
+                <div className="rounded-[8px] border border-border bg-popover px-3 py-2 text-[11px] shadow-md">
                   <p className="font-semibold text-foreground">{formatDayLong(String(label))}</p>
                   {[...payload].reverse().map((p) => (
                     <p key={String(p.dataKey)} className="mt-0.5 flex items-center gap-1.5 text-muted-foreground">
@@ -252,22 +252,26 @@ export function MetricRow({
   className?: string;
 }) {
   return (
-    <div className={`grid grid-cols-2 divide-border overflow-hidden nf-panel sm:grid-cols-3 ${className ?? ""}`}>
-      {items.map((m) => (
-        <div key={m.label} className="border-b border-r border-border/70 p-4" title={m.hint}>
-          <div className="text-xs text-muted-foreground">{m.label}</div>
-          <div className="mt-1 text-xl font-bold tracking-tight text-foreground tabular-nums">{m.value}</div>
-          {m.note && (
-            <div
-              className={`mt-0.5 text-[11px] ${
-                m.tone === "up" ? "text-emerald-600 dark:text-emerald-400" : m.tone === "down" ? "text-rose-600 dark:text-rose-400" : "text-muted-foreground"
-              }`}
-            >
-              {m.note}
-            </div>
-          )}
-        </div>
-      ))}
+    // The cells draw their own right and bottom rules; the inner grid is pulled 1px past the
+    // panel's edge so the last column and row do not double the panel's hairline.
+    <div className={`nf-panel overflow-hidden ${className ?? ""}`}>
+      <div className="-mb-px -mr-px grid grid-cols-2 sm:grid-cols-3">
+        {items.map((m) => (
+          <div key={m.label} className="border-b border-r border-border p-4" title={m.hint}>
+            <div className="text-xs text-muted-foreground">{m.label}</div>
+            <div className="mt-1.5 text-xl font-semibold tracking-[-0.01em] text-foreground tabular-nums">{m.value}</div>
+            {m.note && (
+              <div
+                className={`mt-1 text-xs ${
+                  m.tone === "up" ? "text-success-deep" : m.tone === "down" ? "text-danger-deep" : "text-muted-foreground"
+                }`}
+              >
+                {m.note}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

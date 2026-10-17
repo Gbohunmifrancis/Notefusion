@@ -55,7 +55,8 @@ export const CHART: Record<ThemeMode, ChartPalette> = {
   light: {
     grid: "#eff3f9",
     axis: "#e2e8f0",
-    tick: "#94a3b8",
+    // Slate 500: axis labels at 4.8:1 on the white card (the old #94a3b8 read at 2.6).
+    tick: "#64748b",
     series: "#2563eb",
     sky: "#0ea5e9",
     success: "#16a34a",

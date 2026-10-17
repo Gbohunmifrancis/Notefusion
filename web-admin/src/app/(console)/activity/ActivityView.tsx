@@ -231,7 +231,7 @@ function TranscriptionsTab() {
 
       <div className="flex flex-wrap items-center gap-2.5">
         <div className="relative w-full max-w-xs">
-          <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="search"
             value={search}
@@ -278,7 +278,7 @@ function TranscriptionsTab() {
           <Badge tone="danger">{`${s.failed} failed`}</Badge>
           <Badge tone="danger">{`${s.refused} refused`}</Badge>
           <Badge tone="neutral">{`${s.running} running`}</Badge>
-          <Badge tone="blue">{`${s.saved} saved (${s.total ? Math.round((s.saved / s.total) * 100) : 0}%)`}</Badge>
+          <Badge tone="neutral">{`${s.saved} saved (${s.total ? Math.round((s.saved / s.total) * 100) : 0}%)`}</Badge>
           <Badge tone="warning">{`${s.storePreviews} store previews`}</Badge>
           <Badge tone="neutral">{`${formatBytes(s.totalBytes)} uploaded`}</Badge>
         </div>

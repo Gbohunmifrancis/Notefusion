@@ -1,7 +1,7 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Download, Mail, Search, Sparkles, UserCheck } from "lucide-react";
+import { Download, Mail, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { getWaitlist } from "@/api/endpoints";
@@ -33,13 +33,6 @@ const PAGE_SIZE = 25;
 
 function RoleBadge({ role }: { role: string | null }) {
   if (!role) return <span className="text-faint">—</span>;
-  const lower = role.toLowerCase();
-  if (lower.includes("director") || lower.includes("leader")) {
-    return <Badge tone="blue">{role}</Badge>;
-  }
-  if (lower.includes("teacher") || lower.includes("instructor")) {
-    return <Badge tone="premium">{role}</Badge>;
-  }
   return <Badge>{role}</Badge>;
 }
 
@@ -121,29 +114,19 @@ export function WaitlistView() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card className="flex items-center justify-between p-5">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Total Waitlist
-            </p>
-            <p className="mt-1 text-2xl font-bold tracking-tight text-foreground">
+            <p className="text-[13px] font-medium text-muted-foreground">Total waitlist</p>
+            <p className="mt-3 text-[28px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">
               {state.data ? formatCount(state.data.totalCount) : "—"}
             </p>
-          </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
-            <Sparkles className="h-5 w-5" />
           </div>
         </Card>
         <Card className="flex items-center justify-between p-5">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Program Status
-            </p>
-            <p className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+            <p className="text-[13px] font-medium text-muted-foreground">Program status</p>
+            <p className="mt-3 flex items-center gap-1.5 text-sm font-medium text-success-deep">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
               Early Access Active
             </p>
-          </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
-            <UserCheck className="h-5 w-5" />
           </div>
         </Card>
       </div>

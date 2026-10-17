@@ -18,7 +18,6 @@ import type { FormEvent } from "react";
 
 import { ApiError } from "@/api/client";
 import { BrandMark } from "@/components/BrandMark";
-import { StaffRibbon } from "@/components/StaffRibbon";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -108,22 +107,6 @@ export function LoginView() {
     <div className="min-h-screen bg-card lg:grid lg:grid-cols-2">
       {/* ── Brand panel — desktop only, since a phone has no room to spare ──── */}
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-navy p-12 lg:flex">
-        {/* Ambient blue light, so the navy reads as a lit surface rather than a flat fill. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -left-24 -top-28 h-80 w-80 rounded-full"
-          style={{ background: "rgba(37, 99, 235, 0.38)", filter: "blur(90px)" }}
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-20 right-0 h-72 w-72 rounded-full"
-          style={{ background: "rgba(14, 165, 233, 0.20)", filter: "blur(90px)" }}
-        />
-        {/* Colour via currentColor (text-*) since StaffRibbon has no style prop. */}
-        <StaffRibbon
-          className="pointer-events-none absolute bottom-0 left-0 h-[132px] w-full text-white"
-          opacity={0.1}
-        />
 
         <div className="relative flex items-center gap-2.5">
           <BrandMark size={26} className="text-white" />
@@ -142,9 +125,7 @@ export function LoginView() {
           <ul className="mt-8 space-y-4">
             {POINTS.map(({ icon: Icon, text }) => (
               <li key={text} className="flex items-start gap-3">
-                <span className="mt-px grid h-7 w-7 shrink-0 place-items-center rounded-sm bg-white/10 text-white">
-                  <Icon size={14} aria-hidden="true" />
-                </span>
+                <Icon size={16} aria-hidden="true" className="mt-0.5 shrink-0 text-white/70" />
                 <span className="text-[13.5px] leading-relaxed text-white/75">{text}</span>
               </li>
             ))}
@@ -185,7 +166,7 @@ export function LoginView() {
                 </Label>
                 <div className="relative mt-1.5">
                   <Mail
-                    size={15}
+                    size={16}
                     aria-hidden="true"
                     className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint"
                   />
@@ -208,7 +189,7 @@ export function LoginView() {
                 </Label>
                 <div className="relative mt-1.5">
                   <Lock
-                    size={15}
+                    size={16}
                     aria-hidden="true"
                     className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint"
                   />
@@ -258,7 +239,7 @@ export function LoginView() {
                 role="alert"
                 className="mt-4 flex items-start gap-2 rounded-sm bg-danger/10 px-3.5 py-2.5 text-[13px] text-danger-deep"
               >
-                <AlertTriangle size={15} className="mt-px shrink-0" aria-hidden="true" />
+                <AlertTriangle size={16} className="mt-px shrink-0" aria-hidden="true" />
                 {error}
               </p>
             )}

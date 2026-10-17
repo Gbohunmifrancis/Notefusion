@@ -2,6 +2,9 @@
 
 import {
   AlertCircle,
+  Check,
+  ChevronLeft,
+  ChevronRight,
   Download,
   Loader2,
   Mail,
@@ -60,8 +63,8 @@ function fileSizeLabel(bytes: number): string {
 function EmptyState() {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800">
-        <Mail size={26} className="text-slate-400" aria-hidden="true" />
+      <div className="flex h-14 w-14 items-center justify-center rounded-[10px] bg-slate-100 dark:bg-slate-800">
+        <Mail size={20} className="text-slate-400" aria-hidden="true" />
       </div>
       <p className="font-medium text-slate-700 dark:text-slate-200">No emails yet</p>
       <p className="max-w-xs text-sm text-slate-400 dark:text-slate-500">
@@ -73,7 +76,7 @@ function EmptyState() {
 
 function ErrorBanner({ message }: { message: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-400">
+    <div className="flex items-center gap-2 rounded-[8px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-400">
       <AlertCircle size={16} aria-hidden="true" className="shrink-0" />
       {message}
     </div>
@@ -122,7 +125,7 @@ function ReplyForm({
   }
 
   return (
-    <div className="mt-4 rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-slate-900">
+    <div className="mt-4 rounded-[10px] border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-slate-900">
       <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-white/10">
         <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">Reply</span>
         <button
@@ -155,12 +158,12 @@ function ReplyForm({
           <button
             onClick={handleSend}
             disabled={sending || !body.trim()}
-            className="flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-[8px] bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-500 disabled:opacity-50"
           >
             {sending ? (
-              <Loader2 size={15} className="animate-spin" />
+              <Loader2 size={16} className="animate-spin" />
             ) : (
-              <Reply size={15} />
+              <Reply size={16} />
             )}
             {sending ? "Sending…" : "Send reply"}
           </button>
@@ -238,7 +241,7 @@ function EmailDetailPanel({
           {!replying && !sentBanner && (
             <button
               onClick={() => setReplying(true)}
-              className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
+              className="flex items-center gap-1.5 rounded-[8px] border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
             >
               <Reply size={14} />
               Reply
@@ -258,7 +261,7 @@ function EmailDetailPanel({
       <div className="min-h-0 flex-1 overflow-y-auto p-6">
         {loading && (
           <div className="flex justify-center py-16">
-            <Loader2 className="animate-spin text-blue-500" size={24} />
+            <Loader2 className="animate-spin text-blue-500" size={20} />
           </div>
         )}
         {error && <ErrorBanner message={error} />}
@@ -266,8 +269,9 @@ function EmailDetailPanel({
         {detail && !loading && (
           <>
             {sentBanner && (
-              <div className="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 dark:border-green-900/50 dark:bg-green-950/40 dark:text-green-400">
-                ✓ Reply sent successfully.
+              <div className="mb-4 flex items-center gap-2 rounded-[8px] border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 dark:border-green-900/50 dark:bg-green-950/40 dark:text-green-400">
+                <Check size={16} aria-hidden="true" />
+                Reply sent successfully.
               </div>
             )}
 
@@ -277,11 +281,11 @@ function EmailDetailPanel({
                 srcDoc={EMAIL_CSP + detail.htmlBody}
                 sandbox=""
                 title="Email body"
-                className="h-[480px] w-full rounded-xl border border-slate-200 bg-white dark:border-white/10"
+                className="h-[480px] w-full rounded-[8px] border border-slate-200 bg-white dark:border-white/10"
                 style={{ colorScheme: "light" }}
               />
             ) : (
-              <pre className="whitespace-pre-wrap rounded-xl border border-slate-200 bg-slate-50 p-4 font-mono text-sm text-slate-700 dark:border-white/10 dark:bg-slate-800 dark:text-slate-300">
+              <pre className="whitespace-pre-wrap rounded-[8px] border border-slate-200 bg-slate-50 p-4 font-mono text-sm text-slate-700 dark:border-white/10 dark:bg-slate-800 dark:text-slate-300">
                 {detail.textBody ?? "(No body)"}
               </pre>
             )}
@@ -299,7 +303,7 @@ function EmailDetailPanel({
                       href={att.downloadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
+                      className="flex items-center gap-2 rounded-[8px] border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
                     >
                       <Download size={14} className="shrink-0 text-slate-400" />
                       <span className="max-w-[160px] truncate">{att.filename}</span>
@@ -346,7 +350,7 @@ function EmailListItem({
   return (
     <button
       onClick={onClick}
-      className={`w-full rounded-xl px-4 py-3 text-left transition ${
+      className={`w-full rounded-[8px] px-4 py-3 text-left transition ${
         selected
           ? "bg-blue-600 text-white shadow-md shadow-blue-900/20"
           : "hover:bg-slate-100 dark:hover:bg-white/5"
@@ -377,7 +381,7 @@ function EmailListItem({
       </p>
       {email.hasAttachments && (
         <Paperclip
-          size={12}
+          size={14}
           className={`mt-1 ${selected ? "text-blue-200" : "text-slate-400"}`}
           aria-label="Has attachments"
         />
@@ -456,7 +460,7 @@ export function InboxView() {
           <div className="min-h-0 flex-1 overflow-y-auto p-2">
             {loading && (
               <div className="flex justify-center py-10">
-                <Loader2 className="animate-spin text-blue-500" size={22} />
+                <Loader2 className="animate-spin text-blue-500" size={20} />
               </div>
             )}
             {!loading && emails.length === 0 && <EmptyState />}
@@ -476,9 +480,10 @@ export function InboxView() {
               <button
                 disabled={page === 1}
                 onClick={() => load(page - 1)}
-                className="text-xs font-medium text-blue-600 disabled:opacity-40 hover:underline"
+                className="inline-flex items-center gap-0.5 text-xs font-medium text-brand disabled:opacity-40 hover:underline"
               >
-                ← Prev
+                <ChevronLeft size={14} aria-hidden="true" />
+                Prev
               </button>
               <span className="text-xs text-slate-400">
                 {page} / {totalPages}
@@ -486,9 +491,10 @@ export function InboxView() {
               <button
                 disabled={page === totalPages}
                 onClick={() => load(page + 1)}
-                className="text-xs font-medium text-blue-600 disabled:opacity-40 hover:underline"
+                className="inline-flex items-center gap-0.5 text-xs font-medium text-brand disabled:opacity-40 hover:underline"
               >
-                Next →
+                Next
+                <ChevronRight size={14} aria-hidden="true" />
               </button>
             </div>
           )}
@@ -505,7 +511,7 @@ export function InboxView() {
           ) : (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
-                <Mail size={32} className="mx-auto mb-3 text-slate-300 dark:text-slate-600" />
+                <Mail size={20} className="mx-auto mb-3 text-slate-300 dark:text-slate-600" />
                 <p className="text-sm text-slate-400 dark:text-slate-500">
                   Select an email to read it
                 </p>

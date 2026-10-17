@@ -12,7 +12,7 @@ import { RangePicker, type Range } from "@/components/RangePicker";
 import { Segmented } from "@/components/Segmented";
 import { StateView } from "@/components/StateView";
 import { useChartPalette } from "@/lib/chart";
-import { formatCount, formatDayShort, formatPercent, formatWeekOf, getFlagEmoji, reportingToday, addDays } from "@/lib/format";
+import { formatCount, formatDayShort, formatPercent, formatWeekOf, reportingToday, addDays } from "@/lib/format";
 
 /* Insights: the customer behaviour behind the overview's totals, cut by date, country, platform and plan.
  * Every chart answers one question a decision hangs on, and says its answer in a line under the title. */
@@ -116,7 +116,7 @@ export function InsightsView() {
           <option value="all">All countries</option>
           {(state.data?.filters.countries ?? []).map((c) => (
             <option key={c.label} value={c.label}>
-              {getFlagEmoji(c.label)} {countryName(c.label)} ({c.count})
+              {countryName(c.label)} ({c.count})
             </option>
           ))}
         </select>
@@ -188,7 +188,7 @@ function InsightsBody({
   ];
   const signupTotals = { web: sum(d.dailySignups.map((x) => x.web)), app: sum(d.dailySignups.map((x) => x.app)) };
 
-  const countryRows = d.countries.map((r) => ({ label: `${getFlagEmoji(r.country)} ${countryName(r.country)}`.trim(), count: r[metric], raw: r }));
+  const countryRows = d.countries.map((r) => ({ label: countryName(r.country), count: r[metric], raw: r }));
   const bestPro = d.countries.filter((r) => r.accounts >= 5 && r.country !== "Other").sort((a, b) => b.pro / b.accounts - a.pro / a.accounts)[0];
 
   const heatMax = Math.max(0, ...d.heatmap.map((h) => h.count));

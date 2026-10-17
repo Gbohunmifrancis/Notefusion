@@ -84,11 +84,11 @@ function userInitials(name: string): string {
 }
 
 /**
- * The console's frame: a branded sidebar (the app icon, the wordmark, an amber "Admin" plaque, the
- * nav, and a card saying who is signed in), a top bar, and the canvas every page sits on.
+ * The console's frame: a sidebar (the app icon, the wordmark, an "Admin" marker, the nav, and who
+ * is signed in), a top bar, and the plain page every view sits on.
  *
  * Colours come from the theme tokens in src/app/globals.css, never from a hex here, so Day and
- * Night both follow; the canvas's staff-line texture and brand light are `.nf-canvas`.
+ * Night both follow.
  */
 export function ConsoleShell({ children }: { children: ReactNode }) {
   const { user, avatarUrl } = useAuth();
@@ -110,33 +110,24 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon" className="border-r border-sidebar-border">
-        <SidebarHeader className="relative gap-0 overflow-hidden border-b border-sidebar-border p-0">
-          {/* The app's colours in a row along the top edge: blue, sky, mint, amber. */}
-          <div aria-hidden="true" className="h-[3px] w-full shrink-0" style={{ background: "var(--brand-strip)" }} />
+        <SidebarHeader className="h-14 justify-center border-b border-sidebar-border px-3 py-0">
           <Link
             href="/"
             aria-label="NoteFusion Admin — Overview"
-            className="relative flex items-center gap-3 px-4 py-4 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-3"
+            className="flex items-center gap-2.5 rounded-[8px] px-1.5 py-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
           >
-            {/* Stage light behind the logo. */}
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute -left-10 -top-14 size-44 rounded-full bg-[radial-gradient(circle,var(--canvas-light-1),transparent_68%)]"
-            />
             {/* The launcher icon itself (web-site/assets/icon-192.png), not a redrawing of it. A
                 plain <img>: a 14 KB local PNG at a fixed size gains nothing from next/image. */}
             <img
               src="/brand/app-icon-192.png"
               alt=""
-              width={40}
-              height={40}
-              className="relative size-10 shrink-0 rounded-[12px] shadow-fusion group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:rounded-[10px]"
+              width={28}
+              height={28}
+              className="size-7 shrink-0 rounded-[7px]"
             />
-            <span className="relative min-w-0 group-data-[collapsible=icon]:hidden">
-              <span className="block font-wordmark text-[21px] leading-none tracking-[-0.01em] text-foreground">
-                Note<span className="text-brand">Fusion</span>
-              </span>
-              <span className="mt-1.5 inline-flex items-center rounded-pill bg-linear-to-r from-[#fbd27a] to-[#f59e0b] px-2 py-[3px] text-[9.5px] font-extrabold uppercase leading-none tracking-[0.18em] text-premium-ink shadow-[0_4px_12px_-4px_rgba(245,158,11,0.6)]">
+            <span className="flex min-w-0 items-center gap-2 group-data-[collapsible=icon]:hidden">
+              <span className="font-wordmark text-[17px] leading-none text-foreground">NoteFusion</span>
+              <span className="rounded-[5px] border border-border px-1.5 py-px text-[11px] font-medium leading-4 text-muted-foreground">
                 Admin
               </span>
             </span>
@@ -145,32 +136,33 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
         <ConsoleNav />
 
-        <SidebarFooter className="border-t border-sidebar-border p-3">
+        <SidebarFooter className="border-t border-sidebar-border p-2">
           <SignedInCard name={user?.fullName || firstName || "Admin"} email={user?.email ?? ""} />
         </SidebarFooter>
       </Sidebar>
 
       <SidebarInset className="min-w-0 w-full overflow-x-hidden">
         {/* TOP BAR */}
-        <header className="sticky top-0 z-20 flex h-16 items-center border-b border-border/70 bg-background/85 px-4 backdrop-blur-md sm:px-6 lg:px-8">
+        <header className="sticky top-0 z-20 flex h-14 items-center border-b border-border bg-background px-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-7xl items-center">
-            <SidebarTrigger className="mr-3 size-9 rounded-[10px] text-muted-foreground hover:bg-accent hover:text-foreground" />
+            <SidebarTrigger className="mr-3 size-8 rounded-[8px] text-muted-foreground hover:bg-accent hover:text-foreground" />
 
             <form onSubmit={onSearch} className="relative w-full max-w-md">
               <Search
                 size={16}
-                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-faint"
+                aria-hidden="true"
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
               />
               <input
                 name="q"
                 type="search"
                 aria-label="Search users"
                 placeholder="Search users, transactions, or anything..."
-                className="h-9.5 w-full rounded-[12px] border border-[color:var(--panel-line)] bg-card/70 pl-10 pr-4 text-xs text-foreground outline-none transition placeholder:text-faint focus:border-brand focus:bg-card focus:ring-2 focus:ring-brand/20 sm:text-sm"
+                className="h-8 w-full rounded-[8px] border border-border bg-card pl-9 pr-3 text-xs text-foreground outline-none transition-colors placeholder:text-faint focus:border-ring sm:text-sm"
               />
             </form>
 
-            <div className="ml-auto flex items-center gap-3">
+            <div className="ml-auto flex items-center gap-2">
               <LiveNotices />
 
               <ThemeToggle />
@@ -183,21 +175,21 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
                 {avatarUrl ? (
                   <Avatar name={user?.fullName || user?.email || "Admin"} src={avatarUrl} size={32} />
                 ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand/15 text-xs font-bold text-ice ring-1 ring-brand/30">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-medium text-foreground ring-1 ring-inset ring-border">
                     {userInitials(user?.fullName || user?.email || "Admin")}
                   </div>
                 )}
 
                 <div className="hidden sm:flex items-center gap-1.5 cursor-pointer">
-                  <span className="text-xs font-semibold text-foreground">{firstName}</span>
-                  <ChevronDown size={14} className="text-faint" />
+                  <span className="text-[13px] font-medium text-foreground">{firstName}</span>
+                  <ChevronDown size={14} aria-hidden="true" className="text-faint" />
                 </div>
               </div>
             </div>
           </div>
         </header>
 
-        <div className="nf-canvas min-h-[calc(100vh-4rem)] w-full min-w-0 px-4 py-6 text-foreground sm:px-6 sm:py-7 lg:px-8">
+        <div className="min-h-[calc(100vh-3.5rem)] w-full min-w-0 bg-background px-4 py-6 text-foreground sm:px-6 sm:py-8 lg:px-8">
           <div className="mx-auto w-full min-w-0 max-w-7xl space-y-6">{children}</div>
         </div>
       </SidebarInset>
@@ -206,21 +198,19 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 }
 
 /**
- * One nav entry. The page you are on wears "The Fusion" — the brand gradient with its glow — the
- * way the app marks its selected tab; the rest are quiet until pointed at.
+ * One nav entry. The page you are on is a neutral raised row with its icon in brand blue; the
+ * rest are quiet until pointed at.
  */
 function NavItem({
   to,
   label,
   icon: Icon,
   active,
-  small = false,
 }: {
   to: string;
   label: string;
   icon: (typeof PRIMARY_NAV)[number]["icon"];
   active: boolean;
-  small?: boolean;
 }) {
   const { setOpenMobile } = useSidebar();
   return (
@@ -230,17 +220,16 @@ function NavItem({
         isActive={active}
         tooltip={label}
         className={cn(
-          "rounded-[12px] px-3 transition",
-          small ? "h-9 text-[13px] font-medium" : "h-10 text-sm font-medium",
+          "h-8 rounded-[6px] px-2.5 text-[13px] font-medium transition-colors",
           active
-            ? "nf-fusion font-semibold hover:text-white active:text-white data-[active=true]:font-semibold data-[active=true]:text-white"
+            ? "bg-sidebar-accent text-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-foreground"
             : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground",
         )}
       >
-        <Link href={to} onClick={() => setOpenMobile(false)} className="flex items-center gap-3">
+        <Link href={to} onClick={() => setOpenMobile(false)} className="flex items-center gap-2.5">
           <Icon
-            size={small ? 16 : 18}
-            className={active ? "text-white" : "text-faint"}
+            size={16}
+            className={active ? "text-brand" : "text-faint"}
             aria-hidden="true"
           />
           <span>{label}</span>
@@ -254,20 +243,20 @@ function ConsoleNav() {
   const pathname = usePathname();
 
   return (
-    <SidebarContent className="px-3 py-4 space-y-5">
+    <SidebarContent className="gap-4 px-2 py-3">
       <SidebarGroup className="p-0">
-        <SidebarMenu className="gap-1">
+        <SidebarMenu className="gap-0.5">
           {PRIMARY_NAV.map(({ to, label, icon }) => (
             <NavItem key={`${to}-${label}`} to={to} label={label} icon={icon} active={isActivePath(pathname, to)} />
           ))}
         </SidebarMenu>
       </SidebarGroup>
 
-      <SidebarGroup className="p-0 pt-2 border-t border-sidebar-border">
-        <SidebarGroupLabel className="nf-eyebrow mb-1 px-3 text-[10px] text-faint">Operations</SidebarGroupLabel>
-        <SidebarMenu className="gap-1">
+      <SidebarGroup className="p-0">
+        <SidebarGroupLabel className="h-7 px-2.5 text-xs font-medium text-faint">Operations</SidebarGroupLabel>
+        <SidebarMenu className="gap-0.5">
           {SECONDARY_NAV.map(({ to, label, icon }) => (
-            <NavItem key={`${to}-${label}`} to={to} label={label} icon={icon} active={isActivePath(pathname, to)} small />
+            <NavItem key={`${to}-${label}`} to={to} label={label} icon={icon} active={isActivePath(pathname, to)} />
           ))}
         </SidebarMenu>
       </SidebarGroup>
@@ -280,30 +269,24 @@ function SignedInCard({ name, email }: { name: string; email: string }) {
   const { signOut } = useAuth();
 
   return (
-    <>
-      <div className="nf-panel p-3 group-data-[collapsible=icon]:hidden">
-        <p className="nf-eyebrow text-[10px] text-muted-foreground">Signed in as</p>
-        <p className="mt-1 truncate text-sm font-bold text-ice" title={name}>{name}</p>
-        {email && <p className="truncate text-[11px] text-muted-foreground" title={email}>{email}</p>}
-        <button
-          type="button"
-          onClick={() => void signOut()}
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-[10px] border border-[color:var(--panel-line)] bg-muted/70 px-3 py-2 text-xs font-semibold text-foreground transition hover:border-[color:var(--panel-line-hover)] hover:bg-accent motion-safe:active:scale-[0.97]"
-        >
-          <LogOut size={14} aria-hidden="true" />
-          Sign out
-        </button>
+    <div className="flex items-center gap-2.5 rounded-[8px] px-1.5 py-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+      <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-[11px] font-medium text-foreground ring-1 ring-inset ring-border group-data-[collapsible=icon]:hidden">
+        {userInitials(name)}
+      </div>
+      <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+        <p className="truncate text-[13px] font-medium text-foreground" title={name}>{name}</p>
+        {email && <p className="truncate text-xs text-muted-foreground" title={email}>{email}</p>}
       </div>
       <button
         type="button"
         onClick={() => void signOut()}
         aria-label="Sign out"
         title="Sign out"
-        className="hidden size-8 items-center justify-center rounded-[10px] text-muted-foreground transition hover:bg-sidebar-accent hover:text-foreground group-data-[collapsible=icon]:flex"
+        className="flex size-8 shrink-0 items-center justify-center rounded-[6px] text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
       >
         <LogOut size={16} aria-hidden="true" />
       </button>
-    </>
+    </div>
   );
 }
 
@@ -325,7 +308,7 @@ function ThemeToggle() {
       className="size-8 shrink-0 text-muted-foreground hover:text-foreground disabled:opacity-100"
       {...(mounted ? { title: label, "aria-label": label } : { "aria-label": "Switch theme" })}
     >
-      {mounted ? dark ? <Sun size={17} aria-hidden="true" /> : <Moon size={17} aria-hidden="true" /> : null}
+      {mounted ? dark ? <Sun size={16} aria-hidden="true" /> : <Moon size={16} aria-hidden="true" /> : null}
     </Button>
   );
 }

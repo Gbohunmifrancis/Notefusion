@@ -13,15 +13,15 @@
 
 import { cn } from "@/lib/utils";
 
-// Each tint carries a hairline of its own colour, so a pill reads as a lit chip on the night
-// canvas rather than a smudge.
+// Neutral is the default and the common case; a colour is only for meaning — status (green, red,
+// amber), Pro (amber), in progress (blue). Each tint is faint with a hairline of its own colour.
 const TONES = {
   neutral: "bg-muted text-muted-foreground ring-border",
-  blue: "bg-brand/12 text-brand-deep ring-brand/25",
-  success: "bg-success/12 text-success-deep ring-success/25",
-  warning: "bg-warning/12 text-warning-deep ring-warning/25",
-  danger: "bg-danger/12 text-danger-deep ring-danger/25",
-  premium: "bg-premium/15 text-premium-deep ring-premium/30",
+  blue: "bg-brand/10 text-brand-deep ring-brand/20",
+  success: "bg-success/10 text-success-deep ring-success/20",
+  warning: "bg-warning/10 text-warning-deep ring-warning/20",
+  danger: "bg-danger/10 text-danger-deep ring-danger/20",
+  premium: "bg-premium/12 text-premium-deep ring-premium/25",
 } as const;
 
 export type BadgeTone = keyof typeof TONES;
@@ -39,7 +39,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-pill px-2.5 py-[3px] text-[11px] font-semibold ring-1 ring-inset",
+        "inline-flex items-center rounded-[6px] px-1.5 py-0.5 text-[11px] font-medium leading-4 ring-1 ring-inset",
         TONES[tone],
       )}
       {...(title ? { title } : {})}

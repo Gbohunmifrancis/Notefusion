@@ -19,15 +19,15 @@ export function LoadingView({ label = "Loading" }: { label?: string }) {
       className="flex items-center justify-center gap-2 py-12 text-sm text-muted-foreground"
       role="status"
     >
-      <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+      <Loader2 size={16} className="animate-spin" aria-hidden="true" />
       {label}…
     </div>
   );
 }
 
 /**
- * "Nothing here yet", said kindly: the icon in a lit chip, the message, and a line on what will
- * fill the space. `compact` drops the padding for a panel that is short to begin with.
+ * "Nothing here yet": a quiet icon, the message, and a line on what will fill the space.
+ * `compact` drops the padding for a panel that is short to begin with.
  */
 export function EmptyView({
   message,
@@ -47,13 +47,8 @@ export function EmptyView({
         compact ? "py-6" : "py-12",
       )}
     >
-      <span
-        aria-hidden="true"
-        className="mb-1 grid size-12 place-items-center rounded-[14px] border border-brand/20 bg-brand/10 text-brand shadow-glow"
-      >
-        <Icon size={22} />
-      </span>
-      <p className="text-sm font-bold text-foreground">{message}</p>
+      <Icon size={20} aria-hidden="true" className="mb-1 text-faint" />
+      <p className="text-sm font-medium text-foreground">{message}</p>
       {hint && <p className="max-w-sm text-xs text-muted-foreground">{hint}</p>}
     </div>
   );
@@ -78,13 +73,8 @@ export function ErrorView({
       className="flex flex-col items-center justify-center gap-2 py-12 text-center"
       role="alert"
     >
-      <span
-        aria-hidden="true"
-        className="mb-1 grid size-12 place-items-center rounded-[14px] border border-danger/25 bg-danger/10 text-danger"
-      >
-        <AlertTriangle size={22} />
-      </span>
-      <p className="text-sm font-bold text-foreground">{error.message}</p>
+      <AlertTriangle size={20} aria-hidden="true" className="mb-1 text-danger" />
+      <p className="text-sm font-medium text-foreground">{error.message}</p>
       {code && (
         <p className="font-mono text-xs text-muted-foreground">
           {code}
@@ -98,7 +88,7 @@ export function ErrorView({
           size="sm"
           onClick={onRetry}
           disabled={retrying}
-          className="mt-2 rounded-pill text-xs font-semibold"
+          className="mt-2 text-xs"
         >
           {retrying && <Loader2 className="animate-spin" aria-hidden="true" />}
           {retrying ? "Retrying…" : "Try again"}

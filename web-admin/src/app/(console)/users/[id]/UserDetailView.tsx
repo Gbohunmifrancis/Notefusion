@@ -229,7 +229,7 @@ function IdentityCard({ user, offset }: { user: AdminUserDetail; offset: number 
 
       <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Field label="Role">
-          <Badge tone={user.role === "Admin" ? "blue" : "neutral"}>{user.role}</Badge>
+          <Badge>{user.role}</Badge>
         </Field>
         <Field label="Status">
           {user.isActive ? (
@@ -240,7 +240,7 @@ function IdentityCard({ user, offset }: { user: AdminUserDetail; offset: number 
         </Field>
         <Field label="Sign-in">
           <span className="flex flex-wrap gap-1">
-            {user.hasGoogle && <Badge tone="blue">Google</Badge>}
+            {user.hasGoogle && <Badge>Google</Badge>}
             {user.hasPassword && <Badge>Password</Badge>}
             {!user.hasGoogle && !user.hasPassword && <Badge tone="danger">No method</Badge>}
           </span>

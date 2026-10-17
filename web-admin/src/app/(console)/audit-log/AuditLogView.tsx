@@ -128,7 +128,7 @@ export function AuditLogView() {
             <label className="relative block">
               <span className="sr-only">Search by email or summary</span>
               <Search
-                size={15}
+                size={16}
                 className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
                 aria-hidden="true"
               />
@@ -156,7 +156,7 @@ export function AuditLogView() {
               className="h-auto rounded-pill px-2.5 py-1 text-[11px] font-semibold"
             >
               Clear
-              <X className="size-3" aria-hidden="true" />
+              <X className="size-3.5" aria-hidden="true" />
             </Button>
             <Link
               href={`/users/${targetUserId}`}

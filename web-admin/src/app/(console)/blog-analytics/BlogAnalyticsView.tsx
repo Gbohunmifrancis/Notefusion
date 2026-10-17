@@ -362,7 +362,7 @@ function PostTable({ posts }: { posts: BlogPostRow[] }) {
                       onClick={() => setSort({ key: col.key, desc: active ? !sort.desc : true })}
                     >
                       {col.label}
-                      {active && (sort.desc ? <ArrowDown className="h-3 w-3" aria-hidden /> : <ArrowUp className="h-3 w-3" aria-hidden />)}
+                      {active && (sort.desc ? <ArrowDown className="size-3.5" aria-hidden /> : <ArrowUp className="size-3.5" aria-hidden />)}
                     </button>
                   </th>
                 );
@@ -374,10 +374,10 @@ function PostTable({ posts }: { posts: BlogPostRow[] }) {
               <tr key={p.path} className="hover:bg-muted/40">
                 <td className="max-w-[320px] px-5 py-2.5">
                   <div className="flex items-center gap-2">
-                    <Badge tone={p.kind === "post" ? "blue" : p.kind === "hymn" ? "premium" : "neutral"}>{p.kind === "index" ? "list" : p.kind}</Badge>
+                    <Badge>{p.kind === "index" ? "list" : p.kind}</Badge>
                     <a href={SITE + p.path} target="_blank" rel="noopener noreferrer" className="inline-flex min-w-0 items-center gap-1 text-foreground hover:underline" title={p.path}>
                       <span className="truncate">{pageName(p.path)}</span>
-                      <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden />
+                      <ExternalLink className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
                     </a>
                   </div>
                 </td>

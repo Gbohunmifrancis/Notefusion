@@ -5,17 +5,17 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  // NoteFusion: a semibold label, the app's 10px corner, and the house press — 0.97 under the
-  // pointer, never under reduced motion. `default` wears "The Fusion" gradient and its glow.
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-[10px] text-sm font-semibold whitespace-nowrap transition-all outline-none motion-safe:active:scale-[0.97] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  // NoteFusion: a medium label and an 8px corner. `default` is solid brand blue, the one primary
+  // on a screen; everything else is neutral.
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-[8px] text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default: "nf-fusion hover:brightness-110",
+        default: "bg-primary text-primary-foreground shadow-xs hover:bg-primary-deep",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40",
         outline:
-          "border border-[color:var(--panel-line)] bg-card shadow-xs hover:border-[color:var(--panel-line-hover)] hover:bg-accent hover:text-accent-foreground",
+          "border border-border bg-card shadow-xs hover:bg-accent hover:text-accent-foreground",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost:
@@ -24,11 +24,11 @@ const buttonVariants = cva(
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        xs: "h-6 gap-1 rounded-[8px] px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-8 gap-1.5 rounded-[10px] px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-[12px] px-6 has-[>svg]:px-4",
+        xs: "h-6 gap-1 rounded-[6px] px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        sm: "h-8 gap-1.5 rounded-[8px] px-3 has-[>svg]:px-2.5",
+        lg: "h-10 rounded-[8px] px-6 has-[>svg]:px-4",
         icon: "size-9",
-        "icon-xs": "size-6 rounded-[8px] [&_svg:not([class*='size-'])]:size-3",
+        "icon-xs": "size-6 rounded-[6px] [&_svg:not([class*='size-'])]:size-3.5",
         "icon-sm": "size-8",
         "icon-lg": "size-10",
       },

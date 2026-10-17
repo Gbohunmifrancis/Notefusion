@@ -47,7 +47,7 @@ export function RecentActivity({ items }: { items: ActivityItem[] }) {
             <span
               className={`grid h-8 w-8 shrink-0 place-items-center rounded-full ${meta.tint}`}
             >
-              <Icon size={15} aria-hidden="true" />
+              <Icon size={16} aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">
               <p className="truncate text-[13px] text-foreground">

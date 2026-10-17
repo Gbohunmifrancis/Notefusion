@@ -143,7 +143,7 @@ export function WebhooksView() {
             <label className="relative block">
               <span className="sr-only">Search by event type, event id or payment reference</span>
               <Search
-                size={15}
+                size={16}
                 className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
                 aria-hidden="true"
               />

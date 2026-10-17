@@ -2,29 +2,24 @@
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
-  Activity,
-  BookOpenCheck,
   CalendarDays,
   ChevronDown,
-  Crown,
+  ChevronRight,
   CreditCard,
-  Globe2,
   HeartPulse,
   Inbox,
+  Mail,
   MailCheck,
-  MessageSquareHeart,
+  MessageSquare,
   MousePointerClick,
   Music2,
-  Plus,
+  PenSquare,
   Send,
   Share2,
   Sparkles,
   TriangleAlert,
-  UserRound,
   UserRoundPlus,
   UserRoundSearch,
-  Users2,
-  Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
@@ -54,9 +49,7 @@ import { RangePicker } from "@/components/RangePicker";
 import type { Range } from "@/components/RangePicker";
 import { EmptyView, StateView } from "@/components/StateView";
 import { SendEmailDialog } from "@/components/SendEmailDialog";
-import { StaffRibbon } from "@/components/StaffRibbon";
 import { StatStrip, StatTile } from "@/components/StatStrip";
-import type { StatTone } from "@/components/StatStrip";
 import {
   Table,
   TableBody,
@@ -152,55 +145,56 @@ function groupIntoDays(data: DailyCount[]): ChartGroup[] {
   }));
 }
 
-/** One headline tile: the figure, what it counts, and the chip colour it wears. */
+/** One headline tile: the figure and what it counts. */
 interface StatItem {
   title: string;
   value: string;
-  /** The raw number, for the count-up on first paint. */
-  count: number;
   change?: { label: string; up: boolean } | null;
   description?: string | null;
   hint?: string;
-  icon: LucideIcon;
-  tone: StatTone;
 }
 
-/** A section's heading: a lit icon chip and the name, in place of a rule across the page. */
-function SectionTitle({ icon: Icon, children, tone = "blue" }: { icon: LucideIcon; children: ReactNode; tone?: "blue" | "amber" | "mint" }) {
-  const chip = {
-    blue: "bg-brand/12 text-brand ring-brand/25",
-    amber: "bg-premium/15 text-premium-deep ring-premium/30",
-    mint: "bg-success/12 text-success-deep ring-success/25",
-  }[tone];
+/** A section's heading: the name, with a hairline above it to start the section. */
+function SectionTitle({ children }: { children: ReactNode }) {
   return (
-    <h3 className="flex items-center gap-2.5 text-lg font-extrabold tracking-[-0.02em] text-foreground">
-      <span aria-hidden="true" className={cn("grid size-8 place-items-center rounded-[10px] ring-1 ring-inset", chip)}>
-        <Icon size={16} />
-      </span>
+    <h2 className="border-t border-border pt-6 text-base font-semibold tracking-[-0.01em] text-foreground">
       {children}
-    </h3>
+    </h2>
   );
 }
 
+/** A panel's own heading, the same as `Card`'s. */
+const PANEL_TITLE = "text-sm font-semibold text-foreground";
+
 /**
- * The quick jobs: the console's everyday actions as big coloured buttons, each one a thing the
- * console already does — a new post, a batch of Gemini drafts, finding an account, the founder's
- * outreach log, the inbox, the health page. Blue for the blog, mint for people, amber for the desk.
+ * The quick jobs: the console's everyday actions as a plain list — a new post, a batch of Gemini
+ * drafts, finding an account, the founder's outreach log, the inbox, the health page.
  *
  * "Generate posts" opens the Blog page's own dialog here. It needs the drafting model's name, so
  * the blog's status is asked for only once the dialog is opened, under the Blog page's query key.
  */
-const QUICK_JOB_TONES = {
-  blue: "nf-fusion",
-  mint: "bg-linear-to-b from-[#5ee6aa] to-[#22c58a] text-mint-ink shadow-[0_8px_20px_-10px_rgba(61,220,151,0.7)]",
-  amber: "bg-linear-to-b from-[#fbd27a] to-[#f59e0b] text-premium-ink shadow-[0_8px_20px_-10px_rgba(245,158,11,0.7)]",
-} as const;
+const QUICK_JOB_ROW =
+  "flex w-full items-center gap-3 rounded-[6px] px-2 py-2 text-left text-[13px] font-medium text-foreground transition-colors hover:bg-accent";
 
-const QUICK_JOB_BUTTON =
-  "group relative flex h-11 items-center justify-center gap-1.5 overflow-hidden whitespace-nowrap rounded-[12px] px-2 text-[12.5px] font-bold " +
-  "ring-1 ring-inset ring-white/20 transition hover:brightness-110 motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0 motion-safe:active:scale-[0.97] " +
-  // The pressed-key lip along the bottom edge, as on the reference's buttons.
-  "after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:bg-black/15";
+function QuickJobRow({ icon: Icon, label, note }: { icon: LucideIcon; label: string; note: string }) {
+  return (
+    <>
+      <Icon size={16} aria-hidden="true" className="shrink-0 text-muted-foreground" />
+      <span className="min-w-0 flex-1">
+        <span className="block truncate">{label}</span>
+        <span className="block truncate text-xs font-normal text-muted-foreground">{note}</span>
+      </span>
+      <ChevronRight size={14} aria-hidden="true" className="shrink-0 text-faint" />
+    </>
+  );
+}
+
+const QUICK_LINKS: { label: string; note: string; href: string; icon: LucideIcon }[] = [
+  { label: "Find a user", note: "Search accounts by name or email", href: "/users", icon: UserRoundSearch },
+  { label: "Outreach log", note: "Founder notes and replies", href: "/feedback", icon: Send },
+  { label: "Inbox", note: "Messages from users", href: "/inbox", icon: Inbox },
+  { label: "System health", note: "API, database, jobs, webhooks", href: "/health", icon: HeartPulse },
+];
 
 function QuickJobs() {
   const [generating, setGenerating] = useState(false);
@@ -210,40 +204,32 @@ function QuickJobs() {
     enabled: generating,
   });
 
-  const links: { label: string; href: string; icon: LucideIcon; tone: keyof typeof QUICK_JOB_TONES }[] = [
-    { label: "Find a user", href: "/users", icon: UserRoundSearch, tone: "mint" },
-    { label: "Outreach log", href: "/feedback", icon: Send, tone: "mint" },
-    { label: "Inbox", href: "/inbox", icon: Inbox, tone: "amber" },
-    { label: "System health", href: "/health", icon: HeartPulse, tone: "amber" },
-  ];
-
   return (
     <section className="nf-panel flex h-full flex-col p-5" aria-labelledby="quick-jobs">
-      <h2 id="quick-jobs" className="text-[15px] font-bold tracking-tight text-foreground">
+      <h2 id="quick-jobs" className={PANEL_TITLE}>
         Quick jobs
       </h2>
       <p className="mt-0.5 text-xs text-muted-foreground">The things you come here to do.</p>
 
-      <div className="mt-4 grid grid-cols-2 gap-2.5">
-        <Link href="/blog/new" className={cn(QUICK_JOB_BUTTON, QUICK_JOB_TONES.blue)}>
-          <Plus size={16} aria-hidden="true" /> New post
-        </Link>
-        <button
-          type="button"
-          onClick={() => setGenerating(true)}
-          className={cn(QUICK_JOB_BUTTON, QUICK_JOB_TONES.blue)}
-        >
-          <Sparkles size={16} aria-hidden="true" /> Generate posts
-        </button>
-        {links.map(({ label, href, icon: Icon, tone }) => (
-          <Link key={href} href={href} className={cn(QUICK_JOB_BUTTON, QUICK_JOB_TONES[tone])}>
-            <Icon size={16} aria-hidden="true" /> {label}
+      <ul className="-mx-2 mt-3 space-y-0.5">
+        <li>
+          <Link href="/blog/new" className={QUICK_JOB_ROW}>
+            <QuickJobRow icon={PenSquare} label="New post" note="Write a blog post" />
           </Link>
+        </li>
+        <li>
+          <button type="button" onClick={() => setGenerating(true)} className={QUICK_JOB_ROW}>
+            <QuickJobRow icon={Sparkles} label="Generate posts" note="Draft a batch from the topic queue" />
+          </button>
+        </li>
+        {QUICK_LINKS.map(({ label, note, href, icon }) => (
+          <li key={href}>
+            <Link href={href} className={QUICK_JOB_ROW}>
+              <QuickJobRow icon={icon} label={label} note={note} />
+            </Link>
+          </li>
         ))}
-      </div>
-
-      {/* The app's stave, drifting along the foot of the panel. */}
-      <StaffRibbon className="mt-auto h-14 w-full pt-3 text-brand" opacity={0.3} />
+      </ul>
 
       <GenerateDialog
         open={generating}
@@ -275,7 +261,7 @@ function SignupChart({ data }: { data: DailyCount[] }) {
     <div className="nf-panel flex h-full flex-col p-5">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="text-[15px] font-bold tracking-tight text-foreground">Signups</h2>
+          <h2 className={PANEL_TITLE}>Signups</h2>
           <p className="mt-0.5 text-xs text-muted-foreground">New accounts in this period</p>
         </div>
         <Segmented label="Chart grouping" options={BUCKETS} value={bucket} onChange={setBucket} />
@@ -286,7 +272,7 @@ function SignupChart({ data }: { data: DailyCount[] }) {
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="signupGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={chart.series} stopOpacity={0.35} />
+                <stop offset="5%" stopColor={chart.series} stopOpacity={0.16} />
                 <stop offset="95%" stopColor={chart.series} stopOpacity={0.0} />
               </linearGradient>
             </defs>
@@ -312,9 +298,9 @@ function SignupChart({ data }: { data: DailyCount[] }) {
                 if (!active || !payload?.[0]) return null;
                 const point = payload[0].payload as ChartGroup;
                 return (
-                  <div className="rounded-[10px] border border-[color:var(--panel-line)] bg-popover p-2.5 shadow-lift">
-                    <p className="text-xs font-semibold text-foreground">{point.title}</p>
-                    <p className="mt-0.5 text-xs font-semibold text-brand">
+                  <div className="rounded-[8px] border border-border bg-popover px-3 py-2 shadow-md">
+                    <p className="text-xs font-medium text-foreground">{point.title}</p>
+                    <p className="mt-0.5 text-xs tabular-nums text-muted-foreground">
                       {formatCount(point.count)} signups
                     </p>
                   </div>
@@ -325,7 +311,7 @@ function SignupChart({ data }: { data: DailyCount[] }) {
               type="monotone"
               dataKey="count"
               stroke={chart.series}
-              strokeWidth={2.5}
+              strokeWidth={2}
               fillOpacity={1}
               fill="url(#signupGradient)"
             />
@@ -348,7 +334,7 @@ function WebFunnelPanel({ funnel }: { funnel: AnalyticsOverview["webFunnel"] }) 
 
   return (
     <div className="space-y-5">
-      <SectionTitle icon={MousePointerClick}>Web funnel</SectionTitle>
+      <SectionTitle>Web funnel</SectionTitle>
       <MetricRow
         items={[
           { label: "Previews", value: formatCount(funnel.previews), note: previewChange?.label, tone: previewChange ? (previewChange.up ? "up" : "down") : undefined, hint: `${formatCount(funnel.previewDevices)} browsers · ${formatCount(funnel.previewsSucceeded)} reached a result` },
@@ -388,7 +374,7 @@ function WebFunnelPanel({ funnel }: { funnel: AnalyticsOverview["webFunnel"] }) 
 function RankedList({ title, rows, empty, className = "" }: { title: string; rows: CategoryCount[]; empty: string; className?: string }) {
   return (
     <div className={`h-full min-w-0 nf-panel p-5 ${className}`}>
-      <h4 className="mb-3 text-[15px] font-bold tracking-tight text-foreground">{title}</h4>
+      <h3 className={cn("mb-3", PANEL_TITLE)}>{title}</h3>
       <RankedBars rows={rows} empty={empty} />
     </div>
   );
@@ -426,7 +412,7 @@ function WebTrafficPanel({ traffic }: { traffic: AnalyticsOverview["webTraffic"]
 
   return (
     <div className="space-y-5">
-      <SectionTitle icon={Globe2}>Website traffic</SectionTitle>
+      <SectionTitle>Website traffic</SectionTitle>
       <MetricRow
         items={[
           { label: "Page views", value: formatCount(traffic.pageviews), note: viewChange?.label, tone: viewChange ? (viewChange.up ? "up" : "down") : undefined, hint: "Pages viewed on the website and in the web app" },
@@ -443,9 +429,9 @@ function WebTrafficPanel({ traffic }: { traffic: AnalyticsOverview["webTraffic"]
         </div>
         {/* The feed scrolls inside a card the height of the chart beside it, instead of running on below it. */}
         <div className="flex min-h-0 flex-col nf-panel p-5 lg:col-span-5 lg:h-[22.5rem] xl:col-span-4">
-          <h4 className="mb-4 text-[15px] font-bold tracking-tight text-foreground">What web users do</h4>
+          <h3 className={cn("mb-4", PANEL_TITLE)}>What web users do</h3>
           {traffic.recentActions.length === 0 ? (
-            <div className="nf-well flex flex-1 items-center justify-center">
+            <div className="flex flex-1 items-center justify-center">
               <EmptyView
                 compact
                 icon={MousePointerClick}
@@ -501,7 +487,7 @@ function MembershipPanel({ membership }: { membership: AnalyticsOverview["member
   const lapseRate = m.activeMembers + m.lapsedMembers > 0 ? formatPercent(m.lapsedMembers / (m.activeMembers + m.lapsedMembers), 0) : UNKNOWN;
   return (
     <div className="space-y-5">
-      <SectionTitle icon={Crown} tone="amber">Pro membership</SectionTitle>
+      <SectionTitle>Pro membership</SectionTitle>
       <div className="grid gap-5 xl:grid-cols-3">
         <MetricRow
           className="xl:col-span-2"
@@ -539,15 +525,6 @@ function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[
   );
 }
 
-function getFlagEmoji(countryCode: string | null | undefined): string {
-  if (!countryCode || countryCode.length !== 2) return "";
-  const codePoints = countryCode
-    .toUpperCase()
-    .split("")
-    .map((char) => 127397 + char.charCodeAt(0));
-  return String.fromCodePoint(...codePoints);
-}
-
 const ACTIVITY_FILTERS = [
   { value: "all", label: "All" },
   { value: "transcriptions", label: "Transcriptions" },
@@ -557,15 +534,16 @@ const ACTIVITY_FILTERS = [
 ] as const;
 type ActivityFilter = (typeof ACTIVITY_FILTERS)[number]["value"];
 
-const ACTIVITY_KINDS: Record<string, { icon: typeof UserRound; style: string; group: ActivityFilter }> = {
-  signup: { icon: UserRoundPlus, style: "bg-brand/12 text-brand", group: "signups" },
-  transcription: { icon: Music2, style: "bg-indigo-500/15 text-indigo-600 dark:text-indigo-300", group: "transcriptions" },
-  transcription_failed: { icon: TriangleAlert, style: "bg-danger/12 text-danger", group: "transcriptions" },
-  payment: { icon: CreditCard, style: "bg-success/12 text-success-deep", group: "money" },
-  feedback: { icon: MessageSquareHeart, style: "bg-premium/15 text-premium-deep", group: "feedback" },
-  share: { icon: Share2, style: "bg-sky/15 text-sky-600 dark:text-sky", group: "transcriptions" },
+// Monochrome glyphs; only a failure is coloured, because it is the one row that asks for attention.
+const ACTIVITY_KINDS: Record<string, { icon: LucideIcon; style: string; group: ActivityFilter }> = {
+  signup: { icon: UserRoundPlus, style: "text-muted-foreground", group: "signups" },
+  transcription: { icon: Music2, style: "text-muted-foreground", group: "transcriptions" },
+  transcription_failed: { icon: TriangleAlert, style: "text-danger", group: "transcriptions" },
+  payment: { icon: CreditCard, style: "text-muted-foreground", group: "money" },
+  feedback: { icon: MessageSquare, style: "text-muted-foreground", group: "feedback" },
+  share: { icon: Share2, style: "text-muted-foreground", group: "transcriptions" },
   /** The founder's customer-research emails (GET /api/admin/outreach lists them all). */
-  outreach: { icon: MailCheck, style: "bg-violet-500/15 text-violet-600 dark:text-violet-300", group: "feedback" },
+  outreach: { icon: MailCheck, style: "text-muted-foreground", group: "feedback" },
 };
 
 function regionName(code: string | null | undefined): string {
@@ -592,8 +570,8 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
   return (
     <div className="flex h-full min-h-0 flex-col nf-panel p-5 lg:max-h-[24.5rem]">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-[15px] font-bold tracking-tight text-foreground">Recent activity</h2>
-        <Link href="/activity?tab=feed" className="text-xs font-semibold text-brand hover:underline">
+        <h2 className={PANEL_TITLE}>Recent activity</h2>
+        <Link href="/activity?tab=feed" className="text-xs font-medium text-brand hover:underline">
           View all
         </Link>
       </div>
@@ -604,11 +582,12 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
             type="button"
             onClick={() => setFilter(f.value)}
             aria-pressed={filter === f.value}
-            className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+            className={cn(
+              "rounded-[6px] px-2 py-1 text-xs font-medium ring-1 ring-inset transition-colors",
               filter === f.value
-                ? "nf-fusion"
-                : "bg-muted text-muted-foreground ring-1 ring-inset ring-border hover:text-foreground"
-            }`}
+                ? "bg-accent text-foreground ring-border"
+                : "text-muted-foreground ring-transparent hover:text-foreground",
+            )}
           >
             {f.label}
           </button>
@@ -616,7 +595,7 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
       </div>
 
       {shown.length === 0 ? (
-        <div className="nf-well flex flex-1 items-center justify-center">
+        <div className="flex flex-1 items-center justify-center">
           <EmptyView
             compact
             icon={Music2}
@@ -629,24 +608,21 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
           {shown.map((item, index) => {
             const kind = ACTIVITY_KINDS[item.kind] ?? ACTIVITY_KINDS.transcription!;
             const Icon = kind.icon;
-            const flag = getFlagEmoji(item.country);
             const at = item.occurredAtUtc;
             const exact = new Date(at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
             return (
               <li key={`${item.kind}-${at}-${index}`} className="group relative">
                 <Link
                   href={item.userId ? `/activity/journey?userId=${item.userId}` : "/activity?tab=feed"}
-                  className="flex items-start gap-3 rounded-[12px] px-2 py-2 transition-colors hover:bg-brand/[0.06]"
+                  className="flex items-start gap-3 rounded-[6px] px-2 py-2 transition-colors hover:bg-accent"
                 >
-                  <span className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] ring-1 ring-inset ring-current/20 ${kind.style}`}>
-                    <Icon size={14} />
-                  </span>
+                  <Icon size={16} aria-hidden="true" className={cn("mt-0.5 shrink-0", kind.style)} />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[12.5px] leading-snug text-foreground">
-                      <span className="font-semibold">{item.title}</span> {item.detail ?? item.kind}
+                    <span className="block text-[13px] leading-snug text-foreground">
+                      <span className="font-medium">{item.title}</span>{" "}
+                      <span className="text-muted-foreground">{item.detail ?? item.kind}</span>
                     </span>
-                    <span className="mt-0.5 block truncate text-[11px] text-muted-foreground">
-                      {flag && <span className="mr-1">{flag}</span>}
+                    <span className="mt-0.5 block truncate text-xs text-muted-foreground">
                       {regionName(item.country)}
                       {item.country ? " · " : ""}
                       <time dateTime={at} title={exact}>{formatRelative(at, now)}</time>
@@ -660,11 +636,11 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
                       setEmailTarget({ email: item.email!, fullName: item.title, id: item.userId! });
                       setEmailDialogOpen(true);
                     }}
-                    className="absolute right-1 top-2 rounded-md p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-brand/10 hover:text-brand focus:opacity-100 group-hover:opacity-100"
+                    className="absolute right-1 top-1.5 rounded-[6px] bg-card p-1 text-muted-foreground opacity-0 transition-opacity hover:text-foreground focus:opacity-100 group-hover:opacity-100"
                     title={`Email ${item.title}`}
                     aria-label={`Email ${item.title}`}
                   >
-                    <MailCheck size={14} />
+                    <Mail size={14} aria-hidden="true" />
                   </button>
                 )}
               </li>
@@ -724,31 +700,22 @@ export function OverviewView() {
 
   return (
     <div className="animate-fade-in space-y-6">
-      <div className="relative flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
-        {/* The app's stave drifting behind the greeting: decoration, under everything. */}
-        <StaffRibbon
-          className="pointer-events-none absolute -top-8 right-0 -z-10 hidden h-32 w-[min(600px,60%)] text-brand md:block"
-          opacity={0.15}
-        />
+      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div className="min-w-0">
-          <p className="nf-eyebrow">Overview · Good {partOfDay()}</p>
-          <h1 className="mt-1.5 text-[32px] font-extrabold leading-[1.05] tracking-[-0.035em] text-foreground sm:text-[38px]">
-            Welcome,{" "}
-            <span className="bg-linear-to-r from-brand to-ice bg-clip-text text-transparent">
-              {firstName || "admin"}
-            </span>
+          <h1 className="text-2xl font-semibold leading-tight tracking-[-0.02em] text-foreground">
+            Good {partOfDay()}{firstName ? `, ${firstName}` : ""}
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Here&apos;s how NoteFusion is singing: who joined, what was transcribed and what sold.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Who joined, what was transcribed and what sold in the selected dates.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-xs text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="mr-1 text-xs text-muted-foreground">
             Days bucketed in {formatOffset(state.data?.reportingOffsetMinutes ?? 60)}
           </span>
 
-          <div className="flex rounded-[12px] border border-[color:var(--panel-line)] bg-card/80 p-1 shadow-xs">
+          <div className="flex rounded-[8px] border border-border bg-muted p-0.5" role="group" aria-label="Range presets">
             {[7, 30, 90].map((days) => (
               <button
                 key={days}
@@ -756,8 +723,10 @@ export function OverviewView() {
                 onClick={() => setPresetDays(days)}
                 aria-pressed={isPreset(days)}
                 className={cn(
-                  "rounded-[9px] px-4 py-2 text-xs font-semibold transition",
-                  isPreset(days) ? "nf-fusion" : "text-muted-foreground hover:text-foreground",
+                  "rounded-[6px] px-3 py-1 text-xs font-medium transition-colors",
+                  isPreset(days)
+                    ? "bg-card text-foreground shadow-xs dark:bg-accent"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {days}d
@@ -769,15 +738,15 @@ export function OverviewView() {
             type="button"
             onClick={() => setShowRangePicker((p) => !p)}
             aria-expanded={showRangePicker}
-            className="flex items-center gap-2 rounded-[12px] border border-[color:var(--panel-line)] bg-card/80 px-4 py-2.5 text-xs font-medium text-foreground shadow-xs transition hover:border-[color:var(--panel-line-hover)]"
+            className="flex h-8 items-center gap-2 rounded-[8px] border border-border bg-card px-3 text-xs font-medium text-foreground shadow-xs transition-colors hover:bg-accent"
           >
-            <CalendarDays size={15} />
+            <CalendarDays size={14} aria-hidden="true" className="text-muted-foreground" />
             <span>
               {picker
-                ? `${formatDayShort(picker.from)} - ${formatDayShort(picker.to)}`
+                ? `${formatDayShort(picker.from)} – ${formatDayShort(picker.to)}`
                 : "Select dates"}
             </span>
-            <ChevronDown size={14} />
+            <ChevronDown size={14} aria-hidden="true" className="text-faint" />
           </button>
         </div>
       </div>
@@ -806,48 +775,33 @@ export function OverviewView() {
               // The total is all time; what moves with the window is how many joined, said as such.
               title: "Total users",
               value: formatCount(data.users.totalUsers),
-              count: data.users.totalUsers,
               description: `${formatCount(data.users.newUsers)} new in this period`,
-              icon: UserRound,
-              tone: "blue",
               hint: "Every account, all time",
             },
             {
               title: "Active today",
               value: formatCount(data.users.activeToday ?? 0),
-              count: data.users.activeToday ?? 0,
               description: "Seen since midnight",
-              icon: Zap,
-              tone: "emerald",
               hint: "Accounts that used the app or the website today (reporting time): any signed-in visit, a transcription, or a sign-in",
             },
             {
               title: "Active this period",
               value: formatCount(data.users.activeUsers),
-              count: data.users.activeUsers,
               change: activeChange,
               description: "Transcribed, visited or signed up",
-              icon: Activity,
-              tone: "cyan",
               hint: "Accounts that did something in the selected dates: transcribed, used the web app, signed up, or were seen",
             },
             {
               title: "Transcriptions",
               value: formatCount(data.transcriptions.totalTranscribed),
-              count: data.transcriptions.totalTranscribed,
               change: txChange,
               description: `${formatCount(data.transcriptions.totalSaved)} kept as sheets`,
-              icon: Music2,
-              tone: "violet",
               hint: "Transcriptions that produced a result in this window, including free previews",
             },
             {
               title: "Hymns recognised",
               value: formatCount(hymnsRecognised),
-              count: hymnsRecognised,
               description: `${formatCount(data.transcriptions.hymnVersionsSaved ?? 0)} hymnbook versions kept`,
-              icon: BookOpenCheck,
-              tone: "indigo",
               hint: "Results whose tune matched a hymn in the library and offered its hymnbook version; kept: sheets saved as that version",
             },
             ...(data.membership
@@ -855,10 +809,7 @@ export function OverviewView() {
                   {
                     title: "Pro members",
                     value: formatCount(data.membership.activeMembers),
-                    count: data.membership.activeMembers,
                     description: `${formatCount(data.membership.paidMembers)} paid · ${formatCount(data.membership.giftedMembers)} gifted`,
-                    icon: Crown,
-                    tone: "amber" as const,
                     hint: "Memberships with Pro right now, each counted once. A choir counts once, for its director",
                   },
                 ]
@@ -892,10 +843,6 @@ export function OverviewView() {
                     key={stat.title}
                     label={stat.title}
                     value={stat.value}
-                    count={stat.count}
-                    format={formatCount}
-                    icon={stat.icon}
-                    tone={stat.tone}
                     change={stat.change ?? null}
                     sub={stat.description ?? null}
                     {...(stat.hint ? { hint: stat.hint } : {})}
@@ -925,18 +872,18 @@ export function OverviewView() {
 
               {/* PRO MEMBERSHIP: members, joins and lapses, money, song use */}
               {data.membership && (
-                <div className="pt-4">
+                <div className="pt-2">
                   <MembershipPanel membership={data.membership} />
                 </div>
               )}
 
               {/* WEBSITE TRAFFIC: visits, clicks, referrers, what web users do */}
-              <div className="pt-4">
+              <div className="pt-2">
                 <WebTrafficPanel traffic={data.webTraffic} />
               </div>
 
               {/* WEB FUNNEL: previews → sign-ups → saves → shares → Pro */}
-              <div className="pt-4">
+              <div className="pt-2">
                 <WebFunnelPanel funnel={data.webFunnel} />
               </div>
 
@@ -945,9 +892,7 @@ export function OverviewView() {
                 <MostTranscribedKeys keys={data.topKeys} />
                 <div className="flex h-full flex-col justify-between nf-panel p-5">
                   <div className="mb-4 flex items-center justify-between">
-                    <h4 className="text-[15px] font-bold tracking-tight text-foreground">
-                      Transcription outcomes
-                    </h4>
+                    <h3 className={PANEL_TITLE}>Transcription outcomes</h3>
                     <span
                       className="text-xs text-muted-foreground"
                       title="Every transcription started in this period, account jobs and free previews"
@@ -968,17 +913,13 @@ export function OverviewView() {
               </div>
 
               {/* Telemetry, Cohorts & Signup Methods */}
-              <div className="pt-4 space-y-5">
-                <SectionTitle icon={Users2} tone="mint">
-                  Platform telemetry &amp; cohorts
-                </SectionTitle>
+              <div className="space-y-5 pt-2">
+                <SectionTitle>Platform telemetry &amp; cohorts</SectionTitle>
 
                 <div className="grid gap-5 lg:grid-cols-[1fr_1.6fr]">
                   <div className="flex flex-col justify-between nf-panel p-4 sm:p-5">
                     <div className="mb-4 flex items-center justify-between">
-                      <h4 className="text-[15px] font-bold tracking-tight text-foreground">
-                        Signup methods
-                      </h4>
+                      <h3 className={PANEL_TITLE}>Signup methods</h3>
                       <span className="text-xs text-muted-foreground">All accounts</span>
                     </div>
                     <DonutCard
@@ -988,9 +929,9 @@ export function OverviewView() {
                       meters
                       emptyMessage="No accounts yet"
                     />
-                    <div className="mt-5 border-t border-border/70 pt-4">
+                    <div className="mt-5 border-t border-border pt-4">
                       <div className="mb-3 flex items-center justify-between">
-                        <h4 className="text-[15px] font-bold tracking-tight text-foreground">Signed up from</h4>
+                        <h3 className={PANEL_TITLE}>Signed up from</h3>
                         <span className="text-xs text-muted-foreground">All accounts</span>
                       </div>
                       <DonutCard
@@ -1006,9 +947,7 @@ export function OverviewView() {
                   {/* Weekly Cohorts Table - Bleed to edges of card, no double box! */}
                   <div className="flex flex-col justify-between overflow-hidden nf-panel">
                     <div className="p-4 sm:p-5 pb-3">
-                      <h4 className="text-[15px] font-bold tracking-tight text-foreground">
-                        Weekly cohorts
-                      </h4>
+                      <h3 className={PANEL_TITLE}>Weekly cohorts</h3>
                       <p className="mt-0.5 text-xs text-muted-foreground">
                         Share of each signup week that came back on a later day: seen, signed in, or transcribed
                       </p>
@@ -1018,7 +957,7 @@ export function OverviewView() {
                         <EmptyView message="No signups in the last twelve weeks" />
                       </div>
                     ) : (
-                      <div className="w-full overflow-x-auto border-t border-border/70">
+                      <div className="w-full overflow-x-auto border-t border-border">
                         <Table>
                           <TableHeader>
                             <TableRow className="hover:bg-transparent">
