@@ -18,6 +18,8 @@ import { Touchable } from './Touchable';
 import { useAuth } from '../lib/auth';
 import { useSubscription } from '../lib/subscription';
 import { showDialog } from '../lib/dialog';
+import { outboxPending } from '../lib/outbox';
+import { signOutWarning } from '../lib/sendQueue';
 import { fonts, motion, radii, spacing, type Palette, type Shadows } from '../design/theme';
 import { useColors, useThemedStyles } from '../lib/theme';
 import type { RootStackParams } from '../navigation/types';
@@ -103,7 +105,9 @@ export function AppDrawer({ open, onClose, pictureUrl }: Props) {
     // costs the whole session.
     showDialog({
       title: 'Sign out?',
-      message: "You'll need your password to get back in. Saved transcriptions stay in your library.",
+      message:
+        "You'll need your password to get back in. Saved transcriptions stay in your library." +
+        signOutWarning(outboxPending()),
       icon: 'log-out-outline',
       tone: 'danger',
       actions: [
@@ -197,6 +201,14 @@ export function AppDrawer({ open, onClose, pictureUrl }: Props) {
           icon="folder-outline"
           label="Your library"
           onPress={() => go(() => nav.navigate('Tabs', { screen: 'Library' }))}
+          styles={styles}
+          color={colors.text}
+        />
+
+        <Row
+          icon="book-outline"
+          label="Hymns"
+          onPress={() => go(() => nav.navigate('Hymns'))}
           styles={styles}
           color={colors.text}
         />

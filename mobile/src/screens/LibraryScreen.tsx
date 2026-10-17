@@ -29,10 +29,15 @@ import { toApiError } from "../api/client";
 import { showDialog } from "../lib/dialog";
 import * as haptics from "../lib/haptics";
 import { useSubscription } from "../lib/subscription";
-import { deriveSolfa } from "../lib/solfa";
-import { synthesizeMelodyWavBase64 } from "../lib/synth";
+import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLibrary";
+import { resultFromSaved } from "../lib/openSheet";
+import { removeTake, retryTake, useOutbox } from "../lib/outbox";
+import { useReachability } from "../lib/connectivity";
+import { isNetworkCode } from "../lib/reachability";
+import { openTranscriptionFromNotification } from "../lib/notificationLink";
+import { PendingSends } from "../components/library/PendingSends";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
-import type { SavedTranscription, TranscriptionResult } from "../api/types";
+import type { SavedTranscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
 /** The circular header buttons, and the size the search pill grows from. */
@@ -56,6 +61,12 @@ export function LibraryScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  /** The API could not be reached and the list is the phone's copy (lib/offlineLibrary). */
+  const [offline, setOffline] = useState(false);
+  const offlineCopies = useOfflineLibrary();
+  const reach = useReachability();
+  // Recordings that could not be sent yet (lib/outbox): shown above the sheets until they are.
+  const outbox = useOutbox();
 
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -87,10 +98,10 @@ export function LibraryScreen() {
     if (reconcile) {
       refreshSubscription(true).catch(() => undefined);
     }
-    libraryApi
-      .list()
-      .then((data) => {
+    loadLibraryList()
+      .then(({ items: data, offline: fromCopy }) => {
         setItems(data);
+        setOffline(fromCopy);
         setLoadError(null);
       })
       .catch((e) => setLoadError(toApiError(e).message))
@@ -103,6 +114,11 @@ export function LibraryScreen() {
   useEffect(() => {
     load();
   }, []);
+
+  // Back online while showing the phone's copies (or an error): read the list again, quietly.
+  useEffect(() => {
+    if (reach === "online" && (offline || loadError)) load();
+  }, [reach]);
 
   // A folder emptied by a move or a delete no longer has a tab; fall back to All.
   useEffect(() => {
@@ -158,52 +174,22 @@ export function LibraryScreen() {
   }
 
   /**
-   * Fetches the full item and re-derives its solfa. The list route omits `notes`,
-   * so every use of a saved item starts here — opening it and playing it both need
-   * the notes, and neither has them until this runs.
+   * Opens a sheet with its notes: the list route omits them. An unchanged copy on the phone opens
+   * at once with no download; offline, any copy does (lib/offlineLibrary).
    */
-  async function hydrate(item: SavedTranscription) {
-    const full = await libraryApi.get(item.id);
-    const derived = deriveSolfa(full.notes ?? [], full.key, full.timeSignature);
-    return { full, derived };
-  }
-
   async function openItem(item: SavedTranscription) {
     try {
-      const { full, derived } = await hydrate(item);
-      const audioPreviewBase64 = synthesizeMelodyWavBase64(
-        derived.notes,
-        full.tempoBpm,
-      );
-
-      nav.navigate("Result", {
-        result: {
-          key: full.key,
-          keyConfidence: 1,
-          tempo: full.tempoBpm,
-          timeSignature: full.timeSignature,
-          musicXml: full.musicXml ?? "",
-          midiBase64: "",
-          notes: derived.notes,
-          solfaLines: derived.solfaLines,
-          overallConfidence: full.overallConfidence,
-          audioPreviewBase64,
-          lyrics: full.lyrics ?? "",
-          parts: (full.parts as TranscriptionResult["parts"]) ?? null,
-          partsMusicXml: full.partsMusicXml ?? "",
-          shareToken: full.shareToken ?? null,
-          chords: full.chords ?? null,
-          hymn: full.hymn ?? null,
-        },
-        savedId: full.id,
-        title: full.title,
-      });
+      const { sheet } = await loadSheet(item);
+      nav.navigate("Result", { result: resultFromSaved(sheet), savedId: sheet.id, title: sheet.title });
     } catch (e) {
+      const err = toApiError(e);
       showDialog({
-        title: "Could not open",
-        message: toApiError(e).message,
-        icon: "alert-circle-outline",
-        tone: "danger",
+        title: isNetworkCode(err.code) ? "Not on this phone yet" : "Could not open",
+        message: isNetworkCode(err.code)
+          ? "You're offline and this sheet hasn't been opened on this phone. Open it once online — or choose Keep offline on it — and it will open anywhere."
+          : err.message,
+        icon: isNetworkCode(err.code) ? "cloud-offline-outline" : "alert-circle-outline",
+        tone: isNetworkCode(err.code) ? undefined : "danger",
       });
     }
   }
@@ -467,6 +453,38 @@ export function LibraryScreen() {
         </Touchable>
       </View>
 
+      {/* ── Offline: the phone's copies, said calmly ───────────────────────────── */}
+      {offline && (
+        <View style={styles.offlineBanner} accessibilityRole="text">
+          <Ionicons name="cloud-offline-outline" size={18} color={colors.textMuted} />
+          <Text style={styles.offlineText}>Offline — showing saved copies</Text>
+        </View>
+      )}
+
+      {/* ── Recordings waiting to send (record now, send later) ──────────────── */}
+      <PendingSends
+        items={outbox}
+        onRetry={(t) => retryTake(t.id)}
+        onOpen={(t) => {
+          if (!t.jobId) return;
+          void openTranscriptionFromNotification(t.jobId).then((opened) => opened && removeTake(t.id));
+        }}
+        onDelete={(t) =>
+          t.status === "done"
+            ? removeTake(t.id)
+            : showDialog({
+                title: "Delete this recording?",
+                message: "It hasn't been sent, so nothing is used up — but the audio is gone for good.",
+                icon: "trash-outline",
+                tone: "danger",
+                actions: [
+                  { label: "Delete", style: "destructive", onPress: () => removeTake(t.id) },
+                  { label: "Keep it", style: "cancel" },
+                ],
+              })
+        }
+      />
+
       {/* ── The choir's shared library, on "All", for someone in a running choir ─── */}
       {folder === null && choirName && (
         <Touchable
@@ -584,6 +602,13 @@ export function LibraryScreen() {
             selected={selected.has(item.id)}
             onPress={() => (selecting ? toggle(item) : void openItem(item))}
             onLongPress={() => startSelecting(item)}
+            offline={
+              offline && !offlineCopies.cached.has(item.id)
+                ? "missing"
+                : offlineCopies.keepAll || offlineCopies.pinned.has(item.id)
+                  ? "kept"
+                  : null
+            }
           />
         )}
         ItemSeparatorComponent={() => <View style={styles.itemDivider} />}
@@ -746,6 +771,25 @@ const makeStyles = (c: Palette) =>
     sortBtn: {
       paddingLeft: spacing.sm,
       paddingBottom: spacing.xs,
+    },
+
+    // ── Offline banner: calm, not an error ──────────────────────────────────
+    offlineBanner: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.sm,
+      marginTop: spacing.lg,
+      paddingVertical: 10,
+      paddingHorizontal: spacing.lg,
+      borderRadius: 14,
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    offlineText: {
+      fontFamily: fonts.medium,
+      fontSize: 13,
+      color: c.textMuted,
     },
 
     // ── Folder share banner ──────────────────────────────────────────────────

@@ -12,6 +12,8 @@
 //   4. The PDFs (built with the pages, never committed): every hymn and tune page has its PDF and links
 //      to it; each one opens, is titled "… in Tonic Solfa", has at most two pages and stays under the size
 //      limit, and its first line of solfa is the page's first line of solfa, character for character.
+//   5. The app's hymn pack (web-site/hymns/pack.json, pack-version.json): valid, every entry readable, and
+//      the version file naming the pack's own version and byte size (stale output is caught by 1).
 // The committed output is built from content/ alone (posts come from the API at deploy time); the deploy
 // runs `node check.mjs --deployed` on what `build.mjs --api` wrote, as warnings.
 import fs from "node:fs";
@@ -23,6 +25,7 @@ import { writeSite } from "./build.mjs";
 import { GENERATED_NOTE } from "./lib/layout.mjs";
 import { HYMN_INDEX_PATH } from "./lib/hymn-index.mjs";
 import { pdfText, pdfInfo, PDF_MAX_BYTES, PDF_MAX_PAGES } from "./lib/render-pdf.mjs";
+import { packErrors, PACK_PATH, PACK_VERSION_PATH } from "./lib/hymn-pack.mjs";
 
 /** A small well-formedness check: tags balance, attributes are quoted, entities are known. Returns an error or null. */
 export function xmlError(xml) {
@@ -116,6 +119,10 @@ export function checkSite(siteDir, { generatedOnly = false } = {}) {
       if (!/\salt="/.test(img[0])) errors.push(`${rel}: an image without alt text`);
     }
   }
+
+  const packFile = path.join(siteDir, PACK_PATH), versionFile = path.join(siteDir, PACK_VERSION_PATH);
+  if (!fs.existsSync(packFile) || !fs.existsSync(versionFile)) errors.push(`${PACK_PATH} or ${PACK_VERSION_PATH} is missing`);
+  else errors.push(...packErrors(fs.readFileSync(packFile, "utf8"), fs.readFileSync(versionFile, "utf8")));
 
   for (const name of ["sitemap.xml", "blog/feed.xml"]) {
     const f = path.join(siteDir, name);

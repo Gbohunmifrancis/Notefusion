@@ -54,6 +54,14 @@ import { markPractisedToday } from "../lib/practiceReminder";
 import { extractSongUrl, songLinkHint } from "../lib/songLink";
 import { defaultRange, fitsWhole, formatClock, isWholeSong, sectionLabel, type ClipRange } from "../lib/clipRange";
 import { toApiError } from "../api/client";
+import { isNetworkCode } from "../lib/reachability";
+
+/**
+ * A song link is fetched by the server, so it cannot wait on the phone the way a recording does
+ * (lib/outbox). Said plainly, with the way that does work offline.
+ */
+const LINK_OFFLINE =
+  "Song links need the internet, so a link can't be saved to send later. Sing or hum it on Record instead — a recording waits on your phone and goes when you're back online.";
 import { transcriptionsApi } from "../api/endpoints";
 import { OFFLINE_LINE, STALLED_LINE, percentLabel, stageLabel } from "../lib/jobProgress";
 import { keyboardTranspose } from "../lib/keyboardTranspose";
@@ -134,7 +142,7 @@ export function LinkScreen() {
         if (lookupSeq.current !== seq) return;
         // A plain sentence from the API, or the client's own; never a server detail.
         const err = toApiError(e);
-        setInfoError({ code: err.code, message: err.message });
+        setInfoError({ code: err.code, message: isNetworkCode(err.code) ? LINK_OFFLINE : err.message });
         setInfo(null);
         setRange(null);
       } finally {
@@ -211,6 +219,7 @@ export function LinkScreen() {
 
   const upgradeCodes = new Set(["BILLING_SONG_PREVIEW_USED", "BILLING_FREE_TIER_LIMIT"]);
   const wantsUpgrade = state.status === "failed" && state.errorCode !== null && upgradeCodes.has(state.errorCode);
+  const linkOffline = state.status === "failed" && isNetworkCode(state.errorCode);
 
   // Back from buying this song: the refusal no longer holds, so the link (still in the field) is ready to
   // send again without another tap on Try again.
@@ -519,8 +528,8 @@ export function LinkScreen() {
       {state.status === "failed" && state.error ? (
         <NoticeCard
           icon={wantsUpgrade ? "star-outline" : "alert-circle-outline"}
-          title={wantsUpgrade ? "Your free songs are used" : "Couldn't transcribe that"}
-          message={state.error}
+          title={wantsUpgrade ? "Your free songs are used" : linkOffline ? "You're offline" : "Couldn't transcribe that"}
+          message={linkOffline ? LINK_OFFLINE : state.error}
         >
           {wantsUpgrade ? (
             <>

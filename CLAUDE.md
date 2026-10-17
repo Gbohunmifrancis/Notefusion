@@ -157,6 +157,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   runtime policy: any native change (a new Expo module, a permission, a plugin) gives a new
   runtime, so an update can only reach builds that have its native code — anything native
   needs a store build first.
+  Offline, JS only (no netinfo): opened/saved sheets are kept per account in `documents/offline/` (`lib/offlineLibrary`, pure `sheetCache`; pins exempt from the 8 MB cap; wiped on sign-out) and used on NETWORK_* errors; unsent takes queue in `lib/outbox` (pure `sendQueue`; links never queue).
+  The Hymns screen reads `web-site/hymns/pack.json` (built by `tools/blog/lib/hymn-pack.mjs`, version in `pack-version.json`, checked by `check.mjs`).
+  Data saver (default on, `lib/dataSaver`/`dataPolicy`): 32 kbps AAC uploads (`recordingPreset`, measured), no avatars/artwork, slower polls, hymn updates only on tap.
 
 > The old native `.NET 10 for Android` head was retired in the pivot; there is no
 > `NoteFusion.App` project. Don't reintroduce Android-native or MAUI code.

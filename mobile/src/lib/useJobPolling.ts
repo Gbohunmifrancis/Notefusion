@@ -18,6 +18,8 @@ import type {
   TranscriptionStatus,
 } from "../api/types";
 import { rating } from "./rating";
+import { dataSaverOn } from "./dataSaver";
+import { jobPollMs } from "./dataPolicy";
 
 export interface JobState {
   status: TranscriptionStatus | "idle";
@@ -59,8 +61,11 @@ const IDLE: JobState = {
   canRetry: false,
 };
 
-/** How often the job is re-read over HTTP while it runs; SignalR still delivers the finish. */
-const POLL_MS = 2500;
+/**
+ * How often the job is re-read over HTTP while it runs; SignalR still delivers the finish. Twice as
+ * long on data saver (dataPolicy.ts): the finish arrives over SignalR and the push either way.
+ */
+const pollMs = () => jobPollMs(dataSaverOn());
 
 const TERMINAL: TranscriptionStatus[] = ["done", "failed"];
 
@@ -172,9 +177,9 @@ export function useJobPolling() {
           canRetry: canRetry(startedAt.current, now),
         }));
       }
-      if (activeJobId.current === jobId) pollTimer.current = setTimeout(tick, POLL_MS);
+      if (activeJobId.current === jobId) pollTimer.current = setTimeout(tick, pollMs());
     };
-    pollTimer.current = setTimeout(tick, POLL_MS);
+    pollTimer.current = setTimeout(tick, pollMs());
   }, [stopPolling, finish]);
 
   /**
@@ -194,9 +199,9 @@ export function useJobPolling() {
           stalled: isStalled(markRef.current, now),
           canRetry: canRetry(startedAt.current, now),
         }));
-        pollTimer.current = setTimeout(tick, POLL_MS);
+        pollTimer.current = setTimeout(tick, pollMs());
       };
-      pollTimer.current = setTimeout(tick, POLL_MS);
+      pollTimer.current = setTimeout(tick, pollMs());
     },
     [stopPolling],
   );

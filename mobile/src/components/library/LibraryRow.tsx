@@ -17,6 +17,7 @@ export function LibraryRow({
   selected,
   onPress,
   onLongPress,
+  offline = null,
 }: {
   item: SavedTranscription;
   subtitle: string;
@@ -24,6 +25,11 @@ export function LibraryRow({
   selected: boolean;
   onPress: () => void;
   onLongPress: () => void;
+  /**
+   * The sheet's offline copy: "kept" (pinned, or keep-all) shows a small mark; "missing" — offline
+   * with no copy on the phone — dims the row, since it cannot open until the connection is back.
+   */
+  offline?: "kept" | "missing" | null;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -37,13 +43,14 @@ export function LibraryRow({
     <Touchable
       onPress={onPress}
       onLongPress={onLongPress}
-      style={styles.row}
+      style={[styles.row, offline === "missing" && styles.rowMissing]}
       // Full-bleed row: a deeper press pulls it off both screen edges.
       scaleTo={motion.scale.row}
       accessibilityRole={selecting ? "checkbox" : "button"}
       accessibilityState={selecting ? { checked: selected } : undefined}
       accessibilityLabel={
         `${item.title}, doh is ${doh}${doubtful ? `, ${confidenceA11y(item.overallConfidence)}` : ""}${item.folder ? `, in ${item.folder}` : ""}.` +
+        (offline === "kept" ? " Kept offline." : offline === "missing" ? " Not on this phone while offline." : "") +
         (selecting ? "" : " Long press to select.")
       }
     >
@@ -75,6 +82,13 @@ export function LibraryRow({
           </Text>
         )}
       </View>
+      {offline ? (
+        <Ionicons
+          name={offline === "kept" ? "cloud-done-outline" : "cloud-offline-outline"}
+          size={15}
+          color={colors.textFaint}
+        />
+      ) : null}
       {doubtful ? (
         <View style={styles.score}>
           <View style={[styles.scoreDot, { backgroundColor: tone }]} />
@@ -106,6 +120,9 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       gap: 14,
       paddingVertical: 13,
+    },
+    rowMissing: {
+      opacity: 0.5,
     },
     check: {
       width: 22,
