@@ -174,7 +174,8 @@ body.guest .topbar { display: flex; }
 /* Practice: the streak and XP under the greeting, a tap from today's drill (the view is assets/practice-view.css). */
 .practice-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 14px; padding: 6px 16px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font: inherit; font-size: 0.9rem; font-weight: 600; font-variant-numeric: tabular-nums; cursor: pointer; }
 .practice-chip .ic { width: 18px; height: 18px; color: var(--muted); }
-.practice-chip.is-on .ic { color: var(--premium, #f59e0b); }
+.practice-chip.is-on .ic { color: #c2410c; } /* the streak flame in Practice's warm orange: gold is Pro's alone */
+[data-theme="dark"] .practice-chip.is-on .ic { color: #fb923c; }
 .practice-chip i { width: 1px; height: 16px; background: var(--line-strong); }
 .practice-chip:hover { border-color: var(--blue); }
 .practice-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }

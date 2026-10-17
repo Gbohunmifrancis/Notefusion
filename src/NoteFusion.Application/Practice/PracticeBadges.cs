@@ -18,7 +18,12 @@ public static class PracticeBadges
         new("first_100", "Spot on", "Have a take marked 100.", 1, s => s.Perfect),
         new("drills_10", "Ten drills", "Sing ten daily drills.", 10, s => s.Drills),
         new("first_part", "First part", "Sing a part of a sheet and have it marked.", 1, s => s.Parts),
-        new("streak_7", "A week of practice", "Practise seven days running.", 7, s => s.BestStreak),
+        // The weekly goal met in one Monday–Sunday week. Earned by any week that reached it (so a week before this
+        // badge existed counts from the next practice); until then its progress is this week's days.
+        new("week_goal", "A week of practice", "Practise five days in one week.", PracticeRules.WeeklyGoalDays,
+            s => s.BestWeekDays >= PracticeRules.WeeklyGoalDays ? s.BestWeekDays : s.WeekDays),
+        // streak_7 was titled "A week of practice" until week_goal took that name; the code (and every row) stays.
+        new("streak_7", "Seven in a row", "Practise seven days running.", 7, s => s.BestStreak),
         new("whole_part_80", "Part learned", "Sing a whole part of a saved sheet and score 80 or more.", 1, s => s.WholePartsGood),
         new("streak_30", "A month of practice", "Practise thirty days running.", 30, s => s.BestStreak),
     ];

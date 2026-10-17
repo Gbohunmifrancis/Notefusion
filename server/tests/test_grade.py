@@ -123,3 +123,61 @@ def test_a_drill_take_is_cut_at_its_cap_not_refused():
         bad = client.post("/v1/grade", files={"audio": ("take.wav", BytesIO(buf.getvalue()), "audio/wav")},
                           data={"target": json.dumps({"notes": notes, "tempoBpm": TEMPO, "maxSec": 0})})
         assert bad.status_code == 422
+
+
+# ── The practice curriculum's rhythms ─────────────────────────────────────────
+# Practice drills (C# DrillCatalogue) use quavers, dotted crotchets, syncopation, ties and crotchet triplets, never
+# semiquavers, at no more than 96 BPM: no note is shorter than 0.3 s. The grader judges each note on the pitch sung
+# while it was due, so a rhythm is fair if a singer whose every note lands a little early or late is still marked
+# right note by note.
+
+FASTEST_DRILL_BPM = 96.0
+# "sight-syncopated" (quavers and syncopation), then "choir-triplet-tied" (a tie over the bar, then triplets),
+# each as (semitones from doh, beats).
+_SYNCOPATED = [(0, .5), (4, 1), (7, .5), (7, 1), (9, 1), (7, .5), (4, 1), (0, .5), (2, 1), (4, 1), (2, 1), (0, 2)]
+_TIED_TRIPLETS = [(0, 1), (4, 1), (7, 1), (9, 2), (7, 2 / 3), (4, 2 / 3), (2, 2 / 3), (0, 1), (-1, 1), (0, 2)]
+_DOTTED = [(0, 1.5), (2, .5), (4, 1), (7, 1), (9, 1.5), (7, .5), (4, 1), (2, 1), (0, 2)]
+
+
+def _rhythm_targets(line, doh=60):
+    out, at = [], 0.0
+    for semis, beats in line:
+        out.append(TargetNote(doh + semis, at, beats))
+        at += beats
+    return out
+
+
+def _take_with_jitter(targets, tempo, jitter_sec, lead_in=1.0, sr=SR):
+    """A voice singing each note ``jitter_sec[i]`` early (negative) or late, legato into the next."""
+    beat = 60.0 / tempo
+    starts = [lead_in + t.start_beat * beat + j for t, j in zip(targets, jitter_sec)]
+    ends = starts[1:] + [lead_in + (targets[-1].start_beat + targets[-1].dur_beats) * beat]
+    n = int(sr * (ends[-1] + 0.5))
+    contour = np.full(n, np.nan)
+    for t, s, e in zip(targets, starts, ends):
+        contour[int(sr * s):int(sr * (e - 0.03))] = t.pitch_midi
+    voiced = ~np.isnan(contour)
+    f0 = np.where(voiced, _hz(np.nan_to_num(contour, nan=60.0)), 0.0)
+    phase = 2.0 * np.pi * np.cumsum(f0) / sr
+    y = sum(w * np.sin(k * phase) for k, w in enumerate((1.0, 0.5, 0.25), start=1))
+    return (y * voiced * 0.5).astype(np.float32)
+
+
+def test_the_curriculums_rhythms_are_marked_note_by_note_at_the_fastest_drill_tempo():
+    rng = np.random.default_rng(7)
+    for line in (_SYNCOPATED, _TIED_TRIPLETS, _DOTTED):
+        targets = _rhythm_targets(line)
+        assert min(t.dur_beats for t in targets) * 60.0 / FASTEST_DRILL_BPM >= 0.3
+        # Each note up to 60 ms early or late, as an untrained singer's are.
+        jitter = rng.uniform(-0.06, 0.06, len(targets))
+        g = grade(_take_with_jitter(targets, FASTEST_DRILL_BPM, jitter), SR, targets, FASTEST_DRILL_BPM, lead_in_sec=1.0)
+        assert [n.status for n in g.notes] == ["hit"] * len(targets), [(n.index, n.status, n.cents) for n in g.notes]
+        assert g.score == 100
+
+
+def test_a_wrong_quaver_in_a_rhythmic_drill_is_still_caught():
+    targets = _rhythm_targets(_SYNCOPATED)
+    sung = [TargetNote(t.pitch_midi + (2 if i == 2 else 0), t.start_beat, t.dur_beats) for i, t in enumerate(targets)]
+    g = grade(_take_with_jitter(sung, FASTEST_DRILL_BPM, [0.0] * len(sung)), SR, targets, FASTEST_DRILL_BPM, lead_in_sec=1.0)
+    assert g.notes[2].status == "wrong"
+    assert sum(n.status == "hit" for n in g.notes) == len(targets) - 1

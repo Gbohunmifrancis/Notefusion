@@ -3,7 +3,13 @@
  * Phone first: these are the 360–414 px styles; min-width queries go upward. Colours are the app's tokens
  * (app.css, night.css), so Day and Night follow the theme switch. */
 
+/* Play: Practice's warm accent for the Playful track. Never the Pro amber (--premium), which is Pro's alone. */
+:root { --play: #C2410C; --play-soft: rgba(249, 115, 22, 0.08); --play-line: rgba(249, 115, 22, 0.35); }
+:root[data-theme="dark"] { --play: #FB923C; --play-soft: rgba(251, 146, 60, 0.12); --play-line: rgba(251, 146, 60, 0.40); }
+
 .pv { display: flex; flex-direction: column; gap: 14px; }
+/* The Practice art (assets/practice-art): pictures sized by their width/height attributes, never stretched. */
+.pv-art { display: block; flex: none; max-width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
 .pv .card { margin: 0; }
 .pv h2 { margin: 0; }
 
@@ -12,14 +18,18 @@
 .pv-stat { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .pv .pv-stat { padding: 16px 14px; }
 .pv-stat-head { display: flex; align-items: center; gap: 6px; }
-.pv-stat-head .ic { width: 24px; height: 24px; color: var(--faint); }
-.pv-streak.is-on .pv-stat-head .ic { color: var(--premium); fill: var(--premium-soft); }
 .pv-big { font-size: 1.9rem; font-weight: 700; line-height: 1.1; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
 .pv-level-name { font-size: 1.45rem; font-weight: 700; line-height: 1.25; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: -0.02em; }
 .pv-label { font-size: 0.8rem; color: var(--muted); }
 .pv-sub { font-size: 0.85rem; font-weight: 600; color: var(--ink); margin-top: 6px; }
 .pv-foot { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: var(--muted); line-height: 1.35; }
-.pv-foot .ic { width: 14px; height: 14px; color: var(--blue-dark); }
+.pv-foot .is-spent { opacity: 0.4; }
+/* "Choir-ready" beside its emblem in half a phone's width: smaller, and free to break at the hyphen. */
+.pv-level-name.is-long { font-size: 1.1rem; white-space: normal; }
+.pv-level-head { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.pv-level-text { display: flex; flex-direction: column; min-width: 0; }
+.pv-bar-row { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+.pv-bar-row .pv-bar { flex: 1; margin-top: 0; }
 .pv-bar { height: 8px; border-radius: 999px; background: var(--wash); overflow: hidden; margin-top: 10px; }
 .pv-bar i { display: block; height: 100%; border-radius: inherit; background: var(--blue); }
 
@@ -28,6 +38,13 @@
 .pv-eyebrow { margin: 0; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue-dark); }
 .pv-title { font-size: 1.1rem; font-weight: 700; }
 .pv-meta { margin: 0; font-size: 0.85rem; color: var(--muted); line-height: 1.45; }
+/* Where the drill sits on the practice path: "Grade 2 · Unit 3 · 4 of 6" and a thin bar through the unit. */
+.pv-path { margin: 0; font-size: 0.8rem; font-weight: 600; color: var(--muted); }
+.pv-drill .pv-unit-bar { height: 3px; margin-top: -4px; }
+/* A unit or grade finished: a short card above the marks (the toast or burst plays too). */
+.pv-milestone { padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--blue); background: var(--blue-soft); }
+.pv-milestone strong { display: block; color: var(--ink); }
+.pv-milestone p { margin: 2px 0 0; font-size: 0.85rem; color: var(--muted); line-height: 1.45; }
 .pv-tiles { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 4px; padding: 0; list-style: none; }
 .pv-tiles li {
   min-width: 46px; min-height: 46px; padding: 8px 10px; display: flex; align-items: center; justify-content: center;
@@ -57,24 +74,25 @@
 .pv-result .mark { background: var(--surface); }
 .pv-legend { margin: 0; font-size: 0.75rem; color: var(--muted); line-height: 1.45; }
 .pv-earned { margin: 0; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.9rem; color: var(--blue-dark); }
-.pv-earned .ic { width: 16px; height: 16px; color: var(--premium); }
+.pv-earned .ic { width: 16px; height: 16px; color: var(--blue-dark); }
 
 /* ── This week ───────────────────────────────────────────────────────────── */
 .pv-week { display: flex; flex-direction: column; gap: 12px; }
 .pv-week-row { display: flex; align-items: center; gap: 14px; }
 .pv-ring { position: relative; width: 64px; height: 64px; flex: none; }
-.pv-ring svg { display: block; transform: rotate(-90deg); }
-.pv-ring circle { fill: none; stroke-width: 7; }
-.pv-ring .track { stroke: var(--wash); }
-.pv-ring .fill { stroke: var(--success); stroke-linecap: round; }
-.pv-ring span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.pv-ring svg { display: block; }
+.pv-ring .on, .pv-ring .off { fill: none; stroke-width: 7; stroke-linecap: round; }
+.pv-ring .on { stroke: var(--success); }
+.pv-ring .off { stroke: var(--wash); }
+.pv-ring .disc { fill: var(--success); }
+.pv-ring .tick { fill: none; stroke: var(--bg); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
 .pv-week-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .pv-days { display: flex; justify-content: space-between; margin: 0; padding: 0; list-style: none; }
 .pv-days li { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.72rem; color: var(--muted); }
 .pv-days .dot { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--line-strong); display: flex; align-items: center; justify-content: center; }
 .pv-days .dot .ic { width: 15px; height: 15px; }
 .pv-days .done .dot { background: var(--blue-fill, var(--blue)); border-color: var(--blue-fill, var(--blue)); color: #fff; }
-.pv-days .frozen .dot { border-color: var(--blue-dark); color: var(--blue-dark); }
+.pv-days .frozen .dot { border-color: transparent; }
 .pv-days .today .dot { border-color: var(--ink); border-style: dashed; }
 .pv-days .none .dot { opacity: 0.4; }
 
@@ -83,9 +101,6 @@
 .pv-badges { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
 .pv-badge { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 14px 12px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
 .pv-badge.locked { opacity: 0.6; }
-.pv-badge-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--wash); border: 1px solid var(--line); color: var(--faint); margin-bottom: 2px; }
-.pv-badge-icon .ic { width: 19px; height: 19px; }
-.pv-badge.earned .pv-badge-icon { background: var(--premium-soft); border-color: var(--premium-line); color: var(--premium); }
 .pv-badge strong { font-size: 0.85rem; color: var(--ink); line-height: 1.3; }
 .pv-badge p { margin: 0; font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
 .pv-badge-progress { display: flex; align-items: center; gap: 6px; margin-top: auto; padding-top: 4px; font-size: 0.7rem; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -101,20 +116,22 @@
 }
 .pv-track-pill .ic { width: 16px; height: 16px; color: var(--blue-dark); }
 .pv-track-pill .pv-swap { width: 14px; height: 14px; color: var(--muted); }
-.pv-track-pill.is-playful { border-color: var(--premium-line); background: var(--premium-soft); }
-.pv-track-pill.is-playful .ic:first-child { color: var(--premium); }
+.pv-track-pill { padding-left: 8px; }
+.pv-track-pill.is-playful { border-color: var(--play-line); background: var(--play-soft); }
 .pv-track-pill:focus-visible, .pv-option:focus-visible, .pv-keep:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.pv-picker { display: flex; flex-direction: column; gap: 10px; }
+.pv-picker { display: flex; flex-direction: column; gap: 12px; }
+.pv-picker-head { display: flex; align-items: center; gap: 12px; }
+.pv-picker-head .pv-meta { margin-top: 4px; }
 .pv-options { display: flex; flex-direction: column; gap: 10px; }
 .pv-option {
-  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 12px; text-align: left;
-  border-radius: 10px; border: 1.5px solid var(--line-strong); background: var(--wash); color: var(--ink); font: inherit; cursor: pointer;
+  display: flex; flex-direction: column; gap: 10px; width: 100%; min-height: 64px; padding: 6px 6px 12px; text-align: left;
+  border-radius: 14px; border: 1.5px solid var(--line-strong); background: var(--wash); color: var(--ink); font: inherit; cursor: pointer;
 }
-.pv-option.is-playful { border-style: dashed; }
+.pv-option.is-playful { border-color: var(--play-line); }
+.pv-option-art { width: 100%; height: auto; aspect-ratio: 320 / 200; border-radius: 10px; }
+.pv-option-row { display: flex; align-items: center; gap: 12px; width: 100%; padding: 0 8px; }
 .pv-option.on { border-style: solid; border-color: var(--blue); background: var(--blue-soft); }
 .pv-option:disabled { cursor: progress; opacity: 0.75; }
-.pv-option-icon { width: 40px; height: 40px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid var(--line); background: var(--blue-soft); color: var(--blue-dark); }
-.pv-option.is-playful .pv-option-icon { background: var(--premium-soft); border-color: var(--premium-line); color: var(--premium); }
 .pv-option-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .pv-option-text strong { font-size: 1rem; }
 .pv-option-text span { font-size: 0.82rem; color: var(--muted); line-height: 1.4; }
@@ -126,20 +143,15 @@
 .pv-keep { align-self: center; min-height: 44px; padding: 0 14px; border: 0; background: none; color: var(--muted); font: inherit; font-weight: 600; cursor: pointer; }
 
 /* ── Playful: the buddy, a bigger game card, stars, stickers ─────────────── */
-.pv-buddy { display: flex; align-items: center; gap: 10px; }
-.pv-buddy-face { width: 48px; height: 48px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--premium-soft); border: 1.5px solid var(--premium-line); color: var(--premium); }
-.pv-buddy-face .ic { width: 26px; height: 26px; }
+.pv-buddy { display: flex; align-items: center; gap: 6px; }
 .pv-buddy-bubble { flex: 1; margin: 0; padding: 10px 14px; border-radius: 14px 14px 14px 4px; background: var(--surface); border: 1px solid var(--line); font-weight: 600; font-size: 0.9rem; line-height: 1.45; color: var(--ink); }
-.is-playful .pv-drill { border: 1.5px solid var(--premium-line); }
-.is-playful .pv-eyebrow { color: var(--premium); }
+.is-playful .pv-drill { border: 1.5px solid var(--play-line); }
+.is-playful .pv-eyebrow { color: var(--play); }
 .is-playful .pv-drill .pv-title { font-size: 1.3rem; }
-.is-playful .pv-tiles li { min-width: 56px; min-height: 56px; border-radius: 28px; font-size: 1.5rem; border: 2px solid var(--premium-line); background: var(--premium-soft); }
+.is-playful .pv-tiles li { min-width: 56px; min-height: 56px; border-radius: 28px; font-size: 1.5rem; border: 2px solid var(--play-line); background: var(--play-soft); }
 .is-playful .pv-tiles li.on { border-color: var(--blue); background: var(--blue-soft); }
-.pv-stars-result { margin-top: 4px; padding: 16px 14px; border-radius: 14px; background: var(--premium-soft); border: 1.5px solid var(--premium-line); display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
-.pv-stars { display: flex; align-items: flex-end; gap: 6px; }
-.pv-star { width: 42px; height: 42px; color: var(--faint); fill: none; }
-.pv-star.mid { width: 52px; height: 52px; margin-bottom: 6px; }
-.pv-star.on { color: var(--premium); fill: var(--premium); }
+.pv-stars-result { margin-top: 4px; padding: 16px 14px; border-radius: 14px; background: var(--play-soft); border: 1.5px solid var(--play-line); display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.pv-stars { display: flex; justify-content: center; }
 .pv-star-word { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--ink); }
 .pv-star-hint { margin: 0; font-size: 0.9rem; color: var(--muted); line-height: 1.45; }
 .pv-play-marks { justify-content: center; }
@@ -149,15 +161,7 @@
 .pv-sticker { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; min-width: 0; }
 .pv-sticker strong { font-size: 0.75rem; line-height: 1.3; color: var(--ink); }
 .pv-sticker small { font-size: 0.7rem; color: var(--muted); font-variant-numeric: tabular-nums; }
-.pv-sticker-disc, .pv-sticker-slot { width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.pv-sticker-disc { color: #fff; border: 3px solid #fff; box-shadow: 0 3px 10px rgba(15, 23, 42, 0.25); }
-.pv-sticker-disc .ic { width: 30px; height: 30px; }
-.pv-sticker-disc.fill-ink { background: #1e293b; }
-.pv-sticker-disc.fill-gold { background: #b45309; }
-.pv-sticker-disc.fill-red { background: #dc2626; }
-.pv-sticker-disc.fill-purple { background: #7c3aed; }
-.pv-sticker-slot { border: 2px dashed var(--line-strong); color: var(--faint); }
-.pv-sticker-slot .ic { width: 26px; height: 26px; }
+.pv-sticker:not(.earned) strong { color: var(--muted); }
 
 /* ── Focused: the tuning line, Replay my take, badges as a plain list ────── */
 .pv-focus-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
@@ -167,8 +171,6 @@
 .pv .pv-badge-list { padding: 0; }
 .pv-badge-list li { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 10px 14px; }
 .pv-badge-list li + li { border-top: 1px solid var(--line); }
-.pv-badge-list .ic { width: 18px; height: 18px; color: var(--faint); }
-.pv-badge-list li.earned .ic { color: var(--premium); }
 .pv-badge-row-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .pv-badge-row-text strong { font-size: 0.85rem; color: var(--ink); }
 .pv-badge-list li.locked .pv-badge-row-text strong { color: var(--muted); }
@@ -177,12 +179,7 @@
 
 /* ── Playful's burst: CSS only, gone in about a second, none for reduced motion ── */
 .pv-confetti { position: fixed; left: 50%; top: 42%; width: 0; height: 0; z-index: 47; pointer-events: none; }
-.pv-confetti i { position: absolute; width: 8px; height: 12px; border-radius: 2px; opacity: 0; animation: pv-confetti 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-.pv-confetti i.round { width: 9px; height: 9px; border-radius: 50%; }
-.pv-confetti .c0 { background: #f59e0b; }
-.pv-confetti .c1 { background: #2f7bff; }
-.pv-confetti .c2 { background: #16a34a; }
-.pv-confetti .c3 { background: #ef4444; }
+.pv-confetti img { position: absolute; max-width: none; opacity: 0; animation: pv-confetti 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 @keyframes pv-confetti {
   0% { opacity: 1; transform: translate(0, 0) rotate(0); }
   70% { opacity: 1; }
@@ -195,16 +192,19 @@
 .pv-skel .skel { height: 120px; }
 .pv-failed { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 .pv-failed p { margin: 0; }
+.pv-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 20px 16px; }
+.pv-empty .pv-art { margin-bottom: 4px; }
 
 /* ── The reward: one line, a moment, then gone ───────────────────────────── */
 .pv-toast {
   position: fixed; left: 12px; right: 12px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 46;
   display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 999px;
-  background: var(--glass, var(--surface)); border: 1px solid var(--premium-line); color: var(--ink);
+  background: var(--glass, var(--surface)); border: 1px solid var(--line-strong); color: var(--ink);
   -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
   box-shadow: var(--shadow-elevated, 0 18px 48px rgba(15, 23, 42, 0.16)); font-weight: 600; font-size: 0.925rem;
 }
-.pv-toast .ic { width: 18px; height: 18px; color: var(--premium); }
+.pv-toast-pic { display: flex; flex: none; }
+.pv-toast .ic { width: 18px; height: 18px; color: var(--blue-dark); }
 @media (prefers-reduced-motion: no-preference) {
   .pv-toast { animation: pv-toast-in 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
   .pv-bar i { transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1); }

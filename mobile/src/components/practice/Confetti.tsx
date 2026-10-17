@@ -1,15 +1,17 @@
 /**
- * Confetti — Playful's burst for three stars, a level or a sticker: a couple of dozen paper bits in the palette's
- * colours flung out from the middle and falling away in about a second. Core `Animated` only (no native module), on
- * the native driver, never touchable. Nothing at all when the system asks for reduced motion: the stars say it.
+ * Confetti — Playful's burst for three stars, a level or a sticker: a couple of dozen paper bits from the Practice art
+ * (quavers, sharps, flats, sparkles, ribbons) flung out from the middle and falling away in about a second. Core
+ * `Animated` only (no native module), on the native driver, never touchable. Nothing at all when the system asks for
+ * reduced motion: the stars say it.
  */
 
 import React, { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
 
-import { useColors } from "../../lib/theme";
+import { CONFETTI_ART } from "../../lib/practiceTrack";
+import { Art } from "./Art";
 
-const PIECES = 26;
+const PIECES = 24;
 const DURATION_MS = 1300;
 
 interface Piece {
@@ -17,8 +19,6 @@ interface Piece {
   dy: number;
   spin: number;
   size: number;
-  round: boolean;
-  color: number;
 }
 
 /** Fixed per index, so a burst looks scattered without a random number in render. */
@@ -30,19 +30,15 @@ function layout(): Piece[] {
       dx: Math.cos(angle) * reach,
       dy: Math.sin(angle) * reach * 0.8 - 40,
       spin: ((i * 97) % 720) - 360,
-      size: 7 + ((i * 7) % 6),
-      round: i % 3 === 0,
-      color: i % 6,
+      size: 14 + ((i * 7) % 9),
     };
   });
 }
 
 /** Fires once each time `burst` changes to a new number above 0. */
 export function Confetti({ burst, reduceMotion }: { burst: number; reduceMotion: boolean }) {
-  const colors = useColors();
   const t = useRef(new Animated.Value(0)).current;
   const pieces = useMemo(layout, []);
-  const palette = [colors.premium, colors.accent, colors.success, colors.accentAlt, colors.danger, colors.warning];
 
   useEffect(() => {
     if (burst <= 0 || reduceMotion) return;
@@ -62,10 +58,6 @@ export function Confetti({ burst, reduceMotion }: { burst: number; reduceMotion:
           style={[
             styles.piece,
             {
-              width: p.size,
-              height: p.round ? p.size : p.size * 1.6,
-              borderRadius: p.round ? p.size / 2 : 2,
-              backgroundColor: palette[p.color],
               opacity: t.interpolate({ inputRange: [0, 0.1, 0.75, 1], outputRange: [0, 1, 1, 0] }),
               transform: [
                 { translateX: t.interpolate({ inputRange: [0, 1], outputRange: [0, p.dx] }) },
@@ -75,7 +67,9 @@ export function Confetti({ burst, reduceMotion }: { burst: number; reduceMotion:
               ],
             },
           ]}
-        />
+        >
+          <Art name={CONFETTI_ART[i % CONFETTI_ART.length]!} width={p.size} />
+        </Animated.View>
       ))}
     </View>
   );

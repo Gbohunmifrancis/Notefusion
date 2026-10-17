@@ -3,7 +3,12 @@ import assert from "node:assert/strict";
 import {
   STREAK_EVENING_HOUR,
   addDays,
+  allowanceLine,
   levelFraction,
+  nextAction,
+  pathLine,
+  resetTime,
+  unitFraction,
   nextLevelLine,
   reminderSlot,
   rewardEvents,
@@ -15,7 +20,7 @@ import {
   weekdayLetter,
   weeklyFraction,
 } from "./practiceProgress.ts";
-import type { PracticeBadge, PracticeLevel, PracticeReward, PracticeStreak } from "../api/types";
+import type { Drill, PracticeBadge, PracticeLevel, PracticeReward, PracticeStreak } from "../api/types";
 
 const ray: PracticeLevel = { index: 1, name: "Ray", minXp: 100, nextLevelXp: 250, nextName: "Me", xpForNext: 100 };
 const top: PracticeLevel = { index: 7, name: "Choir-ready", minXp: 3000, nextLevelXp: null, nextName: null, xpForNext: 0 };
@@ -143,4 +148,49 @@ test("every other day keeps the usual reminder at the chosen hour", () => {
   });
   assert.equal(reminderSlot("2026-10-17", 14, null, usual).screen, "Record");
   assert.equal(reminderSlot("2026-10-17", 14, { streak: 0, riskDay: "2026-10-17" }, usual).screen, "Record");
+});
+
+// ── The practice path ─────────────────────────────────────────────────────────
+
+const place = (over: Partial<Pick<Drill, "grade" | "unitIndex" | "drillIndex" | "drillCount" | "adjustment">> = {}) => ({
+  grade: "Grade 2",
+  unitIndex: 3,
+  drillIndex: 4,
+  drillCount: 6,
+  adjustment: "steady" as const,
+  ...over,
+});
+
+test("the path line names the grade, the unit and the drill, and says when the last take moved it", () => {
+  assert.equal(pathLine(place()), "Grade 2 · Unit 3 · 4 of 6");
+  assert.equal(pathLine(place({ adjustment: "easier" })), "Grade 2 · Unit 3 · 4 of 6 · Easier");
+  assert.equal(pathLine(place({ adjustment: "harder", grade: "Advanced 1" })), "Advanced 1 · Unit 3 · 4 of 6 · Harder");
+  assert.equal(pathLine(place({ grade: "" })), null);
+  assert.equal(pathLine(place({ unitIndex: 0 })), null);
+});
+
+test("the unit bar fills with the drills behind the singer", () => {
+  assert.equal(unitFraction(place({ drillIndex: 1, drillCount: 4 })), 0);
+  assert.equal(unitFraction(place({ drillIndex: 3, drillCount: 4 })), 0.5);
+  assert.equal(unitFraction(place({ drillIndex: 9, drillCount: 4 })), 1);
+  assert.equal(unitFraction(place({ drillCount: 0 })), 0);
+});
+
+test("the main button moves on, or says try again when the path brings the same drill back", () => {
+  assert.deepEqual(nextAction({ id: "a@60" }, { id: "b@62" }, null), { label: "Next drill", same: false });
+  assert.deepEqual(nextAction({ id: "a@60" }, { id: "a@60" }, "focused"), { label: "Try it again", same: true });
+  assert.deepEqual(nextAction({ id: "a@60" }, null, "playful"), { label: "Next one!", same: false });
+  assert.deepEqual(nextAction({ id: "a@60~gentle" }, { id: "a@60~gentle" }, "playful"), { label: "Try again!", same: true });
+});
+
+test("the allowance counts down, then says warmly when more come, on the phone's clock", () => {
+  const lagosMidnight = "2026-10-17T23:00:00Z";
+  assert.equal(allowanceLine({ used: 3, limit: 10, resetsAtUtc: lagosMidnight }, -60), "7 of 10 marked drills left today");
+  assert.equal(allowanceLine({ used: 10, limit: 10, resetsAtUtc: lagosMidnight }, -60), "That's all 10 of today's drills. Well sung! More from midnight.");
+  // The same moment on a phone set to UTC is 11 pm.
+  assert.equal(resetTime(lagosMidnight, 0), "11:00 pm");
+  assert.equal(resetTime("2026-10-18T00:30:00Z", 0), "12:30 am");
+  assert.equal(resetTime("2026-10-18T13:05:00Z", 0), "1:05 pm");
+  assert.equal(allowanceLine({ used: 12, limit: 10, resetsAtUtc: null }), "That's all 10 of today's drills. Well sung! More tomorrow.");
+  assert.equal(resetTime("not a time"), null);
 });

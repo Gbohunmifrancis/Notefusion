@@ -358,10 +358,10 @@ export const transcriptionsApi = {
  * server records practice when it grades a take; nothing here reports a score.
  */
 export const practiceApi = {
-  /** Today's drill, the same all day. */
-  todayDrill: () => api.get<Drill>("/api/practice/drills/today").then((r) => r.data),
+  /** The next drill on the practice path: the same until a take of it is marked. */
+  nextDrill: () => api.get<Drill>("/api/practice/drills/next").then((r) => r.data),
 
-  /** Marks a sung drill (free, a few a day) and returns the marks with what the take earned. */
+  /** Marks a sung drill (free, a session a day) and returns the marks with what the take earned and any milestone. */
   gradeDrill: (fileUri: string, drillId: string) => {
     const form = new FormData();
     form.append("audio", { uri: fileUri, name: "drill.m4a", type: "audio/m4a" } as unknown as Blob);

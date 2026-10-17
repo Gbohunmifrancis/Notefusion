@@ -91,7 +91,7 @@ test("the buddy speaks to today and the streak first, else the day's encourageme
 
 test("a sticker's tilt is fixed per badge, within six degrees, and the same as the phone's", () => {
   assert.equal(T.stickerTilt("first_drill"), T.stickerTilt("first_drill"));
-  for (const code of ["first_drill", "streak_3", "first_100", "drills_10", "first_part", "streak_7", "whole_part_80", "streak_30"]) {
+  for (const code of ["first_drill", "streak_3", "first_100", "drills_10", "first_part", "week_goal", "streak_7", "whole_part_80", "streak_30"]) {
     const t = T.stickerTilt(code);
     assert.ok(Number.isInteger(t) && t >= -6 && t <= 6, `${code}: ${t}`);
   }
@@ -101,4 +101,11 @@ test("the mobile copy has the same words (lock-step check)", () => {
   const ts = readFileSync(new URL("../../mobile/src/lib/practiceTrack.ts", import.meta.url), "utf8");
   for (const o of T.TRACK_OPTIONS) assert.ok(ts.includes(o.blurb), o.blurb);
   for (const w of ["Super!", "Nearly there", "Good try!", T.TRACK_QUESTION]) assert.ok(ts.includes(w), w);
+});
+
+test("a path milestone is a burst on Playful and a toast otherwise, even when it earned no XP", () => {
+  assert.equal(T.celebrationFor("playful", 85, reward({ xpGained: 0 }), true), "burst");
+  assert.equal(T.celebrationFor(null, 85, reward({ xpGained: 0 }), true), "toast");
+  assert.equal(T.celebrationFor("focused", 85, reward(), true), "toast");
+  assert.equal(T.celebrationFor("focused", 85, reward(), false), "quiet");
 });

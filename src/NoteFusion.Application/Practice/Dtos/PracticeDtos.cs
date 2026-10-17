@@ -35,8 +35,39 @@ public sealed record BadgeDto(
 /// </summary>
 public sealed record PracticeDayDto(DateOnly Date, string Status, int Xp);
 
-/// <summary>Drills marked today and the most this account may have marked in a day.</summary>
-public sealed record DrillAllowanceDto(int Used, int Limit);
+/// <summary>
+/// Drills marked today and the most this account may have marked in a day. <c>ResetsAtUtc</c>: when the allowance
+/// starts again — the singer's next local midnight (null from older code paths).
+/// </summary>
+public sealed record DrillAllowanceDto(int Used, int Limit, DateTime? ResetsAtUtc = null);
+
+/// <summary>
+/// Where the singer is on their track's practice path: the grade ("Grade 2", "Advanced 1"), the unit's title, the
+/// unit's number among the grade's (1-based <c>UnitIndex</c> of <c>UnitCount</c>) and the drill's within the unit
+/// (1-based <c>DrillIndex</c> of <c>DrillCount</c>), and how many units and grades are finished.
+/// </summary>
+public sealed record PracticePathDto(
+    string Grade,
+    string Unit,
+    int UnitIndex,
+    int UnitCount,
+    int DrillIndex,
+    int DrillCount,
+    int UnitsComplete,
+    int GradesComplete);
+
+/// <summary>
+/// A milestone a marked drill just reached, on the grade response: <c>Kind</c> "unit" ("Unit 3 of Grade 2 complete")
+/// or "grade" ("Grade 2 complete"), a one-line <c>Description</c> of what was learned, the grade, and the unit's
+/// number (1-based) among the grade's.
+/// </summary>
+public sealed record PracticeMilestoneDto(
+    string Kind,
+    string Title,
+    string Description,
+    string Grade,
+    int UnitIndex,
+    int UnitCount);
 
 /// <summary>
 /// GET /api/practice/progress (and PUT /api/practice/track's answer): everything the Practice screen draws, read off the
@@ -54,7 +85,8 @@ public sealed record PracticeProgressDto(
     IReadOnlyList<BadgeDto> Badges,
     IReadOnlyList<PracticeDayDto> LastSevenDays,
     DrillAllowanceDto Drills,
-    PracticeTrack? Track);
+    PracticeTrack? Track,
+    PracticePathDto? Path = null);
 
 /// <summary>
 /// What a marked take earned, returned with its grade so the client can celebrate without a second read:
@@ -70,10 +102,14 @@ public sealed record PracticeRewardDto(
     IReadOnlyList<BadgeDto> NewBadges);
 
 /// <summary>
-/// GET /api/practice/drills/today: a short solfa pattern to hear and sing, the same all day. The notes are labelled
-/// by the solfa engine; the take is a count-in of <c>LeadInBeats</c> (a bar of the first note, a bar of clicks)
-/// and then the singer, cut by the worker at <c>MaxTakeSeconds</c>. <c>Track</c> is the track it was picked for
-/// (null when none is chosen yet): each track has its own drill of the day.
+/// GET /api/practice/drills/next (and its old name, /drills/today): the next drill on the singer's practice path — a
+/// short solfa pattern to hear and sing, the same until a take of it is marked. The notes are labelled by the solfa
+/// engine and timed by the pattern's rhythm; the take is a count-in of <c>LeadInBeats</c> (a bar of the first note, a
+/// bar of clicks) and then the singer, cut by the worker at <c>MaxTakeSeconds</c>. <c>Track</c> is the track it was
+/// picked for (null when none is chosen yet): each track has its own path. Where it sits on the path: <c>Grade</c>,
+/// <c>Unit</c>, <c>UnitIndex</c>/<c>UnitCount</c> and <c>DrillIndex</c>/<c>DrillCount</c> (1-based), <c>Difficulty</c>
+/// (the pattern's unit in its own grade, 1–5) and <c>Adjustment</c> ("harder" after a skip ahead, "easier" for an
+/// easier variant or a step back, else "steady").
 /// </summary>
 public sealed record DrillDto(
     string Id,
@@ -89,7 +125,15 @@ public sealed record DrillDto(
     IReadOnlyList<NoteEventDto> Notes,
     DateOnly Date,
     DrillAllowanceDto Allowance,
-    PracticeTrack? Track);
+    PracticeTrack? Track,
+    string Grade,
+    string Unit,
+    int UnitIndex,
+    int UnitCount,
+    int DrillIndex,
+    int DrillCount,
+    int Difficulty,
+    DrillAdjustment Adjustment);
 
 /// <summary>
 /// GET/PUT /api/practice/reminders: the account's practice reminders, sent to its phones. <c>Enabled</c> is the

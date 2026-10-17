@@ -93,7 +93,8 @@ public sealed record GradeNoteDto(int Index, int TargetMidi, double? SungMidi, d
 /// How a sung take compared to its part. <c>OctaveShift</c> is the octave the singer took it in (a bass
 /// singing the tune down an octave is not wrong); <c>TuningCents</c> is the take's overall lean.
 /// <c>Reward</c> is what the take earned as practice (XP, level, streak, badges) — set by the API once it has
-/// recorded the take for a signed-in singer; the worker never sends it.
+/// recorded the take for a signed-in singer; the worker never sends it. <c>Milestone</c> is set when a marked drill
+/// finished a unit or a grade of the practice path (once per unit and grade, ever).
 /// </summary>
 public sealed record GradeResultDto(
     int Score,
@@ -106,7 +107,8 @@ public sealed record GradeResultDto(
     int OctaveShift,
     string Summary,
     IReadOnlyList<GradeNoteDto> Notes,
-    NoteFusion.Application.Practice.Dtos.PracticeRewardDto? Reward = null);
+    NoteFusion.Application.Practice.Dtos.PracticeRewardDto? Reward = null,
+    NoteFusion.Application.Practice.Dtos.PracticeMilestoneDto? Milestone = null);
 
 /// <summary>One voice of the four-part harmony, in the same note shape as the melody.</summary>
 public sealed record PartDto(IReadOnlyList<NoteEventDto> Notes, IReadOnlyList<string> SolfaLines);

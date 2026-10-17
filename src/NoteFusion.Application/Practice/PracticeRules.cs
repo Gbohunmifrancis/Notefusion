@@ -39,8 +39,12 @@ public static class PracticeRules
     /// <summary>Practice days a week the goal ring asks for (Monday to Sunday).</summary>
     public const int WeeklyGoalDays = 5;
 
-    /// <summary>Drills a free account may have marked in one local day.</summary>
-    public const int FreeDrillGradesPerDay = 5;
+    /// <summary>
+    /// Drills a free account may have marked in one local day: a practice session on the path — a unit of
+    /// <see cref="DrillsPerUnit"/> drills, a retry or two, and the start of the next unit. (It was 5 when practice was one
+    /// drill of the day; 5 stopped a session halfway through its first unit.) The daily XP cap still bounds levelling.
+    /// </summary>
+    public const int FreeDrillGradesPerDay = 10;
 
     /// <summary>Drills a Pro account may have marked in one local day.</summary>
     public const int ProDrillGradesPerDay = 20;
@@ -62,20 +66,69 @@ public static class PracticeRules
     ];
 
     // ── Tracks ──────────────────────────────────────────────────────────────
-    // A track (Core.Enums.PracticeTrack) chooses the day's drill and how a marked take is shown. Nothing above reads
+    // A track (Core.Enums.PracticeTrack) chooses the path's drills and how a marked take is shown. Nothing above reads
     // it: XP, the cap, the ladder, streaks and badges are the same on both, so switching never loses progress.
 
     /// <summary>The most notes a Playful drill has (every drill has at least three).</summary>
     public const int PlayfulMaxNotes = 5;
 
-    /// <summary>The highest tier Playful draws from: steps, the doh chord, scales, leaps and low soh — major, no chromatics.</summary>
-    public const int PlayfulTopTier = 4;
+    /// <summary>
+    /// The highest grade (tier) Playful's path reaches: Grade 7's first chromatic steps, after low lah in the doh key.
+    /// Playful never sings minor.
+    /// </summary>
+    public const int PlayfulTopTier = 6;
+
+    /// <summary>The first grade (tier) whose chromatic notes Playful sings: none before it.</summary>
+    public const int PlayfulChromaticTier = 6;
+
+    /// <summary>Playful's units per grade: the first three, the gentlest (shorter, plainer rhythms).</summary>
+    public const int PlayfulTopStep = 3;
 
     /// <summary>Beats a minute slower than the tier's own tempo for a Playful drill.</summary>
     public const int PlayfulTempoDrop = 12;
 
-    /// <summary>Tiers above the singer's level that Focused draws from, so a beginner who wants the work starts on scales.</summary>
+    /// <summary>Grades above the singer's level that Focused's path starts on, so a beginner who wants the work starts on scales.</summary>
     public const int FocusedTierLead = 2;
+
+    // ── The path ────────────────────────────────────────────────────────────
+    // Practice is an ordered path (PracticePath): grades → units → drills. Where a singer is on it is read off their
+    // marked drills, in order, every time; nothing about it is stored or reported by a client.
+
+    /// <summary>Drills to pass in each unit (no track and Focused).</summary>
+    public const int DrillsPerUnit = 4;
+
+    /// <summary>Drills to pass in each of Playful's units: shorter sessions.</summary>
+    public const int PlayfulDrillsPerUnit = 3;
+
+    /// <summary>A take marked this or more passes the drill and moves the singer on (the same as <see cref="GoodScore"/>).</summary>
+    public const int PassScore = GoodScore;
+
+    /// <summary>A pass this good counts towards skipping ahead.</summary>
+    public const int SkipAheadScore = 90;
+
+    /// <summary>Passes of <see cref="SkipAheadScore"/> or more in a row (the same day) that skip the next drill of the unit.</summary>
+    public const int SkipAheadRun = 2;
+
+    /// <summary>A take marked under this counts towards stepping back.</summary>
+    public const int StepBackScore = 50;
+
+    /// <summary>Takes under <see cref="StepBackScore"/> in a row (the same day) that step back to the unit's previous drill.</summary>
+    public const int StepBackRun = 2;
+
+    /// <summary>
+    /// Takes under <see cref="PassScore"/> at one drill before an easier variant is offered: the first miss brings the
+    /// same drill back once.
+    /// </summary>
+    public const int RetriesBeforeEasier = 1;
+
+    /// <summary>Beats a minute each unit of a grade is quicker than the one before.</summary>
+    public const int TempoPerStep = 2;
+
+    /// <summary>
+    /// The shortest note any drill has, at its tempo: the worker judges a note on the pitch sung while it was due, less
+    /// its attack and release, and below this that is too few pitch frames to judge fairly (no semiquavers).
+    /// </summary>
+    public const double ShortestNoteSeconds = 0.3;
 
     /// <summary>XP for one marked take before the daily cap.</summary>
     public static int BaseXp(PracticeKind kind, int score) => kind switch

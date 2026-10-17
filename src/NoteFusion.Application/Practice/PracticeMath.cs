@@ -9,8 +9,11 @@ public sealed record PracticeFact(PracticeKind Kind, int Score, bool WholePart, 
 /// <summary>The streak as of one day, with the days its freezes bridged.</summary>
 public sealed record StreakState(int Current, int Best, bool TodayDone, bool FreezeAvailable, IReadOnlySet<DateOnly> Frozen);
 
-/// <summary>The counts badges are judged on.</summary>
-public sealed record PracticeStats(int Drills, int Parts, int Perfect, int WholePartsGood, int BestStreak);
+/// <summary>
+/// The counts badges are judged on. <c>WeekDays</c> is the days practised in today's Monday–Sunday week (to today);
+/// <c>BestWeekDays</c> the most practised in any one such week.
+/// </summary>
+public sealed record PracticeStats(int Drills, int Parts, int Perfect, int WholePartsGood, int BestStreak, int WeekDays = 0, int BestWeekDays = 0);
 
 /// <summary>
 /// The rules of <see cref="PracticeRules"/> applied to an account's practice history. Pure: the rows go in, the
@@ -75,14 +78,20 @@ public static class PracticeMath
         return new StreakState(run, best, days.Contains(today), !weeksFrozen.Contains(PracticeTime.WeekStart(today)), frozen);
     }
 
-    /// <summary>The counts badges read, with the best streak as of <paramref name="today"/>.</summary>
+    /// <summary>The counts badges read, with the best streak and today's week as of <paramref name="today"/>.</summary>
     public static PracticeStats Stats(IReadOnlyCollection<PracticeFact> facts, DateOnly today)
-        => new(
+    {
+        var days = facts.Select(f => f.LocalDate).Where(d => d <= today).Distinct().ToList();
+        var weekStart = PracticeTime.WeekStart(today);
+        return new(
             facts.Count(f => f.Kind == PracticeKind.Drill),
             facts.Count(f => f.Kind == PracticeKind.Part),
             facts.Count(f => f.Score >= PracticeRules.PerfectScore),
             facts.Count(f => f.Kind == PracticeKind.Part && f.WholePart && f.Score >= PracticeRules.GoodScore),
-            Streak(facts.Select(f => f.LocalDate), today).Best);
+            Streak(facts.Select(f => f.LocalDate), today).Best,
+            days.Count(d => d >= weekStart),
+            days.Count == 0 ? 0 : days.GroupBy(PracticeTime.WeekStart).Max(w => w.Count()));
+    }
 
     /// <summary>
     /// Everything the Practice screen shows, as of <paramref name="today"/>. The <paramref name="track"/> is passed

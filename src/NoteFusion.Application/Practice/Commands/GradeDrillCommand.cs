@@ -11,10 +11,11 @@ using NoteFusion.Shared.Results;
 namespace NoteFusion.Application.Practice.Commands;
 
 /// <summary>
-/// The daily drill sung and marked: free for every signed-in account, a few a day
+/// A practice drill sung and marked: free for every signed-in account, a session's worth a day
 /// (<see cref="PracticeRules.DrillGradesPerDay"/>). The notes are the server's own drill, rebuilt from its id; the
 /// take goes to the worker's grader (cut at the drill's length plus a few seconds) and the marked take is recorded
-/// as practice, with what it earned returned beside the marks.
+/// as practice, with what it earned — and any path milestone it reached — returned beside the marks. Which drill
+/// comes next is read off the recorded takes (<see cref="PracticePath"/>).
 /// </summary>
 public sealed record GradeDrillCommand(Stream Audio, string FileName, string DrillId) : IRequest<Result<GradeResultDto>>;
 
@@ -68,6 +69,11 @@ public sealed class GradeDrillCommandHandler : IRequestHandler<GradeDrillCommand
             userId, PracticeKind.Drill, grade.Score, grade.Hits, grade.Near, grade.Wrong, grade.Missed,
             drill.PassageSeconds, _clock.UtcNow, today, drillId: drill.Id);
         var reward = await _recorder.RecordAsync(session, cancellationToken);
-        return grade with { Reward = reward };
+
+        // The path read again with this take on it: a milestone it reached is reported by this take alone.
+        var facts = await PracticeRecorder.FactsAsync(_db, userId, cancellationToken);
+        var reading = await PracticePathReader.ReadAsync(_db, userId, facts, cancellationToken);
+        var milestone = reading.ReachedBy(session.Id) is { } reached ? PracticePathReader.Describe(reached) : null;
+        return grade with { Reward = reward, Milestone = milestone };
     }
 }

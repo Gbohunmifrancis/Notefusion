@@ -74,6 +74,18 @@ public static partial class PracticeTime
     public static DateOnly LocalDate(DateTime utc, TimeZoneInfo zone)
         => DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utc, DateTimeKind.Utc), zone));
 
+    /// <summary>
+    /// The moment, in UTC, the singer's day after <paramref name="day"/> begins in <paramref name="zone"/>: when the
+    /// daily drill allowance starts again. A midnight a clock change skips is read as the first half hour that exists.
+    /// </summary>
+    public static DateTime NextMidnightUtc(DateOnly day, TimeZoneInfo zone)
+    {
+        var midnight = day.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Unspecified);
+        while (zone.IsInvalidTime(midnight))
+            midnight = midnight.AddMinutes(30);
+        return TimeZoneInfo.ConvertTimeToUtc(midnight, zone);
+    }
+
     /// <summary>The Monday that starts the ISO week <paramref name="day"/> is in: a week's identity for the freeze and the goal.</summary>
     public static DateOnly WeekStart(DateOnly day)
         => day.AddDays(-(((int)day.DayOfWeek + 6) % 7));

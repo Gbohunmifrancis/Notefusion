@@ -15,8 +15,8 @@ namespace NoteFusion.Application.Practice.Commands;
 /// </summary>
 /// <remarks>
 /// Only the drills offered and how takes are shown change: XP, levels, streaks and badges are read off the same rows
-/// by the same rules, so a switch loses nothing. Today's drill becomes the new track's drill of the day at once
-/// (<see cref="DrillCatalogue.ForDay"/>); a take of the old one is still marked, and the day's allowance is shared.
+/// by the same rules, so a switch loses nothing. The next drill becomes the new track's at once: each track keeps its
+/// own place on its path (<see cref="PracticePath"/>); a take of the old one is still marked, and the day's allowance is shared.
 /// </remarks>
 public sealed record SetPracticeTrackCommand(string? Track) : IRequest<Result<PracticeProgressDto>>;
 

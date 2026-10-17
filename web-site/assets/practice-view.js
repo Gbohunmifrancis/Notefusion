@@ -1,7 +1,8 @@
 /* Practice on the web: the daily habit, as the phone's Practice screen has it (mobile/src/screens/PracticeScreen.tsx).
  *
- * Today's free solfa drill (hear it, a count-in, sing it, marked note by note), the streak, XP toward the next
- * sol-fa level, the weekly goal, the last seven days and the badges. Every number is the server's
+ * The practice path's next free solfa drill (hear it, a count-in, sing it, marked note by note, then "Next drill" —
+ * grades, units and milestones on the way), the streak, XP toward the next sol-fa level, the weekly goal, the last
+ * seven days and the badges. Every number is the server's
  * (GET /api/practice/progress), read off the takes it has marked; the browser never reports a score. A marked
  * take comes back with what it earned, celebrated with one short line — without motion when the reader asks
  * for reduced motion.
@@ -25,31 +26,24 @@
   var TOAST_MS = 3200;
   /** The count-in waits this long at most for the piano's first load before counting in on clicks alone. */
   var PIANO_WAIT_MS = 8000;
-  /** One picture per badge (the phone's Ionicons, drawn from the site's Lucide sprite). */
-  var BADGE_ICONS = {
-    first_drill: "/assets/icons.svg#i-music",
-    streak_3: "/assets/icons.svg#i-flame",
-    first_100: "/assets/icons.svg#i-star",
-    drills_10: "/assets/icons.svg#i-medal",
-    first_part: "/assets/icons.svg#i-choir",
-    streak_7: "/assets/icons.svg#i-flame",
-    whole_part_80: "/assets/icons.svg#i-award",
-    streak_30: "/assets/icons.svg#i-trophy"
-  };
+  /**
+   * The Practice art (Doh the doh bird, level emblems, badge stickers, the flame, stars, confetti, the track scenes,
+   * the empty states): one small SVG file each in /assets/practice-art/, drawn by design/practice-art/build.mjs.
+   * Fetched as <img> only when this view draws them, so none of it is in the app's first load.
+   */
+  var ART_DIR = "/assets/practice-art/", ART_V = "?v=1";
   var LEVELS = 8;
 
   var ctx = null, root = null;
   // gen moves on when the view is reset (signed out), so a reply still on its way renders nothing.
   var s = {
-    gen: 0, progress: null, drill: null, loading: false, loadError: null, phase: "idle", grade: null, error: null,
+    gen: 0, progress: null, drill: null, next: null, loading: false, loadError: null, offline: false, phase: "idle", grade: null, error: null,
     picking: false, savingTrack: null, trackError: null, takeUrl: null
   };
   var take = null;   // the take being recorded: { stream, recorder, audio, timer, stopAt, t0, lead, cancelled }
   var hear = null;   // the player "Hear it" uses, made on the first press
   var replayAudio = null; // Focused's "Replay my take"
   var toastEl = null, toastTimer = null;
-  /** Playful's sticker fills, in turn: deep enough for the white icon in Night and Day alike (mobile STICKER_FILLS). */
-  var STICKER_FILLS = ["ink", "gold", "red", "purple"];
 
   function PP() { return window.NfPracticeProgress; }
   function PT() { return window.NfPracticeTrack; }
@@ -70,6 +64,15 @@
     var use = document.createElementNS("http://www.w3.org/2000/svg", "use");
     use.setAttribute("href", href); svg.appendChild(use);
     return svg;
+  }
+  /** One picture of the Practice art, decorative (the words beside it say what it shows). */
+  function art(name, width, height, cls) {
+    var img = document.createElement("img");
+    img.src = ART_DIR + name + ".svg" + ART_V;
+    img.alt = ""; img.decoding = "async"; img.draggable = false;
+    img.width = width; img.height = height || width;
+    img.className = "pv-art" + (cls ? " " + cls : "");
+    return img;
   }
   function button(cls, href, text, onClick) {
     var b = el("button", "btn " + cls); b.type = "button";
@@ -95,13 +98,14 @@
     var gen = s.gen;
     s.loading = true;
     if (!s.progress) render();
-    return Promise.all([ctx.request("/api/practice/progress"), ctx.request("/api/practice/drills/today")]).then(function (pair) {
+    return Promise.all([ctx.request("/api/practice/progress"), ctx.request("/api/practice/drills/next")]).then(function (pair) {
       if (gen !== s.gen) return;
-      s.progress = pair[0]; s.drill = pair[1]; s.loadError = null;
+      s.progress = pair[0]; s.drill = pair[1]; s.next = null; s.loadError = null; s.offline = false;
       if (ctx.onProgress) ctx.onProgress(s.progress);
     }, function (err) {
       if (gen !== s.gen) return;
       s.loadError = (err && err.message) || "We couldn't load your practice. Please try again.";
+      s.offline = !!err && err.status === 0;
     }).then(function () {
       if (gen !== s.gen) return;
       s.loading = false;
@@ -127,7 +131,9 @@
     root.innerHTML = "";
     root.setAttribute("aria-busy", String(!!(s.loading && !s.progress)));
     if (!s.progress) {
-      if (s.loadError) {
+      if (s.loadError && s.offline) {
+        root.appendChild(emptyState("empty-offline", "You're offline", "Practice needs a connection to mark your singing. Check it, then try again.", function () { s.loadError = null; load(); }));
+      } else if (s.loadError) {
         var failed = el("div", "card pv-failed");
         failed.appendChild(el("p", null, s.loadError));
         failed.appendChild(button("btn-ghost", "/assets/icons.svg#i-restart", "Try again", function () { s.loadError = null; load(); }));
@@ -147,17 +153,18 @@
       var pill = el("button", "pv-track-pill" + (playful ? " is-playful" : ""));
       pill.type = "button"; pill.id = "pv-track-pill";
       pill.setAttribute("aria-label", "Practice style: " + T.trackTitle(tr) + ". Change it");
-      pill.appendChild(icon(playful ? "/assets/icons.svg#i-smile" : "/assets/icons.svg#i-music"));
+      pill.appendChild(art(playful ? "doh-avatar" : T.levelArt(p.level.index), 24));
       pill.appendChild(el("span", null, T.trackTitle(tr)));
       pill.appendChild(icon("/assets/icons.svg#i-swap", "pv-swap"));
       pill.addEventListener("click", function () { s.trackError = null; s.picking = true; stopHear(); render(); });
       bar0.appendChild(pill);
       box.appendChild(bar0);
     }
+    if (playful && !showPicker() && s.drill) { box.appendChild(buddy(p, T)); warmConfetti(); }
     box.appendChild(statsCards(p, P));
     if (showPicker()) box.appendChild(trackPicker(tr, T));
-    if (playful && !showPicker()) box.appendChild(buddy(p, T));
     if (s.drill && !showPicker()) box.appendChild(drillCard(s.drill, P));
+    if (!s.drill && !showPicker()) box.appendChild(emptyState("empty-no-drill", "No drill yet", "Today's drill isn't here yet. Try again in a moment.", function () { load(); }));
     box.appendChild(weekCard(p, P));
     box.appendChild(el("h2", "pv-section", playful ? "My stickers" : "Badges"));
     box.appendChild(playful ? stickers(p, P, T) : focused ? badgeList(p, P) : badgeGrid(p, P));
@@ -171,9 +178,14 @@
   function trackPicker(current, T) {
     var card = el("section", "card pv-picker");
     card.setAttribute("aria-labelledby", "pv-picker-q");
+    var head = el("div", "pv-picker-head");
+    head.appendChild(art(T.mascotArt("handoff"), 64));
+    var headText = el("div");
     var q = el("h2", "pv-title", T.TRACK_QUESTION); q.id = "pv-picker-q";
-    card.appendChild(q);
-    card.appendChild(el("p", "pv-meta", "Your XP, streak and badges stay the same whichever you pick. Change it any time."));
+    headText.appendChild(q);
+    headText.appendChild(el("p", "pv-meta", "Your XP, streak and badges stay the same whichever you pick. Change it any time."));
+    head.appendChild(headText);
+    card.appendChild(head);
     var group = el("div", "pv-options"); group.setAttribute("role", "radiogroup"); group.setAttribute("aria-labelledby", "pv-picker-q");
     T.TRACK_OPTIONS.forEach(function (o) {
       var on = current === o.track, saving = s.savingTrack === o.track;
@@ -181,14 +193,15 @@
       b.type = "button"; b.setAttribute("role", "radio"); b.setAttribute("aria-checked", String(on));
       b.setAttribute("data-track", o.track);
       if (s.savingTrack) { b.disabled = true; if (saving) b.setAttribute("aria-busy", "true"); }
-      var ic = el("span", "pv-option-icon"); ic.appendChild(icon(o.track === "playful" ? "/assets/icons.svg#i-smile" : "/assets/icons.svg#i-music"));
-      b.appendChild(ic);
+      b.appendChild(art(T.trackArt(o.track), 320, 200, "pv-option-art"));
+      var row = el("span", "pv-option-row");
       var text = el("span", "pv-option-text");
       text.appendChild(el("strong", null, o.title));
       text.appendChild(el("span", null, o.blurb));
-      b.appendChild(text);
-      if (saving) b.appendChild(el("span", "pv-spin"));
-      else b.appendChild(icon(on ? "/assets/icons.svg#i-check" : "/assets/icons.svg#i-chev", "pv-option-end"));
+      row.appendChild(text);
+      if (saving) row.appendChild(el("span", "pv-spin"));
+      else row.appendChild(icon(on ? "/assets/icons.svg#i-check" : "/assets/icons.svg#i-chev", "pv-option-end"));
+      b.appendChild(row);
       b.addEventListener("click", function () { chooseTrack(o.track); });
       group.appendChild(b);
     });
@@ -203,16 +216,26 @@
     return card;
   }
 
+  /** "No drill yet" and "You're offline": Doh's picture, a line, and a way to try again. */
+  function emptyState(picture, title, body, retry) {
+    var card = el("section", "card pv-empty");
+    card.appendChild(art(picture, 200, 154));
+    card.appendChild(el("h2", "pv-title", title));
+    card.appendChild(el("p", "pv-meta", body));
+    card.appendChild(button("btn-ghost", "/assets/icons.svg#i-restart", "Try again", retry));
+    return card;
+  }
+
   /** Saves the track, then loads the drill it offers today (each track has its own drill of the day). */
   function chooseTrack(next) {
     if (s.phase !== "idle" || s.savingTrack) return;
     var gen = s.gen;
     s.savingTrack = next; s.trackError = null; render();
     ctx.request("/api/practice/track", { method: "PUT", body: { track: next } }).then(function (p) {
-      return ctx.request("/api/practice/drills/today").then(function (d) { return [p, d]; });
+      return ctx.request("/api/practice/drills/next").then(function (d) { return [p, d]; });
     }).then(function (pair) {
       if (gen !== s.gen) return;
-      s.progress = pair[0]; s.drill = pair[1]; s.grade = null; s.error = null; s.picking = false;
+      s.progress = pair[0]; s.drill = pair[1]; s.next = null; s.grade = null; s.error = null; s.picking = false;
       dropTakeUrl(); hideToast();
       if (ctx.onProgress) ctx.onProgress(s.progress);
       track("practice_track_chosen", "track=" + next);
@@ -225,38 +248,46 @@
     });
   }
 
-  /** Playful's practice buddy: a face and a speech bubble. */
+  /** Playful's practice buddy: Doh the doh bird, in the mood of the moment, and a speech bubble. */
   function buddy(p, T) {
-    var line = T.buddyLine(p), box = el("div", "pv-buddy");
-    box.setAttribute("role", "note"); box.setAttribute("aria-label", "Your practice buddy says: " + line);
-    var face = el("span", "pv-buddy-face"); face.appendChild(icon("/assets/icons.svg#i-smile"));
-    box.appendChild(face);
+    var allowance = (s.progress && s.progress.drills) || (s.drill && s.drill.allowance);
+    var scene = { picking: showPicker(), recording: s.phase !== "idle", grade: s.grade, hasDrill: !!s.drill, drillsLeft: allowance ? PP().drillsLeft(allowance) : null };
+    var mood = T.mascotMood(p, scene), line = T.mascotLine(mood, p, scene), box = el("div", "pv-buddy");
+    box.setAttribute("role", "note"); box.setAttribute("aria-label", "Doh, your practice buddy, says: " + line);
+    box.appendChild(art(T.mascotArt(mood), 68, 68, "pv-buddy-doh"));
     var bubble = el("p", "pv-buddy-bubble", line); bubble.setAttribute("aria-hidden", "true");
     box.appendChild(bubble);
     return box;
   }
 
   function statsCards(p, P) {
-    var row = el("div", "pv-stats");
+    var T = PT(), row = el("div", "pv-stats");
     var streak = el("section", "card pv-stat pv-streak" + (p.streak.current > 0 ? " is-on" : ""));
     streak.setAttribute("aria-label", P.streakLabel(p.streak.current));
     var head = el("div", "pv-stat-head");
-    head.appendChild(icon("/assets/icons.svg#i-flame"));
+    head.appendChild(art(T.flameArt(p.streak), 32));
     head.appendChild(el("strong", "pv-big", String(p.streak.current)));
     streak.appendChild(head);
     streak.appendChild(el("span", "pv-label", "day streak"));
     streak.appendChild(el("span", "pv-sub", P.streakLine(p.streak)));
     var freeze = el("span", "pv-foot");
-    freeze.appendChild(icon("/assets/icons.svg#i-snowflake"));
+    freeze.appendChild(art("freeze", 16, 16, p.streak.freezeAvailable ? "" : "is-spent"));
     freeze.appendChild(document.createTextNode(P.freezeLine(p.streak)));
     streak.appendChild(freeze);
     row.appendChild(streak);
 
     var level = el("section", "card pv-stat pv-level");
     level.setAttribute("aria-label", "Level " + p.level.name);
-    level.appendChild(el("strong", "pv-level-name", p.level.name));
-    level.appendChild(el("span", "pv-label", "level " + (p.level.index + 1) + " of " + LEVELS));
-    level.appendChild(bar(P.levelFraction(p.level, p.xp), p.xp + " XP. " + P.nextLevelLine(p.level)));
+    var lhead = el("div", "pv-level-head"), ltext = el("div", "pv-level-text");
+    lhead.appendChild(art(T.levelArt(p.level.index), 44));
+    ltext.appendChild(el("strong", "pv-level-name" + (p.level.name.length > 6 ? " is-long" : ""), p.level.name));
+    ltext.appendChild(el("span", "pv-label", "level " + (p.level.index + 1) + " of " + LEVELS));
+    lhead.appendChild(ltext);
+    level.appendChild(lhead);
+    var brow = el("div", "pv-bar-row");
+    brow.appendChild(bar(P.levelFraction(p.level, p.xp), p.xp + " XP. " + P.nextLevelLine(p.level)));
+    if (p.level.nextName) brow.appendChild(art(T.levelArt(p.level.index + 1), 22));
+    level.appendChild(brow);
     level.appendChild(el("span", "pv-sub", p.xp + " XP"));
     level.appendChild(el("span", "pv-foot", P.nextLevelLine(p.level)));
     row.appendChild(level);
@@ -267,9 +298,14 @@
     var tr = currentTrack(), playful = tr === "playful", focused = tr === "focused";
     var card = el("section", "card pv-drill");
     card.setAttribute("aria-labelledby", "pv-drill-title");
-    card.appendChild(el("p", "pv-eyebrow", playful ? "Today's singing game" : "Today's drill · " + d.levelName));
+    card.appendChild(el("p", "pv-eyebrow", playful ? "Your singing game" : "Practice path · " + d.levelName));
     var h = el("h2", "pv-title", d.title); h.id = "pv-drill-title";
     card.appendChild(h);
+    var where = P.pathLine(d);
+    if (where) {
+      card.appendChild(el("p", "pv-path", where));
+      var unitBar = bar(P.unitFraction(d), where); unitBar.classList.add("pv-unit-bar"); card.appendChild(unitBar);
+    }
     card.appendChild(el("p", "pv-meta", playful
       ? d.dohHeader + " · " + d.notes.length + " notes"
       : d.dohHeader + " · " + d.key + " · " + d.tempoBpm + " BPM" + (focused ? " · " + d.notes.length + " notes" : "")));
@@ -300,16 +336,31 @@
       live.hidden = true;
       var hearBtn = button("btn-ghost", isHearing() ? "/assets/icons.svg#i-stop" : "/assets/icons.svg#i-volume", isHearing() ? "Stop" : playful ? "Listen" : "Hear it", toggleHear);
       hearBtn.id = "pv-hear";
-      var singBtn = button("btn-primary", "/assets/icons.svg#i-mic", playful ? (s.grade ? "Again!" : "Sing it!") : s.grade ? "Sing it again" : "Sing it", sing);
+      // After a mark: "Next drill" leads (or "Try it again" when the path brings the same drill back), and the drill
+      // just sung can be sung again for practice.
+      var onward = s.grade ? P.nextAction(d, s.next, tr) : null, moveOn = onward && !onward.same;
+      var singBtn = button(moveOn ? "btn-ghost" : "btn-primary", "/assets/icons.svg#i-mic",
+        moveOn ? (playful ? "Again!" : "Sing it again") : onward ? onward.label : playful ? "Sing it!" : "Sing it", sing);
       singBtn.id = "pv-sing";
       if (left === 0) singBtn.disabled = true;
       actions.appendChild(hearBtn); actions.appendChild(singBtn);
+      if (moveOn) {
+        var nextBtn = button("btn-primary pv-wide", "/assets/icons.svg#i-arrow-right", onward.label, goNext);
+        nextBtn.id = "pv-next";
+        actions.appendChild(nextBtn);
+      }
     }
     card.appendChild(live);
     card.appendChild(actions);
     var line = P.allowanceLine(allowance);
     if (line) card.appendChild(el("p", "pv-allow", line));
     if (s.error) { var err = el("p", "pv-error", s.error); err.setAttribute("role", "alert"); card.appendChild(err); }
+    if (s.grade && s.grade.milestone && s.phase === "idle") {
+      var ms = el("div", "pv-milestone"); ms.setAttribute("role", "status");
+      ms.appendChild(el("strong", null, s.grade.milestone.title));
+      ms.appendChild(el("p", null, s.grade.milestone.description));
+      card.appendChild(ms);
+    }
     if (s.grade && s.phase === "idle") {
       card.appendChild(playful ? starGrade(s.grade, d.notes, PT()) : gradeMarks(s.grade, d.notes, P));
       if (focused) {
@@ -332,7 +383,7 @@
     var stars = T.starsFor(g.score), box = el("div", "pv-stars-result");
     var row = el("div", "pv-stars");
     row.setAttribute("role", "img"); row.setAttribute("aria-label", stars + " of 3 stars. " + T.starWord(stars));
-    for (var i = 1; i <= 3; i++) row.appendChild(starShape("pv-star" + (i <= stars ? " on" : "") + (i === 2 ? " mid" : "")));
+    row.appendChild(art(T.starsArt(stars), 148, 72));
     box.appendChild(row);
     box.appendChild(el("p", "pv-star-word", T.starWord(stars)));
     box.appendChild(el("p", "pv-star-hint", T.starHint(g, stars)));
@@ -350,19 +401,6 @@
     var earned = T.playfulRewardLine(g.reward);
     if (earned) box.appendChild(el("p", "pv-earned", earned));
     return box;
-  }
-
-  /**
-   * One star, drawn in place rather than from the sprite: the sprite's symbols carry fill="none", which a filled
-   * (earned) star must override. The shape is Lucide's own "star", so it matches the rest of the set.
-   */
-  var STAR_PATH = "M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z";
-  function starShape(cls) {
-    var NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg"), path = document.createElementNS(NS, "path");
-    svg.setAttribute("class", cls); svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("aria-hidden", "true");
-    svg.setAttribute("stroke", "currentColor"); svg.setAttribute("stroke-width", "1.75"); svg.setAttribute("stroke-linejoin", "round");
-    path.setAttribute("d", STAR_PATH); svg.appendChild(path);
-    return svg;
   }
 
   /** Focused: the take just marked, played back from the recording. */
@@ -419,8 +457,8 @@
   function weekCard(p, P) {
     var card = el("section", "card pv-week");
     card.setAttribute("aria-labelledby", "pv-week-title");
-    var row = el("div", "pv-week-row"), fraction = P.weeklyFraction(p.weeklyGoal);
-    row.appendChild(ring(fraction));
+    var row = el("div", "pv-week-row");
+    row.appendChild(ring(p.weeklyGoal));
     var text = el("div", "pv-week-text");
     var h = el("h2", "pv-title", p.weeklyGoal.daysDone + " of " + p.weeklyGoal.target + " days this week"); h.id = "pv-week-title";
     text.appendChild(h);
@@ -433,7 +471,7 @@
       var li = el("li", d.status), dot = el("span", "dot");
       li.setAttribute("aria-label", d.label);
       if (d.status === "done") dot.appendChild(icon("/assets/icons.svg#i-check"));
-      if (d.status === "frozen") dot.appendChild(icon("/assets/icons.svg#i-snowflake"));
+      if (d.status === "frozen") dot.appendChild(art("freeze", 26));
       li.appendChild(dot);
       var letter = el("span", null, d.letter); letter.setAttribute("aria-hidden", "true");
       li.appendChild(letter);
@@ -444,22 +482,36 @@
     return card;
   }
 
-  function ring(fraction) {
-    var size = 64, stroke = 7, r = (size - stroke) / 2, c = 2 * Math.PI * r, NS = "http://www.w3.org/2000/svg";
-    var box = el("div", "pv-ring");
+  /**
+   * The weekly goal as the art draws it: one arc per practice day of the goal, lit as the days are sung, and a ticked
+   * disc in the middle once the week is met (the phone's GoalRing).
+   */
+  function ring(goal) {
+    var size = 64, stroke = 7, c = size / 2, r = c - stroke / 2 - 1, NS = "http://www.w3.org/2000/svg";
+    var n = Math.max(1, Math.min(7, goal.target)), done = Math.min(goal.daysDone, n), met = goal.target > 0 && goal.daysDone >= goal.target;
+    var seg = 360 / n, gap = n > 1 ? 14 : 0;
+    function at(deg) { var a = (deg - 90) * Math.PI / 180; return (c + r * Math.cos(a)).toFixed(2) + " " + (c + r * Math.sin(a)).toFixed(2); }
+    var box = el("div", "pv-ring" + (met ? " is-met" : ""));
     box.setAttribute("role", "img");
-    box.setAttribute("aria-label", "Weekly goal " + Math.round(fraction * 100) + " percent");
+    box.setAttribute("aria-label", "Weekly goal: " + goal.daysDone + " of " + goal.target + " days" + (met ? ", met" : ""));
     var svg = document.createElementNS(NS, "svg");
     svg.setAttribute("width", size); svg.setAttribute("height", size); svg.setAttribute("viewBox", "0 0 " + size + " " + size);
     svg.setAttribute("aria-hidden", "true");
-    [["track", 0], ["fill", c * (1 - fraction)]].forEach(function (x) {
-      var circle = document.createElementNS(NS, "circle");
-      circle.setAttribute("class", x[0]); circle.setAttribute("cx", size / 2); circle.setAttribute("cy", size / 2); circle.setAttribute("r", r);
-      if (x[0] === "fill") { circle.setAttribute("stroke-dasharray", c + " " + c); circle.setAttribute("stroke-dashoffset", x[1]); if (fraction <= 0) circle.setAttribute("stroke-opacity", "0"); }
-      svg.appendChild(circle);
-    });
+    for (var i = 0; i < n; i++) {
+      var arc = document.createElementNS(NS, n === 1 ? "circle" : "path");
+      if (n === 1) { arc.setAttribute("cx", c); arc.setAttribute("cy", c); arc.setAttribute("r", r); }
+      else arc.setAttribute("d", "M" + at(i * seg + gap / 2) + "A" + r + " " + r + " 0 0 1 " + at((i + 1) * seg - gap / 2));
+      arc.setAttribute("class", i < done ? "on" : "off");
+      svg.appendChild(arc);
+    }
+    if (met) {
+      var disc = document.createElementNS(NS, "circle");
+      disc.setAttribute("class", "disc"); disc.setAttribute("cx", c); disc.setAttribute("cy", c); disc.setAttribute("r", r - 9);
+      var tick = document.createElementNS(NS, "path");
+      tick.setAttribute("class", "tick"); tick.setAttribute("d", "M24.5 32.5l5 5 10-11");
+      svg.appendChild(disc); svg.appendChild(tick);
+    }
     box.appendChild(svg);
-    box.appendChild(el("span", null, Math.round(fraction * 100) + "%"));
     return box;
   }
 
@@ -468,8 +520,7 @@
     P.sortBadges(p.badges).forEach(function (b) {
       var li = el("li", "pv-badge " + (b.earned ? "earned" : "locked"));
       li.setAttribute("aria-label", b.title + ". " + b.description + " " + (b.earned ? "Earned." : b.progress + " of " + b.target + "."));
-      var ic = el("span", "pv-badge-icon"); ic.appendChild(icon(BADGE_ICONS[b.code] || "/assets/icons.svg#i-award"));
-      li.appendChild(ic);
+      li.appendChild(art(PT().badgeArt(b.code, b.earned), 40, 41));
       li.appendChild(el("strong", null, b.title));
       li.appendChild(el("p", null, b.description));
       if (!b.earned) {
@@ -484,16 +535,15 @@
     return list;
   }
 
-  /** Playful's badges as stickers: earned ones a tilted coloured disc, locked ones an empty dashed slot. */
+  /** Playful's sticker book: each badge its own die-cut sticker, tilted as if stuck by hand; locked ones grey and flat. */
   function stickers(p, P, T) {
     var list = el("ul", "pv-stickers");
-    P.sortBadges(p.badges).forEach(function (b, i) {
+    P.sortBadges(p.badges).forEach(function (b) {
       var li = el("li", "pv-sticker" + (b.earned ? " earned" : ""));
       li.setAttribute("aria-label", b.title + " sticker. " + b.description + " " + (b.earned ? "Earned." : b.progress + " of " + b.target + "."));
-      var disc = el("span", b.earned ? "pv-sticker-disc fill-" + STICKER_FILLS[i % STICKER_FILLS.length] : "pv-sticker-slot");
-      if (b.earned) disc.style.transform = "rotate(" + T.stickerTilt(b.code) + "deg)";
-      disc.appendChild(icon(BADGE_ICONS[b.code] || "/assets/icons.svg#i-award"));
-      li.appendChild(disc);
+      var pic = art(T.badgeArt(b.code, b.earned), 76, 79);
+      if (b.earned) pic.style.transform = "rotate(" + T.stickerTilt(b.code) + "deg)";
+      li.appendChild(pic);
       li.appendChild(el("strong", null, b.title));
       if (!b.earned) li.appendChild(el("small", null, Math.min(b.progress, b.target) + "/" + b.target));
       list.appendChild(li);
@@ -501,13 +551,13 @@
     return list;
   }
 
-  /** Focused's badges: a plain list, earned or how far along. */
+  /** Focused's badges: the same stickers, small and flat, in a plain list, earned or how far along. */
   function badgeList(p, P) {
     var list = el("ul", "card pv-badge-list");
     P.sortBadges(p.badges).forEach(function (b) {
       var li = el("li", b.earned ? "earned" : "locked");
       li.setAttribute("aria-label", b.title + ". " + b.description + " " + (b.earned ? "Earned." : b.progress + " of " + b.target + "."));
-      li.appendChild(icon(BADGE_ICONS[b.code] || "/assets/icons.svg#i-award"));
+      li.appendChild(art(PT().badgeArt(b.code, b.earned), 34, 35));
       var text = el("span", "pv-badge-row-text");
       text.appendChild(el("strong", null, b.title));
       text.appendChild(el("span", null, b.description));
@@ -522,12 +572,19 @@
    * Playful's burst: a couple of dozen paper bits flung from the middle and gone in about a second. CSS only (each
    * bit's path is two custom properties), never touchable, and nothing at all for reduced motion — the stars say it.
    */
+  var confettiWarm = false;
+  /** Playful fetches the burst's eight tiny pieces once, ahead of the first burst, so it never flies blank. */
+  function warmConfetti() {
+    if (confettiWarm || reducedMotion()) return;
+    confettiWarm = true;
+    PT().CONFETTI_ART.forEach(function (n) { art(n, 1); });
+  }
   function burst() {
     if (reducedMotion()) return;
     var layer = el("div", "pv-confetti"); layer.setAttribute("aria-hidden", "true");
     for (var i = 0; i < 24; i++) {
       var angle = (i / 24) * Math.PI * 2 + ((i * 37) % 11) / 20, reach = 90 + ((i * 53) % 70);
-      var bit = el("i", "c" + (i % 4) + (i % 3 === 0 ? " round" : ""));
+      var size = 14 + ((i * 7) % 9), bit = art(PT().CONFETTI_ART[i % PT().CONFETTI_ART.length], size);
       bit.style.setProperty("--dx", Math.round(Math.cos(angle) * reach) + "px");
       bit.style.setProperty("--dy", Math.round(Math.sin(angle) * reach - 40) + "px");
       bit.style.setProperty("--r", ((i * 47) % 360) + "deg");
@@ -690,31 +747,66 @@
       render();
       // The moment, by the track the drill was sung on: a burst, a line, or nothing (practice-track.js).
       var T = PT(), sungOn = d.track !== undefined ? d.track : currentTrack();
-      var how = T.celebrationFor(sungOn, g.score, g.reward), moment = P.rewardMoment(g.reward);
-      var line = sungOn === "playful" ? T.playfulRewardLine(g.reward) : moment && moment.line;
+      var how = T.celebrationFor(sungOn, g.score, g.reward, !!g.milestone), moment = P.rewardMoment(g.reward);
+      var line = g.milestone ? g.milestone.title : sungOn === "playful" ? T.playfulRewardLine(g.reward) : moment && moment.line;
       if (how === "burst") burst();
-      if (how !== "quiet" && line) toast(line);
+      if (how !== "quiet" && line) toast(line, T.rewardArt(g.reward));
       refreshProgress();
+      fetchNext();
     }, function (err) {
       if (gen !== s.gen) return;
       s.phase = "idle"; s.error = P.gradeError(err);
       if (err && err.code === "PRACTICE_DAILY_LIMIT" && s.progress) {
         var a = s.progress.drills || d.allowance;
-        s.progress.drills = { used: a.limit, limit: a.limit };
+        s.progress.drills = { used: a.limit, limit: a.limit, resetsAtUtc: a.resetsAtUtc || null };
       }
       render();
     });
   }
 
+  /** After a marked take: the path's next drill, ready for "Next drill" (its label says "Try it again" when it is the same). */
+  function fetchNext() {
+    var gen = s.gen;
+    s.next = null;
+    return ctx.request("/api/practice/drills/next").then(function (d) {
+      if (gen !== s.gen || !d) return;
+      s.next = d;
+      if (s.phase === "idle") render();
+    }, function () { /* "Next drill" asks again when pressed */ });
+  }
+
+  /** On along the path: the drill fetched after the take (or fetched now), its marks cleared. */
+  function goNext() {
+    if (s.phase !== "idle") return;
+    var gen = s.gen;
+    stopHear(); stopReplay();
+    var ready = s.next ? Promise.resolve(s.next) : ctx.request("/api/practice/drills/next");
+    ready.then(function (d) {
+      if (gen !== s.gen || !d) return;
+      s.drill = d; s.next = null; s.grade = null; s.error = null;
+      dropTakeUrl(); hideToast(); render();
+      var title = root && root.querySelector("#pv-drill-title");
+      if (title) { title.setAttribute("tabindex", "-1"); title.focus(); }
+    }, function (err) {
+      if (gen !== s.gen) return;
+      s.error = (err && err.message) || "We couldn't load the next drill. Please try again.";
+      render();
+    });
+  }
+
   // ── The reward toast ────────────────────────────────────────────────────
-  function toast(line) {
+  /** One line, with the new level's emblem or the new badge's sticker beside it when it is one. */
+  function toast(line, picture) {
     if (!toastEl) {
       toastEl = el("div", "pv-toast");
       toastEl.setAttribute("role", "status");
-      toastEl.appendChild(icon("/assets/icons.svg#i-sparkle"));
+      toastEl.appendChild(el("span", "pv-toast-pic"));
       toastEl.appendChild(el("span"));
       document.body.appendChild(toastEl);
     }
+    var pic = toastEl.firstChild;
+    pic.innerHTML = "";
+    pic.appendChild(picture ? art(picture, 28) : icon("/assets/icons.svg#i-sparkle"));
     toastEl.lastChild.textContent = line;
     // Re-inserted so the entrance plays again for a second reward (the CSS drops it for reduced motion).
     toastEl.hidden = true; void toastEl.offsetWidth; toastEl.hidden = false;
@@ -741,7 +833,7 @@
     s.gen++;
     leave();
     dropTakeUrl();
-    s.progress = null; s.drill = null; s.grade = null; s.error = null; s.loadError = null; s.loading = false; s.phase = "idle";
+    s.progress = null; s.drill = null; s.next = null; s.grade = null; s.error = null; s.loadError = null; s.loading = false; s.phase = "idle";
     s.picking = false; s.savingTrack = null; s.trackError = null;
     if (root) root.innerHTML = "";
   }
