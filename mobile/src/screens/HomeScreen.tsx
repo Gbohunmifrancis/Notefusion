@@ -22,10 +22,11 @@ import { AppDrawer } from '../components/AppDrawer';
 import { Touchable } from '../components/Touchable';
 import { Skeleton } from '../components/Skeleton';
 import { Mark, Wordmark } from '../components/night/NightUI';
-import { libraryApi, meApi } from '../api/endpoints';
+import { meApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
-import { deriveSolfa, dohLetter } from '../lib/solfa';
-import { synthesizeMelodyWavBase64 } from '../lib/synth';
+import { dohLetter } from '../lib/solfa';
+import { loadLibraryList, loadSheet } from '../lib/offlineLibrary';
+import { resultFromSaved } from '../lib/openSheet';
 import { useAuth } from '../lib/auth';
 import { showDialog } from '../lib/dialog';
 import { useSubscription } from '../lib/subscription';
@@ -176,9 +177,8 @@ export function HomeScreen({ navigation }: Props) {
 
   const reload = useCallback(() => {
     setLoadingRecent(true);
-    libraryApi
-      .list()
-      .then((all) => {
+    loadLibraryList()
+      .then(({ items: all }) => {
         setRecent(all.slice(0, 3));
         setLoadError(null);
       })
@@ -190,9 +190,8 @@ export function HomeScreen({ navigation }: Props) {
     setRefreshing(true);
     try {
       await Promise.all([
-        libraryApi
-          .list()
-          .then((all) => {
+        loadLibraryList()
+          .then(({ items: all }) => {
             setRecent(all.slice(0, 3));
             setLoadError(null);
           })
@@ -221,9 +220,8 @@ export function HomeScreen({ navigation }: Props) {
         })
         .catch(() => undefined);
       setLoadingRecent(true);
-      libraryApi
-        .list()
-        .then((all) => {
+      loadLibraryList()
+        .then(({ items: all }) => {
           if (!active) return;
           setRecent(all.slice(0, 3));
           setLoadError(null);
@@ -242,34 +240,9 @@ export function HomeScreen({ navigation }: Props) {
 
   async function openRecent(item: SavedTranscription) {
     try {
-      const full = await libraryApi.get(item.id);
-      const derived = deriveSolfa(
-        full.notes ?? [],
-        full.key,
-        full.timeSignature,
-      );
-      const audioPreviewBase64 = synthesizeMelodyWavBase64(
-        derived.notes,
-        full.tempoBpm,
-      );
-
-      rootNav.navigate('Result', {
-        result: {
-          key: full.key,
-          keyConfidence: 1,
-          tempo: full.tempoBpm,
-          timeSignature: full.timeSignature,
-          musicXml: full.musicXml ?? '',
-          midiBase64: '',
-          notes: derived.notes,
-          solfaLines: derived.solfaLines,
-          overallConfidence: full.overallConfidence,
-          audioPreviewBase64,
-          chords: full.chords ?? null,
-        },
-        savedId: full.id,
-        title: full.title,
-      });
+      // The phone's copy when it is current or the API is out of reach (lib/offlineLibrary).
+      const { sheet } = await loadSheet(item);
+      rootNav.navigate('Result', { result: resultFromSaved(sheet), savedId: sheet.id, title: sheet.title });
     } catch (e) {
       showDialog({
         title: 'Could not open',
@@ -430,6 +403,15 @@ export function HomeScreen({ navigation }: Props) {
                 >
                   <Ionicons name="link-outline" size={17} color={colors.accent} />
                   <Text style={styles.chipLabel}>Paste link</Text>
+                </Touchable>
+                <Touchable
+                  onPress={() => rootNav.navigate('Hymns')}
+                  style={styles.chip}
+                  radius={radii.pill}
+                  accessibilityLabel="Hymns, for use offline"
+                >
+                  <Ionicons name="book-outline" size={17} color={colors.accent} />
+                  <Text style={styles.chipLabel}>Hymns</Text>
                 </Touchable>
                 <Touchable
                   onPress={() => rootNav.navigate('Listen')}

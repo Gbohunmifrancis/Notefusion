@@ -49,6 +49,12 @@ import {
 } from "../lib/keyboardTranspose";
 import { meterEventValue, type Meter } from "../lib/meter";
 import { logAnalyticsEvent } from "../lib/analytics";
+import { useDataSaver } from "../lib/dataSaver";
+import { recordingProfile } from "../lib/recordingPreset";
+import { enqueueTake } from "../lib/outbox";
+import { probeApi } from "../lib/connectivity";
+import { isNetworkCode, isOffline } from "../lib/reachability";
+import type { SubmitOptions } from "../api/endpoints";
 import {
   fonts,
   motion,
@@ -115,12 +121,22 @@ const KEYS = [
  */
 const FREE_TIER_LIMIT_CODE = "BILLING_FREE_TIER_LIMIT";
 
-const RECORDING_OPTIONS: RecordingOptions = {
-  ...RecordingPresets.HIGH_QUALITY,
-  sampleRate: 22050,
-  numberOfChannels: 1,
-  isMeteringEnabled: true,
-};
+/**
+ * AAC in an .m4a at 22,050 Hz mono — the rate the worker resamples to anyway — at 128 kbps, or at
+ * 32 kbps on data saver: a quarter of the upload with the same transcription (lib/recordingPreset.ts
+ * has the measurement).
+ */
+function recordingOptionsFor(dataSaver: boolean): RecordingOptions {
+  const profile = recordingProfile(dataSaver);
+  return {
+    ...RecordingPresets.HIGH_QUALITY,
+    sampleRate: profile.sampleRate,
+    numberOfChannels: profile.numberOfChannels,
+    bitRate: profile.bitRate,
+    web: { ...RecordingPresets.HIGH_QUALITY.web, bitsPerSecond: profile.bitRate },
+    isMeteringEnabled: true,
+  };
+}
 
 // ── Recording length cap ──────────────────────────────────────────────────────
 //
@@ -277,7 +293,13 @@ export function RecordScreen() {
   const [elapsed, setElapsed] = useState(0);
   const [permError, setPermError] = useState<string | null>(null);
 
-  const recorder = useAudioRecorder(RECORDING_OPTIONS);
+  // The preset follows Data saver, but never mid-take: a new preset makes a new recorder.
+  const dataSaver = useDataSaver();
+  const [recordingOptions, setRecordingOptions] = useState(() => recordingOptionsFor(dataSaver));
+  useEffect(() => {
+    if (phase !== "recording") setRecordingOptions(recordingOptionsFor(dataSaver));
+  }, [dataSaver, phase]);
+  const recorder = useAudioRecorder(recordingOptions);
   // Polls the native recorder ~6x/sec for status + metering while recording;
   // expo-audio only reports metering through this hook, not on `recorder` itself.
   const recorderState = useAudioRecorderState(recorder, 150);
@@ -292,6 +314,44 @@ export function RecordScreen() {
     if (prev && prev.uri !== next?.uri) deleteQuietly(prev.uri);
     lastSubmitArgs.current = next;
   }, []);
+
+  /**
+   * Record now, send later: the remembered take moves into the send queue (app storage, persisted)
+   * and goes out by itself when the API can be reached; the Library shows it meanwhile. Returns false
+   * when it could not be kept, leaving the usual retry card.
+   */
+  const queueLastTake = useCallback((afterFailedSend: boolean): boolean => {
+    const last = lastSubmitArgs.current;
+    if (!last) return false;
+    if (!enqueueTake({ fileUri: last.uri, fileName: last.name, opts: last.opts, afterFailedSend })) return false;
+    // The file is the queue's now (moved, not copied): forgetting it here must not delete it.
+    lastSubmitArgs.current = null;
+    reset();
+    setPhase("ready");
+    setElapsed(0);
+    showDialog({
+      title: "Saved to send later",
+      message:
+        "You're offline, so your recording is kept on this phone. It will be sent by itself when you're back online — it waits in your Library until then.",
+      icon: "cloud-upload-outline",
+      actions: [
+        { label: "See it in Library", icon: "albums-outline", onPress: () => tabNav.navigate("Library") },
+        { label: "OK", style: "cancel" },
+      ],
+    });
+    return true;
+  }, [reset, tabNav]);
+
+  /** Sends the take, or — when the API is known to be out of reach — queues it without trying. */
+  const submitOrQueue = useCallback(
+    async (uri: string, name: string, opts: SubmitOptions): Promise<string | null> => {
+      rememberSubmit({ uri, name, opts });
+      void logAnalyticsEvent("recording_upload", { data_saver: dataSaver });
+      if (isOffline() && !(await probeApi()) && queueLastTake(false)) return null;
+      return start(uri, name, opts);
+    },
+    [rememberSubmit, queueLastTake, start, dataSaver],
+  );
 
   // ── Voice-level guidance state ────────────────────────────────────────────
   const [showQuietGuidance, setShowQuietGuidance] = useState(false);
@@ -385,8 +445,11 @@ export function RecordScreen() {
     if (state.errorCode === FREE_TIER_LIMIT_CODE) {
       reset();
       showTrialExhausted();
+    } else if (isNetworkCode(state.errorCode)) {
+      // The upload never got an answer: keep the take and send it when the connection is back.
+      queueLastTake(true);
     }
-  }, [state.status, state.errorCode, reset, showTrialExhausted]);
+  }, [state.status, state.errorCode, reset, showTrialExhausted, queueLastTake]);
 
   // The elapsed-time interval is cleared in stopAndSubmit, but a screen unmount
   // mid-recording (back gesture, tab switch) never runs that path, leaking the
@@ -572,7 +635,7 @@ export function RecordScreen() {
       const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
       const opts = { mode, key: keyOpt, separate, keyboardTranspose: kbTranspose || undefined, timeSignature: meter ?? undefined };
       void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "file" });
-      rememberSubmit({ uri: asset.uri, name: asset.name || "imported-audio.m4a", opts }); const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", opts);
+      const jobId = await submitOrQueue(asset.uri, asset.name || "imported-audio.m4a", opts);
       // Only once the job is really queued — a quota refusal has no completion
       // to notify about.
       if (jobId) {
@@ -613,7 +676,7 @@ export function RecordScreen() {
       const separate = mode === "chords" ? false : ((await askIfSong(false)) ?? false);
       const opts = { mode, key: keyOpt, separate, keyboardTranspose: kbTranspose || undefined, timeSignature: meter ?? undefined };
       void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "mic" });
-      rememberSubmit({ uri, name: `clip-${elapsed}s.m4a`, opts }); const jobId = await start(uri, `clip-${elapsed}s.m4a`, opts);
+      const jobId = await submitOrQueue(uri, `clip-${elapsed}s.m4a`, opts);
       if (jobId) {
         setMeter(null);
         void offerBackgroundAlerts();

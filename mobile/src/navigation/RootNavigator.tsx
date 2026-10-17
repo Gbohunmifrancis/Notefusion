@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../lib/auth';
@@ -19,6 +19,9 @@ import { UpgradeScreen } from '../screens/UpgradeScreen';
 import { LinkScreen } from '../screens/LinkScreen';
 import { ListenScreen } from '../screens/ListenScreen';
 import { ChoirScreen } from '../screens/ChoirScreen';
+import { HymnsScreen } from '../screens/HymnsScreen';
+import { useOutboxRunner } from '../lib/outbox';
+import { autoRefreshPack } from '../lib/hymnPackStore';
 import { AdminHomeScreen } from '../screens/admin/AdminHomeScreen';
 import { AdminPaymentsScreen } from '../screens/admin/AdminPaymentsScreen';
 import { AdminUserScreen } from '../screens/admin/AdminUserScreen';
@@ -83,6 +86,14 @@ export function RootNavigator() {
   // server to keep it filled, so this is the only thing that stops the window running out.
   useReminderWindow(Boolean(user));
 
+  // Record now, send later: recordings that could not be sent go out when the API can be reached.
+  useOutboxRunner(Boolean(user));
+
+  // The offline hymn pack's weekly look for a newer version (never on data saver; hymnPackStore).
+  useEffect(() => {
+    if (user) void autoRefreshPack();
+  }, [user]);
+
   const routeNameRef = useRef<string | undefined>(undefined);
 
   // Hold the splash for the stored theme as well as the session: mounting the
@@ -145,6 +156,11 @@ export function RootNavigator() {
             <Stack.Screen
               name="Choir"
               component={ChoirScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="Hymns"
+              component={HymnsScreen}
               options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen

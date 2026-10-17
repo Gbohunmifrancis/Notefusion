@@ -71,6 +71,8 @@ export type RootStackParams = {
    * join field (notefusion://join/CODE); joining is still a tap.
    */
   Choir: { code?: string } | undefined;
+  /** The hymns the website publishes, from the offline pack: browse, search, open as a sheet. */
+  Hymns: undefined;
 
   /**
    * Admin-only screens, reached from the side bar's Admin row and nowhere else.

@@ -1,0 +1,101 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import {
+  PACK_FORMAT,
+  WEEK_MS,
+  autoCheckDue,
+  formatBytes,
+  hymnSheet,
+  needsDownload,
+  parseMeta,
+  parsePack,
+  searchHymns,
+  type PackHymn,
+} from "./hymnPack.ts";
+import { deriveSolfa } from "./solfa.ts";
+
+const hymn = (slug: string, title: string, over: Partial<PackHymn> = {}): PackHymn => ({
+  slug,
+  kind: "hymn",
+  title,
+  firstLine: "",
+  tune: "",
+  key: "C major",
+  time: "4/4",
+  tempo: 90,
+  pickup: 0,
+  credit: "Public domain.",
+  url: `https://notefusion.studio/hymns/${slug}`,
+  notes: [[60, 0, 1]],
+  words: "",
+  verses: [],
+  ...over,
+});
+
+const ag = hymn("amazing-grace", "Amazing Grace", {
+  firstLine: "Amazing grace! how sweet the sound",
+  tune: "NEW BRITAIN",
+  key: "G major",
+  time: "3/4",
+  tempo: 72,
+  pickup: 1,
+  notes: [[62, 2, 1], [67, 3, 2], [71, 5, 0.5], [67, 5.5, 0.5]],
+  words: "A-maz-ing grace! how sweet",
+  verses: [{ lines: ["Amazing grace! how sweet the sound"] }],
+});
+const pack = [ag, hymn("abide-with-me", "Abide with Me", { firstLine: "Abide with me; fast falls the eventide", tune: "EVENTIDE" }), hymn("tis-so-sweet", "‘Tis So Sweet to Trust in Jesus", { tune: "TRUST IN JESUS" }), hymn("tune-new-britain", "New Britain", { kind: "tune", tune: "NEW BRITAIN" })];
+
+test("the version check: a different version is newer, a format this build cannot read waits for an update", () => {
+  const meta = { format: PACK_FORMAT, version: "abc", count: 377, bytes: 700_000 };
+  assert.equal(needsDownload(null, meta), true);
+  assert.equal(needsDownload("abc", meta), false);
+  assert.equal(needsDownload("old", meta), true);
+  assert.equal(needsDownload("old", { ...meta, format: PACK_FORMAT + 1 }), false);
+});
+
+test("the weekly check: only with a pack, once a week, never on data saver", () => {
+  const now = 100 * WEEK_MS;
+  assert.equal(autoCheckDue({ installed: true, lastCheckedAt: now - WEEK_MS, now, dataSaver: false }), true);
+  assert.equal(autoCheckDue({ installed: true, lastCheckedAt: now - WEEK_MS + 1, now, dataSaver: false }), false);
+  assert.equal(autoCheckDue({ installed: true, lastCheckedAt: null, now, dataSaver: false }), true);
+  assert.equal(autoCheckDue({ installed: true, lastCheckedAt: 0, now, dataSaver: true }), false);
+  assert.equal(autoCheckDue({ installed: false, lastCheckedAt: 0, now, dataSaver: false }), false);
+});
+
+test("parsing: a good pack, a future format, junk", () => {
+  const good = parsePack(JSON.stringify({ format: 1, version: "v1", count: 1, hymns: [ag, { slug: "broken" }] }));
+  assert.equal(good?.version, "v1");
+  assert.equal(good?.hymns.length, 1, "an unreadable entry is skipped, not fatal");
+  assert.equal(parsePack(JSON.stringify({ format: 2, version: "v", hymns: [ag] })), null);
+  assert.equal(parsePack("<html>"), null);
+  assert.deepEqual(parseMeta('{"format":1,"version":"v","count":3,"bytes":42}'), { format: 1, version: "v", count: 3, bytes: 42 });
+  assert.equal(parseMeta("{}"), null);
+});
+
+test("search: title start, then title, first line, tune; accents and quote marks do not matter", () => {
+  assert.deepEqual(searchHymns(pack, "").map((h) => h.slug), ["abide-with-me", "amazing-grace", "tune-new-britain", "tis-so-sweet"]);
+  assert.deepEqual(searchHymns(pack, "britain").map((h) => h.slug), ["tune-new-britain", "amazing-grace"]);
+  assert.deepEqual(searchHymns(pack, "tis so").map((h) => h.slug), ["tis-so-sweet"]);
+  assert.deepEqual(searchHymns(pack, "eventide").map((h) => h.slug), ["abide-with-me"]);
+  assert.deepEqual(searchHymns(pack, "sweet sound").map((h) => h.slug), ["amazing-grace"]);
+  assert.deepEqual(searchHymns(pack, "nothing like this"), []);
+});
+
+test("a hymn opens as a sheet the solfa engine reads as the hymnbook does", () => {
+  const sheet = hymnSheet(ag);
+  assert.equal(sheet.key, "G major");
+  assert.equal(sheet.timeSignature, "3/4");
+  assert.equal(sheet.tempo, 72);
+  assert.equal(sheet.lyrics, "A-maz-ing grace! how sweet");
+  assert.deepEqual(sheet.hymn, { slug: "amazing-grace", title: "Amazing Grace", url: ag.url, credit: "Public domain." });
+  const derived = deriveSolfa(sheet.notes, sheet.key, sheet.timeSignature);
+  assert.deepEqual(derived.notes.map((n) => n.solfa + n.octaveMark), ["s,", "d", "m", "d"]);
+  assert.match(derived.solfaLines[0]!, /^Doh is G/);
+  assert.equal(hymnSheet(hymn("x", "X", { tempo: 0 })).tempo, 90);
+});
+
+test("sizes read as people say them", () => {
+  assert.equal(formatBytes(700_414), "684 KB");
+  assert.equal(formatBytes(3_250_000), "3.1 MB");
+  assert.equal(formatBytes(500), "500 B");
+});

@@ -5,7 +5,9 @@
 //      the worker's hymn index, server/app/data/hymn_index.json.
 //   2. Links: every internal href/src (and canonical, og:image) on every page resolves to a file,
 //      and every #fragment to an id on its page.
-//   3. Pages the build writes: one <h1>, a <title>, a description of at most 160 characters, a
+//   3. The app's hymn pack (web-site/hymns/pack.json, pack-version.json): valid, every entry readable, and
+//      the version file naming the pack's own version and byte size (stale output is caught by 1).
+//   4. Pages the build writes: one <h1>, a <title>, a description of at most 160 characters, a
 //      canonical URL; every JSON-LD block and the hymn data parse as JSON; the MusicXML,
 //      sitemap.xml and feed.xml are well-formed XML; every sitemap URL exists.
 // The committed output is built from content/ alone (posts come from the API at deploy time); the deploy
@@ -18,6 +20,7 @@ import { SITE_DIR, ORIGIN } from "./lib/site.mjs";
 import { writeSite } from "./build.mjs";
 import { GENERATED_NOTE } from "./lib/layout.mjs";
 import { HYMN_INDEX_PATH } from "./lib/hymn-index.mjs";
+import { packErrors, PACK_PATH, PACK_VERSION_PATH } from "./lib/hymn-pack.mjs";
 
 /** A small well-formedness check: tags balance, attributes are quoted, entities are known. Returns an error or null. */
 export function xmlError(xml) {
@@ -110,6 +113,10 @@ export function checkSite(siteDir, { generatedOnly = false } = {}) {
       if (!/\salt="/.test(img[0])) errors.push(`${rel}: an image without alt text`);
     }
   }
+
+  const packFile = path.join(siteDir, PACK_PATH), versionFile = path.join(siteDir, PACK_VERSION_PATH);
+  if (!fs.existsSync(packFile) || !fs.existsSync(versionFile)) errors.push(`${PACK_PATH} or ${PACK_VERSION_PATH} is missing`);
+  else errors.push(...packErrors(fs.readFileSync(packFile, "utf8"), fs.readFileSync(versionFile, "utf8")));
 
   for (const name of ["sitemap.xml", "blog/feed.xml"]) {
     const f = path.join(siteDir, name);

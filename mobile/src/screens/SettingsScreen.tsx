@@ -41,6 +41,11 @@ import {
   type ReminderTime,
 } from "../lib/practiceReminder";
 import { meApi } from "../api/endpoints";
+import { setDataSaver, useDataSaver } from "../lib/dataSaver";
+import { clearAutomaticCopies, setKeepAllOffline, useOfflineLibrary } from "../lib/offlineLibrary";
+import { removePack, usePackState } from "../lib/hymnPackStore";
+import { formatBytes } from "../lib/hymnPack";
+import { logAnalyticsEvent } from "../lib/analytics";
 import type { MyProfile } from "../api/types";
 import { toApiError } from "../api/client";
 import { fonts, motion, radii, spacing, typography, type Palette } from "../design/theme";
@@ -90,6 +95,42 @@ export function SettingsScreen({ navigation, route }: Props) {
   const [pushBusy, setPushBusy] = useState(false);
   const [reminderOn, setReminderOn] = useState(false);
   const [reminderAt, setReminderAt] = useState<ReminderTime>(reminderTime());
+
+  // ── Offline & data ─────────────────────────────────────────────────────────
+  const dataSaver = useDataSaver();
+  const offline = useOfflineLibrary();
+  const hymnPack = usePackState();
+
+  function toggleDataSaver(on: boolean) {
+    void setDataSaver(on);
+    void logAnalyticsEvent("data_saver", { on });
+  }
+
+  function confirmClearOffline() {
+    showDialog({
+      title: "Clear offline copies?",
+      message:
+        "Sheets kept on this phone are removed, except the ones you chose to keep offline. Your library itself is untouched — anything you open again is kept again.",
+      icon: "trash-outline",
+      tone: "danger",
+      actions: [
+        { label: "Clear", style: "destructive", onPress: () => void clearAutomaticCopies() },
+        { label: "Cancel", style: "cancel" },
+      ],
+    });
+  }
+
+  function confirmRemoveHymns() {
+    showDialog({
+      title: "Remove the hymns?",
+      message: `Frees ${formatBytes(hymnPack.bytes)}. You can download them again from Hymns at any time.`,
+      icon: "book-outline",
+      actions: [
+        { label: "Remove", style: "destructive", onPress: () => void removePack() },
+        { label: "Keep them", style: "cancel" },
+      ],
+    });
+  }
 
   // ── Section anchors ────────────────────────────────────────────────────────
   const scrollRef = useRef<ScrollView | null>(null);
@@ -367,6 +408,92 @@ export function SettingsScreen({ navigation, route }: Props) {
             ios_backgroundColor={colors.border}
           />
         </View>
+      </Card>
+
+      {/* ── Offline & data ───────────────────────────────────────────────── */}
+      <View style={styles.sectionHeader}>
+        <Ionicons name="cloud-offline-outline" size={14} color={colors.accent} />
+        <Text style={styles.sectionTitle}>Offline & data</Text>
+      </View>
+
+      <Card style={styles.card}>
+        <View style={styles.switchRow}>
+          <View style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}>
+            <Ionicons name={dataSaver ? "leaf" : "leaf-outline"} size={16} color={colors.accent} />
+          </View>
+          <View style={styles.switchText}>
+            <Text style={styles.rowLabel}>Data saver</Text>
+            <Text style={styles.rowHint}>
+              {dataSaver
+                ? "Smaller recordings (same notes), no pictures, and hymns update only when you ask."
+                : "Full-size recordings and pictures; the hymns update by themselves each week."}
+            </Text>
+          </View>
+          <Switch
+            value={dataSaver}
+            onValueChange={toggleDataSaver}
+            trackColor={{ false: colors.border, true: colors.accentGlow }}
+            thumbColor={dataSaver ? colors.accent : colors.surface}
+            ios_backgroundColor={colors.border}
+          />
+        </View>
+
+        <View style={styles.rowDivider} />
+
+        <View style={styles.switchRow}>
+          <View style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}>
+            <Ionicons name={offline.keepAll ? "cloud-done" : "cloud-done-outline"} size={16} color={colors.accent} />
+          </View>
+          <View style={styles.switchText}>
+            <Text style={styles.rowLabel}>Keep all saved sheets offline</Text>
+            <Text style={styles.rowHint}>
+              {offline.usage.sheets === 0
+                ? "Sheets you open are kept on this phone, so they open without a connection."
+                : `${offline.usage.sheets} ${offline.usage.sheets === 1 ? "sheet" : "sheets"} on this phone · ${formatBytes(offline.usage.bytes)}`}
+            </Text>
+          </View>
+          <Switch
+            value={offline.keepAll}
+            onValueChange={(on) => void setKeepAllOffline(on)}
+            trackColor={{ false: colors.border, true: colors.accentGlow }}
+            thumbColor={offline.keepAll ? colors.accent : colors.surface}
+            ios_backgroundColor={colors.border}
+          />
+        </View>
+
+        {offline.usage.sheets > 0 ? (
+          <Touchable onPress={confirmClearOffline} style={styles.inlineAction} ripple={false} hitSlop={6} accessibilityLabel="Clear offline copies">
+            <Text style={styles.inlineActionText}>Clear offline copies</Text>
+          </Touchable>
+        ) : null}
+
+        <View style={styles.rowDivider} />
+
+        <Touchable
+          style={styles.switchRow}
+          onPress={() => navigation.navigate("Hymns")}
+          scaleTo={motion.scale.row}
+          accessibilityLabel="Hymns for offline use"
+        >
+          <View style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}>
+            <Ionicons name="book-outline" size={16} color={colors.accent} />
+          </View>
+          <View style={styles.switchText}>
+            <Text style={styles.rowLabel}>Hymns for offline use</Text>
+            <Text style={styles.rowHint}>
+              {hymnPack.version
+                ? `${hymnPack.count} hymns and tunes on this phone · ${formatBytes(hymnPack.bytes)}`
+                : "Not downloaded yet — tap to get them."}
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
+        </Touchable>
+
+        {hymnPack.version ? (
+          <Touchable onPress={confirmRemoveHymns} style={styles.inlineAction} ripple={false} hitSlop={6} accessibilityLabel="Remove the hymns from this phone">
+            <Text style={styles.inlineActionText}>Remove hymns</Text>
+          </Touchable>
+        ) : null}
       </Card>
 
       {/* ── Notifications ────────────────────────────────────────────────── */}
@@ -781,6 +908,19 @@ const makeStyles = (c: Palette) =>
 
     rowHintWarn: {
       color: c.warning,
+    },
+
+    /** A small text action under a row, set in from the icon column like the reminder chips. */
+    inlineAction: {
+      alignSelf: "flex-start",
+      marginTop: spacing.sm,
+      marginLeft: 32 + spacing.md,
+    },
+
+    inlineActionText: {
+      fontFamily: fonts.medium,
+      fontSize: 13,
+      color: c.accent,
     },
 
     // ── Reminder time chips ─────────────────────────────────────────────────

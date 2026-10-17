@@ -13,6 +13,8 @@ import {
   logSignUp,
 } from '../lib/analytics';
 import type { AuthUser } from '../api/types';
+import { bindOfflineLibrary, clearOfflineLibrary } from '../lib/offlineLibrary';
+import { bindOutbox, clearOutbox } from '../lib/outbox';
 
 interface AuthState {
   user: AuthUser | null;
@@ -111,6 +113,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // The offline library and the send queue belong to one account: bound to whoever is signed in, and
+  // an index or a queue left by another account is deleted before anything of it is shown.
+  useEffect(() => {
+    if (initializing) return;
+    void bindOfflineLibrary(user?.id ?? null);
+    void bindOutbox(user?.id ?? null);
+  }, [user?.id, initializing]);
+
   useEffect(() => onSessionExpired(() => {
     // The server has already refused the refresh token and the pair is cleared, so the push token
     // cannot be unregistered from here: that authenticated call would only 401 into this handler
@@ -205,6 +215,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const refresh = await tokenStore.getRefresh();
         if (refresh) await authApi.logout(refresh).catch(() => undefined);
         await tokenStore.clear();
+        // Saved-sheet copies and queued recordings are this account's; the hymn pack is public and stays.
+        await Promise.all([clearOfflineLibrary(), clearOutbox()]).catch(() => undefined);
         void setAnalyticsUserId(null);
         setUserState(null);
       },

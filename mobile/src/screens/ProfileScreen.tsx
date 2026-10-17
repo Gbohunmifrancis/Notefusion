@@ -23,6 +23,8 @@ import { Mark } from "../components/night/NightUI";
 import { MembershipCard } from "../components/profile/MembershipCard";
 import { useAuth } from "../lib/auth";
 import { showDialog } from "../lib/dialog";
+import { outboxPending } from "../lib/outbox";
+import { signOutWarning } from "../lib/sendQueue";
 import { rating } from "../lib/rating";
 import { useSubscription } from "../lib/subscription";
 import { meApi, authApi } from "../api/endpoints";
@@ -353,7 +355,21 @@ export function ProfileScreen() {
           labelColor={colors.danger}
           label="Sign out"
           chevron={false}
-          onPress={() => signOut()}
+          onPress={() => {
+            // Unconfirmed as before, unless recordings are still waiting to send: those go with it.
+            const pending = outboxPending();
+            if (pending === 0) return void signOut();
+            showDialog({
+              title: "Sign out?",
+              message: signOutWarning(pending).trim(),
+              icon: "log-out-outline",
+              tone: "danger",
+              actions: [
+                { label: "Sign out", style: "destructive", icon: "log-out-outline", onPress: () => signOut() },
+                { label: "Stay signed in", style: "cancel" },
+              ],
+            });
+          }}
           isLast
         />
       </View>

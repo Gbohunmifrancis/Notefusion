@@ -26,7 +26,7 @@ const COLD_START_FRESH_MS = 10 * 60 * 1000;
  * would have shown. The result comes from our own API, which caches it — the ML service forgets a job
  * within minutes, and the whole point of the notification is that the user came back later.
  */
-export async function openTranscriptionFromNotification(jobId: string): Promise<void> {
+export async function openTranscriptionFromNotification(jobId: string): Promise<boolean> {
   try {
     const job = await transcriptionsApi.getJob(jobId);
 
@@ -41,7 +41,7 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
         icon: 'alert-circle-outline',
         tone: 'danger',
       });
-      return;
+      return false;
     }
 
     const result = job.result;
@@ -52,12 +52,13 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
     const audioPreviewBase64 =
       result.audioPreviewBase64 || synthesizeMelodyWavBase64(result.notes, result.tempo);
 
-    if (!navigationRef.isReady()) return;
+    if (!navigationRef.isReady()) return false;
 
     navigationRef.navigate('Result', {
       result: { ...result, audioPreviewBase64 },
       sourceJobId: jobId,
     });
+    return true;
   } catch (e) {
     showDialog({
       title: 'Could not open that transcription',
@@ -65,6 +66,7 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
       icon: 'alert-circle-outline',
       tone: 'danger',
     });
+    return false;
   }
 }
 

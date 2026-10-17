@@ -14,6 +14,8 @@ import { fonts, nightFonts, spacing, type Palette } from "../../design/theme";
 import { useThemedStyles } from "../../lib/theme";
 import type { SongProvider } from "../../lib/songLink";
 import type { LinkInfo } from "../../api/types";
+import { useDataSaver } from "../../lib/dataSaver";
+import { loadsImages } from "../../lib/dataPolicy";
 
 export const PROVIDER_LABEL = { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music" } as const;
 
@@ -36,7 +38,9 @@ export function SongCover({
   const styles = useThemedStyles(makeStyles);
   const length = duration != null ? formatClock(duration) : null;
 
-  if (!song.thumbnailUrl) {
+  // Data saver: the artwork is decoration, so the plain row stands in for it.
+  const dataSaver = useDataSaver();
+  if (!song.thumbnailUrl || !loadsImages(dataSaver)) {
     return (
       <View style={styles.row}>
         <ProviderMark provider={provider} size={56} />

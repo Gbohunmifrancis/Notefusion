@@ -1,4 +1,5 @@
 import { api } from "./client";
+import { emitSheetEvent, sheetSaved } from "../lib/sheetEvents";
 import type {
   AdminPaymentDetail,
   AdminPaymentRow,
@@ -355,17 +356,17 @@ export const libraryApi = {
     chords?: ChordSymbol[] | null;
     /** The hymn whose hymnbook version this is, as the job offered it; the API keeps its credit. */
     hymnSlug?: string | null;
-  }) => api.post<SavedTranscription>("/api/library", body).then((r) => r.data),
+  }) => api.post<SavedTranscription>("/api/library", body).then((r) => sheetSaved(r.data)),
 
   rename: (id: string, title: string) =>
     api
       .put<SavedTranscription>(`/api/library/${id}/title`, { title })
-      .then((r) => r.data),
+      .then((r) => sheetSaved(r.data)),
 
   updateKey: (id: string, key: string) =>
     api
       .put<SavedTranscription>(`/api/library/${id}/key`, { key })
-      .then((r) => r.data),
+      .then((r) => sheetSaved(r.data)),
 
   /**
    * Persists tap-to-correct edits (F-07). The whole list, not one note: a
@@ -375,31 +376,31 @@ export const libraryApi = {
   updateNotes: (id: string, notes: SavedTranscription["notes"]) =>
     api
       .put<SavedTranscription>(`/api/library/${id}/notes`, { notes })
-      .then((r) => r.data),
+      .then((r) => sheetSaved(r.data)),
 
   updateTempo: (id: string, tempo: number) =>
     api
       .put<SavedTranscription>(`/api/library/${id}/tempo`, { tempo })
-      .then((r) => r.data),
+      .then((r) => sheetSaved(r.data)),
 
   updateTimeSignature: (id: string, timeSignature: string) =>
     api
       .put<SavedTranscription>(`/api/library/${id}/time-signature`, { timeSignature })
-      .then((r) => r.data),
+      .then((r) => sheetSaved(r.data)),
 
   remove: (id: string) =>
-    api.delete(`/api/library/${id}`).then(() => undefined),
+    api.delete(`/api/library/${id}`).then(() => emitSheetEvent({ type: "removed", id })),
 
   updateLyrics: (id: string, lyrics: string) =>
-    api.put<SavedTranscription>(`/api/library/${id}/lyrics`, { lyrics }).then((r) => r.data),
+    api.put<SavedTranscription>(`/api/library/${id}/lyrics`, { lyrics }).then((r) => sheetSaved(r.data)),
 
   /** Transpose for a choir's range: moves every note and the key; the solfa reads as before. */
   transpose: (id: string, semitones: number) =>
-    api.post<SavedTranscription>(`/api/library/${id}/transpose`, { semitones }).then((r) => r.data),
+    api.post<SavedTranscription>(`/api/library/${id}/transpose`, { semitones }).then((r) => sheetSaved(r.data)),
 
   /** Files a sheet in a folder; null or blank takes it out of one. */
   setFolder: (id: string, folder: string | null) =>
-    api.put<SavedTranscription>(`/api/library/${id}/folder`, { folder }).then((r) => r.data),
+    api.put<SavedTranscription>(`/api/library/${id}/folder`, { folder }).then((r) => sheetSaved(r.data)),
 
   /** One public link for a whole folder, including sheets filed in it later. */
   shareFolder: (folder: string) =>
@@ -407,7 +408,7 @@ export const libraryApi = {
 
   /** Keeps the parts written for a saved sheet after it was saved (null removes them). */
   setParts: (id: string, parts: Record<string, TranscriptionPart> | null, partsMusicXml: string | null) =>
-    api.put<SavedTranscription>(`/api/library/${id}/parts`, { parts, partsMusicXml }).then((r) => r.data),
+    api.put<SavedTranscription>(`/api/library/${id}/parts`, { parts, partsMusicXml }).then((r) => sheetSaved(r.data)),
 
   share: (id: string) => api.post<ShareLink>(`/api/library/${id}/share`).then((r) => r.data),
 

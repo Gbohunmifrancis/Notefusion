@@ -7,6 +7,7 @@
 //   web-site/<IndexNow key>.txt
 //   web-site/assets/icons.svg             (the Lucide icon sprite every page uses; icons.mjs, + its licence)
 //   web-site/blog/catalogue.json          (--api only: hymns, pages and authors for the API's checks)
+//   web-site/hymns/pack.json              (the app's offline hymn pack, + pack-version.json; lib/hymn-pack.mjs)
 //   server/app/data/hymn_index.json       (the worker's hymn matcher: every published hymn's melody; only
 //                                          when building web-site/ itself, never a --site copy)
 //
@@ -35,6 +36,7 @@ import { handWrittenEntries, sitemapXml, feedXml } from "./lib/sitemap-feed.mjs"
 import { DEFAULT_API_URL, fetchPublished, postsFromApi } from "./lib/api-posts.mjs";
 import { catalogueJson, sitePages } from "./lib/catalogue.mjs";
 import { hymnIndexJson, HYMN_INDEX_PATH } from "./lib/hymn-index.mjs";
+import { hymnPackFiles, PACK_PATH, PACK_VERSION_PATH } from "./lib/hymn-pack.mjs";
 import { spriteSvg, licenseText } from "./icons.mjs";
 import { renderHomeSheet, SHEET_START, SHEET_END, SAMPLE_HYMN } from "./lib/render-home.mjs";
 
@@ -83,6 +85,10 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
   put(IDENTIFY_PATH, renderIdentify({ hymns, tunes: tunePages }));
   for (const h of hymns) put(`/hymns/${h.slug}`, renderHymn(h, { hymns, posts }));
   for (const t of tunePages) put(t.view.url, renderTune(t, { hymns, posts }));
+  // The app's offline hymn pack: every published hymn and tune page in one download.
+  const pack = hymnPackFiles(hymns, tunePages);
+  files.set(PACK_PATH, pack.pack);
+  files.set(PACK_VERSION_PATH, pack.version);
 
   // Sitemap: what was there by hand, then the blog and the hymns.
   const newest = (dates) => dates.sort().pop();
