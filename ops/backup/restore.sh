@@ -41,7 +41,11 @@ while [ $# -gt 0 ]; do
 done
 [ -n "$target" ] || die "--target-url is required (see --help)"
 for tool in pg_restore psql jq sha256sum; do command -v "$tool" >/dev/null || die "$tool is not installed"; done
-major=$(pg_restore --version | grep -oE '[0-9]+' | head -1)
+# Read without a pipe: under pipefail, `| head -1` closing early killed busybox grep's second write
+# ("16", then "15") with SIGPIPE, and the drill died silently with exit 141.
+version=$(pg_restore --version)
+[[ $version =~ ([0-9]+)\. ]] || die "cannot read the pg_restore version from: $version"
+major=${BASH_REMATCH[1]}
 [ "$major" -ge 16 ] || die "pg_restore $major is too old: use 16 or newer (the dump was made by pg_dump 16)"
 
 work=$(mktemp -d)
