@@ -6,7 +6,9 @@
   ],
   "music": [
     {
-      "name": "John H. Steiner",
+      "name": "John Stainer",
+      "born": 1840,
+      "died": 1901,
       "role": "Music (1887)"
     }
   ],
@@ -21,13 +23,13 @@
   "incipit": "msdtlssf|msdmrdr",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0004/x000485.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0004/000485a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000485; public domain.",
-  "reviewNotes": "Held back: not provably public domain: John H. Steiner: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000485 (the melody read from 000485a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000485a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000485 (the melody read from 000485a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells John Stainer as “John H. Steiner”; the name is printed as the sources spell it. John Stainer's dates (1840–1901) are from https://hymnary.org/tune/all_for_jesus_stainer (ALL FOR JESUS / WYCLIFF, 1887, from The Crucifixion, by John Stainer); https://hymnary.org/person/Stainer_John (Stainer, John, 1840-1901). CCEH credits 'John H. Steiner'; no hymn composer of that name is known; CCEH's page gives only the year 1887. The bar lines are those of CCEH's Noteworthy score (000485a.nwc).",
   "importedFrom": "cceh:000485",
   "updated": "2026-10-17"
 }

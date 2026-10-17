@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Cleland B. McAfee",
+      "born": 1866,
+      "died": 1944,
       "role": "Music (1901)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "mmrmmfmf|rrrsfm",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0003/x000354.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0003/000354a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000354; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Cleland B. McAfee: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000354 (the melody read from 000354a.mid, checked against the page's do-re-mi incipit, 1 note off in 14); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000354a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000354 (the melody read from 000354a.mid, checked against the page's do-re-mi incipit, 1 note off in 14); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Cleland B. McAfee's dates (1866–1944) are from https://hymnary.org/person/McAfee_CB (McAfee, Cleland Boyd, 1866-1944); CCEH's page gives only the year 1901. The bar lines are those of CCEH's Noteworthy score (000354a.nwc).",
   "importedFrom": "cceh:000354",
   "updated": "2026-10-17"
 }

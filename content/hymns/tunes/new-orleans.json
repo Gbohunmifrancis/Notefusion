@@ -3,7 +3,9 @@
   "title": "New Orleans",
   "music": [
     {
-      "name": "Ernest O. Sellars",
+      "name": "Ernest O. Sellers",
+      "born": 1869,
+      "died": 1952,
       "role": "Music (1921)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "sssssssss|ssllllll",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0004/x000432.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0004/000432a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000432; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Ernest O. Sellars: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000432 (the melody read from 000432a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000432a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000432 (the melody read from 000432a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells Ernest O. Sellers as “Ernest O. Sellars”; the name is printed as the sources spell it. Ernest O. Sellers's dates (1869–1952) are from https://hymnary.org/person/Sellers_EO (Sellers, Ernest O. (Ernest Orlando), 1869-1952; CCEH spells him Sellars); CCEH's page gives only the year 1921. The bar lines are those of CCEH's Noteworthy score (000432a.nwc).",
   "importedFrom": "cceh:000432",
   "updated": "2026-10-17"
 }

@@ -521,8 +521,16 @@
       "number": "000330"
     },
     {
+      "slug": "promises",
+      "number": "000335"
+    },
+    {
       "slug": "solid-rock",
       "number": "000337"
+    },
+    {
+      "slug": "surrender",
+      "number": "000347"
     },
     {
       "slug": "adelaide",
@@ -541,8 +549,16 @@
       "number": "000352"
     },
     {
+      "slug": "mcafee",
+      "number": "000354"
+    },
+    {
       "slug": "grafenberg",
       "number": "000357"
+    },
+    {
+      "slug": "scott",
+      "number": "000358"
     },
     {
       "slug": "swedish-litany",
@@ -551,6 +567,18 @@
     {
       "slug": "perfect-love",
       "number": "000364"
+    },
+    {
+      "slug": "angels-story",
+      "number": "000365"
+    },
+    {
+      "slug": "galilee-jude",
+      "number": "000367"
+    },
+    {
+      "slug": "st-margaret",
+      "number": "000368"
     },
     {
       "slug": "stabat-mater-mainz",
@@ -585,6 +613,10 @@
       "number": "000387"
     },
     {
+      "slug": "geibel",
+      "number": "000389"
+    },
+    {
       "slug": "kilmarnock",
       "number": "000390"
     },
@@ -597,6 +629,10 @@
       "number": "000393"
     },
     {
+      "slug": "pentecost-boyd",
+      "number": "000394"
+    },
+    {
       "slug": "st-petersburg",
       "number": "000396"
     },
@@ -607,6 +643,14 @@
     {
       "slug": "tallis-ordinal",
       "number": "000402"
+    },
+    {
+      "slug": "dayton-lorenz",
+      "number": "000404"
+    },
+    {
+      "slug": "moab",
+      "number": "000405"
     },
     {
       "slug": "o-mensch-sieh",
@@ -637,8 +681,20 @@
       "number": "000420"
     },
     {
+      "slug": "friend",
+      "number": "000423"
+    },
+    {
       "slug": "he-lifted-me",
       "number": "000426"
+    },
+    {
+      "slug": "garden",
+      "number": "000428"
+    },
+    {
+      "slug": "new-orleans",
+      "number": "000432"
     },
     {
       "slug": "dundee-french",
@@ -681,6 +737,10 @@
       "number": "000457"
     },
     {
+      "slug": "salvationist",
+      "number": "000459"
+    },
+    {
       "slug": "safety",
       "number": "000462"
     },
@@ -689,12 +749,36 @@
       "number": "000470"
     },
     {
+      "slug": "sunlight",
+      "number": "000472"
+    },
+    {
       "slug": "precious-name",
       "number": "000473"
     },
     {
+      "slug": "festal-song",
+      "number": "000476"
+    },
+    {
+      "slug": "deliverance",
+      "number": "000479"
+    },
+    {
+      "slug": "all-for-jesus",
+      "number": "000485"
+    },
+    {
       "slug": "mcdaniel",
       "number": "000487"
+    },
+    {
+      "slug": "face-to-face",
+      "number": "000489"
+    },
+    {
+      "slug": "heaven",
+      "number": "000491"
     },
     {
       "slug": "glory-song",
@@ -707,6 +791,10 @@
     {
       "slug": "hanson-place",
       "number": "000496"
+    },
+    {
+      "slug": "by-and-by",
+      "number": "000499"
     }
   ],
   "drafts": [
@@ -905,13 +993,6 @@
       ]
     },
     {
-      "slug": "promises",
-      "number": "000335",
-      "reasons": [
-        "not provably public domain: R. Kelso Carter: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
       "slug": "haven-of-rest",
       "number": "000338",
       "reasons": [
@@ -941,13 +1022,6 @@
       ]
     },
     {
-      "slug": "surrender",
-      "number": "000347",
-      "reasons": [
-        "not provably public domain: Winfield S. Weeden: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
       "slug": "living",
       "number": "000348",
       "reasons": [
@@ -957,45 +1031,10 @@
       ]
     },
     {
-      "slug": "mcafee",
-      "number": "000354",
-      "reasons": [
-        "not provably public domain: Cleland B. McAfee: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "scott",
-      "number": "000358",
-      "reasons": [
-        "not provably public domain: Clara H. Scott: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
       "slug": "wigan",
       "number": "000363",
       "reasons": [
         "the page gives no year for the tune"
-      ]
-    },
-    {
-      "slug": "angels-story",
-      "number": "000365",
-      "reasons": [
-        "not provably public domain: Arthur Henry Mann: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "galilee-jude",
-      "number": "000367",
-      "reasons": [
-        "not provably public domain: William Herbert Jude: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "st-margaret",
-      "number": "000368",
-      "reasons": [
-        "not provably public domain: Albert L. Peace: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -1014,13 +1053,6 @@
       ]
     },
     {
-      "slug": "whittle",
-      "number": "000381",
-      "reasons": [
-        "not provably public domain: May Whittle Moody: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
       "slug": "andernach",
       "number": "000385",
       "reasons": [
@@ -1035,66 +1067,10 @@
       ]
     },
     {
-      "slug": "geibel",
-      "number": "000389",
-      "reasons": [
-        "not provably public domain: Adam Geibel: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "pentecost-boyd",
-      "number": "000394",
-      "reasons": [
-        "not provably public domain: William Boyd: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "dayton-lorenz",
-      "number": "000404",
-      "reasons": [
-        "not provably public domain: Edmund S. Lorenz: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "moab",
-      "number": "000405",
-      "reasons": [
-        "not provably public domain: John Roberts: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
       "slug": "konig",
       "number": "000415",
       "reasons": [
         "the score has bars of another length (bar 4, 5), which the solfa grid does not draw"
-      ]
-    },
-    {
-      "slug": "friend",
-      "number": "000423",
-      "reasons": [
-        "not provably public domain: George Coles Stubbins: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "garden",
-      "number": "000428",
-      "reasons": [
-        "not provably public domain: C. Austin Miles: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "old-rugged-cross",
-      "number": "000430",
-      "reasons": [
-        "not provably public domain: George Bennard: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "new-orleans",
-      "number": "000432",
-      "reasons": [
-        "not provably public domain: Ernest O. Sellars: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -1150,13 +1126,6 @@
       ]
     },
     {
-      "slug": "salvationist",
-      "number": "000459",
-      "reasons": [
-        "not provably public domain: William S. Hayes: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
       "slug": "hankey",
       "number": "000461",
       "reasons": [
@@ -1171,31 +1140,10 @@
       ]
     },
     {
-      "slug": "sunlight",
-      "number": "000472",
-      "reasons": [
-        "not provably public domain: G. H. Cook: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
       "slug": "new-born-again",
       "number": "000474",
       "reasons": [
         "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
-      ]
-    },
-    {
-      "slug": "festal-song",
-      "number": "000476",
-      "reasons": [
-        "not provably public domain: William H. Walter: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "deliverance",
-      "number": "000479",
-      "reasons": [
-        "not provably public domain: William A. Ogden: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -1214,27 +1162,6 @@
       ]
     },
     {
-      "slug": "all-for-jesus",
-      "number": "000485",
-      "reasons": [
-        "not provably public domain: John H. Steiner: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "face-to-face",
-      "number": "000489",
-      "reasons": [
-        "not provably public domain: Grant Colfax Tullar: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "heaven",
-      "number": "000491",
-      "reasons": [
-        "not provably public domain: Emily D. (Mrs. J. G.) Wilson: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
       "slug": "irish",
       "number": "000492",
       "reasons": [
@@ -1246,13 +1173,6 @@
       "number": "000497",
       "reasons": [
         "the score has bars of another length (bar 7, 9), which the solfa grid does not draw"
-      ]
-    },
-    {
-      "slug": "by-and-by",
-      "number": "000499",
-      "reasons": [
-        "not provably public domain: Charles A. Tindley: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -1335,7 +1255,6 @@
       "number": "000522",
       "reasons": [
         "the page gives no year for the tune",
-        "not provably public domain: William A. Ogden: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
         "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
       ]
     },
@@ -1458,7 +1377,6 @@
       "slug": "beulah-land-miles",
       "number": "000540",
       "reasons": [
-        "not provably public domain: C. Austin Miles: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
         "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
       ]
     },
@@ -2105,7 +2023,6 @@
       "slug": "name-of-jesus-lorenz",
       "number": "000678",
       "reasons": [
-        "not provably public domain: Edmund S. Lorenz: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
         "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
       ]
     },
@@ -2144,6 +2061,22 @@
       "number": "000685",
       "reasons": [
         "the page gives no year for the tune",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "gate-ajar",
+      "number": "000686",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Silas Jones Vail: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
+      ]
+    },
+    {
+      "slug": "give-me-thy-heart",
+      "number": "000687",
+      "reasons": [
         "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score"
       ]
     }
@@ -3666,6 +3599,12 @@
       "reason": "the page marks Otmar Schulz's tune as copyright (“Otmar Schulz, ©1967”)"
     },
     {
+      "number": "000381",
+      "name": "Whittle",
+      "url": "https://www.ccel.org/cceh/0003/x000381.htm",
+      "reason": "May Whittle Moody died in 1963, so the tune is still in copyright in Nigeria, the UK and the EU"
+    },
+    {
       "number": "000391",
       "name": "This Endris Nyght",
       "url": "https://www.ccel.org/cceh/0003/x000391.htm",
@@ -3736,6 +3675,12 @@
       "name": "Heaven Came Down",
       "url": "https://www.ccel.org/cceh/0004/x000425.htm",
       "reason": "the page marks John W. Peterson's tune as copyright (“John W. Peterson, ©1961”)"
+    },
+    {
+      "number": "000430",
+      "name": "Old Rugged Cross",
+      "url": "https://www.ccel.org/cceh/0004/x000430.htm",
+      "reason": "George Bennard died in 1958, so the tune is still in copyright in Nigeria, the UK and the EU"
     },
     {
       "number": "000434",
@@ -4380,160 +4325,22 @@
   ],
   "undatedPeople": [
     {
-      "name": "C. Austin Miles",
-      "tunes": 2,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1911
-    },
-    {
-      "name": "Edmund S. Lorenz",
-      "tunes": 2,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1888
-    },
-    {
-      "name": "William A. Ogden",
-      "tunes": 2,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1887
-    },
-    {
-      "name": "Adam Geibel",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1901
-    },
-    {
-      "name": "Albert L. Peace",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1884
-    },
-    {
-      "name": "Arthur Henry Mann",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1881
-    },
-    {
-      "name": "Charles A. Tindley",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1905
-    },
-    {
-      "name": "Clara H. Scott",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1895
-    },
-    {
-      "name": "Cleland B. McAfee",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1901
-    },
-    {
-      "name": "Emily D. (Mrs. J. G.) Wilson",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1898
-    },
-    {
-      "name": "Ernest O. Sellars",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1921
-    },
-    {
-      "name": "G. H. Cook",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1899
-    },
-    {
-      "name": "George Bennard",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1913
-    },
-    {
-      "name": "George Coles Stubbins",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1878
-    },
-    {
       "name": "George D. Moore",
       "tunes": 1,
       "onlyForWantOfDates": 1,
       "earliestYear": 1890
     },
     {
-      "name": "Grant Colfax Tullar",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1898
-    },
-    {
-      "name": "John H. Steiner",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1887
-    },
-    {
-      "name": "John Roberts",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1870
-    },
-    {
-      "name": "May Whittle Moody",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1893
-    },
-    {
-      "name": "R. Kelso Carter",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1886
-    },
-    {
-      "name": "William Boyd",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1864
-    },
-    {
-      "name": "William H. Walter",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1894
-    },
-    {
-      "name": "William Herbert Jude",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1887
-    },
-    {
-      "name": "William S. Hayes",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1871
-    },
-    {
-      "name": "Winfield S. Weeden",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1896
-    },
-    {
       "name": "Peter C. Lutkin",
       "tunes": 2,
       "onlyForWantOfDates": 0,
       "earliestYear": 1895
+    },
+    {
+      "name": "Silas Jones Vail",
+      "tunes": 2,
+      "onlyForWantOfDates": 0,
+      "earliestYear": 1874
     },
     {
       "name": "A. P. Bland",
@@ -4752,12 +4559,6 @@
       "earliestYear": 1882
     },
     {
-      "name": "Silas Jones Vail",
-      "tunes": 1,
-      "onlyForWantOfDates": 0,
-      "earliestYear": 1874
-    },
-    {
       "name": "Timothy Richard Matthews",
       "tunes": 1,
       "onlyForWantOfDates": 0,
@@ -4777,13 +4578,13 @@
     }
   ],
   "counts": {
-    "published": 176,
-    "drafts": 193,
+    "published": 198,
+    "drafts": 171,
     "duplicates": 101,
-    "refused": 135,
+    "refused": 137,
     "rejected": 79,
-    "pages": 684,
-    "notYetCrawled": 714,
+    "pages": 686,
+    "notYetCrawled": 712,
     "tunesInIndex": 1398
   }
 }
