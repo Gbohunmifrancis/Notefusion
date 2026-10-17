@@ -6,3 +6,7 @@
 
 # APKs
 *.apk
+
+# The printable solfa (hymns/<slug>/<slug>-tonic-solfa.pdf): built by tools/blog/build.mjs with the pages,
+# locally and at deploy time, and checked by tools/blog/check.mjs; never committed (see writeSite).
+hymns/**/*.pdf

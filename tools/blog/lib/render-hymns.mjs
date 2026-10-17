@@ -9,6 +9,9 @@ import { melodyToMusicXml } from "./musicxml.mjs";
 import { PD_DIED_BEFORE, PD_PUBLISHED_BEFORE } from "./content.mjs";
 import { CCEH, tuneIndexItem } from "./render-tunes.mjs";
 import { identifyCallout } from "./render-identify.mjs";
+import { personKey } from "./collections.mjs";
+import { moreLinks, occasionLinks, browseLinks, personLink, pdfButton, pdfAlternate } from "./render-collections.mjs";
+import { pdfPath } from "./render-pdf.mjs";
 
 const DIATONIC = ["d", "r", "m", "f", "s", "l", "t"];
 const TIME_WORDS = { "2/4": "two crotchet beats", "3/4": "three crotchet beats", "4/4": "four crotchet beats", "6/8": "two dotted-crotchet beats (six quavers)", "3/2": "three minim beats", "9/8": "three dotted-crotchet beats (nine quavers)", "12/8": "four dotted-crotchet beats (twelve quavers)", "2/2": "two minim beats", "6/4": "six crotchet beats (two dotted minims)", "8/4": "eight crotchet beats", "9/4": "nine crotchet beats (three dotted minims)" };
@@ -108,9 +111,14 @@ function faqFor(h) {
   ];
 }
 
-export function renderHymn(h, { hymns, posts }) {
+export function renderHymn(h, { hymns, posts, occasions = [], personByKey = new Map() }) {
   const v = h.view, t = h.tuneData, n = hymnName(h);
   const path = `/hymns/${h.slug}`;
+  const pdf = pdfPath(path);
+  const link = (p) => personLink(p, personByKey);
+  // "More Christmas hymns", then "More by …" for the writers (words first) and composers with a page.
+  const myPeople = [...h.text, ...t.music].map((p) => !p.traditional && personByKey.get(personKey(p))).filter((p, i, all) => p && all.indexOf(p) === i);
+  const more = moreLinks({ item: h, occasions: occasions.filter((o) => o.hymns.includes(h)), people: myPeople });
   const crumbs = [["/", "Home"], ["/hymns", "Hymns"], [path, n]];
   const tuneKey = (x) => x.tuneData.name.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   const sameTune = hymns.filter((o) => o !== h && (o.tune === h.tune || (tuneKey(o) === tuneKey(h) && o.tuneData.melody === h.tuneData.melody)));
@@ -121,7 +129,7 @@ export function renderHymn(h, { hymns, posts }) {
   const facts = [
     ["Key", v.key], ["Doh", v.doh], ["Time", v.time], ["Starts on", `${v.first.solfa} (${v.first.letter})`],
     ["Range", `${v.low.solfa} to ${v.high.solfa} (${v.low.letter} to ${v.high.letter}${SPAN_WORDS[v.span] ? `, ${SPAN_WORDS[v.span]}` : ""})`],
-    ["Tune", t.name], ["Words", h.text.map((p) => p.name).join(", ")], ["Music", t.music.map((p) => p.name).join(", ")],
+    ["Tune", t.name], ["Words", h.text.map(link).join(", "), true], ["Music", t.music.map(link).join(", "), true],
   ];
   const tips = [
     `<li><strong>Find doh first.</strong> Play or hum ${escapeHtml(v.doh)} and sing <em>d r m f s</em> up from it, so the whole choir has the key in their ears before you start.</li>`,
@@ -130,7 +138,7 @@ export function renderHymn(h, { hymns, posts }) {
     `<li><strong>Know the notes.</strong> The tune uses ${v.usedOrdered.map((s) => `<em>${s}</em>`).join(" ")}${v.chromatic.length ? ` and the chromatic ${v.chromatic.map((s) => `<em>${s}</em>`).join(" ")}` : ""}${v.usedOrdered.length <= 5 && !v.chromatic.length ? ` — only ${v.usedOrdered.length} different notes, so it is a good one for a choir new to solfa` : ""}. A comma after a note (s,) is the octave below; an apostrophe (d') is the octave above.</li>`,
   ];
   const verses = h.verses.map((vv, i) => `<div class="verse">${vv.label ? `<p class="verse-label">${escapeHtml(vv.label)}</p>` : ""}<p>${vv.lines.map(escapeHtml).join("<br>")}</p>${vv.note ? `<p class="verse-note">${escapeHtml(vv.note)}</p>` : ""}</div>`);
-  const credits = [...h.text.map((p) => `<li>${escapeHtml(p.role)}: ${escapeHtml(p.name)}${years(p)}</li>`), ...t.music.map((p) => `<li>${escapeHtml(p.role)}: ${escapeHtml(p.name)}${years(p)}</li>`)];
+  const credits = [...h.text, ...t.music].map((p) => `<li>${escapeHtml(p.role)}: ${link(p)}${years(p)}</li>`);
 
   const body = `${breadcrumbs(crumbs)}
 <article class="hymn-page">
@@ -138,9 +146,10 @@ export function renderHymn(h, { hymns, posts }) {
   <h1>${escapeHtml(h.title)} in Tonic Solfa</h1>
   <p class="post-lede">${escapeHtml(h.description)}</p>
 </header>
+${pdfButton(path, "Hymn: download PDF")}
 
 <dl class="facts">
-${facts.map(([k, val]) => `  <div><dt>${k}</dt><dd>${escapeHtml(val)}</dd></div>`).join("\n")}
+${facts.map(([k, val, html]) => `  <div><dt>${k}</dt><dd>${html ? val : escapeHtml(val)}</dd></div>`).join("\n")}
 </dl>
 <p class="credit-line">${v.credit.html} <a href="/hymns/credits">Sources and licences</a>.</p>
 
@@ -159,7 +168,7 @@ ${gridHtml(v.lines, { beats: true })}
 
 <section aria-labelledby="lines-title">
   <h2 id="lines-title">The solfa line by line</h2>
-  <p>The same solfa as plain text, a line of the hymn at a time, with the words of the first verse under it — easy to copy into your own notes or a WhatsApp message to the choir.</p>
+  <p>The same solfa as plain text, a line of the hymn at a time, with the words of the first verse under it — easy to copy into your own notes or a WhatsApp message to the choir. To print it, <a href="${pdf}" type="application/pdf" data-track="Hymn: download PDF (text)">download the solfa as a PDF</a>.</p>
   <div class="solfa-text">
 <p class="doh">${escapeHtml(v.header)} · ${escapeHtml(v.time)}</p>
 ${textLinesHtml(v.lines)}
@@ -204,11 +213,16 @@ ${faq.map((f) => `  <h3>${escapeHtml(f.q)}</h3>\n  <p>${escapeHtml(f.a)}</p>`).j
 
 ${ctaBox("hymn")}
 </article>
+${more}
 ${usedIn.length ? `<section class="side-list" aria-labelledby="posts-title"><h2 id="posts-title">On the blog</h2><ul>${usedIn.map((p) => `<li><a href="${p.url}">${escapeHtml(p.title)}</a></li>`).join("")}</ul></section>` : ""}
 <p class="back-link"><a href="/hymns">← All hymns in Tonic Solfa</a></p>
 <script type="application/json" id="hymn-data">${jsonForScript({ key: v.key, time: v.time, tempo: v.tempo, notes: v.notes, musicXml: v.musicXml, osmd: OSMD })}</script>`;
 
-  const composers = t.music.filter((p) => !p.traditional).map((p) => ({ "@type": "Person", name: p.name, ...(p.born && !p.lived ? { birthDate: String(p.born) } : {}), ...(p.lived ? {} : { deathDate: String(p.died) }) }));
+  const personLd = (p) => {
+    const page = personByKey.get(personKey(p));
+    return { "@type": "Person", name: p.name, ...(p.born && !p.lived ? { birthDate: String(p.born) } : {}), ...(p.lived ? {} : { deathDate: String(p.died) }), ...(page ? { url: ORIGIN + page.url } : {}) };
+  };
+  const composers = t.music.filter((p) => !p.traditional).map(personLd);
   const ld = [
     {
       "@context": "https://schema.org",
@@ -219,9 +233,10 @@ ${usedIn.length ? `<section class="side-list" aria-labelledby="posts-title"><h2 
       inLanguage: "en",
       musicalKey: v.key,
       ...(composers.length ? { composer: composers } : {}),
-      lyricist: h.text.filter((p) => !p.traditional).map((p) => ({ "@type": "Person", name: p.name, ...(p.born && !p.lived ? { birthDate: String(p.born) } : {}), ...(p.lived ? {} : { deathDate: String(p.died) }) })),
+      lyricist: h.text.filter((p) => !p.traditional).map(personLd),
       lyrics: { "@type": "CreativeWork", text: verse1 },
       license: "https://creativecommons.org/publicdomain/mark/1.0/",
+      associatedMedia: { "@type": "MediaObject", name: `${n} in Tonic Solfa (PDF)`, encodingFormat: "application/pdf", contentUrl: ORIGIN + pdf, license: "https://creativecommons.org/publicdomain/mark/1.0/" },
       ...(h.source === OHP.name || t.source === OHP.name ? {
         isBasedOn: { "@type": "CreativeWork", name: `${h.title} (${OHP.name})`, url: (h.source === OHP.name ? h.sourceUrl : t.sourceUrl) || OHP.url, publisher: { "@type": "Organization", name: OHP.name, url: OHP.url }, license: "https://creativecommons.org/publicdomain/mark/1.0/" },
         creditText: v.credit.text,
@@ -232,7 +247,7 @@ ${usedIn.length ? `<section class="side-list" aria-labelledby="posts-title"><h2 
   ];
   const scripts = `<script src="/assets/choir.js?v=${ASSET_VERSION.choirJs}" defer></script>
 <script src="/assets/hymn.js?v=${ASSET_VERSION.hymnJs}" defer></script>`;
-  return page({ path, title: hymnPageTitle(h), description: h.description, jsonLd: ld, body, active: "/hymns", scripts });
+  return page({ path, title: hymnPageTitle(h), description: h.description, jsonLd: ld, body, active: "/hymns", scripts, head: pdfAlternate(path, n) });
 }
 
 /** The letter a title is filed under: its first letter, past quotation marks ("'Tis" under T). */
@@ -244,14 +259,16 @@ export function indexLetter(title) {
 /** What the index's filter box matches for a hymn: titles, first line, tune, writers, season and topics. */
 function searchText(h) {
   const t = h.tuneData;
-  return [h.title, ...(h.alsoKnownAs || []), h.verses[0].lines[0], t.name, ...h.text.map((p) => p.name), ...t.music.map((p) => p.name), h.category || "", ...(h.topics || []), h.view.header]
+  return [h.title, ...(h.alsoKnownAs || []), h.verses[0].lines[0], t.name, ...h.text.map((p) => p.name), ...t.music.map((p) => p.name), h.category || "", ...(h.occasions || []), ...(h.topics || []), h.view.header]
     .join(" ").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
 
-/** Seasons and occasions the filter offers as buttons, when some hymn is filed under them. */
-const SEASONS = ["Advent", "Christmas", "Epiphany", "Lent", "Palm Sunday", "Good Friday", "Easter", "Ascension", "Pentecost", "Trinity", "Thanksgiving", "Communion", "Evening", "Funeral"];
-
-export function renderHymnIndex(hymns, tunes = []) {
+/**
+ * /hymns: every hymn and tune page A–Z, the filter box (assets/hymns-index.js), and links to the other ways in:
+ * the seasons and occasions (each a page of its own, `occasions` from collections.mjs occasionPages), the
+ * writers and composers, and the first lines.
+ */
+export function renderHymnIndex(hymns, tunes = [], { occasions = [] } = {}) {
   const crumbs = [["/", "Home"], ["/hymns", "Hymns"]];
   // Hymns and tune pages (a tune without words) in one A–Z, each filed under its title.
   const entries = [...hymns.map((h) => ({ title: h.title, html: () => item(h) })), ...tunes.map((t) => ({ title: t.view.title, html: () => tuneIndexItem(t) }))]
@@ -266,7 +283,7 @@ export function renderHymnIndex(hymns, tunes = []) {
   function item(h) { return `    <li class="hymn-item" data-kind="hymn" data-search="${escapeHtml(searchText(h))}">
       <h3><a href="/hymns/${h.slug}">${escapeHtml(h.title)}</a></h3>
       <p class="first-line">${escapeHtml(h.verses[0].lines[0])}</p>
-      <p class="story-meta"><span>${escapeHtml(h.view.header)}</span><span>${escapeHtml(h.view.time)}</span><span>Tune: ${escapeHtml(h.tuneData.name)}</span>${h.category ? `<span>${escapeHtml(h.category)}</span>` : ""}</p>
+      <p class="story-meta"><span>${escapeHtml(h.view.header)}</span><span>${escapeHtml(h.view.time)}</span><span>Tune: ${escapeHtml(h.tuneData.name)}</span>${h.category || h.occasions ? `<span>${escapeHtml(h.category || h.occasions[0])}</span>` : ""}</p>
     </li>`; }
   const sections = letters.map((L) => `<section class="hymn-letter" id="letter-${L}" aria-labelledby="letter-${L}-title">
   <h2 id="letter-${L}-title">${L}</h2>
@@ -274,19 +291,18 @@ export function renderHymnIndex(hymns, tunes = []) {
 ${groups.get(L).map((e) => e.html()).join("\n")}
   </ul>
 </section>`).join("\n");
-  const present = new Set(hymns.map((h) => (h.category || "").toLowerCase()).concat(hymns.flatMap((h) => (h.topics || []).map((x) => x.toLowerCase()))));
-  const seasons = SEASONS.filter((x) => present.has(x.toLowerCase()) || hymns.some((h) => searchText(h).includes(x.toLowerCase())));
   const body = `${breadcrumbs(crumbs)}
 <header class="masthead">
   <h1>Hymns in Tonic Solfa</h1>
-  <p class="masthead-dek">${hymns.length} public-domain hymns with the solfa written out under the words${tunes.length ? `, and ${tunes.length} more hymn tunes on their own,` : ""} with the staff notation and a piano to sing along with. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
+  <p class="masthead-dek">${hymns.length} public-domain hymns with the solfa written out under the words${tunes.length ? `, and ${tunes.length} more hymn tunes on their own,` : ""} with the staff notation, a piano to sing along with and a free PDF of each to print. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
   ${identifyCallout()}
 </header>
+${browseLinks("/hymns")}
+${occasions.length ? `<h2 class="hymn-seasons-title">Hymns for the season</h2>\n${occasionLinks(occasions)}` : ""}
 <div class="hymn-find" id="hymn-find" hidden>
   <label for="hymn-filter">Find a hymn</label>
-  <input type="search" id="hymn-filter" placeholder="Title, first line, tune or writer" autocomplete="off" spellcheck="false">
+  <input type="search" id="hymn-filter" placeholder="Title, first line, tune, writer or season" autocomplete="off" spellcheck="false">
   ${tunes.length ? `<p class="hymn-seasons" aria-label="Hymns or tunes"><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></p>` : ""}
-  ${seasons.length ? `<p class="hymn-seasons" aria-label="Seasons and occasions">${seasons.map((x) => `<button type="button" data-filter="${escapeHtml(x.toLowerCase())}">${escapeHtml(x)}</button>`).join("")}</p>` : ""}
   <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
 </div>
 <nav class="az" aria-label="Hymns by first letter">${letters.map((L) => `<a href="#letter-${L}">${L}</a>`).join("")}</nav>

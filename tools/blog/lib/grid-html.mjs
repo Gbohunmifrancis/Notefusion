@@ -41,7 +41,7 @@ export function gridHtml(lines, { beats = false, words = true } = {}) {
 }
 
 /** The words sung in one bar; a word that runs on into the next bar keeps its hyphen ("A-"). */
-function barWords(bar) {
+export function barWords(bar) {
   let out = "";
   for (const c of bar.flatMap((cell) => cell.parts || [cell])) {
     const s = c.lyric;

@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 // Builds the blog and hymn pages into web-site/ from content/ and, with --api, from the API's posts:
 //   web-site/blog/**, web-site/hymns/**   (wholly generated: rebuilt from scratch every time; tune pages at /hymns/tunes/<slug>,
-//                                          the hum-to-find page at /hymns/identify)
+//                                          the hum-to-find page at /hymns/identify, the seasons and occasions at
+//                                          /hymns/occasions/<slug>, writers and composers at /hymns/people/<slug>,
+//                                          the first lines at /hymns/first-lines)
+//   web-site/hymns/**/<slug>-tonic-solfa.pdf  (each hymn's and tune page's printable solfa, lib/render-pdf.mjs;
+//                                          built with the pages but never committed: web-site/.gitignore)
 //   web-site/sitemap.xml                  (blog and hymn entries rebuilt, hand-written ones kept)
 //   web-site/index.html                   (only the sample sheet and "Latest from the blog" blocks between their markers)
 //   web-site/<IndexNow key>.txt
@@ -28,15 +32,21 @@ import { SITE_DIR, ORIGIN, PAGE_SIZE, INDEXNOW_KEY } from "./lib/site.mjs";
 import { loadAll } from "./lib/content.mjs";
 import { writeFile } from "./lib/util.mjs";
 import { preparePosts, renderPost, renderBlogIndex, renderTag, renderAuthor, renderHomeStrip, blogPagePath, HOME_START, HOME_END } from "./lib/render-blog.mjs";
-import { prepareHymn, renderHymn, renderHymnIndex, renderHymnCredits } from "./lib/render-hymns.mjs";
+import { prepareHymn, renderHymn, renderHymnIndex, renderHymnCredits, hymnName } from "./lib/render-hymns.mjs";
 import { prepareTune, renderTune } from "./lib/render-tunes.mjs";
 import { renderIdentify, IDENTIFY_PATH, IDENTIFY_UPDATED } from "./lib/render-identify.mjs";
+import { occasionPages, collectPeople, firstLineEntries } from "./lib/collections.mjs";
+import { renderOccasion, renderOccasionsHub, renderPerson, renderPeopleHub, renderFirstLines, OCCASIONS_PATH, PEOPLE_PATH, FIRST_LINES_PATH } from "./lib/render-collections.mjs";
+import { buildSolfaPdf, hymnPdfItem, tunePdfItem, pdfPath } from "./lib/render-pdf.mjs";
 import { handWrittenEntries, sitemapXml, feedXml } from "./lib/sitemap-feed.mjs";
 import { DEFAULT_API_URL, fetchPublished, postsFromApi } from "./lib/api-posts.mjs";
 import { catalogueJson, sitePages } from "./lib/catalogue.mjs";
 import { hymnIndexJson, HYMN_INDEX_PATH } from "./lib/hymn-index.mjs";
 import { spriteSvg, licenseText } from "./icons.mjs";
 import { renderHomeSheet, SHEET_START, SHEET_END, SAMPLE_HYMN } from "./lib/render-home.mjs";
+
+/** Pages under /hymns that a hymn's slug must never take. */
+const RESERVED_HYMN_PATHS = ["/hymns/credits", IDENTIFY_PATH, "/hymns/tunes", OCCASIONS_PATH, PEOPLE_PATH, FIRST_LINES_PATH];
 
 /** Newest first; a tie goes to the slug, so the order never depends on where a post came from. */
 function byDate(a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : a.slug.localeCompare(b.slug); }
@@ -76,13 +86,28 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
   for (const a of Object.values(authors)) put(a.url, renderAuthor(a, posts.filter((p) => p.author === a.id)));
   files.set("blog/feed.xml", feedXml(posts, authors));
 
-  // Hymns
-  put("/hymns", renderHymnIndex(hymns, tunePages));
+  // Hymns, and the ways into them: seasons and occasions, writers and composers, first lines.
+  const occasions = occasionPages(hymns);
+  const people = collectPeople(hymns, tunePages);
+  const personByKey = new Map(people.map((p) => [p.key, p]));
+  const firstLines = firstLineEntries(hymns);
+  for (const h of hymns) if (RESERVED_HYMN_PATHS.includes(`/hymns/${h.slug}`)) throw new Error(`the hymn ${h.slug} clashes with the page /hymns/${h.slug}`);
+  put("/hymns", renderHymnIndex(hymns, tunePages, { occasions }));
   put("/hymns/credits", renderHymnCredits(hymns, tunePages));
-  if (hymns.some((h) => `/hymns/${h.slug}` === IDENTIFY_PATH)) throw new Error(`a hymn's slug clashes with ${IDENTIFY_PATH}, the hymn finder`);
   put(IDENTIFY_PATH, renderIdentify({ hymns, tunes: tunePages }));
-  for (const h of hymns) put(`/hymns/${h.slug}`, renderHymn(h, { hymns, posts }));
-  for (const t of tunePages) put(t.view.url, renderTune(t, { hymns, posts }));
+  put(OCCASIONS_PATH, renderOccasionsHub(occasions));
+  for (const o of occasions) put(o.url, renderOccasion(o, { occasions }));
+  put(PEOPLE_PATH, renderPeopleHub(people));
+  for (const p of people) put(p.url, renderPerson(p, { people }));
+  put(FIRST_LINES_PATH, renderFirstLines(firstLines));
+  for (const h of hymns) put(`/hymns/${h.slug}`, renderHymn(h, { hymns, posts, occasions, personByKey }));
+  for (const t of tunePages) put(t.view.url, renderTune(t, { hymns, posts, personByKey }));
+  // The printable solfa next to each hymn and tune page, built by writeSite (pdf-lib is asynchronous).
+  const named = (list) => list.filter((p) => !p.traditional).map((p) => p.name);
+  const pdfs = [
+    ...hymns.map((h) => ({ rel: pdfPath(`/hymns/${h.slug}`).slice(1), item: hymnPdfItem(h, { name: hymnName(h), writers: named([...h.text, ...h.tuneData.music]) }) })),
+    ...tunePages.map((t) => ({ rel: pdfPath(t.view.url).slice(1), item: tunePdfItem(t, { makers: named(t.music) }) })),
+  ];
 
   // Sitemap: what was there by hand, then the blog and the hymns.
   const newest = (dates) => dates.sort().pop();
@@ -93,6 +118,11 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
     { loc: ORIGIN + "/hymns", lastmod: newest([...hymns.map((h) => h.updated), ...tunePages.map((t) => t.updated)]), changefreq: "weekly", priority: "0.8" },
     { loc: ORIGIN + IDENTIFY_PATH, lastmod: IDENTIFY_UPDATED, changefreq: "monthly", priority: "0.8" },
     { loc: ORIGIN + "/hymns/credits", lastmod: newest([...hymns.map((h) => h.updated), ...tunePages.map((t) => t.updated)]), changefreq: "monthly", priority: "0.3" },
+    { loc: ORIGIN + OCCASIONS_PATH, lastmod: newest(occasions.flatMap((o) => o.hymns.map((h) => h.updated))), changefreq: "monthly", priority: "0.6" },
+    ...occasions.map((o) => ({ loc: ORIGIN + o.url, lastmod: newest(o.hymns.map((h) => h.updated)), changefreq: "monthly", priority: "0.6" })),
+    { loc: ORIGIN + PEOPLE_PATH, lastmod: newest(people.flatMap((p) => p.works.map((w) => w.item.updated))), changefreq: "monthly", priority: "0.5" },
+    ...people.map((p) => ({ loc: ORIGIN + p.url, lastmod: newest(p.works.map((w) => w.item.updated)), changefreq: "monthly", priority: "0.5" })),
+    { loc: ORIGIN + FIRST_LINES_PATH, lastmod: newest(hymns.map((h) => h.updated)), changefreq: "monthly", priority: "0.6" },
     ...hymns.map((h) => ({ loc: `${ORIGIN}/hymns/${h.slug}`, lastmod: h.updated, changefreq: "monthly", priority: "0.7" })),
     ...tunePages.map((t) => ({ loc: ORIGIN + t.view.url, lastmod: t.updated, changefreq: "monthly", priority: "0.5" })),
   ];
@@ -120,18 +150,28 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
   if (api) files.set("blog/catalogue.json", catalogueJson({ hymns, authors, pages: sitePages(siteDir, [...files.keys()]) }));
   // The worker's hymn index: published hymns, then published tune pages (tunes without words), then incipits.
   const indexTunes = tunePages.filter((t) => !t.draft);
-  return { files, hymnIndex: hymnIndexJson(hymns, undefined, indexTunes), summary: { posts: posts.length, hymns: hymns.length, tunes: tunePages.length, tags: tags.length, pages: files.size, skipped } };
+  return {
+    files, pdfs, hymnIndex: hymnIndexJson(hymns, undefined, indexTunes),
+    summary: { posts: posts.length, hymns: hymns.length, tunes: tunePages.length, tags: tags.length, occasions: occasions.length, people: people.length, firstLines: firstLines.length, pages: files.size, skipped },
+  };
 }
 
 /**
  * Writes a build into `siteDir`, clearing the generated folders first so a deleted post disappears, and the
  * hymn index to `indexPath` (the worker's copy when building web-site/ itself; nowhere for a --site copy).
+ *
+ * Then the PDFs (`pdfs: false` leaves them out). They are built here, with the pages, on every build: locally,
+ * in check.mjs (which checks every one) and in the deploy. They are never committed (web-site/.gitignore): a few
+ * hundred binary files that change whenever a hymn, the layout or a font does would grow the repository with
+ * every edit, and a PDF is rebuilt from the same content and code as its page, so it cannot go stale.
  */
-export function writeSite({ siteDir = SITE_DIR, includeDrafts = false, api = null, indexPath = siteDir === SITE_DIR && !includeDrafts ? HYMN_INDEX_PATH : null } = {}) {
-  const { files, hymnIndex, summary } = buildSite({ siteDir, includeDrafts, api });
+export async function writeSite({ siteDir = SITE_DIR, includeDrafts = false, api = null, indexPath = siteDir === SITE_DIR && !includeDrafts ? HYMN_INDEX_PATH : null, pdfs = true } = {}) {
+  const { files, pdfs: jobs, hymnIndex, summary } = buildSite({ siteDir, includeDrafts, api });
   for (const dir of ["blog", "hymns"]) fs.rmSync(path.join(siteDir, dir), { recursive: true, force: true });
   for (const [rel, content] of files) writeFile(path.join(siteDir, rel), content);
   if (indexPath) writeFile(indexPath, hymnIndex);
+  summary.pdfs = 0;
+  if (pdfs) for (const j of jobs) { writeFile(path.join(siteDir, j.rel), await buildSolfaPdf(j.item)); summary.pdfs++; }
   return summary;
 }
 
@@ -154,9 +194,9 @@ async function main() {
       api = await fetchPublished({ apiUrl, waitSeconds: w >= 0 ? Number(args[w + 1]) || 0 : 0, log: (m) => console.log(m) });
       console.log(`Read ${api.posts.length} live post${api.posts.length === 1 ? "" : "s"} from ${apiUrl} (version ${api.version || "?"}).`);
     }
-    const s = writeSite({ siteDir, includeDrafts, api });
+    const s = await writeSite({ siteDir, includeDrafts, api });
     for (const k of s.skipped) console.log(`::warning::Left out /blog/${k.slug}: ${k.reason.replace(/\n/g, " ")}`);
-    console.log(`Built ${s.posts} posts, ${s.hymns} hymns, ${s.tunes} tune pages and ${s.tags} tag pages (${s.pages} files) into ${path.relative(process.cwd(), siteDir) || "."}`);
+    console.log(`Built ${s.posts} posts, ${s.hymns} hymns, ${s.tunes} tune pages, ${s.occasions} occasion pages, ${s.people} people pages, ${s.firstLines} first lines and ${s.tags} tag pages (${s.pages} files), and ${s.pdfs} PDFs into ${path.relative(process.cwd(), siteDir) || "."}`);
   } catch (e) {
     console.error(`Build failed: ${e.message}`);
     process.exit(1);
