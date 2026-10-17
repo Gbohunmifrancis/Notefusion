@@ -53,10 +53,12 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider
       attribute="class"
-      // Light default, matching the app. `enableSystem` is off deliberately: the console has
+      // Night by default, as the app is (mobile `lib/theme.tsx`): the night palette is the brand's
+      // showcase. An operator who already picked a mode keeps it — the key below is unchanged.
+      // `enableSystem` is off deliberately: the console has
       // an explicit two-position switch, and a third "system" state would make the switch
       // disagree with what the page is showing.
-      defaultTheme="light"
+      defaultTheme="dark"
       enableSystem={false}
       // The same key the old runtime wrote, so an operator's existing preference carries over.
       storageKey="nf.themeMode"

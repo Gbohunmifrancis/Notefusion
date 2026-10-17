@@ -45,7 +45,7 @@ export function Segmented<T extends string>({
         if (next) onChange(next as T);
       }}
       aria-label={label}
-      className="inline-flex items-center gap-0.5 rounded-sm border border-border bg-muted/60 p-0.5"
+      className="inline-flex items-center gap-0.5 rounded-[10px] border border-[color:var(--panel-line)] bg-muted/60 p-0.5"
     >
       {options.map((option) => (
         <ToggleGroupItem
@@ -54,7 +54,7 @@ export function Segmented<T extends string>({
           aria-label={option.label}
           disabled={Boolean(option.disabledReason)}
           {...(option.disabledReason ? { title: option.disabledReason } : {})}
-          className="h-auto min-w-0 rounded-[6px] px-2.5 py-1 text-[11px] font-semibold text-muted-foreground transition hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+          className="h-auto min-w-0 rounded-[8px] px-2.5 py-1 text-[11px] font-semibold text-muted-foreground transition hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40 data-[state=on]:nf-fusion data-[state=on]:text-white"
         >
           {option.label}
         </ToggleGroupItem>

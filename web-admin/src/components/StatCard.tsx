@@ -48,7 +48,7 @@ export function StatCard({
   const { spine, fill } = TONES[tone];
 
   return (
-    <div className="relative overflow-hidden rounded-md border border-border bg-card py-4 pl-6 pr-5 shadow-hairline">
+    <div className="nf-panel overflow-hidden py-4 pl-6 pr-5">
       <span
         aria-hidden="true"
         className={cn("absolute inset-y-4 left-0 w-[3px] rounded-r-pill", spine)}
@@ -61,7 +61,7 @@ export function StatCard({
 
       <p
         className={cn(
-          "mt-2 text-[22px] font-semibold leading-none tracking-[-0.02em] tabular-nums",
+          "mt-2 text-[24px] font-bold leading-none tracking-[-0.02em] tabular-nums",
           unknown ? "text-faint" : "text-foreground",
         )}
       >

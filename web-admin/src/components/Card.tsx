@@ -20,8 +20,9 @@ interface CardProps {
 /**
  * The single surface primitive. Everything on a page sits in one of these.
  *
- * Border-first: the hairline does the separating and the shadow only lifts the card off
- * the canvas, so a page of twelve cards does not read as twelve floating objects.
+ * It wears `.nf-panel` (src/app/globals.css): a blue-tinted hairline, a wash of brand light
+ * across the top and a soft glow under it, so every page's cards carry the brand without each
+ * page restyling them.
  *
  * Not built on shadcn's `Card`. That one is a five-part composition (`CardHeader`,
  * `CardTitle`, `CardAction`, …) whose own `py-6`/`gap-6` rhythm would have to be overridden
@@ -47,20 +48,20 @@ export function Card({
     // phone. It is inert for a card that is not a grid or flex item.
     <section
       className={cn(
-        "min-w-0 overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs transition-shadow",
+        "nf-panel overflow-hidden",
         className
       )}
     >
       {hasHeader && (
         <header
           className={cn(
-            "flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-3.5 sm:px-6",
+            "flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-4 sm:px-6",
             bleed && "border-b border-border/60"
           )}
         >
           <div className="min-w-0">
             {title && (
-              <h2 className="flex items-center gap-1.5 text-sm font-semibold tracking-tight text-foreground">
+              <h2 className="flex items-center gap-1.5 text-[15px] font-bold tracking-tight text-foreground">
                 <span className="truncate">{title}</span>
                 {info && <InfoHint text={info} size={13} />}
               </h2>

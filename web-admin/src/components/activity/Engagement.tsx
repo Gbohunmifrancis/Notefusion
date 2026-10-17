@@ -18,7 +18,7 @@ import { getReportingOffset } from "@/lib/reporting";
 
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4" title={hint}>
+    <div className="nf-panel p-4" title={hint}>
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="mt-1 text-2xl font-bold tabular-nums text-foreground">{value}</div>
       {hint && <div className="mt-0.5 text-[11px] text-muted-foreground">{hint}</div>}

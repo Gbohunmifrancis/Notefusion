@@ -60,7 +60,7 @@ function minutes(m: number | null): string {
 
 function Kpi({ label, value, note }: { label: string; value: string; note?: string | undefined }) {
   return (
-    <div className="rounded-xl border border-border/80 bg-card p-4 shadow-xs">
+    <div className="nf-panel p-4">
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="mt-1 text-2xl font-bold tracking-tight text-foreground tabular-nums">{value}</div>
       {note && <div className="mt-1 text-[11px] text-muted-foreground">{note}</div>}
@@ -105,7 +105,7 @@ export function InsightsView() {
       <PageHeader title="Insights" breadcrumb={["Dashboard", "Insights"]} />
 
       {/* Filters: one row, applied to every chart below. */}
-      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border/80 bg-card p-3 shadow-xs">
+      <div className="flex flex-wrap items-center gap-3 nf-panel p-3">
         <RangePicker value={picker} offsetMinutes={offset} onChange={setRange} />
         <select
           value={country}

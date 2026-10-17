@@ -67,18 +67,20 @@ export const CHART: Record<ThemeMode, ChartPalette> = {
     surface: "#ffffff",
   },
   dark: {
-    grid: "#18181b",
-    axis: "#27272a",
-    tick: "#71717a",
-    series: "#3b82f6",
+    // The night palette (globals.css `.dark`): cool hairlines, the app's faint text for ticks
+    // (5.0:1 on the card), the lifted brand blue for the line, mint and red for outcomes.
+    grid: "#161b25",
+    axis: "#1e2533",
+    tick: "#8089a0",
+    series: "#4d8dff",
     sky: "#38bdf8",
-    success: "#22c55e",
-    danger: "#f87171",
-    faint: "#71717a",
-    categorical: ["#3b82f6", "#38bdf8", "#818cf8", "#71717a"],
+    success: "#3ddc97",
+    danger: "#ff4d5e",
+    faint: "#5a6478",
+    categorical: ["#4d8dff", "#38bdf8", "#818cf8", "#8089a0"],
     series5: ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181"],
     ramp: ["#141a24", "#1b2b45", "#21416d", "#2a5c9c", "#3987e5", "#8fbaf2"],
-    surface: "#09090b",
+    surface: "#0e121a",
   },
 };
 
@@ -86,12 +88,12 @@ export const CHART: Record<ThemeMode, ChartPalette> = {
  * The palette for the current mode.
  *
  * `resolvedTheme` is undefined until next-themes has read the stored preference on the
- * client, so this falls back to light — the app's default, and the same thing the page
- * paints underneath. A chart that mounts in dark mode therefore renders once with light
- * grid lines; recharts re-renders on the prop change a tick later, and the alternative
- * (blocking the chart on a mounted flag) trades an invisible flicker for a visible gap.
+ * client, so this falls back to dark — the console's default, and the same thing the page
+ * paints underneath for most operators. A chart that mounts in light mode therefore renders
+ * once with dark grid lines; recharts re-renders on the prop change a tick later, and the
+ * alternative (blocking the chart on a mounted flag) trades an invisible flicker for a visible gap.
  */
 export function useChartPalette(): ChartPalette {
   const { resolvedTheme } = useTheme();
-  return resolvedTheme === "dark" ? CHART.dark : CHART.light;
+  return resolvedTheme === "light" ? CHART.light : CHART.dark;
 }

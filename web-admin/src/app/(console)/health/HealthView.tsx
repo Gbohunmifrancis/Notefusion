@@ -228,7 +228,7 @@ export function HealthView() {
       {/* 4 Top Metric KPI Cards (100% Server Scoped) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {/* API Status */}
-        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
+        <div className="nf-panel p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">API status</span>
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
@@ -259,7 +259,7 @@ export function HealthView() {
         </div>
 
         {/* Database */}
-        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
+        <div className="nf-panel p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Database</span>
             <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
@@ -280,7 +280,7 @@ export function HealthView() {
         </div>
 
         {/* Background Jobs */}
-        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
+        <div className="nf-panel p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Background jobs</span>
             <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
@@ -301,7 +301,7 @@ export function HealthView() {
         </div>
 
         {/* Webhooks */}
-        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
+        <div className="nf-panel p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Webhooks</span>
             <div className="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-950/40 flex items-center justify-center text-violet-600 dark:text-violet-400">
@@ -325,7 +325,7 @@ export function HealthView() {
       {/* Middle 2-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column: Recent Events Timeline (Server Scoped) */}
-        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-6 shadow-xs flex flex-col">
+        <div className="nf-panel p-6 flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Recent events</h2>
@@ -391,7 +391,7 @@ export function HealthView() {
         </div>
 
         {/* Right Column: Webhook Delivery Overview (Server Scoped) */}
-        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-6 shadow-xs flex flex-col">
+        <div className="nf-panel p-6 flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Webhook delivery</h2>
