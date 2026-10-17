@@ -3,6 +3,9 @@
 // file only groups and sorts what content/ already says; lib/render-collections.mjs writes the pages.
 import { slugify } from "./util.mjs";
 
+/** Where the site keeps every name a person has been credited by and their page's address (see collectPeople). */
+export const PEOPLE_ADDRESSES_PATH = "hymns/people/addresses.json";
+
 // ── Seasons and occasions ───────────────────────────────────────────────────
 /**
  * The church year, then the other occasions. A hymn is filed under an occasion when its `category` is one
@@ -78,8 +81,10 @@ const ROLE_NAMES = { words: "Hymn writer", translation: "Translator", music: "Co
  * Everyone credited (words or music, by name: not "traditional") on at least two published hymns and tune
  * pages together, A–Z by surname. Each: { key, slug, url, name, years, role, works: [{ kind, item, as }] },
  * `as` being what they gave that hymn or tune ("words", "translation", "music", "arrangement").
+ * `addresses` ({ name: slug }, every name a person has been credited by) keeps each page at the address it was first
+ * given, so a new credit that changes the name most of them use does not move a published page.
  */
-export function collectPeople(hymns, tunes = [], { min = 2 } = {}) {
+export function collectPeople(hymns, tunes = [], { min = 2, addresses = {} } = {}) {
   const byKey = new Map();
   const credit = (p, kind, item, itemKind) => {
     if (!p || p.traditional || !p.name) return;
@@ -112,14 +117,15 @@ export function collectPeople(hymns, tunes = [], { min = 2 } = {}) {
     const order = ["words", "translation", "music", "arrangement"];
     const roles = order.filter((r) => works.some((w) => w.as.includes(r))).map((r, i) => (i ? ROLE_NAMES[r].toLowerCase() : ROLE_NAMES[r]));
     const role = roles.length > 1 ? `${roles.slice(0, -1).join(", ")} and ${roles[roles.length - 1]}` : roles[0];
-    people.push({ key: e.key, name, years, born: dates.lived ? undefined : dates.born, died: dates.lived ? undefined : dates.died, role, works });
+    people.push({ key: e.key, name, names: [...e.names.keys()], years, born: dates.lived ? undefined : dates.born, died: dates.lived ? undefined : dates.died, role, works });
   }
   people.sort((a, b) => surname(a.name).localeCompare(surname(b.name)) || a.name.localeCompare(b.name));
   // Each person's address (a parenthesis in the name is left out of it); two people whose names make the same
   // slug are told apart by their dates.
   const taken = new Map();
+  const kept = (p) => p.names.map((n) => addresses[n]).find((slug) => slug && !taken.has(slug));
   for (const p of people) {
-    let slug = slugify(p.name.replace(/\([^)]*\)/g, " "));
+    let slug = kept(p) || slugify(p.name.replace(/\([^)]*\)/g, " "));
     if (taken.has(slug)) slug = slugify(`${p.name} ${p.years}`);
     taken.set(slug, p);
     p.slug = slug;
@@ -155,4 +161,11 @@ export function firstLineEntries(hymns) {
     e.letter = /^[a-z]/.test(e.key) ? e.key[0].toUpperCase() : "#";
   }
   return out.sort((a, b) => a.key.localeCompare(b.key) || a.hymn.title.localeCompare(b.hymn.title) || Number(a.refrain) - Number(b.refrain));
+}
+
+/** `addresses` with every name each of `people` is credited by pointing at their page; a name already there keeps its address. */
+export function peopleAddresses(people, addresses = {}) {
+  const out = { ...addresses };
+  for (const p of people) for (const n of p.names) if (!(n in out)) out[n] = p.slug;
+  return Object.fromEntries(Object.entries(out).sort(([a], [b]) => a.localeCompare(b)));
 }

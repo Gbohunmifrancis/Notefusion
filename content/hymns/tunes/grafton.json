@@ -23,9 +23,9 @@
   "key": "Eb major",
   "time": "4/4",
   "tempo": 90,
-  "pickup": 2,
+  "pickup": 0,
   "lineBars": 2,
-  "melody": "Eb4:1 F4:1 | G4:1 Eb4:1 G4:.5 F4:.5 G4:.5 Ab4:.5 | Bb4:1 G4:1 Bb4:1 Bb4:1 | Ab4:1 Ab4:1 G4:.5 F4:.5 G4:.5 Eb4:.5 | F4:2 F4:1 G4:1 | Ab4:1.5 G4:.5 Ab4:.5 G4:.5 F4:.5 Eb4:.5 | F4:1 Bb3:1 Eb4:1 Eb4:1 | F4:1 F4:1 G4:.5 F4:.5 G4:.5 Ab4:.5 | Bb4:2 Bb4:.5 C5:.5 Bb4:.5 Ab4:.5 | G4:1 G4:1 Ab4:.5 Bb4:.5 Ab4:.5 G4:.5 | F4:1 F4:1 Bb4:.5 C5:.5 Bb4:.5 Ab4:.5 | G4:.5 Bb4:.5 Eb5:.5 Ab4:.5 G4:1 F4:1 | Eb4:2",
+  "melody": "Eb4:1 F4:1 G4:1 Eb4:1 | G4:.5 F4:.5 G4:.5 Ab4:.5 Bb4:1 G4:1 | Bb4:1 Bb4:1 Ab4:1 Ab4:1 | G4:.5 F4:.5 G4:.5 Eb4:.5 F4:2 | F4:1 G4:1 Ab4:1.5 G4:.5 | Ab4:.5 G4:.5 F4:.5 Eb4:.5 F4:1 Bb3:1 | Eb4:1 Eb4:1 F4:1 F4:1 | G4:.5 F4:.5 G4:.5 Ab4:.5 Bb4:2 | Bb4:.5 C5:.5 Bb4:.5 Ab4:.5 G4:1 G4:1 | Ab4:.5 Bb4:.5 Ab4:.5 G4:.5 F4:1 F4:1 | Bb4:.5 C5:.5 Bb4:.5 Ab4:.5 G4:.5 Bb4:.5 Eb5:.5 Ab4:.5 | G4:1 F4:1 Eb4:2",
   "incipit": "drmdmrmfsm|ssffmrmdm",
   "reviewed": false,
   "confidence": "imported, unchecked",
@@ -35,7 +35,7 @@
   "scoreUrl": "https://www.ccel.org/cceh/0006/000681a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000681; public domain.",
-  "reviewNotes": "Held back: the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score. Imported from CCEH tune 000681 (the melody read from 000681a.mid, checked against the page's do-re-mi incipit, 1 note off in 19); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true.",
+  "reviewNotes": "Held back: the score has a bar of another length (bar 7), which the solfa grid does not draw. Imported from CCEH tune 000681 (the melody read from 000681a.mid, checked against the page's do-re-mi incipit, 1 note off in 19); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000681a.nwc).",
   "importedFrom": "cceh:000681",
   "updated": "2026-10-17"
 }

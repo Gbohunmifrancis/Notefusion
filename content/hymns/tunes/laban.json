@@ -1,0 +1,36 @@
+{
+  "name": "LABAN",
+  "title": "Laban",
+  "alsoKnownAs": [
+    "Guard",
+    "Conflict"
+  ],
+  "music": [
+    {
+      "name": "Lowell Mason",
+      "born": 1792,
+      "died": 1872,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "6 6 8 6",
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "E4:.5 F4:.5 | G4:1 G4:1 G4:1 C5:1 | G4:3 E5:1 | D5:1 C5:1 B4:1 A4:1 | G4:3 E4:.5 F4:.5 | G4:1 G4:1 G4:1 C5:1 | B4:2 C5:2 | D5:3 D5:1 | E5:1 C5:1 G4:1 B4:1 | C5:2 r:1",
+  "incipit": "mfsssds|mrdtls|mfsssdtdr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000717.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000717a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000717; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000717 (the melody read from 000717a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Lowell Mason's dates (1792–1872) are from our page for the tune BETHANY (content/hymns/tunes/bethany.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000717a.nwc).",
+  "importedFrom": "cceh:000717",
+  "updated": "2026-10-17"
+}

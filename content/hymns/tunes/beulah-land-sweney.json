@@ -14,9 +14,9 @@
   "key": "G major",
   "time": "3/4",
   "tempo": 96,
-  "pickup": 2,
+  "pickup": 1,
   "lineBars": 4,
-  "melody": "D4:1 B4:.75 B4:.25 | B4:1 A4:1 G4:.75 G4:.25 | G4:1 D4:1 C5:.75 C5:.25 | C5:1 B4:1 A4:.75 A4:.25 | A4:1 D4:1 B4:.75 B4:.25 | B4:1 C5:1 D5:.75 D5:.25 | D5:1 B4:1 A4:.5 D5:.5 | C5:1 F#4:1 A4:.75 G4:.25 | G4:1 D5:1 A4:.75 A4:.25 | A4:1 D5:1 B4:.75 B4:.25 | B4:1 D5:1 E5:.75 D5:.25 | C5:1 A4:1 D5:.75 C5:.25 | B4:1 B4:1 A4:.75 Ab4:.25 | A4:1 B4:1 C5:.75 B4:.25 | C5:1 A4:1 B4:.75 A4:.25 | B4:1 C5:1 D5:.75 C#5:.25 | D5:1 D5:1 E5:.75 Eb5:.25 | E5:1 C5:1 D5:.75 C#5:.25 | D5:1 B4:1 A4:.5 D5:.5 | C5:1 F#4:1 A4:.75 G4:.25 | G4:1",
+  "melody": "D4:1 | B4:.75 B4:.25 B4:1 A4:1 | G4:.75 G4:.25 G4:1 D4:1 | C5:.75 C5:.25 C5:1 B4:1 | A4:.75 A4:.25 A4:1 D4:1 | B4:.75 B4:.25 B4:1 C5:1 | D5:.75 D5:.25 D5:1 B4:1 | A4:.5 D5:.5 C5:1 F#4:1 | A4:.75 G4:.25 G4:1 D5:1 | A4:.75 A4:.25 A4:1 D5:1 | B4:.75 B4:.25 B4:1 D5:1 | E5:.75 D5:.25 C5:1 A4:1 | D5:.75 C5:.25 B4:1 B4:1 | A4:.75 Ab4:.25 A4:1 B4:1 | C5:.75 B4:.25 C5:1 A4:1 | B4:.75 A4:.25 B4:1 C5:1 | D5:.75 C#5:.25 D5:1 D5:1 | E5:.75 Eb5:.25 E5:1 C5:1 | D5:.75 C#5:.25 D5:1 B4:1 | A4:.5 D5:.5 C5:1 F#4:1 | A4:.75 G4:.25 G4:1",
   "incipit": "dmmmrddd|sfffmrrr",
   "reviewed": false,
   "confidence": "imported, unchecked",
@@ -26,7 +26,7 @@
   "scoreUrl": "https://www.ccel.org/cceh/0005/000541a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000541; public domain.",
-  "reviewNotes": "Held back: the page gives no year for the tune; where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score. Imported from CCEH tune 000541 (the melody read from 000541a.mid, checked against the page's do-re-mi incipit, 1 note off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. John Robson Sweney's dates (1837–1899) are from https://en.wikipedia.org/wiki/John_R._Sweney; https://www.hymnologyarchive.com/john-sweney; CCEH's page gives none.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000541 (the melody read from 000541a.mid, checked against the page's do-re-mi incipit, 1 note off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. John Robson Sweney's dates (1837–1899) are from https://en.wikipedia.org/wiki/John_R._Sweney; https://www.hymnologyarchive.com/john-sweney; CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000541a.nwc).",
   "importedFrom": "cceh:000541",
   "updated": "2026-10-17"
 }

@@ -1,0 +1,32 @@
+{
+  "name": "HIS EYE IS ON THE SPARROW",
+  "title": "His Eye Is On the Sparrow",
+  "music": [
+    {
+      "name": "Charles Hutchinson Gabriel",
+      "born": 1856,
+      "died": 1932,
+      "role": "Music (1906)"
+    }
+  ],
+  "musicPublished": 1906,
+  "metre": "7 6 7 6 7 6 7 6 7 6 + 7 6 7 6",
+  "key": "D major",
+  "time": "6/8",
+  "tempo": 125,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "A4:.5 B4:.5 A4:.5 F#4:1 D4:.5 | E4:.5 F#4:2.5 | G4:.5 A4:.5 B4:.5 D5:1 D5:.5 | A4:3 | A4:.5 G4:.5 F#4:.5 B4:1 F#4:.5 | A4:.5 G4:2.5 | G4:.5 F#4:.5 E4:.5 A4:1 A4:.5 | F#4:2.5 A4:.5 | D5:1 C#5:.5 E5:.5 D5:.5 F#4:.5 | A4:.5 A4:2 A4:.5 | D5:1 C#5:.5 E5:.5 D5:.5 A4:.5 | B4:2.5 B4:.5 | C#5:1 C#5:.5 C#5:.5 B4:.5 C#5:.5 | D5:.5 A4:2 F#4:.25 F#4:.25 | A4:1 B4:.5 A4:1 B4:.5 | A4:2.5 A4:.5 | D5:1 D5:.5 D5:1 D5:.5 | D5:.5 D4:2 D4:.25 D4:.25 | A4:1 F#4:.5 F#4:.5 E4:1 | D4:1.5 D4:1 A4:.5 | A4:1 C#5:.5 E5:1 A4:.5 | A4:.5 D5:2 A4:.5 | A4:1 C#5:.5 E5:1 A4:.5 | F#5:2.5 D5:.25 D5:.25 | D5:1 D5:.5 D5:1 D5:.5 | D5:.5 D4:2 D4:.25 D4:.25 | A4:1 F#4:.5 F#4:.5 E4:1 | D4:3",
+  "incipit": "slsmdrm|fsldds|sfmlmsf",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0007/x000702.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0007/000702a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000702; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000702 (the melody read from 000702a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Charles Hutchinson Gabriel's dates (1856–1932) are from our page for the tune MY SAVIOR (content/hymns/tunes/my-savior.json); CCEH's page gives only the year 1906. The bar lines are those of CCEH's Noteworthy score (000702a.nwc).",
+  "importedFrom": "cceh:000702",
+  "updated": "2026-10-17"
+}

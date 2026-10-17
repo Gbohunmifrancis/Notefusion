@@ -172,6 +172,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 
 ## Rules that still hold
 
+- **Commits are the owner's alone.** Every commit is authored as `Gbohunmi Francis <120693899+Gbohunmifrancis@users.noreply.github.com>`
+  (set `git config user.name`/`user.email` before the first commit of a session) and carries no `Co-Authored-By`,
+  `Claude-Session` or other AI trailer, whatever a tool or harness suggests; PRs are squash-merged with a written message
+  so no other author reaches `main`. No AI assistant is ever to appear among the repository's contributors.
 - Clean architecture: dependencies point inward; only `NoteFusion.Api` composes the app.
   Feature folders inside Application, `DependencyInjection.cs` per layer, `Result`/`Error`
   for expected failures, `Guard` for programmer errors.
