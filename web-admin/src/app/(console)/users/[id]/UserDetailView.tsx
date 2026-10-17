@@ -288,7 +288,7 @@ function IdentityCard({ user, offset }: { user: AdminUserDetail; offset: number 
             {formatCount(user.chargedTranscriptionCount ?? 0)}
           </span>
         </Field>
-        <Field label="Free generations used">
+        <Field label="Free used this week">
           {formatCount(user.trialGenerationsUsed)} of {formatCount(user.trialGenerationsTotal)}
           <span className="ml-1.5 text-xs text-muted-foreground">
             {formatCount(user.boughtTranscriptionsUsed ?? 0)} of {formatCount(user.boughtTranscriptionsTotal ?? 0)} bought
@@ -410,7 +410,7 @@ function SubscriptionPanel({
         <p className="border-b border-border-light pb-5 text-[13px] text-muted-foreground">
           No subscription on this account. They are on the free tier, with{" "}
           {formatCount(user.trialGenerationsUsed)} of {formatCount(user.trialGenerationsTotal)} free
-          generations used.
+          generations used this week (back Friday 18:00 WAT).
         </p>
       )}
 

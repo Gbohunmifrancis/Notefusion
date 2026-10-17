@@ -11,7 +11,11 @@ public sealed record PlanDto(
 /// The region-aware offer for an anonymous marketing-site visitor. A null country means the geo lookup did
 /// not produce a trustworthy answer, so <see cref="Plans"/> is empty rather than exposing both regional tiers.
 /// </summary>
-public sealed record PublicPricingDto(string? CountryCode, IReadOnlyList<PlanDto> Plans);
+/// <param name="Single">
+/// The region's one-song purchase, for the free card's "or ₦1,500 a song"; null when none is on sale or the
+/// country is unknown. Apart from <see cref="Plans"/>, which older pages render as Pro Monthly or Yearly.
+/// </param>
+public sealed record PublicPricingDto(string? CountryCode, IReadOnlyList<PlanDto> Plans, PlanDto? Single = null);
 
 /// <summary>
 /// A hosted-checkout session. The app opens <see cref="CheckoutUrl"/> in an external browser
@@ -21,9 +25,10 @@ public sealed record CheckoutSessionDto(string Reference, string CheckoutUrl, Pa
 
 /// <summary>The caller's subscription state, enough for the app to gate Pro features.</summary>
 /// <param name="TrialGenerationsRemaining">
-/// Free-tier transcriptions still available, bought ones included, floored at zero; measured against
-/// <c>TrialGenerationsTotal</c>, which is the free three plus every transcription bought. Meaningless while <paramref name="IsActive"/>
-/// is true — Pro is unlimited — and reported anyway so the app has one shape to read.
+/// Free-tier transcriptions still available, this week's free ones and the bought ones, floored at zero;
+/// measured against <c>TrialGenerationsTotal</c>, which is the free three a week plus every transcription
+/// bought. Kept with that meaning for apps that predate the weekly fields below. Meaningless while
+/// <paramref name="IsActive"/> is true — Pro is unlimited — and reported anyway so the app has one shape to read.
 /// </param>
 /// <param name="IsLifetime">
 /// True when Pro was bought outright. Sent as its own flag rather than left for the client to infer
@@ -67,7 +72,19 @@ public sealed record SubscriptionDto(
     /// choir. Reported apart from <see cref="CurrentPeriodEndUtc"/> so a client watching a choir payment land
     /// sees it move even for a director who also has Pro of their own.
     /// </summary>
-    DateTime? ChoirPeriodEndUtc = null);
+    DateTime? ChoirPeriodEndUtc = null,
+    /// <summary>
+    /// This week's free hummed or recorded transcriptions not yet spent or held by a running job, floored at
+    /// zero; bought ones not included. Already counted in <c>TrialGenerationsRemaining</c>, which older apps read.
+    /// </summary>
+    int FreeTranscriptionsRemaining = 0,
+    /// <summary>Free hummed or recorded transcriptions a week (<c>FreeTier.TrialGenerations</c>).</summary>
+    int FreeTranscriptionsPerWeek = 0,
+    /// <summary>
+    /// When this week's free transcriptions come back: the next Friday 18:00 West Africa Time, in UTC. The apps
+    /// show it in the user's own time.
+    /// </summary>
+    DateTime? FreeResetsAtUtc = null);
 
 /// <summary>A balance derived by summing the immutable ledger — never read from a stored column.</summary>
 public sealed record LedgerBalanceDto(long BalanceMinor, string Currency);

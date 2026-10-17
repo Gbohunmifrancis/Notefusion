@@ -104,10 +104,10 @@ public sealed record AdminLedgerEntryDto(
 /// log in" is usually this and nothing to do with suspension, and the two are fixed differently.
 /// </param>
 /// <param name="TrialGenerationsUsed">
-/// Free transcriptions consumed by this account, counted from the jobs that consumed them rather than from
-/// saved transcriptions — deleting a transcription does not hand the trial back. Bought ones are counted
-/// apart (<paramref name="BoughtTranscriptionsUsed"/>). Per account: the paywall also counts other accounts
-/// on the same handset.
+/// Free transcriptions consumed by this account this week (since the last Friday 18:00 WAT), counted from the
+/// jobs that consumed them rather than from saved transcriptions — deleting a transcription does not hand the
+/// trial back. Bought ones are counted apart (<paramref name="BoughtTranscriptionsUsed"/>). Per account: the
+/// paywall also counts other accounts on the same handset and inbox, and jobs still running.
 /// </param>
 /// <param name="BoughtTranscriptionsUsed">One-song purchases spent or held by a running job.</param>
 /// <param name="BoughtTranscriptionsTotal">One-song purchases fulfilled, ever.</param>

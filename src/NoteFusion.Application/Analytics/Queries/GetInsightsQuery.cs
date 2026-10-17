@@ -193,9 +193,10 @@ public sealed class GetInsightsQueryHandler : IRequestHandler<GetInsightsQuery, 
                 new CountryRowDto("Other", rest.Sum(r => r.Accounts), rest.Sum(r => r.Active), rest.Sum(r => r.Transcriptions), rest.Sum(r => r.Pro))];
         }
 
-        // Met the paywall: every free transcription spent, counted as TrialUsage counts them — charged jobs on
-        // the account, or on a handset the account submitted from (the gate refuses either). Ever, not only in
-        // the window, like every other step.
+        // Met the paywall: every free transcription of some week spent, counted as TrialUsage counts them —
+        // charged jobs on the account, or on a handset the account submitted from (the gate refuses either),
+        // in the free week they were submitted in (FreeTier.WeekStart). Any week ever, not only in the window,
+        // like every other step.
         var charged = allJobs.Where(j => j.Charged).ToList();
         var devicesOf = allJobs.Where(j => j.DeviceFingerprint != null)
             .GroupBy(j => j.UserId)
@@ -203,8 +204,10 @@ public sealed class GetInsightsQueryHandler : IRequestHandler<GetInsightsQuery, 
         bool ReachedFreeLimit(Guid id)
         {
             var devices = devicesOf.GetValueOrDefault(id);
-            var used = charged.Count(j => j.UserId == id || (j.DeviceFingerprint != null && devices?.Contains(j.DeviceFingerprint) == true));
-            return used >= FreeTier.TrialGenerations;
+            return charged
+                .Where(j => j.UserId == id || (j.DeviceFingerprint != null && devices?.Contains(j.DeviceFingerprint) == true))
+                .GroupBy(j => FreeTier.WeekStart(j.CreatedAtUtc))
+                .Any(week => week.Count() >= FreeTier.TrialGenerations);
         }
 
         // The path to paying, for the accounts that signed up in the window.

@@ -115,6 +115,12 @@ const KEYS = [
  */
 const FREE_TIER_LIMIT_CODE = "BILLING_FREE_TIER_LIMIT";
 
+/**
+ * The API's code for a free account asking for a song with instruments with no bought song
+ * left (`BillingErrors.SongNotFree`): the free weekly ones are hums and recordings.
+ */
+const SONG_NOT_FREE_CODE = "BILLING_SONG_NOT_FREE";
+
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
   sampleRate: 22050,
@@ -258,7 +264,23 @@ export function RecordScreen() {
   const route = useRoute<RouteProp<TabParams, "Record">>();
   const tabNav = useNavigation<BottomTabNavigationProp<TabParams, "Record">>();
   const { state, start, retry, reset } = useJobPolling();
-  const { isPro, known, trialRemaining, trialTotal, boughtTotal, refresh, subscription } = useSubscription();
+  const {
+    isPro,
+    known,
+    trialRemaining,
+    boughtRemaining,
+    boughtTotal,
+    freeRemaining,
+    freePerWeek,
+    freeBack,
+    refresh,
+    subscription,
+  } = useSubscription();
+  /**
+   * A song with instruments (the voice isolated first) is not one of the free weekly ones: it
+   * takes Pro or a bought song. Known-and-free only, so a dropped billing request fails open.
+   */
+  const songNeedsCredit = known && !isPro && boughtRemaining <= 0;
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
 
@@ -328,16 +350,14 @@ export function RecordScreen() {
    * of the old behaviour and read as the app refusing to record for no stated reason.
    */
   const showTrialExhausted = useCallback(() => {
-    // The total counts the bought ones too, so the free number is what is left once they are taken out.
-    const free = trialTotal - boughtTotal;
     showDialog({
-      title: "Free trial used up",
+      title: "This week's free ones are used",
       message:
         (boughtTotal > 0
-          ? `You've used your ${free} free transcriptions and the ${boughtTotal} you bought. `
-          : `You've used all ${free} free transcriptions. `) +
-        `Buy just this song — one more transcription, no subscription — or upgrade to Pro for ` +
-        `unlimited. Everything you've already transcribed stays in your library.`,
+          ? `You've used this week's ${freePerWeek} free transcriptions and the ${boughtTotal} you bought. `
+          : `You've used this week's ${freePerWeek} free transcriptions. `) +
+        `They come back ${freeBack}. Buy just this song — one more transcription, no subscription — ` +
+        `or upgrade to Pro for unlimited. Everything you've already transcribed stays in your library.`,
       icon: "sparkles",
       tone: "premium",
       actions: [
@@ -354,7 +374,38 @@ export function RecordScreen() {
         { label: "Not now", style: "cancel" },
       ],
     });
-  }, [trialTotal, boughtTotal, nav]);
+  }, [freePerWeek, freeBack, boughtTotal, nav]);
+
+  /**
+   * A song with instruments on a free account with no bought song left. The take (or file) is
+   * already in hand, so the first way out sends it as a tune that was sung, which one of the
+   * week's free ones covers; `sendAsTune` does that.
+   */
+  const showSongNotFree = useCallback(
+    (sendAsTune?: () => void) => {
+      showDialog({
+        title: "Songs need Pro or a bought song",
+        message:
+          `A song with instruments has its voice isolated first, which takes Pro or a bought song. ` +
+          `Your ${freePerWeek} free transcriptions a week are for hums and recordings of a voice` +
+          (sendAsTune ? ` — send this one as a tune you sang?` : `.`),
+        icon: "musical-notes",
+        tone: "premium",
+        actions: [
+          ...(sendAsTune
+            ? [{ label: "Send as a tune I sang", icon: "mic" as const, onPress: sendAsTune }]
+            : []),
+          {
+            label: "Just this song",
+            icon: "musical-note",
+            onPress: () => nav.navigate("Upgrade", { reason: "limit" }),
+          },
+          { label: "Not now", style: "cancel" },
+        ],
+      });
+    },
+    [freePerWeek, nav],
+  );
 
   /**
    * Stops a free account that has nothing left, and says so. Returns true when the
@@ -385,8 +436,11 @@ export function RecordScreen() {
     if (state.errorCode === FREE_TIER_LIMIT_CODE) {
       reset();
       showTrialExhausted();
+    } else if (state.errorCode === SONG_NOT_FREE_CODE) {
+      reset();
+      showSongNotFree();
     }
-  }, [state.status, state.errorCode, reset, showTrialExhausted]);
+  }, [state.status, state.errorCode, reset, showTrialExhausted, showSongNotFree]);
 
   // The elapsed-time interval is cleared in stopAndSubmit, but a screen unmount
   // mid-recording (back gesture, tab switch) never runs that path, leaking the
@@ -519,7 +573,11 @@ export function RecordScreen() {
       "A song with instruments has its lead vocal isolated first, so the notes and the beat come from the voice, not the band." +
         (isPro && typeof subscription?.songCreditsRemaining === "number"
           ? ` It uses 1 of your ${subscription.songCreditsRemaining} songs left this month; a hummed tune costs nothing.`
-          : ""),
+          : known && !isPro
+            ? boughtRemaining > 0
+              ? ` It uses 1 of your ${boughtRemaining} bought songs; a hummed tune uses one of this week's free ones.`
+              : ` That takes Pro or a bought song; a hummed or sung tune uses one of this week's free ones.`
+            : ""),
       [
         ...(remembered === "song" ? [song, voice] : [voice, song]),
         ...(cancelable ? [{ text: "Cancel", style: "cancel" as const, onPress: () => resolve(null) }] : []),
@@ -568,17 +626,25 @@ export function RecordScreen() {
       const isScore = ["mid", "midi", "xml", "musicxml", "mxl", "abc"].includes(ext);
       const separate = isScore || mode === "chords" ? false : await askIfSong(true);
       if (separate === null) return;
-      setPhase("uploading");
-      const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
-      const opts = { mode, key: keyOpt, separate, keyboardTranspose: kbTranspose || undefined, timeSignature: meter ?? undefined };
-      void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "file" });
-      rememberSubmit({ uri: asset.uri, name: asset.name || "imported-audio.m4a", opts }); const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", opts);
-      // Only once the job is really queued — a quota refusal has no completion
-      // to notify about.
-      if (jobId) {
-        setMeter(null);
-        void offerBackgroundAlerts();
+      const send = async (isolate: boolean) => {
+        setPhase("uploading");
+        const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
+        const opts = { mode, key: keyOpt, separate: isolate, keyboardTranspose: kbTranspose || undefined, timeSignature: meter ?? undefined };
+        void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "file" });
+        rememberSubmit({ uri: asset.uri, name: asset.name || "imported-audio.m4a", opts }); const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", opts);
+        // Only once the job is really queued — a quota refusal has no completion
+        // to notify about.
+        if (jobId) {
+          setMeter(null);
+          void offerBackgroundAlerts();
+        }
+      };
+      // A song is not one of the free weekly ones: offer to send it as a sung tune instead.
+      if (separate && songNeedsCredit) {
+        showSongNotFree(() => void send(false).catch(() => setPhase("ready")));
+        return;
       }
+      await send(separate);
     } catch {
       setPhase("ready");
       setPermError("Could not import audio file. Please try again.");
@@ -611,13 +677,24 @@ export function RecordScreen() {
       // transcribed whole comes back as a scatter of wrong notes — so the same question, with the
       // same remembered answer, and no cancel because the take is already made.
       const separate = mode === "chords" ? false : ((await askIfSong(false)) ?? false);
-      const opts = { mode, key: keyOpt, separate, keyboardTranspose: kbTranspose || undefined, timeSignature: meter ?? undefined };
-      void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "mic" });
-      rememberSubmit({ uri, name: `clip-${elapsed}s.m4a`, opts }); const jobId = await start(uri, `clip-${elapsed}s.m4a`, opts);
-      if (jobId) {
-        setMeter(null);
-        void offerBackgroundAlerts();
+      const name = `clip-${elapsed}s.m4a`;
+      const send = async (isolate: boolean) => {
+        setPhase("uploading");
+        const opts = { mode, key: keyOpt, separate: isolate, keyboardTranspose: kbTranspose || undefined, timeSignature: meter ?? undefined };
+        void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "mic" });
+        rememberSubmit({ uri, name, opts }); const jobId = await start(uri, name, opts);
+        if (jobId) {
+          setMeter(null);
+          void offerBackgroundAlerts();
+        }
+      };
+      // A song is not one of the free weekly ones: the take is made, so offer to send it as a sung tune.
+      if (separate && songNeedsCredit) {
+        setPhase("ready");
+        showSongNotFree(() => void send(false).catch(() => setPhase("ready")));
+        return;
       }
+      await send(separate);
     } catch {
       setPhase("ready");
     }
@@ -863,9 +940,11 @@ export function RecordScreen() {
                       trialRemaining <= 0 && styles.trialPillTextSpent,
                     ]}
                   >
-                    {trialRemaining > 0
-                      ? `${trialRemaining} of ${trialTotal} ${boughtTotal > 0 ? "" : "free "}transcriptions left`
-                      : "Free trial used up — see Pro plans"}
+                    {freeRemaining > 0
+                      ? `${freeRemaining} of ${freePerWeek} free this week · back ${freeBack}`
+                      : boughtRemaining > 0
+                        ? `${boughtRemaining} bought left · free back ${freeBack}`
+                        : `Free ones back ${freeBack} — see Pro plans`}
                   </Text>
                 </Touchable>
               )}
@@ -1178,7 +1257,7 @@ const makeStyles = (c: Palette) =>
     paddingHorizontal: spacing.md,
     paddingVertical: 5,
     marginTop: spacing.md,
-    // "Free trial used up — see Pro plans" is wider than a narrow handset once the text setting is
+    // "Free ones back Friday 6pm — see Pro plans" is wider than a narrow handset once the text setting is
     // turned up. RN defaults `flexShrink` to 0, so without this pair the row keeps its natural width
     // and simply runs off both edges rather than wrapping.
     maxWidth: "100%",

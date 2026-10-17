@@ -153,7 +153,8 @@ public class TranscriptionJob : BaseEntity
     /// <summary>
     /// A Pro account's upload of a whole song with instruments: the voice is isolated before transcription,
     /// which is the work a song credit pays for, so it is metered with the links. A free account's song
-    /// upload stays a plain upload and spends a trial generation, as it always has.
+    /// upload is a plain upload paid for with a bought transcription (<see cref="PaidByCredit"/>): the free
+    /// weekly ones cover hums and recordings only.
     /// </summary>
     public static TranscriptionJob RecordSong(
         string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint, Guid? choirId = null)

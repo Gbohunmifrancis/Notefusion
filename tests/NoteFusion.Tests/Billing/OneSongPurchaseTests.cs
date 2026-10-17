@@ -95,6 +95,31 @@ public class OneSongPurchaseTests
     }
 
     [Fact]
+    public async Task A_bought_transcription_pays_for_a_song_upload_and_leaves_the_free_week_alone()
+    {
+        // A song with the voice isolated is not one of the free weekly hums: a bought one pays for it even
+        // while free ones are left, and those stay for the week's hums.
+        using var h = new TestHarness(Now);
+        var user = SeedUser(h);
+        Buy(h, user);
+        var api = new FakeApi();
+
+        var jobId = (await SubmitUpload(h, user, api, separate: true)).Value;
+        var job = h.Db.TranscriptionJobs.Single();
+        Assert.True(job.PaidByCredit);
+        Assert.Equal(TranscriptionJobKind.Upload, job.Kind);
+        Assert.True(api.LastOptions!.Separate);
+
+        api.Status = TranscriptionStatus.Done;
+        await Poll(h, user, jobId, api);
+
+        var shown = await Shown(h, user);
+        Assert.Equal(0, shown.BoughtTranscriptionsRemaining);
+        Assert.Equal(3, shown.FreeTranscriptionsRemaining);
+        Assert.Equal("BILLING_SONG_NOT_FREE", (await SubmitUpload(h, user, api, separate: true)).Error.Code);
+    }
+
+    [Fact]
     public async Task Free_ones_go_first_and_only_the_job_after_them_spends_the_bought_one()
     {
         using var h = new TestHarness(Now);
@@ -126,8 +151,8 @@ public class OneSongPurchaseTests
         const string phone = "shared-phone";
         for (var i = 0; i < 3; i++)
         {
-            var job = TranscriptionJob.Record($"first-{i}", first.Id, Now.AddDays(-10), phone);
-            job.ConsumeTrial(Now.AddDays(-10));
+            var job = TranscriptionJob.Record($"first-{i}", first.Id, Now.AddDays(-1), phone); // earlier this free week
+            job.ConsumeTrial(Now.AddDays(-1));
             h.Db.TranscriptionJobs.Add(job);
         }
         h.Db.SaveChanges();
@@ -312,6 +337,7 @@ public class OneSongPurchaseTests
         Assert.Equal("one_song_ngn", Assert.Single(single).Code);
         Assert.Empty(choir);
         Assert.DoesNotContain(pub.Plans, p => p.Interval == BillingInterval.Single);
+        Assert.Equal("one_song_ngn", pub.Single?.Code); // apart, for the free card's "or ₦1,500 a song"
     }
 
     [Fact]
@@ -406,8 +432,8 @@ public class OneSongPurchaseTests
     {
         for (var i = 0; i < count; i++)
         {
-            var job = TranscriptionJob.Record($"spent-{i}", user.Id, Now.AddDays(-10));
-            job.ConsumeTrial(Now.AddDays(-10));
+            var job = TranscriptionJob.Record($"spent-{i}", user.Id, Now.AddDays(-1)); // earlier this free week
+            job.ConsumeTrial(Now.AddDays(-1));
             h.Db.TranscriptionJobs.Add(job);
         }
         h.Db.SaveChanges();
