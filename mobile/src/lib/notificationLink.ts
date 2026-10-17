@@ -92,6 +92,8 @@ const LINKS: Record<string, () => void> = {
    * nested form — `navigate('Record')` would find no such route and silently do nothing.
    */
   Record: () => navigationRef.navigate('Tabs', { screen: 'Record' }),
+  /** The practice reminder on a day the streak is at risk: today's drill. */
+  Practice: () => navigationRef.navigate('Practice'),
 };
 
 /**

@@ -20,6 +20,12 @@ public sealed class GradeTakeRequest
 {
     public IFormFile? Audio { get; set; }
     public string? Target { get; set; }
+
+    /// <summary>The saved sheet practised, when there is one; recorded with the practice if the singer may open it.</summary>
+    public Guid? TranscriptionId { get; set; }
+
+    /// <summary>The part sung: "soprano", "alto", "tenor" or "bass" (or S/A/T/B).</summary>
+    public string? Part { get; set; }
 }
 
 public sealed class SubmitTranscriptionRequest
@@ -149,7 +155,8 @@ public sealed class TranscriptionsController : ApiControllerBase
     /// <summary>Polls a transcription job for status, progress, and the result once done.</summary>
     /// <summary>
     /// Sing-along grading (Pro): a recorded take and the part it was sung to, as multipart with the
-    /// part as JSON in the <c>target</c> field. Returns every note's verdict with its cents offset.
+    /// part as JSON in the <c>target</c> field (and, optionally, <c>transcriptionId</c> and <c>part</c>).
+    /// Returns every note's verdict with its cents offset, and the practice it earned as <c>reward</c>.
     /// </summary>
     [HttpPost("grade")]
     [Consumes("multipart/form-data")]
@@ -172,7 +179,8 @@ public sealed class TranscriptionsController : ApiControllerBase
             return HandleResult(Result.Failure<GradeResultDto>(Application.Common.Errors.TranscriptionErrors.InvalidAudio));
 
         await using var stream = request.Audio.OpenReadStream();
-        return HandleResult(await _sender.Send(new GradeTakeCommand(stream, request.Audio.FileName, target), ct));
+        return HandleResult(await _sender.Send(
+            new GradeTakeCommand(stream, request.Audio.FileName, target, request.TranscriptionId, request.Part), ct));
     }
 
     /// <summary>

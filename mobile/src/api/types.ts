@@ -276,6 +276,115 @@ export interface GradeResult {
   octaveShift: number;
   summary: string;
   notes: GradeNote[];
+  /** What the take earned as practice (XP, level, streak, badges); set by the API for a signed-in singer. */
+  reward?: PracticeReward | null;
+}
+
+// ── Practice (C# Application/Practice/Dtos/PracticeDtos.cs) ─────────────────
+
+/** Where an account stands on the ladder; `xpForNext` is the XP still to earn (0 at the top). */
+export interface PracticeLevel {
+  index: number;
+  name: string;
+  minXp: number;
+  nextLevelXp: number | null;
+  nextName: string | null;
+  xpForNext: number;
+}
+
+/** Days practised in a row on the singer's own calendar, with the weekly automatic freeze. */
+export interface PracticeStreak {
+  current: number;
+  best: number;
+  todayDone: boolean;
+  /** A streak is running and today is not done yet. */
+  atRisk: boolean;
+  /** This ISO week's one freeze is unused. */
+  freezeAvailable: boolean;
+  /** Yesterday was missed and the freeze bridged it. */
+  frozenYesterday: boolean;
+}
+
+/** Practice days so far this week (Monday to Sunday) against the goal. */
+export interface WeeklyGoal {
+  daysDone: number;
+  target: number;
+  /** yyyy-mm-dd, a Monday. */
+  weekStart: string;
+}
+
+/** A badge, earned or not; locked ones carry `progress` of `target`. */
+export interface PracticeBadge {
+  code: string;
+  title: string;
+  description: string;
+  earned: boolean;
+  earnedAtUtc: string | null;
+  progress: number;
+  target: number;
+}
+
+export type PracticeDayStatus = "done" | "frozen" | "missed" | "today" | "none";
+
+/** One of the last seven days. */
+export interface PracticeDay {
+  /** yyyy-mm-dd on the singer's calendar. */
+  date: string;
+  status: PracticeDayStatus;
+  xp: number;
+}
+
+/** Drills marked today and the day's limit (5 free, 20 Pro). */
+export interface DrillAllowance {
+  used: number;
+  limit: number;
+}
+
+/** GET /api/practice/progress. */
+export interface PracticeProgress {
+  /** yyyy-mm-dd on the singer's calendar. */
+  today: string;
+  xp: number;
+  xpToday: number;
+  dailyXpCap: number;
+  level: PracticeLevel;
+  streak: PracticeStreak;
+  weeklyGoal: WeeklyGoal;
+  badges: PracticeBadge[];
+  lastSevenDays: PracticeDay[];
+  drills: DrillAllowance;
+}
+
+/** What a marked take earned, returned with its grade. */
+export interface PracticeReward {
+  xpGained: number;
+  xp: number;
+  levelUp: boolean;
+  level: PracticeLevel;
+  streak: number;
+  newBadges: PracticeBadge[];
+}
+
+/** GET /api/practice/drills/today: a short solfa pattern, the same all day. */
+export interface Drill {
+  id: string;
+  title: string;
+  level: number;
+  levelName: string;
+  /** e.g. "Eb major", "B minor". */
+  key: string;
+  /** e.g. "Doh is Eb". */
+  dohHeader: string;
+  tempoBpm: number;
+  timeSignature: string;
+  /** A bar of the first note and a bar of clicks before the singer starts. */
+  leadInBeats: number;
+  /** The worker keeps no more of the take than this. */
+  maxTakeSeconds: number;
+  notes: NoteEvent[];
+  /** yyyy-mm-dd on the singer's calendar. */
+  date: string;
+  allowance: DrillAllowance;
 }
 
 /** A public link to a saved sheet. */

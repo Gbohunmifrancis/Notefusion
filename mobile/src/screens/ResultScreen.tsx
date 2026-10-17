@@ -1835,6 +1835,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 timeSignature={timeSignature}
                 isPro={isPro}
                 onRequirePro={() => void requirePro()}
+                sheetId={savedId}
               />
             ) : (
               <Text style={styles.panelHint}>There are no notes to sing yet.</Text>
@@ -1961,6 +1962,7 @@ export function ResultScreen({ route, navigation }: Props) {
           barCount={barCount}
           isPro={isPro}
           onRequirePro={practiceUpsell}
+          sheetId={savedId}
         />
       ) : null}
 

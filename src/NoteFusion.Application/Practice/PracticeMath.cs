@@ -1,0 +1,133 @@
+using NoteFusion.Application.Practice.Dtos;
+using NoteFusion.Core.Enums;
+
+namespace NoteFusion.Application.Practice;
+
+/// <summary>What the scoring needs of one <see cref="Core.Entities.PracticeSession"/>.</summary>
+public sealed record PracticeFact(PracticeKind Kind, int Score, bool WholePart, DateOnly LocalDate, DateTime CreatedAtUtc);
+
+/// <summary>The streak as of one day, with the days its freezes bridged.</summary>
+public sealed record StreakState(int Current, int Best, bool TodayDone, bool FreezeAvailable, IReadOnlySet<DateOnly> Frozen);
+
+/// <summary>The counts badges are judged on.</summary>
+public sealed record PracticeStats(int Drills, int Parts, int Perfect, int WholePartsGood, int BestStreak);
+
+/// <summary>
+/// The rules of <see cref="PracticeRules"/> applied to an account's practice history. Pure: the rows go in, the
+/// numbers come out, so every rule is unit-tested without a database.
+/// </summary>
+public static class PracticeMath
+{
+    /// <summary>XP earned on each local day: the day's takes summed and held to <see cref="PracticeRules.DailyXpCap"/>.</summary>
+    public static Dictionary<DateOnly, int> XpByDay(IEnumerable<PracticeFact> facts)
+        => facts
+            .GroupBy(f => f.LocalDate)
+            .ToDictionary(g => g.Key, g => Math.Min(PracticeRules.DailyXpCap, g.Sum(f => PracticeRules.BaseXp(f.Kind, f.Score))));
+
+    public static int TotalXp(IEnumerable<PracticeFact> facts) => XpByDay(facts).Values.Sum();
+
+    /// <summary>The rung <paramref name="xp"/> reaches, and what the next one asks.</summary>
+    public static LevelDto LevelFor(int xp)
+    {
+        var levels = PracticeRules.Levels;
+        var at = levels.Last(l => l.MinXp <= Math.Max(0, xp));
+        var next = at.Index + 1 < levels.Count ? levels[at.Index + 1] : null;
+        return new LevelDto(at.Index, at.Name, at.MinXp, next?.MinXp, next?.Name, next is null ? 0 : next.MinXp - xp);
+    }
+
+    /// <summary>
+    /// Days practised in a row up to <paramref name="today"/>. Today not yet done does not break it (the day is not
+    /// over). A missed day is bridged by the week's freeze — one per ISO week, used automatically on the first day
+    /// missed that week while a streak is running — and a bridged day keeps the streak without adding to it.
+    /// </summary>
+    public static StreakState Streak(IEnumerable<DateOnly> practisedDays, DateOnly today)
+    {
+        var days = practisedDays.ToHashSet();
+        var frozen = new HashSet<DateOnly>();
+        var weeksFrozen = new HashSet<DateOnly>();
+        int run = 0, best = 0;
+
+        if (days.Count > 0)
+        {
+            var end = days.Max() > today ? days.Max() : today;
+            for (var d = days.Min(); d <= end; d = d.AddDays(1))
+            {
+                if (days.Contains(d))
+                {
+                    run++;
+                    best = Math.Max(best, run);
+                }
+                else if (d >= today)
+                {
+                    // Today, still open: neither kept nor lost yet.
+                }
+                else if (run > 0 && weeksFrozen.Add(PracticeTime.WeekStart(d)))
+                {
+                    frozen.Add(d);
+                }
+                else
+                {
+                    run = 0;
+                }
+            }
+        }
+
+        return new StreakState(run, best, days.Contains(today), !weeksFrozen.Contains(PracticeTime.WeekStart(today)), frozen);
+    }
+
+    /// <summary>The counts badges read, with the best streak as of <paramref name="today"/>.</summary>
+    public static PracticeStats Stats(IReadOnlyCollection<PracticeFact> facts, DateOnly today)
+        => new(
+            facts.Count(f => f.Kind == PracticeKind.Drill),
+            facts.Count(f => f.Kind == PracticeKind.Part),
+            facts.Count(f => f.Score >= PracticeRules.PerfectScore),
+            facts.Count(f => f.Kind == PracticeKind.Part && f.WholePart && f.Score >= PracticeRules.GoodScore),
+            Streak(facts.Select(f => f.LocalDate), today).Best);
+
+    /// <summary>Everything the Practice screen shows, as of <paramref name="today"/>.</summary>
+    public static PracticeProgressDto Progress(
+        IReadOnlyCollection<PracticeFact> facts,
+        IReadOnlyDictionary<string, DateTime> earned,
+        DateOnly today,
+        DrillAllowanceDto drills)
+    {
+        var xpByDay = XpByDay(facts);
+        var xp = xpByDay.Values.Sum();
+        var streak = Streak(facts.Select(f => f.LocalDate), today);
+        var stats = Stats(facts, today);
+        var first = facts.Count == 0 ? (DateOnly?)null : facts.Min(f => f.LocalDate);
+
+        var weekStart = PracticeTime.WeekStart(today);
+        var weekDays = xpByDay.Keys.Count(d => d >= weekStart && d <= today);
+
+        var lastSeven = Enumerable.Range(0, 7)
+            .Select(i => today.AddDays(i - 6))
+            .Select(d => new PracticeDayDto(
+                d,
+                xpByDay.ContainsKey(d) ? "done"
+                    : d == today ? "today"
+                    : streak.Frozen.Contains(d) ? "frozen"
+                    : first is null || d < first ? "none"
+                    : "missed",
+                xpByDay.GetValueOrDefault(d)))
+            .ToList();
+
+        return new PracticeProgressDto(
+            today,
+            xp,
+            xpByDay.GetValueOrDefault(today),
+            PracticeRules.DailyXpCap,
+            LevelFor(xp),
+            new StreakDto(
+                streak.Current,
+                streak.Best,
+                streak.TodayDone,
+                AtRisk: streak.Current > 0 && !streak.TodayDone,
+                streak.FreezeAvailable,
+                FrozenYesterday: streak.Frozen.Contains(today.AddDays(-1))),
+            new WeeklyGoalDto(weekDays, PracticeRules.WeeklyGoalDays, weekStart),
+            PracticeBadges.Describe(stats, earned),
+            lastSeven,
+            drills);
+    }
+}

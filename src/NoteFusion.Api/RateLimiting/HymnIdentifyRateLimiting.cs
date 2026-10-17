@@ -37,7 +37,8 @@ public sealed class HymnIdentifyLimiter : IDisposable
 
     private static readonly RateLimitPartition<string> Unlimited = RateLimitPartition.GetNoLimiter("none");
 
-    private static RateLimitPartition<string> Window(string key, (int Permits, int Seconds) limit)
+    /// <summary>A sliding window of <paramref name="limit"/>; shared with <see cref="PracticeDrillLimiter"/>.</summary>
+    internal static RateLimitPartition<string> Window(string key, (int Permits, int Seconds) limit)
         => RateLimitPartition.GetSlidingWindowLimiter(key, _ => new SlidingWindowRateLimiterOptions
         {
             PermitLimit = limit.Permits,

@@ -19,6 +19,7 @@ import { UpgradeScreen } from '../screens/UpgradeScreen';
 import { LinkScreen } from '../screens/LinkScreen';
 import { ListenScreen } from '../screens/ListenScreen';
 import { ChoirScreen } from '../screens/ChoirScreen';
+import { PracticeScreen } from '../screens/PracticeScreen';
 import { AdminHomeScreen } from '../screens/admin/AdminHomeScreen';
 import { AdminPaymentsScreen } from '../screens/admin/AdminPaymentsScreen';
 import { AdminUserScreen } from '../screens/admin/AdminUserScreen';
@@ -145,6 +146,11 @@ export function RootNavigator() {
             <Stack.Screen
               name="Choir"
               component={ChoirScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="Practice"
+              component={PracticeScreen}
               options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen

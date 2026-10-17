@@ -42,11 +42,16 @@ public interface ITranscriptionApi
         string url,
         CancellationToken cancellationToken = default);
 
-    /// <summary>POST /v1/grade — judges a sung take against a part. Synchronous; the worker answers in seconds.</summary>
+    /// <summary>
+    /// POST /v1/grade — judges a sung take against a part. Synchronous; the worker answers in seconds.
+    /// <paramref name="maxTakeSeconds"/>, when given, has the worker cut the take there (a drill) instead of
+    /// refusing one past its own two-minute bound.
+    /// </summary>
     Task<Result<GradeResultDto>> GradeAsync(
         Stream audio,
         string fileName,
         GradeTargetDto target,
+        double? maxTakeSeconds = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>

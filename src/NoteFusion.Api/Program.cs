@@ -64,6 +64,7 @@ builder.Services.AddScoped<IClientIpAddress, RequestClientIpAddress>();
 // because a second Google account on the same phone was five more free generations.
 builder.Services.AddScoped<IDeviceFingerprint, RequestDeviceFingerprint>();
 builder.Services.AddScoped<IClientApp, RequestClientApp>();
+builder.Services.AddScoped<IClientTimeZone, RequestClientTimeZone>();
 
 // Same seam again, but singleton — see RequestCorrelationId for why the outbound HttpClient handler
 // makes any shorter lifetime wrong.
