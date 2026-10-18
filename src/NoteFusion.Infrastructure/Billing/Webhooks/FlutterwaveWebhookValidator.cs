@@ -9,15 +9,18 @@ namespace NoteFusion.Infrastructure.Billing.Webhooks;
 
 /// <summary>
 /// Verifies Flutterwave webhooks. Flutterwave signs callbacks with the secret hash configured in the
-/// dashboard and passes it in the <c>verif-hash</c> header. The comparison is constant-time.
+/// dashboard and passes it in the <c>verif-hash</c> header. The comparison is constant-time. The hash is its
+/// own value (<c>Flutterwave__WebhookSecret</c>), never the API secret key: the dashboard sends it in a header
+/// on every call, so it must not be a credential that can charge.
 /// </summary>
 internal sealed class FlutterwaveWebhookValidator : IPaymentWebhookValidator
 {
     private const string SignatureHeader = "verif-hash";
     private readonly byte[] _secret;
 
+    // Blank matches nothing: an empty signature is refused below and FixedTimeEquals fails on any other.
     public FlutterwaveWebhookValidator(PaymentProviderOptions options)
-        => _secret = Encoding.UTF8.GetBytes(options.EffectiveWebhookSecret);
+        => _secret = Encoding.UTF8.GetBytes(options.WebhookSecret?.Trim() ?? string.Empty);
 
     public PaymentProvider Provider => PaymentProvider.Flutterwave;
 
@@ -46,6 +49,7 @@ internal sealed class FlutterwaveWebhookValidator : IPaymentWebhookValidator
 
             string? reference = null;
             string? id = null;
+            string? status = null;
 
             if (root.TryGetProperty("data", out var data) && data.ValueKind == JsonValueKind.Object)
             {
@@ -60,10 +64,15 @@ internal sealed class FlutterwaveWebhookValidator : IPaymentWebhookValidator
                         ? idProp.GetInt64().ToString()
                         : idProp.GetString();
                 }
+
+                if (data.TryGetProperty("status", out var st) && st.ValueKind == JsonValueKind.String)
+                    status = st.GetString();
             }
 
+            // The status is part of the id: a transaction reported failed and then, retried on the same page,
+            // successful is two events, and the second must not be dropped as a duplicate of the first.
             var eventId = !string.IsNullOrWhiteSpace(id)
-                ? $"flw:{id}"
+                ? string.IsNullOrWhiteSpace(status) ? $"flw:{id}" : $"flw:{id}:{status.ToLowerInvariant()}"
                 : !string.IsNullOrWhiteSpace(reference)
                     ? $"flw:{eventType}:{reference}"
                     : Guid.NewGuid().ToString("N");

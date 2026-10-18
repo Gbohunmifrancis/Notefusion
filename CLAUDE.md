@@ -434,7 +434,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   admin console), drafted by Gemini in `voice.md`'s voice and checked in code; history on the `x-journal-state`
   branch, never main; a dry run (artifact only) unless `X_POSTING_ENABLED=true` and the four `X_*` secrets are set.
 - Billing: naira plans are charged through Paystack, dollar plans through Bachs; currency routes the
-  charge (`PaymentGatewayFactory.SelectForCurrency`). Every checkout is a one-off priced from the
+  charge (`PaymentGatewayFactory.SelectForCurrency`). Flutterwave Standard is built for dollars beside Bachs
+  (live with key + secret hash; each adapter is handed its own options, never one from the container) and
+  takes them only once `Billing__DefaultProvider=Flutterwave` (docs/DEPLOYMENT.md §1.2). Every checkout is a one-off priced from the
   `Plan` row (`Recurring: false`): Bachs subscription checkouts need a card it can save and this
   account offers none for USD (`CHECKOUT_CANNOT_SAVE_PAYMENT_METHOD`), so no catalog product is
   needed and a price change is a new plan code in `BillingSeeder`. Nothing renews by itself: a member

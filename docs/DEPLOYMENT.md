@@ -31,10 +31,10 @@ binds from its own section, so the var prefix is the provider name:
 | `<Provider>__WebhookSecret` | optional | Only if the provider signs webhooks with a value different from the secret key. Defaults to `SecretKey`. |
 | `<Provider>__SupportedCurrencies` | optional | Comma-separated ISO-4217, e.g. `USD,NGN`. Defaults to `USD`. |
 
-> **Paystack and Bachs have live adapters; `Flutterwave` and `Squad` register as stubs**
-> regardless of config until their gateway adapters are implemented — setting their keys
-> now is forward-looking and will not start charging through them yet. Bachs binds from a
-> section of its own shape (§1.1), not from the generic table above.
+> **Paystack, Bachs and Flutterwave have live adapters; `Squad` registers as a stub**
+> regardless of config until its adapter is implemented. Bachs binds from a section of its
+> own shape (§1.1), not from the generic table above, and Flutterwave needs its secret hash
+> as well (§1.2).
 
 **Paystack:**
 
@@ -53,11 +53,10 @@ heroku config:set \
 > takes it — but the factory falls back to any provider that claims the currency, so an
 > over-broad list is a trap that springs only once the Bachs config is removed or expires.
 
-**Flutterwave / Squad (placeholders for when each adapter lands):**
+**Squad (placeholder for when its adapter lands):**
 
 ```bash
-heroku config:set Flutterwave__SecretKey='...' Flutterwave__BaseUrl='https://api.flutterwave.com/v3' --app <your-heroku-app>
-heroku config:set Squad__SecretKey='...'        Squad__BaseUrl='https://api-d.squadco.com'          --app <your-heroku-app>
+heroku config:set Squad__SecretKey='...' Squad__BaseUrl='https://api-d.squadco.com' --app <your-heroku-app>
 ```
 
 ### 1.1 Bachs
@@ -169,7 +168,40 @@ providers authenticate by signature, not JWT.
 | `Billing__DefaultProvider` | `Paystack` | Provider chosen when a currency has more than one candidate. |
 | `Billing__CheckoutCallbackUrl` | `https://api.notefusion.studio/api/billing/return` | Where the provider returns the browser after checkout: the API's own bridge page, which hands off to the app's deep link (website checkouts use the same path plus `/web`, which returns to `notefusion.studio/app?paid=1`). Must be an absolute https URL; Bachs refuses anything else. Blank, or a retired `herokuapp.com` host, falls back to the default. The real result still arrives via webhook, and the clients also ask `POST /api/billing/confirm`. |
 
-### 1.2 Region pricing (geolocation)
+### 1.2 Flutterwave (ready for dollars, off until switched)
+
+Flutterwave Standard (`FlutterwavePaymentGateway`): a hosted page on `POST /v3/payments`, checked with
+`GET /v3/transactions/verify_by_reference?tx_ref=<our reference>`. **Live only with all three of
+`Flutterwave__SecretKey`, `Flutterwave__BaseUrl` and `Flutterwave__WebhookSecret`**; the secret hash never
+falls back to the key. Live, it still takes nothing until it is the default provider: Bachs is registered
+first and keeps dollars, Paystack keeps naira.
+
+| Secret (GitHub) | Value |
+|-----------------|-------|
+| `FLUTTERWAVE__SECRETKEY` | Dashboard › Settings › API keys, the live secret key (`FLWSECK-…-X`). A `FLWSECK_TEST-…` key runs the same host in test mode. |
+| `FLUTTERWAVE__WEBHOOKSECRET` | A value you make up (letters and digits) and type into Dashboard › Settings › Webhooks › Secret hash. Flutterwave sends it back in `verif-hash`. |
+| `FLUTTERWAVE__BASEURL` | Optional; defaults to `https://api.flutterwave.com` (no `/v3`: the adapter adds it). |
+| `FLUTTERWAVE__SUPPORTEDCURRENCIES` | Optional; defaults to `USD`. Keep naira off it: Paystack takes NGN. |
+
+In the dashboard: Webhook URL `https://api.notefusion.studio/api/billing/webhooks/flutterwave`, with
+"charge.completed" events on, and USD collection (international cards) enabled on the account. Redeploy.
+
+**The switch** is one more secret, `BILLING__DEFAULTPROVIDER=Flutterwave`, and a redeploy; deleting it (or
+setting `Bachs`) switches back. Checkouts already open stay with the provider that opened them.
+
+How the adapter reads Flutterwave's answers:
+
+- `successful` is paid; the amount is read in the currency's own decimals and must cover the price.
+- Nothing else is final. Flutterwave keeps the page open after a declined card for another try, so `failed`
+  is recorded as a declined attempt (the console's "Why checkouts end unpaid") and the row stays open; a page
+  opened and never paid answers "No transaction was found", which reads as not paid yet. The page lives a day
+  (`session_duration` 1440, Flutterwave's maximum), and the stale sweep closes what is still unpaid after that.
+- Looked up by Flutterwave's own id, a transaction carrying another `tx_ref` is refused.
+
+Before switching, pay once in test mode with a card that declines and then one that passes on the same page,
+and check the row completes: Flutterwave does not document how a retry on one page is recorded.
+
+### 1.3 Region pricing (geolocation)
 
 Which tier a user is offered follows the country stored on their row, resolved once from the
 forwarded request address at sign-up — or on the next sign-in, for an account created before

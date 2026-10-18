@@ -207,6 +207,9 @@ jobs:
           PAYSTACK__WEBHOOKSECRET: ${{ secrets.PAYSTACK__WEBHOOKSECRET }}
           # ── Flutterwave ───────────────────────────────────────────────────────
           FLUTTERWAVE__BASEURL: ${{ secrets.FLUTTERWAVE__BASEURL }}
+          FLUTTERWAVE__SECRETKEY: ${{ secrets.FLUTTERWAVE__SECRETKEY }}
+          FLUTTERWAVE__WEBHOOKSECRET: ${{ secrets.FLUTTERWAVE__WEBHOOKSECRET }}
+          FLUTTERWAVE__SUPPORTEDCURRENCIES: ${{ secrets.FLUTTERWAVE__SUPPORTEDCURRENCIES }}
           # ── Squad ─────────────────────────────────────────────────────────────
           SQUAD__BASEURL: ${{ secrets.SQUAD__BASEURL }}
           # ── Cloudflare R2 ─────────────────────────────────────────────────────
@@ -293,7 +296,7 @@ jobs:
             BACHS__BASEURL,BACHS__SECRETKEY,BACHS__WEBHOOKSECRET,BACHS__SUPPORTEDCURRENCIES,
             BACHS__PRODUCTMAP__PRO_MONTHLY_USD,BACHS__PRODUCTMAP__PRO_YEARLY_USD,BACHS__PRODUCTMAP__PRO_MONTHLY,BACHS__PRODUCTMAP__PRO_YEARLY,
             PAYSTACK__SECRETKEY,PAYSTACK__BASEURL,PAYSTACK__SUPPORTEDCURRENCIES,PAYSTACK__WEBHOOKSECRET,
-            FLUTTERWAVE__BASEURL,SQUAD__BASEURL,
+            FLUTTERWAVE__BASEURL,FLUTTERWAVE__SECRETKEY,FLUTTERWAVE__WEBHOOKSECRET,FLUTTERWAVE__SUPPORTEDCURRENCIES,SQUAD__BASEURL,
             R2__ACCOUNTID,R2__ACCESSKEYID,R2__SECRETACCESSKEY,R2__BUCKETNAME,R2__PUBLICBASEURL,R2__USER2,
             PUSH__USEEXPO,AUTH__RESETPASSWORDURL,PASSKEYS_RP_ID,PASSKEYS_ORIGINS,YTDLP_COOKIES,YTDLP_PROXY,
             WEBPUSH_ENABLED,WEBPUSH_PUBLIC_KEY,WEBPUSH_PRIVATE_KEY,WEBPUSH_SUBJECT,
@@ -413,7 +416,10 @@ jobs:
             Paystack__BaseUrl="${PAYSTACK__BASEURL:-https://api.paystack.co}"
             Paystack__SupportedCurrencies="${PAYSTACK__SUPPORTEDCURRENCIES:-NGN}"
             Paystack__WebhookSecret="${PAYSTACK__WEBHOOKSECRET}"
-            Flutterwave__BaseUrl="${FLUTTERWAVE__BASEURL}"
+            Flutterwave__BaseUrl="${FLUTTERWAVE__BASEURL:-https://api.flutterwave.com}"
+            Flutterwave__SecretKey="${FLUTTERWAVE__SECRETKEY}"
+            Flutterwave__WebhookSecret="${FLUTTERWAVE__WEBHOOKSECRET}"
+            Flutterwave__SupportedCurrencies="${FLUTTERWAVE__SUPPORTEDCURRENCIES:-USD}"
             Squad__BaseUrl="${SQUAD__BASEURL}"
             R2__AccountId="${R2__ACCOUNTID}"
             R2__AccessKeyId="${R2__ACCESSKEYID}"

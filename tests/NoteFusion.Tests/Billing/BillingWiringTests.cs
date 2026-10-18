@@ -237,6 +237,23 @@ public class BillingWiringTests
     }
 
     [Fact]
+    public void A_flutterwave_without_its_secret_hash_stays_a_stub()
+    {
+        // The verif-hash is a value of its own set in Flutterwave's dashboard; the API key never stands in for it.
+        var config = Config();
+        config["Flutterwave:SecretKey"] = "FLWSECK_TEST";
+        config["Flutterwave:BaseUrl"] = "https://api.flutterwave.com";
+
+        using var provider = Build(config);
+
+        Assert.IsType<StubPaymentGateway>(
+            provider.GetRequiredService<IPaymentGatewayFactory>().Resolve(PaymentProvider.Flutterwave));
+        Assert.IsType<StubWebhookValidator>(
+            provider.GetRequiredService<IEnumerable<IPaymentWebhookValidator>>()
+                .Single(v => v.Provider == PaymentProvider.Flutterwave));
+    }
+
+    [Fact]
     public void An_unconfigured_deployment_registers_every_provider_as_a_stub()
     {
         using var provider = Build(new Dictionary<string, string?>());
@@ -274,6 +291,28 @@ public class BillingWiringTests
 
         Assert.True(selected.IsSuccess);
         Assert.Equal(PaymentProvider.Paystack, selected.Value.Provider);
+    }
+
+    [Theory]
+    [InlineData("Bachs", PaymentProvider.Bachs)]
+    [InlineData("Flutterwave", PaymentProvider.Flutterwave)]
+    public void A_live_flutterwave_takes_dollars_only_once_it_is_the_default(string defaultProvider, PaymentProvider usd)
+    {
+        // Production's shape: naira on Paystack, dollars on Bachs, Flutterwave live beside them for dollars.
+        // Configuring Flutterwave switches nothing; Billing__DefaultProvider=Flutterwave is the switch, and
+        // naira stays on Paystack either way.
+        var config = Config(defaultProvider);
+        config["Paystack:SupportedCurrencies"] = "NGN";
+        config["Flutterwave:SecretKey"] = "FLWSECK_TEST";
+        config["Flutterwave:BaseUrl"] = "https://api.flutterwave.com";
+        config["Flutterwave:WebhookSecret"] = "flw_hash";
+        config["Flutterwave:SupportedCurrencies"] = "USD";
+
+        using var provider = Build(config);
+        var factory = provider.GetRequiredService<IPaymentGatewayFactory>();
+
+        Assert.Equal(usd, factory.SelectForCurrency("USD").Value.Provider);
+        Assert.Equal(PaymentProvider.Paystack, factory.SelectForCurrency("NGN").Value.Provider);
     }
 
     [Fact]

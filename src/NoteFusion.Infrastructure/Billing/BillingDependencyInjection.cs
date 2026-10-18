@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
 using NoteFusion.Core.Enums;
@@ -30,18 +31,20 @@ public static class BillingDependencyInjection
         // otherwise it joins the stubbed providers so an unconfigured deployment can't half-charge.
         if (paystack.IsConfigured)
         {
-            services.AddSingleton(paystack);
-
             // Named explicitly. The typed-client overload without a name derives it from TClient, which
             // is IPaymentGateway for every provider — so two gateways registered that way would share one
             // HttpClient configuration and the later registration would silently redirect the earlier
-            // provider's traffic to its own base URL, with its own bearer token.
-            services.AddHttpClient<IPaymentGateway, PaystackPaymentGateway>("paystack", client =>
+            // provider's traffic to its own base URL, with its own bearer token. The options are handed over
+            // here, never registered: Flutterwave binds the same type, and a container holding both would
+            // give each adapter whichever was registered last — its key, its currencies.
+            services.AddHttpClient("paystack", client =>
                 {
                     client.BaseAddress = new Uri(paystack.BaseUrl.TrimEnd('/'));
                     client.DefaultRequestHeaders.Authorization =
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", paystack.SecretKey);
                 })
+                .AddTypedClient<IPaymentGateway>((http, sp) => new PaystackPaymentGateway(
+                    http, paystack, sp.GetRequiredService<ILogger<PaystackPaymentGateway>>()))
                 .AddOutboundResilience(OutboundResilience.Payment(PaymentProvider.Paystack));
 
             services.AddSingleton<IPaymentWebhookValidator>(new PaystackWebhookValidator(paystack));
@@ -80,18 +83,21 @@ public static class BillingDependencyInjection
             services.AddSingleton<IPaymentWebhookValidator>(new StubWebhookValidator(PaymentProvider.Bachs));
         }
 
-        // Flutterwave — integrated standard hosted checkout and verification
+        // Flutterwave — integrated standard hosted checkout and verification. Live only with its webhook secret
+        // hash as well as the key: the hash is a value of its own set in the dashboard, never the secret key.
+        // Configured, it takes the currencies it lists only where the default provider does not (Billing__DefaultProvider).
         var flutterwave = configuration.GetSection("Flutterwave").Get<PaymentProviderOptions>() ?? new PaymentProviderOptions();
 
-        if (flutterwave.IsConfigured)
+        if (flutterwave.IsConfigured && !string.IsNullOrWhiteSpace(flutterwave.WebhookSecret))
         {
-            services.AddSingleton(flutterwave);
-            services.AddHttpClient<IPaymentGateway, FlutterwavePaymentGateway>("flutterwave", client =>
+            services.AddHttpClient("flutterwave", client =>
                 {
                     client.BaseAddress = new Uri(flutterwave.BaseUrl.TrimEnd('/'));
                     client.DefaultRequestHeaders.Authorization =
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", flutterwave.SecretKey);
                 })
+                .AddTypedClient<IPaymentGateway>((http, sp) => new FlutterwavePaymentGateway(
+                    http, flutterwave, sp.GetRequiredService<ILogger<FlutterwavePaymentGateway>>()))
                 .AddOutboundResilience(OutboundResilience.Payment(PaymentProvider.Flutterwave));
 
             services.AddSingleton<IPaymentWebhookValidator>(new FlutterwaveWebhookValidator(flutterwave));
