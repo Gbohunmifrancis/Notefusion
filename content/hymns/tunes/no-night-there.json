@@ -1,0 +1,32 @@
+{
+  "name": "NO NIGHT THERE",
+  "title": "No Night There",
+  "music": [
+    {
+      "name": "Hart P. Danks",
+      "born": 1834,
+      "died": 1903,
+      "role": "Music (1899)"
+    }
+  ],
+  "musicPublished": 1899,
+  "metre": "7 6 7 6 + 7 7 7 6",
+  "key": "Eb major",
+  "time": "3/4",
+  "tempo": 105,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "Eb4:.5 F4:.5 | G4:1.5 G4:.5 Ab4:.5 F4:.5 | Bb4:2 Eb4:.5 F4:.5 | G4:.5 Eb4:1.5 F4:1 | Eb4:2 Eb4:.5 F4:.5 | G4:1.5 Bb4:.5 D5:.5 C5:.5 | Bb4:2 Eb4:.5 F4:.5 | G4:.5 Eb4:.5 F4:2 | Eb4:2 Bb4:.5 Bb4:.5 | Bb4:1.5 G4:.5 C5:.5 Bb4:.5 | Ab4:2 Ab4:.5 Ab4:.5 | Ab4:1.5 F4:.5 Bb4:.5 Ab4:.5 | G4:2 Bb4:.5 Bb4:.5 | Eb5:1.5 D5:.5 C5:.5 Bb4:.5 | Bb4:1 Ab4:1 G4:.5 F4:.5 | Eb4:1.5 Eb4:.5 F4:1 | Eb4:2",
+  "incipit": "drmmfrs|drmdrd|drmstls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000938.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000938a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000938; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000938 (the melody read from 000938a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Hart P. Danks's dates (1834–1903) are from https://hymnary.org/person/Danks_HP (Danks, H. P. (Hart Pease), 1834-1903; NO NIGHT THERE, 1899); https://en.wikipedia.org/wiki/Hart_Pease_Danks agrees; CCEH's page gives only the year 1899. The bar lines are those of CCEH's Noteworthy score (000938a.nwc).",
+  "importedFrom": "cceh:000938",
+  "updated": "2026-10-18"
+}

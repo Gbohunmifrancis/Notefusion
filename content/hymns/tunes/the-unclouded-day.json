@@ -1,0 +1,32 @@
+{
+  "name": "THE UNCLOUDED DAY",
+  "title": "The Unclouded Day",
+  "music": [
+    {
+      "name": "Josiah K. Alwood",
+      "born": 1828,
+      "died": 1909,
+      "role": "Music (1890)"
+    }
+  ],
+  "musicPublished": 1890,
+  "metre": "Irregular",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 130,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D4:.75 D4:.25 | G4:.75 G4:.25 G4:.75 G4:.25 G4:1 B4:.75 A4:.25 | G4:1 E4:1 D4:1 D4:.75 D4:.25 | G4:.75 G4:.25 G4:.75 G4:.25 G4:.75 G4:.25 B4:.75 B4:.25 | D5:3 D4:.75 D4:.25 | G4:.75 G4:.25 G4:.75 G4:.25 G4:1 B4:.75 A4:.25 | G4:1 E4:1 D4:1 D5:.75 E5:.25 | D5:.75 B4:.25 G4:.75 A4:.25 B4:1 A4:.75 A4:.25 | G4:2 D5:1.5 E5:.5 | D5:1 B4:1 G4:1 B4:1 | G4:2 D5:1.5 E5:.5 | D5:1 B4:.75 A4:.25 G4:1 B4:.75 B4:.25 | A4:3 D4:.75 D4:.25 | G4:.75 G4:.25 G4:.75 G4:.25 G4:1 B4:.75 A4:.25 | G4:1 E4:1 D4:1 D5:.75 E5:.25 | D5:.75 B4:.25 G4:.75 A4:.25 B4:1 A4:.75 A4:.25 | G4:2 r:1",
+  "incipit": "ssdddddmrdls|ssdddddmms",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000915.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000915a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000915; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000915 (the melody read from 000915a.mid, checked against the page's do-re-mi incipit, 2 notes off in 22); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Josiah K. Alwood's dates (1828–1909) are from https://hymnary.org/person/Alwood_Josiah (Alwood, J. K. (Josiah Kelly), 1828-1909; THE UNCLOUDED DAY, 1890); https://ubcentral.org/2017/07/15/on-this-day-in-ub-history-july-15-the-unclouded-day/ agrees; CCEH's page gives only the year 1890. The bar lines are those of CCEH's Noteworthy score (000915a.nwc).",
+  "importedFrom": "cceh:000915",
+  "updated": "2026-10-18"
+}

@@ -1,7 +1,7 @@
 {
   "source": "Christian Classics Ethereal Hymnary (CCEH)",
   "sourceUrl": "https://www.ccel.org/cceh/index.htm",
-  "date": "2026-10-17",
+  "date": "2026-10-18",
   "rule": "Our public-domain rule (lib/content.mjs): everyone named died before 1955 and the tune was first published before 1929; missing dates make a draft; a © or anyone who died in 1955 or later means not imported.",
   "published": [
     {
@@ -1443,6 +1443,86 @@
     {
       "slug": "true-hearted",
       "number": "000913"
+    },
+    {
+      "slug": "the-unclouded-day",
+      "number": "000915"
+    },
+    {
+      "slug": "marlow",
+      "number": "000916"
+    },
+    {
+      "slug": "messiah-herald",
+      "number": "000918"
+    },
+    {
+      "slug": "monsell",
+      "number": "000919"
+    },
+    {
+      "slug": "o-jesu-warum-legst-du-mir",
+      "number": "000926"
+    },
+    {
+      "slug": "ora-labora",
+      "number": "000927"
+    },
+    {
+      "slug": "only-believe",
+      "number": "000930"
+    },
+    {
+      "slug": "old-time-power-rader",
+      "number": "000932"
+    },
+    {
+      "slug": "only-a-sinner",
+      "number": "000933"
+    },
+    {
+      "slug": "nothing-between",
+      "number": "000937"
+    },
+    {
+      "slug": "no-night-there",
+      "number": "000938"
+    },
+    {
+      "slug": "o-quanta-qualia",
+      "number": "000939"
+    },
+    {
+      "slug": "pax-dei",
+      "number": "000940"
+    },
+    {
+      "slug": "peace",
+      "number": "000941"
+    },
+    {
+      "slug": "church-triumphant",
+      "number": "000944"
+    },
+    {
+      "slug": "constance",
+      "number": "000945"
+    },
+    {
+      "slug": "meribah",
+      "number": "000947"
+    },
+    {
+      "slug": "spohr-gerald",
+      "number": "000956"
+    },
+    {
+      "slug": "song-sixty-seven",
+      "number": "000957"
+    },
+    {
+      "slug": "samuel",
+      "number": "000958"
     }
   ],
   "drafts": [
@@ -2749,6 +2829,112 @@
       "reasons": [
         "the page gives no year for the tune"
       ]
+    },
+    {
+      "slug": "the-kingdom-is-coming",
+      "number": "000914",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Rigdon M. McIntosh: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "bring-a-torch",
+      "number": "000922",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: E. Cuthbert Nunn: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "mornington",
+      "number": "000923",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Garret Wellesley: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "naar-mie-oie",
+      "number": "000928",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "yarmouth",
+      "number": "000931",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "give-me-the-bible",
+      "number": "000942",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "caddo",
+      "number": "000943",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "quedlinburg",
+      "number": "000948",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: J. C. Kittel: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "refuge",
+      "number": "000951",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "harvest",
+      "number": "000952",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: George A. Minor: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the score has a bar of another length (bar 13), which the solfa grid does not draw"
+      ]
+    },
+    {
+      "slug": "salve-domine",
+      "number": "000953",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "sardis",
+      "number": "000954",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "sound-the-battle-cry",
+      "number": "000955",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: William Fiske Sherwin: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "stella-parker",
+      "number": "000959",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Horatio W. Parker: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
     }
   ],
   "duplicates": [
@@ -3871,6 +4057,32 @@
       "oursSource": "Open Hymnal Project",
       "hymn": "when-the-roll-is-called-up-yonder",
       "edits": 3
+    },
+    {
+      "number": "000917",
+      "name": "Merrial",
+      "url": "https://www.ccel.org/cceh/0009/x000917.htm",
+      "ours": "stabat-mater-mainz",
+      "oursSource": "CCEH",
+      "edits": 2
+    },
+    {
+      "number": "000920",
+      "name": "Wie Schon Leuchtet der Morganstern",
+      "url": "https://www.ccel.org/cceh/0009/x000920.htm",
+      "ours": "wie-schon-leuchtet",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "o-holy-spirit-enter-in",
+      "edits": 2
+    },
+    {
+      "number": "000924",
+      "name": "Nun Freut Euch",
+      "url": "https://www.ccel.org/cceh/0009/x000924.htm",
+      "ours": "es-ist-gewisslich-an-der-zeit-the-day-is-surely-drawing-near",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "the-day-is-surely-drawing-near",
+      "edits": 0
     }
   ],
   "refused": [
@@ -4767,6 +4979,30 @@
       "name": "Lillenas",
       "url": "https://www.ccel.org/cceh/0009/x000908.htm",
       "reason": "Haldor Lillenas died in 1959, so the tune is still in copyright in Nigeria, the UK and the EU"
+    },
+    {
+      "number": "000934",
+      "name": "Never Alone",
+      "url": "https://www.ccel.org/cceh/0009/x000934.htm",
+      "reason": "the page marks V. O. Fossett's arrangement as copyright (“arr., V. O. Fossett, ©1949”)"
+    },
+    {
+      "number": "000936",
+      "name": "Never Grow Old (Moore)",
+      "url": "https://www.ccel.org/cceh/0009/x000936.htm",
+      "reason": "James Cleveland Moore died in 1962, so the tune is still in copyright in Nigeria, the UK and the EU"
+    },
+    {
+      "number": "000949",
+      "name": "Resonet in Laudibus",
+      "url": "https://www.ccel.org/cceh/0009/x000949.htm",
+      "reason": "Ralph Vaughan Williams died in 1958, so the arrangement is still in copyright in Nigeria, the UK and the EU"
+    },
+    {
+      "number": "000960",
+      "name": "Harvest Time",
+      "url": "https://www.ccel.org/cceh/0009/x000960.htm",
+      "reason": "the page marks Charles Hutchinson Gabriel's tune as copyright (“Charles Hutchinson Gabriel, ©1931”)"
     }
   ],
   "rejected": [
@@ -5363,6 +5599,54 @@
       "name": "Stewardship",
       "url": "https://www.ccel.org/cceh/0009/x000911.htm",
       "reason": "a note starts off the semiquaver grid (a triplet or a grace note), which the solfa grid does not draw"
+    },
+    {
+      "number": "000921",
+      "name": "St. Columba (Irish)",
+      "url": "https://www.ccel.org/cceh/0009/x000921.htm",
+      "reason": "a note starts off the semiquaver grid (a triplet or a grace note), which the solfa grid does not draw"
+    },
+    {
+      "number": "000925",
+      "name": "O Filii et Filiae",
+      "url": "https://www.ccel.org/cceh/0009/x000925.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 11 notes off in 18)"
+    },
+    {
+      "number": "000929",
+      "name": "Herr Jesu Christ, Wahr'r Mensch",
+      "url": "https://www.ccel.org/cceh/0009/x000929.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 2, is 9 notes off in 15)"
+    },
+    {
+      "number": "000935",
+      "name": "Neidlinger",
+      "url": "https://www.ccel.org/cceh/0009/x000935.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 4 notes off in 16)"
+    },
+    {
+      "number": "000946",
+      "name": "Hinchman",
+      "url": "https://www.ccel.org/cceh/0009/x000946.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 7 notes off in 15)"
+    },
+    {
+      "number": "000950",
+      "name": "Sunlight in My Soul",
+      "url": "https://www.ccel.org/cceh/0009/x000950.htm",
+      "reason": "a note starts off the semiquaver grid (a triplet or a grace note), which the solfa grid does not draw"
+    },
+    {
+      "number": "000961",
+      "name": "Song Thirty-Four",
+      "url": "https://www.ccel.org/cceh/0009/x000961.htm",
+      "reason": "the time signature changes (4/4, 3/4), which the solfa grid does not bar"
+    },
+    {
+      "number": "000962",
+      "name": "Song Four",
+      "url": "https://www.ccel.org/cceh/0009/x000962.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 5 notes off in 21)"
     }
   ],
   "sameNameDifferentTune": [
@@ -5395,6 +5679,12 @@
       "name": "Liebster Jesu, Wir Sind Hier",
       "url": "https://www.ccel.org/cceh/0009/x000903.htm",
       "ours": "liebster-jesu-wir-sind-hier"
+    },
+    {
+      "number": "000928",
+      "name": "Naar Mie Oie",
+      "url": "https://www.ccel.org/cceh/0009/x000928.htm",
+      "ours": "consolation"
     }
   ],
   "fillCandidates": [
@@ -5447,10 +5737,22 @@
       "earliestYear": 1868
     },
     {
+      "name": "Horatio W. Parker",
+      "tunes": 2,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1901
+    },
+    {
       "name": "Silas Jones Vail",
       "tunes": 2,
       "onlyForWantOfDates": 1,
       "earliestYear": 1874
+    },
+    {
+      "name": "William Fiske Sherwin",
+      "tunes": 2,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1877
     },
     {
       "name": "Alfred Judson",
@@ -5513,12 +5815,6 @@
       "earliestYear": 1872
     },
     {
-      "name": "Horatio W. Parker",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1901
-    },
-    {
       "name": "J. E. Hawes",
       "tunes": 1,
       "onlyForWantOfDates": 1,
@@ -5571,12 +5867,6 @@
       "tunes": 1,
       "onlyForWantOfDates": 1,
       "earliestYear": null
-    },
-    {
-      "name": "William Fiske Sherwin",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1877
     },
     {
       "name": "Mrs. Joseph F. (Phoebe) Knapp",
@@ -5651,6 +5941,12 @@
       "earliestYear": null
     },
     {
+      "name": "E. Cuthbert Nunn",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
       "name": "Francois Hippolytus Barthelemon",
       "tunes": 1,
       "onlyForWantOfDates": 0,
@@ -5681,6 +5977,18 @@
       "earliestYear": null
     },
     {
+      "name": "Garret Wellesley",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "George A. Minor",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
       "name": "Harmonia Hymnorum Scholae Gerlicensis",
       "tunes": 1,
       "onlyForWantOfDates": 0,
@@ -5706,6 +6014,12 @@
     },
     {
       "name": "J. B. O. Clemm, 19th cent.",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "J. C. Kittel",
       "tunes": 1,
       "onlyForWantOfDates": 0,
       "earliestYear": null
@@ -5777,6 +6091,12 @@
       "earliestYear": null
     },
     {
+      "name": "Rigdon M. McIntosh",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
       "name": "Robert Simpson",
       "tunes": 1,
       "onlyForWantOfDates": 0,
@@ -5808,13 +6128,13 @@
     }
   ],
   "counts": {
-    "published": 360,
-    "drafts": 179,
-    "duplicates": 125,
-    "refused": 149,
-    "rejected": 99,
-    "pages": 912,
-    "notYetCrawled": 486,
+    "published": 380,
+    "drafts": 193,
+    "duplicates": 128,
+    "refused": 153,
+    "rejected": 107,
+    "pages": 961,
+    "notYetCrawled": 437,
     "tunesInIndex": 1398
   }
 }

@@ -1,0 +1,35 @@
+{
+  "name": "OLD-TIME POWER (RADER)",
+  "title": "Old-Time Power (Rader)",
+  "alsoKnownAs": [
+    "Tabernacle"
+  ],
+  "music": [
+    {
+      "name": "Paul Rader",
+      "born": 1879,
+      "died": 1938,
+      "role": "Music (1921)"
+    }
+  ],
+  "musicPublished": 1921,
+  "metre": "8 7 8 7 + 6 6 6 4",
+  "key": "Bb major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1 G4:1 F4:1 D5:1 | C5:1.5 Bb4:.5 A4:1 G4:1 | F4:1 G4:1 F4:1 Bb4:1 | C5:1 D5:1 C5:2 | D5:1 C5:1 Bb4:1.5 F4:.5 | G4:1 Bb4:1 G4:1 F4:1 | Bb4:1 Bb4:1 C5:1 Eb5:1 | D5:1 C5:1 Bb4:2 | F4:2 D4:1 F4:1 | D5:1.5 C#5:.5 D5:2 | C5:2 Bb4:1 G4:1 | F4:1 D4:1 C4:2 | F4:2 G4:1 F4:1 | Bb4:1 C5:1 Bb4:1 C5:1 | D5:2 C5:2 | Bb4:4",
+  "incipit": "slsmrdtl|slsdrmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000932.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000932a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000932; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000932 (the melody read from 000932a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Paul Rader's dates (1879–1938) are from https://hymnary.org/person/Rader_Paul (Paul Rader, 1879-1938; ONLY BELIEVE and TABERNACLE, 1921); https://en.wikipedia.org/wiki/Paul_Rader_(evangelist) agrees; CCEH's page gives only the year 1921. The bar lines are those of CCEH's Noteworthy score (000932a.nwc).",
+  "importedFrom": "cceh:000932",
+  "updated": "2026-10-18"
+}

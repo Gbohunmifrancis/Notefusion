@@ -1,0 +1,32 @@
+{
+  "name": "SALVE DOMINE",
+  "title": "Salve Domine",
+  "music": [
+    {
+      "name": "Lawrence W. Watson",
+      "born": 1860,
+      "died": 1925,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "7 6 7 6",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "B4:1 D4:.5 D4:.5 E4:1 F#4:1 | G4:2 D4:2 | G4:1 G4:.5 E4:.5 G4:1 A4:1 | B4:4 | D5:1 A4:.5 Ab4:.5 A4:1 B4:1 | A4:2 G4:1 F#4:1 | E4:1 F#4:1 G4:1 A4:1 | A4:3 D4:1 | C5:1.5 C5:.5 B4:1 A4:1 | B4:2 G4:1 G4:1 | E5:1.5 D5:.5 C5:1 B4:1 | C5:3 C5:1 | A4:1.5 A4:.5 B4:1 C5:1 | D5:2 G4:1 G4:1 | C5:1 E4:1 B4:1.5 A4:.5 | G4:4",
+  "incipit": "mssltds|ddldrm|srdrmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000953.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000953a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000953; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000953 (the melody read from 000953a.mid, checked against the page's do-re-mi incipit, 1 note off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000953a.nwc).",
+  "importedFrom": "cceh:000953",
+  "updated": "2026-10-18"
+}

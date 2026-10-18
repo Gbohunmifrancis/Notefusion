@@ -1,0 +1,32 @@
+{
+  "name": "ONLY BELIEVE",
+  "title": "Only Believe",
+  "music": [
+    {
+      "name": "Paul Rader",
+      "born": 1879,
+      "died": 1938,
+      "role": "Music (1921)"
+    }
+  ],
+  "musicPublished": 1921,
+  "metre": "Irregular",
+  "key": "Db major",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "Ab4:1 | Ab4:2 G4:.5 Ab4:.5 | F4:2 F4:.5 F4:.5 | F4:2 E4:.5 F4:.5 | Ab4:2 Ab4:1 | Bb4:2 C5:.5 Bb4:.5 | Ab4:2 F4:.5 F4:.5 | F4:2 Eb4:.5 C#4:.5 | Eb4:2 Ab4:1 | Ab4:1 G4:1 F#4:1 | F4:2 F4:.5 F4:.5 | F4:1 F#4:1 Ab4:1 | Bb4:2 Bb4:1 | C#5:1 C5:1.5 Bb4:.5 | Ab4:2 Bb4:.5 C#5:.5 | F4:1 F4:1 Eb4:1 | C#4:3 | Ab4:1.5 G4:.5 Ab4:1 | F4:3 | C#5:1.5 C5:.5 C#5:1 | Bb4:3 | Ab4:1 Ab4:1 Bb4:1 | Ab4:.5 F4:.5 F4:2 | F4:1 Eb4:1 F4:1 | Eb4:3 | Ab4:1.5 G4:.5 Ab4:1 | F4:3 | C#5:1.5 C5:.5 C#5:1 | Bb4:3 | C#5:1 C5:1 Bb4:1 | Ab4:.5 F4:.5 F4:2 | Ab4:1 F#4:1.5 Eb4:.5 | C#4:2",
+  "incipit": "ssfsmmmmrms|sltlsmmmrdr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000930.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000930a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000930; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000930 (the melody read from 000930a.mid, checked against the page's do-re-mi incipit, 2 notes off in 22); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Paul Rader's dates (1879–1938) are from https://hymnary.org/person/Rader_Paul (Paul Rader, 1879-1938; ONLY BELIEVE and TABERNACLE, 1921); https://en.wikipedia.org/wiki/Paul_Rader_(evangelist) agrees; CCEH's page gives only the year 1921. The bar lines are those of CCEH's Noteworthy score (000930a.nwc).",
+  "importedFrom": "cceh:000930",
+  "updated": "2026-10-18"
+}

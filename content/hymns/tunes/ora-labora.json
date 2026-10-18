@@ -1,0 +1,32 @@
+{
+  "name": "ORA LABORA",
+  "title": "Ora Labora",
+  "music": [
+    {
+      "name": "T. Tertius Noble",
+      "born": 1867,
+      "died": 1953,
+      "role": "Music (1918)"
+    }
+  ],
+  "musicPublished": 1918,
+  "metre": "4 10 10 10 4",
+  "key": "Ab major",
+  "time": "4/2",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 1,
+  "melody": "Eb4:2 F4:1 Eb4:1 Eb4:4 | Ab4:2 G4:1 F4:1 Eb4:2 C4:2 | F4:1 F4:1 Eb4:1 C#4:1 Eb4:4 | C5:2 Ab4:1 Ab4:1 G4:2 F4:2 | G4:1 Ab4:1 G4:1 C4:1 F4:4 | F4:2 G4:1 G4:1 Ab4:2 Eb4:2 | F4:1 G4:1 Ab4:1 Bb4:1 C5:2 Ab4:2 | C#5:2 Ab4:2 G4:2 C5:1 Bb4:1 | C5:4 r:4",
+  "incipit": "slss|dtlsmllsfs|mddtltdtml",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000927.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000927a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000927; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000927 (the melody read from 000927a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. T. Tertius Noble's dates (1867–1953) are from https://hymnary.org/person/Noble_TT (T. Tertius Noble, 1867-1953; ORA LABORA, 1918); https://en.wikipedia.org/wiki/T._Tertius_Noble agrees; CCEH's page gives only the year 1918. The bar lines are those of CCEH's Noteworthy score (000927a.nwc). The tune ends on C, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "importedFrom": "cceh:000927",
+  "updated": "2026-10-18"
+}

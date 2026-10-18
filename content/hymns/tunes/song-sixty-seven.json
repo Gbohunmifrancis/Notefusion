@@ -1,0 +1,40 @@
+{
+  "name": "SONG SIXTY-SEVEN",
+  "title": "Song Sixty-Seven",
+  "alsoKnownAs": [
+    "St. Matthias"
+  ],
+  "music": [
+    {
+      "name": "Edmund Prys",
+      "activeBy": 1621,
+      "role": "Music (llyfr y Psalmau, 1621)"
+    },
+    {
+      "name": "Orlando Gibbons",
+      "born": 1583,
+      "died": 1625,
+      "role": "Music (1623)"
+    }
+  ],
+  "musicPublished": 1621,
+  "metre": "8 6 8 6",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Eb4:1 | Bb4:1 G4:1 Ab4:1 Bb4:1 | C5:1 C5:1 Bb4:1 Bb4:1 | Eb5:1 C5:1 D5:1 D5:1 | C5:3 Eb5:1 | D5:1 C5:1 Bb4:1 Bb4:1 | Ab4:1 G4:1 F4:1 Bb4:1 | Bb4:1 Eb4:1 G4:1 F4:1 | Eb4:3",
+  "incipit": "dsmfslls|sdlttl|dtlssfmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000957.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000957a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000957; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000957 (the melody read from 000957a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Edmund Prys has no death year on CCEH's page or ours; their work is dated 1621, before 1850, so they died before 1955 (they would have been over 105). Orlando Gibbons's dates (1583–1625) are from our page for the tune CANTERBURY (content/hymns/tunes/canterbury.json); CCEH's page gives only the year 1623. The bar lines are those of CCEH's Noteworthy score (000957a.nwc).",
+  "importedFrom": "cceh:000957",
+  "updated": "2026-10-18"
+}
