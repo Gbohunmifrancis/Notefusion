@@ -88,10 +88,24 @@ jobs:
       # contributor) the deployment is created and then BLOCKED ("the commit author
       # doesn't have permission to create deployments for this project"). Outside the
       # checkout there is no git metadata, so the deployment is attributed to the token.
+      # /app's error reports (assets/errors.js): the web Sentry project's DSN and this commit go into the staged copy
+      # only (docs/DEPLOYMENT.md, "Error reports"). Without SENTRY_DSN_WEB the slots stay empty and nothing is sent.
       - name: Stage the site outside the git checkout
+        env:
+          SENTRY_DSN_WEB: ${{ vars.SENTRY_DSN_WEB || secrets.SENTRY_DSN_WEB }}
         run: |
           rm -rf "$RUNNER_TEMP/site" && mkdir -p "$RUNNER_TEMP/site"
           cp -R . "$RUNNER_TEMP/site/"
+          if [ -n "$SENTRY_DSN_WEB" ]; then
+            case "$SENTRY_DSN_WEB" in
+              https://*@*.sentry.io/*) ;;
+              *) echo "::error::SENTRY_DSN_WEB is not a Sentry DSN (https://<key>@<host>.sentry.io/<project>)."; exit 1 ;;
+            esac
+            page="$RUNNER_TEMP/site/app/index.html"
+            sed -i -e "s|<meta name=\"nf-sentry-dsn\" content=\"\">|<meta name=\"nf-sentry-dsn\" content=\"$SENTRY_DSN_WEB\">|" \
+                   -e "s|<meta name=\"nf-release\" content=\"\">|<meta name=\"nf-release\" content=\"$GITHUB_SHA\">|" "$page"
+            grep -q '<meta name="nf-sentry-dsn" content="https://' "$page" || { echo "::error::The Sentry DSN did not reach app/index.html."; exit 1; }
+          fi
 
       - name: Pull the project's Vercel settings
         working-directory: ${{ runner.temp }}/site

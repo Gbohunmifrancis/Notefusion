@@ -273,6 +273,10 @@ jobs:
           BACKUP_WALG_PREFIX: ${{ vars.BACKUP_WALG_PREFIX }}
           # A planned move (docs/BACKUP_AND_MIGRATION.md, "Moving to another cloud"): true refuses writes.
           MAINTENANCE_READ_ONLY: ${{ vars.MAINTENANCE_READ_ONLY }}
+          # ── Error reports (docs/DEPLOYMENT.md, "Error reports"): one Sentry project each; blank = off ──
+          SENTRY_DSN_API: ${{ vars.SENTRY_DSN_API || secrets.SENTRY_DSN_API }}
+          SENTRY_DSN_WORKER: ${{ vars.SENTRY_DSN_WORKER || secrets.SENTRY_DSN_WORKER }}
+          SENTRY_RELEASE: ${{ github.sha }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
@@ -298,7 +302,8 @@ jobs:
             BLOG_AUTODRAFT_ENABLED,BLOG_AUTOPUBLISH_DRAFTS,BLOG_AUTODRAFT_DAYS,BLOG_AUTODRAFT_TIME_UTC,BLOG_AUTODRAFT_COUNT,
             DOZZLE_USER,DOZZLE_PASSWORD_HASH,
             BACKUP_IMAGE,BACKUP_S3_ENDPOINT,BACKUP_S3_BUCKET,BACKUP_S3_REGION,BACKUP_S3_ACCESS_KEY_ID,BACKUP_S3_SECRET_ACCESS_KEY,
-            BACKUP_ENCRYPTION_PASSWORD,BACKUP_MIRROR,BACKUP_WALG_PREFIX,MAINTENANCE_READ_ONLY
+            BACKUP_ENCRYPTION_PASSWORD,BACKUP_MIRROR,BACKUP_WALG_PREFIX,MAINTENANCE_READ_ONLY,
+            SENTRY_DSN_API,SENTRY_DSN_WORKER,SENTRY_RELEASE
           script: |
             set -euo pipefail
             # The transcriber refuses to start without its key; stop here rather than crash-loop it.
@@ -440,6 +445,10 @@ jobs:
             Blog__AutoDraftTimeUtc="${BLOG_AUTODRAFT_TIME_UTC}"
             Blog__AutoDraftCount="${BLOG_AUTODRAFT_COUNT}"
             Maintenance__ReadOnly="${MAINTENANCE_READ_ONLY:-false}"
+            Sentry__Dsn="${SENTRY_DSN_API:-}"
+            Sentry__Release="${SENTRY_RELEASE}"
+            NF_SENTRY_DSN="${SENTRY_DSN_WORKER:-}"
+            NF_SENTRY_RELEASE="${SENTRY_RELEASE}"
             BACKUP_IMAGE="${BACKUP_IMAGE}"
             BACKUP_DB_PASSWORD="${BACKUP_DB_PASSWORD}"
             BACKUP_ENV_NAMES_HOST="/opt/notefusion/env-names.txt"

@@ -234,6 +234,11 @@ class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
 #: Read once: the routes below are fixed when the app is built.
 _DOCS_ENABLED = settings.enable_docs
 
+# Crashes to Sentry when NF_SENTRY_DSN is set (app.telemetry); before the app is made, so it is seen.
+from app.telemetry import configure_error_reporting  # noqa: E402
+
+configure_error_reporting()
+
 app = FastAPI(
     title="NoteFusion Transcription API",
     version="0.1.0",

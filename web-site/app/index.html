@@ -7,12 +7,17 @@
 <meta name="description" content="Sign in to NoteFusion on the web. Paste a YouTube, Spotify or Apple Music link, hum a tune or upload a recording and get Tonic Solfa and staff notation; rehearse, transpose and share it with your choir.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#F4F7FC">
+<!-- Error reports (assets/errors.js): the deploy writes the Sentry DSN and the commit here; empty, nothing is sent. -->
+<meta name="nf-sentry-dsn" content="">
+<meta name="nf-release" content="">
 <link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <!-- Before the first paint, blocking on purpose (no async/defer), and ahead of the CSS so they need not wait for it:
-     the theme, and which screen the HTML below shows (the sign-in form, or the app's shell with a session stored). -->
+     the theme, and which screen the HTML below shows (the sign-in form, or the app's shell with a session stored).
+     errors.js first, so it is listening before anything else runs; it loads nothing more until an error. -->
+<script src="/assets/errors.js?v=1"></script>
 <script src="/assets/theme-boot.js?v=1"></script>
 <script src="/assets/app-boot.js?v=1"></script>
 <!-- The interface font, fetched alongside the CSS rather than after it: the first screen's text is set in it. -->

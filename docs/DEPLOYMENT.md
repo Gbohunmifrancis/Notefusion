@@ -719,6 +719,33 @@ deliberately to upgrade.
 
 Using both asks for two passwords; one is enough.
 
+## Error reports (Sentry)
+
+Four places report errors to Sentry, one Sentry project each (all in the same organisation). Each is off until its
+setting is there, and the release on every report is the commit that was deployed (the app's own version for the phone).
+
+| Where | What is sent | Setting |
+|---|---|---|
+| API (`Program.cs`) | unhandled exceptions and `LogError` lines, Information lines before them as breadcrumbs; of the request only its method and path (no body, headers, cookies, query string or IP address), every email address masked (`Api/Common/SentryScrub.cs`) | repository secret or variable `SENTRY_DSN_API` → `Sentry__Dsn` |
+| ML worker (`app/telemetry.py`) | 5xx responses and crashed jobs (`JobQueue._crashed`; an expected failure is a warning, not an event); of the request only its method and address, no local variables, every URL and email address masked | `SENTRY_DSN_WORKER` → `NF_SENTRY_DSN` |
+| Web app `/app` (`assets/errors.js`) | uncaught errors from the site's own scripts; Sentry's bundle (`assets/vendor`) loads only after the first one; no IP address, user, cookies or query strings, emails masked, the browser's name kept | repository variable `SENTRY_DSN_WEB`, written into the deployed `app/index.html` by `deploy-web.yml` |
+| Phone app (`mobile/App.tsx`) | crashes and errors with device, IP address and masked screen replays (10% of sessions, and every session with an error), as the privacy policy says | the DSN in `App.tsx`; source maps below |
+
+To set it up: in Sentry create the projects (ASP.NET Core, FastAPI, Browser JavaScript; the phone's React Native
+project already exists), copy each project's DSN (Project settings → Client Keys) into the repository's Actions
+secrets or variables as above, and deploy (re-run `deploy.yml` and `deploy-web.yml`, or merge anything). A DSN is
+not a password (every app that reports carries one) but keep the server ones as secrets anyway. The web app's
+`Content-Security-Policy` (`web-site/vercel.json`, `/app`) allows only this organisation's ingest host,
+`o4508111757770752.ingest.us.sentry.io`; a project in another organisation needs that line changed.
+
+**Phone source maps.** Without them a phone crash is minified JavaScript. A store build uploads them itself
+(`@sentry/react-native/expo` in `app.json`) when the EAS `production` environment has `SENTRY_AUTH_TOKEN`
+(secret; a Sentry organisation token), `SENTRY_ORG` and `SENTRY_PROJECT` (the slugs in the project's address,
+`https://<org>.sentry.io/projects/<project>/`). An OTA update carries new JavaScript, so its maps go up too:
+publish with `npm run update:production` in `mobile/` (`eas update`, then `sentry-expo-upload-sourcemaps dist`,
+with the same three values in your shell). Adding the plugin changed the app's native fingerprint: updates
+published from that commit on reach only builds made from it.
+
 ## Backups
 
 The `backup` service (ops/backup) makes encrypted, provider-neutral backups into its own bucket: a
