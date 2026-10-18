@@ -410,6 +410,65 @@ export interface PracticeProgress {
    * off on the server, so show only these. Null from an older server.
    */
   modes: PracticeModeId[] | null;
+  /** The seasonal side-path (the Christmas carols) while its season is on for the singer, else null. */
+  season?: PracticeSeason | null;
+}
+
+/**
+ * The carols path on the progress (C# `PracticeSeasonDto`): the Practice screen's seasonal card. `until` is the last
+ * day it runs (yyyy-mm-dd), null when it runs until switched off; `next` is null once every step is passed.
+ */
+export interface PracticeSeason {
+  /** "christmas". */
+  season: string;
+  /** "Carols for Christmas". */
+  title: string;
+  until: string | null;
+  sung: number;
+  total: number;
+  next: CarolStep | null;
+  steps: CarolStep[];
+  /** The badge all of them earn ("carol_singer"), listed among the badges while the season is on. */
+  badgeCode: string;
+}
+
+/** One drill of the carols path as a row (C# `CarolStepDto`). */
+export interface CarolStep {
+  /** 1-based. */
+  index: number;
+  /** The drill id to grade a take with (the singer's track's pace). */
+  id: string;
+  /** "Sing in thirds". */
+  title: string;
+  /** "Silent Night". */
+  carol: string;
+  hymnSlug: string;
+  /** "Silent Night, in thirds", for "Next: …". */
+  cue: string;
+  /** The line under the title: "Doh is Bb · 4 notes", the solfa sung, "one breath". */
+  detail: string;
+  passed: boolean;
+  bestScore: number | null;
+}
+
+/** GET /api/practice/carols while the season is on (C# `CarolsPathDto`); 404 PRACTICE_SEASON_OFF otherwise. */
+export interface CarolsPath {
+  season: PracticeSeason;
+  drills: CarolDrill[];
+}
+
+/**
+ * One carol drill in full (C# `CarolDrillDto`): its row, the drill (graded at /drills/grade like any), beats before its
+ * first bar line, and for some the tune the piano plays under the sung part (`backing`, quietly; only the part is
+ * marked) or a sing-along's words (`syllables`, one a note, "" where a note carries on; `words`, the verse's lines).
+ */
+export interface CarolDrill {
+  step: CarolStep;
+  drill: Drill;
+  pickupBeats: number;
+  backing: NoteEvent[] | null;
+  syllables: string[] | null;
+  words: string[] | null;
 }
 
 // ── Practice modes (C# Application/Practice/Dtos/PracticeModeDtos.cs) ───────
@@ -953,6 +1012,14 @@ export interface AppVersionInfo {
   androidStoreUrl: string;
   iosStoreUrl: string;
   announcement?: { message: string; severity: string } | null;
+}
+
+/**
+ * `GET /api/app/season` (C# `SeasonDto`), anonymous: the season every surface dresses for now, as the caller sees it
+ * (an admin also sees a season in preview). Cached by the API for a minute.
+ */
+export interface AppSeason {
+  christmas: boolean;
 }
 
 // --- API errors ---------------------------------------------------------
