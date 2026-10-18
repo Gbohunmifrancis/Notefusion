@@ -227,6 +227,9 @@ jobs:
           PUSH__USEEXPO: ${{ secrets.PUSH__USEEXPO }}
           # Only once enhanced push security is on for the Expo project (expo.dev › Credentials): an access token.
           PUSH__EXPOACCESSTOKEN: ${{ secrets.PUSH__EXPOACCESSTOKEN }}
+          # The phone's Admin lock, checked by the server: off until the store build with the fingerprint lock is on the
+          # admins' phones (an older app cannot get the pass), then set the ADMIN_PHONE_LOCK_ENFORCE variable to true.
+          ADMIN_PHONE_LOCK_ENFORCE: ${{ vars.ADMIN_PHONE_LOCK_ENFORCE || secrets.ADMIN_PHONE_LOCK_ENFORCE }}
           # Web push (the web app's notifications with the tab closed): all optional. Without a pair the VAPID
           # keys are derived from the JWT signing key; WEBPUSH_ENABLED=false turns it off.
           WEBPUSH_ENABLED: ${{ vars.WEBPUSH_ENABLED || secrets.WEBPUSH_ENABLED }}
@@ -305,7 +308,7 @@ jobs:
             FLUTTERWAVE__BASEURL,FLUTTERWAVE__SECRETKEY,FLUTTERWAVE__WEBHOOKSECRET,FLUTTERWAVE__SUPPORTEDCURRENCIES,SQUAD__BASEURL,
             GOOGLEPLAY__SERVICEACCOUNTJSON,GOOGLEPLAY__PUSHSERVICEACCOUNT,GOOGLEPLAY__PUSHAUDIENCE,
             R2__ACCOUNTID,R2__ACCESSKEYID,R2__SECRETACCESSKEY,R2__BUCKETNAME,R2__PUBLICBASEURL,R2__USER2,
-            PUSH__USEEXPO,PUSH__EXPOACCESSTOKEN,AUTH__RESETPASSWORDURL,PASSKEYS_RP_ID,PASSKEYS_ORIGINS,YTDLP_COOKIES,YTDLP_PROXY,
+            PUSH__USEEXPO,PUSH__EXPOACCESSTOKEN,ADMIN_PHONE_LOCK_ENFORCE,AUTH__RESETPASSWORDURL,PASSKEYS_RP_ID,PASSKEYS_ORIGINS,YTDLP_COOKIES,YTDLP_PROXY,
             WEBPUSH_ENABLED,WEBPUSH_PUBLIC_KEY,WEBPUSH_PRIVATE_KEY,WEBPUSH_SUBJECT,
             OUTREACH_ENABLED,OUTREACH_FOUNDER_NAME,OUTREACH_REPLY_TO,OUTREACH_BATCH_SIZE,OUTREACH_INTERVAL_MINUTES,
             GEMINI_API_KEY,GEMINI_MODEL,GEMINI_FALLBACK_MODELS,GH_DEPLOY_TOKEN,GH_REPOSITORY,
@@ -439,6 +442,7 @@ jobs:
             R2__UseR2="${R2__USER2}"
             Push__UseExpo="${PUSH__USEEXPO:-true}"
             Push__ExpoAccessToken="${PUSH__EXPOACCESSTOKEN}"
+            AdminPhoneLock__Enforce="${ADMIN_PHONE_LOCK_ENFORCE:-false}"
             WebPush__Enabled="${WEBPUSH_ENABLED:-true}"
             WebPush__PublicKey="${WEBPUSH_PUBLIC_KEY}"
             WebPush__PrivateKey="${WEBPUSH_PRIVATE_KEY}"

@@ -27,22 +27,35 @@ public sealed class AllowLockedPhoneAttribute : Attribute;
 [AttributeUsage(AttributeTargets.Method)]
 public sealed class FreshPhoneUnlockAttribute : Attribute;
 
+/// <summary>
+/// <c>AdminPhoneLock__Enforce</c>: whether the server asks the phone for its pass. Off while the phones still run an app
+/// that cannot get one (the deploy keeps it off until the store build with the fingerprint lock is installed); the
+/// app gets and sends a pass either way, so turning it on needs nothing else.
+/// </summary>
+public sealed class AdminPhoneLockSettings
+{
+    public bool Enforce { get; set; } = true;
+}
+
 public sealed class UnlockedPhoneHandler : AuthorizationHandler<UnlockedPhoneRequirement>
 {
     private readonly IAdminPhoneLock _lock;
     private readonly IHttpContextAccessor _http;
     private readonly IDateTimeProvider _clock;
+    private readonly AdminPhoneLockSettings _settings;
 
-    public UnlockedPhoneHandler(IAdminPhoneLock phoneLock, IHttpContextAccessor http, IDateTimeProvider clock)
+    public UnlockedPhoneHandler(
+        IAdminPhoneLock phoneLock, IHttpContextAccessor http, IDateTimeProvider clock, AdminPhoneLockSettings? settings = null)
     {
         _lock = phoneLock;
         _http = http;
         _clock = clock;
+        _settings = settings ?? new AdminPhoneLockSettings();
     }
 
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, UnlockedPhoneRequirement requirement)
     {
-        if (context.User.FindFirst(ClientKinds.Claim)?.Value != ClientKinds.App)
+        if (!_settings.Enforce || context.User.FindFirst(ClientKinds.Claim)?.Value != ClientKinds.App)
         {
             context.Succeed(requirement);
             return Task.CompletedTask;

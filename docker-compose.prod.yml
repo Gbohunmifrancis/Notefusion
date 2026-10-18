@@ -156,6 +156,8 @@ services:
       Push__UseExpo: ${Push__UseExpo:-true}
       # Only once enhanced push security is on for the Expo project; the receipts worker reads it too.
       Push__ExpoAccessToken: ${Push__ExpoAccessToken:-}
+      # The phone's Admin lock, checked by the server: off until the admins' phones run the app that can unlock it.
+      AdminPhoneLock__Enforce: ${AdminPhoneLock__Enforce:-false}
       # Web push for the web app (notifications with the tab closed). All optional: without a key pair the
       # VAPID keys are derived from the JWT signing key (stable across deploys); false turns it off.
       WebPush__Enabled: ${WebPush__Enabled:-true}

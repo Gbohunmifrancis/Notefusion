@@ -198,6 +198,14 @@ public class AdminPhoneLockTests
     }
 
     [Fact]
+    public async Task Switched_off_the_server_asks_no_phone_for_a_pass()
+    {
+        var off = new AdminPhoneLockSettings { Enforce = false };
+        Assert.Null(await Refusal(new InMemoryAdminPhoneLock(), Guid.NewGuid(), ClientKinds.App, header: null, off,
+            new FreshPhoneUnlockAttribute()));
+    }
+
+    [Fact]
     public async Task A_destructive_action_from_the_phone_wants_a_fingerprint_in_the_last_minute()
     {
         var phoneLock = new InMemoryAdminPhoneLock();
@@ -267,8 +275,13 @@ public class AdminPhoneLockTests
         IAdminPhoneLock phoneLock, Guid userId, string? client, string? header, params object[] metadata)
         => await Refusal(phoneLock, userId, client, header, metadata) is null;
 
-    private static async Task<string?> Refusal(
+    private static Task<string?> Refusal(
         IAdminPhoneLock phoneLock, Guid userId, string? client, string? header, params object[] metadata)
+        => Refusal(phoneLock, userId, client, header, new AdminPhoneLockSettings(), metadata);
+
+    private static async Task<string?> Refusal(
+        IAdminPhoneLock phoneLock, Guid userId, string? client, string? header, AdminPhoneLockSettings settings,
+        params object[] metadata)
     {
         var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, userId.ToString()) };
         if (client is not null)
@@ -282,7 +295,7 @@ public class AdminPhoneLockTests
 
         var requirement = new UnlockedPhoneRequirement();
         var context = new AuthorizationHandlerContext([requirement], user, http);
-        await new UnlockedPhoneHandler(phoneLock, new HttpContextAccessor { HttpContext = http }, new FixedClock(Now))
+        await new UnlockedPhoneHandler(phoneLock, new HttpContextAccessor { HttpContext = http }, new FixedClock(Now), settings)
             .HandleAsync(context);
 
         return context.HasSucceeded ? null : context.FailureReasons.Single().Message;

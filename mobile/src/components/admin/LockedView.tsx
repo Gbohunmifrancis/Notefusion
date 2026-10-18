@@ -339,7 +339,7 @@ const makeStyles = (a: AdminPalette) =>
     boxCurrent: { borderColor: a.brand },
     boxText: { fontFamily: fonts.semibold, fontSize: 22, color: a.text },
     // Covers the boxes, invisible: taps land on it and the keyboard types into it.
-    hidden: { ...StyleSheet.absoluteFillObject, opacity: 0, color: "transparent" },
+    hidden: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0, opacity: 0, color: "transparent" },
     error: { flexDirection: "row", gap: 8, alignItems: "flex-start", alignSelf: "stretch" },
     errorText: { flex: 1, fontFamily: fonts.regular, fontSize: 13.5, lineHeight: 19, color: a.text },
     foot: { fontFamily: fonts.regular, fontSize: 12.5, lineHeight: 18, color: a.faint, textAlign: "center", paddingHorizontal: 28, paddingBottom: 18 },

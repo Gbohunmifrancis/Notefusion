@@ -134,6 +134,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<UserAccessCache>();
 builder.Services.AddSingleton<NoteFusion.Api.Blog.BlogReadsCache>();
 builder.Services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, CurrentAdminHandler>();
+builder.Services.AddSingleton(builder.Configuration.GetSection("AdminPhoneLock").Get<AdminPhoneLockSettings>() ?? new AdminPhoneLockSettings());
 builder.Services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, UnlockedPhoneHandler>();
 builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationMiddlewareResultHandler, UnlockedPhoneResultHandler>();
 
