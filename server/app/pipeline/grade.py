@@ -80,14 +80,16 @@ def _pc_distance(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     return np.abs(d)
 
 
-def align(contour: vocal.Contour, targets: list[TargetNote], beat_sec: float, lead_in: float) -> tuple[float, int]:
-    """(offset seconds, octave shift semitones) that best lines the take up with the part."""
+def align(contour: vocal.Contour, targets: list[TargetNote], beat_sec: float, lead_in: float,
+          search_sec: float = OFFSET_SEARCH_SEC) -> tuple[float, int]:
+    """(offset seconds, octave shift semitones) that best lines the take up with the part, searching
+    ``search_sec`` either side of the count-in's timing."""
     sung = contour.midi
     voiced = ~np.isnan(sung)
     if voiced.sum() == 0:
         return 0.0, 0
     best_offset, best_count = 0.0, -1
-    for offset in np.arange(-OFFSET_SEARCH_SEC, OFFSET_SEARCH_SEC + 1e-9, OFFSET_STEP_SEC):
+    for offset in np.arange(-search_sec, search_sec + 1e-9, OFFSET_STEP_SEC):
         target = _target_track(contour.times - offset, targets, beat_sec, lead_in)
         both = voiced & ~np.isnan(target)
         count = int(np.sum(_pc_distance(sung[both], target[both]) < MATCH_SEMITONES))
@@ -104,15 +106,18 @@ def align(contour: vocal.Contour, targets: list[TargetNote], beat_sec: float, le
     return best_offset, octave
 
 
-def grade(y: np.ndarray, sr: int, targets: list[TargetNote], tempo_bpm: float, lead_in_sec: float = 0.0) -> Grade:
-    """Judge a take against a part. ``targets`` is in beats; ``lead_in_sec`` is the count-in."""
+def grade(y: np.ndarray, sr: int, targets: list[TargetNote], tempo_bpm: float, lead_in_sec: float = 0.0,
+          offset_search_sec: float = OFFSET_SEARCH_SEC) -> Grade:
+    """Judge a take against a part. ``targets`` is in beats; ``lead_in_sec`` is the count-in.
+    ``offset_search_sec`` narrows the alignment for a take with reference tones played between its notes
+    (pitch match), which a wide search could line up with the notes instead of the singer."""
     targets = [t for t in targets if t.dur_beats > 0]
     if not targets:
         return Grade(0, 0, 0, 0, 0, 0.0, 0.0, 0, "There is nothing to sing.", [])
     beat_sec = 60.0 / max(float(tempo_bpm), 30.0)
     y = vocal.condition(y, sr)
     contour = vocal.smooth(vocal.track(y, sr))
-    offset, octave = align(contour, targets, beat_sec, lead_in_sec)
+    offset, octave = align(contour, targets, beat_sec, lead_in_sec, offset_search_sec)
 
     times = contour.times - offset
     sung = contour.midi - octave

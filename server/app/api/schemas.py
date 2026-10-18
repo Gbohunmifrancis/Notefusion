@@ -207,6 +207,10 @@ class GradeTargetDto(ApiModel):
     #: When set, the take is cut to this many seconds instead of refused past ``GRADE_MAX_SECONDS``:
     #: a practice drill is a few seconds long, and a singer who keeps the microphone open is not wrong.
     max_sec: float | None = None
+    #: When set, the take is lined up within this many seconds of the count-in's timing instead of the grader's
+    #: 1.5: pitch match plays each note's reference tone between the held notes, and a wide search could line
+    #: those tones up with the notes in place of the singer.
+    offset_search_sec: float | None = None
 
 
 class HarmoniseNoteDto(ApiModel):

@@ -463,6 +463,8 @@ GRADE_MAX_SECONDS = 120.0
 GRADE_MAX_NOTES = 2000
 #: The longest count-in a take may start with.
 GRADE_MAX_LEAD_IN_SECONDS = 30.0
+#: The widest alignment search a target may ask for: the grader's own (``grade.OFFSET_SEARCH_SEC``).
+GRADE_MAX_OFFSET_SEARCH = 1.5
 
 
 @router.post("/grade", response_model=GradeResponse,
@@ -493,6 +495,9 @@ async def grade_take(
         raise HTTPException(422, _NOTES_INVALID)
     if spec.max_sec is not None and not (math.isfinite(spec.max_sec) and 1 <= spec.max_sec <= GRADE_MAX_SECONDS):
         raise HTTPException(422, f"maxSec must be between 1 and {GRADE_MAX_SECONDS:g}.")
+    if spec.offset_search_sec is not None and not (
+            math.isfinite(spec.offset_search_sec) and 0 <= spec.offset_search_sec <= GRADE_MAX_OFFSET_SEARCH):
+        raise HTTPException(422, f"offsetSearchSec must be between 0 and {GRADE_MAX_OFFSET_SEARCH:g}.")
 
     suffix = Path(audio.filename or "take.wav").suffix.lower()
     if suffix not in GRADE_SUFFIXES:
@@ -546,6 +551,7 @@ def _grade_file(path: Path, spec: GradeTargetDto):
             y, sr,
             [grading.TargetNote(n.pitch_midi, n.start_beat, n.dur_beats) for n in spec.notes],
             spec.tempo_bpm, spec.lead_in_sec,
+            grading.OFFSET_SEARCH_SEC if spec.offset_search_sec is None else spec.offset_search_sec,
         )
     finally:
         if converted:
