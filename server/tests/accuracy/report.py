@@ -9,6 +9,8 @@ Run from ``server/``:
     python -m tests.accuracy.report --vocal --slices  # its stress slices, one line each
     python -m tests.accuracy.report --hymns --jobs 4  # the published hymn tunes: meter, bars, rhythm
     python -m tests.accuracy.report --hymns --split test  # only the held-out half
+    python -m tests.accuracy.report --songs --jobs 4  # studio songs through the linked-song path
+    python -m tests.accuracy.report --songs --split test  # ...the held-out half
 
 ``report.json`` is always overwritten; ``baseline.json`` only on ``--write-baseline``,
 because recording a baseline is a deliberate act a human commits.  Once a baseline
@@ -45,6 +47,8 @@ VOCAL_SLICES_BASELINE_PATH = Path(__file__).parent / "vocal_slices_baseline.json
 BASELINE_PATH = Path(__file__).parent / "baseline.json"
 HYMN_REPORT_PATH = Path(__file__).parent / "hymn_report.json"
 HYMN_BASELINE_PATH = Path(__file__).parent / "hymn_baseline.json"
+SONG_REPORT_PATH = Path(__file__).parent / "song_report.json"
+SONG_BASELINE_PATH = Path(__file__).parent / "song_baseline.json"
 
 # Bumped only if the JSON layout changes in a way a reader must notice.
 SCHEMA_VERSION = 1
@@ -297,12 +301,26 @@ def main(argv: list[str] | None = None) -> int:
         "pickup, rhythm and tempo level as well as the notes (hymn_report.json / hymn_baseline.json)",
     )
     parser.add_argument(
+        "--songs",
+        action="store_true",
+        help="score the studio songs (the hymn tunes produced as songs) through the linked-song path: "
+        "vocal separation, the beat from the mix, chords from the instrumental (song_report.json / song_baseline.json)",
+    )
+    parser.add_argument(
         "--split",
         default="",
         choices=("", "dev", "test"),
-        help="with --hymns: only the dev half (tune on it) or the held-out test half",
+        help="with --hymns or --songs: only the dev half (tune on it) or the held-out test half",
     )
-    parser.add_argument("--jobs", type=int, default=1, help="with --hymns: processes to run cases in")
+    parser.add_argument("--jobs", type=int, default=1, help="with --hymns or --songs: processes to run cases in")
+    parser.add_argument("--set", default="both", choices=("both", "csd", "hymns"), dest="song_set",
+                        help="with --songs: the real studio takes (csd), the synthetic singer's hymns, or both")
+    parser.add_argument("--stem", default="auto", choices=("auto", "mdx", "sim"),
+                        help="with --songs: the MDX model's vocal stem, a simulated one (no model needed), or "
+                        "auto (the model's for the real takes, simulated for the synthetic singer)")
+    parser.add_argument("--lane", default="pro", choices=("pro", "normal"),
+                        help="with --songs: the Pro lane (fast=True, as Pro links run) or the normal lane")
+    parser.add_argument("--data", type=Path, default=None, help="with --songs: where rendered songs and stems are cached")
     parser.add_argument("--filter", default="", metavar="SUBSTR", help="only cases whose name contains SUBSTR")
     args = parser.parse_args(argv)
 
@@ -310,9 +328,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--write-baseline is only supported for the synthetic corpus")
     if args.slices and not args.vocal:
         parser.error("--slices goes with --vocal")
-    if (args.split or args.jobs != 1) and not args.hymns:
-        parser.error("--split and --jobs go with --hymns")
+    if (args.split or args.jobs != 1) and not (args.hymns or args.songs):
+        parser.error("--split and --jobs go with --hymns or --songs")
 
+    if args.songs:
+        return _main_songs(args, parser)
     if args.hymns:
         return _main_hymns(args, parser)
     if args.vocal:
@@ -538,6 +558,87 @@ def _main_hymns(args, parser) -> int:
     if args.write_baseline:
         HYMN_BASELINE_PATH.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
         print(f"wrote {HYMN_BASELINE_PATH.name}")
+    failed = [o.name for o in outcomes if not o.ok]
+    if failed:
+        print(f"\n{len(failed)} case(s) raised: {', '.join(failed)}")
+        return 1
+    return 0
+
+
+# ── The studio songs ──────────────────────────────────────────────────────────
+
+
+def _main_songs(args, parser) -> int:
+    from tests.accuracy import studio_songs as ss
+
+    data = args.data or ss.DEFAULT_DATA
+    sets = ss.SETS if args.song_set == "both" else (args.song_set,)
+    cases = ss.select(args.split, args.filter, sets=sets, data=data)
+    if not cases:
+        parser.error("no song case matches")
+    if args.write_baseline and (args.filter or args.split or args.song_set != "both" or args.stem != "auto"
+                                or args.lane != "pro"):
+        parser.error("--write-baseline needs both sets in full, stems on auto and the Pro lane")
+    outcomes = ss.run(cases, data=data, stem=args.stem, fast=args.lane == "pro", jobs=max(1, args.jobs))
+    groups = ss.groups(outcomes)
+    document = {
+        "schema": SCHEMA_VERSION,
+        # The song path's own switches beside the shared ones (``settings.song_doh``/``song_scoops``).
+        "flags": {**_effective_flags(), "song_doh": settings.song_doh, "song_scoops": settings.song_scoops},
+        "corpus": {
+            "kind": "studio_songs",
+            "n_cases": len(cases),
+            "fingerprint": ss.corpus_fingerprint(cases),
+            "filter": args.filter,
+            "split": args.split,
+            "sets": list(sets),
+            "stem": args.stem,
+            "lane": args.lane,
+        },
+        "groups": groups,
+        "cases": {
+            o.name: {
+                "ok": o.ok, "error": o.error, "tags": list(o.tags), "ref_key": o.ref_key, "est_key": o.est_key,
+                "ref_tempo": o.ref_tempo, "est_tempo": o.est_tempo, "est_time": o.est_time, "n_ref": o.n_ref,
+                "n_est": o.n_est, "read": o.read, "metrics": o.metrics,
+            }
+            for o in outcomes
+        },
+    }
+    baseline = json.loads(SONG_BASELINE_PATH.read_text(encoding="utf-8")) if SONG_BASELINE_PATH.exists() else None
+    print()
+    if baseline is not None and not args.filter and not args.split and args.song_set == "both" and (
+            baseline.get("corpus", {}).get("fingerprint") != document["corpus"]["fingerprint"]):
+        print(f"WARNING: {SONG_BASELINE_PATH.name} was recorded against different songs; re-record it.")
+        print()
+    print(f"{'case':<44} {'key ref -> est':>22} {'tempo':>8} {'time':>9} {'n':>7} {'notes':>6} {'read':>6}")
+    for o in outcomes:
+        if not o.ok:
+            print(f"{o.name:<44} FAILED  {o.error}")
+            continue
+        print(f"{o.name:<44} {o.ref_key + ' -> ' + o.est_key:>22} {f'{o.ref_tempo}/{o.est_tempo}':>8} "
+              f"{o.tags[3] + '>' + o.est_time:>9} {f'{o.n_ref}/{o.n_est}':>7} {_num(o.metrics.get('notes.f1')):>6} "
+              f"{_num(o.metrics.get('solfa.read_error_rate')):>6}")
+    print()
+    base = (baseline or {}).get("groups", {})
+    print(f"{'group':<34} {'n':>4} " + " ".join(f"{ss.SHORT[c]:>8}" for c in ss.COLUMNS))
+    for name, means in groups.items():
+        if name.count("/") > (1 if not args.split else 2):
+            continue  # the breakdown by production is in the JSON; the table keeps to the sets and halves
+        print(f"{name:<34} {int(means.get('n_cases', 0)):>4} " + " ".join(f"{_num(means.get(c)):>8}" for c in ss.COLUMNS))
+        recorded = base.get(name)
+        if recorded:
+            deltas = []
+            for c in ss.COLUMNS:
+                a, b = means.get(c), recorded.get(c)
+                ok = isinstance(a, (int, float)) and isinstance(b, (int, float))
+                deltas.append(f"{float(a) - float(b):>+8.3f}" if ok else f"{'-':>8}")
+            print(f"{'  vs baseline':<34} {'':>4} " + " ".join(deltas))
+    SONG_REPORT_PATH.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
+    print(f"\nwrote {SONG_REPORT_PATH.name}")
+    if args.write_baseline:
+        SONG_BASELINE_PATH.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
+        print(f"wrote {SONG_BASELINE_PATH.name}")
     failed = [o.name for o in outcomes if not o.ok]
     if failed:
         print(f"\n{len(failed)} case(s) raised: {', '.join(failed)}")
