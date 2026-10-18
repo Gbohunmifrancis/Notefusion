@@ -75,12 +75,16 @@
         if (!session || !session.checkoutUrl) throw new Error("No checkout URL in the response");
         // Only the providers' hosted checkouts are followed: https on Paystack or Bachs, nothing else.
         if (!trustedCheckout(session.checkoutUrl)) throw new Error("Unexpected checkout host");
-        // What /app compares against when the browser comes back (only non-members are offered a plan here).
+        // What /app compares against when the browser comes back (only non-members are offered a plan here), and what
+        // "What stopped you?" needs if Back brings it here unpaid: the checkout's id and the plan "Try again" reopens.
         try {
           localStorage.setItem("nf.checkout", JSON.stringify({
-            planId: plan.id, startedAt: Date.now(), wasActive: false, periodEnd: null, lifetime: false, planCode: null
+            planId: plan.id, startedAt: Date.now(), wasActive: false, periodEnd: null, lifetime: false, planCode: null,
+            reference: session.reference, from: "home", single: plan.interval === "single",
+            plan: { id: plan.id, code: plan.code, name: plan.name, amountMinor: plan.amountMinor, currency: plan.currency, interval: plan.interval }
           }));
         } catch (e) { /* private mode: the ?paid=1 return still confirms */ }
+        openedHere = true;
         var provider = "";
         try { provider = new URL(session.checkoutUrl).hostname; } catch (e) { /* ignore */ }
         trackThenGo("Checkout opened", provider, session.checkoutUrl);
@@ -405,5 +409,88 @@
   }
 
   load();
+
+  // ── Back from a checkout this page opened, unpaid: "What stopped you?" (board g-checkout) ──────────
+  // The provider's own return goes to /app, which asks there; Back from the payment page lands here. The rules and
+  // words are assets/checkout-exit.js and the sheet assets/checkout-why.js, loaded only then.
+  var openedHere = false;
+  var whyBusy = false;
+  var WHY_ASSETS = ["/assets/checkout-exit.js?v=1", "/assets/checkout-why.css?v=1", "/assets/checkout-why.js?v=1"];
+  var whyLoads = {};
+  function loadAsset(url) {
+    if (!whyLoads[url]) {
+      whyLoads[url] = new Promise(function (resolve, reject) {
+        var css = /\.css(\?|$)/.test(url), tag = document.createElement(css ? "link" : "script");
+        if (css) { tag.rel = "stylesheet"; tag.href = url; } else { tag.src = url; tag.async = false; }
+        tag.onload = resolve;
+        tag.onerror = function () { tag.remove(); delete whyLoads[url]; reject(new Error("failed " + url)); };
+        document.head.appendChild(tag);
+      });
+    }
+    return whyLoads[url];
+  }
+  function authed(path, body) {
+    var token = accessToken();
+    if (!token) return Promise.reject(new Error("signed out"));
+    return fetch(api + path, {
+      method: body ? "POST" : "GET",
+      headers: body
+        ? { "Content-Type": "application/json", Accept: "application/json", Authorization: "Bearer " + token }
+        : { Accept: "application/json", Authorization: "Bearer " + token },
+      body: body ? JSON.stringify(body) : undefined,
+      cache: "no-store",
+    }).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+  }
+  /**
+   * Reports the return (how long the page was open) and asks when the API says so. The API looks at the provider
+   * again before it answers, which is this page's payment check: a paid checkout is fulfilled there and never asked
+   * about, and neither is one with a transfer under way. Once per checkout; anything that fails asks nothing.
+   */
+  function backFromCheckout() {
+    var snap = null;
+    try { snap = JSON.parse(localStorage.getItem("nf.checkout") || "null"); } catch (e) { snap = null; }
+    if (whyBusy || !accessToken() || !snap || snap.from !== "home" || !snap.reference || !(Date.now() - snap.startedAt < 2 * 60 * 60 * 1000)) return;
+    whyBusy = true;
+    var returnedAt = Date.now();
+    var exitPath = "/api/billing/checkouts/" + encodeURIComponent(snap.reference) + "/exit";
+    Promise.all(WHY_ASSETS.map(loadAsset)).then(function () {
+      var X = window.NfCheckoutExit;
+      var asked;
+      try { asked = X.parseAsked(localStorage.getItem(X.ASKED_KEY)); } catch (e) { asked = []; }
+      if (!X.shouldReportReturn({ returned: false, check: "unpaid", reference: snap.reference, asked: asked })) return null;
+      var seconds = X.secondsOpen(snap.startedAt, returnedAt);
+      return Promise.all([
+        authed(exitPath, { secondsOpen: seconds }),
+        authed("/api/billing/plans/single").catch(function () { return []; })
+      ]).then(function (got) {
+        try { localStorage.setItem(X.ASKED_KEY, JSON.stringify(X.rememberAsked(asked, snap.reference))); } catch (e) { /* private mode */ }
+        var reply = got[0];
+        var song = (got[1] || []).filter(function (p) { return p.interval === "single"; })[0];
+        if (!reply || !reply.ask) return;
+        window.NfCheckoutWhy.open({
+          currency: reply.currency,
+          price: X.formatPrice(reply.amountMinor, reply.currency),
+          songPrice: song ? X.formatPrice(song.amountMinor, song.currency) : null,
+          buyingSong: !!snap.single,
+          keptMinutes: reply.keptMinutes,
+          onAnswer: function (reason, note) {
+            var body = { secondsOpen: seconds, reason: reason };
+            if (note) body.note = note;
+            authed(exitPath, body).catch(function () { /* a lost answer is only a missing row */ });
+          },
+          // The same plan: the API hands back the same checkout while it is kept.
+          onTryAgain: function () { if (snap.plan) startCheckout(snap.plan, document.createElement("button")); },
+          onSong: function () { if (song) startCheckout(song, document.createElement("button")); }
+        });
+      });
+    }).catch(function () { /* offline or refused: nothing recorded, so nothing to ask */ })
+      .then(function () { whyBusy = false; });
+  }
+  window.addEventListener("pageshow", function (e) { if (e.persisted) backFromCheckout(); });
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible" && openedHere) backFromCheckout(); });
+  try {
+    var nav = performance.getEntriesByType("navigation")[0];
+    if (nav && nav.type === "back_forward") backFromCheckout(); // a Back that reloaded the page
+  } catch (e) { /* no navigation timing: nothing to tell */ }
 })();
 

@@ -1,9 +1,11 @@
+using NoteFusion.Core.Enums;
+
 namespace NoteFusion.Application.Analytics.Dtos;
 
 /*
  * The console's Growth page (GET /api/admin/analytics/growth): the figures the founder had no view of — renewals
- * (the membership business's churn), free-to-paid by price set, transcription failures by kind, and app versions on
- * phones. Customers only (AnalyticsScope). Mirrored in web-admin/src/api/types.ts.
+ * (the membership business's churn), free-to-paid by price set, transcription failures by kind, app versions on
+ * phones, and why checkouts end unpaid. Customers only (AnalyticsScope). Mirrored in web-admin/src/api/types.ts.
  */
 
 /// <summary>A membership whose current period ends soon: Pro (paid or a console gift) or a choir, by its director.</summary>
@@ -84,6 +86,49 @@ public sealed record AppVersionsDto(
     int ServerReminders,
     IReadOnlyList<AppBuildRowDto> Builds);
 
+/// <summary>How many of one provider's unpaid returns gave each answer to "What stopped you?".</summary>
+public sealed record CheckoutExitReasonCountDto(CheckoutExitReason Reason, int Count);
+
+/// <summary>
+/// The checkouts opened in the window on one provider (<c>"all"</c>, <c>"bachs"</c> or <c>"paystack"</c>), and why
+/// they ended unpaid.
+/// </summary>
+/// <param name="Opened">Checkouts whose payment page was handed out (a checkout URL), by when they were opened.</param>
+/// <param name="CameBackUnpaid">Of them, those whose client reported coming back from the page without paying.</param>
+/// <param name="Answered">Of those, the ones that answered "What stopped you?".</param>
+/// <param name="Paid">Of the opened, paid and fulfilled.</param>
+/// <param name="Confirming">Of the opened, money on its way: verified and not yet fulfilled, or a transfer under way.</param>
+/// <param name="Reasons">The answers, every reason in the enum's order, zeros included.</param>
+/// <param name="ClosedQuickly">
+/// Of those who came back unpaid, what the provider's page saw: no attempt and closed in under
+/// <see cref="CheckoutExitsDto.QuickSeconds"/> seconds (before Bachs had shown the ways to pay).
+/// </param>
+/// <param name="Declined">A failed charge on record.</param>
+/// <param name="LeftAfterLooking">No attempt, open <see cref="CheckoutExitsDto.QuickSeconds"/> seconds or more.</param>
+/// <param name="TransferStarted">A transfer under way when last read (never asked, since money was moving).</param>
+public sealed record CheckoutExitSliceDto(
+    string Provider,
+    int Opened,
+    int CameBackUnpaid,
+    int Answered,
+    int Paid,
+    int Confirming,
+    IReadOnlyList<CheckoutExitReasonCountDto> Reasons,
+    int ClosedQuickly,
+    int Declined,
+    int LeftAfterLooking,
+    int TransferStarted);
+
+/// <summary>One "Something else" note, newest first: the words, the provider and when. No account, no email.</summary>
+public sealed record CheckoutExitNoteDto(DateTime AnsweredAtUtc, string Provider, string Note);
+
+/// <summary>"Why checkouts end unpaid": the window's checkouts by provider, and the latest "Something else" notes.</summary>
+/// <param name="QuickSeconds">Under this many seconds open counts as closed before the ways to pay had shown.</param>
+public sealed record CheckoutExitsDto(
+    int QuickSeconds,
+    IReadOnlyList<CheckoutExitSliceDto> Providers,
+    IReadOnlyList<CheckoutExitNoteDto> Notes);
+
 public sealed record GrowthDto(
     DateTime FromUtc,
     DateTime ToUtc,
@@ -91,4 +136,5 @@ public sealed record GrowthDto(
     RenewalsDto Renewals,
     IReadOnlyList<PriceSetFunnelDto> FreeToPaid,
     TranscriptionHealthDto Transcriptions,
-    AppVersionsDto AppVersions);
+    AppVersionsDto AppVersions,
+    CheckoutExitsDto CheckoutExits);

@@ -30,6 +30,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<Plan> Plans => Set<Plan>();
     public DbSet<PaymentTransaction> PaymentTransactions => Set<PaymentTransaction>();
+    public DbSet<CheckoutExit> CheckoutExits => Set<CheckoutExit>();
     public DbSet<LedgerEntry> LedgerEntries => Set<LedgerEntry>();
     public DbSet<Subscription> Subscriptions => Set<Subscription>();
     public DbSet<WebhookEvent> WebhookEvents => Set<WebhookEvent>();

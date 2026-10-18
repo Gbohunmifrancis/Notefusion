@@ -49,20 +49,33 @@ public sealed class ReconcilePaymentCommandHandler : IRequestHandler<ReconcilePa
     /// The reconciliation itself, for a transaction the caller has already loaded (tracked). Shared with
     /// <see cref="InitiateCheckoutCommand"/>, which settles an old in-flight checkout this way before it
     /// opens a new one — so there is still exactly one place that turns a provider's answer into state.
+    /// <paramref name="onCheck"/> hears the provider's answer as it came back, for a caller that needs to know the
+    /// session was just read (the checkout exit, before it says "no payment was made").
     /// </summary>
     internal static async Task<Result> ReconcileAsync(
         IApplicationDbContext db, IPaymentGatewayFactory gateways, IDateTimeProvider clock, IEmailSender email,
-        PaymentTransaction tx, CancellationToken ct)
+        PaymentTransaction tx, CancellationToken ct, Action<GatewayCheck>? onCheck = null)
     {
         // Nothing to reconcile unless it is mid-flight or was closed; Completed, Verified and pre-checkout
         // states are left alone.
         if (tx.Status is not (PaymentStatus.Processing or PaymentStatus.Failed))
             return Result.Success();
 
-        var verification = await gateways.Resolve(tx.Provider)
-            .VerifyAsync(new GatewayVerificationRequest(tx.Reference, tx.ProviderReference), ct);
+        var check = await gateways.Resolve(tx.Provider)
+            .CheckAsync(new GatewayVerificationRequest(tx.Reference, tx.ProviderReference), ct);
+        var verification = check.Verification;
+        onCheck?.Invoke(check);
+
+        // What the page showed of the customer (a declined card, a transfer under way) is kept for the console's
+        // "why checkouts end unpaid", and nothing below reads it: it is saved with whatever the answer settles, or
+        // on its own when the answer settles nothing.
+        var attemptChanged = check.Attempt is { } seen && tx.RecordProviderAttempt(seen);
         if (verification.IsFailure)
+        {
+            if (attemptChanged)
+                await db.SaveChangesAsync(ct);
             return verification.Error;
+        }
         var v = verification.Value;
 
         // Provider hasn't settled it. A final answer — the session expired or was cancelled — closes the
@@ -76,6 +89,10 @@ public sealed class ReconcilePaymentCommandHandler : IRequestHandler<ReconcilePa
                 tx.MarkFailed("Provider reports this checkout can no longer be paid.", clock.UtcNow);
                 await db.SaveChangesAsync(ct);
             }
+            else if (attemptChanged)
+            {
+                await db.SaveChangesAsync(ct);
+            }
 
             return Result.Success();
         }
@@ -83,6 +100,8 @@ public sealed class ReconcilePaymentCommandHandler : IRequestHandler<ReconcilePa
         if (!string.Equals(v.Currency, tx.Currency, StringComparison.OrdinalIgnoreCase)
             || v.AmountMinor < tx.AmountMinor)
         {
+            if (attemptChanged)
+                await db.SaveChangesAsync(ct);
             return BillingErrors.VerificationMismatchDetail(tx.AmountMinor, tx.Currency, v.AmountMinor, v.Currency, v.Raw);
         }
 

@@ -1332,7 +1332,7 @@
       // Back from checkout (the provider's return page adds ?paid=1), or a checkout started here not long ago.
       // Only the provider's return says a payment was made; otherwise the check runs out of sight.
       var paidReturn = !!new URLSearchParams(location.search).get("paid");
-      if (paidReturn || readCheckout()) watchPayment(!paidReturn);
+      if (paidReturn || readCheckout()) watchPayment(!paidReturn, paidReturn || cameBack());
       // A notification's link (/app?job=<id>): the finished sheet, or why it failed.
       var jobToOpen = new URLSearchParams(location.search).get("job");
       if (jobToOpen) { dropParam("job"); openJob(jobToOpen); }
@@ -3513,7 +3513,11 @@
         if (!session || !trustedCheckout(session.checkoutUrl)) throw new ApiError(502, { code: "BILLING_CHECKOUT_URL" });
         var provider = "";
         try { provider = new URL(session.checkoutUrl).hostname; } catch (e) { /* ignore */ }
+        openedHere = true;
         saveCheckout({
+          // What "What stopped you?" needs if this comes back unpaid: the checkout's id, and the plan "Try again" reopens.
+          reference: session.reference,
+          plan: { id: plan.id, code: plan.code, name: plan.name, amountMinor: plan.amountMinor, currency: plan.currency, interval: plan.interval, choirSeats: plan.choirSeats || null },
           planId: plan.id, startedAt: Date.now(), wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null,
           lifetime: !!(sub && sub.isLifetime), planCode: (sub && sub.planCode) || null, userId: (me && me.id) || null,
           // A one-song purchase lands as one more bought transcription, not as Pro; and the song link that
@@ -3544,7 +3548,8 @@
   var CHECKOUT_KEY = "nf.checkout";
   var CHECKOUT_TTL = 2 * 60 * 60 * 1000;
   var PAY_FAST_MS = 2500, PAY_FAST_FOR = 60 * 1000, PAY_SLOW_MS = 15000, PAY_SLOW_FOR = 10 * 60 * 1000;
-  var payWatch = null;    // { snap, started, timer, busy, slow, quiet } while a payment is being confirmed
+  var payWatch = null;    // { snap, started, timer, busy, slow, quiet, mayAsk } while a payment is being confirmed
+  var openedHere = false; // this page sent the browser to a checkout (a provider that opened elsewhere leaves it)
   var welcomeReturn = null;
   function readCheckout() {
     try {
@@ -3588,14 +3593,19 @@
       : "This usually takes a few seconds.";
     show(toast);
   }
-  /** quiet: no "Confirming…" note, because nothing says a payment was made (Back from the provider, a later visit). */
-  function watchPayment(quiet) {
+  /**
+   * quiet: no "Confirming…" note, because nothing says a payment was made (Back from the provider, a later visit).
+   * mayAsk: the browser has just come back from the payment page (the provider's return, Back), so a first check that
+   * finds nothing paid reports the return and may ask "What stopped you?"; a later visit only watches.
+   */
+  function watchPayment(quiet, mayAsk) {
     dropParam("paid");
     if (payWatch) {
       if (!quiet && payWatch.quiet) { payWatch.quiet = false; showPayToast(payWatch.slow); }
+      if (mayAsk) payWatch.mayAsk = true;
       checkPayment(); return;
     }
-    payWatch = { snap: readCheckout(), started: Date.now(), timer: null, busy: false, slow: false, quiet: !!quiet };
+    payWatch = { snap: readCheckout(), started: Date.now(), timer: null, busy: false, slow: false, quiet: !!quiet, mayAsk: !!mayAsk };
     if (!quiet) showPayToast(false);
     checkPayment();
   }
@@ -3614,6 +3624,8 @@
         w.busy = false;
         if (payWatch !== w) return;
         if (paymentLanded(s, w.snap)) { paymentDone(s, w.snap); return; }
+        // The quick check answered and nothing is paid: report the return, and ask if the API says so.
+        if (s && w.mayAsk && !w.askedWhy) { w.askedWhy = true; askWhy(w); }
         var age = Date.now() - w.started;
         if (age >= PAY_FAST_FOR && !w.slow) { w.slow = true; if (!w.quiet) showPayToast(true); }
         if (age < PAY_SLOW_FOR) w.timer = setTimeout(checkPayment, w.slow ? PAY_SLOW_MS : PAY_FAST_MS);
@@ -3624,6 +3636,59 @@
         }
       });
   }
+  // ── "What stopped you?" (board g-checkout): a checkout that came back unpaid, asked once ──
+  var WHY_RULES = "/assets/checkout-exit.js?v=1";
+  var WHY_SHEET = ["/assets/checkout-why.css?v=1", "/assets/checkout-why.js?v=1"];
+  function lsGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function lsSet(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* private mode */ } }
+  /**
+   * Reports the return (how long the page was open) and, when the API says so, opens the sheet: the API looks at the
+   * provider again first, so it only asks when the page shows nothing paid and no transfer under way. Once per
+   * checkout; a failure anywhere asks nothing.
+   */
+  function askWhy(w) {
+    var snap = w.snap;
+    if (!snap || !snap.reference) return;
+    var exitPath = "/api/billing/checkouts/" + encodeURIComponent(snap.reference) + "/exit";
+    loadAsset(WHY_RULES).then(function () {
+      var X = window.NfCheckoutExit;
+      var asked = X.parseAsked(lsGet(X.ASKED_KEY));
+      if (!X.shouldReportReturn({ returned: false, check: "unpaid", reference: snap.reference, asked: asked })) return null;
+      var seconds = X.secondsOpen(snap.startedAt, Date.now());
+      return Promise.all([
+        request(exitPath, { method: "POST", body: { secondsOpen: seconds } }),
+        isPro() ? Promise.resolve([]) : request("/api/billing/plans/single").catch(function () { return []; }),
+        Promise.all(WHY_SHEET.map(loadAsset))
+      ]).then(function (got) {
+        lsSet(X.ASKED_KEY, JSON.stringify(X.rememberAsked(asked, snap.reference)));
+        var reply = got[0], song = (got[1] || []).filter(isSinglePlan)[0];
+        // Landed or stopped meanwhile, or the API says not to ask.
+        if (!reply || !reply.ask || payWatch !== w) return;
+        // The API has just read the page and nothing is paid or on its way: nothing is being confirmed.
+        if (!w.quiet) { w.quiet = true; hide($("pay-toast")); }
+        window.NfCheckoutWhy.open({
+          currency: reply.currency,
+          price: X.formatPrice(reply.amountMinor, reply.currency),
+          songPrice: song ? X.formatPrice(song.amountMinor, song.currency) : null,
+          buyingSong: !!snap.single,
+          keptMinutes: reply.keptMinutes,
+          onAnswer: function (reason, note) {
+            var body = { secondsOpen: seconds, reason: reason };
+            if (note) body.note = note;
+            request(exitPath, { method: "POST", body: body }).catch(function () { /* a lost answer is only a missing row */ });
+          },
+          // The same plan: the API hands back the same checkout while it is kept.
+          onTryAgain: function () { if (snap.plan) checkout(snap.plan, document.createElement("button")); else openUpgrade(); },
+          onSong: function () { if (song) checkout(song, document.createElement("button")); }
+        });
+      });
+    }).catch(function () { /* offline or refused: nothing recorded, so nothing to ask */ });
+  }
+  /** How this page was reached: a Back that reloaded it rather than restoring it from the cache counts as coming back. */
+  function cameBack() {
+    try { var nav = performance.getEntriesByType("navigation")[0]; return !!nav && nav.type === "back_forward"; } catch (e) { return false; }
+  }
+
   /** The payment landed: the account shows Pro everywhere it shows the plan, then the welcome. */
   function paymentDone(s, snap) {
     if (snap && snap.single) { songBought(s, snap); return; }
@@ -3708,10 +3773,15 @@
     else if (e.key === "Tab") { e.preventDefault(); $("pro-welcome-go").focus(); } // its one control keeps the focus
   });
   $("pay-toast-close").addEventListener("click", function () { hide($("pay-toast")); });
-  // Coming back to the tab is the likeliest moment for the payment to have landed.
-  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible" && payWatch) checkPayment(); });
+  // Coming back to the tab is the likeliest moment for the payment to have landed. A checkout this page opened that
+  // left it open (a provider in another tab or app) is back when the page is seen again.
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState !== "visible") return;
+    if (payWatch) checkPayment();
+    else if (openedHere && me && readCheckout()) watchPayment(true, true);
+  });
   // Back from the provider's page out of the browser's cache: boot does not run again, so look here.
-  window.addEventListener("pageshow", function (e) { if (e.persisted && me && readCheckout()) watchPayment(true); });
+  window.addEventListener("pageshow", function (e) { if (e.persisted && me && readCheckout()) watchPayment(true, true); });
 
   boot();
   // The first paint was the page's own HTML (assets/app-boot.js); the screen boot() just set is the same one, so

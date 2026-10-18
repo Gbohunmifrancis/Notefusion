@@ -9,12 +9,14 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Icon, type IconName } from "../components/Icon";
 import * as WebBrowser from "expo-web-browser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { Sheet, SheetActions, SheetMessage, SheetTitle } from "../components/Sheet";
 import { ChoiceRow } from "../components/SheetRows";
+import { CheckoutExitSheet, type CheckoutExitAsk } from "../components/CheckoutExitSheet";
 import { Touchable } from "../components/Touchable";
 import { Avatar } from "../components/Avatar";
 import { PlanCardSkeleton } from "../components/Skeleton";
@@ -35,10 +37,17 @@ import { useColors, useThemedStyles } from "../lib/theme";
 import { useAuth } from "../lib/auth";
 import { useSubscription } from "../lib/subscription";
 import { PRO_FEATURES } from "../lib/proFeatures";
-import type { AuthUser, MyProfile, Plan, Subscription } from "../api/types";
+import type { AuthUser, CheckoutExit, MyProfile, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 import { tierOf } from "../lib/planTier";
 import { formatPrice } from "../lib/price";
+import {
+  parseAsked,
+  rememberAsked,
+  secondsOpen,
+  shouldReportReturn,
+  type PaymentCheckResult,
+} from "../lib/checkoutExit";
 
 type Props = { navigation: any; route?: any };
 
@@ -48,6 +57,9 @@ type Props = { navigation: any; route?: any };
  * so openAuthSessionAsync can detect the return and close the external browser.
  */
 const RETURN_URL = "notefusion://billing/return";
+
+/** The checkouts this device has asked "What stopped you?" about (references, newest first). */
+const ASKED_KEY = "nf.checkoutAsked";
 
 /** Key features displayed in the active Pro subscription hub. */
 const PRO_BENEFITS: {
@@ -219,13 +231,53 @@ export function UpgradeScreen({ navigation, route }: Props) {
     load();
   }, [load]);
 
-  async function handleUpgrade() {
-    if (!selectedId) return;
-    const single = plans.find((p) => p.id === selectedId)?.interval === "single";
-    const choir = choirPlans.some((p) => p.id === selectedId);
+  // ── "What stopped you?": asked once per checkout that comes back unpaid (board g-checkout) ──
+  const [exitAsk, setExitAsk] = useState<CheckoutExitAsk | null>(null);
+  /** The checkout asked about: what the answer is posted with, and the plan "Try again" reopens. */
+  const exitFor = useRef<{ reference: string; secondsOpen: number; planId: string } | null>(null);
+  /** Read when the quick check answers, which is after this render. */
+  const paymentCheckRef = useRef(paymentCheck);
+  paymentCheckRef.current = paymentCheck;
+  const songPlanRef = useRef<Plan | undefined>(undefined);
+
+  /**
+   * The page was closed without the provider's return and the quick check found no payment: report the return
+   * (with how long the page was open) and, if the API says this checkout is one to ask about, raise the sheet.
+   */
+  const askWhy = useCallback(
+    async (found: PaymentCheckResult, reference: string, seconds: number, plan: Plan | undefined) => {
+      const asked = parseAsked(await AsyncStorage.getItem(ASKED_KEY).catch(() => null));
+      if (!plan || !shouldReportReturn({ returned: false, check: found, reference, asked })) return;
+      let reply: CheckoutExit;
+      try {
+        reply = await billingApi.checkoutExit(reference, { secondsOpen: seconds });
+      } catch {
+        return; // offline or refused: nothing recorded, so nothing to ask about
+      }
+      await AsyncStorage.setItem(ASKED_KEY, JSON.stringify(rememberAsked(asked, reference))).catch(() => undefined);
+      if (!reply.ask || !mounted.current || paymentCheckRef.current === "confirming") return;
+      const song = songPlanRef.current;
+      exitFor.current = { reference, secondsOpen: seconds, planId: plan.id };
+      setExitAsk({
+        reference,
+        currency: reply.currency,
+        price: formatPrice(reply.amountMinor, reply.currency),
+        songPrice: song ? formatPrice(song.amountMinor, song.currency) : null,
+        buyingSong: plan.interval === "single",
+        keptMinutes: reply.keptMinutes,
+      });
+    },
+    [],
+  );
+
+  async function handleUpgrade(planId: string | null = selectedId) {
+    if (!planId) return;
+    const plan = plans.find((p) => p.id === planId) ?? choirPlans.find((p) => p.id === planId);
+    const single = plan?.interval === "single";
+    const choir = choirPlans.some((p) => p.id === planId);
     setBusy(true);
     try {
-      const session = await billingApi.checkout(selectedId);
+      const session = await billingApi.checkout(planId);
       if (!session || !session.checkoutUrl) {
         setBusy(false);
         showDialog({
@@ -239,7 +291,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
 
       // Before the browser opens: what the provider compares the server's answer against, so a
       // member adding time is told apart from one whose checkout simply closed.
-      beginCheckout(selectedId, subscription, single, choir);
+      beginCheckout(planId, subscription, single, choir);
 
       // Open Paystack hosted checkout in the in-app browser sheet. Every outcome —
       // returned via the deep link, dismissed, or the sheet failing to open — falls
@@ -252,30 +304,41 @@ export function UpgradeScreen({ navigation, route }: Props) {
       // Only the provider sending the browser back to the app says a payment was made; a sheet
       // closed by hand is still watched, quietly, so the plans stay usable for a second try.
       let returned = false;
+      // Only a session the app watched close says how long the page was open and that it was closed by hand.
+      let watchedClose = true;
+      const openedAt = Date.now();
       try {
         const outcome = await WebBrowser.openAuthSessionAsync(session.checkoutUrl, RETURN_URL);
         returned = outcome.type === "success";
       } catch {
+        watchedClose = false;
         await WebBrowser.openBrowserAsync(session.checkoutUrl).catch((e) => {
           // Neither browser would open, so nothing can have been paid: no wait to leave behind.
           abandonCheckout();
           throw e;
         });
       }
+      const seconds = secondsOpen(openedAt, Date.now());
 
       // The provider confirms from here, and owns the welcome when the payment lands, so it
-      // carries on if this screen is left.
-      watchPayment(!returned);
+      // carries on if this screen is left. Closed by hand, its first answer is the quick check
+      // "What stopped you?" waits on; never after the provider's own return.
+      watchPayment(
+        !returned,
+        returned || !watchedClose
+          ? undefined
+          : (found) => void askWhy(found, session.reference, seconds, plan),
+      );
       if (!mounted.current) return;
       setBusy(false);
     } catch (e) {
       if (!mounted.current) return;
       setBusy(false);
       // An earlier checkout turned out to be paid: nothing to buy, so the welcome, not an error.
-      if (toApiError(e).code === "BILLING_PAYMENT_ALREADY_RECEIVED" && selectedId) {
+      if (toApiError(e).code === "BILLING_PAYMENT_ALREADY_RECEIVED") {
         // For one song the snapshot's count is lowered by one, so the purchase already made reads as landed.
         beginCheckout(
-          selectedId,
+          planId,
           single && subscription
             ? { ...subscription, boughtTranscriptionsTotal: (subscription.boughtTranscriptionsTotal ?? 1) - 1 }
             : choir && subscription
@@ -309,6 +372,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
   // first, beside Pro, as the smallest thing to buy.
   const singlePlan =
     subscription?.isActive || extending ? undefined : plans.find((p) => p.interval === "single");
+  songPlanRef.current = singlePlan;
   const proPlans = plans.filter((p) => p.interval !== "single");
   const buyingSong = selected?.interval === "single";
 
@@ -539,7 +603,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
                 : "Upgrade"
             }
             icon={buyingSong ? "song" : buyingChoir ? "choir" : "pro"}
-            onPress={handleUpgrade}
+            onPress={() => void handleUpgrade()}
             loading={busy}
             disabled={!selectedId}
             style={styles.cta}
@@ -552,6 +616,30 @@ export function UpgradeScreen({ navigation, route }: Props) {
           </Text>
         </>
       )}
+
+      <CheckoutExitSheet
+        ask={exitAsk}
+        onClose={() => setExitAsk(null)}
+        onAnswer={(reason, note) => {
+          const at = exitFor.current;
+          if (!at) return;
+          // Best effort: the answer on screen does not wait on it, and a lost one is only a missing row.
+          billingApi
+            .checkoutExit(at.reference, { secondsOpen: at.secondsOpen, reason, ...(note ? { note } : {}) })
+            .catch(() => undefined);
+        }}
+        onTryAgain={() => {
+          // The same plan: the server hands back the same checkout while it is kept.
+          const at = exitFor.current;
+          if (at) void handleUpgrade(at.planId);
+        }}
+        onSong={() => {
+          const song = songPlanRef.current;
+          if (!song) return;
+          setSelectedId(song.id);
+          void handleUpgrade(song.id);
+        }}
+      />
     </Screen>
   );
 }

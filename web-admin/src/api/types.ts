@@ -1506,6 +1506,50 @@ export interface AppVersions {
   builds: AppBuildRow[];
 }
 
+/** The answers to "What stopped you?" after a checkout came back unpaid (C# `CheckoutExitReason`). */
+export type CheckoutExitReason = "currency" | "cardDeclined" | "slow" | "tooExpensive" | "justLooking" | "somethingElse";
+
+export type CheckoutExitProvider = "all" | "bachs" | "paystack";
+
+/** One provider's checkouts in the window and why they ended unpaid (C# `CheckoutExitSliceDto`). */
+export interface CheckoutExitSlice {
+  provider: CheckoutExitProvider;
+  /** Checkouts whose payment page was handed out. */
+  opened: number;
+  /** Of them, the client reported coming back without paying. */
+  cameBackUnpaid: number;
+  /** Of those, answered "What stopped you?". */
+  answered: number;
+  /** Of the opened, paid and fulfilled. */
+  paid: number;
+  /** Of the opened, money on its way (verified, or a transfer under way). */
+  confirming: number;
+  /** Every reason in order, zeros included. */
+  reasons: { reason: CheckoutExitReason; count: number }[];
+  /** Came back unpaid, no attempt, open under `quickSeconds`. */
+  closedQuickly: number;
+  /** Came back unpaid with a failed charge on record. */
+  declined: number;
+  /** Came back unpaid, no attempt, open `quickSeconds` or more. */
+  leftAfterLooking: number;
+  /** Came back with a transfer under way (never asked). */
+  transferStarted: number;
+}
+
+/** A "Something else" note: the words, the provider and when; never the account. */
+export interface CheckoutExitNote {
+  answeredAtUtc: string;
+  /** "bachs" or "paystack". */
+  provider: string;
+  note: string;
+}
+
+export interface CheckoutExits {
+  quickSeconds: number;
+  providers: CheckoutExitSlice[];
+  notes: CheckoutExitNote[];
+}
+
 export interface Growth {
   fromUtc: string;
   toUtc: string;
@@ -1514,4 +1558,6 @@ export interface Growth {
   freeToPaid: PriceSetFunnel[];
   transcriptions: TranscriptionHealth;
   appVersions: AppVersions;
+  /** Why checkouts end unpaid, by provider. */
+  checkoutExits: CheckoutExits;
 }

@@ -147,6 +147,8 @@ export const ICONS = {
   plans: "lucide:tag",
   gift: "lucide:gift",
   card: "lucide:credit-card",
+  "card-declined": "lucide:credit-card-x",
+  currency: "lucide:banknote",
   calendar: "lucide:calendar",
   // Status
   problem: "lucide:circle-alert",

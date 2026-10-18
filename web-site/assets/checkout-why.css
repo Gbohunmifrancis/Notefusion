@@ -1,0 +1,101 @@
+/* "What stopped you?" (assets/checkout-why.js), board g-checkout 04. Drawn on /app and the home page, so every colour
+   is the page's own token: the web app's (--ink, --muted, --line…) first, the site pages' (--page-…) after. Phone first:
+   a bottom sheet in the tool pop-up's shape; past 640 px the centred dialog. Neutral tiles, ink icons, no red. */
+.why-modal {
+  --why-ink: var(--ink, var(--page-navy, #0f172a));
+  --why-muted: var(--muted, var(--page-muted, #5d6879));
+  --why-line: var(--line, var(--page-line, #e5e7eb));
+  --why-line-strong: var(--line-strong, var(--page-line-strong, #d2d6dc));
+  --why-surface: var(--surface, var(--page-surface, #ffffff));
+  --why-tile: var(--wash, var(--page-wash, #eef3fb));
+  --why-icon: var(--copy, var(--page-copy, #334155));
+  --why-link: var(--blue-dark, var(--page-blue-dark, #1d4ed8));
+  --why-focus: var(--blue, var(--page-blue, #2563eb));
+  --why-field-line: var(--input-line, var(--page-input-line, #8a94a4));
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  background: var(--scrim, rgba(15, 23, 42, 0.5));
+}
+:root[data-theme="dark"] .why-modal { --why-tile: rgba(255, 255, 255, 0.07); --why-icon: #d3dae6; }
+.why-card {
+  position: relative; width: min(460px, 100%); max-height: calc(100dvh - 40px); overflow: auto; overscroll-behavior: contain;
+  padding: 26px 22px 20px; border: 1px solid var(--why-line); border-radius: 12px;
+  background: var(--why-surface); color: var(--why-ink); font-family: var(--font-sans, inherit);
+  box-shadow: 0 16px 48px rgba(15, 23, 42, 0.18); text-align: left;
+}
+:root[data-theme="dark"] .why-card { background: var(--surface, var(--page-surface, #0e121a)); box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6); }
+@media (max-width: 640px) {
+  .why-modal { align-items: flex-end; padding: 0; }
+  .why-card { width: 100%; max-height: 86dvh; border-bottom: 0; border-radius: 12px 12px 0 0; padding: 22px 16px calc(22px + env(safe-area-inset-bottom)); }
+  .why-card::before { content: ""; display: block; width: 40px; height: 4px; margin: -8px auto 16px; border-radius: 999px; background: var(--why-line-strong); }
+}
+@keyframes why-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes why-up { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes why-fade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: no-preference) {
+  .why-card { animation: why-rise 220ms ease-out both; }
+  .why-body { animation: why-fade 200ms ease-out both; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 640px) {
+  .why-card { animation: why-up 300ms cubic-bezier(0.2, 0, 0, 1) both; }
+}
+
+.why-card:focus { outline: none; }
+.why-card h2 { margin: 0 0 4px; padding: 0; font-family: var(--font-sans, inherit); font-size: 1.2rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.02em; color: var(--why-ink); }
+.why-lead { margin: 0 0 8px; font-size: 1rem; line-height: 1.5; color: var(--why-muted); }
+.why-lead b { font-weight: 600; color: var(--why-ink); }
+
+/* The six answers: 52 px rows, a 32 px neutral tile, hairlines inset past it. */
+.why-rows { margin: 4px 0 0; }
+.why-row {
+  position: relative; display: flex; align-items: center; gap: 14px; width: 100%; min-height: 52px; padding: 8px 0;
+  border: 0; background: none; color: var(--why-ink); font: inherit; font-size: 1rem; font-weight: 500; text-align: left; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.why-row + .why-row::before { content: ""; position: absolute; top: 0; left: 46px; right: 0; height: 1px; background: var(--why-line); }
+.why-tile { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 8px; background: var(--why-tile); color: var(--why-icon); }
+.why-tile .ic { width: 18px; height: 18px; }
+@media (hover: hover) { .why-row:hover { color: var(--why-link); } }
+.why-row:focus-visible, .why-offer:focus-visible, .why-text:focus-visible { outline: 2px solid var(--why-focus); outline-offset: 2px; border-radius: 8px; }
+
+/* The one-song row: the plan picker's tile (12 px corners, a hairline, the price on the right). */
+.why-offer {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: 14px;
+  width: 100%; margin: 8px 0 2px; padding: 12px 14px; border: 1px solid var(--why-line); border-radius: 12px;
+  background: var(--why-surface); color: var(--why-ink); font: inherit; text-align: left; cursor: pointer;
+}
+:root[data-theme="dark"] .why-offer { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.1); }
+.why-offer .why-tile { width: 40px; height: 40px; border-radius: 10px; }
+.why-offer .why-tile .ic { width: 20px; height: 20px; }
+.why-offer b { display: block; font-size: 0.95rem; font-weight: 600; }
+.why-offer small { display: block; margin-top: 2px; font-size: 0.8rem; color: var(--why-muted); }
+.why-price { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+
+/* "Something else": a short box, 16 px so phones do not zoom. */
+.why-field {
+  display: block; box-sizing: border-box; width: 100%; min-height: 104px; margin: 6px 0 6px; padding: 12px 14px; resize: vertical;
+  border: 1px solid var(--why-field-line); border-radius: 12px; background: var(--why-surface); color: var(--why-ink);
+  font: inherit; font-size: 16px; line-height: 1.4;
+}
+.why-field:focus { outline: none; border-color: var(--why-focus); box-shadow: 0 0 0 3px rgba(47, 123, 255, 0.18); }
+.why-count { margin: 0 0 8px; font-size: 0.8rem; color: var(--why-muted); text-align: right; }
+
+/* The action row: on the right, the text button first, then the one filled button. */
+.why-foot { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 10px; }
+.why-text {
+  min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px; background: none;
+  color: var(--why-link); font: inherit; font-size: 1rem; font-weight: 600; cursor: pointer;
+}
+
+/* Good news that leaves by itself. */
+.why-toast {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 61; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px; width: max-content; max-width: calc(100% - 32px); padding: 12px 16px; border-radius: 12px;
+  border: 1px solid var(--line, var(--page-line, #e5e7eb)); background: var(--surface, var(--page-surface, #ffffff));
+  color: var(--ink, var(--page-navy, #0f172a)); font-size: 0.95rem; font-weight: 500; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
+  transition: opacity 180ms ease-in;
+}
+:root[data-theme="dark"] .why-toast { background: #1a202b; border-color: rgba(255, 255, 255, 0.06); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45); }
+.why-toast .ic { width: 19px; height: 19px; color: var(--success, var(--page-good-fg, #16a34a)); flex: none; }
+.why-toast.is-leaving { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) { .why-toast { animation: why-fade 220ms ease-out both; } }

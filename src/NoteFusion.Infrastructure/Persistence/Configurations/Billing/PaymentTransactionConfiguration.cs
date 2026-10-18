@@ -33,6 +33,8 @@ public sealed class PaymentTransactionConfiguration : IEntityTypeConfiguration<P
         builder.Property(t => t.VerifyRaw);
         builder.Property(t => t.CreatedAtUtc).IsRequired();
         builder.Property(t => t.UpdatedAtUtc).IsRequired();
+        builder.Property(t => t.Client).HasConversion<string>().HasMaxLength(10).IsRequired();
+        builder.Property(t => t.ProviderAttempt).HasConversion<string>().HasMaxLength(20);
 
         builder.Ignore(t => t.Money);
 

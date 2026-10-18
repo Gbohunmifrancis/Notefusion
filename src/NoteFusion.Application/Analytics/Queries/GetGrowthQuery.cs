@@ -14,8 +14,8 @@ namespace NoteFusion.Application.Analytics.Queries;
 
 /// <summary>
 /// The console's Growth page for a window (default the last 30 days): renewals, free-to-paid by price set,
-/// transcription failures by kind, and app versions on phones. What the overview and Insights already show is linked
-/// from the page rather than repeated here.
+/// transcription failures by kind, app versions on phones, and why checkouts end unpaid (<see cref="CheckoutExitReport"/>).
+/// What the overview and Insights already show is linked from the page rather than repeated here.
 /// </summary>
 public sealed record GetGrowthQuery(DateTime? From = null, DateTime? To = null) : IRequest<Result<GrowthDto>>;
 
@@ -61,7 +61,8 @@ public sealed class GetGrowthQueryHandler : IRequestHandler<GetGrowthQuery, Resu
             await BuildRenewals(range, now, ct),
             await BuildFreeToPaid(range, ct),
             await BuildTranscriptionHealth(range, ct),
-            await BuildAppVersions(now, ct));
+            await BuildAppVersions(now, ct),
+            await CheckoutExitReport.BuildAsync(_db, range.FromUtc, range.ToUtc, ct));
     }
 
     // ── Renewals ────────────────────────────────────────────────────────────

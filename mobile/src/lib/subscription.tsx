@@ -17,6 +17,7 @@ import { ProWelcomeModal, type ProWelcome } from '../components/ProWelcomeModal'
 import { PRO_FEATURES } from './proFeatures';
 import type { Subscription } from '../api/types';
 import { FREE_RESET_FALLBACK, freeWeek } from './freeWeek';
+import type { PaymentCheckResult } from './checkoutExit';
 
 /**
  * What the account looked like the moment a checkout opened. A payment has landed when the server's
@@ -105,8 +106,12 @@ interface SubscriptionState {
    * `quiet` polls without the "Confirming your payment…" state, for when nothing says a payment was
    * made (the sheet was closed by hand, the app came back to the front): a person who cancelled is
    * not kept from the plans, and a payment that did go through still gets its welcome.
+   *
+   * `onFirstCheck` hears what the watch's first confirm found ("paid", "unpaid", or "unknown" when it
+   * could not ask), which is the quick check "What stopped you?" waits on. Only a watch this call starts
+   * reports it; one already in its quick ticks says "unknown" at once.
    */
-  watchPayment: (quiet?: boolean) => boolean;
+  watchPayment: (quiet?: boolean, onFirstCheck?: (found: PaymentCheckResult) => void) => boolean;
   /** Drops the snapshot of a checkout whose browser never opened, so nothing waits on it. */
   abandonCheckout: () => void;
 }
@@ -365,12 +370,19 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     }
   }, [apply]);
 
-  const watchPayment = useCallback((quiet: boolean = false): boolean => {
+  const watchPayment = useCallback((
+    quiet: boolean = false,
+    onFirstCheck?: (found: PaymentCheckResult) => void,
+  ): boolean => {
     checkoutOpenRef.current = false;
     const pending = pendingRef.current;
-    if (!pending) return false;
+    if (!pending) {
+      onFirstCheck?.('unknown');
+      return false;
+    }
     if (Date.now() - pending.startedAt > CHECKOUT_TTL_MS) {
       setPending(null);
+      onFirstCheck?.('unknown');
       return false;
     }
     // Still in its quick ticks: keep it, only letting a return from the provider make it visible.
@@ -380,6 +392,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         live.quiet = false;
         setPaymentCheck('confirming');
       }
+      onFirstCheck?.('unknown');
       return true;
     }
 
@@ -389,19 +402,24 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     setPaymentCheck(quiet ? 'idle' : 'confirming');
     void (async () => {
       const started = watch.started;
+      let first: ((found: PaymentCheckResult) => void) | undefined = onFirstCheck;
       for (;;) {
         const elapsed = Date.now() - started;
         if (elapsed >= WATCH_WINDOW_MS) break;
         if (elapsed >= FAST_WINDOW_MS && !watch.quiet && paymentCheckRef.current !== 'delayed') {
           setPaymentCheck('delayed');
         }
+        let found: PaymentCheckResult = 'unknown';
         try {
           const sub = await billingApi.confirm();
           if (!mounted.current || pollRunRef.current !== run) return;
           apply(sub); // clears the snapshot once the payment has landed
+          found = pendingRef.current ? 'unpaid' : 'paid';
         } catch {
           // Offline, a slow provider, a server hiccup: nothing to say, the next tick asks again.
         }
+        first?.(found);
+        first = undefined;
         if (!pendingRef.current) break;
         await delay(elapsed < FAST_WINDOW_MS ? FAST_TICK_MS : SLOW_TICK_MS);
         if (!mounted.current || pollRunRef.current !== run) return;

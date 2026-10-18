@@ -136,6 +136,37 @@ internal sealed class PaystackPaymentGateway : IPaymentGateway
         }
     }
 
+    /// <summary>The verification, and from the same transaction what the page has seen of the customer.</summary>
+    public async Task<GatewayCheck> CheckAsync(GatewayVerificationRequest request, CancellationToken ct)
+    {
+        var verification = await VerifyAsync(request, ct);
+        return new GatewayCheck(
+            verification, verification.IsSuccess && verification.Value.Raw is { } raw ? ReadAttempt(raw) : null);
+    }
+
+    /// <summary>
+    /// What a Paystack transaction shows of the customer: <c>failed</c>, or an error in its attempt log (a card
+    /// declined while the transaction stays payable), is a declined attempt; a transaction still under way on a
+    /// bank transfer (or USSD) channel is money on its way; anything else, <c>abandoned</c> included, is no attempt.
+    /// </summary>
+    internal static CheckoutAttempt ReadAttempt(string raw)
+    {
+        var status = ReadString(raw, "data", "status");
+        var channel = ReadString(raw, "data", "channel");
+        static bool Is(string? value, params string[] any)
+            => value is not null && any.Any(a => string.Equals(value, a, StringComparison.OrdinalIgnoreCase));
+
+        if (Is(status, "ongoing", "pending", "processing", "queued")
+            && Is(channel, "bank_transfer", "bank", "ussd", "dedicated_nuban"))
+        {
+            return CheckoutAttempt.TransferStarted;
+        }
+
+        if (Is(status, "failed") || ReadLong(raw, "data", "log", "errors") is > 0)
+            return CheckoutAttempt.Declined;
+        return CheckoutAttempt.None;
+    }
+
     private static string? ReadString(string raw, params string[] path)
     {
         try

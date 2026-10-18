@@ -39,6 +39,10 @@ public static class BillingErrors
     public static readonly Error TransactionNotFound =
         Error.NotFound("BILLING_TRANSACTION_NOT_FOUND", "No payment matches the webhook reference.");
 
+    /// <summary>No checkout of the caller's has that reference (another account's reads the same).</summary>
+    public static readonly Error CheckoutNotFound =
+        Error.NotFound("BILLING_CHECKOUT_NOT_FOUND", "That checkout was not found.");
+
     public static readonly Error SubscriptionNotFound =
         Error.NotFound("BILLING_SUBSCRIPTION_NOT_FOUND", "That subscription no longer exists.");
 
