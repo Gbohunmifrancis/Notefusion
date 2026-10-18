@@ -26,6 +26,14 @@ jobs:
             # What the last few transcriptions came out as: the activity log's own columns, then the
             # stored result of the newest finished jobs (key, tempo, meter, confidence, the first notes
             # as pitch@beat x length, the solfa lines). Metadata only: no audio, no names, no addresses.
+            # Push: what Expo and Google answered (ticket and receipt lines, no tokens), and how the admin phones are
+            # registered (a token's prefix only, enough to tell two apart).
+            echo "== push: API lines about Expo, receipts and alerts (last 12 h)"; docker logs -t notefusion-prod-api-1 --since 12h 2>&1 | grep -i -E "expo|push|receipt|payment alert|invalidcredentials|devicenotregistered|mismatchsenderid|activity push" | tail -80 | cut -c1-400
+            cd /opt/notefusion
+            echo "== push: admin phones"
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT left(t.\"Token\", 28) AS token, t.\"Platform\" AS os, t.\"AppBuild\" AS build, t.\"ServerReminders\" AS srv, t.\"PaymentAlerts\" AS alerts, t.\"PaymentAlertSound\" AS sound, t.\"PaymentAlertQuietAtNight\" AS quiet, to_char(t.\"PaymentAlertsSetAtUtc\",'MM-DD HH24:MI') AS set_at, to_char(t.\"UpdatedAt\",'MM-DD HH24:MI') AS seen, (SELECT count(*) FROM device_tokens o WHERE o.\"Token\" = t.\"Token\" AND o.\"UserId\" <> t.\"UserId\") AS shared FROM device_tokens t JOIN users u ON u.\"Id\" = t.\"UserId\" WHERE u.\"Role\" = 'Admin' ORDER BY t.\"UpdatedAt\" DESC;" || true
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT \"Platform\" AS os, count(*) AS rows, count(DISTINCT \"Token\") AS phones, max(\"AppBuild\") AS newest_build FROM device_tokens GROUP BY 1;" || true
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT to_char(\"CreatedAtUtc\",'MM-DD HH24:MI') AS at, \"Devices\" AS devices, \"Accepted\" AS accepted, \"Refused\" AS refused, \"Attempts\" AS tries, left(\"Error\",120) AS error FROM admin_payment_alerts ORDER BY \"CreatedAtUtc\" DESC LIMIT 5;" || true
             cd /opt/notefusion
             echo "== backups: the latest run of each kind (docs/BACKUP_AND_MIGRATION.md)"
             docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT DISTINCT ON (\"Kind\") \"Kind\" AS kind, to_char(\"FinishedAtUtc\",'MM-DD HH24:MI') AS at, \"Ok\" AS ok, \"Verified\" AS verified, pg_size_pretty(\"SizeBytes\") AS size, left(\"Detail\",150) AS detail FROM backup_runs ORDER BY \"Kind\", \"FinishedAtUtc\" DESC;" || true
