@@ -208,6 +208,12 @@ services:
       Flutterwave__SecretKey: ${Flutterwave__SecretKey:-}
       Flutterwave__WebhookSecret: ${Flutterwave__WebhookSecret:-}
       Flutterwave__SupportedCurrencies: ${Flutterwave__SupportedCurrencies:-USD}
+      # Google Play Billing: the Android app's purchases, read from Google with this service account (base64 JSON
+      # key). Notifications are believed only from the Pub/Sub push account, signed for the audience URL.
+      GooglePlay__PackageName: ${GooglePlay__PackageName:-com.notefusion.com}
+      GooglePlay__ServiceAccountJson: ${GooglePlay__ServiceAccountJson:-}
+      GooglePlay__PushServiceAccount: ${GooglePlay__PushServiceAccount:-}
+      GooglePlay__PushAudience: ${GooglePlay__PushAudience:-https://api.notefusion.studio/api/billing/google-play/notifications}
       # Profile photos (Cloudflare R2). The deploy writes these into .env; without them here the API
       # never sees them and photo uploads stay off. UseR2 must default: an empty bool stops startup.
       R2__UseR2: ${R2__UseR2:-false}

@@ -95,7 +95,22 @@ public sealed record SubscriptionDto(
     /// When this week's free transcriptions come back: the next Friday 18:00 West Africa Time, in UTC. The apps
     /// show it in the user's own time.
     /// </summary>
-    DateTime? FreeResetsAtUtc = null);
+    DateTime? FreeResetsAtUtc = null,
+    /// <summary>
+    /// Who takes the money for this membership: <c>"googlePlay"</c> (Google renews it; it is managed and cancelled in
+    /// Google Play), <c>"web"</c> (bought on the website; nothing renews by itself), or null (a gift, a choir singer,
+    /// no membership).
+    /// </summary>
+    string? BilledThrough = null,
+    /// <summary>Google Play will charge again when the period ends (false once cancelled in Google Play).</summary>
+    bool AutoRenews = false,
+    /// <summary>
+    /// A Google Play renewal that has not been paid: <c>"grace"</c> (Pro stays on while Google retries the card) or
+    /// <c>"hold"</c> (still unpaid, Pro paused until it is). Null otherwise.
+    /// </summary>
+    string? PaymentIssue = null,
+    /// <summary>The Google Play product a Play membership is (<c>pro</c> or <c>choir</c>), for the app's link to it in Google Play.</summary>
+    string? StoreProductId = null);
 
 /// <summary>A balance derived by summing the immutable ledger — never read from a stored column.</summary>
 public sealed record LedgerBalanceDto(long BalanceMinor, string Currency);

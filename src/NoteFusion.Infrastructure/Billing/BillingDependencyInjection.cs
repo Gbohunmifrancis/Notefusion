@@ -5,6 +5,7 @@ using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
 using NoteFusion.Core.Enums;
 using NoteFusion.Infrastructure.Billing.Gateways;
+using NoteFusion.Infrastructure.Billing.GooglePlay;
 using NoteFusion.Infrastructure.Billing.Webhooks;
 using NoteFusion.Infrastructure.Billing.Workers;
 using NoteFusion.Infrastructure.Http;
@@ -112,6 +113,21 @@ public static class BillingDependencyInjection
         // Squad is listed in the product plan but not yet integrated. Registers
         // as stub so the factory and webhook routing are uniform; fails fast until credentialed.
         RegisterStub(services, configuration, PaymentProvider.Squad, "Squad");
+
+        // Google Play: the Android app's purchases, verified against Google (GooglePlaySync). Not a checkout gateway,
+        // so its gateway is a stub that charges in no currency: the factory never routes a checkout to it, and a
+        // lookup by provider (an admin reconcile of a Play payment) gets a plain "not configured" instead of a throw.
+        var googlePlay = configuration.GetSection("GooglePlay").Get<GooglePlayOptions>() ?? new GooglePlayOptions();
+        services.AddSingleton(googlePlay);
+        services.AddSingleton<GooglePlayAccessTokens>();
+        services.AddHttpClient(GooglePlayAccessTokens.HttpClientName)
+            .AddOutboundResilience(OutboundResilience.Payment(PaymentProvider.GooglePlay));
+        services.AddHttpClient<IGooglePlayClient, GooglePlayClient>("googleplay", client =>
+                client.BaseAddress = new Uri("https://androidpublisher.googleapis.com"))
+            .AddOutboundResilience(OutboundResilience.Payment(PaymentProvider.GooglePlay));
+        services.AddSingleton<IGooglePlayPushVerifier, PubSubPushVerifier>();
+        services.AddSingleton<IPaymentGateway>(new StubPaymentGateway(PaymentProvider.GooglePlay, []));
+        services.AddHostedService<GooglePlaySyncWorker>();
 
         services.AddSingleton<IPaymentGatewayFactory, PaymentGatewayFactory>();
 

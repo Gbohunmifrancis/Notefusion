@@ -76,6 +76,13 @@ internal static class CurrencyUnits
         return minor >= long.MinValue && minor <= long.MaxValue ? (long)minor : null;
     }
 
+    /// <summary>
+    /// A major-unit amount rounded to the currency's minor units, for a figure that is reported rather than verified
+    /// (what a store says an order cost, tax included, which may carry more precision than the currency).
+    /// </summary>
+    public static long RoundToMinor(decimal major, string currency)
+        => (long)decimal.Round(major * Powers[ExponentFor(currency)], 0, MidpointRounding.AwayFromZero);
+
     private static int ExponentFor(string currency)
         => Exponents.TryGetValue(currency.Trim(), out var exponent) ? exponent : DefaultExponent;
 }

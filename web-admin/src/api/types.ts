@@ -415,7 +415,7 @@ export interface AuditLogRow {
 export type SubscriptionStatus = "Active" | "PastDue" | "Canceled" | "Expired";
 
 /** `PaymentProvider.ToString()`. Null on a gift, because no gateway was involved. */
-export type PaymentProviderName = "Paystack" | "Flutterwave" | "Bachs" | "Squad";
+export type PaymentProviderName = "Paystack" | "Flutterwave" | "Bachs" | "Squad" | "GooglePlay";
 
 export interface AdminSubscription {
   id: string;

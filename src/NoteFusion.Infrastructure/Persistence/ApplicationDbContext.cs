@@ -56,6 +56,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<BackupRun> BackupRuns => Set<BackupRun>();
     public DbSet<FeatureFlag> FeatureFlags => Set<FeatureFlag>();
     public DbSet<AdminPaymentAlert> AdminPaymentAlerts => Set<AdminPaymentAlert>();
+    public DbSet<GooglePlayPurchase> GooglePlayPurchases => Set<GooglePlayPurchase>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

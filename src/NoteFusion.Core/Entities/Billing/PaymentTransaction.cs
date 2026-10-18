@@ -132,6 +132,22 @@ public class PaymentTransaction : BaseEntity
         return true;
     }
 
+    /// <summary>
+    /// One order an app store has already charged (a Google Play purchase or renewal), recorded so fulfilment can
+    /// complete it like any payment. There is no checkout: it starts at Processing, and the store's order id is
+    /// both <see cref="Reference"/> (unique, so one order is recorded once) and the provider reference. The purchase
+    /// token, too long for this table, stays on the store's own purchase row. The caller moves it on to Verified and
+    /// Completed in the same unit of work.
+    /// </summary>
+    public static PaymentTransaction ForStoreOrder(
+        Guid userId, Guid planId, PaymentProvider provider, string orderId, long amountMinor, string currency, DateTime utcNow)
+    {
+        var tx = Create(userId, planId, provider, $"store:{orderId}", orderId, amountMinor, currency, utcNow);
+        tx.ProviderReference = orderId;
+        tx.Status = PaymentStatus.Processing;
+        return tx;
+    }
+
     /// <summary>Pending → Processing once the provider accepts the initiation and returns a checkout URL.</summary>
     public void AttachCheckout(string? providerReference, string checkoutUrl, string? initiateRaw, DateTime utcNow)
     {

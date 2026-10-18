@@ -117,5 +117,8 @@ public interface IApplicationDbContext
     /// <summary>The admins' "someone just paid" push: one claim per completed payment, and what became of it.</summary>
     DbSet<AdminPaymentAlert> AdminPaymentAlerts { get; }
 
+    /// <summary>Google Play purchase tokens and the account each belongs to (the Android app's purchases).</summary>
+    DbSet<GooglePlayPurchase> GooglePlayPurchases { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

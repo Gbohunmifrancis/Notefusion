@@ -63,6 +63,10 @@ public sealed class CancelSubscriptionCommandHandler : IRequestHandler<CancelSub
         if (sub.IsLifetime)
             return BillingErrors.LifetimeNotCancelable;
 
+        // Google charges again whatever this row says; only a cancellation in Google Play stops it.
+        if (sub.Provider == PaymentProvider.GooglePlay)
+            return BillingErrors.ManagedByGooglePlay;
+
         if (sub.Status == SubscriptionStatus.Canceled)
             return Result.Success();
 

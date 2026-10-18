@@ -1038,6 +1038,17 @@ export interface Subscription {
   freeTranscriptionsPerWeek?: number;
   /** When this week's free ones come back: the next Friday 18:00 West Africa Time, UTC. */
   freeResetsAtUtc?: string | null;
+  /**
+   * Who takes the money: "googlePlay" (Google renews it; manage and cancel in Google Play), "web" (bought on
+   * the website; nothing renews by itself), or null (a gift, a choir singer, no membership).
+   */
+  billedThrough?: "googlePlay" | "web" | null;
+  /** Google Play will charge again when the period ends (false once cancelled in Google Play). */
+  autoRenews?: boolean;
+  /** A Google Play renewal not yet paid: "grace" (Pro stays on while Google retries) or "hold" (Pro paused). */
+  paymentIssue?: "grace" | "hold" | null;
+  /** The Google Play product a Play membership is ("pro" or "choir"), for the link to it in Google Play. */
+  storeProductId?: string | null;
 }
 
 // --- App release --------------------------------------------------------
@@ -1109,7 +1120,7 @@ export type AdminPaymentStatus =
 
 export type AdminWebhookStatus = "Received" | "Processed" | "Failed";
 
-export type AdminProvider = "Paystack" | "Flutterwave" | "Bachs" | "Squad";
+export type AdminProvider = "Paystack" | "Flutterwave" | "Bachs" | "Squad" | "GooglePlay";
 
 export type AdminLedgerDirection = "Credit" | "Debit";
 

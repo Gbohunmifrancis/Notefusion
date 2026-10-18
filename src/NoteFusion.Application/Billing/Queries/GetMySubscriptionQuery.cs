@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Billing.Dtos;
+using NoteFusion.Application.Billing.GooglePlay;
 using NoteFusion.Application.Choirs;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
@@ -91,6 +92,11 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
         var choirName = choirActive ? choir!.Choir.Name : null;
         var choirRole = choirActive ? (choir!.IsDirector ? ChoirAccess.DirectorRole : ChoirAccess.MemberRole) : null;
 
+        // Who bills the choir, told to its director only: a singer has nothing to manage.
+        var choirBilling = choir is { IsDirector: true }
+            ? await BillingOfAsync(userId, choir.Choir.Provider, GooglePlaySync.ChoirProduct, now, ct)
+            : StoreBilling.None;
+
         // Pro through the choir alone: the membership shown is the choir's plan and period.
         if (!ownPro && choirActive)
         {
@@ -107,7 +113,11 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
                 ChoirPeriodEndUtc: choir!.Choir.CurrentPeriodEndUtc,
                 FreeTranscriptionsRemaining: allowance.FreeRemaining,
                 FreeTranscriptionsPerWeek: allowance.Free,
-                FreeResetsAtUtc: allowance.FreeResetsAtUtc);
+                FreeResetsAtUtc: allowance.FreeResetsAtUtc,
+                BilledThrough: choirBilling.BilledThrough,
+                AutoRenews: choirBilling.AutoRenews,
+                PaymentIssue: choirBilling.PaymentIssue,
+                StoreProductId: choirBilling.StoreProductId);
         }
 
         if (sub is null)
@@ -122,9 +132,14 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
                 ChoirPeriodEndUtc: choir?.Choir.CurrentPeriodEndUtc,
                 FreeTranscriptionsRemaining: allowance.FreeRemaining,
                 FreeTranscriptionsPerWeek: allowance.Free,
-                FreeResetsAtUtc: allowance.FreeResetsAtUtc);
+                FreeResetsAtUtc: allowance.FreeResetsAtUtc,
+                // A director whose Google Play choir plan is on hold is told so, though nothing is running.
+                PaymentIssue: choirBilling.PaymentIssue,
+                StoreProductId: choirBilling.PaymentIssue is null ? null : choirBilling.StoreProductId,
+                BilledThrough: choirBilling.PaymentIssue is null ? null : choirBilling.BilledThrough);
 
         var plan = await _db.Plans.FirstOrDefaultAsync(p => p.Id == sub.PlanId, ct);
+        var billing = await BillingOfAsync(userId, sub.Provider, GooglePlaySync.ProProduct, now, ct);
 
         return new SubscriptionDto(
             isPro, plan?.Code, sub.Status, sub.CurrentPeriodEndUtc,
@@ -138,6 +153,44 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
             ChoirPeriodEndUtc: choir?.Choir.CurrentPeriodEndUtc,
             FreeTranscriptionsRemaining: allowance.FreeRemaining,
             FreeTranscriptionsPerWeek: allowance.Free,
-            FreeResetsAtUtc: allowance.FreeResetsAtUtc);
+            FreeResetsAtUtc: allowance.FreeResetsAtUtc,
+            BilledThrough: billing.BilledThrough,
+            AutoRenews: billing.AutoRenews,
+            PaymentIssue: billing.PaymentIssue,
+            StoreProductId: billing.StoreProductId);
+    }
+
+    /// <summary>
+    /// Who bills a membership. Google Play's is read off the account's live token for the product (the one whose
+    /// access runs latest): whether Google will charge again, and a renewal it could not take.
+    /// </summary>
+    private async Task<StoreBilling> BillingOfAsync(
+        Guid userId, PaymentProvider? provider, string productId, DateTime now, CancellationToken ct)
+    {
+        if (provider is null)
+            return StoreBilling.None;
+        if (provider != PaymentProvider.GooglePlay)
+            return new StoreBilling("web", false, null, null);
+
+        var token = await _db.GooglePlayPurchases.AsNoTracking()
+            .Where(p => p.UserId == userId && p.ProductId == productId && p.ReplacedByToken == null)
+            .OrderByDescending(p => p.ExpiryUtc)
+            .FirstOrDefaultAsync(ct);
+        if (token is null)
+            return new StoreBilling("googlePlay", false, null, productId);
+
+        var issue = token.State switch
+        {
+            GooglePlaySync.StateGrace => "grace",
+            GooglePlaySync.StateOnHold => "hold",
+            _ => null
+        };
+        var renews = token.AutoRenewing && GooglePlaySync.IsEntitledState(token.State) && token.ExpiryUtc > now;
+        return new StoreBilling("googlePlay", renews, issue, productId);
+    }
+
+    private sealed record StoreBilling(string? BilledThrough, bool AutoRenews, string? PaymentIssue, string? StoreProductId)
+    {
+        public static readonly StoreBilling None = new(null, false, null, null);
     }
 }

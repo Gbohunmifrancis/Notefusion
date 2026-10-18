@@ -33,6 +33,7 @@ public static class DependencyInjection
         services.AddScoped<Blog.Drafting.BlogDraftWriter>();
         services.AddScoped<Blog.Drafting.BlogGenerationRunner>();
         services.AddScoped<Blog.Publishing.BlogSitePublisher>();
+        services.AddScoped<Billing.GooglePlay.GooglePlaySync>();
 
         return services;
     }

@@ -93,6 +93,19 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         if (!plan.IsChoir && current is not null && current.IsLifetime && current.IsActiveAt(_clock.UtcNow))
             return BillingErrors.AlreadyLifetime;
 
+        // Google Play renews this membership itself: a website payment on top would charge twice for one period.
+        if (!isSingle && !plan.IsChoir && current is not null && current.Provider == PaymentProvider.GooglePlay
+            && current.IsActiveAt(_clock.UtcNow))
+        {
+            return BillingErrors.ManagedByGooglePlay;
+        }
+        if (plan.IsChoir
+            && await _db.Choirs.AnyAsync(
+                c => c.OwnerId == userId && c.Provider == PaymentProvider.GooglePlay && c.CurrentPeriodEndUtc > _clock.UtcNow, ct))
+        {
+            return BillingErrors.ManagedByGooglePlay;
+        }
+
         // A choir plan is the director's: it extends a choir they lead, or starts one. An account sings in one
         // choir, so a singer in someone else's running choir leaves it before starting their own.
         if (plan.IsChoir

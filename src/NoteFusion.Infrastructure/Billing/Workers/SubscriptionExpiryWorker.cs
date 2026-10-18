@@ -77,6 +77,8 @@ internal sealed class SubscriptionExpiryWorker : BackgroundService
 
         var due = await db.Subscriptions
             .Where(s => (s.Status == SubscriptionStatus.Active || s.Status == SubscriptionStatus.Canceled)
+                        // Google Play renews these itself and tells its own customers; "buy again" would be wrong.
+                        && s.Provider != PaymentProvider.GooglePlay
                         && s.CurrentPeriodEndUtc > now
                         && s.CurrentPeriodEndUtc <= horizon
                         // Spelled out rather than a bare `!=`: a never-notified row holds NULL, and in
