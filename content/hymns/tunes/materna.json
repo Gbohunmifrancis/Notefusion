@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Samuel A. Ward",
+      "born": 1848,
+      "died": 1903,
       "role": "Music (1882)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "ssmmssrr|mfslts",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0005/x000508.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0005/000508a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000508; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Samuel A. Ward: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000508 (the melody read from 000508a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000508a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000508 (the melody read from 000508a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Samuel A. Ward's dates (1848–1903) are from https://en.wikipedia.org/wiki/Samuel_A._Ward (Samuel Augustus Ward, December 28, 1848 - September 28, 1903; composer of MATERNA, 1882); https://hymnary.org/person/Ward_SA (Ward, Samuel A., 1847-1903; its Birth Year field says 1848); CCEH's page gives only the year 1882. The bar lines are those of CCEH's Noteworthy score (000508a.nwc).",
   "importedFrom": "cceh:000508",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }

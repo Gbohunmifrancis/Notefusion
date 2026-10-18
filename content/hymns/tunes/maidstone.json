@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Walter Bond Gilbert",
+      "born": 1829,
+      "died": 1910,
       "role": "Music (1862)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "sltdrmfmrm|sfmrmfdtd",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0013/x001383.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0013/001383a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001383; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Walter Bond Gilbert: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 001383 (the melody read from 001383a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001383a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 001383 (the melody read from 001383a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Walter Bond Gilbert's dates (1829–1910) are from https://hymnary.org/person/Gilbert_WB (Gilbert, Walter Bond, 1829-1910); https://id.loc.gov/authorities/names/no2014165291 (Gilbert, Walter B. (Walter Bond), 1829-1910, citing Humphreys' Dictionary of composers for the Church: born April 21, 1829, Exeter, died March 2, 1910, Oxford); CCEH's page gives only the year 1862. The bar lines are those of CCEH's Noteworthy score (001383a.nwc).",
   "importedFrom": "cceh:001383",
   "updated": "2026-10-18"
 }

@@ -10,6 +10,8 @@
     },
     {
       "name": "Alfred Judson",
+      "born": 1866,
+      "died": 1930,
       "role": "Arranged (1923)"
     }
   ],
@@ -24,13 +26,13 @@
   "incipit": "sdrmmmfmr|sfmrmtdls",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0006/x000625.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0006/000625a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000625; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Alfred Judson: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000625 (the melody read from 000625a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ludwig von Beethoven's dates (1770–1827) are from our page for the tune HYMN TO JOY (content/hymns/tunes/hymn-to-joy.json); CCEH's page gives none. The page gives no year for the tune itself; it was in print by 1923, the year of the arrangement. The bar lines are those of CCEH's Noteworthy score (000625a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000625 (the melody read from 000625a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ludwig von Beethoven's dates (1770–1827) are from our page for the tune HYMN TO JOY (content/hymns/tunes/hymn-to-joy.json); CCEH's page gives none. Alfred Judson's dates (1866–1930) are from https://hymnary.org/person/Judson_Alfred ('Pseudonym. See also Joseph Lincoln Hall, 1866-1930'); https://www.hymnary.org/person/Hall_JLincoln (Hall, J. Lincoln (Joseph Lincoln), 1866-1930). CCEH credits 'arr., Alfred Judson, 1923' on ALSACE; https://id.loc.gov/authorities/names/n2009021476 knows the name only from Easter classics No. 4, 1916, with no dates. The dates are J. Lincoln Hall's, on Hymnary's word that the name is his pseudonym; CCEH's page gives only the year 1923. The page gives no year for the tune itself; it was in print by 1923, the year of the arrangement. The bar lines are those of CCEH's Noteworthy score (000625a.nwc).",
   "importedFrom": "cceh:000625",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }

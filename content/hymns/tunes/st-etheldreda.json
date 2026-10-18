@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Thomas Turton",
+      "born": 1780,
+      "died": 1864,
       "role": "Music (1863)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "ddrmrdtd|rmsfmr|mflstdfm",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0010/x001033.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0010/001033a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001033; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Thomas Turton: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 001033 (the melody read from 001033a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001033a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 001033 (the melody read from 001033a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Thomas Turton's dates (1780–1864) are from https://hymnary.org/tune/st_etheldreda_turton (ST. ETHELDREDA, Thomas Turton, b. 25 Feb. 1780, Yorkshire, d. 7 Jan. 1864, London, Bishop of Ely from 1845; first published in Turle's Psalms and Hymns for Public Worship, 1863); https://en.wikipedia.org/wiki/Thomas_Turton (25 February 1780 - 7 January 1864); https://id.loc.gov/authorities/names/nr2001009860 (Turton, Thomas, 1780-1864); CCEH's page gives only the year 1863. The bar lines are those of CCEH's Noteworthy score (001033a.nwc).",
   "importedFrom": "cceh:001033",
   "updated": "2026-10-18"
 }

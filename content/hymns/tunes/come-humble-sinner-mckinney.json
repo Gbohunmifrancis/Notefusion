@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "B. B. McKinney",
+      "born": 1886,
+      "died": 1952,
       "role": "Arranged (1921)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "ltdlsmslltd|rmmrdltsl",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0012/x001219.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0012/001219a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001219; public domain.",
-  "reviewNotes": "Held back: not provably public domain: B. B. McKinney: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 001219 (the melody read from 001219a.mid, checked against the page's do-re-mi incipit, 2 notes off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The page gives no year for the tune itself; it was in print by 1921, the year of the arrangement. The bar lines are those of CCEH's Noteworthy score (001219a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 001219 (the melody read from 001219a.mid, checked against the page's do-re-mi incipit, 2 notes off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. B. B. McKinney's dates (1886–1952) are from https://hymnary.org/person/McKinney_BB (McKinney, B. B., 1886-1952); https://en.wikipedia.org/wiki/B._B._McKinney (Baylus Benjamin McKinney, July 22, 1886 - September 7, 1952); https://id.loc.gov/authorities/names/n85142894 (McKinney, B. B., 1886-1952); CCEH's page gives only the year 1921. The page gives no year for the tune itself; it was in print by 1921, the year of the arrangement. The bar lines are those of CCEH's Noteworthy score (001219a.nwc).",
   "importedFrom": "cceh:001219",
   "updated": "2026-10-18"
 }

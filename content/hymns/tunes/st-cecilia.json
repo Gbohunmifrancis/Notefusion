@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Leighton G. Hayne",
+      "born": 1836,
+      "died": 1883,
       "role": "Music (1863)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "sfmmrd|mrttls|rrmfsm",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0009/x000981.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0009/000981a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000981; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Leighton G. Hayne: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000981 (the melody read from 000981a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000981a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000981 (the melody read from 000981a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Leighton G. Hayne's dates (1836–1883) are from https://hymnary.org/person/Hayne_LG (Hayne, L. G. (Leighton George), 1836-1883; 'Born: February 28, 1836, St. David's Hall, Exeter'); https://id.loc.gov/authorities/names/no2002069505 (Hayne, L. G. (Leighton George), 1836-1883); CCEH's page gives only the year 1863. The bar lines are those of CCEH's Noteworthy score (000981a.nwc).",
   "importedFrom": "cceh:000981",
   "updated": "2026-10-18"
 }

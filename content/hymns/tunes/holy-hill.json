@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "William H. Pontius",
+      "born": 1857,
+      "died": 1937,
       "role": "Music (1905)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "dmsssdtd|sdtdsfmrds",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0013/x001339.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0013/001339a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001339; public domain.",
-  "reviewNotes": "Held back: not provably public domain: William H. Pontius: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 001339 (the melody read from 001339a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001339a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 001339 (the melody read from 001339a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William H. Pontius's dates (1857–1937) are from https://id.loc.gov/authorities/names/no2019047885 (Pontius, William H., 1857-1937: born 1857, Circleville, Ohio; singer, voice teacher and composer of songs, piano pieces and church music; died April 1, 1937, Hennepin County, Minnesota; 'Do not confuse with: Pontius, William Henry, 1844-1908', a letter writer); https://shorchor.net/00_people/amer_pontius.html ('William H. Pontius (1857-1937) was born in Circleville, Ohio ... He died in Minneapolis'). https://hymnary.org/person/Pontius_WH, which HOLY HILL (1905) links to, mixes the two (1844-1908 in its name, 1860-1937 in its year fields); either man died before 1955; CCEH's page gives only the year 1905. The bar lines are those of CCEH's Noteworthy score (001339a.nwc).",
   "importedFrom": "cceh:001339",
   "updated": "2026-10-18"
 }

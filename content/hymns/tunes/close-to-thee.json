@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Silas Jones Vail",
+      "born": 1818,
+      "died": 1884,
       "role": "Music (1874)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "sdmdtlds|dmsmdmr",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0005/x000572.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0005/000572a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000572; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Silas Jones Vail: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000572 (the melody read from 000572a.mid, checked against the page's do-re-mi incipit, 1 note off in 15); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000572a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000572 (the melody read from 000572a.mid, checked against the page's do-re-mi incipit, 1 note off in 15); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Silas Jones Vail's dates (1818–1884) are from https://hymnary.org/person/Vail_SJ (Vail, S. J. (Silas Jones), 1818-1884); https://id.loc.gov/authorities/names/no98084143 (Vail, S. J. (Silas Jones), 1818-1884); https://en.wikipedia.org/wiki/Silas_Jones_Vail gives born 16 October 1818, died Brooklyn 20 May 1883 (uncited). Either way long before 1955; the later year is kept; CCEH's page gives only the year 1874. The bar lines are those of CCEH's Noteworthy score (000572a.nwc).",
   "importedFrom": "cceh:000572",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }

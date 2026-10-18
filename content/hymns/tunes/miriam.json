@@ -3,7 +3,9 @@
   "title": "Miriam",
   "music": [
     {
-      "name": "Joseph Parry Holbrook",
+      "name": "Joseph Perry Holbrook",
+      "born": 1822,
+      "died": 1888,
       "role": "Music (1865)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "ssdrddt|lsslfm|ssdrddt",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0013/x001326.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0013/001326a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001326; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Joseph Parry Holbrook: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 001326 (the melody read from 001326a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001326a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 001326 (the melody read from 001326a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells Joseph Perry Holbrook as “Joseph Parry Holbrook”; the name is printed as the sources spell it. Joseph Perry Holbrook's dates (1822–1888) are from https://hymnary.org/tune/miriam_holbrook (MIRIAM, Joseph P. Holbrook, 1865); https://hymnary.org/person/Holbrook_JP (Holbrook, Joseph P. (Joseph Perry), 1822-1888); https://id.loc.gov/authorities/names/no2008182910 (Holbrook, Joseph P. (Joseph Perry), 1822-1888). CCEH writes his middle name Parry; CCEH's page gives only the year 1865. The bar lines are those of CCEH's Noteworthy score (001326a.nwc).",
   "importedFrom": "cceh:001326",
   "updated": "2026-10-18"
 }

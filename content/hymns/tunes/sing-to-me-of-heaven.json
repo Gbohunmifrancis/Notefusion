@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "B. B. Beall",
+      "born": 1874,
+      "died": 1945,
       "role": "Music (1914)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "sdmmmrdtlds|dmsslsmrdmr",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0009/x000972.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0009/000972a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000972; public domain.",
-  "reviewNotes": "Held back: not provably public domain: B. B. Beall: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000972 (the melody read from 000972a.mid, checked against the page's do-re-mi incipit, 1 note off in 22); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000972a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000972 (the melody read from 000972a.mid, checked against the page's do-re-mi incipit, 1 note off in 22); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. B. B. Beall's dates (1874–1945) are from https://hymnary.org/person/Beall_BB (Beall, B. B. (Benjamin Burk); 'born on May 25, 1874, Dallas, Georgia ... died on October 7, 1945, in Douglasville, Georgia', from the Cyber Hymnal); https://hymnary.org/hymn/CCEH/972 links CCEH's SING TO ME OF HEAVEN (1914) to that page; https://id.loc.gov/authorities/names/no2010129566 (Beall, B. B. (Benjamin Burk), compiler of Joyful lays, no dates); CCEH's page gives only the year 1914. The bar lines are those of CCEH's Noteworthy score (000972a.nwc).",
   "importedFrom": "cceh:000972",
   "updated": "2026-10-18"
 }

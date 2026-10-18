@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Ethelbert W. Bullinger",
+      "born": 1837,
+      "died": 1913,
       "role": "Music (1874)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "slsdmrltrs|ddmrlr",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0005/x000548.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0005/000548a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000548; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Ethelbert W. Bullinger: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000548 (the melody read from 000548a.mid, checked against the page's do-re-mi incipit, 1 note off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000548a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000548 (the melody read from 000548a.mid, checked against the page's do-re-mi incipit, 1 note off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ethelbert W. Bullinger's dates (1837–1913) are from https://hymnary.org/person/Bullinger_EW (Bullinger, E. W. (Ethelbert William), 1837-1913); https://en.wikipedia.org/wiki/E._W._Bullinger (15 December 1837 - 6 June 1913) agrees; CCEH's page gives only the year 1874. The bar lines are those of CCEH's Noteworthy score (000548a.nwc).",
   "importedFrom": "cceh:000548",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }

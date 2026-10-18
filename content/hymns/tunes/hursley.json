@@ -15,9 +15,10 @@
   ],
   "music": [
     {
-      "name": "ascr. to, Franz Joseph Haydn",
-      "role": "Music",
-      "activeBy": 1774
+      "name": "Franz Joseph Haydn (ascribed)",
+      "born": 1732,
+      "died": 1809,
+      "role": "Music"
     },
     {
       "name": "Katholisches Gesangbuch, Vienna",
@@ -42,7 +43,7 @@
   "scoreUrl": "https://www.ccel.org/cceh/0006/000608a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000608; public domain.",
-  "reviewNotes": "Imported from CCEH tune 000608 (the melody read from 000608a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. ascr. to, Franz Joseph Haydn has no death year on CCEH's page or ours; the tune was in print by 1774, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000608a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000608 (the melody read from 000608a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells Franz Joseph Haydn (ascribed) as “ascr. to, Franz Joseph Haydn”; the name is printed as the sources spell it. Franz Joseph Haydn (ascribed)'s dates (1732–1809) are from https://hymnary.org/person/Haydn_FranzJoseph (Haydn, Joseph, 1732-1809; the person CCEH's 'ascr. to, Franz Joseph Haydn' on MANOAH links to, https://hymnary.org/hymn/CCEH/565); https://en.wikipedia.org/wiki/Joseph_Haydn (31 March 1732 - 31 May 1809). CCEH's 'ascr. to,' is an ascription, not a name; https://hymnary.org/tune/manoah_greatorex says MANOAH was first published in Greatorex's Collection, 1851; CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000608a.nwc).",
   "importedFrom": "cceh:000608",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }

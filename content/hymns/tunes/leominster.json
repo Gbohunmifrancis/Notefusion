@@ -3,7 +3,9 @@
   "title": "Leominster",
   "music": [
     {
-      "name": "George Walter Martin",
+      "name": "George William Martin",
+      "born": 1825,
+      "died": 1881,
       "role": "Music (1862)"
     },
     {
@@ -24,13 +26,13 @@
   "incipit": "mmmmmf|mrrrmr|rmmssddd",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0009/x000905.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0009/000905a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000905; public domain.",
-  "reviewNotes": "Held back: not provably public domain: George Walter Martin: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000905 (the melody read from 000905a.mid, checked against the page's do-re-mi incipit, 1 note off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Arthur Seymour Sullivan's dates (1842–1900) are from our page for the tune ST. EDMUND (SULLIVAN) (content/hymns/tunes/st-edmund-sullivan.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000905a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000905 (the melody read from 000905a.mid, checked against the page's do-re-mi incipit, 1 note off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells George William Martin as “George Walter Martin”; the name is printed as the sources spell it. George William Martin's dates (1825–1881) are from https://hymnary.org/tune/leominster_martin (LEOMINSTER, by George William Martin, 1825-1881, first published in The Journal of Part Music, 1862; hymnals there print his birth as 1821, 1825 or 1828, his death always 1881; 'George Walter Martin' appears nowhere, so CCEH miswrites his middle name); https://id.loc.gov/authorities/names/nr99026485 (Martin, G. W. (George William), 1825-1881, citing New Grove: b. Mar. 8, 1825, London; d. Apr. 16, 1881, London); https://en.wikipedia.org/wiki/George_William_Martin (8 March 1828 - 16 April 1881); CCEH's page gives only the year 1862. Arthur Seymour Sullivan's dates (1842–1900) are from our page for the tune ST. EDMUND (SULLIVAN) (content/hymns/tunes/st-edmund-sullivan.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000905a.nwc).",
   "importedFrom": "cceh:000905",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }
