@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../Icon";
 import { Touchable } from "../Touchable";
 import { Skeleton } from "../Skeleton";
 import { useColors, useThemedStyles } from "../../lib/theme";
@@ -56,7 +56,7 @@ export function LibraryRow({
     >
       {selecting && (
         <View style={[styles.check, selected && styles.checkOn]}>
-          {selected && <Ionicons name="checkmark" size={14} color={colors.onInk} />}
+          {selected && <Icon name="check" size={14} strokeWidth={2.25} color={colors.onInk} />}
         </View>
       )}
       <View style={styles.doh}>
@@ -83,11 +83,7 @@ export function LibraryRow({
         )}
       </View>
       {offline ? (
-        <Ionicons
-          name={offline === "kept" ? "cloud-done-outline" : "cloud-offline-outline"}
-          size={15}
-          color={colors.textFaint}
-        />
+        <Icon name={offline === "kept" ? "kept" : "offline"} size={15} color={colors.textFaint} />
       ) : null}
       {doubtful ? (
         <View style={styles.score}>

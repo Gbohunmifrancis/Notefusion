@@ -1,6 +1,6 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon, type IconName } from "../Icon";
 import { Button } from "../Button";
 import { Sheet, SheetActions } from "../Sheet";
 import { Touchable } from "../Touchable";
@@ -16,7 +16,7 @@ export interface ModeOption {
   title: string;
   /** One line on what the mode listens for. */
   hint: string;
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: IconName;
 }
 
 /**
@@ -80,13 +80,13 @@ export function RecordOptionsSheet({
                 accessibilityState={{ selected: active }}
               >
                 <View style={[styles.modeIcon, active && styles.modeIconOn]}>
-                  <Ionicons name={m.icon} size={18} color={active ? c.onInk : c.textMuted} />
+                  <Icon name={m.icon} size={20} color={active ? c.onInk : c.icon} />
                 </View>
                 <View style={styles.modeText}>
                   <Text style={styles.modeTitle}>{m.title}</Text>
                   <Text style={styles.modeHint}>{m.hint}</Text>
                 </View>
-                {active ? <Ionicons name="checkmark" size={20} color={c.accent} /> : null}
+                {active ? <Icon name="check" size={20} color={c.link} /> : null}
               </Touchable>
             );
           })}

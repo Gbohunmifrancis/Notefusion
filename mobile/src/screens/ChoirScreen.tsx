@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, RefreshControl, Share, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
@@ -93,7 +93,7 @@ export function ChoirScreen({ navigation, route }: Props) {
   async function join() {
     const clean = choirCodeFromText(code) ?? normaliseChoirCode(code);
     if (!clean) {
-      showDialog({ title: "Check the code", message: "A choir code has eight letters and numbers. Ask your director for it.", icon: "people-outline" });
+      showDialog({ title: "Check the code", message: "A choir code has eight letters and numbers. Ask your director for it.", icon: "choir" });
       return;
     }
     setJoining(true);
@@ -109,12 +109,12 @@ export function ChoirScreen({ navigation, route }: Props) {
         kind: "celebrate",
         title: `Welcome to ${joined.name}`,
         message: "You have Pro while the choir's plan runs, and your choir's shared sheets are below.",
-        icon: "people",
+        icon: "choir",
         tone: "choir",
         actions: [{ label: "Start singing", style: "cancel" }],
       });
     } catch (e) {
-      showDialog({ title: "Could not join", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+      showDialog({ title: "Could not join", message: toApiError(e).message, icon: "problem", tone: "danger" });
     } finally {
       if (mounted.current) setJoining(false);
     }
@@ -128,7 +128,7 @@ export function ChoirScreen({ navigation, route }: Props) {
       const updated = await choirApi.rename(next);
       if (mounted.current) setChoir(updated);
     } catch (e) {
-      showDialog({ title: "Could not rename", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+      showDialog({ title: "Could not rename", message: toApiError(e).message, icon: "problem", tone: "danger" });
     } finally {
       if (mounted.current) setRenaming(false);
     }
@@ -147,7 +147,7 @@ export function ChoirScreen({ navigation, route }: Props) {
     showDialog({
       title: "Make a new invite code?",
       message: "The old code and link stop working at once. Singers already in the choir stay in.",
-      icon: "refresh-outline",
+      icon: "retry",
       actions: [
         {
           label: "New code",
@@ -156,7 +156,7 @@ export function ChoirScreen({ navigation, route }: Props) {
               const updated = await choirApi.regenerateInvite();
               if (mounted.current) setChoir(updated);
             } catch (e) {
-              showDialog({ title: "Could not make a new code", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+              showDialog({ title: "Could not make a new code", message: toApiError(e).message, icon: "problem", tone: "danger" });
             }
           },
         },
@@ -169,7 +169,7 @@ export function ChoirScreen({ navigation, route }: Props) {
     showDialog({
       title: `Remove ${member.name}?`,
       message: "They lose Pro through the choir, and the sheets they shared leave the choir library.",
-      icon: "person-remove-outline",
+      icon: "user-minus",
       tone: "danger",
       actions: [
         {
@@ -180,7 +180,7 @@ export function ChoirScreen({ navigation, route }: Props) {
               await choirApi.removeMember(member.userId);
               await load();
             } catch (e) {
-              showDialog({ title: "Could not remove", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+              showDialog({ title: "Could not remove", message: toApiError(e).message, icon: "problem", tone: "danger" });
             }
           },
         },
@@ -193,7 +193,7 @@ export function ChoirScreen({ navigation, route }: Props) {
     showDialog({
       title: "Leave the choir?",
       message: "You lose Pro through the choir, and the sheets you shared leave its library. They stay in yours.",
-      icon: "exit-outline",
+      icon: "leave",
       tone: "danger",
       actions: [
         {
@@ -206,7 +206,7 @@ export function ChoirScreen({ navigation, route }: Props) {
               refreshSubscription(true).catch(() => undefined);
               await load();
             } catch (e) {
-              showDialog({ title: "Could not leave", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+              showDialog({ title: "Could not leave", message: toApiError(e).message, icon: "problem", tone: "danger" });
             } finally {
               if (mounted.current) setBusy(false);
             }
@@ -242,7 +242,7 @@ export function ChoirScreen({ navigation, route }: Props) {
       };
       navigation.navigate("Result", { result, title: full.title });
     } catch (e) {
-      showDialog({ title: "Could not open", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+      showDialog({ title: "Could not open", message: toApiError(e).message, icon: "problem", tone: "danger" });
     }
   }
 
@@ -250,7 +250,7 @@ export function ChoirScreen({ navigation, route }: Props) {
     showDialog({
       title: "Take it out of the choir library?",
       message: sheet.mine ? "It stays in your own library." : `It stays in ${sheet.sharedBy}'s own library.`,
-      icon: "people-outline",
+      icon: "choir",
       actions: [
         {
           label: "Take out",
@@ -259,7 +259,7 @@ export function ChoirScreen({ navigation, route }: Props) {
               await choirApi.unshare(sheet.id);
               setSheets((prev) => prev.filter((s) => s.id !== sheet.id));
             } catch (e) {
-              showDialog({ title: "Could not take it out", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+              showDialog({ title: "Could not take it out", message: toApiError(e).message, icon: "problem", tone: "danger" });
             }
           },
         },
@@ -294,7 +294,7 @@ export function ChoirScreen({ navigation, route }: Props) {
           ripple="borderless"
         >
           <View style={styles.backCircle}>
-            <Ionicons name="chevron-back" size={20} color={colors.text} />
+            <Icon name="back" size={20} color={colors.text} />
           </View>
         </Touchable>
         <View style={styles.titleBlock}>
@@ -326,16 +326,16 @@ export function ChoirScreen({ navigation, route }: Props) {
               placeholder="e.g. AB3K7MQZ"
               autoCapitalize="characters"
               autoCorrect={false}
-              icon="people-outline"
+              icon="choir"
             />
-            <Button label="Join choir" icon="enter-outline" onPress={() => void join()} loading={joining} disabled={!code.trim()} />
+            <Button label="Join choir" icon="join" onPress={() => void join()} loading={joining} disabled={!code.trim()} />
           </Card>
           <Card style={styles.card}>
             <Text style={styles.cardTitle}>Lead a choir?</Text>
             <Text style={styles.body}>
               The choir plan is for directors: Pro for you and up to 25 singers, 60 songs a month shared, and one library for the whole choir.
             </Text>
-            <Button label="See the choir plan" variant="secondary" icon="pricetags-outline" onPress={() => navigation.navigate("Upgrade")} />
+            <Button label="See the choir plan" variant="secondary" icon="plans" onPress={() => navigation.navigate("Upgrade")} />
           </Card>
         </>
       ) : (
@@ -364,7 +364,7 @@ export function ChoirScreen({ navigation, route }: Props) {
               </>
             ) : null}
             {director && !choir.isActive ? (
-              <Button label="Renew the choir plan" icon="refresh-outline" onPress={() => navigation.navigate("Upgrade")} />
+              <Button label="Renew the choir plan" icon="retry" onPress={() => navigation.navigate("Upgrade")} />
             ) : null}
           </Card>
 
@@ -378,8 +378,8 @@ export function ChoirScreen({ navigation, route }: Props) {
               <Text style={styles.link} selectable numberOfLines={1}>
                 {siteUrls.choirJoin(choir.inviteCode)}
               </Text>
-              <Button label="Share invite link" icon="share-outline" onPress={() => void shareInvite()} />
-              <Button label="Make a new code" variant="text" icon="refresh-outline" onPress={confirmNewCode} />
+              <Button label="Share invite link" icon="share" onPress={() => void shareInvite()} />
+              <Button label="Make a new code" variant="text" icon="retry" onPress={confirmNewCode} />
             </Card>
           ) : null}
 
@@ -394,12 +394,12 @@ export function ChoirScreen({ navigation, route }: Props) {
               ) : (
                 members.map((m) => (
                   <View key={m.userId} style={styles.memberRow}>
-                    <Ionicons name="person-circle-outline" size={22} color={colors.textMuted} />
+                    <Icon name="user" size={22} color={colors.textMuted} />
                     <Text style={styles.memberName} numberOfLines={1}>
                       {m.name}
                     </Text>
                     <Touchable onPress={() => confirmRemove(m)} hitSlop={12} ripple="borderless" accessibilityLabel={`Remove ${m.name}`}>
-                      <Ionicons name="close-circle-outline" size={20} color={colors.textMuted} />
+                      <Icon name="user-minus" size={20} color={colors.textMuted} />
                     </Touchable>
                   </View>
                 ))
@@ -437,10 +437,10 @@ export function ChoirScreen({ navigation, route }: Props) {
                       </View>
                       {s.canUnshare ? (
                         <Touchable onPress={() => confirmUnshare(s)} hitSlop={8} ripple="borderless" accessibilityLabel={`Take ${s.title} out of the choir library`}>
-                          <Ionicons name="remove-circle-outline" size={20} color={colors.textMuted} />
+                          <Icon name="remove-item" size={20} color={colors.textMuted} />
                         </Touchable>
                       ) : (
-                        <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
+                        <Icon name="chevron" size={18} color={colors.textFaint} />
                       )}
                     </Touchable>
                   );
@@ -450,7 +450,7 @@ export function ChoirScreen({ navigation, route }: Props) {
           ) : null}
 
           {!director ? (
-            <Button label="Leave the choir" variant="destructive" icon="exit-outline" onPress={confirmLeave} loading={busy} style={styles.leave} />
+            <Button label="Leave the choir" variant="destructive" icon="leave" onPress={confirmLeave} loading={busy} style={styles.leave} />
           ) : null}
         </>
       )}

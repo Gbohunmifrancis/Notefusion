@@ -111,7 +111,7 @@ export function ModeState({ loading, error, onRetry }: { loading: boolean; error
   return (
     <View style={styles.failed}>
       <ProblemNote>{error}</ProblemNote>
-      <Button label="Try again" icon="refresh" variant="secondary" onPress={onRetry} />
+      <Button label="Try again" icon="retry" variant="secondary" onPress={onRetry} />
     </View>
   );
 }

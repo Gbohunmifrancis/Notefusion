@@ -123,27 +123,27 @@ export function SettingsScreen({ navigation }: Props) {
 
       <Group title="Account">
         <Row
-          icon="person-outline"
+          icon="user"
           label="Name"
           value={user?.fullName}
           chevron
           onPress={() => setSheet("name")}
         />
         <Row
-          icon={google ? undefined : "mail-outline"}
+          icon={google ? undefined : "mail"}
           iconNode={google ? <GoogleG size={16} /> : undefined}
           label="Email"
           value={user?.email}
           accessibilityLabel={google ? `Email, ${user?.email}, signs in with Google` : undefined}
         />
         {profile?.hasPassword ? (
-          <Row icon="key-outline" label="Password" value="Change" chevron onPress={() => setSheet("password")} />
+          <Row icon="password" label="Password" value="Change" chevron onPress={() => setSheet("password")} />
         ) : null}
       </Group>
 
       <Group title="Appearance">
         <Row
-          icon="contrast-outline"
+          icon="theme"
           label="Theme"
           trailing={
             <Segmented<ThemeMode>
@@ -151,8 +151,8 @@ export function SettingsScreen({ navigation }: Props) {
               value={mode}
               onChange={setMode}
               options={[
-                { value: "dark", label: "Night", icon: "moon-outline", iconOn: "moon" },
-                { value: "light", label: "Day", icon: "sunny-outline", iconOn: "sunny" },
+                { value: "dark", label: "Night", icon: "night" },
+                { value: "light", label: "Day", icon: "day" },
               ]}
             />
           }
@@ -160,13 +160,13 @@ export function SettingsScreen({ navigation }: Props) {
         {/* Every button, row and chip buzzes on press, so this has to be switchable: an unstoppable vibration
             is an accessibility problem, not a flourish. */}
         <Row
-          icon="pulse-outline"
+          icon="haptics"
           label="Haptic feedback"
           toggle={{ value: hapticsOn, onChange: (on) => void toggleHaptics(on) }}
         />
         {/* Doh's one card on Home (a sheet to practise, the streak, hello); off, Home is plain. On this phone. */}
         <Row
-          icon="sparkles-outline"
+          icon="doh"
           label="Doh's suggestions"
           hint="A card on Home now and then"
           toggle={{ value: dohSuggestions, onChange: (on) => void setDohSuggestions(on) }}
@@ -175,13 +175,13 @@ export function SettingsScreen({ navigation }: Props) {
 
       <Group title="Data & offline">
         <Row
-          icon="leaf-outline"
+          icon="data-saver"
           label="Data saver"
           hint="Smaller uploads, no pictures"
           toggle={{ value: dataSaver, onChange: toggleDataSaver }}
         />
         <Row
-          icon="cloud-done-outline"
+          icon="kept"
           label="Keep saved sheets offline"
           hint={
             usage.sheets === 0
@@ -191,7 +191,7 @@ export function SettingsScreen({ navigation }: Props) {
           toggle={{ value: offline.keepAll, onChange: (on) => void setKeepAllOffline(on) }}
         />
         <Row
-          icon="book-outline"
+          icon="hymns"
           label="Offline hymns"
           value={hymns}
           chevron
@@ -209,27 +209,27 @@ export function SettingsScreen({ navigation }: Props) {
       ) : null}
 
       <Group title="Help & about">
-        <Row icon="help-circle-outline" label="Help & support" chevron onPress={() => navigation.navigate("Help")} />
+        <Row icon="help" label="Help & support" chevron onPress={() => navigation.navigate("Help")} />
         <Row
-          icon="chatbubble-ellipses-outline"
+          icon="feedback"
           label="Send feedback"
           chevron
           onPress={() => openFeedback("Settings")}
         />
         <Row
-          icon="document-text-outline"
+          icon="privacy"
           label="Privacy policy"
           external
           onPress={() => void WebBrowser.openBrowserAsync(siteUrls.privacy)}
         />
         <Row
-          icon="shield-checkmark-outline"
+          icon="terms"
           label="Terms of service"
           external
           onPress={() => void WebBrowser.openBrowserAsync(siteUrls.terms)}
         />
         <Row
-          icon="information-circle-outline"
+          icon="about"
           label="About Notefusion"
           value={Application.nativeApplicationVersion ?? undefined}
           chevron
@@ -238,7 +238,7 @@ export function SettingsScreen({ navigation }: Props) {
       </Group>
 
       <Group style={styles.apart}>
-        <Row icon="log-out-outline" label="Sign out" onPress={confirmSignOut} />
+        <Row icon="leave" label="Sign out" onPress={confirmSignOut} />
       </Group>
 
       <Group style={styles.apart}>

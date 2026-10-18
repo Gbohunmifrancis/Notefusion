@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { Button } from "./Button";
+import { Icon, type IconName } from "./Icon";
 import { Sheet, SheetActions, SheetMessage, SheetTitle } from "./Sheet";
 import { ChoiceRow, OptionRow, type ChoiceChip } from "./SheetRows";
 import { fonts, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { arrangeActions, sheetKind, titleIcon, type SheetKind } from "../lib/sheetKind";
-
-type IconName = keyof typeof Ionicons.glyphMap;
 
 /** How an action is weighted. Mirrors `Alert.alert`'s button styles so replacing a call is mechanical. */
 export type DialogActionStyle = "default" | "cancel" | "destructive";
@@ -40,8 +38,9 @@ export interface DialogOptions {
   /** A line or two: what happened and what to do. Three lines at most. */
   message?: string;
   /**
-   * Shown small on the title line for an info sheet (amber for a problem, mint for good news),
-   * as Pro's gold star on an upsell, and as the tile of a celebration. A question carries none.
+   * Shown small on the title line for an info sheet (the amber "problem" sign, the mint "done" tick,
+   * otherwise ink), as Pro's gold crown ("pro") on an upsell, and as the tile of a celebration.
+   * A question carries none.
    */
   icon?: IconName;
   /**
@@ -120,13 +119,21 @@ export function AppDialog({ visible, options, onResolve, onClosed }: Props) {
   const titleLeading =
     kind === "celebrate" && o?.icon ? (
       <View style={[styles.tile, { backgroundColor: o.tone === "choir" ? c.choirSoft : c.premiumSoft }]}>
-        <Ionicons name={o.icon} size={20} color={o.tone === "choir" ? c.choir : c.premium} />
+        <Icon name={o.icon} size={20} color={o.tone === "choir" ? c.choir : c.premium} />
       </View>
     ) : iconTone && o?.icon ? (
-      <Ionicons
+      <Icon
         name={o.icon}
         size={21}
-        color={iconTone === "premium" ? c.premium : iconTone === "success" ? c.success : c.warning}
+        color={
+          iconTone === "premium"
+            ? c.premium
+            : iconTone === "success"
+              ? c.success
+              : iconTone === "warning"
+                ? c.warning
+                : c.icon
+        }
       />
     ) : undefined;
 
@@ -147,7 +154,7 @@ export function AppDialog({ visible, options, onResolve, onClosed }: Props) {
               <View style={styles.perks}>
                 {o.perks.map((p) => (
                   <View key={p.text} style={styles.perk}>
-                    <Ionicons name={p.icon} size={16} color={c.textMuted} />
+                    <Icon name={p.icon} size={16} color={c.textMuted} />
                     <Text style={styles.perkText}>{p.text}</Text>
                   </View>
                 ))}

@@ -2,7 +2,7 @@ import React from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import Animated, { FadeOutDown, SlideInDown } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../Icon";
 import { Touchable } from "../Touchable";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import { fonts, radii, spacing, type Palette } from "../../design/theme";
@@ -39,16 +39,16 @@ export function SelectionBar({
       style={[styles.bar, { bottom }]}
     >
       <Touchable onPress={onClose} hitSlop={8} ripple="borderless" style={styles.close} accessibilityLabel="Stop selecting">
-        <Ionicons name="close" size={18} color={colors.textMuted} />
+        <Icon name="close" size={20} color={colors.textMuted} />
       </Touchable>
       <Text style={styles.count} numberOfLines={1}>
         {count} selected
       </Text>
       <Touchable onPress={onDelete} style={styles.iconBtn} radius={radii.pill} accessibilityLabel={`Delete ${count} selected`}>
-        <Ionicons name="trash-outline" size={20} color={colors.text} />
+        <Icon name="delete" size={20} color={colors.text} />
       </Touchable>
       <Touchable onPress={onMove} style={styles.iconBtn} radius={radii.pill} accessibilityLabel={`Move ${count} selected to a folder`}>
-        <Ionicons name="folder-outline" size={20} color={colors.text} />
+        <Icon name="folder" size={20} color={colors.text} />
       </Touchable>
       <Touchable
         onPress={onShare}

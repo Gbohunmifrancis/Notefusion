@@ -27,7 +27,7 @@ export interface KindBilling {
 export interface KindChoice {
   kind: RecordingKind;
   title: string;
-  icon: "musical-notes-outline" | "mic-outline";
+  icon: "song" | "sing";
   /** The answer given last time: listed first and marked. */
   lastTime: boolean;
   /** What it costs here, as a short chip; undefined when billing is not known. */
@@ -69,14 +69,14 @@ export function recordKindChoices(remembered: RecordingKind, billing: KindBillin
   const song: KindChoice = {
     kind: "song",
     title: TITLES.song,
-    icon: "musical-notes-outline",
+    icon: "song",
     lastTime: remembered === "song",
     cost: songCost(billing),
   };
   const voice: KindChoice = {
     kind: "voice",
     title: TITLES.voice,
-    icon: "mic-outline",
+    icon: "sing",
     lastTime: remembered === "voice",
     cost: tuneCost(billing),
   };

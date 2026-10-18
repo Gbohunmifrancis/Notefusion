@@ -1,11 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon, type IconName } from "./Icon";
 import { Touchable } from "./Touchable";
 import { fonts, radii, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
-
-type IconName = keyof typeof Ionicons.glyphMap;
 
 export interface ChoiceChip {
   label: string;
@@ -22,7 +20,7 @@ export interface ChoiceRowProps {
   priceUnit?: string;
   /** The tile's icon; a row without one is a plain choice (a reason, an answer). */
   icon?: IconName;
-  /** The tile's colour: blue by default, gold for Pro, violet for the choir. */
+  /** The tile's colour: neutral with an ink icon by default (blue once selected), gold for Pro, violet for the choir. */
   tone?: "accent" | "premium" | "choir";
   chips?: ChoiceChip[];
   /** Drawn chosen (blue border and wash), for a choice that a button then confirms. */
@@ -50,7 +48,7 @@ export function ChoiceRow({
   const c = useColors();
   const styles = useThemedStyles(makeStyles);
   const tile = tone === "premium" ? c.premiumSoft : tone === "choir" ? c.choirSoft : c.sheetTile;
-  const ink = tone === "premium" ? c.premium : tone === "choir" ? c.choir : c.link;
+  const ink = tone === "premium" ? c.premium : tone === "choir" ? c.choir : selected ? c.link : c.icon;
   return (
     <Touchable
       onPress={onPress}
@@ -68,7 +66,7 @@ export function ChoiceRow({
     >
       {icon ? (
         <View style={[styles.tile, { backgroundColor: tile }]}>
-          <Ionicons name={icon} size={22} color={ink} />
+          <Icon name={icon} size={22} color={ink} />
         </View>
       ) : null}
       <View style={styles.body}>
@@ -126,13 +124,13 @@ export function OptionRow({ label, icon, selected = false, destructive = false, 
       {!first ? <View style={[styles.rule, icon ? styles.ruleInset : null]} /> : null}
       {icon ? (
         <View style={[styles.optionIcon, destructive && styles.optionIconPlain]}>
-          <Ionicons name={icon} size={17} color={destructive ? c.textMuted : c.link} />
+          <Icon name={icon} size={18} color={destructive ? c.textMuted : c.icon} />
         </View>
       ) : null}
       <Text style={[styles.optionLabel, destructive && { color: c.danger }]} numberOfLines={2}>
         {label}
       </Text>
-      {selected ? <Ionicons name="checkmark" size={20} color={c.link} /> : null}
+      {selected ? <Icon name="check" size={20} color={c.link} /> : null}
     </Touchable>
   );
 }

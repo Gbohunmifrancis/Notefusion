@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '../components/Icon';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
@@ -351,7 +351,7 @@ export function HomeScreen({ navigation }: Props) {
       showDialog({
         title: 'Could not open',
         message: toApiError(e).message,
-        icon: 'alert-circle-outline',
+        icon: 'problem',
         tone: 'danger',
       });
     }
@@ -394,8 +394,8 @@ export function HomeScreen({ navigation }: Props) {
                     radius={radii.pill}
                     accessibilityLabel={`Practice: ${practice.streak.current}-day streak, ${practice.xp} XP, level ${practice.level.name}`}
                   >
-                    <Ionicons
-                      name={practice.streak.current > 0 ? 'flame' : 'flame-outline'}
+                    <Icon
+                      name="streak"
                       size={15}
                       color={practice.streak.current > 0 ? colors.play : colors.textMuted}
                     />
@@ -424,7 +424,7 @@ export function HomeScreen({ navigation }: Props) {
                     gold treatment invented here. */}
                 {isPro && (
                   <View style={styles.proChip}>
-                    <Ionicons name="star" size={9} color={colors.premiumDeep} />
+                    <Icon name="pro" size={11} color={colors.premiumDeep} />
                     <Text style={styles.proChipText}>PRO</Text>
                   </View>
                 )}
@@ -508,7 +508,7 @@ export function HomeScreen({ navigation }: Props) {
                   radius={radii.pill}
                   accessibilityLabel="Import audio file"
                 >
-                  <Ionicons name="download-outline" size={17} color={colors.accent} />
+                  <Icon name="import" size={18} color={colors.icon} />
                   <Text style={styles.chipLabel}>Import</Text>
                 </Touchable>
                 <Touchable
@@ -517,7 +517,7 @@ export function HomeScreen({ navigation }: Props) {
                   radius={radii.pill}
                   accessibilityLabel="Paste a song link"
                 >
-                  <Ionicons name="link-outline" size={17} color={colors.accent} />
+                  <Icon name="link" size={18} color={colors.icon} />
                   <Text style={styles.chipLabel}>Paste link</Text>
                 </Touchable>
                 {/* The season's one chip: the carols on top of Hymns (a pine tint, never a second accent). */}
@@ -528,7 +528,7 @@ export function HomeScreen({ navigation }: Props) {
                     radius={radii.pill}
                     accessibilityLabel="Carols for Christmas"
                   >
-                    <Ionicons name="snow-outline" size={17} color={colors.candle} />
+                    <Icon name="snow" size={18} color={colors.candle} />
                     <Text style={[styles.chipLabel, styles.chipPineLabel]}>Carols</Text>
                   </Touchable>
                 ) : null}
@@ -538,7 +538,7 @@ export function HomeScreen({ navigation }: Props) {
                   radius={radii.pill}
                   accessibilityLabel="Find the key of a song that is playing"
                 >
-                  <Ionicons name="radio-outline" size={17} color={colors.accent} />
+                  <Icon name="find-key" size={18} color={colors.icon} />
                   <Text style={styles.chipLabel}>Find key</Text>
                 </Touchable>
               </View>
@@ -628,7 +628,7 @@ export function HomeScreen({ navigation }: Props) {
                   ripple="borderless"
                   accessibilityLabel={`More for ${item.title}`}
                 >
-                  <Ionicons name="ellipsis-horizontal" size={18} color={colors.textMuted} />
+                  <Icon name="more" size={20} color={colors.textMuted} />
                 </Touchable>
               </Touchable>
             </FoldAway>
@@ -650,7 +650,7 @@ export function HomeScreen({ navigation }: Props) {
             </View>
           ) : loadError ? (
             <View style={styles.empty}>
-              <Ionicons name="cloud-offline-outline" size={26} color={colors.textMuted} />
+              <Icon name="offline" size={26} color={colors.textMuted} />
               <Text style={styles.emptyText}>{loadError}</Text>
               <Touchable
                 onPress={reload}

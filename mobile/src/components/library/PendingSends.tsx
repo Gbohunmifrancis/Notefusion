@@ -1,6 +1,6 @@
 import React from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon, type IconName } from "../Icon";
 import { Touchable } from "../Touchable";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import { fonts, radii, spacing, type Palette } from "../../design/theme";
@@ -33,15 +33,15 @@ export function PendingSends({
         const when = new Date(item.createdAt).toLocaleString(undefined, { weekday: "short", hour: "numeric", minute: "2-digit" });
         const name = item.fileName.startsWith("clip-") ? "Recording" : item.fileName;
         const problem = item.status === "refused" || item.status === "failed";
-        const icon: keyof typeof Ionicons.glyphMap =
-          item.status === "done" ? "checkmark-circle" : problem ? "alert-circle-outline" : item.status === "sent" ? "hourglass-outline" : "cloud-upload-outline";
+        const icon: IconName =
+          item.status === "done" ? "done" : problem ? "problem" : item.status === "sent" ? "waiting" : "sending";
         return (
           <View key={item.id} style={styles.card} accessible={false}>
             <View style={styles.top} accessible accessibilityLabel={`${name}, ${when}. ${statusLine(item)}`}>
               {item.status === "sending" ? (
                 <ActivityIndicator size="small" color={colors.accent} />
               ) : (
-                <Ionicons name={icon} size={20} color={problem ? colors.warning : colors.accent} />
+                <Icon name={icon} size={20} color={problem ? colors.warning : item.status === "done" ? colors.success : colors.icon} />
               )}
               <View style={styles.text}>
                 <Text style={styles.title} numberOfLines={1}>{`${name} · ${when}`}</Text>

@@ -1,0 +1,9 @@
+<!-- NoteFusion glyph "learn-part": Learn my part. Drawn on the 24 grid (e-icons board 09): 1.75 stroke, round
+     caps and joins, solid note heads (fill="currentColor"). <g id="wash">, when present, is the 20% wash drawn under
+     the selected state (the active tab); it is hidden here. mobile/scripts/build-icons.mjs reads this file. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+     stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M3.5 14.5h2.5a1.8 1.8 0 0 1 1.8 1.8v2.4a1.8 1.8 0 0 1-1.8 1.8H5.3a1.8 1.8 0 0 1-1.8-1.8V12a8.5 8.5 0 0 1 17 0v6.7a1.8 1.8 0 0 1-1.8 1.8h-.7a1.8 1.8 0 0 1-1.8-1.8v-2.4a1.8 1.8 0 0 1 1.8-1.8h2.5"/>
+  <path d="M13.1 16.6v-5c1.1.3 1.9.9 2.1 1.9"/>
+  <circle fill="currentColor" stroke="none" cx="11.65" cy="16.7" r="1.5"/>
+</svg>

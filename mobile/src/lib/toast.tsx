@@ -8,12 +8,12 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AccessibilityInfo } from "react-native";
-import type { Ionicons } from "@expo/vector-icons";
+import type { IconName } from "../components/Icon";
 import { Toast } from "../components/Toast";
 
 export interface ToastOptions {
-  /** Defaults to the mint tick. */
-  icon?: keyof typeof Ionicons.glyphMap;
+  /** Defaults to the mint tick ("done"); any other icon is ink. */
+  icon?: IconName;
 }
 
 interface Shown extends ToastOptions {

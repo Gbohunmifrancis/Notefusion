@@ -7,26 +7,24 @@
 
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon, type IconName } from "../Icon";
 
 import { Touchable } from "../Touchable";
 import { fonts, spacing, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
 
-type Icon = keyof typeof Ionicons.glyphMap;
-
 /** The link refusals the API names, as the screen titles them. */
-const REFUSALS: Record<string, { title: string; icon: Icon }> = {
-  TRANS_LINK_LIVE: { title: "That's a live stream", icon: "radio-outline" },
-  TRANS_LINK_UNAVAILABLE: { title: "That video can't be fetched", icon: "eye-off-outline" },
-  TRANS_LINK_NOT_FOUND: { title: "No video at that link", icon: "search-outline" },
-  TRANS_LINK_TOO_LONG: { title: "That video is too long", icon: "time-outline" },
-  TRANS_LINK_REFUSED: { title: "YouTube said no for now", icon: "hand-left-outline" },
-  TRANS_INVALID_LINK: { title: "That isn't a song link", icon: "link-outline" },
+const REFUSALS: Record<string, { title: string; icon: IconName }> = {
+  TRANS_LINK_LIVE: { title: "That's a live stream", icon: "live" },
+  TRANS_LINK_UNAVAILABLE: { title: "That video can't be fetched", icon: "video-off" },
+  TRANS_LINK_NOT_FOUND: { title: "No video at that link", icon: "not-found" },
+  TRANS_LINK_TOO_LONG: { title: "That video is too long", icon: "too-long" },
+  TRANS_LINK_REFUSED: { title: "YouTube said no for now", icon: "later" },
+  TRANS_INVALID_LINK: { title: "That isn't a song link", icon: "link-off" },
 };
 
 /** Heading and icon for a link the API turned away; null for any other failure. */
-export function linkRefusal(code: string | null | undefined): { title: string; icon: Icon } | null {
+export function linkRefusal(code: string | null | undefined): { title: string; icon: IconName } | null {
   return (code && REFUSALS[code]) || null;
 }
 
@@ -37,14 +35,17 @@ const NEVER = [
   { what: "Playlists, channels and albums", why: "Share the song itself and paste that link." },
 ];
 
-/** An icon, a heading, the plain sentence, and what to do next. */
+/**
+ * An icon, a heading, the plain sentence, and what to do next. The icon names what happened on a neutral tile;
+ * only the alert sign is amber and only Pro's crown gold.
+ */
 export function NoticeCard({
   icon,
   title,
   message,
   children,
 }: {
-  icon: Icon;
+  icon: IconName;
   title: string;
   message: string;
   children?: React.ReactNode;
@@ -53,8 +54,12 @@ export function NoticeCard({
   const styles = useThemedStyles(makeStyles);
   return (
     <View style={styles.card} accessibilityLiveRegion="polite">
-      <View style={styles.iconTile}>
-        <Ionicons name={icon} size={22} color={colors.warning} />
+      <View style={[styles.iconTile, icon === "pro" && { backgroundColor: colors.premiumSoft }]}>
+        <Icon
+          name={icon}
+          size={22}
+          color={icon === "problem" ? colors.warning : icon === "pro" ? colors.premium : colors.icon}
+        />
       </View>
       <Text style={styles.title} accessibilityRole="header">{title}</Text>
       <Text style={styles.message}>{message}</Text>
@@ -113,7 +118,7 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.surface, borderWidth: 1, borderColor: c.border,
     },
     iconTile: {
-      width: 44, height: 44, borderRadius: 14, backgroundColor: c.premiumSoft,
+      width: 44, height: 44, borderRadius: 14, backgroundColor: c.sheetTile,
       alignItems: "center", justifyContent: "center",
     },
     title: { fontFamily: fonts.semibold, fontSize: 19, letterSpacing: -0.4, color: c.text, marginTop: 14 },

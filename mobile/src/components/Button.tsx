@@ -10,7 +10,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon, type IconName } from "./Icon";
 import { fonts, radii, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import * as haptics from "../lib/haptics";
@@ -35,8 +35,8 @@ interface Props {
    * Continue at checkout), never two stacked.
    */
   block?: boolean;
-  icon?: keyof typeof Ionicons.glyphMap;
-  /** Drawn before the label in place of `icon`, for a mark the icon font does not hold (Google's G). */
+  icon?: IconName;
+  /** Drawn before the label in place of `icon`, for a mark that is not an icon (Google's G). */
   leading?: React.ReactNode;
   /** Which side of the label the icon sits on. Defaults to leading. */
   iconPosition?: "left" | "right";
@@ -104,8 +104,9 @@ export function Button({
           ? c.link
           : c.text;
 
+  // Red is the word, never the icon: a destructive button's icon stays grey (the bin beside "Delete").
   const glyph = icon ? (
-    <Ionicons name={icon} size={size === "sm" ? 16 : 18} color={textColor} />
+    <Icon name={icon} size={size === "sm" ? 16 : 18} color={variant === "destructive" ? c.textMuted : textColor} />
   ) : null;
 
   const scale = pressed.interpolate({ inputRange: [0, 1], outputRange: [1, 0.97] });

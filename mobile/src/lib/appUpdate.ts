@@ -146,9 +146,9 @@ export async function promptForUpdateIfNeeded(): Promise<void> {
       message:
         notes ||
         'This version of NoteFusion is no longer supported. Update to keep transcribing.',
-      icon: 'arrow-up-circle-outline',
+      icon: 'update',
       blocking: true,
-      actions: [{ label: 'Update now', icon: 'open-outline', onPress: () => void openStore(info) }],
+      actions: [{ label: 'Update now', icon: 'external', onPress: () => void openStore(info) }],
     });
     return;
   }
@@ -158,9 +158,9 @@ export async function promptForUpdateIfNeeded(): Promise<void> {
   showDialog({
     title: `NoteFusion ${info.latestVersion} is here`,
     message: notes || 'A new version is available with the latest fixes and improvements.',
-    icon: 'sparkles-outline',
+    icon: 'update',
     actions: [
-      { label: 'Update now', icon: 'open-outline', onPress: () => void openStore(info) },
+      { label: 'Update now', icon: 'external', onPress: () => void openStore(info) },
       { label: 'Later', style: 'cancel', onPress: () => void snooze(info.latestBuild) },
     ],
   });

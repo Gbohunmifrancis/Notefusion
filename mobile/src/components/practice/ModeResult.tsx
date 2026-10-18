@@ -6,7 +6,6 @@
 
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import type { PracticeReward } from "../../api/types";
 import type { MarkTone } from "../../lib/practiceModes";
 import { rewardMoment } from "../../lib/practiceProgress";
@@ -14,6 +13,7 @@ import { playfulRewardLine, starsArt, starsFor, starWord } from "../../lib/pract
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import { Art } from "./Art";
+import { Icon } from "../Icon";
 
 export interface ResultMark {
   key: string | number;
@@ -89,7 +89,7 @@ export function ModeResult({
       {children}
       {earned ? (
         <View style={[styles.earnedRow, playful && styles.earnedCenter]}>
-          <Ionicons name="sparkles" size={15} color={playful ? c.play : c.link} />
+          <Icon name="reward" size={15} color={playful ? c.play : c.icon} />
           <Text style={[styles.earned, playful && { color: c.play }]}>{earned}</Text>
         </View>
       ) : null}

@@ -7,7 +7,7 @@
 
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../../components/Icon";
 import type { PracticeModeGrade, PracticeTrack } from "../../api/types";
 import { Screen } from "../../components/Screen";
 import { Button } from "../../components/Button";
@@ -149,7 +149,7 @@ export function RhythmScreen({ track }: { track: PracticeTrack | null }) {
                           <Text style={styles.rowSub} numberOfLines={1}>{e.claps.map((cl) => clapSyllable(cl.durBeats)).join(" ")}</Text>
                         </View>
                         {e.bestScore != null && !playful ? <Text style={styles.rowValue}>Best {e.bestScore}</Text> : null}
-                        <Ionicons name="chevron-forward" size={16} color={c.textFaint} />
+                        <Icon name="chevron" size={16} color={c.textFaint} />
                       </View>
                     </Touchable>
                   ))}
@@ -172,8 +172,8 @@ export function RhythmScreen({ track }: { track: PracticeTrack | null }) {
             </>
           ) : (
             <>
-              <Button label={take.playing === "hear" ? "Stop" : playful ? "Listen" : "Hear it"} icon={take.playing === "hear" ? "stop" : "volume-high-outline"} variant="secondary" onPress={hear} />
-              <Button label="Clap it" icon="hand-left-outline" onPress={() => void start()} disabled={noneLeft(data)} />
+              <Button label={take.playing === "hear" ? "Stop" : playful ? "Listen" : "Hear it"} icon={take.playing === "hear" ? "stop" : "hear"} variant="secondary" onPress={hear} />
+              <Button label="Clap it" icon="rhythm" onPress={() => void start()} disabled={noneLeft(data)} />
             </>
           )}
         </ModeFooter>

@@ -1,10 +1,10 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import Constants from "expo-constants";
-import { Ionicons } from "@expo/vector-icons";
 
 import { feedbackApi, type FeedbackCategory, type HeardAboutSource } from "../api/endpoints";
 import { Button } from "../components/Button";
+import { Icon } from "../components/Icon";
 import { ProblemNote } from "../components/ProblemNote";
 import { Sheet, SheetActions, SheetMessage, SheetTitle } from "../components/Sheet";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
@@ -20,18 +20,19 @@ import { useColors, useThemedStyles } from "./theme";
  * it and sends the answer to the API, so the admin console sees every rating and dismissal.
  */
 
-const SOURCES: { value: HeardAboutSource; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
-  { value: "friend", label: "Friend or family", icon: "people-outline" },
-  { value: "church", label: "Church or choir", icon: "musical-notes-outline" },
-  { value: "whatsapp", label: "WhatsApp", icon: "logo-whatsapp" },
-  { value: "instagram", label: "Instagram", icon: "logo-instagram" },
-  { value: "tiktok", label: "TikTok", icon: "logo-tiktok" },
-  { value: "youtube", label: "YouTube", icon: "logo-youtube" },
-  { value: "facebook", label: "Facebook", icon: "logo-facebook" },
-  { value: "x", label: "X (Twitter)", icon: "logo-twitter" },
-  { value: "google", label: "Google search", icon: "search-outline" },
-  { value: "play_store", label: "Play Store", icon: "logo-google-playstore" },
-  { value: "other", label: "Somewhere else", icon: "ellipsis-horizontal" },
+/** Words only: an icon (or a brand's logo) on each chip would say nothing the word does not. */
+const SOURCES: { value: HeardAboutSource; label: string }[] = [
+  { value: "friend", label: "Friend or family" },
+  { value: "church", label: "Church or choir" },
+  { value: "whatsapp", label: "WhatsApp" },
+  { value: "instagram", label: "Instagram" },
+  { value: "tiktok", label: "TikTok" },
+  { value: "youtube", label: "YouTube" },
+  { value: "facebook", label: "Facebook" },
+  { value: "x", label: "X (Twitter)" },
+  { value: "google", label: "Google search" },
+  { value: "play_store", label: "Play Store" },
+  { value: "other", label: "Somewhere else" },
 ];
 
 const CATEGORIES: { value: FeedbackCategory; label: string }[] = [
@@ -148,16 +149,13 @@ function Frame({
 /** A chip you tap: 36 px, with a 44 px touch target. */
 function Chip({
   label,
-  icon,
   on,
   onPress,
 }: {
   label: string;
-  icon?: keyof typeof Ionicons.glyphMap;
   on: boolean;
   onPress: () => void;
 }) {
-  const c = useColors();
   const styles = useThemedStyles(makeStyles);
   return (
     <Pressable
@@ -171,7 +169,6 @@ function Chip({
       accessibilityState={{ selected: on }}
       accessibilityLabel={label}
     >
-      {icon ? <Ionicons name={icon} size={15} color={on ? c.link : c.textMuted} /> : null}
       <Text style={[styles.chipText, on && styles.chipTextOn]}>{label}</Text>
     </Pressable>
   );
@@ -210,7 +207,6 @@ function HeardAboutSheet({ visible, onDone }: { visible: boolean; onDone: () => 
           <Chip
             key={s.value}
             label={s.label}
-            icon={s.icon}
             on={source === s.value}
             onPress={() => {
               setSource(s.value);
@@ -324,7 +320,7 @@ function RatingSheet({
             accessibilityRole="button"
             accessibilityLabel={`${s} star${s === 1 ? "" : "s"}`}
           >
-            <Ionicons name={s <= stars ? "star" : "star-outline"} size={34} color={s <= stars ? c.primary : c.textFaint} />
+            <Icon name="rate" size={34} filled={s <= stars} color={s <= stars ? c.link : c.textFaint} />
           </Pressable>
         ))}
       </View>

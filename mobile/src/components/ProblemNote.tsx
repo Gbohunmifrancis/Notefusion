@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "./Icon";
 import { fonts, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 
@@ -22,7 +22,7 @@ export function ProblemNote({
   const styles = useThemedStyles(makeStyles);
   return (
     <View style={[styles.row, center && styles.center, style]} accessibilityLiveRegion="polite">
-      <Ionicons name="alert-circle" size={15} color={c.warning} style={styles.icon} />
+      <Icon name="problem" size={15} color={c.warning} style={styles.icon} />
       <Text style={[styles.text, center && styles.textCenter]}>{children}</Text>
     </View>
   );

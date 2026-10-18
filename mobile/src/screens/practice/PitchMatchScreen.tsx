@@ -9,7 +9,7 @@
 
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../../components/Icon";
 import type { PracticeExercise, PracticeModeGrade, PracticeTrack } from "../../api/types";
 import { Screen } from "../../components/Screen";
 import { Button } from "../../components/Button";
@@ -140,7 +140,7 @@ export function PitchMatchScreen({ track }: { track: PracticeTrack | null }) {
                     </View>
                   ) : (
                     <View style={styles.listenRow}>
-                      <Ionicons name="volume-high-outline" size={18} color={c.link} />
+                      <Icon name="hear" size={18} color={c.icon} />
                       <Text style={styles.listen}>{take.phase === "leadin" ? `Starting in ${Math.max(1, Math.ceil(countInSec - take.elapsed))}` : "Listen…"}</Text>
                     </View>
                   )
@@ -163,14 +163,14 @@ export function PitchMatchScreen({ track }: { track: PracticeTrack | null }) {
                     <Touchable key={e.id} onPress={() => open(exercises.indexOf(e))} scaleTo={0.99} accessibilityLabel={`${e.title}. ${e.dohHeader ?? ""}`}>
                       <View style={styles.row}>
                         <View style={styles.tile}>
-                          <Ionicons name="speedometer-outline" size={18} color={c.link} />
+                          <Icon name="pitch" size={20} color={c.icon} />
                         </View>
                         <View style={styles.rowText}>
                           <Text style={styles.rowTitle}>{e.title}</Text>
                           <Text style={styles.rowSolfa} numberOfLines={1}>{e.notes.map(written).join(" ")}</Text>
                         </View>
                         <Text style={styles.rowValue}>{e.bestScore != null && !playful ? `Best ${e.bestScore}` : e.dohHeader}</Text>
-                        <Ionicons name="chevron-forward" size={16} color={c.textFaint} />
+                        <Icon name="chevron" size={16} color={c.textFaint} />
                       </View>
                     </Touchable>
                   ))}
@@ -193,7 +193,7 @@ export function PitchMatchScreen({ track }: { track: PracticeTrack | null }) {
             </>
           ) : (
             <>
-              <Button label={take.playing === "hear" ? "Stop" : "Hear it"} icon={take.playing === "hear" ? "stop" : "volume-high-outline"} variant="secondary" onPress={hear} />
+              <Button label={take.playing === "hear" ? "Stop" : "Hear it"} icon={take.playing === "hear" ? "stop" : "hear"} variant="secondary" onPress={hear} />
               <Button label={playful ? "Sing it!" : "Start"} icon="mic" onPress={() => void start()} disabled={noneLeft(data)} />
             </>
           )}
@@ -232,7 +232,7 @@ const makeStyles = (c: Palette) =>
     section: { fontFamily: fonts.semibold, fontSize: 13, color: c.textFaint, marginTop: spacing.xl, marginBottom: spacing.sm },
     list: { backgroundColor: c.surface, borderWidth: 1, borderColor: c.border, borderRadius: radii.md, overflow: "hidden" },
     row: { flexDirection: "row", alignItems: "center", gap: spacing.md, minHeight: 60, paddingHorizontal: spacing.md, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: c.border },
-    tile: { width: 36, height: 36, borderRadius: 10, backgroundColor: c.accentSoft, alignItems: "center", justifyContent: "center" },
+    tile: { width: 36, height: 36, borderRadius: 10, backgroundColor: c.sheetTile, alignItems: "center", justifyContent: "center" },
     rowText: { flex: 1, minWidth: 0 },
     rowTitle: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
     rowSolfa: { ...typography.mono, fontSize: 12.5, color: c.textMuted, marginTop: 2 },

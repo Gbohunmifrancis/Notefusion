@@ -1,0 +1,11 @@
+<!-- NoteFusion glyph "transpose": Transpose. Drawn on the 24 grid (e-icons board 09): 1.75 stroke, round
+     caps and joins, solid note heads (fill="currentColor"). <g id="wash">, when present, is the 20% wash drawn under
+     the selected state (the active tab); it is hidden here. mobile/scripts/build-icons.mjs reads this file. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+     stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M9.2 16.4V5.5c1.6.35 2.8 1.4 3 2.9"/>
+  <circle fill="currentColor" stroke="none" cx="7.35" cy="16.5" r="1.85"/>
+  <path d="M17.5 4.5v15"/>
+  <path d="m15 7 2.5-2.5L20 7"/>
+  <path d="m15 17 2.5 2.5L20 17"/>
+</svg>

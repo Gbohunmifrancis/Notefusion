@@ -1,12 +1,12 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
-import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
+import { fonts, spacing, typography, type Palette } from "../design/theme";
 import { useFeedback } from "../lib/feedback";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { RootStackParams } from "../navigation/types";
@@ -14,34 +14,28 @@ import type { RootStackParams } from "../navigation/types";
 type Props = NativeStackScreenProps<RootStackParams, "Help">;
 
 /** Static answers — every one describes behaviour the app actually has. */
-const FAQ: { icon: keyof typeof Ionicons.glyphMap; q: string; a: string }[] = [
+const FAQ: { q: string; a: string }[] = [
   {
-    icon: "mic-outline",
     q: "What should I record?",
     a: "A single melodic line — hum, sing, or play a few bars close to the mic. One voice at a time transcribes far better than chords or a full mix.",
   },
   {
-    icon: "sparkles-outline",
     q: "How does transcription work?",
     a: "Your recording is uploaded and analysed for pitch and timing, then labelled as Tonic Solfa and engraved as staff notation. It usually takes a few seconds.",
   },
   {
-    icon: "speedometer-outline",
     q: "What does the confidence score mean?",
     a: "How sure the analysis is about the notes it found. Green is high, amber is worth a review, red means double-check it. Low-confidence notes are outlined so nothing is quietly wrong.",
   },
   {
-    icon: "swap-horizontal-outline",
     q: "Can I change the key afterwards?",
     a: "Yes. Solfa is movable-doh, so picking a new key re-labels the syllables without re-transcribing — the pitches never move, only the names do.",
   },
   {
-    icon: "document-text-outline",
     q: "How do I get sheet music out?",
     a: "Open a transcription and tap Export MusicXML. The file goes to your share sheet, ready to open in MuseScore, Sibelius, or Finale.",
   },
   {
-    icon: "trash-outline",
     q: "How do I delete my account?",
     a: "Profile → Settings → Danger zone. It asks for your password, then removes the account and every saved transcription for good.",
   },
@@ -76,7 +70,7 @@ export function HelpScreen({ navigation }: Props) {
           ripple="borderless"
         >
           <View style={styles.backCircle}>
-            <Ionicons name="chevron-back" size={20} color={colors.text} />
+            <Icon name="back" size={20} color={colors.text} />
           </View>
         </Touchable>
 
@@ -90,11 +84,6 @@ export function HelpScreen({ navigation }: Props) {
       {FAQ.map((item) => (
         <Card key={item.q} style={styles.card}>
           <View style={styles.qRow}>
-            <View
-              style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}
-            >
-              <Ionicons name={item.icon} size={15} color={colors.purple} />
-            </View>
             <Text style={styles.question}>{item.q}</Text>
           </View>
           <Text style={styles.answer}>{item.a}</Text>
@@ -105,7 +94,7 @@ export function HelpScreen({ navigation }: Props) {
       <Card style={styles.card}>
         <Text style={styles.question}>Something not answered here?</Text>
         <Text style={styles.answer}>Report a problem, suggest an idea or tell us how a transcription went.</Text>
-        <Button label="Send feedback" icon="chatbubble-ellipses-outline" variant="secondary" onPress={() => openFeedback("Help")} />
+        <Button label="Send feedback" icon="feedback" variant="secondary" onPress={() => openFeedback("Help")} />
       </Card>
     </Screen>
   );
@@ -170,15 +159,6 @@ const makeStyles = (c: Palette) =>
       flexDirection: "row",
       alignItems: "center",
       marginBottom: spacing.sm,
-    },
-
-    iconCircle: {
-      width: 30,
-      height: 30,
-      borderRadius: radii.sm,
-      alignItems: "center",
-      justifyContent: "center",
-      marginRight: spacing.md,
     },
 
     question: {

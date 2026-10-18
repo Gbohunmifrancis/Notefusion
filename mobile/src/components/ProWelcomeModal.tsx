@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "./Icon";
 import { Button } from "./Button";
 import { Sheet, SheetActions, SheetMessage, SheetTitle } from "./Sheet";
 import { fonts, type Palette } from "../design/theme";
@@ -61,8 +61,9 @@ export function ProWelcomeModal({
     <Sheet visible={welcome !== null && shown !== null} onClose={onClose}>
       <SheetTitle
         leading={
-          <View style={styles.tile}>
-            <Ionicons name={song ? "musical-note" : "star"} size={20} color={c.premium} />
+          // Gold is Pro's crown alone: a bought song is the plain song mark on a neutral tile.
+          <View style={[styles.tile, song && { backgroundColor: c.sheetTile }]}>
+            <Icon name={song ? "song" : "pro"} size={20} color={song ? c.icon : c.premium} />
           </View>
         }
       >
@@ -81,7 +82,7 @@ export function ProWelcomeModal({
         <View style={styles.perks}>
           {PRO_FEATURES.map((f) => (
             <View key={f.text} style={styles.perk}>
-              <Ionicons name={f.icon} size={16} color={c.textMuted} />
+              <Icon name={f.icon} size={16} color={c.textMuted} />
               <Text style={styles.perkText}>{f.text}</Text>
             </View>
           ))}

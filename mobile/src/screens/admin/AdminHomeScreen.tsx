@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon, type IconName } from "../../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../../components/Screen";
 import { Card } from "../../components/Card";
@@ -90,11 +90,11 @@ export function AdminHomeScreen({ navigation }: Props) {
       showDialog({
         title: "Stale sweep completed",
         message: `Cleared ${res.clearedPendingCount} pending and ${res.clearedProcessingCount} processing checkout(s). Fulfilled ${res.fulfilledCount}.`,
-        icon: "checkmark-circle-outline",
+        icon: "done",
         actions: [{ label: "OK", style: "cancel", onPress: load }],
       });
     } catch (e) {
-      showDialog({ title: "Sweep failed", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+      showDialog({ title: "Sweep failed", message: toApiError(e).message, icon: "problem", tone: "danger" });
     } finally {
       setSweeping(false);
     }
@@ -132,7 +132,7 @@ export function AdminHomeScreen({ navigation }: Props) {
       >
         {error ? (
           <Card style={styles.errorCard}>
-            <Ionicons name="alert-circle" size={18} color={colors.danger} />
+            <Icon name="problem" size={18} color={colors.warning} />
             <Text style={styles.errorText}>{error}</Text>
           </Card>
         ) : null}
@@ -142,10 +142,10 @@ export function AdminHomeScreen({ navigation }: Props) {
             {/* ── What needs a human ───────────────────────────────────────── */}
             <Card style={needsAttention ? styles.alertCard : undefined}>
               <View style={styles.cardHead}>
-                <Ionicons
-                  name={needsAttention ? "warning-outline" : "checkmark-circle-outline"}
+                <Icon
+                  name={needsAttention ? "problem" : "done"}
                   size={16}
-                  color={needsAttention ? colors.danger : colors.success}
+                  color={needsAttention ? colors.warning : colors.success}
                 />
                 <Text style={styles.cardTitle}>
                   {needsAttention ? "Needs attention" : "Nothing waiting"}
@@ -259,11 +259,7 @@ export function AdminHomeScreen({ navigation }: Props) {
                   style={styles.sweepBtn}
                   radius={radii.md}
                 >
-                  <Ionicons
-                    name="sparkles-outline"
-                    size={14}
-                    color={colors.accent}
-                  />
+                  <Icon name="sync" size={14} color={colors.icon} />
                   <Text style={styles.sweepBtnText}>
                     {sweeping ? "Sweeping Stale Payments..." : "Sweep Stale Checkouts"}
                   </Text>
@@ -395,19 +391,19 @@ export function AdminHomeScreen({ navigation }: Props) {
         {/* ── Tools ──────────────────────────────────────────────────────────── */}
         <SectionTitle>Tools</SectionTitle>
         <NavRow
-          icon="card-outline"
+          icon="card"
           label="Payments"
           hint="Find a charge, reconcile a stuck one"
           onPress={() => navigation.navigate("AdminPayments")}
         />
         <NavRow
-          icon="git-pull-request-outline"
+          icon="webhook"
           label="Webhook inbox"
           hint="Why a provider callback would not drain"
           onPress={() => navigation.navigate("AdminWebhooks")}
         />
         <NavRow
-          icon="people-outline"
+          icon="users"
           label="Accounts"
           hint="Gift or end Pro, suspend, send a reset"
           onPress={() => navigation.navigate("AdminUsers")}
@@ -445,7 +441,7 @@ function NavRow({
   hint,
   onPress,
 }: {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: IconName;
   label: string;
   hint: string;
   onPress: () => void;
@@ -462,13 +458,13 @@ function NavRow({
       accessibilityLabel={label}
     >
       <View style={styles.navIcon}>
-        <Ionicons name={icon} size={20} color={colors.accent} />
+        <Icon name={icon} size={20} color={colors.icon} />
       </View>
       <View style={styles.navText}>
         <Text style={styles.navLabel}>{label}</Text>
         <Text style={styles.navHint}>{hint}</Text>
       </View>
-      <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
+      <Icon name="chevron" size={16} color={colors.textFaint} />
     </Touchable>
   );
 }
@@ -579,7 +575,7 @@ const makeStyles = (c: Palette) =>
       width: 38,
       height: 38,
       borderRadius: radii.md,
-      backgroundColor: c.accentSoft,
+      backgroundColor: c.sheetTile,
       alignItems: "center",
       justifyContent: "center",
     },

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NightButton } from "../components/night/NightButton";
 import { BackButton, ErrorNote, Glow, NightScreen, nightText, pressedLink } from "../components/night/NightUI";
@@ -109,7 +109,7 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
       }
     >
       <View style={styles.icon}>
-        <Ionicons name="mail-outline" size={28} color={night.ice} />
+        <Icon name="mail" size={28} color={night.ice} />
       </View>
       <Text style={[nightText.h1, styles.title]}>Check your email</Text>
       <Text style={[nightText.lead, styles.lead]}>

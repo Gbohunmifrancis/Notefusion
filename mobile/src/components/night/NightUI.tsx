@@ -10,7 +10,7 @@ import {
   type TextStyle,
   type ViewStyle,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../Icon";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg";
@@ -116,7 +116,7 @@ export function Glow({
 export function BackButton({ onPress }: { onPress: () => void }) {
   return (
     <Touchable onPress={onPress} hitSlop={8} radius={20} accessibilityLabel="Go back" style={styles.iconBtn}>
-      <Ionicons name="chevron-back" size={20} color={night.text} />
+      <Icon name="back" size={20} color={night.text} />
     </Touchable>
   );
 }
@@ -125,7 +125,7 @@ export function BackButton({ onPress }: { onPress: () => void }) {
 export function ErrorNote({ message }: { message: string }) {
   return (
     <View style={styles.error} accessibilityLiveRegion="polite">
-      <Ionicons name="alert-circle" size={17} color={night.amber} />
+      <Icon name="problem" size={17} color={night.amber} />
       <Text style={styles.errorText}>{message}</Text>
     </View>
   );

@@ -7,7 +7,7 @@
 
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../Icon";
 import { Sheet } from "../Sheet";
 import { Group, Row } from "../settings/Rows";
 import { dohLetter } from "../../lib/solfa";
@@ -76,10 +76,11 @@ export function SheetActionsSheet({
           </View>
 
           <Group cardStyle={styles.group}>
-            <Row icon="link-outline" label="Share a link" onPress={handlers.onShareLink} />
+            <Row icon="link" label="Share a link" onPress={handlers.onShareLink} />
             {choirName ? (
               <Row
-                icon="people-outline"
+                icon="choir"
+                choir
                 label={s.sharedWithChoir ? "Take out of choir library" : `Share with ${choirName}`}
                 onPress={handlers.onChoir}
               />
@@ -87,10 +88,10 @@ export function SheetActionsSheet({
           </Group>
 
           <Group cardStyle={styles.group} style={styles.gap}>
-            <Row icon="create-outline" label="Rename" onPress={handlers.onRename} />
-            <Row icon="folder-outline" label="Move to folder" value={s.folder ?? undefined} chevron onPress={handlers.onMove} />
+            <Row icon="rename" label="Rename" onPress={handlers.onRename} />
+            <Row icon="folder" label="Move to folder" value={s.folder ?? undefined} chevron onPress={handlers.onMove} />
             <Row
-              icon="cloud-download-outline"
+              icon="keep-offline"
               label="Keep offline"
               hint={keepAll ? "Every sheet is kept (Settings)" : undefined}
               toggle={{ value: keepAll || kept, onChange: handlers.onKeepOffline, disabled: keepAll }}
@@ -99,7 +100,7 @@ export function SheetActionsSheet({
 
           <Group cardStyle={styles.group} style={styles.gap}>
             <Row
-              iconNode={<Ionicons name="trash-outline" size={17} color={c.textMuted} />}
+              iconNode={<Icon name="delete" size={18} color={c.textMuted} />}
               label="Delete"
               destructive
               onPress={handlers.onDelete}

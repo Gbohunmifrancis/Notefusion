@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Touchable } from "../Touchable";
 import { Glow } from "../night/NightUI";
@@ -134,7 +134,7 @@ export function RehearseView({
         >
           <View style={styles.header}>
             <Touchable onPress={onClose} style={styles.iconBtn} radius={20} accessibilityRole="button" accessibilityLabel="Close rehearsal">
-              <Ionicons name="chevron-down" size={20} color={colors.text} />
+              <Icon name="down" size={20} color={colors.text} />
             </Touchable>
             <Text style={styles.headerText} numberOfLines={1}>
               Rehearsing · {title}
@@ -232,7 +232,7 @@ export function RehearseView({
                 accessibilityRole="button"
                 accessibilityLabel="Slower"
               >
-                <Ionicons name="remove" size={15} color={p.rate <= RATE_STEPS[0]! ? colors.textFaint : colors.text} />
+                <Icon name="minus" size={16} color={p.rate <= RATE_STEPS[0]! ? colors.textFaint : colors.text} />
               </Pressable>
               <Text style={styles.speedText}>{p.rate}×</Text>
               <Pressable
@@ -246,9 +246,9 @@ export function RehearseView({
                 accessibilityRole="button"
                 accessibilityLabel="Faster"
               >
-                <Ionicons
+                <Icon
                   name="add"
-                  size={15}
+                  size={16}
                   color={p.rate >= RATE_STEPS[RATE_STEPS.length - 1]! ? colors.textFaint : colors.text}
                 />
               </Pressable>
@@ -262,7 +262,7 @@ export function RehearseView({
               accessibilityRole="button"
               accessibilityLabel="Back to the start"
             >
-              <Ionicons name="play-skip-back" size={24} color={p.ready ? colors.text : colors.textFaint} />
+              <Icon name="restart" size={24} color={p.ready ? colors.text : colors.textFaint} />
             </Touchable>
 
             <Touchable
@@ -274,7 +274,7 @@ export function RehearseView({
               accessibilityRole="button"
               accessibilityLabel={p.isPlaying ? "Pause playback" : "Play melody"}
             >
-              <Ionicons
+              <Icon
                 name={p.isPlaying ? "pause" : "play"}
                 size={26}
                 color={p.ready ? colors.bg : colors.textFaint}
@@ -292,7 +292,7 @@ export function RehearseView({
                 accessibilityState={{ selected: p.loopOn }}
                 accessibilityLabel="Loop a passage"
               >
-                <Ionicons name="repeat" size={20} color={p.loopOn ? colors.accent : p.ready ? colors.text : colors.textFaint} />
+                <Icon name="rehearse" size={20} color={p.loopOn ? colors.link : p.ready ? colors.text : colors.textFaint} />
               </Touchable>
             ) : (
               <View style={styles.loopBtnSpacer} />

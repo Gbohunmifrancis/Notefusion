@@ -1,6 +1,6 @@
 import React from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Touchable } from "../Touchable";
 import { motion, typography, type Palette } from "../../design/theme";
@@ -46,7 +46,7 @@ export function PlayerDock({
           {isLoading ? (
             <ActivityIndicator size="small" color={colors.bg} />
           ) : (
-            <Ionicons
+            <Icon
               name={isPlaying ? "pause" : "play"}
               size={20}
               color={ready ? colors.bg : colors.textFaint}
@@ -82,7 +82,7 @@ export function PlayerDock({
           accessibilityRole="button"
           accessibilityLabel="Rehearse: loop, slow down and choose the parts"
         >
-          <Ionicons name="expand-outline" size={18} color={colors.text} />
+          <Icon name="rehearse" size={20} color={colors.text} />
         </Touchable>
       </View>
       {/* The hook's error can be a platform message; the dock says it plainly instead. */}

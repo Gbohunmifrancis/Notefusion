@@ -10,7 +10,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "./Icon";
 import { File, Paths } from "expo-file-system";
 import {
   createAudioPlayer,
@@ -162,10 +162,13 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
   return (
     <View style={styles.block}>
       <View style={styles.headerRow}>
-        <Ionicons name="mic-outline" size={16} color={colors.textMuted} />
+        <Icon name="sing" size={16} color={colors.textMuted} />
         <Text style={styles.title}>Sing it</Text>
         {!isPro ? (
-          <View style={styles.proTag}><Text style={styles.proTagText}>PRO</Text></View>
+          <View style={styles.proTag}>
+            <Icon name="pro" size={11} color={colors.premiumDeep} />
+            <Text style={styles.proTagText}>PRO</Text>
+          </View>
         ) : null}
       </View>
       <Text style={styles.hint}>
@@ -192,12 +195,12 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
       {phase === "idle" || phase === "done" ? (
         <Button
           label={phase === "done" ? "Sing it again" : "Record my take"}
-          icon={isPro ? "mic" : "lock-closed-outline"}
+          icon={isPro ? "mic" : "lock"}
           onPress={() => void start()}
           disabled={notes.length === 0}
         />
       ) : phase === "grading" ? (
-        <Button label="Marking your take…" icon="hourglass-outline" loading />
+        <Button label="Marking your take…" icon="waiting" loading />
       ) : (
         <View style={styles.live}>
           <Text style={styles.liveLabel}>{phase === "leadin" ? `Starting note… sing in ${countdown}` : "Sing!"}</Text>
@@ -221,7 +224,7 @@ const makeStyles = (c: Palette) =>
     headerRow: { flexDirection: "row", alignItems: "center", gap: spacing.xs },
     title: { ...typography.heading, color: c.text, fontSize: 16, fontFamily: fonts.bold },
     hint: { ...typography.body, color: c.textMuted, fontSize: 13, lineHeight: 20 },
-    proTag: { marginLeft: "auto", backgroundColor: c.premiumSoft, borderRadius: radii.pill, paddingHorizontal: 8, paddingVertical: 2 },
+    proTag: { marginLeft: "auto", flexDirection: "row", alignItems: "center", gap: 3, backgroundColor: c.premiumSoft, borderRadius: radii.pill, paddingHorizontal: 8, paddingVertical: 2 },
     proTagText: { ...typography.caption, color: c.premiumDeep, fontFamily: fonts.semibold, fontSize: 10 },
     voiceRow: { flexDirection: "row", gap: spacing.xs, flexWrap: "wrap" },
     voiceChip: { paddingVertical: 6, paddingHorizontal: spacing.md, borderRadius: radii.pill, backgroundColor: c.surface, borderWidth: 1, borderColor: c.border },

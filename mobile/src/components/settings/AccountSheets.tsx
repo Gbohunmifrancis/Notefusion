@@ -154,8 +154,8 @@ export function AboutSheet({ visible, onClose }: { visible: boolean; onClose: ()
           {`${Application.nativeApplicationVersion ?? "—"} (build ${Application.nativeBuildVersion ?? "—"})`}
         </Text>
       </View>
-      <OptionRow label="Privacy policy" icon="document-text-outline" onPress={() => void WebBrowser.openBrowserAsync(siteUrls.privacy)} />
-      <OptionRow label="Terms of service" icon="shield-checkmark-outline" onPress={() => void WebBrowser.openBrowserAsync(siteUrls.terms)} />
+      <OptionRow label="Privacy policy" icon="privacy" onPress={() => void WebBrowser.openBrowserAsync(siteUrls.privacy)} />
+      <OptionRow label="Terms of service" icon="terms" onPress={() => void WebBrowser.openBrowserAsync(siteUrls.terms)} />
       {/* CC BY 3.0 asks for this credit wherever the recording is used. */}
       <Text style={styles.credit}>
         Piano sound: Salamander Grand Piano V3 by Alexander Holm, licensed under{" "}

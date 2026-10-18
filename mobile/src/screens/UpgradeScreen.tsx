@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon, type IconName } from "../components/Icon";
 import * as WebBrowser from "expo-web-browser";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
@@ -51,27 +51,27 @@ const RETURN_URL = "notefusion://billing/return";
 
 /** Key features displayed in the active Pro subscription hub. */
 const PRO_BENEFITS: {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: IconName;
   title: string;
   desc: string;
 }[] = [
   {
-    icon: "musical-notes",
+    icon: "song",
     title: "Whole Songs",
     desc: "Songs from a link or a recording, up to six minutes each, twenty a month. Hummed tunes are never counted.",
   },
   {
-    icon: "people",
+    icon: "parts",
     title: "Four-Part Harmony",
     desc: "Alto, tenor and bass written under any tune the way a hymn arranger would — only when you ask.",
   },
   {
-    icon: "download",
+    icon: "export",
     title: "Every Download",
     desc: "Clean PDF, MusicXML and MIDI with no watermark, ready for your choir.",
   },
   {
-    icon: "flash",
+    icon: "quick",
     title: "Priority Lane & Sing-Along",
     desc: "Never queued behind anyone, and sing a take to have every note marked.",
   },
@@ -231,7 +231,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
         showDialog({
           title: "Checkout error",
           message: "Could not initialize checkout. Please try again.",
-          icon: "alert-circle-outline",
+          icon: "problem",
           tone: "danger",
         });
         return;
@@ -290,7 +290,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
       showDialog({
         title: "Checkout failed",
         message: toApiError(e).message,
-        icon: "alert-circle-outline",
+        icon: "problem",
         tone: "danger",
       });
     }
@@ -368,7 +368,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
           ripple="borderless"
         >
           <View style={styles.backCircle}>
-            <Ionicons name="chevron-back" size={20} color={colors.text} />
+            <Icon name="back" size={20} color={colors.text} />
           </View>
         </Touchable>
 
@@ -410,7 +410,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
       {/* ── Payment not confirmed after the quick checks: the provider keeps asking ── */}
       {!loading && paymentCheck === "delayed" && (
         <View style={styles.confirmNote}>
-          <Ionicons name="time-outline" size={18} color={colors.accent} />
+          <Icon name="clock" size={18} color={colors.icon} />
           <Text style={styles.confirmNoteText}>
             {pendingCheckout?.single
               ? "Your payment is still being confirmed. Your song unlocks automatically the moment it lands."
@@ -464,7 +464,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
                 style={[styles.featureRow, i === 0 && styles.featureRowFirst]}
               >
                 <View style={styles.featureIcon}>
-                  <Ionicons name={f.icon} size={15} color={colors.accent} />
+                  <Icon name={f.icon} size={16} color={colors.icon} />
                 </View>
                 <Text style={styles.featureText}>{f.text}</Text>
               </View>
@@ -473,7 +473,6 @@ export function UpgradeScreen({ navigation, route }: Props) {
 
           {/* ── Plan selector ────────────────────────────────────────────── */}
           <View style={styles.sectionHeader}>
-            <Ionicons name="pricetags-outline" size={14} color={colors.purple} />
             <Text style={styles.sectionTitle}>Choose a plan</Text>
           </View>
 
@@ -509,7 +508,6 @@ export function UpgradeScreen({ navigation, route }: Props) {
           {choirPlans.length > 0 ? (
             <>
               <View style={styles.sectionHeader}>
-                <Ionicons name="people-outline" size={14} color={colors.purple} />
                 <Text style={styles.sectionTitle}>For choir directors</Text>
               </View>
               {choirPlans
@@ -540,7 +538,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
                     : `Upgrade — ${ctaPrice(selected)}`
                 : "Upgrade"
             }
-            icon={buyingSong ? "musical-note-outline" : buyingChoir ? "people-outline" : "lock-open-outline"}
+            icon={buyingSong ? "song" : buyingChoir ? "choir" : "pro"}
             onPress={handleUpgrade}
             loading={busy}
             disabled={!selectedId}
@@ -614,13 +612,13 @@ function ActiveState({
         message: renews
           ? `Pro stays active until ${renews}. It won't renew after that, and you can resubscribe any time.`
           : "Pro stays active until the end of your paid period.",
-        icon: "checkmark-circle-outline",
+        icon: "done",
       });
     } catch (e) {
       showDialog({
         title: "Could not cancel",
         message: toApiError(e).message,
-        icon: "alert-circle-outline",
+        icon: "problem",
         tone: "danger",
       });
     } finally {
@@ -655,11 +653,7 @@ function ActiveState({
               {displayEmail}
             </Text>
             <View style={styles.memberBadge}>
-              <Ionicons
-                name={lifetime ? "diamond-outline" : isGift ? "gift-outline" : "sparkles"}
-                size={12}
-                color={colors.premiumDeep}
-              />
+              <Icon name="pro" size={13} color={colors.premiumDeep} />
               <Text style={styles.memberBadgeText}>
                 {lifetime
                   ? "Lifetime Member"
@@ -712,7 +706,7 @@ function ActiveState({
       {/* ── 2. Notice Callout (if canceled) ───────────────────────────── */}
       {canceled && renews && (
         <View style={styles.noticeWarning}>
-          <Ionicons name="time-outline" size={18} color={colors.warning} />
+          <Icon name="problem" size={18} color={colors.warning} />
           <Text style={styles.noticeWarningText}>
             Your subscription has been canceled and will end on {renews}. Pro features remain active until then, and all your saved music scores will stay safe in your library.
           </Text>
@@ -721,7 +715,6 @@ function ActiveState({
 
       {/* ── 3. Included Pro Privileges ────────────────────────────────── */}
       <View style={styles.sectionHeader}>
-        <Ionicons name="sparkles-outline" size={14} color={colors.accent} />
         <Text style={styles.sectionTitle}>Included With Pro</Text>
       </View>
 
@@ -732,20 +725,18 @@ function ActiveState({
             style={[styles.benefitRow, index > 0 && styles.benefitRowBorder]}
           >
             <View style={styles.benefitIconCircle}>
-              <Ionicons name={item.icon} size={18} color={colors.accent} />
+              <Icon name={item.icon} size={20} color={colors.icon} />
             </View>
             <View style={styles.benefitContent}>
               <Text style={styles.benefitTitle}>{item.title}</Text>
               <Text style={styles.benefitDesc}>{item.desc}</Text>
             </View>
-            <Ionicons name="checkmark-circle" size={18} color={colors.accent} />
           </View>
         ))}
       </Card>
 
       {/* ── 4. Plan & Billing Details ─────────────────────────────────── */}
       <View style={styles.sectionHeader}>
-        <Ionicons name="card-outline" size={14} color={colors.textMuted} />
         <Text style={styles.sectionTitle}>Billing Details</Text>
       </View>
 
@@ -796,7 +787,7 @@ function ActiveState({
         {!lifetime && !(viaChoir && subscription.choirRole === "member") && (
           <Button
             label={viaChoir ? "Add choir time" : "Add more Pro time"}
-            icon="add-circle-outline"
+            icon="add"
             onPress={onExtend}
             style={styles.cancelBtn}
           />
@@ -806,7 +797,7 @@ function ActiveState({
           <Button
             label="My choir"
             variant="secondary"
-            icon="people-outline"
+            icon="choir"
             onPress={onOpenChoir}
             style={styles.cancelBtn}
           />
@@ -814,7 +805,7 @@ function ActiveState({
           <Button
             label="Start a choir"
             variant="secondary"
-            icon="people-outline"
+            icon="choir"
             onPress={onExtend}
             style={styles.cancelBtn}
           />
@@ -824,7 +815,7 @@ function ActiveState({
           <Button
             label="Cancel subscription"
             variant="secondary"
-            icon="close-circle-outline"
+            icon="clear"
             onPress={openCancelFlow}
             loading={canceling}
             style={styles.cancelBtn}
@@ -985,7 +976,7 @@ function PlanOption({
       </View>
 
       {selected && (
-        <Ionicons name="checkmark-circle" size={20} color={colors.accent} />
+        <Icon name="check" size={20} color={colors.link} />
       )}
     </Touchable>
   );
@@ -998,7 +989,7 @@ function EmptyState({ onRetry }: { onRetry: () => void }) {
   return (
     <Card style={styles.card}>
       <View style={styles.emptyBlock}>
-        <Ionicons name="cloud-offline-outline" size={28} color={colors.textFaint} />
+        <Icon name="offline" size={28} color={colors.textFaint} />
         <Text style={styles.emptyText}>Plans couldn't be loaded right now.</Text>
         <Button label="Try again" variant="secondary" onPress={onRetry} />
       </View>
@@ -1104,7 +1095,7 @@ const makeStyles = (c: Palette, s: Shadows) =>
       width: 30,
       height: 30,
       borderRadius: radii.sm,
-      backgroundColor: c.accentSoft,
+      backgroundColor: c.sheetTile,
       alignItems: "center",
       justifyContent: "center",
       marginRight: spacing.md,
@@ -1406,7 +1397,7 @@ const makeStyles = (c: Palette, s: Shadows) =>
       width: 36,
       height: 36,
       borderRadius: 18,
-      backgroundColor: c.accentSoft,
+      backgroundColor: c.sheetTile,
       alignItems: "center",
       justifyContent: "center",
       marginRight: spacing.md,
