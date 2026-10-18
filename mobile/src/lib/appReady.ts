@@ -34,12 +34,13 @@ const LAUNCHED_KEY = "nf.hasLaunched";
  * How long the branded splash holds once the fonts are ready.
  *
  * First run gets long enough for the mark to draw itself and the tagline to
- * land — the animation is the introduction, and at returning-user speed it just
- * flashes past. Every launch after that is kept short, because by then the
- * splash is a toll on the way to the app rather than something to look at.
+ * land (1.66 s) — the animation is the introduction, and at returning-user speed
+ * it just flashes past. Every cold start after that plays the 0.6 s version and
+ * hands over at 0.65 s, because by then the splash is a toll on the way to the
+ * app rather than something to look at (board a-core/02).
  */
-const HOLD_FIRST_LAUNCH_MS = 1900;
-const HOLD_RETURNING_MS = 700;
+const HOLD_FIRST_LAUNCH_MS = 1700;
+const HOLD_RETURNING_MS = 650;
 
 interface AppReady {
   /** True once fonts are loaded and the splash has had its minimum time. */
