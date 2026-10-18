@@ -202,6 +202,12 @@ services:
       Paystack__SecretKey: ${Paystack__SecretKey}
       Paystack__WebhookSecret: ${Paystack__WebhookSecret:-}
       Paystack__SupportedCurrencies: ${Paystack__SupportedCurrencies:-NGN}
+      # Flutterwave takes dollars only once it is the default provider (Billing__DefaultProvider=Flutterwave);
+      # until then, live or not, Bachs keeps them. Live only with all three of key, base URL and secret hash.
+      Flutterwave__BaseUrl: ${Flutterwave__BaseUrl:-https://api.flutterwave.com}
+      Flutterwave__SecretKey: ${Flutterwave__SecretKey:-}
+      Flutterwave__WebhookSecret: ${Flutterwave__WebhookSecret:-}
+      Flutterwave__SupportedCurrencies: ${Flutterwave__SupportedCurrencies:-USD}
       # Profile photos (Cloudflare R2). The deploy writes these into .env; without them here the API
       # never sees them and photo uploads stay off. UseR2 must default: an empty bool stops startup.
       R2__UseR2: ${R2__UseR2:-false}
