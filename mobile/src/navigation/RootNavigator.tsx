@@ -22,7 +22,9 @@ import { ChoirScreen } from '../screens/ChoirScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { PracticeModeScreen } from '../screens/practice/PracticeModeScreen';
+import { CarolsScreen } from '../screens/practice/CarolsScreen';
 import { useOutboxRunner } from '../lib/outbox';
+import { useSeasonSync } from '../lib/seasonStore';
 import { autoRefreshPack } from '../lib/hymnPackStore';
 import { AdminHomeScreen } from '../screens/admin/AdminHomeScreen';
 import { AdminPaymentsScreen } from '../screens/admin/AdminPaymentsScreen';
@@ -92,6 +94,10 @@ export function RootNavigator() {
   // Record now, send later: recordings that could not be sent go out when the API can be reached.
   useOutboxRunner(Boolean(user));
 
+  // The season flag (lib/seasonStore): read now, on every return to the app and when the account changes, and kept
+  // on the phone for the next launch's splash. Off, it changes nothing anywhere.
+  useSeasonSync(!initializing, user?.id ?? null);
+
   // The offline hymn pack's weekly look for a newer version (never on data saver; hymnPackStore).
   useEffect(() => {
     if (user) void autoRefreshPack();
@@ -160,6 +166,12 @@ export function RootNavigator() {
             <Stack.Screen
               name="PracticeMode"
               component={PracticeModeScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            {/* The Christmas carols path, from the Practice hub's pine card while the season is on. */}
+            <Stack.Screen
+              name="Carols"
+              component={CarolsScreen}
               options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen

@@ -1,9 +1,13 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AccessibilityInfo, Animated, Easing, StyleSheet, Text, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Circle } from "react-native-svg";
-import { Glow, Mark, Wordmark } from "../components/night/NightUI";
+import { Glow, MARK_ASPECT, Mark, Wordmark } from "../components/night/NightUI";
+import { MarkCap } from "../components/season/Cap";
+import { Snowfall } from "../components/season/Snowfall";
+import { JOY_OPENING, type SplashSeason } from "../lib/season";
+import { prepareCarol } from "../lib/seasonChime";
 import { night, nightFonts } from "../design/theme";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -34,6 +38,13 @@ interface Props {
    * something else after the splash has already played.
    */
   play?: Play;
+  /**
+   * The Christmas season as the phone last heard it (lib/appReady): `intro` once a season — the cap drops onto the
+   * mark as it lights (1.0 s: 220 ms down, then a spring with a 4° wobble), a few flakes fall and "Joy to the world"
+   * sounds; `capped` after that, the cap simply on; `none` (the default) exactly as always. The still frame that may
+   * follow wears what the launch wore.
+   */
+  season?: SplashSeason;
 }
 
 /**
@@ -41,6 +52,13 @@ interface Props {
  * it (RootNavigator, while the session restores): the tagline belongs to it only.
  */
 let introPlayed = false;
+/** What this launch's splash wore for the season, for that still frame too. */
+let launchSeason: SplashSeason = "none";
+
+/** The splash mark's height. */
+const MARK_H = 132;
+/** Where the cap's brim sits on that mark (lib/season `capOnMark`): the drop's wobble turns about it. */
+const CAP_PIVOT: [number, number, number] = [(150 / 438) * MARK_H, (22 / 438) * MARK_H, 0];
 
 /**
  * The animated splash (board a-core/02). The first launch on a phone, about 1.6 s:
@@ -64,9 +82,13 @@ let introPlayed = false;
  * face (narrower), keeps that box when the font arrives, and the last "n" of
  * "Notefusion" falls onto a hidden second line.
  */
-export function SplashScreen({ play = "still" }: Props) {
+export function SplashScreen({ play = "still", season }: Props) {
   const finished = play === "still";
   if (play === "intro") introPlayed = true;
+  if (play !== "still" && play !== "hold" && season) launchSeason = season;
+  const dress: SplashSeason = season ?? (finished ? launchSeason : "none");
+  /** The season's intro drops the cap on; every other dressed splash shows it on from the start. */
+  const dropping = play === "intro" && dress === "intro";
 
   const cover = useRef(new Animated.Value(play === "still" ? 0 : 1)).current;
   const barIn = useRef(BARS.map(() => new Animated.Value(0))).current;
@@ -79,12 +101,41 @@ export function SplashScreen({ play = "still" }: Props) {
   const glow = useRef(new Animated.Value(finished ? 0.7 : 0)).current;
   const wordIn = useRef(new Animated.Value(finished ? 1 : 0)).current;
   const tagIn = useRef(new Animated.Value(finished ? 1 : 0)).current;
+  /** The season's cap: 0 above the mark and unseen, 1 on it. */
+  const capIn = useRef(new Animated.Value(dropping ? 0 : 1)).current;
+  /** Its wobble once landed, ±1 for ±4°. */
+  const capTilt = useRef(new Animated.Value(0)).current;
+  const [snow, setSnow] = useState(false);
   const started = useRef(false);
 
   useEffect(() => {
     if (play === "hold" || play === "still" || started.current) return;
     started.current = true;
     let cancelled = false;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+
+    // The season's first splash: "Joy to the world" as the cap lands (1.0 s), rendered now so it is ready by then.
+    // It plays with Reduce Motion too (sound is not motion), never with the app's sound off, and rings on after the
+    // splash hands over.
+    if (dropping) {
+      // The same splash was the native cover a moment ago (`hold`), with the cap at rest: lift it for the drop.
+      capIn.setValue(0);
+      const startedAt = Date.now();
+      void prepareCarol(JOY_OPENING).then((chime) => {
+        if (!chime || cancelled) return;
+        const wait = Math.max(0, 1000 - (Date.now() - startedAt));
+        timers.push(setTimeout(chime, wait));
+      });
+    }
+
+    const dropCap = () =>
+      Animated.sequence([
+        Animated.timing(capIn, { toValue: 1, duration: 220, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+        Animated.sequence([
+          Animated.timing(capTilt, { toValue: 1, duration: 60, useNativeDriver: true }),
+          Animated.spring(capTilt, { toValue: 0, friction: 3.2, tension: 140, useNativeDriver: true }),
+        ]),
+      ]);
 
     const t = (v: Animated.Value, toValue: number, duration: number, easing = Easing.out(Easing.cubic)) =>
       Animated.timing(v, { toValue, duration, easing, useNativeDriver: true });
@@ -95,6 +146,7 @@ export function SplashScreen({ play = "still" }: Props) {
       markIn.setValue(1);
       glow.setValue(0.7);
       wordIn.setValue(1);
+      capIn.setValue(1);
       if (play === "intro") tagIn.setValue(1);
       t(cover, 0, 200).start();
     };
@@ -172,13 +224,14 @@ export function SplashScreen({ play = "still" }: Props) {
             ]),
           ]),
 
-          // Beat 3: the real mark lights up over them, with one bloom.
+          // Beat 3: the real mark lights up over them, with one bloom (and, once a season, the cap drops on).
           Animated.sequence([
             Animated.delay(1000),
             Animated.parallel([
               t(stageOut, 1, 240),
               Animated.spring(markIn, { toValue: 1, useNativeDriver: true, speed: 14, bounciness: 5 }),
               Animated.sequence([t(glow, 1, 320), t(glow, 0.7, 400)]),
+              ...(dropping ? [dropCap()] : []),
             ]),
           ]),
           Animated.sequence([Animated.delay(1150), t(wordIn, 1, 320)]),
@@ -186,10 +239,13 @@ export function SplashScreen({ play = "still" }: Props) {
           // Beat 4: the promise.
           Animated.sequence([Animated.delay(1400), t(tagIn, 1, 260)]),
         ]).start();
+        // The season's few flakes start with the cap.
+        if (dropping) timers.push(setTimeout(() => setSnow(true), 1000));
       });
 
     return () => {
       cancelled = true;
+      timers.forEach(clearTimeout);
     };
   }, [play]);
 
@@ -277,7 +333,29 @@ export function SplashScreen({ play = "still" }: Props) {
               },
             ]}
           >
-            <Mark height={132} />
+            {dress === "none" ? (
+              <Mark height={MARK_H} />
+            ) : (
+              <View style={styles.capped}>
+                <Mark height={MARK_H} />
+                <Animated.View
+                  pointerEvents="none"
+                  style={[
+                    StyleSheet.absoluteFill,
+                    {
+                      transformOrigin: CAP_PIVOT,
+                      opacity: capIn.interpolate({ inputRange: [0, 0.4, 1], outputRange: [0, 1, 1] }),
+                      transform: [
+                        { translateY: capIn.interpolate({ inputRange: [0, 1], outputRange: [-44, 0] }) },
+                        { rotate: capTilt.interpolate({ inputRange: [-1, 1], outputRange: ["4deg", "-4deg"] }) },
+                      ],
+                    },
+                  ]}
+                >
+                  <MarkCap height={MARK_H} />
+                </Animated.View>
+              </View>
+            )}
           </Animated.View>
         </View>
 
@@ -296,6 +374,9 @@ export function SplashScreen({ play = "still" }: Props) {
         ) : null}
       </View>
 
+      {/* The season's few flakes (its intro only): they start with the cap and fall on as the app takes over. */}
+      {dropping ? <Snowfall run={snow} seed={21} color={night.text} style={StyleSheet.absoluteFill} /> : null}
+
       {/* The native splash, recreated so the hand-over dissolves instead of cutting. */}
       <Animated.View pointerEvents="none" style={[styles.cover, { opacity: cover }]}>
         <Mark height={119} />
@@ -310,6 +391,7 @@ const styles = StyleSheet.create({
   stage: { width: 220, height: 200, marginBottom: 18 },
   centre: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, alignItems: "center", justifyContent: "center" },
   ring: { position: "absolute" },
+  capped: { width: MARK_H * MARK_ASPECT, height: MARK_H },
   bars: { flexDirection: "row", alignItems: "center", gap: PITCH - 9 },
   bar: {
     width: 9,

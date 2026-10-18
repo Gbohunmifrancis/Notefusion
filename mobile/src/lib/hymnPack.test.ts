@@ -4,9 +4,12 @@ import {
   PACK_FORMAT,
   WEEK_MS,
   autoCheckDue,
+  carols,
   formatBytes,
   hymnSheet,
+  keyAndTime,
   needsDownload,
+  openingLine,
   parseMeta,
   parsePack,
   searchHymns,
@@ -92,6 +95,45 @@ test("a hymn opens as a sheet the solfa engine reads as the hymnbook does", () =
   assert.deepEqual(derived.notes.map((n) => n.solfa + n.octaveMark), ["s,", "d", "m", "d"]);
   assert.match(derived.solfaLines[0]!, /^Doh is G/);
   assert.equal(hymnSheet(hymn("x", "X", { tempo: 0 })).tempo, 90);
+});
+
+const xmas = { occasions: ["Christmas"] };
+const silent = hymn("silent-night", "Silent Night", {
+  ...xmas, firstLine: "Silent night, holy night,", tune: "STILLE NACHT", key: "Bb major", time: "6/8",
+  notes: [[65, 0, 1.5], [67, 1.5, 0.5], [65, 2, 1], [62, 3, 3], [65, 6, 1.5], [67, 7.5, 0.5], [65, 8, 1], [62, 9, 3], [72, 12, 2]],
+});
+const joy = hymn("joy-to-the-world", "Joy to the World", {
+  ...xmas, key: "D major", time: "2/4",
+  notes: [[74, 0, 1], [73, 1, 0.75], [71, 1.75, 0.25], [69, 2, 1.5], [67, 3.5, 0.5], [66, 4, 1], [64, 5, 1], [62, 6, 1.5]],
+});
+const hark = hymn("hark-the-herald-angels-sing", "Hark! The Herald Angels Sing", {
+  ...xmas, key: "F major", notes: [[60, 0, 1], [65, 1, 1], [65, 2, 1.5], [64, 3.5, 0.5], [65, 4, 1], [69, 5, 1], [69, 6, 1], [67, 7, 1]],
+});
+const gentle = hymn("gentle-mary-laid-her-child", "Gentle Mary Laid Her Child", xmas);
+const advent = hymn("o-come-o-come-emmanuel", "O Come, O Come, Emmanuel", { occasions: ["Advent"] });
+const shelf = [gentle, advent, hark, ag, joy, silent, hymn("broken", "Broken", { occasions: "Christmas" as unknown as string[] })];
+
+test("the Christmas shelf: only the carols tagged Christmas, the best known first, the rest by title", () => {
+  assert.deepEqual(carols(shelf).map((h) => h.slug), ["silent-night", "joy-to-the-world", "hark-the-herald-angels-sing", "gentle-mary-laid-her-child"]);
+  assert.deepEqual(carols([ag, advent]), []);
+});
+
+test("each carol card opens with its first notes in solfa, as the engine labels them, and its key and time", () => {
+  const label = (h: PackHymn) => openingLine(deriveSolfa(hymnSheet(h).notes, h.key, h.time).notes);
+  assert.equal(label(silent), "s l s m s l s m");
+  assert.equal(label(joy), "d' t l s f m r d");
+  assert.equal(label(hark), "s, d d t, d m m r");
+  assert.equal(keyAndTime(silent), "Bb · 6/8");
+  assert.equal(keyAndTime({ key: "E minor", time: "3/4" }), "Em · 3/4");
+});
+
+test("search finds a carol by its occasion: 'christmas', 'carol' or 'carols'", () => {
+  const names = (q: string) => searchHymns(shelf, q).map((h) => h.slug);
+  assert.deepEqual(names("carol"), ["gentle-mary-laid-her-child", "hark-the-herald-angels-sing", "joy-to-the-world", "silent-night"]);
+  assert.deepEqual(names("christmas"), names("carols"));
+  assert.deepEqual(names("advent"), ["o-come-o-come-emmanuel"]);
+  // a title still outranks an occasion
+  assert.deepEqual(names("silent")[0], "silent-night");
 });
 
 test("sizes read as people say them", () => {

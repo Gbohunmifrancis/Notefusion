@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
@@ -11,14 +11,27 @@ import { Touchable } from "../components/Touchable";
 import { TabHeader } from "../components/TabHeader";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
-import { formatBytes, needsDownload, searchHymns, type HymnPack, type PackHymn, type PackMeta } from "../lib/hymnPack";
+import {
+  carols,
+  formatBytes,
+  hymnSheet,
+  keyAndTime,
+  needsDownload,
+  openingLine,
+  searchHymns,
+  type HymnPack,
+  type PackHymn,
+  type PackMeta,
+} from "../lib/hymnPack";
 import { downloadPack, installedPack, remotePackMeta, removePack, usePackState } from "../lib/hymnPackStore";
 import { resultFromHymn } from "../lib/openSheet";
+import { deriveSolfa } from "../lib/solfa";
 import { useDataSaver } from "../lib/dataSaver";
+import { useSeason } from "../lib/seasonStore";
 import { showDialog } from "../lib/dialog";
 import { showToast } from "../lib/toast";
 import { logAnalyticsEvent } from "../lib/analytics";
-import type { RootStackParams } from "../navigation/types";
+import type { RootStackParams, TabParams } from "../navigation/types";
 
 /**
  * Hymns — the website's public-domain hymns and tunes, from the offline pack: download once, then
@@ -41,6 +54,33 @@ export function HymnsScreen() {
   const [checking, setChecking] = useState(false);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState<PackHymn | null>(null);
+
+  // ── The Christmas season (board d-christmas/02), only while it is on: a "Carols for Christmas" shelf above the list,
+  // each card opening with its first notes in solfa; "See all" narrows the list to the carols. Home's Carols chip
+  // opens the screen at the top, on the shelf.
+  const route = useRoute<RouteProp<TabParams, "Hymns">>();
+  const christmas = useSeason().christmas;
+  const [carolsOnly, setCarolsOnly] = useState(false);
+  const list = useRef<FlatList<PackHymn>>(null);
+  const carolList = useMemo(() => (pack ? carols(pack.hymns) : []), [pack]);
+  const openings = useMemo(() => {
+    if (!christmas) return new Map<string, string>();
+    return new Map(carolList.map((h) => [h.slug, openingLine(deriveSolfa(hymnSheet(h).notes, h.key, h.time).notes)]));
+  }, [christmas, carolList]);
+  const showShelf = christmas && !carolsOnly && !query && carolList.length > 0;
+
+  useEffect(() => {
+    if (!route.params?.carols) return;
+    setQuery("");
+    setCarolsOnly(false);
+    list.current?.scrollToOffset({ offset: 0, animated: false });
+    navigation.setParams({ carols: undefined } as never);
+  }, [route.params?.carols, navigation]);
+
+  // The season ending mid-session takes its filter with it.
+  useEffect(() => {
+    if (!christmas) setCarolsOnly(false);
+  }, [christmas]);
 
   useEffect(() => {
     let live = true;
@@ -72,7 +112,11 @@ export function HymnsScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [packState.version, loading]);
 
-  const results = useMemo(() => (pack ? searchHymns(pack.hymns, query) : []), [pack, query]);
+  const results = useMemo(() => {
+    if (!pack) return [];
+    if (carolsOnly) return query ? searchHymns(carolList, query) : carolList;
+    return searchHymns(pack.hymns, query);
+  }, [pack, query, carolsOnly, carolList]);
 
   async function download(expected?: PackMeta | null) {
     setProgress(0);
@@ -188,6 +232,7 @@ export function HymnsScreen() {
   return (
     <Screen>
       <FlatList
+        ref={list}
         data={results}
         keyExtractor={(h) => h.slug}
         keyboardShouldPersistTaps="handled"
@@ -215,6 +260,54 @@ export function HymnsScreen() {
                 </Touchable>
               ) : null}
             </View>
+
+            {showShelf ? (
+              <View style={styles.shelf}>
+                <View style={styles.shelfHead}>
+                  <View style={styles.shelfIcon}>
+                    <Ionicons name="snow-outline" size={18} color={colors.candle} />
+                  </View>
+                  <Text style={styles.shelfTitle} accessibilityRole="header">Carols for Christmas</Text>
+                  <Touchable
+                    onPress={() => setCarolsOnly(true)}
+                    ripple={false}
+                    style={styles.shelfAll}
+                    accessibilityLabel={`See all ${carolList.length} carols`}
+                  >
+                    <Text style={styles.shelfAllText}>{carolList.length} · See all</Text>
+                  </Touchable>
+                </View>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.shelfRow}>
+                  {carolList.map((h) => (
+                    <Touchable
+                      key={h.slug}
+                      onPress={() => setOpen(h)}
+                      style={styles.carol}
+                      radius={radii.md}
+                      accessibilityLabel={`${h.title}, ${h.key}`}
+                    >
+                      <Text style={styles.carolTitle} numberOfLines={1}>{h.title}</Text>
+                      <Text style={styles.carolLine} numberOfLines={1}>{h.firstLine || `Tune · ${h.tune}`}</Text>
+                      <Text style={styles.carolSolfa} numberOfLines={1}>{openings.get(h.slug) ?? ""}</Text>
+                      <Text style={styles.carolKey}>{keyAndTime(h)}</Text>
+                    </Touchable>
+                  ))}
+                </ScrollView>
+                <Text style={styles.allLabel}>All hymns</Text>
+              </View>
+            ) : null}
+
+            {carolsOnly ? (
+              <View style={styles.shelfHead}>
+                <View style={styles.shelfIcon}>
+                  <Ionicons name="snow-outline" size={18} color={colors.candle} />
+                </View>
+                <Text style={styles.shelfTitle} accessibilityRole="header">Carols for Christmas · {carolList.length}</Text>
+                <Touchable onPress={() => setCarolsOnly(false)} ripple={false} style={styles.shelfAll} accessibilityLabel="Show all hymns">
+                  <Text style={styles.shelfAllText}>All hymns</Text>
+                </Touchable>
+              </View>
+            ) : null}
           </View>
         }
         renderItem={({ item }) => (
@@ -225,7 +318,7 @@ export function HymnsScreen() {
                 {item.kind === "tune" ? `Tune · ${item.tune}` : item.firstLine}
               </Text>
             </View>
-            <Text style={styles.rowKey}>{`${item.key.replace(" major", "").replace(" minor", "m")} · ${item.time}`}</Text>
+            <Text style={styles.rowKey}>{keyAndTime(item)}</Text>
           </Touchable>
         )}
         ItemSeparatorComponent={() => <View style={styles.divider} />}
@@ -310,6 +403,36 @@ const makeStyles = (c: Palette) =>
       marginBottom: spacing.md,
     },
     searchInput: { flex: 1, fontFamily: fonts.regular, fontSize: 15, color: c.text, height: "100%", paddingVertical: 0 },
+
+    // The season's shelf (board d-christmas/02): a pine tile, cards that open with their solfa.
+    shelf: { marginBottom: spacing.xs },
+    shelfHead: { flexDirection: "row", alignItems: "center", gap: spacing.sm, minHeight: 44, marginBottom: spacing.sm },
+    shelfIcon: {
+      width: 32,
+      height: 32,
+      borderRadius: 10,
+      backgroundColor: c.pineSoft,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    shelfTitle: { ...typography.label, flex: 1, color: c.text, fontSize: 16, fontFamily: fonts.semibold },
+    shelfAll: { minHeight: 44, justifyContent: "center", paddingLeft: spacing.sm },
+    shelfAllText: { fontFamily: fonts.medium, fontSize: 14, color: c.link },
+    shelfRow: { gap: spacing.sm, paddingRight: spacing.lg },
+    carol: {
+      width: 220,
+      padding: spacing.md,
+      gap: 3,
+      borderRadius: radii.md,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    carolTitle: { fontFamily: fonts.medium, fontSize: 15.5, color: c.text },
+    carolLine: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
+    carolSolfa: { ...typography.mono, fontSize: 15, color: c.accent, letterSpacing: 1.5, marginTop: spacing.sm },
+    carolKey: { fontFamily: typography.mono.fontFamily, fontSize: 12, color: c.textFaint, marginTop: 2 },
+    allLabel: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted, marginTop: spacing.lg },
 
     row: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: spacing.md },
     rowText: { flex: 1 },

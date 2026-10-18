@@ -236,6 +236,8 @@ const BADGE_ART: Record<string, string> = {
   streak_7: "seven-in-a-row",
   whole_part_80: "part-learned",
   streak_30: "month",
+  // The Christmas season's sticker: all six carols sung while it is on, kept for good.
+  carol_singer: "carol-singer",
 };
 
 /** A badge's sticker, or its locked one; a code this build does not know shows the first drill's. */
@@ -271,6 +273,14 @@ export const CONFETTI_ART: readonly ArtName[] = [
   "confetti-ribbon",
   "confetti-flat",
   "confetti-tri",
+];
+
+/** The Carol singer's burst (board d-christmas/03): snowflakes and quavers in place of the usual paper bits. */
+export const SEASON_CONFETTI_ART: readonly ArtName[] = [
+  "confetti-snowflake",
+  "confetti-quaver",
+  "confetti-snowflake",
+  "confetti-beamed",
 ];
 
 export function trackArt(track: PracticeTrack): ArtName {

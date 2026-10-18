@@ -9,8 +9,10 @@ import type {
   AdminUserRow,
   AdminWebhookEventDetail,
   AdminWebhookEventRow,
+  AppSeason,
   AppVersionInfo,
   BillingInterval,
+  CarolsPath,
   CheckoutSession,
   Choir,
   Drill,
@@ -204,6 +206,12 @@ export const appApi = {
    * work on the login screen too, which is where a user stuck on a broken build ends up.
    */
   version: () => api.get<AppVersionInfo>("/api/app/version").then((r) => r.data),
+
+  /**
+   * The season every surface dresses for now (`{ christmas }`), anonymous; with a token an admin also sees one in
+   * preview. A few bytes, cached by the API for a minute (lib/seasonStore keeps the last answer on the phone).
+   */
+  season: () => api.get<AppSeason>("/api/app/season").then((r) => r.data),
 };
 
 export interface SubmitOptions {
@@ -387,6 +395,13 @@ export const practiceApi = {
 
   /** XP, level, streak, weekly goal, badges, the last seven days and the track (null until chosen). */
   progress: () => api.get<PracticeProgress>("/api/practice/progress").then((r) => r.data),
+
+  /**
+   * The Christmas carols path while the season is on for the singer (404 PRACTICE_SEASON_OFF otherwise): six drills,
+   * each graded at `gradeDrill` with its `drill.id` like any drill, with the tune the piano plays under a part and a
+   * sing-along's words.
+   */
+  carols: () => api.get<CarolsPath>("/api/practice/carols").then((r) => r.data),
 
   /** Sets how the singer likes to practise; answers with the progress. Today's drill becomes the track's own. */
   setTrack: (track: PracticeTrack) => api.put<PracticeProgress>("/api/practice/track", { track }).then((r) => r.data),
