@@ -98,6 +98,51 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("admin_audit_logs", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.AdminPaymentAlert", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Accepted")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Devices")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Error")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<DateTime?>("LastAttemptAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("PaymentTransactionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Refused")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("SentAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAtUtc");
+
+                    b.HasIndex("PaymentTransactionId")
+                        .IsUnique();
+
+                    b.HasIndex("SentAtUtc", "CreatedAtUtc");
+
+                    b.ToTable("admin_payment_alerts", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.BackupRun", b =>
                 {
                     b.Property<long>("Id")
@@ -840,6 +885,32 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("NotifiedBuild")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("PaymentAlertHideNames")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("PaymentAlertQuietAtNight")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PaymentAlertSound")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<bool>("PaymentAlertVibrate")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("PaymentAlerts")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("PaymentAlertsMutedUntilUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("PaymentAlertsSetAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("PaymentProblemAlerts")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Platform")
                         .IsRequired()
@@ -2068,6 +2139,15 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.HasOne("NoteFusion.Core.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.AdminPaymentAlert", b =>
+                {
+                    b.HasOne("NoteFusion.Core.Entities.Billing.PaymentTransaction", null)
+                        .WithMany()
+                        .HasForeignKey("PaymentTransactionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
