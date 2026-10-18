@@ -91,6 +91,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * Paints its children in one mode whatever the user chose. For the first-run screens (welcome,
+ * sign-in, onboarding), which are drawn on the night canvas in either mode, so the shared
+ * components on them (`Button`) take the night palette too.
+ */
+export function ThemeOverride({ mode, children }: { mode: ThemeMode; children: React.ReactNode }) {
+  const outer = useTheme();
+  const value = useMemo<ThemeState>(
+    () => ({ ...outer, mode, palette: paletteFor(mode), shadows: shadowsFor(mode) }),
+    [outer, mode],
+  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+}
+
 export function useTheme(): ThemeState {
   const ctx = useContext(ThemeContext);
   if (!ctx) throw new Error("useTheme must be used inside ThemeProvider");

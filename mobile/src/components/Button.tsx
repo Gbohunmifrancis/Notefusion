@@ -2,256 +2,250 @@ import React, { useRef } from "react";
 import {
   ActivityIndicator,
   Animated,
+  Easing,
   Pressable,
   StyleSheet,
   Text,
-  ViewStyle,
+  View,
+  type StyleProp,
+  type ViewStyle,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  fonts,
-  gradients,
-  radii,
-  spacing,
-  typography,
-  type Palette,
-} from "../design/theme";
+import { fonts, radii, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import * as haptics from "../lib/haptics";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger" | "dangerSolid";
+/**
+ * The four buttons. One `primary` on a screen or in a sheet; everything else is `secondary`
+ * or `text`. `destructive` is the secondary pill with its word in red, for a loss that cannot
+ * be undone (delete, discard, remove, leave): danger is the word, never the paint.
+ */
+export type ButtonVariant = "primary" | "secondary" | "text" | "destructive";
+
+/** Height says the weight: 48 for the actions of a screen or sheet, 40 inside rows and cards. */
+export type ButtonSize = "md" | "sm";
 
 interface Props {
   label: string;
   onPress?: () => void;
-  variant?: Variant;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  /**
+   * Screen-wide. Only for the single main action at the bottom of a flow (Sign in, Transcribe,
+   * Continue at checkout), never two stacked.
+   */
+  block?: boolean;
   icon?: keyof typeof Ionicons.glyphMap;
+  /** Drawn before the label in place of `icon`, for a mark the icon font does not hold (Google's G). */
+  leading?: React.ReactNode;
   /** Which side of the label the icon sits on. Defaults to leading. */
   iconPosition?: "left" | "right";
+  /** A small chip after the label, e.g. "Last used". */
+  badge?: string;
+  /** A spinner replaces the word; the pill keeps its width. */
   loading?: boolean;
   disabled?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
+  /** Defaults to the label. */
+  accessibilityLabel?: string;
 }
 
+const HEIGHT = { md: 48, sm: 40 } as const;
+const PAD = { md: 22, sm: 16 } as const;
+/** A text button needs less room either side: it has no fill to frame. */
+const TEXT_PAD = 12;
+/** Press timing: 120 ms, no bounce. */
+const PRESS_MS = 120;
+
 /**
- * Unified button component.
+ * The app's one button.
  *
- * primary     — "The Fusion" gradient (blue), white label, tactile
- *               spring-scale on press.
- * secondary   — Raised surface + hairline border; body-coloured label.
- * ghost       — Transparent, and genuinely quieter: a lighter face at a smaller
- *               size, because a "ghost" that matches `primary`'s 17px semibold
- *               is only quieter in colour and ends up competing with whatever
- *               heading sits above it (this is what made dialog cancels shout).
- * danger      — Danger-tinted wash; danger label. For a destructive action that
- *               is *not* the main event on screen.
- * dangerSolid — Filled danger, white label. For a destructive action that IS the
- *               primary action — a confirmation dialog's "Sign out". A 12 % tint
- *               reads hollow in that position, as if the app were hedging.
+ * Pressed is a 0.97 scale and a 10 % darker face over 120 ms with no overshoot, and a light
+ * haptic tick (a warning tick on `destructive`). Disabled is 40 %. Loading swaps the word for a
+ * spinner while the word still holds the width, so the row around it does not jump.
  *
- * All variants share the same spring-scale press animation powered by
- * React Native's built-in Animated API (no extra dependencies needed).
+ * It hugs its word: the parent decides the width, except `block`, which fills it. At `sm` the
+ * 40 px pill keeps a 48 px touch target through `hitSlop`.
  */
 export function Button({
   label,
   onPress,
   variant = "primary",
+  size = "md",
+  block = false,
   icon,
+  leading,
   iconPosition = "left",
+  badge,
   loading = false,
   disabled = false,
   style,
+  accessibilityLabel,
 }: Props) {
-  const scale = useRef(new Animated.Value(1)).current;
-  const isDisabled = disabled || loading;
-  const colors = useColors();
+  const c = useColors();
   const styles = useThemedStyles(makeStyles);
+  const pressed = useRef(new Animated.Value(0)).current;
+  const inactive = disabled || loading;
 
-  /** Spring-snap on press-in, snap back on release. */
   const animate = (to: number) =>
-    Animated.spring(scale, {
+    Animated.timing(pressed, {
       toValue: to,
+      duration: PRESS_MS,
+      easing: Easing.out(Easing.quad),
       useNativeDriver: true,
-      speed: 40,
-      // No overshoot: the house press settles without a bounce (see `motion` in theme.ts).
-      bounciness: 0,
     }).start();
 
-  // ── Label / icon colour per variant ───────────────────────────────────────
-  const getTextColor = (): string => {
-    switch (variant) {
-      case "primary":
-      case "dangerSolid":
-        return colors.onAccent;
-      case "danger":
-        return colors.danger;
-      case "ghost":
-        return colors.textMuted;
-      default:
-        return colors.text;
-    }
-  };
+  const textColor =
+    variant === "primary"
+      ? c.onAccent
+      : variant === "destructive"
+        ? c.danger
+        : variant === "text"
+          ? c.link
+          : c.text;
 
-  const textColor = getTextColor();
+  const glyph = icon ? (
+    <Ionicons name={icon} size={size === "sm" ? 16 : 18} color={textColor} />
+  ) : null;
 
-  // ── Inner content (shared across variants) ────────────────────────────────
-  const glyph = icon && (
-    <Ionicons
-      name={icon}
-      size={18}
-      color={textColor}
-      style={iconPosition === "right" ? styles.iconRight : styles.icon}
-    />
-  );
-
-  const content = loading ? (
-    <ActivityIndicator color={textColor} size="small" />
-  ) : (
-    <>
-      {iconPosition === "left" && glyph}
-      <Text
-        style={[
-          styles.label,
-          variant === "ghost" && styles.ghostLabel,
-          { color: textColor },
-        ]}
-      >
-        {label}
-      </Text>
-      {iconPosition === "right" && glyph}
-    </>
-  );
-
-  // ── Primary — LinearGradient background ───────────────────────────────────
-  const primaryInner = (
-    <LinearGradient
-      colors={gradients.brand} // #1D4ED8 → #3B82F6
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={styles.base}
-    >
-      {content}
-    </LinearGradient>
-  );
-
-  // ── All other variants — plain View background ─────────────────────────────
-  const otherInner = (
-    <Animated.View
-      style={[
-        styles.base,
-        variant === "secondary" && styles.secondary,
-        variant === "ghost" && styles.ghost,
-        variant === "danger" && styles.danger,
-        variant === "dangerSolid" && styles.dangerSolid,
-      ]}
-    >
-      {content}
-    </Animated.View>
-  );
+  const scale = pressed.interpolate({ inputRange: [0, 1], outputRange: [1, 0.97] });
+  const shade = pressed.interpolate({ inputRange: [0, 1], outputRange: [0, 0.1] });
 
   return (
     <Animated.View
-      style={[{ transform: [{ scale }] }, style, isDisabled && styles.disabled]}
+      style={[
+        variant === "primary" && !inactive && styles.lift,
+        block && styles.block,
+        { transform: [{ scale }] },
+        style,
+        disabled && styles.disabled,
+      ]}
     >
       <Pressable
-        onPress={isDisabled ? undefined : onPress}
+        onPress={inactive ? undefined : onPress}
         onPressIn={() => {
-          if (isDisabled) return;
-          animate(0.96);
-          // Both destructive variants are the ones that sign you out or delete
-          // something, so they get the warning pattern rather than the tick.
-          haptics.play(
-            variant === "danger" || variant === "dangerSolid"
-              ? "warning"
-              : "light",
-          );
+          if (inactive) return;
+          animate(1);
+          haptics.play(variant === "destructive" ? "warning" : "light");
         }}
-        onPressOut={() => animate(1)}
+        onPressOut={() => animate(0)}
+        hitSlop={size === "sm" ? { top: 4, bottom: 4 } : undefined}
         accessibilityRole="button"
-        accessibilityLabel={label}
-        accessibilityState={{ disabled: isDisabled, busy: loading }}
-        // overflow:hidden clips the gradient to the pill shape on Android
-        style={styles.pressable}
+        accessibilityLabel={accessibilityLabel ?? label}
+        accessibilityState={{ disabled: inactive, busy: loading }}
+        style={[
+          styles.base,
+          { height: HEIGHT[size], paddingHorizontal: variant === "text" ? TEXT_PAD : PAD[size] },
+          variant === "primary" && styles.primary,
+          (variant === "secondary" || variant === "destructive") && styles.quiet,
+        ]}
       >
-        {variant === "primary" ? primaryInner : otherInner}
+        {/* The pressed face: 10 % darker on a fill, a faint blue pill under a text button. */}
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFill,
+            { backgroundColor: variant === "text" ? c.link : "#000000", opacity: shade },
+          ]}
+        />
+        <View style={[styles.row, loading && styles.hidden]}>
+          {leading}
+          {iconPosition === "left" && glyph}
+          <Text
+            style={[styles.label, size === "sm" && styles.labelSm, { color: textColor }]}
+            numberOfLines={1}
+          >
+            {label}
+          </Text>
+          {iconPosition === "right" && glyph}
+          {badge ? (
+            <View style={[styles.badge, variant === "primary" && styles.badgeOnPrimary]}>
+              <Text style={[styles.badgeText, variant === "primary" && styles.badgeTextOnPrimary]}>
+                {badge}
+              </Text>
+            </View>
+          ) : null}
+        </View>
+        {loading ? (
+          <View style={styles.spinner} pointerEvents="none">
+            <ActivityIndicator color={textColor} size="small" />
+          </View>
+        ) : null}
       </Pressable>
     </Animated.View>
   );
 }
 
-// ─── Standalone GradientButton ────────────────────────────────────────────────
-// Convenience alias — keeps the sample-prompt API and is re-exported so screens
-// can import either name without changing existing usages of <Button>.
-export { Button as GradientButton };
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
-
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    /** Clips the LinearGradient to the pill shape on Android & iOS. */
-    pressable: {
-      borderRadius: radii.pill,
-      overflow: "hidden",
-    },
-
-    /** Shared geometry — all variants render at this size. */
     base: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      height: 54,
-      paddingHorizontal: spacing.xl,
       borderRadius: radii.pill,
+      overflow: "hidden",
     },
-
-    /** Raised surface + hairline border. */
-    secondary: {
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
+    primary: {
+      backgroundColor: c.primary,
     },
-
-    /** Transparent — for low-hierarchy / skip actions. */
-    ghost: {
-      backgroundColor: "transparent",
+    /** Secondary and destructive share the quiet pill; only the word's colour differs. */
+    quiet: {
+      backgroundColor: c.surfaceAlt,
     },
-
-    /** Danger-tinted wash — secondary destructive actions. Both the tint and the
-     *  label now come from the same palette, so dark mode stops painting a
-     *  light-mode maroon fill under a lightened salmon label. */
-    danger: {
-      backgroundColor: c.dangerSoft,
-      borderWidth: 1,
-      borderColor: c.dangerBorder,
+    /** The primary's soft glow, on the wrapper so the pill's clip does not cut it off. */
+    lift: {
+      borderRadius: radii.pill,
+      shadowColor: c.primary,
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.3,
+      shadowRadius: 9,
     },
-
-    /** Filled danger — the destructive action that is also the primary one. */
-    dangerSolid: {
-      backgroundColor: c.danger,
+    block: {
+      alignSelf: "stretch",
     },
-
-    /** Applied when disabled or loading — preserves layout, fades visually. */
     disabled: {
       opacity: 0.4,
     },
-
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+    hidden: {
+      opacity: 0,
+    },
+    spinner: {
+      position: "absolute",
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      alignItems: "center",
+      justifyContent: "center",
+    },
     label: {
-      ...typography.label,
+      fontFamily: fonts.semibold,
       fontSize: 16,
     },
-
-    /** Ghost only: a step down in size and weight, not just in colour. */
-    ghostLabel: {
-      fontFamily: fonts.medium,
+    labelSm: {
       fontSize: 15,
     },
-
-    icon: {
-      marginRight: spacing.sm,
+    badge: {
+      height: 22,
+      paddingHorizontal: 8,
+      borderRadius: radii.pill,
+      justifyContent: "center",
+      backgroundColor: c.accentSoft,
     },
-
-    iconRight: {
-      marginLeft: spacing.md,
+    badgeOnPrimary: {
+      backgroundColor: "rgba(255, 255, 255, 0.18)",
+    },
+    badgeText: {
+      fontFamily: fonts.semibold,
+      fontSize: 11,
+      color: c.link,
+    },
+    badgeTextOnPrimary: {
+      color: c.onAccent,
     },
   });

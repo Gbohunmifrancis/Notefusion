@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "./Button";
-import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
+import { Sheet, SheetActions, SheetMessage, SheetTitle } from "./Sheet";
+import { ChoiceRow, OptionRow, type ChoiceChip } from "./SheetRows";
+import { fonts, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
+import { arrangeActions, sheetKind, titleIcon, type SheetKind } from "../lib/sheetKind";
+
+type IconName = keyof typeof Ionicons.glyphMap;
 
 /** How an action is weighted. Mirrors `Alert.alert`'s button styles so replacing a call is mechanical. */
 export type DialogActionStyle = "default" | "cancel" | "destructive";
@@ -16,254 +16,226 @@ export type DialogActionStyle = "default" | "cancel" | "destructive";
 export interface DialogAction {
   label: string;
   style?: DialogActionStyle;
-  icon?: keyof typeof Ionicons.glyphMap;
+  /** The row's icon in an options sheet. Buttons in the action row carry no icon. */
+  icon?: IconName;
+  /** The current choice in an options sheet (the sort order, a sheet's folder): a tick. */
+  selected?: boolean;
+  onPress?: () => void;
+}
+
+/** A row you tap once in an offer sheet: what it is, and what it costs. */
+export interface DialogChoice {
+  label: string;
+  detail?: string;
+  price?: string;
+  priceUnit?: string;
+  icon: IconName;
+  tone?: "accent" | "premium" | "choir";
+  chips?: ChoiceChip[];
   onPress?: () => void;
 }
 
 export interface DialogOptions {
   title: string;
+  /** A line or two: what happened and what to do. Three lines at most. */
   message?: string;
-  /** Glyph for the header medallion. Omit for a plain text dialog. */
-  icon?: keyof typeof Ionicons.glyphMap;
-  /** Tints the medallion. `premium` is the amber upsell tone; `danger` warns. */
-  tone?: "brand" | "premium" | "danger";
+  /**
+   * Shown small on the title line for an info sheet (amber for a problem, mint for good news),
+   * as Pro's gold star on an upsell, and as the tile of a celebration. A question carries none.
+   */
+  icon?: IconName;
+  /**
+   * `danger` makes a lone message an info sheet with the amber icon; it never paints anything red.
+   * `premium` is Pro's gold; `choir` the choir's violet.
+   */
+  tone?: "brand" | "premium" | "danger" | "choir";
   /** Defaults to a single "OK", matching `Alert.alert` with no buttons. */
   actions?: DialogAction[];
+  /** Choice rows (an offer sheet): each acts on one tap, and closes the sheet. */
+  choices?: DialogChoice[];
+  /** A celebration's perk lines. */
+  perks?: { icon: IconName; text: string }[];
+  /** Overrides the kind `lib/sheetKind` infers from the actions and tone. */
+  kind?: SheetKind;
   /**
-   * Removes every way out except the actions: the backdrop stops dismissing and the Android
-   * back button does nothing. For the one case that has no "later" — a build below the
-   * minimum the server will serve, where letting the user past the dialog only lands them
-   * on a screen that cannot work.
-   *
-   * Withholding a `cancel` action is not enough on its own, because both dismissal paths
-   * call `onResolve(undefined)`, which still closes the dialog.
+   * Removes every way out except the actions: no grabber, the scrim and the swipe do nothing, and
+   * the Android back button does nothing. For the one case that has no "later" — a build below the
+   * minimum the server will serve, where letting the user past the dialog only lands them on a
+   * screen that cannot work — and for a question that must be answered.
    */
   blocking?: boolean;
 }
 
+/** Something to run once the sheet has gone: an action's or a choice's handler. */
+export type DialogOutcome = { onPress?: () => void } | undefined;
+
 interface Props {
   visible: boolean;
   options: DialogOptions | null;
-  /** Runs the action's own handler, then closes. Called with nothing on a backdrop/back dismissal. */
-  onResolve: (action?: DialogAction) => void;
+  /** Closes the sheet; the outcome's handler runs once it has left the screen. Nothing on a dismissal with no Cancel. */
+  onResolve: (outcome: DialogOutcome) => void;
+  /** The sheet has left the screen. */
+  onClosed: () => void;
 }
 
-const DEFAULT_ACTIONS: DialogAction[] = [{ label: "OK" }];
+const OK: DialogAction = { label: "OK", style: "cancel" };
 
 /**
- * Entrance spring for the card. Softer than `motion.press` — a dialog arriving is
- * an announcement, not a button acknowledging a finger — but still damped enough
- * that it lands rather than wobbling.
- */
-const ENTER_SPRING = { damping: 18, stiffness: 240, mass: 0.7 } as const;
-
-/**
- * The app's dialog surface — brand canvas, brand radii, and the same gradient
- * button as every other primary action.
- *
- * Replaces `Alert.alert`, whose OS-drawn sheet ignored the theme entirely: it stayed
- * light in dark mode, used the system font, and rendered destructive actions in iOS
- * blue-and-red rather than the palette's own danger tone. On a screen this carefully
- * themed, that read as a different app interrupting.
- *
- * The card scales and rises in under its own spring rather than sharing the Modal's
- * flat cross-fade. Fading a whole dialog up at uniform opacity is what made this one
- * read as pasted on: the scrim and the card arrived as one flat layer, so nothing
- * signalled that the card sits *above* the screen.
+ * Every dialog in the app, drawn as the one bottom sheet (board 7a): grabber, title, a short
+ * message, and the actions in one row on the right — a text button, then one pill. The kind is
+ * read off the options (`lib/sheetKind`), so the callers of `showDialog` say what they mean
+ * (a `destructive` action, a `danger` tone, three choices) and never pick colours: a destructive
+ * confirm is the quiet pill with a red word, a problem is a small amber icon, three or more
+ * choices are rows, an offer is choice rows with prices, and good news is a toast (`showToast`),
+ * not a sheet.
  *
  * Presentational only — mounting, queueing, and the imperative entry point live in
  * `lib/dialog.tsx`.
  */
-export function AppDialog({ visible, options, onResolve }: Props) {
+export function AppDialog({ visible, options, onResolve, onClosed }: Props) {
   const c = useColors();
   const styles = useThemedStyles(makeStyles);
 
-  /**
-   * Retained through the exit. `options` goes null the instant an action fires while
-   * the Modal's own fade-out is still playing, so rendering straight from the prop
-   * empties the card — title, message and buttons all gone — for the length of that
-   * fade. Keeping the last set means the dialog fades out looking like itself.
-   */
+  // Retained through the exit, so the sheet leaves looking like itself.
   const [shown, setShown] = useState<DialogOptions | null>(options);
   useEffect(() => {
     if (options) setShown(options);
   }, [options]);
 
-  // ── Entrance ──────────────────────────────────────────────────────────────
-  const enter = useSharedValue(0);
-  useEffect(() => {
-    if (!options) return; // Exit is the Modal's fade; nothing to drive here.
-    enter.value = 0;
-    enter.value = withSpring(1, ENTER_SPRING);
-  }, [options, enter]);
-
-  const cardStyle = useAnimatedStyle(() => ({
-    // Clamped: the spring overshoots slightly past 1, which is welcome on scale
-    // and meaningless on opacity.
-    opacity: Math.min(enter.value, 1),
-    transform: [
-      { scale: 0.94 + enter.value * 0.06 },
-      { translateY: (1 - enter.value) * 12 },
-    ],
-  }));
-
-  const actions = shown?.actions?.length ? shown.actions : DEFAULT_ACTIONS;
+  const o = shown;
+  const kind = o ? sheetKind(o) : "info";
+  const given = o?.actions ?? [];
+  const actions =
+    given.length > 0 ? given : kind === "options" || kind === "offer" || o?.blocking ? [] : [OK];
+  const arranged = arrangeActions(kind, actions);
   const cancel = actions.find((a) => a.style === "cancel");
-  const rest = actions.filter((a) => a.style !== "cancel");
+  const iconTone = o ? titleIcon(kind, o.tone, o.icon) : null;
 
-  // One real choice gets the full-weight treatment. Several (a sort picker, an options
-  // sheet) become a list instead — four stacked gradient buttons is a wall, not a choice.
-  const emphasised = rest.length === 1;
-
-  /** The backdrop and the Android back button. Both dead while `blocking`. */
+  /** The scrim, a swipe and Android back resolve as the Cancel would. */
   const dismiss = () => {
-    if (shown?.blocking) return;
+    if (o?.blocking) return;
     onResolve(cancel);
   };
 
-  const tone = shown?.tone ?? "brand";
-  const toneColor =
-    tone === "premium" ? c.premium : tone === "danger" ? c.danger : c.accent;
-  const toneWash =
-    tone === "premium" ? c.premiumSoft : tone === "danger" ? c.dangerSoft : c.accentSoft;
-
-  const variantFor = (action: DialogAction) => {
-    if (action.style === "destructive") {
-      // A confirmation dialog's destructive action *is* its primary action, and a
-      // 12 % tint in that slot reads hollow — as if the app were hedging about the
-      // very thing it just asked you to confirm.
-      return emphasised ? "dangerSolid" : "danger";
-    }
-    return emphasised ? "primary" : "secondary";
-  };
+  const titleLeading =
+    kind === "celebrate" && o?.icon ? (
+      <View style={[styles.tile, { backgroundColor: o.tone === "choir" ? c.choirSoft : c.premiumSoft }]}>
+        <Ionicons name={o.icon} size={20} color={o.tone === "choir" ? c.choir : c.premium} />
+      </View>
+    ) : iconTone && o?.icon ? (
+      <Ionicons
+        name={o.icon}
+        size={21}
+        color={iconTone === "premium" ? c.premium : iconTone === "success" ? c.success : c.warning}
+      />
+    ) : undefined;
 
   return (
-    <Modal
-      visible={visible && shown !== null}
-      transparent
-      animationType="fade"
-      statusBarTranslucent
-      // Android hardware back resolves the same way a backdrop tap does.
-      onRequestClose={dismiss}
-    >
-      <Pressable style={styles.overlay} onPress={dismiss}>
-        <Animated.View style={[styles.cardWrap, cardStyle]}>
-          {/* Swallows taps on the card so they don't reach the dismissing backdrop. */}
-          <Pressable style={styles.card} onPress={() => undefined}>
-            {shown?.icon && (
-              <View style={[styles.medallion, { backgroundColor: toneWash }]}>
-                <Ionicons name={shown.icon} size={26} color={toneColor} />
+    <Sheet visible={visible && o !== null} onClose={dismiss} dismissable={!o?.blocking} onClosed={onClosed}>
+      {o ? (
+        <>
+          <SheetTitle leading={titleLeading}>{o.title}</SheetTitle>
+          <ScrollView
+            style={styles.body}
+            contentContainerStyle={styles.bodyContent}
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+          >
+            {o.message ? <SheetMessage>{o.message}</SheetMessage> : <View style={styles.noMessage} />}
+
+            {kind === "celebrate" && o.perks?.length ? (
+              <View style={styles.perks}>
+                {o.perks.map((p) => (
+                  <View key={p.text} style={styles.perk}>
+                    <Ionicons name={p.icon} size={16} color={c.textMuted} />
+                    <Text style={styles.perkText}>{p.text}</Text>
+                  </View>
+                ))}
               </View>
-            )}
-
-            <Text style={styles.title}>{shown?.title}</Text>
-
-            {shown?.message ? (
-              <ScrollView
-                style={styles.messageScroll}
-                contentContainerStyle={styles.messageContent}
-                showsVerticalScrollIndicator={false}
-              >
-                <Text style={styles.message}>{shown.message}</Text>
-              </ScrollView>
             ) : null}
 
-            <View style={styles.actions}>
-              {rest.map((action) => (
+            {o.choices?.map((choice) => (
+              <ChoiceRow
+                key={choice.label}
+                title={choice.label}
+                detail={choice.detail}
+                price={choice.price}
+                priceUnit={choice.priceUnit}
+                icon={choice.icon}
+                tone={choice.tone}
+                chips={choice.chips}
+                onPress={() => onResolve(choice)}
+              />
+            ))}
+
+            {arranged.rows.map((row, i) => (
+              <OptionRow
+                key={row.label}
+                label={row.label}
+                icon={row.icon}
+                selected={row.selected}
+                destructive={row.style === "destructive"}
+                first={i === 0}
+                onPress={row.onPress ? () => onResolve(row) : undefined}
+              />
+            ))}
+          </ScrollView>
+
+          {arranged.buttons.length > 0 ? (
+            <SheetActions style={(o.choices?.length || arranged.rows.length) ? styles.actionsAfterRows : undefined}>
+              {arranged.buttons.map(({ action, variant }) => (
                 <Button
                   key={action.label}
                   label={action.label}
-                  icon={action.icon}
-                  variant={variantFor(action)}
+                  variant={variant}
                   onPress={() => onResolve(action)}
                 />
               ))}
-
-              {cancel && (
-                <Button
-                  label={cancel.label}
-                  variant="ghost"
-                  onPress={() => onResolve(cancel)}
-                />
-              )}
-            </View>
-          </Pressable>
-        </Animated.View>
-      </Pressable>
-    </Modal>
+            </SheetActions>
+          ) : null}
+        </>
+      ) : null}
+    </Sheet>
   );
 }
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    overlay: {
+    /** Grows to its content; a long message or a long list scrolls instead of pushing the actions off. */
+    body: {
+      flexGrow: 0,
+    },
+    bodyContent: {
+      paddingBottom: 2,
+    },
+    noMessage: {
+      height: 10,
+    },
+    tile: {
+      width: 40,
+      height: 40,
+      borderRadius: 12,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    perks: {
+      gap: 10,
+      marginTop: -6,
+      marginBottom: 22,
+    },
+    perk: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+    },
+    perkText: {
       flex: 1,
-      backgroundColor: c.scrim,
-      justifyContent: "center",
-      alignItems: "center",
-      paddingHorizontal: spacing.xl,
-    },
-
-    /** Carries the entrance transform, so the card's own padding stays untouched. */
-    cardWrap: {
-      width: "100%",
-      maxWidth: 400,
-    },
-
-    card: {
-      backgroundColor: c.bgElevated,
-      borderRadius: radii.xl,
-      borderWidth: 1,
-      borderColor: c.border,
-      paddingTop: spacing.xl,
-      // Lighter than the top: the actions already carry their own breathing room,
-      // and matching xl here left a dead band under the last button.
-      paddingBottom: spacing.lg,
-      paddingHorizontal: spacing.xl,
-      alignItems: "center",
-    },
-
-    medallion: {
-      width: 56,
-      height: 56,
-      borderRadius: radii.pill,
-      alignItems: "center",
-      justifyContent: "center",
-      marginBottom: spacing.md,
-    },
-
-    title: {
-      fontSize: 20,
-      // Poppins. A dialog title is the one piece of in-app text that is announcing
-      // rather than reading, and it is short enough that the display face's wide
-      // sidebearings cost nothing.
-      fontFamily: fonts.display,
+      fontFamily: fonts.regular,
+      fontSize: 15,
+      lineHeight: 20,
       color: c.text,
-      textAlign: "center",
-      letterSpacing: -0.3,
     },
-
-    /** Capped so a long server message scrolls instead of pushing the actions off-screen. */
-    messageScroll: {
-      maxHeight: 220,
-      marginTop: spacing.sm,
-      alignSelf: "stretch",
-    },
-    messageContent: {
-      paddingBottom: spacing.xs,
-    },
-    message: {
-      ...typography.body,
-      color: c.textMuted,
-      textAlign: "center",
-      lineHeight: 22,
-    },
-
-    /** `gap`, not a margin on each child — a per-child `marginBottom` also fires on
-     *  the last one, which is what left the card hanging open below its cancel. */
-    actions: {
-      alignSelf: "stretch",
-      marginTop: spacing.lg,
-      gap: spacing.sm,
+    actionsAfterRows: {
+      marginTop: 8,
     },
   });

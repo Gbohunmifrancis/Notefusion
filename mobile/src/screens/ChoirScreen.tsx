@@ -377,7 +377,7 @@ export function ChoirScreen({ navigation, route }: Props) {
                 {siteUrls.choirJoin(choir.inviteCode)}
               </Text>
               <Button label="Share invite link" icon="share-outline" onPress={() => void shareInvite()} />
-              <Button label="Make a new code" variant="ghost" icon="refresh-outline" onPress={confirmNewCode} />
+              <Button label="Make a new code" variant="text" icon="refresh-outline" onPress={confirmNewCode} />
             </Card>
           ) : null}
 
@@ -448,7 +448,7 @@ export function ChoirScreen({ navigation, route }: Props) {
           ) : null}
 
           {!director ? (
-            <Button label="Leave the choir" variant="danger" icon="exit-outline" onPress={confirmLeave} loading={busy} style={styles.leave} />
+            <Button label="Leave the choir" variant="destructive" icon="exit-outline" onPress={confirmLeave} loading={busy} style={styles.leave} />
           ) : null}
         </>
       )}

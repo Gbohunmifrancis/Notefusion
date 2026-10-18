@@ -970,7 +970,7 @@ function CancelReasonModal({
         {/* Actions */}
         <Button
           label="Confirm cancellation"
-          variant="danger"
+          variant="destructive"
           icon="close-circle-outline"
           onPress={onConfirm}
           loading={canceling}

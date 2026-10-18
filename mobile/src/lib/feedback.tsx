@@ -216,7 +216,7 @@ function HeardAboutSheet({ visible, onDone }: { visible: boolean; onDone: () => 
       ) : null}
       <View style={styles.actions}>
         <Button label="Send" onPress={submit} disabled={!source} loading={sending} />
-        <Button label="Skip" variant="ghost" onPress={onDone} />
+        <Button label="Skip" variant="text" onPress={onDone} />
       </View>
     </Frame>
   );
@@ -286,7 +286,7 @@ function RatingSheet({
       <Frame visible={visible} onDismiss={onDone} icon="heart-outline" title="Thank you!" message="Would you share that on Google Play? It helps other choirs find NoteFusion.">
         <View style={styles.actions}>
           <Button label="Rate on Google Play" icon="logo-google-playstore" onPress={openStore} />
-          <Button label="Maybe later" variant="ghost" onPress={onDone} />
+          <Button label="Maybe later" variant="text" onPress={onDone} />
         </View>
       </Frame>
     );
@@ -323,7 +323,7 @@ function RatingSheet({
       ) : null}
       <View style={styles.actions}>
         <Button label="Submit" onPress={submit} disabled={stars === 0} loading={sending} />
-        <Button label="Not now" variant="ghost" onPress={notNow} />
+        <Button label="Not now" variant="text" onPress={notNow} />
       </View>
     </Frame>
   );
@@ -398,7 +398,7 @@ function FeedbackSheet({ visible, screen, onDone }: { visible: boolean; screen: 
       {state === "failed" ? <Text style={styles.error}>That didn't send. Check your connection and try again.</Text> : null}
       <View style={styles.actions}>
         <Button label="Send" onPress={submit} disabled={!message.trim()} loading={state === "sending"} />
-        <Button label="Cancel" variant="ghost" onPress={onDone} />
+        <Button label="Cancel" variant="text" onPress={onDone} />
       </View>
     </Frame>
   );

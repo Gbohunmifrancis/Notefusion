@@ -738,7 +738,7 @@ export function SettingsScreen({ navigation, route }: Props) {
 
             <Button
               label="Delete my account"
-              variant="danger"
+              variant="destructive"
               icon="trash-outline"
               onPress={confirmDelete}
               loading={deleting}
@@ -755,7 +755,7 @@ export function SettingsScreen({ navigation, route }: Props) {
 
             <Button
               label="Confirm with Google & delete"
-              variant="danger"
+              variant="destructive"
               icon="logo-google"
               onPress={confirmDelete}
               loading={deleting}

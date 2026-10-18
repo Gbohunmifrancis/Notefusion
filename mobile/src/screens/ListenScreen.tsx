@@ -113,7 +113,7 @@ export function ListenScreen({ navigation }: Props) {
           <Button
             label={running ? "Stop" : starting ? "Starting…" : "Start listening"}
             icon={running ? "stop-circle-outline" : "radio-outline"}
-            variant={running ? "danger" : "primary"}
+            variant={running ? "secondary" : "primary"}
             onPress={running ? stop : () => void start()}
             loading={starting}
             style={styles.mainButton}

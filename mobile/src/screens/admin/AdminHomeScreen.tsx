@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Alert, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../../components/Screen";
@@ -7,6 +7,7 @@ import { Card } from "../../components/Card";
 import { Touchable } from "../../components/Touchable";
 import { adminApi } from "../../api/endpoints";
 import { toApiError } from "../../api/client";
+import { showDialog } from "../../lib/dialog";
 import {
   fonts,
   motion,
@@ -86,13 +87,14 @@ export function AdminHomeScreen({ navigation }: Props) {
     try {
       setSweeping(true);
       const res = await adminApi.clearStalePayments();
-      Alert.alert(
-        "Stale Sweep Completed",
-        `Cleared ${res.clearedPendingCount} pending and ${res.clearedProcessingCount} processing checkout(s). Fulfilled ${res.fulfilledCount}.`,
-        [{ text: "OK", onPress: load }]
-      );
+      showDialog({
+        title: "Stale sweep completed",
+        message: `Cleared ${res.clearedPendingCount} pending and ${res.clearedProcessingCount} processing checkout(s). Fulfilled ${res.fulfilledCount}.`,
+        icon: "checkmark-circle-outline",
+        actions: [{ label: "OK", style: "cancel", onPress: load }],
+      });
     } catch (e) {
-      Alert.alert("Sweep Failed", toApiError(e).message);
+      showDialog({ title: "Sweep failed", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
     } finally {
       setSweeping(false);
     }
