@@ -223,7 +223,47 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
         }
     }
 
-    public async Task<Result<GatewayVerification>> VerifyAsync(GatewayVerificationRequest request, CancellationToken ct)
+    public Task<Result<GatewayVerification>> VerifyAsync(GatewayVerificationRequest request, CancellationToken ct)
+        => VerifyAsync(request, onSession: null, ct);
+
+    /// <summary>
+    /// The verification, and from the same session read what the page has seen of the customer: an open session
+    /// with a failed charge is a declined attempt, one whose charge is processing a transfer under way.
+    /// </summary>
+    public async Task<GatewayCheck> CheckAsync(GatewayVerificationRequest request, CancellationToken ct)
+    {
+        string? session = null;
+        var verification = await VerifyAsync(request, raw => session = raw, ct);
+        return new GatewayCheck(verification, session is null ? null : ReadAttempt(session));
+    }
+
+    /// <summary>
+    /// What a checkout session shows of the customer. Bachs keeps one charge per session, so its status (or the
+    /// session's payment_status) is the latest thing tried. On a session not yet settled: processing or pending is
+    /// money on its way, which on this account's one-off sessions is a bank transfer (a card settles or fails at
+    /// once), and so is a charge already reading paid while the session catches up; failed or declined is a declined
+    /// attempt; no charge at all is no attempt. A settled session is paid, and reads as no attempt.
+    /// </summary>
+    internal static CheckoutAttempt ReadAttempt(string raw)
+    {
+        var session = ReadString(raw, "status");
+        var charge = ReadString(raw, "charge", "status");
+        var payment = ReadString(raw, "payment_status");
+        static bool Is(string? value, params string[] any)
+            => value is not null && any.Any(a => string.Equals(value, a, StringComparison.OrdinalIgnoreCase));
+
+        if (IsTerminalSuccess(session))
+            return CheckoutAttempt.None;
+        string[] moving = ["processing", "pending", "succeeded", "paid", "overpaid", "accepted"];
+        if (Is(charge, moving) || Is(payment, moving))
+            return CheckoutAttempt.TransferStarted;
+        if (Is(charge, "failed", "declined") || Is(payment, "failed", "declined"))
+            return CheckoutAttempt.Declined;
+        return CheckoutAttempt.None;
+    }
+
+    private async Task<Result<GatewayVerification>> VerifyAsync(
+        GatewayVerificationRequest request, Action<string>? onSession, CancellationToken ct)
     {
         // Not knowing Bachs' id is not evidence that the payment failed — and Bachs has no other way to
         // look it up — so this is transient. Declaring failure here would strand a paid customer.
@@ -260,6 +300,9 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
                     checkoutId, echoed, request.Reference);
                 return Error.Failure("Bachs.Verify", "Bachs returned a checkout for a different reference.");
             }
+
+            // This checkout's own session: what it shows of the customer is read from it (CheckAsync).
+            onSession?.Invoke(raw);
 
             var status = ReadString(raw, "status");
             var paymentStatus = ReadString(raw, "payment_status");

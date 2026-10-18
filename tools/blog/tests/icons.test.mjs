@@ -26,13 +26,17 @@ function sources() {
   return files.map((f) => ({ f, text: fs.readFileSync(f, "utf8") }));
 }
 
-/** Every icon id a file asks for: sprite references, the templates' icon("…") and the scripts' label(…, "…"). */
+/**
+ * Every icon id a file asks for: sprite references, the templates' icon("…"), the scripts' label(…, "…") and a
+ * script's table of rows with an icon: "…" each (checkout-exit.js's answers).
+ */
 function asked(text) {
   const ids = new Set();
   for (const m of text.matchAll(/icons\.svg#i-([a-z0-9-]+)/g)) ids.add(m[1]);
   // The templates' own icon("…"), not a script's ctx.icon("…"), which draws the Practice view's inline icons.
   for (const m of text.matchAll(/(?<!\.)\bicon\("([a-z0-9-]+)"/g)) ids.add(m[1]);
   for (const m of text.matchAll(/\blabel\([^,]+,\s*"([a-z0-9-]+)"/g)) ids.add(m[1]);
+  for (const m of text.matchAll(/\bicon: "([a-z0-9-]+)"/g)) ids.add(m[1]);
   return ids;
 }
 

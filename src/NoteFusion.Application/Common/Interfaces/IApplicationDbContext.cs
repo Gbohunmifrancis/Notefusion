@@ -56,6 +56,9 @@ public interface IApplicationDbContext
     // no balance column anywhere, so a balance is always summed from LedgerEntries.
     DbSet<Plan> Plans { get; }
     DbSet<PaymentTransaction> PaymentTransactions { get; }
+
+    /// <summary>Checkouts someone came back from unpaid, and what stopped them; one per checkout at most.</summary>
+    DbSet<CheckoutExit> CheckoutExits { get; }
     DbSet<LedgerEntry> LedgerEntries { get; }
     DbSet<Subscription> Subscriptions { get; }
     DbSet<WebhookEvent> WebhookEvents { get; }

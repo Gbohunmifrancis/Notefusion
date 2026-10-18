@@ -22,7 +22,19 @@ public interface IPaymentGateway
 
     /// <summary>Asks the provider, authoritatively, what happened to a payment we referenced.</summary>
     Task<Result<GatewayVerification>> VerifyAsync(GatewayVerificationRequest request, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// The same question, with what the hosted page has seen of the customer on the side (a declined charge, a
+    /// transfer under way), read from the one session lookup <see cref="VerifyAsync"/> makes. The verification is
+    /// exactly what <see cref="VerifyAsync"/> would have returned, so a caller that settles payments from it settles
+    /// them the same way; the attempt is only ever recorded. A provider whose adapter cannot read one reports null.
+    /// </summary>
+    async Task<GatewayCheck> CheckAsync(GatewayVerificationRequest request, CancellationToken cancellationToken)
+        => new(await VerifyAsync(request, cancellationToken), null);
 }
+
+/// <summary>A verification and, beside it, what the provider's page showed of the customer (null when unknown).</summary>
+public sealed record GatewayCheck(Result<GatewayVerification> Verification, CheckoutAttempt? Attempt);
 
 /// <summary>Everything we hold that could identify a payment to the provider.</summary>
 /// <param name="Reference">

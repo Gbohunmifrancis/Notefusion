@@ -6,13 +6,14 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { getGrowth } from "@/api/endpoints";
-import type { Growth, KindHealth, PriceSetName } from "@/api/types";
+import type { CheckoutExitProvider, CheckoutExitReason, Growth, KindHealth, PriceSetName } from "@/api/types";
 import { RateMeter, Section, SectionNav, Takeaway } from "@/components/analytics/Section";
 import { Badge } from "@/components/Badge";
 import { Card } from "@/components/Card";
-import { ChartCard, DataTable, MetricRow, RankedBars } from "@/components/insights/Charts";
+import { ChartCard, DataTable, FunnelBars, MetricRow, RankedBars } from "@/components/insights/Charts";
 import { PageHeader } from "@/components/PageHeader";
 import { RangePicker, type Range } from "@/components/RangePicker";
+import { Segmented } from "@/components/Segmented";
 import { EmptyView, StateView } from "@/components/StateView";
 import { useChartPalette } from "@/lib/chart";
 import { addDays, formatCount, formatInstantDate, formatPercent, reportingToday, UNKNOWN } from "@/lib/format";
@@ -86,7 +87,7 @@ function GrowthBody({ d, offset }: { d: Growth; offset: number }) {
   return (
     <div className="space-y-8">
       <RenewalsSection d={d} offset={offset} />
-      <FreeToPaidSection d={d} />
+      <FreeToPaidSection d={d} offset={offset} />
       <TranscriptionHealthSection d={d} />
       <AppVersionsSection d={d} />
     </div>
@@ -229,7 +230,7 @@ function RenewalsSection({ d, offset }: { d: Growth; offset: number }) {
 
 // ── Free to paid ────────────────────────────────────────────────────────────
 
-function FreeToPaidSection({ d }: { d: Growth }) {
+function FreeToPaidSection({ d, offset }: { d: Growth; offset: number }) {
   const rows = d.freeToPaid;
   const total = rows.reduce((n, r) => n + r.signedUp, 0);
   const steps = [
@@ -300,7 +301,166 @@ function FreeToPaidSection({ d }: { d: Growth }) {
           </Takeaway>
         </div>
       </Card>
+      <CheckoutExitsCard d={d} offset={offset} />
     </Section>
+  );
+}
+
+// ── Why checkouts end unpaid ────────────────────────────────────────────────
+
+const PROVIDERS = [
+  { value: "all", label: "All" },
+  { value: "bachs", label: "Bachs" },
+  { value: "paystack", label: "Paystack" },
+] as const satisfies readonly { value: CheckoutExitProvider; label: string }[];
+
+const REASON_LABELS: Record<CheckoutExitReason, string> = {
+  currency: "The price wasn't in my currency",
+  cardDeclined: "My card was declined",
+  slow: "The page was slow or didn't load",
+  tooExpensive: "It costs too much",
+  justLooking: "I'm just looking",
+  somethingElse: "Something else",
+};
+
+/**
+ * "Why checkouts end unpaid" (board g-checkout 05): opened → came back unpaid → answered, the answers to "What
+ * stopped you?", and what the provider's own page saw of everyone who came back unpaid, for All, Bachs or Paystack.
+ * One blue series and numbers in text ink, so nothing needs a legend; the "Something else" notes open under the line.
+ */
+function CheckoutExitsCard({ d, offset }: { d: Growth; offset: number }) {
+  const [provider, setProvider] = useState<CheckoutExitProvider>("all");
+  const [notesOpen, setNotesOpen] = useState(false);
+  const x = d.checkoutExits;
+  const s = x.providers.find((p) => p.provider === provider) ?? x.providers[0]!;
+  const days = Math.max(1, Math.round((new Date(d.toUtc).getTime() - new Date(d.fromUtc).getTime()) / 86_400_000));
+  const reasons = [...s.reasons]
+    .map((r) => ({ label: REASON_LABELS[r.reason], count: r.count }))
+    .sort((a, b) => b.count - a.count);
+  const notes = x.notes.filter((n) => provider === "all" || n.provider === provider);
+  const quick = x.quickSeconds;
+  const count = (reason: CheckoutExitReason) => s.reasons.find((r) => r.reason === reason)?.count ?? 0;
+  const moneyAnswers = count("currency") + count("cardDeclined");
+
+  return (
+    <ChartCard
+      title={`Why checkouts end unpaid (${days} ${days === 1 ? "day" : "days"})`}
+      info={`Checkouts opened in these dates whose payment page was handed out. Came back unpaid: the app or website reported coming back from the page without paying (each checkout once). Answered: they tapped a reason under "What stopped you?", which is asked once per checkout, never while money is on its way. The row below is read from the provider's own page whenever the API verifies the session, for everyone who came back unpaid, answered or not.`}
+      hint="Every checkout opened, by the provider it went to"
+      extra={<Segmented label="Provider" options={PROVIDERS} value={provider} onChange={setProvider} />}
+      table={
+        <DataTable
+          head={["", "Checkouts", "Share"]}
+          rows={[
+            ["Opened", s.opened, "100%"],
+            ["Came back unpaid", s.cameBackUnpaid, pct(rate(s.cameBackUnpaid, s.opened))],
+            ["Answered", s.answered, pct(rate(s.answered, s.opened))],
+            ["Paid", s.paid, pct(rate(s.paid, s.opened))],
+            ["Still being confirmed", s.confirming, pct(rate(s.confirming, s.opened))],
+            ...reasons.map((r): (string | number)[] => [r.label, r.count, pct(rate(r.count, s.answered))]),
+            [`Closed in under ${quick} s`, s.closedQuickly, pct(rate(s.closedQuickly, s.cameBackUnpaid))],
+            ["Tried to pay and was declined", s.declined, pct(rate(s.declined, s.cameBackUnpaid))],
+            ["Left after looking", s.leftAfterLooking, pct(rate(s.leftAfterLooking, s.cameBackUnpaid))],
+            ["A transfer under way", s.transferStarted, pct(rate(s.transferStarted, s.cameBackUnpaid))],
+          ]}
+        />
+      }
+    >
+      <div className="grid grid-cols-1 gap-7 lg:grid-cols-12">
+        <div className="lg:col-span-5">
+          <p className="mb-3 text-xs font-medium text-muted-foreground">Checkouts</p>
+          <FunnelBars
+            steps={[
+              { step: "Opened", count: s.opened, hint: "Checkout page handed out" },
+              { step: "Came back unpaid", count: s.cameBackUnpaid, hint: "Reported coming back from the page without paying" },
+              { step: "Answered", count: s.answered, hint: 'Tapped a reason under "What stopped you?"' },
+            ]}
+          />
+          {s.opened > 0 && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              {formatCount(s.paid)} paid ({pct(rate(s.paid, s.opened))}) · {formatCount(s.confirming)} still being confirmed
+            </p>
+          )}
+        </div>
+        <div className="lg:col-span-7">
+          <p className="mb-3 flex items-baseline justify-between gap-3 text-xs font-medium text-muted-foreground">
+            <span>What stopped them (answers)</span>
+            <span className="tabular-nums">{formatCount(s.answered)}</span>
+          </p>
+          <RankedBars rows={s.answered === 0 ? [] : reasons} total={s.answered} empty="No answers in these dates yet" />
+        </div>
+      </div>
+
+      <div className="mt-5 overflow-hidden rounded-[10px] border border-border">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-border px-4 py-2.5 text-xs font-medium text-muted-foreground">
+          <span>
+            What the page saw, for all <b className="font-semibold text-foreground">{formatCount(s.cameBackUnpaid)}</b> who came back unpaid
+            {s.transferStarted > 0 && ` · ${formatCount(s.transferStarted)} with a transfer under way`}
+          </span>
+          <span>read from the checkout, not from answers</span>
+        </div>
+        <MetricRow
+          className="rounded-none border-0 shadow-none"
+          items={[
+            {
+              label: `Closed in under ${quick} s`,
+              count: s.closedQuickly,
+              note: "Before the ways to pay had shown",
+              info: `Nothing tried on the page, and it was open less than ${quick} seconds: Bachs takes up to 20 seconds to show the ways to pay.`,
+            },
+            {
+              label: "Tried to pay and was declined",
+              count: s.declined,
+              note: "A failed charge on record",
+              info: "The provider recorded a failed attempt on this checkout (a card declined), whatever they answered.",
+            },
+            {
+              label: "Left after looking",
+              count: s.leftAfterLooking,
+              note: `Open ${quick} s or more, no attempt`,
+              info: `Nothing tried on the page, open ${quick} seconds or more.`,
+            },
+          ].map(({ count: n, ...m }) => ({
+            ...m,
+            value: formatCount(n),
+            share: s.cameBackUnpaid > 0 ? pct(rate(n, s.cameBackUnpaid)) : null,
+            hint: `${m.label}: ${formatCount(n)} of ${formatCount(s.cameBackUnpaid)} who came back unpaid`,
+          }))}
+        />
+      </div>
+
+      <Takeaway>
+        {s.answered === 0
+          ? "No one answered in these dates. "
+          : provider === "bachs"
+            ? `Bachs shows the price in naira with its fee, and cards abroad are charged in naira: ${pct(rate(moneyAnswers, s.answered))} of answers are the currency or a declined card. `
+            : provider === "paystack"
+              ? `${pct(rate(count("cardDeclined"), s.answered))} of answers are a declined card. `
+              : `${pct(rate(moneyAnswers, s.answered))} of answers are the currency or a declined card. `}
+        {notes.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setNotesOpen((open) => !open)}
+            aria-expanded={notesOpen}
+            className="font-medium text-brand hover:underline"
+          >
+            {notesOpen ? "Hide" : "Read"} the {formatCount(notes.length)} {notes.length === 1 ? "note" : "notes"} under “Something else” {notesOpen ? "↑" : "→"}
+          </button>
+        )}
+      </Takeaway>
+      {notesOpen && notes.length > 0 && (
+        <ul className="mt-3 max-h-72 space-y-2 overflow-y-auto overscroll-contain" aria-label="Something else notes">
+          {notes.map((n, i) => (
+            <li key={`${n.answeredAtUtc}-${i}`} className="rounded-[8px] bg-muted/50 px-3 py-2 text-xs">
+              <p className="whitespace-pre-wrap break-words text-foreground">{n.note}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                {formatInstantDate(n.answeredAtUtc, offset)} · {n.provider === "bachs" ? "Bachs" : n.provider === "paystack" ? "Paystack" : n.provider}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </ChartCard>
   );
 }
 

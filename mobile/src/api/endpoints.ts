@@ -13,6 +13,8 @@ import type {
   AppVersionInfo,
   BillingInterval,
   CarolsPath,
+  CheckoutExit,
+  CheckoutExitRequest,
   CheckoutSession,
   Choir,
   Drill,
@@ -579,6 +581,16 @@ export const billingApi = {
    */
   confirm: () =>
     api.post<Subscription>("/api/billing/confirm").then((r) => r.data),
+
+  /**
+   * "What stopped you?": the caller came back from their checkout (`reference` from `checkout`) without paying.
+   * Sent once with the seconds the page was open, and again with the answer when they tap one. The return is
+   * recorded the first time and the answer at most once; `ask` says whether to show the question.
+   */
+  checkoutExit: (reference: string, body: CheckoutExitRequest) =>
+    api
+      .post<CheckoutExit>(`/api/billing/checkouts/${encodeURIComponent(reference)}/exit`, body)
+      .then((r) => r.data),
 
   /**
    * Cancels at the end of the paid period. Pro is *not* withdrawn early and nothing is

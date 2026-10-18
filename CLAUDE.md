@@ -429,6 +429,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `BillingReadiness` logs at startup if a plan on sale has no live provider. Provider and server
   error text never reaches a screen: the API returns plain sentences for checkout failures, and the
   web (`friendlyMessage`) and mobile (`toApiError`, `safeReason`) clients replace anything technical.
+  A checkout that comes back unpaid is asked "What stopped you?" once (mobile `CheckoutExitSheet` + `lib/checkoutExit`,
+  web `assets/checkout-exit.js` + `checkout-why.js`): `POST /api/billing/checkouts/{reference}/exit` re-verifies, records the
+  return and seconds open and the one-tap answer on a `CheckoutExit` row (goes with the account), and asks only on the
+  provider's fresh word; every verification keeps the page's strongest signal (`PaymentTransaction.ProviderAttempt`, never
+  read by fulfilment) for Growth's "Why checkouts end unpaid".
 - Founder outreach (`Application/Outreach`, `Infrastructure/Outreach`): an hourly worker writes customer-research
   notes from the founder (email with Reply-To the founder + a one-line push when a device is registered) to four
   segments in priority order — unpaid checkout ≥3 days old (and ≥2 days after `RemindAbandonedCheckouts`, which in

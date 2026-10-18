@@ -23,6 +23,17 @@ public sealed record PublicPricingDto(string? CountryCode, IReadOnlyList<PlanDto
 /// </summary>
 public sealed record CheckoutSessionDto(string Reference, string CheckoutUrl, PaymentProvider Provider);
 
+/// <summary>
+/// The answer to a client reporting it came back from a checkout unpaid (<c>POST /api/billing/checkouts/{id}/exit</c>).
+/// </summary>
+/// <param name="Ask">
+/// Show "What stopped you?": the first return of this checkout, not paid, no transfer under way, no answer sent.
+/// </param>
+/// <param name="Currency">The checkout's currency, as charged ("USD", "NGN").</param>
+/// <param name="AmountMinor">The checkout's amount in minor units, for "the page turns your $9.99 into naira".</param>
+/// <param name="KeptMinutes">How long an open checkout is handed back by "Try again" (<c>Billing__CheckoutReuseMinutes</c>).</param>
+public sealed record CheckoutExitDto(bool Ask, string Currency, long AmountMinor, int KeptMinutes);
+
 /// <summary>The caller's subscription state, enough for the app to gate Pro features.</summary>
 /// <param name="TrialGenerationsRemaining">
 /// Free-tier transcriptions still available, this week's free ones and the bought ones, floored at zero;

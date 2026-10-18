@@ -119,8 +119,13 @@ public sealed class ClearStalePaymentsCommandHandler
             {
                 seen.Add(tx.Id);
 
-                var verification = await _gateways.Resolve(tx.Provider)
-                    .VerifyAsync(new GatewayVerificationRequest(tx.Reference, tx.ProviderReference), ct);
+                var check = await _gateways.Resolve(tx.Provider)
+                    .CheckAsync(new GatewayVerificationRequest(tx.Reference, tx.ProviderReference), ct);
+                var verification = check.Verification;
+
+                // Kept for the console (what the page saw of the customer), saved with the batch; never read here.
+                if (check.Attempt is { } seenOnPage)
+                    tx.RecordProviderAttempt(seenOnPage);
 
                 if (verification.IsFailure)
                 {

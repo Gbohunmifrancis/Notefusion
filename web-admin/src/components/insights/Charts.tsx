@@ -252,6 +252,8 @@ export function MetricRow({
   items: {
     label: string;
     value: string;
+    /** A share drawn small beside the value ("32%"). */
+    share?: string | null | undefined;
     note?: string | null | undefined;
     hint?: string | undefined;
     /** What the figure counts, behind an ⓘ beside the label (readable on touch, unlike `hint`). */
@@ -271,7 +273,10 @@ export function MetricRow({
               <span className="truncate">{m.label}</span>
               {m.info && <InfoHint text={m.info} size={12} />}
             </div>
-            <div className="mt-1.5 text-xl font-semibold tracking-[-0.01em] text-foreground tabular-nums">{m.value}</div>
+            <div className="mt-1.5 text-xl font-semibold tracking-[-0.01em] text-foreground tabular-nums">
+              {m.value}
+              {m.share && <span className="ml-1.5 text-xs font-medium tracking-normal text-muted-foreground">{m.share}</span>}
+            </div>
             {m.note && (
               <div
                 className={`mt-1 text-xs ${

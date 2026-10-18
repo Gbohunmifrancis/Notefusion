@@ -58,6 +58,16 @@ public class PaymentTransaction : BaseEntity
     public DateTime CreatedAtUtc { get; private set; }
     public DateTime UpdatedAtUtc { get; private set; }
 
+    /// <summary>The client that opened the checkout: the phone app or the website.</summary>
+    public CheckoutClient Client { get; private set; }
+
+    /// <summary>
+    /// The strongest thing the provider's page has shown of the customer (nothing tried, a declined charge, a
+    /// transfer under way), read whenever the session is verified; null until it has been read. A record for the
+    /// console's "why checkouts end unpaid", never an input to fulfilment.
+    /// </summary>
+    public CheckoutAttempt? ProviderAttempt { get; private set; }
+
     public bool IsTerminal => Status is PaymentStatus.Completed or PaymentStatus.Failed;
 
     /// <summary>Monetary representation as a strongly typed domain Value Object.</summary>
@@ -86,7 +96,8 @@ public class PaymentTransaction : BaseEntity
         string reference,
         long amountMinor,
         string currency,
-        DateTime utcNow)
+        DateTime utcNow,
+        CheckoutClient client = CheckoutClient.Phone)
         => new()
         {
             Id = Guid.NewGuid(),
@@ -101,8 +112,25 @@ public class PaymentTransaction : BaseEntity
             Currency = Guard.NotNullOrWhiteSpace(currency).ToUpperInvariant(),
             Status = PaymentStatus.Pending,
             CreatedAtUtc = utcNow,
-            UpdatedAtUtc = utcNow
+            UpdatedAtUtc = utcNow,
+            Client = client
         };
+
+    /// <summary>
+    /// Keeps what the provider's page has shown of the customer, the strongest signal so far (see
+    /// <see cref="CheckoutAttempt"/>): a weaker reading never overwrites a stronger one. Returns true when it
+    /// changed. Legal in every status and deliberately leaves <see cref="UpdatedAtUtc"/> alone, which dates the
+    /// checkout's own transitions (the reuse window, the recently-failed window); this is an observation, not one.
+    /// </summary>
+    public bool RecordProviderAttempt(CheckoutAttempt seen)
+    {
+        if (!Enum.IsDefined(seen))
+            throw new ArgumentOutOfRangeException(nameof(seen), seen, "Unknown checkout attempt.");
+        if (ProviderAttempt is { } known && known >= seen)
+            return false;
+        ProviderAttempt = seen;
+        return true;
+    }
 
     /// <summary>Pending → Processing once the provider accepts the initiation and returns a checkout URL.</summary>
     public void AttachCheckout(string? providerReference, string checkoutUrl, string? initiateRaw, DateTime utcNow)

@@ -97,6 +97,16 @@ public sealed class BillingController : ApiControllerBase
         => HandleResult(await _sender.Send(new ConfirmPaymentCommand(), ct));
 
     /// <summary>
+    /// "What stopped you?": the caller came back from their checkout's payment page without paying. <c>id</c> is the
+    /// checkout's <c>reference</c> from <c>checkout</c>; the body says how long the page was open and, once they tap
+    /// one, why they stopped. The return is recorded the first time and the answer at most once; a paid checkout
+    /// records nothing. The reply says whether to ask. 404 for a checkout that is not the caller's.
+    /// </summary>
+    [HttpPost("checkouts/{id}/exit")]
+    public async Task<IActionResult> CheckoutExit(string id, CheckoutExitBody body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new RecordCheckoutExitCommand(id, body.SecondsOpen, body.Reason, body.Note), ct));
+
+    /// <summary>
     /// Cancels the caller's subscription at the end of the period they have already paid for. Pro is not
     /// withdrawn early and nothing is refunded; what changes is that the expiring-soon notice stops
     /// saying the plan renews. Idempotent — cancelling twice returns 204 and changes nothing.
@@ -116,6 +126,13 @@ public sealed class BillingController : ApiControllerBase
     /// optional; <c>"web"</c> returns the browser to the website after paying instead of to the app.
     /// </summary>
     public sealed record CheckoutBody(Guid PlanId, string? Client = null);
+
+    /// <summary>
+    /// Body for a checkout's exit: seconds the payment page was open by the client's clock, and the one-tap reason
+    /// (<c>"currency"</c>, <c>"cardDeclined"</c>, <c>"slow"</c>, <c>"tooExpensive"</c>, <c>"justLooking"</c>,
+    /// <c>"somethingElse"</c>) with an optional note of at most 280 characters, once they answer.
+    /// </summary>
+    public sealed record CheckoutExitBody(int SecondsOpen, Core.Enums.CheckoutExitReason? Reason = null, string? Note = null);
 
     /// <summary>
     /// The deep link the app listens for. Must stay identical to <c>RETURN_URL</c> in

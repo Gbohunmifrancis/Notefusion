@@ -188,7 +188,8 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             transaction = PaymentTransaction.Create(
                 userId, plan.Id, gateway.Provider,
                 fromWeb ? $"checkout:{reference}{WebKeySuffix}" : $"checkout:{reference}", reference,
-                plan.AmountMinor, plan.Currency, now);
+                plan.AmountMinor, plan.Currency, now,
+                fromWeb ? CheckoutClient.Web : CheckoutClient.Phone);
 
             // Persist PENDING before the provider is ever contacted (spec: durable audit row first).
             _db.PaymentTransactions.Add(transaction);

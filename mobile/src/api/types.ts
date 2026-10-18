@@ -953,6 +953,35 @@ export interface CheckoutSession {
   provider: PaymentProvider;
 }
 
+/** The one-tap answer to "What stopped you?" after a checkout came back unpaid (C# `CheckoutExitReason`). */
+export type CheckoutExitReason =
+  | "currency"
+  | "cardDeclined"
+  | "slow"
+  | "tooExpensive"
+  | "justLooking"
+  | "somethingElse";
+
+/** Body of `POST /api/billing/checkouts/{reference}/exit`: seconds the page was open, then the answer. */
+export interface CheckoutExitRequest {
+  secondsOpen: number;
+  reason?: CheckoutExitReason;
+  /** The "Something else" words, at most 280 characters once trimmed. */
+  note?: string;
+}
+
+/** The reply to a checkout's exit (C# `CheckoutExitDto`). */
+export interface CheckoutExit {
+  /** Show "What stopped you?": the checkout's first unpaid return, no transfer under way, no answer yet. */
+  ask: boolean;
+  /** The checkout's currency, as charged ("USD", "NGN"). */
+  currency: string;
+  /** The checkout's amount in minor units. */
+  amountMinor: number;
+  /** How long "Try again" hands back the same checkout, in minutes. */
+  keptMinutes: number;
+}
+
 /** The caller's subscription state — the app gates Pro features on this. */
 export interface Subscription {
   isActive: boolean;
