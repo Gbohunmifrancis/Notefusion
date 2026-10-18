@@ -11,7 +11,8 @@ public static class AuthorizationPolicies
 {
     /// <summary>
     /// Requires an authenticated caller holding the Admin role claim who is, according to the database
-    /// (<see cref="CurrentAdminRequirement"/>), still an active administrator.
+    /// (<see cref="CurrentAdminRequirement"/>), still an active administrator, and, from the phone, has Admin unlocked
+    /// (<see cref="UnlockedPhoneRequirement"/>).
     /// </summary>
     public const string Admin = "Admin";
 
@@ -22,7 +23,7 @@ public static class AuthorizationPolicies
         options.AddPolicy(Admin, policy => policy
             .RequireAuthenticatedUser()
             .RequireRole(nameof(UserRole.Admin))
-            .AddRequirements(new CurrentAdminRequirement()));
+            .AddRequirements(new CurrentAdminRequirement(), new UnlockedPhoneRequirement()));
 
         return options;
     }

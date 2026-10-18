@@ -33,6 +33,7 @@ public sealed class AdminFeaturesController : ApiControllerBase
     /// on with a last day already gone. Answers with the flag as it now stands.
     /// </summary>
     [HttpPut("{key}")]
+    [FreshPhoneUnlock]
     public async Task<IActionResult> Set(string key, SetFeatureFlagRequest body, CancellationToken ct)
         => HandleResult(await _sender.Send(
             new SetFeatureFlagCommand(key, body.Enabled, body.AdminPreview, body.AutoOff, body.AutoOffAt), ct));

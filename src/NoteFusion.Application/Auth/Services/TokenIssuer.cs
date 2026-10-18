@@ -14,6 +14,7 @@ public sealed class TokenIssuer : ITokenIssuer
     private readonly IApplicationDbContext _db;
     private readonly IDateTimeProvider _clock;
     private readonly AuthSettings _settings;
+    private readonly IClientApp? _clientApp;
 
     public TokenIssuer(
         IJwtTokenService jwt,
@@ -21,7 +22,8 @@ public sealed class TokenIssuer : ITokenIssuer
         IPasswordHasher hasher,
         IApplicationDbContext db,
         IDateTimeProvider clock,
-        AuthSettings settings)
+        AuthSettings settings,
+        IClientApp? clientApp = null)
     {
         _jwt = jwt;
         _tokenGenerator = tokenGenerator;
@@ -29,11 +31,13 @@ public sealed class TokenIssuer : ITokenIssuer
         _db = db;
         _clock = clock;
         _settings = settings;
+        _clientApp = clientApp;
     }
 
-    public TokenPairResponse Issue(User user)
+    public TokenPairResponse Issue(User user, string? client = null)
     {
-        var access = _jwt.GenerateAccessToken(user);
+        client ??= _clientApp?.Current;
+        var access = _jwt.GenerateAccessToken(user, client);
 
         var secret = _tokenGenerator.GenerateToken();
         var now = _clock.UtcNow;
@@ -41,7 +45,8 @@ public sealed class TokenIssuer : ITokenIssuer
             user.Id,
             _hasher.Hash(secret),
             now,
-            now.AddDays(_settings.RefreshTokenDays));
+            now.AddDays(_settings.RefreshTokenDays),
+            client);
 
         _db.RefreshTokens.Add(refreshToken);
 

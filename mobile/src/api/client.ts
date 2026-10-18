@@ -74,6 +74,18 @@ const timeZone: string | undefined = (() => {
   }
 })();
 
+/**
+ * Admin's open pass on this phone (`X-Admin-Session`), held in memory by `lib/adminLockRuntime`, which also hears when
+ * the server says Admin is locked. Hooks rather than an import, as the runtime itself talks through this client.
+ */
+let readAdminSession: (() => string | null) | null = null;
+let onAdminLocked: (() => void) | null = null;
+
+export function setAdminSessionHooks(read: () => string | null, locked: () => void): void {
+  readAdminSession = read;
+  onAdminLocked = locked;
+}
+
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   if (config.data instanceof FormData) {
     config.headers.delete('Content-Type');
@@ -90,6 +102,9 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
     const token = await tokenStore.getAccess();
     if (token) config.headers.set('Authorization', `Bearer ${token}`);
   }
+  // Only ever to the API's own admin routes.
+  const pass = config.url?.startsWith('/api/admin/') ? readAdminSession?.() : null;
+  if (pass) config.headers.set('X-Admin-Session', pass);
   return config;
 });
 
@@ -155,6 +170,9 @@ api.interceptors.response.use(
     if (!axios.isCancel(error)) reportReachable(!!error.response);
     const original = error.config as (InternalAxiosRequestConfig & { _retried?: boolean }) | undefined;
     const status = error.response?.status;
+
+    // The server ended Admin's pass (5 minutes idle, its hour up, a lockout): lock the phone's Admin to match.
+    if (status === 403 && error.response?.data?.code === 'ADMIN_LOCKED') onAdminLocked?.();
 
     const isRetryableAuth =
       status === 401 &&

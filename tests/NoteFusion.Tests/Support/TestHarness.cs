@@ -214,6 +214,22 @@ public sealed class RecordingEmailSender : IEmailSender
         return Task.CompletedTask;
     }
 
+    /// <summary>The Admin codes emailed, in order: the phone lock's tests type them back.</summary>
+    public List<string> AdminCodes { get; } = [];
+
+    public Task SendAdminCodeAsync(EmailRecipient to, string code, bool setup, CancellationToken ct = default)
+    {
+        Sent.Add((setup ? "admin-code-setup" : "admin-code-unlock", to));
+        AdminCodes.Add(code);
+        return Task.CompletedTask;
+    }
+
+    public Task SendAdminPhoneAddedAsync(EmailRecipient to, string phoneLabel, DateTime atUtc, CancellationToken ct = default)
+    {
+        Sent.Add(("admin-phone-added", to));
+        return Task.CompletedTask;
+    }
+
     public Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default)
     {
         Sent.Add(("email-verification", to));

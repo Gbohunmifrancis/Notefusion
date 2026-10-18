@@ -69,5 +69,8 @@ public enum AdminAuditAction
     PasskeySignIn = 23,
 
     /// <summary>An admin changed a feature flag (the Christmas season): switched it, its admin preview or its end date.</summary>
-    SetFeatureFlag = 24
+    SetFeatureFlag = 24,
+
+    /// <summary>An admin set Admin up on a phone (password, emailed code, then the phone's fingerprint or face).</summary>
+    SetUpAdminPhone = 25
 }

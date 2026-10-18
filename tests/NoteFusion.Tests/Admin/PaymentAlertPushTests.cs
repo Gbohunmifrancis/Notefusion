@@ -456,6 +456,8 @@ public class PaymentAlertPushTests
         // The policy as Program.cs registers it, evaluated as ASP.NET does for each [Authorize(Policy = Admin)] route.
         var policy = new AuthorizationOptions().AddNoteFusionPolicies().GetPolicy(AuthorizationPolicies.Admin)!;
         var handler = new CurrentAdminHandler(new UserAccessCache(new MemoryCache(new MemoryCacheOptions())), h.Db, new HttpContextAccessor());
+        // A browser's token (no phone claim): the phone's lock passes it, and the role is what is tested here.
+        var phone = new UnlockedPhoneHandler(new NoteFusion.Infrastructure.Security.InMemoryAdminPhoneLock(), new HttpContextAccessor(), h.Clock);
 
         async Task<bool> Allowed(Guid userId, string role)
         {
@@ -465,6 +467,7 @@ public class PaymentAlertPushTests
             foreach (var requirement in policy.Requirements.OfType<IAuthorizationHandler>())
                 await requirement.HandleAsync(context);
             await handler.HandleAsync(context);
+            await phone.HandleAsync(context);
             return context.HasSucceeded;
         }
 

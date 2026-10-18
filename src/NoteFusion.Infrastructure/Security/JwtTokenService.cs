@@ -23,7 +23,7 @@ public sealed class JwtTokenService : IJwtTokenService
         _auth = auth;
     }
 
-    public AccessToken GenerateAccessToken(User user)
+    public AccessToken GenerateAccessToken(User user, string? client = null)
     {
         var now = DateTime.UtcNow;
         var expires = now.AddMinutes(_auth.AccessTokenMinutes);
@@ -36,6 +36,8 @@ public sealed class JwtTokenService : IJwtTokenService
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
             new(ClaimTypes.Role, user.Role.ToString())
         };
+        if (client is not null)
+            claims.Add(new Claim(ClientKinds.Claim, client));
 
         var token = new JwtSecurityToken(
             issuer: _jwt.Issuer,

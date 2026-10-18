@@ -17,6 +17,9 @@ import type {
   LiveActivity,
   PaymentAlertSettings,
   TestPaymentAlert,
+  AdminCodeSent,
+  AdminPhoneSetUp,
+  AdminPhoneSession,
   AppVersionInfo,
   BillingInterval,
   CarolsPath,
@@ -852,7 +855,26 @@ export const adminApi = {
   testAlert: (token: string) =>
     api.post<TestPaymentAlert>("/api/admin/alerts/test", { token }).then((r) => r.data),
 
-  /** The admin lock on a phone with no screen lock: the account password, checked. 204 when right. */
+  /** Confirms a destructive action on a phone with no sensor: the account password, which freshens the pass. 204 when right. */
   confirmPassword: (password: string) =>
     api.post("/api/admin/lock/password", { password }).then(() => undefined),
+
+  // ── The phone's Admin lock (board f-admin/10 revised; answered while Admin is locked) ──────────────────────
+  /** The password, then a six-digit code to the account's inbox: "setup" (once per phone) or "unlock" (no sensor). */
+  requestAdminCode: (password: string, purpose: "setup" | "unlock") =>
+    api.post<AdminCodeSent>("/api/admin/phone-lock/code", { password, purpose }).then((r) => r.data),
+  /** The setup code: this phone's key (its secret shown once, kept behind the fingerprint) and an open pass. */
+  setUpPhone: (codeId: string, code: string, label: string, replacesKeyId: string | null) =>
+    api
+      .post<AdminPhoneSetUp>("/api/admin/phone-lock/keys", { codeId, code, label, replacesKeyId })
+      .then((r) => r.data),
+  /** The key, read with the fingerprint or face: an open pass (also a destructive action's confirmation). */
+  unlockPhone: (keyId: string, secret: string) =>
+    api.post<AdminPhoneSession>("/api/admin/phone-lock/unlock", { keyId, secret }).then((r) => r.data),
+  /** A phone with no sensor: the unlock code opens a pass. */
+  verifyAdminCode: (codeId: string, code: string) =>
+    api.post<AdminPhoneSession>("/api/admin/phone-lock/code/verify", { codeId, code }).then((r) => r.data),
+  /** Admin locked on this phone (5 minutes without a tap): `pass` ends now rather than 5 minutes on. */
+  lockPhone: (pass: string) =>
+    api.post("/api/admin/phone-lock/lock", null, { headers: { "X-Admin-Session": pass } }).then(() => undefined),
 };

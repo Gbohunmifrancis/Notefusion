@@ -1382,6 +1382,27 @@ export interface PaymentAlertSettings {
   mutedUntilUtc: string | null;
 }
 
+/** C# `AdminCodeSentDto`: a code went to `sentTo` (masked); name it back with `codeId`. */
+export interface AdminCodeSent {
+  codeId: string;
+  sentTo: string;
+  expiresAtUtc: string;
+}
+
+/** C# `AdminPhoneSessionDto`: the open pass this phone sends as `X-Admin-Session`. */
+export interface AdminPhoneSession {
+  session: string;
+  expiresAtUtc: string;
+}
+
+/** C# `AdminPhoneSetUpDto`: this phone's key (the secret shown once) and an open pass. */
+export interface AdminPhoneSetUp {
+  keyId: string;
+  secret: string;
+  session: string;
+  expiresAtUtc: string;
+}
+
 export interface TestPaymentAlert {
   sent: boolean;
   /** Google or Apple took it too (its receipt said so in time); false when only Expo has so far. */

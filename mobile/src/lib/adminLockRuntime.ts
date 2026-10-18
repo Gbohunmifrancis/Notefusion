@@ -1,11 +1,17 @@
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AppState, Platform } from "react-native";
+import * as SecureStore from "expo-secure-store";
+import * as Device from "expo-device";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { adminApi } from "../api/endpoints";
-import { toApiError } from "../api/client";
+import { setAdminSessionHooks, toApiError } from "../api/client";
+import type { AdminCodeSent, AdminPhoneSetUp } from "../api/types";
 import { clearAdminData } from "./adminCache";
+import { tokenStore } from "./tokenStore";
 import {
   LOCKED,
   PROMPT,
+  idleExpired,
   isUnlocked,
   lockMethod,
   lockReducer,
@@ -15,24 +21,17 @@ import {
 } from "./adminLock";
 
 /**
- * The admin lock at run time (board f-admin/10). The rules are `lib/adminLock` (pure, tested); this holds the one
- * lock for the app, asks the phone's own lock through expo-local-authentication (Android's BiometricPrompt, Face ID
- * with the passcode behind it), and keeps Admin off screenshots and the app switcher with expo-screen-capture.
+ * The admin lock at run time (board f-admin/10 revised). The rules are `lib/adminLock` (pure, tested). The server asks
+ * every admin request from this phone for an open pass (`X-Admin-Session`), held here in memory only. A pass comes
+ * from this phone's key: a secret the server handed over once at setup (password, emailed code), kept in
+ * expo-secure-store with `requireAuthentication`, which on Android is a Keystore key only a Class 3 fingerprint or face
+ * can use (no PIN, no camera face unlock) and which a newly enrolled fingerprint wipes; Face ID or Touch ID on an
+ * iPhone. A phone with no such sensor gets a pass for the password and an emailed code instead.
  *
- * Both are native modules that ship with the store build. They are required lazily and only when present, so a
- * build without them finds Admin locked behind the account password rather than crashing.
+ * Admin stays off screenshots and the app switcher with expo-screen-capture while it is on screen.
  */
 
-type LocalAuth = typeof import("expo-local-authentication");
 type ScreenCapture = typeof import("expo-screen-capture");
-
-function localAuth(): LocalAuth | null {
-  try {
-    return require("expo-local-authentication") as LocalAuth;
-  } catch {
-    return null;
-  }
-}
 
 function screenCapture(): ScreenCapture | null {
   try {
@@ -42,7 +41,21 @@ function screenCapture(): ScreenCapture | null {
   }
 }
 
+/** This phone's key: which account and which server row; the secret itself is in SecureStore behind the fingerprint. */
+const KEY_RECORD = "nf.adminPhoneKey";
+const SECRET = "nf.adminPhoneSecret";
+
+interface KeyRecord {
+  userId: string;
+  keyId: string;
+  /** The phone wiped the secret (a fingerprint or face was added): set up again. */
+  wiped: boolean;
+}
+
 let state: LockState = LOCKED;
+/** The open pass, in memory only: never stored, gone with the app. */
+let pass: string | null = null;
+let lastTouchAt = Date.now();
 const listeners = new Set<() => void>();
 
 function dispatch(event: LockEvent): void {
@@ -50,8 +63,11 @@ function dispatch(event: LockEvent): void {
   if (next === state) return;
   const wasOpen = state.unlockedAt !== null;
   state = next;
-  // Locked again: nothing admin stays in memory.
-  if (wasOpen && next.unlockedAt === null) clearAdminData();
+  // Locked again: no pass, and nothing admin stays in memory.
+  if (wasOpen && next.unlockedAt === null) {
+    pass = null;
+    clearAdminData();
+  }
   for (const l of listeners) l();
 }
 
@@ -60,7 +76,19 @@ function subscribe(l: () => void): () => void {
   return () => listeners.delete(l);
 }
 
-/** Locks Admin now and drops what it read: sign-out, an account change. */
+// The client sends the pass on admin calls, and a server that says Admin is locked locks it here too.
+setAdminSessionHooks(
+  () => pass,
+  () => lockAdmin(),
+);
+
+function open(session: string): void {
+  pass = session;
+  lastTouchAt = Date.now();
+  dispatch({ type: "unlock", at: Date.now() });
+}
+
+/** Locks Admin now and drops what it read: sign-out, an account change, the server ending the pass. */
 export function lockAdmin(): void {
   dispatch({ type: "lock" });
 }
@@ -70,52 +98,141 @@ export function adminUnlocked(): boolean {
   return isUnlocked(state, Date.now());
 }
 
-/** How this phone opens Admin: its fingerprint or face, its PIN alone, or (no screen lock) the account password. */
-export async function readLockMethod(): Promise<LockMethod> {
-  const la = localAuth();
-  if (!la) return lockMethod({ available: false, hasHardware: false, level: 0 });
+async function currentUserId(): Promise<string | null> {
+  return (await tokenStore.getUser().catch(() => null))?.id ?? null;
+}
+
+async function readKeyRecord(): Promise<KeyRecord | null> {
   try {
-    const [hasHardware, level] = await Promise.all([la.hasHardwareAsync(), la.getEnrolledLevelAsync()]);
-    return lockMethod({ available: true, hasHardware, level: Number(level) });
+    const raw = await AsyncStorage.getItem(KEY_RECORD);
+    const record = raw ? (JSON.parse(raw) as KeyRecord) : null;
+    const userId = await currentUserId();
+    // Another account's key on a shared phone is no key for this one.
+    return record && record.userId === userId && typeof record.keyId === "string" ? record : null;
   } catch {
-    return lockMethod({ available: false, hasHardware: false, level: 0 });
+    return null;
   }
 }
 
-/**
- * Asks the phone's own lock. `reason` is the prompt's title ("Unlock Admin", or the action being confirmed). True
- * when the person proved it is them; false when they cancelled or the phone said no.
- */
-export async function askPhoneLock(reason: string = PROMPT.promptMessage): Promise<boolean> {
-  const la = localAuth();
-  if (!la) return false;
+async function writeKeyRecord(record: KeyRecord | null): Promise<void> {
+  if (record) await AsyncStorage.setItem(KEY_RECORD, JSON.stringify(record)).catch(() => undefined);
+  else await AsyncStorage.removeItem(KEY_RECORD).catch(() => undefined);
+  for (const l of listeners) l();
+}
+
+function strongBiometrics(): boolean {
   try {
-    const result = await la.authenticateAsync({
-      promptMessage: reason,
-      promptSubtitle: PROMPT.promptSubtitle,
-      promptDescription: reason === PROMPT.promptMessage ? PROMPT.promptDescription : undefined,
-      cancelLabel: "Cancel",
-      // The phone's PIN, pattern or password behind "Use PIN": never a PIN of ours.
-      disableDeviceFallback: false,
-    });
-    return result.success;
+    return SecureStore.canUseBiometricAuthentication();
   } catch {
     return false;
   }
 }
 
-/** Opens Admin with the phone's lock. */
-export async function unlockWithPhone(): Promise<boolean> {
-  const ok = await askPhoneLock();
-  if (ok) dispatch({ type: "unlock", at: Date.now() });
-  return ok;
+/** How this phone opens Admin: its key, setting one up, setting it up again, or the password and an emailed code. */
+export async function readLockMethod(): Promise<LockMethod> {
+  const record = await readKeyRecord();
+  return lockMethod({ strongBiometrics: strongBiometrics(), hasKey: record !== null, wiped: record?.wiped ?? false });
 }
 
-/** Opens Admin on a phone with no screen lock: the account password, checked by the server. Null when it opened. */
-export async function unlockWithPassword(password: string): Promise<string | null> {
+type SecretRead =
+  | { ok: true; keyId: string; secret: string }
+  | { ok: false; wiped: boolean; message: string | null };
+
+/** The key, read with the fingerprint or face (the phone's own sheet, titled `prompt`). */
+async function readSecret(prompt: string): Promise<SecretRead> {
+  const record = await readKeyRecord();
+  if (!record || record.wiped) return { ok: false, wiped: record !== null, message: null };
   try {
-    await adminApi.confirmPassword(password);
-    dispatch({ type: "unlock", at: Date.now() });
+    const secret = await SecureStore.getItemAsync(SECRET, { requireAuthentication: true, authenticationPrompt: prompt });
+    if (!secret) {
+      // The Keystore key was invalidated: a fingerprint or face was enrolled since setup.
+      await writeKeyRecord({ ...record, wiped: true });
+      return { ok: false, wiped: true, message: null };
+    }
+    return { ok: true, keyId: record.keyId, secret };
+  } catch (e) {
+    const text = e instanceof Error ? e.message : String(e);
+    // Cancelled is silent; the sensor's own lockout says so.
+    return /lockout/i.test(text)
+      ? { ok: false, wiped: false, message: "Too many tries on the sensor. Wait a moment, then try again." }
+      : { ok: false, wiped: false, message: null };
+  }
+}
+
+export type UnlockOutcome = { kind: "open" } | { kind: "cancelled" } | { kind: "wiped" } | { kind: "failed"; message: string };
+
+/** Asks for a pass with this phone's key: `reason` titles the fingerprint sheet. */
+async function unlockWithKey(reason: string): Promise<UnlockOutcome> {
+  const read = await readSecret(reason);
+  if (!read.ok) {
+    if (read.wiped) return { kind: "wiped" };
+    return read.message ? { kind: "failed", message: read.message } : { kind: "cancelled" };
+  }
+  try {
+    const answer = await adminApi.unlockPhone(read.keyId, read.secret);
+    open(answer.session);
+    return { kind: "open" };
+  } catch (e) {
+    const err = toApiError(e);
+    // Retired on the server (set up on this phone again elsewhere, or past the limit): set up afresh.
+    if (err.code === "ADMIN_PHONE_KEY_INVALID") await writeKeyRecord(null);
+    return { kind: "failed", message: err.message };
+  }
+}
+
+/** Opens Admin with the fingerprint or face. */
+export function unlockWithPhone(): Promise<UnlockOutcome> {
+  return unlockWithKey(PROMPT.unlock);
+}
+
+/** Step one of setting up, and of a phone with no sensor: the password, then a code to the account's inbox. */
+export function requestCode(password: string, purpose: "setup" | "unlock"): Promise<AdminCodeSent> {
+  return adminApi.requestAdminCode(password, purpose);
+}
+
+/** A setup the server finished whose secret is not stored yet (the fingerprint sheet was cancelled): tried again. */
+let pendingSetup: AdminPhoneSetUp | null = null;
+
+/** The emailed setup code: the server makes this phone's key, and the fingerprint stores it. */
+export async function finishSetup(codeId: string, code: string): Promise<UnlockOutcome> {
+  const record = await readKeyRecord();
+  try {
+    pendingSetup = await adminApi.setUpPhone(codeId, code, Device.modelName ?? "Phone", record?.keyId ?? null);
+  } catch (e) {
+    return { kind: "failed", message: toApiError(e).message };
+  }
+  return storePendingKey();
+}
+
+/** Stores the key behind the fingerprint (the phone's own sheet), then opens Admin. Safe to call again on a cancel. */
+export async function storePendingKey(): Promise<UnlockOutcome> {
+  const setUp = pendingSetup;
+  const userId = await currentUserId();
+  if (!setUp || !userId) return { kind: "failed", message: "Start the setup again." };
+  try {
+    await SecureStore.setItemAsync(SECRET, setUp.secret, {
+      requireAuthentication: true,
+      authenticationPrompt: PROMPT.setup,
+    });
+  } catch {
+    return { kind: "cancelled" };
+  }
+  pendingSetup = null;
+  await writeKeyRecord({ userId, keyId: setUp.keyId, wiped: false });
+  open(setUp.session);
+  return { kind: "open" };
+}
+
+/** Whether a setup is waiting on the fingerprint. */
+export function setupPending(): boolean {
+  return pendingSetup !== null;
+}
+
+/** A phone with no sensor: the emailed unlock code opens Admin. Null when it opened, else a sentence to show. */
+export async function verifyCode(codeId: string, code: string): Promise<string | null> {
+  try {
+    const answer = await adminApi.verifyAdminCode(codeId, code);
+    open(answer.session);
     return null;
   } catch (e) {
     return toApiError(e).message;
@@ -123,12 +240,12 @@ export async function unlockWithPassword(password: string): Promise<string | nul
 }
 
 /**
- * The second ask before a destructive action (Suspend, End subscription, Revoke Pro, Change role, a feature flag):
- * the phone's lock once more. On a phone with no lock the sheet asked for the password instead, so this passes it
- * on and lets the server check it. Null when confirmed; otherwise a sentence to show, or "" when cancelled.
+ * The second ask before a destructive action (Suspend, End subscription, Revoke Pro, Change role, a flag): the
+ * fingerprint once more, which gets a fresh pass the server checks; on a phone with no sensor, the password, which the
+ * server checks and marks the pass fresh. Null when confirmed; otherwise a sentence to show, or "" when cancelled.
  */
 export async function confirmAgain(reason: string, method: LockMethod, password?: string): Promise<string | null> {
-  if (method === "password") {
+  if (method === "code") {
     if (!password) return "Enter your password to confirm.";
     try {
       await adminApi.confirmPassword(password);
@@ -137,34 +254,59 @@ export async function confirmAgain(reason: string, method: LockMethod, password?
       return toApiError(e).message;
     }
   }
-  return (await askPhoneLock(reason)) ? null : "";
+  const outcome = await unlockWithKey(reason);
+  switch (outcome.kind) {
+    case "open":
+      return null;
+    case "cancelled":
+      return "";
+    case "wiped":
+      lockAdmin();
+      return "This phone's Admin key was wiped. Set Admin up again.";
+    case "failed":
+      return outcome.message;
+  }
 }
 
-/** The lock's state for a component, re-read when it changes and once a second while away. */
+/** The fingerprint before a quiet change (a flag's preview or date): true when confirmed. */
+export async function askPhoneLock(reason: string): Promise<boolean> {
+  return (await confirmAgain(reason, "biometric")) === null;
+}
+
+/** The lock's state for a component, and how this phone opens it (re-read when the lock or the key changes). */
 export function useAdminLock(): { unlocked: boolean; method: LockMethod | null } {
   const snapshot = useSyncExternalStore(subscribe, () => state);
   const [method, setMethod] = useState<LockMethod | null>(null);
+  const [version, setVersion] = useState(0);
+  useEffect(() => subscribe(() => setVersion((v) => v + 1)), []);
   useEffect(() => {
     let live = true;
     void readLockMethod().then((m) => live && setMethod(m));
     return () => {
       live = false;
     };
-  }, []);
+  }, [version]);
   return { unlocked: isUnlocked(snapshot, Date.now()), method };
 }
 
+/** A tap anywhere in Admin: the 5 minutes without a tap start again. */
+export function noteAdminActivity(): void {
+  lastTouchAt = Date.now();
+}
+
 /**
- * While Admin is on screen: the away clock (5 minutes in the background, or out of Admin, locks it), a blank cover
- * whenever the app is not in front (so the app switcher never shows a figure), and no screenshots. Returns whether
- * the cover is up.
+ * While Admin is on screen: the away clock (5 minutes in the background, or out of Admin, locks it), the idle clock
+ * (5 minutes without a tap locks it, and ends the pass on the server too), a blank cover whenever the app is not in
+ * front (so the app switcher never shows a figure), and no screenshots. Returns whether the cover is up.
  */
 export function useAdminPresence(): boolean {
   const [away, setAway] = useState(AppState.currentState !== "active");
+  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     // Back into Admin: the clock that started when it was left is read now.
     dispatch({ type: "foreground", at: Date.now() });
+    lastTouchAt = Date.now();
     const sub = AppState.addEventListener("change", (next) => {
       if (next === "active") {
         dispatch({ type: "foreground", at: Date.now() });
@@ -175,6 +317,13 @@ export function useAdminPresence(): boolean {
       }
     });
 
+    timer.current = setInterval(() => {
+      if (state.unlockedAt === null || !idleExpired(lastTouchAt, Date.now())) return;
+      const ending = pass;
+      lockAdmin();
+      if (ending) void adminApi.lockPhone(ending).catch(() => undefined);
+    }, 10_000);
+
     const sc = screenCapture();
     const key = "nf-admin";
     void sc?.preventScreenCaptureAsync(key).catch(() => undefined);
@@ -182,6 +331,7 @@ export function useAdminPresence(): boolean {
 
     return () => {
       sub.remove();
+      if (timer.current) clearInterval(timer.current);
       // Leaving Admin starts the same 5 minutes as leaving the app.
       dispatch({ type: "background", at: Date.now() });
       void sc?.allowScreenCaptureAsync(key).catch(() => undefined);

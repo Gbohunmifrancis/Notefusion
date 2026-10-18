@@ -18,6 +18,7 @@ public sealed class RefreshTokenConfiguration : IEntityTypeConfiguration<Refresh
         builder.Property(t => t.TokenHash).HasMaxLength(200).IsRequired();
         builder.Property(t => t.IssuedAt).IsRequired();
         builder.Property(t => t.ExpiresAt).IsRequired();
+        builder.Property(t => t.Client).HasMaxLength(8);
 
         // Index for revocation checks and the "revoke family" rotation sweep.
         builder.HasIndex(t => new { t.UserId, t.IsRevoked });

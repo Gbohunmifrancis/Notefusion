@@ -6,7 +6,7 @@ import { AdminExitContext, AdminStackBar, AdminTabBar } from "../../components/a
 import { AwayCover, LockedView } from "../../components/admin/LockedView";
 import { adminApi } from "../../api/endpoints";
 import { writeAdminData } from "../../lib/adminCache";
-import { useAdminLock, useAdminPresence } from "../../lib/adminLockRuntime";
+import { noteAdminActivity, useAdminLock, useAdminPresence } from "../../lib/adminLockRuntime";
 import { syncPaymentAlerts } from "../../lib/paymentAlertsRuntime";
 import { useAdminColors } from "../../lib/theme";
 import type { AdminStackParams, AdminTabParams, RootStackParams } from "../../navigation/types";
@@ -106,7 +106,7 @@ function AdminOpen() {
 /**
  * The Admin route (registered for admins only): the lock first, then the admin's own stack. While it is on screen,
  * nothing of it can be screenshotted or seen in Recents, a cover hides it whenever the app is not in front, and 5
- * minutes away (from the app, or out of Admin) locks it again and drops what it read.
+ * minutes away (from the app, or out of Admin) or 5 minutes without a tap locks it again and drops what it read.
  */
 export function AdminRoot({ navigation }: NativeStackScreenProps<RootStackParams, "Admin">) {
   const { unlocked, method } = useAdminLock();
@@ -119,7 +119,16 @@ export function AdminRoot({ navigation }: NativeStackScreenProps<RootStackParams
 
   return (
     <AdminExitContext.Provider value={exit}>
-      {unlocked ? <AdminOpen /> : <LockedView method={method} onBack={exit} />}
+      {/* Every touch restarts the 5 minutes without a tap; it watches and never takes the touch. */}
+      <View
+        style={{ flex: 1 }}
+        onStartShouldSetResponderCapture={() => {
+          noteAdminActivity();
+          return false;
+        }}
+      >
+        {unlocked ? <AdminOpen /> : <LockedView method={method} onBack={exit} />}
+      </View>
       {away ? <AwayCover /> : null}
     </AdminExitContext.Provider>
   );

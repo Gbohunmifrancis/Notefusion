@@ -52,4 +52,12 @@ public enum EmailKind
 
     /// <summary>The founder's customer-research note.</summary>
     Outreach = 12,
+
+    // Essential again, added later (the numbers are stored).
+
+    /// <summary>The six-digit code that sets up or opens Admin on a phone.</summary>
+    AdminCode = 13,
+
+    /// <summary>Security notice: a phone was set up for Admin.</summary>
+    AdminPhoneAdded = 14,
 }

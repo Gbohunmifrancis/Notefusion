@@ -134,6 +134,8 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<UserAccessCache>();
 builder.Services.AddSingleton<NoteFusion.Api.Blog.BlogReadsCache>();
 builder.Services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, CurrentAdminHandler>();
+builder.Services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, UnlockedPhoneHandler>();
+builder.Services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationMiddlewareResultHandler, UnlockedPhoneResultHandler>();
 
 // CORS for the browser clients on their own origins: the admin dashboard and, since the password-reset
 // page moved onto the marketing site, notefusion.studio. Origins come from config
