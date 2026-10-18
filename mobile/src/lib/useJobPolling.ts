@@ -45,6 +45,12 @@ export interface JobState {
   offline: boolean;
   /** Long enough without a finish that submitting again is offered. */
   canRetry: boolean;
+  /**
+   * The library sheet the finished job was filed as (every finished transcription is, at once), and its title;
+   * the Result screen then treats the sheet as saved. Null until a job ends, and from a server that does not file.
+   */
+  savedId: string | null;
+  savedTitle: string | null;
 }
 
 const IDLE: JobState = {
@@ -60,6 +66,8 @@ const IDLE: JobState = {
   stalled: false,
   offline: false,
   canRetry: false,
+  savedId: null,
+  savedTitle: null,
 };
 
 /**
@@ -127,6 +135,8 @@ export function useJobPolling() {
       jobId: typeof job.jobId === "string" ? job.jobId : null,
       error: status === "failed" ? safeReason(job.error, fallback) : null,
       source: job.source ?? job.result?.source ?? null,
+      savedId: typeof job.savedId === "string" ? job.savedId : null,
+      savedTitle: typeof job.savedTitle === "string" ? job.savedTitle : null,
     });
   }, [stopPolling]);
 

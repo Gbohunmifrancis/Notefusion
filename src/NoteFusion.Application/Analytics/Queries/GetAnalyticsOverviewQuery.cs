@@ -135,7 +135,7 @@ public sealed class GetAnalyticsOverviewQueryHandler
             .Select(p => p.ClaimedByUserId!.Value)
             .Distinct()
             .ToListAsync(ct);
-        var savers = await _db.RealSheets()
+        var savers = await _db.KeptSheets()
             .Where(t => webUserIds.Contains(t.UserId))
             .Select(t => t.UserId)
             .Distinct()

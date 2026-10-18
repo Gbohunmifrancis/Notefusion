@@ -1,0 +1,32 @@
+/**
+ * Option A (board 12): every finished transcription is filed in the Library by the server the moment its job
+ * finishes. The words the phone puts around such a sheet. Pure.
+ */
+
+/** What kind of take a result was, for the line under its title: "Hummed", "Song", "Choir", "Chords". */
+export function takeKind(result: {
+  separated?: boolean | null;
+  partsSource?: string | null;
+  chordsSource?: string | null;
+}): string {
+  if (result.partsSource === "heard") return "Choir";
+  if (result.separated) return "Song";
+  if (result.chordsSource === "heard") return "Chords";
+  return "Hummed";
+}
+
+/** The first-open toast's second line: what the sheet was filed as, and why when a hymn named it. */
+export function savedToastBody(title: string, hymnTitle?: string | null): string {
+  return hymnTitle && hymnTitle.trim() === title.trim() ? `As "${title}", the hymn it matched` : `As "${title}"`;
+}
+
+/** A sheet the server filed that its owner has not opened yet: the Library's blue dot. */
+export function isUnopened(sheet: { savedAutomatically?: boolean; openedAtUtc?: string | null }): boolean {
+  return !!sheet.savedAutomatically && !sheet.openedAtUtc;
+}
+
+/** "Saved automatically · 18:42", on the phone's clock. */
+export function autoSavedLine(createdAtUtc: string): string {
+  const d = new Date(createdAtUtc);
+  return `Saved automatically · ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}

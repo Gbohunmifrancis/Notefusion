@@ -76,7 +76,7 @@ public class ActivityLogTests
 
         api.Outcomes[done] = TranscriptionStatus.Done;
         api.Outcomes[failed] = TranscriptionStatus.Failed;
-        var poll = new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user), h.Clock);
+        var poll = new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user), h.Clock, h.QuotaGate);
         await poll.Handle(new GetTranscriptionJobQuery(done), default);
         await poll.Handle(new GetTranscriptionJobQuery(done), default); // polled twice: still one outcome
         await poll.Handle(new GetTranscriptionJobQuery(failed), default);

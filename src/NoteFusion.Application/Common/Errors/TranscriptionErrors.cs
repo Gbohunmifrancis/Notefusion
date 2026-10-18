@@ -80,6 +80,10 @@ public static class TranscriptionErrors
         Error.Validation("TRANS_INVALID_TIME_SIGNATURE",
             $"Beats in a bar must be {string.Join(", ", Meters.Supported.SkipLast(1))} or {Meters.Supported[^1]}, or left as Not sure.");
 
+    public static readonly Error InvalidIdempotencyKey =
+        Error.Validation("TRANS_INVALID_IDEMPOTENCY_KEY",
+            $"The Idempotency-Key header can be at most {Core.Entities.TranscriptionJob.IdempotencyKeyMaxLength} characters.");
+
     public static readonly Error InvalidTempo =
         Error.Validation("TRANS_INVALID_TEMPO",
             $"Tempo must be between {TranscribeOptions.MinTempo} and {TranscribeOptions.MaxTempo} beats a minute, or left out.");

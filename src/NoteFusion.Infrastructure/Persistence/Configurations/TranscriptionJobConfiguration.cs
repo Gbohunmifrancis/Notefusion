@@ -44,6 +44,16 @@ public sealed class TranscriptionJobConfiguration : IEntityTypeConfiguration<Tra
         builder.Property(j => j.DeviceFingerprint).HasMaxLength(64);
         builder.HasIndex(j => new { j.DeviceFingerprint, j.TrialConsumedAtUtc });
 
+        // "JOB_LOST" today (TranscriptionJob.LostCode); room for a few more codes.
+        builder.Property(j => j.FailureCode).HasMaxLength(32);
+
+        // A repeated submit with the same key from the same account is handed the same job. Unique per account
+        // (two accounts may send the same key and never collide), and filtered: most rows have none.
+        builder.Property(j => j.IdempotencyKey).HasMaxLength(TranscriptionJob.IdempotencyKeyMaxLength);
+        builder.HasIndex(j => new { j.UserId, j.IdempotencyKey })
+            .IsUnique()
+            .HasFilter("\"IdempotencyKey\" IS NOT NULL");
+
         // Unbounded: a transcription of a long recording is a few hundred KB of MusicXML and note
         // data, and there is no sensible cap to impose that the ML service does not already impose.
         builder.Property(j => j.ResultJson);

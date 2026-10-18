@@ -170,6 +170,30 @@ public class TranscriptionJob : BaseEntity
             ChoirId = choirId
         };
 
+    /// <summary>
+    /// Why a job that settled without a result failed, as a stable code for clients: <see cref="LostCode"/> when
+    /// the transcription service lost it or never answered (a restart, the deadline), null when the worker gave
+    /// a reason of its own (the recording). Kept on the row because a client asking after the worker has
+    /// forgotten the job is answered from this row, and must still be told it was lost, not the recording's fault.
+    /// </summary>
+    public string? FailureCode { get; private set; }
+
+    /// <summary>The <see cref="FailureCode"/> of a job the service lost or never answered: sending it again is free.</summary>
+    public const string LostCode = "JOB_LOST";
+
+    /// <summary>
+    /// The client's <c>Idempotency-Key</c> for the submit that started this job (the phone sends its take's own id),
+    /// unique per account: a send that reached the server but lost its answer is handed this same job when it is
+    /// sent again, never a second job or a second charge. Null for a submit that sent none (the web app).
+    /// </summary>
+    public string? IdempotencyKey { get; private set; }
+
+    public const int IdempotencyKeyMaxLength = 200;
+
+    /// <summary>Stamps the submit's <c>Idempotency-Key</c> (see <see cref="IdempotencyKey"/>).</summary>
+    public void KeyBy(string? idempotencyKey)
+        => IdempotencyKey = string.IsNullOrWhiteSpace(idempotencyKey) ? null : idempotencyKey.Trim();
+
     /// <summary>Records that the library sweep has dealt with this job. Idempotent.</summary>
     public void MarkAutoSaved(DateTime utcNow) => AutoSavedAtUtc ??= utcNow;
 
@@ -220,7 +244,8 @@ public class TranscriptionJob : BaseEntity
     /// <param name="resultJson">
     /// The serialised result for a finished job; null for one that failed or aged out.
     /// </param>
-    public bool Settle(string? resultJson, DateTime utcNow)
+    /// <param name="failureCode">For a job closed without a result, why (see <see cref="FailureCode"/>).</param>
+    public bool Settle(string? resultJson, DateTime utcNow, string? failureCode = null)
     {
         if (SettledAtUtc is not null)
         {
@@ -229,6 +254,7 @@ public class TranscriptionJob : BaseEntity
 
         ResultJson = resultJson;
         SettledAtUtc = utcNow;
+        FailureCode = resultJson is null ? failureCode : null;
         return true;
     }
 }

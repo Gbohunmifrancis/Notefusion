@@ -37,6 +37,13 @@ public static class AnalyticsScope
         return db.Transcriptions.Where(t => !internalIds.Contains(t.UserId));
     }
 
+    /// <summary>
+    /// Real sheets the person kept: saved by hand, or saved automatically and then opened or renamed. A sheet the
+    /// server filed by itself does not count as kept until its owner has looked at it.
+    /// </summary>
+    public static IQueryable<Transcription> KeptSheets(this IApplicationDbContext db)
+        => db.RealSheets().Where(t => !t.SavedAutomatically || t.OpenedAtUtc != null);
+
     public static IQueryable<Subscription> RealSubscriptions(this IApplicationDbContext db)
     {
         var internalIds = db.InternalUserIds();

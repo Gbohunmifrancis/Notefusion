@@ -465,7 +465,7 @@ public class OneSongPurchaseTests
             .Handle(new GetLinkInfoQuery(Link), default)).Value;
 
     private static Task<Result<TranscriptionJobDto>> Poll(TestHarness h, User user, string jobId, FakeApi api)
-        => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock)
+        => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, h.QuotaGate)
             .Handle(new GetTranscriptionJobQuery(jobId), default);
 
     private static async Task<SubscriptionDto> Shown(TestHarness h, User user, string? device = null)

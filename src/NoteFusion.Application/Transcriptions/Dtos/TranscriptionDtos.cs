@@ -306,6 +306,18 @@ public sealed record KeyAlternativeDto(string Key, IReadOnlyList<int> Pitches, s
 /// when <c>Status == Failed</c>; the mobile should surface it directly instead
 /// of showing a hardcoded fallback string.
 /// </para>
+///
+/// <para>
+/// <c>ErrorCode</c> is a stable code next to the sentence: <c>"JOB_LOST"</c> (<see cref="Core.Entities.TranscriptionJob.LostCode"/>)
+/// when the transcription service lost the job or never answered, on every path that says so, so a client can
+/// send the recording again without matching words. Null for a failure about the recording.
+/// </para>
+///
+/// <para>
+/// <c>SavedId</c> and <c>SavedTitle</c> name the library sheet a finished job was filed as (every finished
+/// transcription is, the moment it is settled: <see cref="Library.LibraryFiling"/>); null until then, and for a
+/// sheet its owner has deleted.
+/// </para>
 /// </summary>
 public sealed record TranscriptionJobDto(
     string JobId,
@@ -315,4 +327,7 @@ public sealed record TranscriptionJobDto(
     string? Error = null,
     string? Stage = null,
     SourceDto? Source = null,
-    int? QueuePosition = null);
+    int? QueuePosition = null,
+    string? ErrorCode = null,
+    Guid? SavedId = null,
+    string? SavedTitle = null);

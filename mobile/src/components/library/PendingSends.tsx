@@ -1,64 +1,120 @@
-import React from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import { Icon, type IconName } from "../Icon";
 import { Touchable } from "../Touchable";
+import { showDialog } from "../../lib/dialog";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import { fonts, radii, spacing, type Palette } from "../../design/theme";
-import { statusLine, type QueuedSend } from "../../lib/sendQueue";
-import { formatBytes } from "../../lib/hymnPack";
+import { recordedAt, statusLine, takeName, type QueuedSend } from "../../lib/sendQueue";
 
 /**
- * Recordings waiting in the send queue (lib/outbox), above the Library's sheets: what each is
- * doing in a plain line, and what can be done — send now, try again, delete, or open once ready.
+ * "On its way" (board 13): every take still travelling, above the Library's sheets — sending (with its
+ * progress), sent and being written, or waiting for a connection with its next try. Each moves on by itself and,
+ * once its job is done, lands in the list below as a saved sheet. A waiting one taps for Send now or Delete;
+ * nothing here needs the person unless the server refuses it, which keeps the audio with the server's plain
+ * sentence and Try again / Delete.
  */
 export function PendingSends({
   items,
+  progress,
   onRetry,
   onDelete,
   onOpen,
 }: {
   items: readonly QueuedSend[];
+  /** The upload of each take being sent, 0..1 (`useSendProgress`). */
+  progress: ReadonlyMap<string, number>;
   onRetry: (item: QueuedSend) => void;
   onDelete: (item: QueuedSend) => void;
   onOpen: (item: QueuedSend) => void;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+
+  // "next try in 30 s" counts down while a take waits for a connection.
+  const [now, setNow] = useState(Date.now());
+  const counting = items.some((i) => i.status === "waiting" && i.attempts > 0 && !i.message);
+  useEffect(() => {
+    if (!counting) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [counting]);
+
   if (items.length === 0) return null;
 
   return (
-    <View style={styles.wrap}>
-      <Text style={styles.eyebrow}>{items.length === 1 ? "Waiting to send" : `Waiting to send · ${items.length}`}</Text>
-      {items.map((item) => {
-        const when = new Date(item.createdAt).toLocaleString(undefined, { weekday: "short", hour: "numeric", minute: "2-digit" });
-        const name = item.fileName.startsWith("clip-") ? "Recording" : item.fileName;
+    <View style={styles.card}>
+      <View style={styles.head}>
+        <Text style={styles.heading}>On its way</Text>
+        <Text style={styles.count}>{items.length}</Text>
+      </View>
+      {items.map((item, index) => {
+        const name = `${takeName(item)} · ${recordedAt(item.createdAt)}`;
+        const fraction = progress.get(item.id);
+        const line = statusLine(item, now, fraction);
         const problem = item.status === "refused" || item.status === "failed";
-        const icon: IconName =
-          item.status === "done" ? "done" : problem ? "problem" : item.status === "sent" ? "waiting" : "sending";
-        return (
-          <View key={item.id} style={styles.card} accessible={false}>
-            <View style={styles.top} accessible accessibilityLabel={`${name}, ${when}. ${statusLine(item)}`}>
+        const waiting = item.status === "waiting" || item.status === "held";
+        const icon: IconName = problem
+          ? "problem"
+          : item.status === "done"
+            ? "done"
+            : item.status === "sent"
+              ? "waiting"
+              : waiting && item.message
+                ? "retry"
+                : waiting && item.attempts > 0
+                  ? "offline"
+                  : "sending";
+        const ask = () =>
+          showDialog({
+            title: name,
+            message: line,
+            actions: [
+              { label: "Send now", onPress: () => onRetry(item) },
+              { label: "Delete", style: "destructive", onPress: () => onDelete(item) },
+              { label: "Cancel", style: "cancel" },
+            ],
+          });
+        const a11y = `${name}. ${line}${waiting ? ". Send now or delete" : ""}`;
+        const body = (
+          <>
+            <View style={styles.tile}>
+              <Icon name={icon} size={20} color={problem ? colors.warning : colors.text} />
+            </View>
+            <View style={styles.text}>
+              <Text style={styles.title} numberOfLines={1}>
+                {name}
+              </Text>
+              <Text style={[styles.status, item.status === "sending" && styles.statusLive, problem && styles.statusProblem]}>
+                {line}
+              </Text>
               {item.status === "sending" ? (
-                <ActivityIndicator size="small" color={colors.accent} />
-              ) : (
-                <Icon name={icon} size={20} color={problem ? colors.warning : item.status === "done" ? colors.success : colors.icon} />
-              )}
-              <View style={styles.text}>
-                <Text style={styles.title} numberOfLines={1}>{`${name} · ${when}`}</Text>
-                <Text style={[styles.status, problem && styles.statusProblem]}>{statusLine(item)}</Text>
-                <Text style={styles.meta}>{`${item.opts.mode === "melody" ? "Hummed or sung" : item.opts.mode} · ${formatBytes(item.bytes)}`}</Text>
+                <View style={styles.bar}>
+                  <View style={[styles.barFill, { width: `${Math.max(2, Math.min(100, (fraction ?? 0) * 100))}%` }]} />
+                </View>
+              ) : null}
+            </View>
+          </>
+        );
+        return (
+          <View key={item.id} style={[styles.row, index > 0 && styles.rowDivided]}>
+            {/* Only a waiting take taps (Send now or Delete); the others are drawn plain, never dimmed as disabled. */}
+            {waiting ? (
+              <Touchable onPress={ask} style={styles.top} radius={radii.md} accessibilityLabel={a11y}>
+                {body}
+              </Touchable>
+            ) : (
+              <View style={styles.top} accessible accessibilityLabel={a11y}>
+                {body}
               </View>
-            </View>
-            <View style={styles.actions}>
-              {item.status === "done" ? (
-                <Action label="Open" onPress={() => onOpen(item)} styles={styles} strong />
-              ) : null}
-              {item.status === "waiting" ? <Action label="Send now" onPress={() => onRetry(item)} styles={styles} strong /> : null}
-              {problem ? <Action label="Try again" onPress={() => onRetry(item)} styles={styles} strong /> : null}
-              {item.status !== "sending" && item.status !== "sent" ? (
+            )}
+            {problem || item.status === "done" ? (
+              <View style={styles.actions}>
+                {item.status === "done" ? <Action label="Open" onPress={() => onOpen(item)} styles={styles} strong /> : null}
+                {problem ? <Action label="Try again" onPress={() => onRetry(item)} styles={styles} strong /> : null}
                 <Action label={item.status === "done" ? "Dismiss" : "Delete"} onPress={() => onDelete(item)} styles={styles} />
-              ) : null}
-            </View>
+              </View>
+            ) : null}
           </View>
         );
       })}
@@ -76,22 +132,39 @@ function Action({ label, onPress, styles, strong }: { label: string; onPress: ()
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    wrap: { marginTop: spacing.lg, gap: spacing.sm },
-    eyebrow: { fontFamily: fonts.medium, fontSize: 12, color: c.textFaint, textTransform: "uppercase", letterSpacing: 0.8 },
     card: {
-      padding: spacing.md,
+      marginTop: spacing.lg,
+      paddingHorizontal: spacing.md,
+      paddingTop: spacing.md,
+      paddingBottom: spacing.xs,
       borderRadius: 18,
       backgroundColor: c.surfaceAlt,
       borderWidth: 1,
       borderColor: c.border,
-      gap: spacing.sm,
     },
-    top: { flexDirection: "row", alignItems: "flex-start", gap: spacing.md },
-    text: { flex: 1 },
-    title: { fontFamily: fonts.medium, fontSize: 14, color: c.text },
-    status: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted, marginTop: 2 },
+    head: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: spacing.xs },
+    heading: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
+    count: { fontFamily: fonts.medium, fontSize: 13, color: c.textFaint },
+    row: { paddingVertical: spacing.sm, gap: spacing.sm },
+    rowDivided: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: c.border },
+    top: { flexDirection: "row", alignItems: "center", gap: spacing.md },
+    tile: {
+      width: 40,
+      height: 40,
+      borderRadius: 12,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    text: { flex: 1, minWidth: 0 },
+    title: { fontFamily: fonts.medium, fontSize: 15, color: c.text },
+    status: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted, marginTop: 3 },
+    statusLive: { color: c.link },
     statusProblem: { color: c.warning },
-    meta: { fontFamily: fonts.regular, fontSize: 11.5, color: c.textFaint, marginTop: 2 },
+    bar: { height: 3, borderRadius: radii.pill, backgroundColor: c.border, marginTop: 8, overflow: "hidden" },
+    barFill: { height: "100%", borderRadius: radii.pill, backgroundColor: c.link },
     actions: { flexDirection: "row", justifyContent: "flex-end", gap: spacing.sm },
     action: {
       height: 34,
