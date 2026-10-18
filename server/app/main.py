@@ -14,6 +14,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
+from app.api.practice import router as practice_router
 from app.api.routes import router
 from app.config import TEMP_PREFIX, TEMP_PREFIXES, settings
 from app.jobs.queue import JobQueue
@@ -244,6 +245,7 @@ app = FastAPI(
 )
 app.add_middleware(ApiKeyAuthMiddleware)
 app.include_router(router)
+app.include_router(practice_router)
 
 
 @app.get("/healthz", include_in_schema=False)

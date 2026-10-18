@@ -202,6 +202,36 @@ public class User : BaseEntity
         PracticeTrack = track;
     }
 
+    /// <summary>
+    /// The lowest note the singer held comfortably (MIDI), read by the range finder (<c>POST /api/practice/range</c>);
+    /// null until measured. Measured, never scored: it guides, it marks nothing.
+    /// </summary>
+    public int? VoiceRangeLowMidi { get; private set; }
+
+    /// <summary>The highest note the singer held comfortably (MIDI); null until measured.</summary>
+    public int? VoiceRangeHighMidi { get; private set; }
+
+    /// <summary>
+    /// Keeps one end of the singer's range as just measured. A reading that meets or crosses the other end clears that
+    /// end (it is measured again), so the range kept is always low below high.
+    /// </summary>
+    public void MeasureVoiceRange(bool low, int midi)
+    {
+        Guard.InRange(midi, 0, 127);
+        if (low)
+        {
+            VoiceRangeLowMidi = midi;
+            if (VoiceRangeHighMidi <= midi)
+                VoiceRangeHighMidi = null;
+        }
+        else
+        {
+            VoiceRangeHighMidi = midi;
+            if (VoiceRangeLowMidi >= midi)
+                VoiceRangeLowMidi = null;
+        }
+    }
+
     // ── Practice reminders (Application/Practice/Reminders) ─────────────────
 
     /// <summary>

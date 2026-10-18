@@ -130,16 +130,27 @@ public static class PracticeRules
     /// </summary>
     public const double ShortestNoteSeconds = 0.3;
 
-    /// <summary>XP for one marked take before the daily cap.</summary>
+    /// <summary>XP for one marked take before the daily cap. A practice mode's take earns as a drill does.</summary>
     public static int BaseXp(PracticeKind kind, int score) => kind switch
     {
-        PracticeKind.Drill => DrillXp
+        PracticeKind.Part => PartXp + (score >= GoodScore ? PartGoodBonus : 0),
+        _ when UsesDrillAllowance(kind) => DrillXp
             + (score >= GoodScore ? DrillGoodBonus : 0)
             + (score >= PerfectScore ? DrillPerfectBonus : 0),
-        PracticeKind.Part => PartXp + (score >= GoodScore ? PartGoodBonus : 0),
         _ => 0
     };
 
     /// <summary>Drills marked a day for this account.</summary>
     public static int DrillGradesPerDay(bool isPro) => isPro ? ProDrillGradesPerDay : FreeDrillGradesPerDay;
+
+    /// <summary>
+    /// Whether a take of this kind spends one of the day's marked drills: a drill and every practice mode's take (a
+    /// pitch-match set or a run is one take, so one); a part sung back (Pro) does not.
+    /// </summary>
+    public static bool UsesDrillAllowance(PracticeKind kind) => kind is PracticeKind.Drill
+        or PracticeKind.PitchMatch or PracticeKind.Interval or PracticeKind.Harmony or PracticeKind.Run or PracticeKind.Rhythm;
+
+    /// <summary>The kinds that spend the day's marked drills, for a database count (<see cref="UsesDrillAllowance"/>).</summary>
+    public static readonly PracticeKind[] DrillAllowanceKinds =
+        Enum.GetValues<PracticeKind>().Where(UsesDrillAllowance).ToArray();
 }

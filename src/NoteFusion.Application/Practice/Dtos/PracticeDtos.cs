@@ -73,6 +73,9 @@ public sealed record PracticeMilestoneDto(
 /// GET /api/practice/progress (and PUT /api/practice/track's answer): everything the Practice screen draws, read off the
 /// account's graded practice. <c>Track</c> is how the singer likes to practise ("playful" / "focused"), null until they
 /// pick one — the clients ask then. It changes the drills offered and how takes are shown, never the numbers here.
+/// <c>Modes</c> are the practice modes live for that track, in the order the hub lists them ("warm-up", "pitch-match",
+/// "runs", "intervals", "harmony", "rhythm"; Playful's four), each switchable on the server (<c>PracticeModes__*</c>):
+/// a client shows only these. <c>Drills</c> counts every marked take but parts: a mode's take spends one too.
 /// </summary>
 public sealed record PracticeProgressDto(
     DateOnly Today,
@@ -86,7 +89,8 @@ public sealed record PracticeProgressDto(
     IReadOnlyList<PracticeDayDto> LastSevenDays,
     DrillAllowanceDto Drills,
     PracticeTrack? Track,
-    PracticePathDto? Path = null);
+    PracticePathDto? Path = null,
+    IReadOnlyList<string>? Modes = null);
 
 /// <summary>
 /// What a marked take earned, returned with its grade so the client can celebrate without a second read:

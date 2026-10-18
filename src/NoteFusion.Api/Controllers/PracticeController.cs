@@ -24,6 +24,24 @@ public sealed class GradeDrillRequest
     public string? LeadInSec { get; set; }
 }
 
+/// <summary>
+/// Multipart body of a practice mode's take: the recording, the exercise's id from <c>GET modes/{mode}</c>, and the
+/// count-in's seconds before beat one ("4.5", invariant culture; required).
+/// </summary>
+public sealed class GradePracticeModeRequest
+{
+    public IFormFile? Audio { get; set; }
+    public string? ExerciseId { get; set; }
+    public string? LeadInSec { get; set; }
+}
+
+/// <summary>Multipart body of a range take: the recording and which end it measures, "low" or "high".</summary>
+public sealed class MeasureVoiceRangeRequest
+{
+    public IFormFile? Audio { get; set; }
+    public string? End { get; set; }
+}
+
 /// <summary>JSON body of <c>PUT track</c>: "playful" or "focused".</summary>
 public sealed record SetPracticeTrackRequest(string? Track);
 
@@ -37,6 +55,9 @@ public sealed class PracticeController : ApiControllerBase
 {
     /// <summary>A drill take is a few seconds; an m4a of that is tens of kilobytes, a WAV well under this.</summary>
     private const long MaxDrillTakeBytes = 8 * 1024 * 1024;
+
+    /// <summary>A mode's take is at most about a minute (a pitch-match set): room for a WAV of it.</summary>
+    private const long MaxModeTakeBytes = 16 * 1024 * 1024;
 
     private readonly ISender _sender;
 
@@ -79,7 +100,72 @@ public sealed class PracticeController : ApiControllerBase
         return HandleResult(await _sender.Send(new GradeDrillCommand(stream, request.Audio.FileName, request.DrillId ?? string.Empty, leadIn), ct));
     }
 
-    /// <summary>XP, level, streak, weekly goal, badges, the last seven days, and the track (null until chosen).</summary>
+    /// <summary>The warm-up: breath, lip trills, sirens and the range finder, timed, with the synth's guides. Never marked.</summary>
+    [HttpGet("warm-up")]
+    public async Task<IActionResult> WarmUp(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetWarmUpQuery(), ct));
+
+    /// <summary>The caller's range as last measured: each end null until measured, then the span, solfa and a choir part.</summary>
+    [HttpGet("range")]
+    public async Task<IActionResult> VoiceRange(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetVoiceRangeQuery(), ct));
+
+    /// <summary>
+    /// The range finder: a take holding the lowest (<c>end=low</c>) or highest (<c>end=high</c>) comfortable note. The
+    /// worker reads the notes held in it and that end is kept on the account; answers with the range and the note heard
+    /// (422 <c>PRACTICE_RANGE_NOT_HEARD</c> when no note was held steadily). Measured, never scored.
+    /// </summary>
+    [HttpPost("range")]
+    [Consumes("multipart/form-data")]
+    [RequestSizeLimit(MaxDrillTakeBytes)]
+    [PracticeDrillRateLimit]
+    public async Task<IActionResult> MeasureRange([FromForm] MeasureVoiceRangeRequest request, CancellationToken ct)
+    {
+        if (request.Audio is null || request.Audio.Length == 0)
+            return HandleResult(Result.Failure<Application.Practice.Dtos.VoiceRangeDto>(Application.Common.Errors.PracticeErrors.NoTake));
+        await using var stream = request.Audio.OpenReadStream();
+        return HandleResult(await _sender.Send(new MeasureVoiceRangeCommand(stream, request.Audio.FileName, request.End), ct));
+    }
+
+    /// <summary>
+    /// A practice mode's exercises ("pitch-match", "intervals", "harmony", "runs", "rhythm") on the caller's track, each
+    /// placed in today's key for them, with the day's marked-drill allowance (404 <c>PRACTICE_MODE_UNKNOWN</c> /
+    /// <c>PRACTICE_MODE_OFF</c>).
+    /// </summary>
+    [HttpGet("modes/{mode}")]
+    public async Task<IActionResult> Mode(string mode, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetPracticeModeQuery(mode), ct));
+
+    /// <summary>
+    /// Marks a practice mode's take and records it as practice: the exercise rebuilt from its id, the take marked by the
+    /// grader it names (notes, a run's shape, or claps). Spends one of the day's marked drills (403
+    /// <c>PRACTICE_DAILY_LIMIT</c> past them); also limited per device and address (429).
+    /// </summary>
+    [HttpPost("modes/grade")]
+    [Consumes("multipart/form-data")]
+    [RequestSizeLimit(MaxModeTakeBytes)]
+    [PracticeDrillRateLimit]
+    public async Task<IActionResult> GradeMode([FromForm] GradePracticeModeRequest request, CancellationToken ct)
+    {
+        if (request.Audio is null || request.Audio.Length == 0)
+            return HandleResult(Result.Failure<Application.Practice.Dtos.PracticeModeGradeDto>(Application.Common.Errors.PracticeErrors.NoTake));
+        double? leadIn = null;
+        if (!string.IsNullOrWhiteSpace(request.LeadInSec))
+        {
+            if (!double.TryParse(request.LeadInSec, NumberStyles.Float, CultureInfo.InvariantCulture, out var seconds))
+                return HandleResult(Result.Failure<Application.Practice.Dtos.PracticeModeGradeDto>(Application.Common.Errors.PracticeErrors.LeadIn));
+            leadIn = seconds;
+        }
+
+        await using var stream = request.Audio.OpenReadStream();
+        return HandleResult(await _sender.Send(
+            new GradePracticeModeCommand(stream, request.Audio.FileName, request.ExerciseId ?? string.Empty, leadIn), ct));
+    }
+
+    /// <summary>
+    /// XP, level, streak, weekly goal, badges, the last seven days, the track (null until chosen), and the practice
+    /// modes live for that track (<c>modes</c>).
+    /// </summary>
     [HttpGet("progress")]
     public async Task<IActionResult> Progress(CancellationToken ct)
         => HandleResult(await _sender.Send(new GetPracticeProgressQuery(), ct));

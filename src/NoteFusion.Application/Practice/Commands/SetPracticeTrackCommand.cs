@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Practice.Dtos;
+using NoteFusion.Application.Practice.Modes;
 using NoteFusion.Application.Practice.Queries;
 using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
@@ -26,13 +27,17 @@ public sealed class SetPracticeTrackCommandHandler : IRequestHandler<SetPractice
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _clock;
     private readonly IClientTimeZone _timeZone;
+    private readonly PracticeModeSettings _modes;
 
-    public SetPracticeTrackCommandHandler(IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock, IClientTimeZone timeZone)
+    /// <param name="modes">The server's mode switches (registered; every mode on when none is given).</param>
+    public SetPracticeTrackCommandHandler(
+        IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock, IClientTimeZone timeZone, PracticeModeSettings? modes = null)
     {
         _db = db;
         _currentUser = currentUser;
         _clock = clock;
         _timeZone = timeZone;
+        _modes = modes ?? new PracticeModeSettings();
     }
 
     public async Task<Result<PracticeProgressDto>> Handle(SetPracticeTrackCommand request, CancellationToken cancellationToken)
@@ -50,7 +55,7 @@ public sealed class SetPracticeTrackCommandHandler : IRequestHandler<SetPractice
             await _db.SaveChangesAsync(cancellationToken);
         }
 
-        return await GetPracticeProgressQueryHandler.ReadAsync(_db, _clock, _timeZone, userId, cancellationToken);
+        return await GetPracticeProgressQueryHandler.ReadAsync(_db, _clock, _timeZone, userId, _modes, cancellationToken);
     }
 
     /// <summary>The wire names only: "playful" / "focused", any case — never a number.</summary>

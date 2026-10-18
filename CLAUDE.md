@@ -252,6 +252,16 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   of the day (`PracticePath`, replayed from the session rows; `GET …/drills/next`, `/today` its alias): 80+ moves on, under
   that the drill once more then an easier variant, two 90+ skip a drill, two under 50 step back; unit and grade milestones
   are derived, each once. Mobile `PracticeScreen`.
+  Modes beside the path (`Application/Practice/Modes`; Focused lists all six, Playful warm-up, pitch match, intervals and
+  rhythm): warm-up (`GET …/warm-up`, synth guides, never marked) ending in the range finder (`POST …/range`, a
+  low or high take → worker `/v1/range`, holds ≥1 s; kept as `users.VoiceRange{Low,High}Midi`, said as notes, solfa on doh C
+  and a part by harmony.py's ranges; `GET …/range`), pitch match (8 held notes after their tones, one take, `/v1/grade` with
+  `offsetSearchSec` 0.35 so the tones cannot stand in), intervals (doh then the note, RCM order), harmony (a third above or
+  under a played tune), runs (60–100 %: note by note while every note lasts 0.3 s, else `/v1/grade/run`, DTW shape + landing
+  note) and rhythm (`/v1/grade/rhythm`: clap onsets, offset + tempo fit, ±70/±140 ms). `GET …/modes/{mode}` lists a mode's
+  `ModeCatalogue` exercises (keyed per singer per day; id `mode:code@doh[~speed]`); `POST …/modes/grade` marks a take: a
+  `PracticeSession` of the mode's kind, one of the day's marked drills, drill XP, never the path (it reads Drill rows).
+  Progress carries `modes`, live per track; `PracticeModes__<Mode>=false` switches one off without an app update.
 - Practice reminders are server pushes to phones only (`Application/Practice/Reminders`, `PracticeReminderWorker` every
   10 min, `PracticeReminders__Enabled`): never web push. The singer's clock is `users.TimeZone` (written by
   `ClientTimeZoneMiddleware` when `X-Time-Zone` changes; null = Lagos). `PracticeReminderRules`: at their hour (8–21, default

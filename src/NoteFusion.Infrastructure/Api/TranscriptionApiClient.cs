@@ -17,7 +17,7 @@ namespace NoteFusion.Infrastructure.Api;
 /// <see cref="ErrorType.Network"/> results — connectivity drops are an expected condition
 /// in the target market, not an exceptional one.
 /// </summary>
-internal sealed class TranscriptionApiClient(
+internal sealed partial class TranscriptionApiClient(
     HttpClient http,
     Microsoft.Extensions.Configuration.IConfiguration config,
     ILogger<TranscriptionApiClient> logger) : ITranscriptionApi

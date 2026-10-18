@@ -419,6 +419,21 @@ public static class DrillCatalogue
     /// </summary>
     public static Drill Build(DrillPattern pattern, int dohMidi, bool gentle = false)
     {
+        var (key, notes) = Place(pattern, dohMidi);
+        var tempo = TempoFor(pattern.Tier, pattern.Step);
+        return gentle
+            ? new Drill($"{pattern.Code}@{dohMidi}{GentleSuffix}", pattern, key, dohMidi, tempo - PracticeRules.PlayfulTempoDrop, notes)
+            : new Drill($"{pattern.Code}@{dohMidi}", pattern, key, dohMidi, tempo, notes);
+    }
+
+    /// <summary>
+    /// A pattern's notes with its unmarked doh on <paramref name="dohMidi"/>: pitches from the syllables, labels from the
+    /// solfa engine, timing from its rhythm, and the key (the doh's major, or its relative minor for a minor pattern).
+    /// Throws when the engine would label it differently — a catalogue mistake. The practice modes' content
+    /// (<see cref="Modes.ModeCatalogue"/>) is placed by this too.
+    /// </summary>
+    public static (MusicalKey Key, List<NoteEventDto> Notes) Place(DrillPattern pattern, int dohMidi)
+    {
         var dohPc = dohMidi % 12;
         var key = pattern.Mode == KeyMode.Major
             ? new MusicalKey(dohPc, KeyMode.Major)
@@ -444,11 +459,7 @@ public static class DrillCatalogue
         if (labels != string.Join(' ', pattern.Tokens))
             throw new InvalidOperationException(
                 $"Drill '{pattern.Code}' on {dohMidi} is labelled \"{labels}\" by the solfa engine, not \"{pattern.Solfa}\".");
-
-        var tempo = TempoFor(pattern.Tier, pattern.Step);
-        return gentle
-            ? new Drill($"{pattern.Code}@{dohMidi}{GentleSuffix}", pattern, key, dohMidi, tempo - PracticeRules.PlayfulTempoDrop, notes)
-            : new Drill($"{pattern.Code}@{dohMidi}", pattern, key, dohMidi, tempo, notes);
+        return (key, notes);
     }
 
     /// <summary>A drill's id without building it.</summary>

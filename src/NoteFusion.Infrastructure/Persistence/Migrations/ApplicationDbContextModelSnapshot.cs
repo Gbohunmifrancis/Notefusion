@@ -1723,6 +1723,12 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
+                    b.Property<int?>("VoiceRangeHighMidi")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("VoiceRangeLowMidi")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CanonicalEmail");

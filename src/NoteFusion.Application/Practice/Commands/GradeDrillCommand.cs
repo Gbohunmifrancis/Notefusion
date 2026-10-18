@@ -12,7 +12,7 @@ namespace NoteFusion.Application.Practice.Commands;
 
 /// <summary>
 /// A practice drill sung and marked: free for every signed-in account, a session's worth a day
-/// (<see cref="PracticeRules.DrillGradesPerDay"/>). The notes are the server's own drill, rebuilt from its id; the
+/// (<see cref="PracticeRules.DrillGradesPerDay"/>, shared with the practice modes' takes). The notes are the server's own drill, rebuilt from its id; the
 /// take goes to the worker's grader (cut at the drill's length plus a few seconds) and the marked take is recorded
 /// as practice, with what it earned — and any path milestone it reached — returned beside the marks. Which drill
 /// comes next is read off the recorded takes (<see cref="PracticePath"/>). <see cref="LeadInSec"/> is the count-in the
@@ -61,7 +61,7 @@ public sealed class GradeDrillCommandHandler : IRequestHandler<GradeDrillCommand
         await using var lease = await _gate.AcquireAsync(PracticeRecorder.GateKey(userId), cancellationToken);
 
         var used = await _db.PracticeSessions.CountAsync(
-            s => s.UserId == userId && s.Kind == PracticeKind.Drill && s.LocalDate == today, cancellationToken);
+            s => s.UserId == userId && PracticeRules.DrillAllowanceKinds.Contains(s.Kind) && s.LocalDate == today, cancellationToken);
         var limit = PracticeRules.DrillGradesPerDay(await ProStatus.IsProAsync(_db, _clock, userId, cancellationToken));
         if (used >= limit)
             return PracticeErrors.DailyDrillLimit(limit);
