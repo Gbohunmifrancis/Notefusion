@@ -109,6 +109,14 @@ internal static class OutboundResilience
         TotalTimeout = TimeSpan.FromSeconds(10),
     };
 
+    /// <summary>Expo's receipts: a read sent as a POST, asked again on the next run rather than retried.</summary>
+    public static readonly OutboundResilienceOptions PushReceipts = new()
+    {
+        Provider = OutboundProviders.PushReceipts,
+        AttemptTimeout = TimeSpan.FromSeconds(5),
+        TotalTimeout = TimeSpan.FromSeconds(10),
+    };
+
     /// <summary>
     /// Web push (RFC 8030): one POST per browser, not repeatable (a retry could notify twice), with a breaker
     /// per push service.

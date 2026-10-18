@@ -23,7 +23,8 @@ public sealed record PaymentAlertSettingsDto(
     DateTime? MutedUntilUtc);
 
 /// <summary>What <c>POST /api/admin/alerts/test</c> did: the push service took the sample alert for this phone.</summary>
-public sealed record TestPaymentAlertDto(bool Sent);
+/// <param name="Confirmed">Google or Apple took it too (its receipt said so in time); false when only Expo has.</param>
+public sealed record TestPaymentAlertDto(bool Sent, bool Confirmed = false);
 
 internal static class PaymentAlertDevice
 {
@@ -49,6 +50,10 @@ public static class PaymentAlertErrors
     public static readonly Error TestNotSent = Error.Failure(
         "ADMIN_ALERTS_TEST_NOT_SENT",
         "The test alert could not be sent just now. Try again in a minute.");
+
+    /// <summary>Expo, Google or Apple refused the test alert: why, in a sentence the admin can act on.</summary>
+    public static Error TestRefused(string code) => Error.Failure(
+        "ADMIN_ALERTS_TEST_REFUSED", PushProblems.Describe(code, thisPhone: true));
 }
 
 // ── GET /api/admin/alerts/device?token= ─────────────────────────────────────────────────────────────────────────────
@@ -191,14 +196,20 @@ public sealed class SendTestPaymentAlertCommandHandler
     private readonly ICurrentUser _caller;
     private readonly IPushSender _push;
     private readonly IDateTimeProvider _clock;
+    private readonly IPushReceipts _receipts;
+
+    /// <summary>How long the test waits for Google's or Apple's answer before saying only that Expo took it.</summary>
+    internal static readonly TimeSpan ReceiptWait = TimeSpan.FromSeconds(8);
 
     public SendTestPaymentAlertCommandHandler(
-        IApplicationDbContext db, ICurrentUser caller, IPushSender push, IDateTimeProvider clock)
+        IApplicationDbContext db, ICurrentUser caller, IPushSender push, IDateTimeProvider clock,
+        IPushReceipts? receipts = null)
     {
         _db = db;
         _caller = caller;
         _push = push;
         _clock = clock;
+        _receipts = receipts ?? new NoPushReceipts();
     }
 
     public async Task<Result<TestPaymentAlertDto>> Handle(SendTestPaymentAlertCommand request, CancellationToken ct)
@@ -227,8 +238,18 @@ public sealed class SendTestPaymentAlertCommandHandler
                 sound, channel, PaymentAlertChannels.TimeToLiveSeconds, PaymentAlertChannels.Category),
             ct);
 
-        return delivery.Delivered && delivery.Accepted > 0
-            ? new TestPaymentAlertDto(true)
-            : PaymentAlertErrors.TestNotSent;
+        if (!delivery.Delivered || delivery.Accepted == 0)
+            return delivery.ErrorCode is { } refused
+                ? PaymentAlertErrors.TestRefused(refused)
+                : PaymentAlertErrors.TestNotSent;
+
+        // Expo taking it is not the phone getting it: Google (or Apple) answers in the receipt, usually within seconds,
+        // and a missing FCM key on Expo is only ever said there.
+        if (delivery.Tickets.Count == 0)
+            return new TestPaymentAlertDto(true);
+        var receipt = await _receipts.WaitAsync(delivery.Tickets[0], ReceiptWait, ct);
+        return receipt is { ErrorCode: { } code }
+            ? PaymentAlertErrors.TestRefused(code)
+            : new TestPaymentAlertDto(true, Confirmed: receipt is not null);
     }
 }

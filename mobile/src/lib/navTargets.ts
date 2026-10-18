@@ -38,12 +38,14 @@ export type NavTarget =
    * payment id opens that payment's sheet over Payments. Resolves for an admin only.
    */
   | { kind: "admin"; tab: AdminTabName; paymentId?: string; view?: "webhooks" }
+  /** One account's page in Admin, over Users (behind the admin lock). Resolves for an admin only. */
+  | { kind: "adminUser"; userId: string }
   /** Not a screen: the store listing (an out-of-date app has nothing in it to show). */
   | { kind: "store" };
 
-type Entry = { admin?: boolean; target: (data: { paymentId?: unknown }) => NavTarget | null };
+type Entry = { admin?: boolean; target: (data: { paymentId?: unknown; userId?: unknown }) => NavTarget | null };
 
-/** A payment id as the server sends it (a GUID); anything else is not followed. */
+/** A payment or account id as the server sends it (a GUID); anything else is not followed. */
 const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
@@ -67,6 +69,16 @@ const NOTIFICATION_TARGETS: Record<string, Entry> = {
   /** A payment summary, the test alert, and `NotifyAdminsOfPaymentIssuesCommand`: the screen with Reconcile. */
   AdminPayments: { admin: true, target: () => ({ kind: "admin", tab: "Payments" }) },
   AdminWebhooks: { admin: true, target: () => ({ kind: "admin", tab: "Payments", view: "webhooks" }) },
+  /** `SendAdminActivityAlertsCommand`: one person signed up or is transcribing, so their account opens. */
+  AdminUser: {
+    admin: true,
+    target: (data) =>
+      typeof data.userId === "string" && GUID.test(data.userId)
+        ? { kind: "adminUser", userId: data.userId }
+        : { kind: "admin", tab: "Users" },
+  },
+  /** The same, for several people at once: the Users list. */
+  AdminUsers: { admin: true, target: () => ({ kind: "admin", tab: "Users" }) },
   /** `NotifyAppUpdateCommand`. */
   AppUpdate: { target: () => ({ kind: "store" }) },
   /** The founder's first-song note and the phone's own fallback reminder. */
@@ -81,12 +93,12 @@ const NOTIFICATION_TARGETS: Record<string, Entry> = {
  */
 export function notificationTarget(
   screen: unknown,
-  opts: { isAdmin?: boolean; paymentId?: unknown } = {},
+  opts: { isAdmin?: boolean; paymentId?: unknown; userId?: unknown } = {},
 ): NavTarget | null {
   if (typeof screen !== "string" || !Object.prototype.hasOwnProperty.call(NOTIFICATION_TARGETS, screen)) return null;
   const entry = NOTIFICATION_TARGETS[screen];
   if (!entry || (entry.admin && opts.isAdmin !== true)) return null;
-  return entry.target({ paymentId: opts.paymentId });
+  return entry.target({ paymentId: opts.paymentId, userId: opts.userId });
 }
 
 /** Whether a `screen` names an admin place: the tap is then held until the lock opens. */

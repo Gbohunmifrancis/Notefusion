@@ -363,6 +363,51 @@ public class PaymentAlertPushTests
     }
 
     [Fact]
+    public async Task A_test_alert_Google_refuses_says_why_instead_of_saying_sent()
+    {
+        using var h = new TestHarness(Now);
+        var admin = Admin(h);
+        Device(h, admin, "ExponentPushToken[mine]", alerts: true);
+        h.Push.DeviceOutcome = PushDelivery.Ok(1) with { Tickets = ["ticket-1"] };
+        var caller = new StubCurrentUser(admin.Id, UserRole.Admin);
+
+        // Expo took it, but Google's receipt says Expo has no FCM key for the app: every Android push is lost.
+        var noKey = await new SendTestPaymentAlertCommandHandler(
+                h.Db, caller, h.Push, h.Clock, new StubReceipts(new PushReceipt(PushProblems.InvalidCredentials, "x")))
+            .Handle(new SendTestPaymentAlertCommand("ExponentPushToken[mine]"), default);
+        Assert.Equal("ADMIN_ALERTS_TEST_REFUSED", noKey.Error.Code);
+        Assert.Contains("FCM V1 service account key", noKey.Error.Message);
+
+        // Google took it.
+        var took = await new SendTestPaymentAlertCommandHandler(
+                h.Db, caller, h.Push, h.Clock, new StubReceipts(new PushReceipt(null, null)))
+            .Handle(new SendTestPaymentAlertCommand("ExponentPushToken[mine]"), default);
+        Assert.True(took.Value.Sent);
+        Assert.True(took.Value.Confirmed);
+
+        // No answer in time: sent, not confirmed.
+        var pending = await new SendTestPaymentAlertCommandHandler(h.Db, caller, h.Push, h.Clock, new StubReceipts(null))
+            .Handle(new SendTestPaymentAlertCommand("ExponentPushToken[mine]"), default);
+        Assert.True(pending.Value.Sent);
+        Assert.False(pending.Value.Confirmed);
+
+        // Refused at the send itself: this phone's registration is dead.
+        h.Push.DeviceOutcome = PushDelivery.Failed("not registered", 1, PushProblems.DeviceNotRegistered);
+        var dead = await new SendTestPaymentAlertCommandHandler(h.Db, caller, h.Push, h.Clock, new StubReceipts(null))
+            .Handle(new SendTestPaymentAlertCommand("ExponentPushToken[mine]"), default);
+        Assert.Equal("ADMIN_ALERTS_TEST_REFUSED", dead.Error.Code);
+        Assert.Contains("Profile › Notifications", dead.Error.Message);
+    }
+
+    private sealed class StubReceipts(PushReceipt? receipt) : IPushReceipts
+    {
+        public Task<PushReceipt?> WaitAsync(string ticketId, TimeSpan within, CancellationToken ct = default)
+            => Task.FromResult(receipt);
+
+        public PushReceiptStats Stats(DateTime utcNow) => PushReceiptStats.None;
+    }
+
+    [Fact]
     public void Every_new_admin_route_requires_the_admin_policy()
     {
         // Payment alerts, and the existing routes the phone admin newly reads with new parameters.

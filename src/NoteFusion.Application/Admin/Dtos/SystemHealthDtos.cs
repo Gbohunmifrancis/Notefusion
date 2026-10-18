@@ -70,6 +70,12 @@ public sealed record SystemHealthDto(
 /// </summary>
 /// <param name="LastPaymentAlertDevices">Admin phones the last alert was sent to; with <paramref name="LastPaymentAlertAccepted"/>, "reached 2 of 2".</param>
 /// <param name="RefusedLast24h">Phones Expo refused payment alerts for over the last 24 hours (an expired token, say).</param>
+/// <param name="ReceiptsLast24h">
+/// Pushes of every kind whose fate was read in the last 24 hours (since the API started, if sooner): Expo's receipts,
+/// which carry Google's or Apple's answer.
+/// </param>
+/// <param name="NotDeliveredLast24h">Of those, the ones Expo, Google or Apple refused.</param>
+/// <param name="LastProblem">The latest refusal, as a sentence the admin can act on (<c>PushProblems.Describe</c>).</param>
 public sealed record PushHealthDto(
     int PhonesRegistered,
     int Android,
@@ -78,7 +84,11 @@ public sealed record PushHealthDto(
     DateTime? LastPaymentAlertAtUtc,
     int LastPaymentAlertDevices,
     int LastPaymentAlertAccepted,
-    int RefusedLast24h);
+    int RefusedLast24h,
+    int ReceiptsLast24h = 0,
+    int NotDeliveredLast24h = 0,
+    string? LastProblem = null,
+    DateTime? LastProblemAtUtc = null);
 
 /// <summary>
 /// Transcription throughput. Volume only, deliberately: the API records that a job was submitted and

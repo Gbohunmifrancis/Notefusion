@@ -25,6 +25,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   drop it). VAPID pair from `WebPush__PublicKey`/`__PrivateKey`, else derived from the JWT signing key (`VapidKeys`, no
   setup); `WebPush__Enabled=false` turns it off. `web-site/sw.js` (scope `/app/`, push only) shows it under the tab's
   `nf-job-<id>` tag and a click opens `/app?job=<id>`.
+  Expo push: a ticket only says Expo took a push; `PushReceiptWorker` (2 min) reads each ticket's receipt
+  (`PushTicketLog`, in memory), drops DeviceNotRegistered tokens, logs a key problem (InvalidCredentials = no FCM V1
+  key on Expo, MismatchSenderId, a 401 wanting `Push__ExpoAccessToken`) as an error at most hourly, and System Health's
+  Push panel says how many were not delivered and why (`PushProblems`); the admin test alert waits ≤8 s for its own
+  receipt and answers with the reason. Admin phones also get "someone signed up / is transcribing"
+  (`SendAdminActivityAlertsCommand`, `AdminActivityAlertWorker` every 30 s over an in-memory window; admins' own left
+  out; Android channel `admin-activity`; quiet hours, mute and names as the payment alerts; `AdminActivityAlerts__Enabled=false` off).
   The ready and failed pushes go at FCM high priority (`PushTimeToLiveSeconds`, a day's TTL), and the phone polls a job
   only while the app is in front (`useJobPolling` pauses in the background): a poll that sees a job done settles it,
   and a settled job gets no push, so a phone polling behind the user's back used to silence its own notification.

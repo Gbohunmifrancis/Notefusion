@@ -50,6 +50,7 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
     private readonly IDateTimeProvider _clock;
     private readonly IWorkerHeartbeatTracker? _heartbeats;
     private readonly IEmailQuota? _emailQuota;
+    private readonly IPushReceipts? _pushReceipts;
 
     public GetSystemHealthQueryHandler(
         IApplicationDbContext db,
@@ -57,7 +58,8 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
         ITranscriptionApi transcriber,
         IDateTimeProvider clock,
         IWorkerHeartbeatTracker? heartbeats = null,
-        IEmailQuota? emailQuota = null)
+        IEmailQuota? emailQuota = null,
+        IPushReceipts? pushReceipts = null)
     {
         _db = db;
         _database = database;
@@ -65,6 +67,7 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
         _clock = clock;
         _heartbeats = heartbeats;
         _emailQuota = emailQuota;
+        _pushReceipts = pushReceipts;
     }
 
     public async Task<Result<SystemHealthDto>> Handle(GetSystemHealthQuery request, CancellationToken ct)
@@ -133,8 +136,11 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
             .Where(a => a.CreatedAtUtc >= dayAgo)
             .SumAsync(a => (int?)a.Refused, ct) ?? 0;
 
+        var receipts = _pushReceipts?.Stats(now) ?? PushReceiptStats.None;
         return new PushHealthDto(
-            android + ios, android, ios, alertPhones, last?.SentAtUtc, last?.Devices ?? 0, last?.Accepted ?? 0, refused);
+            android + ios, android, ios, alertPhones, last?.SentAtUtc, last?.Devices ?? 0, last?.Accepted ?? 0, refused,
+            receipts.Checked, receipts.Refused,
+            receipts.LastErrorCode is { } code ? PushProblems.Describe(code) : null, receipts.LastErrorAtUtc);
     }
 
     private async Task<HealthPanelDto> CheckDatabase(CancellationToken ct)
