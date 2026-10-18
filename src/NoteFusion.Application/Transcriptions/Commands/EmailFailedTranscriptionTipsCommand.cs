@@ -2,20 +2,24 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Transcriptions.Commands;
 
 /// <summary>
 /// Emails an account whose transcription failed: it cost nothing, three things that make the next one work,
-/// and the way back. At most once a day per account, and never about a failure they have already tried
+/// and the way back. At most once a week per account, and never about a failure they have already tried
 /// again after. Run by the completion sweep, so every way a job fails (the client's poll, the worker's
 /// webhook, the sweep's own deadline) is covered by one rule.
 /// </summary>
 /// <remarks>
 /// One in five transcriptions fails, and a free account that fails usually leaves without trying again,
 /// not knowing the attempt was free or what to do differently. There is no email opt-out in the product to
-/// respect yet; the daily cap and <see cref="Lookback"/> keep this to a note about a recent attempt.
+/// respect yet; the weekly cap and <see cref="Lookback"/> keep this to a note about a recent attempt (the
+/// tips are the same three every time, so a second copy within the week tells nobody anything). Optional
+/// mail: while the sending quota holds it (<see cref="IEmailQuota"/>) nothing is claimed, and the next
+/// sweep sends it if the failure is still recent.
 /// </remarks>
 public sealed record EmailFailedTranscriptionTipsCommand : IRequest<Result<int>>
 {
@@ -26,7 +30,7 @@ public sealed record EmailFailedTranscriptionTipsCommand : IRequest<Result<int>>
     public static readonly TimeSpan Lookback = TimeSpan.FromDays(1);
 
     /// <summary>The most often one account is sent this email.</summary>
-    public static readonly TimeSpan AtMostEvery = TimeSpan.FromDays(1);
+    public static readonly TimeSpan AtMostEvery = TimeSpan.FromDays(7);
 
     public const int BatchSize = 50;
 }
@@ -38,14 +42,17 @@ public sealed class EmailFailedTranscriptionTipsCommandHandler
     private readonly IDateTimeProvider _clock;
     private readonly IEmailSender _email;
     private readonly IProviderHealth _health;
+    private readonly IEmailQuota _quota;
 
     public EmailFailedTranscriptionTipsCommandHandler(
-        IApplicationDbContext db, IDateTimeProvider clock, IEmailSender email, IProviderHealth? health = null)
+        IApplicationDbContext db, IDateTimeProvider clock, IEmailSender email, IProviderHealth? health = null,
+        IEmailQuota? quota = null)
     {
         _db = db;
         _clock = clock;
         _email = email;
         _health = health ?? ProviderHealth.AlwaysAvailable;
+        _quota = quota ?? EmailBudget.Unlimited;
     }
 
     public async Task<Result<int>> Handle(EmailFailedTranscriptionTipsCommand request, CancellationToken ct)
@@ -53,7 +60,7 @@ public sealed class EmailFailedTranscriptionTipsCommandHandler
         var now = _clock.UtcNow;
         var since = now - EmailFailedTranscriptionTipsCommand.Lookback;
         var quietSince = now - EmailFailedTranscriptionTipsCommand.QuietFor;
-        var dayAgo = now - EmailFailedTranscriptionTipsCommand.AtMostEvery;
+        var weekAgo = now - EmailFailedTranscriptionTipsCommand.AtMostEvery;
 
         // Each account's latest failure in the window: closed with no result, and started in the window too,
         // so an old job a sweep only now closes is not news. A job that finished, or is still running, is not
@@ -83,7 +90,7 @@ public sealed class EmailFailedTranscriptionTipsCommandHandler
         var due = failures
             .Where(f => users.TryGetValue(f.UserId, out var u)
                         && !(lastStarted.TryGetValue(f.UserId, out var started) && started > f.FailedAt)
-                        && (u.FailedTranscriptionEmailSentAtUtc is not { } last || (last < dayAgo && last < f.FailedAt)))
+                        && (u.FailedTranscriptionEmailSentAtUtc is not { } last || (last < weekAgo && last < f.FailedAt)))
             .OrderBy(f => f.FailedAt)
             .Take(EmailFailedTranscriptionTipsCommand.BatchSize)
             .ToList();
@@ -99,11 +106,15 @@ public sealed class EmailFailedTranscriptionTipsCommandHandler
             if (_health.IsUnavailable(OutboundProviders.Email))
                 break;
 
+            // The sending quota is keeping room for essential mail: the same, unclaimed until it has room again.
+            if (!await _quota.AllowsOptionalAsync(EmailKind.TranscriptionTips, ct))
+                break;
+
             var failedAt = f.FailedAt;
             var claimed = await _db.Users
                 .Where(u => u.Id == f.UserId
                             && (u.FailedTranscriptionEmailSentAtUtc == null
-                                || (u.FailedTranscriptionEmailSentAtUtc < dayAgo && u.FailedTranscriptionEmailSentAtUtc < failedAt)))
+                                || (u.FailedTranscriptionEmailSentAtUtc < weekAgo && u.FailedTranscriptionEmailSentAtUtc < failedAt)))
                 .ExecuteUpdateAsync(s => s.SetProperty(u => u.FailedTranscriptionEmailSentAtUtc, now), ct);
             if (claimed != 1)
                 continue;

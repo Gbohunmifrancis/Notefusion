@@ -9,7 +9,7 @@ using NoteFusion.Tests.Support;
 namespace NoteFusion.Tests.Transcriptions;
 
 /// <summary>
-/// The email after a failed transcription: once a day at most, only about a recent failure nobody has
+/// The email after a failed transcription: once a week at most, only about a recent failure nobody has
 /// already tried again after, never to a suspended account, and saying the attempt cost nothing.
 /// </summary>
 public class FailedTranscriptionEmailTests
@@ -38,7 +38,7 @@ public class FailedTranscriptionEmailTests
     }
 
     [Fact]
-    public async Task At_most_one_a_day_however_many_fail()
+    public async Task At_most_one_a_week_however_many_fail()
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
@@ -46,14 +46,19 @@ public class FailedTranscriptionEmailTests
         h.Clock.UtcNow = Now.AddMinutes(15);
         await Run(h);
 
-        // Another failure two hours later: still today's email.
+        // Another failure two hours later: still this week's email.
         Job(h, user, Now.AddHours(2), failed: true);
         h.Clock.UtcNow = Now.AddHours(3);
         Assert.Equal(0, await Run(h));
 
-        // A failure the next day is news again.
+        // Nor the next day: the same three tips again would tell them nothing.
         Job(h, user, Now.AddHours(26), failed: true);
         h.Clock.UtcNow = Now.AddHours(27);
+        Assert.Equal(0, await Run(h));
+
+        // A failure eight days on is news again.
+        Job(h, user, Now.AddDays(8), failed: true);
+        h.Clock.UtcNow = Now.AddDays(8).AddHours(1);
         Assert.Equal(1, await Run(h));
         Assert.Equal(2, h.Email.Sent.Count);
     }

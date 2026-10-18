@@ -173,6 +173,12 @@ services:
       Email__FromAddress: ${Email__FromAddress}
       Email__AssetBaseUrl: ${Email__AssetBaseUrl}
       Email__UseResend: ${Email__UseResend}
+      # The email plan's caps (defaults: Resend's free 100 a day and 3,000 a month, no weekly cap); optional mail
+      # stops at Email__OptionalShare (0.6) of each so essential mail keeps room. Blank = default, 0 = no cap.
+      Email__DailyLimit: ${Email__DailyLimit}
+      Email__WeeklyLimit: ${Email__WeeklyLimit}
+      Email__MonthlyLimit: ${Email__MonthlyLimit}
+      Email__OptionalShare: ${Email__OptionalShare}
       Google__ClientId: ${Google__ClientId}
       # Billing model: naira plans are Paystack subscriptions, dollar plans are Bachs subscriptions.
       # Currency routes the charge — Paystack lists NGN, Bachs lists USD — and the default provider only
@@ -206,7 +212,7 @@ services:
       Outreach__Enabled: ${Outreach__Enabled:-true}
       Outreach__FounderName: ${Outreach__FounderName:-Francis}
       Outreach__ReplyTo: ${Outreach__ReplyTo:-hello@notefusion.studio}
-      Outreach__BatchSize: ${Outreach__BatchSize:-50}
+      Outreach__BatchSize: ${Outreach__BatchSize:-5}
       Outreach__IntervalMinutes: ${Outreach__IntervalMinutes:-60}
       # The blog (docs/BLOG.md). Gemini drafts posts from the admin console and twice a week (Mon and Thu
       # 05:30 UTC); drafts never publish themselves. Publishing runs deploy-web.yml through GitHub's API with

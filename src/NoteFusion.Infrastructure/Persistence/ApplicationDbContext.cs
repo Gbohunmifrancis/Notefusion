@@ -40,6 +40,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<OutreachMessage> OutreachMessages => Set<OutreachMessage>();
     public DbSet<EmailOptOut> EmailOptOuts => Set<EmailOptOut>();
+    public DbSet<EmailSend> EmailSends => Set<EmailSend>();
 
     public DbSet<BlogPost> BlogPosts => Set<BlogPost>();
     public DbSet<BlogTopic> BlogTopics => Set<BlogTopic>();

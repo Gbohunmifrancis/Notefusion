@@ -344,7 +344,7 @@ public class OutreachTests
             ["Outreach:BatchSize"] = "", ["Outreach:IntervalMinutes"] = "", ["Outreach:ApiBaseUrl"] = "",
         }));
         Assert.False(blank.IsActive);
-        Assert.Equal(50, blank.BatchSize);
+        Assert.Equal(5, blank.BatchSize);
         Assert.Equal(60, blank.IntervalMinutes);
         Assert.Equal(OutreachSettings.DefaultApiBaseUrl, blank.ApiBaseUrl);
 

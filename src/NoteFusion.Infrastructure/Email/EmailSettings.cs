@@ -1,4 +1,6 @@
+using System.Globalization;
 using Microsoft.Extensions.Configuration;
+using NoteFusion.Application.Common.Settings;
 
 namespace NoteFusion.Infrastructure.Email;
 
@@ -74,6 +76,33 @@ public sealed class EmailSettings
             ? explicitUse
             : email.ApiKey.Length > 0;
         return email;
+    }
+
+    /// <summary>
+    /// The sending quota from the same section (<c>Email__DailyLimit</c>, <c>Email__WeeklyLimit</c>,
+    /// <c>Email__MonthlyLimit</c>, <c>Email__OptionalShare</c>), read by hand for the same reason as
+    /// <see cref="Resolve"/>. A blank or unreadable value keeps the default; a limit of zero or less turns that
+    /// window off; a share outside 0–1 keeps the default.
+    /// </summary>
+    public static EmailQuotaSettings ResolveQuota(IConfiguration configuration)
+    {
+        var section = configuration.GetSection("Email");
+        var defaults = new EmailQuotaSettings();
+        return new EmailQuotaSettings
+        {
+            DailyLimit = Limit(section["DailyLimit"], defaults.DailyLimit),
+            WeeklyLimit = Limit(section["WeeklyLimit"], defaults.WeeklyLimit),
+            MonthlyLimit = Limit(section["MonthlyLimit"], defaults.MonthlyLimit),
+            OptionalShare = double.TryParse(section["OptionalShare"], NumberStyles.Float, CultureInfo.InvariantCulture, out var share)
+                            && share is >= 0 and <= 1
+                ? share
+                : defaults.OptionalShare,
+        };
+
+        static int? Limit(string? value, int? fallback)
+            => int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var limit)
+                ? (limit > 0 ? limit : null)
+                : fallback;
     }
 
     private static string FirstSet(params string?[] values)

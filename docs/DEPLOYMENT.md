@@ -270,6 +270,10 @@ and the refusal is in the API log as a warning.
 | `Email__ReplyTo` | optional | Where replies land. Committed default is `hello@notefusion.studio`. |
 | `Email__SupportEmail` | optional | Shown in the footer. Defaults to `hello@notefusion.studio`. |
 | `Email__AppUrl` | optional | Marketing-site link in the footer/header. Defaults to `https://notefusion.studio`. |
+| `Email__DailyLimit` / `EMAIL__DAILYLIMIT` | optional | The plan's cap for the last 24 hours. Defaults to `100` (Resend free). `0` = no daily cap. |
+| `Email__WeeklyLimit` / `EMAIL__WEEKLYLIMIT` | optional | Cap for the last 7 days. Unset by default (no weekly cap). |
+| `Email__MonthlyLimit` / `EMAIL__MONTHLYLIMIT` | optional | Cap for the last 31 days (Resend does not say which day its month starts, so 31 rolling days hold under either). Defaults to `3000`. `0` = no monthly cap. |
+| `Email__OptionalShare` / `EMAIL__OPTIONALSHARE` | optional | Optional mail (welcome, waitlist, checkout reminder, failed-transcription tips, outreach) goes only while every capped window is under this share of its cap, counting all mail; the rest is kept for verification codes, resets, receipts and security notices, which always send. Defaults to `0.6`. Held batch mail stays due for a later run. Sends are counted in `email_sends`; System Health shows the usage. |
 
 > **Rotate the Resend key that was shared during development before using it** — treat it
 > as burned. Create a new key in the Resend dashboard and set only that value above.
@@ -298,7 +302,7 @@ or **secret** of the name in the first column (a variable wins over a secret). T
 | `OUTREACH_ENABLED` | `Outreach__Enabled` | `true` | Set `false` to stop all outreach. The API logs one line at startup saying whether outreach is on, and why not when it is off. |
 | `OUTREACH_FOUNDER_NAME` | `Outreach__FounderName` | `Francis` | Who the emails are from and signed by. Blank turns outreach off. |
 | `OUTREACH_REPLY_TO` | `Outreach__ReplyTo` | `hello@notefusion.studio` | Where replies land. Blank turns outreach off. |
-| `OUTREACH_BATCH_SIZE` | `Outreach__BatchSize` | `50` | Most accounts written to per run, so the backlog after the first deploy trickles out. |
+| `OUTREACH_BATCH_SIZE` | `Outreach__BatchSize` | `5` | Most accounts written to per run (hourly, 10 sending hours: at most 50 a day), so a backlog trickles out and leaves the email quota room. |
 | `OUTREACH_INTERVAL_MINUTES` | `Outreach__IntervalMinutes` | `60` | Minutes between runs. |
 | — | `Outreach__ApiBaseUrl` | `https://api.notefusion.studio` | Public API origin the unsubscribe link points at (code default; not passed by the deploy). |
 

@@ -180,6 +180,10 @@ jobs:
           EMAIL__FROMADDRESS: ${{ secrets.EMAIL__FROMADDRESS }}
           EMAIL__ASSETBASEURL: ${{ secrets.EMAIL__ASSETBASEURL }}
           EMAIL__USERESEND: ${{ secrets.EMAIL__USERESEND }}
+          EMAIL__DAILYLIMIT: ${{ vars.EMAIL__DAILYLIMIT || secrets.EMAIL__DAILYLIMIT }}
+          EMAIL__WEEKLYLIMIT: ${{ vars.EMAIL__WEEKLYLIMIT || secrets.EMAIL__WEEKLYLIMIT }}
+          EMAIL__MONTHLYLIMIT: ${{ vars.EMAIL__MONTHLYLIMIT || secrets.EMAIL__MONTHLYLIMIT }}
+          EMAIL__OPTIONALSHARE: ${{ vars.EMAIL__OPTIONALSHARE || secrets.EMAIL__OPTIONALSHARE }}
           # ── Google OAuth ──────────────────────────────────────────────────────
           GOOGLE__CLIENTID: ${{ secrets.GOOGLE__CLIENTID }}
           # ── Billing ───────────────────────────────────────────────────────────
@@ -279,6 +283,7 @@ jobs:
             JWT_ISSUER,JWT_AUDIENCE,JWT_PRIVATE_KEY_PEM,
             SEED_ADMIN_EMAIL,SEED_ADMIN_PASSWORD,
             RESEND_API_KEY,RESEND__APIKEY,RESEND__FROM,EMAIL__FROMADDRESS,EMAIL__ASSETBASEURL,EMAIL__USERESEND,
+            EMAIL__DAILYLIMIT,EMAIL__WEEKLYLIMIT,EMAIL__MONTHLYLIMIT,EMAIL__OPTIONALSHARE,
             GOOGLE__CLIENTID,
             BILLING__DEFAULTPROVIDER,BILLING__CHECKOUTCALLBACKURL,
             BACHS__BASEURL,BACHS__SECRETKEY,BACHS__WEBHOOKSECRET,BACHS__SUPPORTEDCURRENCIES,
@@ -384,6 +389,10 @@ jobs:
             Email__FromAddress="${EMAIL__FROMADDRESS}"
             Email__AssetBaseUrl="${EMAIL__ASSETBASEURL}"
             Email__UseResend="${EMAIL__USERESEND}"
+            Email__DailyLimit="${EMAIL__DAILYLIMIT}"
+            Email__WeeklyLimit="${EMAIL__WEEKLYLIMIT}"
+            Email__MonthlyLimit="${EMAIL__MONTHLYLIMIT}"
+            Email__OptionalShare="${EMAIL__OPTIONALSHARE}"
             Google__ClientId="${GOOGLE__CLIENTID}"
             Billing__DefaultProvider="${BILLING__DEFAULTPROVIDER}"
             Billing__CheckoutCallbackUrl="${BILLING__CHECKOUTCALLBACKURL}"
@@ -418,7 +427,7 @@ jobs:
             Outreach__Enabled="${OUTREACH_ENABLED:-true}"
             Outreach__FounderName="${OUTREACH_FOUNDER_NAME:-Francis}"
             Outreach__ReplyTo="${OUTREACH_REPLY_TO:-hello@notefusion.studio}"
-            Outreach__BatchSize="${OUTREACH_BATCH_SIZE:-50}"
+            Outreach__BatchSize="${OUTREACH_BATCH_SIZE:-5}"
             Outreach__IntervalMinutes="${OUTREACH_INTERVAL_MINUTES:-60}"
             Gemini__ApiKey="${GEMINI_API_KEY}"
             Gemini__Model="${GEMINI_MODEL}"

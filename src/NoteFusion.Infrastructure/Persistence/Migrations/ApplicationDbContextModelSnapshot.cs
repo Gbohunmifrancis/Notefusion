@@ -840,6 +840,26 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("email_opt_outs", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.EmailSend", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<DateTime>("SentAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SentAtUtc");
+
+                    b.ToTable("email_sends", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.FolderShare", b =>
                 {
                     b.Property<Guid>("Id")
