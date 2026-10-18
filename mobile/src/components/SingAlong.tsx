@@ -32,6 +32,7 @@ import { leadInFor, noteDueAt, partSeconds, targetFor } from "../lib/take";
 import { VOICES, type VoiceName } from "../lib/choir";
 import { acknowledgeGrade } from "../lib/practiceReward";
 import { GradeMarks } from "./GradeMarks";
+import { ProblemNote } from "./ProblemNote";
 
 interface Props {
   melody: readonly NoteEvent[];
@@ -207,7 +208,7 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
         </View>
       )}
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {error ? <ProblemNote>{error}</ProblemNote> : null}
 
       {grade ? <GradeMarks grade={grade} notes={notes} /> : null}
     </View>
@@ -230,5 +231,4 @@ const makeStyles = (c: Palette) =>
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.sm },
     liveLabel: { ...typography.label, color: c.textMuted },
     liveNote: { ...typography.hero, color: c.accent },
-    error: { ...typography.caption, color: c.danger },
   });

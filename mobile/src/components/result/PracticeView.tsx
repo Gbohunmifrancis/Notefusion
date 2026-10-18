@@ -50,6 +50,7 @@ import {
   type BarSlice,
 } from "../../lib/practice";
 import type { Practice } from "./usePractice";
+import { ProblemNote } from "../ProblemNote";
 
 const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberOfChannels: 1 };
 const BALANCE_LABELS: { value: Balance; label: string }[] = [
@@ -299,7 +300,7 @@ export function PracticeView({
   }
 
   const statusColor = (s: string) =>
-    s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.danger : colors.textFaint;
+    s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.textMuted : colors.textFaint;
   const t = take.current;
   const due = phase === "singing" && t ? noteDueAt(t.slice.notes, t.tempo, t.leadIn, elapsed) : -1;
   const first = t?.slice.notes[0];
@@ -419,7 +420,7 @@ export function PracticeView({
             </View>
           )}
 
-          {status ? <Text style={styles.error}>{status}</Text> : null}
+          {status ? <ProblemNote>{status}</ProblemNote> : null}
 
           {graded && marks ? (
             <View style={styles.result}>
@@ -427,7 +428,7 @@ export function PracticeView({
                 <Text
                   style={[
                     styles.score,
-                    { color: graded.grade.score >= 80 ? colors.success : graded.grade.score >= 50 ? colors.warning : colors.danger },
+                    { color: graded.grade.score >= 80 ? colors.success : graded.grade.score >= 50 ? colors.warning : colors.textMuted },
                   ]}
                 >
                   {graded.grade.score}
@@ -439,7 +440,7 @@ export function PracticeView({
                   ) : null}
                 </View>
               </View>
-              <Text style={styles.meta}>Marked on your part above: green in tune · amber close · red wrong note · grey not sung.</Text>
+              <Text style={styles.meta}>Marked on your part above: green in tune · amber close · grey off the note or not sung.</Text>
               {rewardMoment(graded.grade.reward) ? (
                 <Text style={styles.earned}>{rewardMoment(graded.grade.reward)!.line}</Text>
               ) : null}
@@ -451,7 +452,7 @@ export function PracticeView({
             You hear the starting note and a bar of clicks, then sing the bars on your own — the others drop out so only your voice is marked.
           </Text>
           {/* The hook's error can be a platform message; this says it plainly instead. */}
-          {p.error ? <Text style={styles.error}>This sheet could not be played. Close it and open it again.</Text> : null}
+          {p.error ? <ProblemNote>This sheet could not be played. Close it and open it again.</ProblemNote> : null}
         </ScrollView>
       </View>
     </Modal>
@@ -510,7 +511,6 @@ const makeStyles = (c: Palette) =>
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.md },
     liveLabel: { ...typography.label, color: c.textMuted },
     liveNote: { ...typography.hero, color: c.accent },
-    error: { ...typography.caption, color: c.danger, marginTop: spacing.sm },
     result: { marginTop: spacing.md, backgroundColor: c.surfaceAlt, borderRadius: radii.md, padding: spacing.md, gap: spacing.sm },
     scoreRow: { flexDirection: "row", alignItems: "center", gap: spacing.md },
     score: { ...typography.display, minWidth: 64, textAlign: "center" },

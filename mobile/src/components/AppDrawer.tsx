@@ -260,7 +260,7 @@ export function AppDrawer({ open, onClose, pictureUrl }: Props) {
           label="Sign out"
           onPress={confirmSignOut}
           styles={styles}
-          color={colors.danger}
+          color={colors.text}
           danger
         />
       </Animated.View>
@@ -291,12 +291,13 @@ function Row({
       style={styles.row}
       scaleTo={motion.scale.row}
       // `danger` is only ever the sign-out row, and that one opens a confirmation —
-      // the warning pattern is what marks it as the row you did not mean to hit.
+      // the warning pattern is what marks it as the row you did not mean to hit. It is a
+      // neutral row: the red word belongs to the confirmation, not the row.
       haptic={danger ? 'warning' : 'light'}
       accessibilityLabel={label}
     >
       <Ionicons name={icon} size={21} color={color} />
-      <Text style={[styles.rowLabel, danger && styles.rowLabelDanger]} numberOfLines={1}>
+      <Text style={styles.rowLabel} numberOfLines={1}>
         {label}
       </Text>
       {trailing}
@@ -367,9 +368,6 @@ const makeStyles = (c: Palette, s: Shadows) =>
       fontSize: 15,
       fontFamily: fonts.semibold,
       color: c.text,
-    },
-    rowLabelDanger: {
-      color: c.danger,
     },
 
     // ── Plan badge ──────────────────────────────────────────────────────────

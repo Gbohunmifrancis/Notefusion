@@ -20,7 +20,7 @@ export function StarGrade({ grade, notes }: { grade: GradeResult; notes: readonl
   const earned = playfulRewardLine(grade.reward);
 
   const statusColor = (s: string) =>
-    s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.danger : colors.textFaint;
+    s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.textMuted : colors.textFaint;
 
   return (
     <View style={styles.result}>

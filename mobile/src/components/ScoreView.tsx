@@ -30,6 +30,7 @@ import type { NoteEvent } from "../api/types";
 import { type Palette, confidenceColor, radii, spacing, typography } from "../design/theme";
 import { beatKey, buildMusicXml, onsetIndexMap, resolveKeySignature } from "../lib/musicxml";
 import { useColors, useThemedStyles } from "../lib/theme";
+import { ProblemNote } from "./ProblemNote";
 
 const ENGRAVER_HTML = require("../../assets/engraver/index.html") as number;
 
@@ -261,7 +262,7 @@ const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
           androidLayerType="hardware"
         />
       )}
-      {error !== null && <Text style={styles.error}>Could not draw the stave. Please try again.</Text>}
+      {error !== null && <ProblemNote style={styles.error}>Could not draw the stave. Please try again.</ProblemNote>}
     </View>
   );
 });
@@ -296,9 +297,6 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: spacing.lg,
     },
     error: {
-      ...typography.caption,
-      color: c.danger,
       paddingHorizontal: spacing.md,
-      paddingTop: spacing.sm,
     },
   });
