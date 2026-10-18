@@ -211,7 +211,80 @@
     return "We couldn't open the microphone. Please try again.";
   }
 
+  // ── The Christmas carols path (board d-christmas/03), while the season is on: the mobile copy is lib/season.ts ──
+
+  var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+  /** "Until 6 January" from the path's last day (yyyy-mm-dd); null when it runs until switched off. */
+  function untilLabel(until) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(until || "");
+    if (!m) return null;
+    var month = MONTHS[Number(m[2]) - 1];
+    return month ? "Until " + Number(m[3]) + " " + month : null;
+  }
+
+  /** The hub's pine card: until when, a segment a drill, how many are sung and what is next. */
+  function carolsCard(season) {
+    var until = untilLabel(season.until), done = season.next == null;
+    return {
+      eyebrow: until ? "Christmas · " + until : "Christmas",
+      title: season.title,
+      body: "Six short drills from carols we hold: a Gloria warm-up, Silent Night in thirds, and more.",
+      segments: season.steps.map(function (st) { return !!st.passed; }),
+      sung: season.sung + " of " + season.total + " sung",
+      next: done ? "All sung. The Carol singer sticker is yours." : "Next: " + season.next.cue,
+      action: done ? "Sing again" : season.sung === 0 ? "Start" : "Continue",
+      label: season.title + ": " + season.sung + " of " + season.total + " sung." + (done ? "" : " Next: " + season.next.cue + ".")
+    };
+  }
+
+  /** The path as its screen draws it: the step open (the one chosen, else the next unsung, else the last) and the rows. */
+  function carolsView(season, chosen) {
+    var indexes = season.steps.map(function (st) { return st.index; });
+    var fallback = season.next ? season.next.index : indexes.length ? indexes[indexes.length - 1] : 1;
+    var open = chosen != null && indexes.indexOf(chosen) >= 0 ? chosen : fallback;
+    return {
+      eyebrow: "Christmas · " + season.sung + " of " + season.total,
+      rows: season.steps.map(function (st) {
+        return { index: st.index, title: st.title, line: st.carol + " · " + st.detail, state: st.index === open ? "open" : st.passed ? "done" : "todo", bestScore: st.bestScore };
+      }),
+      open: open,
+      allSung: season.next == null
+    };
+  }
+
+  /** Doh's word over the carols path (Playful), for the step that is next. */
+  function carolsBuddyLine(season) {
+    var n = season.next;
+    if (!n) return "You sang all six carols. Merry Christmas!";
+    switch (n.index) {
+      case 1: return "A Gloria to warm up: can you sing it all in one breath?";
+      case 2: return "Lovely Gloria! Now Joy to the World, all the way down.";
+      case 3: return "Joyful! Now sing under the tune, like the altos do.";
+      case 4: return "Now sing Silent Night along with the words.";
+      case 5: return "Hark! Leap up from low soh to doh.";
+      default: return "Last one: " + n.title.toLowerCase() + " with " + n.carol + ".";
+    }
+  }
+
+  /** Whether a take just earned the Carol singer sticker (its code among the reward's new badges). */
+  function earnedCarolSinger(newBadges, badgeCode) {
+    var code = badgeCode || "carol_singer";
+    return !!newBadges && newBadges.some(function (b) { return b.code === code; });
+  }
+
+  /** "Joy to the world, the Lord is come!" an octave up, crotchet = 120: the Carol singer's line (d' t l s f m r d). */
+  var JOY_LINE = [[86, 0, 1, "d", "'"], [85, 1, 0.75, "t", ""], [83, 1.75, 0.25, "l", ""], [81, 2, 1.5, "s", ""],
+    [79, 3.5, 0.5, "f", ""], [78, 4, 1, "m", ""], [76, 5, 1, "r", ""], [74, 6, 1.5, "d", ""]].map(function (n) {
+    return { pitchMidi: n[0], startBeat: n[1], durBeats: n[2], solfa: n[3], octaveMark: n[4], degree: 1, conf: 1 };
+  });
+  var CHIME_BPM = 120;
+
+  function solfaLine(notes) { return notes.map(function (n) { return (n.solfa || "") + (n.octaveMark || ""); }).join(" "); }
+
   window.NfPracticeProgress = {
+    untilLabel: untilLabel, carolsCard: carolsCard, carolsView: carolsView, carolsBuddyLine: carolsBuddyLine,
+    earnedCarolSinger: earnedCarolSinger, JOY_LINE: JOY_LINE, CHIME_BPM: CHIME_BPM, solfaLine: solfaLine,
     TAIL_SEC: TAIL_SEC,
     levelFraction: levelFraction, weeklyFraction: weeklyFraction, nextLevelLine: nextLevelLine,
     streakLabel: streakLabel, streakLine: streakLine, freezeLine: freezeLine,

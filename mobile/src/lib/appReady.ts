@@ -27,6 +27,15 @@ import {
   JetBrainsMono_600SemiBold,
 } from "@expo-google-fonts/jetbrains-mono";
 import { Nunito_900Black } from "@expo-google-fonts/nunito";
+import {
+  SEASON_CACHE_KEY,
+  SEASON_INTRO_KEY,
+  parseSeason,
+  seasonKey,
+  splashSeason,
+  type SplashSeason,
+} from "./season";
+import { primeSeason } from "./seasonStore";
 
 const LAUNCHED_KEY = "nf.hasLaunched";
 
@@ -53,6 +62,11 @@ interface AppReady {
    * full `intro` on a first open or the `brief` reveal on every open after.
    */
   splash: "hold" | "intro" | "brief";
+  /**
+   * The Christmas season as this phone last heard it (lib/season `splashSeason`): `none` (as always), `intro` once a
+   * season (the full four beats, the cap dropping on, a little snow and the chime) or `capped` after that.
+   */
+  season: SplashSeason;
 }
 
 export function useAppReady(): AppReady {
@@ -71,6 +85,7 @@ export function useAppReady(): AppReady {
 
   /** null while the flag is still being read — we cannot pick a duration yet. */
   const [firstLaunch, setFirstLaunch] = useState<boolean | null>(null);
+  const [season, setSeason] = useState<SplashSeason>("none");
   const [holdDone, setHoldDone] = useState(false);
 
   // A missing font must not brick the app: a face failing to load is a
@@ -78,11 +93,20 @@ export function useAppReady(): AppReady {
   const fontsReady = fontsLoaded || fontError !== null;
 
   // ── Which launch is this? Answer once, then remember for next time. ────────
+  // The season as the phone last heard it is read here too: the splash dresses before the network is up, which is
+  // why a season switched on shows on the splash from the next launch (lib/seasonStore reads the server).
   useEffect(() => {
     let cancelled = false;
-    AsyncStorage.getItem(LAUNCHED_KEY)
-      .then((seen) => {
+    AsyncStorage.multiGet([LAUNCHED_KEY, SEASON_CACHE_KEY, SEASON_INTRO_KEY])
+      .then(([[, seen], [, cached], [, lastIntro]]) => {
         if (cancelled) return;
+        const flag = parseSeason(cached);
+        primeSeason(flag);
+        const now = new Date();
+        const dressed = seen === null ? "none" : splashSeason(flag, lastIntro, now);
+        setSeason(dressed);
+        // Once a season: the intro is spent the moment it is chosen, chime or no chime.
+        if (dressed === "intro") AsyncStorage.setItem(SEASON_INTRO_KEY, seasonKey(now)).catch(() => undefined);
         setFirstLaunch(seen === null);
         if (seen === null) {
           // Best-effort: a failed write costs a returning user one long splash,
@@ -111,14 +135,16 @@ export function useAppReady(): AppReady {
     if (firstLaunch === null || !fontsReady) return;
     const t = setTimeout(
       () => setHoldDone(true),
-      firstLaunch ? HOLD_FIRST_LAUNCH_MS : HOLD_RETURNING_MS,
+      firstLaunch || season === "intro" ? HOLD_FIRST_LAUNCH_MS : HOLD_RETURNING_MS,
     );
     return () => clearTimeout(t);
-  }, [firstLaunch, fontsReady]);
+  }, [firstLaunch, fontsReady, season]);
 
   return {
     ready: fontsReady && holdDone,
     isFirstLaunch: firstLaunch === true,
-    splash: !fontsReady || firstLaunch === null ? "hold" : firstLaunch ? "intro" : "brief",
+    // The season's intro is the full four beats, as a first open's is.
+    splash: !fontsReady || firstLaunch === null ? "hold" : firstLaunch || season === "intro" ? "intro" : "brief",
+    season,
   };
 }

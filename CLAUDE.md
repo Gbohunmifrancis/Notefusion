@@ -321,6 +321,21 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   labelled from the tune's doh) is served while the season is on for the caller (progress `season`, `GET /api/practice/carols`),
   graded by `drills/grade` like any drill and never moving the main path; all six passed in season earn `carol_singer`, kept for
   good. The carols carry `occasions: ["Christmas"]` in `content/hymns`, and the hymn pack carries `occasions`.
+  Clients (board d-christmas), nothing at all while off: tints only (pine #2E8A66 Night / #1F6B50 Day, candle #F3DFB4 for
+  small Night labels, holly on the cap alone, never Pro gold). Mobile: `lib/seasonStore` reads the flag at start, on
+  foreground and on an account change and keeps it per device (`nf.season`), so `lib/appReady` dresses the splash before
+  the network: once a season (`nf.seasonIntro`, keyed by the year it starts) the full intro with the cap dropping on,
+  ~14 flakes gone by 6 s and "Joy to the world" (d' t l s, `lib/seasonChime` on `lib/synth`, never with the app's sound
+  off), after that the cap alone; pure rules (snow, cap placement, chime notes, the carols view) in `lib/season.ts`. The cap
+  (`components/season/Cap`, art `season-cap`) sits on the brand mark (splash, Home's header; never a control) and on Doh
+  in Practice only. Home asks "What are we singing this Christmas?" with a pine Carols chip and one session's flakes;
+  Hymns shows "Carols for Christmas" (`hymnPack.carols`, each card its opening solfa; search finds occasions, "carol"
+  for Christmas); Practice's pine card opens `screens/practice/CarolsScreen` (graded like any drill, the tune under a part
+  only with headphones; the Carol singer sheet with snowflake confetti and the whole line). Web: `assets/season.js` on
+  every page (one fetch; on, `data-season` and `season.css`: the header's cap, the hero's pine line to
+  `/hymns/occasions/christmas`, the Silent Night sample from `<template id="season-sheet">` (render-home.mjs), flakes in
+  `[data-season-snow]`; the site never chimes); /app's question and "Sing the carols · n of 6"; the Practice view's card
+  and `assets/practice-carols.js` (+ .css, on first open; the line plays after the sixth take, with sounds on).
 - Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read),
   the opening eight notes as `preview` on every read (list rows show them in solfa), an
   optional folder name (`PUT /api/library/{id}/folder`; a folder is just the name its sheets share) and

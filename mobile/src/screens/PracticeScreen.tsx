@@ -52,7 +52,7 @@ import { Art } from "../components/practice/Art";
 import type { ArtName } from "../components/practice/art/svgs";
 import { practiceApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import type { Drill, GradeResult, PracticeBadge, PracticeDay, PracticeProgress, PracticeTrack, WeeklyGoal } from "../api/types";
+import type { Drill, GradeResult, PracticeBadge, PracticeDay, PracticeProgress, PracticeSeason, PracticeTrack, WeeklyGoal } from "../api/types";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { leadInFor, noteDueAt, partSeconds } from "../lib/take";
@@ -87,6 +87,9 @@ import {
   tuningLine,
 } from "../lib/practiceTrack";
 import { ProblemNote } from "../components/ProblemNote";
+import { CappedArt } from "../components/season/Cap";
+import { useSeason } from "../lib/seasonStore";
+import { carolsCard } from "../lib/season";
 import { ModeList } from "../components/practice/ModeList";
 import { hubModes, modesDohLine, modesHeading, progressStrip } from "../lib/practiceModes";
 import type { RootStackParams } from "../navigation/types";
@@ -378,7 +381,14 @@ export function PracticeScreen() {
   const buddy = { mood: buddyMood, line: progress ? mascotLine(buddyMood, progress, scene) : "" };
   // More ways to practise: the live modes in the track's words (a phone has no live pitch meter: no needle promised).
   const modeRows = progress ? hubModes(progress.modes, track, false) : [];
-  const dohLine = modesDohLine(modeRows, track);
+  // The Christmas carols (board d-christmas/03), only while the season is on for the singer: one pine card under
+  // today's drill. Doh wears the cap in Practice then; still one Doh on screen — on Focused the card's, so the modes'
+  // steps aside, and on Playful the buddy's, so the card has none.
+  const seasonFlag = useSeason();
+  const carols = progress?.season ?? null;
+  const capOn = seasonFlag.christmas || !!carols;
+  const carolsDoh = !!carols && !playful && !showPicker;
+  const dohLine = carolsDoh ? null : modesDohLine(modeRows, track);
 
   return (
     <View style={styles.flex}>
@@ -438,7 +448,7 @@ export function PracticeScreen() {
 
             {playful && !showPicker && drill ? (
               <View style={styles.buddy} accessible accessibilityLabel={`Doh, your practice buddy, says: ${buddy.line}`}>
-                <Art name={mascotArt(buddy.mood)} width={68} />
+                <CappedArt name={mascotArt(buddy.mood)} width={68} cap={capOn} />
                 <View style={styles.buddyBubble}>
                   <Text style={styles.buddyText}>{buddy.line}</Text>
                 </View>
@@ -527,6 +537,20 @@ export function PracticeScreen() {
               />
             ) : null}
 
+            {/* ── The Christmas carols: a short side-path with its own place, never the main path's ── */}
+            {carols && !showPicker ? (
+              <CarolsCard
+                season={carols}
+                doh={carolsDoh}
+                styles={styles}
+                onOpen={() => {
+                  if (busy) return;
+                  void logAnalyticsEvent("carols_opened", { sung: carols.sung });
+                  nav.navigate("Carols", { track });
+                }}
+              />
+            ) : null}
+
             {/* ── More ways to practise: the modes the server says are live ── */}
             {modeRows.length > 0 && !showPicker ? (
               <View style={styles.modes}>
@@ -535,7 +559,7 @@ export function PracticeScreen() {
                     <Text style={styles.modesTitle} accessibilityRole="header">{modesHeading(track)}</Text>
                     {dohLine ? <Text style={styles.modesDoh}>“{dohLine}”</Text> : null}
                   </View>
-                  {dohLine ? <Art name="doh-wave" width={56} /> : null}
+                  {dohLine ? <CappedArt name="doh-wave" width={56} cap={capOn} /> : null}
                 </View>
                 <ModeList
                   rows={modeRows}
@@ -679,6 +703,38 @@ export function PracticeScreen() {
 }
 
 type Styles = ReturnType<typeof makeStyles>;
+
+/**
+ * The pine "Carols for Christmas" card (board d-christmas/03): until when, six segments for six drills, how many are
+ * sung and what is next, and the way in. Pine is a tint here, never a second accent; candle labels it on Night.
+ */
+function CarolsCard({ season, doh, styles, onOpen }: { season: PracticeSeason; doh: boolean; styles: Styles; onOpen: () => void }) {
+  const c = carolsCard(season);
+  return (
+    <View style={styles.carols} accessible={false}>
+      <View style={styles.carolsTop}>
+        <View style={styles.carolsText}>
+          <Text style={styles.carolsEyebrow}>{c.eyebrow}</Text>
+          <Text style={styles.carolsTitle} accessibilityRole="header">{c.title}</Text>
+          <Text style={styles.carolsBody}>{c.body}</Text>
+        </View>
+        {doh ? <CappedArt name="doh-wave" width={88} cap /> : null}
+      </View>
+      <View style={styles.carolsBar} accessible accessibilityRole="progressbar" accessibilityLabel={c.label}>
+        {c.segments.map((on, i) => (
+          <View key={i} style={[styles.carolsSeg, on && styles.carolsSegOn]} />
+        ))}
+      </View>
+      <View style={styles.carolsFoot}>
+        <View style={styles.carolsText}>
+          <Text style={styles.carolsSung}>{c.sung}</Text>
+          <Text style={styles.carolsNext} numberOfLines={2}>{c.next}</Text>
+        </View>
+        <Button label={c.action} icon="arrow-forward" iconPosition="right" variant="secondary" size="sm" onPress={onOpen} />
+      </View>
+    </View>
+  );
+}
 
 /** The streak and the level in one line at the top (board 6a); the full cards are under "Your progress". */
 function ProgressLine({ progress, styles }: { progress: PracticeProgress; styles: Styles }) {
@@ -960,6 +1016,27 @@ const makeStyles = (c: Palette) =>
     progSep: { width: 1, height: 14, backgroundColor: c.border },
     progBar: { width: 48, height: 5, borderRadius: 3, backgroundColor: c.surfaceAlt, overflow: "hidden" },
     progFill: { height: 5, borderRadius: 3, backgroundColor: c.accent },
+
+    carols: {
+      marginBottom: spacing.md,
+      padding: spacing.lg,
+      gap: spacing.md,
+      borderRadius: radii.lg,
+      backgroundColor: c.pineSoft,
+      borderWidth: 1,
+      borderColor: c.pineLine,
+    },
+    carolsTop: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm },
+    carolsText: { flex: 1, minWidth: 0, gap: 4 },
+    carolsEyebrow: { ...typography.caption, color: c.candle, textTransform: "uppercase", letterSpacing: 1, fontSize: 10.5, fontFamily: fonts.semibold },
+    carolsTitle: { ...typography.heading, color: c.text, fontSize: 20 },
+    carolsBody: { ...typography.body, color: c.textMuted, fontSize: 13.5, lineHeight: 20 },
+    carolsBar: { flexDirection: "row", gap: 6 },
+    carolsSeg: { flex: 1, height: 5, borderRadius: 3, backgroundColor: c.surfaceAlt },
+    carolsSegOn: { backgroundColor: c.candle },
+    carolsFoot: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+    carolsSung: { ...typography.label, color: c.text, fontSize: 14 },
+    carolsNext: { ...typography.caption, color: c.textMuted, fontSize: 12.5 },
 
     modes: { marginTop: spacing.sm, marginBottom: spacing.lg },
     modesHead: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginBottom: spacing.sm },

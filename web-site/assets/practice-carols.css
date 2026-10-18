@@ -1,0 +1,88 @@
+/* The Christmas carols path on the web (/app, Practice; board d-christmas/03): assets/practice-carols.js's screen.
+ * Loaded the first time the path is opened, while the season is on; never with the app. The top bar and the switch
+ * are practice-modes.css's (loaded with it), the season's tokens (--pine, --candle) practice-view.css's.
+ * Phone first: these are the 360–414 px styles; min-width queries go upward. */
+
+.pc { display: flex; flex-direction: column; gap: 14px; }
+.pc .btn { min-height: 48px; justify-content: center; }
+.pc-failed { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+
+.pc-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+.pc-item + .pc-item.is-done, .pc-item + .pc-item.is-todo { border-top: 1px solid var(--line); }
+.pc-item.is-open + .pc-item { border-top: 0; }
+.pc-row {
+  width: 100%; min-height: 64px; display: flex; align-items: center; gap: 12px; padding: 8px 2px; border: 0; background: none;
+  color: var(--ink); font: inherit; text-align: left; cursor: pointer; border-radius: 12px;
+}
+.pc-row:hover { background: var(--wash); }
+.pc-row:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.pc-row-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pc-row-text strong { font-size: 1rem; font-weight: 600; }
+.pc-row-text span { font-size: 0.85rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pc-dot {
+  width: 36px; height: 36px; flex: none; border-radius: 50%; border: 1.5px solid var(--line-strong); display: flex; align-items: center;
+  justify-content: center; font-weight: 600; font-size: 0.9rem; color: var(--muted);
+}
+.pc-dot.is-done { border-color: var(--success); background: var(--success); color: #fff; }
+.pc-dot.is-done .ic { width: 18px; height: 18px; }
+.pc-dot.is-open { border-color: var(--blue); color: var(--blue-dark); }
+.pc.is-playful .pc-dot.is-open { border-color: var(--play); color: var(--play); }
+.pc-stars { flex: none; color: var(--play); font-size: 1.05rem; letter-spacing: 2px; }
+.pc-stars i { font-style: normal; color: var(--muted); }
+.pc-best { flex: none; font-family: var(--font-mono, ui-monospace, monospace); color: var(--muted); }
+
+/* The drill open for singing. */
+.pc .pc-open { display: flex; flex-direction: column; gap: 12px; margin: 6px 0; border: 1.5px solid var(--blue); }
+.pc.is-playful .pc-open { border-color: var(--play-line); }
+.pc-open-head { display: flex; align-items: center; gap: 12px; }
+.pc-open-title { margin: 0; font-size: 1.15rem; font-weight: 700; }
+.pc-words { margin: 0; font-size: 0.9rem; line-height: 1.55; color: var(--muted); }
+.pc-lane { display: flex; align-items: center; gap: 10px; }
+.pc-lane-label { flex: none; width: 52px; font-size: 0.78rem; font-weight: 600; line-height: 1.25; color: var(--muted); }
+.pc-chips { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.pc-chips li { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.pc-chips b {
+  min-width: 44px; min-height: 44px; padding: 6px 10px; display: flex; align-items: center; justify-content: center; border-radius: 10px;
+  border: 1.5px solid var(--line-strong); background: var(--wash); font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 1.2rem; font-weight: 600; color: var(--ink);
+}
+.pc-chips.is-tune li { min-width: 40px; min-height: 40px; padding: 6px 8px; justify-content: center; border-radius: 10px; border: 1.5px dashed var(--line-strong);
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 1rem; color: var(--muted); }
+.pc-chips.has-words b { min-width: 38px; min-height: 38px; font-size: 1rem; padding: 4px 6px; }
+.pc-chips small { max-width: 52px; font-size: 0.7rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pc-chips li.on b { border-color: var(--blue); background: var(--blue-soft); color: var(--blue-dark); }
+.pc-phones { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: var(--wash); cursor: pointer; }
+.pc-phones-ic { width: 22px; height: 22px; flex: none; color: var(--blue-dark); }
+.pc-phones-ic svg { width: 100%; height: 100%; }
+.pc-phones-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pc-phones-text strong { font-size: 0.95rem; }
+.pc-phones-text span { font-size: 0.82rem; line-height: 1.4; color: var(--muted); }
+
+/* The Carol singer sticker at the foot: dashed until it is earned. */
+.pc-reward { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; border: 1px dashed var(--line-strong); }
+.pc-reward.is-earned { border-style: solid; border-color: var(--pine-line); background: var(--pine-soft); }
+.pc-reward p { margin: 0; font-size: 0.9rem; line-height: 1.45; color: var(--muted); }
+.pc-reward strong { color: var(--ink); }
+
+/* The reward card when the sixth carol is sung: a bottom sheet on a phone, a centred card on a wide screen. */
+/* Under the burst (.pv-confetti, 47), so the snowflakes fly over the dimmed path. */
+.pc-sheet-back { position: fixed; inset: 0; z-index: 46; display: flex; align-items: flex-end; justify-content: center; background: rgba(3, 5, 9, 0.55); }
+.pc-sheet {
+  width: 100%; max-height: 100dvh; overflow: auto; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
+  padding: 28px 20px calc(20px + env(safe-area-inset-bottom)); border-radius: 22px 22px 0 0; background: var(--surface); color: var(--ink);
+}
+.pc-sheet-title { margin: 8px 0 0; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
+.pc-sheet-body { margin: 0; max-width: 26em; color: var(--muted); line-height: 1.5; }
+.pc-sheet-xp { margin: 0; font-size: 0.85rem; color: var(--muted); }
+.pc-sheet-line { display: inline-flex; align-items: center; gap: 8px; margin: 4px 0 0; padding: 8px 16px; border-radius: 999px; background: var(--pine-soft);
+  color: var(--candle); font-family: var(--font-mono, ui-monospace, monospace); font-weight: 600; letter-spacing: 0.12em; }
+.pc-sheet-note { width: 16px; height: 16px; display: inline-flex; }
+.pc-sheet-note svg { width: 100%; height: 100%; }
+.pc-sheet-actions { align-self: stretch; display: flex; justify-content: flex-end; align-items: center; gap: 16px; margin-top: 12px; }
+.pc-sheet-actions .btn-link { min-height: 44px; padding: 0 8px; }
+.pc-sheet-actions .btn-primary { min-width: 104px; }
+
+@media (min-width: 720px) {
+  .pc-sheet-back { align-items: center; }
+  .pc-sheet { width: min(440px, calc(100vw - 48px)); border-radius: 22px; padding-bottom: 24px; }
+}

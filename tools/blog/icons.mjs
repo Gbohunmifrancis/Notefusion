@@ -34,7 +34,6 @@ export const ICONS = {
   "eye-off": "eye-off",
   "flame": "flame",
   "gear": "settings",
-  "headphones": "headphones",
   "help": "circle-help",
   "info": "info",
   "keys": "piano",
@@ -60,6 +59,8 @@ export const ICONS = {
   "share": "share",
   "shift": "chevrons-up-down",
   "sing": "mic-vocal",
+  // The Christmas season's carols (assets/season.js shows them only while the season is on).
+  "snowflake": "snowflake",
   "sparkle": "sparkles",
   "stop": "square",
   "swap": "arrow-left-right",

@@ -123,6 +123,16 @@ export const colors = {
   choir: "#7C3AED",
   choirSoft: "rgba(124, 58, 237, 0.10)",
 
+  // ── The Christmas season (board d-christmas), only while it is on: tints, never a second accent ──
+  /** Pine: the Carols chip and shelf tile, the season card. Darker and bluer than mint, which stays "correct". */
+  pine: "#1F6B50",
+  pineSoft: "rgba(31, 107, 80, 0.09)",
+  pineLine: "rgba(31, 107, 80, 0.22)",
+  /** Small seasonal labels and glyphs: candle ivory on Night, pine on Day. Never Pro's gold. */
+  candle: "#1F6B50",
+  /** The flakes: pale blue-grey on Day, white on Night. */
+  snow: "#9DB3D4",
+
   /** Floating chrome (the tab bar, a player dock): semi-opaque, standing in for a blur. */
   glass: "rgba(255, 255, 255, 0.96)",
 
@@ -200,6 +210,12 @@ export const darkColors: Palette = {
   toast: "#1A202B",
   choir: "#A78BFA",
   choirSoft: "rgba(167, 139, 250, 0.12)",
+
+  pine: "#2E8A66",
+  pineSoft: "rgba(46, 138, 102, 0.14)",
+  pineLine: "rgba(46, 138, 102, 0.34)",
+  candle: "#F3DFB4",
+  snow: "#FFFFFF",
 
   glass: "rgba(20, 25, 35, 0.94)",
 

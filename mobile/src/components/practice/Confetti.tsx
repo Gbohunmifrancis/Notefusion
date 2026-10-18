@@ -10,6 +10,7 @@ import { Animated, Easing, StyleSheet, View } from "react-native";
 
 import { CONFETTI_ART } from "../../lib/practiceTrack";
 import { Art } from "./Art";
+import type { ArtName } from "./art/svgs";
 
 const PIECES = 24;
 const DURATION_MS = 1300;
@@ -35,8 +36,11 @@ function layout(): Piece[] {
   });
 }
 
-/** Fires once each time `burst` changes to a new number above 0. */
-export function Confetti({ burst, reduceMotion }: { burst: number; reduceMotion: boolean }) {
+/**
+ * Fires once each time `burst` changes to a new number above 0. `art` swaps the paper bits (the Carol singer's
+ * snowflakes and quavers); the usual ones by default.
+ */
+export function Confetti({ burst, reduceMotion, art = CONFETTI_ART }: { burst: number; reduceMotion: boolean; art?: readonly ArtName[] }) {
   const t = useRef(new Animated.Value(0)).current;
   const pieces = useMemo(layout, []);
 
@@ -68,7 +72,7 @@ export function Confetti({ burst, reduceMotion }: { burst: number; reduceMotion:
             },
           ]}
         >
-          <Art name={CONFETTI_ART[i % CONFETTI_ART.length]!} width={p.size} />
+          <Art name={art[i % art.length]!} width={p.size} />
         </Animated.View>
       ))}
     </View>

@@ -53,6 +53,12 @@ import {
 } from '../lib/dohSuggestion';
 import { loadDohMemory, saveDohMemory, useDohSuggestions } from '../lib/dohPrefs';
 import { parseUtc } from '../lib/sheetMeta';
+import { useSeason } from '../lib/seasonStore';
+import { homeTitle } from '../lib/season';
+import { Snowfall } from '../components/season/Snowfall';
+
+/** Home's few flakes play once a session (Home stays mounted as a tab; coming back to it is not a new snowfall). */
+let homeSnowPlayed = false;
 
 /** Home lists the newest few sheets. */
 const RECENT_COUNT = 3;
@@ -96,6 +102,17 @@ export function HomeScreen({ navigation }: Props) {
   const [practice, setPractice] = useState<PracticeProgress | null>(null);
   const styles = useThemedStyles(makeStyles);
   const colors = useColors();
+
+  // ── The Christmas season (board d-christmas/02), only while it is on: the cap on the header's mark, the question,
+  // a Carols chip and a few flakes over the top third, once a session. Off, Home is exactly as it was.
+  const seasonFlag = useSeason();
+  const christmas = seasonFlag.christmas;
+  const [snowNow, setSnowNow] = useState(false);
+  useEffect(() => {
+    if (!christmas || !focused || homeSnowPlayed) return;
+    homeSnowPlayed = true;
+    setSnowNow(true);
+  }, [christmas, focused]);
 
   // ── Mic stage motion ──────────────────────────────────────────────────────
   /**
@@ -360,10 +377,11 @@ export function HomeScreen({ navigation }: Props) {
         }
         ListHeaderComponent={
           <View style={styles.headerArea}>
+            {snowNow ? <Snowfall run seed={7} color={colors.snow} style={styles.snow} /> : null}
             {/* ── Top bar: the lock-up left, the account right ───────────── */}
             <View style={styles.topHeader}>
               <View style={styles.lockup} accessible accessibilityLabel="Notefusion">
-                <Mark height={24} color={colors.text} />
+                <Mark height={24} color={colors.text} cap={christmas} />
                 <Wordmark size={19} style={{ color: colors.text }} />
               </View>
 
@@ -411,7 +429,7 @@ export function HomeScreen({ navigation }: Props) {
                   </View>
                 )}
               </View>
-              <Text style={styles.title}>What are we singing today?</Text>
+              <Text style={styles.title}>{homeTitle(seasonFlag)}</Text>
 
               {/* ── The record button: the mark itself ────────────────── */}
               <View style={styles.stage}>
@@ -502,6 +520,18 @@ export function HomeScreen({ navigation }: Props) {
                   <Ionicons name="link-outline" size={17} color={colors.accent} />
                   <Text style={styles.chipLabel}>Paste link</Text>
                 </Touchable>
+                {/* The season's one chip: the carols on top of Hymns (a pine tint, never a second accent). */}
+                {christmas ? (
+                  <Touchable
+                    onPress={() => navigation.navigate('Hymns', { carols: true })}
+                    style={[styles.chip, styles.chipPine]}
+                    radius={radii.pill}
+                    accessibilityLabel="Carols for Christmas"
+                  >
+                    <Ionicons name="snow-outline" size={17} color={colors.candle} />
+                    <Text style={[styles.chipLabel, styles.chipPineLabel]}>Carols</Text>
+                  </Touchable>
+                ) : null}
                 <Touchable
                   onPress={() => rootNav.navigate('Listen')}
                   style={styles.chip}
@@ -831,6 +861,10 @@ const makeStyles = (c: Palette, s: Shadows) =>
       fontFamily: fonts.medium,
       color: c.text,
     },
+    chipPine: { backgroundColor: c.pineSoft, borderColor: c.pineLine },
+    chipPineLabel: { color: c.candle },
+    /** The season's flakes over the top third of Home, behind the content and never touchable. */
+    snow: { top: -spacing.lg, left: -spacing.lg, right: -spacing.lg, height: 300 },
 
     // ── Recent ────────────────────────────────────────────────────────────────
     recentSectionHeader: {

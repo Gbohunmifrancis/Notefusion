@@ -1,0 +1,61 @@
+/* The Christmas season on the website and /app (board d-christmas/06). Loaded by assets/season.js only while the
+ * admin switch is on, so none of it is downloaded the rest of the year. Small touches: the blue stays the one accent,
+ * pine is a tint, candle ivory labels small things on Night (pine on Day), holly red is the cap's alone, and Pro's
+ * gold is never used. Phone first; min-width queries go upward. */
+
+:root { --pine: #1F6B50; --pine-soft: rgba(31, 107, 80, 0.09); --pine-line: rgba(31, 107, 80, 0.22); --candle: #1F6B50; --season-snow: #9DB3D4; }
+:root[data-theme="dark"] { --pine: #2E8A66; --pine-soft: rgba(46, 138, 102, 0.14); --pine-line: rgba(46, 138, 102, 0.34); --candle: #F3DFB4; --season-snow: #FFFFFF; }
+
+/* ── The cap on the brand mark: the mark in a box of its own size, the cap laid over it ─────────────── */
+.season-capped { position: relative; display: block; flex: none; }
+.season-capped > .site-brand-mark, .season-capped > .brand-mark, .season-capped > .home-mark { display: block; margin: 0; }
+.site-brand > .season-capped { width: 24px; height: 32px; }
+.brand > .season-capped { width: 30px; height: 30px; }
+.home > .season-capped { width: 64px; height: 64px; margin: 0 auto 16px; }
+.season-cap { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+/* The recording heartbeat moves the mark: the cap moves with it. */
+body.is-recording .season-capped:has(> .brand-mark, > .home-mark) { animation: heartbeat 1.05s ease-in-out infinite; transform-origin: 50% 55%; }
+body.is-recording .season-capped > .brand-mark, body.is-recording .season-capped > .home-mark { animation: none; }
+
+/* ── A few slow flakes, for a few seconds, then gone (never with reduced motion: season.js draws none) ── */
+[data-season-snow] { position: relative; }
+.season-snow { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+[data-season-snow] > :not(.season-snow) { position: relative; z-index: 1; }
+.season-flake {
+  position: absolute; display: block; border-radius: 50%; background: var(--season-snow); color: var(--season-snow); opacity: 0;
+  animation-name: season-fall; animation-timing-function: linear; animation-iteration-count: 1; animation-fill-mode: both;
+}
+.season-flake.is-glyph { border-radius: 0; background: none; }
+.season-flake svg { display: block; width: 100%; height: 100%; }
+@keyframes season-fall {
+  0% { opacity: 0; transform: translate(0, 0); }
+  8% { opacity: var(--o); }
+  25% { transform: translate(var(--sway), calc(var(--fall) * 0.25)); }
+  50% { transform: translate(0, calc(var(--fall) * 0.5)); }
+  75% { transform: translate(calc(var(--sway) * -1), calc(var(--fall) * 0.75)); }
+  85% { opacity: var(--o); }
+  100% { opacity: 0; transform: translate(0, var(--fall)); }
+}
+@media (prefers-reduced-motion: reduce) { .season-snow { display: none; } }
+
+/* ── Website home: one pine line above the headline, to the carols in the hymnbook ─────────────────── */
+.season-line {
+  display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-height: 44px; margin: 0 0 14px; padding: 8px 14px;
+  border-radius: 999px; background: var(--pine-soft); border: 1px solid var(--pine-line); color: var(--page-text-2, var(--ink));
+  font-size: 14px; line-height: 1.3; text-decoration: none;
+}
+.season-line[hidden] { display: none; }
+.site-document a.season-line, .site-document a.season-line:hover { color: var(--page-text-2, var(--ink)); }
+.season-line strong { color: var(--candle); font-weight: 600; }
+.season-line .ic { flex: none; color: var(--candle); }
+.season-line:hover { border-color: var(--pine); }
+.season-line:focus-visible { outline: 2px solid var(--pine); outline-offset: 2px; }
+
+/* ── The web app's home: the carols, a pine link under the greeting ──────────────────────────────────── */
+.season-carols {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin: 10px 6px 0; padding: 6px 16px; border-radius: 999px;
+  border: 1px solid var(--pine-line); background: var(--pine-soft); color: var(--candle); font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+}
+.season-carols .ic { width: 16px; height: 16px; }
+.season-carols:hover { border-color: var(--pine); }
+.season-carols:focus-visible { outline: 2px solid var(--pine); outline-offset: 2px; }

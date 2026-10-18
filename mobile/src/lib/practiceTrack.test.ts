@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   CONFETTI_ART,
+  SEASON_CONFETTI_ART,
   THREE_STAR_SCORE,
   TRACK_OPTIONS,
   badgeArt,
@@ -194,6 +195,16 @@ test("every badge has a sticker and a locked one; Seven in a row and A week of p
   assert.equal(badgeArt("streak_7", true), "badge-seven-in-a-row");
   assert.equal(badgeArt("week_goal", true), "badge-week-goal");
   assert.equal(badgeArt("a_badge_from_the_future", true), "badge-first-drill");
+});
+
+test("the Christmas season: the Carol singer has its own sticker, and its burst is snowflakes and quavers", () => {
+  assert.equal(badgeArt("carol_singer", true), "badge-carol-singer");
+  assert.equal(badgeArt("carol_singer", false), "badge-carol-singer-locked");
+  assert.ok("badge-carol-singer" in ART && "badge-carol-singer-locked" in ART);
+  assert.equal(rewardArt({ xpGained: 30, xp: 400, levelUp: false, level: ray, streak: 3, newBadges: [{ code: "carol_singer", title: "Carol singer" }] } as never), "badge-carol-singer");
+  for (const c of SEASON_CONFETTI_ART) assert.ok(c in ART, c);
+  assert.ok(SEASON_CONFETTI_ART.includes("confetti-snowflake") && SEASON_CONFETTI_ART.includes("confetti-quaver"));
+  assert.ok("season-cap" in ART);
 });
 
 test("levels, flames, stars, moods, tracks and confetti all name art that exists", () => {

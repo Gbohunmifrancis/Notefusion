@@ -34,6 +34,8 @@ export interface PackHymn {
   /** The first verse in syllables under the notes ("A-maz-ing grace"). */
   words: string;
   verses: PackVerse[];
+  /** The seasons and occasions it is sung for ("Christmas", "Easter"); absent on most and in older packs. */
+  occasions?: string[];
 }
 
 export interface HymnPack {
@@ -113,10 +115,19 @@ export function titleKey(title: string): string {
   return fold(title);
 }
 
+/** The words an occasion is found by: its own name, and "carol" / "carols" for Christmas. */
+function occasionWords(h: PackHymn): string {
+  return occasionsOf(h).map((o) => (fold(o) === "christmas" ? "christmas carol carols" : fold(o))).join(" ");
+}
+
+function occasionsOf(h: PackHymn): string[] {
+  return Array.isArray(h.occasions) ? h.occasions.filter((o): o is string => typeof o === "string") : [];
+}
+
 /**
  * Hymns matching what was typed, best first: a title that starts with it, then a title containing
- * it, then the first line, then the tune's name. Every word typed must appear. Nothing typed is the
- * whole pack by title.
+ * it, then the first line, then the tune's name, then the occasion ("christmas" or "carol" finds the
+ * carols). Every word typed must appear. Nothing typed is the whole pack by title.
  */
 export function searchHymns(hymns: readonly PackHymn[], query: string): PackHymn[] {
   const q = fold(query);
@@ -125,13 +136,56 @@ export function searchHymns(hymns: readonly PackHymn[], query: string): PackHymn
   const words = q.split(" ");
   const scored: { h: PackHymn; rank: number }[] = [];
   for (const h of hymns) {
-    const title = fold(h.title), first = fold(h.firstLine), tune = fold(h.tune);
-    const all = `${title} ${first} ${tune}`;
+    const title = fold(h.title), first = fold(h.firstLine), tune = fold(h.tune), occasion = occasionWords(h);
+    const all = `${title} ${first} ${tune} ${occasion}`;
     if (!words.every((w) => all.includes(w))) continue;
     const rank = title.startsWith(q) ? 0 : title.includes(q) ? 1 : first.includes(q) ? 2 : tune.includes(q) ? 3 : 4;
     scored.push({ h, rank });
   }
   return scored.sort((a, b) => a.rank - b.rank || byTitle(a.h, b.h)).map((s) => s.h);
+}
+
+/** The carols best known, first on the Christmas shelf in this order; the rest follow by title. */
+const CAROL_ORDER = [
+  "silent-night",
+  "joy-to-the-world",
+  "hark-the-herald-angels-sing",
+  "o-come-all-ye-faithful",
+  "angels-we-have-heard-on-high",
+  "the-first-noel",
+  "away-in-a-manger",
+  "o-little-town-of-bethlehem",
+  "once-in-royal-davids-city",
+  "it-came-upon-a-midnight-clear",
+  "good-king-wenceslas",
+];
+
+/**
+ * The Christmas carols in the pack (hymns tagged `occasions: ["Christmas"]`), the best known first: the Hymns
+ * screen's "Carols for Christmas" shelf while the season is on, and its "See all".
+ */
+export function carols(hymns: readonly PackHymn[]): PackHymn[] {
+  const rank = (h: PackHymn) => {
+    const i = CAROL_ORDER.indexOf(h.slug);
+    return i < 0 ? CAROL_ORDER.length : i;
+  };
+  return hymns
+    .filter((h) => occasionsOf(h).some((o) => fold(o) === "christmas"))
+    .sort((a, b) => rank(a) - rank(b) || titleKey(a.title).localeCompare(titleKey(b.title)) || a.slug.localeCompare(b.slug));
+}
+
+/** A hymn's opening as a shelf card prints it, from its labelled notes: "s l s m s l s m". */
+export function openingLine(labelled: readonly Pick<NoteEvent, "solfa" | "octaveMark" | "startBeat">[], count = 8): string {
+  return [...labelled]
+    .sort((a, b) => a.startBeat - b.startBeat)
+    .slice(0, count)
+    .map((n) => n.solfa + n.octaveMark)
+    .join(" ");
+}
+
+/** "Bb · 6/8": a hymn's key and time as the list prints them. */
+export function keyAndTime(h: Pick<PackHymn, "key" | "time">): string {
+  return `${h.key.replace(" major", "").replace(" minor", "m")} · ${h.time}`;
 }
 
 /** A hymn as the sheet view opens it (the solfa is labelled by `deriveSolfa` on the way in). */

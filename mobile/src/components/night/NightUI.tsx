@@ -15,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg";
 import { KeyboardAvoider } from "../KeyboardAvoider";
+import { MarkCap } from "../season/Cap";
 import { Touchable } from "../Touchable";
 import { night, nightFonts } from "../../design/theme";
 
@@ -22,9 +23,12 @@ const MARK = require("../../../assets/brand/mark.png");
 /** The shipped mark is 331 × 438; see BrandMark for why it is a tinted image. */
 export const MARK_ASPECT = 331 / 438;
 
-/** The Notefusion mark, white by default, at a given height. */
-export function Mark({ height, color = "#FFFFFF" }: { height: number; color?: string }) {
-  return (
+/**
+ * The Notefusion mark, white by default, at a given height. `cap` lays the Christmas cap over it (while the season is
+ * on, on the brand mark only — never a control's — and one a screen).
+ */
+export function Mark({ height, color = "#FFFFFF", cap = false }: { height: number; color?: string; cap?: boolean }) {
+  const image = (
     <Image
       source={MARK}
       style={{ height, width: height * MARK_ASPECT }}
@@ -32,6 +36,13 @@ export function Mark({ height, color = "#FFFFFF" }: { height: number; color?: st
       tintColor={color}
       accessibilityIgnoresInvertColors
     />
+  );
+  if (!cap) return image;
+  return (
+    <View style={{ height, width: height * MARK_ASPECT }}>
+      {image}
+      <MarkCap height={height} />
+    </View>
   );
 }
 
@@ -57,11 +68,11 @@ export function Wordmark({ size, style }: { size: number; style?: StyleProp<Text
   );
 }
 
-/** Mark and wordmark side by side, the small lock-up in screen headers. */
-export function Lockup({ size = 16 }: { size?: number }) {
+/** Mark and wordmark side by side, the small lock-up in screen headers; `cap` while the Christmas season is on. */
+export function Lockup({ size = 16, cap = false }: { size?: number; cap?: boolean }) {
   return (
     <View style={styles.lockup} accessible accessibilityLabel="Notefusion">
-      <Mark height={size * 1.25} />
+      <Mark height={size * 1.25} cap={cap} />
       <Wordmark size={size} />
     </View>
   );

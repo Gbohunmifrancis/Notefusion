@@ -2,6 +2,7 @@ import React from "react";
 import { Image, View, StyleSheet } from "react-native";
 import Svg, { Rect } from "react-native-svg";
 import { colors } from "../design/theme";
+import { MarkCap } from "./season/Cap";
 
 const MARK = require("../../assets/brand/mark.png");
 
@@ -25,6 +26,8 @@ interface Props {
   waveColor?: string;
   /** Draw the waveform bars either side of the ring, as on splash and login. */
   showWaves?: boolean;
+  /** The Christmas cap over the mark, while the season is on (components/season/Cap). */
+  cap?: boolean;
 }
 
 /**
@@ -51,6 +54,7 @@ export function BrandMark({
   color = colors.accent,
   waveColor,
   showWaves = false,
+  cap = false,
 }: Props) {
   const wave = waveColor ?? color;
   const markWidth = size * MARK_ASPECT;
@@ -58,18 +62,28 @@ export function BrandMark({
   // rather than shrinking the mark to make room for them.
   const waveWidth = size * 0.36;
   const totalWidth = showWaves ? markWidth + waveWidth * 2 : markWidth;
+  const image = (
+    <Image
+      source={MARK}
+      style={{ width: markWidth, height: size }}
+      resizeMode="contain"
+      tintColor={color}
+      accessibilityIgnoresInvertColors
+    />
+  );
 
   return (
     <View style={[styles.row, { width: totalWidth, height: size }]}>
       {showWaves && <SideWave size={size} color={wave} mirrored={false} />}
 
-      <Image
-        source={MARK}
-        style={{ width: markWidth, height: size }}
-        resizeMode="contain"
-        tintColor={color}
-        accessibilityIgnoresInvertColors
-      />
+      {cap ? (
+        <View style={{ width: markWidth, height: size }}>
+          {image}
+          <MarkCap height={size} />
+        </View>
+      ) : (
+        image
+      )}
 
       {showWaves && <SideWave size={size} color={wave} mirrored />}
     </View>

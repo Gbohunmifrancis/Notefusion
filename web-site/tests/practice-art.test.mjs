@@ -66,6 +66,14 @@ test("every badge has a sticker and a locked one; Seven in a row and A week of p
   assert.equal(T.badgeArt("a_badge_from_the_future", true), "badge-first-drill");
 });
 
+test("the Christmas season: the Carol singer's sticker, its snowflake burst and the cap are files the art draws", () => {
+  assert.equal(T.badgeArt("carol_singer", true), "badge-carol-singer");
+  assert.ok(has("badge-carol-singer") && has("badge-carol-singer-locked"));
+  for (const c of T.SEASON_CONFETTI_ART) assert.ok(has(c), c);
+  assert.ok(T.SEASON_CONFETTI_ART.includes("confetti-snowflake"));
+  assert.ok(has("season-cap"));
+});
+
 test("levels, flames, stars, moods, tracks and confetti all name art that exists", () => {
   for (let i = 0; i < 8; i++) assert.ok(has(T.levelArt(i)), String(i));
   assert.equal(T.levelArt(7), "level-8-choir-ready");

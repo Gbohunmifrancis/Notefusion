@@ -35,8 +35,11 @@ export type TabParams = {
   Record: { autoPickAudio?: boolean } | undefined;
   /** Practice: the drill on the path, the streak, XP and level, the weekly goal and badges. Reminders open it. */
   Practice: undefined;
-  /** The hymns the website publishes, from the offline pack: browse, search, open as a sheet. */
-  Hymns: undefined;
+  /**
+   * The hymns the website publishes, from the offline pack: browse, search, open as a sheet. `carols` (Home's Carols
+   * chip, while the Christmas season is on) opens it on the carols.
+   */
+  Hymns: { carols?: boolean } | undefined;
 };
 
 export type RootStackParams = {
@@ -74,6 +77,11 @@ export type RootStackParams = {
    * finder, pitch match, riffs & runs, intervals, sing the harmony or rhythm. `track` words it as the hub did.
    */
   PracticeMode: { mode: PracticeModeId; track?: PracticeTrack | null };
+  /**
+   * The Christmas carols path (board d-christmas/03), pushed from the Practice hub's pine card while the season is
+   * on: six short drills from carols we hold, each heard, sung and marked like a drill, and the Carol singer sticker.
+   */
+  Carols: { track?: PracticeTrack | null } | undefined;
   /**
    * The account page: plan, choir, Notifications, Settings, help and feedback. Pushed from the avatar
    * at the top right of every tab, so back returns to the tab you were on.
