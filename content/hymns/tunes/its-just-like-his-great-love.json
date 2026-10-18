@@ -1,0 +1,30 @@
+{
+  "name": "IT'S JUST LIKE HIS GREAT LOVE",
+  "title": "It's Just Like His Great Love",
+  "music": [
+    {
+      "name": "DeKoven",
+      "role": "Music (1908)"
+    }
+  ],
+  "musicPublished": 1908,
+  "metre": "Irregular",
+  "key": "Bb major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:1 | Bb4:1.5 A4:.5 C5:1 Bb4:1 | A4:1 G4:2 G4:1 | A4:1.5 G4:.5 F4:1 G4:1 | F4:3 F4:1 | Bb4:1.5 A4:.5 C5:1 Bb4:1 | A4:1 G4:1 G4:1 C5:1 | C5:1.5 G4:.5 A4:1 Bb4:1 | C5:3 C#5:1 | D5:1.5 C5:.5 Bb4:1 A4:1 | A4:1 G4:1 C5:1.5 G4:.5 | Bb4:1 A4:1 Bb4:1 C5:1 | D5:3 D5:1 | D5:1.5 Eb5:.5 D5:1 A4:1 | C5:1 Bb4:1 Bb4:1 C5:1 | D5:1 Bb4:1 C5:1.5 Bb4:.5 | Bb4:3 F4:1 | Bb4:1 A4:1 G4:1 D4:.75 D4:.25 | F4:.75 F4:.25 F4:.75 F4:.25 F4:1.5 F4:.5 | Bb4:1 A4:1 G4:1 D4:.75 D4:.25 | Eb4:.75 Eb4:.25 Eb4:.75 Eb4:.25 Eb4:1.5 F4:.5 | C5:1 Bb4:1 A4:1 G4:1 | G4:.75 F4:.25 E4:.75 G4:.25 C5:1.5 Bb4:.5 | A4:1 G4:1 F4:1 C5:1 | Bb4:3",
+  "incipit": "sdtrdtl|ltlsls|sdtrdtl",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0013/x001337.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0013/001337a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001337; public domain.",
+  "reviewNotes": "Held back: not provably public domain: DeKoven: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 001337 (the melody read from 001337a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001337a.nwc).",
+  "importedFrom": "cceh:001337",
+  "updated": "2026-10-18"
+}

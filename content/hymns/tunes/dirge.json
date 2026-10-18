@@ -1,0 +1,32 @@
+{
+  "name": "DIRGE",
+  "title": "Dirge",
+  "music": [
+    {
+      "name": "George Frederick Handel",
+      "born": 1685,
+      "died": 1759,
+      "role": "Arranged"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 8 8 8 8 8",
+  "key": "Eb major",
+  "time": "4/2",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 1,
+  "melody": "G4:1 | G4:2 G4:2 G4:3 G4:1 | G4:1 F4:.5 G4:.5 Ab4:1 G4:1 F4:4 | Ab4:2 Ab4:1 Bb4:.5 C5:.5 Ab4:3 C5:1 | Bb4:1 Ab4:1 G4:1 F4:.25 G4:.25 Ab4:.5 G4:3 Bb4:1 | Bb4:2 Bb4:2 Bb4:3 Bb4:.5 C5:.5 | C#5:3 C5:1 Bb4:3 Bb4:1 | Bb4:1 Ab4:2 G4:1 G4:1 F4:2 Bb4:1 | Bb4:1 Ab4:.5 G4:.5 Ab4:1 G4:1 F4:3 G4:1 | G4:2 G4:1 Ab4:.5 Bb4:.5 G4:3 G4:1 | F4:1 Eb4:1 Ab4:1 G4:1 F4:3 Bb4:1 | Bb4:2 Eb5:2 Bb4:3 Bb4:1 | Ab4:1 G4:1 F4:1.5 Eb4:.5 Eb4:3",
+  "incipit": "mmmmmmrmfmr|ffslflsfmrmfm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0013/x001346.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0013/001346a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001346; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001346 (the melody read from 001346a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. George Frederick Handel's dates (1685–1759) are from our page for the tune ANTIOCH (content/hymns/tunes/antioch.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001346a.nwc).",
+  "importedFrom": "cceh:001346",
+  "updated": "2026-10-18"
+}

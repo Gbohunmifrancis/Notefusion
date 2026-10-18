@@ -1,0 +1,32 @@
+{
+  "name": "ICH WILL DICH LIEBEN",
+  "title": "Ich Will Dich Lieben",
+  "music": [
+    {
+      "name": "Johann Balthasar Konig",
+      "born": 1691,
+      "died": 1758,
+      "role": "Music (Choralbuch, 1738)"
+    }
+  ],
+  "musicPublished": 1738,
+  "metre": "8 8 8 8 8 8",
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 105,
+  "pickup": 3,
+  "lineBars": 2,
+  "melody": "D4:1 F#4:1 A4:1 | D5:1 A4:1 B4:1 A4:1 | G4:2 F#4:2 | E4:1 F#4:1 Ab4:1 A4:1 | D5:1 C#5:1 B4:1 A4:1~ | A4:2 r:1 D4:1 | F#4:1 A4:1 D5:1 A4:1 | B4:1 A4:1 G4:2 | F#4:2 E4:1 F#4:1 | Ab4:1 A4:1 D5:1 C#5:1 | B4:1 A4:3 | r:1 E4:1 E4:1 E4:1 | F#4:1 E4:1 F#4:1 G4:1 | E4:3 r:1 | r:1 A4:1 D4:1 G4:1 | F#4:1.5 F#4:.5 E4:1 E4:1 | D4:3 r:1",
+  "incipit": "dmsdslsfm|rmfsdtls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001246.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001246a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001246; public domain.",
+  "reviewNotes": "Held back: the score has bars of another length (bar 3, 6), which the solfa grid does not draw. Imported from CCEH tune 001246 (the melody read from 001246a.mid, checked against the page's do-re-mi incipit, 1 note off in 17); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Johann Balthasar Konig's dates (1691–1758) are from our page for the tune ALLES IST AN GOTTES SEGEN (content/hymns/tunes/alles-ist-an-gottes-segen.json); CCEH's page gives only the year 1738. The bar lines are those of CCEH's Noteworthy score (001246a.nwc).",
+  "importedFrom": "cceh:001246",
+  "updated": "2026-10-18"
+}

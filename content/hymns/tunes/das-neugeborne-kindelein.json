@@ -1,0 +1,38 @@
+{
+  "name": "DAS NEUGEBORNE KINDELEIN",
+  "title": "Das Neugeborne Kindelein",
+  "music": [
+    {
+      "name": "Melchior Vulpius",
+      "born": 1560,
+      "died": 1615,
+      "role": "Music (1609)"
+    },
+    {
+      "name": "Johann Sebastian Bach",
+      "born": 1685,
+      "died": 1750,
+      "role": "Harmony (1724)"
+    }
+  ],
+  "musicPublished": 1609,
+  "metre": "8 8 8 8 8 8",
+  "key": "D minor",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "D4:1 D4:1 D4:1 | A4:1.5 G4:.5 F4:1 | A4:1 G4:1 F4:1 | E4:3 | A4:1 A4:1 B4:1 | C5:2 B4:1 | A4:1 Ab4:2 | A4:3 | D4:1 D4:1 D4:1 | A4:1.5 G4:.5 F4:1 | A4:1 G4:1 F4:1 | E4:3 | A4:1 A4:1 B4:1 | C5:2 B4:1 | A4:1 Ab4:2 | A4:3 | A4:1 G4:1 E4:1 | F4:1.5 G4:.5 A4:1 | G4:1 F4:1 E4:1 | F4:3 | C5:1 D5:1 C5:1 | A4:1.5 G4:.5 F4:1 | E4:1 D4:1 C#4:1 | D4:3",
+  "incipit": "lllmrdmrdt|mmfsfmrm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001065.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001065a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001065; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001065 (the melody read from 001065a.mid, checked against the page's do-re-mi incipit, 3 notes off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Melchior Vulpius's dates (1560–1615) are from our page for the tune CHRISTUS DER IST MEIN LEBEN (content/hymns/tunes/christus-der-ist-mein-leben.json); CCEH's page gives only the year 1609. Johann Sebastian Bach's dates (1685–1750) are from our page for the tune POTSDAM (content/hymns/tunes/potsdam.json); CCEH's page gives only the year 1724. The bar lines are those of CCEH's Noteworthy score (001065a.nwc).",
+  "importedFrom": "cceh:001065",
+  "updated": "2026-10-18"
+}

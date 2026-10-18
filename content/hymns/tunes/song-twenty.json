@@ -1,0 +1,32 @@
+{
+  "name": "SONG TWENTY",
+  "title": "Song Twenty",
+  "music": [
+    {
+      "name": "Orlando Gibbons",
+      "born": 1583,
+      "died": 1625,
+      "role": "Music (1623)"
+    }
+  ],
+  "musicPublished": 1623,
+  "metre": "6 6 8 6",
+  "key": "B minor",
+  "time": "4/2",
+  "tempo": 132,
+  "pickup": 4,
+  "lineBars": 1,
+  "melody": "F#4:4 | F#4:2 Ab4:2 Bb4:2 B4:2 | C#5:6 B4:2 | D5:2 B4:2 A4:2 G4:2 | F#4:6 A4:2 | A4:2 Ab4:2 A4:2 F#4:2 | G4:2 A4:2 B4:2 C#5:2 | F#4:2 B4:2 B4:2 Bb4:2 | B4:6 r:2",
+  "incipit": "mmfslt|ldlsfm|ssfsmfsl",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000965.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000965a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000965; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000965 (the melody read from 000965a.mid, checked against the page's do-re-mi incipit, 3 notes off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Orlando Gibbons's dates (1583–1625) are from our page for the tune CANTERBURY (content/hymns/tunes/canterbury.json); CCEH's page gives only the year 1623. The bar lines are those of CCEH's Noteworthy score (000965a.nwc).",
+  "importedFrom": "cceh:000965",
+  "updated": "2026-10-18"
+}

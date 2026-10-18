@@ -1,0 +1,31 @@
+{
+  "name": "RHUDDLAN",
+  "title": "Rhuddlan",
+  "music": [
+    {
+      "name": "Welsh Traditional",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 7 8 7",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:1.5 G4:.5 G4:1 G4:1 | B4:1 G4:1 A4:1 D4:1 | F#4:1.5 F#4:.5 G4:1 G4:1 | F#4:1 E4:1 D4:2 | G4:1.5 G4:.5 G4:1 G4:1 | B4:1 G4:1 A4:1 D4:1 | F#4:1.5 F#4:.5 G4:1 G4:1 | F#4:1 E4:1 D4:2 | B4:1 D5:1 B4:.75 A4:.25 G4:1 | A4:1 C5:1 F#4:.75 E4:.25 D4:1 | G4:1.5 G4:.5 B4:1 D5:1 | B4:1 A4:1 G4:2",
+  "incipit": "ddddmdrs|ttddtls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001244.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001244a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001244; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001244 (the melody read from 001244a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001244a.nwc).",
+  "importedFrom": "cceh:001244",
+  "updated": "2026-10-18"
+}

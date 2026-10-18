@@ -1,0 +1,32 @@
+{
+  "name": "HOME OVER THERE",
+  "title": "Home Over There",
+  "music": [
+    {
+      "name": "Tullius C. O'Kane",
+      "born": 1830,
+      "died": 1912,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 9 9 8 + i",
+  "key": "A major",
+  "time": "4/4",
+  "tempo": 125,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "E4:1 | A4:1 A4:.75 A4:.25 A4:1 C#5:.75 B4:.25 | A4:3 Ab4:.5 A4:.5 | B4:1 B4:.75 B4:.25 B4:1 D5:.75 C#5:.25 | B4:3 A4:.5 B4:.5 | C#5:1 C#5:.75 C#5:.25 C#5:1 B4:.75 A4:.25 | A4:2 F#4:1 D5:.5 D5:.5 | C#5:1 C#5:.75 C#5:.25 B4:1 C#5:.75 B4:.25 | A4:3 Ab4:.75 A4:.25 | B4:3 A4:.75 B4:.25 | C#5:3 C#5:1 | D5:1 D5:.75 D5:.25 C#5:1 E5:.75 C#5:.25 | B4:3 E5:.75 D5:.25 | C#5:3 B4:.75 A4:.25 | F#4:1 D5:.75 D5:.25 D5:1 D5:1 | C#5:1 C#5:.75 C#5:.25 B4:1 C#5:.75 B4:.25 | A4:3",
+  "incipit": "sddddmrd|tdrrrrfmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000994.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000994a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000994; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000994 (the melody read from 000994a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Tullius C. O'Kane's dates (1830–1912) are from https://hymnary.org/person/OKane_TC (O'Kane, T. C. (Tullius Clinton), 1830-1912; IS IT FOR ME); https://viaf.org/viaf/2085480/ agrees; CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000994a.nwc).",
+  "importedFrom": "cceh:000994",
+  "updated": "2026-10-18"
+}

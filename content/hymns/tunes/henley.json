@@ -1,0 +1,32 @@
+{
+  "name": "HENLEY",
+  "title": "Henley",
+  "music": [
+    {
+      "name": "Lowell Mason",
+      "born": 1792,
+      "died": 1872,
+      "role": "Music (1854)"
+    }
+  ],
+  "musicPublished": 1854,
+  "metre": "11 10 11 10",
+  "key": "Eb major",
+  "time": "2/2",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Bb4:2 G4:1 G4:1 | G4:2 F4:2 | Eb4:1 Eb4:1 F4:1 F4:1 | G4:2 Eb4:2 | Bb4:2 G4:1 G4:1 | G4:2 Eb4:2 | F4:1 Eb4:1 F4:1 G4:1 | Eb4:4 | F4:2 F4:1 G4:1 | Ab4:2 F4:2 | G4:1 G4:1 G4:1 Ab4:1 | Bb4:2 G4:2 | Bb4:2 G4:1 G4:1 | G4:2 Eb4:2 | F4:1 Eb4:1 F4:1 G4:1 | Eb4:4",
+  "incipit": "smmmrddrrmd|smmmdrdrmd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0013/x001396.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0013/001396a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001396; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001396 (the melody read from 001396a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Lowell Mason's dates (1792–1872) are from our page for the tune BETHANY (content/hymns/tunes/bethany.json); CCEH's page gives only the year 1854. The bar lines are those of CCEH's Noteworthy score (001396a.nwc).",
+  "importedFrom": "cceh:001396",
+  "updated": "2026-10-18"
+}

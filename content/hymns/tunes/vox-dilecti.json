@@ -1,0 +1,32 @@
+{
+  "name": "VOX DILECTI",
+  "title": "Vox Dilecti",
+  "music": [
+    {
+      "name": "John Bacchus Dykes",
+      "born": 1823,
+      "died": 1876,
+      "role": "Music (1868)"
+    }
+  ],
+  "musicPublished": 1868,
+  "metre": "8 6 8 6",
+  "key": "G minor",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D4:1 | D4:1 G4:1 G4:1 A4:1 | Bb4:1.5 Bb4:.5 A4:1 A4:1 | G4:1 G4:1 G4:1 G4:1 | F#4:3 D4:1 | D4:1 G4:1 G4:1 A4:1 | Bb4:1.5 C5:.5 A4:1 D5:1 | C5:1 Bb4:1 A4:1 G4:1 | D4:3 D4:1 | D4:1 B4:1 A4:1 G4:1 | G4:1 E4:1 D4:1 D4:1 | G4:1 A4:.5 B4:.5 C5:1 B4:.5 A4:.5 | A4:3 A4:1 | D5:1.5 C5:.5 B4:1 B4:1 | E5:1.5 D5:.5 C5:1 A4:1 | G4:1 B4:1 D5:1.5 F#4:.5 | G4:3",
+  "incipit": "mmlltddt|tlllls|mmlltdrt",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001001.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001001a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001001; public domain.",
+  "reviewNotes": "Held back: the key signature changes in the score; the solfa keeps one doh. Imported from CCEH tune 001001 (the melody read from 001001a.mid, checked against the page's do-re-mi incipit, 1 note off in 22); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. John Bacchus Dykes's dates (1823–1876) are from our page for the tune DIES IRAE (DYKES) (content/hymns/tunes/dies-irae-dykes.json); CCEH's page gives only the year 1868. The bar lines are those of CCEH's Noteworthy score (001001a.nwc).",
+  "importedFrom": "cceh:001001",
+  "updated": "2026-10-18"
+}

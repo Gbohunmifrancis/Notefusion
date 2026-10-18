@@ -1,0 +1,34 @@
+{
+  "name": "FREIBURG",
+  "title": "Freiburg",
+  "alsoKnownAs": [
+    "Es Liegt Ein Schloss"
+  ],
+  "music": [
+    {
+      "name": "German Traditional, 16th cent.",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 7 8 7",
+  "key": "D minor",
+  "time": "4/4",
+  "tempo": 105,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "A4:1 G4:1 | F4:1 C5:1 C5:1 D5:1 | A4:1 C5:1 C5:1 A4:1 | A4:1 F4:1 G4:1 G4:1 | A4:2 F4:1 G4:1 | A4:1 G4:1 F4:1 E4:1 | D4:1 C4:1 F4:1 G4:1 | A4:1 G4:1 F4:1 E4:1 | D4:2",
+  "incipit": "mrdsslms|smmdrrm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001245.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001245a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001245; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; the score has bars of another length (bar 3, 4), which the solfa grid does not draw. Imported from CCEH tune 001245 (the melody read from 001245a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001245a.nwc).",
+  "importedFrom": "cceh:001245",
+  "updated": "2026-10-18"
+}

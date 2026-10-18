@@ -1,0 +1,32 @@
+{
+  "name": "SPRING OF SOULS",
+  "title": "Spring of Souls",
+  "music": [
+    {
+      "name": "Ludvig Matthias Lindeman",
+      "born": 1812,
+      "died": 1887,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "7 6 7 6t",
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1 F#4:1 F#4:1 E4:1 | D4:1 D4:1 G4:1.5 r:.5 | E4:1 E4:1 F#4:.5 G4:.5 A4:.5 C#5:.5 | B4:2 A4:1.5 r:.5 | A4:1 F#4:1 F#4:1 E4:1 | D4:1 D4:1 G4:1.5 r:.5 | E4:1 E4:1 F#4:.5 Ab4:.5 A4:.5 C#5:.5 | B4:2 A4:1.5 r:.5 | D5:1 C#5:1 B4:1 F#4:1 | A4:1 G4:1 F#4:1.5 r:.5 | B4:1 C#5:1 D5:1 B4:1 | A4:2 F#4:1.5 r:.5 | F#4:1 D5:1 C#5:1 C#5:1 | B4:1 B4:1 A4:1.5 r:.5 | A4:1 B4:.5 C#5:.5 D5:1 D4:1 | E4:2 D4:2",
+  "incipit": "dmmrddf|rrmfstls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0013/x001358.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0013/001358a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001358; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001358 (the melody read from 001358a.mid, checked against the page's do-re-mi incipit, 1 note off in 15); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ludvig Matthias Lindeman's dates (1812–1887) are from our page for the tune JEG HAR MIN SAG TIL GUD HJEMSTILT (content/hymns/tunes/jeg-har-min-sag-til-gud-hjemstilt.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001358a.nwc).",
+  "importedFrom": "cceh:001358",
+  "updated": "2026-10-18"
+}

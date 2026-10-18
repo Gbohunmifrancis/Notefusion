@@ -1,0 +1,31 @@
+{
+  "name": "SHEFFIELD (ENGLISH)",
+  "title": "Sheffield (English)",
+  "music": [
+    {
+      "name": "English Traditional",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "7 6 7 6",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D4:1 | G4:1 D4:1 G4:1 A4:1 | B4:2 A4:1 B4:.5 C5:.5 | D5:1 G4:1 B4:.5 A4:.5 G4:.5 F#4:.5 | G4:3 D4:1 | G4:1 D4:1 G4:1 A4:1 | B4:2 A4:1 B4:.5 C5:.5 | D5:1 G4:1 B4:.5 A4:.5 G4:.5 F#4:.5 | G4:3 B4:.5 C5:.5 | D5:1.5 E5:.5 D5:1 C5:1 | B4:1.5 C5:.5 D5:1 G4:1 | E5:1 E5:1 D5:.5 C5:.5 B4:.5 A4:.5 | G4:2 F#4:1 D4:1 | G4:1 D4:1 G4:1 A4:1 | B4:2 A4:1 B4:.5 C5:.5 | D5:1 G4:1 B4:.5 A4:.5 G4:.5 F#4:.5 | G4:3",
+  "incipit": "sdsdrmr|mfsdmrdtd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001176.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001176a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001176; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001176 (the melody read from 001176a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001176a.nwc).",
+  "importedFrom": "cceh:001176",
+  "updated": "2026-10-18"
+}

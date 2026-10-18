@@ -1,0 +1,32 @@
+{
+  "name": "REGENSBURG",
+  "title": "Regensburg",
+  "music": [
+    {
+      "name": "Johann Cruger",
+      "born": 1598,
+      "died": 1662,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 7 8 7",
+  "key": "E minor",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "E4:1 Eb4:1 E4:1 F#4:1 | G4:1 G4:1 F#4:1 E4:1 | G4:1 F#4:1 E4:1 F#4:1 | G4:1 A4:1 B4:2 | B4:1 C5:1 D5:1 G4:1 | C5:1 B4:1 B4:1 A4:1 | G4:1 A4:1 B4:1 E4:1 | G4:1 F#4:1 E4:2",
+  "incipit": "lsltddtl|dtltdrm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001107.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001107a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001107; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001107 (the melody read from 001107a.mid, checked against the page's do-re-mi incipit, 1 note off in 15); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Johann Cruger's dates (1598–1662) are from our page for the tune AUF, AUF, MEIN HERZ MIT FREUDEN (content/hymns/tunes/auf-auf-mein-herz-mit-freuden.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001107a.nwc).",
+  "importedFrom": "cceh:001107",
+  "updated": "2026-10-18"
+}

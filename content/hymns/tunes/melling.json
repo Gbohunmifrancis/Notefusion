@@ -1,0 +1,32 @@
+{
+  "name": "MELLING",
+  "title": "Melling",
+  "music": [
+    {
+      "name": "John Fawcett",
+      "born": 1740,
+      "died": 1817,
+      "role": "Music (A New Set of Sacred Music, 1822)"
+    }
+  ],
+  "musicPublished": 1822,
+  "metre": "7 7 7 7",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:1 D4:1 G4:.5 A4:.5 B4:.5 C5:.5 | B4:1 A4:1 G4:2 | A4:1 B4:.5 G4:.5 E4:1 A4:.5 G4:.5 | F#4:1 E4:1 D4:2 | G4:1 G4:.5 A4:.5 B4:.5 G4:.5 E4:.5 F#4:.5 | G4:.5 A4:.5 B4:.5 G4:.5 A4:2 | B4:.5 D5:.5 C5:.5 E5:.5 D5:1.5 C5:.5 | B4:1 A4:1 G4:2",
+  "incipit": "dsdrmfmrd|rmdlrdltd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001194.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001194a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001194; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001194 (the melody read from 001194a.mid, checked against the page's do-re-mi incipit, 3 notes off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. John Fawcett's dates (1740–1817) are from our page for Blest Be the Tie That Binds (Boylston) (content/hymns/blest-be-the-tie-that-binds-boylston.json); CCEH's page gives only the year 1822. The bar lines are those of CCEH's Noteworthy score (001194a.nwc).",
+  "importedFrom": "cceh:001194",
+  "updated": "2026-10-18"
+}

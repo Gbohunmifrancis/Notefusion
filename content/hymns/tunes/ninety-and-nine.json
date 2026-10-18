@@ -1,0 +1,32 @@
+{
+  "name": "NINETY AND NINE",
+  "title": "Ninety and Nine",
+  "music": [
+    {
+      "name": "Ira David Sankey",
+      "born": 1840,
+      "died": 1908,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "Irregular",
+  "key": "Ab major",
+  "time": "6/8",
+  "tempo": 90,
+  "pickup": 0.5,
+  "lineBars": 4,
+  "melody": "Eb4:.25 Eb4:.25 | Ab4:.75 Ab4:.25 Ab4:.5 Ab4:1 Ab4:.5 | G4:.5 G4:.5 G4:.5 Ab4:1 Ab4:.25 Ab4:.25 | C5:1 C5:.25 C5:.25 Ab4:1 Ab4:.5 | Bb4:2.5 Eb4:.25 Eb4:.25 | Ab4:.5 Ab4:.5 Ab4:.5 Ab4:1 Ab4:.25 Ab4:.25 | C5:1 C5:.5 Ab4:1 Ab4:.25 Ab4:.25 | Bb4:1 Bb4:.25 Bb4:.25 G4:.5 G4:.5 G4:.5 | Ab4:2.5 Ab4:.25 Ab4:.25 | C5:.75 C5:.25 C5:.5 Ab4:.5 Ab4:.5 Ab4:.5 | C5:1 C5:.5 Ab4:1 Eb5:.5 | Eb5:.75 Eb5:.25 F5:.5 Eb5:.5 C5:.5 Ab4:.5 | Bb4:.5 Ab4:.5 Bb4:.5 C5:1 Eb5:.5 | Eb5:.75 Eb5:.25 F5:.5 Eb5:.5 C5:.5 Ab4:.5 | Bb4:.5 C5:.5 Bb4:.5 Ab4:1",
+  "incipit": "ssddddddttd|ddmmddr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000996.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000996a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000996; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000996 (the melody read from 000996a.mid, checked against the page's do-re-mi incipit, 3 notes off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ira David Sankey's dates (1840–1908) are from our page for the tune UNDER HIS WINGS (content/hymns/tunes/under-his-wings.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000996a.nwc).",
+  "importedFrom": "cceh:000996",
+  "updated": "2026-10-18"
+}

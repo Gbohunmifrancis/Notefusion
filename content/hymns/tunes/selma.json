@@ -1,0 +1,36 @@
+{
+  "name": "SELMA",
+  "title": "Selma",
+  "music": [
+    {
+      "name": "Traditional, from the Isle of Arran",
+      "traditional": true,
+      "role": "Melody"
+    },
+    {
+      "name": "adapted, R. A. Smith",
+      "activeBy": 1825,
+      "role": "Music (1825)"
+    }
+  ],
+  "musicPublished": 1825,
+  "metre": "6 6 8 6",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Eb4:1 | G4:1 F4:1 Eb4:1 F4:.5 G4:.5 | Bb4:3 Bb4:1 | C5:1 Bb4:1 G4:1 Bb4:.75 C5:.25 | C5:3 C5:1 | Bb4:1 C5:.5 Eb5:.5 Eb5:1 Bb4:1 | C5:1 G4:1 F4:1 Eb4:1 | F4:.5 G4:.5 Bb4:1 F4:1 F4:1 | Eb4:3",
+  "incipit": "dmrdrms|slsmsll|lslddslmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001034.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001034a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001034; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001034 (the melody read from 001034a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. adapted, R. A. Smith has no death year on CCEH's page or ours; their work is dated 1825, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (001034a.nwc).",
+  "importedFrom": "cceh:001034",
+  "updated": "2026-10-18"
+}

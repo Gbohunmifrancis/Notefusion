@@ -1,0 +1,39 @@
+{
+  "name": "ST. AUSTIN",
+  "title": "St. Austin",
+  "alsoKnownAs": [
+    "Austin"
+  ],
+  "music": [
+    {
+      "name": "Gregorian Chant",
+      "traditional": true,
+      "role": "Melody"
+    },
+    {
+      "name": "Bristol Tune Book",
+      "traditional": true,
+      "role": "Melody (1876)"
+    }
+  ],
+  "musicPublished": 1876,
+  "metre": "8 7 8 7 4 7",
+  "key": "D minor",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1.5 A4:.5 A4:1 G4:1 | Bb4:1 A4:1 G4:1 F4:1 | G4:1.5 G4:.5 G4:1 D4:1 | F4:1 E4:1 D4:2 | A4:1.5 A4:.5 A4:1 G4:1 | Bb4:1 A4:1 G4:1 F4:1 | G4:1.5 G4:.5 G4:1 D4:1 | F4:1 E4:1 D4:2 | Bb4:1.5 Bb4:.5 Bb4:1 A4:1 | G4:1.5 G4:.5 G4:1 D4:1 | F4:2 E4:2 | D4:4",
+  "incipit": "mmmrfmrd|rrrldtl",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001235.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001235a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001235; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001235 (the melody read from 001235a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001235a.nwc).",
+  "importedFrom": "cceh:001235",
+  "updated": "2026-10-18"
+}

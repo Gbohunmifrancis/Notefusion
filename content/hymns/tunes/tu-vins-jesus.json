@@ -1,0 +1,35 @@
+{
+  "name": "TU VINS, JESUS",
+  "title": "Tu Vins, Jesus",
+  "alsoKnownAs": [
+    "Guter Hirte"
+  ],
+  "music": [
+    {
+      "name": "Johann Anastasius Freylinghausen",
+      "born": 1670,
+      "died": 1739,
+      "role": "Music (Geist-reiches Gesang-Buch, 1704)"
+    }
+  ],
+  "musicPublished": 1704,
+  "metre": "8 7 8 7",
+  "key": "F minor",
+  "time": "2/2",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:2 C5:1 Bb4:1 | Ab4:2 G4:2 | F4:2 E4:2 | F4:2 F4:2 | Ab4:2 Ab4:1 Bb4:1 | C5:2 C#5:2 | C5:2 Bb4:2 | Ab4:4 | Eb5:2 Eb5:2 | C#5:2 C#5:2 | C5:2 C5:2 | Bb4:2 Bb4:2 | Ab4:2 Bb4:2 | C5:2 F4:1 G4:1 | Ab4:2 G4:2 | F4:4",
+  "incipit": "lmrdtlsll|ddrmfmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001172.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001172a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001172; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001172 (the melody read from 001172a.mid, checked against the page's do-re-mi incipit, 1 note off in 17); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Johann Anastasius Freylinghausen's dates (1670–1739) are from our page for the tune O DURCHBRECHER (content/hymns/tunes/o-durchbrecher.json); CCEH's page gives only the year 1704. The bar lines are those of CCEH's Noteworthy score (001172a.nwc).",
+  "importedFrom": "cceh:001172",
+  "updated": "2026-10-18"
+}

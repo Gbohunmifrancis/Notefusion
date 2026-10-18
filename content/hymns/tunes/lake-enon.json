@@ -1,0 +1,35 @@
+{
+  "name": "LAKE ENON",
+  "title": "Lake Enon",
+  "alsoKnownAs": [
+    "Mercersburg"
+  ],
+  "music": [
+    {
+      "name": "Isaac B. Woodbury",
+      "born": 1819,
+      "died": 1858,
+      "role": "Music (1856)"
+    }
+  ],
+  "musicPublished": 1856,
+  "metre": "6 6 8 6",
+  "key": "A major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "E4:1 | E4:1 C#5:1 C#5:1 B4:1 | A4:3 E4:1 | E4:1 D5:1 D5:1 C#5:1 | B4:3 B4:1 | C#5:1 E5:1 E5:1 C#5:1 | C#5:1 A4:1 A4:1 F#4:1 | E4:1 C#5:1 C#5:1 B4:1 | A4:3",
+  "incipit": "ssmmrd|ssffmr|rmssmmss",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001237.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001237a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001237; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001237 (the melody read from 001237a.mid, checked against the page's do-re-mi incipit, 2 notes off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Isaac B. Woodbury's dates (1819–1858) are from https://hymnary.org/person/Woodbury_Isaac (Woodbury, I. B. (Isaac Baker), 1819-1858; SELENA, 1850); https://en.wikipedia.org/wiki/Isaac_B._Woodbury agrees; CCEH's page gives only the year 1856. The bar lines are those of CCEH's Noteworthy score (001237a.nwc).",
+  "importedFrom": "cceh:001237",
+  "updated": "2026-10-18"
+}

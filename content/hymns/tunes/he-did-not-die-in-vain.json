@@ -1,0 +1,32 @@
+{
+  "name": "HE DID NOT DIE IN VAIN",
+  "title": "He Did Not Die In Vain",
+  "music": [
+    {
+      "name": "Grant Colfax Tullar",
+      "born": 1869,
+      "died": 1950,
+      "role": "Music (1901)"
+    }
+  ],
+  "musicPublished": 1901,
+  "metre": "8 8 8 8 + 8 6 8 6",
+  "key": "Eb major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1.5,
+  "lineBars": 4,
+  "melody": "G5:.5 Eb5:.5 Ab5:.5 | G5:1.5 Ab5:.5 F5:.75 G5:.25 | Eb5:1.5 Eb5:.5 D5:.5 Eb5:.5 | F5:1.5 Bb5:.5 Bb5:.75 Ab5:.25 | G5:1.5 G5:.5 Eb5:.5 Ab5:.5 | G5:1.5 Ab5:.5 F5:.75 G5:.25 | Eb5:2 G5:1 | F5:.5 F5:.5 F5:.5 D6:.5 D6:.75 C6:.25 | Bb5:1.5 Bb5:.5 Bb5:.5 C6:.5 | Bb5:1.5 Ab5:.5 Ab5:.75 Eb5:.25 | G5:2 G5:1 | C6:1.5 Eb5:.5 F5:.75 Eb5:.25 | G5:1.5 G5:.5 F5:.5 Eb5:.5 | G5:1.5 G5:.5 Ab5:.5 Bb5:.5 | C6:2 Eb5:1 | Bb4:1.5 G4:.5 G4:.75 F4:.25 | Eb4:1.5",
+  "incipit": "mdfmfrmd|dtdrssfm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001163.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001163a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001163; public domain.",
+  "reviewNotes": "Held back: the range (MIDI 63–86) is outside what a congregation sings. Imported from CCEH tune 001163 (the melody read from 001163a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Grant Colfax Tullar's dates (1869–1950) are from https://en.wikipedia.org/wiki/Grant_Colfax_Tullar (Aug 5, 1869 - May 20, 1950); CCEH's page gives only the year 1901. The bar lines are those of CCEH's Noteworthy score (001163a.nwc).",
+  "importedFrom": "cceh:001163",
+  "updated": "2026-10-18"
+}

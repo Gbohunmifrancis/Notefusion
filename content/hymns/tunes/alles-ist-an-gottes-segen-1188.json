@@ -1,0 +1,37 @@
+{
+  "name": "ALLES IST AN GOTTES SEGEN",
+  "title": "Alles Ist An Gottes Segen",
+  "music": [
+    {
+      "name": "Johann Balthasar Konig",
+      "born": 1691,
+      "died": 1758,
+      "role": "Music, attributed"
+    },
+    {
+      "name": "Harmonischer Lieder-Schatz",
+      "traditional": true,
+      "role": "Melody (1738)"
+    }
+  ],
+  "musicPublished": 1738,
+  "metre": "8 8 7 8 8 7",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 105,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1 F4:1 C5:1 C5:1 | Bb4:1 C5:1 A4:1 F4:1 | A4:1 A4:1 G4:1 G4:1 | F4:1 G4:1 E4:1 C4:1 | G4:1 G4:1 A4:.5 G4:.5 F4:.5 E4:.5 | D4:1.5 C4:.5 C4:2 | C5:1 C5:1 C5:1 D5:1 | Bb4:1 C5:1 A4:1 F4:1 | A4:1 A4:1 G4:1 G4:1 | F4:1 G4:1 E4:1 C4:1 | F4:1 G4:1 A4:.5 Bb4:.5 C5:.5 Bb4:.5 | A4:1 G4:1 F4:2",
+  "incipit": "ddssfsmd|mmrrdrts",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001188.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001188a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001188; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001188 (the melody read from 001188a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Johann Balthasar Konig's dates (1691–1758) are from our page for the tune ALLES IST AN GOTTES SEGEN (content/hymns/tunes/alles-ist-an-gottes-segen.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001188a.nwc).",
+  "importedFrom": "cceh:001188",
+  "updated": "2026-10-18"
+}

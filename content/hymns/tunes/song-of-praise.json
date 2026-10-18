@@ -1,0 +1,31 @@
+{
+  "name": "SONG OF PRAISE",
+  "title": "Song of Praise",
+  "music": [
+    {
+      "name": "English Song",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "7 7 7 7",
+  "key": "Eb major",
+  "time": "2/4",
+  "tempo": 110,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "G4:1 Bb4:.5 G4:.5 | Eb4:1 Eb4:1 | F4:1 Eb4:.5 F4:.5 | G4:2 | G4:1 Bb4:.5 G4:.5 | Eb4:1 Eb4:1 | F4:1 G4:.5 F4:.5 | Eb4:2 | Eb5:1 D5:.5 C5:.5 | Bb4:.5 G4:.5 Eb4:1 | C5:1 Bb4:.5 Ab4:.5 | G4:2 | Eb4:.5 F4:.5 G4:1 | Ab4:.5 Bb4:.5 C5:1 | Bb4:1 D4:1 | Eb4:2 | C5:1 D5:1 | Eb5:1 G4:1 | F4:2 | Eb4:2",
+  "incipit": "msmddrdrm|msmddrmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001178.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001178a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001178; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001178 (the melody read from 001178a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001178a.nwc).",
+  "importedFrom": "cceh:001178",
+  "updated": "2026-10-18"
+}

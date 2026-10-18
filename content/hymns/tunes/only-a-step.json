@@ -1,0 +1,32 @@
+{
+  "name": "ONLY A STEP",
+  "title": "Only a Step",
+  "music": [
+    {
+      "name": "Charles Hutchinson Gabriel",
+      "born": 1856,
+      "died": 1932,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 8 8 6",
+  "key": "Eb major",
+  "time": "9/8",
+  "tempo": 96,
+  "pickup": 1.5,
+  "lineBars": 2,
+  "melody": "G4:.5 F4:.5 Eb4:.5 | Bb4:2.5 C5:.5 Bb4:1 Eb4:.5 | G4:3 G4:.5 F4:.5 Eb4:.5 | F4:2.5 Ab4:.5 C5:.5 Bb4:.5 Ab4:.5 | G4:3 G4:.5 F4:.5 Eb4:.5 | Bb4:2.5 C5:.5 Bb4:1 Eb4:.5 | G4:3 G4:.5 F4:.5 Eb4:.5 | Bb4:3 D4:1.5 | Eb4:3 Eb5:.5 D5:.5 C5:.5 | D5:3 C5:.5 Bb4:.5 Ab4:.5 | Bb4:3 G4:.5 Ab4:.5 Bb4:.5 | C5:2.5 Bb4:.5 Bb4:1 G4:.5 | F4:3 G4:.5 F4:.5 Eb4:.5 | Bb4:2.5 C5:.5 Bb4:1 Eb4:.5 | G4:3 G4:.5 F4:.5 Eb4:.5 | Bb4:3 D4:1.5 | Eb4:3",
+  "incipit": "mrdslsdm|mrdrflsfm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001202.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001202a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001202; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001202 (the melody read from 001202a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Charles Hutchinson Gabriel's dates (1856–1932) are from our page for the tune MY SAVIOR (content/hymns/tunes/my-savior.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001202a.nwc).",
+  "importedFrom": "cceh:001202",
+  "updated": "2026-10-18"
+}

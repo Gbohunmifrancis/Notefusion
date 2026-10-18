@@ -1,0 +1,36 @@
+{
+  "name": "PEKIN",
+  "title": "Pekin",
+  "music": [
+    {
+      "name": "German Chorale",
+      "traditional": true,
+      "role": "Melody"
+    },
+    {
+      "name": "J. E. Kingsley",
+      "activeBy": 1847,
+      "role": "Arranged (1847)"
+    }
+  ],
+  "musicPublished": 1847,
+  "metre": "6 6 8 6",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "B4:.5 C5:.5 | D5:1 G4:1 A4:1 F#4:1 | G4:3 G4:1 | A4:1 B4:1 C5:1 C5:1 | B4:3 B4:1 | A4:1 D5:1 B4:1 E5:1 | D5:1 C#5:1 D5:1 D5:1 | E5:1 A4:1 B4:1 A4:1 | G4:3",
+  "incipit": "mfsdrtd|drmffm|mrsmlsfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0013/x001382.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0013/001382a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001382; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001382 (the melody read from 001382a.mid, checked against the page's do-re-mi incipit, 1 note off in 21); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. J. E. Kingsley has no death year on CCEH's page or ours; their work is dated 1847, before 1850, so they died before 1955 (they would have been over 105). The page gives no year for the tune itself; it was in print by 1847, the year of the arrangement. The bar lines are those of CCEH's Noteworthy score (001382a.nwc).",
+  "importedFrom": "cceh:001382",
+  "updated": "2026-10-18"
+}

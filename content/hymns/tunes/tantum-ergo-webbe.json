@@ -1,0 +1,42 @@
+{
+  "name": "TANTUM ERGO (WEBBE)",
+  "title": "Tantum Ergo (Webbe)",
+  "alsoKnownAs": [
+    "Dulce Carmen",
+    "Corinth",
+    "Alleluia Dulce Carmen"
+  ],
+  "music": [
+    {
+      "name": "Essay on the Church Plain Chant",
+      "traditional": true,
+      "role": "Melody (1782)"
+    },
+    {
+      "name": "Samuel Webbe",
+      "born": 1740,
+      "died": 1816,
+      "role": "Arranged (1792)"
+    }
+  ],
+  "musicPublished": 1782,
+  "metre": "8 7 8 7 8 7",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Ab4:1 Bb4:1 C5:1 C#5:1 | Eb5:1 C#5:1 C5:1 Bb4:1 | Ab4:1 Ab4:1 Ab4:1 C#5:1 | C5:1 Bb4:1 Ab4:2 | F4:1 F4:1 Eb4:1 Eb4:1 | Ab4:1 Ab4:1 Ab4:1 G4:1 | Bb4:1 Eb5:1 C5:1 Ab4:1 | G4:1 F4:1 Eb4:2 | G4:1 G4:1 Ab4:1 Eb4:1 | F4:1 G4:1 Ab4:1 Bb4:1 | C5:.5 Bb4:.5 Ab4:.5 G4:.5 F4:1 C#5:1 | C5:1 Bb4:1 Ab4:2",
+  "incipit": "drmfsfmr|dddfmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001180.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001180a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001180; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001180 (the melody read from 001180a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Samuel Webbe's dates (1740–1816) are from our page for the tune CONSOLATOR (WEBBE) (content/hymns/tunes/consolator-webbe.json); CCEH's page gives only the year 1792. The bar lines are those of CCEH's Noteworthy score (001180a.nwc).",
+  "importedFrom": "cceh:001180",
+  "updated": "2026-10-18"
+}

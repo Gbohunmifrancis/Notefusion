@@ -1,0 +1,36 @@
+{
+  "name": "STROUDWATER",
+  "title": "Stroudwater",
+  "music": [
+    {
+      "name": "Wilkens' Psalmody",
+      "traditional": true,
+      "role": "Melody (1750)"
+    },
+    {
+      "name": "The Psalter in Metre",
+      "traditional": true,
+      "role": "Melody (1899)"
+    }
+  ],
+  "musicPublished": 1750,
+  "metre": "8 6 8 6",
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 80,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "G4:1 | D4:2 G4:1 | D5:2 B4:1 | C5:1 B4:1 A4:1 | G4:2 G4:1 | A4:2 B4:1 | C5:2 B4:1 | A4:2 B4:1 | A4:2 G4:1 | D4:2 F#4:1 | G4:2 A4:1 | D5:2 D5:.5 C5:.5 | B4:1 A4:1 G4:1 | C5:1 B4:1 A4:1 | G4:2",
+  "incipit": "dsdsmfmrd|drmfmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0013/x001367.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0013/001367a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001367; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001367 (the melody read from 001367a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001367a.nwc).",
+  "importedFrom": "cceh:001367",
+  "updated": "2026-10-18"
+}

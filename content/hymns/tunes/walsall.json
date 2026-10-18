@@ -1,0 +1,42 @@
+{
+  "name": "WALSALL",
+  "title": "Walsall",
+  "music": [
+    {
+      "name": "Henry Purcell",
+      "born": 1659,
+      "died": 1695,
+      "role": "Music, attributed"
+    },
+    {
+      "name": "Wilkin's Psalmody",
+      "traditional": true,
+      "role": "Melody (1699)"
+    },
+    {
+      "name": "A Choice Collection of Psalm Tunes, Anchors",
+      "traditional": true,
+      "role": "Melody (1721)"
+    }
+  ],
+  "musicPublished": 1699,
+  "metre": "8 6 8 6",
+  "key": "G minor",
+  "time": "4/4",
+  "tempo": 105,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "G4:1 | Bb4:1 A4:.5 G4:.5 D4:1 D5:1 | C5:.5 Bb4:.5 A4:1 G4:1 Bb4:.75 A4:.25 | G4:1 F#4:1 G4:.5 A4:.5 Bb4:.5 C5:.5 | D5:3 D5:1 | D5:1 D5:1 C5:1 Bb4:.5 A4:.5 | G4:1 C5:1 A4:1 D5:1 | G4:.5 F#4:.5 G4:.5 A4:.5 Bb4:1 A4:1 | G4:3",
+  "incipit": "ldtlmmrdtl|dtlsltdrm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001079.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001079a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001079; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001079 (the melody read from 001079a.mid, checked against the page's do-re-mi incipit, 1 note off in 19); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Henry Purcell's dates (1659–1695) are from our page for the tune BURFORD (PURCELL) (content/hymns/tunes/burford-purcell.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001079a.nwc).",
+  "importedFrom": "cceh:001079",
+  "updated": "2026-10-18"
+}

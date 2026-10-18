@@ -1,0 +1,34 @@
+{
+  "name": "BISHOPTHORPE",
+  "title": "Bishopthorpe",
+  "alsoKnownAs": [
+    "St. Paul's"
+  ],
+  "music": [
+    {
+      "name": "Jeremiah Clarke",
+      "activeBy": 1700,
+      "role": "Music (1700)"
+    }
+  ],
+  "musicPublished": 1700,
+  "metre": "8 6 8 6",
+  "key": "G major",
+  "time": "3/2",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "D5:1.5 C5:.5 | B4:3 A4:1 G4:2 | F#4:2 E4:2 C5:2 | B4:2 G4:2 F#4:2 | G4:4 A4:2 | B4:3 C5:1 D5:2 | D5:2 C5:2 B4:2 | B4:2 A4:2 D5:2 | D5:2 C5:2 B4:2 | C5:4 C5:2 | C5:2 B4:2 A4:2 | B4:4 D5:1.5 C5:.5 | B4:3 A4:1 G4:2 | E4:1.5 A4:.5 G4:2 F#4:2 | G4:4",
+  "incipit": "sfmrdtlfmdtd|rmfssfmmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001208.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001208a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001208; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001208 (the melody read from 001208a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Jeremiah Clarke has no death year on CCEH's page or ours; their work is dated 1700, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (001208a.nwc).",
+  "importedFrom": "cceh:001208",
+  "updated": "2026-10-18"
+}

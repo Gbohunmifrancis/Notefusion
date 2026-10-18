@@ -1,0 +1,35 @@
+{
+  "name": "BEAUTIFUL WALK",
+  "title": "Beautiful Walk",
+  "alsoKnownAs": [
+    "Stepping in the Light"
+  ],
+  "music": [
+    {
+      "name": "William James Kirkpatrick",
+      "born": 1838,
+      "died": 1921,
+      "role": "Music (1917)"
+    }
+  ],
+  "musicPublished": 1917,
+  "metre": "11 10 11 10 + i",
+  "key": "Db major",
+  "time": "4/4",
+  "tempo": 130,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Ab4:1 Ab4:.75 Bb4:.25 Ab4:1 F4:.75 F#4:.25 | Ab4:1 C#5:.75 Eb5:.25 C#5:1 Bb4:1 | Ab4:1 Ab4:.75 Bb4:.25 Ab4:1 F#4:.5 F4:.5 | F4:1 Eb4:.5 C#4:.5 Eb4:2 | F4:1 F4:.75 F#4:.25 Ab4:1 Ab4:.5 Ab4:.5 | Bb4:1 C#5:.75 Eb5:.25 C#5:1 Bb4:1 | Ab4:.5 Ab4:1 Ab4:.5 Bb4:.5 Eb5:1 C#5:.5 | C5:1 Bb4:.5 C5:.5 C#5:1 C#5:.75 C5:.25 | Bb4:.5 Bb4:.5 Bb4:.75 Bb4:.25 Bb4:1 C#5:.75 Bb4:.25 | Ab4:1 Ab4:.75 Ab4:.25 Ab4:1 F4:1 | F#4:.5 F#4:.5 F#4:.75 F4:.25 Eb4:2 | F4:.5 F4:.5 F4:.75 F#4:.25 Ab4:1 Ab4:1 | Bb4:.5 Bb4:.5 Bb4:.75 Bb4:.25 C#5:1 C#5:.75 Bb4:.25 | Ab4:1 Ab4:.75 Bb4:.25 Ab4:1 F4:1 | C5:1 C5:1 Bb4:1 C5:1 | C#5:3 r:1",
+  "incipit": "sslsmfsdrdl|sslsfmmrdr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001097.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001097a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001097; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001097 (the melody read from 001097a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William James Kirkpatrick's dates (1838–1921) are from our page for the tune THE COMFORTER HAS COME (content/hymns/tunes/the-comforter-has-come.json); CCEH's page gives only the year 1917. The bar lines are those of CCEH's Noteworthy score (001097a.nwc).",
+  "importedFrom": "cceh:001097",
+  "updated": "2026-10-18"
+}

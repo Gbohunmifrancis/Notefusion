@@ -1,0 +1,37 @@
+{
+  "name": "OLMUTZ",
+  "title": "Olmutz",
+  "music": [
+    {
+      "name": "Gregorian Chant",
+      "traditional": true,
+      "role": "Melody"
+    },
+    {
+      "name": "Lowell Mason",
+      "born": 1792,
+      "died": 1872,
+      "role": "Music (1824)"
+    }
+  ],
+  "musicPublished": 1824,
+  "metre": "6 6 8 6",
+  "key": "A major",
+  "time": "3/4",
+  "tempo": 110,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "E4:1 | F#4:.5 E4:.5 A4:1 B4:1 | A4:2 A4:1 | Ab4:.5 A4:.5 F#4:1 F#4:1 | E4:2 E4:1 | F#4:.5 E4:.5 A4:1 Ab4:1 | A4:.5 B4:.5 A4:1 A4:1 | Ab4:.5 A4:.5 F#4:1 E4:1 | E4:2",
+  "incipit": "slsdrd|dtdlls|slsdtdrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001128.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001128a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001128; public domain.",
+  "reviewNotes": "Held back: the score has bars of another length (bar 2, 3, 6, 7), which the solfa grid does not draw. Imported from CCEH tune 001128 (the melody read from 001128a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Lowell Mason's dates (1792–1872) are from our page for the tune BETHANY (content/hymns/tunes/bethany.json); CCEH's page gives only the year 1824. The bar lines are those of CCEH's Noteworthy score (001128a.nwc). The tune ends on E, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "importedFrom": "cceh:001128",
+  "updated": "2026-10-18"
+}

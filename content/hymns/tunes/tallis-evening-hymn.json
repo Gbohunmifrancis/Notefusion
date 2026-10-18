@@ -1,0 +1,32 @@
+{
+  "name": "TALLIS' EVENING HYMN",
+  "title": "Tallis' Evening Hymn",
+  "music": [
+    {
+      "name": "Thomas Tallis",
+      "born": 1505,
+      "died": 1585,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 8 8 8",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D4:1 | G4:1 G4:1 G4:1 G4:1 | A4:1 A4:.5 B4:.25 C5:.25 B4:1 G4:1 | C5:1 C5:1 B4:1 B4:1 | A4:1 A4:1 G4:1 D5:1 | C5:.5 B4:.5 A4:.5 G4:.5 C5:1 B4:1 | A4:1 A4:.5 G4:.5 F#4:1 D4:1 | E4:1 F#4:1 G4:1 A4:.5 B4:.25 C5:.25 | B4:1 A4:1 G4:1",
+  "incipit": "sddddrrmfm|dffmmrrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001119.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001119a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001119; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001119 (the melody read from 001119a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Thomas Tallis's dates (1505–1585) are from our page for the tune TALLIS (content/hymns/tunes/tallis.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001119a.nwc).",
+  "importedFrom": "cceh:001119",
+  "updated": "2026-10-18"
+}

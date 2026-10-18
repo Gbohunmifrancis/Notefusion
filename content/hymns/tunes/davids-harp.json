@@ -1,0 +1,31 @@
+{
+  "name": "DAVID'S HARP",
+  "title": "David's Harp",
+  "music": [
+    {
+      "name": "Robert King",
+      "activeBy": 1722,
+      "role": "Music (1722)"
+    }
+  ],
+  "musicPublished": 1722,
+  "metre": "8 8 8 8 8 8",
+  "key": "D major",
+  "time": "4/2",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 1,
+  "melody": "F#4:2 E4:1 D4:1 C#4:2 D4:2 | E4:2 F#4:1 G4:1 F#4:3 E4:1 | F#4:2 Ab4:2 A4:2 A4:2 | A4:3 Ab4:1 A4:4 | D5:2 D5:1 C#5:1 B4:2 B4:2 | C#5:3 D5:1 Bb4:4 | B4:2 B4:1 A4:1 G4:2 F#4:2 | E4:3 F#4:1 F#4:4 | r:2 B4:2 Ab4:2 E4:2 | A4:2 C#5:2 B4:2 C#5:1 D5:1 | C#5:6 D5:2 | B4:2 G4:2 E4:2 F#4:1 G4:1 | E4:3 D4:1 D4:4",
+  "incipit": "mrdtdrmfm|rmfsssfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001255.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001255a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001255; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001255 (the melody read from 001255a.mid, checked against the page's do-re-mi incipit, 2 notes off in 17); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Robert King has no death year on CCEH's page or ours; their work is dated 1722, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (001255a.nwc).",
+  "importedFrom": "cceh:001255",
+  "updated": "2026-10-18"
+}

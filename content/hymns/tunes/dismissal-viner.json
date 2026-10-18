@@ -1,0 +1,31 @@
+{
+  "name": "DISMISSAL (VINER)",
+  "title": "Dismissal (Viner)",
+  "music": [
+    {
+      "name": "William L. Viner",
+      "activeBy": 1845,
+      "role": "Music (1845)"
+    }
+  ],
+  "musicPublished": 1845,
+  "metre": "8 7 8 7 8 7",
+  "key": "A major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1 Ab4:.5 F#4:.5 E4:1 C#4:1 | F#4:1 A4:1 E4:1 C#4:1 | C#5:1 B4:.5 A4:.5 F#4:1 B4:1 | A4:1 Ab4:1 A4:2 | C#5:1 C#5:.5 D5:.5 E5:1 C#5:1 | D5:1 B4:1 C#5:1 A4:1 | C#5:1 C#5:.5 D5:.5 E5:1 C#5:1 | D5:1 C#5:1 B4:2 | A4:1 Ab4:.5 F#4:.5 E4:1 C#4:1 | F#4:1 A4:1 E4:1 C#4:1 | C#5:1 B4:.5 A4:.5 F#4:1 B4:1 | A4:1 Ab4:1 A4:2",
+  "incipit": "dtlsmldsm|mrdlrdtd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0013/x001315.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0013/001315a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001315; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001315 (the melody read from 001315a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William L. Viner has no death year on CCEH's page or ours; their work is dated 1845, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (001315a.nwc).",
+  "importedFrom": "cceh:001315",
+  "updated": "2026-10-18"
+}
