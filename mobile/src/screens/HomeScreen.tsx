@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
@@ -17,12 +17,11 @@ import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useReducedMotion } from 'react-native-reanimated';
 import { Screen } from '../components/Screen';
-import { Avatar } from '../components/Avatar';
-import { AppDrawer } from '../components/AppDrawer';
+import { HeaderAvatar } from '../components/HeaderAvatar';
 import { Touchable } from '../components/Touchable';
 import { Skeleton } from '../components/Skeleton';
 import { Mark, Wordmark } from '../components/night/NightUI';
-import { meApi, practiceApi } from '../api/endpoints';
+import { practiceApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { dohLetter } from '../lib/solfa';
 import { loadLibraryList, loadSheet } from '../lib/offlineLibrary';
@@ -35,6 +34,8 @@ import { useThemedStyles, useColors } from '../lib/theme';
 import type { PracticeProgress, SavedTranscription } from '../api/types';
 import { streakSnapshot } from '../lib/practiceProgress';
 import { rememberStreak } from '../lib/practiceReminder';
+import { refreshProfilePicture } from '../lib/profilePicture';
+import { useBreath } from '../lib/breath';
 import type { RootStackParams, TabParams } from '../navigation/types';
 import { solfaOpening } from '../lib/solfaOpening';
 import { confidenceA11y, confidenceLevel } from '../lib/confidence';
@@ -59,13 +60,12 @@ export function HomeScreen({ navigation }: Props) {
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const { user } = useAuth();
   const { isPro, refresh: refreshSubscription } = useSubscription();
+  const focused = useIsFocused();
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
   const [loadingRecent, setLoadingRecent] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [pictureUrl, setPictureUrl] = useState<string | null>(null);
   const [greeting, setGreeting] = useState(currentGreeting);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   /** The streak/XP chip's numbers; null hides the chip (not loaded, or the read failed). */
   const [practice, setPractice] = useState<PracticeProgress | null>(null);
   const styles = useThemedStyles(makeStyles);
@@ -77,18 +77,18 @@ export function HomeScreen({ navigation }: Props) {
    * scale so they breathe as a single object rather than two things that happen
    * to share a duration.
    *
-   * RN `Animated` rather than Reanimated, matching the ambient pulse on
-   * RecordScreen: this is an idle loop on the native driver, not a gesture
-   * response, and there is nothing for the UI thread to win here. The press
-   * spring inside `Touchable` is the Reanimated half.
+   * The breath is the app's one (`lib/breath`), shared with the tab bar's record
+   * halo so the two swell together. It runs while Home is focused (Home stays
+   * mounted for the whole session, so an ungated loop would keep waking the
+   * native driver behind Library and Settings); Reduce Motion holds it still.
    */
-  const breathe = useRef(new Animated.Value(0)).current;
+  const reduceMotion = useReducedMotion();
+  const breathe = useBreath(focused && !reduceMotion);
   /** Fires once per press-in: one ring out of the circle, then gone. */
   const ring = useRef(new Animated.Value(0)).current;
   /** Entrance: fades + slides the content in once per focus, so navigating away
    *  and back replays the transition rather than keeping a stale snapshot. */
   const mountFade = useRef(new Animated.Value(0)).current;
-  const reduceMotion = useReducedMotion();
 
   const bloomOpacity = breathe.interpolate({
     inputRange: [0, 1],
@@ -115,12 +115,10 @@ export function HomeScreen({ navigation }: Props) {
     outputRange: [14, 0],
   });
 
-  // Gated on focus, not mount: Home stays mounted for the whole session, so an
-  // ungated loop would keep waking the native driver behind Library and Settings
-  // for as long as the app is open.
+  // Reset and replay the entrance on every focus. Reduce motion: the content still
+  // fades in (no slide, below), and the mic holds still (`useBreath` above).
   useFocusEffect(
     useCallback(() => {
-      // Reset and replay entrance animation on every focus.
       mountFade.setValue(0);
       const entrance = Animated.timing(mountFade, {
         toValue: 1,
@@ -129,32 +127,8 @@ export function HomeScreen({ navigation }: Props) {
         useNativeDriver: true,
       });
       entrance.start();
-      // Reduce motion: the content still fades in (no slide, below), but the mic holds still.
-      if (reduceMotion) return () => entrance.stop();
-
-      const pulse = Animated.loop(
-        Animated.sequence([
-          Animated.timing(breathe, {
-            toValue: 1,
-            duration: 1800,
-            easing: Easing.inOut(Easing.sin),
-            useNativeDriver: true,
-          }),
-          Animated.timing(breathe, {
-            toValue: 0,
-            duration: 1800,
-            easing: Easing.inOut(Easing.sin),
-            useNativeDriver: true,
-          }),
-        ]),
-      );
-      pulse.start();
-      return () => {
-        entrance.stop();
-        pulse.stop();
-        breathe.setValue(0);
-      };
-    }, [breathe, mountFade, reduceMotion]),
+      return () => entrance.stop();
+    }, [mountFade]),
   );
 
   const fireRing = useCallback(() => {
@@ -200,29 +174,18 @@ export function HomeScreen({ navigation }: Props) {
             setLoadError(null);
           })
           .catch((e) => setLoadError(toApiError(e).message)),
-        meApi
-          .get()
-          .then((p) => setPictureUrl(p.profilePictureUrl))
-          .catch(() => undefined),
+        user ? refreshProfilePicture(user.id, true) : undefined,
         refreshSubscription(true).catch(() => undefined),
       ]);
     } finally {
       setRefreshing(false);
     }
-  }, [refreshSubscription]);
+  }, [refreshSubscription, user]);
 
   useFocusEffect(
     useCallback(() => {
       let active = true;
       setGreeting(currentGreeting());
-      // Re-read on focus rather than once on mount: Home stays mounted for the whole
-      // session, so a photo changed on Profile would otherwise not appear until relaunch.
-      meApi
-        .get()
-        .then((p) => {
-          if (active) setPictureUrl(p.profilePictureUrl);
-        })
-        .catch(() => undefined);
       practiceApi
         .progress()
         .then((p) => {
@@ -292,10 +255,10 @@ export function HomeScreen({ navigation }: Props) {
               </View>
 
               <View style={styles.headerActions}>
-                {/* Practice: the streak and XP, a tap from today's drill. */}
+                {/* Practice: the streak and XP, a tap from the Practice tab. */}
                 {practice ? (
                   <Touchable
-                    onPress={() => rootNav.navigate('Practice')}
+                    onPress={() => navigation.navigate('Practice')}
                     style={styles.practiceChip}
                     radius={radii.pill}
                     accessibilityLabel={`Practice: ${practice.streak.current}-day streak, ${practice.xp} XP, level ${practice.level.name}`}
@@ -310,16 +273,8 @@ export function HomeScreen({ navigation }: Props) {
                     <Text style={styles.practiceChipText}>{practice.xp} XP</Text>
                   </Touchable>
                 ) : null}
-                {/* The gold ring is `Avatar`'s own `premium` prop, so Home and Profile
-                    cannot disagree about who is paying. It opens the account side bar;
-                    the profile is one row inside it. */}
-                <Avatar
-                  uri={pictureUrl}
-                  name={user?.fullName}
-                  size={38}
-                  premium={isPro}
-                  onPress={() => setDrawerOpen(true)}
-                />
+                {/* The account, as on every tab: the avatar (Pro's gold ring) opens Profile. */}
+                <HeaderAvatar />
               </View>
             </View>
 
@@ -435,15 +390,6 @@ export function HomeScreen({ navigation }: Props) {
                   <Text style={styles.chipLabel}>Paste link</Text>
                 </Touchable>
                 <Touchable
-                  onPress={() => rootNav.navigate('Hymns')}
-                  style={styles.chip}
-                  radius={radii.pill}
-                  accessibilityLabel="Hymns, for use offline"
-                >
-                  <Ionicons name="book-outline" size={17} color={colors.accent} />
-                  <Text style={styles.chipLabel}>Hymns</Text>
-                </Touchable>
-                <Touchable
                   onPress={() => rootNav.navigate('Listen')}
                   style={styles.chip}
                   radius={radii.pill}
@@ -557,14 +503,6 @@ export function HomeScreen({ navigation }: Props) {
             </View>
           )
         }
-      />
-
-      {/* Mounted here rather than in the navigator: nothing else needs to open it, so
-          local state beats another context. A Modal takes no layout space. */}
-      <AppDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        pictureUrl={pictureUrl}
       />
     </Screen>
   );

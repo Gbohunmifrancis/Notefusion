@@ -19,10 +19,7 @@ import {
   hourFor,
   reminderSetup,
   timeForHour,
-  type ReminderTime,
 } from './reminderPrefs';
-
-export { REMINDER_TIMES, type ReminderTime } from './reminderPrefs';
 
 /**
  * The daily "come and practise" reminder: sent by the server, by push.
@@ -65,7 +62,7 @@ export { REMINDER_TIMES, type ReminderTime } from './reminderPrefs';
  * declared), so under Doze they can drift by minutes. Fine for a nudge.
  */
 
-/** The cached switch and time: the server's answer, or (before it ever answered) the choice made on this phone. */
+/** The cached switch and hour: the server's answer, or (before it ever answered) the choice made on this phone. */
 const ENABLED_KEY = '@notefusion_reminder';
 const TIME_KEY = '@notefusion_reminder_time';
 const HOUR_KEY = '@notefusion_reminder_hour';
@@ -132,10 +129,6 @@ export function reminderHour(): number {
   return hour;
 }
 
-export function reminderTime(): ReminderTime {
-  return timeForHour(hour);
-}
-
 /** Keeps the server's answer: the cache Settings paints from, and proof the server takes care of reminders here. */
 async function adopt(server: PracticeReminders): Promise<void> {
   enabled = server.enabled;
@@ -175,14 +168,14 @@ async function readServer(): Promise<PracticeReminders> {
   return answer;
 }
 
-/** The Settings switch. False when the server did not take it (offline): the caller puts the switch back. */
+/** The Notifications switch. False when the server did not take it (offline): the caller puts the switch back. */
 export async function setReminderEnabled(on: boolean): Promise<boolean> {
   return saveReminders({ enabled: on });
 }
 
-/** The Settings chips. False when the server did not take it. */
-export async function setReminderTime(next: ReminderTime): Promise<boolean> {
-  return saveReminders({ hour: hourFor(next) });
+/** The reminder-time sheet: any hour the server takes (8–21). False when the server did not take it. */
+export async function setReminderHour(next: number): Promise<boolean> {
+  return saveReminders({ hour: next });
 }
 
 /**

@@ -11,13 +11,16 @@
  * Playful — stars and a friendly word instead of the number, a practice buddy, stickers, a confetti burst; and
  * Focused — the exact score and cents, the take's overall tuning, "Replay my take", and less fuss. The server picks
  * each track's drills; XP, levels, streaks and badges are the same on both.
+ *
+ * A tab (board a-core/04), reached from the tab bar, Home's streak chip and every practice reminder. A tab stays
+ * mounted, so leaving it mid-take stops the take, as leaving the old pushed screen did.
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Animated, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useReducedMotion } from "react-native-reanimated";
 import Svg, { Circle, Path } from "react-native-svg";
 import { File, Paths } from "expo-file-system";
@@ -34,6 +37,7 @@ import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
+import { TabHeader } from "../components/TabHeader";
 import { GradeMarks } from "../components/GradeMarks";
 import { TrackPicker } from "../components/practice/TrackPicker";
 import { StarGrade } from "../components/practice/StarGrade";
@@ -76,10 +80,8 @@ import {
   trackTitle,
   tuningLine,
 } from "../lib/practiceTrack";
-import type { RootStackParams } from "../navigation/types";
 import { ProblemNote } from "../components/ProblemNote";
 
-type Props = NativeStackScreenProps<RootStackParams, "Practice">;
 type Phase = "idle" | "leadin" | "singing" | "grading";
 
 const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberOfChannels: 1 };
@@ -87,8 +89,9 @@ const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberO
 const TAIL_SEC = 1;
 const TOAST_MS = 3200;
 
-export function PracticeScreen({ navigation }: Props) {
+export function PracticeScreen() {
   const colors = useColors();
+  const insets = useSafeAreaInsets();
   const styles = useThemedStyles(makeStyles);
   const reduceMotion = useReducedMotion();
   const recorder = useAudioRecorder(RECORDING);
@@ -144,9 +147,18 @@ export function PracticeScreen({ navigation }: Props) {
     }
   }, []);
 
+  // Read on every visit; leaving the tab (or the app's back to another tab) mid-take stops the take and any playback.
+  const phaseRef = useRef<Phase>("idle");
+  phaseRef.current = phase;
   useFocusEffect(
     useCallback(() => {
       void load();
+      return () => {
+        if (phaseRef.current === "leadin" || phaseRef.current === "singing") stop();
+        else if (phaseRef.current === "idle") cleanup();
+      };
+      // `stop` and `cleanup` only touch refs and setters.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [load]),
   );
 
@@ -362,21 +374,7 @@ export function PracticeScreen({ navigation }: Props) {
         contentStyle={styles.screen}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} colors={[colors.accent]} />}
       >
-        <View style={styles.headerRow}>
-          <Touchable
-            onPress={() => (navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Tabs", { screen: "Home" }))}
-            accessibilityLabel="Go back"
-            hitSlop={8}
-            ripple="borderless"
-          >
-            <View style={styles.backCircle}>
-              <Ionicons name="chevron-back" size={20} color={colors.text} />
-            </View>
-          </Touchable>
-          <View style={styles.titleBlock}>
-            <Text style={styles.titleLabel}>Daily practice</Text>
-            <Text style={styles.titleMain}>Practice</Text>
-          </View>
+        <TabHeader title="Practice" eyebrow="Daily practice">
           {track && !showPicker && !busy ? (
             <Touchable
               onPress={() => { setTrackError(null); setPicking(true); }}
@@ -391,7 +389,7 @@ export function PracticeScreen({ navigation }: Props) {
               </View>
             </Touchable>
           ) : null}
-        </View>
+        </TabHeader>
 
         {loading && !progress ? (
           <ActivityIndicator color={colors.accent} style={styles.loading} />
@@ -626,6 +624,7 @@ export function PracticeScreen({ navigation }: Props) {
           accessibilityLiveRegion="polite"
           style={[
             styles.toast,
+            { bottom: Math.max(insets.bottom, spacing.sm) + spacing.xs + 64 + spacing.lg },
             {
               opacity: toastAnim,
               transform: [{ translateY: reduceMotion ? 0 : toastAnim.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }],
@@ -784,21 +783,8 @@ function EmptyState({ art, title, body, onRetry, styles }: { art: ArtName; title
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     flex: { flex: 1, backgroundColor: c.bg },
-    screen: { paddingBottom: spacing.xxxl },
-    headerRow: { flexDirection: "row", alignItems: "center", marginTop: spacing.sm, marginBottom: spacing.xl },
-    backCircle: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    titleBlock: { flex: 1, marginHorizontal: spacing.md },
-    titleLabel: { ...typography.caption, color: c.textFaint, textTransform: "uppercase", letterSpacing: 1, fontSize: 10 },
-    titleMain: { ...typography.title, color: c.text, fontSize: 22, letterSpacing: -0.4, marginTop: 1 },
+    /** Clears the floating tab bar. */
+    screen: { paddingBottom: 120 },
     trackPill: {
       flexDirection: "row",
       alignItems: "center",
@@ -946,7 +932,6 @@ const makeStyles = (c: Palette) =>
       position: "absolute",
       left: spacing.lg,
       right: spacing.lg,
-      bottom: spacing.xxl,
       flexDirection: "row",
       alignItems: "center",
       gap: spacing.sm,

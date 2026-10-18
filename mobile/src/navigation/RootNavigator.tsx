@@ -19,10 +19,10 @@ import { UpgradeScreen } from '../screens/UpgradeScreen';
 import { LinkScreen } from '../screens/LinkScreen';
 import { ListenScreen } from '../screens/ListenScreen';
 import { ChoirScreen } from '../screens/ChoirScreen';
-import { HymnsScreen } from '../screens/HymnsScreen';
+import { ProfileScreen } from '../screens/ProfileScreen';
+import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { useOutboxRunner } from '../lib/outbox';
 import { autoRefreshPack } from '../lib/hymnPackStore';
-import { PracticeScreen } from '../screens/PracticeScreen';
 import { AdminHomeScreen } from '../screens/admin/AdminHomeScreen';
 import { AdminPaymentsScreen } from '../screens/admin/AdminPaymentsScreen';
 import { AdminUserScreen } from '../screens/admin/AdminUserScreen';
@@ -140,9 +140,20 @@ export function RootNavigator() {
               component={ResultScreen}
               options={{ presentation: 'card', animation: 'slide_from_bottom' }}
             />
+            {/* The avatar at the top right of every tab pushes Profile; Settings and Notifications are its rows. */}
+            <Stack.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
             <Stack.Screen
               name="Settings"
               component={SettingsScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="Notifications"
+              component={NotificationsScreen}
               options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen
@@ -161,16 +172,6 @@ export function RootNavigator() {
               options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen
-              name="Hymns"
-              component={HymnsScreen}
-              options={{ animation: 'slide_from_right' }}
-            />
-            <Stack.Screen
-              name="Practice"
-              component={PracticeScreen}
-              options={{ animation: 'slide_from_right' }}
-            />
-            <Stack.Screen
               name="Link"
               component={LinkScreen}
               options={{ presentation: 'card', animation: 'slide_from_bottom' }}
@@ -182,7 +183,7 @@ export function RootNavigator() {
             />
 
             {/* Admin. Registered for every session rather than gated here: the
-                only way in is the drawer row, which checks `isAdmin`, and a
+                only way in is Profile's Admin row, which checks `isAdmin`, and a
                 conditional screen list would remount the stack the moment the
                 boot profile re-read changes that flag. */}
             <Stack.Screen

@@ -35,11 +35,21 @@ export function Mark({ height, color = "#FFFFFF" }: { height: number; color?: st
   );
 }
 
-/** "Notefusion" in the wordmark face. Nunito Black, and nowhere else. */
+/**
+ * "Notefusion" in the wordmark face. Nunito Black, and nowhere else.
+ *
+ * One line always (a logo does not wrap), grown at most 1.2x with large system text, and 2 px clear either side
+ * so Android's negative letter spacing cannot shave the last glyph.
+ */
 export function Wordmark({ size, style }: { size: number; style?: StyleProp<TextStyle> }) {
   return (
     <Text
-      style={[{ fontFamily: nightFonts.wordmark, fontSize: size, color: night.text, letterSpacing: -size * 0.02 }, style]}
+      style={[
+        { fontFamily: nightFonts.wordmark, fontSize: size, color: night.text, letterSpacing: -size * 0.02, paddingHorizontal: 2 },
+        style,
+      ]}
+      numberOfLines={1}
+      maxFontSizeMultiplier={1.2}
       accessibilityRole="header"
     >
       Notefusion

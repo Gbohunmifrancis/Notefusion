@@ -156,7 +156,14 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   bottom sheet (`showDialog` → `components/AppDialog` on `components/Sheet`; `lib/sheetKind` reads confirm,
   destructive, info, options, offer or celebrate off the options) and good news is a toast (`lib/toast` `showToast`),
   one `components/Button` (primary · secondary · text · destructive, md 48 / sm 40, `block` for a flow's last action;
-  red only as a destructive word and the live REC dot, problems an amber icon: `ProblemNote`), a rating ask after the third saved sheet (`lib/ratingPolicy` decides when; the sheet in `lib/feedback` sends the stars to the API and offers Google Play to 4–5★),
+  red only as a destructive word and the live REC dot, problems an amber icon: `ProblemNote`),
+  five labelled tabs Home · Library · Record (centre) · Practice · Hymns (`lib/navTargets`, which also maps a push's
+  `data.screen`), every tab's header its name left and the avatar right (`TabHeader`/`HeaderAvatar`, Pro's gold ring)
+  pushing Profile (plan, choir, Notifications, Settings, help, feedback, Admin); no side drawer and no Profile tab.
+  Settings and Notifications are grouped rows (`components/settings`); Notifications holds push, sound, the reminder
+  and its hour 8–21 (`ReminderTimeSheet`) and the founder-notes email switch (`GET/PUT /api/me/email-preferences`, the
+  `EmailOptOut` row). The record button's halo and Home's mic share one breath (`lib/breath`). Splash: cover only until
+  the fonts load, the 1.6 s intro on the first launch (`nf.hasLaunched`), 0.6 s on every later cold start. A rating ask after the third saved sheet (`lib/ratingPolicy` decides when; the sheet in `lib/feedback` sends the stars to the API and offers Google Play to 4–5★),
   expo-notifications push. OTA via EAS Update (`production` channel) with the `fingerprint`
   runtime policy: any native change (a new Expo module, a permission, a plugin) gives a new
   runtime, so an update can only reach builds that have its native code — anything native
@@ -356,7 +363,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   turn holds off a day after any outreach), active free user, tried once then quiet 5 days, never transcribed after
   2 days — once per segment per account ever, at most one a week, 09:00–19:00 WAT, `Outreach__BatchSize` (5) per run.
   `OutreachMessage` rows are the claim (unique user+segment+channel) and the audit trail (`GET /api/admin/outreach`);
-  a failed send is retried once. Email respects `EmailOptOut` (signed one-click `GET/POST /api/email/unsubscribe`);
+  a failed send is retried once. Email respects `EmailOptOut` (signed one-click `GET/POST /api/email/unsubscribe`, or the
+  app's "Notes from the founder" switch, `GET/PUT /api/me/email-preferences`);
   push respects the app's switch (it unregisters the device). Off unless `Outreach__Enabled` + `FounderName` +
   `ReplyTo` are set (prod defaults them on; the code default is off).
 - Email quota (`Application/Common/EmailBudget`, `Infrastructure/Email/EmailQuota`): every email Resend accepts is an

@@ -36,6 +36,7 @@ import { useReachability } from "../lib/connectivity";
 import { isNetworkCode } from "../lib/reachability";
 import { openTranscriptionFromNotification } from "../lib/notificationLink";
 import { PendingSends } from "../components/library/PendingSends";
+import { HEADER_AVATAR, HeaderAvatar } from "../components/HeaderAvatar";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import type { SavedTranscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
@@ -163,8 +164,8 @@ export function LibraryScreen() {
   }, [searchOpen, searchProgress]);
   const pillStyle = useAnimatedStyle(() => ({
     width: interpolate(searchProgress.value, [0, 1], [ICON_BTN, Math.max(rowWidth, ICON_BTN)]),
-    // Closed, the pill is the search button beside "+"; open, it spans the row.
-    right: interpolate(searchProgress.value, [0, 1], [ICON_BTN + spacing.sm, 0]),
+    // Closed, the pill is the search button beside "+" (and the avatar after it); open, it spans the row.
+    right: interpolate(searchProgress.value, [0, 1], [ICON_BTN + HEADER_AVATAR + 2 * spacing.sm, 0]),
   }));
   const fadeWithSearch = useAnimatedStyle(() => ({ opacity: 1 - searchProgress.value }));
 
@@ -394,7 +395,7 @@ export function LibraryScreen() {
         <Animated.Text style={[styles.pageTitle, fadeWithSearch]} accessibilityRole="header">
           Library
         </Animated.Text>
-        <Animated.View style={fadeWithSearch} pointerEvents={searchOpen ? "none" : "auto"}>
+        <Animated.View style={[styles.titleActions, fadeWithSearch]} pointerEvents={searchOpen ? "none" : "auto"}>
           <Touchable
             onPress={() => nav.navigate("Tabs", { screen: "Record" })}
             style={styles.iconBtn}
@@ -403,6 +404,8 @@ export function LibraryScreen() {
           >
             <Ionicons name="add" size={22} color={colors.text} />
           </Touchable>
+          {/* The account, as on every tab: opens Profile. */}
+          <HeaderAvatar />
         </Animated.View>
         <Animated.View style={[styles.searchPill, pillStyle]}>
           {searchOpen ? (
@@ -685,6 +688,11 @@ const makeStyles = (c: Palette) =>
     pageTitle: {
       ...typography.display,
       color: c.text,
+    },
+    titleActions: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.sm,
     },
     iconBtn: {
       width: ICON_BTN,

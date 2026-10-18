@@ -6,6 +6,7 @@ import { openStoreListing } from './appUpdate';
 import { showDialog } from './dialog';
 import { synthesizeMelodyWavBase64 } from './synth';
 import { isExpoGo } from './env';
+import { notificationTarget } from './navTargets';
 import type { RootStackParams } from '../navigation/types';
 
 /**
@@ -81,36 +82,20 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
 }
 
 /**
- * Screens a notification may ask for by name, and how to get there. Doubles as the allow-list: a
- * `screen` the server did not send — or one from an older build — finds no entry here and is ignored,
- * so an unexpected payload cannot reach the navigator with a route it does not have.
- *
- * Deliberately just the destinations something actually sends. Adding one is a line here and the
- * matching `Data["screen"]` on the server.
+ * Follows a notification's `data.screen` (`lib/navTargets` is the allow-list). A tab is nested in the root
+ * stack, so it needs the nested form: `navigate('Practice')` would find no such route and do nothing.
  */
-const LINKS: Record<string, () => void> = {
-  /** `NotifySubscriptionExpiringCommand` has been sending this since it was written. */
-  Upgrade: () => navigationRef.navigate('Upgrade'),
-  /** `NotifyAdminsOfPaymentIssuesCommand` — the screen with the Reconcile button. */
-  AdminPayments: () => navigationRef.navigate('AdminPayments'),
-  AdminWebhooks: () => navigationRef.navigate('AdminWebhooks'),
-  /**
-   * `NotifyAppUpdateCommand`. Goes to the store, not a screen: there is nothing in the app to
-   * show someone whose whole problem is that the app is out of date.
-   */
-  AppUpdate: () => void openStoreListing(),
-  /**
-   * The daily practice reminder. `Record` is a **tab**, not a root-stack route, so it needs the
-   * nested form — `navigate('Record')` would find no such route and silently do nothing.
-   */
-  Record: () => navigationRef.navigate('Tabs', { screen: 'Record' }),
-  /** Every practice reminder the server pushes (C# `PracticeReminderService.Message`): today's drill. */
-  Practice: () => navigationRef.navigate('Practice'),
-};
+function openScreen(screen: string): void {
+  const target = notificationTarget(screen);
+  if (!target) return;
+  if (target.kind === 'store') void openStoreListing();
+  else if (target.kind === 'tab') navigationRef.navigate('Tabs', { screen: target.tab });
+  else navigationRef.navigate(target.route);
+}
 
 /**
  * A tap waiting for the authenticated stack. `job` carries a job id and costs an API call to resolve;
- * `screen` is a name from {@link LINKS}. `id` is the notification's own, so two taps on two notifications
+ * `screen` is a name `notificationTarget` knows. `id` is the notification's own, so two taps on two notifications
  * that name the same place (the evening reminder, then the last chance) are both followed.
  */
 type PendingTap = { kind: 'job' | 'screen'; value: string; id?: string };
@@ -143,7 +128,7 @@ export function useNotificationDeepLink(ready: boolean): void {
 
       // A job id first: it names a specific result, where `screen` only names a place.
       if (typeof data?.jobId === 'string') return { kind: 'job', value: data.jobId, id };
-      if (typeof data?.screen === 'string' && data.screen in LINKS)
+      if (typeof data?.screen === 'string' && notificationTarget(data.screen))
         return { kind: 'screen', value: data.screen, id };
       return null;
     };
@@ -183,6 +168,6 @@ export function useNotificationDeepLink(ready: boolean): void {
       void openTranscriptionFromNotification(pending.value);
       return;
     }
-    if (navigationRef.isReady()) LINKS[pending.value]?.();
+    if (navigationRef.isReady()) openScreen(pending.value);
   }, [ready, pending]);
 }

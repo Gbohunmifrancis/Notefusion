@@ -17,6 +17,8 @@ const PITCH = 16;
  * how far each slides so the trio closes up around the centre.
  */
 const STAY: Record<number, number> = { 2: 0, 4: -PITCH, 6: -PITCH * 2 };
+/** The mark's own three bars: all the brief version raises. */
+const MARK_BARS = Object.keys(STAY).map(Number);
 
 const RING_R = 62;
 /** The arc's drawn length; the gap that is left is where the "5" opens. */
@@ -26,29 +28,45 @@ type Play = "hold" | "intro" | "brief" | "still";
 
 interface Props {
   /**
-   * `intro` is the full first-run animation, `brief` the quick reveal returning
-   * users get, `hold` the native splash colour while fonts load, and `still`
-   * (the default) the finished frame, for when the app is waiting on something
-   * else after the splash has already played.
+   * `intro` is the full first-run animation, `brief` the short one every later
+   * cold start gets, `hold` the native splash's cover alone while the fonts load,
+   * and `still` (the default) the finished frame, for when the app is waiting on
+   * something else after the splash has already played.
    */
   play?: Play;
 }
 
 /**
- * The animated splash, in four beats over about 1.6 seconds:
+ * Whether this launch played the full intro, for the still frame that may follow
+ * it (RootNavigator, while the session restores): the tagline belongs to it only.
+ */
+let introPlayed = false;
+
+/**
+ * The animated splash (board a-core/02). The first launch on a phone, about 1.6 s:
  *
  *   0.0 s  seven bars rise out of the native splash's blue, like a sung level
  *   0.5 s  four fall away, three close up and a ring draws round them
  *   1.0 s  the mark itself lights up with a bloom and the wordmark rises
  *   1.4 s  the tagline lands, and the app takes over from this frame
  *
- * It opens on the native splash's colour and mark (app.json) so the hand-over
- * from the static native splash is a dissolve rather than a cut. Nothing here
- * blocks a tap: the app mounts the moment `useAppReady` says so. People who ask
- * the system for reduced motion get the brief reveal instead.
+ * Every cold start after it, 0.6 s: the blue dissolves (160 ms), only the mark's
+ * own three bars rise, 30 ms apart, the ring sweeps once (0.15–0.39 s), and the
+ * mark and wordmark land together (0.35–0.60 s), with no tagline. Coming back from
+ * the background shows no splash at all: the app is still in memory.
+ *
+ * It opens on the native splash's colour and mark (app.json) so the hand-over is a
+ * dissolve rather than a cut. Nothing here blocks a tap: the app mounts the moment
+ * `useAppReady` says so. Reduce Motion gets the finished frame with a 200 ms fade.
+ *
+ * While `hold`, only the cover is drawn. The wordmark must first be laid out once
+ * Nunito Black is in memory: laid out earlier, Android measures it in the fallback
+ * face (narrower), keeps that box when the font arrives, and the last "n" of
+ * "Notefusion" falls onto a hidden second line.
  */
 export function SplashScreen({ play = "still" }: Props) {
-  const finished = play === "still" || play === "brief";
+  const finished = play === "still";
+  if (play === "intro") introPlayed = true;
 
   const cover = useRef(new Animated.Value(play === "still" ? 0 : 1)).current;
   const barIn = useRef(BARS.map(() => new Animated.Value(0))).current;
@@ -71,27 +89,58 @@ export function SplashScreen({ play = "still" }: Props) {
     const t = (v: Animated.Value, toValue: number, duration: number, easing = Easing.out(Easing.cubic)) =>
       Animated.timing(v, { toValue, duration, easing, useNativeDriver: true });
 
+    // Reduce Motion: the finished frame, uncovered in 200 ms.
     const finish = () => {
+      stageOut.setValue(1);
       markIn.setValue(1);
       glow.setValue(0.7);
       wordIn.setValue(1);
-      tagIn.setValue(1);
-      t(cover, 0, 260).start();
+      if (play === "intro") tagIn.setValue(1);
+      t(cover, 0, 200).start();
     };
 
-    // Returning users: the finished frame, uncovered. It is set here rather than
-    // at mount because the screen first renders in `hold`, before the launch flag
-    // has been read.
-    if (play === "brief") {
-      finish();
-      return;
-    }
+    // Every later cold start: the same motif in 0.6 s. The kept bars start closed
+    // up (`gather` at 1), so only the mark's own three rise and the rest stay hidden.
+    const brief = () => {
+      gather.setValue(1);
+      Animated.parallel([
+        t(cover, 0, 160),
+        Animated.stagger(
+          30,
+          MARK_BARS.map((i) =>
+            Animated.timing(barIn[i]!, {
+              toValue: 1,
+              duration: 160,
+              easing: Easing.out(Easing.cubic),
+              useNativeDriver: true,
+            }),
+          ),
+        ),
+        Animated.sequence([
+          Animated.delay(150),
+          Animated.parallel([
+            t(ringOpacity, 1, 80),
+            Animated.timing(ringDraw, {
+              toValue: 0,
+              duration: 240,
+              easing: Easing.inOut(Easing.cubic),
+              useNativeDriver: false,
+            }),
+          ]),
+        ]),
+        Animated.sequence([
+          Animated.delay(350),
+          Animated.parallel([t(stageOut, 1, 160), t(markIn, 1, 250), t(wordIn, 1, 250), t(glow, 0.7, 250)]),
+        ]),
+      ]).start();
+    };
 
     AccessibilityInfo.isReduceMotionEnabled()
       .catch(() => false)
       .then((reduce) => {
         if (cancelled) return;
         if (reduce) return finish();
+        if (play === "brief") return brief();
 
         Animated.parallel([
           t(cover, 0, 280),
@@ -144,7 +193,21 @@ export function SplashScreen({ play = "still" }: Props) {
     };
   }, [play]);
 
+  // The fonts are not in memory yet: the native splash's cover alone (the native
+  // splash itself is still up, so nothing visible changes). See the note above.
+  if (play === "hold") {
+    return (
+      <View style={styles.root} accessible accessibilityLabel="Notefusion">
+        <StatusBar style="light" />
+        <View pointerEvents="none" style={styles.cover}>
+          <Mark height={119} />
+        </View>
+      </View>
+    );
+  }
+
   const stageOpacity = stageOut.interpolate({ inputRange: [0, 1], outputRange: [1, 0] });
+  const showTagline = play === "intro" || (play === "still" && introPlayed);
 
   return (
     <View style={styles.root} accessible accessibilityLabel="Notefusion">
@@ -178,11 +241,11 @@ export function SplashScreen({ play = "still" }: Props) {
               <View style={styles.bars}>
                 {BARS.map((h, i) => {
                   const stays = i in STAY;
-                  const rise = barIn[i];
+                  const rise = barIn[i]!;
                   const transform = [
                     {
                       translateX: stays
-                        ? gather.interpolate({ inputRange: [0, 1], outputRange: [0, STAY[i]] })
+                        ? gather.interpolate({ inputRange: [0, 1], outputRange: [0, STAY[i]!] })
                         : 0,
                     },
                     {
@@ -226,9 +289,11 @@ export function SplashScreen({ play = "still" }: Props) {
         >
           <Wordmark size={38} />
         </Animated.View>
-        <Animated.View style={{ opacity: tagIn }}>
-          <Text style={styles.tagline}>Hear it. See it. Notate it.</Text>
-        </Animated.View>
+        {showTagline ? (
+          <Animated.View style={{ opacity: tagIn }}>
+            <Text style={styles.tagline}>Hear it. See it. Notate it.</Text>
+          </Animated.View>
+        ) : null}
       </View>
 
       {/* The native splash, recreated so the hand-over dissolves instead of cutting. */}
