@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Flags;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
 
@@ -30,6 +31,10 @@ public sealed record ReminderCandidate(Guid UserId, string? TimeZone, DateOnly L
 /// Every send is claimed by inserting its <see cref="PracticeReminder"/> row first; the unique (user, local date,
 /// slot) index makes the second of two overlapping sweeps fail its insert and send nothing. A failed send is
 /// retried once while the day is still unpractised and before the quiet hours.
+/// </para>
+/// <para>
+/// While the Christmas season is on for everyone (<see cref="FeatureFlags"/>), the words come from a rotation its
+/// festive lines have joined, naming the singer's next carol; timing, channels and limits are the same.
 /// </para>
 /// </remarks>
 public sealed class PracticeReminderService
@@ -148,8 +153,10 @@ public sealed class PracticeReminderService
             return false;
 
         var due = candidate.Due;
+        var christmas = await ChristmasAsync(ct);
         var words = PracticeReminderCopy.For(
-            due.Kind, candidate.Track, due.Streak, PracticeReminderCopy.Rotation(userId, candidate.LocalDate, due.Slot));
+            due.Kind, candidate.Track, due.Streak, PracticeReminderCopy.Rotation(userId, candidate.LocalDate, due.Slot),
+            christmas, christmas ? await NextCarolAsync(userId, ct) : null);
         var now = _clock.UtcNow;
         var claim = PracticeReminder.Claim(
             userId, candidate.LocalDate, due.Slot, due.Kind, due.Streak, words.Title, words.Body, candidate.Sound, tokens.Count, now);
@@ -242,6 +249,25 @@ public sealed class PracticeReminderService
                 .SetProperty(r => r.Attempts, r => r.Attempts - giveBack)
                 .SetProperty(r => r.Error, error), ct);
         return skipped is null && !delivery.NotAttempted;
+    }
+
+    /// <summary>
+    /// The Christmas season, for everyone (a preview for admins never changes a push): read once per run, since the
+    /// service is made for each run.
+    /// </summary>
+    private async Task<bool> ChristmasAsync(CancellationToken ct)
+        => _christmas ??= await FeatureFlags.ChristmasForEveryoneAsync(_db, _clock.UtcNow, ct);
+
+    private bool? _christmas;
+
+    /// <summary>The carol of the account's next drill on the carols path, or null once all of them are sung.</summary>
+    private async Task<string?> NextCarolAsync(Guid userId, CancellationToken ct)
+    {
+        var takes = await _db.PracticeSessions.AsNoTracking()
+            .Where(s => s.UserId == userId && s.Kind == PracticeKind.Drill && s.DrillId != null && s.DrillId.StartsWith(CarolPath.CodePrefix))
+            .Select(s => new { s.DrillId, s.Score })
+            .ToListAsync(ct);
+        return CarolPath.Next(CarolPath.Read(takes.Select(t => (t.DrillId, t.Score))))?.Carol;
     }
 
     /// <summary>The account's phones on app code that takes server reminders. Never its web push subscriptions.</summary>

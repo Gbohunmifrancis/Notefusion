@@ -67,6 +67,10 @@ public static partial class WebPush
             Clip(string.IsNullOrWhiteSpace(name) ? "Open it in NoteFusion." : $"“{name.Trim()}” is written out. Open it in NoteFusion."),
             Tag(jobId), Url(jobId), "ready");
 
+    /// <summary>"Your sheet is ready" in the words the phone's push carries (the Christmas season's).</summary>
+    public static WebPushNotification Ready(string jobId, string title, string body)
+        => new(title, Clip(body), Tag(jobId), Url(jobId), "ready");
+
     /// <summary>"Transcription didn't finish", with the plain sentence the phone's push carries.</summary>
     public static WebPushNotification Failed(string jobId, string? name, string reason)
         => new(

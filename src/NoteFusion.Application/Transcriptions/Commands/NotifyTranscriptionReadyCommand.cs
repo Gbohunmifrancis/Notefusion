@@ -158,17 +158,26 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         var firstName = user?.FullName?.Split(' ')[0];
         if (string.IsNullOrWhiteSpace(firstName)) firstName = "there";
 
+        // While the Christmas season is on for everyone, the product's festive words, on the phone and the web alike.
+        var christmas = await Flags.FeatureFlags.ChristmasForEveryoneAsync(_db, now, ct)
+            ? ReadyPushCopy.Christmas(firstName, result)
+            : null;
+
         await _push.SendAsync(
             [job.UserId],
             new PushMessage(
-                $"Hey {firstName}, your transcription is ready!",
-                $"{result.Key} · {result.Tempo} BPM — tap to review and save it.",
+                christmas?.Title ?? $"Hey {firstName}, your transcription is ready!",
+                christmas?.Body ?? $"{result.Key} · {result.Tempo} BPM — tap to review and save it.",
                 new Dictionary<string, string> { ["jobId"] = job.JobId }),
             ct);
 
         // The web app's browsers, for a tab that was closed (an open one collected it by its poll first).
         await _webPush.SendAsync(
-            job.UserId, Push.WebPush.Ready(job.JobId, result.Source?.Title ?? await JobNameAsync(job.JobId, ct)), ct);
+            job.UserId,
+            christmas is null
+                ? Push.WebPush.Ready(job.JobId, result.Source?.Title ?? await JobNameAsync(job.JobId, ct))
+                : Push.WebPush.Ready(job.JobId, christmas.Title, christmas.Body),
+            ct);
 
         return Result.Success();
     }
