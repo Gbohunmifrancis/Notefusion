@@ -1,15 +1,22 @@
 import { api } from "./client";
 import { emitSheetEvent, sheetSaved } from "../lib/sheetEvents";
 import type {
+  AdminLedgerRow,
   AdminPaymentDetail,
   AdminPaymentRow,
   AdminReconcileResult,
-  AdminTranscriptionRow,
   AdminUserDetail,
   AdminUserRow,
   AdminWebhookEventDetail,
   AdminWebhookEventRow,
+  AnalyticsOverview,
   AppSeason,
+  FeatureFlag,
+  FeatureFlagChange,
+  Growth,
+  LiveActivity,
+  PaymentAlertSettings,
+  TestPaymentAlert,
   AppVersionInfo,
   BillingInterval,
   CarolsPath,
@@ -653,7 +660,7 @@ export const choirApi = {
  * help with, because the row would be truthful about the wrong person.
  */
 export const adminApi = {
-  /** State of the money right now — counts, stuck rows, and what the ledger sums to. */
+  /** State of the money right now — counts, stuck rows, today's takings and what the ledger sums to. */
   paymentsSummary: () =>
     api
       .get<PaymentOpsSummary>("/api/admin/payments/summary")
@@ -662,6 +669,21 @@ export const adminApi = {
   /** Always 200 while the API is up: a dependency being down is the answer. */
   health: () => api.get<SystemHealth>("/api/admin/health").then((r) => r.data),
 
+  /** The console's Overview for a window (`from`/`to` instants; the server's default is the last 30 days). */
+  overview: (from?: string, to?: string) =>
+    api
+      .get<AnalyticsOverview>("/api/admin/analytics/overview", { params: { from, to } })
+      .then((r) => r.data),
+
+  /** Who is online, transcribing and paying right now: the top bar's "9 online". */
+  live: () => api.get<LiveActivity>("/api/admin/analytics/live").then((r) => r.data),
+
+  /** The Growth page: renewals, free to paid, transcription health, app versions. */
+  growth: (from?: string, to?: string) =>
+    api
+      .get<Growth>("/api/admin/analytics/growth", { params: { from, to } })
+      .then((r) => r.data),
+
   payments: (params: {
     page?: number;
     pageSize?: number;
@@ -669,6 +691,8 @@ export const adminApi = {
     status?: string;
     provider?: string;
     stuckOnly?: boolean;
+    /** Paid with no Pro (Verified) and stuck checkouts: "Needs a look". */
+    needsLook?: boolean;
     search?: string;
   }) =>
     api
@@ -708,11 +732,26 @@ export const adminApi = {
       .get<AdminWebhookEventDetail>(`/api/admin/webhooks/${id}`)
       .then((r) => r.data),
 
+  /** Money in and out across every account, newest first. */
+  ledger: (params: { page?: number; pageSize?: number; direction?: string; search?: string }) =>
+    api
+      .get<PagedResult<AdminLedgerRow>>("/api/admin/ledger", { params })
+      .then((r) => r.data),
+
   users: (params: {
     page?: number;
     pageSize?: number;
     search?: string;
     isActive?: boolean;
+    isOnline?: boolean;
+    /** "online", "today", "week", "month" or "inactive". */
+    lastSeen?: string;
+    /** "lastSeen" for the most recently seen first; anything else is newest account first. */
+    sort?: string;
+    /** The team's and test accounts too; customers only without it. */
+    includeInternal?: boolean;
+    /** "pro" or "free". */
+    plan?: string;
   }) =>
     api
       .get<PagedResult<AdminUserRow>>("/api/admin/analytics/users", { params })
@@ -732,12 +771,6 @@ export const adminApi = {
   revokePro: (id: string, note?: string) =>
     api.post(`/api/admin/users/${id}/revoke-pro`, { note }).then(() => undefined),
 
-  /** Moves the end of the period out. Must be later than the date it replaces. */
-  extendSubscription: (id: string, newEndUtc: string, note?: string) =>
-    api
-      .post(`/api/admin/users/${id}/subscription/extend`, { newEndUtc, note })
-      .then(() => undefined),
-
   /** Ends it now, gift or paid, forfeiting the rest of the period. Refunds nothing. */
   endSubscription: (id: string, note?: string) =>
     api
@@ -755,6 +788,14 @@ export const adminApi = {
   reactivate: (id: string, note?: string) =>
     api.post(`/api/admin/users/${id}/reactivate`, { note }).then(() => undefined),
 
+  /** Makes an account an admin, or takes it away. Refused for your own account and for the last admin. */
+  setRole: (id: string, role: "user" | "admin", note?: string) =>
+    api.post(`/api/admin/users/${id}/role`, { role, note }).then(() => undefined),
+
+  /** Leaves a team or test account out of the analytics (or counts it again). */
+  setInternal: (id: string, isInternal: boolean, note?: string) =>
+    api.post(`/api/admin/users/${id}/internal`, { isInternal, note }).then(() => undefined),
+
   /** Mails a reset link — the supported way to help someone locked out, because it
    *  puts the new password in their hands and not in an operator's. */
   sendPasswordReset: (id: string, note?: string) =>
@@ -762,47 +803,46 @@ export const adminApi = {
       .post(`/api/admin/users/${id}/send-password-reset`, { note })
       .then(() => undefined),
 
-  /** Manually sweeps abandoned Pending and expired Processing checkouts. */
-  clearStalePayments: () =>
-    api
-      .post<ClearStalePaymentsResult>("/api/admin/payments/clear-stale")
-      .then((r) => r.data),
-
-  /** Resets consumed trial quota on an account so they can transcribe again. */
+  /** Gives an account this week's free three back. */
   resetTrialQuota: (id: string, note?: string) =>
     api
       .post<number>(`/api/admin/users/${id}/reset-trial`, { note })
       .then((r) => r.data),
 
-  /** Global list of transcriptions across all users. */
-  transcriptions: (params?: {
-    page?: number;
-    pageSize?: number;
-    status?: string;
-    search?: string;
-  }) =>
+  /** The switches that change what everyone sees (the Christmas season). */
+  features: () => api.get<FeatureFlag[]>("/api/admin/features").then((r) => r.data),
+
+  /** Changes part of a flag; written to the audit log as SetFeatureFlag. Answers with the flag as it now stands. */
+  setFeature: (key: string, change: FeatureFlagChange) =>
+    api.put<FeatureFlag>(`/api/admin/features/${key}`, change).then((r) => r.data),
+
+  /** This phone's payment alerts, by its push token (`registered` false when the token is not this account's). */
+  alertSettings: (token: string) =>
     api
-      .get<PagedResult<AdminTranscriptionRow>>("/api/admin/transcriptions", { params })
+      .get<PaymentAlertSettings>("/api/admin/alerts/device", { params: { token } })
       .then((r) => r.data),
 
-  /** Fetches active global system announcement, if any. */
-  getAnnouncement: () =>
-    api.get<SystemAnnouncement | null>("/api/admin/announcement").then((r) => r.data),
+  setAlertSettings: (body: {
+    token: string;
+    on: boolean;
+    sound: PaymentAlertSettings["sound"];
+    vibrate: boolean;
+    quietAtNight: boolean;
+    hideNames: boolean;
+    problems: boolean;
+  }) => api.put<PaymentAlertSettings>("/api/admin/alerts/device", body).then((r) => r.data),
 
-  /** Publishes a global broadcast announcement. */
-  setAnnouncement: (data: {
-    message: string;
-    severity?: string;
-    expiresAtUtc?: string | null;
-    note?: string;
-  }) =>
+  /** "Mute 1 hour": `minutes` of alerts without a sound, or 0 to unmute. */
+  muteAlerts: (token: string, minutes: number) =>
     api
-      .post<SystemAnnouncement>("/api/admin/announcement", data)
+      .post<PaymentAlertSettings>("/api/admin/alerts/device/mute", { token, minutes })
       .then((r) => r.data),
 
-  /** Clears active global system announcement. */
-  clearAnnouncement: (note?: string) =>
-    api
-      .delete("/api/admin/announcement", { params: { note } })
-      .then(() => undefined),
+  /** A sample payment push to this phone alone. */
+  testAlert: (token: string) =>
+    api.post<TestPaymentAlert>("/api/admin/alerts/test", { token }).then((r) => r.data),
+
+  /** The admin lock on a phone with no screen lock: the account password, checked. 204 when right. */
+  confirmPassword: (password: string) =>
+    api.post("/api/admin/lock/password", { password }).then(() => undefined),
 };

@@ -183,7 +183,10 @@ public sealed record PaymentOpsSummaryDto(
     int SweepIntervalMinutes,
     long MrrMinor = 0,
     int ActiveSubscribersCount = 0,
-    int ExpiringInSevenDaysCount = 0);
+    int ExpiringInSevenDaysCount = 0,
+    // Completed today (West Africa Time), one total per currency, and how many: the phone admin's Today tile.
+    IReadOnlyList<NoteFusion.Application.Analytics.Dtos.CurrencyAmountDto>? PaidToday = null,
+    int PaidTodayCount = 0);
 
 /// <summary>
 /// What an operator-triggered reconciliation actually did.

@@ -1,6 +1,8 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Admin.Dtos;
+using NoteFusion.Application.Analytics.Dtos;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
 using NoteFusion.Core.Enums;
@@ -129,6 +131,21 @@ public sealed class GetPaymentOpsSummaryQueryHandler
                 mrrMinor += (long)Math.Round(sub.AmountMinor / 12.0);
         }
 
+        // Money in today, West Africa Time, one total per currency (never added across them): the phone admin's
+        // Today tile. A ledger credit is a completed payment.
+        var todayStartUtc = DateTime.SpecifyKind((now + FreeTier.WestAfricaOffset).Date - FreeTier.WestAfricaOffset, DateTimeKind.Utc);
+        var today = await _db.LedgerEntries
+            .AsNoTracking()
+            .Where(e => e.Direction == LedgerDirection.Credit && e.CreatedAtUtc >= todayStartUtc)
+            .Select(e => new { e.Currency, e.AmountMinor })
+            .ToListAsync(cancellationToken);
+        var paidToday = today
+            .GroupBy(e => e.Currency.ToUpperInvariant())
+            .OrderByDescending(g => g.Key == "NGN")
+            .ThenBy(g => g.Key)
+            .Select(g => new CurrencyAmountDto(g.Key, g.Sum(e => e.AmountMinor)))
+            .ToList();
+
         var expiringInSevenDaysCount = activeSubs
             .Count(s => s.CurrentPeriodEndUtc < inSevenDays && s.CurrentPeriodEndUtc < NoteFusion.Core.Entities.Billing.Subscription.LifetimeEndUtc);
 
@@ -152,6 +169,8 @@ public sealed class GetPaymentOpsSummaryQueryHandler
             Math.Max(1, _settings.ReconciliationMinutes),
             mrrMinor,
             activeSubscribersCount,
-            expiringInSevenDaysCount);
+            expiringInSevenDaysCount,
+            paidToday,
+            today.Count);
     }
 }

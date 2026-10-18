@@ -348,7 +348,11 @@ public sealed record AdminUserRowDto(
     /// <summary>Seen within <c>LastSeen.OnlineWindow</c>.</summary>
     bool IsOnline = false,
     /// <summary>An admin or an account flagged internal: shown only when the list asks for the team.</summary>
-    bool IsInternal = false);
+    bool IsInternal = false,
+    /// <summary>The account's stored ISO country code, when known.</summary>
+    string? Country = null,
+    /// <summary>Leads or sings in a choir whose plan is running (the phone admin's violet Choir badge).</summary>
+    bool InChoir = false);
 
 /// <summary>A page of results plus the total, so the client can render "showing 1-25 of 340".</summary>
 public sealed record PagedResultDto<T>(IReadOnlyList<T> Items, int Page, int PageSize, int TotalCount)

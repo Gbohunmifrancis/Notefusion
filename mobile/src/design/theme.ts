@@ -241,6 +241,114 @@ export function paletteFor(mode: ThemeMode): Palette {
   return mode === "dark" ? darkColors : lightColors;
 }
 
+// ─── The phone admin (board f-admin) ────────────────────────────────────────
+/**
+ * The web console's tokens on the phone (web-admin/src/app/globals.css `.dark` and `:root`, lib/chart.ts), so the
+ * phone admin reads as the console's phone-sized sibling: the same canvas, card and hairline, one brand blue, mint /
+ * amber / red only for status, gold only for Pro. Red is a status pill's tint (Failed, Suspended) and a destructive
+ * word, never a button or an icon. It follows the app's own Day/Night switch.
+ */
+export const adminDark = {
+  bg: "#07090E",
+  card: "#0E121A",
+  card2: "#121722",
+  sub: "#151A24",
+  line: "#1E2533",
+  line2: "#141922",
+  text: "#F3F6FB",
+  muted: "#8B95AA",
+  faint: "#8089A0",
+  dim: "#5A6478",
+  icon: "#D3DAE6",
+  brand: "#5C9BFF",
+  brandDeep: "#9CC2FF",
+  fill: "#2563EB",
+  ok: "#3DDC97",
+  okDeep: "#3DDC97",
+  warn: "#F5B544",
+  warnDeep: "#F5B544",
+  bad: "#FF4D5E",
+  badDeep: "#FF7A86",
+  prem: "#F5B544",
+  premDeep: "#F5B544",
+  choir: "#A78BFA",
+  series: "#4D8DFF",
+  sky: "#38BDF8",
+  indigo: "#818CF8",
+  grey: "#8089A0",
+  /** The renewals bar's "renewed after the end" and "lapsed" (web-admin lib/chart.ts). */
+  teal: "#14A37F",
+  orange: "#E5602F",
+  grid: "#161B25",
+  tick: "#8089A0",
+  seriesFaint: "#5A6478",
+  /** The raised segment of a segmented control. */
+  segOn: "#222A39",
+  /** Tints behind status words: [fill, hairline]. */
+  okTint: ["rgba(61,220,151,0.10)", "rgba(61,220,151,0.22)"],
+  warnTint: ["rgba(245,181,68,0.10)", "rgba(245,181,68,0.24)"],
+  badTint: ["rgba(255,77,94,0.10)", "rgba(255,77,94,0.22)"],
+  blueTint: ["rgba(92,155,255,0.10)", "rgba(92,155,255,0.22)"],
+  premTint: ["rgba(245,181,68,0.12)", "rgba(245,181,68,0.26)"],
+  choirTint: ["rgba(167,139,250,0.12)", "rgba(167,139,250,0.30)"],
+  onlineBg: "rgba(61,220,151,0.10)",
+  onlineText: "#3DDC97",
+  selected: "rgba(92,155,255,0.06)",
+  scrim: "rgba(3,5,9,0.62)",
+} as const;
+
+export type AdminPalette = { readonly [K in keyof typeof adminDark]: (typeof adminDark)[K] extends readonly string[] ? readonly [string, string] : string };
+
+export const adminLight: AdminPalette = {
+  bg: "#F4F7FC",
+  card: "#FFFFFF",
+  card2: "#F6F9FE",
+  sub: "#EEF3FB",
+  line: "#E2E8F0",
+  line2: "#EFF3F9",
+  text: "#0F172A",
+  muted: "#5B6B82",
+  faint: "#606F86",
+  dim: "#94A3B8",
+  icon: "#334155",
+  brand: "#2563EB",
+  brandDeep: "#1D4ED8",
+  fill: "#2563EB",
+  ok: "#16A34A",
+  okDeep: "#166534",
+  warn: "#D97706",
+  warnDeep: "#92400E",
+  bad: "#DC2626",
+  badDeep: "#991B1B",
+  prem: "#F59E0B",
+  premDeep: "#B45309",
+  choir: "#7C3AED",
+  series: "#2563EB",
+  sky: "#0EA5E9",
+  indigo: "#6366F1",
+  grey: "#94A3B8",
+  teal: "#0F8A6B",
+  orange: "#EA580C",
+  grid: "#EFF3F9",
+  tick: "#64748B",
+  seriesFaint: "#94A3B8",
+  segOn: "#FFFFFF",
+  okTint: ["rgba(22,163,74,0.08)", "rgba(22,163,74,0.22)"],
+  warnTint: ["rgba(217,119,6,0.08)", "rgba(217,119,6,0.24)"],
+  badTint: ["rgba(220,38,38,0.07)", "rgba(220,38,38,0.22)"],
+  blueTint: ["rgba(37,99,235,0.08)", "rgba(37,99,235,0.22)"],
+  premTint: ["rgba(245,158,11,0.10)", "rgba(245,158,11,0.26)"],
+  choirTint: ["rgba(124,58,237,0.08)", "rgba(124,58,237,0.24)"],
+  onlineBg: "#ECFDF3",
+  onlineText: "#15803D",
+  selected: "rgba(37,99,235,0.06)",
+  scrim: "rgba(15,23,42,0.45)",
+};
+
+export function adminPaletteFor(mode: ThemeMode): AdminPalette {
+  return mode === "dark" ? adminDark : adminLight;
+}
+
 // ─── Gradients ──────────────────────────────────────────────────────────────
 
 export const gradients = {

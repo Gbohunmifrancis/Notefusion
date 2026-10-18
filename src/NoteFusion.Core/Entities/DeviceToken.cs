@@ -45,6 +45,55 @@ public class DeviceToken : BaseEntity
     /// </remarks>
     public bool ServerReminders { get; private set; }
 
+    // ── Payment alerts (an admin's phone; board f-admin/09) ─────────────────────────────────────────────────────
+    // Set from Admin › Payment alerts on the phone itself (PUT /api/admin/alerts/device). Read only for a device whose
+    // account is an Admin in the database at send time, so on a customer's row they are inert.
+
+    /// <summary>"Alert me when someone pays". Off until the phone's own admin says otherwise.</summary>
+    public bool PaymentAlerts { get; private set; }
+
+    /// <summary><see cref="PaymentAlertSounds"/>: our cash chime, the phone's own sound, or none.</summary>
+    public string PaymentAlertSound { get; private set; } = PaymentAlertSounds.Chime;
+
+    /// <summary>The two short pulses.</summary>
+    public bool PaymentAlertVibrate { get; private set; } = true;
+
+    /// <summary>22:00–07:00 on the account's clock: banners, no sound.</summary>
+    public bool PaymentAlertQuietAtNight { get; private set; }
+
+    /// <summary>Amount and plan only; who paid is one tap away in Admin.</summary>
+    public bool PaymentAlertHideNames { get; private set; }
+
+    /// <summary>"Payment problems too": paid with no Pro, stuck checkouts. On by default, as it always was.</summary>
+    public bool PaymentProblemAlerts { get; private set; } = true;
+
+    /// <summary>"Mute 1 hour": until then the alerts still show, without a sound.</summary>
+    public DateTime? PaymentAlertsMutedUntilUtc { get; private set; }
+
+    /// <summary>
+    /// When this phone last said how it wants payment alerts. Set only by app code that has created the payment
+    /// channels, so the server names those channels to this device and to no other.
+    /// </summary>
+    public DateTime? PaymentAlertsSetAtUtc { get; private set; }
+
+    public void SetPaymentAlerts(
+        bool on, string sound, bool vibrate, bool quietAtNight, bool hideNames, bool problems, DateTime utcNow)
+    {
+        PaymentAlerts = on;
+        if (!PaymentAlertSounds.IsKnown(sound))
+            throw new ArgumentException($"Unknown payment alert sound '{sound}'.", nameof(sound));
+        PaymentAlertSound = sound;
+        PaymentAlertVibrate = vibrate;
+        PaymentAlertQuietAtNight = quietAtNight;
+        PaymentAlertHideNames = hideNames;
+        PaymentProblemAlerts = problems;
+        PaymentAlertsSetAtUtc = utcNow;
+    }
+
+    /// <summary>Silences the alerts until <paramref name="untilUtc"/>; null (or a moment passed) unmutes.</summary>
+    public void MutePaymentAlerts(DateTime? untilUtc, DateTime utcNow)
+        => PaymentAlertsMutedUntilUtc = untilUtc is { } until && until > utcNow ? until : null;
+
     public static DeviceToken Create(
         Guid userId, string token, string platform, int appBuild, DateTime utcNow, bool serverReminders = false)
         => new()

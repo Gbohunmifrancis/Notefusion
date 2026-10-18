@@ -223,6 +223,8 @@ export const getPayments = (
     status?: PaymentStatus;
     provider?: PaymentProviderName;
     stuckOnly?: boolean;
+    /** Paid with no Pro (Verified) and stuck checkouts: the work list. */
+    needsLook?: boolean;
     fromUtc?: string;
     toUtc?: string;
     search?: string;

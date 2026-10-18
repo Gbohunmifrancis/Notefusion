@@ -261,6 +261,7 @@ public sealed class AdminController : ApiControllerBase
     /// <param name="fromUtc">Created at or after this instant.</param>
     /// <param name="toUtc">Created strictly before this instant.</param>
     /// <param name="search">Case-insensitive substring of our reference, the provider's, or the account's email.</param>
+    /// <param name="needsLook">Only paid-with-no-Pro (Verified) and stuck checkouts.</param>
     /// <param name="ct">Cancellation token.</param>
     [HttpGet("payments")]
     public async Task<IActionResult> Payments(
@@ -272,9 +273,10 @@ public sealed class AdminController : ApiControllerBase
         [FromQuery] DateTime? fromUtc = null,
         [FromQuery] DateTime? toUtc = null,
         [FromQuery] string? search = null,
+        [FromQuery] bool needsLook = false,
         CancellationToken ct = default)
         => HandleResult(await _sender.Send(
-            new GetPaymentsQuery(page, pageSize, status, provider, stuckOnly, fromUtc, toUtc, search), ct));
+            new GetPaymentsQuery(page, pageSize, status, provider, stuckOnly, fromUtc, toUtc, search, needsLook), ct));
 
     /// <summary>
     /// One payment in full, including the raw provider payloads and everything it caused.

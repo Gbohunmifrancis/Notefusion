@@ -101,24 +101,40 @@ export type RootStackParams = {
    */
   Choir: { code?: string } | undefined;
   /**
-   * Admin-only screens, reached from Profile's Admin row (admins only) and nowhere else.
-   *
-   * Pushed routes rather than tabs: the tab bar above is full, and an operator
-   * surface should not cost every user a tab. Each screen is behind the server's
-   * Admin policy regardless of how it was reached.
+   * The phone admin (board f-admin): a stack of its own with its own bottom bar, behind the admin lock. Registered
+   * only for an admin (the role the server's profile reports), so for anyone else it does not exist: no row, no
+   * route, no deep link or push can open it. Every admin endpoint checks the role in the database regardless.
+   * Reached from Profile's Admin row and from a payment push (`lib/navTargets`), which names a tab and a payment.
    */
-  AdminHome: undefined;
-  /**
-   * `search` seeds the search box. The webhook inbox pushes here with a payment
-   * reference, because a failed callback is diagnosed there and repaired on the
-   * payment — a push rather than a navigate, so back returns to the inbox and the
-   * seeded screen is always a fresh one.
-   */
-  AdminPayments: { search?: string } | undefined;
-  AdminWebhooks: undefined;
-  /** The account search. Split from `AdminUser` so finding and acting are
-   *  separate steps, the same way a payment row opens a payment. */
-  AdminUsers: undefined;
-  /** The account to act on. Reached from a payment row or the account search. */
+  Admin: NavigatorScreenParams<AdminStackParams> | undefined;
+};
+
+/**
+ * Inside Admin: the bottom bar's tabs, and the pages pushed over them (an account, and More's native sections).
+ * The × at the top, or Android back from a tab's root, leaves Admin for the app.
+ */
+export type AdminStackParams = {
+  AdminTabs: NavigatorScreenParams<AdminTabParams> | undefined;
+  /** One account: badges, the free week, payments and the actions. From Users, a payment or Growth. */
   AdminUser: { userId: string };
+  /** More › Growth: renewals, free to paid, transcription health, app versions. */
+  AdminGrowth: undefined;
+  /** More › Feature flags (Operations): the Christmas season. */
+  AdminFlags: undefined;
+  /** More › Payment alerts: how this phone is told when someone pays. */
+  AdminAlerts: undefined;
+};
+
+/** The admin's bottom bar, left to right (`lib/navTargets` ADMIN_TAB_ORDER): Overview · Payments · Users · Health · More. */
+export type AdminTabParams = {
+  Overview: undefined;
+  /**
+   * Payments, Webhooks and Ledger as one section. `paymentId` opens that payment's sheet (a payment push lands here);
+   * `filter` "attention" opens on "Needs a look" (the Overview's amber line). `nonce` makes a repeat of the same
+   * request open again.
+   */
+  Payments: { paymentId?: string; view?: "payments" | "webhooks" | "ledger"; filter?: "attention"; nonce?: number } | undefined;
+  Users: undefined;
+  Health: undefined;
+  More: undefined;
 };

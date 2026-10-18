@@ -114,5 +114,8 @@ public interface IApplicationDbContext
     /// <summary>The switches that change what everyone sees (the Christmas season), one row per key.</summary>
     DbSet<FeatureFlag> FeatureFlags { get; }
 
+    /// <summary>The admins' "someone just paid" push: one claim per completed payment, and what became of it.</summary>
+    DbSet<AdminPaymentAlert> AdminPaymentAlerts { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

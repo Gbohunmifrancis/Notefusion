@@ -39,7 +39,7 @@ public class AdminPaymentAlertTests
 
         var result = await Check(h);
 
-        Assert.Empty(h.Push.Sent);
+        Assert.Empty(h.Push.DeviceSends);
         Assert.Equal(0, result.Value.Total);
     }
 
@@ -54,12 +54,12 @@ public class AdminPaymentAlertTests
 
         Assert.Equal(1, result.Value.StrandedVerified);
 
-        var (recipients, message) = Assert.Single(h.Push.Sent);
+        var (recipients, message) = Assert.Single(h.Push.DeviceSends);
 
-        // Only the operators. The customer whose payment this is must not be told their payment is broken
+        // Only the operators' phones. The customer whose payment this is must not be told their payment is broken
         // by the same notification that asks somebody to go and fix it.
-        Assert.Equal([admin.Id], recipients);
-        Assert.DoesNotContain(payer.Id, recipients);
+        Assert.Equal([AdminPhone], recipients);
+        Assert.DoesNotContain(PayerPhone, recipients);
 
         Assert.Equal("Paid but not fulfilled", message.Title);
         Assert.Contains("1 verified, not fulfilled", message.Body);
@@ -82,7 +82,7 @@ public class AdminPaymentAlertTests
         // The problem is still outstanding — the signature says so — and the operator has still been told
         // exactly once. This is the whole of the de-dup: the caller hands back what it was given.
         Assert.Equal(1, second.Value.StrandedVerified);
-        Assert.Single(h.Push.Sent);
+        Assert.Single(h.Push.DeviceSends);
     }
 
     [Fact]
@@ -96,8 +96,8 @@ public class AdminPaymentAlertTests
         Payment(h, payer, plan, "NF_two", PaymentStatus.Verified, Overdue);
         await Check(h, first.Value);
 
-        Assert.Equal(2, h.Push.Sent.Count);
-        Assert.Contains("2 verified, not fulfilled", h.Push.Sent[^1].Message.Body);
+        Assert.Equal(2, h.Push.DeviceSends.Count);
+        Assert.Contains("2 verified, not fulfilled", h.Push.DeviceSends[^1].Message.Body);
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public class AdminPaymentAlertTests
         Payment(h, payer, plan, "NF_two", PaymentStatus.Verified, Overdue);
 
         var first = await Check(h);
-        Assert.Single(h.Push.Sent);
+        Assert.Single(h.Push.DeviceSends);
 
         // The operator fixed one of the two. Structural equality on the signature would treat the
         // remaining one as news and notify about a problem they have already seen.
@@ -119,8 +119,8 @@ public class AdminPaymentAlertTests
         var second = await Check(h, first.Value);
 
         Assert.Equal(1, second.Value.StrandedVerified);
-        Assert.Single(h.Push.Sent);
-        Assert.Equal([admin.Id], h.Push.Sent[0].Recipients);
+        Assert.Single(h.Push.DeviceSends);
+        Assert.Equal([AdminPhone], h.Push.DeviceSends[0].Tokens);
     }
 
     [Fact]
@@ -138,7 +138,7 @@ public class AdminPaymentAlertTests
         Assert.Equal(1, result.Value.WebhookBacklog);
         Assert.Equal(0, result.Value.FailedWebhooks);
 
-        var message = Assert.Single(h.Push.Sent).Message;
+        var message = Assert.Single(h.Push.DeviceSends).Message;
         Assert.Equal("Webhooks are not draining", message.Title);
         Assert.Equal("AdminWebhooks", message.Data?["screen"]);
     }
@@ -155,7 +155,7 @@ public class AdminPaymentAlertTests
         // Inside the grace window the drain worker has not had its turn yet, and a queue one minute deep
         // is the system working.
         Assert.Equal(0, result.Value.WebhookBacklog);
-        Assert.Empty(h.Push.Sent);
+        Assert.Empty(h.Push.DeviceSends);
     }
 
     [Fact]
@@ -169,7 +169,7 @@ public class AdminPaymentAlertTests
 
         Assert.Equal(1, result.Value.FailedWebhooks);
         Assert.Equal(0, result.Value.WebhookBacklog);
-        Assert.Contains("1 webhook failed", Assert.Single(h.Push.Sent).Message.Body);
+        Assert.Contains("1 webhook failed", Assert.Single(h.Push.DeviceSends).Message.Body);
     }
 
     [Fact]
@@ -187,7 +187,7 @@ public class AdminPaymentAlertTests
 
         // Loudest of the five, and first in the title, precisely because it should be unreachable: money
         // left the ledger by a route that does not exist in this codebase.
-        Assert.Equal("Unexplained refund in the ledger", Assert.Single(h.Push.Sent).Message.Title);
+        Assert.Equal("Unexplained refund in the ledger", Assert.Single(h.Push.DeviceSends).Message.Title);
     }
 
     [Fact]
@@ -203,7 +203,7 @@ public class AdminPaymentAlertTests
 
         // One digest, not one push per row: a provider outage strands a batch, and three hundred
         // notifications is indistinguishable from none.
-        var message = Assert.Single(h.Push.Sent).Message;
+        var message = Assert.Single(h.Push.DeviceSends).Message;
         Assert.Contains("1 verified, not fulfilled", message.Body);
         Assert.Contains("1 stuck in processing", message.Body);
         Assert.Contains("1 webhook failed", message.Body);
@@ -231,7 +231,7 @@ public class AdminPaymentAlertTests
         // quarter of an hour.
         Assert.True(result.IsSuccess);
         Assert.Equal(1, result.Value.StrandedVerified);
-        Assert.Empty(h.Push.Sent);
+        Assert.Empty(h.Push.DeviceSends);
     }
 
     [Fact]
@@ -244,6 +244,7 @@ public class AdminPaymentAlertTests
         former.PromoteToAdmin();
         former.Suspend();
         h.Db.Users.Add(former);
+        h.Db.DeviceTokens.Add(DeviceToken.Create(former.Id, "ExponentPushToken[former]", "android", 42, Now.AddDays(-1)));
         h.Db.SaveChanges();
 
         Payment(h, payer, plan, "NF_stranded", PaymentStatus.Verified, Overdue);
@@ -251,7 +252,27 @@ public class AdminPaymentAlertTests
         await Check(h);
 
         // Suspension takes the console away, so a notification pointing at it is a dead end.
-        Assert.Equal([admin.Id], Assert.Single(h.Push.Sent).Recipients);
+        Assert.Equal([AdminPhone], Assert.Single(h.Push.DeviceSends).Tokens);
+    }
+
+    [Fact]
+    public async Task A_phone_that_switched_problems_off_is_not_told_and_one_that_set_alerts_rings_on_its_channel()
+    {
+        using var h = new TestHarness(Now);
+        var (admin, payer, plan) = Seed(h);
+        var phone = h.Db.DeviceTokens.Single(t => t.Token == AdminPhone);
+        phone.SetPaymentAlerts(true, "chime", true, false, false, problems: true, Now);
+        var tablet = DeviceToken.Create(admin.Id, "ExponentPushToken[tablet]", "android", 42, Now);
+        tablet.SetPaymentAlerts(true, "chime", true, false, false, problems: false, Now);
+        h.Db.DeviceTokens.Add(tablet);
+        h.Db.SaveChanges();
+        Payment(h, payer, plan, "NF_stranded", PaymentStatus.Verified, Overdue);
+
+        await Check(h);
+
+        var (tokens, message) = Assert.Single(h.Push.DeviceSends);
+        Assert.Equal([AdminPhone], tokens);
+        Assert.Equal("payment-problems", message.ChannelId);
     }
 
     [Fact]
@@ -265,7 +286,7 @@ public class AdminPaymentAlertTests
         // digest rather than staying silent about an unfulfilled payment — the right way round to be wrong.
         await Check(h, lastNotified: null);
 
-        Assert.Single(h.Push.Sent);
+        Assert.Single(h.Push.DeviceSends);
     }
 
     // ---------------------------------------------------------------- fixtures
@@ -285,10 +306,16 @@ public class AdminPaymentAlertTests
         h.Db.Users.Add(admin);
         h.Db.Users.Add(payer);
         h.Db.Plans.Add(plan);
+        // Each has a phone: the admin's is told, the payer's never is.
+        h.Db.DeviceTokens.Add(DeviceToken.Create(admin.Id, AdminPhone, "android", 42, Now.AddDays(-1)));
+        h.Db.DeviceTokens.Add(DeviceToken.Create(payer.Id, PayerPhone, "android", 42, Now.AddDays(-1)));
         h.Db.SaveChanges();
 
         return (admin, payer, plan);
     }
+
+    private const string AdminPhone = "ExponentPushToken[admin]";
+    private const string PayerPhone = "ExponentPushToken[payer]";
 
     /// <summary>
     /// A payment in the state a test needs, driven through the real transitions. <paramref name="touchedAtUtc"/>

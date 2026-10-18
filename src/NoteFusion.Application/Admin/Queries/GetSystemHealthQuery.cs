@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Admin.Dtos;
+using NoteFusion.Application.Admin.PaymentAlerts;
 using NoteFusion.Application.Admin.Services;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
@@ -96,6 +97,8 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
             ? null
             : await _emailQuota.ReadUsageAsync(ct);
 
+        var push = database.Status == "down" ? null : await CountPush(now, ct);
+
         var panels = new[] { database, worker, backlog };
         var status = panels.Any(p => p.Status == "down") ? "down"
             : panels.Any(p => p.Status == "degraded") ? "degraded"
@@ -106,7 +109,32 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
             .ToList() ?? (IReadOnlyList<WorkerHeartbeatDto>)Array.Empty<WorkerHeartbeatDto>();
 
         return new SystemHealthDto(
-            status, now, database, worker, backlog, activity, subscriptions, NotMonitored, heartbeatDtos, backups, emailUsage);
+            status, now, database, worker, backlog, activity, subscriptions, NotMonitored, heartbeatDtos, backups, emailUsage,
+            push);
+    }
+
+    private async Task<PushHealthDto> CountPush(DateTime now, CancellationToken ct)
+    {
+        // A phone, not a row: one handset registered to two accounts is one phone the API can reach.
+        var phones = _db.DeviceTokens.Where(t => t.Platform != "web");
+        var android = await phones.Where(t => t.Platform == "android").Select(t => t.Token).Distinct().CountAsync(ct);
+        var ios = await phones.Where(t => t.Platform == "ios").Select(t => t.Token).Distinct().CountAsync(ct);
+
+        var alertPhones = await AdminAlertDevices.Query(_db).CountAsync(t => t.PaymentAlerts, ct);
+
+        var last = await _db.AdminPaymentAlerts
+            .Where(a => a.SentAtUtc != null && a.Devices > 0)
+            .OrderByDescending(a => a.SentAtUtc)
+            .Select(a => new { a.SentAtUtc, a.Devices, a.Accepted })
+            .FirstOrDefaultAsync(ct);
+
+        var dayAgo = now.AddHours(-24);
+        var refused = await _db.AdminPaymentAlerts
+            .Where(a => a.CreatedAtUtc >= dayAgo)
+            .SumAsync(a => (int?)a.Refused, ct) ?? 0;
+
+        return new PushHealthDto(
+            android + ios, android, ios, alertPhones, last?.SentAtUtc, last?.Devices ?? 0, last?.Accepted ?? 0, refused);
     }
 
     private async Task<HealthPanelDto> CheckDatabase(CancellationToken ct)

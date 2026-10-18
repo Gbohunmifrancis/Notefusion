@@ -348,6 +348,8 @@ export interface AdminUserRow {
    * false on an account with no access at all, which is not the same claim as "they paid".
    */
   isGiftedPro: boolean;
+  /** Leads or sings in a choir whose plan is running. */
+  inChoir?: boolean;
 }
 
 export interface PagedResult<T> {
@@ -458,7 +460,8 @@ export interface AdminPayment {
 export type LedgerDirection = "Credit" | "Debit";
 
 /** `LedgerEntryReason.ToString()`. */
-export type LedgerReason = "SubscriptionCharge" | "Refund";
+/** `LedgerEntryReason.ToString()`: a membership charge, a refund, or one song bought. */
+export type LedgerReason = "SubscriptionCharge" | "Refund" | "TranscriptionPurchase";
 
 export interface AdminLedgerEntry {
   id: string;
@@ -685,6 +688,9 @@ export interface PaymentOpsSummary {
   mrrMinor: number;
   activeSubscribersCount: number;
   expiringInSevenDaysCount: number;
+  /** Completed today (West Africa Time), one total per currency, never added across them. */
+  paidToday?: CurrencyAmount[] | null;
+  paidTodayCount?: number;
 }
 
 export interface ClearStalePaymentsResult {
@@ -811,6 +817,20 @@ export interface SystemHealth {
   backups?: BackupStatus | null;
   /** The email plan's capped windows, shortest first; empty when no cap is set, null when the database is down. */
   emailUsage?: EmailWindowUsage[] | null;
+  /** Phones the API can reach and the admins' payment alerts (the phone admin's Push panel). */
+  push?: PushHealth | null;
+}
+
+/** C# `PushHealthDto`: phones registered for push, the admin phones payment alerts go to, and the last alert. */
+export interface PushHealth {
+  phonesRegistered: number;
+  android: number;
+  ios: number;
+  adminAlertPhones: number;
+  lastPaymentAlertAtUtc: string | null;
+  lastPaymentAlertDevices: number;
+  lastPaymentAlertAccepted: number;
+  refusedLast24h: number;
 }
 
 /** One capped window of the email plan (`EmailBudget`): mail of every kind the provider accepted in it. */

@@ -59,7 +59,26 @@ public sealed record SystemHealthDto(
     BackupStatusDto? Backups = null,
     // Mail sent in each capped window (last 24 h, 7 days, 31 days) against the email plan's limit, and the count
     // at which optional mail is held (EmailBudget). Null when the database is unreachable.
-    IReadOnlyList<EmailWindowUsage>? EmailUsage = null);
+    IReadOnlyList<EmailWindowUsage>? EmailUsage = null,
+    // Phones the API can reach and the admins' payment alerts (the phone admin's Push panel, board f-admin/06). Null
+    // when the database is unreachable.
+    PushHealthDto? Push = null);
+
+/// <summary>
+/// The Push panel: phones registered for push (customers' and the team's), the admin phones payment alerts go to, and
+/// how the last payment alert went.
+/// </summary>
+/// <param name="LastPaymentAlertDevices">Admin phones the last alert was sent to; with <paramref name="LastPaymentAlertAccepted"/>, "reached 2 of 2".</param>
+/// <param name="RefusedLast24h">Phones Expo refused payment alerts for over the last 24 hours (an expired token, say).</param>
+public sealed record PushHealthDto(
+    int PhonesRegistered,
+    int Android,
+    int Ios,
+    int AdminAlertPhones,
+    DateTime? LastPaymentAlertAtUtc,
+    int LastPaymentAlertDevices,
+    int LastPaymentAlertAccepted,
+    int RefusedLast24h);
 
 /// <summary>
 /// Transcription throughput. Volume only, deliberately: the API records that a job was submitted and

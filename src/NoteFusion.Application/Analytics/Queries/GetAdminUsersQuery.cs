@@ -33,6 +33,7 @@ namespace NoteFusion.Application.Analytics.Queries;
 /// The list is customers only by default: admins and internal accounts are the team (AnalyticsScope).
 /// True lists everyone, for finding a team account to manage.
 /// </param>
+/// <param name="Plan">"pro": accounts whose own membership unlocks Pro now; "free": the rest. Anything else lists both.</param>
 public sealed record GetAdminUsersQuery(
     int Page = 1,
     int PageSize = 25,
@@ -41,7 +42,8 @@ public sealed record GetAdminUsersQuery(
     bool? IsOnline = null,
     string? LastSeenWithin = null,
     string? Sort = null,
-    bool IncludeInternal = false)
+    bool IncludeInternal = false,
+    string? Plan = null)
     : IRequest<Result<PagedResultDto<AdminUserRowDto>>>
 {
     public const int MaxPageSize = 100;
@@ -104,14 +106,25 @@ public sealed class GetAdminUsersQueryHandler
             query = query.Where(u => (u.LastSeenAtUtc ?? u.LastLoginAt) == null || (u.LastSeenAtUtc ?? u.LastLoginAt) < monthAgo);
         }
 
-        var totalCount = await query.CountAsync(cancellationToken);
-
         // Subscriptions that unlock Pro at this instant. Composed into the projection below rather than
         // repeated in it, and deliberately the same predicate GetSystemHealthQuery counts with — the
         // users table and the health page must not disagree about who is a subscriber.
         var live = _db.Subscriptions.Where(s =>
             (s.Status == SubscriptionStatus.Active || s.Status == SubscriptionStatus.Canceled)
             && s.CurrentPeriodEndUtc > now);
+
+        // The phone admin's Pro / Free chips: the same rule as the row's HasProAccess, applied before paging.
+        switch (request.Plan?.Trim().ToLowerInvariant())
+        {
+            case "pro":
+                query = query.Where(u => live.Any(s => s.UserId == u.Id));
+                break;
+            case "free":
+                query = query.Where(u => !live.Any(s => s.UserId == u.Id));
+                break;
+        }
+
+        var totalCount = await query.CountAsync(cancellationToken);
 
         // The per-row transcription count is a correlated subquery in one round trip rather than a
         // count per row, which would be an N+1 across the whole page.
@@ -140,7 +153,10 @@ public sealed class GetAdminUsersQueryHandler
                 0,
                 u.LastSeenAtUtc ?? u.LastLoginAt,
                 (u.LastSeenAtUtc ?? u.LastLoginAt) >= onlineSince,
-                u.Role == UserRole.Admin || u.IsInternal))
+                u.Role == UserRole.Admin || u.IsInternal,
+                u.Country,
+                _db.Choirs.Any(c => c.CurrentPeriodEndUtc > now
+                    && (c.OwnerId == u.Id || _db.ChoirMembers.Any(m => m.ChoirId == c.Id && m.UserId == u.Id)))))
             .ToListAsync(cancellationToken);
 
         var counts = await TranscriptionCounts.ForUsersAsync(_db, items.Select(i => i.Id).ToList(), cancellationToken);

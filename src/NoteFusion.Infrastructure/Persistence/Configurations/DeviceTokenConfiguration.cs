@@ -22,6 +22,11 @@ public sealed class DeviceTokenConfiguration : IEntityTypeConfiguration<DeviceTo
         builder.Property(t => t.AppBuild).IsRequired();
         builder.Property(t => t.NotifiedBuild).IsRequired();
 
+        // Payment alerts, set from an admin's phone. Existing rows take the entity's defaults in the migration
+        // (sound "chime", vibrate and problem alerts on), written there rather than as database defaults here: a bool
+        // with a database default of true would have EF leave a false out of an insert and store true.
+        builder.Property(t => t.PaymentAlertSound).HasMaxLength(16).IsRequired();
+
         builder.HasIndex(t => new { t.UserId, t.Token }).IsUnique();
 
         // The update-notice sweep's whole predicate, so it does not table-scan device_tokens every

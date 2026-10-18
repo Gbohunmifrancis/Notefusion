@@ -177,7 +177,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   tick, gold only Pro's crown, violet the choir, orange Playful and the live streak, never a red icon;
   five labelled tabs Home · Library · Record (centre) · Practice · Hymns (`lib/navTargets`, which also maps a push's
   `data.screen`), every tab's header its name left and the avatar right (`TabHeader`/`HeaderAvatar`, Pro's gold ring)
-  pushing Profile (plan, choir, Notifications, Settings, help, feedback, Admin); no side drawer and no Profile tab.
+  pushing Profile (plan, choir, Notifications, Settings, help, feedback; an Admin's Admin row in a group of its own,
+  see the phone admin below); no side drawer and no Profile tab.
   Settings and Notifications are grouped rows (`components/settings`); Notifications holds push, sound, the reminder
   and its hour 8–21 (`ReminderTimeSheet`) and the founder-notes email switch (`GET/PUT /api/me/email-preferences`, the
   `EmailOptOut` row). The record button's halo and Home's mic share one breath (`lib/breath`). A saved sheet's actions
@@ -192,6 +193,29 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Offline, JS only (no netinfo): opened/saved sheets are kept per account in `documents/offline/` (`lib/offlineLibrary`, pure `sheetCache`; pins exempt from the 8 MB cap; wiped on sign-out) and used on NETWORK_* errors. No take is lost (board 13): every one (never a link) is written ahead into `lib/outbox` (pure `sendQueue`) before its upload — audio moved to app storage beside a synchronous `<id>.json` record, a mic take `held` from the moment it stops while it is asked what it is — sent at once under an `Idempotency-Key` (`sendKey`: the take's id, a new suffix per job it left behind) and followed on the Record screen by `lib/useTakeSend` ("Kept on this phone" card when the connection drops, "Sending it again" card when the job is lost; no dialogs), and in the Library's "On its way" group; the audio stays until the job is done. A job lost (`errorCode: "JOB_LOST"`; the old sentences only as a fallback) or unanswered 4.5 h after sending is re-sent at once, a 5xx on the backoff, at most twice; the network is waited out however long; the recording's failures and refusals wait for Try again/Delete.
   The Hymns screen reads `web-site/hymns/pack.json` (built by `tools/blog/lib/hymn-pack.mjs`, version in `pack-version.json`, checked by `check.mjs`).
   Data saver (default on, `lib/dataSaver`/`dataPolicy`): 32 kbps AAC uploads (`recordingPreset`, measured), no avatars/artwork, slower polls, hymn updates only on tap.
+  **Phone admin** (`screens/admin`, `components/admin`, boards f-admin): Profile › Admin (row and route for an Admin only;
+  every admin endpoint re-reads the role from the database) is its own section with its own bar, Overview · Payments
+  (Webhooks and Ledger as tabs, a payment's sheet, "Needs a look" + Reconcile) · Users (an account and its actions) ·
+  Health (the Push panel, `SystemHealthDto.Push`) · More (Growth, Feature flags, Payment alerts; every other row opens
+  `admin.notefusion.studio/<path>`, whose `/payments` and `/payments/{id}` are the same Payments). Admin palette
+  `adminDark`/`adminLight`; red only as a status pill or a destructive word. The lock (pure `lib/adminLock`,
+  `lib/adminLockRuntime`): expo-local-authentication (biometrics or the phone's PIN; a phone with no screen lock types the
+  account password, `POST /api/admin/lock/password`) on the way in, again after 5 min away or a sign-out, and again
+  before Suspend, End subscription, Revoke Pro, Change role or any flag change; expo-screen-capture keeps Admin out of
+  screenshots and Recents; what Admin reads stays in memory (`lib/adminCache`) and is dropped when it locks.
+  **Payment alerts**: `PaymentFulfillment` stages an `AdminPaymentAlert` (unique per payment) beside the ledger credit;
+  `PaymentAlertWorker` (10 s) claims before it sends (at most once; a recorded failure is retried up to 3 tries) and
+  pushes Admin phones only (`AdminAlertDevices`: role and active re-read, `DeviceToken.PaymentAlerts`, a token no other
+  account holds) at high priority with an hour's TTL, category `payment` (View · Mute 1 hour). One payment is
+  `PaymentPushCopy.Single` ("₦7,500 · Pro Monthly" / "Ada Obi just paid. Pro until Wed 18 Nov.", title ≤ 40, line ≤ 90,
+  amounts in the currency paid and never added, no pronouns); several in one run are one summary. `data.screen`
+  `AdminPayment` + `paymentId`, which `lib/navTargets` resolves for admins only. Per phone (`/api/admin/alerts/device`,
+  `…/device/mute`, `…/test`; More › Payment alerts): sound chime / phone / none, vibrate, quiet 22–07 on
+  `users.TimeZone` (off by default), names left out ("Tap to see who paid."), problems. An Android channel's sound is
+  fixed, so each choice is its own channel (`payments-v1` for the chime with vibration, else
+  `payments-v1-{sound}[-still]`; quiet hours and Mute use `payments-v1-none-still`; problems
+  `payment-problems`, `NotifyAdminsOfPaymentIssuesCommand`); the chime is `assets/sounds/payment.wav` (expo-notifications
+  `sounds`: a store build).
 
 - **`ops/backup/` — backups** (`docs/BACKUP_AND_MIGRATION.md`): the compose `backup` service (pinned image on the db's
   own postgres:16-alpine) puts encrypted copies in a bucket of their own: restic (`pg_dump` every 6 h with a row-count

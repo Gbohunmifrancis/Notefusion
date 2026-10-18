@@ -6,7 +6,10 @@ import { openStoreListing } from './appUpdate';
 import { showDialog } from './dialog';
 import { synthesizeMelodyWavBase64 } from './synth';
 import { isExpoGo } from './env';
-import { notificationTarget } from './navTargets';
+import { isAdminScreen, notificationTarget } from './navTargets';
+import { MUTE_HOUR_ACTION, MUTE_MINUTES } from './paymentAlerts';
+import { mutePaymentAlerts } from './paymentAlertsRuntime';
+import { showToast } from './toast';
 import type { RootStackParams } from '../navigation/types';
 
 /**
@@ -86,23 +89,37 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
 }
 
 /**
- * Follows a notification's `data.screen` (`lib/navTargets` is the allow-list). A tab is nested in the root
- * stack, so it needs the nested form: `navigate('Practice')` would find no such route and do nothing.
+ * Follows a notification's `data.screen` (`lib/navTargets` is the allow-list). A tab is nested in the root stack, so
+ * it needs the nested form: `navigate('Practice')` would find no such route and do nothing. An admin place opens
+ * Admin (behind its lock) on that tab, with the payment's sheet when the push named one; for anyone but an admin it
+ * resolves to nothing.
  */
-function openScreen(screen: string): void {
-  const target = notificationTarget(screen);
+function openScreen(screen: string, opts: { isAdmin: boolean; paymentId?: string }): void {
+  const target = notificationTarget(screen, opts);
   if (!target) return;
   if (target.kind === 'store') void openStoreListing();
   else if (target.kind === 'tab') navigationRef.navigate('Tabs', { screen: target.tab });
+  else if (target.kind === 'admin')
+    navigationRef.navigate('Admin', {
+      screen: 'AdminTabs',
+      params: {
+        screen: target.tab,
+        params:
+          target.tab === 'Payments'
+            ? { paymentId: target.paymentId, view: target.view, nonce: Date.now() }
+            : undefined,
+      } as never,
+    });
   else navigationRef.navigate(target.route);
 }
 
 /**
  * A tap waiting for the authenticated stack. `job` carries a job id and costs an API call to resolve;
  * `screen` is a name `notificationTarget` knows. `id` is the notification's own, so two taps on two notifications
- * that name the same place (the evening reminder, then the last chance) are both followed.
+ * that name the same place (the evening reminder, then the last chance) are both followed. `mute` is a payment
+ * alert's "Mute 1 hour" button: it opens nothing.
  */
-type PendingTap = { kind: 'job' | 'screen'; value: string; id?: string };
+type PendingTap = { kind: 'job' | 'screen' | 'mute'; value: string; id?: string; paymentId?: string };
 
 /**
  * Wires notification taps to the screens they refer to.
@@ -111,7 +128,7 @@ type PendingTap = { kind: 'job' | 'screen'; value: string; id?: string };
  * the session is still being restored, and navigating then would target the sign-in stack — so taps
  * are held until this turns true rather than dropped.
  */
-export function useNotificationDeepLink(ready: boolean): void {
+export function useNotificationDeepLink(ready: boolean, isAdmin = false): void {
   const [pending, setPending] = useState<PendingTap | null>(null);
 
   // Both sources below can report the same tap. Without this the drain effect would run twice and
@@ -125,15 +142,26 @@ export function useNotificationDeepLink(ready: boolean): void {
     const Notifications = require('expo-notifications') as typeof import('expo-notifications');
 
     const tapOf = (response: unknown): PendingTap | null => {
-      const request = (response as { notification?: { request?: { identifier?: unknown; content?: { data?: unknown } } } })
-        ?.notification?.request;
-      const data = request?.content?.data as { jobId?: unknown; screen?: unknown } | undefined;
+      const r = response as {
+        actionIdentifier?: unknown;
+        notification?: { request?: { identifier?: unknown; content?: { data?: unknown } } };
+      };
+      const request = r?.notification?.request;
+      const data = request?.content?.data as { jobId?: unknown; screen?: unknown; paymentId?: unknown } | undefined;
       const id = typeof request?.identifier === 'string' ? request.identifier : undefined;
 
       // A job id first: it names a specific result, where `screen` only names a place.
       if (typeof data?.jobId === 'string') return { kind: 'job', value: data.jobId, id };
-      if (typeof data?.screen === 'string' && notificationTarget(data.screen))
-        return { kind: 'screen', value: data.screen, id };
+      if (typeof data?.screen === 'string' && (notificationTarget(data.screen) || isAdminScreen(data.screen))) {
+        if (r.actionIdentifier === MUTE_HOUR_ACTION && isAdminScreen(data.screen))
+          return { kind: 'mute', value: data.screen, id };
+        return {
+          kind: 'screen',
+          value: data.screen,
+          id,
+          paymentId: typeof data.paymentId === 'string' ? data.paymentId : undefined,
+        };
+      }
       return null;
     };
 
@@ -172,6 +200,21 @@ export function useNotificationDeepLink(ready: boolean): void {
       void openTranscriptionFromNotification(pending.value);
       return;
     }
-    if (navigationRef.isReady()) openScreen(pending.value);
-  }, [ready, pending]);
+    if (pending.kind === 'mute') {
+      // Only an admin's phone has the button; the server refuses anyone else regardless.
+      if (isAdmin)
+        void mutePaymentAlerts(MUTE_MINUTES).then((done) => {
+          if (done) showToast('Payment alerts are quiet for an hour', { icon: 'mute' });
+          else
+            showDialog({
+              title: "Couldn't mute payment alerts",
+              message: 'Try again from Admin, More, Payment alerts.',
+              icon: 'problem',
+              tone: 'danger',
+            });
+        });
+      return;
+    }
+    if (navigationRef.isReady()) openScreen(pending.value, { isAdmin, paymentId: pending.paymentId });
+  }, [ready, pending, isAdmin]);
 }

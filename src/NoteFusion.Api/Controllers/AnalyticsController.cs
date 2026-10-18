@@ -100,6 +100,7 @@ public sealed class AnalyticsController : ApiControllerBase
         [FromQuery] string? lastSeen = null,
         [FromQuery] string? sort = null,
         [FromQuery] bool includeInternal = false,
+        [FromQuery] string? plan = null,
         CancellationToken ct = default)
-        => HandleResult(await _sender.Send(new GetAdminUsersQuery(page, pageSize, search, isActive, isOnline, lastSeen, sort, includeInternal), ct));
+        => HandleResult(await _sender.Send(new GetAdminUsersQuery(page, pageSize, search, isActive, isOnline, lastSeen, sort, includeInternal, plan), ct));
 }
