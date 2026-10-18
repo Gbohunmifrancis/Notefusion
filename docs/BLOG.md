@@ -365,8 +365,8 @@ node tools/blog/import/cceh-run.mjs --cache /path/to/cceh-cache --date 2026-10-1
 node tools/blog/build.mjs && node tools/blog/check.mjs
 ```
 
-The scheduled workflow `.github/workflows/hymns-cceh.yml` does all of this on GitHub's runners: every six
-hours it crawls for five hours (`--minutes`; the cache, third-party files, rides in the Actions cache and
+The workflow `.github/workflows/hymns-cceh.yml` does all of this on GitHub's runners. It ran every six hours
+until the crawl was complete (all 1,398 tune pages, 18 Oct 2026) and now runs only by hand: it crawls for five hours (`--minutes`; the cache, third-party files, rides in the Actions cache and
 is never committed), imports, builds and checks, and when at least 15 more tunes would be published than
 on main (or the crawl is complete and anything is new) it pushes one commit, authored as the owner, to
 the `hymns/cceh-next` branch. It never pushes main or opens a PR. To publish: take the branch, add dates
