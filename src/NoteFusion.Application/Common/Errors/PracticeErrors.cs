@@ -18,6 +18,10 @@ public static class PracticeErrors
     public static readonly Error ReminderHour =
         Error.Validation("PRACTICE_REMINDER_HOUR", "Pick a reminder time between 8 in the morning and 9 at night.");
 
+    /// <summary>The carols path asked for outside the Christmas season.</summary>
+    public static readonly Error SeasonOff =
+        Error.NotFound("PRACTICE_SEASON_OFF", "The carols are back next Christmas. Your path is in Practice.");
+
     public static readonly Error TrackUnknown =
         Error.Validation("PRACTICE_TRACK_UNKNOWN", "Pick a practice style: Playful or Focused.");
 

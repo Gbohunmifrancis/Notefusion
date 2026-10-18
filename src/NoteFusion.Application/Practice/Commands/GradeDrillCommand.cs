@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Flags;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
@@ -17,7 +18,9 @@ namespace NoteFusion.Application.Practice.Commands;
 /// as practice, with what it earned — and any path milestone it reached — returned beside the marks. Which drill
 /// comes next is read off the recorded takes (<see cref="PracticePath"/>). <see cref="LeadInSec"/> is the count-in the
 /// app played before beat one: current apps send it (five seconds at most); a take without one comes from an older app,
-/// which played <see cref="DrillCatalogue.LegacyLeadInBeats"/>.
+/// which played <see cref="DrillCatalogue.LegacyLeadInBeats"/>. A carol drill (<see cref="CarolPath"/>) is marked the
+/// same way and counts like any drill; it never moves the path, and while the season is on its sixth pass earns the
+/// Carol singer badge.
 /// </summary>
 public sealed record GradeDrillCommand(Stream Audio, string FileName, string DrillId, double? LeadInSec = null) : IRequest<Result<GradeResultDto>>;
 
@@ -75,7 +78,8 @@ public sealed class GradeDrillCommandHandler : IRequestHandler<GradeDrillCommand
         var session = PracticeSession.Record(
             userId, PracticeKind.Drill, grade.Score, grade.Hits, grade.Near, grade.Wrong, grade.Missed,
             drill.PassageSeconds, _clock.UtcNow, today, drillId: drill.Id);
-        var reward = await _recorder.RecordAsync(session, cancellationToken);
+        var christmas = await FeatureFlags.ChristmasForCallerAsync(_db, _clock.UtcNow, _currentUser, cancellationToken);
+        var reward = await _recorder.RecordAsync(session, christmas, cancellationToken);
 
         // The path read again with this take on it: a milestone it reached is reported by this take alone.
         var facts = await PracticeRecorder.FactsAsync(_db, userId, cancellationToken);

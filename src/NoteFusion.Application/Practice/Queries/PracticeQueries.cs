@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Flags;
 using NoteFusion.Application.Practice.Dtos;
 using NoteFusion.Application.Practice.Modes;
+using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
 
@@ -141,15 +143,17 @@ public sealed class GetPracticeProgressQueryHandler : IRequestHandler<GetPractic
         if (_currentUser.UserId is not { } userId)
             return UserErrors.NotFound;
 
-        return await ReadAsync(_db, _clock, _timeZone, userId, _modes, cancellationToken);
+        return await ReadAsync(_db, _clock, _timeZone, _currentUser, userId, _modes, cancellationToken);
     }
 
     /// <summary>
     /// The account's progress as of the client's today, with the practice modes live for its track; also PUT
-    /// /api/practice/track's answer.
+    /// /api/practice/track's answer. While the Christmas season is on for the caller, it carries the carols path and
+    /// lists the season's badge.
     /// </summary>
     internal static async Task<PracticeProgressDto> ReadAsync(
-        IApplicationDbContext db, IDateTimeProvider clock, IClientTimeZone timeZone, Guid userId, PracticeModeSettings modes, CancellationToken ct)
+        IApplicationDbContext db, IDateTimeProvider clock, IClientTimeZone timeZone, ICurrentUser caller, Guid userId,
+        PracticeModeSettings modes, CancellationToken ct)
     {
         var zone = PracticeTime.Resolve(timeZone.Current);
         var today = PracticeTime.LocalDate(clock.UtcNow, zone);
@@ -165,11 +169,75 @@ public sealed class GetPracticeProgressQueryHandler : IRequestHandler<GetPractic
         var track = await GetNextDrillQueryHandler.PracticeTrackOf(db, userId, ct);
         var reading = await PracticePathReader.ReadAsync(db, userId, facts, ct);
         var stop = PracticePath.Next(userId, track, reading, PracticeMath.LevelFor(PracticeMath.TotalXp(facts)).Index);
+        var christmas = await FeatureFlags.StateForCallerAsync(db, clock.UtcNow, caller, FeatureFlag.Christmas, ct);
 
-        return PracticeMath.Progress(facts, earned, today, drills, track) with
+        return PracticeMath.Progress(facts, earned, today, drills, track, christmas.On) with
         {
             Path = PracticePathReader.Describe(stop, reading),
             Modes = PracticeModes.Live(track, modes),
+            Season = christmas.On
+                ? PracticePathReader.DescribeSeason(PracticePathReader.CarolStandings(facts), track, christmas.LastDay)
+                : null,
         };
+    }
+}
+
+/// <summary>
+/// GET /api/practice/carols: the Christmas carols path with every drill ready to hear and sing, on the caller's track,
+/// while the season is on for them (<see cref="PracticeErrors.SeasonOff"/> otherwise).
+/// </summary>
+public sealed record GetCarolsQuery : IRequest<Result<CarolsPathDto>>;
+
+public sealed class GetCarolsQueryHandler : IRequestHandler<GetCarolsQuery, Result<CarolsPathDto>>
+{
+    private readonly IApplicationDbContext _db;
+    private readonly ICurrentUser _currentUser;
+    private readonly IDateTimeProvider _clock;
+    private readonly IClientTimeZone _timeZone;
+
+    public GetCarolsQueryHandler(IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock, IClientTimeZone timeZone)
+    {
+        _db = db;
+        _currentUser = currentUser;
+        _clock = clock;
+        _timeZone = timeZone;
+    }
+
+    public async Task<Result<CarolsPathDto>> Handle(GetCarolsQuery request, CancellationToken cancellationToken)
+    {
+        if (_currentUser.UserId is not { } userId)
+            return UserErrors.NotFound;
+        var christmas = await FeatureFlags.StateForCallerAsync(_db, _clock.UtcNow, _currentUser, FeatureFlag.Christmas, cancellationToken);
+        if (!christmas.On)
+            return PracticeErrors.SeasonOff;
+
+        var zone = PracticeTime.Resolve(_timeZone.Current);
+        var today = PracticeTime.LocalDate(_clock.UtcNow, zone);
+        var facts = await PracticeRecorder.FactsAsync(_db, userId, cancellationToken);
+        var track = await GetNextDrillQueryHandler.PracticeTrackOf(_db, userId, cancellationToken);
+        var level = PracticeMath.LevelFor(PracticeMath.TotalXp(facts));
+        var allowance = new DrillAllowanceDto(
+            facts.Count(f => PracticeRules.UsesDrillAllowance(f.Kind) && f.LocalDate == today),
+            PracticeRules.DrillGradesPerDay(await ProStatus.IsProAsync(_db, _clock, userId, cancellationToken)),
+            PracticeTime.NextMidnightUtc(today, zone));
+
+        var standings = PracticePathReader.CarolStandings(facts);
+        var drills = standings
+            .Select(standing =>
+            {
+                var carol = CarolPath.For(standing.Definition, track);
+                var d = carol.Drill;
+                var drill = new DrillDto(
+                    d.Id, d.Pattern.Title, level.Index, level.Name, d.KeyName, d.Key.DohHeader(), d.TempoBpm,
+                    standing.Definition.TimeSignature, DrillCatalogue.LegacyLeadInBeats, d.MaxTakeSeconds, d.Notes, today,
+                    allowance, track, CarolPath.Title, standing.Definition.Carol, standing.Definition.Index, CarolPath.Count,
+                    1, 1, 1, DrillAdjustment.Steady);
+                return new CarolDrillDto(
+                    PracticePathReader.DescribeStep(standing, carol), drill, standing.Definition.PickupBeats,
+                    carol.Backing, carol.Syllables, carol.Syllables is null ? null : standing.Definition.Words);
+            })
+            .ToList();
+
+        return new CarolsPathDto(PracticePathReader.DescribeSeason(standings, track, christmas.LastDay), drills);
     }
 }

@@ -28,13 +28,33 @@ public static class PracticeBadges
         new("streak_30", "A month of practice", "Practise thirty days running.", 30, s => s.BestStreak),
     ];
 
-    /// <summary>The badges <paramref name="stats"/> reach that are not among <paramref name="earned"/> yet.</summary>
-    public static IReadOnlyList<BadgeDefinition> Unlocked(PracticeStats stats, IReadOnlySet<string> earned)
-        => All.Where(b => !earned.Contains(b.Code) && b.Progress(stats) >= b.Target).ToList();
+    /// <summary>
+    /// The Christmas season's badge: all six drills of the carols path passed (<see cref="CarolPath"/>). It can be earned
+    /// only while the season is on, is kept for good, and outside the season is listed only once earned.
+    /// </summary>
+    public static readonly BadgeDefinition CarolSinger =
+        new(CarolPath.BadgeCode, "Carol singer", "Sing all six carols on the Christmas path.", CarolPath.Count, s => s.CarolsSung);
 
-    /// <summary>Every badge as the client draws it: earned (with when) or locked with progress.</summary>
-    public static IReadOnlyList<BadgeDto> Describe(PracticeStats stats, IReadOnlyDictionary<string, DateTime> earned)
-        => All.Select(b => Describe(b, stats, earned.TryGetValue(b.Code, out var at) ? at : null)).ToList();
+    /// <summary>The season's badges, listed after <see cref="All"/> (only while the season is on, or once earned).</summary>
+    public static readonly IReadOnlyList<BadgeDefinition> Seasonal = [CarolSinger];
+
+    /// <summary>
+    /// The badges <paramref name="stats"/> reach that are not among <paramref name="earned"/> yet; the season's only while
+    /// it is on (<paramref name="christmas"/>).
+    /// </summary>
+    public static IReadOnlyList<BadgeDefinition> Unlocked(PracticeStats stats, IReadOnlySet<string> earned, bool christmas = false)
+        => All.Concat(christmas ? Seasonal : [])
+            .Where(b => !earned.Contains(b.Code) && b.Progress(stats) >= b.Target)
+            .ToList();
+
+    /// <summary>
+    /// Every badge as the client draws it: earned (with when) or locked with progress. The season's badge is listed
+    /// while the season is on, and after it only when earned.
+    /// </summary>
+    public static IReadOnlyList<BadgeDto> Describe(PracticeStats stats, IReadOnlyDictionary<string, DateTime> earned, bool christmas = false)
+        => All.Concat(Seasonal.Where(b => christmas || earned.ContainsKey(b.Code)))
+            .Select(b => Describe(b, stats, earned.TryGetValue(b.Code, out var at) ? at : null))
+            .ToList();
 
     public static BadgeDto Describe(BadgeDefinition badge, PracticeStats stats, DateTime? earnedAtUtc)
         => new(

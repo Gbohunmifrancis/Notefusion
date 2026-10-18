@@ -163,8 +163,17 @@ public sealed class PracticeController : ApiControllerBase
     }
 
     /// <summary>
-    /// XP, level, streak, weekly goal, badges, the last seven days, the track (null until chosen), and the practice
-    /// modes live for that track (<c>modes</c>).
+    /// The Christmas carols path, while the season is on for the caller (404 <c>PRACTICE_SEASON_OFF</c> otherwise): six
+    /// drills from carols we hold, each ready to hear and sing on the caller's track, with what each needs (the tune the
+    /// piano plays under a part, a sing-along's words). Takes go to <c>drills/grade</c> like any drill's.
+    /// </summary>
+    [HttpGet("carols")]
+    public async Task<IActionResult> Carols(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetCarolsQuery(), ct));
+
+    /// <summary>
+    /// XP, level, streak, weekly goal, badges, the last seven days, the track (null until chosen), the practice modes
+    /// live for that track (<c>modes</c>), and while the Christmas season is on, <c>season</c>: the carols path's card.
     /// </summary>
     [HttpGet("progress")]
     public async Task<IActionResult> Progress(CancellationToken ct)

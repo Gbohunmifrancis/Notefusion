@@ -468,10 +468,13 @@ public static class DrillCatalogue
 
     /// <summary>
     /// The drill an id names, or null when it names none (an old id, a typo, a range it may not use, the gentle pace
-    /// on a pattern Playful never offers). Any track's drill is found, so a take sung before a switch is still marked.
+    /// on a pattern Playful never offers). Any track's drill is found, so a take sung before a switch is still marked, and
+    /// so is a carol drill (<see cref="CarolPath"/>).
     /// </summary>
     public static Drill? Find(string? id)
     {
+        if (CarolPath.IsCarol(id))
+            return CarolPath.Find(id)?.Drill;
         var gentle = id?.EndsWith(GentleSuffix, StringComparison.Ordinal) == true;
         var parts = (gentle ? id![..^GentleSuffix.Length] : id)?.Split('@');
         if (parts is not { Length: 2 } || !int.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out var doh))
@@ -490,7 +493,7 @@ public static class DrillCatalogue
     }
 
     /// <summary>One syllable with its octave marks, as semitones from the unmarked doh.</summary>
-    private static int Offset(string token)
+    internal static int Offset(string token)
     {
         var up = token.Count(c => c == '\'');
         var down = token.Count(c => c == ',');

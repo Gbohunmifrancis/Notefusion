@@ -3,8 +3,8 @@ using NoteFusion.Core.Enums;
 
 namespace NoteFusion.Application.Practice;
 
-/// <summary>What the scoring needs of one <see cref="Core.Entities.PracticeSession"/>.</summary>
-public sealed record PracticeFact(PracticeKind Kind, int Score, bool WholePart, DateOnly LocalDate, DateTime CreatedAtUtc);
+/// <summary>What the scoring needs of one <see cref="Core.Entities.PracticeSession"/> (the drill's id: the carols path's badge reads it).</summary>
+public sealed record PracticeFact(PracticeKind Kind, int Score, bool WholePart, DateOnly LocalDate, DateTime CreatedAtUtc, string? DrillId = null);
 
 /// <summary>The streak as of one day, with the days its freezes bridged.</summary>
 public sealed record StreakState(int Current, int Best, bool TodayDone, bool FreezeAvailable, IReadOnlySet<DateOnly> Frozen);
@@ -14,9 +14,10 @@ public sealed record StreakBreak(DateOnly Day, int Length);
 
 /// <summary>
 /// The counts badges are judged on. <c>WeekDays</c> is the days practised in today's Monday–Sunday week (to today);
-/// <c>BestWeekDays</c> the most practised in any one such week.
+/// <c>BestWeekDays</c> the most practised in any one such week; <c>CarolsSung</c> the carols path's drills passed.
 /// </summary>
-public sealed record PracticeStats(int Drills, int Parts, int Perfect, int WholePartsGood, int BestStreak, int WeekDays = 0, int BestWeekDays = 0);
+public sealed record PracticeStats(
+    int Drills, int Parts, int Perfect, int WholePartsGood, int BestStreak, int WeekDays = 0, int BestWeekDays = 0, int CarolsSung = 0);
 
 /// <summary>
 /// The rules of <see cref="PracticeRules"/> applied to an account's practice history. Pure: the rows go in, the
@@ -109,19 +110,22 @@ public static class PracticeMath
             facts.Count(f => f.Kind == PracticeKind.Part && f.WholePart && f.Score >= PracticeRules.GoodScore),
             Streak(facts.Select(f => f.LocalDate), today).Best,
             days.Count(d => d >= weekStart),
-            days.Count == 0 ? 0 : days.GroupBy(PracticeTime.WeekStart).Max(w => w.Count()));
+            days.Count == 0 ? 0 : days.GroupBy(PracticeTime.WeekStart).Max(w => w.Count()),
+            CarolPath.Sung(facts.Where(f => f.Kind == PracticeKind.Drill).Select(f => (f.DrillId, f.Score))));
     }
 
     /// <summary>
     /// Everything the Practice screen shows, as of <paramref name="today"/>. The <paramref name="track"/> is passed
-    /// through for the client to draw by; no number here reads it.
+    /// through for the client to draw by; no number here reads it. <paramref name="christmas"/>: the season is on for the
+    /// singer, so its badge is listed before it is earned.
     /// </summary>
     public static PracticeProgressDto Progress(
         IReadOnlyCollection<PracticeFact> facts,
         IReadOnlyDictionary<string, DateTime> earned,
         DateOnly today,
         DrillAllowanceDto drills,
-        PracticeTrack? track = null)
+        PracticeTrack? track = null,
+        bool christmas = false)
     {
         var xpByDay = XpByDay(facts);
         var xp = xpByDay.Values.Sum();
@@ -158,7 +162,7 @@ public static class PracticeMath
                 streak.FreezeAvailable,
                 FrozenYesterday: streak.Frozen.Contains(today.AddDays(-1))),
             new WeeklyGoalDto(weekDays, PracticeRules.WeeklyGoalDays, weekStart),
-            PracticeBadges.Describe(stats, earned),
+            PracticeBadges.Describe(stats, earned, christmas),
             lastSeven,
             drills,
             track);
