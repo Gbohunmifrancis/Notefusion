@@ -1,0 +1,32 @@
+{
+  "name": "MORNING STAR (HARDING)",
+  "title": "Morning Star (Harding)",
+  "music": [
+    {
+      "name": "James Proctor Harding",
+      "born": 1850,
+      "died": 1911,
+      "role": "Music (1861)"
+    }
+  ],
+  "musicPublished": 1861,
+  "metre": "11 10 11 10",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "C5:2 Bb4:1 Ab4:1 | G4:2 F4:1 Eb4:1 | Eb4:1 Ab4:1 G4:1 Ab4:1 | C5:2 Bb4:2 | Eb5:2 C#5:1 C5:1 | C5:2 Bb4:1 Ab4:1 | G4:1 Bb4:1 Ab4:1 F4:1 | Eb4:4 | C5:2 Bb4:1 Ab4:1 | G4:2 F4:1 Eb4:1 | Eb4:1 Ab4:1 C5:1 Eb5:1 | Eb5:2 C#5:2 | C5:2 Ab4:1 Bb4:1 | C5:2 Ab4:1 F4:1 | Eb4:1 F4:1 G4:1 Bb4:1 | Ab4:4",
+  "incipit": "mrdtlssdtdmr|sfmmrdtrdls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000851.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000851a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000851; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000851 (the melody read from 000851a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells James Proctor Harding as “James [John?] P. Harding”; the name is printed as the sources spell it. James Proctor Harding's dates (1850–1911) are from https://hymnary.org/person/Harding_James (Harding, James Proctor, 1850-1911; MORNING STAR; first name sometimes given as John, birth year also printed 1859 or 1861); https://www.commonprayeronline.org/en/hymn/H82/117/text (Hymnal 1982: James Proctor Harding, 1850-1911) agrees; CCEH's page gives only the year 1861. The bar lines are those of CCEH's Noteworthy score (000851a.nwc).",
+  "importedFrom": "cceh:000851",
+  "updated": "2026-10-17"
+}

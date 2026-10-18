@@ -1,0 +1,30 @@
+{
+  "name": "ARE YOU SOWING",
+  "title": "Are You Sowing",
+  "music": [
+    {
+      "name": "Fred A. Fillmore",
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "Irregular",
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 130,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D4:.5 E4:.5 | F#4:1 F#4:.5 F#4:.5 F#4:1 E4:.5 D4:.5 | F#4:1 A4:1 B4:.5 D5:.5 C#5:.5 B4:.5 | A4:1 F#4:1 D4:1 F#4:1 | E4:3 D4:.5 E4:.5 | F#4:1 F#4:.5 F#4:.5 F#4:1 E4:.5 D4:.5 | F#4:1 A4:1 B4:.5 D5:.5 C#5:.5 B4:.5 | A4:1 A4:.5 G4:.5 F#4:1 E4:1 | D4:3 A4:.5 A4:.5 | D5:1 D5:1 C#5:.5 D5:.5 E5:.5 C#5:.5 | D5:3 A4:.5 A4:.5 | B4:1 B4:1 E5:.5 D5:.5 C#5:.5 B4:.5 | A4:3 A4:.5 G4:.5 | F#4:1 F#4:1 F#4:.5 F#4:.5 E4:.5 D4:.5 | F#4:1 A4:1 B4:.5 D5:.5 C#5:.5 B4:.5 | A4:.5 A4:.5 A4:.5 G4:.5 F#4:1 E4:1 | D4:3",
+  "incipit": "drmmmrdmsld|tlsmdms",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000859.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000859a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000859; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; not provably public domain: Fred A. Fillmore: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000859 (the melody read from 000859a.mid, checked against the page's do-re-mi incipit, 2 notes off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000859a.nwc).",
+  "importedFrom": "cceh:000859",
+  "updated": "2026-10-17"
+}

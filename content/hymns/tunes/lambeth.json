@@ -1,0 +1,32 @@
+{
+  "name": "LAMBETH",
+  "title": "Lambeth",
+  "music": [
+    {
+      "name": "Wilhelm A. F. Schulthes",
+      "born": 1816,
+      "died": 1879,
+      "role": "Music (1871)"
+    }
+  ],
+  "musicPublished": 1871,
+  "metre": "8 6 8 6",
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "B4:1 B4:1 B4:1 | C5:2 F#4:1 | E4:2 F#4:1 | G4:3 | G4:1 A4:1 B4:1 | D5:2 C5:1 | B4:3 | A4:3 | B4:1 B4:1 B4:1 | C5:2 F#4:1 | E4:2 F#4:1 | G4:3 | G4:1 F#4:1 G4:1 | B4:2 A4:1 | G4:3~ | G4:3",
+  "incipit": "mmmftltd|drmsfmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000837.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000837a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000837; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000837 (the melody read from 000837a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Wilhelm A. F. Schulthes's dates (1816–1879) are from https://hymnary.org/person/Schulthes_WAF (Schulthes, Wilhelm A. F., 1816-1879; Wilhelm August Ferdinand Schulthes; LAMBETH); CCEH's page gives only the year 1871. The bar lines are those of CCEH's Noteworthy score (000837a.nwc).",
+  "importedFrom": "cceh:000837",
+  "updated": "2026-10-17"
+}

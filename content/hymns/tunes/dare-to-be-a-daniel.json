@@ -1,0 +1,32 @@
+{
+  "name": "DARE TO BE A DANIEL",
+  "title": "Dare to be a Daniel",
+  "music": [
+    {
+      "name": "Philip P. Bliss",
+      "born": 1838,
+      "died": 1876,
+      "role": "Music (1873)"
+    }
+  ],
+  "musicPublished": 1873,
+  "metre": "7 5 7 6 + 6 5 7 5",
+  "key": "Ab major",
+  "time": "2/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "C5:.75 C5:.25 Bb4:.5 Ab4:.5 | Eb4:.5 Ab4:.5 Ab4:1 | Bb4:.75 C5:.25 Bb4:.5 Eb4:.5 | C5:2 | C#5:.75 C#5:.25 C#5:.5 C#5:.5 | C#5:.5 C5:.5 C5:.5 C5:.5 | Bb4:.75 F4:.25 Bb4:.5 C5:.5 | Bb4:2 | C5:.75 C5:.25 Bb4:.5 Ab4:.5 | Eb4:1 Ab4:1 | Bb4:.75 C5:.25 Bb4:.5 Eb4:.5 | C5:2 | C#5:.75 C5:.25 Bb4:.5 Ab4:.5 | G4:.5 F4:.5 Bb4:.5 C#5:.5 | C5:.75 C#5:.25 C5:.5 Bb4:.5 | Ab4:2",
+  "incipit": "mmrdsdd|rmrsm|fffffmm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000819.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000819a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000819; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000819 (the melody read from 000819a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Philip P. Bliss's dates (1838–1876) are from our page for the tune BLANDY (content/hymns/tunes/blandy.json); CCEH's page gives only the year 1873. The bar lines are those of CCEH's Noteworthy score (000819a.nwc).",
+  "importedFrom": "cceh:000819",
+  "updated": "2026-10-17"
+}

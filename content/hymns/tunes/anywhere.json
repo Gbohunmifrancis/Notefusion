@@ -1,0 +1,32 @@
+{
+  "name": "ANYWHERE",
+  "title": "Anywhere",
+  "music": [
+    {
+      "name": "C. Austin Miles",
+      "born": 1868,
+      "died": 1946,
+      "role": "Music (1908)"
+    }
+  ],
+  "musicPublished": 1908,
+  "metre": "Irregular",
+  "key": "C major",
+  "time": "6/8",
+  "tempo": 96,
+  "pickup": 0.5,
+  "lineBars": 4,
+  "melody": "E4:.5 | G4:1 A4:.5 E4:1 D4:.5 | C4:1.5 C5:1 B4:.5 | A4:1 C5:.5 C5:1 A4:.5 | G4:2.5 E4:.5 | G4:1 A4:.5 E4:1 D4:.5 | C4:1.5 C5:1 A4:.5 | B4:1 B4:.5 A4:1 A4:.5 | G4:2.5 G4:.5 | B4:1 B4:.5 A4:1 G4:.5 | B4:2.5 B4:.5 | C5:1 C5:.5 E4:1 A4:.5 | G4:2.5 C5:.5 | D5:1.5 C5:1 A4:.5 | G4:.5 C5:2 E4:.5 | G4:1.5 F4:1 D4:.5 | C4:2.5 E4:.5 | G4:.75 A4:.25 G4:.5 E4:.75 D4:.25 C4:.5 | G4:3 | C5:1.5 A4:1.5 | B4:2.5 B4:.5 | B4:.5 D5:.5 B4:.5 A4:1 A4:.5 | B4:.5 D5:.5 B4:.5 A4:1 A4:.5 | B4:1.5 A4:1.5 | G4:2.5 G4:.5 | G4:.75 A4:.25 G4:.5 E4:.75 D4:.25 C4:.5 | G4:2.5 G4:.5 | C5:1.5 B4:1.5 | A4:2.5 B4:.5 | C5:.75 B4:.25 C5:.5 D5:.5 C5:.5 A4:.5 | G4:1.5 C5:1.5 | E5:1.5 D5:1.5 | C5:2.5",
+  "incipit": "mslmrddtlddls|mslmrddlttlls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000874.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000874a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000874; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000874 (the melody read from 000874a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. C. Austin Miles's dates (1868–1946) are from https://hymnary.org/person/Miles_CA (Miles, C. Austin (Charles Austin), 1868-1946); https://en.wikipedia.org/wiki/C._Austin_Miles agrees; CCEH's page gives only the year 1908. The bar lines are those of CCEH's Noteworthy score (000874a.nwc).",
+  "importedFrom": "cceh:000874",
+  "updated": "2026-10-17"
+}

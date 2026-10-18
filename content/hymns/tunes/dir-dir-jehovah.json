@@ -1,0 +1,34 @@
+{
+  "name": "DIR, DIR, JEHOVAH",
+  "title": "Dir, Dir, Jehovah",
+  "alsoKnownAs": [
+    "Crasselius"
+  ],
+  "music": [
+    {
+      "name": "Gesangbuch (published by J. A. Freylinghausen)",
+      "traditional": true,
+      "role": "Melody (1704)"
+    }
+  ],
+  "musicPublished": 1704,
+  "metre": "9 10 9 10 10 10",
+  "key": "Bb major",
+  "time": "2/2",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "F4:2 | Bb4:2 F4:2 | G4:2 G4:2 | F4:1 G4:1 F4:1 Eb4:1 | D4:1 C4:1 Bb3:2~ | Bb3:1 r:1 C4:2 | D4:2 E4:2 | F4:1 G4:1 A4:1 Bb4:1 | A4:2 G4:2 | F4:2 F4:2 | Bb4:2 F4:2 | G4:2 G4:2 | F4:1 G4:1 F4:1 Eb4:1 | D4:1 C4:1 Bb3:2~ | Bb3:1 r:1 C4:2 | D4:2 E4:2 | F4:1 G4:1 A4:1 Bb4:1 | A4:2 G4:2 | F4:2 F4:2 | Bb4:2 C5:2 | D5:2 Bb4:2 | Eb5:1 C5:1 D5:1 Bb4:1 | C5:3 r:1 | D5:2 C5:1 Bb4:1 | A4:1 G4:1 F4:2 | Bb4:2 Bb4:2 | A4:2 Bb4:2~ | Bb4:2",
+  "incipit": "sdsllslsfmrd|rmfsltdtls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000824.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000824a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000824; public domain.",
+  "reviewNotes": "Held back: the score has bars of another length (bar 1, 3, 4, 5, 6, 7, 10), which the solfa grid does not draw. Imported from CCEH tune 000824 (the melody read from 000824a.mid, checked against the page's do-re-mi incipit, 1 note off in 22); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000824a.nwc).",
+  "importedFrom": "cceh:000824",
+  "updated": "2026-10-17"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "SABAOTH",
+  "title": "Sabaoth",
+  "music": [
+    {
+      "name": "William Batchelder Bradbury",
+      "born": 1816,
+      "died": 1868,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "Irregular",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 125,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1 A4:1 A4:1 A4:1 | G4:.75 F4:.25 E4:.75 D4:.25 C4:2 | F4:1 F4:.75 G4:.25 F4:1 E4:1 | G4:1 G4:.75 A4:.25 G4:1 F4:1 | A4:1 A4:1 A4:1 A4:1 | G4:.75 F4:.25 E4:.75 D4:.25 C4:2 | D4:.75 E4:.25 F4:.75 G4:.25 A4:1 Bb4:.75 A4:.25 | G4:2 F4:2 | C5:1 C5:.75 F5:.25 F5:1 E5:1 | E5:1 D5:.75 C5:.25 C5:1 A4:1 | C5:1 C5:.75 F5:.25 F5:1 E5:1 | E5:1 D5:.75 E5:.25 C5:2 | A4:1 A4:1 A4:1 A4:1 | G4:.75 F4:.25 E4:.75 D4:.25 C4:2 | D4:.75 E4:.25 F4:.75 G4:.25 A4:1 Bb4:.75 A4:.25 | G4:2 F4:2",
+  "incipit": "mmmmrdtls|ddrdtrrmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000852.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000852a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000852; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000852 (the melody read from 000852a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William Batchelder Bradbury's dates (1816–1868) are from our page for the tune BRADBURY (content/hymns/tunes/bradbury.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000852a.nwc).",
+  "importedFrom": "cceh:000852",
+  "updated": "2026-10-17"
+}

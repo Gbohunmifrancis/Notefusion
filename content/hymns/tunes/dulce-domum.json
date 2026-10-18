@@ -1,0 +1,35 @@
+{
+  "name": "DULCE DOMUM",
+  "title": "Dulce Domum",
+  "alsoKnownAs": [
+    "Ambrose"
+  ],
+  "music": [
+    {
+      "name": "Robert S. Ambrose",
+      "born": 1824,
+      "died": 1908,
+      "role": "Music (1876)"
+    }
+  ],
+  "musicPublished": 1876,
+  "metre": "6 6 8 6",
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1 A4:.5 A4:.5 A4:1 A4:1 | A4:4 | B4:1 B4:.5 B4:.5 A4:1 F#4:1 | E4:4 | F#4:1 F#4:.5 F#4:.5 G4:1 Ab4:1 | A4:1 D5:1 D5:1 C#5:.5 B4:.5 | A4:1 D4:.5 E4:.5 F#4:1 E4:1 | D4:4",
+  "incipit": "ssssss|lllsmr|mmmfssdd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000826.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000826a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000826; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000826 (the melody read from 000826a.mid, checked against the page's do-re-mi incipit, 1 note off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Robert S. Ambrose's dates (1824–1908) are from https://hymnary.org/person/Ambrose_RS (Ambrose, R. S. (Robert Steele), 1824-1908; DULCE DOMUM); https://www.biographi.ca/en/bio/ambrose_robert_steele_13E.html agrees; CCEH's page gives only the year 1876. The bar lines are those of CCEH's Noteworthy score (000826a.nwc).",
+  "importedFrom": "cceh:000826",
+  "updated": "2026-10-17"
+}

@@ -4,7 +4,8 @@
   "music": [
     {
       "name": "Timothy R. Matthews",
-      "activeBy": 1846,
+      "born": 1826,
+      "died": 1910,
       "role": "Music (1846)"
     }
   ],
@@ -25,7 +26,7 @@
   "scoreUrl": "https://www.ccel.org/cceh/0005/000597a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000597; public domain.",
-  "reviewNotes": "Imported from CCEH tune 000597 (the melody read from 000597a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Timothy R. Matthews has no death year on CCEH's page or ours; their work is dated 1846, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000597a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000597 (the melody read from 000597a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Timothy R. Matthews's dates (1826–1910) are from https://hymnary.org/person/Matthews_Timothy (Matthews, Timothy R., 1826-1910; Timothy Richard Matthews; CHENIES); https://praise.org.uk/?p=28902 agrees; CCEH's page gives only the year 1846. The bar lines are those of CCEH's Noteworthy score (000597a.nwc).",
   "importedFrom": "cceh:000597",
   "updated": "2026-10-17"
 }
