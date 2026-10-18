@@ -585,6 +585,12 @@ export interface SynthOptions {
    * count-in that is not whole bars (lib/take's) puts it a bar before the singer's beat one.
    */
   downbeat?: number;
+  /**
+   * Beats of clicks before beat one, any number of them (a practice take's count-in, `leadInPlan`); wins over
+   * `countInBars`. Without `metronome` the clicks stop at beat one, so a take's tones are heard without them. A note
+   * may start before beat one (a negative `startBeat`, as far back as the count-in): the count-in's pitch pipe.
+   */
+  countInBeats?: number;
 }
 
 /**
@@ -595,6 +601,8 @@ export interface SynthOptions {
  * playback position back onto a note has to subtract it first.
  */
 export function leadInSec(tempoBpm: number, opts: SynthOptions = {}): number {
+  const beats = Math.max(0, Math.round(opts.countInBeats ?? 0));
+  if (beats > 0) return beats * beatSecOf(tempoBpm);
   const bars = Math.max(0, Math.floor(opts.countInBars ?? 0));
   if (bars === 0) return 0;
   return bars * beatsPerBarOf(opts) * beatSecOf(tempoBpm);
@@ -661,7 +669,7 @@ export function synthesizeVoicesWavBase64(
     if (note.pitchMidi <= 0) continue;
 
     const startSample = leadSamples + Math.floor(note.startBeat * beatSec * SAMPLE_RATE);
-    if (startSample >= totalSamples) continue;
+    if (startSample < 0 || startSample >= totalSamples) continue;
     // Floored at 40 ms so a zero-length note still sounds, as on the server.
     const durSamples = Math.max(
       Math.floor(note.durBeats * beatSec * SAMPLE_RATE),
@@ -727,7 +735,12 @@ export function synthesizeVoicesWavBase64(
   for (let i = 0; i < totalSamples; i++) {
     buffer[i] = Math.round(softLimit(limited[i]!) * 32767);
   }
+  return wavBase64(buffer);
+}
 
+/** A mono 16-bit PCM buffer at SAMPLE_RATE as a base64 WAV file. */
+function wavBase64(buffer: Int16Array): string {
+  const totalSamples = buffer.length;
   // Build WAV header
   const dataSize = totalSamples * 2;
   const headerSize = 44;
@@ -760,6 +773,114 @@ export function synthesizeVoicesWavBase64(
 
   // Convert Uint8Array to base64 string
   return uint8ToBase64(wavBytes);
+}
+
+function toPcm(mix: Float64Array): Int16Array {
+  const out = new Int16Array(mix.length);
+  for (let i = 0; i < mix.length; i++) out[i] = Math.round(softLimit(mix[i]!) * 32767);
+  return out;
+}
+
+// ── Practice guides: the warm-up's sirens and a rhythm's claps (lib/practiceModes lays them out) ──
+
+/** A siren's voice: a soft hum (a sine and two quiet overtones), not the piano, which cannot slide. */
+const GLIDE_PARTIALS: readonly (readonly [number, number])[] = [[1, 1], [2, 0.3], [3, 0.12]];
+const GLIDE_GAIN = 0.32;
+/** Each round fades in and out over this, so a slide never starts or stops with a click. */
+const GLIDE_FADE_SEC = 0.06;
+
+/**
+ * A guide that slides (the warm-up's sirens): each round a line of points (`t` seconds, `midi`), the pitch moving
+ * evenly in semitones between them, silent between rounds. The phase runs on through the slide, so it is one
+ * unbroken tone.
+ */
+export function synthesizeGlideWavBase64(rounds: readonly (readonly { t: number; midi: number }[])[]): string {
+  let end = 0;
+  for (const r of rounds) for (const p of r) end = Math.max(end, p.t);
+  const total = Math.ceil((end + 0.2) * SAMPLE_RATE);
+  const mix = new Float64Array(total);
+  for (const points of rounds) {
+    if (points.length < 2) continue;
+    const start = points[0]!.t;
+    const stop = points[points.length - 1]!.t;
+    const to = Math.min(total, Math.ceil(stop * SAMPLE_RATE));
+    let phase = 0;
+    let seg = 1;
+    for (let i = Math.max(0, Math.floor(start * SAMPLE_RATE)); i < to; i++) {
+      const t = i / SAMPLE_RATE;
+      while (seg < points.length - 1 && t > points[seg]!.t) seg++;
+      const a = points[seg - 1]!;
+      const b = points[seg]!;
+      const midi = b.t > a.t ? a.midi + (b.midi - a.midi) * Math.min(1, Math.max(0, (t - a.t) / (b.t - a.t))) : b.midi;
+      phase += (2 * Math.PI * 440 * Math.pow(2, (midi - 69) / 12)) / SAMPLE_RATE;
+      if (phase > 2 * Math.PI) phase -= 2 * Math.PI;
+      let v = 0;
+      for (const [h, amp] of GLIDE_PARTIALS) v += amp * Math.sin(h * phase);
+      const env = Math.max(0, Math.min(1, (t - start) / GLIDE_FADE_SEC, (stop - t) / GLIDE_FADE_SEC));
+      mix[i] = mix[i]! + GLIDE_GAIN * env * v;
+    }
+  }
+  return wavBase64(toPcm(mix));
+}
+
+const CLAP_GAIN = 0.75;
+/** The pulse under a rhythm heard: the metronome's click, quieter than the claps so the claps stand out. */
+const PULSE_GAIN = 0.35;
+
+/**
+ * One hand clap: three bursts of noise a few milliseconds apart and the body's short decay, high-passed so it is a
+ * snap and not a thud. The noise is a fixed sequence, so every clap (and every render) is the same.
+ */
+function renderClap(): Float64Array {
+  const n = Math.ceil(0.12 * SAMPLE_RATE);
+  const out = new Float64Array(n);
+  let seed = 22222;
+  let prevIn = 0;
+  let prevOut = 0;
+  for (let i = 0; i < n; i++) {
+    const t = i / SAMPLE_RATE;
+    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+    const noise = (seed / 0x7fffffff) * 2 - 1;
+    let env = 0;
+    for (const at of [0, 0.009, 0.018]) if (t >= at) env = Math.max(env, Math.exp(-(t - at) / 0.003));
+    if (t >= 0.018) env = Math.max(env, 0.7 * Math.exp(-(t - 0.018) / 0.045));
+    const x = noise * env;
+    prevOut = 0.9 * (prevOut + x - prevIn);
+    prevIn = x;
+    out[i] = CLAP_GAIN * prevOut;
+  }
+  return out;
+}
+
+/**
+ * A rhythm to hear (Clap it back): `countInBeats` clicks before beat one (accented a whole bar before it), then each
+ * clap at its beat, with a quiet click on every beat underneath when `pulse` is set. With no claps it is just the
+ * count-in a take records over.
+ */
+export function synthesizeClapsWavBase64(
+  claps: readonly { startBeat: number; durBeats: number }[],
+  tempoBpm: number,
+  opts: { countInBeats?: number; beatsPerBar?: number; pulse?: boolean } = {},
+): string {
+  const beatSec = beatSecOf(tempoBpm);
+  const countIn = Math.max(0, Math.round(opts.countInBeats ?? 0));
+  const perBar = opts.beatsPerBar && opts.beatsPerBar > 0 ? opts.beatsPerBar : 4;
+  const lead = countIn * beatSec;
+  const endBeat = claps.reduce((m, c) => Math.max(m, c.startBeat + c.durBeats), 0);
+  const total = Math.ceil((lead + endBeat * beatSec + 0.3) * SAMPLE_RATE);
+  const mix = new Float64Array(total);
+  const add = (sound: Float64Array, atSec: number, gain: number) => {
+    const start = Math.round(atSec * SAMPLE_RATE);
+    if (start < 0) return;
+    for (let i = 0; i < sound.length && start + i < total; i++) mix[start + i] = mix[start + i]! + sound[i]! * gain;
+  };
+  const plain = renderClick(false);
+  const accented = renderClick(true);
+  for (let beat = -countIn; beat < 0; beat++) add(((beat % perBar) + perBar) % perBar === 0 ? accented : plain, lead + beat * beatSec, 1);
+  if (opts.pulse) for (let beat = 0; beat < Math.ceil(endBeat - 1e-9); beat++) add(beat % perBar === 0 ? accented : plain, lead + beat * beatSec, PULSE_GAIN);
+  const clap = renderClap();
+  for (const c of claps) add(clap, lead + c.startBeat * beatSec, 1);
+  return wavBase64(toPcm(mix));
 }
 
 function writeString(view: DataView, offset: number, str: string) {
