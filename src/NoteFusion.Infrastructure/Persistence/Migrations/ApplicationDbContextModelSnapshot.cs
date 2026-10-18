@@ -140,6 +140,46 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("backup_runs", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.Billing.CheckoutExit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("AnsweredAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(280)
+                        .HasColumnType("character varying(280)");
+
+                    b.Property<Guid>("PaymentTransactionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("ReturnedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("SecondsOpen")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnsweredAtUtc");
+
+                    b.HasIndex("PaymentTransactionId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("checkout_exits", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.Billing.LedgerEntry", b =>
                 {
                     b.Property<Guid>("Id")
@@ -199,6 +239,11 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)");
 
+                    b.Property<string>("Client")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -224,6 +269,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Provider")
                         .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("ProviderAttempt")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
@@ -2016,6 +2065,21 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("NoteFusion.Core.Entities.Achievement", b =>
                 {
+                    b.HasOne("NoteFusion.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.Billing.CheckoutExit", b =>
+                {
+                    b.HasOne("NoteFusion.Core.Entities.Billing.PaymentTransaction", null)
+                        .WithMany()
+                        .HasForeignKey("PaymentTransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("NoteFusion.Core.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
