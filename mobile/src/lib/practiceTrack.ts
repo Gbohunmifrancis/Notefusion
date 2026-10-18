@@ -140,8 +140,9 @@ function dayNumber(day: string): number {
 // ── The art (components/practice/Art, drawn by design/practice-art) ──────────
 
 /**
- * Doh the doh bird's moods. Doh lives inside Practice only: Playful's buddy, the track picker, and the empty and
- * offline states. Focused shows no buddy.
+ * Doh the doh bird's moods in Practice: Playful's buddy, the track picker, and the empty and offline states. Focused
+ * shows no buddy. Outside Practice Doh is only Home's suggestion card, the result toast and the empty Library
+ * (`components/doh`, `lib/dohSuggestion`).
  */
 export type MascotMood = "wave" | "sing" | "cheer" | "encourage" | "worried" | "sleepy" | "handoff";
 

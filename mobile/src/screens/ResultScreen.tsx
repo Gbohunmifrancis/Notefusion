@@ -4,7 +4,6 @@ import {
   Image,
   Linking,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   View,
@@ -26,6 +25,8 @@ import { PlayerDock, DOCK_CLEARANCE } from "../components/result/PlayerDock";
 import { RehearseView } from "../components/result/RehearseView";
 import { PracticeView } from "../components/result/PracticeView";
 import { usePractice } from "../components/result/usePractice";
+import { DohToast } from "../components/doh/DohToast";
+import { firstCelebration } from "../lib/dohPrefs";
 import { libraryApi, transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import type { ChordSymbol, HymnCredit, KeyAlternative, NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
@@ -57,7 +58,8 @@ import { sectionOf } from "../lib/clipRange";
 import { choosePart, defaultRange, levels, partsOf, practiceTempo, speedsFor, type Balance } from "../lib/practice";
 import { logAnalyticsEvent } from "../lib/analytics";
 import { isNetworkCode } from "../lib/reachability";
-import { setSheetPinned, useOfflineLibrary } from "../lib/offlineLibrary";
+import { useOfflineLibrary } from "../lib/offlineLibrary";
+import { askToDelete, deleteSheets, keepSheetOffline, renameSheet, shareSheetLinks } from "../lib/sheetActions";
 import { transposeLocally } from "../lib/localTranspose";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { rating } from "../lib/rating";
@@ -188,6 +190,8 @@ export function ResultScreen({ route, navigation }: Props) {
     sourceJobId,
     savedId: initialSavedId,
     title: initialTitle,
+    fresh,
+    practise,
   } = route.params;
 
   const colors = useColors();
@@ -1038,15 +1042,9 @@ export function ResultScreen({ route, navigation }: Props) {
       return;
     }
     setSharing(true);
-    try {
-      const link = await libraryApi.share(savedId);
-      setShareToken(link.token);
-      await Share.share({ message: `${committedTitle || title} — Tonic Solfa on NoteFusion\n${link.url}`, url: link.url });
-    } catch (e) {
-      showDialog({ title: "Could not share", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
-    } finally {
-      setSharing(false);
-    }
+    const tokens = await shareSheetLinks([{ id: savedId, title: committedTitle || title }]);
+    if (tokens) setShareToken(tokens.get(savedId) ?? null);
+    setSharing(false);
   }
 
   async function stopSharing() {
@@ -1065,20 +1063,9 @@ export function ResultScreen({ route, navigation }: Props) {
   async function rename() {
     if (!savedId) return;
     setRenaming(true);
-    try {
-      const updated = await libraryApi.rename(savedId, title.trim());
-      setCommittedTitle(updated.title);
-      showToast("Renamed");
-    } catch (e) {
-      showDialog({
-        title: "Could not rename",
-        message: toApiError(e).message,
-        icon: "alert-circle-outline",
-        tone: "danger",
-      });
-    } finally {
-      setRenaming(false);
-    }
+    const kept = await renameSheet(savedId, title);
+    if (kept !== null) setCommittedTitle(kept);
+    setRenaming(false);
   }
 
   // ── Export (MusicXML) ──────────────────────────────────────────────────────
@@ -1210,6 +1197,47 @@ export function ResultScreen({ route, navigation }: Props) {
   /** The first doubtful note, named in the amber row so the ear knows where to go. */
   const firstLow = view.notes.find((n) => n.conf < 0.5);
 
+  /** Practise this tune: Learn my part when the sheet has parts, else Rehearse's loop for the tune alone. */
+  function practiseNow() {
+    if (parts) void openPractice();
+    else setRehearsing(true);
+  }
+
+  // Home's "Practise this tune" opens the sheet straight on its practice.
+  useEffect(() => {
+    if (practise) practiseNow();
+    // Once, on arrival.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── Doh's first-open toast (board c-practice/8b) ─────────────────────────
+  // Only on a sheet opened straight from its finished job, once per job: Doh cheers with the headline numbers and
+  // offers to practise it — or, when some notes are worth a listen, says so and offers to check them. Leaves after
+  // 5 s or on any touch, and takes the player dock's place, so it never covers the solfa.
+  const [celebrate, setCelebrate] = useState<{ doubtful: boolean } | null>(null);
+  const [celebrating, setCelebrating] = useState(false);
+  useEffect(() => {
+    if (!fresh || !sourceJobId || result.notes.length === 0) return;
+    let live = true;
+    void firstCelebration(sourceJobId).then((first) => {
+      if (!live || !first) return;
+      setCelebrate({ doubtful: result.notes.some((n) => n.conf < 0.5) });
+      setCelebrating(true);
+    });
+    return () => {
+      live = false;
+    };
+    // Once, on arrival.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const endCelebration = () => setCelebrating(false);
+  /** A touch that began on the toast is the toast's own: it reaches the toast first, then bubbles to the screen. */
+  const touchOnToast = useRef(false);
+  function touchedSheet() {
+    if (touchOnToast.current) touchOnToast.current = false;
+    else endCelebration();
+  }
+
   function goBack() {
     if (navigation.canGoBack()) navigation.goBack();
     else navigation.navigate("Tabs", { screen: "Home" });
@@ -1255,18 +1283,7 @@ export function ResultScreen({ route, navigation }: Props) {
       actions.push({
         label: offlineCopies.keepAll ? "Kept offline (all sheets)" : kept ? "Don't keep offline" : "Keep offline",
         icon: kept ? "cloud-done-outline" : "cloud-download-outline",
-        onPress: offlineCopies.keepAll
-          ? undefined
-          : () =>
-              void setSheetPinned(savedId, !kept).then(
-                () => haptics.play("success"),
-                (e) =>
-                  showDialog({
-                    title: "Couldn't keep it offline",
-                    message: isNetworkCode(toApiError(e).code) ? "You're offline. Try again when you're back online." : toApiError(e).message,
-                    icon: "cloud-offline-outline",
-                  }),
-              ),
+        onPress: offlineCopies.keepAll ? undefined : () => void keepSheetOffline(savedId, !kept),
       });
       actions.push({
         label: "Delete from Library",
@@ -1286,36 +1303,15 @@ export function ResultScreen({ route, navigation }: Props) {
     });
   }
 
+  /** The same question as every delete of a saved sheet (lib/sheetActions); gone, the screen closes. */
   function confirmDeleteSheet(id: string) {
-    showDialog({
-      title: "Delete this sheet?",
-      message: `“${shownTitle || "This sheet"}” is removed from your library, along with any link you shared. This can't be undone.`,
-      icon: "trash-outline",
-      tone: "danger",
-      actions: [
-        {
-          label: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await libraryApi.remove(id);
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              } else {
-                navigation.navigate("Tabs", { screen: "Library" });
-              }
-            } catch (e) {
-              showDialog({
-                title: "Could not delete",
-                message: toApiError(e).message,
-                icon: "alert-circle-outline",
-                tone: "danger",
-              });
-            }
-          },
-        },
-        { label: "Cancel", style: "cancel" },
-      ],
+    askToDelete([{ id, title: shownTitle || "This sheet" }], async () => {
+      if (!(await deleteSheets([{ id, title: shownTitle }]))) return;
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+      } else {
+        navigation.navigate("Tabs", { screen: "Library" });
+      }
     });
   }
 
@@ -1428,7 +1424,8 @@ export function ResultScreen({ route, navigation }: Props) {
   const nothingToShow = solfaStyle === "bars" ? view.notes.length === 0 : activeSolfaLines.length === 0;
 
   return (
-    <Screen contentStyle={styles.screen}>
+    // Any touch on the sheet sends Doh's toast away; the touch still does what it was for.
+    <Screen contentStyle={styles.screen} onTouchStart={celebrating ? touchedSheet : undefined}>
       <KeyboardAvoider>
         <ScrollView
           contentContainerStyle={[
@@ -2031,8 +2028,9 @@ export function ResultScreen({ route, navigation }: Props) {
         </ScrollView>
       </KeyboardAvoider>
 
-      {/* ── Playback: hear the tune; Rehearse to loop, slow down and mute parts ─ */}
-      {preview ? <PlayerDock practice={practice} onRehearse={() => setRehearsing(true)} /> : null}
+      {/* ── Playback: hear the tune; Rehearse to loop, slow down and mute parts ─
+          Doh's first-open toast takes the dock's place for its few seconds, so it never covers the solfa. */}
+      {preview && !celebrate ? <PlayerDock practice={practice} onRehearse={() => setRehearsing(true)} /> : null}
 
       <RehearseView
         visible={rehearsing}
@@ -2095,6 +2093,28 @@ export function ResultScreen({ route, navigation }: Props) {
         onDelete={deleteNote}
         onClose={closeEditor}
       />
+
+      {/* ── Doh's first-open toast, where the player docks ─────────────────── */}
+      {celebrate ? (
+        <DohToast
+          visible={celebrating}
+          pose={celebrate.doubtful ? "encourage" : "cheer-notes"}
+          title={celebrate.doubtful ? "Done. A few notes are worth a listen." : `Here it is! Doh is ${doh}.`}
+          body={celebrate.doubtful ? "They're outlined." : `${view.notes.length} notes. Sing it back once?`}
+          action={celebrate.doubtful ? "Check" : "Practise"}
+          bottom={insets.bottom + 10}
+          onTouched={() => {
+            touchOnToast.current = true;
+          }}
+          onAction={() => {
+            endCelebration();
+            if (celebrate.doubtful) startReview();
+            else practiseNow();
+          }}
+          onHide={endCelebration}
+          onGone={() => setCelebrate(null)}
+        />
+      ) : null}
     </Screen>
   );
 }

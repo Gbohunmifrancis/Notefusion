@@ -21,6 +21,9 @@ import { HeaderAvatar } from '../components/HeaderAvatar';
 import { Touchable } from '../components/Touchable';
 import { Skeleton } from '../components/Skeleton';
 import { Mark, Wordmark } from '../components/night/NightUI';
+import { DohCard } from '../components/doh/DohCard';
+import { FoldAway } from '../components/FoldAway';
+import { useSheetActions } from '../components/library/useSheetActions';
 import { practiceApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { dohLetter } from '../lib/solfa';
@@ -28,17 +31,31 @@ import { loadLibraryList, loadSheet } from '../lib/offlineLibrary';
 import { resultFromSaved } from '../lib/openSheet';
 import { useAuth } from '../lib/auth';
 import { showDialog } from '../lib/dialog';
+import * as haptics from '../lib/haptics';
 import { useSubscription } from '../lib/subscription';
 import { confidenceColor, fonts, motion, radii, spacing, typography, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles, useColors } from '../lib/theme';
 import type { PracticeProgress, SavedTranscription } from '../api/types';
 import { streakSnapshot } from '../lib/practiceProgress';
 import { rememberStreak } from '../lib/practiceReminder';
-import { refreshProfilePicture } from '../lib/profilePicture';
+import { refreshProfilePicture, useAccountJoinedAt } from '../lib/profilePicture';
 import { useBreath } from '../lib/breath';
 import type { RootStackParams, TabParams } from '../navigation/types';
 import { solfaOpening } from '../lib/solfaOpening';
 import { confidenceA11y, confidenceLevel } from '../lib/confidence';
+import {
+  EMPTY_DOH_MEMORY,
+  chooseDohCard,
+  dismissDohCard,
+  localDay,
+  type DohCard as DohSuggestion,
+  type DohMemory,
+} from '../lib/dohSuggestion';
+import { loadDohMemory, saveDohMemory, useDohSuggestions } from '../lib/dohPrefs';
+import { parseUtc } from '../lib/sheetMeta';
+
+/** Home lists the newest few sheets. */
+const RECENT_COUNT = 3;
 
 type Props = BottomTabScreenProps<TabParams, 'Home'>;
 
@@ -54,14 +71,23 @@ function currentGreeting(): string {
 /**
  * HomeScreen — "02 · Home" of the night board: one question, one button. The
  * mark is the record button; the chips under it are the other ways in; every
- * recent sheet is known by its doh tile, its opening solfa and its confidence.
+ * recent sheet is known by its doh tile, its opening solfa and its confidence,
+ * and its ⋯ (or a long press) opens its actions (board a-core/11). Under the
+ * ways in, Doh's one suggestion card when there is something to suggest
+ * (board c-practice/8a).
  */
 export function HomeScreen({ navigation }: Props) {
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const { user } = useAuth();
-  const { isPro, refresh: refreshSubscription } = useSubscription();
+  const { isPro, known, freeRemaining, boughtRemaining, refresh: refreshSubscription } = useSubscription();
   const focused = useIsFocused();
-  const [recent, setRecent] = useState<SavedTranscription[]>([]);
+  /** The whole library as last read: Recent shows its newest, and the folder choices come from all of it. */
+  const [all, setAll] = useState<SavedTranscription[]>([]);
+  /** The list has been read at least once (Doh's card waits for it). */
+  const [listReady, setListReady] = useState(false);
+  /** Sheets deleted from a recent row, folding away (board a-core/11). */
+  const [leaving, setLeaving] = useState<ReadonlySet<string>>(new Set());
+  const recent = all.slice(0, RECENT_COUNT);
   const [loadingRecent, setLoadingRecent] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -153,26 +179,28 @@ export function HomeScreen({ navigation }: Props) {
     return () => sub.remove();
   }, []);
 
+  /** The list as read: kept whole, and Doh's card may now be chosen. */
+  const listRead = useCallback((items: SavedTranscription[]) => {
+    setAll(items);
+    setLeaving(new Set());
+    setLoadError(null);
+    setListReady(true);
+  }, []);
+
   const reload = useCallback(() => {
     setLoadingRecent(true);
     loadLibraryList()
-      .then(({ items: all }) => {
-        setRecent(all.slice(0, 3));
-        setLoadError(null);
-      })
+      .then(({ items }) => listRead(items))
       .catch((e) => setLoadError(toApiError(e).message))
       .finally(() => setLoadingRecent(false));
-  }, []);
+  }, [listRead]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
       await Promise.all([
         loadLibraryList()
-          .then(({ items: all }) => {
-            setRecent(all.slice(0, 3));
-            setLoadError(null);
-          })
+          .then(({ items }) => listRead(items))
           .catch((e) => setLoadError(toApiError(e).message)),
         user ? refreshProfilePicture(user.id, true) : undefined,
         refreshSubscription(true).catch(() => undefined),
@@ -180,12 +208,16 @@ export function HomeScreen({ navigation }: Props) {
     } finally {
       setRefreshing(false);
     }
-  }, [refreshSubscription, user]);
+  }, [listRead, refreshSubscription, user]);
+
+  /** Counts Home's visits, so Doh's card is chosen again on each (the hour and the day move on). */
+  const [visit, setVisit] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
       let active = true;
       setGreeting(currentGreeting());
+      setVisit((v) => v + 1);
       practiceApi
         .progress()
         .then((p) => {
@@ -196,10 +228,8 @@ export function HomeScreen({ navigation }: Props) {
         .catch(() => undefined);
       setLoadingRecent(true);
       loadLibraryList()
-        .then(({ items: all }) => {
-          if (!active) return;
-          setRecent(all.slice(0, 3));
-          setLoadError(null);
+        .then(({ items }) => {
+          if (active) listRead(items);
         })
         .catch((e) => {
           if (active) setLoadError(toApiError(e).message);
@@ -210,14 +240,96 @@ export function HomeScreen({ navigation }: Props) {
       return () => {
         active = false;
       };
-    }, []),
+    }, [listRead]),
   );
 
-  async function openRecent(item: SavedTranscription) {
+  // ── Doh's card (board c-practice/8a) ──────────────────────────────────────
+  // One card at most, chosen by lib/dohSuggestion from the list, the streak, the account's age and the free count,
+  // once those are read; × and "once a day" are remembered on the phone, per account. Settings can turn it off.
+  const dohOn = useDohSuggestions();
+  const joinedAt = useAccountJoinedAt(user?.id);
+  const freeLeft = known && !isPro ? freeRemaining : null;
+  const canTranscribe = !known || isPro || freeRemaining > 0 || boughtRemaining > 0;
+  const [card, setCard] = useState<DohSuggestion | null>(null);
+  const [cardGoing, setCardGoing] = useState(false);
+  const dohMemory = useRef<DohMemory>(EMPTY_DOH_MEMORY);
+  const [memoryFor, setMemoryFor] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    let live = true;
+    void loadDohMemory(user.id).then((m) => {
+      if (!live) return;
+      dohMemory.current = m;
+      setMemoryFor(user.id);
+    });
+    return () => {
+      live = false;
+    };
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (!dohOn || !user || memoryFor !== user.id || !listReady || !practice) return;
+    const now = new Date();
+    const { card: next, memory } = chooseDohCard(
+      {
+        now: now.getTime(),
+        hour: now.getHours(),
+        day: localDay(now),
+        sheets: all.map((s) => ({ id: s.id, title: s.title, savedAt: parseUtc(s.createdAtUtc) })),
+        streak: practice.streak,
+        joinedAt,
+        freeLeft,
+        canTranscribe,
+      },
+      dohMemory.current,
+    );
+    dohMemory.current = memory;
+    void saveDohMemory(user.id, memory);
+    setCard(next);
+    // `visit` is read for its change alone: every return to Home chooses again.
+  }, [dohOn, user, memoryFor, listReady, practice, all, joinedAt, freeLeft, canTranscribe, visit]);
+
+  /** × or the card's action: it leaves Home, and does not come back for this context. */
+  function putCardAway(c: DohSuggestion) {
+    if (!user) return;
+    dohMemory.current = dismissDohCard(dohMemory.current, c.key, localDay(new Date()));
+    void saveDohMemory(user.id, dohMemory.current);
+    setCard(null);
+    setCardGoing(false);
+  }
+
+  function actOnCard(c: DohSuggestion) {
+    putCardAway(c);
+    if (c.kind === 'ready') {
+      const sheet = all.find((s) => s.id === c.sheetId);
+      if (sheet) void openRecent(sheet, { practise: true });
+    } else if (c.kind === 'streak') {
+      navigation.navigate('Practice');
+    } else {
+      navigation.navigate('Record');
+    }
+  }
+
+  // ── Recent sheets' actions (board a-core/11) ─────────────────────────────
+  // The Library's own actions on one sheet; a deleted row folds away before it leaves the list.
+  const sheetActions = useSheetActions({
+    items: all,
+    setItems: setAll,
+    reload,
+    onDeleted: (ids) => setLeaving(new Set(ids)),
+  });
+
+  async function openRecent(item: SavedTranscription, opts: { practise?: boolean } = {}) {
     try {
       // The phone's copy when it is current or the API is out of reach (lib/offlineLibrary).
       const { sheet } = await loadSheet(item);
-      rootNav.navigate('Result', { result: resultFromSaved(sheet), savedId: sheet.id, title: sheet.title });
+      rootNav.navigate('Result', {
+        result: resultFromSaved(sheet),
+        savedId: sheet.id,
+        title: sheet.title,
+        practise: opts.practise,
+      });
     } catch (e) {
       showDialog({
         title: 'Could not open',
@@ -234,6 +346,7 @@ export function HomeScreen({ navigation }: Props) {
     <Screen>
       <FlatList
         data={recent}
+        extraData={[leaving, sheetActions.actionsFor]}
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
@@ -400,6 +513,19 @@ export function HomeScreen({ navigation }: Props) {
                 </Touchable>
               </View>
 
+              {/* ── Doh's one suggestion, under the ways in: the record button stays the hero ── */}
+              {dohOn && card ? (
+                <FoldAway key={card.key} gone={cardGoing} onGone={() => putCardAway(card)}>
+                  <DohCard
+                    card={card}
+                    hop
+                    active={focused}
+                    onAction={() => actOnCard(card)}
+                    onClose={() => setCardGoing(true)}
+                  />
+                </FoldAway>
+              ) : null}
+
               {/* ── Recent ────────────────────────────────────────────── */}
               <View style={styles.recentSectionHeader}>
                 <Text style={styles.recentSectionTitle}>Recent</Text>
@@ -422,41 +548,60 @@ export function HomeScreen({ navigation }: Props) {
           const doubtful = confidenceLevel(item.overallConfidence) !== 'clear';
           const tone = confidenceColor(item.overallConfidence, colors);
           return (
-            <Touchable
-              onPress={() => openRecent(item)}
-              style={styles.recentRow}
-              radius={radii.md}
-              accessibilityLabel={`Open ${item.title}`}
+            <FoldAway
+              gone={leaving.has(item.id)}
+              onGone={() => setAll((prev) => prev.filter((s) => s.id !== item.id))}
             >
-              <View style={styles.dohTile}>
-                <Text style={styles.dohLetter} numberOfLines={1}>
-                  {dohLetter(item.key)}
-                </Text>
-                <Text style={styles.dohCaption}>DOH</Text>
-              </View>
-
-              <View style={styles.recentInfo}>
-                <Text style={styles.recentTitle} numberOfLines={1}>
-                  {item.title}
-                </Text>
-                {opening ? (
-                  <Text style={styles.solfaPreview} numberOfLines={1}>
-                    <Text style={styles.solfaLead}>{opening.first}</Text>
-                    {opening.rest ? ` │ ${opening.rest}` : ''}
+              <Touchable
+                onPress={() => openRecent(item)}
+                onLongPress={() => {
+                  haptics.play('light');
+                  sheetActions.openActions(item);
+                }}
+                style={[styles.recentRow, sheetActions.actionsFor?.id === item.id && styles.recentRowActive]}
+                radius={radii.md}
+                accessibilityLabel={`Open ${item.title}`}
+              >
+                <View style={styles.dohTile}>
+                  <Text style={styles.dohLetter} numberOfLines={1}>
+                    {dohLetter(item.key)}
                   </Text>
-                ) : (
-                  <Text style={styles.recentMeta} numberOfLines={1}>
-                    {item.key} · {item.tempoBpm} BPM · {item.timeSignature}
-                  </Text>
-                )}
-              </View>
-
-              {doubtful ? (
-                <View style={styles.score} accessibilityLabel={confidenceA11y(item.overallConfidence)}>
-                  <View style={[styles.scoreDot, { backgroundColor: tone }]} />
+                  <Text style={styles.dohCaption}>DOH</Text>
                 </View>
-              ) : null}
-            </Touchable>
+
+                <View style={styles.recentInfo}>
+                  <Text style={styles.recentTitle} numberOfLines={1}>
+                    {item.title}
+                  </Text>
+                  {opening ? (
+                    <Text style={styles.solfaPreview} numberOfLines={1}>
+                      <Text style={styles.solfaLead}>{opening.first}</Text>
+                      {opening.rest ? ` │ ${opening.rest}` : ''}
+                    </Text>
+                  ) : (
+                    <Text style={styles.recentMeta} numberOfLines={1}>
+                      {item.key} · {item.tempoBpm} BPM · {item.timeSignature}
+                    </Text>
+                  )}
+                </View>
+
+                {doubtful ? (
+                  <View style={styles.score} accessibilityLabel={confidenceA11y(item.overallConfidence)}>
+                    <View style={[styles.scoreDot, { backgroundColor: tone }]} />
+                  </View>
+                ) : null}
+
+                {/* The piece's actions: share, rename, file, keep offline, delete (also a long press). */}
+                <Touchable
+                  onPress={() => sheetActions.openActions(item)}
+                  style={styles.more}
+                  ripple="borderless"
+                  accessibilityLabel={`More for ${item.title}`}
+                >
+                  <Ionicons name="ellipsis-horizontal" size={18} color={colors.textMuted} />
+                </Touchable>
+              </Touchable>
+            </FoldAway>
           );
         }}
         ListEmptyComponent={
@@ -504,6 +649,7 @@ export function HomeScreen({ navigation }: Props) {
           )
         }
       />
+      {sheetActions.element}
     </Screen>
   );
 }
@@ -714,6 +860,21 @@ const makeStyles = (c: Palette, s: Shadows) =>
       alignItems: 'center',
       gap: 14,
       paddingVertical: 12,
+    },
+    /** The row whose actions are open: a faint tint under the sheet, so it is plain which piece they act on. */
+    recentRowActive: {
+      backgroundColor: c.surfaceAlt,
+      marginHorizontal: -spacing.sm,
+      paddingHorizontal: spacing.sm,
+      borderRadius: radii.md,
+    },
+    /** The ⋯ at the row's end: a 44 px target, flush with the screen's edge. */
+    more: {
+      width: 44,
+      height: 44,
+      marginRight: -12,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     dohTile: {
       width: 44,

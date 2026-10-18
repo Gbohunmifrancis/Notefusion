@@ -416,7 +416,7 @@ export function RecordScreen() {
       refresh();
       // Practised today, so today's reminder has nothing to nag about. Fire-and-forget.
       void markPractisedToday();
-      nav.navigate("Result", { result, sourceJobId });
+      nav.navigate("Result", { result, sourceJobId, fresh: true });
     }
   }, [state.status, state.result, state.jobId, nav, reset, refresh, rememberSubmit]);
 

@@ -23,6 +23,8 @@ const EYES = {
   closed: (dx = 0) => `<path d="M${69 + dx} 97Q${78 + dx} 104 ${87 + dx} 97M${113 + dx} 97Q${122 + dx} 104 ${131 + dx} 97" fill="none" stroke="${M.eye}" stroke-width="5" stroke-linecap="round"/>`,
   worried: () => `${EYES.open()}<path d="M66 82L86 77M134 82L114 77" fill="none" stroke="${M.eye}" stroke-width="4.5" stroke-linecap="round"/>`,
   keen: () => `${EYES.open()}<path d="M68 79Q78 73 88 78M112 78Q122 73 132 79" fill="none" stroke="${M.eye}" stroke-width="4.5" stroke-linecap="round"/>`,
+  // the keen face mid-blink: lids shut, brows kept, so the blink twin changes only the eyes
+  keenShut: () => `${EYES.closed()}<path d="M68 79Q78 73 88 78M112 78Q122 73 132 79" fill="none" stroke="${M.eye}" stroke-width="4.5" stroke-linecap="round"/>`,
 };
 const BEAK = {
   closed: (dx = 0) => `<path d="M${89 + dx} 108C${93 + dx} 105 ${107 + dx} 105 ${111 + dx} 108C${109 + dx} 116 ${104 + dx} 122 ${100 + dx} 123C${96 + dx} 122 ${91 + dx} 116 ${89 + dx} 108Z" fill="${M.beak}"/><path d="M${93 + dx} 115Q${100 + dx} 118 ${107 + dx} 115" fill="none" stroke="${M.beakDeep}" stroke-width="2" stroke-linecap="round"/>`,
@@ -56,22 +58,40 @@ const sparkle = (x, y, s, c) => `<path transform="translate(${x} ${y}) scale(${s
 export { sparkle };
 const flame = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 -26C4 -16 16 -10 16 6C16 18 9 26 0 26C-9 26 -16 18 -16 7C-16 -1 -12 -6 -8 -10C-8 -4 -6 -1 -3 0C-4 -10 -2 -20 0 -26Z" fill="${M.flame}"/><path d="M0 0C3 6 8 9 8 15C8 21 4 24 0 24C-4 24 -8 21 -8 15C-8 10 -5 7 -3 4C-2 7 -1 8 0 8C-1 5 -1 3 0 0Z" fill="#FFF1E0"/></g>`;
 
-export const POSES = {
-  wave: () => bird({ wings: [12, 148], eyes: "open", beak: "closed",
-    front: motion("M178 58q8 10 4 22") + motion("M186 50q12 14 6 32", "#5C9BFF") }),
-  sing: () => bird({ wings: [32, 32], eyes: "happy", beak: "open",
-    back: NOTE(160, 70, 1, M.ice) + NOTE(178, 34, .75, "#5C9BFF") + NOTE(36, 52, .7, M.ice) }),
-  cheer: () => bird({ wings: [150, 150], eyes: "happy", beak: "open", lift: 8,
-    back: sparkle(30, 40, 1, M.ice) + sparkle(172, 34, .8, M.spark) + `<circle cx="162" cy="84" r="4" fill="${M.mint}"/><circle cx="40" cy="86" r="3.5" fill="${M.red}"/><rect x="150" y="12" width="8" height="8" rx="2" transform="rotate(20 154 16)" fill="${M.ice}"/>` }),
-  encourage: () => bird({ wings: [12, 128], eyes: "keen", beak: "closed",
-    front: sparkle(180, 44, .8, M.mint) + sparkle(166, 26, .5, M.ice) }),
-  worried: () => bird({ wings: [-48, -48], eyes: "worried", beak: "small", crest: "droop", cheeks: false,
-    front: flame(100, 150, .62) + `<path d="M158 82c0 6-4 10-8 10s-8-4-8-10c0-5 8-14 8-14s8 9 8 14z" fill="${M.ice}" stroke="#fff" stroke-width="2"/>` }),
-  sleepy: () => bird({ wings: [8, 8], eyes: "closed", beak: "small", crest: "droop", tilt: -3,
-    back: mono("z", { cx: 152, cy: 48, h: 26, sw: 13, color: M.ice }) + mono("z", { cx: 174, cy: 24, h: 18, sw: 14, color: "#5C9BFF" }) }),
-  handoff: () => bird({ wings: [12, null], eyes: "happy", beak: "closed", dx: 6,
-    front: `<g transform="rotate(-12 172 140)"><rect x="150" y="124" width="42" height="32" rx="7" fill="#fff" stroke="${M.ice}" stroke-width="2.5"/>` + sparkle(171, 140, .95, "#5C9BFF") + `</g>` + wing(-58, "", "r") + sparkle(188, 104, .55, M.mint) }),
+// Each pose is the bird's options, so a pose's blink twin is the same options with the eyes shut.
+const POSE_OPTS = {
+  wave: { wings: [12, 148], eyes: "open", beak: "closed",
+    front: motion("M178 58q8 10 4 22") + motion("M186 50q12 14 6 32", "#5C9BFF") },
+  sing: { wings: [32, 32], eyes: "happy", beak: "open",
+    back: NOTE(160, 70, 1, M.ice) + NOTE(178, 34, .75, "#5C9BFF") + NOTE(36, 52, .7, M.ice) },
+  cheer: { wings: [150, 150], eyes: "happy", beak: "open", lift: 8,
+    back: sparkle(30, 40, 1, M.ice) + sparkle(172, 34, .8, M.spark) + `<circle cx="162" cy="84" r="4" fill="${M.mint}"/><circle cx="40" cy="86" r="3.5" fill="${M.red}"/><rect x="150" y="12" width="8" height="8" rx="2" transform="rotate(20 154 16)" fill="${M.ice}"/>` },
+  encourage: { wings: [12, 128], eyes: "keen", beak: "closed",
+    front: sparkle(180, 44, .8, M.mint) + sparkle(166, 26, .5, M.ice) },
+  worried: { wings: [-48, -48], eyes: "worried", beak: "small", crest: "droop", cheeks: false,
+    front: flame(100, 150, .62) + `<path d="M158 82c0 6-4 10-8 10s-8-4-8-10c0-5 8-14 8-14s8 9 8 14z" fill="${M.ice}" stroke="#fff" stroke-width="2"/>` },
+  sleepy: { wings: [8, 8], eyes: "closed", beak: "small", crest: "droop", tilt: -3,
+    back: mono("z", { cx: 152, cy: 48, h: 26, sw: 13, color: M.ice }) + mono("z", { cx: 174, cy: 24, h: 18, sw: 14, color: "#5C9BFF" }) },
+  handoff: { wings: [12, null], eyes: "happy", beak: "closed", dx: 6,
+    front: `<g transform="rotate(-12 172 140)"><rect x="150" y="124" width="42" height="32" rx="7" fill="#fff" stroke="${M.ice}" stroke-width="2.5"/>` + sparkle(171, 140, .95, "#5C9BFF") + `</g>` + wing(-58, "", "r") + sparkle(188, 104, .55, M.mint) },
+  // Outside Practice (board 8b): the result toast's cheer, wings up and notes rising, for a sheet just arrived.
+  "cheer-notes": { wings: [150, 150], eyes: "happy", beak: "open", lift: 8,
+    back: NOTE(158, 58, .9, M.ice) + NOTE(42, 50, .7, "#5C9BFF") },
 };
+export const POSES = Object.fromEntries(Object.entries(POSE_OPTS).map(([k, o]) => [k, () => bird(o)]));
+
+/**
+ * The poses that idle outside Practice with their eyes open (Home's card, the result toast): each has a blink twin,
+ * the same bird with the lids shut, shown for 140 ms now and then (board 8c).
+ */
+export const BLINKS = ["wave", "encourage"];
+const SHUT = { open: "closed", keen: "keenShut" };
+export function blinkSvg(pose, { vb = "0 0 200 200" } = {}) {
+  const o = POSE_OPTS[pose];
+  const eyes = SHUT[o.eyes ?? "open"];
+  if (!eyes) throw new Error(`doh-${pose} has no open eyes to blink`);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}"><defs>${birdDefs()}</defs>${bird({ ...o, eyes })}</svg>`;
+}
 export function birdSvg(pose, { vb = "0 0 200 200" } = {}) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}"><defs>${birdDefs()}</defs>${POSES[pose]()}</svg>`;
 }
