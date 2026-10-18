@@ -3,11 +3,15 @@
   "title": "Manoah",
   "music": [
     {
-      "name": "ascr. to, Gioacchinno A. Rossini",
+      "name": "Gioachino Rossini (ascribed)",
+      "born": 1792,
+      "died": 1868,
       "role": "Music"
     },
     {
-      "name": "ascr. to, Franz Joseph Haydn",
+      "name": "Franz Joseph Haydn (ascribed)",
+      "born": 1732,
+      "died": 1809,
       "role": "Music"
     },
     {
@@ -32,13 +36,13 @@
   "incipit": "drmrdttll|rmfmrddt",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0005/x000565.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0005/000565a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000565; public domain.",
-  "reviewNotes": "Held back: not provably public domain: ascr. to, Gioacchinno A. Rossini: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; not provably public domain: ascr. to, Franz Joseph Haydn: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000565 (the melody read from 000565a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. George Holden has no death year on CCEH's page or ours; their work is dated 1840, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000565a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000565 (the melody read from 000565a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells Gioachino Rossini (ascribed) as “ascr. to, Gioacchinno A. Rossini”; the name is printed as the sources spell it. Gioachino Rossini (ascribed)'s dates (1792–1868) are from https://hymnary.org/person/Rossini_GA (Rossini, Gioacchino, 1792-1868; the person CCEH's 'ascr. to, Gioacchinno A. Rossini' on MANOAH links to, https://hymnary.org/hymn/CCEH/565); https://en.wikipedia.org/wiki/Gioachino_Rossini (29 February 1792 - 13 November 1868); hymnals on https://hymnary.org/tune/manoah_greatorex print 'Gioacchino A. Rossini, 1792-1868'. CCEH misspells Gioachino and its 'ascr. to,' is an ascription, not a name; CCEH's page gives none. CCEH's page spells Franz Joseph Haydn (ascribed) as “ascr. to, Franz Joseph Haydn”; the name is printed as the sources spell it. Franz Joseph Haydn (ascribed)'s dates (1732–1809) are from https://hymnary.org/person/Haydn_FranzJoseph (Haydn, Joseph, 1732-1809; the person CCEH's 'ascr. to, Franz Joseph Haydn' on MANOAH links to, https://hymnary.org/hymn/CCEH/565); https://en.wikipedia.org/wiki/Joseph_Haydn (31 March 1732 - 31 May 1809). CCEH's 'ascr. to,' is an ascription, not a name; https://hymnary.org/tune/manoah_greatorex says MANOAH was first published in Greatorex's Collection, 1851; CCEH's page gives none. George Holden has no death year on CCEH's page or ours; their work is dated 1840, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000565a.nwc).",
   "importedFrom": "cceh:000565",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }

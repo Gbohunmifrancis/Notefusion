@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Griffith Hugh Jones",
+      "born": 1849,
+      "died": 1919,
       "role": "Music"
     },
     {
@@ -23,13 +25,13 @@
   "incipit": "llldrdtl|drrmmrdt",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0011/x001192.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0011/001192a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001192; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Griffith Hugh Jones: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 001192 (the melody read from 001192a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001192a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 001192 (the melody read from 001192a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Griffith Hugh Jones's dates (1849–1919) are from https://biography.wales/article/s-JONE-HUG-1849 (JONES, GRIFFITH HUGH (Gutyn Arfon; 1849 - 1919), musician; born January 1849, Llanberis; died 26 July 1919; wrote the tune Llef); https://hymnary.org/tune/llef_jones (LLEF, G. H. Arfon, Griffith Hugh Jones, 1849-1919); https://id.loc.gov/authorities/names/no2010117421 (Arfon, G. H. (Griffith Hugh), 1849-1919); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001192a.nwc).",
   "importedFrom": "cceh:001192",
   "updated": "2026-10-18"
 }

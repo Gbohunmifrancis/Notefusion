@@ -3,7 +3,9 @@
   "title": "Sagina",
   "music": [
     {
-      "name": "Campbell, Thomas",
+      "name": "Thomas Campbell",
+      "died": 1876,
+      "lived": "19th century",
       "role": "Music (1865)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "ddrmsfltrd",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0005/x000558.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0005/000558a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000558; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Campbell, Thomas: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000558 (the melody read from 000558a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000558a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000558 (the melody read from 000558a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells Thomas Campbell as “Campbell, Thomas”; the name is printed as the sources spell it. Thomas Campbell's dates are uncertain, so the page says only that they lived in the 19th century; they died by 1876 (https://hymnary.org/tune/sagina_campbell (SAGINA, by Thomas Campbell, first published in his The Bouquet, 1825; its biography, from Evans and Humphreys' Dictionary of Composers for the Church in Great Britain and Ireland: 'born in Sheffield, Yorkshire in 1800, died in Sheffield in 1876'). Hymnals on the same page print 1777-1844 (the poet Thomas Campbell's dates), 1824-1876 or 1825-1876, so his dates are uncertain; every one has him dead by 1876, and his tune was in print in 1825, before the pre-1850 rule's year. CCEH prints the name surname first). CCEH's page gives only the year 1865. The bar lines are those of CCEH's Noteworthy score (000558a.nwc).",
   "importedFrom": "cceh:000558",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }

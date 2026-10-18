@@ -3,7 +3,9 @@
   "title": "Meditation (Gower)",
   "music": [
     {
-      "name": "John M. Gower",
+      "name": "John Henry Gower",
+      "born": 1855,
+      "died": 1922,
       "role": "Music (1890)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "mmmmmmdd|dffmrs|ssslmsfm",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0009/x000998.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0009/000998a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000998; public domain.",
-  "reviewNotes": "Held back: not provably public domain: John M. Gower: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000998 (the melody read from 000998a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000998a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000998 (the melody read from 000998a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells John Henry Gower as “John M. Gower”; the name is printed as the sources spell it. John Henry Gower's dates (1855–1922) are from https://hymnary.org/tune/meditation_gower (MEDITATION, 1890, by John H. Gower; hymnals there print 'John Henry Gower, 1855-1922'; https://hymnary.org/hymn/CCEH/998 is the one credit as 'John M. Gower', so CCEH miswrites his middle initial); https://hymnary.org/person/Gower_JH (Gower, John H., 1855-1922); https://id.loc.gov/authorities/names/no2013099885 (Gower, John H., 1855-1922; born Rugby 1855, died Denver, Colorado, July 30, 1922; tune Meditation); CCEH's page gives only the year 1890. The bar lines are those of CCEH's Noteworthy score (000998a.nwc).",
   "importedFrom": "cceh:000998",
   "updated": "2026-10-18"
 }

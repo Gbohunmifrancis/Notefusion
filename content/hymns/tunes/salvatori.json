@@ -3,7 +3,9 @@
   "title": "Salvatori",
   "music": [
     {
-      "name": "Arr. from, Johann Michael Haydn",
+      "name": "Johann Michael Haydn",
+      "born": 1737,
+      "died": 1806,
       "role": "Music"
     }
   ],
@@ -24,7 +26,7 @@
   "scoreUrl": "https://www.ccel.org/cceh/0007/000707a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000707; public domain.",
-  "reviewNotes": "Held back: the page gives no year for the tune; not provably public domain: Arr. from, Johann Michael Haydn: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000707 (the melody read from 000707a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000707a.nwc).",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000707 (the melody read from 000707a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells Johann Michael Haydn as “Arr. from, Johann Michael Haydn”; the name is printed as the sources spell it. Johann Michael Haydn's dates (1737–1806) are from https://hymnary.org/person/Haydn_Michael (Haydn, Michael, 1737-1806; the person CCEH's 'Arr. from, Johann Michael Haydn' on SALVATORI links to, https://hymnary.org/hymn/CCEH/707); https://en.wikipedia.org/wiki/Michael_Haydn (14 September 1737 - 10 August 1806). Not in the undated list: added as a guard, because the importer's surname-and-first-initial fallback reads both this credit and 'ascr. to, Franz Joseph Haydn' as 'haydn a', and without this entry SALVATORI would be printed as Franz Joseph Haydn's; CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000707a.nwc).",
   "importedFrom": "cceh:000707",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }

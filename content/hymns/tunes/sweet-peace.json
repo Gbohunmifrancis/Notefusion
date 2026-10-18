@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Peter Philip Bilhorn",
+      "born": 1865,
+      "died": 1936,
       "role": "Music (1889)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "smrdmsdt",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0010/x001009.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0010/001009a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001009; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Peter Philip Bilhorn: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 001009 (the melody read from 001009a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001009a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 001009 (the melody read from 001009a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Peter Philip Bilhorn's dates (1865–1936) are from https://hymnary.org/person/Bilhorn_PP (Bilhorn, P. P. (Peter Philip), 1865-1936); https://id.loc.gov/authorities/names/nr94023824 (Bilhorn, P. P. (Peter Philip), 1865-1936); CCEH's page gives only the year 1889. The bar lines are those of CCEH's Noteworthy score (001009a.nwc).",
   "importedFrom": "cceh:001009",
   "updated": "2026-10-18"
 }

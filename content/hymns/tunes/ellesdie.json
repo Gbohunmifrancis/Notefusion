@@ -15,6 +15,8 @@
     },
     {
       "name": "Hubert P. Main",
+      "born": 1839,
+      "died": 1925,
       "role": "Arranged (1872)"
     }
   ],
@@ -29,13 +31,13 @@
   "incipit": "ddddmrrdd|rrrrfmmr",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0005/x000581.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0005/000581a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000581; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Hubert P. Main: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000581 (the melody read from 000581a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Wolfgang Amadeus Mozart's dates (1756–1791) are from our page for the tune MOZART (content/hymns/tunes/mozart.json); CCEH's page gives none. Joshua Leavitt has no death year on CCEH's page or ours; their work is dated 1831, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000581a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000581 (the melody read from 000581a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Wolfgang Amadeus Mozart's dates (1756–1791) are from our page for the tune MOZART (content/hymns/tunes/mozart.json); CCEH's page gives none. Joshua Leavitt has no death year on CCEH's page or ours; their work is dated 1831, before 1850, so they died before 1955 (they would have been over 105). Hubert P. Main's dates (1839–1925) are from https://hymnary.org/person/Main_HP (Main, Hubert P. (Hubert Platt), 1839-1925); https://id.loc.gov/authorities/names/nr92032058 (Main, Hubert P. (Hubert Platt), 1839-1925); CCEH's page gives only the year 1872. The bar lines are those of CCEH's Noteworthy score (000581a.nwc).",
   "importedFrom": "cceh:000581",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }

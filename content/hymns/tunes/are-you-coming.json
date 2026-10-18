@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "J. E. Hawes",
+      "born": 1862,
+      "died": 1933,
       "role": "Music (1917)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "ssmrdmls",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0005/x000575.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0005/000575a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000575; public domain.",
-  "reviewNotes": "Held back: not provably public domain: J. E. Hawes: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000575 (the melody read from 000575a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000575a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000575 (the melody read from 000575a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. J. E. Hawes's dates (1862–1933) are from https://hymnary.org/person/Hawes_JE (Hawes, James E., 1862-1933; 'born in Vermillion County, IL, near Danville, on Aug. 18, 1862', died 1933); https://id.loc.gov/authorities/names/no2017163219 (Hawes, J. E. (James Edward), 1862-1933; 'composer of many hymns and songs'; born August 18, 1862, died August 23, 1933); CCEH's page gives only the year 1917. The bar lines are those of CCEH's Noteworthy score (000575a.nwc).",
   "importedFrom": "cceh:000575",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }

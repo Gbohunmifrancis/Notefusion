@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Robert L. de Pearsall",
+      "born": 1795,
+      "died": 1856,
       "role": "Music (St. Gall Gesangbuch, 1863)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "sdtdmls|sfmrrm|dmfssls",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0006/x000647.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0006/000647a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000647; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Robert L. de Pearsall: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000647 (the melody read from 000647a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000647a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000647 (the melody read from 000647a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Robert L. de Pearsall's dates (1795–1856) are from https://hymnary.org/person/Pearsall_RL (Pearsall, R. L. (Robert Lucas), 1795-1856); https://en.wikipedia.org/wiki/Robert_Lucas_Pearsall (14 March 1795 - 5 August 1856) agrees; CCEH's page gives only the year 1863. The bar lines are those of CCEH's Noteworthy score (000647a.nwc).",
   "importedFrom": "cceh:000647",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }

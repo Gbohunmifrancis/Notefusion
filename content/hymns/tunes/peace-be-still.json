@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Horatio Richmond Palmer",
+      "born": 1834,
+      "died": 1907,
       "role": "Music"
     }
   ],
@@ -24,7 +26,7 @@
   "scoreUrl": "https://www.ccel.org/cceh/0007/000757a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000757; public domain.",
-  "reviewNotes": "Held back: the page gives no year for the tune; not provably public domain: Horatio Richmond Palmer: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000757 (the melody read from 000757a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000757a.nwc). The tune ends on E, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000757 (the melody read from 000757a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Horatio Richmond Palmer's dates (1834–1907) are from https://hymnary.org/person/Palmer_HR (Palmer, H. R. (Horatio Richmond), 1834-1907; 'was born April 26, 1834'); https://id.loc.gov/authorities/names/nr92011120 (Palmer, H. R. (Horatio Richmond), 1834-1907); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000757a.nwc). The tune ends on E, neither doh nor lah: it may be modal; the doh is the key signature's.",
   "importedFrom": "cceh:000757",
-  "updated": "2026-10-17"
+  "updated": "2026-10-18"
 }
