@@ -4,10 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using NoteFusion.Application.Admin.Queries;
 using NoteFusion.Application.AppRelease.Dtos;
 using NoteFusion.Application.Common.Settings;
+using NoteFusion.Application.Flags.Dtos;
+using NoteFusion.Application.Flags.Queries;
 
 namespace NoteFusion.Api.Controllers;
 
-/// <summary>What the app stores carry, so a running client can tell whether it is out of date.</summary>
+/// <summary>
+/// What the app stores carry, so a running client can tell whether it is out of date, and the season every surface
+/// dresses for.
+/// </summary>
 [ApiController]
 [Route("api/app")]
 public sealed class AppController : ControllerBase
@@ -42,5 +47,23 @@ public sealed class AppController : ControllerBase
             _release.AndroidStoreUrl,
             _release.IosStoreUrl,
             announcement));
+    }
+
+    /// <summary>
+    /// <c>{"christmas": true|false}</c>: whether the website, the web app and the phone app dress for Christmas now. The
+    /// admin console's Feature flags switch decides it, and it switches itself off after its last day. A signed-in admin
+    /// also sees it while "Preview for admins only" is on. Cached for a minute: publicly when anonymous, privately when
+    /// a token was sent (an admin's answer may be the preview).
+    /// </summary>
+    [AllowAnonymous]
+    [HttpGet("season")]
+    [ProducesResponseType(typeof(SeasonDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Season(CancellationToken ct)
+    {
+        var season = (await _sender.Send(new GetSeasonQuery(), ct)).Value;
+        var signedIn = Request.Headers.Authorization.Count > 0;
+        Response.Headers.CacheControl = signedIn ? "private, max-age=60" : "public, max-age=60";
+        Response.Headers.Vary = "Authorization";
+        return Ok(season);
     }
 }

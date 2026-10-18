@@ -860,6 +860,43 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("email_sends", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.FeatureFlag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("AdminPreview")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("AutoOffAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedByEmail")
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)");
+
+                    b.Property<Guid?>("UpdatedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique();
+
+                    b.ToTable("feature_flags", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.FolderShare", b =>
                 {
                     b.Property<Guid>("Id")

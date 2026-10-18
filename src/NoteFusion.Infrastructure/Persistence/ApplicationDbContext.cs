@@ -53,6 +53,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Achievement> Achievements => Set<Achievement>();
     public DbSet<PracticeReminder> PracticeReminders => Set<PracticeReminder>();
     public DbSet<BackupRun> BackupRuns => Set<BackupRun>();
+    public DbSet<FeatureFlag> FeatureFlags => Set<FeatureFlag>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

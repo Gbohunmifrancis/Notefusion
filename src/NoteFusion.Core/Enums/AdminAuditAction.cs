@@ -66,5 +66,8 @@ public enum AdminAuditAction
     RemovePasskey = 22,
 
     /// <summary>An admin signed in to the console with a passkey (actor and target are the same account).</summary>
-    PasskeySignIn = 23
+    PasskeySignIn = 23,
+
+    /// <summary>An admin changed a feature flag (the Christmas season): switched it, its admin preview or its end date.</summary>
+    SetFeatureFlag = 24
 }
