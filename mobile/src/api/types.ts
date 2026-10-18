@@ -45,6 +45,15 @@ export interface MyProfile {
   createdAt: string;
 }
 
+/**
+ * GET/PUT /api/me/email-preferences (C# `EmailPreferencesDto`). `founderNotes` is false once the account
+ * unsubscribed from the founder's notes (the email's link or the Notifications switch); mail about the
+ * account itself always goes.
+ */
+export interface EmailPreferences {
+  founderNotes: boolean;
+}
+
 // --- Transcriptions -----------------------------------------------------
 
 export type TranscriptionStatus = "pending" | "processing" | "done" | "failed";

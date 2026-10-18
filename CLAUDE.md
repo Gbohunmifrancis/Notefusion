@@ -356,7 +356,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   turn holds off a day after any outreach), active free user, tried once then quiet 5 days, never transcribed after
   2 days — once per segment per account ever, at most one a week, 09:00–19:00 WAT, `Outreach__BatchSize` (5) per run.
   `OutreachMessage` rows are the claim (unique user+segment+channel) and the audit trail (`GET /api/admin/outreach`);
-  a failed send is retried once. Email respects `EmailOptOut` (signed one-click `GET/POST /api/email/unsubscribe`);
+  a failed send is retried once. Email respects `EmailOptOut` (signed one-click `GET/POST /api/email/unsubscribe`, or the
+  app's "Notes from the founder" switch, `GET/PUT /api/me/email-preferences`);
   push respects the app's switch (it unregisters the device). Off unless `Outreach__Enabled` + `FounderName` +
   `ReplyTo` are set (prod defaults them on; the code default is off).
 - Email quota (`Application/Common/EmailBudget`, `Infrastructure/Email/EmailQuota`): every email Resend accepts is an

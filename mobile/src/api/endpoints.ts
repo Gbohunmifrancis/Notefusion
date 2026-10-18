@@ -14,6 +14,7 @@ import type {
   CheckoutSession,
   Choir,
   Drill,
+  EmailPreferences,
   ChoirMember,
   ChoirSheet,
   ChordSymbol,
@@ -145,6 +146,12 @@ export const meApi = {
    */
   remove: (proof: { password: string } | { googleIdToken: string }) =>
     api.delete("/api/me", { data: proof }).then(() => undefined),
+
+  /** The "Notes from the founder" email switch (the same opt-out the email's unsubscribe link records). */
+  emailPreferences: () =>
+    api.get<EmailPreferences>("/api/me/email-preferences").then((r) => r.data),
+  setEmailPreferences: (prefs: EmailPreferences) =>
+    api.put<EmailPreferences>("/api/me/email-preferences", prefs).then((r) => r.data),
 };
 
 /** The answers to "where did you hear about us?" the API accepts (UserFeedback.HeardAboutSources). */

@@ -83,6 +83,19 @@ public sealed class MeController : ApiControllerBase
         => HandleResult(await _sender.Send(new RemoveMyProfilePictureCommand(), ct));
 
     /// <summary>
+    /// The caller's email choices: <c>{founderNotes}</c>, false once they unsubscribed from the founder's notes
+    /// (by the email's link or the app's switch). Mail about the account itself always goes.
+    /// </summary>
+    [HttpGet("email-preferences")]
+    public async Task<IActionResult> EmailPreferences(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetMyEmailPreferencesQuery(), ct));
+
+    /// <summary>Sets <c>founderNotes</c>; answers with the choices as they now stand.</summary>
+    [HttpPut("email-preferences")]
+    public async Task<IActionResult> SetEmailPreferences(SetMyEmailPreferencesCommand command, CancellationToken ct)
+        => HandleResult(await _sender.Send(command, ct));
+
+    /// <summary>
     /// Closes the authenticated user's account, taking their library with it. Irreversible;
     /// the current password is re-checked in the handler before anything is removed.
     /// </summary>
