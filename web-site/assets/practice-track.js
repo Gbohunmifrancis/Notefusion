@@ -151,7 +151,9 @@
 
   var BADGE_ART = {
     first_drill: "first-drill", streak_3: "three-in-a-row", first_100: "spot-on", drills_10: "ten-drills", first_part: "first-part",
-    week_goal: "week-goal", streak_7: "seven-in-a-row", whole_part_80: "part-learned", streak_30: "month"
+    week_goal: "week-goal", streak_7: "seven-in-a-row", whole_part_80: "part-learned", streak_30: "month",
+    // The Christmas season's sticker: all six carols sung while it is on, kept for good.
+    carol_singer: "carol-singer"
   };
   /** A badge's sticker, or its locked one; a code this build does not know shows the first drill's. */
   function badgeArt(code, earned) {
@@ -174,12 +176,15 @@
 
   /** The burst's paper bits, in turn. */
   var CONFETTI_ART = ["confetti-quaver", "confetti-sparkle", "confetti-beamed", "confetti-dot", "confetti-sharp", "confetti-ribbon", "confetti-flat", "confetti-tri"];
+  /** The Carol singer's burst (board d-christmas/03): snowflakes and quavers in place of the usual paper bits. */
+  var SEASON_CONFETTI_ART = ["confetti-snowflake", "confetti-quaver", "confetti-snowflake", "confetti-beamed"];
 
   window.NfPracticeTrack = {
     TRACK_OPTIONS: TRACK_OPTIONS, TRACK_QUESTION: TRACK_QUESTION, THREE_STAR_SCORE: THREE_STAR_SCORE, TWO_STAR_SCORE: TWO_STAR_SCORE,
     trackTitle: trackTitle, starsFor: starsFor, starWord: starWord, starHint: starHint, celebrationFor: celebrationFor,
     playfulRewardLine: playfulRewardLine, tuningLine: tuningLine, buddyLine: buddyLine, stickerTilt: stickerTilt,
     mascotMood: mascotMood, mascotLine: mascotLine, mascotArt: mascotArt, levelArt: levelArt, badgeArt: badgeArt,
-    flameArt: flameArt, rewardArt: rewardArt, starsArt: starsArt, trackArt: trackArt, CONFETTI_ART: CONFETTI_ART
+    flameArt: flameArt, rewardArt: rewardArt, starsArt: starsArt, trackArt: trackArt, CONFETTI_ART: CONFETTI_ART,
+    SEASON_CONFETTI_ART: SEASON_CONFETTI_ART
   };
 })();

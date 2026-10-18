@@ -17,11 +17,16 @@
  * practice-modes.css, loaded the first time a mode is opened through `loadAsset`); the stat cards, the week and the
  * badges sit below as "Your progress", the streak and level one line at the top.
  *
+ * While the Christmas season is on for the singer (the progress carries `season`): one pine "Carols for Christmas" card
+ * under today's drill opening the carols path (assets/practice-carols.js and .css, loaded on its first open; board
+ * d-christmas/03), and Doh in the season's cap. Off, none of it is drawn or downloaded.
+ *
  * Loaded by app.js the first time the view is opened (never on the app's first load), with
  * practice-progress.js, practice-track.js and practice-modes.js (the arithmetic and wording) and practice-view.css.
  * app.js hands over its API client, analytics, the rehearsal piano (assets/choir.js) and its asset loader:
  *
- *   NfPracticeView.open(rootEl, { request, track, choir, onProgress, loadAsset })   — show it (loads fresh numbers)
+ *   NfPracticeView.open(rootEl, { request, track, choir, onProgress, loadAsset, show })   — show it (loads fresh numbers;
+ *                                                                        show: "carols" opens on the carols path)
  *   NfPracticeView.leave()                                               — another view: stop sound and mic
  *   NfPracticeView.reset()                                               — signed out: forget everything
  */
@@ -78,6 +83,26 @@
     img.width = width; img.height = height || width;
     img.className = "pv-art" + (cls ? " " + cls : "");
     return img;
+  }
+  /**
+   * Doh in the Christmas cap while the season is on (in Practice only: board d-christmas/03), else the picture as it
+   * is. The cap (practice-art/season-cap.svg) is laid over him on his 200 × 200 box, tipped back so the crest shows.
+   */
+  function seasonOn() { return !!(s.progress && s.progress.season) || !!(window.NfSeason && window.NfSeason.christmas); }
+  function dohArt(name, width, cls) {
+    var pic = art(name, width, width, cls);
+    if (!seasonOn() || name.indexOf("doh-") !== 0 || name === "doh-avatar" || !window.NfSeason) return pic;
+    var box = el("span", "pv-capped" + (cls ? " " + cls : ""));
+    box.style.width = width + "px"; box.style.height = width + "px";
+    pic.className = "pv-art";
+    box.appendChild(pic);
+    var NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg"), g = document.createElementNS(NS, "g"), img = document.createElementNS(NS, "image");
+    svg.setAttribute("viewBox", "0 0 200 200"); svg.setAttribute("aria-hidden", "true"); svg.setAttribute("class", "pv-cap");
+    g.setAttribute("transform", window.NfSeason.capOnDoh(name));
+    img.setAttribute("href", ART_DIR + "season-cap.svg" + ART_V);
+    img.setAttribute("x", "-100"); img.setAttribute("y", "-125"); img.setAttribute("width", "200"); img.setAttribute("height", "150");
+    g.appendChild(img); svg.appendChild(g); box.appendChild(svg);
+    return box;
   }
   function button(cls, href, text, onClick) {
     var b = el("button", "btn " + cls); b.type = "button";
@@ -176,7 +201,7 @@
    * "More ways to practise" (Playful: "More ways to play"): one quiet list of the modes the server says are live, in
    * its order. Focused gets one small Doh beside the heading; Playful's Doh is the buddy at the top.
    */
-  function modesSection(p, tr) {
+  function modesSection(p, tr, dohElsewhere) {
     var M = window.NfPracticeModes, rows = M.hubModes(p.modes, tr, true);
     if (!rows.length) return null;
     var sec = el("section", "pv-modes" + (tr === "playful" ? " is-playful" : ""));
@@ -184,10 +209,11 @@
     var head = el("div", "pv-modes-head"), text = el("div", "pv-modes-text");
     var h = el("h2", "pv-section", M.modesHeading(tr)); h.id = "pv-modes-title";
     text.appendChild(h);
-    var line = M.modesDohLine(rows, tr);
+    // One Doh on screen: while the carols card shows his, the modes' steps aside.
+    var line = dohElsewhere ? null : M.modesDohLine(rows, tr);
     if (line) text.appendChild(el("p", "pv-modes-doh", "“" + line + "”"));
     head.appendChild(text);
-    if (line) head.appendChild(art("doh-wave", 56, 56, "pv-modes-bird"));
+    if (line) head.appendChild(dohArt("doh-wave", 56, "pv-modes-bird"));
     sec.appendChild(head);
     var list = el("ul", "pv-mode-list");
     rows.forEach(function (r) {
@@ -235,11 +261,71 @@
   }
   function closeMode() {
     if (!s.mode) return;
-    if (window.NfPracticeModeView) window.NfPracticeModeView.leave();
+    if (s.mode === "carols") { if (window.NfPracticeCarols) window.NfPracticeCarols.leave(); }
+    else if (window.NfPracticeModeView) window.NfPracticeModeView.leave();
     s.mode = null; inMode(false);
     render();
     window.scrollTo({ top: 0 });
     refreshProgress(); // a marked take moved the XP, the streak and today's allowance
+  }
+
+  // ── The Christmas carols (board d-christmas/03), only while the season is on for the singer ─────────────
+  /** The carols path's screen: its script and styles load the first time it is opened, never with the view. */
+  var CAROLS_ASSETS = ["/assets/practice-modes.css?v=1", "/assets/practice-carols.css?v=1", "/assets/practice-carols.js?v=1"];
+
+  /** The pine card under today's drill: until when, six segments, how many sung and what is next, and the way in. */
+  function carolsCard(season, withDoh) {
+    var c = PP().carolsCard(season), card = el("section", "pv-carols");
+    card.setAttribute("aria-labelledby", "pv-carols-title");
+    var top = el("div", "pv-carols-top"), text = el("div", "pv-carols-text");
+    text.appendChild(el("p", "pv-carols-eyebrow", c.eyebrow));
+    var h = el("h2", "pv-carols-title", c.title); h.id = "pv-carols-title";
+    text.appendChild(h);
+    text.appendChild(el("p", "pv-carols-body", c.body));
+    top.appendChild(text);
+    if (withDoh) top.appendChild(dohArt("doh-wave", 88, "pv-carols-doh"));
+    card.appendChild(top);
+    var segs = el("div", "pv-carols-bar");
+    segs.setAttribute("role", "progressbar"); segs.setAttribute("aria-label", c.label);
+    segs.setAttribute("aria-valuemin", "0"); segs.setAttribute("aria-valuemax", String(season.total)); segs.setAttribute("aria-valuenow", String(season.sung));
+    c.segments.forEach(function (on) { segs.appendChild(el("i", on ? "on" : null)); });
+    card.appendChild(segs);
+    var foot = el("div", "pv-carols-foot"), ft = el("div", "pv-carols-text");
+    ft.appendChild(el("strong", null, c.sung));
+    ft.appendChild(el("span", null, c.next));
+    foot.appendChild(ft);
+    var go = el("button", "btn btn-ghost pv-carols-go"); go.type = "button"; go.id = "pv-carols-go";
+    go.appendChild(document.createTextNode(c.action));
+    go.appendChild(icon("/assets/icons.svg#i-arrow-right"));
+    go.addEventListener("click", openCarols);
+    foot.appendChild(go);
+    card.appendChild(foot);
+    return card;
+  }
+
+  /** Opens the carols path in the view's place, as a mode's screen opens; back returns to the hub. */
+  function openCarols() {
+    if (s.phase !== "idle" || s.mode || !s.progress || !s.progress.season) return;
+    stopHear(); stopReplay(); hideToast();
+    var gen = s.gen;
+    s.mode = "carols"; inMode(true);
+    track("carols_opened", "sung=" + s.progress.season.sung);
+    root.innerHTML = "";
+    var sk = el("div", "pv-skel");
+    for (var i = 0; i < 3; i++) sk.appendChild(el("div", "skel"));
+    root.appendChild(sk);
+    window.scrollTo({ top: 0 });
+    Promise.all(CAROLS_ASSETS.map(ctx.loadAsset)).then(function () {
+      if (gen !== s.gen || s.mode !== "carols" || !root) return;
+      window.NfPracticeCarols.open(root, {
+        request: ctx.request, track: ctx.track, choir: ctx.choir, practiceTrack: currentTrack(),
+        art: art, dohArt: dohArt, icon: icon, modeIcon: modeIcon, starGrade: starGrade, gradeMarks: gradeMarks,
+        toast: toast, burst: burst, back: closeMode
+      });
+    }, function () {
+      if (gen !== s.gen || s.mode !== "carols") return;
+      s.mode = null; inMode(false); s.error = "That didn't load. Check your connection and try again."; render();
+    });
   }
 
   // ── Drawing ─────────────────────────────────────────────────────────────
@@ -283,7 +369,11 @@
     if (showPicker()) box.appendChild(trackPicker(tr, T));
     if (s.drill && !showPicker()) box.appendChild(drillCard(s.drill, P));
     if (!s.drill && !showPicker()) box.appendChild(emptyState("empty-no-drill", "No drill yet", "Today's drill isn't here yet. Try again in a moment.", function () { load(); }));
-    var modes = showPicker() ? null : modesSection(p, tr);
+    // The Christmas carols, while the season is on for the singer: one pine card under today's drill. Doh is in it on
+    // Focused; on Playful he is the buddy at the top.
+    var carolsDoh = !!p.season && !playful && !showPicker();
+    if (p.season && !showPicker()) box.appendChild(carolsCard(p.season, carolsDoh));
+    var modes = showPicker() ? null : modesSection(p, tr, carolsDoh);
     if (modes) box.appendChild(modes);
     // Your progress: the two stat cards, the week and the badges, under the ways to practise (board 6a).
     box.appendChild(el("h2", "pv-section", "Your progress"));
@@ -377,7 +467,7 @@
     var scene = { picking: showPicker(), recording: s.phase !== "idle", grade: s.grade, hasDrill: !!s.drill, drillsLeft: allowance ? PP().drillsLeft(allowance) : null };
     var mood = T.mascotMood(p, scene), line = T.mascotLine(mood, p, scene), box = el("div", "pv-buddy");
     box.setAttribute("role", "note"); box.setAttribute("aria-label", "Doh, your practice buddy, says: " + line);
-    box.appendChild(art(T.mascotArt(mood), 68, 68, "pv-buddy-doh"));
+    box.appendChild(dohArt(T.mascotArt(mood), 68, "pv-buddy-doh"));
     var bubble = el("p", "pv-buddy-bubble", line); bubble.setAttribute("aria-hidden", "true");
     box.appendChild(bubble);
     return box;
@@ -702,12 +792,14 @@
     confettiWarm = true;
     PT().CONFETTI_ART.forEach(function (n) { art(n, 1); });
   }
-  function burst() {
+  /** `pieces` swaps the paper bits (the Carol singer's snowflakes and quavers); the usual ones by default. */
+  function burst(pieces) {
     if (reducedMotion()) return;
+    var bits = pieces && pieces.length ? pieces : PT().CONFETTI_ART;
     var layer = el("div", "pv-confetti"); layer.setAttribute("aria-hidden", "true");
     for (var i = 0; i < 24; i++) {
       var angle = (i / 24) * Math.PI * 2 + ((i * 37) % 11) / 20, reach = 90 + ((i * 53) % 70);
-      var size = 14 + ((i * 7) % 9), bit = art(PT().CONFETTI_ART[i % PT().CONFETTI_ART.length], size);
+      var size = 14 + ((i * 7) % 9), bit = art(bits[i % bits.length], size);
       bit.style.setProperty("--dx", Math.round(Math.cos(angle) * reach) + "px");
       bit.style.setProperty("--dy", Math.round(Math.sin(angle) * reach - 40) + "px");
       bit.style.setProperty("--r", ((i * 47) % 360) + "deg");
@@ -945,20 +1037,27 @@
     ctx = context;
     root = rootEl;
     render();
-    if (s.phase === "idle") load();
+    // The home's Christmas link opens on the carols path, once the progress says it is there.
+    var toCarols = context && context.show === "carols";
+    if (s.phase === "idle") load().then(function () { if (toCarols && s.progress && s.progress.season) openCarols(); });
   }
   /** Another view: nothing keeps sounding or listening, and coming back opens on the hub. */
   function leave() {
     stopHear(); stopReplay();
     if (take) cancelTake();
     hideToast();
-    if (s.mode) { if (window.NfPracticeModeView) window.NfPracticeModeView.leave(); s.mode = null; inMode(false); }
+    if (s.mode) {
+      if (s.mode === "carols") { if (window.NfPracticeCarols) window.NfPracticeCarols.leave(); }
+      else if (window.NfPracticeModeView) window.NfPracticeModeView.leave();
+      s.mode = null; inMode(false);
+    }
   }
   /** Signed out: the next person on this browser sees none of it. */
   function reset() {
     s.gen++;
     leave();
     if (window.NfPracticeModeView) window.NfPracticeModeView.reset();
+    if (window.NfPracticeCarols) window.NfPracticeCarols.reset();
     dropTakeUrl();
     s.progress = null; s.drill = null; s.next = null; s.grade = null; s.error = null; s.loadError = null; s.loading = false; s.phase = "idle";
     s.picking = false; s.savingTrack = null; s.trackError = null;

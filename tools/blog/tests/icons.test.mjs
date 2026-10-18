@@ -30,7 +30,8 @@ function sources() {
 function asked(text) {
   const ids = new Set();
   for (const m of text.matchAll(/icons\.svg#i-([a-z0-9-]+)/g)) ids.add(m[1]);
-  for (const m of text.matchAll(/\bicon\("([a-z0-9-]+)"/g)) ids.add(m[1]);
+  // The templates' own icon("…"), not a script's ctx.icon("…"), which draws the Practice view's inline icons.
+  for (const m of text.matchAll(/(?<!\.)\bicon\("([a-z0-9-]+)"/g)) ids.add(m[1]);
   for (const m of text.matchAll(/\blabel\([^,]+,\s*"([a-z0-9-]+)"/g)) ids.add(m[1]);
   return ids;
 }

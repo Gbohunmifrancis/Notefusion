@@ -391,7 +391,7 @@
     me = null; sub = null; libraryCache = null; libFolder = null; choir = null;
     stopPaymentWatch(); hide($("top-nav")); document.body.classList.remove("is-pro");
     $("recents-list").innerHTML = "";
-    hide($("practice-chip")); if (window.NfPracticeView) window.NfPracticeView.reset();
+    hide($("practice-chip")); hide($("season-carols")); if (window.NfPracticeView) window.NfPracticeView.reset();
   }
   /** The API refused the refresh token: back to the sign-in screen. */
   function sessionEnded() { clearTokens(); forgetAccount(); showAuth(); }
@@ -678,7 +678,7 @@
   // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
   // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
   // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=5", "/assets/practice-progress.js?v=4", "/assets/practice-track.js?v=4", "/assets/practice-modes.js?v=1", "/assets/practice-view.js?v=6"];
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=6", "/assets/practice-progress.js?v=5", "/assets/practice-track.js?v=5", "/assets/practice-modes.js?v=1", "/assets/practice-view.js?v=7"];
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
   function loadAsset(url) {
@@ -694,12 +694,15 @@
     return assetLoads[url];
   }
   var practiceViewOpen = false;
+  /** What the Practice view opens on, once: "carols" from the home's Christmas link, else the hub. */
+  var practiceOpensOn = null;
   function openPracticeView() {
     practiceViewOpen = true;
-    var at = epoch, root = $("practice-root");
+    var at = epoch, root = $("practice-root"), opensOn = practiceOpensOn;
+    practiceOpensOn = null;
     var go = function () {
       if (at !== epoch || !practiceViewOpen) return;
-      window.NfPracticeView.open(root, { request: request, track: track, choir: C, onProgress: renderPracticeChip, loadAsset: loadAsset });
+      window.NfPracticeView.open(root, { request: request, track: track, choir: C, onProgress: renderPracticeChip, loadAsset: loadAsset, show: opensOn });
     };
     if (window.NfPracticeView) { go(); return; }
     Promise.all(PRACTICE_ASSETS.map(loadAsset)).then(go, function () {
@@ -719,13 +722,34 @@
   /** The home chip: the streak and the XP, a tap from today's drill (the phone's Home chip). */
   function renderPracticeChip(p) {
     var chip = $("practice-chip");
-    if (!p || !p.streak || !p.level) { hide(chip); return; }
+    if (!p || !p.streak || !p.level) { hide(chip); hide($("season-carols")); return; }
     chip.classList.toggle("is-on", p.streak.current > 0);
     $("practice-chip-streak").textContent = p.streak.current;
     $("practice-chip-xp").textContent = p.xp + " XP";
     chip.setAttribute("aria-label", "Practice: " + p.streak.current + "-day streak, " + p.xp + " XP, level " + p.level.name);
     show(chip);
+    renderSeasonCarols(p);
   }
+  /**
+   * The Christmas carols, while the season is on for this account (the progress carries the path): one pine link
+   * under the greeting, "Sing the carols · 2 of 6", to the carols path in Practice (board d-christmas/06).
+   */
+  var SEASON_CSS = "/assets/season.css?v=1";
+  function renderSeasonCarols(p) {
+    var link = $("season-carols"), season = p && p.season;
+    if (!season) { hide(link); return; }
+    loadAsset(SEASON_CSS).then(function () {
+      $("season-carols-text").textContent = "Sing the carols · " + season.sung + " of " + season.total;
+      link.setAttribute("aria-label", season.title + ": " + season.sung + " of " + season.total + " sung. Open the carols in Practice");
+      show(link);
+    }, function () { hide(link); });
+  }
+  /** The home's question, in the season's words while it is on (assets/season.js says so). */
+  function homeQuestion() {
+    return window.NfSeason && window.NfSeason.christmas ? "What are we singing this Christmas?" : "What are we writing out today?";
+  }
+  document.addEventListener("nf-season", function () { if (me && !guest) $("home-sub").textContent = homeQuestion(); });
+  $("season-carols").addEventListener("click", function () { track("Season: carols link"); practiceOpensOn = "carols"; setView("practice"); });
   function loadPracticeChip() {
     var at = epoch;
     var go = function () {
@@ -1237,7 +1261,7 @@
     ["topbar-avatar-img", "chip-avatar", "menu-avatar"].forEach(function (id) { setAvatar($(id), me); });
     $("chip-name").textContent = me ? ((me.fullName || "").trim().split(/\s+/)[0] || me.email || "") : "";
     $("greeting").textContent = greeting(me && me.fullName);
-    $("home-sub").textContent = "What are we writing out today?";
+    $("home-sub").textContent = homeQuestion();
     document.body.classList.toggle("is-pro", isPro());
     isPro() ? show($("greeting-pro")) : hide($("greeting-pro"));
     $("menu-plans-label").textContent = isPro() ? "My membership" : "Plans & billing";

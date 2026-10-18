@@ -185,3 +185,56 @@ test("the allowance counts down, then says warmly when more come, on the device'
   assert.equal(P.allowanceLine({ used: 12, limit: 10 }), "That's all 10 of today's drills. Well sung! More tomorrow.");
   assert.equal(P.resetTime("not a time"), null);
 });
+
+// ── The Christmas carols path: the same cases as mobile/src/lib/season.test.ts ──
+const step = (index, title, carol, cue, detail, passed, bestScore = null) => ({ index, id: `carol-${index}@60`, title, carol, hymnSlug: "x", cue, detail, passed, bestScore });
+const STEPS = (n) => [
+  step(1, "Gloria warm-up", "Angels We Have Heard on High", "the Gloria warm-up", "one breath", n >= 1, n >= 1 ? 92 : null),
+  step(2, "All the way down", "Joy to the World", "Joy to the World, all the way down", "d' t l s f m r d", n >= 2, n >= 2 ? 84 : null),
+  step(3, "Sing in thirds", "Silent Night", "Silent Night, in thirds", "Doh is Bb · 4 notes", n >= 3),
+  step(4, "Sing along", "Silent Night", "Silent Night, sing along", "the first verse, with the words", n >= 4),
+  step(5, "Leap up to doh", "Hark! The Herald Angels Sing", "Hark! The Herald Angels Sing, leap up to doh", "s, d d t, d", n >= 5),
+  step(6, "Step up to soh", "The First Noel", "The First Noel, step up to soh", "m r d r m f s", n >= 6),
+];
+const season = (n) => {
+  const steps = STEPS(n);
+  return { season: "christmas", title: "Carols for Christmas", until: "2027-01-06", sung: n, total: 6, next: steps.find((s) => !s.passed) ?? null, steps, badgeCode: "carol_singer" };
+};
+
+test("the carols card: until when, six segments, how many sung and what is next", () => {
+  const c = P.carolsCard(season(2));
+  assert.equal(c.eyebrow, "Christmas · Until 6 January");
+  same(c.segments, [true, true, false, false, false, false]);
+  assert.equal(c.sung, "2 of 6 sung");
+  assert.equal(c.next, "Next: Silent Night, in thirds");
+  assert.equal(c.action, "Continue");
+  assert.equal(P.carolsCard(season(0)).action, "Start");
+  assert.equal(P.carolsCard(season(6)).action, "Sing again");
+  assert.equal(P.carolsCard(season(6)).next, "All sung. The Carol singer sticker is yours.");
+  assert.equal(P.carolsCard({ ...season(1), until: null }).eyebrow, "Christmas");
+  assert.equal(P.untilLabel("2026-12-31"), "Until 31 December");
+  assert.equal(P.untilLabel("6 Jan"), null);
+});
+
+test("the carols path: the next drill open, the sung ones done, any one chosen again", () => {
+  const v = P.carolsView(season(2), null);
+  assert.equal(v.eyebrow, "Christmas · 2 of 6");
+  assert.equal(v.open, 3);
+  same(v.rows.map((r) => r.state), ["done", "done", "open", "todo", "todo", "todo"]);
+  assert.equal(v.rows[0].line, "Angels We Have Heard on High · one breath");
+  same(P.carolsView(season(2), 1).rows.map((r) => r.state), ["open", "done", "todo", "todo", "todo", "todo"]);
+  assert.equal(P.carolsView(season(2), 9).open, 3);
+  assert.equal(P.carolsView(season(6), null).allSung, true);
+  assert.equal(P.carolsView(season(6), null).open, 6);
+});
+
+test("Doh's word over the path, the sticker by its code, and the Carol singer's line", () => {
+  assert.equal(P.carolsBuddyLine(season(2)), "Joyful! Now sing under the tune, like the altos do.");
+  assert.equal(P.carolsBuddyLine(season(5)), "Last one: step up to soh with The First Noel.");
+  assert.equal(P.carolsBuddyLine(season(6)), "You sang all six carols. Merry Christmas!");
+  assert.equal(P.earnedCarolSinger([{ code: "streak_3" }, { code: "carol_singer" }]), true);
+  assert.equal(P.earnedCarolSinger([{ code: "streak_3" }]), false);
+  assert.equal(P.earnedCarolSinger(null), false);
+  assert.equal(P.solfaLine(P.JOY_LINE), "d' t l s f m r d");
+  same(P.JOY_LINE.map((n) => n.pitchMidi), [86, 85, 83, 81, 79, 78, 76, 74]);
+});
