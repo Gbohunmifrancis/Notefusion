@@ -424,9 +424,12 @@ export interface Drill {
   dohHeader: string;
   tempoBpm: number;
   timeSignature: string;
-  /** A bar of the first note and a bar of clicks before the singer starts. */
+  /**
+   * The count-in of apps before the five-second cap (two bars of 4/4), kept for them. This app counts in with
+   * lib/practice `leadInPlan` and sends its seconds with the take.
+   */
   leadInBeats: number;
-  /** The worker keeps no more of the take than this. */
+  /** The worker keeps no more of the take than this (room for the longer, older count-in). */
   maxTakeSeconds: number;
   notes: NoteEvent[];
   /** yyyy-mm-dd on the singer's calendar. */

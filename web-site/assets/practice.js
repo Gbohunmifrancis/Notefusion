@@ -80,6 +80,28 @@
   /** Seconds the sliced bars take at this speed (1 = the sheet's tempo). */
   function sliceSeconds(slice, tempo, speed) { return slice.beats * beatSec(tempo) / (speed || 1); }
 
+  /** The longest count-in before a take: from pressing Sing to beat one, in seconds. */
+  var MAX_LEAD_IN_SEC = 5;
+
+  /**
+   * The count-in before every take — a drill (practice-progress.js), "Sing it" and "Sing it back" (app.js) — at
+   * most MAX_LEAD_IN_SEC: the starting note held, then clicks that end on beat one, a click on every beat
+   * throughout. A whole bar of clicks after the note when that and a beat of the note fit; the note then fills
+   * what is left in whole beats (at least one, at most a bar). At a slow tempo fewer clicks, so the wait stays
+   * inside the five seconds, and never fewer than two beats in all. `speed` slows the beat as a slowed practice
+   * does (the 30 BPM floor first, as every player here has it). Returns { beats, holdBeats (the note's), beatsPerBar
+   * (the click a whole bar before beat one is accented), beatSec, seconds }. Mirrors mobile lib/practice.ts
+   * leadInPlan; the server takes the seconds as the take's lead-in.
+   */
+  function leadInPlan(tempo, ts, speed) {
+    var beat = beatSec(tempo) / (speed || 1);
+    var bar = Math.max(1, Math.round(beatsPerBar(ts)));
+    var fit = Math.max(2, Math.floor(MAX_LEAD_IN_SEC / beat + 1e-9));
+    var clicks = Math.min(bar, fit - 1);
+    var hold = Math.min(bar, fit - clicks);
+    return { beats: hold + clicks, holdBeats: hold, beatsPerBar: bar, beatSec: beat, seconds: (hold + clicks) * beat };
+  }
+
   /** True when a take of these bars (count-in included) would be longer than the worker marks. */
   function tooLong(slice, tempo, speed, leadInSec) { return leadInSec + sliceSeconds(slice, tempo, speed) + TAIL_SEC > MAX_TAKE_SEC; }
 
@@ -120,8 +142,9 @@
 
   window.NfPractice = {
     VOICES: VOICES, OTHERS_LEVEL: OTHERS_LEVEL, BALANCES: BALANCES, SPEEDS: SPEEDS, TAIL_SEC: TAIL_SEC,
+    MAX_LEAD_IN_SEC: MAX_LEAD_IN_SEC,
     partsOf: partsOf, choosePart: choosePart, levels: levels, defaultRange: defaultRange, tapBar: tapBar,
-    sliceBars: sliceBars, sliceSeconds: sliceSeconds, tooLong: tooLong, gradeTarget: gradeTarget,
+    sliceBars: sliceBars, sliceSeconds: sliceSeconds, leadInPlan: leadInPlan, tooLong: tooLong, gradeTarget: gradeTarget,
     marksByNote: marksByNote, bars: bars
   };
 })();

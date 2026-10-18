@@ -580,6 +580,11 @@ export interface SynthOptions {
    * which is the usual practice-tool compromise.
    */
   beatsPerBar?: number;
+  /**
+   * The beat the first bar-line falls on (0 by default); the accent falls there and every bar after it. A
+   * count-in that is not whole bars (lib/take's) puts it a bar before the singer's beat one.
+   */
+  downbeat?: number;
 }
 
 /**
@@ -697,12 +702,13 @@ export function synthesizeVoicesWavBase64(
     const lastBeat = metronome ? Math.ceil(maxBeat) - 1 : -1;
     const plain = renderClick(false);
     const accented = renderClick(true);
+    const downbeat = opts.downbeat ?? 0;
 
     for (let beat = -countInBeats; beat <= lastBeat; beat++) {
       // A count-in is a whole number of bars, so its beats are negative
       // multiples of `perBar` and this accents them on the same downbeats the
-      // melody will land on. (`-0 % perBar` is `-0`, and `-0 === 0`.)
-      const click = beat % perBar === 0 ? accented : plain;
+      // melody will land on — counted from `downbeat`, 0 unless the clip says.
+      const click = (((beat - downbeat) % perBar) + perBar) % perBar === 0 ? accented : plain;
       const startSample = leadSamples + Math.round(beat * beatSec * SAMPLE_RATE);
       if (startSample < 0) continue;
       const n = Math.min(click.length, totalSamples - startSample);

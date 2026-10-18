@@ -634,15 +634,15 @@
   }
 
   /**
-   * The count-in on the audio clock: `beats` clicks (the first of each bar higher), and the first note held on the
-   * piano through the first bar as a pitch pipe. Returns when beat one of the count-in sounds.
+   * The count-in on the audio clock: `beats` clicks (higher a whole bar before beat one), and the first note held on
+   * the piano through the first `holdBeats` as a pitch pipe. Returns when the count-in's first click sounds.
    */
   function countIn(audio, lead, withPiano) {
     var C = ctx.choir, t0 = audio.currentTime + 0.05;
     if (withPiano) C.pianoNote(audio, C.createPianoOutput(audio), lead.pitchMidi, lead.holdBeats * lead.beatSec, t0, 0.9);
     for (var i = 0; i < lead.beats; i++) {
       var at = t0 + i * lead.beatSec, osc = audio.createOscillator(), g = audio.createGain();
-      osc.frequency.value = i % lead.holdBeats === 0 ? 1500 : 1000;
+      osc.frequency.value = (lead.beats - i) % lead.beatsPerBar === 0 ? 1500 : 1000;
       g.gain.setValueAtTime(0.4, at); g.gain.exponentialRampToValueAtTime(0.0001, at + 0.05);
       osc.connect(g); g.connect(audio.destination); osc.start(at); osc.stop(at + 0.06);
     }
@@ -685,7 +685,7 @@
         stream.getTracks().forEach(function (t) { t.stop(); });
         if (gen !== s.gen || mine.cancelled) return; // cancelled: nothing is sent and no drill is spent
         var type = rec.mimeType || mime || "audio/webm";
-        send(new Blob(chunks, { type: type }), type.indexOf("mp4") >= 0 ? "drill.m4a" : "drill.webm", d, gen);
+        send(new Blob(chunks, { type: type }), type.indexOf("mp4") >= 0 ? "drill.m4a" : "drill.webm", d, gen, mine.lead);
       });
       if (audio.state === "suspended") audio.resume();
       rec.start();
@@ -732,10 +732,12 @@
   function finishTake() { endTake(false); s.phase = "grading"; render(); }
   function cancelTake() { var had = !!take; endTake(true); if (had) { s.phase = "idle"; render(); } }
 
-  function send(blob, name, d, gen) {
+  /** `lead` is the take's count-in in seconds: the server finds beat one there. */
+  function send(blob, name, d, gen, lead) {
     var P = PP(), form = new FormData();
     form.append("audio", blob, name);
     form.append("drillId", d.id);
+    form.append("leadInSec", String(lead));
     ctx.request("/api/practice/drills/grade", { method: "POST", form: form }).then(function (g) {
       if (gen !== s.gen) return;
       s.grade = g; s.phase = "idle"; s.error = null;

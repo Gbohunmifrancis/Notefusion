@@ -142,23 +142,24 @@
     return { label: same ? "Try it again" : "Next drill", same: same };
   }
 
-  function beatsPerBar(ts) { var p = String(ts || "4/4").split("/").map(Number); return p[0] && p[1] ? (p[0] * 4) / p[1] : 4; }
   function beatSec(tempo) { return 60 / Math.max(30, tempo || 0); }
 
   /**
-   * The count-in before the singer: `leadInBeats` of clicks (8 = two bars of 4/4), the first note held through
-   * the first bar of them as a pitch pipe. Its length in seconds is the server's own (DrillCatalogue.LeadInSeconds),
-   * since the take is graded with that lead-in — mobile lib/take.leadInFor.
+   * The count-in before the singer, five seconds at most: practice.js `leadInPlan` (loaded with the app, before
+   * this file) — `beats` clicks ending on beat one, the first note held through the first `holdBeats` of them as a
+   * pitch pipe — with the note to hold. The take is sent with its `seconds` as the lead-in the server grades it by
+   * (the drill's own `leadInBeats` is the older apps' two bars) — mobile lib/take.leadInFor.
    */
   function leadIn(drill) {
-    var beats = drill.leadInBeats > 0 ? drill.leadInBeats : 2 * beatsPerBar(drill.timeSignature);
+    var plan = window.NfPractice.leadInPlan(drill.tempoBpm, drill.timeSignature);
     var first = (drill.notes || []).slice().sort(function (a, b) { return a.startBeat - b.startBeat; })[0];
     return {
-      beats: beats,
-      holdBeats: Math.min(beats, beatsPerBar(drill.timeSignature)),
+      beats: plan.beats,
+      holdBeats: plan.holdBeats,
+      beatsPerBar: plan.beatsPerBar,
       pitchMidi: first ? first.pitchMidi : 60,
-      beatSec: beatSec(drill.tempoBpm),
-      seconds: beats * beatSec(drill.tempoBpm)
+      beatSec: plan.beatSec,
+      seconds: plan.seconds
     };
   }
 

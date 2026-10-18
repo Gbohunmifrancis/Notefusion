@@ -8,7 +8,10 @@ import { readFileSync } from "node:fs";
 import vm from "node:vm";
 
 const window = {};
-vm.runInNewContext(readFileSync(new URL("../assets/practice-progress.js", import.meta.url), "utf8"), { window });
+// practice.js first, as the app page loads it: the count-in's plan (leadInPlan) is its.
+const context = vm.createContext({ window });
+vm.runInContext(readFileSync(new URL("../assets/practice.js", import.meta.url), "utf8"), context);
+vm.runInContext(readFileSync(new URL("../assets/practice-progress.js", import.meta.url), "utf8"), context);
 const P = window.NfPracticeProgress;
 // Objects made in the vm context have its Object prototype: compare them as plain data.
 const same = (actual, expected) => assert.deepEqual(JSON.parse(JSON.stringify(actual)), JSON.parse(JSON.stringify(expected)));
@@ -110,16 +113,17 @@ test("the allowance line counts down and says when the day's drills are done", (
   assert.equal(P.drillsLeft({ used: 3, limit: 20 }), 17);
 });
 
-test("the count-in is the drill's lead-in beats, the first note held for a bar, as the server grades it", () => {
-  same(P.leadIn(drill), { beats: 8, holdBeats: 4, pitchMidi: 63, beatSec: 0.75, seconds: 6 });
-  // An older drill without leadInBeats: two bars of its time signature (mobile leadInFor).
-  same(P.leadIn({ ...drill, leadInBeats: undefined, timeSignature: "3/4", tempoBpm: 60 }), { beats: 6, holdBeats: 3, pitchMidi: 63, beatSec: 1, seconds: 6 });
+test("the count-in is practice.js's five-second plan with the first note to hold, whatever leadInBeats says", () => {
+  // 80 BPM: two beats of the note and a bar of clicks, 4.5 s — not the drill's eight beats (older apps' two bars).
+  same(P.leadIn(drill), { beats: 6, holdBeats: 2, beatsPerBar: 4, pitchMidi: 63, beatSec: 0.75, seconds: 4.5 });
+  same(P.leadIn({ ...drill, leadInBeats: undefined, timeSignature: "3/4", tempoBpm: 60 }), { beats: 5, holdBeats: 2, beatsPerBar: 3, pitchMidi: 63, beatSec: 1, seconds: 5 });
+  same(P.leadIn({ ...drill, tempoBpm: 60 }), { beats: 5, holdBeats: 1, beatsPerBar: 4, pitchMidi: 63, beatSec: 1, seconds: 5 });
 });
 
 test("a take stops a second after the last note, never past what the server keeps", () => {
   assert.equal(P.partSeconds(drill.notes, drill.tempoBpm), 4.5);
-  assert.equal(P.takeSeconds(drill), 6 + 4.5 + 1);
-  assert.equal(P.takeSeconds({ ...drill, maxTakeSeconds: 10 }), 10);
+  assert.equal(P.takeSeconds(drill), 4.5 + 4.5 + 1);
+  assert.equal(P.takeSeconds({ ...drill, maxTakeSeconds: 8 }), 8);
 });
 
 test("the note due follows the beat after the count-in", () => {
