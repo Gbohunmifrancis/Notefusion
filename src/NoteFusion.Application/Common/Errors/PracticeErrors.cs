@@ -11,6 +11,10 @@ public static class PracticeErrors
     public static readonly Error NoTake =
         Error.Validation("PRACTICE_TAKE_MISSING", "No recording came through. Sing the drill again.");
 
+    /// <summary>A take's lead-in that is not a number of seconds from 0 to the older apps' two bars.</summary>
+    public static readonly Error LeadIn =
+        Error.Validation("PRACTICE_LEAD_IN", "That take's count-in didn't come through. Sing the drill again.");
+
     public static readonly Error ReminderHour =
         Error.Validation("PRACTICE_REMINDER_HOUR", "Pick a reminder time between 8 in the morning and 9 at night.");
 

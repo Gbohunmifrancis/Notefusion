@@ -1,3 +1,4 @@
+using System.Globalization;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,12 @@ public sealed class GradeDrillRequest
 {
     public IFormFile? Audio { get; set; }
     public string? DrillId { get; set; }
+
+    /// <summary>
+    /// Seconds of count-in before beat one ("4.5"), read in the invariant culture. Older apps send none and are graded
+    /// with the two bars they play.
+    /// </summary>
+    public string? LeadInSec { get; set; }
 }
 
 /// <summary>JSON body of <c>PUT track</c>: "playful" or "focused".</summary>
@@ -60,9 +67,16 @@ public sealed class PracticeController : ApiControllerBase
     {
         if (request.Audio is null || request.Audio.Length == 0)
             return HandleResult(Result.Failure<GradeResultDto>(Application.Common.Errors.PracticeErrors.NoTake));
+        double? leadIn = null;
+        if (!string.IsNullOrWhiteSpace(request.LeadInSec))
+        {
+            if (!double.TryParse(request.LeadInSec, NumberStyles.Float, CultureInfo.InvariantCulture, out var seconds))
+                return HandleResult(Result.Failure<GradeResultDto>(Application.Common.Errors.PracticeErrors.LeadIn));
+            leadIn = seconds;
+        }
 
         await using var stream = request.Audio.OpenReadStream();
-        return HandleResult(await _sender.Send(new GradeDrillCommand(stream, request.Audio.FileName, request.DrillId ?? string.Empty), ct));
+        return HandleResult(await _sender.Send(new GradeDrillCommand(stream, request.Audio.FileName, request.DrillId ?? string.Empty, leadIn), ct));
     }
 
     /// <summary>XP, level, streak, weekly goal, badges, the last seven days, and the track (null until chosen).</summary>

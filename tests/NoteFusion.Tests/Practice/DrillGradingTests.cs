@@ -45,7 +45,7 @@ public class DrillGradingTests
         Assert.Equal("Doh", drill.LevelName);
         Assert.Equal(Today, drill.Date);
         Assert.Equal((0, PracticeRules.FreeDrillGradesPerDay), (drill.Allowance.Used, drill.Allowance.Limit));
-        Assert.Equal(DrillCatalogue.LeadInBeats, drill.LeadInBeats);
+        Assert.Equal(DrillCatalogue.LegacyLeadInBeats, drill.LeadInBeats); // the older apps' count-in, kept for them
         Assert.Equal("4/4", drill.TimeSignature);
     }
 
@@ -61,7 +61,7 @@ public class DrillGradingTests
 
         Assert.True(result.IsSuccess, result.IsFailure ? result.Error.Message : null);
         Assert.Equal(drill.Notes.Select(n => n.PitchMidi), api.LastTarget!.Notes.Select(n => n.PitchMidi));
-        Assert.Equal(drill.LeadInSeconds, api.LastTarget.LeadInSec, 6);
+        Assert.Equal(drill.LegacyLeadInSeconds, api.LastTarget.LeadInSec, 6); // no lead-in sent: an older app's two bars
         Assert.Equal(drill.MaxTakeSeconds, api.LastMaxTakeSeconds);
 
         var session = Assert.Single(h.Db.PracticeSessions);
@@ -77,6 +77,68 @@ public class DrillGradingTests
         Assert.False(reward.LevelUp);
         Assert.Equal(1, reward.Streak);
         Assert.Equal(new[] { "first_drill", "first_100" }, reward.NewBadges.Select(b => b.Code));
+    }
+
+    [Fact]
+    public async Task A_take_is_graded_from_the_count_in_the_app_sent_and_an_older_apps_from_its_two_bars()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new RecordingApi(90);
+        var drill = FirstDrill(user.Id);
+        Assert.Equal(72, drill.TempoBpm);
+
+        // A current app at 72 BPM: two beats of the note and a bar of clicks, five seconds (leadInPlan).
+        await Grade(h, user, api).Handle(new GradeDrillCommand(Stream.Null, "take.m4a", drill.Id, 5.0), default);
+        Assert.Equal(5.0, api.LastTarget!.LeadInSec, 6);
+        Assert.Equal(Math.Round(5.0 + drill.PassageSeconds + PracticeRules.DrillTakeTailSeconds, 2), api.LastMaxTakeSeconds);
+
+        // A shipped app that sends none played the old eight beats.
+        await Grade(h, user, api).Handle(new GradeDrillCommand(Stream.Null, "take.m4a", drill.Id), default);
+        Assert.Equal(8 * 60.0 / 72, api.LastTarget!.LeadInSec, 6);
+        Assert.Equal(drill.MaxTakeSeconds, api.LastMaxTakeSeconds);
+        Assert.Equal(2, h.Db.PracticeSessions.Count());
+    }
+
+    [Theory]
+    [InlineData(-0.5)]
+    [InlineData(7.0)] // past the old two bars at 72 BPM (6.67 s): no app counts in that long
+    [InlineData(double.NaN)]
+    [InlineData(double.PositiveInfinity)]
+    public async Task A_count_in_no_app_plays_is_refused_without_reaching_the_worker(double leadInSec)
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new RecordingApi(90);
+
+        var result = await Grade(h, user, api).Handle(new GradeDrillCommand(Stream.Null, "take.m4a", FirstDrill(user.Id).Id, leadInSec), default);
+
+        Assert.Equal("PRACTICE_LEAD_IN", result.Error.Code);
+        Assert.Null(api.LastTarget);
+        Assert.Empty(h.Db.PracticeSessions);
+    }
+
+    [Fact]
+    public async Task The_route_reads_the_lead_in_as_invariant_seconds_and_none_as_none()
+    {
+        var sender = new CommandSender();
+        var controller = new PracticeController(sender) { ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() } };
+        IFormFile Take() => new FormFile(new MemoryStream([1, 2, 3]), 0, 3, "audio", "drill.m4a");
+        var culture = System.Globalization.CultureInfo.CurrentCulture;
+        System.Globalization.CultureInfo.CurrentCulture = new System.Globalization.CultureInfo("fr-FR"); // "4,5" there
+        try
+        {
+            await controller.GradeDrill(new GradeDrillRequest { Audio = Take(), DrillId = "steps-up@60", LeadInSec = "4.5" }, default);
+            await controller.GradeDrill(new GradeDrillRequest { Audio = Take(), DrillId = "steps-up@60" }, default);
+            var junk = await controller.GradeDrill(new GradeDrillRequest { Audio = Take(), DrillId = "steps-up@60", LeadInSec = "soon" }, default);
+
+            Assert.Equal(new double?[] { 4.5, null }, sender.Sent.Select(c => c.LeadInSec));
+            Assert.Equal(422, Assert.IsType<ObjectResult>(junk).StatusCode);
+        }
+        finally
+        {
+            System.Globalization.CultureInfo.CurrentCulture = culture;
+        }
     }
 
     [Fact]
@@ -385,6 +447,23 @@ public class DrillGradingTests
         h.Db.Plans.Add(plan);
         h.Db.Subscriptions.Add(Subscription.Start(user.Id, plan.Id, PaymentProvider.Paystack, Now.AddDays(-3), Now.AddDays(27), "prov-sub-1", Now.AddDays(-3)));
         h.Db.SaveChanges();
+    }
+
+    /// <summary>Keeps each drill take the route sends on, and answers as if the drill were gone.</summary>
+    private sealed class CommandSender : MediatR.ISender
+    {
+        public List<GradeDrillCommand> Sent { get; } = [];
+
+        public Task<TResponse> Send<TResponse>(MediatR.IRequest<TResponse> request, CancellationToken cancellationToken = default)
+        {
+            Sent.Add((GradeDrillCommand)(object)request);
+            return Task.FromResult((TResponse)(object)Result.Failure<GradeResultDto>(Application.Common.Errors.PracticeErrors.DrillNotFound));
+        }
+
+        public Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = default) where TRequest : MediatR.IRequest => throw new NotSupportedException();
+        public Task<object?> Send(object request, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+        public IAsyncEnumerable<TResponse> CreateStream<TResponse>(MediatR.IStreamRequest<TResponse> request, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+        public IAsyncEnumerable<object?> CreateStream(object request, CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }
 
     private sealed class RecordingApi(int score) : ITranscriptionApi

@@ -15,9 +15,11 @@ namespace NoteFusion.Application.Practice.Commands;
 /// (<see cref="PracticeRules.DrillGradesPerDay"/>). The notes are the server's own drill, rebuilt from its id; the
 /// take goes to the worker's grader (cut at the drill's length plus a few seconds) and the marked take is recorded
 /// as practice, with what it earned — and any path milestone it reached — returned beside the marks. Which drill
-/// comes next is read off the recorded takes (<see cref="PracticePath"/>).
+/// comes next is read off the recorded takes (<see cref="PracticePath"/>). <see cref="LeadInSec"/> is the count-in the
+/// app played before beat one: current apps send it (five seconds at most); a take without one comes from an older app,
+/// which played <see cref="DrillCatalogue.LegacyLeadInBeats"/>.
 /// </summary>
-public sealed record GradeDrillCommand(Stream Audio, string FileName, string DrillId) : IRequest<Result<GradeResultDto>>;
+public sealed record GradeDrillCommand(Stream Audio, string FileName, string DrillId, double? LeadInSec = null) : IRequest<Result<GradeResultDto>>;
 
 public sealed class GradeDrillCommandHandler : IRequestHandler<GradeDrillCommand, Result<GradeResultDto>>
 {
@@ -48,6 +50,10 @@ public sealed class GradeDrillCommandHandler : IRequestHandler<GradeDrillCommand
             return UserErrors.NotFound;
         if (DrillCatalogue.Find(request.DrillId) is not { } drill)
             return PracticeErrors.DrillNotFound;
+        // No app counts in for longer than the older apps' two bars, so nothing past them is a count-in.
+        var leadIn = request.LeadInSec ?? drill.LegacyLeadInSeconds;
+        if (!double.IsFinite(leadIn) || leadIn < 0 || leadIn > drill.LegacyLeadInSeconds + 1e-6)
+            return PracticeErrors.LeadIn;
 
         var today = PracticeTime.LocalDate(_clock.UtcNow, PracticeTime.Resolve(_timeZone.Current));
 
@@ -60,7 +66,8 @@ public sealed class GradeDrillCommandHandler : IRequestHandler<GradeDrillCommand
         if (used >= limit)
             return PracticeErrors.DailyDrillLimit(limit);
 
-        var graded = await _api.GradeAsync(request.Audio, request.FileName, drill.Target(), drill.MaxTakeSeconds, cancellationToken);
+        var graded = await _api.GradeAsync(
+            request.Audio, request.FileName, drill.Target(leadIn), drill.MaxTakeSecondsAfter(leadIn), cancellationToken);
         if (graded.IsFailure)
             return graded.Error;
 

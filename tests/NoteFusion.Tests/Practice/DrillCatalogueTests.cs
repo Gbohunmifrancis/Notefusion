@@ -243,9 +243,13 @@ public class DrillCatalogueTests
         Assert.Equal(new[] { 0.0, 1.0, 2.0 }, target.Notes.Select(n => n.StartBeat));
         Assert.Equal(new[] { 1.0, 1.0, 2.0 }, target.Notes.Select(n => n.DurBeats));
         Assert.Equal(72, target.TempoBpm);
-        Assert.Equal(8 * 60.0 / 72, target.LeadInSec, 6);
+        Assert.Equal(8 * 60.0 / 72, target.LeadInSec, 6); // an older app's two bars, when the take names no count-in
         Assert.Equal(4 * 60.0 / 72, drill.PassageSeconds, 6);
         Assert.Equal(Math.Round(12 * 60.0 / 72 + PracticeRules.DrillTakeTailSeconds, 2), drill.MaxTakeSeconds);
+
+        // A current app's count-in (five seconds at 72 BPM): beat one there, and the take kept that much shorter.
+        Assert.Equal(5.0, drill.Target(5.0).LeadInSec);
+        Assert.Equal(Math.Round(5.0 + 4 * 60.0 / 72 + PracticeRules.DrillTakeTailSeconds, 2), drill.MaxTakeSecondsAfter(5.0));
     }
 
     [Fact]
