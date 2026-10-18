@@ -72,7 +72,7 @@ public sealed class GetNextDrillQueryHandler : IRequestHandler<GetNextDrillQuery
             drill.Key.DohHeader(),
             drill.TempoBpm,
             DrillCatalogue.TimeSignature,
-            DrillCatalogue.LeadInBeats,
+            DrillCatalogue.LegacyLeadInBeats,
             drill.MaxTakeSeconds,
             drill.Notes,
             today,

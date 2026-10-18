@@ -104,8 +104,10 @@ public sealed record PracticeRewardDto(
 /// <summary>
 /// GET /api/practice/drills/next (and its old name, /drills/today): the next drill on the singer's practice path — a
 /// short solfa pattern to hear and sing, the same until a take of it is marked. The notes are labelled by the solfa
-/// engine and timed by the pattern's rhythm; the take is a count-in of <c>LeadInBeats</c> (a bar of the first note, a
-/// bar of clicks) and then the singer, cut by the worker at <c>MaxTakeSeconds</c>. <c>Track</c> is the track it was
+/// engine and timed by the pattern's rhythm; the take is a count-in and then the singer, cut by the worker at
+/// <c>MaxTakeSeconds</c>. Current apps count in for at most five seconds (<c>leadInPlan</c>) and send its seconds with
+/// the take; <c>LeadInBeats</c> is the older apps' count-in (a bar of the first note, a bar of clicks), kept for them
+/// and assumed for a take that sends none, and <c>MaxTakeSeconds</c> leaves room for it. <c>Track</c> is the track it was
 /// picked for (null when none is chosen yet): each track has its own path. Where it sits on the path: <c>Grade</c>,
 /// <c>Unit</c>, <c>UnitIndex</c>/<c>UnitCount</c> and <c>DrillIndex</c>/<c>DrillCount</c> (1-based), <c>Difficulty</c>
 /// (the pattern's unit in its own grade, 1–5) and <c>Adjustment</c> ("harder" after a skip ahead, "easier" for an

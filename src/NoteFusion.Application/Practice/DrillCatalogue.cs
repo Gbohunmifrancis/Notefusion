@@ -33,19 +33,24 @@ public sealed record DrillPattern(string Code, int Tier, int Step, string Title,
 
 /// <summary>
 /// A pattern placed in a key: pitches, the solfa engine's labels for them, and the take's timing (the pattern's
-/// rhythm); the take starts with <see cref="DrillCatalogue.LeadInBeats"/> of count-in.
+/// rhythm); the take starts with the count-in the app played — the seconds it sends, or
+/// <see cref="DrillCatalogue.LegacyLeadInBeats"/> from an app that sends none.
 /// </summary>
 public sealed record Drill(string Id, DrillPattern Pattern, MusicalKey Key, int DohMidi, int TempoBpm, IReadOnlyList<NoteEventDto> Notes)
 {
     public double BeatSeconds => 60.0 / TempoBpm;
-    public double LeadInSeconds => DrillCatalogue.LeadInBeats * BeatSeconds;
+    public double LegacyLeadInSeconds => DrillCatalogue.LegacyLeadInBeats * BeatSeconds;
     public double PassageSeconds => Notes.Sum(n => n.DurBeats) * BeatSeconds;
 
-    /// <summary>The longest take kept: count-in, the passage, and <see cref="PracticeRules.DrillTakeTailSeconds"/>.</summary>
-    public double MaxTakeSeconds => Math.Round(LeadInSeconds + PassageSeconds + PracticeRules.DrillTakeTailSeconds, 2);
+    /// <summary>The longest take any app sends: the older apps' count-in (no app's is longer), the passage and the tail.</summary>
+    public double MaxTakeSeconds => MaxTakeSecondsAfter(LegacyLeadInSeconds);
 
-    public GradeTargetDto Target()
-        => new(Notes.Select(n => new GradeTargetNoteDto(n.PitchMidi, n.StartBeat, n.DurBeats)).ToList(), TempoBpm, LeadInSeconds);
+    /// <summary>The take kept after a count-in of <paramref name="leadInSec"/>: it, the passage, and <see cref="PracticeRules.DrillTakeTailSeconds"/>.</summary>
+    public double MaxTakeSecondsAfter(double leadInSec) => Math.Round(leadInSec + PassageSeconds + PracticeRules.DrillTakeTailSeconds, 2);
+
+    /// <summary>The notes to grade, beat one <paramref name="leadInSec"/> into the take (the older apps' count-in when none is given).</summary>
+    public GradeTargetDto Target(double? leadInSec = null)
+        => new(Notes.Select(n => new GradeTargetNoteDto(n.PitchMidi, n.StartBeat, n.DurBeats)).ToList(), TempoBpm, leadInSec ?? LegacyLeadInSeconds);
 
     /// <summary>"Eb major", "B minor": the key named as its signature spells it, readable by <see cref="KeyParser"/>.</summary>
     public string KeyName => Key.Mode == KeyMode.Major
@@ -71,8 +76,13 @@ public sealed record Drill(string Id, DrillPattern Pattern, MusicalKey Key, int 
 /// </remarks>
 public static class DrillCatalogue
 {
-    /// <summary>A bar of the first note and a bar of clicks in 4/4 — mobile <c>lib/take.leadInFor</c>.</summary>
-    public const int LeadInBeats = 8;
+    /// <summary>
+    /// The count-in apps played before it was held to five seconds: a bar of the first note and a bar of clicks in
+    /// 4/4. A take sent without its own lead-in (those apps, OTA or not) is graded with it, and the drill still offers
+    /// it to them as <c>leadInBeats</c>. Current apps count in with <c>leadInPlan</c> (web <c>assets/practice.js</c>,
+    /// mobile <c>lib/practice.ts</c>) and send its seconds with the take; theirs is never longer than this.
+    /// </summary>
+    public const int LegacyLeadInBeats = 8;
 
     public const string TimeSignature = "4/4";
 
