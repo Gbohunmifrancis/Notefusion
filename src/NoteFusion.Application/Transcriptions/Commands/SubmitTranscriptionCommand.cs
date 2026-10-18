@@ -33,7 +33,12 @@ public sealed record SubmitTranscriptionCommand(
     /// <summary>The upload's media type as the client declared it; for the activity log only.</summary>
     string? ContentType = null,
     /// <summary>The upload's size in bytes; for the activity log only.</summary>
-    long? SizeBytes = null) : IRequest<Result<string>>;
+    long? SizeBytes = null,
+    /// <summary>
+    /// The client's <c>Idempotency-Key</c> (the phone sends its take's own id): a repeat from the same account is
+    /// handed the job the first one started, never a second job or a second charge. See <see cref="TranscriptionJob.IdempotencyKey"/>.
+    /// </summary>
+    string? IdempotencyKey = null) : IRequest<Result<string>>;
 
 public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTranscriptionCommand, Result<string>>
 {
@@ -68,7 +73,12 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
 
     public async Task<Result<string>> Handle(SubmitTranscriptionCommand request, CancellationToken cancellationToken)
     {
-        var submitted = await SubmitAsync(request, cancellationToken);
+        var (submitted, repeat) = await SubmitAsync(request, cancellationToken);
+
+        // A repeat of a submit that already started its job (the answer was lost on the way back): the job and its
+        // activity row exist from the first time, so there is nothing new to record.
+        if (repeat)
+            return submitted;
 
         var ext = Path.GetExtension(request.FileName).ToLowerInvariant();
         var kind = ext is ".musicxml" or ".xml" or ".mxl" or ".mid" or ".midi" or ".abc" ? "score"
@@ -84,14 +94,19 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         return submitted;
     }
 
-    private async Task<Result<string>> SubmitAsync(SubmitTranscriptionCommand request, CancellationToken cancellationToken)
+    /// <returns>The job id, and whether it is the job an earlier submit with the same key started.</returns>
+    private async Task<(Result<string> Submitted, bool Repeat)> SubmitAsync(
+        SubmitTranscriptionCommand request, CancellationToken cancellationToken)
     {
         if (Math.Abs(request.KeyboardTranspose) > TranscribeOptions.MaxKeyboardTranspose)
-            return TranscriptionErrors.InvalidKeyboardTranspose;
+            return (TranscriptionErrors.InvalidKeyboardTranspose, false);
         if (!Meters.TryRead(request.TimeSignature, out var meter))
-            return TranscriptionErrors.InvalidTimeSignature;
+            return (TranscriptionErrors.InvalidTimeSignature, false);
         if (request.Tempo is < TranscribeOptions.MinTempo or > TranscribeOptions.MaxTempo)
-            return TranscriptionErrors.InvalidTempo;
+            return (TranscriptionErrors.InvalidTempo, false);
+        var idempotencyKey = string.IsNullOrWhiteSpace(request.IdempotencyKey) ? null : request.IdempotencyKey.Trim();
+        if (idempotencyKey is { Length: > TranscriptionJob.IdempotencyKeyMaxLength })
+            return (TranscriptionErrors.InvalidIdempotencyKey, false);
 
         // Read once: the header cannot change mid-request, and the gate below and the stamp further down
         // must agree about which handset this is or the two would count different things.
@@ -124,6 +139,19 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 cancellationToken)
             : null;
 
+        // Under the account's lease, before any count: a repeat of a submit that started its job is that job (it
+        // holds or has spent its own place already), whatever the allowance says now. Two repeats at once queue on
+        // the lease, so the second sees the first one's row.
+        if (idempotencyKey is not null && _currentUser.UserId is { } keyOwner)
+        {
+            var started = await _db.TranscriptionJobs
+                .Where(j => j.UserId == keyOwner && j.IdempotencyKey == idempotencyKey)
+                .Select(j => j.JobId)
+                .FirstOrDefaultAsync(cancellationToken);
+            if (started is not null)
+                return (started, true);
+        }
+
         if (_currentUser.UserId is { } userId)
         {
             isPro = access!.IsPro;
@@ -151,7 +179,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 if (song)
                 {
                     if (allowance.BoughtRemaining <= 0)
-                        return BillingErrors.SongNotFree;
+                        return (BillingErrors.SongNotFree, false);
                     paidByCredit = true;
                 }
                 else
@@ -160,7 +188,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                     {
                         // Told the numbers that actually applied to them, not a global one: a refusal that names
                         // a different count than the trial pill did is indistinguishable from a billing bug.
-                        return BillingErrors.FreeTierLimitReached(allowance.Free, allowance.Bought);
+                        return (BillingErrors.FreeTierLimitReached(allowance.Free, allowance.Bought), false);
                     }
 
                     paidByCredit = allowance.FreeRemaining == 0;
@@ -174,7 +202,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 // isolate, so it is neither gated nor charged as a song whatever the form said.
                 var pool = await SongGate.CheckAsync(_db, access, userId, _clock.UtcNow, cancellationToken);
                 if (pool.IsFailure)
-                    return Result.Failure<string>(pool.Error);
+                    return (Result.Failure<string>(pool.Error), false);
                 choirPool = pool.Value.ChoirId;
             }
         }
@@ -188,7 +216,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         var key = SanitiseKey(request.Key);
 
         if (key is not null && KeyParser.Parse(key).IsFailure)
-            return TranscriptionErrors.InvalidKey;
+            return (TranscriptionErrors.InvalidKey, false);
 
         var options = new TranscribeOptions
         {
@@ -222,15 +250,16 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 await _devices.RecordAsync(fingerprint, owner, cancellationToken);
             }
 
-            _db.TranscriptionJobs.Add(
-                isPro && request.Separate && !isScore
-                    ? TranscriptionJob.RecordSong(submitted.Value, owner, _clock.UtcNow, fingerprint, choirPool)
-                    : TranscriptionJob.Record(submitted.Value, owner, _clock.UtcNow, fingerprint, paidByCredit));
+            var row = isPro && request.Separate && !isScore
+                ? TranscriptionJob.RecordSong(submitted.Value, owner, _clock.UtcNow, fingerprint, choirPool)
+                : TranscriptionJob.Record(submitted.Value, owner, _clock.UtcNow, fingerprint, paidByCredit);
+            row.KeyBy(idempotencyKey);
+            _db.TranscriptionJobs.Add(row);
 
             await _db.SaveChangesAsync(cancellationToken);
         }
 
-        return submitted;
+        return (submitted, false);
     }
 
     /// <summary>

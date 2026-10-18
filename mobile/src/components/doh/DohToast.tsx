@@ -2,13 +2,15 @@
  * The result's first-open moment (board c-practice/8b): Doh cheers beside a one-line toast with the headline numbers
  * and one offer. It takes the player dock's place while it shows, so it never covers the solfa; it leaves after 5 s,
  * on a tap on it, or when the screen is touched anywhere (the caller sets `visible` false). Shown once per finished
- * job, never on a reopen from the Library.
+ * job, never on a reopen from the Library. A sheet the server filed as it finished (option A, board 12) gets the same
+ * toast with an icon in Doh's place: "Saved to your Library", with Rename.
  */
 
 import React, { useEffect, useRef } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from "react-native-reanimated";
 import { Button } from "../Button";
+import { Icon, type IconName } from "../Icon";
 import { Doh, type DohPose } from "./Doh";
 import { fonts, type Palette } from "../../design/theme";
 import { useThemedStyles } from "../../lib/theme";
@@ -23,6 +25,8 @@ const DOH = 62;
 export function DohToast({
   visible,
   pose,
+  icon,
+  iconColor,
   title,
   body,
   action,
@@ -34,7 +38,10 @@ export function DohToast({
 }: {
   /** False sends it away (then `onGone`). */
   visible: boolean;
-  pose: DohPose;
+  /** Doh's pose; or `icon` in his place. */
+  pose?: DohPose;
+  icon?: IconName;
+  iconColor?: string;
   title: string;
   body: string;
   action: string;
@@ -78,8 +85,12 @@ export function DohToast({
       pointerEvents={visible ? "auto" : "none"}
       accessibilityLiveRegion="polite"
     >
-      <Pressable onPress={() => hide.current()} style={styles.toast} accessibilityLabel={`${title} ${body}`}>
-        <Doh pose={pose} size={DOH} entrance={pose === "cheer-notes" ? "cheer" : "hop"} idle={false} style={styles.doh} />
+      <Pressable onPress={() => hide.current()} style={[styles.toast, icon ? styles.toastIcon : null]} accessibilityLabel={`${title} ${body}`}>
+        {icon ? (
+          <Icon name={icon} size={22} color={iconColor} />
+        ) : (
+          <Doh pose={pose ?? "cheer-notes"} size={DOH} entrance={(pose ?? "cheer-notes") === "cheer-notes" ? "cheer" : "hop"} idle={false} style={styles.doh} />
+        )}
         <View style={styles.text}>
           <Text style={styles.title} numberOfLines={2}>
             {title}
@@ -118,6 +129,10 @@ const makeStyles = (c: Palette) =>
       shadowOpacity: 0.3,
       shadowRadius: 24,
       elevation: 12,
+    },
+    toastIcon: {
+      paddingLeft: 18,
+      gap: 14,
     },
     doh: {
       position: "absolute",

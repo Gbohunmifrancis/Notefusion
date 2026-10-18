@@ -32,7 +32,7 @@ import { toApiError } from "../api/client";
 import type { ChordSymbol, HymnCredit, KeyAlternative, NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
 import { chordRows } from "../lib/chordRow";
 import { dohChoices, writeInKey } from "../lib/dohChoice";
-import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer } from "../lib/hymnbook";
+import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, type HymnbookSheet } from "../lib/hymnbook";
 import { showDialog, type DialogAction } from "../lib/dialog";
 import { showToast } from "../lib/toast";
 import { useSubscription } from "../lib/subscription";
@@ -59,6 +59,8 @@ import { choosePart, defaultRange, levels, partsOf, practiceTempo, speedsFor, ty
 import { logAnalyticsEvent } from "../lib/analytics";
 import { isNetworkCode } from "../lib/reachability";
 import { useOfflineLibrary } from "../lib/offlineLibrary";
+import { takeOpened } from "../lib/outbox";
+import { savedToastBody, takeKind } from "../lib/savedSheet";
 import { askToDelete, deleteSheets, keepSheetOffline, renameSheet, shareSheetLinks } from "../lib/sheetActions";
 import { transposeLocally } from "../lib/localTranspose";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -206,6 +208,11 @@ export function ResultScreen({ route, navigation }: Props) {
   const [committedTitle, setCommittedTitle] = useState(initialTitle);
   const [savedId, setSavedId] = useState<string | undefined>(initialSavedId);
   /**
+   * Opened straight from its finished job, which the server filed in the Library as it finished (option A,
+   * board 12): the sheet is already theirs, so Save is Rename and every choice made here is saved as it is made.
+   */
+  const autoSaved = !!fresh && !!initialSavedId;
+  /**
    * Set when a saved sheet was transposed on the phone while offline: the screen then shows notes the
    * server does not have, so note corrections and parts are not saved from it (they would store
    * moved pitches under the old key). Opening the sheet again, or transposing it online, clears it.
@@ -338,7 +345,7 @@ export function ResultScreen({ route, navigation }: Props) {
   const edited = correctedCount > 0;
   const hymnAsk = edited
     ? null
-    : hymnOffer(result.hymnMatch, { saved: !!savedId, answered: hymnAnswered || !!hymnSource, hasParts: !!parts });
+    : hymnOffer(result.hymnMatch, { saved: !!savedId && !autoSaved, answered: hymnAnswered || !!hymnSource, hasParts: !!parts });
 
   const [solfaStyle, setSolfaStyle] = useState<SolfaStyle>("bars");
   const hasLyrics = lyrics.trim().length > 0;
@@ -708,6 +715,35 @@ export function ResultScreen({ route, navigation }: Props) {
     setDoubt([]);
     setHymnSource(sheet.hymn);
     haptics.play("success");
+    // On a sheet already in the Library (filed as its job finished) the swap is saved as it is made: the hymnbook
+    // version replaces the filed copy, as a Save of the same job does.
+    if (savedId) void saveHymnbook(sheet, relabelled.notes);
+  }
+
+  async function saveHymnbook(sheet: HymnbookSheet, notes: NoteEvent[]) {
+    const name = committedTitle || title;
+    try {
+      const saved = await libraryApi.save({
+        title: name.trim() || `${sheet.key} transcription`,
+        key: sheet.key,
+        tempoBpm: sheet.tempo,
+        timeSignature: sheet.timeSignature,
+        musicXml:
+          buildMusicXml(notes, resolveKeySignature(sheet.key), sheet.timeSignature, { title: name, lyrics: true }) ??
+          result.hymnMatch?.musicXml ??
+          result.musicXml,
+        notes,
+        overallConfidence: 1,
+        sourceJobId,
+        lyrics: (lyrics.trim() || sheet.lyrics || "").trim(),
+        hymnSlug: sheet.hymn.slug,
+      });
+      committedLyrics.current = saved.lyrics ?? "";
+      setSavedId(saved.id);
+      setCommittedTitle(saved.title);
+    } catch (e) {
+      showDialog({ title: "Could not save", message: toApiError(e).message, icon: "problem", tone: "danger" });
+    }
   }
 
   async function handleTempoChange(nextTempo: number) {
@@ -1214,14 +1250,31 @@ export function ResultScreen({ route, navigation }: Props) {
   // Only on a sheet opened straight from its finished job, once per job: Doh cheers with the headline numbers and
   // offers to practise it — or, when some notes are worth a listen, says so and offers to check them. Leaves after
   // 5 s or on any touch, and takes the player dock's place, so it never covers the solfa.
-  const [celebrate, setCelebrate] = useState<{ doubtful: boolean } | null>(null);
+  /** Doh's cheer (or note check), or — on a sheet filed as it finished — "Saved to your Library" with Rename. */
+  const [celebrate, setCelebrate] = useState<{ doubtful: boolean; saved?: boolean } | null>(null);
   const [celebrating, setCelebrating] = useState(false);
+  // Opened from its job (the record screen, a push, the Library): its take in the send queue is finished with.
+  useEffect(() => {
+    if (sourceJobId) takeOpened(sourceJobId);
+    // Opened: a sheet the server filed stops showing as unopened in the Library.
+    if (autoSaved && initialSavedId) void libraryApi.markOpened(initialSavedId).catch(() => undefined);
+    // Once, on arrival.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     if (!fresh || !sourceJobId || result.notes.length === 0) return;
     let live = true;
-    void firstCelebration(sourceJobId).then((first) => {
+    void firstCelebration(sourceJobId).then(async (first) => {
       if (!live || !first) return;
-      setCelebrate({ doubtful: result.notes.some((n) => n.conf < 0.5) });
+      if (autoSaved) {
+        // A sheet the person has now opened counts toward the rating ask (as a Save did); the ask, when it comes,
+        // says the sheet was saved itself, so the toast stands aside for it.
+        if (await rating.recordSave()) return;
+        if (!live) return;
+        setCelebrate({ doubtful: false, saved: true });
+      } else {
+        setCelebrate({ doubtful: result.notes.some((n) => n.conf < 0.5) });
+      }
       setCelebrating(true);
     });
     return () => {
@@ -1445,12 +1498,11 @@ export function ResultScreen({ route, navigation }: Props) {
                 onPress={() => void shareLink()}
                 busy={sharing}
               />
+              {/* Already in the Library (option A): the bookmark is Rename, a pencil. */}
               <IconButton
-                icon="save"
-                label={savedId ? "Saved to Library. Rename" : "Save to library"}
+                icon={savedId ? "rename" : "save"}
+                label={savedId ? "Rename" : "Save to library"}
                 onPress={() => setNaming((n) => !n)}
-                tint={savedId ? colors.link : undefined}
-                filled={Boolean(savedId)}
                 active={naming}
               />
             </View>
@@ -1467,7 +1519,15 @@ export function ResultScreen({ route, navigation }: Props) {
           >
             <Text style={styles.title}>{shownTitle}</Text>
           </Touchable>
-          {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+          {autoSaved && savedId ? (
+            <View style={styles.savedSub} accessible accessibilityLabel={`${result.source ? subtitle : takeKind(result)}, saved to your Library just now`}>
+              <Text style={styles.savedSubText}>{`${result.source ? subtitle : takeKind(result)} · `}</Text>
+              <Icon name="check" size={13} color={colors.success} />
+              <Text style={styles.savedSubText}> saved to your Library just now</Text>
+            </View>
+          ) : subtitle ? (
+            <Text style={styles.subtitle}>{subtitle}</Text>
+          ) : null}
 
           {naming ? (
             <View style={styles.panel}>
@@ -2100,7 +2160,26 @@ export function ResultScreen({ route, navigation }: Props) {
       />
 
       {/* ── Doh's first-open toast, where the player docks ─────────────────── */}
-      {celebrate ? (
+      {celebrate?.saved ? (
+        <DohToast
+          visible={celebrating}
+          icon="library"
+          iconColor={colors.success}
+          title="Saved to your Library"
+          body={savedToastBody(shownTitle, result.hymnMatch?.title)}
+          action="Rename"
+          bottom={insets.bottom + 10}
+          onTouched={() => {
+            touchOnToast.current = true;
+          }}
+          onAction={() => {
+            endCelebration();
+            setNaming(true);
+          }}
+          onHide={endCelebration}
+          onGone={() => setCelebrate(null)}
+        />
+      ) : celebrate ? (
         <DohToast
           visible={celebrating}
           pose={celebrate.doubtful ? "encourage" : "cheer-notes"}
@@ -2330,6 +2409,8 @@ const makeStyles = (c: Palette) =>
       marginTop: 16,
     },
     subtitle: { fontFamily: fonts.regular, fontSize: 13.5, color: c.textMuted, marginTop: 6 },
+    savedSub: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", marginTop: 6 },
+    savedSubText: { fontFamily: fonts.regular, fontSize: 13.5, color: c.textMuted },
 
     credit: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: 14 },
     creditThumb: { width: 36, height: 36, borderRadius: 10, backgroundColor: c.surfaceAlt },

@@ -50,7 +50,9 @@ import { meterEventValue, type Meter } from "../lib/meter";
 import { logAnalyticsEvent } from "../lib/analytics";
 import { useDataSaver } from "../lib/dataSaver";
 import { recordingProfile } from "../lib/recordingPreset";
-import { enqueueTake } from "../lib/outbox";
+import { enqueueTake, parkTake, releaseTake, takeById } from "../lib/outbox";
+import { useTakeSend } from "../lib/useTakeSend";
+import { takeMeta } from "../lib/sendQueue";
 import { probeApi } from "../lib/connectivity";
 import { isNetworkCode, isOffline } from "../lib/reachability";
 import type { SubmitOptions } from "../api/endpoints";
@@ -125,6 +127,12 @@ const FREE_TIER_LIMIT_CODE = "BILLING_FREE_TIER_LIMIT";
  * left (`BillingErrors.SongNotFree`): the free weekly ones are hums and recordings.
  */
 const SONG_NOT_FREE_CODE = "BILLING_SONG_NOT_FREE";
+
+/** Added to a refusal when the take is kept in the send queue (lib/outbox) rather than lost. */
+const KEPT_LINE = " Your recording is kept in your Library — send it from there when you can.";
+
+/** The Library's line under a mic take kept back because a song needs Pro or a bought song. */
+const SONG_KEPT_REASON = "A song needs Pro or a bought song. Once you have one, tap Try again — or delete it.";
 
 /**
  * AAC in an .m4a at 22,050 Hz mono — the rate the worker resamples to anyway — at 128 kbps, or at
@@ -277,7 +285,21 @@ export function RecordScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const route = useRoute<RouteProp<TabParams, "Record">>();
   const tabNav = useNavigation<BottomTabNavigationProp<TabParams, "Record">>();
-  const { state, start, retry, reset } = useJobPolling();
+  /**
+   * Every take goes through the send queue (lib/outbox): kept in app storage and queued before its upload
+   * starts, followed here until its result is in. `direct` is the old way, straight from the recorder's
+   * file, for a take the queue could not keep (no room, or the account still loading).
+   */
+  const take = useTakeSend();
+  const direct = useJobPolling();
+  const following = take.state.takeId !== null;
+  const state = following ? take.state : direct.state;
+  const resetTake = take.reset;
+  const resetDirect = direct.reset;
+  const reset = useCallback(() => {
+    resetTake();
+    resetDirect();
+  }, [resetTake, resetDirect]);
   const {
     isPro,
     known,
@@ -355,41 +377,62 @@ export function RecordScreen() {
   }, []);
 
   /**
-   * Record now, send later: the remembered take moves into the send queue (app storage, persisted)
-   * and goes out by itself when the API can be reached; the Library shows it meanwhile. Returns false
-   * when it could not be kept, leaving the usual retry card.
+   * A take sent the old way (the queue could not keep it at first) that then failed for want of a network:
+   * queued now if it can be, and shown kept on the phone (board 13). Returns false when it could not be kept,
+   * leaving the usual retry card.
    */
+  const keepTake = take.keep;
   const queueLastTake = useCallback((afterFailedSend: boolean): boolean => {
     const last = lastSubmitArgs.current;
     if (!last) return false;
-    if (!enqueueTake({ fileUri: last.uri, fileName: last.name, opts: last.opts, afterFailedSend })) return false;
+    const id = enqueueTake({ fileUri: last.uri, fileName: last.name, opts: last.opts, afterFailedSend });
+    if (!id) return false;
     // The file is the queue's now (moved, not copied): forgetting it here must not delete it.
     lastSubmitArgs.current = null;
-    reset();
-    setPhase("ready");
-    setElapsed(0);
-    showDialog({
-      title: "Saved to send later",
-      message:
-        "You're offline, so your recording is kept on this phone. It will be sent by itself when you're back online — it waits in your Library until then.",
-      icon: "sending",
-      actions: [
-        { label: "See it in Library", icon: "library", onPress: () => tabNav.navigate("Library") },
-        { label: "OK", style: "cancel" },
-      ],
-    });
+    resetDirect();
+    setPhase("uploading");
+    void logAnalyticsEvent("take_queued_offline", { mode: last.opts?.mode });
+    keepTake(id);
     return true;
-  }, [reset, tabNav]);
+  }, [resetDirect, keepTake]);
 
-  /** Sends the take, or — when the API is known to be out of reach — queues it without trying. */
+  /**
+   * Sends a take. Write-ahead: it is kept in app storage and queued first (a mic take already is, held
+   * since it stopped), then sent at once by the queue and followed here; offline, it waits there. Returns
+   * the job id once the server has the take, null otherwise.
+   */
+  const sendTake = take.send;
+  const startDirect = direct.start;
   const submitOrQueue = useCallback(
-    async (uri: string, name: string, opts: SubmitOptions): Promise<string | null> => {
-      rememberSubmit({ uri, name, opts });
+    async (uri: string, name: string, opts: SubmitOptions, heldId: string | null = null): Promise<string | null> => {
       void logAnalyticsEvent("recording_upload", { data_saver: dataSaver });
+      if (heldId && !releaseTake(heldId, opts)) {
+        // Deleted from the Library while the question was open: nothing left to send.
+        setPhase("ready");
+        return null;
+      }
+      const id = heldId ?? enqueueTake({ fileUri: uri, fileName: name, opts });
+      if (id) {
+        rememberSubmit(null);
+        const sent = await sendTake(id);
+        return sent?.status === "sent" ? sent.jobId : null;
+      }
+      rememberSubmit({ uri, name, opts });
       if (isOffline() && !(await probeApi()) && queueLastTake(false)) return null;
-      return start(uri, name, opts);
+      return startDirect(uri, name, opts);
     },
-    [rememberSubmit, queueLastTake, start, dataSaver],
+    [rememberSubmit, queueLastTake, sendTake, startDirect, dataSaver],
+  );
+
+  /** Board 13's two ways on from a take kept on the phone: it goes by itself either way. */
+  const leaveKept = useCallback(
+    (toLibrary: boolean) => {
+      reset();
+      setPhase("ready");
+      setElapsed(0);
+      if (toLibrary) tabNav.navigate("Library");
+    },
+    [reset, tabNav],
   );
 
   // ── Voice-level guidance state ────────────────────────────────────────────
@@ -404,6 +447,9 @@ export function RecordScreen() {
     if (state.status === "done" && state.result) {
       const result = state.result;
       const sourceJobId = state.jobId ?? undefined;
+      // Filed in the Library by the server as it finished (option A): the Result opens it as a saved sheet.
+      const savedId = state.savedId ?? undefined;
+      const savedTitle = state.savedTitle ?? undefined;
       // The transcription is in; the audio it came from has no further use on the phone. Kept
       // until now (not dropped at upload) because "Retry Upload" re-sends it after a failed job.
       rememberSubmit(null);
@@ -416,9 +462,9 @@ export function RecordScreen() {
       refresh();
       // Practised today, so today's reminder has nothing to nag about. Fire-and-forget.
       void markPractisedToday();
-      nav.navigate("Result", { result, sourceJobId, fresh: true });
+      nav.navigate("Result", { result, sourceJobId, fresh: true, savedId, title: savedTitle });
     }
-  }, [state.status, state.result, state.jobId, nav, reset, refresh, rememberSubmit]);
+  }, [state.status, state.result, state.jobId, state.savedId, state.savedTitle, nav, reset, refresh, rememberSubmit]);
 
   /**
    * Explains an exhausted trial and offers the way out.
@@ -438,12 +484,12 @@ export function RecordScreen() {
     [offer, nav],
   );
 
-  const showTrialExhausted = useCallback(() => {
+  const showTrialExhausted = useCallback((kept = false) => {
     // Board 7b: when they come back, then two ways on, the song first (as Upgrade preselects it).
     const copy = limitCopy(freePerWeek, boughtTotal, freeBack);
     showDialog({
       title: copy.title,
-      message: copy.message,
+      message: copy.message + (kept ? KEPT_LINE : ""),
       choices: [
         songChoice(),
         {
@@ -466,12 +512,13 @@ export function RecordScreen() {
    * week's free ones covers; `sendAsTune` does that.
    */
   const showSongNotFree = useCallback(
-    (sendAsTune?: () => void) => {
+    (sendAsTune?: () => void, kept = false) => {
       showDialog({
         title: "Songs need Pro or a bought song",
         message:
           `A song's voice is lifted out of the band first, which takes Pro or a bought song. ` +
-          `Your ${freePerWeek} free ones a week are for hums and a voice on its own.`,
+          `Your ${freePerWeek} free ones a week are for hums and a voice on its own.` +
+          (kept ? KEPT_LINE : ""),
         choices: [
           ...(sendAsTune
             ? [{ label: "Send as a tune I sang", icon: "sing" as const, chips: [{ label: "Free" }], onPress: sendAsTune }]
@@ -510,17 +557,18 @@ export function RecordScreen() {
     // count, or the last credit spent on another device. Same dialog, and the job state
     // is cleared so the error card's "Try again" doesn't offer a retry that cannot
     // possibly succeed.
+    // A take from the send queue stays in it (and the Library), refused, for Try again or Delete.
     if (state.errorCode === FREE_TIER_LIMIT_CODE) {
       reset();
-      showTrialExhausted();
+      showTrialExhausted(following);
     } else if (state.errorCode === SONG_NOT_FREE_CODE) {
       reset();
-      showSongNotFree();
-    } else if (isNetworkCode(state.errorCode)) {
-      // The upload never got an answer: keep the take and send it when the connection is back.
+      showSongNotFree(undefined, following);
+    } else if (!following && isNetworkCode(state.errorCode)) {
+      // A direct upload never got an answer: keep the take and send it when the connection is back.
       queueLastTake(true);
     }
-  }, [state.status, state.errorCode, reset, showTrialExhausted, showSongNotFree, queueLastTake]);
+  }, [state.status, state.errorCode, following, reset, showTrialExhausted, showSongNotFree, queueLastTake]);
 
   // The elapsed-time interval is cleared in stopAndSubmit, but a screen unmount
   // mid-recording (back gesture, tab switch) never runs that path, leaking the
@@ -755,25 +803,36 @@ export function RecordScreen() {
         return;
       }
       const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
+      const name = `clip-${elapsed}s.m4a`;
+      const base = { mode, key: keyOpt, keyboardTranspose: kbTranspose || undefined, timeSignature: meter ?? undefined };
+      // Kept on the phone the moment it stops (lib/outbox), held while the question below is open: should the
+      // app die meanwhile, it goes with the answer remembered from last time (a free tune if a song is not paid for).
+      const heldId = enqueueTake({
+        fileUri: uri,
+        fileName: name,
+        opts: { ...base, separate: mode !== "chords" && importKind() === "song" && !songNeedsCredit },
+        held: true,
+      });
       // A phone held up to a speaker records a song as surely as a file import does, and a song
       // transcribed whole comes back as a scatter of wrong notes — so the same question, with the
       // same remembered answer, and no cancel because the take is already made.
       const separate = mode === "chords" ? false : ((await askIfSong(false)) ?? false);
-      const name = `clip-${elapsed}s.m4a`;
       const send = async (isolate: boolean) => {
         setPhase("uploading");
-        const opts = { mode, key: keyOpt, separate: isolate, keyboardTranspose: kbTranspose || undefined, timeSignature: meter ?? undefined };
+        const opts = { ...base, separate: isolate };
         void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "mic" });
-        const jobId = await submitOrQueue(uri, name, opts);
+        const jobId = await submitOrQueue(uri, name, opts, heldId);
         if (jobId) {
           setMeter(null);
           void offerBackgroundAlerts();
         }
       };
-      // A song is not one of the free weekly ones: the take is made, so offer to send it as a sung tune.
+      // A song is not one of the free weekly ones: the take is made, so offer to send it as a sung tune —
+      // and keep it in the Library meanwhile, for when a song is bought.
       if (separate && songNeedsCredit) {
         setPhase("ready");
-        showSongNotFree(() => void send(false).catch(() => setPhase("ready")));
+        if (heldId) parkTake(heldId, SONG_NOT_FREE_CODE, SONG_KEPT_REASON, { ...base, separate: true });
+        showSongNotFree(() => void send(false).catch(() => setPhase("ready")), heldId !== null);
         return;
       }
       await send(separate);
@@ -852,10 +911,16 @@ export function RecordScreen() {
 
   const isUploading = phase === "uploading";
   const isRecording = phase === "recording";
+  /** The connection dropped: the take waits on the phone (board 13). */
+  const kept = following && take.state.kept;
+  /** Our failure, and the take is being sent again by itself (board 13). */
+  const resending = following ? take.state.resending : null;
+  const keptTake = kept ? takeById(take.state.takeId!) : null;
 
   // The row of steps on the uploading card. A hummed tune skips the isolating step — unless
   // the worker says it is isolating anyway, in which case the step is shown rather than lost.
-  const separating = lastSubmitArgs.current?.opts?.separate === true || state.stage === "separating";
+  const sentOpts = following ? takeById(take.state.takeId!)?.opts : lastSubmitArgs.current?.opts;
+  const separating = sentOpts?.separate === true || state.stage === "separating";
   const uploadStages = separating ? UPLOAD_STAGES : UPLOAD_STAGES.filter((s) => s.key !== "separating");
   const uploadStageIndex = uploadStages.findIndex((s) => s.key === state.stage);
 
@@ -880,6 +945,15 @@ export function RecordScreen() {
               <Icon name="close" size={20} color={colors.text} />
             </Touchable>
           </View>
+
+          {kept ? (
+            <View style={styles.offlinePill} accessibilityLabel="Offline">
+              <Icon name="offline" size={14} color={colors.textMuted} />
+              <Text style={styles.offlinePillText} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
+                Offline
+              </Text>
+            </View>
+          ) : null}
 
           {!isUploading && (
             <Touchable
@@ -912,7 +986,37 @@ export function RecordScreen() {
           </View>
         </View>
 
-        {isUploading ? (
+        {isUploading && kept ? (
+          /* Kept on this phone (board 13): the connection dropped, so the take waits in the app's storage and goes
+             by itself when the API answers, even after the app is closed. The bar stays where the upload stopped. */
+          <View style={styles.jobZone}>
+            <View style={styles.jobCard}>
+              <View style={[styles.jobMark, styles.jobMarkQuiet]}>
+                <Icon name="offline" size={26} color={colors.text} />
+              </View>
+              <Text style={styles.jobTitle}>Kept on this phone</Text>
+              <Text style={styles.jobSub}>
+                The connection dropped. We&apos;ll send it as soon as you&apos;re online; you can close the app.
+              </Text>
+              <View style={styles.jobBarRow}>
+                <View style={styles.progressTrack}>
+                  <View
+                    style={[styles.progressFill, styles.progressFillPaused, { width: `${Math.max(3, Math.min(100, state.progress * 100))}%` }]}
+                  />
+                </View>
+                <Text style={[styles.jobPct, styles.jobPctPaused]} maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}>
+                  {percentLabel(state.progress)}
+                </Text>
+              </View>
+              <Text style={styles.pausedLine}>Uploading · paused</Text>
+              <View style={styles.keptActions}>
+                <Button label="See it in Library" variant="secondary" size="sm" onPress={() => leaveKept(true)} />
+                <Button label="Record another" size="sm" onPress={() => leaveKept(false)} />
+              </View>
+              {keptTake ? <Text style={styles.keptMeta}>{takeMeta(keptTake)}</Text> : null}
+            </View>
+          </View>
+        ) : isUploading ? (
           /* The uploading card: the mark, the step the job is on, a real percentage — the
              upload's own until the server answers, the worker's after — and the steps still
              to come. Once the server has the job it finishes it whether or not anyone is
@@ -921,13 +1025,17 @@ export function RecordScreen() {
           <View style={styles.jobZone}>
             <View style={styles.jobCard}>
               <View style={styles.jobMark}>
-                <Mark height={30} color={colors.accent} />
+                {resending ? <Icon name="retry" size={26} color={colors.accent} /> : <Mark height={30} color={colors.accent} />}
               </View>
-              <Text style={styles.jobTitle}>{stageLabel(state.stage, state.queuePosition)}</Text>
+              <Text style={styles.jobTitle}>{resending ? "Sending it again" : stageLabel(state.stage, state.queuePosition)}</Text>
               <Text style={styles.jobSub}>
-                {state.stage === "uploading"
-                  ? "Keep the app open until the upload finishes."
-                  : "You can leave this screen — we'll notify you when it's ready."}
+                {resending === "lost"
+                  ? "Our server restarted while writing your solfa, so we're sending your recording again. Nothing to do, and it isn't charged twice."
+                  : resending === "server"
+                    ? "Our server had a problem with that upload, so we're sending your recording again. Nothing to do, and it isn't charged twice."
+                    : state.stage === "uploading"
+                      ? "Keep the app open until the upload finishes."
+                      : "You can leave this screen — we'll notify you when it's ready."}
               </Text>
 
               <View style={styles.jobBarRow}>
@@ -960,12 +1068,16 @@ export function RecordScreen() {
                           done && styles.uploadStageTextDone,
                         ]}
                       >
-                        {s.label}
+                        {/* Sending again, the title says so: the step on carries the place in line instead. */}
+                        {on && resending ? stageLabel(state.stage, state.queuePosition) : s.label}
                       </Text>
                     </View>
                   );
                 })}
               </View>
+              {resending ? (
+                <Text style={styles.jobFoot}>You can leave this screen; we&apos;ll notify you when it&apos;s ready.</Text>
+              ) : null}
 
               {state.stalled ? <Text style={styles.uploadWarn}>{STALLED_LINE}</Text> : null}
               {state.offline ? <Text style={styles.uploadWarn}>{OFFLINE_LINE}</Text> : null}
@@ -974,7 +1086,7 @@ export function RecordScreen() {
                   label="Try again"
                   icon="retry"
                   variant="secondary"
-                  onPress={() => void retry()}
+                  onPress={() => void (following ? take.retry() : direct.retry())}
                   style={{ marginTop: spacing.lg, alignSelf: "stretch" }}
                 />
               ) : null}
@@ -1079,9 +1191,14 @@ export function RecordScreen() {
               label="Retry Upload"
                 variant="secondary"
                 onPress={() => {
-                  if (lastSubmitArgs.current) {
+                  if (following) {
                     setPhase("uploading");
-                    void start(lastSubmitArgs.current.uri, lastSubmitArgs.current.name, lastSubmitArgs.current.opts);
+                    void take.retry().then((t) => {
+                      if (!t) setPhase("ready");
+                    });
+                  } else if (lastSubmitArgs.current) {
+                    setPhase("uploading");
+                    void direct.start(lastSubmitArgs.current.uri, lastSubmitArgs.current.name, lastSubmitArgs.current.opts);
                   } else {
                     reset();
                     setPhase("ready");
@@ -1495,6 +1612,67 @@ const makeStyles = (c: Palette) =>
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.xl + spacing.xs,
     paddingBottom: spacing.xl,
+  },
+
+  /** Kept on the phone: the offline sign on a neutral tile (blue is for what is moving). */
+  jobMarkQuiet: {
+    backgroundColor: c.surfaceAlt,
+  },
+
+  progressFillPaused: {
+    backgroundColor: c.textMuted,
+  },
+
+  jobPctPaused: {
+    color: c.textMuted,
+  },
+
+  pausedLine: {
+    fontFamily: fonts.regular,
+    fontSize: 12.5,
+    color: c.textFaint,
+    marginTop: spacing.sm,
+  },
+
+  keptActions: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: spacing.sm,
+    marginTop: spacing.lg,
+  },
+
+  keptMeta: {
+    fontFamily: fonts.regular,
+    fontSize: 12,
+    color: c.textFaint,
+    marginTop: spacing.lg,
+    textAlign: "center",
+  },
+
+  jobFoot: {
+    fontFamily: fonts.regular,
+    fontSize: 12.5,
+    lineHeight: 17,
+    color: c.textFaint,
+    textAlign: "center",
+    marginTop: spacing.lg,
+  },
+
+  offlinePill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 12,
+    height: 32,
+    borderRadius: radii.pill,
+    backgroundColor: c.surfaceAlt,
+  },
+
+  offlinePillText: {
+    fontFamily: fonts.medium,
+    fontSize: 13,
+    color: c.textMuted,
   },
 
   /** The mark on a soft disc, standing in for the record button while it is busy. */

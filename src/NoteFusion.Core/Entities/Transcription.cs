@@ -176,7 +176,27 @@ public class Transcription : BaseEntity
     private static NoteEvent Shift(NoteEvent n, int semitones)
         => n with { PitchMidi = Math.Clamp(n.PitchMidi + semitones, 0, 127) };
 
-    public void Rename(string title) => Title = Guard.NotNullOrWhiteSpace(title);
+    /// <summary>A rename is the person's own word on the sheet: it counts as opened (<see cref="OpenedAtUtc"/>).</summary>
+    public void Rename(string title)
+    {
+        Title = Guard.NotNullOrWhiteSpace(title);
+        OpenedAtUtc ??= DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// True for a sheet the server filed by itself the moment its job finished (or the library sweep kept),
+    /// rather than one the person saved. Until it is opened (<see cref="OpenedAtUtc"/>) the clients mark it
+    /// "Saved automatically", and analytics do not count it as kept.
+    /// </summary>
+    public bool SavedAutomatically { get; private set; }
+
+    /// <summary>When the person first opened (or renamed) a sheet saved automatically; null until then.</summary>
+    public DateTime? OpenedAtUtc { get; private set; }
+
+    public void MarkSavedAutomatically() => SavedAutomatically = true;
+
+    /// <summary>The person opened it. Idempotent: the first time stands.</summary>
+    public void MarkOpened(DateTime utcNow) => OpenedAtUtc ??= utcNow;
 
     /// <summary>
     /// User key override (F-03). A pure re-labelling: solfa is re-derived from the note

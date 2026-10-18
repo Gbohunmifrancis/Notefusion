@@ -4,7 +4,9 @@ using NoteFusion.Application.Activity;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Library;
 using NoteFusion.Application.Transcriptions.Dtos;
+using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
 
@@ -27,21 +29,28 @@ public sealed record GetTranscriptionJobQuery(string JobId) : IRequest<Result<Tr
 /// </remarks>
 public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscriptionJobQuery, Result<TranscriptionJobDto>>
 {
+    /// <summary>What the client is told about a job the transcription service lost (with <see cref="TranscriptionJob.LostCode"/>).</summary>
+    internal const string LostSentence =
+        "The transcription service restarted while working on this, so the job was lost. Nothing was charged — please submit it again.";
+
     private readonly ITranscriptionApi _api;
     private readonly IApplicationDbContext _db;
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _clock;
+    private readonly IQuotaGate _gate;
 
     public GetTranscriptionJobQueryHandler(
         ITranscriptionApi api,
         IApplicationDbContext db,
         ICurrentUser currentUser,
-        IDateTimeProvider clock)
+        IDateTimeProvider clock,
+        IQuotaGate gate)
     {
         _api = api;
         _db = db;
         _currentUser = currentUser;
         _clock = clock;
+        _gate = gate;
     }
 
     public async Task<Result<TranscriptionJobDto>> Handle(
@@ -70,32 +79,30 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
                 // under it (the queue is in memory; an out-of-memory kill is the usual cause). The
                 // client was polling a job that will never finish and used to be shown a bare
                 // "service returned 404"; it is told plainly that the job is lost, nothing was
-                // charged, and the thing to do is submit again.
+                // charged, and the thing to do is submit again — with the code that says so.
                 if (result.Error.Type == ErrorType.NotFound)
                 {
                     // Closed here, uncharged, so it stops holding a free place (TrialUsage counts open jobs)
                     // and the sweep has nothing left to say about it: the client is being told now.
-                    job.Settle(null, _clock.UtcNow);
+                    job.Settle(null, _clock.UtcNow, TranscriptionJob.LostCode);
                     await ActivityRecorder.FailAsync(_db, request.JobId, "The transcription service restarted and lost the job.", _clock.UtcNow, cancellationToken);
                     await _db.SaveChangesAsync(cancellationToken);
-                    return new TranscriptionJobDto(
-                        request.JobId, TranscriptionStatus.Failed, 0,
-                        null,
-                        "The transcription service restarted while working on this, so the job was lost. Nothing was charged — please submit it again.");
+                    return Lost(request.JobId);
                 }
                 return result;
             }
-            var settled = Settled(request.JobId, job.ResultJson);
-            return settled.Result is null || await IsProAsync(job.UserId, cancellationToken)
-                ? settled
-                : settled with { Result = ProGate.ForFree(settled.Result) };
+            var settled = Settled(request.JobId, job.ResultJson, job.FailureCode);
+            if (settled.Result is null)
+                return settled;
+            return await FiledAsync(job, settled.Result, await IsProAsync(job.UserId, cancellationToken) ? settled : settled with { Result = ProGate.ForFree(settled.Result) }, cancellationToken);
         }
 
         if (result.Value.Status == TranscriptionStatus.Failed)
         {
             // Closed here, as a finished job is below: it stops holding a free place at once, and the sweep
-            // does not push a failure the client is looking at in this very response.
-            job.Settle(null, _clock.UtcNow);
+            // does not push a failure the client is looking at in this very response. The code (a job the
+            // worker could not finish across its restarts) is kept for a later poll answered from this row.
+            job.Settle(null, _clock.UtcNow, result.Value.ErrorCode);
             await ActivityRecorder.FailAsync(_db, request.JobId, result.Value.Error, _clock.UtcNow, cancellationToken);
             await _db.SaveChangesAsync(cancellationToken);
             return result;
@@ -118,12 +125,14 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
         }
 
         // A job the sweep already closed as failed or lost (the worker finished after the deadline) stays
-        // free, as the user was told it was. The late result is still handed over.
+        // free, as the user was told it was. The late result is still handed over, and filed.
         if (closedWithoutResult)
         {
-            return result.Value.Result is null || await IsProAsync(job.UserId, cancellationToken)
+            return result.Value.Result is null
                 ? result
-                : result.Value with { Result = ProGate.ForFree(result.Value.Result) };
+                : await FiledAsync(job, result.Value.Result, await IsProAsync(job.UserId, cancellationToken)
+                    ? result.Value
+                    : result.Value with { Result = ProGate.ForFree(result.Value.Result) }, cancellationToken);
         }
 
         // Pro at the moment of success, so nothing to charge. Asked here rather than recorded at submit
@@ -151,24 +160,39 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
 
         // Downloads are Pro: the MIDI is the one export the client cannot rebuild from the notes, so a
         // free account does not receive it. The notes, the staff and the solfa text are theirs to read.
-        return isPro || result.Value.Result is null
-            ? result
+        var shown = isPro || result.Value.Result is null
+            ? result.Value
             : result.Value with { Result = ProGate.ForFree(result.Value.Result) };
+        return result.Value.Result is null ? shown : await FiledAsync(job, result.Value.Result, shown, cancellationToken);
     }
 
     /// <summary>
-    /// Answers from our own row. A settled job with no cached result did not finish, and saying so
-    /// beats passing on the ML service's 404 — the client has a message for <c>Failed</c> and only a
-    /// generic retry for a transport error.
+    /// The finished job's envelope with the library sheet it is filed as: filed now, the moment it is first seen
+    /// done, or the one filed (or saved) before (<see cref="LibraryFiling"/>).
     /// </summary>
-    private static TranscriptionJobDto Settled(string jobId, string? resultJson)
+    private async Task<TranscriptionJobDto> FiledAsync(
+        TranscriptionJob job, TranscriptionResultDto finished, TranscriptionJobDto shown, CancellationToken ct)
+        => LibraryFiling.WithSheet(shown, await LibraryFiling.FileAsync(_db, _gate, _clock, job, finished, ct));
+
+    private static TranscriptionJobDto Lost(string jobId)
+        => new(jobId, TranscriptionStatus.Failed, 0, null, LostSentence, ErrorCode: TranscriptionJob.LostCode);
+
+    /// <summary>
+    /// Answers from our own row. A settled job with no cached result did not finish: one closed as lost (the
+    /// worker restarted under it, or never answered by the deadline) still says so, with its code, for as long
+    /// as anyone asks; any other says the recording could not be transcribed. Either beats passing on the ML
+    /// service's 404 — the client has a message for <c>Failed</c> and only a generic retry for a transport error.
+    /// </summary>
+    private static TranscriptionJobDto Settled(string jobId, string? resultJson, string? failureCode)
     {
         var cached = resultJson is null ? null : TranscriptionResultCache.Deserialize(resultJson);
 
-        return cached is null
-            ? new TranscriptionJobDto(jobId, TranscriptionStatus.Failed, 1, null,
-                "That recording could not be transcribed. Try again with a clearer take.")
-            : new TranscriptionJobDto(jobId, TranscriptionStatus.Done, 1, cached);
+        if (cached is not null)
+            return new TranscriptionJobDto(jobId, TranscriptionStatus.Done, 1, cached);
+        return failureCode == TranscriptionJob.LostCode
+            ? Lost(jobId) with { Progress = 1 }
+            : new TranscriptionJobDto(jobId, TranscriptionStatus.Failed, 1, null,
+                "That recording could not be transcribed. Try again with a clearer take.");
     }
 
     private Task<bool> IsProAsync(Guid userId, CancellationToken ct) => ProStatus.IsProAsync(_db, _clock, userId, ct);

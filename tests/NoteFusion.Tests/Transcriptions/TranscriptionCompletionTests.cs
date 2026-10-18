@@ -218,7 +218,7 @@ public class TranscriptionCompletionTests
         using var h = new TestHarness(Now);
 
         var result = await new NotifyTranscriptionReadyCommandHandler(
-                h.Db, new FakeMlService(), h.Clock, h.Push, new FakeTranscriptionNotifier(), h.WebPush)
+                h.Db, new FakeMlService(), h.Clock, h.Push, new FakeTranscriptionNotifier(), h.WebPush, h.QuotaGate)
             .Handle(new NotifyTranscriptionReadyCommand(Guid.NewGuid()), CancellationToken.None);
 
         Assert.True(result.IsFailure);
@@ -305,7 +305,7 @@ public class TranscriptionCompletionTests
             Microsoft.Extensions.Logging.Abstractions.NullLogger<NoteFusion.Infrastructure.Push.WebPushSender>.Instance);
 
         var result = await new NotifyTranscriptionReadyCommandHandler(
-                h.Db, new FakeMlService { Status = TranscriptionStatus.Done }, h.Clock, h.Push, new FakeTranscriptionNotifier(), webPush)
+                h.Db, new FakeMlService { Status = TranscriptionStatus.Done }, h.Clock, h.Push, new FakeTranscriptionNotifier(), webPush, h.QuotaGate)
             .Handle(new NotifyTranscriptionReadyCommand(job.Id), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
@@ -522,12 +522,12 @@ public class TranscriptionCompletionTests
     }
 
     private static Task<Result> Notify(TestHarness h, TranscriptionJob job, FakeMlService api)
-        => new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, new FakeTranscriptionNotifier(), h.WebPush)
+        => new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, new FakeTranscriptionNotifier(), h.WebPush, h.QuotaGate)
             .Handle(new NotifyTranscriptionReadyCommand(job.Id), CancellationToken.None);
 
     private static Task<Result<TranscriptionJobDto>> Poll(
         TestHarness h, User user, string jobId, FakeMlService api)
-        => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock)
+        => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, h.QuotaGate)
             .Handle(new GetTranscriptionJobQuery(jobId), CancellationToken.None);
 
     private sealed class FakeTranscriptionNotifier : NoteFusion.Application.Common.Interfaces.ITranscriptionNotifier

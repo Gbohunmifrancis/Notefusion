@@ -238,7 +238,19 @@ export const transcriptionsApi = {
    * Upload a captured clip as multipart/form-data; returns the polling job. `onUploadProgress`
    * hears the upload itself, 0..1, so the screen can show a real figure before the server answers.
    */
-  submit: (fileUri: string, fileName: string, opts: SubmitOptions, extra?: { onUploadProgress?: (fraction: number) => void }) => {
+  submit: (
+    fileUri: string,
+    fileName: string,
+    opts: SubmitOptions,
+    extra?: {
+      onUploadProgress?: (fraction: number) => void;
+      /**
+       * The take's own id (lib/outbox): a send that reached the server but lost its answer is handed the same job
+       * when it is sent again, never a second job or a second charge.
+       */
+      idempotencyKey?: string;
+    },
+  ) => {
     const form = new FormData();
     const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
     const mime =
@@ -283,6 +295,7 @@ export const transcriptionsApi = {
     return api
       .post<TranscriptionJob>("/api/transcriptions", form, {
         timeout: 300_000,
+        headers: extra?.idempotencyKey ? { "Idempotency-Key": extra.idempotencyKey } : undefined,
         onUploadProgress: extra?.onUploadProgress
           ? (e) => {
               const total = e.total ?? 0;
@@ -471,6 +484,9 @@ export const libraryApi = {
     api
       .put<SavedTranscription>(`/api/library/${id}/title`, { title })
       .then((r) => sheetSaved(r.data)),
+
+  /** The owner opened a sheet saved automatically: it stops showing as unopened. */
+  markOpened: (id: string) => api.post(`/api/library/${id}/opened`).then(() => undefined),
 
   updateKey: (id: string, key: string) =>
     api

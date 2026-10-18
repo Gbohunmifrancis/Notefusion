@@ -69,6 +69,9 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
       result: { ...result, audioPreviewBase64 },
       sourceJobId: jobId,
       fresh: true,
+      // Filed in the Library as it finished (option A): opened as the saved sheet.
+      savedId: job.savedId ?? undefined,
+      title: job.savedTitle ?? undefined,
     });
     return true;
   } catch (e) {

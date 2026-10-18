@@ -774,6 +774,16 @@ export interface TranscriptionJob {
    * messages were silently dropped and the mobile showed a hardcoded string.
    */
   error?: string | null;
+  /**
+   * A stable code beside `error`: "JOB_LOST" when the transcription service lost the job or never answered (every
+   * path that says so, and for as long as anyone asks), so the phone sends the recording again without reading
+   * words. Null for a failure about the recording.
+   */
+  errorCode?: string | null;
+  /** The library sheet a finished job was filed as (every finished transcription is, at once); null until then. */
+  savedId?: string | null;
+  /** That sheet's title: the hymn it recognised, else "Recording · Sun 17:10". */
+  savedTitle?: string | null;
 }
 
 // --- Library ------------------------------------------------------------
@@ -809,6 +819,13 @@ export interface SavedTranscription {
   sharedWithChoir?: boolean;
   /** The hymn this sheet is the hymnbook version of, with the credit its page shows; null otherwise. */
   hymn?: HymnCredit | null;
+  /**
+   * Filed by the server the moment its job finished (not saved by hand). With no `openedAtUtc` the Library marks it
+   * unopened: a blue dot and "Saved automatically · 18:42".
+   */
+  savedAutomatically?: boolean;
+  /** When its owner first opened or renamed it; null until then (`libraryApi.markOpened`). */
+  openedAtUtc?: string | null;
 }
 
 // --- Choirs -------------------------------------------------------------

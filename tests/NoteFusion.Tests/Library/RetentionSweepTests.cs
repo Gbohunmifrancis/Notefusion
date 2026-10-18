@@ -30,7 +30,9 @@ public class RetentionSweepTests
         Assert.Equal(1, await AutoSave(h));
         var sheet = Assert.Single(h.Db.Transcriptions);
         Assert.Equal(old.JobId, sheet.SourceJobId);
-        Assert.Equal("Recording in G major · 13 Oct", sheet.Title);
+        // Named for when it was sent, in the owner's zone (Lagos, as they never sent one): 11:15 UTC is 12:15 WAT.
+        Assert.Equal("Recording · Tue 12:15", sheet.Title);
+        Assert.True(sheet.SavedAutomatically);
         Assert.Equal(2, sheet.Notes.Count);
         Assert.Null(h.Db.TranscriptionJobs.Single(j => j.Id == fresh.Id).AutoSavedAtUtc);
 

@@ -1336,6 +1336,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("OpenedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<double>("OverallConfidence")
                         .HasColumnType("double precision");
 
@@ -1346,6 +1349,11 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<string>("PartsMusicXml")
                         .HasColumnType("text")
                         .HasColumnName("parts_music_xml");
+
+                    b.Property<bool>("SavedAutomatically")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ShareToken")
                         .HasMaxLength(64)
@@ -1419,6 +1427,14 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
+                    b.Property<string>("FailureCode")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("IdempotencyKey")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<string>("JobId")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -1465,6 +1481,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.HasIndex("ChoirId", "SongCreditConsumedAtUtc");
 
                     b.HasIndex("DeviceFingerprint", "TrialConsumedAtUtc");
+
+                    b.HasIndex("UserId", "IdempotencyKey")
+                        .IsUnique()
+                        .HasFilter("\"IdempotencyKey\" IS NOT NULL");
 
                     b.HasIndex("UserId", "TrialConsumedAtUtc");
 

@@ -9,6 +9,7 @@ import { confidenceColor, fonts, motion, radii, spacing, typography, type Palett
 import type { SavedTranscription } from "../../api/types";
 import { solfaOpening } from "../../lib/solfaOpening";
 import { confidenceA11y, confidenceLevel } from "../../lib/confidence";
+import { autoSavedLine, isUnopened } from "../../lib/savedSheet";
 
 export function LibraryRow({
   item,
@@ -38,6 +39,8 @@ export function LibraryRow({
   const tone = confidenceColor(item.overallConfidence, colors);
   const doh = dohLetter(item.key);
   const opening = solfaOpening(item.preview ?? item.notes, item.timeSignature);
+  // Filed by the server as its job finished and not opened yet (board 12): a blue dot and the line that says so.
+  const unopened = isUnopened(item);
 
   return (
     <Touchable
@@ -49,7 +52,8 @@ export function LibraryRow({
       accessibilityRole={selecting ? "checkbox" : "button"}
       accessibilityState={selecting ? { checked: selected } : undefined}
       accessibilityLabel={
-        `${item.title}, doh is ${doh}${doubtful ? `, ${confidenceA11y(item.overallConfidence)}` : ""}${item.folder ? `, in ${item.folder}` : ""}.` +
+        `${unopened ? "New. " : ""}${item.title}, doh is ${doh}${doubtful ? `, ${confidenceA11y(item.overallConfidence)}` : ""}${item.folder ? `, in ${item.folder}` : ""}.` +
+        (unopened ? ` ${autoSavedLine(item.createdAtUtc)}.` : "") +
         (offline === "kept" ? " Kept offline." : offline === "missing" ? " Not on this phone while offline." : "") +
         (selecting ? "" : " Long press to select.")
       }
@@ -66,9 +70,12 @@ export function LibraryRow({
         <Text style={styles.dohCaption}>DOH</Text>
       </View>
       <View style={styles.info}>
-        <Text style={styles.title} numberOfLines={1}>
-          {item.title}
-        </Text>
+        <View style={styles.titleRow}>
+          {unopened ? <View style={styles.unopenedDot} /> : null}
+          <Text style={[styles.title, styles.titleFlex]} numberOfLines={1}>
+            {item.title}
+          </Text>
+        </View>
         {/* The song's opening in solfa when the list carries it, so a row is
             recognisable by how it starts; the date and folder otherwise. */}
         {opening ? (
@@ -81,6 +88,14 @@ export function LibraryRow({
             {subtitle}
           </Text>
         )}
+        {unopened ? (
+          <View style={styles.savedRow}>
+            <Icon name="check" size={13} color={colors.success} />
+            <Text style={styles.savedText} numberOfLines={1}>
+              {autoSavedLine(item.createdAtUtc)}
+            </Text>
+          </View>
+        ) : null}
       </View>
       {offline ? (
         <Icon name={offline === "kept" ? "kept" : "offline"} size={15} color={colors.textFaint} />
@@ -120,6 +135,11 @@ const makeStyles = (c: Palette) =>
     rowMissing: {
       opacity: 0.5,
     },
+    titleRow: { flexDirection: "row", alignItems: "center", gap: 7 },
+    titleFlex: { flexShrink: 1 },
+    unopenedDot: { width: 7, height: 7, borderRadius: 3.5, backgroundColor: c.link },
+    savedRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 4 },
+    savedText: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, flexShrink: 1 },
     check: {
       width: 22,
       height: 22,

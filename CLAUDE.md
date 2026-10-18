@@ -189,7 +189,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   runtime policy: any native change (a new Expo module, a permission, a plugin) gives a new
   runtime, so an update can only reach builds that have its native code — anything native
   needs a store build first.
-  Offline, JS only (no netinfo): opened/saved sheets are kept per account in `documents/offline/` (`lib/offlineLibrary`, pure `sheetCache`; pins exempt from the 8 MB cap; wiped on sign-out) and used on NETWORK_* errors; unsent takes queue in `lib/outbox` (pure `sendQueue`; links never queue).
+  Offline, JS only (no netinfo): opened/saved sheets are kept per account in `documents/offline/` (`lib/offlineLibrary`, pure `sheetCache`; pins exempt from the 8 MB cap; wiped on sign-out) and used on NETWORK_* errors. No take is lost (board 13): every one (never a link) is written ahead into `lib/outbox` (pure `sendQueue`) before its upload — audio moved to app storage beside a synchronous `<id>.json` record, a mic take `held` from the moment it stops while it is asked what it is — sent at once under an `Idempotency-Key` (`sendKey`: the take's id, a new suffix per job it left behind) and followed on the Record screen by `lib/useTakeSend` ("Kept on this phone" card when the connection drops, "Sending it again" card when the job is lost; no dialogs), and in the Library's "On its way" group; the audio stays until the job is done. A job lost (`errorCode: "JOB_LOST"`; the old sentences only as a fallback) or unanswered 4.5 h after sending is re-sent at once, a 5xx on the backoff, at most twice; the network is waited out however long; the recording's failures and refusals wait for Try again/Delete.
   The Hymns screen reads `web-site/hymns/pack.json` (built by `tools/blog/lib/hymn-pack.mjs`, version in `pack-version.json`, checked by `check.mjs`).
   Data saver (default on, `lib/dataSaver`/`dataPolicy`): 32 kbps AAC uploads (`recordingPreset`, measured), no avatars/artwork, slower polls, hymn updates only on tap.
 
@@ -363,6 +363,16 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   folder share never gives a sheet a token of its own. "Transpose for my
   choir" is the one edit that moves the notes: `Transcription.Transpose` shifts melody, parts
   and key and respells both scores with `Core/Notation/MusicXmlTransposer`.
+  Every finished transcription is filed in its owner's library the moment its job is settled Done (option A,
+  board 12: `Library/LibraryFiling`, from `GetTranscriptionJobQuery` and `NotifyTranscriptionReadyCommand` under the
+  save lock, one sheet per job, a deleted one stays deleted; `AutoSaveFinishedTranscriptionsCommand` is the fallback):
+  named after the hymn it recognised, else "Recording · Sun 17:10" in `users.TimeZone`, gated by `ProGate.ForFree` for
+  a free owner, `SavedAutomatically` and unopened until `POST /api/library/{id}/opened` or a rename (only then
+  counted as kept: `KeptSheets`); the job DTO carries `savedId`/`savedTitle`, so the phone's Result opens it saved
+  (Rename for Save, "Saved to your Library" toast, edits saved as made) and the Library marks it with a blue dot.
+  A job closed as lost keeps `FailureCode = "JOB_LOST"` on its row, so the code is answered for as long as anyone asks;
+  `POST /api/transcriptions` takes an `Idempotency-Key`, unique per account on `TranscriptionJob`, and a repeat is
+  handed the first job (never a second job or charge). The web app's Save still replaces the filed copy.
 - The website is the top of the funnel: `POST /api/preview` / `/api/preview/link` make an anonymous
   30-second preview (one per `X-Device-Id`, ever, none without one or on a device an account has used, and
   10 a day per address, via `PreviewJob` rows), polled at

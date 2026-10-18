@@ -351,7 +351,7 @@ public class ChoirPlanTests
 
         // A running song that fails frees its place for the whole choir.
         api.Status = TranscriptionStatus.Failed;
-        await new NoteFusion.Application.Transcriptions.Queries.GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(singer.Id), h.Clock)
+        await new NoteFusion.Application.Transcriptions.Queries.GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(singer.Id), h.Clock, h.QuotaGate)
             .Handle(new NoteFusion.Application.Transcriptions.Queries.GetTranscriptionJobQuery(first.Value), default);
         api.Status = TranscriptionStatus.Pending;
         Assert.True((await SubmitLink(h, singer, api)).IsSuccess);

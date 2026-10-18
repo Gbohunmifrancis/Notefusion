@@ -16,6 +16,11 @@ namespace NoteFusion.Application.Library.Dtos;
 /// the full note list.
 /// </param>
 /// <param name="SharedWithChoir">The sheet is in its owner's choir library ("Share with my choir").</param>
+/// <param name="SavedAutomatically">
+/// Filed by the server the moment its job finished, not saved by hand: with no <paramref name="OpenedAtUtc"/> the
+/// clients mark it unopened ("Saved automatically", a blue dot).
+/// </param>
+/// <param name="OpenedAtUtc">When its owner first opened or renamed it; null until then.</param>
 public sealed record SavedTranscriptionDto(
     Guid Id,
     string Title,
@@ -34,7 +39,9 @@ public sealed record SavedTranscriptionDto(
     IReadOnlyList<ChordSymbolDto>? Chords = null,
     IReadOnlyList<NoteEventDto>? Preview = null,
     bool SharedWithChoir = false,
-    HymnCreditDto? Hymn = null);
+    HymnCreditDto? Hymn = null,
+    bool SavedAutomatically = false,
+    DateTime? OpenedAtUtc = null);
 
 /// <summary>
 /// The hymn a sheet is the hymnbook version of: its title, its page and the credit line that page shows
@@ -98,7 +105,9 @@ public static class SavedTranscriptionMapper
             includeNotes ? ChordLabels.Label(t.Chords, t.Key) : null,
             SolfaLabels.Label(t.Notes.Take(PreviewNotes).ToList(), t.Key),
             t.ChoirId is not null,
-            HymnCreditDto.Of(t));
+            HymnCreditDto.Of(t),
+            t.SavedAutomatically,
+            t.OpenedAtUtc);
 
     public static SharedSheetDto ToShared(Transcription t, string sharedBy)
         => new(

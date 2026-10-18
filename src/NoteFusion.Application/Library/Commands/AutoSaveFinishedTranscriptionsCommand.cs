@@ -1,8 +1,8 @@
-using System.Globalization;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Practice;
 using NoteFusion.Application.Transcriptions;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Entities;
@@ -12,16 +12,15 @@ using NoteFusion.Shared.Results;
 namespace NoteFusion.Application.Library.Commands;
 
 /// <summary>
-/// Keeps every finished transcription in its owner's library, whether or not they pressed Save.
+/// The fallback that keeps every finished transcription in its owner's library: a job settled Done is filed at
+/// once (<see cref="LibraryFiling"/>), and this sweep files any that path missed (a filing that failed, a job
+/// settled before it existed) once the job has been finished for <see cref="Delay"/>.
 /// </summary>
 /// <remarks>
-/// Nine in ten finished transcriptions were never saved, and an unsaved one is lost the moment its
-/// screen closes, so most accounts had nothing to come back to. The result is already on the job row
-/// (<see cref="TranscriptionJob.ResultJson"/>); this sweep turns it into a library sheet once the job has
-/// been finished for <see cref="Delay"/>, long enough for the result screen's own choices (which doh, the
-/// title, Save itself) to come first. A sheet saved by hand in that window is left as it is, and a
-/// Save pressed after the sweep replaces the kept copy (<see cref="SaveTranscriptionCommand"/>). Each job
-/// is handled once, so a sheet the user deletes afterwards stays deleted.
+/// The result is already on the job row (<see cref="TranscriptionJob.ResultJson"/>). A sheet already filed or
+/// saved by hand is left as it is, and a Save pressed later replaces the kept copy
+/// (<see cref="SaveTranscriptionCommand"/>). Each job is handled once, so a sheet the user deletes afterwards
+/// stays deleted.
 /// </remarks>
 public sealed record AutoSaveFinishedTranscriptionsCommand : IRequest<Result<int>>
 {
@@ -78,7 +77,9 @@ public sealed class AutoSaveFinishedTranscriptionsCommandHandler
             .Select(t => new { t.UserId, t.SourceJobId })
             .ToListAsync(ct);
         var saved = alreadySaved.Select(t => (t.UserId, t.SourceJobId!)).ToHashSet();
-        var liveUsers = (await _db.Users.Where(u => userIds.Contains(u.Id)).Select(u => u.Id).ToListAsync(ct)).ToHashSet();
+        var zones = (await _db.Users.Where(u => userIds.Contains(u.Id)).Select(u => new { u.Id, u.TimeZone }).ToListAsync(ct))
+            .ToDictionary(u => u.Id, u => PracticeTime.Resolve(u.TimeZone));
+        var liveUsers = zones.Keys.ToHashSet();
 
         // The cached result is the worker's whole answer, parts and MIDI included. A free owner is kept
         // what the poll hands them (ProGate.ForFree), never more: the four-part harmony is Pro, and a
@@ -101,7 +102,7 @@ public sealed class AutoSaveFinishedTranscriptionsCommandHandler
                 continue;
             if (!proUsers.Contains(job.UserId))
                 result = ProGate.ForFree(result);
-            if (ToSheet(job, result) is not { } sheet)
+            if (LibraryFiling.ToSheet(job, result, zones[job.UserId]) is not { } sheet)
                 continue;
 
             _db.Transcriptions.Add(sheet);
@@ -110,53 +111,5 @@ public sealed class AutoSaveFinishedTranscriptionsCommandHandler
 
         await _db.SaveChangesAsync(ct);
         return kept;
-    }
-
-    /// <summary>The sheet the result screen would have saved, with the title it would have suggested.</summary>
-    private static Transcription? ToSheet(TranscriptionJob job, TranscriptionResultDto result)
-    {
-        if (string.IsNullOrWhiteSpace(result.MusicXml) || result.Notes.Count == 0)
-            return null;
-
-        var key = KeyParser.Parse(result.Key);
-        if (key.IsFailure)
-            return null;
-
-        var notes = result.Notes.Select(n => new NoteEvent
-        {
-            PitchMidi = n.PitchMidi,
-            StartBeat = n.StartBeat,
-            DurationBeats = n.DurBeats,
-            Confidence = n.Conf
-        });
-
-        var sheet = new Transcription(
-            job.UserId,
-            TitleFor(job, result),
-            key.Value,
-            Math.Clamp(result.Tempo, 20, 300),
-            string.IsNullOrWhiteSpace(result.TimeSignature) ? "4/4" : result.TimeSignature,
-            result.MusicXml,
-            notes,
-            Math.Clamp(result.OverallConfidence, 0.0, 1.0),
-            job.JobId);
-
-        sheet.SetParts(PartNotes.FromDtos(result.Parts),
-            string.IsNullOrWhiteSpace(result.PartsMusicXml) ? null : result.PartsMusicXml);
-        sheet.SetChords(SheetChords.FromDtos(result.Chords));
-        return sheet;
-    }
-
-    /// <summary>
-    /// "Song — Artist" for a linked song, as the web app suggests; otherwise what and when, e.g.
-    /// "Recording in G major · 9 Oct", which tells two of an afternoon's takes apart in the list.
-    /// </summary>
-    private static string TitleFor(TranscriptionJob job, TranscriptionResultDto result)
-    {
-        var src = result.Source;
-        var title = src is not null && !string.IsNullOrWhiteSpace(src.Title)
-            ? src.Title.Trim() + (string.IsNullOrWhiteSpace(src.Artist) ? "" : " — " + src.Artist.Trim())
-            : $"Recording in {result.Key} · {job.CreatedAtUtc.ToString("d MMM", CultureInfo.InvariantCulture)}";
-        return title.Length <= 120 ? title : title[..120];
     }
 }

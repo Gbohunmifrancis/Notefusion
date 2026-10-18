@@ -71,7 +71,7 @@ public class ReadyPushPriorityTests
         var api = Substitute.For<ITranscriptionApi>();
         api.GetJobAsync(job.JobId, Arg.Any<CancellationToken>()).Returns(Result<TranscriptionJobDto>.Success(answer));
         var notifier = Substitute.For<ITranscriptionNotifier>();
-        var done = await new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, notifier, h.WebPush)
+        var done = await new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, notifier, h.WebPush, h.QuotaGate)
             .Handle(new NotifyTranscriptionReadyCommand(job.Id), default);
         Assert.True(done.IsSuccess);
     }

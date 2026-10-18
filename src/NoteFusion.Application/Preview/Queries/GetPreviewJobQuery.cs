@@ -45,7 +45,8 @@ public sealed class GetPreviewJobQueryHandler : IRequestHandler<GetPreviewJobQue
             {
                 await PreviewOutcome.RecordAsync(_db, preview, null, PreviewOutcome.LostReason, _clock.UtcNow, cancellationToken);
                 return new TranscriptionJobDto(request.JobId, TranscriptionStatus.Failed, 0, null,
-                    "The transcription service restarted while working on this, so the preview was lost. Create a free account to try it again.");
+                    "The transcription service restarted while working on this, so the preview was lost. Create a free account to try it again.",
+                    ErrorCode: Core.Entities.TranscriptionJob.LostCode);
             }
             return result;
         }

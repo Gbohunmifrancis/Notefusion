@@ -3,7 +3,7 @@ import { Directory, File, Paths } from "expo-file-system";
 /**
  * Text and audio kept for offline use, under the app's documents folder (never the cache folder,
  * which Android may empty when space runs low): `offline/` holds the saved-sheet copies, the hymn
- * pack and the send queue's recordings. Every call is wrapped — a full disk or a missing file is an
+ * pack and the send queue's recordings with their records. Every call is wrapped — a full disk or a missing file is an
  * empty answer, never a crash.
  */
 
@@ -69,6 +69,43 @@ export function removeDir(dir: Directory): void {
     if (dir.exists) dir.delete();
   } catch {
     // Already gone, or in use; the next sign-in's account check clears what is left.
+  }
+}
+
+/** The uri a file named `name` in `dir` has (or will have). */
+export function uriIn(dir: Directory, name: string): string {
+  return new File(dir, name).uri;
+}
+
+export function fileExists(uri: string): boolean {
+  try {
+    return new File(uri).exists;
+  } catch {
+    return false;
+  }
+}
+
+/** Size in bytes, or 0 when it cannot be read. */
+export function fileSize(uri: string): number {
+  try {
+    const file = new File(uri);
+    return file.exists ? file.size ?? 0 : 0;
+  } catch {
+    return 0;
+  }
+}
+
+/** The names of the files and of the folders directly in `dir`; empty when it cannot be read. */
+export function listDir(dir: Directory): { files: string[]; dirs: string[] } {
+  try {
+    if (!dir.exists) return { files: [], dirs: [] };
+    const entries = dir.list();
+    return {
+      files: entries.filter((e) => e instanceof File).map((e) => e.name),
+      dirs: entries.filter((e) => e instanceof Directory).map((e) => e.name),
+    };
+  } catch {
+    return { files: [], dirs: [] };
   }
 }
 

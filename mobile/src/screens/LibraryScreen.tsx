@@ -32,7 +32,8 @@ import { useSheetActions } from "../components/library/useSheetActions";
 import { useSubscription } from "../lib/subscription";
 import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLibrary";
 import { resultFromSaved } from "../lib/openSheet";
-import { removeTake, retryTake, useOutbox } from "../lib/outbox";
+import { onTakeChange, removeTake, retryTake, useOutbox, useSendProgress } from "../lib/outbox";
+import { isUnopened } from "../lib/savedSheet";
 import { useReachability } from "../lib/connectivity";
 import { isNetworkCode } from "../lib/reachability";
 import { openTranscriptionFromNotification } from "../lib/notificationLink";
@@ -67,8 +68,9 @@ export function LibraryScreen() {
   const [offline, setOffline] = useState(false);
   const offlineCopies = useOfflineLibrary();
   const reach = useReachability();
-  // Recordings that could not be sent yet (lib/outbox): shown above the sheets until they are.
+  // Takes still on their way (lib/outbox): shown above the sheets until each lands among them.
   const outbox = useOutbox();
+  const sendProgress = useSendProgress();
 
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -120,6 +122,15 @@ export function LibraryScreen() {
   useEffect(() => {
     load();
   }, []);
+
+  // A take on its way finished: the server filed it, so it is a sheet in the list now.
+  useEffect(
+    () =>
+      onTakeChange((_before, after) => {
+        if (after.status === "done") load();
+      }),
+    [],
+  );
 
   // Back online while showing the phone's copies (or an error): read the list again, quietly.
   useEffect(() => {
@@ -184,6 +195,12 @@ export function LibraryScreen() {
    * at once with no download; offline, any copy does (lib/offlineLibrary).
    */
   async function openItem(item: SavedTranscription) {
+    // Opened: a sheet the server filed stops being marked unopened, here and on the server.
+    if (isUnopened(item)) {
+      const openedAtUtc = new Date().toISOString();
+      setItems((list) => list.map((i) => (i.id === item.id ? { ...i, openedAtUtc } : i)));
+      void libraryApi.markOpened(item.id).catch(() => undefined);
+    }
     try {
       const { sheet } = await loadSheet(item);
       nav.navigate("Result", { result: resultFromSaved(sheet), savedId: sheet.id, title: sheet.title });
@@ -347,6 +364,7 @@ export function LibraryScreen() {
       {/* ── Recordings waiting to send (record now, send later) ──────────────── */}
       <PendingSends
         items={outbox}
+        progress={sendProgress}
         onRetry={(t) => retryTake(t.id)}
         onOpen={(t) => {
           if (!t.jobId) return;
@@ -414,6 +432,9 @@ export function LibraryScreen() {
           )}
         </Touchable>
       )}
+
+      {/* Below "On its way", the sheets themselves, so the two lists read apart (board 13). */}
+      {outbox.length > 0 && sortedItems.length > 0 ? <Text style={styles.sheetsEyebrow}>All sheets</Text> : null}
     </View>
   );
 
@@ -663,6 +684,14 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.surfaceAlt,
       borderWidth: 1,
       borderColor: c.border,
+    },
+    sheetsEyebrow: {
+      fontFamily: fonts.medium,
+      fontSize: 12,
+      color: c.textFaint,
+      textTransform: "uppercase",
+      letterSpacing: 0.8,
+      marginTop: spacing.lg,
     },
     offlineText: {
       fontFamily: fonts.medium,

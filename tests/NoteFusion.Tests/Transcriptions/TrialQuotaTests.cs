@@ -652,7 +652,7 @@ public class TrialQuotaTests
 
     private static Task<Result<TranscriptionJobDto>> Poll(
         TestHarness h, User user, string jobId, FakeTranscriptionApi api)
-        => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock)
+        => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, h.QuotaGate)
             .Handle(new GetTranscriptionJobQuery(jobId), CancellationToken.None);
 
     [Fact]

@@ -144,7 +144,7 @@ public sealed class GetInsightsQueryHandler : IRequestHandler<GetInsightsQuery, 
                 .Select(s => new { s.UserId, s.CreatedAtUtc })
                 .ToListAsync(ct))
             .Where(s => ids.Contains(s.UserId)).ToList();
-        var sheets = (await _db.RealSheets().AsNoTracking().Select(t => new { t.UserId, t.CreatedAtUtc }).ToListAsync(ct))
+        var sheets = (await _db.KeptSheets().AsNoTracking().Select(t => new { t.UserId, t.CreatedAtUtc }).ToListAsync(ct))
             .Where(t => ids.Contains(t.UserId)).ToList();
 
         // ── Activity signals per account: a job, a signed-in web event, or being last seen ──

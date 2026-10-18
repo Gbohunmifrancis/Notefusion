@@ -170,17 +170,21 @@ export function LinkScreen() {
     if (state.status === "done" && state.result) {
       const result = state.result;
       const sourceJobId = state.jobId ?? undefined;
+      // Filed in the Library by the server as it finished (option A): opened as the saved sheet.
+      const savedId = state.savedId ?? undefined;
+      const savedTitle = state.savedTitle ?? undefined;
       reset();
       refresh();
       void markPractisedToday();
       nav.replace("Result", {
         result,
         sourceJobId,
-        title: result.source ? result.source.title : undefined,
+        title: savedTitle ?? (result.source ? result.source.title : undefined),
         fresh: true,
+        savedId,
       });
     }
-  }, [state.status, state.result, state.jobId, nav, reset, refresh]);
+  }, [state.status, state.result, state.jobId, state.savedId, state.savedTitle, nav, reset, refresh]);
 
   const stageIndex = STAGES.findIndex((s) => s.key === state.stage);
   const barWidth = useMemo(() => new Animated.Value(0), []);

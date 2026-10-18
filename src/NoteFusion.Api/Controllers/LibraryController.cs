@@ -129,6 +129,11 @@ public sealed class LibraryController : ApiControllerBase
     /// <summary>Where a shared sheet opens: the website's public sheet page.</summary>
     public static string SharedSheetUrl(string token) => $"https://notefusion.studio/app/sheet/?s={Uri.EscapeDataString(token)}";
 
+    /// <summary>Marks a sheet opened: one saved automatically is no longer shown as unopened.</summary>
+    [HttpPost("{id:guid}/opened")]
+    public async Task<IActionResult> MarkOpened(Guid id, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(new MarkSheetOpenedCommand(id), ct));
+
     /// <summary>Deletes a saved transcription.</summary>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
