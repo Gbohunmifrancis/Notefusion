@@ -207,7 +207,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   404 for (lost in a restart), one with no answer past `TrialUsage.RunningFor`, and one the worker still reports
   queued/running past `TrialUsage.HeldFor` (hours: a busy queue is not a lost job, and closing it early made its
   result free), and then emails a failed job's
-  owner tips at most once a day (`EmailFailedTranscriptionTipsCommand`). Every metered submit (uploads,
+  owner tips at most once a week (`EmailFailedTranscriptionTipsCommand`). Every metered submit (uploads,
   links, previews, the free harmony) runs count → worker submit → job row under a per-subject lock
   (`IQuotaGate`: `user:{id}` plus `device:` and `mailbox:` for a free account, or `device:`/`ip:` for previews); the in-process one assumes a single API
   instance — scaling out needs a Postgres advisory lock instead. The allowance is the week's 3 plus every transcription
@@ -340,11 +340,17 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   notes from the founder (email with Reply-To the founder + a one-line push when a device is registered) to four
   segments in priority order — unpaid checkout ≥3 days old (and ≥2 days after `RemindAbandonedCheckouts`, which in
   turn holds off a day after any outreach), active free user, tried once then quiet 5 days, never transcribed after
-  2 days — once per segment per account ever, at most one a week, 09:00–19:00 WAT, `Outreach__BatchSize` per run.
+  2 days — once per segment per account ever, at most one a week, 09:00–19:00 WAT, `Outreach__BatchSize` (5) per run.
   `OutreachMessage` rows are the claim (unique user+segment+channel) and the audit trail (`GET /api/admin/outreach`);
   a failed send is retried once. Email respects `EmailOptOut` (signed one-click `GET/POST /api/email/unsubscribe`);
   push respects the app's switch (it unregisters the device). Off unless `Outreach__Enabled` + `FounderName` +
   `ReplyTo` are set (prod defaults them on; the code default is off).
+- Email quota (`Application/Common/EmailBudget`, `Infrastructure/Email/EmailQuota`): every email Resend accepts is an
+  `email_sends` row (kind + time); optional mail (welcome, waitlist, checkout reminder, failed-job tips, outreach) goes only
+  while each capped window — last 24 h `Email__DailyLimit` (100), 7 days `Email__WeeklyLimit` (none), 31 days
+  `Email__MonthlyLimit` (3000) — is under `Email__OptionalShare` (0.6) of its cap, counting every kind; codes, resets,
+  receipts, security, expiry, admin and backup mail always send. Batches ask `IEmailQuota` before claiming, so held mail
+  stays due (outreach holds both channels); inline welcome/waitlist is skipped. Usage on System Health.
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).

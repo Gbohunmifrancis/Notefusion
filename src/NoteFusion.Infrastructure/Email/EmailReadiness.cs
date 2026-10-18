@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NoteFusion.Application.Common;
+using NoteFusion.Application.Common.Settings;
 
 namespace NoteFusion.Infrastructure.Email;
 
@@ -10,11 +12,13 @@ namespace NoteFusion.Infrastructure.Email;
 public sealed class EmailReadiness : IHostedService
 {
     private readonly EmailSettings _settings;
+    private readonly EmailQuotaSettings _quota;
     private readonly ILogger<EmailReadiness> _logger;
 
-    public EmailReadiness(EmailSettings settings, ILogger<EmailReadiness> logger)
+    public EmailReadiness(EmailSettings settings, EmailQuotaSettings quota, ILogger<EmailReadiness> logger)
     {
         _settings = settings;
+        _quota = quota;
         _logger = logger;
     }
 
@@ -28,6 +32,14 @@ public sealed class EmailReadiness : IHostedService
             _logger.LogWarning("Email goes through Resend's sandbox sender {From}, which only reaches the key owner's inbox.", _settings.FromAddress);
         else
             _logger.LogInformation("Email is delivered through Resend as {From}.", _settings.FromAddress);
+
+        var windows = EmailBudget.Windows(_quota);
+        if (windows.Count == 0)
+            _logger.LogInformation("Email quota: no caps set (Email__DailyLimit, Email__WeeklyLimit, Email__MonthlyLimit); optional mail is never held.");
+        else
+            _logger.LogInformation(
+                "Email quota: {Caps}; optional mail is held once a window reaches {Share:P0} of its cap.",
+                string.Join(", ", windows.Select(w => $"{w.Limit} per {w.Name}")), _quota.OptionalShare);
         return Task.CompletedTask;
     }
 

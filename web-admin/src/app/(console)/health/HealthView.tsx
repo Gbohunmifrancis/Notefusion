@@ -23,6 +23,7 @@ import type {
   BackupHealthStatus,
   BackupRun,
   BackupStatus,
+  EmailWindowUsage,
   HealthPanel,
   HealthStatus,
   SystemHealth,
@@ -238,6 +239,42 @@ function BackupsCard({ backups, nowMs }: { backups: BackupStatus; nowMs: number 
             <ArrowRight size={14} aria-hidden="true" />
           </a>
         )}
+      </div>
+    </Card>
+  );
+}
+
+const EMAIL_WINDOW_LABELS: Record<EmailWindowUsage["window"], string> = {
+  day: "Last 24 hours",
+  week: "Last 7 days",
+  month: "Last 31 days",
+};
+
+/** Mail sent against the email plan's caps (`EmailBudget`), one tile per capped window. */
+function EmailQuotaCard({ windows }: { windows: EmailWindowUsage[] }) {
+  return (
+    <Card
+      title="Email quota"
+      hint="Mail the provider accepted, against the plan's caps. Optional mail (welcome, tips, reminders, outreach) waits once a window reaches its optional line; codes, resets, receipts and security notices always send."
+    >
+      <div className="grid gap-4 sm:grid-cols-3">
+        {windows.map((w) => {
+          const held = w.sent >= w.optionalCeiling;
+          return (
+            <StatCard
+              key={w.window}
+              label={EMAIL_WINDOW_LABELS[w.window] ?? w.window}
+              value={`${formatCount(w.sent)} / ${formatCount(w.limit)}`}
+              sub={
+                held
+                  ? `Optional mail waiting (line at ${formatCount(w.optionalCeiling)})`
+                  : `Optional mail until ${formatCount(w.optionalCeiling)}`
+              }
+              tone={w.sent >= w.limit ? "danger" : held ? "warning" : "success"}
+              share={w.limit > 0 ? w.sent / w.limit : null}
+            />
+          );
+        })}
       </div>
     </Card>
   );
@@ -623,6 +660,10 @@ export function HealthView() {
             </div>
 
             {health.backups && <BackupsCard backups={health.backups} nowMs={nowMs} />}
+
+            {health.emailUsage && health.emailUsage.length > 0 && (
+              <EmailQuotaCard windows={health.emailUsage} />
+            )}
 
             <div className="grid gap-5 lg:grid-cols-2">
               <Card

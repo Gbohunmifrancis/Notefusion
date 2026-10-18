@@ -48,19 +48,22 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
     private readonly ITranscriptionApi _transcriber;
     private readonly IDateTimeProvider _clock;
     private readonly IWorkerHeartbeatTracker? _heartbeats;
+    private readonly IEmailQuota? _emailQuota;
 
     public GetSystemHealthQueryHandler(
         IApplicationDbContext db,
         IDatabaseHealth database,
         ITranscriptionApi transcriber,
         IDateTimeProvider clock,
-        IWorkerHeartbeatTracker? heartbeats = null)
+        IWorkerHeartbeatTracker? heartbeats = null,
+        IEmailQuota? emailQuota = null)
     {
         _db = db;
         _database = database;
         _transcriber = transcriber;
         _clock = clock;
         _heartbeats = heartbeats;
+        _emailQuota = emailQuota;
     }
 
     public async Task<Result<SystemHealthDto>> Handle(GetSystemHealthQuery request, CancellationToken ct)
@@ -89,6 +92,10 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
             ? null
             : (await BackupHealth.ReadAsync(_db, now, ct)).Status;
 
+        var emailUsage = database.Status == "down" || _emailQuota is null
+            ? null
+            : await _emailQuota.ReadUsageAsync(ct);
+
         var panels = new[] { database, worker, backlog };
         var status = panels.Any(p => p.Status == "down") ? "down"
             : panels.Any(p => p.Status == "degraded") ? "degraded"
@@ -99,7 +106,7 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
             .ToList() ?? (IReadOnlyList<WorkerHeartbeatDto>)Array.Empty<WorkerHeartbeatDto>();
 
         return new SystemHealthDto(
-            status, now, database, worker, backlog, activity, subscriptions, NotMonitored, heartbeatDtos, backups);
+            status, now, database, worker, backlog, activity, subscriptions, NotMonitored, heartbeatDtos, backups, emailUsage);
     }
 
     private async Task<HealthPanelDto> CheckDatabase(CancellationToken ct)

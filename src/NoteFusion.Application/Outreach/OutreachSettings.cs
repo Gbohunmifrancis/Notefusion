@@ -18,8 +18,11 @@ public sealed class OutreachSettings
     /// <summary>Where replies go, so they reach the founder rather than the no-reply sender.</summary>
     public string ReplyTo { get; init; } = string.Empty;
 
-    /// <summary>The most accounts written to in one run, so a backlog trickles out instead of going at once.</summary>
-    public int BatchSize { get; init; } = 50;
+    /// <summary>
+    /// The most accounts written to in one run, so a backlog trickles out instead of going at once: at five an
+    /// hour over the ten sending hours, at most 50 a day, half the email plan's daily cap.
+    /// </summary>
+    public int BatchSize { get; init; } = 5;
 
     public int IntervalMinutes { get; init; } = 60;
 

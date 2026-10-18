@@ -48,6 +48,9 @@ public sealed record SubscriptionExpiry(
 /// Delivery is best-effort: implementations log failures and never throw. An email provider being
 /// down must not fail a registration or, worse, abort a payment that already settled. Callers should
 /// send after their <c>SaveChangesAsync</c> for the same reason — the state change is what matters.
+/// The optional ones (welcome, waitlist confirmation, checkout reminder, transcription tips, outreach) are
+/// skipped while the sending quota holds them (<see cref="EmailBudget"/>); a batch that must not lose one
+/// asks <see cref="IEmailQuota"/> before claiming it.
 /// </remarks>
 public interface IEmailSender
 {
@@ -124,7 +127,7 @@ public interface IEmailSender
     Task SendWaitlistConfirmationAsync(EmailRecipient to, CancellationToken ct = default);
 
     /// <summary>
-    /// Sent after a transcription of theirs failed (at most once a day): it cost nothing, three things that
+    /// Sent after a transcription of theirs failed (at most once a week): it cost nothing, three things that
     /// make the next one work, and the way back to the app.
     /// </summary>
     /// <param name="onPro">Pro accounts are told their allowance is untouched rather than their free tries.</param>

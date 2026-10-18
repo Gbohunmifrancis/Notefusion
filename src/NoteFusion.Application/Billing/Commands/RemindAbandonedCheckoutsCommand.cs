@@ -1,6 +1,7 @@
 using NoteFusion.Application.Choirs;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Outreach;
 using NoteFusion.Core.Enums;
@@ -35,14 +36,17 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
     private readonly IDateTimeProvider _clock;
     private readonly IEmailSender _email;
     private readonly IProviderHealth _health;
+    private readonly IEmailQuota _quota;
 
     public RemindAbandonedCheckoutsCommandHandler(
-        IApplicationDbContext db, IDateTimeProvider clock, IEmailSender email, IProviderHealth? health = null)
+        IApplicationDbContext db, IDateTimeProvider clock, IEmailSender email, IProviderHealth? health = null,
+        IEmailQuota? quota = null)
     {
         _db = db;
         _clock = clock;
         _email = email;
         _health = health ?? ProviderHealth.AlwaysAvailable;
+        _quota = quota ?? EmailBudget.Unlimited;
     }
 
     public async Task<Result<int>> Handle(RemindAbandonedCheckoutsCommand request, CancellationToken ct)
@@ -115,6 +119,11 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
         {
             // The email provider is refusing calls: the rest stay due for the next sweep, unclaimed.
             if (_health.IsUnavailable(OutboundProviders.Email))
+                break;
+
+            // The sending quota is keeping room for essential mail: the same, unclaimed while the checkout is
+            // still in the window.
+            if (!await _quota.AllowsOptionalAsync(EmailKind.CheckoutReminder, ct))
                 break;
 
             var createdAt = t.CreatedAtUtc;

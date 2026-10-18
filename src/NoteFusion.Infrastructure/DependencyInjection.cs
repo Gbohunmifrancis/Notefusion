@@ -182,6 +182,10 @@ public static class DependencyInjection
         services.AddSingleton<BrandedEmailTemplate>();
         services.AddScoped<IEmailSender, EmailSender>();
 
+        // The provider's daily/monthly caps: optional mail waits when they are nearly used (EmailBudget).
+        services.AddSingleton(EmailSettings.ResolveQuota(configuration));
+        services.AddScoped<IEmailQuota, EmailQuota>();
+
         // Email provider mirrors the push switch: Resend in production, a logging sink otherwise, so a
         // local run needs no key and cannot mail a real person while sign-up is being tested. A key set
         // but UseResend still false stays in the log — turning it on is the deliberate step.

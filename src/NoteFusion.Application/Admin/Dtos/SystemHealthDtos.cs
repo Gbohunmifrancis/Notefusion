@@ -1,3 +1,5 @@
+using NoteFusion.Application.Common;
+
 namespace NoteFusion.Application.Admin.Dtos;
 
 /// <summary>
@@ -54,7 +56,10 @@ public sealed record SystemHealthDto(
     IReadOnlyList<WorkerHeartbeatDto>? WorkerHeartbeats = null,
     // The backups (ops/backup), as the backup service recorded them. Outside the rollup above: that answers
     // "is the product working", and a late backup does not stop it. Null when the database is unreachable.
-    BackupStatusDto? Backups = null);
+    BackupStatusDto? Backups = null,
+    // Mail sent in each capped window (last 24 h, 7 days, 31 days) against the email plan's limit, and the count
+    // at which optional mail is held (EmailBudget). Null when the database is unreachable.
+    IReadOnlyList<EmailWindowUsage>? EmailUsage = null);
 
 /// <summary>
 /// Transcription throughput. Volume only, deliberately: the API records that a job was submitted and

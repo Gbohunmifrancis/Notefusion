@@ -1,5 +1,6 @@
 using NoteFusion.Application.Choirs;
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
@@ -40,6 +41,11 @@ public sealed record OutreachCandidate(Guid UserId, OutreachSegment Segment);
 /// inserting its <see cref="OutreachMessage"/> row first; the unique (user, segment, channel) index makes the
 /// second of two overlapping sweeps fail its insert and send nothing. A failed send is retried once.
 /// </para>
+/// <para>
+/// While the email quota holds optional mail (<see cref="IEmailQuota"/>), a message that would go by email is
+/// not claimed at all, on either channel, so it stays due and keeps its email for a run with room; one that
+/// reaches the account by push alone still goes.
+/// </para>
 /// </remarks>
 public sealed class OutreachService
 {
@@ -50,6 +56,10 @@ public sealed class OutreachService
     private readonly OutreachSettings _settings;
     private readonly IEmailUnsubscribeTokens _tokens;
     private readonly IProviderHealth _health;
+    private readonly IEmailQuota _quota;
+
+    /// <summary>Set once the quota held email in this run (a scope per run), so the rest of it asks no more.</summary>
+    private bool _emailHeld;
 
     public OutreachService(
         IApplicationDbContext db,
@@ -58,7 +68,8 @@ public sealed class OutreachService
         IPushSender push,
         OutreachSettings settings,
         IEmailUnsubscribeTokens tokens,
-        IProviderHealth? health = null)
+        IProviderHealth? health = null,
+        IEmailQuota? quota = null)
     {
         _db = db;
         _clock = clock;
@@ -67,6 +78,7 @@ public sealed class OutreachService
         _settings = settings;
         _tokens = tokens;
         _health = health ?? ProviderHealth.AlwaysAvailable;
+        _quota = quota ?? EmailBudget.Unlimited;
     }
 
     /// <summary>
@@ -226,6 +238,11 @@ public sealed class OutreachService
         if (channels.Count == 0)
             return false;
 
+        // Email is held by the quota: claim nothing, or the push would go alone and the email never would
+        // (the segment is once per account). It stays due for a later run.
+        if (channels.Contains(OutreachChannel.Email) && await EmailHeldAsync(ct))
+            return false;
+
         var claims = channels.Select(c => OutreachMessage.Claim(userId, candidate.Segment, c, now)).ToList();
         _db.OutreachMessages.AddRange(claims);
         try
@@ -275,6 +292,14 @@ public sealed class OutreachService
     /// </summary>
     public async Task<bool> RetryAsync(Guid messageId, CancellationToken ct)
     {
+        // An email retry while the quota holds email: not claimed, so it keeps its attempt for a later run.
+        var channel = await _db.OutreachMessages.AsNoTracking()
+            .Where(m => m.Id == messageId)
+            .Select(m => m.Channel)
+            .FirstOrDefaultAsync(ct);
+        if (channel == OutreachChannel.Email && await EmailHeldAsync(ct))
+            return false;
+
         var claimed = await _db.OutreachMessages
             .Where(m => m.Id == messageId && m.Status == OutreachStatus.Failed && m.Attempts < OutreachMessage.MaxAttempts)
             .ExecuteUpdateAsync(s => s
@@ -313,6 +338,10 @@ public sealed class OutreachService
         return user is not null && channels.Contains(message.Channel) && !notAttempted;
     }
 
+    /// <summary>Whether the email quota is holding optional mail; once it has said so, for the rest of the run.</summary>
+    private async Task<bool> EmailHeldAsync(CancellationToken ct)
+        => _emailHeld = _emailHeld || !await _quota.AllowsOptionalAsync(EmailKind.Outreach, ct);
+
     private async Task<List<OutreachChannel>> ChannelsAsync(Guid userId, bool emailVerified, CancellationToken ct)
     {
         var channels = new List<OutreachChannel>();
@@ -348,9 +377,10 @@ public sealed class OutreachService
                 new EmailRecipient(email, fullName),
                 new OutreachEmail(segment, _settings.FounderName, _settings.ReplyTo, unsubscribeUrl, triedOn),
                 ct);
+            // Refused unsent by the breaker, or held by the quota after the claim: neither is a spent try.
             return result.IsSuccess
                 ? (null, false)
-                : (result.Error.Message, ProviderErrors.IsUnavailable(result.Error));
+                : (result.Error.Message, ProviderErrors.IsUnavailable(result.Error) || EmailBudget.IsHeld(result.Error));
         }
 
         try

@@ -772,6 +772,18 @@ export interface SystemHealth {
   workerHeartbeats?: WorkerHeartbeat[];
   /** Outside the rollup above. Null when the database (where the backups record their runs) is down. */
   backups?: BackupStatus | null;
+  /** The email plan's capped windows, shortest first; empty when no cap is set, null when the database is down. */
+  emailUsage?: EmailWindowUsage[] | null;
+}
+
+/** One capped window of the email plan (`EmailBudget`): mail of every kind the provider accepted in it. */
+export interface EmailWindowUsage {
+  /** "day" = the last 24 hours, "week" = the last 7 days, "month" = the last 31 days. */
+  window: "day" | "week" | "month";
+  sent: number;
+  limit: number;
+  /** From this count optional mail (welcome, tips, reminders, outreach) waits; essential mail always sends. */
+  optionalCeiling: number;
 }
 
 /**

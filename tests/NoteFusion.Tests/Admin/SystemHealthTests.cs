@@ -1,10 +1,14 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using NoteFusion.Application.Admin.Dtos;
 using NoteFusion.Application.Admin.Queries;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Common.Settings;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Entities.Billing;
 using NoteFusion.Core.Enums;
+using NoteFusion.Infrastructure.Email;
 using NoteFusion.Shared.Results;
 using NoteFusion.Tests.Support;
 
@@ -355,11 +359,29 @@ public class SystemHealthTests
         Assert.Equal("off", health.Backups!.Status);
     }
 
+    [Fact]
+    public async Task The_email_card_shows_each_capped_window_against_its_limit()
+    {
+        using var h = new TestHarness(Now);
+        h.Db.EmailSends.AddRange(Enumerable.Range(0, 3).Select(_ => EmailSend.Record(EmailKind.Verification, Now.AddHours(-2))));
+        h.Db.EmailSends.Add(EmailSend.Record(EmailKind.Welcome, Now.AddDays(-10)));
+        h.Db.SaveChanges();
+        var quota = new EmailQuota(h.Db, h.Options, new EmailQuotaSettings(), h.Clock, NullLogger<EmailQuota>.Instance);
+
+        var health = await Check(h, quota: quota);
+
+        Assert.Equal(
+            new[] { new EmailWindowUsage("day", 3, 100, 60), new EmailWindowUsage("month", 4, 3000, 1800) },
+            health.EmailUsage);
+        var down = new StubDatabaseHealth { Result = new DatabaseHealth(null, 0, "connection refused") };
+        Assert.Null((await Check(h, db: down, quota: quota)).EmailUsage);
+    }
+
     private static async Task<SystemHealthDto> Check(
-        TestHarness h, StubDatabaseHealth? db = null, StubTranscriptionApi? api = null)
+        TestHarness h, StubDatabaseHealth? db = null, StubTranscriptionApi? api = null, IEmailQuota? quota = null)
     {
         var result = await new GetSystemHealthQueryHandler(
-                h.Db, db ?? new StubDatabaseHealth(), api ?? new StubTranscriptionApi(), h.Clock)
+                h.Db, db ?? new StubDatabaseHealth(), api ?? new StubTranscriptionApi(), h.Clock, emailQuota: quota)
             .Handle(new GetSystemHealthQuery(), CancellationToken.None);
 
         // Pinned in the one place every test goes through: whatever is broken, the page still loads.

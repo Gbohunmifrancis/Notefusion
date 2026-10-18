@@ -78,6 +78,9 @@ public interface IApplicationDbContext
     /// <summary>Accounts that unsubscribed from non-essential email.</summary>
     DbSet<EmailOptOut> EmailOptOuts { get; }
 
+    /// <summary>Every email the provider accepted, by kind and time: what the sending quota counts (<see cref="EmailBudget"/>).</summary>
+    DbSet<EmailSend> EmailSends { get; }
+
     /// <summary>The blog's posts: the one source of what notefusion.studio/blog shows (see <see cref="BlogPost"/>).</summary>
     DbSet<BlogPost> BlogPosts { get; }
 

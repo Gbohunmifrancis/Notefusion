@@ -33,6 +33,7 @@ public sealed class TestHarness : IDisposable
             .UseSqlite(_connection)
             .Options;
 
+        Options = options;
         Db = new ApplicationDbContext(options);
         Db.Database.EnsureCreated();
 
@@ -58,6 +59,13 @@ public sealed class TestHarness : IDisposable
     }
 
     public ApplicationDbContext Db { get; }
+
+    /// <summary>
+    /// The options <see cref="Db"/> was built from (the same open in-memory connection), for a component that
+    /// opens a context of its own, as the email quota does to record a send.
+    /// </summary>
+    public DbContextOptions<ApplicationDbContext> Options { get; }
+
     public FixedClock Clock { get; }
     public BcryptPasswordHasher Hasher { get; }
     public RsaKeyProvider Keys { get; }
