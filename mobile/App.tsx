@@ -5,6 +5,7 @@ import { StatusBar } from 'react-native';
 import * as NativeSplash from 'expo-splash-screen';
 import { AuthProvider } from './src/lib/auth';
 import { DialogProvider } from './src/lib/dialog';
+import { ToastHost } from './src/lib/toast';
 import { SubscriptionProvider } from './src/lib/subscription';
 import { ThemeProvider, useTheme } from './src/lib/theme';
 import { useAppReady } from './src/lib/appReady';
@@ -77,11 +78,13 @@ function Themed() {
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: palette.bg }}>
       <StatusBar barStyle={mode === 'dark' ? 'light-content' : 'dark-content'} backgroundColor="transparent" translucent />
       {/* Inside the theme (the dialog is themed) and around the navigator, so a dialog
-          paints above whatever screen is mounted and survives navigation. */}
+          paints above whatever screen is mounted and survives navigation. The toast host
+          comes after the navigator so a toast paints over the screen and its tab bar. */}
       <DialogProvider>
         <ErrorBoundary>
           <RootNavigator />
         </ErrorBoundary>
+        <ToastHost />
       </DialogProvider>
     </GestureHandlerRootView>
   );

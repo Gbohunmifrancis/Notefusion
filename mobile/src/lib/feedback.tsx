@@ -1,20 +1,12 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import {
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 
 import { feedbackApi, type FeedbackCategory, type HeardAboutSource } from "../api/endpoints";
 import { Button } from "../components/Button";
+import { ProblemNote } from "../components/ProblemNote";
+import { Sheet, SheetActions, SheetMessage, SheetTitle } from "../components/Sheet";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { logAnalyticsEvent as logEvent } from "./analytics";
 import * as haptics from "./haptics";
@@ -122,44 +114,73 @@ export function FeedbackProvider({ enabled, children }: { enabled: boolean; chil
 
 /* ── Shared frame ───────────────────────────────────────────────────────────── */
 
+/** The bottom sheet every ask here is drawn on: title, a line, the controls, the action row. */
 function Frame({
   visible,
   onDismiss,
-  icon,
   title,
   message,
   children,
 }: {
   visible: boolean;
   onDismiss: () => void;
-  icon: keyof typeof Ionicons.glyphMap;
   title: string;
   message?: string;
   children: ReactNode;
 }) {
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <Sheet visible={visible} onClose={onDismiss} avoidKeyboard>
+      <SheetTitle>{title}</SheetTitle>
+      <ScrollView
+        style={styles.body}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+      >
+        {message ? <SheetMessage>{message}</SheetMessage> : null}
+        {children}
+      </ScrollView>
+    </Sheet>
+  );
+}
+
+/** A chip you tap: 36 px, with a 44 px touch target. */
+function Chip({
+  label,
+  icon,
+  on,
+  onPress,
+}: {
+  label: string;
+  icon?: keyof typeof Ionicons.glyphMap;
+  on: boolean;
+  onPress: () => void;
+}) {
   const c = useColors();
   const styles = useThemedStyles(makeStyles);
   return (
-    <Modal visible={visible} transparent animationType="fade" statusBarTranslucent onRequestClose={onDismiss}>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.flex}>
-        <Pressable style={styles.overlay} onPress={onDismiss}>
-          <Pressable style={styles.card} onPress={() => undefined}>
-            <ScrollView contentContainerStyle={styles.cardContent} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-              <View style={[styles.medallion, { backgroundColor: c.accentSoft }]}>
-                <Ionicons name={icon} size={26} color={c.accent} />
-              </View>
-              <Text style={styles.title}>{title}</Text>
-              {message ? <Text style={styles.message}>{message}</Text> : null}
-              {children}
-            </ScrollView>
-          </Pressable>
-        </Pressable>
-      </KeyboardAvoidingView>
-    </Modal>
+    <Pressable
+      onPress={() => {
+        haptics.play("light");
+        onPress();
+      }}
+      hitSlop={4}
+      style={({ pressed }) => [styles.chip, on && styles.chipOn, pressed && styles.chipPressed]}
+      accessibilityRole="radio"
+      accessibilityState={{ selected: on }}
+      accessibilityLabel={label}
+    >
+      {icon ? <Ionicons name={icon} size={15} color={on ? c.link : c.textMuted} /> : null}
+      <Text style={[styles.chipText, on && styles.chipTextOn]}>{label}</Text>
+    </Pressable>
   );
 }
 
 /* ── Where did you hear about us? ───────────────────────────────────────────── */
+
+/** The sources that ask for a word more; every other one is answered by the tap itself. */
+const WITH_DETAIL: readonly HeardAboutSource[] = ["other", "friend", "church"];
 
 function HeardAboutSheet({ visible, onDone }: { visible: boolean; onDone: () => void }) {
   const c = useColors();
@@ -167,44 +188,39 @@ function HeardAboutSheet({ visible, onDone }: { visible: boolean; onDone: () => 
   const [source, setSource] = useState<HeardAboutSource | null>(null);
   const [detail, setDetail] = useState("");
   const [sending, setSending] = useState(false);
+  const wantsDetail = source !== null && WITH_DETAIL.includes(source);
 
-  const submit = () => {
-    if (!source) return;
+  const submit = (answer: HeardAboutSource) => {
     setSending(true);
     feedbackApi
-      .submit({ kind: "heard_about", source, message: detail.trim() || undefined, client: "app", appVersion })
+      .submit({ kind: "heard_about", source: answer, message: detail.trim() || undefined, client: "app", appVersion })
       .catch(() => undefined) // a lost answer is asked again next session; nothing to show the user
       .finally(() => {
         setSending(false);
-        void logEvent("heard_about_answered", { source });
+        void logEvent("heard_about_answered", { source: answer });
         onDone();
       });
   };
 
   return (
     // Skipping is allowed: closing without an answer simply asks again next session.
-    <Frame visible={visible} onDismiss={onDone} icon="megaphone-outline" title="How did you hear about us?" message="One quick question — it helps us reach more choirs.">
+    <Frame visible={visible} onDismiss={onDone} title="How did you hear about us?" message="One quick question — it helps us reach more choirs.">
       <View style={styles.chips}>
-        {SOURCES.map((s) => {
-          const on = source === s.value;
-          return (
-            <Pressable
-              key={s.value}
-              onPress={() => {
-                haptics.play("light");
-                setSource(s.value);
-              }}
-              style={[styles.chip, on && { borderColor: c.accent, backgroundColor: c.accentSoft }]}
-              accessibilityRole="radio"
-              accessibilityState={{ selected: on }}
-            >
-              <Ionicons name={s.icon} size={15} color={on ? c.accent : c.textMuted} />
-              <Text style={[styles.chipText, on && { color: c.accent }]}>{s.label}</Text>
-            </Pressable>
-          );
-        })}
+        {SOURCES.map((s) => (
+          <Chip
+            key={s.value}
+            label={s.label}
+            icon={s.icon}
+            on={source === s.value}
+            onPress={() => {
+              setSource(s.value);
+              // One tap answers it, unless this source has a word more to say.
+              if (!WITH_DETAIL.includes(s.value) && !sending) submit(s.value);
+            }}
+          />
+        ))}
       </View>
-      {source === "other" || source === "friend" || source === "church" ? (
+      {wantsDetail ? (
         <TextInput
           value={detail}
           onChangeText={setDetail}
@@ -214,10 +230,10 @@ function HeardAboutSheet({ visible, onDone }: { visible: boolean; onDone: () => 
           style={styles.input}
         />
       ) : null}
-      <View style={styles.actions}>
-        <Button label="Send" onPress={submit} disabled={!source} loading={sending} />
-        <Button label="Skip" variant="ghost" onPress={onDone} />
-      </View>
+      <SheetActions style={styles.actions}>
+        <Button label="Skip" variant="text" onPress={onDone} />
+        {wantsDetail && source ? <Button label="Send" onPress={() => submit(source)} loading={sending} /> : null}
+      </SheetActions>
     </Frame>
   );
 }
@@ -283,30 +299,32 @@ function RatingSheet({
 
   if (sent && stars >= 4) {
     return (
-      <Frame visible={visible} onDismiss={onDone} icon="heart-outline" title="Thank you!" message="Would you share that on Google Play? It helps other choirs find NoteFusion.">
-        <View style={styles.actions}>
-          <Button label="Rate on Google Play" icon="logo-google-playstore" onPress={openStore} />
-          <Button label="Maybe later" variant="ghost" onPress={onDone} />
-        </View>
+      <Frame visible={visible} onDismiss={onDone} title="Thank you!" message="Would you share that on Google Play? It helps other choirs find NoteFusion.">
+        <SheetActions>
+          <Button label="Maybe later" variant="text" onPress={onDone} />
+          <Button label="Rate on Google Play" onPress={openStore} />
+        </SheetActions>
       </Frame>
     );
   }
 
   return (
-    <Frame visible={visible} onDismiss={notNow} icon="star-outline" title="Enjoying NoteFusion?" message={`Saved — that's ${saves} sheets in your library. How would you rate the app so far?`}>
+    <Frame visible={visible} onDismiss={notNow} title="Enjoying NoteFusion?" message={`Saved — that's ${saves} sheets in your library. How would you rate the app so far?`}>
+      {/* Blue, not gold: gold is Pro's. */}
       <View style={styles.stars} accessibilityRole="adjustable" accessibilityLabel={`${stars} of 5 stars`}>
         {[1, 2, 3, 4, 5].map((s) => (
           <Pressable
             key={s}
-            hitSlop={6}
+            hitSlop={4}
             onPress={() => {
               haptics.play("light");
               setStars(s);
             }}
+            style={styles.star}
             accessibilityRole="button"
             accessibilityLabel={`${s} star${s === 1 ? "" : "s"}`}
           >
-            <Ionicons name={s <= stars ? "star" : "star-outline"} size={36} color={s <= stars ? c.premium : c.textFaint} />
+            <Ionicons name={s <= stars ? "star" : "star-outline"} size={34} color={s <= stars ? c.primary : c.textFaint} />
           </Pressable>
         ))}
       </View>
@@ -321,10 +339,10 @@ function RatingSheet({
           style={[styles.input, styles.multiline]}
         />
       ) : null}
-      <View style={styles.actions}>
-        <Button label="Submit" onPress={submit} disabled={stars === 0} loading={sending} />
-        <Button label="Not now" variant="ghost" onPress={notNow} />
-      </View>
+      <SheetActions style={styles.actions}>
+        <Button label="Not now" variant="text" onPress={notNow} />
+        <Button label="Send" onPress={submit} disabled={stars === 0} loading={sending} />
+      </SheetActions>
     </Frame>
   );
 }
@@ -359,31 +377,20 @@ function FeedbackSheet({ visible, screen, onDone }: { visible: boolean; screen: 
 
   if (state === "sent") {
     return (
-      <Frame visible={visible} onDismiss={onDone} icon="checkmark-circle-outline" title="Thanks — we read every one" message="If you asked us something, we'll reply to your account's email.">
-        <View style={styles.actions}>
-          <Button label="Done" onPress={onDone} />
-        </View>
+      <Frame visible={visible} onDismiss={onDone} title="Thanks — we read every one" message="If you asked us something, we'll reply to your account's email.">
+        <SheetActions>
+          <Button label="Done" variant="secondary" onPress={onDone} />
+        </SheetActions>
       </Frame>
     );
   }
 
   return (
-    <Frame visible={visible} onDismiss={onDone} icon="chatbubble-ellipses-outline" title="Send feedback" message="Tell us what's working, what isn't, or what you'd love to see.">
+    <Frame visible={visible} onDismiss={onDone} title="Send feedback" message="Tell us what's working, what isn't, or what you'd love to see.">
       <View style={styles.chips}>
-        {CATEGORIES.map((cat) => {
-          const on = category === cat.value;
-          return (
-            <Pressable
-              key={cat.value}
-              onPress={() => setCategory(cat.value)}
-              style={[styles.chip, on && { borderColor: c.accent, backgroundColor: c.accentSoft }]}
-              accessibilityRole="radio"
-              accessibilityState={{ selected: on }}
-            >
-              <Text style={[styles.chipText, on && { color: c.accent }]}>{cat.label}</Text>
-            </Pressable>
-          );
-        })}
+        {CATEGORIES.map((cat) => (
+          <Chip key={cat.value} label={cat.label} on={category === cat.value} onPress={() => setCategory(cat.value)} />
+        ))}
       </View>
       <TextInput
         value={message}
@@ -395,96 +402,52 @@ function FeedbackSheet({ visible, screen, onDone }: { visible: boolean; screen: 
         style={[styles.input, styles.multiline]}
         autoFocus
       />
-      {state === "failed" ? <Text style={styles.error}>That didn't send. Check your connection and try again.</Text> : null}
-      <View style={styles.actions}>
+      {state === "failed" ? <ProblemNote>That didn't send. Check your connection and try again.</ProblemNote> : null}
+      <SheetActions style={styles.actions}>
+        <Button label="Cancel" variant="text" onPress={onDone} />
         <Button label="Send" onPress={submit} disabled={!message.trim()} loading={state === "sending"} />
-        <Button label="Cancel" variant="ghost" onPress={onDone} />
-      </View>
+      </SheetActions>
     </Frame>
   );
 }
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    flex: { flex: 1 },
-    overlay: {
-      flex: 1,
-      backgroundColor: c.scrim,
-      justifyContent: "center",
-      alignItems: "center",
-      paddingHorizontal: spacing.xl,
-    },
-    card: {
-      width: "100%",
-      maxWidth: 420,
-      maxHeight: "88%",
-      backgroundColor: c.bgElevated,
-      borderRadius: radii.xl,
-      borderWidth: 1,
-      borderColor: c.border,
-    },
-    cardContent: {
-      paddingTop: spacing.xl,
-      paddingBottom: spacing.lg,
-      paddingHorizontal: spacing.xl,
-      alignItems: "center",
-    },
-    medallion: {
-      width: 56,
-      height: 56,
-      borderRadius: radii.pill,
-      alignItems: "center",
-      justifyContent: "center",
-      marginBottom: spacing.md,
-    },
-    title: {
-      fontSize: 20,
-      fontFamily: fonts.display,
-      color: c.text,
-      textAlign: "center",
-      letterSpacing: -0.3,
-    },
-    message: {
-      ...typography.body,
-      color: c.textMuted,
-      textAlign: "center",
-      lineHeight: 22,
-      marginTop: spacing.sm,
-    },
+    body: { flexGrow: 0 },
     chips: {
       flexDirection: "row",
       flexWrap: "wrap",
-      justifyContent: "center",
       gap: spacing.sm,
-      marginTop: spacing.lg,
-      alignSelf: "stretch",
     },
     chip: {
       flexDirection: "row",
       alignItems: "center",
       gap: 6,
+      height: 36,
       paddingHorizontal: spacing.md,
-      paddingVertical: spacing.sm,
       borderRadius: radii.pill,
       borderWidth: 1,
       borderColor: c.border,
       backgroundColor: c.surfaceAlt,
     },
-    chipText: { ...typography.caption, color: c.text },
-    stars: { flexDirection: "row", gap: spacing.sm, marginTop: spacing.lg },
+    chipOn: { borderColor: c.primary, backgroundColor: c.accentSoft },
+    chipPressed: { opacity: 0.8 },
+    chipText: { fontFamily: fonts.medium, fontSize: 13.5, color: c.text },
+    chipTextOn: { color: c.link },
+    stars: { flexDirection: "row", gap: spacing.xs, marginTop: -spacing.xs },
+    star: { padding: 4 },
     input: {
       ...typography.body,
-      alignSelf: "stretch",
+      fontSize: 16,
       marginTop: spacing.lg,
       paddingHorizontal: spacing.md,
       paddingVertical: spacing.md,
-      borderRadius: radii.md,
+      borderRadius: 12,
       borderWidth: 1,
       borderColor: c.border,
-      backgroundColor: c.surface,
+      backgroundColor: c.surfaceAlt,
       color: c.text,
     },
     multiline: { minHeight: 110, textAlignVertical: "top" },
-    error: { ...typography.caption, color: c.danger, marginTop: spacing.sm, textAlign: "center" },
-    actions: { alignSelf: "stretch", gap: spacing.sm, marginTop: spacing.xl },
+    actions: { marginTop: spacing.xl },
   });

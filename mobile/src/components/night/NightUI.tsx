@@ -104,7 +104,7 @@ export function BackButton({ onPress }: { onPress: () => void }) {
 export function ErrorNote({ message }: { message: string }) {
   return (
     <View style={styles.error} accessibilityLiveRegion="polite">
-      <Ionicons name="alert-circle" size={17} color={night.red} />
+      <Ionicons name="alert-circle" size={17} color={night.amber} />
       <Text style={styles.errorText}>{message}</Text>
     </View>
   );
@@ -217,9 +217,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     borderRadius: 16,
-    backgroundColor: night.redSoft,
+    // A neutral card: the amber icon and the words say it is a problem, never a red wash.
+    backgroundColor: night.surface2,
     borderWidth: 1,
-    borderColor: "rgba(255, 77, 94, 0.30)",
+    borderColor: night.line,
   },
   errorText: { flex: 1, fontSize: 13.5, lineHeight: 19, fontFamily: nightFonts.medium, color: night.text },
   or: { flexDirection: "row", alignItems: "center", gap: 12, marginVertical: 20 },

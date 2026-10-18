@@ -102,11 +102,26 @@ export const colors = {
   dangerSoft: "rgba(220, 38, 38, 0.12)",
   dangerBorder: "rgba(220, 38, 38, 0.30)",
 
-  /** Modal/drawer backdrop. `rgba(0,0,0,0.45)` was hardcoded in both, and on a
-   *  navy canvas it barely darkened anything: dialogs read as floating *among*
-   *  the screen behind them rather than above it. Dark mode needs the heavier
-   *  wash because it has less headroom to darken into. */
-  scrim: "rgba(15, 23, 42, 0.55)",
+  /** The wash behind every bottom sheet (components/Sheet): 45 % slate in Day, 62 % in Night,
+   *  enough to set the sheet above the screen without blacking out where the user was. */
+  scrim: "rgba(15, 23, 42, 0.45)",
+
+  // ── The popup system (components/Button, Sheet, Toast) ──────────────────
+  /** The one primary button's fill. Flat, no gradient: blue acts. */
+  primary: "#2563EB",
+  /** Text buttons, links and the "Last time" chip: the blue that reads on a surface. */
+  link: "#1D4ED8",
+  /** The bar at the top of a sheet that says it can be swiped down. */
+  grabber: "#D5DEEA",
+  /** A choice or option row inside a sheet. */
+  sheetRow: "#FFFFFF",
+  /** The icon tile on a sheet's rows: a step above the row in either mode. */
+  sheetTile: "#EEF3FB",
+  /** The toast's surface: good news that leaves by itself. */
+  toast: "#FFFFFF",
+  /** Choir's own colour (violet), as gold is Pro's: the choir welcome's tile. */
+  choir: "#7C3AED",
+  choirSoft: "rgba(124, 58, 237, 0.10)",
 
   /** Floating chrome (the tab bar, a player dock): semi-opaque, standing in for a blur. */
   glass: "rgba(255, 255, 255, 0.96)",
@@ -175,7 +190,17 @@ export const darkColors: Palette = {
   dangerSoft: "rgba(255, 77, 94, 0.12)",
   dangerBorder: "rgba(255, 77, 94, 0.35)",
 
-  scrim: "rgba(3, 5, 8, 0.80)",
+  scrim: "rgba(3, 5, 9, 0.62)",
+
+  primary: "#2F7BFF",
+  link: "#9CC2FF",
+  grabber: "rgba(255, 255, 255, 0.12)",
+  sheetRow: "rgba(255, 255, 255, 0.035)",
+  sheetTile: "rgba(255, 255, 255, 0.07)",
+  toast: "#1A202B",
+  choir: "#A78BFA",
+  choirSoft: "rgba(167, 139, 250, 0.12)",
+
   glass: "rgba(20, 25, 35, 0.94)",
 
   confHigh: "#3DDC97",

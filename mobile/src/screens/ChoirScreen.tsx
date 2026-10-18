@@ -106,10 +106,12 @@ export function ChoirScreen({ navigation, route }: Props) {
       refreshSubscription(true).catch(() => undefined);
       await load();
       showDialog({
+        kind: "celebrate",
         title: `Welcome to ${joined.name}`,
         message: "You have Pro while the choir's plan runs, and your choir's shared sheets are below.",
         icon: "people",
-        tone: "premium",
+        tone: "choir",
+        actions: [{ label: "Start singing", style: "cancel" }],
       });
     } catch (e) {
       showDialog({ title: "Could not join", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
@@ -341,7 +343,7 @@ export function ChoirScreen({ navigation, route }: Props) {
           {/* ── The choir ─────────────────────────────────────────────── */}
           <Card style={styles.card}>
             <View style={styles.statusRow}>
-              <View style={[styles.dot, { backgroundColor: choir.isActive ? colors.success : colors.danger }]} />
+              <View style={[styles.dot, { backgroundColor: choir.isActive ? colors.success : colors.warning }]} />
               <Text style={styles.statusText}>
                 {choir.isActive
                   ? `Active until ${formatDate(choir.currentPeriodEndUtc)}`
@@ -377,7 +379,7 @@ export function ChoirScreen({ navigation, route }: Props) {
                 {siteUrls.choirJoin(choir.inviteCode)}
               </Text>
               <Button label="Share invite link" icon="share-outline" onPress={() => void shareInvite()} />
-              <Button label="Make a new code" variant="ghost" icon="refresh-outline" onPress={confirmNewCode} />
+              <Button label="Make a new code" variant="text" icon="refresh-outline" onPress={confirmNewCode} />
             </Card>
           ) : null}
 
@@ -396,8 +398,8 @@ export function ChoirScreen({ navigation, route }: Props) {
                     <Text style={styles.memberName} numberOfLines={1}>
                       {m.name}
                     </Text>
-                    <Touchable onPress={() => confirmRemove(m)} hitSlop={8} ripple="borderless" accessibilityLabel={`Remove ${m.name}`}>
-                      <Ionicons name="close-circle-outline" size={20} color={colors.danger} />
+                    <Touchable onPress={() => confirmRemove(m)} hitSlop={12} ripple="borderless" accessibilityLabel={`Remove ${m.name}`}>
+                      <Ionicons name="close-circle-outline" size={20} color={colors.textMuted} />
                     </Touchable>
                   </View>
                 ))
@@ -448,7 +450,7 @@ export function ChoirScreen({ navigation, route }: Props) {
           ) : null}
 
           {!director ? (
-            <Button label="Leave the choir" variant="danger" icon="exit-outline" onPress={confirmLeave} loading={busy} style={styles.leave} />
+            <Button label="Leave the choir" variant="destructive" icon="exit-outline" onPress={confirmLeave} loading={busy} style={styles.leave} />
           ) : null}
         </>
       )}

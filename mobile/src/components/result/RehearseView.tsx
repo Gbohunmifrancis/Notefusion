@@ -11,6 +11,7 @@ import type { VoiceName } from "../../lib/choir";
 import type { NoteEvent } from "../../api/types";
 import { barOf } from "./SheetGrid";
 import { clamp, RATE_STEPS, useSeekDrag, type Practice } from "./usePractice";
+import { ProblemNote } from "../ProblemNote";
 
 const VOICE_SHORT: Record<VoiceName, string> = { soprano: "S", alto: "A", tenor: "T", bass: "B" };
 
@@ -333,7 +334,7 @@ export function RehearseView({
           ) : null}
 
           {/* The hook's error can be a platform message; this says it plainly instead. */}
-          {p.error ? <Text style={styles.error}>This sheet could not be played. Close it and open it again.</Text> : null}
+          {p.error ? <ProblemNote center style={styles.error}>This sheet could not be played. Close it and open it again.</ProblemNote> : null}
         </ScrollView>
       </View>
     </Modal>
@@ -473,5 +474,5 @@ const makeStyles = (c: Palette) =>
     voiceLetterOff: { color: c.textFaint, textDecorationLine: "line-through" },
     voiceCaption: { fontFamily: fonts.medium, fontSize: 8.5, letterSpacing: 0.7, color: c.onInk, opacity: 0.8 },
     voicesHint: { fontFamily: fonts.regular, fontSize: 12, color: c.textFaint, textAlign: "center", marginTop: 10 },
-    error: { fontFamily: fonts.medium, fontSize: 12.5, color: c.danger, textAlign: "center", marginTop: 16 },
+    error: { marginTop: 16 },
   });

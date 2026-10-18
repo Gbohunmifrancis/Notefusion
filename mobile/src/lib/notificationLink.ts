@@ -36,10 +36,20 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
         title: "That recording didn't finish",
         message: safeReason(
           job.error,
-          'Something went wrong while transcribing it. Try recording it again.',
+          'Something went wrong while transcribing it. Try recording it again. Nothing was used up.',
         ),
         icon: 'alert-circle-outline',
         tone: 'danger',
+        // The fix is the pill; "OK" only closes (board 7a).
+        actions: [
+          { label: 'OK', style: 'cancel' },
+          {
+            label: 'Record again',
+            onPress: () => {
+              if (navigationRef.isReady()) navigationRef.navigate('Tabs', { screen: 'Record' });
+            },
+          },
+        ],
       });
       return false;
     }

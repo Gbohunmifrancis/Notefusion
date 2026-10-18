@@ -117,9 +117,9 @@ export function SettingsScreen({ navigation, route }: Props) {
       message:
         "Sheets kept on this phone are removed, except the ones you chose to keep offline. Your library itself is untouched — anything you open again is kept again.",
       icon: "trash-outline",
-      tone: "danger",
+      // Reversible (anything opened again is kept again), so an ordinary confirm, not a red word.
       actions: [
-        { label: "Clear", style: "destructive", onPress: () => void clearAutomaticCopies() },
+        { label: "Clear", onPress: () => void clearAutomaticCopies() },
         { label: "Cancel", style: "cancel" },
       ],
     });
@@ -130,8 +130,9 @@ export function SettingsScreen({ navigation, route }: Props) {
       title: "Remove the hymns?",
       message: `Frees ${formatBytes(hymnPack.bytes)}. You can download them again from Hymns at any time.`,
       icon: "book-outline",
+      // They download again from Hymns, so nothing is lost: no red.
       actions: [
-        { label: "Remove", style: "destructive", onPress: () => void removePack() },
+        { label: "Remove", onPress: () => void removePack() },
         { label: "Keep them", style: "cancel" },
       ],
     });
@@ -738,7 +739,7 @@ export function SettingsScreen({ navigation, route }: Props) {
 
             <Button
               label="Delete my account"
-              variant="danger"
+              variant="destructive"
               icon="trash-outline"
               onPress={confirmDelete}
               loading={deleting}
@@ -755,7 +756,7 @@ export function SettingsScreen({ navigation, route }: Props) {
 
             <Button
               label="Confirm with Google & delete"
-              variant="danger"
+              variant="destructive"
               icon="logo-google"
               onPress={confirmDelete}
               loading={deleting}

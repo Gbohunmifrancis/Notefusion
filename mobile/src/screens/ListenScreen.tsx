@@ -22,7 +22,7 @@ import { Touchable } from "../components/Touchable";
 import { showDialog } from "../lib/dialog";
 import { useKeyListener } from "../lib/useKeyListener";
 import { requestAddTile } from "../../modules/notefusion-listen";
-import { fonts, radii, spacing, typography, type Palette, type Shadows } from "../design/theme";
+import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { RootStackParams } from "../navigation/types";
 
@@ -113,7 +113,7 @@ export function ListenScreen({ navigation }: Props) {
           <Button
             label={running ? "Stop" : starting ? "Starting…" : "Start listening"}
             icon={running ? "stop-circle-outline" : "radio-outline"}
-            variant={running ? "danger" : "primary"}
+            variant={running ? "secondary" : "primary"}
             onPress={running ? stop : () => void start()}
             loading={starting}
             style={styles.mainButton}
@@ -122,8 +122,11 @@ export function ListenScreen({ navigation }: Props) {
       </Card>
 
       {error ? (
-        <Card style={{ ...styles.card, ...styles.errorCard }}>
-          <Text style={styles.errorText}>{error}</Text>
+        <Card style={styles.card}>
+          <View style={styles.row}>
+            <Ionicons name="alert-circle-outline" size={18} color={colors.warning} />
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
         </Card>
       ) : null}
 
@@ -166,7 +169,7 @@ export function ListenScreen({ navigation }: Props) {
   );
 }
 
-const makeStyles = (c: Palette, s: Shadows) =>
+const makeStyles = (c: Palette) =>
   StyleSheet.create({
     headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: spacing.md },
     backBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
@@ -214,12 +217,11 @@ const makeStyles = (c: Palette, s: Shadows) =>
 
     status: { ...typography.body, color: c.textMuted, textAlign: "center", marginTop: spacing.lg, lineHeight: 21 },
     statusWarn: { color: c.warning },
-    mainButton: { marginTop: spacing.lg, alignSelf: "stretch", ...s.glow },
+    mainButton: { marginTop: spacing.lg, alignSelf: "stretch" },
 
     row: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm, marginBottom: spacing.sm },
     rowText: { ...typography.body, color: c.textMuted, flex: 1, lineHeight: 21 },
     tileButton: { marginTop: spacing.xs },
 
-    errorCard: { borderColor: c.danger, borderWidth: 1 },
-    errorText: { ...typography.body, color: c.text, lineHeight: 21 },
+    errorText: { ...typography.body, color: c.text, lineHeight: 21, flex: 1 },
   });

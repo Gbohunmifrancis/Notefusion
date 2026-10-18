@@ -368,7 +368,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
             {sub?.isGift ? (
               <Button
                 label="Revoke the gift"
-                variant="danger"
+                variant="destructive"
                 icon="close-circle-outline"
                 loading={action === "revoke"}
                 disabled={action !== null}
@@ -391,7 +391,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
             {sub?.isActive ? (
               <Button
                 label="End the subscription now"
-                variant="danger"
+                variant="destructive"
                 icon="stop-circle-outline"
                 loading={action === "end"}
                 disabled={action !== null}
@@ -419,7 +419,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
             {user.isActive ? (
               <Button
                 label="Suspend this account"
-                variant="danger"
+                variant="destructive"
                 icon="ban-outline"
                 loading={action === "suspend"}
                 disabled={action !== null}

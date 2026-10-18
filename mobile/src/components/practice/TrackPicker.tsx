@@ -16,6 +16,7 @@ import { fonts, radii, spacing, typography, type Palette } from "../../design/th
 import { useColors, useThemedStyles } from "../../lib/theme";
 import { TRACK_OPTIONS, TRACK_QUESTION, mascotArt, trackArt } from "../../lib/practiceTrack";
 import { Art, artRatio } from "./Art";
+import { ProblemNote } from "../ProblemNote";
 
 interface Props {
   current: PracticeTrack | null;
@@ -76,7 +77,7 @@ export function TrackPicker({ current, saving, error, onPick, onCancel }: Props)
           </Touchable>
         );
       })}
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {error ? <ProblemNote>{error}</ProblemNote> : null}
       {onCancel ? (
         <Touchable onPress={onCancel} accessibilityRole="button" accessibilityLabel="Keep my practice style" style={styles.cancel}>
           <Text style={styles.cancelText}>Keep it as it is</Text>
@@ -109,7 +110,6 @@ const makeStyles = (c: Palette) =>
     text: { flex: 1, gap: 2 },
     title: { ...typography.label, color: c.text, fontSize: 16, fontFamily: fonts.bold },
     blurb: { ...typography.caption, color: c.textMuted, lineHeight: 17 },
-    error: { ...typography.caption, color: c.danger },
     cancel: { alignSelf: "center", minHeight: 44, justifyContent: "center", paddingHorizontal: spacing.md },
     cancelText: { ...typography.label, color: c.textMuted },
   });

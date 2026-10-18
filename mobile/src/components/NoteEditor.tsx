@@ -153,13 +153,15 @@ export function NoteEditor({
                 <Button
                   label="Hear it"
                   variant="secondary"
+                  size="sm"
                   icon="play"
                   onPress={() => void auditionNote(note, tempoBpm)}
                   style={styles.action}
                 />
                 <Button
                   label="Revert"
-                  variant="ghost"
+                  variant="text"
+                  size="sm"
                   icon="refresh"
                   onPress={() => onRevert(index)}
                   disabled={!edited}
@@ -167,7 +169,8 @@ export function NoteEditor({
                 />
                 <Button
                   label="Delete"
-                  variant="danger"
+                  variant="destructive"
+                  size="sm"
                   icon="trash-outline"
                   onPress={() => onDelete(index)}
                   style={styles.action}

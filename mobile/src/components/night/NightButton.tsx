@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  View,
-  type StyleProp,
-  type ViewStyle,
-} from "react-native";
-import { night, nightFonts } from "../../design/theme";
-import { Touchable } from "../Touchable";
+import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
+import { Button } from "../Button";
+import { ThemeOverride } from "../../lib/theme";
 
 type Variant = "white" | "blue" | "ghost";
 
@@ -16,8 +9,8 @@ interface Props {
   label: string;
   onPress?: () => void;
   /**
-   * `white` is the primary on the dark canvas, `blue` the commit action (sign in,
-   * verify, the last onboarding card), `ghost` the secondary choice beside them.
+   * `white` and `blue` are both the one primary now (the shared blue `Button`); `ghost` is the
+   * secondary choice beside it. The two primary names stay so the first-run screens read as before.
    */
   variant?: Variant;
   loading?: boolean;
@@ -30,8 +23,9 @@ interface Props {
 }
 
 /**
- * The 54px pill every night screen uses for its actions. It presses through `Touchable`,
- * so it shares the app's one press spring (no overshoot), haptic tick and ripple.
+ * The first-run screens' action (welcome, sign-in, verify, onboarding): the shared `Button` as a
+ * block, in the night palette whatever the app's mode, because those screens are always drawn on
+ * the night canvas.
  */
 export function NightButton({
   label,
@@ -43,72 +37,32 @@ export function NightButton({
   badge,
   style,
 }: Props) {
-  const inactive = disabled || loading;
-  const textColor = variant === "white" ? night.onWhite : night.text;
-
+  const primary = variant !== "ghost";
   return (
-    <Touchable
-      // Loading keeps full opacity (the spinner is the cue) but takes no presses.
-      onPress={inactive ? undefined : onPress}
-      disabled={disabled}
-      haptic={loading ? "none" : "light"}
-      // The blue pill casts a glow; clipping it for the ripple would cut that off.
-      radius={variant === "blue" ? undefined : 27}
-      accessibilityLabel={label}
-      accessibilityState={{ busy: loading }}
-      style={[styles.base, styles[variant], style]}
-    >
-        {loading ? (
-          <ActivityIndicator color={textColor} size="small" />
-        ) : (
-          <View style={styles.row}>
-            {icon}
-            <Text style={[styles.label, { color: textColor }]}>{label}</Text>
-            {badge ? (
-              <View style={[styles.badge, variant === "white" && styles.badgeOnWhite]}>
-                <Text style={[styles.badgeText, variant === "white" && styles.badgeTextOnWhite]}>
-                  {badge}
-                </Text>
-              </View>
-            ) : null}
-          </View>
-        )}
-    </Touchable>
+    <ThemeOverride mode="dark">
+      <Button
+        label={label}
+        onPress={onPress}
+        variant={primary ? "primary" : "secondary"}
+        block
+        // Google's G keeps its colours on a white disc: its own blue would vanish on the blue pill.
+        leading={icon ? primary ? <View style={styles.disc}>{icon}</View> : icon : undefined}
+        badge={badge}
+        loading={loading}
+        disabled={disabled}
+        style={style}
+      />
+    </ThemeOverride>
   );
 }
 
 const styles = StyleSheet.create({
-  base: {
-    height: 54,
-    borderRadius: 999,
+  disc: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 20,
   },
-  white: { backgroundColor: "#FFFFFF" },
-  blue: {
-    backgroundColor: night.blue,
-    shadowColor: night.blue,
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.4,
-    shadowRadius: 24,
-    elevation: 8,
-  },
-  ghost: {
-    backgroundColor: night.surface2,
-    borderWidth: 1,
-    borderColor: night.line2,
-  },
-  row: { flexDirection: "row", alignItems: "center", gap: 10 },
-  label: { fontSize: 15.5, fontFamily: nightFonts.semibold },
-  badge: {
-    paddingHorizontal: 8,
-    height: 22,
-    borderRadius: 999,
-    justifyContent: "center",
-    backgroundColor: night.blueSoft,
-  },
-  badgeOnWhite: { backgroundColor: "rgba(47, 123, 255, 0.12)" },
-  badgeText: { fontSize: 11, fontFamily: nightFonts.semibold, color: night.ice },
-  badgeTextOnWhite: { color: night.blueDeep },
 });

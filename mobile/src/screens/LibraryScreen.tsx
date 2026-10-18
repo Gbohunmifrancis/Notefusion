@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   BackHandler,
   FlatList,
-  Modal,
   RefreshControl,
   ScrollView,
   Share,
@@ -19,6 +18,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Touchable } from "../components/Touchable";
 import { Button } from "../components/Button";
+import { Sheet, SheetActions, SheetTitle } from "../components/Sheet";
 import { TextField } from "../components/TextField";
 import { Mark } from "../components/night/NightUI";
 import { LibraryRow, LibraryRowSkeleton } from "../components/library/LibraryRow";
@@ -227,17 +227,20 @@ export function LibraryScreen() {
     if (targets.length === 0) return;
     const one = targets.length === 1 ? targets[0]! : null;
     showDialog({
-      title: "Move to folder",
-      message: one ? `Where should “${one.title}” go?` : `Where should these ${targets.length} sheets go?`,
-      icon: "folder-outline",
+      kind: "options",
+      title: one ? one.title : `${targets.length} sheets`,
+      message: "Move to a folder",
       actions: [
         ...folders.slice(0, 6).map((f) => ({
           label: f,
-          icon: (targets.every((t) => t.folder === f) ? "checkmark" : undefined) as "checkmark" | undefined,
+          icon: "folder-outline" as const,
+          selected: targets.every((t) => t.folder === f),
           onPress: () => void fileIn(targets, f),
         })),
-        { label: "New folder…", onPress: () => { setNewFolder(""); setNaming(targets); } },
-        ...(targets.some((t) => t.folder) ? [{ label: "Take out of folder", onPress: () => void fileIn(targets, null) }] : []),
+        { label: "New folder…", icon: "add", onPress: () => { setNewFolder(""); setNaming(targets); } },
+        ...(targets.some((t) => t.folder)
+          ? [{ label: "Take out of folder", icon: "remove-circle-outline" as const, onPress: () => void fileIn(targets, null) }]
+          : []),
         { label: "Cancel", style: "cancel" as const },
       ],
     });
@@ -287,13 +290,14 @@ export function LibraryScreen() {
     }
     const allShared = targets.every((t) => t.sharedWithChoir);
     showDialog({
-      title: targets.length === 1 ? "Share this sheet" : `Share ${targets.length} sheets`,
-      icon: "share-outline",
+      kind: "options",
+      title: targets.length === 1 ? targets[0]!.title : `${targets.length} sheets`,
+      message: "Share",
       actions: [
         allShared
-          ? { label: "Take out of choir library", onPress: () => void shareWithChoir(targets, false) }
-          : { label: `Share with ${choirName}`, onPress: () => void shareWithChoir(targets, true) },
-        { label: "Send links", onPress: () => void shareSelected(targets) },
+          ? { label: "Take out of choir library", icon: "people-outline", onPress: () => void shareWithChoir(targets, false) }
+          : { label: `Share with ${choirName}`, icon: "people-outline", onPress: () => void shareWithChoir(targets, true) },
+        { label: "Send links", icon: "link-outline", onPress: () => void shareSelected(targets) },
         { label: "Cancel", style: "cancel" },
       ],
     });
@@ -319,8 +323,10 @@ export function LibraryScreen() {
     haptics.play("warning");
     const one = targets.length === 1 ? targets[0]! : null;
     showDialog({
-      title: one ? "Delete transcription" : `Delete ${targets.length} transcriptions`,
-      message: one ? `Remove "${one.title}"? This cannot be undone.` : `Remove these ${targets.length} sheets? This cannot be undone.`,
+      title: one ? "Delete this sheet?" : `Delete ${targets.length} sheets?`,
+      message: one
+        ? `“${one.title}” is removed from your library, along with any link you shared. This can't be undone.`
+        : `These ${targets.length} sheets are removed from your library, along with any links you shared. This can't be undone.`,
       icon: "trash-outline",
       tone: "danger",
       actions: [
@@ -351,20 +357,21 @@ export function LibraryScreen() {
 
   function chooseSort() {
     showDialog({
+      kind: "options",
       title: "Sort library",
-      message: "Choose how transcriptions are ordered.",
-      icon: "swap-vertical-outline",
       actions: [
         {
           label: "Newest first",
+          icon: "arrow-down-outline",
           // The active order is marked with a tick rather than by
           // appending " ✓" to the label, as the OS sheet had to.
-          icon: sortOrder === "newest" ? "checkmark" : undefined,
+          selected: sortOrder === "newest",
           onPress: () => setSortOrder("newest"),
         },
         {
           label: "Oldest first",
-          icon: sortOrder === "oldest" ? "checkmark" : undefined,
+          icon: "arrow-up-outline",
+          selected: sortOrder === "oldest",
           onPress: () => setSortOrder("oldest"),
         },
         { label: "Cancel", style: "cancel" },
@@ -550,11 +557,13 @@ export function LibraryScreen() {
     </View>
   ) : (
     <View style={styles.emptyContainer}>
-      <Mark height={40} color={loadError ? colors.danger : colors.textFaint} />
+      <Mark height={40} color={colors.textFaint} />
       <Text style={styles.emptyLine}>
-        {loadError
-          ? loadError
-          : query.trim()
+        {loadError ? (
+          <>
+            <Ionicons name="alert-circle" size={15} color={colors.warning} /> {loadError}
+          </>
+        ) : query.trim()
             ? `Nothing here matches “${query.trim()}”.`
             : folder !== null
               ? "Nothing in this folder yet."
@@ -624,33 +633,30 @@ export function LibraryScreen() {
           onShare={() => chooseShare(selectedItems)}
         />
       )}
-      <Modal visible={naming !== null} transparent animationType="fade" onRequestClose={() => setNaming(null)}>
-        <View style={styles.modalBackdrop}>
-          <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>New folder</Text>
-            <TextField
-              label="Folder name"
-              placeholder="Sunday choir, Easter service…"
-              value={newFolder}
-              onChangeText={setNewFolder}
-              autoFocus
-              maxLength={80}
-            />
-            <View style={styles.modalActions}>
-              <Button label="Cancel" variant="secondary" onPress={() => setNaming(null)} />
-              <Button
-                label="Move here"
-                disabled={newFolder.trim().length === 0}
-                onPress={() => {
-                  const targets = naming;
-                  setNaming(null);
-                  if (targets) void fileIn(targets, newFolder.trim());
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
+      {/* One field, then [Cancel] [Create]: the new folder is made by filing the sheets in it. */}
+      <Sheet visible={naming !== null} onClose={() => setNaming(null)} avoidKeyboard>
+        <SheetTitle>New folder</SheetTitle>
+        <TextField
+          label="Folder name"
+          placeholder="Sunday choir, Easter service…"
+          value={newFolder}
+          onChangeText={setNewFolder}
+          autoFocus
+          maxLength={80}
+        />
+        <SheetActions style={styles.namingActions}>
+          <Button label="Cancel" variant="text" onPress={() => setNaming(null)} />
+          <Button
+            label="Create"
+            disabled={newFolder.trim().length === 0}
+            onPress={() => {
+              const targets = naming;
+              setNaming(null);
+              if (targets) void fileIn(targets, newFolder.trim());
+            }}
+          />
+        </SheetActions>
+      </Sheet>
     </Screen>
   );
 }
@@ -863,27 +869,7 @@ const makeStyles = (c: Palette) =>
     },
 
     // ── New folder sheet ──────────────────────────────────────────────────────
-    modalBackdrop: {
-      flex: 1,
-      backgroundColor: c.scrim,
-      justifyContent: "center",
-      padding: spacing.lg,
-    },
-    modalCard: {
-      backgroundColor: c.surface,
-      borderRadius: 22,
-      borderWidth: 1,
-      borderColor: c.border,
-      padding: spacing.lg,
-      gap: spacing.md,
-    },
-    modalTitle: {
-      ...typography.heading,
-      color: c.text,
-    },
-    modalActions: {
-      flexDirection: "row",
-      justifyContent: "flex-end",
-      gap: spacing.sm,
+    namingActions: {
+      marginTop: spacing.lg,
     },
   });

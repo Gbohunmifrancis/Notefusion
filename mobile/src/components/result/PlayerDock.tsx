@@ -6,6 +6,7 @@ import { Touchable } from "../Touchable";
 import { motion, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import { clamp, formatTime, useSeekDrag, type Practice } from "./usePractice";
+import { ProblemNote } from "../ProblemNote";
 
 /** How much the sheet's scroll content must leave clear under the dock. */
 export const DOCK_CLEARANCE = 112;
@@ -85,7 +86,7 @@ export function PlayerDock({
         </Touchable>
       </View>
       {/* The hook's error can be a platform message; the dock says it plainly instead. */}
-      {error ? <Text style={styles.error}>This sheet could not be played. Try closing it and opening it again.</Text> : null}
+      {error ? <ProblemNote>This sheet could not be played. Try closing it and opening it again.</ProblemNote> : null}
     </View>
   );
 }
@@ -147,5 +148,4 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    error: { fontFamily: typography.caption.fontFamily, fontSize: 12, color: c.danger, marginTop: 8 },
   });

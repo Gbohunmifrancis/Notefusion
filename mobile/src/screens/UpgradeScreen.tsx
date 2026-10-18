@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Modal,
-  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
@@ -15,6 +13,8 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
+import { Sheet, SheetActions, SheetMessage, SheetTitle } from "../components/Sheet";
+import { ChoiceRow } from "../components/SheetRows";
 import { Touchable } from "../components/Touchable";
 import { Avatar } from "../components/Avatar";
 import { PlanCardSkeleton } from "../components/Skeleton";
@@ -38,6 +38,7 @@ import { PRO_FEATURES } from "../lib/proFeatures";
 import type { AuthUser, MyProfile, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 import { tierOf } from "../lib/planTier";
+import { formatPrice } from "../lib/price";
 
 type Props = { navigation: any; route?: any };
 
@@ -75,26 +76,6 @@ const PRO_BENEFITS: {
     desc: "Never queued behind anyone, and sing a take to have every note marked.",
   },
 ];
-
-/**
- * "$4.99", "₦7,500", or "SEK 49.00" for a currency we know no symbol for. Two tiers are on sale in
- * two currencies now, so this can no longer assume dollars: naira figures are five digits and need
- * grouping to be readable, and a round one carries no kobo worth printing.
- *
- * Grouped by hand rather than with `toLocaleString`, which takes its options argument only where
- * Hermes was built with full Intl — on Android it is quietly ignored and the separators never appear.
- */
-function formatPrice(amountMinor: number, currency: string): string {
-  const whole = Math.trunc(amountMinor / 100);
-  const minor = Math.abs(amountMinor % 100);
-  const grouped = whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  // Cents are conventional in dollar prices even at .00; kobo on a whole naira figure are noise.
-  const major =
-    minor === 0 && currency !== "USD" ? grouped : `${grouped}.${String(minor).padStart(2, "0")}`;
-
-  const symbol = currency === "USD" ? "$" : currency === "NGN" ? "₦" : null;
-  return symbol ? `${symbol}${major}` : `${currency} ${major}`;
-}
 
 /**
  * The price as the CTA says it. A lifetime plan is bought, not rented — billing it "/mo" would
@@ -146,6 +127,8 @@ function savingsPercent(monthly?: Plan, yearly?: Plan): number | null {
 export function UpgradeScreen({ navigation, route }: Props) {
   // Opened from a refusal for having nothing left: one more song is what was just asked for.
   const forLimit = route?.params?.reason === "limit";
+  // A plan already chosen, by a row of the limit sheet that showed its price.
+  const askedPlanId = route?.params?.planId;
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const {
@@ -199,14 +182,15 @@ export function UpgradeScreen({ navigation, route }: Props) {
       const best = [...planList]
         .filter((p) => p.interval !== "single")
         .sort((a, b) => b.amountMinor - a.amountMinor)[0];
-      const preferred = forLimit && single ? single : best ?? single;
+      const asked = askedPlanId ? planList.find((p) => p.id === askedPlanId) : undefined;
+      const preferred = asked ?? (forLimit && single ? single : best ?? single);
       setSelectedId((cur) => cur ?? preferred?.id ?? null);
     } catch {
       // A failed load leaves the empty state; the retry button re-runs this.
     } finally {
       if (mounted.current) setLoading(false);
     }
-  }, [forLimit]);
+  }, [forLimit, askedPlanId]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -885,9 +869,10 @@ const CANCEL_REASONS = [
 ] as const;
 
 /**
- * Slide-up survey modal shown before the subscription is actually cancelled.
- * The user picks one of five pre-set reasons, then confirms. The reason is
- * held client-side (available for future analytics or a server endpoint).
+ * The survey shown before the membership is cancelled, as a bottom sheet: the reasons are rows
+ * you tap once, then "Cancel membership" confirms. A quiet pill, not a red one: nothing is lost,
+ * Pro runs to its date. The reason is held client-side (available for future analytics or a
+ * server endpoint).
  */
 function CancelReasonModal({
   visible,
@@ -906,85 +891,33 @@ function CancelReasonModal({
   onDismiss: () => void;
   canceling: boolean;
 }) {
-  const colors = useColors();
-  const styles = useThemedStyles(makeStyles);
-
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="slide"
-      onRequestClose={onDismiss}
-    >
-      <Pressable style={styles.cancelModalBackdrop} onPress={onDismiss} />
-      <View style={styles.cancelModalSheet}>
-        {/* Header */}
-        <View style={styles.cancelModalHandle} />
-        <View style={styles.cancelModalHeader}>
-          <Ionicons name="heart-dislike-outline" size={28} color={colors.danger} />
-          <Text style={styles.cancelModalTitle}>Before you go…</Text>
-          <Text style={styles.cancelModalSub}>
-            Help us improve — why are you cancelling?
-          </Text>
-        </View>
-
-        {/* Reason list */}
-        {CANCEL_REASONS.map((reason) => {
-          const active = selectedReason === reason;
-          return (
-            <Touchable
-              key={reason}
-              style={[styles.cancelReasonRow, active && styles.cancelReasonRowActive]}
-              onPress={() => onSelectReason(reason)}
-              scaleTo={0.98}
-              ripple={false}
-              accessibilityLabel={reason}
-            >
-              <View
-                style={[
-                  styles.cancelReasonRadio,
-                  active && styles.cancelReasonRadioActive,
-                ]}
-              >
-                {active && (
-                  <View style={styles.cancelReasonRadioDot} />
-                )}
-              </View>
-              <Text style={[styles.cancelReasonLabel, active && styles.cancelReasonLabelActive]}>
-                {reason}
-              </Text>
-            </Touchable>
-          );
-        })}
-
-        {/* Info strip */}
-        {renews && (
-          <View style={styles.cancelModalInfo}>
-            <Ionicons name="time-outline" size={14} color={colors.textMuted} />
-            <Text style={styles.cancelModalInfoText}>
-              Pro stays active until {renews}. No refund, no charge today.
-            </Text>
-          </View>
-        )}
-
-        {/* Actions */}
+    <Sheet visible={visible} onClose={onDismiss}>
+      <SheetTitle>Before you go…</SheetTitle>
+      <SheetMessage>
+        {renews
+          ? `Pro stays active until ${renews}: no refund, and no charge today. Why are you cancelling?`
+          : "Help us improve: why are you cancelling?"}
+      </SheetMessage>
+      {CANCEL_REASONS.map((reason) => (
+        <ChoiceRow
+          key={reason}
+          title={reason}
+          selected={selectedReason === reason}
+          onPress={() => onSelectReason(reason)}
+        />
+      ))}
+      <SheetActions style={{ marginTop: spacing.sm }}>
+        <Button label="Keep Pro" variant="text" onPress={onDismiss} />
         <Button
-          label="Confirm cancellation"
-          variant="danger"
-          icon="close-circle-outline"
+          label="Cancel membership"
+          variant="secondary"
           onPress={onConfirm}
           loading={canceling}
           disabled={!selectedReason}
-          style={styles.cancelConfirmBtn}
         />
-        <Button
-          label="Keep Pro"
-          variant="secondary"
-          onPress={onDismiss}
-          style={styles.cancelKeepBtn}
-        />
-      </View>
-    </Modal>
+      </SheetActions>
+    </Sheet>
   );
 }
 
@@ -1538,111 +1471,6 @@ const makeStyles = (c: Palette, s: Shadows) =>
       color: c.textMuted,
       fontSize: 14,
       textAlign: "center",
-    },
-
-    // ── Cancel Reason Modal ──────────────────────────────────────────────────
-    cancelModalBackdrop: {
-      flex: 1,
-      backgroundColor: c.scrim,
-    },
-    cancelModalSheet: {
-      backgroundColor: c.bg,
-      borderTopLeftRadius: 24,
-      borderTopRightRadius: 24,
-      paddingHorizontal: spacing.xl,
-      paddingBottom: spacing.xxl + 8,
-      paddingTop: spacing.sm,
-    },
-    cancelModalHandle: {
-      alignSelf: "center",
-      width: 40,
-      height: 4,
-      borderRadius: 2,
-      backgroundColor: c.border,
-      marginBottom: spacing.lg,
-    },
-    cancelModalHeader: {
-      alignItems: "center",
-      gap: spacing.xs,
-      marginBottom: spacing.xl,
-    },
-    cancelModalTitle: {
-      fontSize: 20,
-      fontFamily: fonts.bold,
-      color: c.text,
-    },
-    cancelModalSub: {
-      fontSize: 14,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      textAlign: "center",
-    },
-    cancelReasonRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing.md,
-      paddingVertical: spacing.md,
-      paddingHorizontal: spacing.md,
-      borderRadius: radii.md,
-      marginBottom: spacing.xs,
-      borderWidth: 1,
-      borderColor: c.border,
-      backgroundColor: c.surface,
-    },
-    cancelReasonRowActive: {
-      borderColor: c.accent,
-      backgroundColor: c.accentSoft,
-    },
-    cancelReasonRadio: {
-      width: 20,
-      height: 20,
-      borderRadius: 10,
-      borderWidth: 2,
-      borderColor: c.border,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    cancelReasonRadioActive: {
-      borderColor: c.accent,
-    },
-    cancelReasonRadioDot: {
-      width: 10,
-      height: 10,
-      borderRadius: 5,
-      backgroundColor: c.accent,
-    },
-    cancelReasonLabel: {
-      flex: 1,
-      fontSize: 15,
-      fontFamily: fonts.medium,
-      color: c.text,
-    },
-    cancelReasonLabelActive: {
-      color: c.accent,
-      fontFamily: fonts.semibold,
-    },
-    cancelModalInfo: {
-      flexDirection: "row",
-      alignItems: "flex-start",
-      gap: spacing.sm,
-      backgroundColor: c.surfaceAlt,
-      borderRadius: radii.md,
-      padding: spacing.md,
-      marginTop: spacing.md,
-      marginBottom: spacing.lg,
-    },
-    cancelModalInfoText: {
-      flex: 1,
-      fontSize: 12,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      lineHeight: 18,
-    },
-    cancelConfirmBtn: {
-      marginTop: spacing.xs,
-    },
-    cancelKeepBtn: {
-      marginTop: spacing.sm,
     },
   });
 

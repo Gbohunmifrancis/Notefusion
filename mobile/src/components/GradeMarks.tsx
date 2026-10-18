@@ -17,12 +17,12 @@ export function GradeMarks({ grade, notes }: { grade: GradeResult; notes: readon
   const earned = rewardMoment(grade.reward);
 
   const statusColor = (s: string) =>
-    s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.danger : colors.textFaint;
+    s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.textMuted : colors.textFaint;
 
   return (
     <View style={styles.result}>
       <View style={styles.scoreRow}>
-        <Text style={[styles.score, { color: grade.score >= 80 ? colors.success : grade.score >= 50 ? colors.warning : colors.danger }]}>{grade.score}</Text>
+        <Text style={[styles.score, { color: grade.score >= 80 ? colors.success : grade.score >= 50 ? colors.warning : colors.textMuted }]}>{grade.score}</Text>
         <View style={styles.scoreText}>
           <Text style={styles.summary}>{grade.summary}</Text>
           {grade.octaveShift !== 0 ? (
@@ -44,7 +44,7 @@ export function GradeMarks({ grade, notes }: { grade: GradeResult; notes: readon
           );
         })}
       </View>
-      <Text style={styles.legend}>Green in tune · amber close · red wrong note · grey not sung. Numbers are cents off.</Text>
+      <Text style={styles.legend}>Green in tune · amber close · grey off the note · — not sung. Numbers are cents off.</Text>
       {earned ? <Text style={styles.earned}>{earned.line}</Text> : null}
     </View>
   );

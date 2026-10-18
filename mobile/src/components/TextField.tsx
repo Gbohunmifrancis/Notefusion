@@ -10,6 +10,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { ProblemNote } from "./ProblemNote";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 
@@ -43,11 +44,8 @@ export function TextField({ label, error, secure, icon, style, ...rest }: Props)
 
       <Pressable
         onPress={() => inputRef.current?.focus()}
-        style={[
-          styles.field,
-          focused && styles.focused,
-          !!error && styles.fieldError,
-        ]}
+        // A field with a problem keeps its own edge: the words under it say what is wrong (board 7c).
+        style={[styles.field, focused && styles.focused]}
       >
         {icon && (
           <Ionicons
@@ -85,7 +83,7 @@ export function TextField({ label, error, secure, icon, style, ...rest }: Props)
         )}
       </Pressable>
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {error ? <ProblemNote style={styles.error}>{error}</ProblemNote> : null}
     </View>
   );
 }
@@ -134,18 +132,7 @@ const makeStyles = (c: Palette) =>
       shadowRadius: 8,
     },
 
-    fieldError: {
-      borderColor: c.danger,
-      borderWidth: 1.5,
-      shadowColor: c.danger,
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.3,
-      shadowRadius: 6,
-    },
-
     error: {
-      ...typography.caption,
-      color: c.danger,
-      marginTop: spacing.xs,
+      marginTop: spacing.xs + 2,
     },
   });

@@ -208,9 +208,9 @@ export function ProfileScreen() {
   function onAvatarPress() {
     const hasPicture = Boolean(profile?.profilePictureUrl);
     showDialog({
+      kind: "options",
       title: "Profile photo",
       message: hasPicture ? undefined : "Add a photo to personalise your account.",
-      icon: "camera-outline",
       actions: [
         {
           label: hasPicture ? "Change photo" : "Choose photo",

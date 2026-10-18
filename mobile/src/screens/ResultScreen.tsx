@@ -33,6 +33,7 @@ import { chordRows } from "../lib/chordRow";
 import { dohChoices, writeInKey } from "../lib/dohChoice";
 import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer } from "../lib/hymnbook";
 import { showDialog, type DialogAction } from "../lib/dialog";
+import { showToast } from "../lib/toast";
 import { useSubscription } from "../lib/subscription";
 import {
   ascendingFlags,
@@ -522,7 +523,11 @@ export function ResultScreen({ route, navigation }: Props) {
       title: "Marking your singing is Pro",
       message: "Keep practising free. With Pro, sing your part back and see every note marked: in tune, close, or off.",
       icon: "star",
-      actions: [{ label: "See Pro plans", icon: "star", onPress: () => navigation.navigate("Upgrade") }],
+      tone: "premium",
+      actions: [
+        { label: "Not now", style: "cancel" },
+        { label: "See Pro plans", onPress: () => navigation.navigate("Upgrade") },
+      ],
     });
   }
   /** Note the player is sounding, −1 when stopped. */
@@ -595,13 +600,7 @@ export function ResultScreen({ route, navigation }: Props) {
       // The third save may bring the store-rating ask, which says the sheet was saved
       // itself; two sheets stacked on the same moment would be one too many.
       const askingForRating = await rating.recordSave();
-      if (!askingForRating) {
-        showDialog({
-          title: "Saved",
-          message: "Added to your library.",
-          icon: "checkmark-circle-outline",
-        });
-      }
+      if (!askingForRating) showToast("Saved to your library");
     } catch (e) {
       showDialog({
         title: "Could not save",
@@ -909,7 +908,10 @@ export function ResultScreen({ route, navigation }: Props) {
             message: `The parts could not be kept with this saved sheet: ${toApiError(e).message}`,
             icon: "alert-circle-outline",
             tone: "danger",
-            actions: [{ label: "Try again", onPress: () => void writeParts() }],
+            actions: [
+              { label: "OK", style: "cancel" },
+              { label: "Try again", onPress: () => void writeParts() },
+            ],
           });
           return;
         }
@@ -1066,11 +1068,7 @@ export function ResultScreen({ route, navigation }: Props) {
     try {
       const updated = await libraryApi.rename(savedId, title.trim());
       setCommittedTitle(updated.title);
-      showDialog({
-        title: "Renamed",
-        message: "The title has been updated.",
-        icon: "checkmark-circle-outline",
-      });
+      showToast("Renamed");
     } catch (e) {
       showDialog({
         title: "Could not rename",
@@ -1120,7 +1118,11 @@ export function ResultScreen({ route, navigation }: Props) {
       title: "Downloads are a Pro feature",
       message: "Upgrade to download this sheet as PDF, MusicXML or MIDI, transcribe full songs from a link, and skip the queue.",
       icon: "star",
-      actions: [{ label: "See Pro plans", icon: "star", onPress: () => navigation.navigate("Upgrade") }],
+      tone: "premium",
+      actions: [
+        { label: "Not now", style: "cancel" },
+        { label: "See Pro plans", onPress: () => navigation.navigate("Upgrade") },
+      ],
     });
     return false;
   }
@@ -1270,31 +1272,50 @@ export function ResultScreen({ route, navigation }: Props) {
         label: "Delete from Library",
         style: "destructive",
         icon: "trash-outline",
-        onPress: async () => {
-          try {
-            await libraryApi.remove(savedId);
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            } else {
-              navigation.navigate("Tabs", { screen: "Library" });
-            }
-          } catch (e) {
-            showDialog({
-              title: "Could not delete",
-              message: toApiError(e).message,
-              icon: "alert-circle-outline",
-              tone: "danger",
-            });
-          }
-        },
+        // A red row never deletes at once: it asks, as every other delete in the app does.
+        onPress: () => confirmDeleteSheet(savedId),
       });
     }
     actions.push({ label: "Cancel", style: "cancel" });
 
     showDialog({
-      title: "Transcription options",
-      icon: "ellipsis-horizontal",
+      kind: "options",
+      // The thing acted on is the title (board 7c).
+      title: shownTitle || "Transcription options",
       actions,
+    });
+  }
+
+  function confirmDeleteSheet(id: string) {
+    showDialog({
+      title: "Delete this sheet?",
+      message: `“${shownTitle || "This sheet"}” is removed from your library, along with any link you shared. This can't be undone.`,
+      icon: "trash-outline",
+      tone: "danger",
+      actions: [
+        {
+          label: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await libraryApi.remove(id);
+              if (navigation.canGoBack()) {
+                navigation.goBack();
+              } else {
+                navigation.navigate("Tabs", { screen: "Library" });
+              }
+            } catch (e) {
+              showDialog({
+                title: "Could not delete",
+                message: toApiError(e).message,
+                icon: "alert-circle-outline",
+                tone: "danger",
+              });
+            }
+          },
+        },
+        { label: "Cancel", style: "cancel" },
+      ],
     });
   }
 
@@ -1374,7 +1395,7 @@ export function ResultScreen({ route, navigation }: Props) {
           <Text
             style={[
               styles.rangeStatus,
-              r.status === "ok" ? { color: colors.success } : { color: r.overBy > 2 ? colors.danger : colors.warning },
+              { color: r.status === "ok" ? colors.success : colors.warning },
             ]}
           >
             {r.status === "ok"
@@ -1946,9 +1967,15 @@ export function ResultScreen({ route, navigation }: Props) {
                 <View style={styles.sharedRow}>
                   <Ionicons name="globe-outline" size={14} color={colors.success} />
                   <Text style={styles.sharedText}>Anyone with the link can open this sheet, with playback.</Text>
-                  <Touchable onPress={stopSharing} disabled={sharing} accessibilityLabel="Stop sharing">
-                    <Text style={styles.sharedStop}>Stop</Text>
-                  </Touchable>
+                  <Button
+                    label="Stop"
+                    variant="text"
+                    size="sm"
+                    onPress={stopSharing}
+                    disabled={sharing}
+                    accessibilityLabel="Stop sharing"
+                    style={styles.sharedStop}
+                  />
                 </View>
               ) : null}
               <ExportRow
@@ -2539,7 +2566,8 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: spacing.md,
     },
     sharedText: { ...typography.caption, color: c.textMuted, flex: 1, lineHeight: 16 },
-    sharedStop: { ...typography.caption, color: c.danger, fontFamily: fonts.semibold, paddingHorizontal: 4 },
+    /** The text button sits in the row's own padding: its 40 px would otherwise make the row tall. */
+    sharedStop: { marginVertical: -8, marginRight: -8 },
 
     // ── Chords ────────────────────────────────────────────────────────────────
     chordsBlock: { marginTop: 22, gap: spacing.xs },

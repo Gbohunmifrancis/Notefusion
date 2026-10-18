@@ -152,7 +152,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   client. Night (dark) default with a runtime Day/Night switch (`src/lib/theme.tsx`; every
   stylesheet is a `makeStyles(palette)` factory), JWT refresh interceptor,
   the night redesign (`night`/`nightFonts` in `src/design/theme.ts`, primitives in
-  `src/components/night/`; splash, onboarding and sign-in use it in either mode), a rating ask after the third saved sheet (`lib/ratingPolicy` decides when; the sheet in `lib/feedback` sends the stars to the API and offers Google Play to 4–5★),
+  `src/components/night/`; splash, onboarding and sign-in use it in either mode), one popup: every dialog is the
+  bottom sheet (`showDialog` → `components/AppDialog` on `components/Sheet`; `lib/sheetKind` reads confirm,
+  destructive, info, options, offer or celebrate off the options) and good news is a toast (`lib/toast` `showToast`),
+  one `components/Button` (primary · secondary · text · destructive, md 48 / sm 40, `block` for a flow's last action;
+  red only as a destructive word and the live REC dot, problems an amber icon: `ProblemNote`), a rating ask after the third saved sheet (`lib/ratingPolicy` decides when; the sheet in `lib/feedback` sends the stars to the API and offers Google Play to 4–5★),
   expo-notifications push. OTA via EAS Update (`production` channel) with the `fingerprint`
   runtime policy: any native change (a new Expo module, a permission, a plugin) gives a new
   runtime, so an update can only reach builds that have its native code — anything native

@@ -77,6 +77,7 @@ import {
   tuningLine,
 } from "../lib/practiceTrack";
 import type { RootStackParams } from "../navigation/types";
+import { ProblemNote } from "../components/ProblemNote";
 
 type Props = NativeStackScreenProps<RootStackParams, "Practice">;
 type Phase = "idle" | "leadin" | "singing" | "grading";
@@ -534,7 +535,7 @@ export function PracticeScreen({ navigation }: Props) {
                 ) : null}
 
                 {allowance ? <Text style={styles.allowance}>{allowanceLine(allowance)}</Text> : null}
-                {error ? <Text style={styles.error}>{error}</Text> : null}
+                {error ? <ProblemNote>{error}</ProblemNote> : null}
                 {grade?.milestone ? (
                   <View style={styles.milestone} accessibilityLiveRegion="polite">
                     <Text style={styles.milestoneTitle}>{grade.milestone.title}</Text>
@@ -887,7 +888,6 @@ const makeStyles = (c: Palette) =>
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.xs },
     liveLabel: { ...typography.label, color: c.textMuted },
     allowance: { ...typography.caption, color: c.textMuted },
-    error: { ...typography.caption, color: c.danger },
     focusRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: spacing.sm, flexWrap: "wrap" },
     focusTuning: { ...typography.label, color: c.textMuted, fontSize: 13 },
 

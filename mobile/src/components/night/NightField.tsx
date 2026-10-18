@@ -96,7 +96,12 @@ export const NightField = forwardRef<TextInput, Props>(function NightField(
           )}
         </View>
       </View>
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {error ? (
+        <View style={styles.errorRow}>
+          <Ionicons name="alert-circle" size={14} color={night.amber} />
+          <Text style={styles.error}>{error}</Text>
+        </View>
+      ) : null}
     </View>
   );
 });
@@ -111,7 +116,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   fieldFocused: { borderColor: night.blueRing },
-  fieldError: { borderColor: "rgba(255, 77, 94, 0.55)" },
+  fieldError: { borderColor: "rgba(245, 181, 68, 0.55)" },
   /** The soft 4px halo outside the focused border. */
   ring: {
     position: "absolute",
@@ -142,11 +147,18 @@ const styles = StyleSheet.create({
     color: night.text,
   },
   eye: { paddingLeft: 10 },
-  error: {
+  /** A problem in plain words with a small amber icon, never red (board 7c). */
+  errorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
     marginTop: 7,
     marginLeft: 4,
+  },
+  error: {
+    flexShrink: 1,
     fontSize: 12.5,
     fontFamily: nightFonts.medium,
-    color: night.red,
+    color: night.muted,
   },
 });
