@@ -1,5 +1,6 @@
 import { mono } from "./glyphs.mjs";
 import { rpoly } from "./emblems.mjs";
+import { capDefs, capShapes } from "./season.mjs";
 const f = (n) => Math.round(n * 10) / 10;
 const C = 60;
 // sticker outlines (fill-less, so one shape draws the shadow, the die-cut border and the body)
@@ -52,6 +53,15 @@ export const BADGES = [
     icon: `<rect x="38" y="36" width="40" height="46" rx="6" fill="#fff"/><path d="M44 48H72M44 55H72M44 62H72" stroke="#0F766E" stroke-opacity=".35" stroke-width="2"/>` +
       `<ellipse cx="54" cy="62" rx="4.5" ry="3.5" transform="rotate(-20 54 62)" fill="#0F766E"/><path d="M57.6 61V46" stroke="#0F766E" stroke-width="2.6" stroke-linecap="round"/>` +
       `<circle cx="78" cy="78" r="12" fill="#3DDC97" stroke="#fff" stroke-width="3"/><path d="M72.5 78l4 4 7-8" fill="none" stroke="#064E3B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>` },
+  // The Christmas season's sticker (board d-christmas/03): all six carols sung. Pine, two beamed quavers wearing the
+  // season's cap, and a little snow; earned only while the season is on, kept for good.
+  { id: "carol-singer", name: "Carol singer", shape: "circle", g: ["#3FA27A", "#1B5C44"], defs: capDefs(),
+    icon: `<ellipse cx="44" cy="34" rx="16" ry="7" transform="rotate(-30 44 34)" fill="#fff" opacity=".16"/>` +
+      `<g fill="#fff"><rect x="47" y="40" width="6.5" height="34" rx="3"/><rect x="73" y="35" width="6.5" height="34" rx="3"/>` +
+      `<path d="M47 40L79.5 34.5V43L47 48.5Z"/><ellipse cx="44" cy="75" rx="10" ry="8" transform="rotate(-18 44 75)"/>` +
+      `<ellipse cx="70" cy="70" rx="10" ry="8" transform="rotate(-18 70 70)"/></g>` +
+      `<g transform="translate(58 33) rotate(-14) scale(.23)">${capShapes()}</g>` +
+      `<g fill="#fff" opacity=".75"><circle cx="86" cy="80" r="2.6"/><circle cx="92" cy="66" r="1.8"/><circle cx="30" cy="56" r="2"/></g>` },
   // A rose-pink medal on brand-blue ribbons: gold is Pro's alone.
   { id: "month", name: "A month of practice", shape: "medal", g: ["#F9A8D4", "#DB2777"], ribbon: "#2F7BFF",
     icon: `<path d="${rpoly(60, 50, 31, 10, 4, -90)}" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="2"/>` + mono("30", { cx: 60, cy: 51, h: 28, sw: 13, color: "#fff", gap: 14 }) },
@@ -60,7 +70,7 @@ export const BADGES = [
 const SHADOW = "#0A0D14";
 export function sticker(b, locked = false) {
   const shape = SH[b.shape];
-  let defs = grad("g", ...b.g);
+  let defs = grad("g", ...b.g) + (b.defs || "");
   let body = `<g fill="url(#g)">${shape}</g>`;
   if (b.ribbon) { // the medal's ribbons in brand blue, under the gold rosette
     defs += grad("r", "#5C9BFF", "#1B5FE0");

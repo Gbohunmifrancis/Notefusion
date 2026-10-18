@@ -1,5 +1,5 @@
 // The Practice art: Doh the doh bird (with the poses he takes outside Practice and their blink twins), the level emblems, the badge stickers, the streak flame and freeze, the stars,
-// the confetti pieces, the track-picker scenes and the empty states. All of it is our own original SVG, drawn by
+// the confetti pieces, the track-picker scenes, the empty states and the Christmas season's cap and snowflake. All of it is our own original SVG, drawn by
 // these modules; this script writes the copies the apps ship:
 //
 //   web-site/assets/practice-art/<name>.svg            — the web app's Practice view loads them as <img> on demand
@@ -15,6 +15,7 @@ import { emblem, LEVELS } from "./emblems.mjs";
 import { BADGES, sticker } from "./badges.mjs";
 import * as B from "./bits.mjs";
 import * as S from "./scenes.mjs";
+import * as X from "./season.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 export const WEB_DIR = path.join(ROOT, "web-site/assets/practice-art");
@@ -35,6 +36,9 @@ export function assets() {
   for (const [k, f] of Object.entries(B.CONFETTI)) out.push([`confetti-${k}`, f()]);
   out.push(["track-playful", S.playful()], ["track-focused", S.focused()]);
   out.push(["empty-no-drill", S.noDrill()], ["empty-offline", S.offline()]);
+  // The Christmas season, shown only while it is on: the cap laid over the brand mark and Doh, and the Carol singer's
+  // snowflake (its sticker is with the badges).
+  out.push(["season-cap", X.cap()], ["confetti-snowflake", X.snowflake()]);
   return out.map(([n, s]) => [n, minify(s)]);
 }
 
