@@ -1,0 +1,32 @@
+{
+  "name": "CROSSING THE BAR",
+  "title": "Crossing the Bar",
+  "music": [
+    {
+      "name": "Joseph Barnby",
+      "born": 1838,
+      "died": 1896,
+      "role": "Music (1892)"
+    }
+  ],
+  "musicPublished": 1892,
+  "metre": "Irregular",
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "E4:1 E4:.5 E4:.5 G4:1.5 G4:.5 | C4:3 C4:1 | F4:1 F4:1 A4:1.5 A4:.5 | D4:2 r:.5 D4:.5 E4:.5 F4:.5 | G4:1 C5:1 C5:1 B4:1 | B4:1.5 A4:.5 A4:1 D4:1 | F4:1.5 F4:.5 E4:1 D4:1 | C4:2.5 E4:.5 E4:.5 E4:.5 | E4:1 E4:1 E4:.5 E4:.5 F4:.5 E4:.5 | E4:3 A4:1 | C5:1.5 C5:.5 B4:1 A4:1 | Ab4:2 G4:.5 G4:.5 A4:.5 G4:.5 | E5:1.5 D5:.5 C5:1 B4:1 | A4:1.5 G4:.5 F4:1 D4:1 | G4:1.5 C4:.5 D4:1 E4:1 | C4:4 | F4:1 F4:.5 F4:.5 E4:1.5 E4:.5 | D4:3 D4:1 | G4:1.5 G4:.5 F4:1 F4:1 | E4:2 r:.5 E4:.5 F4:.5 G4:.5 | A4:1 A4:1 Bb4:1 A4:1 | G4:1.5 F4:.5 F4:1 G4:1 | E4:2 F#4:2 | G4:3 G4:1 | G4:1 G4:1 G4:1 G4:1 | G4:1 B4:1 A4:1 G4:1 | G4:1 C5:1 B4:1 A4:1 | G4:2 F#4:2 | G4:3 G4:1 | F5:1 E5:1 D5:1 C5:1 | B4:1 A4:1 G4:1 F4:1 | E4:1 G4:1 F4:1 A3:1 | C4:2 D4:2 | C4:4",
+  "incipit": "mmmssd|dffllr|rmfsddttll",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001185.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001185a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001185; public domain.",
+  "reviewNotes": "Held back: the range (MIDI 57–77) is outside what a congregation sings. Imported from CCEH tune 001185 (the melody read from 001185a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Joseph Barnby's dates (1838–1896) are from our page for the tune GALILEAN (content/hymns/tunes/galilean.json); CCEH's page gives only the year 1892. The bar lines are those of CCEH's Noteworthy score (001185a.nwc).",
+  "importedFrom": "cceh:001185",
+  "updated": "2026-10-18"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "VISION (DOANE)",
+  "title": "Vision (Doane)",
+  "music": [
+    {
+      "name": "William H. Doane",
+      "born": 1832,
+      "died": 1915,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 8 8 8 8 8",
+  "key": "Eb major",
+  "time": "4/2",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 1,
+  "melody": "G4:2 F4:1 Eb4:1 Bb4:3 Bb4:1 | C5:2 Eb5:2 Bb4:4 | G4:2 F4:1 Eb4:1 Bb4:3 C5:1 | Bb4:2 G4:2 F4:4 | G4:2 F4:1 Eb4:1 Bb4:3 Bb4:1 | C5:2 D5:1 Eb5:1 Eb5:4 | Eb5:2 D5:1 C5:1 Bb4:1 G4:1 Eb4:1 Ab4:1 | G4:2 F4:2 Eb4:4 | Bb4:2 Bb4:1 Bb4:1 Bb4:2 G4:2 | C5:2 D5:1 Eb5:1 Eb5:4 | Eb5:2 D5:1 C5:1 Bb4:1 G4:1 Eb4:1 Ab4:1 | G4:2 F4:2 Eb4:2 r:2",
+  "incipit": "mrdsslds|mrdslsmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001028.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001028a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001028; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001028 (the melody read from 001028a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William H. Doane's dates (1832–1915) are from our page for the tune MORE LOVE TO THEE (content/hymns/tunes/more-love-to-thee.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001028a.nwc).",
+  "importedFrom": "cceh:001028",
+  "updated": "2026-10-18"
+}

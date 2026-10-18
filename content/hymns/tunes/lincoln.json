@@ -1,0 +1,36 @@
+{
+  "name": "LINCOLN",
+  "title": "Lincoln",
+  "music": [
+    {
+      "name": "W. Harrison",
+      "activeBy": 1621,
+      "role": "Arranged (1621)"
+    },
+    {
+      "name": "Thomas Ravenscroft",
+      "activeBy": 1621,
+      "role": "Music (Psalter, 1621)"
+    }
+  ],
+  "musicPublished": 1621,
+  "metre": "8 6 8 6",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 A4:1 B4:1 | A4:1 G4:1 G4:1 F#4:1 | G4:2 G4:2 | D5:1 C5:1 C5:1 B4:1 | C5:4 | C5:2 B4:1 A4:1 | Ab4:1 A4:1 B4:1 B4:1 | A4:2 G4:2 | E4:1 G4:1 G4:1 F#4:1 | G4:4",
+  "incipit": "drmrddtd|dsffmf",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0013/x001365.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0013/001365a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001365; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001365 (the melody read from 001365a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. W. Harrison has no death year on CCEH's page or ours; their work is dated 1621, before 1850, so they died before 1955 (they would have been over 105). Thomas Ravenscroft has no death year on CCEH's page or ours; their work is dated 1621, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (001365a.nwc).",
+  "importedFrom": "cceh:001365",
+  "updated": "2026-10-18"
+}

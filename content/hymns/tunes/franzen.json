@@ -1,0 +1,36 @@
+{
+  "name": "FRANZEN",
+  "title": "Franzen",
+  "music": [
+    {
+      "name": "Danish Traditional",
+      "traditional": true,
+      "role": "Melody"
+    },
+    {
+      "name": "Hanz Thomisson",
+      "activeBy": 1569,
+      "role": "Music (Psalmebog, 1569)"
+    }
+  ],
+  "musicPublished": 1569,
+  "metre": "7 6 7 6 8 7 6",
+  "key": "Eb major",
+  "time": "6/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Eb4:1 | G4:2 G4:1 Ab4:1 G4:1 Ab4:1 | Bb4:3 Bb4:2 Bb4:1 | Bb4:2 G4:1 Ab4:2 F4:1 | Eb4:4 r:1 Eb4:1 | G4:2 G4:1 Ab4:1 G4:1 Ab4:1 | Bb4:3 Bb4:2 Bb4:1 | Bb4:2 G4:1 Ab4:2 F4:1 | Eb4:4 r:1 Bb4:1 | Ab4:2 G4:1 F4:2 G4:1 | Eb4:2 F4:1 G4:2 Bb4:1 | C5:2 Bb4:1 Ab4:2 G4:1 | Ab4:3 G4:2 Bb4:1 | Bb4:2 G4:1 Ab4:1 G4:1 F4:1 | Eb4:5",
+  "incipit": "dmmfmfss|ssmfrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001269.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001269a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001269; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001269 (the melody read from 001269a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Hanz Thomisson has no death year on CCEH's page or ours; their work is dated 1569, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (001269a.nwc).",
+  "importedFrom": "cceh:001269",
+  "updated": "2026-10-18"
+}

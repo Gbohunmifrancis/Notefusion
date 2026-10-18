@@ -1,0 +1,32 @@
+{
+  "name": "MALVERN (MASON)",
+  "title": "Malvern (Mason)",
+  "music": [
+    {
+      "name": "Lowell Mason",
+      "born": 1792,
+      "died": 1872,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 8 8 8",
+  "key": "D major",
+  "time": "2/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "F#4:1 F#4:.5 F#4:.5 | F#4:1.5 F#4:.5 | F#4:.5 E4:.5 F#4:.5 G4:.5 | A4:1.5 A4:.5 | B4:1 B4:1 | A4:1.5 F#4:.5 | G4:.5 A4:.5 F#4:.5 G4:.5 | E4:2 | F#4:1 F#4:.5 F#4:.5 | F#4:1.5 F#4:.5 | F#4:.5 E4:.5 F#4:.5 G4:.5 | A4:1.5 A4:.5 | B4:1 B4:1 | A4:1.5 F#4:.5 | E4:.5 F#4:.5 G4:.5 A4:.5 | F#4:2",
+  "incipit": "mmmmmmrmfs|sllsmfsmfr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001160.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001160a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001160; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001160 (the melody read from 001160a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Lowell Mason's dates (1792–1872) are from our page for the tune BETHANY (content/hymns/tunes/bethany.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001160a.nwc). The tune ends on F#, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "importedFrom": "cceh:001160",
+  "updated": "2026-10-18"
+}

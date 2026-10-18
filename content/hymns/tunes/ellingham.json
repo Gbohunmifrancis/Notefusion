@@ -1,0 +1,32 @@
+{
+  "name": "ELLINGHAM",
+  "title": "Ellingham",
+  "music": [
+    {
+      "name": "Samuel Sebastian Wesley",
+      "born": 1810,
+      "died": 1876,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "10 10 10 10",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 G4:1 F4:1 | Eb4:2 Eb4:2 | F4:1 G4:1 Ab4:1 Bb4:1 | G4:2 Bb4:2 | Eb5:2 D5:2 | C5:2 Bb4:2 | Bb4:1 Ab4:1 G4:1 Ab4:1 | F4:3 F4:1 | Bb4:2 G4:1 F4:1 | F4:2 Eb4:2 | C5:1 Bb4:1 Ab4:1 G4:1 | F4:2 Eb4:2 | Ab4:1 G4:1 F4:1 D4:1 | Eb4:1 Ab4:1 G4:2 | F4:2 Eb4:2~ | Eb4:2 r:2",
+  "incipit": "mmrddrmfsm|sdtlssfmfr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001266.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001266a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001266; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; the score has a bar of another length (bar 12), which the solfa grid does not draw. Imported from CCEH tune 001266 (the melody read from 001266a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Samuel Sebastian Wesley's dates (1810–1876) are from our page for the tune AURELIA (content/hymns/tunes/aurelia.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001266a.nwc).",
+  "importedFrom": "cceh:001266",
+  "updated": "2026-10-18"
+}

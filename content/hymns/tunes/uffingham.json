@@ -1,0 +1,30 @@
+{
+  "name": "UFFINGHAM",
+  "title": "Uffingham",
+  "music": [
+    {
+      "name": "Jeremiah Clarke",
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 8 8 8",
+  "key": "F minor",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "F4:1 F4:.5 Eb4:.5 C#4:1 | C4:2 G4:1 | Ab4:1 G4:1 F4:1 | E4:3 | C5:1 C5:1 C5:1 | Bb4:2 Ab4:1 | Bb4:1 G4:2 | Ab4:3 | Eb5:1 Eb5:1 C#5:1 | C5:2 C5:1 | C5:1 Bb4:1 Ab4:1 | G4:2 G4:1 | Ab4:1 G4:1 F4:1 | E4:2 C5:1 | Ab4:2 G4:.5 F4:.5 | F4:3",
+  "incipit": "llsfmtdtls|mmmrdrtd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0013/x001372.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0013/001372a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001372; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; not provably public domain: Jeremiah Clarke: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 001372 (the melody read from 001372a.mid, checked against the page's do-re-mi incipit, 1 note off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001372a.nwc).",
+  "importedFrom": "cceh:001372",
+  "updated": "2026-10-18"
+}

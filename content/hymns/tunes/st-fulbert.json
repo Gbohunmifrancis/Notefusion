@@ -1,0 +1,32 @@
+{
+  "name": "ST. FULBERT",
+  "title": "St. Fulbert",
+  "music": [
+    {
+      "name": "Henry John Gauntlett",
+      "born": 1805,
+      "died": 1876,
+      "role": "Music (1852)"
+    }
+  ],
+  "musicPublished": 1852,
+  "metre": "8 6 8 6",
+  "key": "E major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "B4:1 | B4:1 E4:1 F#4:1 C#5:1 | B4:1 A4:1 Ab4:1 B4:1 | Ab4:1 B4:1 C#5:1 E5:1 | Eb5:3 E5:1 | B4:1 C#5:1 B4:1 E4:1 | A4:1 A4:1 Ab4:1 Ab4:1 | F#4:1 Ab4:1 A4:1 F#4:1 | E4:3",
+  "incipit": "ssdrlsfm|smsldt|dslsdffm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001075.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001075a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001075; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001075 (the melody read from 001075a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Henry John Gauntlett's dates (1805–1876) are from our page for the tune IRBY (content/hymns/tunes/irby.json); CCEH's page gives only the year 1852. The bar lines are those of CCEH's Noteworthy score (001075a.nwc).",
+  "importedFrom": "cceh:001075",
+  "updated": "2026-10-18"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "KALMAR",
+  "title": "Kalmar",
+  "music": [
+    {
+      "name": "Swedish Traditional",
+      "traditional": true,
+      "role": "Melody (1676)"
+    }
+  ],
+  "musicPublished": 1676,
+  "metre": "8 7 8 7 7 7",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:1 G4:1 E4:1 E4:1 | F#4:1 D4:1 G4:1 G4:1 | B4:1 C5:1 A4:1 D5:1 | D5:1 C#5:1 D5:2 | G4:1 G4:1 E4:1 E4:1 | F#4:1 D4:1 G4:1 G4:1 | B4:1 C5:1 A4:1 D5:1 | D5:1 C#5:1 D5:2 | D5:1 B4:1 E5:1 D5:1 | C5:1 B4:1 A4:2 | B4:1 G4:1 C5:1 B4:1 | A4:1 A4:1 G4:2",
+  "incipit": "ddlltsdd|mfrssfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001254.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001254a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001254; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001254 (the melody read from 001254a.mid, checked against the page's do-re-mi incipit, 1 note off in 15); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001254a.nwc).",
+  "importedFrom": "cceh:001254",
+  "updated": "2026-10-18"
+}

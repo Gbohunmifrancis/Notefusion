@@ -1,0 +1,32 @@
+{
+  "name": "SONG ONE",
+  "title": "Song One",
+  "music": [
+    {
+      "name": "Orlando Gibbons",
+      "born": 1583,
+      "died": 1625,
+      "role": "Music (1623)"
+    }
+  ],
+  "musicPublished": 1623,
+  "metre": "10 10 10 10 10 10",
+  "key": "F major",
+  "time": "4/2",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 1,
+  "melody": "C4:4 C4:2 C4:2 | F4:2 G4:2 A4:2 A4:2 | G4:2 G4:2 F4:4 | r:2 A4:2 A4:2 Bb4:2 | C5:2 C4:2 F4:2 E4:2 | D4:2 D4:2 C4:4 | r:2 G4:2 G4:2 A4:2 | Bb4:6 F4:2 | F4:2 F4:2 Bb4:2 A4:2 | G4:6 G4:2 | E4:2 C4:2 F4:2 G4:2 | A4:2 C5:2 G4:2 G4:2 | F4:4 r:2 F4:2 | Bb4:2 C5:2 D5:2 D5:2 | G4:2 C5:2 C5:2 B4:2 | C5:4 r:2 C4:2 | F4:2 G4:2 A4:2 G4:2 | Bb4:2 A4:2 G4:2 G4:2 | F4:4 r:4",
+  "incipit": "sssdrmmrrd|mmfssdtlls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000966.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000966a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000966; public domain.",
+  "reviewNotes": "Held back: the score has a bar of another length (bar 13), which the solfa grid does not draw. Imported from CCEH tune 000966 (the melody read from 000966a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Orlando Gibbons's dates (1583–1625) are from our page for the tune CANTERBURY (content/hymns/tunes/canterbury.json); CCEH's page gives only the year 1623. The bar lines are those of CCEH's Noteworthy score (000966a.nwc).",
+  "importedFrom": "cceh:000966",
+  "updated": "2026-10-18"
+}

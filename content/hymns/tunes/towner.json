@@ -1,0 +1,37 @@
+{
+  "name": "TOWNER",
+  "title": "Towner",
+  "music": [
+    {
+      "name": "American Traditional",
+      "traditional": true,
+      "role": "Melody"
+    },
+    {
+      "name": "Daniel Brink Towner",
+      "born": 1850,
+      "died": 1919,
+      "role": "Music (1909)"
+    }
+  ],
+  "musicPublished": 1909,
+  "metre": "6 6 6 6 8 8 8 + 8 8 8",
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "D4:1 | G4:.75 F#4:.25 G4:1 A4:1 | B4:.75 Bb4:.25 B4:1 C5:1 | C5:1 B4:1 D5:.5 C5:.5 | B4:1 A4:1 G4:1 | A4:1 G4:1 F#4:1 | G4:2 D4:1 | G4:.75 F#4:.25 G4:1 A4:1 | B4:.75 Bb4:.25 B4:1 C5:1 | C5:1 B4:1 D5:.5 C5:.5 | B4:1 A4:1 G4:1 | A4:1 G4:1 F#4:1 | G4:2 G4:1 | B4:.75 A4:.25 G4:1 B4:1 | A4:.75 F#4:.25 D4:1 G4:1 | E4:.75 E4:.25 E4:.5 F#4:.5 G4:.5 E4:.5 | D4:.75 D4:.25 D4:1 B4:1 | C5:.75 B4:.25 C5:1 A4:1 | B4:.75 A4:.25 B4:1 G4:1 | A4:1 G4:1 F#4:1 | G4:2 G4:1 | B4:.75 A4:.25 G4:1 B4:1 | A4:.75 F#4:.25 D4:1 G4:1 | E4:.75 E4:.25 E4:.5 F#4:.5 G4:.5 E4:.5 | D4:.75 D4:.25 D4:1 B4:1 | C5:.75 B4:.25 C5:1 A4:1 | B4:.75 A4:.25 B4:1 G4:1 | A4:1 G4:1 F#4:1 | G4:2",
+  "incipit": "sdtdrmrmffm|sfmrdrdtd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001012.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001012a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001012; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001012 (the melody read from 001012a.mid, checked against the page's do-re-mi incipit, 1 note off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Daniel Brink Towner's dates (1850–1919) are from https://en.wikipedia.org/wiki/Daniel_Brink_Towner; CCEH's page gives only the year 1909. The bar lines are those of CCEH's Noteworthy score (001012a.nwc).",
+  "importedFrom": "cceh:001012",
+  "updated": "2026-10-18"
+}

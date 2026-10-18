@@ -1,0 +1,32 @@
+{
+  "name": "GERAR",
+  "title": "Gerar",
+  "music": [
+    {
+      "name": "Lowell Mason",
+      "born": 1792,
+      "died": 1872,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "6 6 8 6",
+  "key": "F major",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "F4:1 A4:1 F4:1 | C5:2 E4:1 | F4:2 A4:1 | A4:1 G4:1 C5:1 | C5:1 B4:1 D5:1 | C5:2 C5:1 | C5:.75 Bb4:.25 A4:1 A4:1 | Bb4:.75 C5:.25 D5:1 Bb4:1 | Bb4:.75 A4:.25 G4:1 G4:1 | A4:.75 Bb4:.25 C5:1 C5:1 | F5:1 C5:1 A4:1 | A4:1 F4:1 G4:1 | F4:3",
+  "incipit": "dmdstd|mmrssfls|ssfm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001019.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001019a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001019; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001019 (the melody read from 001019a.mid, checked against the page's do-re-mi incipit, 1 note off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Lowell Mason's dates (1792–1872) are from our page for the tune BETHANY (content/hymns/tunes/bethany.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001019a.nwc).",
+  "importedFrom": "cceh:001019",
+  "updated": "2026-10-18"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "THROW OUT THE LIFELINE",
+  "title": "Throw Out the Lifeline",
+  "music": [
+    {
+      "name": "George C. Stebbins",
+      "born": 1846,
+      "died": 1945,
+      "role": "Arranged"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "10 10 10 11 + 10 7 10 7",
+  "key": "G major",
+  "time": "6/8",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "D4:.5 B4:.75 B4:.25 B4:.5 A4:.5 G4:.5 | A4:.5 B4:.5 C5:.5 B4:1.5 | D5:.5 E5:.5 D5:.5 D5:.5 B4:.5 B4:.5 | B4:.5 A4:.5 G4:.5 A4:1.5 | D4:.5 B4:.75 B4:.25 B4:.5 A4:.5 G4:.5 | A4:.5 B4:.5 C5:.5 B4:1 B4:.5 | D5:.5 E5:.75 D5:.25 D5:.5 B4:.5 G4:.5 | A4:.5 G4:.5 F#4:.5 G4:1.5 | D5:.5 D5:.75 D5:.25 E5:.5 D5:1 | B4:.5 B4:.75 B4:.25 C5:.5 B4:1 | A4:.5 A4:.5 A4:.5 A4:.5 G4:.75 A4:.25 | B4:1.5 D5:1.5 | D5:.5 D5:.75 D5:.25 E5:.5 D5:1 | B4:.5 B4:.75 B4:.25 C5:.5 B4:1 | E5:.5 E5:.5 E5:.5 D5:.25 B4:.75 A4:.5 | G4:3",
+  "incipit": "smmmrdrmfm|slssmmmrdr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000991.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000991a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000991; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000991 (the melody read from 000991a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. George C. Stebbins's dates (1846–1945) are from https://en.wikipedia.org/wiki/George_Coles_Stebbins; CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000991a.nwc).",
+  "importedFrom": "cceh:000991",
+  "updated": "2026-10-18"
+}

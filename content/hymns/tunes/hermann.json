@@ -1,0 +1,32 @@
+{
+  "name": "HERMANN",
+  "title": "Hermann",
+  "music": [
+    {
+      "name": "Nicholas Hermann",
+      "born": 1500,
+      "died": 1561,
+      "role": "Music (1560)"
+    }
+  ],
+  "musicPublished": 1560,
+  "metre": "8 6 8 6",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:1 | C5:1 C5:1 C5:1 A4:1 | D5:1 C5:.5 Bb4:.5 A4:1 G4:1 | A4:.5 B4:.5 C5:1 D5:1 D5:1 | C5:3 F4:1 | C5:1 C5:1 C5:1 A4:1 | C5:1 Bb4:.5 A4:.5 G4:1 C5:1 | Bb4:1 A4:1 G4:1 G4:1 | F4:3",
+  "incipit": "dsssmlsfm|rmfslls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001232.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001232a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001232; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001232 (the melody read from 001232a.mid, checked against the page's do-re-mi incipit, 1 note off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Nicholas Hermann's dates (1500–1561) are from our page for the tune LOBT GOTT, IHR CHRISTEN ALLZUGLEICH (content/hymns/tunes/lobt-gott-ihr-christen-allzugleich.json); CCEH's page gives only the year 1560. The bar lines are those of CCEH's Noteworthy score (001232a.nwc).",
+  "importedFrom": "cceh:001232",
+  "updated": "2026-10-18"
+}

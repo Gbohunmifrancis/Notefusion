@@ -1,0 +1,32 @@
+{
+  "name": "SILOAM (WOODBURY)",
+  "title": "Siloam (Woodbury)",
+  "music": [
+    {
+      "name": "Isaac B. Woodbury",
+      "born": 1819,
+      "died": 1858,
+      "role": "Music (1842)"
+    }
+  ],
+  "musicPublished": 1842,
+  "metre": "8 6 8 6",
+  "key": "D major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "F#4:.5 G4:.5 | A4:2 F#4:1 | B4:2 A4:1 | F#4:2 D4:.5 F#4:.5 | E4:2 E4:1 | F#4:1 A4:1 F#4:1 | E4:1 G4:1 E4:1 | F#4:2 D5:1 | C#5:1 B4:1 A4:1 | F#4:2 E4:.5 F#4:.5 | G4:2 F#4:1 | E4:2 F#4:.5 G4:.5 | A4:2 B4:1 | F#4:2 E4:1 | F#4:2",
+  "incipit": "mfsmlsmdmr|rmsmrfrm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0013/x001318.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0013/001318a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001318; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001318 (the melody read from 001318a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Isaac B. Woodbury's dates (1819–1858) are from https://hymnary.org/person/Woodbury_Isaac (Woodbury, I. B. (Isaac Baker), 1819-1858; SELENA, 1850); https://en.wikipedia.org/wiki/Isaac_B._Woodbury agrees; CCEH's page gives only the year 1842. The bar lines are those of CCEH's Noteworthy score (001318a.nwc). The tune ends on F#, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "importedFrom": "cceh:001318",
+  "updated": "2026-10-18"
+}

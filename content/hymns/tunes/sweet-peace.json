@@ -1,0 +1,30 @@
+{
+  "name": "SWEET PEACE",
+  "title": "Sweet Peace",
+  "music": [
+    {
+      "name": "Peter Philip Bilhorn",
+      "role": "Music (1889)"
+    }
+  ],
+  "musicPublished": 1889,
+  "metre": "8 8 8 7 + i",
+  "key": "A major",
+  "time": "6/8",
+  "tempo": 105,
+  "pickup": 0.5,
+  "lineBars": 4,
+  "melody": "E4:.5 | C#5:.75 B4:.25 A4:.5 C#4:.5 E4:.5 A4:.5 | Ab4:2.5 E4:.5 | D5:.75 C#5:.25 B4:.5 F#4:.5 Ab4:.75 F#4:.25 | E4:2.5 E4:.5 | E5:.75 D5:.25 C#5:.5 B4:.5 A4:.5 Ab4:.5 | Ab4:1.5 F#4:1 F#4:.5 | E4:1 A4:.5 Ab4:.75 A4:.25 B4:.5 | A4:3 | C#5:1.5 A4:1.5 | D5:1.5 C#5:1.5 | B4:.75 B4:.25 B4:.5 B4:.5 A4:.5 F#4:.5 | E4:2.5 E4:.5 | A4:.75 A4:.25 A4:.5 A4:.5 B4:.5 C#5:.5 | D5:2.5 F#4:.5 | E4:1 A4:.5 Ab4:.75 A4:.25 B4:.5 | A4:2.5",
+  "incipit": "smrdmsdt",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001009.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001009a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001009; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Peter Philip Bilhorn: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 001009 (the melody read from 001009a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001009a.nwc).",
+  "importedFrom": "cceh:001009",
+  "updated": "2026-10-18"
+}

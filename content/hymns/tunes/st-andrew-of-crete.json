@@ -1,0 +1,32 @@
+{
+  "name": "ST. ANDREW OF CRETE",
+  "title": "St. Andrew of Crete",
+  "music": [
+    {
+      "name": "John Bacchus Dykes",
+      "born": 1823,
+      "died": 1876,
+      "role": "Music (1868)"
+    }
+  ],
+  "musicPublished": 1868,
+  "metre": "6 5 6 5",
+  "key": "C minor",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:1 G4:1 G4:1 G4:1 | G4:1 G4:3 | G4:1 G4:1 G4:1 G4:1 | G4:4 | C5:1 C5:1 Bb4:1 Bb4:1 | Ab4:2 G4:2 | G4:1 G4:1 Eb4:1 F4:1 | G4:4 | G4:1 C5:1 D5:1.5 G4:.5 | E5:2 C5:2 | E5:1 D5:1 C5:1 A4:1 | G4:4 | G4:1 G4:1 C5:1 C5:1 | F5:2 E5:2 | E5:1 D5:.5 C5:.5 B4:1.5 B4:.5 | C5:4",
+  "incipit": "mmmmmm|mmmmm|llssfm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000970.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000970a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000970; public domain.",
+  "reviewNotes": "Held back: the key signature changes in the score; the solfa keeps one doh. Imported from CCEH tune 000970 (the melody read from 000970a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. John Bacchus Dykes's dates (1823–1876) are from our page for the tune DIES IRAE (DYKES) (content/hymns/tunes/dies-irae-dykes.json); CCEH's page gives only the year 1868. The bar lines are those of CCEH's Noteworthy score (000970a.nwc).",
+  "importedFrom": "cceh:000970",
+  "updated": "2026-10-18"
+}

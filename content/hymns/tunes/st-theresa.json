@@ -1,0 +1,32 @@
+{
+  "name": "ST. THERESA",
+  "title": "St. Theresa",
+  "music": [
+    {
+      "name": "Arthur Seymour Sullivan",
+      "born": 1842,
+      "died": 1900,
+      "role": "Music (1874)"
+    }
+  ],
+  "musicPublished": 1874,
+  "metre": "6 5 6 5",
+  "key": "Eb major",
+  "time": "6/8",
+  "tempo": 110,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "G4:1 F4:.5 G4:1 Ab4:.5 | Bb4:1.5 Bb4:1.5 | G4:1 F4:.5 G4:1 Ab4:.5 | Bb4:2.5 Bb4:.5 | C5:1 Bb4:.5 Ab4:1 C5:.5 | Eb5:1.5 Bb4:1.5 | Ab4:1 F4:.5 G4:1 Eb4:.5 | F4:3 | Bb4:1 Bb4:.5 Bb4:.5 A4:.5 G4:.5 | A4:1.5 A4:1.5 | A4:1 A4:.5 A4:.5 G4:.5 F#4:.5 | G4:3 | G4:1 G4:.5 G4:.5 F4:.5 E4:.5 | F4:1.5 F4:1.5 | F4:1 F4:.5 G4:1 F4:.5 | Bb4:3 | G4:1 F4:.5 G4:1 Ab4:.5 | Bb4:1.5 Bb4:1.5 | G4:1 F4:.5 G4:1 Ab4:.5 | Bb4:3 | C5:1 C5:.5 D5:.5 C5:.5 Bb4:.5 | Eb5:1 Bb4:.5 Bb4:1 Ab4:.5 | G4:1.5 F4:1.5 | Eb4:3",
+  "incipit": "mrmfss|mrmfs|lsflds",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000975.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000975a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000975; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000975 (the melody read from 000975a.mid, checked against the page's do-re-mi incipit, 2 notes off in 17); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Arthur Seymour Sullivan's dates (1842–1900) are from our page for the tune ST. EDMUND (SULLIVAN) (content/hymns/tunes/st-edmund-sullivan.json); CCEH's page gives only the year 1874. The bar lines are those of CCEH's Noteworthy score (000975a.nwc).",
+  "importedFrom": "cceh:000975",
+  "updated": "2026-10-18"
+}

@@ -1,0 +1,31 @@
+{
+  "name": "STOCKHOLM",
+  "title": "Stockholm",
+  "music": [
+    {
+      "name": "Swedish Traditional",
+      "traditional": true,
+      "role": "Melody (1694)"
+    }
+  ],
+  "musicPublished": 1694,
+  "metre": "11 9 11 9 9",
+  "key": "C major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "A4:1 | E4:1 E4:1 E4:1 | A4:1 A4:1 G4:1 | C5:1 B4:1 A4:1 | G4:2 B4:1 | C5:1 B4:1 A4:1 | Ab4:1 A4:1 B4:1 | A4:2 B3:1 | A4:2 A4:1 | E4:1 E4:1 E4:1 | A4:1 A4:1 G4:1 | C5:1 B4:1 A4:1 | G4:2 G4:1 | E4:1 D4:1 C4:1 | D4:1 E4:1 D4:1 | C4:3 | C4:2 D4:1 | E4:1 F4:1 G4:1 | C4:1 C4:1 D4:1 | E4:3 | E4:2",
+  "incipit": "lmmmllsdtls|tdtlsltl",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0012/x001265.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0012/001265a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001265; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001265 (the melody read from 001265a.mid, checked against the page's do-re-mi incipit, 1 note off in 19); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001265a.nwc). The tune ends on E, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "importedFrom": "cceh:001265",
+  "updated": "2026-10-18"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "YATTENDON 64",
+  "title": "Yattendon 64",
+  "music": [
+    {
+      "name": "Harry Ellis Wooldridge",
+      "role": "Music (1899)"
+    }
+  ],
+  "musicPublished": 1899,
+  "metre": "6 6 8 6",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:2 G4:1 A4:1 | Bb4:2 Bb4:2 | A4:4 | D5:2 C5:1 F4:1 | A4:2 G4:2 | F4:4 | C5:2 Bb4:1 A4:1 | D5:2 C5:2 | C5:1 B4:1 C5:2~ | C5:2 A4:2 | G4:1 F4:1 F4:2 | E4:2 F4:2~ | F4:2 r:2",
+  "incipit": "drmffm|lsdmrd|sfmlssfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001041.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001041a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001041; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Harry Ellis Wooldridge: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; the score has a bar of another length (bar 8), which the solfa grid does not draw. Imported from CCEH tune 001041 (the melody read from 001041a.mid, checked against the page's do-re-mi incipit, 1 note off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001041a.nwc).",
+  "importedFrom": "cceh:001041",
+  "updated": "2026-10-18"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "THY WORD HAVE I HID IN MY HEART",
+  "title": "Thy Word Have I Hid in My Heart",
+  "music": [
+    {
+      "name": "Ernest O. Sellers",
+      "born": 1869,
+      "died": 1952,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 7 8 7 + 8 8 5 5 8",
+  "key": "Eb major",
+  "time": "6/8",
+  "tempo": 96,
+  "pickup": 0.5,
+  "lineBars": 4,
+  "melody": "Bb3:.5 | Eb4:.5 Eb4:.5 Eb4:.5 G4:.5 F4:.5 Eb4:.5 | Bb4:2.5 Ab4:.5 | G4:.5 F4:.5 Eb4:.5 F4:1 F4:.5 | G4:2.5 Bb3:.5 | Eb4:.5 Eb4:.5 Eb4:.5 G4:.5 F4:.5 Eb4:.5 | Bb4:2.5 G4:.5 | F4:.5 F4:.5 Eb5:.5 D5:1 C5:.5 | Bb4:2.5 Bb4:.25 Ab4:.25 | G4:.5 G4:.5 G4:.5 G4:.5 F4:.5 G4:.5 | Ab4:2.5 Ab4:.5 | Ab4:.5 Ab4:.5 Ab4:.5 Ab4:.75 C5:.25 Bb4:.5 | G4:2.5 Bb4:.5 | Eb5:.5 Eb5:.5 Eb5:.5 D5:1 G4:.5 | C5:.5 C5:.5 C5:.5 Bb4:1 Eb4:.5 | F4:.5 G4:.5 Ab4:.5 G4:.75 Ab4:.25 F4:.5 | Eb4:2.5",
+  "incipit": "sdddmrds|fmrdrrm|sdddmrds",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001062.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001062a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001062; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001062 (the melody read from 001062a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. CCEH's page spells Ernest O. Sellers as “Ernest O. Sellars”; the name is printed as the sources spell it. Ernest O. Sellers's dates (1869–1952) are from https://hymnary.org/person/Sellers_EO (Sellers, Ernest O. (Ernest Orlando), 1869-1952; CCEH spells him Sellars); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001062a.nwc).",
+  "importedFrom": "cceh:001062",
+  "updated": "2026-10-18"
+}

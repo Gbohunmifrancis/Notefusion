@@ -1,0 +1,35 @@
+{
+  "name": "METZLER",
+  "title": "Metzler",
+  "alsoKnownAs": [
+    "Redhead 66"
+  ],
+  "music": [
+    {
+      "name": "Richard Redhead",
+      "born": 1820,
+      "died": 1901,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 6 8 6",
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 105,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F#4:1 | E4:1 D4:1 D5:1 A4:1 | B4:1 B4:1 A4:1 A4:1 | B4:1 C#5:1 D5:1 C#5:1 | B4:3 B4:1 | B4:1 A4:1 B4:1 A4:.5 G4:.5 | F#4:1 E4:1 A4:1 D4:1 | G4:1 F#4:1 E4:1 E4:1 | D4:3",
+  "incipit": "mrddslls|sltdtl|llslsfmrs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001156.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001156a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001156; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001156 (the melody read from 001156a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Richard Redhead's dates (1820–1901) are from our page for the tune GETHSEMANE (content/hymns/tunes/gethsemane.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001156a.nwc).",
+  "importedFrom": "cceh:001156",
+  "updated": "2026-10-18"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "STAND BY ME",
+  "title": "Stand By Me",
+  "music": [
+    {
+      "name": "Charles Albert Tindley",
+      "born": 1851,
+      "died": 1933,
+      "role": "Music (1906)"
+    }
+  ],
+  "musicPublished": 1906,
+  "metre": "Irregular",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Eb4:.75 F4:.25 | G4:.75 G4:.25 G4:.75 F4:.25 Eb4:.25 Bb3:.75 C4:.75 D4:.25 | Eb4:3 Eb4:.75 G4:.25 | Bb4:.75 Bb4:.25 Bb4:.75 C5:.25 Bb4:.25 G4:.75 Eb4:.75 G4:.25 | Bb4:3 Bb4:.75 Bb4:.25 | Eb5:.75 C5:.25 Bb4:.75 G4:.25 G4:1 Eb4:.75 F4:.25 | G4:.75 G4:.25 G4:.75 F4:.25 Eb4:1 Eb4:.75 F4:.25 | G4:.75 G4:.25 G4:.75 F4:.25 Eb4:.25 Bb3:.75 C4:.75 D4:.25 | Eb4:3",
+  "incipit": "drmmmrdsltd|dmssslsmdms",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0010/x001058.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0010/001058a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001058; public domain.",
+  "reviewNotes": "Imported from CCEH tune 001058 (the melody read from 001058a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Charles Albert Tindley's dates (1851–1933) are from https://en.wikipedia.org/wiki/Charles_Albert_Tindley (July 7, 1851 - July 26, 1933); CCEH's page gives only the year 1906. The bar lines are those of CCEH's Noteworthy score (001058a.nwc).",
+  "importedFrom": "cceh:001058",
+  "updated": "2026-10-18"
+}

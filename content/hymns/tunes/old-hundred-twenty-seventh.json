@@ -1,0 +1,32 @@
+{
+  "name": "OLD HUNDRED TWENTY-SEVENTH",
+  "title": "Old Hundred Twenty-Seventh",
+  "music": [
+    {
+      "name": "Louis Bourgeois",
+      "born": 1510,
+      "died": 1561,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 8 8 8 8 8",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 3,
+  "lineBars": 2,
+  "melody": "Bb4:1 Eb5:1 Eb5:1 | D5:1 Bb4:1 C5:1 D5:1 | Eb5:1 Eb5:1 D5:1 C5:1 | Bb4:1 Ab4:1 G4:1 F4:1 | Eb4:1 Eb4:1 F4:1 G4:1 | Ab4:1 Bb4:1 Bb4:1 Ab4:1 | Bb4:1 Bb4:1 C5:1 D5:1 | Eb5:1 Eb5:1 D5:1 C5:1 | Bb4:1 Bb4:1 Ab4:1 G4:1 | C5:1 Bb4:1 Ab4:1 G4:1 | F4:1 F4:1 G4:1 Ab4:1 | Bb4:1 C5:1 Bb4:1 Ab4:1 | Bb4:1",
+  "incipit": "sddtsltd|dtlsfmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0011/x001177.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0011/001177a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001177; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001177 (the melody read from 001177a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Louis Bourgeois's dates (1510–1561) are from our page for the tune OLD 100TH (content/hymns/tunes/old-100th-awake-my-soul-and-with-the-sun.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001177a.nwc). The tune ends on Bb, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "importedFrom": "cceh:001177",
+  "updated": "2026-10-18"
+}

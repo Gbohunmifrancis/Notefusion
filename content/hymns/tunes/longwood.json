@@ -1,0 +1,32 @@
+{
+  "name": "LONGWOOD",
+  "title": "Longwood",
+  "music": [
+    {
+      "name": "Sir Joseph Barnby",
+      "born": 1838,
+      "died": 1896,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "10 10 10 10",
+  "key": "E major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Ab4:2 Ab4:1 A4:1 | B4:1 Ab4:1 F#4:1 E4:1 | E4:2 Eb4:2 | E4:4 | Ab4:2 Ab4:1 Bb4:1 | B4:1 Eb5:1 C#5:1 Ab4:1 | B4:2 Bb4:2 | B4:4 | F#4:2 E4:1 E4:1 | A4:2 Ab4:2 | B4:1 B4:1 A4:1 B4:1 | C#5:4 | Eb5:2 E5:1 B4:1 | A4:1 A4:1 Ab4:1 B4:1 | E4:3 F#4:1 | Ab4:4",
+  "incipit": "mmfsmrddtd|mmfstlmsfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0013/x001399.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0013/001399a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001399; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 001399 (the melody read from 001399a.mid, checked against the page's do-re-mi incipit, 2 notes off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Sir Joseph Barnby's dates (1838–1896) are from our page for the tune GALILEAN (content/hymns/tunes/galilean.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (001399a.nwc). The tune ends on Ab, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "importedFrom": "cceh:001399",
+  "updated": "2026-10-18"
+}
