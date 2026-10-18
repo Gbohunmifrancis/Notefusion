@@ -744,7 +744,10 @@ not a password (every app that reports carries one) but keep the server ones as 
 `https://<org>.sentry.io/projects/<project>/`). An OTA update carries new JavaScript, so its maps go up too:
 publish with `npm run update:production` in `mobile/` (`eas update`, then `sentry-expo-upload-sourcemaps dist`,
 with the same three values in your shell). Adding the plugin changed the app's native fingerprint: updates
-published from that commit on reach only builds made from it.
+published from that commit on reach only builds made from it. Until those three values are on EAS, `eas.json`'s
+`production` and `store` profiles set `SENTRY_DISABLE_AUTO_UPLOAD=true`, so a store build skips the upload
+instead of failing; remove those two lines once they are set. Publish OTA updates with `eas update --channel
+production --environment production` until then.
 
 ## Backups
 
