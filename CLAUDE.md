@@ -292,6 +292,18 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Console: `GET /api/admin/analytics/practice` (`GetPracticeAnalyticsQuery`, web-admin `/practice`; takes and reminders on the singer's
   day, paths replayed through `PracticePath.Read`'s observer, streak breaks from `PracticeMath.StreakBreaks`) and `…/analytics/growth`
   (`GetGrowthQuery`, `/growth`: renewals rebuilt from membership charges, free-to-paid by price set via the shared `FreeLimitReach`, failures by kind, phones by build).
+- The season flag (`Core/Entities/FeatureFlag`, `Application/Flags`): a `feature_flags` row per key (`christmas`), off until an
+  admin turns it on in the console (Operations › Feature flags, `GET/PUT /api/admin/features[/{key}]`, every change in the audit
+  log as `SetFeatureFlag`). On for everyone while enabled and before its switch-off (the midnight WAT after its last day, the
+  next 6 Jan by default; one that switched itself off stays off until turned on again); an admin also sees it while
+  `AdminPreview` is on (the role confirmed in the database, not the token). Every surface reads the anonymous `GET /api/app/season`
+  (`{christmas}`, a minute's Cache-Control: public, private with a token); nothing carries a date of its own. Pushes read it for
+  everyone only, never the preview: Doh's festive lines join the reminder rotation (`PracticeReminderCopy.ChristmasPlayful/Plain`,
+  `{carol}` the singer's next carol) and the ready push, phone and web, says `ReadyPushCopy`'s (same timing and limits). Practice:
+  the six-drill `CarolPath` (each a run of its carol's notes in `web-site/hymns/pack.json`, a test checks; Silent Night's alto
+  labelled from the tune's doh) is served while the season is on for the caller (progress `season`, `GET /api/practice/carols`),
+  graded by `drills/grade` like any drill and never moving the main path; all six passed in season earn `carol_singer`, kept for
+  good. The carols carry `occasions: ["Christmas"]` in `content/hymns`, and the hymn pack carries `occasions`.
 - Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read),
   the opening eight notes as `preview` on every read (list rows show them in solfa), an
   optional folder name (`PUT /api/library/{id}/folder`; a folder is just the name its sheets share) and

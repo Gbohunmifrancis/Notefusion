@@ -56,7 +56,11 @@ export function AuditLogView() {
   const pathname = usePathname();
   const targetUserId = params.get("target") ?? "";
 
-  const [action, setAction] = useState<AuditAction | typeof ALL>(ALL);
+  // `?action=` (the Feature flags page links to its own changes) opens the trail filtered to that action.
+  const [action, setAction] = useState<AuditAction | typeof ALL>(() => {
+    const linked = params.get("action");
+    return AUDIT_ACTIONS.find((entry) => entry.value === linked)?.value ?? ALL;
+  });
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebounced(search);

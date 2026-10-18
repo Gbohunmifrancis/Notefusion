@@ -25,6 +25,11 @@ public sealed record ReminderText(string Title, string Body);
 /// ready" only when this week's is unused; XP and badges are kept when a streak ends; and a drill takes about two
 /// minutes. "We'll stop reminding you; Practice is here when you want it." is the final one, and it is.
 /// </para>
+/// <para>
+/// While the Christmas season is on for everyone, a few festive lines join the rotation (<see cref="ChristmasPlayful"/>,
+/// <see cref="ChristmasPlain"/>), claiming no more than the lines they sit beside; <c>{carol}</c> is the singer's next
+/// carol on the carols path, at most 31 characters (the tests check every line with it too).
+/// </para>
 /// </remarks>
 public static class PracticeReminderCopy
 {
@@ -118,27 +123,92 @@ public static class PracticeReminderCopy
             ],
         };
 
+    /// <summary>
+    /// Doh's Christmas lines, joining <see cref="Playful"/>'s rotation while the season is on for everyone. <c>{carol}</c>
+    /// is the carol of the singer's next drill on the carols path. A lapse, a freeze and the goodbye keep their usual
+    /// words: they should not be festive.
+    /// </summary>
+    public static readonly IReadOnlyDictionary<PracticeReminderKind, IReadOnlyList<ReminderText>> ChristmasPlayful =
+        new Dictionary<PracticeReminderKind, IReadOnlyList<ReminderText>>
+        {
+            [PracticeReminderKind.Ordinary] =
+            [
+                new("Doh's warming up for carols 🎄", "A carol drill is ready! Two minutes of singing makes it {next} days in a row."),
+            ],
+            [PracticeReminderKind.LearningWaiting] =
+            [
+                new("{carol} is waiting 🎵", "Doh has your next carol drill ready. Two minutes of singing, then back to the celebrations!"),
+            ],
+            [PracticeReminderKind.StreakAtRisk] =
+            [
+                new("Keep the carols going: {n} days 🔥", "Your {n}-day streak ends at midnight. One short carol drill keeps it glowing."),
+            ],
+            [PracticeReminderKind.LastChance] =
+            [
+                new("⏰ One carol before midnight?", "Your {n}-day streak ends tonight. Doh saved you a two-minute carol drill to keep it safe."),
+            ],
+        };
+
+    /// <summary>The Focused track's Christmas lines, plainly, joining <see cref="Plain"/>'s rotation while the season is on.</summary>
+    public static readonly IReadOnlyDictionary<PracticeReminderKind, IReadOnlyList<ReminderText>> ChristmasPlain =
+        new Dictionary<PracticeReminderKind, IReadOnlyList<ReminderText>>
+        {
+            [PracticeReminderKind.Ordinary] =
+            [
+                new("Today's carol drill is ready", "{carol}: about two minutes. Practise today to make it {next} days in a row."),
+            ],
+            [PracticeReminderKind.StreakAtRisk] =
+            [
+                new("Keep your {n}-day streak this Christmas", "One short carol drill before midnight keeps it going."),
+            ],
+        };
+
     /// <summary>The variants for a situation in the track's voice: Focused plain, everyone else Doh's.</summary>
     public static IReadOnlyList<ReminderText> VariantsFor(PracticeReminderKind kind, PracticeTrack? track)
         => (track == PracticeTrack.Focused ? Plain : Playful)[kind];
+
+    /// <summary>
+    /// The variants for a situation in the track's voice, with the season's lines joining them while
+    /// <paramref name="christmas"/> is on. A line naming <c>{carol}</c> joins only when there is a next carol to name
+    /// (<paramref name="carol"/>; none once all six are sung).
+    /// </summary>
+    public static IReadOnlyList<ReminderText> VariantsFor(PracticeReminderKind kind, PracticeTrack? track, bool christmas, string? carol)
+    {
+        var usual = VariantsFor(kind, track);
+        if (!christmas || !(track == PracticeTrack.Focused ? ChristmasPlain : ChristmasPlayful).TryGetValue(kind, out var festive))
+            return usual;
+        return [.. usual, .. festive.Where(v => carol is not null || !NamesCarol(v))];
+    }
 
     /// <summary>
     /// The words for <paramref name="kind"/> with <paramref name="streak"/> filled in. <paramref name="rotation"/>
     /// picks the variant (the day number plus a per-account offset, so consecutive days differ and accounts differ).
     /// </summary>
     public static ReminderText For(PracticeReminderKind kind, PracticeTrack? track, int streak, int rotation)
+        => For(kind, track, streak, rotation, christmas: false, carol: null);
+
+    /// <summary>
+    /// The words as <see cref="For(PracticeReminderKind, PracticeTrack?, int, int)"/> picks them, from the rotation the
+    /// season's lines have joined while <paramref name="christmas"/> is on (for everyone); <c>{carol}</c> is
+    /// <paramref name="carol"/>, the singer's next carol.
+    /// </summary>
+    public static ReminderText For(PracticeReminderKind kind, PracticeTrack? track, int streak, int rotation, bool christmas, string? carol)
     {
-        var variants = VariantsFor(kind, track);
+        var variants = VariantsFor(kind, track, christmas, carol);
         var pick = variants[((rotation % variants.Count) + variants.Count) % variants.Count];
-        return new ReminderText(Fill(pick.Title, streak), Fill(pick.Body, streak));
+        return new ReminderText(Fill(pick.Title, streak, carol), Fill(pick.Body, streak, carol));
     }
 
     /// <summary>A rotation for the account on the day: the day number, offset by the account so a cohort does not all read the same line.</summary>
     public static int Rotation(Guid userId, DateOnly localDate, PracticeReminderSlot slot)
         => localDate.DayNumber + userId.ToByteArray()[0] + (int)slot;
 
-    private static string Fill(string template, int streak)
+    private static bool NamesCarol(ReminderText text)
+        => text.Title.Contains("{carol}", StringComparison.Ordinal) || text.Body.Contains("{carol}", StringComparison.Ordinal);
+
+    private static string Fill(string template, int streak, string? carol = null)
         => template
             .Replace("{next}", (streak + 1).ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal)
-            .Replace("{n}", streak.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal);
+            .Replace("{n}", streak.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace("{carol}", carol ?? string.Empty, StringComparison.Ordinal);
 }

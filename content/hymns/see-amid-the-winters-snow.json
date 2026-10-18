@@ -75,6 +75,7 @@
     }
   ],
   "category": "Christmas",
+  "occasions": ["Christmas"],
   "topics": [
     "Angels",
     "Christmas/Advent",

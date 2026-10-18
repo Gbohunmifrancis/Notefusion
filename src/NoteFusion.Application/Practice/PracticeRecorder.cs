@@ -23,7 +23,14 @@ public sealed class PracticeRecorder
     /// <summary>The <see cref="IQuotaGate"/> key an account's practice is counted and recorded under.</summary>
     public static string GateKey(Guid userId) => $"practice:{userId}";
 
-    public async Task<PracticeRewardDto> RecordAsync(PracticeSession session, CancellationToken ct)
+    public Task<PracticeRewardDto> RecordAsync(PracticeSession session, CancellationToken ct)
+        => RecordAsync(session, christmas: false, ct);
+
+    /// <summary>
+    /// Records <paramref name="session"/>; with <paramref name="christmas"/> (the season on for the singer) the season's
+    /// badge can be earned too.
+    /// </summary>
+    public async Task<PracticeRewardDto> RecordAsync(PracticeSession session, bool christmas, CancellationToken ct)
     {
         var facts = await FactsAsync(_db, session.UserId, ct);
         var before = PracticeMath.TotalXp(facts);
@@ -38,7 +45,7 @@ public sealed class PracticeRecorder
                 .Select(a => a.Code)
                 .ToListAsync(ct))
             .ToHashSet();
-        var unlocked = PracticeBadges.Unlocked(stats, earned);
+        var unlocked = PracticeBadges.Unlocked(stats, earned, christmas);
         foreach (var badge in unlocked)
             _db.Achievements.Add(Achievement.Award(session.UserId, badge.Code, session.CreatedAtUtc));
 
@@ -59,8 +66,8 @@ public sealed class PracticeRecorder
         => await db.PracticeSessions
             .AsNoTracking()
             .Where(s => s.UserId == userId)
-            .Select(s => new PracticeFact(s.Kind, s.Score, s.WholePart, s.LocalDate, s.CreatedAtUtc))
+            .Select(s => new PracticeFact(s.Kind, s.Score, s.WholePart, s.LocalDate, s.CreatedAtUtc, s.DrillId))
             .ToListAsync(ct);
 
-    private static PracticeFact Fact(PracticeSession s) => new(s.Kind, s.Score, s.WholePart, s.LocalDate, s.CreatedAtUtc);
+    private static PracticeFact Fact(PracticeSession s) => new(s.Kind, s.Score, s.WholePart, s.LocalDate, s.CreatedAtUtc, s.DrillId);
 }

@@ -90,7 +90,8 @@ public sealed class GradeTakeCommandHandler : IRequestHandler<GradeTakeCommand, 
 
         await using (await _gate.AcquireAsync(PracticeRecorder.GateKey(userId), cancellationToken))
         {
-            var reward = await _recorder.RecordAsync(session, cancellationToken);
+            var christmas = await Flags.FeatureFlags.ChristmasForCallerAsync(_db, _clock.UtcNow, _currentUser, cancellationToken);
+            var reward = await _recorder.RecordAsync(session, christmas, cancellationToken);
             return grade with { Reward = reward };
         }
     }

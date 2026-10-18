@@ -55,7 +55,7 @@ public sealed class SetPracticeTrackCommandHandler : IRequestHandler<SetPractice
             await _db.SaveChangesAsync(cancellationToken);
         }
 
-        return await GetPracticeProgressQueryHandler.ReadAsync(_db, _clock, _timeZone, userId, _modes, cancellationToken);
+        return await GetPracticeProgressQueryHandler.ReadAsync(_db, _clock, _timeZone, _currentUser, userId, _modes, cancellationToken);
     }
 
     /// <summary>The wire names only: "playful" / "focused", any case — never a number.</summary>

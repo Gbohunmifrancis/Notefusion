@@ -16,6 +16,8 @@ import type {
   AnalyticsOverview,
   CheckoutFunnel,
   Engagement,
+  FeatureFlag,
+  FeatureFlagChange,
   FeedbackKind,
   FeedbackRow,
   FeedbackSummary,
@@ -405,6 +407,19 @@ export const setAnnouncement = (payload: {
 export const clearAnnouncement = () =>
   request<void>("/api/admin/announcement", {
     method: "DELETE",
+  });
+
+/* ── Feature flags ────────────────────────────────────────────────────────── */
+
+/** Every switch that changes what everyone sees (the Christmas season), as it stands. */
+export const getFeatureFlags = (signal?: AbortSignal) =>
+  request<FeatureFlag[]>("/api/admin/features", signal ? { signal } : {});
+
+/** Changes part of one flag; answers with the flag as it now stands. Written to the audit log. */
+export const setFeatureFlag = (key: string, change: FeatureFlagChange) =>
+  request<FeatureFlag>(`/api/admin/features/${encodeURIComponent(key)}`, {
+    method: "PUT",
+    body: change,
   });
 
 /* ── Activity ─────────────────────────────────────────────────────────────── */

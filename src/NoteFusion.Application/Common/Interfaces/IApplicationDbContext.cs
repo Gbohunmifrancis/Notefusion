@@ -108,5 +108,8 @@ public interface IApplicationDbContext
     /// <summary>What the backup service did and when (written by the backup container; ops/backup).</summary>
     DbSet<BackupRun> BackupRuns { get; }
 
+    /// <summary>The switches that change what everyone sees (the Christmas season), one row per key.</summary>
+    DbSet<FeatureFlag> FeatureFlags { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -76,6 +76,7 @@ public sealed record PracticeMilestoneDto(
 /// <c>Modes</c> are the practice modes live for that track, in the order the hub lists them ("warm-up", "pitch-match",
 /// "runs", "intervals", "harmony", "rhythm"; Playful's four), each switchable on the server (<c>PracticeModes__*</c>):
 /// a client shows only these. <c>Drills</c> counts every marked take but parts: a mode's take spends one too.
+/// <c>Season</c> is the seasonal side-path (the Christmas carols) while its season is on for the singer, else null.
 /// </summary>
 public sealed record PracticeProgressDto(
     DateOnly Today,
@@ -90,7 +91,64 @@ public sealed record PracticeProgressDto(
     DrillAllowanceDto Drills,
     PracticeTrack? Track,
     PracticePathDto? Path = null,
-    IReadOnlyList<string>? Modes = null);
+    IReadOnlyList<string>? Modes = null,
+    PracticeSeasonDto? Season = null);
+
+/// <summary>
+/// The seasonal practice side-path, on the progress while its season is on (the Practice screen's pine card): which
+/// season ("christmas"), its title, the last day it runs (<c>Until</c>, null when it runs until switched off), the
+/// drills passed of the total, the next to sing (null once all are), every step in order, and the badge all of them
+/// earn (<c>BadgeCode</c>, listed among the badges while the season is on). Mirrored by <c>PracticeSeason</c> in
+/// <c>mobile/src/api/types.ts</c>.
+/// </summary>
+public sealed record PracticeSeasonDto(
+    string Season,
+    string Title,
+    DateOnly? Until,
+    int Sung,
+    int Total,
+    CarolStepDto? Next,
+    IReadOnlyList<CarolStepDto> Steps,
+    string BadgeCode);
+
+/// <summary>
+/// One drill of the carols path as a row: its place (1-based), the id to grade a take of it with (the singer's track's
+/// pace), its title ("Sing in thirds"), the carol and its hymn page's slug, <c>Cue</c> for "Next: Silent Night, in
+/// thirds", <c>Detail</c> for the line under it ("Doh is Bb · 4 notes", the solfa sung, "one breath"), whether it is
+/// passed and its best mark so far.
+/// </summary>
+public sealed record CarolStepDto(
+    int Index,
+    string Id,
+    string Title,
+    string Carol,
+    string HymnSlug,
+    string Cue,
+    string Detail,
+    bool Passed,
+    int? BestScore);
+
+/// <summary>
+/// GET /api/practice/carols, while the season is on (404 <c>PRACTICE_SEASON_OFF</c> otherwise): the carols path with each
+/// drill ready to hear and sing, on the singer's track (Playful's shorter and slower). Takes go to
+/// <c>POST /api/practice/drills/grade</c> with the drill's id, like any drill.
+/// </summary>
+public sealed record CarolsPathDto(PracticeSeasonDto Season, IReadOnlyList<CarolDrillDto> Drills);
+
+/// <summary>
+/// One carol drill in full: its row (<c>Step</c>), the drill itself (<c>Drill</c>: notes labelled by the solfa engine,
+/// key, tempo, the carol's own <c>TimeSignature</c>) with <c>PickupBeats</c> before its first bar line, and for some:
+/// <c>Backing</c>, the tune the app's piano plays while the singer sings the part under it (quietly, at "others" volume;
+/// only the sung part is marked), and <c>Syllables</c> (a syllable a note, "" where a note carries on the one before) with
+/// <c>Words</c>, the verse's lines, for the sing-along.
+/// </summary>
+public sealed record CarolDrillDto(
+    CarolStepDto Step,
+    DrillDto Drill,
+    double PickupBeats,
+    IReadOnlyList<NoteEventDto>? Backing,
+    IReadOnlyList<string>? Syllables,
+    IReadOnlyList<string>? Words);
 
 /// <summary>
 /// What a marked take earned, returned with its grade so the client can celebrate without a second read:

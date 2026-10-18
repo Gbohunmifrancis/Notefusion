@@ -5,7 +5,8 @@
 // Per entry it carries what the app's sheet view needs and nothing it can derive: the melody as
 // [MIDI pitch, start beat, length in beats] in quarter-note beats with any pickup at the end of the
 // first bar (exactly as the worker's hymn index and the hymn page hold it), the key, meter, tempo and
-// pickup, the first verse's syllables under the notes, every verse's words, and the page's credit line.
+// pickup, the first verse's syllables under the notes, every verse's words, the page's credit line, and the
+// occasions the hymn names (content/hymns `occasions`: ["Christmas"] is the app's carols shelf), when it names any.
 // The app labels the solfa itself (lib/solfa.ts, the engine's mirror), so the pack never goes stale
 // against a solfa rule.
 //
@@ -39,6 +40,8 @@ function hymnEntry(h) {
     pickup: t.pickup || 0,
     credit: h.view.credit.text,
     url: `${ORIGIN}/hymns/${h.slug}`,
+    // The seasons it is listed for (["Christmas"] puts it on the app's carols shelf); left out when it names none.
+    ...(h.occasions?.length ? { occasions: h.occasions } : {}),
     notes: notesOf(t.parsed),
     words: h.underlay || "",
     verses: h.verses.map((v) => (v.label ? { label: v.label, lines: v.lines } : { lines: v.lines })),
@@ -97,6 +100,7 @@ export function packErrors(packText, versionText) {
     for (const k of ["slug", "title", "key", "time", "credit", "url"]) if (typeof h[k] !== "string" || !h[k]) errors.push(`hymn pack: ${h.slug || "?"} has no ${k}`);
     if (!Array.isArray(h.notes) || h.notes.length === 0 || !h.notes.every((n) => Array.isArray(n) && n.length === 3 && n.every(Number.isFinite))) errors.push(`hymn pack: ${h.slug} has no readable notes`);
     if (h.kind === "hymn" && (!h.verses?.length || !h.firstLine)) errors.push(`hymn pack: ${h.slug} has no words`);
+    if (h.occasions != null && (!Array.isArray(h.occasions) || !h.occasions.length || !h.occasions.every((o) => typeof o === "string" && o))) errors.push(`hymn pack: ${h.slug} has unreadable occasions`);
   }
   return errors;
 }
