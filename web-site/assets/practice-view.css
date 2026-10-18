@@ -212,6 +212,40 @@
 }
 @keyframes pv-toast-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
+/* ── The one line at the top: streak and level (board 6a) ────────────────── */
+.pv-progline { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 0.82rem; color: var(--muted); margin-bottom: -2px; }
+.pv-progline strong { color: var(--ink); font-weight: 600; white-space: nowrap; }
+.pv-progline-sep { width: 1px; height: 14px; background: var(--line-strong); flex: none; }
+.pv-progline-level, .pv-progline-next { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.pv-minibar { width: 48px; height: 5px; border-radius: 3px; background: var(--wash); overflow: hidden; flex: none; }
+.pv-minibar i { display: block; height: 100%; border-radius: inherit; background: var(--blue); }
+.pv-pill-ic { display: inline-flex; width: 20px; height: 20px; color: var(--play); }
+.pv-mic-ic svg { display: block; width: 100%; height: 100%; }
+
+/* ── More ways to practise: one quiet list (board 6a) ────────────────────── */
+/* A mode's screen has its own top bar: the view's heading steps aside while one is open. */
+.pv-in-mode > .page-head { display: none; }
+.pv-modes { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.pv-modes-head { display: flex; align-items: center; gap: 10px; }
+.pv-modes-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.pv-modes-head .pv-section { margin: 0; }
+.pv-modes-doh { margin: 0; font-size: 0.85rem; color: var(--muted); line-height: 1.45; }
+.pv-mode-list { margin: 0; padding: 0; list-style: none; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); overflow: hidden; }
+.pv-mode-list li + li .pv-mode-row { border-top: 1px solid var(--line); }
+.pv-mode-row {
+  display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 10px 14px; border: 0; background: none;
+  color: var(--ink); font: inherit; text-align: left; cursor: pointer;
+}
+.pv-mode-row:hover { background: var(--wash); }
+.pv-mode-row:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+.pv-mode-tile { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 10px; flex: none; border-radius: 12px; background: var(--blue-soft); color: var(--blue-dark); }
+.pv-modes.is-playful .pv-mode-tile { background: var(--play-soft); color: var(--play); }
+.pv-mode-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pv-mode-text strong { font-size: 0.97rem; font-weight: 600; }
+.pv-mode-text span { font-size: 0.82rem; color: var(--muted); line-height: 1.35; }
+.pv-mode-value { font-size: 0.82rem; color: var(--muted); white-space: nowrap; }
+.pv-mode-chev { width: 16px; height: 16px; color: var(--faint); flex: none; }
+
 /* ── Wider screens ───────────────────────────────────────────────────────── */
 @media (min-width: 641px) {
   .pv { gap: 18px; }

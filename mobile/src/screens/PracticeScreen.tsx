@@ -12,6 +12,11 @@
  * Focused — the exact score and cents, the take's overall tuning, "Replay my take", and less fuss. The server picks
  * each track's drills; XP, levels, streaks and badges are the same on both.
  *
+ * Board c-practice/6a: the path card stays the hero, the streak and level one line above it, then "More ways to
+ * practise" (Playful: "More ways to play") — the modes the server says are live (`progress.modes`), each pushing
+ * `PracticeMode` (screens/practice) — and the stat cards, the week and the badges below as "Your progress". One Doh on
+ * screen: Playful's buddy at the top (the track pill takes an icon), Focused's one small Doh beside the modes.
+ *
  * A tab (board a-core/04), reached from the tab bar, Home's streak chip and every practice reminder. A tab stays
  * mounted, so leaving it mid-take stops the take, as leaving the old pushed screen did.
  */
@@ -19,7 +24,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Animated, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useReducedMotion } from "react-native-reanimated";
 import Svg, { Circle, Path } from "react-native-svg";
@@ -81,6 +87,9 @@ import {
   tuningLine,
 } from "../lib/practiceTrack";
 import { ProblemNote } from "../components/ProblemNote";
+import { ModeList } from "../components/practice/ModeList";
+import { hubModes, modesDohLine, modesHeading, progressStrip } from "../lib/practiceModes";
+import type { RootStackParams } from "../navigation/types";
 
 type Phase = "idle" | "leadin" | "singing" | "grading";
 
@@ -91,6 +100,7 @@ const TOAST_MS = 3200;
 
 export function PracticeScreen() {
   const colors = useColors();
+  const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const insets = useSafeAreaInsets();
   const styles = useThemedStyles(makeStyles);
   const reduceMotion = useReducedMotion();
@@ -366,6 +376,9 @@ export function PracticeScreen() {
   const scene = { picking: showPicker, recording: busy, grade, hasDrill: !!drill, drillsLeft: left };
   const buddyMood = progress ? mascotMood(progress, scene) : "wave";
   const buddy = { mood: buddyMood, line: progress ? mascotLine(buddyMood, progress, scene) : "" };
+  // More ways to practise: the live modes in the track's words (a phone has no live pitch meter: no needle promised).
+  const modeRows = progress ? hubModes(progress.modes, track, false) : [];
+  const dohLine = modesDohLine(modeRows, track);
 
   return (
     <View style={styles.flex}>
@@ -383,7 +396,8 @@ export function PracticeScreen() {
               radius={radii.pill}
             >
               <View style={[styles.trackPill, playful && styles.trackPillPlayful]}>
-                <Art name={playful ? "doh-avatar" : levelArt(progress?.level.index ?? 0)} width={24} />
+                {/* One Doh on screen: Playful's is the buddy below, so the pill takes an icon. */}
+                {playful ? <Ionicons name="happy-outline" size={18} color={colors.play} /> : <Art name={levelArt(progress?.level.index ?? 0)} width={24} />}
                 <Text style={styles.trackPillText}>{trackTitle(track)}</Text>
                 <Ionicons name="swap-horizontal" size={14} color={colors.textMuted} />
               </View>
@@ -410,6 +424,8 @@ export function PracticeScreen() {
           )
         ) : progress ? (
           <>
+            <ProgressLine progress={progress} styles={styles} />
+
             {showPicker ? (
               <TrackPicker
                 current={track}
@@ -428,57 +444,6 @@ export function PracticeScreen() {
                 </View>
               </View>
             ) : null}
-
-            {/* ── Streak and level ─────────────────────────────────────────── */}
-            <View style={styles.statsRow}>
-              <Card style={styles.statCard}>
-                <View style={styles.statHead}>
-                  <Art name={flameArt(progress.streak)} width={32} />
-                  <Text style={styles.statBig} accessibilityLabel={streakLabel(progress.streak.current)}>
-                    {progress.streak.current}
-                  </Text>
-                </View>
-                <Text style={styles.statLabel}>day streak</Text>
-                <Text style={styles.statSub}>
-                  {progress.streak.todayDone
-                    ? "Done for today"
-                    : progress.streak.atRisk
-                      ? "Sing today to keep it"
-                      : "Sing a drill to start one"}
-                </Text>
-                <View style={styles.footRow}>
-                  <Art name="freeze" width={16} style={!progress.streak.freezeAvailable && styles.spent} />
-                  <Text style={[styles.statFoot, styles.footText]}>
-                    {progress.streak.freezeAvailable ? "Streak freeze ready this week" : "Freeze used this week"}
-                  </Text>
-                </View>
-              </Card>
-
-              <Card style={styles.statCard}>
-                <View style={styles.levelHead}>
-                  <Art name={levelArt(progress.level.index)} width={44} />
-                  <View style={styles.levelText}>
-                    <Text style={[styles.levelName, progress.level.name.length > 6 && styles.levelNameLong]} numberOfLines={2}>
-                      {progress.level.name}
-                    </Text>
-                    <Text style={styles.statLabel}>level {progress.level.index + 1} of 8</Text>
-                  </View>
-                </View>
-                <View style={styles.barRow}>
-                  <View
-                    style={styles.barTrack}
-                    accessible
-                    accessibilityRole="progressbar"
-                    accessibilityLabel={`${progress.xp} XP. ${nextLevelLine(progress.level)}`}
-                  >
-                    <View style={[styles.barFill, { width: `${Math.round(levelFraction(progress.level, progress.xp) * 100)}%` }]} />
-                  </View>
-                  {progress.level.nextName ? <Art name={levelArt(progress.level.index + 1)} width={22} /> : null}
-                </View>
-                <Text style={styles.statSub}>{progress.xp} XP</Text>
-                <Text style={styles.statFoot}>{nextLevelLine(progress.level)}</Text>
-              </Card>
-            </View>
 
             {/* ── Today's drill ────────────────────────────────────────────── */}
             {drill && !showPicker ? (
@@ -562,6 +527,80 @@ export function PracticeScreen() {
               />
             ) : null}
 
+            {/* ── More ways to practise: the modes the server says are live ── */}
+            {modeRows.length > 0 && !showPicker ? (
+              <View style={styles.modes}>
+                <View style={styles.modesHead}>
+                  <View style={styles.modesHeadText}>
+                    <Text style={styles.modesTitle} accessibilityRole="header">{modesHeading(track)}</Text>
+                    {dohLine ? <Text style={styles.modesDoh}>“{dohLine}”</Text> : null}
+                  </View>
+                  {dohLine ? <Art name="doh-wave" width={56} /> : null}
+                </View>
+                <ModeList
+                  rows={modeRows}
+                  track={track}
+                  onOpen={(mode) => {
+                    if (busy) return;
+                    void logAnalyticsEvent("practice_mode_opened", { mode });
+                    nav.navigate("PracticeMode", { mode, track });
+                  }}
+                />
+              </View>
+            ) : null}
+
+            {/* ── Your progress: streak and level, the week, the badges ────── */}
+            <Text style={styles.sectionTitle}>Your progress</Text>
+            <View style={styles.statsRow}>
+              <Card style={styles.statCard}>
+                <View style={styles.statHead}>
+                  <Art name={flameArt(progress.streak)} width={32} />
+                  <Text style={styles.statBig} accessibilityLabel={streakLabel(progress.streak.current)}>
+                    {progress.streak.current}
+                  </Text>
+                </View>
+                <Text style={styles.statLabel}>day streak</Text>
+                <Text style={styles.statSub}>
+                  {progress.streak.todayDone
+                    ? "Done for today"
+                    : progress.streak.atRisk
+                      ? "Sing today to keep it"
+                      : "Sing a drill to start one"}
+                </Text>
+                <View style={styles.footRow}>
+                  <Art name="freeze" width={16} style={!progress.streak.freezeAvailable && styles.spent} />
+                  <Text style={[styles.statFoot, styles.footText]}>
+                    {progress.streak.freezeAvailable ? "Streak freeze ready this week" : "Freeze used this week"}
+                  </Text>
+                </View>
+              </Card>
+
+              <Card style={styles.statCard}>
+                <View style={styles.levelHead}>
+                  <Art name={levelArt(progress.level.index)} width={44} />
+                  <View style={styles.levelText}>
+                    <Text style={[styles.levelName, progress.level.name.length > 6 && styles.levelNameLong]} numberOfLines={2}>
+                      {progress.level.name}
+                    </Text>
+                    <Text style={styles.statLabel}>level {progress.level.index + 1} of 8</Text>
+                  </View>
+                </View>
+                <View style={styles.barRow}>
+                  <View
+                    style={styles.barTrack}
+                    accessible
+                    accessibilityRole="progressbar"
+                    accessibilityLabel={`${progress.xp} XP. ${nextLevelLine(progress.level)}`}
+                  >
+                    <View style={[styles.barFill, { width: `${Math.round(levelFraction(progress.level, progress.xp) * 100)}%` }]} />
+                  </View>
+                  {progress.level.nextName ? <Art name={levelArt(progress.level.index + 1)} width={22} /> : null}
+                </View>
+                <Text style={styles.statSub}>{progress.xp} XP</Text>
+                <Text style={styles.statFoot}>{nextLevelLine(progress.level)}</Text>
+              </Card>
+            </View>
+
             {/* ── This week ────────────────────────────────────────────────── */}
             <Card style={styles.card}>
               <View style={styles.weekRow}>
@@ -640,6 +679,25 @@ export function PracticeScreen() {
 }
 
 type Styles = ReturnType<typeof makeStyles>;
+
+/** The streak and the level in one line at the top (board 6a); the full cards are under "Your progress". */
+function ProgressLine({ progress, styles }: { progress: PracticeProgress; styles: Styles }) {
+  const strip = progressStrip(progress);
+  return (
+    <View style={styles.progLine} accessible accessibilityLabel={strip.label}>
+      <Art name={flameArt(progress.streak)} width={20} />
+      <Text style={styles.progStrong} numberOfLines={1}>{strip.streak}</Text>
+      <View style={styles.progSep} />
+      <Text style={styles.progText} numberOfLines={1}>
+        <Text style={styles.progStrong}>{strip.level}</Text> · {strip.xp}
+      </Text>
+      <View style={styles.progBar}>
+        <View style={[styles.progFill, { width: `${Math.round(strip.fraction * 100)}%` }]} />
+      </View>
+      {strip.toNext ? <Text style={styles.progText} numberOfLines={1}>{strip.toNext}</Text> : null}
+    </View>
+  );
+}
 
 /**
  * The weekly goal as the art draws it: one arc per practice day of the goal, lit as the days are sung, and a ticked
@@ -895,6 +953,19 @@ const makeStyles = (c: Palette) =>
     dayLetter: { ...typography.caption, color: c.textFaint, fontSize: 11 },
 
     sectionTitle: { ...typography.heading, color: c.text, marginTop: spacing.sm, marginBottom: spacing.sm },
+
+    progLine: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: -spacing.sm, marginBottom: spacing.md },
+    progText: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted, flexShrink: 1 },
+    progStrong: { fontFamily: fonts.semibold, fontSize: 13, color: c.text },
+    progSep: { width: 1, height: 14, backgroundColor: c.border },
+    progBar: { width: 48, height: 5, borderRadius: 3, backgroundColor: c.surfaceAlt, overflow: "hidden" },
+    progFill: { height: 5, borderRadius: 3, backgroundColor: c.accent },
+
+    modes: { marginTop: spacing.sm, marginBottom: spacing.lg },
+    modesHead: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginBottom: spacing.sm },
+    modesHeadText: { flex: 1, minWidth: 0, gap: 4 },
+    modesTitle: { ...typography.heading, color: c.text },
+    modesDoh: { fontFamily: fonts.regular, fontSize: 13.5, lineHeight: 19, color: c.textMuted },
     badgeGrid: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
     badge: {
       width: "48%",

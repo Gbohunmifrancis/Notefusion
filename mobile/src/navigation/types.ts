@@ -1,5 +1,5 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
-import type { TranscriptionResult } from '../api/types';
+import type { PracticeModeId, PracticeTrack, TranscriptionResult } from '../api/types';
 
 /** Central navigation type map — every screen's params in one place. */
 
@@ -69,6 +69,11 @@ export type RootStackParams = {
   Settings: undefined;
   /** Push, sound, the practice reminder and its hour, and the founder's emails. Pushed from Profile. */
   Notifications: undefined;
+  /**
+   * One of "More ways to practise", pushed from the Practice tab's list (screens/practice): the warm-up and range
+   * finder, pitch match, riffs & runs, intervals, sing the harmony or rhythm. `track` words it as the hub did.
+   */
+  PracticeMode: { mode: PracticeModeId; track?: PracticeTrack | null };
   /**
    * The account page: plan, choir, Notifications, Settings, help and feedback. Pushed from the avatar
    * at the top right of every tab, so back returns to the tab you were on.

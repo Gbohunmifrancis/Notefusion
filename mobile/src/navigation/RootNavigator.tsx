@@ -21,6 +21,7 @@ import { ListenScreen } from '../screens/ListenScreen';
 import { ChoirScreen } from '../screens/ChoirScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
+import { PracticeModeScreen } from '../screens/practice/PracticeModeScreen';
 import { useOutboxRunner } from '../lib/outbox';
 import { autoRefreshPack } from '../lib/hymnPackStore';
 import { AdminHomeScreen } from '../screens/admin/AdminHomeScreen';
@@ -154,6 +155,11 @@ export function RootNavigator() {
             <Stack.Screen
               name="Notifications"
               component={NotificationsScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="PracticeMode"
+              component={PracticeModeScreen}
               options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen

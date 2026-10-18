@@ -34,6 +34,7 @@ export const ICONS = {
   "eye-off": "eye-off",
   "flame": "flame",
   "gear": "settings",
+  "headphones": "headphones",
   "help": "circle-help",
   "info": "info",
   "keys": "piano",

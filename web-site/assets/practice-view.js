@@ -12,11 +12,16 @@
  * Focused — the exact score and cents, the take's overall tuning, "Replay my take", and less fuss. The server picks
  * each track's drills (ids are opaque, e.g. "…~gentle"); XP, levels, streaks and badges are the same on both.
  *
- * Loaded by app.js the first time the view is opened (never on the app's first load), with
- * practice-progress.js and practice-track.js (the arithmetic and wording) and practice-view.css. app.js hands over its API client,
- * analytics and the rehearsal piano (assets/choir.js):
+ * Under the path, "More ways to practise" (boards c-practice/6a–6d): the modes the server says are live, each opening
+ * its own screen in the view's place (assets/practice-mode-view.js, with the live pitch meter assets/pitch-track.js and
+ * practice-modes.css, loaded the first time a mode is opened through `loadAsset`); the stat cards, the week and the
+ * badges sit below as "Your progress", the streak and level one line at the top.
  *
- *   NfPracticeView.open(rootEl, { request, track, choir, onProgress })   — show it (loads fresh numbers)
+ * Loaded by app.js the first time the view is opened (never on the app's first load), with
+ * practice-progress.js, practice-track.js and practice-modes.js (the arithmetic and wording) and practice-view.css.
+ * app.js hands over its API client, analytics, the rehearsal piano (assets/choir.js) and its asset loader:
+ *
+ *   NfPracticeView.open(rootEl, { request, track, choir, onProgress, loadAsset })   — show it (loads fresh numbers)
  *   NfPracticeView.leave()                                               — another view: stop sound and mic
  *   NfPracticeView.reset()                                               — signed out: forget everything
  */
@@ -38,7 +43,7 @@
   // gen moves on when the view is reset (signed out), so a reply still on its way renders nothing.
   var s = {
     gen: 0, progress: null, drill: null, next: null, loading: false, loadError: null, offline: false, phase: "idle", grade: null, error: null,
-    picking: false, savingTrack: null, trackError: null, takeUrl: null
+    picking: false, savingTrack: null, trackError: null, takeUrl: null, mode: null
   };
   var take = null;   // the take being recorded: { stream, recorder, audio, timer, stopAt, t0, lead, cancelled }
   var hear = null;   // the player "Hear it" uses, made on the first press
@@ -125,9 +130,121 @@
     }, function () { /* the cards keep what they showed; the next open corrects them */ });
   }
 
+  // ── More ways to practise (boards c-practice/6a–6d) ────────────────────
+  /**
+   * The modes' screens and the live pitch meter: loaded the first time a mode is opened, never with the view.
+   * practice-modes.js (the words and arithmetic) comes with the view, for the hub's list.
+   */
+  var MODE_ASSETS = ["/assets/practice-modes.css?v=1", "/assets/pitch-track.js?v=1", "/assets/practice-mode-view.js?v=1"];
+  /** The modes' icons, drawn inline (24 × 24, stroked): the app's sprite has none of these. */
+  var MODE_ICONS = {
+    "warm-up": '<circle cx="12" cy="4.6" r="1.9"/><path d="M4.5 9l7.5 1.6L19.5 9M12 10.6V15m0 0l-3.6 6M12 15l3.6 6"/>',
+    "pitch-match": '<path d="M3.5 17a8.5 8.5 0 1 1 17 0"/><path d="M12 17l4.2-5.2"/><circle cx="12" cy="17" r="1.3"/>',
+    runs: '<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>',
+    intervals: '<path d="M7 20V4M3.5 7.5L7 4l3.5 3.5M17 4v16M13.5 16.5L17 20l3.5-3.5"/>',
+    harmony: '<path d="M12 3.5l8.5 4.6L12 12.7 3.5 8.1z"/><path d="M3.5 12.4l8.5 4.6 8.5-4.6M3.5 16.4l8.5 4.6 8.5-4.6"/>',
+    rhythm: '<path d="M8 13V6.5a1.5 1.5 0 0 1 3 0V12m0-1V4.5a1.5 1.5 0 0 1 3 0V11m0 0V6a1.5 1.5 0 0 1 3 0v7.5c0 4-2.6 6.5-6 6.5-2.4 0-3.9-1.2-5.3-3.2l-2.4-3.3a1.5 1.5 0 0 1 2.4-1.8L8 14"/>',
+    headphones: '<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.2" height="6.5" rx="1.6"/><rect x="16.8" y="14" width="4.2" height="6.5" rx="1.6"/>',
+    smile: '<circle cx="12" cy="12" r="9"/><path d="M8.3 14.3c1 1.3 2.3 2 3.7 2s2.7-.7 3.7-2"/><path d="M9 9.6v.6M15 9.6v.6"/>',
+    people: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6M18 14.6c1.8.9 3 2.9 3 5.4"/>'
+  };
+  function modeIcon(name, cls) {
+    var span = el("span", "pv-mic-ic" + (cls ? " " + cls : ""));
+    span.setAttribute("aria-hidden", "true");
+    span.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + (MODE_ICONS[name] || "") + "</svg>";
+    return span;
+  }
+
+  /** The streak and the level in one line at the top (board 6a); the full cards are under "Your progress". */
+  function progressLine(p) {
+    var strip = window.NfPracticeModes.progressStrip(p), line = el("div", "pv-progline");
+    line.setAttribute("role", "group"); line.setAttribute("aria-label", strip.label);
+    line.appendChild(art(PT().flameArt(p.streak), 20));
+    var streak = el("strong", null, strip.streak); streak.setAttribute("aria-hidden", "true");
+    line.appendChild(streak);
+    line.appendChild(el("i", "pv-progline-sep"));
+    var lv = el("span", "pv-progline-level"); lv.setAttribute("aria-hidden", "true");
+    lv.appendChild(el("strong", null, strip.level)); lv.appendChild(document.createTextNode(" · " + strip.xp));
+    line.appendChild(lv);
+    var bar0 = el("span", "pv-minibar"), fill = el("i"); fill.style.width = Math.round(strip.fraction * 100) + "%";
+    bar0.appendChild(fill); bar0.setAttribute("aria-hidden", "true"); line.appendChild(bar0);
+    if (strip.toNext) { var nx = el("span", "pv-progline-next", strip.toNext); nx.setAttribute("aria-hidden", "true"); line.appendChild(nx); }
+    return line;
+  }
+
+  /**
+   * "More ways to practise" (Playful: "More ways to play"): one quiet list of the modes the server says are live, in
+   * its order. Focused gets one small Doh beside the heading; Playful's Doh is the buddy at the top.
+   */
+  function modesSection(p, tr) {
+    var M = window.NfPracticeModes, rows = M.hubModes(p.modes, tr, true);
+    if (!rows.length) return null;
+    var sec = el("section", "pv-modes" + (tr === "playful" ? " is-playful" : ""));
+    sec.setAttribute("aria-labelledby", "pv-modes-title");
+    var head = el("div", "pv-modes-head"), text = el("div", "pv-modes-text");
+    var h = el("h2", "pv-section", M.modesHeading(tr)); h.id = "pv-modes-title";
+    text.appendChild(h);
+    var line = M.modesDohLine(rows, tr);
+    if (line) text.appendChild(el("p", "pv-modes-doh", "“" + line + "”"));
+    head.appendChild(text);
+    if (line) head.appendChild(art("doh-wave", 56, 56, "pv-modes-bird"));
+    sec.appendChild(head);
+    var list = el("ul", "pv-mode-list");
+    rows.forEach(function (r) {
+      var li = el("li"), b = el("button", "pv-mode-row"); b.type = "button";
+      b.setAttribute("data-mode", r.id);
+      b.appendChild(modeIcon(r.id, "pv-mode-tile"));
+      var t = el("span", "pv-mode-text");
+      t.appendChild(el("strong", null, r.title));
+      t.appendChild(el("span", null, r.subtitle));
+      b.appendChild(t);
+      if (r.value) b.appendChild(el("span", "pv-mode-value", r.value));
+      b.appendChild(icon("/assets/icons.svg#i-chev", "pv-mode-chev"));
+      b.addEventListener("click", function () { openMode(r.id); });
+      li.appendChild(b); list.appendChild(li);
+    });
+    sec.appendChild(list);
+    return sec;
+  }
+
+  /** A mode's screen is a pushed screen: the view's own heading steps aside while it is open. */
+  function inMode(on) { if (root && root.parentNode) root.parentNode.classList.toggle("pv-in-mode", on); }
+
+  /** Opens a mode's screen in the view's place (its script loads the first time); back returns to the hub. */
+  function openMode(id) {
+    if (s.phase !== "idle" || s.mode) return;
+    stopHear(); stopReplay(); hideToast();
+    var gen = s.gen;
+    s.mode = id; inMode(true);
+    track("practice_mode_opened", "mode=" + id);
+    root.innerHTML = "";
+    var sk = el("div", "pv-skel");
+    for (var i = 0; i < 3; i++) sk.appendChild(el("div", "skel"));
+    root.appendChild(sk);
+    window.scrollTo({ top: 0 });
+    Promise.all(MODE_ASSETS.map(ctx.loadAsset)).then(function () {
+      if (gen !== s.gen || s.mode !== id || !root) return;
+      window.NfPracticeModeView.open(root, {
+        request: ctx.request, track: ctx.track, choir: ctx.choir, mode: id, practiceTrack: currentTrack(),
+        icon: modeIcon, art: art, back: closeMode
+      });
+    }, function () {
+      if (gen !== s.gen || s.mode !== id) return;
+      s.mode = null; inMode(false); s.error = "That didn't load. Check your connection and try again."; render();
+    });
+  }
+  function closeMode() {
+    if (!s.mode) return;
+    if (window.NfPracticeModeView) window.NfPracticeModeView.leave();
+    s.mode = null; inMode(false);
+    render();
+    window.scrollTo({ top: 0 });
+    refreshProgress(); // a marked take moved the XP, the streak and today's allowance
+  }
+
   // ── Drawing ─────────────────────────────────────────────────────────────
   function render() {
-    if (!root) return;
+    if (!root || s.mode) return; // a mode's screen has the view
     root.innerHTML = "";
     root.setAttribute("aria-busy", String(!!(s.loading && !s.progress)));
     if (!s.progress) {
@@ -153,18 +270,24 @@
       var pill = el("button", "pv-track-pill" + (playful ? " is-playful" : ""));
       pill.type = "button"; pill.id = "pv-track-pill";
       pill.setAttribute("aria-label", "Practice style: " + T.trackTitle(tr) + ". Change it");
-      pill.appendChild(art(playful ? "doh-avatar" : T.levelArt(p.level.index), 24));
+      // One Doh on screen: Playful's is the buddy below, so the pill takes an icon.
+      pill.appendChild(playful ? modeIcon("smile", "pv-pill-ic") : art(T.levelArt(p.level.index), 24));
       pill.appendChild(el("span", null, T.trackTitle(tr)));
       pill.appendChild(icon("/assets/icons.svg#i-swap", "pv-swap"));
       pill.addEventListener("click", function () { s.trackError = null; s.picking = true; stopHear(); render(); });
       bar0.appendChild(pill);
       box.appendChild(bar0);
     }
+    box.appendChild(progressLine(p));
     if (playful && !showPicker() && s.drill) { box.appendChild(buddy(p, T)); warmConfetti(); }
-    box.appendChild(statsCards(p, P));
     if (showPicker()) box.appendChild(trackPicker(tr, T));
     if (s.drill && !showPicker()) box.appendChild(drillCard(s.drill, P));
     if (!s.drill && !showPicker()) box.appendChild(emptyState("empty-no-drill", "No drill yet", "Today's drill isn't here yet. Try again in a moment.", function () { load(); }));
+    var modes = showPicker() ? null : modesSection(p, tr);
+    if (modes) box.appendChild(modes);
+    // Your progress: the two stat cards, the week and the badges, under the ways to practise (board 6a).
+    box.appendChild(el("h2", "pv-section", "Your progress"));
+    box.appendChild(statsCards(p, P));
     box.appendChild(weekCard(p, P));
     box.appendChild(el("h2", "pv-section", playful ? "My stickers" : "Badges"));
     box.appendChild(playful ? stickers(p, P, T) : focused ? badgeList(p, P) : badgeGrid(p, P));
@@ -824,16 +947,18 @@
     render();
     if (s.phase === "idle") load();
   }
-  /** Another view: nothing keeps sounding or listening. */
+  /** Another view: nothing keeps sounding or listening, and coming back opens on the hub. */
   function leave() {
     stopHear(); stopReplay();
     if (take) cancelTake();
     hideToast();
+    if (s.mode) { if (window.NfPracticeModeView) window.NfPracticeModeView.leave(); s.mode = null; inMode(false); }
   }
   /** Signed out: the next person on this browser sees none of it. */
   function reset() {
     s.gen++;
     leave();
+    if (window.NfPracticeModeView) window.NfPracticeModeView.reset();
     dropTakeUrl();
     s.progress = null; s.drill = null; s.next = null; s.grade = null; s.error = null; s.loadError = null; s.loading = false; s.phase = "idle";
     s.picking = false; s.savingTrack = null; s.trackError = null;
