@@ -109,7 +109,7 @@
   /**
    * Doh the doh bird's mood: handing over in the picker, singing along while a take records, cheering a level-up or
    * the weekly goal met, encouraging a near miss (two stars), sleepy with no drill or the day's drills all sung,
-   * worried while the streak is at risk, else waving hello. Doh lives inside Practice only; Focused shows no buddy.
+   * worried while the streak is at risk, else waving hello. Doh lives inside Practice only; Focused shows no buddy (one small Doh beside its modes instead).
    * scene: { picking, recording, grade ({ score, reward } or null), hasDrill, drillsLeft (null: not known) }
    */
   function mascotMood(progress, scene) {

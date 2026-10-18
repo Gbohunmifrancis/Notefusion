@@ -1,0 +1,275 @@
+/* "More ways to practise" on the web (/app, the Practice view): the mode screens of assets/practice-mode-view.js —
+ * warm up and the range finder, pitch match with its live needle, riffs & runs, intervals, harmony and rhythm
+ * (boards c-practice/6b–6d). Loaded the first time a mode is opened, never with the app.
+ * Phone first: these are the 360–414 px styles; min-width queries go upward. Colours are the app's tokens (app.css,
+ * night.css), so Day and Night follow the theme switch. The marks: green in tune, amber close, grey off — never red. */
+
+:root { --pm-in: var(--success); --pm-close: #b45309; --pm-close-line: rgba(180, 83, 9, 0.5); --pm-in-line: rgba(22, 163, 74, 0.5); }
+:root[data-theme="dark"] { --pm-close: #f5b544; --pm-close-line: rgba(245, 181, 68, 0.6); --pm-in-line: rgba(61, 220, 151, 0.55); }
+
+.pm { display: flex; flex-direction: column; gap: 14px; }
+.pm .btn { min-height: 48px; justify-content: center; }
+.pm .btn-text { min-height: 44px; padding: 0 6px; border: 0; background: none; color: var(--blue-dark); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.pm .btn-text .ic { width: 16px; height: 16px; }
+
+/* ── The top bar: back, the mode above the step, one thing on the right ─── */
+.pm-top { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.pm-back {
+  width: 44px; height: 44px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer;
+}
+.pm-back .ic { width: 20px; height: 20px; }
+.pm-back:focus-visible, .pm-row:focus-visible, .pm-seg-item:focus-visible, .pm-step-dot:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.pm-top-text { flex: 1; min-width: 0; }
+.pm-eyebrow { margin: 0; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.pm-title { margin: 2px 0 0; font-size: 1.35rem; font-weight: 650; letter-spacing: -0.015em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pm-title:focus { outline: none; }
+.pm-pill { flex: none; display: inline-flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+
+/* ── The actions row: a status at the left ("● Listening"), the buttons at the right ── */
+.pm-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 2px; }
+.pm-status { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pm-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--danger); flex: none; }
+@media (prefers-reduced-motion: no-preference) { .pm-dot { animation: pm-pulse 1.2s ease-in-out infinite; } }
+@keyframes pm-pulse { 50% { opacity: 0.35; } }
+.pm-buttons { display: flex; gap: 10px; margin-left: auto; }
+.pm-buttons .btn { min-width: 112px; }
+
+/* ── Lists: other sets, the unit's runs, more intervals ──────────────────── */
+.pm-list-box { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.pm-list-title { margin: 0; font-size: 0.82rem; font-weight: 600; color: var(--muted); }
+.pm-list { margin: 0; padding: 0; list-style: none; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); overflow: hidden; }
+.pm-list li + li .pm-row { border-top: 1px solid var(--line); }
+.pm-row { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 8px 14px; border: 0; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.pm-row:hover { background: var(--wash); }
+.pm-row .ic { width: 16px; height: 16px; color: var(--faint); flex: none; }
+.pm-row-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pm-row-text strong { font-size: 0.95rem; font-weight: 600; }
+.pm-row.on .pm-row-text strong { color: var(--blue-dark); }
+.pm-row-text span { font-size: 0.8rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pm-mono, .pm-run-solfa, .pm-chips li, .pm-mark b, .pm-big, .pm-jump-note b, .pm-range-solfa { font-family: var(--font-mono, ui-monospace, monospace); }
+.pm-row-value { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+.pm-state { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--faint); flex: none; }
+.pm-state.current { border: 0; width: 10px; height: 10px; margin: 2px; background: var(--blue); }
+.pm-state.started { border-color: var(--blue); }
+.pm-state.learned { border: 0; background: var(--pm-in); -webkit-mask: radial-gradient(circle, #000 64%, transparent 66%); }
+
+/* ── A marked take ───────────────────────────────────────────────────────── */
+.pm-result { display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); }
+.pm-result.is-playful { border: 1.5px solid var(--play-line); background: var(--play-soft); }
+.pm-score-row { display: flex; align-items: center; gap: 14px; }
+.pm-score { font-size: 2.5rem; font-weight: 700; line-height: 1; letter-spacing: -0.02em; min-width: 2.2ch; font-variant-numeric: tabular-nums; }
+.pm-score.good { color: var(--pm-in); }
+.pm-score.fair { color: var(--pm-close); }
+.pm-score.low { color: var(--muted); }
+.pm-summary { margin: 0; font-size: 0.95rem; line-height: 1.45; color: var(--ink); }
+.pm-sub { margin: 2px 0 0; font-size: 0.85rem; color: var(--muted); }
+.pm-stars { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.pm-star-word { font-size: 1.4rem; }
+.pm-marks { display: flex; flex-wrap: wrap; gap: 5px; }
+.is-playful .pm-marks { justify-content: center; }
+.pm-mark {
+  min-width: 36px; min-height: 44px; padding: 5px 3px; border-radius: 10px; border: 1.5px solid var(--line-strong); background: var(--surface);
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+}
+.pm-mark b { font-size: 1.05rem; font-weight: 500; color: var(--ink); }
+.pm-mark small { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.7rem; color: var(--muted); }
+.pm-mark.hit { border-color: var(--pm-in-line); } .pm-mark.hit b { color: var(--pm-in); }
+.pm-mark.near { border-color: var(--pm-close-line); } .pm-mark.near b { color: var(--pm-close); }
+.pm-mark.off b { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.pm-mark.missed { border-style: dashed; } .pm-mark.missed b { color: var(--faint); }
+.pm-legend { margin: 0; font-size: 0.75rem; color: var(--muted); line-height: 1.45; }
+.pm-earned { margin: 0; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.9rem; color: var(--blue-dark); }
+.pm-earned .ic { width: 16px; height: 16px; }
+.pm-result .btn-text { align-self: flex-start; }
+.is-playful .pm-earned { justify-content: center; color: var(--play); }
+.pm-advice { padding: 14px 16px; border-radius: 14px; background: var(--wash); border: 1px solid var(--line); }
+.pm-advice strong { display: block; font-size: 0.95rem; }
+.pm-advice p { margin: 4px 0 0; font-size: 0.875rem; color: var(--muted); line-height: 1.45; }
+.pm-advice-line { margin: 0; font-size: 0.9rem; line-height: 1.5; color: var(--muted); }
+.pm-advice-line strong { color: var(--ink); }
+
+/* ── Pitch match: the set, the note in hand, the needle, the hold ────────── */
+.pm-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.pm-chips li { min-width: 38px; height: 36px; padding: 0 8px; display: flex; align-items: center; justify-content: center; border-radius: 9px; border: 1.5px solid var(--line); background: var(--surface); font-size: 0.95rem; color: var(--muted); }
+.pm-chips li.done { border-color: var(--pm-in-line); color: var(--pm-in); }
+.pm-chips li.on { border-color: var(--blue); background: var(--blue-soft); color: var(--ink); }
+.pm-stage { display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+.pm-big { margin: 2px 0 0; font-size: 4.2rem; line-height: 1.05; font-weight: 700; color: var(--ink); }
+.pm-caption { margin: 0; font-size: 0.95rem; color: var(--muted); }
+.pm-gauge { width: 100%; max-width: 280px; height: auto; margin-top: 4px; }
+.pm-arc { fill: none; stroke-width: 14; stroke-linecap: butt; }
+.pm-arc.off { stroke: var(--wash); stroke-linecap: round; }
+.pm-arc.close { stroke: var(--pm-close); opacity: 0.32; }
+.pm-arc.in { stroke: var(--pm-in); opacity: 0.45; }
+.pm-tick { stroke: var(--muted); stroke-width: 1.5; }
+.pm-gauge-label { fill: var(--muted); font-size: 12px; font-family: inherit; }
+.pm-needle line { stroke-width: 4; stroke-linecap: round; }
+.pm-needle circle { stroke-width: 4; fill: var(--surface); }
+.pm-needle.none line, .pm-needle.none circle { stroke: var(--faint); }
+.pm-needle.in line, .pm-needle.in circle { stroke: var(--pm-in); }
+.pm-needle.close line, .pm-needle.close circle { stroke: var(--pm-close); }
+.pm-needle.off line, .pm-needle.off circle { stroke: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .pm-needle { transition: transform 0.08s linear; } }
+.pm-word { margin: 4px 0 0; font-size: 1.5rem; font-weight: 650; color: var(--muted); }
+.pm-word.in { color: var(--pm-in); }
+.pm-word.close { color: var(--pm-close); }
+.pm-cents { margin: 0; font-family: var(--font-mono, ui-monospace, monospace); font-size: 1rem; color: var(--muted); min-height: 1.4em; }
+.pm-hold { align-self: stretch; margin-top: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); opacity: 0.55; transition: opacity 0.2s; }
+.pm-hold.on { opacity: 1; }
+.pm-hold-head { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+.pm-hold-head b { color: var(--ink); }
+.pm-hold-svg { display: block; width: 100%; height: 60px; border-radius: 8px; overflow: hidden; }
+.pm-hold-bg { fill: var(--wash); }
+.pm-hold-band { fill: var(--pm-in); opacity: 0.16; }
+.pm-hold-mid { stroke: var(--pm-in); stroke-dasharray: 4 4; opacity: 0.5; }
+.pm-trace { fill: none; stroke: var(--blue); stroke-width: 2; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.pm-trace-dot { fill: var(--pm-in); }
+.pm-trace-dot.close { fill: var(--pm-close); }
+.pm-trace-dot.off, .pm-trace-dot.none { fill: var(--muted); }
+.pm-hint, .pm-prompt { margin: 8px 0 0; font-size: 0.92rem; color: var(--muted); line-height: 1.5; text-align: center; }
+
+/* ── Riffs & runs: the blocks, the speed stepper, the drawn line ─────────── */
+.pm-where { margin: -6px 0 0; font-size: 0.9rem; color: var(--muted); }
+.pm-roll-block { display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); }
+.pm-roll { display: block; width: 100%; height: auto; }
+.pm-roll-lane { fill: var(--wash); }
+.pm-roll-label { fill: var(--muted); font-size: 12px; font-family: var(--font-mono, ui-monospace, monospace); }
+.pm-roll-note { fill: var(--blue); }
+.pm-roll-note.on { fill: var(--pm-in); }
+.pm-roll-outline { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 3; }
+.pm-roll-trace { fill: none; stroke: var(--blue); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.pm-roll-dot { fill: var(--pm-in); }
+.pm-run-solfa { margin: 0; display: flex; gap: 12px; align-items: baseline; padding: 0 6px; font-size: 1.3rem; color: var(--ink); }
+.pm-run-solfa .land { margin-left: 6px; }
+.pm-run-solfa .on { color: var(--pm-in); }
+.pm-card-title { margin: 0; font-size: 1rem; }
+.pm-check { display: flex; gap: 12px; align-items: flex-start; }
+.pm-check-mark { width: 20px; height: 20px; flex: none; border-radius: 50%; border: 1.5px solid var(--muted); font-style: normal; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; color: var(--surface); }
+.pm-check.ok .pm-check-mark { border-color: var(--pm-in); background: var(--pm-in); }
+.pm-check strong { display: block; font-size: 0.95rem; font-weight: 500; }
+.pm-check span { display: block; font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
+.pm-speed-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+.pm-seg { display: flex; gap: 2px; padding: 4px; border-radius: 12px; background: var(--wash); }
+.pm-seg-item {
+  flex: 1; min-height: 44px; border: 0; border-radius: 9px; background: none; color: var(--muted); font: inherit; font-size: 0.9rem; font-weight: 600;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; padding: 0;
+}
+.pm-seg-item small { font-size: 0.65rem; line-height: 1; color: var(--pm-in); }
+.pm-seg-item.done { color: var(--pm-in); }
+.pm-seg-item.on { background: var(--surface); color: var(--ink); box-shadow: 0 1px 0 var(--line), 0 4px 10px -6px rgba(0, 0, 0, 0.35); }
+.pm-bands { display: flex; gap: 6px; margin-top: -6px; }
+.pm-band { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.pm-band i { align-self: stretch; height: 6px; margin: 0 4px; border: 1px solid var(--line-strong); border-top: 0; }
+.pm-band span { margin-top: 4px; font-size: 0.72rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.pm .pm-full { align-self: flex-end; margin-top: -6px; }
+
+/* ── Intervals and harmony ───────────────────────────────────────────────── */
+.pm-jump { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 18px 0 4px; }
+.pm-jump-note { width: 96px; padding: 12px 0; border-radius: 18px; border: 1.5px solid var(--line); background: var(--surface); display: flex; flex-direction: column; align-items: center; }
+.pm-jump-note.target { border-color: var(--blue); background: var(--blue-soft); }
+.pm-jump-note.on { border-color: var(--pm-in); }
+.pm-jump-note b { font-size: 2.4rem; font-weight: 500; line-height: 1.1; }
+.pm-jump-note span { font-size: 0.8rem; color: var(--muted); }
+.pm-jump-arrow { display: flex; flex-direction: column; align-items: center; max-width: 90px; text-align: center; color: var(--blue-dark); }
+.pm-arrow { font-size: 1.6rem; line-height: 1; }
+.pm-jump-arrow small { font-size: 0.75rem; color: var(--muted); }
+.pm-lines { display: flex; flex-direction: column; gap: 8px; padding: 8px 0; }
+.pm-line-label { margin: 0; font-size: 0.8rem; font-weight: 600; color: var(--muted); }
+.pm-chips.mine, .pm-chips.tune { justify-content: flex-start; }
+.pm-chips.mine li { min-width: 44px; height: 44px; font-size: 1.15rem; color: var(--ink); background: var(--wash); }
+.pm-chips.tune li { border-style: dashed; background: none; }
+.pm-phones { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; }
+.pm-phones-ic { display: inline-flex; width: 22px; height: 22px; color: var(--blue-dark); flex: none; }
+.pm-phones-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pm-phones-text strong { font-size: 0.95rem; font-weight: 500; }
+.pm-phones-text span { font-size: 0.82rem; color: var(--muted); line-height: 1.4; }
+.pm-switch { appearance: none; -webkit-appearance: none; width: 50px; height: 30px; flex: none; margin: 0; border-radius: 999px; background: var(--line-strong); position: relative; cursor: pointer; transition: background 0.15s; }
+.pm-switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); transition: transform 0.15s; }
+.pm-switch:checked { background: var(--blue); }
+.pm-switch:checked::after { transform: translateX(20px); }
+.pm-switch:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+/* ── Rhythm: the claps on a beat grid ────────────────────────────────────── */
+.pm-claps { padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); }
+.pm-clap-lane { position: relative; height: 44px; }
+.pm-beat { position: absolute; top: 4px; bottom: 4px; width: 1px; background: var(--line); }
+.pm-beat.bar { top: 0; bottom: 0; background: var(--line-strong); }
+.pm-clap { position: absolute; top: 10px; height: 24px; border-radius: 6px; background: var(--blue); }
+.pm-clap.on { background: var(--pm-in); transform: scaleY(1.25); }
+.pm-clap.hit { background: var(--pm-in); }
+.pm-clap.near { background: var(--pm-close); }
+.pm-clap.missed { background: none; border: 1.5px dashed var(--faint); }
+.pm-syllables { position: relative; height: 22px; margin-top: 6px; }
+.pm-syllables span { position: absolute; font-size: 0.75rem; color: var(--muted); }
+
+/* ── Warm up: the step list, a step's panel, the guide ───────────────────── */
+.pm-steps { margin: 0; padding: 0; list-style: none; }
+.pm-step { position: relative; display: flex; gap: 14px; padding-bottom: 18px; }
+.pm-step::before { content: ""; position: absolute; left: 21.5px; top: 44px; bottom: 0; width: 1px; background: var(--line-strong); }
+.pm-step:last-child::before { display: none; }
+.pm-step-dot {
+  width: 44px; height: 44px; flex: none; border: 0; border-radius: 50%; background: none; padding: 7px; cursor: pointer; position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center; font: inherit; font-size: 0.82rem; font-weight: 600; color: var(--muted);
+}
+.pm-step-dot::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--wash); z-index: -1; }
+.pm-step.done .pm-step-dot { color: var(--pm-in); }
+.pm-step.done .pm-step-dot::before { background: var(--success-soft, var(--wash)); }
+.pm-step.now .pm-step-dot { color: #fff; }
+.pm-step.now .pm-step-dot::before { background: var(--blue); }
+.pm-step-body { flex: 1; min-width: 0; padding-top: 10px; }
+.pm-step-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.pm-step-head strong { font-size: 1rem; }
+.pm-step-head span { font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pm-step-body > p { margin: 3px 0 0; font-size: 0.85rem; color: var(--muted); line-height: 1.45; }
+.pm-panel { margin-top: 12px; padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); display: flex; flex-direction: column; gap: 10px; }
+.pm-panel > p { margin: 0; font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
+.pm-panel-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pm-breath { display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+.pm-breath p { margin: 0; font-size: 0.9rem; color: var(--muted); }
+.pm-breath-word { font-size: 1.3rem; }
+.pm-breath-count { font-size: 2.6rem; line-height: 1.1; color: var(--blue-dark); }
+.pm-breath span { font-size: 0.82rem; color: var(--muted); }
+.pm-round { margin: 0; min-height: 1.2em; font-size: 0.85rem; font-weight: 600; color: var(--blue-dark); }
+.pm-guide { display: block; width: 100%; height: auto; }
+.pm-guide-note { fill: var(--blue-soft); }
+.pm-guide-line { fill: none; stroke: var(--blue); stroke-width: 2; stroke-linejoin: round; }
+.pm-guide-label { fill: var(--muted); font-size: 11px; font-family: var(--font-mono, ui-monospace, monospace); }
+.pm-info { margin: 0; display: flex; gap: 8px; align-items: flex-start; font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+.pm-info .ic { width: 16px; height: 16px; flex: none; margin-top: 2px; }
+
+/* ── The range finder ────────────────────────────────────────────────────── */
+.pm-lead { margin: 0; font-size: 0.95rem; color: var(--muted); line-height: 1.5; }
+.pm-range-note { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 20px 0 10px; text-align: center; }
+.pm-range-note .pm-big { font-family: inherit; font-size: 4rem; }
+.pm-range-note .pm-big.idle { color: var(--faint); }
+.pm-range-bar { width: 70%; height: 6px; border-radius: 3px; background: var(--wash); overflow: hidden; margin-top: 8px; }
+.pm-range-bar i { display: block; height: 100%; width: 0; background: var(--pm-in); border-radius: inherit; }
+.pm-tip { display: flex; align-items: center; gap: 8px; }
+.pm-bubble { flex: 1; margin: 0; padding: 10px 14px; border-radius: 16px 16px 16px 4px; border: 1px solid var(--line); background: var(--surface); font-weight: 500; font-size: 0.9rem; line-height: 1.45; }
+.pm-range-head { margin: 4px 0 0; font-size: 2.6rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+.pm-range-span { margin: -8px 0 0; font-size: 1rem; color: var(--muted); }
+.pm-range-solfa { margin: -6px 0 0; font-size: 1rem; color: var(--blue-dark); }
+.pm-keys { display: block; width: 100%; height: auto; margin-top: 4px; }
+.pm-key.white { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1; }
+.pm-key.black { fill: var(--ink); }
+.pm-key.white.lit { fill: var(--blue); opacity: 0.55; stroke: none; }
+.pm-key.black.lit { fill: var(--blue-dark); }
+:root[data-theme="dark"] .pm-key.white { fill: var(--wash); stroke: none; }
+:root[data-theme="dark"] .pm-key.black { fill: var(--bg); }
+.pm-key-label { fill: var(--muted); font-size: 9px; }
+.pm-key-label.lit { fill: #fff; }
+.pm-key-end { fill: var(--ink); font-size: 12px; font-weight: 600; }
+.pm-key-tick { stroke: var(--ink); stroke-width: 1.2; }
+.pm-part { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 14px; background: rgba(124, 58, 237, 0.10); }
+:root[data-theme="dark"] .pm-part { background: rgba(167, 139, 250, 0.12); }
+.pm-part-ic { display: inline-flex; width: 22px; height: 22px; color: #7c3aed; flex: none; }
+:root[data-theme="dark"] .pm-part-ic { color: #a78bfa; }
+.pm-part strong { display: block; font-size: 1rem; }
+.pm-part span { display: block; font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
+
+/* ── Wider screens ───────────────────────────────────────────────────────── */
+@media (min-width: 641px) {
+  .pm { gap: 18px; max-width: 640px; }
+  .pm-big { font-size: 6rem; }
+}

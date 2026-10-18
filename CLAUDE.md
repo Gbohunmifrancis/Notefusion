@@ -272,6 +272,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `ModeCatalogue` exercises (keyed per singer per day; id `mode:code@doh[~speed]`); `POST …/modes/grade` marks a take: a
   `PracticeSession` of the mode's kind, one of the day's marked drills, drill XP, never the path (it reads Drill rows).
   Progress carries `modes`, live per track; `PracticeModes__<Mode>=false` switches one off without an app update.
+  Screens (boards c-practice/6a–6d), mirrored: the hub keeps the path card first, streak + level one line, the live
+  `modes` as one list (Playful "More ways to play"), the stat cards under "Your progress"; mobile `screens/practice/*`
+  (route `PracticeMode`, `lib/useModeTake`, clips from `lib/modeAudio` on `lib/synth`), web `assets/practice-mode-view.js`
+  + `practice-modes.css` + `pitch-track.js`, loaded on a mode's first open; pure `lib/practiceModes.ts` ↔
+  `assets/practice-modes.js` (same tests). Pitch match: a live needle on the web only (`pitch-track.js`, YIN on the mic,
+  the grader's 35/80 cents, reports nothing); phones hold and mark until a store build adds a pitch stream. Harmony plays
+  the tune under a take only with headphones on. Wrong notes are grey. The range card's two switches are not built yet.
 - Practice reminders are server pushes to phones only (`Application/Practice/Reminders`, `PracticeReminderWorker` every
   10 min, `PracticeReminders__Enabled`): never web push. The singer's clock is `users.TimeZone` (written by
   `ClientTimeZoneMiddleware` when `X-Time-Zone` changes; null = Lagos). `PracticeReminderRules`: at their hour (8–21, default
