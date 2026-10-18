@@ -288,7 +288,7 @@ export function ChoirScreen({ navigation, route }: Props) {
     >
       <View style={styles.headerRow}>
         <Touchable
-          onPress={() => (navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Tabs", { screen: "Profile" }))}
+          onPress={() => (navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Profile"))}
           accessibilityLabel="Go back"
           hitSlop={8}
           ripple="borderless"

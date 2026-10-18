@@ -49,6 +49,7 @@ export function Avatar({
   busy = false,
   editable = false,
   style,
+  accessibilityLabel,
 }: {
   uri?: string | null;
   name?: string | null;
@@ -61,6 +62,8 @@ export function Avatar({
    *  avatar can still be tappable (e.g. to open a profile). */
   editable?: boolean;
   style?: StyleProp<ViewStyle>;
+  /** What a tap does, when it is not changing the picture (the header avatar opens Profile). */
+  accessibilityLabel?: string;
 }) {
   const styles = useThemedStyles(makeStyles);
   // Data saver: initials instead of a downloaded photo, except where the photo is being managed.
@@ -151,7 +154,9 @@ export function Avatar({
       // No ripple and no radius: the premium ring carries a gold glow, and clipping
       // the view to the circle would cut that shadow off. The scale carries the press.
       ripple={false}
-      accessibilityLabel={editable ? 'Change profile picture' : 'Profile picture'}
+      // A small avatar still takes a 44 px tap.
+      hitSlop={size < 44 ? Math.ceil((44 - size) / 2) : undefined}
+      accessibilityLabel={accessibilityLabel ?? (editable ? 'Change profile picture' : 'Profile picture')}
     >
       {body}
     </Touchable>

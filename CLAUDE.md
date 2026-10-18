@@ -156,7 +156,14 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   bottom sheet (`showDialog` → `components/AppDialog` on `components/Sheet`; `lib/sheetKind` reads confirm,
   destructive, info, options, offer or celebrate off the options) and good news is a toast (`lib/toast` `showToast`),
   one `components/Button` (primary · secondary · text · destructive, md 48 / sm 40, `block` for a flow's last action;
-  red only as a destructive word and the live REC dot, problems an amber icon: `ProblemNote`), a rating ask after the third saved sheet (`lib/ratingPolicy` decides when; the sheet in `lib/feedback` sends the stars to the API and offers Google Play to 4–5★),
+  red only as a destructive word and the live REC dot, problems an amber icon: `ProblemNote`),
+  five labelled tabs Home · Library · Record (centre) · Practice · Hymns (`lib/navTargets`, which also maps a push's
+  `data.screen`), every tab's header its name left and the avatar right (`TabHeader`/`HeaderAvatar`, Pro's gold ring)
+  pushing Profile (plan, choir, Notifications, Settings, help, feedback, Admin); no side drawer and no Profile tab.
+  Settings and Notifications are grouped rows (`components/settings`); Notifications holds push, sound, the reminder
+  and its hour 8–21 (`ReminderTimeSheet`) and the founder-notes email switch (`GET/PUT /api/me/email-preferences`, the
+  `EmailOptOut` row). Splash: cover only until
+  the fonts load, the 1.6 s intro on the first launch (`nf.hasLaunched`), 0.6 s on every later cold start. A rating ask after the third saved sheet (`lib/ratingPolicy` decides when; the sheet in `lib/feedback` sends the stars to the API and offers Google Play to 4–5★),
   expo-notifications push. OTA via EAS Update (`production` channel) with the `fingerprint`
   runtime policy: any native change (a new Expo module, a permission, a plugin) gives a new
   runtime, so an update can only reach builds that have its native code — anything native

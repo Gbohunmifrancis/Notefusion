@@ -3,24 +3,55 @@
  * themselves are the server's (C# `Application/Practice/Reminders`); `lib/practiceReminder` reads and writes them.
  */
 
-/**
- * Chips rather than a time picker: a real one needs `@react-native-community/datetimepicker`,
- * which is a new native dependency and therefore a new build. Three presets cover morning,
- * afternoon and evening practice, which is the actual shape of the choice. The server takes any
- * hour from 8 to 21; these are the three the app offers.
- */
-export type ReminderTime = "morning" | "afternoon" | "evening";
+/** The first and last hour the server takes (C# `PracticeReminderRules`): 8am to 9pm, the singer's own time. */
+export const FIRST_REMINDER_HOUR = 8;
+export const LAST_REMINDER_HOUR = 21;
 
-export const REMINDER_TIMES: { key: ReminderTime; label: string; hour: number }[] = [
-  { key: "morning", label: "Morning", hour: 9 },
-  { key: "afternoon", label: "Afternoon", hour: 14 },
-  { key: "evening", label: "Evening", hour: 19 },
+/**
+ * Every hour the server takes, as the reminder-time sheet offers them: plain buttons drawn in JavaScript, so it
+ * ships over the air (a real time picker needs `@react-native-community/datetimepicker`, a new native module, and
+ * offers minutes the server ignores).
+ */
+export const REMINDER_TIMES: number[] = Array.from(
+  { length: LAST_REMINDER_HOUR - FIRST_REMINDER_HOUR + 1 },
+  (_, i) => FIRST_REMINDER_HOUR + i,
+);
+
+/** The sheet's three rows: morning to 11am, afternoon to 4pm, evening to 9pm. */
+export const REMINDER_HOUR_GROUPS: { label: "Morning" | "Afternoon" | "Evening"; hours: number[] }[] = [
+  { label: "Morning", hours: REMINDER_TIMES.filter((h) => h < 12) },
+  { label: "Afternoon", hours: REMINDER_TIMES.filter((h) => h >= 12 && h < 17) },
+  { label: "Evening", hours: REMINDER_TIMES.filter((h) => h >= 17) },
 ];
 
 /** The server's default hour (C# `PracticeReminderRules.DefaultHour`). */
 export const DEFAULT_REMINDER_HOUR = 19;
 
-/** The chip an hour the server holds falls under: before noon morning, before five afternoon, else evening. */
+export function isReminderHour(hour: number): boolean {
+  return Number.isInteger(hour) && hour >= FIRST_REMINDER_HOUR && hour <= LAST_REMINDER_HOUR;
+}
+
+/** An hour as the app writes times elsewhere ("back Friday 6pm"): 8am, 12pm, 6pm. */
+export function hourLabel(hour: number): string {
+  const h = ((hour % 24) + 24) % 24;
+  const twelve = h % 12 === 0 ? 12 : h % 12;
+  return `${twelve}${h < 12 ? "am" : "pm"}`;
+}
+
+/** The toast after a new hour is saved. */
+export function reminderMovedLine(hour: number): string {
+  return `Reminders moved to ${hourLabel(hour)}`;
+}
+
+/**
+ * The three presets the app offered before the hour sheet ("morning" 9:00, "afternoon" 14:00, "evening" 19:00).
+ * Still read from what older app code stored on the phone, and handed to the server once (`carriedChoice`).
+ */
+export type ReminderTime = "morning" | "afternoon" | "evening";
+
+const PRESET_HOURS: Record<ReminderTime, number> = { morning: 9, afternoon: 14, evening: 19 };
+
+/** The preset an hour the server holds falls under: before noon morning, before five afternoon, else evening. */
 export function timeForHour(hour: number): ReminderTime {
   if (hour < 12) return "morning";
   if (hour < 17) return "afternoon";
@@ -28,7 +59,7 @@ export function timeForHour(hour: number): ReminderTime {
 }
 
 export function hourFor(time: ReminderTime): number {
-  return REMINDER_TIMES.find((t) => t.key === time)?.hour ?? DEFAULT_REMINDER_HOUR;
+  return PRESET_HOURS[time] ?? DEFAULT_REMINDER_HOUR;
 }
 
 /**
@@ -65,11 +96,11 @@ export function carriedChoice(
 }
 
 /**
- * The Settings row's hint: which of the reasons it is off ("off because notifications are off" cannot be fixed
- * there; "off because you turned it off" can), or when it comes.
+ * The Practice reminder row's hint (Notifications): why it is off when that cannot be fixed there ("needs push"),
+ * or when it comes. The hour is the Reminder time row's.
  */
-export function describeReminder(on: boolean, hour: number, pushOn: boolean): string {
-  if (!pushOn) return "Needs push notifications turned on.";
-  if (!on) return "Off — nothing will nudge you to practise.";
-  return `Around ${hour}:00 on days you haven't practised yet.`;
+export function describeReminder(on: boolean, pushLive: boolean): string {
+  if (!pushLive) return "Needs push notifications";
+  if (!on) return "Off. Nothing will nudge you to practise.";
+  return "On days you haven't practised yet";
 }

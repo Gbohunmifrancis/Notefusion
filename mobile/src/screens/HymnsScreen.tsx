@@ -1,17 +1,18 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Sheet, SheetActions, SheetTitle } from "../components/Sheet";
 import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
+import { TabHeader } from "../components/TabHeader";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { formatBytes, needsDownload, searchHymns, type HymnPack, type PackHymn, type PackMeta } from "../lib/hymnPack";
-import { downloadPack, installedPack, remotePackMeta, usePackState } from "../lib/hymnPackStore";
+import { downloadPack, installedPack, remotePackMeta, removePack, usePackState } from "../lib/hymnPackStore";
 import { resultFromHymn } from "../lib/openSheet";
 import { useDataSaver } from "../lib/dataSaver";
 import { showDialog } from "../lib/dialog";
@@ -19,18 +20,17 @@ import { showToast } from "../lib/toast";
 import { logAnalyticsEvent } from "../lib/analytics";
 import type { RootStackParams } from "../navigation/types";
 
-type Props = NativeStackScreenProps<RootStackParams, "Hymns">;
-
 /**
  * Hymns — the website's public-domain hymns and tunes, from the offline pack: download once, then
  * browse, search and open any of them as a sheet (play, solfa, staff, practise) with no connection.
  * Until the pack is on the phone the screen offers the download and its size; once it is, a newer
- * version is looked for weekly (off data saver) or when "Check for updates" is tapped.
+ * version is looked for weekly (off data saver) or when "Check for updates" is tapped. A tab (board a-core/04):
+ * the offline book people come back to; "Remove from this phone" is at the foot of the list.
  */
-export function HymnsScreen({ navigation }: Props) {
+export function HymnsScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const insets = useSafeAreaInsets();
   const packState = usePackState();
   const dataSaver = useDataSaver();
 
@@ -55,6 +55,22 @@ export function HymnsScreen({ navigation }: Props) {
       live = false;
     };
   }, []);
+
+  // A tab stays mounted: follow the pack when it changes underneath (the weekly refresh, a removal).
+  useEffect(() => {
+    if (loading || (pack?.version ?? null) === packState.version) return undefined;
+    let live = true;
+    void installedPack().then((p) => {
+      if (!live) return;
+      setPack(p);
+      if (!p) void remotePackMeta().then((m) => live && setMeta(m));
+    });
+    return () => {
+      live = false;
+    };
+    // `pack` is read, not followed: only a change in what is installed starts a re-read.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [packState.version, loading]);
 
   const results = useMemo(() => (pack ? searchHymns(pack.hymns, query) : []), [pack, query]);
 
@@ -98,30 +114,33 @@ export function HymnsScreen({ navigation }: Props) {
     });
   }
 
+  function confirmRemove() {
+    showDialog({
+      title: "Remove the hymns?",
+      message: `Frees ${formatBytes(packState.bytes)}. You can download them again here at any time.`,
+      // They download again, so nothing is lost: no red.
+      actions: [
+        {
+          label: "Remove",
+          onPress: () =>
+            void removePack().then(() => {
+              setPack(null);
+              setQuery("");
+              void remotePackMeta().then(setMeta);
+            }),
+        },
+        { label: "Keep them", style: "cancel" },
+      ],
+    });
+  }
+
   function openSheet(h: PackHymn) {
     setOpen(null);
     void logAnalyticsEvent("hymn_opened", { slug: h.slug, kind: h.kind });
     navigation.navigate("Result", { result: resultFromHymn(h), title: h.title });
   }
 
-  const header = (
-    <View style={styles.headerRow}>
-      <Touchable
-        onPress={() => (navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Tabs", { screen: "Home" }))}
-        accessibilityLabel="Go back"
-        hitSlop={8}
-        ripple="borderless"
-      >
-        <View style={styles.backCircle}>
-          <Ionicons name="chevron-back" size={20} color={colors.text} />
-        </View>
-      </Touchable>
-      <View style={styles.titleBlock}>
-        <Text style={styles.titleLabel}>{pack ? `${pack.count} hymns and tunes · offline` : "Hymnbook"}</Text>
-        <Text style={styles.titleMain}>Hymns</Text>
-      </View>
-    </View>
-  );
+  const header = <TabHeader title="Hymns" eyebrow={pack ? `${pack.count} hymns and tunes · offline` : "Hymnbook"} />;
 
   if (loading) {
     return (
@@ -135,7 +154,7 @@ export function HymnsScreen({ navigation }: Props) {
   if (!pack) {
     const size = meta ? formatBytes(meta.bytes) : null;
     return (
-      <Screen scroll>
+      <Screen scroll contentStyle={styles.tabBarRoom}>
         {header}
         <Card style={styles.card}>
           <View style={styles.offerIcon}>
@@ -175,7 +194,7 @@ export function HymnsScreen({ navigation }: Props) {
         showsVerticalScrollIndicator={false}
         initialNumToRender={20}
         windowSize={7}
-        contentContainerStyle={{ paddingBottom: insets.bottom + spacing.xxl }}
+        contentContainerStyle={styles.tabBarRoom}
         ListHeaderComponent={
           <View>
             {header}
@@ -216,11 +235,17 @@ export function HymnsScreen({ navigation }: Props) {
             <Text style={styles.footerText}>
               {formatBytes(packState.bytes)} on this phone{dataSaver ? " · updates when you ask (data saver)" : " · checked weekly"}
             </Text>
-            <Touchable onPress={() => void checkForUpdate()} disabled={checking || progress !== null} ripple={false} hitSlop={8} accessibilityLabel="Check for newer hymns">
-              <Text style={styles.footerLink}>
-                {progress !== null ? `Downloading… ${Math.round(progress * 100)}%` : checking ? "Checking…" : "Check for updates"}
-              </Text>
-            </Touchable>
+            <View style={styles.footerLinks}>
+              <Touchable onPress={() => void checkForUpdate()} disabled={checking || progress !== null} ripple={false} style={styles.footerAction} accessibilityLabel="Check for newer hymns">
+                <Text style={styles.footerLink}>
+                  {progress !== null ? `Downloading… ${Math.round(progress * 100)}%` : checking ? "Checking…" : "Check for updates"}
+                </Text>
+              </Touchable>
+              <Text style={styles.footerText}>·</Text>
+              <Touchable onPress={confirmRemove} disabled={progress !== null} ripple={false} style={styles.footerAction} accessibilityLabel="Remove the hymns from this phone">
+                <Text style={styles.footerLink}>Remove from this phone</Text>
+              </Touchable>
+            </View>
           </View>
         }
       />
@@ -252,20 +277,8 @@ export function HymnsScreen({ navigation }: Props) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    headerRow: { flexDirection: "row", alignItems: "center", marginTop: spacing.sm, marginBottom: spacing.lg },
-    backCircle: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    titleBlock: { flex: 1, marginHorizontal: spacing.md },
-    titleLabel: { ...typography.caption, color: c.textFaint, textTransform: "uppercase", letterSpacing: 1, fontSize: 10 },
-    titleMain: { ...typography.title, color: c.text, fontSize: 22, letterSpacing: -0.4, marginTop: 1 },
+    /** Clears the floating tab bar. */
+    tabBarRoom: { paddingBottom: 120 },
 
     card: { gap: spacing.md },
     offerIcon: {
@@ -308,7 +321,9 @@ const makeStyles = (c: Palette) =>
 
     footer: { alignItems: "center", gap: spacing.xs, marginTop: spacing.xl },
     footerText: { ...typography.caption, color: c.textFaint, textAlign: "center" },
-    footerLink: { fontFamily: fonts.medium, fontSize: 13, color: c.accent },
+    footerLinks: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", justifyContent: "center", gap: spacing.xs },
+    footerAction: { minHeight: 44, justifyContent: "center", paddingHorizontal: spacing.xs },
+    footerLink: { fontFamily: fonts.medium, fontSize: 13, color: c.link },
 
     sheetMeta: { ...typography.caption, color: c.textMuted },
     sheetScroll: { flexGrow: 0, marginTop: spacing.md, marginBottom: spacing.lg },

@@ -17,12 +17,11 @@ import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useReducedMotion } from 'react-native-reanimated';
 import { Screen } from '../components/Screen';
-import { Avatar } from '../components/Avatar';
-import { AppDrawer } from '../components/AppDrawer';
+import { HeaderAvatar } from '../components/HeaderAvatar';
 import { Touchable } from '../components/Touchable';
 import { Skeleton } from '../components/Skeleton';
 import { Mark, Wordmark } from '../components/night/NightUI';
-import { meApi, practiceApi } from '../api/endpoints';
+import { practiceApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { dohLetter } from '../lib/solfa';
 import { loadLibraryList, loadSheet } from '../lib/offlineLibrary';
@@ -35,6 +34,7 @@ import { useThemedStyles, useColors } from '../lib/theme';
 import type { PracticeProgress, SavedTranscription } from '../api/types';
 import { streakSnapshot } from '../lib/practiceProgress';
 import { rememberStreak } from '../lib/practiceReminder';
+import { refreshProfilePicture } from '../lib/profilePicture';
 import type { RootStackParams, TabParams } from '../navigation/types';
 import { solfaOpening } from '../lib/solfaOpening';
 import { confidenceA11y, confidenceLevel } from '../lib/confidence';
@@ -63,9 +63,7 @@ export function HomeScreen({ navigation }: Props) {
   const [loadingRecent, setLoadingRecent] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [pictureUrl, setPictureUrl] = useState<string | null>(null);
   const [greeting, setGreeting] = useState(currentGreeting);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   /** The streak/XP chip's numbers; null hides the chip (not loaded, or the read failed). */
   const [practice, setPractice] = useState<PracticeProgress | null>(null);
   const styles = useThemedStyles(makeStyles);
@@ -200,29 +198,18 @@ export function HomeScreen({ navigation }: Props) {
             setLoadError(null);
           })
           .catch((e) => setLoadError(toApiError(e).message)),
-        meApi
-          .get()
-          .then((p) => setPictureUrl(p.profilePictureUrl))
-          .catch(() => undefined),
+        user ? refreshProfilePicture(user.id, true) : undefined,
         refreshSubscription(true).catch(() => undefined),
       ]);
     } finally {
       setRefreshing(false);
     }
-  }, [refreshSubscription]);
+  }, [refreshSubscription, user]);
 
   useFocusEffect(
     useCallback(() => {
       let active = true;
       setGreeting(currentGreeting());
-      // Re-read on focus rather than once on mount: Home stays mounted for the whole
-      // session, so a photo changed on Profile would otherwise not appear until relaunch.
-      meApi
-        .get()
-        .then((p) => {
-          if (active) setPictureUrl(p.profilePictureUrl);
-        })
-        .catch(() => undefined);
       practiceApi
         .progress()
         .then((p) => {
@@ -292,10 +279,10 @@ export function HomeScreen({ navigation }: Props) {
               </View>
 
               <View style={styles.headerActions}>
-                {/* Practice: the streak and XP, a tap from today's drill. */}
+                {/* Practice: the streak and XP, a tap from the Practice tab. */}
                 {practice ? (
                   <Touchable
-                    onPress={() => rootNav.navigate('Practice')}
+                    onPress={() => navigation.navigate('Practice')}
                     style={styles.practiceChip}
                     radius={radii.pill}
                     accessibilityLabel={`Practice: ${practice.streak.current}-day streak, ${practice.xp} XP, level ${practice.level.name}`}
@@ -310,16 +297,8 @@ export function HomeScreen({ navigation }: Props) {
                     <Text style={styles.practiceChipText}>{practice.xp} XP</Text>
                   </Touchable>
                 ) : null}
-                {/* The gold ring is `Avatar`'s own `premium` prop, so Home and Profile
-                    cannot disagree about who is paying. It opens the account side bar;
-                    the profile is one row inside it. */}
-                <Avatar
-                  uri={pictureUrl}
-                  name={user?.fullName}
-                  size={38}
-                  premium={isPro}
-                  onPress={() => setDrawerOpen(true)}
-                />
+                {/* The account, as on every tab: the avatar (Pro's gold ring) opens Profile. */}
+                <HeaderAvatar />
               </View>
             </View>
 
@@ -435,15 +414,6 @@ export function HomeScreen({ navigation }: Props) {
                   <Text style={styles.chipLabel}>Paste link</Text>
                 </Touchable>
                 <Touchable
-                  onPress={() => rootNav.navigate('Hymns')}
-                  style={styles.chip}
-                  radius={radii.pill}
-                  accessibilityLabel="Hymns, for use offline"
-                >
-                  <Ionicons name="book-outline" size={17} color={colors.accent} />
-                  <Text style={styles.chipLabel}>Hymns</Text>
-                </Touchable>
-                <Touchable
                   onPress={() => rootNav.navigate('Listen')}
                   style={styles.chip}
                   radius={radii.pill}
@@ -557,14 +527,6 @@ export function HomeScreen({ navigation }: Props) {
             </View>
           )
         }
-      />
-
-      {/* Mounted here rather than in the navigator: nothing else needs to open it, so
-          local state beats another context. A Modal takes no layout space. */}
-      <AppDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        pictureUrl={pictureUrl}
       />
     </Screen>
   );

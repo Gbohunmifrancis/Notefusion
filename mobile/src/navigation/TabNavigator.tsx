@@ -1,62 +1,41 @@
 import React, { useEffect, useState } from "react";
-import {
-  Keyboard,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Keyboard, Platform, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   createBottomTabNavigator,
   type BottomTabBarProps,
 } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeScreen } from "../screens/HomeScreen";
 import { RecordScreen } from "../screens/RecordScreen";
 import { LibraryScreen } from "../screens/LibraryScreen";
-import { ProfileScreen } from "../screens/ProfileScreen";
+import { PracticeScreen } from "../screens/PracticeScreen";
+import { HymnsScreen } from "../screens/HymnsScreen";
 import { Touchable } from "../components/Touchable";
 import { Mark } from "../components/night/NightUI";
-import { motion, spacing, type Palette } from "../design/theme";
+import { fonts, motion, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
-import type { RootStackParams, TabParams } from "../navigation/types";
+import { TAB_ORDER, type TabName } from "../lib/navTargets";
+import type { TabParams } from "../navigation/types";
 
 const Tab = createBottomTabNavigator<TabParams>();
 
 /**
- * Five cells, not three — and five because the count must be odd.
- *
- * Every cell is `flex: 1` in a `space-around` row, so only an odd count puts the mic
- * in the geometric middle. Profile came back off the side bar to make the count work
- * and because it is a destination people look for in a tab bar. Songs is a *launcher*:
- * pasting a link is an action, not a place to be. Its entry in `TABS` carries a `push`
- * key, and `onPress` navigates the root stack rather than switching tabs; it has no
- * `Tab.Screen` and `focused` is always false — it reads as an action, like Record.
- *
- * Order: Home · Library · Record(centre) · Songs · Profile.
+ * Five labelled cells (board a-core/04): Home · Library · Record (centre) · Practice · Hymns, in `TAB_ORDER`.
+ * Every cell is `flex: 1` in the row, so the odd count puts the record button in the geometric middle. Labels,
+ * because a flame or a book alone does not say "Practice" or "Hymns". The record button is the mark on its ink
+ * circle.
  */
+const CELLS: Record<TabName, { label: string; icon: keyof typeof Ionicons.glyphMap; iconActive: keyof typeof Ionicons.glyphMap }> = {
+  Home: { label: "Home", icon: "home-outline", iconActive: "home" },
+  Library: { label: "Library", icon: "albums-outline", iconActive: "albums" },
+  Record: { label: "Record", icon: "mic", iconActive: "mic" },
+  Practice: { label: "Practice", icon: "flame-outline", iconActive: "flame" },
+  Hymns: { label: "Hymns", icon: "book-outline", iconActive: "book" },
+};
 
-interface TabEntry {
-  name: keyof TabParams;
-  label: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  iconActive: keyof typeof Ionicons.glyphMap;
-  isCenter?: boolean;
-  /** When set, pressing this cell pushes a root-stack route instead of switching tabs. */
-  push?: keyof RootStackParams;
-}
-
-const TABS: TabEntry[] = [
-  { name: "Home",    label: "Home",    icon: "home-outline",          iconActive: "home" },
-  { name: "Library", label: "Library", icon: "albums-outline",        iconActive: "albums" },
-  { name: "Record",  label: "Record",  icon: "mic",                   iconActive: "mic",   isCenter: true },
-  // Songs is a push action — `name` is a placeholder (no Tab.Screen exists for it,
-  // so `focused` is always false) and `push` drives the actual navigation.
-  { name: "Home", label: "Songs", icon: "link-outline", iconActive: "link", push: "Link" },
-  { name: "Profile", label: "Profile", icon: "person-outline",        iconActive: "person" },
-];
+/** The record button, by diameter. */
+const RECORD = 52;
 
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
@@ -73,7 +52,10 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
     return () => { showSub.remove(); hideSub.remove(); };
   }, []);
 
+  // The bar goes while the keyboard is up.
   if (keyboardVisible) return null;
+
+  const current = state.routes[state.index]?.name;
 
   return (
     <View
@@ -81,51 +63,24 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
       pointerEvents="box-none"
     >
       <View style={styles.bar}>
-        {TABS.map((tab, index) => {
-          // Songs launcher: always unfocused, pushes the root stack.
-          if (tab.push) {
-            return (
-              <Touchable
-                key={`push-${tab.label}`}
-                accessibilityLabel="Transcribe a song from a link"
-                accessibilityRole="button"
-                onPress={() =>
-                  navigation
-                    .getParent<NativeStackNavigationProp<RootStackParams>>()
-                    ?.navigate("Link")
-                }
-                ripple="borderless"
-                style={styles.tabItem}
-              >
-                <Ionicons name={tab.icon} size={23} color={colors.textMuted} />
-                <View style={styles.dotSlot} />
-              </Touchable>
-            );
-          }
-
-          const routeIndex = state.routes.findIndex((r) => r.name === tab.name);
-          const focused = state.index === routeIndex;
+        {TAB_ORDER.map((name) => {
+          const cell = CELLS[name];
+          const route = state.routes.find((r) => r.name === name);
+          const focused = current === name;
 
           const onPress = () => {
-            const route = state.routes.find((r) => r.name === tab.name);
-            if (route) {
-              const event = navigation.emit({
-                type: "tabPress",
-                target: route.key,
-                canPreventDefault: true,
-              });
-              if (!focused && !event.defaultPrevented) {
-                navigation.navigate(tab.name);
-              }
-            }
+            if (!route) return;
+            const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
+            if (!focused && !event.defaultPrevented) navigation.navigate(name);
           };
 
-          if (tab.isCenter) {
+          if (name === "Record") {
             // The mark is the record button: the one thing the app is for.
             return (
               <Touchable
-                key={`center-${tab.label}`}
-                accessibilityLabel="Record a melody"
+                key={name}
+                accessibilityLabel="Record"
+                accessibilityState={focused ? { selected: true } : {}}
                 accessibilityRole="button"
                 onPress={onPress}
                 haptic="medium"
@@ -142,20 +97,26 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
 
           return (
             <Touchable
-              key={`${tab.label}-${index}`}
+              key={name}
               accessibilityState={focused ? { selected: true } : {}}
-              accessibilityLabel={tab.label}
+              accessibilityLabel={cell.label}
               accessibilityRole="button"
               onPress={onPress}
               ripple="borderless"
               style={styles.tabItem}
             >
               <Ionicons
-                name={focused ? tab.iconActive : tab.icon}
-                size={23}
-                color={focused ? colors.text : colors.textMuted}
+                name={focused ? cell.iconActive : cell.icon}
+                size={22}
+                color={focused ? colors.link : colors.textFaint}
               />
-              <View style={styles.dotSlot}>{focused && <View style={styles.dot} />}</View>
+              <Text
+                style={[styles.label, focused && styles.labelOn]}
+                numberOfLines={1}
+                maxFontSizeMultiplier={1.2}
+              >
+                {cell.label}
+              </Text>
             </Touchable>
           );
         })}
@@ -171,10 +132,11 @@ export function TabNavigator() {
       screenOptions={{ headerShown: false, tabBarHideOnKeyboard: true }}
       tabBar={(props) => <FloatingTabBar {...props} />}
     >
-      <Tab.Screen name="Home"    component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Library" component={LibraryScreen} />
-      <Tab.Screen name="Record"  component={RecordScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Record" component={RecordScreen} />
+      <Tab.Screen name="Practice" component={PracticeScreen} />
+      <Tab.Screen name="Hymns" component={HymnsScreen} />
     </Tab.Navigator>
   );
 }
@@ -211,12 +173,20 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    dotSlot: { height: 4, marginTop: 5, justifyContent: "center" },
-    dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: c.accent },
+    label: {
+      marginTop: 3,
+      fontFamily: fonts.medium,
+      fontSize: 11,
+      color: c.textFaint,
+    },
+    labelOn: {
+      fontFamily: fonts.semibold,
+      color: c.text,
+    },
     centerBtn: {
-      width: 52,
-      height: 52,
-      borderRadius: 26,
+      width: RECORD,
+      height: RECORD,
+      borderRadius: RECORD / 2,
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: c.ink,

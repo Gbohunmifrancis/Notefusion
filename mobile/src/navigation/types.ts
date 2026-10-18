@@ -24,16 +24,19 @@ export type AuthStackParams = {
  * puts the mic in the geometric middle — with an even one it sits off-centre and the
  * whole bar reads as a mistake.
  *
- * Home · Library · **Record** · Songs · Profile. Profile came back off the side bar to
- * make the count work and because it is a destination people look for in a tab bar.
- * Songs is a *launcher*, not a tab: the cell pushes `Link` on the root stack — paste a
- * song link, get its lead vocal as solfa — the way the mic pushes a recording.
+ * Home · Library · **Record** · Practice · Hymns, labelled (`lib/navTargets` `TAB_ORDER`).
+ * Practice is daily (streaks, reminders) and Hymns is the offline book: places people come
+ * back to. Profile is not a tab: the avatar at the top right of every tab pushes it. Pasting
+ * a song link is a chip on Home.
  */
 export type TabParams = {
   Home: undefined;
   Library: undefined;
   Record: { autoPickAudio?: boolean } | undefined;
-  Profile: undefined;
+  /** Practice: the drill on the path, the streak, XP and level, the weekly goal and badges. Reminders open it. */
+  Practice: undefined;
+  /** The hymns the website publishes, from the offline pack: browse, search, open as a sheet. */
+  Hymns: undefined;
 };
 
 export type RootStackParams = {
@@ -53,12 +56,17 @@ export type RootStackParams = {
     title?: string;
   };
   /**
-   * `focus` scrolls straight to a section. The Profile menu has separate
-   * "Notifications" and "About Notefusion" rows, and both used to land on a screen
-   * showing something else; anchoring them here keeps each row honest without a
-   * screen apiece.
+   * The account and the phone's settings (account, appearance, data and offline, help and about, sign out,
+   * delete). Pushed from Profile.
    */
-  Settings: { focus?: 'notifications' | 'about' } | undefined;
+  Settings: undefined;
+  /** Push, sound, the practice reminder and its hour, and the founder's emails. Pushed from Profile. */
+  Notifications: undefined;
+  /**
+   * The account page: plan, choir, Notifications, Settings, help and feedback. Pushed from the avatar
+   * at the top right of every tab, so back returns to the tab you were on.
+   */
+  Profile: undefined;
   Help: undefined;
   /**
    * `reason: "limit"` when a free account has just been refused for having nothing left:
@@ -72,17 +80,8 @@ export type RootStackParams = {
    * join field (notefusion://join/CODE); joining is still a tap.
    */
   Choir: { code?: string } | undefined;
-  /** The hymns the website publishes, from the offline pack: browse, search, open as a sheet. */
-  Hymns: undefined;
   /**
-   * Practice: today's free solfa drill, the streak, XP and level, the weekly goal and badges. A pushed
-   * route rather than a tab — the bar's five cells keep the mic centred — reached from Home's streak
-   * chip, the side bar and the streak reminder.
-   */
-  Practice: undefined;
-
-  /**
-   * Admin-only screens, reached from the side bar's Admin row and nowhere else.
+   * Admin-only screens, reached from Profile's Admin row (admins only) and nowhere else.
    *
    * Pushed routes rather than tabs: the tab bar above is full, and an operator
    * surface should not cost every user a tab. Each screen is behind the server's
