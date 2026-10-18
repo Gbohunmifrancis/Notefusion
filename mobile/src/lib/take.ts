@@ -1,38 +1,36 @@
 /**
  * Sing-along takes: the count-in a chorister hears before singing a part, and the
- * target the server grades the take against. The lead-in is the part's first note
- * held for a bar (a pitch pipe), then a bar of clicks; both are rendered by the same
- * synth as the preview so the pitch reference is exactly the one the player uses.
+ * target the server grades the take against. The count-in is at most five seconds
+ * (lib/practice `leadInPlan`): the part's first note held (a pitch pipe), then clicks
+ * that end on beat one; both are rendered by the same synth as the preview so the
+ * pitch reference is exactly the one the player uses.
  */
 
 import type { GradeTarget, NoteEvent } from "../api/types";
+import { leadInPlan } from "./practice";
 import { beatSecOf, synthesizeVoicesWavBase64 } from "./synth";
 
-function beatsPerBar(timeSignature: string): number {
-  const [num, den] = timeSignature.split("/").map(Number);
-  return num && den ? (num * 4) / den : 4;
-}
-
 export interface LeadIn {
-  /** Base64 WAV: the starting note for a bar, then clicks for a bar. */
+  /** Base64 WAV: the starting note, then clicks up to beat one. */
   wavBase64: string;
   /** Seconds from the start of the recording to the part's first beat. */
   seconds: number;
 }
 
-/** A bar of the starting note, a bar of clicks — what the singer hears before beat one. */
+/** The starting note, then clicks to beat one — what the singer hears before singing, five seconds at most. */
 export function leadInFor(notes: readonly NoteEvent[], tempoBpm: number, timeSignature: string): LeadIn {
-  const bar = beatsPerBar(timeSignature);
+  const plan = leadInPlan(tempoBpm, timeSignature);
   const first = [...notes].sort((a, b) => a.startBeat - b.startBeat)[0];
   const pitch = first?.pitchMidi ?? 60;
   // The second "note" is silent (pitch 0 is skipped by the synth) but stretches the clip
-  // to two bars, so the metronome keeps clicking through the count-in bar.
+  // to the whole count-in, so the metronome keeps clicking up to beat one, its accent a
+  // bar before it.
   const wavBase64 = synthesizeVoicesWavBase64(
-    [{ notes: [{ pitchMidi: pitch, startBeat: 0, durBeats: bar, degree: 1, solfa: "", octaveMark: "", conf: 1 }, { pitchMidi: 0, startBeat: bar, durBeats: bar, degree: 1, solfa: "", octaveMark: "", conf: 1 }], gain: 0.9 }],
+    [{ notes: [{ pitchMidi: pitch, startBeat: 0, durBeats: plan.holdBeats, degree: 1, solfa: "", octaveMark: "", conf: 1 }, { pitchMidi: 0, startBeat: plan.holdBeats, durBeats: plan.beats - plan.holdBeats, degree: 1, solfa: "", octaveMark: "", conf: 1 }], gain: 0.9 }],
     tempoBpm,
-    { metronome: true, beatsPerBar: bar },
+    { metronome: true, beatsPerBar: plan.beatsPerBar, downbeat: plan.beats % plan.beatsPerBar },
   );
-  return { wavBase64, seconds: 2 * bar * beatSecOf(tempoBpm) };
+  return { wavBase64, seconds: plan.seconds };
 }
 
 /** How long the part itself runs, in seconds. */

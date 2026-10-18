@@ -100,6 +100,38 @@ export function sliceSeconds(slice: BarSlice, tempo: number, speed: number): num
   return (slice.beats * beatSec(tempo)) / (speed || 1);
 }
 
+/** The longest count-in before a take: from pressing Sing to beat one, in seconds. */
+export const MAX_LEAD_IN_SEC = 5;
+
+export interface LeadInPlan {
+  /** Beats of count-in, a click on each, the last one beat before the singer's beat one. */
+  beats: number;
+  /** The first of those beats, which the starting note is held through (the pitch pipe). */
+  holdBeats: number;
+  /** Beats in a bar: the click a whole bar (or bars) before beat one is the accented one. */
+  beatsPerBar: number;
+  beatSec: number;
+  /** Seconds from the first click to beat one. */
+  seconds: number;
+}
+
+/**
+ * The count-in before every take — a drill, a sing-along, "Sing it back" — at most MAX_LEAD_IN_SEC: the starting
+ * note held, then clicks that end on beat one, a click on every beat throughout. A whole bar of clicks after the
+ * note when that and a beat of the note fit; the note then fills what is left in whole beats (at least one, at most
+ * a bar). At a slow tempo fewer clicks, so the wait stays inside the five seconds, and never fewer than two beats in
+ * all. `speed` slows the beat as a slowed practice does (the 30 BPM floor first, as every player here has it).
+ * Mirrors web-site/assets/practice.js leadInPlan; the server takes the seconds as the take's lead-in.
+ */
+export function leadInPlan(tempoBpm: number, timeSignature: string, speed = 1): LeadInPlan {
+  const beat = beatSec(tempoBpm) / (speed || 1);
+  const bar = Math.max(1, Math.round(beatsPerBar(timeSignature)));
+  const fit = Math.max(2, Math.floor(MAX_LEAD_IN_SEC / beat + 1e-9));
+  const clicks = Math.min(bar, fit - 1);
+  const hold = Math.min(bar, fit - clicks);
+  return { beats: hold + clicks, holdBeats: hold, beatsPerBar: bar, beatSec: beat, seconds: (hold + clicks) * beat };
+}
+
 /** True when a take of these bars (count-in included) would be longer than the worker marks. */
 export function tooLong(slice: BarSlice, tempo: number, speed: number, leadInSec: number): boolean {
   return leadInSec + sliceSeconds(slice, tempo, speed) + TAIL_SEC > MAX_TAKE_SEC;

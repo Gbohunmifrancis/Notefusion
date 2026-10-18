@@ -678,7 +678,7 @@
   // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
   // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
   // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=4", "/assets/practice-progress.js?v=3", "/assets/practice-track.js?v=3", "/assets/practice-view.js?v=4"];
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=4", "/assets/practice-progress.js?v=4", "/assets/practice-track.js?v=3", "/assets/practice-view.js?v=5"];
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
   function loadAsset(url) {
@@ -2362,24 +2362,27 @@
     });
     hide($("sing-result")); hide($("sing-live")); $("sing-status").textContent = "";
   }
-  /** A bar of the starting note, then a bar of clicks, on the audio context's clock (at `rate`, 1 = the sheet's tempo). Returns the lead-in length. */
+  /**
+   * The starting note, then clicks to beat one (PR.leadInPlan: five seconds at most), on the audio context's clock
+   * (at `rate`, 1 = the sheet's tempo). Returns the lead-in length.
+   */
   function playLeadIn(ctx, notes, tempo, ts, rate) {
-    var bpb = C.beatsPerBar(ts), beat = 60 / Math.max(30, tempo) / (rate || 1), t0 = ctx.currentTime + 0.05;
+    var plan = PR.leadInPlan(tempo, ts, rate), beat = plan.beatSec, t0 = ctx.currentTime + 0.05;
     var first = notes.slice().sort(function (a, b) { return a.startBeat - b.startBeat; })[0];
-    // The starting note on the same piano the rehearsal player uses, held for the bar. The
+    // The starting note on the same piano the rehearsal player uses, held for its beats. The
     // piano is normally loaded by now (the player fetches it when the sheet is shown); if it
-    // is not, the note starts when it arrives and still ends on the bar-line.
-    var out = C.createPianoOutput(ctx), barEnd = t0 + bpb * beat;
+    // is not, the note starts when it arrives and still ends where the clicks go on alone.
+    var out = C.createPianoOutput(ctx), holdEnd = t0 + plan.holdBeats * beat;
     C.loadPiano(ctx).then(function () {
       var at = Math.max(t0, ctx.currentTime);
-      if (barEnd - at > 0.05) C.pianoNote(ctx, out, first ? first.pitchMidi : 60, barEnd - at, at, 0.9);
+      if (holdEnd - at > 0.05) C.pianoNote(ctx, out, first ? first.pitchMidi : 60, holdEnd - at, at, 0.9);
     }, function () { /* no piano: the clicks still count the singer in */ });
-    for (var i = 0; i < 2 * bpb; i++) {
+    for (var i = 0; i < plan.beats; i++) {
       var at = t0 + i * beat, click = ctx.createOscillator(), cg = ctx.createGain();
-      click.frequency.value = i % bpb === 0 ? 1500 : 1000; cg.gain.setValueAtTime(0.4, at); cg.gain.exponentialRampToValueAtTime(0.0001, at + 0.05);
+      click.frequency.value = (plan.beats - i) % plan.beatsPerBar === 0 ? 1500 : 1000; cg.gain.setValueAtTime(0.4, at); cg.gain.exponentialRampToValueAtTime(0.0001, at + 0.05);
       click.connect(cg); cg.connect(ctx.destination); click.start(at); click.stop(at + 0.06);
     }
-    return 2 * bpb * beat;
+    return plan.seconds;
   }
   $("sing-start").addEventListener("click", function () {
     if (!current || !current.result) return;
@@ -2609,8 +2612,7 @@
     var r = current.result, speed = practice.speed, rg = practice.range;
     var slice = PR.sliceBars(practiceNotes(practice.part), rg.from, rg.to, r.timeSignature);
     if (!slice.notes.length) { $("pr-status").textContent = "There is nothing to sing in these bars. Choose bars with notes in your part."; return; }
-    var leadEstimate = 2 * C.beatsPerBar(r.timeSignature) * 60 / Math.max(30, r.tempo) / speed;
-    if (PR.tooLong(slice, r.tempo, speed, leadEstimate)) { $("pr-status").textContent = "That is more than two minutes to sing. Loop fewer bars, or a faster speed, and try again."; return; }
+    if (PR.tooLong(slice, r.tempo, speed, PR.leadInPlan(r.tempo, r.timeSignature, speed).seconds)) { $("pr-status").textContent = "That is more than two minutes to sing. Loop fewer bars, or a faster speed, and try again."; return; }
     if (player) player.pause();
     hide($("pr-result"));
     practice.marks = null; renderPractice();

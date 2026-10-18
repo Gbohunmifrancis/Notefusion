@@ -361,11 +361,15 @@ export const practiceApi = {
   /** The next drill on the practice path: the same until a take of it is marked. */
   nextDrill: () => api.get<Drill>("/api/practice/drills/next").then((r) => r.data),
 
-  /** Marks a sung drill (free, a session a day) and returns the marks with what the take earned and any milestone. */
-  gradeDrill: (fileUri: string, drillId: string) => {
+  /**
+   * Marks a sung drill (free, a session a day) and returns the marks with what the take earned and any milestone.
+   * `leadInSec` is the count-in the take starts with (lib/take `leadInFor`), so the server finds beat one where it was.
+   */
+  gradeDrill: (fileUri: string, drillId: string, leadInSec: number) => {
     const form = new FormData();
     form.append("audio", { uri: fileUri, name: "drill.m4a", type: "audio/m4a" } as unknown as Blob);
     form.append("drillId", drillId);
+    form.append("leadInSec", String(leadInSec));
     return api.post<GradeResult>("/api/practice/drills/grade", form, { timeout: 60_000 }).then((r) => r.data);
   },
 

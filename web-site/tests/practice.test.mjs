@@ -78,6 +78,44 @@ test("a take's length and the worker's two-minute cap", () => {
   assert.equal(P.tooLong(long, 120, 0.5, 4), true);
 });
 
+// The count-in before every take: [tempo, time signature, beats, the starting note's beats]. The same table is in
+// mobile/src/lib/practice.test.ts.
+const LEAD_INS = [
+  [60, "4/4", 5, 1], [72, "4/4", 6, 2], [90, "4/4", 7, 3], [120, "4/4", 8, 4], [160, "4/4", 8, 4],
+  [60, "3/4", 5, 2], [72, "3/4", 6, 3], [90, "3/4", 6, 3], [120, "3/4", 6, 3], [160, "3/4", 6, 3],
+  [60, "6/8", 5, 2], [72, "6/8", 6, 3], [90, "6/8", 6, 3], [120, "6/8", 6, 3], [160, "6/8", 6, 3],
+  [40, "4/4", 3, 1], [30, "4/4", 2, 1], [60, "2/4", 4, 2],
+];
+
+test("the count-in is the starting note then clicks to beat one, never more than five seconds", () => {
+  assert.equal(P.MAX_LEAD_IN_SEC, 5);
+  for (const [tempo, ts, beats, hold] of LEAD_INS) {
+    const plan = P.leadInPlan(tempo, ts), at = `${tempo} BPM ${ts}`;
+    assert.equal(plan.beats, beats, at);
+    assert.equal(plan.holdBeats, hold, at);
+    assert.ok(Number.isInteger(plan.beats) && Number.isInteger(plan.holdBeats), `${at}: ends on a beat`);
+    assert.ok(plan.holdBeats >= 1 && plan.holdBeats <= plan.beatsPerBar, `${at}: the note is a beat to a bar`);
+    assert.ok(plan.beats - plan.holdBeats >= 1, `${at}: a click after the note`);
+    assert.ok(plan.seconds <= 5 + 1e-9, `${at}: ${plan.seconds} s`);
+    assert.ok(Math.abs(plan.seconds - (beats * 60) / tempo) < 1e-9, `${at}: in time with the tempo`);
+    // Never longer than the old two bars; a whole bar of clicks after the note at any drill's tempo.
+    assert.ok(plan.beats <= 2 * plan.beatsPerBar, at);
+    if (tempo >= 60) assert.equal(plan.beats - plan.holdBeats, plan.beatsPerBar, `${at}: a bar of clicks`);
+  }
+});
+
+test("a slowed take counts in at its own speed, and never on fewer than two beats", () => {
+  same(P.leadInPlan(120, "4/4", 0.5), P.leadInPlan(60, "4/4"));
+  same(P.leadInPlan(96, "3/4", 0.75), P.leadInPlan(72, "3/4"));
+  // 40 BPM at half speed: a beat is 3 s, and the note and one click are the least that give the pulse.
+  const slowest = P.leadInPlan(40, "4/4", 0.5);
+  assert.equal(slowest.beats, 2);
+  assert.equal(slowest.holdBeats, 1);
+  assert.equal(slowest.seconds, 6);
+  // Below the 30 BPM floor every player here keeps to.
+  same(P.leadInPlan(12, "4/4"), P.leadInPlan(30, "4/4"));
+});
+
 test("marks come back on the part's own notes", () => {
   const notes = [n(60, 0, 1), n(62, 4, 1), n(64, 5, 1)];
   const s = P.sliceBars(notes, 2, 2, "4/4");

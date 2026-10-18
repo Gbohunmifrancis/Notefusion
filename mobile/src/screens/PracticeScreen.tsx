@@ -280,7 +280,7 @@ export function PracticeScreen({ navigation }: Props) {
       await setAudioModeAsync({ allowsRecording: false, playsInSilentMode: true });
       const uri = recorder.uri;
       if (!uri) throw new Error("The recording was lost.");
-      const result = await practiceApi.gradeDrill(uri, sung.id);
+      const result = await practiceApi.gradeDrill(uri, sung.id, leadIn.current);
       if (!live.current) return;
       setGrade(result);
       setTakeUri(uri);
