@@ -1,0 +1,32 @@
+{
+  "name": "GIVE ME THE BIBLE",
+  "title": "Give Me the Bible",
+  "music": [
+    {
+      "name": "Edmund S. Lorenz",
+      "born": 1854,
+      "died": 1942,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "11 10 11 10",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "C5:1 Eb4:.5 Ab4:.5 C5:1 C#5:1 | C5:.5 Bb4:.5 Bb4:.5 C5:.5 Ab4:1 Eb4:1 | F4:1 F4:.5 G4:.5 Ab4:1 C#5:1 | C5:.5 C#5:.5 Eb5:.5 C5:.5 Bb4:2 | C5:1 Eb4:.5 Ab4:.5 C5:1 C#5:1 | C5:.5 Bb4:.5 Bb4:.5 C5:.5 Ab4:1 Eb4:1 | F4:1 F4:.5 G4:.5 Ab4:1 C#5:1 | C5:.5 Bb4:.5 Ab4:.5 G4:.5 Ab4:2 | Eb5:1 C5:.5 C#5:.5 Eb5:1 Ab4:1 | C#5:.5 C5:.5 Bb4:.5 Ab4:.5 F4:1 Ab4:1 | Eb4:1 Ab4:.5 Bb4:.5 C5:1 Eb5:1 | C5:.5 C5:.5 Bb4:.5 Ab4:.5 Bb4:2 | C5:1 Eb4:.5 Ab4:.5 C5:1 C#5:1 | C5:.5 Bb4:.5 Bb4:.5 C5:.5 Ab4:1 Eb4:1 | F4:1 F4:.5 G4:.5 Ab4:1 C#5:1 | C5:.5 Bb4:.5 Ab4:.5 G4:.5 Ab4:2",
+  "incipit": "msdmfmrrmrs|lltdfmfsmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000942.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000942a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000942; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000942 (the melody read from 000942a.mid, checked against the page's do-re-mi incipit, 1 note off in 21); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Edmund S. Lorenz's dates (1854–1942) are from https://hymnary.org/person/Lorenz_ES (Lorenz, Edmund S. (Edmund Simon), 1854-1942); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000942a.nwc).",
+  "importedFrom": "cceh:000942",
+  "updated": "2026-10-18"
+}
