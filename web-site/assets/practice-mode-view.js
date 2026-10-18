@@ -736,7 +736,7 @@
     var part = M().voicePartLine(r.voicePart);
     if (part) {
       var card = el("div", "pm-part");
-      card.appendChild(ctx.icon("choir", "pm-part-ic"));
+      card.appendChild(ctx.icon("people", "pm-part-ic"));
       var t = el("div"); t.appendChild(el("strong", null, part)); t.appendChild(el("span", null, "A guide for choir parts, not a label"));
       card.appendChild(t);
       out.push(card);

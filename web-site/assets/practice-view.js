@@ -160,7 +160,7 @@
    * The modes' screens and the live pitch meter: loaded the first time a mode is opened, never with the view.
    * practice-modes.js (the words and arithmetic) comes with the view, for the hub's list.
    */
-  var MODE_ASSETS = ["/assets/practice-modes.css?v=1", "/assets/pitch-track.js?v=1", "/assets/practice-mode-view.js?v=1"];
+  var MODE_ASSETS = ["/assets/practice-modes.css?v=1", "/assets/pitch-track.js?v=1", "/assets/practice-mode-view.js?v=2"];
   /** The modes' icons, drawn inline (24 × 24, stroked): the app's sprite has none of these. */
   var MODE_ICONS = {
     "warm-up": '<circle cx="12" cy="4.6" r="1.9"/><path d="M4.5 9l7.5 1.6L19.5 9M12 10.6V15m0 0l-3.6 6M12 15l3.6 6"/>',
