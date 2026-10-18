@@ -2,9 +2,10 @@ name: CCEH hymn import
 
 # Downloads the Christian Classics Ethereal Hymnary's tunes on GitHub's runners and imports them
 # (docs/BLOG.md, "Tune pages: importing tunes from the CCEH"). The crawl takes 9-13 hours at CCEL's
-# crawl delay, more than one job may run, so it goes in slices of --minutes every six hours; its
-# cache (pages, MIDI and Noteworthy files: third-party files, never committed to this public
-# repository) is carried from run to run in the Actions cache.
+# crawl delay, more than one job may run, so it goes in slices of --minutes; its cache (pages, MIDI and
+# Noteworthy files: third-party files, never committed to this public repository) is carried from run
+# to run in the Actions cache. It ran every six hours until the crawl was complete (all 1,398 tune
+# pages, 18 Oct 2026); it now runs only by hand, e.g. crawl_minutes 0 after new dates are merged.
 #
 # After each slice it imports whatever is cached, builds and checks the site, and when that would
 # publish at least min_new more tunes than main does (or the crawl is complete and anything is new)
@@ -13,8 +14,6 @@ name: CCEH hymn import
 # the summary's undated people to tools/blog/import/cceh-dates.json, opens the PR, merges it), so
 # every PR is the owner's and runs the full CI. Dates merged to main are picked up by the next run.
 on:
-  schedule:
-    - cron: "41 */6 * * *"
   workflow_dispatch:
     inputs:
       crawl_minutes:
