@@ -1,6 +1,19 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { LOCKED, RELOCK_AFTER_MS, isUnlocked, lockMethod, lockReducer, lockedLine, type LockState } from "./adminLock.ts";
+import {
+  IDLE_LOCK_MS,
+  LOCKED,
+  RELOCK_AFTER_MS,
+  cleanCode,
+  idleExpired,
+  isUnlocked,
+  lockMethod,
+  lockReducer,
+  lockedFootnote,
+  lockedLine,
+  lockedTitle,
+  type LockState,
+} from "./adminLock.ts";
 
 const MIN = 60 * 1000;
 const T0 = Date.UTC(2026, 9, 18, 17, 40);
@@ -56,14 +69,31 @@ test("sign-out, an account change or a lock closes it at once", () => {
   assert.deepEqual(lockReducer(LOCKED, { type: "background", at: T0 }), LOCKED);
 });
 
-test("fingerprint or face first, then the phone's PIN, then the account password", () => {
-  assert.equal(lockMethod({ available: true, hasHardware: true, level: 3 }), "biometric");
-  assert.equal(lockMethod({ available: true, hasHardware: true, level: 2 }), "biometric");
-  assert.equal(lockMethod({ available: true, hasHardware: true, level: 1 }), "device");
-  assert.equal(lockMethod({ available: true, hasHardware: false, level: 1 }), "device");
-  assert.equal(lockMethod({ available: true, hasHardware: true, level: 0 }), "password");
-  assert.equal(lockMethod({ available: true, hasHardware: false, level: 0 }), "password");
-  // A build without the module (no store build yet) asks for the password rather than opening.
-  assert.equal(lockMethod({ available: false, hasHardware: true, level: 3 }), "password");
-  for (const m of ["biometric", "device", "password"] as const) assert.ok(lockedLine(m).length > 20);
+test("a strong fingerprint or face with this phone's key; no sensor, the password and an emailed code", () => {
+  assert.equal(lockMethod({ strongBiometrics: true, hasKey: true, wiped: false }), "biometric");
+  assert.equal(lockMethod({ strongBiometrics: true, hasKey: false, wiped: false }), "setup");
+  // A fingerprint added to the phone wiped the key: set up again, never the phone's PIN.
+  assert.equal(lockMethod({ strongBiometrics: true, hasKey: true, wiped: true }), "rekey");
+  // No Class 3 sensor (or none enrolled): the password and an emailed code, whatever key there was.
+  assert.equal(lockMethod({ strongBiometrics: false, hasKey: true, wiped: false }), "code");
+  assert.equal(lockMethod({ strongBiometrics: false, hasKey: false, wiped: false }), "code");
+  for (const m of ["biometric", "setup", "rekey", "code"] as const) {
+    assert.ok(lockedLine(m).length > 20, m);
+    assert.ok(lockedFootnote(m).length > 20, m);
+    assert.ok(lockedTitle(m).length > 5, m);
+    assert.doesNotMatch(lockedLine(m) + lockedFootnote(m), /\bPIN, pattern\b/, m);
+  }
+  assert.match(lockedFootnote("biometric"), /never the phone's PIN/);
+});
+
+test("5 minutes without a tap locks Admin, as the server's pass ends", () => {
+  assert.equal(idleExpired(T0, T0 + IDLE_LOCK_MS - 1), false);
+  assert.equal(idleExpired(T0, T0 + IDLE_LOCK_MS), true);
+  assert.equal(IDLE_LOCK_MS, 5 * MIN);
+});
+
+test("an emailed code is typed as six digits, whatever the keyboard pasted", () => {
+  assert.equal(cleanCode("48 12-90"), "481290");
+  assert.equal(cleanCode("1234567"), "123456");
+  assert.equal(cleanCode("abc"), "");
 });

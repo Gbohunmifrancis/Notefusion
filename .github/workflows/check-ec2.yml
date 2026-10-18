@@ -28,6 +28,7 @@ jobs:
             # as pitch@beat x length, the solfa lines). Metadata only: no audio, no names, no addresses.
             # Push: what Expo and Google answered (ticket and receipt lines, no tokens), and how the admin phones are
             # registered (a token's prefix only, enough to tell two apart).
+            echo "== push: the switch as the API sees it (true = Expo, anything else = logged only)"; docker exec notefusion-prod-api-1 printenv Push__UseExpo || echo "(not set)"; grep -E '^Push__UseExpo=' /opt/notefusion/.env || echo "(not in .env)"
             echo "== push: API lines about Expo, receipts and alerts (last 12 h)"; docker logs -t notefusion-prod-api-1 --since 12h 2>&1 | grep -i -E "expo|push|receipt|payment alert|invalidcredentials|devicenotregistered|mismatchsenderid|activity push" | tail -80 | cut -c1-400
             cd /opt/notefusion
             echo "== push: admin phones"
