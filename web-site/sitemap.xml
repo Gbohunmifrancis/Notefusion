@@ -651,6 +651,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://notefusion.studio/hymns/people/b-b-mckinney</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://notefusion.studio/hymns/people/felix-mendelssohn</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>monthly</changefreq>
@@ -3527,6 +3533,12 @@
   <url>
     <loc>https://notefusion.studio/hymns/tunes/he-lifted-me</loc>
     <lastmod>2026-10-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://notefusion.studio/hymns/tunes/he-lives-on-high</loc>
+    <lastmod>2026-10-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
