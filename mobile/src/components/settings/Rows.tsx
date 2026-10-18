@@ -20,10 +20,13 @@ export function Group({
   title,
   children,
   style,
+  cardStyle,
 }: {
   title?: string;
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  /** The card's own style: a sheet's groups take the sheet's row fill (a-core/11). */
+  cardStyle?: StyleProp<ViewStyle>;
 }) {
   const styles = useThemedStyles(makeStyles);
   // Rows after the first draw the hairline above themselves.
@@ -35,7 +38,7 @@ export function Group({
           {title}
         </Text>
       ) : null}
-      <View style={styles.group}>
+      <View style={[styles.group, cardStyle]}>
         {rows.map((row, i) =>
           React.isValidElement<RowProps>(row) && row.type === Row ? React.cloneElement(row, { first: i === 0 }) : row,
         )}

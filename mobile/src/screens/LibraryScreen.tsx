@@ -17,17 +17,15 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Touchable } from "../components/Touchable";
-import { Button } from "../components/Button";
-import { Sheet, SheetActions, SheetTitle } from "../components/Sheet";
-import { TextField } from "../components/TextField";
 import { Mark } from "../components/night/NightUI";
 import { LibraryRow, LibraryRowSkeleton } from "../components/library/LibraryRow";
 import { SelectionBar } from "../components/library/SelectionBar";
 import { useColors, useThemedStyles } from "../lib/theme";
-import { choirApi, libraryApi } from "../api/endpoints";
+import { libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { showDialog } from "../lib/dialog";
 import * as haptics from "../lib/haptics";
+import { useSheetActions } from "../components/library/useSheetActions";
 import { useSubscription } from "../lib/subscription";
 import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLibrary";
 import { resultFromSaved } from "../lib/openSheet";
@@ -74,21 +72,22 @@ export function LibraryScreen() {
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
   // Folders ("Sunday choir", "Easter service"): the tab chosen, and the sheets waiting for a new name.
   const [folder, setFolder] = useState<string | null>(null);
-  const [naming, setNaming] = useState<SavedTranscription[] | null>(null);
-  const [newFolder, setNewFolder] = useState("");
   const [sharingFolder, setSharingFolder] = useState(false);
   // A folder's link is only known once it has been asked for (asking makes it), so the
   // banner can say "shared" for the folders shared during this visit and no others.
   const [folderLinks, setFolderLinks] = useState<Record<string, string>>({});
   // Select mode is simply "something is selected": clearing the last tick leaves it.
   const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
-  const [sharingSelection, setSharingSelection] = useState(false);
   const selecting = selected.size > 0;
 
-  const folders = React.useMemo(
-    () => [...new Set(items.map((i) => i.folder).filter((f): f is string => !!f))].sort((a, b) => a.localeCompare(b)),
-    [items],
-  );
+  // Share, file and delete the chosen sheets: the same actions as Home's recent rows (board a-core/11).
+  const actions = useSheetActions({
+    items,
+    setItems,
+    reload: () => load(),
+    onDone: () => setSelected(new Set()),
+  });
+  const folders = actions.folders;
   const folderCounts = React.useMemo(() => {
     const counts = new Map<string, number>();
     for (const i of items) if (i.folder) counts.set(i.folder, (counts.get(i.folder) ?? 0) + 1);
@@ -210,43 +209,6 @@ export function LibraryScreen() {
     toggle(item);
   }
 
-  /** Files sheets; the list updates in place, so the tabs follow at once. */
-  async function fileIn(targets: SavedTranscription[], name: string | null) {
-    const results = await Promise.allSettled(targets.map((t) => libraryApi.setFolder(t.id, name)));
-    const moved = new Set(targets.filter((_, i) => results[i]!.status === "fulfilled").map((t) => t.id));
-    setItems((prev) => prev.map((t) => (moved.has(t.id) ? { ...t, folder: name } : t)));
-    const failure = results.find((r): r is PromiseRejectedResult => r.status === "rejected");
-    if (failure) {
-      showDialog({ title: "Could not move the sheet", message: toApiError(failure.reason).message, icon: "alert-circle-outline", tone: "danger" });
-    } else {
-      haptics.play("success");
-      setSelected(new Set());
-    }
-  }
-
-  function chooseFolder(targets: SavedTranscription[]) {
-    if (targets.length === 0) return;
-    const one = targets.length === 1 ? targets[0]! : null;
-    showDialog({
-      kind: "options",
-      title: one ? one.title : `${targets.length} sheets`,
-      message: "Move to a folder",
-      actions: [
-        ...folders.slice(0, 6).map((f) => ({
-          label: f,
-          icon: "folder-outline" as const,
-          selected: targets.every((t) => t.folder === f),
-          onPress: () => void fileIn(targets, f),
-        })),
-        { label: "New folder…", icon: "add", onPress: () => { setNewFolder(""); setNaming(targets); } },
-        ...(targets.some((t) => t.folder)
-          ? [{ label: "Take out of folder", icon: "remove-circle-outline" as const, onPress: () => void fileIn(targets, null) }]
-          : []),
-        { label: "Cancel", style: "cancel" as const },
-      ],
-    });
-  }
-
   async function shareFolder() {
     if (!folder) return;
     setSharingFolder(true);
@@ -259,101 +221,6 @@ export function LibraryScreen() {
     } finally {
       setSharingFolder(false);
     }
-  }
-
-  /** Each selected sheet's public link, made if needed, sent in one message. */
-  async function shareSelected(targets: SavedTranscription[]) {
-    if (targets.length === 0) return;
-    setSharingSelection(true);
-    try {
-      const links = await Promise.all(targets.map((t) => libraryApi.share(t.id)));
-      const tokens = new Map(targets.map((t, i) => [t.id, links[i]!.token]));
-      setItems((prev) => prev.map((t) => (tokens.has(t.id) ? { ...t, shareToken: tokens.get(t.id) } : t)));
-      const message =
-        targets.length === 1
-          ? `${targets[0]!.title} — Tonic Solfa on NoteFusion\n${links[0]!.url}`
-          : ["Tonic Solfa on NoteFusion", ...targets.map((t, i) => `${t.title}\n${links[i]!.url}`)].join("\n\n");
-      await Share.share({ message });
-      setSelected(new Set());
-    } catch (e) {
-      showDialog({ title: "Could not share", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
-    } finally {
-      setSharingSelection(false);
-    }
-  }
-
-  /** In a choir, the share button asks where: the choir's library, or public links as before. */
-  function chooseShare(targets: SavedTranscription[]) {
-    if (targets.length === 0) return;
-    if (!choirName) {
-      void shareSelected(targets);
-      return;
-    }
-    const allShared = targets.every((t) => t.sharedWithChoir);
-    showDialog({
-      kind: "options",
-      title: targets.length === 1 ? targets[0]!.title : `${targets.length} sheets`,
-      message: "Share",
-      actions: [
-        allShared
-          ? { label: "Take out of choir library", icon: "people-outline", onPress: () => void shareWithChoir(targets, false) }
-          : { label: `Share with ${choirName}`, icon: "people-outline", onPress: () => void shareWithChoir(targets, true) },
-        { label: "Send links", icon: "link-outline", onPress: () => void shareSelected(targets) },
-        { label: "Cancel", style: "cancel" },
-      ],
-    });
-  }
-
-  /** Puts the sheets in the choir's shared library, or takes them out of it. */
-  async function shareWithChoir(targets: SavedTranscription[], share: boolean) {
-    const results = await Promise.allSettled(targets.map((t) => (share ? choirApi.share(t.id) : choirApi.unshare(t.id))));
-    const done = new Set(targets.filter((_, i) => results[i]!.status === "fulfilled").map((t) => t.id));
-    setItems((prev) => prev.map((t) => (done.has(t.id) ? { ...t, sharedWithChoir: share } : t)));
-    setSelected(new Set());
-    const failure = results.find((r): r is PromiseRejectedResult => r.status === "rejected");
-    if (failure) {
-      showDialog({ title: "Could not share with your choir", message: toApiError(failure.reason).message, icon: "alert-circle-outline", tone: "danger" });
-    } else if (share) {
-      haptics.play("success");
-    }
-  }
-
-  function confirmDelete(targets: SavedTranscription[]) {
-    if (targets.length === 0) return;
-    // The bar's trash is one tap from losing work, so the dialog leads with the warning buzz.
-    haptics.play("warning");
-    const one = targets.length === 1 ? targets[0]! : null;
-    showDialog({
-      title: one ? "Delete this sheet?" : `Delete ${targets.length} sheets?`,
-      message: one
-        ? `“${one.title}” is removed from your library, along with any link you shared. This can't be undone.`
-        : `These ${targets.length} sheets are removed from your library, along with any links you shared. This can't be undone.`,
-      icon: "trash-outline",
-      tone: "danger",
-      actions: [
-        {
-          label: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            const ids = new Set(targets.map((t) => t.id));
-            setItems((prev) => prev.filter((t) => !ids.has(t.id)));
-            setSelected(new Set());
-            const results = await Promise.allSettled(targets.map((t) => libraryApi.remove(t.id)));
-            const failure = results.find((r): r is PromiseRejectedResult => r.status === "rejected");
-            if (failure) {
-              showDialog({
-                title: "Could not delete",
-                message: toApiError(failure.reason).message,
-                icon: "alert-circle-outline",
-                tone: "danger",
-              });
-              load();
-            }
-          },
-        },
-        { label: "Cancel", style: "cancel" },
-      ],
-    });
   }
 
   function chooseSort() {
@@ -629,37 +496,14 @@ export function LibraryScreen() {
       {selecting && (
         <SelectionBar
           count={selected.size}
-          sharing={sharingSelection}
+          sharing={actions.sharing}
           onClose={() => setSelected(new Set())}
-          onDelete={() => confirmDelete(selectedItems)}
-          onMove={() => chooseFolder(selectedItems)}
-          onShare={() => chooseShare(selectedItems)}
+          onDelete={() => actions.confirmDelete(selectedItems)}
+          onMove={() => actions.chooseFolder(selectedItems)}
+          onShare={() => actions.chooseShare(selectedItems)}
         />
       )}
-      {/* One field, then [Cancel] [Create]: the new folder is made by filing the sheets in it. */}
-      <Sheet visible={naming !== null} onClose={() => setNaming(null)} avoidKeyboard>
-        <SheetTitle>New folder</SheetTitle>
-        <TextField
-          label="Folder name"
-          placeholder="Sunday choir, Easter service…"
-          value={newFolder}
-          onChangeText={setNewFolder}
-          autoFocus
-          maxLength={80}
-        />
-        <SheetActions style={styles.namingActions}>
-          <Button label="Cancel" variant="text" onPress={() => setNaming(null)} />
-          <Button
-            label="Create"
-            disabled={newFolder.trim().length === 0}
-            onPress={() => {
-              const targets = naming;
-              setNaming(null);
-              if (targets) void fileIn(targets, newFolder.trim());
-            }}
-          />
-        </SheetActions>
-      </Sheet>
+      {actions.element}
     </Screen>
   );
 }
@@ -874,10 +718,5 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.medium,
       fontSize: 14,
       color: c.text,
-    },
-
-    // ── New folder sheet ──────────────────────────────────────────────────────
-    namingActions: {
-      marginTop: spacing.lg,
     },
   });

@@ -4,7 +4,6 @@ import {
   Image,
   Linking,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   View,
@@ -57,7 +56,8 @@ import { sectionOf } from "../lib/clipRange";
 import { choosePart, defaultRange, levels, partsOf, practiceTempo, speedsFor, type Balance } from "../lib/practice";
 import { logAnalyticsEvent } from "../lib/analytics";
 import { isNetworkCode } from "../lib/reachability";
-import { setSheetPinned, useOfflineLibrary } from "../lib/offlineLibrary";
+import { useOfflineLibrary } from "../lib/offlineLibrary";
+import { askToDelete, deleteSheets, keepSheetOffline, renameSheet, shareSheetLinks } from "../lib/sheetActions";
 import { transposeLocally } from "../lib/localTranspose";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { rating } from "../lib/rating";
@@ -1038,15 +1038,9 @@ export function ResultScreen({ route, navigation }: Props) {
       return;
     }
     setSharing(true);
-    try {
-      const link = await libraryApi.share(savedId);
-      setShareToken(link.token);
-      await Share.share({ message: `${committedTitle || title} — Tonic Solfa on NoteFusion\n${link.url}`, url: link.url });
-    } catch (e) {
-      showDialog({ title: "Could not share", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
-    } finally {
-      setSharing(false);
-    }
+    const tokens = await shareSheetLinks([{ id: savedId, title: committedTitle || title }]);
+    if (tokens) setShareToken(tokens.get(savedId) ?? null);
+    setSharing(false);
   }
 
   async function stopSharing() {
@@ -1065,20 +1059,9 @@ export function ResultScreen({ route, navigation }: Props) {
   async function rename() {
     if (!savedId) return;
     setRenaming(true);
-    try {
-      const updated = await libraryApi.rename(savedId, title.trim());
-      setCommittedTitle(updated.title);
-      showToast("Renamed");
-    } catch (e) {
-      showDialog({
-        title: "Could not rename",
-        message: toApiError(e).message,
-        icon: "alert-circle-outline",
-        tone: "danger",
-      });
-    } finally {
-      setRenaming(false);
-    }
+    const kept = await renameSheet(savedId, title);
+    if (kept !== null) setCommittedTitle(kept);
+    setRenaming(false);
   }
 
   // ── Export (MusicXML) ──────────────────────────────────────────────────────
@@ -1255,18 +1238,7 @@ export function ResultScreen({ route, navigation }: Props) {
       actions.push({
         label: offlineCopies.keepAll ? "Kept offline (all sheets)" : kept ? "Don't keep offline" : "Keep offline",
         icon: kept ? "cloud-done-outline" : "cloud-download-outline",
-        onPress: offlineCopies.keepAll
-          ? undefined
-          : () =>
-              void setSheetPinned(savedId, !kept).then(
-                () => haptics.play("success"),
-                (e) =>
-                  showDialog({
-                    title: "Couldn't keep it offline",
-                    message: isNetworkCode(toApiError(e).code) ? "You're offline. Try again when you're back online." : toApiError(e).message,
-                    icon: "cloud-offline-outline",
-                  }),
-              ),
+        onPress: offlineCopies.keepAll ? undefined : () => void keepSheetOffline(savedId, !kept),
       });
       actions.push({
         label: "Delete from Library",
@@ -1286,36 +1258,15 @@ export function ResultScreen({ route, navigation }: Props) {
     });
   }
 
+  /** The same question as every delete of a saved sheet (lib/sheetActions); gone, the screen closes. */
   function confirmDeleteSheet(id: string) {
-    showDialog({
-      title: "Delete this sheet?",
-      message: `“${shownTitle || "This sheet"}” is removed from your library, along with any link you shared. This can't be undone.`,
-      icon: "trash-outline",
-      tone: "danger",
-      actions: [
-        {
-          label: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await libraryApi.remove(id);
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              } else {
-                navigation.navigate("Tabs", { screen: "Library" });
-              }
-            } catch (e) {
-              showDialog({
-                title: "Could not delete",
-                message: toApiError(e).message,
-                icon: "alert-circle-outline",
-                tone: "danger",
-              });
-            }
-          },
-        },
-        { label: "Cancel", style: "cancel" },
-      ],
+    askToDelete([{ id, title: shownTitle || "This sheet" }], async () => {
+      if (!(await deleteSheets([{ id, title: shownTitle }]))) return;
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+      } else {
+        navigation.navigate("Tabs", { screen: "Library" });
+      }
     });
   }
 
