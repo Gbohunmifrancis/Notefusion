@@ -549,6 +549,7 @@ server/tests/accuracy/real_report.json
 server/tests/accuracy/vocal_report.json
 server/tests/accuracy/vocal_slices_report.json
 server/tests/accuracy/hymn_report.json
+server/tests/accuracy/song_report.json
 
 # ── Scratch tooling: design previews, palette audits, verification scripts ──
 .preview/
