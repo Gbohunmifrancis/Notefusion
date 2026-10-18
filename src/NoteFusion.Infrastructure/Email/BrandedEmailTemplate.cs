@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Net;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 
 namespace NoteFusion.Infrastructure.Email;
@@ -230,6 +231,68 @@ public sealed partial class BrandedEmailTemplate
                 "",
                 "If you didn't sign up for NoteFusion, ignore this email — the account isn't active",
                 "and nobody can sign into it without this code."));
+    }
+
+    public EmailMessage AdminCode(EmailRecipient to, string code, bool setup)
+    {
+        var what = setup ? "set Admin up on a phone" : "open Admin on your phone";
+        var body = Paragraphs(
+            $"Enter this code in the NoteFusion app to {what}.")
+            + CodeBlock(code)
+            + Paragraphs("The code expires in <strong>10 minutes</strong> and works once.")
+            + Callout(
+                "If you didn't just ask for it, someone has your NoteFusion password. Change it now and contact us at "
+                    + $"<a href=\"mailto:{Encode(_settings.SupportEmail)}\" style=\"color:{Blue};"
+                    + $"text-decoration:underline\">{Encode(_settings.SupportEmail)}</a>.",
+                Danger);
+
+        return Compose(
+            to,
+            subject: $"{code} is your NoteFusion Admin code",
+            preheader: $"Enter it in the app to {what}. It expires in 10 minutes.",
+            heading: setup ? "Set up Admin on a phone" : "Open Admin",
+            bodyHtml: body,
+            // No button: a code that travels in a link ends up in a browser history.
+            cta: null,
+            textBody: Text(
+                $"Enter this code in the NoteFusion app to {what}:",
+                "",
+                $"    {code}",
+                "",
+                "The code expires in 10 minutes and works once.",
+                "",
+                "If you didn't just ask for it, someone has your NoteFusion password.",
+                $"Change it now and contact us at {_settings.SupportEmail}."));
+    }
+
+    public EmailMessage AdminPhoneAdded(EmailRecipient to, string phoneLabel, DateTime atUtc)
+    {
+        var when = (atUtc + FreeTier.WestAfricaOffset)
+            .ToString("ddd d MMM yyyy, HH:mm", CultureInfo.InvariantCulture) + " (West Africa Time)";
+        var body = Paragraphs(
+            "Admin was just set up on a phone. From now on that phone's fingerprint or face opens it.")
+            + FactTable(("Phone", Encode(phoneLabel)), ("When", Encode(when)))
+            + Callout(
+                "If this wasn't you, someone has your password and your email. Change your password now and contact us at "
+                    + $"<a href=\"mailto:{Encode(_settings.SupportEmail)}\" style=\"color:{Blue};"
+                    + $"text-decoration:underline\">{Encode(_settings.SupportEmail)}</a>.",
+                Danger);
+
+        return Compose(
+            to,
+            subject: "Admin was set up on a phone",
+            preheader: "If this wasn't you, act now.",
+            heading: "A phone can open Admin",
+            bodyHtml: body,
+            cta: null,
+            textBody: Text(
+                "Admin was just set up on a phone. From now on that phone's fingerprint or face opens it.",
+                "",
+                $"Phone: {phoneLabel}",
+                $"When: {when}",
+                "",
+                "If this wasn't you, someone has your password and your email.",
+                $"Change your password now and contact us at {_settings.SupportEmail}."));
     }
 
     public EmailMessage SubscriptionReceipt(EmailRecipient to, SubscriptionReceipt receipt)

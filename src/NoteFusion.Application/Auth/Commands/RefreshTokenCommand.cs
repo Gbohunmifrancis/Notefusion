@@ -100,7 +100,9 @@ public sealed class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCom
 
         user.RecordSuccessfulLogin(now);
 
-        var tokens = _tokenIssuer.Issue(user);
+        // The client the chain began on, never the one this request names: a phone's token refreshed by a thief
+        // pretending to be a browser is still a phone token. Rows from before it was kept read the request.
+        var tokens = _tokenIssuer.Issue(user, stored.Client);
 
         // Link the rotated token so the chain is auditable and a later reuse is recognised as one. The row is
         // already revoked in the database; this writes the same state plus the successor.

@@ -37,6 +37,8 @@ public sealed class AdminAlertsController : ApiControllerBase
 
     /// <summary>"Mute 1 hour": <c>minutes</c> 1–1440 of alerts without a sound, or 0 to unmute.</summary>
     [HttpPost("device/mute")]
+    // The notification's own "Mute 1 hour" button: it runs without opening Admin, and only quietens this phone.
+    [AllowLockedPhone]
     public async Task<IActionResult> Mute(MutePaymentAlertsRequest body, CancellationToken ct)
         => HandleResult(await _sender.Send(new MutePaymentAlertsCommand(body.Token, body.Minutes), ct));
 
@@ -47,8 +49,8 @@ public sealed class AdminAlertsController : ApiControllerBase
 }
 
 /// <summary>
-/// The phone admin's lock (board f-admin/10). The phone asks for a fingerprint, face or the phone's own PIN; on a
-/// phone with none of those the admin types their account password, checked here. Admin-only like every admin route.
+/// The account password, confirming a destructive action on a phone with no fingerprint or face sensor (board
+/// f-admin/10): checked here, and the phone's open pass marked freshly confirmed. Admin-only like every admin route.
 /// </summary>
 [Authorize(Policy = AuthorizationPolicies.Admin)]
 [Route("api/admin/lock")]
@@ -64,7 +66,8 @@ public sealed class AdminLockController : ApiControllerBase
     /// </summary>
     [HttpPost("password")]
     public async Task<IActionResult> Password(ConfirmAdminPasswordRequest body, CancellationToken ct)
-        => HandleNoContent(await _sender.Send(new ConfirmAdminPasswordCommand(body.Password), ct));
+        => HandleNoContent(await _sender.Send(
+            new ConfirmAdminPasswordCommand(body.Password, AdminPhoneLockController.SessionOf(Request)), ct));
 }
 
 /// <summary>JSON body of <c>POST /api/admin/lock/password</c>.</summary>

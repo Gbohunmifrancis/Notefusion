@@ -1,6 +1,6 @@
 using FluentValidation;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Admin.PhoneLock;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Shared.Results;
@@ -8,11 +8,11 @@ using NoteFusion.Shared.Results;
 namespace NoteFusion.Application.Admin.Commands;
 
 /// <summary>
-/// The phone admin's lock on a phone with no screen lock and no fingerprint or face (board f-admin/10): the admin
-/// types their own account password instead. Checks it and nothing else: no token is issued, no session changes. A
-/// wrong one counts towards the same lockout a wrong sign-in does, so this is no easier a door to guess at.
+/// The admin types their own account password to confirm a destructive action on a phone with no fingerprint or face
+/// sensor (board f-admin/10). Checks it (a wrong one counts towards the sign-in lockout) and, given the phone's open
+/// Admin pass, marks the pass freshly confirmed, which those actions require of a phone.
 /// </summary>
-public sealed record ConfirmAdminPasswordCommand(string Password) : IRequest<Result>;
+public sealed record ConfirmAdminPasswordCommand(string Password, string? Session = null) : IRequest<Result>;
 
 public sealed class ConfirmAdminPasswordCommandValidator : AbstractValidator<ConfirmAdminPasswordCommand>
 {
@@ -21,28 +21,25 @@ public sealed class ConfirmAdminPasswordCommandValidator : AbstractValidator<Con
 
 public sealed class ConfirmAdminPasswordCommandHandler : IRequestHandler<ConfirmAdminPasswordCommand, Result>
 {
-    public static readonly Error Incorrect =
-        Error.Validation("ADMIN_PASSWORD_INCORRECT", "That password is not right. Try again.");
-
-    public static readonly Error NotSet =
-        Error.Validation("ADMIN_PASSWORD_NOT_SET",
-            "This account signs in with Google, so it has no password to check. Set a screen lock on this phone to open Admin.");
-
-    public static readonly Error LockedOut =
-        Error.Forbidden("ADMIN_PASSWORD_LOCKED", "Too many tries. Wait 15 minutes, then try again.");
+    public static readonly Error Incorrect = AdminPassword.Incorrect;
+    public static readonly Error NotSet = AdminPassword.NotSet;
+    public static readonly Error LockedOut = AdminPassword.LockedOut;
 
     private readonly IApplicationDbContext _db;
     private readonly ICurrentUser _caller;
     private readonly IPasswordHasher _hasher;
     private readonly IDateTimeProvider _clock;
+    private readonly IAdminPhoneLock? _lock;
 
     public ConfirmAdminPasswordCommandHandler(
-        IApplicationDbContext db, ICurrentUser caller, IPasswordHasher hasher, IDateTimeProvider clock)
+        IApplicationDbContext db, ICurrentUser caller, IPasswordHasher hasher, IDateTimeProvider clock,
+        IAdminPhoneLock? phoneLock = null)
     {
         _db = db;
         _caller = caller;
         _hasher = hasher;
         _clock = clock;
+        _lock = phoneLock;
     }
 
     public async Task<Result> Handle(ConfirmAdminPasswordCommand request, CancellationToken ct)
@@ -50,21 +47,12 @@ public sealed class ConfirmAdminPasswordCommandHandler : IRequestHandler<Confirm
         if (_caller.UserId is not { } userId)
             return AdminErrors.NotAuthenticated;
 
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId, ct);
-        if (user is null)
-            return AdminErrors.NotAuthenticated;
-        if (user.PasswordHash is null)
-            return NotSet;
-
         var now = _clock.UtcNow;
-        if (user.IsLockedOut(now))
-            return LockedOut;
+        var checkedUser = await AdminPassword.CheckAsync(_db, _hasher, userId, request.Password, now, ct);
+        if (checkedUser.IsFailure)
+            return checkedUser.Error;
 
-        if (_hasher.Verify(request.Password, user.PasswordHash))
-            return Result.Success();
-
-        user.RecordFailedLogin(now);
-        await _db.SaveChangesAsync(ct);
-        return user.IsLockedOut(now) ? LockedOut : Incorrect;
+        _lock?.MarkFresh(request.Session, userId, now);
+        return Result.Success();
     }
 }

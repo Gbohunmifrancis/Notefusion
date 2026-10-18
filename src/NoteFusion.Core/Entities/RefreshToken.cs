@@ -19,7 +19,14 @@ public class RefreshToken : BaseEntity
     public DateTime? RevokedAt { get; private set; }
     public Guid? ReplacedByTokenId { get; private set; }
 
-    public static RefreshToken Issue(Guid userId, string tokenHash, DateTime issuedAt, DateTime expiresAt)
+    /// <summary>
+    /// Which client the sign-in came from, <see cref="ClientKinds"/>: kept through every rotation, so a token taken off
+    /// the phone stays a phone token whatever the thief's request claims to be. Null on rows from before it was kept.
+    /// </summary>
+    public string? Client { get; private set; }
+
+    public static RefreshToken Issue(
+        Guid userId, string tokenHash, DateTime issuedAt, DateTime expiresAt, string? client = null)
         => new()
         {
             Id = Guid.NewGuid(),
@@ -27,7 +34,8 @@ public class RefreshToken : BaseEntity
             TokenHash = Guard.NotNullOrWhiteSpace(tokenHash),
             IssuedAt = issuedAt,
             ExpiresAt = expiresAt,
-            IsRevoked = false
+            IsRevoked = false,
+            Client = client
         };
 
     public bool IsActive(DateTime utcNow) => !IsRevoked && ExpiresAt > utcNow;
@@ -39,4 +47,17 @@ public class RefreshToken : BaseEntity
         RevokedAt = utcNow;
         ReplacedByTokenId = replacedByTokenId;
     }
+}
+
+/// <summary>The clients a sign-in can come from (<see cref="RefreshToken.Client"/>, the access token's <c>nf_client</c>).</summary>
+public static class ClientKinds
+{
+    /// <summary>The access token's claim that carries it.</summary>
+    public const string Claim = "nf_client";
+
+    /// <summary>The mobile app.</summary>
+    public const string App = "app";
+
+    /// <summary>A browser: the website, the web app, the admin console.</summary>
+    public const string Web = "web";
 }

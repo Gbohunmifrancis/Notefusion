@@ -134,6 +134,8 @@ public static class DependencyInjection
         });
         services.AddSingleton<IPasskeyCeremony, Fido2PasskeyCeremony>();
         services.AddSingleton<IPasskeyChallengeStore, InMemoryPasskeyChallengeStore>();
+        // The phone admin lock's codes and passes (one instance, like the challenges above).
+        services.AddSingleton<IAdminPhoneLock, InMemoryAdminPhoneLock>();
     }
 
     private static void AddPush(this IServiceCollection services, IConfiguration configuration)

@@ -73,6 +73,12 @@ public sealed class EmailSender : IEmailSender
     public Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default)
         => TrySendAsync(EmailKind.Verification, _template.VerifyEmail(to, code), ct);
 
+    public Task SendAdminCodeAsync(EmailRecipient to, string code, bool setup, CancellationToken ct = default)
+        => TrySendAsync(EmailKind.AdminCode, _template.AdminCode(to, code, setup), ct);
+
+    public Task SendAdminPhoneAddedAsync(EmailRecipient to, string phoneLabel, DateTime atUtc, CancellationToken ct = default)
+        => TrySendAsync(EmailKind.AdminPhoneAdded, _template.AdminPhoneAdded(to, phoneLabel, atUtc), ct);
+
     public Task SendTranscriptionFailedAsync(EmailRecipient to, bool onPro, CancellationToken ct = default)
         => TrySendAsync(EmailKind.TranscriptionTips, _template.TranscriptionFailed(to, onPro), ct);
 

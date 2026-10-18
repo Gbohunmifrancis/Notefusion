@@ -66,7 +66,7 @@ export function AdminFlagsScreen() {
 
   /** A quiet change (the preview, the date): the phone's lock, then the save; a sheet only when the phone has none. */
   async function guarded(reason: string, change: FeatureFlagChange, done: string) {
-    if (method === "password") {
+    if (method === "code") {
       setConfirm({
         title: reason,
         message: "Every change to a flag changes what someone sees, so it is confirmed first.",

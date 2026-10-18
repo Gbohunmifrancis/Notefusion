@@ -110,6 +110,15 @@ public interface IEmailSender
     Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default);
 
     /// <summary>
+    /// The six-digit code that sets Admin up on a phone (<paramref name="setup"/>) or opens it on a phone with no
+    /// fingerprint or face sensor. Asked for with the account password, so the inbox is the second thing proved.
+    /// </summary>
+    Task SendAdminCodeAsync(EmailRecipient to, string code, bool setup, CancellationToken ct = default);
+
+    /// <summary>Security notice: Admin was set up on a phone. If it was not the admin, this is how they find out.</summary>
+    Task SendAdminPhoneAddedAsync(EmailRecipient to, string phoneLabel, DateTime atUtc, CancellationToken ct = default);
+
+    /// <summary>
     /// Sends a custom branded message drafted by an administrator to the specified recipient.
     /// </summary>
     Task SendCustomEmailAsync(

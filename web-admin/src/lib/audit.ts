@@ -36,6 +36,7 @@ export const AUDIT_ACTIONS: readonly { value: AuditAction; label: string; tone: 
   { value: "PasskeySignIn", label: "Passkey sign-in", tone: "neutral" },
   // Changes what everyone sees (the Christmas season), so it reads as a change.
   { value: "SetFeatureFlag", label: "Feature flag", tone: "blue" },
+  { value: "SetUpAdminPhone", label: "Phone set up for Admin", tone: "blue" },
 ];
 
 const BY_VALUE = new Map(AUDIT_ACTIONS.map((entry) => [entry.value, entry]));

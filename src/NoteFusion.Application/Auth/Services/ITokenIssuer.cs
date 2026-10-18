@@ -11,5 +11,9 @@ namespace NoteFusion.Application.Auth.Services;
 /// </summary>
 public interface ITokenIssuer
 {
-    TokenPairResponse Issue(User user);
+    /// <param name="client">
+    /// The client the sign-in came from (<see cref="ClientKinds"/>); null reads it off the request. A refresh passes the
+    /// spent token's own, so a token keeps the client it was first issued to.
+    /// </param>
+    TokenPairResponse Issue(User user, string? client = null);
 }

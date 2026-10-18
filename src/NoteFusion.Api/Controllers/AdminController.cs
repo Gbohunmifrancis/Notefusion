@@ -141,6 +141,7 @@ public sealed class AdminController : ApiControllerBase
     /// paying customer is <c>subscription/end</c>, which is a separate and separately confirmed act.
     /// </summary>
     [HttpPost("users/{id:guid}/revoke-pro")]
+    [FreshPhoneUnlock]
     public async Task<IActionResult> RevokePro(Guid id, NoteBody? body, CancellationToken ct)
         => HandleNoContent(await _sender.Send(new RevokeProCommand(id, body?.Note), ct));
 
@@ -155,6 +156,7 @@ public sealed class AdminController : ApiControllerBase
     /// money already taken is moved back through the provider, not through here.
     /// </summary>
     [HttpPost("users/{id:guid}/subscription/end")]
+    [FreshPhoneUnlock]
     public async Task<IActionResult> EndSubscription(Guid id, NoteBody? body, CancellationToken ct)
         => HandleNoContent(await _sender.Send(new EndSubscriptionCommand(id, body?.Note), ct));
 
@@ -169,6 +171,7 @@ public sealed class AdminController : ApiControllerBase
     /// console states that window rather than implying the account is cut off the moment this returns.
     /// </remarks>
     [HttpPost("users/{id:guid}/suspend")]
+    [FreshPhoneUnlock]
     public async Task<IActionResult> Suspend(Guid id, NoteBody? body, CancellationToken ct)
         => HandleNoContent(await _sender.Send(new SuspendUserCommand(id, body?.Note), ct));
 
@@ -190,6 +193,7 @@ public sealed class AdminController : ApiControllerBase
         => HandleNoContent(await _sender.Send(new SetInternalAccountCommand(id, body.IsInternal, body.Note), ct));
 
     [HttpPost("users/{id:guid}/role")]
+    [FreshPhoneUnlock]
     public async Task<IActionResult> Role(Guid id, RoleBody body, CancellationToken ct)
         => HandleNoContent(await _sender.Send(new SetUserRoleCommand(id, body.Role, body.Note), ct));
 

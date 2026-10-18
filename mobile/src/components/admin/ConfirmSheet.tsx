@@ -55,7 +55,7 @@ export function ConfirmSheet({ request, onClose }: { request: ConfirmRequest | n
   }, [request]);
 
   const r = request ?? shown;
-  const askPassword = Boolean(r?.secondAsk) && method === "password";
+  const askPassword = Boolean(r?.secondAsk) && method === "code";
 
   async function go() {
     if (!r || busy) return;
@@ -105,7 +105,7 @@ export function ConfirmSheet({ request, onClose }: { request: ConfirmRequest | n
           ) : null}
           {askPassword ? (
             <View style={s.field}>
-              <Text style={s.label}>This phone has no screen lock. Your NoteFusion password confirms it.</Text>
+              <Text style={s.label}>This phone has no fingerprint or face sensor. Your NoteFusion password confirms it.</Text>
               <TextInput
                 value={password}
                 onChangeText={setPassword}
