@@ -77,6 +77,14 @@ jobs:
           path: ${{ runner.temp }}/cceh-cache
           key: cceh-cache-${{ github.run_id }}-${{ github.run_attempt }}
 
+      # The crawl takes hours, and main moves on meanwhile. The token cannot push a branch whose workflow
+      # files differ from main's, so the import is built on main as it is now, not as it was at the start.
+      - name: Move to the latest main
+        run: |
+          git fetch --no-tags --depth=1 origin main
+          git checkout --force --detach FETCH_HEAD
+          (cd tools/blog && npm ci)
+
       - name: Import and build
         run: |
           node tools/blog/import/cceh-run.mjs --cache "$CACHE" --date "$(date -u +%F)"
