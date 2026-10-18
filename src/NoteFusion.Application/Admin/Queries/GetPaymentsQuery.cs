@@ -36,7 +36,8 @@ public sealed record GetPaymentsQuery(
     bool StuckOnly = false,
     DateTime? FromUtc = null,
     DateTime? ToUtc = null,
-    string? Search = null) : IRequest<Result<PagedResultDto<AdminPaymentRowDto>>>
+    string? Search = null,
+    bool NeedsLook = false) : IRequest<Result<PagedResultDto<AdminPaymentRowDto>>>
 {
     public const int MaxPageSize = 100;
 }
@@ -78,6 +79,14 @@ public sealed class GetPaymentsQueryHandler
         if (request.StuckOnly)
         {
             query = query.Where(t => t.Status == PaymentStatus.Processing && t.UpdatedAtUtc < stuckCutoff);
+        }
+
+        // The phone admin's "Needs a look": paid with no Pro (Verified, which no sweep touches) and checkouts stuck
+        // past the grace window — the same two the payment-problem alert counts.
+        if (request.NeedsLook)
+        {
+            query = query.Where(t => t.Status == PaymentStatus.Verified
+                                     || (t.Status == PaymentStatus.Processing && t.UpdatedAtUtc < stuckCutoff));
         }
 
         if (request.FromUtc is { } from)

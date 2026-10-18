@@ -7,13 +7,18 @@ namespace NoteFusion.Application.Common.Interfaces;
 /// </param>
 /// <param name="ChannelId">The Android notification channel; null is the app's default ("Transcriptions").</param>
 /// <param name="TimeToLiveSeconds">How long the push service may hold it for an offline phone; null is its default.</param>
+/// <param name="CategoryId">
+/// The notification category the app registered for its action buttons (a payment alert's "View payment" and
+/// "Mute 1 hour"); null for none.
+/// </param>
 public sealed record PushMessage(
     string Title,
     string Body,
     IReadOnlyDictionary<string, string>? Data = null,
     string? Sound = null,
     string? ChannelId = null,
-    int? TimeToLiveSeconds = null);
+    int? TimeToLiveSeconds = null,
+    string? CategoryId = null);
 
 /// <summary>
 /// How one send to a set of devices went. <see cref="Error"/> is null when the push service accepted it for at

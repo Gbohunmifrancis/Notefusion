@@ -377,6 +377,41 @@ public class SystemHealthTests
         Assert.Null((await Check(h, db: down, quota: quota)).EmailUsage);
     }
 
+    [Fact]
+    public async Task The_push_panel_counts_phones_admin_alert_phones_and_how_the_last_alert_went()
+    {
+        using var h = new TestHarness(Now);
+        var admin = User.CreateAdmin("Francis", "admin@notefusion.studio", "hash", Now.AddDays(-90));
+        h.Db.Users.Add(admin);
+        var customer = Account(h, "ada@example.com");
+        var other = Account(h, "kwame@example.com");
+        var adminPhone = DeviceToken.Create(admin.Id, "ExponentPushToken[admin]", "android", 42, Now);
+        adminPhone.SetPaymentAlerts(true, "chime", true, false, false, true, Now);
+        h.Db.DeviceTokens.AddRange(
+            adminPhone,
+            DeviceToken.Create(customer.Id, "ExponentPushToken[a]", "android", 42, Now),
+            DeviceToken.Create(other.Id, "ExponentPushToken[b]", "ios", 42, Now),
+            DeviceToken.Create(other.Id, "web-token", "web", 0, Now));
+
+        var plan = Plan.Create(Guid.NewGuid(), "pro_monthly_ngn", "NoteFusion Pro (Monthly)", 750_000, "NGN", BillingInterval.Monthly);
+        var tx = PaymentTransaction.Create(customer.Id, plan.Id, PaymentProvider.Paystack, "checkout:NF_1", "NF_1", 750_000, "NGN", Now.AddMinutes(-5));
+        h.Db.Plans.Add(plan);
+        h.Db.PaymentTransactions.Add(tx);
+        var alert = AdminPaymentAlert.Claim(tx.Id, Now.AddMinutes(-3));
+        alert.BeginAttempt(Now.AddMinutes(-3));
+        alert.MarkSent(2, 1, 1, Now.AddMinutes(-3));
+        h.Db.AdminPaymentAlerts.Add(alert);
+        h.Db.SaveChanges();
+
+        var push = (await Check(h)).Push!;
+
+        Assert.Equal((3, 2, 1), (push.PhonesRegistered, push.Android, push.Ios));
+        Assert.Equal(1, push.AdminAlertPhones);
+        Assert.Equal(Now.AddMinutes(-3), push.LastPaymentAlertAtUtc);
+        Assert.Equal((2, 1), (push.LastPaymentAlertDevices, push.LastPaymentAlertAccepted));
+        Assert.Equal(1, push.RefusedLast24h);
+    }
+
     private static async Task<SystemHealthDto> Check(
         TestHarness h, StubDatabaseHealth? db = null, StubTranscriptionApi? api = null, IEmailQuota? quota = null)
     {

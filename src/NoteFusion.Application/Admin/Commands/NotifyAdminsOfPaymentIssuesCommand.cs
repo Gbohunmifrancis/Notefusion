@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Admin.PaymentAlerts;
 using NoteFusion.Application.Admin.Queries;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
@@ -112,31 +113,36 @@ public sealed class NotifyAdminsOfPaymentIssuesCommandHandler
         if (!signature.Escalates(request.LastNotified))
             return signature;
 
-        var admins = await _db.Users
-            .AsNoTracking()
-            .Where(u => u.Role == UserRole.Admin && u.IsActive)
-            .Select(u => u.Id)
-            .ToListAsync(ct);
+        // Admin phones that kept "Payment problems too" on (Admin › Payment alerts), the role read from the account
+        // row now. The same set whether or not "Alert me when someone pays" is on.
+        var devices = await AdminAlertDevices.ProblemAlertsAsync(_db, ct);
 
         // Nobody to tell. The signature still goes back, so the first admin promoted afterwards is not
         // buried under everything that accumulated while there were none.
-        if (admins.Count == 0)
+        if (devices.Count == 0)
             return signature;
 
         // Payment-side trouble outranks the inbox as a destination: the payments screen is where the
         // Reconcile button lives, and that is the only one of these an operator can act on from a phone.
         var paymentSide = strandedVerified + stuckProcessing > 0;
 
-        await _push.SendAsync(
-            admins,
-            new PushMessage(
-                Title(signature),
-                Body(signature),
-                new Dictionary<string, string>
-                {
-                    ["screen"] = paymentSide ? "AdminPayments" : "AdminWebhooks",
-                }),
-            ct);
+        var message = new PushMessage(
+            Title(signature),
+            Body(signature),
+            new Dictionary<string, string>
+            {
+                ["screen"] = paymentSide ? "AdminPayments" : "AdminWebhooks",
+            });
+
+        // A phone that has set its payment alerts has the "Payment problems" channel; an older one files these
+        // under the app's default channel as it always did.
+        foreach (var group in devices.GroupBy(d => d.SetAtUtc is not null))
+        {
+            await _push.SendToDevicesAsync(
+                group.Select(d => d.Token).ToList(),
+                group.Key ? message with { ChannelId = PaymentAlertChannels.Problems } : message,
+                ct);
+        }
 
         return signature;
     }

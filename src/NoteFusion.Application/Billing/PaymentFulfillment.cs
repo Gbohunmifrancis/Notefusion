@@ -51,6 +51,10 @@ internal static class PaymentFulfillment
         tx.MarkVerified(verification.ProviderReference, verification.Raw, now);
         tx.MarkCompleted(now);
 
+        // The admins' "someone just paid" push, claimed in this same unit of work: it exists exactly when the
+        // payment completed, and its unique payment id refuses a second one. The payment-alert worker sends it.
+        db.AdminPaymentAlerts.Add(AdminPaymentAlert.Claim(tx.Id, now));
+
         var plan = await db.Plans.FirstOrDefaultAsync(p => p.Id == tx.PlanId, ct);
 
         var user = await db.Users.FirstOrDefaultAsync(u => u.Id == tx.UserId, ct);

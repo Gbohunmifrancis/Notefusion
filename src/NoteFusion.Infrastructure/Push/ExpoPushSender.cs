@@ -20,14 +20,16 @@ internal sealed record ExpoPushMessage(
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? Sound = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? ChannelId = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? Priority = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] int? Ttl = null)
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] int? Ttl = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? CategoryId = null)
 {
     public static ExpoPushMessage From(string token, PushMessage m) => new(
         token, m.Title, m.Body, m.Data, m.Sound, m.ChannelId,
         // A message with a channel or a time to live is one the caller wants on time: FCM's high priority is
         // what gets it through Android's Doze when it is due rather than at the next maintenance window.
         m.ChannelId is not null || m.TimeToLiveSeconds is not null ? "high" : null,
-        m.TimeToLiveSeconds);
+        m.TimeToLiveSeconds,
+        m.CategoryId);
 }
 
 internal sealed record ExpoPushReceipt(

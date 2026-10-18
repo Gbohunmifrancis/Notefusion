@@ -114,6 +114,7 @@ public static class BillingDependencyInjection
         services.AddHostedService<PaymentReconciliationWorker>();
         services.AddHostedService<SubscriptionExpiryWorker>();
         services.AddHostedService<AdminPaymentAlertWorker>();
+        services.AddHostedService<PaymentAlertWorker>();
         services.AddHostedService<StalePaymentCleanupWorker>();
 
         return services;

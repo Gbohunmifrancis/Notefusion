@@ -55,6 +55,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<PracticeReminder> PracticeReminders => Set<PracticeReminder>();
     public DbSet<BackupRun> BackupRuns => Set<BackupRun>();
     public DbSet<FeatureFlag> FeatureFlags => Set<FeatureFlag>();
+    public DbSet<AdminPaymentAlert> AdminPaymentAlerts => Set<AdminPaymentAlert>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
