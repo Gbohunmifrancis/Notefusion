@@ -25,7 +25,8 @@ function untilLine(sub: Subscription): string | null {
     day: "numeric",
     year: "numeric",
   });
-  return `Pro until ${date}`;
+  // Google Play renews it by itself (board h-play 02): the date is the next charge, not an end.
+  return sub.autoRenews ? `renews ${date}` : `Pro until ${date}`;
 }
 
 /**

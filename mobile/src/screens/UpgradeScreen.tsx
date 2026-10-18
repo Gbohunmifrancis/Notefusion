@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Linking,
   RefreshControl,
   StyleSheet,
   Text,
@@ -24,6 +25,7 @@ import { BrandMark } from "../components/BrandMark";
 import { billingApi, meApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { showDialog } from "../lib/dialog";
+import { showToast } from "../lib/toast";
 import {
   fonts,
   gradients,
@@ -48,6 +50,19 @@ import {
   shouldReportReturn,
   type PaymentCheckResult,
 } from "../lib/checkoutExit";
+import {
+  isOnHold,
+  manageUrl,
+  offerFor,
+  playButtonLabel,
+  playFinePrint,
+  playHint,
+  playMemberState,
+  playProblemNote,
+  playStatusLine,
+  type PlayOffer,
+} from "../lib/playBilling";
+import { buyOnPlay, loadPlayOffers, registerPlayPurchase, restorePlayPurchases, usesPlayBilling } from "../lib/playStore";
 
 type Props = { navigation: any; route?: any };
 
@@ -161,7 +176,10 @@ export function UpgradeScreen({ navigation, route }: Props) {
   const [choirPlans, setChoirPlans] = useState<Plan[]>([]);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  // On Android, what Google Play sells and at what price (board h-play): a plan without an offer is not shown there.
+  const [playOffers, setPlayOffers] = useState<Map<string, PlayOffer>>(new Map());
   const [busy, setBusy] = useState(false); // opening checkout
+  const [restoring, setRestoring] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // pull-to-refresh
 
   // Guards against setState after the screen unmounts mid-poll.
@@ -174,18 +192,22 @@ export function UpgradeScreen({ navigation, route }: Props) {
 
   const load = useCallback(async () => {
     try {
-      const [proList, sub, prof, choirList, singleList] = await Promise.all([
+      const [proList, sub, prof, choirList, singleList, offers] = await Promise.all([
         billingApi.plans(),
         billingApi.mySubscription(),
         meApi.get().catch(() => null),
         billingApi.choirPlans().catch(() => [] as Plan[]),
         // The one-song purchase is listed apart; a failure there leaves Pro on sale.
         billingApi.singlePlans().catch(() => [] as Plan[]),
+        usesPlayBilling ? loadPlayOffers().catch(() => new Map<string, PlayOffer>()) : Promise.resolve(new Map<string, PlayOffer>()),
       ]);
       if (!mounted.current) return;
-      const planList = withSingle(proList, singleList);
+      setPlayOffers(offers);
+      // On Android only what Google Play sells is shown, at Google Play's price.
+      const sold = (p: Plan) => !usesPlayBilling || offerFor(p, offers) !== undefined;
+      const planList = withSingle(proList, singleList).filter(sold);
       setPlans(planList);
-      setChoirPlans(choirList);
+      setChoirPlans(choirList.filter(sold));
       setSubscription(sub);
       if (prof) setProfile(prof);
       // Default to the best-value (highest) plan so the recommended choice is preselected — or, when
@@ -270,11 +292,109 @@ export function UpgradeScreen({ navigation, route }: Props) {
     [],
   );
 
+  /**
+   * The Android purchase (board h-play 02): Google's own sheet, then the server, which asks Google before anything is
+   * granted, then the welcome the provider shows once the membership has moved on.
+   */
+  async function buyWithPlay(plan: Plan) {
+    const offer = offerFor(plan, playOffers);
+    if (!offer || !user) return;
+    setBusy(true);
+    beginCheckout(plan.id, subscription, plan.interval === "single", Boolean(plan.choirSeats));
+    const outcome = await buyOnPlay(offer, user.id);
+    if (outcome.kind !== "purchased") {
+      abandonCheckout();
+      if (mounted.current) setBusy(false);
+      if (outcome.kind === "pending")
+        showDialog({
+          title: "Payment pending",
+          message: "Google Play is waiting for your payment to go through. Pro unlocks the moment it does.",
+          icon: "clock",
+        });
+      else if (outcome.kind === "failed")
+        showDialog({
+          title: "Google Play couldn't open",
+          message: "Nothing was charged. Please try again in a moment.",
+          icon: "problem",
+          tone: "danger",
+        });
+      return;
+    }
+    try {
+      await registerPlayPurchase(outcome.purchase);
+      // The server has it: the provider's next read sees the membership move on and shows the welcome.
+      watchPayment();
+    } catch (e) {
+      abandonCheckout();
+      playRefusal(e, offer.productId);
+    } finally {
+      if (mounted.current) setBusy(false);
+    }
+  }
+
+  /** Restore purchases (board h-play 01/04): whatever this phone's Google account bought, handed to the server. */
+  async function restore() {
+    setRestoring(true);
+    const found = await restorePlayPurchases(true);
+    if (!mounted.current) return;
+    setRestoring(false);
+    if (found.restored > 0) {
+      // Pro that has just arrived is welcomed by the provider, as any payment made away from this screen is.
+      await refreshSubscription(false).catch(() => undefined);
+      if (subscription?.isActive || !found.subscription?.isActive)
+        showToast("Your Google Play purchases are up to date.");
+      load();
+      return;
+    }
+    if (found.otherAccount) {
+      playRefusal({ code: "BILLING_PLAY_OTHER_ACCOUNT" }, null);
+    } else if (found.failed) {
+      showDialog({
+        title: "Couldn't check just now",
+        message: "Your purchases are safe with Google. Please try again in a minute.",
+        icon: "problem",
+        tone: "danger",
+      });
+    } else {
+      showDialog({
+        title: "Nothing to restore",
+        message:
+          "This phone's Google account has no NoteFusion purchase. If you paid with another Google account, switch to it in Google Play and try again.",
+      });
+    }
+  }
+
+  function playRefusal(e: unknown, productId: string | null) {
+    const err = (e as { code?: string })?.code ? (e as { code: string }) : toApiError(e);
+    if (err.code === "BILLING_PLAY_OTHER_ACCOUNT") {
+      showDialog({
+        title: "This purchase is on another account",
+        message:
+          "This Google Play purchase was bought while signed in to a different NoteFusion account. Sign in to that account to use it, or cancel it in Google Play.",
+        actions: [
+          { label: "Manage in Google Play", onPress: () => void Linking.openURL(manageUrl(productId)) },
+          { label: "OK", style: "cancel" },
+        ],
+      });
+      return;
+    }
+    showDialog({
+      title: "Couldn't confirm your purchase",
+      message: "Your purchase is safe with Google Play. It is confirmed the next time you open NoteFusion.",
+      icon: "problem",
+      tone: "danger",
+    });
+  }
+
   async function handleUpgrade(planId: string | null = selectedId) {
     if (!planId) return;
     const plan = plans.find((p) => p.id === planId) ?? choirPlans.find((p) => p.id === planId);
     const single = plan?.interval === "single";
     const choir = choirPlans.some((p) => p.id === planId);
+    if (usesPlayBilling) {
+      if (plan) await buyWithPlay(plan);
+      return;
+    }
     setBusy(true);
     try {
       const session = await billingApi.checkout(planId);
@@ -367,13 +487,16 @@ export function UpgradeScreen({ navigation, route }: Props) {
   // A member who chose "Add more Pro time" sees the plans: each payment covers one period, and a
   // new one starts when the current time ends.
   const [extending, setExtending] = useState(false);
-  const isActive = (subscription?.isActive ?? false) && !extending;
+  // Pro paused on Google Play's account hold shows the member screen with its fix, not the plans.
+  const onHold = usesPlayBilling && isOnHold(subscription);
+  const isActive = ((subscription?.isActive ?? false) || onHold) && !extending;
   // The one-song purchase, for a free account only (the server hides it from members too); listed
   // first, beside Pro, as the smallest thing to buy.
   const singlePlan =
     subscription?.isActive || extending ? undefined : plans.find((p) => p.interval === "single");
   songPlanRef.current = singlePlan;
-  const proPlans = plans.filter((p) => p.interval !== "single");
+  // On Android a member opens the plans only to start a choir: Google Play renews their own Pro.
+  const proPlans = usesPlayBilling && extending ? [] : plans.filter((p) => p.interval !== "single");
   const buyingSong = selected?.interval === "single";
 
   // The provider drops its checkout snapshot when the payment lands (it shows the welcome
@@ -445,7 +568,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
           </Text>
         </View>
 
-        {isActive && (
+        {isActive && !onHold && (
           <View style={styles.activePill}>
             <View style={styles.activeDot} />
             <Text style={styles.activePillText}>Pro Active</Text>
@@ -493,7 +616,9 @@ export function UpgradeScreen({ navigation, route }: Props) {
         <Card style={styles.card}>
           <View style={styles.confirmBlock}>
             <ActivityIndicator color={colors.accent} />
-            <Text style={styles.confirmTitle}>Confirming your payment…</Text>
+            <Text style={styles.confirmTitle}>
+              {usesPlayBilling ? "Confirming with Google Play…" : "Confirming your payment…"}
+            </Text>
             <Text style={styles.confirmText}>This usually takes a few seconds.</Text>
           </View>
         </Card>
@@ -502,6 +627,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
           subscription={subscription!}
           profile={profile}
           user={user}
+          onAndroid={usesPlayBilling}
           onExtend={() => setExtending(true)}
           onOpenChoir={() => navigation.navigate("Choir")}
           onChanged={() => {
@@ -511,7 +637,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
             refreshSubscription().catch(() => undefined);
           }}
         />
-      ) : plans.length === 0 ? (
+      ) : plans.length === 0 && choirPlans.length === 0 ? (
         <EmptyState
           onRetry={() => {
             setLoading(true);
@@ -543,6 +669,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
           {singlePlan ? (
             <PlanOption
               plan={singlePlan}
+              priceLabel={offerFor(singlePlan, playOffers)?.price}
               title="Just this song"
               note="One more transcription, any recording or song link. No subscription."
               selected={singlePlan.id === selectedId}
@@ -558,6 +685,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
               <PlanOption
                 key={plan.id}
                 plan={plan}
+                priceLabel={offerFor(plan, playOffers)?.price}
                 selected={plan.id === selectedId}
                 badge={
                   plan.interval === "yearly" && saving
@@ -581,6 +709,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
                   <PlanOption
                     key={plan.id}
                     plan={plan}
+                    priceLabel={offerFor(plan, playOffers)?.price}
                     title={plan.interval === "yearly" ? "Choir · Yearly" : "Choir · Monthly"}
                     note={`Pro for you and up to ${plan.choirSeats ?? 25} singers, one shared library.`}
                     selected={plan.id === selectedId}
@@ -594,7 +723,13 @@ export function UpgradeScreen({ navigation, route }: Props) {
           {/* ── CTA ──────────────────────────────────────────────────────── */}
           <Button
             label={
-              selected
+              selected && usesPlayBilling
+                ? playButtonLabel(
+                    selected,
+                    offerFor(selected, playOffers)?.price ?? formatPrice(selected.amountMinor, selected.currency),
+                    subscription?.choirRole === "director",
+                  )
+                : selected
                 ? buyingSong
                   ? `Buy this song — ${formatPrice(selected.amountMinor, selected.currency)}`
                   : buyingChoir
@@ -610,10 +745,18 @@ export function UpgradeScreen({ navigation, route }: Props) {
           />
 
           <Text style={styles.finePrint}>
-            {buyingSong
+            {usesPlayBilling && selected
+              ? playFinePrint(selected)
+              : buyingSong
               ? "One payment, one transcription that never expires. Secure checkout opens in your browser; you'll come back to your song."
               : "Secure checkout opens in your browser. You'll return here automatically."}
           </Text>
+
+          {usesPlayBilling ? (
+            <View style={styles.restoreRow}>
+              <Button label="Restore purchases" variant="text" onPress={() => void restore()} loading={restoring} />
+            </View>
+          ) : null}
         </>
       )}
 
@@ -654,6 +797,7 @@ function ActiveState({
   subscription,
   profile,
   user,
+  onAndroid,
   onChanged,
   onExtend,
   onOpenChoir,
@@ -661,6 +805,8 @@ function ActiveState({
   subscription: Subscription;
   profile: MyProfile | null;
   user: AuthUser | null;
+  /** The Android app, which pays through Google Play only: no website time is sold or cancelled here. */
+  onAndroid: boolean;
   onChanged: () => void;
   onExtend: () => void;
   onOpenChoir: () => void;
@@ -683,6 +829,10 @@ function ActiveState({
   const isGift = subscription.isGift ?? false;
   // Pro through a choir alone: the plan shown is the choir's, and there is no membership of one's own to cancel.
   const viaChoir = Boolean(subscription.choirRole) && (subscription.planCode ?? "").startsWith("choir_");
+  // Google Play renews this membership (board h-play 03): it is managed, fixed and cancelled in Google Play.
+  const play = onAndroid ? playMemberState(subscription) : null;
+  const paidOnWeb = onAndroid && subscription.billedThrough === "web";
+  const openPlay = () => void Linking.openURL(manageUrl(subscription.storeProductId));
 
   const displayName = user?.fullName || profile?.fullName || "NoteFusion Member";
   const displayEmail = user?.email || profile?.email || "";
@@ -768,7 +918,7 @@ function ActiveState({
                 ]}
               />
               <Text style={styles.statValue}>
-                {canceled ? "Ending Soon" : "Active"}
+                {play === "hold" ? "Paused" : canceled ? "Ending Soon" : "Active"}
               </Text>
             </View>
           </View>
@@ -791,8 +941,14 @@ function ActiveState({
         </View>
       </Card>
 
-      {/* ── 2. Notice Callout (if canceled) ───────────────────────────── */}
-      {canceled && renews && (
+      {/* ── 2. Notice Callout (a renewal Google Play could not take, or cancelled) ───── */}
+      {play && playProblemNote(play) ? (
+        <View style={styles.noticeWarning}>
+          <Icon name="problem" size={18} color={colors.warning} />
+          <Text style={styles.noticeWarningText}>{playProblemNote(play)}</Text>
+        </View>
+      ) : null}
+      {canceled && renews && !play && (
         <View style={styles.noticeWarning}>
           <Icon name="problem" size={18} color={colors.warning} />
           <Text style={styles.noticeWarningText}>
@@ -840,6 +996,13 @@ function ActiveState({
           </Text>
         </View>
 
+        {play || paidOnWeb ? (
+          <View style={styles.billingRow}>
+            <Text style={styles.billingLabel}>{play ? "Paid through" : "Paid on"}</Text>
+            <Text style={styles.billingValue}>{play ? "Google Play" : "NoteFusion website"}</Text>
+          </View>
+        ) : null}
+
         {typeof subscription.songCreditsTotal === "number" && (
           <View style={styles.billingRow}>
             <Text style={styles.billingLabel}>Songs this month</Text>
@@ -852,7 +1015,9 @@ function ActiveState({
         <View style={styles.billingRow}>
           <Text style={styles.billingLabel}>Status</Text>
           <Text style={styles.billingValue}>
-            {lifetime
+            {play
+              ? playStatusLine(play)
+              : lifetime
               ? "Paid in full"
               : isGift
                 ? "Complimentary"
@@ -862,17 +1027,33 @@ function ActiveState({
           </Text>
         </View>
 
-        {renews && !lifetime && (
+        {renews && !lifetime && play !== "hold" && (
           <View style={styles.billingRow}>
             <Text style={styles.billingLabel}>
-              Pro until
+              {play === "renewing" ? "Next charge" : "Pro until"}
             </Text>
             <Text style={styles.billingValue}>{renews}</Text>
           </View>
         )}
 
-        {/* A singer's Pro is the choir's: their director renews it, so there is nothing for them to add. */}
-        {!lifetime && !(viaChoir && subscription.choirRole === "member") && (
+        {/* Google Play: the fix, the way back, or the page where it is managed. */}
+        {play === "grace" || play === "hold" ? (
+          <Button label="Fix payment in Google Play" icon="card" onPress={openPlay} style={styles.cancelBtn} />
+        ) : play === "cancelled" ? (
+          <Button
+            label="Resubscribe in Google Play"
+            variant="secondary"
+            icon="sync"
+            onPress={openPlay}
+            style={styles.cancelBtn}
+          />
+        ) : play === "renewing" ? (
+          <Button label="Manage in Google Play" variant="secondary" icon="external" onPress={openPlay} style={styles.cancelBtn} />
+        ) : null}
+
+        {/* A singer's Pro is the choir's: their director renews it, so there is nothing for them to add. On Android
+            time is never sold here: Google Play renews its own memberships, and the app may not point elsewhere. */}
+        {!lifetime && !onAndroid && !(viaChoir && subscription.choirRole === "member") && (
           <Button
             label={viaChoir ? "Add choir time" : "Add more Pro time"}
             icon="add"
@@ -899,7 +1080,7 @@ function ActiveState({
           />
         )}
 
-        {!lifetime && !isGift && !canceled && !viaChoir && (
+        {!lifetime && !isGift && !canceled && !viaChoir && !onAndroid && (
           <Button
             label="Cancel subscription"
             variant="secondary"
@@ -911,7 +1092,11 @@ function ActiveState({
         )}
 
         <Text style={styles.billingHint}>
-          {lifetime
+          {play
+            ? playHint(play, renews)
+            : paidOnWeb && !viaChoir
+            ? "This Pro was bought on the NoteFusion website. When it ends, this phone offers Pro through Google Play."
+            : lifetime
             ? "Lifetime access — there is nothing to renew or cancel. Invoices and receipts were sent to your email."
             : viaChoir
               ? subscription.choirRole === "member"
@@ -1008,11 +1193,14 @@ function PlanOption({
   badge,
   title,
   note,
+  priceLabel,
   onSelect,
 }: {
   plan: Plan;
   selected: boolean;
   badge?: string;
+  /** The price as Google Play shows it, on Android, instead of the plan's own. */
+  priceLabel?: string;
   /** Overrides the plan's own name, as "Just this song" does for the one-song purchase. */
   title?: string;
   /** A plain line under the price. */
@@ -1039,7 +1227,7 @@ function PlanOption({
       radius={radii.lg}
       accessibilityRole="radio"
       accessibilityState={{ selected }}
-      accessibilityLabel={`${title ?? plan.name}, ${formatPrice(plan.amountMinor, plan.currency)} ${period}`}
+      accessibilityLabel={`${title ?? plan.name}, ${priceLabel ?? formatPrice(plan.amountMinor, plan.currency)} ${period}`}
     >
       <View
         style={[styles.radio, selected && styles.radioSelected]}
@@ -1057,7 +1245,7 @@ function PlanOption({
           )}
         </View>
         <Text style={styles.planPrice}>
-          {formatPrice(plan.amountMinor, plan.currency)}
+          {priceLabel ?? formatPrice(plan.amountMinor, plan.currency)}
           <Text style={styles.planPeriod}> {period}</Text>
         </Text>
         {note ? <Text style={styles.planNote}>{note}</Text> : null}
@@ -1299,6 +1487,10 @@ const makeStyles = (c: Palette, s: Shadows) =>
       lineHeight: 16,
       marginTop: spacing.md,
       paddingHorizontal: spacing.lg,
+    },
+    restoreRow: {
+      alignItems: "center",
+      marginTop: spacing.sm,
     },
 
     // ── Confirming a payment ────────────────────────────────────────────────
