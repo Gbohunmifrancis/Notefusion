@@ -219,6 +219,28 @@ public class Subscription : BaseEntity
     }
 
     /// <summary>
+    /// Follows a store that renews this membership itself (Google Play): the period ends when the store says,
+    /// later or earlier than before. Its grace period moves the end out, account hold, a refund or expiry bring it
+    /// back to the past, and a cancellation in the store keeps the end and marks the row cancelled. A lifetime row
+    /// is never shortened by it.
+    /// </summary>
+    public void FollowStore(DateTime periodEndUtc, bool canceled, DateTime utcNow)
+    {
+        if (IsLifetime)
+            return;
+
+        CurrentPeriodEndUtc = periodEndUtc;
+        if (CurrentPeriodStartUtc > periodEndUtc)
+            CurrentPeriodStartUtc = periodEndUtc;
+        Status = periodEndUtc <= utcNow
+            ? SubscriptionStatus.Expired
+            : canceled ? SubscriptionStatus.Canceled : SubscriptionStatus.Active;
+        CanceledAtUtc = canceled ? CanceledAtUtc ?? utcNow : null;
+        ExpiryNoticeSentForPeriodEndUtc = null;
+        Touch(utcNow);
+    }
+
+    /// <summary>
     /// Cuts access off now, rather than at the end of a period nobody is going to honour: an operator
     /// revoking a gift, or ending a subscription for cause.
     /// </summary>

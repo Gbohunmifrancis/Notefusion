@@ -85,6 +85,11 @@ public sealed record GatewayInitiation(string CheckoutUrl, string? ProviderRefer
 /// final is closed while the customer may be a keystroke away from paying it. An expired or cancelled
 /// session is final; one the customer has merely not paid yet is not.
 /// </param>
+/// <param name="StorePeriodEndUtc">
+/// Set only by a store that renews the membership itself (Google Play) and says when the access it sold ends.
+/// Fulfilment then runs the membership to that date (keeping any later end already paid for elsewhere) instead
+/// of adding one plan period after the time left.
+/// </param>
 public sealed record GatewayVerification(
     bool Succeeded,
     long AmountMinor,
@@ -92,4 +97,5 @@ public sealed record GatewayVerification(
     string ProviderReference,
     string? ProviderSubscriptionRef,
     string? Raw,
-    bool Terminal = false);
+    bool Terminal = false,
+    DateTime? StorePeriodEndUtc = null);

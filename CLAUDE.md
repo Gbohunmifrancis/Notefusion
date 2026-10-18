@@ -436,7 +436,16 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - Billing: naira plans are charged through Paystack, dollar plans through Bachs; currency routes the
   charge (`PaymentGatewayFactory.SelectForCurrency`). Flutterwave Standard is built for dollars beside Bachs
   (live with key + secret hash; each adapter is handed its own options, never one from the container) and
-  takes them only once `Billing__DefaultProvider=Flutterwave` (docs/DEPLOYMENT.md §1.2). Every checkout is a one-off priced from the
+  takes them only once `Billing__DefaultProvider=Flutterwave` (docs/DEPLOYMENT.md §1.2). The Android app pays through
+  Google Play Billing alone (§1.3; web unchanged): products `pro`/`choir` (auto-renewing, base plans `monthly`/`yearly`)
+  and `one_song`; the app's token (`POST /api/billing/google-play/purchases`) and Google's Pub/Sub notifications (OIDC,
+  `…/notifications`) only name a token — `Billing/GooglePlay/GooglePlaySync` reads Google, ties the token to one account
+  (`GooglePlayPurchase`, unique token; obfuscated account id = user id), records each charged order once
+  (`PaymentProvider.GooglePlay`, order id as reference, Google's order total) through `PaymentFulfillment`, makes the
+  membership follow Google's expiry (`FollowStore`: renewals, grace, hold, cancel, refund), and acknowledges/consumes;
+  `GooglePlaySyncWorker` backstops. A Play membership renews by itself, so the website's checkout and cancel refuse it
+  (`BILLING_MANAGED_BY_GOOGLE_PLAY`), it gets no expiry email, and `SubscriptionDto` says `billedThrough`/`autoRenews`/
+  `paymentIssue`. Every web checkout is a one-off priced from the
   `Plan` row (`Recurring: false`): Bachs subscription checkouts need a card it can save and this
   account offers none for USD (`CHECKOUT_CANNOT_SAVE_PAYMENT_METHOD`), so no catalog product is
   needed and a price change is a new plan code in `BillingSeeder`. Nothing renews by itself: a member

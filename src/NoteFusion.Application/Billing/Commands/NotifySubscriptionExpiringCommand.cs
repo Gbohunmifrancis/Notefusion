@@ -58,6 +58,10 @@ public sealed class NotifySubscriptionExpiringCommandHandler
         if (sub.Status is not (SubscriptionStatus.Active or SubscriptionStatus.Canceled))
             return Result.Success();
 
+        // Google Play renews (or ends) these itself and writes to its own customers; "buy again" would be wrong.
+        if (sub.Provider == PaymentProvider.GooglePlay)
+            return Result.Success();
+
         // Already over, or too far out to be worth mentioning.
         if (sub.CurrentPeriodEndUtc <= now || sub.CurrentPeriodEndUtc > now + NotifySubscriptionExpiringCommand.NoticeWindow)
             return Result.Success();

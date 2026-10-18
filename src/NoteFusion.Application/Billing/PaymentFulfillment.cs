@@ -92,12 +92,16 @@ internal static class PaymentFulfillment
                   ?? await db.Subscriptions.FirstOrDefaultAsync(s => s.UserId == tx.UserId, ct);
         if (sub is null)
         {
-            var renewsAtUtc = BillingPeriod.Advance(now, fulfillment.Interval);
-            sub = Subscription.Start(
-                tx.UserId, tx.PlanId, tx.Provider, now, renewsAtUtc, verification.ProviderSubscriptionRef, now);
-            db.Subscriptions.Add(sub);
-            fulfillment.Subscription = sub;
+            var renewsAtUtc = verification.StorePeriodEndUtc ?? BillingPeriod.Advance(now, fulfillment.Interval);
             fulfillment.RenewsAtUtc = renewsAtUtc;
+            // A store order whose access has already run out (read late, after a hold) is recorded and starts nothing.
+            if (renewsAtUtc > now)
+            {
+                sub = Subscription.Start(
+                    tx.UserId, tx.PlanId, tx.Provider, now, renewsAtUtc, verification.ProviderSubscriptionRef, now);
+                db.Subscriptions.Add(sub);
+                fulfillment.Subscription = sub;
+            }
         }
         else
         {
@@ -130,7 +134,10 @@ internal static class PaymentFulfillment
                     ?? await db.Choirs.FirstOrDefaultAsync(c => c.OwnerId == tx.UserId, ct);
         if (choir is null)
         {
-            var endsAtUtc = BillingPeriod.Advance(now, plan.Interval);
+            var endsAtUtc = verification.StorePeriodEndUtc ?? BillingPeriod.Advance(now, plan.Interval);
+            // As for Pro: a store order whose access has already run out starts no choir.
+            if (endsAtUtc <= now)
+                return fulfillment;
             choir = Choir.Start(
                 tx.UserId, DefaultChoirName(user?.FullName), ChoirAccess.NewInviteCode(), plan.Id, seats, tx.Provider,
                 now, endsAtUtc, now);
@@ -151,7 +158,7 @@ internal static class PaymentFulfillment
         return fulfillment;
     }
 
-    private static string DefaultChoirName(string? directorName)
+    internal static string DefaultChoirName(string? directorName)
     {
         var first = ChoirAccess.FirstName(directorName);
         return string.IsNullOrWhiteSpace(directorName) ? "My choir" : $"{first}'s choir";
@@ -270,7 +277,18 @@ internal sealed class Fulfillment
         {
             // As a Pro renewal: from the later of now and the current period end, on the plan just bought.
             var from = choir.CurrentPeriodEndUtc > _now ? choir.CurrentPeriodEndUtc : _now;
-            RenewsAtUtc = BillingPeriod.Advance(from, Interval);
+            if (_verification.StorePeriodEndUtc is { } choirStoreEnd)
+            {
+                // The store sold access to its own date; time already paid past it is kept.
+                RenewsAtUtc = choirStoreEnd > choir.CurrentPeriodEndUtc ? choirStoreEnd : choir.CurrentPeriodEndUtc;
+                from = _now;
+                if (RenewsAtUtc <= from)
+                    return;
+            }
+            else
+            {
+                RenewsAtUtc = BillingPeriod.Advance(from, Interval);
+            }
             choir.Renew(from, RenewsAtUtc, _tx.PlanId, _choirSeats, _tx.Provider, _now);
             return;
         }
@@ -287,11 +305,23 @@ internal sealed class Fulfillment
             return;
         }
 
-        // Renew from the later of "now" and the current period end, so an early renewal stacks the
-        // remaining time instead of discarding it.
-        var start = sub.CurrentPeriodEndUtc > _now ? sub.CurrentPeriodEndUtc : _now;
-        RenewsAtUtc = BillingPeriod.Advance(start, Interval);
-        sub.Renew(start, RenewsAtUtc, _now);
+        if (_verification.StorePeriodEndUtc is { } storeEnd)
+        {
+            // A store that renews the membership itself sold access to its own date, so the period runs to it
+            // rather than stacking another one; time already paid past it (on the website, say) is kept. An order
+            // whose access has already run out (read late, after a hold) is recorded and moves no date.
+            RenewsAtUtc = storeEnd > sub.CurrentPeriodEndUtc ? storeEnd : sub.CurrentPeriodEndUtc;
+            if (RenewsAtUtc > _now)
+                sub.Renew(_now, RenewsAtUtc, _now);
+        }
+        else
+        {
+            // Renew from the later of "now" and the current period end, so an early renewal stacks the
+            // remaining time instead of discarding it.
+            var start = sub.CurrentPeriodEndUtc > _now ? sub.CurrentPeriodEndUtc : _now;
+            RenewsAtUtc = BillingPeriod.Advance(start, Interval);
+            sub.Renew(start, RenewsAtUtc, _now);
+        }
 
         // Switching monthly to yearly (or back): the new period is the new plan's, so the
         // membership is on that plan from here, and the remaining time stacks as above.

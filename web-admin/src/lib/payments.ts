@@ -53,6 +53,7 @@ export const PAYMENT_PROVIDERS: readonly PaymentProviderName[] = [
   "Flutterwave",
   "Bachs",
   "Squad",
+  "GooglePlay",
 ];
 
 /**

@@ -11,7 +11,8 @@ namespace NoteFusion.Core.Entities;
 /// choir and neither purchase ever converts time bought for the other.
 /// </summary>
 /// <remarks>
-/// Nothing renews by itself (as with Pro): the director buys again to add a period after the time left.
+/// Nothing renews by itself (as with Pro): the director buys again to add a period after the time left, except a
+/// plan bought through Google Play, which Google renews and whose period follows it (<see cref="FollowStore"/>).
 /// <see cref="Version"/> is a concurrency token so two payments landing at once both stack.
 /// </remarks>
 public class Choir : BaseEntity
@@ -80,6 +81,18 @@ public class Choir : BaseEntity
         PlanId = Guard.AgainstEmpty(planId);
         Seats = Guard.InRange(seats, 1, 1000);
         Provider = provider;
+        Touch(utcNow);
+    }
+
+    /// <summary>
+    /// Follows a store that renews the choir's plan itself (Google Play): the period ends when the store says,
+    /// later or earlier than before (a renewal, a grace period, a refund or account hold).
+    /// </summary>
+    public void FollowStore(DateTime periodEndUtc, DateTime utcNow)
+    {
+        CurrentPeriodEndUtc = periodEndUtc;
+        if (CurrentPeriodStartUtc > periodEndUtc)
+            CurrentPeriodStartUtc = periodEndUtc;
         Touch(utcNow);
     }
 

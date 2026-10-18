@@ -128,4 +128,34 @@ public static class BillingErrors
     public static readonly Error SingleNotNeededOnPro =
         Error.Conflict("BILLING_SINGLE_NOT_NEEDED",
             "You're on Pro, so every transcription is already included. There is nothing more to buy.");
+
+    /// <summary>The server has no Google Play service account, so a purchase cannot be checked or granted.</summary>
+    public static readonly Error PlayNotConfigured =
+        Error.Network("BILLING_PLAY_NOT_CONFIGURED",
+            "We couldn't confirm your Google Play purchase just now. It is safe with Google; please try again in a minute.");
+
+    /// <summary>Google could not be asked about a purchase (a timeout, an outage). Nothing is lost: it is asked again.</summary>
+    public static readonly Error PlayUnavailable =
+        Error.Network("BILLING_PLAY_UNAVAILABLE",
+            "We couldn't confirm your Google Play purchase just now. It is safe with Google; please try again in a minute.");
+
+    /// <summary>A purchase token Google does not know for this app, or for a product we do not sell.</summary>
+    public static readonly Error PlayPurchaseNotFound =
+        Error.NotFound("BILLING_PLAY_PURCHASE_NOT_FOUND", "We couldn't find that Google Play purchase.");
+
+    /// <summary>
+    /// The purchase was made while signed in to another NoteFusion account (its obfuscated account id, or the
+    /// account that claimed the token first). One Google purchase serves one account.
+    /// </summary>
+    public static readonly Error PlayOtherAccount =
+        Error.Conflict("BILLING_PLAY_OTHER_ACCOUNT",
+            "This Google Play purchase was made on a different NoteFusion account. Sign in to that account to use it, or cancel it in Google Play.");
+
+    /// <summary>
+    /// Web checkout or cancel for a membership Google Play renews. Paying again on the web would charge twice for
+    /// one period, and cancelling here would not stop Google's next charge.
+    /// </summary>
+    public static readonly Error ManagedByGooglePlay =
+        Error.Conflict("BILLING_MANAGED_BY_GOOGLE_PLAY",
+            "Your Pro renews through Google Play on your phone. Manage or cancel it in Google Play.");
 }

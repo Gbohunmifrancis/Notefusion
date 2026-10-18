@@ -225,6 +225,74 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("checkout_exits", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.Billing.GooglePlayPurchase", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Acknowledged")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("AutoRenewing")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("BasePlanId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("Consumed")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ExpiryUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsSubscription")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LatestOrderId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("PurchaseToken")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.Property<string>("ReplacedByToken")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PurchaseToken")
+                        .IsUnique();
+
+                    b.HasIndex("UpdatedAtUtc");
+
+                    b.HasIndex("UserId", "ProductId");
+
+                    b.ToTable("google_play_purchases", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.Billing.LedgerEntry", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2160,6 +2228,15 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("NoteFusion.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.Billing.GooglePlayPurchase", b =>
+                {
                     b.HasOne("NoteFusion.Core.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")

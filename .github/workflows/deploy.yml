@@ -210,6 +210,10 @@ jobs:
           FLUTTERWAVE__SECRETKEY: ${{ secrets.FLUTTERWAVE__SECRETKEY }}
           FLUTTERWAVE__WEBHOOKSECRET: ${{ secrets.FLUTTERWAVE__WEBHOOKSECRET }}
           FLUTTERWAVE__SUPPORTEDCURRENCIES: ${{ secrets.FLUTTERWAVE__SUPPORTEDCURRENCIES }}
+          # ── Google Play Billing (the Android app's purchases) ──────────────────
+          GOOGLEPLAY__SERVICEACCOUNTJSON: ${{ secrets.GOOGLEPLAY__SERVICEACCOUNTJSON }}
+          GOOGLEPLAY__PUSHSERVICEACCOUNT: ${{ secrets.GOOGLEPLAY__PUSHSERVICEACCOUNT }}
+          GOOGLEPLAY__PUSHAUDIENCE: ${{ secrets.GOOGLEPLAY__PUSHAUDIENCE }}
           # ── Squad ─────────────────────────────────────────────────────────────
           SQUAD__BASEURL: ${{ secrets.SQUAD__BASEURL }}
           # ── Cloudflare R2 ─────────────────────────────────────────────────────
@@ -297,6 +301,7 @@ jobs:
             BACHS__PRODUCTMAP__PRO_MONTHLY_USD,BACHS__PRODUCTMAP__PRO_YEARLY_USD,BACHS__PRODUCTMAP__PRO_MONTHLY,BACHS__PRODUCTMAP__PRO_YEARLY,
             PAYSTACK__SECRETKEY,PAYSTACK__BASEURL,PAYSTACK__SUPPORTEDCURRENCIES,PAYSTACK__WEBHOOKSECRET,
             FLUTTERWAVE__BASEURL,FLUTTERWAVE__SECRETKEY,FLUTTERWAVE__WEBHOOKSECRET,FLUTTERWAVE__SUPPORTEDCURRENCIES,SQUAD__BASEURL,
+            GOOGLEPLAY__SERVICEACCOUNTJSON,GOOGLEPLAY__PUSHSERVICEACCOUNT,GOOGLEPLAY__PUSHAUDIENCE,
             R2__ACCOUNTID,R2__ACCESSKEYID,R2__SECRETACCESSKEY,R2__BUCKETNAME,R2__PUBLICBASEURL,R2__USER2,
             PUSH__USEEXPO,AUTH__RESETPASSWORDURL,PASSKEYS_RP_ID,PASSKEYS_ORIGINS,YTDLP_COOKIES,YTDLP_PROXY,
             WEBPUSH_ENABLED,WEBPUSH_PUBLIC_KEY,WEBPUSH_PRIVATE_KEY,WEBPUSH_SUBJECT,
@@ -420,6 +425,9 @@ jobs:
             Flutterwave__SecretKey="${FLUTTERWAVE__SECRETKEY}"
             Flutterwave__WebhookSecret="${FLUTTERWAVE__WEBHOOKSECRET}"
             Flutterwave__SupportedCurrencies="${FLUTTERWAVE__SUPPORTEDCURRENCIES:-USD}"
+            GooglePlay__ServiceAccountJson="${GOOGLEPLAY__SERVICEACCOUNTJSON}"
+            GooglePlay__PushServiceAccount="${GOOGLEPLAY__PUSHSERVICEACCOUNT}"
+            GooglePlay__PushAudience="${GOOGLEPLAY__PUSHAUDIENCE:-https://api.notefusion.studio/api/billing/google-play/notifications}"
             Squad__BaseUrl="${SQUAD__BASEURL}"
             R2__AccountId="${R2__ACCOUNTID}"
             R2__AccessKeyId="${R2__ACCESSKEYID}"

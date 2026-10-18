@@ -201,7 +201,47 @@ How the adapter reads Flutterwave's answers:
 Before switching, pay once in test mode with a card that declines and then one that passes on the same page,
 and check the row completes: Flutterwave does not document how a retry on one page is recorded.
 
-### 1.3 Region pricing (geolocation)
+### 1.3 Google Play Billing (the Android app)
+
+The Android app sells only through Google Play (Play's payments policy; the website keeps its own checkout). The app
+buys on Google's sheet and hands the purchase token to `POST /api/billing/google-play/purchases`; Google's real-time
+developer notifications reach `POST /api/billing/google-play/notifications`. Both only name a token: the server reads
+what it is worth from Google (`GooglePlaySync`), records each charged order as a completed payment (order id as the
+reference, Google's order total as the amount), makes Pro or the choir end exactly when Google's access does
+(renewal, cancellation, grace period, account hold, refund), and acknowledges the purchase (consumes a one-song one),
+without which Google refunds it after three days. `GooglePlaySyncWorker` (15 min) catches anything missed. Without a
+service account every purchase answers "try again" and stays safe with Google.
+
+**Play Console › Monetize › Products** (prices per country as on the website: ₦ in Nigeria, the regional $ set in the
+regional markets, standard $ elsewhere):
+
+| Product id | Kind | Base plans |
+|------------|------|------------|
+| `pro` | Subscription, auto-renewing | `monthly`, `yearly` |
+| `choir` | Subscription, auto-renewing | `monthly`, `yearly` |
+| `one_song` | In-app (one-time) product | — |
+
+**The service account** (reads purchases): Google Cloud › IAM › Service accounts › create one and a JSON key; enable the
+"Google Play Android Developer API" for that project; Play Console › Users and permissions › invite its email with
+**View financial data** and **Manage orders and subscriptions** for the app.
+
+**Notifications**: Google Cloud › Pub/Sub › a topic (e.g. `play-billing`), with
+`google-play-developer-notifications@system.gserviceaccount.com` as a Publisher on it; Play Console › Monetization
+setup › Real-time developer notifications › that topic. Then a **push** subscription on the topic to
+`https://api.notefusion.studio/api/billing/google-play/notifications` with **authentication enabled**: a service
+account (e.g. `play-push@<project>.iam.gserviceaccount.com`) and the audience left as the endpoint URL. Send a test
+notification from the Play Console; the API answers 204.
+
+| Secret (GitHub) | Value |
+|-----------------|-------|
+| `GOOGLEPLAY__SERVICEACCOUNTJSON` | The JSON key on one line: `base64 -w0 key.json`. |
+| `GOOGLEPLAY__PUSHSERVICEACCOUNT` | The push subscription's service account email. Without it every notification is refused (401) and only the app's own call and the sweep apply purchases. |
+| `GOOGLEPLAY__PUSHAUDIENCE` | Optional; defaults to the endpoint URL above. |
+
+Testing: add testers under Play Console › License testing (their purchases are free and renew every few minutes) and
+install from an internal testing track.
+
+### 1.4 Region pricing (geolocation)
 
 Which tier a user is offered follows the country stored on their row, resolved once from the
 forwarded request address at sign-up — or on the next sign-in, for an account created before
