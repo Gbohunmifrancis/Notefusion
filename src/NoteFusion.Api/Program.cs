@@ -46,6 +46,22 @@ if (!builder.Environment.IsDevelopment())
     });
 }
 
+// Errors to Sentry, only when Sentry__Dsn is set (the "Sentry" section binds the rest: Sentry__Release is the
+// deployed commit). Unhandled exceptions and LogError lines become events, Information lines their breadcrumbs.
+// No request bodies, cookies or IP addresses (SendDefaultPii off), no headers or query strings and no email
+// address anywhere (SentryScrub). The SDK sends from its own background queue and drops events when Sentry cannot be reached,
+// so unlike the outside clients behind OutboundResilience it can never hold up a request.
+if (!string.IsNullOrWhiteSpace(builder.Configuration["Sentry:Dsn"]))
+{
+    builder.WebHost.UseSentry(options =>
+    {
+        options.SendDefaultPii = false;
+        options.MaxRequestBodySize = Sentry.Extensibility.RequestSize.None;
+        options.SetBeforeSend((sentryEvent, _) => SentryScrub.Event(sentryEvent));
+        options.SetBeforeBreadcrumb((breadcrumb, _) => SentryScrub.Breadcrumb(breadcrumb));
+    });
+}
+
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 

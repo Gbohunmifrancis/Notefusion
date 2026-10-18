@@ -68,6 +68,9 @@ services:
       # YouTube's proof-of-origin tokens come from the bgutil-provider sidecar below. Set apart
       # from NF_YTDLP_EXTRA_ARGS, so extra flags in .env can no longer drop the tokens.
       NF_YTDLP_POT_URL: http://bgutil-provider:4416
+      # Crashes to Sentry (docs/DEPLOYMENT.md, "Error reports"): off while the DSN is blank.
+      NF_SENTRY_DSN: ${NF_SENTRY_DSN:-}
+      NF_SENTRY_RELEASE: ${NF_SENTRY_RELEASE:-}
       NF_YTDLP_EXTRA_ARGS: ${NF_YTDLP_EXTRA_ARGS:-}
       # The player clients a refused extraction is tried again with (app/config.py). Empty
       # in .env switches the second try off; unset keeps the default.
@@ -228,6 +231,9 @@ services:
       Blog__AutoDraftDays: ${Blog__AutoDraftDays:-}
       Blog__AutoDraftTimeUtc: ${Blog__AutoDraftTimeUtc:-}
       Blog__AutoDraftCount: ${Blog__AutoDraftCount:-}
+      # Errors to Sentry (docs/DEPLOYMENT.md, "Error reports"): off while the DSN is blank. The release is the commit.
+      Sentry__Dsn: ${Sentry__Dsn:-}
+      Sentry__Release: ${Sentry__Release:-}
     volumes:
       - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
 

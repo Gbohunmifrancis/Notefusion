@@ -73,6 +73,12 @@
       "./plugins/withRemoveAdId",
       "./plugins/withAndroidR8Optimization",
       [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/"
+        }
+      ],
+      [
         "expo-build-properties",
         {
           "android": {

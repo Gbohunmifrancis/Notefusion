@@ -427,6 +427,14 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `Email__MonthlyLimit` (3000) — is under `Email__OptionalShare` (0.6) of its cap, counting every kind; codes, resets,
   receipts, security, expiry, admin and backup mail always send. Batches ask `IEmailQuota` before claiming, so held mail
   stays due (outreach holds both channels); inline welcome/waitlist is skipped. Usage on System Health.
+- Error reports go to Sentry (docs/DEPLOYMENT.md, "Error reports"), one project per surface, each off until its DSN is
+  set: the API (`Sentry__Dsn` from `SENTRY_DSN_API`; unhandled exceptions and `LogError` lines, SendDefaultPii off, every
+  email address masked by `Api/Common/SentryScrub`; the SDK's own background transport is the one outside client not
+  behind OutboundResilience), the worker (`NF_SENTRY_DSN`, `app.telemetry`: crashed jobs and 5xx only, no bodies or
+  locals, URLs and emails masked), `/app` only on the web (`assets/errors.js`: nothing loads until the site's own code
+  throws, then the self-hosted `assets/vendor` bundle; `deploy-web.yml` writes `SENTRY_DSN_WEB` into the deployed page)
+  and the phone (`App.tsx`, IP address and masked replays as the privacy policy says; source maps from the
+  `@sentry/react-native/expo` plugin on store builds and `npm run update:production` for OTA). Never the public pages.
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).

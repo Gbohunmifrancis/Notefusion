@@ -153,7 +153,8 @@ jobs:
         working-directory: ${{ runner.temp }}/state
         run: |
           git add x-history.json
-          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+          # Authored as the owner, like every commit in this repository (CLAUDE.md), though it never reaches main.
+          git -c user.name="Gbohunmi Francis" -c user.email="120693899+Gbohunmifrancis@users.noreply.github.com" \
             commit -qm "X journal: run ${{ github.run_id }}"
           for attempt in 1 2 3; do
             if git push -q origin HEAD:refs/heads/x-journal-state; then exit 0; fi
