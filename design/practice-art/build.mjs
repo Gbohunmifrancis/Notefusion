@@ -1,4 +1,4 @@
-// The Practice art: Doh the doh bird, the level emblems, the badge stickers, the streak flame and freeze, the stars,
+// The Practice art: Doh the doh bird (with the poses he takes outside Practice and their blink twins), the level emblems, the badge stickers, the streak flame and freeze, the stars,
 // the confetti pieces, the track-picker scenes and the empty states. All of it is our own original SVG, drawn by
 // these modules; this script writes the copies the apps ship:
 //
@@ -10,7 +10,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { birdSvg, POSES } from "./mascot.mjs";
+import { birdSvg, blinkSvg, BLINKS, POSES } from "./mascot.mjs";
 import { emblem, LEVELS } from "./emblems.mjs";
 import { BADGES, sticker } from "./badges.mjs";
 import * as B from "./bits.mjs";
@@ -26,6 +26,7 @@ const slug = (s) => s.toLowerCase().replace(/[^a-z]+/g, "-").replace(/-$/, "");
 export function assets() {
   const out = [];
   for (const k of Object.keys(POSES)) out.push([`doh-${k}`, birdSvg(k)]);
+  for (const k of BLINKS) out.push([`doh-${k}-blink`, blinkSvg(k)]);
   out.push(["doh-avatar", S.avatar()]);
   LEVELS.forEach((L, i) => out.push([`level-${i + 1}-${slug(L.name)}`, emblem(i)]));
   for (const b of BADGES) out.push([`badge-${b.id}`, sticker(b)], [`badge-${b.id}-locked`, sticker(b, true)]);
