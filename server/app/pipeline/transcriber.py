@@ -3291,16 +3291,19 @@ def _rewrite_in_root(
     return [replace(e, pitch=p, pyin_midi=m - offset) for e, p, m in zip(events, pitches, untuned)], offset
 
 
-def _key_alternatives(events: list[Event], fit: "vocal.ScaleFit") -> tuple[list[Event], list[int]]:
+def _key_alternatives(
+    events: list[Event], fit: "vocal.ScaleFit", shift: int = 0,
+) -> tuple[list[Event], list[int]]:
     """The events carrying how each of the fit's other dohs would write them, and those dohs.
 
     Each is written as a typed key is (``_rewrite_in_root``): only the notes the voice left in
-    doubt move.  A doh the voice cannot be written in is not offered.
+    doubt move.  A doh the voice cannot be written in is not offered.  ``shift`` is the
+    keyboard transpose already applied to the events (step 6c); the dohs stay in sounding pitch.
     """
     roots: list[int] = []
     steps: list[list[int]] = [[] for _ in events]
     for root in fit.alternatives[:KEY_ALTERNATIVES_MAX]:
-        rewritten = _rewrite_in_root(events, fit, root, False)
+        rewritten = _rewrite_in_root(events, fit, (root + shift) % 12, False)
         if rewritten is None:
             continue
         roots.append(root)
@@ -3309,6 +3312,38 @@ def _key_alternatives(events: list[Event], fit: "vocal.ScaleFit") -> tuple[list[
     if not roots:
         return events, []
     return [replace(e, alt_steps=tuple(st)) for e, st in zip(events, steps)], roots
+
+
+def _doh_from_band(
+    events: list[Event], fit: "vocal.ScaleFit", band_key: tuple[int, str], shift: int = 0,
+) -> tuple[list[Event], "vocal.ScaleFit"] | None:
+    """A song's events written in the doh of its band's key, when the voice could as well be in it.
+
+    The voice alone often cannot tell a tune's doh from its soh or fah: a pentatonic tune lies
+    in three major scales, and a tune that never touches fa or ti reads as well a fifth either
+    way.  When the voice's fit is unsure (``KEY_ALTERNATIVES_BELOW``) and the doh of the key the
+    band's chords are in (``chords.read_chords``, in sounding pitch) is one of the dohs it could
+    as well be (``vocal.ScaleFit.alternatives``), that doh is taken and the notes written in its
+    scale as a typed key's are (``_rewrite_in_root``: only notes the voice left in doubt move).
+    The voice's own doh becomes one of the alternatives.  None when the voice is sure, the band
+    agrees, or the band's doh is not among the voice's readings: taking the band's key over a
+    sure voice (R5, reverted) was measured wrong on two real songs, where it moved a doh the voice
+    had right; this leaves both alone.  ``shift`` is the keyboard transpose the events already
+    carry (step 6c).
+    """
+    if fit.confidence >= KEY_ALTERNATIVES_BELOW:
+        return None
+    doh = solfa.doh_pitch_class(*band_key)
+    if doh == fit.root or doh not in fit.alternatives:
+        return None
+    rewritten = _rewrite_in_root(events, fit, (doh + shift) % 12, band_key[1] == "minor")
+    if rewritten is None:
+        return None
+    print(f"[notefusion] doh: the band's chords rest on {doh}, one of the voice's {(fit.root, *fit.alternatives)}",
+          flush=True)
+    written, offset = rewritten
+    rivals = tuple(r for r in (fit.root, *fit.alternatives) if r != doh)
+    return written, replace(fit, offset=offset, root=doh, alternatives=rivals)
 
 
 def _offered_keys(
@@ -5240,6 +5275,11 @@ def _transcribe_wav(
         override_doh = (solfa.doh_pitch_class(written.tonic.pitchClass, written.mode) - shift) % 12
         override_minor = written.mode == "minor"
 
+    # A song's separated vocal: the queue hands the mix in as ``tempo_source`` only then (a
+    # linked song, or an upload isolated because it asked or a band was heard).  Its unsure doh
+    # is settled by its band (step 7c).  A hum, or a song read from its mixture, keeps the rest.
+    song_stem = mode == "melody" and tempo_source is not None
+
     # The fast lane (see ``transcribe``) tries the voice engine before paying for Basic
     # Pitch at all, and skips it when the engine found the line.
     fast_events: list[Event] = []
@@ -5523,6 +5563,26 @@ def _transcribe_wav(
             if mode == "chords":
                 raise
             print(f"[notefusion] chords skipped: {exc!r}", flush=True)
+
+    # ── 7c. A song's unsure doh, settled by its band ──────────────────────────
+    # See ``_doh_from_band``.  The chords the sheet shows need a clear backing; which of two or
+    # three dohs the band rests on does not, so an unclear backing is read again for its key.
+    if song_stem and settings.song_doh and vocal_fit is not None and events and not key_override \
+            and vocal_fit.confidence < KEY_ALTERNATIVES_BELOW and vocal_fit.alternatives:
+        band_key = chord_key
+        if band_key is None and chord_source is not None:
+            try:
+                _spans, band_key, _confidence = chords.read_chords(
+                    _load_audio(chord_source, sr=sr)[0], sr, bpm, beat_origin)
+            except Exception as exc:  # noqa: BLE001 - the doh stays the voice's
+                print(f"[notefusion] band key skipped: {exc!r}", flush=True)
+        settled = _doh_from_band(events, vocal_fit, band_key, shift) if band_key is not None else None
+        if settled is not None:
+            events, vocal_fit = settled
+            if alternative_roots:
+                # The dohs offered are now the band's doh's rivals, the voice's own among them.
+                events, alternative_roots = _key_alternatives(
+                    [replace(e, alt_steps=()) for e in events], vocal_fit, shift)
     progress(0.65)
 
     # ── 8. music21 stream, quantized to the configured grid ───────────────────

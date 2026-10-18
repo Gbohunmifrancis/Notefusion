@@ -3,7 +3,8 @@
 The voice engine decides the doh from the sung notes alone and snaps them into that scale.
 When the user knows the key better — they typed it — the notes are written again in that
 scale from the same sung pitches, unless the voice is plainly not in it.  A song's backing
-names its chords but leaves the doh to the voice.  And the melody-floor gate, which hands a
+names its chords and leaves the doh to the voice, unless the voice is unsure and the band's
+doh is one it could as well be in (``_doh_from_band``).  And the melody-floor gate, which hands a
 mixture's melody to Basic Pitch's top line, is declined when pyin was following a voice.
 
 The sung line throughout is a G major tune whose F#s are sung 55 cents flat, nearer F than
@@ -196,6 +197,62 @@ def test_a_songs_backing_names_its_chords_but_the_voice_keeps_its_doh(tmp_path):
     assert result.key == "C major"
     assert _pitches(result).count(77) == 1
     assert result.chords
+    # As a song's separated vocal too (the mix beside it): the voice is unsure of C, but G is
+    # 8% worse, not one of the readings it could as well be (``_doh_from_band``).
+    song = transcribe(vocal_path, mode="melody", audio_preview=False, fast=True, chord_source=backing,
+                      tempo_source=_mixed(tmp_path / "mix.wav", vocal_path, backing))
+    assert song.key == "C major"
+    assert _pitches(song) == _pitches(result)
+
+
+def _mixed(path: Path, *parts: Path) -> Path:
+    """The parts summed, as a song's mix holds its vocal and its band."""
+    ys = [sf.read(str(p), dtype="float32")[0] for p in parts]
+    n = max(len(y) for y in ys)
+    mix = sum(np.pad(y, (0, n - len(y))) for y in ys)
+    sf.write(str(path), (0.8 * mix / np.max(np.abs(mix))).astype(np.float32), SR)
+    return path
+
+
+# G A B C C# D D | D C# C B A G G: G and D major read it about equally, an even chance
+# (``test_an_unsure_doh_comes_with_the_others_and_their_notes``).
+NEAR_TIE_SUNG = [67.05, 69.0, 70.95, 72.1, 73.0, 74.05, 74.05, 74.0, 72.9, 72.0, 71.05, 69.0, 66.95, 66.95]
+
+
+def test_a_songs_band_settles_the_doh_its_voice_is_unsure_of(tmp_path, monkeypatch):
+    # Sung over a band in D, as a song (its mix beside the separated vocal): D is one of the
+    # dohs the voice could as well be in, and the band's chords rest on it.  The voice's own G
+    # is then the one offered.  The same take read as a hum keeps the voice's G.
+    monkeypatch.setattr(transcriber, "KEY_ALTERNATIVES_BELOW", 0.51)
+    case = bench.Case("song_D", "D major", 90, [("D", 4), ("G", 4), ("A", 4), ("D", 4)], style="bass", lead_in=LEAD_IN)
+    backing = _backing(tmp_path / "backing.wav", case)
+    voice = _sing(tmp_path / "vocal.wav", NEAR_TIE_SUNG, seconds=sf.info(str(backing)).duration)
+    mix = _mixed(tmp_path / "mix.wav", voice, backing)
+    hum = transcribe(voice, mode="melody", audio_preview=False, fast=True, chord_source=backing)
+    song = transcribe(voice, mode="melody", audio_preview=False, fast=True, chord_source=backing, tempo_source=mix)
+    assert hum.key == "G major"
+    assert song.key == "D major"
+    assert "G major" in {k.key for k in song.key_alternatives or []}
+    # Every note was sung within the keep band of its own pitch: the doh moves, the notes do not.
+    assert _pitches(song) == _pitches(hum)
+    monkeypatch.setenv("NF_SONG_DOH", "0")
+    off = transcribe(voice, mode="melody", audio_preview=False, fast=True, chord_source=backing, tempo_source=mix)
+    assert off.key == "G major"
+
+
+def test_doh_from_band_moves_only_an_unsure_doh_to_one_the_voice_could_be_in():
+    fit = vocal.ScaleFit(offset=0.1, root=0, cost_margin=0.0, tonal_margin=0.1, readings=2, alternatives=(7,))
+    snapped = vocal.snap_to_scale([m - fit.offset for m in FLAT_TI_SUNG], fit.root)
+    events = [Event(i * 0.5, i * 0.5 + 0.45, p, 0.8, pyin_midi=m - fit.offset, stability=1.0)
+              for i, (m, p) in enumerate(zip(FLAT_TI_SUNG, snapped))]
+    written, settled = transcriber._doh_from_band(events, fit, (7, "major"))
+    assert settled.root == 7 and settled.alternatives == (0,)
+    assert [e.pitch for e in written] == FLAT_TI_TUNE  # the flat F#s, in doubt in C, are G's ti
+    assert transcriber._doh_from_band(events, fit, (4, "minor"))[1].root == 7  # E minor is la-based on G
+    assert transcriber._doh_from_band(events, fit, (9, "minor")) is None  # A minor: the voice's own doh
+    assert transcriber._doh_from_band(events, fit, (2, "major")) is None  # D: not a reading of the voice's
+    sure = vocal.ScaleFit(offset=0.1, root=0, cost_margin=0.4, tonal_margin=1.0, alternatives=(7,))
+    assert transcriber._doh_from_band(events, sure, (7, "major")) is None
 
 
 # ── The melody floor ──────────────────────────────────────────────────────────

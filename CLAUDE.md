@@ -51,8 +51,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   the doh correction rate and training rows. A key given at submit (`key_override`) re-writes the
   sung pitches in its scale (`vocal.write_in_root`; a key the voice fits worse than 1.5x its
   best only relabels, and a note sung within 25 cents of its own scale's pitch is never moved,
-  so a wrong key can only relabel what was heard clearly); a song's backing chords are labelled but never move the doh (taking
-  their key was measured wrong on real songs). A melody floor is not handed to a piano when pyin's line moves like a voice
+  so a wrong key can only relabel what was heard clearly); a song's backing chords never override a sure voice (taking
+  their key was measured wrong on real songs), but settle an unsure one: on a song's separated vocal, a doh under
+  `KEY_ALTERNATIVES_BELOW` gives way to the band's when that is one of the fit's own `alternatives` (`_doh_from_band`, step
+  7c; the backing re-read for its key when its chords are too unclear to show; `NF_SONG_DOH=0` off). A melody floor is not handed to a piano when pyin's line moves like a voice
   (`_stillness`). A sung note's confidence is how near its tuned pitch
   sits to the note written (`_pitch_confidence`), never loudness, and the sheet's overall
   confidence weighs the notes by length and by the doh confidence (the uncapped margin,
@@ -68,7 +70,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   downbeats than four does (`TRIPLE_LIFT`), else 4/4 — never 2, 6 or compound — and the first bar
   line is placed by the same durational accent, so an upbeat is written as a pickup
   (`TranscriptionResult.pickup_beats`, not on the wire; `beat_origin_sec` moves with it). Accuracy is
-  measured three times: the sung corpus, intended notes known, including untrained-singer styles
+  measured four times: the sung corpus, intended notes known, including untrained-singer styles
   (`python -m tests.accuracy.report --vocal`, baseline in `tests/accuracy/vocal_baseline.json`;
   `--slices` scores the long-drift, wide-detune, first-phrase and legato stress slices), and real
   singers (`python -m tests.accuracy.vocadito`, Vocadito downloaded on first run, scored against
@@ -78,7 +80,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   published tunes of the website's hymn pages, `content/hymns`, each played and sung at a varied
   tempo and key and scored against its own score — meter, notes in the right bar, pickup, written
   rhythm, tempo level as well as the notes; tune on `--split dev`, report the held-out
-  `--split test`; baseline `hymn_baseline.json`, five tunes in pytest). Linked songs
+  `--split test`; baseline `hymn_baseline.json`, five tunes in pytest), and the song path: studio songs
+  (`python -m tests.accuracy.report --songs`, `tests/accuracy/studio_songs.py`: 47 real takes of the Children's Song
+  Dataset — one studio singer, notes annotated, CC BY-NC-SA, fetched by range requests on first run, never committed —
+  under a rendered band, through the MDX model; and 80 hymn tunes sung by a synthetic singer on simulated stems, which the
+  model would hand to the piano; scored on the audio clock, syllables as read in each side's key; dev/test halves;
+  baseline `song_baseline.json`, three openings in pytest). Linked songs
   (`POST /v1/transcribe/link`: YouTube, Spotify, Apple Music) are fetched by `app/ingest/links.py`
   (oEmbed metadata + yt-dlp), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
   baked into the image at `NF_MDX_MODEL_PATH`; one pass needs ~1.6 GB and the process keeps ~320 MB of it,

@@ -379,6 +379,15 @@ class Settings:
         return os.getenv("NF_VOCAL_ENGINE", "1").strip().lower() not in ("0", "false", "no")
 
     @property
+    def song_doh(self) -> bool:
+        """Let a song's band settle the doh its separated voice is unsure of
+        (``transcriber._doh_from_band``, step 7c of ``_transcribe_wav``).  Studio songs
+        (``tests.accuracy.studio_songs``, dev half): doh 21 -> 23 of 23, the syllables a user
+        reads wrong 0.331 -> 0.287 per note; the real ADC2004/MIREX05 songs: fires on 1 of 21,
+        and puts it right."""
+        return os.getenv("NF_SONG_DOH", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
     def contour_first(self) -> bool:
         """Segment notes from the pyin f0 contour instead of repairing Basic Pitch's.
 
