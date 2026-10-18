@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { AppState } from "react-native";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { transcriptionsApi, type SubmitOptions } from "../api/endpoints";
 import { baseURL, safeReason, toApiError } from "../api/client";
@@ -96,6 +97,8 @@ export function useJobPolling() {
   const bufferedJobsRef = useRef<Record<string, any>>({});
   const connectionRef = useRef<HubConnection | null>(null);
   const pollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** The job whose poll stopped while the app was behind; polled again the moment it comes forward. */
+  const pausedJob = useRef<string | null>(null);
   /** When the current submit began — the twelve-minute clock behind "Try again". */
   const startedAt = useRef<number | null>(null);
   /** The last visible movement — the ninety-second clock behind the "server is busy" line. */
@@ -136,11 +139,20 @@ export function useJobPolling() {
    * A dropped poll is not a failed job: it is counted, and after three in a row the
    * screen says the API cannot be reached; the next good poll clears that. Nothing the
    * server says about a poll failure is ever shown.
+   *
+   * Only while the app is in front. A poll that sees the job done settles it on the server,
+   * and the server then sends no push ("they are looking at the result"); a phone left with
+   * the app behind kept polling and so silenced the very notification meant for it. In the
+   * background the server finishes the job and pushes; coming forward polls at once.
    */
   const pollProgress = useCallback((jobId: string) => {
     stopPolling();
     const tick = async () => {
       if (activeJobId.current !== jobId) return;
+      if (AppState.currentState !== "active") {
+        pausedJob.current = jobId;
+        return;
+      }
       const now = Date.now();
       try {
         const job = await transcriptionsApi.getJob(jobId);
@@ -181,6 +193,21 @@ export function useJobPolling() {
     };
     pollTimer.current = setTimeout(tick, pollMs());
   }, [stopPolling, finish]);
+
+  // Coming forward: the poll the background paused starts again (the result may be waiting).
+  const pollRef = useRef(pollProgress);
+  useEffect(() => {
+    pollRef.current = pollProgress;
+  }, [pollProgress]);
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (next) => {
+      const id = pausedJob.current;
+      if (next !== "active" || !id) return;
+      pausedJob.current = null;
+      if (activeJobId.current === id) pollRef.current(id);
+    });
+    return () => sub.remove();
+  }, []);
 
   /**
    * The clocks while the file is still leaving the phone. There is no job to poll yet, but

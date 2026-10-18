@@ -41,7 +41,7 @@ const Stack = createNativeStackNavigator<RootStackParams>();
  * based on session state, showing the branded splash while the session restores.
  */
 export function RootNavigator() {
-  const { user, initializing } = useAuth();
+  const { user, initializing, isAdmin } = useAuth();
   const { palette, mode, loading: themeLoading } = useTheme();
 
   // React Navigation paints the gap between screens itself, so it needs the
@@ -200,10 +200,12 @@ export function RootNavigator() {
               options={{ presentation: 'card', animation: 'slide_from_bottom' }}
             />
 
-            {/* Admin. Registered for every session rather than gated here: the
-                only way in is Profile's Admin row, which checks `isAdmin`, and a
-                conditional screen list would remount the stack the moment the
-                boot profile re-read changes that flag. */}
+            {/* Admin: registered only for an admin (the role the server's profile reports), so for anyone
+                else these screens do not exist — no row, no route, no deep link or push can open one. Adding
+                or removing screens keeps the rest of the stack's state; an admin demoted mid-session is moved
+                off an admin screen. Every admin endpoint checks the role in the database regardless. */}
+            {isAdmin ? (
+            <>
             <Stack.Screen
               name="AdminHome"
               component={AdminHomeScreen}
@@ -229,6 +231,8 @@ export function RootNavigator() {
               component={AdminUserScreen}
               options={{ animation: 'slide_from_right' }}
             />
+            </>
+            ) : null}
           </>
         ) : (
           <Stack.Screen name="Tabs" component={AuthNavigator} />
