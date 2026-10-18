@@ -143,6 +143,22 @@ VALLEY_WIDTH_FRAMES = 3
 ONSET_CUE_FLUX = 2.0
 ONSET_CUE_STRONG_FLUX = 4.0
 ONSET_CUE_VOICING = 0.3
+# A song's singer slides onto a note: a scoop or an approach from a step below, held long
+# enough on the way to be segmented as a note of its own.  In a song's separated vocal
+# (``analyse(song=True)``) a span that starts a syllable — after a breath or a re-strike — and
+# runs on, with no re-strike, up into a note at least SCOOP_MIN_RATIO times as long and at most
+# SCOOP_MAX_STEP above it, is that note's attack, if it is no longer than SCOOP_MAX_SEC
+# (``absorb_scoops``).  The approach is not written: the annotators of the Children's Song
+# Dataset, the studio takes of ``tests.accuracy.studio_songs``, wrote the note it reaches.
+# Swept on that corpus's dev half (notes.f1 with the band's doh, 0.717 without the rule):
+# 0.25-0.45 s at ratio 2 gave 0.748-0.760, ratio 1.2-1.5 at 0.35 s 0.774-0.780, ratio 3 0.742.
+# 1.5 is kept over 1.2, which measured alike, so that two halves of a slurred note stay two.
+# Only from below: a step down into a longer note is as often a written dotted figure (s. f m,
+# the short note re-sung on a voiced consonant the engine cannot hear); from below alone
+# measured the same on the dev half (0.774).
+SCOOP_MAX_SEC = 0.35
+SCOOP_MIN_RATIO = 1.5
+SCOOP_MAX_STEP = 2.5
 
 # ── Key-aware rounding ────────────────────────────────────────────────────────
 
@@ -839,6 +855,32 @@ def clean(c: Contour, spans: list[tuple[int, int]]) -> list[tuple[int, int, floa
     return [(a, b, m) for a, b, m in out if (b - a) * hop >= MIN_NOTE_SEC * 0.75]
 
 
+def absorb_scoops(c: Contour, spans: list[tuple[int, int, float]]) -> list[tuple[int, int, float]]:
+    """Fold a singer's slide up onto a note into the note: see ``SCOOP_MAX_SEC``.
+
+    The span joined takes the note's pitch and starts where the slide did, so the note is
+    written where the singer began it.  A span preceded by a note it runs on from is not a
+    syllable's attack (a melisma's or a run's inner note) and is left alone.
+    """
+    hop = _hop_sec(c)
+    out = list(spans)
+    i = 0
+    while i + 1 < len(out):
+        a, b, m = out[i]
+        na, nb, nm = out[i + 1]
+        dur = (b - a) * hop
+        attack = i == 0 or (a - out[i - 1][1]) * hop > JOIN_GAP_SEC or _has_rearticulation(
+            c, out[i - 1][0], out[i - 1][1], a, b)
+        if (attack and dur <= SCOOP_MAX_SEC and (nb - na) * hop >= SCOOP_MIN_RATIO * dur
+                and 0.5 <= nm - m <= SCOOP_MAX_STEP and (na - b) * hop <= JOIN_GAP_SEC
+                and not _has_rearticulation(c, a, b, na, nb)):
+            out[i] = (a, nb, nm)
+            del out[i + 1]
+            continue
+        i += 1
+    return out
+
+
 def fix_octaves(y: np.ndarray, sr: int, c: Contour, spans: list[tuple[int, int, float]]) -> list[tuple[int, int, float]]:
     """Raise a note an octave when the audio holds no energy at the pitch pyin claimed."""
     if not spans or y.size < FRAME:
@@ -1301,12 +1343,13 @@ def notate(midis: Sequence[float], durations: Sequence[float]) -> list[int]:
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 
-def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None) -> Analysis:
+def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None, song: bool = False) -> Analysis:
     """Notes from a monophonic voice recording.
 
     ``contour`` lets a caller hand in an f0 track of its own (the transcriber does so
     when it has decided a mixture's melody lives above an accompaniment); otherwise pyin
-    is run on the conditioned audio.
+    is run on the conditioned audio.  ``song`` says the voice is a song's, separated from
+    its band, whose singer's slides onto notes are folded into them (``absorb_scoops``).
     """
     raw = contour if contour is not None else track(condition(y, sr), sr)
     c = smooth(raw)
@@ -1315,6 +1358,8 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
     spans = clean(c, segment(c))
     if contour is None:
         spans = fix_octaves(y, sr, c, spans)
+    if song:
+        spans = absorb_scoops(c, spans)
     hop = _hop_sec(c)
 
     # Noise goes before the scale fit: a span too quiet and too unvoiced to be written must not

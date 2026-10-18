@@ -388,6 +388,11 @@ class Settings:
         return os.getenv("NF_SONG_DOH", "1").strip().lower() not in ("0", "false", "no")
 
     @property
+    def song_scoops(self) -> bool:
+        """Fold a song singer's slides onto notes into the notes (``vocal.absorb_scoops``)."""
+        return os.getenv("NF_SONG_SCOOPS", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
     def contour_first(self) -> bool:
         """Segment notes from the pyin f0 contour instead of repairing Basic Pitch's.
 

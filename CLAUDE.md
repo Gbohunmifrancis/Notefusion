@@ -90,7 +90,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (oEmbed metadata + yt-dlp), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
   baked into the image at `NF_MDX_MODEL_PATH`; one pass needs ~1.6 GB and the process keeps ~320 MB of it,
   so the model runs in a child process that hands the memory back — `NF_SEPARATE_IN_PROCESS=1` restores
-  the in-process run), then transcribed. Every separation (a link, `separate=true`, or a band the queue heard in a
+  the in-process run), then transcribed; a song's separated vocal (the queue passes the mix as `tempo_source` only
+  then) also has its singer's slides folded into the notes they reach (`vocal.absorb_scoops`: a span of at most 0.35 s
+  that starts a syllable and runs, unre-struck, up at most 2.5 st into a note 1.5x as long; `NF_SONG_SCOOPS=0` off).
+  Every separation (a link, `separate=true`, or a band the queue heard in a
   melody upload) checks the stem for a voice (`separate.voice_share_db`): a stem with none gives way to the mixture, and
   one whose sheet has fewer than max(4, seconds/10) notes to the mixture's sheet when that has more; a mixture is
   read on the normal lane (the fast lane has no melody floor). Instruments recorded alone used to come back as

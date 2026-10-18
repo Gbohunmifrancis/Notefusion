@@ -212,6 +212,62 @@ def test_clean_drops_a_fragment_too_short_to_be_a_note():
     assert [round(m) for _, _, m in notes] == [60]
 
 
+# ── A song's singer sliding onto a note ───────────────────────────────────────
+
+
+def _phrase(*runs: tuple[float, int], gap: int = 8, dip_at: tuple[int, ...] = ()) -> tuple[vocal.Contour, list]:
+    """A phrase after a breath: (midi, frames) runs sung on from one to the next, the level
+    dipping (a re-strike, with its attack) at the given run indexes."""
+    midi = [np.nan] * gap + [m for m, n in runs for _ in range(n)]
+    n = len(midi)
+    rms = np.ones(n)
+    onset = np.ones(n)
+    starts = np.cumsum([gap] + [k for _, k in runs])
+    for i in dip_at:
+        rms[starts[i] - 1:starts[i] + 2] = 0.3
+        onset[starts[i] + 2] = 3.0
+    rms[:gap] = 0.0
+    c = vocal.Contour(times=np.arange(n) * HOP_SEC, midi=np.array(midi), voiced_prob=np.where(rms > 0, 1.0, 0.0),
+                      rms=rms, rms_fast=rms, onset=onset)
+    return c, [(int(a), int(b), float(m)) for (m, _), a, b in zip(runs, starts[:-1], starts[1:])]
+
+
+def test_absorb_scoops_folds_a_slide_onto_the_note_it_reaches():
+    # A phrase opened on D for a quarter second and carried, no new attack, up to a held E:
+    # the singer's approach to E, which a sheet writes as E from where the slide began.
+    c, spans = _phrase((62.0, 10), (64.0, 40))
+    assert vocal.absorb_scoops(c, spans) == [(spans[0][0], spans[1][1], 64.0)]
+
+
+def test_absorb_scoops_leaves_what_a_singer_sang_as_notes():
+    # Re-struck onto E: two syllables, two notes.
+    c, spans = _phrase((62.0, 10), (64.0, 40), dip_at=(1,))
+    assert vocal.absorb_scoops(c, spans) == spans
+    # Two halves of a slurred note, as long as each other.
+    c, spans = _phrase((62.0, 12), (64.0, 12))
+    assert vocal.absorb_scoops(c, spans) == spans
+    # Longer than a slide (SCOOP_MAX_SEC), or further than one (SCOOP_MAX_STEP).
+    c, spans = _phrase((62.0, 20), (64.0, 60))
+    assert vocal.absorb_scoops(c, spans) == spans
+    c, spans = _phrase((60.0, 10), (64.0, 40))
+    assert vocal.absorb_scoops(c, spans) == spans
+    # Down a step into a longer note: as often a dotted figure's short note re-sung (s. f m).
+    c, spans = _phrase((64.0, 10), (62.0, 40))
+    assert vocal.absorb_scoops(c, spans) == spans
+    # Run on from a note before it: an inner note of a run, not a syllable's attack.
+    c, spans = _phrase((60.0, 30), (62.0, 10), (64.0, 40))
+    assert vocal.absorb_scoops(c, spans) == spans
+
+
+def test_analyse_folds_slides_only_for_a_song():
+    c, _spans = _phrase((62.0, 10), (64.0, 40))
+    hummed = vocal.analyse(np.zeros(1, dtype=np.float32), contour=c)
+    sung = vocal.analyse(np.zeros(1, dtype=np.float32), contour=c, song=True)
+    assert [n.pitch for n in hummed.notes] == [62, 64]
+    assert [n.pitch for n in sung.notes] == [64]
+    assert sung.notes[0].start == pytest.approx(hummed.notes[0].start)
+
+
 # ── Key-aware rounding ────────────────────────────────────────────────────────
 
 

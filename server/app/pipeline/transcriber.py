@@ -3175,6 +3175,7 @@ def _segment_vocal(
     sr: int,
     note_events: Sequence[tuple] = (),
     post: "Posteriorgram | None" = None,
+    song: bool = False,
 ) -> tuple[list[Event], float | None, "vocal.ScaleFit | None"]:
     """Notes from ``app.pipeline.vocal``: the melody path for hummed and sung clips.
 
@@ -3189,6 +3190,8 @@ def _segment_vocal(
     The third value is the scale the engine wrote the notes in (``vocal.ScaleFit``), which
     the key detection then keeps to: the notes were snapped into that scale, so a key with
     another doh would read its own scale tones as accidentals.
+
+    ``song`` says ``y`` is a song's separated vocal (``vocal.analyse``).
     """
     try:
         raw = vocal.track(vocal.condition(y, sr), sr)
@@ -3210,7 +3213,7 @@ def _segment_vocal(
         if distinct.size < MELODY_FLOOR_MIN_DISTINCT_PITCHES:
             return [], floor_midi, None
 
-    analysis = vocal.analyse(y, sr, contour=raw)
+    analysis = vocal.analyse(y, sr, contour=raw, song=song)
     events = [
         Event(
             start=n.start,
@@ -5276,8 +5279,9 @@ def _transcribe_wav(
         override_minor = written.mode == "minor"
 
     # A song's separated vocal: the queue hands the mix in as ``tempo_source`` only then (a
-    # linked song, or an upload isolated because it asked or a band was heard).  Its unsure doh
-    # is settled by its band (step 7c).  A hum, or a song read from its mixture, keeps the rest.
+    # linked song, or an upload isolated because it asked or a band was heard).  Its singer's
+    # slides onto notes are folded into them (``vocal.absorb_scoops``) and an unsure doh is
+    # settled by its band (step 7c).  A hum, or a song read from its mixture, keeps the rest.
     song_stem = mode == "melody" and tempo_source is not None
 
     # The fast lane (see ``transcribe``) tries the voice engine before paying for Basic
@@ -5287,7 +5291,7 @@ def _transcribe_wav(
     vocal_fit: "vocal.ScaleFit | None" = None
     skip_basic_pitch = fast and strategy.contour_first and settings.vocal_engine
     if skip_basic_pitch:
-        fast_events, _floor, vocal_fit = _segment_vocal(y, sr, [], None)
+        fast_events, _floor, vocal_fit = _segment_vocal(y, sr, [], None, song=song_stem and settings.song_scoops)
         skip_basic_pitch = bool(fast_events)
     progress(0.15)
 
@@ -5337,7 +5341,8 @@ def _transcribe_wav(
     # Chords mode: every note Basic Pitch kept, which the chords are read from.
     chord_events: list[Event] | None = None
     if not contour_events and settings.vocal_engine and strategy.contour_first:
-        contour_events, melody_floor_midi, vocal_fit = _segment_vocal(y, sr, note_events, post)
+        contour_events, melody_floor_midi, vocal_fit = _segment_vocal(
+            y, sr, note_events, post, song=song_stem and settings.song_scoops)
     if not contour_events and settings.contour_first and strategy.contour_first:
         contour_events, melody_floor_midi = _segment_contour(y, note_events, post)
 
