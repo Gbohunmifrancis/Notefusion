@@ -25,6 +25,8 @@ import { PlayerDock, DOCK_CLEARANCE } from "../components/result/PlayerDock";
 import { RehearseView } from "../components/result/RehearseView";
 import { PracticeView } from "../components/result/PracticeView";
 import { usePractice } from "../components/result/usePractice";
+import { DohToast } from "../components/doh/DohToast";
+import { firstCelebration } from "../lib/dohPrefs";
 import { libraryApi, transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import type { ChordSymbol, HymnCredit, KeyAlternative, NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
@@ -188,6 +190,8 @@ export function ResultScreen({ route, navigation }: Props) {
     sourceJobId,
     savedId: initialSavedId,
     title: initialTitle,
+    fresh,
+    practise,
   } = route.params;
 
   const colors = useColors();
@@ -1193,6 +1197,47 @@ export function ResultScreen({ route, navigation }: Props) {
   /** The first doubtful note, named in the amber row so the ear knows where to go. */
   const firstLow = view.notes.find((n) => n.conf < 0.5);
 
+  /** Practise this tune: Learn my part when the sheet has parts, else Rehearse's loop for the tune alone. */
+  function practiseNow() {
+    if (parts) void openPractice();
+    else setRehearsing(true);
+  }
+
+  // Home's "Practise this tune" opens the sheet straight on its practice.
+  useEffect(() => {
+    if (practise) practiseNow();
+    // Once, on arrival.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── Doh's first-open toast (board c-practice/8b) ─────────────────────────
+  // Only on a sheet opened straight from its finished job, once per job: Doh cheers with the headline numbers and
+  // offers to practise it — or, when some notes are worth a listen, says so and offers to check them. Leaves after
+  // 5 s or on any touch, and takes the player dock's place, so it never covers the solfa.
+  const [celebrate, setCelebrate] = useState<{ doubtful: boolean } | null>(null);
+  const [celebrating, setCelebrating] = useState(false);
+  useEffect(() => {
+    if (!fresh || !sourceJobId || result.notes.length === 0) return;
+    let live = true;
+    void firstCelebration(sourceJobId).then((first) => {
+      if (!live || !first) return;
+      setCelebrate({ doubtful: result.notes.some((n) => n.conf < 0.5) });
+      setCelebrating(true);
+    });
+    return () => {
+      live = false;
+    };
+    // Once, on arrival.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const endCelebration = () => setCelebrating(false);
+  /** A touch that began on the toast is the toast's own: it reaches the toast first, then bubbles to the screen. */
+  const touchOnToast = useRef(false);
+  function touchedSheet() {
+    if (touchOnToast.current) touchOnToast.current = false;
+    else endCelebration();
+  }
+
   function goBack() {
     if (navigation.canGoBack()) navigation.goBack();
     else navigation.navigate("Tabs", { screen: "Home" });
@@ -1379,7 +1424,8 @@ export function ResultScreen({ route, navigation }: Props) {
   const nothingToShow = solfaStyle === "bars" ? view.notes.length === 0 : activeSolfaLines.length === 0;
 
   return (
-    <Screen contentStyle={styles.screen}>
+    // Any touch on the sheet sends Doh's toast away; the touch still does what it was for.
+    <Screen contentStyle={styles.screen} onTouchStart={celebrating ? touchedSheet : undefined}>
       <KeyboardAvoider>
         <ScrollView
           contentContainerStyle={[
@@ -1982,8 +2028,9 @@ export function ResultScreen({ route, navigation }: Props) {
         </ScrollView>
       </KeyboardAvoider>
 
-      {/* ── Playback: hear the tune; Rehearse to loop, slow down and mute parts ─ */}
-      {preview ? <PlayerDock practice={practice} onRehearse={() => setRehearsing(true)} /> : null}
+      {/* ── Playback: hear the tune; Rehearse to loop, slow down and mute parts ─
+          Doh's first-open toast takes the dock's place for its few seconds, so it never covers the solfa. */}
+      {preview && !celebrate ? <PlayerDock practice={practice} onRehearse={() => setRehearsing(true)} /> : null}
 
       <RehearseView
         visible={rehearsing}
@@ -2046,6 +2093,28 @@ export function ResultScreen({ route, navigation }: Props) {
         onDelete={deleteNote}
         onClose={closeEditor}
       />
+
+      {/* ── Doh's first-open toast, where the player docks ─────────────────── */}
+      {celebrate ? (
+        <DohToast
+          visible={celebrating}
+          pose={celebrate.doubtful ? "encourage" : "cheer-notes"}
+          title={celebrate.doubtful ? "Done. A few notes are worth a listen." : `Here it is! Doh is ${doh}.`}
+          body={celebrate.doubtful ? "They're outlined." : `${view.notes.length} notes. Sing it back once?`}
+          action={celebrate.doubtful ? "Check" : "Practise"}
+          bottom={insets.bottom + 10}
+          onTouched={() => {
+            touchOnToast.current = true;
+          }}
+          onAction={() => {
+            endCelebration();
+            if (celebrate.doubtful) startReview();
+            else practiseNow();
+          }}
+          onHide={endCelebration}
+          onGone={() => setCelebrate(null)}
+        />
+      ) : null}
     </Screen>
   );
 }

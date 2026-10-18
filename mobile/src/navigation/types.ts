@@ -54,6 +54,13 @@ export type RootStackParams = {
     sourceJobId?: string;
     savedId?: string;
     title?: string;
+    /**
+     * Opened straight from its finished job (the record or link flow, or the job's notification): Doh's toast
+     * celebrates it, once per job. Never set on a reopen from the Library or Home.
+     */
+    fresh?: boolean;
+    /** Open on Learn my part (or, with no parts, Rehearse's loop): Home's "Practise this tune". */
+    practise?: boolean;
   };
   /**
    * The account and the phone's settings (account, appearance, data and offline, help and about, sign out,

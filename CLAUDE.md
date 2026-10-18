@@ -291,7 +291,14 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   1–7, three units each, gentle patterns, slower, id `…~gentle`; stars, stickers, confetti) and Focused (two grades ahead,
   on into Advanced 1–2: wide leaps and 8–16-note sight-singing; exact score, cents, replay). Each track keeps its own place
   on the path. XP and every rule are the same on both.
-  Art (our own SVG): `design/practice-art/build.mjs` draws it into `web-site/assets/practice-art/` and mobile `components/practice/art/svgs.ts`; Doh lives in Practice only, and no gold (Pro's alone).
+  Art (our own SVG): `design/practice-art/build.mjs` draws it into `web-site/assets/practice-art/` and mobile `components/practice/art/svgs.ts`
+  (a `-blink` twin for each open-eyed pose Doh idles in), and no gold (Pro's alone). Doh beyond Practice (mobile `components/doh`) is
+  only: one Home card (`lib/dohSuggestion`; a sheet saved in the last 24 h → Practise this tune, i.e. Learn my part, else Rehearse;
+  after 18:00 a 2+-day streak no freeze covers, today unsung → today's drill; the account's first week (`/api/me` `createdAt`) while it can
+  transcribe → hello; never two, a card's key on Home one day only, × hides it for good; Settings' "Doh's suggestions", per device, turns
+  it off), the result's first-open toast (route `fresh`, once per job, in the player dock's place) and the empty Library (tap for a tip,
+  `lib/dohTips`). Never on errors, payments, sign-in or decisions; one Doh on screen; moves `lib/dohMotion` (hop 480, blink 140, tilt 240,
+  cheer 520, tap 300 ms; idle stops after 30 s; Reduce Motion: a 150 ms fade, still poses).
   Console: `GET /api/admin/analytics/practice` (`GetPracticeAnalyticsQuery`, web-admin `/practice`; takes and reminders on the singer's
   day, paths replayed through `PracticePath.Read`'s observer, streak breaks from `PracticeMath.StreakBreaks`) and `…/analytics/growth`
   (`GetGrowthQuery`, `/growth`: renewals rebuilt from membership charges, free-to-paid by price set via the shared `FreeLimitReach`, failures by kind, phones by build).

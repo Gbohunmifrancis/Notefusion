@@ -13,10 +13,12 @@ import {
 } from "react-native";
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Touchable } from "../components/Touchable";
+import { Button } from "../components/Button";
+import { DohTip } from "../components/doh/DohTip";
 import { Mark } from "../components/night/NightUI";
 import { LibraryRow, LibraryRowSkeleton } from "../components/library/LibraryRow";
 import { SelectionBar } from "../components/library/SelectionBar";
@@ -79,6 +81,9 @@ export function LibraryScreen() {
   // Select mode is simply "something is selected": clearing the last tick leaves it.
   const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
   const selecting = selected.size > 0;
+  // Doh on the empty states idles only while the Library is on show; a scroll closes his tip.
+  const focused = useIsFocused();
+  const [scrolls, setScrolls] = useState(0);
 
   // Share, file and delete the chosen sheets: the same actions as Home's recent rows (board a-core/11).
   const actions = useSheetActions({
@@ -425,30 +430,45 @@ export function LibraryScreen() {
         </View>
       ))}
     </View>
-  ) : (
+  ) : loadError ? (
+    // A problem stays plain words: no Doh on errors.
     <View style={styles.emptyContainer}>
       <Mark height={40} color={colors.textFaint} />
       <Text style={styles.emptyLine}>
-        {loadError ? (
-          <>
-            <Ionicons name="alert-circle" size={15} color={colors.warning} /> {loadError}
-          </>
-        ) : query.trim()
-            ? `Nothing here matches “${query.trim()}”.`
-            : folder !== null
-              ? "Nothing in this folder yet."
-              : "Your sheets will live here."}
+        <Ionicons name="alert-circle" size={15} color={colors.warning} /> {loadError}
       </Text>
-      {loadError
-        ? emptyAction("Try again", () => {
-            setLoading(true);
-            load();
-          })
-        : query.trim()
-          ? emptyAction("Clear search", closeSearch)
+      {emptyAction("Try again", () => {
+        setLoading(true);
+        load();
+      })}
+    </View>
+  ) : (
+    // Nothing here yet: Doh holding a blank sheet, a tip when tapped (board c-practice/8b).
+    <View style={styles.dohEmpty}>
+      <DohTip active={focused} closeSignal={scrolls} />
+      <Text style={styles.emptyTitle}>
+        {query.trim()
+          ? `Nothing here matches “${query.trim()}”`
           : folder !== null
-            ? emptyAction("Show all", () => setFolder(null))
-            : emptyAction("Record a tune", () => nav.navigate("Tabs", { screen: "Record" }))}
+            ? "Nothing in this folder yet"
+            : "Your sheets will live here"}
+      </Text>
+      {!query.trim() && folder === null ? (
+        <Text style={styles.emptyText}>Hum a line and I'll write it in solfa. It lands here, ready to sing, share or print.</Text>
+      ) : null}
+      {query.trim() ? (
+        <Button label="Clear search" variant="secondary" onPress={closeSearch} style={styles.emptyButton} />
+      ) : folder !== null ? (
+        <Button label="Show all" variant="secondary" onPress={() => setFolder(null)} style={styles.emptyButton} />
+      ) : (
+        <Button
+          label="Record a tune"
+          variant="secondary"
+          icon="mic-outline"
+          onPress={() => nav.navigate("Tabs", { screen: "Record" })}
+          style={styles.emptyButton}
+        />
+      )}
     </View>
   );
 
@@ -460,6 +480,7 @@ export function LibraryScreen() {
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        onScrollBeginDrag={() => setScrolls((n) => n + 1)}
         contentContainerStyle={[styles.listContent, selecting && styles.listContentSelecting]}
         refreshControl={
           <RefreshControl
@@ -703,6 +724,32 @@ const makeStyles = (c: Palette) =>
       fontSize: 15,
       color: c.textMuted,
       textAlign: "center",
+    },
+    dohEmpty: {
+      alignItems: "center",
+      // Room above Doh for his tip's bubble.
+      paddingTop: 150,
+      paddingHorizontal: spacing.xl,
+    },
+    emptyTitle: {
+      fontFamily: fonts.semibold,
+      fontSize: 19,
+      lineHeight: 25,
+      color: c.text,
+      textAlign: "center",
+      marginTop: 10,
+    },
+    emptyText: {
+      fontFamily: fonts.regular,
+      fontSize: 14.5,
+      lineHeight: 21,
+      color: c.textMuted,
+      textAlign: "center",
+      marginTop: 6,
+      maxWidth: 320,
+    },
+    emptyButton: {
+      marginTop: 18,
     },
     emptyBtn: {
       height: 44,

@@ -177,6 +177,7 @@ export function LinkScreen() {
         result,
         sourceJobId,
         title: result.source ? result.source.title : undefined,
+        fresh: true,
       });
     }
   }, [state.status, state.result, state.jobId, nav, reset, refresh]);

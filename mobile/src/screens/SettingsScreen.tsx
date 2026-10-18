@@ -14,6 +14,7 @@ import { siteUrls } from "../lib/env";
 import * as haptics from "../lib/haptics";
 import { meApi } from "../api/endpoints";
 import { setDataSaver, useDataSaver } from "../lib/dataSaver";
+import { setDohSuggestions, useDohSuggestions } from "../lib/dohPrefs";
 import { clearAutomaticCopies, setKeepAllOffline, useOfflineLibrary } from "../lib/offlineLibrary";
 import { usePackState } from "../lib/hymnPackStore";
 import { formatBytes } from "../lib/hymnPack";
@@ -35,7 +36,7 @@ type Sheet = "name" | "password" | "about" | "delete" | null;
  *
  *   • Account — Name and Password open one-field sheets; Email is read only (no route changes it) and wears
  *     Google's G for an account that signs in with Google, which has no Password row.
- *   • Appearance — Theme as a Night | Day switch you can see, and haptic feedback.
+ *   • Appearance — Theme as a Night | Day switch you can see, haptic feedback, and Doh's suggestions (Home's card).
  *   • Data & offline — data saver, keeping every saved sheet offline, the offline hymns (the Hymns tab), and
  *     "Clear offline copies".
  *   • Help & about — help, feedback, the legal pages and About.
@@ -55,6 +56,7 @@ export function SettingsScreen({ navigation }: Props) {
   const [sheet, setSheet] = useState<Sheet>(null);
 
   const dataSaver = useDataSaver();
+  const dohSuggestions = useDohSuggestions();
   const offline = useOfflineLibrary();
   const hymnPack = usePackState();
 
@@ -161,6 +163,13 @@ export function SettingsScreen({ navigation }: Props) {
           icon="pulse-outline"
           label="Haptic feedback"
           toggle={{ value: hapticsOn, onChange: (on) => void toggleHaptics(on) }}
+        />
+        {/* Doh's one card on Home (a sheet to practise, the streak, hello); off, Home is plain. On this phone. */}
+        <Row
+          icon="sparkles-outline"
+          label="Doh's suggestions"
+          hint="A card on Home now and then"
+          toggle={{ value: dohSuggestions, onChange: (on) => void setDohSuggestions(on) }}
         />
       </Group>
 

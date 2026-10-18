@@ -23,6 +23,7 @@ export function Screen({
   edges,
   scrollRef,
   refreshControl,
+  onTouchStart,
 }: {
   children: React.ReactNode;
   scroll?: boolean;
@@ -32,12 +33,14 @@ export function Screen({
    *  section on arrival. Ignored unless `scroll` is set. */
   scrollRef?: React.RefObject<ScrollView | null>;
   refreshControl?: React.ReactElement<RefreshControlProps>;
+  /** Any touch on the screen, without taking it (the Result screen sends Doh's toast away). */
+  onTouchStart?: () => void;
 }) {
   const { mode } = useTheme();
   const styles = useThemedStyles(makeStyles);
 
   return (
-    <SafeAreaView style={styles.safe} edges={edges ?? ["top", "left", "right"]}>
+    <SafeAreaView style={styles.safe} edges={edges ?? ["top", "left", "right"]} onTouchStart={onTouchStart}>
       <StatusBar barStyle={mode === "dark" ? "light-content" : "dark-content"} backgroundColor="transparent" translucent />
       {scroll ? (
         <KeyboardAvoider>

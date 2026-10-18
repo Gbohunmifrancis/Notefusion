@@ -68,6 +68,7 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
     navigationRef.navigate('Result', {
       result: { ...result, audioPreviewBase64 },
       sourceJobId: jobId,
+      fresh: true,
     });
     return true;
   } catch (e) {
