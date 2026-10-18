@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
@@ -35,6 +35,7 @@ import type { PracticeProgress, SavedTranscription } from '../api/types';
 import { streakSnapshot } from '../lib/practiceProgress';
 import { rememberStreak } from '../lib/practiceReminder';
 import { refreshProfilePicture } from '../lib/profilePicture';
+import { useBreath } from '../lib/breath';
 import type { RootStackParams, TabParams } from '../navigation/types';
 import { solfaOpening } from '../lib/solfaOpening';
 import { confidenceA11y, confidenceLevel } from '../lib/confidence';
@@ -59,6 +60,7 @@ export function HomeScreen({ navigation }: Props) {
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const { user } = useAuth();
   const { isPro, refresh: refreshSubscription } = useSubscription();
+  const focused = useIsFocused();
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
   const [loadingRecent, setLoadingRecent] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -75,18 +77,18 @@ export function HomeScreen({ navigation }: Props) {
    * scale so they breathe as a single object rather than two things that happen
    * to share a duration.
    *
-   * RN `Animated` rather than Reanimated, matching the ambient pulse on
-   * RecordScreen: this is an idle loop on the native driver, not a gesture
-   * response, and there is nothing for the UI thread to win here. The press
-   * spring inside `Touchable` is the Reanimated half.
+   * The breath is the app's one (`lib/breath`), shared with the tab bar's record
+   * halo so the two swell together. It runs while Home is focused (Home stays
+   * mounted for the whole session, so an ungated loop would keep waking the
+   * native driver behind Library and Settings); Reduce Motion holds it still.
    */
-  const breathe = useRef(new Animated.Value(0)).current;
+  const reduceMotion = useReducedMotion();
+  const breathe = useBreath(focused && !reduceMotion);
   /** Fires once per press-in: one ring out of the circle, then gone. */
   const ring = useRef(new Animated.Value(0)).current;
   /** Entrance: fades + slides the content in once per focus, so navigating away
    *  and back replays the transition rather than keeping a stale snapshot. */
   const mountFade = useRef(new Animated.Value(0)).current;
-  const reduceMotion = useReducedMotion();
 
   const bloomOpacity = breathe.interpolate({
     inputRange: [0, 1],
@@ -113,12 +115,10 @@ export function HomeScreen({ navigation }: Props) {
     outputRange: [14, 0],
   });
 
-  // Gated on focus, not mount: Home stays mounted for the whole session, so an
-  // ungated loop would keep waking the native driver behind Library and Settings
-  // for as long as the app is open.
+  // Reset and replay the entrance on every focus. Reduce motion: the content still
+  // fades in (no slide, below), and the mic holds still (`useBreath` above).
   useFocusEffect(
     useCallback(() => {
-      // Reset and replay entrance animation on every focus.
       mountFade.setValue(0);
       const entrance = Animated.timing(mountFade, {
         toValue: 1,
@@ -127,32 +127,8 @@ export function HomeScreen({ navigation }: Props) {
         useNativeDriver: true,
       });
       entrance.start();
-      // Reduce motion: the content still fades in (no slide, below), but the mic holds still.
-      if (reduceMotion) return () => entrance.stop();
-
-      const pulse = Animated.loop(
-        Animated.sequence([
-          Animated.timing(breathe, {
-            toValue: 1,
-            duration: 1800,
-            easing: Easing.inOut(Easing.sin),
-            useNativeDriver: true,
-          }),
-          Animated.timing(breathe, {
-            toValue: 0,
-            duration: 1800,
-            easing: Easing.inOut(Easing.sin),
-            useNativeDriver: true,
-          }),
-        ]),
-      );
-      pulse.start();
-      return () => {
-        entrance.stop();
-        pulse.stop();
-        breathe.setValue(0);
-      };
-    }, [breathe, mountFade, reduceMotion]),
+      return () => entrance.stop();
+    }, [mountFade]),
   );
 
   const fireRing = useCallback(() => {

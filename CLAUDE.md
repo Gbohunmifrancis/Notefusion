@@ -162,7 +162,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   pushing Profile (plan, choir, Notifications, Settings, help, feedback, Admin); no side drawer and no Profile tab.
   Settings and Notifications are grouped rows (`components/settings`); Notifications holds push, sound, the reminder
   and its hour 8–21 (`ReminderTimeSheet`) and the founder-notes email switch (`GET/PUT /api/me/email-preferences`, the
-  `EmailOptOut` row). Splash: cover only until
+  `EmailOptOut` row). The record button's halo and Home's mic share one breath (`lib/breath`). Splash: cover only until
   the fonts load, the 1.6 s intro on the first launch (`nf.hasLaunched`), 0.6 s on every later cold start. A rating ask after the third saved sheet (`lib/ratingPolicy` decides when; the sheet in `lib/feedback` sends the stars to the API and offers Google Play to 4–5★),
   expo-notifications push. OTA via EAS Update (`production` channel) with the `fingerprint`
   runtime policy: any native change (a new Expo module, a permission, a plugin) gives a new

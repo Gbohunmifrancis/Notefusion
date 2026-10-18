@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Keyboard, Platform, StyleSheet, Text, View } from "react-native";
+import { Animated, Keyboard, Platform, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   createBottomTabNavigator,
   type BottomTabBarProps,
 } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import Svg, { Circle, Defs, RadialGradient, Stop } from "react-native-svg";
+import { useReducedMotion } from "react-native-reanimated";
 import { HomeScreen } from "../screens/HomeScreen";
 import { RecordScreen } from "../screens/RecordScreen";
 import { LibraryScreen } from "../screens/LibraryScreen";
@@ -14,7 +16,8 @@ import { HymnsScreen } from "../screens/HymnsScreen";
 import { Touchable } from "../components/Touchable";
 import { Mark } from "../components/night/NightUI";
 import { fonts, motion, spacing, type Palette } from "../design/theme";
-import { useColors, useThemedStyles } from "../lib/theme";
+import { useColors, useTheme, useThemedStyles } from "../lib/theme";
+import { useBreath } from "../lib/breath";
 import { TAB_ORDER, type TabName } from "../lib/navTargets";
 import type { TabParams } from "../navigation/types";
 
@@ -24,7 +27,7 @@ const Tab = createBottomTabNavigator<TabParams>();
  * Five labelled cells (board a-core/04): Home · Library · Record (centre) · Practice · Hymns, in `TAB_ORDER`.
  * Every cell is `flex: 1` in the row, so the odd count puts the record button in the geometric middle. Labels,
  * because a flame or a book alone does not say "Practice" or "Hymns". The record button is the mark on its ink
- * circle.
+ * circle, with a slow halo behind it ({@link RecordHalo}).
  */
 const CELLS: Record<TabName, { label: string; icon: keyof typeof Ionicons.glyphMap; iconActive: keyof typeof Ionicons.glyphMap }> = {
   Home: { label: "Home", icon: "home-outline", iconActive: "home" },
@@ -34,8 +37,9 @@ const CELLS: Record<TabName, { label: string; icon: keyof typeof Ionicons.glyphM
   Hymns: { label: "Hymns", icon: "book-outline", iconActive: "book" },
 };
 
-/** The record button, by diameter. */
+/** The record button and its halo, by diameter. */
 const RECORD = 52;
+const HALO = 116;
 
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
@@ -52,7 +56,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
     return () => { showSub.remove(); hideSub.remove(); };
   }, []);
 
-  // The bar goes while the keyboard is up.
+  // The bar (and with it the halo's breath) goes while the keyboard is up.
   if (keyboardVisible) return null;
 
   const current = state.routes[state.index]?.name;
@@ -88,8 +92,11 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                 ripple={false}
                 style={styles.tabItem}
               >
-                <View style={styles.centerBtn}>
-                  <Mark height={26} />
+                <View style={styles.centre}>
+                  <RecordHalo breathing={!focused} />
+                  <View style={styles.centerBtn}>
+                    <Mark height={26} />
+                  </View>
                 </View>
               </Touchable>
             );
@@ -122,6 +129,42 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
         })}
       </View>
     </View>
+  );
+}
+
+/**
+ * The record button's halo (board a-core/05): a soft blue light behind it that swells and settles every 3.6 s,
+ * on the breath Home's big mic shares (`lib/breath`). The button itself never moves or changes colour, so it
+ * never reads as already recording. Night 0.08 → 0.26 at the core, Day 0.05 → 0.16, scale 0.96 → 1.04. It rests
+ * on the Record tab; Reduce Motion holds it at 0.14 (Day 0.09). Opacity and scale only, on the native driver.
+ */
+function RecordHalo({ breathing }: { breathing: boolean }) {
+  const colors = useColors();
+  const { mode } = useTheme();
+  const styles = useThemedStyles(makeStyles);
+  const reduceMotion = useReducedMotion();
+  const breath = useBreath(breathing && !reduceMotion);
+  const night = mode === "dark";
+
+  const opacity = reduceMotion
+    ? night ? 0.14 : 0.09
+    : breath.interpolate({ inputRange: [0, 1], outputRange: night ? [0.08, 0.26] : [0.05, 0.16] });
+  const scale = reduceMotion ? 1 : breath.interpolate({ inputRange: [0, 1], outputRange: [0.96, 1.04] });
+
+  return (
+    <Animated.View pointerEvents="none" style={[styles.halo, { opacity, transform: [{ scale }] }]}>
+      <Svg width={HALO} height={HALO}>
+        <Defs>
+          <RadialGradient id="recordHalo" cx="50%" cy="50%" r="50%">
+            <Stop offset="0" stopColor={colors.primary} stopOpacity={1} />
+            <Stop offset="0.42" stopColor={colors.primary} stopOpacity={1} />
+            <Stop offset="0.66" stopColor={colors.primary} stopOpacity={0.38} />
+            <Stop offset="1" stopColor={colors.primary} stopOpacity={0} />
+          </RadialGradient>
+        </Defs>
+        <Circle cx={HALO / 2} cy={HALO / 2} r={HALO / 2} fill="url(#recordHalo)" />
+      </Svg>
+    </Animated.View>
   );
 }
 
@@ -182,6 +225,20 @@ const makeStyles = (c: Palette) =>
     labelOn: {
       fontFamily: fonts.semibold,
       color: c.text,
+    },
+    /** Centres the halo and the button on one point; the halo spills past the bar, untouchable. */
+    centre: {
+      width: RECORD,
+      height: RECORD,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    halo: {
+      position: "absolute",
+      width: HALO,
+      height: HALO,
+      left: (RECORD - HALO) / 2,
+      top: (RECORD - HALO) / 2,
     },
     centerBtn: {
       width: RECORD,
