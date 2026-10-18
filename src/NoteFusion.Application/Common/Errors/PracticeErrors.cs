@@ -21,6 +21,25 @@ public static class PracticeErrors
     public static readonly Error TrackUnknown =
         Error.Validation("PRACTICE_TRACK_UNKNOWN", "Pick a practice style: Playful or Focused.");
 
+    /// <summary>A mode the server does not have ("warm-up", "pitch-match", "intervals", "harmony", "runs", "rhythm").</summary>
+    public static readonly Error ModeUnknown =
+        Error.NotFound("PRACTICE_MODE_UNKNOWN", "That way to practise isn't here. Open Practice to see what is.");
+
+    /// <summary>A mode switched off on the server (<c>PracticeModes__*</c>).</summary>
+    public static readonly Error ModeOff =
+        Error.NotFound("PRACTICE_MODE_OFF", "That way to practise is resting for now. Try today's path or another one.");
+
+    public static readonly Error ExerciseNotFound =
+        Error.Validation("PRACTICE_EXERCISE_UNKNOWN", "That exercise isn't available any more. Open it again from Practice.");
+
+    /// <summary>A range take that says neither "low" nor "high".</summary>
+    public static readonly Error RangeEnd =
+        Error.Validation("PRACTICE_RANGE_END", "Say which note this was: your lowest or your highest.");
+
+    /// <summary>A range take with no note held long and steadily enough to read.</summary>
+    public static readonly Error RangeNotHeard =
+        Error.Validation("PRACTICE_RANGE_NOT_HEARD", "We couldn't hear a steady note. Hold one note for three seconds, close to the microphone.");
+
     /// <summary>The account has had its day's drills marked (<see cref="Practice.PracticeRules.DrillGradesPerDay"/>).</summary>
     public static Error DailyDrillLimit(int limit) =>
         Error.Forbidden("PRACTICE_DAILY_LIMIT", $"That's all {limit} of today's marked drills. Well sung! More from midnight.");

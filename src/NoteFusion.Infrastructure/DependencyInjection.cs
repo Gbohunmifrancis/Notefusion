@@ -45,6 +45,7 @@ public static class DependencyInjection
         services.AddGeo(configuration);
         services.AddOutreach(configuration);
         services.AddPracticeReminders(configuration);
+        services.AddPracticeModes(configuration);
         services.AddBlog(configuration);
 
         // The backups run in their own container (ops/backup); the API reads what they record, shows it on
@@ -244,6 +245,9 @@ public static class DependencyInjection
         })
         .AddHttpMessageHandler<CorrelationIdHandler>()
         .AddOutboundResilience(OutboundResilience.Transcription);
+
+        // The practice graders are the same worker client: its key, correlation id, timeouts and breaker.
+        services.AddTransient<IPracticeAudioApi>(sp => (IPracticeAudioApi)sp.GetRequiredService<ITranscriptionApi>());
 
         // Watches jobs through to completion so a recording finishes whether or not the app is open.
         services.AddHostedService<TranscriptionCompletionWorker>();

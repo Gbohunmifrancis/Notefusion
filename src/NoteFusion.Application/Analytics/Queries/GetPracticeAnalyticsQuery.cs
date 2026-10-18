@@ -519,7 +519,7 @@ public sealed class GetPracticeAnalyticsQueryHandler : IRequestHandler<GetPracti
     {
         int free = PracticeRules.FreeDrillGradesPerDay, pro = PracticeRules.ProDrillGradesPerDay;
         var days = windowTakes
-            .Where(t => t.Kind == PracticeKind.Drill)
+            .Where(t => PracticeRules.UsesDrillAllowance(t.Kind)) // a mode's take spends the allowance too
             .GroupBy(t => (t.UserId, t.LocalDate))
             .Select(g => (g.Key.UserId, Times: g.Select(t => t.CreatedAtUtc).OrderBy(x => x).ToList()))
             .ToList();

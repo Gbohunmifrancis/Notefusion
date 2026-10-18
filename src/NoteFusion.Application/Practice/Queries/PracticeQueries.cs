@@ -4,6 +4,7 @@ using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Practice.Dtos;
+using NoteFusion.Application.Practice.Modes;
 using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
 
@@ -59,7 +60,7 @@ public sealed class GetNextDrillQueryHandler : IRequestHandler<GetNextDrillQuery
         var stop = PracticePath.Next(userId, track, reading, level.Index);
         var drill = stop.Drill;
         var allowance = new DrillAllowanceDto(
-            facts.Count(f => f.Kind == PracticeKind.Drill && f.LocalDate == today),
+            facts.Count(f => PracticeRules.UsesDrillAllowance(f.Kind) && f.LocalDate == today),
             PracticeRules.DrillGradesPerDay(await ProStatus.IsProAsync(db, clock, userId, ct)),
             PracticeTime.NextMidnightUtc(today, zone));
 
@@ -122,13 +123,17 @@ public sealed class GetPracticeProgressQueryHandler : IRequestHandler<GetPractic
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _clock;
     private readonly IClientTimeZone _timeZone;
+    private readonly PracticeModeSettings _modes;
 
-    public GetPracticeProgressQueryHandler(IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock, IClientTimeZone timeZone)
+    /// <param name="modes">The server's mode switches (registered; every mode on when none is given).</param>
+    public GetPracticeProgressQueryHandler(
+        IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock, IClientTimeZone timeZone, PracticeModeSettings? modes = null)
     {
         _db = db;
         _currentUser = currentUser;
         _clock = clock;
         _timeZone = timeZone;
+        _modes = modes ?? new PracticeModeSettings();
     }
 
     public async Task<Result<PracticeProgressDto>> Handle(GetPracticeProgressQuery request, CancellationToken cancellationToken)
@@ -136,12 +141,15 @@ public sealed class GetPracticeProgressQueryHandler : IRequestHandler<GetPractic
         if (_currentUser.UserId is not { } userId)
             return UserErrors.NotFound;
 
-        return await ReadAsync(_db, _clock, _timeZone, userId, cancellationToken);
+        return await ReadAsync(_db, _clock, _timeZone, userId, _modes, cancellationToken);
     }
 
-    /// <summary>The account's progress as of the client's today; also PUT /api/practice/track's answer.</summary>
+    /// <summary>
+    /// The account's progress as of the client's today, with the practice modes live for its track; also PUT
+    /// /api/practice/track's answer.
+    /// </summary>
     internal static async Task<PracticeProgressDto> ReadAsync(
-        IApplicationDbContext db, IDateTimeProvider clock, IClientTimeZone timeZone, Guid userId, CancellationToken ct)
+        IApplicationDbContext db, IDateTimeProvider clock, IClientTimeZone timeZone, Guid userId, PracticeModeSettings modes, CancellationToken ct)
     {
         var zone = PracticeTime.Resolve(timeZone.Current);
         var today = PracticeTime.LocalDate(clock.UtcNow, zone);
@@ -151,13 +159,17 @@ public sealed class GetPracticeProgressQueryHandler : IRequestHandler<GetPractic
             .Where(a => a.UserId == userId)
             .ToDictionaryAsync(a => a.Code, a => a.AwardedAtUtc, ct);
         var drills = new DrillAllowanceDto(
-            facts.Count(f => f.Kind == PracticeKind.Drill && f.LocalDate == today),
+            facts.Count(f => PracticeRules.UsesDrillAllowance(f.Kind) && f.LocalDate == today),
             PracticeRules.DrillGradesPerDay(await ProStatus.IsProAsync(db, clock, userId, ct)),
             PracticeTime.NextMidnightUtc(today, zone));
         var track = await GetNextDrillQueryHandler.PracticeTrackOf(db, userId, ct);
         var reading = await PracticePathReader.ReadAsync(db, userId, facts, ct);
         var stop = PracticePath.Next(userId, track, reading, PracticeMath.LevelFor(PracticeMath.TotalXp(facts)).Index);
 
-        return PracticeMath.Progress(facts, earned, today, drills, track) with { Path = PracticePathReader.Describe(stop, reading) };
+        return PracticeMath.Progress(facts, earned, today, drills, track) with
+        {
+            Path = PracticePathReader.Describe(stop, reading),
+            Modes = PracticeModes.Live(track, modes),
+        };
     }
 }

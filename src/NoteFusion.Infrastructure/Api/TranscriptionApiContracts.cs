@@ -29,12 +29,40 @@ internal sealed record IdentifiedHymn(string Slug, string Title, string? Tune, s
 
 internal sealed record GradeTargetNote(int PitchMidi, double StartBeat, double DurBeats);
 
-/// <summary>POST /v1/grade's target. <c>MaxSec</c> (a drill's cap) is left off the wire when unset, as before it existed.</summary>
+/// <summary>
+/// POST /v1/grade's target (and /v1/grade/run's). <c>MaxSec</c> (a drill's cap) and <c>OffsetSearchSec</c> (pitch
+/// match's narrow alignment) are left off the wire when unset, as before they existed.
+/// </summary>
 internal sealed record GradeTarget(
     IReadOnlyList<GradeTargetNote> Notes,
     double TempoBpm,
     double LeadInSec,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] double? MaxSec = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] double? MaxSec = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] double? OffsetSearchSec = null);
+
+/// <summary>POST /v1/grade/rhythm's target: each clap's beat from beat one.</summary>
+internal sealed record RhythmTarget(IReadOnlyList<double> Beats, double TempoBpm, double LeadInSec, double MaxSec);
+
+/// <summary>A note held in a range take (POST /v1/range).</summary>
+internal sealed record WireHold(int Midi, double Pitch, double Cents, double StartSec, double Seconds);
+
+internal sealed record RangeResponse(IReadOnlyList<WireHold> Holds, WireHold? Lowest, WireHold? Highest, double SecondsHeard);
+
+internal sealed record WireRunNote(int Index, int TargetMidi, bool Followed, string Status);
+
+internal sealed record WireTracePoint(double T, double Midi);
+
+/// <summary>POST /v1/grade/run's answer.</summary>
+internal sealed record RunGradeResponse(
+    int Score, int Followed, int RunNotes, string LandingStatus, double? LandingCents, int LandingMidi, double OffsetSec,
+    int OctaveShift, string Summary, IReadOnlyList<WireRunNote> Notes, IReadOnlyList<WireTracePoint> Trace);
+
+internal sealed record WireClap(int Index, double Beat, double? ErrorMs, string Status);
+
+/// <summary>POST /v1/grade/rhythm's answer.</summary>
+internal sealed record RhythmGradeResponse(
+    int Score, int Hits, int Near, int Missed, int Extra, double OffsetSec, double TempoRatio, string Summary,
+    IReadOnlyList<WireClap> Claps);
 
 internal sealed record HarmoniseNote(int PitchMidi, double StartBeat, double DurBeats, double Conf);
 
@@ -190,6 +218,10 @@ internal sealed record WireNoteEvent(
 [JsonSerializable(typeof(ResolveLinkRequest))]
 [JsonSerializable(typeof(GradeResponse))]
 [JsonSerializable(typeof(GradeTarget))]
+[JsonSerializable(typeof(RhythmTarget))]
+[JsonSerializable(typeof(RangeResponse))]
+[JsonSerializable(typeof(RunGradeResponse))]
+[JsonSerializable(typeof(RhythmGradeResponse))]
 [JsonSerializable(typeof(IdentifyResponse))]
 [JsonSerializable(typeof(HarmoniseRequest))]
 [JsonSerializable(typeof(HarmoniseResponse))]
