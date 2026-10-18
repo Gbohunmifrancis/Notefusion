@@ -1,0 +1,31 @@
+{
+  "name": "FATHER, WE THANK THEE",
+  "title": "Father, We Thank Thee",
+  "music": [
+    {
+      "name": "Anon.",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 8 8 8",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:1 | F4:1.5 F4:.5 F4:.5 F4:.5 E4:.5 F4:.5 | G4:3 G4:1 | G4:1.5 G4:.5 G4:.5 G4:.5 F4:.5 G4:.5 | A4:3 A4:1 | C5:1.5 A4:.5 G4:.5 F4:.5 E4:.5 F4:.5 | D4:2 Bb4:1 Bb4:1 | A4:1.5 F4:.5 A4:.5 G4:.5 F4:.5 E4:.5 | F4:3",
+  "incipit": "dddddtdr|rrrrrdrm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000870.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000870a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000870; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000870 (the melody read from 000870a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000870a.nwc).",
+  "importedFrom": "cceh:000870",
+  "updated": "2026-10-17"
+}

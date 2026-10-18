@@ -1,0 +1,42 @@
+{
+  "name": "SCHUMANN",
+  "title": "Schumann",
+  "alsoKnownAs": [
+    "Heath",
+    "Bucer"
+  ],
+  "music": [
+    {
+      "name": "Robert Schumann",
+      "born": 1810,
+      "died": 1856,
+      "role": "Arranged"
+    },
+    {
+      "name": "Lowell Mason",
+      "born": 1792,
+      "died": 1872,
+      "role": "Music (Cantica Laudis, 1850)"
+    }
+  ],
+  "musicPublished": 1850,
+  "metre": "6 6 8 6",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Eb4:1 Ab4:1 Eb4:1 F4:1 | G4:1 Ab4:3 | Ab4:1 C#5:1 C5:1 Bb4:1 | Ab4:1 Ab4:2 G4:1 | G4:1 Ab4:1 Eb4:1 F4:1 | G4:1 Ab4:1 Bb4:1 C5:1 | Eb5:1 C#5:1 Bb4:1 Ab4:1 | G4:1 Ab4:3",
+  "incipit": "sdsltd|dfmrddt|tdsltdrm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000854.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000854a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000854; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000854 (the melody read from 000854a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Robert Schumann's dates (1810–1856) are from https://hymnary.org/person/Schumann_Robert (Schumann, Robert, 1810-1856; credited on CCEH 854 SCHUMANN, arranged by Lowell Mason); https://en.wikipedia.org/wiki/Robert_Schumann agrees; CCEH's page gives none. Lowell Mason's dates (1792–1872) are from our page for the tune BETHANY (content/hymns/tunes/bethany.json); CCEH's page gives only the year 1850. The bar lines are those of CCEH's Noteworthy score (000854a.nwc).",
+  "importedFrom": "cceh:000854",
+  "updated": "2026-10-17"
+}

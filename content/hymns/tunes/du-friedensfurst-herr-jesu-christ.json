@@ -1,0 +1,37 @@
+{
+  "name": "DU FRIEDENSFURST, HERR JESU CHRIST",
+  "title": "Du Friedensfurst, Herr Jesu Christ",
+  "music": [
+    {
+      "name": "Bartholomaeus Gesius",
+      "activeBy": 1601,
+      "role": "Music (1601)"
+    },
+    {
+      "name": "Johann Sebastian Bach",
+      "born": 1685,
+      "died": 1750,
+      "role": "Harmony (1724)"
+    }
+  ],
+  "musicPublished": 1601,
+  "metre": "7 6 7 6 8 8",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 105,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "A4:1 | F4:1 G4:1 A4:1 C5:1 | Bb4:2 A4:1 C5:1 | Bb4:1 A4:1 G4:1 G4:1 | A4:3 A4:1 | F4:1 G4:1 A4:1 C5:1 | Bb4:2 A4:1 C5:1 | Bb4:1 A4:1 G4:1 G4:1 | A4:3 G4:1 | G4:1 G4:1 A4:1 G4:1 | F4:1 G4:1 E4:1 E4:1 | F4:1 G4:1 A4:1 G4:.5 A4:.5 | Bb4:1 A4:1 G4:1 G4:1 | F4:3",
+  "incipit": "mdrmsfm|sfmrrm|mdrmsfm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000825.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000825a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000825; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000825 (the melody read from 000825a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Bartholomaeus Gesius has no death year on CCEH's page or ours; their work is dated 1601, before 1850, so they died before 1955 (they would have been over 105). Johann Sebastian Bach's dates (1685–1750) are from our page for the tune POTSDAM (content/hymns/tunes/potsdam.json); CCEH's page gives only the year 1724. The bar lines are those of CCEH's Noteworthy score (000825a.nwc).",
+  "importedFrom": "cceh:000825",
+  "updated": "2026-10-17"
+}

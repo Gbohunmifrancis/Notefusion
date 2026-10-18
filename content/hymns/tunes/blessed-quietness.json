@@ -1,0 +1,36 @@
+{
+  "name": "BLESSED QUIETNESS",
+  "title": "Blessed Quietness",
+  "music": [
+    {
+      "name": "W. S. Marshall, 19th cent.",
+      "role": "Music"
+    },
+    {
+      "name": "James M. Kirk",
+      "born": 1854,
+      "died": 1945,
+      "role": "Arranged (1900)"
+    }
+  ],
+  "musicPublished": 1900,
+  "metre": "8 7 8 7 + 5 5 7 5 5 7",
+  "key": "Bb major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "D4:.5 Eb4:.5 | F4:.5 Bb4:.5 Bb4:1 D5:.5 C5:.5 | Bb4:.5 G4:.5 Bb4:1 A4:.5 G4:.5 | F4:1.5 D4:.5 F4:.5 Bb4:.5 | C5:2 A4:.5 G4:.5 | F4:.5 Bb4:.5 Bb4:1 D5:.5 C5:.5 | Bb4:.5 G4:.5 Bb4:1 A4:.5 G4:.5 | F4:1.5 Bb4:.5 A4:.5 C5:.5 | Bb4:2 D4:.5 Eb4:.5 | F4:.5 D4:.5 F4:1 Bb4:.5 A4:.5 | G4:.5 Eb4:.5 G4:1 Bb4:.5 G4:.5 | F4:1.5 D4:.5 F4:.5 Bb4:.5 | C5:2 A4:.5 G4:.5 | F4:.5 D4:.5 F4:1 Bb4:.5 A4:.5 | G4:.5 Eb4:.5 G4:1 Bb4:.5 G4:.5 | F4:1.5 F4:.5 A4:.5 C5:.5 | Bb4:2",
+  "incipit": "mfsddmrdld|tlsmsdr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000812.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000812a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000812; public domain.",
+  "reviewNotes": "Held back: not provably public domain: W. S. Marshall, 19th cent.: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000812 (the melody read from 000812a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. James M. Kirk's dates (1854–1945) are from https://hymnary.org/person/Kirk_James (Kirk, James M., 1854-1945; James McPherson Kirk); https://www.umcdiscipleship.org/articles/history-of-hymns-joys-are-flowing-like-a-river-blessed-quietness agrees (arranger of BLESSED QUIETNESS); CCEH's page gives only the year 1900. The page gives no year for the tune itself; it was in print by 1900, the year of the arrangement. The bar lines are those of CCEH's Noteworthy score (000812a.nwc).",
+  "importedFrom": "cceh:000812",
+  "updated": "2026-10-17"
+}

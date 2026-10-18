@@ -1,0 +1,35 @@
+{
+  "name": "I'LL GO",
+  "title": "I'll Go",
+  "alsoKnownAs": [
+    "Manchester"
+  ],
+  "music": [
+    {
+      "name": "Carrie E. Rounsefell",
+      "born": 1861,
+      "died": 1930,
+      "role": "Music (1894)"
+    }
+  ],
+  "musicPublished": 1894,
+  "metre": "9 7 9 7",
+  "key": "F major",
+  "time": "6/8",
+  "tempo": 96,
+  "pickup": 0.5,
+  "lineBars": 4,
+  "melody": "A4:.5 | A4:1 A4:.5 C5:1 A4:.25 A4:.25 | Bb4:1 Bb4:.5 D5:1 D5:.5 | C5:.75 Bb4:.25 A4:.5 C5:1 A4:.5 | G4:2.5 G4:.5 | A4:1 A4:.5 Bb4:.75 A4:.25 Bb4:.5 | C5:1 C5:.5 D5:1 D5:.5 | C5:.75 Bb4:.25 A4:.5 A4:1 G4:.5 | F4:2.5 C5:.5 | C5:1 G4:.25 G4:.25 G4:.5 F#4:.5 G4:.5 | A4:1 F4:.5 A4:1 C5:.5 | C5:1 G4:.5 G4:.5 F4:.5 G4:.5 | A4:2.5 F4:.5 | A4:.75 G4:.25 A4:.5 Bb4:.75 A4:.25 Bb4:.5 | C5:.75 B4:.25 C5:.5 D5:1 D5:.5 | C5:.75 Bb4:.25 A4:.5 A4:.5 A4:.75 G4:.25 | F4:2.5 C5:.5 | C5:.75 G4:.25 G4:.5 G4:.5 F#4:.5 G4:.5 | A4:1 F4:.5 A4:1 C5:.25 C5:.25 | C5:.75 G4:.25 G4:.5 G4:.5 F4:.5 G4:.5 | A4:2.5 F4:.5 | A4:.75 G4:.25 A4:.5 Bb4:.75 A4:.25 Bb4:.5 | C5:.75 B4:.25 C5:.5 D5:1 D5:.5 | C5:.75 Bb4:.25 A4:.5 A4:.5 A4:.75 G4:.25 | F4:2.5",
+  "incipit": "mmmsmmffl|lsfmsmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000875.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000875a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000875; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000875 (the melody read from 000875a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Carrie E. Rounsefell's dates (1861–1930) are from https://hymnary.org/person/Rounsefell_Carrie (Rounsefell, Carrie E., 1861-1930; its biography line says 1862, so hymnary disagrees with itself); https://hymnsforworship.org/sdah-573-ill-go-want-go/ gives born March 1, 1861, died September 18, 1930; CCEH's page gives only the year 1894. The bar lines are those of CCEH's Noteworthy score (000875a.nwc).",
+  "importedFrom": "cceh:000875",
+  "updated": "2026-10-17"
+}

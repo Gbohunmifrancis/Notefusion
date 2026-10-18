@@ -1,0 +1,32 @@
+{
+  "name": "IS IT FOR ME",
+  "title": "Is It For Me",
+  "music": [
+    {
+      "name": "Tullius C. O'Kane",
+      "born": 1830,
+      "died": 1912,
+      "role": "Music (1912)"
+    }
+  ],
+  "musicPublished": 1912,
+  "metre": "7 7 7 7",
+  "key": "F major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "F4:1 | A4:.75 G4:.25 A4:1 C5:1 | C5:1 Bb4:1 A4:1 | G4:.75 F#4:.25 G4:1 Bb4:1 | Bb4:1 A4:1 F4:1 | A4:.75 G4:.25 A4:1 C5:1 | C5:1 Bb4:1 A4:1 | G4:.75 F#4:.25 G4:1 A4:1 | F4:2 C5:1 | C5:.75 G4:.25 G4:1 G4:.5 C5:.5 | C5:.75 A4:.25 A4:1 A4:1 | G4:.75 A4:.25 Bb4:1 C5:1 | A4:2 C5:1 | D5:.75 C#5:.25 D5:1 Bb4:1 | D5:.75 C5:.25 C5:1 A4:1 | G4:.75 F#4:.25 G4:1 A4:1 | F4:2",
+  "incipit": "dmrmssfmrdrffm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000885.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000885a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000885; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000885 (the melody read from 000885a.mid, checked against the page's do-re-mi incipit, 1 note off in 14); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Tullius C. O'Kane's dates (1830–1912) are from https://hymnary.org/person/OKane_TC (O'Kane, T. C. (Tullius Clinton), 1830-1912; IS IT FOR ME); https://viaf.org/viaf/2085480/ agrees; CCEH's page gives only the year 1912. The bar lines are those of CCEH's Noteworthy score (000885a.nwc).",
+  "importedFrom": "cceh:000885",
+  "updated": "2026-10-17"
+}

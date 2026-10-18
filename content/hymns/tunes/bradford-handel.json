@@ -1,0 +1,35 @@
+{
+  "name": "BRADFORD (HANDEL)",
+  "title": "Bradford (Handel)",
+  "alsoKnownAs": [
+    "Messiah"
+  ],
+  "music": [
+    {
+      "name": "George Frederick Handel",
+      "born": 1685,
+      "died": 1759,
+      "role": "Arranged"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 6 8 6",
+  "key": "D major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "A4:1 | D5:2 F#4:.75 E4:.25 | D4:2 B4:1 | G4:1.5 F#4:.5 G4:1 | F#4:2 A4:1 | D5:1.5 E5:.5 C#5:.5 B4:.5 | A4:1.5 B4:.5 Ab4:1 | A4:2 A4:1 | D5:2 F#4:.75 E4:.25 | D4:2 B4:1 | A4:2 F#4:1 | E4:2 A4:1 | D4:2 G4:1 | F#4:1.5 G4:.5 E4:1 | D4:2",
+  "incipit": "sdmrdlfmfm|sdrtlslfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000836.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000836a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000836; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune; the score has a bar of another length (bar 2), which the solfa grid does not draw. Imported from CCEH tune 000836 (the melody read from 000836a.mid, checked against the page's do-re-mi incipit, 1 note off in 19); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. George Frederick Handel's dates (1685–1759) are from our page for the tune ANTIOCH (content/hymns/tunes/antioch.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000836a.nwc).",
+  "importedFrom": "cceh:000836",
+  "updated": "2026-10-17"
+}

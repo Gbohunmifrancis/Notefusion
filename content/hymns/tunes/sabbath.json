@@ -1,0 +1,32 @@
+{
+  "name": "SABBATH",
+  "title": "Sabbath",
+  "music": [
+    {
+      "name": "Lowell Mason",
+      "born": 1792,
+      "died": 1872,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "7 7 7 7 7 7",
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 110,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "G4:.75 A4:.25 | B4:1.5 B4:.5 C5:.5 B4:.5 | A4:2 F#4:.75 G4:.25 | A4:1.5 C5:.5 B4:.5 A4:.5 | G4:2 G4:.75 A4:.25 | B4:1.5 B4:.5 C5:.5 B4:.5 | A4:2 D5:.75 C5:.25 | B4:.5 G4:.5 F#4:1 E4:1 | D4:2 D5:.75 C5:.25 | B4:1.5 D5:.5 C5:.5 B4:.5 | A4:2 B4:.75 C5:.25 | D5:1.5 G4:.5 C5:.5 B4:.5 | A4:2 D5:.75 C5:.25 | B4:1.5 D5:.5 C5:.5 B4:.5 | A4:2 B4:.75 C5:.25 | D5:.25 G4:.25 A4:.25 C5:.25 B4:1 A4:1 | G4:2",
+  "incipit": "drmmfmr|tdrfmrd|drmmfmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000853.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000853a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000853; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000853 (the melody read from 000853a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Lowell Mason's dates (1792–1872) are from our page for the tune BETHANY (content/hymns/tunes/bethany.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000853a.nwc).",
+  "importedFrom": "cceh:000853",
+  "updated": "2026-10-17"
+}

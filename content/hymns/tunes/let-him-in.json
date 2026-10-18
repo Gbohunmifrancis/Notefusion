@@ -1,0 +1,32 @@
+{
+  "name": "LET HIM IN",
+  "title": "Let Him In",
+  "music": [
+    {
+      "name": "Edwin O. Excell",
+      "born": 1851,
+      "died": 1921,
+      "role": "Music (1909)"
+    }
+  ],
+  "musicPublished": 1909,
+  "metre": "Irregular",
+  "key": "Db major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:.5 F#4:.5 | Ab4:1 F5:1 C#5:1 Bb4:1 | Ab4:3 r:1 | Ab4:3 Bb4:1 | Ab4:3 F4:.5 F#4:.5 | Ab4:1 F5:1 C#5:1 Bb4:1 | Ab4:3 r:1 | Ab4:3 Bb4:.5 C5:.5 | C#5:3 Ab4:.5 Ab4:.5 | Bb4:1 C#5:1 C5:1 Bb4:1 | Ab4:3 F4:.5 F#4:.5 | Ab4:1 C#5:1 C5:1 C#5:1 | Eb5:3 F5:.5 Eb5:.5 | C#5:1 Ab4:1 Bb4:1 Bb4:1 | Ab4:3 r:1 | Ab4:3 Bb4:.5 C5:.5 | C#5:3",
+  "incipit": "mfsmdls|sls|mfsmdls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0009/x000902.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0009/000902a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000902; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000902 (the melody read from 000902a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Edwin O. Excell's dates (1851–1921) are from our page for the tune NEW BRITAIN (content/hymns/tunes/new-britain.json); CCEH's page gives only the year 1909. The bar lines are those of CCEH's Noteworthy score (000902a.nwc).",
+  "importedFrom": "cceh:000902",
+  "updated": "2026-10-17"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "VINCENT",
+  "title": "Vincent",
+  "music": [
+    {
+      "name": "Horatio Richmond Palmer",
+      "role": "Music (1898)"
+    }
+  ],
+  "musicPublished": 1898,
+  "metre": "8 4 8 4",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:1 G4:.75 G4:.25 Ab4:1 G4:1 | G4:1.5 F4:.5 Eb4:2 | Eb4:2 Eb4:1 F4:1 | G4:4 | Bb4:1 Bb4:.75 Bb4:.25 C5:1 Bb4:1 | Bb4:1.5 Ab4:.5 G4:2 | F4:2 C4:1.5 F4:.5 | F4:4 | F4:1 F4:.75 F4:.25 F4:.5 Bb4:.5 Bb4:1 | Bb4:1.5 C5:.5 Bb4:2 | Bb4:2 C5:1.5 C5:.5 | D5:2 Bb4:2 | Eb5:1 G4:.75 G4:.25 Ab4:1 G4:1 | G4:1.5 F4:.5 Eb4:2 | C4:2 Eb4:1.5 F4:.5 | Eb4:4",
+  "incipit": "mmmfmmrd|ddrm|ssslssfm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0008/x000893.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0008/000893a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000893; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Horatio Richmond Palmer: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000893 (the melody read from 000893a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000893a.nwc).",
+  "importedFrom": "cceh:000893",
+  "updated": "2026-10-17"
+}
