@@ -4,6 +4,7 @@ import {
   Activity,
   BookOpenText,
   ChevronDown,
+  Flag,
   HeartPulse,
   Inbox,
   ChartNoAxesCombined,
@@ -73,6 +74,7 @@ const SECONDARY_NAV = [
   { to: "/audit-log", label: "Audit Log", icon: ScrollText },
   { to: "/webhooks", label: "Webhooks", icon: Webhook },
   { to: "/ledger", label: "Ledger", icon: Scale },
+  { to: "/flags", label: "Feature flags", icon: Flag, badge: "New" },
 ] as const;
 
 function isActivePath(pathname: string, to: string): boolean {
@@ -210,11 +212,14 @@ function NavItem({
   label,
   icon: Icon,
   active,
+  badge,
 }: {
   to: string;
   label: string;
   icon: (typeof PRIMARY_NAV)[number]["icon"];
   active: boolean;
+  /** A small blue pill after the label ("New"); hidden when the sidebar is folded to icons. */
+  badge?: string;
 }) {
   const { setOpenMobile } = useSidebar();
   return (
@@ -237,6 +242,11 @@ function NavItem({
             aria-hidden="true"
           />
           <span>{label}</span>
+          {badge && (
+            <span className="ml-auto rounded-[5px] bg-brand/10 px-1.5 py-px text-[10.5px] font-medium text-brand-deep group-data-[collapsible=icon]:hidden">
+              {badge}
+            </span>
+          )}
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -259,8 +269,15 @@ function ConsoleNav() {
       <SidebarGroup className="p-0">
         <SidebarGroupLabel className="h-7 px-2.5 text-xs font-medium text-faint">Operations</SidebarGroupLabel>
         <SidebarMenu className="gap-0.5">
-          {SECONDARY_NAV.map(({ to, label, icon }) => (
-            <NavItem key={`${to}-${label}`} to={to} label={label} icon={icon} active={isActivePath(pathname, to)} />
+          {SECONDARY_NAV.map((item) => (
+            <NavItem
+              key={`${item.to}-${item.label}`}
+              to={item.to}
+              label={item.label}
+              icon={item.icon}
+              active={isActivePath(pathname, item.to)}
+              {...("badge" in item ? { badge: item.badge } : {})}
+            />
           ))}
         </SidebarMenu>
       </SidebarGroup>

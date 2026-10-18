@@ -386,7 +386,8 @@ export type AuditAction =
   | "GenerateBlogDrafts"
   | "AddPasskey"
   | "RemovePasskey"
-  | "PasskeySignIn";
+  | "PasskeySignIn"
+  | "SetFeatureFlag";
 
 /**
  * One line of the audit trail. The emails are stored snapshots rather than joins, so a row still
@@ -708,6 +709,42 @@ export interface SystemAnnouncement {
   expiresAtUtc: string | null;
   createdAtUtc: string;
   updatedAtUtc: string;
+}
+
+/**
+ * `FeatureFlagDto` from `GET /api/admin/features` (and `PUT /api/admin/features/{key}`): a switch that changes
+ * what everyone sees. `on` is the flag for everyone right now: switched on and before its last day is over.
+ */
+export interface FeatureFlag {
+  /** "christmas". */
+  key: string;
+  /** "Christmas season". */
+  name: string;
+  /** The switch as an admin last set it. */
+  enabled: boolean;
+  on: boolean;
+  /** On for admin accounts whatever the switch says. */
+  adminPreview: boolean;
+  /** yyyy-mm-dd, West Africa Time: the last day it is on (off from the midnight after). Null: on until switched off. */
+  autoOffAt: string | null;
+  autoOffAtUtc: string | null;
+  /** Switched on, but past its last day. */
+  switchedItselfOff: boolean;
+  /** yyyy-mm-dd: the next 6 January, for the date field when none is set or the set one has passed. */
+  suggestedAutoOffAt: string;
+  /** Null when it has never been changed. */
+  updatedAtUtc: string | null;
+  updatedByEmail: string | null;
+}
+
+/** `PUT /api/admin/features/{key}`: any of these; what is left out stays as it is. */
+export interface FeatureFlagChange {
+  enabled?: boolean;
+  adminPreview?: boolean;
+  /** False: no switch-off date (on until switched off). */
+  autoOff?: boolean;
+  /** yyyy-mm-dd: the last day it is on. */
+  autoOffAt?: string;
 }
 
 /**
