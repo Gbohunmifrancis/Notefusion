@@ -572,6 +572,16 @@ export const billingApi = {
       .post<CheckoutSession>("/api/billing/checkout", { planId })
       .then((r) => r.data),
 
+  /**
+   * Hands the server a Google Play purchase (just made, or found on restore). The server asks Google what it is
+   * worth and returns the membership afterwards; a purchase made on another account is refused
+   * (`BILLING_PLAY_OTHER_ACCOUNT`).
+   */
+  registerPlayPurchase: (productId: string, purchaseToken: string) =>
+    api
+      .post<Subscription>("/api/billing/google-play/purchases", { productId, purchaseToken })
+      .then((r) => r.data),
+
   /** The caller's subscription state — the app gates Pro features on this. */
   mySubscription: () =>
     api.get<Subscription>("/api/billing/my-subscription").then((r) => r.data),

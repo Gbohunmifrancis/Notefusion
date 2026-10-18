@@ -32,11 +32,13 @@
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
         "android.permission.FOREGROUND_SERVICE_MICROPHONE",
-        "android.permission.POST_NOTIFICATIONS"
+        "android.permission.POST_NOTIFICATIONS",
+        "com.android.vending.BILLING"
       ]
     },
     "plugins": [
       "@react-native-firebase/app",
+      "expo-iap",
       "expo-secure-store",
       [
         "expo-notifications",

@@ -18,6 +18,7 @@ import { PRO_FEATURES } from './proFeatures';
 import type { Subscription } from '../api/types';
 import { FREE_RESET_FALLBACK, freeWeek } from './freeWeek';
 import type { PaymentCheckResult } from './checkoutExit';
+import { restorePlayPurchases, usesPlayBilling } from './playStore';
 
 /**
  * What the account looked like the moment a checkout opened. A payment has landed when the server's
@@ -555,6 +556,26 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     });
     return () => sub.remove();
   }, [userId, load, watchPayment, stopWatching]);
+
+  // Android: a Google Play purchase this phone has not yet handed over (a dropped connection, the app closed on
+  // Google's sheet) is handed over at sign-in and whenever the app comes back to the front. Only unacknowledged
+  // purchases are sent, so a settled account costs nothing; one Google refunds after three days if nobody does.
+  useEffect(() => {
+    if (!userId || !usesPlayBilling) return;
+    const handOver = () => {
+      if (checkoutOpenRef.current) return; // the paywall is handing over its own purchase
+      void restorePlayPurchases(false)
+        .then((found) => {
+          if (found.restored > 0 && mounted.current) void load(false);
+        })
+        .catch(() => undefined);
+    };
+    handOver();
+    const sub = AppState.addEventListener('change', (next) => {
+      if (next === 'active') handOver();
+    });
+    return () => sub.remove();
+  }, [userId, load]);
 
   const week = useMemo(() => freeWeek(subscription), [subscription]);
   const value = useMemo<SubscriptionState>(
