@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, Easing, StyleSheet, Text } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useReducedMotion } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Icon, type IconName } from "./Icon";
 import { fonts, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 
@@ -24,11 +24,11 @@ const TAB_BAR = 64;
  */
 export function Toast({
   message,
-  icon = "checkmark-circle",
+  icon = "done",
   onDone,
 }: {
   message: string;
-  icon?: keyof typeof Ionicons.glyphMap;
+  icon?: IconName;
   onDone: () => void;
 }) {
   const c = useColors();
@@ -60,7 +60,7 @@ export function Toast({
       accessibilityLiveRegion="polite"
       style={[styles.toast, { bottom, opacity: t, transform: [{ translateY }] }]}
     >
-      <Ionicons name={icon} size={20} color={c.success} />
+      <Icon name={icon} size={20} color={icon === "done" ? c.success : c.icon} />
       <Text style={styles.text} numberOfLines={2}>
         {message}
       </Text>

@@ -300,7 +300,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
               kind: "celebrate",
               title: "Pro access gifted",
               message: "An administrator has gifted you NoteFusion Pro.",
-              icon: "gift-outline",
+              icon: "pro",
               tone: "premium",
               perks: PRO_FEATURES,
               actions: [{ label: "Start using Pro", style: "cancel" }],
@@ -317,7 +317,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
             message: prev.isGift
               ? "Your gifted NoteFusion Pro access has been revoked by an administrator. Your account has returned to the Free plan."
               : "Your NoteFusion Pro subscription has ended. Your account has returned to the Free plan.",
-            icon: "alert-circle-outline",
+            icon: "problem",
             tone: "danger",
           });
         }

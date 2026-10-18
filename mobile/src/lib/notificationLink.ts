@@ -39,7 +39,7 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
           job.error,
           'Something went wrong while transcribing it. Try recording it again. Nothing was used up.',
         ),
-        icon: 'alert-circle-outline',
+        icon: 'problem',
         tone: 'danger',
         // The fix is the pill; "OK" only closes (board 7a).
         actions: [
@@ -75,7 +75,7 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
     showDialog({
       title: 'Could not open that transcription',
       message: toApiError(e).message,
-      icon: 'alert-circle-outline',
+      icon: 'problem',
       tone: 'danger',
     });
     return false;

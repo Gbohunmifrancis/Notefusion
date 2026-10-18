@@ -12,12 +12,13 @@ import {
   View,
 } from "react-native";
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../components/Icon";
 import { useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Touchable } from "../components/Touchable";
 import { Button } from "../components/Button";
+import { ProblemNote } from "../components/ProblemNote";
 import { DohTip } from "../components/doh/DohTip";
 import { Mark } from "../components/night/NightUI";
 import { LibraryRow, LibraryRowSkeleton } from "../components/library/LibraryRow";
@@ -193,7 +194,7 @@ export function LibraryScreen() {
         message: isNetworkCode(err.code)
           ? "You're offline and this sheet hasn't been opened on this phone. Open it once online — or choose Keep offline on it — and it will open anywhere."
           : err.message,
-        icon: isNetworkCode(err.code) ? "cloud-offline-outline" : "alert-circle-outline",
+        icon: isNetworkCode(err.code) ? "offline" : "problem",
         tone: isNetworkCode(err.code) ? undefined : "danger",
       });
     }
@@ -222,7 +223,7 @@ export function LibraryScreen() {
       setFolderLinks((prev) => ({ ...prev, [folder]: link.url }));
       await Share.share({ message: `${folder} — songs on NoteFusion: ${link.url}` });
     } catch (e) {
-      showDialog({ title: "Could not share the folder", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+      showDialog({ title: "Could not share the folder", message: toApiError(e).message, icon: "problem", tone: "danger" });
     } finally {
       setSharingFolder(false);
     }
@@ -235,7 +236,7 @@ export function LibraryScreen() {
       actions: [
         {
           label: "Newest first",
-          icon: "arrow-down-outline",
+          icon: "arrow-down",
           // The active order is marked with a tick rather than by
           // appending " ✓" to the label, as the OS sheet had to.
           selected: sortOrder === "newest",
@@ -243,7 +244,7 @@ export function LibraryScreen() {
         },
         {
           label: "Oldest first",
-          icon: "arrow-up-outline",
+          icon: "arrow-up",
           selected: sortOrder === "oldest",
           onPress: () => setSortOrder("oldest"),
         },
@@ -274,7 +275,7 @@ export function LibraryScreen() {
             radius={radii.pill}
             accessibilityLabel="New transcription"
           >
-            <Ionicons name="add" size={22} color={colors.text} />
+            <Icon name="add" size={22} color={colors.text} />
           </Touchable>
           {/* The account, as on every tab: opens Profile. */}
           <HeaderAvatar />
@@ -282,7 +283,7 @@ export function LibraryScreen() {
         <Animated.View style={[styles.searchPill, pillStyle]}>
           {searchOpen ? (
             <>
-              <Ionicons name="search-outline" size={18} color={colors.textMuted} />
+              <Icon name="search" size={18} color={colors.textMuted} />
               <TextInput
                 style={styles.searchInput}
                 placeholder="Search your sheets"
@@ -294,12 +295,12 @@ export function LibraryScreen() {
                 textAlignVertical="center"
               />
               <Touchable onPress={closeSearch} hitSlop={8} ripple="borderless" accessibilityLabel="Close search">
-                <Ionicons name="close-circle" size={18} color={colors.textFaint} />
+                <Icon name="clear" size={18} color={colors.textFaint} />
               </Touchable>
             </>
           ) : (
             <Touchable onPress={() => setSearchOpen(true)} style={styles.searchBtn} radius={radii.pill} accessibilityLabel="Search library">
-              <Ionicons name="search-outline" size={19} color={colors.text} />
+              <Icon name="search" size={20} color={colors.text} />
             </Touchable>
           )}
         </Animated.View>
@@ -331,14 +332,14 @@ export function LibraryScreen() {
           })}
         </ScrollView>
         <Touchable style={styles.sortBtn} hitSlop={8} ripple="borderless" accessibilityLabel="Sort library" onPress={chooseSort}>
-          <Ionicons name="swap-vertical" size={18} color={colors.textMuted} />
+          <Icon name="sort" size={18} color={colors.textMuted} />
         </Touchable>
       </View>
 
       {/* ── Offline: the phone's copies, said calmly ───────────────────────────── */}
       {offline && (
         <View style={styles.offlineBanner} accessibilityRole="text">
-          <Ionicons name="cloud-offline-outline" size={18} color={colors.textMuted} />
+          <Icon name="offline" size={18} color={colors.textMuted} />
           <Text style={styles.offlineText}>Offline — showing saved copies</Text>
         </View>
       )}
@@ -357,7 +358,7 @@ export function LibraryScreen() {
             : showDialog({
                 title: "Delete this recording?",
                 message: "It hasn't been sent, so nothing is used up — but the audio is gone for good.",
-                icon: "trash-outline",
+                icon: "delete",
                 tone: "danger",
                 actions: [
                   { label: "Delete", style: "destructive", onPress: () => removeTake(t.id) },
@@ -375,7 +376,7 @@ export function LibraryScreen() {
           radius={18}
           accessibilityLabel={`Open the choir library of ${choirName}`}
         >
-          <Ionicons name="people" size={20} color={colors.accent} />
+          <Icon name="choir" size={22} color={colors.choir} />
           <View style={styles.bannerText}>
             <Text style={styles.bannerTitle} numberOfLines={1}>
               Choir library
@@ -397,7 +398,7 @@ export function LibraryScreen() {
           radius={18}
           accessibilityLabel={folderLink ? `Share the link to ${folder} again` : `Share ${folder} with one link`}
         >
-          <Ionicons name="link" size={20} color={colors.accent} />
+          <Icon name="link" size={20} color={colors.icon} />
           <View style={styles.bannerText}>
             <Text style={styles.bannerTitle} numberOfLines={1}>
               {folderLink ? "Shared with a link" : "Share this folder"}
@@ -434,9 +435,7 @@ export function LibraryScreen() {
     // A problem stays plain words: no Doh on errors.
     <View style={styles.emptyContainer}>
       <Mark height={40} color={colors.textFaint} />
-      <Text style={styles.emptyLine}>
-        <Ionicons name="alert-circle" size={15} color={colors.warning} /> {loadError}
-      </Text>
+      <ProblemNote center>{loadError}</ProblemNote>
       {emptyAction("Try again", () => {
         setLoading(true);
         load();
@@ -464,7 +463,7 @@ export function LibraryScreen() {
         <Button
           label="Record a tune"
           variant="secondary"
-          icon="mic-outline"
+          icon="mic"
           onPress={() => nav.navigate("Tabs", { screen: "Record" })}
           style={styles.emptyButton}
         />
@@ -718,12 +717,6 @@ const makeStyles = (c: Palette) =>
       paddingTop: spacing.xxxl,
       paddingHorizontal: spacing.xl,
       gap: spacing.lg,
-    },
-    emptyLine: {
-      fontFamily: fonts.regular,
-      fontSize: 15,
-      color: c.textMuted,
-      textAlign: "center",
     },
     dohEmpty: {
       alignItems: "center",

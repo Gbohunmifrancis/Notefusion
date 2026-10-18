@@ -1,0 +1,10 @@
+<!-- NoteFusion glyph "interval": Intervals, jump to the note. Drawn on the 24 grid (e-icons board 09): 1.75 stroke, round
+     caps and joins, solid note heads (fill="currentColor"). <g id="wash">, when present, is the 20% wash drawn under
+     the selected state (the active tab); it is hidden here. mobile/scripts/build-icons.mjs reads this file. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+     stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <ellipse fill="currentColor" stroke="none" cx="5.4" cy="18.4" rx="2.45" ry="1.8" transform="rotate(-20 5.4 18.4)"/>
+  <ellipse fill="currentColor" stroke="none" cx="19.2" cy="6.5" rx="2.45" ry="1.8" transform="rotate(-20 19.2 6.5)"/>
+  <path d="M7.4 14.7c1.2-4.2 3.6-6.6 7.2-7.3"/>
+  <path d="M12.33 6.14 14.6 7.4l-1.64 2.02"/>
+</svg>

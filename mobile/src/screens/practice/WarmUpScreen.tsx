@@ -11,7 +11,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../../components/Icon";
 import { useNavigation } from "@react-navigation/native";
 import Svg, { Circle, Polyline, Rect, Text as SvgText } from "react-native-svg";
 import { practiceApi } from "../../api/endpoints";
@@ -149,7 +149,7 @@ export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
           <View style={styles.bigNoteBox} accessibilityLiveRegion="polite">
             {recording ? (
               <>
-                <View style={styles.listening}><Ionicons name="mic" size={30} color={c.success} /></View>
+                <View style={styles.listening}><Icon name="mic" size={30} color={c.link} /></View>
                 <Text style={styles.bigSub}>Listening · {Math.min(RANGE_TAKE_SECONDS, take.elapsed).toFixed(1)} of {RANGE_TAKE_SECONDS} s</Text>
                 <View style={styles.holdTrack}>
                   <View style={[styles.holdFill, { width: `${Math.min(100, (take.elapsed / RANGE_TAKE_SECONDS) * 100)}%` }]} />
@@ -190,7 +190,7 @@ export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
               <Button label="Again" variant="secondary" onPress={() => void measure(end)} />
               <Button
                 label={end === "low" ? "Now your highest" : "See my range"}
-                icon="arrow-forward"
+                icon="next"
                 iconPosition="right"
                 onPress={() => { setError(null); end === "low" ? setView({ at: "range", end: "high" }) : setView({ at: "result" }); }}
               />
@@ -221,7 +221,7 @@ export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
           ) : null}
           {part ? (
             <View style={styles.partCard}>
-              <Ionicons name="people-outline" size={20} color={c.choir} />
+              <Icon name="choir" size={20} color={c.icon} />
               <View style={styles.flexText}>
                 <Text style={styles.partTitle}>{part}</Text>
                 <Text style={styles.partSub}>A guide for choir parts, not a label</Text>
@@ -242,11 +242,11 @@ export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
   return (
     <View style={styles.flex}>
       <Screen scroll contentStyle={styles.screen}>
-        <ModeHeader eyebrow="Warm up" title={playful ? "Warm up with Doh" : "Voice warm-up"} pill={warmUp ? minutesLabel(warmUp.totalSeconds) : null} pillIcon="time-outline" />
+        <ModeHeader eyebrow="Warm up" title={playful ? "Warm up with Doh" : "Voice warm-up"} pill={warmUp ? minutesLabel(warmUp.totalSeconds) : null} pillIcon="clock" />
         {loadError ? (
           <View style={styles.failed}>
             <ProblemNote>{loadError}</ProblemNote>
-            <Button label="Try again" icon="refresh" variant="secondary" onPress={() => void load()} />
+            <Button label="Try again" icon="retry" variant="secondary" onPress={() => void load()} />
           </View>
         ) : !warmUp ? (
           <ActivityIndicator color={c.accent} style={styles.loading} />
@@ -261,7 +261,7 @@ export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
                   {!last ? <View style={styles.rail} /> : null}
                   <Touchable onPress={() => goTo(i)} radius={15} accessibilityLabel={`Step ${s.number}: ${s.title}${done ? ", done" : now_ ? ", now" : ""}`} hitSlop={8}>
                     <View style={[styles.dot, done && styles.dotDone, now_ && styles.dotNow]}>
-                      {done ? <Ionicons name="checkmark" size={16} color={c.success} /> : <Text style={[styles.dotText, now_ && styles.dotTextNow]}>{s.number}</Text>}
+                      {done ? <Icon name="check" size={16} strokeWidth={2.25} color={c.success} /> : <Text style={[styles.dotText, now_ && styles.dotTextNow]}>{s.number}</Text>}
                     </View>
                   </Touchable>
                   <View style={styles.stepBody}>
@@ -334,7 +334,7 @@ export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
         {error ? <ProblemNote>{error}</ProblemNote> : null}
         {warmUp ? (
           <View style={styles.infoRow}>
-            <Ionicons name="information-circle-outline" size={16} color={c.textFaint} />
+            <Icon name="about" size={16} color={c.textFaint} />
             <Text style={styles.note}>Warm-ups aren't marked or scored. They get your voice ready for today's path.</Text>
           </View>
         ) : null}
@@ -431,7 +431,7 @@ const makeStyles = (c: Palette) =>
     rangeSpan: { fontFamily: fonts.regular, fontSize: 16, color: c.textMuted, marginTop: 4 },
     rangeSolfa: { ...typography.mono, fontSize: 16, color: c.link, marginTop: spacing.sm },
     keyboard: { marginTop: spacing.lg },
-    partCard: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: spacing.lg, padding: spacing.md, borderRadius: radii.md, backgroundColor: c.choirSoft },
+    partCard: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: spacing.lg, padding: spacing.md, borderRadius: radii.md, backgroundColor: c.surfaceAlt },
     flexText: { flex: 1, minWidth: 0 },
     partTitle: { fontFamily: fonts.semibold, fontSize: 15.5, color: c.text },
     partSub: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted, marginTop: 2 },

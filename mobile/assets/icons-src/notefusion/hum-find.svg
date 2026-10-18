@@ -1,0 +1,10 @@
+<!-- NoteFusion glyph "hum-find": Hum to find a hymn (web today). Drawn on the 24 grid (e-icons board 09): 1.75 stroke, round
+     caps and joins, solid note heads (fill="currentColor"). <g id="wash">, when present, is the 20% wash drawn under
+     the selected state (the active tab); it is hidden here. mobile/scripts/build-icons.mjs reads this file. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+     stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="10.5" cy="10.5" r="6.8"/>
+  <path d="m15.6 15.6 4.9 4.9"/>
+  <path d="M11 12.6V6.9c1.2.3 2 1 2.2 2"/>
+  <circle fill="currentColor" stroke="none" cx="9.5" cy="12.7" r="1.55"/>
+</svg>

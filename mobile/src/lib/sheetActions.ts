@@ -18,7 +18,7 @@ import { showToast } from "./toast";
 type Sheet = { id: string; title: string };
 
 function failed(title: string, e: unknown): void {
-  showDialog({ title, message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+  showDialog({ title, message: toApiError(e).message, icon: "problem", tone: "danger" });
 }
 
 /** The first failure of a batch, if any. */
@@ -77,7 +77,7 @@ export async function keepSheetOffline(id: string, keep: boolean): Promise<boole
     showDialog({
       title: "Couldn't keep it offline",
       message: isNetworkCode(err.code) ? "You're offline. Try again when you're back online." : err.message,
-      icon: "cloud-offline-outline",
+      icon: "offline",
     });
     return false;
   }

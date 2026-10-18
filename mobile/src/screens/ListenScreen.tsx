@@ -12,7 +12,7 @@
 
 import React, { useEffect } from "react";
 import { AppState, Platform, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { Screen } from "../components/Screen";
@@ -56,7 +56,7 @@ export function ListenScreen({ navigation }: Props) {
           : result === "already_added"
             ? "Find the key is already there: pull down from the top of the screen and tap it."
             : "Pull down your Quick Settings, tap the pencil to edit, and drag Find the key in.",
-      icon: "flash-outline",
+      icon: "quick",
     });
   }
 
@@ -82,7 +82,7 @@ export function ListenScreen({ navigation }: Props) {
           ripple="borderless"
           accessibilityLabel="Go back"
         >
-          <Ionicons name="arrow-back" size={22} color={colors.text} />
+          <Icon name="back" size={22} color={colors.text} />
         </Touchable>
         <Text style={styles.pageTitle}>Find the key</Text>
         <View style={styles.backBtn} />
@@ -112,7 +112,7 @@ export function ListenScreen({ navigation }: Props) {
         {available ? (
           <Button
             label={running ? "Stop" : starting ? "Starting…" : "Start listening"}
-            icon={running ? "stop-circle-outline" : "radio-outline"}
+            icon={running ? "stop" : "find-key"}
             variant={running ? "secondary" : "primary"}
             onPress={running ? stop : () => void start()}
             loading={starting}
@@ -124,7 +124,7 @@ export function ListenScreen({ navigation }: Props) {
       {error ? (
         <Card style={styles.card}>
           <View style={styles.row}>
-            <Ionicons name="alert-circle-outline" size={18} color={colors.warning} />
+            <Icon name="problem" size={18} color={colors.warning} />
             <Text style={styles.errorText}>{error}</Text>
           </View>
         </Card>
@@ -133,14 +133,14 @@ export function ListenScreen({ navigation }: Props) {
       {available ? (
         <Card style={styles.card}>
           <View style={styles.row}>
-            <Ionicons name="phone-portrait-outline" size={18} color={colors.accent} />
+            <Icon name="phone" size={18} color={colors.icon} />
             <Text style={styles.rowText}>
               It keeps listening while you use other apps. The key sits in your notifications and updates as the
               song goes on; tap Stop there when you are done.
             </Text>
           </View>
           <View style={styles.row}>
-            <Ionicons name="volume-high-outline" size={18} color={colors.accent} />
+            <Icon name="hear" size={18} color={colors.icon} />
             <Text style={styles.rowText}>
               It hears through the microphone, so the music has to play out loud — not through headphones.
             </Text>
@@ -148,7 +148,7 @@ export function ListenScreen({ navigation }: Props) {
           {CAN_ADD_TILE ? (
             <Button
               label="Add to Quick Settings"
-              icon="flash-outline"
+              icon="quick"
               variant="secondary"
               onPress={() => void addTile()}
               style={styles.tileButton}
@@ -158,7 +158,7 @@ export function ListenScreen({ navigation }: Props) {
       ) : (
         <Card style={styles.card}>
           <View style={styles.row}>
-            <Ionicons name="information-circle-outline" size={18} color={colors.accent} />
+            <Icon name="about" size={18} color={colors.icon} />
             <Text style={styles.rowText}>
               Background listening is on Android for now. On this phone, record or import a clip to find its key.
             </Text>

@@ -207,7 +207,7 @@ export function AdminWebhooksScreen({ navigation }: Props) {
           <ListState
             loading={list.loading}
             error={list.error}
-            emptyIcon="git-pull-request-outline"
+            emptyIcon="webhook"
             emptyTitle="Nothing here"
             emptyHint="No callbacks match this filter."
           />
@@ -258,7 +258,7 @@ export function AdminWebhooksScreen({ navigation }: Props) {
               <Button
                 label="Find the payment"
                 variant="secondary"
-                icon="card-outline"
+                icon="card"
                 onPress={() => {
                   const search = open.paymentReference;
                   if (!search) return;

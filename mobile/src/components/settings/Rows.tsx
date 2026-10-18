@@ -1,20 +1,18 @@
 import React from "react";
 import { Animated, StyleSheet, Switch, Text, View, type StyleProp, type ViewStyle } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { Icon, type IconName } from "../Icon";
 import { Touchable } from "../Touchable";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { fonts, motion, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import type { RootStackParams } from "../../navigation/types";
 
-type IconName = keyof typeof Ionicons.glyphMap;
-
 /**
  * The grouped rows of Profile, Settings and Notifications (boards a-core/04, b-system/12a–12c): a small title,
  * then a card of rows, each an icon tile, a label (and a hint only where the row needs one), and a value, a
  * chevron, a switch or a control on the right. One shape for the three pages, so a setting looks the same
- * wherever it lives.
+ * wherever it lives. The tiles are neutral and their icons ink (e-icons board 04): a switch says on, not the tile.
  */
 export function Group({
   title,
@@ -53,8 +51,8 @@ export interface RowProps {
   icon?: IconName;
   /** Drawn in the tile in place of `icon` (Google's G). */
   iconNode?: React.ReactNode;
-  /** The tile takes the blue wash (the push row while push is on). */
-  iconOn?: boolean;
+  /** The choir's violet tile and icon (share with your choir, My choir); every other tile is neutral. */
+  choir?: boolean;
   /** A short line under the label, only where the row needs one. */
   hint?: string;
   /** Muted, on the right ("Grace Okafor", "7pm", "Always"). */
@@ -83,7 +81,7 @@ export function Row({
   label,
   icon,
   iconNode,
-  iconOn = false,
+  choir = false,
   hint,
   value,
   chevron = false,
@@ -107,8 +105,8 @@ export function Row({
       {!first ? <View style={[styles.rule, hasTile ? styles.ruleInset : null]} /> : null}
       <View style={[styles.inner, dim && styles.dim]}>
         {hasTile ? (
-          <View style={[styles.tile, iconOn && styles.tileOn]}>
-            {iconNode ?? <Ionicons name={icon!} size={17} color={c.link} />}
+          <View style={[styles.tile, choir && { backgroundColor: c.choirSoft }]}>
+            {iconNode ?? <Icon name={icon!} size={18} color={choir ? c.choir : c.icon} />}
           </View>
         ) : null}
         <View style={styles.text}>
@@ -134,8 +132,8 @@ export function Row({
             accessibilityLabel={label}
           />
         ) : null}
-        {chevron ? <Ionicons name="chevron-forward" size={16} color={c.textFaint} /> : null}
-        {external ? <Ionicons name="open-outline" size={15} color={c.textFaint} /> : null}
+        {chevron ? <Icon name="chevron" size={16} color={c.textFaint} /> : null}
+        {external ? <Icon name="external" size={15} color={c.textFaint} /> : null}
       </View>
     </View>
   );
@@ -161,7 +159,7 @@ export function Segmented<T extends string>({
   onChange,
   label,
 }: {
-  options: { value: T; label: string; icon: IconName; iconOn: IconName }[];
+  options: { value: T; label: string; icon: IconName }[];
   value: T;
   onChange: (next: T) => void;
   /** Read before each option: "Theme". */
@@ -188,7 +186,7 @@ export function Segmented<T extends string>({
             accessibilityState={{ selected: on }}
             accessibilityLabel={`${label}: ${o.label}`}
           >
-            <Ionicons name={on ? o.iconOn : o.icon} size={15} color={on ? c.text : c.textMuted} />
+            <Icon name={o.icon} size={15} color={on ? c.text : c.textMuted} />
             <Text style={[styles.segText, on && styles.segTextOn]}>{o.label}</Text>
           </Touchable>
         );
@@ -216,7 +214,7 @@ export function BackButton() {
       accessibilityLabel="Go back"
       style={styles.back}
     >
-      <Ionicons name="chevron-back" size={20} color={c.text} />
+      <Icon name="back" size={20} color={c.text} />
     </Touchable>
   );
 }
@@ -293,9 +291,6 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: c.sheetTile,
-    },
-    tileOn: {
-      backgroundColor: c.accentSoft,
     },
     text: {
       flex: 1,

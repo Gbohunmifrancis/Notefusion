@@ -23,7 +23,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Animated, RefreshControl, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../components/Icon";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -407,9 +407,9 @@ export function PracticeScreen() {
             >
               <View style={[styles.trackPill, playful && styles.trackPillPlayful]}>
                 {/* One Doh on screen: Playful's is the buddy below, so the pill takes an icon. */}
-                {playful ? <Ionicons name="happy-outline" size={18} color={colors.play} /> : <Art name={levelArt(progress?.level.index ?? 0)} width={24} />}
+                {playful ? <Icon name="playful" size={18} color={colors.play} /> : <Art name={levelArt(progress?.level.index ?? 0)} width={24} />}
                 <Text style={styles.trackPillText}>{trackTitle(track)}</Text>
-                <Ionicons name="swap-horizontal" size={14} color={colors.textMuted} />
+                <Icon name="switch" size={14} color={colors.textMuted} />
               </View>
             </Touchable>
           ) : null}
@@ -429,7 +429,7 @@ export function PracticeScreen() {
           ) : (
             <Card style={styles.card}>
               <Text style={styles.body}>{loadError}</Text>
-              <Button label="Try again" icon="refresh" variant="secondary" onPress={() => { setLoading(true); void load(); }} />
+              <Button label="Try again" icon="retry" variant="secondary" onPress={() => { setLoading(true); void load(); }} />
             </Card>
           )
         ) : progress ? (
@@ -490,13 +490,13 @@ export function PracticeScreen() {
                     <Button label="Stop" variant="secondary" icon="stop" onPress={stop} />
                   </View>
                 ) : phase === "grading" ? (
-                  <Button label="Marking your take…" icon="hourglass-outline" loading />
+                  <Button label="Marking your take…" icon="waiting" loading />
                 ) : (
                   <View style={styles.actions}>
-                    <Button label={playful ? "Listen" : "Hear it"} icon="volume-high-outline" variant="secondary" onPress={hear} style={styles.action} />
+                    <Button label={playful ? "Listen" : "Hear it"} icon="hear" variant="secondary" onPress={hear} style={styles.action} />
                     <Button
                       label={onward ? onward.label : playful ? "Sing it!" : "Sing it"}
-                      icon={onward && !onward.same ? "arrow-forward" : "mic"}
+                      icon={onward && !onward.same ? "next" : "mic"}
                       onPress={() => void (onward && !onward.same ? goNext() : sing())}
                       disabled={left === 0 && !(onward && !onward.same)}
                       style={styles.action}
@@ -694,7 +694,7 @@ export function PracticeScreen() {
             },
           ]}
         >
-          {toast.art ? <Art name={toast.art} width={28} /> : <Ionicons name="sparkles" size={16} color={colors.accent} />}
+          {toast.art ? <Art name={toast.art} width={28} /> : <Icon name="reward" size={16} color={playful ? colors.play : colors.icon} />}
           <Text style={styles.toastText}>{toast.line}</Text>
         </Animated.View>
       ) : null}
@@ -730,7 +730,7 @@ function CarolsCard({ season, doh, styles, onOpen }: { season: PracticeSeason; d
           <Text style={styles.carolsSung}>{c.sung}</Text>
           <Text style={styles.carolsNext} numberOfLines={2}>{c.next}</Text>
         </View>
-        <Button label={c.action} icon="arrow-forward" iconPosition="right" variant="secondary" size="sm" onPress={onOpen} />
+        <Button label={c.action} icon="next" iconPosition="right" variant="secondary" size="sm" onPress={onOpen} />
       </View>
     </View>
   );
@@ -797,7 +797,7 @@ function GoalRing({ goal, styles, colors }: { goal: WeeklyGoal; styles: Styles; 
         )}
         {met ? <Circle cx={c} cy={c} r={r - 9} fill={colors.success} /> : null}
       </Svg>
-      {met ? <Ionicons name="checkmark" size={22} color={colors.bg} style={styles.ringTick} /> : null}
+      {met ? <Icon name="check" size={22} strokeWidth={2.25} color={colors.bg} style={styles.ringTick} /> : null}
     </View>
   );
 }
@@ -822,7 +822,7 @@ function DayDot({ day, styles, colors }: { day: PracticeDay; styles: Styles; col
           day.status === "none" && { opacity: 0.4 },
         ]}
       >
-        {day.status === "done" ? <Ionicons name="checkmark" size={14} color={colors.onAccent} /> : null}
+        {day.status === "done" ? <Icon name="check" size={14} strokeWidth={2.25} color={colors.onAccent} /> : null}
         {day.status === "frozen" ? <Art name="freeze" width={26} /> : null}
       </View>
       <Text style={styles.dayLetter}>{weekdayLetter(day.date)}</Text>
@@ -889,7 +889,7 @@ function EmptyState({ art, title, body, onRetry, styles }: { art: ArtName; title
       <Art name={art} width={200} />
       <Text style={styles.emptyTitle} accessibilityRole="header">{title}</Text>
       <Text style={styles.emptyBody}>{body}</Text>
-      <Button label="Try again" icon="refresh" variant="secondary" onPress={onRetry} />
+      <Button label="Try again" icon="retry" variant="secondary" onPress={onRetry} />
     </Card>
   );
 }

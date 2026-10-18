@@ -30,7 +30,7 @@ export async function pickProfileImage(): Promise<PickedImage | null> {
       title: 'Not available in this build',
       message:
         'Choosing a photo needs a newer version of the app. Please update to continue.',
-      icon: 'cloud-download-outline',
+      icon: 'keep-offline',
     });
     return null;
   }
@@ -43,9 +43,9 @@ export async function pickProfileImage(): Promise<PickedImage | null> {
     showDialog({
       title: 'Photo access blocked',
       message: 'Allow photo access in system settings to choose a profile picture.',
-      icon: 'lock-closed-outline',
+      icon: 'lock',
       actions: [
-        { label: 'Open Settings', icon: 'settings-outline', onPress: () => Linking.openSettings() },
+        { label: 'Open Settings', icon: 'settings', onPress: () => Linking.openSettings() },
         { label: 'Not now', style: 'cancel' },
       ],
     });

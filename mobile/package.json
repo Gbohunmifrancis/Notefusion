@@ -11,7 +11,8 @@
     "test": "node --test src/lib/*.test.ts",
     "build:brand": "node scripts/build-brand-assets.mjs",
     "build:engraver": "node scripts/build-engraver.mjs",
-    "update:production": "eas update --channel production --environment production && sentry-expo-upload-sourcemaps dist"
+    "update:production": "eas update --channel production --environment production && sentry-expo-upload-sourcemaps dist",
+    "build:icons": "node scripts/build-icons.mjs"
   },
   "dependencies": {
     "@expo-google-fonts/geist": "^0.4.2",

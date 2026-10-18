@@ -7,7 +7,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from './Icon';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Touchable } from './Touchable';
 import { fonts, gradients, type Palette, type Shadows } from '../design/theme';
@@ -135,11 +135,7 @@ export function Avatar({
             { width: badge, height: badge, borderRadius: badge / 2 },
           ]}
         >
-          <Ionicons
-            name={busy ? 'ellipsis-horizontal' : 'camera'}
-            size={Math.round(badge * 0.52)}
-            color="#FFFFFF"
-          />
+          <Icon name={busy ? 'more' : 'camera'} size={Math.round(badge * 0.56)} color="#FFFFFF" />
         </View>
       ) : null}
     </View>

@@ -12,7 +12,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, Switch, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../../components/Icon";
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useReducedMotion } from "react-native-reanimated";
@@ -183,7 +183,7 @@ export function CarolsScreen() {
         {header}
         <View style={styles.failed}>
           <ProblemNote>{loadError ?? "The carols didn't load."}</ProblemNote>
-          <Button label="Try again" icon="refresh" variant="secondary" onPress={() => void load()} />
+          <Button label="Try again" icon="retry" variant="secondary" onPress={() => void load()} />
         </View>
       </Screen>
     );
@@ -247,7 +247,7 @@ export function CarolsScreen() {
                 >
                   {row.state === "done" ? (
                     <View style={[styles.dot, styles.dotDone]}>
-                      <Ionicons name="checkmark" size={18} color={c.onAccent} />
+                      <Icon name="check" size={18} strokeWidth={2.25} color={c.onAccent} />
                     </View>
                   ) : (
                     <View style={styles.dot}>
@@ -296,7 +296,7 @@ export function CarolsScreen() {
               <Text style={styles.sheetXp}>+{sticker.reward.xpGained} XP · same XP rules as every drill</Text>
             ) : null}
             <View style={styles.sheetLine} accessible accessibilityLabel={`Joy to the World: ${solfaLine(JOY_LINE)}`}>
-              <Ionicons name="musical-notes" size={15} color={c.candle} />
+              <Icon name="solfa" size={18} color={c.candle} />
               <Text style={styles.sheetSolfa}>{solfaLine(JOY_LINE)}</Text>
             </View>
             <SheetActions style={styles.sheetActions}>
@@ -414,7 +414,7 @@ function OpenCarol({
 
       {d.backing ? (
         <View style={styles.phones}>
-          <Ionicons name="headset-outline" size={20} color={c.link} />
+          <Icon name="headphones" size={20} color={c.icon} />
           <View style={styles.phonesText}>
             <Text style={styles.phonesTitle}>Headphones help</Text>
             <Text style={styles.phonesHint}>
@@ -441,17 +441,17 @@ function OpenCarol({
           <Button label="Stop" variant="secondary" icon="stop" size="sm" onPress={() => void take.finish()} />
         </View>
       ) : take.phase === "sending" ? (
-        <Button label="Marking your take…" icon="hourglass-outline" loading />
+        <Button label="Marking your take…" icon="waiting" loading />
       ) : onNext ? (
         <View style={styles.actions}>
           <Button label={playful ? "Again!" : "Sing it again"} icon="mic" variant="secondary" onPress={onSing} disabled={left === 0} style={styles.action} />
-          <Button label="Next carol" icon="arrow-forward" iconPosition="right" onPress={onNext} style={styles.action} />
+          <Button label="Next carol" icon="next" iconPosition="right" onPress={onNext} style={styles.action} />
         </View>
       ) : (
         <View style={styles.actions}>
           <Button
             label={take.playing === "hear" ? "Stop" : "Listen"}
-            icon={take.playing === "hear" ? "stop" : "volume-high-outline"}
+            icon={take.playing === "hear" ? "stop" : "hear"}
             variant="secondary"
             onPress={onHear}
             style={styles.action}

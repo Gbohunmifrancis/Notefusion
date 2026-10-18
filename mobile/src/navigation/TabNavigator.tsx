@@ -5,7 +5,6 @@ import {
   createBottomTabNavigator,
   type BottomTabBarProps,
 } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
 import Svg, { Circle, Defs, RadialGradient, Stop } from "react-native-svg";
 import { useReducedMotion } from "react-native-reanimated";
 import { HomeScreen } from "../screens/HomeScreen";
@@ -13,6 +12,7 @@ import { RecordScreen } from "../screens/RecordScreen";
 import { LibraryScreen } from "../screens/LibraryScreen";
 import { PracticeScreen } from "../screens/PracticeScreen";
 import { HymnsScreen } from "../screens/HymnsScreen";
+import { Icon, type IconName } from "../components/Icon";
 import { Touchable } from "../components/Touchable";
 import { Mark } from "../components/night/NightUI";
 import { fonts, motion, spacing, type Palette } from "../design/theme";
@@ -26,15 +26,17 @@ const Tab = createBottomTabNavigator<TabParams>();
 /**
  * Five labelled cells (board a-core/04): Home · Library · Record (centre) · Practice · Hymns, in `TAB_ORDER`.
  * Every cell is `flex: 1` in the row, so the odd count puts the record button in the geometric middle. Labels,
- * because a flame or a book alone does not say "Practice" or "Hymns". The record button is the mark on its ink
- * circle, with a slow halo behind it ({@link RecordHalo}).
+ * because a tuning fork or a hymnal alone does not say "Practice" or "Hymns". Our own glyphs (e-icons board 01):
+ * a house, a stack of sheets with a note, the tuning fork (the flame is the streak's), an open hymnal. The active
+ * tab is the same line in blue over a 20% wash, never a heavier glyph. The record button is the mark on its ink
+ * circle, with a slow halo behind it ({@link RecordHalo}); it has no icon.
  */
-const CELLS: Record<TabName, { label: string; icon: keyof typeof Ionicons.glyphMap; iconActive: keyof typeof Ionicons.glyphMap }> = {
-  Home: { label: "Home", icon: "home-outline", iconActive: "home" },
-  Library: { label: "Library", icon: "albums-outline", iconActive: "albums" },
-  Record: { label: "Record", icon: "mic", iconActive: "mic" },
-  Practice: { label: "Practice", icon: "flame-outline", iconActive: "flame" },
-  Hymns: { label: "Hymns", icon: "book-outline", iconActive: "book" },
+const CELLS: Record<TabName, { label: string; icon: IconName }> = {
+  Home: { label: "Home", icon: "home" },
+  Library: { label: "Library", icon: "library" },
+  Record: { label: "Record", icon: "mic" },
+  Practice: { label: "Practice", icon: "practice" },
+  Hymns: { label: "Hymns", icon: "hymns" },
 };
 
 /** The record button and its halo, by diameter. */
@@ -112,11 +114,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
               ripple="borderless"
               style={styles.tabItem}
             >
-              <Ionicons
-                name={focused ? cell.iconActive : cell.icon}
-                size={22}
-                color={focused ? colors.link : colors.textFaint}
-              />
+              <Icon name={cell.icon} size={24} filled={focused} color={focused ? colors.link : colors.textFaint} />
               <Text
                 style={[styles.label, focused && styles.labelOn]}
                 numberOfLines={1}

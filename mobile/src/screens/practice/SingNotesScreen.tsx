@@ -8,7 +8,7 @@
 
 import React, { useState } from "react";
 import { StyleSheet, Switch, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../../components/Icon";
 import type { PracticeModeGrade, PracticeTrack } from "../../api/types";
 import { Screen } from "../../components/Screen";
 import { Button } from "../../components/Button";
@@ -82,7 +82,7 @@ export function SingNotesScreen({ mode, track }: { mode: "intervals" | "harmony"
                   <Text style={styles.jumpName}>{jump.from}</Text>
                 </View>
                 <View style={styles.jumpArrow}>
-                  <Ionicons name={jump.up ? "arrow-up" : "arrow-down"} size={22} color={c.link} />
+                  <Icon name={jump.up ? "arrow-up" : "arrow-down"} size={22} color={c.icon} />
                   {jump.size ? <Text style={styles.jumpSize}>{jump.size}</Text> : null}
                 </View>
                 <View style={[styles.jumpNote, styles.jumpTarget, due === 1 && styles.jumpOn]}>
@@ -113,7 +113,7 @@ export function SingNotesScreen({ mode, track }: { mode: "intervals" | "harmony"
             <Text style={styles.prompt}>{ex.prompt}</Text>
             {mode === "harmony" ? (
               <View style={styles.phones}>
-                <Ionicons name="headset-outline" size={20} color={c.link} />
+                <Icon name="headphones" size={20} color={c.icon} />
                 <View style={styles.phonesText}>
                   <Text style={styles.phonesTitle}>I'm wearing headphones</Text>
                   <Text style={styles.phonesHint}>
@@ -162,7 +162,7 @@ export function SingNotesScreen({ mode, track }: { mode: "intervals" | "harmony"
                           <Text style={styles.rowSub} numberOfLines={1}>{e.group ?? e.notes.map(written).join(" ")}</Text>
                         </View>
                         {e.bestScore != null && !playful ? <Text style={styles.rowValue}>Best {e.bestScore}</Text> : null}
-                        <Ionicons name="chevron-forward" size={16} color={c.textFaint} />
+                        <Icon name="chevron" size={16} color={c.textFaint} />
                       </View>
                     </Touchable>
                   ))}
@@ -185,7 +185,7 @@ export function SingNotesScreen({ mode, track }: { mode: "intervals" | "harmony"
             </>
           ) : (
             <>
-              <Button label={take.playing === "hear" ? "Stop" : playful ? "Listen" : "Hear it"} icon={take.playing === "hear" ? "stop" : "volume-high-outline"} variant="secondary" onPress={hear} />
+              <Button label={take.playing === "hear" ? "Stop" : playful ? "Listen" : "Hear it"} icon={take.playing === "hear" ? "stop" : "hear"} variant="secondary" onPress={hear} />
               <Button label={playful ? "Sing it!" : "Sing it"} icon="mic" onPress={() => void start()} disabled={noneLeft(data)} />
             </>
           )}

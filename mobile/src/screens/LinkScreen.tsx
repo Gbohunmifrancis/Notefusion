@@ -37,7 +37,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../components/Icon";
 
 import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
@@ -268,7 +268,7 @@ export function LinkScreen() {
           radius={20}
           accessibilityLabel="Go back"
         >
-          <Ionicons name="chevron-back" size={20} color={colors.text} />
+          <Icon name="back" size={20} color={colors.text} />
         </Touchable>
         {ready && !busy ? (
           <View style={styles.lockup} accessible accessibilityLabel="Notefusion">
@@ -305,7 +305,7 @@ export function LinkScreen() {
             {provider ? (
               <ProviderMark provider={provider} size={30} />
             ) : (
-              <Ionicons name="link-outline" size={20} color={focused ? colors.accent : colors.textFaint} />
+              <Icon name="link" size={20} color={focused ? colors.link : colors.textFaint} />
             )}
             <TextInput
               ref={inputRef}
@@ -327,7 +327,7 @@ export function LinkScreen() {
             />
             {url.length > 0 ? (
               <Touchable onPress={() => setUrl("")} hitSlop={8} ripple="borderless" accessibilityLabel="Clear">
-                <Ionicons name="close" size={20} color={colors.textMuted} />
+                <Icon name="close" size={20} color={colors.textMuted} />
               </Touchable>
             ) : null}
           </View>
@@ -336,7 +336,7 @@ export function LinkScreen() {
 
       {!busy && url.trim().length > 0 && !provider ? (
         <View style={styles.note}>
-          <Ionicons name="information-circle-outline" size={16} color={colors.warning} />
+          <Icon name="problem" size={16} color={colors.warning} />
           <Text style={styles.noteText}>{songLinkHint(url)}</Text>
         </View>
       ) : null}
@@ -415,7 +415,7 @@ export function LinkScreen() {
             </View>
           ) : infoError ? (
             <View style={styles.note}>
-              <Ionicons name="information-circle-outline" size={16} color={colors.warning} />
+              <Icon name="problem" size={16} color={colors.warning} />
               <Text style={styles.noteText}>{infoError.message}</Text>
             </View>
           ) : null}
@@ -484,10 +484,11 @@ export function LinkScreen() {
               const on = stageIndex === i;
               return (
                 <View key={s.key} style={[styles.stage, on && styles.stageOn]}>
-                  <Ionicons
-                    name={done ? "checkmark-circle" : on ? "ellipse" : "ellipse-outline"}
+                  <Icon
+                    name={done ? "done" : "step"}
                     size={12}
-                    color={done ? colors.success : on ? colors.accent : colors.textFaint}
+                    filled={on}
+                    color={done ? colors.success : on ? colors.link : colors.textFaint}
                   />
                   <Text style={[styles.stageText, on && styles.stageTextOn, done && styles.stageTextDone]}>
                     {on ? stageLabel(s.key, state.queuePosition) : s.label}
@@ -517,7 +518,7 @@ export function LinkScreen() {
           {state.canRetry ? (
             <Button
               label="Try again"
-              icon="refresh-outline"
+              icon="retry"
               variant="secondary"
               onPress={() => void retry()}
               style={styles.submit}
@@ -528,7 +529,7 @@ export function LinkScreen() {
 
       {state.status === "failed" && state.error ? (
         <NoticeCard
-          icon={wantsUpgrade ? "star-outline" : "alert-circle-outline"}
+          icon={wantsUpgrade ? "pro" : linkOffline ? "offline" : "problem"}
           title={wantsUpgrade ? "Your free songs are used" : linkOffline ? "You're offline" : "Couldn't transcribe that"}
           message={linkOffline ? LINK_OFFLINE : state.error}
         >
@@ -579,7 +580,7 @@ const makeStyles = (c: Palette) =>
     fieldLarge: { height: 60, paddingLeft: 20, paddingRight: 18 },
     fieldCompact: { height: 52, paddingLeft: 11, paddingRight: 16 },
     fieldFocused: { borderColor: c.ink },
-    fieldRefused: { borderColor: c.premiumBorder },
+    fieldRefused: { borderColor: c.warning + "66" },
     input: { flex: 1, fontFamily: fonts.regular, fontSize: 15, color: c.text, paddingVertical: 0 },
     inputFilled: { fontFamily: nightFonts.mono, fontSize: 13.5 },
 

@@ -9,7 +9,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon, type IconName } from "./Icon";
 import { ProblemNote } from "./ProblemNote";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
@@ -19,7 +19,7 @@ interface Props extends Omit<TextInputProps, "style"> {
   error?: string;
   secure?: boolean;
   /** Leading glyph inside the field — a mail envelope, a padlock, and so on. */
-  icon?: keyof typeof Ionicons.glyphMap;
+  icon?: IconName;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -48,12 +48,7 @@ export function TextField({ label, error, secure, icon, style, ...rest }: Props)
         style={[styles.field, focused && styles.focused]}
       >
         {icon && (
-          <Ionicons
-            name={icon}
-            size={20}
-            color={focused ? colors.accent : colors.textFaint}
-            style={styles.icon}
-          />
+          <Icon name={icon} size={20} color={focused ? colors.link : colors.textFaint} style={styles.icon} />
         )}
 
         <TextInput
@@ -74,11 +69,7 @@ export function TextField({ label, error, secure, icon, style, ...rest }: Props)
             accessibilityRole="button"
             accessibilityLabel={revealed ? "Hide password" : "Show password"}
           >
-            <Ionicons
-              name={revealed ? "eye-off-outline" : "eye-outline"}
-              size={22}
-              color={colors.textFaint}
-            />
+            <Icon name={revealed ? "eye-off" : "eye"} size={22} color={colors.textFaint} />
           </Pressable>
         )}
       </Pressable>

@@ -16,7 +16,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon, type IconName } from "../../components/Icon";
 import { Touchable } from "../../components/Touchable";
 import { toApiError } from "../../api/client";
 import {
@@ -169,7 +169,7 @@ export function AdminHeader({
         ripple="borderless"
       >
         <View style={styles.backCircle}>
-          <Ionicons name="chevron-back" size={20} color={colors.text} />
+          <Icon name="back" size={20} color={colors.text} />
         </View>
       </Touchable>
 
@@ -208,7 +208,7 @@ export function RefreshButton({
         {busy ? (
           <ActivityIndicator size="small" color={colors.accent} />
         ) : (
-          <Ionicons name="refresh" size={18} color={colors.text} />
+          <Icon name="retry" size={18} color={colors.text} />
         )}
       </View>
     </Touchable>
@@ -270,8 +270,8 @@ export function SearchField({
 
   return (
     <View style={styles.searchBar}>
-      <Ionicons
-        name="search-outline"
+      <Icon
+        name="search"
         size={18}
         color={colors.textFaint}
         style={styles.searchIcon}
@@ -399,7 +399,7 @@ export function Sheet({
               hitSlop={8}
               ripple="borderless"
             >
-              <Ionicons name="close" size={22} color={colors.textMuted} />
+              <Icon name="close" size={22} color={colors.textMuted} />
             </Touchable>
           </View>
           <ScrollView
@@ -436,7 +436,7 @@ export function ListState({
 }: {
   loading: boolean;
   error: string | null;
-  emptyIcon: keyof typeof Ionicons.glyphMap;
+  emptyIcon: IconName;
   emptyTitle: string;
   emptyHint: string;
 }) {
@@ -453,11 +453,7 @@ export function ListState({
 
   return (
     <View style={styles.listState}>
-      <Ionicons
-        name={error ? "alert-circle-outline" : emptyIcon}
-        size={38}
-        color={error ? colors.danger : colors.textFaint}
-      />
+      <Icon name={error ? "problem" : emptyIcon} size={38} color={error ? colors.warning : colors.textFaint} />
       <Text style={styles.emptyTitle}>{error ? "Couldn't load" : emptyTitle}</Text>
       <Text style={styles.emptyHint}>{error ?? emptyHint}</Text>
     </View>

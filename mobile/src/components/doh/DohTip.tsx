@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../Icon";
 import { Doh } from "./Doh";
 import { DOH_MS } from "../../lib/dohMotion";
 import { DOH_TIPS, nextTip, tipLabel } from "../../lib/dohTips";
@@ -83,7 +83,7 @@ export function DohTip({
             <Text style={styles.eyebrow}>{tipLabel(tip)}</Text>
             <Text style={styles.tip}>{DOH_TIPS[tip]}</Text>
             <View style={styles.again}>
-              <Ionicons name="hand-left-outline" size={13} color={c.textFaint} />
+              <Icon name="tap" size={13} color={c.textFaint} />
               <Text style={styles.againText}>Tap me again for another</Text>
             </View>
           </>

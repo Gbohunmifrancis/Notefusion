@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Animated, Linking, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../components/Icon";
 import { useFocusEffect } from "@react-navigation/native";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
@@ -95,7 +95,7 @@ export function NotificationsScreen() {
     showDialog({
       title: "Couldn't save that",
       message: "Check your connection and try again.",
-      icon: "cloud-offline-outline",
+      icon: "offline",
     });
   }
 
@@ -168,8 +168,7 @@ export function NotificationsScreen() {
 
       <Group style={styles.first}>
         <Row
-          icon={status.on ? "notifications" : "notifications-off-outline"}
-          iconOn={status.on}
+          icon={status.on ? "bell" : "bell-off"}
           label="Push notifications"
           trailing={pushBusy ? <ActivityIndicator color={c.link} /> : undefined}
           toggle={
@@ -179,7 +178,7 @@ export function NotificationsScreen() {
           }
         />
         <Row
-          icon={soundOn ? "volume-high-outline" : "volume-mute-outline"}
+          icon={soundOn ? "sound" : "mute"}
           label="Sound"
           dim={!live}
           toggle={{ value: soundOn, onChange: (on) => void toggleSound(on), disabled: !live }}
@@ -189,9 +188,9 @@ export function NotificationsScreen() {
       {/* The phone's answer, said once, with the way out when the phone is what is in the way. */}
       <View style={styles.state} accessibilityLiveRegion="polite">
         {status.tone === "ok" ? (
-          <Ionicons name="checkmark-circle" size={16} color={c.success} />
+          <Icon name="done" size={16} color={c.success} />
         ) : status.tone === "warn" ? (
-          <Ionicons name="alert-circle" size={16} color={c.warning} />
+          <Icon name="problem" size={16} color={c.warning} />
         ) : null}
         <Text style={styles.stateText}>{status.line}</Text>
         {status.openSettings ? (
@@ -201,21 +200,21 @@ export function NotificationsScreen() {
 
       <Group title="What you get">
         <Row
-          icon="musical-notes-outline"
+          icon="transcribe"
           label="Transcription ready"
           hint="Even if you have left the app"
           value={readyValue(status)}
           dim={!live}
         />
         <Row
-          icon="alarm-outline"
+          icon="alarm"
           label="Practice reminder"
           hint={describeReminder(reminderOn, live)}
           dim={!live}
           toggle={{ value: live && reminderOn, onChange: (on) => void toggleReminder(on), disabled: !live }}
         />
         <Row
-          icon="time-outline"
+          icon="clock"
           label="Reminder time"
           value={hourLabel(hour)}
           chevron
@@ -232,7 +231,7 @@ export function NotificationsScreen() {
 
       <Group title="Email">
         <Row
-          icon="mail-outline"
+          icon="mail"
           label="Notes from the founder"
           hint="Now and then, asking how it's going"
           toggle={

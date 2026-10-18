@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon, type IconName } from "./Icon";
 import { Button } from "./Button";
 import { auditionNote } from "../lib/audition";
 import {
@@ -121,7 +121,7 @@ export function NoteEditor({
               {/* ── Pitch steppers ───────────────────────────────────────── */}
               <View style={styles.stepperRow}>
                 <Stepper
-                  icon="remove"
+                  icon="minus"
                   label="Semitone"
                   onPress={() => onTranspose(index, -1)}
                   disabled={note.pitchMidi <= 0}
@@ -135,13 +135,13 @@ export function NoteEditor({
               </View>
               <View style={styles.stepperRow}>
                 <Stepper
-                  icon="chevron-down"
+                  icon="down"
                   label="Octave"
                   onPress={() => onTranspose(index, -12)}
                   disabled={note.pitchMidi < 12}
                 />
                 <Stepper
-                  icon="chevron-up"
+                  icon="up"
                   label="Octave"
                   onPress={() => onTranspose(index, 12)}
                   disabled={note.pitchMidi > 115}
@@ -162,7 +162,7 @@ export function NoteEditor({
                   label="Revert"
                   variant="text"
                   size="sm"
-                  icon="refresh"
+                  icon="retry"
                   onPress={() => onRevert(index)}
                   disabled={!edited}
                   style={styles.action}
@@ -171,7 +171,7 @@ export function NoteEditor({
                   label="Delete"
                   variant="destructive"
                   size="sm"
-                  icon="trash-outline"
+                  icon="delete"
                   onPress={() => onDelete(index)}
                   style={styles.action}
                 />
@@ -180,7 +180,7 @@ export function NoteEditor({
               {/* ── Walk the list ────────────────────────────────────────── */}
               <View style={styles.navRow}>
                 <Nav
-                  icon="chevron-back"
+                  icon="back"
                   label="Prev"
                   onPress={() => prev !== undefined && onNavigate(prev)}
                   disabled={prev === undefined}
@@ -193,7 +193,7 @@ export function NoteEditor({
                   <Text style={styles.doneText}>Done</Text>
                 </Pressable>
                 <Nav
-                  icon="chevron-forward"
+                  icon="chevron"
                   label="Next"
                   onPress={() => next !== undefined && onNavigate(next)}
                   disabled={next === undefined}
@@ -217,7 +217,7 @@ function Stepper({
   onPress,
   disabled,
 }: {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: IconName;
   label: string;
   onPress: () => void;
   disabled?: boolean;
@@ -235,9 +235,9 @@ function Stepper({
         disabled && styles.stepperDisabled,
       ]}
       accessibilityRole="button"
-      accessibilityLabel={`${icon === "add" || icon === "chevron-up" ? "Up" : "Down"} one ${label.toLowerCase()}`}
+      accessibilityLabel={`${icon === "add" || icon === "up" ? "Up" : "Down"} one ${label.toLowerCase()}`}
     >
-      <Ionicons name={icon} size={18} color={disabled ? c.textFaint : c.accent} />
+      <Icon name={icon} size={18} color={disabled ? c.textFaint : c.text} />
       <Text style={[styles.stepperLabel, disabled && { color: c.textFaint }]}>
         {label}
       </Text>
@@ -252,7 +252,7 @@ function Nav({
   disabled,
   trailing,
 }: {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: IconName;
   label: string;
   onPress: () => void;
   disabled?: boolean;
@@ -270,9 +270,9 @@ function Nav({
       hitSlop={8}
       accessibilityRole="button"
     >
-      {!trailing && <Ionicons name={icon} size={16} color={color} />}
+      {!trailing && <Icon name={icon} size={16} color={color} />}
       <Text style={[styles.navLabel, { color }]}>{label}</Text>
-      {trailing && <Ionicons name={icon} size={16} color={color} />}
+      {trailing && <Icon name={icon} size={16} color={color} />}
     </Pressable>
   );
 }

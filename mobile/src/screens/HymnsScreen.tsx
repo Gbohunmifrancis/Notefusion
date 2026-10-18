@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../components/Icon";
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
@@ -127,7 +127,7 @@ export function HymnsScreen() {
       showDialog({
         title: "Couldn't download the hymns",
         message: e instanceof Error && /room|read/.test(e.message) ? e.message : "Check your connection and try again.",
-        icon: "cloud-offline-outline",
+        icon: "offline",
         tone: "danger",
       });
     } finally {
@@ -140,7 +140,7 @@ export function HymnsScreen() {
     const remote = await remotePackMeta();
     setChecking(false);
     if (!remote) {
-      showDialog({ title: "You're offline", message: "The hymns on your phone still work. Check again when you're online.", icon: "cloud-offline-outline" });
+      showDialog({ title: "You're offline", message: "The hymns on your phone still work. Check again when you're online.", icon: "offline" });
       return;
     }
     if (!needsDownload(packState.version, remote)) {
@@ -150,9 +150,9 @@ export function HymnsScreen() {
     showDialog({
       title: "Newer hymns available",
       message: `Download the updated hymns (${formatBytes(remote.bytes)})?`,
-      icon: "cloud-download-outline",
+      icon: "keep-offline",
       actions: [
-        { label: "Download", icon: "cloud-download-outline", onPress: () => void download(remote) },
+        { label: "Download", icon: "keep-offline", onPress: () => void download(remote) },
         { label: "Not now", style: "cancel" },
       ],
     });
@@ -202,7 +202,7 @@ export function HymnsScreen() {
         {header}
         <Card style={styles.card}>
           <View style={styles.offerIcon}>
-            <Ionicons name="book-outline" size={22} color={colors.accent} />
+            <Icon name="hymns" size={24} color={colors.icon} />
           </View>
           <Text style={styles.offerTitle}>Hymns you can use anywhere</Text>
           <Text style={styles.offerBody}>
@@ -219,7 +219,7 @@ export function HymnsScreen() {
           ) : (
             <Button
               label={size ? `Download hymns for offline — ${size}` : "Download hymns for offline"}
-              icon="cloud-download-outline"
+              icon="keep-offline"
               onPress={() => void download()}
             />
           )}
@@ -244,7 +244,7 @@ export function HymnsScreen() {
           <View>
             {header}
             <View style={styles.searchPill}>
-              <Ionicons name="search-outline" size={18} color={colors.textMuted} />
+              <Icon name="search" size={18} color={colors.textMuted} />
               <TextInput
                 style={styles.searchInput}
                 placeholder="Title, first line or tune"
@@ -256,7 +256,7 @@ export function HymnsScreen() {
               />
               {query ? (
                 <Touchable onPress={() => setQuery("")} hitSlop={8} ripple="borderless" accessibilityLabel="Clear search">
-                  <Ionicons name="close-circle" size={18} color={colors.textFaint} />
+                  <Icon name="clear" size={18} color={colors.textFaint} />
                 </Touchable>
               ) : null}
             </View>
@@ -265,7 +265,7 @@ export function HymnsScreen() {
               <View style={styles.shelf}>
                 <View style={styles.shelfHead}>
                   <View style={styles.shelfIcon}>
-                    <Ionicons name="snow-outline" size={18} color={colors.candle} />
+                    <Icon name="snow" size={18} color={colors.candle} />
                   </View>
                   <Text style={styles.shelfTitle} accessibilityRole="header">Carols for Christmas</Text>
                   <Touchable
@@ -300,7 +300,7 @@ export function HymnsScreen() {
             {carolsOnly ? (
               <View style={styles.shelfHead}>
                 <View style={styles.shelfIcon}>
-                  <Ionicons name="snow-outline" size={18} color={colors.candle} />
+                  <Icon name="snow" size={18} color={colors.candle} />
                 </View>
                 <Text style={styles.shelfTitle} accessibilityRole="header">Carols for Christmas · {carolList.length}</Text>
                 <Touchable onPress={() => setCarolsOnly(false)} ripple={false} style={styles.shelfAll} accessibilityLabel="Show all hymns">
@@ -378,7 +378,7 @@ const makeStyles = (c: Palette) =>
       width: 44,
       height: 44,
       borderRadius: 22,
-      backgroundColor: c.accentSoft,
+      backgroundColor: c.sheetTile,
       alignItems: "center",
       justifyContent: "center",
     },

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Linking, Platform, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NightButton } from "../components/night/NightButton";
 import { Touchable } from "../components/Touchable";
@@ -82,7 +82,7 @@ export function ForgotPasswordScreen({ navigation, route }: Props) {
         <View style={styles.sent} accessibilityLiveRegion="polite">
           <View style={styles.sentHead}>
             <View style={styles.tick}>
-              <Ionicons name="checkmark" size={15} color={night.bgDeep} />
+              <Icon name="check" size={15} strokeWidth={2.25} color={night.bgDeep} />
             </View>
             <Text style={styles.sentTitle}>Check your inbox</Text>
           </View>

@@ -9,7 +9,7 @@ import {
   View,
   type TextInputProps,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../Icon";
 import { night, nightFonts } from "../../design/theme";
 
 interface Props extends Omit<TextInputProps, "style" | "placeholder" | "secureTextEntry"> {
@@ -91,14 +91,14 @@ export const NightField = forwardRef<TextInput, Props>(function NightField(
               accessibilityLabel={shown ? "Hide password" : "Show password"}
               style={styles.eye}
             >
-              <Ionicons name={shown ? "eye-off-outline" : "eye-outline"} size={19} color={night.muted} />
+              <Icon name={shown ? "eye-off" : "eye"} size={20} color={night.muted} />
             </Pressable>
           )}
         </View>
       </View>
       {error ? (
         <View style={styles.errorRow}>
-          <Ionicons name="alert-circle" size={14} color={night.amber} />
+          <Icon name="problem" size={14} color={night.amber} />
           <Text style={styles.error}>{error}</Text>
         </View>
       ) : null}

@@ -7,9 +7,9 @@
 
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 import { Card } from "../Card";
+import { Icon } from "../Icon";
 import { Touchable } from "../Touchable";
 import type { PracticeTrack } from "../../api/types";
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
@@ -70,7 +70,7 @@ export function TrackPicker({ current, saving, error, onPick, onCancel }: Props)
                 {saving === o.track ? (
                   <ActivityIndicator color={colors.accent} />
                 ) : (
-                  <Ionicons name={on ? "checkmark-circle" : "chevron-forward"} size={20} color={on ? colors.success : colors.textFaint} />
+                  <Icon name={on ? "check" : "chevron"} size={20} color={on ? colors.link : colors.textFaint} />
                 )}
               </View>
             </View>

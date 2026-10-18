@@ -8,7 +8,7 @@ import {
   requestRecordingPermissionsAsync,
   type RecordingOptions,
 } from "expo-audio";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../components/Icon";
 import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
@@ -76,10 +76,10 @@ type Mode = "melody" | "poly" | "choir" | "chords";
  * piano or guitar playing: the chords are read and written over the solfa.
  */
 const MODES: readonly ModeOption[] = [
-  { mode: "melody", title: "Hum or sing", hint: "One line — hummed, sung or played on its own.", icon: "mic-outline" },
-  { mode: "poly", title: "Polyphonic", hint: "An instrument playing several notes at once.", icon: "musical-notes-outline" },
-  { mode: "choir", title: "Choir", hint: "A choir singing in parts: each part comes back as it was sung.", icon: "people-outline" },
-  { mode: "chords", title: "Chords", hint: "Chords (piano, guitar): the chords played are read and written over the solfa.", icon: "grid-outline" },
+  { mode: "melody", title: "Hum or sing", hint: "One line — hummed, sung or played on its own.", icon: "sing" },
+  { mode: "poly", title: "Polyphonic", hint: "An instrument playing several notes at once.", icon: "instrument" },
+  { mode: "choir", title: "Choir", hint: "A choir singing in parts: each part comes back as it was sung.", icon: "choir" },
+  { mode: "chords", title: "Chords", hint: "Chords (piano, guitar): the chords played are read and written over the solfa.", icon: "chords" },
 ];
 const MODE_TITLE = Object.fromEntries(MODES.map((m) => [m.mode, m.title])) as Record<Mode, string>;
 type Phase = "ready" | "recording" | "uploading";
@@ -252,7 +252,7 @@ async function offerBackgroundAlerts(): Promise<void> {
   showDialog({
     title: "Tell you when it's ready?",
     message: "Turn on notifications and you can leave the app. We'll tell you the moment your score is done.",
-    icon: "notifications-outline",
+    icon: "bell",
     tone: "brand",
     actions: [
       { label: "Notify me", onPress: () => void enablePush() },
@@ -372,9 +372,9 @@ export function RecordScreen() {
       title: "Saved to send later",
       message:
         "You're offline, so your recording is kept on this phone. It will be sent by itself when you're back online — it waits in your Library until then.",
-      icon: "cloud-upload-outline",
+      icon: "sending",
       actions: [
-        { label: "See it in Library", icon: "albums-outline", onPress: () => tabNav.navigate("Library") },
+        { label: "See it in Library", icon: "library", onPress: () => tabNav.navigate("Library") },
         { label: "OK", style: "cancel" },
       ],
     });
@@ -432,7 +432,7 @@ export function RecordScreen() {
       label: "Just this song",
       detail: "One more transcription. No subscription.",
       price: offer.single ? formatPrice(offer.single.amountMinor, offer.single.currency) : undefined,
-      icon: "musical-note" as const,
+      icon: "song" as const,
       onPress: () => nav.navigate("Upgrade", { reason: "limit", planId: offer.single?.id }),
     }),
     [offer, nav],
@@ -451,7 +451,7 @@ export function RecordScreen() {
           detail: "Unlimited hums · 20 songs a month",
           price: offer.monthly ? formatPrice(offer.monthly.amountMinor, offer.monthly.currency) : undefined,
           priceUnit: offer.monthly ? "/ month" : undefined,
-          icon: "star",
+          icon: "pro",
           tone: "premium",
           onPress: () => nav.navigate("Upgrade", offer.monthly ? { planId: offer.monthly.id } : undefined),
         },
@@ -474,7 +474,7 @@ export function RecordScreen() {
           `Your ${freePerWeek} free ones a week are for hums and a voice on its own.`,
         choices: [
           ...(sendAsTune
-            ? [{ label: "Send as a tune I sang", icon: "mic-outline" as const, chips: [{ label: "Free" }], onPress: sendAsTune }]
+            ? [{ label: "Send as a tune I sang", icon: "sing" as const, chips: [{ label: "Free" }], onPress: sendAsTune }]
             : []),
           songChoice(),
         ],
@@ -817,7 +817,7 @@ export function RecordScreen() {
     showDialog({
       title,
       message: "This recording will be lost. Nothing is sent and nothing is used up.",
-      icon: "trash-outline",
+      icon: "delete",
       tone: "danger",
       actions: [
         { label: confirmLabel, style: "destructive", onPress: then },
@@ -877,7 +877,7 @@ export function RecordScreen() {
               radius={20}
               accessibilityLabel={isRecording ? "Discard recording and close" : "Close"}
             >
-              <Ionicons name="close" size={20} color={colors.text} />
+              <Icon name="close" size={20} color={colors.text} />
             </Touchable>
           </View>
 
@@ -895,7 +895,7 @@ export function RecordScreen() {
               <Text style={styles.modePillText} numberOfLines={1} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
                 {pillLabel}
               </Text>
-              <Ionicons name="chevron-down" size={14} color={colors.textMuted} />
+              <Icon name="down" size={14} color={colors.textMuted} />
             </Touchable>
           )}
 
@@ -903,6 +903,7 @@ export function RecordScreen() {
             {/* Pro jobs run in the queue's high-priority lane. */}
             {isPro && (
               <View style={styles.fastLane} accessibilityLabel="Fast lane: Pro recordings go first">
+                <Icon name="pro" size={12} color={colors.premiumDeep} />
                 <Text style={styles.fastLaneText} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
                   Fast lane
                 </Text>
@@ -946,10 +947,11 @@ export function RecordScreen() {
                   const on = uploadStageIndex === i;
                   return (
                     <View key={s.key} style={styles.uploadStage}>
-                      <Ionicons
-                        name={done ? "checkmark-circle" : on ? "ellipse" : "ellipse-outline"}
-                        size={11}
-                        color={done ? colors.success : on ? colors.accent : colors.textFaint}
+                      <Icon
+                        name={done ? "done" : "step"}
+                        size={12}
+                        filled={on}
+                        color={done ? colors.success : on ? colors.link : colors.textFaint}
                       />
                       <Text
                         style={[
@@ -970,7 +972,7 @@ export function RecordScreen() {
               {state.canRetry ? (
                 <Button
                   label="Try again"
-                  icon="refresh-outline"
+                  icon="retry"
                   variant="secondary"
                   onPress={() => void retry()}
                   style={{ marginTop: spacing.lg, alignSelf: "stretch" }}
@@ -1014,7 +1016,6 @@ export function RecordScreen() {
                   }
                 >
                   {/* Spent is said plainly, in the quiet pill: no lock, no red. */}
-                  {trialRemaining > 0 ? <Ionicons name="sparkles-outline" size={13} color={colors.accent} /> : null}
                   <Text style={[styles.trialPillText, trialRemaining <= 0 && styles.trialPillTextSpent]}>
                     {freeRemaining > 0
                       ? `${freeRemaining} of ${freePerWeek} free this week · back ${freeBack}`
@@ -1062,7 +1063,7 @@ export function RecordScreen() {
         {permError && (
           <Card style={styles.errCard}>
             <View style={styles.errRow}>
-              <Ionicons name="alert-circle-outline" size={18} color={colors.warning} style={styles.errIcon} />
+              <Icon name="problem" size={18} color={colors.warning} style={styles.errIcon} />
               <Text style={styles.errText}>{permError}</Text>
             </View>
           </Card>
@@ -1071,7 +1072,7 @@ export function RecordScreen() {
         {state.error && (
           <Card style={styles.errCard}>
             <View style={styles.errRow}>
-              <Ionicons name="alert-circle-outline" size={18} color={colors.warning} style={styles.errIcon} />
+              <Icon name="problem" size={18} color={colors.warning} style={styles.errIcon} />
               <Text style={styles.errText}>{state.error}</Text>
             </View>
             <Button
@@ -1103,8 +1104,8 @@ export function RecordScreen() {
                 radius={28}
                 accessibilityLabel={isRecording ? "Start over" : "Import audio file"}
               >
-                <Ionicons
-                  name={isRecording ? "refresh" : "folder-open-outline"}
+                <Icon
+                  name={isRecording ? "retry" : "import"}
                   size={22}
                   color={colors.text}
                 />
@@ -1143,7 +1144,7 @@ export function RecordScreen() {
                 radius={28}
                 accessibilityLabel="Stop and transcribe"
               >
-                <Ionicons name="checkmark" size={24} color={colors.onInk} />
+                <Icon name="check" size={24} strokeWidth={2} color={colors.onInk} />
               </Touchable>
               <Text
                 style={[styles.sideCaption, !isRecording && styles.sideCaptionOff]}
@@ -1252,11 +1253,13 @@ const makeStyles = (c: Palette) =>
 
   fastLane: {
     height: 26,
+    flexDirection: "row",
+    gap: 4,
     paddingHorizontal: 10,
     borderRadius: radii.pill,
-    backgroundColor: c.accentSoft,
+    backgroundColor: c.premiumSoft,
     borderWidth: 1,
-    borderColor: c.accentGlow,
+    borderColor: c.premiumBorder,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1264,7 +1267,7 @@ const makeStyles = (c: Palette) =>
   fastLaneText: {
     fontFamily: fonts.medium,
     fontSize: 12,
-    color: c.accentAlt,
+    color: c.premiumDeep,
   },
 
   // ── Clock & status ────────────────────────────────────────────────────────
@@ -1341,7 +1344,7 @@ const makeStyles = (c: Palette) =>
   trialPillText: {
     fontSize: 11.5,
     fontFamily: fonts.semibold,
-    color: c.accent,
+    color: c.textMuted,
     flexShrink: 1,
   },
   trialPillTextSpent: {

@@ -8,7 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../../components/Screen";
 import { Touchable } from "../../components/Touchable";
@@ -177,8 +177,8 @@ export function AdminUsersScreen({ navigation }: Props) {
               {!item.isActive ? (
                 <StatusPill label="Suspended" tone="bad" />
               ) : null}
-              <Ionicons
-                name="chevron-forward"
+              <Icon
+                name="chevron"
                 size={16}
                 color={colors.textFaint}
               />
@@ -190,7 +190,7 @@ export function AdminUsersScreen({ navigation }: Props) {
           <ListState
             loading={list.loading}
             error={list.error}
-            emptyIcon="people-outline"
+            emptyIcon="users"
             emptyTitle="No accounts"
             emptyHint="Nothing matches that search."
           />

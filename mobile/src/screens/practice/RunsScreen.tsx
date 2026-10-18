@@ -7,7 +7,7 @@
 
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../../components/Icon";
 import type { PracticeExercise, PracticeModeGrade, PracticeTrack } from "../../api/types";
 import { Screen } from "../../components/Screen";
 import { Button } from "../../components/Button";
@@ -137,7 +137,7 @@ export function RunsScreen({ track }: { track: PracticeTrack | null }) {
                 <NoteRoll roll={roll} trace={traceOnRoll(grade.run.trace, roll, sung.tempoBpm)} label={`Your pitch line over ${ex.notes.map(written).join(" ")}`} />
                 {runShapeLines(grade.run, landing).map((l, i) => (
                   <View key={i} style={styles.check}>
-                    <Ionicons name={l.ok ? "checkmark-circle" : "ellipse-outline"} size={20} color={l.ok ? c.success : c.textMuted} />
+                    <Icon name={l.ok ? "done" : "step"} size={20} color={l.ok ? c.success : c.textMuted} />
                     <View style={styles.checkText}>
                       <Text style={styles.checkTitle}>{l.title}</Text>
                       <Text style={styles.checkSub}>{l.sub}</Text>
@@ -145,7 +145,7 @@ export function RunsScreen({ track }: { track: PracticeTrack | null }) {
                   </View>
                 ))}
                 <View style={styles.earnedRow}>
-                  <Ionicons name="sparkles" size={15} color={c.link} />
+                  <Icon name="reward" size={15} color={c.icon} />
                   <Text style={styles.earned}>
                     {[rewardMoment(grade.reward)?.line ?? `Score ${grade.score}`, grade.score >= PASS_SCORE ? "run learned" : null].filter(Boolean).join(" · ")}
                   </Text>
@@ -184,7 +184,7 @@ export function RunsScreen({ track }: { track: PracticeTrack | null }) {
                     accessibilityLabel={`${s.label}${s.passed ? ", passed" : ""}`}
                   >
                     <Text style={[styles.segText, on && styles.segTextOn, s.passed && !on && styles.segDone]}>{s.label}</Text>
-                    {s.passed ? <Ionicons name="checkmark" size={11} color={c.success} /> : null}
+                    {s.passed ? <Icon name="check" size={11} strokeWidth={2.25} color={c.success} /> : null}
                   </Touchable>
                 );
               })}
@@ -199,7 +199,7 @@ export function RunsScreen({ track }: { track: PracticeTrack | null }) {
             </View>
             {!busy && !grade && step.percent !== 100 ? (
               <View style={styles.fullLink}>
-                <Button label={take.playing === "full" ? "Stop" : "Hear it at 100%"} icon="volume-high-outline" variant="text" size="sm" onPress={() => hear(true)} />
+                <Button label={take.playing === "full" ? "Stop" : "Hear it at 100%"} icon="hear" variant="text" size="sm" onPress={() => hear(true)} />
               </View>
             ) : null}
 
@@ -240,7 +240,7 @@ export function RunsScreen({ track }: { track: PracticeTrack | null }) {
                         <Text style={[styles.rowTitle, r.state === "current" && styles.rowTitleOn]} numberOfLines={1}>{r.title}</Text>
                         <Text style={styles.rowSolfa} numberOfLines={1}>{r.solfa}</Text>
                         {r.state === "learned" ? (
-                          <Ionicons name="checkmark-circle" size={18} color={c.success} />
+                          <Icon name="done" size={18} color={c.success} />
                         ) : r.state === "current" ? (
                           <View style={styles.dotOn} />
                         ) : (
@@ -272,7 +272,7 @@ export function RunsScreen({ track }: { track: PracticeTrack | null }) {
             </>
           ) : (
             <>
-              <Button label={take.playing === "hear" ? "Stop" : "Hear it"} icon={take.playing === "hear" ? "stop" : "volume-high-outline"} variant="secondary" onPress={() => hear(false)} />
+              <Button label={take.playing === "hear" ? "Stop" : "Hear it"} icon={take.playing === "hear" ? "stop" : "hear"} variant="secondary" onPress={() => hear(false)} />
               <Button label="Sing it" icon="mic" onPress={() => void start()} disabled={noneLeft(data)} />
             </>
           )}

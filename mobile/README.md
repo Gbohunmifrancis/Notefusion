@@ -10,7 +10,9 @@ The cross-platform client for NoteFusion. Talks only to the C# Web API
 - **axios** with a JWT access/refresh interceptor (`src/api/client.ts`)
 - **expo-secure-store** for the token vault, **expo-av** for capture,
   **expo-notifications** for push
-- **@expo/vector-icons** (Ionicons) — no proprietary icon packs
+- Icons: **Lucide** (ISC) for the generic ones and our own music glyphs (`assets/icons-src/notefusion`), baked into
+  `src/design/iconGlyphs.ts` by `npm run build:icons` and drawn by `components/Icon` on react-native-svg — no icon
+  font, no proprietary packs (`@expo/vector-icons` stays only for the store-art tool in `store/`)
 
 ## Layout
 

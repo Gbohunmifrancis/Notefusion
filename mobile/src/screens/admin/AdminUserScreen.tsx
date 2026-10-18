@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { type IconName } from "../../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../../components/Screen";
 import { Card } from "../../components/Card";
@@ -124,7 +124,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
       await load();
       showDialog({
         title: done,
-        icon: "checkmark-circle-outline",
+        icon: "done",
         tone: "brand",
       });
     } catch (e) {
@@ -132,7 +132,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
       showDialog({
         title: "Couldn't do that",
         message: `${err.message}\n\n${err.code}`,
-        icon: "alert-circle-outline",
+        icon: "problem",
         tone: "danger",
       });
     } finally {
@@ -144,7 +144,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
     title: string;
     message: string;
     label: string;
-    icon: keyof typeof Ionicons.glyphMap;
+    icon: IconName;
     destructive?: boolean;
     key: string;
     done: string;
@@ -189,7 +189,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
         <ListState
           loading={busy}
           error={error}
-          emptyIcon="person-outline"
+          emptyIcon="user"
           emptyTitle="Not found"
           emptyHint="No account with that id."
         />
@@ -318,7 +318,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
                           title: `Gift ${g.label.toLowerCase()} Pro?`,
                           message: `${user.email} gets Pro at no charge. This writes no payment and no ledger entry.`,
                           label: "Gift Pro",
-                          icon: "gift-outline",
+                          icon: "gift",
                           key: `gift-${g.duration}`,
                           done: `${g.label} Pro granted`,
                           fn: () => adminApi.giftPro(user.id, g.duration, NOTE),
@@ -352,7 +352,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
                           title: `Extend by ${x.label.replace("+", "")}?`,
                           message: `The period will end ${dateTime(next)}.`,
                           label: "Extend",
-                          icon: "calendar-outline",
+                          icon: "calendar",
                           key: `extend-${x.label}`,
                           done: "Period extended",
                           fn: () =>
@@ -369,7 +369,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
               <Button
                 label="Revoke the gift"
                 variant="destructive"
-                icon="close-circle-outline"
+                icon="clear"
                 loading={action === "revoke"}
                 disabled={action !== null}
                 style={styles.stacked}
@@ -378,7 +378,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
                     title: "Revoke this gift?",
                     message: `${user.email} loses Pro immediately. Only gifts can be revoked — a paid subscription is refused.`,
                     label: "Revoke",
-                    icon: "close-circle-outline",
+                    icon: "clear",
                     destructive: true,
                     key: "revoke",
                     done: "Gift revoked",
@@ -392,7 +392,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
               <Button
                 label="End the subscription now"
                 variant="destructive"
-                icon="stop-circle-outline"
+                icon="stop"
                 loading={action === "end"}
                 disabled={action !== null}
                 style={styles.stacked}
@@ -402,7 +402,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
                     message:
                       "The rest of the paid period is forfeited and nothing is refunded. Refunds happen at the provider.",
                     label: "End it",
-                    icon: "stop-circle-outline",
+                    icon: "stop",
                     destructive: true,
                     key: "end",
                     done: "Subscription ended",
@@ -420,7 +420,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
               <Button
                 label="Suspend this account"
                 variant="destructive"
-                icon="ban-outline"
+                icon="ban"
                 loading={action === "suspend"}
                 disabled={action !== null}
                 onPress={() =>
@@ -429,7 +429,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
                     message:
                       "Sign-in is blocked and refresh tokens are revoked. An access token already issued keeps working until it expires — up to an hour.",
                     label: "Suspend",
-                    icon: "ban-outline",
+                    icon: "ban",
                     destructive: true,
                     key: "suspend",
                     done: "Account suspended",
@@ -440,7 +440,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
             ) : (
               <Button
                 label="Reactivate this account"
-                icon="checkmark-circle-outline"
+                icon="done"
                 loading={action === "reactivate"}
                 disabled={action !== null}
                 onPress={() =>
@@ -448,7 +448,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
                     title: "Reactivate this account?",
                     message: `${user.email} will be able to sign in again.`,
                     label: "Reactivate",
-                    icon: "checkmark-circle-outline",
+                    icon: "done",
                     key: "reactivate",
                     done: "Account reactivated",
                     fn: () => adminApi.reactivate(user.id, NOTE),
@@ -460,7 +460,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
             <Button
               label="Email a password reset"
               variant="secondary"
-              icon="mail-outline"
+              icon="mail"
               loading={action === "reset"}
               disabled={action !== null}
               style={styles.stacked}
@@ -469,7 +469,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
                   title: "Send a reset link?",
                   message: `A link goes to ${user.email}. This is the supported way to help someone locked out — it puts the new password in their hands, not yours.`,
                   label: "Send it",
-                  icon: "mail-outline",
+                  icon: "mail",
                   key: "reset",
                   done: "Reset link sent",
                   fn: () => adminApi.sendPasswordReset(user.id, NOTE),
@@ -481,7 +481,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
               <Button
                 label="Reset free trial quota"
                 variant="secondary"
-                icon="refresh-outline"
+                icon="retry"
                 loading={action === "reset-trial"}
                 disabled={action !== null}
                 style={styles.stacked}
@@ -490,7 +490,7 @@ export function AdminUserScreen({ navigation, route }: Props) {
                     title: "Reset trial quota?",
                     message: `Reset free trial usage for ${user.email}? They will receive their free transcription quota again.`,
                     label: "Reset quota",
-                    icon: "refresh-outline",
+                    icon: "retry",
                     key: "reset-trial",
                     done: "Trial quota reset",
                     fn: async () => {

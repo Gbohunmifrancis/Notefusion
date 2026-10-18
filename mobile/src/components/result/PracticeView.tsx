@@ -11,7 +11,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Modal, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { File, Paths } from "expo-file-system";
 import {
@@ -316,7 +316,7 @@ export function PracticeView({
         >
           <View style={styles.header}>
             <Touchable onPress={onClose} style={styles.iconBtn} radius={20} accessibilityRole="button" accessibilityLabel="Close Learn my part">
-              <Ionicons name="chevron-down" size={20} color={colors.text} />
+              <Icon name="down" size={20} color={colors.text} />
             </Touchable>
             <Text style={styles.title}>Learn my part</Text>
             <View style={styles.iconSpacer} />
@@ -412,7 +412,7 @@ export function PracticeView({
               <Button
                 label={phase === "grading" ? "Marking…" : "Sing it back"}
                 variant="secondary"
-                icon={isPro ? "mic" : "lock-closed-outline"}
+                icon={isPro ? "mic" : "lock"}
                 loading={phase === "grading"}
                 onPress={() => void sing()}
                 style={styles.transportBtn}
@@ -444,7 +444,7 @@ export function PracticeView({
               {rewardMoment(graded.grade.reward) ? (
                 <Text style={styles.earned}>{rewardMoment(graded.grade.reward)!.line}</Text>
               ) : null}
-              <Button label="Try again" icon="refresh" onPress={() => void sing()} disabled={busy} style={styles.again} />
+              <Button label="Try again" icon="retry" onPress={() => void sing()} disabled={busy} style={styles.again} />
             </View>
           ) : null}
 

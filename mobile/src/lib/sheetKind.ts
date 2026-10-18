@@ -100,17 +100,18 @@ export function arrangeActions<A extends ActionLike>(kind: SheetKind, actions: r
 }
 
 /**
- * Whether the title carries a small icon, and in which colour: an info sheet's (amber for a
- * problem, mint for good news) and Pro's gold star on an upsell. A confirm or a destructive
- * confirm has none: the question says it.
+ * Whether the title carries a small icon, and in which colour. Colour follows the shape, never the
+ * kind alone: the alert sign ("problem") is amber, the tick ("done") mint, the crown ("pro") gold —
+ * on an upsell question too — and any other icon on an info sheet is ink. A confirm or a destructive
+ * confirm otherwise has none: the question says it.
  */
 export function titleIcon(
   kind: SheetKind,
-  tone: KindInput["tone"],
+  _tone: KindInput["tone"],
   icon: string | undefined,
-): "warning" | "success" | "premium" | null {
+): "warning" | "success" | "premium" | "ink" | null {
   if (!icon || kind === "options" || kind === "celebrate") return null;
-  if (tone === "premium") return "premium";
+  if (icon === "pro") return "premium";
   if (kind !== "info") return null;
-  return icon.startsWith("checkmark") ? "success" : "warning";
+  return icon === "problem" ? "warning" : icon === "done" ? "success" : "ink";
 }

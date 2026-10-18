@@ -5,8 +5,8 @@
 
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { Icon, type IconName } from "../Icon";
 import { Touchable } from "../Touchable";
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
@@ -21,7 +21,7 @@ export function ModeHeader({
   eyebrow: string;
   title: string;
   pill?: string | null;
-  pillIcon?: keyof typeof Ionicons.glyphMap;
+  pillIcon?: IconName;
   /** Instead of leaving the screen (a step inside it, such as the range finder back to the routine). */
   onBack?: () => void;
 }) {
@@ -37,7 +37,7 @@ export function ModeHeader({
         accessibilityLabel="Go back"
         style={styles.back}
       >
-        <Ionicons name="chevron-back" size={20} color={c.text} />
+        <Icon name="back" size={20} color={c.text} />
       </Touchable>
       <View style={styles.text}>
         <Text style={styles.eyebrow} numberOfLines={1}>{eyebrow}</Text>
@@ -45,7 +45,7 @@ export function ModeHeader({
       </View>
       {pill ? (
         <View style={styles.pill}>
-          {pillIcon ? <Ionicons name={pillIcon} size={14} color={c.textMuted} /> : null}
+          {pillIcon ? <Icon name={pillIcon} size={14} color={c.textMuted} /> : null}
           <Text style={styles.pillText}>{pill}</Text>
         </View>
       ) : null}

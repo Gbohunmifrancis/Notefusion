@@ -1,0 +1,11 @@
+<!-- NoteFusion glyph "metronome": Tempo, speed. Drawn on the 24 grid (e-icons board 09): 1.75 stroke, round
+     caps and joins, solid note heads (fill="currentColor"). <g id="wash">, when present, is the 20% wash drawn under
+     the selected state (the active tab); it is hidden here. mobile/scripts/build-icons.mjs reads this file. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+     stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <g id="wash" fill="currentColor" stroke="none" opacity="0.2" display="none"><path d="M9.4 3.5h5.2a1 1 0 0 1 1 .8l3.2 15a1 1 0 0 1-1 1.2H6.2a1 1 0 0 1-1-1.2l3.2-15a1 1 0 0 1 1-.8Z"/></g>
+  <path d="M9.4 3.5h5.2a1 1 0 0 1 1 .8l3.2 15a1 1 0 0 1-1 1.2H6.2a1 1 0 0 1-1-1.2l3.2-15a1 1 0 0 1 1-.8Z"/>
+  <path d="M6.6 16.3h10.8"/>
+  <path d="M12 16.3 15.3 7"/>
+  <path d="m12.9 9.8 2.5.9"/>
+</svg>

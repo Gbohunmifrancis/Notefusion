@@ -96,9 +96,9 @@ export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: 
       message: "Share",
       actions: [
         allShared
-          ? { label: "Take out of choir library", icon: "people-outline", onPress: () => void shareWithChoir(targets, false) }
-          : { label: `Share with ${choirName}`, icon: "people-outline", onPress: () => void shareWithChoir(targets, true) },
-        { label: "Send links", icon: "link-outline", onPress: () => void shareLinks(targets) },
+          ? { label: "Take out of choir library", icon: "choir", onPress: () => void shareWithChoir(targets, false) }
+          : { label: `Share with ${choirName}`, icon: "choir", onPress: () => void shareWithChoir(targets, true) },
+        { label: "Send links", icon: "link", onPress: () => void shareLinks(targets) },
         { label: "Cancel", style: "cancel" },
       ],
     });
@@ -120,7 +120,7 @@ export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: 
       actions: [
         ...folders.slice(0, 6).map((f) => ({
           label: f,
-          icon: "folder-outline" as const,
+          icon: "folder" as const,
           selected: targets.every((t) => t.folder === f),
           onPress: () => void fileIn(targets, f),
         })),
@@ -133,7 +133,7 @@ export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: 
           },
         },
         ...(targets.some((t) => t.folder)
-          ? [{ label: "Take out of folder", icon: "remove-circle-outline" as const, onPress: () => void fileIn(targets, null) }]
+          ? [{ label: "Take out of folder", icon: "folder-out" as const, onPress: () => void fileIn(targets, null) }]
           : []),
         { label: "Cancel", style: "cancel" as const },
       ],

@@ -94,7 +94,7 @@ export function ProfileScreen() {
       showDialog({
         title: "Could not update photo",
         message: toApiError(e).message,
-        icon: "alert-circle-outline",
+        icon: "problem",
         tone: "danger",
       });
     } finally {
@@ -112,7 +112,7 @@ export function ProfileScreen() {
       showDialog({
         title: "Could not remove photo",
         message: toApiError(e).message,
-        icon: "alert-circle-outline",
+        icon: "problem",
         tone: "danger",
       });
     } finally {
@@ -129,7 +129,7 @@ export function ProfileScreen() {
       actions: [
         {
           label: hasPicture ? "Change photo" : "Choose photo",
-          icon: "image-outline",
+          icon: "image",
           onPress: changePicture,
         },
         ...(hasPicture
@@ -137,7 +137,7 @@ export function ProfileScreen() {
               {
                 label: "Remove photo",
                 style: "destructive" as const,
-                icon: "trash-outline" as const,
+                icon: "delete" as const,
                 onPress: removePicture,
               },
             ]
@@ -202,7 +202,8 @@ export function ProfileScreen() {
       {/* ── 3. The choir ────────────────────────────────────────────────────── */}
       <Group style={styles.gap}>
         <Row
-          icon="people-outline"
+          icon="choir"
+          choir
           label="My choir"
           value={subscription?.choirName ?? "Enter code"}
           chevron
@@ -213,34 +214,34 @@ export function ProfileScreen() {
       {/* ── 4. The rest of the account ──────────────────────────────────────── */}
       <Group style={styles.gap}>
         <Row
-          icon="notifications-outline"
+          icon="bell"
           label="Notifications"
           value={notifications ?? undefined}
           chevron
           onPress={() => nav.navigate("Notifications")}
         />
         <Row
-          icon="settings-outline"
+          icon="settings"
           label="Settings"
           hint="Account, appearance, data saver, sign out"
           chevron
           onPress={() => nav.navigate("Settings")}
         />
-        <Row icon="help-circle-outline" label="Help & support" chevron onPress={() => nav.navigate("Help")} />
+        <Row icon="help" label="Help & support" chevron onPress={() => nav.navigate("Help")} />
         <Row
-          icon="chatbubble-ellipses-outline"
+          icon="feedback"
           label="Send feedback"
           chevron
           onPress={() => openFeedback("Profile")}
         />
         {/* Android only, like the rating ask: there is no App Store listing to open yet. */}
         {Platform.OS === "android" ? (
-          <Row icon="star-outline" label="Rate Notefusion" chevron onPress={() => void rating.rate()} />
+          <Row icon="rate" label="Rate Notefusion" chevron onPress={() => void rating.rate()} />
         ) : null}
         {/* Hidden for everyone else: the routes are behind the server's Admin policy, so this is about not
             showing a customer an operator surface. */}
         {isAdmin ? (
-          <Row icon="shield-checkmark-outline" label="Admin" chevron onPress={() => nav.navigate("AdminHome")} />
+          <Row icon="admin" label="Admin" chevron onPress={() => nav.navigate("AdminHome")} />
         ) : null}
       </Group>
 

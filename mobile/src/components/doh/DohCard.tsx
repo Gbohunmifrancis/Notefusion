@@ -5,7 +5,7 @@
 
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../Icon";
 import { Button } from "../Button";
 import { Touchable } from "../Touchable";
 import { Doh } from "./Doh";
@@ -44,7 +44,7 @@ export function DohCard({
           label={card.action}
           variant="text"
           size="sm"
-          icon="arrow-forward"
+          icon="next"
           iconPosition="right"
           onPress={onAction}
           style={styles.action}
@@ -58,7 +58,7 @@ export function DohCard({
         hitSlop={4}
         accessibilityLabel="Hide this suggestion"
       >
-        <Ionicons name="close" size={17} color={c.textFaint} />
+        <Icon name="close" size={18} color={c.textFaint} />
       </Touchable>
     </View>
   );

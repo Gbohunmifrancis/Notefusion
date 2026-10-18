@@ -74,12 +74,18 @@ test("two acts with no Cancel: the first is text, the last the pill; never stack
 });
 
 test("the title icon: amber for a problem, mint for good news, gold for Pro, none on a question", () => {
-  assert.equal(titleIcon("info", "danger", "alert-circle-outline"), "warning");
-  assert.equal(titleIcon("info", undefined, "cloud-offline-outline"), "warning");
-  assert.equal(titleIcon("info", undefined, "checkmark-circle-outline"), "success");
-  assert.equal(titleIcon("confirm", "premium", "star"), "premium");
-  assert.equal(titleIcon("confirm", "brand", "notifications-outline"), null);
-  assert.equal(titleIcon("destructive", "danger", "trash-outline"), null);
-  assert.equal(titleIcon("options", undefined, "ellipsis-horizontal"), null);
+  assert.equal(titleIcon("info", "danger", "problem"), "warning");
+  assert.equal(titleIcon("info", undefined, "done"), "success");
+  assert.equal(titleIcon("confirm", "premium", "pro"), "premium");
+  assert.equal(titleIcon("info", "premium", "pro"), "premium");
+  assert.equal(titleIcon("confirm", "brand", "bell"), null);
+  assert.equal(titleIcon("destructive", "danger", "delete"), null);
+  assert.equal(titleIcon("options", undefined, "more"), null);
   assert.equal(titleIcon("info", "danger", undefined), null);
+});
+
+test("amber, mint and gold belong to their shapes: any other icon on an info sheet is ink", () => {
+  assert.equal(titleIcon("info", "danger", "offline"), "ink");
+  assert.equal(titleIcon("info", undefined, "about"), "ink");
+  assert.equal(titleIcon("confirm", "premium", "gift"), null);
 });

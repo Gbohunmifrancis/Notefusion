@@ -8,7 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "../../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../../components/Screen";
 import { Button } from "../../components/Button";
@@ -147,7 +147,7 @@ export function AdminPaymentsScreen({ navigation, route }: Props) {
     showDialog({
       title: "Reconcile this payment?",
       message: `Ask ${row.provider} what happened to ${row.reference} and apply the answer. Safe to repeat — a settled payment is left alone.`,
-      icon: "sync-outline",
+      icon: "sync",
       tone: "brand",
       actions: [
         {
@@ -169,7 +169,7 @@ export function AdminPaymentsScreen({ navigation, route }: Props) {
       showDialog({
         title: res.changed ? `${res.previousStatus} → ${res.status}` : "No change",
         message: res.outcome,
-        icon: res.changed ? "checkmark-circle-outline" : "information-circle-outline",
+        icon: res.changed ? "done" : "about",
         tone: res.changed ? "brand" : undefined,
       });
       if (res.changed) list.refresh();
@@ -182,7 +182,7 @@ export function AdminPaymentsScreen({ navigation, route }: Props) {
       showDialog({
         title: "Could not reconcile",
         message: `${err.message}\n\n${err.code}`,
-        icon: "alert-circle-outline",
+        icon: "problem",
         tone: "danger",
       });
     } finally {
@@ -282,7 +282,7 @@ export function AdminPaymentsScreen({ navigation, route }: Props) {
           <ListState
             loading={list.loading}
             error={list.error}
-            emptyIcon="card-outline"
+            emptyIcon="card"
             emptyTitle="No payments"
             emptyHint="Nothing matches this filter."
           />
@@ -339,7 +339,7 @@ export function AdminPaymentsScreen({ navigation, route }: Props) {
               <Button
                 label="Open account"
                 variant="secondary"
-                icon="person-outline"
+                icon="user"
                 onPress={() => {
                   const userId = open.userId;
                   closeSheet();
@@ -444,8 +444,8 @@ export function AdminPaymentsScreen({ navigation, route }: Props) {
                       style={styles.rawToggle}
                       accessibilityLabel="Toggle provider payloads"
                     >
-                      <Ionicons
-                        name={showRaw ? "chevron-up" : "chevron-down"}
+                      <Icon
+                        name={showRaw ? "up" : "down"}
                         size={16}
                         color={colors.textMuted}
                       />

@@ -89,6 +89,8 @@ export const colors = {
   text: "#0F172A", // Ink Navy   — primary text
   textMuted: "#64748B", // Slate      — secondary / subtitles
   textFaint: "#64748B", // Slate — placeholder / tertiary; 4.76:1 on white (#94A3B8 was 2.6:1)
+  /** Row and chip icons at rest (components/Icon): a step under `text`, so the words lead. Controls use `text`. */
+  icon: "#334155",
 
   // ── Semantic signals ────────────────────────────────────────────────────
   success: "#16A34A",
@@ -180,10 +182,12 @@ export const darkColors: Palette = {
   accentGlow: "rgba(47, 123, 255, 0.35)",
   pinkSoft: "rgba(156, 194, 255, 0.12)",
 
-  premium: "#F5B544",
-  premiumDeep: "#D99A2B",
-  premiumSoft: "rgba(245, 181, 68, 0.14)",
-  premiumBorder: "rgba(245, 181, 68, 0.40)",
+  // Pro's gold is its own colour, never the problem amber (`warning` #F5B544): a paler, yellower gold, so a
+  // crown and an alert sign differ in colour as well as shape.
+  premium: "#F0D27A",
+  premiumDeep: "#D9B65A",
+  premiumSoft: "rgba(240, 210, 122, 0.14)",
+  premiumBorder: "rgba(240, 210, 122, 0.40)",
 
   play: "#FB923C",
   playSoft: "rgba(251, 146, 60, 0.12)",
@@ -192,6 +196,7 @@ export const darkColors: Palette = {
   text: "#F3F6FB",
   textMuted: "#8B95AA",
   textFaint: "#8089A0", // ≥4.98:1 on bg, surface and surfaceAlt (#5A6478 was 3.3:1)
+  icon: "#D3DAE6",
 
   success: "#3DDC97",
   warning: "#F5B544",
