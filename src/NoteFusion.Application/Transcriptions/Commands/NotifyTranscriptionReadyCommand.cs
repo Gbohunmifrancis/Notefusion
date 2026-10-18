@@ -44,6 +44,14 @@ public sealed record NotifyTranscriptionReadyCommand(Guid JobRowId) : IRequest<R
 
     /// <summary>A job older than this is closed without a push when it fails: the user has long moved on.</summary>
     public static readonly TimeSpan TooOldToMention = TimeSpan.FromDays(1);
+
+    /// <summary>
+    /// The ready (and failed) push is sent to someone who stopped watching, so it must arrive now: a time to live
+    /// makes the sender ask FCM for high priority, which Android delivers through Doze instead of holding it for
+    /// the next maintenance window (with the screen off that was minutes, or not before the phone was picked up).
+    /// A push that has not arrived within the day is no longer worth showing.
+    /// </summary>
+    public const int PushTimeToLiveSeconds = 24 * 60 * 60;
 }
 
 public sealed class NotifyTranscriptionReadyCommandHandler
@@ -168,7 +176,8 @@ public sealed class NotifyTranscriptionReadyCommandHandler
             new PushMessage(
                 christmas?.Title ?? $"Hey {firstName}, your transcription is ready!",
                 christmas?.Body ?? $"{result.Key} · {result.Tempo} BPM — tap to review and save it.",
-                new Dictionary<string, string> { ["jobId"] = job.JobId }),
+                new Dictionary<string, string> { ["jobId"] = job.JobId },
+                TimeToLiveSeconds: NotifyTranscriptionReadyCommand.PushTimeToLiveSeconds),
             ct);
 
         // The web app's browsers, for a tab that was closed (an open one collected it by its poll first).
@@ -216,7 +225,8 @@ public sealed class NotifyTranscriptionReadyCommandHandler
             new PushMessage(
                 $"Sorry {firstName}, the transcription failed",
                 sentence,
-                new Dictionary<string, string> { ["jobId"] = job.JobId }),
+                new Dictionary<string, string> { ["jobId"] = job.JobId },
+                TimeToLiveSeconds: NotifyTranscriptionReadyCommand.PushTimeToLiveSeconds),
             ct);
 
         await _webPush.SendAsync(job.UserId, Push.WebPush.Failed(job.JobId, await JobNameAsync(job.JobId, ct), sentence), ct);

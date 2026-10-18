@@ -25,6 +25,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   drop it). VAPID pair from `WebPush__PublicKey`/`__PrivateKey`, else derived from the JWT signing key (`VapidKeys`, no
   setup); `WebPush__Enabled=false` turns it off. `web-site/sw.js` (scope `/app/`, push only) shows it under the tab's
   `nf-job-<id>` tag and a click opens `/app?job=<id>`.
+  The ready and failed pushes go at FCM high priority (`PushTimeToLiveSeconds`, a day's TTL), and the phone polls a job
+  only while the app is in front (`useJobPolling` pauses in the background): a poll that sees a job done settles it,
+  and a settled job gets no push, so a phone polling behind the user's back used to silence its own notification.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off

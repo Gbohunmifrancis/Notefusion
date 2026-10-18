@@ -231,6 +231,9 @@ services:
       Blog__AutoDraftDays: ${Blog__AutoDraftDays:-}
       Blog__AutoDraftTimeUtc: ${Blog__AutoDraftTimeUtc:-}
       Blog__AutoDraftCount: ${Blog__AutoDraftCount:-}
+      # A planned move (docs/BACKUP_AND_MIGRATION.md): true answers every write with a 503. The deploy wrote it to
+      # .env from MAINTENANCE_READ_ONLY all along, but nothing here passed it in, so the switch did nothing.
+      Maintenance__ReadOnly: ${Maintenance__ReadOnly:-false}
       # Errors to Sentry (docs/DEPLOYMENT.md, "Error reports"): off while the DSN is blank. The release is the commit.
       Sentry__Dsn: ${Sentry__Dsn:-}
       Sentry__Release: ${Sentry__Release:-}
