@@ -162,11 +162,18 @@ def test_the_accuracy_corpora_non_hymn_melodies_match_nothing():
 
 
 def test_real_singers_songs_from_vocadito_match_nothing():
+    # Clip 37 is "Aloha 'Oe", whose chorus is the Hawaiian melody HE LIVES ON HIGH is set to (31 of the
+    # take's 37 notes in order): it may be offered that tune, and only that one.
+    shared = {"37": "tune-he-lives-on-high"}
     frozen = json.loads((hm.INDEX_PATH.parent.parent.parent / "tests" / "accuracy" / "vocadito_frozen.json").read_text())
     for clip, ann in frozen["clips"].items():
         for who in ("A1", "A2"):
             if who in ann:
-                assert hm.match([(p, i, 1.0) for i, p in enumerate(ann[who]["written"])]) is None, (clip, who)
+                found = hm.match([(p, i, 1.0) for i, p in enumerate(ann[who]["written"])])
+                if clip in shared and found is not None:
+                    assert found.entry.slug == shared[clip], (clip, who, found.entry.slug)
+                else:
+                    assert found is None, (clip, who)
 
 
 def test_random_melodies_moving_like_hymns_match_nothing():
