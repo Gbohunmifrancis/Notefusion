@@ -28,6 +28,9 @@ import type {
   PagedResult,
   PaymentOpsSummary,
   Plan,
+  PracticeMode,
+  PracticeModeGrade,
+  PracticeModeId,
   PracticeProgress,
   PracticeReminders,
   PracticeTrack,
@@ -42,6 +45,8 @@ import type {
   TranscriptionJob,
   TranscriptionPart,
   TransposedSheet,
+  VoiceRange,
+  WarmUp,
 } from "./types";
 
 /** Typed wrappers over the C# Web API endpoints. One function per route. */
@@ -385,6 +390,36 @@ export const practiceApi = {
   /** Changes what is given (hour 8–21) and answers with the reminders as they now stand. */
   setReminders: (change: Partial<PracticeReminders>) =>
     api.put<PracticeReminders>("/api/practice/reminders", change).then((r) => r.data),
+
+  /** The warm-up routine: breath, lip trills, sirens and the range finder, with the synth's guides. Never marked. */
+  warmUp: () => api.get<WarmUp>("/api/practice/warm-up").then((r) => r.data),
+
+  /** The singer's range as last measured (each end null until measured). */
+  range: () => api.get<VoiceRange>("/api/practice/range").then((r) => r.data),
+
+  /** The range finder: a take holding the lowest ("low") or highest ("high") comfortable note. Measured, not scored. */
+  measureRange: (fileUri: string, end: "low" | "high") => {
+    const form = new FormData();
+    form.append("audio", { uri: fileUri, name: "range.m4a", type: "audio/m4a" } as unknown as Blob);
+    form.append("end", end);
+    return api.post<VoiceRange>("/api/practice/range", form, { timeout: 60_000 }).then((r) => r.data);
+  },
+
+  /** A practice mode's exercises on the singer's track, placed in today's key, with the day's allowance. */
+  mode: (mode: Exclude<PracticeModeId, "warm-up">) =>
+    api.get<PracticeMode>(`/api/practice/modes/${mode}`).then((r) => r.data),
+
+  /**
+   * Marks a mode's take (spends one of the day's marked drills) and returns the mark with what it earned. `leadInSec` is
+   * the count-in played before beat one, required.
+   */
+  gradeMode: (fileUri: string, exerciseId: string, leadInSec: number) => {
+    const form = new FormData();
+    form.append("audio", { uri: fileUri, name: "take.m4a", type: "audio/m4a" } as unknown as Blob);
+    form.append("exerciseId", exerciseId);
+    form.append("leadInSec", String(leadInSec));
+    return api.post<PracticeModeGrade>("/api/practice/modes/grade", form, { timeout: 90_000 }).then((r) => r.data);
+  },
 };
 
 export const libraryApi = {

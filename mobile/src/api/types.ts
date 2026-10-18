@@ -396,6 +396,213 @@ export interface PracticeProgress {
   track: PracticeTrack | null;
   /** The singer's place on their track's path. */
   path: PracticePath | null;
+  /**
+   * The practice modes live for the track, in the hub's order (Focused all six, Playful four); each can be switched
+   * off on the server, so show only these. Null from an older server.
+   */
+  modes: PracticeModeId[] | null;
+}
+
+// ── Practice modes (C# Application/Practice/Dtos/PracticeModeDtos.cs) ───────
+
+/** A practice mode's wire id ("More ways to practise"). */
+export type PracticeModeId = "warm-up" | "pitch-match" | "runs" | "intervals" | "harmony" | "rhythm";
+
+/** How a mode's take is marked: note by note, a run's shape and landing note, or clap by clap. */
+export type ExerciseGrader = "notes" | "run" | "rhythm";
+
+/** GET /api/practice/warm-up: the guided routine (about three minutes), never marked and earning nothing. */
+export interface WarmUp {
+  totalSeconds: number;
+  steps: WarmUpStep[];
+}
+
+/** One warm-up step: a breathing pattern, a guide the synth plays, or the range finder. */
+export interface WarmUpStep {
+  id: string;
+  kind: "breath" | "guide" | "range";
+  title: string;
+  instruction: string;
+  seconds: number;
+  breath: BreathPattern | null;
+  guide: WarmUpGuide | null;
+}
+
+/** In, hold and out, in counts at `countsPerMinute`, `cycles` times. */
+export interface BreathPattern {
+  inCounts: number;
+  holdCounts: number;
+  outCounts: number;
+  countsPerMinute: number;
+  cycles: number;
+}
+
+/** The notes the synth plays for a guided step: the pattern, then `stepSemitones` higher each round; `glide` slides (a siren). */
+export interface WarmUpGuide {
+  key: string;
+  dohHeader: string;
+  tempoBpm: number;
+  notes: NoteEvent[];
+  rounds: number;
+  stepSemitones: number;
+  glide: boolean;
+}
+
+/**
+ * GET/POST /api/practice/range (C# `VoiceRangeDto`): the singer's comfortable range, each end null until measured; once
+ * both are, the span, the range in solfa with doh on C, and the choir part it sits best in (a guide, not a label).
+ * `heard` is the note the take just sent held (POST only).
+ */
+export interface VoiceRange {
+  lowMidi: number | null;
+  highMidi: number | null;
+  /** e.g. "G3". */
+  low: string | null;
+  /** e.g. "D5". */
+  high: string | null;
+  spanSemitones: number | null;
+  /** e.g. "An octave and a fifth". */
+  span: string | null;
+  /** "Doh is C". */
+  dohHeader: string;
+  /** e.g. "s,". */
+  lowSolfa: string | null;
+  /** e.g. "r'". */
+  highSolfa: string | null;
+  voicePart: "soprano" | "alto" | "tenor" | "bass" | null;
+  heard: HeldNote | null;
+}
+
+/** A note held in a range take: the note, how long it was held, and how far off it the voice sat. */
+export interface HeldNote {
+  midi: number;
+  name: string;
+  seconds: number;
+  cents: number;
+}
+
+/** GET /api/practice/modes/{mode}: a mode's exercises on the singer's track, placed in today's key, with the day's allowance. */
+export interface PracticeMode {
+  mode: PracticeModeId;
+  /** yyyy-mm-dd on the singer's calendar. */
+  date: string;
+  track: PracticeTrack | null;
+  allowance: DrillAllowance;
+  exercises: PracticeExercise[];
+}
+
+/**
+ * One exercise. Send `id` with the take. `notes` are sung and marked; `backing` is played and never marked (pitch
+ * match's tone before each held note, the tune under a harmony line); `claps` are a rhythm's. Times in beats at
+ * `tempoBpm`. A run lists its `speeds`, each with its own exercise id, tempo and grader.
+ */
+export interface PracticeExercise {
+  id: string;
+  mode: PracticeModeId;
+  /** Names the exercise across keys and speeds. */
+  code: string;
+  title: string;
+  prompt: string;
+  /** A run's unit ("Runs down to doh"), an interval's size, a harmony's "A third above"/"A third below". */
+  group: string | null;
+  /** e.g. "Eb major"; null for a rhythm. */
+  key: string | null;
+  dohHeader: string | null;
+  tempoBpm: number;
+  timeSignature: string;
+  notes: NoteEvent[];
+  backing: NoteEvent[];
+  claps: RhythmClap[];
+  /** The worker keeps no more of the take than this. */
+  maxTakeSeconds: number;
+  grader: ExerciseGrader;
+  /** The singer's best mark at this exercise (this speed, for a run); null before any. */
+  bestScore: number | null;
+  speedPercent: number | null;
+  speeds: RunSpeed[] | null;
+}
+
+/** A clap of a rhythm, in beats. */
+export interface RhythmClap {
+  startBeat: number;
+  durBeats: number;
+}
+
+/** A run at one speed: its exercise id, tempo, quickest note there (seconds), and how it is marked there. */
+export interface RunSpeed {
+  percent: number;
+  exerciseId: string;
+  tempoBpm: number;
+  shortestNoteSeconds: number;
+  grader: ExerciseGrader;
+  bestScore: number | null;
+}
+
+/**
+ * POST /api/practice/modes/grade (C# `PracticeModeGradeDto`): the take marked by the server and recorded as practice.
+ * `score`/`summary` whatever marked it; the grader's own answer is in `marks` ("notes"), `run` or `rhythm`.
+ */
+export interface PracticeModeGrade {
+  mode: PracticeModeId;
+  exerciseId: string;
+  grader: ExerciseGrader;
+  score: number;
+  summary: string;
+  speedPercent: number | null;
+  marks: GradeResult | null;
+  run: RunGrade | null;
+  rhythm: RhythmGrade | null;
+  reward: PracticeReward;
+}
+
+/** A full-speed run's mark: the run's notes followed in order, and the landing note judged as any held note. */
+export interface RunGrade {
+  score: number;
+  followed: number;
+  runNotes: number;
+  landing: GradeStatus;
+  landingCents: number | null;
+  landingMidi: number;
+  offsetSec: number;
+  octaveShift: number;
+  summary: string;
+  notes: RunNoteMark[];
+  /** The take's pitch line from beat one (seconds, MIDI with the octave taken out), to draw over the run. */
+  trace: TracePoint[];
+}
+
+export interface RunNoteMark {
+  index: number;
+  targetMidi: number;
+  followed: boolean;
+  status: "hit" | "wrong" | "missed";
+}
+
+export interface TracePoint {
+  t: number;
+  midi: number;
+}
+
+/** A rhythm's mark: claps in time (`hits`, ±70 ms), close (`near`, ±140 ms), missed, and extra (each costs half a clap). */
+export interface RhythmGrade {
+  score: number;
+  hits: number;
+  near: number;
+  missed: number;
+  extra: number;
+  offsetSec: number;
+  /** The tempo clapped over the tempo given: above 1 is quicker. */
+  tempoRatio: number;
+  summary: string;
+  claps: ClapMark[];
+}
+
+/** One clap: its beat, how early (negative) or late it came in ms, and in time / close / missed. */
+export interface ClapMark {
+  index: number;
+  beat: number;
+  errorMs: number | null;
+  status: "hit" | "near" | "missed";
 }
 
 /** What a marked take earned, returned with its grade. */
