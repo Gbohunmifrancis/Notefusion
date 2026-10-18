@@ -62,9 +62,10 @@ export type RootStackParams = {
   Help: undefined;
   /**
    * `reason: "limit"` when a free account has just been refused for having nothing left:
-   * the one-song purchase is then the option already chosen.
+   * the one-song purchase is then the option already chosen. `planId` chooses a plan outright:
+   * the limit sheet's rows each open the screen on the plan they priced.
    */
-  Upgrade: { reason?: 'limit' } | undefined;
+  Upgrade: { reason?: 'limit'; planId?: string } | undefined;
   /**
    * My choir: the choir plan's home — the director's invite link and singers, a singer's
    * choir, the shared library, and "Enter choir code" for someone in none. `code` fills the

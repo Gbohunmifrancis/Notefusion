@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, FlatList, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
+import { Sheet, SheetActions, SheetTitle } from "../components/Sheet";
 import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
@@ -14,6 +15,7 @@ import { downloadPack, installedPack, remotePackMeta, usePackState } from "../li
 import { resultFromHymn } from "../lib/openSheet";
 import { useDataSaver } from "../lib/dataSaver";
 import { showDialog } from "../lib/dialog";
+import { showToast } from "../lib/toast";
 import { logAnalyticsEvent } from "../lib/analytics";
 import type { RootStackParams } from "../navigation/types";
 
@@ -82,7 +84,7 @@ export function HymnsScreen({ navigation }: Props) {
       return;
     }
     if (!needsDownload(packState.version, remote)) {
-      showDialog({ title: "Up to date", message: `You have every hymn we publish (${remote.count}).`, icon: "checkmark-circle-outline" });
+      showToast(`Up to date: every hymn we publish (${remote.count})`);
       return;
     }
     showDialog({
@@ -223,28 +225,27 @@ export function HymnsScreen({ navigation }: Props) {
         }
       />
 
-      <Modal visible={open !== null} transparent animationType="slide" onRequestClose={() => setOpen(null)}>
-        <View style={styles.sheetBackdrop}>
-          <Pressable style={StyleSheet.absoluteFill} onPress={() => setOpen(null)} accessibilityRole="button" accessibilityLabel="Close" />
-          {open ? (
-            <View style={[styles.sheet, { paddingBottom: insets.bottom + spacing.lg }]}>
-              <Text style={styles.sheetTitle}>{open.title}</Text>
-              <Text style={styles.sheetMeta}>{[open.tune && `Tune ${open.tune}`, open.key, open.time].filter(Boolean).join(" · ")}</Text>
-              <ScrollView style={styles.sheetScroll} contentContainerStyle={{ gap: spacing.md }}>
-                {open.verses.map((v, i) => (
-                  <View key={i}>
-                    {v.label ? <Text style={styles.verseLabel}>{v.label}</Text> : <Text style={styles.verseLabel}>{`Verse ${i + 1}`}</Text>}
-                    <Text style={styles.verse}>{v.lines.join("\n")}</Text>
-                  </View>
-                ))}
-                {open.verses.length === 0 ? <Text style={styles.verse}>A hymn tune, without words.</Text> : null}
-                <Text style={styles.credit}>{open.credit}</Text>
-              </ScrollView>
-              <Button label="Open the sheet" icon="musical-notes-outline" onPress={() => openSheet(open)} />
-            </View>
-          ) : null}
-        </View>
-      </Modal>
+      <Sheet visible={open !== null} onClose={() => setOpen(null)}>
+        {open ? (
+          <>
+            <SheetTitle>{open.title}</SheetTitle>
+            <Text style={styles.sheetMeta}>{[open.tune && `Tune ${open.tune}`, open.key, open.time].filter(Boolean).join(" · ")}</Text>
+            <ScrollView style={styles.sheetScroll} contentContainerStyle={{ gap: spacing.md }}>
+              {open.verses.map((v, i) => (
+                <View key={i}>
+                  {v.label ? <Text style={styles.verseLabel}>{v.label}</Text> : <Text style={styles.verseLabel}>{`Verse ${i + 1}`}</Text>}
+                  <Text style={styles.verse}>{v.lines.join("\n")}</Text>
+                </View>
+              ))}
+              {open.verses.length === 0 ? <Text style={styles.verse}>A hymn tune, without words.</Text> : null}
+              <Text style={styles.credit}>{open.credit}</Text>
+            </ScrollView>
+            <SheetActions>
+              <Button label="Open the sheet" onPress={() => openSheet(open)} />
+            </SheetActions>
+          </>
+        ) : null}
+      </Sheet>
     </Screen>
   );
 }
@@ -309,20 +310,8 @@ const makeStyles = (c: Palette) =>
     footerText: { ...typography.caption, color: c.textFaint, textAlign: "center" },
     footerLink: { fontFamily: fonts.medium, fontSize: 13, color: c.accent },
 
-    sheetBackdrop: { flex: 1, backgroundColor: c.scrim, justifyContent: "flex-end" },
-    sheet: {
-      backgroundColor: c.surface,
-      borderTopLeftRadius: 24,
-      borderTopRightRadius: 24,
-      borderWidth: 1,
-      borderColor: c.border,
-      padding: spacing.lg,
-      gap: spacing.sm,
-      maxHeight: "85%",
-    },
-    sheetTitle: { ...typography.heading, color: c.text },
     sheetMeta: { ...typography.caption, color: c.textMuted },
-    sheetScroll: { marginVertical: spacing.sm },
+    sheetScroll: { flexGrow: 0, marginTop: spacing.md, marginBottom: spacing.lg },
     verseLabel: { ...typography.caption, color: c.textFaint, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 2 },
     verse: { ...typography.body, color: c.text, lineHeight: 22 },
     credit: { ...typography.caption, color: c.textFaint, lineHeight: 18 },

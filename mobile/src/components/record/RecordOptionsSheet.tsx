@@ -1,8 +1,8 @@
 import React from "react";
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "../Button";
+import { Sheet, SheetActions } from "../Sheet";
 import { Touchable } from "../Touchable";
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
@@ -61,144 +61,116 @@ export function RecordOptionsSheet({
 }) {
   const c = useColors();
   const styles = useThemedStyles(makeStyles);
-  const insets = useSafeAreaInsets();
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} statusBarTranslucent>
-      <View style={styles.root}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Close" />
-        <View style={[styles.sheet, { paddingBottom: insets.bottom + spacing.lg }]}>
-          <View style={styles.grabber} />
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-            <Text style={styles.eyebrow}>What are you recording?</Text>
-            <View>
-              {modes.map((m, i) => {
-                const active = m.mode === mode;
-                return (
-                  <Touchable
-                    key={m.mode}
-                    onPress={() => onMode(m.mode)}
-                    scaleTo={0.99}
-                    radius={16}
-                    style={[styles.modeRow, i > 0 && styles.modeRowRule, active && styles.modeRowOn]}
-                    accessibilityLabel={`${m.title} mode`}
-                    accessibilityState={{ selected: active }}
-                  >
-                    <View style={[styles.modeIcon, active && styles.modeIconOn]}>
-                      <Ionicons name={m.icon} size={18} color={active ? c.onInk : c.textMuted} />
-                    </View>
-                    <View style={styles.modeText}>
-                      <Text style={styles.modeTitle}>{m.title}</Text>
-                      <Text style={styles.modeHint}>{m.hint}</Text>
-                    </View>
-                    {active ? <Ionicons name="checkmark" size={20} color={c.accent} /> : null}
-                  </Touchable>
-                );
-              })}
-            </View>
+    <Sheet visible={visible} onClose={onClose}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
+        <Text style={styles.eyebrow}>What are you recording?</Text>
+        <View>
+          {modes.map((m, i) => {
+            const active = m.mode === mode;
+            return (
+              <Touchable
+                key={m.mode}
+                onPress={() => onMode(m.mode)}
+                scaleTo={0.99}
+                radius={16}
+                style={[styles.modeRow, i > 0 && styles.modeRowRule, active && styles.modeRowOn]}
+                accessibilityLabel={`${m.title} mode`}
+                accessibilityState={{ selected: active }}
+              >
+                <View style={[styles.modeIcon, active && styles.modeIconOn]}>
+                  <Ionicons name={m.icon} size={18} color={active ? c.onInk : c.textMuted} />
+                </View>
+                <View style={styles.modeText}>
+                  <Text style={styles.modeTitle}>{m.title}</Text>
+                  <Text style={styles.modeHint}>{m.hint}</Text>
+                </View>
+                {active ? <Ionicons name="checkmark" size={20} color={c.accent} /> : null}
+              </Touchable>
+            );
+          })}
+        </View>
 
-            <Text style={[styles.eyebrow, styles.eyebrowGap]}>Key signature</Text>
+        <Text style={[styles.eyebrow, styles.eyebrowGap]}>Key signature</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+          {keys.map((k) => {
+            const active = selectedKey === k;
+            return (
+              <Touchable
+                key={k}
+                onPress={() => onKey(k)}
+                radius={radii.pill}
+                style={[styles.chip, active && styles.chipOn]}
+                accessibilityLabel={`Key: ${k}`}
+                accessibilityState={{ selected: active }}
+              >
+                <Text style={[styles.chipText, active && styles.chipTextOn]}>{k}</Text>
+              </Touchable>
+            );
+          })}
+        </ScrollView>
+
+        <Text style={[styles.eyebrow, styles.eyebrowGap]}>Beats in a bar</Text>
+        <View style={styles.chipsWrap}>
+          {METER_CHOICES.map((m) => {
+            const active = meter === m.value;
+            return (
+              <Touchable
+                key={m.short}
+                onPress={() => onMeter(m.value)}
+                radius={radii.pill}
+                style={[styles.chip, styles.meterChip, active && styles.chipOn]}
+                accessibilityLabel={`Beats in a bar: ${m.label}`}
+                accessibilityState={{ selected: active }}
+              >
+                <Text style={[styles.chipText, active && styles.chipTextOn]}>{m.short}</Text>
+              </Touchable>
+            );
+          })}
+        </View>
+        <Text style={styles.meterHint}>{meterLabel(meter)}</Text>
+
+        {showTranspose ? (
+          <>
+            {/* The setting on the player's keyboard, so the sheet reads as the music sounded,
+                not as the shapes were played. */}
+            <Text style={[styles.eyebrow, styles.eyebrowGap]}>
+              Keyboard transpose{transpose !== 0 ? ` · ${transposeLabel(transpose)}` : ""}
+            </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
-              {keys.map((k) => {
-                const active = selectedKey === k;
+              {transposeChoices.map((t) => {
+                const active = transpose === t;
+                const label = transposeLabel(t);
                 return (
                   <Touchable
-                    key={k}
-                    onPress={() => onKey(k)}
+                    key={t}
+                    onPress={() => onTranspose(t)}
                     radius={radii.pill}
                     style={[styles.chip, active && styles.chipOn]}
-                    accessibilityLabel={`Key: ${k}`}
+                    accessibilityLabel={`Keyboard transpose ${label}`}
                     accessibilityState={{ selected: active }}
                   >
-                    <Text style={[styles.chipText, active && styles.chipTextOn]}>{k}</Text>
+                    <Text style={[styles.chipText, styles.chipMono, active && styles.chipTextOn]}>{label}</Text>
                   </Touchable>
                 );
               })}
             </ScrollView>
+          </>
+        ) : null}
 
-            <Text style={[styles.eyebrow, styles.eyebrowGap]}>Beats in a bar</Text>
-            <View style={styles.chipsWrap}>
-              {METER_CHOICES.map((m) => {
-                const active = meter === m.value;
-                return (
-                  <Touchable
-                    key={m.short}
-                    onPress={() => onMeter(m.value)}
-                    radius={radii.pill}
-                    style={[styles.chip, styles.meterChip, active && styles.chipOn]}
-                    accessibilityLabel={`Beats in a bar: ${m.label}`}
-                    accessibilityState={{ selected: active }}
-                  >
-                    <Text style={[styles.chipText, active && styles.chipTextOn]}>{m.short}</Text>
-                  </Touchable>
-                );
-              })}
-            </View>
-            <Text style={styles.meterHint}>{meterLabel(meter)}</Text>
-
-            {showTranspose ? (
-              <>
-                {/* The setting on the player's keyboard, so the sheet reads as the music sounded,
-                    not as the shapes were played. */}
-                <Text style={[styles.eyebrow, styles.eyebrowGap]}>
-                  Keyboard transpose{transpose !== 0 ? ` · ${transposeLabel(transpose)}` : ""}
-                </Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
-                  {transposeChoices.map((t) => {
-                    const active = transpose === t;
-                    const label = transposeLabel(t);
-                    return (
-                      <Touchable
-                        key={t}
-                        onPress={() => onTranspose(t)}
-                        radius={radii.pill}
-                        style={[styles.chip, active && styles.chipOn]}
-                        accessibilityLabel={`Keyboard transpose ${label}`}
-                        accessibilityState={{ selected: active }}
-                      >
-                        <Text style={[styles.chipText, styles.chipMono, active && styles.chipTextOn]}>{label}</Text>
-                      </Touchable>
-                    );
-                  })}
-                </ScrollView>
-              </>
-            ) : null}
-
-            <Button label="Done" onPress={onClose} style={{ marginTop: spacing.xl }} />
-          </ScrollView>
-        </View>
-      </View>
-    </Modal>
+        <SheetActions style={{ marginTop: spacing.xl }}>
+          <Button label="Done" onPress={onClose} />
+        </SheetActions>
+      </ScrollView>
+    </Sheet>
   );
 }
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    root: {
-      flex: 1,
-      justifyContent: "flex-end",
-      backgroundColor: c.scrim,
-    },
-    sheet: {
-      backgroundColor: c.bgElevated,
-      borderTopLeftRadius: 28,
-      borderTopRightRadius: 28,
-      borderWidth: 1,
-      borderBottomWidth: 0,
-      borderColor: c.border,
-      paddingTop: spacing.sm,
-      maxHeight: "88%",
-    },
-    grabber: {
-      alignSelf: "center",
-      width: 38,
-      height: 4,
-      borderRadius: 2,
-      backgroundColor: c.border,
-      marginBottom: spacing.md,
-    },
     scroll: {
-      paddingHorizontal: spacing.lg + 4,
+      flexGrow: 0,
     },
     eyebrow: {
       fontFamily: fonts.medium,

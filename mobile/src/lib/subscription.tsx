@@ -14,6 +14,7 @@ import { useAuth } from './auth';
 import { showDialog } from './dialog';
 import * as haptics from './haptics';
 import { ProWelcomeModal, type ProWelcome } from '../components/ProWelcomeModal';
+import { PRO_FEATURES } from './proFeatures';
 import type { Subscription } from '../api/types';
 import { FREE_RESET_FALLBACK, freeWeek } from './freeWeek';
 
@@ -296,11 +297,13 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
           if (currentIsGift) {
             haptics.play('success');
             showDialog({
-              title: "Pro Access Gifted! 🎁",
-              message:
-                "An administrator has gifted you NoteFusion Pro access! Enjoy unlimited transcriptions, full staff notation, and priority processing.",
+              kind: "celebrate",
+              title: "Pro access gifted",
+              message: "An administrator has gifted you NoteFusion Pro.",
               icon: "gift-outline",
               tone: "premium",
+              perks: PRO_FEATURES,
+              actions: [{ label: "Start using Pro", style: "cancel" }],
             });
           } else {
             // Paid where this device was not watching: the website, or a checkout that outlived
