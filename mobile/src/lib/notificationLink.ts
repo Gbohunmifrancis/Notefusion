@@ -94,11 +94,14 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
  * Admin (behind its lock) on that tab, with the payment's sheet when the push named one; for anyone but an admin it
  * resolves to nothing.
  */
-function openScreen(screen: string, opts: { isAdmin: boolean; paymentId?: string }): void {
+function openScreen(screen: string, opts: { isAdmin: boolean; paymentId?: string; userId?: string }): void {
   const target = notificationTarget(screen, opts);
   if (!target) return;
   if (target.kind === 'store') void openStoreListing();
   else if (target.kind === 'tab') navigationRef.navigate('Tabs', { screen: target.tab });
+  else if (target.kind === 'adminUser')
+    // Not as Admin's first screen: its tabs stay under it, so back lands in Admin rather than leaving it.
+    navigationRef.navigate('Admin', { screen: 'AdminUser', params: { userId: target.userId }, initial: false });
   else if (target.kind === 'admin')
     navigationRef.navigate('Admin', {
       screen: 'AdminTabs',
@@ -119,7 +122,7 @@ function openScreen(screen: string, opts: { isAdmin: boolean; paymentId?: string
  * that name the same place (the evening reminder, then the last chance) are both followed. `mute` is a payment
  * alert's "Mute 1 hour" button: it opens nothing.
  */
-type PendingTap = { kind: 'job' | 'screen' | 'mute'; value: string; id?: string; paymentId?: string };
+type PendingTap = { kind: 'job' | 'screen' | 'mute'; value: string; id?: string; paymentId?: string; userId?: string };
 
 /**
  * Wires notification taps to the screens they refer to.
@@ -147,7 +150,9 @@ export function useNotificationDeepLink(ready: boolean, isAdmin = false): void {
         notification?: { request?: { identifier?: unknown; content?: { data?: unknown } } };
       };
       const request = r?.notification?.request;
-      const data = request?.content?.data as { jobId?: unknown; screen?: unknown; paymentId?: unknown } | undefined;
+      const data = request?.content?.data as
+        | { jobId?: unknown; screen?: unknown; paymentId?: unknown; userId?: unknown }
+        | undefined;
       const id = typeof request?.identifier === 'string' ? request.identifier : undefined;
 
       // A job id first: it names a specific result, where `screen` only names a place.
@@ -160,6 +165,7 @@ export function useNotificationDeepLink(ready: boolean, isAdmin = false): void {
           value: data.screen,
           id,
           paymentId: typeof data.paymentId === 'string' ? data.paymentId : undefined,
+          userId: typeof data.userId === 'string' ? data.userId : undefined,
         };
       }
       return null;
@@ -215,6 +221,7 @@ export function useNotificationDeepLink(ready: boolean, isAdmin = false): void {
         });
       return;
     }
-    if (navigationRef.isReady()) openScreen(pending.value, { isAdmin, paymentId: pending.paymentId });
+    if (navigationRef.isReady())
+      openScreen(pending.value, { isAdmin, paymentId: pending.paymentId, userId: pending.userId });
   }, [ready, pending, isAdmin]);
 }

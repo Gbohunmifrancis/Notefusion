@@ -412,11 +412,34 @@ public class SystemHealthTests
         Assert.Equal(1, push.RefusedLast24h);
     }
 
+    [Fact]
+    public async Task The_push_panel_says_how_many_pushes_Google_or_Apple_refused_and_why()
+    {
+        using var h = new TestHarness(Now);
+        var receipts = new StubPushReceipts(new PushReceiptStats(40, 31, PushProblems.InvalidCredentials, Now.AddMinutes(-2)));
+
+        var push = (await Check(h, receipts: receipts)).Push!;
+
+        Assert.Equal((40, 31), (push.ReceiptsLast24h, push.NotDeliveredLast24h));
+        Assert.Contains("FCM V1 service account key", push.LastProblem);
+        Assert.Equal(Now.AddMinutes(-2), push.LastProblemAtUtc);
+    }
+
+    private sealed class StubPushReceipts(PushReceiptStats stats) : IPushReceipts
+    {
+        public Task<PushReceipt?> WaitAsync(string ticketId, TimeSpan within, CancellationToken ct = default)
+            => Task.FromResult<PushReceipt?>(null);
+
+        public PushReceiptStats Stats(DateTime utcNow) => stats;
+    }
+
     private static async Task<SystemHealthDto> Check(
-        TestHarness h, StubDatabaseHealth? db = null, StubTranscriptionApi? api = null, IEmailQuota? quota = null)
+        TestHarness h, StubDatabaseHealth? db = null, StubTranscriptionApi? api = null, IEmailQuota? quota = null,
+        IPushReceipts? receipts = null)
     {
         var result = await new GetSystemHealthQueryHandler(
-                h.Db, db ?? new StubDatabaseHealth(), api ?? new StubTranscriptionApi(), h.Clock, emailQuota: quota)
+                h.Db, db ?? new StubDatabaseHealth(), api ?? new StubTranscriptionApi(), h.Clock, emailQuota: quota,
+                pushReceipts: receipts)
             .Handle(new GetSystemHealthQuery(), CancellationToken.None);
 
         // Pinned in the one place every test goes through: whatever is broken, the page still loads.

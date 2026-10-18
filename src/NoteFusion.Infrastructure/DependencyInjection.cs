@@ -151,13 +151,25 @@ public static class DependencyInjection
         var useExpo = configuration.GetValue<bool?>("Push:UseExpo");
         if (useExpo == true)
         {
+            // Push__ExpoAccessToken only once enhanced push security is on for the Expo project.
+            services.AddSingleton(configuration.GetSection("Push").Get<ExpoPushSettings>() ?? new ExpoPushSettings());
+            services.AddSingleton<PushTicketLog>();
             services.AddHttpClient<IPushSender, ExpoPushSender>()
                 .AddOutboundResilience(OutboundResilience.Push);
+            // What Google or Apple did with each push Expo took: read by the worker, and by the test alert.
+            services.AddHttpClient<IPushReceipts, ExpoPushReceipts>()
+                .AddOutboundResilience(OutboundResilience.PushReceipts);
+            services.AddHostedService<PushReceiptWorker>();
         }
         else
         {
             services.AddScoped<IPushSender, LoggingPushSender>();
+            services.AddSingleton<IPushReceipts, NoPushReceipts>();
         }
+
+        // "Someone signed up" / "someone is transcribing" on the admins' phones; AdminActivityAlerts__Enabled=false is off.
+        if (configuration.GetValue("AdminActivityAlerts:Enabled", true))
+            services.AddHostedService<AdminActivityAlertWorker>();
 
         // Web push for the web app: the VAPID pair is configured or derived from the JWT signing key
         // (see VapidKeys), so it needs no setup; WebPush__Enabled=false turns it off.

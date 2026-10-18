@@ -47,4 +47,17 @@ public sealed class DeviceTokenService : IDeviceTokenService
             .Select(t => t.Token)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<int> ForgetAsync(IReadOnlyList<string> tokens, CancellationToken cancellationToken = default)
+    {
+        if (tokens.Count == 0)
+            return 0;
+
+        var rows = await _db.DeviceTokens
+            .Where(t => tokens.Contains(t.Token))
+            .ToListAsync(cancellationToken);
+        _db.DeviceTokens.RemoveRange(rows);
+        await _db.SaveChangesAsync(cancellationToken);
+        return rows.Count;
+    }
 }

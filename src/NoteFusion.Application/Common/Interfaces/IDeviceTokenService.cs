@@ -16,4 +16,10 @@ public interface IDeviceTokenService
     /// <summary>All active device tokens for the given users (used by the push sender).</summary>
     Task<IReadOnlyList<string>> ResolveTokensAsync(
         IReadOnlyList<Guid> userIds, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Drops these tokens from every account that holds them: Expo said the phone no longer takes pushes (the app was
+    /// uninstalled, or its registration expired). The app registers a fresh one the next time it signs in.
+    /// </summary>
+    Task<int> ForgetAsync(IReadOnlyList<string> tokens, CancellationToken cancellationToken = default);
 }

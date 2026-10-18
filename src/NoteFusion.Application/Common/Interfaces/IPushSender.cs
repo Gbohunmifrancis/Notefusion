@@ -28,8 +28,30 @@ public sealed record PushDelivery(int Accepted, int Refused, string? Error, bool
 {
     public bool Delivered => Error is null;
 
+    /// <summary>
+    /// Expo's code for why nothing was sent (<see cref="PushProblems"/>: DeviceNotRegistered, Unauthorized, …); null
+    /// when it was, or when the failure was not Expo's answer (no network, a timeout).
+    /// </summary>
+    public string? ErrorCode { get; init; }
+
+    /// <summary>
+    /// Expo's ticket for each message it took. Taking it is not delivering it: Google or Apple answer later, in the
+    /// ticket's receipt (<see cref="IPushReceipts"/>).
+    /// </summary>
+    public IReadOnlyList<string> Tickets { get; init; } = [];
+
+    // By value, tickets included: the synthesized equality would compare the ticket lists by reference.
+    public bool Equals(PushDelivery? other)
+        => other is not null
+           && (Accepted, Refused, Error, NotAttempted, ErrorCode) ==
+              (other.Accepted, other.Refused, other.Error, other.NotAttempted, other.ErrorCode)
+           && Tickets.SequenceEqual(other.Tickets);
+
+    public override int GetHashCode() => HashCode.Combine(Accepted, Refused, Error, NotAttempted, ErrorCode, Tickets.Count);
+
     public static PushDelivery Ok(int accepted, int refused = 0) => new(accepted, refused, null);
-    public static PushDelivery Failed(string error, int refused = 0) => new(0, refused, error);
+    public static PushDelivery Failed(string error, int refused = 0, string? code = null)
+        => new(0, refused, error) { ErrorCode = code };
     public static PushDelivery Unavailable(string reason) => new(0, 0, reason, NotAttempted: true);
 }
 

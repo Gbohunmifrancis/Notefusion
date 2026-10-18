@@ -32,6 +32,8 @@ public static class OutboundProviders
     public const string Email = "resend";
     public const string EmailInbox = "resend-inbox";
     public const string Push = "expo";
+    /// <summary>Expo's receipts: reads of what Google or Apple did with a push, apart so a slow read never stops a send.</summary>
+    public const string PushReceipts = "expo-receipts";
     public const string WebPush = "webpush";
     public const string Transcription = "transcriber";
     public const string GeoIp = "geoip";

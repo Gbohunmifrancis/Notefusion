@@ -47,8 +47,18 @@ test("a payment push opens that payment over Payments, for an admin", () => {
   }
 });
 
+test("a sign-up or transcription push opens that account, or Users for several, for an admin", () => {
+  const id = "0b1c2d3e-4f50-4c8e-9a12-5f0c6a1e3b7d";
+  assert.deepEqual(notificationTarget("AdminUser", { isAdmin: true, userId: id }), { kind: "adminUser", userId: id });
+  assert.deepEqual(notificationTarget("AdminUsers", { isAdmin: true }), { kind: "admin", tab: "Users" });
+  // An id that is not one opens the list, never a guessed route.
+  for (const userId of ["../payments", "", 7, null, undefined]) {
+    assert.deepEqual(notificationTarget("AdminUser", { isAdmin: true, userId }), { kind: "admin", tab: "Users" });
+  }
+});
+
 test("an admin target resolves for nobody else: a customer's phone is never sent into Admin", () => {
-  for (const screen of ["AdminPayment", "AdminPayments", "AdminWebhooks"]) {
+  for (const screen of ["AdminPayment", "AdminPayments", "AdminWebhooks", "AdminUser", "AdminUsers"]) {
     assert.equal(notificationTarget(screen), null, screen);
     assert.equal(notificationTarget(screen, { isAdmin: false, paymentId: "5f0c6a1e-3b7d-4c8e-9a12-0b1c2d3e4f50" }), null, screen);
     assert.ok(isAdminScreen(screen), screen);
@@ -58,7 +68,7 @@ test("an admin target resolves for nobody else: a customer's phone is never sent
 });
 
 test("anything else is ignored, including names off the object's prototype", () => {
-  for (const screen of ["Profile", "Settings", "Hymns", "Admin", "AdminUser", "toString", "__proto__", "constructor", "", 3, null, undefined]) {
+  for (const screen of ["Profile", "Settings", "Hymns", "Admin", "AdminAlerts", "toString", "__proto__", "constructor", "", 3, null, undefined]) {
     assert.equal(notificationTarget(screen, { isAdmin: true }), null, String(screen));
   }
 });

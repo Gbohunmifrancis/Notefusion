@@ -831,6 +831,13 @@ export interface PushHealth {
   lastPaymentAlertDevices: number;
   lastPaymentAlertAccepted: number;
   refusedLast24h: number;
+  /** Pushes of every kind whose fate Expo's receipts gave in the last 24 h (since the API started, if sooner). */
+  receiptsLast24h: number;
+  /** Of those, the ones Expo, Google or Apple refused. */
+  notDeliveredLast24h: number;
+  /** The latest refusal as a sentence to act on, or null. */
+  lastProblem: string | null;
+  lastProblemAtUtc: string | null;
 }
 
 /** One capped window of the email plan (`EmailBudget`): mail of every kind the provider accepted in it. */

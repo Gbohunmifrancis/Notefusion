@@ -32,6 +32,9 @@ import {
 
 const STORAGE_KEY = "nf.paymentAlerts";
 
+/** The admins' sign-up and transcription pushes (C# `SendAdminActivityAlertsCommand.Channel`). */
+export const ADMIN_ACTIVITY_CHANNEL = "admin-activity";
+
 type Notifications = typeof import("expo-notifications");
 
 function notifications(): Notifications | null {
@@ -86,6 +89,14 @@ export async function ensurePaymentChannels(prefs: PaymentAlertPrefs): Promise<v
         name: "Payment problems",
         description: "Paid with no Pro, stuck checkouts. Admin phones only.",
         importance: N.AndroidImportance.HIGH,
+        lightColor: colors.accent,
+      });
+      // "Someone signed up", "someone is transcribing" (C# SendAdminActivityAlertsCommand.Channel): a channel of its
+      // own, so Android's settings can quiet it without touching payments or this phone's own transcriptions.
+      await N.setNotificationChannelAsync(ADMIN_ACTIVITY_CHANNEL, {
+        name: "New users and transcriptions",
+        description: "When someone signs up or starts a transcription. Admin phones only.",
+        importance: N.AndroidImportance.DEFAULT,
         lightColor: colors.accent,
       });
       const existing = ((await N.getNotificationChannelsAsync()) ?? []).map((c) => c.id);

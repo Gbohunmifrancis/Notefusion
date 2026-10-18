@@ -1361,6 +1361,13 @@ export interface PushHealth {
   lastPaymentAlertDevices: number;
   lastPaymentAlertAccepted: number;
   refusedLast24h: number;
+  /** Pushes of every kind whose fate Expo's receipts gave in the last 24 h (since the API started, if sooner). */
+  receiptsLast24h: number;
+  /** Of those, the ones Expo, Google or Apple refused. */
+  notDeliveredLast24h: number;
+  /** The latest refusal as a sentence to act on ("Upload the FCM V1 service account key…"), or null. */
+  lastProblem: string | null;
+  lastProblemAtUtc: string | null;
 }
 
 /** One admin phone's payment alerts (C# `PaymentAlertSettingsDto`; `GET`/`PUT /api/admin/alerts/device`). */
@@ -1377,6 +1384,8 @@ export interface PaymentAlertSettings {
 
 export interface TestPaymentAlert {
   sent: boolean;
+  /** Google or Apple took it too (its receipt said so in time); false when only Expo has so far. */
+  confirmed: boolean;
 }
 
 export interface CurrencyAmount {

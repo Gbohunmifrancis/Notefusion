@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { AdminPage, AdminTopBar, PageTitle } from "../../components/admin/AdminChrome";
-import { Badge, DefRows, Dot, LoadState, Meter, Panel } from "../../components/admin/AdminUI";
+import { Badge, DefRows, Dot, LoadState, Meter, Panel, WarnNote } from "../../components/admin/AdminUI";
 import { Button } from "../../components/Button";
 import { Icon, type IconName } from "../../components/Icon";
 import { adminApi } from "../../api/endpoints";
@@ -177,8 +177,17 @@ export function AdminHealthScreen() {
                       : "None yet",
                   },
                   { term: "Refused by Expo, last 24 h", value: count(h.push.refusedLast24h), tone: h.push.refusedLast24h ? "warn" : undefined },
+                  {
+                    // Every push, not only payment alerts: what Google or Apple did with it (Expo's receipts).
+                    term: "Not delivered, last 24 h",
+                    value: `${count(h.push.notDeliveredLast24h ?? 0)} of ${count(h.push.receiptsLast24h ?? 0)}`,
+                    tone: h.push.notDeliveredLast24h ? "warn" : undefined,
+                  },
                 ]}
               />
+              {h.push.notDeliveredLast24h && h.push.lastProblem ? (
+                <WarnNote style={s.gap12}>{h.push.lastProblem}</WarnNote>
+              ) : null}
             </Panel>
           ) : null}
 

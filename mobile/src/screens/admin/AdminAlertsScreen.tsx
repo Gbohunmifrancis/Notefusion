@@ -101,12 +101,40 @@ export function AdminAlertsScreen() {
   }
 
   async function test() {
-    const token = await pushToken();
-    if (!token) return;
     setTesting(true);
+    const token = await pushToken();
+    if (!token) {
+      // Used to return here without a word, which read as a button that does nothing.
+      const permission = await getPushPermission();
+      setTesting(false);
+      setPush("off");
+      showDialog({
+        title: "This phone can't get notifications yet",
+        message:
+          permission === "denied"
+            ? "Notifications are blocked for NoteFusion. Allow them in the phone's settings, then try again."
+            : permission === "granted"
+              ? "Notifications are allowed, but Expo gave this phone no push address. Check the connection and try again."
+              : "Turn notifications on in Profile, Notifications, then try again.",
+        icon: "problem",
+        tone: "danger",
+        ...(permission === "denied"
+          ? {
+              actions: [
+                { label: "Not now", style: "cancel" as const },
+                { label: "Open settings", onPress: () => void Linking.openSettings() },
+              ],
+            }
+          : {}),
+      });
+      return;
+    }
     try {
-      await adminApi.testAlert(token);
-      showToast("Test alert sent. It should ring in a moment.", { icon: "send" });
+      const result = await adminApi.testAlert(token);
+      // Confirmed: Google (or Apple) took it, not only Expo.
+      showToast(result.confirmed ? "Google has it. It should ring now." : "Test alert sent. It should ring in a moment.", {
+        icon: "send",
+      });
     } catch (e) {
       showDialog({ title: "Couldn't send a test alert", message: toApiError(e).message, icon: "problem", tone: "danger" });
     } finally {
