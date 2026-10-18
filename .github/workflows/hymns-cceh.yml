@@ -1,0 +1,132 @@
+name: CCEH hymn import
+
+# Downloads the Christian Classics Ethereal Hymnary's tunes on GitHub's runners and imports them
+# (docs/BLOG.md, "Tune pages: importing tunes from the CCEH"). The crawl takes 9-13 hours at CCEL's
+# crawl delay, more than one job may run, so it goes in slices of --minutes every six hours; its
+# cache (pages, MIDI and Noteworthy files: third-party files, never committed to this public
+# repository) is carried from run to run in the Actions cache.
+#
+# After each slice it imports whatever is cached, builds and checks the site, and when that would
+# publish at least min_new more tunes than main does (or the crawl is complete and anything is new)
+# it pushes the result, one commit authored as the owner, to the hymns/cceh-next branch. It never
+# pushes main and never opens a pull request: a person takes the branch from there (adds dates for
+# the summary's undated people to tools/blog/import/cceh-dates.json, opens the PR, merges it), so
+# every PR is the owner's and runs the full CI. Dates merged to main are picked up by the next run.
+on:
+  schedule:
+    - cron: "41 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      crawl_minutes:
+        description: "Minutes to crawl before importing (0 imports what is cached)"
+        default: "300"
+      min_new:
+        description: "Push hymns/cceh-next when at least this many more tunes would be published"
+        default: "15"
+
+concurrency:
+  group: hymns-cceh
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # the hymns/cceh-next branch only
+
+jobs:
+  import:
+    name: Crawl and import
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    env:
+      CRAWL_MINUTES: ${{ inputs.crawl_minutes || '300' }}
+      MIN_NEW: ${{ inputs.min_new || '15' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/blog/package-lock.json
+
+      - name: Install the generator
+        working-directory: tools/blog
+        run: npm ci
+
+      - name: Restore the crawl cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/cceh-cache
+          key: cceh-cache-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: cceh-cache-
+
+      - name: Crawl (one request every 11 s, as CCEL's robots.txt asks)
+        id: crawl
+        run: |
+          echo "CACHE=$RUNNER_TEMP/cceh-cache" >> "$GITHUB_ENV"
+          CACHE=$RUNNER_TEMP/cceh-cache
+          mkdir -p "$CACHE"
+          python3 -I tools/blog/import/cceh-crawl.py "$CACHE" --minutes "$CRAWL_MINUTES"
+          tail -1 "$CACHE/crawl.log"
+
+      - name: Save the crawl cache
+        if: always() && steps.crawl.conclusion != 'skipped'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/cceh-cache
+          key: cceh-cache-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Import and build
+        run: |
+          node tools/blog/import/cceh-run.mjs --cache "$CACHE" --date "$(date -u +%F)"
+          node tools/blog/build.mjs
+
+      - name: Generator tests, site check and web tests
+        run: |
+          (cd tools/blog && npm test)
+          node tools/blog/check.mjs
+          node --test web-site/tests/*.test.mjs
+
+      - name: Decide
+        id: decide
+        run: |
+          report=tools/blog/import/cceh-report.json
+          was=$(git show HEAD:$report | jq '.counts.published')
+          now=$(jq '.counts.published' $report)
+          read=$(jq '.counts.pages' $report)
+          total=$(jq '.counts.tunesInIndex' $report)
+          done=false; tail -1 "$CACHE/crawl.log" | grep -q ' done$' && done=true
+          # A published people page keeps its address (build.mjs records them in addresses.json).
+          lost=$(comm -23 <(git ls-tree -r --name-only HEAD web-site/hymns/people | grep '/index.html$' | sort) \
+                          <(find web-site/hymns/people -name index.html | sort))
+          if [ -n "$lost" ]; then echo "::error::People pages would disappear: $lost"; exit 1; fi
+          push=false
+          if [ "$now" -ge $((was + MIN_NEW)) ] || { [ "$done" = true ] && [ "$now" -gt "$was" ]; }; then push=true; fi
+          {
+            echo "### CCEH import"
+            echo "$read of $total tunes read (crawl complete: $done). $now would be published; main has $was."
+            echo
+            echo "Pushed to hymns/cceh-next: $push."
+            echo
+            echo "Undated people new since main whose dates alone hold a tune back (research them, with a source, into tools/blog/import/cceh-dates.json):"
+            echo
+            jq -r --argjson old "$(git show HEAD:$report | jq '[.undatedPeople[].name]')" \
+              '.undatedPeople[] | select(.onlyForWantOfDates > 0 and (.name | IN($old[]) | not)) | "- \(.name) (\(.onlyForWantOfDates) tune(s), earliest \(.earliestYear // "no year"))"' $report
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "push=$push" >> "$GITHUB_OUTPUT"
+          echo "title=Hymns: $read of $total CCEH tunes read, $now published" >> "$GITHUB_OUTPUT"
+          echo "body=$((now - was)) more tunes published than main ($(git rev-parse --short HEAD)), imported by hymns-cceh.yml." >> "$GITHUB_OUTPUT"
+
+      - name: Push hymns/cceh-next
+        if: steps.decide.outputs.push == 'true'
+        env:
+          TITLE: ${{ steps.decide.outputs.title }}
+          BODY: ${{ steps.decide.outputs.body }}
+        run: |
+          git config user.name "Gbohunmi Francis"
+          git config user.email "120693899+Gbohunmifrancis@users.noreply.github.com"
+          git checkout -B hymns/cceh-next
+          git add -A
+          git commit -q -m "$TITLE" -m "$BODY"
+          git push -f origin hymns/cceh-next

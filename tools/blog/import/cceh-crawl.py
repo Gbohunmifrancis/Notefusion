@@ -1,6 +1,10 @@
 """Downloads the Christian Classics Ethereal Hymnary's tunes for the CCEH importer (cceh-run.mjs).
 
-    python3 -I tools/blog/import/cceh-crawl.py CACHE_DIR      (a directory outside the repository)
+    python3 -I tools/blog/import/cceh-crawl.py CACHE_DIR [--minutes N]    (CACHE_DIR outside the repository)
+
+--minutes N stops before the next tune once N minutes have gone (the scheduled workflow
+hymns-cceh.yml crawls in slices that fit a GitHub job); the log's last line is then "paused", and
+"done" once every tune in the lists has been asked for.
 
 Politely: one request at a time, 11 seconds apart (CCEL's robots.txt asks for a crawl delay of 10),
 a User-Agent that says who is asking, a back-off of a minute and more after an error, and no retry of
@@ -19,6 +23,7 @@ The downloads are data: this script stores them and never opens or runs them.
 import html, json, os, re, subprocess, sys, time
 
 CACHE = sys.argv[1] if len(sys.argv) > 1 else "."
+MINUTES = float(sys.argv[sys.argv.index("--minutes") + 1]) if "--minutes" in sys.argv else None
 UA = "NoteFusionHymnImporter/1.0 (+https://notefusion.studio; hello@notefusion.studio)"
 BASE = "https://www.ccel.org/cceh/"
 DELAY = 11
@@ -113,9 +118,13 @@ def extras():
 
 
 def main():
+    started = time.monotonic()
     tunes = index()
     log(f"start: {len(tunes)} tunes")
     for n, (folder, num, _name) in enumerate(tunes):
+        if MINUTES is not None and time.monotonic() - started >= MINUTES * 60:
+            log(f"paused at {n + 1}/{len(tunes)} after {MINUTES:g} minutes")
+            return
         extras()
         page_path = os.path.join(CACHE, "pages", f"x{num}.htm")
         if not fetch(f"{BASE}{folder}/x{num}.htm", page_path):

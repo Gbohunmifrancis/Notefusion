@@ -365,6 +365,14 @@ node tools/blog/import/cceh-run.mjs --cache /path/to/cceh-cache --date 2026-10-1
 node tools/blog/build.mjs && node tools/blog/check.mjs
 ```
 
+The scheduled workflow `.github/workflows/hymns-cceh.yml` does all of this on GitHub's runners: every six
+hours it crawls for five hours (`--minutes`; the cache, third-party files, rides in the Actions cache and
+is never committed), imports, builds and checks, and when at least 15 more tunes would be published than
+on main (or the crawl is complete and anything is new) it pushes one commit, authored as the owner, to
+the `hymns/cceh-next` branch. It never pushes main or opens a PR. To publish: take the branch, add dates
+for the new undated people its run summary lists (the next run imports what they unlock), open the PR
+and merge it. Run it by hand from the Actions tab (`crawl_minutes` 0 imports only).
+
 The crawl keeps each tune's page, one MIDI file (the plain four-part score, not a descant, tenor-lead
 or alternative arrangement when the page has one) and the Noteworthy score of the same arrangement.
 For each tune the importer (`tools/blog/import/cceh*.mjs`; the files are data, read and parsed, never run):
