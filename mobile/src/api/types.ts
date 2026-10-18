@@ -1243,6 +1243,9 @@ export interface PaymentOpsSummary {
   mrrMinor: number;
   activeSubscribersCount: number;
   expiringInSevenDaysCount: number;
+  /** Completed today (West Africa Time), one total per currency, never added across them. */
+  paidToday: CurrencyAmount[] | null;
+  paidTodayCount: number;
 }
 
 /**
@@ -1296,7 +1299,357 @@ export interface SystemHealth {
   };
   /** Tiers this stack cannot prove anything about, named rather than faked. */
   notMonitored: string[];
-  workerHeartbeats?: WorkerHeartbeat[];
+  workerHeartbeats: WorkerHeartbeat[] | null;
+  /** The backups as the backup service recorded them; null when the database is unreachable. */
+  backups: BackupStatus | null;
+  /** Mail sent in each capped window against its limit; null when the database is unreachable. */
+  emailUsage: EmailWindowUsage[] | null;
+  /** Phones the API can reach and the admins' payment alerts; null when the database is unreachable. */
+  push: PushHealth | null;
+}
+
+export interface BackupRun {
+  finishedAtUtc: string;
+  ok: boolean;
+  sizeBytes: number | null;
+  verified: boolean;
+  detail: string | null;
+}
+
+export interface BackupStatus {
+  status: string;
+  summary: string;
+  lastDump: BackupRun | null;
+  lastVerifiedDump: BackupRun | null;
+  lastBaseBackup: BackupRun | null;
+  walArchivedAtUtc: string | null;
+  lastWalReport: BackupRun | null;
+  lastFiles: BackupRun | null;
+  lastCheck: BackupRun | null;
+  lastMirror: BackupRun | null;
+  lastDrill: BackupRun | null;
+  drillUrl: string | null;
+  problems: string[];
+}
+
+/** One capped mail window ("day", "week", "month"): sent, the cap, and where optional mail stops. */
+export interface EmailWindowUsage {
+  window: string;
+  sent: number;
+  limit: number;
+  optionalCeiling: number;
+}
+
+/** The phone admin's Push panel (C# `PushHealthDto`). */
+export interface PushHealth {
+  phonesRegistered: number;
+  android: number;
+  ios: number;
+  adminAlertPhones: number;
+  lastPaymentAlertAtUtc: string | null;
+  lastPaymentAlertDevices: number;
+  lastPaymentAlertAccepted: number;
+  refusedLast24h: number;
+}
+
+/** One admin phone's payment alerts (C# `PaymentAlertSettingsDto`; `GET`/`PUT /api/admin/alerts/device`). */
+export interface PaymentAlertSettings {
+  registered: boolean;
+  on: boolean;
+  sound: "chime" | "phone" | "none";
+  vibrate: boolean;
+  quietAtNight: boolean;
+  hideNames: boolean;
+  problems: boolean;
+  mutedUntilUtc: string | null;
+}
+
+export interface TestPaymentAlert {
+  sent: boolean;
+}
+
+export interface CurrencyAmount {
+  currency: string;
+  amountMinor: number;
+}
+
+// ── The console's analytics, read by the phone admin (C# Analytics/Dtos) ─────
+
+export interface DailyCount {
+  date: string;
+  count: number;
+}
+
+export interface CategoryCount {
+  label: string;
+  count: number;
+}
+
+export interface UserMetrics {
+  totalUsers: number;
+  newUsers: number;
+  newUsersPrevious: number;
+  activeUsers: number;
+  activeUsersPrevious: number;
+  googleVerifiedUsers: number;
+  passwordOnlyUsers: number;
+  lockedOutUsers: number;
+  deactivatedUsers: number;
+  activeToday: number;
+}
+
+export interface TranscriptionMetrics {
+  totalSaved: number;
+  totalSavedPrevious: number;
+  succeededCount: number;
+  failedCount: number;
+  inFlightCount: number;
+  successRate: number | null;
+  averageConfidence: number | null;
+  storedBytes: number;
+  totalTranscribed: number;
+  totalTranscribedPrevious: number;
+  hymnMatchesOffered: number;
+  hymnVersionsSaved: number;
+}
+
+export interface ActivityItem {
+  kind: string;
+  title: string;
+  subtitle: string | null;
+  occurredAtUtc: string;
+  userId: string | null;
+  email: string | null;
+  country: string | null;
+  detail: string | null;
+}
+
+export interface RetentionCohort {
+  cohortStart: string;
+  cohortSize: number;
+  returnedCount: number;
+  retentionRate: number | null;
+}
+
+export interface WebFunnel {
+  previews: number;
+  previewsPrevious: number;
+  previewDevices: number;
+  previewsSucceeded: number;
+  webSignups: number;
+  webSignupsPrevious: number;
+  signupsFromPreview: number;
+  webSignupsWhoSaved: number;
+  sharesCreated: number;
+  shareViews: number;
+  webProConversions: number;
+  previewsPerDay: DailyCount[];
+}
+
+export interface WebActionItem {
+  userId: string;
+  fullName: string;
+  email: string;
+  action: string;
+  path: string;
+  occurredAtUtc: string;
+}
+
+export interface WebTraffic {
+  pageviews: number;
+  pageviewsPrevious: number;
+  visitors: number;
+  visitorsPrevious: number;
+  sessions: number;
+  clicks: number;
+  signupClicks: number;
+  actions: number;
+  activeWebUsers: number;
+  pageviewsPerDay: DailyCount[];
+  topPages: CategoryCount[];
+  topReferrers: CategoryCount[];
+  topClicks: CategoryCount[];
+  devices: CategoryCount[];
+  topActions: CategoryCount[];
+  recentActions: WebActionItem[];
+}
+
+export interface Membership {
+  activeMembers: number;
+  paidMembers: number;
+  giftedMembers: number;
+  lifetimeMembers: number;
+  newMembers: number;
+  lapsedMembers: number;
+  revenue: CurrencyAmount[];
+  monthlyRunRate: CurrencyAmount[];
+  membersByPlan: CategoryCount[];
+  songsUsedThisMonth: number;
+  membersOutOfSongs: number;
+  activeChoirs: number;
+  choirSingers: number;
+}
+
+/** `GET /api/admin/analytics/overview` (C# `AnalyticsOverviewDto`). */
+export interface AnalyticsOverview {
+  fromUtc: string;
+  toUtc: string;
+  reportingOffsetMinutes: number;
+  users: UserMetrics;
+  transcriptions: TranscriptionMetrics;
+  signupsPerDay: DailyCount[];
+  transcriptionsPerDay: DailyCount[];
+  signupMethods: CategoryCount[];
+  devicePlatforms: CategoryCount[];
+  topKeys: CategoryCount[];
+  retention: RetentionCohort[];
+  recentActivity: ActivityItem[];
+  signupSources: CategoryCount[];
+  webFunnel: WebFunnel;
+  webTraffic: WebTraffic;
+  membership: Membership;
+}
+
+export interface LiveUser {
+  id: string;
+  fullName: string;
+  email: string;
+  country: string | null;
+  seenAtUtc: string;
+}
+
+export interface LiveJob {
+  jobId: string;
+  userId: string | null;
+  fullName: string | null;
+  email: string | null;
+  kind: string;
+  preview: boolean;
+  finished: boolean;
+  startedAtUtc: string;
+}
+
+export interface LivePayment {
+  id: string;
+  userId: string;
+  fullName: string | null;
+  email: string | null;
+  amountMinor: number;
+  currency: string;
+  planName: string;
+  paidAtUtc: string;
+}
+
+/** `GET /api/admin/analytics/live` (C# `LiveActivityDto`): who is online, transcribing and paying now. */
+export interface LiveActivity {
+  serverTimeUtc: string;
+  online: LiveUser[];
+  transcribing: LiveJob[];
+  payments: LivePayment[];
+}
+
+export interface EndingMembership {
+  userId: string;
+  fullName: string;
+  email: string;
+  kind: string;
+  plan: string;
+  paid: boolean;
+  endsAtUtc: string;
+}
+
+export interface Renewals {
+  graceDays: number;
+  endingIn7Days: number;
+  endingIn30Days: number;
+  endingIn30DaysByKind: CategoryCount[];
+  endingSoon: EndingMembership[];
+  dueInWindow: number;
+  renewedEarly: number;
+  renewedLate: number;
+  lapsed: number;
+  deciding: number;
+  renewalRate: number | null;
+}
+
+export interface PriceSetFunnel {
+  set: string;
+  signedUp: number;
+  transcribed: number;
+  reachedFreeLimit: number;
+  startedCheckout: number;
+  paid: number;
+  paidRate: number | null;
+  medianDaysToPay: number | null;
+}
+
+export interface KindHealth {
+  kind: string;
+  started: number;
+  succeeded: number;
+  failed: number;
+  running: number;
+  failureRate: number | null;
+}
+
+export interface TranscriptionHealth {
+  byKind: KindHealth[];
+  linkAttempts: number;
+  linkRefused: number;
+  linkFailed: number;
+  linkProblems: CategoryCount[];
+}
+
+export interface AppBuildRow {
+  build: number;
+  phones: number;
+  recent: number;
+  android: number;
+  ios: number;
+  serverReminders: number;
+}
+
+export interface AppVersions {
+  latestBuild: number;
+  phones: number;
+  recent: number;
+  onLatestBuild: number;
+  serverReminders: number;
+  builds: AppBuildRow[];
+}
+
+/** `GET /api/admin/analytics/growth` (C# `GrowthDto`). */
+export interface Growth {
+  fromUtc: string;
+  toUtc: string;
+  reportingOffsetMinutes: number;
+  renewals: Renewals;
+  freeToPaid: PriceSetFunnel[];
+  transcriptions: TranscriptionHealth;
+  appVersions: AppVersions;
+}
+
+/** `GET /api/admin/features` (C# `FeatureFlagDto`). `autoOffAt` is the last day it is on, yyyy-mm-dd, WAT. */
+export interface FeatureFlag {
+  key: string;
+  name: string;
+  enabled: boolean;
+  on: boolean;
+  adminPreview: boolean;
+  autoOffAt: string | null;
+  autoOffAtUtc: string | null;
+  switchedItselfOff: boolean;
+  suggestedAutoOffAt: string;
+  updatedAtUtc: string | null;
+  updatedByEmail: string | null;
+}
+
+/** `PUT /api/admin/features/{key}`: any of the four; what is left out stays as it is. */
+export interface FeatureFlagChange {
+  enabled?: boolean;
+  adminPreview?: boolean;
+  autoOff?: boolean;
+  autoOffAt?: string;
 }
 
 /** One row of the admin user table — enough for a support conversation, no more. */
@@ -1316,6 +1669,17 @@ export interface AdminUserRow {
   hasProAccess: boolean;
   /** Only meaningful while `hasProAccess` — false is not "they paid". */
   isGiftedPro: boolean;
+  /** Sheets in the library now; `transcriptionCount` counts every transcription that produced a result. */
+  savedTranscriptionCount: number;
+  failedTranscriptionCount: number;
+  /** The last signed-in request (or, before presence was recorded, the last sign-in). */
+  lastSeenAtUtc: string | null;
+  isOnline: boolean;
+  /** An admin or an account flagged internal: listed only with `includeInternal`. */
+  isInternal: boolean;
+  country: string | null;
+  /** Leads or sings in a choir whose plan is running. */
+  inChoir: boolean;
 }
 
 export interface AdminSubscription {
@@ -1387,7 +1751,21 @@ export interface AdminUserDetail {
   payments: AdminPayment[];
   ledger: AdminLedgerEntry[];
   recentActions: AuditLogRow[];
-  recentTranscriptions?: AdminTranscriptionSummary[];
+  recentTranscriptions: AdminTranscriptionSummary[] | null;
+  savedTranscriptionCount: number;
+  failedTranscriptionCount: number;
+  isInternal: boolean;
+  lastSeenAtUtc: string | null;
+  /** Bought transcriptions (one song at a time) spent and bought in all; per account only. */
+  boughtTranscriptionsUsed: number;
+  boughtTranscriptionsTotal: number;
+  songPreviewsUsed: number;
+  /** Jobs that spent an allowance: a free one, a bought one, a Pro song or the link preview. */
+  chargedTranscriptionCount: number;
+  /** The inbox the address delivers to (dots and +tags folded); accounts on one inbox share the free three. */
+  canonicalEmail: string | null;
+  /** Other accounts on the same inbox. */
+  sharedMailboxAccounts: number;
 }
 
 export interface AdminTranscriptionSummary {

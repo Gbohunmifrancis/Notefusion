@@ -1,639 +1,361 @@
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AdminPage, AdminTopBar, PageTitle } from "../../components/admin/AdminChrome";
 import {
-  ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import { Icon } from "../../components/Icon";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Screen } from "../../components/Screen";
+  Badge,
+  FilterChips,
+  GroupLabel,
+  IconBox,
+  Initials,
+  List,
+  ListRow,
+  LoadState,
+  Segmented,
+  StatTile,
+} from "../../components/admin/AdminUI";
+import { PaymentSheet } from "../../components/admin/PaymentSheet";
+import { ConfirmSheet, type ConfirmRequest } from "../../components/admin/ConfirmSheet";
 import { Button } from "../../components/Button";
-import { Touchable } from "../../components/Touchable";
+import { Icon } from "../../components/Icon";
 import { adminApi } from "../../api/endpoints";
-import { toApiError } from "../../api/client";
-import { showDialog } from "../../lib/dialog";
-import {
-  fonts,
-  motion,
-  spacing,
-  typography,
-  type Palette,
-} from "../../design/theme";
-import { useColors, useThemedStyles } from "../../lib/theme";
-import {
-  AdminHeader,
-  Chip,
-  Field,
-  ListState,
-  RawBlock,
-  SearchField,
-  SectionTitle,
-  Sheet,
-  StatusPill,
-  ago,
-  dateTime,
-  money,
-  paymentTone,
-  useDebounced,
-  usePagedList,
-  webhookTone,
-} from "./parts";
 import type {
-  AdminPaymentDetail,
+  AdminLedgerRow,
   AdminPaymentRow,
-  AdminPaymentStatus,
+  AdminWebhookEventRow,
+  PagedResult,
+  PaymentOpsSummary,
 } from "../../api/types";
-import type { RootStackParams } from "../../navigation/types";
+import { useAdminQuery } from "../../lib/adminCache";
+import { showToast } from "../../lib/toast";
+import { fonts, type AdminPalette } from "../../design/theme";
+import { useAdminColors, useAdminStyles } from "../../lib/theme";
+import {
+  PAYMENT_TONE,
+  agoSentence,
+  byCurrency,
+  clock,
+  count,
+  dayLabel,
+  firstName,
+  groupByDay,
+  initials,
+  money,
+  moneyLine,
+  parseUtc,
+  paymentLine,
+  shortPlan,
+  stuckFor,
+  type PaymentStatus,
+} from "../../lib/adminFormat";
+import type { AdminStackParams, AdminTabParams } from "../../navigation/types";
 
-type Props = NativeStackScreenProps<RootStackParams, "AdminPayments">;
+type View3 = "payments" | "webhooks" | "ledger";
+type Filter = "all" | "attention" | "Completed" | "Failed" | "Pending";
+
+const PAGE = 25;
+
+const WEBHOOK_META: Record<string, { label: string; tone: "warn" | "ok" | "bad" }> = {
+  Received: { label: "Awaiting", tone: "warn" },
+  Processed: { label: "Processed", tone: "ok" },
+  Failed: { label: "Parked", tone: "bad" },
+};
 
 /**
- * The filter row. `status` is sent PascalCase because the wire values are enum
- * member *names*, not serialized enums — ASP.NET happens to bind them
- * case-insensitively, but matching what comes back keeps one spelling in play.
+ * Payments, Webhooks and Ledger as one section (board f-admin/04): three tiles for the state of the money (the two
+ * amber ones are the only colour that asks for something), the web's filters, rows by day with its status pills, a
+ * payment's sheet, and "Needs a look" with Reconcile, which asks first.
  */
-const FILTERS: {
-  label: string;
-  status?: AdminPaymentStatus;
-  stuckOnly?: boolean;
-}[] = [
-  { label: "All" },
-  { label: "Stuck", stuckOnly: true },
-  { label: "Paid, no Pro", status: "Verified" },
-  { label: "Processing", status: "Processing" },
-  { label: "Completed", status: "Completed" },
-  { label: "Failed", status: "Failed" },
-  { label: "Pending", status: "Pending" },
-];
+export function AdminPaymentsScreen() {
+  const a = useAdminColors();
+  const s = useAdminStyles(makeStyles);
+  const route = useRoute<RouteProp<AdminTabParams, "Payments">>();
+  const nav = useNavigation<NativeStackNavigationProp<AdminStackParams>>();
+  const [view, setView] = useState<View3>("payments");
+  const [filter, setFilter] = useState<Filter>("all");
+  const [searching, setSearching] = useState(false);
+  const [search, setSearch] = useState("");
+  const [term, setTerm] = useState("");
+  const [pages, setPages] = useState(1);
+  const [open, setOpen] = useState<string | null>(null);
+  const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
 
-const PAGE_SIZE = 25;
+  // A push, the Overview's amber line, or a webhook alert names what to open.
+  useEffect(() => {
+    const p = route.params;
+    if (!p) return;
+    if (p.view) setView(p.view);
+    if (p.filter === "attention") {
+      setView("payments");
+      setFilter("attention");
+    }
+    if (p.paymentId) setOpen(p.paymentId);
+  }, [route.params?.nonce, route.params?.paymentId, route.params?.filter, route.params?.view]);
 
-/** Provider payloads run to kilobytes; past this nobody is reading on a phone. */
-const RAW_LIMIT = 2_000;
+  useEffect(() => {
+    const t = setTimeout(() => setTerm(search.trim()), 350);
+    return () => clearTimeout(t);
+  }, [search]);
+  useEffect(() => setPages(1), [view, filter, term]);
 
-function clip(raw: string): string {
-  return raw.length > RAW_LIMIT
-    ? `${raw.slice(0, RAW_LIMIT)}\n\n… ${raw.length - RAW_LIMIT} more characters`
-    : raw;
-}
+  const summary = useAdminQuery<PaymentOpsSummary>("payments-summary", adminApi.paymentsSummary);
+  const listKey = `${view}:${filter}:${term}:${pages}`;
+  const list = useAdminQuery<PagedResult<AdminPaymentRow | AdminWebhookEventRow | AdminLedgerRow>>(`list:${listKey}`, () => {
+    const pageSize = PAGE * pages;
+    if (view === "webhooks") return adminApi.webhooks({ page: 1, pageSize, search: term || undefined });
+    if (view === "ledger") return adminApi.ledger({ page: 1, pageSize, search: term || undefined });
+    return adminApi.payments({
+      page: 1,
+      pageSize,
+      search: term || undefined,
+      needsLook: filter === "attention" || undefined,
+      status: filter === "all" || filter === "attention" ? undefined : filter,
+    });
+  });
 
-// ─── Component ────────────────────────────────────────────────────────────────
+  const refresh = () => {
+    void summary.refresh();
+    void list.refresh();
+  };
 
-/**
- * Every payment attempt across every account, and the one repair an operator can
- * make from a phone.
- *
- * This is the "the customer says they paid" screen. Search takes a reference, a
- * provider's reference, or an email; Reconcile asks the provider what actually
- * happened and applies the answer, which is the same command the background sweep
- * runs — so nothing reachable here can reach an outcome the sweep could not.
- */
-export function AdminPaymentsScreen({ navigation, route }: Props) {
-  const colors = useColors();
-  const styles = useThemedStyles(makeStyles);
+  const sm = summary.data;
+  const today = byCurrency(sm?.paidToday ?? []);
+  const needsLook = sm ? sm.verifiedCount + sm.stuckCount : 0;
+  const now = new Date();
 
-  // Seeded when the webhook inbox pushed us here with a reference to look up.
-  const [query, setQuery] = useState(route.params?.search ?? "");
-  const search = useDebounced(query);
-  const [filter, setFilter] = useState(0);
-
-  const active = FILTERS[filter];
-  const list = usePagedList<AdminPaymentRow>(
-    (page) =>
-      adminApi.payments({
-        page,
-        pageSize: PAGE_SIZE,
-        status: active.status,
-        stuckOnly: active.stuckOnly,
-        search: search.trim() || undefined,
-      }),
-    [search, filter],
-  );
-
-  // The open row. Kept alongside the fetched detail so the sheet can title itself
-  // and show the amount while the detail request is still in flight.
-  const [open, setOpen] = useState<AdminPaymentRow | null>(null);
-  const [detail, setDetail] = useState<AdminPaymentDetail | null>(null);
-  const [detailError, setDetailError] = useState<string | null>(null);
-  const [reconciling, setReconciling] = useState(false);
-  const [showRaw, setShowRaw] = useState(false);
-
-  const fetchDetail = useCallback((id: string) => {
-    setDetail(null);
-    setDetailError(null);
-    adminApi
-      .payment(id)
-      .then(setDetail)
-      .catch((e) => setDetailError(toApiError(e).message));
-  }, []);
-
-  function openRow(row: AdminPaymentRow) {
-    setOpen(row);
-    setShowRaw(false);
-    fetchDetail(row.id);
-  }
-
-  function closeSheet() {
-    setOpen(null);
-    setDetail(null);
-    setDetailError(null);
-  }
-
-  function confirmReconcile(row: AdminPaymentRow) {
-    showDialog({
-      title: "Reconcile this payment?",
-      message: `Ask ${row.provider} what happened to ${row.reference} and apply the answer. Safe to repeat — a settled payment is left alone.`,
-      icon: "sync",
-      tone: "brand",
-      actions: [
-        {
-          label: "Reconcile",
-          icon: "sync",
-          onPress: () => void reconcile(row),
-        },
-        { label: "Cancel", style: "cancel" },
-      ],
+  function reconcile(row: { id: string; provider: string; userFullName: string; amountMinor: number; currency: string; planName: string | null; status: string; isStuck: boolean; updatedAtUtc: string }) {
+    const who = firstName(row.userFullName);
+    setConfirm({
+      title: `Ask ${row.provider} about ${who}'s payment?`,
+      message: `${money(row.amountMinor, row.currency)}, ${shortPlan(row.planName).toLowerCase()}, ${row.status}${
+        row.status === "Processing" ? ` for ${stuckFor(parseUtc(row.updatedAtUtc), now)}` : ""
+      }. Reconcile asks ${row.provider} what happened and applies the answer: the same step the sweep runs every 5 minutes, so it is safe to repeat.`,
+      confirmLabel: "Reconcile",
+      note: { placeholder: "Customer emailed: charged, no song" },
+      onConfirm: async (note) => {
+        const result = await adminApi.reconcile(row.id, note);
+        // The server's own sentence, written for the operator.
+        showToast(result.outcome, { icon: result.changed ? "done" : "about" });
+        refresh();
+      },
     });
   }
 
-  async function reconcile(row: AdminPaymentRow) {
-    setReconciling(true);
-    try {
-      const res = await adminApi.reconcile(row.id, "via mobile admin");
-      // `outcome` is written server-side on purpose: what a status pair means is a
-      // billing rule, not a phrase a dashboard should invent.
-      showDialog({
-        title: res.changed ? `${res.previousStatus} → ${res.status}` : "No change",
-        message: res.outcome,
-        icon: res.changed ? "done" : "about",
-        tone: res.changed ? "brand" : undefined,
-      });
-      if (res.changed) list.refresh();
-      fetchDetail(row.id);
-    } catch (e) {
-      const err = toApiError(e);
-      // The code matters here — BILLING_VERIFICATION_MISMATCH is a different
-      // conversation from a provider being unreachable, and a generic "failed"
-      // hides which one happened.
-      showDialog({
-        title: "Could not reconcile",
-        message: `${err.message}\n\n${err.code}`,
-        icon: "problem",
-        tone: "danger",
-      });
-    } finally {
-      setReconciling(false);
-    }
-  }
+  const items = list.data?.items ?? [];
+  const more = list.data ? list.data.totalCount > items.length : false;
 
   return (
-    <Screen>
-      <AdminHeader
-        label="Operations"
+    <AdminPage header={<AdminTopBar />} onRefresh={refresh} refreshing={list.refreshing}>
+      <PageTitle
         title="Payments"
-        onBack={() =>
-          navigation.canGoBack()
-            ? navigation.goBack()
-            : navigation.navigate("AdminHome")
-        }
+        sub={view === "payments" ? "Every checkout, newest first" : view === "webhooks" ? "Every provider callback, stored once" : "Money in and out, newest first"}
+        right={<IconBox icon="search" label="Search payments" active={searching} onPress={() => setSearching((v) => !v)} />}
       />
-
-      <FlatList
-        data={list.items}
-        keyExtractor={(t) => t.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
-        keyboardShouldPersistTaps="handled"
-        onEndReachedThreshold={0.4}
-        onEndReached={list.loadMore}
-        refreshControl={
-          <RefreshControl
-            refreshing={list.refreshing}
-            onRefresh={list.refresh}
-            tintColor={colors.accent}
-            colors={[colors.accent]}
+      {searching ? (
+        <View style={s.search}>
+          <Icon name="search" size={17} color={a.faint} />
+          <TextInput
+            value={search}
+            onChangeText={setSearch}
+            autoFocus
+            placeholder="Reference, provider's or email"
+            placeholderTextColor={a.dim}
+            style={s.searchInput}
+            autoCapitalize="none"
+            autoCorrect={false}
+            accessibilityLabel="Search"
           />
-        }
-        ListHeaderComponent={
-          <View style={styles.header}>
-            <SearchField
-              value={query}
-              onChange={setQuery}
-              placeholder="Reference, provider ref, or email"
+        </View>
+      ) : null}
+
+      <View style={s.gap14}>
+        <Segmented
+          wide
+          options={[
+            { value: "payments", label: "Payments" },
+            { value: "webhooks", label: "Webhooks" },
+            { value: "ledger", label: "Ledger" },
+          ]}
+          value={view}
+          onChange={setView}
+        />
+      </View>
+
+      {view === "payments" ? (
+        <>
+          <View style={[s.minis, s.gap12]}>
+            <StatTile
+              style={s.mini}
+              label="Today"
+              value={today[0] ? money(today[0].amountMinor, today[0].currency) : money(0, "NGN")}
+              sub={[moneyLine(today.slice(1)), `${sm?.paidTodayCount ?? 0} paid`].filter(Boolean).join(" · ")}
             />
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.chipRow}
-            >
-              {FILTERS.map((f, i) => (
-                <Chip
-                  key={f.label}
-                  label={f.label}
-                  active={filter === i}
-                  onPress={() => setFilter(i)}
-                />
-              ))}
-            </ScrollView>
-            {list.items.length > 0 ? (
-              <Text style={styles.count}>
-                {list.items.length} of {list.total}
-              </Text>
-            ) : null}
+            <StatTile style={s.mini} tone={sm?.verifiedCount ? "warn" : undefined} label="Paid, no Pro" value={count(sm?.verifiedCount ?? 0)} sub={sm?.verifiedCount ? "Escalate" : "None"} />
+            <StatTile
+              style={s.mini}
+              tone={sm?.stuckCount ? "warn" : undefined}
+              label="Stuck"
+              value={count(sm?.stuckCount ?? 0)}
+              sub={sm?.oldestStuckSinceUtc ? `Oldest ${stuckFor(parseUtc(sm.oldestStuckSinceUtc), now)}` : "None"}
+            />
           </View>
-        }
-        renderItem={({ item }) => (
-          <Touchable
-            onPress={() => openRow(item)}
-            style={styles.row}
-            scaleTo={motion.scale.row}
-            accessibilityLabel={`${item.userEmail}, ${item.status}, ${money(item.amountMinor, item.currency)}`}
-          >
-            <View style={styles.rowMain}>
-              <Text style={styles.rowTitle} numberOfLines={1}>
-                {item.userEmail}
-              </Text>
-              <Text style={styles.rowRef} numberOfLines={1}>
-                {item.reference}
-              </Text>
-              <Text style={styles.rowMeta} numberOfLines={1}>
-                {item.provider}
-                {item.planName ? ` · ${item.planName}` : ""} ·{" "}
-                {dateTime(item.createdAtUtc)}
-              </Text>
-            </View>
-            <View style={styles.rowRight}>
-              <Text style={styles.rowAmount}>
-                {money(item.amountMinor, item.currency)}
-              </Text>
-              <View style={styles.rowPills}>
-                {item.isStuck ? <StatusPill label="Stuck" tone="warn" /> : null}
-                <StatusPill label={item.status} tone={paymentTone(item.status)} />
-              </View>
-            </View>
-          </Touchable>
-        )}
-        ItemSeparatorComponent={() => <View style={styles.divider} />}
-        ListEmptyComponent={
-          <ListState
-            loading={list.loading}
-            error={list.error}
-            emptyIcon="card"
-            emptyTitle="No payments"
-            emptyHint="Nothing matches this filter."
-          />
-        }
-        ListFooterComponent={
-          list.loadingMore ? (
-            <ActivityIndicator style={styles.footer} color={colors.accent} />
-          ) : null
-        }
-      />
-
-      {/* ── Detail ─────────────────────────────────────────────────────────── */}
-      <Sheet
-        visible={open !== null}
-        title={open ? money(open.amountMinor, open.currency) : ""}
-        onClose={closeSheet}
-      >
-        {open ? (
-          <>
-            <View style={styles.sheetPills}>
-              <StatusPill label={open.status} tone={paymentTone(open.status)} />
-              {open.isStuck ? (
-                <StatusPill
-                  label={`Stuck ${ago(open.updatedAtUtc)}`}
-                  tone="warn"
-                />
-              ) : null}
-            </View>
-
-            <Field label="Account" value={open.userFullName} />
-            <Field label="Email" value={open.userEmail} mono />
-            <Field label="Plan" value={open.planName} />
-            <Field label="Provider" value={open.provider} />
-            <Field label="Reference" value={open.reference} mono />
-            <Field
-              label="Provider ref"
-              value={open.providerReference}
-              mono
+          <View style={s.gap12}>
+            <FilterChips
+              options={[
+                { value: "all", label: "All" },
+                { value: "attention", label: "Needs a look", count: needsLook || undefined },
+                { value: "Completed", label: "Completed" },
+                { value: "Failed", label: "Failed" },
+                { value: "Pending", label: "Pending" },
+              ]}
+              value={filter}
+              onChange={setFilter}
             />
-            <Field label="Created" value={dateTime(open.createdAtUtc)} />
-            <Field label="Updated" value={dateTime(open.updatedAtUtc)} />
-            {open.failureReason ? (
-              <Field label="Failure" value={open.failureReason} tone="bad" />
-            ) : null}
-
-            <View style={styles.actions}>
-              <Button
-                label="Reconcile"
-                icon="sync"
-                loading={reconciling}
-                onPress={() => confirmReconcile(open)}
-                style={styles.action}
-              />
-              <Button
-                label="Open account"
-                variant="secondary"
-                icon="user"
-                onPress={() => {
-                  const userId = open.userId;
-                  closeSheet();
-                  navigation.navigate("AdminUser", { userId });
-                }}
-                style={styles.action}
-              />
-            </View>
-
-            {open.status === "Verified" ? (
-              <Text style={styles.escalate}>
-                Reconciliation does not retry this state. The money is confirmed
-                and the subscription was never applied — gift Pro from the account
-                to unblock the customer, and escalate the payment.
-              </Text>
-            ) : null}
-
-            {detailError ? (
-              <Text style={styles.detailError}>{detailError}</Text>
-            ) : detail === null ? (
-              <ActivityIndicator style={styles.footer} color={colors.accent} />
-            ) : (
-              <>
-                <Field
-                  label="Idempotency"
-                  value={detail.idempotencyKey}
-                  mono
-                />
-                <Field label="Checkout URL" value={detail.checkoutUrl} mono />
-
-                <SectionTitle>Ledger</SectionTitle>
-                {detail.ledger.length === 0 ? (
-                  <Text style={styles.none}>
-                    No entries. A completed payment always has one, so its absence
-                    on a paid charge is the problem itself.
-                  </Text>
-                ) : (
-                  detail.ledger.map((entry) => (
-                    <View key={entry.id} style={styles.subRow}>
-                      <View style={styles.subMain}>
-                        <Text style={styles.subTitle}>
-                          {entry.direction} · {entry.reason}
-                        </Text>
-                        <Text style={styles.subMeta} numberOfLines={2}>
-                          {entry.description}
-                        </Text>
-                        <Text style={styles.subMeta}>
-                          {dateTime(entry.createdAtUtc)}
-                        </Text>
-                      </View>
-                      <Text
-                        style={[
-                          styles.subAmount,
-                          {
-                            color:
-                              entry.direction === "Credit"
-                                ? colors.success
-                                : colors.danger,
-                          },
-                        ]}
-                      >
-                        {money(entry.amountMinor, entry.currency)}
-                      </Text>
-                    </View>
-                  ))
-                )}
-
-                <SectionTitle>Webhook events</SectionTitle>
-                {detail.webhookEvents.length === 0 ? (
-                  <Text style={styles.none}>
-                    The provider never called back about this reference.
-                  </Text>
-                ) : (
-                  detail.webhookEvents.map((event) => (
-                    <View key={event.id} style={styles.subRow}>
-                      <View style={styles.subMain}>
-                        <Text style={styles.subTitle}>{event.eventType}</Text>
-                        <Text style={styles.subMeta}>
-                          {event.processAttempts} attempt
-                          {event.processAttempts === 1 ? "" : "s"} ·{" "}
-                          {dateTime(event.receivedAtUtc)}
-                        </Text>
-                        {event.lastError ? (
-                          <Text style={styles.subError} numberOfLines={3}>
-                            {event.lastError}
-                          </Text>
-                        ) : null}
-                      </View>
-                      <StatusPill
-                        label={event.status}
-                        tone={webhookTone(event.status)}
-                      />
-                    </View>
-                  ))
-                )}
-
-                {detail.initiateRaw || detail.verifyRaw ? (
+          </View>
+          <PaymentList
+            rows={items as AdminPaymentRow[]}
+            attention={filter === "attention"}
+            now={now}
+            onOpen={(row) => (filter === "attention" && row.status === "Processing" ? reconcile(row) : setOpen(row.id))}
+          />
+          {filter === "attention" ? (
+            <Text style={s.note}>
+              Stuck: still Processing past the grace window. The sweep asks the provider every 5 minutes; Reconcile asks now.
+              Paid, no Pro (Verified) is never touched by the sweep: escalate it.
+            </Text>
+          ) : null}
+        </>
+      ) : view === "webhooks" ? (
+        <List style={s.gap14}>
+          {(items as AdminWebhookEventRow[]).map((w) => {
+            const meta = WEBHOOK_META[w.status] ?? { label: w.status, tone: "warn" as const };
+            return (
+              <ListRow
+                key={w.id}
+                leading={<Icon name="webhook" size={18} color={a.faint} />}
+                title={w.eventType}
+                line={`${w.provider} · ${w.paymentReference ?? "no reference"} · ${clock(parseUtc(w.receivedAtUtc))}`}
+                end={
                   <>
-                    <SectionTitle>Provider payloads</SectionTitle>
-                    <Touchable
-                      onPress={() => setShowRaw((v) => !v)}
-                      style={styles.rawToggle}
-                      accessibilityLabel="Toggle provider payloads"
-                    >
-                      <Icon
-                        name={showRaw ? "up" : "down"}
-                        size={16}
-                        color={colors.textMuted}
-                      />
-                      <Text style={styles.rawToggleText}>
-                        {showRaw ? "Hide" : "Show"} what the provider sent
-                      </Text>
-                    </Touchable>
-                    {showRaw ? (
-                      <>
-                        {detail.initiateRaw ? (
-                          <>
-                            <Text style={styles.rawLabel}>Initiate</Text>
-                            <RawBlock text={clip(detail.initiateRaw)} />
-                          </>
-                        ) : null}
-                        {detail.verifyRaw ? (
-                          <>
-                            <Text style={styles.rawLabel}>Verify</Text>
-                            <RawBlock text={clip(detail.verifyRaw)} />
-                          </>
-                        ) : null}
-                      </>
-                    ) : null}
+                    <Badge label={meta.label} tone={meta.tone} />
+                    <Text style={s.when}>{`${w.processAttempts} ${w.processAttempts === 1 ? "try" : "tries"}`}</Text>
                   </>
-                ) : null}
-              </>
-            )}
-          </>
-        ) : null}
-      </Sheet>
-    </Screen>
+                }
+                onPress={w.paymentTransactionId ? () => setOpen(w.paymentTransactionId) : undefined}
+              />
+            );
+          })}
+        </List>
+      ) : (
+        <List style={s.gap14}>
+          {(items as AdminLedgerRow[]).map((e) => (
+            <ListRow
+              key={e.id}
+              leading={<Icon name="money" size={18} color={a.faint} />}
+              title={e.userEmail}
+              line={`${e.reason === "SubscriptionCharge" ? "Charge" : e.reason === "TranscriptionPurchase" ? "One song" : e.reason} · ${shortPlan(e.description)} · ${dayLabel(parseUtc(e.createdAtUtc), now)}`}
+              end={
+                <Text style={[s.amount, e.direction === "Debit" && { color: a.badDeep }]}>
+                  {`${e.direction === "Debit" ? "−" : ""}${money(e.amountMinor, e.currency)}`}
+                </Text>
+              }
+              onPress={() => setOpen(e.paymentTransactionId)}
+            />
+          ))}
+        </List>
+      )}
+
+      {items.length === 0 ? (
+        <LoadState
+          loading={list.loading}
+          error={list.error}
+          empty={term ? "Nothing matches that search." : filter === "attention" ? "Nothing needs a look." : "Nothing here yet."}
+          onRetry={list.refresh}
+        />
+      ) : null}
+      {more ? <Button label="Show more" variant="text" onPress={() => setPages((p) => p + 1)} style={s.more} /> : null}
+
+      <PaymentSheet
+        paymentId={open}
+        onClose={() => setOpen(null)}
+        onOpenAccount={(userId) => nav.navigate("AdminUser", { userId })}
+        onReconcile={(d) => {
+          setOpen(null);
+          reconcile(d.payment);
+        }}
+      />
+      <ConfirmSheet request={confirm} onClose={() => setConfirm(null)} />
+    </AdminPage>
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
+function PaymentList({
+  rows,
+  attention,
+  now,
+  onOpen,
+}: {
+  rows: readonly AdminPaymentRow[];
+  attention: boolean;
+  now: Date;
+  onOpen: (row: AdminPaymentRow) => void;
+}) {
+  const s = useAdminStyles(makeStyles);
+  const groups = useMemo(
+    () => (attention ? [{ label: "Needs a look", items: [...rows], paid: [] }] : groupByDay(rows, now)),
+    [rows, attention, now.toDateString()],
+  );
+  if (!rows.length) return null;
+  return (
+    <View>
+      {groups.map((g) => (
+        <View key={g.label}>
+          <GroupLabel right={attention ? String(g.items.length) : moneyLine(g.paid) || undefined}>{g.label}</GroupLabel>
+          <List>
+            {g.items.map((p) => (
+              <ListRow
+                key={p.id}
+                leading={<Initials text={initials(p.userFullName || p.userEmail)} />}
+                title={p.userFullName || p.userEmail}
+                line={attention && p.status === "Verified" ? `${shortPlan(p.planName)} · ${p.provider} · paid ${agoSentence(parseUtc(p.updatedAtUtc), now)}` : paymentLine({ ...p, status: p.status as PaymentStatus }, now)}
+                end={
+                  <>
+                    <Text style={s.amount}>{money(p.amountMinor, p.currency)}</Text>
+                    <Badge label={p.status} tone={PAYMENT_TONE[p.status as PaymentStatus] ?? "neutral"} />
+                  </>
+                }
+                onPress={() => onOpen(p)}
+              />
+            ))}
+          </List>
+        </View>
+      ))}
+    </View>
+  );
+}
 
-const makeStyles = (c: Palette) =>
+const makeStyles = (a: AdminPalette) =>
   StyleSheet.create({
-    listContent: {
-      paddingBottom: spacing.xxxl,
-    },
-    header: {
-      gap: spacing.md,
-      marginBottom: spacing.sm,
-    },
-    chipRow: {
-      gap: spacing.xs,
-      paddingRight: spacing.lg,
-    },
-    count: {
-      ...typography.caption,
-      color: c.textFaint,
-      fontSize: 11,
-    },
-
-    // ── Rows ────────────────────────────────────────────────────────────────
-    row: {
+    gap12: { marginTop: 12 },
+    gap14: { marginTop: 14 },
+    search: {
       flexDirection: "row",
       alignItems: "center",
-      gap: spacing.md,
-      paddingVertical: spacing.md,
+      gap: 8,
+      height: 46,
+      paddingHorizontal: 12,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: a.brand,
+      backgroundColor: a.card,
+      marginTop: 12,
     },
-    rowMain: {
-      flex: 1,
-    },
-    rowTitle: {
-      fontSize: 14.5,
-      fontFamily: fonts.semibold,
-      color: c.text,
-    },
-    rowRef: {
-      ...typography.mono,
-      fontSize: 11,
-      color: c.textMuted,
-      marginTop: 2,
-    },
-    rowMeta: {
-      fontSize: 11.5,
-      fontFamily: fonts.regular,
-      color: c.textFaint,
-      marginTop: 2,
-    },
-    rowRight: {
-      alignItems: "flex-end",
-      gap: spacing.xs,
-    },
-    rowAmount: {
-      fontSize: 14,
-      fontFamily: fonts.bold,
-      color: c.text,
-    },
-    rowPills: {
-      flexDirection: "row",
-      gap: spacing.xs,
-    },
-    divider: {
-      height: 1,
-      backgroundColor: c.border,
-    },
-    footer: {
-      paddingVertical: spacing.lg,
-    },
-
-    // ── Sheet ───────────────────────────────────────────────────────────────
-    sheetPills: {
-      flexDirection: "row",
-      gap: spacing.xs,
-      marginBottom: spacing.sm,
-    },
-    actions: {
-      flexDirection: "row",
-      gap: spacing.sm,
-      marginTop: spacing.lg,
-    },
-    action: {
-      flex: 1,
-    },
-    escalate: {
-      ...typography.caption,
-      color: c.danger,
-      fontSize: 11.5,
-      lineHeight: 17,
-      marginTop: spacing.md,
-    },
-    detailError: {
-      ...typography.body,
-      color: c.danger,
-      fontSize: 12.5,
-      marginTop: spacing.lg,
-    },
-    none: {
-      ...typography.caption,
-      color: c.textMuted,
-      fontSize: 11.5,
-      lineHeight: 17,
-    },
-
-    subRow: {
-      flexDirection: "row",
-      alignItems: "flex-start",
-      gap: spacing.md,
-      paddingVertical: spacing.sm,
-      borderTopWidth: 1,
-      borderTopColor: c.border,
-    },
-    subMain: {
-      flex: 1,
-    },
-    subTitle: {
-      fontSize: 13,
-      fontFamily: fonts.semibold,
-      color: c.text,
-    },
-    subMeta: {
-      fontSize: 11.5,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      marginTop: 1,
-    },
-    subError: {
-      ...typography.mono,
-      fontSize: 10.5,
-      lineHeight: 15,
-      color: c.danger,
-      marginTop: 2,
-    },
-    subAmount: {
-      fontSize: 13,
-      fontFamily: fonts.bold,
-    },
-
-    rawToggle: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing.xs,
-      paddingVertical: spacing.xs,
-    },
-    rawToggleText: {
-      fontSize: 12.5,
-      fontFamily: fonts.medium,
-      color: c.textMuted,
-    },
-    rawLabel: {
-      ...typography.caption,
-      color: c.textFaint,
-      fontSize: 10,
-      textTransform: "uppercase",
-      letterSpacing: 1,
-      marginTop: spacing.sm,
-    },
+    searchInput: { flex: 1, fontFamily: fonts.regular, fontSize: 16, color: a.text, paddingVertical: 0 },
+    minis: { flexDirection: "row", gap: 8 },
+    mini: { flex: 1, minHeight: 96, padding: 10 },
+    amount: { fontFamily: fonts.semibold, fontSize: 14.5, color: a.text, fontVariant: ["tabular-nums"] },
+    when: { fontFamily: fonts.regular, fontSize: 12, color: a.muted },
+    note: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: a.muted, marginTop: 12 },
+    more: { alignSelf: "center", marginTop: 8 },
   });

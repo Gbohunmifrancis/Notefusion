@@ -1,770 +1,442 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
-import { type IconName } from "../../components/Icon";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Screen } from "../../components/Screen";
-import { Card } from "../../components/Card";
-import { Button } from "../../components/Button";
-import { Touchable } from "../../components/Touchable";
+import React, { useState } from "react";
+import { Linking, Share, StyleSheet, Text, View } from "react-native";
+import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AdminBackBar, AdminPage, BarButton } from "../../components/admin/AdminChrome";
+import {
+  ActionGroup,
+  ActionRow,
+  Badge,
+  GroupLabel,
+  Initials,
+  List,
+  ListRow,
+  LoadState,
+  Meter,
+  Panel,
+  WarnNote,
+} from "../../components/admin/AdminUI";
+import { ConfirmSheet, type ConfirmRequest } from "../../components/admin/ConfirmSheet";
+import { PaymentSheet } from "../../components/admin/PaymentSheet";
+import { Icon } from "../../components/Icon";
 import { adminApi } from "../../api/endpoints";
-import { toApiError } from "../../api/client";
-import { showDialog } from "../../lib/dialog";
-import {
-  fonts,
-  motion,
-  spacing,
-  typography,
-  type Palette,
-} from "../../design/theme";
-import { useColors, useThemedStyles } from "../../lib/theme";
-import {
-  AdminHeader,
-  Field,
-  ListState,
-  RefreshButton,
-  SectionTitle,
-  StatusPill,
-  ago,
-  dateTime,
-  money,
-  parseUtc,
-  paymentTone,
-} from "./parts";
 import type { AdminUserDetail, BillingInterval } from "../../api/types";
-import type { RootStackParams } from "../../navigation/types";
+import { useAdminQuery } from "../../lib/adminCache";
+import { openConsole } from "../../lib/adminConsole";
+import { useAuth } from "../../lib/auth";
+import { showDialog } from "../../lib/dialog";
+import { showToast } from "../../lib/toast";
+import { freeResetLabel } from "../../lib/freeWeek";
+import { fonts, type AdminPalette } from "../../design/theme";
+import { useAdminColors, useAdminStyles } from "../../lib/theme";
+import {
+  PAYMENT_TONE,
+  agoSentence,
+  clock,
+  countryName,
+  dayLabel,
+  dayMonth,
+  firstName,
+  initials,
+  money,
+  nextFreeReset,
+  parseUtc,
+  proUntil,
+  shortPlan,
+  stuckFor,
+  type PaymentStatus,
+} from "../../lib/adminFormat";
+import type { AdminStackParams } from "../../navigation/types";
 
-type Props = NativeStackScreenProps<RootStackParams, "AdminUser">;
-
-/**
- * Stamped on every mutation from this screen.
- *
- * The audit trail already records who and what; this records *where*, which is the
- * question asked when an action looks out of character — a gift granted from a
- * phone at midnight reads differently from one granted at a desk.
- */
-const NOTE = "via mobile admin";
-
-const GIFTS: { label: string; duration: BillingInterval }[] = [
-  { label: "Monthly", duration: "monthly" },
-  { label: "Yearly", duration: "yearly" },
-  { label: "Lifetime", duration: "lifetime" },
+const GIFTS: { duration: BillingInterval; label: string }[] = [
+  { duration: "monthly", label: "A month" },
+  { duration: "yearly", label: "A year" },
+  { duration: "lifetime", label: "Lifetime" },
 ];
 
-const EXTENSIONS: { label: string; days?: number; months?: number }[] = [
-  { label: "+7 days", days: 7 },
-  { label: "+1 month", months: 1 },
-  { label: "+3 months", months: 3 },
-];
+/** An access token outlives a suspension or a demotion by up to this (Auth:AccessTokenMinutes). */
+const TOKEN_WINDOW = "60 minutes";
 
 /**
- * The new period end, as UTC ISO.
- *
- * Counts from *now* when the old end is already behind us: the server only
- * requires the new end to be later than the one it replaces, so adding a month to
- * a date three months gone would satisfy that check and still grant nothing.
+ * One account, a support conversation on one screen (board f-admin/05): who, the badges, the free week as a meter
+ * (and when it comes back), the shared-inbox warning that explains "my free ones are gone", the payments one tap
+ * from their sheet and Reconcile, then the actions as rows with Suspend the one red word. Destructive ones (Suspend,
+ * End subscription, Revoke Pro, Change role) ask in a sheet and then the phone's lock; the rest ask once.
  */
-function extendedEnd(
-  currentEndUtc: string,
-  by: { days?: number; months?: number },
-): string {
-  const from = Math.max(parseUtc(currentEndUtc).getTime(), Date.now());
-  const d = new Date(from);
-  if (by.months) d.setUTCMonth(d.getUTCMonth() + by.months);
-  if (by.days) d.setUTCDate(d.getUTCDate() + by.days);
-  return d.toISOString();
-}
+export function AdminUserScreen() {
+  const a = useAdminColors();
+  const s = useAdminStyles(makeStyles);
+  const nav = useNavigation<NativeStackNavigationProp<AdminStackParams>>();
+  const { userId } = useRoute<RouteProp<AdminStackParams, "AdminUser">>().params;
+  const { user: me } = useAuth();
+  const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
+  const [payment, setPayment] = useState<string | null>(null);
+  const q = useAdminQuery<AdminUserDetail>(`user:${userId}`, () => adminApi.user(userId));
+  const u = q.data;
+  const now = new Date();
 
-// ─── Component ────────────────────────────────────────────────────────────────
+  const back = () => (nav.canGoBack() ? nav.goBack() : nav.navigate("AdminTabs", { screen: "Users" }));
 
-/**
- * One account, and every operator action the server already supports.
- *
- * Each action is shown only in the state that makes it legal — gifting is hidden
- * while a subscription is active, revoking only appears for a gift, extending only
- * for a dated period — because the API refuses those combinations anyway, and a
- * button that exists to return an error teaches the operator to distrust the
- * screen. Role changes are deliberately absent: granting admin is not a decision
- * to take one-handed, and the console has it.
- */
-export function AdminUserScreen({ navigation, route }: Props) {
-  const { userId } = route.params;
-  const colors = useColors();
-  const styles = useThemedStyles(makeStyles);
+  if (!u)
+    return (
+      <AdminPage header={<AdminBackBar label="Users" onBack={back} />}>
+        <LoadState loading={q.loading} error={q.error} onRetry={q.refresh} />
+      </AdminPage>
+    );
 
-  const [user, setUser] = useState<AdminUserDetail | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(true);
-  const [action, setAction] = useState<string | null>(null);
+  const name = u.fullName || u.email;
+  const who = firstName(name);
+  const isSelf = me?.id === u.id;
+  const isAdmin = u.role === "Admin";
+  const sub = u.subscription;
+  const active = Boolean(sub?.isActive);
+  const done = (message: string) => async () => {
+    showToast(message);
+    await q.refresh();
+  };
 
-  const load = useCallback(async () => {
-    setBusy(true);
-    try {
-      setUser(await adminApi.user(userId));
-      setError(null);
-    } catch (e) {
-      setError(toApiError(e).message);
-    } finally {
-      setBusy(false);
-    }
-  }, [userId]);
+  const act = (r: Omit<ConfirmRequest, "onConfirm">, run: (note?: string) => Promise<unknown>, toast: string) =>
+    setConfirm({
+      ...r,
+      onConfirm: async (note) => {
+        await run(note);
+        await done(toast)();
+      },
+    });
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  // Change role sits in ⋯ with the other rare things (board f-admin/05); it asks in a sheet, then the phone's lock.
+  const changeRole = () =>
+    act(
+      isAdmin
+        ? {
+            title: `Remove ${who}'s admin access?`,
+            message: `${u.email} loses access to the console and to every admin endpoint. A signed-in session keeps admin powers for up to ${TOKEN_WINDOW}.`,
+            confirmLabel: "Remove admin",
+            destructive: true,
+            note: {},
+            secondAsk: true,
+          }
+        : {
+            title: `Make ${who} an admin?`,
+            message: `${u.email} gains full access to the console: every account's personal data, and every action here. They must sign out and back in before the new role is in their token.`,
+            confirmLabel: "Grant admin",
+            note: {},
+            secondAsk: true,
+          },
+      (note) => adminApi.setRole(u.id, isAdmin ? "user" : "admin", note),
+      isAdmin ? "Admin access removed" : "Admin access granted",
+    );
 
-  /**
-   * Runs one mutation, then re-reads the account rather than patching state
-   * locally: `hasProAccess` and the subscription window are computed server-side,
-   * and a client that guesses at the new shape eventually disagrees with it.
-   */
-  async function run(key: string, done: string, fn: () => Promise<void>) {
-    setAction(key);
-    try {
-      await fn();
-      await load();
-      showDialog({
-        title: done,
-        icon: "done",
-        tone: "brand",
-      });
-    } catch (e) {
-      const err = toApiError(e);
-      showDialog({
-        title: "Couldn't do that",
-        message: `${err.message}\n\n${err.code}`,
-        icon: "problem",
-        tone: "danger",
-      });
-    } finally {
-      setAction(null);
-    }
-  }
-
-  function confirm(opts: {
-    title: string;
-    message: string;
-    label: string;
-    icon: IconName;
-    destructive?: boolean;
-    key: string;
-    done: string;
-    fn: () => Promise<void>;
-  }) {
+  const moreMenu = () =>
     showDialog({
-      title: opts.title,
-      message: opts.message,
-      icon: opts.icon,
-      tone: opts.destructive ? "danger" : "brand",
+      title: name,
       actions: [
-        {
-          label: opts.label,
-          style: opts.destructive ? "destructive" : "default",
-          icon: opts.icon,
-          onPress: () => void run(opts.key, opts.done, opts.fn),
-        },
-        { label: "Cancel", style: "cancel" },
+        { label: "Copy email", icon: "copy", onPress: () => void Share.share({ message: u.email }).catch(() => undefined) },
+        { label: "Copy account id", icon: "copy", onPress: () => void Share.share({ message: u.id }).catch(() => undefined) },
+        { label: "Journey on the web console", icon: "external", onPress: () => openConsole(`/activity/journey?user=${u.id}`) },
+        ...(!isSelf ? [{ label: isAdmin ? "Remove admin access" : "Make admin", icon: "role" as const, onPress: changeRole }] : []),
+        ...(!isAdmin
+          ? [
+              {
+                label: u.isInternal ? "Count in analytics" : "Mark as team or test account",
+                icon: (u.isInternal ? "eye" : "eye-off") as "eye" | "eye-off",
+                onPress: () =>
+                  act(
+                    {
+                      title: u.isInternal ? "Count this account in analytics?" : "Leave this account out of analytics?",
+                      message: u.isInternal
+                        ? `${u.email} will be counted as a customer again: in the overview, Insights, the Users list, the live notices and every chart.`
+                        : `${u.email} is the team's own or a test account. It disappears from the overview, Insights, the Users list (unless you show the team), the live notices and every chart. The account itself is not touched.`,
+                      confirmLabel: u.isInternal ? "Count it" : "Leave it out",
+                      note: {},
+                    },
+                    (note) => adminApi.setInternal(u.id, !u.isInternal, note),
+                    u.isInternal ? "Counted in analytics again" : "Left out of analytics",
+                  ),
+              },
+            ]
+          : []),
+        { label: "Cancel", style: "cancel" as const },
       ],
     });
-  }
 
-  const sub = user?.subscription ?? null;
-  const locked =
-    user?.lockoutEndAt != null &&
-    parseUtc(user.lockoutEndAt).getTime() > Date.now();
+  const gift = () =>
+    showDialog({
+      title: `Gift Pro to ${who}`,
+      message: "No payment is taken, so this never counts as revenue.",
+      actions: [
+        ...GIFTS.map((g) => ({
+          label: g.label,
+          icon: "gift" as const,
+          onPress: () =>
+            act(
+              {
+                title: "Gift Pro access?",
+                message: `Grants ${g.label.toLowerCase()} of Pro to ${u.email} at no charge. No payment is recorded, so this never counts as revenue. It is written to the audit trail against your account.`,
+                confirmLabel: "Grant Pro",
+                note: {},
+              },
+              (note) => adminApi.giftPro(u.id, g.duration, note),
+              "Pro access granted",
+            ),
+        })),
+        { label: "Cancel", style: "cancel" as const },
+      ],
+    });
+
+  const used = u.trialGenerationsUsed;
+  const total = Math.max(1, u.trialGenerationsTotal);
+  const boughtLeft = Math.max(0, u.boughtTranscriptionsTotal - u.boughtTranscriptionsUsed);
+  const songsWaiting = u.payments.filter((p) => p.status === "Processing" && /one song/i.test(p.planName ?? "")).length;
+  const seen = u.lastSeenAtUtc ? parseUtc(u.lastSeenAtUtc) : null;
 
   return (
-    <Screen>
-      <AdminHeader
-        label="Account"
-        title={user?.fullName ?? "Account"}
-        onBack={() =>
-          navigation.canGoBack()
-            ? navigation.goBack()
-            : navigation.navigate("AdminUsers")
-        }
-        right={<RefreshButton onPress={() => void load()} busy={busy} />}
-      />
-
-      {user === null ? (
-        <ListState
-          loading={busy}
-          error={error}
-          emptyIcon="user"
-          emptyTitle="Not found"
-          emptyHint="No account with that id."
-        />
-      ) : (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.body}
-          refreshControl={
-            <RefreshControl
-              refreshing={busy}
-              onRefresh={() => void load()}
-              tintColor={colors.accent}
-              colors={[colors.accent]}
-            />
+    <AdminPage
+      header={
+        <AdminBackBar
+          label="Users"
+          onBack={back}
+          right={
+            <>
+              <BarButton icon="mail" label={`Email ${who}`} onPress={() => void Linking.openURL(`mailto:${u.email}`).catch(() => undefined)} />
+              <BarButton icon="more" label="More" onPress={moreMenu} />
+            </>
           }
-        >
-          {/* ── Identity ─────────────────────────────────────────────────────── */}
-          <Card>
-            <View style={styles.pills}>
-              {user.role === "Admin" ? (
-                <StatusPill label="Admin" tone="info" />
-              ) : null}
-              {sub?.isGift ? (
-                <StatusPill label="Gifted Pro" tone="warn" />
-              ) : sub?.isActive ? (
-                <StatusPill label="Pro" tone="good" />
-              ) : (
-                <StatusPill label="Free" tone="muted" />
-              )}
-              {!user.isActive ? (
-                <StatusPill label="Suspended" tone="bad" />
-              ) : null}
-              {locked ? <StatusPill label="Locked out" tone="bad" /> : null}
+        />
+      }
+      onRefresh={q.refresh}
+      refreshing={q.refreshing}
+    >
+      <View style={s.who}>
+        <Initials text={initials(name)} size={58} />
+        <View style={s.flex}>
+          <Text style={s.name} numberOfLines={2}>
+            {name}
+          </Text>
+          <Text style={s.email} numberOfLines={1}>
+            {[u.email, countryName(u.country)].filter(Boolean).join(" · ")}
+          </Text>
+        </View>
+      </View>
+
+      <View style={s.badges}>
+        <Badge label={active ? (sub?.isGift ? "Pro · gift" : "Pro") : "Free"} tone={active ? "prem" : "neutral"} />
+        <Badge label={u.isActive ? "Active" : "Suspended"} tone={u.isActive ? "ok" : "bad"} />
+        {isAdmin ? <Badge label="Admin" tone="blue" /> : null}
+        {u.isInternal && !isAdmin ? <Badge label="Team" /> : null}
+        <Badge label={u.hasGoogle ? "Google" : "Password"} />
+        <Badge label={`Joined ${dayMonth(parseUtc(u.createdAt), now)}`} />
+        {seen ? <Badge label={`Seen ${agoSentence(seen, now)}`} /> : null}
+      </View>
+
+      <Panel style={s.gap14}>
+        {active ? (
+          <View style={s.line}>
+            <Text style={s.lineTerm}>{shortPlan(sub?.planName) === "Payment" ? "Pro" : shortPlan(sub?.planName)}</Text>
+            <Text style={s.lineValue}>
+              {sub?.isLifetime || !sub?.currentPeriodEndUtc
+                ? "For life"
+                : `until ${proUntil(parseUtc(sub.currentPeriodEndUtc), now)}${sub.isGift ? " · gift" : sub.provider ? ` · ${sub.provider}` : ""}`}
+            </Text>
+          </View>
+        ) : (
+          <>
+            <View style={s.line}>
+              <Text style={s.lineTerm}>Free this week</Text>
+              <Text style={s.lineValue}>{`${used} of ${total} used · back ${freeResetLabel(nextFreeReset(now).toISOString())}`}</Text>
             </View>
+            <View style={s.meter}>
+              <Meter pct={(used / total) * 100} color={used >= total ? a.warn : a.brand} />
+            </View>
+          </>
+        )}
+        <View style={s.line}>
+          <Text style={s.lineTerm}>Bought songs</Text>
+          <Text style={s.lineValue}>{`${boughtLeft}${songsWaiting ? ` · ${songsWaiting} waiting on a payment` : ""}`}</Text>
+        </View>
+        <View style={s.line}>
+          <Text style={s.lineTerm}>Transcriptions</Text>
+          <Text style={s.lineValue}>
+            {`${u.transcriptionCount} · ${u.savedTranscriptionCount} saved · ${u.failedTranscriptionCount} failed · ${u.chargedTranscriptionCount} charged`}
+          </Text>
+        </View>
+        {u.sharedMailboxAccounts > 0 ? (
+          <WarnNote style={s.gap10}>
+            {`Inbox shared with ${u.sharedMailboxAccounts} other account${u.sharedMailboxAccounts === 1 ? "" : "s"}: they share the free three.`}
+          </WarnNote>
+        ) : null}
+      </Panel>
 
-            <Field label="Email" value={user.email} mono />
-            <Field label="Phone" value={user.phoneNumber} />
-            <Field label="Country" value={user.country} />
-            <Field
-              label="Sign-in"
-              value={
-                [user.hasGoogle && "Google", user.hasPassword && "Password"]
-                  .filter(Boolean)
-                  .join(" + ") || "None"
-              }
-            />
-            <Field label="Joined" value={dateTime(user.createdAt)} />
-            <Field
-              label="Last seen"
-              value={
-                user.lastLoginAt
-                  ? `${dateTime(user.lastLoginAt)} · ${ago(user.lastLoginAt)} ago`
-                  : "Never"
-              }
-            />
-            {locked && user.lockoutEndAt ? (
-              <Field
-                label="Locked until"
-                value={dateTime(user.lockoutEndAt)}
-                tone="bad"
-              />
-            ) : null}
-            <Field
-              label="Transcriptions"
-              value={String(user.transcriptionCount)}
-            />
-            <Field
-              label="Free this week"
-              value={`${user.trialGenerationsUsed} of ${user.trialGenerationsTotal} used`}
-            />
-          </Card>
-
-          {/* ── Subscription ─────────────────────────────────────────────────── */}
-          <SectionTitle>Subscription</SectionTitle>
-          <Card>
-            {sub === null ? (
-              <Text style={styles.note}>
-                No subscription. Gifting grants Pro at no charge — no payment and
-                no ledger entry, because a gift is not revenue.
-              </Text>
-            ) : (
-              <>
-                <Field label="Plan" value={sub.planName ?? sub.planCode} />
-                <Field label="Status" value={sub.status} />
-                <Field label="Provider" value={sub.provider} />
-                <Field
-                  label="Started"
-                  value={dateTime(sub.currentPeriodStartUtc)}
-                />
-                <Field
-                  label="Ends"
-                  value={
-                    sub.isLifetime
-                      ? "Never — lifetime"
-                      : sub.currentPeriodEndUtc
-                        ? dateTime(sub.currentPeriodEndUtc)
-                        : null
-                  }
-                />
-                {sub.canceledAtUtc ? (
-                  <Field
-                    label="Canceled"
-                    value={dateTime(sub.canceledAtUtc)}
-                    tone="bad"
-                  />
-                ) : null}
-              </>
-            )}
-
-            {/* Gifting is refused while a subscription is active, so it is only
-                offered when there is nothing in the way. */}
-            {!sub?.isActive ? (
-              <>
-                <Text style={styles.actionLabel}>Gift Pro</Text>
-                <View style={styles.buttonRow}>
-                  {GIFTS.map((g) => (
-                    <Button
-                      key={g.duration}
-                      label={g.label}
-                      variant="secondary"
-                      loading={action === `gift-${g.duration}`}
-                      disabled={action !== null}
-                      style={styles.rowButton}
-                      onPress={() =>
-                        confirm({
-                          title: `Gift ${g.label.toLowerCase()} Pro?`,
-                          message: `${user.email} gets Pro at no charge. This writes no payment and no ledger entry.`,
-                          label: "Gift Pro",
-                          icon: "gift",
-                          key: `gift-${g.duration}`,
-                          done: `${g.label} Pro granted`,
-                          fn: () => adminApi.giftPro(user.id, g.duration, NOTE),
-                        })
-                      }
-                    />
-                  ))}
-                </View>
-              </>
-            ) : null}
-
-            {/* A lifetime period has a year-9999 sentinel behind it; there is
-                nothing to move. */}
-            {sub?.isActive && !sub.isLifetime && sub.currentPeriodEndUtc ? (
-              <>
-                <Text style={styles.actionLabel}>Extend the period</Text>
-                <View style={styles.buttonRow}>
-                  {EXTENSIONS.map((x) => (
-                    <Button
-                      key={x.label}
-                      label={x.label}
-                      variant="secondary"
-                      loading={action === `extend-${x.label}`}
-                      disabled={action !== null}
-                      style={styles.rowButton}
-                      onPress={() => {
-                        const end = sub.currentPeriodEndUtc;
-                        if (!end) return;
-                        const next = extendedEnd(end, x);
-                        confirm({
-                          title: `Extend by ${x.label.replace("+", "")}?`,
-                          message: `The period will end ${dateTime(next)}.`,
-                          label: "Extend",
-                          icon: "calendar",
-                          key: `extend-${x.label}`,
-                          done: "Period extended",
-                          fn: () =>
-                            adminApi.extendSubscription(user.id, next, NOTE),
-                        });
-                      }}
-                    />
-                  ))}
-                </View>
-              </>
-            ) : null}
-
-            {sub?.isGift ? (
-              <Button
-                label="Revoke the gift"
-                variant="destructive"
-                icon="clear"
-                loading={action === "revoke"}
-                disabled={action !== null}
-                style={styles.stacked}
-                onPress={() =>
-                  confirm({
-                    title: "Revoke this gift?",
-                    message: `${user.email} loses Pro immediately. Only gifts can be revoked — a paid subscription is refused.`,
-                    label: "Revoke",
-                    icon: "clear",
-                    destructive: true,
-                    key: "revoke",
-                    done: "Gift revoked",
-                    fn: () => adminApi.revokePro(user.id, NOTE),
-                  })
-                }
-              />
-            ) : null}
-
-            {sub?.isActive ? (
-              <Button
-                label="End the subscription now"
-                variant="destructive"
-                icon="stop"
-                loading={action === "end"}
-                disabled={action !== null}
-                style={styles.stacked}
-                onPress={() =>
-                  confirm({
-                    title: "End it now?",
-                    message:
-                      "The rest of the paid period is forfeited and nothing is refunded. Refunds happen at the provider.",
-                    label: "End it",
-                    icon: "stop",
-                    destructive: true,
-                    key: "end",
-                    done: "Subscription ended",
-                    fn: () => adminApi.endSubscription(user.id, NOTE),
-                  })
-                }
-              />
-            ) : null}
-          </Card>
-
-          {/* ── Access ───────────────────────────────────────────────────────── */}
-          <SectionTitle>Access</SectionTitle>
-          <Card>
-            {user.isActive ? (
-              <Button
-                label="Suspend this account"
-                variant="destructive"
-                icon="ban"
-                loading={action === "suspend"}
-                disabled={action !== null}
-                onPress={() =>
-                  confirm({
-                    title: "Suspend this account?",
-                    message:
-                      "Sign-in is blocked and refresh tokens are revoked. An access token already issued keeps working until it expires — up to an hour.",
-                    label: "Suspend",
-                    icon: "ban",
-                    destructive: true,
-                    key: "suspend",
-                    done: "Account suspended",
-                    fn: () => adminApi.suspend(user.id, NOTE),
-                  })
-                }
-              />
-            ) : (
-              <Button
-                label="Reactivate this account"
-                icon="done"
-                loading={action === "reactivate"}
-                disabled={action !== null}
-                onPress={() =>
-                  confirm({
-                    title: "Reactivate this account?",
-                    message: `${user.email} will be able to sign in again.`,
-                    label: "Reactivate",
-                    icon: "done",
-                    key: "reactivate",
-                    done: "Account reactivated",
-                    fn: () => adminApi.reactivate(user.id, NOTE),
-                  })
-                }
-              />
-            )}
-
-            <Button
-              label="Email a password reset"
-              variant="secondary"
-              icon="mail"
-              loading={action === "reset"}
-              disabled={action !== null}
-              style={styles.stacked}
-              onPress={() =>
-                confirm({
-                  title: "Send a reset link?",
-                  message: `A link goes to ${user.email}. This is the supported way to help someone locked out — it puts the new password in their hands, not yours.`,
-                  label: "Send it",
-                  icon: "mail",
-                  key: "reset",
-                  done: "Reset link sent",
-                  fn: () => adminApi.sendPasswordReset(user.id, NOTE),
-                })
-              }
-            />
-
-            {user.trialGenerationsUsed > 0 ? (
-              <Button
-                label="Reset free trial quota"
-                variant="secondary"
-                icon="retry"
-                loading={action === "reset-trial"}
-                disabled={action !== null}
-                style={styles.stacked}
-                onPress={() =>
-                  confirm({
-                    title: "Reset trial quota?",
-                    message: `Reset free trial usage for ${user.email}? They will receive their free transcription quota again.`,
-                    label: "Reset quota",
-                    icon: "retry",
-                    key: "reset-trial",
-                    done: "Trial quota reset",
-                    fn: async () => {
-                      await adminApi.resetTrialQuota(user.id, NOTE);
-                    },
-                  })
-                }
-              />
-            ) : null}
-
-            {!user.hasPassword ? (
-              <Text style={styles.note}>
-                This account signs in with Google and has no password, so a reset
-                link is what creates one.
-              </Text>
-            ) : null}
-            {locked ? (
-              <Text style={styles.note}>
-                The lockout is from failed sign-ins and lifts on its own. A reset
-                link is the faster way through it.
-              </Text>
-            ) : null}
-          </Card>
-
-          {/* ── Payments ─────────────────────────────────────────────────────── */}
-          <SectionTitle>Payments</SectionTitle>
-          {user.payments.length === 0 ? (
-            <Card>
-              <Text style={styles.note}>
-                No payment attempts. A gifted account never has any.
-              </Text>
-            </Card>
-          ) : (
-            <Card padded={false}>
-              {user.payments.map((p, i) => (
-                <Touchable
+      {u.payments.length ? (
+        <>
+          <GroupLabel>Payments</GroupLabel>
+          <List>
+            {u.payments.slice(0, 5).map((p) => {
+              const at = parseUtc(p.createdAtUtc);
+              // The account's payment rows carry when the checkout opened, not when it last moved: "waiting", not "stuck".
+              const stuck = p.status === "Processing" ? ` · waiting ${stuckFor(at, now)}` : "";
+              return (
+                <ListRow
                   key={p.id}
-                  // The repair lives on the payment, so tapping goes there rather
-                  // than duplicating Reconcile on this screen.
-                  onPress={() =>
-                    navigation.push("AdminPayments", { search: p.reference })
+                  leading={
+                    <View style={s.payIcon}>
+                      <Icon name="card" size={17} color={a.icon} />
+                    </View>
                   }
-                  style={[styles.subRow, i > 0 && styles.subRowDivided]}
-                  scaleTo={motion.scale.row}
-                  accessibilityLabel={`${p.reference}, ${p.status}`}
-                >
-                  <View style={styles.subMain}>
-                    <Text style={styles.subTitle} numberOfLines={1}>
-                      {p.planName ?? p.provider}
-                    </Text>
-                    <Text style={styles.subRef} numberOfLines={1}>
-                      {p.reference}
-                    </Text>
-                    <Text style={styles.subMeta}>
-                      {dateTime(p.createdAtUtc)}
-                    </Text>
-                    {p.failureReason ? (
-                      <Text style={styles.subError} numberOfLines={2}>
-                        {p.failureReason}
-                      </Text>
-                    ) : null}
-                  </View>
-                  <View style={styles.subRight}>
-                    <Text style={styles.subAmount}>
-                      {money(p.amountMinor, p.currency)}
-                    </Text>
-                    <StatusPill label={p.status} tone={paymentTone(p.status)} />
-                  </View>
-                </Touchable>
-              ))}
-            </Card>
-          )}
+                  title={`${shortPlan(p.planName)} · ${money(p.amountMinor, p.currency)}`}
+                  line={`${p.provider} · ${dayLabel(at, now).toLowerCase()} ${clock(at)}${stuck}`}
+                  end={<Badge label={p.status} tone={PAYMENT_TONE[p.status as PaymentStatus] ?? "neutral"} />}
+                  onPress={() => setPayment(p.id)}
+                />
+              );
+            })}
+          </List>
+        </>
+      ) : null}
 
-          {/* ── Ledger ───────────────────────────────────────────────────────── */}
-          {user.ledger.length > 0 ? (
-            <>
-              <SectionTitle>Ledger</SectionTitle>
-              <Card padded={false}>
-                {user.ledger.map((entry, i) => (
-                  <View
-                    key={entry.id}
-                    style={[styles.subRow, i > 0 && styles.subRowDivided]}
-                  >
-                    <View style={styles.subMain}>
-                      <Text style={styles.subTitle}>
-                        {entry.direction} · {entry.reason}
-                      </Text>
-                      <Text style={styles.subMeta} numberOfLines={2}>
-                        {entry.description}
-                      </Text>
-                      <Text style={styles.subMeta}>
-                        {dateTime(entry.createdAtUtc)}
-                      </Text>
-                    </View>
-                    <Text
-                      style={[
-                        styles.subAmount,
-                        {
-                          color:
-                            entry.direction === "Credit"
-                              ? colors.success
-                              : colors.danger,
-                        },
-                      ]}
-                    >
-                      {money(entry.amountMinor, entry.currency)}
-                    </Text>
-                  </View>
-                ))}
-              </Card>
-            </>
-          ) : null}
+      <GroupLabel>Account actions</GroupLabel>
+      <ActionGroup>
+        {!active ? <ActionRow icon="gift" label="Gift Pro" hint="A month, a year or lifetime; no payment taken" onPress={gift} /> : null}
+        {active && sub?.isGift ? (
+          <ActionRow
+            icon="pro"
+            label="Revoke Pro"
+            hint="Ends the gift now; nothing was charged"
+            onPress={() =>
+              act(
+                {
+                  title: `Revoke ${who}'s gift?`,
+                  message: `Ends the granted Pro access for ${u.email} immediately. Their saved transcriptions are untouched; only the Pro entitlement stops. Nothing was charged, so nothing is refunded.`,
+                  confirmLabel: "Revoke",
+                  destructive: true,
+                  note: {},
+                  secondAsk: true,
+                },
+                (note) => adminApi.revokePro(u.id, note),
+                "Gifted Pro revoked",
+              )
+            }
+          />
+        ) : null}
+        {active ? (
+          <ActionRow
+            icon="end-period"
+            label="End subscription"
+            hint="Cuts Pro now; no refund"
+            onPress={() =>
+              act(
+                {
+                  title: `End ${who}'s subscription now?`,
+                  message: `Cuts Pro access for ${u.email} immediately, whether it was paid for or gifted. No refund is issued: if they paid for the remaining period, refund it in the provider's dashboard separately.`,
+                  confirmLabel: "End access",
+                  destructive: true,
+                  note: {},
+                  secondAsk: true,
+                },
+                (note) => adminApi.endSubscription(u.id, note),
+                "Subscription ended",
+              )
+            }
+          />
+        ) : null}
+        {used > 0 ? (
+          <ActionRow
+            icon="retry"
+            label="Reset this week's free three"
+            onPress={() =>
+              act(
+                {
+                  title: "Reset this week's free three?",
+                  message: `Gives ${u.email} this week's free transcriptions back.`,
+                  confirmLabel: "Reset",
+                  note: {},
+                },
+                (note) => adminApi.resetTrialQuota(u.id, note),
+                "Free three reset",
+              )
+            }
+          />
+        ) : null}
+        <ActionRow
+          icon="password"
+          label="Send password reset"
+          onPress={() =>
+            act(
+              {
+                title: "Send a password-reset link?",
+                message: `Emails a reset link to ${u.email}.${u.hasPassword ? "" : " This account signs in with Google and has no password: the link lets them set one."}`,
+                confirmLabel: "Send link",
+                note: {},
+              },
+              (note) => adminApi.sendPasswordReset(u.id, note),
+              "Reset link sent",
+            )
+          }
+        />
+        {!isSelf && u.isActive ? (
+          <ActionRow
+            icon="user-x"
+            label="Suspend account"
+            destructive
+            chevron={false}
+            onPress={() =>
+              act(
+                {
+                  title: `Suspend ${name}?`,
+                  message: `${u.email} can't sign in, and every refresh token is revoked. A token already issued keeps working for up to ${TOKEN_WINDOW}. Nothing is deleted; reactivating lets them sign in again.`,
+                  confirmLabel: "Suspend",
+                  destructive: true,
+                  note: { placeholder: "Five cards declined in an hour; Paystack flagged it" },
+                  secondAsk: true,
+                },
+                (note) => adminApi.suspend(u.id, note),
+                "Account suspended",
+              )
+            }
+          />
+        ) : null}
+        {!isSelf && !u.isActive ? (
+          <ActionRow
+            icon="user-check"
+            label="Reactivate account"
+            onPress={() =>
+              act(
+                {
+                  title: `Reactivate ${name}?`,
+                  message: `${u.email} will be able to sign in again, fresh: the refresh tokens revoked on suspension are not restored.`,
+                  confirmLabel: "Reactivate",
+                  note: {},
+                },
+                (note) => adminApi.reactivate(u.id, note),
+                "Account reactivated",
+              )
+            }
+          />
+        ) : null}
+      </ActionGroup>
 
-          {/* ── Recent Transcriptions ────────────────────────────────────────── */}
-          {user.recentTranscriptions && user.recentTranscriptions.length > 0 ? (
-            <>
-              <SectionTitle>Recent transcriptions</SectionTitle>
-              <Card padded={false}>
-                {user.recentTranscriptions.map((t, i) => (
-                  <View
-                    key={t.id}
-                    style={[styles.subRow, i > 0 && styles.subRowDivided]}
-                  >
-                    <View style={styles.subMain}>
-                      <Text style={styles.subTitle} numberOfLines={1}>
-                        {t.title || "Untitled"}
-                      </Text>
-                      <Text style={styles.subMeta}>
-                        Key: {t.key || "—"} · {t.tempoBpm > 0 ? `${t.tempoBpm} BPM · ` : ""}{Math.round(t.overallConfidence * 100)}% conf
-                      </Text>
-                      <Text style={styles.subMeta}>
-                        {dateTime(t.createdAtUtc)} · {ago(t.createdAtUtc)} ago
-                      </Text>
-                    </View>
-                    <StatusPill
-                      label={t.status}
-                      tone={
-                        t.status.toLowerCase() === "completed"
-                          ? "good"
-                          : t.status.toLowerCase() === "failed"
-                            ? "bad"
-                            : "info"
-                      }
-                    />
-                  </View>
-                ))}
-              </Card>
-            </>
-          ) : null}
-
-          {/* ── Audit ────────────────────────────────────────────────────────── */}
-          {user.recentActions.length > 0 ? (
-            <>
-              <SectionTitle>Recent admin actions</SectionTitle>
-              <Card padded={false}>
-                {user.recentActions.map((a, i) => (
-                  <View
-                    key={a.id}
-                    style={[styles.subRow, i > 0 && styles.subRowDivided]}
-                  >
-                    <View style={styles.subMain}>
-                      <Text style={styles.subTitle}>{a.summary}</Text>
-                      <Text style={styles.subMeta} numberOfLines={1}>
-                        {a.actorEmail} · {dateTime(a.occurredAtUtc)}
-                      </Text>
-                      {a.note ? (
-                        <Text style={styles.subNote}>“{a.note}”</Text>
-                      ) : null}
-                    </View>
-                  </View>
-                ))}
-              </Card>
-            </>
-          ) : null}
-        </ScrollView>
-      )}
-    </Screen>
+      <ConfirmSheet request={confirm} onClose={() => setConfirm(null)} />
+      <PaymentSheet
+        paymentId={payment}
+        onClose={() => setPayment(null)}
+        onOpenAccount={(id) => (id === u.id ? undefined : nav.push("AdminUser", { userId: id }))}
+      />
+    </AdminPage>
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
-
-const makeStyles = (c: Palette) =>
+const makeStyles = (a: AdminPalette) =>
   StyleSheet.create({
-    body: {
-      paddingBottom: spacing.xxxl,
-    },
-
-    pills: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      gap: spacing.xs,
-      marginBottom: spacing.sm,
-    },
-    note: {
-      ...typography.caption,
-      color: c.textMuted,
-      fontSize: 11.5,
-      lineHeight: 17,
-      marginTop: spacing.md,
-    },
-
-    actionLabel: {
-      ...typography.caption,
-      color: c.textFaint,
-      textTransform: "uppercase",
-      letterSpacing: 1,
-      fontSize: 10,
-      marginTop: spacing.lg,
-      marginBottom: spacing.sm,
-    },
-    buttonRow: {
-      flexDirection: "row",
-      gap: spacing.sm,
-    },
-    rowButton: {
-      flex: 1,
-    },
-    stacked: {
-      marginTop: spacing.sm,
-    },
-
-    // ── Nested lists ────────────────────────────────────────────────────────
-    subRow: {
-      flexDirection: "row",
-      alignItems: "flex-start",
-      gap: spacing.md,
-      padding: spacing.lg,
-    },
-    subRowDivided: {
-      borderTopWidth: 1,
-      borderTopColor: c.border,
-    },
-    subMain: {
-      flex: 1,
-    },
-    subTitle: {
-      fontSize: 13.5,
-      fontFamily: fonts.semibold,
-      color: c.text,
-    },
-    subRef: {
-      ...typography.mono,
-      fontSize: 11,
-      color: c.textMuted,
-      marginTop: 2,
-    },
-    subMeta: {
-      fontSize: 11.5,
-      fontFamily: fonts.regular,
-      color: c.textFaint,
-      marginTop: 2,
-    },
-    subNote: {
-      fontSize: 11.5,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      fontStyle: "italic",
-      marginTop: 2,
-    },
-    subError: {
-      ...typography.mono,
-      fontSize: 10.5,
-      lineHeight: 15,
-      color: c.danger,
-      marginTop: spacing.xs,
-    },
-    subRight: {
-      alignItems: "flex-end",
-      gap: spacing.xs,
-    },
-    subAmount: {
-      fontSize: 13,
-      fontFamily: fonts.bold,
-      color: c.text,
-    },
+    flex: { flex: 1, minWidth: 0 },
+    gap10: { marginTop: 10 },
+    gap14: { marginTop: 14 },
+    who: { flexDirection: "row", alignItems: "center", gap: 14, marginTop: 4 },
+    name: { fontFamily: fonts.semibold, fontSize: 22, letterSpacing: -0.4, color: a.text },
+    email: { fontFamily: fonts.regular, fontSize: 14, color: a.muted, marginTop: 3 },
+    badges: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 14 },
+    line: { flexDirection: "row", justifyContent: "space-between", gap: 12, paddingVertical: 6 },
+    lineTerm: { fontFamily: fonts.medium, fontSize: 14.5, color: a.text },
+    lineValue: { flexShrink: 1, textAlign: "right", fontFamily: fonts.regular, fontSize: 13.5, color: a.muted, fontVariant: ["tabular-nums"] },
+    meter: { marginTop: 4, marginBottom: 8 },
+    payIcon: { width: 36, height: 36, borderRadius: 10, backgroundColor: a.sub, alignItems: "center", justifyContent: "center" },
   });

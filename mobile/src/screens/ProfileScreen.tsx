@@ -21,6 +21,8 @@ import { refreshProfilePicture, setProfilePicture, useProfilePicture } from "../
 import { getPushPermission, loadNotificationPrefs, pushEnabled } from "../lib/push";
 import { notificationsValue } from "../lib/pushStatus";
 import { useFeedback } from "../lib/feedback";
+import { useAdminLock } from "../lib/adminLockRuntime";
+import { Icon } from "../components/Icon";
 import { fonts, radii, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { RootStackParams } from "../navigation/types";
@@ -238,12 +240,22 @@ export function ProfileScreen() {
         {Platform.OS === "android" ? (
           <Row icon="rate" label="Rate Notefusion" chevron onPress={() => void rating.rate()} />
         ) : null}
-        {/* Hidden for everyone else: the routes are behind the server's Admin policy, so this is about not
-            showing a customer an operator surface. */}
-        {isAdmin ? (
-          <Row icon="admin" label="Admin" chevron onPress={() => nav.navigate("AdminHome")} />
-        ) : null}
       </Group>
+
+      {/* Admin in a group of its own (board f-admin/10), only for an admin: a customer's Profile has no row, no
+          space and no "request access". It opens behind the admin lock, so it says "Locked" until it is open. */}
+      {isAdmin ? (
+        <Group style={styles.gap}>
+          <Row
+            icon="overview"
+            label="Admin"
+            hint="Payments, users, health"
+            trailing={<AdminLockState />}
+            chevron
+            onPress={() => nav.navigate("Admin")}
+          />
+        </Group>
+      ) : null}
 
       {/* ── 5. The version, which opens About ───────────────────────────────── */}
       <Touchable
@@ -257,6 +269,19 @@ export function ProfileScreen() {
 
       <AboutSheet visible={about} onClose={() => setAbout(false)} />
     </Screen>
+  );
+}
+
+/** "Locked", with the padlock, until the admin lock opens; then "Open". */
+function AdminLockState() {
+  const { unlocked } = useAdminLock();
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <View style={styles.lockState}>
+      {unlocked ? null : <Icon name="lock" size={14} color={colors.textMuted} />}
+      <Text style={styles.lockText}>{unlocked ? "Open" : "Locked"}</Text>
+    </View>
   );
 }
 
@@ -308,6 +333,16 @@ const makeStyles = (c: Palette) =>
     },
     gap: {
       marginTop: spacing.lg,
+    },
+    lockState: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 5,
+    },
+    lockText: {
+      fontFamily: fonts.regular,
+      fontSize: 14,
+      color: c.textMuted,
     },
     footer: {
       alignSelf: "center",

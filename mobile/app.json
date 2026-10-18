@@ -42,7 +42,14 @@
         "expo-notifications",
         {
           "icon": "./assets/brand/mark.png",
-          "color": "#2563EB"
+          "color": "#2563EB",
+          "sounds": ["./assets/sounds/payment.wav"]
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "NoteFusion uses Face ID to open Admin, so payments and accounts stay locked on a phone left unlocked."
         }
       ],
       [

@@ -26,11 +26,8 @@ import { CarolsScreen } from '../screens/practice/CarolsScreen';
 import { useOutboxRunner } from '../lib/outbox';
 import { useSeasonSync } from '../lib/seasonStore';
 import { autoRefreshPack } from '../lib/hymnPackStore';
-import { AdminHomeScreen } from '../screens/admin/AdminHomeScreen';
-import { AdminPaymentsScreen } from '../screens/admin/AdminPaymentsScreen';
-import { AdminUserScreen } from '../screens/admin/AdminUserScreen';
-import { AdminUsersScreen } from '../screens/admin/AdminUsersScreen';
-import { AdminWebhooksScreen } from '../screens/admin/AdminWebhooksScreen';
+import { AdminRoot } from '../screens/admin/AdminNavigator';
+import { useAdminSession } from '../lib/adminSession';
 import { FeedbackProvider } from '../lib/feedback';
 import type { RootStackParams } from './types';
 
@@ -65,7 +62,10 @@ export function RootNavigator() {
   // Tapping a "transcription ready" push opens that transcription as an unsaved draft. Held until
   // the authenticated stack exists, because a tap is what launches the app in the case this feature
   // is for.
-  useNotificationDeepLink(Boolean(user));
+  useNotificationDeepLink(Boolean(user), isAdmin);
+
+  // Admin locks, and everything it read is dropped, on sign-out and on an account change.
+  useAdminSession(user?.id ?? null);
 
   // The Quick Settings tile, the home-screen widget and the listening notification open
   // notefusion://listen. Same hold-until-signed-in rule; only that one path is matched. Also held
@@ -200,38 +200,12 @@ export function RootNavigator() {
               options={{ presentation: 'card', animation: 'slide_from_bottom' }}
             />
 
-            {/* Admin: registered only for an admin (the role the server's profile reports), so for anyone
-                else these screens do not exist — no row, no route, no deep link or push can open one. Adding
-                or removing screens keeps the rest of the stack's state; an admin demoted mid-session is moved
-                off an admin screen. Every admin endpoint checks the role in the database regardless. */}
+            {/* Admin: registered only for an admin (the role the server's profile reports), so for anyone else it does
+                not exist — no row, no route, no deep link or push can open it. Adding or removing it keeps the rest of the
+                stack's state; an admin demoted mid-session is moved off it. Behind its own lock (lib/adminLockRuntime),
+                and every admin endpoint checks the role in the database regardless. */}
             {isAdmin ? (
-            <>
-            <Stack.Screen
-              name="AdminHome"
-              component={AdminHomeScreen}
-              options={{ animation: 'slide_from_right' }}
-            />
-            <Stack.Screen
-              name="AdminPayments"
-              component={AdminPaymentsScreen}
-              options={{ animation: 'slide_from_right' }}
-            />
-            <Stack.Screen
-              name="AdminWebhooks"
-              component={AdminWebhooksScreen}
-              options={{ animation: 'slide_from_right' }}
-            />
-            <Stack.Screen
-              name="AdminUsers"
-              component={AdminUsersScreen}
-              options={{ animation: 'slide_from_right' }}
-            />
-            <Stack.Screen
-              name="AdminUser"
-              component={AdminUserScreen}
-              options={{ animation: 'slide_from_right' }}
-            />
-            </>
+              <Stack.Screen name="Admin" component={AdminRoot} options={{ animation: 'slide_from_right' }} />
             ) : null}
           </>
         ) : (

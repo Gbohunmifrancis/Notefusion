@@ -24,8 +24,10 @@ import React, {
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  adminPaletteFor,
   paletteFor,
   shadowsFor,
+  type AdminPalette,
   type Palette,
   type Shadows,
   type ThemeMode,
@@ -128,4 +130,15 @@ export function useThemedStyles<T extends StyleSheet.NamedStyles<T>>(
 ): T {
   const { palette, shadows } = useTheme();
   return useMemo(() => factory(palette, shadows), [factory, palette, shadows]);
+}
+
+/** The phone admin's palette: the web console's tokens (`design/theme` `adminDark`/`adminLight`) in the active mode. */
+export function useAdminColors(): AdminPalette {
+  return adminPaletteFor(useTheme().mode);
+}
+
+/** `useThemedStyles` for the phone admin: the factory gets the console's palette. */
+export function useAdminStyles<T extends StyleSheet.NamedStyles<T>>(factory: (palette: AdminPalette) => T): T {
+  const { mode } = useTheme();
+  return useMemo(() => factory(adminPaletteFor(mode)), [factory, mode]);
 }

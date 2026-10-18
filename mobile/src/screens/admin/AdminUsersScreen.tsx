@@ -1,279 +1,195 @@
-import React, { useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { Linking, Share, StyleSheet, Text, TextInput, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AdminPage, AdminTopBar, PageTitle } from "../../components/admin/AdminChrome";
+import { Badge, FilterChips, Initials, List, ListRow, LoadState } from "../../components/admin/AdminUI";
+import { Button } from "../../components/Button";
 import { Icon } from "../../components/Icon";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Screen } from "../../components/Screen";
 import { Touchable } from "../../components/Touchable";
 import { adminApi } from "../../api/endpoints";
-import {
-  fonts,
-  motion,
-  radii,
-  spacing,
-  typography,
-  type Palette,
-} from "../../design/theme";
-import { useColors, useThemedStyles } from "../../lib/theme";
-import {
-  AdminHeader,
-  Chip,
-  ListState,
-  SearchField,
-  StatusPill,
-  ago,
-  useDebounced,
-  usePagedList,
-} from "./parts";
-import type { AdminUserRow } from "../../api/types";
-import type { RootStackParams } from "../../navigation/types";
+import type { AdminUserRow, LiveActivity, PagedResult } from "../../api/types";
+import { useAdminData, useAdminQuery } from "../../lib/adminCache";
+import { showDialog } from "../../lib/dialog";
+import { fonts, type AdminPalette } from "../../design/theme";
+import { useAdminColors, useAdminStyles } from "../../lib/theme";
+import { ago, count, initials, parseUtc } from "../../lib/adminFormat";
+import type { AdminStackParams } from "../../navigation/types";
 
-type Props = NativeStackScreenProps<RootStackParams, "AdminUsers">;
+type Filter = "all" | "pro" | "free" | "online" | "suspended";
+type Sort = "lastSeen" | "newest";
+
+const PAGE = 30;
 
 /**
- * Active state is the only filter here.
- *
- * Pro and gifted are on every row, but the server pages before anything sees
- * them, so a chip for either could only filter the page already loaded — which
- * would show "3 of 214" and mean neither number. Search is the tool for finding a
- * specific account; this is just the two states an operator puts an account into.
+ * The web's Users table as rows (board f-admin/05): search by name or email, its filters as chips, its two sorts,
+ * team and test accounts hidden unless asked for. Each row: who, Pro in gold (choir in violet), email and country,
+ * last seen (mint while online) and transcriptions. A long press offers Email and Copy email.
  */
-const FILTERS: { label: string; isActive?: boolean }[] = [
-  { label: "All" },
-  { label: "Active", isActive: true },
-  { label: "Suspended", isActive: false },
-];
+export function AdminUsersScreen() {
+  const a = useAdminColors();
+  const s = useAdminStyles(makeStyles);
+  const nav = useNavigation<NativeStackNavigationProp<AdminStackParams>>();
+  const [search, setSearch] = useState("");
+  const [term, setTerm] = useState("");
+  const [filter, setFilter] = useState<Filter>("all");
+  const [sort, setSort] = useState<Sort>("lastSeen");
+  const [team, setTeam] = useState(false);
+  const [pages, setPages] = useState(1);
+  const live = useAdminData<LiveActivity>("live");
 
-const PAGE_SIZE = 25;
+  useEffect(() => {
+    const t = setTimeout(() => setTerm(search.trim()), 350);
+    return () => clearTimeout(t);
+  }, [search]);
+  useEffect(() => setPages(1), [term, filter, sort, team]);
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
-/**
- * Find an account. Split from `AdminUser` because that screen needs a `userId`,
- * and the support case this exists for starts from an email in an inbox.
- */
-export function AdminUsersScreen({ navigation }: Props) {
-  const colors = useColors();
-  const styles = useThemedStyles(makeStyles);
-
-  const [query, setQuery] = useState("");
-  const search = useDebounced(query);
-  const [filter, setFilter] = useState(0);
-
-  const active = FILTERS[filter];
-  const list = usePagedList<AdminUserRow>(
-    (page) =>
-      adminApi.users({
-        page,
-        pageSize: PAGE_SIZE,
-        search: search.trim() || undefined,
-        isActive: active.isActive,
-      }),
-    [search, filter],
+  const users = useAdminQuery<PagedResult<AdminUserRow>>(`users:${term}:${filter}:${sort}:${team}:${pages}`, () =>
+    adminApi.users({
+      page: 1,
+      pageSize: PAGE * pages,
+      search: term || undefined,
+      sort: sort === "lastSeen" ? "lastSeen" : undefined,
+      includeInternal: team || undefined,
+      lastSeen: filter === "online" ? "online" : undefined,
+      isActive: filter === "suspended" ? false : undefined,
+      plan: filter === "pro" || filter === "free" ? filter : undefined,
+    }),
   );
 
+  const now = new Date();
+  const rows = users.data?.items ?? [];
+
+  const pickSort = () =>
+    showDialog({
+      title: "Sort",
+      actions: [
+        { label: "Recently seen", icon: "clock", selected: sort === "lastSeen", onPress: () => setSort("lastSeen") },
+        { label: "Newest accounts", icon: "user-plus", selected: sort === "newest", onPress: () => setSort("newest") },
+      ],
+    });
+
+  const offer = (u: AdminUserRow) =>
+    showDialog({
+      title: u.fullName || u.email,
+      message: u.email,
+      actions: [
+        { label: "Email", icon: "mail", onPress: () => void Linking.openURL(`mailto:${u.email}`).catch(() => undefined) },
+        { label: "Copy email", icon: "copy", onPress: () => void Share.share({ message: u.email }).catch(() => undefined) },
+        { label: "Cancel", style: "cancel" },
+      ],
+    });
+
   return (
-    <Screen>
-      <AdminHeader
-        label="Operations"
-        title="Accounts"
-        onBack={() =>
-          navigation.canGoBack()
-            ? navigation.goBack()
-            : navigation.navigate("AdminHome")
-        }
+    <AdminPage header={<AdminTopBar />} onRefresh={users.refresh} refreshing={users.refreshing}>
+      <PageTitle
+        title="Users"
+        sub={users.data ? `${count(users.data.totalCount)} accounts · ${team ? "team included" : "customers only"}` : " "}
       />
-
-      <FlatList
-        data={list.items}
-        keyExtractor={(u) => u.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
-        keyboardShouldPersistTaps="handled"
-        onEndReachedThreshold={0.4}
-        onEndReached={list.loadMore}
-        refreshControl={
-          <RefreshControl
-            refreshing={list.refreshing}
-            onRefresh={list.refresh}
-            tintColor={colors.accent}
-            colors={[colors.accent]}
-          />
-        }
-        ListHeaderComponent={
-          <View style={styles.header}>
-            <SearchField
-              value={query}
-              onChange={setQuery}
-              placeholder="Name or email"
-            />
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.chipRow}
-            >
-              {FILTERS.map((f, i) => (
-                <Chip
-                  key={f.label}
-                  label={f.label}
-                  active={filter === i}
-                  onPress={() => setFilter(i)}
-                />
-              ))}
-            </ScrollView>
-            {list.items.length > 0 ? (
-              <Text style={styles.count}>
-                {list.items.length} of {list.total}
-              </Text>
-            ) : null}
+      <View style={s.search}>
+        <Icon name="search" size={17} color={a.faint} />
+        <TextInput
+          value={search}
+          onChangeText={setSearch}
+          placeholder="Search by name or email"
+          placeholderTextColor={a.dim}
+          style={s.searchInput}
+          autoCapitalize="none"
+          autoCorrect={false}
+          accessibilityLabel="Search by name or email"
+        />
+      </View>
+      <View style={s.gap12}>
+        <FilterChips
+          options={[
+            { value: "all", label: "All" },
+            { value: "pro", label: "Pro" },
+            { value: "free", label: "Free" },
+            { value: "online", label: live ? `Online now ${live.online.length}` : "Online now", dot: true },
+            { value: "suspended", label: "Suspended" },
+          ]}
+          value={filter}
+          onChange={setFilter}
+        />
+      </View>
+      <View style={s.sortRow}>
+        <Touchable onPress={pickSort} ripple={false} accessibilityLabel="Sort">
+          <View style={s.sort}>
+            <Text style={s.sortMuted}>Sort</Text>
+            <Text style={s.sortValue}>{sort === "lastSeen" ? "Recently seen" : "Newest accounts"}</Text>
+            <Icon name="down" size={14} color={a.muted} />
           </View>
-        }
-        renderItem={({ item }) => (
-          <Touchable
-            onPress={() => navigation.navigate("AdminUser", { userId: item.id })}
-            style={styles.row}
-            scaleTo={motion.scale.row}
-            accessibilityLabel={`${item.fullName}, ${item.email}`}
-          >
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>
-                {(item.fullName.trim()[0] ?? item.email[0] ?? "?").toUpperCase()}
-              </Text>
-            </View>
+        </Touchable>
+        <Touchable onPress={() => setTeam((t) => !t)} ripple={false} accessibilityLabel={team ? "Hide team accounts" : "Show team accounts"}>
+          <Text style={s.sortMuted}>{team ? "Team accounts shown" : "Team accounts hidden"}</Text>
+        </Touchable>
+      </View>
 
-            <View style={styles.rowMain}>
-              <Text style={styles.rowTitle} numberOfLines={1}>
-                {item.fullName}
-              </Text>
-              <Text style={styles.rowEmail} numberOfLines={1}>
-                {item.email}
-              </Text>
-              <Text style={styles.rowMeta} numberOfLines={1}>
-                {item.transcriptionCount} transcription
-                {item.transcriptionCount === 1 ? "" : "s"} ·{" "}
-                {item.lastLoginAt ? `seen ${ago(item.lastLoginAt)} ago` : "never signed in"}
-                {/* Which sign-in methods exist decides whether a password reset
-                    is even the right suggestion. */}
-                {item.hasGoogle ? " · Google" : ""}
-              </Text>
-            </View>
-
-            <View style={styles.rowRight}>
-              {item.role === "Admin" ? (
-                <StatusPill label="Admin" tone="info" />
-              ) : null}
-              {item.isGiftedPro ? (
-                <StatusPill label="Gift" tone="warn" />
-              ) : item.hasProAccess ? (
-                <StatusPill label="Pro" tone="good" />
-              ) : null}
-              {!item.isActive ? (
-                <StatusPill label="Suspended" tone="bad" />
-              ) : null}
-              <Icon
-                name="chevron"
-                size={16}
-                color={colors.textFaint}
+      {rows.length ? (
+        <List>
+          {rows.map((u) => {
+            const seen = u.lastSeenAtUtc ? parseUtc(u.lastSeenAtUtc) : null;
+            return (
+              <ListRow
+                key={u.id}
+                leading={<Initials text={initials(u.fullName || u.email)} online={u.isOnline} />}
+                title={u.fullName || u.email}
+                titleExtra={
+                  <View style={s.badges}>
+                    {!u.isActive ? <Badge label="Suspended" tone="bad" /> : null}
+                    <Badge label={u.hasProAccess || u.inChoir ? "Pro" : "Free"} tone={u.hasProAccess || u.inChoir ? "prem" : "neutral"} />
+                    {u.inChoir ? <Badge label="Choir" tone="choir" /> : null}
+                  </View>
+                }
+                line={[u.email, u.country].filter(Boolean).join(" · ")}
+                end={
+                  <>
+                    <Text style={[s.seen, u.isOnline && { color: a.ok }]}>{u.isOnline ? "Online" : seen ? ago(seen, now) : "Never"}</Text>
+                    <View style={s.countRow}>
+                      <Icon name="transcribe" size={12} color={a.faint} />
+                      <Text style={s.count}>{count(u.transcriptionCount)}</Text>
+                    </View>
+                  </>
+                }
+                onPress={() => nav.navigate("AdminUser", { userId: u.id })}
+                onLongPress={() => offer(u)}
               />
-            </View>
-          </Touchable>
-        )}
-        ItemSeparatorComponent={() => <View style={styles.divider} />}
-        ListEmptyComponent={
-          <ListState
-            loading={list.loading}
-            error={list.error}
-            emptyIcon="users"
-            emptyTitle="No accounts"
-            emptyHint="Nothing matches that search."
-          />
-        }
-        ListFooterComponent={
-          list.loadingMore ? (
-            <ActivityIndicator style={styles.footer} color={colors.accent} />
-          ) : null
-        }
-      />
-    </Screen>
+            );
+          })}
+        </List>
+      ) : (
+        <LoadState loading={users.loading} error={users.error} empty={term ? "No account matches that." : "No accounts here."} onRetry={users.refresh} />
+      )}
+      {users.data && users.data.totalCount > rows.length ? (
+        <Button label="Show more" variant="text" onPress={() => setPages((p) => p + 1)} style={s.more} />
+      ) : null}
+    </AdminPage>
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
-
-const makeStyles = (c: Palette) =>
+const makeStyles = (a: AdminPalette) =>
   StyleSheet.create({
-    listContent: {
-      paddingBottom: spacing.xxxl,
-    },
-    header: {
-      gap: spacing.md,
-      marginBottom: spacing.sm,
-    },
-    chipRow: {
-      gap: spacing.xs,
-      paddingRight: spacing.lg,
-    },
-    count: {
-      ...typography.caption,
-      color: c.textFaint,
-      fontSize: 11,
-    },
-
-    row: {
+    gap12: { marginTop: 12 },
+    search: {
       flexDirection: "row",
       alignItems: "center",
-      gap: spacing.md,
-      paddingVertical: spacing.md,
+      gap: 8,
+      height: 48,
+      paddingHorizontal: 12,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: a.line,
+      backgroundColor: a.card,
+      marginTop: 14,
     },
-    avatar: {
-      width: 40,
-      height: 40,
-      borderRadius: radii.pill,
-      backgroundColor: c.accentSoft,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    avatarText: {
-      fontSize: 16,
-      fontFamily: fonts.bold,
-      color: c.accent,
-    },
-    rowMain: {
-      flex: 1,
-    },
-    rowTitle: {
-      fontSize: 14.5,
-      fontFamily: fonts.semibold,
-      color: c.text,
-    },
-    rowEmail: {
-      fontSize: 12,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      marginTop: 1,
-    },
-    rowMeta: {
-      fontSize: 11,
-      fontFamily: fonts.regular,
-      color: c.textFaint,
-      marginTop: 2,
-    },
-    rowRight: {
-      alignItems: "flex-end",
-      gap: spacing.xs,
-    },
-    divider: {
-      height: 1,
-      backgroundColor: c.border,
-    },
-    footer: {
-      paddingVertical: spacing.lg,
-    },
+    searchInput: { flex: 1, fontFamily: fonts.regular, fontSize: 16, color: a.text, paddingVertical: 0 },
+    sortRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 6, marginBottom: 8, paddingHorizontal: 2 },
+    sort: { flexDirection: "row", alignItems: "center", gap: 5, minHeight: 40 },
+    sortMuted: { fontFamily: fonts.regular, fontSize: 13, color: a.muted },
+    sortValue: { fontFamily: fonts.medium, fontSize: 13, color: a.text },
+    badges: { flexDirection: "row", gap: 4 },
+    seen: { fontFamily: fonts.regular, fontSize: 12.5, color: a.muted, fontVariant: ["tabular-nums"] },
+    countRow: { flexDirection: "row", alignItems: "center", gap: 3 },
+    count: { fontFamily: fonts.regular, fontSize: 12.5, color: a.muted, fontVariant: ["tabular-nums"] },
+    more: { alignSelf: "center", marginTop: 8 },
   });
