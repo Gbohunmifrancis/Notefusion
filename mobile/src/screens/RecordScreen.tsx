@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  StyleSheet,
-  Text,
-  View,
- Alert } from "react-native";
+import { Animated, StyleSheet, Text, View } from "react-native";
 import {
   useAudioRecorder,
   useAudioRecorderState,
@@ -40,6 +35,10 @@ import { useJobPolling } from "../lib/useJobPolling";
 import { OFFLINE_LINE, STALLED_LINE, percentLabel, stageLabel, type ClientStage } from "../lib/jobProgress";
 import { useSubscription } from "../lib/subscription";
 import { importKind, loadImportKind, setImportKind } from "../lib/importKind";
+import { recordKindChoices } from "../lib/recordKind";
+import { formatPrice, limitCopy, limitOffer, type LimitOffer } from "../lib/price";
+import { billingApi } from "../api/endpoints";
+import type { Plan } from "../api/types";
 import {
   KEYBOARD_TRANSPOSE_CHOICES,
   keyboardTranspose,
@@ -209,11 +208,11 @@ function meteringToFraction(dbfs: number): number {
   return (clamped - LEVEL_SILENCE_DBFS) / (0 - LEVEL_SILENCE_DBFS);
 }
 
-/** Traffic-light colour for the current metering level. */
+/** The trace's head colour for the current metering level: mint, amber, then grey for nothing heard. */
 function meteringToColor(dbfs: number, c: Palette): string {
   if (dbfs >= LEVEL_GOOD_DBFS) return c.success; // comfortably loud
   if (dbfs >= LEVEL_QUIET_DBFS) return c.warning; // audible but soft
-  return c.danger; // too quiet / far from the mic
+  return c.textMuted; // too quiet / far from the mic: the amber "Sing louder" pill says so
 }
 
 /** Removes a local take or imported cache copy; one that is already gone is nothing to report. */
@@ -252,12 +251,11 @@ async function offerBackgroundAlerts(): Promise<void> {
   await markPushPermissionAsked();
   showDialog({
     title: "Tell you when it's ready?",
-    message:
-      "Transcribing takes a moment. Turn on notifications and you can leave the app — we'll let you know as soon as your score is done.",
+    message: "Turn on notifications and you can leave the app. We'll tell you the moment your score is done.",
     icon: "notifications-outline",
     tone: "brand",
     actions: [
-      { label: "Notify me", icon: "checkmark", onPress: () => void enablePush() },
+      { label: "Notify me", onPress: () => void enablePush() },
       { label: "Not now", style: "cancel" },
     ],
   });
@@ -299,6 +297,25 @@ export function RecordScreen() {
   const songNeedsCredit = known && !isPro && boughtRemaining <= 0;
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+
+  /**
+   * The region's own prices for the limit sheet's two rows (the one-song purchase and Pro by the
+   * month). Read once for a free account; until they arrive, or if they fail, the rows go without.
+   */
+  const [offer, setOffer] = useState<LimitOffer>({});
+  useEffect(() => {
+    if (!known || isPro) return;
+    let live = true;
+    void Promise.all([
+      billingApi.plans().catch(() => [] as Plan[]),
+      billingApi.singlePlans().catch(() => [] as Plan[]),
+    ]).then(([pro, single]) => {
+      if (live) setOffer(limitOffer(pro, single));
+    });
+    return () => {
+      live = false;
+    };
+  }, [known, isPro]);
 
   const [phase, setPhase] = useState<Phase>("ready");
   const [mode, setMode] = useState<Mode>("melody");
@@ -409,32 +426,39 @@ export function RecordScreen() {
    * Shown instead of dropping the user on the paywall unannounced, which was the whole
    * of the old behaviour and read as the app refusing to record for no stated reason.
    */
+  /** The one-song purchase as a row you tap once, with this region's price when it is known. */
+  const songChoice = useCallback(
+    () => ({
+      label: "Just this song",
+      detail: "One more transcription. No subscription.",
+      price: offer.single ? formatPrice(offer.single.amountMinor, offer.single.currency) : undefined,
+      icon: "musical-note" as const,
+      onPress: () => nav.navigate("Upgrade", { reason: "limit", planId: offer.single?.id }),
+    }),
+    [offer, nav],
+  );
+
   const showTrialExhausted = useCallback(() => {
+    // Board 7b: when they come back, then two ways on, the song first (as Upgrade preselects it).
+    const copy = limitCopy(freePerWeek, boughtTotal, freeBack);
     showDialog({
-      title: "This week's free ones are used",
-      message:
-        (boughtTotal > 0
-          ? `You've used this week's ${freePerWeek} free transcriptions and the ${boughtTotal} you bought. `
-          : `You've used this week's ${freePerWeek} free transcriptions. `) +
-        `They come back ${freeBack}. Buy just this song — one more transcription, no subscription — ` +
-        `or upgrade to Pro for unlimited. Everything you've already transcribed stays in your library.`,
-      icon: "sparkles",
-      tone: "premium",
-      actions: [
+      title: copy.title,
+      message: copy.message,
+      choices: [
+        songChoice(),
         {
-          label: "Just this song",
-          icon: "musical-note",
-          onPress: () => nav.navigate("Upgrade", { reason: "limit" }),
+          label: "NoteFusion Pro",
+          detail: "Unlimited hums · 20 songs a month",
+          price: offer.monthly ? formatPrice(offer.monthly.amountMinor, offer.monthly.currency) : undefined,
+          priceUnit: offer.monthly ? "/ month" : undefined,
+          icon: "star",
+          tone: "premium",
+          onPress: () => nav.navigate("Upgrade", offer.monthly ? { planId: offer.monthly.id } : undefined),
         },
-        {
-          label: "See Pro plans",
-          icon: "arrow-forward",
-          onPress: () => nav.navigate("Upgrade"),
-        },
-        { label: "Not now", style: "cancel" },
       ],
+      actions: [{ label: "Not now", style: "cancel" }],
     });
-  }, [freePerWeek, freeBack, boughtTotal, nav]);
+  }, [freePerWeek, freeBack, boughtTotal, nav, offer, songChoice]);
 
   /**
    * A song with instruments on a free account with no bought song left. The take (or file) is
@@ -446,25 +470,18 @@ export function RecordScreen() {
       showDialog({
         title: "Songs need Pro or a bought song",
         message:
-          `A song with instruments has its voice isolated first, which takes Pro or a bought song. ` +
-          `Your ${freePerWeek} free transcriptions a week are for hums and recordings of a voice` +
-          (sendAsTune ? ` — send this one as a tune you sang?` : `.`),
-        icon: "musical-notes",
-        tone: "premium",
-        actions: [
+          `A song's voice is lifted out of the band first, which takes Pro or a bought song. ` +
+          `Your ${freePerWeek} free ones a week are for hums and a voice on its own.`,
+        choices: [
           ...(sendAsTune
-            ? [{ label: "Send as a tune I sang", icon: "mic" as const, onPress: sendAsTune }]
+            ? [{ label: "Send as a tune I sang", icon: "mic-outline" as const, chips: [{ label: "Free" }], onPress: sendAsTune }]
             : []),
-          {
-            label: "Just this song",
-            icon: "musical-note",
-            onPress: () => nav.navigate("Upgrade", { reason: "limit" }),
-          },
-          { label: "Not now", style: "cancel" },
+          songChoice(),
         ],
+        actions: [{ label: "Not now", style: "cancel" }],
       });
     },
-    [freePerWeek, nav],
+    [freePerWeek, songChoice],
   );
 
   /**
@@ -615,39 +632,41 @@ export function RecordScreen() {
 
   /**
    * Whether the audio is a song with instruments (true: vocal isolated first) or a hummed tune;
-   * null when the sheet was dismissed. The remembered answer — a song, until someone says otherwise
-   * — is listed first and marked, and whatever is chosen is remembered for next time. A recording
-   * cannot be cancelled: the take is already made, so it offers only the two answers.
+   * null when the sheet was cancelled. Board a-core/03: two rows you tap once, each with what it
+   * costs on this account (`lib/recordKind`). The remembered answer — a song, until someone says
+   * otherwise — is listed first with a "Last time" chip, and whatever is chosen is remembered for
+   * next time. A recording cannot be cancelled: the take is already made, so the sheet then has no
+   * Cancel and cannot be swiped or tapped away.
    */
   function askIfSong(cancelable: boolean): Promise<boolean | null> {
-    const remembered = importKind();
-    let resolve: (v: boolean | null) => void = () => undefined;
-    const done = new Promise<boolean | null>((r) => {
-      resolve = r;
+    return new Promise<boolean | null>((resolve) => {
+      const choose = (kind: "song" | "voice") => {
+        void setImportKind(kind);
+        resolve(kind === "song");
+      };
+      const choices = recordKindChoices(importKind(), {
+        known,
+        isPro,
+        songCreditsRemaining: subscription?.songCreditsRemaining,
+        freeRemaining,
+        boughtRemaining,
+      });
+      showDialog({
+        title: "What is this recording?",
+        message: "A song's lead vocal is lifted out of the band first, so the notes come from the voice.",
+        choices: choices.map((choice) => ({
+          label: choice.title,
+          icon: choice.icon,
+          chips: [
+            ...(choice.lastTime ? [{ label: "Last time", tone: "accent" as const }] : []),
+            ...(choice.cost ? [{ label: choice.cost }] : []),
+          ],
+          onPress: () => choose(choice.kind),
+        })),
+        actions: cancelable ? [{ label: "Cancel", style: "cancel", onPress: () => resolve(null) }] : [],
+        blocking: !cancelable,
+      });
     });
-    const choose = (kind: "song" | "voice") => {
-      void setImportKind(kind);
-      resolve(kind === "song");
-    };
-    const song = { text: `A song with instruments${remembered === "song" ? " (last time)" : ""}`, onPress: () => choose("song") };
-    const voice = { text: `A tune I hummed or sang${remembered === "voice" ? " (last time)" : ""}`, onPress: () => choose("voice") };
-    Alert.alert(
-      "What is this recording?",
-      "A song with instruments has its lead vocal isolated first, so the notes and the beat come from the voice, not the band." +
-        (isPro && typeof subscription?.songCreditsRemaining === "number"
-          ? ` It uses 1 of your ${subscription.songCreditsRemaining} songs left this month; a hummed tune costs nothing.`
-          : known && !isPro
-            ? boughtRemaining > 0
-              ? ` It uses 1 of your ${boughtRemaining} bought songs; a hummed tune uses one of this week's free ones.`
-              : ` That takes Pro or a bought song; a hummed or sung tune uses one of this week's free ones.`
-            : ""),
-      [
-        ...(remembered === "song" ? [song, voice] : [voice, song]),
-        ...(cancelable ? [{ text: "Cancel", style: "cancel" as const, onPress: () => resolve(null) }] : []),
-      ],
-      { cancelable, onDismiss: () => resolve(cancelable ? null : remembered === "song") },
-    );
-    return done;
   }
 
   async function pickAudioFile() {
@@ -988,26 +1007,20 @@ export function RecordScreen() {
               {known && !isPro && (
                 <Touchable
                   onPress={() => nav.navigate("Upgrade")}
-                  style={[styles.trialPill, trialRemaining <= 0 && styles.trialPillSpent]}
+                  style={styles.trialPill}
                   radius={radii.pill}
-                  accessibilityLabel="See Pro plans"
+                  accessibilityLabel={
+                    trialRemaining > 0 ? "See Pro plans" : `Free ones back ${freeBack}. See Pro plans`
+                  }
                 >
-                  <Ionicons
-                    name={trialRemaining > 0 ? "sparkles-outline" : "lock-closed-outline"}
-                    size={13}
-                    color={trialRemaining > 0 ? colors.accent : colors.danger}
-                  />
-                  <Text
-                    style={[
-                      styles.trialPillText,
-                      trialRemaining <= 0 && styles.trialPillTextSpent,
-                    ]}
-                  >
+                  {/* Spent is said plainly, in the quiet pill: no lock, no red. */}
+                  {trialRemaining > 0 ? <Ionicons name="sparkles-outline" size={13} color={colors.accent} /> : null}
+                  <Text style={[styles.trialPillText, trialRemaining <= 0 && styles.trialPillTextSpent]}>
                     {freeRemaining > 0
                       ? `${freeRemaining} of ${freePerWeek} free this week · back ${freeBack}`
                       : boughtRemaining > 0
                         ? `${boughtRemaining} bought left · free back ${freeBack}`
-                        : `Free ones back ${freeBack} — see Pro plans`}
+                        : `Free ones back ${freeBack}`}
                   </Text>
                 </Touchable>
               )}
@@ -1049,7 +1062,7 @@ export function RecordScreen() {
         {permError && (
           <Card style={styles.errCard}>
             <View style={styles.errRow}>
-              <View style={styles.errDot} />
+              <Ionicons name="alert-circle-outline" size={18} color={colors.warning} style={styles.errIcon} />
               <Text style={styles.errText}>{permError}</Text>
             </View>
           </Card>
@@ -1058,7 +1071,7 @@ export function RecordScreen() {
         {state.error && (
           <Card style={styles.errCard}>
             <View style={styles.errRow}>
-              <View style={styles.errDot} />
+              <Ionicons name="alert-circle-outline" size={18} color={colors.warning} style={styles.errIcon} />
               <Text style={styles.errText}>{state.error}</Text>
             </View>
             <Button
@@ -1325,10 +1338,6 @@ const makeStyles = (c: Palette) =>
     // and simply runs off both edges rather than wrapping.
     maxWidth: "100%",
   },
-  trialPillSpent: {
-    backgroundColor: c.dangerSoft,
-    borderColor: c.dangerBorder,
-  },
   trialPillText: {
     fontSize: 11.5,
     fontFamily: fonts.semibold,
@@ -1336,7 +1345,7 @@ const makeStyles = (c: Palette) =>
     flexShrink: 1,
   },
   trialPillTextSpent: {
-    color: c.danger,
+    color: c.textMuted,
   },
 
   // ── Level trace ───────────────────────────────────────────────────────────
@@ -1353,15 +1362,15 @@ const makeStyles = (c: Palette) =>
 
   // ── Voice-level guidance banner ───────────────────────────────────────────
 
+  /** A nudge, not an alarm (board 7c): the quiet pill with an amber dot, never red. */
   guidanceBanner: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: c.dangerSoft,
-    borderWidth: 1,
-    borderColor: c.dangerBorder,
+    backgroundColor: c.surfaceAlt,
     borderRadius: radii.pill,
-    paddingVertical: 8,
-    paddingHorizontal: spacing.md,
+    minHeight: 34,
+    paddingVertical: 7,
+    paddingHorizontal: 14,
     // Inside the edge-to-edge trace area, so this is what keeps the banner off both edges.
     maxWidth: "90%",
   },
@@ -1370,15 +1379,14 @@ const makeStyles = (c: Palette) =>
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: c.danger,
+    backgroundColor: c.warning,
     marginRight: spacing.sm,
   },
 
   guidanceText: {
-    ...typography.caption,
-    color: c.danger,
-    fontSize: 12,
-    fontFamily: fonts.bold,
+    color: c.text,
+    fontSize: 13,
+    fontFamily: fonts.semibold,
     flexShrink: 1,
   },
 
@@ -1585,11 +1593,10 @@ const makeStyles = (c: Palette) =>
 
   // ── Error card ────────────────────────────────────────────────────────────
 
+  /** A problem is a neutral card with a small amber icon and plain words, never a red wash. */
   errCard: {
     width: "100%",
     marginTop: spacing.md,
-    backgroundColor: c.dangerSoft,
-    borderColor: c.dangerBorder,
   },
 
   errRow: {
@@ -1597,19 +1604,15 @@ const makeStyles = (c: Palette) =>
     alignItems: "flex-start",
   },
 
-  errDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: c.danger,
+  errIcon: {
     marginRight: spacing.sm,
-    marginTop: 6,
+    marginTop: 1,
   },
 
   errText: {
     ...typography.body,
-    color: c.danger,
-    fontSize: 13,
+    color: c.text,
+    fontSize: 14,
     flex: 1,
     lineHeight: 20,
   },
