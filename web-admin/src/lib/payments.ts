@@ -89,6 +89,7 @@ export const WEBHOOK_STATUSES: readonly WebhookStatus[] = ["Received", "Processe
 export const LEDGER_REASON_LABELS: Record<LedgerReason, string> = {
   SubscriptionCharge: "Charge",
   Refund: "Refund",
+  TranscriptionPurchase: "One song",
 };
 
-export const LEDGER_REASONS: readonly LedgerReason[] = ["SubscriptionCharge", "Refund"];
+export const LEDGER_REASONS: readonly LedgerReason[] = ["SubscriptionCharge", "TranscriptionPurchase", "Refund"];
