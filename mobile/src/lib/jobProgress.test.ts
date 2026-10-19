@@ -8,6 +8,7 @@ import {
   isOffline,
   isStalled,
   markProgress,
+  nextClockAt,
   normalizeStage,
   percentLabel,
   stageLabel,
@@ -99,4 +100,18 @@ test("offline after three failed polls in a row", () => {
   assert.equal(isOffline(2), false);
   assert.equal(isOffline(3), true);
   assert.equal(isOffline(7), true);
+});
+
+test("the clocks' next change is the stall line or Try again, whichever comes first", () => {
+  const t0 = 1_000_000;
+  const mark = markProgress(null, "queued", 0, t0);
+  assert.equal(nextClockAt(mark, t0, t0 + 1_000), t0 + STALLED_AFTER_MS);
+  // Once stalled, the next change is the offer to try again.
+  assert.equal(nextClockAt(mark, t0, t0 + STALLED_AFTER_MS), t0 + RETRY_AFTER_MS);
+  // Movement restarts the stall clock; a job started long ago may offer Try again first.
+  const moved = markProgress(mark, "transcribing", 0.5, t0 + RETRY_AFTER_MS - 10_000);
+  assert.equal(nextClockAt(moved, t0, t0 + RETRY_AFTER_MS - 10_000), t0 + RETRY_AFTER_MS);
+  // Both already reached, or nothing running: nothing left to wake for.
+  assert.equal(nextClockAt(mark, t0, t0 + RETRY_AFTER_MS), null);
+  assert.equal(nextClockAt(null, null, t0), null);
 });

@@ -1,4 +1,9 @@
+using System.Text.Json;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using NoteFusion.Api.Realtime;
+using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Transcriptions.Queries;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Api.Common;
@@ -25,6 +30,27 @@ public abstract class ApiControllerBase : ControllerBase
     /// <summary>204 on success, or the mapped error response.</summary>
     protected IActionResult HandleNoContent(Result result)
         => result.IsSuccess ? NoContent() : Problem(result.Error);
+
+    /// <summary>
+    /// A job's event stream (<see cref="JobEventStream"/>) for a caller <paramref name="query"/> allows; 404 for anyone
+    /// else, 429 when they (or the server) already hold too many open. <paramref name="away"/>: a hidden tab's, which is
+    /// told everything but does not count as looking at the job (<see cref="IJobEvents.Watch"/>).
+    /// </summary>
+    protected async Task<IActionResult> StreamJobAsync(
+        ISender sender, IJobEvents events, JsonSerializerOptions json, GetJobWatchQuery query, bool away, CancellationToken ct)
+    {
+        var state = await sender.Send(query, ct);
+        if (state.IsFailure)
+            return Problem(state.Error);
+
+        using var watch = state.Value.Ended ? null : events.Watch(query.JobId, state.Value.Watcher, away);
+        if (!state.Value.Ended && watch is null)
+            return StatusCode(StatusCodes.Status429TooManyRequests, new ApiError(
+                "JOB_STREAMS_FULL", "Too many live views are open at once. Close one and try again."));
+
+        await JobEventStream.WriteAsync(Response, query.JobId, watch, json, ct);
+        return new EmptyResult();
+    }
 
     private IActionResult Problem(Error error)
     {

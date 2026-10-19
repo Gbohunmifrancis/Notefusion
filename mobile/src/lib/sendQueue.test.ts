@@ -10,6 +10,7 @@ import {
   awaitingJobs,
   backoffMs,
   classifySendFailure,
+  hasTimedWork,
   isLostJob,
   jobOutcome,
   newQueuedSend,
@@ -426,4 +427,18 @@ test("recover gives an old entry its send key and its saved sheet", () => {
   assert.equal(read.gen, 0);
   assert.equal(read.savedId, null);
   assert.equal(sendKey(read), "o");
+});
+
+test("the runner's timer runs only while a take is to be sent or a sent job is still running", () => {
+  const waiting = take("w");
+  const sending = transition(take("s"), { type: "attempt", now: 1 });
+  const running = sent("r");
+  const done = transition(sent("d"), { type: "job_done" });
+  const held = take("h", 0, { held: true });
+  const refused = transition(transition(take("x"), { type: "attempt", now: 1 }), { type: "refused", code: "BILLING_LIMIT", message: "No more this week." });
+  assert.equal(refused.status, "refused");
+  assert.equal(hasTimedWork([]), false);
+  // Waiting on the person or finished: nothing for a timer to move.
+  assert.equal(hasTimedWork([done, held, refused]), false);
+  for (const busy of [waiting, sending, running]) assert.equal(hasTimedWork([done, busy]), true, busy.id);
 });

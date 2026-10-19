@@ -299,6 +299,15 @@ export function awaitingJobs(items: readonly QueuedSend[]): QueuedSend[] {
 }
 
 /**
+ * Whether the queue has anything its timer could move on: a take to send (now or after its backoff), one being
+ * sent, or a sent one whose job has not ended. Held, refused and failed takes wait for the person, and finished
+ * ones for nothing: with only those, the runner sets no timer at all.
+ */
+export function hasTimedWork(items: readonly QueuedSend[]): boolean {
+  return items.some((i) => i.status === "waiting" || i.status === "sending" || (i.status === "sent" && !!i.jobId));
+}
+
+/**
  * How a failed send is read. No answer, a timeout, a gateway that could not reach the API, a busy or
  * throttled API, or an expired session (the take goes once the person is signed in again) is the network:
  * wait, for as long as it takes. Another 5xx is the server's fault: sent again, a few times. Any other

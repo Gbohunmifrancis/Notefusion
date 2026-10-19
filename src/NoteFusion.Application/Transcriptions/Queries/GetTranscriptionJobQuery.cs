@@ -33,6 +33,12 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
     internal const string LostSentence =
         "The transcription service restarted while working on this, so the job was lost. Nothing was charged — please submit it again.";
 
+    /// <summary>
+    /// How long the worker keeps a finished job (its <c>NF_JOB_TTL_SECONDS</c>). A job settled longer ago than this, with
+    /// its result banked, is answered from our copy without asking: the worker would only say it no longer has it.
+    /// </summary>
+    internal static readonly TimeSpan WorkerKeepsJobsFor = TimeSpan.FromMinutes(15);
+
     private readonly ITranscriptionApi _api;
     private readonly IApplicationDbContext _db;
     private readonly ICurrentUser _currentUser;
@@ -67,6 +73,10 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
             return TranscriptionErrors.JobNotFound;
         }
 
+        if (job is { SettledAtUtc: { } settledAt, ResultJson: { } banked } && _clock.UtcNow - settledAt > WorkerKeepsJobsFor
+            && Settled(request.JobId, banked, job.FailureCode) is { Result: not null } kept)
+            return await FromRowAsync(job, kept, cancellationToken);
+
         var result = await _api.GetJobAsync(request.JobId, cancellationToken);
         if (result.IsFailure)
         {
@@ -94,7 +104,7 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
             var settled = Settled(request.JobId, job.ResultJson, job.FailureCode);
             if (settled.Result is null)
                 return settled;
-            return await FiledAsync(job, settled.Result, await IsProAsync(job.UserId, cancellationToken) ? settled : settled with { Result = ProGate.ForFree(settled.Result) }, cancellationToken);
+            return await FromRowAsync(job, settled, cancellationToken);
         }
 
         if (result.Value.Status == TranscriptionStatus.Failed)
@@ -173,6 +183,12 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
     private async Task<TranscriptionJobDto> FiledAsync(
         TranscriptionJob job, TranscriptionResultDto finished, TranscriptionJobDto shown, CancellationToken ct)
         => LibraryFiling.WithSheet(shown, await LibraryFiling.FileAsync(_db, _gate, _clock, job, finished, ct));
+
+    /// <summary>A settled job's answer from our own copy, as its owner may see it, with the sheet it is filed as.</summary>
+    private async Task<TranscriptionJobDto> FromRowAsync(TranscriptionJob job, TranscriptionJobDto settled, CancellationToken ct)
+        => await FiledAsync(job, settled.Result!, await IsProAsync(job.UserId, ct)
+            ? settled
+            : settled with { Result = ProGate.ForFree(settled.Result!) }, ct);
 
     private static TranscriptionJobDto Lost(string jobId)
         => new(jobId, TranscriptionStatus.Failed, 0, null, LostSentence, ErrorCode: TranscriptionJob.LostCode);

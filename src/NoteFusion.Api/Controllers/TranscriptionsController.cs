@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.RateLimiting;
 
 using NoteFusion.Api.Common;
 using NoteFusion.Api.RateLimiting;
+using Microsoft.Extensions.Options;
+using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Transcriptions.Commands;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Application.Transcriptions.Queries;
@@ -209,4 +211,15 @@ public sealed class TranscriptionsController : ApiControllerBase
     [HttpGet("jobs/{jobId}")]
     public async Task<IActionResult> GetJob(string jobId, CancellationToken ct)
         => HandleResult(await _sender.Send(new GetTranscriptionJobQuery(jobId), ct));
+
+    /// <summary>
+    /// The job's live events (<c>text/event-stream</c>), held while a client watches it instead of polling
+    /// <c>jobs/{jobId}</c>: <c>ready</c>, then <c>job</c> as it moves, then <c>ended</c> (see <c>JobEventStream</c>).
+    /// <c>?away=true</c> from a hidden tab: it is told, but its owner is still pushed.
+    /// </summary>
+    [HttpGet("jobs/{jobId}/events")]
+    public Task<IActionResult> JobEvents(
+        string jobId, [FromQuery] bool away, [FromServices] IJobEvents events, [FromServices] IOptions<JsonOptions> json,
+        CancellationToken ct)
+        => StreamJobAsync(_sender, events, json.Value.JsonSerializerOptions, new GetJobWatchQuery(jobId), away, ct);
 }

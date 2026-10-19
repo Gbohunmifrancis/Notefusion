@@ -88,7 +88,7 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         if (job is null)
             return TranscriptionErrors.JobNotFound;
 
-        // A client poll got there first. Nothing to say: they are looking at the result.
+        // A client's own GET got there first. Nothing to say: they are looking at the result.
         if (job.SettledAtUtc is not null)
             return Result.Success();
 
@@ -170,6 +170,11 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         var dto = Library.LibraryFiling.WithSheet(new TranscriptionJobDto(job.JobId, TranscriptionStatus.Done, 1, shown), sheet);
         await _notifier.NotifyJobCompletedAsync(job.UserId, dto, ct);
 
+        // A client watching the job's stream is told and fetches it: they are looking at it, so no push follows, as
+        // none followed a poll that saw it done.
+        if (_notifier.JobEnded(job.JobId) > 0)
+            return Result.Success();
+
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == job.UserId, ct);
         var firstName = user?.FullName?.Split(' ')[0];
         if (string.IsNullOrWhiteSpace(firstName)) firstName = "there";
@@ -224,6 +229,8 @@ public sealed class NotifyTranscriptionReadyCommandHandler
 
         var dto = new TranscriptionJobDto(job.JobId, TranscriptionStatus.Failed, 1, null, reason, ErrorCode: code);
         await _notifier.NotifyJobCompletedAsync(job.UserId, dto, ct);
+        if (_notifier.JobEnded(job.JobId) > 0)
+            return Result.Success();
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == job.UserId, ct);
         var firstName = user?.FullName?.Split(' ')[0];

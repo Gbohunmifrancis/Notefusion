@@ -1,26 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AppState } from "react-native";
-import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { transcriptionsApi, type SubmitOptions } from "../api/endpoints";
-import { baseURL, safeReason, toApiError } from "../api/client";
-import { tokenStore } from "./tokenStore";
+import { safeReason, toApiError } from "../api/client";
 import {
   canRetry,
   isOffline,
   isStalled,
   markProgress,
+  nextClockAt,
   normalizeStage,
   type ClientStage,
   type ProgressMark,
 } from "./jobProgress";
 import type {
+  TranscriptionJob,
   TranscriptionResult,
   TranscriptionSource,
   TranscriptionStatus,
 } from "../api/types";
 import { rating } from "./rating";
-import { dataSaverOn } from "./dataSaver";
-import { jobPollMs } from "./dataPolicy";
+import { watchJob } from "./jobStream";
 
 export interface JobState {
   status: TranscriptionStatus | "idle";
@@ -70,12 +68,6 @@ const IDLE: JobState = {
   savedTitle: null,
 };
 
-/**
- * How often the job is re-read over HTTP while it runs; SignalR still delivers the finish. Twice as
- * long on data saver (dataPolicy.ts): the finish arrives over SignalR and the push either way.
- */
-const pollMs = () => jobPollMs(dataSaverOn());
-
 const TERMINAL: TranscriptionStatus[] = ["done", "failed"];
 
 function normalizeStatus(status: unknown): TranscriptionStatus {
@@ -92,39 +84,73 @@ type LastSubmit =
   | { kind: "link"; url: string; opts: Parameters<typeof transcriptionsApi.submitLink>[1] };
 
 /**
- * Listens via SignalR for job completion instead of HTTP polling.
+ * Follows the job the record or link screen submitted, as it happens: its live stream (`lib/jobStream`)
+ * carries every change of stage, place in line and progress, and its end, and the job is read over HTTP only
+ * when the stream says so (listening, ended) or cannot be held. Nothing is read on a timer while it holds.
  */
 export function useJobPolling() {
   const [state, setState] = useState<JobState>(IDLE);
   const activeJobId = useRef<string | null>(null);
   /**
-   * Jobs this screen submitted and then resubmitted past ("Try again"): the server still
+   * Jobs this screen submitted and then resubmitted past ("Try again"), each still followed: the server still
    * finishes them, and whichever job finishes first is the result the person is waiting for.
    */
-  const supersededJobs = useRef<Set<string>>(new Set());
-  const bufferedJobsRef = useRef<Record<string, any>>({});
-  const connectionRef = useRef<HubConnection | null>(null);
-  const pollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  /** The job whose poll stopped while the app was behind; polled again the moment it comes forward. */
-  const pausedJob = useRef<string | null>(null);
+  const superseded = useRef<Map<string, () => void>>(new Map());
+  /** Stops following the current job. */
+  const stopWatch = useRef<(() => void) | null>(null);
+  /** Wakes the card when its clocks next change (the stall line, "Try again"). */
+  const clockTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   /** When the current submit began — the twelve-minute clock behind "Try again". */
   const startedAt = useRef<number | null>(null);
   /** The last visible movement — the ninety-second clock behind the "server is busy" line. */
   const markRef = useRef<ProgressMark | null>(null);
+  /** Reads and stream connections that failed in a row: three say the API cannot be reached. */
   const failedPolls = useRef(0);
   const lastSubmit = useRef<LastSubmit | null>(null);
 
-  const stopPolling = useCallback(() => {
-    if (pollTimer.current) {
-      clearTimeout(pollTimer.current);
-      pollTimer.current = null;
-    }
+  const stopClocks = useCallback(() => {
+    if (clockTimer.current) clearTimeout(clockTimer.current);
+    clockTimer.current = null;
+  }, []);
+
+  /**
+   * The stall line and "Try again" are clocks, not news from the server: the card wakes once, when the next
+   * of them is due (`nextClockAt`), instead of re-reading the time on a timer. Rescheduled on every movement.
+   */
+  const scheduleClocks = useCallback(function schedule() {
+    if (clockTimer.current) clearTimeout(clockTimer.current);
+    clockTimer.current = null;
+    const at = nextClockAt(markRef.current, startedAt.current, Date.now());
+    if (at === null) return;
+    clockTimer.current = setTimeout(() => {
+      clockTimer.current = null;
+      const now = Date.now();
+      setState((prev) =>
+        prev.status === "pending" || prev.status === "processing"
+          ? { ...prev, stalled: isStalled(markRef.current, now), canRetry: canRetry(startedAt.current, now) }
+          : prev,
+      );
+      schedule();
+    }, Math.max(0, at - Date.now()) + 50);
+  }, []);
+
+  /** Stops following the current job, and its clocks. Jobs left behind by "Try again" are still followed. */
+  const stopFollowing = useCallback(() => {
+    stopWatch.current?.();
+    stopWatch.current = null;
+    stopClocks();
+  }, [stopClocks]);
+
+  const stopSuperseded = useCallback(() => {
+    for (const stop of superseded.current.values()) stop();
+    superseded.current.clear();
   }, []);
 
   const finish = useCallback((job: any, fallback: string) => {
     const status = normalizeStatus(job.status);
-    // Whatever clock was running — the upload's or the poll's — has nothing left to measure.
-    stopPolling();
+    // Nothing left to follow or to measure; a job left behind by "Try again" finishes on the server and is pushed.
+    stopFollowing();
+    stopSuperseded();
     // Keeps the store-rating ask away from someone whose last job just failed.
     if (status === "failed") void rating.recordFailure();
     setState({
@@ -138,41 +164,46 @@ export function useJobPolling() {
       savedId: typeof job.savedId === "string" ? job.savedId : null,
       savedTitle: typeof job.savedTitle === "string" ? job.savedTitle : null,
     });
-  }, [stopPolling]);
+  }, [stopFollowing, stopSuperseded]);
+
+  /** A read or a stream that got no answer: after three in a row the screen says the API cannot be reached. */
+  const missed = useCallback((jobId: string) => {
+    if (activeJobId.current !== jobId) return;
+    failedPolls.current += 1;
+    const now = Date.now();
+    setState((prev) => ({
+      ...prev,
+      stalled: isStalled(markRef.current, now),
+      offline: isOffline(failedPolls.current),
+      canRetry: canRetry(startedAt.current, now),
+    }));
+  }, []);
 
   /**
-   * Progress over HTTP while the job runs. SignalR only speaks at the end, and a
-   * linked song spends minutes fetching and isolating vocals before that — time the
-   * screen has to account for with a stage and a bar, not a spinner. Stops itself on
-   * a terminal status, on reset, and whenever the job it was watching is replaced.
+   * The job's stage and progress while it runs, and its end. A linked song spends minutes fetching and
+   * isolating vocals before it ends — time the screen accounts for with a stage and a bar, not a spinner.
+   * Stops itself on a terminal reading, on reset, and whenever the job it was following is replaced.
    *
-   * A dropped poll is not a failed job: it is counted, and after three in a row the
-   * screen says the API cannot be reached; the next good poll clears that. Nothing the
-   * server says about a poll failure is ever shown.
+   * A dropped stream or read is not a failed job: it is counted, and after three in a row the screen says
+   * the API cannot be reached; the next good word clears that. Nothing the server says about a failure to
+   * read the job is ever shown.
    *
-   * Only while the app is in front. A poll that sees the job done settles it on the server,
-   * and the server then sends no push ("they are looking at the result"); a phone left with
-   * the app behind kept polling and so silenced the very notification meant for it. In the
-   * background the server finishes the job and pushes; coming forward polls at once.
+   * Only while the app is in front (`jobStream`): a stream that heard the job end means the server sends no
+   * push ("they are looking at the result"), so in the background nothing listens and the push comes.
    */
-  const pollProgress = useCallback((jobId: string) => {
-    stopPolling();
-    const tick = async () => {
-      if (activeJobId.current !== jobId) return;
-      if (AppState.currentState !== "active") {
-        pausedJob.current = jobId;
-        return;
-      }
-      const now = Date.now();
-      try {
-        const job = await transcriptionsApi.getJob(jobId);
+  const follow = useCallback((jobId: string) => {
+    stopFollowing();
+    stopWatch.current = watchJob(jobId, {
+      onJob: (job: TranscriptionJob) => {
         if (activeJobId.current !== jobId) return;
         failedPolls.current = 0;
         const status = normalizeStatus(job.status);
         if (TERMINAL.includes(status)) {
+          activeJobId.current = null;
           finish(job, "Transcription failed — please try again.");
           return;
         }
+        const now = Date.now();
         const stage = normalizeStage(job.stage, status);
         setState((prev) => {
           const progress = Math.max(prev.progress, job.progress ?? 0);
@@ -189,100 +220,39 @@ export function useJobPolling() {
             canRetry: canRetry(startedAt.current, now),
           };
         });
-      } catch {
+        scheduleClocks();
+      },
+      onReadFailed: () => missed(jobId),
+      onLink: (up) => {
         if (activeJobId.current !== jobId) return;
-        failedPolls.current += 1;
-        setState((prev) => ({
-          ...prev,
-          stalled: isStalled(markRef.current, now),
-          offline: isOffline(failedPolls.current),
-          canRetry: canRetry(startedAt.current, now),
-        }));
-      }
-      if (activeJobId.current === jobId) pollTimer.current = setTimeout(tick, pollMs());
-    };
-    pollTimer.current = setTimeout(tick, pollMs());
-  }, [stopPolling, finish]);
-
-  // Coming forward: the poll the background paused starts again (the result may be waiting).
-  const pollRef = useRef(pollProgress);
-  useEffect(() => {
-    pollRef.current = pollProgress;
-  }, [pollProgress]);
-  useEffect(() => {
-    const sub = AppState.addEventListener("change", (next) => {
-      const id = pausedJob.current;
-      if (next !== "active" || !id) return;
-      pausedJob.current = null;
-      if (activeJobId.current === id) pollRef.current(id);
-    });
-    return () => sub.remove();
-  }, []);
-
-  /**
-   * The clocks while the file is still leaving the phone. There is no job to poll yet, but
-   * the bytes can all be sent long before the API answers — on a busy server that answer
-   * is what takes the time — and the card would otherwise sit at "100%" without a word.
-   * Stops when the server answers (`track` replaces it), on failure, reset and unmount.
-   */
-  const tickUploadClocks = useCallback(
-    (token: number) => {
-      stopPolling();
-      const tick = () => {
-        if (startedAt.current !== token) return;
-        const now = Date.now();
-        setState((prev) => ({
-          ...prev,
-          stalled: isStalled(markRef.current, now),
-          canRetry: canRetry(startedAt.current, now),
-        }));
-        pollTimer.current = setTimeout(tick, pollMs());
-      };
-      pollTimer.current = setTimeout(tick, pollMs());
-    },
-    [stopPolling],
-  );
-
-  useEffect(() => {
-    let active = true;
-
-    const connection = new HubConnectionBuilder()
-      .withUrl(`${baseURL}/hubs/transcription`, {
-        accessTokenFactory: async () => (await tokenStore.getAccess()) || "",
-      })
-      .configureLogging(LogLevel.Warning)
-      .withAutomaticReconnect()
-      .build();
-
-    connection.on("JobCompleted", (job: any) => {
-      if (!active) return;
-      if (activeJobId.current !== job.jobId) {
-        // A job this screen resubmitted past still counts when it finishes well; its failure
-        // says nothing about the fresh job, so that is dropped.
-        if (supersededJobs.current.has(job.jobId)) {
-          supersededJobs.current.delete(job.jobId);
-          if (normalizeStatus(job.status) !== "done") return;
-        } else {
-          bufferedJobsRef.current[job.jobId] = job;
+        if (!up) {
+          missed(jobId);
           return;
         }
-      }
-      // A finish from either the watched job or one it replaced ends the wait.
-      activeJobId.current = null;
-      supersededJobs.current.clear();
-      finish(job, "Transcription failed — please try a cleaner recording, closer to the microphone.");
+        failedPolls.current = 0;
+        setState((prev) => (prev.offline ? { ...prev, offline: false } : prev));
+      },
     });
+  }, [stopFollowing, finish, missed, scheduleClocks]);
 
-    connection.start().catch((err) => {
-      console.warn("SignalR connection failed:", err);
+  /**
+   * A job left behind by "Try again" is still followed: if it finishes well before the fresh one, that is the
+   * result. Its failure says nothing about the fresh job, so it is only let go.
+   */
+  const followSuperseded = useCallback((jobId: string) => {
+    if (superseded.current.has(jobId)) return;
+    const stop = watchJob(jobId, {
+      onJob: (job: TranscriptionJob) => {
+        const status = normalizeStatus(job.status);
+        if (!TERMINAL.includes(status)) return;
+        superseded.current.get(jobId)?.();
+        superseded.current.delete(jobId);
+        if (status !== "done" || !job.result || startedAt.current === null) return;
+        activeJobId.current = null;
+        finish(job, "Transcription failed — please try a cleaner recording, closer to the microphone.");
+      },
     });
-
-    connectionRef.current = connection;
-
-    return () => {
-      active = false;
-      connection.stop();
-    };
+    superseded.current.set(jobId, stop);
   }, [finish]);
 
   /** Shared tail of `start` and `startLink`: bind the job, drain any early finish, start polling. */
@@ -302,14 +272,6 @@ export function useJobPolling() {
         }
 
         activeJobId.current = jobId;
-        // Process any buffered job that arrived before the HTTP response resolved
-        if (bufferedJobsRef.current[jobId]) {
-          const job = bufferedJobsRef.current[jobId];
-          delete bufferedJobsRef.current[jobId];
-          finish(job, "Transcription failed — please try again.");
-          return jobId;
-        }
-
         const inlineStatus =
           typeof res !== "string" ? normalizeStatus(res.status) : "pending";
 
@@ -336,15 +298,16 @@ export function useJobPolling() {
           stalled: false,
           offline: false,
         }));
-        pollProgress(jobId);
+        scheduleClocks();
+        follow(jobId);
         return jobId;
     },
-    [pollProgress, finish],
+    [follow, finish, scheduleClocks],
   );
 
   const fail = useCallback((e: unknown) => {
     const err = toApiError(e);
-    stopPolling();
+    stopFollowing();
     setState({
       ...IDLE,
       status: "failed",
@@ -353,20 +316,21 @@ export function useJobPolling() {
     });
     activeJobId.current = null;
     return null;
-  }, [stopPolling]);
+  }, [stopFollowing]);
 
   /** Opens a fresh wait: the clocks start, nothing counted against the last job carries over. */
   const begin = useCallback(
     (stage: ClientStage) => {
-      stopPolling();
+      stopFollowing();
       const now = Date.now();
       startedAt.current = now;
       markRef.current = markProgress(null, stage, 0, now);
       failedPolls.current = 0;
       setState({ ...IDLE, status: "pending", stage });
       activeJobId.current = null;
+      scheduleClocks();
     },
-    [stopPolling],
+    [stopFollowing, scheduleClocks],
   );
 
   /**
@@ -400,7 +364,6 @@ export function useJobPolling() {
       lastSubmit.current = { kind: "upload", fileUri, fileName, opts };
       begin("uploading");
       const token = startedAt.current as number;
-      tickUploadClocks(token);
       try {
         const res = await transcriptionsApi.submit(fileUri, fileName, opts, {
           onUploadProgress: (fraction) => {
@@ -413,6 +376,7 @@ export function useJobPolling() {
               markRef.current = markProgress(markRef.current, "uploading", progress, Date.now());
               return { ...prev, progress };
             });
+            scheduleClocks();
           },
         });
         if (startedAt.current !== token) return null;
@@ -422,42 +386,43 @@ export function useJobPolling() {
         return fail(e);
       }
     },
-    [track, fail, begin, tickUploadClocks],
+    [track, fail, begin, scheduleClocks],
   );
 
   /**
    * "Try again" after a long wait: the same recording or link is submitted afresh. The job
-   * being left behind keeps running on the server, and its finish — over SignalR, or the
-   * completion push — still counts, so nothing the person already paid for is thrown away.
+   * being left behind keeps running on the server and is still followed, and its finish — or
+   * the completion push — still counts, so nothing the person already paid for is thrown away.
    */
   const retry = useCallback(async () => {
     const last = lastSubmit.current;
     if (!last) return null;
-    if (activeJobId.current) supersededJobs.current.add(activeJobId.current);
+    if (activeJobId.current) followSuperseded(activeJobId.current);
     return last.kind === "upload"
       ? start(last.fileUri, last.fileName, last.opts)
       : startLink(last.url, last.opts);
-  }, [start, startLink]);
+  }, [start, startLink, followSuperseded]);
 
   const reset = useCallback(() => {
     activeJobId.current = null;
-    supersededJobs.current.clear();
     startedAt.current = null;
     markRef.current = null;
     failedPolls.current = 0;
-    stopPolling();
+    stopFollowing();
+    stopSuperseded();
     setState(IDLE);
-  }, [stopPolling]);
+  }, [stopFollowing, stopSuperseded]);
 
   useEffect(
     () => () => {
-      // Unmounted mid-job: a poll or submit still in flight must not reschedule itself or
-      // bind a job to a screen that is gone. The server finishes the job and pushes as usual.
+      // Unmounted mid-job: a read or submit still in flight must not bind a job to a screen that is
+      // gone, and nothing is followed any more. The server finishes the job and pushes as usual.
       activeJobId.current = null;
       startedAt.current = null;
-      stopPolling();
+      stopFollowing();
+      stopSuperseded();
     },
-    [stopPolling],
+    [stopFollowing, stopSuperseded],
   );
 
   return { state, start, startLink, retry, reset };

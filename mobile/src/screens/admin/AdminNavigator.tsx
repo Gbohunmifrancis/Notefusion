@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { View } from "react-native";
+import { AppState, View } from "react-native";
 import { createNativeStackNavigator, type NativeStackScreenProps } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AdminExitContext, AdminStackBar, AdminTabBar } from "../../components/admin/AdminChrome";
@@ -24,7 +24,7 @@ import { AdminAlertsScreen } from "./AdminAlertsScreen";
 const Stack = createNativeStackNavigator<AdminStackParams>();
 const Tabs = createBottomTabNavigator<AdminTabParams>();
 
-/** How often the top bar's "online" count and the Payments pip are read while Admin is open. */
+/** How often the top bar's "online" count and the Payments pip are read while Admin is open and in front. */
 const LIVE_EVERY_MS = 60_000;
 
 function AdminTabs() {
@@ -76,17 +76,29 @@ function AdminOpen() {
 
   useEffect(() => {
     let live = true;
+    let timer: ReturnType<typeof setInterval> | null = null;
     const read = () => {
       void adminApi.live().then((v) => live && writeAdminData("live", v)).catch(() => undefined);
       void adminApi.paymentsSummary().then((v) => live && writeAdminData("payments-summary", v)).catch(() => undefined);
     };
-    read();
-    const timer = setInterval(read, LIVE_EVERY_MS);
+    // Only while the app is in front: behind, nobody is looking, and coming forward reads them once at once.
+    const run = () => {
+      if (timer) return;
+      read();
+      timer = setInterval(read, LIVE_EVERY_MS);
+    };
+    const halt = () => {
+      if (timer) clearInterval(timer);
+      timer = null;
+    };
+    if (AppState.currentState === "active") run();
+    const sub = AppState.addEventListener("change", (next) => (next === "active" ? run() : halt()));
     // This phone's payment alerts: on by default the first time Admin opens here, and kept in step after.
     void syncPaymentAlerts();
     return () => {
       live = false;
-      clearInterval(timer);
+      halt();
+      sub.remove();
     };
   }, []);
 

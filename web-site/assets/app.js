@@ -12,7 +12,6 @@
       ? "http://localhost:5080"
       : "https://api.notefusion.studio";
   var TOKENS_KEY = "nf.web.tokens";
-  var POLL_MS = 2000;
   var DEVICE_KEY = "nf.web.device";
 
   /** The browser's opaque id, sent as X-Device-Id so the free preview is metered per browser. */
@@ -335,7 +334,7 @@
   var me = null;          // { fullName, email }
   var sub = null;         // SubscriptionDto
   var current = null;     // { jobId, kind, source, result, savedId, shareToken, semitones }
-  var pollTimer = null;
+  var follow = null;      // the job being followed: its event stream and timers (see "Following a job")
   var osmd = null;
   var C = window.NfChoir;
   var N = window.NfChords;
@@ -376,7 +375,7 @@
    */
   function resetWork() {
     epoch++;
-    stopPolling();
+    stopFollowing();
     current = null; keepPreviewJob = null; submitting = false; transposing = false;
     if (player) player.stop();
     cancelSinging(); cancelPracticeTake();
@@ -953,7 +952,7 @@
   }
   /** A choir sheet, read-only, in the result view: saving it makes the singer's own copy, never touches the original. */
   function openChoirSheet(id) {
-    stopPolling();
+    stopFollowing();
     var at = epoch;
     request("/api/choirs/mine/sheets/" + encodeURIComponent(id)).then(function (t) {
       if (at !== epoch) return;
@@ -977,7 +976,7 @@
   $("lib-search").addEventListener("input", filterLibrary);
   /** A saved sheet, opened into the same result view a fresh transcription uses. */
   function openSaved(id) {
-    stopPolling();
+    stopFollowing();
     var at = epoch;
     request("/api/library/" + id).then(function (t) {
       if (at !== epoch) return; // signed out while it loaded
@@ -1454,7 +1453,7 @@
     linkInfo.sending = true; syncLinkSubmit(); hide($("app-alert"));
     track(guest ? "Preview started (link)" : "Song link transcribed");
     if (!again && window.NfMeter) track(window.NfMeter.eventName(body.timeSignature));
-    var following = !!pollTimer, before = current;
+    var following = !!follow, before = current;
     request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: body })
       .then(function (job) {
         if (again && doneMeanwhile(before)) return;
@@ -1597,7 +1596,7 @@
     if (!again && window.NfMeter) track(window.NfMeter.eventName(meter));
     // The recording's own journey up is the first stage on the card, with a real percentage. When a
     // job is still being followed (Try again), that card is left alone and the button carries the count.
-    var following = !!pollTimer, before = current;
+    var following = !!follow, before = current;
     if (!following) {
       openProgress("Uploading your recording");
       setStage("uploading", "upload", null);
@@ -1752,8 +1751,8 @@
   }
   NF.onWorkerMessage(window, function (msg) {
     if (msg.type === "nf-open") { openedFromNotification(msg.jobId, msg.kind); return; }
-    // A push while this page is in front: the job on the card is collected by asking now rather than at the next poll.
-    if (current && current.jobId === msg.jobId) { if (pollTimer) { stopPolling(); poll(); } return; }
+    // A push while this page is in front: the job on the card is read now rather than when its stream says so.
+    if (current && current.jobId === msg.jobId) { if (follow) readJob(follow); return; }
     if (!msg.jobId || guest || !tokens()) return;
     var said = msg.body && !TECHNICAL.test(msg.body) ? msg.body : msg.kind === "failed" ? "That could not be transcribed." : "Open it in NoteFusion.";
     alertIn($("app-alert"), msg.kind === "failed" ? "danger" : "info", msg.title + ". " + said);
@@ -1863,7 +1862,7 @@
   });
   renderNotifySettings();
 
-  // ── Polling ──────────────────────────────────────────────────────────────
+  // ── Progress ─────────────────────────────────────────────────────────────
   // The card says where the job really is: the recording going up, its place in the worker's
   // line, then the worker's own stages with a percentage. When nothing moves for a while it says
   // so; when the API cannot be reached it says that; after twelve minutes it offers to send again.
@@ -1910,18 +1909,21 @@
    * nothing when unknown, as for a preview opened by its id); `retry` sends the same thing again.
    */
   function startJob(job, kind, from, retry) {
-    stopPolling();
+    stopFollowing();
     current = { jobId: job.jobId, kind: kind, from: from || null, retry: retry || null, source: job.source || null, fileName: job.fileName || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0, failures: 0, seen: "", seenAt: Date.now() };
     openProgress(kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : "Transcribing your recording…");
     current.preview = kind === "preview";
     if (current.preview) previewId = job.jobId;
     setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
     primeAudio();
-    poll();
+    follow = {
+      jobId: job.jobId, ctrl: null, away: false, timer: null, clock: null, noStream: !streamable(), streamFails: 0, authRetries: 0,
+      fallback: false, ended: false, getting: false, again: false, lastByteAt: 0, lastEventAt: Date.now(), lastGetAt: 0
+    };
+    followView();
     // A song (or a free transcription) still running holds its place in the count: the meter shows it at once.
     if (!guest && kind !== "preview") refreshUsage();
   }
-  function stopPolling() { if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; } }
 
   /** Lights the row and writes the plain line under the bar. A stage this page has no name for is the last one. */
   function setStage(stage, from, queuePosition) {
@@ -1938,7 +1940,7 @@
     });
     var text = STAGE_COPY[stage];
     if (stage === "queued" && queuePosition > 0) text += " · " + queuePosition + " ahead";
-    // Written only when it changes: the line is aria-live, and a poll that found nothing new should say nothing.
+    // Written only when it changes: the line is aria-live, and an update that found nothing new should say nothing.
     if ($("p-status").textContent !== text) $("p-status").textContent = text;
   }
 
@@ -1954,29 +1956,191 @@
     current.retry(); // the old job is still followed until the new one is accepted
   });
 
-  function poll() {
-    if (!current) return;
-    var jobId = current.jobId, at = epoch;
+  // ── Following a job: the API's event stream, not a poll (assets/sse.js) ──
+  // `ready` says the stream is subscribed, and the job is read once; `job` is its progress; `ended` says it finished,
+  // and it is read once more for the outcome. In view the stream is a plain one: the API sends no push for a job
+  // whose end it delivered, because the page shows it. Out of view it is an away stream (?away=true), which the API
+  // does not count as someone looking, so the push still goes, and the page gives its own cues too (the title, the
+  // chime, its notification under the push's nf-job-<id> tag, so the two are one). In view, a browser that cannot
+  // read a stream, or a stream that keeps failing, reads the job every 10 s instead, and a stream quiet for 90 s gets
+  // one read to be sure; out of view there are no such reads.
+  var FALLBACK_POLL_MS = 10 * 1000, QUIET_CHECK_MS = 90 * 1000, STREAM_SILENT_MS = 45 * 1000, CLOCK_MS = 5 * 1000, FALLBACK_AFTER = 3;
+  function streamable() { return !!(window.fetch && window.ReadableStream && window.TextDecoder && window.AbortController && window.NfSse); }
+  function inView() { return document.visibilityState !== "hidden"; }
+  function jobPath(jobId) { return (current.preview ? "/api/preview/jobs/" : "/api/transcriptions/jobs/") + encodeURIComponent(jobId); }
+
+  function stopFollowing() {
+    var f = follow;
+    follow = null;
+    if (!f) return;
+    closeStream(f);
+    clearTimeout(f.timer); f.timer = null;
+    clearInterval(f.clock); f.clock = null;
+  }
+  function closeStream(f) {
+    var ctrl = f.ctrl;
+    f.ctrl = null;
+    if (ctrl) { try { ctrl.abort(); } catch (e) { /* already closed */ } }
+  }
+  /**
+   * The stream this tab's view wants: a plain one in view, an away one out of it, swapped at once when the view
+   * changes. A job told to have ended, or a browser without streams, is read every 10 s instead, in view only.
+   */
+  function followView() {
+    var f = follow;
+    if (!f) return;
+    if (!f.clock) f.clock = setInterval(function () { tick(f); }, CLOCK_MS);
+    if (inView()) reviewWait();
+    if (f.noStream || f.ended) { f.fallback = true; if (inView()) readJob(f); return; }
+    if (f.ctrl && f.away === !inView()) return;
+    closeStream(f);
+    if (f.fallback && inView()) readJob(f);
+    openStream(f);
+  }
+  document.addEventListener("visibilitychange", followView);
+  window.addEventListener("pageshow", function (e) { if (e.persisted) followView(); });
+
+  /**
+   * Every few seconds: a stream gone silent is opened again; in view, also the lines under the bar and the reads a
+   * quiet or missing stream needs. Out of view the away stream alone follows the job, and the push covers the person.
+   */
+  function tick(f) {
+    if (follow !== f) return;
+    var now = Date.now();
+    if (f.ctrl && now - f.lastByteAt > STREAM_SILENT_MS) { closeStream(f); streamFailed(f, 0); return; }
+    if (!inView()) return;
+    reviewWait();
+    // Half a tick early is on time: the clock's own drift would otherwise push every read to the tick after.
+    var since = f.fallback ? now - f.lastGetAt : now - Math.max(f.lastEventAt, f.lastGetAt);
+    if (since >= (f.fallback ? FALLBACK_POLL_MS : QUIET_CHECK_MS) - CLOCK_MS / 2) readJob(f);
+  }
+
+  function openStream(f) {
+    if (follow !== f || f.ctrl || f.noStream || f.ended) return;
+    clearTimeout(f.timer); f.timer = null;
+    var ctrl = new AbortController(), anonymous = current.preview && guest, subscribed = false;
+    f.away = !inView();
+    var headers = baseHeaders();
+    headers.Accept = "text/event-stream";
+    if (!anonymous) {
+      var t = tokens();
+      if (t && t.accessToken) headers.Authorization = "Bearer " + t.accessToken;
+    }
+    f.ctrl = ctrl; f.lastByteAt = Date.now();
+    /** Still this page's stream: not let go of (hidden, stopped, reconnecting) since it was opened. */
+    function mine() { return follow === f && f.ctrl === ctrl; }
+    fetch(API + jobPath(f.jobId) + "/events" + (f.away ? "?away=true" : ""), { headers: headers, signal: ctrl.signal, cache: "no-store" })
+      .then(function (r) {
+        if (!mine()) return;
+        if (r.status === 401 && !anonymous && f.authRetries < 1) {
+          f.ctrl = null; f.authRetries++;
+          return refresh().then(function () { openStream(f); }, function (err) {
+            if (err && err.status === 401) { sessionEnded(); return; }
+            streamFailed(f, 0);
+          });
+        }
+        if (!r.ok || !r.body) { f.ctrl = null; streamFailed(f, r.status); return; }
+        var reader = r.body.getReader(), decoder = new TextDecoder(), parse = window.NfSse.parser();
+        function pump() {
+          return reader.read().then(function (chunk) {
+            if (!mine()) return;
+            if (chunk.done) { f.ctrl = null; streamClosed(f, subscribed); return; }
+            f.lastByteAt = Date.now();
+            var events = parse.feed(decoder.decode(chunk.value, { stream: true }));
+            for (var i = 0; i < events.length && mine(); i++) {
+              if (events[i].event === "ready") subscribed = true;
+              heard(f, events[i]);
+            }
+            if (mine()) return pump();
+          });
+        }
+        return pump();
+      })
+      .catch(function () {
+        if (!mine()) return; // let go of on purpose
+        f.ctrl = null;
+        streamFailed(f, 0);
+      });
+  }
+
+  /** One event off the stream. The outcome is never taken from an event: the job is read for it. */
+  function heard(f, e) {
+    if (e.event === "ready") {
+      f.streamFails = 0; f.authRetries = 0; f.fallback = false;
+      current.failures = 0; hide($("p-offline"));
+      readJob(f);
+      return;
+    }
+    if (e.event === "job") {
+      var job = window.NfSse.json(e);
+      if (!job) return;
+      f.lastEventAt = Date.now();
+      var status = String(job.status || "").toLowerCase();
+      if (status === "done" || status === "failed") { readJob(f); return; }
+      render(job);
+      reviewWait();
+      return;
+    }
+    if (e.event === "ended") {
+      f.lastEventAt = Date.now();
+      f.ended = true;
+      closeStream(f);
+      readJob(f);
+    }
+  }
+
+  /** The stream would not open, or broke: open it again after a wait; after three in a row, in view, read the job every 10 s meanwhile. */
+  function streamFailed(f, status) {
+    if (follow !== f) return;
+    f.streamFails++;
+    // No answer at all is the connection; an answer (a 5xx, a 429) is the API, which a read would say for itself.
+    if (status === 0) {
+      current.failures++;
+      if (current.failures >= OFFLINE_AFTER) show($("p-offline"));
+    }
+    if (f.streamFails >= FALLBACK_AFTER && !f.fallback) { f.fallback = true; if (inView()) readJob(f); }
+    clearTimeout(f.timer);
+    f.timer = setTimeout(function () { f.timer = null; openStream(f); }, window.NfSse.reconnectDelay(f.streamFails));
+  }
+  /** The API closed the stream (its ten minutes are up, or it restarted): open it again at once, unless it never said ready. */
+  function streamClosed(f, subscribed) {
+    if (follow !== f) return;
+    if (!subscribed) { streamFailed(f, null); return; }
+    clearTimeout(f.timer);
+    f.timer = setTimeout(function () { f.timer = null; openStream(f); }, window.NfSse.RECONNECT_MS[0]);
+  }
+
+  /** What a read or an event says about the job so far: its song, its stage, the bar and the line ahead. */
+  function render(job) {
+    if (job.source) {
+      current.source = job.source;
+      $("p-title").textContent = job.source.title || "Untitled";
+      $("p-artist").textContent = job.source.artist || "";
+      if (job.source.thumbnailUrl) { $("p-thumb").src = job.source.thumbnailUrl; show($("p-thumb")); }
+    }
+    var stage = stageOf(job, "transcribing"), progress = job.progress || 0;
+    setStage(stage, current.from, job.queuePosition);
+    setPercent(progress);
+    // Something moved: the stage, the bar or the line ahead. Otherwise the clock keeps running.
+    var seen = stage + "|" + Math.round(progress * 100) + "|" + (job.queuePosition == null ? "" : job.queuePosition);
+    if (seen !== current.seen) { current.seen = seen; current.seenAt = Date.now(); }
+  }
+
+  /** Reads the job once: on `ready`, on `ended`, after a push, and on the fallback's clock. One read at a time. */
+  function readJob(f) {
+    if (follow !== f) return;
+    if (f.getting) { f.again = true; return; }
+    f.getting = true; f.lastGetAt = Date.now();
+    var jobId = f.jobId, at = epoch;
     /** The reply is still wanted: nobody signed out meanwhile and this is still the job on the card. */
-    function wanted() { return at === epoch && (guest || !!tokens()) && !!current && current.jobId === jobId; }
-    request((current.preview ? "/api/preview/jobs/" : "/api/transcriptions/jobs/") + encodeURIComponent(jobId), { anonymous: current.preview && guest }).then(function (job) {
+    function wanted() { return at === epoch && (guest || !!tokens()) && follow === f && !!current && current.jobId === jobId; }
+    request(jobPath(jobId), { anonymous: current.preview && guest }).then(function (job) {
       if (!wanted()) return;
       current.failures = 0; hide($("p-offline"));
-      if (job.source) {
-        current.source = job.source;
-        $("p-title").textContent = job.source.title || "Untitled";
-        $("p-artist").textContent = job.source.artist || "";
-        if (job.source.thumbnailUrl) { $("p-thumb").src = job.source.thumbnailUrl; show($("p-thumb")); }
-      }
-      var stage = stageOf(job, "transcribing"), progress = job.progress || 0;
-      setStage(stage, current.from, job.queuePosition);
-      setPercent(progress);
-      // Something moved: the stage, the bar or the line ahead. Otherwise the clock keeps running.
-      var seen = stage + "|" + Math.round(progress * 100) + "|" + (job.queuePosition == null ? "" : job.queuePosition);
-      if (seen !== current.seen) { current.seen = seen; current.seenAt = Date.now(); }
+      render(job);
       var status = String(job.status || "").toLowerCase();
       if (status === "done" && job.result) {
-        stopPolling();
+        stopFollowing();
         current.result = job.result;
         hide($("progress"));
         announce("ready");
@@ -1987,7 +2151,7 @@
         return;
       }
       if (status === "failed") {
-        stopPolling();
+        stopFollowing();
         hide($("progress"));
         var failed = job.error && !TECHNICAL.test(job.error) ? job.error
           : current.from === "link" ? "That link could not be transcribed." : "That could not be transcribed. Try a cleaner recording or a different link.";
@@ -2001,15 +2165,18 @@
         return;
       }
       reviewWait();
-      pollTimer = setTimeout(poll, POLL_MS);
+      // Said to have ended, or done without its sheet, yet not finished here: nothing more comes on a stream, so it is read every 10 s.
+      if (f.ended || status === "done") f.fallback = true;
     }).catch(function (err) {
-      if (err.status === 401) { stopPolling(); return; }
+      if (err.status === 401) { stopFollowing(); return; }
       if (!wanted()) return;
       // Whatever the API or the network said stays in the console; the card gets one plain line.
       current.failures++;
       if (current.failures >= OFFLINE_AFTER) show($("p-offline"));
       reviewWait();
-      pollTimer = setTimeout(poll, POLL_MS * 2);
+    }).then(function () {
+      f.getting = false;
+      if (f.again && follow === f) { f.again = false; readJob(f); }
     });
   }
 
@@ -2784,7 +2951,7 @@
   new MutationObserver(syncFocus).observe($("result"), { attributes: true, attributeFilter: ["class"] });
   /** Back to the studio for another one. The sheet is kept in the library (or is the guest's preview). */
   function newTranscription() {
-    if (pollTimer) return; // a job still running keeps its card
+    if (follow) return; // a job still running keeps its card
     closeTool(); closeFull();
     hide($("result")); hide($("progress"));
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -3543,12 +3710,13 @@
   }
 
   // ── Back from checkout: Pro unlocks the moment the payment lands ────────
-  // The provider's webhook and the browser's return race each other, so the page asks the API to
-  // confirm every few seconds for a minute, then quietly every 15 s for ten; failures are silent retries.
+  // The provider's webhook and the browser's return race each other, so the page asks the API to confirm at once,
+  // then after 3, 6, 12 and 20 s, then every 30 s for ten minutes; failures are silent retries. Never while the tab
+  // is hidden: coming back to it asks at once (below).
   var CHECKOUT_KEY = "nf.checkout";
   var CHECKOUT_TTL = 2 * 60 * 60 * 1000;
-  var PAY_FAST_MS = 2500, PAY_FAST_FOR = 60 * 1000, PAY_SLOW_MS = 15000, PAY_SLOW_FOR = 10 * 60 * 1000;
-  var payWatch = null;    // { snap, started, timer, busy, slow, quiet, mayAsk } while a payment is being confirmed
+  var PAY_STEPS_MS = [3000, 6000, 12000, 20000], PAY_EVERY_MS = 30000, PAY_SLOW_AFTER = 60 * 1000, PAY_WATCH_FOR = 10 * 60 * 1000;
+  var payWatch = null;    // { snap, started, checks, timer, busy, slow, quiet, mayAsk } while a payment is being confirmed
   var openedHere = false; // this page sent the browser to a checkout (a provider that opened elsewhere leaves it)
   var welcomeReturn = null;
   function readCheckout() {
@@ -3605,7 +3773,7 @@
       if (mayAsk) payWatch.mayAsk = true;
       checkPayment(); return;
     }
-    payWatch = { snap: readCheckout(), started: Date.now(), timer: null, busy: false, slow: false, quiet: !!quiet, mayAsk: !!mayAsk };
+    payWatch = { snap: readCheckout(), started: Date.now(), checks: 0, timer: null, busy: false, slow: false, quiet: !!quiet, mayAsk: !!mayAsk };
     if (!quiet) showPayToast(false);
     checkPayment();
   }
@@ -3617,7 +3785,7 @@
   function checkPayment() {
     var w = payWatch;
     if (!w || w.busy) return;
-    w.busy = true; clearTimeout(w.timer);
+    w.busy = true; clearTimeout(w.timer); w.checks++;
     request("/api/billing/confirm", { method: "POST" })
       .catch(function (err) { if (err.status === 401) stopPaymentWatch(); return null; })
       .then(function (s) {
@@ -3627,8 +3795,8 @@
         // The quick check answered and nothing is paid: report the return, and ask if the API says so.
         if (s && w.mayAsk && !w.askedWhy) { w.askedWhy = true; askWhy(w); }
         var age = Date.now() - w.started;
-        if (age >= PAY_FAST_FOR && !w.slow) { w.slow = true; if (!w.quiet) showPayToast(true); }
-        if (age < PAY_SLOW_FOR) w.timer = setTimeout(checkPayment, w.slow ? PAY_SLOW_MS : PAY_FAST_MS);
+        if (age >= PAY_SLOW_AFTER && !w.slow) { w.slow = true; if (!w.quiet) showPayToast(true); }
+        if (age < PAY_WATCH_FOR) w.timer = setTimeout(payTick, PAY_STEPS_MS[w.checks - 1] || PAY_EVERY_MS);
         else if (!w.reported) {
           // Watched for the full ten minutes and nothing landed: the dashboard's "never confirmed" step.
           w.reported = true;
@@ -3636,6 +3804,8 @@
         }
       });
   }
+  /** The next check, unless the tab is hidden: then the next look at it asks (the visibilitychange handler below). */
+  function payTick() { if (document.visibilityState !== "hidden") checkPayment(); }
   // ── "What stopped you?" (board g-checkout): a checkout that came back unpaid, asked once ──
   var WHY_RULES = "/assets/checkout-exit.js?v=1";
   var WHY_SHEET = ["/assets/checkout-why.css?v=1", "/assets/checkout-why.js?v=1"];
