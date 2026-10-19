@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { DATA_SAVER_PROFILE, STANDARD_PROFILE, estimatedBytes, recordingProfile } from "./recordingPreset.ts";
-import { jobPollMs, loadsImages, outboxTickMs } from "./dataPolicy.ts";
+import { jobFallbackPollMs, loadsImages, outboxTickMs } from "./dataPolicy.ts";
 import { transposeChord, transposeKeyName, transposeLocally } from "./localTranspose.ts";
 
 test("data saver records the same AAC the worker reads (22.05 kHz mono) at a quarter of the bit rate", () => {
@@ -21,9 +21,9 @@ test("data saver records the same AAC the worker reads (22.05 kHz mono) at a qua
   assert.ok(estimatedBytes(30, standard) > 450_000);
 });
 
-test("data saver polls half as often, checks the queue each minute and skips pictures", () => {
-  assert.equal(jobPollMs(false), 2_500);
-  assert.equal(jobPollMs(true), 5_000);
+test("data saver reads a job half as often without its stream, checks the queue each minute and skips pictures", () => {
+  assert.equal(jobFallbackPollMs(false), 15_000);
+  assert.equal(jobFallbackPollMs(true), 30_000);
   assert.equal(outboxTickMs(false), 30_000);
   assert.equal(outboxTickMs(true), 60_000);
   assert.equal(loadsImages(true), false);

@@ -136,6 +136,8 @@ public static class DependencyInjection
         services.AddSingleton<IPasskeyChallengeStore, InMemoryPasskeyChallengeStore>();
         // The phone admin lock's codes and passes (one instance, like the challenges above).
         services.AddSingleton<IAdminPhoneLock, InMemoryAdminPhoneLock>();
+        // Live job updates for the clients watching a job (one instance, like the above).
+        services.AddSingleton<IJobEvents, Transcriptions.InMemoryJobEvents>();
     }
 
     private static void AddPush(this IServiceCollection services, IConfiguration configuration)

@@ -101,6 +101,12 @@ class Settings:
         return os.getenv("NF_ENABLE_DOCS", "").strip().lower() in ("1", "true", "yes")
 
     @property
+    def progress_push(self) -> bool:
+        """``NF_PROGRESS_PUSH=0`` stops posting each job's progress to the API (``app.jobs.progress``);
+        the clients then see a job's progress only when they ask for it."""
+        return os.getenv("NF_PROGRESS_PUSH", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
     def callback_hosts(self) -> frozenset[str]:
         """The hosts a completion webhook may be POSTed to (``NF_CALLBACK_HOSTS``, comma separated):
         the API's compose name and loopback. A callback_url anywhere else is ignored."""

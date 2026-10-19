@@ -324,7 +324,7 @@ public class StuckJobTests
             .Handle(new NotifyTranscriptionReadyCommand(job.Id), CancellationToken.None);
 
     private static Task<Result> Settle(TestHarness h, PreviewJob preview, Worker api)
-        => new SettlePreviewJobCommandHandler(h.Db, api, h.Clock)
+        => new SettlePreviewJobCommandHandler(h.Db, api, h.Clock, new NoteFusion.Infrastructure.Transcriptions.InMemoryJobEvents())
             .Handle(new SettlePreviewJobCommand(preview.Id), CancellationToken.None);
 
     private sealed class NoNotifier : ITranscriptionNotifier

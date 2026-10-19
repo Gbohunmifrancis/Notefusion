@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Preview.Commands;
 using NoteFusion.Application.Transcriptions.Commands;
+using NoteFusion.Infrastructure.Api;
 using NoteFusion.Infrastructure.Persistence;
 
 using NoteFusion.Application.Common.Interfaces;
@@ -59,6 +60,33 @@ public sealed class WebhookController : ControllerBase
         var result = await _sender.Send(new NotifyTranscriptionReadyCommand(job.Id), ct);
 
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
+    }
+
+    /// <summary>
+    /// The worker's word that a job moved (its stage, progress or place in line; <c>app.jobs.progress</c>), handed to
+    /// the clients watching the job's event stream. Read only when someone is watching, and never touches the database:
+    /// who may watch was settled when each stream opened.
+    /// </summary>
+    [HttpPost("transcription/{jobId}/progress")]
+    public async Task<IActionResult> TranscriptionProgress(string jobId, [FromServices] IJobEvents events, CancellationToken ct)
+    {
+        if (!IsAuthorised(_config["TranscriptionApi:ApiKey"], Request.Headers[ApiKeyHeader].ToString(), _env.IsDevelopment()))
+            return Unauthorized();
+        if (!events.IsWatched(jobId))
+            return NoContent();
+        if (Request.ContentLength > WorkerJobUpdates.MaxBytes)
+            return StatusCode(StatusCodes.Status413PayloadTooLarge);
+
+        using var reader = new StreamReader(Request.Body);
+        var buffer = new char[WorkerJobUpdates.MaxBytes + 1];
+        var read = await reader.ReadBlockAsync(buffer.AsMemory(), ct);
+        if (read > WorkerJobUpdates.MaxBytes)
+            return StatusCode(StatusCodes.Status413PayloadTooLarge);
+
+        if (WorkerJobUpdates.Read(jobId, new string(buffer, 0, read)) is not { } update)
+            return BadRequest();
+        events.Publish(jobId, new JobEvent(JobEvent.Progress, update));
+        return NoContent();
     }
 
     /// <summary>

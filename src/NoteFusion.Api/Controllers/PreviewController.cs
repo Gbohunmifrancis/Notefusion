@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using NoteFusion.Api.Common;
 using NoteFusion.Api.RateLimiting;
+using Microsoft.Extensions.Options;
+using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Preview.Commands;
+using NoteFusion.Application.Transcriptions.Queries;
 using NoteFusion.Application.Preview.Queries;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Enums;
@@ -67,6 +70,13 @@ public sealed class PreviewController : ApiControllerBase
     [HttpGet("jobs/{jobId}")]
     public async Task<IActionResult> GetJob(string jobId, CancellationToken ct)
         => HandleResult(await _sender.Send(new GetPreviewJobQuery(jobId), ct));
+
+    /// <summary>The preview's live events, as an account job's (<c>TranscriptionsController.JobEvents</c>).</summary>
+    [HttpGet("jobs/{jobId}/events")]
+    public Task<IActionResult> JobEvents(
+        string jobId, [FromQuery] bool away, [FromServices] IJobEvents events, [FromServices] IOptions<JsonOptions> json,
+        CancellationToken ct)
+        => StreamJobAsync(_sender, events, json.Value.JsonSerializerOptions, new GetJobWatchQuery(jobId, Preview: true), away, ct);
 
     /// <summary>A signed-in account attributes its sign-up to this preview.</summary>
     [Authorize]

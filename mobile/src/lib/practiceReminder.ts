@@ -353,9 +353,12 @@ async function armFallback(): Promise<void> {
   }
 }
 
+/** Coming forward re-reads the reminder settings at most this often: they change on this phone or in Settings. */
+const FOREGROUND_SYNC_MS = 10 * 60_000;
+
 /**
- * Keeps the reminders set up: on mount and every time the app returns to the foreground (one small read; the
- * re-registration runs once a launch).
+ * Keeps the reminders set up: on mount and when the app returns to the foreground, at most once per
+ * `FOREGROUND_SYNC_MS` (one small read; the re-registration runs once a launch).
  *
  * @param ready Whether the authenticated app is mounted. Nothing to remind a signed-out user of.
  */
@@ -363,10 +366,13 @@ export function useReminderSync(ready: boolean): void {
   useEffect(() => {
     if (!ready) return;
 
+    let lastSync = Date.now();
     void syncReminders();
 
     const sub = AppState.addEventListener('change', (status) => {
-      if (status === 'active') void syncReminders();
+      if (status !== 'active' || Date.now() - lastSync < FOREGROUND_SYNC_MS) return;
+      lastSync = Date.now();
+      void syncReminders();
     });
     return () => sub.remove();
   }, [ready]);

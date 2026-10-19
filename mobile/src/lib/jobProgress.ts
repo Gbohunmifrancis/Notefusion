@@ -88,6 +88,18 @@ export function canRetry(startedAt: number | null, now: number): boolean {
   return startedAt !== null && now - startedAt >= RETRY_AFTER_MS;
 }
 
+/**
+ * The next moment the card's clocks change on their own — the stall line appearing, or "Try again" being
+ * offered — so the screen can wake once then instead of re-reading the clock on a timer. Null when neither
+ * is still to come.
+ */
+export function nextClockAt(mark: ProgressMark | null, startedAt: number | null, now: number): number | null {
+  const due: number[] = [];
+  if (mark !== null && !isStalled(mark, now)) due.push(mark.changedAt + STALLED_AFTER_MS);
+  if (startedAt !== null && !canRetry(startedAt, now)) due.push(startedAt + RETRY_AFTER_MS);
+  return due.length > 0 ? Math.min(...due) : null;
+}
+
 export function isOffline(failedPollsInARow: number): boolean {
   return failedPollsInARow >= OFFLINE_AFTER_FAILED_POLLS;
 }

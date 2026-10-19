@@ -18,6 +18,7 @@ import { PRO_FEATURES } from './proFeatures';
 import type { Subscription } from '../api/types';
 import { FREE_RESET_FALLBACK, freeWeek } from './freeWeek';
 import type { PaymentCheckResult } from './checkoutExit';
+import { paymentCheckDelayMs } from './paymentWatch';
 import { restorePlayPurchases, usesPlayBilling } from './playStore';
 
 /**
@@ -140,15 +141,16 @@ const trackerKey = (userId: string) => `@notefusion_sub_tracker:${userId}`;
 const checkoutKey = (userId: string) => `@notefusion_checkout:${userId}`;
 
 /**
- * How a payment is watched after the browser closes: quick ticks first, because most land within
- * seconds, then slow ones for a provider that settles minutes later. A checkout older than the TTL
- * was abandoned and is no longer asked about.
+ * How a payment is watched after the browser closes: at once and then on a widening schedule
+ * (`paymentWatch.ts`), because most land within seconds and each check reaches the provider. Past the
+ * first minute the screen says it is taking longer. A checkout older than the TTL was abandoned and is
+ * no longer asked about.
  */
-const FAST_TICK_MS = 2_500;
 const FAST_WINDOW_MS = 60_000;
-const SLOW_TICK_MS = 15_000;
 const WATCH_WINDOW_MS = 10 * 60_000;
 const CHECKOUT_TTL_MS = 2 * 60 * 60_000;
+/** Coming forward re-reads the membership at most this often (a checkout's return is watched at once). */
+const FOREGROUND_RELOAD_MS = 30_000;
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -404,6 +406,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     void (async () => {
       const started = watch.started;
       let first: ((found: PaymentCheckResult) => void) | undefined = onFirstCheck;
+      let checks = 0;
       for (;;) {
         const elapsed = Date.now() - started;
         if (elapsed >= WATCH_WINDOW_MS) break;
@@ -422,7 +425,8 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         first?.(found);
         first = undefined;
         if (!pendingRef.current) break;
-        await delay(elapsed < FAST_WINDOW_MS ? FAST_TICK_MS : SLOW_TICK_MS);
+        checks += 1;
+        await delay(paymentCheckDelayMs(checks));
         if (!mounted.current || pollRunRef.current !== run) return;
       }
       if (mounted.current && pollRunRef.current === run) setPaymentCheck('idle');
@@ -543,13 +547,21 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   // A checkout in flight is watched instead: the poll confirms on its first tick, and keeps
   // asking only while the app is in front. While its browser is still open the paywall starts
   // that watch itself when the browser closes.
+  //
+  // Without a checkout in flight, at most once per FOREGROUND_RELOAD_MS: flicking between apps is no reason to
+  // ask the payment provider again.
   useEffect(() => {
     if (!userId) return;
+    let lastReload = 0;
     const sub = AppState.addEventListener('change', (next) => {
       // Reconcile pending payments when returning to foreground (e.g. from checkout browser)
       if (next === 'active') {
         if (checkoutOpenRef.current) return;
-        if (!watchPayment(true)) void load(true);
+        if (watchPayment(true)) return;
+        const now = Date.now();
+        if (now - lastReload < FOREGROUND_RELOAD_MS) return;
+        lastReload = now;
+        void load(true);
       } else if (next === 'background') {
         stopWatching();
       }

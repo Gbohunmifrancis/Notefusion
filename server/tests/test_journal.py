@@ -215,6 +215,7 @@ def test_the_journal_is_written_whole_and_counts_starts(tmp_path):
 
 
 def test_the_webhook_is_tried_again_while_the_api_is_away_but_not_after_an_answer(monkeypatch, tmp_path):
+    monkeypatch.setenv("NF_PROGRESS_PUSH", "0")  # only the completion webhook is counted here
     monkeypatch.setattr(queue_mod, "_WEBHOOK_DELAYS", (0.0, 0.0, 0.0))
     monkeypatch.setattr(queue_mod, "transcribe", lambda path, **kwargs: _result())
     monkeypatch.setattr(queue_mod, "_sounds_like_a_song", lambda *a: False)

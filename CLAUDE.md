@@ -38,9 +38,17 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   receipt and answers with the reason. Admin phones also get "someone signed up / is transcribing"
   (`SendAdminActivityAlertsCommand`, `AdminActivityAlertWorker` every 30 s over an in-memory window; admins' own left
   out; Android channel `admin-activity`; quiet hours, mute and names as the payment alerts; `AdminActivityAlerts__Enabled=false` off).
-  The ready and failed pushes go at FCM high priority (`PushTimeToLiveSeconds`, a day's TTL), and the phone polls a job
-  only while the app is in front (`useJobPolling` pauses in the background): a poll that sees a job done settles it,
-  and a settled job gets no push, so a phone polling behind the user's back used to silence its own notification.
+  The ready and failed pushes go at FCM high priority (`PushTimeToLiveSeconds`, a day's TTL).
+  Clients are told, not polling (the 2–2.5 s job polls and the phone's always-open SignalR socket are gone; the hub stays
+  for older builds): a watched job has an event stream, `GET /api/transcriptions/jobs/{id}/events` (previews
+  `/api/preview/jobs/{id}/events`; `Api/Realtime/JobEventStream`: `ready` → the client GETs once, `job` progress, `ended` →
+  one GET, ping 20 s, closed after 10 min) over the in-memory `IJobEvents` (8 streams per account or address, 2000 in all).
+  The worker posts each job's stage/progress/place in line to `<callback>/progress` (`app/jobs/progress.py`, ≤1/s per job,
+  `NF_PROGRESS_PUSH=0` off), read only when someone watches. A stream that heard `ended` means no push (they are looking
+  at it), as a poll that saw a job done used to; a hidden tab's `?away=true` stream hears it but still lets the push go.
+  Phone `lib/jobStream` (XHR, shared per job, closed in the background), web `assets/app.js` (fetch stream + `sse.js`);
+  both fall back to a GET every 15 s (phone; 30 on data saver) / 10 s (web) after 3 failed opens, and read once after 90 s
+  quiet. A job settled 15 min ago is answered from `ResultJson` without asking the worker.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off

@@ -35,11 +35,13 @@ import urllib.parse
 import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Callable
 
 import httpx
 
 from app.config import settings
 from app.jobs.journal import JobJournal
+from app.jobs.progress import ProgressReporter
 from app.pipeline.transcriber import LowConfidenceError, TranscriptionResult, transcribe
 
 logger = logging.getLogger(__name__)
@@ -95,6 +97,20 @@ class Job:
     #: When the completion webhook was answered 2xx: the API has banked the result by then,
     #: so this job's audio fields are the first to go when results outgrow their budget.
     delivered_at: float | None = None
+    #: Told whenever a field a watching client sees changes (``_REPORTED``): the queue's
+    #: progress reporter, which posts it on to the API. Set once the job is built.
+    on_change: Callable[["Job"], None] | None = field(default=None, repr=False, compare=False)
+
+    def __setattr__(self, name, value) -> None:
+        object.__setattr__(self, name, value)
+        if name in _REPORTED:
+            hook = self.__dict__.get("on_change")
+            if hook is not None:
+                hook(self)
+
+
+#: The fields of a job that a client watching it is shown while it runs.
+_REPORTED = frozenset({"status", "stage", "progress", "source"})
 
 
 #: Rank of the shutdown sentinel: below every real job, so a draining worker of either
@@ -110,6 +126,18 @@ _WEBHOOK_DELAYS = (0.0, 5.0, 20.0)
 _RESULT_AUDIO_GRACE_SECONDS = 120.0
 #: The result fields that hold audio as base64: the bulk of a finished job's memory.
 _AUDIO_FIELDS = ("audio_preview_base64", "backing_audio_base64")
+
+
+def _webhook_headers() -> dict:
+    """The key the API sends this service, so the API can tell a webhook came from here."""
+    return {"X-Api-Key": settings.api_key} if settings.api_key else {}
+
+
+def _progress_url(job: "Job") -> str | None:
+    """Where a job's progress goes: beside its completion webhook, on an allowed host only."""
+    if not job.callback_url or not _callback_allowed(job.callback_url):
+        return None
+    return job.callback_url.rstrip("/") + "/progress"
 
 
 def _callback_allowed(url: str) -> bool:
@@ -138,6 +166,8 @@ class JobQueue:
         self._pending: list[tuple[int, int, object]] = []
         self._cv = threading.Condition()
         self._seq = itertools.count()
+        # Live progress for the API (app.jobs.progress); NF_PROGRESS_PUSH=0 turns it off.
+        self._progress = ProgressReporter(self._progress_body, _progress_url, _webhook_headers)
         self._threads = [
             threading.Thread(target=self._worker, args=(False,), name=f"nf-inference-{i}", daemon=True)
             for i in range(max(1, workers))
@@ -238,6 +268,8 @@ class JobQueue:
         if priority not in _PRIORITY_RANK:
             priority = PRIORITY_NORMAL
         job = Job(id=job_id, correlation_id=correlation_id, callback_url=callback_url, priority=priority)
+        if settings.progress_push and callback_url:
+            job.on_change = self._progress.mark
         with self._lock:
             self._purge_expired()
             if not recovered and self._pending_count() >= settings.max_pending_jobs:
@@ -248,6 +280,7 @@ class JobQueue:
     def _enqueue(self, job: Job, fn) -> None:
         job.stage = STAGE_QUEUED
         job.rank, job.seq = self._push(_PRIORITY_RANK[job.priority], fn)
+        self._line_moved()
 
     # ── The journal ───────────────────────────────────────────────────────────
 
@@ -353,8 +386,26 @@ class JobQueue:
                 if self._pending:
                     rank = self._pending[0][0]
                     if not pro_lane or rank <= _PRIORITY_RANK[PRIORITY_HIGH]:
-                        return heapq.heappop(self._pending)
+                        taken = heapq.heappop(self._pending)
+                        self._line_moved()
+                        return taken
                 self._cv.wait()
+
+    def _line_moved(self) -> None:
+        """Everyone still waiting has a new place in line (one left it, or one jumped it)."""
+        for job in list(self._jobs.values()):
+            if job.status == STATUS_PENDING and job.on_change is not None:
+                job.on_change(job)
+
+    def _progress_body(self, job: Job) -> dict | None:
+        """What a client watching the job is shown while it runs; None once it has ended."""
+        if job.status not in (STATUS_PENDING, STATUS_PROCESSING):
+            return None
+        from app.api.schemas import JobResponse
+
+        return JobResponse(status=job.status, progress=job.progress, stage=job.stage,
+                           queue_position=self.queue_position(job.id),
+                           source=job.source).model_dump(by_alias=True, exclude_none=True)
 
     def _worker(self, pro_lane: bool = False) -> None:
         while True:
@@ -639,8 +690,7 @@ class JobQueue:
                          source=job.source, result=result_payload, error=job.error)
 
         payload = jr.model_dump(by_alias=True, exclude_none=True)
-        # The key the API sends this service, so the API can tell the webhook came from here.
-        headers = {"X-Api-Key": settings.api_key} if settings.api_key else {}
+        headers = _webhook_headers()
 
         def fire():
             # An API that is restarting (a deploy swaps it after the worker) is tried again

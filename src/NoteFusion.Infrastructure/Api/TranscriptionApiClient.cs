@@ -544,7 +544,7 @@ internal sealed partial class TranscriptionApiClient(
         }
     }
 
-    private static Result<TranscriptionJobDto> MapJob(string jobId, JobResponse wire)
+    internal static Result<TranscriptionJobDto> MapJob(string jobId, JobResponse wire)
     {
         var status = wire.Status.ToLowerInvariant() switch
         {

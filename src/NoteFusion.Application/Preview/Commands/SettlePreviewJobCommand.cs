@@ -20,7 +20,8 @@ namespace NoteFusion.Application.Preview.Commands;
 /// tab while it ran (a linked song takes minutes) left a preview "still running" for good — and the worker's
 /// completion webhook for it was answered 404, because the webhook only looked for account jobs. Run by the
 /// webhook and by the completion sweep, as <see cref="NotifyTranscriptionReadyCommand"/> is for account jobs,
-/// with the same deadline. A preview has no owner to tell, so this only records.
+/// with the same deadline. A preview has no owner to push, so this records, and tells a visitor still watching the
+/// preview's event stream that it has ended.
 /// </remarks>
 public sealed record SettlePreviewJobCommand(Guid PreviewRowId) : IRequest<Result>;
 
@@ -29,12 +30,14 @@ public sealed class SettlePreviewJobCommandHandler : IRequestHandler<SettlePrevi
     private readonly IApplicationDbContext _db;
     private readonly ITranscriptionApi _api;
     private readonly IDateTimeProvider _clock;
+    private readonly IJobEvents _events;
 
-    public SettlePreviewJobCommandHandler(IApplicationDbContext db, ITranscriptionApi api, IDateTimeProvider clock)
+    public SettlePreviewJobCommandHandler(IApplicationDbContext db, ITranscriptionApi api, IDateTimeProvider clock, IJobEvents events)
     {
         _db = db;
         _api = api;
         _clock = clock;
+        _events = events;
     }
 
     public async Task<Result> Handle(SettlePreviewJobCommand request, CancellationToken ct)
@@ -45,6 +48,14 @@ public sealed class SettlePreviewJobCommandHandler : IRequestHandler<SettlePrevi
         if (preview.CompletedAtUtc is not null)
             return Result.Success();
 
+        await SettleAsync(preview, ct);
+        if (preview.CompletedAtUtc is not null)
+            _events.Publish(preview.JobId, new JobEvent(JobEvent.Ended));
+        return Result.Success();
+    }
+
+    private async Task SettleAsync(PreviewJob preview, CancellationToken ct)
+    {
         var now = _clock.UtcNow;
         var expired = now - preview.CreatedAtUtc > NotifyTranscriptionReadyCommand.GiveUpAfter;
 
@@ -56,7 +67,7 @@ public sealed class SettlePreviewJobCommandHandler : IRequestHandler<SettlePrevi
         catch (Exception) when (expired && !ct.IsCancellationRequested)
         {
             await PreviewOutcome.RecordAsync(_db, preview, null, PreviewOutcome.ExpiredReason, now, ct);
-            return Result.Success();
+            return;
         }
 
         if (poll.IsFailure)
@@ -65,7 +76,7 @@ public sealed class SettlePreviewJobCommandHandler : IRequestHandler<SettlePrevi
                 await PreviewOutcome.RecordAsync(_db, preview, null, PreviewOutcome.LostReason, now, ct);
             else if (expired)
                 await PreviewOutcome.RecordAsync(_db, preview, null, PreviewOutcome.ExpiredReason, now, ct);
-            return Result.Success();
+            return;
         }
 
         var job = poll.Value;
@@ -73,8 +84,6 @@ public sealed class SettlePreviewJobCommandHandler : IRequestHandler<SettlePrevi
             await PreviewOutcome.RecordAsync(_db, preview, job, job.Error, now, ct);
         else if (expired)
             await PreviewOutcome.RecordAsync(_db, preview, null, PreviewOutcome.ExpiredReason, now, ct);
-
-        return Result.Success();
     }
 }
 

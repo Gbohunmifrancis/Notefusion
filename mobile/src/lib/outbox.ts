@@ -8,12 +8,14 @@ import { dirAt, fileExists, fileSize, keepAudio, listDir, readText, removeDir, r
 import { probeApi } from "./connectivity";
 import { dataSaverOn } from "./dataSaver";
 import { outboxTickMs } from "./dataPolicy";
+import { isJobWatched, onJobEnded } from "./jobStream";
 import { isOffline, onReachability } from "./reachability";
 import {
   AUDIO_GONE_LINE,
   LOST_LINE,
   awaitingJobs,
   classifySendFailure,
+  hasTimedWork,
   jobOutcome,
   newQueuedSend,
   nextDue,
@@ -37,9 +39,10 @@ import { logAnalyticsEvent } from "./analytics";
  * retry and delete. The audio is kept until the take's job is done, so a job the server loses is sent again.
  *
  * The runner (`useOutboxRunner`, mounted with the signed-in app) sends one at a time: a take just recorded
- * at once (`sendTakeNow`), the rest when the app comes forward, when the API is heard from again, and on a
- * timer (30 s, a minute on data saver) under each take's backoff. Once sent it follows the job like any
- * other — the completion push still comes — and a finished one opens from the Library.
+ * at once (`sendTakeNow`), the rest when the app comes forward, when the API is heard from again, when a job a
+ * screen was following ends, and on a timer (30 s, a minute on data saver) under each take's backoff — only
+ * while it holds a take still to send or a job still running. Once sent it follows the job like any other —
+ * the completion push still comes — and a finished one opens from the Library.
  *
  * Each take's record (`<id>.json`, beside its audio) is written synchronously before the audio is moved
  * there and on every change, so a take survives the app being killed at any step, even between two writes
@@ -397,9 +400,13 @@ function afterJob(id: string, after: QueuedSend | null): QueuedSend | null {
   return after;
 }
 
-/** Re-reads sent jobs; the completion push and the Library's row both follow from this. */
+/**
+ * Re-reads sent jobs; the completion push and the Library's row both follow from this. A job a screen is
+ * following live (`jobStream`) is left to it: the screen settles the take from what the stream says.
+ */
 async function followJobs(): Promise<void> {
   for (const take of awaitingJobs(items)) {
+    if (isJobWatched(take.jobId!)) continue;
     try {
       settleTake(take.id, await transcriptionsApi.getJob(take.jobId!));
     } catch (e) {
@@ -441,29 +448,47 @@ export function useOutbox(): QueuedSend[] {
 
 /**
  * Runs the queue while the signed-in app is open: at once, whenever the app comes forward (every
- * waiting take is tried, whatever its backoff), when the API is heard from again, and on a timer.
+ * waiting take is tried, whatever its backoff), when the API is heard from again, when a followed job
+ * ends, and on a timer — set only while the queue holds a take to send or a job still running
+ * (`hasTimedWork`), so an empty or settled queue wakes the phone for nothing.
  */
 export function useOutboxRunner(active: boolean): void {
   useEffect(() => {
     if (!active) return;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const arm = () => {
+      if (timer || !hasTimedWork(items)) return;
+      timer = setTimeout(() => {
+        timer = null;
+        if (AppState.currentState === "active") void pump();
+        arm();
+      }, outboxTickMs(dataSaverOn()));
+    };
+    const onItems = () => {
+      if (hasTimedWork(items)) arm();
+      else if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    };
     void pump({ force: true });
+    arm();
+    listeners.add(onItems);
     const appSub = AppState.addEventListener("change", (s) => {
       if (s === "active") void pump({ force: true });
     });
     const offReach = onReachability((s) => {
       if (s === "online") void pump();
     });
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    const tick = () => {
-      timer = setTimeout(() => {
-        if (AppState.currentState === "active") void pump();
-        tick();
-      }, outboxTickMs(dataSaverOn()));
-    };
-    tick();
+    // A job a screen followed has ended: a take sent as it is settled now rather than at the next tick.
+    const offEnded = onJobEnded((jobId) => {
+      if (items.some((i) => i.status === "sent" && i.jobId === jobId)) void pump();
+    });
     return () => {
+      listeners.delete(onItems);
       appSub.remove();
       offReach();
+      offEnded();
       if (timer) clearTimeout(timer);
     };
   }, [active]);

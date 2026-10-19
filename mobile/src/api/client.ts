@@ -108,6 +108,20 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   return config;
 });
 
+/**
+ * The headers the request interceptor adds, for a request that cannot go through axios: a job's live stream
+ * (`lib/jobStream`), read over XMLHttpRequest because axios and React Native's fetch cannot stream.
+ */
+export async function streamHeaders(): Promise<Record<string, string>> {
+  const headers: Record<string, string> = {};
+  const deviceId = await getDeviceId();
+  if (deviceId) headers['X-Device-Id'] = deviceId;
+  if (timeZone) headers['X-Time-Zone'] = timeZone;
+  const token = await tokenStore.getAccess();
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  return headers;
+}
+
 let refreshInFlight: Promise<RefreshOutcome> | null = null;
 
 /**
