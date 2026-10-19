@@ -141,8 +141,9 @@ services:
       Database__Host: db
       Database__Port: "5432"
       Database__Database: notefusion
-      Database__Username: notefusion
-      Database__Password: ${POSTGRES_PASSWORD}
+      # Its own login, not the superuser (ops/db/app-role.sql): the deploy adds both once the role is ready.
+      Database__Username: ${API_DB_USER:-notefusion}
+      Database__Password: ${API_DB_PASSWORD:-${POSTGRES_PASSWORD}}
       Database__ApplyMigrationsAtStartup: "true"
       TranscriptionApi__BaseUrl: http://transcriber:8000
       TranscriptionApi__ApiKey: ${TRANSCRIPTION_API_KEY}
