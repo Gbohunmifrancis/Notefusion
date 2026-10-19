@@ -6,7 +6,7 @@
  *   Herald's leap and the First Noel's climb. All six earn the Carol singer sticker: snowflakes and quavers, and the
  *   first line of Joy to the World.
  * - Halloween, the Midnight path (board j-halloween/03; GET /api/practice/seasons/halloween): the Mountain King's
- *   tiptoe, Bach's organ turn, a ghostly round, Dem Bones' climb, the Marionette's march and All Saints to finish. All
+ *   tiptoe and climb, Bach's organ turn, the skeletons' waltz, the Marionette's fall and All Saints to finish. All
  *   six earn the Night Singer sticker: bats and quavers, and the Mountain King's first phrase (from the hymn pack,
  *   /hymns/pack.json, fetched only near the end of the path; else his opening seven notes).
  *

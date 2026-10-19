@@ -307,7 +307,7 @@ public class CarolPathTests
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-    private static string RepoRoot()
+    internal static string RepoRoot()
     {
         for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir is not null; dir = dir.Parent)
             if (File.Exists(Path.Combine(dir.FullName, "NoteFusion.slnx")))
@@ -316,14 +316,14 @@ public class CarolPathTests
     }
 
     /// <summary>The hymn's doh as a MIDI pitch class.</summary>
-    private static int KeyOf(JsonElement hymn)
+    internal static int KeyOf(JsonElement hymn)
         => KeyParser.Parse(hymn.GetProperty("key").GetString()!).Value.DohPitchClass;
 
     /// <summary>
     /// Beats from the run's first note to the next bar line. The pack puts a pickup at the end of the first bar, so bar
     /// lines fall at whole bars of quarter-note beats.
     /// </summary>
-    private static double Pickup(List<(int Pitch, double Start, double Beats)> melody, int at, JsonElement hymn)
+    internal static double Pickup(List<(int Pitch, double Start, double Beats)> melody, int at, JsonElement hymn)
     {
         var time = hymn.GetProperty("time").GetString()!.Split('/');
         var bar = int.Parse(time[0]) * 4.0 / int.Parse(time[1]);
@@ -345,7 +345,7 @@ public class CarolPathTests
         return syllables;
     }
 
-    private static async Task<PracticeProgressDto> Progress(TestHarness h, User user)
+    internal static async Task<PracticeProgressDto> Progress(TestHarness h, User user)
         => (await new GetPracticeProgressQueryHandler(h.Db, SeasonFlagTests.Caller(user), h.Clock, new StubClientTimeZone())
             .Handle(new GetPracticeProgressQuery(), default)).Value;
 
@@ -357,7 +357,7 @@ public class CarolPathTests
         => Assert.True((await new SetPracticeTrackCommandHandler(h.Db, SeasonFlagTests.Caller(user), h.Clock, new StubClientTimeZone())
             .Handle(new SetPracticeTrackCommand(track), default)).IsSuccess);
 
-    private static async Task<GradeResultDto> Sing(TestHarness h, User user, string drillId, int score)
+    internal static async Task<GradeResultDto> Sing(TestHarness h, User user, string drillId, int score)
     {
         h.Clock.UtcNow = h.Clock.UtcNow.AddSeconds(30);
         var result = await new GradeDrillCommandHandler(
@@ -367,7 +367,7 @@ public class CarolPathTests
         return result.Value;
     }
 
-    private sealed class FixedScoreApi(int score) : ITranscriptionApi
+    internal sealed class FixedScoreApi(int score) : ITranscriptionApi
     {
         public Task<Result<GradeResultDto>> GradeAsync(Stream audio, string fileName, GradeTargetDto target, double? maxTakeSeconds = null, CancellationToken ct = default)
             => Task.FromResult(Result.Success(new GradeResultDto(score, target.Notes.Count, 0, 0, 0, 3.0, 0.1, 0, "Good.",

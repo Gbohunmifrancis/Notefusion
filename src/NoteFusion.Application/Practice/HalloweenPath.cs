@@ -4,14 +4,15 @@ namespace NoteFusion.Application.Practice;
 
 /// <summary>
 /// The Halloween season's Midnight path: six short drills from the songs for Halloween we publish (the Mountain King's
-/// tiptoe, Bach's Toccata turn, a ghostly round, Dem Bones' climb, the Marionette's march, and All Saints to finish, on
-/// the eve of All Saints' Day), served only while the season is on, as the carols path is at Christmas
-/// (<see cref="SeasonPath"/>). All six passed earn the "Night Singer" badge, earned only in season and kept for good.
+/// tiptoe and its climb, Bach's Toccata turn, the skeletons' waltz from Danse Macabre, the Marionette's fall, and All
+/// Saints to finish, on the eve of All Saints' Day), served only while the season is on, as the carols path is at
+/// Christmas (<see cref="SeasonPath"/>). All six passed earn the "Night Singer" badge, earned only in season and kept for good.
 /// </summary>
 /// <remarks>
-/// Every drill is a run of its song's melody as the hymn page publishes it (a test reads <c>web-site/hymns/pack.json</c>),
-/// labelled by the solfa engine. The minor tunes are written la-based, from their relative major's doh, as the hymn book
-/// writes them; a raised soh is <c>se</c>.
+/// Every drill is a run of its tune as its page publishes it (a test reads <c>web-site/hymns/pack.json</c>), labelled by
+/// the solfa engine. The minor tunes are written la-based, from their relative major's doh, as the hymn book writes them;
+/// a raised note is named for where it goes (<c>fe</c>, <c>se</c>), a lowered one too (<c>sa</c>). The Marionette's fall is
+/// sung a fourth lower than the page prints it, to stay in the comfortable range (its doh moves with it).
 /// </remarks>
 public static class HalloweenPath
 {
@@ -24,8 +25,28 @@ public static class HalloweenPath
 
     public static readonly IReadOnlyList<SeasonDrillDefinition> Drills =
     [
+        // IN THE HALL OF THE MOUNTAIN KING, B minor (doh D): the tiptoe up from low lah, la-based minor (bar 1).
+        new(1, "midnight-king", "Mountain King run", "In the Hall of the Mountain King", "tune-in-the-hall-of-the-mountain-king",
+            "the Mountain King's tiptoe", null, 62, "4/4", 0, 96,
+            "l, t, d r m d m", ".5 .5 .5 .5 .5 .5 1"),
+        // TOCCATA IN D MINOR, D minor (doh F): the turn on the top note, then the fall to low lah through se.
+        new(2, "midnight-toccata", "Toccata turn", "Toccata in D minor", "tune-toccata-in-d-minor",
+            "Bach's organ turn", null, 65, "4/4", 0, 80,
+            "m r m r d t, l, se, l,", ".5 .5 2 .5 .5 .5 .5 1 2"),
+        // IN THE HALL OF THE MOUNTAIN KING: its answer, a fifth up, climbing through the raised notes fe and se (bar 9).
+        new(3, "midnight-climb", "The climb", "In the Hall of the Mountain King", "tune-in-the-hall-of-the-mountain-king",
+            "the Mountain King's climb", null, 62, "4/4", 0, 96,
+            "m fe se l t se t", ".5 .5 .5 .5 .5 .5 1"),
+        // DANSE MACABRE, G minor (doh B♭): the skeletons' waltz, falling a semitone at a time through sa.
+        new(4, "midnight-waltz", "Skeleton waltz", "Danse Macabre", "tune-danse-macabre",
+            "the skeletons' waltz", null, 58, "3/4", 0, 100,
+            "l l s s sa sa f f m", "2 1 2 1 2 1 2 1 1"),
+        // FUNERAL MARCH OF A MARIONETTE, D minor: the fall from soh down to low te, sung a fourth lower (doh C).
+        new(5, "midnight-march", "Marionette march", "Funeral March of a Marionette", "tune-funeral-march-of-a-marionette",
+            "the Marionette's fall", null, 60, "6/8", 2, 96,
+            "s t l se f m r d t,", ".5 1 .5 .5 .5 .5 .5 .5 .5"),
         // ALL SAINTS (DARMSTADT), C major: its opening line, falling from the top doh (the eve of All Saints' Day).
-        new(6, "midnight-saints", "All Saints line", "All Saints (Darmstadt)", "all-saints-darmstadt",
+        new(6, "midnight-saints", "All Saints line", "All Saints (Darmstadt)", "tune-all-saints-darmstadt",
             "All Saints, from the top doh down", null, 60, "4/4", 0, 92,
             "d' s l l s f m d", "1 1 1 1 1.5 .5 1 1"),
     ];

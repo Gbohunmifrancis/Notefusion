@@ -277,7 +277,7 @@
 
   // ── The season's path (boards d-christmas/03, j-halloween/03), only while its season is on for the singer ─────
   /** The path's screen (either season's): its script and styles load the first time it is opened, never with the view. */
-  var SEASON_ASSETS = ["/assets/practice-modes.css?v=1", "/assets/practice-carols.css?v=2", "/assets/practice-carols.js?v=2"];
+  var SEASON_ASSETS = ["/assets/practice-modes.css?v=1", "/assets/practice-carols.css?v=2", "/assets/practice-carols.js?v=3"];
   // Three tiny still bats in the Midnight path card's corner: [left, top, width, degrees] (the phone's CARD_BATS).
   var CARD_BATS = [[4, 10, 14, -10], [58, 0, 11, 8], [80, 30, 9, -4]];
   var BAT_PATH = "M20 8L18.4 4.8L17.4 8.6C14.5 4.4 8.5 3.2 1.5 7.2C4.6 8.2 5.8 10.8 5.6 13.8C7.6 12 9.8 12 11 14C12.6 12 14.8 12.1 15.8 15C17 13.2 18.6 13.4 20 15.6C21.4 13.4 23 13.2 24.2 15C25.2 12.1 27.4 12 29 14C30.2 12 32.4 12 34.4 13.8C34.2 10.8 35.4 8.2 38.5 7.2C31.5 3.2 25.5 4.4 22.6 8.6L21.6 4.8Z";

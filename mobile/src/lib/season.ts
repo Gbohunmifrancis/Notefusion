@@ -486,7 +486,7 @@ const WORDS: Record<SeasonName, SeasonWords> = {
     shelf: "Songs for Halloween",
     icon: "ghost",
     cardBody:
-      "Six short drills from spooky songs: the Mountain King's tiptoe, Bach's organ turn, a ghostly round, and All Saints to finish.",
+      "Six short drills from spooky songs: the Mountain King's tiptoe, Bach's organ turn, the skeletons' waltz, and All Saints to finish.",
     pathTitle: "The Midnight path",
     sticker: "Night Singer",
     stickerBody: "You sang all six on the Midnight path. This sticker stays in your book after Halloween.",
@@ -607,18 +607,19 @@ export function seasonView(s: PracticeSeason, chosen: number | null = null): Sea
   };
 }
 
-const fold = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+/** Doh's word over each Midnight drill (Playful), by its code (the drill id's part before "@"). */
+const MIDNIGHT_LINES: Readonly<Record<string, string>> = {
+  "midnight-king": "Shh, tiptoe with me: the Mountain King's run, soft and short.",
+  "midnight-toccata": "A perfect tiptoe! Now the organ's turn: m r m, quick as a wink.",
+  "midnight-climb": "Up we go: the Mountain King climbs through fe and se.",
+  "midnight-waltz": "Waltz with the skeletons: down one semitone at a time.",
+  "midnight-march": "Tiptoe like a puppet: the Marionette's fall.",
+  "midnight-saints": "Last one, for All Saints' Day: sing it from the top doh down.",
+};
 
-/** Doh's word over the Midnight path (Playful), by the song the next drill comes from. */
+/** Doh's word over the Midnight path (Playful), for the drill that is next. */
 function midnightLine(next: NonNullable<PracticeSeason["next"]>): string {
-  const song = fold(next.carol);
-  if (song.includes("mountain king")) return "Shh, tiptoe with me: the Mountain King's run, soft and short.";
-  if (song.includes("toccata")) return "A perfect tiptoe! Now the organ's turn: m r m, quick as a wink.";
-  if (song.includes("ghost of john")) return "Boo sings the first line of the round. You come in at the second!";
-  if (song.includes("bones")) return "Now climb Dem Bones, one little semitone at a time.";
-  if (song.includes("marionette")) return "Tiptoe like a puppet: the Marionette's march.";
-  if (song.includes("all saints")) return "Last one, for All Saints' Day: sing it from the top doh down.";
-  return `Next: ${next.cue}. Boo and I are listening!`;
+  return MIDNIGHT_LINES[next.id.split("@")[0]!] ?? `Next: ${next.cue}. Boo and I are listening!`;
 }
 
 /** Doh's word over the path (Playful), for the step that is next. */

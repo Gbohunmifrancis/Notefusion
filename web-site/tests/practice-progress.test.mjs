@@ -240,14 +240,14 @@ test("Doh's word over the path, the sticker by its code, and the Carol singer's 
 });
 
 // ── The Halloween Midnight path: the same cases as mobile/src/lib/season.test.ts ──
-const mstep = (index, title, carol, cue, detail, passed) => ({ index, id: `midnight-${index}@62`, title, carol, hymnSlug: "x", cue, detail, passed, bestScore: passed ? 90 : null });
+const mstep = (index, code, title, carol, cue, detail, passed) => ({ index, id: `${code}@62`, title, carol, hymnSlug: "x", cue, detail, passed, bestScore: passed ? 90 : null });
 const MIDNIGHT = (n) => [
-  mstep(1, "Mountain King run", "In the Hall of the Mountain King", "the Mountain King run", "l, t, d r m d m", n >= 1),
-  mstep(2, "Toccata turn", "Toccata in D minor", "the Toccata turn", "m r m r d t, l, se, l,", n >= 2),
-  mstep(3, "Round entry", "Have You Seen the Ghost of John?", "the round's entry", "Boo starts, you come in", n >= 3),
-  mstep(4, "The semitone climb", "Dem Bones", "Dem Bones' climb", "d de r re m f fe s", n >= 4),
-  mstep(5, "Marionette march", "Funeral March of a Marionette", "the Marionette's march", "the 6/8 tiptoe", n >= 5),
-  mstep(6, "All Saints line", "All Saints (Darmstadt)", "All Saints, from the top doh down", "d' s l l s f m d", n >= 6),
+  mstep(1, "midnight-king", "Mountain King run", "In the Hall of the Mountain King", "the Mountain King's tiptoe", "l, t, d r m d m", n >= 1),
+  mstep(2, "midnight-toccata", "Toccata turn", "Toccata in D minor", "Bach's organ turn", "m r m r d t, l, se, l,", n >= 2),
+  mstep(3, "midnight-climb", "The climb", "In the Hall of the Mountain King", "the Mountain King's climb", "m fe se l t se t", n >= 3),
+  mstep(4, "midnight-waltz", "Skeleton waltz", "Danse Macabre", "the skeletons' waltz", "l l s s sa sa f f m", n >= 4),
+  mstep(5, "midnight-march", "Marionette march", "Funeral March of a Marionette", "the Marionette's fall", "s t l se f m r d t,", n >= 5),
+  mstep(6, "midnight-saints", "All Saints line", "All Saints (Darmstadt)", "All Saints, from the top doh down", "d' s l l s f m d", n >= 6),
 ];
 const midnight = (n) => {
   const steps = MIDNIGHT(n);
@@ -259,11 +259,11 @@ test("the hub's pumpkin card: Halloween until 1 November, the first drill named 
   assert.equal(first.season, "halloween");
   assert.equal(first.eyebrow, "Halloween · Until 1 November");
   assert.equal(first.title, "The Midnight path");
-  assert.equal(first.body, "Six short drills from spooky songs: the Mountain King's tiptoe, Bach's organ turn, a ghostly round, and All Saints to finish.");
+  assert.equal(first.body, "Six short drills from spooky songs: the Mountain King's tiptoe, Bach's organ turn, the skeletons' waltz, and All Saints to finish.");
   assert.equal(first.sung, "0 of 6 sung");
-  assert.equal(first.next, "First: the Mountain King run");
+  assert.equal(first.next, "First: the Mountain King's tiptoe");
   assert.equal(first.action, "Start");
-  assert.equal(P.seasonCard(midnight(2)).next, "Next: the round's entry");
+  assert.equal(P.seasonCard(midnight(2)).next, "Next: the Mountain King's climb");
   assert.equal(P.seasonCard(midnight(2)).action, "Continue");
   assert.equal(P.seasonCard(midnight(6)).next, "All sung. The Night Singer sticker is yours.");
   // The carols' card is as it was.
@@ -281,9 +281,9 @@ test("the Midnight path: Halloween · n of 6, Doh's word by the next song, the N
   assert.equal(P.seasonBuddyLine(midnight(0)), "Shh, tiptoe with me: the Mountain King's run, soft and short.");
   assert.equal(P.seasonBuddyLine(midnight(5)), "Last one, for All Saints' Day: sing it from the top doh down.");
   assert.equal(P.seasonBuddyLine(midnight(6)), "You sang all six on the Midnight path. Happy Halloween!");
-  // a song this build has no line for still gets one, by its cue
+  // a drill this build has no line for still gets one, by its cue
   const other = midnight(0);
-  other.next = { ...other.next, carol: "Danse Macabre", cue: "the open fifth" };
+  other.next = { ...other.next, id: "midnight-unknown@62", cue: "the open fifth" };
   assert.equal(P.seasonBuddyLine(other), "Next: the open fifth. Boo and I are listening!");
   assert.equal(P.earnedSeasonBadge([{ code: "night_singer" }], "night_singer"), true);
   assert.equal(P.earnedSeasonBadge([{ code: "carol_singer" }], "night_singer"), false);

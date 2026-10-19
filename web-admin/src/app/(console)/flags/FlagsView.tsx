@@ -64,7 +64,7 @@ const SEASONS: Record<string, SeasonCopy> = {
       { icon: Sparkles, title: "A small witch hat on the mark", detail: "Splash, headers, the website logo. The launcher icon stays the same." },
       { icon: MoonStar, title: "A few seconds of bats and a crescent moon", detail: "Splash and the top of Home only; none with reduced motion" },
       { icon: Music, title: "A Grieg chime, once a season", detail: "“In the Hall of the Mountain King”, l, t, d r m d m: the app's own piano, no audio file" },
-      { icon: BookOpenText, title: "Songs for Halloween at the top of Hymns", detail: "Nine: seven spooky songs and two All Saints tunes" },
+      { icon: BookOpenText, title: "Songs for Halloween at the top of Hymns", detail: "Eight: five spooky songs and three for All Saints' Day" },
       { icon: MicVocal, title: "The Midnight path in Practice", detail: "Six drills, Boo, and the Night Singer sticker (kept for good)" },
       { icon: BellRing, title: "Halloween wording in pushes", detail: "Practice reminders and “ready” pushes, same timing and limits" },
     ],
