@@ -59,7 +59,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off
-  unless `NF_ENABLE_DOCS=1`. Every upload is cut to its cap with ffmpeg `-t` whatever its header says;
+  unless `NF_ENABLE_DOCS=1`. Every upload is cut to its cap with ffmpeg `-t` whatever its header says, and read only as the containers people send
+  (`app/pipeline/ffmpeg_input.INPUT_GUARD`: `-protocol_whitelist file -format_whitelist …` on every ffmpeg/ffprobe of an
+  outside file, and audioread's ffmpeg wrapped the same way), so a DASH/HLS manifest sent as a recording fetches nothing;
   pending jobs are capped (`NF_MAX_PENDING_JOBS`, 503 past it); completion webhooks go only to
   `NF_CALLBACK_HOSTS` (default `api,localhost,127.0.0.1`) and carry `X-Api-Key`, which the API requires.
   Melody mode (hummed/sung clips) is decoded by `app/pipeline/vocal.py` — pyin f0 contour,
@@ -463,7 +465,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   one GitHub `workflow_dispatch` of `deploy-web.yml` (20 s quiet, at most one per 2 min; `GitHub__Token`), whose
   `tools/blog/build.mjs --api` renders the live posts from the public `GET /api/blog/published` at deploy time
   (the committed `web-site/` is built from `content/` alone; the deploy fails rather than ship without the blog).
-  `BlogChecks` mirror the build: blockers (what would break it, incl. ```solfa blocks checked against the site's
+  `BlogChecks` mirror the build (links read as the browser reads them, character references decoded, in both `safeUrl` and
+  `BlogChecks.AsBrowserReadsIt`; a cover address that could end its attribute is refused): blockers (what would break it, incl. ```solfa blocks checked against the site's
   `/blog/catalogue.json`) stop publishing; advice is the old drafter's quality checks. Gemini (`Gemini__ApiKey`,
   through `OutboundResilience`) drafts from the `BlogTopic` queue on demand (1–10, a `BlogGenerationRun` the
   `BlogDraftWorker` writes) and Mon/Thu 05:30 UTC, one revision round, tokens recorded; a draft that passes every check publishes itself (`Blog__AutoPublishDrafts`,
@@ -541,6 +544,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - No secret ever in the repository: `.github/workflows/secret-scan.yml` (gitleaks, `.gitleaks.toml`) fails pull requests,
   main and the first job of every deploy on a finding (docs/DEPLOYMENT.md, "Secret scanning").
+  Every workflow action is pinned to a commit SHA (version in a comment), and the SSH steps check the server's ECDSA
+  host key against the variable `EC2_HOST_FINGERPRINT` (docs/DEPLOYMENT.md, "Pinning the server's host key").
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).
   The same image runs in dev and compose with only env changes.
 - **Mobile first, always**: most users arrive on phones. Design, layout and performance are judged at 360–414 px on a

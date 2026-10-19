@@ -61,6 +61,7 @@ from pathlib import Path
 from typing import NamedTuple
 
 from app.config import settings
+from app.pipeline.ffmpeg_input import INPUT_GUARD
 from app.ingest import ytdlp_update
 
 logger = logging.getLogger(__name__)
@@ -998,7 +999,7 @@ def _audio_seconds(audio: Path) -> float | None:
     """The file's length by ffprobe, or None when it will not say."""
     try:
         probe = subprocess.run(
-            ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(audio)],
+            ["ffprobe", "-v", "error", *INPUT_GUARD, "-show_entries", "format=duration", "-of", "csv=p=0", str(audio)],
             capture_output=True, text=True, timeout=60)
         return float(probe.stdout.strip()) if probe.returncode == 0 else None
     except (subprocess.TimeoutExpired, ValueError, OSError):
@@ -1170,7 +1171,7 @@ def _to_wav(audio: Path, max_seconds: float, work: Path, offset: float = 0.0) ->
     ffmpeg = subprocess.run(
         [
             "ffmpeg", "-y", "-v", "error", *(["-ss", f"{offset:.3f}"] if offset > 0 else []),
-            "-protocol_whitelist", "file", "-i", str(audio),
+            *INPUT_GUARD, "-i", str(audio),
             "-t", f"{max_seconds:.2f}", "-ac", "2", "-ar", "44100", "-f", "wav", str(wav),
         ],
         capture_output=True, text=True, timeout=300,

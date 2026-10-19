@@ -103,6 +103,10 @@ public static partial class BlogChecks
         {
             if (!(cover.StartsWith('/') && !cover.StartsWith("//")) && !cover.StartsWith("https://", StringComparison.Ordinal))
                 blockers.Add("The cover image must be a site path (/assets/blog/…) or an https:// address.");
+            // It goes into the page's meta tags as an attribute: nothing that could end one.
+            else if (cover.Any(c => c <= ' ' || c is '"' or '\'' or '<' or '>' or '\u007f') ||
+                     (cover.StartsWith("https://", StringComparison.Ordinal) && !Uri.TryCreate(cover, UriKind.Absolute, out _)))
+                blockers.Add("The cover image's address has characters an address cannot have.");
             if (string.IsNullOrWhiteSpace(post.CoverAlt) || post.CoverWidth is not > 0 || post.CoverHeight is not > 0)
                 blockers.Add("The cover image needs alt text, a width and a height.");
         }
@@ -131,7 +135,7 @@ public static partial class BlogChecks
         var faqLinks = post.Faq.SelectMany(f => FaqLink().Matches(f.Answer ?? string.Empty).Select(m => m.Groups[1].Value)).ToList();
         var allLinks = links.Concat(faqLinks).ToList();
         var everyHref = links.Concat(post.Faq.SelectMany(f => Links(f.Answer ?? string.Empty)));
-        foreach (var h in everyHref.Where(h => ScriptScheme().IsMatch(h)).Distinct())
+        foreach (var h in everyHref.Where(h => ScriptScheme().IsMatch(AsBrowserReadsIt(h))).Distinct())
             blockers.Add($"The link {h} is not a web address; links go to a page or an https:// address.");
         foreach (var h in allLinks.Where(h => h.StartsWith('/')).Distinct())
         {
@@ -330,6 +334,31 @@ public static partial class BlogChecks
 
     [GeneratedRegex(@"^\s*(?:javascript|vbscript|data|file):", RegexOptions.IgnoreCase)]
     private static partial Regex ScriptScheme();
+
+    /// <summary>
+    /// An address as the browser reads it in an attribute: character references decoded ("javascript&amp;#58;" is
+    /// "javascript:") and the tabs, newlines and control characters it drops from a URL dropped. The site's build reads
+    /// links the same way (<c>tools/blog/lib/markdown.mjs</c>, <c>safeUrl</c>).
+    /// </summary>
+    internal static string AsBrowserReadsIt(string href)
+    {
+        var decoded = CharacterReference().Replace(href, m =>
+        {
+            if (m.Groups["named"].Success)
+                return m.Groups["named"].Value.ToLowerInvariant() switch { "colon" => ":", "tab" => "\t", _ => "\n" };
+            var hex = m.Groups["hex"].Success;
+            var digits = hex ? m.Groups["hex"].Value : m.Groups["dec"].Value;
+            return digits.Length <= 7 &&
+                   int.TryParse(digits, hex ? System.Globalization.NumberStyles.HexNumber : System.Globalization.NumberStyles.None, null, out var code) &&
+                   code is >= 0 and <= 0x10FFFF and (< 0xD800 or > 0xDFFF)
+                ? char.ConvertFromUtf32(code)
+                : "\uFFFD";
+        });
+        return new string(decoded.Where(c => c > ' ' && c != '\u007f').ToArray());
+    }
+
+    [GeneratedRegex(@"&#[xX](?<hex>[0-9a-fA-F]+);?|&#(?<dec>[0-9]+);?|&(?<named>colon|tab|newline);", RegexOptions.IgnoreCase)]
+    private static partial Regex CharacterReference();
 
     [GeneratedRegex("!\\[(?<alt>[^\\]]*)\\]\\(\\s*(?<src>[^)\\s]+)(?:\\s+\"(?<title>[^\"]*)\")?\\s*\\)")]
     private static partial Regex Image();

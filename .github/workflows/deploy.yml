@@ -49,7 +49,7 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       # Re-running an old push run deploys that old commit. The database may already hold rows a
       # newer build wrote (e.g. a plan interval the old code cannot read), so an old API crashes on
@@ -66,10 +66,10 @@ jobs:
           fi
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
 
       - name: Log in to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -77,7 +77,7 @@ jobs:
 
       - name: Extract metadata for API
         id: meta-api
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
         with:
           images: ${{ env.API_IMAGE_NAME }}
           tags: |
@@ -85,7 +85,7 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
       - name: Build and push API
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         with:
           context: .
           file: src/NoteFusion.Api/Dockerfile
@@ -98,7 +98,7 @@ jobs:
 
       - name: Extract metadata for Transcriber
         id: meta-transcriber
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
         with:
           images: ${{ env.TRANSCRIBER_IMAGE_NAME }}
           tags: |
@@ -106,7 +106,7 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
       - name: Build and push Transcriber
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         with:
           context: server
           file: server/Dockerfile
@@ -125,7 +125,7 @@ jobs:
       # checksum or commit; the weekly restore drill pulls the "latest" tag.
       - name: Extract metadata for Backup
         id: meta-backup
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
         with:
           images: ${{ env.BACKUP_IMAGE_NAME }}
           tags: |
@@ -133,7 +133,7 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
       - name: Build and push Backup
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         with:
           context: ops/backup
           file: ops/backup/Dockerfile
@@ -154,20 +154,26 @@ jobs:
       packages: read
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Is the server's host key pinned?
+        if: ${{ vars.EC2_HOST_FINGERPRINT == '' }}
+        run: echo "::warning::EC2_HOST_FINGERPRINT is not set, so this deploy does not check it is talking to our server (docs/DEPLOYMENT.md, \"Pinning the server's host key\")."
 
       - name: Copy docker-compose.prod.yml to EC2
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@917f8b81dfc1ccd331fef9e2d61bdc6c8be94634 # v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          # The server's ECDSA host key (the actions' SSH client checks that one); unset, the key goes unchecked.
+          fingerprint: ${{ vars.EC2_HOST_FINGERPRINT }}
           # db-role.sql lands at /opt/notefusion/ops/backup/: the backup service's database login.
           source: "docker-compose.prod.yml,ops/backup/db-role.sql,ops/db/app-role.sql"
           target: "/opt/notefusion/"
 
       - name: Deploy
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@7eaf76671a0d7eec5d98ee897acda4f968735a17 # v1.2.0
         env:
           API_IMAGE: ${{ env.API_IMAGE_NAME }}:sha-${{ github.sha }}
           TRANSCRIBER_IMAGE: ${{ env.TRANSCRIBER_IMAGE_NAME }}:sha-${{ github.sha }}
@@ -307,6 +313,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          # The server's ECDSA host key (the actions' SSH client checks that one); unset, the key goes unchecked.
+          fingerprint: ${{ vars.EC2_HOST_FINGERPRINT }}
           envs: >-
             API_IMAGE,TRANSCRIBER_IMAGE,GHCR_TOKEN,GHCR_USER,
             POSTGRES_PASSWORD,DOMAIN_NAME,TRANSCRIPTION_API_KEY,

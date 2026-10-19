@@ -38,7 +38,7 @@ public class SecurityHeadersTests
         SecurityHeadersMiddleware.Apply(secure.Response);
         SecurityHeadersMiddleware.Apply(plain.Response);
 
-        Assert.Equal("max-age=31536000", secure.Response.Headers.StrictTransportSecurity);
+        Assert.Equal("max-age=31536000; includeSubDomains", secure.Response.Headers.StrictTransportSecurity);
         Assert.False(plain.Response.Headers.ContainsKey("Strict-Transport-Security"));
     }
 

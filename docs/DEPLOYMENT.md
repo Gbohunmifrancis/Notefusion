@@ -811,6 +811,22 @@ first). Add an allowance to `.gitleaks.toml` only for a value that is public by 
 free for public repositories. GitHub then refuses a `git push` that carries a known key format before it reaches the
 repository at all. GitGuardian already checks every pull request.
 
+## Pinning the server's host key
+
+The deploy and the server check reach the server over SSH and hand it every production secret, so they should refuse to
+talk to anything but our server. Every action in the workflows is pinned to a commit (the version in the comment beside
+it), and the SSH steps check the server's host key against the repository variable `EC2_HOST_FINGERPRINT`. Unset, the
+key is not checked and the deploy says so in a warning.
+
+The SSH client in those actions picks the server's **ECDSA** key, so that is the fingerprint to set, in the form
+`SHA256:…`. Take it from a source an attacker cannot answer for: in the AWS console, the instance's *Actions › Monitor
+and troubleshoot › Get system log* prints `BEGIN SSH HOST KEY FINGERPRINTS` at first boot; use the `(ECDSA)` line.
+Or, on the server itself (an EC2 Instance Connect or Session Manager shell):
+`ssh-keygen -lf /etc/ssh/ssh_host_ecdsa_key.pub`. Put it in Settings › Secrets and variables › Actions › Variables as
+`EC2_HOST_FINGERPRINT`, then run *Check EC2 Status* once to see it connect. A new instance has new host keys: set the
+variable again after moving or rebuilding the server (not after a resize, which keeps the disk). Keep an Elastic IP on
+the instance, so its address is never handed to someone else while a deploy still points at it.
+
 ## Error reports (Sentry)
 
 Four places report errors to Sentry, one Sentry project each (all in the same organisation). Each is off until its

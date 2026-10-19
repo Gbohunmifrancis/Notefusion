@@ -22,6 +22,7 @@ from app.api.schemas import (
     LinkInfoRequest, LinkInfoResponse, ResultDto, SubmitResponse,
 )
 from app.config import TEMP_PREFIX, settings
+from app.pipeline.ffmpeg_input import INPUT_GUARD
 from app.jobs.queue import JobQueue, QueueFull
 
 router = APIRouter(prefix="/v1")
@@ -263,7 +264,7 @@ def _trim_head(path: Path, seconds: float) -> Path:
         ffmpeg = shutil.which("ffmpeg")
         if ffmpeg:
             subprocess.run(
-                [ffmpeg, "-v", "error", "-nostdin", "-y", "-protocol_whitelist", "file", "-i", str(path),
+                [ffmpeg, "-v", "error", "-nostdin", "-y", *INPUT_GUARD, "-i", str(path),
                  "-t", f"{seconds:.3f}", "-vn", "-af", _TRIM_FORMAT, "-c:a", "pcm_s16le", str(out_path)],
                 capture_output=True, timeout=120, check=True)
         else:

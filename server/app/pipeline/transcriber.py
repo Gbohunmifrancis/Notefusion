@@ -42,6 +42,7 @@ from pathlib import Path
 import numpy as np
 
 from app.config import TEMP_PREFIX, settings
+from app.pipeline.ffmpeg_input import INPUT_GUARD
 from app.pipeline import chords
 from app.pipeline import solfa
 from app.pipeline import solfa_render
@@ -3744,8 +3745,7 @@ def _ensure_wav_path(audio_path: Path, max_seconds: float | None = None) -> tupl
             [
                 ffmpeg_bin,
                 "-y",
-                "-protocol_whitelist",
-                "file",
+                *INPUT_GUARD,
                 "-i",
                 str(audio_path),
                 "-t",
