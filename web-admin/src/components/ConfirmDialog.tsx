@@ -4,6 +4,7 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 
 import { ApiError } from "@/api/client";
+import { IdentityFields, useIdentityCheck } from "@/components/IdentityCheck";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -16,6 +17,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { isFresh } from "@/lib/adminLock";
+import { unlockErrorMessage } from "@/lib/consoleUnlock";
+import { isPasskeyCancel } from "@/lib/webauthn";
 
 /**
  * The confirmation step for an operator action. One component rather than a per-action modal,
@@ -31,6 +35,8 @@ import { Textarea } from "@/components/ui/textarea";
  * - A failure keeps the dialog open and shows the server's own message, because the guards on the
  *   other side ("you cannot do that to your own account", "that is the last administrator") are
  *   written for this reader and are the whole answer.
+ * - `confirmIdentity` ends the actions the server wants freshly confirmed in the admin's passkey or
+ *   password (board i-console-lock, frame 3), skipped when they confirmed in the last minute.
  *
  * Built on Radix's `AlertDialog`, which brings the focus trap, the scroll lock and the inert
  * background this used to hand-roll. Two consequences of the primitive worth naming: an alert
@@ -51,6 +57,11 @@ export interface ConfirmRequest {
   typeToConfirm?: string;
   /** Prompt for the operator's reason. Omit for actions where a note adds nothing. */
   noteLabel?: string;
+  /**
+   * Confirm it is the admin before `onConfirm` runs: the server refuses Suspend, End subscription,
+   * Revoke Pro, Change role and every flag change without a fresh confirmation.
+   */
+  confirmIdentity?: boolean;
   /** Resolve to close. Throw to stay open with the error shown. */
   onConfirm: (note: string | undefined) => Promise<void>;
 }
@@ -66,6 +77,8 @@ export function ConfirmDialog({
   const [note, setNote] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [askIdentity, setAskIdentity] = useState(false);
+  const identity = useIdentityCheck(request?.confirmIdentity === true);
   const firstFieldRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const gateId = useId();
   const noteId = useId();
@@ -78,13 +91,18 @@ export function ConfirmDialog({
       setNote("");
       setError(null);
       setPending(false);
+      setAskIdentity(request.confirmIdentity === true && !isFresh());
+      identity.reset();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [request]);
 
   if (!request) return null;
 
   const gated = request.typeToConfirm !== undefined;
-  const unlocked = !gated || typed.trim().toLowerCase() === request.typeToConfirm?.toLowerCase();
+  const unlocked =
+    (!gated || typed.trim().toLowerCase() === request.typeToConfirm?.toLowerCase()) &&
+    (!askIdentity || identity.ready);
   const danger = request.tone === "danger";
 
   const submit = async (event: React.FormEvent) => {
@@ -94,6 +112,18 @@ export function ConfirmDialog({
     setPending(true);
     setError(null);
     try {
+      if (askIdentity && !isFresh()) {
+        try {
+          await identity.confirm();
+        } catch (cause) {
+          if (isPasskeyCancel(cause)) {
+            setPending(false);
+            return;
+          }
+          throw cause instanceof ApiError ? cause : new Error(unlockErrorMessage(cause));
+        }
+        setAskIdentity(false);
+      }
       await request.onConfirm(note.trim() || undefined);
       onClose();
     } catch (caught) {
@@ -172,6 +202,8 @@ export function ConfirmDialog({
               />
             </div>
           )}
+
+          {askIdentity && <IdentityFields check={identity} disabled={pending} />}
 
           {error && (
             <p

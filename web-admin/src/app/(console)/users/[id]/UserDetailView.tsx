@@ -474,6 +474,7 @@ function SubscriptionPanel({
                 </>
               ),
               confirmLabel: "Revoke",
+              confirmIdentity: true,
               tone: "danger",
               noteLabel: "Why (optional)",
               onConfirm: perform("Gifted Pro revoked.", (note) => revokePro(user.id, note)),
@@ -544,6 +545,7 @@ function SubscriptionPanel({
                 </>
               ),
               confirmLabel: "End access",
+              confirmIdentity: true,
               tone: "danger",
               typeToConfirm: user.email,
               noteLabel: "Why (optional)",
@@ -617,6 +619,7 @@ function LifecyclePanel({
                   </>
                 ),
                 confirmLabel: "Suspend account",
+                confirmIdentity: true,
                 tone: "danger",
                 typeToConfirm: user.email,
                 noteLabel: "Why (optional)",
@@ -765,6 +768,7 @@ function LifecyclePanel({
                 </>
               ),
               confirmLabel: isAdmin ? "Remove admin" : "Grant admin",
+              confirmIdentity: true,
               tone: "danger",
               typeToConfirm: user.email,
               noteLabel: "Why (optional)",

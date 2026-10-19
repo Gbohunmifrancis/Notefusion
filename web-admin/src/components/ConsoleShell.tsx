@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 
 import { Avatar } from "@/components/Avatar";
+import { ConsoleLock } from "@/components/ConsoleLock";
 import { LiveNotices } from "@/components/LiveNotices";
 import { NotificationBell } from "@/components/NotificationBell";
 import { Button } from "@/components/ui/button";
@@ -201,6 +202,8 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
           <div className="mx-auto w-full min-w-0 max-w-7xl space-y-6">{children}</div>
         </div>
       </SidebarInset>
+
+      <ConsoleLock />
     </SidebarProvider>
   );
 }

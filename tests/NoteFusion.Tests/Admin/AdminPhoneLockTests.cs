@@ -179,22 +179,33 @@ public class AdminPhoneLockTests
     // ── The policy ──────────────────────────────────────────────────────────────────────────────────────────────
 
     [Fact]
-    public async Task A_phones_token_needs_an_open_pass_and_a_browsers_is_not_asked_yet()
+    public async Task Every_admin_token_needs_an_open_pass_the_phones_and_the_consoles()
     {
         var phoneLock = new InMemoryAdminPhoneLock();
         var admin = Guid.NewGuid();
 
-        Assert.True(await Allowed(phoneLock, admin, ClientKinds.Web, header: null));
-        Assert.True(await Allowed(phoneLock, admin, client: null, header: null)); // a token from before the claim
+        // The console's (board i-console-lock), and a token naming no client, which only a script could have.
+        Assert.Equal(AdminPhoneLockErrors.Locked.Code, await Refusal(phoneLock, admin, ClientKinds.Web, header: null));
+        Assert.Equal(AdminPhoneLockErrors.Locked.Code, await Refusal(phoneLock, admin, client: null, header: null));
         Assert.Equal(AdminPhoneLockErrors.Locked.Code, await Refusal(phoneLock, admin, ClientKinds.App, header: null));
         Assert.Equal(AdminPhoneLockErrors.Locked.Code, await Refusal(phoneLock, admin, ClientKinds.App, header: "made-up"));
 
         var pass = phoneLock.Open(admin, null, Now);
         Assert.True(await Allowed(phoneLock, admin, ClientKinds.App, pass.Token));
+        Assert.True(await Allowed(phoneLock, admin, ClientKinds.Web, pass.Token));
         // Someone else's pass is no pass.
         Assert.Equal(AdminPhoneLockErrors.Locked.Code, await Refusal(phoneLock, Guid.NewGuid(), ClientKinds.App, pass.Token));
         // The lock's own routes and "Mute 1 hour" answer while locked.
         Assert.True(await Allowed(phoneLock, admin, ClientKinds.App, header: null, new AllowLockedPhoneAttribute()));
+    }
+
+    [Fact]
+    public async Task Each_lock_has_its_own_switch()
+    {
+        var consoleOff = new AdminPhoneLockSettings { Enforce = true, EnforceConsole = false };
+        Assert.Null(await Refusal(new InMemoryAdminPhoneLock(), Guid.NewGuid(), ClientKinds.Web, header: null, consoleOff));
+        Assert.Equal(AdminPhoneLockErrors.Locked.Code,
+            await Refusal(new InMemoryAdminPhoneLock(), Guid.NewGuid(), ClientKinds.App, header: null, consoleOff));
     }
 
     [Fact]
@@ -239,9 +250,19 @@ public class AdminPhoneLockTests
 
         var open = actions.Where(a => a.Method.GetCustomAttribute<AllowLockedPhoneAttribute>() is not null
                                       || a.Type.GetCustomAttribute<AllowLockedPhoneAttribute>() is not null)
-            .Select(a => a.Type == typeof(AdminPhoneLockController) ? "phone-lock" : $"{a.Type.Name}.{a.Method.Name}")
+            .Select(a => a.Type == typeof(AdminPhoneLockController) ? "phone-lock"
+                : a.Type == typeof(AdminConsoleLockController) ? "console-lock"
+                : $"{a.Type.Name}.{a.Method.Name}")
             .Distinct().OrderBy(n => n).ToList();
-        Assert.Equal(["AdminAlertsController.Mute", "phone-lock"], open);
+        Assert.Equal(["AdminAlertsController.Mute", "console-lock", "phone-lock"], open);
+
+        // Passkeys (their routes carry the admin policy one by one): adding or removing one wants a fresh unlock, and
+        // the list answers while locked so the lock can offer a passkey or the password.
+        var passkeys = typeof(PasskeysController).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        Assert.Equal(["Delete", "Register", "RegisterOptions"],
+            passkeys.Where(m => m.GetCustomAttribute<FreshPhoneUnlockAttribute>() is not null).Select(m => m.Name).Order().ToList());
+        Assert.Equal(["List"],
+            passkeys.Where(m => m.GetCustomAttribute<AllowLockedPhoneAttribute>() is not null).Select(m => m.Name).ToList());
     }
 
     // ── Tokens keep their client ────────────────────────────────────────────────────────────────────────────────

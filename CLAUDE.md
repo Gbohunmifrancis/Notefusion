@@ -19,6 +19,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Admin registers one, and a passkey sign-in returns the password login's token pair to an Admin only; challenges are
   single-use, 5 min, in memory (`InMemoryPasskeyChallengeStore`, single instance). RP: `Passkeys__RpId`
   (`notefusion.studio`; `localhost` in Development) and `Passkeys__Origins` (`https://admin.notefusion.studio`).
+  The console has the phone's lock (board i-console-lock): every admin route wants an open `X-Admin-Session` pass from
+  any non-app token (`AdminPhoneLock__EnforceConsole`, default on; the phone's own is `__Enforce`); a console sign-in
+  hands an Admin the first pass in that header (CORS-exposed), and `/api/admin/console-lock` opens a fresh one with one
+  of the admin's own passkeys (challenge kind `Unlock`, bound to them) or the password (the sign-in lockout's count).
+  web-admin `lib/adminLock` keeps the pass in memory only, locks after 5 min idle, and confirms Suspend, End
+  subscription, Revoke Pro, Change role, flags and adding/removing a passkey (`[FreshPhoneUnlock]`).
   Web push (the web app with its tab closed): `WebPushSubscription` rows (unique endpoint, known push services only,
   `/api/push/web/key|subscriptions`), sent beside the Expo push by `NotifyTranscriptionReadyCommand` via `WebPushSender`
   (Lib.Net.Http.WebPush over `OutboundResilience.WebPush`, a breaker per push service; 404/410 deletes the row, 5 refusals

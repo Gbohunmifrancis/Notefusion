@@ -408,8 +408,8 @@ def test_a_timeout_kills_the_whole_process_group(tmp_path):
     while time.monotonic() < deadline:
         try:
             state = Path(f"/proc/{pid}/status").read_text()
-        except FileNotFoundError:
-            return
+        except (FileNotFoundError, ProcessLookupError):
+            return  # gone: the file vanished, or the process did while it was being read
         if "State:\tZ" in state:
             return  # killed, waiting on a parent that does not reap (no init in this container)
         time.sleep(0.05)

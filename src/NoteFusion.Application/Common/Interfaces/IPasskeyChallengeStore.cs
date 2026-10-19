@@ -19,7 +19,10 @@ public interface IPasskeyChallengeStore
 public enum PasskeyCeremonyKind
 {
     Registration = 1,
-    SignIn = 2
+    SignIn = 2,
+
+    /// <summary>Unlocking the admin console for the admin already signed in (bound to them).</summary>
+    Unlock = 3
 }
 
 /// <summary>

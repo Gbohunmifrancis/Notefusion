@@ -193,6 +193,8 @@ builder.Services.AddCors(options =>
         // allowed, so a matching origin can call the API only with a token it already holds.
         policy.SetIsOriginAllowed(origin => IsAllowedOrigin(origin, allowedOrigins))
               .AllowAnyHeader()
+              // The console reads the pass a sign-in hands it (AdminConsolePass); a header is hidden from it unless named.
+              .WithExposedHeaders(NoteFusion.Application.Admin.PhoneLock.AdminPhoneLockRules.Header)
               .AllowAnyMethod();
     });
 });
