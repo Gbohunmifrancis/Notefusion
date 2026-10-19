@@ -34,6 +34,9 @@
         "android.permission.FOREGROUND_SERVICE_MICROPHONE",
         "android.permission.POST_NOTIFICATIONS",
         "com.android.vending.BILLING"
+      ],
+      "blockedPermissions": [
+        "android.permission.READ_MEDIA_IMAGES"
       ]
     },
     "plugins": [
