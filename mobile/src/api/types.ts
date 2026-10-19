@@ -410,29 +410,29 @@ export interface PracticeProgress {
    * off on the server, so show only these. Null from an older server.
    */
   modes: PracticeModeId[] | null;
-  /** The seasonal side-path (the Christmas carols) while its season is on for the singer, else null. */
+  /** The seasonal side-path (the Christmas carols, Halloween's Midnight path) while its season is on for the singer, else null. */
   season?: PracticeSeason | null;
 }
 
 /**
- * The carols path on the progress (C# `PracticeSeasonDto`): the Practice screen's seasonal card. `until` is the last
+ * A season's path on the progress (C# `PracticeSeasonDto`): the Practice screen's seasonal card. `until` is the last
  * day it runs (yyyy-mm-dd), null when it runs until switched off; `next` is null once every step is passed.
  */
 export interface PracticeSeason {
-  /** "christmas". */
+  /** "christmas" or "halloween". */
   season: string;
-  /** "Carols for Christmas". */
+  /** "Carols for Christmas", "The Midnight path". */
   title: string;
   until: string | null;
   sung: number;
   total: number;
   next: CarolStep | null;
   steps: CarolStep[];
-  /** The badge all of them earn ("carol_singer"), listed among the badges while the season is on. */
+  /** The badge all of them earn ("carol_singer", "night_singer"), listed among the badges while the season is on. */
   badgeCode: string;
 }
 
-/** One drill of the carols path as a row (C# `CarolStepDto`). */
+/** One drill of a season's path as a row (C# `CarolStepDto`; `carol` is the song's title in either season). */
 export interface CarolStep {
   /** 1-based. */
   index: number;
@@ -451,7 +451,10 @@ export interface CarolStep {
   bestScore: number | null;
 }
 
-/** GET /api/practice/carols while the season is on (C# `CarolsPathDto`); 404 PRACTICE_SEASON_OFF otherwise. */
+/**
+ * GET /api/practice/carols (Christmas) or /api/practice/seasons/{season} while that season is on (C# `CarolsPathDto`);
+ * 404 PRACTICE_SEASON_OFF otherwise.
+ */
 export interface CarolsPath {
   season: PracticeSeason;
   drills: CarolDrill[];
@@ -1073,10 +1076,12 @@ export interface AppVersionInfo {
 
 /**
  * `GET /api/app/season` (C# `SeasonDto`), anonymous: the season every surface dresses for now, as the caller sees it
- * (an admin also sees a season in preview). Cached by the API for a minute.
+ * (an admin also sees a season in preview). At most one is true (Christmas, should an admin preview both); builds that
+ * predate Halloween read only `christmas`. Cached by the API for a minute.
  */
 export interface AppSeason {
   christmas: boolean;
+  halloween: boolean;
 }
 
 // --- API errors ---------------------------------------------------------

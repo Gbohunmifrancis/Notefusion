@@ -1,13 +1,19 @@
 /**
- * The Christmas carols path (board d-christmas/03), pushed from the Practice hub's pine card while the season is on:
- * six short drills from carols we hold — a Gloria warm-up, Joy to the World all the way down, Silent Night in thirds
- * (the piano keeps the tune) and sung along with its words, Hark! the Herald's leap and the First Noel's climb.
+ * A season's practice path, pushed from the Practice hub's season card while that season is on:
+ *
+ * - Christmas, the carols (board d-christmas/03): six short drills from carols we hold — a Gloria warm-up, Joy to the
+ *   World all the way down, Silent Night in thirds (the piano keeps the tune) and sung along with its words, Hark! the
+ *   Herald's leap and the First Noel's climb. All six earn the Carol singer sticker: snowflakes and quavers, and the
+ *   whole first line of Joy to the World.
+ * - Halloween, the Midnight path (board j-halloween/03): six short drills from the songs for Halloween — the Mountain
+ *   King's tiptoe, Bach's organ turn, a ghostly round, Dem Bones' climb, the Marionette's march and All Saints to
+ *   finish. All six earn the Night Singer sticker: bats and quavers, and the Mountain King's first phrase.
  *
  * A side-path with its own place: each drill is heard, counted in, sung and marked by `drills/grade` like any drill
  * (XP, the day's allowance and the streak as ever) and never moves the main path. The next unsung drill is open; any
- * other can be tapped and sung again. All six sung earn the Carol singer sticker: the reward sheet, a burst of
- * snowflakes and quavers (none with Reduce Motion) and the whole first line of Joy to the World on the piano (only
- * with the app's sound on). Playful has Doh, in his cap, over the path; Focused has the longer takes and no Doh.
+ * other can be tapped and sung again. The sticker's burst is none with Reduce Motion, and its tune plays on the piano
+ * only with the app's sound on. Playful has Doh, in the season's costume, over the path (at Halloween with Boo beside
+ * him); Focused has the longer takes and neither.
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -19,7 +25,7 @@ import { useReducedMotion } from "react-native-reanimated";
 
 import { practiceApi } from "../../api/endpoints";
 import { toApiError } from "../../api/client";
-import type { CarolDrill, CarolsPath, GradeResult } from "../../api/types";
+import type { CarolDrill, CarolsPath, GradeResult, NoteEvent } from "../../api/types";
 import { Screen } from "../../components/Screen";
 import { Button } from "../../components/Button";
 import { ProblemNote } from "../../components/ProblemNote";
@@ -30,15 +36,33 @@ import { ModeHeader } from "../../components/practice/ModeHeader";
 import { StarGrade } from "../../components/practice/StarGrade";
 import { Confetti } from "../../components/practice/Confetti";
 import { Art } from "../../components/practice/Art";
-import { CappedArt } from "../../components/season/Cap";
+import { CostumedArt } from "../../components/season/Costume";
 import { logAnalyticsEvent } from "../../lib/analytics";
 import { leadInPlan } from "../../lib/practice";
 import { allowanceLine, rewardMoment } from "../../lib/practiceProgress";
 import { acknowledgeGrade } from "../../lib/practiceReward";
-import { SEASON_CONFETTI_ART, badgeArt, celebrationFor, playfulRewardLine, starsFor } from "../../lib/practiceTrack";
+import { badgeArt, celebrationFor, playfulRewardLine, seasonConfettiArt, starsFor } from "../../lib/practiceTrack";
 import { MODE_TAIL_SEC, TUNE_LEVEL, takeSound } from "../../lib/practiceModes";
-import { JOY_LINE, carolsBuddyLine, carolsView, earnedCarolSinger, solfaLine } from "../../lib/season";
-import { playCarol } from "../../lib/seasonChime";
+import {
+  CHIME_BPM,
+  JOY_LINE,
+  KING_BPM,
+  KING_OPENING,
+  costumeOf,
+  earnedSeasonBadge,
+  kingPhrase,
+  seasonBuddyLine,
+  seasonTint,
+  seasonView,
+  seasonWords,
+  stickerLine,
+  type SeasonName,
+  type SeasonTune,
+} from "../../lib/season";
+import { playTune } from "../../lib/seasonChime";
+import { hymnSheet, mountainKing } from "../../lib/hymnPack";
+import { installedPack } from "../../lib/hymnPackStore";
+import { deriveSolfa } from "../../lib/solfa";
 import { noteDueAt, partSeconds } from "../../lib/take";
 import { synthesizeVoicesWavBase64 } from "../../lib/synth";
 import { showToast } from "../../lib/toast";
@@ -50,13 +74,25 @@ import type { RootStackParams } from "../../navigation/types";
 /** The synth rings each note on this long past its end; a clip's length includes it. */
 const RING_SEC = 0.4;
 
-export function CarolsScreen() {
+/** The sticker's tune: Christmas's whole carol line; Halloween's the Mountain King's first phrase from the pack, else his opening. */
+function stickerTune(season: SeasonName, kingNotes: NoteEvent[] | null): SeasonTune {
+  if (season === "halloween") return { notes: kingNotes ?? KING_OPENING, bpm: KING_BPM };
+  return { notes: JOY_LINE, bpm: CHIME_BPM };
+}
+
+export function SeasonPathScreen() {
   const c = useColors();
   const styles = useThemedStyles(makeStyles);
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
-  const route = useRoute<RouteProp<RootStackParams, "Carols">>();
+  const route = useRoute<RouteProp<RootStackParams, "SeasonPath">>();
   const reduceMotion = useReducedMotion();
   const take = useModeTake();
+  const season: SeasonName = route.params?.season === "halloween" ? "halloween" : "christmas";
+  const words = seasonWords(season);
+  const tint = seasonTint(c, season);
+  const costume = costumeOf(season);
+  /** The Mountain King's first phrase as the hymn pack publishes it (Halloween; null until read, or without the pack). */
+  const [kingNotes, setKingNotes] = useState<NoteEvent[] | null>(null);
 
   const [path, setPath] = useState<CarolsPath | null>(null);
   const [loading, setLoading] = useState(true);
@@ -70,27 +106,39 @@ export function CarolsScreen() {
   const live = useRef(true);
   useEffect(() => () => { live.current = false; }, []);
 
+  // The Night Singer's phrase comes from the pack on the phone, labelled by the solfa engine; without it, the opening.
+  useEffect(() => {
+    if (season !== "halloween") return;
+    void installedPack()
+      .then((pack) => {
+        const king = pack ? mountainKing(pack.hymns) : null;
+        if (!king || !live.current) return;
+        setKingNotes(kingPhrase(deriveSolfa(hymnSheet(king).notes, king.key, king.time).notes));
+      })
+      .catch(() => undefined);
+  }, [season]);
+
   const load = useCallback(async (quiet = false) => {
     if (!quiet) setLoading(true);
     try {
-      const p = await practiceApi.carols();
+      const p = await practiceApi.seasonPath(season);
       if (!live.current) return;
       setPath(p);
       setLoadError(null);
     } catch (e) {
       if (!live.current || quiet) return;
       const err = toApiError(e);
-      setLoadError(err.code === "PRACTICE_SEASON_OFF" ? "The carols are put away until next Christmas." : err.message);
+      setLoadError(err.code === "PRACTICE_SEASON_OFF" ? words.away : err.message);
     } finally {
       if (live.current) setLoading(false);
     }
-  }, []);
+  }, [season, words.away]);
 
   useEffect(() => { void load(); }, [load]);
 
   const track = path?.drills[0]?.drill.track ?? route.params?.track ?? null;
   const playful = track === "playful";
-  const view = path ? carolsView(path.season, chosen) : null;
+  const view = path ? seasonView(path.season, chosen) : null;
   const open = path?.drills.find((d) => d.step.index === view?.open) ?? null;
   const busy = take.phase !== "idle";
   const allowance = open?.drill.allowance ?? null;
@@ -113,7 +161,7 @@ export function CarolsScreen() {
       const end = Math.max(partSeconds(d.drill.notes, d.drill.tempoBpm), d.backing ? partSeconds(d.backing, d.drill.tempoBpm) : 0);
       take.play(synthesizeVoicesWavBase64(voices, d.drill.tempoBpm), end + RING_SEC, "hear");
     } catch {
-      setError("Could not play the carol. Please try again.");
+      setError(words.playFailed);
     }
   }
 
@@ -136,7 +184,7 @@ export function CarolsScreen() {
     });
     const natural = plan.seconds + partSeconds(d.drill.notes, d.drill.tempoBpm) + MODE_TAIL_SEC;
     const seconds = d.drill.maxTakeSeconds > 0 ? Math.min(d.drill.maxTakeSeconds, natural) : natural;
-    void logAnalyticsEvent("carol_started", { drill: d.drill.id, step: d.step.index });
+    void logAnalyticsEvent(words.started, { drill: d.drill.id, step: d.step.index });
     try {
       const got = await take.record({
         clipBase64: clip,
@@ -147,12 +195,13 @@ export function CarolsScreen() {
       if (!got || !live.current) return;
       const result = got.value;
       setGrade({ index: d.step.index, result });
-      void logAnalyticsEvent("carol_marked", { drill: d.drill.id, step: d.step.index, score: result.score });
+      void logAnalyticsEvent(words.marked, { drill: d.drill.id, step: d.step.index, score: result.score });
       const moment = acknowledgeGrade(result);
-      if (earnedCarolSinger(result.reward?.newBadges, path?.season.badgeCode)) {
+      if (path && earnedSeasonBadge(result.reward?.newBadges, path.season.badgeCode)) {
         setSticker(result);
         if (!reduceMotion) setBurst((b) => b + 1);
-        void playCarol(JOY_LINE);
+        const tune = stickerTune(season, kingNotes);
+        void playTune(tune.notes, tune.bpm);
       } else {
         const how = celebrationFor(track, result.score, result.reward, false);
         if (how === "burst" && !reduceMotion) setBurst((b) => b + 1);
@@ -166,7 +215,7 @@ export function CarolsScreen() {
   }
 
   const header = (
-    <ModeHeader eyebrow={view?.eyebrow ?? "Christmas"} title="Carols" />
+    <ModeHeader eyebrow={view?.eyebrow ?? words.name} title={words.pathTitle} />
   );
 
   if (loading && !path) {
@@ -182,18 +231,22 @@ export function CarolsScreen() {
       <Screen>
         {header}
         <View style={styles.failed}>
-          <ProblemNote>{loadError ?? "The carols didn't load."}</ProblemNote>
+          <ProblemNote>{loadError ?? words.failed}</ProblemNote>
           <Button label="Try again" icon="retry" variant="secondary" onPress={() => void load()} />
         </View>
       </Screen>
     );
   }
 
-  const season = path.season;
-  const dohPose = take.phase === "leadin" || take.phase === "live" ? "doh-sing" : view.allSung ? "doh-cheer" : "doh-wave";
+  const card = path.season;
+  const singing = take.phase === "leadin" || take.phase === "live";
+  const dohPose = singing ? "doh-sing" : view.allSung ? "doh-cheer" : "doh-wave";
+  const tune = stickerTune(season, kingNotes);
+  const line = stickerLine(season, tune.notes);
+  const tuneName = season === "halloween" ? "In the Hall of the Mountain King" : "Joy to the World";
   const passedNow = grade && grade.result.score >= 80;
-  const nextStep = season.next && season.next.index !== view.open ? season.next.index : null;
-  const earned = season.next == null;
+  const nextStep = card.next && card.next.index !== view.open ? card.next.index : null;
+  const earned = card.next == null;
 
   return (
     <View style={styles.flex}>
@@ -201,10 +254,18 @@ export function CarolsScreen() {
         {header}
 
         {playful ? (
-          <View style={styles.buddy} accessible accessibilityLabel={`Doh says: ${carolsBuddyLine(season)}`}>
-            <CappedArt name={dohPose} width={72} cap />
+          <View style={styles.buddy} accessible accessibilityLabel={`Doh says: ${seasonBuddyLine(card)}`}>
+            {season === "halloween" ? (
+              // Boo, Halloween's friendly ghost, floats beside Doh (never alone: board j-halloween/03).
+              <View style={styles.pair}>
+                <CostumedArt name={dohPose} width={72} costume={costume} />
+                <Art name={singing ? "boo-sing" : "boo"} width={34} style={styles.boo} />
+              </View>
+            ) : (
+              <CostumedArt name={dohPose} width={72} costume={costume} />
+            )}
             <View style={styles.bubble}>
-              <Text style={styles.bubbleText}>{carolsBuddyLine(season)}</Text>
+              <Text style={styles.bubbleText}>{seasonBuddyLine(card)}</Text>
             </View>
           </View>
         ) : null}
@@ -216,7 +277,7 @@ export function CarolsScreen() {
             const rule = after && after.state !== "open" && row.state !== "open" ? <View style={styles.rule} /> : null;
             if (row.state === "open" && d) {
               return (
-                <OpenCarol
+                <OpenDrill
                   key={row.index}
                   d={d}
                   line={row.line}
@@ -231,6 +292,8 @@ export function CarolsScreen() {
                   onHear={() => hear(d)}
                   onSing={() => void sing(d)}
                   onNext={passedNow && nextStep ? () => choose(nextStep) : null}
+                  nextLabel={words.nextLabel}
+                  lanes={season === "halloween" ? ["Piano\nplays", "You\nsing"] : ["Piano\ntune", "You\nalto"]}
                   styles={styles}
                   c={c}
                 />
@@ -275,29 +338,34 @@ export function CarolsScreen() {
           })}
         </View>
 
-        <View style={[styles.reward, earned && styles.rewardEarned]} accessible accessibilityLabel={earned ? "Carol singer sticker: yours to keep." : "Carol singer sticker for all six. It stays in your book after Christmas."}>
-          <Art name={badgeArt(season.badgeCode, earned)} width={52} />
+        <View
+          style={[styles.reward, earned && { borderStyle: "solid", borderColor: tint.line, backgroundColor: tint.soft }]}
+          accessible
+          accessibilityLabel={earned ? `${words.sticker} sticker: yours to keep.` : `${words.sticker} sticker for all six. It stays in your book after ${words.name}.`}
+        >
+          <Art name={badgeArt(card.badgeCode, earned)} width={52} />
           <Text style={styles.rewardText}>
-            <Text style={styles.rewardStrong}>Carol singer sticker</Text>
-            {earned ? ": yours to keep, after Christmas too." : " for all six. It stays in your book after Christmas."}
+            <Text style={styles.rewardStrong}>{words.sticker} sticker</Text>
+            {earned ? `: yours to keep, after ${words.name} too.` : ` for all six. It stays in your book after ${words.name}.`}
           </Text>
         </View>
       </Screen>
 
-      <Confetti burst={burst} reduceMotion={reduceMotion} art={SEASON_CONFETTI_ART} />
+      <Confetti burst={burst} reduceMotion={reduceMotion} art={seasonConfettiArt(season)} />
 
       <Sheet visible={sticker !== null} onClose={() => setSticker(null)}>
         {sticker ? (
           <View style={styles.sheet}>
-            <Art name={badgeArt(season.badgeCode, true)} width={132} />
-            <Text style={styles.sheetTitle} accessibilityRole="header">Carol singer</Text>
-            <Text style={styles.sheetBody}>You sang all six carols. This sticker stays in your book after Christmas.</Text>
+            <Art name={badgeArt(card.badgeCode, true)} width={132} />
+            <Text style={styles.sheetTitle} accessibilityRole="header">{words.sticker}</Text>
+            <Text style={styles.sheetBody}>{words.stickerBody}</Text>
             {sticker.reward && sticker.reward.xpGained > 0 ? (
               <Text style={styles.sheetXp}>+{sticker.reward.xpGained} XP · same XP rules as every drill</Text>
             ) : null}
-            <View style={styles.sheetLine} accessible accessibilityLabel={`Joy to the World: ${solfaLine(JOY_LINE)}`}>
-              <Icon name="solfa" size={18} color={c.candle} />
-              <Text style={styles.sheetSolfa}>{solfaLine(JOY_LINE)}</Text>
+            <View style={[styles.sheetLine, { backgroundColor: tint.soft }]} accessible accessibilityLabel={`${tuneName}: ${line}`}>
+              <Icon name="solfa" size={18} color={tint.label} />
+              {/* A long phrase (the Mountain King's) sets tighter, so it fits a 360 px phone on one line. */}
+              <Text style={[styles.sheetSolfa, line.length > 24 && styles.sheetSolfaLong, { color: tint.label }]}>{line}</Text>
             </View>
             <SheetActions style={styles.sheetActions}>
               <Button
@@ -321,7 +389,7 @@ type Styles = ReturnType<typeof makeStyles>;
 type Take = ReturnType<typeof useModeTake>;
 
 /** The drill open for singing: its notes (the piano's tune over a part, a sing-along's words), Listen and Sing it. */
-function OpenCarol({
+function OpenDrill({
   d,
   line,
   playful,
@@ -335,6 +403,8 @@ function OpenCarol({
   onHear,
   onSing,
   onNext,
+  nextLabel,
+  lanes,
   styles,
   c,
 }: {
@@ -351,6 +421,10 @@ function OpenCarol({
   onHear: () => void;
   onSing: () => void;
   onNext: (() => void) | null;
+  /** "Next carol", "Next drill". */
+  nextLabel: string;
+  /** The two lanes' names when the piano plays under a part: the piano's, then the singer's. */
+  lanes: [string, string];
   styles: Styles;
   c: Palette;
 }) {
@@ -383,7 +457,7 @@ function OpenCarol({
 
       {d.backing ? (
         <View style={styles.lane}>
-          <Text style={styles.laneLabel}>Piano{"\n"}tune</Text>
+          <Text style={styles.laneLabel}>{lanes[0]}</Text>
           <View style={styles.chips}>
             {d.backing.map((n, i) => (
               <View key={i} style={[styles.chip, styles.chipTune]}>
@@ -395,7 +469,7 @@ function OpenCarol({
       ) : null}
 
       <View style={d.backing ? styles.lane : undefined}>
-        {d.backing ? <Text style={styles.laneLabel}>You{"\n"}alto</Text> : null}
+        {d.backing ? <Text style={styles.laneLabel}>{lanes[1]}</Text> : null}
         <View
           style={styles.chips}
           accessible
@@ -445,7 +519,7 @@ function OpenCarol({
       ) : onNext ? (
         <View style={styles.actions}>
           <Button label={playful ? "Again!" : "Sing it again"} icon="mic" variant="secondary" onPress={onSing} disabled={left === 0} style={styles.action} />
-          <Button label="Next carol" icon="next" iconPosition="right" onPress={onNext} style={styles.action} />
+          <Button label={nextLabel} icon="next" iconPosition="right" onPress={onNext} style={styles.action} />
         </View>
       ) : (
         <View style={styles.actions}>
@@ -476,6 +550,9 @@ const makeStyles = (c: Palette) =>
     failed: { gap: spacing.md, marginTop: spacing.lg },
 
     buddy: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginBottom: spacing.md },
+    /** Doh with Boo floating at his shoulder (Halloween). */
+    pair: { width: 72 + 20, flexDirection: "row" },
+    boo: { position: "absolute", right: 0, top: -2 },
     bubble: {
       flex: 1,
       paddingVertical: spacing.sm,
@@ -584,7 +661,6 @@ const makeStyles = (c: Palette) =>
       borderStyle: "dashed",
       borderColor: c.border,
     },
-    rewardEarned: { borderStyle: "solid", borderColor: c.pineLine, backgroundColor: c.pineSoft },
     rewardText: { flex: 1, fontFamily: fonts.regular, fontSize: 13.5, lineHeight: 19, color: c.textMuted },
     rewardStrong: { fontFamily: fonts.semibold, color: c.text },
 
@@ -600,8 +676,9 @@ const makeStyles = (c: Palette) =>
       paddingVertical: 8,
       paddingHorizontal: spacing.md,
       borderRadius: radii.pill,
-      backgroundColor: c.pineSoft,
+      maxWidth: "100%",
     },
-    sheetSolfa: { ...typography.mono, fontSize: 15, color: c.candle, letterSpacing: 2 },
+    sheetSolfa: { ...typography.mono, fontSize: 15, letterSpacing: 2, flexShrink: 1 },
+    sheetSolfaLong: { fontSize: 13.5, letterSpacing: 0.3 },
     sheetActions: { alignSelf: "stretch", flexDirection: "row", justifyContent: "flex-end", alignItems: "center", gap: spacing.md, marginTop: spacing.md },
   });

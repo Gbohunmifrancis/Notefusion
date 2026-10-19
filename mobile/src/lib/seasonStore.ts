@@ -1,6 +1,7 @@
 /**
- * The season flag on the phone: read from `GET /api/app/season` at startup and whenever the app comes forward,
- * kept per device (AsyncStorage `nf.season`) so the next launch's splash can wear the cap before the network is up,
+ * The season flags on the phone (Christmas, Halloween; one at a time): read from `GET /api/app/season` at startup and
+ * whenever the app comes forward, kept per device (AsyncStorage `nf.season`) so the next launch's splash can wear the
+ * season's costume (the cap, the witch hat) before the network is up,
  * and held in module scope so every screen reads it for free and follows a change within the session.
  *
  * Fails closed to "no season": a phone that cannot reach the API keeps the last answer it had, and one that never had
@@ -11,14 +12,14 @@ import { useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { appApi } from "../api/endpoints";
-import { NO_SEASON, SEASON_CACHE_KEY, parseSeason, seasonFrom, serializeSeason, type SeasonFlag } from "./season";
+import { NO_SEASON, SEASON_CACHE_KEY, parseSeason, sameSeason, seasonFrom, serializeSeason, type SeasonFlag } from "./season";
 
 let current: SeasonFlag = NO_SEASON;
 let loaded: Promise<void> | null = null;
 const listeners = new Set<(s: SeasonFlag) => void>();
 
 function setLocal(next: SeasonFlag): void {
-  if (next.christmas === current.christmas) return;
+  if (sameSeason(next, current)) return;
   current = next;
   for (const fn of listeners) fn(current);
 }

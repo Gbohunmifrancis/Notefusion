@@ -22,7 +22,7 @@ import { ChoirScreen } from '../screens/ChoirScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { PracticeModeScreen } from '../screens/practice/PracticeModeScreen';
-import { CarolsScreen } from '../screens/practice/CarolsScreen';
+import { SeasonPathScreen } from '../screens/practice/SeasonPathScreen';
 import { useOutboxRunner } from '../lib/outbox';
 import { useSeasonSync } from '../lib/seasonStore';
 import { autoRefreshPack } from '../lib/hymnPackStore';
@@ -168,10 +168,10 @@ export function RootNavigator() {
               component={PracticeModeScreen}
               options={{ animation: 'slide_from_right' }}
             />
-            {/* The Christmas carols path, from the Practice hub's pine card while the season is on. */}
+            {/* A season's path (the carols, the Midnight path), from the Practice hub's season card while it is on. */}
             <Stack.Screen
-              name="Carols"
-              component={CarolsScreen}
+              name="SeasonPath"
+              component={SeasonPathScreen}
               options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen

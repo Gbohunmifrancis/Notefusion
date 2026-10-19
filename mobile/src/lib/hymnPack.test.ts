@@ -5,6 +5,11 @@ import {
   WEEK_MS,
   autoCheckDue,
   carols,
+  filterHalloween,
+  halloween,
+  isAllSaints,
+  mountainKing,
+  seasonShelf,
   formatBytes,
   hymnSheet,
   keyAndTime,
@@ -140,4 +145,62 @@ test("sizes read as people say them", () => {
   assert.equal(formatBytes(700_414), "684 KB");
   assert.equal(formatBytes(3_250_000), "3.1 MB");
   assert.equal(formatBytes(500), "500 B");
+});
+
+const spooky = { occasions: ["Halloween"] };
+const saints = { occasions: ["All Saints", "Halloween"] };
+const king = hymn("tune-in-the-hall-of-the-mountain-king", "In the Hall of the Mountain King", {
+  ...spooky, kind: "tune", tune: "Peer Gynt", key: "B minor", time: "4/4",
+  notes: [[59, 0, 0.5], [61, 0.5, 0.5], [62, 1, 0.5], [64, 1.5, 0.5], [66, 2, 0.5], [62, 2.5, 0.5], [66, 3, 1], [65, 4, 0.5]],
+});
+const toccata = hymn("tune-toccata-in-d-minor", "Toccata in D minor", { ...spooky, kind: "tune", key: "D minor" });
+const bones = hymn("dem-bones", "Dem Bones", { ...spooky, firstLine: "Ezekiel connected dem dry bones" });
+const hearse = hymn("the-hearse-song", "The Hearse Song", spooky);
+const darmstadt = hymn("tune-all-saints-darmstadt", "All Saints (Darmstadt)", {
+  ...saints, kind: "tune", tune: "ALL SAINTS (DARMSTADT)",
+  notes: [[72, 0, 1], [67, 1, 1], [69, 2, 1], [69, 3, 1], [67, 4, 1.5], [65, 5.5, 0.5], [64, 6, 1], [60, 7, 1]],
+});
+const allSaintsNew = hymn("tune-all-saints-new", "All Saints, New", { ...saints, kind: "tune", key: "Bb major" });
+const lookYe = hymn("look-ye-saints-the-sight-is-glorious", "Look, Ye Saints, the Sight Is Glorious");
+const halloweenPack = [allSaintsNew, hearse, ag, darmstadt, bones, silent, toccata, lookYe, king, hymn("odd", "Odd", { occasions: "Halloween" as unknown as string[] })];
+
+test("the Halloween shelf: the spooky songs first, the best known first, and the All Saints tunes close it", () => {
+  assert.deepEqual(halloween(halloweenPack).map((h) => h.slug), [
+    "tune-in-the-hall-of-the-mountain-king",
+    "tune-toccata-in-d-minor",
+    "dem-bones",
+    "the-hearse-song",
+    "tune-all-saints-darmstadt",
+    "tune-all-saints-new",
+  ]);
+  assert.deepEqual(halloween([ag, silent, lookYe]), []);
+  assert.deepEqual(seasonShelf(halloweenPack, "halloween"), halloween(halloweenPack));
+  assert.deepEqual(seasonShelf(shelf, "christmas"), carols(shelf));
+  assert.equal(isAllSaints(darmstadt), true);
+  assert.equal(isAllSaints(king), false);
+});
+
+test("See all's filters: All, Spooky and All Saints", () => {
+  const songs = halloween(halloweenPack);
+  assert.equal(filterHalloween(songs, "all").length, 6);
+  assert.deepEqual(filterHalloween(songs, "spooky").map((h) => h.slug), ["tune-in-the-hall-of-the-mountain-king", "tune-toccata-in-d-minor", "dem-bones", "the-hearse-song"]);
+  assert.deepEqual(filterHalloween(songs, "saints").map((h) => h.slug), ["tune-all-saints-darmstadt", "tune-all-saints-new"]);
+});
+
+test("search finds the songs for Halloween by 'halloween', 'spooky' or 'all saints'", () => {
+  const names = (q: string) => searchHymns(halloweenPack, q).map((h) => h.slug);
+  assert.deepEqual(names("halloween"), names("spooky"));
+  assert.equal(names("spooky").length, 6);
+  assert.deepEqual(names("all saints"), ["tune-all-saints-darmstadt", "tune-all-saints-new"]);
+  // a title still outranks an occasion
+  assert.equal(names("bones")[0], "dem-bones");
+});
+
+test("each Halloween card opens with its first notes in solfa: the Mountain King la-based from doh D", () => {
+  const label = (h: PackHymn) => openingLine(deriveSolfa(hymnSheet(h).notes, h.key, h.time).notes);
+  assert.equal(label(king), "l, t, d r m d m ma");
+  assert.equal(label(darmstadt), "d' s l l s f m d");
+  assert.equal(keyAndTime(king), "Bm · 4/4");
+  assert.equal(mountainKing(halloweenPack)?.slug, "tune-in-the-hall-of-the-mountain-king");
+  assert.equal(mountainKing(shelf), null);
 });

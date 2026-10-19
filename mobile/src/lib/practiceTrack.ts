@@ -238,6 +238,8 @@ const BADGE_ART: Record<string, string> = {
   streak_30: "month",
   // The Christmas season's sticker: all six carols sung while it is on, kept for good.
   carol_singer: "carol-singer",
+  // The Halloween season's: all six on the Midnight path sung while it is on, kept for good.
+  night_singer: "night-singer",
 };
 
 /** A badge's sticker, or its locked one; a code this build does not know shows the first drill's. */
@@ -282,6 +284,19 @@ export const SEASON_CONFETTI_ART: readonly ArtName[] = [
   "confetti-snowflake",
   "confetti-beamed",
 ];
+
+/** The Night Singer's burst (board j-halloween/03): bats and quavers in place of the usual paper bits. */
+export const HALLOWEEN_CONFETTI_ART: readonly ArtName[] = [
+  "confetti-bat",
+  "confetti-quaver",
+  "confetti-bat",
+  "confetti-beamed",
+];
+
+/** A season's sticker burst. */
+export function seasonConfettiArt(season: "christmas" | "halloween"): readonly ArtName[] {
+  return season === "halloween" ? HALLOWEEN_CONFETTI_ART : SEASON_CONFETTI_ART;
+}
 
 export function trackArt(track: PracticeTrack): ArtName {
   return track === "playful" ? "track-playful" : "track-focused";

@@ -29,10 +29,14 @@ import {
 import { Nunito_900Black } from "@expo-google-fonts/nunito";
 import {
   SEASON_CACHE_KEY,
-  SEASON_INTRO_KEY,
+  activeSeason,
+  costumeOf,
   parseSeason,
+  seasonIntroKey,
   seasonKey,
   splashSeason,
+  type Costume,
+  type SeasonName,
   type SplashSeason,
 } from "./season";
 import { primeSeason } from "./seasonStore";
@@ -63,10 +67,13 @@ interface AppReady {
    */
   splash: "hold" | "intro" | "brief";
   /**
-   * The Christmas season as this phone last heard it (lib/season `splashSeason`): `none` (as always), `intro` once a
-   * season (the full four beats, the cap dropping on, a little snow and the chime) or `capped` after that.
+   * The season as this phone last heard it (lib/season `splashSeason`): `none` (as always), `intro` once a season (the
+   * full four beats, the costume dropping on, a few seconds of snow or bats and the chime) or `dressed` after that.
    */
   season: SplashSeason;
+  /** Which season that is: Christmas (the cap) or Halloween (the witch hat); null with `none`. */
+  seasonName: SeasonName | null;
+  costume: Costume | null;
 }
 
 export function useAppReady(): AppReady {
@@ -86,6 +93,7 @@ export function useAppReady(): AppReady {
   /** null while the flag is still being read — we cannot pick a duration yet. */
   const [firstLaunch, setFirstLaunch] = useState<boolean | null>(null);
   const [season, setSeason] = useState<SplashSeason>("none");
+  const [seasonName, setSeasonName] = useState<SeasonName | null>(null);
   const [holdDone, setHoldDone] = useState(false);
 
   // A missing font must not brick the app: a face failing to load is a
@@ -97,16 +105,19 @@ export function useAppReady(): AppReady {
   // why a season switched on shows on the splash from the next launch (lib/seasonStore reads the server).
   useEffect(() => {
     let cancelled = false;
-    AsyncStorage.multiGet([LAUNCHED_KEY, SEASON_CACHE_KEY, SEASON_INTRO_KEY])
-      .then(([[, seen], [, cached], [, lastIntro]]) => {
+    AsyncStorage.multiGet([LAUNCHED_KEY, SEASON_CACHE_KEY, seasonIntroKey("christmas"), seasonIntroKey("halloween")])
+      .then(([[, seen], [, cached], [, christmasIntro], [, halloweenIntro]]) => {
         if (cancelled) return;
         const flag = parseSeason(cached);
         primeSeason(flag);
         const now = new Date();
+        const on = activeSeason(flag);
+        const lastIntro = on === "halloween" ? halloweenIntro : christmasIntro;
         const dressed = seen === null ? "none" : splashSeason(flag, lastIntro, now);
         setSeason(dressed);
+        setSeasonName(dressed === "none" ? null : on);
         // Once a season: the intro is spent the moment it is chosen, chime or no chime.
-        if (dressed === "intro") AsyncStorage.setItem(SEASON_INTRO_KEY, seasonKey(now)).catch(() => undefined);
+        if (dressed === "intro" && on) AsyncStorage.setItem(seasonIntroKey(on), seasonKey(now, on)).catch(() => undefined);
         setFirstLaunch(seen === null);
         if (seen === null) {
           // Best-effort: a failed write costs a returning user one long splash,
@@ -146,5 +157,7 @@ export function useAppReady(): AppReady {
     // The season's intro is the full four beats, as a first open's is.
     splash: !fontsReady || firstLaunch === null ? "hold" : firstLaunch || season === "intro" ? "intro" : "brief",
     season,
+    seasonName,
+    costume: costumeOf(seasonName),
   };
 }

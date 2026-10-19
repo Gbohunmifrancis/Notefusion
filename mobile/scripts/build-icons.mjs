@@ -165,6 +165,7 @@ export const ICONS = {
   "link-off": "lucide:link-2-off",
   update: "lucide:circle-arrow-up",
   snow: "lucide:snowflake",
+  ghost: "lucide:ghost",
   // Admin
   users: "lucide:users",
   webhook: "lucide:git-pull-request",

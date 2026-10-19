@@ -1,5 +1,6 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
 import type { PracticeModeId, PracticeTrack, TranscriptionResult } from '../api/types';
+import type { SeasonName } from '../lib/season';
 
 /** Central navigation type map — every screen's params in one place. */
 
@@ -36,10 +37,10 @@ export type TabParams = {
   /** Practice: the drill on the path, the streak, XP and level, the weekly goal and badges. Reminders open it. */
   Practice: undefined;
   /**
-   * The hymns the website publishes, from the offline pack: browse, search, open as a sheet. `carols` (Home's Carols
-   * chip, while the Christmas season is on) opens it on the carols.
+   * The hymns the website publishes, from the offline pack: browse, search, open as a sheet. `shelf` (Home's season
+   * chip, Carols or Spooky songs, while a season is on) opens it at the top, on the season's shelf.
    */
-  Hymns: { carols?: boolean } | undefined;
+  Hymns: { shelf?: boolean } | undefined;
 };
 
 export type RootStackParams = {
@@ -78,10 +79,11 @@ export type RootStackParams = {
    */
   PracticeMode: { mode: PracticeModeId; track?: PracticeTrack | null };
   /**
-   * The Christmas carols path (board d-christmas/03), pushed from the Practice hub's pine card while the season is
-   * on: six short drills from carols we hold, each heard, sung and marked like a drill, and the Carol singer sticker.
+   * A season's practice path, pushed from the Practice hub's season card while that season is on: the Christmas
+   * carols (board d-christmas/03, the Carol singer sticker) or Halloween's Midnight path (board j-halloween/03, the
+   * Night Singer sticker). Six short drills, each heard, sung and marked like a drill.
    */
-  Carols: { track?: PracticeTrack | null } | undefined;
+  SeasonPath: { season: SeasonName; track?: PracticeTrack | null };
   /**
    * The account page: plan, choir, Notifications, Settings, help and feedback. Pushed from the avatar
    * at the top right of every tab, so back returns to the tab you were on.
@@ -119,7 +121,7 @@ export type AdminStackParams = {
   AdminUser: { userId: string };
   /** More › Growth: renewals, free to paid, transcription health, app versions. */
   AdminGrowth: undefined;
-  /** More › Feature flags (Operations): the Christmas season. */
+  /** More › Feature flags (Operations): the Halloween and Christmas seasons. */
   AdminFlags: undefined;
   /** More › Payment alerts: how this phone is told when someone pays. */
   AdminAlerts: undefined;

@@ -135,6 +135,16 @@ export const colors = {
   /** The flakes: pale blue-grey on Day, white on Night. */
   snow: "#9DB3D4",
 
+  // ── The Halloween season (board j-halloween), only while it is on: tints and hairlines, never an icon fill or flame ──
+  /** Pumpkin: the Spooky songs chip and shelf tile, the Midnight path card. Yellower than Playful's orange. */
+  pumpkin: "#B4531C",
+  pumpkinSoft: "rgba(180, 83, 28, 0.09)",
+  pumpkinLine: "rgba(180, 83, 28, 0.24)",
+  /** Small seasonal labels and glyphs: moon cream on Night, pumpkin on Day. Never Pro's gold. */
+  moon: "#B4531C",
+  /** The bats (drawn in currentColor): slate on Day, pale on Night, so they show on both canvases. */
+  bat: "#475569",
+
   /** Floating chrome (the tab bar, a player dock): semi-opaque, standing in for a blur. */
   glass: "rgba(255, 255, 255, 0.96)",
 
@@ -221,6 +231,12 @@ export const darkColors: Palette = {
   pineLine: "rgba(46, 138, 102, 0.34)",
   candle: "#F3DFB4",
   snow: "#FFFFFF",
+
+  pumpkin: "#F28A3A",
+  pumpkinSoft: "rgba(242, 138, 58, 0.14)",
+  pumpkinLine: "rgba(242, 138, 58, 0.34)",
+  moon: "#EDE6CF",
+  bat: "#C9D1E0",
 
   glass: "rgba(20, 25, 35, 0.94)",
 

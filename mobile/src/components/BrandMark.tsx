@@ -2,7 +2,8 @@ import React from "react";
 import { Image, View, StyleSheet } from "react-native";
 import Svg, { Rect } from "react-native-svg";
 import { colors } from "../design/theme";
-import { MarkCap } from "./season/Cap";
+import { MarkCostume } from "./season/Costume";
+import type { Costume } from "../lib/season";
 
 const MARK = require("../../assets/brand/mark.png");
 
@@ -26,8 +27,8 @@ interface Props {
   waveColor?: string;
   /** Draw the waveform bars either side of the ring, as on splash and login. */
   showWaves?: boolean;
-  /** The Christmas cap over the mark, while the season is on (components/season/Cap). */
-  cap?: boolean;
+  /** The season's costume over the mark while one is on: the cap or the witch hat (components/season/Costume). */
+  costume?: Costume | null;
 }
 
 /**
@@ -54,7 +55,7 @@ export function BrandMark({
   color = colors.accent,
   waveColor,
   showWaves = false,
-  cap = false,
+  costume = null,
 }: Props) {
   const wave = waveColor ?? color;
   const markWidth = size * MARK_ASPECT;
@@ -76,10 +77,10 @@ export function BrandMark({
     <View style={[styles.row, { width: totalWidth, height: size }]}>
       {showWaves && <SideWave size={size} color={wave} mirrored={false} />}
 
-      {cap ? (
+      {costume ? (
         <View style={{ width: markWidth, height: size }}>
           {image}
-          <MarkCap height={size} />
+          <MarkCostume height={size} costume={costume} />
         </View>
       ) : (
         image

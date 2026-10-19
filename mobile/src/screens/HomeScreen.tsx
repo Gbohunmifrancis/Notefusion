@@ -54,11 +54,15 @@ import {
 import { loadDohMemory, saveDohMemory, useDohSuggestions } from '../lib/dohPrefs';
 import { parseUtc } from '../lib/sheetMeta';
 import { useSeason } from '../lib/seasonStore';
-import { homeTitle } from '../lib/season';
+import { activeSeason, costumeOf, homeTitle, seasonTint, seasonWords } from '../lib/season';
 import { Snowfall } from '../components/season/Snowfall';
+import { Bats } from '../components/season/Bats';
 
-/** Home's few flakes play once a session (Home stays mounted as a tab; coming back to it is not a new snowfall). */
-let homeSnowPlayed = false;
+/**
+ * Home's few flakes or bats play once a session (Home stays mounted as a tab; coming back to it is not a new
+ * snowfall or a new flight).
+ */
+let homeSkyPlayed = false;
 
 /** Home lists the newest few sheets. */
 const RECENT_COUNT = 3;
@@ -103,16 +107,19 @@ export function HomeScreen({ navigation }: Props) {
   const styles = useThemedStyles(makeStyles);
   const colors = useColors();
 
-  // ── The Christmas season (board d-christmas/02), only while it is on: the cap on the header's mark, the question,
-  // a Carols chip and a few flakes over the top third, once a session. Off, Home is exactly as it was.
+  // ── The season (boards d-christmas/02, j-halloween/02), only while one is on: its costume on the header's mark (the
+  // cap, the witch hat), the question, one chip (Carols, Spooky songs) and a few flakes or bats over the top third,
+  // once a session. Off, Home is exactly as it was.
   const seasonFlag = useSeason();
-  const christmas = seasonFlag.christmas;
-  const [snowNow, setSnowNow] = useState(false);
+  const season = activeSeason(seasonFlag);
+  const costume = costumeOf(season);
+  const tint = season ? seasonTint(colors, season) : null;
+  const [skyNow, setSkyNow] = useState(false);
   useEffect(() => {
-    if (!christmas || !focused || homeSnowPlayed) return;
-    homeSnowPlayed = true;
-    setSnowNow(true);
-  }, [christmas, focused]);
+    if (!season || !focused || homeSkyPlayed) return;
+    homeSkyPlayed = true;
+    setSkyNow(true);
+  }, [season, focused]);
 
   // ── Mic stage motion ──────────────────────────────────────────────────────
   /**
@@ -377,11 +384,12 @@ export function HomeScreen({ navigation }: Props) {
         }
         ListHeaderComponent={
           <View style={styles.headerArea}>
-            {snowNow ? <Snowfall run seed={7} color={colors.snow} style={styles.snow} /> : null}
+            {skyNow && season === 'christmas' ? <Snowfall run seed={7} color={colors.snow} style={styles.sky} /> : null}
+            {skyNow && season === 'halloween' ? <Bats run seed={7} color={colors.bat} style={styles.sky} /> : null}
             {/* ── Top bar: the lock-up left, the account right ───────────── */}
             <View style={styles.topHeader}>
               <View style={styles.lockup} accessible accessibilityLabel="Notefusion">
-                <Mark height={24} color={colors.text} cap={christmas} />
+                <Mark height={24} color={colors.text} costume={costume} />
                 <Wordmark size={19} style={{ color: colors.text }} />
               </View>
 
@@ -520,16 +528,16 @@ export function HomeScreen({ navigation }: Props) {
                   <Icon name="link" size={18} color={colors.icon} />
                   <Text style={styles.chipLabel}>Paste link</Text>
                 </Touchable>
-                {/* The season's one chip: the carols on top of Hymns (a pine tint, never a second accent). */}
-                {christmas ? (
+                {/* The season's one chip: its songs on top of Hymns (a pine or pumpkin tint, never a second accent). */}
+                {season && tint ? (
                   <Touchable
-                    onPress={() => navigation.navigate('Hymns', { carols: true })}
-                    style={[styles.chip, styles.chipPine]}
+                    onPress={() => navigation.navigate('Hymns', { shelf: true })}
+                    style={[styles.chip, { backgroundColor: tint.soft, borderColor: tint.line }]}
                     radius={radii.pill}
-                    accessibilityLabel="Carols for Christmas"
+                    accessibilityLabel={seasonWords(season).chipLabel}
                   >
-                    <Icon name="snow" size={18} color={colors.candle} />
-                    <Text style={[styles.chipLabel, styles.chipPineLabel]}>Carols</Text>
+                    <Icon name={seasonWords(season).icon} size={18} color={tint.label} />
+                    <Text style={[styles.chipLabel, { color: tint.label }]}>{seasonWords(season).chip}</Text>
                   </Touchable>
                 ) : null}
                 <Touchable
@@ -861,10 +869,8 @@ const makeStyles = (c: Palette, s: Shadows) =>
       fontFamily: fonts.medium,
       color: c.text,
     },
-    chipPine: { backgroundColor: c.pineSoft, borderColor: c.pineLine },
-    chipPineLabel: { color: c.candle },
-    /** The season's flakes over the top third of Home, behind the content and never touchable. */
-    snow: { top: -spacing.lg, left: -spacing.lg, right: -spacing.lg, height: 300 },
+    /** The season's flakes or bats over the top third of Home, behind the content and never touchable. */
+    sky: { top: -spacing.lg, left: -spacing.lg, right: -spacing.lg, height: 300 },
 
     // ── Recent ────────────────────────────────────────────────────────────────
     recentSectionHeader: {

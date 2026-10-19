@@ -12,13 +12,16 @@ import { TabHeader } from "../components/TabHeader";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import {
-  carols,
+  filterHalloween,
   formatBytes,
   hymnSheet,
+  isAllSaints,
   keyAndTime,
   needsDownload,
   openingLine,
   searchHymns,
+  seasonShelf,
+  type HalloweenFilter,
   type HymnPack,
   type PackHymn,
   type PackMeta,
@@ -28,6 +31,7 @@ import { resultFromHymn } from "../lib/openSheet";
 import { deriveSolfa } from "../lib/solfa";
 import { useDataSaver } from "../lib/dataSaver";
 import { useSeason } from "../lib/seasonStore";
+import { activeSeason, seasonTint, seasonWords } from "../lib/season";
 import { showDialog } from "../lib/dialog";
 import { showToast } from "../lib/toast";
 import { logAnalyticsEvent } from "../lib/analytics";
@@ -55,32 +59,39 @@ export function HymnsScreen() {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState<PackHymn | null>(null);
 
-  // ── The Christmas season (board d-christmas/02), only while it is on: a "Carols for Christmas" shelf above the list,
-  // each card opening with its first notes in solfa; "See all" narrows the list to the carols. Home's Carols chip
-  // opens the screen at the top, on the shelf.
+  // ── The season (boards d-christmas/02, j-halloween/02), only while one is on: a shelf above the list ("Carols for
+  // Christmas", "Songs for Halloween"), each card opening with its first notes in solfa; "See all" narrows the list to
+  // the shelf (Halloween's as a grid, with All / Spooky / All Saints). Home's season chip opens the screen at the top,
+  // on the shelf.
   const route = useRoute<RouteProp<TabParams, "Hymns">>();
-  const christmas = useSeason().christmas;
-  const [carolsOnly, setCarolsOnly] = useState(false);
+  const season = activeSeason(useSeason());
+  const tint = season ? seasonTint(colors, season) : null;
+  const words = season ? seasonWords(season) : null;
+  const [shelfOnly, setShelfOnly] = useState(false);
+  const [filter, setFilter] = useState<HalloweenFilter>("all");
   const list = useRef<FlatList<PackHymn>>(null);
-  const carolList = useMemo(() => (pack ? carols(pack.hymns) : []), [pack]);
-  const openings = useMemo(() => {
-    if (!christmas) return new Map<string, string>();
-    return new Map(carolList.map((h) => [h.slug, openingLine(deriveSolfa(hymnSheet(h).notes, h.key, h.time).notes)]));
-  }, [christmas, carolList]);
-  const showShelf = christmas && !carolsOnly && !query && carolList.length > 0;
+  const shelfList = useMemo(() => (pack && season ? seasonShelf(pack.hymns, season) : []), [pack, season]);
+  const openings = useMemo(
+    () => new Map(shelfList.map((h) => [h.slug, openingLine(deriveSolfa(hymnSheet(h).notes, h.key, h.time).notes)])),
+    [shelfList],
+  );
+  const showShelf = !!season && !shelfOnly && !query && shelfList.length > 0;
+  /** Halloween's "See all" is a two-column grid of cards. */
+  const grid = season === "halloween" && shelfOnly;
 
   useEffect(() => {
-    if (!route.params?.carols) return;
+    if (!route.params?.shelf) return;
     setQuery("");
-    setCarolsOnly(false);
+    setShelfOnly(false);
     list.current?.scrollToOffset({ offset: 0, animated: false });
-    navigation.setParams({ carols: undefined } as never);
-  }, [route.params?.carols, navigation]);
+    navigation.setParams({ shelf: undefined } as never);
+  }, [route.params?.shelf, navigation]);
 
-  // The season ending mid-session takes its filter with it.
+  // The season ending (or changing) mid-session takes its filter with it.
   useEffect(() => {
-    if (!christmas) setCarolsOnly(false);
-  }, [christmas]);
+    setShelfOnly(false);
+    setFilter("all");
+  }, [season]);
 
   useEffect(() => {
     let live = true;
@@ -114,9 +125,12 @@ export function HymnsScreen() {
 
   const results = useMemo(() => {
     if (!pack) return [];
-    if (carolsOnly) return query ? searchHymns(carolList, query) : carolList;
+    if (shelfOnly) {
+      const shown = season === "halloween" ? filterHalloween(shelfList, filter) : shelfList;
+      return query ? searchHymns(shown, query) : shown;
+    }
     return searchHymns(pack.hymns, query);
-  }, [pack, query, carolsOnly, carolList]);
+  }, [pack, query, shelfOnly, shelfList, season, filter]);
 
   async function download(expected?: PackMeta | null) {
     setProgress(0);
@@ -232,8 +246,11 @@ export function HymnsScreen() {
   return (
     <Screen>
       <FlatList
+        key={grid ? "grid" : "list"}
         ref={list}
         data={results}
+        numColumns={grid ? 2 : 1}
+        columnWrapperStyle={grid ? styles.gridRow : undefined}
         keyExtractor={(h) => h.slug}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -261,56 +278,76 @@ export function HymnsScreen() {
               ) : null}
             </View>
 
-            {showShelf ? (
+            {showShelf && words && tint ? (
               <View style={styles.shelf}>
                 <View style={styles.shelfHead}>
-                  <View style={styles.shelfIcon}>
-                    <Icon name="snow" size={18} color={colors.candle} />
+                  <View style={[styles.shelfIcon, { backgroundColor: tint.soft }]}>
+                    <Icon name={words.icon} size={18} color={tint.label} />
                   </View>
-                  <Text style={styles.shelfTitle} accessibilityRole="header">Carols for Christmas</Text>
+                  <Text style={styles.shelfTitle} accessibilityRole="header">{words.shelf}</Text>
                   <Touchable
-                    onPress={() => setCarolsOnly(true)}
+                    onPress={() => setShelfOnly(true)}
                     ripple={false}
                     style={styles.shelfAll}
-                    accessibilityLabel={`See all ${carolList.length} carols`}
+                    accessibilityLabel={`See all ${shelfList.length} ${season === "halloween" ? "songs for Halloween" : "carols"}`}
                   >
-                    <Text style={styles.shelfAllText}>{carolList.length} · See all</Text>
+                    <Text style={styles.shelfAllText}>{shelfList.length} · See all</Text>
                   </Touchable>
                 </View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.shelfRow}>
-                  {carolList.map((h) => (
-                    <Touchable
-                      key={h.slug}
-                      onPress={() => setOpen(h)}
-                      style={styles.carol}
-                      radius={radii.md}
-                      accessibilityLabel={`${h.title}, ${h.key}`}
-                    >
-                      <Text style={styles.carolTitle} numberOfLines={1}>{h.title}</Text>
-                      <Text style={styles.carolLine} numberOfLines={1}>{h.firstLine || `Tune · ${h.tune}`}</Text>
-                      <Text style={styles.carolSolfa} numberOfLines={1}>{openings.get(h.slug) ?? ""}</Text>
-                      <Text style={styles.carolKey}>{keyAndTime(h)}</Text>
-                    </Touchable>
+                  {shelfList.map((h) => (
+                    <ShelfCard key={h.slug} h={h} solfa={openings.get(h.slug) ?? ""} saints={season === "halloween" && isAllSaints(h)} onOpen={() => setOpen(h)} styles={styles} />
                   ))}
                 </ScrollView>
                 <Text style={styles.allLabel}>All hymns</Text>
               </View>
             ) : null}
 
-            {carolsOnly ? (
-              <View style={styles.shelfHead}>
-                <View style={styles.shelfIcon}>
-                  <Icon name="snow" size={18} color={colors.candle} />
+            {shelfOnly && words && tint ? (
+              <View>
+                <View style={styles.shelfHead}>
+                  <View style={[styles.shelfIcon, { backgroundColor: tint.soft }]}>
+                    <Icon name={words.icon} size={18} color={tint.label} />
+                  </View>
+                  <Text style={styles.shelfTitle} accessibilityRole="header">{words.shelf} · {shelfList.length}</Text>
+                  <Touchable onPress={() => setShelfOnly(false)} ripple={false} style={styles.shelfAll} accessibilityLabel="Show all hymns">
+                    <Text style={styles.shelfAllText}>All hymns</Text>
+                  </Touchable>
                 </View>
-                <Text style={styles.shelfTitle} accessibilityRole="header">Carols for Christmas · {carolList.length}</Text>
-                <Touchable onPress={() => setCarolsOnly(false)} ripple={false} style={styles.shelfAll} accessibilityLabel="Show all hymns">
-                  <Text style={styles.shelfAllText}>All hymns</Text>
-                </Touchable>
+                {season === "halloween" ? (
+                  <View style={styles.filters} accessibilityRole="tablist">
+                    {(
+                      [
+                        ["all", "All"],
+                        ["spooky", "Spooky"],
+                        ["saints", "All Saints"],
+                      ] as const
+                    ).map(([key, label]) => {
+                      const n = filterHalloween(shelfList, key).length;
+                      const on = filter === key;
+                      return (
+                        <Touchable
+                          key={key}
+                          onPress={() => setFilter(key)}
+                          radius={radii.pill}
+                          style={[styles.filter, on && { backgroundColor: tint.soft, borderColor: tint.line }]}
+                          accessibilityRole="tab"
+                          accessibilityState={{ selected: on }}
+                          accessibilityLabel={`${label}, ${n}`}
+                        >
+                          <Text style={[styles.filterText, on && { color: colors.text }]}>{label} {n}</Text>
+                        </Touchable>
+                      );
+                    })}
+                  </View>
+                ) : null}
               </View>
             ) : null}
           </View>
         }
-        renderItem={({ item }) => (
+        renderItem={({ item }) => grid ? (
+          <ShelfCard h={item} solfa={openings.get(item.slug) ?? ""} saints={isAllSaints(item)} onOpen={() => setOpen(item)} styles={styles} grid />
+        ) : (
           <Touchable onPress={() => setOpen(item)} style={styles.row} radius={radii.md} accessibilityLabel={`${item.title}, ${item.key}`}>
             <View style={styles.rowText}>
               <Text style={styles.rowTitle} numberOfLines={1}>{item.title}</Text>
@@ -321,7 +358,7 @@ export function HymnsScreen() {
             <Text style={styles.rowKey}>{keyAndTime(item)}</Text>
           </Touchable>
         )}
-        ItemSeparatorComponent={() => <View style={styles.divider} />}
+        ItemSeparatorComponent={grid ? undefined : () => <View style={styles.divider} />}
         ListEmptyComponent={<Text style={styles.empty}>Nothing matches “{query.trim()}”.</Text>}
         ListFooterComponent={
           <View style={styles.footer}>
@@ -368,6 +405,30 @@ export function HymnsScreen() {
   );
 }
 
+type Styles = ReturnType<typeof makeStyles>;
+
+/**
+ * One song on the season's shelf (or in Halloween's "See all" grid): its title, its first line or tune, its opening in
+ * solfa as the engine labels it, its key and time, and for an All Saints tune a small "All Saints' Day, 1 Nov" tag.
+ */
+function ShelfCard({ h, solfa, saints, onOpen, styles, grid = false }: { h: PackHymn; solfa: string; saints: boolean; onOpen: () => void; styles: Styles; grid?: boolean }) {
+  return (
+    <Touchable onPress={onOpen} style={[styles.carol, grid && styles.carolGrid]} radius={radii.md} accessibilityLabel={`${h.title}, ${h.key}${saints ? ", for All Saints' Day" : ""}`}>
+      <Text style={styles.carolTitle} numberOfLines={grid ? 2 : 1}>{h.title}</Text>
+      <Text style={styles.carolLine} numberOfLines={1}>{h.firstLine || `Tune · ${h.tune}`}</Text>
+      <Text style={styles.carolSolfa} numberOfLines={1}>{solfa}</Text>
+      <View style={styles.carolFoot}>
+        <Text style={styles.carolKey}>{keyAndTime(h)}</Text>
+        {saints ? (
+          <View style={styles.saints}>
+            <Text style={styles.saintsText} numberOfLines={1}>All Saints' Day, 1 Nov</Text>
+          </View>
+        ) : null}
+      </View>
+    </Touchable>
+  );
+}
+
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     /** Clears the floating tab bar. */
@@ -404,14 +465,13 @@ const makeStyles = (c: Palette) =>
     },
     searchInput: { flex: 1, fontFamily: fonts.regular, fontSize: 15, color: c.text, height: "100%", paddingVertical: 0 },
 
-    // The season's shelf (board d-christmas/02): a pine tile, cards that open with their solfa.
+    // The season's shelf (boards d-christmas/02, j-halloween/02): a pine or pumpkin tile, cards that open with their solfa.
     shelf: { marginBottom: spacing.xs },
     shelfHead: { flexDirection: "row", alignItems: "center", gap: spacing.sm, minHeight: 44, marginBottom: spacing.sm },
     shelfIcon: {
       width: 32,
       height: 32,
       borderRadius: 10,
-      backgroundColor: c.pineSoft,
       alignItems: "center",
       justifyContent: "center",
     },
@@ -431,7 +491,26 @@ const makeStyles = (c: Palette) =>
     carolTitle: { fontFamily: fonts.medium, fontSize: 15.5, color: c.text },
     carolLine: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
     carolSolfa: { ...typography.mono, fontSize: 15, color: c.accent, letterSpacing: 1.5, marginTop: spacing.sm },
-    carolKey: { fontFamily: typography.mono.fontFamily, fontSize: 12, color: c.textFaint, marginTop: 2 },
+    carolKey: { fontFamily: typography.mono.fontFamily, fontSize: 12, color: c.textFaint },
+    carolFoot: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 6, marginTop: 2 },
+    /** Halloween's "See all": two cards a row, sharing the width. */
+    carolGrid: { width: "48.5%" },
+    gridRow: { justifyContent: "space-between", marginBottom: spacing.sm },
+    /** The All Saints tunes' small tag: moon cream on Night (pumpkin on Day), on a faint wash. */
+    saints: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: c.pumpkinSoft },
+    saintsText: { fontFamily: fonts.medium, fontSize: 11, color: c.moon },
+    filters: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginBottom: spacing.md },
+    filter: {
+      minHeight: 44,
+      paddingHorizontal: 14,
+      borderRadius: radii.pill,
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.surfaceAlt,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    filterText: { fontFamily: fonts.medium, fontSize: 13.5, color: c.textMuted },
     allLabel: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted, marginTop: spacing.lg },
 
     row: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: spacing.md },
