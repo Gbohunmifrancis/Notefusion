@@ -1,0 +1,98 @@
+{
+  "title": "For All the Saints",
+  "tune": "sarum-barnby",
+  "text": [
+    {
+      "name": "William Walsham How",
+      "born": 1823,
+      "died": 1897,
+      "role": "Words (1864)"
+    }
+  ],
+  "textPublished": 1864,
+  "occasions": [
+    "All Saints",
+    "Halloween"
+  ],
+  "metre": "10 10 10 4",
+  "description": "For All the Saints in Tonic Solfa to Barnby's SARUM (doh is Eb): the All Saints' Day hymn, the solfa under the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "William Walsham How wrote For All the Saints in 1864, a hymn for All Saints' Day (1 November), the day after Halloween. It is sung here to SARUM, the tune Joseph Barnby wrote for it in 1868, as The Hymnal of the Episcopal Church (1916) prints it, with that book's eight verses. Many churches now sing it to Ralph Vaughan Williams' SINE NOMINE (1906), which is not on this site because it is still in copyright in many countries.",
+    "The book prints the tune in long notes (minims); here every note is half as long, the way most hymn books print it now."
+  ],
+  "underlay": "For all the saints, who from their la-bours rest,_ Who Thee by faith be-fore the_ world con-fessed, Thy Name, O Je-sus, be for ev-er blessed. Al-le-lu-ia, Al-le-lu-ia!",
+  "verses": [
+    {
+      "lines": [
+        "For all the saints, who from their labours rest,",
+        "Who Thee by faith before the world confessed,",
+        "Thy Name, O Jesus, be for ever blessed.",
+        "Alleluia, Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou wast their Rock, their Fortress, and their Might:",
+        "Thou, Lord, their Captain in the well-fought fight;",
+        "Thou, in the darkness drear, the one true Light.",
+        "Alleluia, Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "O may Thy soldiers, faithful, true, and bold,",
+        "Fight as the saints who nobly fought of old,",
+        "And win, with them, the victor's crown of gold.",
+        "Alleluia, Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "O blest communion, fellowship divine!",
+        "We feebly struggle, they in glory shine;",
+        "Yet all are one in Thee, for all are Thine.",
+        "Alleluia, Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "And when the strife is fierce, the warfare long,",
+        "Steals on the ear the distant triumph song,",
+        "And hearts are brave again, and arms are strong.",
+        "Alleluia, Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "The golden evening brightens in the west;",
+        "Soon, soon to faithful warriors cometh rest;",
+        "Sweet is the calm of Paradise the blest.",
+        "Alleluia, Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "But lo! there breaks a yet more glorious day;",
+        "The saints triumphant rise in bright array;",
+        "The King of glory passes on His way.",
+        "Alleluia, Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "From earth's wide bounds, from ocean's farthest coast,",
+        "Through gates of pearl streams in the countless host,",
+        "Singing to Father, Son, and Holy Ghost,",
+        "Alleluia, Alleluia!"
+      ]
+    }
+  ],
+  "source": "The Hymnal (Protestant Episcopal Church, 1916)",
+  "sourceUrl": "https://archive.org/details/authoriz00epis",
+  "licence": "Public domain. How died in 1897 and Barnby in 1896; the words and the tune are as The Hymnal, as authorized and approved for use by the General Convention of the Protestant Episcopal Church (1916) prints them, hymn 295.",
+  "credits": "Words and melody from The Hymnal (Protestant Episcopal Church in the U.S.A., 1916), hymn 295, the Internet Archive's scan; public domain.",
+  "updated": "2026-10-19",
+  "reviewed": false,
+  "draft": false,
+  "reviewNotes": "Words and melody from the 1916 Hymnal, hymn 295 (Internet Archive authoriz00epis, leaf 452). Note values halved (the book is in 4/2). Each verse's 'Alleluia.' in the book stands for the two Alleluias sung to the last line; they are written out. Verse 8 ends 'Alleluia! Amen.' in the book; the Amen is left out of the tune and the words. How wrote 11 verses; this is the book's selection of 8 (the verses for the apostles, the evangelists and the martyrs are left out, as in most books). 'labours' is the book's spelling. Check, then set \"reviewed\": true."
+}

@@ -3,39 +3,69 @@
 // the staff (web-site/assets/sample-staff.svg, engraved by the pinned OSMD the hymn pages and the web app
 // use). Real output, never a drawing of one.
 //
-// The Christmas season's sample (board d-christmas/06) is built beside it, inert in a <template>: Silent Night,
-// with its own engraving (assets/sample-staff-silent-night.svg). The build is static, so nothing here knows the
-// season; assets/season.js swaps it in at runtime while the admin switch is on.
+// The seasons' samples are built beside it, inert in a <template> each: Christmas's Silent Night (board d-christmas/06,
+// <template id="season-sheet">, engraved as assets/sample-staff-silent-night.svg) and Halloween's first bar of In the
+// Hall of the Mountain King (board j-halloween/06, <template id="season-sheet-halloween">, engraved as
+// assets/sample-staff-mountain-king.svg), the latter only once the tune is published in content/hymns. The build is
+// static, so nothing here knows the season; assets/season.js swaps the season's in at runtime while its switch is on.
 import { escapeHtml } from "./util.mjs";
 import { gridHtml } from "./grid-html.mjs";
 
 export const SHEET_START = "<!-- home-sheet:start -->", SHEET_END = "<!-- home-sheet:end -->";
 export const SAMPLE_HYMN = "amazing-grace";
 export const SEASON_SAMPLE_HYMN = "silent-night";
+/** The Halloween sample's tune (content/hymns/tunes/<slug>.json, or a hymn of that slug); left out until it is published. */
+export const HALLOWEEN_SAMPLE_TUNE = "in-the-hall-of-the-mountain-king";
 
-/** One sample sheet: `hymn` has been through prepareHymn (its `view` holds the lines of bars). */
-function sheetFigure(hymn, { id, staff, staffHeight, open }) {
+/**
+ * One sample sheet: `hymn` has been through prepareHymn or prepareTune (its `view` holds the lines of bars). `bars`
+ * keeps only that many bars of the first line (the Mountain King's one); `words` false for a tune without them.
+ */
+function sheetFigure(hymn, { id, staff, staffHeight, staffAlt, open, caption, bars = null, words = true }) {
   const v = hymn.view;
+  const line = bars ? v.lines[0].slice(0, bars) : v.lines[0];
+  const href = v.url || `/hymns/${hymn.slug}`;
   return `<figure class="sheet" aria-labelledby="${id}">
   <div class="sheet-head">
-    <p class="sheet-title" id="${id}">${escapeHtml(hymn.title)}</p>
+    <p class="sheet-title" id="${id}">${escapeHtml(v.title || hymn.title)}</p>
     <p class="sheet-meta"><span>${escapeHtml(v.header)}</span><span>${escapeHtml(v.key)}</span><span>${escapeHtml(v.time)}</span></p>
   </div>
   <div class="sheet-solfa">
-${gridHtml([v.lines[0]], { words: true })}
+${gridHtml([line], { words })}
   </div>
-  <div class="sheet-staff"><img src="${staff}" width="613" height="${staffHeight}" alt="The same bars on the treble staff in ${escapeHtml(v.key)}, with the words under the notes"></div>
-  <figcaption class="sheet-foot"><span>The opening line, as NoteFusion writes it: solfa above, staff below.</span> <a href="/hymns/${hymn.slug}">${open}</a></figcaption>
+  <div class="sheet-staff"><img src="${staff}" width="613" height="${staffHeight}" alt="${escapeHtml(staffAlt || `The same bars on the treble staff in ${v.key}, with the words under the notes`)}"></div>
+  <figcaption class="sheet-foot"><span>${caption || "The opening line, as NoteFusion writes it: solfa above, staff below."}</span> <a href="${href}">${open}</a></figcaption>
 </figure>`;
 }
 
-/** `hymn` is the year-round sample; `seasonHymn` the Christmas one, kept in a template until the season is on. */
-export function renderHomeSheet(hymn, seasonHymn) {
+/** The Halloween sample: the Mountain King's first bar, la-based minor, with its own engraving. */
+function halloweenFigure(tune) {
+  const minor = /minor/i.test(tune.view.key);
+  return sheetFigure(tune, {
+    id: "sheet-title-halloween",
+    staff: "/assets/sample-staff-mountain-king.svg",
+    staffHeight: 88,
+    staffAlt: `The same bar on the treble staff in ${tune.view.key}`,
+    open: "Open the whole tune",
+    // A phone reads the short caption; season.css shows the rest from 600 px up.
+    caption: `The first bar, as NoteFusion writes it<span class="sheet-foot-more">${minor ? ": la-based minor, two quavers to a beat" : ": two quavers to a beat"}</span>.`,
+    bars: 1,
+    words: false,
+  });
+}
+
+/**
+ * `hymn` is the year-round sample; `seasonHymn` the Christmas one and `halloweenTune` the Halloween one (null until
+ * the Mountain King is published), each kept in a template until its season is on.
+ */
+export function renderHomeSheet(hymn, seasonHymn, halloweenTune = null) {
   const season = seasonHymn
     ? `\n<template id="season-sheet">\n${sheetFigure(seasonHymn, { id: "sheet-title-season", staff: "/assets/sample-staff-silent-night.svg", staffHeight: 94, open: "Open the whole carol" })}\n</template>`
     : "";
+  const halloween = halloweenTune ? `\n<template id="season-sheet-halloween">\n${halloweenFigure(halloweenTune)}\n</template>` : "";
+  const from = [SAMPLE_HYMN, seasonHymn && SEASON_SAMPLE_HYMN, halloweenTune && halloweenTune.slug].filter(Boolean);
   return `${SHEET_START}
-<!-- Generated by tools/blog/build.mjs from content/hymns/${SAMPLE_HYMN}${seasonHymn ? ` and ${SEASON_SAMPLE_HYMN}` : ""}. Edit the hymns, not this block. -->
-${sheetFigure(hymn, { id: "sheet-title", staff: "/assets/sample-staff.svg", staffHeight: 236, open: "Open the whole hymn" })}${season}
+<!-- Generated by tools/blog/build.mjs from content/hymns/${from.slice(0, -1).join(", ")}${from.length > 1 ? ` and ${from[from.length - 1]}` : from[0]}. Edit the hymns, not this block. -->
+${sheetFigure(hymn, { id: "sheet-title", staff: "/assets/sample-staff.svg", staffHeight: 236, open: "Open the whole hymn" })}${season}${halloween}
 ${SHEET_END}`;
 }

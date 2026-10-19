@@ -10,7 +10,7 @@ import { gridHtml, textLinesHtml } from "./grid-html.mjs";
 import { melodyToMusicXml } from "./musicxml.mjs";
 import { PD_DIED_BEFORE, PD_PUBLISHED_BEFORE } from "./content.mjs";
 import { personKey } from "./collections.mjs";
-import { moreLinks, personLink, pdfButton, pdfAlternate } from "./render-collections.mjs";
+import { moreLinks, personLink, pdfButton, pdfAlternate, tuneForm } from "./render-collections.mjs";
 import { pdfPath } from "./render-pdf.mjs";
 
 export const CCEH = { name: "Christian Classics Ethereal Hymnary", short: "CCEH", url: "https://www.ccel.org/cceh/index.htm", terms: "https://www.ccel.org/cceh/cceh_cpr.htm" };
@@ -74,11 +74,11 @@ export function prepareTune(t) {
 }
 
 export function tuneDescription(t) {
-  const v = t.view, makers = tuneMakers(t).filter((p) => !p.traditional).map((p) => p.name);
+  const v = t.view, makers = tuneMakers(t).filter((p) => !p.traditional).map((p) => p.name), form = tuneForm(t);
   const options = [
-    `${v.title}, the hymn tune${makers.length ? ` by ${makers.join(" and ")}` : ""}, in Tonic Solfa (doh is ${v.doh}): the solfa line by line, staff notation and a piano to sing along with.`,
-    `${v.title}, the hymn tune, in Tonic Solfa (doh is ${v.doh}): the solfa, staff notation and a piano to sing along with.`,
-    `${v.title}, the hymn tune, in Tonic Solfa with staff notation.`,
+    `${v.title}, the ${form}${makers.length ? ` by ${makers.join(" and ")}` : ""}, in Tonic Solfa (doh is ${v.doh}): the solfa line by line, staff notation and a piano to sing along with.`,
+    `${v.title}, the ${form}, in Tonic Solfa (doh is ${v.doh}): the solfa, staff notation and a piano to sing along with.`,
+    `${v.title}, the ${form}, in Tonic Solfa with staff notation.`,
   ];
   return options.find((d) => d.length <= 155) || options[options.length - 1].slice(0, 155);
 }
@@ -127,7 +127,7 @@ export function renderTune(t, { hymns, posts, personByKey = new Map() }) {
   const body = `${breadcrumbs(crumbs)}
 <article class="hymn-page tune-page">
 <header class="post-header">
-  <h1>${escapeHtml(v.title)}: hymn tune in Tonic Solfa</h1>
+  <h1>${escapeHtml(v.title)}: ${t.form ? "the " : ""}${escapeHtml(tuneForm(t))} in Tonic Solfa</h1>
   <p class="post-lede">${escapeHtml(description)}</p>
 </header>
 ${pdfButton(path, "Tune: download PDF")}
@@ -167,6 +167,7 @@ ${textLinesHtml(v.lines, { words: false })}
 
 <section aria-labelledby="about-title">
   <h2 id="about-title">About the tune</h2>
+${(t.about || []).map((para) => `  <p>${escapeHtml(para)}</p>`).join("\n")}
   <ul class="credits">
 ${credits.join("\n")}
   </ul>
@@ -201,7 +202,7 @@ ${moreLinks({ item: t, people: myPeople })}
       musicalKey: v.key,
       ...(composers.length ? { composer: composers } : {}),
       license: "https://creativecommons.org/publicdomain/mark/1.0/",
-      associatedMedia: { "@type": "MediaObject", name: `${v.title} (hymn tune) in Tonic Solfa (PDF)`, encodingFormat: "application/pdf", contentUrl: ORIGIN + pdf, license: "https://creativecommons.org/publicdomain/mark/1.0/" },
+      associatedMedia: { "@type": "MediaObject", name: `${v.title} (${tuneForm(t)}) in Tonic Solfa (PDF)`, encodingFormat: "application/pdf", contentUrl: ORIGIN + pdf, license: "https://creativecommons.org/publicdomain/mark/1.0/" },
       ...(fromCceh ? {
         isBasedOn: { "@type": "CreativeWork", name: `${v.title} (${CCEH.name})`, url: t.sourceUrl || CCEH.url, publisher: { "@type": "Organization", name: CCEH.name, url: CCEH.url }, license: "https://creativecommons.org/publicdomain/mark/1.0/" },
         creditText: v.credit.text,
@@ -212,13 +213,13 @@ ${moreLinks({ item: t, people: myPeople })}
   ];
   const scripts = `<script src="/assets/choir.js?v=${ASSET_VERSION.choirJs}" defer></script>
 <script src="/assets/hymn.js?v=${ASSET_VERSION.hymnJs}" defer></script>`;
-  const titleTag = `${v.title} (hymn tune) — Tonic Solfa & Sheet Music (${v.header})`;
-  return page({ path, title: titleTag.length <= 70 ? titleTag : `${v.title} hymn tune in Tonic Solfa (${v.header})`, description, jsonLd: ld, body, active: "/hymns", scripts, head: pdfAlternate(path, `${v.title} (hymn tune)`) });
+  const titleTag = `${v.title} (${tuneForm(t)}) — Tonic Solfa & Sheet Music (${v.header})`;
+  return page({ path, title: titleTag.length <= 70 ? titleTag : `${v.title} ${tuneForm(t)} in Tonic Solfa (${v.header})`, description, jsonLd: ld, body, active: "/hymns", scripts, head: pdfAlternate(path, `${v.title} (${tuneForm(t)})`) });
 }
 
 /** What the hymn index's filter box matches for a tune page: its names, composers, metre and doh. */
 export function tuneSearchText(t) {
-  return [t.view.title, t.name, ...(t.alsoKnownAs || []), ...t.music.map((p) => p.name), t.metre || "", metreLabel(t.metre) || "", t.view.header, "tune"]
+  return [t.view.title, t.name, ...(t.alsoKnownAs || []), ...t.music.map((p) => p.name), t.metre || "", metreLabel(t.metre) || "", t.view.header, "tune", ...(t.occasions || [])]
     .join(" ").normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
 
@@ -227,7 +228,7 @@ export function tuneIndexItem(t) {
   const makers = tuneMakers(t).map((p) => p.name).join(", ");
   return `    <li class="hymn-item" data-kind="tune" data-search="${escapeHtml(tuneSearchText(t))}">
       <h3><a href="${t.view.url}">${escapeHtml(t.view.title)}</a></h3>
-      <p class="first-line">Hymn tune${t.metre ? ` · ${escapeHtml(metreLabel(t.metre).replace(/ — .*$/, ""))}` : ""}${makers ? ` · ${escapeHtml(makers)}` : ""}</p>
+      <p class="first-line">${escapeHtml(tuneForm(t)[0].toUpperCase() + tuneForm(t).slice(1))}${t.metre ? ` · ${escapeHtml(metreLabel(t.metre).replace(/ — .*$/, ""))}` : ""}${makers ? ` · ${escapeHtml(makers)}` : ""}</p>
       <p class="story-meta"><span>${escapeHtml(t.view.header)}</span><span>${escapeHtml(t.view.time)}</span></p>
     </li>`;
 }

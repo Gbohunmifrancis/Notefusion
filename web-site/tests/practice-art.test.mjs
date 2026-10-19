@@ -121,3 +121,15 @@ test("Choir-ready is violet and no gold is left in the art (gold is Pro's alone)
     assert.doesNotMatch(judged, golds, f);
   }
 });
+
+test("the Halloween season: the Night Singer's sticker, its bat burst, the hat, Boo and the bat are files the art draws", () => {
+  assert.equal(T.badgeArt("night_singer", true), "badge-night-singer");
+  assert.equal(T.badgeArt("night_singer", false), "badge-night-singer-locked");
+  assert.ok(has("badge-night-singer") && has("badge-night-singer-locked"));
+  assert.equal(T.rewardArt(reward({ newBadges: [{ code: "night_singer", title: "Night Singer" }] })), "badge-night-singer");
+  for (const c of T.HALLOWEEN_CONFETTI_ART) assert.ok(has(c), c);
+  assert.ok(T.HALLOWEEN_CONFETTI_ART.includes("confetti-bat") && T.HALLOWEEN_CONFETTI_ART.includes("confetti-quaver"));
+  assert.equal(T.seasonConfettiArt("halloween"), T.HALLOWEEN_CONFETTI_ART);
+  assert.equal(T.seasonConfettiArt("christmas"), T.SEASON_CONFETTI_ART);
+  for (const a of ["season-hat", "boo", "boo-sing", "boo-blink", "bat"]) assert.ok(has(a), a);
+});

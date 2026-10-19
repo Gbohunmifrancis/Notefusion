@@ -1,0 +1,40 @@
+{
+  "name": "Toccata in D minor",
+  "title": "Toccata in D minor",
+  "form": "opening",
+  "alsoKnownAs": [
+    "Toccata and Fugue in D minor, BWV 565"
+  ],
+  "music": [
+    {
+      "name": "Johann Sebastian Bach",
+      "born": 1685,
+      "died": 1750,
+      "role": "Music (attributed)"
+    }
+  ],
+  "musicPublished": 1833,
+  "occasions": [
+    "Halloween"
+  ],
+  "key": "D minor",
+  "time": "4/4",
+  "tempo": 80,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:.5 G4:.5 A4:2 G4:.5 F4:.5 | E4:.5 D4:.5 C#4:1 D4:2 | A4:.5 G4:.5 A4:2 E4:1 | F4:1 C#4:1 D4:2 | A4:.5 G4:.5 A4:2 G4:.5 F4:.5 | E4:.5 D4:.5 C#4:1 D4:2",
+  "about": [
+    "The Toccata and Fugue in D minor, BWV 565, is the organ music most people think of at Halloween. It survives in a copy made after Bach's death by Johannes Ringk and was first printed in 1833; it is credited to Johann Sebastian Bach, though some scholars doubt that he wrote it.",
+    "This page has only its famous opening: the turn on A and the fall to D, played three times, the second time shorter, as the Bach-Gesellschaft edition (1867) prints it. On the organ the fall is a flash of tiny notes and each time it sounds an octave lower; here it is written out at a pace a voice can sing, the turn and the run as quavers and all three times in one octave, and the pauses between them are left out."
+  ],
+  "reviewed": false,
+  "confidence": "hand-encoded from a public-domain score and adapted for singing, unchecked",
+  "draft": false,
+  "source": "Mutopia Project",
+  "sourceUrl": "https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=1780",
+  "scoreUrl": "https://www.mutopiaproject.org/ftp/BachJS/BWV565/ToccataFugue/ToccataFugue.ly",
+  "licence": "Public domain. Bach died in 1750. The Mutopia Project's typesetting (from the Bach-Gesellschaft Ausgabe, 1867) is marked “Public Domain”.",
+  "credits": "Opening read from the Mutopia Project's LilyPond typesetting of BWV 565 (piece 1780, from the Bach-Gesellschaft Ausgabe, 1867), adapted for one voice by NoteFusion; public domain.",
+  "reviewNotes": "Hand-encoded from Mutopia's BWV 565 (.ly and MIDI, bar 1 and the start of bar 2) and ADAPTED, not the written rhythm — the about text says so on the page. (1) The ornament on each A (\\prall in the Mutopia source) is written out as A–G–A, the lower mordent nearly every performance plays; check the sign in the Bach-Gesellschaft print. (2) Note values are 8× the written ones so a voice can sing them: the 64th-note run G F E D as quavers, the 32nd C# as a crotchet, the 16th D as a minim (statement 2: E F C# as crotchets, D a minim); the held A under its fermata is 2 beats; the 32nd rest and the fermata rests between statements are left out. (3) The statements sound from A5, A4 and A3 on the organ (the third in octaves with the pedal); all three are written from A4 here. Bar lines are ours (two 4/4 bars a statement). The broken diminished-seventh chord that follows is not included. Tempo 80 is ours (the score says Adagio). musicPublished 1833 is the first printed edition (Breitkopf & Härtel); Bach's authorship is disputed and the role says \"attributed\". Check, then set \"reviewed\": true.",
+  "updated": "2026-10-19"
+}

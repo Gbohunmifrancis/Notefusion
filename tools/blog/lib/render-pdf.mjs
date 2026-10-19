@@ -371,13 +371,13 @@ export function hymnPdfItem(h, { name, writers }) {
 
 /** What the PDF of a prepared tune page (render-tunes prepareTune) prints. */
 export function tunePdfItem(t, { makers }) {
-  const v = t.view;
+  const v = t.view, form = t.form || "hymn tune";
   return {
-    kind: "tune", title: `${v.title} (hymn tune)`, view: v, path: v.url, updated: t.updated,
+    kind: "tune", title: `${v.title} (${form})`, view: v, path: v.url, updated: t.updated,
     subhead: t.metre && t.metre !== "Irregular" ? `Metre: ${t.metre.replace(/ (?=\d)/g, ".")}` : "",
     credits: `${v.credit.text} Public domain: free to print, copy and play. Solfa written by NoteFusion’s engine from the tune’s notes.`,
-    subject: `${v.title}, the hymn tune: the Tonic Solfa (${v.header}, ${v.time}). Free to print, from NoteFusion.`,
-    keywords: [v.title, t.name, `${v.title} tonic solfa`, "hymn tune", "tonic solfa", "sol-fa", "pdf", v.header.toLowerCase(), ...makers],
+    subject: `${v.title}, the ${form}: the Tonic Solfa (${v.header}, ${v.time}). Free to print, from NoteFusion.`,
+    keywords: [v.title, t.name, `${v.title} tonic solfa`, form, "tonic solfa", "sol-fa", "pdf", v.header.toLowerCase(), ...makers],
   };
 }
 

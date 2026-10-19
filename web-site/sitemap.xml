@@ -28,7 +28,7 @@
   </url>
   <url>
     <loc>https://notefusion.studio/hymns</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -40,13 +40,13 @@
   </url>
   <url>
     <loc>https://notefusion.studio/hymns/credits</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://notefusion.studio/hymns/occasions</loc>
-    <lastmod>2026-10-16</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -99,6 +99,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://notefusion.studio/hymns/occasions/halloween</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://notefusion.studio/hymns/occasions/thanksgiving</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>monthly</changefreq>
@@ -124,13 +130,13 @@
   </url>
   <url>
     <loc>https://notefusion.studio/hymns/people</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://notefusion.studio/hymns/people/johann-sebastian-bach</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -148,7 +154,7 @@
   </url>
   <url>
     <loc>https://notefusion.studio/hymns/people/joseph-barnby</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -382,7 +388,7 @@
   </url>
   <url>
     <loc>https://notefusion.studio/hymns/people/charles-francois-gounod</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -1018,7 +1024,7 @@
   </url>
   <url>
     <loc>https://notefusion.studio/hymns/first-lines</loc>
-    <lastmod>2026-10-16</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1385,6 +1391,12 @@
   <url>
     <loc>https://notefusion.studio/hymns/far-far-away-on-judeas-plains</loc>
     <lastmod>2026-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://notefusion.studio/hymns/for-all-the-saints</loc>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -2289,6 +2301,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://notefusion.studio/hymns/the-hearse-song</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://notefusion.studio/hymns/the-king-shall-come</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>monthly</changefreq>
@@ -2560,13 +2578,13 @@
   </url>
   <url>
     <loc>https://notefusion.studio/hymns/tunes/all-saints-darmstadt</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://notefusion.studio/hymns/tunes/all-saints-new</loc>
-    <lastmod>2026-10-18</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -3021,6 +3039,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://notefusion.studio/hymns/tunes/danse-macabre</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://notefusion.studio/hymns/tunes/dare-to-be-a-daniel</loc>
     <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
@@ -3293,6 +3317,12 @@
   <url>
     <loc>https://notefusion.studio/hymns/tunes/friend</loc>
     <lastmod>2026-10-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://notefusion.studio/hymns/tunes/funeral-march-of-a-marionette</loc>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -3713,6 +3743,12 @@
   <url>
     <loc>https://notefusion.studio/hymns/tunes/in-dulci-jubilo</loc>
     <lastmod>2026-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://notefusion.studio/hymns/tunes/in-the-hall-of-the-mountain-king</loc>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -5393,6 +5429,12 @@
   <url>
     <loc>https://notefusion.studio/hymns/tunes/tidings</loc>
     <lastmod>2026-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://notefusion.studio/hymns/tunes/toccata-in-d-minor</loc>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

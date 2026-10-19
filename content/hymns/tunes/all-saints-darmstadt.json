@@ -10,6 +10,10 @@
   ],
   "musicPublished": 1698,
   "metre": "8 7 8 7 7 7",
+  "occasions": [
+    "All Saints",
+    "Halloween"
+  ],
   "key": "C major",
   "time": "4/4",
   "tempo": 96,
@@ -27,5 +31,5 @@
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 001256; public domain.",
   "reviewNotes": "Imported from CCEH tune 001256 (the melody read from 001256a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (001256a.nwc).",
   "importedFrom": "cceh:001256",
-  "updated": "2026-10-18"
+  "updated": "2026-10-19"
 }

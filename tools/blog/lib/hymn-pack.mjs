@@ -6,7 +6,8 @@
 // [MIDI pitch, start beat, length in beats] in quarter-note beats with any pickup at the end of the
 // first bar (exactly as the worker's hymn index and the hymn page hold it), the key, meter, tempo and
 // pickup, the first verse's syllables under the notes, every verse's words, the page's credit line, and the
-// occasions the hymn names (content/hymns `occasions`: ["Christmas"] is the app's carols shelf), when it names any.
+// occasions the hymn or tune page names (content/hymns `occasions`: ["Christmas"] is the app's carols shelf,
+// ["Halloween"] its Halloween one), when it names any.
 // The app labels the solfa itself (lib/solfa.ts, the engine's mirror), so the pack never goes stale
 // against a solfa rule.
 //
@@ -62,6 +63,8 @@ function tuneEntry(t) {
     pickup: t.pickup || 0,
     credit: t.view.credit.text,
     url: ORIGIN + t.view.url,
+    // A tune page's occasions (["Halloween"] puts it on the app's Halloween shelf); left out when it names none.
+    ...(t.occasions?.length ? { occasions: t.occasions } : {}),
     notes: notesOf(t.parsed),
     words: "",
     verses: [],

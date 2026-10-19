@@ -17,16 +17,17 @@
  * practice-modes.css, loaded the first time a mode is opened through `loadAsset`); the stat cards, the week and the
  * badges sit below as "Your progress", the streak and level one line at the top.
  *
- * While the Christmas season is on for the singer (the progress carries `season`): one pine "Carols for Christmas" card
- * under today's drill opening the carols path (assets/practice-carols.js and .css, loaded on its first open; board
- * d-christmas/03), and Doh in the season's cap. Off, none of it is drawn or downloaded.
+ * While a season is on for the singer (the progress carries `season`): one card under today's drill opening the season's
+ * path (assets/practice-carols.js and .css, loaded on its first open), and Doh in the season's costume — at Christmas
+ * the pine "Carols for Christmas" card and the cap (board d-christmas/03), at Halloween the pumpkin "The Midnight path"
+ * card, the witch hat and Boo beside Doh (board j-halloween/03). Off, none of it is drawn or downloaded.
  *
  * Loaded by app.js the first time the view is opened (never on the app's first load), with
  * practice-progress.js, practice-track.js and practice-modes.js (the arithmetic and wording) and practice-view.css.
  * app.js hands over its API client, analytics, the rehearsal piano (assets/choir.js) and its asset loader:
  *
  *   NfPracticeView.open(rootEl, { request, track, choir, onProgress, loadAsset, show })   — show it (loads fresh numbers;
- *                                                                        show: "carols" opens on the carols path)
+ *                                                                        show: "season" opens on the season's path)
  *   NfPracticeView.leave()                                               — another view: stop sound and mic
  *   NfPracticeView.reset()                                               — signed out: forget everything
  */
@@ -85,21 +86,26 @@
     return img;
   }
   /**
-   * Doh in the Christmas cap while the season is on (in Practice only: board d-christmas/03), else the picture as it
-   * is. The cap (practice-art/season-cap.svg) is laid over him on his 200 × 200 box, tipped back so the crest shows.
+   * Doh in the season's costume while a season is on (in Practice only: boards d-christmas/03, j-halloween/03) — the
+   * Christmas cap, the Halloween witch hat — else the picture as it is. The costume (practice-art/season-cap.svg,
+   * season-hat.svg) is laid over him on his 200 × 200 box, tipped back so the crest shows.
    */
-  function seasonOn() { return !!(s.progress && s.progress.season) || !!(window.NfSeason && window.NfSeason.christmas); }
+  function seasonName() {
+    if (s.progress && s.progress.season) return PP().seasonOf(s.progress.season.season);
+    return (window.NfSeason && window.NfSeason.season) || null;
+  }
   function dohArt(name, width, cls) {
-    var pic = art(name, width, width, cls);
-    if (!seasonOn() || name.indexOf("doh-") !== 0 || name === "doh-avatar" || !window.NfSeason) return pic;
+    var pic = art(name, width, width, cls), S = window.NfSeason, season = seasonName();
+    if (!season || name.indexOf("doh-") !== 0 || name === "doh-avatar" || !S || !S.costumeOf) return pic;
+    var costume = S.costumeOf(season);
     var box = el("span", "pv-capped" + (cls ? " " + cls : ""));
     box.style.width = width + "px"; box.style.height = width + "px";
     pic.className = "pv-art";
     box.appendChild(pic);
     var NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg"), g = document.createElementNS(NS, "g"), img = document.createElementNS(NS, "image");
     svg.setAttribute("viewBox", "0 0 200 200"); svg.setAttribute("aria-hidden", "true"); svg.setAttribute("class", "pv-cap");
-    g.setAttribute("transform", window.NfSeason.capOnDoh(name));
-    img.setAttribute("href", ART_DIR + "season-cap.svg" + ART_V);
+    g.setAttribute("transform", S.costumeOnDoh(costume, name));
+    img.setAttribute("href", S.COSTUME_ART[costume]);
     img.setAttribute("x", "-100"); img.setAttribute("y", "-125"); img.setAttribute("width", "200"); img.setAttribute("height", "150");
     g.appendChild(img); svg.appendChild(g); box.appendChild(svg);
     return box;
@@ -209,7 +215,7 @@
     var head = el("div", "pv-modes-head"), text = el("div", "pv-modes-text");
     var h = el("h2", "pv-section", M.modesHeading(tr)); h.id = "pv-modes-title";
     text.appendChild(h);
-    // One Doh on screen: while the carols card shows his, the modes' steps aside.
+    // One Doh on screen: while the season's card shows his, the modes' steps aside.
     var line = dohElsewhere ? null : M.modesDohLine(rows, tr);
     if (line) text.appendChild(el("p", "pv-modes-doh", "“" + line + "”"));
     head.appendChild(text);
@@ -261,7 +267,7 @@
   }
   function closeMode() {
     if (!s.mode) return;
-    if (s.mode === "carols") { if (window.NfPracticeCarols) window.NfPracticeCarols.leave(); }
+    if (s.mode === "season") { if (window.NfPracticeCarols) window.NfPracticeCarols.leave(); }
     else if (window.NfPracticeModeView) window.NfPracticeModeView.leave();
     s.mode = null; inMode(false);
     render();
@@ -269,21 +275,42 @@
     refreshProgress(); // a marked take moved the XP, the streak and today's allowance
   }
 
-  // ── The Christmas carols (board d-christmas/03), only while the season is on for the singer ─────────────
-  /** The carols path's screen: its script and styles load the first time it is opened, never with the view. */
-  var CAROLS_ASSETS = ["/assets/practice-modes.css?v=1", "/assets/practice-carols.css?v=1", "/assets/practice-carols.js?v=1"];
+  // ── The season's path (boards d-christmas/03, j-halloween/03), only while its season is on for the singer ─────
+  /** The path's screen (either season's): its script and styles load the first time it is opened, never with the view. */
+  var SEASON_ASSETS = ["/assets/practice-modes.css?v=1", "/assets/practice-carols.css?v=2", "/assets/practice-carols.js?v=2"];
+  // Three tiny still bats in the Midnight path card's corner: [left, top, width, degrees] (the phone's CARD_BATS).
+  var CARD_BATS = [[4, 10, 14, -10], [58, 0, 11, 8], [80, 30, 9, -4]];
+  var BAT_PATH = "M20 8L18.4 4.8L17.4 8.6C14.5 4.4 8.5 3.2 1.5 7.2C4.6 8.2 5.8 10.8 5.6 13.8C7.6 12 9.8 12 11 14C12.6 12 14.8 12.1 15.8 15C17 13.2 18.6 13.4 20 15.6C21.4 13.4 23 13.2 24.2 15C25.2 12.1 27.4 12 29 14C30.2 12 32.4 12 34.4 13.8C34.2 10.8 35.4 8.2 38.5 7.2C31.5 3.2 25.5 4.4 22.6 8.6L21.6 4.8Z";
 
-  /** The pine card under today's drill: until when, six segments, how many sung and what is next, and the way in. */
-  function carolsCard(season, withDoh) {
-    var c = PP().carolsCard(season), card = el("section", "pv-carols");
+  /**
+   * The season's card under today's drill — the carols' pine one, the Midnight path's pumpkin one: until when, six
+   * segments, how many sung and what is next, and the way in. With `withDoh`, Doh in the season's costume (at
+   * Halloween with Boo at his shoulder); the Midnight path's corner holds three tiny still bats.
+   */
+  function seasonPathCard(season, withDoh) {
+    var c = PP().seasonCard(season), halloween = c.season === "halloween";
+    var card = el("section", "pv-carols" + (halloween ? " is-halloween" : ""));
     card.setAttribute("aria-labelledby", "pv-carols-title");
+    if (halloween) {
+      var sky = el("span", "pv-card-bats"); sky.setAttribute("aria-hidden", "true");
+      sky.innerHTML = CARD_BATS.map(function (b) {
+        return '<svg viewBox="0 0 40 20" style="left:' + b[0] + "px;top:" + b[1] + "px;width:" + b[2] + "px;height:" + b[2] / 2 + "px;transform:rotate(" + b[3] + 'deg)"><path fill="currentColor" d="' + BAT_PATH + '"/></svg>';
+      }).join("");
+      card.appendChild(sky);
+    }
     var top = el("div", "pv-carols-top"), text = el("div", "pv-carols-text");
     text.appendChild(el("p", "pv-carols-eyebrow", c.eyebrow));
     var h = el("h2", "pv-carols-title", c.title); h.id = "pv-carols-title";
     text.appendChild(h);
     text.appendChild(el("p", "pv-carols-body", c.body));
     top.appendChild(text);
-    if (withDoh) top.appendChild(dohArt("doh-wave", 88, "pv-carols-doh"));
+    if (withDoh && halloween) {
+      // Boo, Halloween's friendly ghost, floats beside Doh (never alone: board j-halloween/03).
+      var pair = el("span", "pv-card-pair");
+      pair.appendChild(dohArt("doh-wave", 72, "pv-carols-doh"));
+      pair.appendChild(art("boo", 34, 34, "pv-card-boo"));
+      top.appendChild(pair);
+    } else if (withDoh) top.appendChild(dohArt("doh-wave", 88, "pv-carols-doh"));
     card.appendChild(top);
     var segs = el("div", "pv-carols-bar");
     segs.setAttribute("role", "progressbar"); segs.setAttribute("aria-label", c.label);
@@ -297,33 +324,33 @@
     var go = el("button", "btn btn-ghost pv-carols-go"); go.type = "button"; go.id = "pv-carols-go";
     go.appendChild(document.createTextNode(c.action));
     go.appendChild(icon("/assets/icons.svg#i-arrow-right"));
-    go.addEventListener("click", openCarols);
+    go.addEventListener("click", openSeasonPath);
     foot.appendChild(go);
     card.appendChild(foot);
     return card;
   }
 
-  /** Opens the carols path in the view's place, as a mode's screen opens; back returns to the hub. */
-  function openCarols() {
+  /** Opens the season's path in the view's place, as a mode's screen opens; back returns to the hub. */
+  function openSeasonPath() {
     if (s.phase !== "idle" || s.mode || !s.progress || !s.progress.season) return;
     stopHear(); stopReplay(); hideToast();
-    var gen = s.gen;
-    s.mode = "carols"; inMode(true);
-    track("carols_opened", "sung=" + s.progress.season.sung);
+    var gen = s.gen, season = PP().seasonOf(s.progress.season.season);
+    s.mode = "season"; inMode(true);
+    track(PP().seasonWords(season).opened, "sung=" + s.progress.season.sung);
     root.innerHTML = "";
     var sk = el("div", "pv-skel");
     for (var i = 0; i < 3; i++) sk.appendChild(el("div", "skel"));
     root.appendChild(sk);
     window.scrollTo({ top: 0 });
-    Promise.all(CAROLS_ASSETS.map(ctx.loadAsset)).then(function () {
-      if (gen !== s.gen || s.mode !== "carols" || !root) return;
+    Promise.all(SEASON_ASSETS.map(ctx.loadAsset)).then(function () {
+      if (gen !== s.gen || s.mode !== "season" || !root) return;
       window.NfPracticeCarols.open(root, {
-        request: ctx.request, track: ctx.track, choir: ctx.choir, practiceTrack: currentTrack(),
+        season: season, request: ctx.request, track: ctx.track, choir: ctx.choir, practiceTrack: currentTrack(),
         art: art, dohArt: dohArt, icon: icon, modeIcon: modeIcon, starGrade: starGrade, gradeMarks: gradeMarks,
         toast: toast, burst: burst, back: closeMode
       });
     }, function () {
-      if (gen !== s.gen || s.mode !== "carols") return;
+      if (gen !== s.gen || s.mode !== "season") return;
       s.mode = null; inMode(false); s.error = "That didn't load. Check your connection and try again."; render();
     });
   }
@@ -365,15 +392,20 @@
       box.appendChild(bar0);
     }
     box.appendChild(progressLine(p));
-    if (playful && !showPicker() && s.drill) { box.appendChild(buddy(p, T)); warmConfetti(); }
+    // The season's path, while its season is on for the singer: one card under today's drill. Doh wears the season's
+    // costume and there is still one Doh on screen. Christmas: on Focused the card's, on Playful the buddy's. Halloween:
+    // on Playful the card's, with Boo beside him, so the buddy steps aside; Focused's card has neither.
+    var pathSeason = p.season ? P.seasonOf(p.season.season) : null;
+    var cardDoh = !!p.season && !showPicker() && (pathSeason === "halloween" ? playful : !playful);
+    if (playful && !showPicker() && s.drill) {
+      if (!(cardDoh && pathSeason === "halloween")) box.appendChild(buddy(p, T));
+      warmConfetti();
+    }
     if (showPicker()) box.appendChild(trackPicker(tr, T));
     if (s.drill && !showPicker()) box.appendChild(drillCard(s.drill, P));
     if (!s.drill && !showPicker()) box.appendChild(emptyState("empty-no-drill", "No drill yet", "Today's drill isn't here yet. Try again in a moment.", function () { load(); }));
-    // The Christmas carols, while the season is on for the singer: one pine card under today's drill. Doh is in it on
-    // Focused; on Playful he is the buddy at the top.
-    var carolsDoh = !!p.season && !playful && !showPicker();
-    if (p.season && !showPicker()) box.appendChild(carolsCard(p.season, carolsDoh));
-    var modes = showPicker() ? null : modesSection(p, tr, carolsDoh);
+    if (p.season && !showPicker()) box.appendChild(seasonPathCard(p.season, cardDoh));
+    var modes = showPicker() ? null : modesSection(p, tr, cardDoh);
     if (modes) box.appendChild(modes);
     // Your progress: the two stat cards, the week and the badges, under the ways to practise (board 6a).
     box.appendChild(el("h2", "pv-section", "Your progress"));
@@ -1037,9 +1069,9 @@
     ctx = context;
     root = rootEl;
     render();
-    // The home's Christmas link opens on the carols path, once the progress says it is there.
-    var toCarols = context && context.show === "carols";
-    if (s.phase === "idle") load().then(function () { if (toCarols && s.progress && s.progress.season) openCarols(); });
+    // The home's season link opens on the season's path, once the progress says it is there.
+    var toSeason = context && (context.show === "season" || context.show === "carols");
+    if (s.phase === "idle") load().then(function () { if (toSeason && s.progress && s.progress.season) openSeasonPath(); });
   }
   /** Another view: nothing keeps sounding or listening, and coming back opens on the hub. */
   function leave() {
@@ -1047,7 +1079,7 @@
     if (take) cancelTake();
     hideToast();
     if (s.mode) {
-      if (s.mode === "carols") { if (window.NfPracticeCarols) window.NfPracticeCarols.leave(); }
+      if (s.mode === "season") { if (window.NfPracticeCarols) window.NfPracticeCarols.leave(); }
       else if (window.NfPracticeModeView) window.NfPracticeModeView.leave();
       s.mode = null; inMode(false);
     }

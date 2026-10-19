@@ -45,7 +45,7 @@ import { catalogueJson, sitePages } from "./lib/catalogue.mjs";
 import { hymnIndexJson, HYMN_INDEX_PATH } from "./lib/hymn-index.mjs";
 import { hymnPackFiles, PACK_PATH, PACK_VERSION_PATH } from "./lib/hymn-pack.mjs";
 import { spriteSvg, licenseText } from "./icons.mjs";
-import { renderHomeSheet, SHEET_START, SHEET_END, SAMPLE_HYMN, SEASON_SAMPLE_HYMN } from "./lib/render-home.mjs";
+import { renderHomeSheet, SHEET_START, SHEET_END, SAMPLE_HYMN, SEASON_SAMPLE_HYMN, HALLOWEEN_SAMPLE_TUNE } from "./lib/render-home.mjs";
 
 /** Pages under /hymns that a hymn's slug must never take. */
 const RESERVED_HYMN_PATHS = ["/hymns/credits", IDENTIFY_PATH, "/hymns/tunes", OCCASIONS_PATH, PEOPLE_PATH, FIRST_LINES_PATH];
@@ -89,7 +89,7 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
   files.set("blog/feed.xml", feedXml(posts, authors));
 
   // Hymns, and the ways into them: seasons and occasions, writers and composers, first lines.
-  const occasions = occasionPages(hymns);
+  const occasions = occasionPages(hymns, tunePages);
   // Each person's page stays where it was first published (lib/collections.mjs collectPeople).
   const addressesPath = path.join(siteDir, PEOPLE_ADDRESSES_PATH);
   const addresses = fs.existsSync(addressesPath) ? JSON.parse(fs.readFileSync(addressesPath, "utf8")) : {};
@@ -152,9 +152,12 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
   // The Christmas season's sample (Silent Night), inert until assets/season.js swaps it in while the switch is on.
   const seasonSample = hymnsBySlug.get(SEASON_SAMPLE_HYMN);
   if (!seasonSample) throw new Error(`the home page's Christmas sample needs the hymn ${SEASON_SAMPLE_HYMN}`);
+  // The Halloween season's sample (the Mountain King's first bar), once the tune is published; until then there is none
+  // and the season keeps the year-round sample.
+  const halloweenSample = tunePages.find((t) => t.slug === HALLOWEEN_SAMPLE_TUNE && !t.draft) ?? hymnsBySlug.get(HALLOWEEN_SAMPLE_TUNE) ?? null;
   let home = fs.readFileSync(homePath, "utf8");
   home = between(home, HOME_START, HOME_END, renderHomeStrip(posts), "the latest posts");
-  home = between(home, SHEET_START, SHEET_END, renderHomeSheet(sample, seasonSample), "the sample sheet");
+  home = between(home, SHEET_START, SHEET_END, renderHomeSheet(sample, seasonSample, halloweenSample), "the sample sheet");
   files.set("index.html", home);
 
   files.set(`${INDEXNOW_KEY}.txt`, INDEXNOW_KEY + "\n");

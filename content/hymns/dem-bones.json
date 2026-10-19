@@ -1,0 +1,64 @@
+{
+  "title": "Dem Bones",
+  "tune": "dem-bones",
+  "alsoKnownAs": [
+    "Dry Bones",
+    "Dem Dry Bones"
+  ],
+  "text": [
+    {
+      "name": "James Weldon Johnson",
+      "born": 1871,
+      "died": 1938,
+      "role": "Words (1928, credited), after Ezekiel 37"
+    }
+  ],
+  "textPublished": 1928,
+  "occasions": [
+    "Halloween"
+  ],
+  "description": "Dem Bones (Dry Bones) in Tonic Solfa: the toe bone connected to the foot bone, with the solfa under the words, staff notation and a piano.",
+  "about": [
+    "Dem Bones, also called Dry Bones, is a spiritual on Ezekiel's vision of the valley of dry bones (Ezekiel 37), credited to the brothers James Weldon Johnson and J. Rosamond Johnson and first recorded in 1928."
+  ],
+  "verses": [
+    {
+      "label": "Chorus",
+      "lines": [
+        "Dem bones, dem bones, dem dry bones,",
+        "Dem bones, dem bones, dem dry bones,",
+        "Dem bones, dem bones, dem dry bones,",
+        "Now hear the word of the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Toe bone connected to the foot bone,",
+        "Foot bone connected to the heel bone,",
+        "Heel bone connected to the ankle bone,",
+        "Ankle bone connected to the leg bone,",
+        "Leg bone connected to the knee bone,",
+        "Knee bone connected to the thigh bone,",
+        "Thigh bone connected to the hip bone,",
+        "Hip bone connected to the back bone,",
+        "Back bone connected to the shoulder bone,",
+        "Shoulder bone connected to the neck bone,",
+        "Neck bone connected to the head bone,",
+        "Now hear the word of the Lord."
+      ]
+    },
+    {
+      "label": "Chorus",
+      "lines": [
+        "Dem bones, dem bones gonna walk around,",
+        "Dem bones, dem bones gonna walk around,",
+        "Dem bones, dem bones gonna walk around,",
+        "Now hear the word of the Lord."
+      ]
+    }
+  ],
+  "updated": "2026-10-19",
+  "reviewed": false,
+  "draft": true,
+  "reviewNotes": "DRAFT, not published: its tune (tunes/dem-bones.json) has no melody, because no public-domain score of the 1928 song was found to read one from, and a melody written from memory would be published as the authoritative one. The words are the commonly sung ones (as Wikipedia gives them), not checked against the Johnsons' 1928 text; the verse is often sung back down ('Head bone connected to the neck bone …'). To publish: add the melody to the tune, an underlay for the first verse, check the words and dates against the 1928 publication, set \"draft\": false. The credits (words to James Weldon Johnson, music to both brothers) follow Wikipedia; some sources call the words traditional — check."
+}

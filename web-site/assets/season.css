@@ -1,26 +1,40 @@
-/* The Christmas season on the website and /app (board d-christmas/06). Loaded by assets/season.js only while the
- * admin switch is on, so none of it is downloaded the rest of the year. Small touches: the blue stays the one accent,
- * pine is a tint, candle ivory labels small things on Night (pine on Day), holly red is the cap's alone, and Pro's
- * gold is never used. Phone first; min-width queries go upward. */
+/* The seasons on the website and /app (boards d-christmas/06, j-halloween/06). Loaded by assets/season.js only while
+ * an admin switch is on, so none of it is downloaded the rest of the year. Small touches: the blue stays the one
+ * accent and Pro's gold is never used. Christmas: pine is a tint, candle ivory labels small things on Night (pine on
+ * Day), holly red is the cap's alone. Halloween: pumpkin is a tint or a hairline (never an icon fill or a flame, so it
+ * never reads as Playful's orange), moon cream labels small things on Night (pumpkin on Day), hat purple is the hat's
+ * alone, and the bats are pale on Night, slate on Day. Phone first; min-width queries go upward. */
 
-:root { --pine: #1F6B50; --pine-soft: rgba(31, 107, 80, 0.09); --pine-line: rgba(31, 107, 80, 0.22); --candle: #1F6B50; --season-snow: #9DB3D4; }
-:root[data-theme="dark"] { --pine: #2E8A66; --pine-soft: rgba(46, 138, 102, 0.14); --pine-line: rgba(46, 138, 102, 0.34); --candle: #F3DFB4; --season-snow: #FFFFFF; }
+:root {
+  --pine: #1F6B50; --pine-soft: rgba(31, 107, 80, 0.09); --pine-line: rgba(31, 107, 80, 0.22); --candle: #1F6B50; --season-snow: #9DB3D4;
+  --pumpkin: #B4531C; --pumpkin-soft: rgba(180, 83, 28, 0.09); --pumpkin-line: rgba(180, 83, 28, 0.24); --moon: #B4531C; --season-bat: #475569;
+}
+:root[data-theme="dark"] {
+  --pine: #2E8A66; --pine-soft: rgba(46, 138, 102, 0.14); --pine-line: rgba(46, 138, 102, 0.34); --candle: #F3DFB4; --season-snow: #FFFFFF;
+  --pumpkin: #F28A3A; --pumpkin-soft: rgba(242, 138, 58, 0.14); --pumpkin-line: rgba(242, 138, 58, 0.34); --moon: #EDE6CF; --season-bat: #C9D1E0;
+}
+/* The season's tint, its wash and hairline, and its small labels: the page's season, or an element's own (the web
+   app's link under the greeting carries the season its path is in). */
+:root[data-season="christmas"], .season-christmas { --season-tint: var(--pine); --season-soft: var(--pine-soft); --season-line: var(--pine-line); --season-label: var(--candle); }
+:root[data-season="halloween"], .season-halloween { --season-tint: var(--pumpkin); --season-soft: var(--pumpkin-soft); --season-line: var(--pumpkin-line); --season-label: var(--moon); }
 
-/* ── The cap on the brand mark: the mark in a box of its own size, the cap laid over it ─────────────── */
+/* ── The costume on the brand mark (the cap, the witch hat): the mark in a box of its own size, the costume over it ── */
 .season-capped { position: relative; display: block; flex: none; }
 .season-capped > .site-brand-mark, .season-capped > .brand-mark, .season-capped > .home-mark { display: block; margin: 0; }
 .site-brand > .season-capped { width: 24px; height: 32px; }
 .brand > .season-capped { width: 30px; height: 30px; }
 .home > .season-capped { width: 64px; height: 64px; margin: 0 auto 16px; }
 .season-cap { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-/* The recording heartbeat moves the mark: the cap moves with it. */
+/* The recording heartbeat moves the mark: the costume moves with it. */
 body.is-recording .season-capped:has(> .brand-mark, > .home-mark) { animation: heartbeat 1.05s ease-in-out infinite; transform-origin: 50% 55%; }
 body.is-recording .season-capped > .brand-mark, body.is-recording .season-capped > .home-mark { animation: none; }
 
-/* ── A few slow flakes, for a few seconds, then gone (never with reduced motion: season.js draws none) ── */
-[data-season-snow] { position: relative; }
-.season-snow { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
-[data-season-snow] > :not(.season-snow) { position: relative; z-index: 1; }
+/* ── The season's sky, for a few seconds and then gone (never with reduced motion: season.js draws none) ── */
+[data-season-sky] { position: relative; }
+.season-snow, .season-bats { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+[data-season-sky] > :not(.season-snow):not(.season-bats) { position: relative; z-index: 1; }
+
+/* Christmas: a few slow flakes. */
 .season-flake {
   position: absolute; display: block; border-radius: 50%; background: var(--season-snow); color: var(--season-snow); opacity: 0;
   animation-name: season-fall; animation-timing-function: linear; animation-iteration-count: 1; animation-fill-mode: both;
@@ -36,26 +50,55 @@ body.is-recording .season-capped > .brand-mark, body.is-recording .season-capped
   85% { opacity: var(--o); }
   100% { opacity: 0; transform: translate(0, var(--fall)); }
 }
-@media (prefers-reduced-motion: reduce) { .season-snow { display: none; } }
 
-/* ── Website home: one pine line above the headline, to the carols in the hymnbook ─────────────────── */
+/* Halloween: a few bats, each across the box in one arc with a two-frame wing beat (open, folded). */
+.season-bat {
+  position: absolute; left: 0; display: block; color: var(--season-bat); opacity: 0;
+  animation-name: season-fly; animation-timing-function: linear; animation-iteration-count: 1; animation-fill-mode: both;
+}
+.season-bat svg {
+  display: block; width: 100%; height: 100%; transform-origin: 50% 45%;
+  animation: season-flap var(--flap) steps(1, end) var(--flaps) both;
+}
+@keyframes season-fly {
+  0% { opacity: 0; transform: translate(var(--x0), 0) rotate(var(--tilt)); }
+  8% { opacity: var(--o); }
+  50% { transform: translate(var(--xm), var(--rise)) rotate(var(--tilt)); }
+  90% { opacity: var(--o); }
+  100% { opacity: 0; transform: translate(var(--x1), var(--rise-end)) rotate(var(--tilt)); }
+}
+@keyframes season-flap {
+  0% { transform: scaleY(1); }
+  50% { transform: scaleY(0.55); }
+  100% { transform: scaleY(0.55); }
+}
+@media (prefers-reduced-motion: reduce) { .season-snow, .season-bats { display: none; } }
+
+/* ── Website home: one line above the headline, to the season's songs in the hymnbook ─────────────────── */
 .season-line {
   display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-height: 44px; margin: 0 0 14px; padding: 8px 14px;
-  border-radius: 999px; background: var(--pine-soft); border: 1px solid var(--pine-line); color: var(--page-text-2, var(--ink));
+  border-radius: 22px; background: var(--season-soft); border: 1px solid var(--season-line); color: var(--page-text-2, var(--ink));
   font-size: 14px; line-height: 1.3; text-decoration: none;
 }
 .season-line[hidden] { display: none; }
 .site-document a.season-line, .site-document a.season-line:hover { color: var(--page-text-2, var(--ink)); }
-.season-line strong { color: var(--candle); font-weight: 600; }
-.season-line .ic { flex: none; color: var(--candle); }
-.season-line:hover { border-color: var(--pine); }
-.season-line:focus-visible { outline: 2px solid var(--pine); outline-offset: 2px; }
+.season-line strong { color: var(--season-label); font-weight: 600; }
+.season-line .ic { flex: none; color: var(--season-label); }
+.season-line:hover { border-color: var(--season-tint); }
+.season-line:focus-visible { outline: 2px solid var(--season-tint); outline-offset: 2px; }
+/* A phone reads the short line ("Spooky songs in tonic solfa →"); a wider screen the songs it leads to as well. */
+.season-line-more, .sheet-foot-more { display: none; }
+@media (min-width: 600px) {
+  .season-line-more, .sheet-foot-more { display: inline; }
+  /* The longer Halloween line sets a touch smaller, so it stays on one line in the hero's column. */
+  .season-line[data-season-show="halloween"] { font-size: 13px; }
+}
 
-/* ── The web app's home: the carols, a pine link under the greeting ──────────────────────────────────── */
+/* ── The web app's home: the season's path, a link under the greeting ──────────────────────────────── */
 .season-carols {
   display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin: 10px 6px 0; padding: 6px 16px; border-radius: 999px;
-  border: 1px solid var(--pine-line); background: var(--pine-soft); color: var(--candle); font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--season-line); background: var(--season-soft); color: var(--season-label); font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer;
 }
 .season-carols .ic { width: 16px; height: 16px; }
-.season-carols:hover { border-color: var(--pine); }
-.season-carols:focus-visible { outline: 2px solid var(--pine); outline-offset: 2px; }
+.season-carols:hover { border-color: var(--season-tint); }
+.season-carols:focus-visible { outline: 2px solid var(--season-tint); outline-offset: 2px; }

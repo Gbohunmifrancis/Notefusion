@@ -1,24 +1,43 @@
 // node --test web-site/tests/*.test.mjs
-// assets/season.js: the one switch on the website and in /app. Only an answer of { christmas: true } dresses a page,
-// and the flakes and the cap's place are the phone's (mobile/src/lib/season.ts, season.test.ts): same cases.
+// assets/season.js: the seasons' one switch each on the website and in /app. Only an answer of { christmas: true } or
+// { halloween: true } dresses a page (Christmas first should both say so), and the flakes, the bats and the costumes'
+// places are the phone's (mobile/src/lib/season.ts, season.test.ts): same cases.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
+import { renderHomeSheet, HALLOWEEN_SAMPLE_TUNE } from "../../tools/blog/lib/render-home.mjs";
+import { prepareTune } from "../../tools/blog/lib/render-tunes.mjs";
+import { parseMelody } from "../../tools/blog/lib/solfa.mjs";
 
 const window = {};
 // No document: the script answers its pure half and touches nothing.
 vm.runInNewContext(readFileSync(new URL("../assets/season.js", import.meta.url), "utf8"), { window });
 const S = window.NfSeason;
 const read = (p) => readFileSync(new URL(p, import.meta.url), "utf8");
+const plain = (x) => JSON.parse(JSON.stringify(x));
 
-test("only an answer of christmas: true turns the season on; off is the default", () => {
+test("only an answer of christmas: true or halloween: true turns a season on, one at a time; off is the default", () => {
   assert.equal(S.christmas, false);
+  assert.equal(S.halloween, false);
+  assert.equal(S.season, null);
   assert.equal(S.isOn({ christmas: true }), true);
   assert.equal(S.isOn({ christmas: false }), false);
   assert.equal(S.isOn({ christmas: "true" }), false);
   assert.equal(S.isOn(null), false);
   assert.equal(S.isOn("<html>"), false);
+  assert.equal(S.seasonOf({ christmas: true, halloween: false }), "christmas");
+  assert.equal(S.seasonOf({ christmas: false, halloween: true }), "halloween");
+  assert.equal(S.seasonOf({ halloween: true }), "halloween");
+  // An admin previewing both sees Christmas, as the server and the phone say.
+  assert.equal(S.seasonOf({ christmas: true, halloween: true }), "christmas");
+  assert.equal(S.seasonOf({ halloween: "true" }), null);
+  assert.equal(S.seasonOf({ christmas: false, halloween: false }), null);
+  assert.equal(S.isOn({ halloween: true }), true);
+  assert.equal(S.costumeOf("christmas"), "cap");
+  assert.equal(S.costumeOf("halloween"), "hat");
+  assert.equal(S.costumeOf(null), null);
+  assert.match(S.COSTUME_ART.hat, /\/assets\/practice-art\/season-hat\.svg/);
 });
 
 test("snow: about fourteen slow flakes, 2–5 px and 30–60% white, none after 3 s, all gone by 6 s, as the phone's", () => {
@@ -34,16 +53,43 @@ test("snow: about fourteen slow flakes, 2–5 px and 30–60% white, none after 
     assert.ok(f.delay >= 0 && f.delay <= 3);
     assert.ok(f.delay + f.duration <= 6 + 1e-9);
   }
-  assert.deepEqual(JSON.parse(JSON.stringify(S.snowPlan(7, 280))), JSON.parse(JSON.stringify(plan)));
+  assert.deepEqual(plain(S.snowPlan(7, 280)), plain(plan));
+});
+
+test("bats: eight silhouettes, 18–34 px at 30–50%, each across in 2–3 s, none after 3 s, all gone by 6 s, as the phone's", () => {
+  const plan = S.batPlan(5, 280);
+  assert.equal(plan.length, 8);
+  for (const b of plan) {
+    assert.ok(b.size >= 18 && b.size <= 34, `size ${b.size}`);
+    assert.ok(b.opacity >= 0.3 && b.opacity <= 0.5, `opacity ${b.opacity}`);
+    assert.ok(b.delay >= 0 && b.delay <= 3, `delay ${b.delay}`);
+    assert.ok(b.duration >= 2 - 1e-9 && b.duration <= 3 + 1e-9, `flight ${b.duration}`);
+    assert.ok(b.delay + b.duration <= 6 + 1e-9, "gone by 6 s");
+    assert.ok(b.y >= 0 && b.y <= 0.8 * 280 + 1, `y ${b.y}`);
+    assert.ok(b.dir === 1 || b.dir === -1);
+    assert.ok(Math.abs(b.rise) <= 24);
+    assert.ok(Math.abs(b.tilt) <= 12);
+    assert.ok(b.flaps >= 4);
+  }
+  // both ways across, the same sky every time, another seed another sky
+  assert.ok(plan.some((b) => b.dir === 1) && plan.some((b) => b.dir === -1));
+  assert.deepEqual(plain(S.batPlan(5, 280)), plain(plan));
+  assert.notDeepEqual(plain(S.batPlan(6, 280)), plain(plan));
 });
 
 test("the same sky as the phone draws from the same seed", () => {
-  // mobile/src/lib/season.ts snowPlan(7, 280), first flake and last: kept in step by hand, checked here.
+  // mobile/src/lib/season.ts: kept in step by hand, checked here.
   const src = read("../../mobile/src/lib/season.ts");
   for (const n of ["minSize: 2", "maxSize: 5", "minOpacity: 0.3", "maxOpacity: 0.6", "minSpeed: 40", "maxSpeed: 70", "sway: 8", "lastStart: 3", "allGone: 6", "dots: 12", "glyphs: 2"]) {
     assert.ok(src.includes(n), n);
   }
+  for (const n of ["count: 8", "minSize: 18", "maxSize: 34", "minOpacity: 0.3", "maxOpacity: 0.5", "minFlight: 2", "maxFlight: 3", "arc: 24", "flapsPerSecond: 5"]) {
+    assert.ok(src.includes(n), n);
+    const [k, v] = n.split(": ");
+    assert.equal(S.BATS[k], Number(v), n);
+  }
   assert.ok(src.includes("(s * 16807) % 2147483647"));
+  assert.ok(src.includes("between(0.06, 0.8)") && src.includes("between(-BATS.arc, BATS.arc * 0.5)") && src.includes("between(-12, 12)"));
 });
 
 test("the cap: a third larger on a header-sized mark, higher on Doh when he jumps", () => {
@@ -54,13 +100,63 @@ test("the cap: a third larger on a header-sized mark, higher on Doh when he jump
   assert.equal(S.capOnDoh("doh-cheer"), "translate(84 52) rotate(-18) scale(.46)");
 });
 
-test("every page that carries the brand reads the switch, and the home page holds the season's pieces inert", () => {
+test("the witch hat: on the 5's top bar, a third larger at header sizes, higher on Doh when he jumps", () => {
+  assert.equal(S.hatOnMark(132), "translate(150 30) rotate(-12) scale(1.18)");
+  assert.equal(S.hatOnMark(31), "translate(150 30) rotate(-12) scale(1.18)");
+  assert.equal(S.hatOnMark(30), "translate(150 38) rotate(-12) scale(1.6)");
+  assert.equal(S.hatOnMark(24), "translate(150 38) rotate(-12) scale(1.6)");
+  assert.equal(S.hatOnDoh("doh-wave"), "translate(90 62) rotate(-14) scale(.5)");
+  assert.equal(S.hatOnDoh("doh-cheer-blink"), "translate(90 54) rotate(-14) scale(.5)");
+  assert.equal(S.costumeOnMark("hat", 132), S.hatOnMark(132));
+  assert.equal(S.costumeOnDoh("cap", "doh-sing"), S.capOnDoh("doh-sing"));
+});
+
+test("every page that carries the brand reads the switch, and the home page holds the seasons' pieces inert", () => {
   for (const p of ["../index.html", "../app/index.html", "../privacy/index.html", "../terms/index.html", "../delete-account/index.html", "../reset-password/index.html", "../hymns/silent-night/index.html"]) {
     assert.match(read(p), /<script src="\/assets\/season\.js\?v=\d+" defer><\/script>/, p);
   }
   const home = read("../index.html");
-  assert.match(home, /<a class="season-line"[^>]*data-season-show hidden>/);
+  assert.match(home, /<section class="hero"[^>]*data-season-sky>/);
+  assert.match(home, /<a class="season-line" href="\/hymns\/occasions\/christmas"[^>]*data-season-show="christmas" hidden>/);
+  assert.match(home, /<a class="season-line" href="\/hymns\/occasions\/halloween"[^>]*data-season-show="halloween" hidden>[\s\S]*?i-ghost[\s\S]*?<strong>Spooky songs in tonic solfa<\/strong><span class="season-line-more">: the Mountain King, Bach's Toccata and more<\/span>/);
   assert.match(home, /<template id="season-sheet">[\s\S]*Silent Night[\s\S]*sample-staff-silent-night\.svg[\s\S]*<\/template>/);
-  // Off, nothing seasonal is fetched: the stylesheet and the engraving are asked for only by season.js.
+  // The Mountain King is published (content/hymns/tunes/in-the-hall-of-the-mountain-king.json), so the build gives the
+  // home page his first bar too.
+  assert.match(home, /<template id="season-sheet-halloween">[\s\S]*In the Hall of the Mountain King[\s\S]*sample-staff-mountain-king\.svg[\s\S]*\/hymns\/tunes\/in-the-hall-of-the-mountain-king[\s\S]*<\/template>/);
+  // Off, nothing seasonal is fetched: the stylesheet and the engravings are asked for only by season.js.
   assert.doesNotMatch(home, /season\.css/);
+  assert.match(read("../app/index.html"), /<div class="home" id="home" data-season-sky>/);
+});
+
+/** The Mountain King's opening bars as content/hymns would publish them (B minor, from B3), prepared as build.mjs does. */
+function king() {
+  const t = {
+    slug: HALLOWEEN_SAMPLE_TUNE, name: "IN THE HALL OF THE MOUNTAIN KING", title: "In the Hall of the Mountain King",
+    music: [{ name: "Edvard Grieg", died: 1907 }], key: "B minor", time: "4/4", tempo: 138, pickup: 0, lineBars: 2,
+    melody: "B3:.5 C#4:.5 D4:.5 E4:.5 F#4:.5 D4:.5 F#4:1 | E#4:.5 C#4:.5 E#4:1 E4:.5 C4:.5 E4:1",
+  };
+  t.parsed = parseMelody(t.melody, { time: t.time, pickup: 0 });
+  return prepareTune(t);
+}
+
+test("the Halloween sample: the Mountain King's first bar in its own template, only once the tune is published", () => {
+  const amazing = { slug: "amazing-grace", title: "Amazing Grace", view: king().view };
+  const without = renderHomeSheet(amazing, null);
+  assert.doesNotMatch(without, /season-sheet-halloween/);
+  const sheet = renderHomeSheet(amazing, null, king());
+  const tpl = /<template id="season-sheet-halloween">([\s\S]*?)<\/template>/.exec(sheet);
+  assert.ok(tpl, "the template");
+  const fig = tpl[1];
+  assert.match(fig, /<p class="sheet-title" id="sheet-title-halloween">In the Hall of the Mountain King<\/p>/);
+  assert.match(fig, /<span>Doh is D<\/span><span>B minor<\/span><span>4\/4<\/span>/);
+  // One bar, no words: l, t, d r m d m (the crotchet held), in the engine's own grid.
+  const cells = [...fig.matchAll(/<b>(.*?)<\/b>/g)].map((m) => m[1].replace(/<[^>]+>/g, ""));
+  assert.deepEqual(cells, ["l,", "t,", "d", "r", "m", "d", "m", "-"]);
+  assert.doesNotMatch(fig, /<i>/);
+  assert.match(fig, /<img src="\/assets\/sample-staff-mountain-king\.svg" width="613" height="88" alt="The same bar on the treble staff in B minor">/);
+  assert.match(fig, /The first bar, as NoteFusion writes it<span class="sheet-foot-more">: la-based minor, two quavers to a beat<\/span>\./);
+  assert.match(fig, /<a href="\/hymns\/tunes\/in-the-hall-of-the-mountain-king">Open the whole tune<\/a>/);
+  assert.match(sheet, /from content\/hymns\/amazing-grace and in-the-hall-of-the-mountain-king\./);
+  // The engraving is a file, 613 × 88 as the template says.
+  assert.match(read("../assets/sample-staff-mountain-king.svg"), /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" width="613" height="88" viewBox="[\d.]+ [\d.]+ 613 88" role="img"><title>In the Hall of the Mountain King/);
 });

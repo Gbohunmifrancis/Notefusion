@@ -1,9 +1,18 @@
-/* The Christmas carols path on the web (/app, Practice; board d-christmas/03): assets/practice-carols.js's screen.
- * Loaded the first time the path is opened, while the season is on; never with the app. The top bar and the switch
- * are practice-modes.css's (loaded with it), the season's tokens (--pine, --candle) practice-view.css's.
+/* A season's practice path on the web (/app, Practice): assets/practice-carols.js's screen — the Christmas carols
+ * (board d-christmas/03) and the Halloween Midnight path (board j-halloween/03). Loaded the first time a path is
+ * opened, while its season is on; never with the app. The top bar and the switch are practice-modes.css's (loaded with
+ * it), the seasons' tokens (--pine, --candle; --pumpkin, --moon) practice-view.css's.
  * Phone first: these are the 360–414 px styles; min-width queries go upward. */
 
+/* The season's wash, hairline and small labels: pine and candle, or pumpkin and moon. */
+.pc, .pc-sheet-back { --sn-soft: var(--pine-soft); --sn-line: var(--pine-line); --sn-label: var(--candle); }
+.pc.is-halloween, .pc-sheet-back.is-halloween { --sn-soft: var(--pumpkin-soft); --sn-line: var(--pumpkin-line); --sn-label: var(--moon); }
+
 .pc { display: flex; flex-direction: column; gap: 14px; }
+/* Doh in his witch hat with Boo at his shoulder (the Midnight path, Playful). */
+.pc-pair { position: relative; flex: none; width: 94px; height: 80px; }
+.pc-pair .pv-buddy-doh { position: absolute; left: 0; bottom: 0; }
+.pc-boo { position: absolute; right: 0; top: -6px; }
 .pc .btn { min-height: 48px; justify-content: center; }
 .pc-failed { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
 
@@ -58,14 +67,14 @@
 .pc-phones-text strong { font-size: 0.95rem; }
 .pc-phones-text span { font-size: 0.82rem; line-height: 1.4; color: var(--muted); }
 
-/* The Carol singer sticker at the foot: dashed until it is earned. */
+/* The season's sticker at the foot (Carol singer, Night Singer): dashed until it is earned. */
 .pc-reward { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; border: 1px dashed var(--line-strong); }
-.pc-reward.is-earned { border-style: solid; border-color: var(--pine-line); background: var(--pine-soft); }
+.pc-reward.is-earned { border-style: solid; border-color: var(--sn-line); background: var(--sn-soft); }
 .pc-reward p { margin: 0; font-size: 0.9rem; line-height: 1.45; color: var(--muted); }
 .pc-reward strong { color: var(--ink); }
 
-/* The reward card when the sixth carol is sung: a bottom sheet on a phone, a centred card on a wide screen. */
-/* Under the burst (.pv-confetti, 47), so the snowflakes fly over the dimmed path. */
+/* The reward card when the sixth drill is sung: a bottom sheet on a phone, a centred card on a wide screen. */
+/* Under the burst (.pv-confetti, 47), so the snowflakes or bats fly over the dimmed path. */
 .pc-sheet-back { position: fixed; inset: 0; z-index: 46; display: flex; align-items: flex-end; justify-content: center; background: rgba(3, 5, 9, 0.55); }
 .pc-sheet {
   width: 100%; max-height: 100dvh; overflow: auto; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
@@ -74,8 +83,10 @@
 .pc-sheet-title { margin: 8px 0 0; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
 .pc-sheet-body { margin: 0; max-width: 26em; color: var(--muted); line-height: 1.5; }
 .pc-sheet-xp { margin: 0; font-size: 0.85rem; color: var(--muted); }
-.pc-sheet-line { display: inline-flex; align-items: center; gap: 8px; margin: 4px 0 0; padding: 8px 16px; border-radius: 999px; background: var(--pine-soft);
-  color: var(--candle); font-family: var(--font-mono, ui-monospace, monospace); font-weight: 600; letter-spacing: 0.12em; }
+.pc-sheet-line { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; margin: 4px 0 0; padding: 8px 16px; border-radius: 999px; background: var(--sn-soft);
+  color: var(--sn-label); font-family: var(--font-mono, ui-monospace, monospace); font-weight: 600; letter-spacing: 0.12em; }
+/* A long phrase (the Mountain King's) sets tighter, so it fits a 360 px phone on one line. */
+.pc-sheet-line.is-long { padding: 8px 12px; gap: 6px; font-size: 0.8rem; letter-spacing: 0.02em; white-space: nowrap; }
 .pc-sheet-note { width: 16px; height: 16px; display: inline-flex; }
 .pc-sheet-note svg { width: 100%; height: 100%; }
 .pc-sheet-actions { align-self: stretch; display: flex; justify-content: flex-end; align-items: center; gap: 16px; margin-top: 12px; }
