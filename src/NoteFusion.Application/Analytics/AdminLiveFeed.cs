@@ -1,0 +1,19 @@
+using NoteFusion.Application.Common.Interfaces;
+
+namespace NoteFusion.Application.Analytics;
+
+/// <summary>
+/// The console's live notices are told when what they show changes — someone comes online or signs up, a transcription
+/// or preview starts, a payment goes through — and only then ask for it (<c>GetLiveActivityQuery</c>), instead of asking
+/// every fifteen seconds in every open tab. Carried on <see cref="IJobEvents"/> under its own key.
+/// </summary>
+public static class AdminLiveFeed
+{
+    /// <summary>The key the console's stream watches; not a job id.</summary>
+    public const string Key = "admin:live";
+
+    /// <summary>The event: something the live notices show has changed.</summary>
+    public const string Changed = "changed";
+
+    public static void Tell(IJobEvents events) => events.Publish(Key, new JobEvent(Changed));
+}

@@ -69,7 +69,7 @@ public static class JobEventStream
                         await SendAsync(response, JobEvent.Ended, ended, open.Token);
                         return;
                     }
-                    await SendAsync(response, next.Name, JsonSerializer.Serialize(next.Job, json), open.Token);
+                    await SendAsync(response, next.Name, next.Job is null ? "{}" : JsonSerializer.Serialize(next.Job, json), open.Token);
                 }
             }
         }

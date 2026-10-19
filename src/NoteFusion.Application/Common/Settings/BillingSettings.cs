@@ -43,8 +43,11 @@ public sealed class BillingSettings
     /// </summary>
     public int MaxWebhookAttempts { get; init; } = 8;
 
-    /// <summary>How often the webhook worker polls the inbox for undrained events.</summary>
-    public int WebhookPollSeconds { get; init; } = 3;
+    /// <summary>
+    /// How often the webhook worker sweeps the inbox when nothing rang it: a stored webhook wakes it at once, so the sweep
+    /// only picks up retries as they come due and anything stored before a restart.
+    /// </summary>
+    public int WebhookPollSeconds { get; init; } = 30;
 
     /// <summary>
     /// How often the reconciliation worker sweeps stuck transactions against the provider. Short, so a

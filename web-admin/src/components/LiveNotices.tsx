@@ -9,15 +9,16 @@ import { toast } from "sonner";
 import { getLiveActivity } from "@/api/endpoints";
 import type { LiveActivity } from "@/api/types";
 import { formatMoney } from "@/lib/format";
+import { followLiveFeed } from "@/lib/liveFeed";
 
 const SOUND_KEY = "notefusion_admin_live_sound";
-const POLL_MS = 15_000;
 
 /**
  * Live notices for the console: a pop-up and a short chime when someone comes online or starts a
- * transcription, and a loud cash-register "ka-ching" when a payment goes through. It polls the live endpoint and announces only what is new since its last look; the
- * first look of a session is taken quietly, so opening the console does not ring for everyone who
- * was already there. The speaker button mutes the sound (remembered on this browser); the pop-ups stay.
+ * transcription, and a loud cash-register "ka-ching" when a payment goes through. The live endpoint is
+ * fetched when its feed says something changed (src/lib/liveFeed.ts), and only what is new since the last
+ * look is announced; the first look of a session is taken quietly, so opening the console does not ring for
+ * everyone who was already there. The speaker button mutes the sound (remembered on this browser); the pop-ups stay.
  */
 export function LiveNotices() {
   const router = useRouter();
@@ -50,10 +51,15 @@ export function LiveNotices() {
   const live = useQuery({
     queryKey: ["live-activity"],
     queryFn: ({ signal }) => getLiveActivity(signal),
-    refetchInterval: POLL_MS,
-    refetchIntervalInBackground: true,
     retry: false,
   });
+
+  // Fetched again when the feed says something changed, in a hidden tab too (the ka-ching still rings).
+  const refetch = useRef(live.refetch);
+  useEffect(() => {
+    refetch.current = live.refetch;
+  });
+  useEffect(() => followLiveFeed(() => void refetch.current()), []);
 
   useEffect(() => {
     if (!live.data) return;

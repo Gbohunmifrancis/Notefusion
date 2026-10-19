@@ -172,6 +172,19 @@ async function sendPastLock(path: string, options: RequestOptions): Promise<Resp
   return response;
 }
 
+/**
+ * Opens a server-sent event stream (the live notices' feed, `src/lib/liveFeed.ts`) with the bearer token and console
+ * pass any other call carries. The response is the caller's to read; nothing here retries or refreshes.
+ */
+export function openStream(path: string, signal: AbortSignal): Promise<Response> {
+  const headers: Record<string, string> = { Accept: "text/event-stream" };
+  const token = getAccessToken();
+  if (token) headers.Authorization = `Bearer ${token}`;
+  const pass = getAdminPass();
+  if (pass && needsPassHeader(path)) headers[ADMIN_SESSION_HEADER] = pass;
+  return fetch(`${BASE_URL}${path}`, { headers, signal, cache: "no-store" });
+}
+
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   let response = await sendPastLock(path, options);
 

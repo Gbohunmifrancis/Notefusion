@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Analytics;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 
@@ -29,7 +30,7 @@ public sealed class LastSeenMiddleware
 
     public async Task InvokeAsync(
         HttpContext context, ICurrentUser currentUser, IApplicationDbContext db, IDateTimeProvider clock,
-        ILogger<LastSeenMiddleware> logger)
+        IJobEvents events, ILogger<LastSeenMiddleware> logger)
     {
         await _next(context);
 
@@ -37,8 +38,11 @@ public sealed class LastSeenMiddleware
             return;
 
         var now = clock.UtcNow;
-        if (Recent.TryGetValue(userId, out var written) && now - written < LastSeen.WriteEvery)
+        var known = Recent.TryGetValue(userId, out var written);
+        if (known && now - written < LastSeen.WriteEvery)
             return;
+        // Not seen for the online window: they have just come online, which the console's live notices announce.
+        var cameOnline = !known || now - written >= LastSeen.OnlineWindow;
         if (Recent.Count > MaxRemembered)
             Recent.Clear();
         Recent[userId] = now;
@@ -46,9 +50,11 @@ public sealed class LastSeenMiddleware
         try
         {
             var stale = now - LastSeen.WriteEvery;
-            await db.Users
+            var moved = await db.Users
                 .Where(u => u.Id == userId && (u.LastSeenAtUtc == null || u.LastSeenAtUtc < stale))
                 .ExecuteUpdateAsync(s => s.SetProperty(u => u.LastSeenAtUtc, now), CancellationToken.None);
+            if (moved > 0 && cameOnline)
+                AdminLiveFeed.Tell(events);
         }
         catch (Exception ex)
         {

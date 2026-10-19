@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Blog.Drafting;
 using NoteFusion.Application.Blog.Publishing;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Infrastructure.Common;
 
 namespace NoteFusion.Infrastructure.Blog;
 
@@ -78,19 +79,27 @@ internal sealed class BlogSiteWorker : BackgroundService
 /// </summary>
 internal sealed class BlogDraftWorker : BackgroundService
 {
-    public static readonly TimeSpan Interval = TimeSpan.FromSeconds(10);
+    /// <summary>
+    /// How often the queue is read when nothing rang: a batch asked for in the console rings the worker as it is saved;
+    /// this sweep is for the Monday and Thursday batches and anything left by a restart.
+    /// </summary>
+    public static readonly TimeSpan Interval = TimeSpan.FromSeconds(60);
 
     private readonly IServiceScopeFactory _scopes;
     private readonly IGeminiClient _gemini;
     private readonly ILogger<BlogDraftWorker> _logger;
     private readonly IWorkerHeartbeatTracker? _heartbeat;
+    private readonly WorkSignals? _signals;
 
-    public BlogDraftWorker(IServiceScopeFactory scopes, IGeminiClient gemini, ILogger<BlogDraftWorker> logger, IWorkerHeartbeatTracker? heartbeat = null)
+    public BlogDraftWorker(
+        IServiceScopeFactory scopes, IGeminiClient gemini, ILogger<BlogDraftWorker> logger,
+        IWorkerHeartbeatTracker? heartbeat = null, WorkSignals? signals = null)
     {
         _scopes = scopes;
         _gemini = gemini;
         _logger = logger;
         _heartbeat = heartbeat;
+        _signals = signals;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -131,7 +140,7 @@ internal sealed class BlogDraftWorker : BackgroundService
 
             try
             {
-                await Task.Delay(Interval, stoppingToken);
+                await WorkSignals.Between(_signals, Work.BlogDrafts, Interval, stoppingToken);
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {

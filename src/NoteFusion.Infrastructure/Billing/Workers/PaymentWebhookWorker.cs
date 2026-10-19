@@ -9,6 +9,7 @@ using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
 using NoteFusion.Core.Entities.Billing;
 using NoteFusion.Core.Enums;
+using NoteFusion.Infrastructure.Common;
 using NoteFusion.Infrastructure.Persistence;
 
 namespace NoteFusion.Infrastructure.Billing.Workers;
@@ -30,13 +31,16 @@ internal sealed class PaymentWebhookWorker : BackgroundService
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly BillingSettings _settings;
     private readonly ILogger<PaymentWebhookWorker> _logger;
+    private readonly WorkSignals? _signals;
 
     public PaymentWebhookWorker(
-        IServiceScopeFactory scopeFactory, BillingSettings settings, ILogger<PaymentWebhookWorker> logger)
+        IServiceScopeFactory scopeFactory, BillingSettings settings, ILogger<PaymentWebhookWorker> logger,
+        WorkSignals? signals = null)
     {
         _scopeFactory = scopeFactory;
         _settings = settings;
         _logger = logger;
+        _signals = signals;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -61,7 +65,8 @@ internal sealed class PaymentWebhookWorker : BackgroundService
 
             try
             {
-                await Task.Delay(interval, stoppingToken);
+                // A stored webhook rings at once; the sweep in between is for retries and anything left by a restart.
+                await WorkSignals.Between(_signals, Work.PaymentWebhooks, interval, stoppingToken);
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
