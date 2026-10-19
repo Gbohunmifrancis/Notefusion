@@ -580,6 +580,9 @@ export const billingApi = {
    * worth and returns the membership afterwards; a purchase made on another account is refused
    * (`BILLING_PLAY_OTHER_ACCOUNT`).
    */
+  /** Whether the server can confirm Google Play purchases; until then Android keeps the website's checkout. */
+  googlePlayStatus: () =>
+    api.get<{ ready: boolean }>("/api/billing/google-play/status").then((r) => r.data.ready),
   registerPlayPurchase: (productId: string, purchaseToken: string) =>
     api
       .post<Subscription>("/api/billing/google-play/purchases", { productId, purchaseToken })

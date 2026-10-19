@@ -198,7 +198,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   runtime, so an update can only reach builds that have its native code — anything native
   needs a store build first.
   Offline, JS only (no netinfo): opened/saved sheets are kept per account in `documents/offline/` (`lib/offlineLibrary`, pure `sheetCache`; pins exempt from the 8 MB cap; wiped on sign-out) and used on NETWORK_* errors. No take is lost (board 13): every one (never a link) is written ahead into `lib/outbox` (pure `sendQueue`) before its upload — audio moved to app storage beside a synchronous `<id>.json` record, a mic take `held` from the moment it stops while it is asked what it is — sent at once under an `Idempotency-Key` (`sendKey`: the take's id, a new suffix per job it left behind) and followed on the Record screen by `lib/useTakeSend` ("Kept on this phone" card when the connection drops, "Sending it again" card when the job is lost; no dialogs), and in the Library's "On its way" group; the audio stays until the job is done. A job lost (`errorCode: "JOB_LOST"`; the old sentences only as a fallback) or unanswered 4.5 h after sending is re-sent at once, a 5xx on the backoff, at most twice; the network is waited out however long; the recording's failures and refusals wait for Try again/Delete.
-  Android pays through Google Play only (board h-play; a store build, expo-iap pinned): `lib/playStore` (connect, Play
+  Android pays through Google Play (board h-play; a store build, expo-iap pinned) once `sellsOnPlay`: the server can
+  confirm Play purchases (`GET /api/billing/google-play/status`, its service account set) and Play sells the products;
+  until then it keeps the website's checkout (Paystack, Bachs) exactly as before. `lib/playStore` (connect, Play
   offers, Google's sheet with the user id as obfuscated account id, hand-over to the server, restore) on the pure
   `lib/playBilling` (plan ↔ product/base plan, Play's own prices, labels, member states renewing/cancelled/grace/hold,
   the Google Play manage link); UpgradeScreen shows only what Play sells at Play's price, "Subscribe"/"Buy this song",

@@ -210,7 +210,9 @@ what it is worth from Google (`GooglePlaySync`), records each charged order as a
 reference, Google's order total as the amount), makes Pro or the choir end exactly when Google's access does
 (renewal, cancellation, grace period, account hold, refund), and acknowledges the purchase (consumes a one-song one),
 without which Google refunds it after three days. `GooglePlaySyncWorker` (15 min) catches anything missed. Without a
-service account every purchase answers "try again" and stays safe with Google.
+service account every purchase answers "try again" and stays safe with Google, and the app does not offer Google Play
+at all: until `GooglePlay__ServiceAccountJson` is set (`GET /api/billing/google-play/status`) and Play sells the
+products, Android keeps the website's checkout (Paystack, Bachs).
 
 **Play Console › Monetize › Products** (prices per country as on the website: ₦ in Nigeria, the regional $ set in the
 regional markets, standard $ elsewhere):

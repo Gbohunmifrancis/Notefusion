@@ -3,8 +3,9 @@
  * and at what price, opens Google's purchase sheet, and hands each purchase to the server, which asks Google what it
  * is worth before anything is granted. The pure mapping is `playBilling.ts`.
  *
- * Android only (`usesPlayBilling`); the website and other platforms keep the web checkout. The native module arrives
- * with a store build, and the fingerprint runtime keeps this code from reaching a build without it.
+ * Android only (`usesPlayBilling`), and only once the server can confirm Play purchases and Google Play sells the
+ * products (`sellsOnPlay`); until then, and on other platforms, the web checkout. The native module arrives with a
+ * store build, and the fingerprint runtime keeps this code from reaching a build without it.
  */
 import { Platform } from "react-native";
 import {
@@ -32,6 +33,18 @@ import {
 } from "./playBilling";
 
 export const usesPlayBilling = Platform.OS === "android";
+
+let serverReady = false;
+
+/**
+ * Whether the server can confirm Google Play purchases (its service account is set). Until it can, Android keeps the
+ * website's checkout. Asked again each time while it says no; once yes, for the rest of the app's life.
+ */
+export async function playBillingReady(): Promise<boolean> {
+  if (!usesPlayBilling) return false;
+  if (!serverReady) serverReady = await billingApi.googlePlayStatus().catch(() => false);
+  return serverReady;
+}
 
 let connection: Promise<boolean> | null = null;
 
@@ -133,7 +146,7 @@ export interface PlayRestore {
  */
 export async function restorePlayPurchases(all: boolean): Promise<PlayRestore> {
   const result: PlayRestore = { restored: 0, otherAccount: false, failed: false, subscription: null };
-  if (!usesPlayBilling || !(await connect())) return result;
+  if (!usesPlayBilling || !(await playBillingReady()) || !(await connect())) return result;
   let held: Purchase[];
   try {
     held = await getAvailablePurchases();

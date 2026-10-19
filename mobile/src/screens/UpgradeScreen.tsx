@@ -60,9 +60,17 @@ import {
   playMemberState,
   playProblemNote,
   playStatusLine,
+  sellsOnPlay,
   type PlayOffer,
 } from "../lib/playBilling";
-import { buyOnPlay, loadPlayOffers, registerPlayPurchase, restorePlayPurchases, usesPlayBilling } from "../lib/playStore";
+import {
+  buyOnPlay,
+  loadPlayOffers,
+  playBillingReady,
+  registerPlayPurchase,
+  restorePlayPurchases,
+  usesPlayBilling,
+} from "../lib/playStore";
 
 type Props = { navigation: any; route?: any };
 
@@ -178,6 +186,8 @@ export function UpgradeScreen({ navigation, route }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   // On Android, what Google Play sells and at what price (board h-play): a plan without an offer is not shown there.
   const [playOffers, setPlayOffers] = useState<Map<string, PlayOffer>>(new Map());
+  // Selling through Google Play (Android, the server ready, Play selling the products); else the website's checkout.
+  const [play, setPlay] = useState(false);
   const [busy, setBusy] = useState(false); // opening checkout
   const [restoring, setRestoring] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // pull-to-refresh
@@ -192,19 +202,23 @@ export function UpgradeScreen({ navigation, route }: Props) {
 
   const load = useCallback(async () => {
     try {
-      const [proList, sub, prof, choirList, singleList, offers] = await Promise.all([
+      const [proList, sub, prof, choirList, singleList, ready] = await Promise.all([
         billingApi.plans(),
         billingApi.mySubscription(),
         meApi.get().catch(() => null),
         billingApi.choirPlans().catch(() => [] as Plan[]),
         // The one-song purchase is listed apart; a failure there leaves Pro on sale.
         billingApi.singlePlans().catch(() => [] as Plan[]),
-        usesPlayBilling ? loadPlayOffers().catch(() => new Map<string, PlayOffer>()) : Promise.resolve(new Map<string, PlayOffer>()),
+        playBillingReady(),
       ]);
+      // Google Play is asked only once the server can confirm what it sells.
+      const offers = ready ? await loadPlayOffers().catch(() => new Map<string, PlayOffer>()) : new Map<string, PlayOffer>();
       if (!mounted.current) return;
+      const viaPlay = sellsOnPlay(usesPlayBilling, ready, offers.size);
+      setPlay(viaPlay);
       setPlayOffers(offers);
-      // On Android only what Google Play sells is shown, at Google Play's price.
-      const sold = (p: Plan) => !usesPlayBilling || offerFor(p, offers) !== undefined;
+      // Through Google Play only what it sells is shown, at its price.
+      const sold = (p: Plan) => !viaPlay || offerFor(p, offers) !== undefined;
       const planList = withSingle(proList, singleList).filter(sold);
       setPlans(planList);
       setChoirPlans(choirList.filter(sold));
@@ -233,7 +247,10 @@ export function UpgradeScreen({ navigation, route }: Props) {
       const [sub] = await Promise.all([
         billingApi.confirm().catch(() => billingApi.mySubscription()),
         Promise.all([billingApi.plans(), billingApi.singlePlans().catch(() => [] as Plan[])])
-          .then(([proList, singleList]) => setPlans(withSingle(proList, singleList)))
+          // The same filter as the first load: through Google Play, only what it sells.
+          .then(([proList, singleList]) =>
+            setPlans(withSingle(proList, singleList).filter((p) => !play || offerFor(p, playOffers) !== undefined)),
+          )
           .catch(() => undefined),
         meApi.get().then((p) => setProfile(p)).catch(() => null),
       ]);
@@ -391,7 +408,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
     const plan = plans.find((p) => p.id === planId) ?? choirPlans.find((p) => p.id === planId);
     const single = plan?.interval === "single";
     const choir = choirPlans.some((p) => p.id === planId);
-    if (usesPlayBilling) {
+    if (play) {
       if (plan) await buyWithPlay(plan);
       return;
     }
@@ -488,7 +505,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
   // new one starts when the current time ends.
   const [extending, setExtending] = useState(false);
   // Pro paused on Google Play's account hold shows the member screen with its fix, not the plans.
-  const onHold = usesPlayBilling && isOnHold(subscription);
+  const onHold = play && isOnHold(subscription);
   const isActive = ((subscription?.isActive ?? false) || onHold) && !extending;
   // The one-song purchase, for a free account only (the server hides it from members too); listed
   // first, beside Pro, as the smallest thing to buy.
@@ -496,7 +513,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
     subscription?.isActive || extending ? undefined : plans.find((p) => p.interval === "single");
   songPlanRef.current = singlePlan;
   // On Android a member opens the plans only to start a choir: Google Play renews their own Pro.
-  const proPlans = usesPlayBilling && extending ? [] : plans.filter((p) => p.interval !== "single");
+  const proPlans = play && extending ? [] : plans.filter((p) => p.interval !== "single");
   const buyingSong = selected?.interval === "single";
 
   // The provider drops its checkout snapshot when the payment lands (it shows the welcome
@@ -617,7 +634,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
           <View style={styles.confirmBlock}>
             <ActivityIndicator color={colors.accent} />
             <Text style={styles.confirmTitle}>
-              {usesPlayBilling ? "Confirming with Google Play…" : "Confirming your payment…"}
+              {play ? "Confirming with Google Play…" : "Confirming your payment…"}
             </Text>
             <Text style={styles.confirmText}>This usually takes a few seconds.</Text>
           </View>
@@ -627,7 +644,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
           subscription={subscription!}
           profile={profile}
           user={user}
-          onAndroid={usesPlayBilling}
+          onAndroid={play}
           onExtend={() => setExtending(true)}
           onOpenChoir={() => navigation.navigate("Choir")}
           onChanged={() => {
@@ -723,7 +740,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
           {/* ── CTA ──────────────────────────────────────────────────────── */}
           <Button
             label={
-              selected && usesPlayBilling
+              selected && play
                 ? playButtonLabel(
                     selected,
                     offerFor(selected, playOffers)?.price ?? formatPrice(selected.amountMinor, selected.currency),
@@ -745,14 +762,14 @@ export function UpgradeScreen({ navigation, route }: Props) {
           />
 
           <Text style={styles.finePrint}>
-            {usesPlayBilling && selected
+            {play && selected
               ? playFinePrint(selected)
               : buyingSong
               ? "One payment, one transcription that never expires. Secure checkout opens in your browser; you'll come back to your song."
               : "Secure checkout opens in your browser. You'll return here automatically."}
           </Text>
 
-          {usesPlayBilling ? (
+          {play ? (
             <View style={styles.restoreRow}>
               <Button label="Restore purchases" variant="text" onPress={() => void restore()} loading={restoring} />
             </View>

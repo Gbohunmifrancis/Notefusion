@@ -16,6 +16,15 @@ export const PLAY_SONG = "one_song";
 export const PLAY_SUBSCRIPTIONS = [PLAY_PRO, PLAY_CHOIR];
 export const PLAY_PRODUCTS = [PLAY_SONG];
 
+/**
+ * Whether this phone sells through Google Play: Android, the server able to confirm Play purchases (its service
+ * account set), and Google Play selling the products. Until then the app keeps the website's checkout (Paystack,
+ * Bachs), as the builds before Play billing did.
+ */
+export function sellsOnPlay(android: boolean, serverReady: boolean, playOffers: number): boolean {
+  return android && serverReady && playOffers > 0;
+}
+
 /** What a server plan is sold as on Google Play. */
 export interface PlayItem {
   productId: string;
