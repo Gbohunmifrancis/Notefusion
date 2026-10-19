@@ -44,15 +44,18 @@ internal static class PreviewThrottle
 {
     /// <summary>
     /// Refuses a preview the visitor has no claim to: a browser that sent no id (the website always sends
-    /// one, so this is a script), one that has had its preview, one an account has already transcribed on
-    /// (signing out is not a way back to free use), or an address past its day's ceiling.
+    /// one, so this is a script), one that has had its preview (one that failed — a link YouTube refused, a
+    /// recording with no notes — was not had, so it can be tried again; one still running holds it), one an
+    /// account has already transcribed on (signing out is not a way back to free use), or an address past its
+    /// day's ceiling, which every attempt counts towards.
     /// </summary>
     public static async Task<Error?> CheckAsync(
         IApplicationDbContext db, string? device, string? ip, DateTime utcNow, CancellationToken ct)
     {
         if (device is null)
             return TranscriptionErrors.PreviewLimitReached;
-        if (await db.PreviewJobs.CountAsync(p => p.DeviceFingerprint == device, ct) >= PreviewLimits.PerDevice)
+        if (await db.PreviewJobs.CountAsync(
+                p => p.DeviceFingerprint == device && (p.CompletedAtUtc == null || p.Succeeded), ct) >= PreviewLimits.PerDevice)
             return TranscriptionErrors.PreviewLimitReached;
         if (await db.TranscriptionJobs.AnyAsync(j => j.DeviceFingerprint == device, ct))
             return TranscriptionErrors.PreviewLimitReached;

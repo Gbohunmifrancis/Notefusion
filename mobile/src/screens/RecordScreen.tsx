@@ -570,6 +570,15 @@ export function RecordScreen() {
     }
   }, [state.status, state.errorCode, following, reset, showTrialExhausted, showSongNotFree, queueLastTake]);
 
+  // A failed job costs nothing: the place it held comes back, so the count is read again, once per job
+  // (`refresh` is a new function after every read, and the job stays failed).
+  const recountedFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (state.status !== "failed" || !state.jobId || recountedFor.current === state.jobId) return;
+    recountedFor.current = state.jobId;
+    void refresh(false);
+  }, [state.status, state.jobId, refresh]);
+
   // The elapsed-time interval is cleared in stopAndSubmit, but a screen unmount
   // mid-recording (back gesture, tab switch) never runs that path, leaking the
   // timer and firing a state update on an unmounted component. Tear it down here.

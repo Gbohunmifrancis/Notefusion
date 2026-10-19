@@ -58,6 +58,18 @@ public sealed class DatabaseSeeder : IHostedService
         {
             _logger.LogError(ex, "Could not fill the canonical inbox on existing accounts; will retry at next start.");
         }
+
+        // Not fatal either: the charges stay until the next start, and nothing else depends on them going.
+        try
+        {
+            var refunded = await StandInChargeRefund.RunAsync(context, cancellationToken);
+            if (refunded > 0)
+                _logger.LogInformation("Handed back the charge on {Count} link jobs a store preview stood in for.", refunded);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            _logger.LogError(ex, "Could not hand back the charges on stand-in link jobs; will retry at next start.");
+        }
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
