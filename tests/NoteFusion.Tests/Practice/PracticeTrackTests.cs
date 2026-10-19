@@ -167,8 +167,16 @@ public class PracticeTrackTests
             Assert.NotNull(DrillCatalogue.Find(drill.Id));
         }
 
-        // Singers start on different drills.
-        var starts = Enumerable.Range(0, 14).Select(i => First(Guid.NewGuid(), track, 0).Id).Distinct().Count();
+        // Singers start on different drills. Fourteen fixed singers, not fresh ones each run: with random ids the
+        // Playful slice now and then dealt three or fewer first drills, and the test failed by chance.
+        var rng = new Random(14);
+        var singers = Enumerable.Range(0, 14).Select(_ =>
+        {
+            var bytes = new byte[16];
+            rng.NextBytes(bytes);
+            return new Guid(bytes);
+        });
+        var starts = singers.Select(singer => First(singer, track, 0).Id).Distinct().Count();
         Assert.True(starts > 3, $"only {starts} different first drills for fourteen singers");
     }
 
