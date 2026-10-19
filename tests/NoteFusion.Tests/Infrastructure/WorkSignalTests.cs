@@ -91,6 +91,36 @@ public class WorkSignalTests
     }
 
     [Fact]
+    public async Task A_batch_of_drafts_tells_the_console_as_it_moves_and_rings_its_worker_once()
+    {
+        using var h = new TestHarness();
+        var signals = new WorkSignals();
+        var events = new InMemoryJobEvents();
+        using var console = events.Watch(AdminLiveFeed.Key, "user:admin")!;
+        await using var db = Context(h, signals, events);
+        string Told() => console.Events.TryRead(out var told) ? told.Name : "nothing";
+
+        var run = BlogGenerationRun.Queue(BlogGenerationTrigger.Admin, 2, null, null, null, h.Clock.UtcNow);
+        db.BlogGenerationRuns.Add(run);
+        await db.SaveChangesAsync();
+        Assert.Equal(AdminLiveFeed.Blog, Told());
+        Assert.True(await signals.WaitAsync(Work.BlogDrafts, TimeSpan.FromSeconds(1), default));
+
+        run.Start("gemini-flash-latest", h.Clock.UtcNow);
+        await db.SaveChangesAsync();
+        Assert.Equal(AdminLiveFeed.Blog, Told());
+
+        run.Add(new BlogGenerationItem("hymn-tips", "hymn tips", null, Guid.NewGuid(), "Hymn tips", true, [], null, []));
+        await db.SaveChangesAsync();
+        Assert.Equal(AdminLiveFeed.Blog, Told());
+
+        // Saving nothing new about it says nothing, and only queueing a batch wakes the worker.
+        await db.SaveChangesAsync();
+        Assert.Equal("nothing", Told());
+        Assert.False(await signals.WaitAsync(Work.BlogDrafts, TimeSpan.FromMilliseconds(50), default));
+    }
+
+    [Fact]
     public async Task Someone_coming_online_tells_the_live_notices_once()
     {
         using var h = new TestHarness();

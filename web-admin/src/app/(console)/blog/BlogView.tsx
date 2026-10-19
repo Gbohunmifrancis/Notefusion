@@ -26,6 +26,7 @@ import { StateView } from "@/components/StateView";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatInstantDateTime, formatRelative } from "@/lib/format";
+import { followLiveFeed } from "@/lib/liveFeed";
 import { getReportingOffset } from "@/lib/reporting";
 import { useClampPage } from "@/lib/useClampPage";
 import { useDebounced } from "@/lib/useDebounced";
@@ -133,7 +134,10 @@ function SiteCard() {
 
 /** The newest batches of drafts, with their state and cost. */
 function RecentRuns() {
-  const runs = useQuery({ queryKey: ["blog-generations"], queryFn: ({ signal }) => getBlogGenerations(5, signal), refetchInterval: 10_000 });
+  const queryClient = useQueryClient();
+  const runs = useQuery({ queryKey: ["blog-generations"], queryFn: ({ signal }) => getBlogGenerations(5, signal) });
+  // Fetched again when a batch is queued, starts, saves a draft or finishes.
+  useEffect(() => followLiveFeed(() => void queryClient.invalidateQueries({ queryKey: ["blog-generations"] }), "blog"), [queryClient]);
   const offset = getReportingOffset();
   return (
     <Card title="Recent drafting" hint="Gemini batches, newest first">
