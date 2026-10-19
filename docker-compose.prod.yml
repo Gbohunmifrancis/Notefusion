@@ -255,7 +255,9 @@ services:
       Sentry__Release: ${Sentry__Release:-}
     volumes:
       - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
-    # It needs no Linux capabilities (port 8080, an unprivileged user) and may never gain any.
+    # Not root: the deploy user's uid, which owns the 0600 JWT key the API reads (the deploy cannot give the file
+    # to another user without root). It needs no Linux capabilities (port 8080) and may never gain any.
+    user: "1000:1000"
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
 

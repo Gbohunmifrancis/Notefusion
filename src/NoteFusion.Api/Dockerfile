@@ -30,8 +30,8 @@ WORKDIR /app
 
 COPY --from=build /app/publish ./
 
-# Not root: the image's own unprivileged user (uid 1654). The API writes nothing to disk; the JWT key it reads is
-# chowned to this uid by the deploy.
+# Not root: the image's own unprivileged user (uid 1654). The API writes nothing to disk. Production runs it as the
+# deploy user's uid instead (docker-compose.prod.yml), the owner of the JWT key it reads.
 USER $APP_UID
 
 # Kestrel binds Heroku's dynamic $PORT, falling back to 8080 for compose.
