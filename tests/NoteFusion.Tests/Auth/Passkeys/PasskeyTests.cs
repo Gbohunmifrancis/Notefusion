@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,11 +9,14 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NoteFusion.Api.Auth;
 using NoteFusion.Api.Controllers;
 using NoteFusion.Api.RateLimiting;
+using NoteFusion.Application.Admin.PhoneLock;
+using NoteFusion.Application.Auth.Dtos;
 using NoteFusion.Application.Auth.Passkeys;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
+using NoteFusion.Infrastructure.Security;
 using NoteFusion.Infrastructure.Security.Passkeys;
 using NoteFusion.Tests.Support;
 
@@ -382,6 +386,112 @@ public sealed class PasskeyTests : IDisposable
 
     // ── Helpers ─────────────────────────────────────────────────────────────────────────────────
 
+    // ── Unlocking the admin console ─────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task An_admins_own_passkey_unlocks_the_console_with_a_fresh_pass_that_replaces_the_old_one()
+    {
+        var admin = await SeedAsync("admin@example.com", admin: true);
+        await RegisterAsync(admin, "Laptop");
+        var passes = new InMemoryAdminPhoneLock();
+        var old = passes.Open(admin.Id, null, _h.Clock.UtcNow);
+
+        var result = await UnlockWithPasskeyAsync(admin, passes, old.Token);
+
+        Assert.True(result.IsSuccess, result.IsSuccess ? null : result.Error.Message);
+        var pass = passes.Touch(result.Value.Session, admin.Id, _h.Clock.UtcNow);
+        Assert.NotNull(pass);
+        Assert.Equal(_h.Clock.UtcNow, pass.UnlockedAtUtc); // counts as a fresh confirmation
+        Assert.Null(passes.Touch(old.Token, admin.Id, _h.Clock.UtcNow));
+        Assert.Equal(_h.Clock.UtcNow, (await _h.Db.Passkeys.SingleAsync()).LastUsedAtUtc);
+    }
+
+    [Fact]
+    public async Task Another_admins_passkey_or_unlock_options_do_not_open_this_console()
+    {
+        var owner = await SeedAsync("owner@example.com", admin: true);
+        await RegisterAsync(owner, "Owner's laptop");
+        var other = await SeedAsync("other@example.com", admin: true);
+        var passes = new InMemoryAdminPhoneLock();
+
+        // The owner's own passkey, answering options the other admin asked for.
+        var options = (await BeginUnlock(other).Handle(new BeginConsoleUnlockCommand(), default)).Value;
+        var crossed = await Unlock(owner, passes).Handle(
+            new UnlockConsoleWithPasskeyCommand(_authenticator.Get(options)), default);
+        Assert.Equal(PasskeyErrors.SignInExpired, crossed.Error);
+
+        // The owner's passkey on the other admin's console.
+        var theirs = await UnlockWithPasskeyAsync(other, passes);
+        Assert.Equal(PasskeyErrors.UnknownPasskey, theirs.Error);
+
+        // Sign-in options are not unlock options.
+        var signIn = (await BeginSignIn().Handle(new BeginPasskeySignInCommand(), default)).Value;
+        var wrongKind = await Unlock(owner, passes).Handle(
+            new UnlockConsoleWithPasskeyCommand(_authenticator.Get(signIn)), default);
+        Assert.Equal(PasskeyErrors.SignInExpired, wrongKind.Error);
+    }
+
+    [Fact]
+    public async Task Unlock_options_are_spent_once()
+    {
+        var admin = await SeedAsync("admin@example.com", admin: true);
+        await RegisterAsync(admin, "Laptop");
+        var passes = new InMemoryAdminPhoneLock();
+        var options = (await BeginUnlock(admin).Handle(new BeginConsoleUnlockCommand(), default)).Value;
+
+        var first = await Unlock(admin, passes).Handle(
+            new UnlockConsoleWithPasskeyCommand(_authenticator.Get(options)), default);
+        var again = await Unlock(admin, passes).Handle(
+            new UnlockConsoleWithPasskeyCommand(_authenticator.Get(options)), default);
+
+        Assert.True(first.IsSuccess);
+        Assert.Equal(PasskeyErrors.SignInExpired, again.Error);
+    }
+
+    [Fact]
+    public async Task The_password_unlocks_the_console_and_wrong_ones_count_towards_the_sign_in_lockout()
+    {
+        const string password = "correct horse battery";
+        var admin = User.CreateAdmin("Test Admin", "admin@example.com", _h.Hasher.Hash(password), _h.Clock.UtcNow);
+        _h.Db.Users.Add(admin);
+        await _h.Db.SaveChangesAsync();
+        var passes = new InMemoryAdminPhoneLock();
+
+        var unlocked = await UnlockWithPassword(admin, passes).Handle(new UnlockConsoleWithPasswordCommand(password), default);
+        Assert.True(unlocked.IsSuccess);
+        Assert.NotNull(passes.Touch(unlocked.Value.Session, admin.Id, _h.Clock.UtcNow));
+
+        for (var i = 1; i < User.MaxFailedLoginAttempts; i++)
+            Assert.Equal(AdminPassword.Incorrect,
+                (await UnlockWithPassword(admin, passes).Handle(new UnlockConsoleWithPasswordCommand("guess"), default)).Error);
+        Assert.Equal(AdminPassword.LockedOut,
+            (await UnlockWithPassword(admin, passes).Handle(new UnlockConsoleWithPasswordCommand("guess"), default)).Error);
+
+        // Locked out like the sign-in form: even the right password waits.
+        Assert.Equal(AdminPassword.LockedOut,
+            (await UnlockWithPassword(admin, passes).Handle(new UnlockConsoleWithPasswordCommand(password), default)).Error);
+    }
+
+    [Theory]
+    [InlineData("Admin", "web", true)]
+    [InlineData("Admin", null, true)]
+    [InlineData("Admin", "app", false)]
+    [InlineData("User", "web", false)]
+    public void Signing_in_to_the_console_hands_an_admin_an_open_pass(string role, string? client, bool handed)
+    {
+        var passes = new InMemoryAdminPhoneLock();
+        var http = new DefaultHttpContext();
+        var userId = Guid.NewGuid();
+        var signedIn = new LoginResponse("access", "refresh", 900, new AuthUserDto(userId, "Ada", "ada@example.com", role));
+
+        AdminConsolePass.Attach(http, signedIn, passes, new StubClientApp(client), _h.Clock);
+
+        var token = http.Response.Headers[AdminPhoneLockRules.Header].ToString();
+        Assert.Equal(handed, token.Length > 0);
+        if (handed)
+            Assert.NotNull(passes.Touch(token, userId, _h.Clock.UtcNow));
+    }
+
     private async Task<User> SeedAsync(string email, bool admin)
     {
         var user = admin
@@ -420,4 +530,21 @@ public sealed class PasskeyTests : IDisposable
     private PasskeySignInCommandHandler SignIn()
         => new(_h.Db, _ceremony, _challenges, _h.TokenIssuer, _h.ClientIp, _h.Clock,
             NullLogger<PasskeySignInCommandHandler>.Instance);
+
+    private async Task<NoteFusion.Shared.Results.Result<AdminPhoneSessionDto>> UnlockWithPasskeyAsync(
+        User caller, InMemoryAdminPhoneLock passes, string? session = null)
+    {
+        var options = (await BeginUnlock(caller).Handle(new BeginConsoleUnlockCommand(), default)).Value;
+        return await Unlock(caller, passes).Handle(
+            new UnlockConsoleWithPasskeyCommand(_authenticator.Get(options), session), default);
+    }
+
+    private BeginConsoleUnlockCommandHandler BeginUnlock(User caller)
+        => new(new StubCurrentUser(caller.Id, caller.Role, caller.Email), _ceremony, _challenges, _h.Clock);
+
+    private UnlockConsoleWithPasskeyCommandHandler Unlock(User caller, InMemoryAdminPhoneLock passes)
+        => new(_h.Db, new StubCurrentUser(caller.Id, caller.Role, caller.Email), _ceremony, _challenges, passes, _h.Clock);
+
+    private UnlockConsoleWithPasswordCommandHandler UnlockWithPassword(User caller, InMemoryAdminPhoneLock passes)
+        => new(_h.Db, new StubCurrentUser(caller.Id, caller.Role, caller.Email), _h.Hasher, passes, _h.Clock, _h.QuotaGate);
 }

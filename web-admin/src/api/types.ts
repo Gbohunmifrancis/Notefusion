@@ -72,6 +72,12 @@ export interface Passkey {
   lastUsedAtUtc: string | null;
 }
 
+/** An open console pass (`AdminPhoneSessionDto`): sent back as `X-Admin-Session` on admin calls. */
+export interface ConsoleSession {
+  session: string;
+  expiresAtUtc: string;
+}
+
 export interface UserMetrics {
   totalUsers: number;
   newUsers: number;

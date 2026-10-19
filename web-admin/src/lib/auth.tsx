@@ -17,11 +17,13 @@ import { setSessionExpiredHandler } from "@/api/client";
 import {
   getMyProfile,
   getPasskeyLoginOptions,
+  lockConsoleSession,
   login,
   logout,
   passkeyLogin,
 } from "@/api/endpoints";
 import type { AuthUser, LoginResponse } from "@/api/types";
+import { getAdminPass, resetAdminLock } from "@/lib/adminLock";
 import {
   clearSession,
   getRefreshToken,
@@ -102,6 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // The API client cannot navigate; it reports an unrecoverable session and this does.
     setSessionExpiredHandler(() => {
+      resetAdminLock();
       setUser(null);
       router.replace("/login");
     });
@@ -150,6 +153,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signOut = useCallback(async () => {
+    // The console's pass ends with the session, and nothing is left waiting behind the lock.
+    const pass = getAdminPass();
+    resetAdminLock();
+    if (pass) {
+      try {
+        await lockConsoleSession(pass);
+      } catch {
+        // It also lapses by itself after 5 minutes unused.
+      }
+    }
     const refreshToken = getRefreshToken();
     if (refreshToken) {
       try {

@@ -140,6 +140,7 @@ function ChristmasFlag({ flag }: { flag: FeatureFlag }) {
               </>
             ),
             confirmLabel: "Turn on",
+            confirmIdentity: true,
             onConfirm: async () => {
               await save({ enabled: true, autoOff, ...(autoOff ? { autoOffAt: shownDate } : {}) });
               toast.success("Christmas is on for everyone");
@@ -155,6 +156,7 @@ function ChristmasFlag({ flag }: { flag: FeatureFlag }) {
               </p>
             ),
             confirmLabel: "Turn off",
+            confirmIdentity: true,
             onConfirm: async () => {
               await save({ enabled: false });
               toast.success("Christmas is off for everyone");

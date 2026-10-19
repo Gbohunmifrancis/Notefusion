@@ -37,6 +37,7 @@ import type {
   InboxPage,
   LedgerDirection,
   LedgerReason,
+  ConsoleSession,
   LoginResponse,
   MyProfile,
   PagedResult,
@@ -106,6 +107,25 @@ export const renamePasskey = (id: string, name: string) =>
 
 export const deletePasskey = (id: string) =>
   request<void>(`/api/auth/passkeys/${encodeURIComponent(id)}`, { method: "DELETE" });
+
+/*
+ * The console lock (src/lib/adminLock.ts). Each unlock answers with a new pass, which also counts as
+ * the fresh confirmation the destructive actions want for the next minute.
+ */
+
+/** Assertion options for unlocking with one of the admin's own passkeys. */
+export const getConsoleUnlockOptions = () =>
+  request<WebAuthnJson>("/api/admin/console-lock/passkey/options", { method: "POST" });
+
+export const unlockConsoleWithPasskey = (credential: WebAuthnJson) =>
+  request<ConsoleSession>("/api/admin/console-lock/passkey", { method: "POST", body: { credential } });
+
+export const unlockConsoleWithPassword = (password: string) =>
+  request<ConsoleSession>("/api/admin/console-lock/password", { method: "POST", body: { password } });
+
+/** Ends a pass the console has let go of (5 minutes away, signing out). */
+export const lockConsoleSession = (pass: string) =>
+  request<void>("/api/admin/console-lock/lock", { method: "POST", adminPass: pass });
 
 /**
  * The signed-in operator's own account. Not admin-gated — it is the same endpoint the app calls —

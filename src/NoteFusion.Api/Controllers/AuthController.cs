@@ -2,9 +2,11 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using NoteFusion.Api.Auth;
 using NoteFusion.Api.Common;
 using NoteFusion.Api.RateLimiting;
 using NoteFusion.Application.Auth.Commands;
+using NoteFusion.Application.Common.Interfaces;
 
 namespace NoteFusion.Api.Controllers;
 
@@ -17,8 +19,17 @@ namespace NoteFusion.Api.Controllers;
 public sealed class AuthController : ApiControllerBase
 {
     private readonly ISender _sender;
+    private readonly IAdminPhoneLock _passes;
+    private readonly IClientApp _client;
+    private readonly IDateTimeProvider _clock;
 
-    public AuthController(ISender sender) => _sender = sender;
+    public AuthController(ISender sender, IAdminPhoneLock passes, IClientApp client, IDateTimeProvider clock)
+    {
+        _sender = sender;
+        _passes = passes;
+        _client = client;
+        _clock = clock;
+    }
 
     /// <summary>
     /// Creates an account and emails a six-digit code. Returns the address, not a token pair —
@@ -59,7 +70,12 @@ public sealed class AuthController : ApiControllerBase
     [EnableRateLimiting(AuthRateLimiting.Credentials)]
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginCommand command, CancellationToken ct)
-        => HandleResult(await _sender.Send(command, ct));
+    {
+        var result = await _sender.Send(command, ct);
+        if (result.IsSuccess)
+            AdminConsolePass.Attach(HttpContext, result.Value, _passes, _client, _clock);
+        return HandleResult(result);
+    }
 
     /// <summary>
     /// Signs in with a Google ID token, creating the account on first use.

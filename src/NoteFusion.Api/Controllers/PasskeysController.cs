@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using NoteFusion.Api.Auth;
 using NoteFusion.Api.Common;
 using NoteFusion.Api.RateLimiting;
+using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Auth.Passkeys;
 
 namespace NoteFusion.Api.Controllers;
@@ -25,10 +26,21 @@ public sealed class PasskeysController : ApiControllerBase
 {
     private readonly ISender _sender;
 
-    public PasskeysController(ISender sender) => _sender = sender;
+    private readonly IAdminPhoneLock _passes;
+    private readonly IClientApp _client;
+    private readonly IDateTimeProvider _clock;
+
+    public PasskeysController(ISender sender, IAdminPhoneLock passes, IClientApp client, IDateTimeProvider clock)
+    {
+        _sender = sender;
+        _passes = passes;
+        _client = client;
+        _clock = clock;
+    }
 
     /// <summary>Creation options for adding a passkey to the signed-in admin's account.</summary>
     [Authorize(Policy = AuthorizationPolicies.Admin)]
+    [FreshPhoneUnlock]
     [EnableRateLimiting(AuthRateLimiting.Passkeys)]
     [HttpPost("register/options")]
     public async Task<IActionResult> RegisterOptions(CancellationToken ct)
@@ -39,13 +51,18 @@ public sealed class PasskeysController : ApiControllerBase
     /// the PublicKeyCredential as JSON. Returns the stored passkey.
     /// </summary>
     [Authorize(Policy = AuthorizationPolicies.Admin)]
+    [FreshPhoneUnlock]
     [EnableRateLimiting(AuthRateLimiting.Passkeys)]
     [HttpPost("register")]
     public async Task<IActionResult> Register(CompletePasskeyRegistrationCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
 
-    /// <summary>The signed-in admin's passkeys, newest first.</summary>
+    /// <summary>
+    /// The signed-in admin's passkeys, newest first. Answered while the console is locked, so the lock knows whether to
+    /// offer a passkey or the password.
+    /// </summary>
     [Authorize(Policy = AuthorizationPolicies.Admin)]
+    [AllowLockedPhone]
     [HttpGet]
     public async Task<IActionResult> List(CancellationToken ct)
         => HandleResult(await _sender.Send(new GetMyPasskeysQuery(), ct));
@@ -58,6 +75,7 @@ public sealed class PasskeysController : ApiControllerBase
 
     /// <summary>Removes one of the caller's passkeys. 404 for one that is not theirs.</summary>
     [Authorize(Policy = AuthorizationPolicies.Admin)]
+    [FreshPhoneUnlock]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
         => HandleNoContent(await _sender.Send(new DeletePasskeyCommand(id), ct));
@@ -77,7 +95,12 @@ public sealed class PasskeysController : ApiControllerBase
     [EnableRateLimiting(AuthRateLimiting.Credentials)]
     [HttpPost("login")]
     public async Task<IActionResult> Login(PasskeyLoginRequest body, CancellationToken ct)
-        => HandleResult(await _sender.Send(new PasskeySignInCommand(body.Credential), ct));
+    {
+        var result = await _sender.Send(new PasskeySignInCommand(body.Credential), ct);
+        if (result.IsSuccess)
+            AdminConsolePass.Attach(HttpContext, result.Value, _passes, _client, _clock);
+        return HandleResult(result);
+    }
 }
 
 /// <summary>Body of <c>PATCH /api/auth/passkeys/{id}</c>.</summary>

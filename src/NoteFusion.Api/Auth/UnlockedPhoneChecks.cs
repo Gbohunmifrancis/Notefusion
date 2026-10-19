@@ -9,10 +9,10 @@ using NoteFusion.Shared.Results;
 namespace NoteFusion.Api.Auth;
 
 /// <summary>
-/// The phone's Admin must be unlocked (board f-admin/10 revised): a request whose access token was issued to the app
-/// (<see cref="ClientKinds.App"/>) needs an open pass in <see cref="AdminPhoneLockRules.Header"/>, which only the
-/// phone's fingerprint-locked key or the password plus an emailed code can open. A token taken off the phone is no use
-/// without it. Browser tokens are not asked yet.
+/// Admin must be unlocked, on the phone (board f-admin/10 revised) and in the console (board i-console-lock): every
+/// admin request needs an open pass in <see cref="AdminPhoneLockRules.Header"/>. On the phone (a token issued to the app,
+/// <see cref="ClientKinds.App"/>) only its fingerprint-locked key or the password plus an emailed code opens one; in the
+/// console (every other token) a passkey or the password does. A token taken off either is no use without it.
 /// </summary>
 public sealed class UnlockedPhoneRequirement : IAuthorizationRequirement;
 
@@ -30,11 +30,14 @@ public sealed class FreshPhoneUnlockAttribute : Attribute;
 /// <summary>
 /// <c>AdminPhoneLock__Enforce</c>: whether the server asks the phone for its pass. Off while the phones still run an app
 /// that cannot get one (the deploy keeps it off until the store build with the fingerprint lock is installed); the
-/// app gets and sends a pass either way, so turning it on needs nothing else.
+/// app gets and sends a pass either way, so turning it on needs nothing else. <c>AdminPhoneLock__EnforceConsole</c>:
+/// the same for the console, on from the start because the console ships with the lock (a switch-off for emergencies).
 /// </summary>
 public sealed class AdminPhoneLockSettings
 {
     public bool Enforce { get; set; } = true;
+
+    public bool EnforceConsole { get; set; } = true;
 }
 
 public sealed class UnlockedPhoneHandler : AuthorizationHandler<UnlockedPhoneRequirement>
@@ -55,7 +58,12 @@ public sealed class UnlockedPhoneHandler : AuthorizationHandler<UnlockedPhoneReq
 
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, UnlockedPhoneRequirement requirement)
     {
-        if (!_settings.Enforce || context.User.FindFirst(ClientKinds.Claim)?.Value != ClientKinds.App)
+        // The phone's rule for app tokens; the console's for every other one, a token with no client named included
+        // (it can only have come from a script signing in with the password, which is the console's proof anyway).
+        var enforced = context.User.FindFirst(ClientKinds.Claim)?.Value == ClientKinds.App
+            ? _settings.Enforce
+            : _settings.EnforceConsole;
+        if (!enforced)
         {
             context.Succeed(requirement);
             return Task.CompletedTask;

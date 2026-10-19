@@ -1,10 +1,23 @@
 /**
  * The single HTTP entry point. Everything the dashboard fetches goes through `request`,
- * which owns three things the pages should not each reimplement: the bearer header, the
- * `ApiError` envelope, and one silent refresh-and-retry on a 401.
+ * which owns what the pages should not each reimplement: the bearer header, the
+ * `ApiError` envelope, one silent refresh-and-retry on a 401, and the console lock's pass
+ * (src/lib/adminLock.ts): sent on admin calls, held while locked, and one retry once the
+ * admin has unlocked or confirmed it is them.
  */
 
 import type { ApiErrorBody, TokenPairResponse } from "@/api/types";
+import {
+  ADMIN_SESSION_HEADER,
+  getAdminPass,
+  holdsWhileLocked,
+  isLockExemptPath,
+  lockConsole,
+  needsPassHeader,
+  requestConfirmation,
+  setAdminPass,
+  waitForUnlock,
+} from "@/lib/adminLock";
 import {
   clearSession,
   getAccessToken,
@@ -52,6 +65,8 @@ interface RequestOptions {
   /** Skip the bearer header and the refresh retry. Used by login and refresh themselves. */
   anonymous?: boolean;
   signal?: AbortSignal;
+  /** The console pass to send instead of the one held: ending a pass the console just let go of. */
+  adminPass?: string;
 }
 
 async function parseError(response: Response): Promise<ApiError> {
@@ -70,6 +85,8 @@ async function send(path: string, options: RequestOptions): Promise<Response> {
   if (!options.anonymous) {
     const token = getAccessToken();
     if (token) headers.Authorization = `Bearer ${token}`;
+    const pass = options.adminPass ?? getAdminPass();
+    if (pass && needsPassHeader(path)) headers[ADMIN_SESSION_HEADER] = pass;
   }
 
   return fetch(`${BASE_URL}${path}`, {
@@ -131,13 +148,37 @@ function refreshTokens(): Promise<RefreshOutcome> {
   return refreshInFlight;
 }
 
+/**
+ * The console lock's two refusals. `ADMIN_LOCKED`: lock the console and send the call again once
+ * the admin unlocks. `ADMIN_CONFIRM_REQUIRED`: ask the admin to confirm it is them and send it again;
+ * a cancelled prompt fails the call. Either way, one retry only.
+ */
+async function sendPastLock(path: string, options: RequestOptions): Promise<Response> {
+  if (holdsWhileLocked(path)) await waitForUnlock();
+  const response = await send(path, options);
+  if (response.status !== 403 || options.anonymous || isLockExemptPath(path)) return response;
+
+  const refusal = await parseError(response.clone());
+  if (refusal.code === "ADMIN_LOCKED") {
+    lockConsole("required");
+    await waitForUnlock();
+    return send(path, options);
+  }
+  if (refusal.code === "ADMIN_CONFIRM_REQUIRED") {
+    if (await requestConfirmation()) return send(path, options);
+    // The server's sentence is written for the phone ("your fingerprint or face").
+    throw new ApiError(403, { code: refusal.code, message: "Confirm it’s you to do that." });
+  }
+  return response;
+}
+
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  let response = await send(path, options);
+  let response = await sendPastLock(path, options);
 
   if (response.status === 401 && !options.anonymous) {
     const outcome = await refreshTokens();
     if (outcome === "refreshed") {
-      response = await send(path, options);
+      response = await sendPastLock(path, options);
     } else if (outcome === "unavailable") {
       throw new ApiError(0, {
         code: "NETWORK",
@@ -149,6 +190,10 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
       throw await parseError(response);
     }
   }
+
+  // A sign-in hands an admin the console's first pass in this header (exposed by CORS).
+  const pass = response.headers.get(ADMIN_SESSION_HEADER);
+  if (pass) setAdminPass(pass);
 
   if (!response.ok) throw await parseError(response);
   if (response.status === 204) return undefined as T;

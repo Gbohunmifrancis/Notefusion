@@ -30,6 +30,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatInstantDateTime } from "@/lib/format";
+import { isFresh } from "@/lib/adminLock";
+import { offersPasskey, unlockErrorMessage, unlockWithPasskey, unlockWithPassword } from "@/lib/consoleUnlock";
 import { getReportingOffset } from "@/lib/reporting";
 import {
   defaultPasskeyName,
@@ -77,6 +79,7 @@ export function PasskeysPanel() {
       ),
       confirmLabel: "Remove passkey",
       tone: "danger",
+      confirmIdentity: true,
       onConfirm: async () => {
         await deletePasskey(passkey.id);
         await refresh();
@@ -144,6 +147,7 @@ export function PasskeysPanel() {
 
       <AddPasskeyDialog
         open={adding}
+        passkeys={state.data}
         onClose={() => setAdding(false)}
         onAdded={async (passkey) => {
           setAdding(false);
@@ -289,30 +293,63 @@ function PasskeyRow({
 }
 
 /**
- * Names the passkey, then runs the ceremony: options from the API, `navigator.credentials.create`,
- * and the attestation back to the API. Stays open on failure to say why.
+ * Two steps (board i-console-lock, frame 4). First the admin confirms it is them — an existing
+ * passkey or the password — because a passkey signs in without one; the server refuses to add or
+ * remove a passkey without that fresh confirmation. Then the passkey is named and the ceremony runs:
+ * options from the API, `navigator.credentials.create`, and the attestation back to the API. Stays
+ * open on failure to say why.
  */
 function AddPasskeyDialog({
   open,
+  passkeys,
   onClose,
   onAdded,
 }: {
   open: boolean;
+  passkeys: readonly Passkey[] | undefined;
   onClose: () => void;
   onAdded: (passkey: Passkey) => Promise<void>;
 }) {
+  const [step, setStep] = useState<1 | 2>(1);
+  const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const passwordId = useId();
   const inputId = useId();
 
   useEffect(() => {
     if (open) {
+      // Confirmed in the last minute (the lock, another dialog): straight to naming.
+      setStep(isFresh() ? 2 : 1);
+      setPassword("");
       setName(defaultPasskeyName());
       setError(null);
       setPending(false);
     }
   }, [open]);
+
+  const byPasskey = offersPasskey(passkeys);
+  const only = passkeys?.length === 1 ? passkeys[0] : undefined;
+
+  async function confirm(unlock: () => Promise<void>) {
+    if (pending) return;
+    setPending(true);
+    setError(null);
+    try {
+      await unlock();
+      setStep(2);
+    } catch (cause) {
+      if (!isPasskeyCancel(cause)) setError(unlockErrorMessage(cause));
+    } finally {
+      setPending(false);
+    }
+  }
+
+  function confirmWithPassword(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (password) void confirm(() => unlockWithPassword(password));
+  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -333,6 +370,16 @@ function AddPasskeyDialog({
     }
   }
 
+  const errorNote = error && (
+    <p
+      role="alert"
+      className="flex items-start gap-2 rounded-sm bg-danger/10 px-3 py-2 text-[12.5px] text-danger-deep"
+    >
+      <AlertTriangle size={14} className="mt-[2px] shrink-0" aria-hidden="true" />
+      <span>{error}</span>
+    </p>
+  );
+
   return (
     <AlertDialog
       open={open}
@@ -341,50 +388,110 @@ function AddPasskeyDialog({
       }}
     >
       <AlertDialogContent className="bg-popover sm:max-w-md">
-        <AlertDialogTitle>Add a passkey</AlertDialogTitle>
-        <AlertDialogDescription className="text-[13px] leading-relaxed">
-          Your browser will ask you to confirm with your fingerprint, face, device PIN or a security
-          key. Give it a name you&apos;ll recognise later.
-        </AlertDialogDescription>
-
-        <form onSubmit={submit} className="space-y-4">
-          <div>
-            <Label htmlFor={inputId} className="text-xs text-muted-foreground">
-              Name
-            </Label>
-            <Input
-              id={inputId}
-              autoFocus
-              value={name}
-              maxLength={NAME_MAX}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="MacBook Touch ID"
-              className="mt-1.5 text-[13px]"
-            />
+        <div>
+          <div className="flex gap-1.5" aria-hidden="true">
+            <i className="h-1 w-[22px] rounded-[2px] bg-brand" />
+            <i className={`h-1 w-[22px] rounded-[2px] ${step === 2 ? "bg-brand" : "bg-border"}`} />
           </div>
+          <AlertDialogTitle className="mt-3">
+            Add a passkey<span className="sr-only">, step {step} of 2</span>
+          </AlertDialogTitle>
+        </div>
 
-          {error && (
-            <p
-              role="alert"
-              className="flex items-start gap-2 rounded-sm bg-danger/10 px-3 py-2 text-[12.5px] text-danger-deep"
-            >
-              <AlertTriangle size={14} className="mt-[2px] shrink-0" aria-hidden="true" />
-              <span>{error}</span>
-            </p>
-          )}
+        {step === 1 ? (
+          <>
+            <AlertDialogDescription className="text-[13px] leading-relaxed">
+              First, confirm it&rsquo;s you. A passkey signs in without a password, so only you
+              should be able to add one.
+            </AlertDialogDescription>
 
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
-            <Button type="submit" disabled={pending}>
-              {pending ? (
-                <Loader2 className="animate-spin" aria-hidden="true" />
-              ) : (
-                <KeyRound aria-hidden="true" />
+            <form onSubmit={confirmWithPassword} className="space-y-4">
+              {byPasskey && (
+                <Button
+                  type="button"
+                  className="w-full"
+                  onClick={() => void confirm(unlockWithPasskey)}
+                  disabled={pending}
+                >
+                  <KeyRound aria-hidden="true" />
+                  <span className="truncate">
+                    {only
+                      ? `Confirm with my passkey “${only.name}”`
+                      : "Confirm with my passkey"}
+                  </span>
+                </Button>
               )}
-              {pending ? "Waiting for your device" : "Continue"}
-            </Button>
-          </AlertDialogFooter>
-        </form>
+
+              <div>
+                <Label htmlFor={passwordId} className="text-xs text-muted-foreground">
+                  {byPasskey ? "Or your password" : "Your password"}
+                </Label>
+                <Input
+                  id={passwordId}
+                  type="password"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  disabled={pending}
+                  className="mt-1.5 text-[13px]"
+                />
+              </div>
+
+              <p className="rounded-[8px] bg-muted px-3 py-2.5 dark:bg-background text-[12.5px] leading-[1.45] text-muted-foreground">
+                We email you whenever a passkey is added, so you would know if it ever wasn&rsquo;t
+                you.
+              </p>
+
+              {errorNote}
+
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
+                <Button type="submit" disabled={pending || !password}>
+                  {pending && <Loader2 className="animate-spin" aria-hidden="true" />}
+                  Continue
+                </Button>
+              </AlertDialogFooter>
+            </form>
+          </>
+        ) : (
+          <>
+            <AlertDialogDescription className="text-[13px] leading-relaxed">
+              Your browser will ask you to confirm with your fingerprint, face, device PIN or a
+              security key. Give it a name you&apos;ll recognise later.
+            </AlertDialogDescription>
+
+            <form onSubmit={submit} className="space-y-4">
+              <div>
+                <Label htmlFor={inputId} className="text-xs text-muted-foreground">
+                  Name
+                </Label>
+                <Input
+                  id={inputId}
+                  autoFocus
+                  value={name}
+                  maxLength={NAME_MAX}
+                  onChange={(event) => setName(event.target.value)}
+                  placeholder="MacBook Touch ID"
+                  className="mt-1.5 text-[13px]"
+                />
+              </div>
+
+              {errorNote}
+
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
+                <Button type="submit" disabled={pending}>
+                  {pending ? (
+                    <Loader2 className="animate-spin" aria-hidden="true" />
+                  ) : (
+                    <KeyRound aria-hidden="true" />
+                  )}
+                  {pending ? "Waiting for your device" : "Continue"}
+                </Button>
+              </AlertDialogFooter>
+            </form>
+          </>
+        )}
       </AlertDialogContent>
     </AlertDialog>
   );
