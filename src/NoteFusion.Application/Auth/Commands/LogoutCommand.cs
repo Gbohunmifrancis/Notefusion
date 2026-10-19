@@ -36,7 +36,7 @@ public sealed class LogoutCommandHandler : IRequestHandler<LogoutCommand, Result
         var stored = await _db.RefreshTokens.FirstOrDefaultAsync(t => t.Id == tokenId, cancellationToken);
         // Same proof as a refresh: the row id travels in the clear half of the token, so without checking
         // the secret anybody who saw an id could sign that session out.
-        if (stored is not null && _hasher.Verify(secret, stored.TokenHash))
+        if (stored is not null && RefreshTokenSecrets.Matches(secret, stored, _hasher, _clock.UtcNow))
         {
             stored.Revoke(_clock.UtcNow);
             await _db.SaveChangesAsync(cancellationToken);

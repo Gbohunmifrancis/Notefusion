@@ -107,13 +107,15 @@ jobs:
             grep -q '<meta name="nf-sentry-dsn" content="https://' "$page" || { echo "::error::The Sentry DSN did not reach app/index.html."; exit 1; }
           fi
 
+      # The CLI is pinned (it runs with the account-wide VERCEL_TOKEN): a new release reaches the deploy only when
+      # this version is bumped on purpose, never because it was published. deploy-admin.yml pins the same one.
       - name: Pull the project's Vercel settings
         working-directory: ${{ runner.temp }}/site
-        run: npx --yes vercel@latest pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
+        run: npx --yes vercel@64.5.0 pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
 
       - name: Deploy
         working-directory: ${{ runner.temp }}/site
-        run: npx --yes vercel@latest deploy --prod --yes --token="${{ secrets.VERCEL_TOKEN }}"
+        run: npx --yes vercel@64.5.0 deploy --prod --yes --token="${{ secrets.VERCEL_TOKEN }}"
 
       - name: Smoke-check the live site
         working-directory: .
