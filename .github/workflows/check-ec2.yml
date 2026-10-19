@@ -8,11 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: E2E Tests
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@7eaf76671a0d7eec5d98ee897acda4f968735a17 # v1.2.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          # The server's ECDSA host key (the actions' SSH client checks that one); unset, the key goes unchecked.
+          fingerprint: ${{ vars.EC2_HOST_FINGERPRINT }}
           script: |
             # The repository is public, so this run's log is too: everything below goes through redact (addresses,
             # IPs, push tokens, JWTs and any long token-like string, share links included), and Caddy's access log

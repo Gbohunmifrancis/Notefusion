@@ -74,12 +74,30 @@ public class BlogChecksTests
     }
 
     [Theory]
+    [InlineData("https://x.example/a.jpg\"><script>alert(1)</script><meta x=\"")]
+    [InlineData("/assets/blog/a.jpg onerror=alert(1)")]
+    [InlineData("https://x.example/a'.jpg")]
+    public void A_cover_address_that_could_end_its_attribute_is_a_blocker(string cover)
+    {
+        var post = Post(BlogSamples.GoodBody()) with { CoverUrl = cover, CoverAlt = "A choir", CoverWidth = 1200, CoverHeight = 675 };
+        Assert.Contains(BlogChecks.Check(post, Ctx).Blockers, b => b.Contains("cover image", StringComparison.Ordinal));
+
+        var fine = post with { CoverUrl = "https://x.example/covers/a-choir.jpg?w=1200&h=675" };
+        Assert.DoesNotContain(BlogChecks.Check(fine, Ctx).Blockers, b => b.Contains("cover image", StringComparison.Ordinal));
+    }
+
+    [Theory]
     [InlineData("<img src=x onerror=alert(1)>")]
     [InlineData("<a href=\"https://example.com\">here</a>")]
     [InlineData("<details open>")]
     [InlineData("<!-- a comment -->")]
     [InlineData("[more](javascript:alert(1))")]
     [InlineData("[more](JavaScript:alert(1))")]
+    [InlineData("[more](javascript&#58;alert(1))")]
+    [InlineData("[more](javascript&#x3A;alert(1))")]
+    [InlineData("[more](&#106;avascript:alert(1))")]
+    [InlineData("[more](javascript&colon;alert(1))")]
+    [InlineData("[more](java&Tab;script:alert(1))")]
     public void Markup_that_could_run_a_script_is_a_blocker_in_the_body_and_in_an_faq_answer(string payload)
     {
         var inBody = BlogChecks.Check(Post(BlogSamples.GoodBody() + "\n\n" + payload + "\n"), Ctx);

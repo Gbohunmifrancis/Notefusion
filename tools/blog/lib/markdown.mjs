@@ -12,7 +12,14 @@ import { ORIGIN } from "./site.mjs";
  */
 export function safeUrl(href) {
   const h = String(href ?? "").trim();
-  const scheme = /^([^:/?#]+):/.exec(h);
+  // Read as the browser will: character references decoded ("javascript&#58;" is "javascript:" in an attribute) and
+  // the tabs, newlines and control characters it drops from a URL dropped, before the scheme is looked at.
+  const read = h
+    .replace(/&#x([0-9a-f]+);?/gi, (_, n) => String.fromCodePoint(Math.min(parseInt(n, 16), 0x10ffff)))
+    .replace(/&#(\d+);?/g, (_, n) => String.fromCodePoint(Math.min(parseInt(n, 10), 0x10ffff)))
+    .replace(/&(colon|tab|newline);/gi, (_, n) => ({ colon: ":", tab: "\t", newline: "\n" })[n.toLowerCase()])
+    .replace(/[\u0000-\u0020\u007f]/g, "");
+  const scheme = /^([^:/?#]+):/.exec(read);
   return !scheme || /^(https?|mailto)$/i.test(scheme[1]) ? h : "#";
 }
 
@@ -104,11 +111,14 @@ export function renderInline(src) {
     gfm: true,
     renderer: {
       html: rawHtmlAsText,
-      link(token) {
-        return this.constructor.prototype.link.call(this, { ...token, href: safeUrl(token.href) });
+      // Written here rather than by marked, whose own renderer leaves "&#58;" in an href for the browser to decode.
+      link({ href, title, tokens }) {
+        const t = title ? ` title="${escapeHtml(title)}"` : "";
+        return `<a href="${escapeHtml(safeUrl(href))}"${t}>${this.parser.parseInline(tokens)}</a>`;
       },
-      image(token) {
-        return this.constructor.prototype.image.call(this, { ...token, href: safeUrl(token.href) });
+      image({ href, title, text }) {
+        const t = title ? ` title="${escapeHtml(title)}"` : "";
+        return `<img src="${escapeHtml(safeUrl(href))}" alt="${escapeHtml(text)}"${t}>`;
       },
     },
   }).parseInline(src);

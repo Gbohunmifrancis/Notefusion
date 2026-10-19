@@ -36,7 +36,7 @@ jobs:
       PROJECT_NAME: ${{ vars.VERCEL_ADMIN_PROJECT || 'web-admin' }}
       ADMIN_URL: ${{ vars.ADMIN_URL || 'https://admin.notefusion.studio' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Find the Vercel project
         env:
@@ -71,7 +71,7 @@ jobs:
           tar -C web-admin --exclude=node_modules --exclude=.next --exclude=.vercel -cf - . | tar -C "$dest" -xf -
           echo "DEPLOY_FROM=$deploy_from" >> "$GITHUB_ENV"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
 

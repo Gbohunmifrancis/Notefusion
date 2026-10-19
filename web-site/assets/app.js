@@ -3347,9 +3347,9 @@
     if (window.requestIdleCallback) window.requestIdleCallback(go, { timeout: 4000 }); else setTimeout(go, 1500);
   }
 
-  /** jsPDF 2.5.1 (~95 KB) only when a PDF is asked for: one pinned URL with its SRI hash (the CSP allows it). */
-  var JSPDF_URL = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
-  var JSPDF_SRI = "sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk";
+  /** jsPDF 4.2.1 (~110 KB) only when a PDF is asked for: one pinned URL with its SRI hash (the CSP allows it). */
+  var JSPDF_URL = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js";
+  var JSPDF_SRI = "sha384-qovJwSBbRDPP5cEjCp8S0UP66wrvnjaa60XMOGzTNanrThcrGfXfnZkvgY8N1KT3";
   var jspdfLoading = null;
   function ensureJsPdf() {
     if (window.jspdf) return Promise.resolve();

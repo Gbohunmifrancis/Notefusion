@@ -43,7 +43,7 @@ public sealed class SecurityHeadersMiddleware
         // X-Forwarded-Proto says). Production switches UseHsts off with Security__RequireHttps=false because
         // the proxy terminates TLS, which had left the API sending no HSTS at all.
         if (response.HttpContext.Request.IsHttps)
-            SetIfAbsent(headers, "Strict-Transport-Security", "max-age=31536000");
+            SetIfAbsent(headers, "Strict-Transport-Security", "max-age=31536000; includeSubDomains");
 
         var isHtml = response.ContentType?.StartsWith("text/html", StringComparison.OrdinalIgnoreCase) == true;
         if (!isHtml)
