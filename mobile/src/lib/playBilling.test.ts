@@ -9,6 +9,7 @@ import {
   playFinePrint,
   playItemFor,
   playMemberState,
+  sellsOnPlay,
   type PlayProductLike,
 } from "./playBilling.ts";
 import type { Plan } from "../api/types";
@@ -89,4 +90,11 @@ test("Manage opens Google's page for this app's subscription", () => {
     "https://play.google.com/store/account/subscriptions?sku=pro&package=com.notefusion.com",
   );
   assert.equal(manageUrl(null), "https://play.google.com/store/account/subscriptions?package=com.notefusion.com");
+});
+
+test("the website's checkout stays until the server and Google Play are both ready", () => {
+  assert.equal(sellsOnPlay(true, true, 3), true);
+  assert.equal(sellsOnPlay(true, false, 3), false, "the server cannot confirm a Play purchase yet");
+  assert.equal(sellsOnPlay(true, true, 0), false, "no products in the Play Console yet");
+  assert.equal(sellsOnPlay(false, true, 3), false, "not Android");
 });

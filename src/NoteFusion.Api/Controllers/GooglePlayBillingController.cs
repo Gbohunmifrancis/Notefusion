@@ -20,12 +20,21 @@ public sealed class GooglePlayBillingController : ApiControllerBase
 {
     private readonly ISender _sender;
     private readonly IGooglePlayPushVerifier _pushes;
+    private readonly IGooglePlayClient _play;
 
-    public GooglePlayBillingController(ISender sender, IGooglePlayPushVerifier pushes)
+    public GooglePlayBillingController(ISender sender, IGooglePlayPushVerifier pushes, IGooglePlayClient play)
     {
         _sender = sender;
         _pushes = pushes;
+        _play = play;
     }
+
+    /// <summary>
+    /// Whether the server can take Google Play purchases (its service account is set). Until it can, the Android app
+    /// keeps the website's checkout (Paystack, Bachs), so a phone never sells what the server cannot confirm.
+    /// </summary>
+    [HttpGet("status")]
+    public IActionResult Status() => Ok(new GooglePlayStatus(_play.IsConfigured));
 
     /// <summary>
     /// A purchase the app just made or found on restore. Returns the membership afterwards; a purchase made on another
@@ -72,3 +81,6 @@ public sealed class GooglePlayBillingController : ApiControllerBase
     /// <summary>The token Google Play gave the app for a purchase, and the product it was for.</summary>
     public sealed record PurchaseBody(string ProductId, string PurchaseToken);
 }
+
+/// <summary>Answer of <c>GET /api/billing/google-play/status</c>.</summary>
+public sealed record GooglePlayStatus(bool Ready);
