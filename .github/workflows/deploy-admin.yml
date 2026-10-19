@@ -71,10 +71,10 @@ jobs:
           node-version: 22
 
       - name: Pull the project's Vercel settings
-        run: cd "$DEPLOY_FROM" && npx --yes vercel@latest pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
+        run: cd "$DEPLOY_FROM" && npx --yes vercel@64.5.0 pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
 
       - name: Deploy
-        run: cd "$DEPLOY_FROM" && npx --yes vercel@latest deploy --prod --yes --token="${{ secrets.VERCEL_TOKEN }}"
+        run: cd "$DEPLOY_FROM" && npx --yes vercel@64.5.0 deploy --prod --yes --token="${{ secrets.VERCEL_TOKEN }}"
 
       - name: Smoke-check the console
         run: |

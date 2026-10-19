@@ -252,7 +252,7 @@ public class AdminPhoneLockTests
         using var h = new TestHarness(Now);
         var admin = Admin(h);
         var client = new StubClientApp(ClientKinds.App);
-        var issuer = new TokenIssuer(h.Jwt, h.Tokens, h.Hasher, h.Db, h.Clock, h.Auth, client);
+        var issuer = new TokenIssuer(h.Jwt, h.Tokens, h.Db, h.Clock, h.Auth, client);
 
         var first = issuer.Issue(admin);
         await h.Db.SaveChangesAsync();

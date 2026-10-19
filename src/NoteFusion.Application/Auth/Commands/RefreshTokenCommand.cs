@@ -60,7 +60,7 @@ public sealed class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCom
 
         // The secret is checked before anything else is decided, so knowing a row id alone can neither
         // spend a token nor set off the theft response below.
-        if (stored is null || !_hasher.Verify(secret, stored.TokenHash))
+        if (stored is null || !RefreshTokenSecrets.Matches(secret, stored, _hasher, now))
             return AuthErrors.InvalidRefreshToken;
 
         if (stored.IsRevoked)

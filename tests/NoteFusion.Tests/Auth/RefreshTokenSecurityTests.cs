@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Auth.Commands;
+using NoteFusion.Application.Auth.Services;
 using NoteFusion.Core.Entities;
 using NoteFusion.Tests.Support;
 
@@ -163,6 +164,53 @@ public class RefreshTokenSecurityTests
         h.Db.ChangeTracker.Clear();
 
         Assert.True((await Refresh(h).Handle(new RefreshTokenCommand(token), default)).IsFailure);
+    }
+
+    [Fact]
+    public async Task A_new_token_keeps_a_sha256_of_its_secret_and_still_refreshes_once()
+    {
+        using var h = new TestHarness();
+        var user = await Seed(h);
+        var token = await IssueAsync(h, user);
+        h.Db.ChangeTracker.Clear();
+
+        // Not bcrypt: the secret is 256 random bits, and a slow hash only made every refresh cost ~250 ms of CPU.
+        Assert.StartsWith("sha256:", (await h.Db.RefreshTokens.SingleAsync()).TokenHash);
+        Assert.True((await Refresh(h).Handle(new RefreshTokenCommand(token), default)).IsSuccess);
+        h.Db.ChangeTracker.Clear();
+        Assert.True((await Refresh(h).Handle(new RefreshTokenCommand(token[..^1] + (token[^1] == 'A' ? 'B' : 'A')), default)).IsFailure);
+    }
+
+    [Fact]
+    public async Task A_token_from_before_still_refreshes_until_it_expires_and_is_never_checked_after()
+    {
+        using var h = new TestHarness();
+        var user = await Seed(h);
+        const string secret = "an-old-bcrypt-era-secret-of-enough-length";
+        var legacy = RefreshToken.Issue(user.Id, h.Hasher.Hash(secret), h.Clock.UtcNow, h.Clock.UtcNow.AddDays(7));
+        var expired = RefreshToken.Issue(user.Id, h.Hasher.Hash(secret), h.Clock.UtcNow.AddDays(-8), h.Clock.UtcNow.AddDays(-1));
+        h.Db.RefreshTokens.AddRange(legacy, expired);
+        await h.Db.SaveChangesAsync();
+        h.Db.ChangeTracker.Clear();
+
+        // Signed-in phones keep their session across the change: rotation hands them a SHA-256 token.
+        var refreshed = await Refresh(h).Handle(new RefreshTokenCommand(CompositeTokenCodec.Compose(legacy.Id, secret)), default);
+        Assert.True(refreshed.IsSuccess);
+
+        // An expired bcrypt row is refused without running bcrypt, so an old id cannot be replayed to burn CPU.
+        var counting = new CountingHasher(h.Hasher);
+        var replay = await new RefreshTokenCommandHandler(h.Db, counting, h.TokenIssuer, h.Clock)
+            .Handle(new RefreshTokenCommand(CompositeTokenCodec.Compose(expired.Id, secret)), default);
+        Assert.True(replay.IsFailure);
+        Assert.Equal(0, counting.Verifies);
+    }
+
+    private sealed class CountingHasher(NoteFusion.Application.Common.Interfaces.IPasswordHasher inner)
+        : NoteFusion.Application.Common.Interfaces.IPasswordHasher
+    {
+        public int Verifies { get; private set; }
+        public string Hash(string plainText) => inner.Hash(plainText);
+        public bool Verify(string plainText, string hash) { Verifies++; return inner.Verify(plainText, hash); }
     }
 
     private static RefreshTokenCommandHandler Refresh(TestHarness h)

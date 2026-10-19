@@ -47,7 +47,7 @@ public sealed class TestHarness : IDisposable
         // As the composition root does for a deploy with no Auth__DeletionSecret of its own.
         DeletionSecretFallback.Apply(Auth, Keys);
         Jwt = new JwtTokenService(Keys, jwt, Auth);
-        TokenIssuer = new TokenIssuer(Jwt, Tokens, Hasher, Db, Clock, Auth);
+        TokenIssuer = new TokenIssuer(Jwt, Tokens, Db, Clock, Auth);
         Email = new RecordingEmailSender();
         Push = new RecordingPushSender();
         WebPush = new RecordingWebPushSender();
