@@ -146,16 +146,9 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         job.Settle(TranscriptionResultCache.Serialize(result), now);
         await Activity.ActivityRecorder.FinishAsync(_db, job.JobId, result, now, ct);
 
-        // Same rule and the same idempotent methods the client poll uses, because either path may be the
+        // Same rule and the same idempotent methods the client's GET uses, because either path may be the
         // one that first observes success and the allowance must be spent exactly once regardless.
-        if (job.IsSong)
-        {
-            job.ConsumeSongCredit(now);
-        }
-        else if (!await IsProAsync(job.UserId, ct))
-        {
-            job.ConsumeTrial(now);
-        }
+        JobCharge.Apply(job, result, await IsProAsync(job.UserId, ct), now);
 
         // Committed before the push, matching the billing notices: delivery is best-effort and cannot
         // throw, so pushing first would risk notifying twice about a job we then failed to close.

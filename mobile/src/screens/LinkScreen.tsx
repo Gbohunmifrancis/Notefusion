@@ -186,6 +186,16 @@ export function LinkScreen() {
     }
   }, [state.status, state.result, state.jobId, state.savedId, state.savedTitle, nav, reset, refresh]);
 
+  // A failed job costs nothing (a song YouTube refused, a link that broke): the credit or preview it held
+  // comes back, so the count is read again rather than left showing it spent. Once per job: `refresh` is a
+  // new function after every read, and the job stays failed.
+  const recountedFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (state.status !== "failed" || !state.jobId || recountedFor.current === state.jobId) return;
+    recountedFor.current = state.jobId;
+    void refresh(false);
+  }, [state.status, state.jobId, refresh]);
+
   const stageIndex = STAGES.findIndex((s) => s.key === state.stage);
   const barWidth = useMemo(() => new Animated.Value(0), []);
   useEffect(() => {

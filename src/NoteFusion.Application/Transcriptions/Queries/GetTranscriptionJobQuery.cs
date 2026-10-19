@@ -152,17 +152,7 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
         // for it does spend a trial — one credit, in the minutes a transcription takes, so not worth a
         // column to avoid.
         var isPro = await IsProAsync(job.UserId, cancellationToken);
-        if (job.IsSong)
-        {
-            // A song is its own allowance (Pro monthly songs, or the one free preview) and never a trial
-            // generation: the preview exists precisely so a free account can try the feature without it
-            // costing one of their recordings.
-            job.ConsumeSongCredit(_clock.UtcNow);
-        }
-        else if (!isPro)
-        {
-            job.ConsumeTrial(_clock.UtcNow);
-        }
+        JobCharge.Apply(job, result.Value.Result, isPro, _clock.UtcNow);
 
         // No-ops when neither method changed anything, which is the common case for a client that
         // polls a finished job more than once.

@@ -55,6 +55,29 @@ public class PreviewTests
     }
 
     [Fact]
+    public async Task A_preview_that_failed_is_not_the_browsers_one_but_one_still_running_holds_it()
+    {
+        using var h = new TestHarness(Now);
+        var api = new FakeApi();
+        Assert.True((await Link(h, api).Handle(new SubmitPreviewLinkCommand("https://youtu.be/dQw4w9WgXcQ"), default)).IsSuccess);
+
+        // Still running: it holds the browser's preview, so a second cannot start beside it.
+        Assert.Equal("PREVIEW_LIMIT_REACHED",
+            (await Link(h, api).Handle(new SubmitPreviewLinkCommand("https://youtu.be/dQw4w9WgXcQ"), default)).Error.Code);
+
+        // YouTube refused the song: the preview failed, and the browser may try again.
+        Assert.True(h.Db.PreviewJobs.Single().Complete(succeeded: false, null, Now));
+        await h.Db.SaveChangesAsync();
+        Assert.True((await Link(h, api).Handle(new SubmitPreviewLinkCommand("https://youtu.be/dQw4w9WgXcQ"), default)).IsSuccess);
+
+        // One that came back is the browser's one, for good.
+        Assert.True(h.Db.PreviewJobs.OrderBy(p => p.CreatedAtUtc).ToList()[^1].Complete(succeeded: true, null, Now));
+        await h.Db.SaveChangesAsync();
+        Assert.Equal("PREVIEW_LIMIT_REACHED",
+            (await Link(h, api).Handle(new SubmitPreviewLinkCommand("https://youtu.be/dQw4w9WgXcQ"), default)).Error.Code);
+    }
+
+    [Fact]
     public async Task A_request_with_no_browser_id_is_refused()
     {
         using var h = new TestHarness(Now);

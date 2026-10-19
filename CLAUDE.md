@@ -319,7 +319,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   mobile `lib/freeWeek.ts`) beside `boughtTranscriptionsRemaining`/`boughtTranscriptionsTotal`, and keeps
   `trialGenerations*` (week's free + bought) for shipped apps. `public-plans` carries the region's one-song `single`.
 - Song credits (20 a month on Pro) are spent on completion by linked songs and by uploads with
-  vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. A song still running holds its
+  vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. A failed job costs nothing, and neither
+  does a link whose song YouTube refused, where the store's 30-second preview stood in (`source.preview`): no song
+  credit, bought transcription or free link preview (`JobCharge`, the one charge rule both finish paths use;
+  `StandInChargeRefund` handed back those charged before, at startup). The clients re-read the count after a failure. A song still running holds its
   credit in the gate and in the displayed count (`SongCredits.CountHeldThisMonthAsync`), and an account may
   have at most 3 running at once (`SongCredits.ProMaxSongsInProgress`). Pro clients show the
   membership (plan name, period, credits) wherever a free account would see prices.
@@ -436,8 +439,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `POST /api/transcriptions` takes an `Idempotency-Key`, unique per account on `TranscriptionJob`, and a repeat is
   handed the first job (never a second job or charge). The web app's Save still replaces the filed copy.
 - The website is the top of the funnel: `POST /api/preview` / `/api/preview/link` make an anonymous
-  30-second preview (one per `X-Device-Id`, ever, none without one or on a device an account has used, and
-  10 a day per address, via `PreviewJob` rows), polled at
+  30-second preview (one per `X-Device-Id`, ever — one running or succeeded; a failed one, a link YouTube refused,
+  is not it — none without one or on a device an account has used, and 10 attempts a day per address, via
+  `PreviewJob` rows), polled at
   `GET /api/preview/jobs/{id}` (and settled by the worker's webhook and the completion sweep,
   `SettlePreviewJobCommand`, so a closed tab does not leave one running) and claimed by the account that signs up (`POST …/claim`). Users carry
   a `SignupSource` ("web"/"mobile"), sheets count `ShareViews`, and `GetAnalyticsOverviewQuery`

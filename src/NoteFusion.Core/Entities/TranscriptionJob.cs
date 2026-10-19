@@ -229,6 +229,22 @@ public class TranscriptionJob : BaseEntity
     }
 
     /// <summary>
+    /// Hands back what the job was charged: a link job charged for the store's 30-second preview that stood in when
+    /// YouTube refused its song, from before such a job became free. Returns false when nothing was charged.
+    /// </summary>
+    public bool Uncharge()
+    {
+        if (SongCreditConsumedAtUtc is null && TrialConsumedAtUtc is null)
+        {
+            return false;
+        }
+
+        SongCreditConsumedAtUtc = null;
+        TrialConsumedAtUtc = null;
+        return true;
+    }
+
+    /// <summary>
     /// Resets the trial consumption on this job (support action to restore a user's free quota).
     /// </summary>
     public void ResetTrial()
