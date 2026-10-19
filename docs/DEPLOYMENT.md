@@ -846,16 +846,18 @@ not a password (every app that reports carries one) but keep the server ones as 
 `Content-Security-Policy` (`web-site/vercel.json`, `/app`) allows only this organisation's ingest host,
 `o4508111757770752.ingest.us.sentry.io`; a project in another organisation needs that line changed.
 
-**Phone source maps.** Without them a phone crash is minified JavaScript. A store build uploads them itself
-(`@sentry/react-native/expo` in `app.json`) when the EAS `production` environment has `SENTRY_AUTH_TOKEN`
-(secret; a Sentry organisation token), `SENTRY_ORG` and `SENTRY_PROJECT` (the slugs in the project's address,
-`https://<org>.sentry.io/projects/<project>/`). An OTA update carries new JavaScript, so its maps go up too:
-publish with `npm run update:production` in `mobile/` (`eas update`, then `sentry-expo-upload-sourcemaps dist`,
-with the same three values in your shell). Adding the plugin changed the app's native fingerprint: updates
-published from that commit on reach only builds made from it. Until those three values are on EAS, `eas.json`'s
-`production` and `store` profiles set `SENTRY_DISABLE_AUTO_UPLOAD=true`, so a store build skips the upload
-instead of failing; remove those two lines once they are set. Publish OTA updates with `eas update --channel
-production --environment production` until then.
+**Phone source maps.** Without them a phone crash is minified JavaScript. The EAS `production` environment
+holds the three values the upload needs: `SENTRY_AUTH_TOKEN` (a Sentry organisation token, visibility
+Sensitive so a command on your machine can read it), `SENTRY_ORG` (`fransix`) and `SENTRY_PROJECT`
+(`notefusion-mobile`), the slugs in the project's address, `https://<org>.sentry.io/projects/<project>/`.
+An OTA update carries new JavaScript, so its maps go up with it: publish from `mobile/` with
+`eas env:exec production 'npm run update:production' --non-interactive` (`eas update`, then
+`sentry-expo-upload-sourcemaps dist`, the three values read from EAS rather than your shell).
+A store build uploads its own (`@sentry/react-native/expo` in `app.json`) once `eas.json`'s `production` and
+`store` profiles stop setting `SENTRY_DISABLE_AUTO_UPLOAD=true`. Remove those two lines in the commit of the
+next store build, never on their own: `eas.json` is part of the Android fingerprint, so changing it gives a
+new runtime, and OTA updates from that commit on reach only builds made from it (adding the plugin moved the
+fingerprint the same way).
 
 ## Backups
 
