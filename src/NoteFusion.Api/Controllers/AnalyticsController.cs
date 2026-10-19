@@ -1,9 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using NoteFusion.Api.Auth;
 using NoteFusion.Api.Common;
+using NoteFusion.Api.Realtime;
+using NoteFusion.Application.Analytics;
 using NoteFusion.Application.Analytics.Queries;
+using NoteFusion.Application.Common.Interfaces;
 
 namespace NoteFusion.Api.Controllers;
 
@@ -89,6 +93,24 @@ public sealed class AnalyticsController : ApiControllerBase
     [HttpGet("live")]
     public async Task<IActionResult> Live(CancellationToken ct = default)
         => HandleResult(await _sender.Send(new GetLiveActivityQuery(), ct));
+
+    /// <summary>
+    /// Tells the console when what <c>live</c> shows has changed (<see cref="AdminLiveFeed"/>): <c>ready</c>, then
+    /// <c>changed</c> each time someone comes online or signs up, a transcription starts or a payment goes through, so
+    /// the console asks for <c>live</c> then instead of every fifteen seconds. The same stream as a job's.
+    /// </summary>
+    [HttpGet("live/events")]
+    public async Task<IActionResult> LiveEvents(
+        [FromServices] IJobEvents events, [FromServices] ICurrentUser caller, [FromServices] IOptions<JsonOptions> json,
+        CancellationToken ct)
+    {
+        using var watch = events.Watch(AdminLiveFeed.Key, $"user:{caller.UserId}");
+        if (watch is null)
+            return StatusCode(StatusCodes.Status429TooManyRequests, new ApiError(
+                "JOB_STREAMS_FULL", "Too many live views are open at once. Close one and try again."));
+        await JobEventStream.WriteAsync(Response, AdminLiveFeed.Key, watch, json.Value.JsonSerializerOptions, ct);
+        return new EmptyResult();
+    }
 
     [HttpGet("users")]
     public async Task<IActionResult> Users(

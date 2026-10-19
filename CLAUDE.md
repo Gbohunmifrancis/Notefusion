@@ -49,6 +49,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Phone `lib/jobStream` (XHR, shared per job, closed in the background), web `assets/app.js` (fetch stream + `sse.js`);
   both fall back to a GET every 15 s (phone; 30 on data saver) / 10 s (web) after 3 failed opens, and read once after 90 s
   quiet. A job settled 15 min ago is answered from `ResultJson` without asking the worker.
+  Server loops that work saved rows are rung, not on short timers: `WorkSignalInterceptor` (EF, after the commit) rings
+  `WorkSignals` for a new `WebhookEvent` (`PaymentWebhookWorker`, sweep `Billing__WebhookPollSeconds` 30), an
+  `AdminPaymentAlert` (`PaymentAlertWorker`, 60 s) or a `BlogGenerationRun` (`BlogDraftWorker`, 60 s), and tells the
+  console's live notices (`AdminLiveFeed`, stream `GET /api/admin/analytics/live/events`; web-admin `lib/liveFeed`) of a new
+  account, job, preview or payment and of someone coming online (`LastSeenMiddleware`): the console fetches `live` then,
+  hidden tabs included, instead of every 15 s.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off
@@ -233,7 +239,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   before Suspend, End subscription, Revoke Pro, Change role or any flag change; expo-screen-capture keeps Admin out of
   screenshots and Recents; what Admin reads stays in memory (`lib/adminCache`) and is dropped when it locks.
   **Payment alerts**: `PaymentFulfillment` stages an `AdminPaymentAlert` (unique per payment) beside the ledger credit;
-  `PaymentAlertWorker` (10 s) claims before it sends (at most once; a recorded failure is retried up to 3 tries) and
+  `PaymentAlertWorker` (rung as the claim is saved, else a 60 s sweep) claims before it sends (at most once; a recorded failure is retried up to 3 tries) and
   pushes Admin phones only (`AdminAlertDevices`: role and active re-read, `DeviceToken.PaymentAlerts`, a token no other
   account holds) at high priority with an hour's TTL, category `payment` (View · Mute 1 hour). One payment is
   `PaymentPushCopy.Single` ("₦7,500 · Pro Monthly" / "Ada Obi just paid. Pro until Wed 18 Nov.", title ≤ 40, line ≤ 90,

@@ -63,8 +63,12 @@ public static class DependencyInjection
             .Get<DatabaseSettings>() ?? new DatabaseSettings();
         services.AddSingleton(database);
 
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(ConnectionStringResolver.Resolve(database)));
+        // The loops that work saved rows are rung as the rows are saved (WorkSignalInterceptor).
+        services.AddSingleton<Common.WorkSignals>();
+        services.AddSingleton<WorkSignalInterceptor>();
+        services.AddDbContext<ApplicationDbContext>((sp, options) => options
+            .UseNpgsql(ConnectionStringResolver.Resolve(database))
+            .AddInterceptors(sp.GetRequiredService<WorkSignalInterceptor>()));
 
         // Bridge the concrete context to the Application contract.
         services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());

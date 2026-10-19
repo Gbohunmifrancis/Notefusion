@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Admin.PaymentAlerts;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Infrastructure.Common;
 
 namespace NoteFusion.Infrastructure.Billing.Workers;
 
@@ -15,19 +16,26 @@ namespace NoteFusion.Infrastructure.Billing.Workers;
 /// </summary>
 internal sealed class PaymentAlertWorker : BackgroundService
 {
-    /// <summary>How often the claims are read: often enough that the push reads "now".</summary>
-    internal static readonly TimeSpan Interval = TimeSpan.FromSeconds(10);
+    /// <summary>
+    /// How often the claims are read when nothing rang: a payment's claim rings the worker as it is saved, so the push
+    /// reads "now"; this sweep is for a send to try again and for claims left by a restart.
+    /// </summary>
+    internal static readonly TimeSpan Interval = TimeSpan.FromSeconds(60);
 
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IWorkerHeartbeatTracker? _heartbeats;
     private readonly ILogger<PaymentAlertWorker> _logger;
 
+    private readonly WorkSignals? _signals;
+
     public PaymentAlertWorker(
-        IServiceScopeFactory scopeFactory, ILogger<PaymentAlertWorker> logger, IWorkerHeartbeatTracker? heartbeats = null)
+        IServiceScopeFactory scopeFactory, ILogger<PaymentAlertWorker> logger, IWorkerHeartbeatTracker? heartbeats = null,
+        WorkSignals? signals = null)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
         _heartbeats = heartbeats;
+        _signals = signals;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -36,7 +44,7 @@ internal sealed class PaymentAlertWorker : BackgroundService
         {
             try
             {
-                await Task.Delay(Interval, stoppingToken);
+                await WorkSignals.Between(_signals, Work.PaymentAlerts, Interval, stoppingToken);
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
