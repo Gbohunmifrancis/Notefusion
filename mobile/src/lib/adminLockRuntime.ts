@@ -55,6 +55,8 @@ interface KeyRecord {
 let state: LockState = LOCKED;
 /** The open pass, in memory only: never stored, gone with the app. */
 let pass: string | null = null;
+/** A setup the server finished whose secret is not stored yet (the fingerprint sheet was cancelled): tried again. */
+let pendingSetup: AdminPhoneSetUp | null = null;
 let lastTouchAt = Date.now();
 const listeners = new Set<() => void>();
 
@@ -90,6 +92,8 @@ function open(session: string): void {
 
 /** Locks Admin now and drops what it read: sign-out, an account change, the server ending the pass. */
 export function lockAdmin(): void {
+  // A setup left at the fingerprint is this account's alone: the next one to sign in starts its own.
+  pendingSetup = null;
   dispatch({ type: "lock" });
 }
 
@@ -189,9 +193,6 @@ export function unlockWithPhone(): Promise<UnlockOutcome> {
 export function requestCode(password: string, purpose: "setup" | "unlock"): Promise<AdminCodeSent> {
   return adminApi.requestAdminCode(password, purpose);
 }
-
-/** A setup the server finished whose secret is not stored yet (the fingerprint sheet was cancelled): tried again. */
-let pendingSetup: AdminPhoneSetUp | null = null;
 
 /** The emailed setup code: the server makes this phone's key, and the fingerprint stores it. */
 export async function finishSetup(codeId: string, code: string): Promise<UnlockOutcome> {

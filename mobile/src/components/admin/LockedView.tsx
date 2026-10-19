@@ -121,13 +121,14 @@ function CodeSteps({ method, onBack }: { method: LockMethod; onBack: () => void 
     if (o.kind === "cancelled") setStep("fingerprint");
   }
 
-  async function submitCode() {
-    if (!sent) return;
+  /** `typed`: the code as the sixth digit lands, before the state holding it has been updated. */
+  async function submitCode(typed: string = code) {
+    if (!sent || busy) return;
     setBusy(true);
     setError(null);
     try {
-      if (setup) outcome(await finishSetup(sent.codeId, code));
-      else setError(await verifyCode(sent.codeId, code));
+      if (setup) outcome(await finishSetup(sent.codeId, typed));
+      else setError(await verifyCode(sent.codeId, typed));
     } finally {
       setBusy(false);
     }
@@ -184,7 +185,7 @@ function CodeSteps({ method, onBack }: { method: LockMethod; onBack: () => void 
           </View>
         ) : step === "code" ? (
           <View style={s.form}>
-            <CodeBoxes value={code} onChange={setCode} onDone={() => void submitCode()} />
+            <CodeBoxes value={code} onChange={setCode} onDone={(typed) => void submitCode(typed)} />
             <ErrorLine text={error} />
             <Button label="Continue" onPress={() => void submitCode()} loading={busy} disabled={code.length < 6} block />
             <Button label="Send a new code" variant="text" onPress={() => setStep("password")} disabled={busy} />
@@ -229,7 +230,15 @@ function StepDots({ step }: { step: Step }) {
 }
 
 /** Six boxes over one hidden field: the keyboard's own one-time-code suggestion fills them all at once. */
-function CodeBoxes({ value, onChange, onDone }: { value: string; onChange: (v: string) => void; onDone: () => void }) {
+function CodeBoxes({
+  value,
+  onChange,
+  onDone,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onDone: (code: string) => void;
+}) {
   const s = useAdminStyles(makeStyles);
   const input = useRef<TextInput>(null);
   return (
@@ -246,7 +255,7 @@ function CodeBoxes({ value, onChange, onDone }: { value: string; onChange: (v: s
           onChangeText={(t) => {
             const next = cleanCode(t);
             onChange(next);
-            if (next.length === 6) onDone();
+            if (next.length === 6) onDone(next);
           }}
           keyboardType="number-pad"
           textContentType="oneTimeCode"
