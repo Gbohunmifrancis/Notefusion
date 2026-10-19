@@ -153,7 +153,7 @@ async def submit_transcription(
             try:
                 _parse_key_override(key)
             except Exception:  # noqa: BLE001 - any parse failure is a client input error
-                raise HTTPException(422, f"Unparseable key override: {key!r}")
+                raise HTTPException(422, f"Unparseable key override: {key[:32]!r}")
 
     suffix = Path(audio.filename or "clip.wav").suffix.lower()
     if suffix not in ACCEPTED_SUFFIXES:
@@ -233,6 +233,13 @@ def _working_audio(path: Path, cap: float) -> tuple[Path, float | None]:
     return out, None
 
 
+MAX_TRIM_RATE = 48000
+# Mono and stereo, and the usual rates, pass through untouched; ffmpeg folds anything else to
+# the nearest of them (more channels to stereo, a faster rate to 48 kHz).
+_TRIM_FORMAT = ("aformat=sample_rates=8000|11025|12000|16000|22050|24000|32000|44100|48000"
+                ":channel_layouts=mono|stereo")
+
+
 def _trim_head(path: Path, seconds: float) -> Path:
     """The first ``seconds`` of ``path`` as a new WAV; the original is deleted.
 
@@ -240,6 +247,10 @@ def _trim_head(path: Path, seconds: float) -> Path:
     isolated, and the isolation model reads 44.1 kHz stereo.  This used to write 22.05 kHz
     mono, which cost the preview of a song 0.02-0.10 solfa error per note and doubled its
     tempo errors (``tests.accuracy.songs``).  ffmpeg cuts without decoding the rest.
+
+    Up to stereo and ``MAX_TRIM_RATE`` only (``_TRIM_FORMAT``): a few hundred KB of silent
+    655 kHz eight-channel FLAC trimmed as it came would be ~2 GB on disk and ~4 GB once
+    loaded, enough to kill the worker; anything wider or faster is folded to stereo at 48 kHz.
     """
     import shutil
     import subprocess
@@ -252,11 +263,15 @@ def _trim_head(path: Path, seconds: float) -> Path:
         ffmpeg = shutil.which("ffmpeg")
         if ffmpeg:
             subprocess.run(
-                [ffmpeg, "-v", "error", "-nostdin", "-y", "-i", str(path), "-t", f"{seconds:.3f}",
-                 "-vn", "-c:a", "pcm_s16le", str(out_path)],
+                [ffmpeg, "-v", "error", "-nostdin", "-y", "-protocol_whitelist", "file", "-i", str(path),
+                 "-t", f"{seconds:.3f}", "-vn", "-af", _TRIM_FORMAT, "-c:a", "pcm_s16le", str(out_path)],
                 capture_output=True, timeout=120, check=True)
         else:
             y, sr = librosa.load(str(path), sr=None, mono=False, duration=seconds)
+            if y.ndim > 1 and y.shape[0] > 2:
+                y = y.mean(axis=0)
+            if sr > MAX_TRIM_RATE:
+                y, sr = librosa.resample(y, orig_sr=sr, target_sr=MAX_TRIM_RATE), MAX_TRIM_RATE
             sf.write(str(out_path), y.T, sr)
     except Exception:
         out_path.unlink(missing_ok=True)
@@ -310,7 +325,7 @@ def _clean_key(key: str | None) -> str | None:
     try:
         _parse_key_override(key)
     except Exception:  # noqa: BLE001 - any parse failure is a client input error
-        raise HTTPException(422, f"Unparseable key override: {key!r}")
+        raise HTTPException(422, f"Unparseable key override: {key[:32]!r}")
     return key
 
 
@@ -741,7 +756,7 @@ async def submit_score_transcription(
             try:
                 _parse_key_override(key)
             except Exception:
-                raise HTTPException(422, f"Unparseable key override: {key!r}")
+                raise HTTPException(422, f"Unparseable key override: {key[:32]!r}")
 
     suffix = Path(score.filename or "score.musicxml").suffix.lower()
     if suffix not in ACCEPTED_SCORE_SUFFIXES:

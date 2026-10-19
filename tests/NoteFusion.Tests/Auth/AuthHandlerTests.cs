@@ -136,7 +136,7 @@ public class AuthHandlerTests
     }
 
     private static LoginCommandHandler Login(TestHarness h)
-        => new(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email);
+        => new(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email, h.QuotaGate);
 
     private static async Task Seed(TestHarness h, string email, string password)
     {

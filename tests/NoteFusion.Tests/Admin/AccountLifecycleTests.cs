@@ -343,6 +343,6 @@ public class AccountLifecycleTests
             .Handle(new SetUserRoleCommand(targetId, role), CancellationToken.None);
 
     private static Task<Result<Application.Auth.Dtos.LoginResponse>> Login(TestHarness h, string email)
-        => new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email)
+        => new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email, h.QuotaGate)
             .Handle(new LoginCommand(email, "password123"), CancellationToken.None);
 }

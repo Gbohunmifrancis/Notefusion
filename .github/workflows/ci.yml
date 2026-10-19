@@ -2,7 +2,8 @@ name: CI
 
 # Runs on the self-hosted runner when the repository variable CI_RUNNER names it (e.g.
 # "notefusion-pc", see docs/self-hosted-runner.md); without it, on GitHub's Linux runners, which
-# cost half what Windows ones do against the private-repo minute allowance.
+# cost half what Windows ones do against the private-repo minute allowance. A pull request from a fork
+# always runs on GitHub's runners: the repository is public, and a fork's code must never run on our machine.
 on:
   push:
     branches: [main]
@@ -30,7 +31,7 @@ concurrency:
 jobs:
   dotnet:
     name: .NET build & tests
-    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
+    runs-on: ${{ (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && vars.CI_RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -51,7 +52,7 @@ jobs:
 
   python:
     name: Python transcription API
-    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
+    runs-on: ${{ (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && vars.CI_RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 30
     defaults:
       run:

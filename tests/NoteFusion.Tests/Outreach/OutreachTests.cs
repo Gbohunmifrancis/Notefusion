@@ -631,6 +631,7 @@ public class OutreachTests
         public Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default) => throw new NotSupportedException();
         public Task SendAdminCodeAsync(EmailRecipient to, string code, bool setup, CancellationToken ct = default) => throw new NotSupportedException();
         public Task SendAdminPhoneAddedAsync(EmailRecipient to, string phoneLabel, DateTime atUtc, CancellationToken ct = default) => throw new NotSupportedException();
+        public Task SendAdminPasskeyAddedAsync(EmailRecipient to, string passkeyName, DateTime atUtc, CancellationToken ct = default) => throw new NotSupportedException();
         public Task SendCustomEmailAsync(EmailRecipient to, string subject, string heading, string bodyHtml, string? ctaText = null, string? ctaUrl = null, CancellationToken ct = default) => throw new NotSupportedException();
         public Task SendWaitlistConfirmationAsync(EmailRecipient to, CancellationToken ct = default) => throw new NotSupportedException();
         public Task SendTranscriptionFailedAsync(EmailRecipient to, bool onPro, CancellationToken ct = default) => throw new NotSupportedException();

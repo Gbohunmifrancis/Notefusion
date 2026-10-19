@@ -67,6 +67,11 @@ public sealed class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswor
             return Unit.Value;
         }
 
+        // A link sent moments ago stands: replacing it on every request would let anyone who knows the address
+        // keep the owner's link dead. Same silent answer, so the cooldown says nothing about the address.
+        if (user.PasswordResetRecentlySent(_clock.UtcNow))
+            return Unit.Value;
+
         // Generate a cryptographically random opaque token and store only its hash.
         var plainToken = _tokenGen.GenerateToken();
         var tokenHash = HashToken(plainToken);

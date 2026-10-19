@@ -29,11 +29,15 @@ public class DeleteMyAccountTests
 
         await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(user.Id), h.QuotaGate)
             .Handle(SaveCommand(), default);
+        h.Db.FolderShares.Add(FolderShare.Create(user.Id, "Sunday choir", "folder-token-1", h.Clock.UtcNow));
+        await h.Db.SaveChangesAsync();
 
         var result = await Handler(h, user.Id).Handle(new DeleteMyAccountCommand(Password, null), default);
 
         Assert.True(result.IsSuccess);
         Assert.False(await h.Db.Users.AnyAsync(u => u.Id == user.Id));
+        // A folder link would otherwise reopen for whoever registers this address next (ids derive from it).
+        Assert.False(await h.Db.FolderShares.AnyAsync(f => f.UserId == user.Id));
         // Transcriptions have no FK to users, so nothing cascades them — the handler
         // has to remove them or they survive as rows no one can ever reach.
         Assert.False(await h.Db.Transcriptions.AnyAsync(t => t.UserId == user.Id));

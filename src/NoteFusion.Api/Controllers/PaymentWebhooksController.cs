@@ -24,6 +24,8 @@ public sealed class PaymentWebhooksController : ControllerBase
     private readonly ISender _sender;
     private readonly IReadOnlyDictionary<PaymentProvider, IPaymentWebhookValidator> _validators;
 
+    internal const long MaxBodyBytes = 256 * 1024;
+
     public PaymentWebhooksController(ISender sender, IEnumerable<IPaymentWebhookValidator> validators)
     {
         _sender = sender;
@@ -31,7 +33,12 @@ public sealed class PaymentWebhooksController : ControllerBase
     }
 
     /// <summary>Ingests a webhook for <paramref name="provider"/> (e.g. <c>paystack</c>).</summary>
+    /// <remarks>
+    /// Capped well above any provider's event (a few KB): the body is read and hashed before the signature
+    /// can refuse it, so without a cap anyone could make the server buffer the 30 MB default per request.
+    /// </remarks>
     [HttpPost("{provider}")]
+    [RequestSizeLimit(MaxBodyBytes)]
     public async Task<IActionResult> Receive(string provider, CancellationToken ct)
     {
         if (!Enum.TryParse<PaymentProvider>(provider, ignoreCase: true, out var parsed)

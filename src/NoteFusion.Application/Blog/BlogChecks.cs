@@ -120,14 +120,19 @@ public static partial class BlogChecks
             if (SolfaBlocks.Problem(block, ctx.Catalogue) is { } problem)
                 blockers.Add($"The body does not build: {problem}");
         }
-        if (RawHtml().IsMatch(body))
-            blockers.Add("The body contains raw HTML (script, iframe, style, form…); use Markdown only.");
+        // Any tag at all, in the prose or an FAQ answer: the site is the origin that holds signed-in readers'
+        // tokens, so markup that could carry a script never reaches it (the build escapes it too).
+        if (RawHtml().IsMatch(prose) || post.Faq.Any(f => RawHtml().IsMatch(f.Answer ?? string.Empty)))
+            blockers.Add("The post contains raw HTML (a <tag>); use Markdown only.");
         if (title.Length > 0 && ctx.OtherLivePosts.Any(p => string.Equals(p.Title.Trim(), title, StringComparison.OrdinalIgnoreCase)))
             blockers.Add($"A post titled \"{title}\" already exists.");
 
         var links = Links(body);
         var faqLinks = post.Faq.SelectMany(f => FaqLink().Matches(f.Answer ?? string.Empty).Select(m => m.Groups[1].Value)).ToList();
         var allLinks = links.Concat(faqLinks).ToList();
+        var everyHref = links.Concat(post.Faq.SelectMany(f => Links(f.Answer ?? string.Empty)));
+        foreach (var h in everyHref.Where(h => ScriptScheme().IsMatch(h)).Distinct())
+            blockers.Add($"The link {h} is not a web address; links go to a page or an https:// address.");
         foreach (var h in allLinks.Where(h => h.StartsWith('/')).Distinct())
         {
             if (!ctx.LinkExists(h))
@@ -319,8 +324,12 @@ public static partial class BlogChecks
     [GeneratedRegex(@"^#{2,3}\s+(?:faqs?|frequently asked)", RegexOptions.IgnoreCase | RegexOptions.Multiline)]
     private static partial Regex FaqSection();
 
-    [GeneratedRegex(@"<\s*(?:script|iframe|style|object|embed|form)\b", RegexOptions.IgnoreCase)]
+    // An opening or closing tag, or a comment. "a < b" in prose and Markdown autolinks (<https://…>, <a@b.c>) are not tags.
+    [GeneratedRegex(@"</?[a-z][a-z0-9-]*(?:[\s/>]|$)|<!--", RegexOptions.IgnoreCase | RegexOptions.Multiline)]
     private static partial Regex RawHtml();
+
+    [GeneratedRegex(@"^\s*(?:javascript|vbscript|data|file):", RegexOptions.IgnoreCase)]
+    private static partial Regex ScriptScheme();
 
     [GeneratedRegex("!\\[(?<alt>[^\\]]*)\\]\\(\\s*(?<src>[^)\\s]+)(?:\\s+\"(?<title>[^\"]*)\")?\\s*\\)")]
     private static partial Regex Image();

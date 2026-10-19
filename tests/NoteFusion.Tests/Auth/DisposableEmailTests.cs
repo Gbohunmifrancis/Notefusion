@@ -85,7 +85,7 @@ public class DisposableEmailTests
         h.Db.Users.Add(user);
         await h.Db.SaveChangesAsync();
 
-        var result = await new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email)
+        var result = await new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email, h.QuotaGate)
             .Handle(new LoginCommand("old@mailinator.com", "password123"), default);
 
         Assert.True(result.IsSuccess);

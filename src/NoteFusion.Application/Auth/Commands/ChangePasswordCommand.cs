@@ -28,10 +28,11 @@ public sealed class ChangePasswordCommandHandler : IRequestHandler<ChangePasswor
     private readonly IDateTimeProvider _clock;
     private readonly ICurrentUser _currentUser;
     private readonly IEmailSender _email;
+    private readonly IQuotaGate _gate;
 
     public ChangePasswordCommandHandler(
         IApplicationDbContext db, IPasswordHasher hasher, ITokenIssuer tokenIssuer,
-        IDateTimeProvider clock, ICurrentUser currentUser, IEmailSender email)
+        IDateTimeProvider clock, ICurrentUser currentUser, IEmailSender email, IQuotaGate gate)
     {
         _db = db;
         _hasher = hasher;
@@ -39,6 +40,7 @@ public sealed class ChangePasswordCommandHandler : IRequestHandler<ChangePasswor
         _clock = clock;
         _currentUser = currentUser;
         _email = email;
+        _gate = gate;
     }
 
     public async Task<Result<ChangePasswordResponse>> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
@@ -46,6 +48,13 @@ public sealed class ChangePasswordCommandHandler : IRequestHandler<ChangePasswor
         if (_currentUser.UserId is not { } userId)
             return AuthErrors.InvalidCredentials;
 
+        var email = await _db.Users.Where(u => u.Id == userId).Select(u => u.Email).FirstOrDefaultAsync(cancellationToken);
+        if (email is null)
+            return AuthErrors.CurrentPasswordIncorrect;
+
+        // A stolen session must not be a way to guess the password: the same one-at-a-time count and lockout as
+        // the sign-in form, so five wrong guesses here lock the password for everyone just as they would there.
+        await using var lease = await _gate.AcquireAsync(QuotaGateExtensions.SignInKey(email), cancellationToken);
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
         if (user is null)
             return AuthErrors.CurrentPasswordIncorrect;
@@ -55,8 +64,17 @@ public sealed class ChangePasswordCommandHandler : IRequestHandler<ChangePasswor
         if (user.PasswordHash is null)
             return AuthErrors.PasswordNotSet;
 
-        if (!_hasher.Verify(request.CurrentPassword, user.PasswordHash))
+        var now = _clock.UtcNow;
+        var matches = _hasher.Verify(request.CurrentPassword, user.PasswordHash);
+        if (user.IsLockedOut(now))
             return AuthErrors.CurrentPasswordIncorrect;
+
+        if (!matches)
+        {
+            user.RecordFailedLogin(now);
+            await _db.SaveChangesAsync(cancellationToken);
+            return AuthErrors.CurrentPasswordIncorrect;
+        }
 
         user.ChangePassword(_hasher.Hash(request.NewPassword), _clock.UtcNow);
 

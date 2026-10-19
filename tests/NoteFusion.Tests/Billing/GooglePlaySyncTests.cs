@@ -391,7 +391,7 @@ public class GooglePlaySyncTests
     }
 
     [Fact]
-    public async Task A_purchase_notified_before_the_app_calls_is_granted_from_its_account_id()
+    public async Task A_purchase_notified_before_the_app_calls_waits_for_the_app_whatever_account_id_it_names()
     {
         using var h = new TestHarness(Now);
         var (user, _, _) = Seed(h);
@@ -400,7 +400,14 @@ public class GooglePlaySyncTests
 
         var result = await Notify(h, play, Token);
 
+        // The account id is whatever the buying app set; on its own it ties nothing (a modified app could name anyone).
         Assert.True(result.IsSuccess);
+        Assert.False((await Mine(h, user)).IsActive);
+        Assert.Empty(h.Db.GooglePlayPurchases);
+        Assert.Empty(play.Acknowledged);
+
+        // The account's own app hands it over, and it is granted then.
+        await Register(h, play, user, GooglePlaySync.ProProduct, Token);
         Assert.True((await Mine(h, user)).IsActive);
         Assert.Single(play.Acknowledged);
     }

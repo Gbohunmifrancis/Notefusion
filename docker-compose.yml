@@ -21,7 +21,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
-      - "5432:5432" # exposed for local tooling (pgAdmin, dotnet ef); not needed by clients
+      - "127.0.0.1:5432:5432" # this machine only; exposed for local tooling (pgAdmin, dotnet ef); not needed by clients
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U notefusion -d notefusion"]
       interval: 5s
@@ -37,7 +37,7 @@ services:
       NF_JOB_TTL_SECONDS: ${NF_JOB_TTL_SECONDS:-900}
       NF_API_KEY: ${TRANSCRIPTION_API_KEY:-dev_transcription_secret}
     ports:
-      - "8000:8000" # exposed for curl/dev; in production, drop this and let the api reach it internally
+      - "127.0.0.1:8000:8000" # this machine only; exposed for curl/dev; in production, drop this and let the api reach it internally
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request,sys; urllib.request.urlopen('http://localhost:8000/healthz', timeout=3)"]
       interval: 10s
@@ -112,7 +112,7 @@ services:
       R2__BucketName: ${R2__BucketName:-}
       R2__PublicBaseUrl: ${R2__PublicBaseUrl:-}
     ports:
-      - "5080:8080"
+      - "127.0.0.1:5080:8080" # this machine only: the stack's passwords are public defaults
     depends_on:
       db:
         condition: service_healthy

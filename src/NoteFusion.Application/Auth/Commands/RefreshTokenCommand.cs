@@ -98,7 +98,7 @@ public sealed class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCom
         if (claimed != 1)
             return AuthErrors.InvalidRefreshToken;
 
-        user.RecordSuccessfulLogin(now);
+        user.RecordSessionRefresh(now);
 
         // The client the chain began on, never the one this request names: a phone's token refreshed by a thief
         // pretending to be a browser is still a phone token. Rows from before it was kept read the request.

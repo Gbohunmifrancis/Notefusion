@@ -1410,6 +1410,11 @@ def _normalise_key_name(name: str) -> str:
     return f"{tonic} {mode_str}".strip() if mode_str else tonic
 
 
+#: The longest key text read.  "Bbb minor" and every other real spelling fits with room to
+#: spare; a run of accidentals far longer would only be work for music21.
+KEY_OVERRIDE_MAX_CHARS = 16
+
+
 def _parse_key_override(text: str | None):
     """Parse a user/ML key string into a music21 Key.
 
@@ -1424,6 +1429,8 @@ def _parse_key_override(text: str | None):
     if not text or not text.strip():
         raise ValueError("Empty key override.")
     raw = text.strip()
+    if len(raw) > KEY_OVERRIDE_MAX_CHARS:
+        raise ValueError("Key override too long.")
 
     lowered = raw.lower()
     mode, body = "major", raw
@@ -3737,6 +3744,8 @@ def _ensure_wav_path(audio_path: Path, max_seconds: float | None = None) -> tupl
             [
                 ffmpeg_bin,
                 "-y",
+                "-protocol_whitelist",
+                "file",
                 "-i",
                 str(audio_path),
                 "-t",

@@ -60,4 +60,7 @@ public enum EmailKind
 
     /// <summary>Security notice: a phone was set up for Admin.</summary>
     AdminPhoneAdded = 14,
+
+    /// <summary>Security notice: a passkey was added to an admin account.</summary>
+    AdminPasskeyAdded = 15,
 }

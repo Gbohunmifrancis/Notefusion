@@ -153,7 +153,7 @@ public class MailboxQuotaTests
         }
         h.Db.SaveChanges();
 
-        var login = new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email);
+        var login = new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email, h.QuotaGate);
         Assert.True((await login.Handle(new LoginCommand("you@gmail.com", "password123"), default)).IsSuccess);
         Assert.True((await login.Handle(new LoginCommand("y.o.u@gmail.com", "password123"), default)).IsSuccess);
 

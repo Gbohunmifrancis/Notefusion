@@ -73,6 +73,30 @@ public class BlogChecksTests
         Assert.Contains("A post titled \"How to read Tonic Solfa\" already exists.", dup.Blockers);
     }
 
+    [Theory]
+    [InlineData("<img src=x onerror=alert(1)>")]
+    [InlineData("<a href=\"https://example.com\">here</a>")]
+    [InlineData("<details open>")]
+    [InlineData("<!-- a comment -->")]
+    [InlineData("[more](javascript:alert(1))")]
+    [InlineData("[more](JavaScript:alert(1))")]
+    public void Markup_that_could_run_a_script_is_a_blocker_in_the_body_and_in_an_faq_answer(string payload)
+    {
+        var inBody = BlogChecks.Check(Post(BlogSamples.GoodBody() + "\n\n" + payload + "\n"), Ctx);
+        Assert.NotEmpty(inBody.Blockers);
+
+        var good = Post(BlogSamples.GoodBody());
+        var inFaq = BlogChecks.Check(good with { Faq = [.. good.Faq.Take(2), new BlogFaqItem("Is this safe?", "Yes. " + payload)] }, Ctx);
+        Assert.NotEmpty(inFaq.Blockers);
+    }
+
+    [Fact]
+    public void Prose_comparisons_and_markdown_autolinks_are_not_raw_html()
+    {
+        var r = BlogChecks.Check(Post(BlogSamples.GoodBody() + "\n\nA third is < a fifth. Write to <hello@notefusion.studio> or see <https://notefusion.studio>.\n"), Ctx);
+        Assert.DoesNotContain(r.Blockers, b => b.Contains("raw HTML"));
+    }
+
     [Fact]
     public void Invented_facts_stock_phrases_and_hand_written_solfa_are_flagged_as_in_quality_mjs()
     {

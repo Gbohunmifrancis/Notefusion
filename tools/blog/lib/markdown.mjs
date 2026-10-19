@@ -5,6 +5,22 @@ import { escapeHtml, slugify } from "./util.mjs";
 import { renderSolfaBlock } from "./grid-html.mjs";
 import { ORIGIN } from "./site.mjs";
 
+/**
+ * Only addresses a reader can follow: site paths, fragments, relative paths, http(s) and mailto. A post is
+ * untrusted text (a Gemini draft can publish itself), and these pages share the /app origin that holds the
+ * reader's sign-in, so a javascript: (or any other scheme's) link becomes "#".
+ */
+export function safeUrl(href) {
+  const h = String(href ?? "").trim();
+  const scheme = /^([^:/?#]+):/.exec(h);
+  return !scheme || /^(https?|mailto)$/i.test(scheme[1]) ? h : "#";
+}
+
+/** Raw HTML in a post is printed as text, never passed through: same reason as safeUrl. */
+function rawHtmlAsText({ text }) {
+  return escapeHtml(text);
+}
+
 export function renderMarkdown(src, { hymnsBySlug, file = "post" }) {
   const toc = [], ids = new Set(), hymnsUsed = new Set(), links = [], errors = [];
   const marked = new Marked({
@@ -30,9 +46,10 @@ export function renderMarkdown(src, { hymnsBySlug, file = "post" }) {
         }
         return `<pre><code>${escapeHtml(text)}</code></pre>\n`;
       },
+      html: rawHtmlAsText,
       link({ href, title, tokens }) {
         const inner = this.parser.parseInline(tokens);
-        let h = href;
+        let h = safeUrl(href);
         if (h.startsWith(ORIGIN)) h = h.slice(ORIGIN.length) || "/";
         const internal = h.startsWith("/") || h.startsWith("#");
         links.push(h);
@@ -74,14 +91,25 @@ export function renderMarkdown(src, { hymnsBySlug, file = "post" }) {
     const m = /^(\d+)x(\d+)(?:\s*\||$)/.exec(title || "");
     if (!m) errors.push(`image ${href}: give its size as the title, e.g. ![alt](${href} "1200x675")`);
     const size = m ? ` width="${m[1]}" height="${m[2]}"` : "";
-    return `<img src="${escapeHtml(href)}" alt="${escapeHtml(text)}"${size} loading="lazy" decoding="async">`;
+    return `<img src="${escapeHtml(safeUrl(href))}" alt="${escapeHtml(text)}"${size} loading="lazy" decoding="async">`;
   }
   const html = marked.parse(src);
   if (errors.length) throw new Error(`${file}:\n  - ${errors.join("\n  - ")}`);
   return { html, toc, hymnsUsed: [...hymnsUsed], links };
 }
 
-/** Inline markdown (FAQ answers): links and emphasis, no blocks. */
+/** Inline markdown (FAQ answers, author bios): links and emphasis, no blocks, no raw HTML. */
 export function renderInline(src) {
-  return new Marked({ gfm: true }).parseInline(src);
+  return new Marked({
+    gfm: true,
+    renderer: {
+      html: rawHtmlAsText,
+      link(token) {
+        return this.constructor.prototype.link.call(this, { ...token, href: safeUrl(token.href) });
+      },
+      image(token) {
+        return this.constructor.prototype.image.call(this, { ...token, href: safeUrl(token.href) });
+      },
+    },
+  }).parseInline(src);
 }

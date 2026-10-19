@@ -88,6 +88,12 @@ public sealed class DatabaseSeeder : IHostedService
                 _logger.LogInformation("Seeded admin account {Email}.", primary.Email);
             }
         }
+        else if (!primary.EmailVerified)
+        {
+            // Someone signed up with the admin address and never proved the mailbox: that may be a stranger who
+            // got there first, holding a password of their own. It becomes an admin once the address is verified.
+            _logger.LogWarning("Not promoting {Email} to admin: the address is not verified.", primary.Email);
+        }
         else if (primary.PromoteToAdmin())
         {
             // Someone signed up with the configured admin address before the seeder first ran.
@@ -124,6 +130,12 @@ public sealed class DatabaseSeeder : IHostedService
                 // inventing one would hand out an admin login nobody asked for.
                 _logger.LogWarning(
                     "Cannot promote {Email} to admin — no account with that email exists.", email);
+                continue;
+            }
+
+            if (!user.EmailVerified)
+            {
+                _logger.LogWarning("Not promoting {Email} to admin: the address is not verified.", email);
                 continue;
             }
 

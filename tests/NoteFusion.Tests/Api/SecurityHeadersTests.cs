@@ -29,6 +29,20 @@ public class SecurityHeadersTests
     }
 
     [Fact]
+    public void An_answer_over_https_says_https_only_and_one_over_http_does_not()
+    {
+        var secure = new DefaultHttpContext();
+        secure.Request.Scheme = "https";
+        var plain = new DefaultHttpContext();
+
+        SecurityHeadersMiddleware.Apply(secure.Response);
+        SecurityHeadersMiddleware.Apply(plain.Response);
+
+        Assert.Equal("max-age=31536000", secure.Response.Headers.StrictTransportSecurity);
+        Assert.False(plain.Response.Headers.ContainsKey("Strict-Transport-Security"));
+    }
+
+    [Fact]
     public void A_response_with_no_body_type_is_treated_as_api_content()
     {
         var response = new DefaultHttpContext().Response;

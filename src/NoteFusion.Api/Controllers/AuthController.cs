@@ -92,12 +92,14 @@ public sealed class AuthController : ApiControllerBase
 
     /// <summary>Revokes a refresh token.</summary>
     [AllowAnonymous]
+    [EnableRateLimiting(AuthRateLimiting.TokenRefresh)]
     [HttpPost("logout")]
     public async Task<IActionResult> Logout(LogoutCommand command, CancellationToken ct)
         => HandleNoContent(await _sender.Send(command, ct));
 
     /// <summary>Changes the current user's password and returns a fresh token pair.</summary>
     [Authorize]
+    [EnableRateLimiting(AuthRateLimiting.Credentials)]
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePassword(ChangePasswordCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));

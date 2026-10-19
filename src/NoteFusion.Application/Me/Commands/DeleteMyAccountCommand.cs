@@ -69,6 +69,10 @@ public sealed class DeleteMyAccountCommandHandler : IRequestHandler<DeleteMyAcco
             .ToListAsync(cancellationToken);
         _db.Transcriptions.RemoveRange(transcriptions);
 
+        // Folder links have no relationship either. Left behind, a public link would come back to life for
+        // whoever next registers this address (the id is derived from it) and files sheets under that name.
+        _db.FolderShares.RemoveRange(await _db.FolderShares.Where(f => f.UserId == userId).ToListAsync(cancellationToken));
+
         _db.Users.Remove(user);
         await _db.SaveChangesAsync(cancellationToken);
 

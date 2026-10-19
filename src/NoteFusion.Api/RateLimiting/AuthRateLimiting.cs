@@ -53,6 +53,15 @@ public static class AuthRateLimiting
     /// </summary>
     public const string Passkeys = "auth-passkeys";
 
+    /// <summary>
+    /// Asking how long a linked song is (<c>…/link/info</c>, signed in or a website preview): each one has the
+    /// worker ask YouTube, so a loop over fresh ids would burn its CPU and get its address blocked for everyone.
+    /// </summary>
+    public const string LinkInfo = "link-info";
+
+    /// <summary>Opening, confirming and leaving a checkout: each one asks the payment provider.</summary>
+    public const string Billing = "billing";
+
     public static IServiceCollection AddNoteFusionRateLimiting(
         this IServiceCollection services, IConfiguration configuration)
     {
@@ -92,6 +101,12 @@ public static class AuthRateLimiting
 
             options.AddPolicy(Passkeys, context => SlidingWindow(
                 context, settings, settings.PasskeyPermits, settings.PasskeyWindowSeconds));
+
+            options.AddPolicy(LinkInfo, context => SlidingWindow(
+                context, settings, settings.LinkInfoPermits, settings.LinkInfoWindowSeconds));
+
+            options.AddPolicy(Billing, context => SlidingWindow(
+                context, settings, settings.BillingPermits, settings.BillingWindowSeconds));
 
             options.OnRejected = (context, cancellationToken) => new ValueTask(WriteRejectedAsync(
                 context.HttpContext, context.Lease, seconds => $"Too many attempts from this device. Try again in {Describe(seconds)}.",
@@ -200,7 +215,18 @@ public static class AuthRateLimiting
         if (!IPAddress.TryParse(value, out var ip))
             return null;
 
-        return (ip.IsIPv4MappedToIPv6 ? ip.MapToIPv4() : ip).ToString();
+        if (ip.IsIPv4MappedToIPv6)
+            return ip.MapToIPv4().ToString();
+
+        // One IPv6 subscriber is handed a whole /64, so a bucket per address would give them 2^64 buckets.
+        if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+        {
+            var bytes = ip.GetAddressBytes();
+            Array.Clear(bytes, 8, 8);
+            return new IPAddress(bytes) + "/64";
+        }
+
+        return ip.ToString();
     }
 
     internal static string Describe(int seconds)
@@ -281,6 +307,16 @@ public sealed class RateLimitSettings
 
     public int PasskeyWindowSeconds { get; set; } = 60;
 
+    /// <summary>Linked-song lookups: a person checks a song or two before choosing a section.</summary>
+    public int LinkInfoPermits { get; set; } = 20;
+
+    public int LinkInfoWindowSeconds { get; set; } = 60;
+
+    /// <summary>Checkout, confirm and leave: a buyer makes a handful; each is a call to the payment provider.</summary>
+    public int BillingPermits { get; set; } = 30;
+
+    public int BillingWindowSeconds { get; set; } = 60;
+
     /// <summary>
     /// "Hum to find a hymn", per address and per device alike: a few tries a minute (a visitor humming a tune
     /// again, more slowly, is the expected use) and a day's ceiling, since every try is a second of the
@@ -319,6 +355,8 @@ public sealed class RateLimitSettings
         WebEventsPermits = int.MaxValue,
         BlogReadsPermits = int.MaxValue,
         PasskeyPermits = int.MaxValue,
+        LinkInfoPermits = int.MaxValue,
+        BillingPermits = int.MaxValue,
         HymnIdentifyPermits = int.MaxValue,
         HymnIdentifyDailyPermits = int.MaxValue,
         PracticeDrillPermits = int.MaxValue,

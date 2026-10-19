@@ -295,6 +295,36 @@ public sealed partial class BrandedEmailTemplate
                 $"Change your password now and contact us at {_settings.SupportEmail}."));
     }
 
+    public EmailMessage AdminPasskeyAdded(EmailRecipient to, string passkeyName, DateTime atUtc)
+    {
+        var when = (atUtc + FreeTier.WestAfricaOffset)
+            .ToString("ddd d MMM yyyy, HH:mm", CultureInfo.InvariantCulture) + " (West Africa Time)";
+        var body = Paragraphs(
+            "A passkey was just added to your admin account. From now on it signs in to the admin console without a password.")
+            + FactTable(("Passkey", Encode(passkeyName)), ("When", Encode(when)))
+            + Callout(
+                "If this wasn't you, remove it under Settings › Passkeys in the console, change your password, and contact us at "
+                    + $"<a href=\"mailto:{Encode(_settings.SupportEmail)}\" style=\"color:{Blue};"
+                    + $"text-decoration:underline\">{Encode(_settings.SupportEmail)}</a>.",
+                Danger);
+
+        return Compose(
+            to,
+            subject: "A passkey was added to your admin account",
+            preheader: "If this wasn't you, act now.",
+            heading: "A new passkey can sign in",
+            bodyHtml: body,
+            cta: null,
+            textBody: Text(
+                "A passkey was just added to your admin account. From now on it signs in to the admin console without a password.",
+                "",
+                $"Passkey: {passkeyName}",
+                $"When: {when}",
+                "",
+                "If this wasn't you, remove it under Settings > Passkeys in the console, change your password,",
+                $"and contact us at {_settings.SupportEmail}."));
+    }
+
     public EmailMessage SubscriptionReceipt(EmailRecipient to, SubscriptionReceipt receipt)
     {
         var amount = FormatAmount(receipt.AmountMinor, receipt.Currency);

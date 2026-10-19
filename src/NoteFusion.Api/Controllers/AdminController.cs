@@ -382,18 +382,7 @@ public sealed class AdminController : ApiControllerBase
     public async Task<IActionResult> ClearAnnouncement([FromQuery] string? note, CancellationToken ct)
         => HandleNoContent(await _sender.Send(new ClearSystemAnnouncementCommand(note), ct));
 
-    /// <summary>
-    /// Irreversible pre-production maintenance action. Clears all test accounts, transcriptions, jobs,
-    /// and payment records while preserving designated administrator accounts.
-    /// </summary>
-    [HttpPost("maintenance/purge-test-data")]
-    public async Task<IActionResult> PurgeTestData([FromBody] PurgeTestDataBody body, CancellationToken ct)
-        => HandleResult(await _sender.Send(new PurgeTestDataCommand(body.Confirm, body.Note), ct));
-
     // ------------------------------------------------------------------- bodies
-
-    /// <summary>Safety payload for pre-production database purge.</summary>
-    public sealed record PurgeTestDataBody(string Confirm, string? Note = null);
 
     /// <summary>
     /// The operator's reason, carried by every action that has nothing else to say. Optional, and stored
