@@ -350,8 +350,9 @@ jobs:
 
             echo "─── Writing JWT private key ───"
             printf '%s\n' "$JWT_PRIVATE_KEY_PEM" > jwt_private_key.pem
-            # The API runs as the aspnet image's unprivileged user (APP_UID 1654), the only one that may read it.
-            chown 1654:1654 jwt_private_key.pem
+            # Owned by the deploy user (uid 1000), which is also the uid the API container runs as
+            # (docker-compose.prod.yml `user:`), so the API reads it and no one else can.
+            chown 1000:1000 jwt_private_key.pem
             chmod 600 jwt_private_key.pem
 
             echo "─── YouTube cookies ───"
