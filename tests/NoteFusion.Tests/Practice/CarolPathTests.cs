@@ -350,8 +350,8 @@ public class CarolPathTests
             .Handle(new GetPracticeProgressQuery(), default)).Value;
 
     private static Task<Result<CarolsPathDto>> Carols(TestHarness h, User user)
-        => new GetCarolsQueryHandler(h.Db, SeasonFlagTests.Caller(user), h.Clock, new StubClientTimeZone())
-            .Handle(new GetCarolsQuery(), default);
+        => new GetSeasonPathQueryHandler(h.Db, SeasonFlagTests.Caller(user), h.Clock, new StubClientTimeZone())
+            .Handle(new GetSeasonPathQuery(), default);
 
     private static async Task Track(TestHarness h, User user, string track)
         => Assert.True((await new SetPracticeTrackCommandHandler(h.Db, SeasonFlagTests.Caller(user), h.Clock, new StubClientTimeZone())

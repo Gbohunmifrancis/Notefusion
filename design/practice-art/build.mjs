@@ -1,6 +1,6 @@
 // The Practice art: Doh the doh bird (with the poses he takes outside Practice and their blink twins), the level emblems, the badge stickers, the streak flame and freeze, the stars,
-// the confetti pieces, the track-picker scenes, the empty states and the Christmas season's cap and snowflake. All of it is our own original SVG, drawn by
-// these modules; this script writes the copies the apps ship:
+// the confetti pieces, the track-picker scenes, the empty states, the Christmas season's cap and snowflake and the Halloween season's hat, Boo and bats.
+// All of it is our own original SVG, drawn by these modules; this script writes the copies the apps ship:
 //
 //   web-site/assets/practice-art/<name>.svg            — the web app's Practice view loads them as <img> on demand
 //   mobile/src/components/practice/art/svgs.ts         — the phone draws them with react-native-svg's SvgXml
@@ -39,6 +39,11 @@ export function assets() {
   // The Christmas season, shown only while it is on: the cap laid over the brand mark and Doh, and the Carol singer's
   // snowflake (its sticker is with the badges).
   out.push(["season-cap", X.cap()], ["confetti-snowflake", X.snowflake()]);
+  // The Halloween season, the same way: the hat laid over the mark and Doh, Boo (beside Doh on the Midnight path) with
+  // the idle pose's blink twin, the clients' flitting bat and the Night Singer's bat confetti (its sticker is with the badges).
+  out.push(["season-hat", X.hat()]);
+  for (const k of X.BOO_POSES) out.push([k === "idle" ? "boo" : `boo-${k}`, X.booSvg(k)]);
+  out.push(["boo-blink", X.booBlinkSvg()], ["bat", X.bat()], ["confetti-bat", X.batConfetti()]);
   return out.map(([n, s]) => [n, minify(s)]);
 }
 

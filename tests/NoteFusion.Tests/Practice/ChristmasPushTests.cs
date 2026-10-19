@@ -63,21 +63,21 @@ public class ChristmasPushTests
             foreach (var track in new PracticeTrack?[] { PracticeTrack.Playful, PracticeTrack.Focused, null })
             {
                 var usual = PracticeReminderCopy.VariantsFor(kind, track);
-                Assert.Equal(usual, PracticeReminderCopy.VariantsFor(kind, track, christmas: false, "Silent Night"));
-                var festive = PracticeReminderCopy.VariantsFor(kind, track, christmas: true, "Silent Night");
+                Assert.Equal(usual, PracticeReminderCopy.VariantsFor(kind, track, season: null, "Silent Night"));
+                var festive = PracticeReminderCopy.VariantsFor(kind, track, season: FeatureFlag.Christmas, "Silent Night");
                 Assert.Equal(usual, festive.Take(usual.Count)); // the usual lines stay, in their order
                 if (kind is PracticeReminderKind.FreezeReady or PracticeReminderKind.StreakLost or PracticeReminderKind.Final)
                     Assert.Equal(usual, festive);
             }
         }
 
-        Assert.Equal(4, PracticeReminderCopy.VariantsFor(PracticeReminderKind.LearningWaiting, PracticeTrack.Playful, true, "Silent Night").Count);
+        Assert.Equal(4, PracticeReminderCopy.VariantsFor(PracticeReminderKind.LearningWaiting, PracticeTrack.Playful, FeatureFlag.Christmas, "Silent Night").Count);
         // No next carol (all six sung): a line naming one stays out.
-        Assert.Equal(3, PracticeReminderCopy.VariantsFor(PracticeReminderKind.LearningWaiting, PracticeTrack.Playful, true, carol: null).Count);
+        Assert.Equal(3, PracticeReminderCopy.VariantsFor(PracticeReminderKind.LearningWaiting, PracticeTrack.Playful, FeatureFlag.Christmas, song: null).Count);
         Assert.Equal(new ReminderText("Silent Night is waiting 🎵", "Doh has your next carol drill ready. Two minutes of singing, then back to the celebrations!"),
-            PracticeReminderCopy.For(PracticeReminderKind.LearningWaiting, PracticeTrack.Playful, 0, 3, christmas: true, "Silent Night"));
+            PracticeReminderCopy.For(PracticeReminderKind.LearningWaiting, PracticeTrack.Playful, 0, 3, season: FeatureFlag.Christmas, "Silent Night"));
         Assert.Equal(new ReminderText("Keep your 12-day streak this Christmas", "One short carol drill before midnight keeps it going."),
-            PracticeReminderCopy.For(PracticeReminderKind.StreakAtRisk, PracticeTrack.Focused, 12, 3, christmas: true, null));
+            PracticeReminderCopy.For(PracticeReminderKind.StreakAtRisk, PracticeTrack.Focused, 12, 3, season: FeatureFlag.Christmas, null));
     }
 
     [Fact]

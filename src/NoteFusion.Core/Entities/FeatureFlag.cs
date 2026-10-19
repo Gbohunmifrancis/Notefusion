@@ -5,8 +5,9 @@ namespace NoteFusion.Core.Entities;
 
 /// <summary>
 /// A switch that changes what everyone sees, turned by an admin in the console (Operations › Feature flags): one row
-/// per <see cref="Key"/>, made the first time it is changed (until then it is off). The season flag
-/// (<see cref="Christmas"/>) is the first. Every change is written to the audit log by the command that makes it.
+/// per <see cref="Key"/>, made the first time it is changed (until then it is off). The season flags
+/// (<see cref="Christmas"/>, <see cref="Halloween"/>) are the first. Every change is written to the audit log by the
+/// command that makes it.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -23,6 +24,12 @@ public sealed class FeatureFlag : BaseEntity
 {
     /// <summary>The Christmas season: the capped mark, snow, carols on top of Hymns, the carols path and festive pushes.</summary>
     public const string Christmas = "christmas";
+
+    /// <summary>
+    /// The Halloween season: the hatted mark, bats, songs for Halloween on top of Hymns, the Midnight path and its pushes.
+    /// One season at a time: turning one on switches the other off.
+    /// </summary>
+    public const string Halloween = "halloween";
 
     public const int KeyMaxLength = 40;
     public const int EmailMaxLength = 320;

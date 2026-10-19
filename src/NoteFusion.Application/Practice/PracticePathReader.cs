@@ -39,28 +39,28 @@ public static class PracticePathReader
             reading.UnitsComplete,
             reading.GradesComplete);
 
-    /// <summary>Where the singer stands on each carol drill, read off their facts (any pace's pass counts).</summary>
-    public static IReadOnlyList<CarolStanding> CarolStandings(IEnumerable<PracticeFact> facts)
-        => CarolPath.Read(facts.Where(f => f.Kind == PracticeKind.Drill).Select(f => (f.DrillId, f.Score)));
+    /// <summary>Where the singer stands on each of a season path's drills, read off their facts (any pace's pass counts).</summary>
+    public static IReadOnlyList<SeasonStanding> SeasonStandings(SeasonPath path, IEnumerable<PracticeFact> facts)
+        => path.Read(facts.Where(f => f.Kind == PracticeKind.Drill).Select(f => (f.DrillId, f.Score)));
 
-    /// <summary>The carols path as the Practice screen's card draws it, on the singer's track.</summary>
-    public static PracticeSeasonDto DescribeSeason(IReadOnlyList<CarolStanding> standings, PracticeTrack? track, DateOnly? until)
+    /// <summary>A season's path as the Practice screen's card draws it, on the singer's track.</summary>
+    public static PracticeSeasonDto DescribeSeason(SeasonPath path, IReadOnlyList<SeasonStanding> standings, PracticeTrack? track, DateOnly? until)
     {
-        var steps = standings.Select(s => DescribeStep(s, CarolPath.For(s.Definition, track))).ToList();
-        var next = CarolPath.Next(standings);
+        var steps = standings.Select(s => DescribeStep(s, path.For(s.Definition, track))).ToList();
+        var next = SeasonPath.Next(standings);
         return new PracticeSeasonDto(
-            CarolPath.Season,
-            CarolPath.Title,
+            path.Season,
+            path.Title,
             until,
             standings.Count(s => s.Passed),
-            CarolPath.Count,
+            path.Count,
             next is null ? null : steps[next.Index - 1],
             steps,
-            CarolPath.BadgeCode);
+            path.BadgeCode);
     }
 
-    /// <summary>One carol drill as a row of the path.</summary>
-    public static CarolStepDto DescribeStep(CarolStanding standing, CarolDrill carol)
+    /// <summary>One season drill as a row of its path.</summary>
+    public static CarolStepDto DescribeStep(SeasonStanding standing, SeasonDrill carol)
     {
         var d = standing.Definition;
         return new CarolStepDto(d.Index, carol.Drill.Id, d.Title, d.Carol, d.HymnSlug, d.Cue, carol.Detail, standing.Passed, standing.BestScore);

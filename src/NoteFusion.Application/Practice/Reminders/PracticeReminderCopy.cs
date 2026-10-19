@@ -1,4 +1,5 @@
 using System.Globalization;
+using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
 
 namespace NoteFusion.Application.Practice.Reminders;
@@ -163,21 +164,76 @@ public static class PracticeReminderCopy
             ],
         };
 
+    /// <summary>
+    /// Doh's Halloween lines, joining <see cref="Playful"/>'s rotation while the Halloween season is on for everyone, as
+    /// the Christmas ones do. <c>{song}</c> is the song of the singer's next drill on the Midnight path. Bats, lanterns and
+    /// a ghost who sings: never gory. A lapse, a freeze and the goodbye keep their usual words.
+    /// </summary>
+    public static readonly IReadOnlyDictionary<PracticeReminderKind, IReadOnlyList<ReminderText>> HalloweenPlayful =
+        new Dictionary<PracticeReminderKind, IReadOnlyList<ReminderText>>
+        {
+            [PracticeReminderKind.Ordinary] =
+            [
+                new("Doh's hat is on: a spooky drill awaits 🎃", "A Halloween drill is ready! Two minutes of singing makes it {next} days in a row."),
+            ],
+            [PracticeReminderKind.LearningWaiting] =
+            [
+                new("{song} is waiting 🦇", "Doh has your next Midnight drill ready. Sing three notes before the bats wake up!"),
+            ],
+            [PracticeReminderKind.StreakAtRisk] =
+            [
+                new("Keep the lantern lit: {n} days 🔥", "Your {n}-day streak ends at midnight. One short Halloween drill keeps it glowing."),
+            ],
+            [PracticeReminderKind.LastChance] =
+            [
+                new("⏰ One spooky song before midnight?", "Your {n}-day streak ends tonight. Doh saved you a two-minute drill. No tricks!"),
+            ],
+        };
+
+    /// <summary>The Focused track's Halloween lines, plainly, joining <see cref="Plain"/>'s rotation while the season is on.</summary>
+    public static readonly IReadOnlyDictionary<PracticeReminderKind, IReadOnlyList<ReminderText>> HalloweenPlain =
+        new Dictionary<PracticeReminderKind, IReadOnlyList<ReminderText>>
+        {
+            [PracticeReminderKind.Ordinary] =
+            [
+                new("Today's Halloween drill is ready", "{song}: about two minutes. Practise today to make it {next} days in a row."),
+            ],
+            [PracticeReminderKind.StreakAtRisk] =
+            [
+                new("Keep your {n}-day streak this Halloween", "One short drill before midnight keeps it going."),
+            ],
+        };
+
+    /// <summary>
+    /// The Midnight path's last day (1 November unless an admin picked another): an ordinary or "learning waiting"
+    /// reminder to someone who has started the path and not finished it says so, on either track. <c>{left}</c> is "3 drills".
+    /// </summary>
+    public static readonly ReminderText HalloweenLastNight =
+        new("Last night of the Midnight path 🕯️", "It closes at midnight. {left} left for the Night Singer sticker.");
+
     /// <summary>The variants for a situation in the track's voice: Focused plain, everyone else Doh's.</summary>
     public static IReadOnlyList<ReminderText> VariantsFor(PracticeReminderKind kind, PracticeTrack? track)
         => (track == PracticeTrack.Focused ? Plain : Playful)[kind];
 
     /// <summary>
     /// The variants for a situation in the track's voice, with the season's lines joining them while
-    /// <paramref name="christmas"/> is on. A line naming <c>{carol}</c> joins only when there is a next carol to name
-    /// (<paramref name="carol"/>; none once all six are sung).
+    /// <paramref name="season"/> ("christmas", "halloween") is on. A line naming the next song (<c>{carol}</c>,
+    /// <c>{song}</c>) joins only when there is one to name (<paramref name="song"/>; none once all six are sung).
     /// </summary>
-    public static IReadOnlyList<ReminderText> VariantsFor(PracticeReminderKind kind, PracticeTrack? track, bool christmas, string? carol)
+    public static IReadOnlyList<ReminderText> VariantsFor(PracticeReminderKind kind, PracticeTrack? track, string? season, string? song)
     {
         var usual = VariantsFor(kind, track);
-        if (!christmas || !(track == PracticeTrack.Focused ? ChristmasPlain : ChristmasPlayful).TryGetValue(kind, out var festive))
+        var lines = (season, track == PracticeTrack.Focused) switch
+        {
+            (FeatureFlag.Christmas, true) => ChristmasPlain,
+            (FeatureFlag.Christmas, false) => ChristmasPlayful,
+            (FeatureFlag.Halloween, true) => HalloweenPlain,
+            (FeatureFlag.Halloween, false) => HalloweenPlayful,
+            _ => null,
+        };
+        if (lines is null || !lines.TryGetValue(kind, out var festive))
             return usual;
-        return [.. usual, .. festive.Where(v => carol is not null || !NamesCarol(v))];
+        return [.. usual, .. festive.Where(v => song is not null || !NamesSong(v))];
     }
 
     /// <summary>
@@ -185,30 +241,41 @@ public static class PracticeReminderCopy
     /// picks the variant (the day number plus a per-account offset, so consecutive days differ and accounts differ).
     /// </summary>
     public static ReminderText For(PracticeReminderKind kind, PracticeTrack? track, int streak, int rotation)
-        => For(kind, track, streak, rotation, christmas: false, carol: null);
+        => For(kind, track, streak, rotation, season: null, song: null);
 
     /// <summary>
     /// The words as <see cref="For(PracticeReminderKind, PracticeTrack?, int, int)"/> picks them, from the rotation the
-    /// season's lines have joined while <paramref name="christmas"/> is on (for everyone); <c>{carol}</c> is
-    /// <paramref name="carol"/>, the singer's next carol.
+    /// season's lines have joined while <paramref name="season"/> is on (for everyone); <c>{carol}</c> and <c>{song}</c>
+    /// are <paramref name="song"/>, the singer's next song on the season's path. On the Midnight path's last day,
+    /// <paramref name="lastNightLeft"/> (its drills the singer has left, having started it) makes an ordinary or "learning
+    /// waiting" reminder <see cref="HalloweenLastNight"/>.
     /// </summary>
-    public static ReminderText For(PracticeReminderKind kind, PracticeTrack? track, int streak, int rotation, bool christmas, string? carol)
+    public static ReminderText For(
+        PracticeReminderKind kind, PracticeTrack? track, int streak, int rotation, string? season, string? song, int? lastNightLeft = null)
     {
-        var variants = VariantsFor(kind, track, christmas, carol);
+        if (season == FeatureFlag.Halloween && lastNightLeft is > 0
+            && kind is PracticeReminderKind.Ordinary or PracticeReminderKind.LearningWaiting)
+        {
+            var left = lastNightLeft == 1 ? "1 drill" : $"{lastNightLeft} drills";
+            return new ReminderText(HalloweenLastNight.Title, HalloweenLastNight.Body.Replace("{left}", left, StringComparison.Ordinal));
+        }
+        var variants = VariantsFor(kind, track, season, song);
         var pick = variants[((rotation % variants.Count) + variants.Count) % variants.Count];
-        return new ReminderText(Fill(pick.Title, streak, carol), Fill(pick.Body, streak, carol));
+        return new ReminderText(Fill(pick.Title, streak, song), Fill(pick.Body, streak, song));
     }
 
     /// <summary>A rotation for the account on the day: the day number, offset by the account so a cohort does not all read the same line.</summary>
     public static int Rotation(Guid userId, DateOnly localDate, PracticeReminderSlot slot)
         => localDate.DayNumber + userId.ToByteArray()[0] + (int)slot;
 
-    private static bool NamesCarol(ReminderText text)
-        => text.Title.Contains("{carol}", StringComparison.Ordinal) || text.Body.Contains("{carol}", StringComparison.Ordinal);
+    private static bool NamesSong(ReminderText text)
+        => $"{text.Title} {text.Body}" is var words
+           && (words.Contains("{carol}", StringComparison.Ordinal) || words.Contains("{song}", StringComparison.Ordinal));
 
-    private static string Fill(string template, int streak, string? carol = null)
+    private static string Fill(string template, int streak, string? song = null)
         => template
             .Replace("{next}", (streak + 1).ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal)
             .Replace("{n}", streak.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal)
-            .Replace("{carol}", carol ?? string.Empty, StringComparison.Ordinal);
+            .Replace("{carol}", song ?? string.Empty, StringComparison.Ordinal)
+            .Replace("{song}", song ?? string.Empty, StringComparison.Ordinal);
 }

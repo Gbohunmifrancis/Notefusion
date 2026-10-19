@@ -24,13 +24,13 @@ public sealed class PracticeRecorder
     public static string GateKey(Guid userId) => $"practice:{userId}";
 
     public Task<PracticeRewardDto> RecordAsync(PracticeSession session, CancellationToken ct)
-        => RecordAsync(session, christmas: false, ct);
+        => RecordAsync(session, season: null, ct);
 
     /// <summary>
-    /// Records <paramref name="session"/>; with <paramref name="christmas"/> (the season on for the singer) the season's
-    /// badge can be earned too.
+    /// Records <paramref name="session"/>; with <paramref name="season"/> (the season on for the singer: "christmas",
+    /// "halloween") that season's badge can be earned too.
     /// </summary>
-    public async Task<PracticeRewardDto> RecordAsync(PracticeSession session, bool christmas, CancellationToken ct)
+    public async Task<PracticeRewardDto> RecordAsync(PracticeSession session, string? season, CancellationToken ct)
     {
         var facts = await FactsAsync(_db, session.UserId, ct);
         var before = PracticeMath.TotalXp(facts);
@@ -45,7 +45,7 @@ public sealed class PracticeRecorder
                 .Select(a => a.Code)
                 .ToListAsync(ct))
             .ToHashSet();
-        var unlocked = PracticeBadges.Unlocked(stats, earned, christmas);
+        var unlocked = PracticeBadges.Unlocked(stats, earned, season);
         foreach (var badge in unlocked)
             _db.Achievements.Add(Achievement.Award(session.UserId, badge.Code, session.CreatedAtUtc));
 

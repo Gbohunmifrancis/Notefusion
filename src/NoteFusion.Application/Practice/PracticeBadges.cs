@@ -33,26 +33,31 @@ public static class PracticeBadges
     /// only while the season is on, is kept for good, and outside the season is listed only once earned.
     /// </summary>
     public static readonly BadgeDefinition CarolSinger =
-        new(CarolPath.BadgeCode, "Carol singer", "Sing all six carols on the Christmas path.", CarolPath.Count, s => s.CarolsSung);
+        new(CarolPath.BadgeCode, CarolPath.Path.BadgeTitle, CarolPath.Path.BadgeDescription, CarolPath.Count, s => s.CarolsSung);
 
-    /// <summary>The season's badges, listed after <see cref="All"/> (only while the season is on, or once earned).</summary>
-    public static readonly IReadOnlyList<BadgeDefinition> Seasonal = [CarolSinger];
+    /// <summary>The Halloween season's badge: all six drills of the Midnight path passed (<see cref="HalloweenPath"/>), as the carols'.</summary>
+    public static readonly BadgeDefinition NightSinger =
+        new(HalloweenPath.BadgeCode, HalloweenPath.Path.BadgeTitle, HalloweenPath.Path.BadgeDescription, HalloweenPath.Path.Count,
+            s => s.MidnightSung);
+
+    /// <summary>The seasons' badges, listed after <see cref="All"/> (each only while its season is on, or once earned).</summary>
+    public static readonly IReadOnlyList<BadgeDefinition> Seasonal = [CarolSinger, NightSinger];
 
     /// <summary>
-    /// The badges <paramref name="stats"/> reach that are not among <paramref name="earned"/> yet; the season's only while
-    /// it is on (<paramref name="christmas"/>).
+    /// The badges <paramref name="stats"/> reach that are not among <paramref name="earned"/> yet; a season's only while
+    /// it is the one on (<paramref name="season"/>).
     /// </summary>
-    public static IReadOnlyList<BadgeDefinition> Unlocked(PracticeStats stats, IReadOnlySet<string> earned, bool christmas = false)
-        => All.Concat(christmas ? Seasonal : [])
+    public static IReadOnlyList<BadgeDefinition> Unlocked(PracticeStats stats, IReadOnlySet<string> earned, string? season = null)
+        => All.Concat(Seasonal.Where(b => season is not null && SeasonPaths.SeasonOfBadge(b.Code) == season))
             .Where(b => !earned.Contains(b.Code) && b.Progress(stats) >= b.Target)
             .ToList();
 
     /// <summary>
-    /// Every badge as the client draws it: earned (with when) or locked with progress. The season's badge is listed
-    /// while the season is on, and after it only when earned.
+    /// Every badge as the client draws it: earned (with when) or locked with progress. A season's badge is listed while
+    /// its season is on, and after it only when earned.
     /// </summary>
-    public static IReadOnlyList<BadgeDto> Describe(PracticeStats stats, IReadOnlyDictionary<string, DateTime> earned, bool christmas = false)
-        => All.Concat(Seasonal.Where(b => christmas || earned.ContainsKey(b.Code)))
+    public static IReadOnlyList<BadgeDto> Describe(PracticeStats stats, IReadOnlyDictionary<string, DateTime> earned, string? season = null)
+        => All.Concat(Seasonal.Where(b => (season is not null && SeasonPaths.SeasonOfBadge(b.Code) == season) || earned.ContainsKey(b.Code)))
             .Select(b => Describe(b, stats, earned.TryGetValue(b.Code, out var at) ? at : null))
             .ToList();
 

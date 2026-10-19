@@ -153,10 +153,20 @@ public sealed class PracticeReminderService
             return false;
 
         var due = candidate.Due;
-        var christmas = await ChristmasAsync(ct);
+        var season = await SeasonAsync(ct);
+        string? song = null;
+        int? lastNightLeft = null;
+        if (SeasonPaths.For(season?.Key) is { } path)
+        {
+            var standings = await StandingsAsync(userId, path, ct);
+            song = SeasonPath.Next(standings)?.Carol;
+            var sung = standings.Count(s => s.Passed);
+            if (season!.Value.LastDay == candidate.LocalDate && sung > 0 && sung < path.Count)
+                lastNightLeft = path.Count - sung;
+        }
         var words = PracticeReminderCopy.For(
             due.Kind, candidate.Track, due.Streak, PracticeReminderCopy.Rotation(userId, candidate.LocalDate, due.Slot),
-            christmas, christmas ? await NextCarolAsync(userId, ct) : null);
+            season?.Key, song, lastNightLeft);
         var now = _clock.UtcNow;
         var claim = PracticeReminder.Claim(
             userId, candidate.LocalDate, due.Slot, due.Kind, due.Streak, words.Title, words.Body, candidate.Sound, tokens.Count, now);
@@ -252,22 +262,30 @@ public sealed class PracticeReminderService
     }
 
     /// <summary>
-    /// The Christmas season, for everyone (a preview for admins never changes a push): read once per run, since the
-    /// service is made for each run.
+    /// The season on for everyone and its last day (a preview for admins never changes a push): read once per run, since
+    /// the service is made for each run.
     /// </summary>
-    private async Task<bool> ChristmasAsync(CancellationToken ct)
-        => _christmas ??= await FeatureFlags.ChristmasForEveryoneAsync(_db, _clock.UtcNow, ct);
+    private async Task<(string Key, DateOnly? LastDay)?> SeasonAsync(CancellationToken ct)
+    {
+        if (!_seasonRead)
+        {
+            _season = await FeatureFlags.SeasonForEveryoneAsync(_db, _clock.UtcNow, ct);
+            _seasonRead = true;
+        }
+        return _season;
+    }
 
-    private bool? _christmas;
+    private (string Key, DateOnly? LastDay)? _season;
+    private bool _seasonRead;
 
-    /// <summary>The carol of the account's next drill on the carols path, or null once all of them are sung.</summary>
-    private async Task<string?> NextCarolAsync(Guid userId, CancellationToken ct)
+    /// <summary>Where the account stands on each drill of the season's path.</summary>
+    private async Task<IReadOnlyList<SeasonStanding>> StandingsAsync(Guid userId, SeasonPath path, CancellationToken ct)
     {
         var takes = await _db.PracticeSessions.AsNoTracking()
-            .Where(s => s.UserId == userId && s.Kind == PracticeKind.Drill && s.DrillId != null && s.DrillId.StartsWith(CarolPath.CodePrefix))
+            .Where(s => s.UserId == userId && s.Kind == PracticeKind.Drill && s.DrillId != null && s.DrillId.StartsWith(path.CodePrefix))
             .Select(s => new { s.DrillId, s.Score })
             .ToListAsync(ct);
-        return CarolPath.Next(CarolPath.Read(takes.Select(t => (t.DrillId, t.Score))))?.Carol;
+        return path.Read(takes.Select(t => (t.DrillId, t.Score)));
     }
 
     /// <summary>The account's phones on app code that takes server reminders. Never its web push subscriptions.</summary>

@@ -169,33 +169,35 @@ public sealed class GetPracticeProgressQueryHandler : IRequestHandler<GetPractic
         var track = await GetNextDrillQueryHandler.PracticeTrackOf(db, userId, ct);
         var reading = await PracticePathReader.ReadAsync(db, userId, facts, ct);
         var stop = PracticePath.Next(userId, track, reading, PracticeMath.LevelFor(PracticeMath.TotalXp(facts)).Index);
-        var christmas = await FeatureFlags.StateForCallerAsync(db, clock.UtcNow, caller, FeatureFlag.Christmas, ct);
+        var season = await FeatureFlags.SeasonForCallerAsync(db, clock.UtcNow, caller, ct);
+        var seasonPath = SeasonPaths.For(season?.Key);
 
-        return PracticeMath.Progress(facts, earned, today, drills, track, christmas.On) with
+        return PracticeMath.Progress(facts, earned, today, drills, track, season?.Key) with
         {
             Path = PracticePathReader.Describe(stop, reading),
             Modes = PracticeModes.Live(track, modes),
-            Season = christmas.On
-                ? PracticePathReader.DescribeSeason(PracticePathReader.CarolStandings(facts), track, christmas.LastDay)
-                : null,
+            Season = seasonPath is null
+                ? null
+                : PracticePathReader.DescribeSeason(seasonPath, PracticePathReader.SeasonStandings(seasonPath, facts), track, season!.Value.State.LastDay),
         };
     }
 }
 
 /// <summary>
-/// GET /api/practice/carols: the Christmas carols path with every drill ready to hear and sing, on the caller's track,
-/// while the season is on for them (<see cref="PracticeErrors.SeasonOff"/> otherwise).
+/// GET /api/practice/seasons/{season} (and GET /api/practice/carols, Christmas's): a season's path with every drill ready
+/// to hear and sing, on the caller's track, while that season is on for them (<see cref="PracticeErrors.SeasonOffFor"/>
+/// otherwise): the carols at Christmas, the Midnight path at Halloween.
 /// </summary>
-public sealed record GetCarolsQuery : IRequest<Result<CarolsPathDto>>;
+public sealed record GetSeasonPathQuery(string Season = FeatureFlag.Christmas) : IRequest<Result<CarolsPathDto>>;
 
-public sealed class GetCarolsQueryHandler : IRequestHandler<GetCarolsQuery, Result<CarolsPathDto>>
+public sealed class GetSeasonPathQueryHandler : IRequestHandler<GetSeasonPathQuery, Result<CarolsPathDto>>
 {
     private readonly IApplicationDbContext _db;
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _clock;
     private readonly IClientTimeZone _timeZone;
 
-    public GetCarolsQueryHandler(IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock, IClientTimeZone timeZone)
+    public GetSeasonPathQueryHandler(IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock, IClientTimeZone timeZone)
     {
         _db = db;
         _currentUser = currentUser;
@@ -203,13 +205,15 @@ public sealed class GetCarolsQueryHandler : IRequestHandler<GetCarolsQuery, Resu
         _timeZone = timeZone;
     }
 
-    public async Task<Result<CarolsPathDto>> Handle(GetCarolsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<CarolsPathDto>> Handle(GetSeasonPathQuery request, CancellationToken cancellationToken)
     {
         if (_currentUser.UserId is not { } userId)
             return UserErrors.NotFound;
-        var christmas = await FeatureFlags.StateForCallerAsync(_db, _clock.UtcNow, _currentUser, FeatureFlag.Christmas, cancellationToken);
-        if (!christmas.On)
-            return PracticeErrors.SeasonOff;
+        if (SeasonPaths.For(request.Season) is not { } path)
+            return PracticeErrors.SeasonOffFor(request.Season);
+        var state = await FeatureFlags.StateForCallerAsync(_db, _clock.UtcNow, _currentUser, path.Season, cancellationToken);
+        if (!state.On)
+            return PracticeErrors.SeasonOffFor(path.Season);
 
         var zone = PracticeTime.Resolve(_timeZone.Current);
         var today = PracticeTime.LocalDate(_clock.UtcNow, zone);
@@ -221,16 +225,16 @@ public sealed class GetCarolsQueryHandler : IRequestHandler<GetCarolsQuery, Resu
             PracticeRules.DrillGradesPerDay(await ProStatus.IsProAsync(_db, _clock, userId, cancellationToken)),
             PracticeTime.NextMidnightUtc(today, zone));
 
-        var standings = PracticePathReader.CarolStandings(facts);
+        var standings = PracticePathReader.SeasonStandings(path, facts);
         var drills = standings
             .Select(standing =>
             {
-                var carol = CarolPath.For(standing.Definition, track);
+                var carol = path.For(standing.Definition, track);
                 var d = carol.Drill;
                 var drill = new DrillDto(
                     d.Id, d.Pattern.Title, level.Index, level.Name, d.KeyName, d.Key.DohHeader(), d.TempoBpm,
                     standing.Definition.TimeSignature, DrillCatalogue.LegacyLeadInBeats, d.MaxTakeSeconds, d.Notes, today,
-                    allowance, track, CarolPath.Title, standing.Definition.Carol, standing.Definition.Index, CarolPath.Count,
+                    allowance, track, path.Title, standing.Definition.Carol, standing.Definition.Index, path.Count,
                     1, 1, 1, DrillAdjustment.Steady);
                 return new CarolDrillDto(
                     PracticePathReader.DescribeStep(standing, carol), drill, standing.Definition.PickupBeats,
@@ -238,6 +242,6 @@ public sealed class GetCarolsQueryHandler : IRequestHandler<GetCarolsQuery, Resu
             })
             .ToList();
 
-        return new CarolsPathDto(PracticePathReader.DescribeSeason(standings, track, christmas.LastDay), drills);
+        return new CarolsPathDto(PracticePathReader.DescribeSeason(path, standings, track, state.LastDay), drills);
     }
 }

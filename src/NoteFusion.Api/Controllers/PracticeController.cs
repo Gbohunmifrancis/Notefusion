@@ -169,11 +169,19 @@ public sealed class PracticeController : ApiControllerBase
     /// </summary>
     [HttpGet("carols")]
     public async Task<IActionResult> Carols(CancellationToken ct)
-        => HandleResult(await _sender.Send(new GetCarolsQuery(), ct));
+        => HandleResult(await _sender.Send(new GetSeasonPathQuery(), ct));
+
+    /// <summary>
+    /// A season's path, while that season is on for the caller (404 <c>PRACTICE_SEASON_OFF</c> otherwise): <c>christmas</c>
+    /// (the carols, as <c>carols</c>) or <c>halloween</c> (the Midnight path), the same shape as the carols.
+    /// </summary>
+    [HttpGet("seasons/{season}")]
+    public async Task<IActionResult> SeasonPath(string season, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetSeasonPathQuery(season.ToLowerInvariant()), ct));
 
     /// <summary>
     /// XP, level, streak, weekly goal, badges, the last seven days, the track (null until chosen), the practice modes
-    /// live for that track (<c>modes</c>), and while the Christmas season is on, <c>season</c>: the carols path's card.
+    /// live for that track (<c>modes</c>), and while a season is on, <c>season</c>: its path's card (the carols, the Midnight path).
     /// </summary>
     [HttpGet("progress")]
     public async Task<IActionResult> Progress(CancellationToken ct)
