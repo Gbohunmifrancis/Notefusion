@@ -514,6 +514,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `SENTRY_DISABLE_AUTO_UPLOAD` — until EAS has `SENTRY_AUTH_TOKEN`/`ORG`/`PROJECT`). Never the public pages.
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
+- No secret ever in the repository: `.github/workflows/secret-scan.yml` (gitleaks, `.gitleaks.toml`) fails pull requests,
+  main and the first job of every deploy on a finding (docs/DEPLOYMENT.md, "Secret scanning").
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).
   The same image runs in dev and compose with only env changes.
 - **Mobile first, always**: most users arrive on phones. Design, layout and performance are judged at 360–414 px on a

@@ -1,0 +1,32 @@
+# Secret scanning: .github/workflows/secret-scan.yml runs gitleaks on every pull request, on main, and first in every
+# deploy, and fails on any finding, so a key that reaches the code stops the deploy instead of shipping.
+# gitleaks' own rules, plus allowances for the few values here that are public by design or fake test data.
+# Add one only for a value that is genuinely public; a real secret goes in the deploy's secrets, never here.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Public by design: the Firebase Android config ships inside the app (its key is restricted to the app in Google Cloud)"
+paths = ['''^mobile/google-services\.json$''']
+
+[[allowlists]]
+description = "X's documented OAuth 1.0a example, the test vector the signer is checked against"
+paths = ['''^tools/social/tests/oauth1\.test\.mjs$''']
+
+[[allowlists]]
+description = "Fake payment fixtures in the billing tests"
+paths = ['''^tests/NoteFusion\.Tests/Billing/(Flutterwave|Paystack)PaymentGatewayTests\.cs$''']
+
+[[allowlists]]
+description = "Public by design: the IndexNow key is served at /<key>.txt for search engines to read"
+regexTarget = "line"
+regexes = ['''INDEXNOW_KEY\s*=''']
+
+[[allowlists]]
+description = "Not a key: an activity name beside a worker route"
+regexTarget = "line"
+regexes = ['''"Api\.[A-Za-z]+",\s*"v1/''']
+
+[[allowlists]]
+description = "Never committed: build output and installed packages on a developer's machine"
+paths = ['''(^|/)(node_modules|\.next|bin|obj|\.git|\.expo|dist|build)/''']
