@@ -237,6 +237,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   manifest, read back and SHA-checked; photos, JWT key, Caddyfile daily) and WAL-G (daily base + WAL from the db's
   `wal-spool`, ~1 min PITR). It writes `backup_runs` via the INSERT-only `notefusion_backup` role → System Health card +
   `BackupAlertWorker`; `backup-restore-drill.yml` restores weekly. `Maintenance__ReadOnly` 503s every write for a move.
+  The API connects as `notefusion_app` (`ops/db/app-role.sql`: owns the app's tables so migrations run, no superuser,
+  password derived from the database's), which every deploy sets up and hands every table to; if that fails, that deploy
+  keeps the superuser rather than start an API that cannot connect.
 
 > The old native `.NET 10 for Android` head was retired in the pivot; there is no
 > `NoteFusion.App` project. Don't reintroduce Android-native or MAUI code.

@@ -10,6 +10,7 @@ on:
       - "Dockerfile"
       - "docker-compose.prod.yml"
       - "ops/backup/**"
+      - "ops/db/**"
       - "NoteFusion.slnx"
       - "Directory.Build.props"
       - ".github/workflows/deploy.yml"
@@ -157,7 +158,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           # db-role.sql lands at /opt/notefusion/ops/backup/: the backup service's database login.
-          source: "docker-compose.prod.yml,ops/backup/db-role.sql"
+          source: "docker-compose.prod.yml,ops/backup/db-role.sql,ops/db/app-role.sql"
           target: "/opt/notefusion/"
 
       - name: Deploy
@@ -396,6 +397,8 @@ jobs:
             # the database password, so there is no extra secret to keep, and the backup container never
             # sees the superuser's.
             BACKUP_DB_PASSWORD=$(printf 'notefusion-backup-role:%s' "$POSTGRES_PASSWORD" | sha256sum | cut -c1-48)
+            # The API's own login (ops/db/app-role.sql), derived the same way: no superuser, no extra secret.
+            APP_DB_PASSWORD=$(printf 'notefusion-app-role:%s' "$POSTGRES_PASSWORD" | sha256sum | cut -c1-48)
 
             echo "─── Writing .env ───"
             cat > .env <<EOF
@@ -532,6 +535,16 @@ jobs:
             { printf '\\set backup_pw %s\n' "$BACKUP_DB_PASSWORD"; cat ops/backup/db-role.sql; } \
               | docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -q -v ON_ERROR_STOP=1 \
               || echo "::warning::Could not set up the notefusion_backup login; backups cannot record their runs (docs/BACKUP_AND_MIGRATION.md)"
+
+            echo "─── API database login ───"
+            # The API connects as notefusion_app only once the role is set up and owns the tables; if that fails,
+            # this deploy keeps the superuser (compose's default) rather than start an API that cannot connect.
+            if { printf '\\set app_pw %s\n' "$APP_DB_PASSWORD"; cat ops/db/app-role.sql; } \
+              | docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -q -v ON_ERROR_STOP=1; then
+              printf 'API_DB_USER="notefusion_app"\nAPI_DB_PASSWORD="%s"\n' "$APP_DB_PASSWORD" >> .env
+            else
+              echo "::warning::Could not set up the notefusion_app login; the API connects as the superuser for this deploy"
+            fi
 
             docker compose -f docker-compose.prod.yml up -d --no-deps api
             # Dozzle is recreated whenever its image, socket mount or sign-in changed, and runs only with a sign-in.

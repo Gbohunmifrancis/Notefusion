@@ -44,6 +44,8 @@ jobs:
             docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT \"Platform\" AS os, count(*) AS rows, count(DISTINCT \"Token\") AS phones, max(\"AppBuild\") AS newest_build FROM device_tokens GROUP BY 1;" || true
             docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT to_char(\"CreatedAtUtc\",'MM-DD HH24:MI') AS at, \"Devices\" AS devices, \"Accepted\" AS accepted, \"Refused\" AS refused, \"Attempts\" AS tries, left(\"Error\",120) AS error FROM admin_payment_alerts ORDER BY \"CreatedAtUtc\" DESC LIMIT 5;" || true
             cd /opt/notefusion
+            echo "== database logins in use (the API should be notefusion_app, never the superuser: ops/db/app-role.sql)"
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT usename AS login, count(*) AS connections FROM pg_stat_activity WHERE datname = 'notefusion' GROUP BY 1 ORDER BY 1;" || true
             echo "== backups: the latest run of each kind (docs/BACKUP_AND_MIGRATION.md)"
             docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT DISTINCT ON (\"Kind\") \"Kind\" AS kind, to_char(\"FinishedAtUtc\",'MM-DD HH24:MI') AS at, \"Ok\" AS ok, \"Verified\" AS verified, pg_size_pretty(\"SizeBytes\") AS size, left(\"Detail\",150) AS detail FROM backup_runs ORDER BY \"Kind\", \"FinishedAtUtc\" DESC;" || true
             docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT archived_count, last_archived_wal, last_archived_time, failed_count FROM pg_stat_archiver;" || true
