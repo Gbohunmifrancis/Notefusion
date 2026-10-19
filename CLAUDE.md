@@ -54,7 +54,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `AdminPaymentAlert` (`PaymentAlertWorker`, 60 s) or a `BlogGenerationRun` (`BlogDraftWorker`, 60 s), and tells the
   console's live notices (`AdminLiveFeed`, stream `GET /api/admin/analytics/live/events`; web-admin `lib/liveFeed`) of a new
   account, job, preview or payment and of someone coming online (`LastSeenMiddleware`): the console fetches `live` then,
-  hidden tabs included, instead of every 15 s.
+  hidden tabs included, instead of every 15 s. One stream per tab: the Users page follows the same `changed` (and looks every 2 min for
+  those who left), and a drafting batch's every move is its `blog` event (Recent drafting, a batch's progress).
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off

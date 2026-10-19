@@ -1,6 +1,6 @@
 "use client";
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Download, Mail, MoreHorizontal, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -20,6 +20,7 @@ import {
   formatInstantDateTime,
   formatRelative,
 } from "@/lib/format";
+import { followLiveFeed } from "@/lib/liveFeed";
 import { getReportingOffset } from "@/lib/reporting";
 import { useClampPage } from "@/lib/useClampPage";
 import { useDebounced } from "@/lib/useDebounced";
@@ -162,15 +163,28 @@ export function UsersView() {
         showTeam || undefined,
       ),
     placeholderData: keepPreviousData,
-    // Presence goes stale fast: the online list refreshes itself.
-    refetchInterval: lastSeen === "online" ? 30_000 : 120_000,
+    // Someone arriving is told by the live feed (below); someone leaving is not an event, so the page still looks again
+    // every two minutes for those who have dropped out of the online window.
+    refetchInterval: 120_000,
   });
   // How many are online right now, for the header; a one-row page carries the total.
   const onlineNow = useQuery({
     queryKey: ["users-online-count"],
     queryFn: ({ signal }) => getUsers(1, 1, undefined, undefined, undefined, signal, "online"),
-    refetchInterval: 30_000,
+    refetchInterval: 120_000,
   });
+  // Someone came online or signed up, a transcription started, a payment went through: fetched again, unless the tab
+  // is hidden (its two-minute look catches up when it is back).
+  const queryClient = useQueryClient();
+  useEffect(
+    () =>
+      followLiveFeed(() => {
+        if (document.hidden) return;
+        void queryClient.invalidateQueries({ queryKey: ["users"] });
+        void queryClient.invalidateQueries({ queryKey: ["users-online-count"] });
+      }),
+    [queryClient],
+  );
 
   useClampPage(page, state.data?.totalPages, setPage);
   const offset = getReportingOffset();

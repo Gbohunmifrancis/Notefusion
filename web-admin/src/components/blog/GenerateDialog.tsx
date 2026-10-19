@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { followLiveFeed } from "@/lib/liveFeed";
 
 type Mode = "queue" | "topic" | "free";
 
@@ -78,15 +79,18 @@ function ItemRow({ item }: { item: BlogGenerationItem }) {
   );
 }
 
-/** A batch's progress: each draft as it is saved, with what it cost. Polls until the batch is done. */
+/** A batch's progress: each draft as it is saved, with what it cost. Fetched again each time the batch moves. */
 export function RunProgress({ runId }: { runId: string }) {
   const queryClient = useQueryClient();
   const run = useQuery({
     queryKey: ["blog-generation", runId],
     queryFn: ({ signal }) => getBlogGeneration(runId, signal),
-    refetchInterval: (q) => (q.state.data && isFinished(q.state.data) ? false : 3000),
   });
   const finished = run.data ? isFinished(run.data) : false;
+  useEffect(() => {
+    if (finished) return;
+    return followLiveFeed(() => void queryClient.invalidateQueries({ queryKey: ["blog-generation", runId] }), "blog");
+  }, [finished, queryClient, runId]);
   useEffect(() => {
     if (finished) {
       void queryClient.invalidateQueries({ queryKey: ["blog-posts"] });

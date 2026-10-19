@@ -7,6 +7,9 @@
  * While the console is locked there is no pass to open it with: it closes and opens again on unlock. A stream that
  * cannot be held is reopened after 1, 2, 5, 10 and then 30 s, and after three failures in a row `live` is fetched
  * every minute until one holds. The API closes each stream after ten minutes; it is opened again at once.
+ *
+ * One stream per tab, whoever follows it: the notices and the Users page follow `changed`, the Blog section's drafting
+ * cards follow `blog` (a batch of drafts moved). `ready` and the fallback tell every follower.
  */
 
 import { openStream } from "@/api/client";
@@ -21,23 +24,45 @@ const SETTLE_MS = 1_000;
 const FALLBACK_MS = 60_000;
 const BACKOFF_MS = [1_000, 2_000, 5_000, 10_000, 30_000];
 
-/** Follows the feed, calling `onChange` when `live` should be fetched again; returns a function that stops it. */
-export function followLiveFeed(onChange: () => void): () => void {
+export type LiveEvent = "changed" | "blog";
+
+type Follower = { event: LiveEvent; onChange: () => void; settle: ReturnType<typeof setTimeout> | null };
+
+const followers = new Set<Follower>();
+let disconnect: (() => void) | null = null;
+
+/** Follows the feed, calling `onChange` when `event` says to fetch again; returns a function that stops it. */
+export function followLiveFeed(onChange: () => void, event: LiveEvent = "changed"): () => void {
+  const me: Follower = { event, onChange, settle: null };
+  followers.add(me);
+  disconnect ??= connect();
+  return () => {
+    followers.delete(me);
+    if (me.settle) clearTimeout(me.settle);
+    if (followers.size > 0) return;
+    disconnect?.();
+    disconnect = null;
+  };
+}
+
+/** Tells the followers of `event`, or all of them. */
+function tell(event?: string): void {
+  for (const f of followers) {
+    if ((event && f.event !== event) || f.settle) continue;
+    f.settle = setTimeout(() => {
+      f.settle = null;
+      if (followers.has(f)) f.onChange();
+    }, SETTLE_MS);
+  }
+}
+
+function connect(): () => void {
   let stopped = false;
   let controller: AbortController | null = null;
   let failures = 0;
   let retry: ReturnType<typeof setTimeout> | null = null;
   let watchdog: ReturnType<typeof setTimeout> | null = null;
-  let settle: ReturnType<typeof setTimeout> | null = null;
   let fallback: ReturnType<typeof setInterval> | null = null;
-
-  const changed = () => {
-    if (settle) return;
-    settle = setTimeout(() => {
-      settle = null;
-      if (!stopped) onChange();
-    }, SETTLE_MS);
-  };
 
   const close = () => {
     controller?.abort();
@@ -48,7 +73,7 @@ export function followLiveFeed(onChange: () => void): () => void {
 
   const later = () => {
     failures += 1;
-    if (failures >= 3 && !fallback) fallback = setInterval(() => !stopped && onChange(), FALLBACK_MS);
+    if (failures >= 3 && !fallback) fallback = setInterval(() => !stopped && tell(), FALLBACK_MS);
     if (retry) clearTimeout(retry);
     retry = setTimeout(() => {
       retry = null;
@@ -83,7 +108,7 @@ export function followLiveFeed(onChange: () => void): () => void {
       if (!response.ok || !response.body) {
         // A token that ran out is refreshed by the next ordinary call, which this asks for; a locked console waits
         // for its unlock (the lock listener below reopens it).
-        if (response.status === 401) changed();
+        if (response.status === 401) tell();
         if (response.status === 403 && getLockState().locked) return close();
         close();
         return later();
@@ -98,8 +123,10 @@ export function followLiveFeed(onChange: () => void): () => void {
         if (chunk.done) break;
         guard();
         for (const event of parser.feed(decoder.decode(chunk.value, { stream: true }))) {
-          if (event.event === "ready") held();
-          if (event.event === "ready" || event.event === "changed") changed();
+          if (event.event === "ready") {
+            held();
+            tell();
+          } else if (event.event) tell(event.event);
         }
       }
       // The API ended it (its ten minutes, or a restart): open the next one now.
@@ -125,7 +152,7 @@ export function followLiveFeed(onChange: () => void): () => void {
     stopped = true;
     unsubscribe();
     close();
-    for (const t of [retry, settle]) if (t) clearTimeout(t);
+    if (retry) clearTimeout(retry);
     if (fallback) clearInterval(fallback);
   };
 }

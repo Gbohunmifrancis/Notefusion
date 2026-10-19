@@ -73,6 +73,9 @@ public sealed class WorkSignalInterceptor : SaveChangesInterceptor
         var staged = new Staged();
         foreach (var entry in context.ChangeTracker.Entries())
         {
+            // The console follows a batch of drafts as it moves, not only when it is queued.
+            if (entry.Entity is BlogGenerationRun && entry.State is EntityState.Added or EntityState.Modified)
+                staged.Blog = true;
             if (entry.State != EntityState.Added)
                 continue;
             switch (entry.Entity)
@@ -92,7 +95,7 @@ public sealed class WorkSignalInterceptor : SaveChangesInterceptor
                     break;
             }
         }
-        if (staged.Work.Count > 0 || staged.Live)
+        if (staged.Work.Count > 0 || staged.Live || staged.Blog)
             Pending.AddOrUpdate(context, staged);
         else
             Pending.Remove(context);
@@ -107,11 +110,14 @@ public sealed class WorkSignalInterceptor : SaveChangesInterceptor
             _signals.Ring(work);
         if (staged.Live)
             AdminLiveFeed.Tell(_events);
+        if (staged.Blog)
+            AdminLiveFeed.Tell(_events, AdminLiveFeed.Blog);
     }
 
     private sealed class Staged
     {
         public HashSet<Work> Work { get; } = [];
         public bool Live { get; set; }
+        public bool Blog { get; set; }
     }
 }
