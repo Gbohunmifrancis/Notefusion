@@ -14,6 +14,14 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # The repository is public, so this run's log is too: everything below goes through redact (addresses,
+            # IPs, push tokens, JWTs and any long token-like string, share links included), and Caddy's access log
+            # (every visitor's IP and URL) is never printed.
+            redact() { sed -E -e 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/[email]/g' \
+              -e 's/([0-9]{1,3}\.){3}[0-9]{1,3}/[ip]/g' -e 's/([0-9a-fA-F]{1,4}:){3,7}[0-9a-fA-F]{1,4}/[ip]/g' \
+              -e 's/Expo(nent)?PushToken\[[^]]*\]?/[push-token]/g' -e 's/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]*/[jwt]/g' \
+              -e 's/[A-Za-z0-9_-]{32,}/[redacted]/g'; }
+            {
             echo "== host"; uptime; nproc; free -m; df -h / | tail -1
             echo "== instance"; TOKEN=$(curl -s -m 2 -X PUT http://169.254.169.254/latest/api/token -H "X-aws-ec2-metadata-token-ttl-seconds: 60"); curl -s -m 2 -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-type; echo
             for k in instance-id placement/region public-ipv4 local-ipv4; do printf "%s: " "$k"; curl -s -m 2 -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/$k" | head -c 300; echo; done
@@ -21,18 +29,18 @@ jobs:
             echo "== top"; top -bn1 | head -15
             echo "== containers"; docker ps -a
             echo "== stats"; docker stats --no-stream
-            for c in $(docker ps --format '{{.Names}}'); do echo "== logs $c"; docker logs "$c" --tail 60 2>&1 | grep -v "GET /healthz" | tail -60; done
+            for c in $(docker ps --format '{{.Names}}' | grep -v caddy); do echo "== logs $c"; docker logs "$c" --tail 60 2>&1 | grep -v "GET /healthz" | tail -60; done
             echo "== worker: job, link and yt-dlp lines (last 60, with times)"; docker logs -t notefusion-prod-transcriber-1 2>&1 | grep -i -E "yt-dlp|link_attempt|ytdlp_cookies|link job|journal|recover|job [0-9a-f]{8}|vocal engine|accompaniment|transcription_completed|warning|error" | grep -v "GET /healthz" | tail -60 | cut -c1-400
             # What the last few transcriptions came out as: the activity log's own columns, then the
             # stored result of the newest finished jobs (key, tempo, meter, confidence, the first notes
             # as pitch@beat x length, the solfa lines). Metadata only: no audio, no names, no addresses.
             # Push: what Expo and Google answered (ticket and receipt lines, no tokens), and how the admin phones are
-            # registered (a token's prefix only, enough to tell two apart).
+            # registered (a token's last characters only, enough to tell two apart).
             echo "== push: the switch as the API sees it (true = Expo, anything else = logged only)"; docker exec notefusion-prod-api-1 printenv Push__UseExpo || echo "(not set)"; grep -E '^Push__UseExpo=' /opt/notefusion/.env || echo "(not in .env)"
             echo "== push: API lines about Expo, receipts and alerts (last 12 h)"; docker logs -t notefusion-prod-api-1 --since 12h 2>&1 | grep -i -E "expo|push|receipt|payment alert|invalidcredentials|devicenotregistered|mismatchsenderid|activity push" | tail -80 | cut -c1-400
             cd /opt/notefusion
             echo "== push: admin phones"
-            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT left(t.\"Token\", 28) AS token, t.\"Platform\" AS os, t.\"AppBuild\" AS build, t.\"ServerReminders\" AS srv, t.\"PaymentAlerts\" AS alerts, t.\"PaymentAlertSound\" AS sound, t.\"PaymentAlertQuietAtNight\" AS quiet, to_char(t.\"PaymentAlertsSetAtUtc\",'MM-DD HH24:MI') AS set_at, to_char(t.\"UpdatedAt\",'MM-DD HH24:MI') AS seen, (SELECT count(*) FROM device_tokens o WHERE o.\"Token\" = t.\"Token\" AND o.\"UserId\" <> t.\"UserId\") AS shared FROM device_tokens t JOIN users u ON u.\"Id\" = t.\"UserId\" WHERE u.\"Role\" = 'Admin' ORDER BY t.\"UpdatedAt\" DESC;" || true
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT right(t.\"Token\", 7) AS token_end, t.\"Platform\" AS os, t.\"AppBuild\" AS build, t.\"ServerReminders\" AS srv, t.\"PaymentAlerts\" AS alerts, t.\"PaymentAlertSound\" AS sound, t.\"PaymentAlertQuietAtNight\" AS quiet, to_char(t.\"PaymentAlertsSetAtUtc\",'MM-DD HH24:MI') AS set_at, to_char(t.\"UpdatedAt\",'MM-DD HH24:MI') AS seen, (SELECT count(*) FROM device_tokens o WHERE o.\"Token\" = t.\"Token\" AND o.\"UserId\" <> t.\"UserId\") AS shared FROM device_tokens t JOIN users u ON u.\"Id\" = t.\"UserId\" WHERE u.\"Role\" = 'Admin' ORDER BY t.\"UpdatedAt\" DESC;" || true
             docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT \"Platform\" AS os, count(*) AS rows, count(DISTINCT \"Token\") AS phones, max(\"AppBuild\") AS newest_build FROM device_tokens GROUP BY 1;" || true
             docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT to_char(\"CreatedAtUtc\",'MM-DD HH24:MI') AS at, \"Devices\" AS devices, \"Accepted\" AS accepted, \"Refused\" AS refused, \"Attempts\" AS tries, left(\"Error\",120) AS error FROM admin_payment_alerts ORDER BY \"CreatedAtUtc\" DESC LIMIT 5;" || true
             cd /opt/notefusion
@@ -61,3 +69,4 @@ jobs:
             echo "-- default clients"; probe ""
             echo "-- fallback clients"; probe "--extractor-args youtube:player_client=\$NF_YTDLP_FALLBACK_CLIENTS"
             if [ -s /opt/notefusion/ytdlp-cookies.txt ]; then echo "-- default clients + cookies"; probe "--cookies /tmp/probe-cookies.txt" ; fi
+            } 2>&1 | redact

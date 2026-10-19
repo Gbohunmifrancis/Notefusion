@@ -768,8 +768,9 @@ socket (its read-only mount does not limit the Docker API). Give it a sign-in:
 2. Set the repository secrets `DOZZLE_USER` (letters, digits, `.`, `_`, `-`) and
    `DOZZLE_PASSWORD_HASH` (the hash, not the password).
 3. Redeploy. The deploy writes `/opt/notefusion/dozzle-users.yml` (0600), mounts it at
-   `/data/users.yml` and sets `DOZZLE_AUTH_PROVIDER=simple`. With either secret unset or
-   malformed, the deploy warns and Dozzle is served without a sign-in, as before.
+   `/data/users.yml` and starts Dozzle with `DOZZLE_AUTH_PROVIDER=simple`. With either secret
+   unset or malformed, the deploy warns and stops Dozzle: `/logs` answers 502 until the secrets
+   are set and the deploy is run again. It is never served without a sign-in.
 
 The Dozzle image is pinned (`amir20/dozzle:v11.3.2` in `docker-compose.prod.yml`); bump the tag
 deliberately to upgrade.

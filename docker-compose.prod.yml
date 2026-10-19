@@ -320,7 +320,10 @@ services:
       - ${DOZZLE_USERS_HOST:-/dev/null}:/data/users.yml:ro
     environment:
       DOZZLE_BASE: /logs
-      DOZZLE_AUTH_PROVIDER: ${DOZZLE_AUTH_PROVIDER:-none}
+      # Never without a sign-in: started by hand with no users file, it lets nobody in.
+      DOZZLE_AUTH_PROVIDER: ${DOZZLE_AUTH_PROVIDER:-simple}
+      DOZZLE_ENABLE_ACTIONS: "false"
+      DOZZLE_ENABLE_SHELL: "false"
 
   caddy:
     image: caddy:2-alpine
