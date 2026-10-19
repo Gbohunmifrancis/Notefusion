@@ -794,6 +794,23 @@ deliberately to upgrade.
 
 Using both asks for two passwords; one is enough.
 
+## Secret scanning (no deploy with a key in the code)
+
+`.github/workflows/secret-scan.yml` runs [gitleaks](https://github.com/gitleaks/gitleaks) (its own rules plus the
+allowances in `.gitleaks.toml`) on every pull request, on every push to main, and as the first job of all three deploys
+(`deploy.yml`, `deploy-web.yml`, `deploy-admin.yml`), which wait for it. Any finding fails the check and nothing is
+built or shipped. It scans the files as they are and the commits being added, so a key committed and then deleted in
+the same push still stops it. Findings are printed redacted. Run it locally the same way:
+`gitleaks dir . --config .gitleaks.toml --redact` and `gitleaks git . --config .gitleaks.toml --log-opts="origin/main..HEAD" --redact`.
+
+**When it fires:** treat the key as public. Revoke it at the provider and make a new one, put the new one in the
+repository's secrets, then take the key out of the code (the history keeps the old one, which is why revoking comes
+first). Add an allowance to `.gitleaks.toml` only for a value that is public by design, with a description saying why.
+
+**Also switch on, in the repository's settings** (Settings › Code security): *Secret Protection* and *Push protection*,
+free for public repositories. GitHub then refuses a `git push` that carries a known key format before it reaches the
+repository at all. GitGuardian already checks every pull request.
+
 ## Error reports (Sentry)
 
 Four places report errors to Sentry, one Sentry project each (all in the same organisation). Each is off until its

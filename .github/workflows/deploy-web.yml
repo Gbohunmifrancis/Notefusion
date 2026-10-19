@@ -36,8 +36,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Nothing is deployed while the code holds a secret (secret-scan.yml).
+  secret-scan:
+    uses: ./.github/workflows/secret-scan.yml
+
   vercel:
     name: Vercel production deploy
+    needs: secret-scan
     runs-on: ubuntu-latest
     timeout-minutes: 30
     defaults:
