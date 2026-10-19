@@ -14,10 +14,12 @@ public sealed record StreakBreak(DateOnly Day, int Length);
 
 /// <summary>
 /// The counts badges are judged on. <c>WeekDays</c> is the days practised in today's Monday–Sunday week (to today);
-/// <c>BestWeekDays</c> the most practised in any one such week; <c>CarolsSung</c> the carols path's drills passed.
+/// <c>BestWeekDays</c> the most practised in any one such week; <c>CarolsSung</c> the carols path's drills passed and
+/// <c>MidnightSung</c> the Midnight path's (Halloween).
 /// </summary>
 public sealed record PracticeStats(
-    int Drills, int Parts, int Perfect, int WholePartsGood, int BestStreak, int WeekDays = 0, int BestWeekDays = 0, int CarolsSung = 0);
+    int Drills, int Parts, int Perfect, int WholePartsGood, int BestStreak, int WeekDays = 0, int BestWeekDays = 0, int CarolsSung = 0,
+    int MidnightSung = 0);
 
 /// <summary>
 /// The rules of <see cref="PracticeRules"/> applied to an account's practice history. Pure: the rows go in, the
@@ -111,13 +113,17 @@ public static class PracticeMath
             Streak(facts.Select(f => f.LocalDate), today).Best,
             days.Count(d => d >= weekStart),
             days.Count == 0 ? 0 : days.GroupBy(PracticeTime.WeekStart).Max(w => w.Count()),
-            CarolPath.Sung(facts.Where(f => f.Kind == PracticeKind.Drill).Select(f => (f.DrillId, f.Score))));
+            CarolPath.Path.Sung(Takes(facts)),
+            HalloweenPath.Path.Sung(Takes(facts)));
     }
+
+    private static IEnumerable<(string? DrillId, int Score)> Takes(IEnumerable<PracticeFact> facts)
+        => facts.Where(f => f.Kind == PracticeKind.Drill).Select(f => (f.DrillId, f.Score));
 
     /// <summary>
     /// Everything the Practice screen shows, as of <paramref name="today"/>. The <paramref name="track"/> is passed
-    /// through for the client to draw by; no number here reads it. <paramref name="christmas"/>: the season is on for the
-    /// singer, so its badge is listed before it is earned.
+    /// through for the client to draw by; no number here reads it. <paramref name="season"/>: the season on for the
+    /// singer ("christmas", "halloween"), whose badge is listed before it is earned.
     /// </summary>
     public static PracticeProgressDto Progress(
         IReadOnlyCollection<PracticeFact> facts,
@@ -125,7 +131,7 @@ public static class PracticeMath
         DateOnly today,
         DrillAllowanceDto drills,
         PracticeTrack? track = null,
-        bool christmas = false)
+        string? season = null)
     {
         var xpByDay = XpByDay(facts);
         var xp = xpByDay.Values.Sum();
@@ -162,7 +168,7 @@ public static class PracticeMath
                 streak.FreezeAvailable,
                 FrozenYesterday: streak.Frozen.Contains(today.AddDays(-1))),
             new WeeklyGoalDto(weekDays, PracticeRules.WeeklyGoalDays, weekStart),
-            PracticeBadges.Describe(stats, earned, christmas),
+            PracticeBadges.Describe(stats, earned, season),
             lastSeven,
             drills,
             track);

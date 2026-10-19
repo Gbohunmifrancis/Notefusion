@@ -1,8 +1,10 @@
 /**
- * The season's carol on the app's own piano (lib/synth, the same samples as everything else; no audio file): "Joy to
- * the world" (d' t l s) as the cap lands on the season's first splash, and the whole first line (d' t l s f m r d)
- * when the Carol singer sticker is earned. Never when the app's sound is off (Notifications › Sound), never in the
- * iPhone's silent mode, and mixed with whatever else is playing rather than stopping it.
+ * The season's tune on the app's own piano (lib/synth, the same samples as everything else; no audio file): at
+ * Christmas "Joy to the world" (d' t l s) as the cap lands on the season's first splash, and the whole first line
+ * (d' t l s f m r d) when the Carol singer sticker is earned; at Halloween the Mountain King's tiptoe (l, t, d r m d m)
+ * as the witch hat lands, and his first phrase for the Night Singer sticker. Never when the app's sound is off
+ * (Notifications › Sound), never in the iPhone's silent mode, and mixed with whatever else is playing rather than
+ * stopping it.
  *
  * JS only (expo-audio and expo-file-system, already in the app), so it ships over the air.
  */
@@ -30,17 +32,17 @@ function release(): void {
 }
 
 /**
- * Renders the notes now, so the chime can start the moment it is due. Resolves with a function that plays it (or
- * with null when the app's sound is off or the clip could not be written); the clip cleans itself up when done.
+ * Renders the notes now (at `bpm`), so the chime can start the moment it is due. Resolves with a function that plays
+ * it (or with null when the app's sound is off or the clip could not be written); the clip cleans itself up when done.
  */
-export async function prepareCarol(notes: readonly NoteEvent[]): Promise<(() => void) | null> {
+export async function prepareTune(notes: readonly NoteEvent[], bpm: number = CHIME_BPM): Promise<(() => void) | null> {
   await loadNotificationPrefs();
   if (!soundEnabled()) return null;
   await Promise.race([ensurePiano(), new Promise((r) => setTimeout(r, PIANO_WAIT_MS))]);
   let file: File;
   try {
-    file = new File(Paths.cache, `notefusion-carol-${Date.now()}.wav`);
-    file.write(synthesizeMelodyWavBase64([...notes], CHIME_BPM), { encoding: "base64" });
+    file = new File(Paths.cache, `notefusion-season-${Date.now()}.wav`);
+    file.write(synthesizeMelodyWavBase64([...notes], bpm), { encoding: "base64" });
   } catch {
     return null;
   }
@@ -56,7 +58,7 @@ export async function prepareCarol(notes: readonly NoteEvent[]): Promise<(() => 
       const player = createAudioPlayer({ uri: file.uri });
       player.volume = 0.85;
       player.play();
-      playing = { player, file, timer: setTimeout(release, (chimeSeconds(notes) + 0.5) * 1000) };
+      playing = { player, file, timer: setTimeout(release, (chimeSeconds(notes, bpm) + 0.5) * 1000) };
     } catch {
       try { if (file.exists) file.delete(); } catch { /* gone */ }
     }
@@ -64,7 +66,7 @@ export async function prepareCarol(notes: readonly NoteEvent[]): Promise<(() => 
 }
 
 /** Plays the notes once, now (the sticker's line). */
-export async function playCarol(notes: readonly NoteEvent[]): Promise<void> {
-  const play = await prepareCarol(notes);
+export async function playTune(notes: readonly NoteEvent[], bpm: number = CHIME_BPM): Promise<void> {
+  const play = await prepareTune(notes, bpm);
   play?.();
 }

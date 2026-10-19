@@ -1,6 +1,7 @@
 import { mono } from "./glyphs.mjs";
 import { rpoly } from "./emblems.mjs";
-import { capDefs, capShapes } from "./season.mjs";
+import { boo, booDefs, capDefs, capShapes, MOON } from "./season.mjs";
+import { note } from "./mascot.mjs";
 const f = (n) => Math.round(n * 10) / 10;
 const C = 60;
 // sticker outlines (fill-less, so one shape draws the shadow, the die-cut border and the body)
@@ -28,6 +29,14 @@ const grad = (id, a, b) => `<linearGradient id="${id}" x1="0" y1="0" x2=".35" y2
 const quaver = (x, y, s, c) => `<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="0" rx="11" ry="8.5" transform="rotate(-20)" fill="${c}"/><path d="M8.5 -3V-40C16 -37 23 -31 24 -20" fill="none" stroke="${c}" stroke-width="6" stroke-linecap="round"/></g>`;
 const spark = (x, y, s, c) => `<path transform="translate(${x} ${y}) scale(${s})" d="M0 -10C1 -3 3 -1 10 0C3 1 1 3 0 10C-1 3 -3 1 -10 0C-3 -1 -1 -3 0 -10Z" fill="${c}"/>`;
 const FLAME = "M0 -26C4 -16 16 -10 16 6C16 18 9 26 0 26C-9 26 -16 18 -16 7C-16 -1 -12 -6 -8 -10C-8 -4 -6 -1 -3 0C-4 -10 -2 -20 0 -26Z";
+
+// The Night Singer's lit pumpkin: three lobes, a green stem, a friendly carved face (no teeth) glowing candle cream.
+const PUMPKIN_DEFS = `<linearGradient id="pk" x1=".2" y1="0" x2=".8" y2="1"><stop offset="0" stop-color="#F8A65C"/><stop offset="1" stop-color="#E0711F"/></linearGradient>`;
+const pumpkin = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})">` +
+  `<path d="M-2 -17C-1 -22 2 -25 6 -26" fill="none" stroke="#5E7B3C" stroke-width="4" stroke-linecap="round"/>` +
+  `<g fill="url(#pk)"><ellipse cx="-11" rx="13" ry="15"/><ellipse cx="11" rx="13" ry="15"/><ellipse rx="13" ry="16"/></g>` +
+  `<path d="M-6 -14C-9 -6 -9 6 -6 14M6 -14C9 -6 9 6 6 14" fill="none" stroke="#B4531C" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>` +
+  `<g fill="#FFE9C2"><path d="M-12.5 -1L-9 -7.5L-5.5 -1Z"/><path d="M12.5 -1L9 -7.5L5.5 -1Z"/><path d="M-10 4C-6 10 6 10 10 4C6 6.5 -6 6.5 -10 4Z"/></g></g>`;
 
 export const BADGES = [
   { id: "first-drill", name: "First drill", shape: "circle", g: ["#7DB3FF", "#2F7BFF"],
@@ -62,6 +71,14 @@ export const BADGES = [
       `<ellipse cx="70" cy="70" rx="10" ry="8" transform="rotate(-18 70 70)"/></g>` +
       `<g transform="translate(58 33) rotate(-14) scale(.23)">${capShapes()}</g>` +
       `<g fill="#fff" opacity=".75"><circle cx="86" cy="80" r="2.6"/><circle cx="92" cy="66" r="1.8"/><circle cx="30" cy="56" r="2"/></g>` },
+  // The Halloween season's sticker (board j-halloween/03): all six of the Midnight path sung. A night sky, a crescent
+  // moon, a lit pumpkin and Boo singing "oo"; earned only while the season is on, kept for good. Boo's eyes are the
+  // night's navy rather than Doh's ink, so a locked sticker greys them with the rest.
+  { id: "night-singer", name: "Night singer", shape: "circle", g: ["#2E3C66", "#121A30"], defs: booDefs("b") + PUMPKIN_DEFS,
+    icon: `<path d="M39 25a12 12 0 1 0 13 17a10 10 0 1 1 -13 -17z" fill="${MOON}"/>` +
+      `<g fill="${MOON}" opacity=".85"><circle cx="54" cy="19" r="1.6"/><circle cx="24" cy="60" r="1.3"/><circle cx="88" cy="88" r="1.2"/></g>` +
+      `<g transform="translate(84 56) scale(.28) translate(-100 -104)">${boo({ mouth: "oo", arms: [null, null], edge: false, shadow: false, eye: "#121A30" }, "b")}</g>` +
+      note(68, 34, .55, "#9CC2FF") + pumpkin(50, 79, .92) },
   // A rose-pink medal on brand-blue ribbons: gold is Pro's alone.
   { id: "month", name: "A month of practice", shape: "medal", g: ["#F9A8D4", "#DB2777"], ribbon: "#2F7BFF",
     icon: `<path d="${rpoly(60, 50, 31, 10, 4, -90)}" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="2"/>` + mono("30", { cx: 60, cy: 51, h: 28, sw: 13, color: "#fff", gap: 14 }) },

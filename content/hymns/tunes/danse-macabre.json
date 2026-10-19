@@ -1,0 +1,37 @@
+{
+  "name": "Danse Macabre",
+  "title": "Danse Macabre",
+  "form": "waltz theme",
+  "music": [
+    {
+      "name": "Camille Saint-Saëns",
+      "born": 1835,
+      "died": 1921,
+      "role": "Music (1874)"
+    }
+  ],
+  "musicPublished": 1875,
+  "occasions": [
+    "Halloween"
+  ],
+  "key": "G minor",
+  "time": "3/4",
+  "tempo": 138,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "D4:1 | G4:2 G4:1 | F4:2 F4:1 | E4:2 E4:1 | Eb4:2 Eb4:1 | D4:1 E4:1 G4:1 | F#4:1 E4:1 D4:1 | E4:2 E4:1 | F#4:1 r:1 D4:1 | G4:2 G4:1 | F4:2 F4:1 | E4:2 E4:1 | Eb4:2 Eb4:1 | D4:1 G4:1 Bb4:1 | A4:1 F#4:1 D4:1 | F#4:2 E4:1 | D4:2",
+  "about": [
+    "Camille Saint-Saëns wrote Danse macabre, Op. 40, in 1874, after a poem by Henri Cazalis: at midnight Death plays his fiddle in the graveyard and the skeletons dance until the cock crows at dawn. The harp strikes twelve, and the solo violin plays with its top string tuned down to E flat.",
+    "This is the waltz tune that falls by half steps, G, F, E, E flat, D, read from Théodore Ritter's piano transcription of the piece (Paris: Durand & Schoenewerk): its pickup and the sixteen bars that follow. The piano has it with chords; this page has the tune alone, and its last note is held to close it, where the dance goes straight on."
+  ],
+  "reviewed": false,
+  "confidence": "hand-encoded from a public-domain score, unchecked",
+  "draft": false,
+  "source": "Internet Archive (University of Toronto)",
+  "sourceUrl": "https://archive.org/details/31761048735393",
+  "scoreUrl": "https://archive.org/download/31761048735393/31761048735393.pdf",
+  "licence": "Public domain. Saint-Saëns died in 1921 and Théodore Ritter, whose piano transcription the tune is read from, in 1886; the score scanned is Durand's edition, digitised by the Internet Archive from the University of Toronto Library.",
+  "credits": "Melody read from Théodore Ritter's piano transcription of Danse macabre (Paris: A. Durand & Fils), the University of Toronto's copy at the Internet Archive; public domain.",
+  "reviewNotes": "Hand-encoded from Ritter's piano transcription (Internet Archive 31761048735393): the pickup D under 'largamento e marcato' at the foot of music page 2, then the first two systems of page 3, up to the D where the staccato quaver theme returns (p). Read off a 400 dpi render with a staff-line grid. The last D is a crotchet in the score (the quaver theme follows in the same bar); it is a minim here so the tune ends on a full bar after the pickup. Bar 8 is F#, crotchet rest, D, as printed. Check that this is the tune the owner means by 'the main waltz theme': the piece's other famous tune, the staccato quaver theme (G B♭ G A | B♭ A B♭ G B♭ …, Ritter page 2), is not here. Tempo 138 is ours (the score says Mouvement modéré de valse). musicPublished 1875 is Durand's first edition of the orchestral score; check. Check against the orchestral score (IMSLP), then set \"reviewed\": true.",
+  "updated": "2026-10-19"
+}

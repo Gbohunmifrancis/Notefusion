@@ -729,9 +729,9 @@ export interface SystemAnnouncement {
  * what everyone sees. `on` is the flag for everyone right now: switched on and before its last day is over.
  */
 export interface FeatureFlag {
-  /** "christmas". */
+  /** "halloween" or "christmas" (listed in that order). One season is on at a time: turning one on switches the other off. */
   key: string;
-  /** "Christmas season". */
+  /** "Halloween season", "Christmas season". */
   name: string;
   /** The switch as an admin last set it. */
   enabled: boolean;
@@ -743,7 +743,7 @@ export interface FeatureFlag {
   autoOffAtUtc: string | null;
   /** Switched on, but past its last day. */
   switchedItselfOff: boolean;
-  /** yyyy-mm-dd: the next 6 January, for the date field when none is set or the set one has passed. */
+  /** yyyy-mm-dd: the next 6 January (Halloween: 1 November), for the date field when none is set or the set one has passed. */
   suggestedAutoOffAt: string;
   /** Null when it has never been changed. */
   updatedAtUtc: string | null;

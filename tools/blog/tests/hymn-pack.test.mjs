@@ -73,7 +73,7 @@ test("packErrors catches a version file that disagrees with the pack", () => {
   assert.match(packErrors(packText, wrong).join("\n"), /bytes/);
 });
 
-test("the carols carry their occasion, for the app's carols shelf; other entries carry none", () => {
+test("the carols and the Halloween songs carry their occasions, for the app's season shelves", () => {
   const carols = pack.hymns.filter((h) => h.occasions?.includes("Christmas")).map((h) => h.slug).sort();
   assert.deepEqual(carols, [
     "angels-from-the-realms-of-glory", "angels-we-have-heard-on-high", "away-in-a-manger", "far-far-away-on-judeas-plains",
@@ -82,7 +82,11 @@ test("the carols carry their occasion, for the app's carols shelf; other entries
     "of-the-fathers-love-begotten-divinum-mysterium-isorythmic", "once-in-royal-davids-city", "see-amid-the-winters-snow",
     "silent-night", "the-first-noel", "to-shepherds-as-they-watched-by-night",
   ]);
-  assert.ok(pack.hymns.every((h) => h.occasions === undefined || (h.kind === "hymn" && h.occasions.length > 0)));
+  assert.ok(pack.hymns.every((h) => h.occasions === undefined || h.occasions.length > 0));
+  // The Halloween shelf: hymns and tune pages alike carry the occasion, the All Saints tunes with "All Saints" too.
+  const halloween = pack.hymns.filter((h) => h.occasions?.includes("Halloween"));
+  for (const slug of ["tune-in-the-hall-of-the-mountain-king", "tune-toccata-in-d-minor", "tune-funeral-march-of-a-marionette", "tune-danse-macabre", "the-hearse-song", "for-all-the-saints"]) assert.ok(halloween.some((h) => h.slug === slug), slug);
+  assert.deepEqual(pack.hymns.filter((h) => h.kind === "tune" && h.occasions?.includes("All Saints")).map((h) => h.slug).sort(), ["tune-all-saints-darmstadt", "tune-all-saints-new"]);
   const broken = JSON.stringify({ ...pack, hymns: [{ ...pack.hymns[0], occasions: [] }, ...pack.hymns.slice(1)] });
   assert.match(packErrors(broken, versionText).join("\n"), /unreadable occasions/);
 });

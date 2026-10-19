@@ -14,6 +14,10 @@
   ],
   "musicPublished": 1872,
   "metre": "8 6 8 6",
+  "occasions": [
+    "All Saints",
+    "Halloween"
+  ],
   "key": "Bb major",
   "time": "4/4",
   "tempo": 96,
@@ -31,5 +35,5 @@
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000516; public domain.",
   "reviewNotes": "Imported from CCEH tune 000516 (the melody read from 000516a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Henry Stephen Cutler's dates (1825–1902) are from https://hymnary.org/person/Cutler_HS (Cutler, H. S. (Henry Stephen), 1825-1902; its biography says 'b. Boston, MA, 1824; d. Boston, 1902'); https://id.loc.gov/authorities/names/n87150055 (Cutler, H. S. (Henry Stephen), 1825-1902); CCEH's page gives only the year 1872. The bar lines are those of CCEH's Noteworthy score (000516a.nwc).",
   "importedFrom": "cceh:000516",
-  "updated": "2026-10-18"
+  "updated": "2026-10-19"
 }

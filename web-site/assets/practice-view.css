@@ -10,6 +10,10 @@
    Day). Never the Pro amber, and never a second accent. The same values as season.css and the phone's theme. */
 :root { --pine: #1F6B50; --pine-soft: rgba(31, 107, 80, 0.09); --pine-line: rgba(31, 107, 80, 0.22); --candle: #1F6B50; }
 :root[data-theme="dark"] { --pine: #2E8A66; --pine-soft: rgba(46, 138, 102, 0.14); --pine-line: rgba(46, 138, 102, 0.34); --candle: #F3DFB4; }
+/* The Halloween season: pumpkin as a tint or a hairline (never an icon or a flame, so never Playful's orange), moon
+   cream for small labels on Night (pumpkin on Day), bats pale on Night and slate on Day. The same values as season.css. */
+:root { --pumpkin: #B4531C; --pumpkin-soft: rgba(180, 83, 28, 0.09); --pumpkin-line: rgba(180, 83, 28, 0.24); --moon: #B4531C; --bat: #475569; }
+:root[data-theme="dark"] { --pumpkin: #F28A3A; --pumpkin-soft: rgba(242, 138, 58, 0.14); --pumpkin-line: rgba(242, 138, 58, 0.34); --moon: #EDE6CF; --bat: #C9D1E0; }
 
 .pv { display: flex; flex-direction: column; gap: 14px; }
 /* The Practice art (assets/practice-art): pictures sized by their width/height attributes, never stretched. */
@@ -148,24 +152,34 @@
 
 /* ── Playful: the buddy, a bigger game card, stars, stickers ─────────────── */
 .pv-buddy { display: flex; align-items: center; gap: 6px; }
-/* Doh in the season's cap: the cap laid over his picture's own box. */
+/* Doh in the season's costume (the cap, the witch hat): laid over his picture's own box. */
 .pv-capped { position: relative; display: block; flex: none; }
 .pv-cap { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 
-/* ── The Christmas carols card (board d-christmas/03), under today's drill while the season is on ─────────── */
-.pv-carols { display: flex; flex-direction: column; gap: 14px; padding: 18px 16px; border-radius: 16px; background: var(--pine-soft); border: 1px solid var(--pine-line); }
+/* ── The season's card under today's drill while its season is on: the carols' pine one (board d-christmas/03), the
+   Midnight path's pumpkin one (board j-halloween/03). The season's wash, hairline and small labels are its own. ── */
+.pv-carols { --sn-soft: var(--pine-soft); --sn-line: var(--pine-line); --sn-label: var(--candle); }
+.pv-carols.is-halloween { --sn-soft: var(--pumpkin-soft); --sn-line: var(--pumpkin-line); --sn-label: var(--moon); position: relative; overflow: hidden; }
+.pv-carols { display: flex; flex-direction: column; gap: 14px; padding: 18px 16px; border-radius: 16px; background: var(--sn-soft); border: 1px solid var(--sn-line); }
 .pv-carols-top { display: flex; align-items: flex-start; gap: 8px; }
 .pv-carols-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-.pv-carols-eyebrow { margin: 0; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--candle); }
+.pv-carols-eyebrow { margin: 0; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sn-label); }
 .pv .pv-carols-title { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.015em; color: var(--ink); }
 .pv-carols-body { margin: 0; font-size: 0.9rem; line-height: 1.45; color: var(--muted); }
 .pv-carols-bar { display: flex; gap: 6px; }
 .pv-carols-bar i { flex: 1; height: 5px; border-radius: 999px; background: var(--wash); }
-.pv-carols-bar i.on { background: var(--candle); }
+.pv-carols-bar i.on { background: var(--sn-label); }
 .pv-carols-foot { display: flex; align-items: center; gap: 10px; }
 .pv-carols-foot strong { font-size: 0.95rem; color: var(--ink); }
 .pv-carols-foot span { font-size: 0.8rem; color: var(--muted); }
 .pv-carols-go { flex: none; min-height: 44px; gap: 6px; }
+/* The Midnight path: three tiny still bats in the corner, and Doh in his witch hat with Boo at his shoulder (Playful). */
+.pv-card-bats { position: absolute; top: 10px; right: 12px; width: 96px; height: 44px; color: var(--bat); opacity: 0.45; pointer-events: none; }
+.pv-card-bats svg { position: absolute; display: block; }
+.pv-carols.is-halloween .pv-carols-top { position: relative; }
+.pv-card-pair { position: relative; flex: none; width: 94px; height: 80px; margin-top: 8px; }
+.pv-card-pair .pv-carols-doh { position: absolute; left: 0; bottom: 0; }
+.pv-card-boo { position: absolute; right: 0; top: -6px; }
 .pv-buddy-bubble { flex: 1; margin: 0; padding: 10px 14px; border-radius: 14px 14px 14px 4px; background: var(--surface); border: 1px solid var(--line); font-weight: 600; font-size: 0.9rem; line-height: 1.45; color: var(--ink); }
 .is-playful .pv-drill { border: 1.5px solid var(--play-line); }
 .is-playful .pv-eyebrow { color: var(--play); }

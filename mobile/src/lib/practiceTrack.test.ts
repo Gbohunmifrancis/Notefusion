@@ -2,10 +2,12 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   CONFETTI_ART,
+  HALLOWEEN_CONFETTI_ART,
   SEASON_CONFETTI_ART,
   THREE_STAR_SCORE,
   TRACK_OPTIONS,
   badgeArt,
+  seasonConfettiArt,
   buddyLine,
   celebrationFor,
   flameArt,
@@ -205,6 +207,19 @@ test("the Christmas season: the Carol singer has its own sticker, and its burst 
   for (const c of SEASON_CONFETTI_ART) assert.ok(c in ART, c);
   assert.ok(SEASON_CONFETTI_ART.includes("confetti-snowflake") && SEASON_CONFETTI_ART.includes("confetti-quaver"));
   assert.ok("season-cap" in ART);
+});
+
+test("the Halloween season: the Night Singer has its own sticker, and its burst is bats and quavers", () => {
+  assert.equal(badgeArt("night_singer", true), "badge-night-singer");
+  assert.equal(badgeArt("night_singer", false), "badge-night-singer-locked");
+  assert.ok("badge-night-singer" in ART && "badge-night-singer-locked" in ART);
+  assert.equal(rewardArt({ xpGained: 30, xp: 400, levelUp: false, level: ray, streak: 3, newBadges: [{ code: "night_singer", title: "Night Singer" }] } as never), "badge-night-singer");
+  for (const c of HALLOWEEN_CONFETTI_ART) assert.ok(c in ART, c);
+  assert.ok(HALLOWEEN_CONFETTI_ART.includes("confetti-bat") && HALLOWEEN_CONFETTI_ART.includes("confetti-quaver"));
+  assert.equal(seasonConfettiArt("halloween"), HALLOWEEN_CONFETTI_ART);
+  assert.equal(seasonConfettiArt("christmas"), SEASON_CONFETTI_ART);
+  // the hat, Boo (with his singing and blinking twins) and the bat the screens draw
+  for (const name of ["season-hat", "boo", "boo-sing", "boo-blink", "bat"]) assert.ok(name in ART, name);
 });
 
 test("levels, flames, stars, moods, tracks and confetti all name art that exists", () => {

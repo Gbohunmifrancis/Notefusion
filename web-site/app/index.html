@@ -337,14 +337,15 @@
       </span>
     </div>
     <div id="view-transcribe">
-    <div class="home" id="home" data-season-snow>
+    <div class="home" id="home" data-season-sky>
       <span class="home-mark" aria-hidden="true"></span>
       <h1 class="greeting" id="greeting">Good afternoon</h1><span class="pill pill-pro greeting-pro hidden" id="greeting-pro">Pro member</span>
       <p class="muted home-sub" id="home-sub">What are we writing out today?</p>
       <!-- Practice: the streak and XP, a tap from today's drill (filled by app.js once the numbers come). -->
       <button class="practice-chip hidden" id="practice-chip" type="button"><svg class="ic"><use href="/assets/icons.svg#i-flame"/></svg><span id="practice-chip-streak">0</span><i aria-hidden="true"></i><span id="practice-chip-xp">0 XP</span></button>
-      <!-- The Christmas carols path, while the season is on (the progress carries it): a pine link to Practice. -->
-      <button class="season-carols hidden" id="season-carols" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-snowflake"/></svg><span id="season-carols-text">Sing the carols</span><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-arrow-right"/></svg></button>
+      <!-- The season's path, while its season is on (the progress carries it): a link to Practice in the season's tint,
+           the carols (pine) or the Midnight path (pumpkin). app.js fills it. -->
+      <button class="season-carols hidden" id="season-carols" type="button"><svg class="ic" aria-hidden="true"><use id="season-carols-icon" href="/assets/icons.svg#i-snowflake"/></svg><span id="season-carols-text">Sing the carols</span><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-arrow-right"/></svg></button>
     </div>
     <div id="app-alert" class="alert hidden" role="alert"></div>
 
@@ -976,8 +977,8 @@
 <script src="/assets/notify.js?v=2" defer></script>
 <script src="/assets/freeweek.js?v=1" defer></script>
 <script src="/assets/sse.js?v=1" defer></script>
-<script src="/assets/app.js?v=53" defer></script>
-<script src="/assets/season.js?v=1" defer></script>
+<script src="/assets/app.js?v=55" defer></script>
+<script src="/assets/season.js?v=2" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>
 </html>

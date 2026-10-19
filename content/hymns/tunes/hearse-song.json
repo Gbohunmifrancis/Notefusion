@@ -1,0 +1,20 @@
+{
+  "name": "THE HEARSE SONG",
+  "music": [
+    {
+      "name": "Traditional American",
+      "traditional": true,
+      "role": "Melody, a soldiers' song of the First World War"
+    }
+  ],
+  "musicPublished": 1927,
+  "key": "C minor",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "G4:1 | C5:.75 D5:.25 Eb5:.75 G4:.25 C5:.75 D5:.25 Eb5:.75 G4:.25 | C5:.75 D5:.25 Eb5:.25 D5:.25 C5:.5 B4:.75 C5:.25 D5:.5 G4:.25 G4:.25 | C5:.75 D5:.25 Eb5:.5 G4:.25 G4:.25 C5:.75 D5:.25 Eb5:.5 G4:.25 G4:.25 | G4:.75 G4:.25 G4:.5 G4:.25 G4:.25 G4:.5 G4:.5 C5:1",
+  "reviewed": false,
+  "confidence": "read from a printed public-domain source, unchecked",
+  "reviewNotes": "Read from Carl Sandburg's The American Songbag (1927), page 444 (Internet Archive americansongbag00sand, leaf 472), which prints the melody alone. Written an octave above the Songbag, where it runs from G3 to E♭4. The dotted-quaver-and-semiquaver pairs are as printed; 'hearse's' is one note."
+}

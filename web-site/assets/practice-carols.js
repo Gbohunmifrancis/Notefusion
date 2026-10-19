@@ -1,20 +1,27 @@
-/* The Christmas carols path on the web (board d-christmas/03), as the phone has it (mobile/src/screens/practice/
- * CarolsScreen.tsx): six short drills from carols we hold, opened from the Practice hub's pine card while the season
- * is on for the singer. A Gloria warm-up, Joy to the World all the way down, Silent Night in thirds (the piano keeps
- * the tune in headphones) and sung along with its words, Hark! the Herald's leap and the First Noel's climb.
+/* A season's practice path on the web, as the phone has it (mobile/src/screens/practice/SeasonPathScreen.tsx), opened
+ * from the Practice hub's season card while that season is on for the singer:
+ *
+ * - Christmas, the carols (board d-christmas/03; GET /api/practice/carols): a Gloria warm-up, Joy to the World all the
+ *   way down, Silent Night in thirds (the piano keeps the tune in headphones) and sung along with its words, Hark! the
+ *   Herald's leap and the First Noel's climb. All six earn the Carol singer sticker: snowflakes and quavers, and the
+ *   first line of Joy to the World.
+ * - Halloween, the Midnight path (board j-halloween/03; GET /api/practice/seasons/halloween): the Mountain King's
+ *   tiptoe and climb, Bach's organ turn, the skeletons' waltz, the Marionette's fall and All Saints to finish. All
+ *   six earn the Night Singer sticker: bats and quavers, and the Mountain King's first phrase (from the hymn pack,
+ *   /hymns/pack.json, fetched only near the end of the path; else his opening seven notes).
  *
  * A side-path with its own place: each drill is heard, counted in, sung and marked by POST /api/practice/drills/grade
  * like any drill (XP, the day's allowance and the streak as ever) and never moves the main path. The next unsung drill
- * is open; any other can be chosen and sung again. All six sung earn the Carol singer sticker: a reward card, a burst
- * of snowflakes and quavers (none for reduced motion) and the first line of Joy to the World on the piano — after
- * the tap that sang it, and only with the app's sounds on. Playful has Doh, in his cap, over the path.
+ * is open; any other can be chosen and sung again. The sticker's burst is none for reduced motion, and its tune plays on
+ * the piano only after the tap that sang it, and only with the app's sounds on. Playful has Doh, in the season's
+ * costume, over the path (at Halloween with Boo beside him); Focused has the longer takes and neither.
  *
- * The words and arithmetic are practice-progress.js's (carolsView, carolsBuddyLine…) and practice-modes.js's (what
- * plays under a take); practice-view.js lends its drawing (the art, the marks, the toast, the burst). Loaded the
- * first time the path is opened, with practice-carols.css:
+ * The words and arithmetic are practice-progress.js's (seasonView, seasonBuddyLine, kingPhrase…) and
+ * practice-modes.js's (what plays under a take); practice-view.js lends its drawing (the art, the marks, the toast,
+ * the burst). Loaded the first time a path is opened, with practice-carols.css:
  *
- *   NfPracticeCarols.open(rootEl, { request, track, choir, practiceTrack, art, dohArt, icon, modeIcon, starGrade,
- *                                    gradeMarks, toast, burst, back })
+ *   NfPracticeCarols.open(rootEl, { season, request, track, choir, practiceTrack, art, dohArt, icon, modeIcon,
+ *                                    starGrade, gradeMarks, toast, burst, back })   — season: "christmas" or "halloween"
  *   NfPracticeCarols.leave()   — another view or back to the hub: stop sound and mic
  *   NfPracticeCarols.reset()   — signed out
  */
@@ -22,15 +29,20 @@
   "use strict";
 
   var PIANO_WAIT_MS = 8000;
+  /** The sticker waits this long at most for the Mountain King's phrase from the hymn pack, then plays his opening. */
+  var KING_WAIT_MS = 2500;
+  var PACK_URL = "/hymns/pack.json";
   var SOUNDS_KEY = "nf.web.sounds";
-  var ctx = null, root = null, gen = 0;
+  var ctx = null, root = null, gen = 0, season = "christmas", moment = 0;
   var c = fresh();
-  var take = null, hear = null, hearing = false, chime = null, sheetEl = null;
+  var take = null, hear = null, hearing = false, chime = null, sheetEl = null, kingLoad = null;
 
   function fresh() {
     return { path: null, loading: false, loadError: null, chosen: null, grade: null, gradeFor: null, phase: "idle", error: null, headphones: false };
   }
   function P() { return window.NfPracticeProgress; }
+  function W() { return P().seasonWords(season); }
+  function halloween() { return season === "halloween"; }
   function T() { return window.NfPracticeTrack; }
   function M() { return window.NfPracticeModes; }
   function playful() { var d = c.path && c.path.drills[0]; return ((d && d.drill.track) || (ctx && ctx.practiceTrack)) === "playful"; }
@@ -57,13 +69,14 @@
   function load(quiet) {
     var g = gen;
     if (!quiet) { c.loading = true; render(); }
-    return ctx.request("/api/practice/carols").then(function (p) {
+    return ctx.request(P().seasonPathUrl(season)).then(function (p) {
       if (g !== gen) return;
       c.path = p; c.loadError = null;
+      // One drill from the Night Singer: the Mountain King's phrase is fetched now, so it is ready when it is earned.
+      if (halloween() && p && p.season && p.season.next && p.season.total - p.season.sung <= 1) loadKing();
     }, function (err) {
       if (g !== gen || quiet) return;
-      c.loadError = err && err.code === "PRACTICE_SEASON_OFF" ? "The carols are put away until next Christmas."
-        : (err && err.message) || "The carols didn't load. Please try again.";
+      c.loadError = err && err.code === "PRACTICE_SEASON_OFF" ? W().away : (err && err.message) || W().failed;
     }).then(function () {
       if (g !== gen) return;
       c.loading = false;
@@ -77,9 +90,9 @@
   function render() {
     if (!root) return;
     root.innerHTML = "";
-    var box = el("div", "pc" + (playful() ? " is-playful" : ""));
-    var view = c.path ? P().carolsView(c.path.season, c.chosen) : null;
-    box.appendChild(header(view ? view.eyebrow : "Christmas"));
+    var box = el("div", "pc" + (playful() ? " is-playful" : "") + (halloween() ? " is-halloween" : ""));
+    var view = c.path ? P().seasonView(c.path.season, c.chosen) : null;
+    box.appendChild(header(view ? view.eyebrow : W().name));
     if (!c.path) {
       if (c.loadError) {
         var failed = el("div", "card pc-failed");
@@ -94,12 +107,19 @@
       root.appendChild(box);
       return;
     }
-    var season = c.path.season;
+    var card = c.path.season;
     if (playful()) {
-      var bud = el("div", "pv-buddy pc-buddy"), line = P().carolsBuddyLine(season);
+      var bud = el("div", "pv-buddy pc-buddy"), line = P().seasonBuddyLine(card);
       bud.setAttribute("role", "note"); bud.setAttribute("aria-label", "Doh says: " + line);
-      var pose = c.phase === "leadin" || c.phase === "singing" ? "doh-sing" : view.allSung ? "doh-cheer" : "doh-wave";
-      bud.appendChild(ctx.dohArt(pose, 72, "pv-buddy-doh"));
+      var singing = c.phase === "leadin" || c.phase === "singing";
+      var pose = singing ? "doh-sing" : view.allSung ? "doh-cheer" : "doh-wave";
+      if (halloween()) {
+        // Boo, Halloween's friendly ghost, floats beside Doh (never alone: board j-halloween/03).
+        var pair = el("span", "pc-pair");
+        pair.appendChild(ctx.dohArt(pose, 72, "pv-buddy-doh"));
+        pair.appendChild(ctx.art(singing ? "boo-sing" : "boo", 34, 34, "pc-boo"));
+        bud.appendChild(pair);
+      } else bud.appendChild(ctx.dohArt(pose, 72, "pv-buddy-doh"));
       var bubble = el("p", "pv-buddy-bubble", line); bubble.setAttribute("aria-hidden", "true");
       bud.appendChild(bubble);
       box.appendChild(bud);
@@ -112,11 +132,11 @@
       list.appendChild(li);
     });
     box.appendChild(list);
-    var earned = season.next == null, reward = el("div", "pc-reward" + (earned ? " is-earned" : ""));
-    reward.appendChild(ctx.art(T().badgeArt(season.badgeCode, earned), 52, 54));
+    var earned = card.next == null, reward = el("div", "pc-reward" + (earned ? " is-earned" : ""));
+    reward.appendChild(ctx.art(T().badgeArt(card.badgeCode, earned), 52, 54));
     var rt = el("p");
-    rt.appendChild(el("strong", null, "Carol singer sticker"));
-    rt.appendChild(document.createTextNode(earned ? ": yours to keep, after Christmas too." : " for all six. It stays in your book after Christmas."));
+    rt.appendChild(el("strong", null, W().sticker + " sticker"));
+    rt.appendChild(document.createTextNode(earned ? ": yours to keep, after " + W().name + " too." : " for all six. It stays in your book after " + W().name + "."));
     reward.appendChild(rt);
     box.appendChild(reward);
     root.appendChild(box);
@@ -129,7 +149,7 @@
     back.addEventListener("click", function () { leave(); ctx.back(); });
     var text = el("div", "pm-top-text");
     text.appendChild(el("p", "pm-eyebrow", eyebrow));
-    var h = el("h2", "pm-title", "Carols"); h.id = "pc-title"; h.setAttribute("tabindex", "-1");
+    var h = el("h2", "pm-title", W().pathTitle); h.id = "pc-title"; h.setAttribute("tabindex", "-1");
     text.appendChild(h);
     bar.appendChild(back); bar.appendChild(text);
     return bar;
@@ -184,14 +204,14 @@
     }
     if (d.backing) {
       var lane = el("div", "pc-lane");
-      lane.appendChild(el("span", "pc-lane-label", "Piano tune"));
+      lane.appendChild(el("span", "pc-lane-label", halloween() ? "Piano plays" : "Piano tune"));
       var tune = el("ol", "pc-chips is-tune"); tune.setAttribute("aria-label", "The piano plays: " + d.backing.map(written).join(" "));
       d.backing.forEach(function (n) { var li = el("li", null, written(n)); li.setAttribute("aria-hidden", "true"); tune.appendChild(li); });
       lane.appendChild(tune);
       card.appendChild(lane);
     }
     var sung = el("div", d.backing ? "pc-lane" : "pc-sung");
-    if (d.backing) sung.appendChild(el("span", "pc-lane-label", "You, alto"));
+    if (d.backing) sung.appendChild(el("span", "pc-lane-label", halloween() ? "You sing" : "You, alto"));
     var chips = el("ol", "pc-chips" + (d.syllables && d.syllables.length ? " has-words" : ""));
     chips.id = "pc-chips";
     chips.setAttribute("aria-label", "Sing: " + drill.notes.map(written).join(" "));
@@ -241,7 +261,7 @@
         var again = button("btn-ghost", "/assets/icons.svg#i-mic", playful() ? "Again!" : "Sing it again", function () { sing(d); });
         if (left === 0) again.disabled = true;
         actions.appendChild(again);
-        var on = button("btn-primary", "/assets/icons.svg#i-arrow-right", "Next carol", function () { choose(next.index); });
+        var on = button("btn-primary", "/assets/icons.svg#i-arrow-right", W().nextLabel, function () { choose(next.index); });
         on.id = "pc-next";
         actions.appendChild(on);
       } else {
@@ -287,7 +307,7 @@
     if (d.backing) voices.push({ name: "tune", notes: d.backing, gain: M().TUNE_LEVEL });
     hear.load({ voices: voices, tempoBpm: d.drill.tempoBpm, timeSignature: d.drill.timeSignature });
     hear.play();
-    track("carol_heard", d.drill.id);
+    track(W().heard, d.drill.id);
   }
   function stopHear() { if (hear) hear.stop(); highlight(-1); }
 
@@ -369,7 +389,7 @@
       schedule(audio, d, plan, mine.t0, got[1]);
       c.phase = "leadin"; render();
       document.body.classList.add("is-recording");
-      track("carol_started", "drill=" + d.drill.id + ";step=" + d.step.index);
+      track(W().started, "drill=" + d.drill.id + ";step=" + d.step.index);
       mine.timer = setInterval(function () { tick(mine); }, 100);
       var natural = plan.seconds + P().partSeconds(d.drill.notes, d.drill.tempoBpm) + P().TAIL_SEC;
       var seconds = d.drill.maxTakeSeconds > 0 ? Math.min(d.drill.maxTakeSeconds, natural) : natural;
@@ -415,13 +435,11 @@
     ctx.request("/api/practice/drills/grade", { method: "POST", form: form }).then(function (result) {
       if (g !== gen) return;
       c.grade = result; c.gradeFor = d.step.index; c.phase = "idle"; c.error = null;
-      track("carol_marked", "drill=" + d.drill.id + ";score=" + result.score);
+      track(W().marked, "drill=" + d.drill.id + ";score=" + result.score);
       P().rewardEvents(result.reward).forEach(function (e) { track(e.name, e.detail); });
       render();
-      if (P().earnedCarolSinger(result.reward && result.reward.newBadges, c.path && c.path.season.badgeCode)) {
-        ctx.burst(T().SEASON_CONFETTI_ART);
-        playLine();
-        stickerSheet(result);
+      if (P().earnedSeasonBadge(result.reward && result.reward.newBadges, c.path && c.path.season.badgeCode)) {
+        celebrate(result);
       } else {
         var how = T().celebrationFor(d.drill.track, result.score, result.reward, false), moment = P().rewardMoment(result.reward);
         var line = d.drill.track === "playful" ? T().playfulRewardLine(result.reward) : moment && moment.line;
@@ -436,30 +454,67 @@
     });
   }
 
-  // ── The Carol singer: the reward card and the line on the piano ───────
-  /** The first line of Joy to the World, once, on the piano: after the tap that sang it, and only with sounds on. */
-  function playLine() {
+  // ── The season's sticker: the burst, the reward card and the tune on the piano ───────
+  /** The sticker's tune: the carols' whole Joy to the World line; the Midnight path's Mountain King phrase. */
+  function celebrate(result) {
+    var mine = ++moment;
+    ctx.burst(T().seasonConfettiArt(season));
+    if (!halloween()) {
+      playTune(P().JOY_LINE, P().CHIME_BPM, "2/4");
+      stickerSheet(result, P().JOY_LINE, "Joy to the World");
+      return;
+    }
+    var waited = new Promise(function (resolve) { setTimeout(function () { resolve(null); }, KING_WAIT_MS); });
+    Promise.race([loadKing(), waited]).then(function (phrase) {
+      if (mine !== moment || !root) return;
+      var notes = phrase || P().KING_OPENING;
+      playTune(notes, P().KING_BPM, "4/4");
+      stickerSheet(result, notes, "In the Hall of the Mountain King");
+    });
+  }
+
+  /**
+   * The Mountain King's first phrase as the hymn pack publishes it, labelled by the solfa engine (choir.js), or null
+   * without the pack or the tune. Asked for once, near the end of the path.
+   */
+  function loadKing() {
+    if (kingLoad) return kingLoad;
+    kingLoad = (window.fetch ? fetch(PACK_URL, { credentials: "omit" }).then(function (r) { return r.ok ? r.json() : null; }) : Promise.resolve(null))
+      .then(function (pack) {
+        var king = pack && P().mountainKing(pack.hymns);
+        if (!king || !king.notes || !king.notes.length || !ctx || !ctx.choir) return null;
+        var notes = king.notes.map(function (n) { return { pitchMidi: n[0], startBeat: n[1], durBeats: n[2] }; });
+        return P().kingPhrase(ctx.choir.label(notes, king.key));
+      })
+      .catch(function () { kingLoad = null; return null; });
+    return kingLoad;
+  }
+
+  /** The tune, once, on the piano: after the tap that sang it, and only with sounds on. */
+  function playTune(notes, bpm, time) {
     if (!soundsOn()) return;
     try {
       if (!chime) chime = ctx.choir.createPlayer();
-      chime.load({ voices: [{ name: "carol", notes: P().JOY_LINE, gain: 0.9 }], tempoBpm: P().CHIME_BPM, timeSignature: "2/4" });
+      chime.load({ voices: [{ name: "tune", notes: notes, gain: 0.9 }], tempoBpm: bpm, timeSignature: time });
       chime.play();
     } catch (e) { /* the sticker says it */ }
   }
 
-  function stickerSheet(result) {
+  function stickerSheet(result, notes, tuneName) {
     closeSheet();
-    var back = el("div", "pc-sheet-back"), sheet = el("div", "pc-sheet");
+    var words = W(), line = P().stickerLine(season, notes);
+    var back = el("div", "pc-sheet-back" + (halloween() ? " is-halloween" : "")), sheet = el("div", "pc-sheet");
     sheet.setAttribute("role", "dialog"); sheet.setAttribute("aria-modal", "true"); sheet.setAttribute("aria-labelledby", "pc-sheet-title");
     sheet.appendChild(ctx.art(T().badgeArt(c.path.season.badgeCode, true), 132, 136, "pc-sheet-art"));
-    var h = el("h2", "pc-sheet-title", "Carol singer"); h.id = "pc-sheet-title";
+    var h = el("h2", "pc-sheet-title", words.sticker); h.id = "pc-sheet-title";
     sheet.appendChild(h);
-    sheet.appendChild(el("p", "pc-sheet-body", "You sang all six carols. This sticker stays in your book after Christmas."));
+    sheet.appendChild(el("p", "pc-sheet-body", words.stickerBody));
     if (result.reward && result.reward.xpGained > 0) sheet.appendChild(el("p", "pc-sheet-xp", "+" + result.reward.xpGained + " XP · same XP rules as every drill"));
-    var pill = el("p", "pc-sheet-line");
-    pill.setAttribute("aria-label", "Joy to the World: " + P().solfaLine(P().JOY_LINE));
+    // A long phrase (the Mountain King's) sets tighter, so it fits a 360 px phone on one line.
+    var pill = el("p", "pc-sheet-line" + (line.length > 24 ? " is-long" : ""));
+    pill.setAttribute("aria-label", tuneName + ": " + line);
     pill.appendChild(ctx.modeIcon("runs", "pc-sheet-note"));
-    var sol = el("span", null, P().solfaLine(P().JOY_LINE)); sol.setAttribute("aria-hidden", "true");
+    var sol = el("span", null, line); sol.setAttribute("aria-hidden", "true");
     pill.appendChild(sol);
     sheet.appendChild(pill);
     var row = el("div", "pc-sheet-actions");
@@ -478,12 +533,16 @@
 
   // ── The way in and out ──────────────────────────────────────────────────
   function open(rootEl, context) {
-    ctx = context; root = rootEl;
+    var next = context && context.season === "halloween" ? "halloween" : "christmas";
+    // Another season's path (the switch moved since the last open) starts from nothing.
+    if (next !== season) { gen++; c = fresh(); kingLoad = null; }
+    ctx = context; root = rootEl; season = next;
     c.chosen = null; c.grade = null; c.gradeFor = null; c.error = null;
     render();
     load().then(function () { var t = root && root.querySelector("#pc-title"); if (t) t.focus(); });
   }
   function leave() {
+    moment++;
     stopHear();
     if (chime) { try { chime.stop(); } catch (e) { /* gone */ } }
     if (take) cancelTake();

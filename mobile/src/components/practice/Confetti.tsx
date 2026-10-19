@@ -38,7 +38,7 @@ function layout(): Piece[] {
 
 /**
  * Fires once each time `burst` changes to a new number above 0. `art` swaps the paper bits (the Carol singer's
- * snowflakes and quavers); the usual ones by default.
+ * snowflakes and quavers, the Night Singer's bats and quavers); the usual ones by default.
  */
 export function Confetti({ burst, reduceMotion, art = CONFETTI_ART }: { burst: number; reduceMotion: boolean; art?: readonly ArtName[] }) {
   const t = useRef(new Animated.Value(0)).current;

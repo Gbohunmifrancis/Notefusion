@@ -115,9 +115,18 @@ export function titleKey(title: string): string {
   return fold(title);
 }
 
-/** The words an occasion is found by: its own name, and "carol" / "carols" for Christmas. */
+/** The words an occasion is found by: its own name, "carol" / "carols" for Christmas and "spooky" for Halloween. */
+const OCCASION_WORDS: Record<string, string> = {
+  christmas: "christmas carol carols",
+  halloween: "halloween spooky",
+};
+
 function occasionWords(h: PackHymn): string {
-  return occasionsOf(h).map((o) => (fold(o) === "christmas" ? "christmas carol carols" : fold(o))).join(" ");
+  return occasionsOf(h).map((o) => OCCASION_WORDS[fold(o)] ?? fold(o)).join(" ");
+}
+
+function hasOccasion(h: PackHymn, occasion: string): boolean {
+  return occasionsOf(h).some((o) => fold(o) === occasion);
 }
 
 function occasionsOf(h: PackHymn): string[] {
@@ -127,7 +136,8 @@ function occasionsOf(h: PackHymn): string[] {
 /**
  * Hymns matching what was typed, best first: a title that starts with it, then a title containing
  * it, then the first line, then the tune's name, then the occasion ("christmas" or "carol" finds the
- * carols). Every word typed must appear. Nothing typed is the whole pack by title.
+ * carols; "halloween", "spooky" or "all saints" the songs for Halloween). Every word typed must
+ * appear. Nothing typed is the whole pack by title.
  */
 export function searchHymns(hymns: readonly PackHymn[], query: string): PackHymn[] {
   const q = fold(query);
@@ -170,8 +180,56 @@ export function carols(hymns: readonly PackHymn[]): PackHymn[] {
     return i < 0 ? CAROL_ORDER.length : i;
   };
   return hymns
-    .filter((h) => occasionsOf(h).some((o) => fold(o) === "christmas"))
+    .filter((h) => hasOccasion(h, "christmas"))
     .sort((a, b) => rank(a) - rank(b) || titleKey(a.title).localeCompare(titleKey(b.title)) || a.slug.localeCompare(b.slug));
+}
+
+/**
+ * The best known spooky songs, first on the Halloween shelf in this order (by title: they are being written into the
+ * pack as this ships); the rest follow by title, and the All Saints tunes close it (All Hallows' Eve is the night
+ * before All Saints' Day).
+ */
+const HALLOWEEN_ORDER = ["mountain king", "toccata", "ghost of john", "dem bones", "marionette", "danse macabre", "hearse song"];
+
+/** A song for All Saints' Day (tagged "All Saints"), which the Halloween shelf ends with. */
+export function isAllSaints(h: PackHymn): boolean {
+  return hasOccasion(h, "all saints");
+}
+
+/**
+ * The songs for Halloween in the pack (tagged `occasions` "Halloween"; the All Saints tunes carry ["All Saints",
+ * "Halloween"]): the spooky ones first, the best known first, then the All Saints tunes. The Hymns screen's "Songs for
+ * Halloween" shelf while the season is on, and its "See all".
+ */
+export function halloween(hymns: readonly PackHymn[]): PackHymn[] {
+  const rank = (h: PackHymn) => {
+    if (isAllSaints(h)) return HALLOWEEN_ORDER.length + 1;
+    const title = fold(h.title);
+    const i = HALLOWEEN_ORDER.findIndex((k) => title.includes(k));
+    return i < 0 ? HALLOWEEN_ORDER.length : i;
+  };
+  return hymns
+    .filter((h) => hasOccasion(h, "halloween"))
+    .sort((a, b) => rank(a) - rank(b) || titleKey(a.title).localeCompare(titleKey(b.title)) || a.slug.localeCompare(b.slug));
+}
+
+/** "See all"'s filters on the Halloween shelf: every song, the spooky ones, the All Saints tunes. */
+export type HalloweenFilter = "all" | "spooky" | "saints";
+
+export function filterHalloween(songs: readonly PackHymn[], filter: HalloweenFilter): PackHymn[] {
+  if (filter === "spooky") return songs.filter((h) => !isAllSaints(h));
+  if (filter === "saints") return songs.filter(isAllSaints);
+  return [...songs];
+}
+
+/** The season's shelf: the carols at Christmas, the songs for Halloween at Halloween. */
+export function seasonShelf(hymns: readonly PackHymn[], season: "christmas" | "halloween"): PackHymn[] {
+  return season === "halloween" ? halloween(hymns) : carols(hymns);
+}
+
+/** The pack's "In the Hall of the Mountain King" (the Night Singer's phrase), or null while the pack has none. */
+export function mountainKing(hymns: readonly PackHymn[]): PackHymn | null {
+  return hymns.find((h) => fold(h.title).includes("mountain king")) ?? null;
 }
 
 /** A hymn's opening as a shelf card prints it, from its labelled notes: "s l s m s l s m". */

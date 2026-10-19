@@ -395,12 +395,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Console: `GET /api/admin/analytics/practice` (`GetPracticeAnalyticsQuery`, web-admin `/practice`; takes and reminders on the singer's
   day, paths replayed through `PracticePath.Read`'s observer, streak breaks from `PracticeMath.StreakBreaks`) and `…/analytics/growth`
   (`GetGrowthQuery`, `/growth`: renewals rebuilt from membership charges, free-to-paid by price set via the shared `FreeLimitReach`, failures by kind, phones by build).
-- The season flag (`Core/Entities/FeatureFlag`, `Application/Flags`): a `feature_flags` row per key (`christmas`), off until an
+- The season flag (`Core/Entities/FeatureFlag`, `Application/Flags`): a `feature_flags` row per key (`christmas`, `halloween`), off until an
   admin turns it on in the console (Operations › Feature flags, `GET/PUT /api/admin/features[/{key}]`, every change in the audit
   log as `SetFeatureFlag`). On for everyone while enabled and before its switch-off (the midnight WAT after its last day, the
   next 6 Jan by default; one that switched itself off stays off until turned on again); an admin also sees it while
   `AdminPreview` is on (the role confirmed in the database, not the token). Every surface reads the anonymous `GET /api/app/season`
-  (`{christmas}`, a minute's Cache-Control: public, private with a token); nothing carries a date of its own. Pushes read it for
+  (`{christmas, halloween}`, a minute's Cache-Control: public, private with a token); nothing carries a date of its own. Pushes read it for
   everyone only, never the preview: Doh's festive lines join the reminder rotation (`PracticeReminderCopy.ChristmasPlayful/Plain`,
   `{carol}` the singer's next carol) and the ready push, phone and web, says `ReadyPushCopy`'s (same timing and limits). Practice:
   the six-drill `CarolPath` (each a run of its carol's notes in `web-site/hymns/pack.json`, a test checks; Silent Night's alto
@@ -422,6 +422,19 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `/hymns/occasions/christmas`, the Silent Night sample from `<template id="season-sheet">` (render-home.mjs), flakes in
   `[data-season-snow]`; the site never chimes); /app's question and "Sing the carols · n of 6"; the Practice view's card
   and `assets/practice-carols.js` (+ .css, on first open; the line plays after the sixth take, with sounds on).
+  Halloween (`halloween`, board j-halloween) is the second season on the same pieces: one season at a time (turning one on
+  switches the other off, in the trail; Christmas wins an admin's double preview), its default last day 1 Nov, All Saints' Day
+  (`FeatureFlags.DefaultLastDay(key, …)`). A season's practice path is a `SeasonPath` (`CarolPath`; `HalloweenPath`, the
+  Midnight path: six drills from the songs for Halloween, `midnight-` codes, `GET /api/practice/seasons/{season}` beside
+  `/carols`); progress, badges (`carol_singer`, `night_singer`), the recorder and grading read the season on (`string? season`);
+  `PracticeReminderCopy.HalloweenPlayful/Plain` (`{song}`) plus `HalloweenLastNight` on the path's last day for a singer who
+  started it; `ReadyPushCopy.ForSeason`. The songs carry `occasions: ["Halloween"]` (the All Saints tunes `["All Saints",
+  "Halloween"]`; page `/hymns/occasions/halloween`). Clients: the witch hat (`season-hat`; its purple #5B3A9E on the hat only)
+  on the mark and Doh, Boo (`boo*`, on the Midnight path only, always beside Doh), bats (`bat` in currentColor,
+  `confetti-bat`), pumpkin tints only (#F28A3A Night / #B4531C Day, never an icon or flame; moon #EDE6CF labels), the Mountain
+  King chime (`l, t, d r m d m`) once a season; mobile `components/season/Costume|Bats|Crescent`, `lib/season.ts` per season,
+  `screens/practice/SeasonPathScreen`; web `season.js` (`data-season`, `[data-season-sky]`, `#season-sheet-halloween` from
+  `render-home.mjs`), `practice-carols.js` for either season; the console's `FlagsView` both seasons with a switch confirmation.
 - Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read),
   the opening eight notes as `preview` on every read (list rows show them in solfa), an
   optional folder name (`PUT /api/library/{id}/folder`; a folder is just the name its sheets share) and

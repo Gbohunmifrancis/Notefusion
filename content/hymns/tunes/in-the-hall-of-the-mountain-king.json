@@ -1,0 +1,41 @@
+{
+  "name": "In the Hall of the Mountain King",
+  "title": "In the Hall of the Mountain King",
+  "form": "theme",
+  "alsoKnownAs": [
+    "I Dovregubbens hall",
+    "In der Halle des Bergkönigs"
+  ],
+  "music": [
+    {
+      "name": "Edvard Grieg",
+      "born": 1843,
+      "died": 1907,
+      "role": "Music (1875), for Ibsen's Peer Gynt"
+    }
+  ],
+  "musicPublished": 1888,
+  "occasions": [
+    "Halloween"
+  ],
+  "key": "B minor",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "B3:.5 C#4:.5 D4:.5 E4:.5 F#4:.5 D4:.5 F#4:1 | E#4:.5 C#4:.5 E#4:1 E4:.5 C4:.5 E4:1 | B3:.5 C#4:.5 D4:.5 E4:.5 F#4:.5 D4:.5 F#4:.5 B4:.5 | A4:.5 F#4:.5 D4:.5 F#4:.5 A4:2 | B3:.5 C#4:.5 D4:.5 E4:.5 F#4:.5 D4:.5 F#4:1 | E#4:.5 C#4:.5 E#4:1 E4:.5 C4:.5 E4:1 | B3:.5 C#4:.5 D4:.5 E4:.5 F#4:.5 D4:.5 F#4:.5 B4:.5 | A4:.5 F#4:.5 D4:.5 F#4:.5 A4:2 | F#4:.5 G#4:.5 A#4:.5 B4:.5 C#5:.5 A#4:.5 C#5:1 | D5:.5 A#4:.5 D5:1 C#5:.5 A#4:.5 C#5:1 | F#4:.5 G#4:.5 A#4:.5 B4:.5 C#5:.5 A#4:.5 C#5:1 | D5:.5 A#4:.5 D5:1 C#5:2 | F#4:.5 G#4:.5 A#4:.5 B4:.5 C#5:.5 A#4:.5 C#5:1 | D5:.5 A#4:.5 D5:1 C#5:.5 A#4:.5 C#5:1 | F#4:.5 G#4:.5 A#4:.5 B4:.5 C#5:.5 A#4:.5 C#5:1 | D5:.5 A#4:.5 D5:1 C#5:2 | B3:.5 C#4:.5 D4:.5 E4:.5 F#4:.5 D4:.5 F#4:1 | E#4:.5 C#4:.5 E#4:1 E4:.5 C4:.5 E4:1 | B3:.5 C#4:.5 D4:.5 E4:.5 F#4:.5 D4:.5 F#4:.5 B4:.5 | A4:.5 F#4:.5 D4:.5 F#4:.5 A4:2 | B3:.5 C#4:.5 D4:.5 E4:.5 F#4:.5 D4:.5 F#4:1 | E#4:.5 C#4:.5 E#4:1 E4:.5 C4:.5 E4:1 | B3:.5 C#4:.5 D4:.5 E4:.5 F#4:.5 D4:.5 F#4:.5 B4:.5 | A4:.5 F#4:.5 D4:.5 F#4:.5 A4:2",
+  "about": [
+    "Edvard Grieg wrote In the Hall of the Mountain King in 1875 for Henrik Ibsen's play Peer Gynt, where the trolls of the mountain close in on Peer, and later made it the last movement of his first Peer Gynt Suite (Op. 46, published in 1888). The same theme comes round again and again, louder and faster each time.",
+    "This is the theme as Grieg's own piano version gives it, read note for note from the Mutopia Project's public-domain typesetting: the tune in B minor twice, its answer on F sharp twice, then the B minor tune twice more. The piano moves it from octave to octave; here it sits in one singing range, the tune from the B below middle C and the answer from the F sharp a fifth above. The staccato and accents of the score are left out."
+  ],
+  "reviewed": false,
+  "confidence": "hand-encoded from a public-domain score, unchecked",
+  "draft": false,
+  "source": "Mutopia Project",
+  "sourceUrl": "https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=1888",
+  "scoreUrl": "https://www.mutopiaproject.org/ftp/GriegE/O46/Dans_l_antre_du_roi_de_la_montagne/Dans_l_antre_du_roi_de_la_montagne.ly",
+  "licence": "Public domain. Grieg died in 1907. The Mutopia Project's typesetting of his piano version (from The University Society's edition of 1918) is marked “Public Domain” by its typesetter.",
+  "credits": "Melody read from the Mutopia Project's LilyPond typesetting (piece 1888, typeset by Coyau) of Grieg's piano version of Peer Gynt Suite No. 1, Op. 46 No. 4; public domain.",
+  "reviewNotes": "Hand-encoded from Mutopia piece 1888 (the .ly source, checked against its MIDI note for note): bars 2–25 of the piano score, the theme in the order A A B B A A (B minor tune, F-sharp answer). Octaves are ours: the piano doubles the theme and moves it between octaves (statements from B1 and B2, answers from F#2 and F#3); every statement here is written with the tune from B3 and the answer from F#4, a fifth above, so one voice can sing it — check that plan against the orchestral score. E# (bar 2) is written as E#4, i.e. F natural, and C natural as C4; the engine names them ma and ta. Staccato dots and accents are not encoded; the crotchets are written as crotchets. Tempo 120 is ours: the score says Alla marcia e molto marcato, and Mutopia's 4=138 is the typesetter's MIDI tempo. The first bar is the home page's Halloween sample (tools/blog/lib/render-home.mjs HALLOWEEN_SAMPLE_TUNE). Check against a printed score, then set \"reviewed\": true.",
+  "updated": "2026-10-19"
+}

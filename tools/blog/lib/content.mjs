@@ -169,6 +169,11 @@ export function loadTunes(dir = path.join(CONTENT_DIR, "hymns", "tunes")) {
       if (typeof t.draft !== "boolean" || typeof t.reviewed !== "boolean") fail(file, `"draft" and "reviewed" must be true or false`);
       if (!isIsoDate(t.updated)) fail(file, `"updated" must be YYYY-MM-DD`);
       if (t.alsoKnownAs != null && (!Array.isArray(t.alsoKnownAs) || t.alsoKnownAs.some((x) => typeof x !== "string" || !x.trim()))) fail(file, `"alsoKnownAs" must be a list of text`);
+      // A tune page names its occasions like a hand-made hymn (lib/collections.mjs OCCASIONS), what it is when it is
+      // not a hymn tune ("form": "waltz theme"), and may say more about itself ("about", paragraphs).
+      if (t.occasions != null && (!Array.isArray(t.occasions) || !t.occasions.length || t.occasions.some((x) => !OCCASION_NAMES.includes(x)))) fail(file, `"occasions" must be a list of: ${OCCASION_NAMES.join(", ")}`);
+      if (t.form != null && (typeof t.form !== "string" || !/^[a-z][a-z ]*$/.test(t.form))) fail(file, `"form" names what the tune is, in lower case ("waltz theme")`);
+      if (t.about != null && (!Array.isArray(t.about) || t.about.some((x) => typeof x !== "string" || !x.trim()))) fail(file, `"about" must be a list of paragraphs`);
       if (!t.draft) {
         if (!t.parsed) fail(file, `a published tune page needs its melody; keep it a draft until it has one`);
         const pd = tunePublicDomainProblems(t);

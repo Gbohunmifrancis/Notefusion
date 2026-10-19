@@ -677,7 +677,7 @@
   // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
   // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
   // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=6", "/assets/practice-progress.js?v=5", "/assets/practice-track.js?v=5", "/assets/practice-modes.js?v=1", "/assets/practice-view.js?v=7"];
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=7", "/assets/practice-progress.js?v=7", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=1", "/assets/practice-view.js?v=9"];
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
   function loadAsset(url) {
@@ -693,7 +693,7 @@
     return assetLoads[url];
   }
   var practiceViewOpen = false;
-  /** What the Practice view opens on, once: "carols" from the home's Christmas link, else the hub. */
+  /** What the Practice view opens on, once: "season" from the home's season link (the carols, the Midnight path), else the hub. */
   var practiceOpensOn = null;
   function openPracticeView() {
     practiceViewOpen = true;
@@ -730,25 +730,35 @@
     renderSeasonCarols(p);
   }
   /**
-   * The Christmas carols, while the season is on for this account (the progress carries the path): one pine link
-   * under the greeting, "Sing the carols · 2 of 6", to the carols path in Practice (board d-christmas/06).
+   * The season's path, while its season is on for this account (the progress carries it): one link under the
+   * greeting to the path in Practice, in the season's tint — pine "Sing the carols · 2 of 6" (board d-christmas/06),
+   * pumpkin "The Midnight path · 2 of 6" (board j-halloween/06).
    */
-  var SEASON_CSS = "/assets/season.css?v=1";
+  var SEASON_CSS = "/assets/season.css?v=2";
   function renderSeasonCarols(p) {
     var link = $("season-carols"), season = p && p.season;
     if (!season) { hide(link); return; }
+    var halloween = season.season === "halloween";
     loadAsset(SEASON_CSS).then(function () {
-      $("season-carols-text").textContent = "Sing the carols · " + season.sung + " of " + season.total;
-      link.setAttribute("aria-label", season.title + ": " + season.sung + " of " + season.total + " sung. Open the carols in Practice");
+      link.classList.toggle("season-halloween", halloween);
+      link.classList.toggle("season-christmas", !halloween);
+      $("season-carols-icon").setAttribute("href", halloween ? "/assets/icons.svg#i-ghost" : "/assets/icons.svg#i-snowflake");
+      $("season-carols-text").textContent = (halloween ? season.title : "Sing the carols") + " · " + season.sung + " of " + season.total;
+      link.setAttribute("aria-label", season.title + ": " + season.sung + " of " + season.total + " sung. Open " + (halloween ? "the Midnight path" : "the carols") + " in Practice");
+      link.setAttribute("data-season-path", halloween ? "halloween" : "christmas");
       show(link);
     }, function () { hide(link); });
   }
-  /** The home's question, in the season's words while it is on (assets/season.js says so). */
+  /** The home's question, in the season's words while one is on (assets/season.js says so). */
   function homeQuestion() {
-    return window.NfSeason && window.NfSeason.christmas ? "What are we singing this Christmas?" : "What are we writing out today?";
+    var S = window.NfSeason;
+    return S && S.christmas ? "What are we singing this Christmas?" : S && S.halloween ? "What are we singing this Halloween?" : "What are we writing out today?";
   }
   document.addEventListener("nf-season", function () { if (me && !guest) $("home-sub").textContent = homeQuestion(); });
-  $("season-carols").addEventListener("click", function () { track("Season: carols link"); practiceOpensOn = "carols"; setView("practice"); });
+  $("season-carols").addEventListener("click", function () {
+    track($("season-carols").getAttribute("data-season-path") === "halloween" ? "Season: midnight path link" : "Season: carols link");
+    practiceOpensOn = "season"; setView("practice");
+  });
   function loadPracticeChip() {
     var at = epoch;
     var go = function () {

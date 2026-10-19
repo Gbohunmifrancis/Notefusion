@@ -469,12 +469,12 @@ public static class DrillCatalogue
     /// <summary>
     /// The drill an id names, or null when it names none (an old id, a typo, a range it may not use, the gentle pace
     /// on a pattern Playful never offers). Any track's drill is found, so a take sung before a switch is still marked, and
-    /// so is a carol drill (<see cref="CarolPath"/>).
+    /// so is a season path's drill (<see cref="SeasonPaths"/>: the carols, the Midnight path).
     /// </summary>
     public static Drill? Find(string? id)
     {
-        if (CarolPath.IsCarol(id))
-            return CarolPath.Find(id)?.Drill;
+        if (SeasonPaths.Owning(id) is { } path)
+            return path.Find(id)?.Drill;
         var gentle = id?.EndsWith(GentleSuffix, StringComparison.Ordinal) == true;
         var parts = (gentle ? id![..^GentleSuffix.Length] : id)?.Split('@');
         if (parts is not { Length: 2 } || !int.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out var doh))

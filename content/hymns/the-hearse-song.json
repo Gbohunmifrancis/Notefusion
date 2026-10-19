@@ -1,0 +1,58 @@
+{
+  "title": "The Hearse Song",
+  "tune": "hearse-song",
+  "alsoKnownAs": [
+    "The Worms Crawl In"
+  ],
+  "text": [
+    {
+      "name": "Traditional American",
+      "traditional": true,
+      "role": "Words, a soldiers' song of the First World War"
+    }
+  ],
+  "textPublished": 1927,
+  "occasions": [
+    "Halloween"
+  ],
+  "description": "The Hearse Song in Tonic Solfa (doh is Eb): the old soldiers' song of the hearse and the worms, with the solfa under the words, staff notation and a piano.",
+  "about": [
+    "Nobody knows who made up The Hearse Song. American and British soldiers sang it in the First World War, and children have sung it ever since, often as The Worms Crawl In. Carl Sandburg printed its tune with two sets of words in The American Songbag (1927).",
+    "The tune here is the one Sandburg prints, an octave higher. The verses are the first of his version A and the first and third of his version B; the rest use a soldier's language and are left out."
+  ],
+  "underlay": "The old Grey Hearse goes roll-ing by, You don't know wheth-er to laugh or cry, For you know some day it-'ll get you too, And the hearse's next load may con-sist of you.",
+  "verses": [
+    {
+      "lines": [
+        "The old Grey Hearse goes rolling by,",
+        "You don't know whether to laugh or cry;",
+        "For you know some day it'll get you too,",
+        "And the hearse's next load may consist of—you."
+      ]
+    },
+    {
+      "lines": [
+        "Did you ever think as the hearse rolls by",
+        "That some of these days you must surely die?",
+        "They'll take you away in a big black hack,",
+        "They'll take you away but won't bring you back."
+      ]
+    },
+    {
+      "lines": [
+        "And your eyes drop out and your teeth fall in,",
+        "And the worms crawl over your mouth and chin;",
+        "And the worms crawl out and the worms crawl in,",
+        "And your limbs drop off of you limb by limb."
+      ]
+    }
+  ],
+  "source": "The American Songbag (1927)",
+  "sourceUrl": "https://archive.org/details/americansongbag00sand",
+  "licence": "Public domain. The song is traditional (words and tune by unknown soldiers); this melody and these verses are as Carl Sandburg's The American Songbag (New York: Harcourt, Brace, 1927) printed them, out of copyright in the United States.",
+  "credits": "Melody and words from The American Songbag, collected by Carl Sandburg (1927), page 444; the Internet Archive's scan.",
+  "updated": "2026-10-19",
+  "reviewed": false,
+  "draft": false,
+  "reviewNotes": "Melody read from the Songbag's printed tune (page 444, the single melody line printed with verse A1) and written an octave higher; words of verses A1, B1 and B3 from the same page. Verses A2 ('they won't give a dam-m-m') and A3 ('you look like hell') and B2 ('They don't give a dam') are left out for their language — the owner may want them back, or B3 out (it is gruesome). 'Grey Hearse' is capitalised as printed. The Songbag names its informants (James Stevens, Irma H. Thrane, W. W. Woodbridge for A; Jake Zeitlin for B), not authors. Check against the scan, then set \"reviewed\": true."
+}

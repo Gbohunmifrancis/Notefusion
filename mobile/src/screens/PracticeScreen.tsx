@@ -28,7 +28,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useReducedMotion } from "react-native-reanimated";
-import Svg, { Circle, Path } from "react-native-svg";
+import Svg, { Circle, Path, SvgXml } from "react-native-svg";
 import { File, Paths } from "expo-file-system";
 import {
   createAudioPlayer,
@@ -87,9 +87,10 @@ import {
   tuningLine,
 } from "../lib/practiceTrack";
 import { ProblemNote } from "../components/ProblemNote";
-import { CappedArt } from "../components/season/Cap";
+import { CostumedArt } from "../components/season/Costume";
+import { ART } from "../components/practice/art/svgs";
 import { useSeason } from "../lib/seasonStore";
-import { carolsCard } from "../lib/season";
+import { activeSeason, costumeOf, seasonCard, seasonOf, seasonTint, seasonWords, type Costume } from "../lib/season";
 import { ModeList } from "../components/practice/ModeList";
 import { hubModes, modesDohLine, modesHeading, progressStrip } from "../lib/practiceModes";
 import type { RootStackParams } from "../navigation/types";
@@ -381,14 +382,18 @@ export function PracticeScreen() {
   const buddy = { mood: buddyMood, line: progress ? mascotLine(buddyMood, progress, scene) : "" };
   // More ways to practise: the live modes in the track's words (a phone has no live pitch meter: no needle promised).
   const modeRows = progress ? hubModes(progress.modes, track, false) : [];
-  // The Christmas carols (board d-christmas/03), only while the season is on for the singer: one pine card under
-  // today's drill. Doh wears the cap in Practice then; still one Doh on screen — on Focused the card's, so the modes'
-  // steps aside, and on Playful the buddy's, so the card has none.
+  // The season's path, only while its season is on for the singer: one card under today's drill — the carols' pine
+  // card (board d-christmas/03) or the Midnight path's pumpkin one (board j-halloween/03). Doh wears the season's
+  // costume in Practice then (the cap, the witch hat), and there is still one Doh on screen. Christmas: on Focused
+  // the card's, so the modes' steps aside, and on Playful the buddy's, so the card has none. Halloween: on Playful
+  // the card's, with Boo beside him, so the buddy steps aside; Focused's card has neither Doh nor Boo.
   const seasonFlag = useSeason();
-  const carols = progress?.season ?? null;
-  const capOn = seasonFlag.christmas || !!carols;
-  const carolsDoh = !!carols && !playful && !showPicker;
-  const dohLine = carolsDoh ? null : modesDohLine(modeRows, track);
+  const seasonPath = progress?.season ?? null;
+  const pathSeason = seasonPath ? seasonOf(seasonPath.season) : null;
+  const costume = costumeOf(pathSeason ?? activeSeason(seasonFlag));
+  const cardDoh = !!seasonPath && !showPicker && (pathSeason === "halloween" ? playful : !playful);
+  const dohLine = cardDoh ? null : modesDohLine(modeRows, track);
+  const buddyShown = playful && !showPicker && !!drill && !(cardDoh && pathSeason === "halloween");
 
   return (
     <View style={styles.flex}>
@@ -446,9 +451,9 @@ export function PracticeScreen() {
               />
             ) : null}
 
-            {playful && !showPicker && drill ? (
+            {buddyShown ? (
               <View style={styles.buddy} accessible accessibilityLabel={`Doh, your practice buddy, says: ${buddy.line}`}>
-                <CappedArt name={mascotArt(buddy.mood)} width={68} cap={capOn} />
+                <CostumedArt name={mascotArt(buddy.mood)} width={68} costume={costume} />
                 <View style={styles.buddyBubble}>
                   <Text style={styles.buddyText}>{buddy.line}</Text>
                 </View>
@@ -537,16 +542,18 @@ export function PracticeScreen() {
               />
             ) : null}
 
-            {/* ── The Christmas carols: a short side-path with its own place, never the main path's ── */}
-            {carols && !showPicker ? (
-              <CarolsCard
-                season={carols}
-                doh={carolsDoh}
+            {/* ── The season's path: a short side-path with its own place, never the main path's ── */}
+            {seasonPath && pathSeason && !showPicker ? (
+              <SeasonPathCard
+                season={seasonPath}
+                doh={cardDoh}
+                costume={costume}
                 styles={styles}
+                c={colors}
                 onOpen={() => {
                   if (busy) return;
-                  void logAnalyticsEvent("carols_opened", { sung: carols.sung });
-                  nav.navigate("Carols", { track });
+                  void logAnalyticsEvent(seasonWords(pathSeason).opened, { sung: seasonPath.sung });
+                  nav.navigate("SeasonPath", { season: pathSeason, track });
                 }}
               />
             ) : null}
@@ -559,7 +566,7 @@ export function PracticeScreen() {
                     <Text style={styles.modesTitle} accessibilityRole="header">{modesHeading(track)}</Text>
                     {dohLine ? <Text style={styles.modesDoh}>“{dohLine}”</Text> : null}
                   </View>
-                  {dohLine ? <CappedArt name="doh-wave" width={56} cap={capOn} /> : null}
+                  {dohLine ? <CostumedArt name="doh-wave" width={56} costume={costume} /> : null}
                 </View>
                 <ModeList
                   rows={modeRows}
@@ -704,33 +711,74 @@ export function PracticeScreen() {
 
 type Styles = ReturnType<typeof makeStyles>;
 
+/** Three tiny still bats in the Midnight path card's corner: [left, top, width, degrees], px within the corner. */
+const CARD_BATS: [number, number, number, number][] = [
+  [4, 10, 14, -10],
+  [58, 0, 11, 8],
+  [80, 30, 9, -4],
+];
+
 /**
- * The pine "Carols for Christmas" card (board d-christmas/03): until when, six segments for six drills, how many are
- * sung and what is next, and the way in. Pine is a tint here, never a second accent; candle labels it on Night.
+ * The season's card (boards d-christmas/03, j-halloween/03): until when, six segments for six drills, how many are
+ * sung and what is next, and the way in. The carols' card is pine and the Midnight path's pumpkin, each a tint here,
+ * never a second accent; candle or moon cream labels it on Night. The Midnight path's corner holds three tiny still
+ * bats and, with `doh`, Doh in his witch hat with Boo beside him.
  */
-function CarolsCard({ season, doh, styles, onOpen }: { season: PracticeSeason; doh: boolean; styles: Styles; onOpen: () => void }) {
-  const c = carolsCard(season);
+function SeasonPathCard({
+  season,
+  doh,
+  costume,
+  styles,
+  c,
+  onOpen,
+}: {
+  season: PracticeSeason;
+  doh: boolean;
+  costume: Costume | null;
+  styles: Styles;
+  c: Palette;
+  onOpen: () => void;
+}) {
+  const card = seasonCard(season);
+  const tint = seasonTint(c, card.season);
+  const halloween = card.season === "halloween";
   return (
-    <View style={styles.carols} accessible={false}>
+    <View style={[styles.carols, { backgroundColor: tint.soft, borderColor: tint.line }]} accessible={false}>
+      {halloween ? (
+        <View style={styles.cardBats} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+          {CARD_BATS.map(([left, top, width, deg], i) => (
+            <View key={i} style={{ position: "absolute", left, top, opacity: 0.45, transform: [{ rotate: `${deg}deg` }] }}>
+              <SvgXml xml={ART.bat} width={width} height={width / 2} color={c.bat} />
+            </View>
+          ))}
+        </View>
+      ) : null}
       <View style={styles.carolsTop}>
         <View style={styles.carolsText}>
-          <Text style={styles.carolsEyebrow}>{c.eyebrow}</Text>
-          <Text style={styles.carolsTitle} accessibilityRole="header">{c.title}</Text>
-          <Text style={styles.carolsBody}>{c.body}</Text>
+          <Text style={[styles.carolsEyebrow, { color: tint.label }]}>{card.eyebrow}</Text>
+          <Text style={styles.carolsTitle} accessibilityRole="header">{card.title}</Text>
+          <Text style={styles.carolsBody}>{card.body}</Text>
         </View>
-        {doh ? <CappedArt name="doh-wave" width={88} cap /> : null}
+        {doh && halloween ? (
+          <View style={styles.cardPair}>
+            <CostumedArt name="doh-wave" width={72} costume={costume} />
+            <Art name="boo" width={34} style={styles.cardBoo} />
+          </View>
+        ) : doh ? (
+          <CostumedArt name="doh-wave" width={88} costume={costume} />
+        ) : null}
       </View>
-      <View style={styles.carolsBar} accessible accessibilityRole="progressbar" accessibilityLabel={c.label}>
-        {c.segments.map((on, i) => (
-          <View key={i} style={[styles.carolsSeg, on && styles.carolsSegOn]} />
+      <View style={styles.carolsBar} accessible accessibilityRole="progressbar" accessibilityLabel={card.label}>
+        {card.segments.map((on, i) => (
+          <View key={i} style={[styles.carolsSeg, on && { backgroundColor: tint.label }]} />
         ))}
       </View>
       <View style={styles.carolsFoot}>
         <View style={styles.carolsText}>
-          <Text style={styles.carolsSung}>{c.sung}</Text>
-          <Text style={styles.carolsNext} numberOfLines={2}>{c.next}</Text>
+          <Text style={styles.carolsSung}>{card.sung}</Text>
+          <Text style={styles.carolsNext} numberOfLines={2}>{card.next}</Text>
         </View>
-        <Button label={c.action} icon="next" iconPosition="right" variant="secondary" size="sm" onPress={onOpen} />
+        <Button label={card.action} icon="next" iconPosition="right" variant="secondary" size="sm" onPress={onOpen} />
       </View>
     </View>
   );
@@ -1022,18 +1070,21 @@ const makeStyles = (c: Palette) =>
       padding: spacing.lg,
       gap: spacing.md,
       borderRadius: radii.lg,
-      backgroundColor: c.pineSoft,
       borderWidth: 1,
-      borderColor: c.pineLine,
+      overflow: "hidden",
     },
     carolsTop: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm },
+    /** The Midnight path card's top right corner, where the still bats hang. */
+    cardBats: { position: "absolute", top: 10, right: 12, width: 96, height: 44 },
+    /** Doh with Boo at his shoulder (Halloween, Playful). */
+    cardPair: { width: 72 + 22, height: 80, marginTop: spacing.sm },
+    cardBoo: { position: "absolute", right: 0, top: -6 },
     carolsText: { flex: 1, minWidth: 0, gap: 4 },
-    carolsEyebrow: { ...typography.caption, color: c.candle, textTransform: "uppercase", letterSpacing: 1, fontSize: 10.5, fontFamily: fonts.semibold },
+    carolsEyebrow: { ...typography.caption, textTransform: "uppercase", letterSpacing: 1, fontSize: 10.5, fontFamily: fonts.semibold },
     carolsTitle: { ...typography.heading, color: c.text, fontSize: 20 },
     carolsBody: { ...typography.body, color: c.textMuted, fontSize: 13.5, lineHeight: 20 },
     carolsBar: { flexDirection: "row", gap: 6 },
     carolsSeg: { flex: 1, height: 5, borderRadius: 3, backgroundColor: c.surfaceAlt },
-    carolsSegOn: { backgroundColor: c.candle },
     carolsFoot: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
     carolsSung: { ...typography.label, color: c.text, fontSize: 14 },
     carolsNext: { ...typography.caption, color: c.textMuted, fontSize: 12.5 },

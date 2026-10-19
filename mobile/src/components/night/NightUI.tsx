@@ -15,7 +15,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg";
 import { KeyboardAvoider } from "../KeyboardAvoider";
-import { MarkCap } from "../season/Cap";
+import { MarkCostume } from "../season/Costume";
+import type { Costume } from "../../lib/season";
 import { Touchable } from "../Touchable";
 import { night, nightFonts } from "../../design/theme";
 
@@ -24,10 +25,10 @@ const MARK = require("../../../assets/brand/mark.png");
 export const MARK_ASPECT = 331 / 438;
 
 /**
- * The Notefusion mark, white by default, at a given height. `cap` lays the Christmas cap over it (while the season is
- * on, on the brand mark only — never a control's — and one a screen).
+ * The Notefusion mark, white by default, at a given height. `costume` lays the season's over it (Christmas's cap,
+ * Halloween's witch hat) while a season is on: on the brand mark only — never a control's — and one a screen.
  */
-export function Mark({ height, color = "#FFFFFF", cap = false }: { height: number; color?: string; cap?: boolean }) {
+export function Mark({ height, color = "#FFFFFF", costume = null }: { height: number; color?: string; costume?: Costume | null }) {
   const image = (
     <Image
       source={MARK}
@@ -37,11 +38,11 @@ export function Mark({ height, color = "#FFFFFF", cap = false }: { height: numbe
       accessibilityIgnoresInvertColors
     />
   );
-  if (!cap) return image;
+  if (!costume) return image;
   return (
     <View style={{ height, width: height * MARK_ASPECT }}>
       {image}
-      <MarkCap height={height} />
+      <MarkCostume height={height} costume={costume} />
     </View>
   );
 }
@@ -68,11 +69,11 @@ export function Wordmark({ size, style }: { size: number; style?: StyleProp<Text
   );
 }
 
-/** Mark and wordmark side by side, the small lock-up in screen headers; `cap` while the Christmas season is on. */
-export function Lockup({ size = 16, cap = false }: { size?: number; cap?: boolean }) {
+/** Mark and wordmark side by side, the small lock-up in screen headers; `costume` while a season is on. */
+export function Lockup({ size = 16, costume = null }: { size?: number; costume?: Costume | null }) {
   return (
     <View style={styles.lockup} accessible accessibilityLabel="Notefusion">
-      <Mark height={size * 1.25} cap={cap} />
+      <Mark height={size * 1.25} costume={costume} />
       <Wordmark size={size} />
     </View>
   );

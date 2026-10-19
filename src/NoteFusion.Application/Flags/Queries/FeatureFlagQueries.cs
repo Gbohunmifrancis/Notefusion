@@ -30,7 +30,10 @@ public sealed class GetSeasonQueryHandler : IRequestHandler<GetSeasonQuery, Resu
     }
 
     public async Task<Result<SeasonDto>> Handle(GetSeasonQuery request, CancellationToken ct)
-        => new SeasonDto(await FeatureFlags.ChristmasForCallerAsync(_db, _clock.UtcNow, _caller, ct));
+    {
+        var season = (await FeatureFlags.SeasonForCallerAsync(_db, _clock.UtcNow, _caller, ct))?.Key;
+        return new SeasonDto(season == FeatureFlag.Christmas, season == FeatureFlag.Halloween);
+    }
 }
 
 public sealed class GetFeatureFlagsQueryHandler : IRequestHandler<GetFeatureFlagsQuery, Result<IReadOnlyList<FeatureFlagDto>>>
@@ -56,12 +59,13 @@ public sealed class GetFeatureFlagsQueryHandler : IRequestHandler<GetFeatureFlag
     }
 
     /// <summary>
-    /// A flag for the console. With no row it is off, never changed, and would switch itself off after the next 6 January
-    /// once turned on (what the first save stores unless the admin unticks it).
+    /// A flag for the console. With no row it is off, never changed, and would switch itself off after its default last
+    /// day (the next 6 January; Halloween's, the next 1 November) once turned on (what the first save stores unless the
+    /// admin unticks it).
     /// </summary>
     public static FeatureFlagDto Describe(string key, FeatureFlag? flag, DateTime utcNow)
     {
-        var suggested = FeatureFlags.DefaultLastDay(FeatureFlags.Today(utcNow));
+        var suggested = FeatureFlags.DefaultLastDay(key, FeatureFlags.Today(utcNow));
         if (flag is null)
         {
             return new FeatureFlagDto(

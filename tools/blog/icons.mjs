@@ -39,6 +39,8 @@ export const ICONS = {
   "eye-off": "eye-off",
   "flame": "flame",
   "gear": "settings",
+  // The Halloween season's spooky songs (assets/season.js and app.js show them only while the season is on).
+  "ghost": "ghost",
   "help": "circle-help",
   "hourglass": "hourglass",
   "info": "info",

@@ -211,7 +211,8 @@
     return "We couldn't open the microphone. Please try again.";
   }
 
-  // ── The Christmas carols path (board d-christmas/03), while the season is on: the mobile copy is lib/season.ts ──
+  // ── The season's path while its season is on: the Christmas carols (board d-christmas/03) and the Midnight path
+  // (board j-halloween/03). The mobile copy is lib/season.ts ──
 
   var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
@@ -223,28 +224,60 @@
     return month ? "Until " + Number(m[3]) + " " + month : null;
   }
 
-  /** The hub's pine card: until when, a segment a drill, how many are sung and what is next. */
-  function carolsCard(season) {
-    var until = untilLabel(season.until), done = season.next == null;
+  /** Each season's words: its name, the card's line, the path's title, the sticker and what the path says. */
+  var WORDS = {
+    christmas: {
+      name: "Christmas", pathTitle: "Carols",
+      cardBody: "Six short drills from carols we hold: a Gloria warm-up, Silent Night in thirds, and more.",
+      sticker: "Carol singer", stickerBody: "You sang all six carols. This sticker stays in your book after Christmas.",
+      allSungLine: "You sang all six carols. Merry Christmas!",
+      away: "The carols are put away until next Christmas.", failed: "The carols didn't load. Please try again.",
+      nextLabel: "Next carol", opened: "carols_opened", heard: "carol_heard", started: "carol_started", marked: "carol_marked",
+      link: "the carols"
+    },
+    halloween: {
+      name: "Halloween", pathTitle: "The Midnight path",
+      cardBody: "Six short drills from spooky songs: the Mountain King's tiptoe, Bach's organ turn, the skeletons' waltz, and All Saints to finish.",
+      sticker: "Night Singer", stickerBody: "You sang all six on the Midnight path. This sticker stays in your book after Halloween.",
+      allSungLine: "You sang all six on the Midnight path. Happy Halloween!",
+      away: "The Midnight path is back next Halloween.", failed: "The Midnight path didn't load. Please try again.",
+      nextLabel: "Next drill", opened: "midnight_opened", heard: "midnight_heard", started: "midnight_started", marked: "midnight_marked",
+      link: "the Midnight path"
+    }
+  };
+  /** A path card's season as this build knows it: anything but "halloween" is the carols. */
+  function seasonOf(name) { return name === "halloween" ? "halloween" : "christmas"; }
+  function seasonWords(name) { return WORDS[seasonOf(name)]; }
+  /** Where a season's path is read: the carols keep their own address, the Midnight path is /seasons/halloween. */
+  function seasonPathUrl(name) { return seasonOf(name) === "christmas" ? "/api/practice/carols" : "/api/practice/seasons/" + seasonOf(name); }
+
+  /** The hub's season card (pine, pumpkin): until when, a segment a drill, how many are sung and what is next. */
+  function seasonCard(season) {
+    var name = seasonOf(season.season), words = WORDS[name], until = untilLabel(season.until), done = season.next == null;
+    // The Midnight path names its first drill as the first; the carols always said "Next".
+    var lead = name === "halloween" && season.sung === 0 ? "First" : "Next";
     return {
-      eyebrow: until ? "Christmas · " + until : "Christmas",
+      season: name,
+      eyebrow: until ? words.name + " · " + until : words.name,
       title: season.title,
-      body: "Six short drills from carols we hold: a Gloria warm-up, Silent Night in thirds, and more.",
+      body: words.cardBody,
       segments: season.steps.map(function (st) { return !!st.passed; }),
       sung: season.sung + " of " + season.total + " sung",
-      next: done ? "All sung. The Carol singer sticker is yours." : "Next: " + season.next.cue,
+      next: done ? "All sung. The " + words.sticker + " sticker is yours." : lead + ": " + season.next.cue,
       action: done ? "Sing again" : season.sung === 0 ? "Start" : "Continue",
-      label: season.title + ": " + season.sung + " of " + season.total + " sung." + (done ? "" : " Next: " + season.next.cue + ".")
+      label: season.title + ": " + season.sung + " of " + season.total + " sung." + (done ? "" : " " + lead + ": " + season.next.cue + ".")
     };
   }
 
   /** The path as its screen draws it: the step open (the one chosen, else the next unsung, else the last) and the rows. */
-  function carolsView(season, chosen) {
+  function seasonView(season, chosen) {
+    var name = seasonOf(season.season);
     var indexes = season.steps.map(function (st) { return st.index; });
     var fallback = season.next ? season.next.index : indexes.length ? indexes[indexes.length - 1] : 1;
     var open = chosen != null && indexes.indexOf(chosen) >= 0 ? chosen : fallback;
     return {
-      eyebrow: "Christmas · " + season.sung + " of " + season.total,
+      season: name,
+      eyebrow: WORDS[name].name + " · " + season.sung + " of " + season.total,
       rows: season.steps.map(function (st) {
         return { index: st.index, title: st.title, line: st.carol + " · " + st.detail, state: st.index === open ? "open" : st.passed ? "done" : "todo", bestScore: st.bestScore };
       }),
@@ -253,10 +286,29 @@
     };
   }
 
-  /** Doh's word over the carols path (Playful), for the step that is next. */
-  function carolsBuddyLine(season) {
-    var n = season.next;
-    if (!n) return "You sang all six carols. Merry Christmas!";
+  function fold(text) { return String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+
+  /** Doh's word over each Midnight drill (Playful), by its code (the drill id's part before "@"). */
+  var MIDNIGHT_LINES = {
+    "midnight-king": "Shh, tiptoe with me: the Mountain King's run, soft and short.",
+    "midnight-toccata": "A perfect tiptoe! Now the organ's turn: m r m, quick as a wink.",
+    "midnight-climb": "Up we go: the Mountain King climbs through fe and se.",
+    "midnight-waltz": "Waltz with the skeletons: down one semitone at a time.",
+    "midnight-march": "Tiptoe like a puppet: the Marionette's fall.",
+    "midnight-saints": "Last one, for All Saints' Day: sing it from the top doh down."
+  };
+
+  /** Doh's word over the Midnight path (Playful), for the drill that is next. */
+  function midnightLine(next) {
+    var code = String(next.id || "").split("@")[0];
+    return Object.prototype.hasOwnProperty.call(MIDNIGHT_LINES, code) ? MIDNIGHT_LINES[code] : "Next: " + next.cue + ". Boo and I are listening!";
+  }
+
+  /** Doh's word over the path (Playful), for the step that is next. */
+  function seasonBuddyLine(season) {
+    var name = seasonOf(season.season), n = season.next;
+    if (!n) return WORDS[name].allSungLine;
+    if (name === "halloween") return midnightLine(n);
     switch (n.index) {
       case 1: return "A Gloria to warm up: can you sing it all in one breath?";
       case 2: return "Lovely Gloria! Now Joy to the World, all the way down.";
@@ -267,24 +319,88 @@
     }
   }
 
-  /** Whether a take just earned the Carol singer sticker (its code among the reward's new badges). */
-  function earnedCarolSinger(newBadges, badgeCode) {
+  /** Whether a take just earned the season's sticker (its code among the reward's new badges). */
+  function earnedSeasonBadge(newBadges, badgeCode) {
     var code = badgeCode || "carol_singer";
     return !!newBadges && newBadges.some(function (b) { return b.code === code; });
+  }
+
+  function event(pitchMidi, startBeat, durBeats, solfa, octaveMark) {
+    return { pitchMidi: pitchMidi, startBeat: startBeat, durBeats: durBeats, solfa: solfa, octaveMark: octaveMark, degree: 1, conf: 1 };
   }
 
   /** "Joy to the world, the Lord is come!" an octave up, crotchet = 120: the Carol singer's line (d' t l s f m r d). */
   var JOY_LINE = [[86, 0, 1, "d", "'"], [85, 1, 0.75, "t", ""], [83, 1.75, 0.25, "l", ""], [81, 2, 1.5, "s", ""],
     [79, 3.5, 0.5, "f", ""], [78, 4, 1, "m", ""], [76, 5, 1, "r", ""], [74, 6, 1.5, "d", ""]].map(function (n) {
-    return { pitchMidi: n[0], startBeat: n[1], durBeats: n[2], solfa: n[3], octaveMark: n[4], degree: 1, conf: 1 };
+    return event(n[0], n[1], n[2], n[3], n[4]);
   });
   var CHIME_BPM = 120;
 
+  /** The Mountain King's tempo (crotchet = 150) and its tiptoe: each note sounds this share of its written length. */
+  var KING_BPM = 150, DETACHED = 0.6, KING_PHRASE_NOTES = 13;
+  /**
+   * Grieg's "In the Hall of the Mountain King" (B minor, la-based: doh D), its opening seven notes l, t, d r m d m:
+   * quavers and a crotchet, B4 C#5 D5 E5 F#5 D5 F#5, short and detached. The Night Singer's tune when the hymn pack
+   * does not have the tune.
+   */
+  var KING_OPENING = (function () {
+    var at = 0;
+    return [[71, 0.5, "l", ","], [73, 0.5, "t", ","], [74, 0.5, "d", ""], [76, 0.5, "r", ""], [78, 0.5, "m", ""], [74, 0.5, "d", ""], [78, 1, "m", ""]].map(function (n) {
+      var e = event(n[0], at, Math.round(n[1] * DETACHED * 1000) / 1000, n[2], n[3]);
+      at += n[1];
+      return e;
+    });
+  })();
+
+  /**
+   * The Night Singer's phrase from the Mountain King as the hymn pack publishes it, labelled by the solfa engine: its
+   * first phrase (l, t, d r m d m · ma t, ma · r ta, r) from its first note, moved by whole octaves to sit where the
+   * opening does and played detached. Fewer notes than the opening (no pack, or no such tune): the opening itself.
+   */
+  function kingPhrase(labelled) {
+    var sorted = (labelled || []).slice().sort(function (a, b) { return a.startBeat - b.startBeat; });
+    if (sorted.length < KING_OPENING.length) return KING_OPENING.map(function (n) { return Object.assign({}, n); });
+    var phrase = sorted.slice(0, KING_PHRASE_NOTES), first = phrase[0];
+    var shift = 12 * Math.round((KING_OPENING[0].pitchMidi - first.pitchMidi) / 12);
+    return phrase.map(function (n, i) {
+      var next = phrase[i + 1], written = next ? next.startBeat - n.startBeat : n.durBeats;
+      return Object.assign({}, n, {
+        pitchMidi: n.pitchMidi + shift,
+        startBeat: Math.round((n.startBeat - first.startBeat) * 1000) / 1000,
+        durBeats: Math.round(Math.min(n.durBeats, written) * DETACHED * 1000) / 1000
+      });
+    });
+  }
+
   function solfaLine(notes) { return notes.map(function (n) { return (n.solfa || "") + (n.octaveMark || ""); }).join(" "); }
 
+  /** A phrase as the sticker prints it, a dot after each figure that ends on a longer note: "l, t, d r m d m · ma t, ma · r ta, r". */
+  function phraseLine(notes) {
+    var sorted = notes.slice().sort(function (a, b) { return a.startBeat - b.startBeat; });
+    function length(i) { return sorted[i + 1].startBeat - sorted[i].startBeat; }
+    var out = "";
+    sorted.forEach(function (n, i) {
+      if (i > 0) out += i >= 2 && length(i - 1) > length(i - 2) + 1e-9 ? " · " : " ";
+      out += (n.solfa || "") + (n.octaveMark || "");
+    });
+    return out;
+  }
+
+  /** The sticker sheet's line: the whole carol line at Christmas, the Mountain King's phrase with its figures at Halloween. */
+  function stickerLine(name, notes) { return seasonOf(name) === "halloween" ? phraseLine(notes) : solfaLine(notes); }
+
+  /** The pack's "In the Hall of the Mountain King" (the Night Singer's phrase), or null while the pack has none. */
+  function mountainKing(hymns) {
+    return (hymns || []).filter(function (h) { return fold(h.title).indexOf("mountain king") >= 0; })[0] || null;
+  }
+
   window.NfPracticeProgress = {
-    untilLabel: untilLabel, carolsCard: carolsCard, carolsView: carolsView, carolsBuddyLine: carolsBuddyLine,
-    earnedCarolSinger: earnedCarolSinger, JOY_LINE: JOY_LINE, CHIME_BPM: CHIME_BPM, solfaLine: solfaLine,
+    untilLabel: untilLabel, seasonOf: seasonOf, seasonWords: seasonWords, seasonPathUrl: seasonPathUrl,
+    seasonCard: seasonCard, seasonView: seasonView, seasonBuddyLine: seasonBuddyLine, earnedSeasonBadge: earnedSeasonBadge,
+    // The carols' own names, as the Christmas season first had them.
+    carolsCard: seasonCard, carolsView: seasonView, carolsBuddyLine: seasonBuddyLine, earnedCarolSinger: earnedSeasonBadge,
+    JOY_LINE: JOY_LINE, CHIME_BPM: CHIME_BPM, KING_OPENING: KING_OPENING, KING_BPM: KING_BPM, KING_PHRASE_NOTES: KING_PHRASE_NOTES,
+    kingPhrase: kingPhrase, mountainKing: mountainKing, solfaLine: solfaLine, phraseLine: phraseLine, stickerLine: stickerLine,
     TAIL_SEC: TAIL_SEC,
     levelFraction: levelFraction, weeklyFraction: weeklyFraction, nextLevelLine: nextLevelLine,
     streakLabel: streakLabel, streakLine: streakLine, freezeLine: freezeLine,

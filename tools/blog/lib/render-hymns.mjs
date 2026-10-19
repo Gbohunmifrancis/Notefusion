@@ -327,6 +327,8 @@ export function renderHymnCredits(hymns, tunes = []) {
   const path = "/hymns/credits";
   const crumbs = [["/", "Home"], ["/hymns", "Hymns"], [path, "Sources and licences"]];
   const fromOhp = hymns.filter((h) => h.source === OHP.name);
+  // The tune pages from the CCEH, and those encoded by hand from other public-domain scores.
+  const fromCceh = tunes.filter((t) => t.source === CCEH.short), tunesByHand = tunes.filter((t) => t.source !== CCEH.short);
   const melodyOnly = hymns.filter((h) => h.source !== OHP.name && h.tuneData.source === OHP.name);
   const byHand = hymns.filter((h) => h.source !== OHP.name && h.tuneData.source !== OHP.name);
   const row = (h) => {
@@ -355,7 +357,7 @@ ${list.map(row).join("\n")}
 
 ${tunes.length ? `<section aria-labelledby="cceh-title">
   <h2 id="cceh-title">The Christian Classics Ethereal Hymnary</h2>
-  <p>${tunes.length} hymn tunes on their own (tunes without words) come from the <a href="${CCEH.url}" rel="noopener">${CCEH.name}</a> (CCEH), an archive of public-domain hymn tunes at the Christian Classics Ethereal Library, given as four-part scores. We read each tune's melody from its MIDI file, check it against the incipit (the opening notes in do-re-mi) on the tune's page, and NoteFusion's own solfa engine writes the Tonic Solfa from the notes; each tune page links to the tune's page at the CCEH.</p>
+  <p>${fromCceh.length} hymn tunes on their own (tunes without words) come from the <a href="${CCEH.url}" rel="noopener">${CCEH.name}</a> (CCEH), an archive of public-domain hymn tunes at the Christian Classics Ethereal Library, given as four-part scores. We read each tune's melody from its MIDI file, check it against the incipit (the opening notes in do-re-mi) on the tune's page, and NoteFusion's own solfa engine writes the Tonic Solfa from the notes; each tune page links to the tune's page at the CCEH.</p>
   <p>The CCEH <a href="${CCEH.terms}" rel="noopener">states</a> that its music is in the public domain and that all its files — sheet music, MIDIs and electronic scores — are free to use in any manner. It judges public domain by the American rule (published before 1923); we apply our own rule below as well, so tunes by composers or arrangers who died in ${PD_DIED_BEFORE} or later are not taken, and tunes whose composer's dates we do not have are held back until they are checked.</p>
   <p>Imported tunes have not yet been checked note by note against a printed hymn book; each one says so on its page. If you find a wrong note, tell us and we will correct it.</p>
 </section>
@@ -368,7 +370,7 @@ ${tunes.length ? `<section aria-labelledby="cceh-title">
 
 <section aria-labelledby="hand-title">
   <h2 id="hand-title">Encoded by NoteFusion</h2>
-  <p>${byHand.length} hymns were encoded by hand from public-domain scores and checked against other public sources; ${melodyOnly.length ? `${melodyOnly.length} more have our words with the Open Hymnal's melody. ` : ""}Each page says what was checked.</p>
+  <p>${byHand.length} hymns were encoded by hand from public-domain scores and checked against other public sources; ${melodyOnly.length ? `${melodyOnly.length} more have our words with the Open Hymnal's melody. ` : ""}Each page says what was checked.${tunesByHand.length ? ` ${tunesByHand.length} ${tunesByHand.length === 1 ? "tune" : "tunes"} without words ${tunesByHand.length === 1 ? "was" : "were"} encoded the same way, each from the public-domain score its page names.` : ""}</p>
 </section>
 
 <section aria-labelledby="list-title">

@@ -1,0 +1,25 @@
+{
+  "name": "SARUM",
+  "alsoKnownAs": [
+    "Pro Omnibus Sanctis"
+  ],
+  "music": [
+    {
+      "name": "Joseph Barnby",
+      "born": 1838,
+      "died": 1896,
+      "role": "Music (1868)"
+    }
+  ],
+  "musicPublished": 1869,
+  "metre": "10 10 10 4",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Bb4:2 G4:1 Ab4:1 | Bb4:2 Bb4:2 | C5:1 C5:1 C5:1 C5:1 | C5:2 Bb4:2 | Bb4:2 Eb5:1 Eb5:1 | D5:1 C5:1 Bb4:1 A4:.5 G4:.5 | F4:2 C5:2 | Bb4:4 | Bb4:2 F4:1 G4:1 | F4:2 Eb4:2 | Bb4:1 Bb4:1 C5:1 Bb4:1 | Ab4:2 G4:1.5 F4:.5 | Bb4:4 | Eb4:2 Ab4:1.5 G4:.5 | F4:4 | Eb4:4",
+  "reviewed": false,
+  "confidence": "read from a printed public-domain hymnal, unchecked",
+  "reviewNotes": "Read from The Hymnal of the Protestant Episcopal Church (1916), hymn 295 (Internet Archive authoriz00epis, leaf 452), which prints it in 4/2 in minims; every note value is halved here (4/4 in crotchets), as the CCEH copy of the tune does (content/hymns/tunes/sarum.json, a draft held back for its bar 13). The two agree note for note except one length: the 1916 book has 'blessed' as a semibreve (2 beats here) with the first Alleluia starting in the same bar, CCEH holds it for 4 beats; with the 1916 lengths every bar is a full 4/4 bar. The Amen is left out. Barnby's date: the 1916 book says 1868; musicPublished 1869 is the year the tune is usually said to have been first printed — check."
+}

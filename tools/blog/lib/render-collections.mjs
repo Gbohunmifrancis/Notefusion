@@ -24,11 +24,15 @@ export function hymnRow(h, { note = "" } = {}) {
     </li>`;
 }
 
+/** What a tune page is, as the pages name it: a tune file's `form` ("waltz theme"), else a hymn tune. */
+export const tuneForm = (t) => t.form || "hymn tune";
+
 /** A tune page in a list. */
 export function tuneRow(t, { note = "" } = {}) {
+  const form = tuneForm(t);
   return `    <li class="hymn-item">
       <h3><a href="${t.view.url}">${escapeHtml(t.view.title)}</a></h3>
-      <p class="first-line">Hymn tune${t.metre && t.metre !== "Irregular" ? ` · ${escapeHtml(t.metre.replace(/ (?=\d)/g, "."))}` : ""}</p>
+      <p class="first-line">${escapeHtml(form[0].toUpperCase() + form.slice(1))}${t.metre && t.metre !== "Irregular" ? ` · ${escapeHtml(t.metre.replace(/ (?=\d)/g, "."))}` : ""}</p>
       <p class="story-meta"><span>${escapeHtml(t.view.header)}</span><span>${escapeHtml(t.view.time)}</span>${note ? `<span>${escapeHtml(note)}</span>` : ""}<span><a href="${pdfPath(t.view.url)}" type="application/pdf" data-track="List: solfa PDF">Solfa PDF</a></span></p>
     </li>`;
 }
@@ -56,7 +60,13 @@ function collectionLd(path, name, description, list) {
 const fit = (...options) => options.find((d) => d.length <= 155) || options[options.length - 1].slice(0, 155);
 
 // ── Seasons and occasions ───────────────────────────────────────────────────
+/** An occasion's hymns and tune pages (occasionPages gives both; a tune page has no words), A–Z by title. */
+const occasionItems = (o) => [...o.hymns, ...(o.tunes || [])].sort((a, b) => itemTitle(a).localeCompare(itemTitle(b)));
+const itemTitle = (x) => (x.view && x.view.url ? x.view.title : x.title);
+const itemUrl = (x) => (x.view && x.view.url ? x.view.url : hymnUrl(x));
+
 export function occasionTitle(o) {
+  if (o.tunes?.length) return `${o.name} ${o.what || "hymns"} in Tonic Solfa | NoteFusion`;
   const t = `${o.name} hymns in Tonic Solfa — ${o.hymns.length} ${o.slug === "christmas" ? "carols" : "hymns"} with words | NoteFusion`;
   return t.length <= 70 ? t : `${o.name} hymns in Tonic Solfa | NoteFusion`;
 }
@@ -64,31 +74,37 @@ export function occasionTitle(o) {
 export function renderOccasion(o, { occasions }) {
   const path = o.url;
   const crumbs = [["/", "Home"], ["/hymns", "Hymns"], [OCCASIONS_PATH, "Seasons and occasions"], [path, o.name]];
-  const heading = `${o.name} hymns in Tonic Solfa`;
+  const heading = `${o.name} ${o.what || "hymns"} in Tonic Solfa`;
+  const items = occasionItems(o), n = items.length;
+  // A tune page has no words to write the solfa under.
+  const withWords = o.tunes?.length ? "the solfa (under the words, where there are words)" : "the solfa written under the words";
   const description = fit(
-    `${o.hymns.length} ${o.name} ${o.noun} in Tonic Solfa: the doh, the solfa under the words, staff notation, a piano to sing along with and a free PDF to print.`,
-    `${o.hymns.length} ${o.name} ${o.noun} in Tonic Solfa, with the words, staff notation and a free PDF to print.`,
+    o.tunes?.length
+      ? `${n} ${o.name} ${o.noun} in Tonic Solfa: the doh, the solfa, staff notation, a piano to sing along with and a free PDF to print.`
+      : `${n} ${o.name} ${o.noun} in Tonic Solfa: the doh, the solfa under the words, staff notation, a piano to sing along with and a free PDF to print.`,
+    `${n} ${o.name} ${o.noun} in Tonic Solfa, with ${o.tunes?.length ? "the solfa" : "the words"}, staff notation and a free PDF to print.`,
   );
   const body = `${breadcrumbs(crumbs)}
 <header class="masthead">
   <h1>${escapeHtml(heading)}</h1>
-  <p class="masthead-dek">${escapeHtml(o.intro)} Here ${o.hymns.length === 1 ? "is" : "are"} the ${plural(o.hymns.length, o.noun.replace(/s$/, ""), o.noun)} on NoteFusion, each with the solfa written under the words, staff notation, a piano to sing along with and a free PDF to print.</p>
+  <p class="masthead-dek">${escapeHtml(o.intro)} Here ${n === 1 ? "is" : "are"} the ${plural(n, o.noun.replace(/s$/, ""), o.noun)} on NoteFusion, each with ${withWords}, staff notation, a piano to sing along with and a free PDF to print.</p>
 </header>
 ${occasionLinks(occasions, o.slug)}
 <ul class="hymn-list">
-${o.hymns.map((h) => hymnRow(h)).join("\n")}
+${items.map((x) => (x.view && x.view.url ? tuneRow(x) : hymnRow(x))).join("\n")}
 </ul>
 <p class="note">${PD_NOTE} Want a song that is not here? <a href="/app">Transcribe it with NoteFusion</a>.</p>
 ${browseLinks()}
 ${ctaBox("occasion")}`;
-  const list = itemList(heading, o.hymns.map((h) => [hymnUrl(h), h.title]));
+  const list = itemList(heading, items.map((x) => [itemUrl(x), itemTitle(x)]));
   return page({ path, title: occasionTitle(o), description, body, active: "/hymns", jsonLd: [collectionLd(path, heading, description, list), breadcrumbLd(crumbs)] });
 }
 
 /** "Silent Night, Away in a Manger, Hark! The Herald Angels Sing and 22 more": the hand-encoded hymns first. */
 function sample(o) {
-  const first = [...o.hymns.filter((h) => !h.importedFrom), ...o.hymns.filter((h) => h.importedFrom)].slice(0, 3).map((h) => h.title);
-  const more = o.hymns.length - first.length;
+  const all = [...o.hymns, ...(o.tunes || [])];
+  const first = [...all.filter((h) => !h.importedFrom), ...all.filter((h) => h.importedFrom)].slice(0, 3).map(itemTitle);
+  const more = all.length - first.length;
   return more ? `${first.join(", ")} and ${more} more` : `${first.slice(0, -1).join(", ")} and ${first[first.length - 1]}`;
 }
 
@@ -96,7 +112,7 @@ export function renderOccasionsHub(occasions) {
   const path = OCCASIONS_PATH;
   const crumbs = [["/", "Home"], ["/hymns", "Hymns"], [path, "Seasons and occasions"]];
   const heading = "Hymns for the seasons and occasions of the church year";
-  const total = new Set(occasions.flatMap((o) => o.hymns)).size;
+  const total = new Set(occasions.flatMap((o) => [...o.hymns, ...(o.tunes || [])])).size;
   const description = fit(`Hymns in Tonic Solfa for ${occasions.map((o) => o.name).join(", ")}: the solfa under the words, staff notation and a free PDF of each.`, `Hymns in Tonic Solfa for Advent, Christmas, Lent, Easter and the rest of the church year, with the words and a free PDF of each.`);
   const body = `${breadcrumbs(crumbs)}
 <header class="masthead">
@@ -275,7 +291,8 @@ export function neighbours(list, self, n) {
 export function moreLinks({ item, occasions = [], people = [], max = 3 }) {
   const sections = [];
   for (const o of occasions) {
-    sections.push({ id: `more-${o.slug}`, title: `More ${o.name} hymns`, items: neighbours(o.hymns, item, 5).map((h) => [hymnUrl(h), h.title]), all: [o.url, `All ${plural(o.hymns.length, o.noun.replace(/s$/, ""), o.noun)} for ${o.name}`] });
+    const all = occasionItems(o);
+    sections.push({ id: `more-${o.slug}`, title: `More ${o.name} ${o.what || "hymns"}`, items: neighbours(all, item, 5).map((x) => [itemUrl(x), itemTitle(x)]), all: [o.url, `All ${plural(all.length, o.noun.replace(/s$/, ""), o.noun)} for ${o.name}`] });
   }
   for (const p of people) {
     const works = p.works.map((w) => w.item);

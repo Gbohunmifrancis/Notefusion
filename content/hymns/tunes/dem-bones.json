@@ -1,0 +1,28 @@
+{
+  "name": "DEM BONES",
+  "music": [
+    {
+      "name": "James Weldon Johnson",
+      "born": 1871,
+      "died": 1938,
+      "role": "Music (1928)"
+    },
+    {
+      "name": "J. Rosamond Johnson",
+      "born": 1873,
+      "died": 1954,
+      "role": "Music (1928)"
+    }
+  ],
+  "musicPublished": 1928,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "not encoded",
+  "source": "No public-domain score of DEM BONES found to read the melody from.",
+  "reviewNotes": "No melody yet: no public-domain score of the 1928 song could be found to read it from (IMSLP lists only a 2017 CC BY arrangement by Adam Cuerden, behind IMSLP's bot check; Mutopia, the Internet Archive and abcnotation have none). Add the melody from a printed source (key, time, melody), then publish the hymn dem-bones.json. The credit and the 1928 date are from Wikipedia and IMSLP's work page ('Year of First Publication: 1928'), not from a copy of the song; the well-known version whose verse climbs a half step on each 'bone' line may be a later arrangement (Fred Waring, the Delta Rhythm Boys) and still in copyright — check before using it."
+}

@@ -238,3 +238,122 @@ test("Doh's word over the path, the sticker by its code, and the Carol singer's 
   assert.equal(P.solfaLine(P.JOY_LINE), "d' t l s f m r d");
   same(P.JOY_LINE.map((n) => n.pitchMidi), [86, 85, 83, 81, 79, 78, 76, 74]);
 });
+
+// ── The Halloween Midnight path: the same cases as mobile/src/lib/season.test.ts ──
+const mstep = (index, code, title, carol, cue, detail, passed) => ({ index, id: `${code}@62`, title, carol, hymnSlug: "x", cue, detail, passed, bestScore: passed ? 90 : null });
+const MIDNIGHT = (n) => [
+  mstep(1, "midnight-king", "Mountain King run", "In the Hall of the Mountain King", "the Mountain King's tiptoe", "l, t, d r m d m", n >= 1),
+  mstep(2, "midnight-toccata", "Toccata turn", "Toccata in D minor", "Bach's organ turn", "m r m r d t, l, se, l,", n >= 2),
+  mstep(3, "midnight-climb", "The climb", "In the Hall of the Mountain King", "the Mountain King's climb", "m fe se l t se t", n >= 3),
+  mstep(4, "midnight-waltz", "Skeleton waltz", "Danse Macabre", "the skeletons' waltz", "l l s s sa sa f f m", n >= 4),
+  mstep(5, "midnight-march", "Marionette march", "Funeral March of a Marionette", "the Marionette's fall", "s t l se f m r d t,", n >= 5),
+  mstep(6, "midnight-saints", "All Saints line", "All Saints (Darmstadt)", "All Saints, from the top doh down", "d' s l l s f m d", n >= 6),
+];
+const midnight = (n) => {
+  const steps = MIDNIGHT(n);
+  return { season: "halloween", title: "The Midnight path", until: "2026-11-01", sung: n, total: 6, next: steps.find((s) => !s.passed) ?? null, steps, badgeCode: "night_singer" };
+};
+
+test("the hub's pumpkin card: Halloween until 1 November, the first drill named as the first, then the next", () => {
+  const first = P.seasonCard(midnight(0));
+  assert.equal(first.season, "halloween");
+  assert.equal(first.eyebrow, "Halloween · Until 1 November");
+  assert.equal(first.title, "The Midnight path");
+  assert.equal(first.body, "Six short drills from spooky songs: the Mountain King's tiptoe, Bach's organ turn, the skeletons' waltz, and All Saints to finish.");
+  assert.equal(first.sung, "0 of 6 sung");
+  assert.equal(first.next, "First: the Mountain King's tiptoe");
+  assert.equal(first.action, "Start");
+  assert.equal(P.seasonCard(midnight(2)).next, "Next: the Mountain King's climb");
+  assert.equal(P.seasonCard(midnight(2)).action, "Continue");
+  assert.equal(P.seasonCard(midnight(6)).next, "All sung. The Night Singer sticker is yours.");
+  // The carols' card is as it was.
+  assert.equal(P.seasonCard(season(0)).next, "Next: the Gloria warm-up");
+  assert.equal(P.seasonCard(season(0)).season, "christmas");
+});
+
+test("the Midnight path: Halloween · n of 6, Doh's word by the next song, the Night Singer told by its code", () => {
+  const v = P.seasonView(midnight(1));
+  assert.equal(v.season, "halloween");
+  assert.equal(v.eyebrow, "Halloween · 1 of 6");
+  assert.equal(v.open, 2);
+  assert.equal(v.rows[0].line, "In the Hall of the Mountain King · l, t, d r m d m");
+  assert.equal(P.seasonBuddyLine(midnight(1)), "A perfect tiptoe! Now the organ's turn: m r m, quick as a wink.");
+  assert.equal(P.seasonBuddyLine(midnight(0)), "Shh, tiptoe with me: the Mountain King's run, soft and short.");
+  assert.equal(P.seasonBuddyLine(midnight(5)), "Last one, for All Saints' Day: sing it from the top doh down.");
+  assert.equal(P.seasonBuddyLine(midnight(6)), "You sang all six on the Midnight path. Happy Halloween!");
+  // a drill this build has no line for still gets one, by its cue
+  const other = midnight(0);
+  other.next = { ...other.next, id: "midnight-unknown@62", cue: "the open fifth" };
+  assert.equal(P.seasonBuddyLine(other), "Next: the open fifth. Boo and I are listening!");
+  assert.equal(P.earnedSeasonBadge([{ code: "night_singer" }], "night_singer"), true);
+  assert.equal(P.earnedSeasonBadge([{ code: "carol_singer" }], "night_singer"), false);
+});
+
+test("each season's path has its own address and words", () => {
+  assert.equal(P.seasonPathUrl("christmas"), "/api/practice/carols");
+  assert.equal(P.seasonPathUrl("halloween"), "/api/practice/seasons/halloween");
+  assert.equal(P.seasonOf("something-new"), "christmas");
+  const w = P.seasonWords("halloween");
+  assert.equal(w.pathTitle, "The Midnight path");
+  assert.equal(w.sticker, "Night Singer");
+  assert.equal(w.stickerBody, "You sang all six on the Midnight path. This sticker stays in your book after Halloween.");
+  assert.equal(w.away, "The Midnight path is back next Halloween.");
+  assert.equal(P.seasonWords("christmas").sticker, "Carol singer");
+});
+
+test("the Mountain King's tiptoe: l, t, d r m d m an octave up, quavers and a crotchet, each note short of its length", () => {
+  assert.equal(P.solfaLine(P.KING_OPENING), "l, t, d r m d m");
+  same(P.KING_OPENING.map((n) => n.pitchMidi), [71, 73, 74, 76, 78, 74, 78]);
+  same(P.KING_OPENING.map((n) => n.startBeat), [0, 0.5, 1, 1.5, 2, 2.5, 3]);
+  const last = P.KING_OPENING[P.KING_OPENING.length - 1];
+  assert.equal(((last.startBeat + 1) * 60) / P.KING_BPM, 1.6);
+  for (let i = 0; i + 1 < P.KING_OPENING.length; i++) {
+    assert.ok(P.KING_OPENING[i].durBeats < P.KING_OPENING[i + 1].startBeat - P.KING_OPENING[i].startBeat, `note ${i} is detached`);
+  }
+});
+
+/** The published Mountain King's first bars as the pack would hold them (B minor, from B3), labelled. */
+function kingFromPack() {
+  const steps = [
+    [59, 0.5, "l", ","], [61, 0.5, "t", ","], [62, 0.5, "d", ""], [64, 0.5, "r", ""], [66, 0.5, "m", ""], [62, 0.5, "d", ""], [66, 1, "m", ""],
+    [65, 0.5, "ma", ""], [61, 0.5, "t", ","], [65, 1, "ma", ""],
+    [64, 0.5, "r", ""], [60, 0.5, "ta", ","], [64, 1, "r", ""],
+    [59, 0.5, "l", ","], [61, 0.5, "t", ","],
+  ];
+  let at = 4;
+  return steps.map(([pitchMidi, beats, solfa, octaveMark]) => {
+    const n = { pitchMidi, startBeat: at, durBeats: beats, degree: 0, solfa, octaveMark, conf: 1 };
+    at += beats;
+    return n;
+  });
+}
+
+test("the Night Singer's phrase: the pack's first phrase from its first note, where the chime sits, else the opening", () => {
+  const phrase = P.kingPhrase(kingFromPack());
+  assert.equal(phrase.length, P.KING_PHRASE_NOTES);
+  assert.equal(P.phraseLine(phrase), "l, t, d r m d m · ma t, ma · r ta, r");
+  assert.equal(P.stickerLine("halloween", phrase), "l, t, d r m d m · ma t, ma · r ta, r");
+  // moved up an octave to start on B4 as the opening does, from beat 0, and played detached
+  assert.equal(phrase[0].pitchMidi, 71);
+  assert.equal(phrase[0].startBeat, 0);
+  assert.ok(phrase.every((n) => n.durBeats <= 0.6 + 1e-9));
+  const end = phrase[phrase.length - 1].startBeat + 1;
+  assert.ok(Math.abs((end * 60) / P.KING_BPM - 3.2) < 1e-9);
+  // no pack, or too short a tune: the opening
+  same(P.kingPhrase(null), P.KING_OPENING);
+  assert.equal(P.solfaLine(P.kingPhrase(kingFromPack().slice(0, 4))), "l, t, d r m d m");
+  // Christmas's sticker line prints as it always did
+  assert.equal(P.stickerLine("christmas", P.JOY_LINE), "d' t l s f m r d");
+  // The pack's tune is found by its title, the engine labels it as the phone does
+  assert.equal(P.mountainKing([{ title: "Abends" }, { title: "In the Hall of the Mountain King" }]).title, "In the Hall of the Mountain King");
+  assert.equal(P.mountainKing([{ title: "Abends" }]), null);
+  assert.equal(P.mountainKing(null), null);
+});
+
+test("the pack's notes, labelled by the web's solfa engine (choir.js), give the sticker's line", () => {
+  const ctx = vm.createContext({ window: {} });
+  vm.runInContext(readFileSync(new URL("../assets/choir.js", import.meta.url), "utf8"), ctx);
+  const label = ctx.window.NfChoir.label;
+  const raw = kingFromPack().map((n) => ({ pitchMidi: n.pitchMidi, startBeat: n.startBeat, durBeats: n.durBeats }));
+  assert.equal(P.phraseLine(P.kingPhrase(label(raw, "B minor"))), "l, t, d r m d m · ma t, ma · r ta, r");
+});

@@ -1,0 +1,40 @@
+{
+  "name": "Funeral March of a Marionette",
+  "title": "Funeral March of a Marionette",
+  "form": "theme",
+  "alsoKnownAs": [
+    "Marche funèbre d'une marionnette"
+  ],
+  "music": [
+    {
+      "name": "Charles Francois Gounod",
+      "born": 1818,
+      "died": 1893,
+      "role": "Music (1872)"
+    }
+  ],
+  "musicPublished": 1873,
+  "occasions": [
+    "Halloween"
+  ],
+  "key": "D minor",
+  "time": "6/8",
+  "tempo": 126,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "r:1 D4:.5 D4:.5 C#4:.5 B3:.5 | C#4:.5 r:.5 D4:.5 E4:.5 r:1 | r:1 D4:.5 D4:.5 C#4:.5 B3:.5 | C#4:.5 r:.5 D4:.5 E4:.5 r:1 | r:1 F4:.5 A4:1 G4:.5 | F4:.5 r:.5 A4:.5 C5:1 Bb4:.5 | A4:.5 r:.5 C5:.5 E5:1 D5:.5 | C#5:.5 Bb4:.5 A4:.5 G4:.5 F4:.5 E4:.5 | r:1 D4:.5 D4:.5 C#4:.5 B3:.5 | C#4:.5 r:.5 D4:.5 E4:.5 r:1 | r:1.5 A4:1.5~ | A4:1.5 G4:1.5 | F4:.5 r:.5 A4:.5 C5:1 Bb4:.5 | A4:.5 G4:.5 F4:.5 Eb4:.5 G4:.5 Bb4:.5 | D4:.5 C#4:.5 D4:.5 E4:.5 r:.5 F4:.5 | E4:1.5 D4:.5 r:1",
+  "about": [
+    "Charles Gounod wrote the Funeral March of a Marionette for piano in 1872 as a joke in music: a troupe of puppets carry a broken friend to the cemetery, stop at a tavern on the way and hurry back into step. He scored it for orchestra in 1879, and it is best known today as the theme of the television series Alfred Hitchcock Presents.",
+    "This is the march's main tune, its first sixteen bars, read from Lemoine's illustrated edition of the piano score (Paris, 1882), with the rests as the score has them. Where the piano splits into two voices (the eleventh and twelfth bars) the tune follows the top one, a held A falling to G, while the march figure goes on underneath. The grace notes are left out."
+  ],
+  "reviewed": false,
+  "confidence": "hand-encoded from a public-domain score, unchecked",
+  "draft": false,
+  "source": "Internet Archive (Harold B. Lee Library)",
+  "sourceUrl": "https://archive.org/details/marchefunbredune00goun",
+  "scoreUrl": "https://archive.org/download/marchefunbredune00goun/marchefunbredune00goun.pdf",
+  "licence": "Public domain. Gounod died in 1893; the score scanned is Lemoine's edition of 1882 (Paris), digitised by the Internet Archive from the Harold B. Lee Library, Brigham Young University.",
+  "credits": "Melody read from Marche funèbre d'une marionnette (Paris: H. Lemoine, 1882), checked against Kunkel Brothers' St. Louis edition (1886); both scans at the Internet Archive; public domain.",
+  "reviewNotes": "Hand-encoded from the piano score in Lemoine's illustrated edition (Internet Archive marchefunbredune00goun: bars 1–8 at the top of music page 4, bars 9–16 on page 5), bars 1–8 checked against Kunkel Brothers' edition (1886, Internet Archive b10332613, page 3, 'The Procession'). Each phrase starts after a crotchet rest, as printed. Left out: the acciaccatura before the second D of bars 1, 3 and 9, and the chords under the tune. Bars 11–12 follow the top voice (A held over the bar, then G); the march figure (D D C# B | C# - D) is in the lower voice there — decide whether the sung tune should take it instead. The last bar's D is the score's quaver, followed by rests. Tempo: Allegretto, dotted crotchet = 84 in Lemoine (88 in Kunkel), written here as 126 crotchets a minute. musicPublished 1873 is IMSLP's date for Lemoine's first edition (n.d., plate 7523); check it. Check against another printed score, then set \"reviewed\": true.",
+  "updated": "2026-10-19"
+}

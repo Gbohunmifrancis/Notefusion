@@ -1,5 +1,6 @@
 import { api } from "./client";
 import { emitSheetEvent, sheetSaved } from "../lib/sheetEvents";
+import type { SeasonName } from "../lib/season";
 import type {
   AdminLedgerRow,
   AdminPaymentDetail,
@@ -220,7 +221,7 @@ export const appApi = {
   version: () => api.get<AppVersionInfo>("/api/app/version").then((r) => r.data),
 
   /**
-   * The season every surface dresses for now (`{ christmas }`), anonymous; with a token an admin also sees one in
+   * The season every surface dresses for now (`{ christmas, halloween }`, at most one true), anonymous; with a token an admin also sees one in
    * preview. A few bytes, cached by the API for a minute (lib/seasonStore keeps the last answer on the phone).
    */
   season: () => api.get<AppSeason>("/api/app/season").then((r) => r.data),
@@ -422,11 +423,15 @@ export const practiceApi = {
   progress: () => api.get<PracticeProgress>("/api/practice/progress").then((r) => r.data),
 
   /**
-   * The Christmas carols path while the season is on for the singer (404 PRACTICE_SEASON_OFF otherwise): six drills,
-   * each graded at `gradeDrill` with its `drill.id` like any drill, with the tune the piano plays under a part and a
-   * sing-along's words.
+   * A season's path while that season is on for the singer (404 PRACTICE_SEASON_OFF otherwise): the Christmas carols
+   * or Halloween's Midnight path, six drills each graded at `gradeDrill` with its `drill.id` like any drill, with the
+   * tune the piano plays under a part and a sing-along's words. The carols keep their own address, which every server
+   * since Christmas answers.
    */
-  carols: () => api.get<CarolsPath>("/api/practice/carols").then((r) => r.data),
+  seasonPath: (season: SeasonName) =>
+    api
+      .get<CarolsPath>(season === "christmas" ? "/api/practice/carols" : `/api/practice/seasons/${season}`)
+      .then((r) => r.data),
 
   /** Sets how the singer likes to practise; answers with the progress. Today's drill becomes the track's own. */
   setTrack: (track: PracticeTrack) => api.put<PracticeProgress>("/api/practice/track", { track }).then((r) => r.data),
@@ -825,7 +830,7 @@ export const adminApi = {
       .post<number>(`/api/admin/users/${id}/reset-trial`, { note })
       .then((r) => r.data),
 
-  /** The switches that change what everyone sees (the Christmas season). */
+  /** The switches that change what everyone sees (the Halloween and Christmas seasons, in that order). */
   features: () => api.get<FeatureFlag[]>("/api/admin/features").then((r) => r.data),
 
   /** Changes part of a flag; written to the audit log as SetFeatureFlag. Answers with the flag as it now stands. */

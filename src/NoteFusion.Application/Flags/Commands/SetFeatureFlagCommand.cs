@@ -18,6 +18,8 @@ namespace NoteFusion.Application.Flags.Commands;
 /// <see cref="AutoOffAt"/>, else the one set if it is still ahead, else the next 6 January — and a date alone sets it.
 /// Turning a flag on whose date has passed, with no new one given, moves it to the next 6 January, so "on" means on;
 /// a flag that switched itself off is off, and changing its preview or its date leaves it off.
+/// (Halloween's default is the next 1 November where Christmas's is the next 6 January.) One season at a time: turning
+/// a season on switches any other season that is on off, in the same save and audit trail.
 /// Every change is written to the audit log with who made it; a save that changes nothing writes nothing.
 /// </summary>
 public sealed record SetFeatureFlagCommand(
@@ -52,12 +54,12 @@ public sealed class SetFeatureFlagCommandHandler : IRequestHandler<SetFeatureFla
 
         var now = _clock.UtcNow;
         var today = FeatureFlags.Today(now);
-        var nextSixth = FeatureFlags.SwitchOffAtUtc(FeatureFlags.DefaultLastDay(today));
+        var defaultEnd = FeatureFlags.SwitchOffAtUtc(FeatureFlags.DefaultLastDay(key, today));
 
         var flag = await _db.FeatureFlags.FirstOrDefaultAsync(f => f.Key == key, ct);
         var isNew = flag is null;
         // Never changed: off, no preview, and the default end the console showed.
-        flag ??= FeatureFlag.Create(key, nextSixth, now);
+        flag ??= FeatureFlag.Create(key, defaultEnd, now);
 
         // A flag that switched itself off is off: changing its preview or its date leaves it off, and only turning it
         // on brings it back.
@@ -71,12 +73,12 @@ public sealed class SetFeatureFlagCommandHandler : IRequestHandler<SetFeatureFla
             false => null,
             true => request.AutoOffAt is { } day ? FeatureFlags.SwitchOffAtUtc(day)
                 : flag.AutoOffAtUtc is { } kept && kept > now ? kept
-                : nextSixth,
+                : defaultEnd,
             null => request.AutoOffAt is { } day ? FeatureFlags.SwitchOffAtUtc(day) : flag.AutoOffAtUtc,
         };
-        // Turned on with a date that has gone and no new one: the next 6 January, not an "on" that is off.
+        // Turned on with a date that has gone and no new one: the default end, not an "on" that is off.
         if (enabled && !wasOn && request.AutoOffAt is null && autoOffAt is { } stale && stale <= now)
-            autoOffAt = nextSixth;
+            autoOffAt = defaultEnd;
         if (enabled && autoOffAt is { } off && off <= now)
             return FeatureFlagErrors.AutoOffPassed;
 
@@ -84,11 +86,26 @@ public sealed class SetFeatureFlagCommandHandler : IRequestHandler<SetFeatureFla
         if ((enabled, preview, autoOffAt) == before)
             return GetFeatureFlagsQueryHandler.Describe(key, isNew ? null : flag, now);
 
-        flag.Set(enabled, preview, autoOffAt, actorId, _caller.Email ?? $"user:{actorId}", now);
+        var actorEmail = _caller.Email ?? $"user:{actorId}";
+        flag.Set(enabled, preview, autoOffAt, actorId, actorEmail, now);
         if (isNew)
             _db.FeatureFlags.Add(flag);
 
         _audit.Record(AdminAuditAction.SetFeatureFlag, null, Summary(FeatureFlags.NameOf(key), before, (enabled, preview, autoOffAt)));
+
+        // One season at a time: a season turned on switches off any other that is on (its preview and date are kept).
+        if (enabled && !wasOn && FeatureFlags.Seasons.Contains(key))
+        {
+            var others = FeatureFlags.Seasons.Where(s => s != key).ToList();
+            foreach (var other in await _db.FeatureFlags.Where(f => others.Contains(f.Key)).ToListAsync(ct))
+            {
+                if (!other.IsOn(now))
+                    continue;
+                other.Set(false, other.AdminPreview, other.AutoOffAtUtc, actorId, actorEmail, now);
+                _audit.Record(AdminAuditAction.SetFeatureFlag, null,
+                    Summary(FeatureFlags.NameOf(other.Key), (true, other.AdminPreview, other.AutoOffAtUtc), (false, other.AdminPreview, other.AutoOffAtUtc)));
+            }
+        }
 
         try
         {

@@ -176,7 +176,9 @@ public class SeasonFlagTests
     {
         using var h = new TestHarness(Now);
 
-        var flag = Assert.Single((await new GetFeatureFlagsQueryHandler(h.Db, h.Clock).Handle(new GetFeatureFlagsQuery(), default)).Value);
+        var flags = (await new GetFeatureFlagsQueryHandler(h.Db, h.Clock).Handle(new GetFeatureFlagsQuery(), default)).Value;
+        Assert.Equal(["halloween", "christmas"], flags.Select(f => f.Key));
+        var flag = flags.Single(f => f.Key == "christmas");
 
         Assert.Equal(("christmas", "Christmas season"), (flag.Key, flag.Name));
         Assert.False(flag.Enabled || flag.On || flag.AdminPreview || flag.SwitchedItselfOff);
@@ -261,7 +263,7 @@ public class SeasonFlagTests
 
         h.Clock.UtcNow = new DateTime(2027, 2, 1, 9, 0, 0, DateTimeKind.Utc);
         var flags = (await new GetFeatureFlagsQueryHandler(h.Db, h.Clock).Handle(new GetFeatureFlagsQuery(), default)).Value;
-        var lapsed = Assert.Single(flags);
+        var lapsed = flags.Single(f => f.Key == "christmas");
         Assert.True(lapsed.Enabled && lapsed.SwitchedItselfOff);
         Assert.False(lapsed.On);
         Assert.Equal(new DateOnly(2028, 1, 6), lapsed.SuggestedAutoOffAt);

@@ -106,8 +106,8 @@ public sealed class GradePracticeModeCommandHandler : IRequestHandler<GradePract
         var session = PracticeSession.Record(
             userId, exercise.Kind, mark.Score, mark.Hits, mark.Near, mark.Wrong, mark.Missed,
             exercise.PassageSeconds, _clock.UtcNow, today, drillId: exercise.Id);
-        var christmas = await Flags.FeatureFlags.ChristmasForCallerAsync(_db, _clock.UtcNow, _currentUser, cancellationToken);
-        var reward = await _recorder.RecordAsync(session, christmas, cancellationToken);
+        var season = (await Flags.FeatureFlags.SeasonForCallerAsync(_db, _clock.UtcNow, _currentUser, cancellationToken))?.Key;
+        var reward = await _recorder.RecordAsync(session, season, cancellationToken);
 
         return new PracticeModeGradeDto(
             exercise.Mode, exercise.Id, exercise.GraderName, mark.Score, mark.Summary, exercise.SpeedPercent,

@@ -13,7 +13,9 @@ export const PEOPLE_ADDRESSES_PATH = "hymns/people/addresses.json";
  * its own `occasions` list names it (the hymns encoded by hand, which have no category). Topics are not used:
  * the Open Hymnal's topic tags name what a hymn mentions ("Harvest", "Trinity", "Easter"), not when it is
  * sung. An occasion gets a page only with at least MIN_OCCASION hymns, so no page is thin; the rest wait.
- * `intro` is the page's opening, in plain facts about the day; nothing about any one hymn.
+ * A tune page (content/hymns/tunes, a tune without words) is filed the same way by its own `occasions` list, and
+ * counts toward that minimum. `intro` is the page's opening, in plain facts about the day; nothing about any one
+ * hymn. `what` names the page's list where it is more than hymns (Halloween's songs and hymns).
  */
 export const OCCASIONS = [
   { slug: "advent", name: "Advent", categories: ["Advent"], noun: "hymns", intro: "Advent is the four Sundays before Christmas, when the church prepares to celebrate the coming of Christ. Its hymns look forward: to his birth at Bethlehem and to his coming again." },
@@ -27,6 +29,8 @@ export const OCCASIONS = [
   { slug: "pentecost", name: "Pentecost", categories: ["Pentecost"], noun: "hymns", intro: "Pentecost, fifty days after Easter, remembers the Holy Spirit coming upon the apostles in Jerusalem. Its hymns pray for the Spirit's breath, light and fire." },
   { slug: "trinity", name: "Trinity", categories: ["Trinity"], noun: "hymns", intro: "Trinity Sunday, the Sunday after Pentecost, praises one God: Father, Son and Holy Spirit." },
   { slug: "harvest", name: "Harvest", categories: ["Harvest"], noun: "hymns", intro: "Harvest thanksgiving, when a church brings the fruits of the year to God and gives thanks for them." },
+  { slug: "halloween", name: "Halloween", categories: [], noun: "songs and hymns", what: "songs and hymns", intro: "Halloween, on 31 October, is All Hallows' Eve: the night before All Saints' Day, when the church remembers all the saints. The night has its spooky classics and folk songs, and the day that follows its All Saints hymns." },
+  { slug: "all-saints", name: "All Saints", categories: [], noun: "hymns", intro: "All Saints' Day, on 1 November, remembers all the saints, known and unknown, who have gone before in the faith." },
   { slug: "thanksgiving", name: "Thanksgiving", categories: ["Thanksgiving"], noun: "hymns", intro: "Hymns of thanks to God, for a thanksgiving service, a harvest, an anniversary or any Sunday a church sets aside to give thanks." },
   { slug: "communion", name: "Holy Communion", categories: ["Lord’s Supper"], noun: "hymns", intro: "Hymns for the Lord's Supper, also called Holy Communion or the Eucharist, sung before and while the bread and wine are shared." },
   { slug: "baptism", name: "Baptism", categories: ["Baptismal Life"], noun: "hymns", intro: "Hymns for a baptism, and for remembering the promises made in it." },
@@ -44,9 +48,13 @@ export function inOccasion(h, o) {
   return o.categories.includes(h.category) || (h.occasions || []).includes(o.name);
 }
 
-/** The occasions that get a page, each with its hymns (A–Z, as given), in the order of the church year. */
-export function occasionPages(hymns) {
-  return OCCASIONS.map((o) => ({ ...o, url: `/hymns/occasions/${o.slug}`, hymns: hymns.filter((h) => inOccasion(h, o)) })).filter((o) => o.hymns.length >= MIN_OCCASION);
+/**
+ * The occasions that get a page, each with its hymns and its tune pages (A–Z, as given), in the order of the
+ * church year. `tunes` are published tune pages (after prepareTune); a hymn and a tune page count alike.
+ */
+export function occasionPages(hymns, tunes = []) {
+  return OCCASIONS.map((o) => ({ ...o, url: `/hymns/occasions/${o.slug}`, hymns: hymns.filter((h) => inOccasion(h, o)), tunes: tunes.filter((t) => inOccasion(t, o)) }))
+    .filter((o) => o.hymns.length + o.tunes.length >= MIN_OCCASION);
 }
 
 // ── People ──────────────────────────────────────────────────────────────────

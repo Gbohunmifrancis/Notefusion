@@ -22,6 +22,13 @@ public static class PracticeErrors
     public static readonly Error SeasonOff =
         Error.NotFound("PRACTICE_SEASON_OFF", "The carols are back next Christmas. Your path is in Practice.");
 
+    /// <summary>The Midnight path asked for outside the Halloween season.</summary>
+    public static readonly Error MidnightOff =
+        Error.NotFound("PRACTICE_SEASON_OFF", "The Midnight path is back next Halloween. Your path is in Practice.");
+
+    /// <summary>A season's path asked for outside its season, or a season there is none of.</summary>
+    public static Error SeasonOffFor(string? season) => season == Practice.HalloweenPath.Season ? MidnightOff : SeasonOff;
+
     public static readonly Error TrackUnknown =
         Error.Validation("PRACTICE_TRACK_UNKNOWN", "Pick a practice style: Playful or Focused.");
 
