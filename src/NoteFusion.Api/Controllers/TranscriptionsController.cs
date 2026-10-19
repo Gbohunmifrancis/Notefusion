@@ -2,8 +2,10 @@ using MediatR;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 using NoteFusion.Api.Common;
+using NoteFusion.Api.RateLimiting;
 using NoteFusion.Application.Transcriptions.Commands;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Application.Transcriptions.Queries;
@@ -153,6 +155,7 @@ public sealed class TranscriptionsController : ApiControllerBase
     /// transcribe in one go, so the client can offer a section of the song. Costs nothing.
     /// </summary>
     [HttpPost("link/info")]
+    [EnableRateLimiting(AuthRateLimiting.LinkInfo)]
     public async Task<IActionResult> LinkInfo([FromBody] LinkInfoRequest request, CancellationToken ct)
         => HandleResult(await _sender.Send(new GetLinkInfoQuery(request.Url ?? string.Empty), ct));
 

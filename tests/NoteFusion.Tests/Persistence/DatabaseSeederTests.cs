@@ -112,6 +112,29 @@ public class DatabaseSeederTests
     }
 
     [Fact]
+    public async Task Does_not_promote_an_unverified_account_holding_the_primary_admin_email()
+    {
+        using var h = new TestHarness(Now);
+        await SeedUser(h, "admin@notefusion.app", verified: false);
+
+        await Run(h);
+
+        // A stranger may have registered the address first, with a password of their own.
+        Assert.Equal(UserRole.User, (await FindUser(h, "admin@notefusion.app"))!.Role);
+    }
+
+    [Fact]
+    public async Task Does_not_promote_an_unverified_account_named_in_AdminEmails()
+    {
+        using var h = new TestHarness(Now);
+        await SeedUser(h, "francisgbohunmi@gmail.com", verified: false);
+
+        await Run(h, adminEmails: ["francisgbohunmi@gmail.com"]);
+
+        Assert.Equal(UserRole.User, (await FindUser(h, "francisgbohunmi@gmail.com"))!.Role);
+    }
+
+    [Fact]
     public async Task Does_not_create_an_account_for_an_AdminEmails_entry_that_has_none()
     {
         using var h = new TestHarness(Now);
@@ -189,9 +212,12 @@ public class DatabaseSeederTests
         await seeder.StartAsync(default);
     }
 
-    private static async Task<Guid> SeedUser(TestHarness h, string email, string fullName = "Test User")
+    private static async Task<Guid> SeedUser(
+        TestHarness h, string email, string fullName = "Test User", bool verified = true)
     {
         var user = User.Create(fullName, email, h.Hasher.Hash("password123"), Now.AddDays(-30));
+        if (verified)
+            h.MarkEmailVerified(user);
         h.Db.Users.Add(user);
         await h.Db.SaveChangesAsync();
         return user.Id;

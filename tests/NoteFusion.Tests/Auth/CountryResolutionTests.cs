@@ -251,7 +251,7 @@ public class CountryResolutionTests
             NullLogger<HttpGeoIpLookup>.Instance);
 
     private static LoginCommandHandler Login(TestHarness h)
-        => new(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email);
+        => new(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email, h.QuotaGate);
 
     private static async Task<User> Seed(TestHarness h)
     {

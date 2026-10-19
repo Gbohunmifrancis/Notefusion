@@ -433,7 +433,7 @@ public class EmailVerificationTests
     }
 
     private static Task<Result<LoginResponse>> Verify(TestHarness h, string email, string code)
-        => new VerifyEmailCommandHandler(h.Db, h.TokenIssuer, h.Clock, h.Email)
+        => new VerifyEmailCommandHandler(h.Db, h.TokenIssuer, h.Clock, h.Email, h.QuotaGate)
             .Handle(new VerifyEmailCommand(email, code), default);
 
     private static Task<Result<MediatR.Unit>> Resend(TestHarness h, string email)
@@ -443,7 +443,7 @@ public class EmailVerificationTests
             .Handle(new ResendEmailVerificationCommand(email), default);
 
     private static LoginCommandHandler Login(TestHarness h)
-        => new(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email);
+        => new(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email, h.QuotaGate);
 
     /// <summary>Any six digits that are not <paramref name="code"/>.</summary>
     private static string WrongCode(string code) => code == "000000" ? "111111" : "000000";

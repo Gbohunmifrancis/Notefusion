@@ -25,6 +25,12 @@ public static class KeyParser
             "Key must be a note (A–G) with an optional #/b and an optional major/minor, " +
             "e.g. \"C\", \"Bb\", \"F#\", \"B- major\", \"F# minor\", \"Am\".");
 
+    /// <summary>
+    /// The longest key string read at all: twice the longest real spelling ("F# minor", "Bb major"). The worker
+    /// refuses longer ones too, so an endless run of accidentals is turned away here rather than parsed there.
+    /// </summary>
+    public const int MaxLength = 16;
+
     // Pitch class of each natural note letter.
     private static readonly IReadOnlyDictionary<char, int> NaturalPitchClass =
         new Dictionary<char, int>
@@ -55,6 +61,9 @@ public static class KeyParser
             return Invalid;
 
         var s = text.Trim();
+        if (s.Length > MaxLength)
+            return Invalid;
+
         var mode = KeyMode.Major;
 
         // Peel off an explicit mode suffix, longest first so "minor" isn't read as "m" + "inor".

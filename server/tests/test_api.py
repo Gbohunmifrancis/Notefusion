@@ -209,6 +209,24 @@ def test_a_trimmed_clip_keeps_its_sample_rate_and_channels(tmp_path):
     out.unlink()
 
 
+def test_a_trim_folds_a_wide_fast_upload_to_stereo_at_48k(tmp_path):
+    """A small FLAC can claim eight channels at 192 kHz (or 655 kHz): written out as it came
+    it would be gigabytes on disk and in memory, so the trim folds it to stereo at 48 kHz."""
+    from app.api.routes import _trim_head
+
+    sr = 192_000
+    src = tmp_path / "wide.flac"
+    sf.write(src, (0.01 * np.random.default_rng(0).standard_normal((sr, 8))).astype("float32"), sr)
+
+    out = _trim_head(src, 1.0)
+    info = sf.info(str(out))
+    # ffmpeg folds to stereo; the librosa fallback (no ffmpeg, as on CI) to mono. Either is small.
+    assert info.channels <= 2
+    assert info.samplerate == 48_000
+    assert abs(info.duration - 1.0) < 0.02
+    out.unlink()
+
+
 def test_get_unknown_job_returns_404():
     with TestClient(app) as client:
         r = client.get("/v1/jobs/nosuchid")
@@ -258,7 +276,7 @@ def test_submit_rejects_genuinely_unparseable_keys():
     """
     with TestClient(app) as client:
         data = _make_wav(duration_sec=0.1)
-        for bad in ("H", "Cx", "123", "m", "#", "Zb"):
+        for bad in ("H", "Cx", "123", "m", "#", "Zb", "C" + "#" * 5000):
             r = client.post(
                 "/v1/transcribe",
                 files={"audio": ("clip.wav", BytesIO(data), "audio/wav")},

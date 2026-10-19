@@ -38,7 +38,7 @@ public enum AdminAuditAction
     /// <summary>An operator set or cleared a global system broadcast announcement.</summary>
     SetAnnouncement = 13,
 
-    /// <summary>An operator executed a pre-production purge of test users and data.</summary>
+    /// <summary>An operator executed a pre-production purge of test users and data (the endpoint is gone; old rows keep it).</summary>
     PurgeTestData = 14,
 
     /// <summary>An operator marked an account as the team's own or a test account, or back to a customer.</summary>

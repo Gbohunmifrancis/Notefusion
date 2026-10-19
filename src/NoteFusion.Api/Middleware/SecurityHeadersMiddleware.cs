@@ -39,6 +39,12 @@ public sealed class SecurityHeadersMiddleware
         SetIfAbsent(headers, "Referrer-Policy", "no-referrer");
         SetIfAbsent(headers, "X-Frame-Options", "DENY");
 
+        // HTTPS only from now on, said on every answer that arrived over HTTPS (behind the proxy, as its
+        // X-Forwarded-Proto says). Production switches UseHsts off with Security__RequireHttps=false because
+        // the proxy terminates TLS, which had left the API sending no HSTS at all.
+        if (response.HttpContext.Request.IsHttps)
+            SetIfAbsent(headers, "Strict-Transport-Security", "max-age=31536000");
+
         var isHtml = response.ContentType?.StartsWith("text/html", StringComparison.OrdinalIgnoreCase) == true;
         if (!isHtml)
             SetIfAbsent(headers, "Content-Security-Policy", ApiContentSecurityPolicy);

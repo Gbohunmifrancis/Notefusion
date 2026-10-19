@@ -208,6 +208,13 @@ def test_rejects_invalid_input(text):
         _parse_key_override(text)
 
 
+def test_rejects_an_overlong_key_before_parsing_it():
+    # A megabyte of sharps is still "C sharp ... sharp" to the loop; it is refused unread.
+    assert _parse_key_override("Bbb minor").tonic.pitchClass == 9
+    with pytest.raises(ValueError, match="too long"):
+        _parse_key_override("C" + "#" * 20)
+
+
 # ── Specific regression: "Auto" is sanitised upstream, not here ──────────────
 #
 # "Auto" is handled by the route layer (routes.py strips it to None before

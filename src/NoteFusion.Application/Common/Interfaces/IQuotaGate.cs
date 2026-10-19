@@ -46,6 +46,13 @@ public static class QuotaGateExtensions
     public static string SaveKey(Guid userId) => $"save:{userId}";
 
     /// <summary>
+    /// The key every guess at one account's secret holds (a password, an email code): its attempt counters are
+    /// read, checked and written back, so parallel guesses would each see the count before the others and a
+    /// burst would cost one attempt instead of one each.
+    /// </summary>
+    public static string SignInKey(string email) => $"signin:{email}";
+
+    /// <summary>
     /// Takes every non-null key in ordinal order, so overlapping sets cannot deadlock, and hands back one
     /// lease that releases them all.
     /// </summary>

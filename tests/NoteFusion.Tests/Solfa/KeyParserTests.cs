@@ -257,4 +257,13 @@ public class KeyParserTests
         Assert.Equal(11, result.Value.TonicPitchClass);
         Assert.Equal(KeyMode.Minor, result.Value.Mode);
     }
+
+    [Fact]
+    public void An_endless_run_of_accidentals_is_refused_before_it_is_read()
+    {
+        Assert.True(KeyParser.Parse("C" + new string('#', 5000)).IsFailure);
+        Assert.True(KeyParser.Parse("  Bb major  ").IsSuccess); // surrounding space does not count
+        Assert.True(KeyParser.Parse("C" + new string('#', KeyParser.MaxLength - 1)).IsSuccess);
+        Assert.True(KeyParser.Parse("C" + new string('#', KeyParser.MaxLength)).IsFailure);
+    }
 }

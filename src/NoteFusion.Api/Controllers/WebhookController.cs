@@ -27,18 +27,20 @@ public sealed class WebhookController : ControllerBase
     private readonly ISender _sender;
     private readonly IApplicationDbContext _db;
     private readonly IConfiguration _config;
+    private readonly IWebHostEnvironment _env;
 
-    public WebhookController(ISender sender, IApplicationDbContext db, IConfiguration config)
+    public WebhookController(ISender sender, IApplicationDbContext db, IConfiguration config, IWebHostEnvironment env)
     {
         _sender = sender;
         _db = db;
         _config = config;
+        _env = env;
     }
 
     [HttpPost("transcription/{jobId}")]
     public async Task<IActionResult> TranscriptionReady(string jobId, CancellationToken ct)
     {
-        if (!IsAuthorised(_config["TranscriptionApi:ApiKey"], Request.Headers[ApiKeyHeader].ToString()))
+        if (!IsAuthorised(_config["TranscriptionApi:ApiKey"], Request.Headers[ApiKeyHeader].ToString(), _env.IsDevelopment()))
             return Unauthorized();
 
         var job = await _db.TranscriptionJobs.FirstOrDefaultAsync(j => j.JobId == jobId, ct);
@@ -60,13 +62,14 @@ public sealed class WebhookController : ControllerBase
     }
 
     /// <summary>
-    /// True when no key is configured, or <paramref name="presented"/> is that key. Compared in constant time
-    /// so the answer's timing does not give the key away a character at a time.
+    /// True when <paramref name="presented"/> is the configured key, or when no key is configured on a
+    /// development machine. Outside Development a missing key refuses everyone rather than letting anyone in.
+    /// Compared in constant time so the answer's timing does not give the key away a character at a time.
     /// </summary>
-    internal static bool IsAuthorised(string? configured, string? presented)
+    internal static bool IsAuthorised(string? configured, string? presented, bool development)
     {
         if (string.IsNullOrEmpty(configured))
-            return true;
+            return development;
 
         return CryptographicOperations.FixedTimeEquals(
             Encoding.UTF8.GetBytes(configured),

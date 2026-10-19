@@ -1169,7 +1169,8 @@ def _to_wav(audio: Path, max_seconds: float, work: Path, offset: float = 0.0) ->
     wav = work / "song.wav"
     ffmpeg = subprocess.run(
         [
-            "ffmpeg", "-y", "-v", "error", *(["-ss", f"{offset:.3f}"] if offset > 0 else []), "-i", str(audio),
+            "ffmpeg", "-y", "-v", "error", *(["-ss", f"{offset:.3f}"] if offset > 0 else []),
+            "-protocol_whitelist", "file", "-i", str(audio),
             "-t", f"{max_seconds:.2f}", "-ac", "2", "-ar", "44100", "-f", "wav", str(wav),
         ],
         capture_output=True, text=True, timeout=300,

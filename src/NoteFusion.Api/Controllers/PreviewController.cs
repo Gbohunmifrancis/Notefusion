@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using NoteFusion.Api.Common;
+using NoteFusion.Api.RateLimiting;
 using NoteFusion.Application.Preview.Commands;
 using NoteFusion.Application.Preview.Queries;
 using NoteFusion.Application.Transcriptions.Dtos;
@@ -57,6 +59,7 @@ public sealed class PreviewController : ApiControllerBase
     /// which thirty. Throttled with the previews but not counted as one.
     /// </summary>
     [HttpPost("link/info")]
+    [EnableRateLimiting(AuthRateLimiting.LinkInfo)]
     public async Task<IActionResult> LinkInfo([FromBody] PreviewLinkInfoRequest request, CancellationToken ct)
         => HandleResult(await _sender.Send(new GetPreviewLinkInfoQuery(request.Url ?? string.Empty), ct));
 

@@ -45,7 +45,7 @@ public class RefreshTokenSecurityTests
         h.Db.ChangeTracker.Clear();
 
         var changed = await new ChangePasswordCommandHandler(
-                h.Db, h.Hasher, h.TokenIssuer, h.Clock, new StubCurrentUser(user.Id), h.Email)
+                h.Db, h.Hasher, h.TokenIssuer, h.Clock, new StubCurrentUser(user.Id), h.Email, h.QuotaGate)
             .Handle(new ChangePasswordCommand("s3cretpw!", "brand-new-pw1"), default);
         Assert.True(changed.IsSuccess);
         h.Db.ChangeTracker.Clear();

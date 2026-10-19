@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { parseFrontMatter, stringifyFrontMatter, loadTunes, loadHymns, loadAll, loadAuthors } from "../lib/content.mjs";
-import { renderMarkdown } from "../lib/markdown.mjs";
+import { renderMarkdown, renderInline, safeUrl } from "../lib/markdown.mjs";
 import { prepareHymn } from "../lib/render-hymns.mjs";
 
 test("front matter: fields, lists, nested FAQ, and the body after it", () => {
@@ -107,6 +107,20 @@ test("markdown: callouts, pull quotes and captioned figures", () => {
   const fig = renderMarkdown('![A choir](/assets/blog/c.jpg "1200x675 | The choir at practice")', { hymnsBySlug }).html;
   assert.equal(fig.trim(), '<figure class="post-figure"><img src="/assets/blog/c.jpg" alt="A choir" width="1200" height="675" loading="lazy" decoding="async"><figcaption>The choir at practice</figcaption></figure>');
   assert.doesNotMatch(renderMarkdown('![A](/a.jpg "10x10")', { hymnsBySlug }).html, /<p>|figcaption/);
+});
+
+test("markdown: raw HTML is text and only followable links keep their address (posts share /app's origin)", () => {
+  const hymnsBySlug = new Map();
+  const body = renderMarkdown("<script>alert(1)</script>\n\nSee <img src=x onerror=alert(1)> and [x](javascript:alert(1)) or [y](JaVaScript:alert(1)).", { hymnsBySlug }).html;
+  assert.doesNotMatch(body, /<script|<img src=x|javascript:/i);
+  assert.match(body, /&lt;img src=x onerror=alert\(1\)&gt;/);
+  assert.match(body, /<a href="#">x<\/a>/);
+  const faq = renderInline("Hi <img src=x onerror=alert(1)> [x](javascript:alert(1)) ![i](data:text/html,x)");
+  assert.doesNotMatch(faq, /<img src=x|javascript:|data:/i);
+  assert.match(faq, /<a href="#">x<\/a>/);
+  assert.equal(renderInline("Mail [us](mailto:hello@notefusion.studio)."), 'Mail <a href="mailto:hello@notefusion.studio">us</a>.');
+  for (const ok of ["/app", "#faq", "https://example.com/a?b=c", "http://x.y", "mailto:a@b.c", "guide.html", "?q=1"]) assert.equal(safeUrl(ok), ok);
+  for (const bad of ["javascript:alert(1)", " vbscript:x", "data:text/html,x", "java\tscript:x", "file:///etc"]) assert.equal(safeUrl(bad), "#");
 });
 
 test("authors: an optional photo under /assets; posts: an optional dek", () => {

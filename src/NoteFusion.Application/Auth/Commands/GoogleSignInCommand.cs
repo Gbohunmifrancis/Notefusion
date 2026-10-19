@@ -96,6 +96,11 @@ public sealed class GoogleSignInCommandHandler : IRequestHandler<GoogleSignInCom
             if (!user.IsActive)
                 return AuthErrors.AccountInactive;
 
+            // Found by address but already tied to a different Google account: the address has changed hands
+            // at Google (a recycled Workspace mailbox, say), and its new holder is not this account's owner.
+            if (user.GoogleId is not null && user.GoogleId != identity.SubjectId)
+                return AuthErrors.InvalidGoogleToken;
+
             if (user.GoogleId is null)
                 user.LinkGoogleAccount(identity.SubjectId);
 

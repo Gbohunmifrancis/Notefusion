@@ -230,6 +230,12 @@ public sealed class RecordingEmailSender : IEmailSender
         return Task.CompletedTask;
     }
 
+    public Task SendAdminPasskeyAddedAsync(EmailRecipient to, string passkeyName, DateTime atUtc, CancellationToken ct = default)
+    {
+        Sent.Add(("admin-passkey-added", to));
+        return Task.CompletedTask;
+    }
+
     public Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default)
     {
         Sent.Add(("email-verification", to));

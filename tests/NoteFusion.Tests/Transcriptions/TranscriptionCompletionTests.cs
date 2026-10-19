@@ -83,6 +83,24 @@ public class TranscriptionCompletionTests
     }
 
     [Fact]
+    public async Task The_live_update_gives_a_free_account_what_its_poll_would_and_a_pro_account_everything()
+    {
+        using var h = new TestHarness(Now);
+        var free = Seed(h);
+        var pro = Seed(h, "pro@example.com");
+        GoPro(h, pro);
+        var freeNotifier = new FakeTranscriptionNotifier();
+        var proNotifier = new FakeTranscriptionNotifier();
+
+        await Notify(h, Open(h, free), new FakeMlService { Status = TranscriptionStatus.Done }, freeNotifier);
+        await Notify(h, Open(h, pro, "job-2"), new FakeMlService { Status = TranscriptionStatus.Done }, proNotifier);
+
+        // MIDI is Pro; the hub used to send it to everyone, ahead of the gated poll.
+        Assert.Equal(string.Empty, Assert.Single(freeNotifier.Sent).Result!.MidiBase64);
+        Assert.Equal(Finished.MidiBase64, Assert.Single(proNotifier.Sent).Result!.MidiBase64);
+    }
+
+    [Fact]
     public async Task A_free_accounts_finished_job_spends_one_generation()
     {
         using var h = new TestHarness(Now);
@@ -521,8 +539,9 @@ public class TranscriptionCompletionTests
         return job;
     }
 
-    private static Task<Result> Notify(TestHarness h, TranscriptionJob job, FakeMlService api)
-        => new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, new FakeTranscriptionNotifier(), h.WebPush, h.QuotaGate)
+    private static Task<Result> Notify(
+        TestHarness h, TranscriptionJob job, FakeMlService api, FakeTranscriptionNotifier? notifier = null)
+        => new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, notifier ?? new FakeTranscriptionNotifier(), h.WebPush, h.QuotaGate)
             .Handle(new NotifyTranscriptionReadyCommand(job.Id), CancellationToken.None);
 
     private static Task<Result<TranscriptionJobDto>> Poll(
@@ -532,8 +551,13 @@ public class TranscriptionCompletionTests
 
     private sealed class FakeTranscriptionNotifier : NoteFusion.Application.Common.Interfaces.ITranscriptionNotifier
     {
+        public List<TranscriptionJobDto> Sent { get; } = [];
+
         public Task NotifyJobCompletedAsync(Guid userId, TranscriptionJobDto job, CancellationToken cancellationToken = default)
-            => Task.CompletedTask;
+        {
+            Sent.Add(job);
+            return Task.CompletedTask;
+        }
     }
 
     /// <summary>

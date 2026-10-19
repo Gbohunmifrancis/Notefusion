@@ -455,7 +455,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Google Play Billing alone (§1.3; web unchanged): products `pro`/`choir` (auto-renewing, base plans `monthly`/`yearly`)
   and `one_song`; the app's token (`POST /api/billing/google-play/purchases`) and Google's Pub/Sub notifications (OIDC,
   `…/notifications`) only name a token — `Billing/GooglePlay/GooglePlaySync` reads Google, ties the token to one account
-  (`GooglePlayPurchase`, unique token; obfuscated account id = user id), records each charged order once
+  (`GooglePlayPurchase`, unique token; obfuscated account id = user id, but only the account's own app call ties a new token, never a notification alone), records each charged order once
   (`PaymentProvider.GooglePlay`, order id as reference, Google's order total) through `PaymentFulfillment`, makes the
   membership follow Google's expiry (`FollowStore`: renewals, grace, hold, cancel, refund), and acknowledges/consumes;
   `GooglePlaySyncWorker` backstops. A Play membership renews by itself, so the website's checkout and cancel refuse it

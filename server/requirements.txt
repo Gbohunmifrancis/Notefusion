@@ -4,14 +4,18 @@
 # `pip install --no-deps basic-pitch==0.4.0` and provide onnxruntime manually
 # (Basic Pitch auto-detects ONNX when TensorFlow is absent).
 
-fastapi==0.121.0
+fastapi==0.146.0
 # Pinned on its own so fastapi's range cannot resolve to a vulnerable release:
-# >= 0.47.2 fixes CVE-2025-54121 (multipart upload blocking the event loop) and
-# >= 0.49.1 fixes CVE-2025-62727 (Range header DoS in FileResponse).
-starlette==0.49.3
+# >= 0.47.2 fixes CVE-2025-54121 (multipart upload blocking the event loop),
+# >= 0.49.1 fixes CVE-2025-62727 (Range header DoS in FileResponse), and
+# >= 1.3.1 fixes CVE-2026-48710 / CVE-2026-54282 (request.url rebuilt from an unchecked
+# Host header or path) and CVE-2026-54283 (form limits ignored for urlencoded bodies).
+starlette==1.9.0
 uvicorn[standard]==0.34.0
 pydantic==2.10.4
-python-multipart==0.0.20
+# >= 0.0.31 fixes the multipart and urlencoded parser DoS bugs CVE-2026-40347, -42561,
+# -53538, -53539 and -53540 (huge preambles, unbounded part headers, a negative Content-Length).
+python-multipart==0.0.32
 # Crash reports, sent only when NF_SENTRY_DSN is set (app.telemetry.configure_error_reporting).
 sentry-sdk[fastapi]==2.71.0
 
@@ -33,7 +37,8 @@ mir_eval==0.8.2
 mido==1.3.3
 typing_extensions==4.16.0
 # resampy imports pkg_resources, which ships with setuptools — absent from the
-# python:3.12-slim base image (no setuptools by default since 3.12).
+# python:3.12-slim base image (no setuptools by default since 3.12).  Held below 83: that release
+# (the CVE-2026-59890 fix, a MANIFEST.in build-time bug never run in the image) drops pkg_resources.
 setuptools==80.9.0
 
 # Linked songs: audio fetch (YouTube) for the song-to-solfa feature.  Deliberately a

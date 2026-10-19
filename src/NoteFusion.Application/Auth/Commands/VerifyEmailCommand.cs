@@ -39,19 +39,25 @@ public sealed class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailComma
     private readonly ITokenIssuer _tokenIssuer;
     private readonly IDateTimeProvider _clock;
     private readonly IEmailSender _email;
+    private readonly IQuotaGate _gate;
 
     public VerifyEmailCommandHandler(
-        IApplicationDbContext db, ITokenIssuer tokenIssuer, IDateTimeProvider clock, IEmailSender email)
+        IApplicationDbContext db, ITokenIssuer tokenIssuer, IDateTimeProvider clock, IEmailSender email, IQuotaGate gate)
     {
         _db = db;
         _tokenIssuer = tokenIssuer;
         _clock = clock;
         _email = email;
+        _gate = gate;
     }
 
     public async Task<Result<LoginResponse>> Handle(VerifyEmailCommand request, CancellationToken cancellationToken)
     {
         var email = request.Email.Trim().ToLowerInvariant();
+
+        // One guess at a time per account: five tries is the whole defence of a six-digit code, and parallel
+        // guesses that each read the count before the others wrote would get far more than five.
+        await using var lease = await _gate.AcquireAsync(QuotaGateExtensions.SignInKey(email), cancellationToken);
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
 
         // An unknown address gets the same answer a wrong code does. This endpoint is anonymous, so any

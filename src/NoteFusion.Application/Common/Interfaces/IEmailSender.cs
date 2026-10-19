@@ -119,6 +119,12 @@ public interface IEmailSender
     Task SendAdminPhoneAddedAsync(EmailRecipient to, string phoneLabel, DateTime atUtc, CancellationToken ct = default);
 
     /// <summary>
+    /// Security notice: a passkey was added to an admin account. A passkey signs in for good, past password changes,
+    /// so one added by somebody else must not go unnoticed.
+    /// </summary>
+    Task SendAdminPasskeyAddedAsync(EmailRecipient to, string passkeyName, DateTime atUtc, CancellationToken ct = default);
+
+    /// <summary>
     /// Sends a custom branded message drafted by an administrator to the specified recipient.
     /// </summary>
     Task SendCustomEmailAsync(

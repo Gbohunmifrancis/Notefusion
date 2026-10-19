@@ -29,11 +29,12 @@ public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<L
     private readonly IDateTimeProvider _clock;
     private readonly ICountryResolver _country;
     private readonly IEmailSender _email;
+    private readonly IQuotaGate _gate;
 
     public LoginCommandHandler(
         IApplicationDbContext db, IPasswordHasher hasher, ITokenIssuer tokenIssuer,
         ISecureTokenGenerator tokenGen, IDateTimeProvider clock, ICountryResolver country,
-        IEmailSender email)
+        IEmailSender email, IQuotaGate gate)
     {
         _db = db;
         _hasher = hasher;
@@ -42,11 +43,15 @@ public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<L
         _clock = clock;
         _country = country;
         _email = email;
+        _gate = gate;
     }
 
     public async Task<Result<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var email = request.Email.Trim().ToLowerInvariant();
+
+        // One guess at a time per account, so the failed-attempt count each one reads is the one the last wrote.
+        await using var lease = await _gate.AcquireAsync(QuotaGateExtensions.SignInKey(email), cancellationToken);
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
 
         // Every refusal below is the same error after the same amount of work, so a caller cannot tell an

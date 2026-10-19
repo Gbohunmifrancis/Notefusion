@@ -163,7 +163,11 @@ public sealed class NotifyTranscriptionReadyCommandHandler
 
         // Filed in the owner's library now, before anyone is told: the push opens a sheet that is already theirs.
         var sheet = await Library.LibraryFiling.FileAsync(_db, _gate, _clock, job, result, ct);
-        var dto = Library.LibraryFiling.WithSheet(new TranscriptionJobDto(job.JobId, TranscriptionStatus.Done, 1, result), sheet);
+
+        // What the owner is sent over the live connection is what their poll would answer: a free account's copy
+        // without the Pro parts (MIDI, harmony), which only the stored result keeps.
+        var shown = await IsProAsync(job.UserId, ct) ? result : ProGate.ForFree(result);
+        var dto = Library.LibraryFiling.WithSheet(new TranscriptionJobDto(job.JobId, TranscriptionStatus.Done, 1, shown), sheet);
         await _notifier.NotifyJobCompletedAsync(job.UserId, dto, ct);
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == job.UserId, ct);

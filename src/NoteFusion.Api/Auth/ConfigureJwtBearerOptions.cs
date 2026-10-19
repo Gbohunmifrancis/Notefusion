@@ -34,6 +34,8 @@ public sealed class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearer
             ValidAudience = _settings.Audience,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = _keys.SecurityKey,
+            // The one algorithm our tokens are signed with; nothing else is ever accepted, whatever a token's header claims.
+            ValidAlgorithms = [SecurityAlgorithms.RsaSha256],
             ValidateLifetime = true,
             ClockSkew = TimeSpan.FromSeconds(30),
             RoleClaimType = System.Security.Claims.ClaimTypes.Role,

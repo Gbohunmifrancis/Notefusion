@@ -242,16 +242,22 @@ public sealed class GooglePlaySync
     private static string Key(string purchaseToken) => $"play:{purchaseToken}";
 
     /// <summary>
-    /// The account a token belongs to: the one that claimed it first; else the account id the app set when buying
-    /// (our user id); else, for a replacement token, the old token's account; else the caller. A caller who is not
-    /// that account is refused, so one purchase can never serve two accounts.
+    /// The account a token belongs to: the one that claimed it first; else, when an account is asking, the account id
+    /// the app set when buying (our user id); else, for a replacement token, the old token's account; else the caller.
+    /// A caller who is not that account is refused, so one purchase can never serve two accounts.
     /// </summary>
+    /// <remarks>
+    /// A notification alone (no caller) never ties a new token to the account id it names: Google passes that id
+    /// through from whoever bought, and user ids can be worked out from an address, so a modified app could buy in a
+    /// stranger's name and refund to cut their membership short. Such a purchase waits, unclaimed, for its own app,
+    /// which hands it over at sign-in and on every foreground.
+    /// </remarks>
     private async Task<Result<Guid?>> ResolveOwnerAsync(
         GooglePlayPurchase? link, string? accountId, string? linkedToken, Guid? caller, CancellationToken ct)
     {
         Guid? owner = link?.UserId;
 
-        if (owner is null && Guid.TryParse(accountId, out var fromAccountId)
+        if (owner is null && caller is not null && Guid.TryParse(accountId, out var fromAccountId)
             && await _db.Users.AnyAsync(u => u.Id == fromAccountId, ct))
         {
             owner = fromAccountId;

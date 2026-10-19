@@ -119,6 +119,9 @@ public sealed class PasskeyTests : IDisposable
         Assert.Equal("internal,hybrid", stored.Transports);
         Assert.Null(stored.LastUsedAtUtc);
         Assert.Single(_h.Db.AdminAuditLogs, a => a.Action == AdminAuditAction.AddPasskey && a.ActorUserId == admin.Id);
+
+        // The admin is told: a passkey added with a stolen session would otherwise be a silent way back in.
+        Assert.Contains(_h.Email.Sent, s => s.Kind == "admin-passkey-added" && s.To.Email == "admin@example.com");
     }
 
     [Fact]
@@ -410,7 +413,7 @@ public sealed class PasskeyTests : IDisposable
 
     private CompletePasskeyRegistrationCommandHandler CompleteRegistration(User caller)
         => new(_h.Db, new StubCurrentUser(caller.Id, caller.Role, caller.Email), _ceremony, _challenges,
-            _h.AuditAs(caller), _h.Clock);
+            _h.AuditAs(caller), _h.Clock, _h.Email);
 
     private BeginPasskeySignInCommandHandler BeginSignIn() => new(_ceremony, _challenges, _h.Clock);
 

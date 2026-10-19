@@ -36,6 +36,15 @@ public class User : BaseEntity
     public static readonly TimeSpan EmailVerificationResendCooldown = TimeSpan.FromSeconds(60);
 
     /// <summary>
+    /// How long after one reset link another is refused. Without it, anyone who knows the address could keep
+    /// replacing the owner's link with a new one faster than the owner can open their mail.
+    /// </summary>
+    public static readonly TimeSpan PasswordResetResendCooldown = TimeSpan.FromMinutes(2);
+
+    /// <summary>How long a reset link works.</summary>
+    public static readonly TimeSpan PasswordResetLifetime = TimeSpan.FromHours(1);
+
+    /// <summary>
     /// The wait between "you already have an account" notices to one address. Registration answers a
     /// taken address exactly as it answers a new one and mails the owner instead, so this is what stops
     /// the sign-up form being used to fill somebody's inbox.
@@ -443,6 +452,11 @@ public class User : BaseEntity
         }
 
         EmailVerified = true;
+
+        // A code still waiting from the sign-up form must not outlive the verification Google just gave: it
+        // was mailed to whoever typed the address, and a correct guess would sign them in to this account.
+        EmailVerificationCodeHash = null;
+        EmailVerificationExpiry = null;
     }
 
     /// <summary>Adopts Google's avatar only when the user has no picture of their own to lose.</summary>
@@ -485,6 +499,12 @@ public class User : BaseEntity
         LastLoginAt = utcNow;
     }
 
+    /// <summary>
+    /// A session refreshed its tokens. Only the time is recorded: a refresh proves nothing about the password,
+    /// so it must not clear failed attempts or lift a lockout someone else's guessing set.
+    /// </summary>
+    public void RecordSessionRefresh(DateTime utcNow) => LastLoginAt = utcNow;
+
     /// <summary>Increments the failed-attempt counter and locks the account once the threshold is hit.</summary>
     public void RecordFailedLogin(DateTime utcNow)
     {
@@ -509,8 +529,14 @@ public class User : BaseEntity
     public void SetPasswordResetToken(string tokenHash, DateTime utcNow)
     {
         PasswordResetTokenHash = Guard.NotNullOrWhiteSpace(tokenHash);
-        PasswordResetTokenExpiry = utcNow.AddHours(1);
+        PasswordResetTokenExpiry = utcNow.Add(PasswordResetLifetime);
     }
+
+    /// <summary>Whether a reset link went out within <see cref="PasswordResetResendCooldown"/>.</summary>
+    public bool PasswordResetRecentlySent(DateTime utcNow)
+        => PasswordResetTokenHash is not null
+            && PasswordResetTokenExpiry is { } expiry
+            && expiry - utcNow > PasswordResetLifetime - PasswordResetResendCooldown;
 
     /// <summary>
     /// Verifies the token hash, resets the password, and invalidates the token.
@@ -530,6 +556,11 @@ public class User : BaseEntity
         PasswordResetTokenHash = null;
         PasswordResetTokenExpiry = null;
         IsFirstLogin = false;
+
+        // The mailbox's owner chose a new password, so a lockout someone else's guesses set on the old one
+        // no longer stands between them and it.
+        FailedLoginAttempts = 0;
+        LockoutEndAt = null;
 
         // Receiving the reset link proves the mailbox, which is the same thing the six-digit code
         // proves — so an account that resets its password is verified by that alone. Without this, a
@@ -579,7 +610,9 @@ public class User : BaseEntity
     /// </remarks>
     public bool ConsumeEmailVerificationCode(string codeHash, DateTime utcNow)
     {
-        if (EmailVerificationCodeHash is null
+        // A verified address has nothing left to prove; a code that somehow outlived verification is not a way in.
+        if (EmailVerified
+            || EmailVerificationCodeHash is null
             || EmailVerificationExpiry is null
             || EmailVerificationExpiry.Value < utcNow
             || EmailVerificationAttempts >= MaxEmailVerificationAttempts)

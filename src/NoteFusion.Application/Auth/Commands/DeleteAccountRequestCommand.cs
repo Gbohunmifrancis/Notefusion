@@ -190,6 +190,8 @@ public sealed class DeleteAccountRequestCommandHandler
             .ToListAsync(ct);
 
         _db.Transcriptions.RemoveRange(transcriptions);
+        // Folder links too: they would otherwise reopen for whoever next registers this address (DeleteMyAccountCommand).
+        _db.FolderShares.RemoveRange(await _db.FolderShares.Where(f => f.UserId == user.Id).ToListAsync(ct));
         _db.Users.Remove(user);
         await _db.SaveChangesAsync(ct);
 

@@ -1,8 +1,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using NoteFusion.Api.Auth;
 using NoteFusion.Api.Common;
+using NoteFusion.Api.RateLimiting;
 using NoteFusion.Application.Billing.Commands;
 using NoteFusion.Application.Billing.Queries;
 
@@ -56,6 +58,7 @@ public sealed class BillingController : ApiControllerBase
     /// for an in-flight checkout: tapping "Upgrade" twice returns the same session, never a second charge.
     /// </summary>
     [HttpPost("checkout")]
+    [EnableRateLimiting(AuthRateLimiting.Billing)]
     public async Task<IActionResult> Checkout(CheckoutBody body, CancellationToken ct)
         => HandleResult(await _sender.Send(new InitiateCheckoutCommand(body.PlanId, body.Client), ct));
 
@@ -93,6 +96,7 @@ public sealed class BillingController : ApiControllerBase
     /// the transaction is chosen from the authenticated identity, never supplied by the caller.
     /// </summary>
     [HttpPost("confirm")]
+    [EnableRateLimiting(AuthRateLimiting.Billing)]
     public async Task<IActionResult> Confirm(CancellationToken ct)
         => HandleResult(await _sender.Send(new ConfirmPaymentCommand(), ct));
 
@@ -103,6 +107,7 @@ public sealed class BillingController : ApiControllerBase
     /// records nothing. The reply says whether to ask. 404 for a checkout that is not the caller's.
     /// </summary>
     [HttpPost("checkouts/{id}/exit")]
+    [EnableRateLimiting(AuthRateLimiting.Billing)]
     public async Task<IActionResult> CheckoutExit(string id, CheckoutExitBody body, CancellationToken ct)
         => HandleResult(await _sender.Send(new RecordCheckoutExitCommand(id, body.SecondsOpen, body.Reason, body.Note), ct));
 

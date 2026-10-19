@@ -93,10 +93,11 @@ public sealed class CompletePasskeyRegistrationCommandHandler
     private readonly IPasskeyChallengeStore _challenges;
     private readonly IAuditLogger _audit;
     private readonly IDateTimeProvider _clock;
+    private readonly IEmailSender _email;
 
     public CompletePasskeyRegistrationCommandHandler(
         IApplicationDbContext db, ICurrentUser currentUser, IPasskeyCeremony ceremony,
-        IPasskeyChallengeStore challenges, IAuditLogger audit, IDateTimeProvider clock)
+        IPasskeyChallengeStore challenges, IAuditLogger audit, IDateTimeProvider clock, IEmailSender email)
     {
         _db = db;
         _currentUser = currentUser;
@@ -104,6 +105,7 @@ public sealed class CompletePasskeyRegistrationCommandHandler
         _challenges = challenges;
         _audit = audit;
         _clock = clock;
+        _email = email;
     }
 
     public async Task<Result<PasskeyDto>> Handle(CompletePasskeyRegistrationCommand request, CancellationToken ct)
@@ -142,6 +144,10 @@ public sealed class CompletePasskeyRegistrationCommandHandler
 
         _audit.Record(AdminAuditAction.AddPasskey, user, $"Added the passkey \"{passkey.Name}\".");
         await _db.SaveChangesAsync(ct);
+
+        // Security notice, as for a phone set up for Admin: a passkey added with a stolen session is a way back in
+        // that outlives a password change, so its owner hears about every one.
+        await _email.SendAdminPasskeyAddedAsync(new EmailRecipient(user.Email, user.FullName), passkey.Name, _clock.UtcNow, ct);
 
         return PasskeyDto.From(passkey);
     }

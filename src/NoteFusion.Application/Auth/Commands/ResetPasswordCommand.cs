@@ -53,13 +53,16 @@ public sealed class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordC
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == normalizedEmail, cancellationToken);
 
+        // Hashed before anything is decided, so an unknown address costs the same time as a known one: the
+        // answer below is the same either way, and so must be how long it takes to arrive.
+        var newPasswordHash = _hasher.Hash(request.NewPassword);
+
         // Avoid revealing whether the email is registered. Token mismatch and unknown email
         // both return the same generic error.
         if (user is null)
             return AuthErrors.InvalidResetToken;
 
         var tokenHash = HashToken(request.Token);
-        var newPasswordHash = _hasher.Hash(request.NewPassword);
 
         if (!user.ConsumePasswordResetToken(tokenHash, newPasswordHash, _clock.UtcNow))
             return AuthErrors.InvalidResetToken;
