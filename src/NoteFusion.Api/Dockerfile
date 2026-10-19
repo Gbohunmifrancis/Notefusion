@@ -30,5 +30,9 @@ WORKDIR /app
 
 COPY --from=build /app/publish ./
 
+# Not root: the image's own unprivileged user (uid 1654). The API writes nothing to disk; the JWT key it reads is
+# chowned to this uid by the deploy.
+USER $APP_UID
+
 # Kestrel binds Heroku's dynamic $PORT, falling back to 8080 for compose.
 CMD sh -c "ASPNETCORE_URLS=http://+:${PORT:-8080} dotnet NoteFusion.Api.dll"

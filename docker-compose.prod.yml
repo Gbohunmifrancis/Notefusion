@@ -255,6 +255,9 @@ services:
       Sentry__Release: ${Sentry__Release:-}
     volumes:
       - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
+    # It needs no Linux capabilities (port 8080, an unprivileged user) and may never gain any.
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
 
   # Backups (docs/BACKUP_AND_MIGRATION.md, ops/backup): a logical dump every 6 hours, a daily base backup
   # plus WAL every minute for point-in-time recovery, and the photos, JWT key and Caddyfile daily — all
