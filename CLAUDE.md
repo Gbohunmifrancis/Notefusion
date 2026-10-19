@@ -551,8 +551,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   locals, URLs and emails masked), `/app` only on the web (`assets/errors.js`: nothing loads until the site's own code
   throws, then the self-hosted `assets/vendor` bundle; `deploy-web.yml` writes `SENTRY_DSN_WEB` into the deployed page)
   and the phone (`App.tsx`, IP address and masked replays as the privacy policy says; source maps from the
-  `@sentry/react-native/expo` plugin on store builds and `npm run update:production` for OTA; off — `eas.json`'s
-  `SENTRY_DISABLE_AUTO_UPLOAD` — until EAS has `SENTRY_AUTH_TOKEN`/`ORG`/`PROJECT`). Never the public pages.
+  `@sentry/react-native/expo` plugin on store builds and `eas env:exec production 'npm run update:production'`
+  for OTA, which reads `SENTRY_AUTH_TOKEN`/`ORG`/`PROJECT` from EAS; store builds stay off — `eas.json`'s
+  `SENTRY_DISABLE_AUTO_UPLOAD` — until the next store build's commit removes it, since `eas.json` is part of the
+  Android fingerprint). Never the public pages.
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - No secret ever in the repository: `.github/workflows/secret-scan.yml` (gitleaks, `.gitleaks.toml`) fails pull requests,
