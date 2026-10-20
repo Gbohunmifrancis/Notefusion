@@ -104,7 +104,8 @@ export function MembershipCard({ onPress }: { onPress: () => void }) {
           <View style={styles.top}>
             <View style={styles.brand}>
               <Mark height={20} color={c.onInk} />
-              <Text style={styles.brandText}>Notefusion Pro</Text>
+              {/* A free account's card is not headed Pro: its plan, "Free plan", is on the right. */}
+              <Text style={styles.brandText}>{isPro ? "Notefusion Pro" : "Notefusion"}</Text>
             </View>
             <Text style={styles.period}>{period}</Text>
           </View>
