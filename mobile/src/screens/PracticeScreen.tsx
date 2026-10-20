@@ -247,24 +247,40 @@ export function PracticeScreen() {
     }
   }
 
-  /** Saves the track, then loads the drill it offers today (each track has its own drill of the day). */
+  /**
+   * Saves the track, then loads the drill it offers (each track keeps its own place on the path). The picker closes at
+   * once, with the drill card's stand-in until the track's drill is here; a refusal puts both back and reopens it.
+   */
   async function chooseTrack(next: PracticeTrack) {
     if (phase !== "idle") return;
+    const before = { progress, drill };
     setSavingTrack(next);
     setTrackError(null);
+    setPicking(false);
+    setProgress((p) => (p ? { ...p, track: next } : p));
+    setNext(null);
+    setGrade(null);
+    setTakeUri(null);
+    let saved: PracticeProgress | null = null;
     try {
-      const p = await practiceApi.setTrack(next);
+      saved = await practiceApi.setTrack(next);
       const d = await practiceApi.nextDrill();
       if (!live.current) return;
-      setProgress(p);
+      setProgress(saved);
       setDrill(d);
-      setNext(null);
-      setGrade(null);
-      setTakeUri(null);
-      setPicking(false);
       void logAnalyticsEvent("practice_track_chosen", { track: next });
     } catch (e) {
-      if (live.current) setTrackError(toApiError(e).message);
+      if (!live.current) return;
+      if (saved) {
+        // The track is saved, only its drill did not come: "No drill yet" offers to try again.
+        setProgress(saved);
+        setDrill(null);
+        return;
+      }
+      setProgress(before.progress);
+      setDrill(before.drill);
+      setPicking(true);
+      setTrackError(toApiError(e).message);
     } finally {
       if (live.current) setSavingTrack(null);
     }
@@ -526,8 +542,10 @@ export function PracticeScreen() {
               </View>
             ) : null}
 
-            {/* ── Today's drill ────────────────────────────────────────────── */}
-            {drill && !showPicker ? (
+            {/* ── Today's drill (its stand-in while a new track's drill comes) ── */}
+            {savingTrack && !showPicker ? (
+              <DrillSkeleton styles={styles} />
+            ) : drill && !showPicker ? (
               <Card style={playful ? { ...styles.card, ...styles.cardPlayful } : styles.card}>
                 <Text style={[styles.eyebrow, playful && styles.eyebrowPlayful]}>
                   {playful ? "Your singing game" : `Practice path · ${drill.levelName}`}
@@ -619,7 +637,7 @@ export function PracticeScreen() {
                 ) : null}
               </Card>
             ) : null}
-            {!drill && !showPicker ? (
+            {!drill && !showPicker && !savingTrack ? (
               <EmptyState
                 art="empty-no-drill"
                 title="No drill yet"
@@ -877,7 +895,16 @@ function PracticeSkeleton({ styles }: { styles: Styles }) {
         <Skeleton width={20} height={20} radius={10} />
         <Skeleton width="55%" height={13} radius={radii.sm} />
       </View>
-      <Card style={styles.card}>
+      <DrillSkeleton styles={styles} />
+    </View>
+  );
+}
+
+/** The path card's stand-in: the first read's, and a new track's while its drill comes. */
+function DrillSkeleton({ styles }: { styles: Styles }) {
+  return (
+    <Card style={styles.card}>
+      <View accessible accessibilityLabel="Loading your drill" accessibilityState={{ busy: true }} style={styles.skeletonCard}>
         <Skeleton width="40%" height={11} radius={radii.sm} />
         <Skeleton width="70%" height={20} radius={radii.sm} />
         <View style={styles.solfaRow}>
@@ -889,8 +916,8 @@ function PracticeSkeleton({ styles }: { styles: Styles }) {
           <Skeleton height={48} radius={radii.pill} style={styles.action} />
           <Skeleton height={48} radius={radii.pill} style={styles.action} />
         </View>
-      </Card>
-    </View>
+      </View>
+    </Card>
   );
 }
 
@@ -1087,6 +1114,8 @@ const makeStyles = (c: Palette) =>
     },
     buddyText: { ...typography.label, color: c.text, lineHeight: 20 },
     card: { marginBottom: spacing.md, gap: spacing.sm },
+    /** The card's own gap, inside the stand-in's one accessible element. */
+    skeletonCard: { gap: spacing.sm },
     cardPlayful: { borderColor: c.playBorder, borderWidth: 1.5 },
     // Sentences are 16 px, meta and labels 13, and nothing is under 12 (board m-ux-medium P5c).
     body: { ...typography.body, color: c.textMuted, fontSize: 16, lineHeight: 23 },
