@@ -191,7 +191,7 @@
 .pv-star-word { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--ink); }
 .pv-star-hint { margin: 0; font-size: 0.9rem; color: var(--muted); line-height: 1.45; }
 .pv-play-marks { justify-content: center; }
-.pv-play-marks .mark { min-width: 46px; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.05rem; }
+.pv-play-marks .mark { min-width: 46px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.05rem; }
 .pv-stars-result .pv-earned { justify-content: center; }
 .pv-stickers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 6px; margin: 0; padding: 0; list-style: none; }
 .pv-sticker { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; min-width: 0; }

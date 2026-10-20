@@ -859,7 +859,7 @@
     practiceOpensOn = null;
     var go = function () {
       if (at !== epoch || !practiceViewOpen) return;
-      window.NfPracticeView.open(root, { request: request, track: track, choir: C, onProgress: renderPracticeChip, loadAsset: loadAsset, show: opensOn });
+      window.NfPracticeView.open(root, { request: request, track: track, choir: C, onProgress: renderPracticeChip, loadAsset: loadAsset, mark: markSpan, show: opensOn });
     };
     if (window.NfPracticeView) { go(); return; }
     Promise.all(PRACTICE_ASSETS.map(loadAsset)).then(go, function () {
@@ -2937,6 +2937,25 @@
     hide($("sing-result"));
   }
   $("sing-stop").addEventListener("click", stopSinging);
+  /**
+   * One note's mark, readable without colour (board l-ux-high 05b): ✓ in tune, ~ close, off the note struck through in
+   * grey, not sung dashed with –, as the practice modes draw them (app.css .mark); the cents under it unless Playful, and
+   * the whole of it said in words ("d: in tune, 6 cents sharp"). Also handed to the Practice view.
+   */
+  var MARK_WORDS = { hit: ["in tune", "spot on"], near: ["close", "close"], wrong: ["off the note", "try again"], missed: ["not sung", "not heard"] };
+  function markSpan(syllable, status, cents, playful) {
+    var mk = document.createElement("span"), b = document.createElement("b");
+    mk.className = "mark " + status; b.textContent = syllable; mk.appendChild(b);
+    var said = syllable + ": " + (MARK_WORDS[status] || MARK_WORDS.missed)[playful ? 1 : 0];
+    if (!playful) {
+      var c = status === "missed" || cents == null ? null : Math.round(cents), small = document.createElement("small");
+      small.textContent = status === "missed" ? "—" : c == null ? "" : (c > 0 ? "+" : "") + c;
+      mk.appendChild(small);
+      if (c) said += ", " + Math.abs(c) + " cents " + (c > 0 ? "sharp" : "flat");
+    }
+    mk.setAttribute("role", "img"); mk.setAttribute("aria-label", said);
+    return mk;
+  }
   function gradeTake(blob, name, notes, tempo, leadIn) {
     var at = epoch;
     var form = new FormData();
@@ -2951,9 +2970,7 @@
       var marks = $("sing-marks"); marks.innerHTML = "";
       (g.notes || []).forEach(function (m) {
         var n = notes[m.index]; if (!n) return;
-        var el = document.createElement("span"); el.className = "mark " + m.status; el.textContent = (n.solfa || "") + (n.octaveMark || "");
-        var s = document.createElement("small"); s.textContent = m.status === "missed" ? "—" : (m.cents == null ? "" : (m.cents > 0 ? "+" : "") + Math.round(m.cents)); el.appendChild(s);
-        marks.appendChild(el);
+        marks.appendChild(markSpan((n.solfa || "") + (n.octaveMark || ""), m.status, m.cents, false));
       });
       show($("sing-result"));
     }).catch(function (err) { if (at === epoch) $("sing-status").textContent = "Could not mark the take: " + (err.message || err); });

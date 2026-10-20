@@ -393,12 +393,20 @@ table.hymn td:last-child { border-right: 2px solid var(--ink); }
 .sing-score { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
 .sing-score strong { font-size: 2.2rem; letter-spacing: -0.02em; min-width: 2.2ch; text-align: center; color: var(--ink); }
 .marks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-.mark { min-width: 42px; text-align: center; border: 1.5px solid var(--line); border-radius: 8px; padding: 4px 6px; font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; background: #fff; }
+/* A note's mark carries a shape as well as a colour (app.js markSpan): ✓ in tune, ~ close, off the note struck through
+ * in grey (never red), not sung dashed with –. */
+.mark { min-width: 42px; min-height: 44px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border: 1.5px solid var(--line); border-radius: 8px; padding: 4px 6px; font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; background: #fff; }
+.mark b { font-weight: inherit; }
 .mark small { display: block; font-weight: 500; color: var(--muted); font-size: 0.7rem; font-family: Inter, sans-serif; }
 .mark.hit { border-color: var(--success); color: var(--success-text); }
 .mark.near { border-color: var(--amber); color: var(--amber-text); }
-.mark.wrong { border-color: var(--danger); color: var(--danger-text); }
-.mark.missed { color: var(--faint); }
+.mark.hit b::after, .mark.near b::after, .mark.missed b::after { margin-left: 3px; font-family: var(--font-sans, sans-serif); font-weight: 600; }
+.mark.hit b::after { content: "✓"; }
+.mark.near b::after { content: "~"; }
+.mark.wrong { border-color: var(--line-strong); color: var(--muted); }
+.mark.wrong b { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.mark.missed { border-style: dashed; border-color: var(--line-strong); color: var(--faint); }
+.mark.missed b::after { content: "–"; }
 .tr-readout { display: inline-flex; align-items: baseline; gap: 6px; padding: 0 4px; }
 .tr-readout strong { font-size: 1.35rem; min-width: 2ch; display: inline-block; text-align: center; }
 table.ranges { border-collapse: collapse; margin-top: 12px; font-size: 0.875rem; width: 100%; }

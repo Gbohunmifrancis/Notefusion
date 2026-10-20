@@ -166,7 +166,7 @@
    * The modes' screens and the live pitch meter: loaded the first time a mode is opened, never with the view.
    * practice-modes.js (the words and arithmetic) comes with the view, for the hub's list.
    */
-  var MODE_ASSETS = ["/assets/practice-modes.css?v=2", "/assets/pitch-track.js?v=1", "/assets/practice-mode-view.js?v=2"];
+  var MODE_ASSETS = ["/assets/practice-modes.css?v=2", "/assets/pitch-track.js?v=1", "/assets/practice-mode-view.js?v=3"];
   /** The modes' icons, drawn inline (24 × 24, stroked): the app's sprite has none of these. */
   var MODE_ICONS = {
     "warm-up": '<circle cx="12" cy="4.6" r="1.9"/><path d="M4.5 9l7.5 1.6L19.5 9M12 10.6V15m0 0l-3.6 6M12 15l3.6 6"/>',
@@ -629,7 +629,7 @@
     return card;
   }
 
-  /** Playful's marked take: one to three stars and a friendly word, never the number; the notes coloured, no cents. */
+  /** Playful's marked take: one to three stars and a friendly word, never the number; the notes marked, no cents. */
   function starGrade(g, notes, T) {
     var stars = T.starsFor(g.score), box = el("div", "pv-stars-result");
     var row = el("div", "pv-stars");
@@ -643,12 +643,10 @@
     (g.notes || []).forEach(function (m) {
       var n = notes[m.index];
       if (!n) return;
-      var mk = el("span", "mark " + m.status, (n.solfa || "") + (n.octaveMark || ""));
-      mk.title = m.status === "hit" ? "spot on" : m.status === "near" ? "close" : m.status === "wrong" ? "try again" : "not heard";
-      marks.appendChild(mk);
+      marks.appendChild(ctx.mark((n.solfa || "") + (n.octaveMark || ""), m.status, null, true));
     });
     box.appendChild(marks);
-    box.appendChild(el("p", "pv-legend", "Green spot on · amber close · red try again · grey not heard"));
+    box.appendChild(el("p", "pv-legend", "✓ spot on · ~ close · struck through: try again · dashed: not heard"));
     var earned = T.playfulRewardLine(g.reward);
     if (earned) box.appendChild(el("p", "pv-earned", earned));
     return box;
@@ -673,7 +671,7 @@
     s.takeUrl = null;
   }
 
-  /** The marked take: score, verdict, every note green/amber/red/grey with its cents off, and what it earned. */
+  /** The marked take: score, verdict, every note marked (✓ ~ struck dashed) with its cents off, and what it earned. */
   function gradeMarks(g, notes, P) {
     var box = el("div", "pv-result");
     box.setAttribute("aria-label", "Your take, marked");
@@ -688,13 +686,10 @@
     (g.notes || []).forEach(function (m) {
       var n = notes[m.index];
       if (!n) return;
-      var mk = el("span", "mark " + m.status, (n.solfa || "") + (n.octaveMark || ""));
-      mk.appendChild(el("small", null, m.status === "missed" ? "—" : m.cents == null ? "" : (m.cents > 0 ? "+" : "") + Math.round(m.cents)));
-      mk.title = m.status === "missed" ? "not sung" : m.status;
-      marks.appendChild(mk);
+      marks.appendChild(ctx.mark((n.solfa || "") + (n.octaveMark || ""), m.status, m.cents, false));
     });
     box.appendChild(marks);
-    box.appendChild(el("p", "pv-legend", "Green in tune · amber close · red wrong note · grey not sung. Numbers are cents off."));
+    box.appendChild(el("p", "pv-legend", "✓ in tune · ~ close · struck through: off the note · dashed: not sung. Numbers are cents off."));
     var earned = P.rewardMoment(g.reward);
     if (earned) {
       var e = el("p", "pv-earned");
