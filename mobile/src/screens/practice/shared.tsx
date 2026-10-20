@@ -11,6 +11,7 @@ import { toApiError } from "../../api/client";
 import type { PracticeExercise, PracticeMode, PracticeModeGrade, PracticeModeId } from "../../api/types";
 import { Button } from "../../components/Button";
 import { ProblemNote } from "../../components/ProblemNote";
+import { MarkingBar } from "../../components/practice/MarkingBar";
 import { logAnalyticsEvent } from "../../lib/analytics";
 import { countInFor, takeClip } from "../../lib/modeAudio";
 import { allowanceLine } from "../../lib/practiceProgress";
@@ -79,13 +80,25 @@ export function useGrade(take: Take) {
 }
 
 /** The actions at the foot of a mode's screen, above the home indicator; `status` sits at the left ("● Listening"). */
-export function ModeFooter({ status, children }: { status?: React.ReactNode; children: React.ReactNode }) {
+export function ModeFooter({
+  status,
+  marking = false,
+  children,
+}: {
+  status?: React.ReactNode;
+  /** A take is being marked: the moving bar under the row, the footer's full width (board m-ux-medium P5a). */
+  marking?: boolean;
+  children: React.ReactNode;
+}) {
   const insets = useSafeAreaInsets();
   const styles = useThemedStyles(makeStyles);
   return (
     <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, spacing.md) }]}>
-      {status ? <View style={styles.status}>{status}</View> : <View style={styles.status} />}
-      <View style={styles.actions}>{children}</View>
+      <View style={styles.footerRow}>
+        {status ? <View style={styles.status}>{status}</View> : <View style={styles.status} />}
+        <View style={styles.actions}>{children}</View>
+      </View>
+      {marking ? <MarkingBar /> : null}
     </View>
   );
 }
@@ -130,8 +143,6 @@ export function noneLeft(data: PracticeMode | null): boolean {
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     footer: {
-      flexDirection: "row",
-      alignItems: "center",
       gap: spacing.sm,
       paddingTop: spacing.md,
       paddingHorizontal: spacing.lg,
@@ -139,6 +150,7 @@ const makeStyles = (c: Palette) =>
       borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: c.border,
     },
+    footerRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
     status: { flex: 1, minWidth: 0 },
     actions: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
     liveRow: { flexDirection: "row", alignItems: "center", gap: 8 },

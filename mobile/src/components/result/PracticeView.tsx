@@ -52,6 +52,7 @@ import {
 } from "../../lib/practice";
 import type { Practice } from "./usePractice";
 import { ProblemNote } from "../ProblemNote";
+import { MarkingBar } from "../practice/MarkingBar";
 
 const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberOfChannels: 1 };
 const BALANCE_LABELS: { value: Balance; label: string }[] = [
@@ -421,6 +422,7 @@ export function PracticeView({
               />
             </View>
           )}
+          {phase === "grading" ? <MarkingBar style={styles.marking} /> : null}
 
           {status ? <ProblemNote>{status}</ProblemNote> : null}
 
@@ -510,6 +512,8 @@ const makeStyles = (c: Palette) =>
     struck: { textDecorationLine: "line-through" },
     transport: { flexDirection: "row", gap: spacing.sm, marginTop: spacing.lg },
     transportBtn: { flex: 1 },
+    /** 8 px under the buttons while the take is marked (board m-ux-medium P5a). */
+    marking: { marginTop: spacing.sm },
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.md },
     liveLabel: { ...typography.label, color: c.textMuted },
     liveNote: { ...typography.hero, color: c.accent },

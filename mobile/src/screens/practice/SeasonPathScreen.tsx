@@ -29,6 +29,7 @@ import type { CarolDrill, CarolsPath, GradeResult, NoteEvent } from "../../api/t
 import { Screen } from "../../components/Screen";
 import { Button } from "../../components/Button";
 import { ProblemNote } from "../../components/ProblemNote";
+import { MarkingBar } from "../../components/practice/MarkingBar";
 import { Touchable } from "../../components/Touchable";
 import { GradeMarks } from "../../components/GradeMarks";
 import { Sheet, SheetActions } from "../../components/Sheet";
@@ -515,7 +516,10 @@ function OpenDrill({
           <Button label="Stop" variant="secondary" icon="stop" size="sm" onPress={() => void take.finish()} />
         </View>
       ) : take.phase === "sending" ? (
-        <Button label="Marking your take…" icon="waiting" loading />
+        <View style={styles.marking}>
+          <Button label="Marking your take…" icon="waiting" loading />
+          <MarkingBar />
+        </View>
       ) : onNext ? (
         <View style={styles.actions}>
           <Button label={playful ? "Again!" : "Sing it again"} icon="mic" variant="secondary" onPress={onSing} disabled={left === 0} style={styles.action} />
@@ -607,6 +611,8 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.surface,
     },
     openPlayful: { borderColor: c.playBorder },
+    /** The pill and, 8 px under it, the bar while the take is marked (board m-ux-medium P5a). */
+    marking: { gap: spacing.sm },
     openHead: { flexDirection: "row", alignItems: "center", gap: spacing.md },
     openTitle: { ...typography.heading, color: c.text, fontSize: 19 },
     words: { fontFamily: fonts.regular, fontSize: 14, lineHeight: 21, color: c.textMuted },

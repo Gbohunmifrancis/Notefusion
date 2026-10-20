@@ -256,7 +256,7 @@ export function RunsScreen({ track }: { track: PracticeTrack | null }) {
         ) : null}
       </Screen>
       {ex && sung ? (
-        <ModeFooter status={take.phase === "leadin" || take.phase === "live" ? <LiveDot label={take.phase === "leadin" ? `Starting in ${Math.max(1, Math.ceil(countInSec - take.elapsed))}` : "Sing!"} /> : null}>
+        <ModeFooter marking={take.phase === "sending"} status={take.phase === "leadin" || take.phase === "live" ? <LiveDot label={take.phase === "leadin" ? `Starting in ${Math.max(1, Math.ceil(countInSec - take.elapsed))}` : "Sing!"} /> : null}>
           {take.phase === "leadin" || take.phase === "live" ? (
             <Button label="Stop" icon="stop" variant="secondary" onPress={take.cancel} />
           ) : take.phase === "sending" ? (

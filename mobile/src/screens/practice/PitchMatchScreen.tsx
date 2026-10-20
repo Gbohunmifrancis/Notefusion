@@ -181,7 +181,7 @@ export function PitchMatchScreen({ track }: { track: PracticeTrack | null }) {
         ) : null}
       </Screen>
       {ex ? (
-        <ModeFooter status={take.phase === "leadin" || take.phase === "live" ? <LiveDot label="Listening" /> : null}>
+        <ModeFooter marking={take.phase === "sending"} status={take.phase === "leadin" || take.phase === "live" ? <LiveDot label="Listening" /> : null}>
           {take.phase === "leadin" || take.phase === "live" ? (
             <Button label="Stop" icon="stop" variant="secondary" onPress={take.cancel} />
           ) : take.phase === "sending" ? (

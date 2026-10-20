@@ -98,6 +98,7 @@ import { ART } from "../components/practice/art/svgs";
 import { useSeason } from "../lib/seasonStore";
 import { activeSeason, costumeOf, seasonCard, seasonOf, seasonTint, seasonWords, type Costume } from "../lib/season";
 import { ModeList } from "../components/practice/ModeList";
+import { MarkingBar } from "../components/practice/MarkingBar";
 import { hubModes, modesDohLine, modesHeading, progressStrip } from "../lib/practiceModes";
 import type { RootStackParams } from "../navigation/types";
 
@@ -560,7 +561,10 @@ export function PracticeScreen() {
                     <Button label="Stop" variant="secondary" icon="stop" onPress={stop} />
                   </View>
                 ) : phase === "grading" ? (
-                  <Button label="Marking your take…" icon="waiting" loading />
+                  <>
+                    <Button label="Marking your take…" icon="waiting" loading />
+                    <MarkingBar />
+                  </>
                 ) : (
                   <View style={styles.actions}>
                     <Button label={playful ? "Listen" : "Hear it"} icon="hear" variant="secondary" onPress={hear} style={styles.action} />

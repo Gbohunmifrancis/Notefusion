@@ -33,6 +33,7 @@ import { VOICES, type VoiceName } from "../lib/choir";
 import { acknowledgeGrade } from "../lib/practiceReward";
 import { GradeMarks } from "./GradeMarks";
 import { ProblemNote } from "./ProblemNote";
+import { MarkingBar } from "./practice/MarkingBar";
 
 interface Props {
   melody: readonly NoteEvent[];
@@ -200,7 +201,10 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
           disabled={notes.length === 0}
         />
       ) : phase === "grading" ? (
-        <Button label="Marking your take…" icon="waiting" loading />
+        <>
+          <Button label="Marking your take…" icon="waiting" loading />
+          <MarkingBar />
+        </>
       ) : (
         <View style={styles.live}>
           <Text style={styles.liveLabel}>{phase === "leadin" ? `Starting note… sing in ${countdown}` : "Sing!"}</Text>
