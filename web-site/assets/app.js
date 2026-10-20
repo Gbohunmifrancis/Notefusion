@@ -1554,7 +1554,8 @@
         : "The choir's plan ended on " + longDate(c.currentPeriodEndUtc) + "." + (director ? " Renew it to give your singers Pro again." : " Ask your director to renew it.");
       if (director && c.inviteCode) {
         $("choir-invite-url").value = inviteUrl(c.inviteCode);
-        $("choir-invite-code").textContent = c.inviteCode;
+        // Read out or copied by hand in fours ("ABCD 2345"); the API takes it with or without the space.
+        $("choir-invite-code").textContent = c.inviteCode.replace(/(.{4})(?=.)/g, "$1 ");
         show($("choir-invite-row"));
       } else hide($("choir-invite-row"));
       director && !c.isActive ? show($("choir-renew")) : hide($("choir-renew"));
