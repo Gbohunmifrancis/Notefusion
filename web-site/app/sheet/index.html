@@ -96,10 +96,14 @@
       <h2><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Rehearse</h2>
       <p class="card-lead no-print">Hear the tune or just your part. Mute a voice to sing it against the others; loop a few bars; slow it down.</p>
       <div class="player" id="player">
-        <button class="btn btn-primary" id="play" type="button"><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
-        <button class="btn btn-ghost btn-icon" id="restart" type="button" title="From the start" aria-label="From the start"><svg class="ic"><use href="/assets/icons.svg#i-restart"/></svg></button>
-        <span class="group"><label for="rate">Speed</label>
-          <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></span>
+        <!-- On a phone, Play, From the start and Speed ride in a bar pinned to the foot of the screen, so the choir can
+             start it from wherever they have scrolled (board m-ux-medium W2g); on a wider screen they stay in this row. -->
+        <div class="play-bar" role="group" aria-label="Play the sheet">
+          <button class="btn btn-primary" id="play" type="button"><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
+          <button class="btn btn-ghost btn-icon" id="restart" type="button" title="From the start" aria-label="From the start"><svg class="ic"><use href="/assets/icons.svg#i-restart"/></svg></button>
+          <span class="group"><label for="rate">Speed</label>
+            <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></span>
+        </div>
         <span class="group"><label><input type="checkbox" id="loop-on"> Loop bars</label>
           <input type="number" id="loop-from" min="1" value="1" aria-label="From bar"> – <input type="number" id="loop-to" min="1" value="4" aria-label="To bar"></span>
         <span class="group hidden" id="voices"><label>Voices</label></span>
