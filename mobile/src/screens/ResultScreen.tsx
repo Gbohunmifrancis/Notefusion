@@ -1103,6 +1103,13 @@ export function ResultScreen({ route, navigation }: Props) {
     void commitNotes(draft);
   }
 
+  /** "Finish review" on the last flagged note: the walk is over, and a toast says so rather than a greyed-out Next. */
+  function finishReview() {
+    const count = reviewQueue?.length ?? 0;
+    closeEditor();
+    showToast(count === 1 ? "The flagged note is checked" : `All ${count} flagged notes checked`);
+  }
+
   function discardCorrections() {
     settleHeld();
     const original = pristine(baseline.notes);
@@ -2617,6 +2624,7 @@ export function ResultScreen({ route, navigation }: Props) {
         onRevert={revertNote}
         onDelete={deleteNote}
         onClose={closeEditor}
+        onFinishReview={finishReview}
       />
 
       {/* ── Doh's first-open toast, where the player docks ─────────────────── */}
