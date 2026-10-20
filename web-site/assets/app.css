@@ -474,7 +474,7 @@ table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 .lrow-block { display: block; }
 .lrow-block .usage-row { font-size: 0.9rem; }
 .lrow-note { margin: 10px 0 0; color: var(--muted); font-size: 0.82rem; }
-.lrow-btn { cursor: pointer; }
+.lrow-btn, .lrow-switch { cursor: pointer; }
 .lrow-btn:hover { background: var(--wash); }
 /* Inside the card's rounded, clipped edge, so the keyboard's ring is not cut off at the sides. */
 .list-card :focus-visible { outline-offset: -2px; }

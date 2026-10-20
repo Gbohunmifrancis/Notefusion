@@ -2556,6 +2556,13 @@
     if (on) { sfx.prime(); NF.chime(sfx.ctx, "ready"); } // what it will sound like
   });
   renderNotifySettings();
+  // A switch's whole row turns it, not only the small switch at its end; the switch keeps the focus and says the state.
+  document.querySelectorAll("#view-account .lrow").forEach(function (row) {
+    var sw = row.querySelector(".switch");
+    if (!sw) return;
+    row.classList.add("lrow-switch");
+    row.addEventListener("click", function (e) { if (!sw.contains(e.target) && !sw.disabled) sw.click(); });
+  });
 
   // ── Progress ─────────────────────────────────────────────────────────────
   // The card says where the job really is: the recording going up, its place in the worker's
