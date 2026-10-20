@@ -838,6 +838,12 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 /* The card's phone padding (24px 18px 20px, max-width 640px above) is matched here, after the rule it overrides. */
 @media (max-width: 640px) { .pay-foot { bottom: -20px; margin: 12px -18px -20px; padding: 4px 18px 14px; } }
 .pay-fx { margin: 8px 0 0; font-size: 0.85rem; color: var(--muted); text-align: center; }
+/* Help and refunds, and the terms, one line under the fine print (board m-ux-medium W3f); the links take a 44 px
+   target from an invisible layer, and the address and Terms wrap together, side by side, on a narrow phone. */
+.pay-help { margin: 6px 0 0; text-align: center; font-size: 0.8125rem; line-height: 1.5; color: var(--muted); }
+.pay-help > span { white-space: nowrap; }
+.pay-help a { position: relative; color: var(--blue-dark); font-weight: 600; }
+.pay-help a::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
 .pay-error { margin: 10px 0 0; padding: 8px 10px; border-radius: 8px; background: var(--danger-soft, rgba(220, 38, 38, 0.08)); color: var(--danger-text); font-size: 0.9rem; }
 .pay-reason { display: flex; gap: 8px; align-items: flex-start; margin: 4px 0 14px; padding: 10px 12px; border-radius: 8px; background: var(--blue-tint, rgba(37, 99, 235, 0.08)); color: var(--ink); font-size: 0.95rem; line-height: 1.45; }
 .pay-reason .ic { width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--blue-dark); }

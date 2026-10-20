@@ -4438,7 +4438,10 @@
       // The price and the button stay at the bottom of the dialog while the plans scroll above them
       // (board l-ux-high/03b): on a phone Pay sat about a screen below the fold.
       var foot = document.createElement("div"); foot.className = "pay-foot";
-      foot.appendChild(payError); foot.appendChild(cta); foot.appendChild(fx); foot.appendChild(fine);
+      // Who to ask and the terms, beside Pay (board m-ux-medium W3f).
+      var help = document.createElement("p"); help.className = "pay-help";
+      help.innerHTML = 'Help &amp; refunds: <span><a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a> · <a href="/terms" target="_blank" rel="noopener">Terms</a></span>';
+      foot.appendChild(payError); foot.appendChild(cta); foot.appendChild(fx); foot.appendChild(fine); foot.appendChild(help);
       grid.appendChild(options); grid.appendChild(foot);
     }).catch(function () {
       // A way to ask again where the plans should be, not only the words.
