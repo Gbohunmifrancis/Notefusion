@@ -498,6 +498,7 @@
   $("forgot").addEventListener("click", function () {
     var email = $("login-email").value.trim(), btn = $("forgot");
     if (!email) { alertIn($("auth-alert"), "info", "Type your email above, then press Forgot password."); $("login-email").focus(); return; }
+    if (emailProblem(email)) { stopForm(emailProblem(email), "login-email"); return; }
     if (btn.disabled) return; // one email per press: repeated taps sent one each
     btn.disabled = true;
     request("/api/auth/forgot-password", { method: "POST", anonymous: true, body: { email: email } })
@@ -552,9 +553,23 @@
   }
   if (window.google && google.accounts) initGoogle();
 
+  /**
+   * What is missing or mistyped, said before anything is sent: the server's answer to a blank or broken email was
+   * "One or more validation errors occurred." Returns the sentence, or null when the form can go.
+   */
+  var EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function emailProblem(value) {
+    if (!value) return "Enter your email address.";
+    return EMAIL_SHAPE.test(value) ? null : "That email address looks incomplete. Check it reads like you@example.com.";
+  }
+  function stopForm(text, field) { alertIn($("auth-alert"), "danger", text); if (field) $(field).focus(); }
+
   $("form-login").addEventListener("submit", function (e) {
     e.preventDefault();
     var btn = e.target.querySelector("button[type=submit]");
+    var bad = emailProblem($("login-email").value.trim());
+    if (bad) { stopForm(bad, "login-email"); return; }
+    if (!$("login-password").value) { stopForm("Enter your password.", "login-password"); return; }
     btn.disabled = true; hide($("auth-alert"));
     request("/api/auth/login", { method: "POST", anonymous: true, body: { email: $("login-email").value.trim(), password: $("login-password").value } })
       .then(function (res) {
@@ -598,16 +613,19 @@
     e.preventDefault();
     var btn = e.target.querySelector("button[type=submit]");
     btn.disabled = true; hide($("auth-alert"));
+    if (!$("reg-name").value.trim()) { stopForm("Enter your name.", "reg-name"); btn.disabled = false; return; }
+    var badEmail = emailProblem($("reg-email").value.trim());
+    if (badEmail) { stopForm(badEmail, "reg-email"); btn.disabled = false; return; }
     // One password field: the eye shows what was typed, so a second copy only slowed sign-up down.
-    if ($("reg-password").value.length < 8) { alertIn($("auth-alert"), "danger", "Use at least 8 characters for the password."); btn.disabled = false; return; }
+    if ($("reg-password").value.length < 8) { stopForm("Use at least 8 characters for the password.", "reg-password"); btn.disabled = false; return; }
     request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value, source: "web" } })
       .then(function (res) {
         track("Created account");
         openVerify((res && res.email) || $("reg-email").value.trim(), "Almost there — enter the code we just emailed you.");
       })
       .catch(function (err) {
-        var detail = err.details ? Object.keys(err.details).map(function (k) { return err.details[k].join(" "); }).join(" ") : "";
-        alertIn($("auth-alert"), "danger", (err.message || "Could not create the account.") + (detail ? " " + detail : ""));
+        // The checks above catch what the validator would; its own words ("'Full Name' must not be empty.") stay out.
+        alertIn($("auth-alert"), "danger", err.details ? "Check your name, email and password, then try again." : (err.message || "Could not create the account."));
       })
       .finally(function () { btn.disabled = false; });
   });
@@ -616,8 +634,9 @@
   $("form-verify").addEventListener("submit", function (e) {
     e.preventDefault();
     var btn = e.target.querySelector("button[type=submit]");
+    if (!/^\d{6}$/.test($("verify-code").value.replace(/\s+/g, ""))) { stopForm("Enter the 6-digit code from the email.", "verify-code"); return; }
     btn.disabled = true; hide($("auth-alert"));
-    request("/api/auth/verify-email", { method: "POST", anonymous: true, body: { email: pendingEmail, code: $("verify-code").value.trim() } })
+    request("/api/auth/verify-email", { method: "POST", anonymous: true, body: { email: pendingEmail, code: $("verify-code").value.replace(/\s+/g, "") } })
       .then(function (res) {
         saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
         track("Verified email");
