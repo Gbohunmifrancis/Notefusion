@@ -432,8 +432,8 @@ export function UpgradeScreen({ navigation, route }: Props) {
       if (!session || !session.checkoutUrl) {
         setBusy(false);
         showDialog({
-          title: "Checkout error",
-          message: "Could not initialize checkout. Please try again.",
+          title: "Checkout didn't open",
+          message: "We couldn't open checkout. Check your connection and try again.",
           icon: "problem",
           tone: "danger",
         });
