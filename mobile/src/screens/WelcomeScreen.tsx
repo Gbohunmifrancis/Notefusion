@@ -5,6 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { GoogleG } from "../components/night/GoogleG";
+import { Icon } from "../components/Icon";
 import { NightButton } from "../components/night/NightButton";
 import { ErrorNote, Glow, Mark, Wordmark, nightText } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
@@ -20,12 +21,17 @@ type Props = NativeStackScreenProps<AuthStackParams, "Welcome">;
  * Choose how to come in: Google first, email second, and a sign-in link for
  * people who already have an account. One screen of choices instead of a login
  * page and a register page that each try to be the front door.
+ *
+ * When this phone last signed in by email (board l-ux-high/04a), the second button is
+ * "Sign in with email" with the same "Last used" chip Google gets, and creating an
+ * account moves into the line under the buttons.
  */
 export function WelcomeScreen({ navigation }: Props) {
   const { signInWithGoogle } = useAuth();
   const [googleBusy, setGoogleBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null>(null);
+  const emailLast = lastAuthMethod === "email";
 
   useEffect(() => {
     tokenStore.getLastAuthMethod().then(setLastAuthMethod);
@@ -65,15 +71,30 @@ export function WelcomeScreen({ navigation }: Props) {
               loading={googleBusy}
             />
           )}
-          <NightButton
-            label="Create an account with email"
-            variant={googleAuthConfigured ? "ghost" : "white"}
-            onPress={() => navigation.navigate("Register")}
-          />
+          {emailLast ? (
+            <NightButton
+              label="Sign in with email"
+              // The envelope on the quiet button only: the blue one keeps its disc for Google's G.
+              icon={googleAuthConfigured ? <Icon name="mail" size={18} color={night.text} /> : undefined}
+              badge="Last used"
+              variant={googleAuthConfigured ? "ghost" : "white"}
+              onPress={() => navigation.navigate("Login")}
+            />
+          ) : (
+            <NightButton
+              label="Create an account with email"
+              variant={googleAuthConfigured ? "ghost" : "white"}
+              onPress={() => navigation.navigate("Register")}
+            />
+          )}
           <Text style={[nightText.muted, styles.center, styles.signIn]}>
-            Already have one?{" "}
-            <Text style={nightText.link} onPress={() => navigation.navigate("Login")} accessibilityRole="link">
-              Sign in
+            {emailLast ? "New here?" : "Already have one?"}{" "}
+            <Text
+              style={nightText.link}
+              onPress={() => navigation.navigate(emailLast ? "Register" : "Login")}
+              accessibilityRole="link"
+            >
+              {emailLast ? "Create an account" : "Sign in"}
             </Text>
           </Text>
           <Text style={styles.legal}>
