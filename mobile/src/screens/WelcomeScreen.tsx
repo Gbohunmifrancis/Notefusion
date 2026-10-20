@@ -11,6 +11,9 @@ import { ErrorNote, Glow, Mark, Wordmark, nightText } from "../components/night/
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
 import { tokenStore } from "../lib/tokenStore";
+import { guestPreviewStore } from "../lib/guestPreviewStore";
+import { GUEST_PREVIEW_TITLE } from "../lib/guestPreview";
+import { welcomeChoices } from "../lib/welcomeChoices";
 import { googleAuthConfigured, siteUrls } from "../lib/env";
 import { night, nightFonts } from "../design/theme";
 import type { AuthStackParams } from "../navigation/types";
@@ -25,6 +28,10 @@ type Props = NativeStackScreenProps<AuthStackParams, "Welcome">;
  * When this phone last signed in by email (board l-ux-high/04a), the second button is
  * "Sign in with email" with the same "Last used" chip Google gets, and creating an
  * account moves into the line under the buttons.
+ *
+ * "Try it first — hum a tune" (board l-ux-high/07) records thirty seconds as a guest with no
+ * account; it is the second button unless email was used last, when it is a link in the line
+ * (`lib/welcomeChoices`: never more than two buttons).
  */
 export function WelcomeScreen({ navigation }: Props) {
   const { signInWithGoogle } = useAuth();
@@ -32,10 +39,21 @@ export function WelcomeScreen({ navigation }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null>(null);
   const emailLast = lastAuthMethod === "email";
+  const choices = welcomeChoices(googleAuthConfigured, emailLast);
 
   useEffect(() => {
     tokenStore.getLastAuthMethod().then(setLastAuthMethod);
   }, []);
+
+  /**
+   * A guest's take. A preview this phone has made and not kept yet opens again instead (one per phone): its sheet
+   * when it has one, else Record follows it to the end.
+   */
+  async function tryFirst() {
+    const pending = await guestPreviewStore.read();
+    if (pending?.result) navigation.navigate("Result", { result: pending.result, guest: true, title: GUEST_PREVIEW_TITLE });
+    else navigation.navigate("GuestRecord");
+  }
 
   async function google() {
     setError(null);
@@ -62,40 +80,63 @@ export function WelcomeScreen({ navigation }: Props) {
 
         <View style={styles.actions}>
           {error && <ErrorNote message={error} />}
-          {googleAuthConfigured && (
-            <NightButton
-              label="Continue with Google"
-              icon={<GoogleG size={20} />}
-              badge={lastAuthMethod === "google" ? "Last used" : undefined}
-              onPress={google}
-              loading={googleBusy}
-            />
-          )}
-          {emailLast ? (
-            <NightButton
-              label="Sign in with email"
-              // The envelope on the quiet button only: the blue one keeps its disc for Google's G.
-              icon={googleAuthConfigured ? <Icon name="mail" size={18} color={night.text} /> : undefined}
-              badge="Last used"
-              variant={googleAuthConfigured ? "ghost" : "white"}
-              onPress={() => navigation.navigate("Login")}
-            />
-          ) : (
-            <NightButton
-              label="Create an account with email"
-              variant={googleAuthConfigured ? "ghost" : "white"}
-              onPress={() => navigation.navigate("Register")}
-            />
+          {choices.blocks.map((block, i) =>
+            block === "google" ? (
+              <NightButton
+                key={block}
+                label="Continue with Google"
+                icon={<GoogleG size={20} />}
+                badge={lastAuthMethod === "google" ? "Last used" : undefined}
+                onPress={google}
+                loading={googleBusy}
+              />
+            ) : block === "email" && emailLast ? (
+              <NightButton
+                key={block}
+                label="Sign in with email"
+                // The envelope on the quiet button only: the blue one keeps its disc for Google's G.
+                icon={i > 0 ? <Icon name="mail" size={18} color={night.text} /> : undefined}
+                badge="Last used"
+                variant={i > 0 ? "ghost" : "white"}
+                onPress={() => navigation.navigate("Login")}
+              />
+            ) : block === "email" ? (
+              <NightButton
+                key={block}
+                label="Create an account with email"
+                variant={i > 0 ? "ghost" : "white"}
+                onPress={() => navigation.navigate("Register")}
+              />
+            ) : (
+              <NightButton
+                key={block}
+                label="Try it first — hum a tune"
+                icon={<Icon name="mic" size={18} color={night.text} />}
+                variant="ghost"
+                onPress={() => void tryFirst()}
+              />
+            ),
           )}
           <Text style={[nightText.muted, styles.center, styles.signIn]}>
-            {emailLast ? "New here?" : "Already have one?"}{" "}
-            <Text
-              style={nightText.link}
-              onPress={() => navigation.navigate(emailLast ? "Register" : "Login")}
-              accessibilityRole="link"
-            >
-              {emailLast ? "Create an account" : "Sign in"}
-            </Text>
+            {choices.lead}{" "}
+            {choices.links.map((link, i) => (
+              <React.Fragment key={link}>
+                {i > 0 ? " · " : null}
+                <Text
+                  style={nightText.link}
+                  onPress={
+                    link === "create"
+                      ? () => navigation.navigate("Register")
+                      : link === "signIn"
+                        ? () => navigation.navigate("Login")
+                        : () => void tryFirst()
+                  }
+                  accessibilityRole="link"
+                >
+                  {link === "create" ? "Create an account" : link === "signIn" ? "Sign in" : "Try it first"}
+                </Text>
+              </React.Fragment>
+            ))}
           </Text>
           <Text style={styles.legal}>
             By continuing you agree to the{" "}

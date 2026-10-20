@@ -7,6 +7,8 @@ import { LoginScreen } from '../screens/LoginScreen';
 import { RegisterScreen } from '../screens/RegisterScreen';
 import { VerifyEmailScreen } from '../screens/VerifyEmailScreen';
 import { ForgotPasswordScreen } from '../screens/ForgotPasswordScreen';
+import { GuestRecordScreen } from '../screens/RecordScreen';
+import { GuestPreviewScreen } from '../screens/ResultScreen';
 import { onboarding } from '../lib/onboarding';
 import { pendingVerifyStore } from '../lib/pendingVerifyStore';
 import type { PendingVerify } from '../lib/pendingVerify';
@@ -20,7 +22,8 @@ const Stack = createNativeStackNavigator<AuthStackParams>();
  * create an account → the email code. Every screen here is on the night canvas,
  * which is also what shows between screens during a transition. A code sent under
  * ten minutes ago and not yet typed (the app closed while its mail was read) opens
- * the code screen again.
+ * the code screen again. "Try it first" (board l-ux-high/07) opens Record and then
+ * Result here, as a guest: the website's free preview, kept by signing up.
  */
 export function AuthNavigator() {
   const [start, setStart] = useState<{ seen: boolean; pending: PendingVerify | null } | null>(null);
@@ -54,6 +57,8 @@ export function AuthNavigator() {
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} initialParams={pending ?? undefined} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen name="GuestRecord" component={GuestRecordScreen} options={{ animation: 'slide_from_bottom' }} />
+      <Stack.Screen name="Result" component={GuestPreviewScreen} options={{ animation: 'slide_from_bottom' }} />
     </Stack.Navigator>
   );
 }

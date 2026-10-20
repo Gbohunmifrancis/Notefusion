@@ -40,7 +40,7 @@ import { canImport, isScoreFile } from "../lib/importFile";
 import { recordKindChoices } from "../lib/recordKind";
 import { onlySettingsCanGrant } from "../lib/micPermission";
 import { formatPrice, limitCopy, limitOffer, type LimitOffer } from "../lib/price";
-import { billingApi } from "../api/endpoints";
+import { billingApi, previewApi } from "../api/endpoints";
 import type { Plan } from "../api/types";
 import {
   KEYBOARD_TRANSPOSE_CHOICES,
@@ -68,8 +68,20 @@ import {
   typography,
   type Palette,
 } from "../design/theme";
-import { useColors, useThemedStyles } from "../lib/theme";
-import type { RootStackParams, TabParams } from "../navigation/types";
+import { ThemeOverride, useColors, useThemedStyles } from "../lib/theme";
+import type { AuthStackParams, RootStackParams, TabParams } from "../navigation/types";
+import { GuestAccountCard } from "../components/GuestAccountCard";
+import type { AxiosError } from "axios";
+import {
+  GUEST_MAX_SECONDS,
+  GUEST_PREVIEW_TITLE,
+  PREVIEW_MAX_BYTES,
+  guestRecordingLine,
+  guestTakeFull,
+  type PendingPreview,
+  type PreviewRefusal,
+} from "../lib/guestPreview";
+import { guestPreviewStore } from "../lib/guestPreviewStore";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -283,11 +295,17 @@ async function offerBackgroundAlerts(): Promise<void> {
  *   • Level trace    : the mic level as a thin glowing line over faint guides.
  *   • Controls       : import / start over · record–stop · done.
  *   • Uploading      : one calm card — the mark, the stage, the steps, a thin progress bar.
+ *
+ * `guest` (board l-ux-high/07, "Try it first" on Welcome, in the signed-out stack): the same screen with no account —
+ * thirty seconds that stop by themselves, the microphone or a recording file, sent to the website's anonymous
+ * preview and followed there. No tab bar, send queue or free count; the sheet opens in Result as a guest.
  */
-export function RecordScreen() {
+export function RecordScreen({ guest = false }: { guest?: boolean }) {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const route = useRoute<RouteProp<TabParams, "Record">>();
   const tabNav = useNavigation<BottomTabNavigationProp<TabParams, "Record">>();
+  /** The signed-out stack, for a guest (the same navigator as `nav`, typed for its routes). */
+  const guestNav = useNavigation<NativeStackNavigationProp<AuthStackParams>>();
   /**
    * Every take goes through the send queue (lib/outbox): kept in app storage and queued before its upload
    * starts, followed here until its result is in. `direct` is the old way, straight from the recorder's
@@ -358,6 +376,20 @@ export function RecordScreen() {
   const [permError, setPermError] = useState<string | null>(null);
   /** The microphone was refused for good: only the phone's settings can turn it on now. */
   const [permSettings, setPermSettings] = useState(false);
+
+  // ── The guest preview (board l-ux-high/07) ────────────────────────────────
+  /** The guest's take, kept until its sheet opens: what "Send it again" sends. */
+  const guestTake = useRef<{ uri: string; name: string } | null>(null);
+  /** Why the guest's last send was refused (`lib/guestPreview`), with the API's words; null otherwise. */
+  const [guestRefused, setGuestRefused] = useState<{ refusal: PreviewRefusal; message: string } | null>(null);
+  /** The preview on its way: its job, when it was sent and from what. Kept on the phone with its sheet once in. */
+  const guestPending = useRef<Omit<PendingPreview, "result"> | null>(null);
+  const { startPreview, resumePreview } = direct;
+  /** A guest leaves to Welcome (the job, once sent, goes on and is kept); an account to Home. */
+  const leave = useCallback(() => {
+    if (guest) guestNav.goBack();
+    else tabNav.navigate("Home");
+  }, [guest, guestNav, tabNav]);
 
   // The preset follows Data saver, but never mid-take: a new preset makes a new recorder.
   const dataSaver = useDataSaver();
@@ -449,6 +481,22 @@ export function RecordScreen() {
 
   // ── Navigate to Result ────────────────────────────────────────────────────
   useEffect(() => {
+    if (state.status === "done" && state.result && guest) {
+      // A guest's preview: kept on the phone with its sheet until an account keeps it, and opened in Result in
+      // this one's place, so closing it goes back to Welcome.
+      const result = state.result;
+      const pending = guestPending.current;
+      guestPending.current = null;
+      if (pending) void guestPreviewStore.save({ ...pending, result });
+      if (guestTake.current) deleteQuietly(guestTake.current.uri);
+      guestTake.current = null;
+      reset();
+      setPhase("ready");
+      setElapsed(0);
+      void logAnalyticsEvent("guest_preview_ready");
+      guestNav.replace("Result", { result, guest: true, title: GUEST_PREVIEW_TITLE });
+      return;
+    }
     if (state.status === "done" && state.result) {
       const result = state.result;
       const sourceJobId = state.jobId ?? undefined;
@@ -469,7 +517,7 @@ export function RecordScreen() {
       void markPractisedToday();
       nav.navigate("Result", { result, sourceJobId, fresh: true, savedId, title: savedTitle });
     }
-  }, [state.status, state.result, state.jobId, state.savedId, state.savedTitle, nav, reset, refresh, rememberSubmit]);
+  }, [state.status, state.result, state.jobId, state.savedId, state.savedTitle, nav, reset, refresh, rememberSubmit, guest, guestNav]);
 
   /**
    * Explains an exhausted trial and offers the way out.
@@ -558,6 +606,13 @@ export function RecordScreen() {
     if (state.status !== "failed") return;
     setPhase("ready");
 
+    // A guest's preview that failed was not had (the API lets this phone try again): nothing is kept for it.
+    if (guest) {
+      guestPending.current = null;
+      void guestPreviewStore.clear();
+      return;
+    }
+
     // The server refusing on quota means the local gate let the tap through — a stale
     // count, or the last credit spent on another device. Same dialog, and the job state
     // is cleared so the error card's "Try again" doesn't offer a retry that cannot
@@ -573,16 +628,16 @@ export function RecordScreen() {
       // A direct upload never got an answer: keep the take and send it when the connection is back.
       queueLastTake(true);
     }
-  }, [state.status, state.errorCode, following, reset, showTrialExhausted, showSongNotFree, queueLastTake]);
+  }, [state.status, state.errorCode, following, reset, showTrialExhausted, showSongNotFree, queueLastTake, guest]);
 
   // A failed job costs nothing: the place it held comes back, so the count is read again, once per job
-  // (`refresh` is a new function after every read, and the job stays failed).
+  // (`refresh` is a new function after every read, and the job stays failed). A guest has no count.
   const recountedFor = useRef<string | null>(null);
   useEffect(() => {
-    if (state.status !== "failed" || !state.jobId || recountedFor.current === state.jobId) return;
+    if (guest || state.status !== "failed" || !state.jobId || recountedFor.current === state.jobId) return;
     recountedFor.current = state.jobId;
     void refresh(false);
-  }, [state.status, state.jobId, refresh]);
+  }, [state.status, state.jobId, refresh, guest]);
 
   // The elapsed-time interval is cleared in stopAndSubmit, but a screen unmount
   // mid-recording (back gesture, tab switch) never runs that path, leaking the
@@ -601,11 +656,80 @@ export function RecordScreen() {
   // Safe against firing twice: the phase guard closes as soon as stopAndSubmit sets
   // "uploading", and stopAndSubmit itself returns early unless recorder.isRecording.
   // stopAndSubmit is deliberately not a dependency — it is redeclared every render, so
-  // depending on it would re-run this effect on each one.
+  // depending on it would re-run this effect on each one. A guest's take stops at the preview's
+  // thirty seconds, which is all the API transcribes of it.
   useEffect(() => {
-    if (phase === "recording" && elapsed >= MAX_RECORD_SEC) void stopAndSubmit();
+    if (phase === "recording" && (guest ? guestTakeFull(elapsed) : elapsed >= MAX_RECORD_SEC)) void stopAndSubmit();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, elapsed]);
+
+  // A preview this phone sent before and has not seen (the guest left while it ran) is followed again here. One the
+  // API no longer knows, or one that failed, is let go: this phone may try again.
+  useEffect(() => {
+    if (!guest) return;
+    let live = true;
+    void (async () => {
+      const pending = await guestPreviewStore.read();
+      if (!live || !pending || recorder.isRecording) return;
+      if (pending.result) {
+        guestNav.replace("Result", { result: pending.result, guest: true, title: GUEST_PREVIEW_TITLE });
+        return;
+      }
+      let failed = false;
+      try {
+        failed = (await previewApi.getJob(pending.jobId)).status === "failed";
+      } catch (e) {
+        failed = (e as AxiosError)?.response?.status === 404;
+      }
+      if (!live || recorder.isRecording) return;
+      if (failed) {
+        void guestPreviewStore.clear();
+        return;
+      }
+      guestPending.current = { jobId: pending.jobId, recordedAt: pending.recordedAt, fileName: pending.fileName };
+      setPhase("uploading");
+      resumePreview(pending.jobId);
+    })();
+    return () => {
+      live = false;
+    };
+    // Once, on arrival.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /**
+   * Sends a guest's take to the anonymous preview and follows it. The take stays in hand until its sheet opens: a
+   * send that got no answer, or met a fault on our side, offers "Send it again", as the website does.
+   */
+  async function sendGuest(uri: string, name: string) {
+    // A take kept from a send that failed is let go once another takes its place.
+    if (guestTake.current && guestTake.current.uri !== uri) deleteQuietly(guestTake.current.uri);
+    guestTake.current = { uri, name };
+    setGuestRefused(null);
+    setPermError(null);
+    setPhase("uploading");
+    void logAnalyticsEvent("guest_preview_sent", { mode, source: name.startsWith("clip-") ? "mic" : "file" });
+    const sent = await startPreview(uri, name, {
+      mode,
+      timeSignature: meter ?? undefined,
+      keyboardTranspose: kbTranspose || undefined,
+    });
+    if (!sent) return; // left or sent again while it went up
+    if ("jobId" in sent) {
+      setMeter(null);
+      guestPending.current = { jobId: sent.jobId, recordedAt: Date.now(), fileName: name };
+      // Kept from now: closing this screen, or the app, does not lose it.
+      void guestPreviewStore.save({ ...guestPending.current, result: null });
+      return;
+    }
+    setPhase("ready");
+    setGuestRefused(sent);
+    if (sent.refusal !== "kept") {
+      // Sending it again cannot change the answer: the take has no further use.
+      deleteQuietly(uri);
+      guestTake.current = null;
+    }
+  }
 
   // ── Voice-level metering & "sing louder" guidance ─────────────────────────
   //
@@ -666,6 +790,8 @@ export function RecordScreen() {
     if (startingRef.current) return;
     setPermError(null);
     setPermSettings(false);
+    // A new take puts a failed send's note away; the phone's preview being used up still stands.
+    setGuestRefused((r) => (r?.refusal === "used" ? r : null));
     if (blockedByTrialLimit()) return;
     startingRef.current = true;
     try {
@@ -764,6 +890,19 @@ export function RecordScreen() {
       }
 
       const asset = res.assets[0];
+      if (guest) {
+        // The preview reads a recording, as the website's does: no scores, and 25 MB at most.
+        if (!canImport(asset.name) || isScoreFile(asset.name)) {
+          setPermError("That doesn't look like a recording. Choose an MP3, WAV, M4A, FLAC, OGG or WebM file.");
+          return;
+        }
+        if ((asset.size ?? 0) > PREVIEW_MAX_BYTES) {
+          setPermError("That file is over 25 MB. Choose a shorter recording, or one saved as MP3 or M4A.");
+          return;
+        }
+        await sendGuest(asset.uri, asset.name || "imported-audio.m4a");
+        return;
+      }
       // Refused here, not after the upload: the picker shows every file (lib/importFile).
       if (!canImport(asset.name)) {
         setPermError("That file isn't one we can read. Choose a recording (MP3, M4A, WAV…), a MIDI file or MusicXML.");
@@ -825,6 +964,12 @@ export function RecordScreen() {
       }
       const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
       const name = `clip-${elapsed}s.m4a`;
+      // A guest's take goes straight to the preview: no send queue, and no question about a band (the website
+      // asks none either).
+      if (guest) {
+        await sendGuest(uri, name);
+        return;
+      }
       const base = { mode, key: keyOpt, keyboardTranspose: kbTranspose || undefined, timeSignature: meter ?? undefined };
       // Kept on the phone the moment it stops (lib/outbox), held while the question below is open: should the
       // app die meanwhile, it goes with the answer remembered from last time (a free tune if a song is not paid for).
@@ -921,11 +1066,11 @@ export function RecordScreen() {
     if (phase === "recording") {
       confirmDiscard("Discard this recording?", "Discard", () => {
         void discardTake();
-        tabNav.navigate("Home");
+        leave();
       });
       return;
     }
-    tabNav.navigate("Home");
+    leave();
   }
 
   /**
@@ -948,11 +1093,11 @@ export function RecordScreen() {
     useCallback(() => {
       if (phase !== "recording") return;
       const sub = BackHandler.addEventListener("hardwareBackPress", () => {
-        leaveAsk.current(() => tabNav.navigate("Home"));
+        leaveAsk.current(leave);
         return true;
       });
       return () => sub.remove();
-    }, [phase, tabNav]),
+    }, [phase, leave]),
   );
 
   const clock = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, "0")}`;
@@ -979,8 +1124,8 @@ export function RecordScreen() {
     // size the trace takes up the slack between the clock and the controls — the scroll is what
     // absorbs a large Font size or Display size setting instead of pushing the controls off the
     // bottom edge behind the tab bar.
-    <Screen edges={["top"]} scroll contentStyle={styles.scrollContent}>
-      <View style={styles.container}>
+    <Screen edges={guest ? ["top", "bottom"] : ["top"]} scroll contentStyle={styles.scrollContent}>
+      <View style={[styles.container, guest && styles.containerGuest]}>
         {/* ── Top bar ─────────────────────────────────────────────────────── */}
         <View style={styles.topBar}>
           <View style={styles.topSide}>
@@ -1085,7 +1230,9 @@ export function RecordScreen() {
                     ? "Our server had a problem with that upload, so we're sending your recording again. Nothing to do, and it isn't charged twice."
                     : state.stage === "uploading"
                       ? "Keep the app open until the upload finishes."
-                      : "You can leave this screen — we'll notify you when it's ready."}
+                      : guest
+                        ? "Your preview opens here when it's ready."
+                        : "You can leave this screen — we'll notify you when it's ready."}
               </Text>
 
               <View style={styles.jobBarRow}>
@@ -1131,7 +1278,8 @@ export function RecordScreen() {
 
               {state.stalled ? <Text style={styles.uploadWarn}>{STALLED_LINE}</Text> : null}
               {state.offline ? <Text style={styles.uploadWarn}>{OFFLINE_LINE}</Text> : null}
-              {state.canRetry ? (
+              {/* Never for a guest: a second preview from this phone would be refused while the first runs. */}
+              {state.canRetry && !guest ? (
                 <Button
                   label="Try again"
                   icon="retry"
@@ -1158,17 +1306,30 @@ export function RecordScreen() {
                 <Text style={styles.statusLine}>
                   {phase === "ready"
                     ? "Tap to record · sing, hum or play near the mic"
-                    : elapsed >= MAX_RECORD_SEC - RECORD_WARN_AT_SEC
-                      ? `Stopping in ${MAX_RECORD_SEC - elapsed}s — ${MAX_RECORD_SEC / 60} minutes is the longest clip we can transcribe.`
-                      : "Recording · keep going to the end of the phrase"}
+                    : guest
+                      ? guestRecordingLine(elapsed)
+                      : elapsed >= MAX_RECORD_SEC - RECORD_WARN_AT_SEC
+                        ? `Stopping in ${MAX_RECORD_SEC - elapsed}s — ${MAX_RECORD_SEC / 60} minutes is the longest clip we can transcribe.`
+                        : "Recording · keep going to the end of the phrase"}
                 </Text>
               </View>
+
+              {/* A guest's take is the website's free preview (board l-ux-high/07): said once, in the
+                  counter's place. */}
+              {guest ? (
+                <View style={styles.previewPill}>
+                  <Icon name="about" size={13} color={colors.link} />
+                  <Text style={styles.previewPillText}>
+                    Free {GUEST_MAX_SECONDS}-second preview · no account needed
+                  </Text>
+                </View>
+              ) : null}
 
               {/* Free-tier counter. Gated on `known` as well as `!isPro`: the fallback
                   value is the full allowance, so an unanswered billing request would
                   otherwise announce "5 of 5 left" to a Pro account. Tappable throughout —
                   wanting to see the plans is not only an out-of-credits impulse. */}
-              {known && !isPro && (
+              {!guest && known && !isPro && (
                 <Touchable
                   onPress={() => nav.navigate("Upgrade")}
                   style={styles.trialPill}
@@ -1244,7 +1405,47 @@ export function RecordScreen() {
           </Card>
         )}
 
-        {state.error && (
+        {/* A guest's refused send (board l-ux-high/07): this phone's preview used — the way to an account; no answer
+            or our fault — the take is kept, with Send it again; anything else in the API's words. */}
+        {guest && guestRefused?.refusal === "used" ? (
+          <GuestAccountCard
+            message="This phone has had its free preview. Create a free account for 3 a week."
+            primary="Create a free account"
+            style={styles.errCard}
+          />
+        ) : guest && guestRefused ? (
+          <Card style={styles.errCard}>
+            <View style={styles.errRow}>
+              <Icon name="problem" size={18} color={colors.warning} style={styles.errIcon} />
+              <Text style={styles.errText}>
+                {guestRefused.refusal === "kept" ? "Couldn't send it. Your take is kept." : guestRefused.message}
+              </Text>
+            </View>
+            {guestRefused.refusal === "kept" && guestTake.current ? (
+              <Button
+                label="Send it again"
+                icon="retry"
+                onPress={() => {
+                  const kept = guestTake.current;
+                  if (kept) void sendGuest(kept.uri, kept.name);
+                }}
+                style={{ marginTop: spacing.md }}
+              />
+            ) : null}
+          </Card>
+        ) : null}
+
+        {/* A guest's preview that failed: said, and a new take is the way on (a failed preview is not had). */}
+        {guest && state.error ? (
+          <Card style={styles.errCard}>
+            <View style={styles.errRow}>
+              <Icon name="problem" size={18} color={colors.warning} style={styles.errIcon} />
+              <Text style={styles.errText}>{state.error}</Text>
+            </View>
+          </Card>
+        ) : null}
+
+        {!guest && state.error && (
           <Card style={styles.errCard}>
             <View style={styles.errRow}>
               <Icon name="problem" size={18} color={colors.warning} style={styles.errIcon} />
@@ -1335,6 +1536,9 @@ export function RecordScreen() {
             </View>
           </View>
         )}
+        {guest && !isUploading ? (
+          <Text style={styles.stopsLine}>Stops by itself at 0:{GUEST_MAX_SECONDS}</Text>
+        ) : null}
       </View>
 
       <RecordOptionsSheet
@@ -1343,7 +1547,8 @@ export function RecordScreen() {
         modes={MODES}
         mode={mode}
         onMode={setMode}
-        keys={KEYS}
+        // The preview has no key to give: it is always heard (the API's preview takes none).
+        keys={guest ? [] : KEYS}
         selectedKey={selectedKey}
         onKey={setSelectedKey}
         meter={meter}
@@ -1358,6 +1563,15 @@ export function RecordScreen() {
         }}
       />
     </Screen>
+  );
+}
+
+/** "Try it first" (board l-ux-high/07): Record as a guest, on the night canvas as every first-run screen is. */
+export function GuestRecordScreen() {
+  return (
+    <ThemeOverride mode="dark">
+      <RecordScreen guest />
+    </ThemeOverride>
   );
 }
 
@@ -1378,6 +1592,11 @@ const makeStyles = (c: Palette) =>
     flexGrow: 1,
     // Clears the floating tab bar, which is absolutely positioned over the bottom of the screen.
     paddingBottom: 110,
+  },
+
+  /** A guest has no tab bar to clear. */
+  containerGuest: {
+    paddingBottom: spacing.xl,
   },
 
   // ── Top bar ──────────────────────────────────────────────────────────────
@@ -1529,6 +1748,35 @@ const makeStyles = (c: Palette) =>
   },
   trialPillTextSpent: {
     color: c.textMuted,
+  },
+
+  /** The guest's "Free 30-second preview" (board l-ux-high/07): information, so the link blue on its soft wash. */
+  previewPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: c.accentSoft,
+    borderWidth: 1,
+    borderColor: c.accentGlow,
+    borderRadius: radii.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: 5,
+    marginTop: spacing.md,
+    maxWidth: "100%",
+  },
+  previewPillText: {
+    fontSize: 12,
+    fontFamily: fonts.semibold,
+    color: c.link,
+    flexShrink: 1,
+  },
+
+  /** Under the controls for a guest: when the take ends by itself. */
+  stopsLine: {
+    ...typography.caption,
+    color: c.textMuted,
+    textAlign: "center",
+    marginTop: spacing.lg,
   },
 
   // ── Level trace ───────────────────────────────────────────────────────────

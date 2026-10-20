@@ -1,0 +1,30 @@
+/**
+ * Welcome's ways in (boards l-ux-high/04a and 07): never more than two block buttons, the rest as links in the line
+ * under them. Google is first when it is set up; the second button is the likeliest next move — signing in by email
+ * when that is how this phone signed in last, else trying the app first with a hummed tune — and with no Google both
+ * are buttons. Pure (`welcomeChoices.test.ts`).
+ */
+
+/** A block button: Google, the email one (sign in when email was used last, else create an account), or try it. */
+export type WelcomeBlock = "google" | "email" | "try";
+
+/** A link in the line under the buttons. */
+export type WelcomeLink = "create" | "signIn" | "try";
+
+export interface WelcomeChoices {
+  blocks: WelcomeBlock[];
+  /** The words before the links: "Use email:", "New here?", "Already have one?". */
+  lead: string;
+  links: WelcomeLink[];
+}
+
+export function welcomeChoices(googleConfigured: boolean, emailLast: boolean): WelcomeChoices {
+  if (!googleConfigured) {
+    return emailLast
+      ? { blocks: ["email", "try"], lead: "New here?", links: ["create"] }
+      : { blocks: ["email", "try"], lead: "Already have one?", links: ["signIn"] };
+  }
+  return emailLast
+    ? { blocks: ["google", "email"], lead: "New here?", links: ["create", "try"] }
+    : { blocks: ["google", "try"], lead: "Use email:", links: ["create", "signIn"] };
+}

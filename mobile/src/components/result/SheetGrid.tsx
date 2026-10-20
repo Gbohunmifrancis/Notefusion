@@ -93,7 +93,8 @@ export function SheetGrid({
   timeSignature: string;
   barCount: number;
   playingNote: number;
-  onSelectNote: (index: number) => void;
+  /** Opens the note's editor; none for a sheet that is only read (a guest's preview). */
+  onSelectNote?: (index: number) => void;
 }) {
   const styles = useThemedStyles(makeStyles);
   const bars = useMemo(
@@ -125,10 +126,11 @@ export function SheetGrid({
                         return (
                           <Pressable
                             key={i}
-                            onPress={() => onSelectNote(i)}
+                            onPress={onSelectNote ? () => onSelectNote(i) : undefined}
+                            disabled={!onSelectNote}
                             style={({ pressed }) => [styles.note, now && styles.noteNow, pressed && styles.notePressed]}
-                            accessibilityRole="button"
-                            accessibilityLabel={`Note ${i + 1}, ${n.solfa}, ${spokenPitch(n.pitchMidi)}. Tap to correct.`}
+                            accessibilityRole={onSelectNote ? "button" : "text"}
+                            accessibilityLabel={`Note ${i + 1}, ${n.solfa}, ${spokenPitch(n.pitchMidi)}.${onSelectNote ? " Tap to correct." : ""}`}
                           >
                             <Text style={[styles.syllable, low && styles.syllableLow, now && styles.syllableNow]}>
                               {n.solfa}

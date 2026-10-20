@@ -12,6 +12,12 @@ export const GUEST_MAX_SECONDS = 30;
 /** How long before the stop the line under the clock counts down. */
 export const GUEST_WARN_SECONDS = 10;
 
+/** The largest file the preview takes (`PreviewController.MaxAudioBytes`). */
+export const PREVIEW_MAX_BYTES = 25 * 1024 * 1024;
+
+/** What the guest's sheet is called until an account keeps it. */
+export const GUEST_PREVIEW_TITLE = "Your preview";
+
 /** The API's refusal once this phone has had its preview, or an account has transcribed on it. */
 export const PREVIEW_LIMIT_CODE = "PREVIEW_LIMIT_REACHED";
 

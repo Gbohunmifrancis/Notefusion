@@ -405,6 +405,9 @@ export function useJobPolling() {
    * followed on the preview's routes, as any job is. A refused send leaves the card idle and says why
    * (`lib/guestPreview`), so the screen can keep the take when sending again could work. Never "Try again" after a
    * long wait: a second preview from this phone would be refused while the first one runs.
+   *
+   * A job the API made after the screen moved on (left mid-upload) is still handed back, unfollowed: it is this
+   * phone's one preview, so the screen keeps its id for the guest to come back to.
    */
   const startPreview = useCallback(
     async (
@@ -417,7 +420,7 @@ export function useJobPolling() {
       const token = startedAt.current as number;
       try {
         const res = await previewApi.submit(fileUri, fileName, opts, { onUploadProgress: uploadProgress(token) });
-        if (startedAt.current !== token) return null;
+        if (startedAt.current !== token) return typeof res?.jobId === "string" ? { jobId: res.jobId } : null;
         return { jobId: track(res, true) };
       } catch (e) {
         if (startedAt.current !== token) return null;
