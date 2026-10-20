@@ -1133,6 +1133,8 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
               onPress={close}
               style={styles.iconBtn}
               radius={20}
+              // A 40 px circle: 48 dp to a thumb without moving it (the pill is 8 px away).
+              hitSlop={4}
               accessibilityLabel={isRecording ? "Discard recording and close" : "Close"}
             >
               <Icon name="close" size={20} color={colors.text} />
@@ -1157,6 +1159,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
               disabled={phase !== "ready"}
               style={styles.modePill}
               radius={radii.pill}
+              hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
               accessibilityLabel={`${pillLabel}. Change what you're recording`}
             >
               <Text style={styles.modePillText} numberOfLines={1} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
@@ -1334,6 +1337,8 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
                   onPress={() => nav.navigate("Upgrade")}
                   style={styles.trialPill}
                   radius={radii.pill}
+                  // A one-line pill about 27 px tall: the slop makes it 44 to a thumb.
+                  hitSlop={{ top: 9, bottom: 9, left: 8, right: 8 }}
                   accessibilityLabel={
                     trialRemaining > 0 ? "See Pro plans" : `Free ones back ${freeBack}. See Pro plans`
                   }
