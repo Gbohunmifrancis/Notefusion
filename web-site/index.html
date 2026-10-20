@@ -33,7 +33,7 @@
 <!-- The interface font, fetched alongside the CSS rather than after it: the first screen's text is set in it. -->
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site-pages.css?v=5">
-<link rel="stylesheet" href="/assets/home.css?v=4">
+<link rel="stylesheet" href="/assets/home.css?v=5">
 
 <script type="application/ld+json">
 {
@@ -105,7 +105,6 @@
             <svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-upload"/></svg>Upload a recording
           </label>
         </div>
-        <label class="try-meter" for="try-meter">Beats in a bar <select id="try-meter" data-meter></select></label>
         <details class="try-link" id="try-link">
           <summary><svg class="ic ic-16" aria-hidden="true"><use href="/assets/icons.svg#i-link"/></svg>Or paste a song link<svg class="ic ic-16 try-link-chev" aria-hidden="true"><use href="/assets/icons.svg#i-chev-down"/></svg></summary>
           <form id="try-form" class="try-form" novalidate>
@@ -114,6 +113,9 @@
             <button class="btn btn-primary" id="try-submit" type="submit">Transcribe</button>
           </form>
           <button class="btn btn-secondary try-paste" id="try-paste" type="button" hidden><svg class="ic ic-16" aria-hidden="true"><use href="/assets/icons.svg#i-paste"/></svg>Paste a link</button>
+          <!-- "Beats in a bar" goes with a link from here; a recorded take is asked it in its review (assets/recorder.js),
+               and an uploaded file goes as Not sure. -->
+          <label class="try-meter" for="try-meter">Beats in a bar <select id="try-meter" data-meter></select></label>
           <p class="try-link-note">Links work for many songs, not all: YouTube sometimes blocks our downloads. If yours fails, upload the audio file instead.</p>
         </details>
         <div class="try-section" id="try-section"></div>
@@ -413,13 +415,13 @@
 <!-- The recorder and the song-section picker only open on a tap: their styles load here, after the page, so
      they never hold up the first paint on a phone. -->
 <link rel="stylesheet" href="/assets/rangepicker.css?v=3">
-<link rel="stylesheet" href="/assets/recorder.css?v=3">
+<link rel="stylesheet" href="/assets/recorder.css?v=4">
 <script src="/assets/songlink.js?v=2" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/back.js?v=1" defer></script>
-<script src="/assets/recorder.js?v=7" defer></script>
+<script src="/assets/recorder.js?v=8" defer></script>
 <script src="/assets/meter.js?v=1" defer></script>
-<script src="/assets/preview.js?v=13" defer></script>
+<script src="/assets/preview.js?v=14" defer></script>
 <script src="/assets/pricing.js?v=17" defer></script>
 <script src="/assets/landing.js?v=8" defer></script>
 <script src="/assets/site-theme.js?v=2" defer></script>

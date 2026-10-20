@@ -19,6 +19,10 @@
   if (!form) return;
   var urlInput = $("try-url"), submit = $("try-submit"), file = $("try-file"), record = $("try-record"), status = $("try-status");
   var meterBox = $("try-meter");
+  // "Beats in a bar" (assets/meter.js). Where the page asks it inside the song-link panel (the home page), it goes with
+  // a link only: a recorded take is asked it in its review (assets/recorder.js) and a picked file goes as Not sure.
+  // Where the row still sits under Record and Upload (/app's guest box), it goes with everything, as before.
+  var meterForLinks = !!(meterBox && meterBox.closest("details"));
   var links = window.NfSongLink;
 
   function say(text, kind) { status.textContent = text || ""; status.className = "try-status" + (kind ? " try-status-" + kind : ""); }
@@ -82,12 +86,13 @@
    * sending again cannot change (the one preview used) is explained as before.
    */
   var kept = null;
-  function sendTake(blob, name) {
+  /** `meter`: the one named ("3/4"), null for Not sure, or undefined when the question was not asked (a file). */
+  function sendTake(blob, name, meter) {
     kept = null;
     busy(true); sayUpload(0);
-    upload("/api/preview", audioForm(blob, name), sayUpload).then(open).catch(function (err) {
+    upload("/api/preview", audioForm(blob, name, meter), sayUpload).then(open).catch(function (err) {
       busy(false);
-      if (!err.status || err.status === 408 || err.status === 429 || err.status >= 500) { kept = { blob: blob, name: name }; sayKept(); }
+      if (!err.status || err.status === 408 || err.status === 429 || err.status >= 500) { kept = { blob: blob, name: name, meter: meter }; sayKept(); }
       else explain(err);
     });
   }
@@ -95,7 +100,7 @@
     say("Couldn't send it. Your take is kept.", "error");
     var again = document.createElement("button");
     again.type = "button"; again.className = "btn btn-primary try-again"; again.textContent = "Send it again";
-    again.addEventListener("click", function () { if (kept) sendTake(kept.blob, kept.name); });
+    again.addEventListener("click", function () { if (kept) sendTake(kept.blob, kept.name, kept.meter); });
     status.appendChild(again);
   }
   function explain(err) {
@@ -174,15 +179,14 @@
     if (info.url !== found.url || info.pending) { info.wanted = found.url; if (info.url !== found.url) lookup(true); return; }
     submitLink(found.url);
   });
-  // "Beats in a bar" (assets/meter.js), when the box has one: sent only when the visitor names a meter.
+  // "Beats in a bar": sent only when the visitor names a meter, and counted only where it was asked.
   function chosenMeter() { return window.NfMeter ? window.NfMeter.chosen(meterBox) : null; }
   function trackMeter(meter) { if (window.NfMeter) track(window.NfMeter.eventName(meter)); }
   /** A recording or file as the preview's form, with the meter when one was named. */
-  function audioForm(blob, name) {
+  function audioForm(blob, name, meter) {
     var fd = new FormData(); fd.append("audio", blob, name); fd.append("audioPreview", "false");
-    var meter = chosenMeter();
     if (meter) fd.append("timeSignature", meter);
-    trackMeter(meter);
+    if (meter !== undefined) trackMeter(meter);
     return fd;
   }
 
@@ -211,7 +215,7 @@
     if (problem) { say(problem, "error"); file.value = ""; return; }
     track("Preview started (audio)");
     file.value = "";
-    sendTake(f, f.name);
+    sendTake(f, f.name, meterForLinks ? undefined : chosenMeter());
   });
 
   // "Record a tune" opens the same recording pop-up as the signed-in studio (assets/recorder.js):
@@ -222,9 +226,10 @@
     say("");
     window.NfRecorder.open({
       maxSeconds: MAX_RECORD_SEC,
+      meter: meterForLinks,
       track: track,
       onError: function (text, kind) { say(kind === "short" ? text : text + " Paste a link or pick a file instead.", "error"); },
-      onTake: function (blob, name) { sendTake(blob, name); }
+      onTake: function (blob, name, seconds, meter) { sendTake(blob, name, meterForLinks ? meter : chosenMeter()); }
     });
   });
 })();
