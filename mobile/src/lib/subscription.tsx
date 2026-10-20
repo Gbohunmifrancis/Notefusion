@@ -14,6 +14,8 @@ import { useAuth } from './auth';
 import { showDialog } from './dialog';
 import * as haptics from './haptics';
 import { ProWelcomeModal, type ProWelcome } from '../components/ProWelcomeModal';
+import { navigationRef } from './notificationLink';
+import { welcomeStep } from './proWelcome';
 import { PRO_FEATURES } from './proFeatures';
 import type { Subscription } from '../api/types';
 import { FREE_RESET_FALLBACK, freeWeek } from './freeWeek';
@@ -271,14 +273,24 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
    * The poll, a foreground re-read and a pull-to-refresh can all see the same payment land.
    * Whichever sees it first is the only one that speaks.
    */
-  const celebrate = useCallback((sub: Subscription, extended: boolean, song: boolean = false) => {
+  const celebrate = useCallback((sub: Subscription, extended: boolean, song: boolean = false, choir: boolean = false) => {
     const key = song
       ? `song|${sub.boughtTranscriptionsTotal ?? 0}`
       : `${sub.planCode}|${sub.currentPeriodEndUtc}|${sub.isLifetime}|${sub.choirPeriodEndUtc ?? ''}`;
     if (celebratedRef.current === key) return;
     celebratedRef.current = key;
     haptics.play('success');
-    setWelcome({ subscription: sub, extended, kind: song ? 'song' : 'pro' });
+    setWelcome({ subscription: sub, extended, kind: song ? 'song' : choir ? 'choir' : 'pro' });
+  }, []);
+
+  /** The welcome's button, once its sheet has gone: on to where Pro, a choir or a song is used (`lib/proWelcome`). */
+  const goOnFromWelcome = useCallback((w: ProWelcome) => {
+    if (!navigationRef.isReady()) return;
+    const stack = navigationRef.getRootState()?.routes.map((r) => r.name) ?? [];
+    const step = welcomeStep(w.kind ?? 'pro', stack);
+    if (step === 'back') navigationRef.goBack();
+    else if (step === 'record') navigationRef.navigate('Tabs', { screen: 'Record' });
+    else if (step === 'choir') navigationRef.navigate('Choir');
   }, []);
 
   /** Takes a fresh answer from the server: state, transitions, and the cache. */
@@ -298,7 +310,13 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         // The payment this device started. Judged against the snapshot rather than the last
         // state seen, so a member adding time is celebrated too.
         setPending(null);
-        celebrate(sub, pending.wasActive, Boolean(pending.single));
+        // A choir's welcome says the choir's time: "added" when the choir already ran, whatever the director's own Pro.
+        celebrate(
+          sub,
+          pending.choir ? Boolean(pending.choirPeriodEnd) : pending.wasActive,
+          Boolean(pending.single),
+          Boolean(pending.choir),
+        );
       } else if (prev !== null) {
         // Only check state transitions when we have an existing known baseline
         if (!prev.isActive && currentIsActive) {
@@ -628,7 +646,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   return (
     <SubscriptionContext.Provider value={value}>
       {children}
-      <ProWelcomeModal welcome={welcome} onClose={() => setWelcome(null)} />
+      <ProWelcomeModal welcome={welcome} onClose={() => setWelcome(null)} onAction={goOnFromWelcome} />
     </SubscriptionContext.Provider>
   );
 }
