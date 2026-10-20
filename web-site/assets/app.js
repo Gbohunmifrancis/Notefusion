@@ -965,7 +965,7 @@
    * greeting to the path in Practice, in the season's tint — pine "Sing the carols · 2 of 6" (board d-christmas/06),
    * pumpkin "The Midnight path · 2 of 6" (board j-halloween/06).
    */
-  var SEASON_CSS = "/assets/season.css?v=2";
+  var SEASON_CSS = "/assets/season.css?v=4";
   function renderSeasonCarols(p) {
     var link = $("season-carols"), season = p && p.season;
     if (!season) { hide(link); return; }
