@@ -130,7 +130,8 @@ export function SheetGrid({
                             disabled={!onSelectNote}
                             style={({ pressed }) => [styles.note, now && styles.noteNow, pressed && styles.notePressed]}
                             accessibilityRole={onSelectNote ? "button" : "text"}
-                            accessibilityLabel={`Note ${i + 1}, ${n.solfa}, ${spokenPitch(n.pitchMidi)}.${onSelectNote ? " Tap to correct." : ""}`}
+                            // A doubtful note is amber and dotted on screen; the words say it too.
+                            accessibilityLabel={`Note ${i + 1}, ${n.solfa}, ${spokenPitch(n.pitchMidi)}${low ? ", worth a check" : ""}.${onSelectNote ? " Tap to correct." : ""}`}
                           >
                             <Text style={[styles.syllable, low && styles.syllableLow, now && styles.syllableNow]}>
                               {n.solfa}
