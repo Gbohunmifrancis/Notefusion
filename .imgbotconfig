@@ -1,5 +1,6 @@
 {
   "ignoredFiles": [
-    "web-site/assets/icons.svg"
+    "web-site/assets/icons.svg",
+    "web-site/assets/practice-art/*"
   ]
 }
