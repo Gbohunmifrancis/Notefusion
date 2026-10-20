@@ -42,6 +42,8 @@
           "</div>" +
         "</div>" +
         '<div class="nf-rec-review" hidden>' +
+          // Discard is a quiet word at the top left, as a sheet's Cancel sits, away from the thumb's path to Transcribe.
+          '<button class="nf-rec-btn nf-rec-text nf-rec-discard" type="button">Discard</button>' +
           '<div class="nf-rec-orb done">' + ICONS.check + "</div>" +
           '<h2 class="nf-rec-heading" id="nf-rec-review-title">Here’s your take</h2>' +
           '<p class="nf-rec-time"><span class="nf-rec-length">0:00</span><span class="nf-rec-muted"> recorded</span></p>' +
@@ -49,7 +51,6 @@
           '<p class="nf-rec-lead">Listen back. If it’s the phrase you meant, send it off; otherwise record it again.</p>' +
           '<label class="nf-rec-opt" hidden>Beats in a bar <select class="nf-rec-beats"></select></label>' +
           '<div class="nf-rec-actions">' +
-            '<button class="nf-rec-btn nf-rec-ghost nf-rec-discard" type="button">Discard</button>' +
             '<button class="nf-rec-btn nf-rec-ghost nf-rec-again" type="button">' + ICONS.restart + "Record again</button>" +
             '<button class="nf-rec-btn nf-rec-primary nf-rec-use" type="button">' + ICONS.wave + "Transcribe this take</button>" +
           "</div>" +
