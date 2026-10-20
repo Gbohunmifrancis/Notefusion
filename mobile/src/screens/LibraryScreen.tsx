@@ -305,6 +305,8 @@ export function LibraryScreen() {
             onPress={() => nav.navigate("Tabs", { screen: "Record" })}
             style={styles.iconBtn}
             radius={radii.pill}
+            // 40 px circles: the slop makes them 48 dp without moving them.
+            hitSlop={4}
             accessibilityLabel="New transcription"
           >
             <Icon name="add" size={22} color={colors.text} />
@@ -328,12 +330,12 @@ export function LibraryScreen() {
                 returnKeyType="search"
                 textAlignVertical="center"
               />
-              <Touchable onPress={closeSearch} hitSlop={8} ripple="borderless" accessibilityLabel="Close search">
+              <Touchable onPress={closeSearch} hitSlop={{ top: 11, bottom: 11, left: 12, right: 14 }} ripple="borderless" accessibilityLabel="Close search">
                 <Icon name="clear" size={18} color={colors.textFaint} />
               </Touchable>
             </>
           ) : (
-            <Touchable onPress={() => setSearchOpen(true)} style={styles.searchBtn} radius={radii.pill} accessibilityLabel="Search library">
+            <Touchable onPress={() => setSearchOpen(true)} style={styles.searchBtn} radius={radii.pill} hitSlop={4} accessibilityLabel="Search library">
               <Icon name="search" size={20} color={colors.text} />
             </Touchable>
           )}
@@ -352,6 +354,8 @@ export function LibraryScreen() {
                 onPress={() => setFolder(f)}
                 style={styles.tab}
                 ripple={false}
+                // Wider to a thumb: half the 22 px gap to the next tab on each side.
+                hitSlop={{ top: 0, bottom: 0, left: 11, right: 11 }}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: active }}
                 accessibilityLabel={`${f ? `Folder: ${f}` : "All sheets"}, ${count}`}
@@ -365,7 +369,7 @@ export function LibraryScreen() {
             );
           })}
         </ScrollView>
-        <Touchable style={styles.sortBtn} hitSlop={8} ripple="borderless" accessibilityLabel="Sort library" onPress={chooseSort}>
+        <Touchable style={styles.sortBtn} hitSlop={{ top: 12, bottom: 8, left: 12, right: 14 }} ripple="borderless" accessibilityLabel="Sort library" onPress={chooseSort}>
           <Icon name="sort" size={18} color={colors.textMuted} />
         </Touchable>
       </View>
