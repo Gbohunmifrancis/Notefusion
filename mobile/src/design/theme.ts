@@ -64,6 +64,9 @@ export const colors = {
   accent: "#2563EB",
   accentAlt: "#3B82F6",
   accentSoft: "rgba(37, 99, 235, 0.10)",
+  /** The soft blue made opaque, for a tab that sits across a card's edge (Upgrade's "Best value"), where a
+   *  see-through fill would show the border through it. */
+  accentSoftOpaque: "#E3ECFC",
   accentGlow: "rgba(37, 99, 235, 0.22)",
   pinkSoft: "rgba(14, 165, 233, 0.10)",
 
@@ -203,6 +206,7 @@ export const darkColors: Palette = {
   accent: "#5C9BFF",
   accentAlt: "#9CC2FF",
   accentSoft: "rgba(47, 123, 255, 0.14)",
+  accentSoftOpaque: "#13254A",
   accentGlow: "rgba(47, 123, 255, 0.35)",
   pinkSoft: "rgba(156, 194, 255, 0.12)",
 

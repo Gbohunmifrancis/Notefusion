@@ -522,6 +522,10 @@ export function UpgradeScreen({ navigation, route }: Props) {
   const monthly = plans.find((p) => p.interval === "monthly");
   const yearly = plans.find((p) => p.interval === "yearly");
   const saving = savingsPercent(monthly, yearly);
+  // One badge on the paywall (board m-ux-medium P4a): "Best value" on the plan it opens on, Pro's year, when the year
+  // does save on paying by the month.
+  const bestValue = saving ? bestValuePlan(plans) : undefined;
+  const bestValueId = bestValue?.interval === "yearly" ? bestValue.id : undefined;
   const selected = plans.find((p) => p.id === selectedId) ?? choirPlans.find((p) => p.id === selectedId);
   const buyingChoir = choirPlans.some((p) => p.id === selectedId);
   // A member who chose "Add more Pro time" sees the plans: each payment covers one period, and a
@@ -737,7 +741,6 @@ export function UpgradeScreen({ navigation, route }: Props) {
                 title={planTitle(singlePlan)}
                 note="One more transcription, any recording or song link. No subscription."
                 selected={singlePlan.id === selectedId}
-                badge="No subscription"
                 onSelect={() => setSelectedId(singlePlan.id)}
               />
             ) : null}
@@ -748,11 +751,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
                 plan={plan}
                 priceLabel={offerFor(plan, playOffers)?.price}
                 selected={plan.id === selectedId}
-                badge={
-                  plan.interval === "yearly" && saving
-                    ? `Save ${saving}%`
-                    : undefined
-                }
+                bestValue={plan.id === bestValueId}
                 onSelect={() => setSelectedId(plan.id)}
               />
             ))}
@@ -1319,18 +1318,16 @@ function ChoirPlanOption({
       title={planTitle(plan)}
       note={`Pro for you and up to ${plan.choirSeats ?? 25} singers, one shared library.`}
       selected={selected}
-      badge={plan.interval === "yearly" ? "Whole choir" : undefined}
       onSelect={onSelect}
     />
   );
 }
 
-/** A selectable plan row with a radio, price, and optional savings badge. */
+/** A selectable plan row with a radio and price, and the "Best value" tab on the plan the paywall opens on. */
 function PlanOption({
-
   plan,
   selected,
-  badge,
+  bestValue = false,
   title,
   note,
   priceLabel,
@@ -1338,7 +1335,8 @@ function PlanOption({
 }: {
   plan: Plan;
   selected: boolean;
-  badge?: string;
+  /** The one badge on the paywall: a small tab on the card's top edge, so the plan's name keeps its line. */
+  bestValue?: boolean;
   /** The price as Google Play shows it, on Android, instead of the plan's own. */
   priceLabel?: string;
   /** Overrides the plan's own name, as "Just this song" does for the one-song purchase. */
@@ -1352,42 +1350,45 @@ function PlanOption({
   const period = periodLabel(plan.interval);
 
   return (
-    <Touchable
-      onPress={onSelect}
-      style={[styles.planOption, selected && styles.planOptionSelected]}
-      // Flat surface fill and no shadow, so the ripple can be clipped to the card's
-      // own corner radius rather than painting a square over it.
-      radius={radii.lg}
-      accessibilityRole="radio"
-      accessibilityState={{ selected }}
-      accessibilityLabel={`${title ?? plan.name}, ${priceLabel ?? formatPrice(plan.amountMinor, plan.currency)} ${period}`}
-    >
-      <View
-        style={[styles.radio, selected && styles.radioSelected]}
+    <View>
+      <Touchable
+        onPress={onSelect}
+        style={[styles.planOption, selected && styles.planOptionSelected]}
+        // Flat surface fill and no shadow, so the ripple can be clipped to the card's
+        // own corner radius rather than painting a square over it.
+        radius={radii.lg}
+        accessibilityRole="radio"
+        accessibilityState={{ selected }}
+        accessibilityLabel={`${title ?? plan.name}, ${priceLabel ?? formatPrice(plan.amountMinor, plan.currency)} ${period}${bestValue ? ", best value" : ""}`}
       >
-        {selected && <View style={styles.radioDot} />}
-      </View>
-
-      <View style={styles.planInfo}>
-        <View style={styles.planTitleRow}>
-          <Text style={styles.planName}>{title ?? plan.name}</Text>
-          {badge && (
-            <View style={styles.saveBadge}>
-              <Text style={styles.saveBadgeText}>{badge}</Text>
-            </View>
-          )}
+        <View
+          style={[styles.radio, selected && styles.radioSelected]}
+        >
+          {selected && <View style={styles.radioDot} />}
         </View>
-        <Text style={styles.planPrice}>
-          {priceLabel ?? formatPrice(plan.amountMinor, plan.currency)}
-          <Text style={styles.planPeriod}> {period}</Text>
-        </Text>
-        {note ? <Text style={styles.planNote}>{note}</Text> : null}
-      </View>
 
-      {selected && (
-        <Icon name="check" size={20} color={colors.link} />
-      )}
-    </Touchable>
+        <View style={styles.planInfo}>
+          <View style={styles.planTitleRow}>
+            <Text style={styles.planName}>{title ?? plan.name}</Text>
+          </View>
+          <Text style={styles.planPrice}>
+            {priceLabel ?? formatPrice(plan.amountMinor, plan.currency)}
+            <Text style={styles.planPeriod}> {period}</Text>
+          </Text>
+          {note ? <Text style={styles.planNote}>{note}</Text> : null}
+        </View>
+
+        {selected && (
+          <Icon name="check" size={20} color={colors.link} />
+        )}
+      </Touchable>
+      {/* Beside the card rather than in it: the card clips to its corners for the ripple, and the tab stands proud. */}
+      {bestValue ? (
+        <View style={styles.bestTab} pointerEvents="none">
+          <Text style={styles.bestTabText}>Best value</Text>
+        </View>
+      ) : null}
+    </View>
   );
 }
 
@@ -1581,17 +1582,22 @@ const makeStyles = (c: Palette, s: Shadows) =>
       color: c.text,
       fontSize: 15,
     },
-    saveBadge: {
-      backgroundColor: c.success,
+    /** "Best value", in the selected blue, on the card's top edge (board m-ux-medium P4a). */
+    bestTab: {
+      position: "absolute",
+      top: -11,
+      right: spacing.lg,
+      backgroundColor: c.accentSoftOpaque,
+      borderWidth: 1,
+      borderColor: c.accent,
       borderRadius: radii.pill,
-      paddingHorizontal: spacing.sm,
-      paddingVertical: 2,
+      paddingHorizontal: 10,
+      paddingVertical: 3,
     },
-    saveBadgeText: {
-      ...typography.caption,
-      color: c.onAccent,
-      fontSize: 10,
+    bestTabText: {
       fontFamily: fonts.bold,
+      fontSize: 12,
+      color: c.link,
     },
     planPrice: {
       ...typography.heading,
