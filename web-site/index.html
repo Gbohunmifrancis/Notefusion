@@ -109,9 +109,11 @@
           <summary><svg class="ic ic-16" aria-hidden="true"><use href="/assets/icons.svg#i-link"/></svg>Or paste a song link<svg class="ic ic-16 try-link-chev" aria-hidden="true"><use href="/assets/icons.svg#i-chev-down"/></svg></summary>
           <form id="try-form" class="try-form" novalidate>
             <label class="sr-only" for="try-url">Song link</label>
-            <input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false">
+            <input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false" aria-describedby="try-url-error">
             <button class="btn btn-primary" id="try-submit" type="submit">Transcribe</button>
           </form>
+          <!-- What is wrong with the link, under the field (assets/preview.js); the line below the box keeps the rest. -->
+          <p class="try-status try-status-error" id="try-url-error" aria-live="polite" hidden></p>
           <button class="btn btn-secondary try-paste" id="try-paste" type="button" hidden><svg class="ic ic-16" aria-hidden="true"><use href="/assets/icons.svg#i-paste"/></svg>Paste a link</button>
           <!-- "Beats in a bar" goes with a link from here; a recorded take is asked it in its review (assets/recorder.js),
                and an uploaded file goes as Not sure. -->
@@ -424,7 +426,7 @@
 <script src="/assets/back.js?v=1" defer></script>
 <script src="/assets/recorder.js?v=9" defer></script>
 <script src="/assets/meter.js?v=1" defer></script>
-<script src="/assets/preview.js?v=14" defer></script>
+<script src="/assets/preview.js?v=15" defer></script>
 <script src="/assets/pricing.js?v=18" defer></script>
 <script src="/assets/landing.js?v=8" defer></script>
 <script src="/assets/site-theme.js?v=2" defer></script>
