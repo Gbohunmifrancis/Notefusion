@@ -137,6 +137,11 @@ export const colors = {
   sheetTile: "#EEF3FB",
   /** The toast's surface: good news that leaves by itself. */
   toast: "#FFFFFF",
+  /**
+   * Selected (a chosen chip, the open action, the reading shown): this wash under an `accent` line and `link` words,
+   * the tab bar's own selected look (board m-ux-medium P1d). Never a fill under white words, which reads as a button.
+   */
+  selectedWash: "rgba(37, 99, 235, 0.12)",
   /** Choir's own colour (violet), as gold is Pro's: the choir welcome's tile. */
   choir: "#7C3AED",
   choirSoft: "rgba(124, 58, 237, 0.10)",
@@ -248,6 +253,7 @@ export const darkColors: Palette = {
   sheetRow: "rgba(255, 255, 255, 0.035)",
   sheetTile: "rgba(255, 255, 255, 0.07)",
   toast: "#1A202B",
+  selectedWash: "rgba(47, 123, 255, 0.20)",
   choir: "#A78BFA",
   choirSoft: "rgba(167, 139, 250, 0.12)",
 

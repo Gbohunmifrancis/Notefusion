@@ -1710,10 +1710,13 @@ export function ResultScreen({ route, navigation }: Props) {
               ripple={false}
               scaleTo={motion.scale.row}
               haptic="none"
+              style={styles.titleRow}
               accessibilityRole="button"
               accessibilityLabel={`${shownTitle}. ${savedId ? "Rename" : "Name and save"}`}
             >
-              <Text style={styles.title}>{shownTitle}</Text>
+              <Text style={[styles.title, styles.titleInRow]}>{shownTitle}</Text>
+              {/* The pencil says the name can be changed, as the top bar's does. */}
+              <Icon name="rename" size={18} color={colors.textMuted} style={styles.titlePencil} />
             </Touchable>
           )}
           {guest ? (
@@ -2199,7 +2202,7 @@ export function ResultScreen({ route, navigation }: Props) {
                   accessibilityLabel={v.a11y}
                 >
                   {v.id === "bars" || v.id === "staff" ? (
-                    <Icon name={v.id === "bars" ? "solfa" : "staff"} size={16} color={on ? colors.text : colors.textMuted} />
+                    <Icon name={v.id === "bars" ? "solfa" : "staff"} size={16} color={on ? colors.link : colors.textMuted} />
                   ) : null}
                   <Text style={[styles.viewChipText, on && styles.viewChipTextOn]}>{v.label}</Text>
                 </Touchable>
@@ -2510,13 +2513,26 @@ function Stat({
   active?: boolean;
   accessibilityLabel: string;
 }) {
+  const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const body = (
     <>
       <Text style={styles.statValue} numberOfLines={1} adjustsFontSizeToFit>
         {value}
       </Text>
-      <Text style={[styles.statCaption, active && styles.statCaptionActive]}>{caption}</Text>
+      <View style={styles.statCaptionRow}>
+        <Text style={[styles.statCaption, active && styles.statCaptionActive]}>{caption}</Text>
+        {/* A small chevron says the figure opens something (up while it is open); a pill would box the sheet's
+            three biggest figures. */}
+        {onPress ? (
+          <Icon
+            name="chevron"
+            size={12}
+            color={active ? colors.accent : colors.textMuted}
+            style={active ? styles.chevronUp : styles.chevronDown}
+          />
+        ) : null}
+      </View>
     </>
   );
   // Only the stats that change something get a touch target, so a read-only one
@@ -2676,6 +2692,10 @@ const makeStyles = (c: Palette) =>
       color: c.text,
       marginTop: 16,
     },
+    titleRow: { flexDirection: "row", alignItems: "flex-end", marginTop: 16 },
+    titleInRow: { marginTop: 0, flexShrink: 1 },
+    /** Centred on the last line of the 36 px title. */
+    titlePencil: { marginLeft: 8, marginBottom: 9 },
     subtitle: { fontFamily: fonts.regular, fontSize: 13.5, color: c.textMuted, marginTop: 6 },
     savedSub: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", marginTop: 6 },
     savedSubText: { fontFamily: fonts.regular, fontSize: 13.5, color: c.textMuted },
@@ -2718,14 +2738,16 @@ const makeStyles = (c: Palette) =>
       letterSpacing: -1.2,
       color: c.text,
     },
+    statCaptionRow: { flexDirection: "row", alignItems: "center", gap: 3, marginTop: 6 },
     statCaption: {
       fontFamily: fonts.medium,
       fontSize: 10.5,
       letterSpacing: 1.5,
       textTransform: "uppercase",
       color: c.textMuted,
-      marginTop: 6,
     },
+    chevronDown: { transform: [{ rotate: "90deg" }] },
+    chevronUp: { transform: [{ rotate: "-90deg" }] },
     statCaptionActive: { color: c.accent },
 
     // ── Panels (pickers, lyrics, parts, export, the name) ────────────────────
@@ -2773,10 +2795,10 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
     },
-    /** `ink`, not `accent`: a fill under a white label, so it stays deep in both modes. */
-    chipOn: { backgroundColor: c.ink, borderColor: c.ink },
+    /** Selected takes one look on this screen (key, doh and meter chips, reading chips, actions): wash, line, blue words. */
+    chipOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
     chipText: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted },
-    chipTextOn: { fontFamily: fonts.semibold, color: c.onInk },
+    chipTextOn: { fontFamily: fonts.semibold, color: c.link },
 
     transposeRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginVertical: spacing.xs },
     roundStep: {
@@ -2827,9 +2849,9 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
     },
-    viewChipOn: { backgroundColor: c.surfaceAlt, borderColor: c.textFaint },
+    viewChipOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
     viewChipText: { fontFamily: fonts.medium, fontSize: 12.5, color: c.textMuted },
-    viewChipTextOn: { color: c.text },
+    viewChipTextOn: { fontFamily: fonts.semibold, color: c.link },
 
     notation: { marginTop: 10, minHeight: 120, position: "relative" },
     watermark: { position: "absolute", right: -30, top: 30, opacity: 0.05 },
@@ -2919,9 +2941,9 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    actionCircleOn: { backgroundColor: c.accentSoft, borderColor: c.accentGlow },
+    actionCircleOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
     actionLabel: { fontFamily: fonts.regular, fontSize: 11.5, color: c.textMuted },
-    actionLabelOn: { color: c.accent },
+    actionLabelOn: { color: c.link },
 
     // ── Parts ─────────────────────────────────────────────────────────────────
     voice: { paddingTop: spacing.sm, borderTopWidth: 1, borderTopColor: c.border },
@@ -2960,16 +2982,12 @@ const makeStyles = (c: Palette) =>
 
     // ── Chords ────────────────────────────────────────────────────────────────
     chordsBlock: { marginTop: 22, gap: spacing.xs },
-    chordChips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs, marginTop: spacing.xs },
+    /** Read, not tapped: no box or border, so nothing here looks like a button. */
+    chordChips: { flexDirection: "row", flexWrap: "wrap", rowGap: 2, columnGap: 14, marginTop: spacing.xs },
     chordChip: {
       alignItems: "center",
-      minWidth: 44,
-      paddingHorizontal: spacing.sm,
-      paddingVertical: 6,
-      borderRadius: 12,
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
+      minWidth: 30,
+      paddingVertical: 4,
     },
     chordChipSymbol: { fontFamily: fonts.semibold, fontSize: 14, color: c.text },
     chordChipSolfa: { fontFamily: typography.mono.fontFamily, color: c.accent, fontSize: 13, marginTop: 1 },
