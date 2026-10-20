@@ -34,6 +34,7 @@ import { withoutHeldDeletes } from "../lib/sheetActions";
 import { useSubscription } from "../lib/subscription";
 import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLibrary";
 import { resultFromSaved } from "../lib/openSheet";
+import { useOpening } from "../lib/useOpening";
 import { onTakeChange, removeTake, retryTake, useOutbox, useSendProgress } from "../lib/outbox";
 import { isUnopened } from "../lib/savedSheet";
 import { matchesWords } from "../lib/hymnPack";
@@ -192,8 +193,8 @@ export function LibraryScreen() {
   }));
   const fadeWithSearch = useAnimatedStyle(() => ({ opacity: 1 - searchProgress.value }));
 
-  /** Set while a sheet loads (`openItem`). */
-  const opening = useRef(false);
+  /** The sheet loading (`openItem`): its row says "Opening…" after 300 ms. */
+  const opening = useOpening();
   // Tapping Library again while on it scrolls back to the top.
   const listRef = useRef<FlatList<SavedTranscription>>(null);
   useScrollToTop(listRef);
@@ -209,8 +210,7 @@ export function LibraryScreen() {
    */
   async function openItem(item: SavedTranscription) {
     // A second tap while the sheet loads would push a second Result.
-    if (opening.current) return;
-    opening.current = true;
+    if (!opening.begin(item.id)) return;
     // Opened: a sheet the server filed stops being marked unopened, here and on the server.
     if (isUnopened(item)) {
       const openedAtUtc = new Date().toISOString();
@@ -231,7 +231,7 @@ export function LibraryScreen() {
         tone: isNetworkCode(err.code) ? undefined : "danger",
       });
     } finally {
-      opening.current = false;
+      opening.end();
     }
   }
 
@@ -521,7 +521,7 @@ export function LibraryScreen() {
       <FlatList
         ref={listRef}
         data={sortedItems}
-        extraData={[selected, actions.folding]}
+        extraData={[selected, actions.folding, opening.opening]}
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -549,6 +549,7 @@ export function LibraryScreen() {
               selected={selected.has(item.id)}
               onPress={() => (selecting ? toggle(item) : void openItem(item))}
               onLongPress={() => startSelecting(item)}
+              opening={opening.opening === item.id}
               offline={
                 offline && !offlineCopies.cached.has(item.id)
                   ? "missing"

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Icon } from "../Icon";
 import { Touchable } from "../Touchable";
 import { Skeleton } from "../Skeleton";
@@ -19,6 +19,7 @@ export function LibraryRow({
   onPress,
   onLongPress,
   offline = null,
+  opening = false,
 }: {
   item: SavedTranscription;
   subtitle: string;
@@ -31,6 +32,8 @@ export function LibraryRow({
    * with no copy on the phone — dims the row, since it cannot open until the connection is back.
    */
   offline?: "kept" | "missing" | null;
+  /** Tapped and still loading (board m-ux-medium P2b): a soft tint, "Opening…" and a spinner until Result opens. */
+  opening?: boolean;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -38,7 +41,7 @@ export function LibraryRow({
   const doubtful = confidenceLevel(item.overallConfidence) !== "clear";
   const tone = confidenceColor(item.overallConfidence, colors);
   const doh = dohLetter(item.key);
-  const opening = solfaOpening(item.preview ?? item.notes, item.timeSignature);
+  const solfa = solfaOpening(item.preview ?? item.notes, item.timeSignature);
   // Filed by the server as its job finished and not opened yet (board 12): a blue dot and the line that says so.
   const unopened = isUnopened(item);
 
@@ -46,11 +49,11 @@ export function LibraryRow({
     <Touchable
       onPress={onPress}
       onLongPress={onLongPress}
-      style={[styles.row, offline === "missing" && styles.rowMissing]}
+      style={[styles.row, offline === "missing" && styles.rowMissing, opening && styles.rowOpening]}
       // Full-bleed row: a deeper press pulls it off both screen edges.
       scaleTo={motion.scale.row}
       accessibilityRole={selecting ? "checkbox" : "button"}
-      accessibilityState={selecting ? { checked: selected } : undefined}
+      accessibilityState={selecting ? { checked: selected } : opening ? { busy: true } : undefined}
       accessibilityLabel={
         `${unopened ? "New. " : ""}${item.title}, doh is ${doh}${doubtful ? `, ${confidenceA11y(item.overallConfidence)}` : ""}${item.folder ? `, in ${item.folder}` : ""}.` +
         (unopened ? ` ${autoSavedLine(item.createdAtUtc)}.` : "") +
@@ -79,16 +82,20 @@ export function LibraryRow({
         {/* The song's opening in solfa when the list carries it, so a row is
             recognisable by how it starts; the date and folder otherwise. */}
         {opening ? (
+          <Text style={styles.openingText} numberOfLines={1}>
+            Opening…
+          </Text>
+        ) : solfa ? (
           <Text style={styles.solfa} numberOfLines={1}>
-            {opening.first}
-            {opening.rest ? ` │ ${opening.rest}` : ""}
+            {solfa.first}
+            {solfa.rest ? ` │ ${solfa.rest}` : ""}
           </Text>
         ) : (
           <Text style={styles.subtitle} numberOfLines={1}>
             {subtitle}
           </Text>
         )}
-        {unopened ? (
+        {unopened && !opening ? (
           <View style={styles.savedRow}>
             <Icon name="check" size={13} color={colors.success} />
             <Text style={styles.savedText} numberOfLines={1}>
@@ -97,14 +104,20 @@ export function LibraryRow({
           </View>
         ) : null}
       </View>
-      {offline ? (
-        <Icon name={offline === "kept" ? "kept" : "offline"} size={15} color={colors.textFaint} />
-      ) : null}
-      {doubtful ? (
-        <View style={styles.score}>
-          <View style={[styles.scoreDot, { backgroundColor: tone }]} />
-        </View>
-      ) : null}
+      {opening ? (
+        <ActivityIndicator size="small" color={colors.accent} />
+      ) : (
+        <>
+          {offline ? (
+            <Icon name={offline === "kept" ? "kept" : "offline"} size={15} color={colors.textFaint} />
+          ) : null}
+          {doubtful ? (
+            <View style={styles.score}>
+              <View style={[styles.scoreDot, { backgroundColor: tone }]} />
+            </View>
+          ) : null}
+        </>
+      )}
     </Touchable>
   );
 }
@@ -135,6 +148,14 @@ const makeStyles = (c: Palette) =>
     rowMissing: {
       opacity: 0.5,
     },
+    /** The row's pressed colour, held while it opens; it steps out to the gutter so its words stay put. */
+    rowOpening: {
+      backgroundColor: c.surfaceAlt,
+      marginHorizontal: -8,
+      paddingHorizontal: 8,
+      borderRadius: 14,
+    },
+    openingText: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted, marginTop: 3 },
     titleRow: { flexDirection: "row", alignItems: "center", gap: 7 },
     titleFlex: { flexShrink: 1 },
     unopenedDot: { width: 7, height: 7, borderRadius: 3.5, backgroundColor: c.link },

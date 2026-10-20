@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   Animated,
   AppState,
   Easing,
@@ -30,6 +31,7 @@ import { dohLetter } from '../lib/solfa';
 import { loadLibraryList, loadSheet } from '../lib/offlineLibrary';
 import { withoutHeldDeletes } from '../lib/sheetActions';
 import { resultFromSaved } from '../lib/openSheet';
+import { useOpening } from '../lib/useOpening';
 import { useAuth } from '../lib/auth';
 import { showDialog } from '../lib/dialog';
 import * as haptics from '../lib/haptics';
@@ -342,15 +344,14 @@ export function HomeScreen({ navigation }: Props) {
     reload,
   });
 
-  /** Set while a sheet loads: a second tap meanwhile would push a second Result. */
-  const opening = useRef(false);
+  /** The sheet loading: a second tap meanwhile would push a second Result; its row says "Opening…" after 300 ms. */
+  const opening = useOpening();
   // Tapping Home again while on it scrolls back to the top.
   const listRef = useRef<FlatList<SavedTranscription>>(null);
   useScrollToTop(listRef);
 
   async function openRecent(item: SavedTranscription, opts: { practise?: boolean } = {}) {
-    if (opening.current) return;
-    opening.current = true;
+    if (!opening.begin(item.id)) return;
     try {
       // The phone's copy when it is current or the API is out of reach (lib/offlineLibrary).
       const { sheet } = await loadSheet(item);
@@ -368,7 +369,7 @@ export function HomeScreen({ navigation }: Props) {
         tone: 'danger',
       });
     } finally {
-      opening.current = false;
+      opening.end();
     }
   }
 
@@ -379,7 +380,7 @@ export function HomeScreen({ navigation }: Props) {
       <FlatList
         ref={listRef}
         data={recent}
-        extraData={[sheetActions.folding, sheetActions.actionsFor]}
+        extraData={[sheetActions.folding, sheetActions.actionsFor, opening.opening]}
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
@@ -598,7 +599,9 @@ export function HomeScreen({ navigation }: Props) {
         }
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => {
-          const opening = solfaOpening(item.notes ?? item.preview, item.timeSignature);
+          const solfa = solfaOpening(item.notes ?? item.preview, item.timeSignature);
+          // Tapped and still loading (board m-ux-medium P2b): tinted, "Opening…", a spinner in the ⋯'s place.
+          const isOpening = opening.opening === item.id;
           // No percentage on a row: a tone dot, and only when the sheet is worth a second look.
           const doubtful = confidenceLevel(item.overallConfidence) !== 'clear';
           const tone = confidenceColor(item.overallConfidence, colors);
@@ -610,7 +613,10 @@ export function HomeScreen({ navigation }: Props) {
                   haptics.play('light');
                   sheetActions.openActions(item);
                 }}
-                style={[styles.recentRow, sheetActions.actionsFor?.id === item.id && styles.recentRowActive]}
+                style={[
+                  styles.recentRow,
+                  (sheetActions.actionsFor?.id === item.id || isOpening) && styles.recentRowActive,
+                ]}
                 radius={radii.md}
                 // The dot is inside the row, so its words go in the row's label (as the Library's rows do).
                 accessibilityLabel={`Open ${item.title}${doubtful ? `, ${confidenceA11y(item.overallConfidence)}` : ''}`}
@@ -631,10 +637,14 @@ export function HomeScreen({ navigation }: Props) {
                   <Text style={styles.recentTitle} numberOfLines={1}>
                     {item.title}
                   </Text>
-                  {opening ? (
+                  {isOpening ? (
+                    <Text style={styles.openingText} numberOfLines={1}>
+                      Opening…
+                    </Text>
+                  ) : solfa ? (
                     <Text style={styles.solfaPreview} numberOfLines={1}>
-                      <Text style={styles.solfaLead}>{opening.first}</Text>
-                      {opening.rest ? ` │ ${opening.rest}` : ''}
+                      <Text style={styles.solfaLead}>{solfa.first}</Text>
+                      {solfa.rest ? ` │ ${solfa.rest}` : ''}
                     </Text>
                   ) : (
                     <Text style={styles.recentMeta} numberOfLines={1}>
@@ -643,22 +653,29 @@ export function HomeScreen({ navigation }: Props) {
                   )}
                 </View>
 
-                {doubtful ? (
+                {doubtful && !isOpening ? (
                   <View style={styles.score}>
                     <View style={[styles.scoreDot, { backgroundColor: tone }]} />
                   </View>
                 ) : null}
 
-                {/* The piece's actions: share, rename, file, keep offline, delete (also a long press). */}
-                <Touchable
-                  onPress={() => sheetActions.openActions(item)}
-                  style={styles.more}
-                  hitSlop={2}
-                  ripple="borderless"
-                  accessibilityLabel={`More for ${item.title}`}
-                >
-                  <Icon name="more" size={20} color={colors.textMuted} />
-                </Touchable>
+                {/* The piece's actions: share, rename, file, keep offline, delete (also a long press). The ⋯ steps
+                    aside for the spinner while the sheet opens. */}
+                {isOpening ? (
+                  <View style={styles.more}>
+                    <ActivityIndicator size="small" color={colors.accent} />
+                  </View>
+                ) : (
+                  <Touchable
+                    onPress={() => sheetActions.openActions(item)}
+                    style={styles.more}
+                    hitSlop={2}
+                    ripple="borderless"
+                    accessibilityLabel={`More for ${item.title}`}
+                  >
+                    <Icon name="more" size={20} color={colors.textMuted} />
+                  </Touchable>
+                )}
               </Touchable>
             </FoldAway>
           );
@@ -979,6 +996,12 @@ const makeStyles = (c: Palette, s: Shadows) =>
     },
     solfaLead: {
       color: c.accent,
+    },
+    openingText: {
+      fontSize: 13,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      marginTop: 3,
     },
     recentMeta: {
       fontSize: 12.5,
