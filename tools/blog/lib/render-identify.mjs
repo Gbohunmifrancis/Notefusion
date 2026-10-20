@@ -90,7 +90,7 @@ ${ctaBox("identify")}
     path: IDENTIFY_PATH, title: TITLE, description: DESCRIPTION, jsonLd: ld, body, active: "/hymns", bodyClass: "identify-page",
     head: `<link rel="stylesheet" href="/assets/hymn-identify.css?v=${ASSET_VERSION.hymnIdentifyCss}">`,
     // The recorder's styles are only needed once it opens on a tap: loaded after the page, never blocking its first paint.
-    scripts: `<link rel="stylesheet" href="/assets/recorder.css?v=${ASSET_VERSION.recorderCss}">\n<script src="/assets/recorder.js?v=${ASSET_VERSION.recorderJs}" defer></script>\n<script src="/assets/hymn-identify.js?v=${ASSET_VERSION.hymnIdentifyJs}" defer></script>`,
+    scripts: `<link rel="stylesheet" href="/assets/recorder.css?v=${ASSET_VERSION.recorderCss}">\n<script src="/assets/back.js?v=${ASSET_VERSION.backJs}" defer></script>\n<script src="/assets/recorder.js?v=${ASSET_VERSION.recorderJs}" defer></script>\n<script src="/assets/hymn-identify.js?v=${ASSET_VERSION.hymnIdentifyJs}" defer></script>`,
   });
 }
 

@@ -139,11 +139,14 @@
    * goes over XMLHttpRequest. Same headers, same 401 refresh-and-retry and the same ApiError as
    * request(); opts.onProgress(fraction) is called as the bytes leave.
    */
+  var uploadsInFlight = 0; // the page asks before closing while one is still sending (beforeunload, below)
   function upload(path, form, opts) {
     opts = opts || {};
     function send() {
       return new Promise(function (resolve, reject) {
         var xhr = new XMLHttpRequest();
+        uploadsInFlight++;
+        xhr.addEventListener("loadend", function () { uploadsInFlight--; });
         xhr.open("POST", API + path);
         var base = baseHeaders();
         Object.keys(base).forEach(function (k) { xhr.setRequestHeader(k, base[k]); });
@@ -409,7 +412,10 @@
     // Not on taking over the first paint (assets/app-boot.js): whoever scrolled down to the password stays there.
     if (!document.documentElement.classList.contains("nf-boot")) window.scrollTo(0, 0);
   }
-  function leaveAuth() { document.body.classList.remove("auth-only"); hide($("view-auth")); }
+  function leaveAuth() {
+    if (authLayer) { NfBack.done(authLayer); authLayer = null; }
+    document.body.classList.remove("auth-only"); hide($("view-auth"));
+  }
   var AUTH_COPY = {
     login: ["Welcome back", "Sign in to open your sheets on any device."],
     register: ["Create your account", "Free to start: 3 hummed or recorded transcriptions every week."],
@@ -540,9 +546,21 @@
         track("Signed in");
         return boot();
       })
-      .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not sign in."); })
+      .catch(function (err) {
+        // The password was right but the address was never confirmed, and a fresh code is on its way:
+        // straight to the code boxes, as the phone does, rather than an error with nowhere to type it.
+        if (err.code === "AUTH_EMAIL_NOT_VERIFIED") { openVerify($("login-email").value.trim(), "We've emailed you a new code. Enter it to finish setting up your account."); return; }
+        alertIn($("auth-alert"), "danger", err.message || "Could not sign in.");
+      })
       .finally(function () { btn.disabled = false; });
   });
+  function openVerify(email, note) {
+    pendingEmail = email;
+    $("verify-email-label").textContent = pendingEmail;
+    showAuthForm("verify");
+    alertIn($("auth-alert"), "success", note);
+    $("verify-code").focus();
+  }
 
   $("form-register").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -552,12 +570,8 @@
     if ($("reg-password").value.length < 8) { alertIn($("auth-alert"), "danger", "Use at least 8 characters for the password."); btn.disabled = false; return; }
     request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value, source: "web" } })
       .then(function (res) {
-        pendingEmail = (res && res.email) || $("reg-email").value.trim();
         track("Created account");
-        $("verify-email-label").textContent = pendingEmail;
-        showAuthForm("verify");
-        alertIn($("auth-alert"), "success", "Almost there — enter the code we just emailed you.");
-        $("verify-code").focus();
+        openVerify((res && res.email) || $("reg-email").value.trim(), "Almost there — enter the code we just emailed you.");
       })
       .catch(function (err) {
         var detail = err.details ? Object.keys(err.details).map(function (k) { return err.details[k].join(" "); }).join(" ") : "";
@@ -588,7 +602,9 @@
   });
 
   // Guest → account: the sign-up screen on its own, with a way back to the preview that is waiting.
+  var authLayer = null; // a guest's sign-up screen: the browser's Back returns to the preview, as "Back to your preview" does
   function openAuth(tab) {
+    if (guest && !authLayer && window.NfBack) authLayer = NfBack.push(function () { authLayer = null; leaveAuth(); show($("view-app")); });
     hide($("view-app")); show($("view-auth"));
     document.body.classList.add("auth-only"); closeDrawer();
     guest ? show($("auth-back")) : hide($("auth-back"));
@@ -630,10 +646,20 @@
   });
 
   // ── Views: transcribe / library / practice / account ────────────────────
+  var viewNow = "transcribe";
+  // The view the address asked for, read before boot settles on the studio (which clears it from the address).
+  var viewAsked = new URLSearchParams(location.search).get("view");
   function setView(name) {
     var focusSearch = name === "search";
     if (focusSearch) name = "library";
     if (name === "practice" && (guest || !tokens())) name = "transcribe"; // practice is for a signed-in account
+    viewNow = name;
+    try {
+      // The view rides in the address, so a reload (or a shared link) opens it again.
+      var url = new URL(location.href);
+      name === "transcribe" ? url.searchParams.delete("view") : url.searchParams.set("view", name);
+      history.replaceState(history.state, "", url.pathname + url.search + url.hash);
+    } catch (e) { /* the address keeps the old view; nothing depends on it */ }
     ["transcribe", "library", "practice", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
     document.querySelectorAll("#top-nav .top-link").forEach(function (b) { b.classList.toggle("on", b.dataset.view === name); });
     if (name === "library") loadLibrary().then(function () { if (focusSearch) $("lib-search").focus(); });
@@ -642,7 +668,13 @@
     closeDrawer(); closeUserMenu();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
-  document.querySelectorAll("#top-nav .top-link, .user-menu-item[data-view]").forEach(function (b) { b.addEventListener("click", function () { setView(b.dataset.view); }); });
+  /** A view chosen in the nav or the menu is a step the browser's Back undoes (assets/back.js). */
+  function goView(name) {
+    var from = viewNow;
+    if (window.NfBack && (name === "search" ? "library" : name) !== from) NfBack.push(function () { setView(from); });
+    setView(name);
+  }
+  document.querySelectorAll("#top-nav .top-link, .user-menu-item[data-view]").forEach(function (b) { b.addEventListener("click", function () { goView(b.dataset.view); }); });
 
   // The sidebar is a drawer on phones.
   function openDrawer() { document.body.classList.add("drawer-open"); $("drawer-backdrop").hidden = false; $("drawer-toggle").setAttribute("aria-expanded", "true"); }
@@ -677,7 +709,7 @@
   // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
   // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
   // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=7", "/assets/practice-progress.js?v=7", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=1", "/assets/practice-view.js?v=9"];
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=7", "/assets/practice-progress.js?v=7", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=1", "/assets/practice-view.js?v=10"];
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
   function loadAsset(url) {
@@ -997,6 +1029,7 @@
         solfaLines: C.renderLines(t.notes || [], C.keyHeader(t.key), t.timeSignature), source: null, hymn: t.hymn || null
       };
       current = { jobId: null, kind: "library", source: null, result: result, startedAt: Date.now(), savedId: t.id, title: t.title, shareToken: t.shareToken || null, lyrics: t.lyrics || "", semitones: 0 };
+      resultReturnView = viewNow;
       setView("transcribe");
       hide($("progress"));
       $("sheet-parts").innerHTML = "";
@@ -1236,6 +1269,44 @@
   $("upgrade-close").addEventListener("click", function () { hide($("upgrade-panel")); });
   $("upgrade-panel").addEventListener("click", function (e) { if (e.target === $("upgrade-panel")) hide($("upgrade-panel")); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") hide($("upgrade-panel")); });
+  /**
+   * The plans dialog behaves as one: whichever of its many openers shows it, focus moves to its title, Tab stays
+   * inside it while it is open, and closing it hands focus back to what opened it. Watched rather than wired into
+   * each show/hide, so a new opener cannot forget it.
+   */
+  (function trapUpgradeFocus() {
+    var panel = $("upgrade-panel"), title = $("upgrade-title"), opener = null;
+    title.setAttribute("tabindex", "-1");
+    new MutationObserver(function () {
+      var open = !panel.classList.contains("hidden");
+      if (open && !opener) {
+        opener = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
+        opener = opener || document.body;
+        title.focus({ preventScroll: true });
+      } else if (!open && opener) {
+        var back = opener; opener = null;
+        if (back !== document.body && document.contains(back) && (panel.contains(document.activeElement) || document.activeElement === document.body)) {
+          try { back.focus({ preventScroll: true }); } catch (err) { /* gone */ }
+        }
+      }
+    }).observe(panel, { attributes: true, attributeFilter: ["class"] });
+    panel.addEventListener("keydown", function (e) {
+      if (e.key !== "Tab") return;
+      var items = Array.prototype.filter.call(panel.querySelectorAll("button, a[href], input, select, textarea, [tabindex]:not([tabindex='-1'])"),
+        function (x) { return !x.disabled && x.offsetParent !== null; });
+      if (!items.length) return;
+      var at = items.indexOf(document.activeElement), next;
+      if (at === -1) {
+        // On the title (or anything outside the list): the next control after it in reading order, wrapping round.
+        var after = items.filter(function (x) { return document.activeElement.compareDocumentPosition(x) & Node.DOCUMENT_POSITION_FOLLOWING; });
+        var before = items.filter(function (x) { return document.activeElement.compareDocumentPosition(x) & Node.DOCUMENT_POSITION_PRECEDING; });
+        next = e.shiftKey ? (before[before.length - 1] || items[items.length - 1]) : (after[0] || items[0]);
+      } else {
+        next = items[(at + (e.shiftKey ? -1 : 1) + items.length) % items.length];
+      }
+      e.preventDefault(); next.focus();
+    });
+  })();
   $("acct-signout").addEventListener("click", function () { $("signout").click(); });
 
   // ── App view ─────────────────────────────────────────────────────────────
@@ -1345,8 +1416,9 @@
       // A notification's link (/app?job=<id>): the finished sheet, or why it failed.
       var jobToOpen = new URLSearchParams(location.search).get("job");
       if (jobToOpen) { dropParam("job"); openJob(jobToOpen); }
-      // A link to the Practice view (/app?view=practice): the drill, once signed in.
-      if (new URLSearchParams(location.search).get("view") === "practice") { dropParam("view"); setView("practice"); }
+      // A link to a view (/app?view=practice, or a reload on the Library): that view, once signed in.
+      var viewToOpen = viewAsked; viewAsked = null;
+      if (["library", "practice", "account"].indexOf(viewToOpen) !== -1) setView(viewToOpen);
       loadPracticeChip();
       syncPush();
       if (previewId) {
@@ -2962,6 +3034,7 @@
   /** Back to the studio for another one. The sheet is kept in the library (or is the guest's preview). */
   function newTranscription() {
     if (follow) return; // a job still running keeps its card
+    resultReturnView = null;
     closeTool(); closeFull();
     hide($("result")); hide($("progress"));
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -3036,6 +3109,36 @@
     if (e.key !== "Escape") return;
     if (openToolId) { closeTool(); return; }
     closeFull();
+  });
+
+  /**
+   * The browser's Back (assets/back.js): the result, a tool, the full-screen sheet and the plans dialog each close
+   * with it instead of leaving /app. Watched rather than wired into every opener, so none can forget it; a layer
+   * closed on screen is marked done and its history entry is stepped over by the next Back.
+   */
+  var resultReturnView = null;
+  function backLayer(el, isOpen, close) {
+    if (!window.NfBack) return;
+    var layer = null;
+    new MutationObserver(function () {
+      if (isOpen() && !layer) {
+        layer = NfBack.push(function () { layer = null; close(); });
+      } else if (!isOpen() && layer) {
+        NfBack.done(layer); layer = null;
+      }
+    }).observe(el, { attributes: true, attributeFilter: ["class"] });
+  }
+  backLayer($("result"), function () { return !$("result").classList.contains("hidden"); }, function () {
+    var back = resultReturnView; resultReturnView = null;
+    newTranscription();
+    if (back && back !== "transcribe") setView(back); // opened from the Library: back to it
+  });
+  backLayer($("tool-modal"), function () { return !!openToolId; }, closeTool);
+  backLayer($("sheet-stage"), function () { return $("sheet-stage").classList.contains("is-full"); }, closeFull);
+  backLayer($("upgrade-panel"), function () { return !$("upgrade-panel").classList.contains("hidden"); }, function () { hide($("upgrade-panel")); });
+  // An upload or a take still in the air is lost with the page: the browser asks first.
+  window.addEventListener("beforeunload", function (e) {
+    if (uploadsInFlight > 0 || document.body.classList.contains("is-recording")) { e.preventDefault(); e.returnValue = ""; }
   });
   /**
    * A tool shows in the row only when its panel applies to this sheet (the result logic hides the rest).
@@ -3675,11 +3778,11 @@
    * to /app?paid=1 rather than to the app's deep link. What the membership was before leaving is kept,
    * so the return can tell a payment that landed from Pro that was already there.
    */
-  /** Only the providers' hosted checkouts are followed: https on Paystack or Bachs, nothing else. */
+  /** Only the providers' hosted checkouts are followed: https on Paystack, Bachs or Flutterwave, nothing else. */
   function trustedCheckout(url) {
     try {
       var u = new URL(url);
-      return u.protocol === "https:" && /(^|\.)(paystack\.com|paystack\.co|bachs\.io)$/i.test(u.hostname);
+      return u.protocol === "https:" && /(^|\.)(paystack\.com|paystack\.co|bachs\.io|flutterwave\.com)$/i.test(u.hostname);
     } catch (e) { return false; }
   }
   function checkout(plan, btn) {

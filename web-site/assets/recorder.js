@@ -12,7 +12,7 @@
 (function () {
   "use strict";
   var panel = null, els = {}, meterBars = [];
-  var rec = { recorder: null, chunks: [], timer: null, stopAt: null, started: 0, stream: null, audioCtx: null, analyser: null, raf: null, blob: null, name: "", url: null, discard: false, opts: null, opening: false, opener: null };
+  var rec = { recorder: null, chunks: [], timer: null, stopAt: null, started: 0, stream: null, audioCtx: null, analyser: null, raf: null, blob: null, name: "", url: null, discard: false, opts: null, opening: false, opener: null, layer: null };
 
   /** An icon from the site's sprite (Lucide, /assets/icons.svg). */
   function icon(id) {
@@ -83,8 +83,21 @@
     });
   }
   function hook(opts, name, arg) { try { if (opts && typeof opts[name] === "function") opts[name](arg); } catch (e) { /* never in the way */ } }
+  /**
+   * The browser's Back (assets/back.js, where the page has it): while recording it stops the take and shows it for
+   * review, so nothing is lost; on the review it discards, as Escape does. Without it, Back left the page and the take.
+   */
+  function backLayer() {
+    if (rec.layer || !window.NfBack) return;
+    rec.layer = window.NfBack.push(function () {
+      rec.layer = null;
+      if (rec.recorder && rec.recorder.state === "recording") stopRecording();
+      else if (!panel.hidden) close();
+    });
+  }
   function showLive(live) {
     if (panel.hidden) { rec.opener = document.activeElement; document.documentElement.classList.add("nf-rec-open"); }
+    backLayer();
     panel.hidden = false;
     els.live.hidden = !live; els.review.hidden = live;
     panel.setAttribute("aria-labelledby", live ? "nf-rec-title" : "nf-rec-review-title");
@@ -92,6 +105,7 @@
   }
   function fail(opts, kind, text) { hook(opts, "sounds", "error"); try { if (opts && typeof opts.onError === "function") opts.onError(text, kind); } catch (e) { /* never in the way */ } }
   function close() {
+    if (rec.layer) { window.NfBack.done(rec.layer); rec.layer = null; }
     var wasOpen = !panel.hidden;
     panel.hidden = true; document.documentElement.classList.remove("nf-rec-open");
     if (wasOpen && rec.opener && typeof rec.opener.focus === "function" && document.contains(rec.opener)) rec.opener.focus();

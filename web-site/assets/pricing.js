@@ -44,7 +44,7 @@
   function trustedCheckout(url) {
     try {
       var u = new URL(url);
-      return u.protocol === "https:" && /(^|\.)(paystack\.com|paystack\.co|bachs\.io)$/i.test(u.hostname);
+      return u.protocol === "https:" && /(^|\.)(paystack\.com|paystack\.co|bachs\.io|flutterwave\.com)$/i.test(u.hostname);
     } catch (e) { return false; }
   }
 
