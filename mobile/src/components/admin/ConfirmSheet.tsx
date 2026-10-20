@@ -8,6 +8,7 @@ import { useAdminColors, useAdminStyles } from "../../lib/theme";
 import { toApiError } from "../../api/client";
 import { CONFIRM_LINE } from "../../lib/adminLock";
 import { confirmAgain, useAdminLock } from "../../lib/adminLockRuntime";
+import { SecretField } from "../../lib/replayPrivacy";
 
 export interface ConfirmRequest {
   title: string;
@@ -106,18 +107,20 @@ export function ConfirmSheet({ request, onClose }: { request: ConfirmRequest | n
           {askPassword ? (
             <View style={s.field}>
               <Text style={s.label}>This phone has no fingerprint or face sensor. Your NoteFusion password confirms it.</Text>
-              <TextInput
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Password"
-                placeholderTextColor={a.dim}
-                secureTextEntry
-                autoCapitalize="none"
-                autoCorrect={false}
-                style={s.input}
-                editable={!busy}
-                accessibilityLabel="Password"
-              />
+              <SecretField secret>
+                <TextInput
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="Password"
+                  placeholderTextColor={a.dim}
+                  secureTextEntry
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={s.input}
+                  editable={!busy}
+                  accessibilityLabel="Password"
+                />
+              </SecretField>
             </View>
           ) : r.secondAsk ? (
             <View style={s.second}>

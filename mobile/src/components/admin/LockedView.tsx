@@ -7,6 +7,7 @@ import { Touchable } from "../Touchable";
 import { AdminTopBar } from "./AdminChrome";
 import { fonts, type AdminPalette } from "../../design/theme";
 import { useAdminColors, useAdminStyles } from "../../lib/theme";
+import { SecretField } from "../../lib/replayPrivacy";
 import { toApiError } from "../../api/client";
 import { cleanCode, lockedFootnote, lockedLine, lockedTitle, type LockMethod } from "../../lib/adminLock";
 import {
@@ -168,18 +169,20 @@ function CodeSteps({ method, onBack }: { method: LockMethod; onBack: () => void 
 
         {step === "password" ? (
           <View style={s.form}>
-            <TextInput
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Your NoteFusion password"
-              placeholderTextColor={a.dim}
-              secureTextEntry
-              autoCapitalize="none"
-              autoCorrect={false}
-              style={s.input}
-              onSubmitEditing={() => void sendCode()}
-              accessibilityLabel="Password"
-            />
+            <SecretField secret>
+              <TextInput
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Your NoteFusion password"
+                placeholderTextColor={a.dim}
+                secureTextEntry
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={s.input}
+                onSubmitEditing={() => void sendCode()}
+                accessibilityLabel="Password"
+              />
+            </SecretField>
             <ErrorLine text={error} />
             <Button label="Email me a code" onPress={() => void sendCode()} loading={busy} disabled={!password} block />
           </View>

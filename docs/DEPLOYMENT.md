@@ -837,7 +837,7 @@ setting is there, and the release on every report is the commit that was deploye
 | API (`Program.cs`) | unhandled exceptions and `LogError` lines, Information lines before them as breadcrumbs; of the request only its method and path (no body, headers, cookies, query string or IP address), every email address masked (`Api/Common/SentryScrub.cs`) | repository secret or variable `SENTRY_DSN_API` → `Sentry__Dsn` |
 | ML worker (`app/telemetry.py`) | 5xx responses and crashed jobs (`JobQueue._crashed`; an expected failure is a warning, not an event); of the request only its method and address, no local variables, every URL and email address masked | `SENTRY_DSN_WORKER` → `NF_SENTRY_DSN` |
 | Web app `/app` (`assets/errors.js`) | uncaught errors from the site's own scripts; Sentry's bundle (`assets/vendor`) loads only after the first one; no IP address, user, cookies or query strings, emails masked, the browser's name kept | repository variable `SENTRY_DSN_WEB`, written into the deployed `app/index.html` by `deploy-web.yml` |
-| Phone app (`mobile/App.tsx`) | crashes and errors with device, IP address and masked screen replays (10% of sessions, and every session with an error), as the privacy policy says | the DSN in `App.tsx`; source maps below |
+| Phone app (`mobile/App.tsx`) | crashes and errors with device, IP address, the account's id and screen recordings (10% of sessions, and every session with an error) that show the screen as it was except password fields and Admin (`src/lib/replayPrivacy.tsx`), as the privacy policy says | the DSN in `App.tsx`; source maps below |
 
 To set it up: in Sentry create the projects (ASP.NET Core, FastAPI, Browser JavaScript; the phone's React Native
 project already exists), copy each project's DSN (Project settings → Client Keys) into the repository's Actions
@@ -845,6 +845,15 @@ secrets or variables as above, and deploy (re-run `deploy.yml` and `deploy-web.y
 not a password (every app that reports carries one) but keep the server ones as secrets anyway. The web app's
 `Content-Security-Policy` (`web-site/vercel.json`, `/app`) allows only this organisation's ingest host,
 `o4508111757770752.ingest.us.sentry.io`; a project in another organisation needs that line changed.
+
+**Sessions in the console** (board k-sessions). The console's Sessions page (`/sessions`) lists the phone's
+recordings, newest first with a session still recording on top, plays one (its MP4 pieces, fetched through the API
+and kept nowhere) beside what happened in it, and lists every project's unresolved errors. It reads Sentry with a
+read-only token: in Sentry, Settings → Developer Settings → Custom Integrations → Create New Integration → Internal
+Integration, permissions Organization, Project and Issue & Event set to Read and nothing else; its token goes in the
+repository secret `SENTRY_API_TOKEN` (→ `SentryApi__Token`), the organisation's slug in the variable `SENTRY_ORG`
+(→ `SentryApi__Org`, `fransix` when unset). Without the token the page says how to connect it. Sentry tells us
+nothing, so the lists are read again every 30 s while the page is open, and a session still recording every 15 s.
 
 **Phone source maps.** Without them a phone crash is minified JavaScript. The EAS `production` environment
 holds the three values the upload needs: `SENTRY_AUTH_TOKEN` (a Sentry organisation token, visibility

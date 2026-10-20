@@ -13,6 +13,7 @@ import {
   LogOut,
   MessageSquareHeart,
   MicVocal,
+  MonitorPlay,
   Moon,
   Music2,
   Newspaper,
@@ -78,6 +79,7 @@ const SECONDARY_NAV = [
   { to: "/webhooks", label: "Webhooks", icon: Webhook },
   { to: "/ledger", label: "Ledger", icon: Scale },
   { to: "/flags", label: "Feature flags", icon: Flag, badge: "New" },
+  { to: "/sessions", label: "Sessions", icon: MonitorPlay, badge: "New" },
 ] as const;
 
 function isActivePath(pathname: string, to: string): boolean {

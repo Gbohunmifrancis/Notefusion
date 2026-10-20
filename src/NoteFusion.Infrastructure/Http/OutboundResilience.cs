@@ -188,6 +188,18 @@ internal static class OutboundResilience
         MaxRetryAttempts = 2,
     };
 
+    /// <summary>
+    /// Sentry's REST API for the console's Sessions page: reads only, so they are retried. A recording's video pieces
+    /// are small (a few hundred KB) and read one at a time as the player reaches them.
+    /// </summary>
+    public static readonly OutboundResilienceOptions SentryApi = new()
+    {
+        Provider = OutboundProviders.SentryApi,
+        AttemptTimeout = TimeSpan.FromSeconds(15),
+        TotalTimeout = TimeSpan.FromSeconds(35),
+        MaxRetryAttempts = 2,
+    };
+
     /// <summary>Registers the shared breaker-state tracker (idempotent).</summary>
     public static IServiceCollection AddProviderHealth(this IServiceCollection services)
     {

@@ -186,6 +186,18 @@ export function openStream(path: string, signal: AbortSignal): Promise<Response>
 }
 
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const response = await respond(path, options);
+  if (response.status === 204) return undefined as T;
+  return (await response.json()) as T;
+}
+
+/** As `request`, for a file the API serves (a session recording's video piece): the body as a Blob. */
+export async function requestBlob(path: string, options: RequestOptions = {}): Promise<Blob> {
+  return (await respond(path, options)).blob();
+}
+
+/** The bearer, the console pass and one refresh-and-retry; anything but a 2xx is thrown as an ApiError. */
+async function respond(path: string, options: RequestOptions): Promise<Response> {
   let response = await sendPastLock(path, options);
 
   if (response.status === 401 && !options.anonymous) {
@@ -209,9 +221,7 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
   if (pass) setAdminPass(pass);
 
   if (!response.ok) throw await parseError(response);
-  if (response.status === 204) return undefined as T;
-
-  return (await response.json()) as T;
+  return response;
 }
 
 /** Builds a query string, dropping empty values so the server sees its own defaults. */

@@ -1595,3 +1595,81 @@ export interface Growth {
   /** Why checkouts end unpaid, by provider. */
   checkoutExits: CheckoutExits;
 }
+
+/* ── Sessions (board k-sessions) ─────────────────────────────────────────── */
+
+/** Whose a recording is, looked up in our own accounts from the id the app gave Sentry. */
+export interface SessionPerson {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface SessionRecording {
+  id: string;
+  /** The Sentry project's slug, handed back to fetch the video. */
+  project: string;
+  startedAt: string;
+  durationSeconds: number;
+  /** A piece arrived in the last 90 seconds: the session is still going. */
+  recordingNow: boolean;
+  errorCount: number;
+  person: SessionPerson | null;
+  device: string | null;
+  os: string | null;
+  /** "43". */
+  build: string | null;
+  /** The screens it went through, in order. */
+  screens: string[];
+}
+
+export interface SessionRecordingsPage {
+  items: SessionRecording[];
+  nextCursor: string | null;
+}
+
+/** A video piece on the recording's own clock. */
+export interface SessionVideo {
+  segmentId: number;
+  startMs: number;
+  durationMs: number;
+}
+
+export type SessionStepKind = "screen" | "tap" | "request" | "app" | "note";
+
+export interface SessionStep {
+  atMs: number;
+  kind: SessionStepKind;
+  text: string;
+}
+
+export interface SessionError {
+  id: string;
+  atMs: number;
+  title: string;
+  /** Innermost first, "at fn (file:line)". */
+  frames: string[];
+}
+
+export interface SessionRecordingDetail {
+  recording: SessionRecording;
+  videos: SessionVideo[];
+  steps: SessionStep[];
+  errors: SessionError[];
+  sentryUrl: string;
+}
+
+export type SessionSource = "Phone" | "API" | "Worker" | "Web";
+
+export interface SessionIssue {
+  id: string;
+  title: string;
+  /** The code it happened in. */
+  where: string;
+  source: SessionSource | string;
+  count: number;
+  people: number;
+  firstSeen: string;
+  lastSeen: string;
+  sentryUrl: string;
+}

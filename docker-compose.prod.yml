@@ -255,6 +255,9 @@ services:
       # Errors to Sentry (docs/DEPLOYMENT.md, "Error reports"): off while the DSN is blank. The release is the commit.
       Sentry__Dsn: ${Sentry__Dsn:-}
       Sentry__Release: ${Sentry__Release:-}
+      # The console's Sessions page (recordings and errors, read from Sentry): off while the token is blank.
+      SentryApi__Token: ${SentryApi__Token:-}
+      SentryApi__Org: ${SentryApi__Org:-}
     volumes:
       - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
     # Not root: the deploy user's uid, which owns the 0600 JWT key the API reads (the deploy cannot give the file

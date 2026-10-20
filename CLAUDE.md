@@ -550,11 +550,18 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   behind OutboundResilience), the worker (`NF_SENTRY_DSN`, `app.telemetry`: crashed jobs and 5xx only, no bodies or
   locals, URLs and emails masked), `/app` only on the web (`assets/errors.js`: nothing loads until the site's own code
   throws, then the self-hosted `assets/vendor` bundle; `deploy-web.yml` writes `SENTRY_DSN_WEB` into the deployed page)
-  and the phone (`App.tsx`, IP address and masked replays as the privacy policy says; source maps from the
+  and the phone (`App.tsx`, IP address, the account's id (`Sentry.setUser`, nothing else) and recordings of 1 in 10
+  sessions and every one with an error that show the screen as it was except password fields and Admin, its sheets
+  included (`lib/replayPrivacy`: `SecretField`, `PrivateArea`, `MaskIfPrivate` on `Sentry.Mask`; a build without the native
+  mask view keeps masking everything), as the privacy policy says; source maps from the
   `@sentry/react-native/expo` plugin on store builds and `eas env:exec production 'npm run update:production'`
   for OTA, which reads `SENTRY_AUTH_TOKEN`/`ORG`/`PROJECT` from EAS; store builds stay off — `eas.json`'s
   `SENTRY_DISABLE_AUTO_UPLOAD` — until the next store build's commit removes it, since `eas.json` is part of the
-  Android fingerprint). Never the public pages.
+  Android fingerprint). Never the public pages. The console's Sessions page (board k-sessions, `/sessions`,
+  `GET /api/admin/sessions/recordings|errors…`, `Application/Admin/Sessions`, `Infrastructure/ErrorReports` over
+  `OutboundResilience.SentryApi`) reads the recordings and every project's errors with a read-only token
+  (`SentryApi__Token`/`__Org` from `SENTRY_API_TOKEN`/`SENTRY_ORG`), plays a recording's MP4 pieces through the API (kept
+  nowhere) and links each account; Admins only, behind the console lock; read again every 30 s while open.
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - No secret ever in the repository: `.github/workflows/secret-scan.yml` (gitleaks, `.gitleaks.toml`) fails pull requests,
