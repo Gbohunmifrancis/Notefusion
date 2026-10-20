@@ -35,12 +35,27 @@
     count.textContent = q.length || kind ? shown + (shown === 1 ? noun[0] : noun[1]) + (q.length ? " found" : "") : "";
     none.hidden = shown > 0;
   }
-  input.addEventListener("input", apply);
+  /**
+   * The search and the filter ride in the address, so Back from a hymn finds the list as it was left (the box has
+   * autocomplete off, and only a page kept whole in the browser's back cache used to come back filtered).
+   */
+  function remember() {
+    try {
+      var url = new URL(window.location.href);
+      var text = input.value.trim();
+      text ? url.searchParams.set("q", text) : url.searchParams.delete("q");
+      kind ? url.searchParams.set("kind", kind) : url.searchParams.delete("kind");
+      history.replaceState(history.state, "", url.pathname + url.search + url.hash);
+    } catch (e) { /* the list still filters; only Back forgets it */ }
+  }
+  input.addEventListener("input", function () { apply(); remember(); });
+  // The phone keyboard's Search key puts the keyboard away, so the results it was covering show.
+  input.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); input.blur(); } });
   kindButtons.forEach(function (b) {
     b.addEventListener("click", function () {
       kind = kind === b.getAttribute("data-kind") ? null : b.getAttribute("data-kind");
       kindButtons.forEach(function (o) { o.setAttribute("aria-pressed", String(o.getAttribute("data-kind") === kind)); });
-      apply();
+      apply(); remember();
       if (window.nfTrack) try { window.nfTrack("Hymn filter: " + b.textContent); } catch (e) { /* ignore */ }
     });
   });

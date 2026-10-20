@@ -141,7 +141,7 @@ export function SingNotesScreen({ mode, track }: { mode: "intervals" | "harmony"
                   score={grade.score}
                   summary={grade.summary}
                   marks={noteMarks(grade.marks, ex.notes).map((m) => ({ key: m.index, text: m.text, sub: m.cents, tone: m.tone }))}
-                  legend={playful ? null : "Green in tune · amber close · grey off. Numbers are cents off."}
+                  legend={playful ? null : "✓ in tune · ~ close · struck through: off. Numbers are cents off."}
                   reward={grade.reward}
                   playful={playful}
                 />

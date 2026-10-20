@@ -15,7 +15,9 @@ import {
   rewardMoment,
   snapshotAfterTake,
   sortBadges,
+  bestStreakLine,
   streakLabel,
+  streakLine,
   streakSnapshot,
   weekdayLetter,
   weeklyFraction,
@@ -106,6 +108,7 @@ test("earned badges come first, newest first, then the nearest locked ones", () 
 test("labels", () => {
   assert.equal(streakLabel(4), "4-day streak");
   assert.equal(streakLabel(0), "No streak yet");
+  assert.equal(streakLabel(0, 30), "No streak now");
   assert.equal(weekdayLetter("2026-10-17"), "S"); // a Saturday
   assert.equal(weekdayLetter("2026-10-12"), "M");
 });
@@ -193,4 +196,16 @@ test("the allowance counts down, then says warmly when more come, on the phone's
   assert.equal(resetTime("2026-10-18T13:05:00Z", 0), "1:05 pm");
   assert.equal(allowanceLine({ used: 12, limit: 10, resetsAtUtc: null }), "That's all 10 of today's drills. Well sung! More tomorrow.");
   assert.equal(resetTime("not a time"), null);
+});
+
+test("a lapsed streak says the best kept, never 'No streak yet'", () => {
+  const lapsed = { current: 0, best: 30, todayDone: false, atRisk: false };
+  assert.equal(bestStreakLine(lapsed), "Your best: 30 days");
+  assert.equal(bestStreakLine({ current: 0, best: 1 }), "Your best: 1 day");
+  assert.equal(bestStreakLine({ current: 4, best: 30 }), null);
+  assert.equal(bestStreakLine({ current: 0, best: 0 }), null);
+  assert.equal(streakLine(lapsed), "Your best: 30 days. Start a new one today.");
+  assert.equal(streakLine({ ...lapsed, best: 0 }), "Sing a drill to start one");
+  assert.equal(streakLine({ current: 3, best: 30, todayDone: false, atRisk: true }), "Sing today to keep it");
+  assert.equal(streakLine({ current: 3, best: 30, todayDone: true, atRisk: false }), "Done for today");
 });

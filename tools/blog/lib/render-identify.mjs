@@ -42,7 +42,7 @@ export function renderIdentify({ hymns, tunes = [] }) {
       <span>Hum a tune</span>
     </button>
     <p class="identify-hint">Up to ${IDENTIFY_MAX_SECONDS} seconds: the first line or two, steadily and clearly. Words, la-la or humming all work.</p>
-    <p class="identify-alt"><label class="identify-file-label">or choose a recording <input type="file" id="identify-file" accept="audio/*" class="visually-hidden"></label></p>
+    <label class="identify-file-btn">${icon("upload")}<span>Choose a recording</span><input type="file" id="identify-file" accept="audio/*" class="visually-hidden"></label>
   </div>
   <div class="identify-status" id="identify-status" role="status" aria-live="polite"></div>
   <div class="identify-result" id="identify-result" hidden tabindex="-1"></div>

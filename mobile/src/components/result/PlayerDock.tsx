@@ -19,9 +19,12 @@ export const DOCK_CLEARANCE = 112;
 export function PlayerDock({
   practice,
   onRehearse,
+  lift = 0,
 }: {
   practice: Practice;
   onRehearse: () => void;
+  /** Raised this far above its place, over a card pinned under it (a guest's "Keep this sheet"). */
+  lift?: number;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -32,7 +35,7 @@ export function PlayerDock({
   const played = dragFraction ?? (duration > 0 ? clamp(position / duration, 0, 1) : 0);
 
   return (
-    <View style={[styles.dock, { bottom: insets.bottom + 10 }]}>
+    <View style={[styles.dock, { bottom: insets.bottom + 10 + lift }]}>
       <View style={styles.row}>
         <Touchable
           onPress={() => void practice.togglePlay()}

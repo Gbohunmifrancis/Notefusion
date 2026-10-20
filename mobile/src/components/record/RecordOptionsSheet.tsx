@@ -92,24 +92,29 @@ export function RecordOptionsSheet({
           })}
         </View>
 
-        <Text style={[styles.eyebrow, styles.eyebrowGap]}>Key signature</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
-          {keys.map((k) => {
-            const active = selectedKey === k;
-            return (
-              <Touchable
-                key={k}
-                onPress={() => onKey(k)}
-                radius={radii.pill}
-                style={[styles.chip, active && styles.chipOn]}
-                accessibilityLabel={`Key: ${k}`}
-                accessibilityState={{ selected: active }}
-              >
-                <Text style={[styles.chipText, active && styles.chipTextOn]}>{k}</Text>
-              </Touchable>
-            );
-          })}
-        </ScrollView>
+        {/* No keys, no section: a guest's preview takes none. */}
+        {keys.length > 0 ? (
+          <>
+            <Text style={[styles.eyebrow, styles.eyebrowGap]}>Key signature</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+              {keys.map((k) => {
+                const active = selectedKey === k;
+                return (
+                  <Touchable
+                    key={k}
+                    onPress={() => onKey(k)}
+                    radius={radii.pill}
+                    style={[styles.chip, active && styles.chipOn]}
+                    accessibilityLabel={`Key: ${k}`}
+                    accessibilityState={{ selected: active }}
+                  >
+                    <Text style={[styles.chipText, active && styles.chipTextOn]}>{k}</Text>
+                  </Touchable>
+                );
+              })}
+            </ScrollView>
+          </>
+        ) : null}
 
         <Text style={[styles.eyebrow, styles.eyebrowGap]}>Beats in a bar</Text>
         <View style={styles.chipsWrap}>

@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { transcriptionsApi, type SubmitOptions } from "../api/endpoints";
+import type { AxiosError } from "axios";
+import { previewApi, transcriptionsApi, type SubmitOptions } from "../api/endpoints";
 import { safeReason, toApiError } from "../api/client";
+import { previewRefusal, type PreviewRefusal } from "./guestPreview";
 import {
   canRetry,
   isOffline,
@@ -82,6 +84,9 @@ function normalizeStatus(status: unknown): TranscriptionStatus {
 type LastSubmit =
   | { kind: "upload"; fileUri: string; fileName: string; opts: SubmitOptions }
   | { kind: "link"; url: string; opts: Parameters<typeof transcriptionsApi.submitLink>[1] };
+
+/** What the guest preview's send came to: the job the API made, or why it would not (`lib/guestPreview`). */
+export type PreviewSent = { jobId: string } | { refusal: PreviewRefusal; message: string };
 
 /**
  * Follows the job the record or link screen submitted, as it happens: its live stream (`lib/jobStream`)
@@ -191,7 +196,7 @@ export function useJobPolling() {
    * Only while the app is in front (`jobStream`): a stream that heard the job end means the server sends no
    * push ("they are looking at the result"), so in the background nothing listens and the push comes.
    */
-  const follow = useCallback((jobId: string) => {
+  const follow = useCallback((jobId: string, preview: boolean) => {
     stopFollowing();
     stopWatch.current = watchJob(jobId, {
       onJob: (job: TranscriptionJob) => {
@@ -232,7 +237,7 @@ export function useJobPolling() {
         failedPolls.current = 0;
         setState((prev) => (prev.offline ? { ...prev, offline: false } : prev));
       },
-    });
+    }, { preview });
   }, [stopFollowing, finish, missed, scheduleClocks]);
 
   /**
@@ -255,9 +260,9 @@ export function useJobPolling() {
     superseded.current.set(jobId, stop);
   }, [finish]);
 
-  /** Shared tail of `start` and `startLink`: bind the job, drain any early finish, start polling. */
+  /** Shared tail of `start`, `startLink` and `startPreview`: bind the job, drain any early finish, start polling. */
   const track = useCallback(
-    (res: Awaited<ReturnType<typeof transcriptionsApi.submit>> | string) => {
+    (res: Awaited<ReturnType<typeof transcriptionsApi.submit>> | string, preview = false) => {
         const jobId =
           typeof res === "string"
             ? res
@@ -299,7 +304,7 @@ export function useJobPolling() {
           offline: false,
         }));
         scheduleClocks();
-        follow(jobId);
+        follow(jobId, preview);
         return jobId;
     },
     [follow, finish, scheduleClocks],
@@ -355,6 +360,23 @@ export function useJobPolling() {
     [track, fail, begin],
   );
 
+  /** The upload's own progress for the card, while the upload begun at `token` is the one on screen. */
+  const uploadProgress = useCallback(
+    (token: number) => (fraction: number) => {
+      // Only while this very upload is the one on screen, and only before the server answered.
+      if (startedAt.current !== token) return;
+      setState((prev) => {
+        if (prev.stage !== "uploading") return prev;
+        const progress = Math.max(prev.progress, fraction);
+        // Bytes leaving the phone are movement; the stall clock measures from the last of them.
+        markRef.current = markProgress(markRef.current, "uploading", progress, Date.now());
+        return { ...prev, progress };
+      });
+      scheduleClocks();
+    },
+    [scheduleClocks],
+  );
+
   const start = useCallback(
     async (
       fileUri: string,
@@ -366,18 +388,7 @@ export function useJobPolling() {
       const token = startedAt.current as number;
       try {
         const res = await transcriptionsApi.submit(fileUri, fileName, opts, {
-          onUploadProgress: (fraction) => {
-            // Only while this very upload is the one on screen, and only before the server answered.
-            if (startedAt.current !== token) return;
-            setState((prev) => {
-              if (prev.stage !== "uploading") return prev;
-              const progress = Math.max(prev.progress, fraction);
-              // Bytes leaving the phone are movement; the stall clock measures from the last of them.
-              markRef.current = markProgress(markRef.current, "uploading", progress, Date.now());
-              return { ...prev, progress };
-            });
-            scheduleClocks();
-          },
+          onUploadProgress: uploadProgress(token),
         });
         if (startedAt.current !== token) return null;
         return track(res);
@@ -386,7 +397,53 @@ export function useJobPolling() {
         return fail(e);
       }
     },
-    [track, fail, begin, scheduleClocks],
+    [track, fail, begin, uploadProgress],
+  );
+
+  /**
+   * The guest preview (board l-ux-high/07): the take goes to `POST /api/preview` with no account and its job is
+   * followed on the preview's routes, as any job is. A refused send leaves the card idle and says why
+   * (`lib/guestPreview`), so the screen can keep the take when sending again could work. Never "Try again" after a
+   * long wait: a second preview from this phone would be refused while the first one runs.
+   *
+   * A job the API made after the screen moved on (left mid-upload) is still handed back, unfollowed: it is this
+   * phone's one preview, so the screen keeps its id for the guest to come back to.
+   */
+  const startPreview = useCallback(
+    async (
+      fileUri: string,
+      fileName: string,
+      opts: Parameters<typeof previewApi.submit>[2],
+    ): Promise<PreviewSent | null> => {
+      lastSubmit.current = null;
+      begin("uploading");
+      const token = startedAt.current as number;
+      try {
+        const res = await previewApi.submit(fileUri, fileName, opts, { onUploadProgress: uploadProgress(token) });
+        if (startedAt.current !== token) return typeof res?.jobId === "string" ? { jobId: res.jobId } : null;
+        return { jobId: track(res, true) };
+      } catch (e) {
+        if (startedAt.current !== token) return null;
+        stopFollowing();
+        activeJobId.current = null;
+        startedAt.current = null;
+        markRef.current = null;
+        setState(IDLE);
+        const err = toApiError(e);
+        return { refusal: previewRefusal((e as AxiosError)?.response?.status, err.code), message: err.message };
+      }
+    },
+    [track, begin, stopFollowing, uploadProgress],
+  );
+
+  /** A preview sent before (the guest left while it ran): followed again from where it stands. */
+  const resumePreview = useCallback(
+    (jobId: string) => {
+      lastSubmit.current = null;
+      begin("queued");
+      track(jobId, true);
+    },
+    [begin, track],
   );
 
   /**
@@ -425,5 +482,5 @@ export function useJobPolling() {
     [stopFollowing, stopSuperseded],
   );
 
-  return { state, start, startLink, retry, reset };
+  return { state, start, startLink, startPreview, resumePreview, retry, reset };
 }

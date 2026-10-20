@@ -111,7 +111,7 @@ export function PitchMatchScreen({ track }: { track: PracticeTrack | null }) {
                   summary={grade.summary}
                   sub={!playful && grade.marks ? tuningLine(grade.marks.tuningCents) : null}
                   marks={noteMarks(grade.marks, ex.notes).map((m) => ({ key: m.index, text: m.text, sub: m.cents, tone: m.tone }))}
-                  legend={playful ? "Green spot on · amber close · grey not quite" : "Green in tune · amber close · grey off. Numbers are cents off."}
+                  legend={playful ? "✓ spot on · ~ close · struck through: not quite" : "✓ in tune · ~ close · struck through: off. Numbers are cents off."}
                   reward={grade.reward}
                   playful={playful}
                 />

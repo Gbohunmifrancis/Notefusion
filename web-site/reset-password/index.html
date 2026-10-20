@@ -15,7 +15,7 @@
 <link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/site-pages.css?v=4">
+<link rel="stylesheet" href="/assets/site-pages.css?v=5">
 </head>
 <body class="site-document site-document--reset">
 
@@ -29,7 +29,7 @@
     <div class="site-shell-actions">
       <button type="button" class="theme-toggle" data-theme-toggle data-track="Theme toggle" aria-label="Colour theme" title="Colour theme"><svg class="ic tt-light" aria-hidden="true"><use href="/assets/icons.svg#i-sun"/></svg><svg class="ic tt-dark" aria-hidden="true"><use href="/assets/icons.svg#i-moon"/></svg><svg class="ic tt-system" aria-hidden="true"><use href="/assets/icons.svg#i-monitor"/></svg></button>
       <a class="site-shell-signin" href="/app">Sign in</a>
-      <a class="site-shell-cta" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="utility_header">Get the app</a>
+      <a class="site-shell-cta" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="utility_header">Get<span class="cta-more"> the</span> app</a>
     </div>
     <details class="site-shell-mobile">
       <summary aria-label="Open site navigation"><svg class="ic ic-open" aria-hidden="true"><use href="/assets/icons.svg#i-menu"/></svg><svg class="ic ic-close" aria-hidden="true"><use href="/assets/icons.svg#i-x"/></svg></summary>
@@ -49,7 +49,7 @@
     <div id="done" class="notice good" role="alert" hidden></div>
 
     <form id="form" novalidate hidden>
-      <p>Signing in as <strong id="who"></strong>.</p>
+      <p>Setting a new password for <strong id="who"></strong>.</p>
 
       <label for="pw">New password</label>
       <input id="pw" type="password" autocomplete="new-password" minlength="8" required>
@@ -61,7 +61,7 @@
       <button id="submit" type="submit">Set new password</button>
     </form>
 
-    <p id="closing" hidden>Open the NoteFusion app and sign in with your new password.</p>
+    <p id="closing" hidden>Sign in with your new password on the website or in the NoteFusion app. <a href="/app">Sign in on the website</a></p>
   </div>
 </main>
 
@@ -200,7 +200,7 @@
 
 <!-- Page Pulse Tracking Script -->
 <!-- End Page Pulse Tracking Script -->
-<script src="/assets/site-theme.js?v=1" defer></script>
+<script src="/assets/site-theme.js?v=2" defer></script>
 <script src="/assets/season.js?v=2" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>

@@ -34,6 +34,11 @@ export function meterLabel(meter: Meter | null): string {
   return (METER_CHOICES.find((c) => c.value === meter) ?? METER_CHOICES[0]).label;
 }
 
+/** The choice as Song link's "More options" row shows it while folded: "Beats in a bar: Not sure". */
+export function meterSummary(meter: Meter | null): string {
+  return `Beats in a bar: ${(METER_CHOICES.find((c) => c.value === meter) ?? METER_CHOICES[0]).short}`;
+}
+
 /** The analytics value for a submission: the meter, or "not_sure". */
 export function meterEventValue(meter: Meter | null): string {
   return meter ?? "not_sure";

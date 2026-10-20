@@ -6,6 +6,7 @@ import { NightField } from "../components/night/NightField";
 import { BackButton, ErrorNote, NightScreen, nightText } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
+import { emailFieldError } from "../lib/authErrors";
 import { MIN_PASSWORD, passwordStrength } from "../lib/passwordStrength";
 import { night, nightFonts } from "../design/theme";
 import type { AuthStackParams } from "../navigation/types";
@@ -17,16 +18,18 @@ type Props = NativeStackScreenProps<AuthStackParams, "Register">;
  * no "confirm password" field — the eye in the field shows what was typed, which
  * catches a typo without making everyone type it twice.
  */
-export function RegisterScreen({ navigation }: Props) {
+export function RegisterScreen({ navigation, route }: Props) {
   const { signUp } = useAuth();
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
 
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(route.params?.email ?? "");
   const [password, setPassword] = useState("");
   const [emailTouched, setEmailTouched] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /** The server refused the address itself (a throwaway inbox): said on the Email field, not above Continue. */
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const nameOk = fullName.trim().length >= 2;
@@ -38,13 +41,17 @@ export function RegisterScreen({ navigation }: Props) {
   async function submit() {
     if (!canSubmit) return;
     setError(null);
+    setEmailError(null);
     setBusy(true);
     try {
       // No session yet: registration mails a code, and VerifyEmail is what signs in.
       const registered = await signUp(fullName.trim(), email.trim(), password);
-      navigation.navigate("VerifyEmail", { email: registered, fromSignUp: true });
+      navigation.navigate("VerifyEmail", { email: registered, fromSignUp: true, sentAt: Date.now() });
     } catch (e) {
-      setError(toApiError(e).message);
+      const err = toApiError(e);
+      const onEmail = emailFieldError(err);
+      if (onEmail) setEmailError(onEmail);
+      else setError(err.message);
     } finally {
       setBusy(false);
     }
@@ -82,6 +89,7 @@ export function RegisterScreen({ navigation }: Props) {
           onChangeText={(t) => {
             setEmail(t);
             setError(null);
+            setEmailError(null);
           }}
           onBlur={() => setEmailTouched(true)}
           keyboardType="email-address"
@@ -93,7 +101,7 @@ export function RegisterScreen({ navigation }: Props) {
           submitBehavior="submit"
           // Only once they have left the field: "enter a valid email" while someone
           // is still typing the address is nagging, not help.
-          error={emailTouched && email.length > 0 && !emailOk ? "That doesn't look like an email address." : undefined}
+          error={emailError ?? (emailTouched && email.length > 0 && !emailOk ? "That doesn't look like an email address." : undefined)}
         />
         <NightField
           ref={passwordRef}
@@ -128,7 +136,7 @@ export function RegisterScreen({ navigation }: Props) {
 
       <Text style={[nightText.muted, styles.footer]}>
         Already have one?{" "}
-        <Text style={nightText.link} onPress={() => navigation.navigate("Login")} accessibilityRole="link">
+        <Text style={nightText.link} onPress={() => navigation.navigate("Login", { email: email.trim() })} accessibilityRole="link">
           Sign in
         </Text>
       </Text>

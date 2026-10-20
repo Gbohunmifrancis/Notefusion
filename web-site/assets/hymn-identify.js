@@ -46,6 +46,14 @@
     if (text) status.appendChild(document.createTextNode(text));
   }
   function showStart(on) { start.hidden = !on; }
+  /** A microphone the browser blocks for this site: how to let it listen again, step by step (board l-ux-high/06d). */
+  function sayBlocked() {
+    say("The microphone is blocked for this site. To hum here, allow it again:", "error");
+    var steps = el("ol", "identify-steps");
+    ["Tap the lock (or settings) icon beside the address.", "Choose Permissions › Microphone › Allow.", "Then tap Hum a tune, or choose a recording instead."]
+      .forEach(function (t) { steps.appendChild(el("li", null, t)); });
+    status.appendChild(steps);
+  }
   function clearResult() { result.hidden = true; result.className = "identify-result"; result.textContent = ""; }
 
   function againButton(label) {
@@ -121,6 +129,7 @@
   var OWN = /^(HYMN_[A-Z_]+|RATE_LIMITED)$/;
   function failure(code, message, status) {
     var text = OWN.test(code || "") && message ? message
+      : code === "TIMEOUT" ? "This is taking longer than usual. Please try again in a moment."
       : status === 0 ? "We couldn't reach NoteFusion. Check your connection and try again."
       : "Something went wrong on our side. Please try again in a moment.";
     showStart(true);
@@ -128,14 +137,29 @@
     track("error;code=" + (code || (status ? "HTTP " + status : "network")));
   }
 
+  /**
+   * A take that did not get through (no connection, too slow, the finder busy or a server fault) is kept, with
+   * "Send it again" under the note, instead of being lost with the error (board l-ux-high/06e). The rate limit's
+   * refusal keeps nothing: sending it again at once would only be refused again.
+   */
+  function keepTake(blob, name, statusCode) {
+    if (!(statusCode === 0 || statusCode === 408 || statusCode >= 500)) return;
+    say("Couldn't send it. Your take is kept.", "error");
+    var again = el("button", "identify-again identify-resend", "Send it again");
+    again.type = "button";
+    again.addEventListener("click", function () { send(blob, name); });
+    status.appendChild(again);
+  }
   function send(blob, name) {
     clearResult();
     showStart(false);
-    say("Listening for the tune…", "listening");
+    say("Finding your hymn… usually a few seconds.", "listening");
     var form = new FormData();
     form.append("audio", blob, name || "hum.webm");
     var ctrl = window.AbortController ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, TIMEOUT_MS);
+    // A slow answer is not a lost connection: the abort is told apart from a network failure.
+    var timedOut = false;
+    var timer = setTimeout(function () { timedOut = true; if (ctrl) ctrl.abort(); }, TIMEOUT_MS);
     var headers = {};
     var dev = deviceId();
     if (dev) headers["X-Device-Id"] = dev;
@@ -144,12 +168,12 @@
         return r.text().then(function (text) {
           var body = null;
           try { body = text ? JSON.parse(text) : null; } catch (e) { /* not JSON */ }
-          if (!r.ok) { failure(body && body.code, body && body.message, r.status); return; }
-          if (!body) { failure(null, null, r.status); return; }
+          if (!r.ok) { failure(body && body.code, body && body.message, r.status); keepTake(blob, name, r.status); return; }
+          if (!body) { failure(null, null, r.status); keepTake(blob, name, r.status); return; }
           render(body);
         });
       })
-      .catch(function () { failure(null, null, 0); })
+      .catch(function () { failure(timedOut ? "TIMEOUT" : null, null, 0); keepTake(blob, name, 0); })
       .then(function () { clearTimeout(timer); });
   }
 
@@ -161,6 +185,7 @@
       onTake: function (blob, name) { send(blob, name); },
       onError: function (text, kind) {
         showStart(true);
+        if (kind === "blocked") { sayBlocked(); return; }
         say(text + (kind === "short" ? "" : " You can choose a recording instead."), "error");
       }
     });

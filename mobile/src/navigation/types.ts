@@ -6,18 +6,48 @@ import type { SeasonName } from '../lib/season';
 
 export type AuthStackParams = {
   Onboarding: undefined;
-  /** Google, email or sign in: where the intro ends and where a signed-out return lands. */
+  /** Google, email, sign in or try it first: where the intro ends and where a signed-out return lands. */
   Welcome: undefined;
-  Login: undefined;
-  Register: undefined;
+  /** Login and Register are each seeded with the email typed on the other, when one was. */
+  Login: { email?: string } | undefined;
+  Register: { email?: string } | undefined;
   /**
    * The email is a param rather than screen state because two routes arrive here:
    * sign-up, and a login that was refused as unverified. Both know the address the
-   * code went to, and the screen must show it so a typo is visible.
+   * code went to, and the screen must show it so a typo is visible. `sentAt` is when the
+   * code went (ms): a start that reopens the screen (lib/pendingVerify) keeps the first time.
+   * Every route passes all three, so none is taken from that reopening's initial params.
    */
-  VerifyEmail: { email: string; fromSignUp?: boolean };
+  VerifyEmail: { email: string; fromSignUp: boolean; sentAt: number };
   /** Seeded with whatever was already typed into Sign in. */
   ForgotPassword: { email?: string } | undefined;
+  /**
+   * "Try it first" (board l-ux-high/07): Record as a guest — thirty seconds, the microphone or a file, no account —
+   * sent to the website's anonymous preview. Follows a preview this phone sent before and has not seen yet.
+   */
+  GuestRecord: undefined;
+  /** The guest's preview in the Result screen, read-only (`guest`), with the card that keeps it. */
+  Result: ResultParams;
+};
+
+/** The Result screen's params: in the app, and in the signed-out stack for a guest's preview. */
+export type ResultParams = {
+  result: TranscriptionResult;
+  sourceJobId?: string;
+  savedId?: string;
+  title?: string;
+  /**
+   * Opened straight from its finished job (the record or link flow, or the job's notification): Doh's toast
+   * celebrates it, once per job. Never set on a reopen from the Library or Home.
+   */
+  fresh?: boolean;
+  /** Open on Learn my part (or, with no parts, Rehearse's loop): Home's "Practise this tune". */
+  practise?: boolean;
+  /**
+   * A guest's preview (board l-ux-high/07): the sheet, playback and the ways to read it, nothing that saves,
+   * shares, exports or edits, and the "Keep this sheet" card. Only ever in the signed-out stack.
+   */
+  guest?: boolean;
 };
 
 /**
@@ -53,19 +83,7 @@ export type RootStackParams = {
    */
   Listen: undefined;
   // Result can arrive fresh from a job or be opened from the library.
-  Result: {
-    result: TranscriptionResult;
-    sourceJobId?: string;
-    savedId?: string;
-    title?: string;
-    /**
-     * Opened straight from its finished job (the record or link flow, or the job's notification): Doh's toast
-     * celebrates it, once per job. Never set on a reopen from the Library or Home.
-     */
-    fresh?: boolean;
-    /** Open on Learn my part (or, with no parts, Rehearse's loop): Home's "Practise this tune". */
-    practise?: boolean;
-  };
+  Result: ResultParams;
   /**
    * The account and the phone's settings (account, appearance, data and offline, help and about, sign out,
    * delete). Pushed from Profile.

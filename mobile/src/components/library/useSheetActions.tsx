@@ -15,6 +15,7 @@ import { SheetActionsSheet } from "./SheetActionsSheet";
 import { showDialog } from "../../lib/dialog";
 import { useSubscription } from "../../lib/subscription";
 import { useOfflineLibrary } from "../../lib/offlineLibrary";
+import { folderNamed } from "../../lib/savedSheet";
 import {
   askToDelete,
   deleteSheets,
@@ -117,8 +118,9 @@ export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: 
       kind: "options",
       title: one ? one.title : `${targets.length} sheets`,
       message: "Move to a folder",
+      // Every folder: the options sheet scrolls once the list is longer than the screen.
       actions: [
-        ...folders.slice(0, 6).map((f) => ({
+        ...folders.map((f) => ({
           label: f,
           icon: "folder" as const,
           selected: targets.every((t) => t.folder === f),
@@ -216,7 +218,7 @@ export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: 
             onPress={() => {
               const targets = naming;
               setNaming(null);
-              if (targets) void fileIn(targets, newFolder.trim());
+              if (targets) void fileIn(targets, folderNamed(newFolder, folders));
             }}
           />
         </SheetActions>

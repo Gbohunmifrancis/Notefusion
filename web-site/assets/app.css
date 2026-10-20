@@ -140,7 +140,7 @@ body.is-recording .brand-mark, body.is-recording .home-mark { animation: heartbe
 .user-menu-item { cursor: pointer; }
 .user-menu-item .ic, .user-menu-row > .ic { width: 20px; height: 20px; color: var(--muted); }
 .user-menu-item:hover { background: var(--wash); color: var(--ink); }
-.user-menu-item.danger, .user-menu-item.danger .ic { color: var(--danger); }
+.user-menu-item.danger, .user-menu-item.danger .ic { color: var(--danger-text); }
 .user-menu-row .theme-switch, .user-menu-item .switch { margin-left: auto; }
 .user-menu-sep { height: 1px; background: var(--line); margin: 6px 4px; }
 
@@ -273,7 +273,7 @@ textarea { resize: vertical; line-height: 1.5; }
 .btn-ghost:hover:not(:disabled) { border-color: var(--faint); background: var(--wash); }
 .btn-gold { background: var(--gold); color: var(--gold-ink); }
 .btn-gold:hover:not(:disabled) { background: #eab63a; }
-.btn-danger { color: var(--danger); border-color: var(--line-strong); }
+.btn-danger { color: var(--danger-text); border-color: var(--line-strong); }
 .btn-danger:hover:not(:disabled) { background: var(--danger-soft); border-color: transparent; }
 .btn-sm { min-height: 36px; padding: 6px 13px; font-size: 0.85rem; border-radius: 8px; }
 .btn-sm .ic { width: 16px; height: 16px; }
@@ -281,6 +281,7 @@ textarea { resize: vertical; line-height: 1.5; }
 .btn-icon .ic { width: 16px; height: 16px; }
 .btn.on { background: var(--blue-fill, var(--blue)); color: #fff; border-color: var(--blue-fill, var(--blue)); }
 .btn-link { background: none; border: none; color: var(--blue-dark); padding: 0; font: inherit; font-weight: 600; cursor: pointer; min-height: 0; }
+.btn-link:disabled { color: var(--muted); cursor: default; }
 .btn .lock { width: 14px; height: 14px; opacity: 0.75; }
 .btn-rec { color: var(--danger); }
 .btn-rec .ic { color: var(--danger); }
@@ -293,9 +294,9 @@ textarea { resize: vertical; line-height: 1.5; }
 .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 
 .alert { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: var(--radius-sm); font-size: 0.9rem; margin: 0 0 14px; line-height: 1.5; }
-.alert-danger { background: var(--danger-soft); color: var(--danger); }
+.alert-danger { background: var(--danger-soft); color: var(--danger-text); }
 .alert-info { background: var(--blue-tint); color: var(--blue-dark); }
-.alert-success { background: var(--success-soft); color: var(--success); }
+.alert-success { background: var(--success-soft); color: var(--success-alert-text); }
 .alert .btn { margin-left: auto; }
 .doh-ask { flex-wrap: wrap; align-items: center; }
 .doh-ask .doh-choices { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
@@ -324,7 +325,7 @@ textarea { resize: vertical; line-height: 1.5; }
 .stage .dot::before { content: counter(stage); }
 .stage.on { background: var(--blue-tint); color: var(--blue-dark); }
 .stage.on .dot { border-color: var(--blue-fill, var(--blue)); background: var(--blue-fill, var(--blue)); color: #fff; animation: pulse 1.2s ease-in-out infinite; }
-.stage.done { background: var(--success-soft); color: var(--success); }
+.stage.done { background: var(--success-soft); color: var(--success-text); }
 .stage.done .dot { background: var(--success); border-color: var(--success); color: #fff; }
 .stage.done .dot::before { content: "✓"; }
 @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35); } 50% { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); } }
@@ -334,7 +335,7 @@ textarea { resize: vertical; line-height: 1.5; }
 .bar-pct { flex: none; min-width: 3.2em; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; font-size: 0.9rem; color: var(--blue-dark); }
 .p-status { margin: 10px 0 0; color: var(--copy); font-weight: 600; }
 .p-slow { margin: 8px 0 0; color: var(--color-warning-600); }
-.p-offline { margin: 8px 0 0; color: var(--danger); }
+.p-offline { margin: 8px 0 0; color: var(--danger-text); }
 .p-retry { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 12px 0 0; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--wash); color: var(--copy); }
 /* "Notify me when it's ready": one quiet button under the note, asked from a click (assets/notify.js). */
 .p-notify { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 16px 0 0; }
@@ -392,20 +393,28 @@ table.hymn td:last-child { border-right: 2px solid var(--ink); }
 .sing-score { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
 .sing-score strong { font-size: 2.2rem; letter-spacing: -0.02em; min-width: 2.2ch; text-align: center; color: var(--ink); }
 .marks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-.mark { min-width: 42px; text-align: center; border: 1.5px solid var(--line); border-radius: 8px; padding: 4px 6px; font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; background: #fff; }
+/* A note's mark carries a shape as well as a colour (app.js markSpan): ✓ in tune, ~ close, off the note struck through
+ * in grey (never red), not sung dashed with –. */
+.mark { min-width: 42px; min-height: 44px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border: 1.5px solid var(--line); border-radius: 8px; padding: 4px 6px; font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; background: #fff; }
+.mark b { font-weight: inherit; }
 .mark small { display: block; font-weight: 500; color: var(--muted); font-size: 0.7rem; font-family: Inter, sans-serif; }
-.mark.hit { border-color: var(--success); color: var(--success); }
-.mark.near { border-color: var(--amber); color: var(--amber); }
-.mark.wrong { border-color: var(--danger); color: var(--danger); }
-.mark.missed { color: var(--faint); }
+.mark.hit { border-color: var(--success); color: var(--success-text); }
+.mark.near { border-color: var(--amber); color: var(--amber-text); }
+.mark.hit b::after, .mark.near b::after, .mark.missed b::after { margin-left: 3px; font-family: var(--font-sans, sans-serif); font-weight: 600; }
+.mark.hit b::after { content: "✓"; }
+.mark.near b::after { content: "~"; }
+.mark.wrong { border-color: var(--line-strong); color: var(--muted); }
+.mark.wrong b { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.mark.missed { border-style: dashed; border-color: var(--line-strong); color: var(--faint); }
+.mark.missed b::after { content: "–"; }
 .tr-readout { display: inline-flex; align-items: baseline; gap: 6px; padding: 0 4px; }
 .tr-readout strong { font-size: 1.35rem; min-width: 2ch; display: inline-block; text-align: center; }
 table.ranges { border-collapse: collapse; margin-top: 12px; font-size: 0.875rem; width: 100%; }
 table.ranges td { padding: 6px 12px 6px 0; border-top: 1px solid var(--line); }
 table.ranges td:first-child { text-transform: capitalize; color: var(--muted); }
-table.ranges .ok { color: var(--success); font-weight: 600; }
-table.ranges .warn { color: var(--amber); font-weight: 600; }
-table.ranges .bad { color: var(--danger); font-weight: 600; }
+table.ranges .ok { color: var(--success-text); font-weight: 600; }
+table.ranges .warn { color: var(--amber-text); font-weight: 600; }
+table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 
 .share-row { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .share-row input { width: min(380px, 70vw); min-height: 36px; padding: 6px 10px; font-size: 0.875rem; }
@@ -415,7 +424,7 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 .plan { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; background: #fff; }
 .plan .price { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); }
 .plan .per { color: var(--muted); font-size: 0.85rem; }
-.plan .save { color: var(--success); font-size: 0.8rem; font-weight: 700; }
+.plan .save { color: var(--success-text); font-size: 0.8rem; font-weight: 700; }
 .plan .btn { width: 100%; margin-top: 12px; }
 .foot { color: var(--muted); font-size: 0.8rem; text-align: center; margin-top: 36px; }
 .foot a { color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
@@ -459,8 +468,10 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 .lrow-note { margin: 10px 0 0; color: var(--muted); font-size: 0.82rem; }
 .lrow-btn { cursor: pointer; }
 .lrow-btn:hover { background: var(--wash); }
-.lrow-btn.danger, .lrow-btn.danger .k > .ic { color: var(--danger); }
-.pill-active { background: var(--success-soft); color: var(--success); }
+/* Inside the card's rounded, clipped edge, so the keyboard's ring is not cut off at the sides. */
+.list-card :focus-visible { outline-offset: -2px; }
+.lrow-btn.danger, .lrow-btn.danger .k > .ic { color: var(--danger-text); }
+.pill-active { background: var(--success-soft); color: var(--success-text); }
 .theme-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 8px; background: var(--wash); }
 .theme-seg button { min-width: 64px; padding: 6px 10px; border: 0; border-radius: 8px; background: none; font: inherit; font-size: 0.82rem; font-weight: 600; color: var(--muted); cursor: pointer; }
 .theme-seg button:hover { color: var(--ink); }
@@ -476,13 +487,15 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 .auth-points li { display: flex; gap: 10px; align-items: flex-start; font-size: 0.95rem; color: var(--copy); }
 .auth-points .ic { width: 20px; height: 20px; color: var(--blue); margin-top: 1px; }
 .try-free { margin-top: 22px; }
-.try-free .try-status-error { color: var(--danger); }
+.try-free .try-status-error { color: var(--danger-text); }
 .try-free .try-status-info { color: var(--blue-dark); }
 .try-free .try-status a { font-weight: 600; }
 .try-file { position: relative; }
 .try-file input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip: rect(0 0 0 0); }
 .try-file:has(input:focus-visible) { outline: 2px solid var(--blue); outline-offset: 2px; }
 #try-status { min-height: 1.3em; margin-top: 10px; }
+#try-status .try-again { display: flex; min-height: 44px; margin-top: 10px; }
+.alert .alert-action { display: flex; margin-top: 10px; min-height: 40px; }
 .try-meter { display: flex; align-items: center; gap: 8px; margin: 12px 0 0; font-weight: 600; color: var(--muted); }
 .try-meter select { width: auto; min-height: 34px; padding: 4px 10px; font-size: 0.85rem; font-weight: 600; }
 
@@ -507,6 +520,8 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 .modal-close { position: absolute; top: 16px; right: 16px; }
 /* The title takes focus when the dialog opens (for screen readers); it is never a Tab stop, so no ring. */
 #upgrade-title:focus { outline: none; }
+/* A view's heading takes focus when the nav opens it (for screen readers); never a Tab stop, so no ring. */
+main h1[tabindex="-1"]:focus { outline: none; }
 @keyframes onb-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: none; } }
 .onb-skip { position: absolute; top: 16px; right: 18px; background: none; border: none; color: var(--muted); font-weight: 600; cursor: pointer; font-size: 0.875rem; }
 .onb-skip:hover { color: var(--ink); }
@@ -540,8 +555,9 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
   .topbar .side-help { display: none; }
   body.guest .topbar .side-help { display: inline-flex; }
   /* The sidebar becomes a drawer that slides in over the page. */
-  .side { position: fixed; top: 0; left: 0; bottom: 0; height: auto; width: min(300px, 86vw); transform: translateX(-104%); transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: none; }
-  body.drawer-open .side { transform: none; box-shadow: 0 20px 60px rgba(15, 23, 42, 0.3); }
+  /* Closed, it is hidden (out of the tab order and the screen reader's reach) once it has slid away. */
+  .side { position: fixed; top: 0; left: 0; bottom: 0; height: auto; width: min(300px, 86vw); transform: translateX(-104%); visibility: hidden; transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.28s; box-shadow: none; }
+  body.drawer-open .side { transform: none; visibility: visible; transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 20px 60px rgba(15, 23, 42, 0.3); }
   .side .drawer-close { display: inline-flex; }
   .drawer-backdrop { position: fixed; inset: 0; z-index: 19; background: rgba(15, 23, 42, 0.45); }
   .user-menu { top: calc(var(--topbar-h) + 6px); right: 12px; width: min(320px, calc(100vw - 24px)); }
@@ -599,7 +615,14 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 .pw-eye .ic { width: 20px; height: 20px; }
 .pw-hint { display: flex; align-items: center; gap: 6px; margin: 8px 0 0; font-size: 0.82rem; color: var(--muted); }
 .pw-hint .ic { width: 16px; height: 16px; }
-.pw-hint.ok { color: var(--success); }
+.pw-hint.ok { color: var(--success-text); }
+/* A problem with one field, said under it (app.js fieldError); its field takes the red edge. */
+.field-error { display: flex; align-items: flex-start; gap: 6px; margin: 8px 0 0; font-size: 0.85rem; line-height: 1.45; color: var(--danger-text); }
+.field-error .ic { width: 16px; height: 16px; margin-top: 2px; }
+.field-error .btn-link { position: relative; font-size: inherit; color: var(--blue-dark); text-decoration: underline; text-underline-offset: 2px; }
+.field-error .btn-link::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); } /* a 44 px target on a text line */
+.auth-form .auth-switch .btn-link { display: inline-flex; align-items: center; min-height: 44px; }
+.auth-form .auth-switch + .auth-switch { margin-top: -16px; }
 .code-input { text-align: center; letter-spacing: 0.3em; font-weight: 700; font-size: 1.2rem; }
 .auth-note { color: var(--muted); margin: 0; }
 .btn-block { width: 100%; min-height: 48px; }
@@ -720,6 +743,17 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .btn-pay .ic { width: 20px; height: 20px; }
 .pay-fine { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 10px 0 0; font-size: 0.78rem; color: var(--muted); text-align: center; }
 .pay-fine .ic { width: 16px; height: 16px; flex: none; }
+/* The price, the button and their notes stay at the bottom of the dialog while the plans scroll (board l-ux-high/03b). */
+/* bottom matches the card's bottom padding, so it sits on the card's edge with nothing showing under it. */
+.pay-foot { position: sticky; bottom: -26px; z-index: 1; margin: 12px -28px -26px; padding: 4px 28px 18px; background: #fff; border-top: 1px solid var(--line); box-shadow: 0 -10px 18px rgba(15, 23, 42, 0.06); }
+:root[data-theme="dark"] .pay-foot { background: #0E121A; box-shadow: 0 -10px 18px rgba(0, 0, 0, 0.35); }
+:root[data-theme="dark"] .pay-error { color: #FF9AA4; }
+/* The card's phone padding (24px 18px 20px, max-width 640px above) is matched here, after the rule it overrides. */
+@media (max-width: 640px) { .pay-foot { bottom: -20px; margin: 12px -18px -20px; padding: 4px 18px 14px; } }
+.pay-fx { margin: 8px 0 0; font-size: 0.85rem; color: var(--muted); text-align: center; }
+.pay-error { margin: 10px 0 0; padding: 8px 10px; border-radius: 8px; background: var(--danger-soft, rgba(220, 38, 38, 0.08)); color: var(--danger-text); font-size: 0.9rem; }
+.pay-reason { display: flex; gap: 8px; align-items: flex-start; margin: 4px 0 14px; padding: 10px 12px; border-radius: 8px; background: var(--blue-tint, rgba(37, 99, 235, 0.08)); color: var(--ink); font-size: 0.95rem; line-height: 1.45; }
+.pay-reason .ic { width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--blue-dark); }
 .pay-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 #plans-extend { margin-top: 4px; }
 
@@ -853,4 +887,4 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .choir-members li span { min-width: 0; overflow-wrap: anywhere; }
 .choir-lib { margin-top: 16px; }
 .choir-lib .group-title { display: flex; align-items: center; gap: 8px; }
-.pill-ended { background: var(--danger-soft); color: var(--danger); }
+.pill-ended { background: var(--danger-soft); color: var(--danger-text); }

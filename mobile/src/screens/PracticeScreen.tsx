@@ -22,7 +22,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Animated, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { AccessibilityInfo, ActivityIndicator, Animated, Linking, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { Icon } from "../components/Icon";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -69,6 +69,7 @@ import {
   unitFraction,
   sortBadges,
   streakLabel,
+  streakLine,
   streakSnapshot,
   weekdayLetter,
 } from "../lib/practiceProgress";
@@ -76,6 +77,7 @@ import {
   badgeArt,
   celebrationFor,
   flameArt,
+  gradeAnnouncement,
   levelArt,
   mascotArt,
   mascotLine,
@@ -87,6 +89,7 @@ import {
   tuningLine,
 } from "../lib/practiceTrack";
 import { ProblemNote } from "../components/ProblemNote";
+import { onlySettingsCanGrant } from "../lib/micPermission";
 import { CostumedArt } from "../components/season/Costume";
 import { ART } from "../components/practice/art/svgs";
 import { useSeason } from "../lib/seasonStore";
@@ -101,6 +104,7 @@ const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberO
 /** Recording runs on this long after the last note, so a held ending is not cut (the server keeps four). */
 const TAIL_SEC = 1;
 const TOAST_MS = 3200;
+const MIC_REFUSED = "Microphone permission is needed to sing the drill.";
 
 export function PracticeScreen() {
   const colors = useColors();
@@ -122,6 +126,8 @@ export function PracticeScreen() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  /** The microphone was refused for good: only the phone's settings can turn it on now. */
+  const [micBlocked, setMicBlocked] = useState(false);
   const [grade, setGrade] = useState<GradeResult | null>(null);
 
   const [picking, setPicking] = useState(false);
@@ -142,12 +148,23 @@ export function PracticeScreen() {
   const stopAt = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startedAt = useRef(0);
   const live = useRef(true);
+  /** Closed before `sing`'s first await: a second tap during the permission prompt would start a second take. */
+  const startingRef = useRef(false);
+
+  // The drill on screen, read by `load`: a visit that brings a different drill clears the last one's marks.
+  const drillRef = useRef<Drill | null>(null);
+  drillRef.current = drill;
 
   const load = useCallback(async () => {
     try {
       const [p, d] = await Promise.all([practiceApi.progress(), practiceApi.nextDrill()]);
       if (!live.current) return;
       setProgress(p);
+      if (drillRef.current?.id !== d.id) {
+        setGrade(null);
+        setNext(null);
+        setTakeUri(null);
+      }
       setDrill(d);
       setLoadError(null);
       void rememberStreak(streakSnapshot(p));
@@ -262,14 +279,19 @@ export function PracticeScreen() {
   }
 
   async function sing() {
-    if (!drill || phase !== "idle") return;
+    if (!drill || phase !== "idle" || startingRef.current) return;
+    startingRef.current = true;
     cleanup();
     setError(null);
     setGrade(null);
     setTakeUri(null);
     try {
       const perm = await requestRecordingPermissionsAsync();
-      if (!perm.granted) { setError("Microphone permission is needed to sing the drill."); return; }
+      if (!perm.granted) {
+        setError(MIC_REFUSED);
+        setMicBlocked(onlySettingsCanGrant(perm));
+        return;
+      }
       await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true, shouldRouteThroughEarpiece: false });
       const lead = leadInFor(drill.notes, drill.tempoBpm, drill.timeSignature);
       leadIn.current = lead.seconds;
@@ -296,6 +318,8 @@ export function PracticeScreen() {
       setPhase("idle");
       if (__DEV__) console.warn("[practice] start failed", e);
       setError("Could not start recording. Please try again.");
+    } finally {
+      startingRef.current = false;
     }
   }
 
@@ -318,6 +342,10 @@ export function PracticeScreen() {
       if (how === "burst") setBurst((b) => b + 1);
       const line = result.milestone?.title ?? (sung.track === "playful" ? playfulRewardLine(result.reward) : moment?.line);
       if (how !== "quiet" && line) showToast(line, rewardArt(result.reward));
+      // Android's live regions already read the toast and the milestone; iOS hears the line here.
+      AccessibilityInfo.announceForAccessibility(
+        gradeAnnouncement(sung.track === "playful", result, Platform.OS === "ios" ? line : null),
+      );
       const [fresh, upcoming] = await Promise.all([
         practiceApi.progress().catch(() => null),
         practiceApi.nextDrill().catch(() => null),
@@ -402,7 +430,7 @@ export function PracticeScreen() {
         contentStyle={styles.screen}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} colors={[colors.accent]} />}
       >
-        <TabHeader title="Practice" eyebrow="Daily practice">
+        <TabHeader title="Practice" eyebrow="Practice path">
           {track && !showPicker && !busy ? (
             <Touchable
               onPress={() => { setTrackError(null); setPicking(true); }}
@@ -514,6 +542,15 @@ export function PracticeScreen() {
 
                 {allowance ? <Text style={styles.allowance}>{allowanceLine(allowance)}</Text> : null}
                 {error ? <ProblemNote>{error}</ProblemNote> : null}
+                {error === MIC_REFUSED && micBlocked ? (
+                  <Button
+                    label="Open settings"
+                    variant="text"
+                    size="sm"
+                    onPress={() => void Linking.openSettings().catch(() => undefined)}
+                    style={styles.settingsLink}
+                  />
+                ) : null}
                 {grade?.milestone ? (
                   <View style={styles.milestone} accessibilityLiveRegion="polite">
                     <Text style={styles.milestoneTitle}>{grade.milestone.title}</Text>
@@ -536,7 +573,7 @@ export function PracticeScreen() {
               <EmptyState
                 art="empty-no-drill"
                 title="No drill yet"
-                body="Today's drill isn't here yet. Pull down, or try again in a moment."
+                body="Your next drill isn't here yet. Pull down, or try again in a moment."
                 onRetry={() => void onRefresh()}
                 styles={styles}
               />
@@ -586,18 +623,12 @@ export function PracticeScreen() {
               <Card style={styles.statCard}>
                 <View style={styles.statHead}>
                   <Art name={flameArt(progress.streak)} width={32} />
-                  <Text style={styles.statBig} accessibilityLabel={streakLabel(progress.streak.current)}>
+                  <Text style={styles.statBig} accessibilityLabel={streakLabel(progress.streak.current, progress.streak.best)}>
                     {progress.streak.current}
                   </Text>
                 </View>
                 <Text style={styles.statLabel}>day streak</Text>
-                <Text style={styles.statSub}>
-                  {progress.streak.todayDone
-                    ? "Done for today"
-                    : progress.streak.atRisk
-                      ? "Sing today to keep it"
-                      : "Sing a drill to start one"}
-                </Text>
+                <Text style={styles.statSub}>{streakLine(progress.streak)}</Text>
                 <View style={styles.footRow}>
                   <Art name="freeze" width={16} style={!progress.streak.freezeAvailable && styles.spent} />
                   <Text style={[styles.statFoot, styles.footText]}>
@@ -680,7 +711,7 @@ export function PracticeScreen() {
             <Text style={styles.foot}>
               {playful
                 ? `Every singing game earns XP and stars. Up to ${progress.dailyXpCap} XP a day.`
-                : `Practice counts when a take is marked: the daily drill, Sing it, or Learn my part. Up to ${progress.dailyXpCap} XP a day.`}
+                : `Practice counts when a take is marked: a drill on your path, Sing it, or Learn my part. Up to ${progress.dailyXpCap} XP a day.`}
             </Text>
           </>
         ) : null}
@@ -1036,6 +1067,8 @@ const makeStyles = (c: Palette) =>
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.xs },
     liveLabel: { ...typography.label, color: c.textMuted },
     allowance: { ...typography.caption, color: c.textMuted },
+    /** Under the problem note, its word lined up with the note's (icon 15 + gap 6, less the button's 12 pad). */
+    settingsLink: { alignSelf: "flex-start", marginLeft: 15 + 6 - 12 },
     focusRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: spacing.sm, flexWrap: "wrap" },
     focusTuning: { ...typography.label, color: c.textMuted, fontSize: 13 },
 

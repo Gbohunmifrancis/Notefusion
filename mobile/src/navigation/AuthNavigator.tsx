@@ -7,7 +7,11 @@ import { LoginScreen } from '../screens/LoginScreen';
 import { RegisterScreen } from '../screens/RegisterScreen';
 import { VerifyEmailScreen } from '../screens/VerifyEmailScreen';
 import { ForgotPasswordScreen } from '../screens/ForgotPasswordScreen';
+import { GuestRecordScreen } from '../screens/RecordScreen';
+import { GuestPreviewScreen } from '../screens/ResultScreen';
 import { onboarding } from '../lib/onboarding';
+import { pendingVerifyStore } from '../lib/pendingVerifyStore';
+import type { PendingVerify } from '../lib/pendingVerify';
 import { night } from '../design/theme';
 import type { AuthStackParams } from './types';
 
@@ -16,25 +20,31 @@ const Stack = createNativeStackNavigator<AuthStackParams>();
 /**
  * Unauthenticated flow: the intro cards (first time only) → Welcome → sign in or
  * create an account → the email code. Every screen here is on the night canvas,
- * which is also what shows between screens during a transition.
+ * which is also what shows between screens during a transition. A code sent under
+ * ten minutes ago and not yet typed (the app closed while its mail was read) opens
+ * the code screen again. "Try it first" (board l-ux-high/07) opens Record and then
+ * Result here, as a guest: the website's free preview, kept by signing up.
  */
 export function AuthNavigator() {
-  const [seen, setSeen] = useState<boolean | null>(null);
+  const [start, setStart] = useState<{ seen: boolean; pending: PendingVerify | null } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    onboarding.seen().then((s) => !cancelled && setSeen(s));
+    Promise.all([onboarding.seen(), pendingVerifyStore.read()]).then(
+      ([seen, pending]) => !cancelled && setStart({ seen, pending }),
+    );
     return () => {
       cancelled = true;
     };
   }, []);
 
   // A storage read, so a frame or two: the canvas colour, not a flash of the wrong screen.
-  if (seen === null) return <View style={{ flex: 1, backgroundColor: night.bg }} />;
+  if (start === null) return <View style={{ flex: 1, backgroundColor: night.bg }} />;
+  const { seen, pending } = start;
 
   return (
     <Stack.Navigator
-      initialRouteName={seen ? 'Welcome' : 'Onboarding'}
+      initialRouteName={pending ? 'VerifyEmail' : seen ? 'Welcome' : 'Onboarding'}
       screenOptions={{
         headerShown: false,
         animation: 'slide_from_right',
@@ -45,8 +55,10 @@ export function AuthNavigator() {
       <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ animation: 'fade' }} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
-      <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} />
+      <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} initialParams={pending ?? undefined} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen name="GuestRecord" component={GuestRecordScreen} options={{ animation: 'slide_from_bottom' }} />
+      <Stack.Screen name="Result" component={GuestPreviewScreen} options={{ animation: 'slide_from_bottom' }} />
     </Stack.Navigator>
   );
 }

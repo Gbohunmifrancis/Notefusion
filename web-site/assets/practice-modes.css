@@ -59,7 +59,7 @@
 .pm-result.is-playful { border: 1.5px solid var(--play-line); background: var(--play-soft); }
 .pm-score-row { display: flex; align-items: center; gap: 14px; }
 .pm-score { font-size: 2.5rem; font-weight: 700; line-height: 1; letter-spacing: -0.02em; min-width: 2.2ch; font-variant-numeric: tabular-nums; }
-.pm-score.good { color: var(--pm-in); }
+.pm-score.good { color: var(--success-text); }
 .pm-score.fair { color: var(--pm-close); }
 .pm-score.low { color: var(--muted); }
 .pm-summary { margin: 0; font-size: 0.95rem; line-height: 1.45; color: var(--ink); }
@@ -74,8 +74,10 @@
 }
 .pm-mark b { font-size: 1.05rem; font-weight: 500; color: var(--ink); }
 .pm-mark small { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.7rem; color: var(--muted); }
-.pm-mark.hit { border-color: var(--pm-in-line); } .pm-mark.hit b { color: var(--pm-in); }
+.pm-mark.hit { border-color: var(--pm-in-line); } .pm-mark.hit b { color: var(--success-text); }
 .pm-mark.near { border-color: var(--pm-close-line); } .pm-mark.near b { color: var(--pm-close); }
+.pm-mark.hit b::after { content: "✓"; margin-left: 2px; } .pm-mark.near b::after { content: "~"; margin-left: 2px; }
+.pm-mark.missed b::after { content: "–"; margin-left: 2px; }
 .pm-mark.off b { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1.5px; }
 .pm-mark.missed { border-style: dashed; } .pm-mark.missed b { color: var(--faint); }
 .pm-legend { margin: 0; font-size: 0.75rem; color: var(--muted); line-height: 1.45; }
@@ -92,7 +94,7 @@
 /* ── Pitch match: the set, the note in hand, the needle, the hold ────────── */
 .pm-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .pm-chips li { min-width: 38px; height: 36px; padding: 0 8px; display: flex; align-items: center; justify-content: center; border-radius: 9px; border: 1.5px solid var(--line); background: var(--surface); font-size: 0.95rem; color: var(--muted); }
-.pm-chips li.done { border-color: var(--pm-in-line); color: var(--pm-in); }
+.pm-chips li.done { border-color: var(--pm-in-line); color: var(--success-text); }
 .pm-chips li.on { border-color: var(--blue); background: var(--blue-soft); color: var(--ink); }
 .pm-stage { display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
 .pm-big { margin: 2px 0 0; font-size: 4.2rem; line-height: 1.05; font-weight: 700; color: var(--ink); }
@@ -112,7 +114,7 @@
 .pm-needle.off line, .pm-needle.off circle { stroke: var(--muted); }
 @media (prefers-reduced-motion: no-preference) { .pm-needle { transition: transform 0.08s linear; } }
 .pm-word { margin: 4px 0 0; font-size: 1.5rem; font-weight: 650; color: var(--muted); }
-.pm-word.in { color: var(--pm-in); }
+.pm-word.in { color: var(--success-text); }
 .pm-word.close { color: var(--pm-close); }
 .pm-cents { margin: 0; font-family: var(--font-mono, ui-monospace, monospace); font-size: 1rem; color: var(--muted); min-height: 1.4em; }
 .pm-hold { align-self: stretch; margin-top: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); opacity: 0.55; transition: opacity 0.2s; }

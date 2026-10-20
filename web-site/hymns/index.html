@@ -28,8 +28,8 @@
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="alternate" type="application/rss+xml" title="NoteFusion blog" href="/blog/feed.xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-v15-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site-pages.css?v=4">
-<link rel="stylesheet" href="/assets/blog.css?v=7">
+<link rel="stylesheet" href="/assets/site-pages.css?v=5">
+<link rel="stylesheet" href="/assets/blog.css?v=8">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -1575,7 +1575,7 @@
     <div class="site-shell-actions">
       <button type="button" class="theme-toggle" data-theme-toggle data-track="Theme toggle" aria-label="Colour theme" title="Colour theme"><svg class="ic tt-light" aria-hidden="true"><use href="/assets/icons.svg#i-sun"/></svg><svg class="ic tt-dark" aria-hidden="true"><use href="/assets/icons.svg#i-moon"/></svg><svg class="ic tt-system" aria-hidden="true"><use href="/assets/icons.svg#i-monitor"/></svg></button>
       <a class="site-shell-signin" href="/app">Sign in</a>
-      <a class="site-shell-cta" href="/app" data-track="Header: try it free">Try it free</a>
+      <a class="site-shell-cta" href="/app" data-track="Header: try it free">Try<span class="cta-more"> it</span> free</a>
     </div>
     <details class="site-shell-mobile">
       <summary aria-label="Open site navigation"><svg class="ic ic-open" aria-hidden="true"><use href="/assets/icons.svg#i-menu"/></svg><svg class="ic ic-close" aria-hidden="true"><use href="/assets/icons.svg#i-x"/></svg></summary>
@@ -1591,18 +1591,19 @@
 <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><span aria-current="page">Hymns</span></li></ol></nav>
 <header class="masthead">
   <h1>Hymns in Tonic Solfa</h1>
+  <!-- The search first (board l-ux-high/06c): on a phone it sat some 850px down, under the chips. -->
+  <div class="hymn-find hymn-find-top" id="hymn-find" hidden>
+    <label class="sr-only" for="hymn-filter">Find a hymn</label>
+    <input type="search" id="hymn-filter" placeholder="Title, first line, tune, writer or season" autocomplete="off" spellcheck="false">
+    <p class="hymn-seasons" aria-label="Hymns or tunes"><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></p>
+    <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
+  </div>
   <p class="masthead-dek">250 public-domain hymns with the solfa written out under the words, and 539 more hymn tunes on their own, with the staff notation, a piano to sing along with and a free PDF of each to print. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
   <p class="identify-callout"><a href="/hymns/identify" data-track="Hymns: hum to find">Can't remember the name? <strong>Hum the tune and we'll find the hymn</strong> <svg class="ic ic-16" aria-hidden="true"><use href="/assets/icons.svg#i-arrow-right"/></svg></a></p>
 </header>
 <nav class="hymn-browse" aria-label="Browse the hymns"><a href="/hymns" aria-current="page">All hymns A–Z</a><a href="/hymns/occasions">Seasons and occasions</a><a href="/hymns/people">Writers and composers</a><a href="/hymns/first-lines">First lines</a></nav>
 <h2 class="hymn-seasons-title">Hymns for the season</h2>
 <nav class="hymn-seasons" aria-label="Seasons and occasions"><a href="/hymns/occasions/advent" data-track="Occasion: Advent">Advent</a><a href="/hymns/occasions/christmas" data-track="Occasion: Christmas">Christmas</a><a href="/hymns/occasions/epiphany" data-track="Occasion: Epiphany">Epiphany</a><a href="/hymns/occasions/lent" data-track="Occasion: Lent">Lent</a><a href="/hymns/occasions/holy-week" data-track="Occasion: Holy Week">Holy Week</a><a href="/hymns/occasions/good-friday" data-track="Occasion: Good Friday">Good Friday</a><a href="/hymns/occasions/easter" data-track="Occasion: Easter">Easter</a><a href="/hymns/occasions/ascension" data-track="Occasion: Ascension">Ascension</a><a href="/hymns/occasions/halloween" data-track="Occasion: Halloween">Halloween</a><a href="/hymns/occasions/thanksgiving" data-track="Occasion: Thanksgiving">Thanksgiving</a><a href="/hymns/occasions/communion" data-track="Occasion: Holy Communion">Holy Communion</a><a href="/hymns/occasions/evening" data-track="Occasion: Evening">Evening</a><a href="/hymns/occasions/funeral" data-track="Occasion: Funeral">Funeral</a></nav>
-<div class="hymn-find" id="hymn-find" hidden>
-  <label for="hymn-filter">Find a hymn</label>
-  <input type="search" id="hymn-filter" placeholder="Title, first line, tune, writer or season" autocomplete="off" spellcheck="false">
-  <p class="hymn-seasons" aria-label="Hymns or tunes"><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></p>
-  <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
-</div>
 <nav class="az" aria-label="Hymns by first letter"><a href="#letter-A">A</a><a href="#letter-B">B</a><a href="#letter-C">C</a><a href="#letter-D">D</a><a href="#letter-E">E</a><a href="#letter-F">F</a><a href="#letter-G">G</a><a href="#letter-H">H</a><a href="#letter-I">I</a><a href="#letter-J">J</a><a href="#letter-K">K</a><a href="#letter-L">L</a><a href="#letter-M">M</a><a href="#letter-N">N</a><a href="#letter-O">O</a><a href="#letter-P">P</a><a href="#letter-Q">Q</a><a href="#letter-R">R</a><a href="#letter-S">S</a><a href="#letter-T">T</a><a href="#letter-U">U</a><a href="#letter-V">V</a><a href="#letter-W">W</a><a href="#letter-Y">Y</a><a href="#letter-Z">Z</a></nav>
 <div class="hymn-index" id="hymn-index">
 <section class="hymn-letter" id="letter-A" aria-labelledby="letter-A-title">
@@ -5689,8 +5690,8 @@
   <p class="site-footer-links"><a href="/blog">Blog</a><a href="/hymns">Hymns in Tonic Solfa</a><a href="/hymns/identify">Hum to find a hymn</a><a href="/app">Web app</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="mailto:hello@notefusion.studio">Contact</a></p>
   <p>NoteFusion. Hear it. See it. Notate it. &copy; 2026 NoteFusion.</p>
 </footer>
-<script src="/assets/site-theme.js?v=1" defer></script>
-<script src="/assets/hymns-index.js?v=3" defer></script>
+<script src="/assets/site-theme.js?v=2" defer></script>
+<script src="/assets/hymns-index.js?v=4" defer></script>
 <script src="/assets/season.js?v=2" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 <script src="/assets/blog-track.js?v=1" defer></script>

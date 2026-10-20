@@ -216,7 +216,7 @@ const makeStyles = (c: Palette) =>
     chordValue: { ...typography.mono, color: c.text, fontSize: 16 },
 
     status: { ...typography.body, color: c.textMuted, textAlign: "center", marginTop: spacing.lg, lineHeight: 21 },
-    statusWarn: { color: c.warning },
+    statusWarn: { color: c.warningText },
     mainButton: { marginTop: spacing.lg, alignSelf: "stretch" },
 
     row: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm, marginBottom: spacing.sm },

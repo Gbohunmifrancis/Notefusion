@@ -1,6 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
+  BackHandler,
   Pressable,
   StyleSheet,
   Text,
@@ -88,6 +89,17 @@ export function OnboardingScreen({ navigation }: Props) {
   const onSettled = (e: NativeSyntheticEvent<NativeScrollEvent>) =>
     setIndex(Math.round(e.nativeEvent.contentOffset.x / width));
 
+  // Android back on the second or third card goes to the card before, instead of closing the app.
+  useEffect(() => {
+    if (index === 0) return undefined;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+      listRef.current?.scrollToOffset({ offset: width * (index - 1), animated: true });
+      setIndex(index - 1);
+      return true;
+    });
+    return () => sub.remove();
+  }, [index, width]);
+
   return (
     <View style={styles.root}>
       <StatusBar style="light" />
@@ -149,7 +161,8 @@ export function OnboardingScreen({ navigation }: Props) {
             });
             return (
               <View style={[styles.slide, { width }]}>
-                <View style={styles.art}>
+                {/* Pictures of the product: their letters and logos are not words to read aloud. */}
+                <View style={styles.art} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
                   <item.Art width={width - 44} />
                 </View>
                 <Animated.View style={{ transform: [{ translateX: drift }] }}>
@@ -163,7 +176,12 @@ export function OnboardingScreen({ navigation }: Props) {
         />
 
         <View style={styles.footer}>
-          <View style={styles.dots} accessibilityLabel={`Card ${index + 1} of ${SLIDES.length}`}>
+          <View
+            style={styles.dots}
+            accessible
+            accessibilityLabel={`Card ${index + 1} of ${SLIDES.length}`}
+            accessibilityLiveRegion="polite"
+          >
             {SLIDES.map((s) => (
               <View key={s.key} style={styles.slot}>
                 <View style={styles.dot} />
@@ -370,8 +388,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   partOn: {
-    backgroundColor: night.blue,
-    borderColor: night.blue,
+    backgroundColor: night.blueDeep,
+    borderColor: night.blueDeep,
     shadowColor: night.blue,
     shadowOpacity: 0.4,
     shadowRadius: 16,

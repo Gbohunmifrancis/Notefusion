@@ -4,6 +4,7 @@ import { fonts, typography, type Palette } from "../../design/theme";
 import { useThemedStyles } from "../../lib/theme";
 import type { NoteEvent } from "../../api/types";
 import { beatsPerBarOf } from "./usePractice";
+import { spokenPitch } from "../../lib/choir";
 
 /** Below this a note is the model's guess rather than its answer — same line as the review. */
 export const LOW_CONF = 0.5;
@@ -73,7 +74,8 @@ export function barOf(note: NoteEvent, timeSignature: string): number {
 /**
  * The sheet itself: a bar to a row, a column to a beat, each syllable large in mono
  * with the lyric syllable it carries beneath. A doubtful note is amber with a dotted
- * underline, the note sounding is lit, and every syllable is a way into the editor.
+ * underline, the note sounding is lit, and every syllable is a way into the editor: a
+ * button filling its beat's column, at least 44 px tall (board l-ux-high 05a).
  */
 export function SheetGrid({
   notes,
@@ -91,7 +93,8 @@ export function SheetGrid({
   timeSignature: string;
   barCount: number;
   playingNote: number;
-  onSelectNote: (index: number) => void;
+  /** Opens the note's editor; none for a sheet that is only read (a guest's preview). */
+  onSelectNote?: (index: number) => void;
 }) {
   const styles = useThemedStyles(makeStyles);
   const bars = useMemo(
@@ -123,11 +126,11 @@ export function SheetGrid({
                         return (
                           <Pressable
                             key={i}
-                            onPress={() => onSelectNote(i)}
-                            hitSlop={4}
+                            onPress={onSelectNote ? () => onSelectNote(i) : undefined}
+                            disabled={!onSelectNote}
                             style={({ pressed }) => [styles.note, now && styles.noteNow, pressed && styles.notePressed]}
-                            accessibilityRole="button"
-                            accessibilityLabel={`Note ${i + 1}, ${n.solfa}, MIDI ${n.pitchMidi}. Tap to correct.`}
+                            accessibilityRole={onSelectNote ? "button" : "text"}
+                            accessibilityLabel={`Note ${i + 1}, ${n.solfa}, ${spokenPitch(n.pitchMidi)}.${onSelectNote ? " Tap to correct." : ""}`}
                           >
                             <Text style={[styles.syllable, low && styles.syllableLow, now && styles.syllableNow]}>
                               {n.solfa}
@@ -170,24 +173,28 @@ const makeStyles = (c: Palette) =>
       width: 20,
       paddingTop: 12,
     },
-    /** The barline is the row's left edge, as on the board. */
+    /** The barline is the row's left edge, as on the board. The columns sit 8 px apart. */
     bar: {
       flex: 1,
       flexDirection: "row",
+      columnGap: 8,
       borderLeftWidth: 1,
       borderLeftColor: c.border,
-      paddingLeft: 12,
+      paddingLeft: 8,
       paddingVertical: 8,
     },
     cell: { flex: 1, minWidth: 0 },
     cellNotes: { flexDirection: "row", flexWrap: "wrap", columnGap: 6 },
-    chord: { fontFamily: fonts.semibold, fontSize: 11, color: c.accent, marginBottom: 2 },
+    // Chords and held beats sit 4 px in, where a syllable sits inside its button.
+    chord: { fontFamily: fonts.semibold, fontSize: 11, color: c.accent, marginBottom: 2, paddingHorizontal: 4 },
+    /** The syllable's button fills its column and is 44 px at least; the letter keeps its place in it. */
     note: {
+      flexGrow: 1,
+      minHeight: 44,
       alignItems: "flex-start",
       borderRadius: 9,
       paddingHorizontal: 4,
-      marginHorizontal: -4,
-      paddingVertical: 2,
+      paddingVertical: 7,
     },
     noteNow: { backgroundColor: c.accentSoft },
     notePressed: { opacity: 0.6 },
@@ -197,9 +204,9 @@ const makeStyles = (c: Palette) =>
       lineHeight: 26,
       color: c.text,
     },
-    syllableLow: { color: c.warning },
+    syllableLow: { color: c.warningText },
     syllableNow: { color: c.accent },
-    hold: { color: c.textFaint, paddingVertical: 2 },
+    hold: { color: c.textFaint, paddingVertical: 7, paddingHorizontal: 4 },
     dots: { flexDirection: "row", gap: 2, height: 3, marginTop: 1 },
     dot: { width: 2, height: 2, borderRadius: 1, backgroundColor: c.warning },
     lyric: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, marginTop: 2, minHeight: 16 },

@@ -166,7 +166,7 @@
    * The modes' screens and the live pitch meter: loaded the first time a mode is opened, never with the view.
    * practice-modes.js (the words and arithmetic) comes with the view, for the hub's list.
    */
-  var MODE_ASSETS = ["/assets/practice-modes.css?v=1", "/assets/pitch-track.js?v=1", "/assets/practice-mode-view.js?v=2"];
+  var MODE_ASSETS = ["/assets/practice-modes.css?v=2", "/assets/pitch-track.js?v=1", "/assets/practice-mode-view.js?v=3"];
   /** The modes' icons, drawn inline (24 × 24, stroked): the app's sprite has none of these. */
   var MODE_ICONS = {
     "warm-up": '<circle cx="12" cy="4.6" r="1.9"/><path d="M4.5 9l7.5 1.6L19.5 9M12 10.6V15m0 0l-3.6 6M12 15l3.6 6"/>',
@@ -282,7 +282,7 @@
 
   // ── The season's path (boards d-christmas/03, j-halloween/03), only while its season is on for the singer ─────
   /** The path's screen (either season's): its script and styles load the first time it is opened, never with the view. */
-  var SEASON_ASSETS = ["/assets/practice-modes.css?v=1", "/assets/practice-carols.css?v=2", "/assets/practice-carols.js?v=3"];
+  var SEASON_ASSETS = ["/assets/practice-modes.css?v=2", "/assets/practice-carols.css?v=2", "/assets/practice-carols.js?v=3"];
   // Three tiny still bats in the Midnight path card's corner: [left, top, width, degrees] (the phone's CARD_BATS).
   var CARD_BATS = [[4, 10, 14, -10], [58, 0, 11, 8], [80, 30, 9, -4]];
   var BAT_PATH = "M20 8L18.4 4.8L17.4 8.6C14.5 4.4 8.5 3.2 1.5 7.2C4.6 8.2 5.8 10.8 5.6 13.8C7.6 12 9.8 12 11 14C12.6 12 14.8 12.1 15.8 15C17 13.2 18.6 13.4 20 15.6C21.4 13.4 23 13.2 24.2 15C25.2 12.1 27.4 12 29 14C30.2 12 32.4 12 34.4 13.8C34.2 10.8 35.4 8.2 38.5 7.2C31.5 3.2 25.5 4.4 22.6 8.6L21.6 4.8Z";
@@ -514,7 +514,7 @@
   function statsCards(p, P) {
     var T = PT(), row = el("div", "pv-stats");
     var streak = el("section", "card pv-stat pv-streak" + (p.streak.current > 0 ? " is-on" : ""));
-    streak.setAttribute("aria-label", P.streakLabel(p.streak.current));
+    streak.setAttribute("aria-label", P.streakLabel(p.streak.current, p.streak.best));
     var head = el("div", "pv-stat-head");
     head.appendChild(art(T.flameArt(p.streak), 32));
     head.appendChild(el("strong", "pv-big", String(p.streak.current)));
@@ -629,7 +629,7 @@
     return card;
   }
 
-  /** Playful's marked take: one to three stars and a friendly word, never the number; the notes coloured, no cents. */
+  /** Playful's marked take: one to three stars and a friendly word, never the number; the notes marked, no cents. */
   function starGrade(g, notes, T) {
     var stars = T.starsFor(g.score), box = el("div", "pv-stars-result");
     var row = el("div", "pv-stars");
@@ -643,12 +643,10 @@
     (g.notes || []).forEach(function (m) {
       var n = notes[m.index];
       if (!n) return;
-      var mk = el("span", "mark " + m.status, (n.solfa || "") + (n.octaveMark || ""));
-      mk.title = m.status === "hit" ? "spot on" : m.status === "near" ? "close" : m.status === "wrong" ? "try again" : "not heard";
-      marks.appendChild(mk);
+      marks.appendChild(ctx.mark((n.solfa || "") + (n.octaveMark || ""), m.status, null, true));
     });
     box.appendChild(marks);
-    box.appendChild(el("p", "pv-legend", "Green spot on · amber close · red try again · grey not heard"));
+    box.appendChild(el("p", "pv-legend", "✓ spot on · ~ close · struck through: try again · dashed: not heard"));
     var earned = T.playfulRewardLine(g.reward);
     if (earned) box.appendChild(el("p", "pv-earned", earned));
     return box;
@@ -673,7 +671,7 @@
     s.takeUrl = null;
   }
 
-  /** The marked take: score, verdict, every note green/amber/red/grey with its cents off, and what it earned. */
+  /** The marked take: score, verdict, every note marked (✓ ~ struck dashed) with its cents off, and what it earned. */
   function gradeMarks(g, notes, P) {
     var box = el("div", "pv-result");
     box.setAttribute("aria-label", "Your take, marked");
@@ -688,13 +686,10 @@
     (g.notes || []).forEach(function (m) {
       var n = notes[m.index];
       if (!n) return;
-      var mk = el("span", "mark " + m.status, (n.solfa || "") + (n.octaveMark || ""));
-      mk.appendChild(el("small", null, m.status === "missed" ? "—" : m.cents == null ? "" : (m.cents > 0 ? "+" : "") + Math.round(m.cents)));
-      mk.title = m.status === "missed" ? "not sung" : m.status;
-      marks.appendChild(mk);
+      marks.appendChild(ctx.mark((n.solfa || "") + (n.octaveMark || ""), m.status, m.cents, false));
     });
     box.appendChild(marks);
-    box.appendChild(el("p", "pv-legend", "Green in tune · amber close · red wrong note · grey not sung. Numbers are cents off."));
+    box.appendChild(el("p", "pv-legend", "✓ in tune · ~ close · struck through: off the note · dashed: not sung. Numbers are cents off."));
     var earned = P.rewardMoment(g.reward);
     if (earned) {
       var e = el("p", "pv-earned");

@@ -223,7 +223,10 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 }
 @media (max-width: 800px) {
   .site-shell-inner { width: calc(100% - 32px); min-height: 56px; }
-  .site-shell-links, .site-shell-actions > .site-shell-cta, .site-shell-actions > .site-shell-signin { display: none !important; }
+  .site-shell-links, .site-shell-actions > .site-shell-signin { display: none !important; }
+  /* The way into the app stays on the first screen of every page (board l-ux-high/06a), compact beside the menu. */
+  .site-document .site-shell-actions > .site-shell-cta { min-height: 44px; padding: 0 12px; }
+  .site-shell-actions > .site-shell-cta .cta-more { display: none; }
   .site-shell-actions { margin-left: auto; }
   .site-shell-mobile { display: block; position: relative; }
   .site-shell-mobile summary { display: flex; width: 44px; height: 44px; align-items: center; justify-content: center; border: 1px solid var(--page-line-strong); border-radius: var(--r-sm); background: var(--page-surface); color: var(--page-navy); list-style: none; cursor: pointer; }

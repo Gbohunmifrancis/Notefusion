@@ -65,6 +65,8 @@ export function NameSheet({ visible, onClose }: { visible: boolean; onClose: () 
         value={name}
         onChangeText={setName}
         autoCapitalize="words"
+        autoComplete="name"
+        textContentType="name"
         autoFocus
         maxLength={100}
         returnKeyType="done"
@@ -89,6 +91,8 @@ export function PasswordSheet({ visible, onClose }: { visible: boolean; onClose:
   const styles = useThemedStyles(makeStyles);
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
+  /** The new password was left or submitted: only then is "too short" said, not from the first keystroke. */
+  const [nextDone, setNextDone] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -96,11 +100,13 @@ export function PasswordSheet({ visible, onClose }: { visible: boolean; onClose:
     if (visible) {
       setCurrent("");
       setNext("");
+      setNextDone(false);
       setError(null);
     }
   }, [visible]);
 
   async function save() {
+    setNextDone(true);
     if (!current || next.length < 8) return;
     setBusy(true);
     setError(null);
@@ -121,14 +127,26 @@ export function PasswordSheet({ visible, onClose }: { visible: boolean; onClose:
     <Sheet visible={visible} onClose={onClose} avoidKeyboard>
       <SheetTitle>Change your password</SheetTitle>
       <SheetMessage>You stay signed in here; other phones will ask for the new one.</SheetMessage>
-      <TextField label="Current password" value={current} onChangeText={setCurrent} secure autoFocus />
+      <TextField
+        label="Current password"
+        value={current}
+        onChangeText={setCurrent}
+        secure
+        autoFocus
+        autoComplete="current-password"
+        textContentType="password"
+      />
       <TextField
         label="New password"
         value={next}
         onChangeText={setNext}
+        onBlur={() => setNextDone(true)}
+        onSubmitEditing={() => void save()}
         secure
+        autoComplete="new-password"
+        textContentType="newPassword"
         placeholder="At least 8 characters"
-        error={error ?? (next.length > 0 && next.length < 8 ? "At least 8 characters" : undefined)}
+        error={error ?? (nextDone && next.length > 0 && next.length < 8 ? "At least 8 characters" : undefined)}
       />
       <SheetActions style={styles.actions}>
         <Button label="Cancel" variant="text" onPress={onClose} />
@@ -247,6 +265,8 @@ export function DeleteAccountSheet({
           }}
           secure
           autoFocus
+          autoComplete="current-password"
+          textContentType="password"
           error={error ?? undefined}
         />
       ) : (

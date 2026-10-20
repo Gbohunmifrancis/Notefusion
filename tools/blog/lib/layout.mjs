@@ -33,7 +33,7 @@ export function siteHeader(active = null) {
     <div class="site-shell-actions">
       ${THEME_TOGGLE}
       <a class="site-shell-signin" href="/app">Sign in</a>
-      <a class="site-shell-cta" href="/app" data-track="Header: try it free">Try it free</a>
+      <a class="site-shell-cta" href="/app" data-track="Header: try it free">Try<span class="cta-more"> it</span> free</a>
     </div>
     <details class="site-shell-mobile">
       <summary aria-label="Open site navigation">${icon("menu", "ic-open")}${icon("x", "ic-close")}</summary>

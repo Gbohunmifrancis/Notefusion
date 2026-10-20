@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   BackHandler,
@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { Icon } from "../components/Icon";
-import { useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused, useNavigation, useScrollToTop } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Touchable } from "../components/Touchable";
@@ -34,6 +34,7 @@ import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLib
 import { resultFromSaved } from "../lib/openSheet";
 import { onTakeChange, removeTake, retryTake, useOutbox, useSendProgress } from "../lib/outbox";
 import { isUnopened } from "../lib/savedSheet";
+import { matchesWords } from "../lib/hymnPack";
 import { useReachability } from "../lib/connectivity";
 import { isNetworkCode } from "../lib/reachability";
 import { openTranscriptionFromNotification } from "../lib/notificationLink";
@@ -119,9 +120,13 @@ export function LibraryScreen() {
       });
   }
 
-  useEffect(() => {
-    load();
-  }, []);
+  // Read on every visit, quietly over the list shown: a sheet renamed or deleted from Home or the Result screen
+  // shows as it is now, never as a stale row that fails to open.
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, []),
+  );
 
   // A take on its way finished: the server filed it, so it is a sheet in the list now.
   useEffect(
@@ -155,9 +160,8 @@ export function LibraryScreen() {
   );
 
   const filteredItems = items.filter((item) => {
-    const matchesQuery =
-      query.trim() === "" ||
-      item.title.toLowerCase().includes(query.trim().toLowerCase());
+    // Title or folder, as the hymn search reads words: "ave" finds "Avé Maria", "sunday" the Sunday choir folder.
+    const matchesQuery = matchesWords(query, [item.title, item.folder]);
     const matchesFolder = folder === null || item.folder === folder;
     return matchesQuery && matchesFolder;
   });
@@ -185,6 +189,12 @@ export function LibraryScreen() {
   }));
   const fadeWithSearch = useAnimatedStyle(() => ({ opacity: 1 - searchProgress.value }));
 
+  /** Set while a sheet loads (`openItem`). */
+  const opening = useRef(false);
+  // Tapping Library again while on it scrolls back to the top.
+  const listRef = useRef<FlatList<SavedTranscription>>(null);
+  useScrollToTop(listRef);
+
   function closeSearch() {
     setQuery("");
     setSearchOpen(false);
@@ -195,6 +205,9 @@ export function LibraryScreen() {
    * at once with no download; offline, any copy does (lib/offlineLibrary).
    */
   async function openItem(item: SavedTranscription) {
+    // A second tap while the sheet loads would push a second Result.
+    if (opening.current) return;
+    opening.current = true;
     // Opened: a sheet the server filed stops being marked unopened, here and on the server.
     if (isUnopened(item)) {
       const openedAtUtc = new Date().toISOString();
@@ -214,6 +227,8 @@ export function LibraryScreen() {
         icon: isNetworkCode(err.code) ? "offline" : "problem",
         tone: isNetworkCode(err.code) ? undefined : "danger",
       });
+    } finally {
+      opening.current = false;
     }
   }
 
@@ -304,10 +319,12 @@ export function LibraryScreen() {
               <TextInput
                 style={styles.searchInput}
                 placeholder="Search your sheets"
+                accessibilityLabel="Search your sheets"
                 placeholderTextColor={colors.textFaint}
                 value={query}
                 onChangeText={setQuery}
                 autoFocus
+                autoCorrect={false}
                 returnKeyType="search"
                 textAlignVertical="center"
               />
@@ -495,6 +512,7 @@ export function LibraryScreen() {
   return (
     <Screen edges={["top"]}>
       <FlatList
+        ref={listRef}
         data={sortedItems}
         extraData={selected}
         keyExtractor={(t) => t.id}

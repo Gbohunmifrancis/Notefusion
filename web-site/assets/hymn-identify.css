@@ -10,12 +10,16 @@
 .identify-page .identify-start[hidden] { display: none; }
 .identify-page .identify-record { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 20px 0 16px; border: 0; border-radius: 8px; background: var(--page-fill); color: var(--page-on-fill); font: inherit; font-size: 16px; font-weight: 600; letter-spacing: 0; cursor: pointer; }
 .identify-page .identify-record:hover:not(:disabled) { background: var(--page-fill-hover); }
-.identify-page .identify-record:focus-visible, .identify-page .identify-again:focus-visible, .identify-page .identify-file-label:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
+.identify-page .identify-record:focus-visible, .identify-page .identify-again:focus-visible, .identify-page .identify-file-btn:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
 .identify-page .identify-record:disabled { opacity: .55; cursor: default; }
 .identify-page .identify-record .ic { width: 20px; height: 20px; }
 .identify-page .identify-hint { margin: 0; color: var(--text); font-size: 15.5px; line-height: 1.55; }
-.identify-page .identify-alt { margin: 0; font-size: 14px; }
-.identify-page .identify-file-label { color: var(--accent); text-decoration: underline; text-underline-offset: .2em; cursor: pointer; }
+/* The other way in, a real button (board l-ux-high/06d): once the microphone is refused it is the only one. */
+.identify-page .identify-file-btn { position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 18px 0 14px; border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--bg); color: var(--ink); font-size: 15.5px; font-weight: 650; cursor: pointer; }
+.identify-page .identify-file-btn:hover { border-color: var(--accent); color: var(--accent); }
+.identify-page .identify-file-btn .ic { width: 18px; height: 18px; }
+.identify-page .identify-steps { margin: 8px 0 0; padding: 12px 14px 12px 32px; border: 1px solid var(--tint-line); border-radius: 8px; background: var(--bg); color: var(--ink); font-weight: 400; }
+.identify-page .identify-steps li { margin: 2px 0; }
 .identify-page .identify-privacy { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--tint-line); color: var(--muted); font-size: 13.5px; }
 
 .identify-page .identify-status { font-size: 16px; color: var(--ink); }
@@ -44,6 +48,7 @@
 .identify-page .identify-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 6px; }
 .identify-page .identify-again { min-height: 46px; padding: 0 18px; border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; font-size: 15.5px; font-weight: 650; cursor: pointer; }
 .identify-page .identify-again:hover { border-color: var(--accent); color: var(--accent); }
+.identify-page .identify-resend { display: flex; margin-top: 10px; align-items: center; }
 .identify-page .identify-result.is-missed h2 { font-size: clamp(25px, 3.6vw, 32px); }
 
 .identify-page .identify-about { max-width: var(--measure); }

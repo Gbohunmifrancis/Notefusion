@@ -157,6 +157,7 @@
         s.appendChild(el("b", null, mk.text));
         if (!playful() && mk.sub) s.appendChild(el("small", null, mk.sub));
         s.title = mk.tone === "hit" ? "in tune" : mk.tone === "near" ? "close" : mk.tone === "off" ? "off" : "not heard";
+        s.setAttribute("role", "img"); s.setAttribute("aria-label", mk.text + ": " + s.title + (!playful() && mk.sub && mk.sub !== "—" ? ", " + mk.sub : ""));
         marks.appendChild(s);
       });
       card.appendChild(marks);
@@ -238,7 +239,7 @@
       out.push(resultCard({
         score: g.score, summary: g.summary, sub: T().tuningLine(g.marks.tuningCents), reward: g.reward, art: ctx.art,
         marks: M().noteMarks(g.marks, ex.notes).map(function (k) { return { text: k.text, sub: k.cents, tone: k.tone }; }),
-        legend: playful() ? "Green spot on · amber close · grey not quite" : "Green in tune · amber close · grey off. Numbers are cents off."
+        legend: playful() ? "✓ spot on · ~ close · struck through: not quite" : "✓ in tune · ~ close · struck through: off. Numbers are cents off."
       }));
       var advice = M().pitchAdvice(g.marks, ex.notes);
       if (advice) {
@@ -411,7 +412,7 @@
         score: g.score, summary: g.summary, sub: g.score >= M().PASS_SCORE ? "Clean at " + rs.step.percent + "%" : "At " + rs.step.percent + "%",
         reward: g.reward, art: ctx.art,
         marks: M().noteMarks(g.marks, ex.notes).map(function (k) { return { text: k.text, sub: k.cents, tone: k.tone }; }),
-        legend: playful() ? null : "Green in tune · amber close · grey off. Numbers are cents off.",
+        legend: playful() ? null : "✓ in tune · ~ close · struck through: off. Numbers are cents off.",
         extra: [!playful() && m.takeUrl ? button("btn-text", "/assets/icons.svg#i-play", sound && sound.kind === "replay" ? "Stop" : "Replay my take", replay) : null]
       }));
       var adv = M().runAdvice(g.marks, ex.notes, next);
@@ -533,7 +534,7 @@
       out.push(resultCard({
         score: m.grade.score, summary: m.grade.summary, reward: m.grade.reward, art: ctx.art,
         marks: M().noteMarks(m.grade.marks, ex.notes).map(function (k) { return { text: k.text, sub: k.cents, tone: k.tone }; }),
-        legend: playful() ? null : "Green in tune · amber close · grey off. Numbers are cents off."
+        legend: playful() ? null : "✓ in tune · ~ close · struck through: off. Numbers are cents off."
       }));
     }
     if (m.error) out.push(errorLine(m.error));
@@ -587,7 +588,7 @@
       out.push(resultCard({
         score: m.grade.score, summary: m.grade.summary, reward: m.grade.reward, art: ctx.art,
         marks: marks.map(function (k, i) { return { text: String(k.index + 1), sub: k.tone === "missed" ? "—" : M().centsText(rg.claps[i] && rg.claps[i].errorMs), tone: k.tone }; }),
-        legend: playful() ? "Green in time · amber close · grey off" : "Green in time · amber close · grey off. Numbers are ms early (−) or late (+).",
+        legend: playful() ? "✓ in time · ~ close · struck through: off" : "✓ in time · ~ close · struck through: off. Numbers are ms early (−) or late (+).",
         extra: [advice ? el("p", "pm-advice-line", advice) : null]
       }));
     }

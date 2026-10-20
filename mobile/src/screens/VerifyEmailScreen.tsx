@@ -7,6 +7,7 @@ import { BackButton, ErrorNote, Glow, NightScreen, nightText, pressedLink } from
 import { useAuth } from "../lib/auth";
 import { authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import { pendingVerifyStore } from "../lib/pendingVerifyStore";
 import { night, nightFonts } from "../design/theme";
 import type { AuthStackParams } from "../navigation/types";
 
@@ -31,6 +32,14 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
   const { email, fromSignUp } = route.params;
   const { verifyEmail } = useAuth();
   const inputRef = useRef<TextInput>(null);
+
+  // Kept while this screen is open, so a phone that closes the app while the code is fetched from the mail reopens
+  // here (lib/pendingVerify). Leaving — verified, Back or Change email — unmounts it and forgets the code.
+  const sentAt = useRef(route.params.sentAt);
+  useEffect(() => {
+    pendingVerifyStore.save({ email, fromSignUp, sentAt: sentAt.current });
+    return () => pendingVerifyStore.clear();
+  }, [email, fromSignUp]);
 
   const [code, setCode] = useState("");
   const [focused, setFocused] = useState(false);
@@ -92,6 +101,23 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
     // we can give, and it restarts either way.
     setResent(true);
     setSecondsLeft(RESEND_COOLDOWN);
+    sentAt.current = Date.now();
+    pendingVerifyStore.save({ email, fromSignUp, sentAt: sentAt.current });
+  }
+
+  /**
+   * Back to where the address was typed. Reopened at start (the app had closed), nothing is behind this screen, so
+   * Welcome and the form it came from are put back, the address filled in.
+   */
+  function changeEmail() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return;
+    }
+    navigation.reset({
+      index: 1,
+      routes: [{ name: "Welcome" }, fromSignUp ? { name: "Register", params: { email } } : { name: "Login", params: { email } }],
+    });
   }
 
   const activeIndex = Math.min(code.length, CODE_LENGTH - 1);
@@ -102,7 +128,7 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
       glow={<Glow y={0.18} radius={260} opacity={0.2} />}
       header={
         <>
-          {navigation.canGoBack() ? <BackButton onPress={() => navigation.goBack()} /> : <View style={styles.side} />}
+          <BackButton onPress={changeEmail} />
           {fromSignUp ? <Text style={nightText.step}>2 of 2</Text> : <View />}
           <View style={styles.side} />
         </>
@@ -187,11 +213,9 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
           </Pressable>
         )}
       </View>
-      {navigation.canGoBack() && (
-        <Pressable onPress={() => navigation.goBack()} hitSlop={8} accessibilityRole="button" style={({ pressed }) => [styles.change, pressed && pressedLink]}>
-          <Text style={styles.changeText}>Change email</Text>
-        </Pressable>
-      )}
+      <Pressable onPress={changeEmail} hitSlop={8} accessibilityRole="button" style={({ pressed }) => [styles.change, pressed && pressedLink]}>
+        <Text style={styles.changeText}>Change email</Text>
+      </Pressable>
       <Text style={styles.hint}>The code expires in 10 minutes. Check your spam folder if it isn&apos;t there.</Text>
     </NightScreen>
   );

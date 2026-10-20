@@ -13,6 +13,7 @@ import {
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { NoteEvent } from "../api/types";
+import { spokenPitch } from "../lib/choir";
 
 interface Props {
   /** Index into `notes` of the note being edited. `null` keeps the sheet closed. */
@@ -112,7 +113,7 @@ export function NoteEditor({
                   {note.octaveMark}
                 </Text>
                 <View style={styles.metaRow}>
-                  <Text style={styles.meta}>MIDI {note.pitchMidi}</Text>
+                  <Text style={styles.meta} accessibilityLabel={spokenPitch(note.pitchMidi)}>MIDI {note.pitchMidi}</Text>
                   <View style={styles.metaDot} />
                   <Text style={[styles.meta, { color: confColor }]}>{conf}%</Text>
                 </View>
@@ -185,13 +186,7 @@ export function NoteEditor({
                   onPress={() => prev !== undefined && onNavigate(prev)}
                   disabled={prev === undefined}
                 />
-                <Pressable
-                  onPress={onClose}
-                  style={styles.doneBtn}
-                  accessibilityRole="button"
-                >
-                  <Text style={styles.doneText}>Done</Text>
-                </Pressable>
+                <Button label="Done" size="sm" onPress={onClose} />
                 <Nav
                   icon="chevron"
                   label="Next"
@@ -322,7 +317,7 @@ const makeStyles = (c: Palette) =>
 
     queuePosition: {
       ...typography.caption,
-      color: c.warning,
+      color: c.warningText,
       fontSize: 12,
       fontFamily: fonts.medium,
     },
@@ -440,19 +435,5 @@ const makeStyles = (c: Palette) =>
       ...typography.label,
       fontSize: 14,
       fontFamily: fonts.semibold,
-    },
-
-    doneBtn: {
-      paddingVertical: spacing.xs,
-      paddingHorizontal: spacing.lg,
-      borderRadius: radii.pill,
-      backgroundColor: c.accentSoft,
-    },
-
-    doneText: {
-      ...typography.label,
-      color: c.accent,
-      fontSize: 14,
-      fontFamily: fonts.bold,
     },
   });

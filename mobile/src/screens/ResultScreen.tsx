@@ -19,6 +19,8 @@ import { TextField } from "../components/TextField";
 import { NoteEditor } from "../components/NoteEditor";
 import { SingAlong } from "../components/SingAlong";
 import { Mark } from "../components/night/NightUI";
+import { GuestAccountCard } from "../components/GuestAccountCard";
+import { GUEST_MAX_SECONDS } from "../lib/guestPreview";
 import ScoreView, { type ScoreViewHandle } from "../components/ScoreView";
 import { SheetGrid, barOf } from "../components/result/SheetGrid";
 import { PlayerDock, DOCK_CLEARANCE } from "../components/result/PlayerDock";
@@ -74,7 +76,7 @@ import {
   typography,
   type Palette,
 } from "../design/theme";
-import { useColors, useThemedStyles } from "../lib/theme";
+import { ThemeOverride, useColors, useThemedStyles } from "../lib/theme";
 import { confidenceNote } from "../lib/confidence";
 import * as haptics from "../lib/haptics";
 import type { RootStackParams } from "../navigation/types";
@@ -161,6 +163,9 @@ function barCountOf(notes: readonly NoteEvent[], timeSignature: string): number 
 
 const PROVIDERS: Record<string, string> = { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music" };
 
+/** The space between a guest's "Keep this sheet" card and the player above it. */
+const KEEP_GAP = 8;
+
 type Panel = "transpose" | "lyrics" | "parts" | "sing" | "export";
 
 /** The part a singer practised last on this device; Learn my part opens on it when the sheet has it. */
@@ -185,6 +190,10 @@ type SolfaStyle = "bars" | "grid" | "curwen" | "hymn";
  *
  * PRD honesty rule: the SURE figure is always visible and coloured by level, and
  * low-confidence notes are amber with a dotted underline so users double-check.
+ *
+ * A guest's preview (`guest`, board l-ux-high/07) is the same sheet, only read: × closes it, the figures and the
+ * ways to read it stay, the player plays it, and "Keep this sheet" is pinned under the player in place of
+ * everything an account brings (save, share, export, parts, edits).
  */
 export function ResultScreen({ route, navigation }: Props) {
   const {
@@ -194,6 +203,7 @@ export function ResultScreen({ route, navigation }: Props) {
     title: initialTitle,
     fresh,
     practise,
+    guest,
   } = route.params;
 
   const colors = useColors();
@@ -410,9 +420,11 @@ export function ResultScreen({ route, navigation }: Props) {
   // ── Layout state for the sheet's surfaces ───────────────────────────────────
   // One panel under the action row at a time; parts heard from a choir open on
   // arrival, since they are half of what was transcribed.
-  const [panel, setPanel] = useState<Panel | null>(result.parts ? "parts" : null);
+  const [panel, setPanel] = useState<Panel | null>(result.parts && !guest ? "parts" : null);
   const [naming, setNaming] = useState(false);
   const [rehearsing, setRehearsing] = useState(false);
+  /** A guest's "Keep this sheet" card, pinned under the player: its height lifts the dock and the sheet's end. */
+  const [keepHeight, setKeepHeight] = useState(0);
 
   // The rehearsal mix: the tune plus whichever parts are switched on, re-rendered when
   // any of them changes. Without parts the player keeps the melody preview above.
@@ -895,7 +907,7 @@ export function ResultScreen({ route, navigation }: Props) {
     } catch (e) {
       persisted.current = rollback;
       setDraft(rollback);
-      setPreview(synthesizeMelodyWavBase64(rollback.notes, result.tempo));
+      setPreview(synthesizeMelodyWavBase64(rollback.notes, tempo));
       showDialog({
         title: "Could not save your corrections",
         message: toApiError(e).message,
@@ -911,8 +923,9 @@ export function ResultScreen({ route, navigation }: Props) {
     stopAudition();
     // Synthesising walks every sample on the JS thread, so it happens once here
     // rather than on each nudge, which would jank the stepper.
+    // At the tempo chosen, not the one heard: a fix must not undo a tempo change.
     if (draft.notes !== result.notes)
-      setPreview(synthesizeMelodyWavBase64(draft.notes, result.tempo));
+      setPreview(synthesizeMelodyWavBase64(draft.notes, tempo));
     void commitNotes(draft);
   }
 
@@ -1096,13 +1109,34 @@ export function ResultScreen({ route, navigation }: Props) {
     }
   }
 
+  /** Set synchronously: the field's blur and the Rename tap that caused it would otherwise rename twice. */
+  const renamingRef = useRef(false);
+
   async function rename() {
-    if (!savedId) return;
+    if (!savedId || renamingRef.current) return;
+    renamingRef.current = true;
     setRenaming(true);
     const kept = await renameSheet(savedId, title);
     if (kept !== null) setCommittedTitle(kept);
+    renamingRef.current = false;
     setRenaming(false);
   }
+
+  /** A saved sheet's typed name is kept when the field is submitted or left, not only on Rename. */
+  function commitTitle() {
+    const next = title.trim();
+    if (!savedId || !next || next === committedTitle) return;
+    void rename();
+  }
+
+  // Back can take the screen away before a focused field reports its blur: leaving saves the lyrics and a typed
+  // name as the blur would have. Read through a ref, so the listener always sees what was typed last.
+  const commitOnLeave = useRef(() => {});
+  commitOnLeave.current = () => {
+    void commitLyrics();
+    commitTitle();
+  };
+  useEffect(() => navigation.addListener("beforeRemove", () => commitOnLeave.current()), [navigation]);
 
   // ── Export (MusicXML) ──────────────────────────────────────────────────────
   // Exports `scoreXml`, engraved here from the live note list, rather than the
@@ -1154,7 +1188,14 @@ export function ResultScreen({ route, navigation }: Props) {
   async function handleExportPdf() {
     setExportingType("pdf");
     try {
-      const svg = await scoreRef.current?.getSvg();
+      let svg: string | undefined;
+      try {
+        svg = await scoreRef.current?.getSvg();
+      } catch {
+        // Not drawn yet, or the engraver was slow to answer: it was dropped silently with the spinner.
+        showDialog({ title: "Not ready yet", message: "The staff is still drawing. Try again in a moment.", icon: "clock" });
+        return;
+      }
       if (!svg) {
         showDialog({
           title: "Open the Staff view first",
@@ -1444,7 +1485,7 @@ export function ResultScreen({ route, navigation }: Props) {
           <Text
             style={[
               styles.rangeStatus,
-              { color: r.status === "ok" ? colors.success : colors.warning },
+              { color: r.status === "ok" ? colors.successText : colors.warningText },
             ]}
           >
             {r.status === "ok"
@@ -1483,43 +1524,54 @@ export function ResultScreen({ route, navigation }: Props) {
         <ScrollView
           contentContainerStyle={[
             styles.content,
-            { paddingBottom: (preview ? DOCK_CLEARANCE : spacing.xl) + insets.bottom },
+            { paddingBottom: (preview ? DOCK_CLEARANCE : spacing.xl) + insets.bottom + (guest ? keepHeight + KEEP_GAP : 0) },
           ]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
           {/* ── Top bar ──────────────────────────────────────────────────── */}
+          {/* A guest's preview (board l-ux-high/07) is only read: × closes it, and nothing saves or shares. */}
           <View style={styles.topBar}>
-            <IconButton icon="back" label="Go back" onPress={goBack} />
-            <View style={styles.topActions}>
-              <IconButton
-                icon="share"
-                label={shareToken ? "Share the link again" : "Share a link"}
-                onPress={() => void shareLink()}
-                busy={sharing}
-              />
-              {/* Already in the Library (option A): the bookmark is Rename, a pencil. */}
-              <IconButton
-                icon={savedId ? "rename" : "save"}
-                label={savedId ? "Rename" : "Save to library"}
-                onPress={() => setNaming((n) => !n)}
-                active={naming}
-              />
-            </View>
+            <IconButton icon={guest ? "close" : "back"} label={guest ? "Close" : "Go back"} onPress={goBack} />
+            {guest ? null : (
+              <View style={styles.topActions}>
+                <IconButton
+                  icon="share"
+                  label={shareToken ? "Share the link again" : "Share a link"}
+                  onPress={() => void shareLink()}
+                  busy={sharing}
+                />
+                {/* Already in the Library (option A): the bookmark is Rename, a pencil. */}
+                <IconButton
+                  icon={savedId ? "rename" : "save"}
+                  label={savedId ? "Rename" : "Save to library"}
+                  onPress={() => setNaming((n) => !n)}
+                  active={naming}
+                />
+              </View>
+            )}
           </View>
 
           {/* ── Title ───────────────────────────────────────────────────── */}
-          <Touchable
-            onPress={() => setNaming((n) => !n)}
-            ripple={false}
-            scaleTo={motion.scale.row}
-            haptic="none"
-            accessibilityRole="button"
-            accessibilityLabel={`${shownTitle}. ${savedId ? "Rename" : "Name and save"}`}
-          >
-            <Text style={styles.title}>{shownTitle}</Text>
-          </Touchable>
-          {autoSaved && savedId ? (
+          {guest ? (
+            <Text style={styles.title} accessibilityRole="header">
+              {shownTitle}
+            </Text>
+          ) : (
+            <Touchable
+              onPress={() => setNaming((n) => !n)}
+              ripple={false}
+              scaleTo={motion.scale.row}
+              haptic="none"
+              accessibilityRole="button"
+              accessibilityLabel={`${shownTitle}. ${savedId ? "Rename" : "Name and save"}`}
+            >
+              <Text style={styles.title}>{shownTitle}</Text>
+            </Touchable>
+          )}
+          {guest ? (
+            <Text style={styles.subtitle}>{`${takeKind(result)} · ${key}`}</Text>
+          ) : autoSaved && savedId ? (
             <View style={styles.savedSub} accessible accessibilityLabel={`${result.source ? subtitle : takeKind(result)}, saved to your Library just now`}>
               <Text style={styles.savedSubText}>{`${result.source ? subtitle : takeKind(result)} · `}</Text>
               <Icon name="check" size={13} color={colors.success} />
@@ -1543,6 +1595,9 @@ export function ResultScreen({ route, navigation }: Props) {
                 label="Title"
                 value={title}
                 onChangeText={setTitle}
+                onBlur={commitTitle}
+                onSubmitEditing={commitTitle}
+                returnKeyType="done"
                 placeholder="Name this transcription…"
               />
               {savedId ? (
@@ -1591,7 +1646,11 @@ export function ResultScreen({ route, navigation }: Props) {
               ) : null}
             </Text>
           ) : null}
-          {result.source?.preview && result.source.notice ? (
+          {guest ? (
+            <Text style={styles.notice}>
+              Free preview: the first {GUEST_MAX_SECONDS} seconds. Create a free account to keep the sheet.
+            </Text>
+          ) : result.source?.preview && result.source.notice ? (
             <Text style={styles.notice}>{result.source.notice}</Text>
           ) : result.truncated ? (
             <Text style={styles.notice}>
@@ -1605,34 +1664,35 @@ export function ResultScreen({ route, navigation }: Props) {
 
           {/* ── The numbers that matter ─────────────────────────────────── */}
           <View style={styles.stats}>
+            {/* A guest's figures are read, not changed: no pickers behind them. */}
             <Stat
               value={doh}
               caption={rekeying ? "Saving" : "Doh"}
-              onPress={toggleKeyPicker}
+              onPress={guest ? undefined : toggleKeyPicker}
               active={pickingKey}
-              accessibilityLabel={`Key ${key}, doh is ${doh}. Change key`}
+              accessibilityLabel={`Key ${key}, doh is ${doh}.${guest ? "" : " Change key"}`}
             />
             <Stat
               value={String(tempo)}
               caption="BPM"
-              onPress={() => {
+              onPress={guest ? undefined : () => {
                 setPickingTempo((p) => !p);
                 setPickingKey(false);
                 setPickingMeter(false);
               }}
               active={pickingTempo}
-              accessibilityLabel={`Tempo ${tempo} BPM. Change tempo`}
+              accessibilityLabel={`Tempo ${tempo} BPM.${guest ? "" : " Change tempo"}`}
             />
             <Stat
               value={timeSignature}
               caption="Time"
-              onPress={() => {
+              onPress={guest ? undefined : () => {
                 setPickingMeter((p) => !p);
                 setPickingKey(false);
                 setPickingTempo(false);
               }}
               active={pickingMeter}
-              accessibilityLabel={`Time signature ${timeSignature}. Change meter`}
+              accessibilityLabel={`Time signature ${timeSignature}.${guest ? "" : " Change meter"}`}
             />
           </View>
 
@@ -1640,7 +1700,7 @@ export function ResultScreen({ route, navigation }: Props) {
               doubtful notes are tinted on the sheet, so a middling one points at them. */}
           {confNote ? <Text style={styles.notice}>{confNote}</Text> : null}
 
-          {hymnAsk && result.hymnMatch ? (
+          {hymnAsk && result.hymnMatch && !guest ? (
             <View style={styles.panel}>
               <Text style={styles.panelEyebrow}>Is this a hymn?</Text>
               <Text style={styles.panelHint}>
@@ -1675,7 +1735,7 @@ export function ResultScreen({ route, navigation }: Props) {
             </View>
           ) : null}
 
-          {doubt.length > 0 && !edited && !parts && hymnAsk !== "version" ? (
+          {doubt.length > 0 && !edited && !parts && hymnAsk !== "version" && !guest ? (
             <View style={styles.panel}>
               <Text style={styles.panelEyebrow}>Which doh is it?</Text>
               <Text style={styles.panelHint}>
@@ -1823,9 +1883,9 @@ export function ResultScreen({ route, navigation }: Props) {
                     timeSignature={timeSignature}
                     barCount={barCount}
                     playingNote={playingNote}
-                    onSelectNote={openNote}
+                    onSelectNote={guest ? undefined : openNote}
                   />
-                  <Text style={styles.gridHint}>Tap a syllable to fix it.</Text>
+                  {guest ? null : <Text style={styles.gridHint}>Tap a syllable to fix it.</Text>}
                 </>
               ) : solfaStyle === "hymn" ? (
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -1869,10 +1929,10 @@ export function ResultScreen({ route, navigation }: Props) {
                 <ScoreView
                   ref={scoreRef}
                   notes={view.notes}
-                  timeSignature={result.timeSignature}
+                  timeSignature={timeSignature}
                   musicalKey={key}
                   cursorBeat={cursorBeat}
-                  onSelectNote={openNote}
+                  onSelectNote={guest ? undefined : openNote}
                 />
                 {/* A free account reads the sheet on screen with the preview mark; the
                     download is the Pro half. */}
@@ -1888,7 +1948,7 @@ export function ResultScreen({ route, navigation }: Props) {
           {/* One amber row when the model doubted some notes. Tapping opens the piano on
               the flagged piece: a doubtful note is a *pitch* question, and the fastest
               answer to one is pressing the key and hearing it. */}
-          {lowCount > 0 && firstLow ? (
+          {lowCount > 0 && firstLow && !guest ? (
             <Touchable
               style={styles.check}
               onPress={startReview}
@@ -1907,15 +1967,17 @@ export function ResultScreen({ route, navigation }: Props) {
             </Touchable>
           ) : null}
 
-          {/* ── Actions ─────────────────────────────────────────────────────── */}
-          <View style={styles.actions}>
-            <Action icon="transpose" label="Transpose" active={panel === "transpose"} onPress={() => togglePanel("transpose")} />
-            <Action icon="lyrics" label="Lyrics" active={panel === "lyrics"} onPress={() => togglePanel("lyrics")} />
-            <Action icon="parts" label="SATB" active={panel === "parts"} onPress={() => togglePanel("parts")} />
-            <Action icon="sing" label="Sing" active={panel === "sing"} onPress={() => togglePanel("sing")} />
-            <Action icon="export" label="Export" active={panel === "export"} onPress={() => togglePanel("export")} />
-            <Action icon="more" label="More" onPress={openOptions} accessibilityLabel="Transcription options" />
-          </View>
+          {/* ── Actions (none on a guest's preview: an account is what they come with) ── */}
+          {guest ? null : (
+            <View style={styles.actions}>
+              <Action icon="transpose" label="Transpose" active={panel === "transpose"} onPress={() => togglePanel("transpose")} />
+              <Action icon="lyrics" label="Lyrics" active={panel === "lyrics"} onPress={() => togglePanel("lyrics")} />
+              <Action icon="parts" label="SATB" active={panel === "parts"} onPress={() => togglePanel("parts")} />
+              <Action icon="sing" label="Sing" active={panel === "sing"} onPress={() => togglePanel("sing")} />
+              <Action icon="export" label="Export" active={panel === "export"} onPress={() => togglePanel("export")} />
+              <Action icon="more" label="More" onPress={openOptions} accessibilityLabel="Transcription options" />
+            </View>
+          )}
 
           {panel === "transpose" ? keyControls : null}
 
@@ -2003,7 +2065,8 @@ export function ResultScreen({ route, navigation }: Props) {
                 tempoBpm={tempo}
                 timeSignature={timeSignature}
                 isPro={isPro}
-                onRequirePro={() => void requirePro()}
+                // Marking a take is what Pro adds here, so the practice words, not the downloads'.
+                onRequirePro={practiceUpsell}
                 sheetId={savedId}
               />
             ) : (
@@ -2095,7 +2158,24 @@ export function ResultScreen({ route, navigation }: Props) {
 
       {/* ── Playback: hear the tune; Rehearse to loop, slow down and mute parts ─
           Doh's first-open toast takes the dock's place for its few seconds, so it never covers the solfa. */}
-      {preview && !celebrate ? <PlayerDock practice={practice} onRehearse={() => setRehearsing(true)} /> : null}
+      {preview && !celebrate && (!guest || keepHeight > 0) ? (
+        <PlayerDock
+          practice={practice}
+          onRehearse={() => setRehearsing(true)}
+          lift={guest ? keepHeight + KEEP_GAP : 0}
+        />
+      ) : null}
+
+      {/* ── A guest's preview: what an account adds, and the two ways to one (board l-ux-high/07) ── */}
+      {guest ? (
+        <GuestAccountCard
+          title="Keep this sheet"
+          message="Save it to your Library, hear it in four parts and share it with your choir. Free: 3 transcriptions a week."
+          primary="Create a free account to keep it"
+          style={[styles.keepCard, { bottom: insets.bottom + 10 }]}
+          onLayout={(e) => setKeepHeight(Math.round(e.nativeEvent.layout.height))}
+        />
+      ) : null}
 
       <RehearseView
         visible={rehearsing}
@@ -2204,6 +2284,15 @@ export function ResultScreen({ route, navigation }: Props) {
 }
 
 // ─── Small pieces ─────────────────────────────────────────────────────────────
+
+/** A guest's preview in the signed-out stack, on the night canvas as every first-run screen is. */
+export function GuestPreviewScreen(props: Props) {
+  return (
+    <ThemeOverride mode="dark">
+      <ResultScreen {...props} />
+    </ThemeOverride>
+  );
+}
 
 /** The board's 40px round icon button: surface fill, hairline border. */
 function IconButton({
@@ -2380,6 +2469,17 @@ const makeStyles = (c: Palette) =>
     /** The ScrollView takes the gutter so the dock can sit over the full width. */
     screen: { paddingHorizontal: 0, paddingBottom: 0 },
     content: { paddingHorizontal: 22 },
+    /** A guest's "Keep this sheet", pinned where the player docks (the player sits on it), at the dock's width. */
+    keepCard: {
+      position: "absolute",
+      left: 14,
+      right: 14,
+      shadowColor: "#000000",
+      shadowOffset: { width: 0, height: 14 },
+      shadowOpacity: 0.35,
+      shadowRadius: 24,
+      elevation: 12,
+    },
 
     // ── Top bar & title ───────────────────────────────────────────────────────
     topBar: {
@@ -2423,7 +2523,7 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.regular,
       fontSize: 12.5,
       lineHeight: 18,
-      color: c.accentAlt,
+      color: c.noticeText,
       backgroundColor: c.accentSoft,
       borderRadius: 12,
       paddingVertical: spacing.sm,
@@ -2493,8 +2593,11 @@ const makeStyles = (c: Palette) =>
     savedLine: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
     savedText: { fontFamily: fonts.medium, fontSize: 13, color: c.text, flex: 1 },
 
-    chipScroll: { gap: spacing.xs, paddingRight: spacing.md },
+    /** Chips are 44 px tall and 8 px apart: big enough to hit (board l-ux-high 05a). */
+    chipScroll: { gap: spacing.sm, paddingRight: spacing.md },
     chip: {
+      minHeight: 44,
+      justifyContent: "center",
       paddingVertical: 8,
       paddingHorizontal: 14,
       borderRadius: radii.pill,
@@ -2539,16 +2642,17 @@ const makeStyles = (c: Palette) =>
     },
     stepText: { fontFamily: typography.mono.fontFamily, fontSize: 13, color: c.text },
     stepValue: { flex: 1, textAlign: "center", fontFamily: typography.mono.fontFamily, fontSize: 24, color: c.text },
-    meterRow: { flexDirection: "row", gap: spacing.xs, flexWrap: "wrap" },
+    meterRow: { flexDirection: "row", gap: spacing.sm, flexWrap: "wrap" },
     meterChip: { flexGrow: 1, alignItems: "center" },
 
     // ── Notation ──────────────────────────────────────────────────────────────
     viewsScroll: { marginTop: 14, marginHorizontal: -22 },
-    views: { paddingHorizontal: 22, gap: 6 },
+    views: { paddingHorizontal: 22, gap: 8 },
     viewChip: {
       flexDirection: "row",
       alignItems: "center",
       gap: 5,
+      minHeight: 44,
       paddingVertical: 6,
       paddingHorizontal: 13,
       borderRadius: radii.pill,
@@ -2632,7 +2736,7 @@ const makeStyles = (c: Palette) =>
       borderColor: c.border,
     },
     checkText: { flex: 1, fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
-    checkStrong: { fontFamily: fonts.semibold, color: c.warning },
+    checkStrong: { fontFamily: fonts.semibold, color: c.warningText },
 
     // ── Actions ───────────────────────────────────────────────────────────────
     actions: { flexDirection: "row", justifyContent: "space-between", marginTop: 18 },
@@ -2656,7 +2760,7 @@ const makeStyles = (c: Palette) =>
     voiceName: { ...typography.caption, color: c.textMuted, marginBottom: 4 },
     voiceLines: { fontFamily: typography.mono.fontFamily, fontSize: 14, color: c.text, lineHeight: 22 },
     teaser: { backgroundColor: c.accentSoft, borderRadius: radii.md, padding: spacing.md },
-    teaserText: { fontFamily: fonts.regular, fontSize: 13, color: c.accentAlt, lineHeight: 19 },
+    teaserText: { fontFamily: fonts.regular, fontSize: 13, color: c.noticeText, lineHeight: 19 },
     proTag: {
       flexDirection: "row",
       alignItems: "center",

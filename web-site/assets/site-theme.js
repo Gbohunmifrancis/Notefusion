@@ -1,7 +1,8 @@
 /* The Light / Dark / System toggle in the public site's header. theme-boot.js has already applied the
    theme before the first paint; this wires the button. Each press moves to the next choice
    (Light → Dark → System), saves it under the same key the web app uses ("nf.web.theme"), and the
-   page follows the device while the choice is System. Other open tabs follow a change too. */
+   page follows the device while the choice is System. Other open tabs follow a change too. It also closes
+   the phone menu once it has been used. */
 (function () {
   "use strict";
   var KEY = "nf.web.theme", ORDER = ["light", "dark", "system"];
@@ -50,4 +51,18 @@
   }
   window.addEventListener("storage", function (e) { if (e.key === KEY) apply(choice()); });
   apply(choice());
+
+  // The phone menu (a <details>) closes once it has done its job: a link chosen (an on-page one like Pricing used
+  // to leave the panel open over the section), a tap outside it, or Escape, which hands focus back to its button.
+  var menu = document.querySelector(".site-shell-mobile");
+  if (menu) {
+    menu.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("a")) menu.open = false; });
+    document.addEventListener("click", function (e) { if (menu.open && !menu.contains(e.target)) menu.open = false; });
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape" || !menu.open) return;
+      menu.open = false;
+      var summary = menu.querySelector("summary");
+      if (summary) summary.focus();
+    });
+  }
 })();

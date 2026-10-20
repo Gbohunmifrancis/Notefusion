@@ -242,6 +242,10 @@ export function toApiError(err: unknown): ApiError {
         : "Something went wrong on our side. Please try again in a moment.",
     };
   }
+  // The server's sentence speaks of a "token", which nobody signing in has seen.
+  if (data?.code === 'AUTH_INVALID_GOOGLE_TOKEN') {
+    return { code: data.code, message: "Google sign-in didn't finish. Please try again." };
+  }
   if (data?.message) return data;
   if (ax?.response?.status === 415) {
     return { code: 'UNSUPPORTED_MEDIA', message: 'Unsupported audio format. Please re-record.' };

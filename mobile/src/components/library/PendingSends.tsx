@@ -162,7 +162,7 @@ const makeStyles = (c: Palette) =>
     title: { fontFamily: fonts.medium, fontSize: 15, color: c.text },
     status: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted, marginTop: 3 },
     statusLive: { color: c.link },
-    statusProblem: { color: c.warning },
+    statusProblem: { color: c.warningText },
     bar: { height: 3, borderRadius: radii.pill, backgroundColor: c.border, marginTop: 8, overflow: "hidden" },
     barFill: { height: "100%", borderRadius: radii.pill, backgroundColor: c.link },
     actions: { flexDirection: "row", justifyContent: "flex-end", gap: spacing.sm },

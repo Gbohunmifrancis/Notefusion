@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Icon } from "../components/Icon";
-import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
+import { useNavigation, useRoute, useScrollToTop, type RouteProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
@@ -26,7 +26,7 @@ import {
   type PackHymn,
   type PackMeta,
 } from "../lib/hymnPack";
-import { downloadPack, installedPack, remotePackMeta, removePack, usePackState } from "../lib/hymnPackStore";
+import { checkRemotePack, downloadPack, installedPack, remotePackMeta, removePack, usePackState } from "../lib/hymnPackStore";
 import { resultFromHymn } from "../lib/openSheet";
 import { deriveSolfa } from "../lib/solfa";
 import { useDataSaver } from "../lib/dataSaver";
@@ -70,6 +70,8 @@ export function HymnsScreen() {
   const [shelfOnly, setShelfOnly] = useState(false);
   const [filter, setFilter] = useState<HalloweenFilter>("all");
   const list = useRef<FlatList<PackHymn>>(null);
+  // Tapping Hymns again while on it scrolls back to the top.
+  useScrollToTop(list);
   const shelfList = useMemo(() => (pack && season ? seasonShelf(pack.hymns, season) : []), [pack, season]);
   const openings = useMemo(
     () => new Map(shelfList.map((h) => [h.slug, openingLine(deriveSolfa(hymnSheet(h).notes, h.key, h.time).notes)])),
@@ -151,12 +153,17 @@ export function HymnsScreen() {
 
   async function checkForUpdate() {
     setChecking(true);
-    const remote = await remotePackMeta();
+    const check = await checkRemotePack();
     setChecking(false);
-    if (!remote) {
-      showDialog({ title: "You're offline", message: "The hymns on your phone still work. Check again when you're online.", icon: "offline" });
+    if (!("meta" in check)) {
+      showDialog(
+        check.problem === "offline"
+          ? { title: "You're offline", message: "The hymns on your phone still work. Check again when you're online.", icon: "offline" }
+          : { title: "Couldn't check for new hymns", message: "The hymns on your phone still work. Please try again later.", icon: "problem" },
+      );
       return;
     }
+    const remote = check.meta;
     if (!needsDownload(packState.version, remote)) {
       showToast(`Up to date: every hymn we publish (${remote.count})`);
       return;
@@ -265,6 +272,7 @@ export function HymnsScreen() {
               <TextInput
                 style={styles.searchInput}
                 placeholder="Title, first line or tune"
+                accessibilityLabel="Search hymns by title, first line or tune"
                 placeholderTextColor={colors.textFaint}
                 value={query}
                 onChangeText={setQuery}
@@ -359,7 +367,10 @@ export function HymnsScreen() {
           </Touchable>
         )}
         ItemSeparatorComponent={grid ? undefined : () => <View style={styles.divider} />}
-        ListEmptyComponent={<Text style={styles.empty}>Nothing matches “{query.trim()}”.</Text>}
+        ListEmptyComponent={
+          // Without a query the list is empty only under a season filter (Spooky, All Saints) with nothing in it.
+          <Text style={styles.empty}>{query.trim() ? `Nothing matches “${query.trim()}”.` : "Nothing here yet."}</Text>
+        }
         ListFooterComponent={
           <View style={styles.footer}>
             <Text style={styles.footerText}>

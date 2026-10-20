@@ -33,6 +33,7 @@
     if (status === 0) err.message = "We couldn't reach NoteFusion. Check your connection and try again.";
     if (status === 429) err.message = "That's a lot of requests at once. Wait a moment and try again.";
     err.code = body && body.code;
+    err.status = status;
     try { if (message && message !== err.message) console.warn("[notefusion]", status, err.code, message); } catch (e) { /* ignore */ }
     return err;
   }
@@ -56,10 +57,14 @@
       var xhr = new XMLHttpRequest();
       xhr.open("POST", API + path);
       xhr.setRequestHeader("X-Device-Id", deviceId());
+      // A connection that stops moving (3G under a bridge) gives up after 45 s of no progress, rather than
+      // sitting on "Uploading… 40%" with every control off until the page is reloaded.
+      var lastMove = Date.now(), watch = setInterval(function () { if (Date.now() - lastMove > 45000) xhr.abort(); }, 5000);
       if (xhr.upload) {
-        xhr.upload.addEventListener("progress", function (e) { if (e.lengthComputable && e.total > 0) onProgress(Math.min(1, e.loaded / e.total)); });
-        xhr.upload.addEventListener("load", function () { onProgress(1); });
+        xhr.upload.addEventListener("progress", function (e) { lastMove = Date.now(); if (e.lengthComputable && e.total > 0) onProgress(Math.min(1, e.loaded / e.total)); });
+        xhr.upload.addEventListener("load", function () { clearInterval(watch); onProgress(1); });
       }
+      xhr.addEventListener("loadend", function () { clearInterval(watch); });
       xhr.onerror = xhr.onabort = xhr.ontimeout = function () { reject(failure(0, null)); };
       xhr.onload = function () {
         var body = parse(xhr.responseText || "");
@@ -71,6 +76,28 @@
   function sayUpload(fraction) { say("Uploading… " + Math.round(fraction * 100) + "%"); }
   function track(name) { try { if (window.nfTrack) window.nfTrack(name); } catch (e) { /* never in the way */ } }
   function open(job) { location.href = "/app/?preview=" + encodeURIComponent(job.jobId); }
+  /**
+   * A take or file whose send failed on the way (no connection, a server fault, too many at once) is kept, with a
+   * "Send it again" beside the note, instead of being lost with the error (board l-ux-high/06e). A refusal that
+   * sending again cannot change (the one preview used) is explained as before.
+   */
+  var kept = null;
+  function sendTake(blob, name) {
+    kept = null;
+    busy(true); sayUpload(0);
+    upload("/api/preview", audioForm(blob, name), sayUpload).then(open).catch(function (err) {
+      busy(false);
+      if (!err.status || err.status === 408 || err.status === 429 || err.status >= 500) { kept = { blob: blob, name: name }; sayKept(); }
+      else explain(err);
+    });
+  }
+  function sayKept() {
+    say("Couldn't send it. Your take is kept.", "error");
+    var again = document.createElement("button");
+    again.type = "button"; again.className = "btn btn-primary try-again"; again.textContent = "Send it again";
+    again.addEventListener("click", function () { if (kept) sendTake(kept.blob, kept.name); });
+    status.appendChild(again);
+  }
   function explain(err) {
     if (err.code === "PREVIEW_LIMIT_REACHED") { say(err.message + " ", "info"); var a = document.createElement("a"); a.href = "/app"; a.textContent = "Create a free account"; status.appendChild(a); return; }
     say(err.message || "Something went wrong. Try again.", "error");
@@ -160,13 +187,20 @@
     send("/api/preview/link", { json: body }).then(open).catch(function (err) { busy(false); explain(err); });
   }
 
+  /** A file the API would refuse, said before it goes up: over 25 MB, or not a recording. */
+  function fileProblem(f) {
+    if (f.size > 25 * 1024 * 1024) return "That file is over 25 MB. Choose a shorter recording, or one saved as MP3 or M4A.";
+    var audio = /^audio\//.test(f.type || "") || /\.(wav|mp3|m4a|aac|flac|ogg|oga|opus|webm|mp4)$/i.test(f.name || "");
+    return audio ? null : "That doesn't look like a recording. Choose an MP3, WAV, M4A, FLAC, OGG or WebM file.";
+  }
   file.addEventListener("change", function () {
     var f = file.files && file.files[0];
     if (!f) return;
-    busy(true); sayUpload(0);
+    var problem = fileProblem(f);
+    if (problem) { say(problem, "error"); file.value = ""; return; }
     track("Preview started (audio)");
-    var fd = audioForm(f, f.name);
-    upload("/api/preview", fd, sayUpload).then(open).catch(function (err) { busy(false); explain(err); file.value = ""; });
+    file.value = "";
+    sendTake(f, f.name);
   });
 
   // "Record a tune" opens the same recording pop-up as the signed-in studio (assets/recorder.js):
@@ -179,11 +213,7 @@
       maxSeconds: MAX_RECORD_SEC,
       track: track,
       onError: function (text, kind) { say(kind === "short" ? text : text + " Paste a link or pick a file instead.", "error"); },
-      onTake: function (blob, name) {
-        var fd = audioForm(blob, name);
-        busy(true); sayUpload(0);
-        upload("/api/preview", fd, sayUpload).then(open).catch(function (err) { busy(false); explain(err); });
-      }
+      onTake: function (blob, name) { sendTake(blob, name); }
     });
   });
 })();

@@ -229,10 +229,16 @@ public static class AuthRateLimiting
         return ip.ToString();
     }
 
+    /// <summary>
+    /// The wait, as a person says it: seconds, then minutes, then hours, so a daily limit reads "Try again in
+    /// 9 hours" rather than "in 540 minutes".
+    /// </summary>
     internal static string Describe(int seconds)
-        => seconds < 90
-            ? $"{seconds} seconds"
-            : $"{(int)Math.Ceiling(seconds / 60.0)} minutes";
+    {
+        if (seconds < 90) return $"{seconds} seconds";
+        var minutes = (int)Math.Ceiling(seconds / 60.0);
+        return minutes < 90 ? $"{minutes} minutes" : $"{(int)Math.Ceiling(minutes / 60.0)} hours";
+    }
 }
 
 /// <summary>Limits for <see cref="AuthRateLimiting"/>, bound from the <c>RateLimit</c> configuration section.</summary>

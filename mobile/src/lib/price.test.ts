@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { formatPrice, limitCopy, limitOffer } from "./price.ts";
+import { formatPrice, limitCopy, limitOffer, nairaNote, periodLabel } from "./price.ts";
 import type { Plan } from "../api/types";
 
 const plan = (code: string, amountMinor: number, currency: string, interval: Plan["interval"]): Plan => ({
@@ -35,6 +35,22 @@ test("an older API that lists the song in the main list still offers it", () => 
   const offer = limitOffer([plan("pro_m", 750000, "NGN", "monthly"), plan("song", 150000, "NGN", "single")], []);
   assert.equal(offer.single?.code, "song");
   assert.equal(offer.monthly?.code, "pro_m");
+});
+
+test("a price says what it is for: a rate for Pro, one-time for a song or a lifetime", () => {
+  assert.equal(periodLabel("monthly"), "/ month");
+  assert.equal(periodLabel("yearly"), "/ year");
+  assert.equal(periodLabel("single"), "one-time");
+  assert.equal(periodLabel("lifetime"), "one-time");
+});
+
+test("a dollar plan on the website's checkout warns of the naira charge; naira and Google Play do not", () => {
+  assert.equal(
+    nairaNote("USD", false),
+    "You'll pay the naira amount at today's rate on the next page; your bank may add a fee.",
+  );
+  assert.equal(nairaNote("NGN", false), null);
+  assert.equal(nairaNote("USD", true), null);
 });
 
 test("no plans loaded: no prices, the rows go without them", () => {

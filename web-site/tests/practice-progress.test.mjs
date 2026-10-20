@@ -79,6 +79,13 @@ test("earned badges come first, newest first, then the nearest locked ones", () 
 test("the streak card says done, at risk, or how to start, and whether the freeze is left", () => {
   assert.equal(P.streakLabel(4), "4-day streak");
   assert.equal(P.streakLabel(0), "No streak yet");
+  // A lapsed streak keeps its best (mirrors mobile lib/practiceProgress.test.ts).
+  assert.equal(P.streakLabel(0, 30), "No streak now");
+  assert.equal(P.bestStreakLine({ current: 0, best: 30 }), "Your best: 30 days");
+  assert.equal(P.bestStreakLine({ current: 0, best: 1 }), "Your best: 1 day");
+  assert.equal(P.bestStreakLine({ current: 3, best: 30 }), null);
+  assert.equal(P.streakLine({ current: 0, best: 12, todayDone: false, atRisk: false }), "Your best: 12 days. Start a new one today.");
+  assert.equal(P.streakLine({ current: 0, best: 0, todayDone: false, atRisk: false }), "Sing a drill to start one");
   assert.equal(P.streakLine(streak({ current: 6, todayDone: true })), "Done for today");
   assert.equal(P.streakLine(streak({ current: 6, atRisk: true })), "Sing today to keep it");
   assert.equal(P.streakLine(streak({})), "Sing a drill to start one");

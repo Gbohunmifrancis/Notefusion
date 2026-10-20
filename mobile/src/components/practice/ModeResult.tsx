@@ -1,13 +1,15 @@
 /**
  * A practice mode's marked take (boards c-practice/6b, 6c): the server's score and its own summary, then the marks,
  * then what the take earned. Focused shows the number and each note's cents; Playful shows stars and a friendly word
- * and the notes coloured without numbers. Green is in tune, amber close, grey off (never red), dashed not heard.
+ * and the notes without numbers. Each mark has a shape as well as a colour (lib/markShape): ✓ in tune, ~ close, off struck
+ * through in grey (never red), dashed with – not heard.
  */
 
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import type { PracticeReward } from "../../api/types";
 import type { MarkTone } from "../../lib/practiceModes";
+import { markGlyph } from "../../lib/markShape";
 import { rewardMoment } from "../../lib/practiceProgress";
 import { playfulRewardLine, starsArt, starsFor, starWord } from "../../lib/practiceTrack";
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
@@ -49,6 +51,8 @@ export function ModeResult({
   const stars = starsFor(score);
   const earned = playful ? playfulRewardLine(reward) : rewardMoment(reward)?.line ?? null;
   const toneColor = (t: MarkTone) => (t === "hit" ? c.success : t === "near" ? c.warning : t === "off" ? c.textMuted : c.textFaint);
+  // The mark's letter is a word: the deep shade in Day; the border keeps the bright hue.
+  const toneText = (t: MarkTone) => (t === "hit" ? c.successText : t === "near" ? c.warningText : t === "off" ? c.textMuted : c.textFaint);
 
   return (
     <View style={[styles.card, playful && styles.cardPlay]} accessibilityLiveRegion="polite">
@@ -60,7 +64,7 @@ export function ModeResult({
         </View>
       ) : (
         <View style={styles.scoreRow} accessible accessibilityLabel={`Score ${score}. ${summary}${sub ? ` ${sub}` : ""}`}>
-          <Text style={[styles.score, { color: score >= 80 ? c.success : score >= 50 ? c.warning : c.textMuted }]}>{score}</Text>
+          <Text style={[styles.score, { color: score >= 80 ? c.successText : score >= 50 ? c.warningText : c.textMuted }]}>{score}</Text>
           <View style={styles.scoreText}>
             <Text style={styles.summary}>{summary}</Text>
             {sub ? <Text style={styles.sub}>{sub}</Text> : null}
@@ -78,7 +82,10 @@ export function ModeResult({
                 accessible
                 accessibilityLabel={`${m.text}: ${m.tone === "hit" ? "in tune" : m.tone === "near" ? "close" : m.tone === "off" ? "off" : "not heard"}${!playful && m.sub ? `, ${m.sub}` : ""}`}
               >
-                <Text style={[styles.markText, { color }, m.tone === "off" && styles.markOff]}>{m.text}</Text>
+                <Text style={[styles.markText, { color: toneText(m.tone) }, m.tone === "off" && styles.markOff]}>
+                  {m.text}
+                  {markGlyph(m.tone === "off" ? "wrong" : m.tone)}
+                </Text>
                 {!playful && m.sub ? <Text style={styles.markSub}>{m.sub}</Text> : null}
               </View>
             );

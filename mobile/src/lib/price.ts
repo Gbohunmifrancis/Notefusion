@@ -1,4 +1,4 @@
-import type { Plan } from "../api/types";
+import type { BillingInterval, Plan } from "../api/types";
 
 /**
  * Prices as the app writes them, and the free-week limit's offer (board b-system/7b). Pure, so
@@ -23,6 +23,25 @@ export function formatPrice(amountMinor: number, currency: string): string {
 
   const symbol = currency === "USD" ? "$" : currency === "NGN" ? "₦" : null;
   return symbol ? `${symbol}${major}` : `${currency} ${major}`;
+}
+
+/**
+ * What a price is for, after it ("₦7,500 / month"). A noun for the lifetime tier and the one-song purchase, not a
+ * rate: "/ month" would be wrong and "/ lifetime" still reads like one.
+ */
+export function periodLabel(interval: BillingInterval): string {
+  return interval === "lifetime" || interval === "single" ? "one-time" : interval === "yearly" ? "/ year" : "/ month";
+}
+
+/**
+ * The line under the Pay button for a plan priced in dollars (board l-ux-high 03c): the website's checkout charges it
+ * in naira at the day's rate, so the next page shows a different figure. Google Play charges in the store's own
+ * currency, so never there.
+ */
+export function nairaNote(currency: string, viaPlay: boolean): string | null {
+  return !viaPlay && currency !== "NGN"
+    ? "You'll pay the naira amount at today's rate on the next page; your bank may add a fee."
+    : null;
 }
 
 export interface LimitOffer {

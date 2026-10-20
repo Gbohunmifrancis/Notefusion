@@ -36,6 +36,7 @@ import {
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Icon } from "../components/Icon";
 
@@ -62,14 +63,16 @@ import { isNetworkCode } from "../lib/reachability";
  */
 const LINK_OFFLINE =
   "Song links need the internet, so a link can't be saved to send later. Sing or hum it on Record instead — a recording waits on your phone and goes when you're back online.";
-import { transcriptionsApi } from "../api/endpoints";
+import { billingApi, transcriptionsApi } from "../api/endpoints";
 import { OFFLINE_LINE, STALLED_LINE, percentLabel, stageLabel } from "../lib/jobProgress";
 import { keyboardTranspose } from "../lib/keyboardTranspose";
-import { METER_CHOICES, meterEventValue, meterLabel, type Meter } from "../lib/meter";
+import { METER_CHOICES, meterEventValue, meterLabel, meterSummary, type Meter } from "../lib/meter";
 import { logAnalyticsEvent } from "../lib/analytics";
-import { fonts, nightFonts, radii, spacing, type Palette } from "../design/theme";
+import { linkEntitlement } from "../lib/linkEntitlement";
+import { formatPrice, limitOffer, type LimitOffer } from "../lib/price";
+import { fonts, motion, nightFonts, radii, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
-import type { LinkInfo, TranscriptionStage } from "../api/types";
+import type { LinkInfo, Plan, TranscriptionStage } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
 type Nav = NativeStackNavigationProp<RootStackParams>;
@@ -93,6 +96,7 @@ export function LinkScreen() {
   const nav = useNavigation<Nav>();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+  const insets = useSafeAreaInsets();
   const { state, startLink, retry, reset } = useJobPolling();
   const { isPro, known, subscription, refresh, boughtRemaining } = useSubscription();
 
@@ -100,6 +104,8 @@ export function LinkScreen() {
   const [focused, setFocused] = useState(false);
   /** Beats in a bar for this song; null is Not sure. Back to Not sure once a song is sent (lib/meter). */
   const [meter, setMeter] = useState<Meter | null>(null);
+  /** "More options" unfolded: the Beats-in-a-bar chips, folded away by default (board l-ux-high 02b). */
+  const [moreOpen, setMoreOpen] = useState(false);
   const inputRef = useRef<TextInput>(null);
   // Share text ("Listen to … on Spotify: https://…") is read down to its link, the one rule the
   // worker applies (lib/songLink); only the link itself is sent.
@@ -164,6 +170,30 @@ export function LinkScreen() {
 
   const credits = subscription?.songCreditsRemaining;
   const creditsTotal = subscription?.songCreditsTotal;
+  // What the pinned bar says and offers (board l-ux-high 02c): with nothing left for a song it offers the ways on
+  // instead of a Transcribe that could only end in a refusal card. Unknown until the subscription is read.
+  const entitlement = known
+    ? linkEntitlement({ isPro, credits, creditsTotal, boughtRemaining })
+    : null;
+
+  /**
+   * The region's one-song purchase and Pro by the month, as Record's limit sheet reads them, for the bar's
+   * "Buy this song · ₦1,500". Read once for a free account; until they arrive, or if they fail, it goes without the price.
+   */
+  const [offer, setOffer] = useState<LimitOffer>({});
+  useEffect(() => {
+    if (!known || isPro) return;
+    let live = true;
+    void Promise.all([
+      billingApi.plans().catch(() => [] as Plan[]),
+      billingApi.singlePlans().catch(() => [] as Plan[]),
+    ]).then(([pro, single]) => {
+      if (live) setOffer(limitOffer(pro, single));
+    });
+    return () => {
+      live = false;
+    };
+  }, [known, isPro]);
 
   // ── Finish ────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -209,8 +239,9 @@ export function LinkScreen() {
   }, [busy, state.progress, barWidth]);
 
   // While the link is being read the button waits, so the song and the picker are seen before
-  // anything is transcribed; a lookup that failed leaves it enabled and the server has the final say.
-  const canSubmit = found !== null && !busy && !infoBusy;
+  // anything is transcribed; a lookup that failed leaves it enabled and the server has the final say. With nothing
+  // left for a song the bar offers the ways on instead, and the keyboard's Go does not send either.
+  const canSubmit = found !== null && !busy && !infoBusy && (entitlement === null || entitlement.kind === "send");
 
   async function submit() {
     if (!found || !canSubmit) return;
@@ -246,6 +277,9 @@ export function LinkScreen() {
 
   // Ready: nothing we can read yet, so the screen introduces itself and the services.
   const ready = !provider;
+  // A link we can send: Transcribe and its entitlement line sit in a bar pinned to the bottom edge, where the
+  // thumb is (Song link opens over the tabs, so there is no tab bar under it).
+  const docked = !busy && provider !== null && !refusal;
 
   // Which preset the section matches, for the chips. A song that fits whole starts as the whole song.
   const first = duration != null && maxSeconds != null ? defaultRange(duration, maxSeconds) : null;
@@ -273,306 +307,340 @@ export function LinkScreen() {
   );
 
   return (
-    <Screen scroll>
-      <View style={styles.headerRow}>
-        <Touchable
-          onPress={() => (nav.canGoBack() ? nav.goBack() : nav.navigate("Tabs", { screen: "Home" }))}
-          style={styles.backBtn}
-          hitSlop={8}
-          radius={20}
-          accessibilityLabel="Go back"
-        >
-          <Icon name="back" size={20} color={colors.text} />
-        </Touchable>
-        {ready && !busy ? (
-          <View style={styles.lockup} accessible accessibilityLabel="Notefusion">
-            <Mark height={20} color={colors.text} />
-            <Wordmark size={16} style={{ color: colors.text }} />
-          </View>
-        ) : (
-          <Text style={styles.pageTitle} accessibilityRole="header">Song from a link</Text>
-        )}
-        <View style={styles.headerSpacer} />
-      </View>
-
-      {!busy && ready ? (
-        <>
-          <Text style={styles.title} accessibilityRole="header">Song from{"\n"}a link</Text>
-          <Text style={styles.lead}>We isolate the lead voice and write it out in solfa and staff.</Text>
-          {/* Said before anyone pastes: YouTube blocks server downloads for many songs, and a recording always works. */}
-          <Text style={styles.lead}>
-            Links work for many songs, not all. If yours fails, record it or import the audio file instead.
-          </Text>
-        </>
-      ) : null}
-
-      {!busy ? (
-        <View style={[styles.ring, ready && focused && styles.ringOn]}>
-          <View
-            style={[
-              styles.field,
-              ready ? styles.fieldLarge : styles.fieldCompact,
-              ready && focused && styles.fieldFocused,
-              refusal && styles.fieldRefused,
-            ]}
+    <View style={styles.flex}>
+      <Screen scroll>
+        <View style={styles.headerRow}>
+          <Touchable
+            onPress={() => (nav.canGoBack() ? nav.goBack() : nav.navigate("Tabs", { screen: "Home" }))}
+            style={styles.backBtn}
+            hitSlop={8}
+            radius={20}
+            accessibilityLabel="Go back"
           >
-            {provider ? (
-              <ProviderMark provider={provider} size={30} />
-            ) : (
-              <Icon name="link" size={20} color={focused ? colors.link : colors.textFaint} />
-            )}
-            <TextInput
-              ref={inputRef}
-              value={url}
-              onChangeText={setUrl}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-              placeholder="Paste a song link"
-              placeholderTextColor={colors.textFaint}
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardType="url"
-              returnKeyType="go"
-              onSubmitEditing={submit}
-              editable={!busy}
-              selectionColor={colors.accent}
-              style={[styles.input, url.length > 0 && styles.inputFilled]}
-              accessibilityLabel="Song link"
-            />
-            {url.length > 0 ? (
-              <Touchable onPress={() => setUrl("")} hitSlop={8} ripple="borderless" accessibilityLabel="Clear">
-                <Icon name="close" size={20} color={colors.textMuted} />
-              </Touchable>
-            ) : null}
-          </View>
+            <Icon name="back" size={20} color={colors.text} />
+          </Touchable>
+          {ready && !busy ? (
+            <View style={styles.lockup} accessible accessibilityLabel="Notefusion">
+              <Mark height={20} color={colors.text} />
+              <Wordmark size={16} style={{ color: colors.text }} />
+            </View>
+          ) : (
+            <Text style={styles.pageTitle} accessibilityRole="header">Song from a link</Text>
+          )}
+          <View style={styles.headerSpacer} />
         </View>
-      ) : null}
 
-      {!busy && url.trim().length > 0 && !provider ? (
-        <View style={styles.note}>
-          <Icon name="problem" size={16} color={colors.warning} />
-          <Text style={styles.noteText}>{songLinkHint(url)}</Text>
-        </View>
-      ) : null}
-
-      {!busy && ready ? (
-        <>
-          <Text style={styles.eyebrow}>Works with</Text>
-          <SourceTiles />
-          <Text style={styles.tip}>Tip: in any of these apps tap Share, then Copy link.</Text>
-        </>
-      ) : null}
-
-      {!busy && provider && refusal && infoError ? (
-        <>
-          <NoticeCard icon={refusal.icon} title={refusal.title} message={infoError.message}>
-            <PillAction label="Try another link" tone="solid" onPress={tryAnother} />
-            <PillAction label="Upload a file" onPress={uploadInstead} />
-          </NoticeCard>
-          <RefusedLinks />
-        </>
-      ) : null}
-
-      {!busy && provider && !refusal ? (
-        <>
-          {provider !== "youtube" && !song ? (
-            <Text style={styles.hint}>
-              {PROVIDER_LABEL[provider]} — we'll find the song on YouTube by its title and artist.
+        {!busy && ready ? (
+          <>
+            <Text style={styles.title} accessibilityRole="header">Song from{"\n"}a link</Text>
+            <Text style={styles.lead}>We isolate the lead voice and write it out in solfa and staff.</Text>
+            {/* Said before anyone pastes: YouTube blocks server downloads for many songs, and a recording always works. */}
+            <Text style={styles.lead}>
+              Links work for many songs, not all. If yours fails, record it or import the audio file instead.
             </Text>
-          ) : null}
+          </>
+        ) : null}
 
-          {song ? (
-            <>
-              <SongCover song={song} provider={provider} duration={duration} />
-
-              {duration != null && maxSeconds != null && range ? (
-                <>
-                  <View style={styles.pickHead}>
-                    <Text style={styles.pickTitle}>Which part?</Text>
-                    <Text style={styles.pickRange}>
-                      {formatClock(range.start)} – {formatClock(range.end)} · {formatClock(range.end - range.start)} long
-                    </Text>
-                  </View>
-                  <RangePicker
-                    duration={duration}
-                    maxSeconds={maxSeconds}
-                    value={range}
-                    onChange={(next) => {
-                      setRange(next);
-                      setPick(next);
-                    }}
-                  />
-                  <View style={styles.chips}>
-                    {chip("From the start", preset === "start", () => setRange(defaultRange(duration, maxSeconds)))}
-                    {pick ? chip("My pick", preset === "pick", () => setRange(pick)) : null}
-                    {fitsWhole(duration, maxSeconds)
-                      ? chip("Whole song", preset === "whole", () => setRange({ start: 0, end: Math.floor(duration) }))
-                      : null}
-                  </View>
-                  <Text style={styles.hint}>
-                    {isPro
-                      ? `Up to ${formatClock(maxSeconds)} at a time on Pro.`
-                      : `Up to ${formatClock(maxSeconds)} on the free preview — Pro takes up to 6:00 of any song.`}
-                  </Text>
-                </>
+        {!busy ? (
+          <View style={[styles.ring, ready && focused && styles.ringOn]}>
+            <View
+              style={[
+                styles.field,
+                ready ? styles.fieldLarge : styles.fieldCompact,
+                ready && focused && styles.fieldFocused,
+                refusal && styles.fieldRefused,
+              ]}
+            >
+              {provider ? (
+                <ProviderMark provider={provider} size={30} />
               ) : (
-                <Text style={styles.hint}>
-                  We couldn't read how long this song is, so we'll transcribe the first{" "}
-                  {maxSeconds != null ? formatClock(maxSeconds) : "part"}.
-                </Text>
+                <Icon name="link" size={20} color={focused ? colors.link : colors.textFaint} />
               )}
-            </>
-          ) : infoBusy ? (
-            <View style={styles.reading}>
-              <ActivityIndicator size="small" color={colors.accent} />
-              <Text style={styles.readingText}>Reading the link…</Text>
-            </View>
-          ) : infoError ? (
-            <View style={styles.note}>
-              <Icon name="problem" size={16} color={colors.warning} />
-              <Text style={styles.noteText}>{infoError.message}</Text>
-            </View>
-          ) : null}
-
-          <Text style={[styles.pickTitle, styles.meterTitle]}>Beats in a bar</Text>
-          <View style={styles.chips}>
-            {METER_CHOICES.map((m) =>
-              chip(m.short, meter === m.value, () => setMeter(m.value), `Beats in a bar: ${m.label}`),
-            )}
-          </View>
-          <Text style={styles.hint}>{meterLabel(meter)}</Text>
-
-          {known ? (
-            <View style={styles.entitlement}>
-              <Mark height={14} color={isPro ? colors.textMuted : colors.textFaint} />
-              <Text style={styles.entitlementText}>
-                {isPro
-                  ? credits == null
-                    ? `Pro: ${creditsTotal ?? 20} songs a month, in the fast lane.`
-                    : credits > 0
-                      ? `Uses 1 of your ${credits} songs left this month`
-                      : `All ${creditsTotal ?? 20} of this month's songs are used.`
-                  : boughtRemaining > 0
-                    ? "Uses the song you bought: the whole song, up to six minutes."
-                    : credits === 0
-                      ? "Your free preview is used. Buy just this song, or go Pro for full songs and downloads."
-                      : "Free preview: the first 60 seconds of one song. Buy the whole song, or go Pro."}
-              </Text>
-            </View>
-          ) : null}
-
-          <Button
-            label={section && duration != null && !isWholeSong(section, duration) ? "Transcribe this part" : "Transcribe this song"}
-            variant="primary"
-            onPress={submit}
-            disabled={!canSubmit}
-            style={styles.submit}
-          />
-        </>
-      ) : null}
-
-      {busy ? (
-        <Card style={styles.progressCard}>
-          <View style={styles.song}>
-            {state.source?.thumbnailUrl ? (
-              <Image source={{ uri: state.source.thumbnailUrl }} style={styles.thumb} />
-            ) : (
-              <View style={[styles.thumb, styles.thumbEmpty]}>
-                <ActivityIndicator color={colors.accent} />
-              </View>
-            )}
-            <View style={styles.songText}>
-              <Text style={styles.songTitle} numberOfLines={2}>
-                {state.source?.title ?? "Reading the link…"}
-              </Text>
-              {state.source?.artist ? <Text style={styles.songArtist} numberOfLines={1}>{state.source.artist}</Text> : null}
-              {section && duration != null && !isWholeSong(section, duration) ? (
-                <Text style={styles.songSection}>{sectionLabel(section.start, section.end, duration)}</Text>
+              <TextInput
+                ref={inputRef}
+                value={url}
+                onChangeText={setUrl}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                placeholder="Paste a song link"
+                placeholderTextColor={colors.textFaint}
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="url"
+                returnKeyType="go"
+                onSubmitEditing={submit}
+                editable={!busy}
+                selectionColor={colors.accent}
+                style={[styles.input, url.length > 0 && styles.inputFilled]}
+                accessibilityLabel="Song link"
+              />
+              {url.length > 0 ? (
+                <Touchable onPress={() => setUrl("")} hitSlop={8} ripple="borderless" accessibilityLabel="Clear">
+                  <Icon name="close" size={20} color={colors.textMuted} />
+                </Touchable>
               ) : null}
             </View>
           </View>
+        ) : null}
 
-          <View style={styles.stages}>
-            {STAGES.map((s, i) => {
-              const done = stageIndex > i;
-              const on = stageIndex === i;
-              return (
-                <View key={s.key} style={[styles.stage, on && styles.stageOn]}>
-                  <Icon
-                    name={done ? "done" : "step"}
-                    size={12}
-                    filled={on}
-                    color={done ? colors.success : on ? colors.link : colors.textFaint}
-                  />
-                  <Text style={[styles.stageText, on && styles.stageTextOn, done && styles.stageTextDone]}>
-                    {on ? stageLabel(s.key, state.queuePosition) : s.label}
-                  </Text>
-                </View>
-              );
-            })}
+        {!busy && url.trim().length > 0 && !provider ? (
+          <View style={styles.note}>
+            <Icon name="problem" size={16} color={colors.warning} />
+            <Text style={styles.noteText}>{songLinkHint(url)}</Text>
           </View>
-          <View style={styles.barRow}>
-            <View style={styles.bar}>
-              <Animated.View
-                style={[
-                  styles.barFill,
-                  { transformOrigin: "left", transform: [{ scaleX: barWidth }] },
-                ]}
+        ) : null}
+
+        {!busy && ready ? (
+          <>
+            <Text style={styles.eyebrow}>Works with</Text>
+            <SourceTiles />
+            <Text style={styles.tip}>Tip: in any of these apps tap Share, then Copy link.</Text>
+          </>
+        ) : null}
+
+        {!busy && provider && refusal && infoError ? (
+          <>
+            <NoticeCard icon={refusal.icon} title={refusal.title} message={infoError.message}>
+              <PillAction label="Try another link" tone="solid" onPress={tryAnother} />
+              <PillAction label="Upload a file" onPress={uploadInstead} />
+            </NoticeCard>
+            <RefusedLinks />
+          </>
+        ) : null}
+
+        {!busy && provider && !refusal ? (
+          <>
+            {provider !== "youtube" && !song ? (
+              <Text style={styles.hint}>
+                {PROVIDER_LABEL[provider]} — we'll find the song on YouTube by its title and artist.
+              </Text>
+            ) : null}
+
+            {song ? (
+              <>
+                <SongCover song={song} provider={provider} duration={duration} />
+
+                {duration != null && maxSeconds != null && range ? (
+                  <>
+                    <View style={styles.pickHead}>
+                      <Text style={styles.pickTitle}>Which part?</Text>
+                      <Text style={styles.pickRange}>
+                        {formatClock(range.start)} – {formatClock(range.end)} · {formatClock(range.end - range.start)} long
+                      </Text>
+                    </View>
+                    <RangePicker
+                      duration={duration}
+                      maxSeconds={maxSeconds}
+                      value={range}
+                      onChange={(next) => {
+                        setRange(next);
+                        setPick(next);
+                      }}
+                    />
+                    <View style={styles.chips}>
+                      {chip("From the start", preset === "start", () => setRange(defaultRange(duration, maxSeconds)))}
+                      {pick ? chip("My pick", preset === "pick", () => setRange(pick)) : null}
+                      {fitsWhole(duration, maxSeconds)
+                        ? chip("Whole song", preset === "whole", () => setRange({ start: 0, end: Math.floor(duration) }))
+                        : null}
+                    </View>
+                    <Text style={styles.hint}>
+                      {isPro
+                        ? `Up to ${formatClock(maxSeconds)} at a time on Pro.`
+                        : `Up to ${formatClock(maxSeconds)} on the free preview — Pro takes up to 6:00 of any song.`}
+                    </Text>
+                  </>
+                ) : (
+                  <Text style={styles.hint}>
+                    We couldn't read how long this song is, so we'll transcribe the first{" "}
+                    {maxSeconds != null ? formatClock(maxSeconds) : "part"}.
+                  </Text>
+                )}
+              </>
+            ) : infoBusy ? (
+              <View style={styles.reading}>
+                <ActivityIndicator size="small" color={colors.accent} />
+                <Text style={styles.readingText}>Reading the link…</Text>
+              </View>
+            ) : infoError ? (
+              <View style={styles.note}>
+                <Icon name="problem" size={16} color={colors.warning} />
+                <Text style={styles.noteText}>{infoError.message}</Text>
+              </View>
+            ) : null}
+
+            <Touchable
+              onPress={() => setMoreOpen((open) => !open)}
+              style={styles.moreRow}
+              scaleTo={motion.scale.row}
+              accessibilityRole="button"
+              accessibilityLabel={`More options. ${meterSummary(meter)}`}
+              accessibilityState={{ expanded: moreOpen }}
+            >
+              <Icon name="settings" size={18} color={colors.icon} />
+              <Text style={styles.moreTitle}>More options</Text>
+              <Text style={styles.moreValue} numberOfLines={1}>{meterSummary(meter)}</Text>
+              <Icon name={moreOpen ? "down" : "chevron"} size={16} color={colors.textFaint} />
+            </Touchable>
+            {moreOpen ? (
+              <>
+                <Text style={[styles.pickTitle, styles.meterTitle]}>Beats in a bar</Text>
+                <View style={styles.chips}>
+                  {METER_CHOICES.map((m) =>
+                    chip(m.short, meter === m.value, () => setMeter(m.value), `Beats in a bar: ${m.label}`),
+                  )}
+                </View>
+                <Text style={styles.hint}>{meterLabel(meter)}</Text>
+              </>
+            ) : null}
+          </>
+        ) : null}
+
+        {busy ? (
+          <Card style={styles.progressCard}>
+            <View style={styles.song}>
+              {state.source?.thumbnailUrl ? (
+                <Image source={{ uri: state.source.thumbnailUrl }} style={styles.thumb} />
+              ) : (
+                <View style={[styles.thumb, styles.thumbEmpty]}>
+                  <ActivityIndicator color={colors.accent} />
+                </View>
+              )}
+              <View style={styles.songText}>
+                <Text style={styles.songTitle} numberOfLines={2}>
+                  {state.source?.title ?? "Reading the link…"}
+                </Text>
+                {state.source?.artist ? <Text style={styles.songArtist} numberOfLines={1}>{state.source.artist}</Text> : null}
+                {section && duration != null && !isWholeSong(section, duration) ? (
+                  <Text style={styles.songSection}>{sectionLabel(section.start, section.end, duration)}</Text>
+                ) : null}
+              </View>
+            </View>
+
+            <View style={styles.stages}>
+              {STAGES.map((s, i) => {
+                const done = stageIndex > i;
+                const on = stageIndex === i;
+                return (
+                  <View key={s.key} style={[styles.stage, on && styles.stageOn]}>
+                    <Icon
+                      name={done ? "done" : "step"}
+                      size={12}
+                      filled={on}
+                      color={done ? colors.success : on ? colors.link : colors.textFaint}
+                    />
+                    <Text style={[styles.stageText, on && styles.stageTextOn, done && styles.stageTextDone]}>
+                      {on ? stageLabel(s.key, state.queuePosition) : s.label}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
+            <View style={styles.barRow}>
+              <View style={styles.bar}>
+                <Animated.View
+                  style={[
+                    styles.barFill,
+                    { transformOrigin: "left", transform: [{ scaleX: barWidth }] },
+                  ]}
+                />
+              </View>
+              <Text style={styles.barPct}>{percentLabel(state.progress)}</Text>
+            </View>
+            <Text style={styles.progressNote}>
+              A full song takes a few minutes. We'll notify you when it's ready if you leave.
+            </Text>
+            {/* The wait explained in plain words: a busy server and an unreachable one are different
+                things, and neither is the job failing. Server text never reaches this card. */}
+            {state.stalled ? <Text style={styles.progressWarn}>{STALLED_LINE}</Text> : null}
+            {state.offline ? <Text style={styles.progressWarn}>{OFFLINE_LINE}</Text> : null}
+            {state.canRetry ? (
+              <Button
+                label="Try again"
+                icon="retry"
+                variant="secondary"
+                onPress={() => void retry()}
+                style={styles.submit}
+              />
+            ) : null}
+          </Card>
+        ) : null}
+
+        {state.status === "failed" && state.error ? (
+          <NoticeCard
+            icon={wantsUpgrade ? "pro" : linkOffline ? "offline" : "problem"}
+            title={wantsUpgrade ? "Your free songs are used" : linkOffline ? "You're offline" : "Couldn't transcribe that"}
+            message={linkOffline ? LINK_OFFLINE : state.error}
+          >
+            {wantsUpgrade ? (
+              <>
+                <PillAction
+                  label="Just this song"
+                  tone="solid"
+                  onPress={() => nav.navigate("Upgrade", { reason: "limit" })}
+                />
+                <PillAction label="See Pro plans" onPress={() => nav.navigate("Upgrade")} />
+              </>
+            ) : (
+              <PillAction label="Upload the audio instead" tone="solid" onPress={uploadInstead} />
+            )}
+            <PillAction label="Try again" onPress={reset} />
+          </NoticeCard>
+        ) : null}
+
+        <Text style={styles.legal}>
+          Transcriptions are for personal and choir rehearsal use. The song's audio is deleted the moment
+          the job finishes; only the notes are kept.
+        </Text>
+      </Screen>
+      {docked ? (
+        <View style={[styles.dock, { paddingBottom: Math.max(insets.bottom, spacing.md) }]}>
+          {entitlement ? (
+            <View style={styles.entitlement}>
+              {entitlement.kind === "buy" ? (
+                <Icon name="pro" size={14} color={colors.premium} />
+              ) : (
+                <Mark height={14} color={isPro ? colors.textMuted : colors.textFaint} />
+              )}
+              <Text style={styles.entitlementText}>
+                {entitlement.kind === "send" ? entitlement.line : entitlement.reason}
+              </Text>
+            </View>
+          ) : null}
+          {entitlement?.kind === "buy" ? (
+            <View style={styles.dockActions}>
+              <Button
+                label={offer.single ? `Buy this song · ${formatPrice(offer.single.amountMinor, offer.single.currency)}` : "Buy this song"}
+                icon="song"
+                onPress={() => nav.navigate("Upgrade", { reason: "limit", planId: offer.single?.id })}
+                style={styles.dockMain}
+              />
+              <Button
+                label="See Pro"
+                variant="text"
+                onPress={() => nav.navigate("Upgrade", offer.monthly ? { planId: offer.monthly.id } : undefined)}
               />
             </View>
-            <Text style={styles.barPct}>{percentLabel(state.progress)}</Text>
-          </View>
-          <Text style={styles.progressNote}>
-            A full song takes a few minutes. We'll notify you when it's ready if you leave.
-          </Text>
-          {/* The wait explained in plain words: a busy server and an unreachable one are different
-              things, and neither is the job failing. Server text never reaches this card. */}
-          {state.stalled ? <Text style={styles.progressWarn}>{STALLED_LINE}</Text> : null}
-          {state.offline ? <Text style={styles.progressWarn}>{OFFLINE_LINE}</Text> : null}
-          {state.canRetry ? (
-            <Button
-              label="Try again"
-              icon="retry"
-              variant="secondary"
-              onPress={() => void retry()}
-              style={styles.submit}
-            />
-          ) : null}
-        </Card>
-      ) : null}
-
-      {state.status === "failed" && state.error ? (
-        <NoticeCard
-          icon={wantsUpgrade ? "pro" : linkOffline ? "offline" : "problem"}
-          title={wantsUpgrade ? "Your free songs are used" : linkOffline ? "You're offline" : "Couldn't transcribe that"}
-          message={linkOffline ? LINK_OFFLINE : state.error}
-        >
-          {wantsUpgrade ? (
-            <>
-              <PillAction
-                label="Just this song"
-                tone="solid"
-                onPress={() => nav.navigate("Upgrade", { reason: "limit" })}
-              />
-              <PillAction label="See Pro plans" onPress={() => nav.navigate("Upgrade")} />
-            </>
+          ) : entitlement?.kind === "full" ? (
+            <Button label="See your membership" variant="secondary" onPress={() => nav.navigate("Upgrade")} block />
           ) : (
-            <PillAction label="Upload the audio instead" tone="solid" onPress={uploadInstead} />
+            <Button
+              label={section && duration != null && !isWholeSong(section, duration) ? "Transcribe this part" : "Transcribe this song"}
+              variant="primary"
+              onPress={submit}
+              disabled={!canSubmit}
+              block
+            />
           )}
-          <PillAction label="Try again" onPress={reset} />
-        </NoticeCard>
+        </View>
       ) : null}
-
-      <Text style={styles.legal}>
-        Transcriptions are for personal and choir rehearsal use. The song's audio is deleted the moment
-        the job finishes; only the notes are kept.
-      </Text>
-    </Screen>
+    </View>
   );
 }
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+    flex: { flex: 1, backgroundColor: c.bg },
     headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: spacing.xs },
     backBtn: {
       width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center",
@@ -622,7 +690,21 @@ const makeStyles = (c: Palette) =>
     chipText: { fontFamily: fonts.medium, fontSize: 12.5, color: c.textMuted },
     chipTextOn: { color: c.accent },
 
-    entitlement: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, marginTop: spacing.xl, paddingHorizontal: spacing.md },
+    moreRow: {
+      flexDirection: "row", alignItems: "center", gap: 10, minHeight: 52, marginTop: 22,
+      borderTopWidth: StyleSheet.hairlineWidth, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: c.border,
+    },
+    moreTitle: { flex: 1, fontFamily: fonts.medium, fontSize: 14.5, color: c.text },
+    moreValue: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 12.5, color: c.textMuted },
+
+    /** The pinned bar: the canvas under a hairline, as a practice mode's footer. */
+    dock: {
+      gap: spacing.md, paddingTop: spacing.md, paddingHorizontal: spacing.lg, backgroundColor: c.bg,
+      borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: c.border,
+    },
+    dockActions: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+    dockMain: { flex: 1 },
+    entitlement: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: spacing.md },
     entitlementText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 12.5, lineHeight: 18, color: c.textMuted, textAlign: "center" },
     submit: { marginTop: spacing.md },
 
@@ -639,12 +721,12 @@ const makeStyles = (c: Palette) =>
     stageOn: { backgroundColor: c.accentSoft },
     stageText: { fontFamily: fonts.medium, fontSize: 12, color: c.textFaint },
     stageTextOn: { color: c.accent },
-    stageTextDone: { color: c.success },
+    stageTextDone: { color: c.successText },
     barRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.md },
     bar: { flex: 1, height: 6, borderRadius: 3, backgroundColor: c.border, overflow: "hidden" },
     barFill: { width: "100%", height: "100%", backgroundColor: c.ink },
     barPct: { fontFamily: nightFonts.mono, fontSize: 12, color: c.accent, minWidth: 42, textAlign: "right" },
     progressNote: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, marginTop: spacing.sm },
-    progressWarn: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: c.warning, marginTop: spacing.sm },
+    progressWarn: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: c.warningText, marginTop: spacing.sm },
     legal: { fontFamily: fonts.regular, fontSize: 11, lineHeight: 16, color: c.textFaint, textAlign: "center", marginTop: spacing.xl },
   });

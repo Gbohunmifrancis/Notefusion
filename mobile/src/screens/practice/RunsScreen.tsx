@@ -210,7 +210,7 @@ export function RunsScreen({ track }: { track: PracticeTrack | null }) {
                   summary={grade.summary}
                   sub={grade.score >= PASS_SCORE ? `Clean at ${step.percent}%` : `At ${step.percent}%`}
                   marks={noteMarks(grade.marks, sung.notes).map((m) => ({ key: m.index, text: m.text, sub: m.cents, tone: m.tone }))}
-                  legend={playful ? null : "Green in tune · amber close · grey off. Numbers are cents off."}
+                  legend={playful ? null : "✓ in tune · ~ close · struck through: off. Numbers are cents off."}
                   reward={grade.reward}
                   playful={playful}
                 >
@@ -307,7 +307,7 @@ const makeStyles = (c: Palette) =>
     segOn: { backgroundColor: c.surface, borderWidth: 1, borderColor: c.border },
     segText: { fontFamily: fonts.semibold, fontSize: 14, color: c.textMuted },
     segTextOn: { color: c.text },
-    segDone: { color: c.success },
+    segDone: { color: c.successText },
     bands: { flexDirection: "row", gap: 6, marginTop: 6 },
     band: { alignItems: "center" },
     bandLine: { alignSelf: "stretch", height: 6, borderLeftWidth: 1, borderRightWidth: 1, borderBottomWidth: 1, borderColor: c.border, marginHorizontal: 4 },

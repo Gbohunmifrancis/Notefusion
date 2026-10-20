@@ -24,8 +24,8 @@
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Only what the first screen needs; the range picker's and the recorder's styles load at the end of the body. -->
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/app.css?v=31">
-<link rel="stylesheet" href="/assets/night.css?v=11">
+<link rel="stylesheet" href="/assets/app.css?v=32">
+<link rel="stylesheet" href="/assets/night.css?v=12">
 </head>
 <body class="guest">
 
@@ -190,6 +190,7 @@
           </div>
           <button class="btn btn-primary btn-block" type="submit">Confirm and sign in</button>
           <p class="auth-switch">Didn't get it? <button class="btn-link" id="verify-resend" type="button">Send it again</button></p>
+          <p class="auth-switch">Wrong address? <button class="btn-link" id="verify-change" type="button">Change it</button></p>
         </form>
 
         <form id="form-register" class="auth-form has-google hidden" novalidate>
@@ -266,8 +267,10 @@
         <span class="pay-badge" aria-hidden="true"><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg></span>
         <h2 id="upgrade-title"><span id="upgrade-title-text">Do more with NoteFusion</span></h2>
       </div>
+      <!-- Why the dialog opened, when a refusal opened it (board l-ux-high/03d): the reason used to land behind it. -->
+      <p class="pay-reason hidden" id="upgrade-reason" role="status"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-clock"/></svg><span id="upgrade-reason-text"></span></p>
       <div id="upgrade-free">
-        <p class="pay-lead">Whole songs, four-part harmony and every download, for the choir that rehearses every week.</p>
+        <p class="pay-lead" id="upgrade-lead">Whole songs, four-part harmony and every download, for the choir that rehearses every week.</p>
         <ul class="pay-perks">
           <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
           <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Alto, tenor and bass, when you ask</li>
@@ -668,7 +671,7 @@
         <p class="small muted" id="pr-status" aria-live="polite"></p>
         <div class="pr-result hidden" id="pr-result">
           <div class="sing-score"><strong id="pr-score"></strong><span id="pr-summary"></span></div>
-          <p class="muted small" style="margin:6px 0 0">Marked on your part above: green in tune · amber close · red wrong note · grey not sung.</p>
+          <p class="muted small" style="margin:6px 0 0">Marked on your part above: ✓ in tune · ~ close · struck through: off the note · – not sung.</p>
           <button class="btn btn-primary btn-sm" id="pr-again" type="button"><svg class="ic"><use href="/assets/icons.svg#i-restart"/></svg>Try again</button>
         </div>
         <p class="small muted pr-foot">You hear the starting note and a bar of clicks, then sing the bars on your own — the others drop out so only your voice is marked. Headphones are not needed.</p>
@@ -695,7 +698,7 @@
         <div id="sing-result" class="hidden">
           <div class="sing-score"><strong id="sing-score"></strong><span id="sing-summary"></span></div>
           <div class="marks" id="sing-marks"></div>
-          <p class="muted small" style="margin:8px 0 0">Green in tune · amber close · red wrong note · grey not sung. Numbers are cents off.</p>
+          <p class="muted small" style="margin:8px 0 0">✓ in tune · ~ close · struck through: off the note · dashed: not sung. Numbers are cents off.</p>
         </div>
       </div>
 
@@ -779,6 +782,7 @@
         <h1>Transcriptions</h1>
         <p>Every sheet you saved, from the web or the app. Open one to rehearse, transpose, add lyrics or share it.</p>
       </div>
+      <div id="lib-alert" class="alert hidden" role="alert"></div>
       <div class="card">
         <div class="input-wrap lib-search"><svg class="ic"><use href="/assets/icons.svg#i-search"/></svg><input id="lib-search" type="text" placeholder="Search your transcriptions" autocomplete="off" aria-label="Search your transcriptions"></div>
         <div class="lib-folders hidden" id="lib-folders" role="tablist" aria-label="Folders" data-track-items="Folder chip"></div>
@@ -799,9 +803,10 @@
         </div>
         <div id="lib-skel"><div class="lib-list"><div class="skel skel-plan"></div><div class="skel skel-plan"></div><div class="skel skel-plan"></div></div></div>
         <div class="lib-list hidden" id="lib-list"></div>
+        <p class="muted" id="lib-no-match" role="status" hidden></p>
         <div class="empty hidden" id="lib-empty">
           <svg class="ic"><use href="/assets/icons.svg#i-music"/></svg>
-          <p id="lib-empty-text">Nothing saved yet. Transcribe a song and press <strong>Save to my library</strong> — it will be here, and in the app.</p>
+          <p id="lib-empty-text">Nothing here yet. Every tune you transcribe lands here by itself, and in the app.</p>
           <button class="btn btn-primary btn-sm" id="lib-empty-go" type="button"><svg class="ic"><use href="/assets/icons.svg#i-plus"/></svg>New transcription</button>
         </div>
       </div>
@@ -968,9 +973,9 @@
 <script src="/assets/songlink.js?v=2" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/back.js?v=1" defer></script>
-<script src="/assets/recorder.js?v=4" defer></script>
+<script src="/assets/recorder.js?v=6" defer></script>
 <script src="/assets/meter.js?v=1" defer></script>
-<script src="/assets/preview.js?v=11" defer></script>
+<script src="/assets/preview.js?v=12" defer></script>
 <script src="/assets/confidence.js?v=1" defer></script>
 <script src="/assets/hymnbook.js?v=1" defer></script>
 <script src="/assets/parts.js?v=1" defer></script>
@@ -978,7 +983,7 @@
 <script src="/assets/notify.js?v=2" defer></script>
 <script src="/assets/freeweek.js?v=1" defer></script>
 <script src="/assets/sse.js?v=1" defer></script>
-<script src="/assets/app.js?v=56" defer></script>
+<script src="/assets/app.js?v=57" defer></script>
 <script src="/assets/season.js?v=2" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>

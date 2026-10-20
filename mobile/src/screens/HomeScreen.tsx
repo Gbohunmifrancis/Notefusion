@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, useNavigation, useScrollToTop } from '@react-navigation/native';
 import { Icon } from '../components/Icon';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
@@ -344,7 +344,15 @@ export function HomeScreen({ navigation }: Props) {
     onDeleted: (ids) => setLeaving(new Set(ids)),
   });
 
+  /** Set while a sheet loads: a second tap meanwhile would push a second Result. */
+  const opening = useRef(false);
+  // Tapping Home again while on it scrolls back to the top.
+  const listRef = useRef<FlatList<SavedTranscription>>(null);
+  useScrollToTop(listRef);
+
   async function openRecent(item: SavedTranscription, opts: { practise?: boolean } = {}) {
+    if (opening.current) return;
+    opening.current = true;
     try {
       // The phone's copy when it is current or the API is out of reach (lib/offlineLibrary).
       const { sheet } = await loadSheet(item);
@@ -361,6 +369,8 @@ export function HomeScreen({ navigation }: Props) {
         icon: 'problem',
         tone: 'danger',
       });
+    } finally {
+      opening.current = false;
     }
   }
 
@@ -369,6 +379,7 @@ export function HomeScreen({ navigation }: Props) {
   return (
     <Screen>
       <FlatList
+        ref={listRef}
         data={recent}
         extraData={[leaving, sheetActions.actionsFor]}
         keyExtractor={(t) => t.id}
@@ -598,7 +609,8 @@ export function HomeScreen({ navigation }: Props) {
                 }}
                 style={[styles.recentRow, sheetActions.actionsFor?.id === item.id && styles.recentRowActive]}
                 radius={radii.md}
-                accessibilityLabel={`Open ${item.title}`}
+                // The dot is inside the row, so its words go in the row's label (as the Library's rows do).
+                accessibilityLabel={`Open ${item.title}${doubtful ? `, ${confidenceA11y(item.overallConfidence)}` : ''}`}
               >
                 <View style={styles.dohTile}>
                   <Text style={styles.dohLetter} numberOfLines={1}>
@@ -624,7 +636,7 @@ export function HomeScreen({ navigation }: Props) {
                 </View>
 
                 {doubtful ? (
-                  <View style={styles.score} accessibilityLabel={confidenceA11y(item.overallConfidence)}>
+                  <View style={styles.score}>
                     <View style={[styles.scoreDot, { backgroundColor: tone }]} />
                   </View>
                 ) : null}
