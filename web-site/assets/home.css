@@ -26,6 +26,11 @@ html { scroll-padding-top: 80px; }
 .home .btn-secondary { border-color: var(--page-line-strong); background: var(--page-surface); color: var(--page-navy); }
 .home .btn-secondary:hover { background: var(--page-wash); color: var(--page-navy); }
 .home .btn-lg { min-height: 48px; padding: 0 20px; }
+/* The song-section picker's shortcuts (rangepicker.js: btn btn-ghost btn-sm) take the secondary look a size down;
+   undefined here, they fell back to the browser's own grey. */
+.home .btn-ghost { border-color: var(--page-line-strong); background: var(--page-surface); color: var(--page-navy); }
+.home .btn-ghost:hover:not(:disabled) { background: var(--page-wash); color: var(--page-navy); }
+.home .btn-sm { padding: 0 12px; font-size: 14px; }
 .home .btn:disabled { opacity: .55; cursor: not-allowed; }
 .home .store-badge { display: inline-flex; flex: none; border-radius: var(--r-sm); }
 .home .store-badge img { width: auto; height: 44px; }
@@ -205,7 +210,7 @@ html { scroll-padding-top: 80px; }
 @media (min-width: 1001px) and (hover: hover) and (pointer: fine) {
   .home .store-badge img { height: 40px; }
   .try-meter select { min-height: 32px; font-size: 14px; }
-  .try-link .try-paste { min-height: 36px; }
+  .try-link .try-paste, .home .btn-sm { min-height: 36px; }
   .segmented button { min-width: 40px; min-height: 32px; }
   .site-footer ul { gap: 8px; }
   .site-footer nav a { display: inline; min-height: 0; }
