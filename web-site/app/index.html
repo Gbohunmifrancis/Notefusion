@@ -922,6 +922,17 @@
   <p class="foot">Transcriptions are for personal and choir rehearsal use. Audio fetched from a link is deleted as soon as the job finishes. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · Help and refunds: <a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a></p>
   </main>
   </div>
+
+  <!-- Phones, signed in: the app's five tabs, as on the phone, with its own glyphs (board m-ux-medium W3a). Home is the
+       studio and the sheet, Record opens the recorder from any tab, Hymns is the site's hymn pages; the account stays on
+       the photo top right. Under 641 px it takes the menu's place (app.css); wide screens keep the sidebar. -->
+  <nav class="tabbar" id="tabbar" aria-label="App sections">
+    <button class="tab-cell" type="button" data-view="transcribe"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="w" d="M5.5 9 12 3.8 18.5 9v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 19Z"/><path d="M3.5 10.6 12 3.8l8.5 6.8M5.5 9v10a1.5 1.5 0 0 0 1.5 1.5h10a1.5 1.5 0 0 0 1.5-1.5V9M10 20.5v-4.3a2 2 0 0 1 4 0v4.3"/></svg><span>Home</span></button>
+    <button class="tab-cell" type="button" data-view="library"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="w" d="M5.5 7h9a1.5 1.5 0 0 1 1.5 1.5v10.5a1.5 1.5 0 0 1 -1.5 1.5h-9a1.5 1.5 0 0 1 -1.5 -1.5v-10.5a1.5 1.5 0 0 1 1.5 -1.5Z"/><path d="M8 7V5a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 20 5v11.5a1.5 1.5 0 0 1-1.5 1.5H16M5.5 7h9a1.5 1.5 0 0 1 1.5 1.5v10.5a1.5 1.5 0 0 1 -1.5 1.5h-9a1.5 1.5 0 0 1 -1.5 -1.5v-10.5a1.5 1.5 0 0 1 1.5 -1.5ZM10.6 16.2V10.6c1.5.3 2.6 1.2 2.8 2.6"/><path class="k" d="M7 16.3a1.85 1.85 0 1 0 3.7 0a1.85 1.85 0 1 0 -3.7 0Z"/></svg><span>Library</span></button>
+    <button class="tab-rec" type="button" id="tab-record" aria-label="Record a tune"><span class="tab-rec-disc" aria-hidden="true"><span class="brand-mark"></span></span><span aria-hidden="true">Record</span></button>
+    <button class="tab-cell" type="button" data-view="practice"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="w" d="M8.8 3v7.2a3.2 3.2 0 0 0 6.4 0V3Z"/><path d="M8.8 3v7.2a3.2 3.2 0 0 0 6.4 0V3M12 13.4V21M4.8 6.2c-1 1.4-1 3.6 0 5M19.2 6.2c1 1.4 1 3.6 0 5"/></svg><span>Practice</span></button>
+    <a class="tab-cell" href="/hymns"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="w" d="M12 7.6C10.4 5.9 7.9 5 3.5 5v13c4.4 0 6.9.8 8.5 2.5c1.6-1.7 4.1-2.5 8.5-2.5V5c-4.4 0-6.9.9-8.5 2.6Z"/><path d="M12 7.6v12.9M12 7.6C10.4 5.9 7.9 5 3.5 5v13c4.4 0 6.9.8 8.5 2.5M12 7.6c1.6-1.7 4.1-2.6 8.5-2.6v13c-4.4 0-6.9.8-8.5 2.5M17.1 14.4V9.2c1.2.3 2 1 2.2 2"/><path class="k" d="M14.1 14.5a1.55 1.55 0 1 0 3.1 0a1.55 1.55 0 1 0 -3.1 0Z"/></svg><span>Hymns</span></a>
+  </nav>
 </div>
 
 <!-- Not needed for the first screen, so not in <head>: a stylesheet here holds back no paint. -->

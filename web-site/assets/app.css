@@ -615,6 +615,47 @@ main h1[tabindex="-1"]:focus { outline: none; }
   .onb-card, .modal-card { padding: 24px 18px 20px; }
 }
 
+/* ── Phones, signed in: the five tabs at the foot, as on the phone (board m-ux-medium W3a) ─────────────────
+ * They take the menu's place under 641 px: Home · Library · Record (raised, in the centre) · Practice · Hymns; the
+ * account stays on the photo top right. The tab that is open reads blue, with a line on top and a 20% wash in its
+ * glyph. The page keeps the bar's height at its end, over the safe area, so the bar never covers the last line, and
+ * the bar steps aside while the recorder or a dialog is open. Wider screens keep the drawer or the sidebar. */
+.tabbar { display: none; }
+@media (max-width: 640px) {
+  body.has-tabbar .topbar .drawer-toggle { display: none; }
+  body.has-tabbar .content { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+  html:has(body.has-tabbar) { scroll-padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+  body.has-tabbar .tabbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+    height: calc(64px + env(safe-area-inset-bottom)); padding: 0 4px env(safe-area-inset-bottom); background: var(--surface); border-top: 1px solid var(--line);
+  }
+  :root.nf-rec-open body.has-tabbar .tabbar, body.auth-only .tabbar,
+  body.has-tabbar:has(.modal:not(.hidden), .onb:not(.hidden)) .tabbar { display: none; }
+  /* Toasts sit over the bar, not under it. */
+  body.has-tabbar .pay-toast, body.has-tabbar .pv-toast { bottom: calc(76px + env(safe-area-inset-bottom)); }
+  body.has-tabbar .why-toast { bottom: calc(88px + env(safe-area-inset-bottom)); }
+}
+.tab-cell, .tab-rec {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-width: 0; min-height: 64px;
+  padding: 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: 0.75rem; font-weight: 600; line-height: 1;
+  text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.tab-cell svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.tab-cell svg .k { fill: currentColor; stroke: none; }
+.tab-cell svg .w { fill: currentColor; stroke: none; opacity: 0; }
+.tab-cell.on { color: var(--blue-dark); }
+.tab-cell.on svg .w { opacity: 0.2; }
+.tab-cell.on::before { content: ""; position: absolute; top: -1px; left: 24%; right: 24%; height: 2px; border-radius: 0 0 2px 2px; background: currentColor; }
+.tab-cell:focus-visible, .tab-rec:focus-visible { outline: 2px solid var(--blue); outline-offset: -4px; border-radius: 8px; }
+.tab-rec { justify-content: flex-end; padding-bottom: 9px; color: var(--muted); }
+.tab-rec-disc {
+  position: absolute; top: -16px; left: 50%; translate: -50% 0; width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--blue-fill, var(--blue)); box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.12), 0 6px 16px rgba(37, 99, 235, 0.28);
+}
+:root[data-theme="dark"] .tab-rec-disc { box-shadow: 0 0 0 6px rgba(47, 123, 255, 0.18), 0 6px 16px rgba(0, 0, 0, 0.5); }
+.tab-rec .tab-rec-disc .brand-mark { width: 24px; height: 28px; background: #fff; }
+@media (prefers-reduced-motion: no-preference) { .tab-cell:active, .tab-rec:active .tab-rec-disc { transform: scale(0.97); } }
+
 /* ── Sign in / create account ───────────────────────────────────────────────
  * One column on a phone; on a wide screen a quiet navy panel says what NoteFusion does beside it. */
 .auth-page { width: 100%; }

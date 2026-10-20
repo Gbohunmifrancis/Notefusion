@@ -397,7 +397,7 @@
   /** Signed out here or in another tab, or the session ran out: nothing of the account stays on screen. */
   function forgetAccount() {
     me = null; sub = null; libraryCache = null; libFolder = null; choir = null;
-    stopPaymentWatch(); hide($("top-nav")); document.body.classList.remove("is-pro");
+    stopPaymentWatch(); hide($("top-nav")); showTabbar(false); document.body.classList.remove("is-pro");
     $("recents-list").innerHTML = "";
     hide($("practice-chip")); hide($("practice-slot")); hide($("season-carols")); if (window.NfPracticeView) window.NfPracticeView.reset();
   }
@@ -793,8 +793,9 @@
     ["transcribe", "library", "practice", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
     // The nav says where you are, to the eye and to a screen reader; Search lights itself, not Transcriptions.
     var navOn = focusSearch ? "search" : name;
-    document.querySelectorAll("#top-nav .top-link").forEach(function (b) {
-      var on = b.dataset.view === navOn;
+    // The phone's tab bar has no Search (the Library's own box is it) and no Account (the photo, top right).
+    document.querySelectorAll("#top-nav .top-link, #tabbar [data-view]").forEach(function (b) {
+      var on = b.dataset.view === (b.closest("#tabbar") ? name : navOn);
       b.classList.toggle("on", on);
       on ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current");
     });
@@ -813,7 +814,9 @@
     var h = name !== "search" && document.querySelector("#view-" + viewNow + " h1");
     if (h && h.offsetParent !== null) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
   }
-  document.querySelectorAll("#top-nav .top-link, .user-menu-item[data-view]").forEach(function (b) { b.addEventListener("click", function () { goView(b.dataset.view); }); });
+  document.querySelectorAll("#top-nav .top-link, .user-menu-item[data-view], #tabbar [data-view]").forEach(function (b) { b.addEventListener("click", function () { goView(b.dataset.view); }); });
+  /** The phone's tab bar (app.css shows it under 641 px): a signed-in account's, never a guest's or the sign-in screen's. */
+  function showTabbar(on) { document.body.classList.toggle("has-tabbar", on); }
 
   // The sidebar is a drawer on phones.
   // Opening it moves focus into it; closing it (Escape too) hands focus back to the menu button. Closed, it is out of
@@ -1643,7 +1646,7 @@
       guest = false;
       // The practice chip's place, until its numbers come (loadPracticeChip, below).
       if ($("practice-chip").classList.contains("hidden")) show($("practice-slot"));
-      hide($("boot-skel")); leaveAuth(); hide($("guest-bar")); show($("view-app")); show($("top-nav")); showAccountUi(true); setView("transcribe"); libraryCache = null;
+      hide($("boot-skel")); leaveAuth(); hide($("guest-bar")); show($("view-app")); show($("top-nav")); showTabbar(true); showAccountUi(true); setView("transcribe"); libraryCache = null;
       warmEngraver();
       document.body.classList.remove("guest"); hide($("topbar-signin")); show($("recents"));
       fetchLibrary().catch(function () { return []; });
@@ -1680,7 +1683,7 @@
   /** A visitor with a preview and no account: the app, read-only, with the sign-up card ready. */
   function startGuest() {
     guest = true;
-    hide($("boot-skel")); leaveAuth(); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); showAccountUi(false); setView("transcribe");
+    hide($("boot-skel")); leaveAuth(); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); showTabbar(false); showAccountUi(false); setView("transcribe");
     warmEngraver();
     document.body.classList.add("guest"); show($("topbar-signin"));
     $("greeting").textContent = greeting(""); $("home-sub").textContent = "Your free preview is on its way. Create a free account to keep transcribing.";
@@ -2093,7 +2096,7 @@
   // The same recording pop-up as the home page (assets/recorder.js): the level meter and the
   // clock while the microphone is open, then the take to listen back to. Nothing is sent
   // until it has been approved.
-  $("rec-btn").addEventListener("click", function () {
+  function openRecorder() {
     $("rec-status").textContent = "";
     window.NfRecorder.open({
       maxSeconds: guest ? 30 : 180, // a guest gets the same thirty seconds as on the home page
@@ -2102,6 +2105,20 @@
       onError: function (text, kind) { $("rec-status").textContent = kind === "short" ? text : text + " Upload a file instead."; },
       onTake: function (blob, name) { submitAudio(blob, name, true); }
     });
+  }
+  $("rec-btn").addEventListener("click", openRecorder);
+  /**
+   * The tab bar's Record, from any tab: the studio with the recorder open over it. While a recording is going up or a job
+   * runs, its card instead (a second take then would be sent as that job's "Try again"); a sheet showing steps aside for
+   * the studio, as New transcription does (it is in the library).
+   */
+  $("tab-record").addEventListener("click", function () {
+    track("Tab: record");
+    if (viewNow !== "transcribe") goView("transcribe");
+    if (submitting || follow) { $("progress").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+    if (!$("result").classList.contains("hidden")) newTranscription();
+    selectSource("record");
+    openRecorder();
   });
 
   function explain(err) {
