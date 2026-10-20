@@ -23,7 +23,7 @@
  *
  * This file is the whole contract with the native side, in both directions:
  *
- *   native → page   window.NF.render / cursorTo / setZoom
+ *   native → page   window.NF.render / cursorTo / setZoom / svg
  *   page → native   ready | rendered | tap | error, as JSON over postMessage
  *
  * Positions crossing the boundary are always **quarter-note beats**, never note
@@ -42,6 +42,9 @@
   var container = document.getElementById("score");
   /** Cached [beat, svgElement] for hit-testing taps, rebuilt on every render. */
   var heads = [];
+  /** The options of the last render, so a re-render (zoom) rings the same notes again. */
+  var lastOptions = {};
+  var SVG_NS = "http://www.w3.org/2000/svg";
 
   function post(message) {
     if (window.ReactNativeWebView) {
@@ -133,11 +136,55 @@
               if (!stamp) return;
               var element = gNote.getSVGGElement ? gNote.getSVGGElement() : null;
               if (!element) return;
-              heads.push({ beat: stamp.RealValue * 4, element: element });
+              var noteheads = gNote.getNoteheadSVGs ? gNote.getNoteheadSVGs() : [];
+              heads.push({
+                beat: stamp.RealValue * 4,
+                element: element,
+                head: (noteheads && noteheads[0]) || element.querySelector(".vf-notehead"),
+                continued: struck !== source,
+              });
             });
           });
         });
       });
+    });
+  }
+
+  /**
+   * A dotted ring round each doubtful head (board m-ux-medium P1g): the shape says what the amber says, so the note
+   * is found without colour too. Drawn after OSMD lays the bar out, in the head's own coordinates, so zoom and
+   * spacing need no arithmetic; a tie's held half is not ringed again. `options.doubtBeats` are the doubtful notes'
+   * onsets in quarter notes, `options.ringColor` the amber.
+   */
+  function ringDoubts(options) {
+    var beats = (options && options.doubtBeats) || [];
+    if (beats.length === 0) return;
+    var color = options.ringColor || "#F5B544";
+    heads.forEach(function (h) {
+      if (h.continued || !h.head) return;
+      var doubtful = beats.some(function (b) {
+        return Math.abs(b - h.beat) < 1e-3;
+      });
+      if (!doubtful) return;
+      var box;
+      try {
+        box = h.head.getBBox();
+      } catch (err) {
+        return;
+      }
+      if (!box || box.width === 0) return;
+      var r = Math.max(box.width, box.height) * 0.95;
+      var ring = document.createElementNS(SVG_NS, "circle");
+      ring.setAttribute("class", "nf-doubt");
+      ring.setAttribute("cx", String(box.x + box.width / 2));
+      ring.setAttribute("cy", String(box.y + box.height / 2));
+      ring.setAttribute("r", String(r));
+      ring.setAttribute("fill", "none");
+      ring.setAttribute("stroke", color);
+      ring.setAttribute("stroke-width", String(r * 0.14));
+      ring.setAttribute("stroke-dasharray", r * 0.19 + " " + r * 0.21);
+      ring.setAttribute("pointer-events", "none");
+      h.head.appendChild(ring);
     });
   }
 
@@ -163,8 +210,10 @@
           .load(payload.xml)
           .then(function () {
             applyColors(payload.options || {});
+            lastOptions = payload.options || {};
             osmd.render();
             indexHeads();
+            ringDoubts(lastOptions);
             if (osmd.cursor) {
               osmd.cursor.reset();
               if (payload.options && payload.options.showCursor) osmd.cursor.show();
@@ -214,11 +263,16 @@
       }
     },
 
-    /** The engraved sheet as standalone SVG markup, for the PDF export. */
+    /** The engraved sheet as standalone SVG markup, for the PDF export: the rings are the screen's, not the page's. */
     svg: function (token) {
       try {
         var node = container.querySelector("svg");
-        post({ type: "svg", token: token, svg: node ? node.outerHTML : "" });
+        var copy = node ? node.cloneNode(true) : null;
+        if (copy) {
+          var rings = copy.querySelectorAll(".nf-doubt");
+          for (var i = 0; i < rings.length; i++) rings[i].parentNode.removeChild(rings[i]);
+        }
+        post({ type: "svg", token: token, svg: copy ? copy.outerHTML : "" });
       } catch (err) {
         fail("svg", err);
       }
@@ -230,6 +284,7 @@
         osmd.zoom = zoom;
         osmd.render();
         indexHeads();
+        ringDoubts(lastOptions);
         post({ type: "rendered", height: contentHeight(), heads: heads.length });
       } catch (err) {
         fail("setZoom", err);

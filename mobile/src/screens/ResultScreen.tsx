@@ -12,6 +12,7 @@ import { Icon, type IconName } from "../components/Icon";
 import { usePreventRemove } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Svg, { Circle, Ellipse } from "react-native-svg";
 import { Screen } from "../components/Screen";
 import { KeyboardAvoider } from "../components/KeyboardAvoider";
 import { Button } from "../components/Button";
@@ -2461,6 +2462,18 @@ export function ResultScreen({ route, navigation }: Props) {
                   onSelectNote={guest ? undefined : openNote}
                   onRendered={() => setStaffDraws((n) => n + 1)}
                 />
+                {/* What the ring means, under the stave, only when there is a ringed note. */}
+                {lowCount > 0 ? (
+                  <View style={styles.ringLegend}>
+                    <Svg width={24} height={24}>
+                      <Circle cx={12} cy={12} r={10} fill="none" stroke={colors.warning} strokeWidth={1.6} strokeDasharray="2.4 2.6" />
+                      <Ellipse cx={12} cy={12} rx={5.6} ry={4} transform="rotate(-22 12 12)" fill={colors.warning} />
+                    </Svg>
+                    <Text style={styles.ringLegendText}>
+                      {guest ? "Ringed notes are worth a listen." : "Ringed notes are worth a listen. Tap one to hear and fix it."}
+                    </Text>
+                  </View>
+                ) : null}
                 {/* A free account reads the sheet on screen with the preview mark; the
                     download is the Pro half. */}
                 {!isPro ? (
@@ -3190,6 +3203,8 @@ const makeStyles = (c: Palette) =>
       opacity: 0.9,
     },
     previewMarkText: { ...typography.caption, color: c.accent, fontFamily: fonts.semibold },
+    ringLegend: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: 10 },
+    ringLegendText: { flex: 1, fontFamily: fonts.regular, fontSize: 13, lineHeight: 18, color: c.textMuted },
 
     // ── The amber row ─────────────────────────────────────────────────────────
     check: {
