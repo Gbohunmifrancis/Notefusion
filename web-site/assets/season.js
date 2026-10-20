@@ -129,7 +129,7 @@
   if (typeof document === "undefined" || !document.documentElement) return;
 
   // ── The page ────────────────────────────────────────────────────────────
-  var CSS = "/assets/season.css?v=3";
+  var CSS = "/assets/season.css?v=4";
   var NS = "http://www.w3.org/2000/svg";
   // The header's mark (not the footer's: one costume a screen), the web app's top bar and sidebar, and its home's big mark.
   var MARKS = ".site-header .site-brand-mark, .topbar .brand-mark, .side-head .brand-mark, .home-mark";

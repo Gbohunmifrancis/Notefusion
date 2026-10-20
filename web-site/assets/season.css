@@ -2,12 +2,12 @@
  * an admin switch is on, so none of it is downloaded the rest of the year. Small touches: the blue stays the one
  * accent and Pro's gold is never used. Christmas: pine is a tint, candle ivory labels small things on Night (pine on
  * Day), holly red is the cap's alone. Halloween: pumpkin is a tint or a hairline (never an icon fill or a flame, so it
- * never reads as Playful's orange), moon cream labels small things on Night (pumpkin on Day), hat purple is the hat's
+ * never reads as Playful's orange), moon cream labels small things on Night (a shade darker pumpkin on Day, 4.5:1 on its wash), hat purple is the hat's
  * alone, and the bats are pale on Night, slate on Day. Phone first; min-width queries go upward. */
 
 :root {
   --pine: #1F6B50; --pine-soft: rgba(31, 107, 80, 0.09); --pine-line: rgba(31, 107, 80, 0.22); --candle: #1F6B50; --season-snow: #9DB3D4;
-  --pumpkin: #B4531C; --pumpkin-soft: rgba(180, 83, 28, 0.09); --pumpkin-line: rgba(180, 83, 28, 0.24); --moon: #B4531C; --season-bat: #475569;
+  --pumpkin: #B4531C; --pumpkin-soft: rgba(180, 83, 28, 0.09); --pumpkin-line: rgba(180, 83, 28, 0.24); --moon: #AC4E1A; --season-bat: #475569;
 }
 :root[data-theme="dark"] {
   --pine: #2E8A66; --pine-soft: rgba(46, 138, 102, 0.14); --pine-line: rgba(46, 138, 102, 0.34); --candle: #F3DFB4; --season-snow: #FFFFFF;
