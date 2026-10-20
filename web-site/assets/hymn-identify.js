@@ -138,8 +138,18 @@
       : code === "TIMEOUT" ? "This is taking longer than usual. Please try again in a moment."
       : status === 0 ? "We couldn't reach NoteFusion. Check your connection and try again."
       : "Something went wrong on our side. Please try again in a moment.";
-    showStart(true);
+    // Past the limit, humming again would only be refused again: the Hum button steps aside for the hymn search.
+    var limited = status === 429;
+    showStart(!limited);
     say(text, "error");
+    if (limited) {
+      var line = $("identify-status"); // `status` here is the HTTP status
+      line.appendChild(document.createTextNode(" Meanwhile, "));
+      var search = el("a", null, "find it by its title or first line");
+      search.href = "/hymns"; search.setAttribute("data-track", "Hymn identify: search instead");
+      line.appendChild(search);
+      line.appendChild(document.createTextNode("."));
+    }
     track("error;code=" + (code || (status ? "HTTP " + status : "network")));
   }
 
