@@ -209,7 +209,7 @@
     return out;
   }
   /** A button's content: an icon from the page's sprite and a label. */
-  function label(btn, icon, text) { btn.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + icon + '"/></svg>' + text; }
+  function label(btn, icon, text) { btn.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-' + icon + '"/></svg>' + text; }
   function initial(name) { return (name || "?").trim().charAt(0).toUpperCase() || "?"; }
   /** "Good morning, Francis" — the time of day, and the first name when there is one. */
   function greeting(name) {
@@ -321,7 +321,7 @@
       b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on));
     });
     var t = $("auth-theme");
-    t.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + (dark ? "sun" : "moon") + '"/></svg>';
+    t.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-' + (dark ? "sun" : "moon") + '"/></svg>';
     t.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
   }
   function setThemePref(pref) {
@@ -498,7 +498,7 @@
     b.addEventListener("click", function () {
       var input = $(b.dataset.eye), showing = input.type === "text";
       input.type = showing ? "password" : "text";
-      b.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + (showing ? "eye" : "eye-off") + '"/></svg>';
+      b.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-' + (showing ? "eye" : "eye-off") + '"/></svg>';
       b.setAttribute("aria-label", showing ? "Show password" : "Hide password");
     });
   });
@@ -3095,7 +3095,7 @@
     if ($("r-staff").classList.contains("hidden") && $("r-solfa").classList.contains("hidden")) document.querySelector('.result-tabs [data-view="staff"]').click();
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
       var text = b.textContent.trim();
-      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="/assets/icons.svg#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg>');
+      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg>');
     });
 
     // A guest reads and rehearses; saving, sharing, transposing, singing and downloads are the account's.
@@ -4165,7 +4165,7 @@
   /** The harmony card's label and note: "free once" for a free account that still has it. */
   function renderHarmonyOffer() {
     var free = freeHarmonyLeft();
-    $("harmony-add").innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-plus"/></svg>' + (free ? "Write the four parts (1 free)" : "Write the four parts");
+    $("harmony-add").innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-plus"/></svg>' + (free ? "Write the four parts (1 free)" : "Write the four parts");
     $("harmony-free-note").classList.toggle("hidden", !free);
     // The "Four parts" action shows no lock while the free one is left.
     document.body.classList.toggle("has-free-harmony", free);
@@ -4547,7 +4547,7 @@
       // A checkout that will not open says so here, above the button, not in the page behind the dialog.
       var payError = document.createElement("p"); payError.className = "pay-error"; payError.setAttribute("role", "alert"); payError.hidden = true;
       function renderCta() {
-        cta.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>';
+        cta.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-lock"/></svg>';
         // What the money buys, as one period ("Pay ₦7,500 for 1 month of Pro"): "₦7,500 a month" read as a renewal.
         var span = isLifetimePlan(chosen) ? "" : "1 " + (isYearly(chosen) ? "year" : "month");
         cta.appendChild(document.createTextNode(isSinglePlan(chosen)
@@ -4555,7 +4555,7 @@
           : isChoirPlan(chosen)
             ? (leadsChoir() ? "Add choir time — " : "Start your choir — ") + money(chosen) + " for " + span
             : "Pay " + money(chosen) + (span ? " for " + span + " of Pro" : " for Pro for life")));
-        fine.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>';
+        fine.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-lock"/></svg>';
         // Adding time: the date it would run to, so a member sees what the payment buys before paying.
         var until = extendedEnd(chosen);
         fine.appendChild(document.createTextNode(isSinglePlan(chosen)
