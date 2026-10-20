@@ -849,12 +849,24 @@
       show($("lib-folder-bar"));
     } else hide($("lib-folder-bar"));
   }
+  /** Search text as people type it: no accents ("noel" finds "Noël"), no case, punctuation as spaces. */
+  function fold(text) {
+    return String(text || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  }
   function filterLibrary() {
-    var q = $("lib-search").value.trim().toLowerCase();
+    var words = fold($("lib-search").value).split(" ").filter(Boolean), shown = 0;
     document.querySelectorAll("#lib-list .lib-item").forEach(function (card) {
-      var match = (!q || card.dataset.title.indexOf(q) >= 0) && (!libFolder || card.dataset.folder === libFolder);
+      // Every word typed, anywhere in the title, the folder or the key.
+      var match = words.every(function (w) { return card.dataset.search.indexOf(w) >= 0; }) && (!libFolder || card.dataset.folder === libFolder);
       card.classList.toggle("hidden", !match);
+      if (match) shown++;
     });
+    // A search that hides every sheet says so, rather than leaving an empty page.
+    var none = $("lib-no-match");
+    if (none) {
+      none.textContent = words.length ? "No sheets match \u201c" + $("lib-search").value.trim() + "\u201d. Try fewer words, or clear the search." : "No sheets in this folder.";
+      none.hidden = shown > 0 || !document.querySelector("#lib-list .lib-item");
+    }
   }
   /** Files a sheet: an existing folder, a new one, or none. */
   function fileSheet(it, value, select) {
@@ -910,7 +922,7 @@
       renderFolders(items);
       var folders = foldersOf(items);
       items.forEach(function (it) {
-        var card = document.createElement("div"); card.className = "lib-item"; card.dataset.title = (it.title || "Untitled").toLowerCase(); card.dataset.folder = it.folder || "";
+        var card = document.createElement("div"); card.className = "lib-item"; card.dataset.search = fold([it.title || "Untitled", it.folder, it.key].join(" ")); card.dataset.folder = it.folder || "";
         var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
         var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
         var m = document.createElement("div"); m.className = "meta";
