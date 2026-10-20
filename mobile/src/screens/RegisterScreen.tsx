@@ -29,11 +29,11 @@ export function RegisterScreen({ navigation, route }: Props) {
   const [nameTouched, setNameTouched] = useState(false);
   const [emailTouched, setEmailTouched] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  /** The server refused the address itself (a throwaway inbox): said on the Email field, not above Continue. */
+  /** The server refused the address itself (a throwaway inbox): said on the Email field, not above the button. */
   const [emailError, setEmailError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  // Any name the server takes (it asks only that there is one): a one-letter name no longer leaves Continue
+  // Any name the server takes (it asks only that there is one): a one-letter name no longer leaves the button
   // greyed out with nothing said.
   const nameOk = fullName.trim().length > 0;
   const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim());
@@ -85,7 +85,7 @@ export function RegisterScreen({ navigation, route }: Props) {
           returnKeyType="next"
           onSubmitEditing={() => emailRef.current?.focus()}
           submitBehavior="submit"
-          // Said once the field is left empty, as the email's problem is: Continue waits for a name.
+          // Said once the field is left empty, as the email's problem is: the button waits for a name.
           error={nameTouched && !nameOk ? "Type your name to continue." : undefined}
         />
         <NightField
@@ -138,7 +138,8 @@ export function RegisterScreen({ navigation, route }: Props) {
         </View>
       )}
 
-      <NightButton label="Continue" variant="blue" onPress={submit} loading={busy} disabled={!canSubmit} style={styles.submit} />
+      {/* Says what the tap does: the next step is the code it mails. */}
+      <NightButton label="Email me a code" variant="blue" onPress={submit} loading={busy} disabled={!canSubmit} style={styles.submit} />
 
       {/* The link its own 44 px text button (board m-ux-medium P5d); "Already have one?" stays plain text. */}
       <View style={styles.footer}>
