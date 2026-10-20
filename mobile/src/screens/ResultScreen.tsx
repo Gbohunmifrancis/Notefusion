@@ -2526,8 +2526,11 @@ const makeStyles = (c: Palette) =>
     savedLine: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
     savedText: { fontFamily: fonts.medium, fontSize: 13, color: c.text, flex: 1 },
 
-    chipScroll: { gap: spacing.xs, paddingRight: spacing.md },
+    /** Chips are 44 px tall and 8 px apart: big enough to hit (board l-ux-high 05a). */
+    chipScroll: { gap: spacing.sm, paddingRight: spacing.md },
     chip: {
+      minHeight: 44,
+      justifyContent: "center",
       paddingVertical: 8,
       paddingHorizontal: 14,
       borderRadius: radii.pill,
@@ -2572,16 +2575,17 @@ const makeStyles = (c: Palette) =>
     },
     stepText: { fontFamily: typography.mono.fontFamily, fontSize: 13, color: c.text },
     stepValue: { flex: 1, textAlign: "center", fontFamily: typography.mono.fontFamily, fontSize: 24, color: c.text },
-    meterRow: { flexDirection: "row", gap: spacing.xs, flexWrap: "wrap" },
+    meterRow: { flexDirection: "row", gap: spacing.sm, flexWrap: "wrap" },
     meterChip: { flexGrow: 1, alignItems: "center" },
 
     // ── Notation ──────────────────────────────────────────────────────────────
     viewsScroll: { marginTop: 14, marginHorizontal: -22 },
-    views: { paddingHorizontal: 22, gap: 6 },
+    views: { paddingHorizontal: 22, gap: 8 },
     viewChip: {
       flexDirection: "row",
       alignItems: "center",
       gap: 5,
+      minHeight: 44,
       paddingVertical: 6,
       paddingHorizontal: 13,
       borderRadius: radii.pill,

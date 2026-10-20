@@ -186,13 +186,7 @@ export function NoteEditor({
                   onPress={() => prev !== undefined && onNavigate(prev)}
                   disabled={prev === undefined}
                 />
-                <Pressable
-                  onPress={onClose}
-                  style={styles.doneBtn}
-                  accessibilityRole="button"
-                >
-                  <Text style={styles.doneText}>Done</Text>
-                </Pressable>
+                <Button label="Done" size="sm" onPress={onClose} />
                 <Nav
                   icon="chevron"
                   label="Next"
@@ -441,19 +435,5 @@ const makeStyles = (c: Palette) =>
       ...typography.label,
       fontSize: 14,
       fontFamily: fonts.semibold,
-    },
-
-    doneBtn: {
-      paddingVertical: spacing.xs,
-      paddingHorizontal: spacing.lg,
-      borderRadius: radii.pill,
-      backgroundColor: c.accentSoft,
-    },
-
-    doneText: {
-      ...typography.label,
-      color: c.accent,
-      fontSize: 14,
-      fontFamily: fonts.bold,
     },
   });
