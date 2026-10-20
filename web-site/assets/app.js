@@ -1416,7 +1416,8 @@
     if (isPro()) { renderMembership(); show($("upgrade-panel")); return; }
     $("upgrade-title-text").textContent = "Do more with NoteFusion";
     show($("upgrade-free")); hide($("upgrade-pro"));
-    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: true });
+    // At the free limit one more song is what was asked for: the choir plans stay out of it, unless this is a director.
+    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: reason !== "limit" || leadsChoir() });
   }
   /** Pro through a choir alone: the plan shown is the choir's, renewed by its director. */
   function proViaChoir() { return !!(sub && sub.choirRole && String(sub.planCode || "").indexOf("choir_") === 0); }
