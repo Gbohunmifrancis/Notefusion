@@ -1593,10 +1593,10 @@
    */
   var usageAskedAt = 0;
   function refreshUsage() {
-    if (guest || !tokens()) return;
+    if (guest || !tokens()) return Promise.resolve();
     usageAskedAt = Date.now();
     var at = epoch;
-    request("/api/billing/my-subscription").then(function (s) {
+    return request("/api/billing/my-subscription").then(function (s) {
       if (at !== epoch || !s) return;
       sub = s; renderWho();
       if (!$("view-account").classList.contains("hidden")) renderAccount();
@@ -1887,10 +1887,25 @@
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && !$("cost-pop").hidden) { setCostInfo(false); $("cost-info").focus(); }
   });
-  function submitAudio(file, name, fromMic, again, meter) {
+  function submitAudio(file, name, fromMic, again, meter, costChecked) {
     // One recording goes up at a time: a second drop or take while the first is uploading is ignored.
     if (submitting) return Promise.resolve();
     sfx.prime(); // from the click that sent it: the chime for a job that finishes out of sight can play
+    // On a free account whose chip already says this one cannot go (the week's free ones used, or a song with nothing
+    // to pay for it), the plans come first and the take is kept for after (keepTake, songBought), rather than a whole
+    // upload over 3G only to be refused. The count is read again first, in case the week has turned since.
+    if (!again && !costChecked && !guest && !isPro()) {
+      uploadKind(fromMic);
+      var cost = studioCost();
+      if (cost && cost.out) {
+        return refreshUsage().then(function () {
+          var still = studioCost();
+          if (!still || !still.out || isPro()) return submitAudio(file, name, fromMic, false, undefined, true);
+          keepTake(file, name, fromMic, chosenMeter());
+          openUpgrade("limit", still.text + ". Your recording is kept, and goes once it's paid for.");
+        });
+      }
+    }
     // Read once: "Try again" sends the meter this recording went with, not what the box says now.
     if (!again) meter = chosenMeter();
     var kind = uploadKind(fromMic), song = kind === "song" || (kind === "choir" && $("choir-band").checked);
