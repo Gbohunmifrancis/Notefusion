@@ -195,6 +195,8 @@ export function HomeScreen({ navigation }: Props) {
   );
 
   const fireRing = useCallback(() => {
+    // Reduce Motion: no ring growing out of the circle; the press itself and its tick still answer the finger.
+    if (reduceMotion) return;
     ring.setValue(0);
     Animated.timing(ring, {
       toValue: 1,
@@ -202,7 +204,7 @@ export function HomeScreen({ navigation }: Props) {
       easing: Easing.out(Easing.ease),
       useNativeDriver: true,
     }).start();
-  }, [ring]);
+  }, [ring, reduceMotion]);
 
   // The greeting used to be read at render, on the assumption that focus alone would
   // keep it honest. It does not: backgrounding the app with Home focused and coming
