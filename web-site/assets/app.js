@@ -1771,9 +1771,10 @@
   /**
    * The plans dialog. reason "limit" is the free allowance running out (the refusal after the last one):
    * the one-song purchase is then the option already chosen, since one more song is what was just asked for. Reason
-   * "choir" (My choir's links) opens on the choir plans rather than on their folded row.
+   * "choir" (My choir's links) opens on the choir plans rather than on their folded row. `want` is a plan's id or code
+   * picked on the pricing page: that plan is the one chosen here.
    */
-  function openUpgrade(reason, why) {
+  function openUpgrade(reason, why, want) {
     track("Opened plans");
     track("Plans viewed", "app"); // the checkout funnel's top step (CheckoutSteps in the API)
     // A refusal's own sentence ("back Friday at 6pm…") heads the dialog; the sales line steps aside for it.
@@ -1785,7 +1786,7 @@
     $("upgrade-title-text").textContent = "Do more with NoteFusion";
     show($("upgrade-free")); hide($("upgrade-pro"));
     // At the free limit one more song is what was asked for: the choir plans stay out of it, unless this is a director.
-    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: reason !== "limit" || leadsChoir(), choirFirst: reason === "choir" });
+    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: reason !== "limit" || leadsChoir(), choirFirst: reason === "choir", want: want });
   }
   /** Pro through a choir alone: the plan shown is the choir's, renewed by its director. */
   function proViaChoir() { return !!(sub && sub.choirRole && String(sub.planCode || "").indexOf("choir_") === 0); }
@@ -2011,7 +2012,7 @@
       var upgradeTo = new URLSearchParams(location.search).get("upgrade");
       // Handled once: the checkout leaves this tab, and Back must not land on a page that starts it again.
       if (upgradeTo) dropParam("upgrade");
-      if (upgradeTo && !isPro()) { openUpgrade(); if (upgradeTo !== "1") autoCheckout(upgradeTo); }
+      if (upgradeTo && !isPro()) { openUpgrade(null, null, upgradeTo !== "1" ? upgradeTo : null); if (upgradeTo !== "1") autoCheckout(upgradeTo); }
       // Back from checkout (the provider's return page adds ?paid=1), or a checkout started here not long ago.
       // Only the provider's return says a payment was made; otherwise the check runs out of sight.
       var paidReturn = !!new URLSearchParams(location.search).get("paid");
@@ -4506,6 +4507,9 @@
       // A director renewing their choir starts on the choir plans; anyone else on what they would buy for themselves.
       var showingChoir = !!choirPlans.length && (opts.choirFirst || leadsChoir() || !ordered.length);
       if (showingChoir) chosen = choirPlans[0];
+      // A plan picked on the pricing page is the one chosen here too, while its checkout opens and if it cannot.
+      var wanted = opts.want ? ordered.concat(choirPlans).filter(function (x) { return String(x.id) === String(opts.want) || x.code === opts.want; })[0] : null;
+      if (wanted) { chosen = wanted; showingChoir = isChoirPlan(wanted); if (!showingChoir) ownChoice = wanted; }
       var options = document.createElement("div"); options.className = "plan-options"; options.setAttribute("role", "radiogroup"); options.setAttribute("aria-label", "Choose a plan");
       var cta = document.createElement("button"); cta.type = "button"; cta.className = "btn btn-primary btn-pay";
       function label(plan) { return isChoirPlan(plan) ? (isYearly(plan) ? "Choir · Yearly" : "Choir · Monthly") : isSinglePlan(plan) ? "Just this song" : isLifetimePlan(plan) ? "Lifetime" : isYearly(plan) ? "Yearly" : "Monthly"; }
