@@ -575,7 +575,23 @@
     $("verify-email-label").textContent = pendingEmail;
     showAuthForm("verify");
     alertIn($("auth-alert"), "success", note);
+    resendCooldown();
     $("verify-code").focus();
+  }
+  /**
+   * A code was just sent: the server sends no other for a minute (and said nothing when asked), so "Send it again"
+   * counts the minute down instead of promising a code that never came.
+   */
+  var resendTimer = null;
+  function resendCooldown() {
+    var btn = $("verify-resend"), until = Date.now() + 60000;
+    clearInterval(resendTimer);
+    function tick() {
+      var left = Math.ceil((until - Date.now()) / 1000);
+      if (left <= 0) { clearInterval(resendTimer); btn.disabled = false; btn.textContent = "Send it again"; return; }
+      btn.disabled = true; btn.textContent = "Send it again in 0:" + String(left).padStart(2, "0");
+    }
+    tick(); resendTimer = setInterval(tick, 1000);
   }
 
   $("form-register").addEventListener("submit", function (e) {
@@ -612,6 +628,8 @@
       .finally(function () { btn.disabled = false; });
   });
   $("verify-resend").addEventListener("click", function () {
+    if ($("verify-resend").disabled) return;
+    resendCooldown();
     request("/api/auth/resend-verification", { method: "POST", anonymous: true, body: { email: pendingEmail } })
       .then(function () { alertIn($("auth-alert"), "success", "A new code is on its way."); })
       .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not resend the code."); });
