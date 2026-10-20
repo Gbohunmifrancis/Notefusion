@@ -236,7 +236,10 @@
         billingTerm,
       ]),
     );
-    card.appendChild(action(accessToken() ? "Upgrade to Pro" : "Sign up and upgrade", true, "pricing_" + (plan.interval || "pro"), null, plan));
+    // Each button says what it buys ("Upgrade — ₦7,500 a month"): both used to read "Upgrade to Pro" (signed out, "Sign
+    // up and upgrade"), so the buttons alone, as a screen reader lists them, never said which plan was which.
+    var cost = formatPrice(plan) + (plan.interval === "yearly" ? " a year" : " a month");
+    card.appendChild(action((accessToken() ? "Upgrade — " : "Get Pro — ") + cost, true, "pricing_" + (plan.interval || "pro"), null, plan));
     return card;
   }
 
