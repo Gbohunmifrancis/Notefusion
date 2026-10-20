@@ -1458,9 +1458,13 @@
     $("acct-credits").textContent = u ? u.left + " of " + u.total + " left · " + (isPro() ? "resets " + resetDay() : freeNote(u).replace(/^R/, "r")) : "—";
     fillMeter($("acct-usage-fill"), u);
     var play = playBilled();
+    var soon = !play && !proViaChoir() ? daysLeft() : null, ended = lapsedOn();
     $("acct-sub-note").textContent = isPro()
-      ? periodLine() + (play ? " " + playLine() : sub && (sub.isLifetime || sub.isGift) ? "" : " Nothing renews by itself; add time whenever you like.")
-      : play ? playLine() : "Pro adds 20 songs a month, full songs up to six minutes, four-part harmony and every download format.";
+      ? periodLine() + (play ? " " + playLine() : sub && (sub.isLifetime || sub.isGift) ? ""
+        : soon !== null ? " " + (soon < 1 ? "That's today" : soon === 1 ? "That's tomorrow" : "That's in " + soon + " days") + ": add time to keep it."
+        : " Nothing renews by itself; add time whenever you like.")
+      : play ? playLine()
+      : (ended ? "Your Pro ended on " + longDate(ended) + ". " : "") + "Pro adds 20 songs a month, full songs up to six minutes, four-part harmony and every download format.";
     $("acct-upgrade-label").textContent = play ? (sub.paymentIssue ? "Fix it in Google Play" : "Manage in Google Play")
       : isPro() ? (sub && (sub.isLifetime || sub.isGift) ? "My membership" : "Add another month") : "See the plans";
     var since = me && (me.createdAtUtc || me.createdAt);
@@ -1810,6 +1814,18 @@
     if (sub.isGift) return when ? "A gift from the NoteFusion team, Pro until " + when + "." : "A gift from the NoteFusion team.";
     if (!when) return "Your membership is active.";
     return "Pro until " + when + ".";
+  }
+  /** Whole days until a membership that runs out (not for life) ends, when that is three or fewer; null otherwise. */
+  function daysLeft() {
+    var end = isPro() && sub && !sub.isLifetime && sub.currentPeriodEndUtc ? Date.parse(sub.currentPeriodEndUtc) : NaN;
+    if (isNaN(end)) return null;
+    var days = Math.floor((end - Date.now()) / 86400000);
+    return days <= 3 ? Math.max(0, days) : null;
+  }
+  /** When Pro of the account's own ended, for an account that had it and is free again; null otherwise. */
+  function lapsedOn() {
+    var end = !isPro() && sub && !sub.isLifetime && sub.currentPeriodEndUtc ? Date.parse(sub.currentPeriodEndUtc) : NaN;
+    return !isNaN(end) && end <= Date.now() ? sub.currentPeriodEndUtc : null;
   }
   function creditsLine() { return sub ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left · resets " + resetDay() : "—"; }
   /**
