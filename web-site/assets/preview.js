@@ -99,9 +99,20 @@
     status.appendChild(again);
   }
   function explain(err) {
-    if (err.code === "PREVIEW_LIMIT_REACHED") { say(err.message + " ", "info"); var a = document.createElement("a"); a.href = "/app"; a.textContent = "Create a free account"; status.appendChild(a); return; }
+    if (err.code === "PREVIEW_LIMIT_REACHED") { say(err.message + " ", "info"); status.appendChild(signupLink()); return; }
     say(err.message || "Something went wrong. Try again.", "error");
   }
+  /** The way on once the preview is spent: the sign-up form itself, not the sign-in screen /app opens on. */
+  function signupLink() { var a = document.createElement("a"); a.href = "/app?signup=1"; a.textContent = "Create a free account"; return a; }
+  // A preview this browser already finished (app.js remembers it): said before anything is recorded or uploaded, not
+  // after, since the API allows one per device.
+  try {
+    if (localStorage.getItem("nf.web.previewUsed")) {
+      say("You've had the free preview on this browser. ", "info");
+      status.appendChild(signupLink());
+      status.appendChild(document.createTextNode(" for 3 hummed or recorded transcriptions a week."));
+    }
+  } catch (e) { /* storage off: the API says so when asked */ }
 
   // Share text ("Listen to … on Spotify: https://…") is cut down to its link as it lands, with a plain
   // hint when there is none; the hint clears itself without touching a recorded take shown here.

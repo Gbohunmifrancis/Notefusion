@@ -2574,6 +2574,8 @@
         hide($("progress"));
         announce("ready");
         track(current && current.kind === "preview" ? "Preview ready" : "Sheet ready");
+        // One preview a device: the try box says so next time, before anything is recorded (assets/preview.js).
+        if (current.preview && guest) { try { localStorage.setItem("nf.web.previewUsed", "1"); } catch (e) { /* private mode */ } }
         showResult(job.result);
         if (current.filedId) alertIn($("app-alert"), "success", "Saved to your Library as “" + (current.filedTitle || "your recording") + "”. Lyrics or a new doh added here are kept when you press Save changes.");
         keepClaimedPreview();
