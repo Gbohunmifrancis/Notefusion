@@ -460,6 +460,8 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 .lrow-note { margin: 10px 0 0; color: var(--muted); font-size: 0.82rem; }
 .lrow-btn { cursor: pointer; }
 .lrow-btn:hover { background: var(--wash); }
+/* Inside the card's rounded, clipped edge, so the keyboard's ring is not cut off at the sides. */
+.list-card :focus-visible { outline-offset: -2px; }
 .lrow-btn.danger, .lrow-btn.danger .k > .ic { color: var(--danger); }
 .pill-active { background: var(--success-soft); color: var(--success); }
 .theme-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 8px; background: var(--wash); }
