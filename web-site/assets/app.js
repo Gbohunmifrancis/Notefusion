@@ -1245,16 +1245,18 @@
     $("acct-usage-label").textContent = u ? u.label : "This month";
     $("acct-credits").textContent = u ? u.left + " of " + u.total + " left · " + (isPro() ? "resets " + resetDay() : freeNote(u).replace(/^R/, "r")) : "—";
     fillMeter($("acct-usage-fill"), u);
+    var play = playBilled();
     $("acct-sub-note").textContent = isPro()
-      ? periodLine() + (sub && (sub.isLifetime || sub.isGift) ? "" : " Nothing renews by itself; add time whenever you like.")
-      : "Pro adds 20 songs a month, full songs up to six minutes, four-part harmony and every download format.";
-    $("acct-upgrade-label").textContent = isPro() ? (sub && (sub.isLifetime || sub.isGift) ? "My membership" : "Add another month") : "See the plans";
+      ? periodLine() + (play ? " " + playLine() : sub && (sub.isLifetime || sub.isGift) ? "" : " Nothing renews by itself; add time whenever you like.")
+      : play ? playLine() : "Pro adds 20 songs a month, full songs up to six minutes, four-part harmony and every download format.";
+    $("acct-upgrade-label").textContent = play ? (sub.paymentIssue ? "Fix it in Google Play" : "Manage in Google Play")
+      : isPro() ? (sub && (sub.isLifetime || sub.isGift) ? "My membership" : "Add another month") : "See the plans";
     var since = me && (me.createdAtUtc || me.createdAt);
     $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "short" }) : "—";
     fetchLibrary().then(function (items) { $("acct-saved").textContent = String(items.length); }, function () { $("acct-saved").textContent = "—"; });
     renderChoirPanel();
   }
-  $("acct-upgrade").addEventListener("click", openUpgrade);
+  $("acct-upgrade").addEventListener("click", function () { if (playBilled()) openPlayManage(); else openUpgrade(); });
 
   // ── My choir (Account & settings) ───────────────────────────────────────
   /** The account's choir, as director or singer; null when it is in none (the API answers 404). */
@@ -1435,6 +1437,25 @@
     return "Pro until " + when + ".";
   }
   function creditsLine() { return sub ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left · resets " + resetDay() : "—"; }
+  /**
+   * A membership Google Play bills (bought in the Android app): Google renews it and it is managed there, so this page
+   * neither says nothing renews nor offers more time (the website's checkout refuses it: BILLING_MANAGED_BY_GOOGLE_PLAY).
+   * The words are the phone's (mobile lib/playBilling).
+   */
+  function playBilled() { return !!(sub && sub.billedThrough === "googlePlay"); }
+  function playLine() {
+    if (sub.paymentIssue === "hold") return "Pro is paused. Google Play still couldn't take the payment. Fix it in Google Play and Pro comes back at once.";
+    if (sub.paymentIssue === "grace") return "Google Play couldn't take this period's payment. Update your card in Google Play and Pro carries on.";
+    return sub.autoRenews
+      ? "Google Play charges you again at the end of each period until you cancel there. Receipts come from Google Play."
+      : "You cancelled in Google Play. Pro stays on until the end of the period you paid for.";
+  }
+  /** Google's page for the subscription: cancel, change card, switch plan. */
+  function openPlayManage() {
+    track("Opened Google Play subscriptions");
+    var sku = sub && sub.storeProductId ? "sku=" + encodeURIComponent(sub.storeProductId) + "&" : "";
+    window.open("https://play.google.com/store/account/subscriptions?" + sku + "package=com.notefusion.com", "_blank", "noopener");
+  }
   /** The plans dialog for a member: the membership, with nothing for sale. */
   function renderMembership() {
     $("upgrade-title-text").textContent = "Your Pro membership";
@@ -1445,11 +1466,16 @@
     // A singer's Pro is the choir's: the director renews it, so a singer is shown it rather than offered more of it.
     var singer = proViaChoir() && sub.choirRole === "member";
     if (singer) $("upgrade-pro-period").textContent = "Pro through " + sub.choirName + ". " + periodLine() + " Your choir director renews it.";
-    label($("upgrade-extend"), "plus", proViaChoir() ? (singer ? "Get Pro of my own" : "Add choir time") : "Add more Pro time");
+    var play = playBilled();
+    $("upgrade-pro-note").textContent = play ? playLine()
+      : "Each payment covers one period and nothing renews without you. Add more time whenever you like; it starts when your current time ends. Receipts come by email.";
+    if (play) label($("upgrade-extend"), "arrow-right", sub.paymentIssue ? "Fix it in Google Play" : "Manage in Google Play");
+    else label($("upgrade-extend"), "plus", proViaChoir() ? (singer ? "Get Pro of my own" : "Add choir time") : "Add more Pro time");
     sub && sub.isLifetime ? hide($("upgrade-extend")) : show($("upgrade-extend"));
     hide($("plans-extend"));
   }
   $("upgrade-extend").addEventListener("click", function () {
+    if (playBilled()) { openPlayManage(); return; }
     track("Opened plans to extend");
     track("Plans viewed", "app · extend");
     show($("plans-extend"));
