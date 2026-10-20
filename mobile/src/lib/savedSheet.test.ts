@@ -1,6 +1,20 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { autoSavedLine, folderNamed, isUnopened, savedToastBody, takeKind } from "./savedSheet.ts";
+import { autoSavedLine, choirToast, filedToast, folderNamed, isUnopened, savedToastBody, takeKind } from "./savedSheet.ts";
+
+test("a move to a folder says where the sheets went, or that they left their folder", () => {
+  assert.equal(filedToast(1, "Sunday choir"), "Moved to Sunday choir");
+  assert.equal(filedToast(3, "Sunday choir"), "3 sheets moved to Sunday choir");
+  assert.equal(filedToast(1, null), "Taken out of its folder");
+  assert.equal(filedToast(2, null), "2 sheets taken out of their folders");
+});
+
+test("sharing with the choir says it was shared, or taken back out", () => {
+  assert.equal(choirToast(1, true), "Shared with your choir");
+  assert.equal(choirToast(4, true), "4 sheets shared with your choir");
+  assert.equal(choirToast(1, false), "Taken out of the choir library");
+  assert.equal(choirToast(2, false), "2 sheets taken out of the choir library");
+});
 
 test("the line under a fresh sheet's title names the kind of take", () => {
   assert.equal(takeKind({}), "Hummed");
