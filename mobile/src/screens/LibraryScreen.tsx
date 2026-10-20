@@ -333,7 +333,7 @@ export function LibraryScreen() {
             radius={radii.pill}
             // 40 px circles: the slop makes them 48 dp without moving them.
             hitSlop={4}
-            accessibilityLabel="New transcription"
+            accessibilityLabel="Record a new sheet"
           >
             <Icon name="add" size={22} color={colors.text} />
           </Touchable>

@@ -663,7 +663,7 @@ export function HomeScreen({ navigation }: Props) {
                   ripple={false}
                   // A short word: 44 pt or more to a thumb without moving it.
                   hitSlop={{ top: 14, bottom: 14, left: 12, right: 12 }}
-                  accessibilityLabel="See all transcriptions"
+                  accessibilityLabel="See all your sheets"
                 >
                   <Text style={styles.seeAllText}>See all</Text>
                 </Touchable>
