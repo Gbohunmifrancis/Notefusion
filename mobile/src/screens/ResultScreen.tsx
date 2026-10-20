@@ -263,16 +263,16 @@ export function ResultScreen({ route, navigation }: Props) {
    */
   const autoSaved = !!fresh && !!initialSavedId;
   /**
-   * Set when a saved sheet was transposed on the phone while offline: the screen then shows notes the
-   * server does not have, so note corrections and parts are not saved from it (they would store
-   * moved pitches under the old key). Opening the sheet again, or transposing it online, clears it.
+   * Set when a saved sheet was transposed, or given another doh, on the phone while offline: the screen then shows
+   * notes the server does not have, so note corrections and parts are not saved from it (they would store moved
+   * pitches under the old key). Opening the sheet again, or transposing it online, clears it.
    */
   const movedOffline = useRef(false);
   function blockedByLocalTranspose(): boolean {
     if (!movedOffline.current) return false;
     showDialog({
-      title: "Shown transposed on this phone",
-      message: "This sheet was transposed while you were offline, so changes to it here aren't saved. Open it again from your Library to edit it.",
+      title: "Changed on this phone only",
+      message: "This sheet was changed while you were offline, so changes to it here aren't saved. Open it again from your Library to edit it.",
       icon: "offline",
     });
     return true;
@@ -845,6 +845,17 @@ export function ResultScreen({ route, navigation }: Props) {
             await libraryApi.updateNotes(id, relabelled.notes);
             await libraryApi.updateKey(id, choice.key);
           } catch (e) {
+            if (isNetworkCode(toApiError(e).code)) {
+              // Offline, as a re-key: the doh stays on screen, and the saved sheet keeps its own until this is done
+              // online. Its notes are now ones the server does not have, so edits here are not saved from it.
+              movedOffline.current = true;
+              showDialog({
+                title: "You're offline",
+                message: `Showing it with doh in ${dohLetter(choice.key)} for now. The saved sheet stays with doh in ${dohLetter(before.key)} until you choose again online.`,
+                icon: "offline",
+              });
+              return;
+            }
             applySheet(before);
             showDialog({ title: "Could not change the doh", message: toApiError(e).message, icon: "problem", tone: "danger" });
           } finally {
@@ -1340,8 +1351,11 @@ export function ResultScreen({ route, navigation }: Props) {
     settleHeld();
     renamingRef.current = true;
     setRenaming(true);
+    // Shown at once: the server's name replaces it when it answers, or the old one comes back if it refuses.
+    const before = committedTitle;
+    setCommittedTitle(title.trim());
     const kept = await renameSheet(savedId, title);
-    if (kept !== null) setCommittedTitle(kept);
+    setCommittedTitle(kept ?? before);
     renamingRef.current = false;
     setRenaming(false);
   }
