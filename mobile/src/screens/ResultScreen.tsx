@@ -1385,6 +1385,12 @@ export function ResultScreen({ route, navigation }: Props) {
     void rename();
   }
 
+  /** Return on the name: a saved sheet keeps it, an unsaved one is saved under it, as its Save to Library does. */
+  function submitTitle() {
+    if (savedId) commitTitle();
+    else if (title.trim() && !saving) void save();
+  }
+
   // Back can take the screen away before a focused field reports its blur: leaving saves the lyrics and a typed
   // name as the blur would have. Read through a ref, so the listener always sees what was typed last.
   const commitOnLeave = useRef(() => {});
@@ -1988,8 +1994,9 @@ export function ResultScreen({ route, navigation }: Props) {
                 value={title}
                 onChangeText={setTitle}
                 onBlur={commitTitle}
-                onSubmitEditing={commitTitle}
+                onSubmitEditing={submitTitle}
                 returnKeyType="done"
+                autoCapitalize="sentences"
                 placeholder="Name this transcription…"
               />
               {savedId ? (
@@ -2266,6 +2273,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 onChangeText={setLyrics}
                 onBlur={() => void commitLyrics()}
                 placeholder="A-ma-zing grace, how sweet the sound…"
+                autoCapitalize="sentences"
                 multiline
                 numberOfLines={3}
               />
