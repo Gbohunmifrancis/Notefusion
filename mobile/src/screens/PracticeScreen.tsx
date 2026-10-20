@@ -142,6 +142,8 @@ export function PracticeScreen() {
   const stopAt = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startedAt = useRef(0);
   const live = useRef(true);
+  /** Closed before `sing`'s first await: a second tap during the permission prompt would start a second take. */
+  const startingRef = useRef(false);
 
   const load = useCallback(async () => {
     try {
@@ -262,7 +264,8 @@ export function PracticeScreen() {
   }
 
   async function sing() {
-    if (!drill || phase !== "idle") return;
+    if (!drill || phase !== "idle" || startingRef.current) return;
+    startingRef.current = true;
     cleanup();
     setError(null);
     setGrade(null);
@@ -296,6 +299,8 @@ export function PracticeScreen() {
       setPhase("idle");
       if (__DEV__) console.warn("[practice] start failed", e);
       setError("Could not start recording. Please try again.");
+    } finally {
+      startingRef.current = false;
     }
   }
 
