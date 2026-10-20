@@ -593,7 +593,8 @@ export function ResultScreen({ route, navigation }: Props) {
     [draft.notes, edited, result.overallConfidence, hymnSource],
   );
 
-  async function save() {
+  /** Saves the sheet to the Library. Resolves to its id, or null when it could not be saved (and the dialog said why). */
+  async function save(): Promise<string | null> {
     setSaving(true);
     try {
       const saved = await libraryApi.save({
@@ -624,6 +625,7 @@ export function ResultScreen({ route, navigation }: Props) {
       // itself; two sheets stacked on the same moment would be one too many.
       const askingForRating = await rating.recordSave();
       if (!askingForRating) showToast("Saved to your library");
+      return saved.id;
     } catch (e) {
       showDialog({
         title: "Could not save",
@@ -631,6 +633,7 @@ export function ResultScreen({ route, navigation }: Props) {
         icon: "problem",
         tone: "danger",
       });
+      return null;
     } finally {
       setSaving(false);
     }
@@ -1081,18 +1084,20 @@ export function ResultScreen({ route, navigation }: Props) {
   }
 
   /** The public link: made once, then handed to the OS share sheet. */
+  /**
+   * A share link points at a sheet in the Library, so an unsaved sheet is saved first, then shared: one tap, where
+   * it used to stop at "Save it first".
+   */
   async function shareLink() {
-    if (!savedId) {
-      showDialog({
-        title: "Save it first",
-        message: "A share link points at a sheet in your library. Save this transcription, then share the link.",
-        icon: "save",
-      });
+    if (sharing) return;
+    setSharing(true);
+    const id = savedId ?? (await save());
+    if (!id) {
+      setSharing(false);
       return;
     }
-    setSharing(true);
-    const tokens = await shareSheetLinks([{ id: savedId, title: committedTitle || title }]);
-    if (tokens) setShareToken(tokens.get(savedId) ?? null);
+    const tokens = await shareSheetLinks([{ id, title: committedTitle || title.trim() || `${key} transcription` }]);
+    if (tokens) setShareToken(tokens.get(id) ?? null);
     setSharing(false);
   }
 
