@@ -167,6 +167,15 @@ export function playProblemNote(state: PlayMemberState): string | null {
   return null;
 }
 
+/**
+ * What Delete account adds for a membership Google Play still bills: deleting the account does not stop Google's
+ * charges, which only Google Play can cancel. Null once it is cancelled (or not billed by Google Play).
+ */
+export function deleteAccountPlayNote(state: PlayMemberState | null): string | null {
+  if (state === null || state === "cancelled") return null;
+  return "Your Pro is billed by Google Play, and deleting your account doesn't stop that. Cancel it first in Google Play (Payments & subscriptions), or Google keeps charging you.";
+}
+
 /** The plain line at the foot of the card. */
 export function playHint(state: PlayMemberState, until: string | null): string {
   switch (state) {

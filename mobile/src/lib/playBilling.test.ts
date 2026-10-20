@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  deleteAccountPlayNote,
   isOnHold,
   manageUrl,
   offerFor,
@@ -82,6 +83,14 @@ test("a Google Play membership reads as renewing, cancelled, a payment problem o
   assert.equal(playMemberState({ billedThrough: "web", autoRenews: false, paymentIssue: null }), null);
   assert.equal(isOnHold({ billedThrough: "googlePlay", paymentIssue: "hold" }), true);
   assert.equal(isOnHold({ billedThrough: "web", paymentIssue: null }), false);
+});
+
+test("deleting the account warns while Google Play still bills, and only then", () => {
+  assert.match(deleteAccountPlayNote("renewing") ?? "", /^Your Pro is billed by Google Play, and deleting your account doesn't stop that\./);
+  assert.ok(deleteAccountPlayNote("grace"));
+  assert.ok(deleteAccountPlayNote("hold"));
+  assert.equal(deleteAccountPlayNote("cancelled"), null);
+  assert.equal(deleteAccountPlayNote(null), null);
 });
 
 test("Manage opens Google's page for this app's subscription", () => {
