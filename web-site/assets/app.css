@@ -608,6 +608,13 @@ main h1[tabindex="-1"]:focus { outline: none; }
 .pw-hint { display: flex; align-items: center; gap: 6px; margin: 8px 0 0; font-size: 0.82rem; color: var(--muted); }
 .pw-hint .ic { width: 16px; height: 16px; }
 .pw-hint.ok { color: var(--success); }
+/* A problem with one field, said under it (app.js fieldError); its field takes the red edge. */
+.field-error { display: flex; align-items: flex-start; gap: 6px; margin: 8px 0 0; font-size: 0.85rem; line-height: 1.45; color: var(--danger-text); }
+.field-error .ic { width: 16px; height: 16px; margin-top: 2px; }
+.field-error .btn-link { position: relative; font-size: inherit; color: var(--blue-dark); text-decoration: underline; text-underline-offset: 2px; }
+.field-error .btn-link::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); } /* a 44 px target on a text line */
+.auth-form .auth-switch .btn-link { display: inline-flex; align-items: center; min-height: 44px; }
+.auth-form .auth-switch + .auth-switch { margin-top: -16px; }
 .code-input { text-align: center; letter-spacing: 0.3em; font-weight: 700; font-size: 1.2rem; }
 .auth-note { color: var(--muted); margin: 0; }
 .btn-block { width: 100%; min-height: 48px; }

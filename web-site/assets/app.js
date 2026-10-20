@@ -433,7 +433,7 @@
     // Sign in and Create account are one choice; the code step is neither, so the tabs step aside.
     name === "verify" ? hide($("auth-tabs")) : show($("auth-tabs"));
     document.querySelectorAll("#auth-tabs [data-tab]").forEach(function (t) { t.setAttribute("aria-selected", String(t.dataset.tab === name)); });
-    hide($("auth-alert"));
+    hide($("auth-alert")); clearFieldErrors();
   }
   /** "Just trying it out?": the 30-second preview, opened under the form. */
   function openTry() {
@@ -502,7 +502,10 @@
     if (btn.disabled) return; // one email per press: repeated taps sent one each
     btn.disabled = true;
     request("/api/auth/forgot-password", { method: "POST", anonymous: true, body: { email: email } })
-      .then(function () { alertIn($("auth-alert"), "success", "If that address has an account, a reset link is on its way."); })
+      .then(function () {
+        alertIn($("auth-alert"), "success", "If that address has an account, a reset link is on its way.");
+        $("auth-alert").scrollIntoView({ block: "nearest", behavior: "smooth" }); // asked from under the password, it may be out of sight
+      })
       .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not send the reset email."); })
       .finally(function () { btn.disabled = false; });
   });
@@ -562,7 +565,41 @@
     if (!value) return "Enter your email address.";
     return EMAIL_SHAPE.test(value) ? null : "That email address looks incomplete. Check it reads like you@example.com.";
   }
-  function stopForm(text, field) { alertIn($("auth-alert"), "danger", text); if (field) $(field).focus(); }
+  function stopForm(text, field) {
+    if (field) { fieldError(field, text); $(field).focus(); }
+    else alertIn($("auth-alert"), "danger", text);
+  }
+  /**
+   * A problem with one field is said under that field, where the eye is: with the keyboard up and the field centred,
+   * the alert above both forms had scrolled out of sight. `action` (a button) may follow the words. The line goes
+   * once the field is typed in again.
+   */
+  function fieldError(field, text, action) {
+    var input = $(field), id = field + "-error";
+    clearFieldError(field);
+    var line = document.createElement("p");
+    line.className = "field-error"; line.id = id; line.setAttribute("role", "alert");
+    line.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-info"/></svg>';
+    var words = document.createElement("span"); words.textContent = text + (action ? " " : "");
+    if (action) words.appendChild(action);
+    line.appendChild(words);
+    input.closest(".field").appendChild(line);
+    input.setAttribute("aria-invalid", "true");
+    input.setAttribute("aria-describedby", ((input.getAttribute("aria-describedby") || "") + " " + id).trim());
+  }
+  function clearFieldError(field) {
+    var input = $(field), line = $(field + "-error");
+    if (line) line.remove();
+    input.removeAttribute("aria-invalid");
+    var rest = (input.getAttribute("aria-describedby") || "").split(" ").filter(function (x) { return x && x !== field + "-error"; }).join(" ");
+    rest ? input.setAttribute("aria-describedby", rest) : input.removeAttribute("aria-describedby");
+  }
+  var AUTH_FIELDS = ["login-email", "login-password", "reg-name", "reg-email", "reg-password", "verify-code"];
+  function clearFieldErrors() { AUTH_FIELDS.forEach(clearFieldError); }
+  AUTH_FIELDS.forEach(function (f) { $(f).addEventListener("input", function () { clearFieldError(f); }); });
+  /** Wrong passwords in a row for the address typed: from the second, the line under the field offers the reset. */
+  var loginMisses = 0;
+  $("login-email").addEventListener("input", function () { loginMisses = 0; });
 
   $("form-login").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -570,7 +607,7 @@
     var bad = emailProblem($("login-email").value.trim());
     if (bad) { stopForm(bad, "login-email"); return; }
     if (!$("login-password").value) { stopForm("Enter your password.", "login-password"); return; }
-    btn.disabled = true; hide($("auth-alert"));
+    btn.disabled = true; hide($("auth-alert")); clearFieldErrors();
     request("/api/auth/login", { method: "POST", anonymous: true, body: { email: $("login-email").value.trim(), password: $("login-password").value } })
       .then(function (res) {
         saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
@@ -580,13 +617,20 @@
       .catch(function (err) {
         // The password was right but the address was never confirmed, and a fresh code is on its way:
         // straight to the code boxes, as the phone does, rather than an error with nowhere to type it.
-        if (err.code === "AUTH_EMAIL_NOT_VERIFIED") { openVerify($("login-email").value.trim(), "We've emailed you a new code. Enter it to finish setting up your account."); return; }
-        alertIn($("auth-alert"), "danger", err.message || "Could not sign in.");
+        if (err.code === "AUTH_EMAIL_NOT_VERIFIED") { openVerify($("login-email").value.trim(), "We've emailed you a new code. Enter it to finish setting up your account.", "login"); return; }
+        var reset = null;
+        if (err.code === "AUTH_INVALID_CREDENTIALS" && ++loginMisses >= 2) {
+          reset = document.createElement("button");
+          reset.type = "button"; reset.className = "btn-link"; reset.textContent = "Forgot your password?";
+          reset.addEventListener("click", function () { $("forgot").click(); });
+        }
+        fieldError("login-password", err.message || "Could not sign in.", reset);
       })
       .finally(function () { btn.disabled = false; });
   });
-  function openVerify(email, note) {
-    pendingEmail = email;
+  var verifyFrom = "register"; // the form the code step came from, which "Wrong address? Change it" returns to
+  function openVerify(email, note, from) {
+    pendingEmail = email; verifyFrom = from || "register";
     $("verify-email-label").textContent = pendingEmail;
     showAuthForm("verify");
     alertIn($("auth-alert"), "success", note);
@@ -612,7 +656,7 @@
   $("form-register").addEventListener("submit", function (e) {
     e.preventDefault();
     var btn = e.target.querySelector("button[type=submit]");
-    btn.disabled = true; hide($("auth-alert"));
+    btn.disabled = true; hide($("auth-alert")); clearFieldErrors();
     if (!$("reg-name").value.trim()) { stopForm("Enter your name.", "reg-name"); btn.disabled = false; return; }
     var badEmail = emailProblem($("reg-email").value.trim());
     if (badEmail) { stopForm(badEmail, "reg-email"); btn.disabled = false; return; }
@@ -621,10 +665,12 @@
     request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value, source: "web" } })
       .then(function (res) {
         track("Created account");
-        openVerify((res && res.email) || $("reg-email").value.trim(), "Almost there — enter the code we just emailed you.");
+        openVerify((res && res.email) || $("reg-email").value.trim(), "Almost there — enter the code we just emailed you.", "register");
       })
       .catch(function (err) {
         // The checks above catch what the validator would; its own words ("'Full Name' must not be empty.") stay out.
+        if (err.code === "USER_EMAIL_EXISTS" || err.code === "AUTH_DISPOSABLE_EMAIL") { fieldError("reg-email", err.message); return; }
+        if (err.code === "AUTH_PASSWORD_WEAK") { fieldError("reg-password", err.message); return; }
         alertIn($("auth-alert"), "danger", err.details ? "Check your name, email and password, then try again." : (err.message || "Could not create the account."));
       })
       .finally(function () { btn.disabled = false; });
@@ -635,7 +681,7 @@
     e.preventDefault();
     var btn = e.target.querySelector("button[type=submit]");
     if (!/^\d{6}$/.test($("verify-code").value.replace(/\s+/g, ""))) { stopForm("Enter the 6-digit code from the email.", "verify-code"); return; }
-    btn.disabled = true; hide($("auth-alert"));
+    btn.disabled = true; hide($("auth-alert")); clearFieldErrors();
     request("/api/auth/verify-email", { method: "POST", anonymous: true, body: { email: pendingEmail, code: $("verify-code").value.replace(/\s+/g, "") } })
       .then(function (res) {
         saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
@@ -643,7 +689,7 @@
         showAuthForm("login");
         return boot();
       })
-      .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "That code did not match."); })
+      .catch(function (err) { fieldError("verify-code", err.message || "That code did not match."); })
       .finally(function () { btn.disabled = false; });
   });
   $("verify-resend").addEventListener("click", function () {
@@ -652,6 +698,13 @@
     request("/api/auth/resend-verification", { method: "POST", anonymous: true, body: { email: pendingEmail } })
       .then(function () { alertIn($("auth-alert"), "success", "A new code is on its way."); })
       .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not resend the code."); });
+  });
+  // A mistyped address: back to the form it was typed in, everything else still filled, the address ready to fix.
+  $("verify-change").addEventListener("click", function () {
+    $("verify-code").value = "";
+    showAuthForm(verifyFrom);
+    var email = $(verifyFrom === "login" ? "login-email" : "reg-email");
+    email.focus(); email.select();
   });
 
   // Guest → account: the sign-up screen on its own, with a way back to the preview that is waiting.

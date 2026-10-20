@@ -48,6 +48,7 @@
   --danger-soft: rgba(220, 38, 38, 0.10);
   --success-soft: rgba(22, 163, 74, 0.10);
   --amber-soft: rgba(217, 119, 6, 0.12);
+  --danger-text: #B91C1C;   /* red as words: 4.5:1 and more on white, the canvas and its own tint */
   --glass: rgba(255, 255, 255, 0.86);
   --scrim: rgba(15, 23, 42, 0.55);
   --radius: 12px;
@@ -95,6 +96,7 @@
   --danger-soft: rgba(255, 77, 94, 0.12);
   --success-soft: rgba(61, 220, 151, 0.10);
   --amber-soft: rgba(245, 181, 68, 0.12);
+  --danger-text: #FF4D5E;
   --glass: rgba(14, 18, 26, 0.82);
   --scrim: rgba(3, 5, 8, 0.80);
   --ring: 0 0 0 4px rgba(47, 123, 255, 0.30);
@@ -149,6 +151,9 @@ input[type=text], input[type=url], input[type=email], input[type=password], text
   background: rgba(255, 255, 255, 0.05); border-color: var(--input-line); color: var(--ink);
 }
 input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: var(--ring); }
+/* A field whose problem is said under it (app.js fieldError) keeps a red edge, focused or not, in either theme. */
+:root :is(input, textarea)[aria-invalid="true"], :root[data-theme] :is(input, textarea)[aria-invalid="true"] { border-color: var(--danger); }
+:root :is(input, textarea)[aria-invalid="true"]:focus { box-shadow: 0 0 0 4px var(--danger-soft); }
 
 /* ── Surfaces ────────────────────────────────────────────────────────────── */
 .card { border-radius: var(--radius); box-shadow: var(--shadow-card); }
