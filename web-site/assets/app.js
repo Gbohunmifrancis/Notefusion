@@ -901,7 +901,7 @@
   // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
   // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
   // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=10", "/assets/practice-progress.js?v=8", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=2", "/assets/practice-view.js?v=12"];
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=10", "/assets/practice-progress.js?v=9", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=3", "/assets/practice-view.js?v=12"];
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
   function loadAsset(url) {
@@ -954,8 +954,9 @@
     chip.classList.toggle("is-start", start);
     chip.classList.toggle("is-on", p.streak.current > 0);
     $("practice-chip-streak").textContent = p.streak.current;
-    $("practice-chip-xp").textContent = p.xp + " XP";
-    chip.setAttribute("aria-label", start ? "Start practising: open Practice" : "Practice: " + p.streak.current + "-day streak, " + p.xp + " XP, level " + p.level.name);
+    var xp = String(Math.round(p.xp)).replace(/\B(?=(\d{3})+(?!\d))/g, ","); // "12,450", as Practice writes it
+    $("practice-chip-xp").textContent = xp + " XP";
+    chip.setAttribute("aria-label", start ? "Start practising: open Practice" : "Practice: " + p.streak.current + "-day streak, " + xp + " XP, level " + p.level.name);
     show(chip);
     renderSeasonCarols(p);
   }

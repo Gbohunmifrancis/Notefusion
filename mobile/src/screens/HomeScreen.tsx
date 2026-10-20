@@ -40,7 +40,7 @@ import { useSubscription } from '../lib/subscription';
 import { confidenceColor, fonts, motion, radii, spacing, typography, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles, useColors } from '../lib/theme';
 import type { PracticeProgress, SavedTranscription } from '../api/types';
-import { streakSnapshot } from '../lib/practiceProgress';
+import { streakSnapshot, xpAmount } from '../lib/practiceProgress';
 import { rememberStreak } from '../lib/practiceReminder';
 import { refreshProfilePicture, useAccountJoinedAt } from '../lib/profilePicture';
 import { useBreath } from '../lib/breath';
@@ -480,7 +480,7 @@ export function HomeScreen({ navigation }: Props) {
                     radius={radii.pill}
                     // A 32 px chip, 48 tall to a thumb; less to the sides, where the avatar is.
                     hitSlop={{ top: 8, bottom: 8, left: 6, right: 6 }}
-                    accessibilityLabel={`Practice: ${practice.streak.current}-day streak, ${practice.xp} XP, level ${practice.level.name}`}
+                    accessibilityLabel={`Practice: ${practice.streak.current}-day streak, ${xpAmount(practice.xp)}, level ${practice.level.name}`}
                   >
                     <Icon
                       name="streak"
@@ -489,7 +489,7 @@ export function HomeScreen({ navigation }: Props) {
                     />
                     <Text style={styles.practiceChipText}>{practice.streak.current}</Text>
                     <View style={styles.practiceChipDivider} />
-                    <Text style={styles.practiceChipText}>{practice.xp} XP</Text>
+                    <Text style={styles.practiceChipText}>{xpAmount(practice.xp)}</Text>
                   </Touchable>
                 ) : null}
                 {/* The account, as on every tab: the avatar (Pro's gold ring) opens Profile. */}

@@ -74,6 +74,9 @@
   }
 
   // ── The one line at the top (streak and level) ──────────────────────────
+  /** "12,450": XP in thousands, grouped by hand as the phone's progressStrip does. */
+  function grouped(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
   /** The streak and the level in one line, where the two stat cards used to open the view (board 6a). */
   function progressStrip(p) {
     var best = p.streak.best || 0, lapsed = p.streak.current <= 0 && best > 0;
@@ -81,9 +84,9 @@
     var lv = p.level;
     var span = lv.nextLevelXp == null ? 0 : lv.nextLevelXp - lv.minXp;
     var fraction = lv.nextLevelXp == null ? 1 : span > 0 ? clamp01((p.xp - lv.minXp) / span) : 1;
-    var toNext = lv.nextName ? lv.xpForNext + " to " + lv.nextName : null;
-    var label = (lapsed ? "No streak now. " + streak : streak) + ". Level " + lv.name + ", " + p.xp + " XP" + (lv.nextName ? ", " + lv.xpForNext + " XP to " + lv.nextName : "") + ".";
-    return { streak: streak, level: lv.name, xp: p.xp + " XP", toNext: toNext, fraction: fraction, label: label };
+    var toNext = lv.nextName ? grouped(lv.xpForNext) + " to " + lv.nextName : null;
+    var label = (lapsed ? "No streak now. " + streak : streak) + ". Level " + lv.name + ", " + grouped(p.xp) + " XP" + (lv.nextName ? ", " + grouped(lv.xpForNext) + " XP to " + lv.nextName : "") + ".";
+    return { streak: streak, level: lv.name, xp: grouped(p.xp) + " XP", toNext: toNext, fraction: fraction, label: label };
   }
 
   // ── Shared arithmetic ───────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 /* Practice on the web: the daily habit, as the phone's Practice screen has it (mobile/src/screens/PracticeScreen.tsx).
  *
- * The practice path's next free solfa drill (hear it, a count-in, sing it, marked note by note, then "Next drill" —
+ * The practice path's next free solfa drill (hear it, a count-in, sing it, marked note by note, then "Continue" —
  * grades, units and milestones on the way), the streak, XP toward the next sol-fa level, the weekly goal, the last
  * seven days and the badges. Every number is the server's
  * (GET /api/practice/progress), read off the takes it has marked; the browser never reports a score. A marked
@@ -536,10 +536,10 @@
     lhead.appendChild(ltext);
     level.appendChild(lhead);
     var brow = el("div", "pv-bar-row");
-    brow.appendChild(bar(P.levelFraction(p.level, p.xp), p.xp + " XP. " + P.nextLevelLine(p.level)));
+    brow.appendChild(bar(P.levelFraction(p.level, p.xp), P.xpAmount(p.xp) + ". " + P.nextLevelLine(p.level)));
     if (p.level.nextName) brow.appendChild(art(T.levelArt(p.level.index + 1), 22));
     level.appendChild(brow);
-    level.appendChild(el("span", "pv-sub", p.xp + " XP"));
+    level.appendChild(el("span", "pv-sub", P.xpAmount(p.xp)));
     level.appendChild(el("span", "pv-foot", P.nextLevelLine(p.level)));
     row.appendChild(level);
     return row;
@@ -587,7 +587,7 @@
       live.hidden = true;
       var hearBtn = button("btn-ghost", isHearing() ? "/assets/icons.svg#i-stop" : "/assets/icons.svg#i-volume", isHearing() ? "Stop" : playful ? "Listen" : "Hear it", toggleHear);
       hearBtn.id = "pv-hear";
-      // After a mark: "Next drill" leads (or "Try it again" when the path brings the same drill back), and the drill
+      // After a mark: "Continue" leads (or "Try it again" when the path brings the same drill back), and the drill
       // just sung can be sung again for practice.
       var onward = s.grade ? P.nextAction(d, s.next, tr) : null, moveOn = onward && !onward.same;
       var singBtn = button(moveOn ? "btn-ghost" : "btn-primary", "/assets/icons.svg#i-mic",
@@ -1014,7 +1014,7 @@
     });
   }
 
-  /** After a marked take: the path's next drill, ready for "Next drill" (its label says "Try it again" when it is the same). */
+  /** After a marked take: the path's next drill, ready for "Continue" (its label says "Try it again" when it is the same). */
   function fetchNext() {
     var gen = s.gen;
     s.next = null;
@@ -1022,7 +1022,7 @@
       if (gen !== s.gen || !d) return;
       s.next = d;
       if (s.phase === "idle") render();
-    }, function () { /* "Next drill" asks again when pressed */ });
+    }, function () { /* "Continue" asks again when pressed */ });
   }
 
   /** On along the path: the drill fetched after the take (or fetched now), its marks cleared. */
