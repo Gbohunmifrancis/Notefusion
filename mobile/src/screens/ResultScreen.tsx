@@ -2879,7 +2879,7 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: 8,
       paddingVertical: 2,
     },
-    proTagText: { ...typography.caption, color: c.premiumDeep, fontFamily: fonts.semibold, fontSize: 10 },
+    proTagText: { ...typography.caption, color: c.premiumText, fontFamily: fonts.semibold, fontSize: 10 },
 
     // ── Export ────────────────────────────────────────────────────────────────
     exportRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingVertical: 13 },

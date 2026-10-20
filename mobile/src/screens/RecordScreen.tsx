@@ -1672,7 +1672,7 @@ const makeStyles = (c: Palette) =>
   fastLaneText: {
     fontFamily: fonts.medium,
     fontSize: 12,
-    color: c.premiumDeep,
+    color: c.premiumText,
   },
 
   // ── Clock & status ────────────────────────────────────────────────────────

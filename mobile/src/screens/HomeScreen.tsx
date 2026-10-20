@@ -806,7 +806,7 @@ const makeStyles = (c: Palette, s: Shadows) =>
     proChipText: {
       fontSize: 9.5,
       fontFamily: fonts.bold,
-      color: c.premiumDeep,
+      color: c.premiumText,
       letterSpacing: 0.8,
     },
     title: {

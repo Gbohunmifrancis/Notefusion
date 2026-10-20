@@ -1760,7 +1760,7 @@ const makeStyles = (c: Palette, s: Shadows) =>
       ...typography.caption,
       fontSize: 11,
       fontFamily: fonts.bold,
-      color: c.premiumDeep,
+      color: c.premiumText,
     },
     memberDivider: {
       height: 1,

@@ -74,6 +74,9 @@ export const colors = {
    *  and plan badge, and nowhere a free account can see. */
   premium: "#F59E0B",
   premiumDeep: "#B45309",
+  /** The words of a gold chip on its tint (Fast lane, the PRO tags; board m-ux-medium P3g): `premiumDeep` was 4.29:1
+   *  there in Day, this 6.06:1. The crown and the tint keep `premiumDeep` and `premiumSoft`. */
+  premiumText: "#92400E",
   premiumSoft: "rgba(245, 158, 11, 0.12)",
   premiumBorder: "rgba(245, 158, 11, 0.35)",
 
@@ -207,6 +210,8 @@ export const darkColors: Palette = {
   // crown and an alert sign differ in colour as well as shape.
   premium: "#F0D27A",
   premiumDeep: "#D9B65A",
+  // Night's gold already reads on its tint (7.86:1), so the chip's words keep it.
+  premiumText: "#D9B65A",
   premiumSoft: "rgba(240, 210, 122, 0.14)",
   premiumBorder: "rgba(240, 210, 122, 0.40)",
 
