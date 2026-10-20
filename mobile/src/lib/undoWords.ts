@@ -11,6 +11,11 @@ export function dohNowLine(dohLetter: string): string {
 /** "Use the hymnbook" taken. */
 export const HYMNBOOK_IN_LINE = "Hymnbook version in";
 
+/** "“Abide with Me” deleted", or "3 sheets deleted": a held delete (board m-ux-medium P2a). */
+export function deletedLine(titles: readonly string[]): string {
+  return titles.length === 1 ? `“${titles[0]}” deleted` : `${titles.length} sheets deleted`;
+}
+
 /** "Moved up 2, to A": a transposition, by semitones, to the key it reached ("A major" is said "A"). */
 export function movedLine(semitones: number, key: string): string {
   const to = key.replace(/\s+major$/i, "").trim();

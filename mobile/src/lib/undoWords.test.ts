@@ -1,11 +1,16 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { dohNowLine, HYMNBOOK_IN_LINE, movedLine } from "./undoWords.ts";
+import { deletedLine, dohNowLine, HYMNBOOK_IN_LINE, movedLine } from "./undoWords.ts";
 
 test("the doh and hymnbook toasts say what is on screen now", () => {
   assert.equal(dohNowLine("D"), "Doh is D now");
   assert.equal(dohNowLine("Bb"), "Doh is Bb now");
   assert.equal(HYMNBOOK_IN_LINE, "Hymnbook version in");
+});
+
+test("a delete names the one sheet, or counts several", () => {
+  assert.equal(deletedLine(["Abide with Me"]), "“Abide with Me” deleted");
+  assert.equal(deletedLine(["a", "b", "c"]), "3 sheets deleted");
 });
 
 test("a transposition says which way, how far and to what key", () => {

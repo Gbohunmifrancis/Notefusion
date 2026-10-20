@@ -28,6 +28,7 @@ import { practiceApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { dohLetter } from '../lib/solfa';
 import { loadLibraryList, loadSheet } from '../lib/offlineLibrary';
+import { withoutHeldDeletes } from '../lib/sheetActions';
 import { resultFromSaved } from '../lib/openSheet';
 import { useAuth } from '../lib/auth';
 import { showDialog } from '../lib/dialog';
@@ -95,8 +96,6 @@ export function HomeScreen({ navigation }: Props) {
   const [all, setAll] = useState<SavedTranscription[]>([]);
   /** The list has been read at least once (Doh's card waits for it). */
   const [listReady, setListReady] = useState(false);
-  /** Sheets deleted from a recent row, folding away (board a-core/11). */
-  const [leaving, setLeaving] = useState<ReadonlySet<string>>(new Set());
   const recent = all.slice(0, RECENT_COUNT);
   const [loadingRecent, setLoadingRecent] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -205,8 +204,8 @@ export function HomeScreen({ navigation }: Props) {
 
   /** The list as read: kept whole, and Doh's card may now be chosen. */
   const listRead = useCallback((items: SavedTranscription[]) => {
-    setAll(items);
-    setLeaving(new Set());
+    // A sheet whose delete is still held behind its Undo stays out (lib/sheetActions).
+    setAll(withoutHeldDeletes(items));
     setLoadError(null);
     setListReady(true);
   }, []);
@@ -336,12 +335,11 @@ export function HomeScreen({ navigation }: Props) {
   }
 
   // ── Recent sheets' actions (board a-core/11) ─────────────────────────────
-  // The Library's own actions on one sheet; a deleted row folds away before it leaves the list.
+  // The Library's own actions on one sheet; a deleted row folds away, held behind its Undo (board m-ux-medium P2a).
   const sheetActions = useSheetActions({
     items: all,
     setItems: setAll,
     reload,
-    onDeleted: (ids) => setLeaving(new Set(ids)),
   });
 
   /** Set while a sheet loads: a second tap meanwhile would push a second Result. */
@@ -381,7 +379,7 @@ export function HomeScreen({ navigation }: Props) {
       <FlatList
         ref={listRef}
         data={recent}
-        extraData={[leaving, sheetActions.actionsFor]}
+        extraData={[sheetActions.folding, sheetActions.actionsFor]}
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
@@ -605,10 +603,7 @@ export function HomeScreen({ navigation }: Props) {
           const doubtful = confidenceLevel(item.overallConfidence) !== 'clear';
           const tone = confidenceColor(item.overallConfidence, colors);
           return (
-            <FoldAway
-              gone={leaving.has(item.id)}
-              onGone={() => setAll((prev) => prev.filter((s) => s.id !== item.id))}
-            >
+            <FoldAway {...sheetActions.foldProps(item.id)}>
               <Touchable
                 onPress={() => openRecent(item)}
                 onLongPress={() => {

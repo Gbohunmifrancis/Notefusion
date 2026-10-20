@@ -7,7 +7,7 @@
 
 import { AppState } from "react-native";
 import type { IconName } from "../components/Icon";
-import { createHolds, type HeldChange } from "./heldChange";
+import { createHolds, HOLD_MS, type HeldChange } from "./heldChange";
 import { hideToast, showToast } from "./toast";
 
 const holds = createHolds({
@@ -35,27 +35,36 @@ export interface Held {
 
 /**
  * Holds `change` for 6 s behind a toast saying `message` with Undo. The screen has already changed; `commit` tells
- * the server, `undo` puts the screen back.
+ * the server, `undo` puts the screen back. `afterMs`: the toast rises once that has played out (a row folding away,
+ * board m-ux-medium P2a), and the hold lasts as much longer, so Undo stays for the toast's whole 6 s.
  */
-export function holdWithUndo(message: string, change: HeldChange, icon?: IconName): Held {
-  const id = holds.hold({
-    commit: () => {
-      toasts.delete(id);
-      return change.commit();
+export function holdWithUndo(message: string, change: HeldChange, icon?: IconName, afterMs = 0): Held {
+  const id = holds.hold(
+    {
+      commit: () => {
+        toasts.delete(id);
+        return change.commit();
+      },
+      undo: () => {
+        toasts.delete(id);
+        change.undo();
+      },
     },
-    undo: () => {
-      toasts.delete(id);
-      change.undo();
-    },
-  });
-  toasts.set(
-    id,
-    showToast(message, {
-      icon,
-      action: { label: "Undo", onPress: () => holds.undo(id) },
-      onLeave: () => holds.commit(id),
-    }),
+    HOLD_MS + afterMs,
   );
+  const show = () => {
+    if (!holds.isHeld(id)) return;
+    toasts.set(
+      id,
+      showToast(message, {
+        icon,
+        action: { label: "Undo", onPress: () => holds.undo(id) },
+        onLeave: () => holds.commit(id),
+      }),
+    );
+  };
+  if (afterMs > 0) setTimeout(show, afterMs);
+  else show();
   return {
     settle: () => {
       const toast = toasts.get(id);

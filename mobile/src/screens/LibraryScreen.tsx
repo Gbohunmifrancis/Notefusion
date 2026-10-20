@@ -22,6 +22,7 @@ import { ProblemNote } from "../components/ProblemNote";
 import { DohTip } from "../components/doh/DohTip";
 import { Mark } from "../components/night/NightUI";
 import { LibraryRow, LibraryRowSkeleton } from "../components/library/LibraryRow";
+import { FoldAway } from "../components/FoldAway";
 import { SelectionBar } from "../components/library/SelectionBar";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { libraryApi } from "../api/endpoints";
@@ -29,6 +30,7 @@ import { toApiError } from "../api/client";
 import { showDialog } from "../lib/dialog";
 import * as haptics from "../lib/haptics";
 import { useSheetActions } from "../components/library/useSheetActions";
+import { withoutHeldDeletes } from "../lib/sheetActions";
 import { useSubscription } from "../lib/subscription";
 import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLibrary";
 import { resultFromSaved } from "../lib/openSheet";
@@ -109,7 +111,8 @@ export function LibraryScreen() {
     }
     loadLibraryList()
       .then(({ items: data, offline: fromCopy }) => {
-        setItems(data);
+        // A sheet whose delete is still held behind its Undo stays out (lib/sheetActions).
+        setItems(withoutHeldDeletes(data));
         setOffline(fromCopy);
         setLoadError(null);
       })
@@ -518,7 +521,7 @@ export function LibraryScreen() {
       <FlatList
         ref={listRef}
         data={sortedItems}
-        extraData={selected}
+        extraData={[selected, actions.folding]}
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -537,21 +540,24 @@ export function LibraryScreen() {
         }
         ListHeaderComponent={header}
         renderItem={({ item }) => (
-          <LibraryRow
-            item={item}
-            subtitle={subtitleFor(item)}
-            selecting={selecting}
-            selected={selected.has(item.id)}
-            onPress={() => (selecting ? toggle(item) : void openItem(item))}
-            onLongPress={() => startSelecting(item)}
-            offline={
-              offline && !offlineCopies.cached.has(item.id)
-                ? "missing"
-                : offlineCopies.keepAll || offlineCopies.pinned.has(item.id)
-                  ? "kept"
-                  : null
-            }
-          />
+          // A deleted row folds away, and unfolds where it was on Undo (board m-ux-medium P2a).
+          <FoldAway {...actions.foldProps(item.id)}>
+            <LibraryRow
+              item={item}
+              subtitle={subtitleFor(item)}
+              selecting={selecting}
+              selected={selected.has(item.id)}
+              onPress={() => (selecting ? toggle(item) : void openItem(item))}
+              onLongPress={() => startSelecting(item)}
+              offline={
+                offline && !offlineCopies.cached.has(item.id)
+                  ? "missing"
+                  : offlineCopies.keepAll || offlineCopies.pinned.has(item.id)
+                    ? "kept"
+                    : null
+              }
+            />
+          </FoldAway>
         )}
         ItemSeparatorComponent={() => <View style={styles.itemDivider} />}
         ListEmptyComponent={empty}
