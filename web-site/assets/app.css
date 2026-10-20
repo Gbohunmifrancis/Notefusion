@@ -728,6 +728,17 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .btn-pay .ic { width: 20px; height: 20px; }
 .pay-fine { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 10px 0 0; font-size: 0.78rem; color: var(--muted); text-align: center; }
 .pay-fine .ic { width: 16px; height: 16px; flex: none; }
+/* The price, the button and their notes stay at the bottom of the dialog while the plans scroll (board l-ux-high/03b). */
+/* bottom matches the card's bottom padding, so it sits on the card's edge with nothing showing under it. */
+.pay-foot { position: sticky; bottom: -26px; z-index: 1; margin: 12px -28px -26px; padding: 4px 28px 18px; background: #fff; border-top: 1px solid var(--line); box-shadow: 0 -10px 18px rgba(15, 23, 42, 0.06); }
+:root[data-theme="dark"] .pay-foot { background: #0E121A; box-shadow: 0 -10px 18px rgba(0, 0, 0, 0.35); }
+:root[data-theme="dark"] .pay-error { color: #FF9AA4; }
+/* The card's phone padding (24px 18px 20px, max-width 640px above) is matched here, after the rule it overrides. */
+@media (max-width: 640px) { .pay-foot { bottom: -20px; margin: 12px -18px -20px; padding: 4px 18px 14px; } }
+.pay-fx { margin: 8px 0 0; font-size: 0.85rem; color: var(--muted); text-align: center; }
+.pay-error { margin: 10px 0 0; padding: 8px 10px; border-radius: 8px; background: var(--danger-soft, rgba(220, 38, 38, 0.08)); color: var(--danger-text, #B91C1C); font-size: 0.9rem; }
+.pay-reason { display: flex; gap: 8px; align-items: flex-start; margin: 4px 0 14px; padding: 10px 12px; border-radius: 8px; background: var(--blue-tint, rgba(37, 99, 235, 0.08)); color: var(--ink); font-size: 0.95rem; line-height: 1.45; }
+.pay-reason .ic { width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--blue-dark); }
 .pay-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 #plans-extend { margin-top: 4px; }
 

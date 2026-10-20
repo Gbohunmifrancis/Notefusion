@@ -1297,9 +1297,14 @@
    * The plans dialog. reason "limit" is the free allowance running out (the refusal after the last one):
    * the one-song purchase is then the option already chosen, since one more song is what was just asked for.
    */
-  function openUpgrade(reason) {
+  function openUpgrade(reason, why) {
     track("Opened plans");
     track("Plans viewed", "app"); // the checkout funnel's top step (CheckoutSteps in the API)
+    // A refusal's own sentence ("back Friday at 6pm…") heads the dialog; the sales line steps aside for it.
+    var said = reason === "limit" && why;
+    $("upgrade-reason-text").textContent = said ? why : "";
+    said ? show($("upgrade-reason")) : hide($("upgrade-reason"));
+    said ? hide($("upgrade-lead")) : show($("upgrade-lead"));
     if (isPro()) { renderMembership(); show($("upgrade-panel")); return; }
     $("upgrade-title-text").textContent = "Do more with NoteFusion";
     show($("upgrade-free")); hide($("upgrade-pro"));
@@ -1935,8 +1940,8 @@
   function explain(err) {
     var text = err.message || "Something went wrong.";
     if (err.code === "BILLING_SONG_PREVIEW_USED" || err.code === "BILLING_FREE_TIER_LIMIT" || err.code === "BILLING_SONG_NOT_FREE") {
-      alertIn($("app-alert"), "info", text);
-      openUpgrade("limit");
+      hide($("app-alert"));
+      openUpgrade("limit", text);
       return;
     }
     if (err.code === "BILLING_SONG_CREDITS_EXHAUSTED") { alertIn($("app-alert"), "info", text); return; }
@@ -3872,6 +3877,10 @@
       function label(plan) { return isChoirPlan(plan) ? (isYearly(plan) ? "Choir · Yearly" : "Choir · Monthly") : isSinglePlan(plan) ? "Just this song" : isLifetimePlan(plan) ? "Lifetime" : isYearly(plan) ? "Yearly" : "Monthly"; }
       function per(plan) { return isSinglePlan(plan) || isLifetimePlan(plan) ? "once" : isYearly(plan) ? "a year" : "a month"; }
       var fine = document.createElement("p"); fine.className = "pay-fine";
+      // A dollar price is charged in naira at the day's rate (Bachs): said before paying, not only after.
+      var fx = document.createElement("p"); fx.className = "pay-fx";
+      // A checkout that will not open says so here, above the button, not in the page behind the dialog.
+      var payError = document.createElement("p"); payError.className = "pay-error"; payError.setAttribute("role", "alert"); payError.hidden = true;
       function renderCta() {
         cta.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>';
         cta.appendChild(document.createTextNode(isSinglePlan(chosen)
@@ -3885,6 +3894,10 @@
           : isChoirPlan(chosen)
             ? "Secure checkout. One payment covers the whole choir for the period; nothing renews without you. You'll get an invite link for your singers."
             : "Secure checkout. One payment covers the whole period; nothing renews without you."));
+        var naira = String(chosen.currency).toUpperCase() === "NGN";
+        fx.hidden = naira;
+        fx.textContent = naira ? "" : "You'll pay the naira amount at today's rate on the next page; your bank may add a fee.";
+        payError.hidden = true;
       }
       ordered.forEach(function (plan, index) {
         if (isChoirPlan(plan) && (index === 0 || !isChoirPlan(ordered[index - 1]))) {
@@ -3923,7 +3936,11 @@
       });
       renderCta();
       cta.addEventListener("click", function () { checkout(chosen, cta); });
-      grid.appendChild(options); grid.appendChild(cta); grid.appendChild(fine);
+      // The price and the button stay at the bottom of the dialog while the plans scroll above them
+      // (board l-ux-high/03b): on a phone Pay sat about a screen below the fold.
+      var foot = document.createElement("div"); foot.className = "pay-foot";
+      foot.appendChild(payError); foot.appendChild(cta); foot.appendChild(fx); foot.appendChild(fine);
+      grid.appendChild(options); grid.appendChild(foot);
     }).catch(function () { grid.textContent = "Plans could not be loaded right now. Please try again in a moment."; });
   }
 
@@ -3948,6 +3965,8 @@
   }
   function checkout(plan, btn) {
     btn.disabled = true;
+    var label = btn.innerHTML;
+    if (btn.isConnected) btn.textContent = "Opening secure checkout…";
     track("Checkout started", plan.id);
     request("/api/billing/checkout", { method: "POST", body: { planId: plan.id, client: "web" } })
       .then(function (session) {
@@ -3971,6 +3990,7 @@
         return trackNow("Checkout opened", provider).then(function () { location.assign(session.checkoutUrl); });
       })
       .catch(function (err) {
+        btn.innerHTML = label; // the page stays, so the button reads as it did (on success the page is leaving)
         // An earlier checkout turned out to be paid: nothing to buy, so this is the welcome, not an error.
         if (err instanceof ApiError && err.code === "BILLING_PAYMENT_ALREADY_RECEIVED") {
           var before = { wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null, single: isSinglePlan(plan), choir: isChoirPlan(plan) };
@@ -3978,7 +3998,10 @@
             .catch(function () { alertIn($("app-alert"), "success", err.message); });
         }
         track("Checkout failed", (err instanceof ApiError ? err.code + " (HTTP " + err.status + ")" : (err && err.message) || "Network error") + " · app");
-        alertIn($("app-alert"), "danger", (err instanceof ApiError && err.message) || "We couldn't open the payment page just now. Please try again in a minute.");
+        var text = (err instanceof ApiError && err.message) || "We couldn't open the payment page just now. Please try again in a minute.";
+        var box = !$("upgrade-panel").classList.contains("hidden") && document.querySelector("#upgrade-panel .plans:not(.hidden) .pay-error");
+        if (box) { box.textContent = text; box.hidden = false; }
+        else alertIn($("app-alert"), "danger", text);
       })
       .finally(function () { btn.disabled = false; });
   }
