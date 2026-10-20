@@ -4184,25 +4184,39 @@
     return jspdfLoading;
   }
 
+  var engraving = 0; // the latest sheet being drawn: an older one finishing late leaves the skeleton to it
   function engrave(xml) {
     // The engraver takes a moment on a long sheet (and longer the first time, while it
-    // loads): show the shape of a staff rather than an empty box.
-    var skel = $("sheet-skel"); show(skel); $("sheet").classList.add("hidden");
-    try { osmd = engraveInto($("sheet"), xml, false); }
-    finally { hide(skel); $("sheet").classList.remove("hidden"); }
+    // loads): the shape of a staff shows until the staff is drawn (or cannot be), not an empty box.
+    // The staff is drawn out of sight rather than hidden outright, so the engraver still measures the frame's width.
+    var skel = $("sheet-skel"), sheet = $("sheet"), at = ++engraving;
+    show(skel); sheet.classList.add("is-drawing");
+    osmd = engraveInto(sheet, xml, false, function () {
+      if (at !== engraving) return;
+      hide(skel); sheet.classList.remove("is-drawing");
+    });
   }
 
   /**
    * Engrave ``xml`` into ``container``; part names only make sense with more than one part. Once drawn, the staff is
-   * one picture to a screen reader, named for what it shows (the Tonic Solfa tab has the notes as text).
+   * one picture to a screen reader, named for what it shows (the Tonic Solfa tab has the notes as text). `done` runs
+   * once it is drawn or has failed. A failure is one plain sentence on the page; what the engraver said is the console's.
    */
-  function engraveInto(container, xml, partNames) {
+  var NOT_DRAWN = "The staff could not be drawn. The Tonic Solfa tab has the same notes.";
+  function engraveInto(container, xml, partNames, done) {
+    done = done || function () {};
     container.innerHTML = "";
     container.removeAttribute("role"); container.removeAttribute("aria-label");
-    if (!xml) { container.textContent = "Nothing to engrave."; return null; }
+    if (!xml) { container.textContent = "Nothing to engrave."; done(); return null; }
+    function failed(err) {
+      try { if (err) console.warn("[notefusion] staff", err); } catch (e) { /* ignore */ }
+      container.textContent = NOT_DRAWN; done();
+    }
     if (!window.opensheetmusicdisplay) {
-      container.textContent = "Loading the engraver…";
-      ensureOsmd().then(function () { engraveInto(container, xml, partNames); }, function () { container.textContent = "The staff engraver could not be loaded. The Tonic Solfa tab still works; check your connection and reload for the staff."; });
+      container.textContent = "Drawing the staff…";
+      ensureOsmd().then(function () { engraveInto(container, xml, partNames, done); }, function () {
+        container.textContent = "The staff couldn't load. The Tonic Solfa tab still works; check your connection and reload for the staff."; done();
+      });
       return null;
     }
     try {
@@ -4210,9 +4224,9 @@
         backend: "svg", autoResize: true, drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false, drawPartNames: !!partNames, drawMeasureNumbers: true,
         autoBeam: true, autoBeamOptions: { beam_rests: false, maintain_stem_directions: false }
       });
-      display.load(xml).then(function () { display.render(); nameStaff(container, partNames); }).catch(function (err) { container.textContent = "Could not draw the staff: " + err; });
+      display.load(xml).then(function () { display.render(); nameStaff(container, partNames); done(); }).catch(failed);
       return display;
-    } catch (err) { container.textContent = "Could not draw the staff: " + err; return null; }
+    } catch (err) { failed(err); return null; }
   }
   function nameStaff(container, parts) {
     var r = current && current.result, title = $("r-title").textContent || "this sheet";

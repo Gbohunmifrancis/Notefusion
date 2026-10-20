@@ -357,6 +357,8 @@ textarea { resize: vertical; line-height: 1.5; }
 .chip { padding: 4px 10px; border-radius: 8px; background: var(--wash); font-size: 0.78rem; font-weight: 600; color: var(--copy); }
 .sheet-wrap { position: relative; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: auto; min-height: 240px; }
 #sheet, #staff, #staff-parts, #sheet-parts { padding: 12px; }
+/* Being drawn under the skeleton (app.js engrave): full width for the engraver to measure, nothing showing yet. */
+#sheet.is-drawing { visibility: hidden; height: 0; padding-block: 0; overflow: hidden; }
 .watermark { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 /* The faint mark on a free account's sheet is the logo itself, tinted brand blue, turned like a stamp. */
 .watermark::before { content: ""; display: block; width: clamp(120px, 28%, 260px); aspect-ratio: 331 / 438; background: var(--blue); opacity: 0.08; transform: rotate(-24deg); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; }
