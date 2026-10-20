@@ -178,14 +178,14 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .site-page-main .card { border: 1px solid var(--page-line); border-radius: var(--r-md); background: var(--page-surface); padding: clamp(24px, 3vw, 32px); margin-bottom: 16px; box-shadow: none; }
 .site-page-main h2 { margin: 0 0 12px; color: var(--page-navy); font-size: 20px; font-weight: 600; letter-spacing: -.015em; line-height: 1.35; }
 .site-page-main h3 { margin: 24px 0 8px; color: var(--page-navy); font-size: 16px; font-weight: 600; }
-.site-page-main p, .site-page-main li { color: var(--page-text-2); font-size: 15px; }
+.site-page-main p, .site-page-main li { color: var(--page-text-2); font-size: 16px; }
 .site-page-main p { margin: 0 0 16px; }
 .site-page-main li { margin-bottom: 8px; }
 .site-page-main strong { color: var(--page-navy); font-weight: 600; }
 .site-page-main ul { padding-left: 24px; margin: 0 0 16px; }
 .site-page-main .callout { border: 1px solid var(--page-wash-line); border-radius: var(--r-sm); background: var(--page-wash); padding: 16px 20px; margin: 0 0 16px; }
 .site-page-main .callout p:last-child { margin-bottom: 0; }
-.site-page-main .notice { padding: 16px; margin: 0 0 16px; border-radius: var(--r-sm); font-size: 14px; line-height: 1.5; }
+.site-page-main .notice { padding: 16px; margin: 0 0 16px; border-radius: var(--r-sm); font-size: 16px; line-height: 1.5; }
 .site-page-main .notice p:last-child { margin-bottom: 0; }
 .site-page-main .notice.bad { color: var(--page-bad-fg); background: var(--page-bad-bg); border: 1px solid var(--page-bad-line); }
 .site-page-main .notice.good { color: var(--page-good-fg); background: var(--page-good-bg); border: 1px solid var(--page-good-line); }
@@ -194,7 +194,7 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .site-page-main input[type=email], .site-page-main input[type=password], .site-page-main textarea { display: block; width: 100%; min-height: 44px; margin: 0 0 16px; padding: 10px 12px; border: 1px solid var(--page-input-line); border-radius: var(--r-sm); background: var(--page-input-bg); color: var(--page-navy); font: inherit; font-size: 16px; transition: border-color .15s, box-shadow .15s; }
 .site-page-main textarea { min-height: 96px; resize: vertical; }
 .site-page-main input:focus, .site-page-main textarea:focus { outline: 0; border-color: var(--page-blue); box-shadow: 0 0 0 3px var(--page-focus); }
-.site-page-main .hint { margin-top: -8px; color: var(--page-muted); font-size: 12px; }
+.site-page-main .hint { margin-top: -8px; color: var(--page-muted); font-size: 14px; }
 .site-page-main .hint.bad { color: var(--page-bad-fg); }  /* a field's own problem, said as it is left (reset-password) */
 .site-page-main .checkbox-group { display: flex; align-items: flex-start; gap: 8px; margin: 16px 0 24px; }
 .site-page-main .checkbox-group input { width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--page-danger); flex: 0 0 auto; }
@@ -243,6 +243,13 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
   .site-document .site-shell-panel .site-shell-cta { color: var(--page-on-fill); }
   .site-page-main { width: calc(100% - 32px); padding: 32px 0 56px; }
   .site-page-intro { margin-bottom: 24px; }
+}
+/* Reading text is 16 px on a phone (the base above: pages' copy, notices; a field's hint 14); a wide screen keeps the
+   compact page it had. */
+@media (min-width: 801px) {
+  .site-page-main p, .site-page-main li { font-size: 15px; }
+  .site-page-main .notice { font-size: 14px; }
+  .site-page-main .hint { font-size: 12px; }
 }
 @media (max-width: 560px) {
   .site-page-main { padding: 24px 0 48px; }
