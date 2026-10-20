@@ -33,6 +33,7 @@
     if (status === 0) err.message = "We couldn't reach NoteFusion. Check your connection and try again.";
     if (status === 429) err.message = "That's a lot of requests at once. Wait a moment and try again.";
     err.code = body && body.code;
+    err.status = status;
     try { if (message && message !== err.message) console.warn("[notefusion]", status, err.code, message); } catch (e) { /* ignore */ }
     return err;
   }
@@ -75,6 +76,28 @@
   function sayUpload(fraction) { say("Uploading… " + Math.round(fraction * 100) + "%"); }
   function track(name) { try { if (window.nfTrack) window.nfTrack(name); } catch (e) { /* never in the way */ } }
   function open(job) { location.href = "/app/?preview=" + encodeURIComponent(job.jobId); }
+  /**
+   * A take or file whose send failed on the way (no connection, a server fault, too many at once) is kept, with a
+   * "Send it again" beside the note, instead of being lost with the error (board l-ux-high/06e). A refusal that
+   * sending again cannot change (the one preview used) is explained as before.
+   */
+  var kept = null;
+  function sendTake(blob, name) {
+    kept = null;
+    busy(true); sayUpload(0);
+    upload("/api/preview", audioForm(blob, name), sayUpload).then(open).catch(function (err) {
+      busy(false);
+      if (!err.status || err.status === 408 || err.status === 429 || err.status >= 500) { kept = { blob: blob, name: name }; sayKept(); }
+      else explain(err);
+    });
+  }
+  function sayKept() {
+    say("Couldn't send it. Your take is kept.", "error");
+    var again = document.createElement("button");
+    again.type = "button"; again.className = "btn btn-primary try-again"; again.textContent = "Send it again";
+    again.addEventListener("click", function () { if (kept) sendTake(kept.blob, kept.name); });
+    status.appendChild(again);
+  }
   function explain(err) {
     if (err.code === "PREVIEW_LIMIT_REACHED") { say(err.message + " ", "info"); var a = document.createElement("a"); a.href = "/app"; a.textContent = "Create a free account"; status.appendChild(a); return; }
     say(err.message || "Something went wrong. Try again.", "error");
@@ -175,10 +198,9 @@
     if (!f) return;
     var problem = fileProblem(f);
     if (problem) { say(problem, "error"); file.value = ""; return; }
-    busy(true); sayUpload(0);
     track("Preview started (audio)");
-    var fd = audioForm(f, f.name);
-    upload("/api/preview", fd, sayUpload).then(open).catch(function (err) { busy(false); explain(err); file.value = ""; });
+    file.value = "";
+    sendTake(f, f.name);
   });
 
   // "Record a tune" opens the same recording pop-up as the signed-in studio (assets/recorder.js):
@@ -191,11 +213,7 @@
       maxSeconds: MAX_RECORD_SEC,
       track: track,
       onError: function (text, kind) { say(kind === "short" ? text : text + " Paste a link or pick a file instead.", "error"); },
-      onTake: function (blob, name) {
-        var fd = audioForm(blob, name);
-        busy(true); sayUpload(0);
-        upload("/api/preview", fd, sayUpload).then(open).catch(function (err) { busy(false); explain(err); });
-      }
+      onTake: function (blob, name) { sendTake(blob, name); }
     });
   });
 })();

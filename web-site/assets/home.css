@@ -57,6 +57,7 @@ html { scroll-padding-top: 80px; }
 .try-status-error { color: var(--page-bad-fg); }
 .try-status-info { color: var(--page-blue-dark); }
 .try-status a { font-weight: 600; }
+.try-status .try-again { display: flex; min-height: 44px; margin-top: 10px; }
 .try-note { color: var(--page-muted); font-size: 14px; }
 .hero-apps { display: flex; align-items: center; gap: 12px; margin-top: 24px; color: var(--page-muted); font-size: 14px; }
 

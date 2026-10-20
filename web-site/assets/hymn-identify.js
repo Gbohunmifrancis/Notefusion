@@ -137,6 +137,19 @@
     track("error;code=" + (code || (status ? "HTTP " + status : "network")));
   }
 
+  /**
+   * A take that did not get through (no connection, too slow, the finder busy or a server fault) is kept, with
+   * "Send it again" under the note, instead of being lost with the error (board l-ux-high/06e). The rate limit's
+   * refusal keeps nothing: sending it again at once would only be refused again.
+   */
+  function keepTake(blob, name, statusCode) {
+    if (!(statusCode === 0 || statusCode === 408 || statusCode >= 500)) return;
+    say("Couldn't send it. Your take is kept.", "error");
+    var again = el("button", "identify-again identify-resend", "Send it again");
+    again.type = "button";
+    again.addEventListener("click", function () { send(blob, name); });
+    status.appendChild(again);
+  }
   function send(blob, name) {
     clearResult();
     showStart(false);
@@ -155,12 +168,12 @@
         return r.text().then(function (text) {
           var body = null;
           try { body = text ? JSON.parse(text) : null; } catch (e) { /* not JSON */ }
-          if (!r.ok) { failure(body && body.code, body && body.message, r.status); return; }
-          if (!body) { failure(null, null, r.status); return; }
+          if (!r.ok) { failure(body && body.code, body && body.message, r.status); keepTake(blob, name, r.status); return; }
+          if (!body) { failure(null, null, r.status); keepTake(blob, name, r.status); return; }
           render(body);
         });
       })
-      .catch(function () { failure(timedOut ? "TIMEOUT" : null, null, 0); })
+      .catch(function () { failure(timedOut ? "TIMEOUT" : null, null, 0); keepTake(blob, name, 0); })
       .then(function () { clearTimeout(timer); });
   }
 

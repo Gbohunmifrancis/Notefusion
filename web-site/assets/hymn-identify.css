@@ -48,6 +48,7 @@
 .identify-page .identify-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 6px; }
 .identify-page .identify-again { min-height: 46px; padding: 0 18px; border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; font-size: 15.5px; font-weight: 650; cursor: pointer; }
 .identify-page .identify-again:hover { border-color: var(--accent); color: var(--accent); }
+.identify-page .identify-resend { display: flex; margin-top: 10px; align-items: center; }
 .identify-page .identify-result.is-missed h2 { font-size: clamp(25px, 3.6vw, 32px); }
 
 .identify-page .identify-about { max-width: var(--measure); }

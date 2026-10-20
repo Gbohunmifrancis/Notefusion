@@ -1508,6 +1508,8 @@
       var viewToOpen = viewAsked; viewAsked = null;
       if (["library", "practice", "account"].indexOf(viewToOpen) !== -1) setView(viewToOpen);
       loadPracticeChip();
+      // A recording that did not get in last time (a closed tab, a lost connection) is offered again.
+      if (!readCheckout()) readKeptTake().then(function (k) { if (k && !submitting) offerResend(k, "A recording from earlier didn't send. It's kept on this browser.", "info"); });
       syncPush();
       if (previewId) {
         // The preview that brought this person here is now theirs: the funnel's conversion.
@@ -1787,6 +1789,7 @@
       .then(function (job) {
         if (at !== epoch) return; // signed out while it went up
         submitting = false;
+        forgetTake();
         if (again && doneMeanwhile(before)) return;
         if (!again) resetMeter();
         startJob(Object.assign({}, job, { stage: job.stage || "queued", fileName: fromMic ? null : name }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic, true, meter); });
@@ -1796,8 +1799,55 @@
         submitting = false;
         if (following) resetRetry();
         else { hide($("progress")); if (current && current.result) show($("result")); }
+        keepTake(file, name, fromMic, meter);
+        // A failure on the way (no connection, a server fault, too many at once) can simply go again; a refusal
+        // (the week's free ones, a song not paid for) waits for the purchase, which sends it on (songBought).
+        if (!following && (!err.status || err.status === 408 || err.status === 429 || err.status >= 500)) {
+          sfx.play("error");
+          offerResend({ blob: file, name: name, fromMic: fromMic, meter: meter }, "Couldn't send it. Your take is kept. " + (err.message || ""));
+          return;
+        }
         explain(err);
       });
+  }
+  /**
+   * A take or file that did not get in is kept on this browser (IndexedDB) until it goes (board l-ux-high/06e):
+   * a failed send offers "Send it again", a song paid for after a refusal sends it on, and a reload or a later visit
+   * still has it. It used to be gone with the error, and the singing with it.
+   */
+  var KEPT_DB = "nf-kept-take", KEPT_FOR_MS = 6 * 60 * 60 * 1000;
+  function keptStore(mode, op) {
+    return new Promise(function (resolve) {
+      try {
+        var open = indexedDB.open(KEPT_DB, 1);
+        open.onupgradeneeded = function () { open.result.createObjectStore("take"); };
+        open.onerror = function () { resolve(null); };
+        open.onsuccess = function () {
+          try {
+            var db = open.result, tx = db.transaction("take", mode), req = op(tx.objectStore("take"));
+            tx.oncomplete = function () { db.close(); resolve(req ? req.result : null); };
+            tx.onerror = tx.onabort = function () { db.close(); resolve(null); };
+          } catch (e) { resolve(null); }
+        };
+      } catch (e) { resolve(null); }
+    });
+  }
+  function keepTake(file, name, fromMic, meter) {
+    keptStore("readwrite", function (st) { return st.put({ blob: file, name: name, fromMic: !!fromMic, meter: meter || null, at: Date.now() }, "last"); });
+  }
+  function forgetTake() { keptStore("readwrite", function (st) { return st.delete("last"); }); }
+  function readKeptTake() {
+    return keptStore("readonly", function (st) { return st.get("last"); })
+      .then(function (k) { return k && k.blob && Date.now() - k.at < KEPT_FOR_MS ? k : null; });
+  }
+  function sendKept(k) { forgetTake(); setView("transcribe"); submitAudio(k.blob, k.name, k.fromMic, true, k.meter); }
+  /** "Send it again" under a note in the studio's alert. */
+  function offerResend(k, note, kind) {
+    alertIn($("app-alert"), kind || "danger", note);
+    var again = document.createElement("button");
+    again.type = "button"; again.className = "btn btn-primary btn-sm alert-action"; again.textContent = "Send it again";
+    again.addEventListener("click", function () { hide($("app-alert")); sendKept(k); });
+    $("app-alert").appendChild(again);
   }
   /**
    * A file the server would refuse, said before it is sent: over 25 MB (the API's limit) or not audio at all.
@@ -4123,6 +4173,12 @@
     $("pro-welcome-plan").textContent = relink
       ? "Your link is back in the box. Press Transcribe to write out the whole song."
       : "One more transcription is ready: record, upload, or paste a song link.";
+    // The recording that was refused for want of it goes on with the button, not sung again.
+    if (!relink) readKeptTake().then(function (k) {
+      if (!k) return;
+      welcomeResend = k;
+      $("pro-welcome-plan").textContent = "Your recording is kept. Press Transcribe it to send it now.";
+    });
     hide($("pro-welcome-perks"));
     $("pro-welcome-go").textContent = "Transcribe it";
     welcomeReturn = document.activeElement;
@@ -4164,7 +4220,12 @@
     if (welcomeReturn && welcomeReturn.focus && welcomeReturn !== document.body) welcomeReturn.focus();
     welcomeReturn = null;
   }
-  $("pro-welcome-go").addEventListener("click", closeProWelcome);
+  var welcomeResend = null;
+  $("pro-welcome-go").addEventListener("click", function () {
+    var k = welcomeResend; welcomeResend = null;
+    closeProWelcome();
+    if (k) sendKept(k);
+  });
   $("pro-welcome").addEventListener("click", function (e) { if (e.target === $("pro-welcome")) closeProWelcome(); });
   document.addEventListener("keydown", function (e) {
     if ($("pro-welcome").classList.contains("hidden")) return;

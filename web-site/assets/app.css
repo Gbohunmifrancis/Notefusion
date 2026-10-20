@@ -486,6 +486,8 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 .try-file input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip: rect(0 0 0 0); }
 .try-file:has(input:focus-visible) { outline: 2px solid var(--blue); outline-offset: 2px; }
 #try-status { min-height: 1.3em; margin-top: 10px; }
+#try-status .try-again { display: flex; min-height: 44px; margin-top: 10px; }
+.alert .alert-action { display: flex; margin-top: 10px; min-height: 40px; }
 .try-meter { display: flex; align-items: center; gap: 8px; margin: 12px 0 0; font-weight: 600; color: var(--muted); }
 .try-meter select { width: auto; min-height: 34px; padding: 4px 10px; font-size: 0.85rem; font-weight: 600; }
 
