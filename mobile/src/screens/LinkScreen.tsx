@@ -261,6 +261,12 @@ export function LinkScreen() {
     inputRef.current?.focus();
   }
 
+  /** The failure card's way on: the card goes, and the link stays in the field to change or send again. */
+  function changeLink() {
+    reset();
+    inputRef.current?.focus();
+  }
+
   const uploadInstead = () => nav.navigate("Tabs", { screen: "Record", params: { autoPickAudio: true } });
 
   const upgradeCodes = new Set(["BILLING_SONG_PREVIEW_USED", "BILLING_FREE_TIER_LIMIT"]);
@@ -572,19 +578,28 @@ export function LinkScreen() {
             title={wantsUpgrade ? "Your free songs are used" : linkOffline ? "You're offline" : "Couldn't transcribe that"}
             message={linkOffline ? LINK_OFFLINE : state.error}
           >
+            {/* The same ways on as the pinned bar, priced and with their verbs (lib/price `limitOffer`). */}
             {wantsUpgrade ? (
               <>
                 <PillAction
-                  label="Just this song"
+                  label={offer.single ? `Buy this song · ${formatPrice(offer.single.amountMinor, offer.single.currency)}` : "Buy this song"}
                   tone="solid"
-                  onPress={() => nav.navigate("Upgrade", { reason: "limit" })}
+                  onPress={() => nav.navigate("Upgrade", { reason: "limit", planId: offer.single?.id })}
                 />
-                <PillAction label="See Pro plans" onPress={() => nav.navigate("Upgrade")} />
+                <PillAction
+                  label="See Pro"
+                  onPress={() => nav.navigate("Upgrade", offer.monthly ? { planId: offer.monthly.id } : undefined)}
+                />
               </>
             ) : (
               <PillAction label="Upload the audio instead" tone="solid" onPress={uploadInstead} />
             )}
-            <PillAction label="Try again" onPress={reset} />
+            {/* Offline, the same link is sent again; otherwise the card goes and the link is ready to change. */}
+            {linkOffline ? (
+              <PillAction label="Try again" onPress={() => void retry()} />
+            ) : (
+              <PillAction label="Change link" onPress={changeLink} />
+            )}
           </NoticeCard>
         ) : null}
 
