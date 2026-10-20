@@ -40,12 +40,15 @@ export function WelcomeScreen({ navigation }: Props) {
   const [error, setError] = useState<string | null>(null);
   /** A refusal only we can lift (a deactivated account): the note carries a mail to us. */
   const [contact, setContact] = useState<string | null>(null);
-  const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null>(null);
+  /** Undefined until the phone has said how it last signed in. */
+  const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null | undefined>(undefined);
   const emailLast = lastAuthMethod === "email";
   const choices = welcomeChoices(googleAuthConfigured, emailLast);
+  // The buttons wait, unseen, for that answer (a moment): a "Last used" chip never pops into a label already showing.
+  const methodKnown = lastAuthMethod !== undefined;
 
   useEffect(() => {
-    tokenStore.getLastAuthMethod().then(setLastAuthMethod);
+    tokenStore.getLastAuthMethod().then(setLastAuthMethod, () => setLastAuthMethod(null));
   }, []);
 
   /**
@@ -83,7 +86,7 @@ export function WelcomeScreen({ navigation }: Props) {
           <Text style={[nightText.lead, styles.tagline]}>Hear it. See it. Notate it.</Text>
         </View>
 
-        <View style={styles.actions}>
+        <View style={[styles.actions, !methodKnown && styles.waiting]} pointerEvents={methodKnown ? "auto" : "none"}>
           {error && (
             <ErrorNote
               message={error}
@@ -170,6 +173,8 @@ const styles = StyleSheet.create({
   tagline: { marginTop: 6 },
   // 6 apart, so the 44 px link rows sit close; the buttons keep their 10 (`next`).
   actions: { paddingHorizontal: 22, paddingBottom: 20, gap: 6 },
+  /** Laid out but unseen while the last way in is read. */
+  waiting: { opacity: 0 },
   next: { marginTop: 4 },
   linkRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center" },
   dot: { fontSize: 14, fontFamily: nightFonts.regular, color: night.dim },

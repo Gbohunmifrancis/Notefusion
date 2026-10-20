@@ -29,10 +29,11 @@ export function LoginScreen({ navigation, route }: Props) {
   const [contact, setContact] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
-  const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null>(null);
+  /** Undefined until the phone has said how it last signed in: Google's button waits, unseen, for its chip. */
+  const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null | undefined>(undefined);
 
   useEffect(() => {
-    tokenStore.getLastAuthMethod().then(setLastAuthMethod);
+    tokenStore.getLastAuthMethod().then(setLastAuthMethod, () => setLastAuthMethod(null));
   }, []);
 
   const canSubmit = email.trim().length > 3 && password.length > 0;
@@ -160,6 +161,7 @@ export function LoginScreen({ navigation, route }: Props) {
             badge={lastAuthMethod === "google" ? "Last used" : undefined}
             onPress={google}
             loading={googleBusy}
+            style={lastAuthMethod === undefined && styles.waiting}
           />
         </>
       )}
@@ -182,5 +184,7 @@ const styles = StyleSheet.create({
   forgotText: { fontSize: 13.5, fontFamily: nightFonts.medium, color: night.ice },
   error: { marginTop: 18 },
   submit: { marginTop: 22 },
+  /** Laid out but unseen while the last way in is read. */
+  waiting: { opacity: 0 },
   footer: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center", marginTop: 12 },
 });
