@@ -939,6 +939,19 @@ export function ResultScreen({ route, navigation }: Props) {
     void commitNotes(original);
   }
 
+  /** Every fix made by hand goes at once and cannot be brought back, so it asks first, as a delete does. */
+  function confirmDiscard() {
+    showDialog({
+      title: correctedCount === 1 ? "Discard your correction?" : `Discard ${correctedCount} corrections?`,
+      message: "The notes go back to how they were heard. This can't be undone.",
+      icon: "retry",
+      actions: [
+        { label: "Keep them", style: "cancel" },
+        { label: "Discard", style: "destructive", onPress: discardCorrections },
+      ],
+    });
+  }
+
   /**
    * Four-part harmony, only when asked: a hummed or sung line is one voice, and alto, tenor
    * and bass under it are an arrangement, not a transcription. A saved sheet keeps them.
@@ -1374,7 +1387,7 @@ export function ResultScreen({ route, navigation }: Props) {
       actions.push({
         label: "Discard corrections",
         icon: "retry",
-        onPress: discardCorrections,
+        onPress: confirmDiscard,
       });
     }
     if (savedId) {
