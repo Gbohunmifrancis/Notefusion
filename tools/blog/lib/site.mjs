@@ -36,7 +36,7 @@ export const OSMD = {
 };
 
 /** Cache-busting versions for the hand-written assets the generated pages load (/assets is cached a week). */
-export const ASSET_VERSION = { blogCss: 7, sitePagesCss: 4, hymnJs: 2, hymnsIndexJs: 3, choirJs: 3, track: 5, themeBoot: 2, siteTheme: 1, blogJs: 1, blogTrack: 1, recorderJs: 4, backJs: 1, recorderCss: 3, hymnIdentifyJs: 2, hymnIdentifyCss: 2, seasonJs: 2 };
+export const ASSET_VERSION = { blogCss: 7, sitePagesCss: 4, hymnJs: 2, hymnsIndexJs: 4, choirJs: 3, track: 5, themeBoot: 2, siteTheme: 1, blogJs: 1, blogTrack: 1, recorderJs: 4, backJs: 1, recorderCss: 3, hymnIdentifyJs: 2, hymnIdentifyCss: 2, seasonJs: 2 };
 
 /** The call to action every post and hymn page ends with. */
 export const APP_URL = "/app";
