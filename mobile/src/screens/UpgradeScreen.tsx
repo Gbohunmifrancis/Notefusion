@@ -264,7 +264,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
     } finally {
       if (mounted.current) setRefreshing(false);
     }
-  }, [refreshSubscription]);
+  }, [refreshSubscription, play, playOffers]);
 
   useEffect(() => {
     load();
