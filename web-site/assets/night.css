@@ -661,8 +661,12 @@ body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
 .lib-file { min-height: 44px; font-size: 16px; }
 .choir-join input { min-height: 44px; font-size: 16px; }
 /* Text buttons keep their look and take a 44 px target from an invisible layer, as .field-error's link does. */
-#auth-back, #link-upload, #p-notify-no, #acct-photo-remove, #choir-invite-new { position: relative; }
-#auth-back::after, #link-upload::after, #p-notify-no::after, #acct-photo-remove::after, #choir-invite-new::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
+#auth-back, #link-upload, #p-notify-no, #acct-photo-remove, #choir-invite-new, .folder-back { position: relative; }
+#auth-back::after, #link-upload::after, #p-notify-no::after, #acct-photo-remove::after, #choir-invite-new::after, .folder-back::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
+/* The sheet's verdicts and what was off, the parts' voices, and a checkbox's row (Loop bars, Play with the song). */
+.verdict, .issue, .mix-voice button { min-height: 44px; }
+.player .group label:has(> input[type=checkbox]), #backing-group { min-height: 44px; }
+.player input[type=checkbox] { width: 20px; height: 20px; }
 /* The account menu's rows and the guest bar's "How it works". */
 .user-menu-item, .user-menu-row, .side-help { min-height: 44px; }
 /* "Beats in a bar" keeps to one line; the select gives way instead. */
@@ -694,5 +698,10 @@ body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
   .player select, .player input[type=number] { min-height: 32px; font-size: 0.875rem; }
   .result-views .tab { padding-inline: 14px; }
   .user-menu-item, .user-menu-row, .side-help { min-height: 0; }
+  .verdict, .mix-voice button { min-height: 40px; }
+  .issue { min-height: 34px; }
+  .player .group label:has(> input[type=checkbox]) { min-height: 0; }
+  #backing-group { min-height: 36px; }
+  .player input[type=checkbox] { width: 15px; height: 15px; }
 }
 
