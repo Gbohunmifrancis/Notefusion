@@ -265,6 +265,12 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
   --ls-track: var(--line-strong); --ls-fill: var(--blue); --ls-handle: #fff; --ls-handle-ring: var(--blue); --ls-focus: var(--blue-soft);
 }
 .studio .link-section .btn-ghost { background: var(--wash); color: var(--ink); border-color: var(--line); }
+/* The order a choice is read in (board m-ux-medium W2a): what is in it, the beats and the cost, then the action
+   last, where the thumb is: the record button, the drop zone, or Transcribe across the card. */
+#src-record { margin-top: 6px; }
+#src-record .studio-rec-stage { padding-top: 14px; }
+#src-upload { margin-top: 16px; }
+.studio > .studio-go { display: flex; width: 100%; min-height: 48px; margin-top: 16px; }
 
 /* ── Progress ────────────────────────────────────────────────────────────── */
 .stage { border-radius: 12px; }

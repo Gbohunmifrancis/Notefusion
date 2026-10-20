@@ -25,7 +25,7 @@
 <!-- Only what the first screen needs; the range picker's and the recorder's styles load at the end of the body. -->
 <link rel="stylesheet" href="/assets/theme.css?v=7">
 <link rel="stylesheet" href="/assets/app.css?v=33">
-<link rel="stylesheet" href="/assets/night.css?v=13">
+<link rel="stylesheet" href="/assets/night.css?v=14">
 </head>
 <body class="guest">
 
@@ -359,6 +359,47 @@
         <button class="source-tab" type="button" role="tab" id="src-tab-link" data-source="link" aria-controls="src-link" aria-selected="false" tabindex="-1"><svg class="ic"><use href="/assets/icons.svg#i-link"/></svg>Song link</button>
       </div>
 
+      <!-- The choices first, then what it costs, then the action (board m-ux-medium W2a): the record button or the
+           drop zone for a recording, Transcribe for a link. -->
+      <div class="source-panel" id="src-link" role="tabpanel" aria-labelledby="src-tab-link" hidden>
+      <form id="form-link" class="link-form studio-link" novalidate>
+        <label class="sr-only" for="link-url">Song link</label>
+        <span class="input-wrap providers">
+          <span class="provider-marks" aria-hidden="true"><svg class="ic"><use href="#p-youtube"/></svg><svg class="ic"><use href="#p-spotify"/></svg><svg class="ic"><use href="#p-apple"/></svg></span>
+          <input id="link-url" type="url" placeholder="YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false" required>
+        </span>
+        <button class="btn btn-glass" id="link-paste" type="button" hidden><svg class="ic"><use href="/assets/icons.svg#i-paste"/></svg>Paste</button>
+      </form>
+      <p class="small studio-status link-hint" id="link-hint" aria-live="polite"></p>
+      <p class="link-upload-row hidden" id="link-upload-row"><button class="btn-link" id="link-upload" type="button"><svg class="ic"><use href="/assets/icons.svg#i-upload"/></svg>Switch to Upload</button></p>
+      <div id="link-section"></div>
+      </div>
+
+      <div id="kind-block">
+      <div class="upload-kind studio-kind" role="radiogroup" aria-label="What is in the recording?">
+        <label><input type="radio" name="upload-kind" value="hum"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Just a voice</label>
+        <label><input type="radio" name="upload-kind" value="song" checked><svg class="ic"><use href="/assets/icons.svg#i-music"/></svg>Voice with instruments</label>
+        <label title="A choir singing in parts: soprano, alto, tenor and bass come back as they were sung"><input type="radio" name="upload-kind" value="choir"><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg>A choir in parts</label>
+        <label title="Piano or guitar: the chords as they were played, with the top line as the tune"><input type="radio" name="upload-kind" value="chords"><svg class="ic"><use href="/assets/icons.svg#i-keys"/></svg>Chords (piano, guitar)</label>
+      </div>
+      <div class="studio-opts">
+        <label class="studio-opt hidden" id="choir-band-row"><input type="checkbox" id="choir-band"> Instruments are playing too</label>
+        <label class="studio-opt hidden" id="kb-row" title="The transpose setting on your keyboard. At −4 you press A and hear F; the sheet is written in the keys you press.">Keyboard transpose
+          <select id="kb-transpose"></select></label>
+      </div>
+      </div>
+
+      <!-- Beats in a bar, on every tab: the worker cannot hear the meter yet, so a 3/4 hymn came back in 4/4. -->
+      <div class="studio-opts studio-meter">
+        <label class="studio-opt" for="meter" title="How many beats each bar holds. Not sure leaves it to us.">Beats in a bar
+          <select id="meter" data-meter></select></label>
+      </div>
+      <!-- What the next transcription costs, only when it costs something; the why behind (i). -->
+      <div class="studio-cost hidden" id="studio-cost">
+        <span class="cost-line"><span class="cost-chip" id="cost-chip"></span><button class="cost-info" id="cost-info" type="button" aria-expanded="false" aria-controls="cost-pop" aria-label="How this is counted"><svg class="ic"><use href="/assets/icons.svg#i-info"/></svg></button></span>
+        <div class="cost-pop" id="cost-pop" role="note" hidden></div>
+      </div>
+
       <div class="source-panel" id="src-record" role="tabpanel" aria-labelledby="src-tab-record">
         <div class="studio-rec-stage">
           <button class="btn btn-rec studio-rec" id="rec-btn" type="button" aria-label="Record a tune"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg></button>
@@ -377,44 +418,8 @@
       </label>
       </div>
 
-      <div id="kind-block">
-      <div class="upload-kind studio-kind" role="radiogroup" aria-label="What is in the recording?">
-        <label><input type="radio" name="upload-kind" value="hum"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Just a voice</label>
-        <label><input type="radio" name="upload-kind" value="song" checked><svg class="ic"><use href="/assets/icons.svg#i-music"/></svg>Voice with instruments</label>
-        <label title="A choir singing in parts: soprano, alto, tenor and bass come back as they were sung"><input type="radio" name="upload-kind" value="choir"><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg>A choir in parts</label>
-        <label title="Piano or guitar: the chords as they were played, with the top line as the tune"><input type="radio" name="upload-kind" value="chords"><svg class="ic"><use href="/assets/icons.svg#i-keys"/></svg>Chords (piano, guitar)</label>
-      </div>
-      <div class="studio-opts">
-        <label class="studio-opt hidden" id="choir-band-row"><input type="checkbox" id="choir-band"> Instruments are playing too</label>
-        <label class="studio-opt hidden" id="kb-row" title="The transpose setting on your keyboard. At −4 you press A and hear F; the sheet is written in the keys you press.">Keyboard transpose
-          <select id="kb-transpose"></select></label>
-      </div>
-      </div>
-
-      <div class="source-panel" id="src-link" role="tabpanel" aria-labelledby="src-tab-link" hidden>
-      <form id="form-link" class="link-form studio-link" novalidate>
-        <label class="sr-only" for="link-url">Song link</label>
-        <span class="input-wrap providers">
-          <span class="provider-marks" aria-hidden="true"><svg class="ic"><use href="#p-youtube"/></svg><svg class="ic"><use href="#p-spotify"/></svg><svg class="ic"><use href="#p-apple"/></svg></span>
-          <input id="link-url" type="url" placeholder="YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false" required>
-        </span>
-        <button class="btn btn-glass" id="link-paste" type="button" hidden><svg class="ic"><use href="/assets/icons.svg#i-paste"/></svg>Paste</button>
-        <button class="btn btn-light" id="link-submit" type="submit">Transcribe</button>
-      </form>
-      <p class="small studio-status link-hint" id="link-hint" aria-live="polite"></p>
-      <p class="link-upload-row hidden" id="link-upload-row"><button class="btn-link" id="link-upload" type="button"><svg class="ic"><use href="/assets/icons.svg#i-upload"/></svg>Switch to Upload</button></p>
-      <div id="link-section"></div>
-      </div>
-      <!-- Beats in a bar, on every tab: the worker cannot hear the meter yet, so a 3/4 hymn came back in 4/4. -->
-      <div class="studio-opts studio-meter">
-        <label class="studio-opt" for="meter" title="How many beats each bar holds. Not sure leaves it to us.">Beats in a bar
-          <select id="meter" data-meter></select></label>
-      </div>
-      <!-- What the next transcription costs, only when it costs something; the why behind (i). -->
-      <div class="studio-cost hidden" id="studio-cost">
-        <span class="cost-line"><span class="cost-chip" id="cost-chip"></span><button class="cost-info" id="cost-info" type="button" aria-expanded="false" aria-controls="cost-pop" aria-label="How this is counted"><svg class="ic"><use href="/assets/icons.svg#i-info"/></svg></button></span>
-        <div class="cost-pop" id="cost-pop" role="note" hidden></div>
-      </div>
+      <!-- Out of the form's row and still its submit button: shown on the Song link tab only (app.js selectSource). -->
+      <button class="btn btn-primary studio-go" id="link-submit" type="submit" form="form-link" hidden>Transcribe</button>
     </div>
 
     <!-- ── Working on it: the engine at work, not a grey bar ─────────── -->
@@ -983,7 +988,7 @@
 <script src="/assets/notify.js?v=2" defer></script>
 <script src="/assets/freeweek.js?v=1" defer></script>
 <script src="/assets/sse.js?v=1" defer></script>
-<script src="/assets/app.js?v=58" defer></script>
+<script src="/assets/app.js?v=59" defer></script>
 <script src="/assets/season.js?v=2" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>

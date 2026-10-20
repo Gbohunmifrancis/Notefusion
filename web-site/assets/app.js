@@ -2046,8 +2046,9 @@
       tab.tabIndex = on ? 0 : -1;
       $("src-" + s).hidden = !on;
     });
-    // What is in the recording matters for a recording or a file, not for a link.
+    // What is in the recording matters for a recording or a file, not for a link; Transcribe is the link's own action.
     $("kind-block").hidden = name === "link";
+    $("link-submit").hidden = name !== "link";
     // Until someone picks, the picker shows what this tab sends (defaultKind).
     if (!chosenKind() && name !== "link") selectKind(defaultKind(name));
     renderStudioCredits();
