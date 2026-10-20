@@ -19,6 +19,7 @@ import { Button } from "../components/Button";
 import { Sheet, SheetActions, SheetMessage, SheetTitle } from "../components/Sheet";
 import { ChoiceRow } from "../components/SheetRows";
 import { CheckoutExitSheet, type CheckoutExitAsk } from "../components/CheckoutExitSheet";
+import { Group, Row } from "../components/settings/Rows";
 import { Touchable } from "../components/Touchable";
 import { Avatar } from "../components/Avatar";
 import { PlanCardSkeleton } from "../components/Skeleton";
@@ -43,7 +44,18 @@ import { PRO_FEATURES } from "../lib/proFeatures";
 import type { AuthUser, CheckoutExit, MyProfile, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 import { tierOf } from "../lib/planTier";
-import { bestValuePlan, formatPrice, nairaNote, periodLabel, plansInOrder, webFinePrint } from "../lib/price";
+import { siteUrls } from "../lib/env";
+import {
+  bestValuePlan,
+  formatPrice,
+  nairaNote,
+  paidUntilLine,
+  payLabel,
+  periodLabel,
+  plansInOrder,
+  webFinePrint,
+  yearNote,
+} from "../lib/price";
 import {
   parseAsked,
   rememberAsked,
@@ -85,6 +97,13 @@ const RETURN_URL = "notefusion://billing/return";
 /** The checkouts this device has asked "What stopped you?" about (references, newest first). */
 const ASKED_KEY = "nf.checkoutAsked";
 
+/** Where a question about paying goes: the app's help address. */
+const HELP_EMAIL = "hello@notefusion.studio";
+
+/** The refund policy as the Terms put it (§8), said where the money is asked for. */
+const REFUND_LINE =
+  "Write to us and we answer within 14 days. We refund in full where the service failed: a transcription you paid for was never delivered, the service was unavailable for a sustained period, or you were charged twice. It goes back to the same card or account.";
+
 /** Key features displayed in the active Pro subscription hub. */
 const PRO_BENEFITS: {
   icon: IconName;
@@ -113,18 +132,6 @@ const PRO_BENEFITS: {
   },
 ];
 
-/**
- * The price as the CTA says it. A lifetime plan is bought, not rented — billing it "/mo" would
- * both misdescribe the purchase and understate what it costs, which is the one mistake on this
- * screen a buyer would be right to complain about afterwards.
- */
-function ctaPrice(plan: Plan): string {
-  const price = formatPrice(plan.amountMinor, plan.currency);
-  return plan.interval === "lifetime" || plan.interval === "single"
-    ? `${price} once`
-    : `${price}/${plan.interval === "yearly" ? "yr" : "mo"}`;
-}
-
 /** A plan as the list and the pay bar name it: the one-song purchase and the choir plans by what they are. */
 function planTitle(plan: Plan): string {
   if (plan.interval === "single") return "Just this song";
@@ -140,18 +147,6 @@ function withSingle(pro: Plan[], single: Plan[]): Plan[] {
   // An API from before the split still lists it in the main list.
   const songs = single.length > 0 ? single : pro;
   return [...pro.filter((p) => p.interval !== "single"), ...songs.filter((p) => p.interval === "single")];
-}
-
-/** Percentage a yearly plan saves over paying monthly for a year, or null. */
-function savingsPercent(monthly?: Plan, yearly?: Plan): number | null {
-  if (!monthly || !yearly) return null;
-  // Dividing one currency by another gives a number with no meaning. The list can hold both when the
-  // server does not know where the account is and offers every tier.
-  if (monthly.currency !== yearly.currency) return null;
-  const fullYear = monthly.amountMinor * 12;
-  if (fullYear <= 0) return null;
-  const pct = Math.round((1 - yearly.amountMinor / fullYear) * 100);
-  return pct > 0 ? pct : null;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -200,6 +195,13 @@ export function UpgradeScreen({ navigation, route }: Props) {
   const [busy, setBusy] = useState(false); // opening checkout
   // The choir plans' own sheet, opened from the "For choir directors" row (board l-ux-high 03a).
   const [choirOpen, setChoirOpen] = useState(false);
+  // "Questions? Help & refunds" (board m-ux-medium P4e), and what its row does once the sheet has gone.
+  const [helpOpen, setHelpOpen] = useState(false);
+  const afterHelp = useRef<(() => void) | null>(null);
+  const closeHelp = (then?: () => void) => {
+    afterHelp.current = then ?? null;
+    setHelpOpen(false);
+  };
   const [restoring, setRestoring] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // pull-to-refresh
 
@@ -519,9 +521,10 @@ export function UpgradeScreen({ navigation, route }: Props) {
     }
   }
 
-  const monthly = plans.find((p) => p.interval === "monthly");
-  const yearly = plans.find((p) => p.interval === "yearly");
-  const saving = savingsPercent(monthly, yearly);
+  // One badge on the paywall (board m-ux-medium P4a): "Best value" on the plan it opens on, Pro's year, when the year
+  // does save on paying by the month.
+  const bestValue = bestValuePlan(plans);
+  const bestValueId = bestValue && yearNote(bestValue, plans) ? bestValue.id : undefined;
   const selected = plans.find((p) => p.id === selectedId) ?? choirPlans.find((p) => p.id === selectedId);
   const buyingChoir = choirPlans.some((p) => p.id === selectedId);
   // A member who chose "Add more Pro time" sees the plans: each payment covers one period, and a
@@ -734,10 +737,10 @@ export function UpgradeScreen({ navigation, route }: Props) {
               <PlanOption
                 plan={singlePlan}
                 priceLabel={offerFor(singlePlan, playOffers)?.price}
+                viaPlay={play}
                 title={planTitle(singlePlan)}
                 note="One more transcription, any recording or song link. No subscription."
                 selected={singlePlan.id === selectedId}
-                badge="No subscription"
                 onSelect={() => setSelectedId(singlePlan.id)}
               />
             ) : null}
@@ -747,12 +750,11 @@ export function UpgradeScreen({ navigation, route }: Props) {
                 key={plan.id}
                 plan={plan}
                 priceLabel={offerFor(plan, playOffers)?.price}
+                viaPlay={play}
                 selected={plan.id === selectedId}
-                badge={
-                  plan.interval === "yearly" && saving
-                    ? `Save ${saving}%`
-                    : undefined
-                }
+                bestValue={plan.id === bestValueId}
+                // The year in money (board m-ux-medium P4b); Google Play's own prices say their own.
+                note={play ? undefined : yearNote(plan, plans) ?? undefined}
                 onSelect={() => setSelectedId(plan.id)}
               />
             ))}
@@ -776,10 +778,10 @@ export function UpgradeScreen({ navigation, route }: Props) {
                   <Text style={styles.planName}>For choir directors</Text>
                   <Text style={styles.planNote}>
                     {buyingChoir && selected
-                      ? `${planTitle(selected)} · ${selectedPrice} ${periodLabel(selected.interval)}`
+                      ? `${planTitle(selected)} · ${selectedPrice} ${periodLabel(selected.interval, play)}`
                       : `Pro for you and ${choirFrom.choirSeats ?? 25} singers · from ${
                           offerFor(choirFrom, playOffers)?.price ?? formatPrice(choirFrom.amountMinor, choirFrom.currency)
-                        } ${periodLabel(choirFrom.interval)}`}
+                        } ${periodLabel(choirFrom.interval, play)}`}
                   </Text>
                 </View>
                 <Icon name="chevron" size={18} color={colors.textFaint} />
@@ -794,6 +796,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
                     key={plan.id}
                     plan={plan}
                     priceLabel={offerFor(plan, playOffers)?.price}
+                    viaPlay={play}
                     selected={plan.id === selectedId}
                     onSelect={() => setSelectedId(plan.id)}
                   />
@@ -814,6 +817,18 @@ export function UpgradeScreen({ navigation, route }: Props) {
                 <Button label="Restore purchases" variant="text" onPress={() => void restore()} loading={restoring} />
               </View>
             ) : null}
+
+            {/* A quiet row, not a link in the fine print: the pay bar keeps its one action. */}
+            <Touchable
+              onPress={() => setHelpOpen(true)}
+              style={styles.helpRow}
+              scaleTo={0.99}
+              accessibilityLabel="Questions? Help and refunds"
+            >
+              <Icon name="help" size={20} color={colors.icon} />
+              <Text style={styles.helpRowText}>Questions? Help & refunds</Text>
+              <Icon name="chevron" size={16} color={colors.textFaint} />
+            </Touchable>
           </>
         )}
 
@@ -841,6 +856,40 @@ export function UpgradeScreen({ navigation, route }: Props) {
           }}
         />
 
+        <Sheet
+          visible={helpOpen}
+          onClose={() => closeHelp()}
+          onClosed={() => {
+            const run = afterHelp.current;
+            afterHelp.current = null;
+            run?.();
+          }}
+        >
+          <SheetTitle>Questions about paying?</SheetTitle>
+          <SheetMessage>{REFUND_LINE}</SheetMessage>
+          <Group cardStyle={styles.helpGroup}>
+            <Row
+              icon="mail"
+              label="Email us"
+              value={HELP_EMAIL}
+              onPress={() =>
+                closeHelp(() =>
+                  void Linking.openURL(
+                    `mailto:${HELP_EMAIL}?subject=${encodeURIComponent("Help with a payment")}`,
+                  ).catch(() => undefined),
+                )
+              }
+            />
+            <Row
+              icon="terms"
+              label="Refunds and terms"
+              external
+              onPress={() => closeHelp(() => void WebBrowser.openBrowserAsync(siteUrls.terms).catch(() => undefined))}
+            />
+            <Row icon="help" label="FAQ & Help" chevron onPress={() => closeHelp(() => navigation.navigate("Help"))} />
+          </Group>
+        </Sheet>
+
         <Sheet visible={choirOpen} onClose={() => setChoirOpen(false)}>
           <SheetTitle>For choir directors</SheetTitle>
           <SheetMessage>One director pays and the whole choir is Pro, with one shared library.</SheetMessage>
@@ -849,6 +898,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
               key={plan.id}
               plan={plan}
               priceLabel={offerFor(plan, playOffers)?.price}
+              viaPlay={play}
               selected={plan.id === selectedId}
               onSelect={() => {
                 setSelectedId(plan.id);
@@ -865,10 +915,15 @@ export function UpgradeScreen({ navigation, route }: Props) {
           {selected && selectedPrice ? (
             <View style={styles.payLine}>
               <Text style={styles.payPlan} numberOfLines={1}>{planTitle(selected)}</Text>
-              <Text style={styles.payPrice}>
-                {selectedPrice}
-                <Text style={styles.planPeriod}> {periodLabel(selected.interval)}</Text>
-              </Text>
+              {/* On the website's checkout, how long it lasts (board m-ux-medium P4b); Google Play's own labels stay. */}
+              {play ? (
+                <Text style={styles.payPrice}>
+                  {selectedPrice}
+                  <Text style={styles.planPeriod}> {periodLabel(selected.interval, play)}</Text>
+                </Text>
+              ) : (
+                <Text style={styles.payUntil}>{paidUntilLine(selected, membership, new Date())}</Text>
+              )}
             </View>
           ) : null}
           <Button
@@ -880,12 +935,9 @@ export function UpgradeScreen({ navigation, route }: Props) {
                     subscription?.choirRole === "director",
                   )
                 : selected
-                ? buyingSong
-                  ? `Buy this song — ${formatPrice(selected.amountMinor, selected.currency)}`
-                  : buyingChoir
-                    ? `${subscription?.choirRole === "director" ? "Add choir time" : "Start your choir"} — ${ctaPrice(selected)}`
-                    : `Upgrade — ${ctaPrice(selected)}`
-                : "Upgrade"
+                  // What one payment buys, on the website's checkout (board m-ux-medium P4d).
+                  ? payLabel(selected)
+                  : "Upgrade"
             }
             icon={buyingSong ? "song" : buyingChoir ? "choir" : "pro"}
             onPress={() => void handleUpgrade()}
@@ -1304,11 +1356,13 @@ function CancelReasonModal({
 function ChoirPlanOption({
   plan,
   priceLabel,
+  viaPlay,
   selected,
   onSelect,
 }: {
   plan: Plan;
   priceLabel?: string;
+  viaPlay: boolean;
   selected: boolean;
   onSelect: () => void;
 }) {
@@ -1316,31 +1370,34 @@ function ChoirPlanOption({
     <PlanOption
       plan={plan}
       priceLabel={priceLabel}
+      viaPlay={viaPlay}
       title={planTitle(plan)}
       note={`Pro for you and up to ${plan.choirSeats ?? 25} singers, one shared library.`}
       selected={selected}
-      badge={plan.interval === "yearly" ? "Whole choir" : undefined}
       onSelect={onSelect}
     />
   );
 }
 
-/** A selectable plan row with a radio, price, and optional savings badge. */
+/** A selectable plan row with a radio and price, and the "Best value" tab on the plan the paywall opens on. */
 function PlanOption({
-
   plan,
   selected,
-  badge,
+  bestValue = false,
   title,
   note,
   priceLabel,
+  viaPlay,
   onSelect,
 }: {
   plan: Plan;
   selected: boolean;
-  badge?: string;
+  /** The one badge on the paywall: a small tab on the card's top edge, so the plan's name keeps its line. */
+  bestValue?: boolean;
   /** The price as Google Play shows it, on Android, instead of the plan's own. */
   priceLabel?: string;
+  /** Sold through Google Play, which renews: the price is a rate there, and what one payment buys on the website. */
+  viaPlay: boolean;
   /** Overrides the plan's own name, as "Just this song" does for the one-song purchase. */
   title?: string;
   /** A plain line under the price. */
@@ -1349,45 +1406,48 @@ function PlanOption({
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const period = periodLabel(plan.interval);
+  const period = periodLabel(plan.interval, viaPlay);
 
   return (
-    <Touchable
-      onPress={onSelect}
-      style={[styles.planOption, selected && styles.planOptionSelected]}
-      // Flat surface fill and no shadow, so the ripple can be clipped to the card's
-      // own corner radius rather than painting a square over it.
-      radius={radii.lg}
-      accessibilityRole="radio"
-      accessibilityState={{ selected }}
-      accessibilityLabel={`${title ?? plan.name}, ${priceLabel ?? formatPrice(plan.amountMinor, plan.currency)} ${period}`}
-    >
-      <View
-        style={[styles.radio, selected && styles.radioSelected]}
+    <View>
+      <Touchable
+        onPress={onSelect}
+        style={[styles.planOption, selected && styles.planOptionSelected]}
+        // Flat surface fill and no shadow, so the ripple can be clipped to the card's
+        // own corner radius rather than painting a square over it.
+        radius={radii.lg}
+        accessibilityRole="radio"
+        accessibilityState={{ selected }}
+        accessibilityLabel={`${title ?? plan.name}, ${priceLabel ?? formatPrice(plan.amountMinor, plan.currency)} ${period}${bestValue ? ", best value" : ""}`}
       >
-        {selected && <View style={styles.radioDot} />}
-      </View>
-
-      <View style={styles.planInfo}>
-        <View style={styles.planTitleRow}>
-          <Text style={styles.planName}>{title ?? plan.name}</Text>
-          {badge && (
-            <View style={styles.saveBadge}>
-              <Text style={styles.saveBadgeText}>{badge}</Text>
-            </View>
-          )}
+        <View
+          style={[styles.radio, selected && styles.radioSelected]}
+        >
+          {selected && <View style={styles.radioDot} />}
         </View>
-        <Text style={styles.planPrice}>
-          {priceLabel ?? formatPrice(plan.amountMinor, plan.currency)}
-          <Text style={styles.planPeriod}> {period}</Text>
-        </Text>
-        {note ? <Text style={styles.planNote}>{note}</Text> : null}
-      </View>
 
-      {selected && (
-        <Icon name="check" size={20} color={colors.link} />
-      )}
-    </Touchable>
+        <View style={styles.planInfo}>
+          <View style={styles.planTitleRow}>
+            <Text style={styles.planName}>{title ?? plan.name}</Text>
+          </View>
+          <Text style={styles.planPrice}>
+            {priceLabel ?? formatPrice(plan.amountMinor, plan.currency)}
+            <Text style={styles.planPeriod}> {period}</Text>
+          </Text>
+          {note ? <Text style={styles.planNote}>{note}</Text> : null}
+        </View>
+
+        {selected && (
+          <Icon name="check" size={20} color={colors.link} />
+        )}
+      </Touchable>
+      {/* Beside the card rather than in it: the card clips to its corners for the ripple, and the tab stands proud. */}
+      {bestValue ? (
+        <View style={styles.bestTab} pointerEvents="none">
+          <Text style={styles.bestTabText}>Best value</Text>
+        </View>
+      ) : null}
+    </View>
   );
 }
 
@@ -1581,17 +1641,22 @@ const makeStyles = (c: Palette, s: Shadows) =>
       color: c.text,
       fontSize: 15,
     },
-    saveBadge: {
-      backgroundColor: c.success,
+    /** "Best value", in the selected blue, on the card's top edge (board m-ux-medium P4a). */
+    bestTab: {
+      position: "absolute",
+      top: -11,
+      right: spacing.lg,
+      backgroundColor: c.accentSoftOpaque,
+      borderWidth: 1,
+      borderColor: c.accent,
       borderRadius: radii.pill,
-      paddingHorizontal: spacing.sm,
-      paddingVertical: 2,
+      paddingHorizontal: 10,
+      paddingVertical: 3,
     },
-    saveBadgeText: {
-      ...typography.caption,
-      color: c.onAccent,
-      fontSize: 10,
+    bestTabText: {
       fontFamily: fonts.bold,
+      fontSize: 12,
+      color: c.link,
     },
     planPrice: {
       ...typography.heading,
@@ -1603,10 +1668,13 @@ const makeStyles = (c: Palette, s: Shadows) =>
       color: c.textMuted,
       fontSize: 13,
     },
+    // The plans' notes and the terms under them are read, not glanced at: 13.5 in the muted grey (board m-ux-medium P4c).
     planNote: {
-      ...typography.caption,
+      fontFamily: fonts.regular,
+      fontSize: 13.5,
+      lineHeight: 19,
       color: c.textMuted,
-      marginTop: 2,
+      marginTop: 3,
     },
 
     // ── The pay bar: the canvas under a hairline, pinned to the bottom ────────
@@ -1634,6 +1702,11 @@ const makeStyles = (c: Palette, s: Shadows) =>
       color: c.text,
       fontSize: 15,
     },
+    payUntil: {
+      fontFamily: fonts.semibold,
+      fontSize: 13.5,
+      color: c.text,
+    },
     nairaLine: {
       ...typography.caption,
       color: c.textMuted,
@@ -1642,17 +1715,38 @@ const makeStyles = (c: Palette, s: Shadows) =>
       paddingHorizontal: spacing.md,
     },
     finePrint: {
-      ...typography.caption,
-      color: c.textFaint,
+      fontFamily: fonts.regular,
+      fontSize: 13.5,
+      lineHeight: 19,
+      color: c.textMuted,
       textAlign: "center",
-      fontSize: 11,
-      lineHeight: 16,
       marginTop: spacing.md,
-      paddingHorizontal: spacing.lg,
+      paddingHorizontal: spacing.sm,
     },
     restoreRow: {
       alignItems: "center",
       marginTop: spacing.sm,
+    },
+    /** "Questions? Help & refunds": a 52 px row between hairlines, under the terms. */
+    helpRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+      minHeight: 52,
+      marginTop: 14,
+      paddingHorizontal: spacing.xs,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderColor: c.border,
+    },
+    helpRowText: {
+      flex: 1,
+      fontFamily: fonts.medium,
+      fontSize: 15,
+      color: c.text,
+    },
+    helpGroup: {
+      backgroundColor: c.sheetRow,
     },
 
     // ── Confirming a payment ────────────────────────────────────────────────
@@ -1760,7 +1854,7 @@ const makeStyles = (c: Palette, s: Shadows) =>
       ...typography.caption,
       fontSize: 11,
       fontFamily: fonts.bold,
-      color: c.premiumDeep,
+      color: c.premiumText,
     },
     memberDivider: {
       height: 1,

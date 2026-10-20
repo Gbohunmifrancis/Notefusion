@@ -3,7 +3,8 @@
  * share links, share with the choir, file in a folder (or a new one), rename, keep offline, delete. One
  * implementation on `lib/sheetActions`, so both lists act and read the same; each keeps its own list, which this
  * updates in place. `element` holds the sheets these open (the one sheet's actions, New folder, Rename): render it
- * once in the screen.
+ * once in the screen. A delete is held behind an Undo toast (board m-ux-medium P2a): each row wraps itself in
+ * `FoldAway` with `foldProps(id)`, so it folds away, and unfolds where it was on Undo.
  */
 
 import React, { useMemo, useRef, useState } from "react";
@@ -12,13 +13,15 @@ import { Button } from "../Button";
 import { Sheet, SheetActions, SheetTitle } from "../Sheet";
 import { TextField } from "../TextField";
 import { SheetActionsSheet } from "./SheetActionsSheet";
+import { FOLD_MS } from "../FoldAway";
+import { putBack, takeOut } from "../../lib/heldDelete";
 import { showDialog } from "../../lib/dialog";
 import { useSubscription } from "../../lib/subscription";
 import { useOfflineLibrary } from "../../lib/offlineLibrary";
 import { folderNamed } from "../../lib/savedSheet";
 import {
   askToDelete,
-  deleteSheets,
+  deleteWithUndo,
   fileSheets,
   keepSheetOffline,
   renameSheet,
@@ -38,11 +41,11 @@ interface Options {
   reload: () => void;
   /** An action on the chosen sheets went through (the Library leaves select mode). */
   onDone?: () => void;
-  /** How deleted sheets leave the list; at once by default. Home folds the row away first. */
-  onDeleted?: (ids: ReadonlySet<string>) => void;
+  /** The actions sheet's "Select several": starts the list's selection with this sheet ticked (the Library). */
+  onSelectSeveral?: (item: SavedTranscription) => void;
 }
 
-export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: Options) {
+export function useSheetActions({ items, setItems, reload, onDone, onSelectSeveral }: Options) {
   const { subscription } = useSubscription();
   // The choir this account is in while its plan runs: sheets can be shared with it.
   const choirName = subscription?.choirName ?? null;
@@ -54,6 +57,9 @@ export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: 
   const [renaming, setRenaming] = useState<SavedTranscription | null>(null);
   const [newTitle, setNewTitle] = useState("");
   const [actionsFor, setActionsFor] = useState<SavedTranscription | null>(null);
+  /** Rows folding away after Delete, and rows Undo put back (they unfold where they were). */
+  const [leaving, setLeaving] = useState<ReadonlySet<string>>(new Set());
+  const [returning, setReturning] = useState<ReadonlySet<string>>(new Set());
   const lastActions = useRef<SavedTranscription | null>(null);
   if (actionsFor) lastActions.current = actionsFor;
   /** What a row of the actions sheet asked for: run once the sheet has gone (iOS shows one modal at a time). */
@@ -142,14 +148,45 @@ export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: 
     });
   }
 
+  /** One confirm, then the rows fold away and the delete is held behind "… deleted · Undo". */
   function confirmDelete(targets: SavedTranscription[]) {
-    askToDelete(targets, async () => {
-      const ids = new Set(targets.map((t) => t.id));
-      if (onDeleted) onDeleted(ids);
-      else setItems((prev) => prev.filter((t) => !ids.has(t.id)));
-      onDone?.();
-      if (!(await deleteSheets(targets))) reload();
-    });
+    askToDelete(
+      targets,
+      () => {
+        const ids = new Set(targets.map((t) => t.id));
+        const removed = takeOut(items, ids);
+        setLeaving((prev) => new Set([...prev, ...ids]));
+        onDone?.();
+        deleteWithUndo(
+          targets,
+          () => {
+            setLeaving((prev) => new Set([...prev].filter((id) => !ids.has(id))));
+            setReturning(ids);
+            setItems((prev) => putBack(prev, removed));
+            // Unfolded by then; a row mounted later (scrolled back to) simply shows.
+            setTimeout(() => setReturning(new Set()), FOLD_MS * 2);
+          },
+          () => {
+            // Refused: the list is read again, and its rows must not fold away a second time.
+            setLeaving((prev) => new Set([...prev].filter((id) => !ids.has(id))));
+            reload();
+          },
+        );
+      },
+      { undoable: true },
+    );
+  }
+
+  /** Changes whenever a row starts folding or unfolding, for a list's `extraData`. */
+  const folding = useMemo(() => [leaving, returning] as const, [leaving, returning]);
+
+  /** How a row folds: away after Delete, back on Undo. */
+  function foldProps(id: string) {
+    return {
+      gone: leaving.has(id),
+      appear: returning.has(id),
+      onGone: () => setItems((prev) => prev.filter((t) => t.id !== id)),
+    };
   }
 
   async function rename(target: SavedTranscription, title: string) {
@@ -157,7 +194,7 @@ export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: 
     if (kept !== null) patch(new Set([target.id]), (t) => ({ ...t, title: kept }));
   }
 
-  /** Opens one sheet's actions (Home's ⋯ and long press). */
+  /** Opens one sheet's actions (the ⋯ on Home's and the Library's rows; a long press on Home's). */
   function openActions(item: SavedTranscription) {
     setActionsFor(item);
   }
@@ -182,6 +219,7 @@ export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: 
       if (one) void keepSheetOffline(one.id, keep);
     },
     onDelete: () => one && closeActions(() => confirmDelete([one])),
+    onSelectSeveral: onSelectSeveral ? () => one && closeActions(() => onSelectSeveral(one)) : undefined,
   };
 
   const element = (
@@ -243,7 +281,19 @@ export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: 
     </>
   );
 
-  return { folders, choirName, sharing, actionsFor, openActions, chooseShare, chooseFolder, confirmDelete, element };
+  return {
+    folders,
+    choirName,
+    sharing,
+    actionsFor,
+    openActions,
+    chooseShare,
+    chooseFolder,
+    confirmDelete,
+    foldProps,
+    folding,
+    element,
+  };
 }
 
 const styles = StyleSheet.create({

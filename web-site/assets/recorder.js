@@ -3,9 +3,11 @@
  * One panel serves the home page, the guest box and the signed-in studio, so recording looks
  * and works the same wherever "Record a tune" is pressed. Plain script, no build step.
  *
- *   NfRecorder.open({ maxSeconds: 30, onTake: function (blob, name, seconds) {…}, onError: function (text, kind) {…} })
+ *   NfRecorder.open({ maxSeconds: 30, onTake: function (blob, name, seconds, meter) {…}, onError: function (text, kind) {…} })
  *
  * `useLabel` names the button that sends the take ("Transcribe this take" when it is not given).
+ * `meter: true` asks "Beats in a bar" in the review (assets/meter.js, starting on Not sure each time the panel is opened):
+ * the singer has just sung it and knows whether it went in threes. onTake then gets the meter named ("3/4"), or null.
  * `onError` gets a plain sentence and a kind ("unsupported" | "blocked" | "nomic" | "busy" | "short"), so the page can add
  * its own way out ("Upload a file instead."). `sounds(name)` ("start" | "stop" | "error") and
  * `track(name)` are optional hooks. */
@@ -40,20 +42,22 @@
           "</div>" +
         "</div>" +
         '<div class="nf-rec-review" hidden>' +
+          // Discard is a quiet word at the top left, as a sheet's Cancel sits, away from the thumb's path to Transcribe.
+          '<button class="nf-rec-btn nf-rec-text nf-rec-discard" type="button">Discard</button>' +
           '<div class="nf-rec-orb done">' + ICONS.check + "</div>" +
           '<h2 class="nf-rec-heading" id="nf-rec-review-title">Here’s your take</h2>' +
           '<p class="nf-rec-time"><span class="nf-rec-length">0:00</span><span class="nf-rec-muted"> recorded</span></p>' +
           '<audio class="nf-rec-audio" controls preload="auto"></audio>' +
           '<p class="nf-rec-lead">Listen back. If it’s the phrase you meant, send it off; otherwise record it again.</p>' +
+          '<label class="nf-rec-opt" hidden>Beats in a bar <select class="nf-rec-beats"></select></label>' +
           '<div class="nf-rec-actions">' +
-            '<button class="nf-rec-btn nf-rec-ghost nf-rec-discard" type="button">Discard</button>' +
             '<button class="nf-rec-btn nf-rec-ghost nf-rec-again" type="button">' + ICONS.restart + "Record again</button>" +
             '<button class="nf-rec-btn nf-rec-primary nf-rec-use" type="button">' + ICONS.wave + "Transcribe this take</button>" +
           "</div>" +
         "</div>" +
       "</div>";
     document.body.appendChild(panel);
-    ["live", "review", "elapsed", "max", "meter", "length", "audio", "cancel", "stop", "discard", "again", "use"].forEach(function (k) { els[k] = panel.querySelector(".nf-rec-" + k); });
+    ["live", "review", "elapsed", "max", "meter", "length", "audio", "opt", "beats", "cancel", "stop", "discard", "again", "use"].forEach(function (k) { els[k] = panel.querySelector(".nf-rec-" + k); });
     for (var i = 0; i < 28; i++) { var bar = document.createElement("span"); els.meter.appendChild(bar); meterBars.push(bar); }
     els.stop.addEventListener("click", stopRecording);
     els.cancel.addEventListener("click", function () {
@@ -65,9 +69,10 @@
     els.use.addEventListener("click", function () {
       if (!rec.blob) return;
       var blob = rec.blob, name = rec.name, seconds = rec.seconds, opts = rec.opts;
+      var meter = !els.opt.hidden && window.NfMeter ? window.NfMeter.chosen(els.beats) : null;
       close();
       hook(opts, "track", "Recording sent");
-      if (opts.onTake) opts.onTake(blob, name, seconds);
+      if (opts.onTake) opts.onTake(blob, name, seconds, meter);
     });
     document.addEventListener("keydown", function (ev) {
       if (panel.hidden) return;
@@ -75,7 +80,7 @@
       if (ev.key !== "Tab") return;
       // Focus stays inside the dialog: Tab from the last control wraps to the first and back.
       var pane = els.live.hidden ? els.review : els.live;
-      var stops = Array.prototype.filter.call(pane.querySelectorAll("button, audio"), function (el) { return !el.disabled; });
+      var stops = Array.prototype.filter.call(pane.querySelectorAll("button, audio, select"), function (el) { return !el.disabled && !el.closest("[hidden]"); });
       if (!stops.length) return;
       var first = stops[0], last = stops[stops.length - 1], active = document.activeElement;
       if (ev.shiftKey && (active === first || !panel.contains(active))) { ev.preventDefault(); last.focus(); }
@@ -174,6 +179,8 @@
     var maxSec = opts.maxSeconds > 0 ? opts.maxSeconds : 180;
     rec.opts = opts; rec.discard = false; rec.opening = true;
     els.use.innerHTML = ICONS.wave; els.use.appendChild(document.createTextNode(opts.useLabel || "Transcribe this take"));
+    els.opt.hidden = !(opts.meter && window.NfMeter);
+    if (!els.opt.hidden) window.NfMeter.fill(els.beats);
     hook(opts, "track", "Recording started");
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } }).then(function (stream) {
       rec.opening = false;
@@ -210,5 +217,13 @@
     }).catch(function (err) { rec.opening = false; fail(opts, micKind(err), micProblem(err)); });
   }
 
-  window.NfRecorder = { open: start, isRecording: function () { return !!(rec.recorder && rec.recorder.state === "recording"); }, micProblem: micProblem };
+  /** Opening the panel starts "Beats in a bar" on Not sure: the meter belongs to the piece, so it is never carried over
+   *  (Record again keeps it, as the same piece). */
+  function open(opts) {
+    build();
+    if (window.NfMeter) window.NfMeter.reset(els.beats);
+    start(opts);
+  }
+
+  window.NfRecorder = { open: open, isRecording: function () { return !!(rec.recorder && rec.recorder.state === "recording"); }, micProblem: micProblem };
 })();

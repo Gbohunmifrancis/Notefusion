@@ -33,6 +33,7 @@ import { VOICES, type VoiceName } from "../lib/choir";
 import { acknowledgeGrade } from "../lib/practiceReward";
 import { GradeMarks } from "./GradeMarks";
 import { ProblemNote } from "./ProblemNote";
+import { MarkingBar } from "./practice/MarkingBar";
 
 interface Props {
   melody: readonly NoteEvent[];
@@ -200,7 +201,10 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
           disabled={notes.length === 0}
         />
       ) : phase === "grading" ? (
-        <Button label="Marking your take…" icon="waiting" loading />
+        <>
+          <Button label="Marking your take…" icon="waiting" loading />
+          <MarkingBar />
+        </>
       ) : (
         <View style={styles.live}>
           <Text style={styles.liveLabel}>{phase === "leadin" ? `Starting note… sing in ${countdown}` : "Sing!"}</Text>
@@ -225,7 +229,7 @@ const makeStyles = (c: Palette) =>
     title: { ...typography.heading, color: c.text, fontSize: 16, fontFamily: fonts.bold },
     hint: { ...typography.body, color: c.textMuted, fontSize: 13, lineHeight: 20 },
     proTag: { marginLeft: "auto", flexDirection: "row", alignItems: "center", gap: 3, backgroundColor: c.premiumSoft, borderRadius: radii.pill, paddingHorizontal: 8, paddingVertical: 2 },
-    proTagText: { ...typography.caption, color: c.premiumDeep, fontFamily: fonts.semibold, fontSize: 10 },
+    proTagText: { ...typography.caption, color: c.premiumText, fontFamily: fonts.semibold, fontSize: 10 },
     voiceRow: { flexDirection: "row", gap: spacing.xs, flexWrap: "wrap" },
     voiceChip: { paddingVertical: 6, paddingHorizontal: spacing.md, borderRadius: radii.pill, backgroundColor: c.surface, borderWidth: 1, borderColor: c.border },
     voiceChipOn: { backgroundColor: c.ink, borderColor: c.ink },

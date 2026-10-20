@@ -3,7 +3,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Icon } from "../Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Touchable } from "../Touchable";
-import { motion, typography, type Palette } from "../../design/theme";
+import { fonts, motion, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import { clamp, formatTime, useSeekDrag, type Practice } from "./usePractice";
 import { ProblemNote } from "../ProblemNote";
@@ -13,18 +13,23 @@ export const DOCK_CLEARANCE = 112;
 
 /**
  * The player docked over the bottom of the sheet: play, a scrubber with mono times,
- * and the way into Rehearse. The audio is always the piano rendering of the notes —
- * the only source a sheet on the phone has — so there is no source switch.
+ * and the sheet's one labelled next step, Practise (board m-ux-medium P1a): Learn my part when the sheet has
+ * parts, else Rehearse's loop — what the first-open toast offers, kept on screen after it goes. The audio is
+ * always the piano rendering of the notes — the only source a sheet on the phone has — so there is no source switch.
  */
 export function PlayerDock({
   practice,
-  onRehearse,
+  onPractise,
   lift = 0,
+  onHeight,
 }: {
   practice: Practice;
-  onRehearse: () => void;
+  /** Learn my part, or Rehearse for a sheet without parts (ResultScreen `practiseNow`). */
+  onPractise: () => void;
   /** Raised this far above its place, over a card pinned under it (a guest's "Keep this sheet"). */
   lift?: number;
+  /** The dock's height as laid out, for what floats over it (an unsaved sheet's Save to Library). */
+  onHeight?: (height: number) => void;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -35,7 +40,10 @@ export function PlayerDock({
   const played = dragFraction ?? (duration > 0 ? clamp(position / duration, 0, 1) : 0);
 
   return (
-    <View style={[styles.dock, { bottom: insets.bottom + 10 + lift }]}>
+    <View
+      style={[styles.dock, { bottom: insets.bottom + 10 + lift }]}
+      onLayout={onHeight ? (e) => onHeight(Math.round(e.nativeEvent.layout.height)) : undefined}
+    >
       <View style={styles.row}>
         <Touchable
           onPress={() => void practice.togglePlay()}
@@ -78,14 +86,16 @@ export function PlayerDock({
           </View>
         </View>
 
+        {/* Button's secondary look at 44 px, in the dock's glass; the scrubber gives up the room and keeps its drag. */}
         <Touchable
-          onPress={onRehearse}
-          style={styles.rehearse}
-          radius={20}
+          onPress={onPractise}
+          style={styles.practise}
+          radius={22}
           accessibilityRole="button"
-          accessibilityLabel="Rehearse: loop, slow down and choose the parts"
+          accessibilityLabel="Practise this tune"
         >
-          <Icon name="rehearse" size={20} color={colors.text} />
+          <Icon name="rehearse" size={18} color={colors.text} />
+          <Text style={styles.practiseLabel}>Practise</Text>
         </Touchable>
       </View>
       {/* The hook's error can be a platform message; the dock says it plainly instead. */}
@@ -140,15 +150,18 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.text,
     },
     times: { flexDirection: "row", justifyContent: "space-between", marginTop: 2 },
-    time: { fontFamily: typography.mono.fontFamily, fontSize: 11, color: c.textMuted },
-    rehearse: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
+    time: { fontFamily: typography.mono.fontFamily, fontSize: 12, color: c.textMuted },
+    practise: {
+      height: 44,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 7,
+      paddingLeft: 13,
+      paddingRight: 16,
+      borderRadius: 22,
       backgroundColor: c.surfaceAlt,
       borderWidth: 1,
       borderColor: c.border,
-      alignItems: "center",
-      justifyContent: "center",
     },
+    practiseLabel: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
   });

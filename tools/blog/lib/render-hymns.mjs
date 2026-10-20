@@ -301,7 +301,8 @@ ${groups.get(L).map((e) => e.html()).join("\n")}
   <div class="hymn-find hymn-find-top" id="hymn-find" hidden>
     <label class="sr-only" for="hymn-filter">Find a hymn</label>
     <input type="search" id="hymn-filter" placeholder="Title, first line, tune, writer or season" autocomplete="off" spellcheck="false">
-    ${tunes.length ? `<p class="hymn-seasons" aria-label="Hymns or tunes"><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></p>` : ""}
+    ${tunes.length ? `<!-- One control, one choice always made, All to start (board m-ux-medium W4a): it reads apart from the season links below. -->
+    <div class="hymn-kinds" role="group" aria-label="Hymns or tunes"><button type="button" data-kind="" aria-pressed="true">All</button><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></div>` : ""}
     <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
   </div>
   <p class="masthead-dek">${hymns.length} public-domain hymns with the solfa written out under the words${tunes.length ? `, and ${tunes.length} more hymn tunes on their own,` : ""} with the staff notation, a piano to sing along with and a free PDF of each to print. The solfa is written by the same engine NoteFusion uses for your own songs.</p>

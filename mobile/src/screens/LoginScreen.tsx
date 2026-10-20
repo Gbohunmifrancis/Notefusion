@@ -4,7 +4,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { GoogleG } from "../components/night/GoogleG";
 import { NightButton } from "../components/night/NightButton";
 import { NightField } from "../components/night/NightField";
-import { BackButton, ErrorNote, Mark, NightScreen, OrRule, nightText, pressedLink } from "../components/night/NightUI";
+import { BackButton, ErrorNote, Mark, NightLink, NightScreen, OrRule, nightText, pressedLink } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
 import { missesAfter, offersReset } from "../lib/authErrors";
@@ -150,12 +150,11 @@ export function LoginScreen({ navigation, route }: Props) {
         </>
       )}
 
-      <Text style={[nightText.muted, styles.footer]}>
-        New here?{" "}
-        <Text style={nightText.link} onPress={() => navigation.navigate("Register", { email: email.trim() })} accessibilityRole="link">
-          Create an account
-        </Text>
-      </Text>
+      {/* The link its own 44 px text button (board m-ux-medium P5d); "New here?" stays plain text. */}
+      <View style={styles.footer}>
+        <Text style={nightText.muted}>New here?</Text>
+        <NightLink label="Create an account" onPress={() => navigation.navigate("Register", { email: email.trim() })} />
+      </View>
     </NightScreen>
   );
 }
@@ -169,5 +168,5 @@ const styles = StyleSheet.create({
   forgotText: { fontSize: 13.5, fontFamily: nightFonts.medium, color: night.ice },
   error: { marginTop: 18 },
   submit: { marginTop: 22 },
-  footer: { textAlign: "center", marginTop: 22 },
+  footer: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center", marginTop: 12 },
 });

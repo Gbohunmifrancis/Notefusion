@@ -104,8 +104,6 @@ export function RecordOptionsSheet({
                     key={k}
                     onPress={() => onKey(k)}
                     radius={radii.pill}
-                    // 36 px chips 6 apart: half the gap each way.
-                    hitSlop={3}
                     style={[styles.chip, active && styles.chipOn]}
                     accessibilityLabel={`Key: ${k}`}
                     accessibilityState={{ selected: active }}
@@ -127,7 +125,6 @@ export function RecordOptionsSheet({
                 key={m.short}
                 onPress={() => onMeter(m.value)}
                 radius={radii.pill}
-                hitSlop={3}
                 style={[styles.chip, styles.meterChip, active && styles.chipOn]}
                 accessibilityLabel={`Beats in a bar: ${m.label}`}
                 accessibilityState={{ selected: active }}
@@ -155,7 +152,6 @@ export function RecordOptionsSheet({
                     key={t}
                     onPress={() => onTranspose(t)}
                     radius={radii.pill}
-                    hitSlop={3}
                     style={[styles.chip, active && styles.chipOn]}
                     accessibilityLabel={`Keyboard transpose ${label}`}
                     accessibilityState={{ selected: active }}
@@ -238,17 +234,18 @@ const makeStyles = (c: Palette) =>
       lineHeight: 17,
       marginTop: 2,
     },
+    // The chips are 44 px to a thumb, 8 apart (board m-ux-medium P3e).
     chips: {
-      gap: spacing.xs + 2,
+      gap: spacing.sm,
       paddingRight: spacing.lg,
     },
     chipsWrap: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: spacing.xs + 2,
+      gap: spacing.sm,
     },
     meterChip: {
-      minWidth: 48,
+      minWidth: 52,
     },
     meterHint: {
       ...typography.caption,
@@ -257,8 +254,8 @@ const makeStyles = (c: Palette) =>
       marginTop: spacing.sm,
     },
     chip: {
-      height: 36,
-      paddingHorizontal: 14,
+      height: 44,
+      paddingHorizontal: spacing.lg,
       borderRadius: radii.pill,
       backgroundColor: c.surfaceAlt,
       borderWidth: 1,
@@ -272,7 +269,7 @@ const makeStyles = (c: Palette) =>
     },
     chipText: {
       fontFamily: fonts.medium,
-      fontSize: 13,
+      fontSize: 14,
       color: c.textMuted,
     },
     chipMono: {

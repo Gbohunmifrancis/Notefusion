@@ -11,19 +11,22 @@ import { useColors, useThemedStyles } from "../lib/theme";
 export function ProblemNote({
   children,
   center = false,
+  sentence = false,
   style,
 }: {
   children: React.ReactNode;
   /** Centred under a centred block (a player, a dialog's form). */
   center?: boolean;
+  /** A 16 px sentence where the screen's sentences are 16 (Practice's drill card, board m-ux-medium P5c). */
+  sentence?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
   const c = useColors();
   const styles = useThemedStyles(makeStyles);
   return (
     <View style={[styles.row, center && styles.center, style]} accessibilityLiveRegion="polite">
-      <Icon name="problem" size={15} color={c.warning} style={styles.icon} />
-      <Text style={[styles.text, center && styles.textCenter]}>{children}</Text>
+      <Icon name="problem" size={15} color={c.warning} style={[styles.icon, sentence && styles.iconSentence]} />
+      <Text style={[styles.text, sentence && styles.textSentence, center && styles.textCenter]}>{children}</Text>
     </View>
   );
 }
@@ -42,12 +45,21 @@ const makeStyles = (c: Palette) =>
     icon: {
       marginTop: 1,
     },
+    /** Centred on the first of the sentence's 23 px lines. */
+    iconSentence: {
+      marginTop: 4,
+    },
     text: {
       flexShrink: 1,
       fontFamily: fonts.medium,
       fontSize: 13,
       lineHeight: 18,
       color: c.textMuted,
+    },
+    textSentence: {
+      fontFamily: fonts.regular,
+      fontSize: 16,
+      lineHeight: 23,
     },
     textCenter: {
       textAlign: "center",

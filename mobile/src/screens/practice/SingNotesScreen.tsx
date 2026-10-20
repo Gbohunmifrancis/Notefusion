@@ -173,7 +173,7 @@ export function SingNotesScreen({ mode, track }: { mode: "intervals" | "harmony"
         ) : null}
       </Screen>
       {ex ? (
-        <ModeFooter status={take.phase === "leadin" || take.phase === "live" ? <LiveDot label={take.phase === "live" ? "Sing!" : "Listening"} /> : null}>
+        <ModeFooter marking={take.phase === "sending"} status={take.phase === "leadin" || take.phase === "live" ? <LiveDot label={take.phase === "live" ? "Sing!" : "Listening"} /> : null}>
           {take.phase === "leadin" || take.phase === "live" ? (
             <Button label="Stop" icon="stop" variant="secondary" onPress={take.cancel} />
           ) : take.phase === "sending" ? (

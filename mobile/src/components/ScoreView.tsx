@@ -27,7 +27,8 @@ import { File } from "expo-file-system";
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
 
 import type { NoteEvent } from "../api/types";
-import { type Palette, confidenceColor, radii, spacing, typography } from "../design/theme";
+import { type Palette, radii, spacing, typography } from "../design/theme";
+import { doubtfulBeats, isDoubtfulNote } from "../lib/confidence";
 import { beatKey, buildMusicXml, onsetIndexMap, resolveKeySignature } from "../lib/musicxml";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { ProblemNote } from "./ProblemNote";
@@ -74,7 +75,10 @@ interface Props {
   onRendered?: () => void;
   /** Print each note's solfa syllable under its head. On by default. */
   showSolfa?: boolean;
-  /** Tint each head by its confidence. On by default per the PRD honesty rule. */
+  /**
+   * Mark the doubtful notes (board m-ux-medium P1g): their heads amber in a dotted amber ring, every other head ink,
+   * so a doubtful note is found by its shape as well as its colour. On by default per the PRD honesty rule.
+   */
   colorByConfidence?: boolean;
 }
 
@@ -127,7 +131,7 @@ const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
     () =>
       buildMusicXml(notes, resolveKeySignature(musicalKey), timeSignature, {
         lyrics: showSolfa,
-        colorFor: colorByConfidence ? (conf) => confidenceColor(conf, palette) : undefined,
+        colorFor: colorByConfidence ? (conf) => (isDoubtfulNote(conf) ? palette.warning : null) : undefined,
       }),
     [notes, musicalKey, timeSignature, showSolfa, colorByConfidence, palette],
   );
@@ -140,8 +144,11 @@ const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
       lyrics: showSolfa,
       showCursor: false,
       measureNumberInterval: 1,
+      // The page rings these heads once it has laid the bars out (scripts/engraver/page.js `ringDoubts`).
+      doubtBeats: colorByConfidence ? doubtfulBeats(notes) : [],
+      ringColor: palette.warning,
     }),
-    [palette, showSolfa],
+    [palette, showSolfa, colorByConfidence, notes],
   );
 
   const send = useCallback((js: string) => {

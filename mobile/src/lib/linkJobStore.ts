@@ -26,4 +26,13 @@ export const linkJobStore = {
   clear(): void {
     AsyncStorage.removeItem(KEY).catch(() => undefined);
   },
+  /** Forgets the kept job if it is this one: its sheet was opened, so "On its way" lets it go. */
+  async forget(jobId: string): Promise<void> {
+    try {
+      const raw = await AsyncStorage.getItem(KEY);
+      if (raw && (JSON.parse(raw) as { jobId?: unknown }).jobId === jobId) await AsyncStorage.removeItem(KEY);
+    } catch {
+      // unreadable: it is dropped on its next read
+    }
+  },
 };

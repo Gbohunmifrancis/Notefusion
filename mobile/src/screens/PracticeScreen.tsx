@@ -98,6 +98,7 @@ import { ART } from "../components/practice/art/svgs";
 import { useSeason } from "../lib/seasonStore";
 import { activeSeason, costumeOf, seasonCard, seasonOf, seasonTint, seasonWords, type Costume } from "../lib/season";
 import { ModeList } from "../components/practice/ModeList";
+import { MarkingBar } from "../components/practice/MarkingBar";
 import { hubModes, modesDohLine, modesHeading, progressStrip } from "../lib/practiceModes";
 import type { RootStackParams } from "../navigation/types";
 
@@ -560,7 +561,10 @@ export function PracticeScreen() {
                     <Button label="Stop" variant="secondary" icon="stop" onPress={stop} />
                   </View>
                 ) : phase === "grading" ? (
-                  <Button label="Marking your take…" icon="waiting" loading />
+                  <>
+                    <Button label="Marking your take…" icon="waiting" loading />
+                    <MarkingBar />
+                  </>
                 ) : (
                   <View style={styles.actions}>
                     <Button label={playful ? "Listen" : "Hear it"} icon="hear" variant="secondary" onPress={hear} style={styles.action} />
@@ -587,7 +591,7 @@ export function PracticeScreen() {
                 ) : allowance ? (
                   <Text style={styles.allowance}>{allowanceLine(allowance)}</Text>
                 ) : null}
-                {error ? <ProblemNote>{error}</ProblemNote> : null}
+                {error ? <ProblemNote sentence>{error}</ProblemNote> : null}
                 {error === MIC_REFUSED && micBlocked ? (
                   <Button
                     label="Open settings"
@@ -717,7 +721,7 @@ export function PracticeScreen() {
                   <Text style={styles.cardTitle}>
                     {progress.weeklyGoal.daysDone} of {progress.weeklyGoal.target} days this week
                   </Text>
-                  <Text style={styles.meta}>
+                  <Text style={styles.weekLine}>
                     {progress.weeklyGoal.daysDone >= progress.weeklyGoal.target ? "Weekly goal met." : "Practise five days a week to meet the goal."}
                   </Text>
                 </View>
@@ -987,14 +991,18 @@ function badgeLabel(badge: PracticeBadge, sticker = false): string {
   return `${badge.title}${sticker ? " sticker" : ""}. ${badge.description} ${badge.earned ? "Earned." : `${badge.progress} of ${badge.target}.`}`;
 }
 
-/** No track chosen yet: the badges as tiles under the picker. */
+/**
+ * No track chosen yet: the badges as tiles under the picker. A locked one fades its picture only (board m-ux-medium
+ * P5b), and its title goes muted: what it takes and how far along it is stay at full strength, to be read.
+ */
 function BadgeTile({ badge, styles }: { badge: PracticeBadge; styles: Styles }) {
+  const locked = !badge.earned;
   return (
-    <View style={[styles.badge, !badge.earned && styles.badgeLocked]} accessible accessibilityLabel={badgeLabel(badge)}>
-      <Art name={badgeArt(badge.code, badge.earned)} width={40} />
-      <Text style={styles.badgeTitle} numberOfLines={1}>{badge.title}</Text>
+    <View style={styles.badge} accessible accessibilityLabel={badgeLabel(badge)}>
+      <Art name={badgeArt(badge.code, badge.earned)} width={40} style={locked && styles.badgeArtLocked} />
+      <Text style={[styles.badgeTitle, locked && styles.badgeTitleLocked]} numberOfLines={1}>{badge.title}</Text>
       <Text style={styles.badgeDesc} numberOfLines={2}>{badge.description}</Text>
-      {!badge.earned ? (
+      {locked ? (
         <View style={styles.badgeProgressRow}>
           <View style={styles.badgeTrack}>
             <View style={[styles.badgeFill, { width: `${Math.round((badge.progress / Math.max(1, badge.target)) * 100)}%` }]} />
@@ -1080,7 +1088,8 @@ const makeStyles = (c: Palette) =>
     buddyText: { ...typography.label, color: c.text, lineHeight: 20 },
     card: { marginBottom: spacing.md, gap: spacing.sm },
     cardPlayful: { borderColor: c.playBorder, borderWidth: 1.5 },
-    body: { ...typography.body, color: c.textMuted, fontSize: 13, lineHeight: 20 },
+    // Sentences are 16 px, meta and labels 13, and nothing is under 12 (board m-ux-medium P5c).
+    body: { ...typography.body, color: c.textMuted, fontSize: 16, lineHeight: 23 },
 
     statsRow: { flexDirection: "row", gap: spacing.md, marginBottom: spacing.md },
     statCard: { flex: 1, gap: 2 },
@@ -1091,7 +1100,7 @@ const makeStyles = (c: Palette) =>
     levelNameLong: { fontSize: 18, lineHeight: 21 },
     statLabel: { ...typography.caption, color: c.textMuted },
     statSub: { ...typography.label, color: c.text, fontSize: 13, marginTop: spacing.xs },
-    statFoot: { ...typography.caption, color: c.textFaint, fontSize: 11 },
+    statFoot: { ...typography.caption, color: c.textFaint, fontSize: 12 },
     footRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 2 },
     footText: { flex: 1 },
     spent: { opacity: 0.4 },
@@ -1101,12 +1110,12 @@ const makeStyles = (c: Palette) =>
     barTrack: { flex: 1, height: 8, borderRadius: 4, backgroundColor: c.surfaceAlt, overflow: "hidden" },
     barFill: { height: 8, borderRadius: 4, backgroundColor: c.accent },
 
-    eyebrow: { ...typography.caption, color: c.accent, textTransform: "uppercase", letterSpacing: 1, fontSize: 10 },
+    eyebrow: { ...typography.caption, color: c.accent, textTransform: "uppercase", letterSpacing: 1, fontSize: 12 },
     eyebrowPlayful: { color: c.play },
-    cardTitle: { ...typography.label, color: c.text, fontSize: 15, fontFamily: fonts.bold },
+    cardTitle: { ...typography.label, color: c.text, fontSize: 16, fontFamily: fonts.bold },
     cardTitlePlayful: { ...typography.heading, fontSize: 20 },
-    meta: { ...typography.caption, color: c.textMuted, lineHeight: 17 },
-    pathLine: { ...typography.caption, color: c.textMuted, fontSize: 12 },
+    meta: { ...typography.caption, color: c.textMuted, fontSize: 13, lineHeight: 18 },
+    pathLine: { ...typography.caption, color: c.textMuted, fontSize: 13, lineHeight: 18 },
     unitBar: { height: 3, borderRadius: 2, backgroundColor: c.surfaceAlt, overflow: "hidden", marginTop: 4 },
     unitBarFill: { height: 3, borderRadius: 2, backgroundColor: c.accent },
     milestone: { gap: 2, padding: spacing.sm, borderRadius: radii.sm, borderWidth: 1.5, borderColor: c.accent, backgroundColor: c.accentSoft },
@@ -1139,7 +1148,7 @@ const makeStyles = (c: Palette) =>
     action: { flex: 1 },
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.xs },
     liveLabel: { ...typography.label, color: c.textMuted },
-    allowance: { ...typography.caption, color: c.textMuted },
+    allowance: { ...typography.caption, color: c.textMuted, fontSize: 13, lineHeight: 18 },
     /** Under the problem note, its word lined up with the note's (icon 15 + gap 6, less the button's 12 pad). */
     settingsLink: { alignSelf: "flex-start", marginLeft: 15 + 6 - 12 },
     focusRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: spacing.sm, flexWrap: "wrap" },
@@ -1147,6 +1156,7 @@ const makeStyles = (c: Palette) =>
 
     weekRow: { flexDirection: "row", alignItems: "center", gap: spacing.md },
     weekText: { flex: 1, gap: 2 },
+    weekLine: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted },
     ring: { width: 64, height: 64, alignItems: "center", justifyContent: "center" },
     ringTick: { position: "absolute" },
     days: { flexDirection: "row", justifyContent: "space-between", marginTop: spacing.xs },
@@ -1160,7 +1170,7 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    dayLetter: { ...typography.caption, color: c.textFaint, fontSize: 11 },
+    dayLetter: { ...typography.caption, color: c.textFaint, fontSize: 12 },
 
     sectionTitle: { ...typography.heading, color: c.text, marginTop: spacing.sm, marginBottom: spacing.sm },
 
@@ -1186,7 +1196,7 @@ const makeStyles = (c: Palette) =>
     cardPair: { width: 72 + 22, height: 80, marginTop: spacing.sm },
     cardBoo: { position: "absolute", right: 0, top: -6 },
     carolsText: { flex: 1, minWidth: 0, gap: 4 },
-    carolsEyebrow: { ...typography.caption, textTransform: "uppercase", letterSpacing: 1, fontSize: 10.5, fontFamily: fonts.semibold },
+    carolsEyebrow: { ...typography.caption, textTransform: "uppercase", letterSpacing: 1, fontSize: 12, fontFamily: fonts.semibold },
     carolsTitle: { ...typography.heading, color: c.text, fontSize: 20 },
     carolsBody: { ...typography.body, color: c.textMuted, fontSize: 13.5, lineHeight: 20 },
     carolsBar: { flexDirection: "row", gap: 6 },
@@ -1199,7 +1209,7 @@ const makeStyles = (c: Palette) =>
     modesHead: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginBottom: spacing.sm },
     modesHeadText: { flex: 1, minWidth: 0, gap: 4 },
     modesTitle: { ...typography.heading, color: c.text },
-    modesDoh: { fontFamily: fonts.regular, fontSize: 13.5, lineHeight: 19, color: c.textMuted },
+    modesDoh: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted },
     badgeGrid: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
     badge: {
       width: "48%",
@@ -1211,13 +1221,15 @@ const makeStyles = (c: Palette) =>
       padding: spacing.md,
       gap: 4,
     },
-    badgeLocked: { opacity: 0.55 },
+    /** A locked tile: the sticker (already the grey "-locked" art) at half strength, never the words. */
+    badgeArtLocked: { opacity: 0.5 },
     badgeTitle: { ...typography.label, color: c.text, fontSize: 13 },
-    badgeDesc: { ...typography.caption, color: c.textMuted, fontSize: 11, lineHeight: 15 },
+    badgeTitleLocked: { color: c.textMuted },
+    badgeDesc: { ...typography.caption, color: c.textMuted, fontSize: 12, lineHeight: 16 },
     badgeProgressRow: { flexDirection: "row", alignItems: "center", gap: spacing.xs, marginTop: 2 },
     badgeTrack: { flex: 1, height: 4, borderRadius: 2, backgroundColor: c.surfaceAlt, overflow: "hidden" },
     badgeFill: { height: 4, borderRadius: 2, backgroundColor: c.textMuted },
-    badgeCount: { ...typography.caption, color: c.textFaint, fontSize: 10 },
+    badgeCount: { ...typography.caption, color: c.textFaint, fontSize: 12 },
 
     stickerGrid: { flexDirection: "row", flexWrap: "wrap", rowGap: spacing.md },
     sticker: { width: "33.33%", paddingHorizontal: spacing.xs, alignItems: "center", gap: 6 },
@@ -1232,7 +1244,7 @@ const makeStyles = (c: Palette) =>
     foot: { ...typography.caption, color: c.textFaint, lineHeight: 17, marginTop: spacing.lg },
     empty: { marginBottom: spacing.md, gap: spacing.sm, alignItems: "center", paddingVertical: spacing.lg },
     emptyTitle: { ...typography.heading, color: c.text, textAlign: "center" },
-    emptyBody: { ...typography.body, color: c.textMuted, fontSize: 13, lineHeight: 20, textAlign: "center", marginBottom: spacing.xs },
+    emptyBody: { ...typography.body, color: c.textMuted, fontSize: 16, lineHeight: 23, textAlign: "center", marginBottom: spacing.xs },
     toast: {
       position: "absolute",
       left: spacing.lg,

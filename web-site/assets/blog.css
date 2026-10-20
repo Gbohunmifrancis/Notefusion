@@ -245,7 +245,8 @@
 .blog-page .cell.hold { min-width: 1.1em; }
 .blog-page .cell b { display: block; color: var(--ink); font-size: 1rem; line-height: 1.5; }
 .blog-page .cell b.now { color: var(--now-ink); background: var(--now-bg); border-radius: 3px; }
-.blog-page .cell i { display: block; min-height: 1.1em; color: var(--muted); font-family: var(--sans); font-size: .74rem; font-style: normal; line-height: 1.5; }
+/* The words under the solfa: read as they are sung, so at 14 px in the reading colour (board m-ux-medium W4b). */
+.blog-page .cell i { display: block; min-height: 1.1em; color: var(--text); font-family: var(--sans); font-size: 14px; font-style: normal; line-height: 1.5; }
 /* Octave marks (s, d') drawn small and set low or high against the letter, as hymn books print their
    octave figures, so they never read as the quarter-beat mark. A half beat split into two quarter beats
    (a semiquaver pair, the tail of a dotted quaver) shows both syllables with the quarter-beat mark
@@ -333,10 +334,13 @@
 .blog-page .hymn-find input { box-sizing: border-box; width: 100%; max-width: 560px; min-height: 46px; padding: 0 14px; border: 1px solid var(--page-input-line, var(--rule-strong)); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; font-size: 16px; }
 .blog-page .hymn-find input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .blog-page .hymn-seasons { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
-.blog-page .hymn-seasons button { min-height: 36px; padding: 0 12px; border: 1px solid var(--rule-strong); border-radius: 8px; background: transparent; color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
-.blog-page .hymn-seasons button:hover { border-color: var(--accent); color: var(--accent); }
-/* Hymns or Tunes pressed reads as chosen, as the current page's link does below. */
-.blog-page .hymn-seasons button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+/* All · Hymns · Tunes: one control on a tinted track, the chosen one raised (the home page's key switch,
+   .segmented), so it never reads as the season links below it. */
+.blog-page .hymn-kinds { display: inline-flex; gap: 0; padding: 3px; margin: 12px 0 0; border: 1px solid var(--rule); border-radius: 10px; background: var(--tint); }
+.blog-page .hymn-kinds button { min-width: 84px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
+.blog-page .hymn-kinds button:hover { color: var(--ink); }
+.blog-page .hymn-kinds button[aria-pressed="true"] { background: var(--bg); color: var(--ink); box-shadow: 0 0 0 1px var(--rule-strong), 0 1px 2px rgba(15, 23, 42, .06); }
+.blog-page .hymn-kinds button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* The seasons and occasions as links (each a page, /hymns/occasions/<slug>), and the ways into the hymnal. */
 .blog-page .hymn-seasons a, .blog-page .hymn-browse a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border: 1px solid var(--rule-strong); border-radius: 8px; color: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 600; text-decoration: none; }
 .blog-page .hymn-seasons a:hover, .blog-page .hymn-browse a:hover { border-color: var(--accent); color: var(--accent); }
@@ -433,7 +437,7 @@
 .blog-page .share-links a { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; }
 .blog-page .topics a { padding: 12px 0; }
 .blog-page .player select { min-height: 44px; font-size: 16px; }
-.blog-page .hymn-seasons button, .blog-page .hymn-seasons a, .blog-page .hymn-browse a { min-height: 44px; }
+.blog-page .hymn-seasons a, .blog-page .hymn-browse a { min-height: 44px; }
 .blog-page .az a { min-width: 44px; min-height: 44px; }
 @media (min-width: 801px) and (hover: hover) and (pointer: fine) {
   .blog-page .toc li { margin: 0 0 5px; }
@@ -442,7 +446,7 @@
   .blog-page .share-links a { display: inline; min-width: 0; min-height: 0; }
   .blog-page .topics a { padding: 4px 0; }
   .blog-page .player select { min-height: 40px; font-size: 14px; }
-  .blog-page .hymn-seasons button, .blog-page .hymn-seasons a { min-height: 36px; }
+  .blog-page .hymn-kinds button, .blog-page .hymn-seasons a { min-height: 36px; }
   .blog-page .hymn-browse a { min-height: 40px; }
   .blog-page .az a { min-width: 36px; min-height: 36px; }
 }

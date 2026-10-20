@@ -64,6 +64,9 @@ export const colors = {
   accent: "#2563EB",
   accentAlt: "#3B82F6",
   accentSoft: "rgba(37, 99, 235, 0.10)",
+  /** The soft blue made opaque, for a tab that sits across a card's edge (Upgrade's "Best value"), where a
+   *  see-through fill would show the border through it. */
+  accentSoftOpaque: "#E3ECFC",
   accentGlow: "rgba(37, 99, 235, 0.22)",
   pinkSoft: "rgba(14, 165, 233, 0.10)",
 
@@ -74,6 +77,9 @@ export const colors = {
    *  and plan badge, and nowhere a free account can see. */
   premium: "#F59E0B",
   premiumDeep: "#B45309",
+  /** The words of a gold chip on its tint (Fast lane, the PRO tags; board m-ux-medium P3g): `premiumDeep` was 4.29:1
+   *  there in Day, this 6.06:1. The crown and the tint keep `premiumDeep` and `premiumSoft`. */
+  premiumText: "#92400E",
   premiumSoft: "rgba(245, 158, 11, 0.12)",
   premiumBorder: "rgba(245, 158, 11, 0.35)",
 
@@ -131,6 +137,11 @@ export const colors = {
   sheetTile: "#EEF3FB",
   /** The toast's surface: good news that leaves by itself. */
   toast: "#FFFFFF",
+  /**
+   * Selected (a chosen chip, the open action, the reading shown): this wash under an `accent` line and `link` words,
+   * the tab bar's own selected look (board m-ux-medium P1d). Never a fill under white words, which reads as a button.
+   */
+  selectedWash: "rgba(37, 99, 235, 0.12)",
   /** Choir's own colour (violet), as gold is Pro's: the choir welcome's tile. */
   choir: "#7C3AED",
   choirSoft: "rgba(124, 58, 237, 0.10)",
@@ -200,6 +211,7 @@ export const darkColors: Palette = {
   accent: "#5C9BFF",
   accentAlt: "#9CC2FF",
   accentSoft: "rgba(47, 123, 255, 0.14)",
+  accentSoftOpaque: "#13254A",
   accentGlow: "rgba(47, 123, 255, 0.35)",
   pinkSoft: "rgba(156, 194, 255, 0.12)",
 
@@ -207,6 +219,8 @@ export const darkColors: Palette = {
   // crown and an alert sign differ in colour as well as shape.
   premium: "#F0D27A",
   premiumDeep: "#D9B65A",
+  // Night's gold already reads on its tint (7.86:1), so the chip's words keep it.
+  premiumText: "#D9B65A",
   premiumSoft: "rgba(240, 210, 122, 0.14)",
   premiumBorder: "rgba(240, 210, 122, 0.40)",
 
@@ -239,6 +253,7 @@ export const darkColors: Palette = {
   sheetRow: "rgba(255, 255, 255, 0.035)",
   sheetTile: "rgba(255, 255, 255, 0.07)",
   toast: "#1A202B",
+  selectedWash: "rgba(47, 123, 255, 0.20)",
   choir: "#A78BFA",
   choirSoft: "rgba(167, 139, 250, 0.12)",
 

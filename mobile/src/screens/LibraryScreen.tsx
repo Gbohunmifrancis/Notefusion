@@ -22,6 +22,7 @@ import { ProblemNote } from "../components/ProblemNote";
 import { DohTip } from "../components/doh/DohTip";
 import { Mark } from "../components/night/NightUI";
 import { LibraryRow, LibraryRowSkeleton } from "../components/library/LibraryRow";
+import { FoldAway } from "../components/FoldAway";
 import { SelectionBar } from "../components/library/SelectionBar";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { libraryApi } from "../api/endpoints";
@@ -29,9 +30,11 @@ import { toApiError } from "../api/client";
 import { showDialog } from "../lib/dialog";
 import * as haptics from "../lib/haptics";
 import { useSheetActions } from "../components/library/useSheetActions";
+import { withoutHeldDeletes } from "../lib/sheetActions";
 import { useSubscription } from "../lib/subscription";
 import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLibrary";
 import { resultFromSaved } from "../lib/openSheet";
+import { useOpening } from "../lib/useOpening";
 import { onTakeChange, removeTake, retryTake, useOutbox, useSendProgress } from "../lib/outbox";
 import { isUnopened } from "../lib/savedSheet";
 import { matchesWords } from "../lib/hymnPack";
@@ -39,6 +42,8 @@ import { useReachability } from "../lib/connectivity";
 import { isNetworkCode } from "../lib/reachability";
 import { openTranscriptionFromNotification } from "../lib/notificationLink";
 import { PendingSends } from "../components/library/PendingSends";
+import { useSongOnItsWay } from "../lib/useSongOnItsWay";
+import { useAuth } from "../lib/auth";
 import { HEADER_AVATAR, HeaderAvatar } from "../components/HeaderAvatar";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import type { SavedTranscription } from "../api/types";
@@ -46,12 +51,17 @@ import type { RootStackParams } from "../navigation/types";
 
 /** The circular header buttons, and the size the search pill grows from. */
 const ICON_BTN = 40;
+/** The open search pill, and every target in the header's rows: 44 px to a thumb (board m-ux-medium P2d). */
+const TARGET = 44;
+/** The title row the search pill is centred in. */
+const TITLE_ROW = 48;
 
 /**
  * LibraryScreen — the night board's "06 · Library": a big title with search and new,
  * folders as text tabs, the folder's one share link as a banner, and hairline rows
- * that each read by their doh. Long press starts select mode; the floating bar then
- * deletes, files or shares the chosen sheets.
+ * that each read by their doh. Each row's ⋯ opens its actions, as on Home (board m-ux-medium P2c); a long press, or
+ * the actions' "Select several", starts select mode, and the floating bar then deletes, files or shares the chosen
+ * sheets.
  */
 export function LibraryScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
@@ -72,6 +82,8 @@ export function LibraryScreen() {
   // Takes still on their way (lib/outbox): shown above the sheets until each lands among them.
   const outbox = useOutbox();
   const sendProgress = useSendProgress();
+  // A song sent from Song link, listed with them while it is written (board m-ux-medium P2e).
+  const { user } = useAuth();
 
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -88,6 +100,7 @@ export function LibraryScreen() {
   // Doh on the empty states idles only while the Library is on show; a scroll closes his tip.
   const focused = useIsFocused();
   const [scrolls, setScrolls] = useState(0);
+  const song = useSongOnItsWay(user?.id, focused);
 
   // Share, file and delete the chosen sheets: the same actions as Home's recent rows (board a-core/11).
   const actions = useSheetActions({
@@ -95,6 +108,10 @@ export function LibraryScreen() {
     setItems,
     reload: () => load(),
     onDone: () => setSelected(new Set()),
+    onSelectSeveral: (item) => {
+      haptics.play("medium");
+      setSelected(new Set([item.id]));
+    },
   });
   const folders = actions.folders;
   const folderCounts = React.useMemo(() => {
@@ -109,7 +126,8 @@ export function LibraryScreen() {
     }
     loadLibraryList()
       .then(({ items: data, offline: fromCopy }) => {
-        setItems(data);
+        // A sheet whose delete is still held behind its Undo stays out (lib/sheetActions).
+        setItems(withoutHeldDeletes(data));
         setOffline(fromCopy);
         setLoadError(null);
       })
@@ -136,6 +154,11 @@ export function LibraryScreen() {
       }),
     [],
   );
+
+  // The song is written: the server filed it, so it is a sheet in the list now.
+  useEffect(() => {
+    if (song.row?.state === "done") load();
+  }, [song.row?.state]);
 
   // Back online while showing the phone's copies (or an error): read the list again, quietly.
   useEffect(() => {
@@ -184,13 +207,16 @@ export function LibraryScreen() {
   }, [searchOpen, searchProgress]);
   const pillStyle = useAnimatedStyle(() => ({
     width: interpolate(searchProgress.value, [0, 1], [ICON_BTN, Math.max(rowWidth, ICON_BTN)]),
-    // Closed, the pill is the search button beside "+" (and the avatar after it); open, it spans the row.
+    // Closed, the pill is the search button beside "+" (and the avatar after it); open, it spans the row, 44 tall.
     right: interpolate(searchProgress.value, [0, 1], [ICON_BTN + HEADER_AVATAR + 2 * spacing.sm, 0]),
+    height: interpolate(searchProgress.value, [0, 1], [ICON_BTN, TARGET]),
+    top: interpolate(searchProgress.value, [0, 1], [(TITLE_ROW - ICON_BTN) / 2, (TITLE_ROW - TARGET) / 2]),
+    borderRadius: interpolate(searchProgress.value, [0, 1], [ICON_BTN / 2, TARGET / 2]),
   }));
   const fadeWithSearch = useAnimatedStyle(() => ({ opacity: 1 - searchProgress.value }));
 
-  /** Set while a sheet loads (`openItem`). */
-  const opening = useRef(false);
+  /** The sheet loading (`openItem`): its row says "Opening…" after 300 ms. */
+  const opening = useOpening();
   // Tapping Library again while on it scrolls back to the top.
   const listRef = useRef<FlatList<SavedTranscription>>(null);
   useScrollToTop(listRef);
@@ -206,8 +232,7 @@ export function LibraryScreen() {
    */
   async function openItem(item: SavedTranscription) {
     // A second tap while the sheet loads would push a second Result.
-    if (opening.current) return;
-    opening.current = true;
+    if (!opening.begin(item.id)) return;
     // Opened: a sheet the server filed stops being marked unopened, here and on the server.
     if (isUnopened(item)) {
       const openedAtUtc = new Date().toISOString();
@@ -228,7 +253,7 @@ export function LibraryScreen() {
         tone: isNetworkCode(err.code) ? undefined : "danger",
       });
     } finally {
-      opening.current = false;
+      opening.end();
     }
   }
 
@@ -330,7 +355,8 @@ export function LibraryScreen() {
                 returnKeyType="search"
                 textAlignVertical="center"
               />
-              <Touchable onPress={closeSearch} hitSlop={{ top: 11, bottom: 11, left: 12, right: 14 }} ripple="borderless" accessibilityLabel="Close search">
+              {/* A 44 px button at the pill's end, not an icon leaning on slop past the row. */}
+              <Touchable onPress={closeSearch} style={styles.searchClear} ripple="borderless" accessibilityLabel="Close search">
                 <Icon name="clear" size={18} color={colors.textFaint} />
               </Touchable>
             </>
@@ -354,22 +380,24 @@ export function LibraryScreen() {
                 onPress={() => setFolder(f)}
                 style={styles.tab}
                 ripple={false}
-                // Wider to a thumb: half the 22 px gap to the next tab on each side.
+                // 44 tall; wider to a thumb by half the 22 px gap to the next tab on each side.
                 hitSlop={{ top: 0, bottom: 0, left: 11, right: 11 }}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: active }}
                 accessibilityLabel={`${f ? `Folder: ${f}` : "All sheets"}, ${count}`}
               >
-                <View style={styles.tabLabelRow}>
-                  <Text style={[styles.tabText, active && styles.tabTextActive]}>{f ?? "All"}</Text>
-                  {count > 0 && <Text style={[styles.tabCount, active && styles.tabCountActive]}>{count}</Text>}
+                <View style={styles.tabLabelArea}>
+                  <View style={styles.tabLabelRow}>
+                    <Text style={[styles.tabText, active && styles.tabTextActive]}>{f ?? "All"}</Text>
+                    {count > 0 && <Text style={[styles.tabCount, active && styles.tabCountActive]}>{count}</Text>}
+                  </View>
                 </View>
                 <View style={[styles.tabUnderline, active && styles.tabUnderlineActive]} />
               </Touchable>
             );
           })}
         </ScrollView>
-        <Touchable style={styles.sortBtn} hitSlop={{ top: 12, bottom: 8, left: 12, right: 14 }} ripple="borderless" accessibilityLabel="Sort library" onPress={chooseSort}>
+        <Touchable style={styles.sortBtn} ripple="borderless" accessibilityLabel="Sort library" onPress={chooseSort}>
           <Icon name="sort" size={18} color={colors.textMuted} />
         </Touchable>
       </View>
@@ -386,6 +414,13 @@ export function LibraryScreen() {
       <PendingSends
         items={outbox}
         progress={sendProgress}
+        song={song.row}
+        onOpenSong={() => {
+          const jobId = song.jobId;
+          if (!jobId) return;
+          void openTranscriptionFromNotification(jobId).then((opened) => opened && song.forget());
+        }}
+        onDismissSong={song.forget}
         onRetry={(t) => retryTake(t.id)}
         onOpen={(t) => {
           if (!t.jobId) return;
@@ -455,7 +490,7 @@ export function LibraryScreen() {
       )}
 
       {/* Below "On its way", the sheets themselves, so the two lists read apart (board 13). */}
-      {outbox.length > 0 && sortedItems.length > 0 ? <Text style={styles.sheetsEyebrow}>All sheets</Text> : null}
+      {(outbox.length > 0 || song.row) && sortedItems.length > 0 ? <Text style={styles.sheetsEyebrow}>All sheets</Text> : null}
     </View>
   );
 
@@ -518,7 +553,7 @@ export function LibraryScreen() {
       <FlatList
         ref={listRef}
         data={sortedItems}
-        extraData={selected}
+        extraData={[selected, actions.folding, opening.opening, actions.actionsFor]}
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -537,21 +572,26 @@ export function LibraryScreen() {
         }
         ListHeaderComponent={header}
         renderItem={({ item }) => (
-          <LibraryRow
-            item={item}
-            subtitle={subtitleFor(item)}
-            selecting={selecting}
-            selected={selected.has(item.id)}
-            onPress={() => (selecting ? toggle(item) : void openItem(item))}
-            onLongPress={() => startSelecting(item)}
-            offline={
-              offline && !offlineCopies.cached.has(item.id)
-                ? "missing"
-                : offlineCopies.keepAll || offlineCopies.pinned.has(item.id)
-                  ? "kept"
-                  : null
-            }
-          />
+          // A deleted row folds away, and unfolds where it was on Undo (board m-ux-medium P2a).
+          <FoldAway {...actions.foldProps(item.id)}>
+            <LibraryRow
+              item={item}
+              subtitle={subtitleFor(item)}
+              selecting={selecting}
+              selected={selected.has(item.id)}
+              onPress={() => (selecting ? toggle(item) : void openItem(item))}
+              onLongPress={() => startSelecting(item)}
+              opening={opening.opening === item.id}
+              onMore={() => actions.openActions(item)}
+              offline={
+                offline && !offlineCopies.cached.has(item.id)
+                  ? "missing"
+                  : offlineCopies.keepAll || offlineCopies.pinned.has(item.id)
+                    ? "kept"
+                    : null
+              }
+            />
+          </FoldAway>
         )}
         ItemSeparatorComponent={() => <View style={styles.itemDivider} />}
         ListEmptyComponent={empty}
@@ -587,7 +627,7 @@ const makeStyles = (c: Palette) =>
 
     // ── Title row ──────────────────────────────────────────────────────────────
     titleRow: {
-      height: 48,
+      height: TITLE_ROW,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
@@ -613,7 +653,7 @@ const makeStyles = (c: Palette) =>
     },
     searchPill: {
       position: "absolute",
-      top: (48 - ICON_BTN) / 2,
+      top: (TITLE_ROW - ICON_BTN) / 2,
       height: ICON_BTN,
       borderRadius: ICON_BTN / 2,
       backgroundColor: c.surfaceAlt,
@@ -630,6 +670,14 @@ const makeStyles = (c: Palette) =>
       width: ICON_BTN,
       height: ICON_BTN,
       marginHorizontal: -11,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    /** The close: 44 × 44 at the open pill's end (its padding cancelled). */
+    searchClear: {
+      width: TARGET,
+      height: TARGET,
+      marginRight: -11,
       alignItems: "center",
       justifyContent: "center",
     },
@@ -655,8 +703,13 @@ const makeStyles = (c: Palette) =>
       gap: 22,
       paddingRight: spacing.md,
     },
+    /** 44 px tall: the label centred, the underline at the row's foot. */
     tab: {
-      paddingTop: spacing.xs,
+      height: TARGET,
+    },
+    tabLabelArea: {
+      flex: 1,
+      justifyContent: "center",
     },
     tabLabelRow: {
       flexDirection: "row",
@@ -684,14 +737,17 @@ const makeStyles = (c: Palette) =>
     tabUnderline: {
       height: 2,
       borderRadius: 1,
-      marginTop: 8,
     },
     tabUnderlineActive: {
       backgroundColor: c.ink,
     },
+    /** A 44 × 44 button at the row's end, its icon flush with the screen's edge. */
     sortBtn: {
-      paddingLeft: spacing.sm,
-      paddingBottom: spacing.xs,
+      width: TARGET,
+      height: TARGET,
+      marginRight: -12,
+      alignItems: "center",
+      justifyContent: "center",
     },
 
     // ── Offline banner: calm, not an error ──────────────────────────────────

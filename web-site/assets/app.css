@@ -179,6 +179,13 @@ body.guest .topbar { display: flex; }
 .practice-chip i { width: 1px; height: 16px; background: var(--line-strong); }
 .practice-chip:hover { border-color: var(--blue); }
 .practice-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+/* Not practised yet: one line to start, in the same place. */
+.practice-chip-start { display: none; }
+.practice-chip.is-start .practice-chip-start { display: inline; }
+.practice-chip.is-start #practice-chip-streak, .practice-chip.is-start i, .practice-chip.is-start #practice-chip-xp { display: none; }
+/* The chip's place before its numbers come (board m-ux-medium W2b): a quiet outlined pill of the chip's own height. */
+.practice-chip, .practice-slot { vertical-align: middle; }
+.practice-slot { display: inline-flex; width: 156px; height: 44px; margin-top: 14px; border-radius: 999px; border: 1px solid var(--line); background: linear-gradient(90deg, var(--wash), var(--surface), var(--wash)); }
 .studio { position: relative; background: var(--studio-gradient); color: #fff; border-radius: 12px; padding: 22px; box-shadow: 0 18px 48px rgba(29, 78, 216, 0.28); margin-bottom: 24px; overflow: hidden; }
 .studio::before { content: ""; position: absolute; inset: -40% -20% auto auto; width: 60%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 65%); pointer-events: none; }
 .studio > * { position: relative; }
@@ -473,6 +480,16 @@ table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 .list-card :focus-visible { outline-offset: -2px; }
 .lrow-btn.danger, .lrow-btn.danger .k > .ic { color: var(--danger-text); }
 .pill-active { background: var(--success-soft); color: var(--success-text); }
+/* The Account group's values (board m-ux-medium W3d): quiet, on one line, cut short rather than wrapped. */
+.acct-val { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: 0.9375rem; font-weight: 500; }
+.lrow .v .acct-val + .ic { margin-left: 2px; }
+.switch:disabled { opacity: 0.5; cursor: default; }
+/* The name and password dialogs. */
+.acct-dialog { width: min(420px, 100%); }
+.acct-dialog .card-lead { margin: 0 0 16px; }
+.acct-dialog .input-wrap input { padding-left: 14px; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+.dialog-actions .btn { min-width: 96px; }
 .theme-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 8px; background: var(--wash); }
 .theme-seg button { min-width: 64px; padding: 6px 10px; border: 0; border-radius: 8px; background: none; font: inherit; font-size: 0.82rem; font-weight: 600; color: var(--muted); cursor: pointer; }
 .theme-seg button:hover { color: var(--ink); }
@@ -537,6 +554,22 @@ main h1[tabindex="-1"]:focus { outline: none; }
 .onb-brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
 .onb-brand .brand-mark { width: 24px; height: 24px; }
 
+/* ── The shared sheet's play bar (board m-ux-medium W2g) ─────────────────────
+ * Wide, its buttons are part of the Rehearse row. On a phone they sit in a bar pinned to the foot of the screen, over
+ * the safe area, and the page keeps room at its end so the bar never hides the last line. */
+.play-bar { display: contents; }
+@media (max-width: 640px) {
+  .play-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px calc(8px + env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid var(--line);
+    box-shadow: 0 -10px 24px -14px rgba(15, 23, 42, 0.25);
+  }
+  :root[data-theme="dark"] .play-bar { box-shadow: 0 -10px 24px -14px rgba(0, 0, 0, 0.6); }
+  .play-bar #play { min-width: 112px; min-height: 48px; }
+  .player .play-bar .group { margin-left: auto; padding-top: 0; padding-bottom: 0; }
+  body:has(#sheet:not(.hidden) .play-bar) main { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+}
+
 /* ── Print (shared sheet) ────────────────────────────────────────────────── */
 @media print {
   .side, .topbar, .player, .tabs, .no-print, .foot .cta { display: none !important; }
@@ -591,6 +624,47 @@ main h1[tabindex="-1"]:focus { outline: none; }
   .theme-seg button { min-width: 0; padding: 6px 9px; }
   .onb-card, .modal-card { padding: 24px 18px 20px; }
 }
+
+/* ── Phones, signed in: the five tabs at the foot, as on the phone (board m-ux-medium W3a) ─────────────────
+ * They take the menu's place under 641 px: Home · Library · Record (raised, in the centre) · Practice · Hymns; the
+ * account stays on the photo top right. The tab that is open reads blue, with a line on top and a 20% wash in its
+ * glyph. The page keeps the bar's height at its end, over the safe area, so the bar never covers the last line, and
+ * the bar steps aside while the recorder or a dialog is open. Wider screens keep the drawer or the sidebar. */
+.tabbar { display: none; }
+@media (max-width: 640px) {
+  body.has-tabbar .topbar .drawer-toggle { display: none; }
+  body.has-tabbar .content { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+  html:has(body.has-tabbar) { scroll-padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+  body.has-tabbar .tabbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 25; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+    height: calc(64px + env(safe-area-inset-bottom)); padding: 0 4px env(safe-area-inset-bottom); background: var(--surface); border-top: 1px solid var(--line);
+  }
+  :root.nf-rec-open body.has-tabbar .tabbar, body.auth-only .tabbar,
+  body.has-tabbar:has(.modal:not(.hidden), .onb:not(.hidden)) .tabbar { display: none; }
+  /* Toasts sit over the bar, not under it. */
+  body.has-tabbar .pay-toast, body.has-tabbar .pv-toast { bottom: calc(76px + env(safe-area-inset-bottom)); }
+  body.has-tabbar .why-toast { bottom: calc(88px + env(safe-area-inset-bottom)); }
+}
+.tab-cell, .tab-rec {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-width: 0; min-height: 64px;
+  padding: 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: 0.75rem; font-weight: 600; line-height: 1;
+  text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.tab-cell svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.tab-cell svg .k { fill: currentColor; stroke: none; }
+.tab-cell svg .w { fill: currentColor; stroke: none; opacity: 0; }
+.tab-cell.on { color: var(--blue-dark); }
+.tab-cell.on svg .w { opacity: 0.2; }
+.tab-cell.on::before { content: ""; position: absolute; top: -1px; left: 24%; right: 24%; height: 2px; border-radius: 0 0 2px 2px; background: currentColor; }
+.tab-cell:focus-visible, .tab-rec:focus-visible { outline: 2px solid var(--blue); outline-offset: -4px; border-radius: 8px; }
+.tab-rec { justify-content: flex-end; padding-bottom: 9px; color: var(--muted); }
+.tab-rec-disc {
+  position: absolute; top: -16px; left: 50%; translate: -50% 0; width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--blue-fill, var(--blue)); box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.12), 0 6px 16px rgba(37, 99, 235, 0.28);
+}
+:root[data-theme="dark"] .tab-rec-disc { box-shadow: 0 0 0 6px rgba(47, 123, 255, 0.18), 0 6px 16px rgba(0, 0, 0, 0.5); }
+.tab-rec .tab-rec-disc .brand-mark { width: 24px; height: 28px; background: #fff; }
+@media (prefers-reduced-motion: no-preference) { .tab-cell:active, .tab-rec:active .tab-rec-disc { transform: scale(0.97); } }
 
 /* ── Sign in / create account ───────────────────────────────────────────────
  * One column on a phone; on a wide screen a quiet navy panel says what NoteFusion does beside it. */
@@ -725,6 +799,18 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 /* One plan per row, at every width: the radio, the name and its note on the left, the price on the right
    (below the name on a phone). Columns side by side left ~120px for each plan in the dialog. */
 .plan-group { margin: 12px 0 0; }
+/* The choir plans folded into one row, and the way back from them (board m-ux-medium W3e). */
+.choir-row { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; margin: 4px 0 0; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+:root[data-theme="dark"] .choir-row { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.10); }
+.choir-row:hover { border-color: var(--line-strong); }
+.choir-row > .ic { width: 20px; height: 20px; flex: none; color: var(--muted); }
+.choir-row > .ic:last-child { width: 16px; height: 16px; }
+.choir-row > span { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.choir-row b { font-size: 0.9375rem; font-weight: 600; }
+.choir-row small { font-size: 0.875rem; color: var(--muted); line-height: 1.35; }
+.plan-back { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: 44px; font-size: 0.9375rem; }
+.plan-back .ic { width: 16px; height: 16px; }
+.plan-back + .plan-group { margin-top: 0; }
 .plan-opt { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "top price" "note price"; align-items: center; column-gap: 16px; row-gap: 2px; width: 100%; text-align: left; padding: 12px 14px 12px 42px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font: inherit; color: inherit; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
 .plan-opt:hover { border-color: var(--line-strong); }
 .plan-opt.on { border-color: var(--blue); background: var(--blue-tint); box-shadow: 0 0 0 1px var(--blue); }
@@ -752,6 +838,12 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 /* The card's phone padding (24px 18px 20px, max-width 640px above) is matched here, after the rule it overrides. */
 @media (max-width: 640px) { .pay-foot { bottom: -20px; margin: 12px -18px -20px; padding: 4px 18px 14px; } }
 .pay-fx { margin: 8px 0 0; font-size: 0.85rem; color: var(--muted); text-align: center; }
+/* Help and refunds, and the terms, one line under the fine print (board m-ux-medium W3f); the links take a 44 px
+   target from an invisible layer, and the address and Terms wrap together, side by side, on a narrow phone. */
+.pay-help { margin: 6px 0 0; text-align: center; font-size: 0.8125rem; line-height: 1.5; color: var(--muted); }
+.pay-help > span { white-space: nowrap; }
+.pay-help a { position: relative; color: var(--blue-dark); font-weight: 600; }
+.pay-help a::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
 .pay-error { margin: 10px 0 0; padding: 8px 10px; border-radius: 8px; background: var(--danger-soft, rgba(220, 38, 38, 0.08)); color: var(--danger-text); font-size: 0.9rem; }
 .pay-reason { display: flex; gap: 8px; align-items: flex-start; margin: 4px 0 14px; padding: 10px 12px; border-radius: 8px; background: var(--blue-tint, rgba(37, 99, 235, 0.08)); color: var(--ink); font-size: 0.95rem; line-height: 1.45; }
 .pay-reason .ic { width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--blue-dark); }
@@ -790,6 +882,19 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 @keyframes pay-spin { to { transform: rotate(360deg); } }
 @keyframes pay-toast-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @media (max-width: 640px) { .pay-toast { left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); width: auto; } }
+
+/* A short note with at most one action, at the foot of the screen: "Deleted …" with Undo (board m-ux-medium W3b). */
+.app-toast { position: fixed; right: 20px; bottom: 20px; z-index: 45; display: flex; align-items: center; gap: 12px; width: min(380px, calc(100vw - 32px)); min-height: 56px; padding: 6px 6px 6px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 18px 48px rgba(15, 23, 42, 0.16); color: var(--ink); font-size: 0.9375rem; animation: pay-toast-in 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+.app-toast > span { flex: 1; min-width: 0; padding: 8px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-toast-action { flex: none; min-height: 44px; padding: 0 14px; border: 0; border-radius: 8px; background: none; color: var(--blue-dark); font: inherit; font-weight: 600; cursor: pointer; }
+.app-toast-action:hover { background: var(--wash); }
+.app-toast-action:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+:root[data-theme="dark"] .app-toast { background: #151A24; border-color: rgba(255, 255, 255, 0.08); box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6); }
+@media (max-width: 640px) {
+  .app-toast { left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); width: auto; }
+  body.has-tabbar .app-toast { bottom: calc(76px + env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) { .app-toast { animation: none; } }
 
 .pro-welcome { animation: pro-fade 0.25s ease-out; }
 .pro-welcome-card { width: min(440px, 100%); text-align: center; padding-top: 34px; animation: pro-in 0.5s cubic-bezier(0.34, 1.36, 0.64, 1); }
@@ -851,7 +956,18 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .lib-chip.on { background: var(--blue-fill, var(--blue)); border-color: var(--blue-fill, var(--blue)); color: #fff; }
 .lib-folder-bar { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; margin: 0 0 14px; background: var(--wash); }
 .lib-folder-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.lib-folder-actions { display: inline-flex; gap: 8px; }
+.lib-folder-actions { position: relative; display: inline-flex; gap: 8px; }
+/* The folder's ⋯ menu (board m-ux-medium W3c): Rename, and the link's one red word. */
+.lib-more { width: 44px; padding: 0; }
+.lib-more .ic { width: 20px; height: 20px; }
+.lib-more .ic circle { fill: currentColor; stroke: none; }
+.lib-menu { position: absolute; z-index: 10; right: 0; top: calc(100% + 6px); display: block; width: 232px; padding: 6px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 16px 40px rgba(15, 23, 42, 0.16); }
+:root[data-theme="dark"] .lib-menu { background: #151A24; border-color: rgba(255, 255, 255, 0.08); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6); }
+.lib-menu [role=menuitem] { display: flex; align-items: center; width: 100%; min-height: 48px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: var(--ink); font: inherit; font-size: 0.9375rem; font-weight: 500; text-align: left; cursor: pointer; }
+.lib-menu [role=menuitem]:hover, .lib-menu [role=menuitem]:focus-visible { background: var(--wash); outline: none; }
+.lib-menu [role=menuitem].danger { color: var(--danger-text); }
+.lib-menu-sep { display: block; margin: 4px 6px; border-top: 1px solid var(--line); }
+@media (min-width: 641px) and (hover: hover) and (pointer: fine) { .lib-more { width: 38px; } .lib-menu [role=menuitem] { min-height: 40px; } }
 .lib-folder-bar .share-row { margin-top: 10px; }
 .lib-folder-tag { align-self: flex-start; font-size: 0.72rem; font-weight: 700; color: var(--blue-dark); background: var(--blue-tint); border-radius: 8px; padding: 2px 9px; }
 .lib-item .actions { flex-wrap: wrap; align-items: center; }

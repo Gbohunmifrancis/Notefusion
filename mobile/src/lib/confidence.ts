@@ -17,6 +17,21 @@ export const CONFIDENCE = {
 
 export type ConfidenceLevel = "clear" | "check" | "hard";
 
+/**
+ * A note the sheet flags: amber and dotted on the grid, amber in a dotted ring on the stave, counted by "2 notes to
+ * check" and walked by Check.
+ */
+export function isDoubtfulNote(conf: number): boolean {
+  return conf < CONFIDENCE.hard;
+}
+
+/** The onsets (quarter notes) of the doubtful notes, once each and in order: the heads the stave rings. */
+export function doubtfulBeats(notes: readonly { startBeat: number; conf: number }[]): number[] {
+  const beats = new Set<number>();
+  for (const n of notes) if (isDoubtfulNote(n.conf)) beats.add(Math.round(n.startBeat * 1000) / 1000);
+  return [...beats].sort((a, b) => a - b);
+}
+
 export function confidenceLevel(conf: number): ConfidenceLevel {
   const c = Number.isFinite(conf) ? conf : 0;
   if (c >= CONFIDENCE.clear) return "clear";

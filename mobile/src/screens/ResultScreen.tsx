@@ -12,6 +12,7 @@ import { Icon, type IconName } from "../components/Icon";
 import { usePreventRemove } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Svg, { Circle, Ellipse } from "react-native-svg";
 import { Screen } from "../components/Screen";
 import { KeyboardAvoider } from "../components/KeyboardAvoider";
 import { Button } from "../components/Button";
@@ -64,12 +65,17 @@ import { logAnalyticsEvent } from "../lib/analytics";
 import { isNetworkCode } from "../lib/reachability";
 import { useOfflineLibrary } from "../lib/offlineLibrary";
 import { takeOpened } from "../lib/outbox";
-import { savedToastBody, takeKind } from "../lib/savedSheet";
+import { linkJobStore } from "../lib/linkJobStore";
+import { savedToastBody, takeKind, worthAListenLine } from "../lib/savedSheet";
 import { askToDelete, deleteSheets, keepSheetOffline, renameSheet, shareSheetLinks } from "../lib/sheetActions";
 import { transposeLocally } from "../lib/localTranspose";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { rating } from "../lib/rating";
 import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
+import type { HeldChange } from "../lib/heldChange";
+import { holdWithUndo, type Held } from "../lib/heldChangeRuntime";
+import { dohNowLine, HYMNBOOK_IN_LINE, movedLine } from "../lib/undoWords";
+import { openingBars } from "../lib/solfaOpening";
 import {
   fonts,
   motion,
@@ -123,6 +129,27 @@ function realign(next: NoteEvent[], from: Draft): Draft {
 type Parts = NonNullable<TranscriptionResult["parts"]>;
 
 /**
+ * Everything another doh, the hymnbook version or a transposition rewrites. Each is shown at once with an Undo toast
+ * (board m-ux-medium P1e), and Undo puts back exactly this.
+ */
+interface SheetState {
+  baseline: { notes: NoteEvent[]; key: string; solfaLines: string[] };
+  draft: Draft;
+  persisted: Draft;
+  key: string;
+  timeSignature: string;
+  tempo: number;
+  lyrics: string;
+  chords: ChordSymbol[] | null;
+  parts: Parts | null;
+  partsMusicXml: string;
+  preview: string;
+  doubt: KeyAlternative[];
+  hymnSource: HymnCredit | null;
+  hymnAnswered: boolean;
+}
+
+/**
  * A part's solfa lines for a key. The worker labels the parts it returns; a saved sheet
  * (and a transposed one) comes back with pitches only, so the lines are made here. The
  * octave marks are relative to the soprano's reference doh (`partReference`: the melody's
@@ -168,6 +195,15 @@ const PROVIDERS: Record<string, string> = { youtube: "YouTube", spotify: "Spotif
 /** The space between a guest's "Keep this sheet" card and the player above it. */
 const KEEP_GAP = 8;
 
+/** Long enough for one full-screen modal to leave before the next is shown (iOS presents one at a time). */
+const MODAL_HANDOVER_MS = 400;
+
+/** The player dock's height before it has been laid out: play (44) in 12 px of padding, and its border. */
+const DOCK_HEIGHT_GUESS = 70;
+/** Save to Library floats this far over the dock, and the sheet's end leaves room for it (48 + 12). */
+const SAVE_PILL_GAP = 12;
+const SAVE_PILL_ROOM = 48 + SAVE_PILL_GAP;
+
 type Panel = "transpose" | "lyrics" | "parts" | "sing" | "export";
 
 /** The part a singer practised last on this device; Learn my part opens on it when the sheet has it. */
@@ -182,13 +218,14 @@ type SolfaStyle = "bars" | "grid" | "curwen" | "hymn";
  *     under it (artist, section, key) and the song's credit when it has one.
  *   • One row of the numbers that matter — DOH, BPM, TIME, SURE. The first three
  *     open their pickers (re-key and transpose, tempo, meter) beneath the row.
+ *   • One amber row when the model doubted some notes — the way into a review — and
+ *     the round actions — transpose, lyrics, SATB, sing, export, more — each opening
+ *     its panel below the row. Above the notation, so they are on the first screen
+ *     however long the sheet is (board m-ux-medium P1c).
  *   • The notation: a bar to a row, a syllable to a beat, the words beneath, the
  *     mark faint behind it. The same note list can be read as the text grid, as
  *     Curwen, as a hymn layout or on the stave. Every syllable opens the editor.
- *   • One amber row when the model doubted some notes — the way into a review.
- *   • Round actions — transpose, lyrics, SATB, sing, export, more — each opening
- *     its panel below the row.
- *   • The player docked over the bottom; its expand button opens Rehearse.
+ *   • The player docked over the bottom; its Practise opens Learn my part (Rehearse on a sheet without parts).
  *
  * PRD honesty rule: the SURE figure is always visible and coloured by level, and
  * low-confidence notes are amber with a dotted underline so users double-check.
@@ -242,6 +279,10 @@ export function ResultScreen({ route, navigation }: Props) {
   /** Which saved sheets are kept on the phone ("Keep offline", or keep-all in Settings). */
   const offlineCopies = useOfflineLibrary();
   const [saving, setSaving] = useState(false);
+  /** Saved to the Library during this visit: the line under the title says so. */
+  const [savedHere, setSavedHere] = useState(false);
+  /** The player dock's height, so Save to Library floats 12 px over it. */
+  const [dockHeight, setDockHeight] = useState(DOCK_HEIGHT_GUESS);
   const [renaming, setRenaming] = useState(false);
   const [exportingType, setExportingType] = useState<"musicxml" | "solfa" | "midi" | "pdf" | null>(null);
   const scoreRef = useRef<ScoreViewHandle>(null);
@@ -359,6 +400,19 @@ export function ResultScreen({ route, navigation }: Props) {
     ? null
     : hymnOffer(result.hymnMatch, { saved: !!savedId && !autoSaved, answered: hymnAnswered || !!hymnSource, hasParts: !!parts });
 
+  /** How the tune starts in each doh on offer: the rewrite a tap on it makes (board m-ux-medium P1e). */
+  const dohPreviews = useMemo(
+    () =>
+      doubt.map((choice) => ({
+        choice,
+        opening: openingBars(
+          deriveSolfa(writeInKey(baseline.notes, choice), choice.key, timeSignature, result.chromaticSpelling ?? "direction").notes,
+          timeSignature,
+        ),
+      })),
+    [doubt, baseline.notes, timeSignature, result.chromaticSpelling],
+  );
+
   const [solfaStyle, setSolfaStyle] = useState<SolfaStyle>("bars");
   const hasLyrics = lyrics.trim().length > 0;
   useEffect(() => {
@@ -397,6 +451,20 @@ export function ResultScreen({ route, navigation }: Props) {
     () => (hasLyrics ? hymnRows(view.notes, lyrics, timeSignature) : []),
     [hasLyrics, view.notes, lyrics, timeSignature],
   );
+
+  /** "Use the hymnbook version?": the take's opening and the hymnbook's, each in its own meter. */
+  const hymnPreview = useMemo(() => {
+    if (hymnAsk !== "version" || !result.hymnMatch) return null;
+    const sheet = hymnbookSheet(result.hymnMatch, tempo);
+    if (!sheet) return null;
+    const book = deriveSolfa(sheet.notes, sheet.key, sheet.timeSignature, result.chromaticSpelling ?? "direction").notes;
+    return {
+      yours: openingBars(view.notes, timeSignature),
+      yoursMeter: timeSignature,
+      book: openingBars(book, sheet.timeSignature),
+      bookMeter: sheet.timeSignature,
+    };
+  }, [hymnAsk, result.hymnMatch, result.chromaticSpelling, tempo, view.notes, timeSignature]);
 
   /** The parts' solfa lines, labelled for the current key. */
   const partsView = useMemo(() => {
@@ -595,8 +663,66 @@ export function ResultScreen({ route, navigation }: Props) {
     [draft.notes, edited, result.overallConfidence, hymnSource],
   );
 
-  /** Saves the sheet to the Library. Resolves to its id, or null when it could not be saved (and the dialog said why). */
-  async function save(): Promise<string | null> {
+  // ── Shown at once, sent after its Undo (board m-ux-medium P1e) ──────────────
+  /** The sheet as it stands, for an Undo to put back. */
+  function sheetState(): SheetState {
+    return {
+      baseline,
+      draft,
+      persisted: persisted.current,
+      key,
+      timeSignature,
+      tempo,
+      lyrics,
+      chords,
+      parts,
+      partsMusicXml,
+      preview,
+      doubt,
+      hymnSource,
+      hymnAnswered,
+    };
+  }
+
+  function applySheet(next: SheetState) {
+    setBaseline(next.baseline);
+    setDraft(next.draft);
+    persisted.current = next.persisted;
+    setKey(next.key);
+    setTimeSignature(next.timeSignature);
+    setTempo(next.tempo);
+    setLyrics(next.lyrics);
+    setChords(next.chords);
+    setParts(next.parts);
+    setPartsMusicXml(next.partsMusicXml);
+    setPreview(next.preview);
+    setDoubt(next.doubt);
+    setHymnSource(next.hymnSource);
+    setHymnAnswered(next.hymnAnswered);
+  }
+
+  /** The change still held behind its Undo toast, if any. */
+  const held = useRef<Held | null>(null);
+  function hold(message: string, change: HeldChange, icon: IconName) {
+    held.current = holdWithUndo(message, change, icon);
+  }
+  /**
+   * A change still held is sent before anything else on the sheet changes or is saved: its Undo would otherwise take
+   * the later edit with it, and its write would land on top of it.
+   */
+  function settleHeld() {
+    held.current?.settle();
+    held.current = null;
+  }
+  // Leaving the screen sends it: an Undo can only put back a sheet that is still open.
+  useEffect(() => () => settleHeld(), []);
+
+  /**
+   * Saves the sheet to the Library. Resolves to its id, or null when it could not be saved (and the dialog said why).
+   * `offerRename`: saved by the one tap on Save to Library, under the title shown, so the toast offers Rename.
+   */
+  async function save({ offerRename = false }: { offerRename?: boolean } = {}): Promise<string | null> {
+    settleHeld();
     setSaving(true);
     try {
       const saved = await libraryApi.save({
@@ -617,6 +743,7 @@ export function ResultScreen({ route, navigation }: Props) {
       committedLyrics.current = lyrics.trim();
       setSavedId(saved.id);
       setCommittedTitle(saved.title);
+      setSavedHere(true);
       // Corrections rode along in the payload, so the server is now level with
       // the draft and a later edit only has to send the difference.
       persisted.current = draft;
@@ -626,7 +753,11 @@ export function ResultScreen({ route, navigation }: Props) {
       // The third save may bring the store-rating ask, which says the sheet was saved
       // itself; two sheets stacked on the same moment would be one too many.
       const askingForRating = await rating.recordSave();
-      if (!askingForRating) showToast("Saved to your library");
+      if (!askingForRating)
+        showToast(
+          "Saved to your Library",
+          offerRename ? { action: { label: "Rename", onPress: () => setNaming(true) } } : undefined,
+        );
       return saved.id;
     } catch (e) {
       showDialog({
@@ -642,6 +773,7 @@ export function ResultScreen({ route, navigation }: Props) {
   }
 
   async function applyKey(next: string) {
+    settleHeld();
     setPickingKey(false);
     setDoubt([]);
     if (sameKey(next, key)) return;
@@ -679,34 +811,49 @@ export function ResultScreen({ route, navigation }: Props) {
   /**
    * The answer to "which doh is it?". Another doh brings its own pitches — a note the singer left
    * between two scale tones is written as that key's tone — so it is the sheet as heard in that key,
-   * not a correction: the baseline moves with it, as it does for a transposition.
+   * not a correction: the baseline moves with it, as it does for a transposition. Shown at once with
+   * "Doh is D now · Undo"; a saved sheet is written when the toast leaves, so Undo sends nothing.
    */
-  async function chooseDoh(choice: KeyAlternative | null) {
+  function chooseDoh(choice: KeyAlternative | null) {
     if (!choice) {
       setDoubt([]);
       return;
     }
+    settleHeld();
+    const before = sheetState();
     const relabelled = deriveSolfa(
       writeInKey(baseline.notes, choice), choice.key, timeSignature, result.chromaticSpelling ?? "direction");
-    if (savedId) {
-      setRekeying(true);
-      try {
-        await libraryApi.updateNotes(savedId, relabelled.notes);
-        await libraryApi.updateKey(savedId, choice.key);
-      } catch (e) {
-        showDialog({ title: "Could not change the doh", message: toApiError(e).message, icon: "problem", tone: "danger" });
-        return;
-      } finally {
-        setRekeying(false);
-      }
-    }
-    setBaseline({ notes: relabelled.notes, key: choice.key, solfaLines: relabelled.solfaLines });
-    setDraft(pristine(relabelled.notes));
-    persisted.current = pristine(relabelled.notes);
-    setKey(choice.key);
-    setPreview(synthesizeMelodyWavBase64(relabelled.notes, tempo));
-    setDoubt([]);
+    applySheet({
+      ...before,
+      baseline: { notes: relabelled.notes, key: choice.key, solfaLines: relabelled.solfaLines },
+      draft: pristine(relabelled.notes),
+      persisted: pristine(relabelled.notes),
+      key: choice.key,
+      preview: synthesizeMelodyWavBase64(relabelled.notes, tempo),
+      doubt: [],
+    });
     haptics.play("success");
+    const id = savedId;
+    hold(
+      dohNowLine(dohLetter(choice.key)),
+      {
+        commit: async () => {
+          if (!id) return; // unsaved: the key and notes travel with the save payload
+          setRekeying(true);
+          try {
+            await libraryApi.updateNotes(id, relabelled.notes);
+            await libraryApi.updateKey(id, choice.key);
+          } catch (e) {
+            applySheet(before);
+            showDialog({ title: "Could not change the doh", message: toApiError(e).message, icon: "problem", tone: "danger" });
+          } finally {
+            setRekeying(false);
+          }
+        },
+        undo: () => applySheet(before),
+      },
+      "solfa",
+    );
   }
 
   /**
@@ -714,27 +861,44 @@ export function ResultScreen({ route, navigation }: Props) {
    * notes, rhythm, time signature and pickup, already in the key that was sung, at the pace it was sung,
    * with the first verse under it when no words were typed. Like another doh, it is the sheet, not a
    * correction: the baseline moves with it. What was read against the old beats (the chords) goes.
+   * Shown at once with "Hymnbook version in · Undo"; Undo puts back the take as heard, its chords and the question.
    */
   function chooseHymnbook(take: boolean) {
-    setHymnAnswered(true);
     const sheet = take && result.hymnMatch ? hymnbookSheet(result.hymnMatch, tempo) : null;
-    if (!sheet) return;
+    if (!sheet) {
+      setHymnAnswered(true);
+      return;
+    }
+    settleHeld();
+    const before = sheetState();
     const relabelled = deriveSolfa(sheet.notes, sheet.key, sheet.timeSignature, result.chromaticSpelling ?? "direction");
-    setBaseline({ notes: relabelled.notes, key: sheet.key, solfaLines: relabelled.solfaLines });
-    setDraft(pristine(relabelled.notes));
-    persisted.current = pristine(relabelled.notes);
-    setKey(sheet.key);
-    setTimeSignature(sheet.timeSignature);
-    setTempo(sheet.tempo);
-    if (!lyrics.trim() && sheet.lyrics) setLyrics(sheet.lyrics);
-    setChords(null);
-    setPreview(synthesizeMelodyWavBase64(relabelled.notes, sheet.tempo));
-    setDoubt([]);
-    setHymnSource(sheet.hymn);
+    applySheet({
+      ...before,
+      baseline: { notes: relabelled.notes, key: sheet.key, solfaLines: relabelled.solfaLines },
+      draft: pristine(relabelled.notes),
+      persisted: pristine(relabelled.notes),
+      key: sheet.key,
+      timeSignature: sheet.timeSignature,
+      tempo: sheet.tempo,
+      lyrics: !lyrics.trim() && sheet.lyrics ? sheet.lyrics : lyrics,
+      chords: null,
+      preview: synthesizeMelodyWavBase64(relabelled.notes, sheet.tempo),
+      doubt: [],
+      hymnSource: sheet.hymn,
+      hymnAnswered: true,
+    });
     haptics.play("success");
-    // On a sheet already in the Library (filed as its job finished) the swap is saved as it is made: the hymnbook
-    // version replaces the filed copy, as a Save of the same job does.
-    if (savedId) void saveHymnbook(sheet, relabelled.notes);
+    // On a sheet already in the Library (filed as its job finished) the swap is saved when the toast leaves: the
+    // hymnbook version replaces the filed copy, as a Save of the same job does.
+    const id = savedId;
+    hold(
+      HYMNBOOK_IN_LINE,
+      {
+        commit: () => (id ? saveHymnbook(sheet, relabelled.notes) : undefined),
+        undo: () => applySheet(before),
+      },
+      "hymns",
+    );
   }
 
   async function saveHymnbook(sheet: HymnbookSheet, notes: NoteEvent[]) {
@@ -765,6 +929,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   async function handleTempoChange(nextTempo: number) {
     if (nextTempo < 20 || nextTempo > 300 || nextTempo === tempo) return;
+    settleHeld();
     const previous = tempo;
     setTempo(nextTempo);
     try {
@@ -788,6 +953,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   async function handleMeterChange(nextMeter: string) {
     if (nextMeter === timeSignature) return;
+    settleHeld();
     const previous = timeSignature;
     setTimeSignature(nextMeter);
     setPickingMeter(false);
@@ -809,6 +975,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   /** A free tap on any chip. Prev/Next then walk the whole list. */
   function openNote(index: number) {
+    settleHeld();
     setReviewQueue(null);
     setEditing(index);
   }
@@ -819,6 +986,7 @@ export function ResultScreen({ route, navigation }: Props) {
       .map((n, i) => (n.conf < 0.5 ? i : -1))
       .filter((i) => i >= 0);
     if (flagged.length === 0) return;
+    settleHeld();
     setReviewQueue(flagged);
     setEditing(flagged[0]);
   }
@@ -935,6 +1103,7 @@ export function ResultScreen({ route, navigation }: Props) {
   }
 
   function discardCorrections() {
+    settleHeld();
     const original = pristine(baseline.notes);
     setDraft(original);
     setPreview(synthesizeMelodyWavBase64(baseline.notes, tempo));
@@ -961,6 +1130,7 @@ export function ResultScreen({ route, navigation }: Props) {
   async function writeParts() {
     if (harmonising || view.notes.length === 0) return;
     if (savedId && blockedByLocalTranspose()) return;
+    settleHeld();
     setHarmonising(true);
     try {
       const written = await transcriptionsApi.harmonise({ key, tempoBpm: Math.round(tempo), timeSignature, notes: view.notes });
@@ -1006,7 +1176,10 @@ export function ResultScreen({ route, navigation }: Props) {
    */
   async function applyTranspose() {
     if (semitones === 0) return;
+    settleHeld();
     setTransposing(true);
+    const before = sheetState();
+    const by = semitones;
     try {
       const moved = savedId
         ? await libraryApi.transpose(savedId, semitones).then((s) => ({
@@ -1028,20 +1201,41 @@ export function ResultScreen({ route, navigation }: Props) {
           });
       const relabelled = deriveSolfa(moved.notes, moved.key, timeSignature, result.chromaticSpelling ?? "direction");
       const notes = relabelled.notes;
-      setBaseline({ notes, key: moved.key, solfaLines: relabelled.solfaLines });
-      setDraft(pristine(notes));
-      persisted.current = pristine(notes);
-      setKey(moved.key);
-      setParts((moved.parts as Parts | null) ?? null);
-      setPartsMusicXml(moved.partsMusicXml ?? "");
-      setChords(moved.chords?.length ? moved.chords : null);
-      setPreview(synthesizeMelodyWavBase64(notes, tempo));
+      const after: SheetState = {
+        ...before,
+        baseline: { notes, key: moved.key, solfaLines: relabelled.solfaLines },
+        draft: pristine(notes),
+        persisted: pristine(notes),
+        key: moved.key,
+        parts: (moved.parts as Parts | null) ?? null,
+        partsMusicXml: moved.partsMusicXml ?? "",
+        chords: moved.chords?.length ? moved.chords : null,
+        preview: synthesizeMelodyWavBase64(notes, tempo),
+        doubt: [],
+      };
+      applySheet(after);
       setSemitones(0);
       setPickingKey(false);
-      setDoubt([]);
       // The server moved the saved sheet and the screen now shows exactly that.
       movedOffline.current = false;
       haptics.play("success");
+      // The one edit that moves the notes: its Undo moves them back, on the saved sheet too.
+      const id = savedId;
+      hold(
+        movedLine(by, moved.key),
+        {
+          commit: () => undefined, // already moved where it is kept
+          undo: () => {
+            applySheet(before);
+            if (!id) return;
+            libraryApi.transpose(id, -by).catch((e) => {
+              applySheet(after);
+              showDialog({ title: "Could not move it back", message: toApiError(e).message, icon: "problem", tone: "danger" });
+            });
+          },
+        },
+        "transpose",
+      );
     } catch (e) {
       if (isNetworkCode(toApiError(e).code)) {
         transposeOffline();
@@ -1088,6 +1282,7 @@ export function ResultScreen({ route, navigation }: Props) {
   async function commitLyrics() {
     const next = lyrics.trim();
     if (!savedId || next === committedLyrics.current) return;
+    settleHeld();
     const previous = committedLyrics.current;
     committedLyrics.current = next;
     try {
@@ -1134,6 +1329,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   async function rename() {
     if (!savedId || renamingRef.current) return;
+    settleHeld();
     renamingRef.current = true;
     setRenaming(true);
     const kept = await renameSheet(savedId, title);
@@ -1371,6 +1567,8 @@ export function ResultScreen({ route, navigation }: Props) {
 
 
   const hasScore = scoreXml.length > 0;
+  /** A sheet not in the Library (deleted and opened again, or from before option A): one tap saves it as titled. */
+  const offerSave = !guest && !savedId;
 
   const insets = useSafeAreaInsets();
   const shownTitle = committedTitle || title;
@@ -1388,6 +1586,15 @@ export function ResultScreen({ route, navigation }: Props) {
     else setRehearsing(true);
   }
 
+  /**
+   * Learn my part's Rehearse row: the dock's Practise opens Learn my part on a sheet with parts, so Rehearse is
+   * reached from there. Opened once Learn my part has gone, as iOS shows one modal at a time.
+   */
+  function rehearseFromPractice() {
+    closePractice();
+    setTimeout(() => setRehearsing(true), MODAL_HANDOVER_MS);
+  }
+
   // Home's "Practise this tune" opens the sheet straight on its practice.
   useEffect(() => {
     if (practise) practiseNow();
@@ -1399,12 +1606,18 @@ export function ResultScreen({ route, navigation }: Props) {
   // Only on a sheet opened straight from its finished job, once per job: Doh cheers with the headline numbers and
   // offers to practise it — or, when some notes are worth a listen, says so and offers to check them. Leaves after
   // 5 s or on any touch, and takes the player dock's place, so it never covers the solfa.
-  /** Doh's cheer (or note check), or — on a sheet filed as it finished — "Saved to your Library" with Rename. */
+  /**
+   * Doh's cheer (or note check), or — on a sheet filed as it finished — "Saved to your Library" with Rename, or with
+   * Check when it has notes worth a listen.
+   */
   const [celebrate, setCelebrate] = useState<{ doubtful: boolean; saved?: boolean } | null>(null);
   const [celebrating, setCelebrating] = useState(false);
   // Opened from its job (the record screen, a push, the Library): its take in the send queue is finished with.
   useEffect(() => {
-    if (sourceJobId) takeOpened(sourceJobId);
+    if (sourceJobId) {
+      takeOpened(sourceJobId);
+      void linkJobStore.forget(sourceJobId);
+    }
     // Opened: a sheet the server filed stops showing as unopened in the Library.
     if (autoSaved && initialSavedId) void libraryApi.markOpened(initialSavedId).catch(() => undefined);
     // Once, on arrival.
@@ -1420,7 +1633,8 @@ export function ResultScreen({ route, navigation }: Props) {
         // says the sheet was saved itself, so the toast stands aside for it.
         if (await rating.recordSave()) return;
         if (!live) return;
-        setCelebrate({ doubtful: false, saved: true });
+        // Notes under the check line turn the toast's one action into Check (board m-ux-medium P1f).
+        setCelebrate({ doubtful: result.notes.some((n) => n.conf < 0.5), saved: true });
       } else {
         setCelebrate({ doubtful: result.notes.some((n) => n.conf < 0.5) });
       }
@@ -1508,6 +1722,7 @@ export function ResultScreen({ route, navigation }: Props) {
   /** The same question as every delete of a saved sheet (lib/sheetActions); gone, the screen closes. */
   function confirmDeleteSheet(id: string) {
     askToDelete([{ id, title: shownTitle || "This sheet" }], async () => {
+      settleHeld();
       if (!(await deleteSheets([{ id, title: shownTitle }]))) return;
       if (navigation.canGoBack()) {
         navigation.goBack();
@@ -1632,7 +1847,13 @@ export function ResultScreen({ route, navigation }: Props) {
         <ScrollView
           contentContainerStyle={[
             styles.content,
-            { paddingBottom: (preview ? DOCK_CLEARANCE : spacing.xl) + insets.bottom + (guest ? keepHeight + KEEP_GAP : 0) },
+            {
+              paddingBottom:
+                (preview ? DOCK_CLEARANCE : spacing.xl) +
+                insets.bottom +
+                (guest ? keepHeight + KEEP_GAP : 0) +
+                (offerSave ? SAVE_PILL_ROOM : 0),
+            },
           ]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
@@ -1649,10 +1870,10 @@ export function ResultScreen({ route, navigation }: Props) {
                   onPress={() => void shareLink()}
                   busy={sharing}
                 />
-                {/* Already in the Library (option A): the bookmark is Rename, a pencil. */}
+                {/* The pencil names the sheet; an unsaved one is saved by the Save to Library pill over the dock. */}
                 <IconButton
-                  icon={savedId ? "rename" : "save"}
-                  label={savedId ? "Rename" : "Save to library"}
+                  icon="rename"
+                  label={savedId ? "Rename" : "Name this sheet"}
                   onPress={() => setNaming((n) => !n)}
                   active={naming}
                 />
@@ -1671,10 +1892,13 @@ export function ResultScreen({ route, navigation }: Props) {
               ripple={false}
               scaleTo={motion.scale.row}
               haptic="none"
+              style={styles.titleRow}
               accessibilityRole="button"
               accessibilityLabel={`${shownTitle}. ${savedId ? "Rename" : "Name and save"}`}
             >
-              <Text style={styles.title}>{shownTitle}</Text>
+              <Text style={[styles.title, styles.titleInRow]}>{shownTitle}</Text>
+              {/* The pencil says the name can be changed, as the top bar's does. */}
+              <Icon name="rename" size={18} color={colors.textMuted} style={styles.titlePencil} />
             </Touchable>
           )}
           {guest ? (
@@ -1684,6 +1908,12 @@ export function ResultScreen({ route, navigation }: Props) {
               <Text style={styles.savedSubText}>{`${result.source ? subtitle : takeKind(result)} · `}</Text>
               <Icon name="check" size={13} color={colors.success} />
               <Text style={styles.savedSubText}> saved to your Library just now</Text>
+            </View>
+          ) : savedHere && savedId ? (
+            <View style={styles.savedSub} accessible accessibilityLabel={`${subtitle}, saved to your Library`}>
+              <Text style={styles.savedSubText}>{`${subtitle} · `}</Text>
+              <Icon name="check" size={13} color={colors.success} />
+              <Text style={styles.savedSubText}> saved to your Library</Text>
             </View>
           ) : subtitle ? (
             <Text style={styles.subtitle}>{subtitle}</Text>
@@ -1820,6 +2050,15 @@ export function ResultScreen({ route, navigation }: Props) {
                   ? ". Use the hymnbook version? Its notes, rhythm and bar lines come from the published score, in the key you sang."
                   : "."}
               </Text>
+              {/* Both openings, bar lines and meter as each writes them, so the swap is seen before it is made. */}
+              {hymnPreview ? (
+                <View style={styles.compare}>
+                  <Text style={styles.compareLabel}>Yours · {hymnPreview.yoursMeter}</Text>
+                  <Text style={styles.compareLine}>{hymnPreview.yours}</Text>
+                  <Text style={[styles.compareLabel, styles.compareGap]}>Hymnbook · {hymnPreview.bookMeter}</Text>
+                  <Text style={[styles.compareLine, styles.compareBook]}>{hymnPreview.book}</Text>
+                </View>
+              ) : null}
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipScroll}>
                 {hymnAsk === "version" ? (
                   <Touchable
@@ -1828,16 +2067,16 @@ export function ResultScreen({ route, navigation }: Props) {
                     onPress={() => chooseHymnbook(true)}
                     accessibilityLabel={`Use the hymnbook version of ${result.hymnMatch.title}`}
                   >
-                    <Text style={[styles.chipText, styles.chipTextOn]}>Yes</Text>
+                    <Text style={[styles.chipText, styles.chipTextOn]}>Use the hymnbook</Text>
                   </Touchable>
                 ) : null}
                 <Touchable
                   style={styles.chip}
                   radius={radii.pill}
                   onPress={() => chooseHymnbook(false)}
-                  accessibilityLabel={hymnAsk === "version" ? "Keep the transcription" : "Dismiss"}
+                  accessibilityLabel={hymnAsk === "version" ? "Keep your transcription" : "Dismiss"}
                 >
-                  <Text style={styles.chipText}>{hymnAsk === "version" ? "No" : "Dismiss"}</Text>
+                  <Text style={styles.chipText}>{hymnAsk === "version" ? "Keep mine" : "Dismiss"}</Text>
                 </Touchable>
               </ScrollView>
             </View>
@@ -1847,32 +2086,25 @@ export function ResultScreen({ route, navigation }: Props) {
             <View style={styles.panel}>
               <Text style={styles.panelEyebrow}>Which doh is it?</Text>
               <Text style={styles.panelHint}>
-                Your tune fits more than one doh about as well. Tap the one you sang in — notes you left
-                between two tones are written in its scale.
+                Your tune fits more than one doh. Here is how it starts in each; tap the one you sang in.
               </Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipScroll}>
-                <Touchable
-                  style={[styles.chip, styles.chipOn]}
-                  radius={radii.pill}
-                  onPress={() => chooseDoh(null)}
+              {/* Each row is the rewrite a tap makes, of the first eight notes; the one shown is "Now". */}
+              <DohChoiceRow
+                letter={doh}
+                opening={openingBars(view.notes, timeSignature)}
+                now
+                disabled={rekeying}
+                onPress={() => chooseDoh(null)}
+              />
+              {dohPreviews.map(({ choice, opening }) => (
+                <DohChoiceRow
+                  key={choice.key}
+                  letter={dohLetter(choice.key)}
+                  opening={opening}
                   disabled={rekeying}
-                  accessibilityLabel={`Keep doh as ${doh}`}
-                >
-                  <Text style={[styles.chipText, styles.chipTextOn]}>Doh is {doh}</Text>
-                </Touchable>
-                {doubt.map((choice) => (
-                  <Touchable
-                    key={choice.key}
-                    style={styles.chip}
-                    radius={radii.pill}
-                    onPress={() => chooseDoh(choice)}
-                    disabled={rekeying}
-                    accessibilityLabel={`Doh is ${dohLetter(choice.key)}`}
-                  >
-                    <Text style={styles.chipText}>Doh is {dohLetter(choice.key)}</Text>
-                  </Touchable>
-                ))}
-              </ScrollView>
+                  onPress={() => chooseDoh(choice)}
+                />
+              ))}
             </View>
           ) : null}
 
@@ -1934,125 +2166,6 @@ export function ResultScreen({ route, navigation }: Props) {
               </View>
             </View>
           ) : null}
-
-          {/* ── How to read it: solfa by bar, the text grid, Curwen, hymn, stave ── */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.viewsScroll}
-            contentContainerStyle={styles.views}
-          >
-            {notationChoices.map((v) => {
-              const on = notationChoice === v.id;
-              return (
-                <Touchable
-                  key={v.id}
-                  onPress={() => {
-                    if (v.id === "staff") {
-                      setNotationView("staff");
-                    } else {
-                      setNotationView("solfa");
-                      setSolfaStyle(v.id);
-                    }
-                  }}
-                  style={[styles.viewChip, on && styles.viewChipOn]}
-                  radius={radii.pill}
-                  haptic="none"
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: on }}
-                  accessibilityLabel={v.a11y}
-                >
-                  {v.id === "bars" || v.id === "staff" ? (
-                    <Icon name={v.id === "bars" ? "solfa" : "staff"} size={16} color={on ? colors.text : colors.textMuted} />
-                  ) : null}
-                  <Text style={[styles.viewChipText, on && styles.viewChipTextOn]}>{v.label}</Text>
-                </Touchable>
-              );
-            })}
-          </ScrollView>
-
-          {/* ── The notation, from the same note data whichever way it is read ── */}
-          <View style={styles.notation}>
-            {notationView === "solfa" ? (
-              // The mark, faint behind the solfa — the board's watermark.
-              <View pointerEvents="none" style={styles.watermark}>
-                <Mark height={200} color={colors.text} />
-              </View>
-            ) : null}
-            {notationView === "solfa" ? (
-              nothingToShow ? (
-                <Text style={styles.solfaMuted}>No solfa lines produced.</Text>
-              ) : solfaStyle === "bars" ? (
-                <>
-                  <SheetGrid
-                    notes={view.notes}
-                    lyrics={lyricsUnder}
-                    chords={chordView}
-                    timeSignature={timeSignature}
-                    barCount={barCount}
-                    playingNote={playingNote}
-                    onSelectNote={guest ? undefined : openNote}
-                  />
-                  {guest ? null : <Text style={styles.gridHint}>Tap a syllable to fix it.</Text>}
-                </>
-              ) : solfaStyle === "hymn" ? (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <View>
-                    <Text style={styles.solfaHeader}>{activeSolfaLines[0]}</Text>
-                    {hymn.map((bars, r) => (
-                      <View key={r} style={styles.hymnRow}>
-                        {bars.map((bar, b) => (
-                          <View key={b} style={styles.hymnBar}>
-                            {bar.map((cell, c) => (
-                              <View key={c} style={styles.hymnCell}>
-                                <Text style={styles.hymnSolfa}>{cell.solfa}</Text>
-                                <Text style={styles.hymnLyric} numberOfLines={1}>{cell.lyric}</Text>
-                              </View>
-                            ))}
-                          </View>
-                        ))}
-                      </View>
-                    ))}
-                  </View>
-                </ScrollView>
-              ) : (
-                activeSolfaLines.map((line, i) => (
-                  <View key={i} style={styles.solfaLineWrap}>
-                    {activeSolfaLines.length > 1 && (
-                      <Text style={styles.solfaLineNum}>{i + 1}</Text>
-                    )}
-                    <View style={styles.solfaLineColumn}>
-                      {/* The chords over the bar, in the same monospaced face so each symbol sits
-                          on the syllable it belongs to (lib/chordRow). */}
-                      {chordLines?.[i]?.trim() ? (
-                        <Text style={styles.chordLine}>{chordLines[i]}</Text>
-                      ) : null}
-                      <Text style={[styles.solfaLine, i === 0 && styles.solfaHeader]}>{line}</Text>
-                    </View>
-                  </View>
-                ))
-              )
-            ) : (
-              <View>
-                <ScoreView
-                  ref={scoreRef}
-                  notes={view.notes}
-                  timeSignature={timeSignature}
-                  musicalKey={key}
-                  cursorBeat={cursorBeat}
-                  onSelectNote={guest ? undefined : openNote}
-                  onRendered={() => setStaffDraws((n) => n + 1)}
-                />
-                {/* A free account reads the sheet on screen with the preview mark; the
-                    download is the Pro half. */}
-                {!isPro ? (
-                  <View pointerEvents="none" style={styles.previewMark}>
-                    <Text style={styles.previewMarkText}>NoteFusion preview</Text>
-                  </View>
-                ) : null}
-              </View>
-            )}
-          </View>
 
           {/* One amber row when the model doubted some notes. Tapping opens the piano on
               the flagged piece: a doubtful note is a *pitch* question, and the fastest
@@ -2245,6 +2358,137 @@ export function ResultScreen({ route, navigation }: Props) {
             </View>
           ) : null}
 
+          {/* ── How to read it: solfa by bar, the text grid, Curwen, hymn, stave ── */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.viewsScroll}
+            contentContainerStyle={styles.views}
+          >
+            {notationChoices.map((v) => {
+              const on = notationChoice === v.id;
+              return (
+                <Touchable
+                  key={v.id}
+                  onPress={() => {
+                    if (v.id === "staff") {
+                      setNotationView("staff");
+                    } else {
+                      setNotationView("solfa");
+                      setSolfaStyle(v.id);
+                    }
+                  }}
+                  style={[styles.viewChip, on && styles.viewChipOn]}
+                  radius={radii.pill}
+                  haptic="none"
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  accessibilityLabel={v.a11y}
+                >
+                  {v.id === "bars" || v.id === "staff" ? (
+                    <Icon name={v.id === "bars" ? "solfa" : "staff"} size={16} color={on ? colors.link : colors.textMuted} />
+                  ) : null}
+                  <Text style={[styles.viewChipText, on && styles.viewChipTextOn]}>{v.label}</Text>
+                </Touchable>
+              );
+            })}
+          </ScrollView>
+
+          {/* ── The notation, from the same note data whichever way it is read ── */}
+          <View style={styles.notation}>
+            {notationView === "solfa" ? (
+              // The mark, faint behind the solfa — the board's watermark.
+              <View pointerEvents="none" style={styles.watermark}>
+                <Mark height={200} color={colors.text} />
+              </View>
+            ) : null}
+            {notationView === "solfa" ? (
+              nothingToShow ? (
+                <Text style={styles.solfaMuted}>No solfa lines produced.</Text>
+              ) : solfaStyle === "bars" ? (
+                <>
+                  <SheetGrid
+                    notes={view.notes}
+                    lyrics={lyricsUnder}
+                    chords={chordView}
+                    timeSignature={timeSignature}
+                    barCount={barCount}
+                    playingNote={playingNote}
+                    onSelectNote={guest ? undefined : openNote}
+                  />
+                  {guest ? null : <Text style={styles.gridHint}>Tap a syllable to fix it.</Text>}
+                </>
+              ) : solfaStyle === "hymn" ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <View>
+                    <Text style={styles.solfaHeader}>{activeSolfaLines[0]}</Text>
+                    {hymn.map((bars, r) => (
+                      <View key={r} style={styles.hymnRow}>
+                        {bars.map((bar, b) => (
+                          <View key={b} style={styles.hymnBar}>
+                            {bar.map((cell, c) => (
+                              <View key={c} style={styles.hymnCell}>
+                                <Text style={styles.hymnSolfa}>{cell.solfa}</Text>
+                                <Text style={styles.hymnLyric} numberOfLines={1}>{cell.lyric}</Text>
+                              </View>
+                            ))}
+                          </View>
+                        ))}
+                      </View>
+                    ))}
+                  </View>
+                </ScrollView>
+              ) : (
+                activeSolfaLines.map((line, i) => (
+                  <View key={i} style={styles.solfaLineWrap}>
+                    {activeSolfaLines.length > 1 && (
+                      <Text style={styles.solfaLineNum}>{i + 1}</Text>
+                    )}
+                    <View style={styles.solfaLineColumn}>
+                      {/* The chords over the bar, in the same monospaced face so each symbol sits
+                          on the syllable it belongs to (lib/chordRow). */}
+                      {chordLines?.[i]?.trim() ? (
+                        <Text style={styles.chordLine}>{chordLines[i]}</Text>
+                      ) : null}
+                      <Text style={[styles.solfaLine, i === 0 && styles.solfaHeader]}>{line}</Text>
+                    </View>
+                  </View>
+                ))
+              )
+            ) : (
+              <View>
+                <ScoreView
+                  ref={scoreRef}
+                  notes={view.notes}
+                  timeSignature={timeSignature}
+                  musicalKey={key}
+                  cursorBeat={cursorBeat}
+                  onSelectNote={guest ? undefined : openNote}
+                  onRendered={() => setStaffDraws((n) => n + 1)}
+                />
+                {/* What the ring means, under the stave, only when there is a ringed note. */}
+                {lowCount > 0 ? (
+                  <View style={styles.ringLegend}>
+                    <Svg width={24} height={24}>
+                      <Circle cx={12} cy={12} r={10} fill="none" stroke={colors.warning} strokeWidth={1.6} strokeDasharray="2.4 2.6" />
+                      <Ellipse cx={12} cy={12} rx={5.6} ry={4} transform="rotate(-22 12 12)" fill={colors.warning} />
+                    </Svg>
+                    <Text style={styles.ringLegendText}>
+                      {guest ? "Ringed notes are worth a listen." : "Ringed notes are worth a listen. Tap one to hear and fix it."}
+                    </Text>
+                  </View>
+                ) : null}
+                {/* A free account reads the sheet on screen with the preview mark; the
+                    download is the Pro half. */}
+                {!isPro ? (
+                  <View pointerEvents="none" style={styles.previewMark}>
+                    <Text style={styles.previewMarkText}>NoteFusion preview</Text>
+                  </View>
+                ) : null}
+              </View>
+            )}
+          </View>
+
           {/* ── Chords: the progression heard, symbol over its solfa ───────── */}
           {chordView ? (
             <View style={styles.chordsBlock}>
@@ -2270,9 +2514,20 @@ export function ResultScreen({ route, navigation }: Props) {
       {preview && !celebrate && (!guest || keepHeight > 0) ? (
         <PlayerDock
           practice={practice}
-          onRehearse={() => setRehearsing(true)}
+          onPractise={practiseNow}
           lift={guest ? keepHeight + KEEP_GAP : 0}
+          onHeight={setDockHeight}
         />
+      ) : null}
+
+      {/* ── Not in the Library: Save to Library is the screen's one primary, over the dock where the thumb is ── */}
+      {offerSave ? (
+        <View
+          pointerEvents="box-none"
+          style={[styles.savePill, { bottom: insets.bottom + 10 + (preview ? dockHeight + SAVE_PILL_GAP : 0) }]}
+        >
+          <Button label="Save to Library" icon="save" onPress={() => void save({ offerRename: true })} loading={saving} />
+        </View>
       ) : null}
 
       {/* ── A guest's preview: what an account adds, and the two ways to one (board l-ux-high/07) ── */}
@@ -2306,6 +2561,7 @@ export function ResultScreen({ route, navigation }: Props) {
       {practising && parts && practiceParts ? (
         <PracticeView
           onClose={closePractice}
+          onRehearse={rehearseFromPractice}
           practice={practice}
           names={partsOf(parts)}
           part={practicePart}
@@ -2349,7 +2605,28 @@ export function ResultScreen({ route, navigation }: Props) {
       />
 
       {/* ── Doh's first-open toast, where the player docks ─────────────────── */}
-      {celebrate?.saved ? (
+      {celebrate?.saved && celebrate.doubtful && lowCount > 0 ? (
+        // Filed as it finished, with notes worth a listen: the good news with its tick, and Check (Rename stays one
+        // tap away on the title's pencil).
+        <DohToast
+          visible={celebrating}
+          icon="done"
+          iconColor={colors.success}
+          title="Saved to your Library"
+          body={worthAListenLine(lowCount)}
+          action="Check"
+          bottom={insets.bottom + 10}
+          onTouched={() => {
+            touchOnToast.current = true;
+          }}
+          onAction={() => {
+            endCelebration();
+            startReview();
+          }}
+          onHide={endCelebration}
+          onGone={() => setCelebrate(null)}
+        />
+      ) : celebrate?.saved ? (
         <DohToast
           visible={celebrating}
           icon="library"
@@ -2453,13 +2730,26 @@ function Stat({
   active?: boolean;
   accessibilityLabel: string;
 }) {
+  const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const body = (
     <>
       <Text style={styles.statValue} numberOfLines={1} adjustsFontSizeToFit>
         {value}
       </Text>
-      <Text style={[styles.statCaption, active && styles.statCaptionActive]}>{caption}</Text>
+      <View style={styles.statCaptionRow}>
+        <Text style={[styles.statCaption, active && styles.statCaptionActive]}>{caption}</Text>
+        {/* A small chevron says the figure opens something (up while it is open); a pill would box the sheet's
+            three biggest figures. */}
+        {onPress ? (
+          <Icon
+            name="chevron"
+            size={12}
+            color={active ? colors.accent : colors.textMuted}
+            style={active ? styles.chevronUp : styles.chevronDown}
+          />
+        ) : null}
+      </View>
     </>
   );
   // Only the stats that change something get a touch target, so a read-only one
@@ -2479,6 +2769,45 @@ function Stat({
     <View style={styles.stat} accessible accessibilityLabel={accessibilityLabel}>
       {body}
     </View>
+  );
+}
+
+/** One answer to "Which doh is it?": the doh, how the tune starts in it, and "Now" on the one shown. */
+function DohChoiceRow({
+  letter,
+  opening,
+  now = false,
+  disabled,
+  onPress,
+}: {
+  letter: string;
+  opening: string | null;
+  now?: boolean;
+  disabled?: boolean;
+  onPress: () => void;
+}) {
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <Touchable
+      onPress={onPress}
+      disabled={disabled}
+      style={[styles.dohRow, now && styles.dohRowOn]}
+      radius={16}
+      scaleTo={motion.scale.row}
+      accessibilityRole="button"
+      accessibilityState={{ selected: now }}
+      accessibilityLabel={`${now ? `Keep doh as ${letter}` : `Doh is ${letter}`}${opening ? `. It starts ${opening}` : ""}`}
+    >
+      <View style={styles.dohRowText}>
+        <Text style={styles.dohRowName}>Doh is {letter}</Text>
+        {opening ? (
+          <Text style={styles.dohRowOpening} numberOfLines={1}>
+            {opening}
+          </Text>
+        ) : null}
+      </View>
+      {now ? <Text style={styles.nowPill}>Now</Text> : null}
+    </Touchable>
   );
 }
 
@@ -2579,6 +2908,8 @@ const makeStyles = (c: Palette) =>
     screen: { paddingHorizontal: 0, paddingBottom: 0 },
     content: { paddingHorizontal: 22 },
     /** A guest's "Keep this sheet", pinned where the player docks (the player sits on it), at the dock's width. */
+    /** Save to Library: 16 px from the edge, 12 px over the dock. */
+    savePill: { position: "absolute", right: 16 },
     keepCard: {
       position: "absolute",
       left: 14,
@@ -2617,9 +2948,15 @@ const makeStyles = (c: Palette) =>
       color: c.text,
       marginTop: 16,
     },
-    subtitle: { fontFamily: fonts.regular, fontSize: 13.5, color: c.textMuted, marginTop: 6 },
+    titleRow: { flexDirection: "row", alignItems: "flex-end", marginTop: 16 },
+    titleInRow: { marginTop: 0, flexShrink: 1 },
+    /** Centred on the last line of the 36 px title. */
+    titlePencil: { marginLeft: 8, marginBottom: 9 },
+    // Sentences that explain are 15/22 and captions 12 at least (board m-ux-medium P1h); 15, not 16, so the solfa
+    // stays the biggest thing on the sheet.
+    subtitle: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted, marginTop: 6 },
     savedSub: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", marginTop: 6 },
-    savedSubText: { fontFamily: fonts.regular, fontSize: 13.5, color: c.textMuted },
+    savedSubText: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted },
 
     credit: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: 14 },
     creditThumb: { width: 36, height: 36, borderRadius: 10, backgroundColor: c.surfaceAlt },
@@ -2630,8 +2967,8 @@ const makeStyles = (c: Palette) =>
     hymnName: { fontFamily: fonts.medium, fontStyle: "italic", color: c.accent, textDecorationLine: "underline" },
     notice: {
       fontFamily: fonts.regular,
-      fontSize: 12.5,
-      lineHeight: 18,
+      fontSize: 15,
+      lineHeight: 22,
       color: c.noticeText,
       backgroundColor: c.accentSoft,
       borderRadius: 12,
@@ -2659,14 +2996,16 @@ const makeStyles = (c: Palette) =>
       letterSpacing: -1.2,
       color: c.text,
     },
+    statCaptionRow: { flexDirection: "row", alignItems: "center", gap: 3, marginTop: 6 },
     statCaption: {
       fontFamily: fonts.medium,
-      fontSize: 10.5,
+      fontSize: 12,
       letterSpacing: 1.5,
       textTransform: "uppercase",
       color: c.textMuted,
-      marginTop: 6,
     },
+    chevronDown: { transform: [{ rotate: "90deg" }] },
+    chevronUp: { transform: [{ rotate: "-90deg" }] },
     statCaptionActive: { color: c.accent },
 
     // ── Panels (pickers, lyrics, parts, export, the name) ────────────────────
@@ -2688,7 +3027,7 @@ const makeStyles = (c: Palette) =>
       textTransform: "uppercase",
       color: c.textMuted,
     },
-    panelHint: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: c.textMuted },
+    panelHint: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted },
     panelDivider: { height: 1, backgroundColor: c.border, marginVertical: spacing.sm },
     panelButton: { marginTop: spacing.xs },
     eyebrow: {
@@ -2714,10 +3053,51 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
     },
-    /** `ink`, not `accent`: a fill under a white label, so it stays deep in both modes. */
-    chipOn: { backgroundColor: c.ink, borderColor: c.ink },
+    /** Selected takes one look on this screen (key, doh and meter chips, reading chips, actions): wash, line, blue words. */
+    chipOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
     chipText: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted },
-    chipTextOn: { fontFamily: fonts.semibold, color: c.onInk },
+    chipTextOn: { fontFamily: fonts.semibold, color: c.link },
+
+    // ── Which doh is it? and the hymnbook version: seen before they are taken ──
+    dohRow: {
+      minHeight: 60,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+      paddingVertical: spacing.sm,
+      paddingHorizontal: 14,
+      borderRadius: 16,
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1.5,
+      borderColor: c.border,
+    },
+    dohRowOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
+    dohRowText: { flex: 1, minWidth: 0 },
+    dohRowName: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
+    dohRowOpening: { fontFamily: typography.mono.fontFamily, fontSize: 14, letterSpacing: 0.3, color: c.accent, marginTop: 3 },
+    nowPill: {
+      fontFamily: fonts.semibold,
+      fontSize: 12,
+      color: c.link,
+      backgroundColor: c.accentSoft,
+      borderRadius: radii.pill,
+      paddingVertical: 4,
+      paddingHorizontal: 9,
+      overflow: "hidden",
+    },
+    compare: {
+      gap: 2,
+      marginTop: 2,
+      marginBottom: 4,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      borderRadius: 12,
+      backgroundColor: c.surfaceAlt,
+    },
+    compareLabel: { fontFamily: fonts.medium, fontSize: 12, color: c.textMuted },
+    compareGap: { marginTop: 6 },
+    compareLine: { fontFamily: typography.mono.fontFamily, fontSize: 14, letterSpacing: 0.3, color: c.text },
+    compareBook: { color: c.accent },
 
     transposeRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginVertical: spacing.xs },
     roundStep: {
@@ -2768,20 +3148,20 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
     },
-    viewChipOn: { backgroundColor: c.surfaceAlt, borderColor: c.textFaint },
+    viewChipOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
     viewChipText: { fontFamily: fonts.medium, fontSize: 12.5, color: c.textMuted },
-    viewChipTextOn: { color: c.text },
+    viewChipTextOn: { fontFamily: fonts.semibold, color: c.link },
 
     notation: { marginTop: 10, minHeight: 120, position: "relative" },
     watermark: { position: "absolute", right: -30, top: 30, opacity: 0.05 },
-    gridHint: { fontFamily: fonts.regular, fontSize: 12, color: c.textFaint, marginTop: spacing.sm },
+    gridHint: { fontFamily: fonts.regular, fontSize: 13, color: c.textFaint, marginTop: spacing.sm },
 
     solfaLineWrap: { flexDirection: "row", alignItems: "flex-start", marginBottom: spacing.md },
     /** Optional line-number prefix for multi-line results. */
     solfaLineNum: {
       fontFamily: typography.mono.fontFamily,
       color: c.textFaint,
-      fontSize: 10,
+      fontSize: 12,
       marginRight: spacing.sm,
       marginTop: 5,
       width: 14,
@@ -2829,6 +3209,8 @@ const makeStyles = (c: Palette) =>
       opacity: 0.9,
     },
     previewMarkText: { ...typography.caption, color: c.accent, fontFamily: fonts.semibold },
+    ringLegend: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: 10 },
+    ringLegendText: { flex: 1, fontFamily: fonts.regular, fontSize: 13, lineHeight: 18, color: c.textMuted },
 
     // ── The amber row ─────────────────────────────────────────────────────────
     check: {
@@ -2844,7 +3226,7 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
     },
-    checkText: { flex: 1, fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
+    checkText: { flex: 1, fontFamily: fonts.regular, fontSize: 15, color: c.textMuted },
     checkStrong: { fontFamily: fonts.semibold, color: c.warningText },
 
     // ── Actions ───────────────────────────────────────────────────────────────
@@ -2860,9 +3242,9 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    actionCircleOn: { backgroundColor: c.accentSoft, borderColor: c.accentGlow },
-    actionLabel: { fontFamily: fonts.regular, fontSize: 11.5, color: c.textMuted },
-    actionLabelOn: { color: c.accent },
+    actionCircleOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
+    actionLabel: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted },
+    actionLabelOn: { color: c.link },
 
     // ── Parts ─────────────────────────────────────────────────────────────────
     voice: { paddingTop: spacing.sm, borderTopWidth: 1, borderTopColor: c.border },
@@ -2879,7 +3261,7 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: 8,
       paddingVertical: 2,
     },
-    proTagText: { ...typography.caption, color: c.premiumDeep, fontFamily: fonts.semibold, fontSize: 10 },
+    proTagText: { ...typography.caption, color: c.premiumText, fontFamily: fonts.semibold, fontSize: 10 },
 
     // ── Export ────────────────────────────────────────────────────────────────
     exportRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingVertical: 13 },
@@ -2901,16 +3283,12 @@ const makeStyles = (c: Palette) =>
 
     // ── Chords ────────────────────────────────────────────────────────────────
     chordsBlock: { marginTop: 22, gap: spacing.xs },
-    chordChips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs, marginTop: spacing.xs },
+    /** Read, not tapped: no box or border, so nothing here looks like a button. */
+    chordChips: { flexDirection: "row", flexWrap: "wrap", rowGap: 2, columnGap: 14, marginTop: spacing.xs },
     chordChip: {
       alignItems: "center",
-      minWidth: 44,
-      paddingHorizontal: spacing.sm,
-      paddingVertical: 6,
-      borderRadius: 12,
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
+      minWidth: 30,
+      paddingVertical: 4,
     },
     chordChipSymbol: { fontFamily: fonts.semibold, fontSize: 14, color: c.text },
     chordChipSolfa: { fontFamily: typography.mono.fontFamily, color: c.accent, fontSize: 13, marginTop: 1 },

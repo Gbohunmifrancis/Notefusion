@@ -41,7 +41,10 @@ public sealed class UpdateMyProfileCommandHandler : IRequestHandler<UpdateMyProf
         if (user is null)
             return UserErrors.NotFound;
 
-        user.UpdateProfile(request.FullName.Trim(), request.PhoneNumber?.Trim());
+        // The clients send the name alone: a phone left out is kept, and only an empty one clears it.
+        var phone = request.PhoneNumber is null ? user.PhoneNumber
+            : string.IsNullOrWhiteSpace(request.PhoneNumber) ? null : request.PhoneNumber.Trim();
+        user.UpdateProfile(request.FullName.Trim(), phone);
         await _db.SaveChangesAsync(cancellationToken);
 
         return new MyProfileDto(

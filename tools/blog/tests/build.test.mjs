@@ -12,6 +12,7 @@ import { checkSite, checkPdfs, staleFiles, xmlError, resolveSitePath } from "../
 import { handWrittenEntries } from "../lib/sitemap-feed.mjs";
 import { melodyToMusicXml } from "../lib/musicxml.mjs";
 import { parseMelody } from "../lib/solfa.mjs";
+import { withInlineCta } from "../lib/render-blog.mjs";
 
 const API = JSON.parse(fs.readFileSync(new URL("./fixtures/published.json", import.meta.url), "utf8"));
 
@@ -75,6 +76,26 @@ test("a post: one h1, canonical, Open Graph, BlogPosting + BreadcrumbList + FAQP
   assert.match(html, /class="toc"/);
   assert.match(html, /\/assets\/track\.js/);
   assert.match(html, /href="\/app\?utm_source=blog"/);
+});
+
+test("a post carries the way into the app once, right before its second section (board m-ux-medium W4c)", () => {
+  const html = read("blog/how-to-read-tonic-solfa/index.html");
+  const body = html.slice(html.indexOf('<div class="post-body">'), html.indexOf('<section class="faq"'));
+  const cta = '<p class="inline-cta"><a href="/app?utm_source=blog-inline" data-track="Blog: inline cta">Got a recording? Get it in solfa&nbsp;→</a></p>\n';
+  assert.equal(body.split(cta).length, 2, "once");
+  const h2s = [...body.matchAll(/<h2 /g)].map((m) => m.index);
+  assert.ok(h2s.length >= 2);
+  assert.equal(body.indexOf(cta) + cta.length, h2s[1]);
+  // The end-of-post box stays; the feed's copy of the body is the post's own words.
+  assert.match(html, /href="\/app\?utm_source=blog"/);
+  assert.ok(!read("blog/feed.xml").includes("blog-inline"));
+});
+
+test("a post with fewer than two sections has the line at the end of its body, before the FAQ", () => {
+  const cta = withInlineCta("");
+  assert.equal(withInlineCta("<p>One.</p>\n"), "<p>One.</p>\n" + cta);
+  assert.equal(withInlineCta('<p>One.</p>\n<h2 id="a">A</h2>\n<p>Two.</p>\n'), '<p>One.</p>\n<h2 id="a">A</h2>\n<p>Two.</p>\n' + cta);
+  assert.equal(withInlineCta('<h2 id="a">A</h2>\n<p>x</p>\n<h2 id="b">B</h2>\n'), '<h2 id="a">A</h2>\n<p>x</p>\n' + cta + '<h2 id="b">B</h2>\n');
 });
 
 test("a post's header: kicker, title, dek, then the byline with the read-count slot, before the body", () => {
@@ -147,6 +168,8 @@ test("the hymn index links every season's page (no buttons to wait for), the peo
   assert.match(html, /<nav class="hymn-browse" aria-label="Browse the hymns"><a href="\/hymns" aria-current="page">All hymns A–Z<\/a><a href="\/hymns\/occasions">Seasons and occasions<\/a><a href="\/hymns\/people">Writers and composers<\/a><a href="\/hymns\/first-lines">First lines<\/a><\/nav>/);
   assert.match(html, /<nav class="hymn-seasons" aria-label="Seasons and occasions"><a href="\/hymns\/occasions\/advent"/);
   assert.ok(!html.includes("data-filter="), "the seasons are links now, not filter buttons");
+  // Hymns or tunes: one segmented control with a choice always made, All first (board m-ux-medium W4a).
+  assert.match(html, /<div class="hymn-kinds" role="group" aria-label="Hymns or tunes"><button type="button" data-kind="" aria-pressed="true">All<\/button><button type="button" data-kind="hymn" aria-pressed="false">Hymns<\/button><button type="button" data-kind="tune" aria-pressed="false">Tunes<\/button><\/div>/);
 });
 
 test("the built PDFs pass the checker, and every new page is in the sitemap", async () => {

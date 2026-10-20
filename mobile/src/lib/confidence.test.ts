@@ -1,6 +1,26 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { CONFIDENCE, confidenceA11y, confidenceLevel, confidenceNote } from "./confidence.ts";
+import { CONFIDENCE, confidenceA11y, confidenceLevel, confidenceNote, doubtfulBeats, isDoubtfulNote } from "./confidence.ts";
+
+test("a note under the check line is doubtful; the line itself is not", () => {
+  assert.equal(isDoubtfulNote(0.49), true);
+  assert.equal(isDoubtfulNote(0), true);
+  assert.equal(isDoubtfulNote(CONFIDENCE.hard), false);
+  assert.equal(isDoubtfulNote(0.9), false);
+});
+
+test("the stave rings each doubtful onset once, in order", () => {
+  const notes = [
+    { startBeat: 3, conf: 0.3 },
+    { startBeat: 0, conf: 0.9 },
+    { startBeat: 1.5, conf: 0.2 },
+    { startBeat: 3, conf: 0.1 },
+    { startBeat: 4.3333333, conf: 0.4 },
+    { startBeat: 6, conf: 0.5 },
+  ];
+  assert.deepEqual(doubtfulBeats(notes), [1.5, 3, 4.333]);
+  assert.deepEqual(doubtfulBeats([]), []);
+});
 
 test("a clear sheet says nothing", () => {
   assert.equal(confidenceNote(0.9, true), null);

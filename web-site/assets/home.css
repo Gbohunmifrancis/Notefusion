@@ -40,7 +40,7 @@ html { scroll-padding-top: 80px; }
 /* Hidden from sight, not from the keyboard: Tab reaches the picker and a screen reader hears "Upload a recording". */
 .try-file input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip: rect(0 0 0 0); }
 .try-file:has(input:focus-visible) { outline: 2px solid var(--page-blue); outline-offset: 2px; }
-.try-meter { display: inline-flex; max-width: 100%; align-items: center; gap: 8px; margin-top: 16px; white-space: nowrap; color: var(--page-text-2); font-size: 14px; font-weight: 500; }
+.try-meter { display: inline-flex; max-width: 100%; align-items: center; gap: 8px; margin-top: 12px; white-space: nowrap; color: var(--page-text-2); font-size: 14px; font-weight: 500; }
 .try-meter select { flex: 0 1 auto; min-width: 0; min-height: 44px; padding: 0 8px; border: 1px solid var(--page-line-strong); border-radius: var(--r-sm); background: var(--page-surface); color: var(--page-navy); font: inherit; font-size: 16px; }
 .try-link { margin-top: 16px; }
 .try-link summary { display: inline-flex; align-items: center; gap: 8px; padding-block: 11px; margin-block: -11px; color: var(--page-blue-dark); font-size: 14px; font-weight: 600; list-style: none; cursor: pointer; border-radius: 4px; }
@@ -58,6 +58,14 @@ html { scroll-padding-top: 80px; }
 .try-status-info { color: var(--page-blue-dark); }
 .try-status a { font-weight: 600; }
 .try-status .try-again { display: flex; min-height: 44px; margin-top: 10px; }
+/* Uploading (preview.js): how much has gone, in words and a 4 px bar, beside Cancel. */
+.try-up { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.try-up-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; color: var(--page-text-2); font-size: 15px; }
+.try-up-bar { display: block; width: 100%; height: 4px; border: 0; border-radius: 2px; background: var(--page-line); color: var(--page-blue); overflow: hidden; -webkit-appearance: none; appearance: none; }
+.try-up-bar::-webkit-progress-bar { background: var(--page-line); border-radius: 2px; }
+.try-up-bar::-webkit-progress-value { background: var(--page-blue); border-radius: 2px; }
+.try-up-bar::-moz-progress-bar { background: var(--page-blue); border-radius: 2px; }
+.try-up .try-cancel { flex: none; min-height: 44px; }
 .try-note { color: var(--page-muted); font-size: 14px; }
 .hero-apps { display: flex; align-items: center; gap: 12px; margin-top: 24px; color: var(--page-muted); font-size: 14px; }
 
@@ -217,6 +225,8 @@ html { scroll-padding-top: 80px; }
   .home h1 { font-size: 36px; }
   .home h2 { font-size: 28px; }
   .home .lead { font-size: 17px; }
+  /* Body copy reads at 16 px on a phone; captions, dates and the footer stay 13–14 px. */
+  .steps p, .checks li, .features dd, .faq-item p, .home .plan .blurb, .plan li, .post-dek, .try-note, .hero-apps, .home .pricing-note, .home .rekey-note { font-size: 16px; }
   .hero { padding: 32px 0 64px; }
   .section { padding: 64px 0; }
   .try-main .btn { flex: 1 1 100%; }

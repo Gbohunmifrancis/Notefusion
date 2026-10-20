@@ -115,7 +115,8 @@
         var t = tokens();
         if (t && t.accessToken) headers.Authorization = "Bearer " + t.accessToken;
       }
-      return fetch(API + path, { method: opts.method || "GET", headers: headers, body: body })
+      // keepalive: a request that must reach the API even if the page is being left (a deferred delete).
+      return fetch(API + path, { method: opts.method || "GET", headers: headers, body: body, keepalive: !!opts.keepalive })
         .catch(function () { throw new ApiError(0, null); });
     }
     return send().then(function (r) {
@@ -396,10 +397,11 @@
   }
   /** Signed out here or in another tab, or the session ran out: nothing of the account stays on screen. */
   function forgetAccount() {
-    me = null; sub = null; libraryCache = null; libFolder = null; choir = null;
-    stopPaymentWatch(); hide($("top-nav")); document.body.classList.remove("is-pro");
+    me = null; sub = null; libraryCache = null; libFolder = null; choir = null; pendingDelete = null; dropToast();
+    founderNotes = null; renderFounder(); closeDialog();
+    stopPaymentWatch(); hide($("top-nav")); showTabbar(false); document.body.classList.remove("is-pro");
     $("recents-list").innerHTML = "";
-    hide($("practice-chip")); hide($("season-carols")); if (window.NfPracticeView) window.NfPracticeView.reset();
+    hide($("practice-chip")); hide($("practice-slot")); hide($("season-carols")); if (window.NfPracticeView) window.NfPracticeView.reset();
   }
   /** The API refused the refresh token: back to the sign-in screen. */
   function sessionEnded() { clearTokens(); forgetAccount(); showAuth(); }
@@ -751,6 +753,7 @@
   $("signout").addEventListener("click", function () {
     if (signingOut) return;
     signingOut = true;
+    flushDelete(); // a sheet deleted a moment ago goes while the session is still here to send it
     var t = tokens();
     var told = t && t.refreshToken
       ? Promise.race([
@@ -793,8 +796,9 @@
     ["transcribe", "library", "practice", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
     // The nav says where you are, to the eye and to a screen reader; Search lights itself, not Transcriptions.
     var navOn = focusSearch ? "search" : name;
-    document.querySelectorAll("#top-nav .top-link").forEach(function (b) {
-      var on = b.dataset.view === navOn;
+    // The phone's tab bar has no Search (the Library's own box is it) and no Account (the photo, top right).
+    document.querySelectorAll("#top-nav .top-link, #tabbar [data-view]").forEach(function (b) {
+      var on = b.dataset.view === (b.closest("#tabbar") ? name : navOn);
       b.classList.toggle("on", on);
       on ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current");
     });
@@ -813,7 +817,9 @@
     var h = name !== "search" && document.querySelector("#view-" + viewNow + " h1");
     if (h && h.offsetParent !== null) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
   }
-  document.querySelectorAll("#top-nav .top-link, .user-menu-item[data-view]").forEach(function (b) { b.addEventListener("click", function () { goView(b.dataset.view); }); });
+  document.querySelectorAll("#top-nav .top-link, .user-menu-item[data-view], #tabbar [data-view]").forEach(function (b) { b.addEventListener("click", function () { goView(b.dataset.view); }); });
+  /** The phone's tab bar (app.css shows it under 641 px): a signed-in account's, never a guest's or the sign-in screen's. */
+  function showTabbar(on) { document.body.classList.toggle("has-tabbar", on); }
 
   // The sidebar is a drawer on phones.
   // Opening it moves focus into it; closing it (Escape too) hands focus back to the menu button. Closed, it is out of
@@ -900,14 +906,20 @@
     practiceViewOpen = false;
     if (window.NfPracticeView) window.NfPracticeView.leave();
   }
-  /** The home chip: the streak and the XP, a tap from today's drill (the phone's Home chip). */
+  /**
+   * The home chip: the streak and the XP, a tap from today's drill (the phone's Home chip); "Start practising" for an
+   * account that has not practised yet. It fills the place the slot held from the first paint.
+   */
   function renderPracticeChip(p) {
     var chip = $("practice-chip");
+    hide($("practice-slot"));
     if (!p || !p.streak || !p.level) { hide(chip); hide($("season-carols")); return; }
+    var start = !p.xp && !p.streak.current && !p.streak.best;
+    chip.classList.toggle("is-start", start);
     chip.classList.toggle("is-on", p.streak.current > 0);
     $("practice-chip-streak").textContent = p.streak.current;
     $("practice-chip-xp").textContent = p.xp + " XP";
-    chip.setAttribute("aria-label", "Practice: " + p.streak.current + "-day streak, " + p.xp + " XP, level " + p.level.name);
+    chip.setAttribute("aria-label", start ? "Start practising: open Practice" : "Practice: " + p.streak.current + "-day streak, " + p.xp + " XP, level " + p.level.name);
     show(chip);
     renderSeasonCarols(p);
   }
@@ -945,7 +957,7 @@
     var at = epoch;
     var go = function () {
       if (at !== epoch || guest || !tokens()) return;
-      request("/api/practice/progress").then(function (p) { if (at === epoch) renderPracticeChip(p); }, function () { /* no chip; the menu still leads there */ });
+      request("/api/practice/progress").then(function (p) { if (at === epoch) renderPracticeChip(p); }, function () { if (at === epoch) hide($("practice-slot")); /* no chip; the menu still leads there */ });
     };
     if (window.requestIdleCallback) window.requestIdleCallback(go, { timeout: 3000 }); else setTimeout(go, 1200);
   }
@@ -953,7 +965,11 @@
 
   /** The saved sheets, fetched once and shared by the library, the account view and the sidebar. */
   function fetchLibrary(force) {
-    var p = libraryCache && !force ? Promise.resolve(libraryCache) : request("/api/library").then(function (items) { libraryCache = items || []; return libraryCache; });
+    var p = libraryCache && !force ? Promise.resolve(libraryCache) : request("/api/library").then(function (items) {
+      // A sheet deleted a moment ago is still on the server until its Undo runs out: it stays out of the list.
+      libraryCache = (items || []).filter(function (x) { return !pendingDelete || x.id !== pendingDelete.it.id; });
+      return libraryCache;
+    });
     return p.then(function (items) { renderRecents(items); return items; });
   }
   function renderRecents(items) {
@@ -977,6 +993,7 @@
   function renderFolders(items) {
     var folders = foldersOf(items), box = $("lib-folders");
     if (libFolder && !folders.some(function (f) { return f.name === libFolder; })) libFolder = null;
+    closeFolderMenu(false);
     box.innerHTML = "";
     if (!folders.length) { hide(box); hide($("lib-folder-bar")); return; }
     [{ name: null, count: items.length }].concat(folders).forEach(function (f) {
@@ -1056,7 +1073,37 @@
     var url = $("lib-folder-url").value;
     (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { $("lib-folder-copy").textContent = "Copied"; setTimeout(function () { $("lib-folder-copy").textContent = "Copy"; }, 1500); }, function () { $("lib-folder-url").select(); });
   });
+  // ── The folder's ⋯ menu: Rename, and Stop sharing once a link is out (board m-ux-medium W3c) ──
+  // A menu button: Enter, Space or a tap opens it on its first item, the arrows move between items, and Escape, Tab or a
+  // tap outside closes it (Escape hands the focus back to ⋯).
+  function folderMenuItems() {
+    return Array.prototype.filter.call($("lib-folder-menu").querySelectorAll("[role=menuitem]"), function (b) { return !b.hidden; });
+  }
+  function openFolderMenu() {
+    var shared = !$("lib-folder-share-row").classList.contains("hidden");
+    $("lib-folder-stop").hidden = !shared; $("lib-folder-stop-sep").hidden = !shared;
+    show($("lib-folder-menu")); $("lib-folder-more").setAttribute("aria-expanded", "true");
+    folderMenuItems()[0].focus();
+  }
+  function closeFolderMenu(focusBack) {
+    if ($("lib-folder-menu").classList.contains("hidden")) return;
+    hide($("lib-folder-menu")); $("lib-folder-more").setAttribute("aria-expanded", "false");
+    if (focusBack) $("lib-folder-more").focus();
+  }
+  $("lib-folder-more").addEventListener("click", function (e) {
+    e.stopPropagation();
+    $("lib-folder-menu").classList.contains("hidden") ? openFolderMenu() : closeFolderMenu(true);
+  });
+  $("lib-folder-menu").addEventListener("keydown", function (e) {
+    var items = folderMenuItems(), at = items.indexOf(document.activeElement);
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); items[(at + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus(); }
+    else if (e.key === "Home" || e.key === "End") { e.preventDefault(); items[e.key === "Home" ? 0 : items.length - 1].focus(); }
+    else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); closeFolderMenu(true); }
+    else if (e.key === "Tab") closeFolderMenu(false);
+  });
+  document.addEventListener("click", function (e) { if (!$("lib-folder-menu").contains(e.target)) closeFolderMenu(false); });
   $("lib-folder-stop").addEventListener("click", function () {
+    closeFolderMenu(true);
     if (!libFolder) return;
     // The link dies for everyone who has it, and sharing again makes a new one: asked first, like a delete.
     if (!confirm("Stop sharing \u201c" + libFolder + "\u201d? Everyone with the link loses it, and sharing again makes a new link.")) return;
@@ -1065,6 +1112,7 @@
       .catch(function (err) { libAlert("Could not stop sharing: " + (err.message || err)); });
   });
   $("lib-folder-rename").addEventListener("click", function () {
+    closeFolderMenu(true);
     if (!libFolder) return;
     var to = (window.prompt("Rename “" + libFolder + "” to:", libFolder) || "").trim();
     if (!to || to === libFolder) return;
@@ -1089,7 +1137,7 @@
       renderFolders(items);
       var folders = foldersOf(items);
       items.forEach(function (it) {
-        var card = document.createElement("div"); card.className = "lib-item"; card.dataset.search = fold([it.title || "Untitled", it.folder, it.key].join(" ")); card.dataset.folder = it.folder || "";
+        var card = document.createElement("div"); card.className = "lib-item"; card.dataset.id = it.id; card.dataset.search = fold([it.title || "Untitled", it.folder, it.key].join(" ")); card.dataset.folder = it.folder || "";
         var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
         var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
         var m = document.createElement("div"); m.className = "meta";
@@ -1108,17 +1156,7 @@
         open.addEventListener("click", function () { openSaved(it.id); });
         opensOnTap(card, function () { openSaved(it.id); });
         var del = document.createElement("button"); del.className = "btn btn-ghost btn-sm btn-danger"; del.type = "button"; label(del, "trash", "Delete");
-        del.addEventListener("click", function () {
-          if (!confirm("Delete \u201c" + (it.title || "Untitled") + "\u201d from your library? This cannot be undone." +
-            (isPro() ? " Deleting won't give back a song it used." : " Deleting won't give back the free transcription it used."))) return;
-          del.disabled = true;
-          // Taken out of the list in place: a full reload went back to the skeleton and lost the scroll.
-          request("/api/library/" + it.id, { method: "DELETE" }).then(function () {
-            if (libraryCache) libraryCache = libraryCache.filter(function (x) { return x.id !== it.id; });
-            loadLibrary(false); refreshUsage();
-          })
-            .catch(function (err) { libAlert("Could not delete: " + (err.message || err)); del.disabled = false; });
-        });
+        del.addEventListener("click", function () { deleteSheet(it); });
         a.appendChild(open); a.appendChild(file);
         if (sub && sub.choirName) a.appendChild(choirShareButton(it));
         a.appendChild(del); card.appendChild(a);
@@ -1128,6 +1166,89 @@
     }).catch(function (err) { hide(skel); show(empty); $("lib-empty-text").textContent = "Your library didn't load. " + ((err && err.message) || "Check your connection and try again."); })
       .then(renderChoirLibrary);
   }
+
+  // ── A short note at the foot of the screen, with at most one action (board m-ux-medium W3b) ──
+  // One at a time: a new note ends the one before, and that one's end runs (a deferred delete is sent).
+  var toast = { timer: null, onEnd: null, onAction: null };
+  function showToast(text, opts) {
+    finishToast();
+    opts = opts || {};
+    $("app-toast-text").textContent = text;
+    var btn = $("app-toast-action");
+    btn.hidden = !opts.action;
+    btn.textContent = opts.action || "";
+    toast.onEnd = opts.onEnd || null; toast.onAction = opts.onAction || null;
+    show($("app-toast"));
+    toast.timer = setTimeout(finishToast, opts.ms || 4000);
+  }
+  /** Takes the note away without running its end (the action ran, or the account is gone). */
+  function dropToast() {
+    clearTimeout(toast.timer); toast.timer = null; toast.onEnd = null; toast.onAction = null;
+    var had = $("app-toast").contains(document.activeElement);
+    hide($("app-toast"));
+    return had;
+  }
+  /** Its time is up (or another note takes its place): it goes, and its end runs. */
+  function finishToast() {
+    if (!toast.timer) return;
+    var end = toast.onEnd;
+    // The keyboard's place was the note's button: it lands on the Library's search rather than on nothing.
+    if (dropToast() && viewNow === "library") $("lib-search").focus({ preventScroll: true });
+    if (end) end();
+  }
+  $("app-toast-action").addEventListener("click", function () { var act = toast.onAction; dropToast(); if (act) act(); });
+
+  // ── Delete, then Undo (board m-ux-medium W3b) ──────────────────────────────
+  // The card goes at once and a note says so for 6 s with Undo; the DELETE goes when the note ends, or at once when
+  // the page is hidden or left (fetch keepalive: an Undo that never ran leaves nothing to take back). No browser confirm.
+  var pendingDelete = null; // { it, index, done }
+  function deleteSheet(it) {
+    var list = libraryCache || [], index = list.indexOf(it);
+    var pd = { it: it, index: index < 0 ? list.length : index, done: false };
+    showToast("Deleted “" + (it.title || "Untitled") + "”", {
+      action: "Undo", ms: 6000,
+      onAction: function () { undoDelete(pd); },
+      onEnd: function () { sendDelete(pd); }
+    });
+    pendingDelete = pd;
+    libraryCache = list.filter(function (x) { return x.id !== it.id; });
+    loadLibrary(false);
+    track("Deleted sheet");
+    $("app-toast-action").focus({ preventScroll: true });
+  }
+  function sendDelete(pd) {
+    if (pd.done) return;
+    pd.done = true;
+    if (pendingDelete === pd) pendingDelete = null;
+    request("/api/library/" + pd.it.id, { method: "DELETE", keepalive: true })
+      .then(function () { refreshUsage(); renderChoirLibrary(); })
+      .catch(function (err) { restoreSheet(pd); libAlert("Could not delete: " + (err.message || err)); });
+  }
+  function undoDelete(pd) {
+    if (pd.done) return;
+    pd.done = true;
+    if (pendingDelete === pd) pendingDelete = null;
+    track("Undid delete");
+    restoreSheet(pd).then(function () {
+      // Back where it was, and the keyboard with it.
+      var open = Array.prototype.filter.call(document.querySelectorAll("#lib-list .lib-item"), function (c) { return c.dataset.id === String(pd.it.id); })[0];
+      if (open && open.querySelector(".btn-primary")) open.querySelector(".btn-primary").focus({ preventScroll: true });
+    });
+  }
+  function restoreSheet(pd) {
+    if (!libraryCache) return loadLibrary(true);
+    if (!libraryCache.some(function (x) { return x.id === pd.it.id; })) libraryCache.splice(Math.min(pd.index, libraryCache.length), 0, pd.it);
+    return loadLibrary(false);
+  }
+  /** The page is being hidden or left: a delete still waiting on its Undo goes now. */
+  function flushDelete() {
+    if (!pendingDelete) return;
+    var pd = pendingDelete;
+    if (dropToast() && viewNow === "library") $("lib-search").focus({ preventScroll: true });
+    sendDelete(pd);
+  }
+  window.addEventListener("pagehide", flushDelete);
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") flushDelete(); });
 
   // ── The choir's shared library ──────────────────────────────────────────
   /** "Share with choir" on one of the account's own sheets, or "In choir library" to take it out again. */
@@ -1255,7 +1376,121 @@
     $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "short" }) : "—";
     fetchLibrary().then(function (items) { $("acct-saved").textContent = String(items.length); }, function () { $("acct-saved").textContent = "—"; });
     renderChoirPanel();
+    // The Account group (board m-ux-medium W3d): an account that signs in with Google has no password to change.
+    $("acct-name-val").textContent = me ? (me.fullName || "—") : "—";
+    $("acct-email-val").textContent = me ? (me.email || "—") : "—";
+    var google = !!me && me.hasPassword === false;
+    google ? hide($("acct-password-row")) : show($("acct-password-row"));
+    google ? show($("acct-password-google")) : hide($("acct-password-google"));
+    loadEmailPrefs();
   }
+
+  // ── Account: the name, the password, the founder's notes (board m-ux-medium W3d) ──
+  // One small dialog each for the name and the password: focus goes in and stays in, Escape, Cancel, a tap outside or
+  // the browser's Back close it, and the focus goes back to the row that opened it.
+  var dialogOpen = null, dialogReturn = null;
+  function openDialog(id, focusId) {
+    dialogReturn = document.activeElement; dialogOpen = id;
+    show($(id));
+    $(focusId).focus();
+  }
+  function closeDialog() {
+    if (!dialogOpen) return;
+    hide($(dialogOpen)); dialogOpen = null;
+    if (dialogReturn && dialogReturn.focus && document.contains(dialogReturn)) dialogReturn.focus({ preventScroll: true });
+    dialogReturn = null;
+  }
+  ["name-dialog", "password-dialog"].forEach(function (id) {
+    var el = $(id);
+    el.addEventListener("click", function (e) { if (e.target === el || e.target.closest("[data-close]")) closeDialog(); });
+    el.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { e.preventDefault(); closeDialog(); return; }
+      if (e.key !== "Tab") return;
+      var items = Array.prototype.filter.call(el.querySelectorAll("button, input"), function (x) { return !x.disabled && x.offsetParent !== null; });
+      var at = items.indexOf(document.activeElement), next = e.shiftKey ? (at <= 0 ? items.length - 1 : at - 1) : (at === items.length - 1 ? 0 : at + 1);
+      e.preventDefault(); items[next].focus();
+    });
+    backLayer(el, function () { return !el.classList.contains("hidden"); }, closeDialog);
+  });
+  $("acct-name-row").addEventListener("click", function () {
+    clearFieldError("name-input");
+    $("name-input").value = (me && me.fullName) || "";
+    openDialog("name-dialog", "name-input");
+    $("name-input").select();
+  });
+  $("name-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = $("name-input").value.trim();
+    clearFieldError("name-input");
+    if (!name) { fieldError("name-input", "Enter your name."); $("name-input").focus(); return; }
+    if (me && name === me.fullName) { closeDialog(); return; }
+    var btn = $("name-save"), done = waitLabel(btn, "Saving…");
+    btn.disabled = true;
+    request("/api/me", { method: "PUT", body: { fullName: name } })
+      .then(function (profile) {
+        me = profile || Object.assign({}, me, { fullName: name });
+        renderWho(); renderAccount(); closeDialog();
+        showToast("Saved"); track("Changed name");
+      })
+      .catch(function (err) { fieldError("name-input", (err && err.message) || "We couldn't save that just now. Please try again."); $("name-input").focus(); })
+      .finally(function () { done(); btn.disabled = false; });
+  });
+  function renderNewPasswordHint() {
+    var met = $("pw-new").value.length >= 8, hint = $("pw-new-hint");
+    hint.classList.toggle("ok", met);
+    hint.querySelector("use").setAttribute("href", "/assets/icons.svg#i-" + (met ? "check" : "minus"));
+  }
+  $("pw-new").addEventListener("input", renderNewPasswordHint);
+  $("acct-password-row").addEventListener("click", function () {
+    ["pw-current", "pw-new"].forEach(function (id) { clearFieldError(id); $(id).value = ""; $(id).type = "password"; });
+    renderNewPasswordHint();
+    openDialog("password-dialog", "pw-current");
+  });
+  $("password-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    clearFieldError("pw-current"); clearFieldError("pw-new");
+    var current = $("pw-current").value, next = $("pw-new").value;
+    if (!current) { fieldError("pw-current", "Enter the password you use now."); $("pw-current").focus(); return; }
+    if (next.length < 8) { fieldError("pw-new", "Your new password needs at least 8 characters."); $("pw-new").focus(); return; }
+    var btn = $("password-save"), done = waitLabel(btn, "Updating…");
+    btn.disabled = true;
+    request("/api/auth/change-password", { method: "POST", body: { currentPassword: current, newPassword: next } })
+      .then(function (pair) {
+        // Every other session ended with the old password; the pair that came back is this one's.
+        if (pair && pair.accessToken) saveTokens({ accessToken: pair.accessToken, refreshToken: pair.refreshToken });
+        closeDialog(); showToast("Password updated"); track("Changed password");
+      })
+      .catch(function (err) {
+        var onNew = err && (err.code === "AUTH_PASSWORD_WEAK" || (err.details && (err.details.NewPassword || err.details.newPassword)));
+        var field = onNew ? "pw-new" : "pw-current";
+        fieldError(field, (err && err.message) || "We couldn't change it just now. Please try again.");
+        $(field).focus();
+      })
+      .finally(function () { done(); btn.disabled = false; });
+  });
+  /** "Notes from the founder by email": the account's choice (EmailOptOut), read when Account opens; null until then. */
+  var founderNotes = null;
+  function renderFounder() {
+    var s = $("acct-founder");
+    s.disabled = founderNotes === null;
+    s.setAttribute("aria-checked", String(!!founderNotes));
+  }
+  function loadEmailPrefs() {
+    var at = epoch;
+    request("/api/me/email-preferences").then(function (p) {
+      if (at !== epoch || !p) return;
+      founderNotes = !!p.founderNotes; renderFounder();
+    }, function () { /* the switch keeps what it showed */ });
+  }
+  $("acct-founder").addEventListener("click", function () {
+    if (founderNotes === null) return;
+    var want = !founderNotes, before = founderNotes;
+    founderNotes = want; renderFounder(); $("acct-founder").disabled = true;
+    request("/api/me/email-preferences", { method: "PUT", body: { founderNotes: want } })
+      .then(function (p) { founderNotes = p ? !!p.founderNotes : want; track(want ? "Founder notes on" : "Founder notes off"); })
+      .catch(function () { founderNotes = before; showToast("That didn't save. Check your connection and try again."); })
+      .finally(renderFounder);
+  });
   $("acct-upgrade").addEventListener("click", function () { if (playBilled()) openPlayManage(); else openUpgrade(); });
   // The deletion page fills in the signed-in address (handed over in this tab only, never in the URL).
   $("acct-delete").addEventListener("click", function () {
@@ -1384,8 +1619,8 @@
       .then(function () { choir = null; track("Left choir"); libraryCache = null; return loadAccount().then(renderAccount); })
       .catch(function (err) { alertIn($("app-alert"), "danger", "Could not leave the choir: " + (err.message || err)); });
   });
-  $("choir-plan-open").addEventListener("click", function () { openUpgrade(); });
-  $("choir-renew").addEventListener("click", function () { openUpgrade(); });
+  $("choir-plan-open").addEventListener("click", function () { openUpgrade("choir"); });
+  $("choir-renew").addEventListener("click", function () { openUpgrade("choir"); });
   $("acct-photo").addEventListener("change", function (e) {
     var file = e.target.files && e.target.files[0];
     if (!file) return;
@@ -1407,7 +1642,8 @@
   // ── Upgrade dialog ──────────────────────────────────────────────────────
   /**
    * The plans dialog. reason "limit" is the free allowance running out (the refusal after the last one):
-   * the one-song purchase is then the option already chosen, since one more song is what was just asked for.
+   * the one-song purchase is then the option already chosen, since one more song is what was just asked for. Reason
+   * "choir" (My choir's links) opens on the choir plans rather than on their folded row.
    */
   function openUpgrade(reason, why) {
     track("Opened plans");
@@ -1421,7 +1657,7 @@
     $("upgrade-title-text").textContent = "Do more with NoteFusion";
     show($("upgrade-free")); hide($("upgrade-pro"));
     // At the free limit one more song is what was asked for: the choir plans stay out of it, unless this is a director.
-    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: reason !== "limit" || leadsChoir() });
+    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: reason !== "limit" || leadsChoir(), choirFirst: reason === "choir" });
   }
   /** Pro through a choir alone: the plan shown is the choir's, renewed by its director. */
   function proViaChoir() { return !!(sub && sub.choirRole && String(sub.planCode || "").indexOf("choir_") === 0); }
@@ -1635,7 +1871,9 @@
       if (!tokens()) { showAuth(); return; }
       var wasGuest = guest;
       guest = false;
-      hide($("boot-skel")); leaveAuth(); hide($("guest-bar")); show($("view-app")); show($("top-nav")); showAccountUi(true); setView("transcribe"); libraryCache = null;
+      // The practice chip's place, until its numbers come (loadPracticeChip, below).
+      if ($("practice-chip").classList.contains("hidden")) show($("practice-slot"));
+      hide($("boot-skel")); leaveAuth(); hide($("guest-bar")); show($("view-app")); show($("top-nav")); showTabbar(true); showAccountUi(true); setView("transcribe"); libraryCache = null;
       warmEngraver();
       document.body.classList.remove("guest"); hide($("topbar-signin")); show($("recents"));
       fetchLibrary().catch(function () { return []; });
@@ -1672,7 +1910,7 @@
   /** A visitor with a preview and no account: the app, read-only, with the sign-up card ready. */
   function startGuest() {
     guest = true;
-    hide($("boot-skel")); leaveAuth(); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); showAccountUi(false); setView("transcribe");
+    hide($("boot-skel")); leaveAuth(); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); showTabbar(false); showAccountUi(false); setView("transcribe");
     warmEngraver();
     document.body.classList.add("guest"); show($("topbar-signin"));
     $("greeting").textContent = greeting(""); $("home-sub").textContent = "Your free preview is on its way. Create a free account to keep transcribing.";
@@ -2046,8 +2284,9 @@
       tab.tabIndex = on ? 0 : -1;
       $("src-" + s).hidden = !on;
     });
-    // What is in the recording matters for a recording or a file, not for a link.
+    // What is in the recording matters for a recording or a file, not for a link; Transcribe is the link's own action.
     $("kind-block").hidden = name === "link";
+    $("link-submit").hidden = name !== "link";
     // Until someone picks, the picker shows what this tab sends (defaultKind).
     if (!chosenKind() && name !== "link") selectKind(defaultKind(name));
     renderStudioCredits();
@@ -2084,7 +2323,7 @@
   // The same recording pop-up as the home page (assets/recorder.js): the level meter and the
   // clock while the microphone is open, then the take to listen back to. Nothing is sent
   // until it has been approved.
-  $("rec-btn").addEventListener("click", function () {
+  function openRecorder() {
     $("rec-status").textContent = "";
     window.NfRecorder.open({
       maxSeconds: guest ? 30 : 180, // a guest gets the same thirty seconds as on the home page
@@ -2093,6 +2332,20 @@
       onError: function (text, kind) { $("rec-status").textContent = kind === "short" ? text : text + " Upload a file instead."; },
       onTake: function (blob, name) { submitAudio(blob, name, true); }
     });
+  }
+  $("rec-btn").addEventListener("click", openRecorder);
+  /**
+   * The tab bar's Record, from any tab: the studio with the recorder open over it. While a recording is going up or a job
+   * runs, its card instead (a second take then would be sent as that job's "Try again"); a sheet showing steps aside for
+   * the studio, as New transcription does (it is in the library).
+   */
+  $("tab-record").addEventListener("click", function () {
+    track("Tab: record");
+    if (viewNow !== "transcribe") goView("transcribe");
+    if (submitting || follow) { $("progress").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+    if (!$("result").classList.contains("hidden")) newTranscription();
+    selectSource("record");
+    openRecorder();
   });
 
   function explain(err) {
@@ -2658,9 +2911,8 @@
     renderSave();
 
     isPro() ? hide($("r-watermark")) : show($("r-watermark"));
-    // One set of plans on the page at a time: the note under the downloads carries them while a
-    // result is showing; the standalone panel is for the empty state and the Account view.
-    isPro() ? hide($("r-upgrade")) : (renderUnlock(result), show($("r-upgrade")), loadPlans($("r-upgrade"), $("plans"), {}));
+    // A free sheet's way to Pro is one row under it; the plans themselves are the dialog's.
+    isPro() ? hide($("r-upgrade")) : (renderUnlock(result), show($("r-upgrade")));
     renderVerdict();
     hide($("upgrade-panel"));
     // Four parts are written on request, never assumed: the tab appears once they exist (a saved
@@ -2909,12 +3161,13 @@
     if (!player) {
       player = C.createPlayer();
       $("play").addEventListener("click", function () { player.toggle(); });
+      $("rehearse-play").addEventListener("click", function () { player.toggle(); });
       $("restart").addEventListener("click", function () { player.stop(); player.play(); });
       $("rate").addEventListener("change", function () { player.setRate(parseFloat($("rate").value)); });
       ["loop-on", "loop-from", "loop-to"].forEach(function (id) { $(id).addEventListener("change", applyLoop); });
       $("backing-on").addEventListener("change", function () { player.setBackingOn($("backing-on").checked); });
       player.onTick(function (t) {
-        label($("play"), t.playing ? "pause" : "play", t.playing ? "Pause" : "Play");
+        [$("play"), $("rehearse-play")].forEach(function (b) { label(b, t.playing ? "pause" : "play", t.playing ? "Pause" : "Play"); });
         var now = -1;
         for (var i = 0; i < hymnCells.length; i++) if (hymnCells[i].beat <= t.beat + 1e-6) now = i;
         hymnCells.forEach(function (c, i) { c.el.className = t.playing && i === now ? "now" : ""; });
@@ -3541,59 +3794,33 @@
       b.hidden = !showsParts && (!panel || panel.classList.contains("hidden"));
     });
   }
-  /** A Pro-only action, from anywhere: close the pop-up and bring the Pro card into view. */
+  /** A Pro-only action, from anywhere: close the pop-up and open the plans (a guest is asked to sign up first). */
   function pitchPro() {
     closeTool(); closeFull();
     if (guest) { openAuth("register"); return; }
-    show($("r-upgrade"));
-    $("r-upgrade").scrollIntoView({ behavior: "smooth", block: "start" });
-    rise($("r-upgrade"));
-  }
-  document.querySelectorAll(".pro-tile").forEach(function (t) {
-    t.addEventListener("click", function () { track("Pro preview: " + t.getAttribute("data-upgrade")); openUpgrade(); });
-  });
-
-  /** The frosted four-part preview, written from this sheet's own opening so it looks like theirs. */
-  var SCALE = ["d", "r", "m", "f", "s", "l", "t"];
-  function previewParts(result) {
-    var notes = (result.notes || []).slice(0, 8);
-    if (notes.length < 4) return;
-    function step(sol, by) {
-      var i = SCALE.indexOf(String(sol || "").charAt(0)); if (i < 0) return sol || "d";
-      var j = i + by, mark = j < 0 ? "," : j > 6 ? "'" : "";
-      return SCALE[((j % 7) + 7) % 7] + mark;
-    }
-    function row(by) { return notes.map(function (n, k) { return (by === 0 ? (n.solfa || "d") + (n.octaveMark || "") : step(n.solfa, by)) + (k % 2 ? " |" : " :"); }).join(" ").replace(/ [:|]$/, ""); }
-    var rows = $("pro-satb").children;
-    [0, -2, 2, -4].forEach(function (by, i) {
-      if (!rows[i]) return;
-      rows[i].innerHTML = "<em>" + "SATB".charAt(i) + "</em>";
-      rows[i].appendChild(document.createTextNode(row(by)));
-    });
+    openUpgrade();
   }
 
-  // ── Pro, under the sheet: what this song is missing, in its own words ────
-  // The plans used to sit under the downloads at the very bottom, past every tool, so most people never
-  // saw them. They now follow the sheet, and a free preview of a longer song says how much is locked.
+  // ── Pro, under the sheet: one row, in this song's own words (board m-ux-medium W2e) ────
+  // It used to be a card taller than the sheet, with a second blue button; Play is now the result's one filled button,
+  // and a free preview of a longer song still says how much is locked.
   function renderUnlock(result) {
-    previewParts(result);
     var dur = result.songDurationSec || 0, heard = 60;
     var cut = !!result.truncated && dur > heard;
-    cut ? show($("r-unlock-rest")) : hide($("r-unlock-rest"));
     if (cut) {
-      // The Pro card below says what is locked, so the long notice above the sheet becomes one chip.
+      // The row below says what is locked, so the long notice above the sheet becomes one chip.
       hide($("r-truncated"));
       var chip = document.createElement("span"); chip.className = "chip chip-preview";
       chip.textContent = "Preview · 1:00 of " + formatSec(dur);
       $("r-chips").appendChild(chip);
-      $("r-unlock-left").textContent = formatSec(dur - heard) + " more of this song";
-      $("r-unlock-title").textContent = "Unlock the rest of this song";
-      $("r-unlock-lead").textContent = "You've seen the first minute of " + formatSec(dur) + ". Pro writes out the whole song — every bar, with the alto, tenor and bass under it and a PDF without the mark.";
+      $("r-unlock-title").textContent = "The rest of this song with Pro";
+      $("r-unlock-lead").textContent = formatSec(dur - heard) + " more of it, with alto, tenor and bass and no watermark";
     } else {
-      $("r-unlock-title").textContent = "Take this sheet to your choir";
-      $("r-unlock-lead").textContent = "Pro adds the alto, tenor and bass under the tune, the PDF, MusicXML and MIDI with no watermark, and whole songs up to six minutes.";
+      $("r-unlock-title").textContent = "More with Pro";
+      $("r-unlock-lead").textContent = "Alto, tenor and bass, Sing it, downloads with no watermark";
     }
   }
+  $("r-upgrade").addEventListener("click", function () { track("Pro row"); openUpgrade(); });
 
   // ── How did it come out? Asked under every fresh transcription ──────────
   // One tap; "close" or "off" then asks what was off. The answer goes to the API as a "transcription"
@@ -4110,11 +4337,13 @@
       // Just this song goes first: the smallest, simplest thing to buy, next to Pro.
       if (single) ordered.unshift(single);
       var chosen = single && (opts.singleFirst || !plans.length) ? single : ordered[single ? 1 : 0];
-      // The choir plans come last, as the third option: one director pays and the whole choir is Pro.
+      // The choir plans fold into one row under the rest, "For choir directors ›", which swaps the list to them with a
+      // Back (board m-ux-medium W3e; the phone's Upgrade does the same): one director pays and the whole choir is Pro.
       var choirMonthly = choirPlans.find(function (x) { return !isYearly(x); });
-      ordered = ordered.concat(choirPlans);
-      // A director renewing their choir starts on the choir plan; anyone else on what they would buy for themselves.
-      if (!chosen || (choirPlans.length && leadsChoir())) chosen = choirPlans[0] || chosen;
+      var ownChoice = chosen;
+      // A director renewing their choir starts on the choir plans; anyone else on what they would buy for themselves.
+      var showingChoir = !!choirPlans.length && (opts.choirFirst || leadsChoir() || !ordered.length);
+      if (showingChoir) chosen = choirPlans[0];
       var options = document.createElement("div"); options.className = "plan-options"; options.setAttribute("role", "radiogroup"); options.setAttribute("aria-label", "Choose a plan");
       var cta = document.createElement("button"); cta.type = "button"; cta.className = "btn btn-primary btn-pay";
       function label(plan) { return isChoirPlan(plan) ? (isYearly(plan) ? "Choir · Yearly" : "Choir · Monthly") : isSinglePlan(plan) ? "Just this song" : isLifetimePlan(plan) ? "Lifetime" : isYearly(plan) ? "Yearly" : "Monthly"; }
@@ -4142,12 +4371,38 @@
         fx.textContent = naira ? "" : "You'll pay the naira amount at today's rate on the next page; your bank may add a fee.";
         payError.hidden = true;
       }
-      ordered.forEach(function (plan, index) {
-        if (isChoirPlan(plan) && (index === 0 || !isChoirPlan(ordered[index - 1]))) {
+      var seats = (choirPlans[0] && choirPlans[0].choirSeats) || 25;
+      /** The list as it stands: the plans for oneself and the choir row, or the choir plans with a way back. */
+      function renderOptions() {
+        options.innerHTML = "";
+        if (showingChoir) {
+          if (ordered.length) {
+            var back = document.createElement("button"); back.type = "button"; back.className = "btn-link plan-back";
+            back.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-back"/></svg>All plans';
+            back.addEventListener("click", function () { showingChoir = false; chosen = ownChoice; renderOptions(); renderCta(); options.querySelector(".choir-row").focus(); });
+            options.appendChild(back);
+          }
           var head = document.createElement("p"); head.className = "plan-group muted small"; head.setAttribute("role", "presentation");
-          head.textContent = "For choir directors — Pro for you and up to " + (plan.choirSeats || 25) + " singers, one shared library";
+          head.textContent = "For choir directors — Pro for you and up to " + seats + " singers, one shared library";
           options.appendChild(head);
+          choirPlans.forEach(addOption);
+          return;
         }
+        ordered.forEach(addOption);
+        if (!choirPlans.length) return;
+        var row = document.createElement("button"); row.type = "button"; row.className = "choir-row";
+        var from = choirMonthly || choirPlans[0];
+        row.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg><span><b>For choir directors</b><small></small></span><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev"/></svg>';
+        row.querySelector("small").textContent = "Pro for you and up to " + seats + " singers · from " + money(from) + " " + per(from);
+        row.addEventListener("click", function () {
+          track("Plans: choir directors");
+          showingChoir = true; chosen = choirPlans[0]; renderOptions(); renderCta();
+          var first = options.querySelector(".plan-back") || options.querySelector(".plan-opt.on");
+          if (first) first.focus();
+        });
+        options.appendChild(row);
+      }
+      function addOption(plan) {
         var opt = document.createElement("button"); opt.type = "button"; opt.className = "plan-opt"; opt.setAttribute("role", "radio");
         var top = document.createElement("span"); top.className = "plan-opt-top";
         var name = document.createElement("span"); name.className = "plan-opt-name"; name.textContent = label(plan);
@@ -4176,13 +4431,17 @@
         opt.addEventListener("click", select);
         options.appendChild(opt);
         if (plan === chosen) { opt.classList.add("on"); opt.setAttribute("aria-checked", "true"); } else opt.setAttribute("aria-checked", "false");
-      });
+      }
+      renderOptions();
       renderCta();
       cta.addEventListener("click", function () { checkout(chosen, cta); });
       // The price and the button stay at the bottom of the dialog while the plans scroll above them
       // (board l-ux-high/03b): on a phone Pay sat about a screen below the fold.
       var foot = document.createElement("div"); foot.className = "pay-foot";
-      foot.appendChild(payError); foot.appendChild(cta); foot.appendChild(fx); foot.appendChild(fine);
+      // Who to ask and the terms, beside Pay (board m-ux-medium W3f).
+      var help = document.createElement("p"); help.className = "pay-help";
+      help.innerHTML = 'Help &amp; refunds: <span><a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a> · <a href="/terms" target="_blank" rel="noopener">Terms</a></span>';
+      foot.appendChild(payError); foot.appendChild(cta); foot.appendChild(fx); foot.appendChild(fine); foot.appendChild(help);
       grid.appendChild(options); grid.appendChild(foot);
     }).catch(function () {
       // A way to ask again where the plans should be, not only the words.

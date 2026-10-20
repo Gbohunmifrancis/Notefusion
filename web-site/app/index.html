@@ -24,8 +24,8 @@
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Only what the first screen needs; the range picker's and the recorder's styles load at the end of the body. -->
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/app.css?v=33">
-<link rel="stylesheet" href="/assets/night.css?v=13">
+<link rel="stylesheet" href="/assets/app.css?v=34">
+<link rel="stylesheet" href="/assets/night.css?v=14">
 </head>
 <body class="guest">
 
@@ -225,7 +225,6 @@
         <button class="btn btn-primary btn-rec" id="try-record" type="button"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Record a tune</button>
         <label class="btn btn-ghost try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*"><svg class="ic"><use href="/assets/icons.svg#i-upload"/></svg>Upload a recording</label>
       </div>
-      <label class="try-meter small" for="try-meter">Beats in a bar <select id="try-meter" data-meter></select></label>
       <details class="link-more">
         <summary>Or paste a song link</summary>
         <form id="try-form" class="link-form" novalidate>
@@ -234,6 +233,9 @@
           <button class="btn btn-primary" id="try-submit" type="submit">Preview</button>
         </form>
         <button class="btn btn-ghost btn-sm" id="try-paste" type="button" hidden><svg class="ic"><use href="/assets/icons.svg#i-paste"/></svg>Paste a link</button>
+        <!-- "Beats in a bar" goes with a link from here; a recorded take is asked it in its review (assets/recorder.js),
+             and an uploaded file goes as Not sure, as on the home page. -->
+        <label class="try-meter small" for="try-meter">Beats in a bar <select id="try-meter" data-meter></select></label>
         <p class="small muted link-note">Links work for many songs, not all — YouTube sometimes blocks our downloads. If yours fails, upload the audio file instead.</p>
       </details>
       <div id="try-section"></div>
@@ -313,6 +315,12 @@
     <button class="btn btn-ghost btn-icon pay-toast-close" id="pay-toast-close" type="button" aria-label="Hide this note"><svg class="ic"><use href="/assets/icons.svg#i-x"/></svg></button>
   </div>
 
+  <!-- ── A short note at the foot of the screen, with at most one action: "Deleted …" with Undo (board m-ux-medium W3b) ── -->
+  <div class="app-toast hidden" id="app-toast" role="status" aria-live="polite">
+    <span id="app-toast-text"></span>
+    <button class="app-toast-action" id="app-toast-action" type="button" hidden></button>
+  </div>
+
   <!-- ── The payment landed: welcome to Pro ──────────────────────────── -->
   <div class="modal pro-welcome hidden" id="pro-welcome" role="dialog" aria-modal="true" aria-labelledby="pro-welcome-title" aria-describedby="pro-welcome-plan">
     <div class="modal-card pro-welcome-card">
@@ -330,6 +338,42 @@
     </div>
   </div>
 
+  <!-- ── Account: the name, and a new password, one dialog each (board m-ux-medium W3d) ── -->
+  <div class="modal hidden" id="name-dialog" role="dialog" aria-modal="true" aria-labelledby="name-dialog-title">
+    <form class="modal-card acct-dialog" id="name-form" novalidate>
+      <button class="modal-close btn btn-ghost btn-icon" type="button" data-close aria-label="Close"><svg class="ic"><use href="/assets/icons.svg#i-x"/></svg></button>
+      <h2 id="name-dialog-title">Your name</h2>
+      <div class="field">
+        <label for="name-input">Name</label>
+        <input id="name-input" type="text" autocomplete="name" autocapitalize="words" maxlength="100" required>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="button" data-close>Cancel</button>
+        <button class="btn btn-primary" type="submit" id="name-save">Save</button>
+      </div>
+    </form>
+  </div>
+  <div class="modal hidden" id="password-dialog" role="dialog" aria-modal="true" aria-labelledby="password-dialog-title" aria-describedby="password-dialog-note">
+    <form class="modal-card acct-dialog" id="password-form" novalidate>
+      <button class="modal-close btn btn-ghost btn-icon" type="button" data-close aria-label="Close"><svg class="ic"><use href="/assets/icons.svg#i-x"/></svg></button>
+      <h2 id="password-dialog-title">Change your password</h2>
+      <p class="card-lead" id="password-dialog-note">You stay signed in here; your other devices will ask for the new one.</p>
+      <div class="field">
+        <label for="pw-current">Current password</label>
+        <span class="input-wrap pw-wrap"><input id="pw-current" type="password" autocomplete="current-password" required><button class="pw-eye" type="button" data-eye="pw-current" aria-label="Show password"><svg class="ic"><use href="/assets/icons.svg#i-eye"/></svg></button></span>
+      </div>
+      <div class="field">
+        <label for="pw-new">New password</label>
+        <span class="input-wrap pw-wrap"><input id="pw-new" type="password" autocomplete="new-password" minlength="8" required aria-describedby="pw-new-hint"><button class="pw-eye" type="button" data-eye="pw-new" aria-label="Show password"><svg class="ic"><use href="/assets/icons.svg#i-eye"/></svg></button></span>
+        <p class="pw-hint" id="pw-new-hint"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-minus"/></svg>At least 8 characters</p>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="button" data-close>Cancel</button>
+        <button class="btn btn-primary" type="submit" id="password-save">Update</button>
+      </div>
+    </form>
+  </div>
+
   <!-- ── Signed in ──────────────────────────────────────────────────── -->
   <section id="view-app" class="hidden">
     <div class="alert alert-info hidden" id="guest-bar">
@@ -345,7 +389,10 @@
       <h1 class="greeting" id="greeting">Good afternoon</h1><span class="pill pill-pro greeting-pro hidden" id="greeting-pro">Pro member</span>
       <p class="muted home-sub" id="home-sub">What are we writing out today?</p>
       <!-- Practice: the streak and XP, a tap from today's drill (filled by app.js once the numbers come). -->
-      <button class="practice-chip hidden" id="practice-chip" type="button"><svg class="ic"><use href="/assets/icons.svg#i-flame"/></svg><span id="practice-chip-streak">0</span><i aria-hidden="true"></i><span id="practice-chip-xp">0 XP</span></button>
+      <button class="practice-chip hidden" id="practice-chip" type="button"><svg class="ic"><use href="/assets/icons.svg#i-flame"/></svg><span id="practice-chip-streak">0</span><i aria-hidden="true"></i><span id="practice-chip-xp">0 XP</span><span class="practice-chip-start">Start practising</span></button>
+      <!-- The chip's place, held from the app's first paint for a signed-in account (board m-ux-medium W2b): the chip
+           fills it when the numbers come, up to 3 s later, so the studio under it never moves. -->
+      <span class="practice-slot hidden" id="practice-slot" aria-hidden="true"></span>
       <!-- The season's path, while its season is on (the progress carries it): a link to Practice in the season's tint,
            the carols (pine) or the Midnight path (pumpkin). app.js fills it. -->
       <button class="season-carols hidden" id="season-carols" type="button"><svg class="ic" aria-hidden="true"><use id="season-carols-icon" href="/assets/icons.svg#i-snowflake"/></svg><span id="season-carols-text">Sing the carols</span><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-arrow-right"/></svg></button>
@@ -357,6 +404,47 @@
         <button class="source-tab" type="button" role="tab" id="src-tab-record" data-source="record" aria-controls="src-record" aria-selected="true"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Record</button>
         <button class="source-tab" type="button" role="tab" id="src-tab-upload" data-source="upload" aria-controls="src-upload" aria-selected="false" tabindex="-1"><svg class="ic"><use href="/assets/icons.svg#i-upload"/></svg>Upload</button>
         <button class="source-tab" type="button" role="tab" id="src-tab-link" data-source="link" aria-controls="src-link" aria-selected="false" tabindex="-1"><svg class="ic"><use href="/assets/icons.svg#i-link"/></svg>Song link</button>
+      </div>
+
+      <!-- The choices first, then what it costs, then the action (board m-ux-medium W2a): the record button or the
+           drop zone for a recording, Transcribe for a link. -->
+      <div class="source-panel" id="src-link" role="tabpanel" aria-labelledby="src-tab-link" hidden>
+      <form id="form-link" class="link-form studio-link" novalidate>
+        <label class="sr-only" for="link-url">Song link</label>
+        <span class="input-wrap providers">
+          <span class="provider-marks" aria-hidden="true"><svg class="ic"><use href="#p-youtube"/></svg><svg class="ic"><use href="#p-spotify"/></svg><svg class="ic"><use href="#p-apple"/></svg></span>
+          <input id="link-url" type="url" placeholder="YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false" required>
+        </span>
+        <button class="btn btn-glass" id="link-paste" type="button" hidden><svg class="ic"><use href="/assets/icons.svg#i-paste"/></svg>Paste</button>
+      </form>
+      <p class="small studio-status link-hint" id="link-hint" aria-live="polite"></p>
+      <p class="link-upload-row hidden" id="link-upload-row"><button class="btn-link" id="link-upload" type="button"><svg class="ic"><use href="/assets/icons.svg#i-upload"/></svg>Switch to Upload</button></p>
+      <div id="link-section"></div>
+      </div>
+
+      <div id="kind-block">
+      <div class="upload-kind studio-kind" role="radiogroup" aria-label="What is in the recording?">
+        <label><input type="radio" name="upload-kind" value="hum"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Just a voice</label>
+        <label><input type="radio" name="upload-kind" value="song" checked><svg class="ic"><use href="/assets/icons.svg#i-music"/></svg>Voice with instruments</label>
+        <label title="A choir singing in parts: soprano, alto, tenor and bass come back as they were sung"><input type="radio" name="upload-kind" value="choir"><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg>A choir in parts</label>
+        <label title="Piano or guitar: the chords as they were played, with the top line as the tune"><input type="radio" name="upload-kind" value="chords"><svg class="ic"><use href="/assets/icons.svg#i-keys"/></svg>Chords (piano, guitar)</label>
+      </div>
+      <div class="studio-opts">
+        <label class="studio-opt hidden" id="choir-band-row"><input type="checkbox" id="choir-band"> Instruments are playing too</label>
+        <label class="studio-opt hidden" id="kb-row" title="The transpose setting on your keyboard. At −4 you press A and hear F; the sheet is written in the keys you press.">Keyboard transpose
+          <select id="kb-transpose"></select></label>
+      </div>
+      </div>
+
+      <!-- Beats in a bar, on every tab: the worker cannot hear the meter yet, so a 3/4 hymn came back in 4/4. -->
+      <div class="studio-opts studio-meter">
+        <label class="studio-opt" for="meter" title="How many beats each bar holds. Not sure leaves it to us.">Beats in a bar
+          <select id="meter" data-meter></select></label>
+      </div>
+      <!-- What the next transcription costs, only when it costs something; the why behind (i). -->
+      <div class="studio-cost hidden" id="studio-cost">
+        <span class="cost-line"><span class="cost-chip" id="cost-chip"></span><button class="cost-info" id="cost-info" type="button" aria-expanded="false" aria-controls="cost-pop" aria-label="How this is counted"><svg class="ic"><use href="/assets/icons.svg#i-info"/></svg></button></span>
+        <div class="cost-pop" id="cost-pop" role="note" hidden></div>
       </div>
 
       <div class="source-panel" id="src-record" role="tabpanel" aria-labelledby="src-tab-record">
@@ -377,44 +465,8 @@
       </label>
       </div>
 
-      <div id="kind-block">
-      <div class="upload-kind studio-kind" role="radiogroup" aria-label="What is in the recording?">
-        <label><input type="radio" name="upload-kind" value="hum"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Just a voice</label>
-        <label><input type="radio" name="upload-kind" value="song" checked><svg class="ic"><use href="/assets/icons.svg#i-music"/></svg>Voice with instruments</label>
-        <label title="A choir singing in parts: soprano, alto, tenor and bass come back as they were sung"><input type="radio" name="upload-kind" value="choir"><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg>A choir in parts</label>
-        <label title="Piano or guitar: the chords as they were played, with the top line as the tune"><input type="radio" name="upload-kind" value="chords"><svg class="ic"><use href="/assets/icons.svg#i-keys"/></svg>Chords (piano, guitar)</label>
-      </div>
-      <div class="studio-opts">
-        <label class="studio-opt hidden" id="choir-band-row"><input type="checkbox" id="choir-band"> Instruments are playing too</label>
-        <label class="studio-opt hidden" id="kb-row" title="The transpose setting on your keyboard. At −4 you press A and hear F; the sheet is written in the keys you press.">Keyboard transpose
-          <select id="kb-transpose"></select></label>
-      </div>
-      </div>
-
-      <div class="source-panel" id="src-link" role="tabpanel" aria-labelledby="src-tab-link" hidden>
-      <form id="form-link" class="link-form studio-link" novalidate>
-        <label class="sr-only" for="link-url">Song link</label>
-        <span class="input-wrap providers">
-          <span class="provider-marks" aria-hidden="true"><svg class="ic"><use href="#p-youtube"/></svg><svg class="ic"><use href="#p-spotify"/></svg><svg class="ic"><use href="#p-apple"/></svg></span>
-          <input id="link-url" type="url" placeholder="YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false" required>
-        </span>
-        <button class="btn btn-glass" id="link-paste" type="button" hidden><svg class="ic"><use href="/assets/icons.svg#i-paste"/></svg>Paste</button>
-        <button class="btn btn-light" id="link-submit" type="submit">Transcribe</button>
-      </form>
-      <p class="small studio-status link-hint" id="link-hint" aria-live="polite"></p>
-      <p class="link-upload-row hidden" id="link-upload-row"><button class="btn-link" id="link-upload" type="button"><svg class="ic"><use href="/assets/icons.svg#i-upload"/></svg>Switch to Upload</button></p>
-      <div id="link-section"></div>
-      </div>
-      <!-- Beats in a bar, on every tab: the worker cannot hear the meter yet, so a 3/4 hymn came back in 4/4. -->
-      <div class="studio-opts studio-meter">
-        <label class="studio-opt" for="meter" title="How many beats each bar holds. Not sure leaves it to us.">Beats in a bar
-          <select id="meter" data-meter></select></label>
-      </div>
-      <!-- What the next transcription costs, only when it costs something; the why behind (i). -->
-      <div class="studio-cost hidden" id="studio-cost">
-        <span class="cost-line"><span class="cost-chip" id="cost-chip"></span><button class="cost-info" id="cost-info" type="button" aria-expanded="false" aria-controls="cost-pop" aria-label="How this is counted"><svg class="ic"><use href="/assets/icons.svg#i-info"/></svg></button></span>
-        <div class="cost-pop" id="cost-pop" role="note" hidden></div>
-      </div>
+      <!-- Out of the form's row and still its submit button: shown on the Song link tab only (app.js selectSource). -->
+      <button class="btn btn-primary studio-go" id="link-submit" type="submit" form="form-link" hidden>Transcribe</button>
     </div>
 
     <!-- ── Working on it: the engine at work, not a grey bar ─────────── -->
@@ -563,55 +615,12 @@
         <p class="verdict-thanks hidden" id="verdict-thanks" aria-live="polite"></p>
       </div>
 
-      <!-- ── Pro: what it gives, in plain words, and a look at it through frosted glass ── -->
-      <div class="unlock hidden" id="r-upgrade">
-        <div class="unlock-rest hidden" id="r-unlock-rest" aria-hidden="true"><span class="unlock-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg><span id="r-unlock-left"></span></span></div>
-        <h2><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg><span id="r-unlock-title">Take this sheet to your choir</span></h2>
-        <p class="unlock-lead" id="r-unlock-lead">Pro adds the alto, tenor and bass under the tune, the PDF, MusicXML and MIDI with no watermark, and whole songs up to six minutes.</p>
-
-        <div class="pro-previews" role="list" aria-label="What Pro unlocks">
-          <button class="pro-tile" type="button" role="listitem" data-upgrade="parts">
-            <span class="pro-glass pro-satb" id="pro-satb" aria-hidden="true">
-              <span><em>S</em>d : r | m : f | s : – | m : d</span>
-              <span><em>A</em>s, : t, | d : r | m : – | d : s,</span>
-              <span><em>T</em>m : f | s : l | d' : – | s : m</span>
-              <span><em>B</em>d, : s, | d : f, | d : – | d : d,</span>
-            </span>
-            <span class="pro-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Pro</span>
-            <strong>Alto, tenor &amp; bass</strong>
-            <small>All four parts written under your tune, ready for the choir</small>
-          </button>
-          <button class="pro-tile" type="button" role="listitem" data-upgrade="sing">
-            <span class="pro-glass pro-marks" aria-hidden="true"><i class="hit">d</i><i class="hit">r</i><i class="near">m</i><i class="hit">f</i><i class="wrong">s</i><i class="hit">l</i><i class="near">t</i><i class="hit">d'</i></span>
-            <span class="pro-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Pro</span>
-            <strong>Sing it, get marked</strong>
-            <small>Sing your part and see every note: in tune, close or off</small>
-          </button>
-          <button class="pro-tile" type="button" role="listitem" data-upgrade="downloads">
-            <span class="pro-glass pro-pdf" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><b>PDF</b></span>
-            <span class="pro-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Pro</span>
-            <strong>PDF, MusicXML &amp; MIDI</strong>
-            <small>Print it, open it in MuseScore or Sibelius — no watermark</small>
-          </button>
-          <button class="pro-tile" type="button" role="listitem" data-upgrade="whole">
-            <span class="pro-glass pro-long" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="pro-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Pro</span>
-            <strong>The whole song</strong>
-            <small>Up to six minutes, twenty songs a month — not just the first minute</small>
-          </button>
-        </div>
-
-        <p class="pro-plus"><strong>Everything in Free, plus:</strong></p>
-        <ul class="pay-perks">
-          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
-          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Alto, tenor and bass written under any tune</li>
-          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Sing your part and have every note marked</li>
-          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>PDF, MusicXML and MIDI, no watermark</li>
-          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>The priority lane: never wait in the queue</li>
-          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>One payment per period — nothing renews without you</li>
-        </ul>
-        <div class="plans" id="plans"></div>
-      </div>
+      <!-- ── Pro, one row under the sheet (board m-ux-medium W2e): Play stays the one filled button; this opens the plans. ── -->
+      <button class="pro-row hidden" id="r-upgrade" type="button">
+        <span class="pro-row-ic" aria-hidden="true"><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg></span>
+        <span class="pro-row-tx"><b id="r-unlock-title">More with Pro</b><small id="r-unlock-lead">Alto, tenor and bass, Sing it, downloads with no watermark</small></span>
+        <svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev"/></svg>
+      </button>
 
       <!-- The tools themselves. They live here, out of sight, and open one at a time in the pop-up below. -->
       <div class="tool-dock" id="tool-dock" hidden>
@@ -623,8 +632,11 @@
 
       <div class="section" id="rehearse">
         <h2><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Rehearse</h2>
-        <p class="card-lead">Hear the tune — or, with the parts, mute your own voice and sing it against the others. Loop a few bars and slow it down. Play is on the sheet, under the music.</p>
+        <p class="card-lead">Hear the tune — or, with the parts, mute your own voice and sing it against the others. Loop a few bars and slow it down.</p>
         <div class="player" id="player">
+          <!-- The sheet covers the result's own Play, so it has its own (board m-ux-medium W2d); it takes the focus as the
+               sheet opens. Both play the same player. -->
+          <button class="btn btn-primary rh-play" id="rehearse-play" type="button"><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
           <button class="btn btn-ghost btn-icon" id="restart" type="button" title="From the start" aria-label="From the start"><svg class="ic"><use href="/assets/icons.svg#i-restart"/></svg></button>
           <span class="group"><label for="rate">Speed</label>
             <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></span>
@@ -789,15 +801,20 @@
         <div class="lib-folder-bar hidden" id="lib-folder-bar">
           <div class="lib-folder-head">
             <strong id="lib-folder-name"></strong>
+            <!-- Rename and Stop sharing behind ⋯, beside Share (board m-ux-medium W3c); the link row keeps the link and Copy. -->
             <span class="lib-folder-actions">
-              <button class="btn btn-ghost btn-sm" id="lib-folder-rename" type="button">Rename</button>
               <button class="btn btn-primary btn-sm" id="lib-folder-share" type="button"><svg class="ic"><use href="/assets/icons.svg#i-share"/></svg>Share the folder</button>
+              <button class="btn btn-ghost btn-sm lib-more" id="lib-folder-more" type="button" aria-label="More for this folder" aria-haspopup="menu" aria-expanded="false" aria-controls="lib-folder-menu"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+              <span class="lib-menu hidden" id="lib-folder-menu" role="menu" aria-label="This folder">
+                <button type="button" role="menuitem" id="lib-folder-rename">Rename folder</button>
+                <span class="lib-menu-sep" id="lib-folder-stop-sep" role="separator"></span>
+                <button class="danger" type="button" role="menuitem" id="lib-folder-stop">Stop sharing the link</button>
+              </span>
             </span>
           </div>
           <div class="share-row hidden" id="lib-folder-share-row">
             <input id="lib-folder-url" type="text" readonly aria-label="Folder link">
             <button class="btn btn-ghost btn-sm" id="lib-folder-copy" type="button">Copy</button>
-            <button class="btn-link small" id="lib-folder-stop" type="button">Stop sharing</button>
           </div>
           <p class="muted small" style="margin:6px 0 0">One link for the whole folder: everyone can open each song, including ones you add later.</p>
         </div>
@@ -854,6 +871,18 @@
         </div>
 
         <div class="acct-groups">
+          <!-- The account itself first, as on the phone (board m-ux-medium W3d): the name and the password open one dialog
+               each; the email is read only (no route changes it). An account that signs in with Google has no password. -->
+          <section aria-labelledby="acct-you-title">
+            <h2 class="group-title" id="acct-you-title">Account</h2>
+            <div class="list-card">
+              <button class="lrow lrow-btn" id="acct-name-row" type="button"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-user"/></svg>Name</span><span class="v"><span class="acct-val" id="acct-name-val">—</span><svg class="ic"><use href="/assets/icons.svg#i-chev"/></svg></span></button>
+              <div class="lrow"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-mail"/></svg>Email</span><span class="v"><span class="acct-val" id="acct-email-val">—</span></span></div>
+              <button class="lrow lrow-btn hidden" id="acct-password-row" type="button"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Password</span><span class="v"><span class="acct-val">Change</span><svg class="ic"><use href="/assets/icons.svg#i-chev"/></svg></span></button>
+              <div class="lrow hidden" id="acct-password-google"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Password</span><span class="v"><span class="acct-val">Signs in with Google</span></span></div>
+            </div>
+          </section>
+
           <section aria-labelledby="acct-plan-title">
             <h2 class="group-title" id="acct-plan-title">Plan &amp; usage</h2>
             <div class="list-card">
@@ -929,6 +958,8 @@
               <div class="lrow"><span class="k" id="acct-notify-label"><svg class="ic"><use href="/assets/icons.svg#i-bell"/></svg>Notify me when a transcription is ready</span><span class="v"><button class="switch" id="acct-notify" type="button" role="switch" aria-checked="false" aria-labelledby="acct-notify-label" aria-describedby="acct-notify-note"></button></span></div>
               <div class="lrow"><span class="k" id="acct-notify-sound-label"><svg class="ic"><use href="/assets/icons.svg#i-volume"/></svg>Play a sound when it's ready</span><span class="v"><button class="switch" id="acct-notify-sound" type="button" role="switch" aria-checked="true" aria-labelledby="acct-notify-sound-label"></button></span></div>
               <div class="lrow lrow-block"><p class="lrow-note acct-notify-note" id="acct-notify-note" aria-live="polite">For a transcription that finishes while you're in another tab or window.</p></div>
+              <!-- The account's choice, the one the unsubscribe link in those emails makes (GET/PUT /api/me/email-preferences). -->
+              <div class="lrow"><span class="k" id="acct-founder-label"><svg class="ic"><use href="/assets/icons.svg#i-message"/></svg>Notes from the founder by email</span><span class="v"><button class="switch" id="acct-founder" type="button" role="switch" aria-checked="false" aria-labelledby="acct-founder-label" disabled></button></span></div>
             </div>
           </section>
 
@@ -954,11 +985,22 @@
   <p class="foot">Transcriptions are for personal and choir rehearsal use. Audio fetched from a link is deleted as soon as the job finishes. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · Help and refunds: <a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a></p>
   </main>
   </div>
+
+  <!-- Phones, signed in: the app's five tabs, as on the phone, with its own glyphs (board m-ux-medium W3a). Home is the
+       studio and the sheet, Record opens the recorder from any tab, Hymns is the site's hymn pages; the account stays on
+       the photo top right. Under 641 px it takes the menu's place (app.css); wide screens keep the sidebar. -->
+  <nav class="tabbar" id="tabbar" aria-label="App sections">
+    <button class="tab-cell" type="button" data-view="transcribe"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="w" d="M5.5 9 12 3.8 18.5 9v10a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 19Z"/><path d="M3.5 10.6 12 3.8l8.5 6.8M5.5 9v10a1.5 1.5 0 0 0 1.5 1.5h10a1.5 1.5 0 0 0 1.5-1.5V9M10 20.5v-4.3a2 2 0 0 1 4 0v4.3"/></svg><span>Home</span></button>
+    <button class="tab-cell" type="button" data-view="library"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="w" d="M5.5 7h9a1.5 1.5 0 0 1 1.5 1.5v10.5a1.5 1.5 0 0 1 -1.5 1.5h-9a1.5 1.5 0 0 1 -1.5 -1.5v-10.5a1.5 1.5 0 0 1 1.5 -1.5Z"/><path d="M8 7V5a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 20 5v11.5a1.5 1.5 0 0 1-1.5 1.5H16M5.5 7h9a1.5 1.5 0 0 1 1.5 1.5v10.5a1.5 1.5 0 0 1 -1.5 1.5h-9a1.5 1.5 0 0 1 -1.5 -1.5v-10.5a1.5 1.5 0 0 1 1.5 -1.5ZM10.6 16.2V10.6c1.5.3 2.6 1.2 2.8 2.6"/><path class="k" d="M7 16.3a1.85 1.85 0 1 0 3.7 0a1.85 1.85 0 1 0 -3.7 0Z"/></svg><span>Library</span></button>
+    <button class="tab-rec" type="button" id="tab-record" aria-label="Record a tune"><span class="tab-rec-disc" aria-hidden="true"><span class="brand-mark"></span></span><span aria-hidden="true">Record</span></button>
+    <button class="tab-cell" type="button" data-view="practice"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="w" d="M8.8 3v7.2a3.2 3.2 0 0 0 6.4 0V3Z"/><path d="M8.8 3v7.2a3.2 3.2 0 0 0 6.4 0V3M12 13.4V21M4.8 6.2c-1 1.4-1 3.6 0 5M19.2 6.2c1 1.4 1 3.6 0 5"/></svg><span>Practice</span></button>
+    <a class="tab-cell" href="/hymns"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="w" d="M12 7.6C10.4 5.9 7.9 5 3.5 5v13c4.4 0 6.9.8 8.5 2.5c1.6-1.7 4.1-2.5 8.5-2.5V5c-4.4 0-6.9.9-8.5 2.6Z"/><path d="M12 7.6v12.9M12 7.6C10.4 5.9 7.9 5 3.5 5v13c4.4 0 6.9.8 8.5 2.5M12 7.6c1.6-1.7 4.1-2.6 8.5-2.6v13c-4.4 0-6.9.8-8.5 2.5M17.1 14.4V9.2c1.2.3 2 1 2.2 2"/><path class="k" d="M14.1 14.5a1.55 1.55 0 1 0 3.1 0a1.55 1.55 0 1 0 -3.1 0Z"/></svg><span>Hymns</span></a>
+  </nav>
 </div>
 
 <!-- Not needed for the first screen, so not in <head>: a stylesheet here holds back no paint. -->
 <link rel="stylesheet" href="/assets/rangepicker.css?v=3">
-<link rel="stylesheet" href="/assets/recorder.css?v=3">
+<link rel="stylesheet" href="/assets/recorder.css?v=4">
 
 <!-- Hidden engraving surface for the PDF export: OSMD paginates to A4 on canvas here. -->
 <div id="pdf-stage" aria-hidden="true" style="position:absolute; left:-10000px; top:0; width:794px;"></div>
@@ -973,9 +1015,9 @@
 <script src="/assets/songlink.js?v=2" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/back.js?v=1" defer></script>
-<script src="/assets/recorder.js?v=7" defer></script>
+<script src="/assets/recorder.js?v=8" defer></script>
 <script src="/assets/meter.js?v=1" defer></script>
-<script src="/assets/preview.js?v=13" defer></script>
+<script src="/assets/preview.js?v=14" defer></script>
 <script src="/assets/confidence.js?v=1" defer></script>
 <script src="/assets/hymnbook.js?v=1" defer></script>
 <script src="/assets/parts.js?v=1" defer></script>
@@ -983,8 +1025,8 @@
 <script src="/assets/notify.js?v=2" defer></script>
 <script src="/assets/freeweek.js?v=1" defer></script>
 <script src="/assets/sse.js?v=1" defer></script>
-<script src="/assets/app.js?v=58" defer></script>
-<script src="/assets/season.js?v=2" defer></script>
+<script src="/assets/app.js?v=59" defer></script>
+<script src="/assets/season.js?v=3" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>
 </html>

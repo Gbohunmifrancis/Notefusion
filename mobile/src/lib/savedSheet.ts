@@ -20,6 +20,14 @@ export function savedToastBody(title: string, hymnTitle?: string | null): string
   return hymnTitle && hymnTitle.trim() === title.trim() ? `As "${title}", the hymn it matched` : `As "${title}"`;
 }
 
+/**
+ * The first-open toast's second line on a filed sheet with doubtful notes (board m-ux-medium P1f): "2 notes worth a
+ * listen", beside its one action, Check.
+ */
+export function worthAListenLine(count: number): string {
+  return count === 1 ? "1 note worth a listen" : `${count} notes worth a listen`;
+}
+
 /** A sheet the server filed that its owner has not opened yet: the Library's blue dot. */
 export function isUnopened(sheet: { savedAutomatically?: boolean; openedAtUtc?: string | null }): boolean {
   return !!sheet.savedAutomatically && !sheet.openedAtUtc;

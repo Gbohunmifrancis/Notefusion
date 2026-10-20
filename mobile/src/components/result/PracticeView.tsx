@@ -52,6 +52,7 @@ import {
 } from "../../lib/practice";
 import type { Practice } from "./usePractice";
 import { ProblemNote } from "../ProblemNote";
+import { MarkingBar } from "../practice/MarkingBar";
 
 const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberOfChannels: 1 };
 const BALANCE_LABELS: { value: Balance; label: string }[] = [
@@ -108,6 +109,7 @@ function Segment<T extends string | number>({
 
 export function PracticeView({
   onClose,
+  onRehearse,
   practice: p,
   names,
   part,
@@ -126,6 +128,8 @@ export function PracticeView({
   sheetId,
 }: {
   onClose: () => void;
+  /** Rehearse the whole sheet (every part, any speed): the dock's Practise opens this view, so Rehearse is here. */
+  onRehearse: () => void;
   practice: Practice;
   names: readonly VoiceName[];
   part: VoiceName;
@@ -421,6 +425,7 @@ export function PracticeView({
               />
             </View>
           )}
+          {phase === "grading" ? <MarkingBar style={styles.marking} /> : null}
 
           {status ? <ProblemNote>{status}</ProblemNote> : null}
 
@@ -449,6 +454,22 @@ export function PracticeView({
               <Button label="Try again" icon="retry" onPress={() => void sing()} disabled={busy} style={styles.again} />
             </View>
           ) : null}
+
+          <Touchable
+            onPress={onRehearse}
+            disabled={busy}
+            style={styles.rehearse}
+            radius={radii.md}
+            accessibilityRole="button"
+            accessibilityLabel="Rehearse: loop, slow down and choose the parts"
+          >
+            <Icon name="rehearse" size={20} color={colors.icon} />
+            <View style={styles.rehearseText}>
+              <Text style={styles.rehearseLabel}>Rehearse</Text>
+              <Text style={styles.rehearseHint}>Loop, slow down and choose the parts</Text>
+            </View>
+            <Icon name="chevron" size={16} color={colors.textFaint} />
+          </Touchable>
 
           <Text style={styles.foot}>
             You hear the starting note and a bar of clicks, then sing the bars on your own — the others drop out so only your voice is marked.
@@ -510,6 +531,8 @@ const makeStyles = (c: Palette) =>
     struck: { textDecorationLine: "line-through" },
     transport: { flexDirection: "row", gap: spacing.sm, marginTop: spacing.lg },
     transportBtn: { flex: 1 },
+    /** 8 px under the buttons while the take is marked (board m-ux-medium P5a). */
+    marking: { marginTop: spacing.sm },
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.md },
     liveLabel: { ...typography.label, color: c.textMuted },
     liveNote: { ...typography.hero, color: c.accent },
@@ -521,5 +544,19 @@ const makeStyles = (c: Palette) =>
     meta: { ...typography.caption, color: c.textMuted, lineHeight: 17 },
     earned: { ...typography.label, color: c.accent },
     again: { alignSelf: "flex-start" },
+    rehearse: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+      minHeight: 56,
+      marginTop: spacing.lg,
+      paddingVertical: 10,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderColor: c.border,
+    },
+    rehearseText: { flex: 1 },
+    rehearseLabel: { fontFamily: fonts.medium, fontSize: 15, color: c.text },
+    rehearseHint: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted, marginTop: 2 },
     foot: { fontFamily: fonts.regular, fontSize: 12, color: c.textFaint, marginTop: spacing.lg, lineHeight: 17 },
   });

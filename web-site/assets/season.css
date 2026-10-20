@@ -74,9 +74,9 @@ body.is-recording .season-capped > .brand-mark, body.is-recording .season-capped
 }
 @media (prefers-reduced-motion: reduce) { .season-snow, .season-bats { display: none; } }
 
-/* ── Website home: one line above the headline, to the season's songs in the hymnbook ─────────────────── */
+/* ── Website home: one line at the top of the sample's column, to the season's songs in the hymnbook ─────── */
 .season-line {
-  display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-height: 44px; margin: 0 0 14px; padding: 8px 14px;
+  display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-height: 44px; margin: 0 0 12px; padding: 8px 14px;
   border-radius: 22px; background: var(--season-soft); border: 1px solid var(--season-line); color: var(--page-text-2, var(--ink));
   font-size: 14px; line-height: 1.3; text-decoration: none;
 }

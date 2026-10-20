@@ -1511,40 +1511,35 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
                 a recording is the most consequential tap on the screen — and the large-target
                 press. No ripple: unclipped it paints a square, and clipping would cut off the
                 idle glow. Idle it is the mark on the brand blue; recording, a ring around the
-                red stop square. */}
-            <Touchable
-              onPress={handleButtonPress}
-              haptic="medium"
-              scaleTo={motion.scale.large}
-              ripple={false}
-              style={isRecording ? styles.recordRing : styles.recordIdle}
-              accessibilityLabel={isRecording ? "Stop and transcribe" : "Start recording"}
-            >
-              {isRecording ? (
-                <View style={styles.stopSquare} />
-              ) : (
-                <Mark height={38} color={colors.onInk} />
-              )}
-            </Touchable>
-
-            {/* Right: done — stop and send the take. Nothing to send before a take starts. */}
-            <View style={styles.sideSlot}>
+                red stop square, and the one way to finish (board m-ux-medium P3d): its words
+                under it. They hold their place while idle, so the ring does not move as a take starts. */}
+            <View style={styles.recordSlot}>
               <Touchable
-                onPress={stopAndSubmit}
-                disabled={!isRecording}
-                style={styles.doneBtn}
-                radius={28}
-                accessibilityLabel="Stop and transcribe"
+                onPress={handleButtonPress}
+                haptic="medium"
+                scaleTo={motion.scale.large}
+                ripple={false}
+                style={isRecording ? styles.recordRing : styles.recordIdle}
+                accessibilityLabel={isRecording ? "Stop and transcribe" : "Start recording"}
               >
-                <Icon name="check" size={24} strokeWidth={2} color={colors.onInk} />
+                {isRecording ? (
+                  <View style={styles.stopSquare} />
+                ) : (
+                  <Mark height={38} color={colors.onInk} />
+                )}
               </Touchable>
               <Text
-                style={[styles.sideCaption, !isRecording && styles.sideCaptionOff]}
+                style={[styles.recordCaption, !isRecording && styles.recordCaptionIdle]}
                 maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}
+                accessibilityElementsHidden
+                importantForAccessibility="no"
               >
-                Done
+                Stop and transcribe
               </Text>
             </View>
+
+            {/* Right: empty, so the record button keeps the centre. */}
+            <View style={styles.sideSlot} />
           </View>
         )}
         {guest && !isUploading ? (
@@ -1677,7 +1672,7 @@ const makeStyles = (c: Palette) =>
   fastLaneText: {
     fontFamily: fonts.medium,
     fontSize: 12,
-    color: c.premiumDeep,
+    color: c.premiumText,
   },
 
   // ── Clock & status ────────────────────────────────────────────────────────
@@ -1714,10 +1709,11 @@ const makeStyles = (c: Palette) =>
     backgroundColor: c.danger,
   },
 
+  // The one instruction on the screen is a 16 px sentence; labels are 13 and up (board m-ux-medium P3f).
   statusLine: {
     ...typography.body,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: 16,
+    lineHeight: 23,
     color: c.textMuted,
     textAlign: "center",
     flexShrink: 1,
@@ -1752,7 +1748,7 @@ const makeStyles = (c: Palette) =>
     maxWidth: "100%",
   },
   trialPillText: {
-    fontSize: 11.5,
+    fontSize: 13,
     fontFamily: fonts.semibold,
     color: c.textMuted,
     flexShrink: 1,
@@ -1853,14 +1849,9 @@ const makeStyles = (c: Palette) =>
 
   sideCaption: {
     ...typography.caption,
-    fontSize: 11.5,
+    fontSize: 13,
     letterSpacing: 0,
     color: c.textMuted,
-  },
-
-  /** Matches the 0.4 a disabled Touchable fades its button to. */
-  sideCaptionOff: {
-    opacity: 0.4,
   },
 
   ghostBtn: {
@@ -1874,13 +1865,20 @@ const makeStyles = (c: Palette) =>
     justifyContent: "center",
   },
 
-  doneBtn: {
-    width: SIDE_SIZE,
-    height: SIDE_SIZE,
-    borderRadius: SIDE_SIZE / 2,
-    backgroundColor: c.ink,
+  /** The record button with its words under it. */
+  recordSlot: {
     alignItems: "center",
-    justifyContent: "center",
+    gap: spacing.sm,
+  },
+
+  /** "Stop and transcribe": the ring's own spoken label, said under it while recording. */
+  recordCaption: {
+    fontFamily: fonts.medium,
+    fontSize: 13,
+    color: c.textMuted,
+  },
+  recordCaptionIdle: {
+    opacity: 0,
   },
 
   /** Idle: the mark on a filled blue disc — the one glowing thing on the screen. */

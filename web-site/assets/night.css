@@ -265,6 +265,12 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
   --ls-track: var(--line-strong); --ls-fill: var(--blue); --ls-handle: #fff; --ls-handle-ring: var(--blue); --ls-focus: var(--blue-soft);
 }
 .studio .link-section .btn-ghost { background: var(--wash); color: var(--ink); border-color: var(--line); }
+/* The order a choice is read in (board m-ux-medium W2a): what is in it, the beats and the cost, then the action
+   last, where the thumb is: the record button, the drop zone, or Transcribe across the card. */
+#src-record { margin-top: 6px; }
+#src-record .studio-rec-stage { padding-top: 14px; }
+#src-upload { margin-top: 16px; }
+.studio > .studio-go { display: flex; width: 100%; min-height: 48px; margin-top: 16px; }
 
 /* ── Progress ────────────────────────────────────────────────────────────── */
 .stage { border-radius: 12px; }
@@ -286,22 +292,19 @@ table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
 .player .group { border-radius: 8px; padding: 5px 14px; }
 :root[data-theme="dark"] .player .group { background: rgba(255, 255, 255, 0.05); }
 .player input[type=number], .player select { border-radius: 8px; min-height: 32px; background-color: var(--surface); }
+#player .rh-play { min-width: 112px; }
 
-/* The rest of a song a free account has not heard: a faded strip of stave under a lock. */
-.unlock { position: relative; margin: 16px 0 0; border-radius: 12px; padding: 20px; border: 1px solid var(--premium-line); background: linear-gradient(160deg, var(--premium-soft), transparent 70%), var(--surface); overflow: hidden; }
-:root[data-theme="dark"] .unlock { background: linear-gradient(160deg, rgba(245, 181, 68, 0.10), rgba(255, 255, 255, 0.02) 70%); }
-.unlock-rest { position: relative; height: 74px; margin: -4px -4px 14px; border-radius: 12px; overflow: hidden;
-  background: repeating-linear-gradient(180deg, var(--line-strong) 0 1.5px, transparent 1.5px 11px) 0 14px / 100% 46px no-repeat; }
-.unlock-rest::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 34px, var(--faint) 34px 44px, transparent 44px 70px) 0 22px / 100% 26px no-repeat; opacity: 0.35; filter: blur(3px); }
-.unlock-rest::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, var(--surface) 92%); }
-:root[data-theme="dark"] .unlock-rest::after { background: linear-gradient(90deg, transparent, #0F131B 92%); }
-.unlock-lock { position: absolute; z-index: 1; left: 50%; top: 50%; translate: -50% -50%; display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: var(--surface); border: 1px solid var(--premium-line); color: var(--ink); font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
-.unlock-lock .ic { width: 16px; height: 16px; color: var(--premium); }
-.unlock h2 { font-size: 1.2rem; margin: 0 0 4px; }
-.unlock h2 .ic { color: var(--premium); }
-.unlock-lead { color: var(--muted); margin: 0 0 14px; max-width: 62ch; }
-.unlock .pay-perks { margin-bottom: 14px; }
-.unlock .pay-perks .ic { color: var(--premium); }
+/* A free sheet's way to Pro (board m-ux-medium W2e): one quiet row that opens the plans, never a second filled button. */
+.pro-row { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; margin: 16px 0 0; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--surface); color: var(--ink); font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+:root[data-theme="dark"] .pro-row { background: rgba(255, 255, 255, 0.03); }
+@media (hover: hover) { .pro-row:hover { border-color: var(--line-strong); } }
+.pro-row-ic { width: 36px; height: 36px; flex: none; display: grid; place-items: center; border-radius: 8px; background: var(--premium-soft); }
+.pro-row-ic .ic { width: 20px; height: 20px; color: var(--premium); }
+.pro-row-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pro-row-tx b { font-size: 0.9375rem; font-weight: 600; }
+.pro-row-tx small { font-size: 0.875rem; color: var(--muted); line-height: 1.35; }
+.pro-row > .ic { width: 16px; height: 16px; color: var(--muted); }
 
 /* How did it come out? One tap, then (only if it was off) what was off. */
 .verdict-card { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 14px 0 0; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); }
@@ -364,7 +367,6 @@ table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
   .studio { padding: 14px; border-radius: 12px; }
   .source-tab { font-size: 0.85rem; gap: 6px; padding: 8px 6px; }
   .verdict-card { padding: 12px 14px; }
-  .unlock { padding: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .btn, .nav-item, .tab, .lib-chip, .plan-opt, .source-tab, .verdict, .issue { transition-property: background-color, border-color, color, opacity; }
@@ -476,18 +478,19 @@ body.sheet-full { overflow: hidden; }
 @media (prefers-reduced-motion: no-preference) { .act:active { transform: scale(0.97); } }
 .act .act-lock { display: none; width: 13px; height: 13px; color: var(--premium); }
 body:not(.is-pro):not(.guest) .act-pro .act-lock { display: inline-block; }
-body:not(.is-pro):not(.guest) .act-pro { border-color: var(--premium-line); }
 .act[hidden] { display: none; }
 @media (max-width: 640px) {
   /* A phone sees every action at once: Play across the top, the tools in a four-up grid of
      icon-over-label tiles under it. Nothing sits off-screen behind a sideways scroll. */
   .result-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
   .result-actions #play { grid-column: 1 / -1; min-width: 0; width: 100%; }
-  .result-actions .act { flex-direction: column; justify-content: center; gap: 4px; min-height: 60px; min-width: 0; padding: 8px 2px;
-    border-radius: 12px; font-size: 0.72rem; line-height: 1.15; text-align: center; }
+  /* The labels at 13 px on every phone (board m-ux-medium W2f): four still fit across at 360 px, "Transpose" in a
+     68 px tile, and "Save & share" and "Four parts" take two lines. */
+  .result-actions .act { flex-direction: column; justify-content: center; gap: 4px; min-height: 64px; min-width: 0; padding: 8px 1px;
+    border-radius: 12px; font-size: 13px; line-height: 1.2; text-align: center; }
   .result-actions .act .ic { width: 20px; height: 20px; flex: none; }
   .result-actions .act .act-lock { position: absolute; top: 6px; right: 6px; width: 11px; height: 11px; }
-  @media (max-width: 374px) { .result-actions { gap: 6px; } .result-actions .act { font-size: 0.68rem; } }
+  @media (max-width: 374px) { .result-actions { gap: 6px; } }
   .result-head { gap: 10px; }
   .result-views { width: 100%; }
   .result-views .tabs { flex: 1; }
@@ -520,37 +523,6 @@ body:not(.is-pro):not(.guest) .act-pro { border-color: var(--premium-line); }
   .tool-modal:not(.hidden) .tool-card { animation: nf-sheet-up 300ms cubic-bezier(0.2, 0, 0, 1) both; }
 }
 
-/* ── Pro, seen through frosted glass ── */
-.pro-previews { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 4px 0 14px; }
-.pro-tile { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; text-align: left; padding: 12px; border-radius: 12px; overflow: hidden;
-  border: 1px solid var(--premium-line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer;
-  transition-property: transform, border-color; transition-duration: 150ms; transition-timing-function: ease-out; -webkit-tap-highlight-color: transparent; }
-:root[data-theme="dark"] .pro-tile { background: rgba(255, 255, 255, 0.03); }
-@media (hover: hover) { .pro-tile:hover { border-color: var(--premium); } }
-@media (prefers-reduced-motion: no-preference) { .pro-tile:active { transform: scale(0.97); } }
-.pro-tile strong { font-size: 0.92rem; letter-spacing: -0.01em; }
-.pro-tile small { color: var(--muted); font-size: 0.78rem; line-height: 1.35; }
-.pro-glass { display: block; width: 100%; height: 74px; margin-bottom: 8px; border-radius: 8px; overflow: hidden; background: var(--wash);
-  filter: blur(3.5px); user-select: none; }
-:root[data-theme="dark"] .pro-glass { background: rgba(255, 255, 255, 0.04); }
-.pro-lock { position: absolute; top: 18px; right: 18px; display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 8px; font-size: 0.72rem; font-weight: 700;
-  background: linear-gradient(135deg, #FBD27A, var(--premium)); color: var(--premium-ink); box-shadow: 0 4px 14px rgba(245, 181, 68, 0.35); }
-.pro-lock .ic { width: 16px; height: 16px; }
-.pro-satb { display: flex; flex-direction: column; justify-content: center; gap: 2px; padding: 6px 10px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink); white-space: nowrap; }
-.pro-satb em { font-style: normal; color: var(--blue-dark); font-weight: 700; margin-right: 6px; }
-.pro-marks { display: flex; flex-wrap: wrap; align-content: center; gap: 4px; padding: 8px; }
-.pro-marks i { font-style: normal; font-family: var(--font-mono); font-weight: 700; font-size: 0.75rem; padding: 3px 7px; border-radius: 8px; border: 1.5px solid; }
-.pro-marks .hit { color: var(--success-text); } .pro-marks .near { color: var(--amber-text); } .pro-marks .wrong { color: var(--danger-text); }
-.pro-pdf { position: relative; padding: 10px 14px; }
-.pro-pdf i { display: block; height: 5px; margin: 6px 0; border-radius: 3px; background: var(--line-strong); }
-.pro-pdf i:nth-child(2) { width: 80%; } .pro-pdf i:nth-child(4) { width: 65%; }
-.pro-pdf b { position: absolute; right: 12px; bottom: 8px; font-size: 0.7rem; color: #fff; background: var(--danger); padding: 2px 6px; border-radius: 4px; }
-.pro-long { display: block; padding: 12px 10px;
-  background: repeating-linear-gradient(180deg, var(--line-strong) 0 1.5px, transparent 1.5px 8px) 10px 12px / calc(100% - 20px) 34px no-repeat, var(--wash); }
-.pro-long i { display: inline-block; width: 9px; height: 7px; margin: 18px 10px 0 6px; border-radius: 50%; background: var(--ink); }
-.pro-plus { margin: 2px 0 8px; color: var(--ink); }
-@media (max-width: 420px) { .pro-tile { padding: 10px; } .pro-tile small { display: none; } .pro-glass { height: 56px; } .pro-lock { top: 14px; right: 14px; padding: 3px 8px; } }
-
 /* Downloads in the pop-up: a free account sees the Pro formats locked, the solfa text free. */
 .dl-pro-note { margin-bottom: 12px; }
 body.is-pro .dl-pro-note { display: none; }
@@ -576,7 +548,6 @@ body.is-pro .dl-pro-note { display: none; }
 
 /* A free account's one four-part harmony: no lock on that action until it is used. */
 body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
-body.has-free-harmony .act[data-tool="harmony"] { border-color: var(--line); }
 
 /* The four parts: which voices Play sounds. Mute a voice, or Solo to hear one alone; it sits at the top
    of the parts view and stays there while the parts scroll, so a singer can drop their own line and
@@ -690,8 +661,8 @@ body.has-free-harmony .act[data-tool="harmony"] { border-color: var(--line); }
 .lib-file { min-height: 44px; font-size: 16px; }
 .choir-join input { min-height: 44px; font-size: 16px; }
 /* Text buttons keep their look and take a 44 px target from an invisible layer, as .field-error's link does. */
-#auth-back, #link-upload, #p-notify-no, #lib-folder-stop { position: relative; }
-#auth-back::after, #link-upload::after, #p-notify-no::after, #lib-folder-stop::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
+#auth-back, #link-upload, #p-notify-no { position: relative; }
+#auth-back::after, #link-upload::after, #p-notify-no::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
 /* "Beats in a bar" keeps to one line; the select gives way instead. */
 .studio-meter .studio-opt { max-width: 100%; white-space: nowrap; }
 .studio-meter .studio-opt select { flex: 0 1 auto; min-width: 0; }

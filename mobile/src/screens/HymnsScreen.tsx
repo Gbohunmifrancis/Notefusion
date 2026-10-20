@@ -538,9 +538,11 @@ const makeStyles = (c: Palette) =>
     footerAction: { minHeight: 44, justifyContent: "center", paddingHorizontal: spacing.xs },
     footerLink: { fontFamily: fonts.medium, fontSize: 13, color: c.link },
 
-    sheetMeta: { ...typography.caption, color: c.textMuted },
+    // The open hymn reads as words to sing (board m-ux-medium P2g): verses 16/25, the tune line and credit 13; the
+    // labels (VERSE 1) stay 12 px caps. The sheet scrolls, so a longer hymn just scrolls further.
+    sheetMeta: { ...typography.caption, fontSize: 13, color: c.textMuted },
     sheetScroll: { flexGrow: 0, marginTop: spacing.md, marginBottom: spacing.lg },
     verseLabel: { ...typography.caption, color: c.textFaint, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 2 },
-    verse: { ...typography.body, color: c.text, lineHeight: 22 },
-    credit: { ...typography.caption, color: c.textFaint, lineHeight: 18 },
+    verse: { ...typography.body, fontSize: 16, lineHeight: 25, color: c.text },
+    credit: { ...typography.caption, fontSize: 13, color: c.textFaint, lineHeight: 19 },
   });

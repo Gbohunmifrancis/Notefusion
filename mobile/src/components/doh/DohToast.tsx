@@ -3,7 +3,8 @@
  * and one offer. It takes the player dock's place while it shows, so it never covers the solfa; it leaves after 5 s,
  * on a tap on it, or when the screen is touched anywhere (the caller sets `visible` false). Shown once per finished
  * job, never on a reopen from the Library. A sheet the server filed as it finished (option A, board 12) gets the same
- * toast with an icon in Doh's place: "Saved to your Library", with Rename.
+ * toast with an icon in Doh's place: "Saved to your Library", with Rename — or, when some notes are worth a listen,
+ * the mint tick, "2 notes worth a listen" and Check (board m-ux-medium P1f).
  */
 
 import React, { useEffect, useRef } from "react";

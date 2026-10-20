@@ -21,14 +21,16 @@
  * The screen has three faces: ready (nothing readable pasted yet — the field and the
  * services a link can come from), found (the song and its section picker), and refused (a
  * link the API turned away by code, in its own plain sentence, beside the links that never
- * work). The app has no clipboard module, so there is no paste button: the field is
- * pasted into by hand.
+ * work). While the field is empty it carries a Paste pill (board m-ux-medium P3a): one tap reads
+ * the clipboard, only then, with React Native's own Clipboard (still in core, so no store build),
+ * and the link is looked up as if it had been typed.
  */
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
+  Clipboard,
   Image,
   StyleSheet,
   Text,
@@ -53,7 +55,7 @@ import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
 import { useAuth } from "../lib/auth";
 import { linkJobStore } from "../lib/linkJobStore";
-import type { LinkJobOptions } from "../lib/linkJob";
+import type { LinkJobOptions, LinkSong } from "../lib/linkJob";
 import { markPractisedToday } from "../lib/practiceReminder";
 import { extractSongUrl, songLinkHint } from "../lib/songLink";
 import { defaultRange, fitsWhole, formatClock, isWholeSong, sectionLabel, type ClipRange } from "../lib/clipRange";
@@ -235,10 +237,11 @@ export function LinkScreen() {
   // A song takes minutes, and leaving the screen meanwhile used to lose its card. The link sent is kept until its
   // job ends, and on coming back the screen follows it again while it still runs.
   /** The link and options last sent, for "Try again" to keep the job it sends instead. */
-  const sent = useRef<{ url: string; opts: LinkJobOptions } | null>(null);
-  function remember(jobId: string | null, link: string, opts: LinkJobOptions) {
-    sent.current = { url: link, opts };
-    if (jobId && user) linkJobStore.save({ jobId, url: link, userId: user.id, sentAt: Date.now(), opts });
+  const sent = useRef<{ url: string; opts: LinkJobOptions; song?: LinkSong } | null>(null);
+  /** Kept with the song it is, so the Library's "On its way" names it from the start (board m-ux-medium P2e). */
+  function remember(jobId: string | null, link: string, opts: LinkJobOptions, kept?: LinkSong) {
+    sent.current = { url: link, opts, song: kept };
+    if (jobId && user) linkJobStore.save({ jobId, url: link, userId: user.id, sentAt: Date.now(), opts, song: kept });
   }
   useEffect(() => {
     if (!user) return;
@@ -247,7 +250,7 @@ export function LinkScreen() {
       if (!live || !kept) return;
       const outcome = await resumeLink(kept.jobId, kept.url, kept.opts);
       if (!live) return;
-      if (outcome === "running") sent.current = { url: kept.url, opts: kept.opts };
+      if (outcome === "running") sent.current = { url: kept.url, opts: kept.opts, song: kept.song };
       else if (outcome === "ended") linkJobStore.clear();
     });
     return () => {
@@ -267,7 +270,7 @@ export function LinkScreen() {
   /** "Try again": the same link sent afresh, and kept as the job to come back to. */
   async function sendAgain() {
     const jobId = await retry();
-    if (sent.current) remember(jobId, sent.current.url, sent.current.opts);
+    if (sent.current) remember(jobId, sent.current.url, sent.current.opts, sent.current.song);
   }
 
   const stageIndex = STAGES.findIndex((s) => s.key === state.stage);
@@ -298,13 +301,28 @@ export function LinkScreen() {
       endSeconds: section?.end,
     };
     const jobId = await startLink(found.url, opts);
-    remember(jobId, found.url, opts);
+    remember(
+      jobId,
+      found.url,
+      opts,
+      song ? { title: song.title, artist: song.artist, thumbnailUrl: song.thumbnailUrl ?? null } : undefined,
+    );
     if (jobId) setMeter(null);
   }
 
   function tryAnother() {
     setUrl("");
     inputRef.current?.focus();
+  }
+
+  /**
+   * The Paste pill: the clipboard is read on this tap and never on open, and its text goes in the field as if typed,
+   * so the link is looked up (or its hint shown) the same way. An empty clipboard opens the keyboard instead.
+   */
+  async function paste() {
+    const text = (await Clipboard.getString().catch(() => "")).trim();
+    if (text) setUrl(text);
+    else inputRef.current?.focus();
   }
 
   /** The failure card's way on: the card goes, and the link stays in the field to change or send again. */
@@ -350,8 +368,6 @@ export function LinkScreen() {
       onPress={onPress}
       style={[styles.chip, on && styles.chipOn]}
       radius={radii.pill}
-      // 30 px chips 8 apart: half the gap each way (their height is the design's to change).
-      hitSlop={4}
       accessibilityRole="button"
       accessibilityLabel={a11y ?? label}
       accessibilityState={{ selected: on }}
@@ -401,6 +417,7 @@ export function LinkScreen() {
               style={[
                 styles.field,
                 ready ? styles.fieldLarge : styles.fieldCompact,
+                ready && url.length === 0 && styles.fieldPaste,
                 ready && focused && styles.fieldFocused,
                 refusal && styles.fieldRefused,
               ]}
@@ -432,7 +449,16 @@ export function LinkScreen() {
                 <Touchable onPress={() => setUrl("")} hitSlop={12} ripple="borderless" accessibilityLabel="Clear">
                   <Icon name="close" size={20} color={colors.textMuted} />
                 </Touchable>
-              ) : null}
+              ) : (
+                <Touchable
+                  onPress={() => void paste()}
+                  style={styles.paste}
+                  radius={radii.pill}
+                  accessibilityLabel="Paste a song link"
+                >
+                  <Text style={styles.pasteText}>Paste</Text>
+                </Touchable>
+              )}
             </View>
           </View>
         ) : null}
@@ -448,7 +474,7 @@ export function LinkScreen() {
           <>
             <Text style={styles.eyebrow}>Works with</Text>
             <SourceTiles />
-            <Text style={styles.tip}>Tip: in any of these apps tap Share, then Copy link.</Text>
+            <Text style={styles.tip}>Tip: in any of these apps tap Share, then Copy link — then Paste here.</Text>
           </>
         ) : null}
 
@@ -713,7 +739,8 @@ const makeStyles = (c: Palette) =>
     lockup: { flexDirection: "row", alignItems: "center", gap: 7 },
     pageTitle: { fontFamily: fonts.medium, fontSize: 15, color: c.text },
     title: { fontFamily: fonts.semibold, fontSize: 34, lineHeight: 36, letterSpacing: -1.4, color: c.text, marginTop: 28 },
-    lead: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted, marginTop: 10 },
+    // Sentences are 16 px and nothing is under 13 (board m-ux-medium P3f).
+    lead: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 24, color: c.textMuted, marginTop: 10 },
 
     // The focus ring is a padded wrapper rather than a shadow, so it draws the same on Android.
     ring: { borderRadius: 999, padding: 4, marginHorizontal: -4, marginTop: spacing.lg },
@@ -724,6 +751,13 @@ const makeStyles = (c: Palette) =>
     },
     fieldLarge: { height: 60, paddingLeft: 20, paddingRight: 18 },
     fieldCompact: { height: 52, paddingLeft: 11, paddingRight: 16 },
+    /** The Paste pill sits 8 px from the field's end: 44 px inside the 60. */
+    fieldPaste: { paddingRight: 8 },
+    paste: {
+      height: 44, paddingHorizontal: spacing.lg, borderRadius: radii.pill, justifyContent: "center",
+      backgroundColor: c.accentSoft, borderWidth: 1, borderColor: c.accentGlow,
+    },
+    pasteText: { fontFamily: fonts.semibold, fontSize: 15, color: c.link },
     fieldFocused: { borderColor: c.ink },
     fieldRefused: { borderColor: c.warning + "66" },
     input: { flex: 1, fontFamily: fonts.regular, fontSize: 15, color: c.text, paddingVertical: 0 },
@@ -735,8 +769,8 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.medium, fontSize: 12, letterSpacing: 1.7, textTransform: "uppercase",
       color: c.textMuted, marginTop: 30,
     },
-    tip: { fontFamily: fonts.regular, fontSize: 12, lineHeight: 18, color: c.textFaint, textAlign: "center", marginTop: spacing.lg },
-    hint: { fontFamily: fonts.regular, fontSize: 12, lineHeight: 17, color: c.textMuted, marginTop: spacing.sm },
+    tip: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, textAlign: "center", marginTop: spacing.lg },
+    hint: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, marginTop: spacing.sm },
     reading: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.lg, paddingHorizontal: spacing.xs },
     readingText: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
 
@@ -745,12 +779,13 @@ const makeStyles = (c: Palette) =>
     meterTitle: { marginTop: 22 },
     pickRange: { fontFamily: nightFonts.mono, fontSize: 12.5, color: c.accent },
     chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.md },
+    /** The section and Beats-in-a-bar chips: 44 px to a thumb, 8 apart (board m-ux-medium P3c). */
     chip: {
-      height: 30, paddingHorizontal: 12, borderRadius: radii.pill, justifyContent: "center",
+      height: 44, paddingHorizontal: spacing.lg, borderRadius: radii.pill, justifyContent: "center",
       backgroundColor: c.surfaceAlt, borderWidth: 1, borderColor: c.border,
     },
     chipOn: { backgroundColor: c.accentSoft, borderColor: c.ink },
-    chipText: { fontFamily: fonts.medium, fontSize: 12.5, color: c.textMuted },
+    chipText: { fontFamily: fonts.medium, fontSize: 14, color: c.textMuted },
     chipTextOn: { color: c.accent },
 
     moreRow: {
@@ -768,7 +803,7 @@ const makeStyles = (c: Palette) =>
     dockActions: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
     dockMain: { flex: 1 },
     entitlement: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: spacing.md },
-    entitlementText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 12.5, lineHeight: 18, color: c.textMuted, textAlign: "center" },
+    entitlementText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, textAlign: "center" },
     submit: { marginTop: spacing.md },
 
     progressCard: { marginTop: spacing.lg },
@@ -791,5 +826,5 @@ const makeStyles = (c: Palette) =>
     barPct: { fontFamily: nightFonts.mono, fontSize: 12, color: c.accent, minWidth: 42, textAlign: "right" },
     progressNote: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, marginTop: spacing.sm },
     progressWarn: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: c.warningText, marginTop: spacing.sm },
-    legal: { fontFamily: fonts.regular, fontSize: 11, lineHeight: 16, color: c.textFaint, textAlign: "center", marginTop: spacing.xl },
+    legal: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: c.textFaint, textAlign: "center", marginTop: spacing.xl },
   });
