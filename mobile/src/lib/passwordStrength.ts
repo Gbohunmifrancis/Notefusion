@@ -6,8 +6,8 @@ export interface Strength {
   score: number;
   /** What to show under the bars: how to improve, not just "weak". */
   hint: string;
-  /** A night palette colour name for the filled bars. */
-  tone: "dim" | "red" | "amber" | "mint";
+  /** A night palette colour name for the filled bars. Never red: red is kept for the one word that deletes. */
+  tone: "dim" | "amber" | "mint";
 }
 
 /**
@@ -18,7 +18,7 @@ export function passwordStrength(pw: string): Strength {
   if (pw.length === 0) return { score: 0, hint: `At least ${MIN_PASSWORD} characters`, tone: "dim" };
   if (pw.length < MIN_PASSWORD) {
     const left = MIN_PASSWORD - pw.length;
-    return { score: 1, hint: `Too short · ${left} more character${left === 1 ? "" : "s"}`, tone: "red" };
+    return { score: 1, hint: `Too short · ${left} more character${left === 1 ? "" : "s"}`, tone: "amber" };
   }
   const missing: string[] = [];
   if (!/\d/.test(pw)) missing.push("a number");

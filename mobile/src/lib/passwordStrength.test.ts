@@ -13,6 +13,8 @@ test("empty asks for the minimum length", () => {
 test("short counts what is left", () => {
   assert.equal(passwordStrength(lower(7)).hint, "Too short · 1 more character");
   assert.equal(passwordStrength(lower(3)).hint, "Too short · 5 more characters");
+  // A problem is amber, never red (red is the one word that deletes).
+  assert.equal(passwordStrength(lower(3)).tone, "amber");
 });
 
 test("each missing kind costs a bar and the first one is named", () => {
