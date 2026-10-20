@@ -146,12 +146,6 @@ export function renderHymn(h, { hymns, posts, occasions = [], personByKey = new 
   <h1>${escapeHtml(h.title)} in Tonic Solfa</h1>
   <p class="post-lede">${escapeHtml(h.description)}</p>
 </header>
-${pdfButton(path, "Hymn: download PDF")}
-
-<dl class="facts">
-${facts.map(([k, val, html]) => `  <div><dt>${k}</dt><dd>${html ? val : escapeHtml(val)}</dd></div>`).join("\n")}
-</dl>
-<p class="credit-line">${v.credit.html} <a href="/hymns/credits">Sources and licences</a>.</p>
 
 <section aria-labelledby="solfa-title" class="card">
   <h2 id="solfa-title">The solfa with the words</h2>
@@ -165,6 +159,15 @@ ${gridHtml(v.lines, { beats: true })}
     <span class="player-note">Piano, ${escapeHtml(String(v.tempo))} beats a minute. The note being played lights up.</span>
   </div>
 </section>
+<!-- The solfa first, then the way into the app beside it, then the PDF and the facts (board l-ux-high/06b): on a phone
+     the solfa used to start some 1,100px down, and the only way into the app was at the very end. -->
+<p class="inline-cta"><a href="/app?utm_source=hymn-inline" data-track="Hymn: inline cta">Got your choir's recording? Get it in solfa →</a></p>
+${pdfButton(path, "Hymn: download PDF")}
+
+<dl class="facts">
+${facts.map(([k, val, html]) => `  <div><dt>${k}</dt><dd>${html ? val : escapeHtml(val)}</dd></div>`).join("\n")}
+</dl>
+<p class="credit-line">${v.credit.html} <a href="/hymns/credits">Sources and licences</a>.</p>
 
 <section aria-labelledby="lines-title">
   <h2 id="lines-title">The solfa line by line</h2>

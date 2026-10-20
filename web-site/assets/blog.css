@@ -268,7 +268,11 @@
 .blog-page .hymn-page section { margin-bottom: 8px; }
 .blog-page .hymn-page .card { margin: 0 0 18px; padding: clamp(16px, 3vw, 24px); border: 1px solid var(--tint-line); border-radius: 8px; background: var(--tint); box-shadow: none; }
 .blog-page .hymn-page .card h2 { margin-top: 0; }
-.blog-page .facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0 28px; margin: 0 0 30px; border-top: 1px solid var(--rule); }
+/* The way into the app, right under the solfa (board l-ux-high/06b). */
+.blog-page .inline-cta { margin: -8px 0 16px; font-family: var(--sans); font-weight: 650; }
+.blog-page .inline-cta a { display: inline-flex; min-height: 44px; align-items: center; }
+/* Two columns from a 360px phone up: in one column the eight facts took some 540px before the words. */
+.blog-page .facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0 24px; margin: 0 0 30px; border-top: 1px solid var(--rule); }
 .blog-page .facts div { padding: 10px 0; border-bottom: 1px solid var(--rule); }
 .blog-page .facts dt { color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: 0; }
 .blog-page .facts dd { margin: 2px 0 0; color: var(--ink); font-size: 15.5px; font-weight: 600; }
