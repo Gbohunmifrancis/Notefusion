@@ -110,6 +110,17 @@ export function fold(text: string): string {
     .trim();
 }
 
+/**
+ * Whether every word typed appears among the texts, folded (case, accents and punctuation ignored): the hymn search's
+ * rule, also the Library's over a sheet's title and folder. Nothing typed matches everything.
+ */
+export function matchesWords(query: string, texts: readonly (string | null | undefined)[]): boolean {
+  const q = fold(query);
+  if (!q) return true;
+  const all = texts.map((t) => fold(t ?? "")).join(" ");
+  return q.split(" ").every((w) => all.includes(w));
+}
+
 /** Titles sort by their first letter, not by a quote mark in front of it. */
 export function titleKey(title: string): string {
   return fold(title);

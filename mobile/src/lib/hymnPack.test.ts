@@ -13,6 +13,7 @@ import {
   formatBytes,
   hymnSheet,
   keyAndTime,
+  matchesWords,
   needsDownload,
   openingLine,
   parseMeta,
@@ -203,4 +204,12 @@ test("each Halloween card opens with its first notes in solfa: the Mountain King
   assert.equal(keyAndTime(king), "Bm · 4/4");
   assert.equal(mountainKing(halloweenPack)?.slug, "tune-in-the-hall-of-the-mountain-king");
   assert.equal(mountainKing(shelf), null);
+});
+
+test("matchesWords: every word, in any order, across the texts, accents and case ignored", () => {
+  assert.ok(matchesWords("", ["Anything"]));
+  assert.ok(matchesWords("ave", ["Avé Maria", null]));
+  assert.ok(matchesWords("sunday maria", ["Ave Maria", "Sunday choir"]));
+  assert.ok(matchesWords("TIS SO", ["‘Tis So Sweet"]));
+  assert.equal(matchesWords("easter maria", ["Ave Maria", "Sunday choir"]), false);
 });

@@ -34,6 +34,7 @@ import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLib
 import { resultFromSaved } from "../lib/openSheet";
 import { onTakeChange, removeTake, retryTake, useOutbox, useSendProgress } from "../lib/outbox";
 import { isUnopened } from "../lib/savedSheet";
+import { matchesWords } from "../lib/hymnPack";
 import { useReachability } from "../lib/connectivity";
 import { isNetworkCode } from "../lib/reachability";
 import { openTranscriptionFromNotification } from "../lib/notificationLink";
@@ -159,9 +160,8 @@ export function LibraryScreen() {
   );
 
   const filteredItems = items.filter((item) => {
-    const matchesQuery =
-      query.trim() === "" ||
-      item.title.toLowerCase().includes(query.trim().toLowerCase());
+    // Title or folder, as the hymn search reads words: "ave" finds "Avé Maria", "sunday" the Sunday choir folder.
+    const matchesQuery = matchesWords(query, [item.title, item.folder]);
     const matchesFolder = folder === null || item.folder === folder;
     return matchesQuery && matchesFolder;
   });
@@ -320,6 +320,7 @@ export function LibraryScreen() {
                 value={query}
                 onChangeText={setQuery}
                 autoFocus
+                autoCorrect={false}
                 returnKeyType="search"
                 textAlignVertical="center"
               />
