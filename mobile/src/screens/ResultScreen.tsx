@@ -1895,6 +1895,23 @@ export function ResultScreen({ route, navigation }: Props) {
   ];
   const notationChoice = notationView === "staff" ? "staff" : solfaStyle;
   const nothingToShow = solfaStyle === "bars" ? view.notes.length === 0 : activeSolfaLines.length === 0;
+  /** No notes were heard (the editor never deletes the last one): why, and the way to another take. */
+  const emptySheet = (
+    <View style={styles.emptySheet}>
+      <Text style={styles.panelHint}>
+        No notes were heard in this recording, so there is nothing to read yet. Hum or sing a little closer to the
+        phone and record it again.
+      </Text>
+      {guest ? null : (
+        <Button
+          label="Record again"
+          icon="mic"
+          variant="secondary"
+          onPress={() => navigation.navigate("Tabs", { screen: "Record" })}
+        />
+      )}
+    </View>
+  );
 
   return (
     // Any touch on the sheet sends Doh's toast away; the touch still does what it was for.
@@ -2350,7 +2367,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 sheetId={savedId}
               />
             ) : (
-              <Text style={styles.panelHint}>There are no notes to sing yet.</Text>
+              <Text style={styles.panelHint}>There are no notes to sing: none were heard in this recording.</Text>
             )
           ) : null}
 
@@ -2463,7 +2480,7 @@ export function ResultScreen({ route, navigation }: Props) {
             ) : null}
             {notationView === "solfa" ? (
               nothingToShow ? (
-                <Text style={styles.solfaMuted}>No solfa lines produced.</Text>
+                emptySheet
               ) : solfaStyle === "bars" ? (
                 <>
                   <SheetGrid
@@ -2514,6 +2531,8 @@ export function ResultScreen({ route, navigation }: Props) {
                   </View>
                 ))
               )
+            ) : view.notes.length === 0 ? (
+              emptySheet
             ) : (
               <View>
                 <ScoreView
@@ -3252,7 +3271,8 @@ const makeStyles = (c: Palette) =>
       lineHeight: 20,
       letterSpacing: 1,
     },
-    solfaMuted: { ...typography.body, color: c.textFaint, fontStyle: "italic" },
+    /** No notes heard: the sentence, then Record again under it. */
+    emptySheet: { gap: spacing.md, alignItems: "flex-start" },
     hymnRow: { flexDirection: "row", marginBottom: spacing.sm },
     hymnBar: { flexDirection: "row", borderLeftWidth: 1, borderLeftColor: c.border, paddingHorizontal: 4 },
     hymnCell: { minWidth: 34, alignItems: "center", marginRight: 2 },
