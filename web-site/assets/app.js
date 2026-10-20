@@ -493,8 +493,13 @@
       b.setAttribute("aria-label", showing ? "Show password" : "Hide password");
     });
   });
-  // The password rule, ticked off as it is met rather than refused after the fact.
-  $("reg-password").addEventListener("input", function () { $("reg-password-hint").classList.toggle("ok", $("reg-password").value.length >= 8); });
+  // The password rule, ticked off as it is met rather than refused after the fact: a dash until then, a tick once
+  // met, so it reads without the colour.
+  $("reg-password").addEventListener("input", function () {
+    var met = $("reg-password").value.length >= 8, hint = $("reg-password-hint");
+    hint.classList.toggle("ok", met);
+    hint.querySelector("use").setAttribute("href", "/assets/icons.svg#i-" + (met ? "check" : "minus"));
+  });
   $("forgot").addEventListener("click", function () {
     var email = $("login-email").value.trim(), btn = $("forgot");
     if (!email) { alertIn($("auth-alert"), "info", "Type your email above, then press Forgot password."); $("login-email").focus(); return; }
