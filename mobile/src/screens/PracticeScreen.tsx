@@ -463,6 +463,8 @@ export function PracticeScreen() {
   const showPicker = !!progress && (track == null || picking);
   const where = drill ? pathLine(drill) : null;
   const onward = drill && grade ? nextAction(drill, next, track) : null;
+  /** Nothing left to mark today and nothing to move on to: the main button is the day's end. */
+  const doneForToday = left === 0 && !(onward && !onward.same);
   /** The kept take, while its drill is the one on screen: the main button sends it again. */
   const resendable = !!unsent && !!drill && unsent.drill.id === drill.id && !grade;
   // Doh's mood and line (Playful only): singing along, cheering, encouraging, worried, sleepy or waving.
@@ -597,10 +599,11 @@ export function PracticeScreen() {
                       <Button label="Send it again" icon="retry" onPress={sendAgain} style={styles.action} />
                     ) : (
                       <Button
-                        label={onward ? onward.label : playful ? "Sing it!" : "Sing it"}
-                        icon={onward && !onward.same ? "next" : "mic"}
+                        // The day's marked drills all sung: the button says the day is done, not a greyed "Sing it".
+                        label={doneForToday ? "Done for today" : onward ? onward.label : playful ? "Sing it!" : "Sing it"}
+                        icon={doneForToday ? "check" : onward && !onward.same ? "next" : "mic"}
                         onPress={() => void (onward && !onward.same ? goNext() : sing())}
-                        disabled={left === 0 && !(onward && !onward.same)}
+                        disabled={doneForToday}
                         style={styles.action}
                       />
                     )}
@@ -614,7 +617,8 @@ export function PracticeScreen() {
                 {phase === "grading" ? (
                   <Text style={styles.allowance}>Marking your take, note by note. It can take up to a minute.</Text>
                 ) : allowance ? (
-                  <Text style={styles.allowance}>{allowanceLine(allowance)}</Text>
+                  // The count is a label (13); once they are all sung it is good news in a sentence (16).
+                  <Text style={left === 0 ? styles.body : styles.allowance}>{allowanceLine(allowance)}</Text>
                 ) : null}
                 {error ? <ProblemNote sentence>{error}</ProblemNote> : null}
                 {error === MIC_REFUSED && micBlocked ? (
