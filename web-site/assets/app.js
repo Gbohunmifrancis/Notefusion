@@ -920,6 +920,15 @@
   function fold(text) {
     return String(text || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   }
+  /**
+   * A Library action's failure, said in the Library (an alert under its heading), not in the studio's alert, which
+   * sits inside the hidden Transcribe view; elsewhere it falls back to that one.
+   */
+  function libAlert(text) {
+    var box = viewNow === "library" ? $("lib-alert") : $("app-alert");
+    alertIn(box, "danger", text);
+    if (box.scrollIntoView) box.scrollIntoView({ block: "nearest" });
+  }
   function filterLibrary() {
     var words = fold($("lib-search").value).split(" ").filter(Boolean), shown = 0;
     document.querySelectorAll("#lib-list .lib-item").forEach(function (card) {
@@ -945,7 +954,7 @@
     select.disabled = true;
     request("/api/library/" + it.id + "/folder", { method: "PUT", body: { folder: name || null } })
       .then(function () { it.folder = name || null; track("Filed sheet"); loadLibrary(false); })
-      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not move the sheet: " + (err.message || err)); select.value = it.folder || ""; })
+      .catch(function (err) { libAlert("Could not move the sheet: " + (err.message || err)); select.value = it.folder || ""; })
       .finally(function () { select.disabled = false; });
   }
   $("lib-folder-share").addEventListener("click", function () {
@@ -956,7 +965,7 @@
         $("lib-folder-url").value = link.url || ("https://notefusion.studio/app/sheet/?f=" + encodeURIComponent(link.token));
         show($("lib-folder-share-row")); $("lib-folder-url").select(); track("Shared folder"); libraryCache = null;
       })
-      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not share the folder: " + (err.message || err)); })
+      .catch(function (err) { libAlert("Could not share the folder: " + (err.message || err)); })
       .finally(function () { btn.disabled = false; });
   });
   $("lib-folder-copy").addEventListener("click", function () {
@@ -969,7 +978,7 @@
     if (!confirm("Stop sharing \u201c" + libFolder + "\u201d? Everyone with the link loses it, and sharing again makes a new link.")) return;
     request("/api/library/folders/share?folder=" + encodeURIComponent(libFolder), { method: "DELETE" })
       .then(function () { hide($("lib-folder-share-row")); })
-      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not stop sharing: " + (err.message || err)); });
+      .catch(function (err) { libAlert("Could not stop sharing: " + (err.message || err)); });
   });
   $("lib-folder-rename").addEventListener("click", function () {
     if (!libFolder) return;
@@ -977,7 +986,7 @@
     if (!to || to === libFolder) return;
     request("/api/library/folders", { method: "PUT", body: { from: libFolder, to: to } })
       .then(function () { libFolder = to; libraryCache = null; loadLibrary(true); })
-      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not rename the folder: " + (err.message || err)); });
+      .catch(function (err) { libAlert("Could not rename the folder: " + (err.message || err)); });
   });
 
   function loadLibrary(force) {
@@ -1013,7 +1022,7 @@
             (isPro() ? " Deleting won't give back a song it used." : " Deleting won't give back the free transcription it used."))) return;
           del.disabled = true;
           request("/api/library/" + it.id, { method: "DELETE" }).then(function () { libraryCache = null; loadLibrary(true); refreshUsage(); })
-            .catch(function (err) { alertIn($("app-alert"), "danger", "Could not delete: " + (err.message || err)); del.disabled = false; });
+            .catch(function (err) { libAlert("Could not delete: " + (err.message || err)); del.disabled = false; });
         });
         a.appendChild(open); a.appendChild(file);
         if (sub && sub.choirName) a.appendChild(choirShareButton(it));
@@ -1036,7 +1045,7 @@
       b.disabled = true;
       request("/api/choirs/mine/sheets/" + encodeURIComponent(it.id), { method: on ? "PUT" : "DELETE" })
         .then(function () { it.sharedWithChoir = on; paint(); track(on ? "Shared with choir" : "Unshared from choir"); if (on) sfx.play("saved"); renderChoirLibrary(); })
-        .catch(function (err) { alertIn($("app-alert"), "danger", "Could not share with your choir: " + (err.message || err)); })
+        .catch(function (err) { libAlert("Could not share with your choir: " + (err.message || err)); })
         .finally(function () { b.disabled = false; });
     });
     return b;
@@ -1069,7 +1078,7 @@
             out.disabled = true;
             request("/api/choirs/mine/sheets/" + encodeURIComponent(it.id), { method: "DELETE" })
               .then(function () { track("Unshared from choir"); if (it.mine) libraryCache = null; return it.mine ? loadLibrary(true) : renderChoirLibrary(); })
-              .catch(function (err) { alertIn($("app-alert"), "danger", "Could not take it out: " + (err.message || err)); out.disabled = false; });
+              .catch(function (err) { libAlert("Could not take it out: " + (err.message || err)); out.disabled = false; });
           });
           a.appendChild(out);
         }
@@ -1099,7 +1108,7 @@
       track("Opened choir sheet");
       showResult(result);
       $("result").scrollIntoView({ behavior: "smooth", block: "start" });
-    }).catch(function (err) { if (at === epoch) alertIn($("app-alert"), "danger", "Could not open that sheet: " + (err.message || err)); });
+    }).catch(function (err) { if (at === epoch) libAlert("Could not open that sheet: " + (err.message || err)); });
   }
   // To the microphone: what every account can do for free (a song link never is on a free account).
   $("lib-empty-go").addEventListener("click", function () { setView("transcribe"); selectSource("record"); $("rec-btn").focus(); });
@@ -1123,7 +1132,7 @@
       $("sheet-parts").innerHTML = "";
       showResult(result);
       $("result").scrollIntoView({ behavior: "smooth", block: "start" });
-    }).catch(function (err) { if (at === epoch) alertIn($("app-alert"), "danger", "Could not open that sheet: " + (err.message || err)); });
+    }).catch(function (err) { if (at === epoch) libAlert("Could not open that sheet: " + (err.message || err)); });
   }
 
   function renderAccount() {
