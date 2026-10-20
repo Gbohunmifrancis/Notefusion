@@ -55,10 +55,14 @@
       });
     });
   }
-  /** A recording on its way up, with how much has gone: fetch cannot say, so this one goes over XMLHttpRequest. */
-  function upload(path, form, onProgress) {
+  /**
+   * A recording on its way up, with how much has gone: fetch cannot say, so this one goes over XMLHttpRequest.
+   * `started` is handed the request at once, so Cancel can stop it.
+   */
+  function upload(path, form, onProgress, started) {
     return new Promise(function (resolve, reject) {
       var xhr = new XMLHttpRequest();
+      if (started) started(xhr);
       xhr.open("POST", API + path);
       xhr.setRequestHeader("X-Device-Id", deviceId());
       // A connection that stops moving (3G under a bridge) gives up after 45 s of no progress, rather than
@@ -77,31 +81,78 @@
       xhr.send(form);
     });
   }
-  function sayUpload(fraction) { say("Uploading… " + Math.round(fraction * 100) + "%"); }
+  /**
+   * While a take or file goes up: how much has gone, in words and a 4 px bar, beside Cancel, the one live control then
+   * (the stall watchdog's abort, sooner). Cancel goes once the whole recording is up: the preview is being made by then.
+   */
+  var progress = null;
+  function showUploading(take) {
+    status.className = "try-status"; status.textContent = "";
+    var row = document.createElement("span"), text = document.createElement("span"), label = document.createElement("span");
+    var bar = document.createElement("progress"), cancel = document.createElement("button");
+    row.className = "try-up"; text.className = "try-up-text";
+    bar.className = "try-up-bar"; bar.max = 100; bar.value = 0; bar.setAttribute("aria-hidden", "true");
+    // btn-secondary on the home page, btn-ghost in /app's guest box: each page styles the one it has.
+    cancel.type = "button"; cancel.className = "btn btn-secondary btn-ghost try-cancel"; cancel.textContent = "Cancel";
+    cancel.addEventListener("click", function () {
+      if (!take.xhr) return;
+      take.cancelled = true; take.refocus = document.activeElement === cancel;
+      take.xhr.abort();
+    });
+    text.appendChild(label); text.appendChild(document.createTextNode(" ")); text.appendChild(bar);
+    row.appendChild(text); row.appendChild(document.createTextNode(" ")); row.appendChild(cancel);
+    status.appendChild(row);
+    progress = { label: label, bar: bar, cancel: cancel };
+    sayUpload(0);
+  }
+  function sayUpload(fraction) {
+    var pct = Math.round(fraction * 100);
+    if (!progress || !status.contains(progress.label)) { say("Uploading… " + pct + "%"); return; }
+    progress.label.textContent = "Uploading… " + pct + "%";
+    progress.bar.value = pct;
+    if (fraction >= 1 && progress.cancel.parentNode) progress.cancel.parentNode.removeChild(progress.cancel);
+  }
   function track(name) { try { if (window.nfTrack) window.nfTrack(name); } catch (e) { /* never in the way */ } }
   function open(job) { location.href = "/app/?preview=" + encodeURIComponent(job.jobId); }
   /**
    * A take or file whose send failed on the way (no connection, a server fault, too many at once) is kept, with a
    * "Send it again" beside the note, instead of being lost with the error (board l-ux-high/06e). A refusal that
-   * sending again cannot change (the one preview used) is explained as before.
+   * sending again cannot change (the one preview used) is explained as before. A take cancelled on its way up is kept
+   * the same way; a cancelled file is simply dropped, since it is still on the device.
    */
   var kept = null;
-  /** `meter`: the one named ("3/4"), null for Not sure, or undefined when the question was not asked (a file). */
-  function sendTake(blob, name, meter) {
+  /**
+   * `meter`: the one named ("3/4"), null for Not sure, or undefined when the question was not asked (a file).
+   * `picked`: a file chosen from the device rather than a take recorded here.
+   */
+  function sendTake(blob, name, meter, picked) {
     kept = null;
-    busy(true); sayUpload(0);
-    upload("/api/preview", audioForm(blob, name, meter), sayUpload).then(open).catch(function (err) {
+    var take = { blob: blob, name: name, meter: meter, picked: picked, xhr: null, cancelled: false, refocus: false };
+    var active = document.activeElement;
+    busy(true); showUploading(take);
+    // The control that sent it is off (or gone) now, so the keyboard goes on to Cancel, the one live control.
+    if (!active || active === document.body || active === record || active === file || status.contains(active) || !document.contains(active)) {
+      try { progress.cancel.focus({ preventScroll: true }); } catch (e) { /* an old browser */ }
+    }
+    upload("/api/preview", audioForm(blob, name, meter), sayUpload, function (xhr) { take.xhr = xhr; }).then(open).catch(function (err) {
       busy(false);
-      if (!err.status || err.status === 408 || err.status === 429 || err.status >= 500) { kept = { blob: blob, name: name, meter: meter }; sayKept(); }
+      if (take.cancelled) {
+        if (!picked) { kept = take; sayKept("Upload cancelled. Your take is kept.", take.refocus); return; }
+        say("Upload cancelled.");
+        if (take.refocus) file.focus();
+        return;
+      }
+      if (!err.status || err.status === 408 || err.status === 429 || err.status >= 500) { kept = take; sayKept(); }
       else explain(err);
     });
   }
-  function sayKept() {
-    say("Couldn't send it. Your take is kept.", "error");
+  function sayKept(text, focus) {
+    say(text || "Couldn't send it. Your take is kept.", text ? "" : "error");
     var again = document.createElement("button");
     again.type = "button"; again.className = "btn btn-primary try-again"; again.textContent = "Send it again";
-    again.addEventListener("click", function () { if (kept) sendTake(kept.blob, kept.name, kept.meter); });
+    again.addEventListener("click", function () { if (kept) sendTake(kept.blob, kept.name, kept.meter, kept.picked); });
     status.appendChild(again);
+    if (focus) again.focus();
   }
   function explain(err) {
     if (err.code === "PREVIEW_LIMIT_REACHED") { say(err.message + " ", "info"); status.appendChild(signupLink()); return; }
@@ -215,7 +266,7 @@
     if (problem) { say(problem, "error"); file.value = ""; return; }
     track("Preview started (audio)");
     file.value = "";
-    sendTake(f, f.name, meterForLinks ? undefined : chosenMeter());
+    sendTake(f, f.name, meterForLinks ? undefined : chosenMeter(), true);
   });
 
   // "Record a tune" opens the same recording pop-up as the signed-in studio (assets/recorder.js):
