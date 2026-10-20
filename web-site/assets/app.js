@@ -1068,8 +1068,13 @@
     if (!libFolder) return;
     var to = (window.prompt("Rename “" + libFolder + "” to:", libFolder) || "").trim();
     if (!to || to === libFolder) return;
-    request("/api/library/folders", { method: "PUT", body: { from: libFolder, to: to } })
-      .then(function () { libFolder = to; libraryCache = null; loadLibrary(true); })
+    var from = libFolder;
+    request("/api/library/folders", { method: "PUT", body: { from: from, to: to } })
+      .then(function () {
+        // Renamed in the list as it stands, without a reload to the skeleton.
+        (libraryCache || []).forEach(function (x) { if (x.folder === from) x.folder = to; });
+        libFolder = to; loadLibrary(false);
+      })
       .catch(function (err) { libAlert("Could not rename the folder: " + (err.message || err)); });
   });
 
@@ -1107,7 +1112,11 @@
           if (!confirm("Delete \u201c" + (it.title || "Untitled") + "\u201d from your library? This cannot be undone." +
             (isPro() ? " Deleting won't give back a song it used." : " Deleting won't give back the free transcription it used."))) return;
           del.disabled = true;
-          request("/api/library/" + it.id, { method: "DELETE" }).then(function () { libraryCache = null; loadLibrary(true); refreshUsage(); })
+          // Taken out of the list in place: a full reload went back to the skeleton and lost the scroll.
+          request("/api/library/" + it.id, { method: "DELETE" }).then(function () {
+            if (libraryCache) libraryCache = libraryCache.filter(function (x) { return x.id !== it.id; });
+            loadLibrary(false); refreshUsage();
+          })
             .catch(function (err) { libAlert("Could not delete: " + (err.message || err)); del.disabled = false; });
         });
         a.appendChild(open); a.appendChild(file);
