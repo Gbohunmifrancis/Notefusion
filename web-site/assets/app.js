@@ -667,7 +667,13 @@
       history.replaceState(history.state, "", url.pathname + url.search + url.hash);
     } catch (e) { /* the address keeps the old view; nothing depends on it */ }
     ["transcribe", "library", "practice", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
-    document.querySelectorAll("#top-nav .top-link").forEach(function (b) { b.classList.toggle("on", b.dataset.view === name); });
+    // The nav says where you are, to the eye and to a screen reader; Search lights itself, not Transcriptions.
+    var navOn = focusSearch ? "search" : name;
+    document.querySelectorAll("#top-nav .top-link").forEach(function (b) {
+      var on = b.dataset.view === navOn;
+      b.classList.toggle("on", on);
+      on ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current");
+    });
     if (name === "library") loadLibrary().then(function () { if (focusSearch) $("lib-search").focus(); });
     if (name === "account") renderAccount();
     name === "practice" ? openPracticeView() : leavePracticeView();
@@ -679,12 +685,26 @@
     var from = viewNow;
     if (window.NfBack && (name === "search" ? "library" : name) !== from) NfBack.push(function () { setView(from); });
     setView(name);
+    // A screen reader hears the new view's heading (Search goes to its field instead).
+    var h = name !== "search" && document.querySelector("#view-" + viewNow + " h1");
+    if (h && h.offsetParent !== null) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
   }
   document.querySelectorAll("#top-nav .top-link, .user-menu-item[data-view]").forEach(function (b) { b.addEventListener("click", function () { goView(b.dataset.view); }); });
 
   // The sidebar is a drawer on phones.
-  function openDrawer() { document.body.classList.add("drawer-open"); $("drawer-backdrop").hidden = false; $("drawer-toggle").setAttribute("aria-expanded", "true"); }
-  function closeDrawer() { document.body.classList.remove("drawer-open"); $("drawer-backdrop").hidden = true; $("drawer-toggle").setAttribute("aria-expanded", "false"); }
+  // Opening it moves focus into it; closing it (Escape too) hands focus back to the menu button. Closed, it is out of
+  // the tab order altogether (app.css), not just slid off the screen.
+  function openDrawer() {
+    document.body.classList.add("drawer-open"); $("drawer-backdrop").hidden = false; $("drawer-toggle").setAttribute("aria-expanded", "true");
+    var first = document.querySelector("#top-nav:not(.hidden) .top-link.on") || $("drawer-close");
+    setTimeout(function () { first.focus({ preventScroll: true }); }, 0);
+  }
+  function closeDrawer() {
+    var wasOpen = document.body.classList.contains("drawer-open");
+    document.body.classList.remove("drawer-open"); $("drawer-backdrop").hidden = true; $("drawer-toggle").setAttribute("aria-expanded", "false");
+    if (wasOpen && $("side").contains(document.activeElement)) $("drawer-toggle").focus({ preventScroll: true });
+  }
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && document.body.classList.contains("drawer-open")) closeDrawer(); });
   $("drawer-toggle").addEventListener("click", function () { document.body.classList.contains("drawer-open") ? closeDrawer() : openDrawer(); });
   $("drawer-close").addEventListener("click", closeDrawer);
   $("drawer-backdrop").addEventListener("click", closeDrawer);

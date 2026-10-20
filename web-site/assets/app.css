@@ -507,6 +507,8 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 .modal-close { position: absolute; top: 16px; right: 16px; }
 /* The title takes focus when the dialog opens (for screen readers); it is never a Tab stop, so no ring. */
 #upgrade-title:focus { outline: none; }
+/* A view's heading takes focus when the nav opens it (for screen readers); never a Tab stop, so no ring. */
+main h1[tabindex="-1"]:focus { outline: none; }
 @keyframes onb-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: none; } }
 .onb-skip { position: absolute; top: 16px; right: 18px; background: none; border: none; color: var(--muted); font-weight: 600; cursor: pointer; font-size: 0.875rem; }
 .onb-skip:hover { color: var(--ink); }
@@ -540,8 +542,9 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
   .topbar .side-help { display: none; }
   body.guest .topbar .side-help { display: inline-flex; }
   /* The sidebar becomes a drawer that slides in over the page. */
-  .side { position: fixed; top: 0; left: 0; bottom: 0; height: auto; width: min(300px, 86vw); transform: translateX(-104%); transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: none; }
-  body.drawer-open .side { transform: none; box-shadow: 0 20px 60px rgba(15, 23, 42, 0.3); }
+  /* Closed, it is hidden (out of the tab order and the screen reader's reach) once it has slid away. */
+  .side { position: fixed; top: 0; left: 0; bottom: 0; height: auto; width: min(300px, 86vw); transform: translateX(-104%); visibility: hidden; transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.28s; box-shadow: none; }
+  body.drawer-open .side { transform: none; visibility: visible; transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 20px 60px rgba(15, 23, 42, 0.3); }
   .side .drawer-close { display: inline-flex; }
   .drawer-backdrop { position: fixed; inset: 0; z-index: 19; background: rgba(15, 23, 42, 0.45); }
   .user-menu { top: calc(var(--topbar-h) + 6px); right: 12px; width: min(320px, calc(100vw - 24px)); }
