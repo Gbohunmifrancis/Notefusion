@@ -7,6 +7,18 @@ import type { ApiError } from "../api/types";
 const NOT_AN_EMAIL = "That doesn't look like an email address.";
 
 /**
+ * Wrong email or password, counted in a row (board l-ux-high 04d): any other answer starts the count again. From the
+ * second miss the error note carries its own "Forgot password?" (`offersReset`), where the eye already is.
+ */
+export function missesAfter(previous: number, code: string): number {
+  return code === "AUTH_INVALID_CREDENTIALS" ? previous + 1 : 0;
+}
+
+export function offersReset(misses: number): boolean {
+  return misses >= 2;
+}
+
+/**
  * The words for the Email field when the server refused the address itself — a throwaway inbox, or an address its
  * own check could not read — so they sit on the field that needs changing; null for any other failure.
  */

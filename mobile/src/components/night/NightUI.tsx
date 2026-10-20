@@ -1,6 +1,7 @@
 import React, { useId } from "react";
 import {
   Image,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -123,11 +124,32 @@ export function BackButton({ onPress }: { onPress: () => void }) {
 }
 
 /** A plain-language problem, shown once above the action it blocks. */
-export function ErrorNote({ message }: { message: string }) {
+export function ErrorNote({
+  message,
+  action,
+}: {
+  message: string;
+  /** A way on, after the words ("Forgot password?"): a text link with a 44 px hit area. */
+  action?: { label: string; onPress: () => void };
+}) {
   return (
     <View style={styles.error} accessibilityLiveRegion="polite">
       <Icon name="problem" size={17} color={night.amber} />
-      <Text style={styles.errorText}>{message}</Text>
+      {action ? (
+        <View style={styles.errorBody}>
+          <Text style={styles.errorWords}>{message}</Text>
+          <Pressable
+            onPress={action.onPress}
+            hitSlop={13}
+            style={({ pressed }) => pressed && pressedLink}
+            accessibilityRole="button"
+          >
+            <Text style={styles.errorLink}>{action.label}</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <Text style={styles.errorText}>{message}</Text>
+      )}
     </View>
   );
 }
@@ -245,6 +267,10 @@ const styles = StyleSheet.create({
     borderColor: night.line,
   },
   errorText: { flex: 1, fontSize: 13.5, lineHeight: 19, fontFamily: nightFonts.medium, color: night.text },
+  /** The words and the link on one line while they fit, the link wrapping under them when not. */
+  errorBody: { flex: 1, flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 4 },
+  errorWords: { fontSize: 13.5, lineHeight: 19, fontFamily: nightFonts.medium, color: night.text },
+  errorLink: { fontSize: 13.5, lineHeight: 19, fontFamily: nightFonts.semibold, color: night.ice },
   or: { flexDirection: "row", alignItems: "center", gap: 12, marginVertical: 20 },
   orLine: { flex: 1, height: 1, backgroundColor: night.line },
   orText: { fontSize: 13, fontFamily: nightFonts.regular, color: night.dim },

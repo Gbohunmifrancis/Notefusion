@@ -7,6 +7,7 @@ import { NightField } from "../components/night/NightField";
 import { BackButton, ErrorNote, Mark, NightScreen, OrRule, nightText, pressedLink } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
+import { missesAfter, offersReset } from "../lib/authErrors";
 import { tokenStore } from "../lib/tokenStore";
 import { googleAuthConfigured } from "../lib/env";
 import { night, nightFonts } from "../design/theme";
@@ -22,6 +23,8 @@ export function LoginScreen({ navigation, route }: Props) {
   const [email, setEmail] = useState(route.params?.email ?? "");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  /** Wrong email or password in a row: from the second, the note offers Forgot password? (board l-ux-high 04d). */
+  const [misses, setMisses] = useState(0);
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
   const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null>(null);
@@ -40,6 +43,7 @@ export function LoginScreen({ navigation, route }: Props) {
       await signIn(email.trim(), password);
     } catch (e) {
       const err = toApiError(e);
+      setMisses((n) => missesAfter(n, err.code));
       // The password was right; the address was never confirmed. The server has already
       // mailed a fresh code by the time this lands, so send them straight to the boxes
       // rather than showing an error they can do nothing about.
@@ -53,12 +57,15 @@ export function LoginScreen({ navigation, route }: Props) {
     }
   }
 
+  const forgot = () => navigation.navigate("ForgotPassword", { email: email.trim() });
+
   async function google() {
     setError(null);
     setGoogleBusy(true);
     try {
       await signInWithGoogle();
     } catch (e) {
+      setMisses(0);
       setError(toApiError(e).message);
     } finally {
       setGoogleBusy(false);
@@ -112,7 +119,7 @@ export function LoginScreen({ navigation, route }: Props) {
       </View>
 
       <Pressable
-        onPress={() => navigation.navigate("ForgotPassword", { email: email.trim() })}
+        onPress={forgot}
         style={({ pressed }) => [styles.forgot, pressed && pressedLink]}
         hitSlop={8}
         accessibilityRole="button"
@@ -122,7 +129,7 @@ export function LoginScreen({ navigation, route }: Props) {
 
       {error && (
         <View style={styles.error}>
-          <ErrorNote message={error} />
+          <ErrorNote message={error} action={offersReset(misses) ? { label: "Forgot password?", onPress: forgot } : undefined} />
         </View>
       )}
 

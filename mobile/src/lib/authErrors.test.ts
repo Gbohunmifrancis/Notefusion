@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { emailFieldError } from "./authErrors.ts";
+import { emailFieldError, missesAfter, offersReset } from "./authErrors.ts";
 
 test("a refused address goes on the Email field; other failures stay above Continue", () => {
   const disposable = "Please use a permanent email address. Temporary inboxes can't receive your NoteFusion sheets.";
@@ -14,4 +14,13 @@ test("a refused address goes on the Email field; other failures stay above Conti
     null,
   );
   assert.equal(emailFieldError({ code: "NETWORK_OFFLINE", message: "You're offline." }), null);
+});
+
+test("the second wrong password in a row offers Forgot password? in the note", () => {
+  const first = missesAfter(0, "AUTH_INVALID_CREDENTIALS");
+  assert.equal(offersReset(first), false);
+  const second = missesAfter(first, "AUTH_INVALID_CREDENTIALS");
+  assert.equal(offersReset(second), true);
+  // Anything else between two misses starts the count again.
+  assert.equal(offersReset(missesAfter(missesAfter(first, "NETWORK_OFFLINE"), "AUTH_INVALID_CREDENTIALS")), false);
 });
