@@ -150,7 +150,7 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.text,
     },
     times: { flexDirection: "row", justifyContent: "space-between", marginTop: 2 },
-    time: { fontFamily: typography.mono.fontFamily, fontSize: 11, color: c.textMuted },
+    time: { fontFamily: typography.mono.fontFamily, fontSize: 12, color: c.textMuted },
     practise: {
       height: 44,
       flexDirection: "row",

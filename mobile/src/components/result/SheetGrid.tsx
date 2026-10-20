@@ -169,7 +169,7 @@ const makeStyles = (c: Palette) =>
     barRow: { flexDirection: "row", alignItems: "stretch" },
     barNumber: {
       fontFamily: typography.mono.fontFamily,
-      fontSize: 10,
+      fontSize: 12,
       color: c.textFaint,
       width: 20,
       paddingTop: 12,

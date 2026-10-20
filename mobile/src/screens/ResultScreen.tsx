@@ -2948,9 +2948,11 @@ const makeStyles = (c: Palette) =>
     titleInRow: { marginTop: 0, flexShrink: 1 },
     /** Centred on the last line of the 36 px title. */
     titlePencil: { marginLeft: 8, marginBottom: 9 },
-    subtitle: { fontFamily: fonts.regular, fontSize: 13.5, color: c.textMuted, marginTop: 6 },
+    // Sentences that explain are 15/22 and captions 12 at least (board m-ux-medium P1h); 15, not 16, so the solfa
+    // stays the biggest thing on the sheet.
+    subtitle: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted, marginTop: 6 },
     savedSub: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", marginTop: 6 },
-    savedSubText: { fontFamily: fonts.regular, fontSize: 13.5, color: c.textMuted },
+    savedSubText: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted },
 
     credit: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: 14 },
     creditThumb: { width: 36, height: 36, borderRadius: 10, backgroundColor: c.surfaceAlt },
@@ -2961,8 +2963,8 @@ const makeStyles = (c: Palette) =>
     hymnName: { fontFamily: fonts.medium, fontStyle: "italic", color: c.accent, textDecorationLine: "underline" },
     notice: {
       fontFamily: fonts.regular,
-      fontSize: 12.5,
-      lineHeight: 18,
+      fontSize: 15,
+      lineHeight: 22,
       color: c.noticeText,
       backgroundColor: c.accentSoft,
       borderRadius: 12,
@@ -2993,7 +2995,7 @@ const makeStyles = (c: Palette) =>
     statCaptionRow: { flexDirection: "row", alignItems: "center", gap: 3, marginTop: 6 },
     statCaption: {
       fontFamily: fonts.medium,
-      fontSize: 10.5,
+      fontSize: 12,
       letterSpacing: 1.5,
       textTransform: "uppercase",
       color: c.textMuted,
@@ -3021,7 +3023,7 @@ const makeStyles = (c: Palette) =>
       textTransform: "uppercase",
       color: c.textMuted,
     },
-    panelHint: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: c.textMuted },
+    panelHint: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted },
     panelDivider: { height: 1, backgroundColor: c.border, marginVertical: spacing.sm },
     panelButton: { marginTop: spacing.xs },
     eyebrow: {
@@ -3148,14 +3150,14 @@ const makeStyles = (c: Palette) =>
 
     notation: { marginTop: 10, minHeight: 120, position: "relative" },
     watermark: { position: "absolute", right: -30, top: 30, opacity: 0.05 },
-    gridHint: { fontFamily: fonts.regular, fontSize: 12, color: c.textFaint, marginTop: spacing.sm },
+    gridHint: { fontFamily: fonts.regular, fontSize: 13, color: c.textFaint, marginTop: spacing.sm },
 
     solfaLineWrap: { flexDirection: "row", alignItems: "flex-start", marginBottom: spacing.md },
     /** Optional line-number prefix for multi-line results. */
     solfaLineNum: {
       fontFamily: typography.mono.fontFamily,
       color: c.textFaint,
-      fontSize: 10,
+      fontSize: 12,
       marginRight: spacing.sm,
       marginTop: 5,
       width: 14,
@@ -3220,7 +3222,7 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
     },
-    checkText: { flex: 1, fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
+    checkText: { flex: 1, fontFamily: fonts.regular, fontSize: 15, color: c.textMuted },
     checkStrong: { fontFamily: fonts.semibold, color: c.warningText },
 
     // ── Actions ───────────────────────────────────────────────────────────────
@@ -3237,7 +3239,7 @@ const makeStyles = (c: Palette) =>
       justifyContent: "center",
     },
     actionCircleOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
-    actionLabel: { fontFamily: fonts.regular, fontSize: 11.5, color: c.textMuted },
+    actionLabel: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted },
     actionLabelOn: { color: c.link },
 
     // ── Parts ─────────────────────────────────────────────────────────────────
