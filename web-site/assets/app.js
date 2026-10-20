@@ -4191,7 +4191,12 @@
   function checkout(plan, btn) {
     btn.disabled = true;
     var label = btn.innerHTML;
+    // Started with no button on screen (the pricing page's plan, "What stopped you?"'s Try again), the wait is said in
+    // the plans dialog's reason line when it is open, else in the page's alert.
+    var note = null;
     if (btn.isConnected) btn.textContent = "Opening secure checkout…";
+    else if (!$("upgrade-panel").classList.contains("hidden")) { note = $("upgrade-reason"); $("upgrade-reason-text").textContent = "Opening secure checkout…"; show(note); }
+    else { note = $("app-alert"); alertIn(note, "info", "Opening secure checkout…"); }
     track("Checkout started", plan.id);
     request("/api/billing/checkout", { method: "POST", body: { planId: plan.id, client: "web" } })
       .then(function (session) {
@@ -4216,6 +4221,7 @@
       })
       .catch(function (err) {
         btn.innerHTML = label; // the page stays, so the button reads as it did (on success the page is leaving)
+        if (note) hide(note);
         // An earlier checkout turned out to be paid: nothing to buy, so this is the welcome, not an error.
         if (err instanceof ApiError && err.code === "BILLING_PAYMENT_ALREADY_RECEIVED") {
           var before = { wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null, single: isSinglePlan(plan), choir: isChoirPlan(plan) };
