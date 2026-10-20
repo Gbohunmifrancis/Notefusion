@@ -4086,7 +4086,12 @@
       // An API from before the split still lists it in the main list; either way it is shown as one song.
       var single = opts.single && !isPro() ? ((all[2] || []).find(isSinglePlan) || plans.find(isSinglePlan) || null) : null;
       plans = plans.filter(function (x) { return !isSinglePlan(x); });
-      if (!plans.length && !single && !choirPlans.length) { grid.textContent = "No plan is available for your region yet."; return; }
+      if (!plans.length && !single && !choirPlans.length) {
+        grid.textContent = "No plan is available for your region yet. Email ";
+        var mail = document.createElement("a"); mail.href = "mailto:hello@notefusion.studio"; mail.textContent = "hello@notefusion.studio";
+        grid.appendChild(mail); grid.appendChild(document.createTextNode(" and we'll help you pay."));
+        return;
+      }
       var monthly = plans.find(function (x) { return !isYearly(x) && !isLifetimePlan(x); });
       // Naira opens on the monthly plan: ₦60,000 as the first price anyone sees reads as a wall, while
       // ₦7,500 a month is a decision. Elsewhere the yearly saving leads, as before.
@@ -4172,7 +4177,14 @@
       var foot = document.createElement("div"); foot.className = "pay-foot";
       foot.appendChild(payError); foot.appendChild(cta); foot.appendChild(fx); foot.appendChild(fine);
       grid.appendChild(options); grid.appendChild(foot);
-    }).catch(function () { grid.textContent = "Plans could not be loaded right now. Please try again in a moment."; });
+    }).catch(function () {
+      // A way to ask again where the plans should be, not only the words.
+      grid.textContent = "Plans could not be loaded right now. ";
+      var again = document.createElement("button");
+      again.type = "button"; again.className = "btn btn-ghost btn-sm"; again.textContent = "Try again";
+      again.addEventListener("click", function () { loadPlans(panel, grid, opts); });
+      grid.appendChild(again);
+    });
   }
 
   function money(plan) {
