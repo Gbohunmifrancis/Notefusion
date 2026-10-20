@@ -21,6 +21,7 @@ import { Screen } from '../components/Screen';
 import { HeaderAvatar } from '../components/HeaderAvatar';
 import { Touchable } from '../components/Touchable';
 import { Skeleton } from '../components/Skeleton';
+import { ProblemNote } from '../components/ProblemNote';
 import { Mark, Wordmark } from '../components/night/NightUI';
 import { DohCard } from '../components/doh/DohCard';
 import { FoldAway } from '../components/FoldAway';
@@ -56,6 +57,7 @@ import {
 } from '../lib/dohSuggestion';
 import { loadDohMemory, saveDohMemory, useDohSuggestions } from '../lib/dohPrefs';
 import { parseUtc } from '../lib/sheetMeta';
+import { REFRESH_FAILED } from '../lib/savedSheet';
 import { PROGRESS_WAIT_MS, recentReveal, type RecentReveal } from '../lib/homeReveal';
 import { useSeason } from '../lib/seasonStore';
 import { activeSeason, costumeOf, homeTitle, seasonTint, seasonWords } from '../lib/season';
@@ -666,6 +668,10 @@ export function HomeScreen({ navigation }: Props) {
                   <Text style={styles.seeAllText}>See all</Text>
                 </Touchable>
               </View>
+              {/* A read that failed over rows already shown: said, so they are not taken for the latest. */}
+              {loadError && revealed && recent.length > 0 ? (
+                <ProblemNote style={styles.refreshNote}>{REFRESH_FAILED}</ProblemNote>
+              ) : null}
             </Animated.View>
           </View>
         }
@@ -993,6 +999,10 @@ const makeStyles = (c: Palette, s: Shadows) =>
       alignItems: 'center',
       marginTop: 28,
       marginBottom: spacing.xs,
+    },
+    refreshNote: {
+      marginTop: 0,
+      marginBottom: spacing.sm,
     },
     recentSectionTitle: {
       fontSize: 17,

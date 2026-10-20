@@ -28,6 +28,9 @@ export function worthAListenLine(count: number): string {
   return count === 1 ? "1 note worth a listen" : `${count} notes worth a listen`;
 }
 
+/** Over Home's or the Library's rows when reading the list again failed: they are what was read before. */
+export const REFRESH_FAILED = "Couldn't refresh your sheets just now. Pull down to try again.";
+
 /** A sheet the server filed that its owner has not opened yet: the Library's blue dot. */
 export function isUnopened(sheet: { savedAutomatically?: boolean; openedAtUtc?: string | null }): boolean {
   return !!sheet.savedAutomatically && !sheet.openedAtUtc;

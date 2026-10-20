@@ -36,7 +36,7 @@ import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLib
 import { resultFromSaved } from "../lib/openSheet";
 import { useOpening } from "../lib/useOpening";
 import { onTakeChange, removeTake, retryTake, useOutbox, useSendProgress } from "../lib/outbox";
-import { isUnopened } from "../lib/savedSheet";
+import { REFRESH_FAILED, isUnopened } from "../lib/savedSheet";
 import { libraryRowLine, parseUtc } from "../lib/sheetMeta";
 import { matchesWords } from "../lib/hymnPack";
 import { useReachability } from "../lib/connectivity";
@@ -410,6 +410,9 @@ export function LibraryScreen() {
         </View>
       )}
 
+      {/* A read that failed over rows already shown: said, so they are not taken for the latest. */}
+      {loadError && items.length > 0 ? <ProblemNote style={styles.refreshNote}>{REFRESH_FAILED}</ProblemNote> : null}
+
       {/* ── Recordings waiting to send (record now, send later) ──────────────── */}
       <PendingSends
         items={outbox}
@@ -766,6 +769,9 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.surfaceAlt,
       borderWidth: 1,
       borderColor: c.border,
+    },
+    refreshNote: {
+      marginTop: spacing.md,
     },
     sheetsEyebrow: {
       fontFamily: fonts.medium,
