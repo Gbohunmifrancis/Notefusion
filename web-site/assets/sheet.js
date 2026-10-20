@@ -197,7 +197,7 @@
   function engrave(container, xml, partNames) {
     container.innerHTML = "";
     if (!xml) { container.textContent = "No score to draw."; return; }
-    container.textContent = "Loading the engraver…";
+    container.textContent = "Drawing the staff…";
     ensureOsmd().then(function () {
       container.innerHTML = "";
       var d = new opensheetmusicdisplay.OpenSheetMusicDisplay(container, { backend: "svg", autoResize: true, drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false, drawPartNames: partNames, drawMeasureNumbers: true, autoBeam: true });
