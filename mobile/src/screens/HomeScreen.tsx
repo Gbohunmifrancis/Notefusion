@@ -611,6 +611,11 @@ export function HomeScreen({ navigation }: Props) {
                 radius={radii.md}
                 // The dot is inside the row, so its words go in the row's label (as the Library's rows do).
                 accessibilityLabel={`Open ${item.title}${doubtful ? `, ${confidenceA11y(item.overallConfidence)}` : ''}`}
+                // VoiceOver never reaches the ⋯ inside the row, so its sheet is one of the row's own actions.
+                accessibilityActions={[{ name: 'more', label: `More for ${item.title}` }]}
+                onAccessibilityAction={(e) => {
+                  if (e.nativeEvent.actionName === 'more') sheetActions.openActions(item);
+                }}
               >
                 <View style={styles.dohTile}>
                   <Text style={styles.dohLetter} numberOfLines={1}>
