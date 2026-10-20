@@ -1187,7 +1187,7 @@
   }
   /** A choir sheet, read-only, in the result view: saving it makes the singer's own copy, never touches the original. */
   function openChoirSheet(id) {
-    stopFollowing();
+    stopFollowing(); rememberJob(null);
     var at = epoch;
     request("/api/choirs/mine/sheets/" + encodeURIComponent(id)).then(function (t) {
       if (at !== epoch) return;
@@ -1212,7 +1212,7 @@
   $("lib-search").addEventListener("input", filterLibrary);
   /** A saved sheet, opened into the same result view a fresh transcription uses. */
   function openSaved(id) {
-    stopFollowing();
+    stopFollowing(); rememberJob(null);
     var at = epoch;
     request("/api/library/" + id).then(function (t) {
       if (at !== epoch) return; // signed out while it loaded
@@ -2161,6 +2161,17 @@
       alertIn($("app-alert"), "info", err.status === 404 ? "That transcription isn't available any more." : err.message);
     });
   }
+  /**
+   * The job on the card rides in the address (?job=<id>, which boot() opens), so a reload, or a closed tab brought
+   * back, finds it running or finished instead of an empty studio. A new transcription or a saved sheet drops it.
+   */
+  function rememberJob(jobId) {
+    try {
+      var u = new URL(location.href);
+      jobId ? u.searchParams.set("job", jobId) : u.searchParams.delete("job");
+      history.replaceState(history.state, "", u.pathname + u.search + u.hash);
+    } catch (e) { /* only the address; nothing depends on it */ }
+  }
   // Looking at the tab again puts its own title and icon back (and closes a notification still showing).
   function backInView() { if (NF.cued() && !NF.isAway(document)) NF.clearCue(document); }
   document.addEventListener("visibilitychange", backInView);
@@ -2292,7 +2303,7 @@
     current = { jobId: job.jobId, kind: kind, from: from || null, retry: retry || null, source: job.source || null, fileName: job.fileName || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0, failures: 0, seen: "", seenAt: Date.now() };
     openProgress(kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : "Transcribing your recording…");
     current.preview = kind === "preview";
-    if (current.preview) previewId = job.jobId;
+    if (current.preview) previewId = job.jobId; else rememberJob(job.jobId);
     setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
     primeAudio();
     follow = {
@@ -3378,7 +3389,7 @@
   /** Back to the studio for another one. The sheet is kept in the library (or is the guest's preview). */
   function newTranscription() {
     if (follow) return; // a job still running keeps its card
-    resultReturnView = null;
+    resultReturnView = null; rememberJob(null);
     closeTool(); closeFull();
     hide($("result")); hide($("progress"));
     window.scrollTo({ top: 0, behavior: "smooth" });
