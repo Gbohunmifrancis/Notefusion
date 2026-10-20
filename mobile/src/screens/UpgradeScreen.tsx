@@ -43,7 +43,7 @@ import { PRO_FEATURES } from "../lib/proFeatures";
 import type { AuthUser, CheckoutExit, MyProfile, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 import { tierOf } from "../lib/planTier";
-import { formatPrice, nairaNote, periodLabel } from "../lib/price";
+import { bestValuePlan, formatPrice, nairaNote, periodLabel, plansInOrder } from "../lib/price";
 import {
   parseAsked,
   rememberAsked,
@@ -238,9 +238,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
       // Default to the best-value (highest) plan so the recommended choice is preselected — or, when
       // the free allowance has just run out, to the one-song purchase.
       const single = sub.isActive ? undefined : planList.find((p) => p.interval === "single");
-      const best = [...planList]
-        .filter((p) => p.interval !== "single")
-        .sort((a, b) => b.amountMinor - a.amountMinor)[0];
+      const best = bestValuePlan(planList);
       const asked = askedPlanId ? planList.find((p) => p.id === askedPlanId) : undefined;
       const preferred = asked ?? (forLimit && single ? single : best ?? single);
       setSelectedId((cur) => cur ?? preferred?.id ?? null);
@@ -549,7 +547,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
   // The choir plans fold into one row when there is something else to choose; alone (a member starting a choir on
   // Android), they are the list.
   const foldChoir = proPlans.length > 0 || Boolean(singlePlan);
-  const choirSorted = choirPlans.slice().sort((a, b) => a.amountMinor - b.amountMinor);
+  const choirSorted = plansInOrder(choirPlans);
   const choirFrom = choirSorted[0];
 
   // The provider drops its checkout snapshot when the payment lands (it shows the welcome
@@ -732,23 +730,20 @@ export function UpgradeScreen({ navigation, route }: Props) {
               />
             ) : null}
 
-            {proPlans
-              .slice()
-              .sort((a, b) => a.amountMinor - b.amountMinor)
-              .map((plan) => (
-                <PlanOption
-                  key={plan.id}
-                  plan={plan}
-                  priceLabel={offerFor(plan, playOffers)?.price}
-                  selected={plan.id === selectedId}
-                  badge={
-                    plan.interval === "yearly" && saving
-                      ? `Save ${saving}%`
-                      : undefined
-                  }
-                  onSelect={() => setSelectedId(plan.id)}
-                />
-              ))}
+            {plansInOrder(proPlans).map((plan) => (
+              <PlanOption
+                key={plan.id}
+                plan={plan}
+                priceLabel={offerFor(plan, playOffers)?.price}
+                selected={plan.id === selectedId}
+                badge={
+                  plan.interval === "yearly" && saving
+                    ? `Save ${saving}%`
+                    : undefined
+                }
+                onSelect={() => setSelectedId(plan.id)}
+              />
+            ))}
 
             {/* ── The choir plan: one director pays, the whole choir is Pro ───── */}
             {choirFrom && foldChoir ? (
