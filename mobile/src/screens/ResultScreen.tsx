@@ -191,12 +191,13 @@ type SolfaStyle = "bars" | "grid" | "curwen" | "hymn";
  *     under it (artist, section, key) and the song's credit when it has one.
  *   • One row of the numbers that matter — DOH, BPM, TIME, SURE. The first three
  *     open their pickers (re-key and transpose, tempo, meter) beneath the row.
+ *   • One amber row when the model doubted some notes — the way into a review — and
+ *     the round actions — transpose, lyrics, SATB, sing, export, more — each opening
+ *     its panel below the row. Above the notation, so they are on the first screen
+ *     however long the sheet is (board m-ux-medium P1c).
  *   • The notation: a bar to a row, a syllable to a beat, the words beneath, the
  *     mark faint behind it. The same note list can be read as the text grid, as
  *     Curwen, as a hymn layout or on the stave. Every syllable opens the editor.
- *   • One amber row when the model doubted some notes — the way into a review.
- *   • Round actions — transpose, lyrics, SATB, sing, export, more — each opening
- *     its panel below the row.
  *   • The player docked over the bottom; its Practise opens Learn my part (Rehearse on a sheet without parts).
  *
  * PRD honesty rule: the SURE figure is always visible and coloured by level, and
@@ -1979,125 +1980,6 @@ export function ResultScreen({ route, navigation }: Props) {
             </View>
           ) : null}
 
-          {/* ── How to read it: solfa by bar, the text grid, Curwen, hymn, stave ── */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.viewsScroll}
-            contentContainerStyle={styles.views}
-          >
-            {notationChoices.map((v) => {
-              const on = notationChoice === v.id;
-              return (
-                <Touchable
-                  key={v.id}
-                  onPress={() => {
-                    if (v.id === "staff") {
-                      setNotationView("staff");
-                    } else {
-                      setNotationView("solfa");
-                      setSolfaStyle(v.id);
-                    }
-                  }}
-                  style={[styles.viewChip, on && styles.viewChipOn]}
-                  radius={radii.pill}
-                  haptic="none"
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: on }}
-                  accessibilityLabel={v.a11y}
-                >
-                  {v.id === "bars" || v.id === "staff" ? (
-                    <Icon name={v.id === "bars" ? "solfa" : "staff"} size={16} color={on ? colors.text : colors.textMuted} />
-                  ) : null}
-                  <Text style={[styles.viewChipText, on && styles.viewChipTextOn]}>{v.label}</Text>
-                </Touchable>
-              );
-            })}
-          </ScrollView>
-
-          {/* ── The notation, from the same note data whichever way it is read ── */}
-          <View style={styles.notation}>
-            {notationView === "solfa" ? (
-              // The mark, faint behind the solfa — the board's watermark.
-              <View pointerEvents="none" style={styles.watermark}>
-                <Mark height={200} color={colors.text} />
-              </View>
-            ) : null}
-            {notationView === "solfa" ? (
-              nothingToShow ? (
-                <Text style={styles.solfaMuted}>No solfa lines produced.</Text>
-              ) : solfaStyle === "bars" ? (
-                <>
-                  <SheetGrid
-                    notes={view.notes}
-                    lyrics={lyricsUnder}
-                    chords={chordView}
-                    timeSignature={timeSignature}
-                    barCount={barCount}
-                    playingNote={playingNote}
-                    onSelectNote={guest ? undefined : openNote}
-                  />
-                  {guest ? null : <Text style={styles.gridHint}>Tap a syllable to fix it.</Text>}
-                </>
-              ) : solfaStyle === "hymn" ? (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <View>
-                    <Text style={styles.solfaHeader}>{activeSolfaLines[0]}</Text>
-                    {hymn.map((bars, r) => (
-                      <View key={r} style={styles.hymnRow}>
-                        {bars.map((bar, b) => (
-                          <View key={b} style={styles.hymnBar}>
-                            {bar.map((cell, c) => (
-                              <View key={c} style={styles.hymnCell}>
-                                <Text style={styles.hymnSolfa}>{cell.solfa}</Text>
-                                <Text style={styles.hymnLyric} numberOfLines={1}>{cell.lyric}</Text>
-                              </View>
-                            ))}
-                          </View>
-                        ))}
-                      </View>
-                    ))}
-                  </View>
-                </ScrollView>
-              ) : (
-                activeSolfaLines.map((line, i) => (
-                  <View key={i} style={styles.solfaLineWrap}>
-                    {activeSolfaLines.length > 1 && (
-                      <Text style={styles.solfaLineNum}>{i + 1}</Text>
-                    )}
-                    <View style={styles.solfaLineColumn}>
-                      {/* The chords over the bar, in the same monospaced face so each symbol sits
-                          on the syllable it belongs to (lib/chordRow). */}
-                      {chordLines?.[i]?.trim() ? (
-                        <Text style={styles.chordLine}>{chordLines[i]}</Text>
-                      ) : null}
-                      <Text style={[styles.solfaLine, i === 0 && styles.solfaHeader]}>{line}</Text>
-                    </View>
-                  </View>
-                ))
-              )
-            ) : (
-              <View>
-                <ScoreView
-                  ref={scoreRef}
-                  notes={view.notes}
-                  timeSignature={timeSignature}
-                  musicalKey={key}
-                  cursorBeat={cursorBeat}
-                  onSelectNote={guest ? undefined : openNote}
-                  onRendered={() => setStaffDraws((n) => n + 1)}
-                />
-                {/* A free account reads the sheet on screen with the preview mark; the
-                    download is the Pro half. */}
-                {!isPro ? (
-                  <View pointerEvents="none" style={styles.previewMark}>
-                    <Text style={styles.previewMarkText}>NoteFusion preview</Text>
-                  </View>
-                ) : null}
-              </View>
-            )}
-          </View>
-
           {/* One amber row when the model doubted some notes. Tapping opens the piano on
               the flagged piece: a doubtful note is a *pitch* question, and the fastest
               answer to one is pressing the key and hearing it. */}
@@ -2288,6 +2170,125 @@ export function ResultScreen({ route, navigation }: Props) {
               />
             </View>
           ) : null}
+
+          {/* ── How to read it: solfa by bar, the text grid, Curwen, hymn, stave ── */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.viewsScroll}
+            contentContainerStyle={styles.views}
+          >
+            {notationChoices.map((v) => {
+              const on = notationChoice === v.id;
+              return (
+                <Touchable
+                  key={v.id}
+                  onPress={() => {
+                    if (v.id === "staff") {
+                      setNotationView("staff");
+                    } else {
+                      setNotationView("solfa");
+                      setSolfaStyle(v.id);
+                    }
+                  }}
+                  style={[styles.viewChip, on && styles.viewChipOn]}
+                  radius={radii.pill}
+                  haptic="none"
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  accessibilityLabel={v.a11y}
+                >
+                  {v.id === "bars" || v.id === "staff" ? (
+                    <Icon name={v.id === "bars" ? "solfa" : "staff"} size={16} color={on ? colors.text : colors.textMuted} />
+                  ) : null}
+                  <Text style={[styles.viewChipText, on && styles.viewChipTextOn]}>{v.label}</Text>
+                </Touchable>
+              );
+            })}
+          </ScrollView>
+
+          {/* ── The notation, from the same note data whichever way it is read ── */}
+          <View style={styles.notation}>
+            {notationView === "solfa" ? (
+              // The mark, faint behind the solfa — the board's watermark.
+              <View pointerEvents="none" style={styles.watermark}>
+                <Mark height={200} color={colors.text} />
+              </View>
+            ) : null}
+            {notationView === "solfa" ? (
+              nothingToShow ? (
+                <Text style={styles.solfaMuted}>No solfa lines produced.</Text>
+              ) : solfaStyle === "bars" ? (
+                <>
+                  <SheetGrid
+                    notes={view.notes}
+                    lyrics={lyricsUnder}
+                    chords={chordView}
+                    timeSignature={timeSignature}
+                    barCount={barCount}
+                    playingNote={playingNote}
+                    onSelectNote={guest ? undefined : openNote}
+                  />
+                  {guest ? null : <Text style={styles.gridHint}>Tap a syllable to fix it.</Text>}
+                </>
+              ) : solfaStyle === "hymn" ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <View>
+                    <Text style={styles.solfaHeader}>{activeSolfaLines[0]}</Text>
+                    {hymn.map((bars, r) => (
+                      <View key={r} style={styles.hymnRow}>
+                        {bars.map((bar, b) => (
+                          <View key={b} style={styles.hymnBar}>
+                            {bar.map((cell, c) => (
+                              <View key={c} style={styles.hymnCell}>
+                                <Text style={styles.hymnSolfa}>{cell.solfa}</Text>
+                                <Text style={styles.hymnLyric} numberOfLines={1}>{cell.lyric}</Text>
+                              </View>
+                            ))}
+                          </View>
+                        ))}
+                      </View>
+                    ))}
+                  </View>
+                </ScrollView>
+              ) : (
+                activeSolfaLines.map((line, i) => (
+                  <View key={i} style={styles.solfaLineWrap}>
+                    {activeSolfaLines.length > 1 && (
+                      <Text style={styles.solfaLineNum}>{i + 1}</Text>
+                    )}
+                    <View style={styles.solfaLineColumn}>
+                      {/* The chords over the bar, in the same monospaced face so each symbol sits
+                          on the syllable it belongs to (lib/chordRow). */}
+                      {chordLines?.[i]?.trim() ? (
+                        <Text style={styles.chordLine}>{chordLines[i]}</Text>
+                      ) : null}
+                      <Text style={[styles.solfaLine, i === 0 && styles.solfaHeader]}>{line}</Text>
+                    </View>
+                  </View>
+                ))
+              )
+            ) : (
+              <View>
+                <ScoreView
+                  ref={scoreRef}
+                  notes={view.notes}
+                  timeSignature={timeSignature}
+                  musicalKey={key}
+                  cursorBeat={cursorBeat}
+                  onSelectNote={guest ? undefined : openNote}
+                  onRendered={() => setStaffDraws((n) => n + 1)}
+                />
+                {/* A free account reads the sheet on screen with the preview mark; the
+                    download is the Pro half. */}
+                {!isPro ? (
+                  <View pointerEvents="none" style={styles.previewMark}>
+                    <Text style={styles.previewMarkText}>NoteFusion preview</Text>
+                  </View>
+                ) : null}
+              </View>
+            )}
+          </View>
 
           {/* ── Chords: the progression heard, symbol over its solfa ───────── */}
           {chordView ? (
