@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import * as Application from "expo-application";
 import * as WebBrowser from "expo-web-browser";
@@ -13,6 +13,7 @@ import { showDialog } from "../lib/dialog";
 import { siteUrls } from "../lib/env";
 import * as haptics from "../lib/haptics";
 import { meApi } from "../api/endpoints";
+import { toApiError } from "../api/client";
 import { setDataSaver, useDataSaver } from "../lib/dataSaver";
 import { setDohSuggestions, useDohSuggestions } from "../lib/dohPrefs";
 import { clearAutomaticCopies, setKeepAllOffline, useOfflineLibrary } from "../lib/offlineLibrary";
@@ -69,6 +70,27 @@ export function SettingsScreen({ navigation }: Props) {
     // Already in flight from the module's own load; awaiting it keeps the switch from painting "on" for a frame.
     void haptics.loadHapticPref().then(() => setHapticsOn(haptics.hapticsEnabled()));
   }, []);
+
+  /** Set while the profile is fetched again for Delete account. */
+  const fetchingProfile = useRef(false);
+
+  /** Delete account needs the profile (password or Google): read again on the tap when the first read failed. */
+  async function openDelete() {
+    if (profile) {
+      setSheet("delete");
+      return;
+    }
+    if (fetchingProfile.current) return;
+    fetchingProfile.current = true;
+    try {
+      setProfile(await meApi.get());
+      setSheet("delete");
+    } catch (e) {
+      showDialog({ title: "Couldn't open this", message: toApiError(e).message, icon: "problem", tone: "danger" });
+    } finally {
+      fetchingProfile.current = false;
+    }
+  }
 
   async function toggleHaptics(on: boolean) {
     setHapticsOn(on);
@@ -245,8 +267,8 @@ export function SettingsScreen({ navigation }: Props) {
         <Row
           label="Delete account"
           destructive
-          // The proof depends on the account kind: wait for it rather than guess.
-          onPress={profile ? () => setSheet("delete") : undefined}
+          // The proof depends on the account kind: read it rather than guess.
+          onPress={() => void openDelete()}
         />
       </Group>
       <GroupNote>Removes your account and every saved sheet.</GroupNote>
