@@ -210,6 +210,9 @@ type Panel = "transpose" | "lyrics" | "parts" | "sing" | "export";
 /** The part a singer practised last on this device; Learn my part opens on it when the sheet has it. */
 const PRACTICE_PART_KEY = "nf.practice.part";
 type SolfaStyle = "bars" | "grid" | "curwen" | "hymn";
+/** The way of reading a sheet chosen last on this device; every sheet opens on it. */
+const NOTATION_VIEW_KEY = "nf.result.view";
+const NOTATION_VIEWS: readonly string[] = ["bars", "grid", "curwen", "hymn", "staff"];
 
 /**
  * ResultScreen — the sheet (night board 04) and, over it, Rehearse (05).
@@ -415,6 +418,21 @@ export function ResultScreen({ route, navigation }: Props) {
   );
 
   const [solfaStyle, setSolfaStyle] = useState<SolfaStyle>("bars");
+  /** A reading chosen on this visit, which the remembered one arriving late must not undo. */
+  const viewChosen = useRef(false);
+  useEffect(() => {
+    let live = true;
+    AsyncStorage.getItem(NOTATION_VIEW_KEY)
+      .then((v) => {
+        if (!live || viewChosen.current || !v || !NOTATION_VIEWS.includes(v)) return;
+        if (v === "staff") setNotationView("staff");
+        else setSolfaStyle(v as SolfaStyle);
+      })
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, []);
   const hasLyrics = lyrics.trim().length > 0;
   useEffect(() => {
     if (!hasLyrics && solfaStyle === "hymn") setSolfaStyle("grid");
@@ -2407,6 +2425,8 @@ export function ResultScreen({ route, navigation }: Props) {
                 <Touchable
                   key={v.id}
                   onPress={() => {
+                    viewChosen.current = true;
+                    AsyncStorage.setItem(NOTATION_VIEW_KEY, v.id).catch(() => undefined);
                     if (v.id === "staff") {
                       setNotationView("staff");
                     } else {
