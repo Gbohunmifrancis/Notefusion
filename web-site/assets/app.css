@@ -42,6 +42,8 @@
 html { scroll-padding-top: 80px; }
 body { color: var(--ink); background: var(--bg); line-height: 1.55; }
 a { color: var(--blue-dark); }
+/* A link inside a sentence is underlined, so it reads as a link without its colour (as .foot's already are). */
+.credit a, .alert a, .auth-fine a, .pay-help a, .plans a, .try-status a, .muted a { text-decoration: underline; text-underline-offset: 2px; }
 .hidden { display: none !important; }
 [hidden] { display: none !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
