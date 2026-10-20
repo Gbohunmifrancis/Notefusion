@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
@@ -10,6 +10,7 @@ import { NightButton } from "../components/night/NightButton";
 import { ErrorNote, Glow, Mark, NightLink, Wordmark, nightText } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
+import { contactUsUrl } from "../lib/authErrors";
 import { tokenStore } from "../lib/tokenStore";
 import { guestPreviewStore } from "../lib/guestPreviewStore";
 import { GUEST_PREVIEW_TITLE } from "../lib/guestPreview";
@@ -37,6 +38,8 @@ export function WelcomeScreen({ navigation }: Props) {
   const { signInWithGoogle } = useAuth();
   const [googleBusy, setGoogleBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /** A refusal only we can lift (a deactivated account): the note carries a mail to us. */
+  const [contact, setContact] = useState<string | null>(null);
   const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null>(null);
   const emailLast = lastAuthMethod === "email";
   const choices = welcomeChoices(googleAuthConfigured, emailLast);
@@ -61,7 +64,9 @@ export function WelcomeScreen({ navigation }: Props) {
     try {
       await signInWithGoogle();
     } catch (e) {
-      setError(toApiError(e).message);
+      const err = toApiError(e);
+      setContact(contactUsUrl(err.code));
+      setError(err.message);
     } finally {
       setGoogleBusy(false);
     }
@@ -79,7 +84,12 @@ export function WelcomeScreen({ navigation }: Props) {
         </View>
 
         <View style={styles.actions}>
-          {error && <ErrorNote message={error} />}
+          {error && (
+            <ErrorNote
+              message={error}
+              action={contact ? { label: "Email us", onPress: () => void Linking.openURL(contact).catch(() => undefined) } : undefined}
+            />
+          )}
           {choices.blocks.map((block, i) =>
             block === "google" ? (
               <NightButton

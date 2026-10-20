@@ -18,6 +18,18 @@ export function offersReset(misses: number): boolean {
   return misses >= 2;
 }
 
+/** Where someone can write to us (the address the website, receipts and the code screen give). */
+const HELP_EMAIL = "hello@notefusion.studio";
+
+/**
+ * A refusal only we can lift — the account was deactivated, and the server's sentence ends "Contact support." — so its
+ * note carries a way to write to us (a mail to that address); null for any other.
+ */
+export function contactUsUrl(code: string): string | null {
+  if (code !== "AUTH_ACCOUNT_INACTIVE") return null;
+  return `mailto:${HELP_EMAIL}?subject=${encodeURIComponent("My account is deactivated")}`;
+}
+
 /**
  * The words for the Email field when the server refused the address itself — a throwaway inbox, or an address its
  * own check could not read — so they sit on the field that needs changing; null for any other failure.

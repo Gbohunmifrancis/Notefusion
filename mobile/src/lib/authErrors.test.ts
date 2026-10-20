@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { emailFieldError, missesAfter, offersReset } from "./authErrors.ts";
+import { contactUsUrl, emailFieldError, missesAfter, offersReset } from "./authErrors.ts";
 
 test("a refused address goes on the Email field; other failures stay above Continue", () => {
   const disposable = "Please use a permanent email address. Temporary inboxes can't receive your NoteFusion sheets.";
@@ -23,4 +23,10 @@ test("the second wrong password in a row offers Forgot password? in the note", (
   assert.equal(offersReset(second), true);
   // Anything else between two misses starts the count again.
   assert.equal(offersReset(missesAfter(missesAfter(first, "NETWORK_OFFLINE"), "AUTH_INVALID_CREDENTIALS")), false);
+});
+
+test("a deactivated account's note is the one that offers to write to us", () => {
+  assert.equal(contactUsUrl("AUTH_ACCOUNT_INACTIVE"), "mailto:hello@notefusion.studio?subject=My%20account%20is%20deactivated");
+  assert.equal(contactUsUrl("AUTH_INVALID_CREDENTIALS"), null);
+  assert.equal(contactUsUrl("NETWORK_OFFLINE"), null);
 });
