@@ -47,6 +47,7 @@ import {
   dohLetter,
   dohPitchClass,
   KEY_CHOICES,
+  keyChoiceLabel,
   parseKey,
   partReference,
   referenceDoh,
@@ -1761,7 +1762,8 @@ export function ResultScreen({ route, navigation }: Props) {
               accessibilityState={{ selected: on }}
               accessibilityLabel={`Change key to ${k}`}
             >
-              <Text style={[styles.chipText, on && styles.chipTextOn]}>{k}</Text>
+              {/* Spelled as the DOH figure spells it, a minor with its doh (lib/solfa `keyChoiceLabel`). */}
+              <Text style={[styles.chipText, on && styles.chipTextOn]}>{keyChoiceLabel(k)}</Text>
             </Touchable>
           );
         })}
