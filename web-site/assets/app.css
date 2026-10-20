@@ -799,6 +799,18 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 /* One plan per row, at every width: the radio, the name and its note on the left, the price on the right
    (below the name on a phone). Columns side by side left ~120px for each plan in the dialog. */
 .plan-group { margin: 12px 0 0; }
+/* The choir plans folded into one row, and the way back from them (board m-ux-medium W3e). */
+.choir-row { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; margin: 4px 0 0; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+:root[data-theme="dark"] .choir-row { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.10); }
+.choir-row:hover { border-color: var(--line-strong); }
+.choir-row > .ic { width: 20px; height: 20px; flex: none; color: var(--muted); }
+.choir-row > .ic:last-child { width: 16px; height: 16px; }
+.choir-row > span { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.choir-row b { font-size: 0.9375rem; font-weight: 600; }
+.choir-row small { font-size: 0.875rem; color: var(--muted); line-height: 1.35; }
+.plan-back { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: 44px; font-size: 0.9375rem; }
+.plan-back .ic { width: 16px; height: 16px; }
+.plan-back + .plan-group { margin-top: 0; }
 .plan-opt { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "top price" "note price"; align-items: center; column-gap: 16px; row-gap: 2px; width: 100%; text-align: left; padding: 12px 14px 12px 42px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font: inherit; color: inherit; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
 .plan-opt:hover { border-color: var(--line-strong); }
 .plan-opt.on { border-color: var(--blue); background: var(--blue-tint); box-shadow: 0 0 0 1px var(--blue); }

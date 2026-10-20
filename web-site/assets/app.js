@@ -1619,8 +1619,8 @@
       .then(function () { choir = null; track("Left choir"); libraryCache = null; return loadAccount().then(renderAccount); })
       .catch(function (err) { alertIn($("app-alert"), "danger", "Could not leave the choir: " + (err.message || err)); });
   });
-  $("choir-plan-open").addEventListener("click", function () { openUpgrade(); });
-  $("choir-renew").addEventListener("click", function () { openUpgrade(); });
+  $("choir-plan-open").addEventListener("click", function () { openUpgrade("choir"); });
+  $("choir-renew").addEventListener("click", function () { openUpgrade("choir"); });
   $("acct-photo").addEventListener("change", function (e) {
     var file = e.target.files && e.target.files[0];
     if (!file) return;
@@ -1642,7 +1642,8 @@
   // ── Upgrade dialog ──────────────────────────────────────────────────────
   /**
    * The plans dialog. reason "limit" is the free allowance running out (the refusal after the last one):
-   * the one-song purchase is then the option already chosen, since one more song is what was just asked for.
+   * the one-song purchase is then the option already chosen, since one more song is what was just asked for. Reason
+   * "choir" (My choir's links) opens on the choir plans rather than on their folded row.
    */
   function openUpgrade(reason, why) {
     track("Opened plans");
@@ -1656,7 +1657,7 @@
     $("upgrade-title-text").textContent = "Do more with NoteFusion";
     show($("upgrade-free")); hide($("upgrade-pro"));
     // At the free limit one more song is what was asked for: the choir plans stay out of it, unless this is a director.
-    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: reason !== "limit" || leadsChoir() });
+    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: reason !== "limit" || leadsChoir(), choirFirst: reason === "choir" });
   }
   /** Pro through a choir alone: the plan shown is the choir's, renewed by its director. */
   function proViaChoir() { return !!(sub && sub.choirRole && String(sub.planCode || "").indexOf("choir_") === 0); }
@@ -4336,11 +4337,13 @@
       // Just this song goes first: the smallest, simplest thing to buy, next to Pro.
       if (single) ordered.unshift(single);
       var chosen = single && (opts.singleFirst || !plans.length) ? single : ordered[single ? 1 : 0];
-      // The choir plans come last, as the third option: one director pays and the whole choir is Pro.
+      // The choir plans fold into one row under the rest, "For choir directors ›", which swaps the list to them with a
+      // Back (board m-ux-medium W3e; the phone's Upgrade does the same): one director pays and the whole choir is Pro.
       var choirMonthly = choirPlans.find(function (x) { return !isYearly(x); });
-      ordered = ordered.concat(choirPlans);
-      // A director renewing their choir starts on the choir plan; anyone else on what they would buy for themselves.
-      if (!chosen || (choirPlans.length && leadsChoir())) chosen = choirPlans[0] || chosen;
+      var ownChoice = chosen;
+      // A director renewing their choir starts on the choir plans; anyone else on what they would buy for themselves.
+      var showingChoir = !!choirPlans.length && (opts.choirFirst || leadsChoir() || !ordered.length);
+      if (showingChoir) chosen = choirPlans[0];
       var options = document.createElement("div"); options.className = "plan-options"; options.setAttribute("role", "radiogroup"); options.setAttribute("aria-label", "Choose a plan");
       var cta = document.createElement("button"); cta.type = "button"; cta.className = "btn btn-primary btn-pay";
       function label(plan) { return isChoirPlan(plan) ? (isYearly(plan) ? "Choir · Yearly" : "Choir · Monthly") : isSinglePlan(plan) ? "Just this song" : isLifetimePlan(plan) ? "Lifetime" : isYearly(plan) ? "Yearly" : "Monthly"; }
@@ -4368,12 +4371,38 @@
         fx.textContent = naira ? "" : "You'll pay the naira amount at today's rate on the next page; your bank may add a fee.";
         payError.hidden = true;
       }
-      ordered.forEach(function (plan, index) {
-        if (isChoirPlan(plan) && (index === 0 || !isChoirPlan(ordered[index - 1]))) {
+      var seats = (choirPlans[0] && choirPlans[0].choirSeats) || 25;
+      /** The list as it stands: the plans for oneself and the choir row, or the choir plans with a way back. */
+      function renderOptions() {
+        options.innerHTML = "";
+        if (showingChoir) {
+          if (ordered.length) {
+            var back = document.createElement("button"); back.type = "button"; back.className = "btn-link plan-back";
+            back.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-back"/></svg>All plans';
+            back.addEventListener("click", function () { showingChoir = false; chosen = ownChoice; renderOptions(); renderCta(); options.querySelector(".choir-row").focus(); });
+            options.appendChild(back);
+          }
           var head = document.createElement("p"); head.className = "plan-group muted small"; head.setAttribute("role", "presentation");
-          head.textContent = "For choir directors — Pro for you and up to " + (plan.choirSeats || 25) + " singers, one shared library";
+          head.textContent = "For choir directors — Pro for you and up to " + seats + " singers, one shared library";
           options.appendChild(head);
+          choirPlans.forEach(addOption);
+          return;
         }
+        ordered.forEach(addOption);
+        if (!choirPlans.length) return;
+        var row = document.createElement("button"); row.type = "button"; row.className = "choir-row";
+        var from = choirMonthly || choirPlans[0];
+        row.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg><span><b>For choir directors</b><small></small></span><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev"/></svg>';
+        row.querySelector("small").textContent = "Pro for you and up to " + seats + " singers · from " + money(from) + " " + per(from);
+        row.addEventListener("click", function () {
+          track("Plans: choir directors");
+          showingChoir = true; chosen = choirPlans[0]; renderOptions(); renderCta();
+          var first = options.querySelector(".plan-back") || options.querySelector(".plan-opt.on");
+          if (first) first.focus();
+        });
+        options.appendChild(row);
+      }
+      function addOption(plan) {
         var opt = document.createElement("button"); opt.type = "button"; opt.className = "plan-opt"; opt.setAttribute("role", "radio");
         var top = document.createElement("span"); top.className = "plan-opt-top";
         var name = document.createElement("span"); name.className = "plan-opt-name"; name.textContent = label(plan);
@@ -4402,7 +4431,8 @@
         opt.addEventListener("click", select);
         options.appendChild(opt);
         if (plan === chosen) { opt.classList.add("on"); opt.setAttribute("aria-checked", "true"); } else opt.setAttribute("aria-checked", "false");
-      });
+      }
+      renderOptions();
       renderCta();
       cta.addEventListener("click", function () { checkout(chosen, cta); });
       // The price and the button stay at the bottom of the dialog while the plans scroll above them
