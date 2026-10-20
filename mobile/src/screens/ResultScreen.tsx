@@ -1795,7 +1795,7 @@ export function ResultScreen({ route, navigation }: Props) {
    */
   const keyControls = (
     <View style={styles.panel}>
-      <Text style={styles.panelEyebrow}>Doh</Text>
+      <Text style={styles.panelEyebrow} accessibilityRole="header">Doh</Text>
       <Text style={styles.panelHint}>
         Change the Doh — your notes stay put, only the labels move.
       </Text>
@@ -1825,7 +1825,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
       {/* Transpose for my choir: the one edit that moves the notes. */}
       <View style={styles.panelDivider} />
-      <Text style={styles.panelEyebrow}>Transpose for my choir</Text>
+      <Text style={styles.panelEyebrow} accessibilityRole="header">Transpose for my choir</Text>
       <Text style={styles.panelHint}>
         Moves every note so the parts sit in your singers' range. The solfa reads exactly as before — only Doh moves.
       </Text>
@@ -2097,7 +2097,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
           {hymnAsk && result.hymnMatch && !guest ? (
             <View style={styles.panel}>
-              <Text style={styles.panelEyebrow}>Is this a hymn?</Text>
+              <Text style={styles.panelEyebrow} accessibilityRole="header">Is this a hymn?</Text>
               <Text style={styles.panelHint}>
                 This sounds like{" "}
                 <Text style={styles.hymnName} onPress={() => Linking.openURL(result.hymnMatch!.url).catch(() => undefined)}>
@@ -2141,7 +2141,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
           {askingDoh ? (
             <View style={styles.panel}>
-              <Text style={styles.panelEyebrow}>Which doh is it?</Text>
+              <Text style={styles.panelEyebrow} accessibilityRole="header">Which doh is it?</Text>
               <Text style={styles.panelHint}>
                 Your tune fits more than one doh. Here is how it starts in each; tap the one you sang in.
               </Text>
@@ -2283,7 +2283,7 @@ export function ResultScreen({ route, navigation }: Props) {
           {panel === "parts" ? (
             <View style={styles.panel}>
               <View style={styles.panelHeader}>
-                <Text style={styles.panelTitle}>
+                <Text style={styles.panelTitle} accessibilityRole="header">
                   {result.partsSource === "heard" ? "The four parts, as sung" : "Four-part harmony"}
                 </Text>
                 {!isPro && !partsView && !freeHarmony ? <ProTag /> : null}
@@ -2551,7 +2551,7 @@ export function ResultScreen({ route, navigation }: Props) {
           {/* ── Chords: the progression heard, symbol over its solfa ───────── */}
           {chordView ? (
             <View style={styles.chordsBlock}>
-              <Text style={styles.eyebrow}>Chords</Text>
+              <Text style={styles.eyebrow} accessibilityRole="header">Chords</Text>
               <Text style={styles.panelHint}>
                 As heard under the tune. The letter is the chord; the syllable beneath is its root in this key.
               </Text>
