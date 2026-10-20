@@ -763,15 +763,20 @@
         <div class="lib-folder-bar hidden" id="lib-folder-bar">
           <div class="lib-folder-head">
             <strong id="lib-folder-name"></strong>
+            <!-- Rename and Stop sharing behind ⋯, beside Share (board m-ux-medium W3c); the link row keeps the link and Copy. -->
             <span class="lib-folder-actions">
-              <button class="btn btn-ghost btn-sm" id="lib-folder-rename" type="button">Rename</button>
               <button class="btn btn-primary btn-sm" id="lib-folder-share" type="button"><svg class="ic"><use href="/assets/icons.svg#i-share"/></svg>Share the folder</button>
+              <button class="btn btn-ghost btn-sm lib-more" id="lib-folder-more" type="button" aria-label="More for this folder" aria-haspopup="menu" aria-expanded="false" aria-controls="lib-folder-menu"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+              <span class="lib-menu hidden" id="lib-folder-menu" role="menu" aria-label="This folder">
+                <button type="button" role="menuitem" id="lib-folder-rename">Rename folder</button>
+                <span class="lib-menu-sep" id="lib-folder-stop-sep" role="separator"></span>
+                <button class="danger" type="button" role="menuitem" id="lib-folder-stop">Stop sharing the link</button>
+              </span>
             </span>
           </div>
           <div class="share-row hidden" id="lib-folder-share-row">
             <input id="lib-folder-url" type="text" readonly aria-label="Folder link">
             <button class="btn btn-ghost btn-sm" id="lib-folder-copy" type="button">Copy</button>
-            <button class="btn-link small" id="lib-folder-stop" type="button">Stop sharing</button>
           </div>
           <p class="muted small" style="margin:6px 0 0">One link for the whole folder: everyone can open each song, including ones you add later.</p>
         </div>

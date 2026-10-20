@@ -992,6 +992,7 @@
   function renderFolders(items) {
     var folders = foldersOf(items), box = $("lib-folders");
     if (libFolder && !folders.some(function (f) { return f.name === libFolder; })) libFolder = null;
+    closeFolderMenu(false);
     box.innerHTML = "";
     if (!folders.length) { hide(box); hide($("lib-folder-bar")); return; }
     [{ name: null, count: items.length }].concat(folders).forEach(function (f) {
@@ -1071,7 +1072,37 @@
     var url = $("lib-folder-url").value;
     (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { $("lib-folder-copy").textContent = "Copied"; setTimeout(function () { $("lib-folder-copy").textContent = "Copy"; }, 1500); }, function () { $("lib-folder-url").select(); });
   });
+  // ── The folder's ⋯ menu: Rename, and Stop sharing once a link is out (board m-ux-medium W3c) ──
+  // A menu button: Enter, Space or a tap opens it on its first item, the arrows move between items, and Escape, Tab or a
+  // tap outside closes it (Escape hands the focus back to ⋯).
+  function folderMenuItems() {
+    return Array.prototype.filter.call($("lib-folder-menu").querySelectorAll("[role=menuitem]"), function (b) { return !b.hidden; });
+  }
+  function openFolderMenu() {
+    var shared = !$("lib-folder-share-row").classList.contains("hidden");
+    $("lib-folder-stop").hidden = !shared; $("lib-folder-stop-sep").hidden = !shared;
+    show($("lib-folder-menu")); $("lib-folder-more").setAttribute("aria-expanded", "true");
+    folderMenuItems()[0].focus();
+  }
+  function closeFolderMenu(focusBack) {
+    if ($("lib-folder-menu").classList.contains("hidden")) return;
+    hide($("lib-folder-menu")); $("lib-folder-more").setAttribute("aria-expanded", "false");
+    if (focusBack) $("lib-folder-more").focus();
+  }
+  $("lib-folder-more").addEventListener("click", function (e) {
+    e.stopPropagation();
+    $("lib-folder-menu").classList.contains("hidden") ? openFolderMenu() : closeFolderMenu(true);
+  });
+  $("lib-folder-menu").addEventListener("keydown", function (e) {
+    var items = folderMenuItems(), at = items.indexOf(document.activeElement);
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); items[(at + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus(); }
+    else if (e.key === "Home" || e.key === "End") { e.preventDefault(); items[e.key === "Home" ? 0 : items.length - 1].focus(); }
+    else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); closeFolderMenu(true); }
+    else if (e.key === "Tab") closeFolderMenu(false);
+  });
+  document.addEventListener("click", function (e) { if (!$("lib-folder-menu").contains(e.target)) closeFolderMenu(false); });
   $("lib-folder-stop").addEventListener("click", function () {
+    closeFolderMenu(true);
     if (!libFolder) return;
     // The link dies for everyone who has it, and sharing again makes a new one: asked first, like a delete.
     if (!confirm("Stop sharing \u201c" + libFolder + "\u201d? Everyone with the link loses it, and sharing again makes a new link.")) return;
@@ -1080,6 +1111,7 @@
       .catch(function (err) { libAlert("Could not stop sharing: " + (err.message || err)); });
   });
   $("lib-folder-rename").addEventListener("click", function () {
+    closeFolderMenu(true);
     if (!libFolder) return;
     var to = (window.prompt("Rename “" + libFolder + "” to:", libFolder) || "").trim();
     if (!to || to === libFolder) return;

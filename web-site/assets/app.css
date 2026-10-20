@@ -928,7 +928,18 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .lib-chip.on { background: var(--blue-fill, var(--blue)); border-color: var(--blue-fill, var(--blue)); color: #fff; }
 .lib-folder-bar { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; margin: 0 0 14px; background: var(--wash); }
 .lib-folder-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.lib-folder-actions { display: inline-flex; gap: 8px; }
+.lib-folder-actions { position: relative; display: inline-flex; gap: 8px; }
+/* The folder's ⋯ menu (board m-ux-medium W3c): Rename, and the link's one red word. */
+.lib-more { width: 44px; padding: 0; }
+.lib-more .ic { width: 20px; height: 20px; }
+.lib-more .ic circle { fill: currentColor; stroke: none; }
+.lib-menu { position: absolute; z-index: 10; right: 0; top: calc(100% + 6px); display: block; width: 232px; padding: 6px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 16px 40px rgba(15, 23, 42, 0.16); }
+:root[data-theme="dark"] .lib-menu { background: #151A24; border-color: rgba(255, 255, 255, 0.08); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6); }
+.lib-menu [role=menuitem] { display: flex; align-items: center; width: 100%; min-height: 48px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: var(--ink); font: inherit; font-size: 0.9375rem; font-weight: 500; text-align: left; cursor: pointer; }
+.lib-menu [role=menuitem]:hover, .lib-menu [role=menuitem]:focus-visible { background: var(--wash); outline: none; }
+.lib-menu [role=menuitem].danger { color: var(--danger-text); }
+.lib-menu-sep { display: block; margin: 4px 6px; border-top: 1px solid var(--line); }
+@media (min-width: 641px) and (hover: hover) and (pointer: fine) { .lib-more { width: 38px; } .lib-menu [role=menuitem] { min-height: 40px; } }
 .lib-folder-bar .share-row { margin-top: 10px; }
 .lib-folder-tag { align-self: flex-start; font-size: 0.72rem; font-weight: 700; color: var(--blue-dark); background: var(--blue-tint); border-radius: 8px; padding: 2px 9px; }
 .lib-item .actions { flex-wrap: wrap; align-items: center; }
