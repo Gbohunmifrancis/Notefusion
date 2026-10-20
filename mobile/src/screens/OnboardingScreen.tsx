@@ -16,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import Svg, { Circle, Defs, LinearGradient as SvgGradient, Path, Stop, Text as SvgText } from "react-native-svg";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useReducedMotion } from "react-native-reanimated";
 import { NightButton } from "../components/night/NightButton";
 import { Glow, Lockup, nightText, pressedLink } from "../components/night/NightUI";
 import { AppleMusicLogo, SpotifyLogo, YouTubeLogo, YouTubeMusicLogo } from "../components/SourceLogos";
@@ -74,6 +75,8 @@ export function OnboardingScreen({ navigation }: Props) {
   const scrollX = useRef(new Animated.Value(0)).current;
   const [index, setIndex] = useState(0);
   const isLast = index === SLIDES.length - 1;
+  // Reduce Motion: the words move with their page, no parallax; the blooms still cross-fade (a fade, not motion).
+  const reduceMotion = useReducedMotion();
 
   const finish = () => {
     onboarding.markSeen();
@@ -153,13 +156,16 @@ export function OnboardingScreen({ navigation }: Props) {
           })}
           scrollEventThrottle={16}
           style={styles.flex}
+          extraData={reduceMotion}
           renderItem={({ item, index: i }) => {
             // The words drift a little slower than the page, so a swipe has depth.
-            const drift = scrollX.interpolate({
-              inputRange: [(i - 1) * width, i * width, (i + 1) * width],
-              outputRange: [width * 0.18, 0, -width * 0.18],
-              extrapolate: "clamp",
-            });
+            const drift = reduceMotion
+              ? 0
+              : scrollX.interpolate({
+                  inputRange: [(i - 1) * width, i * width, (i + 1) * width],
+                  outputRange: [width * 0.18, 0, -width * 0.18],
+                  extrapolate: "clamp",
+                });
             return (
               <View style={[styles.slide, { width }]}>
                 {/* Pictures of the product: their letters and logos are not words to read aloud. */}
