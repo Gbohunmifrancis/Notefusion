@@ -1539,7 +1539,7 @@
   }
   function renderChoirPanel() {
     return fetchChoir().then(function (c) {
-      hide($("choir-wait"));
+      hide($("choir-wait")); hide($("choir-msg-row"));
       if (!c) { show($("choir-none")); hide($("choir-card")); return; }
       hide($("choir-none")); show($("choir-card"));
       var director = c.role === "director";
@@ -1568,6 +1568,12 @@
       show($("choir-wait-text"));
     });
   }
+  /** A choir action that failed, said in the choir's own card on Account (the studio's alert is in another view). */
+  function choirProblem(text) {
+    $("choir-msg").textContent = text;
+    show($("choir-msg-row"));
+    $("choir-msg").scrollIntoView({ block: "nearest", behavior: glide() });
+  }
   function loadChoirMembers() {
     request("/api/choirs/mine/members").then(function (list) {
       var ul = $("choir-members"); ul.textContent = "";
@@ -1581,7 +1587,7 @@
           rm.disabled = true;
           request("/api/choirs/mine/members/" + encodeURIComponent(m.userId), { method: "DELETE" })
             .then(function () { track("Removed choir singer"); renderChoirPanel(); })
-            .catch(function (err) { alertIn($("app-alert"), "danger", "Could not remove the singer: " + (err.message || err)); rm.disabled = false; });
+            .catch(function (err) { choirProblem("Could not remove the singer: " + (err.message || err)); rm.disabled = false; });
         });
         li.appendChild(name); li.appendChild(rm); ul.appendChild(li);
       });
@@ -1600,14 +1606,16 @@
       track("Joined choir");
       $("choir-join-code").value = "";
       return loadAccount().then(function () {
+        // Said over Account, where the choir now shows (the studio's alert is in another view).
         setView("account");
-        alertIn($("app-alert"), "success", "Welcome to " + c.name + ". You have Pro while the choir's plan runs, and its shared sheets are under Transcriptions.");
+        showToast("You've joined " + c.name + ".");
         sfx.play("saved");
       });
     }).catch(function (err) {
       var text = (err && err.message) || "We couldn't join that choir just now.";
       $("choir-join-status").textContent = text;
-      alertIn($("app-alert"), "danger", "Could not join the choir: " + text);
+      // From an invite link the studio is showing, not the join form: the alert there says it.
+      if (viewNow !== "account") alertIn($("app-alert"), "danger", "Could not join the choir: " + text);
     });
   }
   /** After signing in from an invite link: asked once, because an account sings in one choir. */
@@ -1635,8 +1643,8 @@
     if (!name || (choir && name === choir.name)) return;
     var btn = $("choir-name-save"); btn.disabled = true;
     request("/api/choirs/mine", { method: "PUT", body: { name: name } })
-      .then(function (c) { choir = c; track("Renamed choir"); return loadAccount().then(renderChoirPanel); })
-      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not rename the choir: " + (err.message || err)); })
+      .then(function (c) { choir = c; track("Renamed choir"); showToast("Choir renamed"); return loadAccount().then(renderChoirPanel); })
+      .catch(function (err) { choirProblem("Could not rename the choir: " + (err.message || err)); })
       .finally(function () { btn.disabled = false; });
   });
   $("choir-invite-copy").addEventListener("click", function () {
@@ -1649,13 +1657,13 @@
     if (!confirm("Make a new invite code? The old code and link stop working at once. Singers already in the choir stay in.")) return;
     request("/api/choirs/mine/invite", { method: "POST" })
       .then(function (c) { choir = c; track("New choir invite code"); renderChoirPanel(); })
-      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not make a new code: " + (err.message || err)); });
+      .catch(function (err) { choirProblem("Could not make a new code: " + (err.message || err)); });
   });
   $("choir-leave").addEventListener("click", function () {
     if (!confirm("Leave the choir? You lose Pro through it, and the sheets you shared leave its library. They stay in yours.")) return;
     request("/api/choirs/leave", { method: "POST" })
       .then(function () { choir = null; track("Left choir"); libraryCache = null; return loadAccount().then(renderAccount); })
-      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not leave the choir: " + (err.message || err)); });
+      .catch(function (err) { choirProblem("Could not leave the choir: " + (err.message || err)); });
   });
   $("choir-plan-open").addEventListener("click", function () { openUpgrade("choir"); });
   $("choir-renew").addEventListener("click", function () { openUpgrade("choir"); });

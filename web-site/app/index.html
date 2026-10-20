@@ -919,6 +919,8 @@
             <!-- In a choir: the director manages it here; a singer sees it and can leave. -->
             <div class="list-card hidden" id="choir-card">
               <div class="lrow"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg><span id="choir-title">—</span></span><span class="v"><span class="pill" id="choir-status">Active</span></span></div>
+              <!-- What went wrong with a rename, a new code, a removal or leaving, said here (the studio's alert is out of sight). -->
+              <div class="lrow lrow-block hidden" id="choir-msg-row"><p class="field-error" id="choir-msg" role="alert" style="margin:0"></p></div>
               <div class="lrow lrow-block hidden" id="choir-rename-row">
                 <form class="choir-join" id="choir-rename-form" novalidate>
                   <input id="choir-name" type="text" maxlength="80" autocomplete="off" aria-label="Choir name">
