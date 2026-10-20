@@ -1064,7 +1064,9 @@ export function RecordScreen() {
               <View style={styles.jobMark}>
                 {resending ? <Icon name="retry" size={26} color={colors.accent} /> : <Mark height={30} color={colors.accent} />}
               </View>
-              <Text style={styles.jobTitle}>{resending ? "Sending it again" : stageLabel(state.stage, state.queuePosition)}</Text>
+              <Text style={styles.jobTitle} accessibilityLiveRegion="polite">
+                {resending ? "Sending it again" : stageLabel(state.stage, state.queuePosition)}
+              </Text>
               <Text style={styles.jobSub}>
                 {resending === "lost"
                   ? "Our server restarted while writing your solfa, so we're sending your recording again. Nothing to do, and it isn't charged twice."
@@ -1194,10 +1196,14 @@ export function RecordScreen() {
 
               {/* "Sing louder / move closer" guidance banner — fades in after a
                   sustained quiet stretch while recording. Over the top of the trace,
-                  so it never covers the controls. */}
+                  so it never covers the controls. Always drawn for the fade, so a
+                  screen reader is kept off it while it is hidden and told when it shows. */}
               <Animated.View
                 style={[styles.guidanceBanner, { opacity: guidanceOpacity }]}
                 pointerEvents="none"
+                accessibilityElementsHidden={!showQuietGuidance}
+                importantForAccessibility={showQuietGuidance ? "yes" : "no-hide-descendants"}
+                accessibilityLiveRegion={showQuietGuidance ? "polite" : "none"}
               >
                 <View style={styles.guidanceDot} />
                 <Text style={styles.guidanceText}>
