@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { autoSavedLine, isUnopened, savedToastBody, takeKind } from "./savedSheet.ts";
+import { autoSavedLine, folderNamed, isUnopened, savedToastBody, takeKind } from "./savedSheet.ts";
 
 test("the line under a fresh sheet's title names the kind of take", () => {
   assert.equal(takeKind({}), "Hummed");
@@ -26,4 +26,12 @@ test("a sheet is unopened only while the server filed it and its owner has not o
 test("the row's line is the time it was filed on the phone's clock", () => {
   const d = new Date(2026, 9, 18, 18, 42);
   assert.equal(autoSavedLine(d.toISOString()), "Saved automatically · 18:42");
+});
+
+test("a new folder's name finds an existing folder in any case, in that folder's spelling", () => {
+  const folders = ["Easter service", "Sunday choir"];
+  assert.equal(folderNamed("sunday choir", folders), "Sunday choir");
+  assert.equal(folderNamed("  SUNDAY CHOIR ", folders), "Sunday choir");
+  assert.equal(folderNamed(" Harvest ", folders), "Harvest");
+  assert.equal(folderNamed("Sunday", folders), "Sunday");
 });

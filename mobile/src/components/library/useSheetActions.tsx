@@ -15,6 +15,7 @@ import { SheetActionsSheet } from "./SheetActionsSheet";
 import { showDialog } from "../../lib/dialog";
 import { useSubscription } from "../../lib/subscription";
 import { useOfflineLibrary } from "../../lib/offlineLibrary";
+import { folderNamed } from "../../lib/savedSheet";
 import {
   askToDelete,
   deleteSheets,
@@ -217,7 +218,7 @@ export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: 
             onPress={() => {
               const targets = naming;
               setNaming(null);
-              if (targets) void fileIn(targets, newFolder.trim());
+              if (targets) void fileIn(targets, folderNamed(newFolder, folders));
             }}
           />
         </SheetActions>

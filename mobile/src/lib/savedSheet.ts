@@ -30,3 +30,13 @@ export function autoSavedLine(createdAtUtc: string): string {
   const d = new Date(createdAtUtc);
   return `Saved automatically · ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
+
+/**
+ * The folder a typed name files into: an existing folder spelt any other case ("sunday choir" for "Sunday choir")
+ * is that folder, in its own spelling, so one folder never splits in two. Otherwise the name as typed, trimmed.
+ */
+export function folderNamed(typed: string, folders: readonly string[]): string {
+  const name = typed.trim();
+  const key = name.toLowerCase();
+  return folders.find((f) => f.trim().toLowerCase() === key) ?? name;
+}
