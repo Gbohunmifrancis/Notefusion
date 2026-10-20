@@ -37,7 +37,8 @@ type Sheet = "name" | "password" | "about" | "delete" | null;
  *
  *   • Account — Name and Password open one-field sheets; Email is read only (no route changes it) and wears
  *     Google's G for an account that signs in with Google, which has no Password row.
- *   • Appearance — Theme as a Night | Day switch you can see, haptic feedback, and Doh's suggestions (Home's card).
+ *   • Look & feel — Theme as a Night | Day switch you can see, haptic feedback, and Doh's suggestions (Home's card):
+ *     not all of it is how the app looks, so the group is not called Appearance.
  *   • Data & offline — data saver, keeping every saved sheet offline, the offline hymns (the Hymns tab), and
  *     "Clear offline copies".
  *   • Help & about — help, feedback, the legal pages and About.
@@ -179,7 +180,7 @@ export function SettingsScreen({ navigation }: Props) {
         ) : null}
       </Group>
 
-      <Group title="Appearance">
+      <Group title="Look & feel">
         <Row
           icon="theme"
           label="Theme"

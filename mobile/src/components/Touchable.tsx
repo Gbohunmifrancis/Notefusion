@@ -91,7 +91,7 @@ interface Props {
   /** One number for every side, or per side where a neighbour sits closer on one of them. */
   hitSlop?: number | Insets;
   accessibilityLabel?: string;
-  /** What the control does, read after its label: a row's line under its name ("Account, appearance, sign out"). */
+  /** What the control does, read after its label: a row's line under its name ("Account, look & feel, data saver, sign out"). */
   accessibilityHint?: string;
   accessibilityRole?: AccessibilityRole;
   accessibilityState?: AccessibilityState;

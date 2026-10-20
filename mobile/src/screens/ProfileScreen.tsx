@@ -241,7 +241,7 @@ export function ProfileScreen() {
         <Row
           icon="settings"
           label="Settings"
-          hint="Account, appearance, data saver, sign out"
+          hint="Account, look & feel, data saver, sign out"
           chevron
           onPress={() => nav.navigate("Settings")}
         />
