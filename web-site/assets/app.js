@@ -1021,6 +1021,13 @@
       none.hidden = shown > 0 || !document.querySelector("#lib-list .lib-item");
     }
   }
+  /**
+   * A tap anywhere on a sheet's card opens it (the title is the biggest target there is), not only the small Open
+   * button beside Delete; the card's own controls keep their jobs. Keyboards and screen readers still use Open.
+   */
+  function opensOnTap(card, open) {
+    card.addEventListener("click", function (e) { if (!e.target.closest("button, select, a, input, label")) open(); });
+  }
   /** Files a sheet: an existing folder, a new one, or none. */
   function fileSheet(it, value, select) {
     var name = value;
@@ -1092,7 +1099,9 @@
         file.value = it.folder || "";
         file.addEventListener("change", function () { fileSheet(it, file.value, file); });
         var open = document.createElement("button"); open.className = "btn btn-primary btn-sm"; open.type = "button"; open.textContent = "Open";
+        open.setAttribute("aria-label", "Open " + (it.title || "Untitled"));
         open.addEventListener("click", function () { openSaved(it.id); });
+        opensOnTap(card, function () { openSaved(it.id); });
         var del = document.createElement("button"); del.className = "btn btn-ghost btn-sm btn-danger"; del.type = "button"; label(del, "trash", "Delete");
         del.addEventListener("click", function () {
           if (!confirm("Delete \u201c" + (it.title || "Untitled") + "\u201d from your library? This cannot be undone." +
@@ -1146,7 +1155,9 @@
         card.appendChild(m);
         var a = document.createElement("div"); a.className = "actions";
         var open = document.createElement("button"); open.className = "btn btn-primary btn-sm"; open.type = "button"; open.textContent = "Open";
+        open.setAttribute("aria-label", "Open " + (it.title || "Untitled"));
         open.addEventListener("click", function () { openChoirSheet(it.id); });
+        opensOnTap(card, function () { openChoirSheet(it.id); });
         a.appendChild(open);
         if (it.canUnshare) {
           var out = document.createElement("button"); out.className = "btn btn-ghost btn-sm"; out.type = "button"; out.textContent = "Take out";
