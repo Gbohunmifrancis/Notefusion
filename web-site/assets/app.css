@@ -480,6 +480,16 @@ table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 .list-card :focus-visible { outline-offset: -2px; }
 .lrow-btn.danger, .lrow-btn.danger .k > .ic { color: var(--danger-text); }
 .pill-active { background: var(--success-soft); color: var(--success-text); }
+/* The Account group's values (board m-ux-medium W3d): quiet, on one line, cut short rather than wrapped. */
+.acct-val { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: 0.9375rem; font-weight: 500; }
+.lrow .v .acct-val + .ic { margin-left: 2px; }
+.switch:disabled { opacity: 0.5; cursor: default; }
+/* The name and password dialogs. */
+.acct-dialog { width: min(420px, 100%); }
+.acct-dialog .card-lead { margin: 0 0 16px; }
+.acct-dialog .input-wrap input { padding-left: 14px; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+.dialog-actions .btn { min-width: 96px; }
 .theme-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 8px; background: var(--wash); }
 .theme-seg button { min-width: 64px; padding: 6px 10px; border: 0; border-radius: 8px; background: none; font: inherit; font-size: 0.82rem; font-weight: 600; color: var(--muted); cursor: pointer; }
 .theme-seg button:hover { color: var(--ink); }

@@ -336,6 +336,42 @@
     </div>
   </div>
 
+  <!-- ── Account: the name, and a new password, one dialog each (board m-ux-medium W3d) ── -->
+  <div class="modal hidden" id="name-dialog" role="dialog" aria-modal="true" aria-labelledby="name-dialog-title">
+    <form class="modal-card acct-dialog" id="name-form" novalidate>
+      <button class="modal-close btn btn-ghost btn-icon" type="button" data-close aria-label="Close"><svg class="ic"><use href="/assets/icons.svg#i-x"/></svg></button>
+      <h2 id="name-dialog-title">Your name</h2>
+      <div class="field">
+        <label for="name-input">Name</label>
+        <input id="name-input" type="text" autocomplete="name" autocapitalize="words" maxlength="100" required>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="button" data-close>Cancel</button>
+        <button class="btn btn-primary" type="submit" id="name-save">Save</button>
+      </div>
+    </form>
+  </div>
+  <div class="modal hidden" id="password-dialog" role="dialog" aria-modal="true" aria-labelledby="password-dialog-title" aria-describedby="password-dialog-note">
+    <form class="modal-card acct-dialog" id="password-form" novalidate>
+      <button class="modal-close btn btn-ghost btn-icon" type="button" data-close aria-label="Close"><svg class="ic"><use href="/assets/icons.svg#i-x"/></svg></button>
+      <h2 id="password-dialog-title">Change your password</h2>
+      <p class="card-lead" id="password-dialog-note">You stay signed in here; your other devices will ask for the new one.</p>
+      <div class="field">
+        <label for="pw-current">Current password</label>
+        <span class="input-wrap pw-wrap"><input id="pw-current" type="password" autocomplete="current-password" required><button class="pw-eye" type="button" data-eye="pw-current" aria-label="Show password"><svg class="ic"><use href="/assets/icons.svg#i-eye"/></svg></button></span>
+      </div>
+      <div class="field">
+        <label for="pw-new">New password</label>
+        <span class="input-wrap pw-wrap"><input id="pw-new" type="password" autocomplete="new-password" minlength="8" required aria-describedby="pw-new-hint"><button class="pw-eye" type="button" data-eye="pw-new" aria-label="Show password"><svg class="ic"><use href="/assets/icons.svg#i-eye"/></svg></button></span>
+        <p class="pw-hint" id="pw-new-hint"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-minus"/></svg>At least 8 characters</p>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="button" data-close>Cancel</button>
+        <button class="btn btn-primary" type="submit" id="password-save">Update</button>
+      </div>
+    </form>
+  </div>
+
   <!-- ── Signed in ──────────────────────────────────────────────────── -->
   <section id="view-app" class="hidden">
     <div class="alert alert-info hidden" id="guest-bar">
@@ -833,6 +869,18 @@
         </div>
 
         <div class="acct-groups">
+          <!-- The account itself first, as on the phone (board m-ux-medium W3d): the name and the password open one dialog
+               each; the email is read only (no route changes it). An account that signs in with Google has no password. -->
+          <section aria-labelledby="acct-you-title">
+            <h2 class="group-title" id="acct-you-title">Account</h2>
+            <div class="list-card">
+              <button class="lrow lrow-btn" id="acct-name-row" type="button"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-user"/></svg>Name</span><span class="v"><span class="acct-val" id="acct-name-val">—</span><svg class="ic"><use href="/assets/icons.svg#i-chev"/></svg></span></button>
+              <div class="lrow"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-mail"/></svg>Email</span><span class="v"><span class="acct-val" id="acct-email-val">—</span></span></div>
+              <button class="lrow lrow-btn hidden" id="acct-password-row" type="button"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Password</span><span class="v"><span class="acct-val">Change</span><svg class="ic"><use href="/assets/icons.svg#i-chev"/></svg></span></button>
+              <div class="lrow hidden" id="acct-password-google"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Password</span><span class="v"><span class="acct-val">Signs in with Google</span></span></div>
+            </div>
+          </section>
+
           <section aria-labelledby="acct-plan-title">
             <h2 class="group-title" id="acct-plan-title">Plan &amp; usage</h2>
             <div class="list-card">
@@ -908,6 +956,8 @@
               <div class="lrow"><span class="k" id="acct-notify-label"><svg class="ic"><use href="/assets/icons.svg#i-bell"/></svg>Notify me when a transcription is ready</span><span class="v"><button class="switch" id="acct-notify" type="button" role="switch" aria-checked="false" aria-labelledby="acct-notify-label" aria-describedby="acct-notify-note"></button></span></div>
               <div class="lrow"><span class="k" id="acct-notify-sound-label"><svg class="ic"><use href="/assets/icons.svg#i-volume"/></svg>Play a sound when it's ready</span><span class="v"><button class="switch" id="acct-notify-sound" type="button" role="switch" aria-checked="true" aria-labelledby="acct-notify-sound-label"></button></span></div>
               <div class="lrow lrow-block"><p class="lrow-note acct-notify-note" id="acct-notify-note" aria-live="polite">For a transcription that finishes while you're in another tab or window.</p></div>
+              <!-- The account's choice, the one the unsubscribe link in those emails makes (GET/PUT /api/me/email-preferences). -->
+              <div class="lrow"><span class="k" id="acct-founder-label"><svg class="ic"><use href="/assets/icons.svg#i-message"/></svg>Notes from the founder by email</span><span class="v"><button class="switch" id="acct-founder" type="button" role="switch" aria-checked="false" aria-labelledby="acct-founder-label" disabled></button></span></div>
             </div>
           </section>
 

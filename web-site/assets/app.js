@@ -398,6 +398,7 @@
   /** Signed out here or in another tab, or the session ran out: nothing of the account stays on screen. */
   function forgetAccount() {
     me = null; sub = null; libraryCache = null; libFolder = null; choir = null; pendingDelete = null; dropToast();
+    founderNotes = null; renderFounder(); closeDialog();
     stopPaymentWatch(); hide($("top-nav")); showTabbar(false); document.body.classList.remove("is-pro");
     $("recents-list").innerHTML = "";
     hide($("practice-chip")); hide($("practice-slot")); hide($("season-carols")); if (window.NfPracticeView) window.NfPracticeView.reset();
@@ -1375,7 +1376,121 @@
     $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "short" }) : "—";
     fetchLibrary().then(function (items) { $("acct-saved").textContent = String(items.length); }, function () { $("acct-saved").textContent = "—"; });
     renderChoirPanel();
+    // The Account group (board m-ux-medium W3d): an account that signs in with Google has no password to change.
+    $("acct-name-val").textContent = me ? (me.fullName || "—") : "—";
+    $("acct-email-val").textContent = me ? (me.email || "—") : "—";
+    var google = !!me && me.hasPassword === false;
+    google ? hide($("acct-password-row")) : show($("acct-password-row"));
+    google ? show($("acct-password-google")) : hide($("acct-password-google"));
+    loadEmailPrefs();
   }
+
+  // ── Account: the name, the password, the founder's notes (board m-ux-medium W3d) ──
+  // One small dialog each for the name and the password: focus goes in and stays in, Escape, Cancel, a tap outside or
+  // the browser's Back close it, and the focus goes back to the row that opened it.
+  var dialogOpen = null, dialogReturn = null;
+  function openDialog(id, focusId) {
+    dialogReturn = document.activeElement; dialogOpen = id;
+    show($(id));
+    $(focusId).focus();
+  }
+  function closeDialog() {
+    if (!dialogOpen) return;
+    hide($(dialogOpen)); dialogOpen = null;
+    if (dialogReturn && dialogReturn.focus && document.contains(dialogReturn)) dialogReturn.focus({ preventScroll: true });
+    dialogReturn = null;
+  }
+  ["name-dialog", "password-dialog"].forEach(function (id) {
+    var el = $(id);
+    el.addEventListener("click", function (e) { if (e.target === el || e.target.closest("[data-close]")) closeDialog(); });
+    el.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { e.preventDefault(); closeDialog(); return; }
+      if (e.key !== "Tab") return;
+      var items = Array.prototype.filter.call(el.querySelectorAll("button, input"), function (x) { return !x.disabled && x.offsetParent !== null; });
+      var at = items.indexOf(document.activeElement), next = e.shiftKey ? (at <= 0 ? items.length - 1 : at - 1) : (at === items.length - 1 ? 0 : at + 1);
+      e.preventDefault(); items[next].focus();
+    });
+    backLayer(el, function () { return !el.classList.contains("hidden"); }, closeDialog);
+  });
+  $("acct-name-row").addEventListener("click", function () {
+    clearFieldError("name-input");
+    $("name-input").value = (me && me.fullName) || "";
+    openDialog("name-dialog", "name-input");
+    $("name-input").select();
+  });
+  $("name-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = $("name-input").value.trim();
+    clearFieldError("name-input");
+    if (!name) { fieldError("name-input", "Enter your name."); $("name-input").focus(); return; }
+    if (me && name === me.fullName) { closeDialog(); return; }
+    var btn = $("name-save"), done = waitLabel(btn, "Saving…");
+    btn.disabled = true;
+    request("/api/me", { method: "PUT", body: { fullName: name } })
+      .then(function (profile) {
+        me = profile || Object.assign({}, me, { fullName: name });
+        renderWho(); renderAccount(); closeDialog();
+        showToast("Saved"); track("Changed name");
+      })
+      .catch(function (err) { fieldError("name-input", (err && err.message) || "We couldn't save that just now. Please try again."); $("name-input").focus(); })
+      .finally(function () { done(); btn.disabled = false; });
+  });
+  function renderNewPasswordHint() {
+    var met = $("pw-new").value.length >= 8, hint = $("pw-new-hint");
+    hint.classList.toggle("ok", met);
+    hint.querySelector("use").setAttribute("href", "/assets/icons.svg#i-" + (met ? "check" : "minus"));
+  }
+  $("pw-new").addEventListener("input", renderNewPasswordHint);
+  $("acct-password-row").addEventListener("click", function () {
+    ["pw-current", "pw-new"].forEach(function (id) { clearFieldError(id); $(id).value = ""; $(id).type = "password"; });
+    renderNewPasswordHint();
+    openDialog("password-dialog", "pw-current");
+  });
+  $("password-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    clearFieldError("pw-current"); clearFieldError("pw-new");
+    var current = $("pw-current").value, next = $("pw-new").value;
+    if (!current) { fieldError("pw-current", "Enter the password you use now."); $("pw-current").focus(); return; }
+    if (next.length < 8) { fieldError("pw-new", "Your new password needs at least 8 characters."); $("pw-new").focus(); return; }
+    var btn = $("password-save"), done = waitLabel(btn, "Updating…");
+    btn.disabled = true;
+    request("/api/auth/change-password", { method: "POST", body: { currentPassword: current, newPassword: next } })
+      .then(function (pair) {
+        // Every other session ended with the old password; the pair that came back is this one's.
+        if (pair && pair.accessToken) saveTokens({ accessToken: pair.accessToken, refreshToken: pair.refreshToken });
+        closeDialog(); showToast("Password updated"); track("Changed password");
+      })
+      .catch(function (err) {
+        var onNew = err && (err.code === "AUTH_PASSWORD_WEAK" || (err.details && (err.details.NewPassword || err.details.newPassword)));
+        var field = onNew ? "pw-new" : "pw-current";
+        fieldError(field, (err && err.message) || "We couldn't change it just now. Please try again.");
+        $(field).focus();
+      })
+      .finally(function () { done(); btn.disabled = false; });
+  });
+  /** "Notes from the founder by email": the account's choice (EmailOptOut), read when Account opens; null until then. */
+  var founderNotes = null;
+  function renderFounder() {
+    var s = $("acct-founder");
+    s.disabled = founderNotes === null;
+    s.setAttribute("aria-checked", String(!!founderNotes));
+  }
+  function loadEmailPrefs() {
+    var at = epoch;
+    request("/api/me/email-preferences").then(function (p) {
+      if (at !== epoch || !p) return;
+      founderNotes = !!p.founderNotes; renderFounder();
+    }, function () { /* the switch keeps what it showed */ });
+  }
+  $("acct-founder").addEventListener("click", function () {
+    if (founderNotes === null) return;
+    var want = !founderNotes, before = founderNotes;
+    founderNotes = want; renderFounder(); $("acct-founder").disabled = true;
+    request("/api/me/email-preferences", { method: "PUT", body: { founderNotes: want } })
+      .then(function (p) { founderNotes = p ? !!p.founderNotes : want; track(want ? "Founder notes on" : "Founder notes off"); })
+      .catch(function () { founderNotes = before; showToast("That didn't save. Check your connection and try again."); })
+      .finally(renderFounder);
+  });
   $("acct-upgrade").addEventListener("click", function () { if (playBilled()) openPlayManage(); else openUpgrade(); });
   // The deletion page fills in the signed-in address (handed over in this tab only, never in the URL).
   $("acct-delete").addEventListener("click", function () {
