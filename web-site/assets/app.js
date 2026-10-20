@@ -643,7 +643,7 @@
       .catch(function (err) {
         // The password was right but the address was never confirmed, and a fresh code is on its way:
         // straight to the code boxes, as the phone does, rather than an error with nowhere to type it.
-        if (err.code === "AUTH_EMAIL_NOT_VERIFIED") { openVerify($("login-email").value.trim(), "We've emailed you a new code. Enter it to finish setting up your account.", "login"); return; }
+        if (err.code === "AUTH_EMAIL_NOT_VERIFIED") { openVerify($("login-email").value.trim(), "login"); return; }
         var reset = null;
         if (err.code === "AUTH_INVALID_CREDENTIALS" && ++loginMisses >= 2) {
           reset = document.createElement("button");
@@ -655,11 +655,21 @@
       .finally(function () { btn.disabled = false; restore(); });
   });
   var verifyFrom = "register"; // the form the code step came from, which "Wrong address? Change it" returns to
-  function openVerify(email, note, from) {
+  /**
+   * The code step says once, under its heading, where the code went and why (no alert above saying it again): a new
+   * account's code, or a fresh one for an address that was never confirmed.
+   */
+  var VERIFY_NOTE = {
+    register: ["We emailed a six-digit code to ", ". Enter it to finish creating your account."],
+    login: ["This address isn't confirmed yet, so we've emailed a new six-digit code to ", ". Enter it to finish setting up your account."]
+  };
+  function openVerify(email, from) {
     pendingEmail = email; verifyFrom = from || "register";
-    $("verify-email-label").textContent = pendingEmail;
+    var words = VERIFY_NOTE[verifyFrom] || VERIFY_NOTE.register, note = $("verify-note"), who = document.createElement("strong");
+    who.id = "verify-email-label"; who.textContent = pendingEmail;
+    note.textContent = "";
+    note.appendChild(document.createTextNode(words[0])); note.appendChild(who); note.appendChild(document.createTextNode(words[1]));
     showAuthForm("verify");
-    alertIn($("auth-alert"), "success", note);
     resendCooldown();
     $("verify-code").focus();
   }
@@ -692,7 +702,7 @@
     request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value, source: "web" } })
       .then(function (res) {
         track("Created account");
-        openVerify((res && res.email) || $("reg-email").value.trim(), "Almost there — enter the code we just emailed you.", "register");
+        openVerify((res && res.email) || $("reg-email").value.trim(), "register");
       })
       .catch(function (err) {
         // The checks above catch what the validator would; its own words ("'Full Name' must not be empty.") stay out.
