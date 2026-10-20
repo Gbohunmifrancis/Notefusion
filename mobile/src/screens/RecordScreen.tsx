@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Animated, StyleSheet, Text, View } from "react-native";
+import { Animated, BackHandler, StyleSheet, Text, View } from "react-native";
 import {
   useAudioRecorder,
   useAudioRecorderState,
@@ -11,7 +11,7 @@ import {
 import { Icon } from "../components/Icon";
 import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
-import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
@@ -35,6 +35,7 @@ import { useJobPolling } from "../lib/useJobPolling";
 import { OFFLINE_LINE, STALLED_LINE, percentLabel, stageLabel, type ClientStage } from "../lib/jobProgress";
 import { useSubscription } from "../lib/subscription";
 import { importKind, loadImportKind, setImportKind } from "../lib/importKind";
+import { setLeaveGuard } from "../lib/leaveGuard";
 import { recordKindChoices } from "../lib/recordKind";
 import { formatPrice, limitCopy, limitOffer, type LimitOffer } from "../lib/price";
 import { billingApi } from "../api/endpoints";
@@ -915,6 +916,33 @@ export function RecordScreen() {
     }
     tabNav.navigate("Home");
   }
+
+  /**
+   * While the mic is on, leaving asks as the close button does: Android's back and a tab in the bar
+   * (lib/leaveGuard) used to walk away with the recorder still running out of sight, which then sent the
+   * take by itself at the three-minute cap. The latest render's ask is kept in a ref so it sees today's clock.
+   */
+  const leaveAsk = useRef<(proceed: () => void) => void>(() => {});
+  leaveAsk.current = (proceed) =>
+    confirmDiscard("Discard this recording?", "Discard", () => {
+      void discardTake();
+      proceed();
+    });
+  useEffect(() => {
+    if (phase !== "recording") return;
+    setLeaveGuard((proceed) => leaveAsk.current(proceed));
+    return () => setLeaveGuard(null);
+  }, [phase]);
+  useFocusEffect(
+    useCallback(() => {
+      if (phase !== "recording") return;
+      const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+        leaveAsk.current(() => tabNav.navigate("Home"));
+        return true;
+      });
+      return () => sub.remove();
+    }, [phase, tabNav]),
+  );
 
   const clock = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, "0")}`;
 
