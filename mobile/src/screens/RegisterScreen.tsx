@@ -46,7 +46,7 @@ export function RegisterScreen({ navigation, route }: Props) {
     try {
       // No session yet: registration mails a code, and VerifyEmail is what signs in.
       const registered = await signUp(fullName.trim(), email.trim(), password);
-      navigation.navigate("VerifyEmail", { email: registered, fromSignUp: true });
+      navigation.navigate("VerifyEmail", { email: registered, fromSignUp: true, sentAt: Date.now() });
     } catch (e) {
       const err = toApiError(e);
       const onEmail = emailFieldError(err);

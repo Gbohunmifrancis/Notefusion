@@ -14,9 +14,11 @@ export type AuthStackParams = {
   /**
    * The email is a param rather than screen state because two routes arrive here:
    * sign-up, and a login that was refused as unverified. Both know the address the
-   * code went to, and the screen must show it so a typo is visible.
+   * code went to, and the screen must show it so a typo is visible. `sentAt` is when the
+   * code went (ms): a start that reopens the screen (lib/pendingVerify) keeps the first time.
+   * Every route passes all three, so none is taken from that reopening's initial params.
    */
-  VerifyEmail: { email: string; fromSignUp?: boolean };
+  VerifyEmail: { email: string; fromSignUp: boolean; sentAt: number };
   /** Seeded with whatever was already typed into Sign in. */
   ForgotPassword: { email?: string } | undefined;
 };

@@ -44,7 +44,7 @@ export function LoginScreen({ navigation, route }: Props) {
       // mailed a fresh code by the time this lands, so send them straight to the boxes
       // rather than showing an error they can do nothing about.
       if (err.code === "AUTH_EMAIL_NOT_VERIFIED") {
-        navigation.navigate("VerifyEmail", { email: email.trim().toLowerCase() });
+        navigation.navigate("VerifyEmail", { email: email.trim().toLowerCase(), fromSignUp: false, sentAt: Date.now() });
         return;
       }
       setError(err.message);
