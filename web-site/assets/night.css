@@ -131,6 +131,12 @@ h1 { font-weight: 700; letter-spacing: -0.035em; }
 }
 .btn:active:not(:disabled) { transform: none; }
 @media (prefers-reduced-motion: no-preference) { .btn:active:not(:disabled) { transform: scale(var(--press)); } }
+/* Less motion asked for: the press is a brief dimming in place of the scale, so a tap on a phone is still seen. */
+@media (prefers-reduced-motion: reduce) {
+  .btn:active:not(:disabled), .nav-item:active, .tab:active, .lib-chip:active, .plan-opt:active, .source-tab:active,
+  .verdict:active:not(:disabled), .issue:active, .upload-kind label:active, .act:active, .studio-rec:active, .tab-cell:active,
+  .tab-rec:active .tab-rec-disc { opacity: 0.8; }
+}
 
 /* ── Buttons ─────────────────────────────────────────────────────────────── */
 .btn { border-radius: 8px; min-height: 46px; padding: 10px 20px; font-weight: 600; }
