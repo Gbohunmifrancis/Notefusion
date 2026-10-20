@@ -134,7 +134,9 @@
   <section id="view-auth" class="auth-page">
     <!-- Wide screens: what NoteFusion does, beside the form. -->
     <aside class="auth-aside" aria-hidden="true">
-      <span class="brand"><span class="brand-mark"></span>NoteFusion</span>
+      <!-- The logo a wide screen shows (the form's own is hidden there) goes home like every other; out of the tab order,
+           as the panel is hidden from screen readers. -->
+      <a class="brand" href="/" tabindex="-1"><span class="brand-mark"></span>NoteFusion</a>
       <div class="auth-pitch">
         <p class="auth-pitch-title">Hum it. Read it.<br>Sing it with your choir.</p>
         <p class="auth-pitch-sub">Any tune, a recording or a song link becomes Tonic Solfa and staff notation in about a minute.</p>
