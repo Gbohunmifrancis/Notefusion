@@ -113,6 +113,28 @@ export function canNudge(range: ClipRange, edge: RangeEdge, delta: number, durat
   return next.start !== range.start || next.end !== range.end;
 }
 
+/**
+ * Where `RangePicker` draws its two handles, as centres along a track `width` px wide: at their marks, unless that
+ * puts them closer than one handle (`handle` px) — a five-second section of a long song — when they are spread apart
+ * evenly, and into the track's room when one sits at an end, so each can still be taken. The window between them
+ * still shows the true section; a drag is measured from where it began, so it moves the marks exactly as before.
+ */
+export function handleCentres(startX: number, endX: number, width: number, handle: number): { start: number; end: number } {
+  const short = handle - (endX - startX);
+  if (short <= 0 || width <= 0) return { start: startX, end: endX };
+  let start = startX - short / 2;
+  let end = endX + short / 2;
+  if (start < 0) {
+    end -= start;
+    start = 0;
+  }
+  if (end > width) {
+    start -= end - width;
+    end = width;
+  }
+  return { start: Math.max(0, start), end };
+}
+
 /** "1:05–1:35 of 3:33"; "1:05–1:35" when the song's length is not known. */
 export function sectionLabel(start: number, end: number, duration?: number | null): string {
   const span = `${formatClock(start)}–${formatClock(end)}`;

@@ -5,6 +5,7 @@ import {
   defaultRange,
   fitsWhole,
   formatClock,
+  handleCentres,
   isWholeSong,
   moveEnd,
   moveStart,
@@ -107,4 +108,16 @@ test("the credit's section: only when a part of the song was chosen", () => {
   assert.equal(sectionOf({ startSeconds: 0, endSeconds: 213, durationSeconds: 213.4 }), null);
   assert.equal(sectionOf({ startSeconds: null, endSeconds: null, durationSeconds: 213 }), null);
   assert.equal(sectionOf({}), null);
+});
+
+test("handles closer than one handle are spread apart, into the track's room at either end", () => {
+  // Far enough apart: drawn at their marks.
+  assert.deepEqual(handleCentres(40, 120, 300, 28), { start: 40, end: 120 });
+  // Five seconds of a long song, mid-track: 9 px apart becomes 28, evenly.
+  assert.deepEqual(handleCentres(100, 109, 300, 28), { start: 90.5, end: 118.5 });
+  // At the start the end handle takes all the room; at the end, the start handle does.
+  assert.deepEqual(handleCentres(0, 9, 300, 28), { start: 0, end: 28 });
+  assert.deepEqual(handleCentres(291, 300, 300, 28), { start: 272, end: 300 });
+  // Before the track is measured nothing moves.
+  assert.deepEqual(handleCentres(0, 0, 0, 28), { start: 0, end: 0 });
 });
