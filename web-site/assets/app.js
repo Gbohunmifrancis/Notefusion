@@ -1399,7 +1399,8 @@
     $("acct-upgrade-label").textContent = play ? (sub.paymentIssue ? "Fix it in Google Play" : "Manage in Google Play")
       : isPro() ? (sub && (sub.isLifetime || sub.isGift) ? "My membership" : "Add another month") : "See the plans";
     var since = me && (me.createdAtUtc || me.createdAt);
-    $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "short" }) : "—";
+    // The month spelled out, as the plan's and the choir's dates on Account are ("October 2026", "20 October 2026").
+    $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "long" }) : "—";
     fetchLibrary().then(function (items) { $("acct-saved").textContent = String(items.length); }, function () { $("acct-saved").textContent = "—"; });
     renderChoirPanel();
     // The Account group (board m-ux-medium W3d): an account that signs in with Google has no password to change.
