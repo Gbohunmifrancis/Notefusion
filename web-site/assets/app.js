@@ -428,7 +428,7 @@
   }
   var AUTH_COPY = {
     login: ["Welcome back", "Sign in to open your sheets on any device."],
-    register: ["Create your account", "Free to start: 3 hummed or recorded transcriptions every week."],
+    register: ["Create your account", "Free to start: 3 hummed or recorded transcriptions every week. We'll email you a code to confirm your address."],
     verify: ["Check your email", "One code and you're in."]
   };
   function showAuthForm(name) {
