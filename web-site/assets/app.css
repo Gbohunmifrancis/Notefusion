@@ -449,7 +449,7 @@ table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 .lib-item:hover { border-color: rgba(37, 99, 235, 0.35); box-shadow: var(--shadow-card-hover); transform: translateY(-1px); }
 .lib-list .lib-item { cursor: pointer; } /* the whole card opens the sheet (app.js opensOnTap) */
 .lib-key { width: 42px; height: 42px; border-radius: 8px; background: var(--blue-tint); color: var(--blue-dark); font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; letter-spacing: -0.02em; margin-bottom: 6px; }
-.lib-item h3 { margin: 0; font-size: 1rem; line-height: 1.3; overflow-wrap: anywhere; }
+.lib-item h2, .lib-item h3 { display: block; margin: 0; font-size: 1rem; line-height: 1.3; overflow-wrap: anywhere; }
 .lib-item .meta { color: var(--muted); font-size: 0.825rem; }
 .lib-item .actions { display: flex; gap: 8px; margin-top: 8px; }
 .empty { text-align: center; padding: 28px 16px 20px; color: var(--muted); }

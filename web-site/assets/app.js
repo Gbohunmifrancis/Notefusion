@@ -1175,7 +1175,8 @@
       items.forEach(function (it) {
         var card = document.createElement("div"); card.className = "lib-item"; card.dataset.id = it.id; card.dataset.search = fold([it.title || "Untitled", it.folder, it.key].join(" ")); card.dataset.folder = it.folder || "";
         var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
-        var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
+        // A level under the page's h1 (the choir's cards sit under its own h2, so they stay h3).
+        var h = document.createElement("h2"); h.textContent = it.title || "Untitled"; card.appendChild(h);
         var m = document.createElement("div"); m.className = "meta";
         m.textContent = [it.key, it.tempoBpm ? it.tempoBpm + " BPM" : "", it.timeSignature, new Date(it.createdAtUtc).toLocaleDateString()].filter(Boolean).join(" · ") + (it.shareToken ? " · shared" : "") + (it.sharedWithChoir ? " · in the choir library" : "");
         card.appendChild(m);
