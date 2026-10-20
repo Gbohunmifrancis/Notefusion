@@ -58,6 +58,22 @@ export const tokenStore = {
     return val === 'google' || val === 'email' ? val : null;
   },
 
+  /**
+   * The address this phone last signed in or signed up with by email, so Login can fill it in. Kept through a
+   * sign-out, like the last way in: it is what someone signing back in types first.
+   */
+  async saveLastEmail(email: string): Promise<void> {
+    await SecureStore.setItemAsync('nf.lastEmail', email);
+  },
+
+  async getLastEmail(): Promise<string | null> {
+    try {
+      return await SecureStore.getItemAsync('nf.lastEmail');
+    } catch {
+      return null;
+    }
+  },
+
   async clear(): Promise<void> {
     // Credentials only. `nf.deviceId` (see lib/deviceId.ts) is deliberately not here: signing out
     // to add a second Google account is the exact move the free-trial ceiling exists to catch, and

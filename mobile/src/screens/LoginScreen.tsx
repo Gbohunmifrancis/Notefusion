@@ -34,6 +34,11 @@ export function LoginScreen({ navigation, route }: Props) {
 
   useEffect(() => {
     tokenStore.getLastAuthMethod().then(setLastAuthMethod, () => setLastAuthMethod(null));
+    // No address handed over: the one this phone last used by email, unless something is typed by then.
+    if (route.params?.email) return;
+    void tokenStore.getLastEmail().then((last) => {
+      if (last) setEmail((typed) => typed || last);
+    });
   }, []);
 
   const canSubmit = email.trim().length > 3 && password.length > 0;
