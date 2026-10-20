@@ -32,6 +32,11 @@ export function pitchName(midi: number): string {
   return `${NAMES[((midi % 12) + 12) % 12]}${Math.floor(midi / 12) - 1}`;
 }
 
+/** The pitch as a screen reader should say it: "C sharp 4", never a MIDI number or a "#". */
+export function spokenPitch(midi: number): string {
+  return pitchName(midi).replace(/^([A-G])#/, "$1 sharp ").replace(/^([A-G])(-?\d)/, "$1 $2");
+}
+
 export type RangeStatus = "ok" | "high" | "low" | "wide";
 
 export interface VoiceRange {

@@ -4,6 +4,7 @@ import { fonts, typography, type Palette } from "../../design/theme";
 import { useThemedStyles } from "../../lib/theme";
 import type { NoteEvent } from "../../api/types";
 import { beatsPerBarOf } from "./usePractice";
+import { spokenPitch } from "../../lib/choir";
 
 /** Below this a note is the model's guess rather than its answer — same line as the review. */
 export const LOW_CONF = 0.5;
@@ -127,7 +128,7 @@ export function SheetGrid({
                             hitSlop={4}
                             style={({ pressed }) => [styles.note, now && styles.noteNow, pressed && styles.notePressed]}
                             accessibilityRole="button"
-                            accessibilityLabel={`Note ${i + 1}, ${n.solfa}, MIDI ${n.pitchMidi}. Tap to correct.`}
+                            accessibilityLabel={`Note ${i + 1}, ${n.solfa}, ${spokenPitch(n.pitchMidi)}. Tap to correct.`}
                           >
                             <Text style={[styles.syllable, low && styles.syllableLow, now && styles.syllableNow]}>
                               {n.solfa}
