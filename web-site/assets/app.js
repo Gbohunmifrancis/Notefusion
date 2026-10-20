@@ -820,7 +820,7 @@
       history.replaceState(history.state, "", url.pathname + url.search + url.hash);
     } catch (e) { /* the address keeps the old view; nothing depends on it */ }
     ["transcribe", "library", "practice", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
-    // The nav says where you are, to the eye and to a screen reader; Search lights itself, not Transcriptions.
+    // The nav says where you are, to the eye and to a screen reader; Search lights itself, not Library.
     var navOn = focusSearch ? "search" : name;
     // The phone's tab bar has no Search (the Library's own box is it) and no Account (the photo, top right).
     document.querySelectorAll("#top-nav .top-link, #tabbar [data-view]").forEach(function (b) {
