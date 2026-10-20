@@ -32,7 +32,7 @@ interface Props extends Omit<TextInputProps, "style"> {
  * to re-layer the native View tree, which immediately forces onBlur and dismisses the keyboard.
  * Shadows/glows use shadowColor/shadowOpacity (iOS only) while Android gets a clean border outline.
  */
-export function TextField({ label, error, secure, icon, style, ...rest }: Props) {
+export function TextField({ label, error, secure, icon, style, onFocus, onBlur, ...rest }: Props) {
   const [focused, setFocused] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const inputRef = useRef<TextInput>(null);
@@ -59,9 +59,16 @@ export function TextField({ label, error, secure, icon, style, ...rest }: Props)
             placeholderTextColor={colors.textFaint}
             secureTextEntry={secure && !revealed}
             autoCapitalize="none"
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
             {...rest}
+            // The caller's own handlers run as well: passed through `rest`, they replaced these and the focus ring stuck.
+            onFocus={(e) => {
+              setFocused(true);
+              onFocus?.(e);
+            }}
+            onBlur={(e) => {
+              setFocused(false);
+              onBlur?.(e);
+            }}
           />
         </SecretField>
 
