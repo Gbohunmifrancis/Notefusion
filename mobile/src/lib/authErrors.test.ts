@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { contactUsUrl, emailFieldError, googleFailure, missesAfter, offersReset } from "./authErrors.ts";
+import { codeFailure, contactUsUrl, emailFieldError, googleFailure, missesAfter, offersReset } from "./authErrors.ts";
 
 test("a refused address goes on the Email field; other failures stay above Continue", () => {
   const disposable = "Please use a permanent email address. Temporary inboxes can't receive your NoteFusion sheets.";
@@ -35,6 +35,16 @@ test("Google failing on the phone offers the email way in; the API's refusals ke
     "Google has not verified this email address.",
   );
   assert.equal(googleFailure({ code: "NETWORK_OFFLINE", message: "Could not reach the server." }, "x"), "Could not reach the server.");
+});
+
+test("a refused code asks for the digits first, and a new code only once Resend is open", () => {
+  const refused = { code: "AUTH_INVALID_VERIFICATION_CODE", message: "That code is incorrect or has expired. Request a new one to try again." };
+  assert.equal(codeFailure(refused, false), "That code didn't work. Check it against the newest email and type it again.");
+  assert.equal(
+    codeFailure(refused, true),
+    "That code didn't work. Check it against the newest email, or tap Resend code for a new one.",
+  );
+  assert.equal(codeFailure({ code: "NETWORK_OFFLINE", message: "Could not reach the server." }, true), "Could not reach the server.");
 });
 
 test("a deactivated account's note is the one that offers to write to us", () => {

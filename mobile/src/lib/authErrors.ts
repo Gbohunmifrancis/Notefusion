@@ -27,6 +27,18 @@ export function googleFailure(err: Pick<ApiError, "code" | "message">, alternati
   return err.code === "UNKNOWN" ? `Google sign-in didn't work on this phone. Try again, or ${alternative}.` : err.message;
 }
 
+/**
+ * What a refused code says. The server has one answer for a code that is wrong, expired, used or out of tries, and it
+ * ends "Request a new one" even while Resend is still counting down; the digits are checked first, and a new code is
+ * offered only once one can be sent (`canResend`).
+ */
+export function codeFailure(err: Pick<ApiError, "code" | "message">, canResend: boolean): string {
+  if (err.code !== "AUTH_INVALID_VERIFICATION_CODE") return err.message;
+  return canResend
+    ? "That code didn't work. Check it against the newest email, or tap Resend code for a new one."
+    : "That code didn't work. Check it against the newest email and type it again.";
+}
+
 /** Where someone can write to us (the address the website, receipts and the code screen give). */
 const HELP_EMAIL = "hello@notefusion.studio";
 

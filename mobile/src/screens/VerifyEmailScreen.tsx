@@ -7,6 +7,7 @@ import { BackButton, ErrorNote, Glow, NightScreen, nightText, pressedLink } from
 import { useAuth } from "../lib/auth";
 import { authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import { codeFailure } from "../lib/authErrors";
 import { pendingVerifyStore } from "../lib/pendingVerifyStore";
 import { night, nightFonts } from "../design/theme";
 import type { AuthStackParams } from "../navigation/types";
@@ -78,7 +79,8 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
       // is nothing to navigate to from here.
       await verifyEmail(email, entered);
     } catch (e) {
-      setError(toApiError(e).message);
+      // While Resend still counts down, a new code cannot be asked for yet: the digits are checked first.
+      setError(codeFailure(toApiError(e), !counting));
       // Clear rather than leave the rejected digits sitting there: it makes the next
       // attempt a fresh typing action, and stops the effect above resubmitting them.
       setCode("");
