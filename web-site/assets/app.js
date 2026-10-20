@@ -606,6 +606,13 @@
   var AUTH_FIELDS = ["login-email", "login-password", "reg-name", "reg-email", "reg-password", "verify-code"];
   function clearFieldErrors() { AUTH_FIELDS.forEach(clearFieldError); }
   AUTH_FIELDS.forEach(function (f) { $(f).addEventListener("input", function () { clearFieldError(f); }); });
+  // A mistyped address is said as soon as the field is left, not after the whole form is sent; an empty one waits.
+  ["login-email", "reg-email"].forEach(function (f) {
+    $(f).addEventListener("blur", function () {
+      var value = $(f).value.trim(), bad = value && emailProblem(value);
+      if (bad) fieldError(f, bad);
+    });
+  });
   /** Wrong passwords in a row for the address typed: from the second, the line under the field offers the reset. */
   var loginMisses = 0;
   $("login-email").addEventListener("input", function () { loginMisses = 0; });
