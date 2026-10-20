@@ -47,6 +47,7 @@ import { tierOf } from "../lib/planTier";
 import { siteUrls } from "../lib/env";
 import {
   bestValuePlan,
+  dayLabel,
   formatPrice,
   nairaNote,
   paidUntilLine,
@@ -984,13 +985,8 @@ function ActiveState({
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelReason, setCancelReason] = useState<string | null>(null);
 
-  const renews = subscription.currentPeriodEndUtc
-    ? new Date(subscription.currentPeriodEndUtc).toLocaleDateString("en", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-    : null;
+  // "20 Oct 2027", as the pay bar says a date (built by hand: Hermes on Android can ignore toLocaleDateString's options).
+  const renews = subscription.currentPeriodEndUtc ? dayLabel(new Date(subscription.currentPeriodEndUtc)) : null;
   const canceled = subscription.status === "canceled";
   const lifetime = subscription.isLifetime;
   const isGift = subscription.isGift ?? false;

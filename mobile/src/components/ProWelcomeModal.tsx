@@ -6,6 +6,7 @@ import { Sheet, SheetActions, SheetMessage, SheetTitle } from "./Sheet";
 import { fonts, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { PRO_FEATURES } from "../lib/proFeatures";
+import { dayLabel } from "../lib/price";
 import type { Subscription } from "../api/types";
 
 export interface ProWelcome {
@@ -16,15 +17,11 @@ export interface ProWelcome {
   kind?: "pro" | "song";
 }
 
-/** "Pro until Nov 3, 2026", or "Pro for life": a lifetime end date is a far-future sentinel. */
+/** "Pro until 3 Nov 2026" (as the paywall says dates), or "Pro for life": a lifetime end date is a far-future sentinel. */
 function untilLine(sub: Subscription): string | null {
   if (sub.isLifetime) return "Pro for life";
   if (!sub.currentPeriodEndUtc) return null;
-  const date = new Date(sub.currentPeriodEndUtc).toLocaleDateString("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  const date = dayLabel(new Date(sub.currentPeriodEndUtc));
   // Google Play renews it by itself (board h-play 02): the date is the next charge, not an end.
   return sub.autoRenews ? `renews ${date}` : `Pro until ${date}`;
 }

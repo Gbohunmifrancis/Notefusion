@@ -121,10 +121,13 @@ export function playFinePrint(plan: Plan): string {
   return `Paid through Google Play. Renews every ${period} until you cancel in Google Play; cancel any time before the next charge.`;
 }
 
-/** The paywall's button (board h-play 01): what happens, and Google Play's price. */
+/**
+ * The paywall's button (board h-play 01): what happens, and Google Play's price, per period as the plan rows above it
+ * write it (`price.periodLabel`: "/ month").
+ */
 export function playButtonLabel(plan: Plan, price: string, director: boolean): string {
   if (plan.interval === "single") return `Buy this song · ${price}`;
-  const per = plan.interval === "yearly" ? "/year" : "/month";
+  const per = plan.interval === "yearly" ? " / year" : " / month";
   if (plan.choirSeats) return `${director ? "Add choir time" : "Start your choir"} · ${price}${per}`;
   return `Subscribe · ${price}${per}`;
 }
