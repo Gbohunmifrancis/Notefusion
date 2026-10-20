@@ -685,6 +685,9 @@ body.has-free-harmony .act[data-tool="harmony"] { border-color: var(--line); }
 .switch::before { content: ""; position: absolute; inset: -10px -2px; }
 .pr-seg button { min-height: 44px; }
 .studio-opt select, .player select, .player input[type=number] { min-height: 44px; font-size: 16px; }
+/* Text buttons keep their look and take a 44 px target from an invisible layer, as .field-error's link does. */
+#auth-back { position: relative; }
+#auth-back::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
 /* "Beats in a bar" keeps to one line; the select gives way instead. */
 .studio-meter .studio-opt { max-width: 100%; white-space: nowrap; }
 .studio-meter .studio-opt select { flex: 0 1 auto; min-width: 0; }
