@@ -1892,8 +1892,9 @@
     }).observe(panel, { attributes: true, attributeFilter: ["class"] });
     panel.addEventListener("keydown", function (e) {
       if (e.key !== "Tab") return;
+      // Out of the Tab order (tabindex -1: the plans not chosen, reached with the arrows) is out of this list too.
       var items = Array.prototype.filter.call(panel.querySelectorAll("button, a[href], input, select, textarea, [tabindex]:not([tabindex='-1'])"),
-        function (x) { return !x.disabled && x.offsetParent !== null; });
+        function (x) { return !x.disabled && x.offsetParent !== null && x.tabIndex >= 0; });
       if (!items.length) return;
       var at = items.indexOf(document.activeElement), next;
       if (at === -1) {
@@ -4592,13 +4593,25 @@
         opt.appendChild(dot); opt.appendChild(top); opt.appendChild(price); opt.appendChild(note);
         function select() {
           chosen = plan;
-          options.querySelectorAll(".plan-opt").forEach(function (o) { var on = o === opt; o.classList.toggle("on", on); o.setAttribute("aria-checked", String(on)); });
+          options.querySelectorAll(".plan-opt").forEach(function (o) { var on = o === opt; o.classList.toggle("on", on); o.setAttribute("aria-checked", String(on)); o.tabIndex = on ? 0 : -1; });
           renderCta();
         }
         opt.addEventListener("click", select);
         options.appendChild(opt);
         if (plan === chosen) { opt.classList.add("on"); opt.setAttribute("aria-checked", "true"); } else opt.setAttribute("aria-checked", "false");
+        opt.tabIndex = plan === chosen ? 0 : -1;
       }
+      // A radio group as the keyboard expects one: Tab reaches the chosen plan, the arrows move the choice (and Home, End).
+      options.addEventListener("keydown", function (e) {
+        var radios = Array.prototype.slice.call(options.querySelectorAll(".plan-opt")), at = radios.indexOf(document.activeElement);
+        if (at < 0) return;
+        var next = e.key === "ArrowDown" || e.key === "ArrowRight" ? (at + 1) % radios.length
+          : e.key === "ArrowUp" || e.key === "ArrowLeft" ? (at - 1 + radios.length) % radios.length
+          : e.key === "Home" ? 0 : e.key === "End" ? radios.length - 1 : -1;
+        if (next < 0) return;
+        e.preventDefault();
+        radios[next].focus(); radios[next].click();
+      });
       renderOptions();
       renderCta();
       cta.addEventListener("click", function () { checkout(chosen, cta); });
@@ -4806,7 +4819,7 @@
   function payTick() { if (document.visibilityState !== "hidden") checkPayment(); }
   // ── "What stopped you?" (board g-checkout): a checkout that came back unpaid, asked once ──
   var WHY_RULES = "/assets/checkout-exit.js?v=1";
-  var WHY_SHEET = ["/assets/checkout-why.css?v=1", "/assets/checkout-why.js?v=1"];
+  var WHY_SHEET = ["/assets/checkout-why.css?v=1", "/assets/checkout-why.js?v=2"];
   function lsGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
   function lsSet(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* private mode */ } }
   /**
