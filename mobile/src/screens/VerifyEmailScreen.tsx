@@ -302,6 +302,6 @@ const styles = StyleSheet.create({
   countdown: { fontSize: 14, fontFamily: nightFonts.mono, color: night.faint },
   change: { alignSelf: "flex-start", marginTop: 12 },
   changeText: { fontSize: 13.5, fontFamily: nightFonts.medium, color: night.ice },
-  hint: { marginTop: 24, fontSize: 12, lineHeight: 17, fontFamily: nightFonts.regular, color: night.faint },
+  hint: { marginTop: 24, fontSize: 13, lineHeight: 19, fontFamily: nightFonts.regular, color: night.faint },
   hintLink: { color: night.muted, textDecorationLine: "underline" },
 });

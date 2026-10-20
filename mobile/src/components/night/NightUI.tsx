@@ -208,9 +208,10 @@ export const nightText = StyleSheet.create({
     letterSpacing: -1.3,
     color: night.text,
   },
+  /** The screen's sentence: 16 px, as every sentence in the app (board m-ux-medium P3f). */
   lead: {
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 16,
+    lineHeight: 23,
     fontFamily: nightFonts.regular,
     color: night.muted,
   },

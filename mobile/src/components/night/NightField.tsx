@@ -50,7 +50,7 @@ export const NightField = forwardRef<TextInput, Props>(function NightField(
   const labelStyle = {
     transform: [
       { translateY: lift.interpolate({ inputRange: [0, 1], outputRange: [11, 0] }) },
-      { scale: lift.interpolate({ inputRange: [0, 1], outputRange: [15.5 / 11.5, 1] }) },
+      { scale: lift.interpolate({ inputRange: [0, 1], outputRange: [16 / 11.5, 1] }) },
     ],
   };
 
@@ -148,7 +148,8 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
     paddingVertical: 0,
-    fontSize: 15.5,
+    // 16, as every field's typing is (and the resting label grows to match it).
+    fontSize: 16,
     fontFamily: nightFonts.regular,
     color: night.text,
   },
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
   },
   error: {
     flexShrink: 1,
-    fontSize: 12.5,
+    fontSize: 13,
     fontFamily: nightFonts.medium,
     color: night.muted,
   },

@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   meter: { marginTop: 12 },
   bars: { flexDirection: "row", gap: 5 },
   bar: { flex: 1, height: 4, borderRadius: 2, backgroundColor: "rgba(255, 255, 255, 0.12)" },
-  hint: { marginTop: 8, fontSize: 12.5, fontFamily: nightFonts.regular, color: night.muted },
+  hint: { marginTop: 8, fontSize: 13, fontFamily: nightFonts.regular, color: night.muted },
   error: { marginTop: 18 },
   submit: { marginTop: 24 },
   footer: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center", marginTop: 12 },
