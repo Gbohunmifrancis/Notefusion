@@ -4516,11 +4516,13 @@
       var payError = document.createElement("p"); payError.className = "pay-error"; payError.setAttribute("role", "alert"); payError.hidden = true;
       function renderCta() {
         cta.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>';
+        // What the money buys, as one period ("Pay ₦7,500 for 1 month of Pro"): "₦7,500 a month" read as a renewal.
+        var span = isLifetimePlan(chosen) ? "" : "1 " + (isYearly(chosen) ? "year" : "month");
         cta.appendChild(document.createTextNode(isSinglePlan(chosen)
           ? "Buy this song — " + money(chosen)
           : isChoirPlan(chosen)
-            ? (leadsChoir() ? "Add choir time — " : "Start your choir — ") + money(chosen) + " " + per(chosen)
-            : "Continue — " + money(chosen) + " " + per(chosen)));
+            ? (leadsChoir() ? "Add choir time — " : "Start your choir — ") + money(chosen) + " for " + span
+            : "Pay " + money(chosen) + (span ? " for " + span + " of Pro" : " for Pro for life")));
         fine.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>';
         fine.appendChild(document.createTextNode(isSinglePlan(chosen)
           ? "Secure checkout. One payment, one transcription that never expires. No subscription."
