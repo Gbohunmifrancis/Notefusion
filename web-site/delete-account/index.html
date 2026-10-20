@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="/assets/theme-boot.js?v=2" data-default="system"></script>
-<title>Delete Your NoteFusion Account &amp; Data | NoteFusion</title>
+<title>Delete your NoteFusion account and data | NoteFusion</title>
 <meta name="description" content="Request permanent deletion of your NoteFusion account, profile information, and musical transcriptions.">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#2563EB">
@@ -41,17 +41,17 @@
 <main class="site-page-main">
   <section class="site-page-intro site-page-intro--center"><p class="site-page-kicker">Account settings</p><h1>Delete your account &amp; data</h1><p id="lede">Request permanent deletion of your NoteFusion account and associated musical data.</p></section>
   <div class="card">
-    <h2>Data Safety &amp; Deletion Disclosures</h2>
+    <h2>Data safety and deletion disclosures</h2>
     <p>
       At NoteFusion, your privacy and control over your personal data are paramount. Under Google Play Data Safety requirements and global privacy regulations (GDPR / NDPR), you have the right to permanently delete your account and all associated data at any time.
     </p>
 
     <h3>What will be permanently deleted</h3>
     <ul>
-      <li><strong>Account &amp; Profile:</strong> Your full name, registered email address, authentication credentials, and account profile settings.</li>
-      <li><strong>Music Transcriptions:</strong> All saved Tonic Solfa transcriptions, solfa syllables, staff notation scores, audio pitch analyses, and chord sheets.</li>
-      <li><strong>Audio &amp; Voice Recordings:</strong> Any temporarily buffered or saved audio clips recorded through the app.</li>
-      <li><strong>Sessions &amp; Tokens:</strong> All active login tokens, device push notification registrations, and OAuth grant connections.</li>
+      <li><strong>Account and profile:</strong> Your full name, registered email address, authentication credentials, and account profile settings.</li>
+      <li><strong>Music transcriptions:</strong> All saved Tonic Solfa transcriptions, solfa syllables, staff notation scores, audio pitch analyses, and chord sheets.</li>
+      <li><strong>Audio and voice recordings:</strong> Any temporarily buffered or saved audio clips recorded through the app.</li>
+      <li><strong>Sessions and tokens:</strong> All active login tokens, device push notification registrations, and OAuth grant connections.</li>
     </ul>
 
     <h3>Data retention exceptions</h3>
@@ -67,7 +67,7 @@
 
   <!-- Token Confirmation Mode (shown when opened with ?token=...&email=...) -->
   <div id="token-card" class="card" hidden>
-    <h2>Confirm Account Deletion</h2>
+    <h2>Confirm account deletion</h2>
     <div id="token-error" class="notice bad" role="alert" hidden></div>
     <div id="token-done" class="notice good" role="alert" hidden></div>
 
@@ -76,7 +76,7 @@
         <p><strong>Warning:</strong> You are about to permanently delete the NoteFusion account for <strong id="token-email-display"></strong>.</p>
         <p>All your saved Tonic Solfa notes, transcriptions, and audio records will be permanently erased. This cannot be undone.</p>
       </div>
-      <button id="btn-token-confirm" class="btn-danger" type="button">Confirm Permanent Deletion</button>
+      <button id="btn-token-confirm" class="btn-danger" type="button">Confirm permanent deletion</button>
       <p style="text-align: center; margin-top: 14px; font-size: .875rem;">
         <a href="/">Keep my account &mdash; Return to NoteFusion</a>
       </p>
@@ -85,7 +85,7 @@
 
   <!-- Standard Request Form Mode -->
   <div id="form-card" class="card">
-    <h2>Submit Deletion Request</h2>
+    <h2>Submit a deletion request</h2>
     <p>
       You can initiate permanent deletion through this web form, from the web app&rsquo;s account settings, or directly from within the mobile app.
       Any Pro time left ends with the account and is not refunded (see our <a href="/terms">terms</a>), and a Google Play
@@ -97,16 +97,16 @@
     <div id="success-box" class="notice good" role="alert" hidden></div>
 
     <form id="deletion-form" novalidate>
-      <label for="email">Account Email Address *</label>
+      <label for="email">Account email address *</label>
       <input id="email" type="email" autocomplete="email" placeholder="name@example.com" required>
 
-      <label for="password">Account Password (Optional)</label>
+      <label for="password">Account password (optional)</label>
       <input id="password" type="password" autocomplete="current-password" placeholder="Enter password for instant deletion">
       <p class="hint">
         If you leave password blank (or if you signed in with Google), we will email a secure 24-hour confirmation link to your address before deleting any data.
       </p>
 
-      <label for="reason">Reason for leaving (Optional)</label>
+      <label for="reason">Reason for leaving (optional)</label>
       <textarea id="reason" placeholder="Tell us why you are leaving (e.g. no longer needed, missing features)..."></textarea>
 
       <div class="checkbox-group">
@@ -116,13 +116,13 @@
         </label>
       </div>
 
-      <button id="submit-btn" class="btn-danger" type="submit" disabled>Request Account Deletion</button>
+      <button id="submit-btn" class="btn-danger" type="submit" disabled>Request account deletion</button>
     </form>
   </div>
 
   <!-- In-app Instructions Card -->
   <div class="card">
-    <h2>Deleting From Within the Mobile App</h2>
+    <h2>Deleting from within the mobile app</h2>
     <p>
       If you currently have the NoteFusion app installed on your Android device, you can delete your account directly without email verification:
     </p>
@@ -143,10 +143,10 @@
 
 <footer class="wrap">
   <div class="site-footer-links">
-    <a href="/">NoteFusion Home</a> &middot;
-    <a href="/privacy">Privacy Policy</a> &middot;
-    <a href="/terms">Terms of Service</a> &middot;
-    <a href="mailto:support@notefusion.studio">Contact Support</a>
+    <a href="/">NoteFusion home</a> &middot;
+    <a href="/privacy">Privacy policy</a> &middot;
+    <a href="/terms">Terms of service</a> &middot;
+    <a href="mailto:support@notefusion.studio">Contact support</a>
   </div>
   <p>&copy; 2026 NoteFusion. All rights reserved.</p>
 </footer>
@@ -253,11 +253,11 @@
         reason: "Confirmed via web email link"
       }).then(function (res) {
         tokenPrompt.hidden = true;
-        tokenDone.innerHTML = "<p><strong>Account Deleted Successfully</strong></p><p>" + escapeHtml(res.message || "Your NoteFusion account and all associated data have been permanently deleted.") + "</p>";
+        tokenDone.innerHTML = "<p><strong>Account deleted</strong></p><p>" + escapeHtml(res.message || "Your NoteFusion account and all associated data have been permanently deleted.") + "</p>";
         tokenDone.hidden = false;
       }).catch(function (err) {
         btnTokenConfirm.disabled = false;
-        btnTokenConfirm.textContent = "Confirm Permanent Deletion";
+        btnTokenConfirm.textContent = "Confirm permanent deletion";
         showLines(tokenError, problemLines(err, "Failed to confirm account deletion. The link may have expired or is invalid. Please request a new link."));
       });
     });
@@ -307,7 +307,7 @@
       // A password that didn't match keeps the form, with the message, so only the password is typed again.
       if (!data.confirmed && password) {
         submitBtn.disabled = false;
-        submitBtn.textContent = "Request Account Deletion";
+        submitBtn.textContent = "Request account deletion";
         showLines(errorBox, [data.message || "Your account was not deleted. Check your password and try again."]);
         var pw = document.getElementById("password");
         if (pw) { pw.value = ""; pw.focus(); }
@@ -315,18 +315,18 @@
       }
       form.hidden = true;
       if (data.confirmed) {
-        successBox.innerHTML = "<p><strong>Account Successfully Deleted</strong></p><p>" + escapeHtml(data.message) + "</p>";
+        successBox.innerHTML = "<p><strong>Account deleted</strong></p><p>" + escapeHtml(data.message) + "</p>";
         successBox.hidden = false;
       } else {
         // With a password the server answers "not deleted" in the same words whether the account exists
         // or not; without one it has emailed a link if there is an account. The heading follows the request.
-        var heading = password ? "Account Not Deleted" : "Check Your Email";
+        var heading = password ? "Account not deleted" : "Check your email";
         infoBox.innerHTML = "<p><strong>" + heading + "</strong></p><p>" + escapeHtml(data.message) + "</p>";
         infoBox.hidden = false;
       }
     }).catch(function (err) {
       submitBtn.disabled = false;
-      submitBtn.textContent = "Request Account Deletion";
+      submitBtn.textContent = "Request account deletion";
       showLines(errorBox, problemLines(err, "Unable to process deletion request. Please check your details and try again."));
     });
   });
