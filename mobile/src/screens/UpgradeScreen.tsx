@@ -639,7 +639,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
             <Text style={styles.titleLabel}>
               {isActive ? "Account" : "Membership"}
             </Text>
-            <Text style={styles.titleMain}>
+            <Text style={styles.titleMain} accessibilityRole="header">
               {isActive ? "Membership" : "NoteFusion Pro"}
             </Text>
           </View>
@@ -663,7 +663,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
             >
               <BrandMark size={34} color="#FFFFFF" waveColor="rgba(255,255,255,0.7)" />
             </LinearGradient>
-            <Text style={styles.heroTitle}>Unlock everything</Text>
+            <Text style={styles.heroTitle} accessibilityRole="header">Unlock everything</Text>
             {/* What Pro is, no more: hummed tunes are never counted, whole songs are twenty a month (PRO_FEATURES). */}
             <Text style={styles.heroSub}>
               Unlimited hummed tunes, twenty whole songs a month, and every download.
@@ -731,7 +731,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
 
             {/* ── Plan selector ────────────────────────────────────────────── */}
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Choose a plan</Text>
+              <Text style={styles.sectionTitle} accessibilityRole="header">Choose a plan</Text>
             </View>
 
             {singlePlan ? (
@@ -790,7 +790,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
             ) : choirPlans.length > 0 ? (
               <>
                 <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>For choir directors</Text>
+                  <Text style={styles.sectionTitle} accessibilityRole="header">For choir directors</Text>
                 </View>
                 {choirSorted.map((plan) => (
                   <ChoirPlanOption
@@ -1123,7 +1123,7 @@ function ActiveState({
 
       {/* ── 3. Included Pro Privileges ────────────────────────────────── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Included with Pro</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">Included with Pro</Text>
       </View>
 
       <Card style={styles.benefitsCard}>
@@ -1145,7 +1145,7 @@ function ActiveState({
 
       {/* ── 4. Plan & Billing Details ─────────────────────────────────── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Billing details</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">Billing details</Text>
       </View>
 
       <Card style={styles.billingCard}>
@@ -1414,7 +1414,8 @@ function PlanOption({
         radius={radii.lg}
         accessibilityRole="radio"
         accessibilityState={{ selected }}
-        accessibilityLabel={`${title ?? plan.name}, ${priceLabel ?? formatPrice(plan.amountMinor, plan.currency)} ${period}${bestValue ? ", best value" : ""}`}
+        // Everything the card shows, badge and note included: "Pro Yearly, ₦60,000 for a year, best value. ₦5,000 a month · save …".
+        accessibilityLabel={`${title ?? plan.name}, ${priceLabel ?? formatPrice(plan.amountMinor, plan.currency)} ${period}${bestValue ? ", best value" : ""}${note ? `. ${note}` : ""}`}
       >
         <View
           style={[styles.radio, selected && styles.radioSelected]}
