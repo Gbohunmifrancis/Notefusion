@@ -733,7 +733,8 @@ const makeStyles = (c: Palette) =>
     lockup: { flexDirection: "row", alignItems: "center", gap: 7 },
     pageTitle: { fontFamily: fonts.medium, fontSize: 15, color: c.text },
     title: { fontFamily: fonts.semibold, fontSize: 34, lineHeight: 36, letterSpacing: -1.4, color: c.text, marginTop: 28 },
-    lead: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted, marginTop: 10 },
+    // Sentences are 16 px and nothing is under 13 (board m-ux-medium P3f).
+    lead: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 24, color: c.textMuted, marginTop: 10 },
 
     // The focus ring is a padded wrapper rather than a shadow, so it draws the same on Android.
     ring: { borderRadius: 999, padding: 4, marginHorizontal: -4, marginTop: spacing.lg },
@@ -762,8 +763,8 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.medium, fontSize: 12, letterSpacing: 1.7, textTransform: "uppercase",
       color: c.textMuted, marginTop: 30,
     },
-    tip: { fontFamily: fonts.regular, fontSize: 12, lineHeight: 18, color: c.textFaint, textAlign: "center", marginTop: spacing.lg },
-    hint: { fontFamily: fonts.regular, fontSize: 12, lineHeight: 17, color: c.textMuted, marginTop: spacing.sm },
+    tip: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, textAlign: "center", marginTop: spacing.lg },
+    hint: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, marginTop: spacing.sm },
     reading: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.lg, paddingHorizontal: spacing.xs },
     readingText: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
 
@@ -796,7 +797,7 @@ const makeStyles = (c: Palette) =>
     dockActions: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
     dockMain: { flex: 1 },
     entitlement: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: spacing.md },
-    entitlementText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 12.5, lineHeight: 18, color: c.textMuted, textAlign: "center" },
+    entitlementText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, textAlign: "center" },
     submit: { marginTop: spacing.md },
 
     progressCard: { marginTop: spacing.lg },
@@ -819,5 +820,5 @@ const makeStyles = (c: Palette) =>
     barPct: { fontFamily: nightFonts.mono, fontSize: 12, color: c.accent, minWidth: 42, textAlign: "right" },
     progressNote: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, marginTop: spacing.sm },
     progressWarn: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: c.warningText, marginTop: spacing.sm },
-    legal: { fontFamily: fonts.regular, fontSize: 11, lineHeight: 16, color: c.textFaint, textAlign: "center", marginTop: spacing.xl },
+    legal: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: c.textFaint, textAlign: "center", marginTop: spacing.xl },
   });

@@ -1709,10 +1709,11 @@ const makeStyles = (c: Palette) =>
     backgroundColor: c.danger,
   },
 
+  // The one instruction on the screen is a 16 px sentence; labels are 13 and up (board m-ux-medium P3f).
   statusLine: {
     ...typography.body,
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: 16,
+    lineHeight: 23,
     color: c.textMuted,
     textAlign: "center",
     flexShrink: 1,
@@ -1747,7 +1748,7 @@ const makeStyles = (c: Palette) =>
     maxWidth: "100%",
   },
   trialPillText: {
-    fontSize: 11.5,
+    fontSize: 13,
     fontFamily: fonts.semibold,
     color: c.textMuted,
     flexShrink: 1,
@@ -1848,7 +1849,7 @@ const makeStyles = (c: Palette) =>
 
   sideCaption: {
     ...typography.caption,
-    fontSize: 11.5,
+    fontSize: 13,
     letterSpacing: 0,
     color: c.textMuted,
   },
