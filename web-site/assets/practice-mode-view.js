@@ -997,7 +997,7 @@
       mine.t0 = audio.currentTime + 0.05;
       if (opts.ex) scheduleTake(audio, opts.ex, countIn, mine.t0, got[1], m.headphones);
       m.phase = countIn.seconds > 0 ? "leadin" : "live"; render();
-      window.scrollTo({ top: 0, behavior: "smooth" }); // the note in hand, the needle and Stop, on one phone screen
+      window.scrollTo({ top: 0 }); // the note in hand, the needle and Stop, on one phone screen (smooth by the stylesheet, unless less motion is asked for)
       document.body.classList.add("is-recording");
       mine.timer = setInterval(function () { tick(mine); }, NEEDLE_MS);
       mine.stopAt = setTimeout(function () { if (take === mine) finishTake(); }, (opts.seconds + 0.05) * 1000);
@@ -1142,7 +1142,7 @@
           track("practice_mode_marked", "mode=" + ex.mode + ";score=" + grade.score + ";xp=" + ((grade.reward && grade.reward.xpGained) || 0));
           P().rewardEvents(grade.reward).forEach(function (e) { track(e.name, e.detail); });
           render();
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          window.scrollTo({ top: 0 }); // smooth by the stylesheet, unless less motion is asked for
           load(true).then(function () { if (g === gen && m.phase === "idle") render(); });
         }, function (err) {
           if (g !== gen) return;

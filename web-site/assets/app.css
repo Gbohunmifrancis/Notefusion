@@ -541,6 +541,11 @@ table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 /* A view's heading takes focus when the nav opens it (for screen readers); never a Tab stop, so no ring. */
 main h1[tabindex="-1"]:focus { outline: none; }
 @keyframes onb-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: none; } }
+/* Less motion asked for: dialogs appear in place, and the page jumps rather than glides (theme.css scrolls smoothly). */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .onb-card, .modal-card { animation: none; }
+}
 .onb-skip { position: absolute; top: 16px; right: 18px; background: none; border: none; color: var(--muted); font-weight: 600; cursor: pointer; font-size: 0.875rem; }
 .onb-skip:hover { color: var(--ink); }
 .onb-art { width: 140px; height: 140px; margin: 8px auto 20px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #dbeafe, #f4f7fc 72%); display: flex; align-items: center; justify-content: center; color: var(--blue); }

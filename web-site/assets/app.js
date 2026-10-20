@@ -188,6 +188,8 @@
   function $(id) { return document.getElementById(id); }
   function show(el) { el.classList.remove("hidden"); }
   function hide(el) { el.classList.add("hidden"); }
+  /** How the page scrolls to something: smoothly, unless the device asks for less motion (then it jumps). */
+  function glide() { return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"; }
   function alertIn(el, kind, text) {
     el.className = "alert alert-" + kind;
     el.textContent = text;
@@ -440,7 +442,7 @@
   /** "Just trying it out?": the 30-second preview, opened under the form. */
   function openTry() {
     show($("try-free")); hide($("try-open")); $("try-open").setAttribute("aria-expanded", "true");
-    $("try-free").scrollIntoView({ behavior: "smooth", block: "start" });
+    $("try-free").scrollIntoView({ behavior: glide(), block: "start" });
   }
   $("try-open").addEventListener("click", openTry);
   function selectAuthTab(name) { showAuthForm(name); }
@@ -511,7 +513,7 @@
     request("/api/auth/forgot-password", { method: "POST", anonymous: true, body: { email: email } })
       .then(function () {
         alertIn($("auth-alert"), "success", "If that address has an account, a reset link is on its way.");
-        $("auth-alert").scrollIntoView({ block: "nearest", behavior: "smooth" }); // asked from under the password, it may be out of sight
+        $("auth-alert").scrollIntoView({ block: "nearest", behavior: glide() }); // asked from under the password, it may be out of sight
       })
       .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not send the reset email."); })
       .finally(function () { btn.disabled = false; });
@@ -806,7 +808,7 @@
     if (name === "account") renderAccount();
     name === "practice" ? openPracticeView() : leavePracticeView();
     closeDrawer(); closeUserMenu();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: glide() });
   }
   /** A view chosen in the nav or the menu is a step the browser's Back undoes (assets/back.js). */
   function goView(name) {
@@ -865,7 +867,7 @@
   // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
   // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
   // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=9", "/assets/practice-progress.js?v=8", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=2", "/assets/practice-view.js?v=11"];
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=9", "/assets/practice-progress.js?v=8", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=2", "/assets/practice-view.js?v=12"];
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
   function loadAsset(url) {
@@ -1325,7 +1327,7 @@
       $("save-title").value = t.title || "";
       track("Opened choir sheet");
       showResult(result);
-      $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+      $("result").scrollIntoView({ behavior: glide(), block: "start" });
     }).catch(function (err) { if (at === epoch) libAlert("Could not open that sheet: " + (err.message || err)); });
   }
   // To the microphone: what every account can do for free (a song link never is on a free account).
@@ -1349,7 +1351,7 @@
       hide($("progress"));
       $("sheet-parts").innerHTML = "";
       showResult(result);
-      $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+      $("result").scrollIntoView({ behavior: glide(), block: "start" });
     }).catch(function (err) { if (at === epoch) libAlert("Could not open that sheet: " + (err.message || err)); });
   }
 
@@ -1721,7 +1723,7 @@
     track("Plans viewed", "app · extend");
     show($("plans-extend"));
     loadPlans($("upgrade-panel"), $("plans-extend"), { choir: true });
-    $("plans-extend").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    $("plans-extend").scrollIntoView({ behavior: glide(), block: "nearest" });
   });
   $("upgrade-account").addEventListener("click", function () { hide($("upgrade-panel")); setView("account"); });
   /** The pricing page sends a plan id along: once signed in, open its checkout without another click. */
@@ -2342,7 +2344,7 @@
   $("tab-record").addEventListener("click", function () {
     track("Tab: record");
     if (viewNow !== "transcribe") goView("transcribe");
-    if (submitting || follow) { $("progress").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+    if (submitting || follow) { $("progress").scrollIntoView({ behavior: glide(), block: "start" }); return; }
     if (!$("result").classList.contains("hidden")) newTranscription();
     selectSource("record");
     openRecorder();
@@ -2941,7 +2943,7 @@
     engrave(result.musicXml);
     showParts(result);
     syncActions();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: glide() });
   }
 
   /**
@@ -3680,7 +3682,7 @@
     resultReturnView = null; rememberJob(null);
     closeTool(); closeFull();
     hide($("result")); hide($("progress"));
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: glide() });
     track("New transcription");
   }
   $("r-new").addEventListener("click", newTranscription);
@@ -3984,7 +3986,7 @@
     show($("tab-parts")); hide($("harmony"));
     syncActions();
     document.querySelector('.result-tabs [data-view="parts"]').click();
-    $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+    $("result").scrollIntoView({ behavior: glide(), block: "start" });
   }
   /**
    * Four-part harmony, only when asked: the transcription is the one voice we heard, and alto,
