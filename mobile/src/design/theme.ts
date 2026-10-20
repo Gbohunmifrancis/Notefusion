@@ -729,7 +729,10 @@ export const night = {
 
   text: "#F3F6FB",
   muted: "#8B95AA",
+  /** The faintest grey: art and shapes only. As words it is 3.35:1, so tertiary words take `faint`. */
   dim: "#5A6478",
+  /** Tertiary words (legal lines, hints, the resend countdown, "or", placeholders): 5.69:1, as the in-app `textFaint`. */
+  faint: "#8089A0",
 
   blue: "#2F7BFF",
   /** The fill under white words (5.59:1 with white; `blue` is 3.89:1): `blue` stays the glow, ring and stroke. */

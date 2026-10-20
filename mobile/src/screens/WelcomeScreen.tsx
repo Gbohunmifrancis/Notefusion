@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     fontSize: 11.5,
     lineHeight: 17,
     fontFamily: nightFonts.regular,
-    color: night.dim,
+    color: night.faint,
   },
   legalLink: { color: night.muted, textDecorationLine: "underline" },
 });

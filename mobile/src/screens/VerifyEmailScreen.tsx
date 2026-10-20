@@ -282,8 +282,8 @@ const styles = StyleSheet.create({
   note: { marginTop: 16 },
   submit: { marginTop: 28 },
   resendRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 20 },
-  countdown: { fontSize: 14, fontFamily: nightFonts.mono, color: night.dim },
+  countdown: { fontSize: 14, fontFamily: nightFonts.mono, color: night.faint },
   change: { alignSelf: "flex-start", marginTop: 12 },
   changeText: { fontSize: 13.5, fontFamily: nightFonts.medium, color: night.ice },
-  hint: { marginTop: 24, fontSize: 12, lineHeight: 17, fontFamily: nightFonts.regular, color: night.dim },
+  hint: { marginTop: 24, fontSize: 12, lineHeight: 17, fontFamily: nightFonts.regular, color: night.faint },
 });
