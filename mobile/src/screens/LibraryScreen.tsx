@@ -37,6 +37,7 @@ import { resultFromSaved } from "../lib/openSheet";
 import { useOpening } from "../lib/useOpening";
 import { onTakeChange, removeTake, retryTake, useOutbox, useSendProgress } from "../lib/outbox";
 import { isUnopened } from "../lib/savedSheet";
+import { libraryRowLine, parseUtc } from "../lib/sheetMeta";
 import { matchesWords } from "../lib/hymnPack";
 import { useReachability } from "../lib/connectivity";
 import { isNetworkCode } from "../lib/reachability";
@@ -191,8 +192,8 @@ export function LibraryScreen() {
 
   const sortedItems = React.useMemo(() => {
     return [...filteredItems].sort((a, b) => {
-      const tA = new Date(a.createdAtUtc).getTime();
-      const tB = new Date(b.createdAtUtc).getTime();
+      const tA = parseUtc(a.createdAtUtc);
+      const tB = parseUtc(b.createdAtUtc);
       return sortOrder === "newest" ? tB - tA : tA - tB;
     });
   }, [filteredItems, sortOrder]);
@@ -311,9 +312,8 @@ export function LibraryScreen() {
   }
 
   function subtitleFor(item: SavedTranscription) {
-    const date = new Date(item.createdAtUtc).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
     // On "All" the folder says where a sheet lives; inside a folder it would repeat the tab.
-    return [date, folder === null ? item.folder : null, `${Math.round(item.tempoBpm)} bpm`].filter(Boolean).join(" · ");
+    return libraryRowLine(item, folder === null, new Date());
   }
 
   const folderLink = folder ? folderLinks[folder] : undefined;

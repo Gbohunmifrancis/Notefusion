@@ -721,7 +721,7 @@ export function HomeScreen({ navigation }: Props) {
                       </Text>
                     ) : (
                       <Text style={styles.recentMeta} numberOfLines={1}>
-                        {item.key} · {item.tempoBpm} BPM · {item.timeSignature}
+                        {item.key} · {Math.round(item.tempoBpm)} BPM · {item.timeSignature}
                       </Text>
                     )}
                   </View>

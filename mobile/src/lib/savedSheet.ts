@@ -33,9 +33,12 @@ export function isUnopened(sheet: { savedAutomatically?: boolean; openedAtUtc?: 
   return !!sheet.savedAutomatically && !sheet.openedAtUtc;
 }
 
-/** "Saved automatically · 18:42", on the phone's clock. */
+/**
+ * "Saved automatically · 18:42", on the phone's clock. A date with no zone is the API's UTC (`sheetMeta.parseUtc`'s
+ * rule, repeated here so this file keeps no imports), never the phone's local time.
+ */
 export function autoSavedLine(createdAtUtc: string): string {
-  const d = new Date(createdAtUtc);
+  const d = new Date(/(Z|[+-]\d\d:?\d\d)$/i.test(createdAtUtc) ? createdAtUtc : `${createdAtUtc}Z`);
   return `Saved automatically · ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
 
