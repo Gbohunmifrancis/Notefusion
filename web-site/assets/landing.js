@@ -1,5 +1,5 @@
 /* The home page's key example (#solfa): pick a key and doh, and the notes under the solfa, move with it while
- * the solfa stays as it is. The header menu needs no script (a <details>); the theme toggle is site-theme.js. */
+ * the solfa stays as it is. The header menu is a <details> (site-theme.js closes it after use, with the theme toggle). */
 (function () {
   "use strict";
   var NOTES = {
