@@ -1046,6 +1046,16 @@
       show($("lib-folder-bar"));
     } else hide($("lib-folder-bar"));
   }
+  /** A saved sheet's opening notes in solfa ("s, d m d m r d l,"), from the preview every read carries; "" without one. */
+  function openingSolfa(it) { return (it.preview || []).map(function (n) { return (n.solfa || "") + (n.octaveMark || ""); }).join(" "); }
+  /** "18 Oct" this year, "20 Dec 2025" before it: in the reader's own order. */
+  function shortDate(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    var opts = { day: "numeric", month: "short" };
+    if (d.getFullYear() !== new Date().getFullYear()) opts.year = "numeric";
+    return d.toLocaleDateString(undefined, opts);
+  }
   /** Search text as people type it: no accents ("noel" finds "Noël"), no case, punctuation as spaces. */
   function fold(text) {
     return String(text || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -1178,7 +1188,8 @@
         // A level under the page's h1 (the choir's cards sit under its own h2, so they stay h3).
         var h = document.createElement("h2"); h.textContent = it.title || "Untitled"; card.appendChild(h);
         var m = document.createElement("div"); m.className = "meta";
-        m.textContent = [it.key, it.tempoBpm ? it.tempoBpm + " BPM" : "", it.timeSignature, new Date(it.createdAtUtc).toLocaleDateString()].filter(Boolean).join(" · ") + (it.shareToken ? " · shared" : "") + (it.sharedWithChoir ? " · in the choir library" : "");
+        // How the tune opens, in solfa, as the phone's rows show it, then the key and a short date ("18 Oct").
+        m.textContent = [openingSolfa(it), it.key, shortDate(it.createdAtUtc)].filter(Boolean).join(" · ") + (it.shareToken ? " · shared" : "") + (it.sharedWithChoir ? " · in the choir library" : "");
         card.appendChild(m);
         if (it.folder) { var tag = document.createElement("span"); tag.className = "lib-folder-tag"; tag.textContent = it.folder; card.appendChild(tag); }
         var a = document.createElement("div"); a.className = "actions";
@@ -1317,8 +1328,7 @@
         var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
         var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
         var m = document.createElement("div"); m.className = "meta";
-        var opening = (it.preview || []).map(function (n) { return (n.solfa || "") + (n.octaveMark || ""); }).join(" ");
-        m.textContent = [it.mine ? "Shared by you" : "Shared by " + it.sharedBy, it.key, opening].filter(Boolean).join(" · ");
+        m.textContent = [it.mine ? "Shared by you" : "Shared by " + it.sharedBy, it.key, openingSolfa(it)].filter(Boolean).join(" · ");
         card.appendChild(m);
         var a = document.createElement("div"); a.className = "actions";
         var open = document.createElement("button"); open.className = "btn btn-primary btn-sm"; open.type = "button"; open.textContent = "Open";
