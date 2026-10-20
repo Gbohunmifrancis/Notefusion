@@ -1,7 +1,8 @@
 /**
  * StarGrade — a marked take as Playful shows it: one to three stars and a friendly word instead of the number, each
- * note coloured (green spot on, amber close, red try again, grey not heard) without the cents, and the line it earned.
- * The marks are the same as Focused's (`GradeMarks`); only the telling differs.
+ * note told by shape as well as colour (lib/markShape: ✓ spot on, ~ close, struck through try again, dashed not
+ * heard) without the cents, and the line it earned. The marks are the same as Focused's (`GradeMarks`); only the
+ * telling differs.
  */
 
 import React from "react";
@@ -11,6 +12,7 @@ import type { GradeResult, NoteEvent } from "../../api/types";
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import { playfulRewardLine, starHint, starsArt, starsFor, starWord } from "../../lib/practiceTrack";
+import { PLAYFUL_MARK_LEGEND, markGlyph, markLabel } from "../../lib/markShape";
 import { Art } from "./Art";
 
 export function StarGrade({ grade, notes }: { grade: GradeResult; notes: readonly NoteEvent[] }) {
@@ -39,14 +41,25 @@ export function StarGrade({ grade, notes }: { grade: GradeResult; notes: readonl
         {grade.notes.map((g) => {
           const n = notes[g.index];
           if (!n) return null;
+          const glyph = markGlyph(g.status);
           return (
-            <View key={g.index} style={[styles.mark, { borderColor: statusColor(g.status) }]}>
-              <Text style={[styles.markSolfa, { color: statusText(g.status) }]}>{n.solfa}{n.octaveMark}</Text>
+            <View
+              key={g.index}
+              style={[styles.mark, { borderColor: statusColor(g.status) }, g.status === "missed" && styles.markMissed]}
+              accessible
+              accessibilityLabel={markLabel(`${n.solfa}${n.octaveMark}`, g.status, g.cents, true)}
+            >
+              <View style={styles.markRow}>
+                <Text style={[styles.markSolfa, { color: statusText(g.status) }, g.status === "wrong" && styles.markOff]}>
+                  {n.solfa}{n.octaveMark}
+                </Text>
+                {glyph ? <Text style={[styles.markGlyph, { color: statusText(g.status) }]}>{glyph}</Text> : null}
+              </View>
             </View>
           );
         })}
       </View>
-      <Text style={styles.legend}>Green spot on · amber close · red try again · grey not heard</Text>
+      <Text style={styles.legend}>{PLAYFUL_MARK_LEGEND}</Text>
       {earned ? <Text style={styles.earned}>{earned}</Text> : null}
     </View>
   );
@@ -67,8 +80,12 @@ const makeStyles = (c: Palette) =>
     word: { ...typography.title, color: c.text, fontSize: 26, textAlign: "center" },
     hint: { ...typography.body, color: c.textMuted, textAlign: "center", lineHeight: 20 },
     marks: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 6, marginTop: spacing.xs },
-    mark: { minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center", borderRadius: 22, borderWidth: 2, backgroundColor: c.surface },
+    mark: { minWidth: 44, minHeight: 44, paddingHorizontal: 8, alignItems: "center", justifyContent: "center", borderRadius: 22, borderWidth: 2, backgroundColor: c.surface },
+    markMissed: { borderStyle: "dashed" },
+    markRow: { flexDirection: "row", alignItems: "baseline", gap: 2 },
     markSolfa: { ...typography.mono, fontSize: 17 },
-    legend: { ...typography.caption, color: c.textFaint, textAlign: "center", lineHeight: 16 },
+    markOff: { textDecorationLine: "line-through" },
+    markGlyph: { fontFamily: fonts.bold, fontSize: 11 },
+    legend: { ...typography.caption, color: c.textFaint, textAlign: "center", fontSize: 13, lineHeight: 18 },
     earned: { ...typography.label, color: c.play, fontFamily: fonts.bold, textAlign: "center", fontSize: 15 },
   });
