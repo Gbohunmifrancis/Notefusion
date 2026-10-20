@@ -1586,7 +1586,12 @@
       .catch(function () { founderNotes = before; showToast("That didn't save. Check your connection and try again."); })
       .finally(renderFounder);
   });
-  $("acct-upgrade").addEventListener("click", function () { if (playBilled()) openPlayManage(); else openUpgrade(); });
+  $("acct-upgrade").addEventListener("click", function () {
+    if (playBilled()) { openPlayManage(); return; }
+    openUpgrade();
+    // "Add another month" goes straight to the month: the plans open under the membership with Monthly chosen.
+    if (isPro() && !(sub && (sub.isLifetime || sub.isGift))) openExtend(true);
+  });
   // The deletion page fills in the signed-in address (handed over in this tab only, never in the URL).
   $("acct-delete").addEventListener("click", function () {
     try { if (me && me.email) sessionStorage.setItem("nf.deleteEmail", me.email); } catch (e) { /* typed there instead */ }
@@ -1844,13 +1849,17 @@
     sub && sub.isLifetime ? hide($("upgrade-extend")) : show($("upgrade-extend"));
     hide($("plans-extend"));
   }
-  $("upgrade-extend").addEventListener("click", function () {
-    if (playBilled()) { openPlayManage(); return; }
+  /** A member's plans for more time, under the membership; `monthly` starts on the monthly plan (Account's "Add another month"). */
+  function openExtend(monthly) {
     track("Opened plans to extend");
     track("Plans viewed", "app · extend");
     show($("plans-extend"));
-    loadPlans($("upgrade-panel"), $("plans-extend"), { choir: true });
+    loadPlans($("upgrade-panel"), $("plans-extend"), { choir: true, monthly: !!monthly });
     $("plans-extend").scrollIntoView({ behavior: glide(), block: "nearest" });
+  }
+  $("upgrade-extend").addEventListener("click", function () {
+    if (playBilled()) { openPlayManage(); return; }
+    openExtend(false);
   });
   $("upgrade-account").addEventListener("click", function () { hide($("upgrade-panel")); setView("account"); });
   /** The pricing page sends a plan id along: once signed in, open its checkout without another click. */
@@ -4507,6 +4516,8 @@
       // A director renewing their choir starts on the choir plans; anyone else on what they would buy for themselves.
       var showingChoir = !!choirPlans.length && (opts.choirFirst || leadsChoir() || !ordered.length);
       if (showingChoir) chosen = choirPlans[0];
+      // "Add another month" (Account) starts on the month it says, a director's choir plans aside.
+      if (opts.monthly && monthly) { chosen = ownChoice = monthly; showingChoir = false; }
       // A plan picked on the pricing page is the one chosen here too, while its checkout opens and if it cannot.
       var wanted = opts.want ? ordered.concat(choirPlans).filter(function (x) { return String(x.id) === String(opts.want) || x.code === opts.want; })[0] : null;
       if (wanted) { chosen = wanted; showingChoir = isChoirPlan(wanted); if (!showingChoir) ownChoice = wanted; }
