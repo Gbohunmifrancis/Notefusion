@@ -10,6 +10,7 @@ import {
   type TextInputProps,
 } from "react-native";
 import { Icon } from "../Icon";
+import { pressedLink } from "./NightUI";
 import { night, nightFonts } from "../../design/theme";
 import { SecretField, fillRow } from "../../lib/replayPrivacy";
 
@@ -93,7 +94,8 @@ export const NightField = forwardRef<TextInput, Props>(function NightField(
               hitSlop={14}
               accessibilityRole="button"
               accessibilityLabel={shown ? "Hide password" : "Show password"}
-              style={styles.eye}
+              // The links' instant dim, so a tap on the eye is seen to land.
+              style={({ pressed }) => [styles.eye, pressed && pressedLink]}
             >
               <Icon name={shown ? "eye-off" : "eye"} size={20} color={night.muted} />
             </Pressable>
