@@ -1,4 +1,4 @@
-import type { BillingInterval, Plan } from "../api/types";
+import type { BillingInterval, Plan, Subscription } from "../api/types";
 
 /**
  * Prices as the app writes them, and the free-week limit's offer (board b-system/7b). Pure, so
@@ -82,6 +82,78 @@ export function webFinePrint(plan: Pick<Plan, "interval" | "choirSeats">): strin
   const period = plan.interval === "yearly" ? "year" : "month";
   const what = plan.choirSeats ? `One ${period} of Pro for your choir` : `One ${period} of Pro`;
   return `${what}. It doesn't renew by itself: pay again whenever you want more time. ${open}`;
+}
+
+/**
+ * What the year costs a month and saves in money against twelve months of the monthly plan in its currency (board
+ * m-ux-medium P4b): "₦5,000 a month · save ₦30,000", never a percentage. Null for any other plan, with no monthly plan
+ * of its kind in the same currency, or when the year saves nothing.
+ */
+export function yearNote(
+  plan: Pick<Plan, "interval" | "currency" | "amountMinor" | "choirSeats">,
+  plans: readonly Pick<Plan, "interval" | "currency" | "amountMinor" | "choirSeats">[],
+): string | null {
+  if (plan.interval !== "yearly") return null;
+  const monthly = plans.find(
+    (p) => p.interval === "monthly" && p.currency === plan.currency && Boolean(p.choirSeats) === Boolean(plan.choirSeats),
+  );
+  if (!monthly) return null;
+  const saves = monthly.amountMinor * 12 - plan.amountMinor;
+  if (saves <= 0) return null;
+  // To the cent, but to the whole naira: kobo on a month's share are noise, as `formatPrice` says.
+  const unit = plan.currency === "NGN" ? 100 : 1;
+  const perMonth = Math.round(plan.amountMinor / 12 / unit) * unit;
+  return `${formatPrice(perMonth, plan.currency)} a month · save ${formatPrice(saves, plan.currency)}`;
+}
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** "20 Oct 2027": a day as the pay bar says it, on the phone's own calendar (by hand, as `formatPrice` is). */
+export function dayLabel(d: Date): string {
+  return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+/**
+ * One period on from `from`, as the server counts it (`BillingPeriod.Advance`: .NET's AddMonths and AddYears on the
+ * UTC instant), so a day past the end of the shorter month is held to its last day: 31 Jan and a month is 28 Feb.
+ */
+export function advancePeriod(from: Date, interval: "monthly" | "yearly"): Date {
+  const to = new Date(from.getTime());
+  to.setUTCDate(1);
+  to.setUTCMonth(to.getUTCMonth() + (interval === "yearly" ? 12 : 1));
+  const lastDay = new Date(Date.UTC(to.getUTCFullYear(), to.getUTCMonth() + 1, 0)).getUTCDate();
+  to.setUTCDate(Math.min(from.getUTCDate(), lastDay));
+  return to;
+}
+
+/**
+ * The pay bar's line on the website's checkout (board m-ux-medium P4b): how long the chosen plan lasts — "Pro until
+ * 20 Oct 2027" — never "billed", since nothing bought there renews. Time added by a member starts the day theirs
+ * ends, as the server stacks it: their own Pro for a Pro plan, their choir's for a director's choir plan.
+ */
+export function paidUntilLine(
+  plan: Pick<Plan, "interval" | "choirSeats">,
+  sub: Pick<
+    Subscription,
+    "isActive" | "isLifetime" | "currentPeriodEndUtc" | "planCode" | "choirRole" | "choirPeriodEndUtc"
+  > | null,
+  now: Date,
+): string {
+  if (plan.interval === "single") return "Never expires";
+  if (plan.interval === "lifetime") return "Pro for good";
+  const choir = Boolean(plan.choirSeats);
+  // Pro only through a choir is the choir's period, not time of one's own to add to.
+  const viaChoir = Boolean(sub?.choirRole) && (sub?.planCode ?? "").startsWith("choir_");
+  const current = choir
+    ? sub?.choirRole === "director"
+      ? sub.choirPeriodEndUtc
+      : null
+    : sub?.isActive && !sub.isLifetime && !viaChoir
+      ? sub.currentPeriodEndUtc
+      : null;
+  const ends = current ? new Date(current) : null;
+  const from = ends && ends.getTime() > now.getTime() ? ends : now;
+  return `${choir ? "Choir" : "Pro"} until ${dayLabel(advancePeriod(from, plan.interval))}`;
 }
 
 export interface LimitOffer {

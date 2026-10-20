@@ -43,7 +43,16 @@ import { PRO_FEATURES } from "../lib/proFeatures";
 import type { AuthUser, CheckoutExit, MyProfile, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 import { tierOf } from "../lib/planTier";
-import { bestValuePlan, formatPrice, nairaNote, periodLabel, plansInOrder, webFinePrint } from "../lib/price";
+import {
+  bestValuePlan,
+  formatPrice,
+  nairaNote,
+  paidUntilLine,
+  periodLabel,
+  plansInOrder,
+  webFinePrint,
+  yearNote,
+} from "../lib/price";
 import {
   parseAsked,
   rememberAsked,
@@ -140,18 +149,6 @@ function withSingle(pro: Plan[], single: Plan[]): Plan[] {
   // An API from before the split still lists it in the main list.
   const songs = single.length > 0 ? single : pro;
   return [...pro.filter((p) => p.interval !== "single"), ...songs.filter((p) => p.interval === "single")];
-}
-
-/** Percentage a yearly plan saves over paying monthly for a year, or null. */
-function savingsPercent(monthly?: Plan, yearly?: Plan): number | null {
-  if (!monthly || !yearly) return null;
-  // Dividing one currency by another gives a number with no meaning. The list can hold both when the
-  // server does not know where the account is and offers every tier.
-  if (monthly.currency !== yearly.currency) return null;
-  const fullYear = monthly.amountMinor * 12;
-  if (fullYear <= 0) return null;
-  const pct = Math.round((1 - yearly.amountMinor / fullYear) * 100);
-  return pct > 0 ? pct : null;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -519,13 +516,10 @@ export function UpgradeScreen({ navigation, route }: Props) {
     }
   }
 
-  const monthly = plans.find((p) => p.interval === "monthly");
-  const yearly = plans.find((p) => p.interval === "yearly");
-  const saving = savingsPercent(monthly, yearly);
   // One badge on the paywall (board m-ux-medium P4a): "Best value" on the plan it opens on, Pro's year, when the year
   // does save on paying by the month.
-  const bestValue = saving ? bestValuePlan(plans) : undefined;
-  const bestValueId = bestValue?.interval === "yearly" ? bestValue.id : undefined;
+  const bestValue = bestValuePlan(plans);
+  const bestValueId = bestValue && yearNote(bestValue, plans) ? bestValue.id : undefined;
   const selected = plans.find((p) => p.id === selectedId) ?? choirPlans.find((p) => p.id === selectedId);
   const buyingChoir = choirPlans.some((p) => p.id === selectedId);
   // A member who chose "Add more Pro time" sees the plans: each payment covers one period, and a
@@ -752,6 +746,8 @@ export function UpgradeScreen({ navigation, route }: Props) {
                 priceLabel={offerFor(plan, playOffers)?.price}
                 selected={plan.id === selectedId}
                 bestValue={plan.id === bestValueId}
+                // The year in money (board m-ux-medium P4b); Google Play's own prices say their own.
+                note={play ? undefined : yearNote(plan, plans) ?? undefined}
                 onSelect={() => setSelectedId(plan.id)}
               />
             ))}
@@ -864,10 +860,15 @@ export function UpgradeScreen({ navigation, route }: Props) {
           {selected && selectedPrice ? (
             <View style={styles.payLine}>
               <Text style={styles.payPlan} numberOfLines={1}>{planTitle(selected)}</Text>
-              <Text style={styles.payPrice}>
-                {selectedPrice}
-                <Text style={styles.planPeriod}> {periodLabel(selected.interval)}</Text>
-              </Text>
+              {/* On the website's checkout, how long it lasts (board m-ux-medium P4b); Google Play's own labels stay. */}
+              {play ? (
+                <Text style={styles.payPrice}>
+                  {selectedPrice}
+                  <Text style={styles.planPeriod}> {periodLabel(selected.interval)}</Text>
+                </Text>
+              ) : (
+                <Text style={styles.payUntil}>{paidUntilLine(selected, membership, new Date())}</Text>
+              )}
             </View>
           ) : null}
           <Button
@@ -1639,6 +1640,11 @@ const makeStyles = (c: Palette, s: Shadows) =>
       ...typography.label,
       color: c.text,
       fontSize: 15,
+    },
+    payUntil: {
+      fontFamily: fonts.semibold,
+      fontSize: 13.5,
+      color: c.text,
     },
     nairaLine: {
       ...typography.caption,
