@@ -22,7 +22,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Animated, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { AccessibilityInfo, ActivityIndicator, Animated, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { Icon } from "../components/Icon";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -76,6 +76,7 @@ import {
   badgeArt,
   celebrationFor,
   flameArt,
+  gradeAnnouncement,
   levelArt,
   mascotArt,
   mascotLine,
@@ -332,6 +333,10 @@ export function PracticeScreen() {
       if (how === "burst") setBurst((b) => b + 1);
       const line = result.milestone?.title ?? (sung.track === "playful" ? playfulRewardLine(result.reward) : moment?.line);
       if (how !== "quiet" && line) showToast(line, rewardArt(result.reward));
+      // Android's live regions already read the toast and the milestone; iOS hears the line here.
+      AccessibilityInfo.announceForAccessibility(
+        gradeAnnouncement(sung.track === "playful", result, Platform.OS === "ios" ? line : null),
+      );
       const [fresh, upcoming] = await Promise.all([
         practiceApi.progress().catch(() => null),
         practiceApi.nextDrill().catch(() => null),

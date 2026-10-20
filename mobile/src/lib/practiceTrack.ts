@@ -92,6 +92,21 @@ export function playfulRewardLine(reward: PracticeReward | null | undefined): st
   return reward.streak > 1 ? `+${reward.xpGained} XP and ${reward.streak} days in a row!` : `+${reward.xpGained} XP. Well sung!`;
 }
 
+/**
+ * What a screen reader hears when a take is marked: the stars and their word (Playful) or the score and verdict, then
+ * the line it earned. The marks themselves are not a live region, and iOS reads no live region at all.
+ */
+export function gradeAnnouncement(
+  playful: boolean,
+  grade: Pick<GradeResult, "score" | "summary">,
+  earned?: string | null,
+): string {
+  const stars = starsFor(grade.score);
+  const head = playful ? `${stars} of 3 stars. ${starWord(stars)}` : `Score ${grade.score}. ${grade.summary}`;
+  if (!earned) return head;
+  return /[.!?]$/.test(head) ? `${head} ${earned}` : `${head}. ${earned}`;
+}
+
 // ── Focused's detail ─────────────────────────────────────────────────────────
 
 /** The take's overall lean, for Focused: "In tune overall" within 5 cents, else "12 cents sharp overall". */

@@ -10,6 +10,7 @@ import {
   seasonConfettiArt,
   buddyLine,
   celebrationFor,
+  gradeAnnouncement,
   flameArt,
   levelArt,
   mascotArt,
@@ -246,4 +247,11 @@ test("a reward's picture: the new level's emblem, else the new badge's sticker, 
   assert.equal(rewardArt(reward({ newBadges: [sticker] })), "badge-ten-drills");
   assert.equal(rewardArt(reward()), null);
   assert.equal(rewardArt(null), null);
+});
+
+test("gradeAnnouncement: stars on Playful, the score on Focused, then the line earned", () => {
+  assert.equal(gradeAnnouncement(true, { score: 85, summary: "Lovely." }), "3 of 3 stars. Super!");
+  assert.equal(gradeAnnouncement(true, { score: 60, summary: "Close." }, "+10 XP. Well sung!"), "2 of 3 stars. Nearly there. +10 XP. Well sung!");
+  assert.equal(gradeAnnouncement(false, { score: 72, summary: "Mostly in tune." }, "Unit 2 done"), "Score 72. Mostly in tune. Unit 2 done");
+  assert.equal(gradeAnnouncement(false, { score: 40, summary: "Keep going" }, null), "Score 40. Keep going");
 });
