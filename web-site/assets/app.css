@@ -252,12 +252,14 @@ body.guest .topbar { display: flex; }
 
 /* ── Forms & buttons ─────────────────────────────────────────────────────── */
 label { display: block; font-size: 0.85rem; font-weight: 600; margin: 0 0 6px; color: var(--copy); }
-input[type=text], input[type=url], input[type=email], input[type=password], textarea, select {
+input[type=text], input[type=search], input[type=url], input[type=email], input[type=password], textarea, select {
   width: 100%; font: inherit; color: var(--ink); padding: 11px 14px; min-height: 46px;
   border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 input::placeholder, textarea::placeholder { color: var(--muted); }
+/* A search box keeps the fields' own shape (Safari would round it); the browser's clear button stays. */
+input[type=search] { -webkit-appearance: none; appearance: none; }
 input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: var(--ring); }
 textarea { resize: vertical; line-height: 1.5; }
 .field { margin-bottom: 14px; }

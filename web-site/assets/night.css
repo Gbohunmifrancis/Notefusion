@@ -152,10 +152,10 @@ h1 { font-weight: 700; letter-spacing: -0.035em; }
 .btn-link { color: var(--blue-dark); }
 
 /* ── Fields ──────────────────────────────────────────────────────────────── */
-input[type=text], input[type=url], input[type=email], input[type=password], textarea, select {
+input[type=text], input[type=search], input[type=url], input[type=email], input[type=password], textarea, select {
   border-radius: 8px; min-height: 48px; background: var(--surface); border-color: var(--input-line);
 }
-:root[data-theme="dark"] :is(input[type=text], input[type=url], input[type=email], input[type=password], textarea, select) {
+:root[data-theme="dark"] :is(input[type=text], input[type=search], input[type=url], input[type=email], input[type=password], textarea, select) {
   background: rgba(255, 255, 255, 0.05); border-color: var(--input-line); color: var(--ink);
 }
 input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: var(--ring); }
