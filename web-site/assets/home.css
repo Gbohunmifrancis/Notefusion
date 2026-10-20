@@ -74,7 +74,7 @@ html { scroll-padding-top: 80px; }
 .sheet-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; padding: 16px 20px; border-bottom: 1px solid var(--page-line); }
 .home .sheet-title { color: var(--page-navy); font-size: 16px; font-weight: 600; }
 .home .sheet-meta { display: flex; gap: 0; color: var(--page-muted); font-size: 14px; font-variant-numeric: tabular-nums; }
-.sheet-meta span:first-child { color: var(--page-blue-dark); font-weight: 600; }
+.sheet-meta span:first-child { color: var(--page-navy); font-weight: 600; }  /* the doh: bold, not link blue (it is not a link) */
 .sheet-meta span + span::before { content: "·"; margin: 0 8px; color: var(--page-line-strong); }
 .sheet-solfa { padding: 16px 20px 8px; }
 .sheet-staff { padding: 16px 20px; border-top: 1px solid var(--page-line); background: #fffdf8; }  /* the staff is engraved on paper in both themes, as on the hymn pages */
@@ -130,7 +130,7 @@ html { scroll-padding-top: 80px; }
 .segmented button { min-width: 44px; min-height: 44px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: var(--page-text-2); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
 .segmented button:hover { color: var(--page-navy); }
 .segmented button[aria-pressed="true"] { background: var(--page-surface); color: var(--page-navy); box-shadow: 0 0 0 1px var(--page-line-strong); }
-.home .rekey-doh { margin-top: 24px; color: var(--page-blue-dark); font-size: 14px; font-weight: 600; }
+.home .rekey-doh { margin-top: 24px; color: var(--page-navy); font-size: 14px; font-weight: 600; }
 .rekey-table { width: 100%; margin-top: 8px; border-collapse: collapse; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 .rekey-table th { width: 72px; padding: 12px 8px 12px 0; color: var(--page-muted); font-family: var(--font-sans); font-size: 13px; font-weight: 500; text-align: left; }
 .rekey-table td { padding: 12px 0; color: var(--page-navy); font-size: 18px; font-weight: 600; text-align: center; }
