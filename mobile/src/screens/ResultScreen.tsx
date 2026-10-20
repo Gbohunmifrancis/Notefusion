@@ -64,7 +64,7 @@ import { logAnalyticsEvent } from "../lib/analytics";
 import { isNetworkCode } from "../lib/reachability";
 import { useOfflineLibrary } from "../lib/offlineLibrary";
 import { takeOpened } from "../lib/outbox";
-import { savedToastBody, takeKind } from "../lib/savedSheet";
+import { savedToastBody, takeKind, worthAListenLine } from "../lib/savedSheet";
 import { askToDelete, deleteSheets, keepSheetOffline, renameSheet, shareSheetLinks } from "../lib/sheetActions";
 import { transposeLocally } from "../lib/localTranspose";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -1604,7 +1604,10 @@ export function ResultScreen({ route, navigation }: Props) {
   // Only on a sheet opened straight from its finished job, once per job: Doh cheers with the headline numbers and
   // offers to practise it — or, when some notes are worth a listen, says so and offers to check them. Leaves after
   // 5 s or on any touch, and takes the player dock's place, so it never covers the solfa.
-  /** Doh's cheer (or note check), or — on a sheet filed as it finished — "Saved to your Library" with Rename. */
+  /**
+   * Doh's cheer (or note check), or — on a sheet filed as it finished — "Saved to your Library" with Rename, or with
+   * Check when it has notes worth a listen.
+   */
   const [celebrate, setCelebrate] = useState<{ doubtful: boolean; saved?: boolean } | null>(null);
   const [celebrating, setCelebrating] = useState(false);
   // Opened from its job (the record screen, a push, the Library): its take in the send queue is finished with.
@@ -1625,7 +1628,8 @@ export function ResultScreen({ route, navigation }: Props) {
         // says the sheet was saved itself, so the toast stands aside for it.
         if (await rating.recordSave()) return;
         if (!live) return;
-        setCelebrate({ doubtful: false, saved: true });
+        // Notes under the check line turn the toast's one action into Check (board m-ux-medium P1f).
+        setCelebrate({ doubtful: result.notes.some((n) => n.conf < 0.5), saved: true });
       } else {
         setCelebrate({ doubtful: result.notes.some((n) => n.conf < 0.5) });
       }
@@ -2584,7 +2588,28 @@ export function ResultScreen({ route, navigation }: Props) {
       />
 
       {/* ── Doh's first-open toast, where the player docks ─────────────────── */}
-      {celebrate?.saved ? (
+      {celebrate?.saved && celebrate.doubtful && lowCount > 0 ? (
+        // Filed as it finished, with notes worth a listen: the good news with its tick, and Check (Rename stays one
+        // tap away on the title's pencil).
+        <DohToast
+          visible={celebrating}
+          icon="done"
+          iconColor={colors.success}
+          title="Saved to your Library"
+          body={worthAListenLine(lowCount)}
+          action="Check"
+          bottom={insets.bottom + 10}
+          onTouched={() => {
+            touchOnToast.current = true;
+          }}
+          onAction={() => {
+            endCelebration();
+            startReview();
+          }}
+          onHide={endCelebration}
+          onGone={() => setCelebrate(null)}
+        />
+      ) : celebrate?.saved ? (
         <DohToast
           visible={celebrating}
           icon="library"

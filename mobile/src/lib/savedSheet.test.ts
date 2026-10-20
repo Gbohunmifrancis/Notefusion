@@ -1,6 +1,21 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { autoSavedLine, choirToast, filedToast, folderNamed, isUnopened, savedToastBody, takeKind } from "./savedSheet.ts";
+import {
+  autoSavedLine,
+  choirToast,
+  filedToast,
+  folderNamed,
+  isUnopened,
+  savedToastBody,
+  takeKind,
+  worthAListenLine,
+} from "./savedSheet.ts";
+
+test("a filed sheet with doubtful notes says how many are worth a listen", () => {
+  assert.equal(worthAListenLine(1), "1 note worth a listen");
+  assert.equal(worthAListenLine(2), "2 notes worth a listen");
+  assert.equal(worthAListenLine(12), "12 notes worth a listen");
+});
 
 test("a move to a folder says where the sheets went, or that they left their folder", () => {
   assert.equal(filedToast(1, "Sunday choir"), "Moved to Sunday choir");
