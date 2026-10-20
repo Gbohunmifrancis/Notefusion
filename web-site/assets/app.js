@@ -594,6 +594,15 @@
     var rest = (input.getAttribute("aria-describedby") || "").split(" ").filter(function (x) { return x && x !== field + "-error"; }).join(" ");
     rest ? input.setAttribute("aria-describedby", rest) : input.removeAttribute("aria-describedby");
   }
+  /**
+   * The button says what it is doing while the request is out ("Signing in…"), then reads as before: on a slow
+   * connection a button that only faded looked like a tap that missed.
+   */
+  function waitLabel(btn, text) {
+    var was = btn.textContent;
+    btn.textContent = text;
+    return function () { btn.textContent = was; };
+  }
   var AUTH_FIELDS = ["login-email", "login-password", "reg-name", "reg-email", "reg-password", "verify-code"];
   function clearFieldErrors() { AUTH_FIELDS.forEach(clearFieldError); }
   AUTH_FIELDS.forEach(function (f) { $(f).addEventListener("input", function () { clearFieldError(f); }); });
@@ -608,6 +617,7 @@
     if (bad) { stopForm(bad, "login-email"); return; }
     if (!$("login-password").value) { stopForm("Enter your password.", "login-password"); return; }
     btn.disabled = true; hide($("auth-alert")); clearFieldErrors();
+    var restore = waitLabel(btn, "Signing in…");
     request("/api/auth/login", { method: "POST", anonymous: true, body: { email: $("login-email").value.trim(), password: $("login-password").value } })
       .then(function (res) {
         saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
@@ -626,7 +636,7 @@
         }
         fieldError("login-password", err.message || "Could not sign in.", reset);
       })
-      .finally(function () { btn.disabled = false; });
+      .finally(function () { btn.disabled = false; restore(); });
   });
   var verifyFrom = "register"; // the form the code step came from, which "Wrong address? Change it" returns to
   function openVerify(email, note, from) {
@@ -662,6 +672,7 @@
     if (badEmail) { stopForm(badEmail, "reg-email"); btn.disabled = false; return; }
     // One password field: the eye shows what was typed, so a second copy only slowed sign-up down.
     if ($("reg-password").value.length < 8) { stopForm("Use at least 8 characters for the password.", "reg-password"); btn.disabled = false; return; }
+    var restore = waitLabel(btn, "Creating your account…");
     request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value, source: "web" } })
       .then(function (res) {
         track("Created account");
@@ -673,7 +684,7 @@
         if (err.code === "AUTH_PASSWORD_WEAK") { fieldError("reg-password", err.message); return; }
         alertIn($("auth-alert"), "danger", err.details ? "Check your name, email and password, then try again." : (err.message || "Could not create the account."));
       })
-      .finally(function () { btn.disabled = false; });
+      .finally(function () { btn.disabled = false; restore(); });
   });
 
   var pendingEmail = "";
@@ -682,6 +693,7 @@
     var btn = e.target.querySelector("button[type=submit]");
     if (!/^\d{6}$/.test($("verify-code").value.replace(/\s+/g, ""))) { stopForm("Enter the 6-digit code from the email.", "verify-code"); return; }
     btn.disabled = true; hide($("auth-alert")); clearFieldErrors();
+    var restore = waitLabel(btn, "Checking the code…");
     request("/api/auth/verify-email", { method: "POST", anonymous: true, body: { email: pendingEmail, code: $("verify-code").value.replace(/\s+/g, "") } })
       .then(function (res) {
         saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
@@ -690,7 +702,7 @@
         return boot();
       })
       .catch(function (err) { fieldError("verify-code", err.message || "That code did not match."); })
-      .finally(function () { btn.disabled = false; });
+      .finally(function () { btn.disabled = false; restore(); });
   });
   $("verify-resend").addEventListener("click", function () {
     if ($("verify-resend").disabled) return;
