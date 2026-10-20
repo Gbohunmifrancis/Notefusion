@@ -1610,10 +1610,13 @@ const makeStyles = (c: Palette, s: Shadows) =>
       color: c.textMuted,
       fontSize: 13,
     },
+    // The plans' notes and the terms under them are read, not glanced at: 13.5 in the muted grey (board m-ux-medium P4c).
     planNote: {
-      ...typography.caption,
+      fontFamily: fonts.regular,
+      fontSize: 13.5,
+      lineHeight: 19,
       color: c.textMuted,
-      marginTop: 2,
+      marginTop: 3,
     },
 
     // ── The pay bar: the canvas under a hairline, pinned to the bottom ────────
@@ -1654,13 +1657,13 @@ const makeStyles = (c: Palette, s: Shadows) =>
       paddingHorizontal: spacing.md,
     },
     finePrint: {
-      ...typography.caption,
-      color: c.textFaint,
+      fontFamily: fonts.regular,
+      fontSize: 13.5,
+      lineHeight: 19,
+      color: c.textMuted,
       textAlign: "center",
-      fontSize: 11,
-      lineHeight: 16,
       marginTop: spacing.md,
-      paddingHorizontal: spacing.lg,
+      paddingHorizontal: spacing.sm,
     },
     restoreRow: {
       alignItems: "center",
