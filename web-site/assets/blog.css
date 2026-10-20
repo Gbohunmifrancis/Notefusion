@@ -430,7 +430,7 @@
 .blog-page .share-links a { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; }
 .blog-page .topics a { padding: 12px 0; }
 .blog-page .player select { min-height: 44px; font-size: 16px; }
-.blog-page .hymn-seasons button { min-height: 44px; }
+.blog-page .hymn-seasons button, .blog-page .hymn-seasons a, .blog-page .hymn-browse a { min-height: 44px; }
 .blog-page .az a { min-width: 44px; min-height: 44px; }
 @media (min-width: 801px) and (hover: hover) and (pointer: fine) {
   .blog-page .toc li { margin: 0 0 5px; }
@@ -439,7 +439,8 @@
   .blog-page .share-links a { display: inline; min-width: 0; min-height: 0; }
   .blog-page .topics a { padding: 4px 0; }
   .blog-page .player select { min-height: 40px; font-size: 14px; }
-  .blog-page .hymn-seasons button { min-height: 36px; }
+  .blog-page .hymn-seasons button, .blog-page .hymn-seasons a { min-height: 36px; }
+  .blog-page .hymn-browse a { min-height: 40px; }
   .blog-page .az a { min-width: 36px; min-height: 36px; }
 }
 @media print {
