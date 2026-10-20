@@ -313,6 +313,12 @@
     <button class="btn btn-ghost btn-icon pay-toast-close" id="pay-toast-close" type="button" aria-label="Hide this note"><svg class="ic"><use href="/assets/icons.svg#i-x"/></svg></button>
   </div>
 
+  <!-- ── A short note at the foot of the screen, with at most one action: "Deleted …" with Undo (board m-ux-medium W3b) ── -->
+  <div class="app-toast hidden" id="app-toast" role="status" aria-live="polite">
+    <span id="app-toast-text"></span>
+    <button class="app-toast-action" id="app-toast-action" type="button" hidden></button>
+  </div>
+
   <!-- ── The payment landed: welcome to Pro ──────────────────────────── -->
   <div class="modal pro-welcome hidden" id="pro-welcome" role="dialog" aria-modal="true" aria-labelledby="pro-welcome-title" aria-describedby="pro-welcome-plan">
     <div class="modal-card pro-welcome-card">

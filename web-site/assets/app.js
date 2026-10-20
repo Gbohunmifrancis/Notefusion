@@ -115,7 +115,8 @@
         var t = tokens();
         if (t && t.accessToken) headers.Authorization = "Bearer " + t.accessToken;
       }
-      return fetch(API + path, { method: opts.method || "GET", headers: headers, body: body })
+      // keepalive: a request that must reach the API even if the page is being left (a deferred delete).
+      return fetch(API + path, { method: opts.method || "GET", headers: headers, body: body, keepalive: !!opts.keepalive })
         .catch(function () { throw new ApiError(0, null); });
     }
     return send().then(function (r) {
@@ -396,7 +397,7 @@
   }
   /** Signed out here or in another tab, or the session ran out: nothing of the account stays on screen. */
   function forgetAccount() {
-    me = null; sub = null; libraryCache = null; libFolder = null; choir = null;
+    me = null; sub = null; libraryCache = null; libFolder = null; choir = null; pendingDelete = null; dropToast();
     stopPaymentWatch(); hide($("top-nav")); showTabbar(false); document.body.classList.remove("is-pro");
     $("recents-list").innerHTML = "";
     hide($("practice-chip")); hide($("practice-slot")); hide($("season-carols")); if (window.NfPracticeView) window.NfPracticeView.reset();
@@ -751,6 +752,7 @@
   $("signout").addEventListener("click", function () {
     if (signingOut) return;
     signingOut = true;
+    flushDelete(); // a sheet deleted a moment ago goes while the session is still here to send it
     var t = tokens();
     var told = t && t.refreshToken
       ? Promise.race([
@@ -962,7 +964,11 @@
 
   /** The saved sheets, fetched once and shared by the library, the account view and the sidebar. */
   function fetchLibrary(force) {
-    var p = libraryCache && !force ? Promise.resolve(libraryCache) : request("/api/library").then(function (items) { libraryCache = items || []; return libraryCache; });
+    var p = libraryCache && !force ? Promise.resolve(libraryCache) : request("/api/library").then(function (items) {
+      // A sheet deleted a moment ago is still on the server until its Undo runs out: it stays out of the list.
+      libraryCache = (items || []).filter(function (x) { return !pendingDelete || x.id !== pendingDelete.it.id; });
+      return libraryCache;
+    });
     return p.then(function (items) { renderRecents(items); return items; });
   }
   function renderRecents(items) {
@@ -1098,7 +1104,7 @@
       renderFolders(items);
       var folders = foldersOf(items);
       items.forEach(function (it) {
-        var card = document.createElement("div"); card.className = "lib-item"; card.dataset.search = fold([it.title || "Untitled", it.folder, it.key].join(" ")); card.dataset.folder = it.folder || "";
+        var card = document.createElement("div"); card.className = "lib-item"; card.dataset.id = it.id; card.dataset.search = fold([it.title || "Untitled", it.folder, it.key].join(" ")); card.dataset.folder = it.folder || "";
         var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
         var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
         var m = document.createElement("div"); m.className = "meta";
@@ -1117,17 +1123,7 @@
         open.addEventListener("click", function () { openSaved(it.id); });
         opensOnTap(card, function () { openSaved(it.id); });
         var del = document.createElement("button"); del.className = "btn btn-ghost btn-sm btn-danger"; del.type = "button"; label(del, "trash", "Delete");
-        del.addEventListener("click", function () {
-          if (!confirm("Delete \u201c" + (it.title || "Untitled") + "\u201d from your library? This cannot be undone." +
-            (isPro() ? " Deleting won't give back a song it used." : " Deleting won't give back the free transcription it used."))) return;
-          del.disabled = true;
-          // Taken out of the list in place: a full reload went back to the skeleton and lost the scroll.
-          request("/api/library/" + it.id, { method: "DELETE" }).then(function () {
-            if (libraryCache) libraryCache = libraryCache.filter(function (x) { return x.id !== it.id; });
-            loadLibrary(false); refreshUsage();
-          })
-            .catch(function (err) { libAlert("Could not delete: " + (err.message || err)); del.disabled = false; });
-        });
+        del.addEventListener("click", function () { deleteSheet(it); });
         a.appendChild(open); a.appendChild(file);
         if (sub && sub.choirName) a.appendChild(choirShareButton(it));
         a.appendChild(del); card.appendChild(a);
@@ -1137,6 +1133,89 @@
     }).catch(function (err) { hide(skel); show(empty); $("lib-empty-text").textContent = "Your library didn't load. " + ((err && err.message) || "Check your connection and try again."); })
       .then(renderChoirLibrary);
   }
+
+  // ── A short note at the foot of the screen, with at most one action (board m-ux-medium W3b) ──
+  // One at a time: a new note ends the one before, and that one's end runs (a deferred delete is sent).
+  var toast = { timer: null, onEnd: null, onAction: null };
+  function showToast(text, opts) {
+    finishToast();
+    opts = opts || {};
+    $("app-toast-text").textContent = text;
+    var btn = $("app-toast-action");
+    btn.hidden = !opts.action;
+    btn.textContent = opts.action || "";
+    toast.onEnd = opts.onEnd || null; toast.onAction = opts.onAction || null;
+    show($("app-toast"));
+    toast.timer = setTimeout(finishToast, opts.ms || 4000);
+  }
+  /** Takes the note away without running its end (the action ran, or the account is gone). */
+  function dropToast() {
+    clearTimeout(toast.timer); toast.timer = null; toast.onEnd = null; toast.onAction = null;
+    var had = $("app-toast").contains(document.activeElement);
+    hide($("app-toast"));
+    return had;
+  }
+  /** Its time is up (or another note takes its place): it goes, and its end runs. */
+  function finishToast() {
+    if (!toast.timer) return;
+    var end = toast.onEnd;
+    // The keyboard's place was the note's button: it lands on the Library's search rather than on nothing.
+    if (dropToast() && viewNow === "library") $("lib-search").focus({ preventScroll: true });
+    if (end) end();
+  }
+  $("app-toast-action").addEventListener("click", function () { var act = toast.onAction; dropToast(); if (act) act(); });
+
+  // ── Delete, then Undo (board m-ux-medium W3b) ──────────────────────────────
+  // The card goes at once and a note says so for 6 s with Undo; the DELETE goes when the note ends, or at once when
+  // the page is hidden or left (fetch keepalive: an Undo that never ran leaves nothing to take back). No browser confirm.
+  var pendingDelete = null; // { it, index, done }
+  function deleteSheet(it) {
+    var list = libraryCache || [], index = list.indexOf(it);
+    var pd = { it: it, index: index < 0 ? list.length : index, done: false };
+    showToast("Deleted “" + (it.title || "Untitled") + "”", {
+      action: "Undo", ms: 6000,
+      onAction: function () { undoDelete(pd); },
+      onEnd: function () { sendDelete(pd); }
+    });
+    pendingDelete = pd;
+    libraryCache = list.filter(function (x) { return x.id !== it.id; });
+    loadLibrary(false);
+    track("Deleted sheet");
+    $("app-toast-action").focus({ preventScroll: true });
+  }
+  function sendDelete(pd) {
+    if (pd.done) return;
+    pd.done = true;
+    if (pendingDelete === pd) pendingDelete = null;
+    request("/api/library/" + pd.it.id, { method: "DELETE", keepalive: true })
+      .then(function () { refreshUsage(); renderChoirLibrary(); })
+      .catch(function (err) { restoreSheet(pd); libAlert("Could not delete: " + (err.message || err)); });
+  }
+  function undoDelete(pd) {
+    if (pd.done) return;
+    pd.done = true;
+    if (pendingDelete === pd) pendingDelete = null;
+    track("Undid delete");
+    restoreSheet(pd).then(function () {
+      // Back where it was, and the keyboard with it.
+      var open = Array.prototype.filter.call(document.querySelectorAll("#lib-list .lib-item"), function (c) { return c.dataset.id === String(pd.it.id); })[0];
+      if (open && open.querySelector(".btn-primary")) open.querySelector(".btn-primary").focus({ preventScroll: true });
+    });
+  }
+  function restoreSheet(pd) {
+    if (!libraryCache) return loadLibrary(true);
+    if (!libraryCache.some(function (x) { return x.id === pd.it.id; })) libraryCache.splice(Math.min(pd.index, libraryCache.length), 0, pd.it);
+    return loadLibrary(false);
+  }
+  /** The page is being hidden or left: a delete still waiting on its Undo goes now. */
+  function flushDelete() {
+    if (!pendingDelete) return;
+    var pd = pendingDelete;
+    if (dropToast() && viewNow === "library") $("lib-search").focus({ preventScroll: true });
+    sendDelete(pd);
+  }
+  window.addEventListener("pagehide", flushDelete);
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") flushDelete(); });
 
   // ── The choir's shared library ──────────────────────────────────────────
   /** "Share with choir" on one of the account's own sheets, or "In choir library" to take it out again. */

@@ -855,6 +855,19 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 @keyframes pay-toast-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @media (max-width: 640px) { .pay-toast { left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); width: auto; } }
 
+/* A short note with at most one action, at the foot of the screen: "Deleted …" with Undo (board m-ux-medium W3b). */
+.app-toast { position: fixed; right: 20px; bottom: 20px; z-index: 45; display: flex; align-items: center; gap: 12px; width: min(380px, calc(100vw - 32px)); min-height: 56px; padding: 6px 6px 6px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 18px 48px rgba(15, 23, 42, 0.16); color: var(--ink); font-size: 0.9375rem; animation: pay-toast-in 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+.app-toast > span { flex: 1; min-width: 0; padding: 8px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-toast-action { flex: none; min-height: 44px; padding: 0 14px; border: 0; border-radius: 8px; background: none; color: var(--blue-dark); font: inherit; font-weight: 600; cursor: pointer; }
+.app-toast-action:hover { background: var(--wash); }
+.app-toast-action:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+:root[data-theme="dark"] .app-toast { background: #151A24; border-color: rgba(255, 255, 255, 0.08); box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6); }
+@media (max-width: 640px) {
+  .app-toast { left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); width: auto; }
+  body.has-tabbar .app-toast { bottom: calc(76px + env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) { .app-toast { animation: none; } }
+
 .pro-welcome { animation: pro-fade 0.25s ease-out; }
 .pro-welcome-card { width: min(440px, 100%); text-align: center; padding-top: 34px; animation: pro-in 0.5s cubic-bezier(0.34, 1.36, 0.64, 1); }
 .pro-welcome-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 160px; border-radius: inherit; background: radial-gradient(120% 100% at 50% 0%, rgba(242, 193, 78, 0.3), transparent 70%); pointer-events: none; }
