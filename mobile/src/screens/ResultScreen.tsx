@@ -280,6 +280,19 @@ export function ResultScreen({ route, navigation }: Props) {
     });
     return true;
   }
+  /** A change that could not be saved, said plainly, with Try again beside OK rather than OK alone. */
+  function failedWithRetry(title: string, e: unknown, retry: () => void) {
+    showDialog({
+      title,
+      message: toApiError(e).message,
+      icon: "problem",
+      tone: "danger",
+      actions: [
+        { label: "OK", style: "cancel" },
+        { label: "Try again", onPress: retry },
+      ],
+    });
+  }
   /** Which saved sheets are kept on the phone ("Keep offline", or keep-all in Settings). */
   const offlineCopies = useOfflineLibrary();
   const [saving, setSaving] = useState(false);
@@ -779,12 +792,7 @@ export function ResultScreen({ route, navigation }: Props) {
         );
       return saved.id;
     } catch (e) {
-      showDialog({
-        title: "Could not save",
-        message: toApiError(e).message,
-        icon: "problem",
-        tone: "danger",
-      });
+      failedWithRetry("Could not save", e, () => void save({ offerRename }));
       return null;
     } finally {
       setSaving(false);
@@ -816,12 +824,7 @@ export function ResultScreen({ route, navigation }: Props) {
         return;
       }
       setKey(previous); // the label would otherwise disagree with the server
-      showDialog({
-        title: "Could not change key",
-        message: toApiError(e).message,
-        icon: "problem",
-        tone: "danger",
-      });
+      failedWithRetry("Could not change key", e, () => void applyKey(next));
     } finally {
       setRekeying(false);
     }
@@ -875,7 +878,7 @@ export function ResultScreen({ route, navigation }: Props) {
               return;
             }
             applySheet(before);
-            showDialog({ title: "Could not change the doh", message: toApiError(e).message, icon: "problem", tone: "danger" });
+            failedWithRetry("Could not change the doh", e, () => chooseDoh(choice));
           } finally {
             setRekeying(false);
           }
@@ -953,7 +956,7 @@ export function ResultScreen({ route, navigation }: Props) {
       setSavedId(saved.id);
       setCommittedTitle(saved.title);
     } catch (e) {
-      showDialog({ title: "Could not save", message: toApiError(e).message, icon: "problem", tone: "danger" });
+      failedWithRetry("Could not save", e, () => void saveHymnbook(sheet, notes));
     }
   }
 
@@ -972,12 +975,7 @@ export function ResultScreen({ route, navigation }: Props) {
       await libraryApi.updateTempo(savedId, nextTempo);
     } catch (e) {
       setTempo(previous);
-      showDialog({
-        title: "Could not change tempo",
-        message: toApiError(e).message,
-        icon: "problem",
-        tone: "danger",
-      });
+      failedWithRetry("Could not change tempo", e, () => void handleTempoChange(nextTempo));
     }
   }
 
@@ -992,12 +990,7 @@ export function ResultScreen({ route, navigation }: Props) {
       await libraryApi.updateTimeSignature(savedId, nextMeter);
     } catch (e) {
       setTimeSignature(previous);
-      showDialog({
-        title: "Could not change meter",
-        message: toApiError(e).message,
-        icon: "problem",
-        tone: "danger",
-      });
+      failedWithRetry("Could not change meter", e, () => void handleMeterChange(nextMeter));
     }
   }
 
@@ -1111,11 +1104,11 @@ export function ResultScreen({ route, navigation }: Props) {
       persisted.current = rollback;
       setDraft(rollback);
       setPreview(synthesizeMelodyWavBase64(rollback.notes, tempo));
-      showDialog({
-        title: "Could not save your corrections",
-        message: toApiError(e).message,
-        icon: "problem",
-        tone: "danger",
+      // Try again puts the corrections back on screen and sends them once more.
+      failedWithRetry("Could not save your corrections", e, () => {
+        setDraft(target);
+        setPreview(synthesizeMelodyWavBase64(target.notes, tempo));
+        void commitNotes(target);
       });
     }
   }
@@ -1200,7 +1193,7 @@ export function ResultScreen({ route, navigation }: Props) {
       // The free one is spent: re-read so the next sheet offers the plans instead.
       if (!isPro) void refreshSubscription(false);
     } catch (e) {
-      showDialog({ title: "Could not write the parts", message: toApiError(e).message, icon: "problem", tone: "danger" });
+      failedWithRetry("Could not write the parts", e, () => void writeParts());
     } finally {
       setHarmonising(false);
     }
@@ -1278,7 +1271,7 @@ export function ResultScreen({ route, navigation }: Props) {
         transposeOffline();
         return;
       }
-      showDialog({ title: "Could not transpose", message: toApiError(e).message, icon: "problem", tone: "danger" });
+      failedWithRetry("Could not transpose", e, () => void applyTranspose());
     } finally {
       setTransposing(false);
     }
@@ -1326,7 +1319,7 @@ export function ResultScreen({ route, navigation }: Props) {
       await libraryApi.updateLyrics(savedId, next);
     } catch (e) {
       committedLyrics.current = previous;
-      showDialog({ title: "Could not save the lyrics", message: toApiError(e).message, icon: "problem", tone: "danger" });
+      failedWithRetry("Could not save the lyrics", e, () => void commitLyrics());
     }
   }
 
@@ -1356,7 +1349,7 @@ export function ResultScreen({ route, navigation }: Props) {
       setShareToken(null);
       showToast(SHARING_STOPPED);
     } catch (e) {
-      showDialog({ title: "Could not stop sharing", message: toApiError(e).message, icon: "problem", tone: "danger" });
+      failedWithRetry("Could not stop sharing", e, () => void stopSharing());
     } finally {
       setSharing(false);
     }
