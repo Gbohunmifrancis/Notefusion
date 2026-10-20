@@ -332,6 +332,8 @@
 .blog-page .hymn-seasons { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
 .blog-page .hymn-seasons button { min-height: 36px; padding: 0 12px; border: 1px solid var(--rule-strong); border-radius: 8px; background: transparent; color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
 .blog-page .hymn-seasons button:hover { border-color: var(--accent); color: var(--accent); }
+/* Hymns or Tunes pressed reads as chosen, as the current page's link does below. */
+.blog-page .hymn-seasons button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
 /* The seasons and occasions as links (each a page, /hymns/occasions/<slug>), and the ways into the hymnal. */
 .blog-page .hymn-seasons a, .blog-page .hymn-browse a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px; border: 1px solid var(--rule-strong); border-radius: 8px; color: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 600; text-decoration: none; }
 .blog-page .hymn-seasons a:hover, .blog-page .hymn-browse a:hover { border-color: var(--accent); color: var(--accent); }
