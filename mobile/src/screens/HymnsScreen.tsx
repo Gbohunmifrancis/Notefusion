@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, BackHandler, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { BackHandler, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Icon } from "../components/Icon";
 import { useFocusEffect, useNavigation, useRoute, useScrollToTop, type RouteProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -8,6 +8,7 @@ import { Button } from "../components/Button";
 import { Sheet, SheetActions, SheetTitle } from "../components/Sheet";
 import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
+import { Skeleton } from "../components/Skeleton";
 import { TabHeader } from "../components/TabHeader";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
@@ -224,7 +225,19 @@ export function HymnsScreen() {
     return (
       <Screen>
         {header}
-        <ActivityIndicator color={colors.accent} style={{ marginTop: spacing.xxl }} />
+        {/* The pack is read from the phone: the list's shape holds its place meanwhile, as the Library's rows do. */}
+        <View accessible accessibilityLabel="Loading the hymns">
+          <Skeleton height={44} radius={22} style={styles.searchSkeleton} />
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <View key={i} style={styles.row}>
+              <View style={styles.rowText}>
+                <Skeleton width="62%" height={14} radius={radii.sm} />
+                <Skeleton width="44%" height={11} radius={radii.sm} style={styles.skeletonGap} />
+              </View>
+              <Skeleton width={42} height={12} radius={radii.sm} />
+            </View>
+          ))}
+        </View>
       </Screen>
     );
   }
@@ -488,6 +501,8 @@ const makeStyles = (c: Palette) =>
       marginBottom: spacing.md,
     },
     searchInput: { flex: 1, fontFamily: fonts.regular, fontSize: 15, color: c.text, height: "100%", paddingVertical: 0 },
+    searchSkeleton: { marginBottom: spacing.md },
+    skeletonGap: { marginTop: 7 },
 
     // The season's shelf (boards d-christmas/02, j-halloween/02): a pine or pumpkin tile, cards that open with their solfa.
     shelf: { marginBottom: spacing.xs },
