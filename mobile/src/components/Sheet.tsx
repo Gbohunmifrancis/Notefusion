@@ -17,6 +17,7 @@ import { useReducedMotion } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { fonts, type Palette } from "../design/theme";
 import { useThemedStyles } from "../lib/theme";
+import { MaskIfPrivate } from "../lib/replayPrivacy";
 
 /** Scrim in, sheet in, both out (board 7a, item 6). No spring. */
 const SCRIM_IN_MS = 150;
@@ -180,24 +181,26 @@ export function Sheet({
 
   return (
     <Modal visible transparent animationType="none" statusBarTranslucent onRequestClose={close}>
-      <View style={styles.root}>
-        <Animated.View style={[StyleSheet.absoluteFill, styles.scrim, { opacity: scrim }]}>
-          <Pressable
-            style={StyleSheet.absoluteFill}
-            onPress={close}
-            accessible={dismissable}
-            accessibilityRole="button"
-            accessibilityLabel="Close"
-          />
-        </Animated.View>
-        {avoidKeyboard ? (
-          <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} pointerEvents="box-none">
-            {surface}
-          </KeyboardAvoidingView>
-        ) : (
-          surface
-        )}
-      </View>
+      <MaskIfPrivate>
+        <View style={styles.root}>
+          <Animated.View style={[StyleSheet.absoluteFill, styles.scrim, { opacity: scrim }]}>
+            <Pressable
+              style={StyleSheet.absoluteFill}
+              onPress={close}
+              accessible={dismissable}
+              accessibilityRole="button"
+              accessibilityLabel="Close"
+            />
+          </Animated.View>
+          {avoidKeyboard ? (
+            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} pointerEvents="box-none">
+              {surface}
+            </KeyboardAvoidingView>
+          ) : (
+            surface
+          )}
+        </View>
+      </MaskIfPrivate>
     </Modal>
   );
 }

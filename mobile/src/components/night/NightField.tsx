@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { Icon } from "../Icon";
 import { night, nightFonts } from "../../design/theme";
+import { SecretField, fillRow } from "../../lib/replayPrivacy";
 
 interface Props extends Omit<TextInputProps, "style" | "placeholder" | "secureTextEntry"> {
   label: string;
@@ -64,25 +65,27 @@ export const NightField = forwardRef<TextInput, Props>(function NightField(
           {label}
         </Animated.Text>
         <View style={styles.inputRow}>
-          <TextInput
-            ref={ref}
-            value={value}
-            secureTextEntry={secure && !shown}
-            placeholderTextColor={night.dim}
-            selectionColor={night.blue}
-            cursorColor={night.ice}
-            accessibilityLabel={label}
-            onFocus={(e) => {
-              setFocused(true);
-              onFocus?.(e);
-            }}
-            onBlur={(e) => {
-              setFocused(false);
-              onBlur?.(e);
-            }}
-            style={styles.input}
-            {...input}
-          />
+          <SecretField secret={Boolean(secure)} style={fillRow}>
+            <TextInput
+              ref={ref}
+              value={value}
+              secureTextEntry={secure && !shown}
+              placeholderTextColor={night.dim}
+              selectionColor={night.blue}
+              cursorColor={night.ice}
+              accessibilityLabel={label}
+              onFocus={(e) => {
+                setFocused(true);
+                onFocus?.(e);
+              }}
+              onBlur={(e) => {
+                setFocused(false);
+                onBlur?.(e);
+              }}
+              style={styles.input}
+              {...input}
+            />
+          </SecretField>
           {secure && (
             <Pressable
               onPress={() => setShown((s) => !s)}

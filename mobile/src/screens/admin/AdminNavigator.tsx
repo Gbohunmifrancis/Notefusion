@@ -9,6 +9,7 @@ import { writeAdminData } from "../../lib/adminCache";
 import { noteAdminActivity, useAdminLock, useAdminPresence } from "../../lib/adminLockRuntime";
 import { syncPaymentAlerts } from "../../lib/paymentAlertsRuntime";
 import { useAdminColors } from "../../lib/theme";
+import { PrivateArea } from "../../lib/replayPrivacy";
 import type { AdminStackParams, AdminTabParams, RootStackParams } from "../../navigation/types";
 import type { AdminTabName } from "../../lib/navTargets";
 import { AdminOverviewScreen } from "./AdminOverviewScreen";
@@ -129,19 +130,22 @@ export function AdminRoot({ navigation }: NativeStackScreenProps<RootStackParams
     else navigation.navigate("Tabs", { screen: "Home" });
   }, [navigation]);
 
+  // Admin shows other people's accounts, so it stays blank in session recordings, its sheets too.
   return (
-    <AdminExitContext.Provider value={exit}>
-      {/* Every touch restarts the 5 minutes without a tap; it watches and never takes the touch. */}
-      <View
-        style={{ flex: 1 }}
-        onStartShouldSetResponderCapture={() => {
-          noteAdminActivity();
-          return false;
-        }}
-      >
-        {unlocked ? <AdminOpen /> : <LockedView method={method} onBack={exit} />}
-      </View>
-      {away ? <AwayCover /> : null}
-    </AdminExitContext.Provider>
+    <PrivateArea>
+      <AdminExitContext.Provider value={exit}>
+        {/* Every touch restarts the 5 minutes without a tap; it watches and never takes the touch. */}
+        <View
+          style={{ flex: 1 }}
+          onStartShouldSetResponderCapture={() => {
+            noteAdminActivity();
+            return false;
+          }}
+        >
+          {unlocked ? <AdminOpen /> : <LockedView method={method} onBack={exit} />}
+        </View>
+        {away ? <AwayCover /> : null}
+      </AdminExitContext.Provider>
+    </PrivateArea>
   );
 }

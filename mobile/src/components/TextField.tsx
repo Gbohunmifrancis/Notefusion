@@ -13,6 +13,7 @@ import { Icon, type IconName } from "./Icon";
 import { ProblemNote } from "./ProblemNote";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
+import { SecretField, fillRow } from "../lib/replayPrivacy";
 
 interface Props extends Omit<TextInputProps, "style"> {
   label?: string;
@@ -51,16 +52,18 @@ export function TextField({ label, error, secure, icon, style, ...rest }: Props)
           <Icon name={icon} size={20} color={focused ? colors.link : colors.textFaint} style={styles.icon} />
         )}
 
-        <TextInput
-          ref={inputRef}
-          style={styles.input}
-          placeholderTextColor={colors.textFaint}
-          secureTextEntry={secure && !revealed}
-          autoCapitalize="none"
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          {...rest}
-        />
+        <SecretField secret={Boolean(secure)} style={fillRow}>
+          <TextInput
+            ref={inputRef}
+            style={styles.input}
+            placeholderTextColor={colors.textFaint}
+            secureTextEntry={secure && !revealed}
+            autoCapitalize="none"
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+            {...rest}
+          />
+        </SecretField>
 
         {secure && (
           <Pressable

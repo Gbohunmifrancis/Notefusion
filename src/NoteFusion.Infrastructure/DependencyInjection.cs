@@ -9,6 +9,7 @@ using NoteFusion.Infrastructure.Api;
 using NoteFusion.Infrastructure.Billing;
 using NoteFusion.Infrastructure.Blog;
 using NoteFusion.Infrastructure.Email;
+using NoteFusion.Infrastructure.ErrorReports;
 using NoteFusion.Infrastructure.Geo;
 using NoteFusion.Infrastructure.Http;
 using NoteFusion.Infrastructure.Media;
@@ -47,6 +48,7 @@ public static class DependencyInjection
         services.AddPracticeReminders(configuration);
         services.AddPracticeModes(configuration);
         services.AddBlog(configuration);
+        services.AddSentrySessions(configuration);
 
         // The backups run in their own container (ops/backup); the API reads what they record, shows it on
         // System Health and alerts the admins when they fall behind.

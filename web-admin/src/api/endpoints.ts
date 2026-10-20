@@ -1,4 +1,4 @@
-import { query, request } from "@/api/client";
+import { query, request, requestBlob } from "@/api/client";
 import type {
   AdminLedgerRow,
   Insights,
@@ -47,6 +47,10 @@ import type {
   PaymentStatus,
   RoleName,
   SystemAnnouncement,
+  SessionIssue,
+  SessionRecordingDetail,
+  SessionRecordingsPage,
+  SessionSource,
   SystemHealth,
   TranscriptionLogFilters,
   TranscriptionLogPage,
@@ -496,3 +500,30 @@ export const getFeedbackSummary = (signal?: AbortSignal) =>
 export const getFeedbackList = (page: number, pageSize: number, kind?: FeedbackKind, userId?: string, signal?: AbortSignal) =>
   request<PagedResult<FeedbackRow>>(`/api/admin/feedback${query({ page, pageSize, kind, userId })}`, signal ? { signal } : {});
 
+
+/* ── Sessions (board k-sessions) ─────────────────────────────────────────── */
+
+/** The phone's Sentry recordings, newest first; `errors` keeps those that hit one; `cursor` is the page after. */
+export const getSessionRecordings = (errors: boolean, cursor: string | null, signal?: AbortSignal) =>
+  request<SessionRecordingsPage>(
+    `/api/admin/sessions/recordings${query({ errors: errors || undefined, cursor })}`,
+    signal ? { signal } : {},
+  );
+
+/** One recording: its video pieces, what happened, its errors and whose it is. */
+export const getSessionRecording = (id: string, signal?: AbortSignal) =>
+  request<SessionRecordingDetail>(`/api/admin/sessions/recordings/${encodeURIComponent(id)}`, signal ? { signal } : {});
+
+/** One MP4 piece of a recording, as bytes (a <video> cannot send the console's headers itself). */
+export const getSessionVideo = (id: string, project: string, segmentId: number) =>
+  requestBlob(
+    `/api/admin/sessions/recordings/${encodeURIComponent(id)}/videos/${segmentId}${query({ project })}`,
+  );
+
+/** Every project's unresolved errors of the last 7 days, most people first; `source` keeps one of them. */
+export const getSessionErrors = (source: SessionSource | null, signal?: AbortSignal) =>
+  request<SessionIssue[]>(`/api/admin/sessions/errors${query({ source })}`, signal ? { signal } : {});
+
+/** The recording of an error's latest event, if it was recorded. */
+export const getSessionErrorRecording = (issueId: string) =>
+  request<{ recordingId: string | null }>(`/api/admin/sessions/errors/${encodeURIComponent(issueId)}/recording`);

@@ -14,6 +14,7 @@ import { RootNavigator } from './src/navigation/RootNavigator';
 import { SplashScreen } from './src/screens/SplashScreen';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
 import * as Sentry from '@sentry/react-native';
+import { canMaskViews } from './src/lib/replayPrivacy';
 
 Sentry.init({
   dsn: 'https://04ec041914c6c17614d986cd5526edcb@o4508111757770752.ingest.us.sentry.io/4511889593073664',
@@ -28,7 +29,12 @@ Sentry.init({
   // Configure Session Replay
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1,
-  integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
+  // Recordings show the screen as it was, except password fields and Admin (src/lib/replayPrivacy). A build that
+  // cannot mask one view keeps blanking everything, as before.
+  integrations: [
+    Sentry.mobileReplayIntegration({ maskAllText: !canMaskViews, maskAllImages: !canMaskViews, maskAllVectors: !canMaskViews }),
+    Sentry.feedbackIntegration(),
+  ],
 
   // uncomment the line below to enable Spotlight (https://spotlightjs.com)
   // spotlight: __DEV__,

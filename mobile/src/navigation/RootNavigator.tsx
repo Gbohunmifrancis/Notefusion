@@ -9,6 +9,7 @@ import { navigationRef, useNotificationDeepLink } from '../lib/notificationLink'
 import { useListenDeepLink } from '../lib/listenLink';
 import { useChoirDeepLink } from '../lib/choirLink';
 import { logScreenView } from '../lib/analytics';
+import * as Sentry from '@sentry/react-native';
 import { SplashScreen } from '../screens/SplashScreen';
 import { AuthNavigator } from './AuthNavigator';
 import { TabNavigator } from './TabNavigator';
@@ -66,6 +67,12 @@ export function RootNavigator() {
 
   // Admin locks, and everything it read is dropped, on sign-out and on an account change.
   useAdminSession(user?.id ?? null);
+
+  // Error reports and recordings carry the account's id and nothing else about it; the console looks the person up.
+  const userId = user?.id ?? null;
+  useEffect(() => {
+    Sentry.setUser(userId ? { id: userId } : null);
+  }, [userId]);
 
   // The Quick Settings tile, the home-screen widget and the listening notification open
   // notefusion://listen. Same hold-until-signed-in rule; only that one path is matched. Also held
