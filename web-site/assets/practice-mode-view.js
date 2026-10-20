@@ -84,7 +84,8 @@
     back.addEventListener("click", onBack || goBack);
     var text = el("div", "pm-top-text");
     text.appendChild(el("p", "pm-eyebrow", eyebrow));
-    var h = el("h2", "pm-title", title); h.id = "pm-title"; h.setAttribute("tabindex", "-1");
+    // The page's heading while a mode is open: the Practice view's own h1 steps aside then (practice-view.css).
+    var h = el("h1", "pm-title", title); h.id = "pm-title"; h.setAttribute("tabindex", "-1");
     text.appendChild(h);
     bar.appendChild(back); bar.appendChild(text);
     if (pill) bar.appendChild(el("span", "pm-pill", pill));
