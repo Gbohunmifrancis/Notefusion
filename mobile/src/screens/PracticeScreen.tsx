@@ -422,7 +422,7 @@ export function PracticeScreen() {
         contentStyle={styles.screen}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} colors={[colors.accent]} />}
       >
-        <TabHeader title="Practice" eyebrow="Daily practice">
+        <TabHeader title="Practice" eyebrow="Practice path">
           {track && !showPicker && !busy ? (
             <Touchable
               onPress={() => { setTrackError(null); setPicking(true); }}
@@ -556,7 +556,7 @@ export function PracticeScreen() {
               <EmptyState
                 art="empty-no-drill"
                 title="No drill yet"
-                body="Today's drill isn't here yet. Pull down, or try again in a moment."
+                body="Your next drill isn't here yet. Pull down, or try again in a moment."
                 onRetry={() => void onRefresh()}
                 styles={styles}
               />
@@ -694,7 +694,7 @@ export function PracticeScreen() {
             <Text style={styles.foot}>
               {playful
                 ? `Every singing game earns XP and stars. Up to ${progress.dailyXpCap} XP a day.`
-                : `Practice counts when a take is marked: the daily drill, Sing it, or Learn my part. Up to ${progress.dailyXpCap} XP a day.`}
+                : `Practice counts when a take is marked: a drill on your path, Sing it, or Learn my part. Up to ${progress.dailyXpCap} XP a day.`}
             </Text>
           </>
         ) : null}
