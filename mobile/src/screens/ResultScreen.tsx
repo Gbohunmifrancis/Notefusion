@@ -1154,7 +1154,14 @@ export function ResultScreen({ route, navigation }: Props) {
   async function handleExportPdf() {
     setExportingType("pdf");
     try {
-      const svg = await scoreRef.current?.getSvg();
+      let svg: string | undefined;
+      try {
+        svg = await scoreRef.current?.getSvg();
+      } catch {
+        // Not drawn yet, or the engraver was slow to answer: it was dropped silently with the spinner.
+        showDialog({ title: "Not ready yet", message: "The staff is still drawing. Try again in a moment.", icon: "clock" });
+        return;
+      }
       if (!svg) {
         showDialog({
           title: "Open the Staff view first",
