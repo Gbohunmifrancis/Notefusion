@@ -121,7 +121,7 @@ export function PracticeScreen() {
 
   const [progress, setProgress] = useState<PracticeProgress | null>(null);
   const [drill, setDrill] = useState<Drill | null>(null);
-  /** The path's drill after a marked take, fetched with the fresh progress: what "Next drill" opens. */
+  /** The path's drill after a marked take, fetched with the fresh progress: what "Continue" opens. */
   const [next, setNext] = useState<Drill | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -607,7 +607,7 @@ export function PracticeScreen() {
                   </View>
                 )}
                 {phase === "idle" && ((onward && !onward.same) || resendable) ? (
-                  <Button label={playful ? "Again!" : "Sing it again"} icon="mic" variant="secondary" onPress={() => void sing()} disabled={left === 0} />
+                  <Button label={playful ? "Sing again!" : "Sing it again"} icon="mic" variant="secondary" onPress={() => void sing()} disabled={left === 0} />
                 ) : null}
 
                 {/* Marking takes up to a minute and the button shows only its spinner, so the line under it says so. */}

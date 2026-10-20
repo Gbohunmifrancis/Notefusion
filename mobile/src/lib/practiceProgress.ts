@@ -115,8 +115,9 @@ export function unitFraction(drill: Pick<Drill, "drillIndex" | "drillCount">): n
 }
 
 /**
- * The result's main button: on to the next drill, or — when the path brings the same drill back after a miss —
- * the same one again. `next` is null while it is still loading (the button says "Next drill" and loads it).
+ * The result's main button, a verb that fits half the card: on to the next drill ("Continue", Playful's "Keep going!"),
+ * or — when the path brings the same drill back after a miss — the same one again. `next` is null while it is still
+ * loading (the button says "Continue" and loads it).
  */
 export function nextAction(
   current: Pick<Drill, "id">,
@@ -124,8 +125,8 @@ export function nextAction(
   track: PracticeTrack | null,
 ): { label: string; same: boolean } {
   const same = !!next && next.id === current.id;
-  if (track === "playful") return { label: same ? "Try again!" : "Next one!", same };
-  return { label: same ? "Try it again" : "Next drill", same };
+  if (track === "playful") return { label: same ? "Try again!" : "Keep going!", same };
+  return { label: same ? "Try it again" : "Continue", same };
 }
 
 /**

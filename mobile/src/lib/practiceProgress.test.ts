@@ -184,9 +184,9 @@ test("the unit bar fills with the drills behind the singer", () => {
 });
 
 test("the main button moves on, or says try again when the path brings the same drill back", () => {
-  assert.deepEqual(nextAction({ id: "a@60" }, { id: "b@62" }, null), { label: "Next drill", same: false });
+  assert.deepEqual(nextAction({ id: "a@60" }, { id: "b@62" }, null), { label: "Continue", same: false });
   assert.deepEqual(nextAction({ id: "a@60" }, { id: "a@60" }, "focused"), { label: "Try it again", same: true });
-  assert.deepEqual(nextAction({ id: "a@60" }, null, "playful"), { label: "Next one!", same: false });
+  assert.deepEqual(nextAction({ id: "a@60" }, null, "playful"), { label: "Keep going!", same: false });
   assert.deepEqual(nextAction({ id: "a@60~gentle" }, { id: "a@60~gentle" }, "playful"), { label: "Try again!", same: true });
 });
 
