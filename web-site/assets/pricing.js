@@ -212,13 +212,18 @@
 
     var blurb = document.createElement("p");
     blurb.className = "blurb";
-    blurb.textContent = "Whole songs, four parts and every download, for the choir that rehearses every week.";
+    // A year is priced by the month as well, with its saving, under the price (the web app's plans say the same):
+    // the saving used to be the card's last line, and the month's figure was nowhere.
+    blurb.textContent = plan.interval === "yearly"
+      ? formatPrice({ amountMinor: Math.round(plan.amountMinor / 12), currency: plan.currency }) + " a month, paid once a year." +
+        (saving ? " Save " + saving + "% against paying monthly." : "")
+      : "Whole songs, four parts and every download, for the choir that rehearses every week.";
     card.appendChild(blurb);
 
     // One payment buys one period; nothing is charged again unless you start a new checkout.
     var billingTerm =
       plan.interval === "yearly"
-        ? (saving ? "A year of Pro; save " + saving + "% against paying monthly" : "A year of Pro, paid once")
+        ? "A year of Pro, paid once"
         : "A month of Pro, paid once; buy again whenever you like";
 
     card.appendChild(
