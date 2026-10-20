@@ -411,6 +411,8 @@ export function HomeScreen({ navigation }: Props) {
                     onPress={() => navigation.navigate('Practice')}
                     style={styles.practiceChip}
                     radius={radii.pill}
+                    // A 32 px chip, 48 tall to a thumb; less to the sides, where the avatar is.
+                    hitSlop={{ top: 8, bottom: 8, left: 6, right: 6 }}
                     accessibilityLabel={`Practice: ${practice.streak.current}-day streak, ${practice.xp} XP, level ${practice.level.name}`}
                   >
                     <Icon
@@ -525,6 +527,8 @@ export function HomeScreen({ navigation }: Props) {
                   onPress={() => navigation.navigate('Record', { autoPickAudio: true })}
                   style={styles.chip}
                   radius={radii.pill}
+                  // 40 px chips 8 apart: half the gap each way makes every one a 48 dp target.
+                  hitSlop={4}
                   accessibilityLabel="Import audio file"
                 >
                   <Icon name="import" size={18} color={colors.icon} />
@@ -534,6 +538,7 @@ export function HomeScreen({ navigation }: Props) {
                   onPress={() => rootNav.navigate('Link')}
                   style={styles.chip}
                   radius={radii.pill}
+                  hitSlop={4}
                   accessibilityLabel="Paste a song link"
                 >
                   <Icon name="link" size={18} color={colors.icon} />
@@ -545,6 +550,7 @@ export function HomeScreen({ navigation }: Props) {
                     onPress={() => navigation.navigate('Hymns', { shelf: true })}
                     style={[styles.chip, { backgroundColor: tint.soft, borderColor: tint.line }]}
                     radius={radii.pill}
+                    hitSlop={4}
                     accessibilityLabel={seasonWords(season).chipLabel}
                   >
                     <Icon name={seasonWords(season).icon} size={18} color={tint.label} />
@@ -555,6 +561,7 @@ export function HomeScreen({ navigation }: Props) {
                   onPress={() => rootNav.navigate('Listen')}
                   style={styles.chip}
                   radius={radii.pill}
+                  hitSlop={4}
                   accessibilityLabel="Find the key of a song that is playing"
                 >
                   <Icon name="find-key" size={18} color={colors.icon} />
@@ -581,7 +588,8 @@ export function HomeScreen({ navigation }: Props) {
                 <Touchable
                   onPress={() => navigation.navigate('Library')}
                   ripple={false}
-                  hitSlop={8}
+                  // A short word: 44 pt or more to a thumb without moving it.
+                  hitSlop={{ top: 14, bottom: 14, left: 12, right: 12 }}
                   accessibilityLabel="See all transcriptions"
                 >
                   <Text style={styles.seeAllText}>See all</Text>
@@ -650,6 +658,7 @@ export function HomeScreen({ navigation }: Props) {
                 <Touchable
                   onPress={() => sheetActions.openActions(item)}
                   style={styles.more}
+                  hitSlop={2}
                   ripple="borderless"
                   accessibilityLabel={`More for ${item.title}`}
                 >
@@ -681,6 +690,7 @@ export function HomeScreen({ navigation }: Props) {
                 onPress={reload}
                 style={styles.emptyAction}
                 radius={radii.pill}
+                hitSlop={4}
                 accessibilityLabel="Try again"
               >
                 <Text style={styles.emptyActionLabel}>Try again</Text>
@@ -696,6 +706,7 @@ export function HomeScreen({ navigation }: Props) {
                 onPress={() => navigation.navigate('Record')}
                 style={styles.emptyAction}
                 radius={radii.pill}
+                hitSlop={4}
                 accessibilityLabel="Record your first tune"
               >
                 <Text style={styles.emptyActionLabel}>Record your first tune</Text>
