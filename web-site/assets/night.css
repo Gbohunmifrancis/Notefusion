@@ -638,6 +638,7 @@ body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
 .lib-item:hover { box-shadow: none; }
 .btn-primary:hover:not(:disabled) { transform: none; box-shadow: none; }
 .btn { border-radius: 8px; }
+.btn.studio-rec { border-radius: 50%; } /* the house corner above would square the round record button */
 /* Labels read as labels, not as shouted kickers: sentence case, no tracking. */
 .recents-title, .group-title, .part h3, .player .group label, .part-mix-label, .pr-label, .eyebrow, .or, .brand small { text-transform: none; letter-spacing: 0; font-size: 0.8125rem; font-weight: 600; }
 .pill, .plan-opt-tag { text-transform: none; letter-spacing: 0; font-size: 0.75rem; font-weight: 600; }
