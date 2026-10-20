@@ -631,8 +631,11 @@
 
       <div class="section" id="rehearse">
         <h2><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Rehearse</h2>
-        <p class="card-lead">Hear the tune — or, with the parts, mute your own voice and sing it against the others. Loop a few bars and slow it down. Play is on the sheet, under the music.</p>
+        <p class="card-lead">Hear the tune — or, with the parts, mute your own voice and sing it against the others. Loop a few bars and slow it down.</p>
         <div class="player" id="player">
+          <!-- The sheet covers the result's own Play, so it has its own (board m-ux-medium W2d); it takes the focus as the
+               sheet opens. Both play the same player. -->
+          <button class="btn btn-primary rh-play" id="rehearse-play" type="button"><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
           <button class="btn btn-ghost btn-icon" id="restart" type="button" title="From the start" aria-label="From the start"><svg class="ic"><use href="/assets/icons.svg#i-restart"/></svg></button>
           <span class="group"><label for="rate">Speed</label>
             <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></span>

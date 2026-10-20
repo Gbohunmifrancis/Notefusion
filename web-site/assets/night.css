@@ -292,6 +292,7 @@ table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
 .player .group { border-radius: 8px; padding: 5px 14px; }
 :root[data-theme="dark"] .player .group { background: rgba(255, 255, 255, 0.05); }
 .player input[type=number], .player select { border-radius: 8px; min-height: 32px; background-color: var(--surface); }
+#player .rh-play { min-width: 112px; }
 
 /* The rest of a song a free account has not heard: a faded strip of stave under a lock. */
 .unlock { position: relative; margin: 16px 0 0; border-radius: 12px; padding: 20px; border: 1px solid var(--premium-line); background: linear-gradient(160deg, var(--premium-soft), transparent 70%), var(--surface); overflow: hidden; }

@@ -2918,12 +2918,13 @@
     if (!player) {
       player = C.createPlayer();
       $("play").addEventListener("click", function () { player.toggle(); });
+      $("rehearse-play").addEventListener("click", function () { player.toggle(); });
       $("restart").addEventListener("click", function () { player.stop(); player.play(); });
       $("rate").addEventListener("change", function () { player.setRate(parseFloat($("rate").value)); });
       ["loop-on", "loop-from", "loop-to"].forEach(function (id) { $(id).addEventListener("change", applyLoop); });
       $("backing-on").addEventListener("change", function () { player.setBackingOn($("backing-on").checked); });
       player.onTick(function (t) {
-        label($("play"), t.playing ? "pause" : "play", t.playing ? "Pause" : "Play");
+        [$("play"), $("rehearse-play")].forEach(function (b) { label(b, t.playing ? "pause" : "play", t.playing ? "Pause" : "Play"); });
         var now = -1;
         for (var i = 0; i < hymnCells.length; i++) if (hymnCells[i].beat <= t.beat + 1e-6) now = i;
         hymnCells.forEach(function (c, i) { c.el.className = t.playing && i === now ? "now" : ""; });
