@@ -217,6 +217,8 @@ html { scroll-padding-top: 80px; }
   .home h1 { font-size: 36px; }
   .home h2 { font-size: 28px; }
   .home .lead { font-size: 17px; }
+  /* Body copy reads at 16 px on a phone; captions, dates and the footer stay 13–14 px. */
+  .steps p, .checks li, .features dd, .faq-item p, .home .plan .blurb, .plan li, .post-dek, .try-note, .hero-apps, .home .pricing-note, .home .rekey-note { font-size: 16px; }
   .hero { padding: 32px 0 64px; }
   .section { padding: 64px 0; }
   .try-main .btn { flex: 1 1 100%; }
