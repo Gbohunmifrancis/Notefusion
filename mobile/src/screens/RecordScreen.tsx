@@ -36,6 +36,7 @@ import { OFFLINE_LINE, STALLED_LINE, percentLabel, stageLabel, type ClientStage 
 import { useSubscription } from "../lib/subscription";
 import { importKind, importKindAnswered, loadImportKind, setImportKind } from "../lib/importKind";
 import { setLeaveGuard } from "../lib/leaveGuard";
+import { canImport, isScoreFile } from "../lib/importFile";
 import { recordKindChoices } from "../lib/recordKind";
 import { formatPrice, limitCopy, limitOffer, type LimitOffer } from "../lib/price";
 import { billingApi } from "../api/endpoints";
@@ -757,13 +758,17 @@ export function RecordScreen() {
       }
 
       const asset = res.assets[0];
+      // Refused here, not after the upload: the picker shows every file (lib/importFile).
+      if (!canImport(asset.name)) {
+        setPermError("That file isn't one we can read. Choose a recording (MP3, M4A, WAV…), a MIDI file or MusicXML.");
+        return;
+      }
       // A file from the phone's library is as likely to be a song with a band behind the
       // voice as a hummed line, and the two need different treatment: a song's lead vocal
       // is isolated first and its beat read from the full mix, or the mixture comes back as
       // a scatter of wrong notes. Scores and MIDI files have nothing to isolate.
       // Chords mode reads the instruments themselves, so nothing is isolated there either.
-      const ext = (asset.name || "").split(".").pop()?.toLowerCase() ?? "";
-      const isScore = ["mid", "midi", "xml", "musicxml", "mxl", "abc"].includes(ext);
+      const isScore = isScoreFile(asset.name);
       const separate = isScore || mode === "chords" ? false : await askIfSong(true, false);
       if (separate === null) return;
       const send = async (isolate: boolean) => {
