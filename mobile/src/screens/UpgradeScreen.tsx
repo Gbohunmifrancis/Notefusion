@@ -12,6 +12,7 @@ import { Icon, type IconName } from "../components/Icon";
 import * as WebBrowser from "expo-web-browser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
@@ -42,7 +43,7 @@ import { PRO_FEATURES } from "../lib/proFeatures";
 import type { AuthUser, CheckoutExit, MyProfile, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 import { tierOf } from "../lib/planTier";
-import { formatPrice } from "../lib/price";
+import { formatPrice, nairaNote, periodLabel } from "../lib/price";
 import {
   parseAsked,
   rememberAsked,
@@ -124,6 +125,13 @@ function ctaPrice(plan: Plan): string {
     : `${price}/${plan.interval === "yearly" ? "yr" : "mo"}`;
 }
 
+/** A plan as the list and the pay bar name it: the one-song purchase and the choir plans by what they are. */
+function planTitle(plan: Plan): string {
+  if (plan.interval === "single") return "Just this song";
+  if (plan.choirSeats) return plan.interval === "yearly" ? "Choir · Yearly" : "Choir · Monthly";
+  return plan.name;
+}
+
 /**
  * The Pro plans with the one-song purchase beside them. The server lists the purchase apart
  * (`plans/single`), so a build that labels everything in the main list as Pro never shows it.
@@ -166,6 +174,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
   const askedPlanId = route?.params?.planId;
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+  const insets = useSafeAreaInsets();
   const {
     refresh: refreshSubscription,
     beginCheckout,
@@ -189,6 +198,8 @@ export function UpgradeScreen({ navigation, route }: Props) {
   // Selling through Google Play (Android, the server ready, Play selling the products); else the website's checkout.
   const [play, setPlay] = useState(false);
   const [busy, setBusy] = useState(false); // opening checkout
+  // The choir plans' own sheet, opened from the "For choir directors" row (board l-ux-high 03a).
+  const [choirOpen, setChoirOpen] = useState(false);
   const [restoring, setRestoring] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // pull-to-refresh
 
@@ -529,6 +540,17 @@ export function UpgradeScreen({ navigation, route }: Props) {
   // On Android a member opens the plans only to start a choir: Google Play renews their own Pro.
   const proPlans = play && extending ? [] : plans.filter((p) => p.interval !== "single");
   const buyingSong = selected?.interval === "single";
+  // The chosen plan's price as the bar says it: Google Play's own on Android.
+  const selectedPrice = selected
+    ? offerFor(selected, playOffers)?.price ?? formatPrice(selected.amountMinor, selected.currency)
+    : null;
+  // The plans are on screen: the chosen plan's price and Pay sit in a bar pinned to the bottom (board l-ux-high 03a).
+  const choosing = !loading && paymentCheck !== "confirming" && !isActive && (plans.length > 0 || choirPlans.length > 0);
+  // The choir plans fold into one row when there is something else to choose; alone (a member starting a choir on
+  // Android), they are the list.
+  const foldChoir = proPlans.length > 0 || Boolean(singlePlan);
+  const choirSorted = choirPlans.slice().sort((a, b) => a.amountMinor - b.amountMinor);
+  const choirFrom = choirSorted[0];
 
   // The provider drops its checkout snapshot when the payment lands (it shows the welcome
   // itself): back to the member hub, re-read so it carries the new dates. One song bought goes
@@ -561,203 +583,293 @@ export function UpgradeScreen({ navigation, route }: Props) {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <Screen
-      scroll
-      contentStyle={styles.screen}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          tintColor={colors.accent}
-          colors={[colors.accent]}
-        />
-      }
-    >
-      {/* ── Header row ─────────────────────────────────────────────────────── */}
-      <View style={styles.headerRow}>
-        <Touchable
-          onPress={() =>
-            navigation.canGoBack()
-              ? navigation.goBack()
-              : navigation.navigate("Tabs", { screen: "Home" })
-          }
-          accessibilityLabel="Go back"
-          hitSlop={8}
-          ripple="borderless"
-        >
-          <View style={styles.backCircle}>
-            <Icon name="back" size={20} color={colors.text} />
-          </View>
-        </Touchable>
+    <View style={styles.flex}>
+      <Screen
+        scroll
+        contentStyle={styles.screen}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.accent}
+            colors={[colors.accent]}
+          />
+        }
+      >
+        {/* ── Header row ─────────────────────────────────────────────────────── */}
+        <View style={styles.headerRow}>
+          <Touchable
+            onPress={() =>
+              navigation.canGoBack()
+                ? navigation.goBack()
+                : navigation.navigate("Tabs", { screen: "Home" })
+            }
+            accessibilityLabel="Go back"
+            hitSlop={8}
+            ripple="borderless"
+          >
+            <View style={styles.backCircle}>
+              <Icon name="back" size={20} color={colors.text} />
+            </View>
+          </Touchable>
 
-        <View style={styles.titleBlock}>
-          <Text style={styles.titleLabel}>
-            {isActive ? "Account" : "Membership"}
-          </Text>
-          <Text style={styles.titleMain}>
-            {isActive ? "Subscription" : "NoteFusion Pro"}
-          </Text>
+          <View style={styles.titleBlock}>
+            <Text style={styles.titleLabel}>
+              {isActive ? "Account" : "Membership"}
+            </Text>
+            <Text style={styles.titleMain}>
+              {isActive ? "Subscription" : "NoteFusion Pro"}
+            </Text>
+          </View>
+
+          {isActive && !onHold && (
+            <View style={styles.activePill}>
+              <View style={styles.activeDot} />
+              <Text style={styles.activePillText}>Pro Active</Text>
+            </View>
+          )}
         </View>
 
-        {isActive && !onHold && (
-          <View style={styles.activePill}>
-            <View style={styles.activeDot} />
-            <Text style={styles.activePillText}>Pro Active</Text>
+        {/* ── Hero badge (only on paywall when not active) ─────────────────── */}
+        {!isActive && !loading && (
+          <View style={styles.hero}>
+            <LinearGradient
+              colors={gradients.brand}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.heroBadge}
+            >
+              <BrandMark size={34} color="#FFFFFF" waveColor="rgba(255,255,255,0.7)" />
+            </LinearGradient>
+            <Text style={styles.heroTitle}>Unlock everything</Text>
+            <Text style={styles.heroSub}>
+              Go further with unlimited transcriptions and full exports.
+            </Text>
           </View>
         )}
-      </View>
 
-      {/* ── Hero badge (only on paywall when not active) ─────────────────── */}
-      {!isActive && !loading && (
-        <View style={styles.hero}>
-          <LinearGradient
-            colors={gradients.brand}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.heroBadge}
-          >
-            <BrandMark size={34} color="#FFFFFF" waveColor="rgba(255,255,255,0.7)" />
-          </LinearGradient>
-          <Text style={styles.heroTitle}>Unlock everything</Text>
-          <Text style={styles.heroSub}>
-            Go further with unlimited transcriptions and full exports.
-          </Text>
-        </View>
-      )}
-
-      {/* ── Payment not confirmed after the quick checks: the provider keeps asking ── */}
-      {!loading && paymentCheck === "delayed" && (
-        <View style={styles.confirmNote}>
-          <Icon name="clock" size={18} color={colors.icon} />
-          <Text style={styles.confirmNoteText}>
-            {pendingCheckout?.single
-              ? "Your payment is still being confirmed. Your song unlocks automatically the moment it lands."
-              : "Your payment is still being confirmed. Pro unlocks automatically the moment it lands."}
-          </Text>
-        </View>
-      )}
-
-      {loading ? (
-        <View style={styles.loadingBlock}>
-          <PlanCardSkeleton />
-          <PlanCardSkeleton />
-        </View>
-      ) : paymentCheck === "confirming" ? (
-        // The provider is asking the server; there is nothing to press until it answers.
-        <Card style={styles.card}>
-          <View style={styles.confirmBlock}>
-            <ActivityIndicator color={colors.accent} />
-            <Text style={styles.confirmTitle}>
-              {play ? "Confirming with Google Play…" : "Confirming your payment…"}
+        {/* ── Payment not confirmed after the quick checks: the provider keeps asking ── */}
+        {!loading && paymentCheck === "delayed" && (
+          <View style={styles.confirmNote}>
+            <Icon name="clock" size={18} color={colors.icon} />
+            <Text style={styles.confirmNoteText}>
+              {pendingCheckout?.single
+                ? "Your payment is still being confirmed. Your song unlocks automatically the moment it lands."
+                : "Your payment is still being confirmed. Pro unlocks automatically the moment it lands."}
             </Text>
-            <Text style={styles.confirmText}>This usually takes a few seconds.</Text>
           </View>
-        </Card>
-      ) : isActive ? (
-        <ActiveState
-          subscription={subscription!}
-          profile={profile}
-          user={user}
-          onAndroid={play}
-          onExtend={() => setExtending(true)}
-          onOpenChoir={() => navigation.navigate("Choir")}
-          onChanged={() => {
-            load();
-            // The shared provider drives the tab label and the gold ring, so it has to
-            // hear about a cancellation too — not just this screen's local copy.
-            refreshSubscription().catch(() => undefined);
-          }}
-        />
-      ) : plans.length === 0 && choirPlans.length === 0 ? (
-        <EmptyState
-          onRetry={() => {
-            setLoading(true);
-            load();
-          }}
-        />
-      ) : (
-        <>
-          {/* ── Feature list ─────────────────────────────────────────────── */}
+        )}
+
+        {loading ? (
+          <View style={styles.loadingBlock}>
+            <PlanCardSkeleton />
+            <PlanCardSkeleton />
+          </View>
+        ) : paymentCheck === "confirming" ? (
+          // The provider is asking the server; there is nothing to press until it answers.
           <Card style={styles.card}>
-            {PRO_FEATURES.map((f, i) => (
-              <View
-                key={f.text}
-                style={[styles.featureRow, i === 0 && styles.featureRowFirst]}
+            <View style={styles.confirmBlock}>
+              <ActivityIndicator color={colors.accent} />
+              <Text style={styles.confirmTitle}>
+                {play ? "Confirming with Google Play…" : "Confirming your payment…"}
+              </Text>
+              <Text style={styles.confirmText}>This usually takes a few seconds.</Text>
+            </View>
+          </Card>
+        ) : isActive ? (
+          <ActiveState
+            subscription={subscription!}
+            profile={profile}
+            user={user}
+            onAndroid={play}
+            onExtend={() => setExtending(true)}
+            onOpenChoir={() => navigation.navigate("Choir")}
+            onChanged={() => {
+              load();
+              // The shared provider drives the tab label and the gold ring, so it has to
+              // hear about a cancellation too — not just this screen's local copy.
+              refreshSubscription().catch(() => undefined);
+            }}
+          />
+        ) : plans.length === 0 && choirPlans.length === 0 ? (
+          <EmptyState
+            onRetry={() => {
+              setLoading(true);
+              load();
+            }}
+          />
+        ) : (
+          <>
+            {/* ── Feature list ─────────────────────────────────────────────── */}
+            <Card style={styles.card}>
+              {PRO_FEATURES.map((f, i) => (
+                <View
+                  key={f.text}
+                  style={[styles.featureRow, i === 0 && styles.featureRowFirst]}
+                >
+                  <View style={styles.featureIcon}>
+                    <Icon name={f.icon} size={16} color={colors.icon} />
+                  </View>
+                  <Text style={styles.featureText}>{f.text}</Text>
+                </View>
+              ))}
+            </Card>
+
+            {/* ── Plan selector ────────────────────────────────────────────── */}
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Choose a plan</Text>
+            </View>
+
+            {singlePlan ? (
+              <PlanOption
+                plan={singlePlan}
+                priceLabel={offerFor(singlePlan, playOffers)?.price}
+                title={planTitle(singlePlan)}
+                note="One more transcription, any recording or song link. No subscription."
+                selected={singlePlan.id === selectedId}
+                badge="No subscription"
+                onSelect={() => setSelectedId(singlePlan.id)}
+              />
+            ) : null}
+
+            {proPlans
+              .slice()
+              .sort((a, b) => a.amountMinor - b.amountMinor)
+              .map((plan) => (
+                <PlanOption
+                  key={plan.id}
+                  plan={plan}
+                  priceLabel={offerFor(plan, playOffers)?.price}
+                  selected={plan.id === selectedId}
+                  badge={
+                    plan.interval === "yearly" && saving
+                      ? `Save ${saving}%`
+                      : undefined
+                  }
+                  onSelect={() => setSelectedId(plan.id)}
+                />
+              ))}
+
+            {/* ── The choir plan: one director pays, the whole choir is Pro ───── */}
+            {choirFrom && foldChoir ? (
+              <Touchable
+                onPress={() => setChoirOpen(true)}
+                style={[styles.planOption, buyingChoir && styles.planOptionSelected]}
+                radius={radii.lg}
+                accessibilityLabel={
+                  buyingChoir && selected
+                    ? `For choir directors, ${planTitle(selected)} chosen. Open the choir plans`
+                    : "For choir directors. Open the choir plans"
+                }
               >
                 <View style={styles.featureIcon}>
-                  <Icon name={f.icon} size={16} color={colors.icon} />
+                  <Icon name="choir" size={16} color={colors.icon} />
                 </View>
-                <Text style={styles.featureText}>{f.text}</Text>
-              </View>
-            ))}
-          </Card>
-
-          {/* ── Plan selector ────────────────────────────────────────────── */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Choose a plan</Text>
-          </View>
-
-          {singlePlan ? (
-            <PlanOption
-              plan={singlePlan}
-              priceLabel={offerFor(singlePlan, playOffers)?.price}
-              title="Just this song"
-              note="One more transcription, any recording or song link. No subscription."
-              selected={singlePlan.id === selectedId}
-              badge="No subscription"
-              onSelect={() => setSelectedId(singlePlan.id)}
-            />
-          ) : null}
-
-          {proPlans
-            .slice()
-            .sort((a, b) => a.amountMinor - b.amountMinor)
-            .map((plan) => (
-              <PlanOption
-                key={plan.id}
-                plan={plan}
-                priceLabel={offerFor(plan, playOffers)?.price}
-                selected={plan.id === selectedId}
-                badge={
-                  plan.interval === "yearly" && saving
-                    ? `Save ${saving}%`
-                    : undefined
-                }
-                onSelect={() => setSelectedId(plan.id)}
-              />
-            ))}
-
-          {/* ── The choir plan: one director pays, the whole choir is Pro ───── */}
-          {choirPlans.length > 0 ? (
-            <>
-              <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>For choir directors</Text>
-              </View>
-              {choirPlans
-                .slice()
-                .sort((a, b) => a.amountMinor - b.amountMinor)
-                .map((plan) => (
-                  <PlanOption
+                <View style={styles.planInfo}>
+                  <Text style={styles.planName}>For choir directors</Text>
+                  <Text style={styles.planNote}>
+                    {buyingChoir && selected
+                      ? `${planTitle(selected)} · ${selectedPrice} ${periodLabel(selected.interval)}`
+                      : `Pro for you and ${choirFrom.choirSeats ?? 25} singers · from ${
+                          offerFor(choirFrom, playOffers)?.price ?? formatPrice(choirFrom.amountMinor, choirFrom.currency)
+                        } ${periodLabel(choirFrom.interval)}`}
+                  </Text>
+                </View>
+                <Icon name="chevron" size={18} color={colors.textFaint} />
+              </Touchable>
+            ) : choirPlans.length > 0 ? (
+              <>
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>For choir directors</Text>
+                </View>
+                {choirSorted.map((plan) => (
+                  <ChoirPlanOption
                     key={plan.id}
                     plan={plan}
                     priceLabel={offerFor(plan, playOffers)?.price}
-                    title={plan.interval === "yearly" ? "Choir · Yearly" : "Choir · Monthly"}
-                    note={`Pro for you and up to ${plan.choirSeats ?? 25} singers, one shared library.`}
                     selected={plan.id === selectedId}
-                    badge={plan.interval === "yearly" ? "Whole choir" : undefined}
                     onSelect={() => setSelectedId(plan.id)}
                   />
                 ))}
-            </>
-          ) : null}
+              </>
+            ) : null}
 
-          {/* ── CTA ──────────────────────────────────────────────────────── */}
+            <Text style={styles.finePrint}>
+              {play && selected
+                ? playFinePrint(selected)
+                : buyingSong
+                ? "One payment, one transcription that never expires. Secure checkout opens in your browser; you'll come back to your song."
+                : "Secure checkout opens in your browser. You'll return here automatically."}
+            </Text>
+
+            {play ? (
+              <View style={styles.restoreRow}>
+                <Button label="Restore purchases" variant="text" onPress={() => void restore()} loading={restoring} />
+              </View>
+            ) : null}
+          </>
+        )}
+
+        <CheckoutExitSheet
+          ask={exitAsk}
+          onClose={() => setExitAsk(null)}
+          onAnswer={(reason, note) => {
+            const at = exitFor.current;
+            if (!at) return;
+            // Best effort: the answer on screen does not wait on it, and a lost one is only a missing row.
+            billingApi
+              .checkoutExit(at.reference, { secondsOpen: at.secondsOpen, reason, ...(note ? { note } : {}) })
+              .catch(() => undefined);
+          }}
+          onTryAgain={() => {
+            // The same plan: the server hands back the same checkout while it is kept.
+            const at = exitFor.current;
+            if (at) void handleUpgrade(at.planId);
+          }}
+          onSong={() => {
+            const song = songPlanRef.current;
+            if (!song) return;
+            setSelectedId(song.id);
+            void handleUpgrade(song.id);
+          }}
+        />
+
+        <Sheet visible={choirOpen} onClose={() => setChoirOpen(false)}>
+          <SheetTitle>For choir directors</SheetTitle>
+          <SheetMessage>One director pays and the whole choir is Pro, with one shared library.</SheetMessage>
+          {choirSorted.map((plan) => (
+            <ChoirPlanOption
+              key={plan.id}
+              plan={plan}
+              priceLabel={offerFor(plan, playOffers)?.price}
+              selected={plan.id === selectedId}
+              onSelect={() => {
+                setSelectedId(plan.id);
+                setChoirOpen(false);
+              }}
+            />
+          ))}
+        </Sheet>
+      </Screen>
+
+      {/* ── The pay bar: the chosen plan's price and Pay, where the thumb is ── */}
+      {choosing ? (
+        <View style={[styles.payBar, { paddingBottom: Math.max(insets.bottom, spacing.md) }]}>
+          {selected && selectedPrice ? (
+            <View style={styles.payLine}>
+              <Text style={styles.payPlan} numberOfLines={1}>{planTitle(selected)}</Text>
+              <Text style={styles.payPrice}>
+                {selectedPrice}
+                <Text style={styles.planPeriod}> {periodLabel(selected.interval)}</Text>
+              </Text>
+            </View>
+          ) : null}
           <Button
             label={
               selected && play
                 ? playButtonLabel(
                     selected,
-                    offerFor(selected, playOffers)?.price ?? formatPrice(selected.amountMinor, selected.currency),
+                    selectedPrice ?? formatPrice(selected.amountMinor, selected.currency),
                     subscription?.choirRole === "director",
                   )
                 : selected
@@ -772,49 +884,14 @@ export function UpgradeScreen({ navigation, route }: Props) {
             onPress={() => void handleUpgrade()}
             loading={busy}
             disabled={!selectedId}
-            style={styles.cta}
+            block
           />
-
-          <Text style={styles.finePrint}>
-            {play && selected
-              ? playFinePrint(selected)
-              : buyingSong
-              ? "One payment, one transcription that never expires. Secure checkout opens in your browser; you'll come back to your song."
-              : "Secure checkout opens in your browser. You'll return here automatically."}
-          </Text>
-
-          {play ? (
-            <View style={styles.restoreRow}>
-              <Button label="Restore purchases" variant="text" onPress={() => void restore()} loading={restoring} />
-            </View>
+          {selected && nairaNote(selected.currency, play) ? (
+            <Text style={styles.nairaLine}>{nairaNote(selected.currency, play)}</Text>
           ) : null}
-        </>
-      )}
-
-      <CheckoutExitSheet
-        ask={exitAsk}
-        onClose={() => setExitAsk(null)}
-        onAnswer={(reason, note) => {
-          const at = exitFor.current;
-          if (!at) return;
-          // Best effort: the answer on screen does not wait on it, and a lost one is only a missing row.
-          billingApi
-            .checkoutExit(at.reference, { secondsOpen: at.secondsOpen, reason, ...(note ? { note } : {}) })
-            .catch(() => undefined);
-        }}
-        onTryAgain={() => {
-          // The same plan: the server hands back the same checkout while it is kept.
-          const at = exitFor.current;
-          if (at) void handleUpgrade(at.planId);
-        }}
-        onSong={() => {
-          const song = songPlanRef.current;
-          if (!song) return;
-          setSelectedId(song.id);
-          void handleUpgrade(song.id);
-        }}
-      />
-    </Screen>
+        </View>
+      ) : null}
+    </View>
   );
 }
 
@@ -1215,6 +1292,31 @@ function CancelReasonModal({
   );
 }
 
+/** A choir plan as a plan row: in the "For choir directors" sheet, or the list when it is all there is. */
+function ChoirPlanOption({
+  plan,
+  priceLabel,
+  selected,
+  onSelect,
+}: {
+  plan: Plan;
+  priceLabel?: string;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <PlanOption
+      plan={plan}
+      priceLabel={priceLabel}
+      title={planTitle(plan)}
+      note={`Pro for you and up to ${plan.choirSeats ?? 25} singers, one shared library.`}
+      selected={selected}
+      badge={plan.interval === "yearly" ? "Whole choir" : undefined}
+      onSelect={onSelect}
+    />
+  );
+}
+
 /** A selectable plan row with a radio, price, and optional savings badge. */
 function PlanOption({
 
@@ -1239,14 +1341,7 @@ function PlanOption({
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  // A noun for the lifetime tier, not a rate: "/ month" would be wrong and "/ lifetime" still reads
-  // like one. The slash is part of the string so it can be dropped along with the period.
-  const period =
-    plan.interval === "lifetime" || plan.interval === "single"
-      ? "one-time"
-      : plan.interval === "yearly"
-        ? "/ year"
-        : "/ month";
+  const period = periodLabel(plan.interval);
 
   return (
     <Touchable
@@ -1307,6 +1402,7 @@ function EmptyState({ onRetry }: { onRetry: () => void }) {
 
 const makeStyles = (c: Palette, s: Shadows) =>
   StyleSheet.create({
+    flex: { flex: 1, backgroundColor: c.bg },
     screen: {
       paddingBottom: spacing.xxxl,
     },
@@ -1505,9 +1601,37 @@ const makeStyles = (c: Palette, s: Shadows) =>
       marginTop: 2,
     },
 
-    // ── CTA ─────────────────────────────────────────────────────────────────
-    cta: {
-      marginTop: spacing.sm,
+    // ── The pay bar: the canvas under a hairline, pinned to the bottom ────────
+    payBar: {
+      gap: spacing.sm,
+      paddingTop: spacing.md,
+      paddingHorizontal: spacing.lg,
+      backgroundColor: c.bg,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: c.border,
+    },
+    payLine: {
+      flexDirection: "row",
+      alignItems: "baseline",
+      justifyContent: "space-between",
+      gap: spacing.md,
+    },
+    payPlan: {
+      ...typography.caption,
+      color: c.textMuted,
+      flexShrink: 1,
+    },
+    payPrice: {
+      ...typography.label,
+      color: c.text,
+      fontSize: 15,
+    },
+    nairaLine: {
+      ...typography.caption,
+      color: c.textMuted,
+      textAlign: "center",
+      lineHeight: 17,
+      paddingHorizontal: spacing.md,
     },
     finePrint: {
       ...typography.caption,
