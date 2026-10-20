@@ -991,19 +991,23 @@ function badgeLabel(badge: PracticeBadge, sticker = false): string {
   return `${badge.title}${sticker ? " sticker" : ""}. ${badge.description} ${badge.earned ? "Earned." : `${badge.progress} of ${badge.target}.`}`;
 }
 
-/** No track chosen yet: the badges as tiles under the picker. */
+/**
+ * No track chosen yet: the badges as tiles under the picker. A locked one fades its picture only (board m-ux-medium
+ * P5b), and its title goes muted: what it takes and how far along it is stay at full strength, to be read.
+ */
 function BadgeTile({ badge, styles }: { badge: PracticeBadge; styles: Styles }) {
+  const locked = !badge.earned;
   return (
-    <View style={[styles.badge, !badge.earned && styles.badgeLocked]} accessible accessibilityLabel={badgeLabel(badge)}>
-      <Art name={badgeArt(badge.code, badge.earned)} width={40} />
-      <Text style={styles.badgeTitle} numberOfLines={1}>{badge.title}</Text>
-      <Text style={styles.badgeDesc} numberOfLines={2}>{badge.description}</Text>
-      {!badge.earned ? (
+    <View style={styles.badge} accessible accessibilityLabel={badgeLabel(badge)}>
+      <Art name={badgeArt(badge.code, badge.earned)} width={40} style={locked && styles.badgeArtLocked} />
+      <Text style={[styles.badgeTitle, locked && styles.badgeTitleLocked]} numberOfLines={1}>{badge.title}</Text>
+      <Text style={[styles.badgeDesc, locked && styles.badgeDescLocked]} numberOfLines={2}>{badge.description}</Text>
+      {locked ? (
         <View style={styles.badgeProgressRow}>
           <View style={styles.badgeTrack}>
             <View style={[styles.badgeFill, { width: `${Math.round((badge.progress / Math.max(1, badge.target)) * 100)}%` }]} />
           </View>
-          <Text style={styles.badgeCount}>{badge.progress}/{badge.target}</Text>
+          <Text style={[styles.badgeCount, styles.badgeCountLocked]}>{badge.progress}/{badge.target}</Text>
         </View>
       ) : null}
     </View>
@@ -1215,13 +1219,17 @@ const makeStyles = (c: Palette) =>
       padding: spacing.md,
       gap: 4,
     },
-    badgeLocked: { opacity: 0.55 },
+    /** A locked tile: the sticker (already the grey "-locked" art) at half strength, never the words. */
+    badgeArtLocked: { opacity: 0.5 },
     badgeTitle: { ...typography.label, color: c.text, fontSize: 13 },
+    badgeTitleLocked: { color: c.textMuted },
     badgeDesc: { ...typography.caption, color: c.textMuted, fontSize: 11, lineHeight: 15 },
+    badgeDescLocked: { fontSize: 12, lineHeight: 16 },
     badgeProgressRow: { flexDirection: "row", alignItems: "center", gap: spacing.xs, marginTop: 2 },
     badgeTrack: { flex: 1, height: 4, borderRadius: 2, backgroundColor: c.surfaceAlt, overflow: "hidden" },
     badgeFill: { height: 4, borderRadius: 2, backgroundColor: c.textMuted },
     badgeCount: { ...typography.caption, color: c.textFaint, fontSize: 10 },
+    badgeCountLocked: { fontSize: 12 },
 
     stickerGrid: { flexDirection: "row", flexWrap: "wrap", rowGap: spacing.md },
     sticker: { width: "33.33%", paddingHorizontal: spacing.xs, alignItems: "center", gap: 6 },
