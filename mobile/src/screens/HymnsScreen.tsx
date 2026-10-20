@@ -26,7 +26,7 @@ import {
   type PackHymn,
   type PackMeta,
 } from "../lib/hymnPack";
-import { downloadPack, installedPack, remotePackMeta, removePack, usePackState } from "../lib/hymnPackStore";
+import { checkRemotePack, downloadPack, installedPack, remotePackMeta, removePack, usePackState } from "../lib/hymnPackStore";
 import { resultFromHymn } from "../lib/openSheet";
 import { deriveSolfa } from "../lib/solfa";
 import { useDataSaver } from "../lib/dataSaver";
@@ -151,12 +151,17 @@ export function HymnsScreen() {
 
   async function checkForUpdate() {
     setChecking(true);
-    const remote = await remotePackMeta();
+    const check = await checkRemotePack();
     setChecking(false);
-    if (!remote) {
-      showDialog({ title: "You're offline", message: "The hymns on your phone still work. Check again when you're online.", icon: "offline" });
+    if (!("meta" in check)) {
+      showDialog(
+        check.problem === "offline"
+          ? { title: "You're offline", message: "The hymns on your phone still work. Check again when you're online.", icon: "offline" }
+          : { title: "Couldn't check for new hymns", message: "The hymns on your phone still work. Please try again later.", icon: "problem" },
+      );
       return;
     }
+    const remote = check.meta;
     if (!needsDownload(packState.version, remote)) {
       showToast(`Up to date: every hymn we publish (${remote.count})`);
       return;

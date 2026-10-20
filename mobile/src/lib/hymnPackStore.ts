@@ -6,6 +6,8 @@ import { dirAt, readText, removeDir, writeText } from "./blobStore";
 import { dataSaverOn } from "./dataSaver";
 import { autoCheckDue, needsDownload, parseMeta, parsePack, type HymnPack, type PackMeta } from "./hymnPack";
 import { logAnalyticsEvent } from "./analytics";
+import { isNetworkCode } from "./reachability";
+import { toApiError } from "../api/client";
 
 /**
  * The hymn pack on the phone: downloaded on request (Hymns screen) from the website, kept under
@@ -72,16 +74,26 @@ export async function installedPack(): Promise<HymnPack | null> {
   return pack;
 }
 
-/** What the website has now: version and size (for "Download hymns — 684 KB"). Null when unreachable. */
-export async function remotePackMeta(): Promise<PackMeta | null> {
+/** The website's answer to "is there a newer pack?": its version and size, or why it could not be read. */
+export type PackCheck = { meta: PackMeta } | { problem: "offline" | "failed" };
+
+/** Asks the website for the pack's version: "offline" when no answer came, "failed" for any other miss. */
+export async function checkRemotePack(): Promise<PackCheck> {
   try {
     const res = await axios.get<string>(siteUrls.hymnPackVersion, { timeout: 15_000, responseType: "text", transformResponse: (d) => d });
     await loadPackState();
     setState({ ...state, lastCheckedAt: Date.now() });
-    return parseMeta(typeof res.data === "string" ? res.data : JSON.stringify(res.data));
-  } catch {
-    return null;
+    const meta = parseMeta(typeof res.data === "string" ? res.data : JSON.stringify(res.data));
+    return meta ? { meta } : { problem: "failed" };
+  } catch (e) {
+    return { problem: isNetworkCode(toApiError(e).code) ? "offline" : "failed" };
   }
+}
+
+/** What the website has now: version and size (for "Download hymns — 684 KB"). Null when it could not be read. */
+export async function remotePackMeta(): Promise<PackMeta | null> {
+  const check = await checkRemotePack();
+  return "meta" in check ? check.meta : null;
 }
 
 /**
