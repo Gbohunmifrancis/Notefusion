@@ -41,9 +41,11 @@ interface Options {
   reload: () => void;
   /** An action on the chosen sheets went through (the Library leaves select mode). */
   onDone?: () => void;
+  /** The actions sheet's "Select several": starts the list's selection with this sheet ticked (the Library). */
+  onSelectSeveral?: (item: SavedTranscription) => void;
 }
 
-export function useSheetActions({ items, setItems, reload, onDone }: Options) {
+export function useSheetActions({ items, setItems, reload, onDone, onSelectSeveral }: Options) {
   const { subscription } = useSubscription();
   // The choir this account is in while its plan runs: sheets can be shared with it.
   const choirName = subscription?.choirName ?? null;
@@ -192,7 +194,7 @@ export function useSheetActions({ items, setItems, reload, onDone }: Options) {
     if (kept !== null) patch(new Set([target.id]), (t) => ({ ...t, title: kept }));
   }
 
-  /** Opens one sheet's actions (Home's ⋯ and long press). */
+  /** Opens one sheet's actions (the ⋯ on Home's and the Library's rows; a long press on Home's). */
   function openActions(item: SavedTranscription) {
     setActionsFor(item);
   }
@@ -217,6 +219,7 @@ export function useSheetActions({ items, setItems, reload, onDone }: Options) {
       if (one) void keepSheetOffline(one.id, keep);
     },
     onDelete: () => one && closeActions(() => confirmDelete([one])),
+    onSelectSeveral: onSelectSeveral ? () => one && closeActions(() => onSelectSeveral(one)) : undefined,
   };
 
   const element = (

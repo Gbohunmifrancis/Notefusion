@@ -20,6 +20,7 @@ export function LibraryRow({
   onLongPress,
   offline = null,
   opening = false,
+  onMore,
 }: {
   item: SavedTranscription;
   subtitle: string;
@@ -34,7 +35,13 @@ export function LibraryRow({
   offline?: "kept" | "missing" | null;
   /** Tapped and still loading (board m-ux-medium P2b): a soft tint, "Opening…" and a spinner until Result opens. */
   opening?: boolean;
+  /**
+   * The sheet's actions (board m-ux-medium P2c): Home's ⋯ at the row's end, opening the same sheet of actions. Not
+   * drawn while selecting, when the row is a tick box.
+   */
+  onMore?: () => void;
 }) {
+  const more = !!onMore && !selecting;
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   // No percentage on a row: a tone dot, and only when the sheet is worth a second look.
@@ -60,6 +67,11 @@ export function LibraryRow({
         (offline === "kept" ? " Kept offline." : offline === "missing" ? " Not on this phone while offline." : "") +
         (selecting ? "" : " Long press to select.")
       }
+      // VoiceOver never reaches the ⋯ inside the row, so its sheet is one of the row's own actions (as on Home).
+      accessibilityActions={more ? [{ name: "more", label: `More for ${item.title}` }] : undefined}
+      onAccessibilityAction={(e) => {
+        if (e.nativeEvent.actionName === "more") onMore?.();
+      }}
     >
       {selecting && (
         <View style={[styles.check, selected && styles.checkOn]}>
@@ -105,7 +117,9 @@ export function LibraryRow({
         ) : null}
       </View>
       {opening ? (
-        <ActivityIndicator size="small" color={colors.accent} />
+        <View style={more ? styles.more : null}>
+          <ActivityIndicator size="small" color={colors.accent} />
+        </View>
       ) : (
         <>
           {offline ? (
@@ -115,6 +129,17 @@ export function LibraryRow({
             <View style={styles.score}>
               <View style={[styles.scoreDot, { backgroundColor: tone }]} />
             </View>
+          ) : null}
+          {more ? (
+            <Touchable
+              onPress={onMore}
+              style={styles.more}
+              hitSlop={2}
+              ripple="borderless"
+              accessibilityLabel={`More for ${item.title}`}
+            >
+              <Icon name="more" size={20} color={colors.textMuted} />
+            </Touchable>
           ) : null}
         </>
       )}
@@ -225,5 +250,13 @@ const makeStyles = (c: Palette) =>
       paddingLeft: spacing.xs,
     },
     scoreDot: { width: 6, height: 6, borderRadius: 3 },
+    /** The ⋯ at the row's end, as on Home: a 44 px target, flush with the screen's edge. */
+    more: {
+      width: 44,
+      height: 44,
+      marginRight: -12,
+      alignItems: "center",
+      justifyContent: "center",
+    },
     skeletonGap: { marginTop: 7 },
   });

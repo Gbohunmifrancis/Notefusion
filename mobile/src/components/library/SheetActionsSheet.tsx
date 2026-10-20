@@ -1,7 +1,7 @@
 /**
  * One saved sheet's actions, from Home's recent rows (board a-core/11): the sheet by its doh, name and "72 BPM · 4/4 ·
  * saved Sunday", then grouped rows — Share a link · Share with the choir (only in one) | Rename · Move to folder ·
- * Keep offline | Delete, last and apart, a red word. Edit notes, Transpose and Export need the sheet open, so they stay
+ * Keep offline · Select several (the Library only, board m-ux-medium P2c) | Delete, last and apart, a red word. Edit notes, Transpose and Export need the sheet open, so they stay
  * on the Result screen. Presentational: `useSheetActions` owns what each row does.
  */
 
@@ -23,6 +23,8 @@ export interface SheetActionHandlers {
   onMove: () => void;
   onKeepOffline: (keep: boolean) => void;
   onDelete: () => void;
+  /** Starts the list's selection with this sheet ticked; absent where the list has none (Home). */
+  onSelectSeveral?: () => void;
 }
 
 export function SheetActionsSheet({
@@ -96,6 +98,9 @@ export function SheetActionsSheet({
               hint={keepAll ? "Every sheet is kept (Settings)" : undefined}
               toggle={{ value: keepAll || kept, onChange: handlers.onKeepOffline, disabled: keepAll }}
             />
+            {handlers.onSelectSeveral ? (
+              <Row icon="check" label="Select several" chevron onPress={handlers.onSelectSeveral} />
+            ) : null}
           </Group>
 
           <Group cardStyle={styles.group} style={styles.gap}>

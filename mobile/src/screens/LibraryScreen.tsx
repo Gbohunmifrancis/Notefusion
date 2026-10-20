@@ -53,8 +53,9 @@ const ICON_BTN = 40;
 /**
  * LibraryScreen — the night board's "06 · Library": a big title with search and new,
  * folders as text tabs, the folder's one share link as a banner, and hairline rows
- * that each read by their doh. Long press starts select mode; the floating bar then
- * deletes, files or shares the chosen sheets.
+ * that each read by their doh. Each row's ⋯ opens its actions, as on Home (board m-ux-medium P2c); a long press, or
+ * the actions' "Select several", starts select mode, and the floating bar then deletes, files or shares the chosen
+ * sheets.
  */
 export function LibraryScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
@@ -98,6 +99,10 @@ export function LibraryScreen() {
     setItems,
     reload: () => load(),
     onDone: () => setSelected(new Set()),
+    onSelectSeveral: (item) => {
+      haptics.play("medium");
+      setSelected(new Set([item.id]));
+    },
   });
   const folders = actions.folders;
   const folderCounts = React.useMemo(() => {
@@ -521,7 +526,7 @@ export function LibraryScreen() {
       <FlatList
         ref={listRef}
         data={sortedItems}
-        extraData={[selected, actions.folding, opening.opening]}
+        extraData={[selected, actions.folding, opening.opening, actions.actionsFor]}
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -550,6 +555,7 @@ export function LibraryScreen() {
               onPress={() => (selecting ? toggle(item) : void openItem(item))}
               onLongPress={() => startSelecting(item)}
               opening={opening.opening === item.id}
+              onMore={() => actions.openActions(item)}
               offline={
                 offline && !offlineCopies.cached.has(item.id)
                   ? "missing"
