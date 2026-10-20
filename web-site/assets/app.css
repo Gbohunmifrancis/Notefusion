@@ -140,7 +140,6 @@ body.is-recording .brand-mark, body.is-recording .home-mark { animation: heartbe
 .user-menu-item { cursor: pointer; }
 .user-menu-item .ic, .user-menu-row > .ic { width: 20px; height: 20px; color: var(--muted); }
 .user-menu-item:hover { background: var(--wash); color: var(--ink); }
-.user-menu-item.danger, .user-menu-item.danger .ic { color: var(--danger-text); }
 .user-menu-row .theme-switch, .user-menu-item .switch { margin-left: auto; }
 .user-menu-sep { height: 1px; background: var(--line); margin: 6px 4px; }
 
