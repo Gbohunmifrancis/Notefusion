@@ -2649,6 +2649,23 @@
     });
     current.result = next;
     showResult(next);
+    offerUndo($("r-doh"), C.keyHeader(alt.key) + " now: the notes are written in its scale.", function () {
+      current.dohAnswered = false; current.result = r; showResult(r);
+    });
+  }
+  /**
+   * A choice that rewrote the notes (another doh, the hymnbook's version) is said in the box that asked, with Undo
+   * putting the sheet back as it was and the question with it. Gone once the sheet is saved.
+   */
+  function offerUndo(box, text, undo) {
+    box.innerHTML = "";
+    var said = document.createElement("span"); said.textContent = text;
+    var row = document.createElement("span"); row.className = "doh-choices";
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "btn btn-sm btn-ghost"; b.textContent = "Undo";
+    b.addEventListener("click", function () { hide(box); track("Undid a sheet choice"); undo(); });
+    row.appendChild(b); box.appendChild(said); box.appendChild(row);
+    show(box);
   }
 
   /**
@@ -2694,14 +2711,20 @@
   }
 
   function pickHymn(match) {
+    var before = { result: current.result, lyrics: current.lyrics, dohAnswered: current.dohAnswered };
     current.hymnAnswered = true;
     current.dohAnswered = true;
     // The first verse goes under the notes, unless words were typed already.
     if (!(current.lyrics || "").trim() && match.lyrics) current.lyrics = match.lyrics;
     track("Took hymnbook version", match.slug);
-    var next = H.swap(current.result, match);
+    var next = H.swap(current.result, match), given = current.lyrics;
     current.result = next;
     showResult(next);
+    offerUndo($("r-hymnbook"), "This is the hymnbook's version now, with its notes and words.", function () {
+      current.hymnAnswered = false; current.dohAnswered = before.dohAnswered;
+      if (current.lyrics === given) current.lyrics = before.lyrics; // words typed since are kept
+      current.result = before.result; showResult(before.result);
+    });
   }
 
   /** "Hymnbook version of “Amazing Grace”. Melody and words from …", with the hymn's page linked. */
@@ -3583,6 +3606,7 @@
       if (auto) alertIn($("app-alert"), "success", "Your preview is saved to your library.");
       current.savedId = saved.id; current.title = saved.title; current.shareToken = saved.shareToken || null;
       libraryCache = null;
+      hide($("r-doh")); hide($("r-hymnbook")); // asked before saving; an Undo cannot reach the saved copy
       renderSave();
       var dismissed = false; try { dismissed = localStorage.getItem("nf.web.appBanner") === "no"; } catch (e) { /* ignore */ }
       if (!dismissed) show($("app-banner"));
