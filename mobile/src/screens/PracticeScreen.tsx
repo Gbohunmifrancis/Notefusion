@@ -559,7 +559,9 @@ export function PracticeScreen() {
                 <Text style={[styles.eyebrow, playful && styles.eyebrowPlayful]}>
                   {playful ? "Your singing game" : `Practice path · ${drill.levelName}`}
                 </Text>
-                <Text style={[styles.cardTitle, playful && styles.cardTitlePlayful]}>{drill.title}</Text>
+                <Text style={[styles.cardTitle, playful && styles.cardTitlePlayful]} accessibilityRole="header">
+                  {drill.title}
+                </Text>
                 {where ? (
                   <View accessible accessibilityLabel={where}>
                     <Text style={styles.pathLine}>{where}</Text>
@@ -697,7 +699,7 @@ export function PracticeScreen() {
             ) : null}
 
             {/* ── Your progress: streak and level, the week, the badges ────── */}
-            <Text style={styles.sectionTitle}>Your progress</Text>
+            <Text style={styles.sectionTitle} accessibilityRole="header">Your progress</Text>
             <View style={styles.statsRow}>
               <Card style={styles.statCard}>
                 <View style={styles.statHead}>
@@ -769,7 +771,7 @@ export function PracticeScreen() {
             </Card>
 
             {/* ── Badges: stickers on Playful, a plain list on Focused ──────── */}
-            <Text style={styles.sectionTitle}>{playful ? "My stickers" : "Badges"}</Text>
+            <Text style={styles.sectionTitle} accessibilityRole="header">{playful ? "My stickers" : "Badges"}</Text>
             {playful ? (
               <View style={styles.stickerGrid}>
                 {sortBadges(progress.badges).map((b) => (
