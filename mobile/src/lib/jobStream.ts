@@ -1,7 +1,7 @@
 import { AppState, type AppStateStatus, type NativeEventSubscription } from "react-native";
 import type { AxiosError } from "axios";
 import { baseURL, streamHeaders } from "../api/client";
-import { transcriptionsApi } from "../api/endpoints";
+import { previewApi, transcriptionsApi } from "../api/endpoints";
 import type { TranscriptionJob } from "../api/types";
 import { jobFallbackPollMs } from "./dataPolicy";
 import { dataSaverOn } from "./dataSaver";
@@ -32,6 +32,9 @@ import {
  * A stream that keeps failing is reopened on a backoff (`streamPolicy.ts`), and after three in a row the job
  * is also read on a timer (`jobFallbackPollMs`) until one holds. A server without the stream (404 while the
  * job itself reads fine) is read on that timer only.
+ *
+ * A guest's preview (board l-ux-high/07) is followed the same way on the preview's own routes
+ * (`/api/preview/jobs/{id}/events` and `/api/preview/jobs/{id}`), with no account.
  */
 
 export interface JobWatcher {
@@ -47,6 +50,8 @@ type Timer = ReturnType<typeof setTimeout>;
 
 interface Watch {
   jobId: string;
+  /** A guest's preview: its routes are `/api/preview/jobs/{id}…`. */
+  preview: boolean;
   watchers: Set<JobWatcher>;
   /** The last reading, handed to a screen that starts following the job part-way. */
   last: TranscriptionJob | null;
@@ -78,12 +83,13 @@ let appStateSub: NativeEventSubscription | null = null;
 
 /**
  * Follows a job until it ends or `stop` is called (the last screen to stop closes the stream). Readings arrive
- * through `watcher.onJob`; the last one is handed over at once to a screen joining part-way.
+ * through `watcher.onJob`; the last one is handed over at once to a screen joining part-way. `preview` follows a
+ * guest's preview on its own routes.
  */
-export function watchJob(jobId: string, watcher: JobWatcher): () => void {
+export function watchJob(jobId: string, watcher: JobWatcher, opts?: { preview?: boolean }): () => void {
   let w = watches.get(jobId);
   if (!w) {
-    w = newWatch(jobId);
+    w = newWatch(jobId, opts?.preview === true);
     watches.set(jobId, w);
     w.watchers.add(watcher);
     listenToAppState();
@@ -114,9 +120,10 @@ export function isJobWatched(jobId: string): boolean {
   return watches.has(jobId);
 }
 
-function newWatch(jobId: string): Watch {
+function newWatch(jobId: string, preview: boolean): Watch {
   return {
     jobId,
+    preview,
     watchers: new Set(),
     last: null,
     xhr: null,
@@ -232,7 +239,7 @@ async function open(w: Watch): Promise<void> {
   w.parser = new SseParser();
   w.seen = 0;
   w.endSeen = false;
-  xhr.open("GET", `${baseURL}/api/transcriptions/jobs/${encodeURIComponent(w.jobId)}/events`);
+  xhr.open("GET", `${baseURL}/api/${w.preview ? "preview" : "transcriptions"}/jobs/${encodeURIComponent(w.jobId)}/events`);
   for (const [name, value] of Object.entries(headers)) xhr.setRequestHeader(name, value);
   xhr.setRequestHeader("Accept", "text/event-stream");
   xhr.setRequestHeader("Cache-Control", "no-cache");
@@ -401,7 +408,7 @@ async function read(w: Watch): Promise<void> {
       w.readAgain = false;
       let job: TranscriptionJob;
       try {
-        job = await transcriptionsApi.getJob(w.jobId);
+        job = await (w.preview ? previewApi : transcriptionsApi).getJob(w.jobId);
       } catch (e) {
         if (!isLive(w)) return;
         for (const x of [...w.watchers]) x.onReadFailed?.(e);

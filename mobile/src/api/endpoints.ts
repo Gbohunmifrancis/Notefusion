@@ -246,6 +246,26 @@ export interface SubmitOptions {
   keyboardTranspose?: number;
 }
 
+/** A recording or score on the phone as a multipart part: React Native's FormData takes a {uri,name,type} descriptor. */
+function audioPart(fileUri: string, fileName: string): Blob {
+  const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
+  const mime =
+    ext === "mp3"
+      ? "audio/mpeg"
+      : ext === "wav"
+      ? "audio/wav"
+      : ext === "mid" || ext === "midi"
+      ? "audio/midi"
+      : ext === "xml" || ext === "musicxml"
+      ? "application/xml"
+      : ext === "mxl"
+      ? "application/vnd.recordare.musicxml"
+      : ext === "abc"
+      ? "text/plain"
+      : "audio/m4a";
+  return { uri: fileUri, name: fileName, type: mime } as unknown as Blob;
+}
+
 export const transcriptionsApi = {
   /**
    * Upload a captured clip as multipart/form-data; returns the polling job. `onUploadProgress`
@@ -265,27 +285,7 @@ export const transcriptionsApi = {
     },
   ) => {
     const form = new FormData();
-    const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
-    const mime =
-      ext === "mp3"
-        ? "audio/mpeg"
-        : ext === "wav"
-        ? "audio/wav"
-        : ext === "mid" || ext === "midi"
-        ? "audio/midi"
-        : ext === "xml" || ext === "musicxml"
-        ? "application/xml"
-        : ext === "mxl"
-        ? "application/vnd.recordare.musicxml"
-        : ext === "abc"
-        ? "text/plain"
-        : "audio/m4a";
-    // React Native's FormData takes a {uri,name,type} blob descriptor.
-    form.append("audio", {
-      uri: fileUri,
-      name: fileName,
-      type: mime,
-    } as unknown as Blob);
+    form.append("audio", audioPart(fileUri, fileName));
     form.append("mode", opts.mode);
     if (opts.key) form.append("key", opts.key);
     if (opts.tempo != null) form.append("tempo", String(opts.tempo));
@@ -397,6 +397,49 @@ export const transcriptionsApi = {
         { timeout: 30_000 },
       )
       .then((r) => r.data),
+};
+
+/**
+ * The guest preview (board l-ux-high/07): the website's try-it-free thirty seconds, from a phone with no account.
+ * Anonymous, as the website sends it — the API meters it by the `X-Device-Id` every request carries, one per phone
+ * ever — and answered with an ordinary job, which is followed on the preview's own routes. `claim` is the one call
+ * made with an account: the sign-up that keeps the preview.
+ */
+export const previewApi = {
+  /** The take or file, as the web app's guest form sends it; only its first thirty seconds are transcribed. */
+  submit: (
+    fileUri: string,
+    fileName: string,
+    opts: Pick<SubmitOptions, "mode" | "timeSignature" | "keyboardTranspose">,
+    extra?: { onUploadProgress?: (fraction: number) => void },
+  ) => {
+    const form = new FormData();
+    form.append("audio", audioPart(fileUri, fileName));
+    form.append("mode", opts.mode);
+    if (opts.timeSignature) form.append("timeSignature", opts.timeSignature);
+    if (opts.keyboardTranspose) form.append("keyboardTranspose", String(opts.keyboardTranspose));
+    // Played back with the app's own piano, as every result is.
+    form.append("audioPreview", "false");
+    return api
+      .post<TranscriptionJob>("/api/preview", form, {
+        timeout: 300_000,
+        onUploadProgress: extra?.onUploadProgress
+          ? (e) => {
+              const total = e.total ?? 0;
+              if (total > 0) extra.onUploadProgress?.(Math.min(1, e.loaded / total));
+            }
+          : undefined,
+      })
+      .then((r) => r.data);
+  },
+
+  /** The preview job; its id is the credential. A finished one carries the sheet as a free account sees it. */
+  getJob: (jobId: string) =>
+    api.get<TranscriptionJob>(`/api/preview/jobs/${encodeURIComponent(jobId)}`).then((r) => r.data),
+
+  /** The signed-in account says the preview was theirs (the funnel's conversion). Idempotent. */
+  claim: (jobId: string) =>
+    api.post(`/api/preview/jobs/${encodeURIComponent(jobId)}/claim`).then(() => undefined),
 };
 
 /**
