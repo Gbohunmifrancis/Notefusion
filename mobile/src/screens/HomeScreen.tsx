@@ -515,7 +515,9 @@ export function HomeScreen({ navigation }: Props) {
                   </View>
                 )}
               </View>
-              <Text style={styles.title}>{homeTitle(seasonFlag)}</Text>
+              <Text style={styles.title} accessibilityRole="header">
+                {homeTitle(seasonFlag)}
+              </Text>
 
               {/* ── The record button: the mark itself ────────────────── */}
               <View style={styles.stage}>
@@ -651,7 +653,9 @@ export function HomeScreen({ navigation }: Props) {
 
               {/* ── Recent ────────────────────────────────────────────── */}
               <View style={styles.recentSectionHeader}>
-                <Text style={styles.recentSectionTitle}>Recent</Text>
+                <Text style={styles.recentSectionTitle} accessibilityRole="header">
+                  Recent
+                </Text>
                 <Touchable
                   onPress={() => navigation.navigate('Library')}
                   ripple={false}

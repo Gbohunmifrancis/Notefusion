@@ -490,7 +490,11 @@ export function LibraryScreen() {
       )}
 
       {/* Below "On its way", the sheets themselves, so the two lists read apart (board 13). */}
-      {(outbox.length > 0 || song.row) && sortedItems.length > 0 ? <Text style={styles.sheetsEyebrow}>All sheets</Text> : null}
+      {(outbox.length > 0 || song.row) && sortedItems.length > 0 ? (
+        <Text style={styles.sheetsEyebrow} accessibilityRole="header">
+          All sheets
+        </Text>
+      ) : null}
     </View>
   );
 

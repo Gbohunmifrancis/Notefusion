@@ -60,7 +60,9 @@ export function PendingSends({
   return (
     <View style={styles.card}>
       <View style={styles.head}>
-        <Text style={styles.heading}>On its way</Text>
+        <Text style={styles.heading} accessibilityRole="header">
+          On its way
+        </Text>
         <Text style={styles.count}>{items.length + (song ? 1 : 0)}</Text>
       </View>
       {song ? (
