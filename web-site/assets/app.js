@@ -4527,7 +4527,7 @@
         // Adding time: the date it would run to, so a member sees what the payment buys before paying.
         var until = extendedEnd(chosen);
         fine.appendChild(document.createTextNode(isSinglePlan(chosen)
-          ? "Secure checkout. One payment, one transcription that never expires. No subscription."
+          ? "Secure checkout. One payment, one transcription that never expires."
           : until
             ? "Secure checkout. It starts when your current time ends: " + (isChoirPlan(chosen) ? "your choir's Pro" : "Pro") + " until " + longDate(until) + ". Nothing renews without you."
           : isChoirPlan(chosen)
@@ -4582,7 +4582,7 @@
         if (isSinglePlan(plan)) { var noSub = document.createElement("span"); noSub.className = "plan-opt-tag"; noSub.textContent = "No subscription"; top.appendChild(noSub); }
         var note = document.createElement("span"); note.className = "plan-opt-note";
         note.textContent = isSinglePlan(plan)
-          ? "One more transcription, any recording or song link. No subscription."
+          ? "One more transcription, any recording or song link."
           : isChoirPlan(plan)
             ? "Pro for you and up to " + (plan.choirSeats || 25) + " singers, 60 songs a month shared, one library" + (isYearly(plan) ? ", paid once a year" : "")
           : isYearly(plan)
