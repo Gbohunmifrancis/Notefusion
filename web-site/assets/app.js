@@ -3647,7 +3647,10 @@
         live.appendChild(small);
       }, 100);
       prTake.stopAt = setTimeout(stopPracticeTake, (leadIn + PR.sliceSeconds(slice, r.tempo, speed) + PR.TAIL_SEC) * 1000);
-    }).catch(function () { if (at === epoch && !prTake.cancelled) $("pr-status").textContent = "Allow the microphone for this site to record a take, then try again."; });
+    }).catch(function (err) {
+      // Said by cause, with the way to allow it, as Sing it and the recorder say it (assets/recorder.js).
+      if (at === epoch && !prTake.cancelled) $("pr-status").textContent = window.NfRecorder ? window.NfRecorder.micProblem(err) : "Allow the microphone for this site to record a take, then try again.";
+    });
   });
   /** Ends the take; it is marked unless it was cancelled. */
   function stopPracticeTake() {
