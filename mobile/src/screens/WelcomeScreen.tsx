@@ -7,7 +7,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { GoogleG } from "../components/night/GoogleG";
 import { Icon } from "../components/Icon";
 import { NightButton } from "../components/night/NightButton";
-import { ErrorNote, Glow, Mark, Wordmark, nightText } from "../components/night/NightUI";
+import { ErrorNote, Glow, Mark, NightLink, Wordmark, nightText } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
 import { tokenStore } from "../lib/tokenStore";
@@ -89,6 +89,7 @@ export function WelcomeScreen({ navigation }: Props) {
                 badge={lastAuthMethod === "google" ? "Last used" : undefined}
                 onPress={google}
                 loading={googleBusy}
+                style={i > 0 && styles.next}
               />
             ) : block === "email" && emailLast ? (
               <NightButton
@@ -99,6 +100,7 @@ export function WelcomeScreen({ navigation }: Props) {
                 badge="Last used"
                 variant={i > 0 ? "ghost" : "white"}
                 onPress={() => navigation.navigate("Login")}
+                style={i > 0 && styles.next}
               />
             ) : block === "email" ? (
               <NightButton
@@ -106,6 +108,7 @@ export function WelcomeScreen({ navigation }: Props) {
                 label="Create an account with email"
                 variant={i > 0 ? "ghost" : "white"}
                 onPress={() => navigation.navigate("Register")}
+                style={i > 0 && styles.next}
               />
             ) : (
               <NightButton
@@ -114,16 +117,18 @@ export function WelcomeScreen({ navigation }: Props) {
                 icon={<Icon name="mic" size={18} color={night.text} />}
                 variant="ghost"
                 onPress={() => void tryFirst()}
+                style={i > 0 && styles.next}
               />
             ),
           )}
-          <Text style={[nightText.muted, styles.center, styles.signIn]}>
-            {choices.lead}{" "}
+          {/* Each link its own 44 px text button (board m-ux-medium P5d); the lead-in stays plain text. */}
+          <View style={styles.linkRow}>
+            <Text style={nightText.muted}>{choices.lead}</Text>
             {choices.links.map((link, i) => (
               <React.Fragment key={link}>
-                {i > 0 ? " · " : null}
-                <Text
-                  style={nightText.link}
+                {i > 0 ? <Text style={styles.dot}>·</Text> : null}
+                <NightLink
+                  label={link === "create" ? "Create an account" : link === "signIn" ? "Sign in" : "Try it first"}
                   onPress={
                     link === "create"
                       ? () => navigation.navigate("Register")
@@ -131,24 +136,16 @@ export function WelcomeScreen({ navigation }: Props) {
                         ? () => navigation.navigate("Login")
                         : () => void tryFirst()
                   }
-                  accessibilityRole="link"
-                >
-                  {link === "create" ? "Create an account" : link === "signIn" ? "Sign in" : "Try it first"}
-                </Text>
+                />
               </React.Fragment>
             ))}
-          </Text>
-          <Text style={styles.legal}>
-            By continuing you agree to the{" "}
-            <Text style={styles.legalLink} onPress={() => WebBrowser.openBrowserAsync(siteUrls.terms)}>
-              Terms
-            </Text>{" "}
-            and the{" "}
-            <Text style={styles.legalLink} onPress={() => WebBrowser.openBrowserAsync(siteUrls.privacy)}>
-              Privacy Policy
-            </Text>
-            .
-          </Text>
+          </View>
+          <Text style={styles.legal}>By continuing you agree to the</Text>
+          <View style={[styles.linkRow, styles.legalRow]}>
+            <NightLink legal label="Terms" onPress={() => void WebBrowser.openBrowserAsync(siteUrls.terms)} />
+            <Text style={styles.legal}>and the</Text>
+            <NightLink legal label="Privacy Policy" onPress={() => void WebBrowser.openBrowserAsync(siteUrls.privacy)} />
+          </View>
         </View>
       </SafeAreaView>
     </View>
@@ -161,16 +158,18 @@ const styles = StyleSheet.create({
   brand: { flex: 1, alignItems: "center", justifyContent: "center", paddingBottom: 40 },
   wordmark: { marginTop: 24 },
   tagline: { marginTop: 6 },
-  actions: { paddingHorizontal: 22, paddingBottom: 20, gap: 10 },
-  center: { textAlign: "center" },
-  signIn: { marginTop: 8 },
+  // 6 apart, so the 44 px link rows sit close; the buttons keep their 10 (`next`).
+  actions: { paddingHorizontal: 22, paddingBottom: 20, gap: 6 },
+  next: { marginTop: 4 },
+  linkRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center" },
+  dot: { fontSize: 14, fontFamily: nightFonts.regular, color: night.dim },
   legal: {
-    marginTop: 6,
     textAlign: "center",
-    fontSize: 11.5,
-    lineHeight: 17,
+    fontSize: 13,
+    lineHeight: 19,
     fontFamily: nightFonts.regular,
     color: night.faint,
   },
-  legalLink: { color: night.muted, textDecorationLine: "underline" },
+  /** The legal links' row, straight under the sentence they finish. */
+  legalRow: { marginTop: -6 },
 });

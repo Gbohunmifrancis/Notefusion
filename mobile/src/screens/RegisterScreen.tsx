@@ -3,7 +3,7 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NightButton } from "../components/night/NightButton";
 import { NightField } from "../components/night/NightField";
-import { BackButton, ErrorNote, NightScreen, nightText } from "../components/night/NightUI";
+import { BackButton, ErrorNote, NightLink, NightScreen, nightText } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
 import { emailFieldError } from "../lib/authErrors";
@@ -140,12 +140,11 @@ export function RegisterScreen({ navigation, route }: Props) {
 
       <NightButton label="Continue" variant="blue" onPress={submit} loading={busy} disabled={!canSubmit} style={styles.submit} />
 
-      <Text style={[nightText.muted, styles.footer]}>
-        Already have one?{" "}
-        <Text style={nightText.link} onPress={() => navigation.navigate("Login", { email: email.trim() })} accessibilityRole="link">
-          Sign in
-        </Text>
-      </Text>
+      {/* The link its own 44 px text button (board m-ux-medium P5d); "Already have one?" stays plain text. */}
+      <View style={styles.footer}>
+        <Text style={nightText.muted}>Already have one?</Text>
+        <NightLink label="Sign in" onPress={() => navigation.navigate("Login", { email: email.trim() })} />
+      </View>
     </NightScreen>
   );
 }
@@ -161,5 +160,5 @@ const styles = StyleSheet.create({
   hint: { marginTop: 8, fontSize: 12.5, fontFamily: nightFonts.regular, color: night.muted },
   error: { marginTop: 18 },
   submit: { marginTop: 24 },
-  footer: { textAlign: "center", marginTop: 20 },
+  footer: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center", marginTop: 12 },
 });

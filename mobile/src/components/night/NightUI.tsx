@@ -232,6 +232,23 @@ export const nightText = StyleSheet.create({
  */
 export const pressedLink = { opacity: 0.55 } as const;
 
+/**
+ * A link as its own text button (board m-ux-medium P5d): the words and colour of a link in a sentence, but 44 px tall
+ * with 10 px either side, so a thumb can hit it. Its lead-in ("New here?") stays plain text beside it. `legal` is the
+ * legal line's: 13 px, underlined, in the muted grey.
+ */
+export function NightLink({ label, onPress, legal = false }: { label: string; onPress: () => void; legal?: boolean }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="link"
+      style={({ pressed }) => [styles.textButton, legal && styles.textButtonLegal, pressed && pressedLink]}
+    >
+      <Text style={legal ? styles.legalLink : nightText.link}>{label}</Text>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: night.bg },
   flex: { flex: 1 },
@@ -274,4 +291,7 @@ const styles = StyleSheet.create({
   or: { flexDirection: "row", alignItems: "center", gap: 12, marginVertical: 20 },
   orLine: { flex: 1, height: 1, backgroundColor: night.line },
   orText: { fontSize: 13, fontFamily: nightFonts.regular, color: night.faint },
+  textButton: { minHeight: 44, paddingHorizontal: 10, justifyContent: "center" },
+  textButtonLegal: { paddingHorizontal: 8 },
+  legalLink: { fontSize: 13, fontFamily: nightFonts.medium, color: night.muted, textDecorationLine: "underline" },
 });
