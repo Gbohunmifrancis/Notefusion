@@ -12,11 +12,16 @@ export type ImportKind = 'song' | 'voice';
 const KEY = 'nf.importKind';
 
 let current: ImportKind = 'song';
+/** Whether anyone has answered on this phone yet: until then nothing is "last time". */
+let answered = false;
 
 export function loadImportKind(): Promise<void> {
   return AsyncStorage.getItem(KEY)
     .then((stored) => {
-      if (stored === 'song' || stored === 'voice') current = stored;
+      if (stored === 'song' || stored === 'voice') {
+        current = stored;
+        answered = true;
+      }
     })
     .catch(() => undefined);
 }
@@ -25,7 +30,12 @@ export function importKind(): ImportKind {
   return current;
 }
 
+export function importKindAnswered(): boolean {
+  return answered;
+}
+
 export async function setImportKind(kind: ImportKind): Promise<void> {
   current = kind;
+  answered = true;
   await AsyncStorage.setItem(KEY, kind).catch(() => undefined);
 }

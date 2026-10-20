@@ -242,12 +242,15 @@
   /** A mode's screen is a pushed screen: the view's own heading steps aside while it is open. */
   function inMode(on) { if (root && root.parentNode) root.parentNode.classList.toggle("pv-in-mode", on); }
 
+  /** The browser's Back closes an open mode's screen too (assets/back.js), as its own back button does. */
+  var modeLayer = null;
   /** Opens a mode's screen in the view's place (its script loads the first time); back returns to the hub. */
   function openMode(id) {
     if (s.phase !== "idle" || s.mode) return;
     stopHear(); stopReplay(); hideToast();
     var gen = s.gen;
     s.mode = id; inMode(true);
+    if (window.NfBack) modeLayer = window.NfBack.push(function () { modeLayer = null; closeMode(); });
     track("practice_mode_opened", "mode=" + id);
     root.innerHTML = "";
     var sk = el("div", "pv-skel");
@@ -262,10 +265,12 @@
       });
     }, function () {
       if (gen !== s.gen || s.mode !== id) return;
-      s.mode = null; inMode(false); s.error = "That didn't load. Check your connection and try again."; render();
+      modeDone(); s.mode = null; inMode(false); s.error = "That didn't load. Check your connection and try again."; render();
     });
   }
+  function modeDone() { if (modeLayer) { window.NfBack.done(modeLayer); modeLayer = null; } }
   function closeMode() {
+    modeDone();
     if (!s.mode) return;
     if (s.mode === "season") { if (window.NfPracticeCarols) window.NfPracticeCarols.leave(); }
     else if (window.NfPracticeModeView) window.NfPracticeModeView.leave();
@@ -336,6 +341,7 @@
     stopHear(); stopReplay(); hideToast();
     var gen = s.gen, season = PP().seasonOf(s.progress.season.season);
     s.mode = "season"; inMode(true);
+    if (window.NfBack) modeLayer = window.NfBack.push(function () { modeLayer = null; closeMode(); });
     track(PP().seasonWords(season).opened, "sung=" + s.progress.season.sung);
     root.innerHTML = "";
     var sk = el("div", "pv-skel");
@@ -351,7 +357,7 @@
       });
     }, function () {
       if (gen !== s.gen || s.mode !== "season") return;
-      s.mode = null; inMode(false); s.error = "That didn't load. Check your connection and try again."; render();
+      modeDone(); s.mode = null; inMode(false); s.error = "That didn't load. Check your connection and try again."; render();
     });
   }
 
@@ -1081,7 +1087,7 @@
     if (s.mode) {
       if (s.mode === "season") { if (window.NfPracticeCarols) window.NfPracticeCarols.leave(); }
       else if (window.NfPracticeModeView) window.NfPracticeModeView.leave();
-      s.mode = null; inMode(false);
+      modeDone(); s.mode = null; inMode(false);
     }
   }
   /** Signed out: the next person on this browser sees none of it. */

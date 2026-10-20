@@ -19,6 +19,7 @@ import { fonts, motion, spacing, type Palette } from "../design/theme";
 import { useColors, useTheme, useThemedStyles } from "../lib/theme";
 import { useBreath } from "../lib/breath";
 import { TAB_ORDER, type TabName } from "../lib/navTargets";
+import { leaveThrough } from "../lib/leaveGuard";
 import type { TabParams } from "../navigation/types";
 
 const Tab = createBottomTabNavigator<TabParams>();
@@ -77,7 +78,8 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
           const onPress = () => {
             if (!route) return;
             const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
-            if (!focused && !event.defaultPrevented) navigation.navigate(name);
+            // A take being recorded asks first (lib/leaveGuard): the tab bar no longer walks away from it.
+            if (!focused && !event.defaultPrevented) leaveThrough(() => navigation.navigate(name));
           };
 
           if (name === "Record") {

@@ -37,7 +37,9 @@ html { scroll-padding-top: 80px; }
 .try-box { margin-top: 32px; max-width: 520px; }
 .try-main { display: flex; flex-wrap: wrap; gap: 8px; }
 .try-file { position: relative; }
-.try-file input { display: none; }
+/* Hidden from sight, not from the keyboard: Tab reaches the picker and a screen reader hears "Upload a recording". */
+.try-file input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip: rect(0 0 0 0); }
+.try-file:has(input:focus-visible) { outline: 2px solid var(--page-blue); outline-offset: 2px; }
 .try-meter { display: inline-flex; max-width: 100%; align-items: center; gap: 8px; margin-top: 16px; white-space: nowrap; color: var(--page-text-2); font-size: 14px; font-weight: 500; }
 .try-meter select { flex: 0 1 auto; min-width: 0; min-height: 44px; padding: 0 8px; border: 1px solid var(--page-line-strong); border-radius: var(--r-sm); background: var(--page-surface); color: var(--page-navy); font: inherit; font-size: 16px; }
 .try-link { margin-top: 16px; }

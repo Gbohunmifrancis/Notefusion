@@ -64,21 +64,43 @@ function tuneCost(b: KindBilling): string | undefined {
   return b.boughtRemaining > 0 ? boughtLine(b.boughtRemaining) : undefined;
 }
 
-/** The two answers, the remembered one first. */
-export function recordKindChoices(remembered: RecordingKind, billing: KindBilling): KindChoice[] {
+/** Where the audio came from, and whether this phone has answered the question before. */
+export interface KindContext {
+  answered: boolean;
+  fromMic: boolean;
+}
+
+/**
+ * The answer put first before anyone has given one. A take from the mic is a hummed or sung tune (a phone held
+ * up to a speaker is the exception); a file from the phone is a song, unless this account cannot send a song
+ * (free, none bought), when offering it first only led to "Songs need Pro" and a second choice.
+ */
+export function defaultKind(fromMic: boolean, billing: KindBilling): RecordingKind {
+  if (fromMic) return "voice";
+  const cannotSendSong = billing.known && !billing.isPro && billing.boughtRemaining <= 0;
+  return cannotSendSong ? "voice" : "song";
+}
+
+/** The two answers: the one given last time first (and marked), else the likelier one for where the audio came from. */
+export function recordKindChoices(
+  remembered: RecordingKind,
+  billing: KindBilling,
+  context: KindContext = { answered: true, fromMic: false },
+): KindChoice[] {
+  const first = context.answered ? remembered : defaultKind(context.fromMic, billing);
   const song: KindChoice = {
     kind: "song",
     title: TITLES.song,
     icon: "song",
-    lastTime: remembered === "song",
+    lastTime: context.answered && remembered === "song",
     cost: songCost(billing),
   };
   const voice: KindChoice = {
     kind: "voice",
     title: TITLES.voice,
     icon: "sing",
-    lastTime: remembered === "voice",
+    lastTime: context.answered && remembered === "voice",
     cost: tuneCost(billing),
   };
-  return remembered === "song" ? [song, voice] : [voice, song];
+  return first === "song" ? [song, voice] : [voice, song];
 }

@@ -72,3 +72,30 @@ test("Pro without the month's count says nothing about the song, and the tune is
 test("billing not known: no cost chips at all (fails open)", () => {
   assert.deepEqual(costs("song", free({ known: false })), ["song*: -", "voice: -"]);
 });
+
+test("nobody has answered yet: a mic take offers the tune first, with no Last time chip", () => {
+  assert.deepEqual(
+    recordKindChoices("song", free(), { answered: false, fromMic: true }).map((c) => [c.kind, c.lastTime]),
+    [["voice", false], ["song", false]],
+  );
+  // Pro too: a take from the mic is a tune far more often than a speaker held up to it.
+  assert.deepEqual(
+    recordKindChoices("song", { known: true, isPro: true, songCreditsRemaining: 20, freeRemaining: 0, boughtRemaining: 0 }, { answered: false, fromMic: true })
+      .map((c) => c.kind),
+    ["voice", "song"],
+  );
+});
+
+test("nobody has answered yet: an imported file offers the song first, unless this account cannot send one", () => {
+  assert.deepEqual(recordKindChoices("song", free({ boughtRemaining: 1 }), { answered: false, fromMic: false }).map((c) => c.kind), ["song", "voice"]);
+  assert.deepEqual(recordKindChoices("song", free(), { answered: false, fromMic: false }).map((c) => c.kind), ["voice", "song"]);
+  // Billing not read yet: no guess about what the account can afford.
+  assert.deepEqual(recordKindChoices("song", { ...free(), known: false }, { answered: false, fromMic: false }).map((c) => c.kind), ["song", "voice"]);
+});
+
+test("an answer given before still comes first, from the mic as from a file", () => {
+  assert.deepEqual(
+    recordKindChoices("song", free({ boughtRemaining: 2 }), { answered: true, fromMic: true }).map((c) => [c.kind, c.lastTime]),
+    [["song", true], ["voice", false]],
+  );
+});
