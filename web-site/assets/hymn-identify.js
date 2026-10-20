@@ -121,6 +121,7 @@
   var OWN = /^(HYMN_[A-Z_]+|RATE_LIMITED)$/;
   function failure(code, message, status) {
     var text = OWN.test(code || "") && message ? message
+      : code === "TIMEOUT" ? "This is taking longer than usual. Please try again in a moment."
       : status === 0 ? "We couldn't reach NoteFusion. Check your connection and try again."
       : "Something went wrong on our side. Please try again in a moment.";
     showStart(true);
@@ -131,11 +132,13 @@
   function send(blob, name) {
     clearResult();
     showStart(false);
-    say("Listening for the tune…", "listening");
+    say("Finding your hymn… usually a few seconds.", "listening");
     var form = new FormData();
     form.append("audio", blob, name || "hum.webm");
     var ctrl = window.AbortController ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, TIMEOUT_MS);
+    // A slow answer is not a lost connection: the abort is told apart from a network failure.
+    var timedOut = false;
+    var timer = setTimeout(function () { timedOut = true; if (ctrl) ctrl.abort(); }, TIMEOUT_MS);
     var headers = {};
     var dev = deviceId();
     if (dev) headers["X-Device-Id"] = dev;
@@ -149,7 +152,7 @@
           render(body);
         });
       })
-      .catch(function () { failure(null, null, 0); })
+      .catch(function () { failure(timedOut ? "TIMEOUT" : null, null, 0); })
       .then(function () { clearTimeout(timer); });
   }
 
