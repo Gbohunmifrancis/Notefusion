@@ -2667,9 +2667,8 @@
     renderSave();
 
     isPro() ? hide($("r-watermark")) : show($("r-watermark"));
-    // One set of plans on the page at a time: the note under the downloads carries them while a
-    // result is showing; the standalone panel is for the empty state and the Account view.
-    isPro() ? hide($("r-upgrade")) : (renderUnlock(result), show($("r-upgrade")), loadPlans($("r-upgrade"), $("plans"), {}));
+    // A free sheet's way to Pro is one row under it; the plans themselves are the dialog's.
+    isPro() ? hide($("r-upgrade")) : (renderUnlock(result), show($("r-upgrade")));
     renderVerdict();
     hide($("upgrade-panel"));
     // Four parts are written on request, never assumed: the tab appears once they exist (a saved
@@ -3551,59 +3550,33 @@
       b.hidden = !showsParts && (!panel || panel.classList.contains("hidden"));
     });
   }
-  /** A Pro-only action, from anywhere: close the pop-up and bring the Pro card into view. */
+  /** A Pro-only action, from anywhere: close the pop-up and open the plans (a guest is asked to sign up first). */
   function pitchPro() {
     closeTool(); closeFull();
     if (guest) { openAuth("register"); return; }
-    show($("r-upgrade"));
-    $("r-upgrade").scrollIntoView({ behavior: "smooth", block: "start" });
-    rise($("r-upgrade"));
-  }
-  document.querySelectorAll(".pro-tile").forEach(function (t) {
-    t.addEventListener("click", function () { track("Pro preview: " + t.getAttribute("data-upgrade")); openUpgrade(); });
-  });
-
-  /** The frosted four-part preview, written from this sheet's own opening so it looks like theirs. */
-  var SCALE = ["d", "r", "m", "f", "s", "l", "t"];
-  function previewParts(result) {
-    var notes = (result.notes || []).slice(0, 8);
-    if (notes.length < 4) return;
-    function step(sol, by) {
-      var i = SCALE.indexOf(String(sol || "").charAt(0)); if (i < 0) return sol || "d";
-      var j = i + by, mark = j < 0 ? "," : j > 6 ? "'" : "";
-      return SCALE[((j % 7) + 7) % 7] + mark;
-    }
-    function row(by) { return notes.map(function (n, k) { return (by === 0 ? (n.solfa || "d") + (n.octaveMark || "") : step(n.solfa, by)) + (k % 2 ? " |" : " :"); }).join(" ").replace(/ [:|]$/, ""); }
-    var rows = $("pro-satb").children;
-    [0, -2, 2, -4].forEach(function (by, i) {
-      if (!rows[i]) return;
-      rows[i].innerHTML = "<em>" + "SATB".charAt(i) + "</em>";
-      rows[i].appendChild(document.createTextNode(row(by)));
-    });
+    openUpgrade();
   }
 
-  // ── Pro, under the sheet: what this song is missing, in its own words ────
-  // The plans used to sit under the downloads at the very bottom, past every tool, so most people never
-  // saw them. They now follow the sheet, and a free preview of a longer song says how much is locked.
+  // ── Pro, under the sheet: one row, in this song's own words (board m-ux-medium W2e) ────
+  // It used to be a card taller than the sheet, with a second blue button; Play is now the result's one filled button,
+  // and a free preview of a longer song still says how much is locked.
   function renderUnlock(result) {
-    previewParts(result);
     var dur = result.songDurationSec || 0, heard = 60;
     var cut = !!result.truncated && dur > heard;
-    cut ? show($("r-unlock-rest")) : hide($("r-unlock-rest"));
     if (cut) {
-      // The Pro card below says what is locked, so the long notice above the sheet becomes one chip.
+      // The row below says what is locked, so the long notice above the sheet becomes one chip.
       hide($("r-truncated"));
       var chip = document.createElement("span"); chip.className = "chip chip-preview";
       chip.textContent = "Preview · 1:00 of " + formatSec(dur);
       $("r-chips").appendChild(chip);
-      $("r-unlock-left").textContent = formatSec(dur - heard) + " more of this song";
-      $("r-unlock-title").textContent = "Unlock the rest of this song";
-      $("r-unlock-lead").textContent = "You've seen the first minute of " + formatSec(dur) + ". Pro writes out the whole song — every bar, with the alto, tenor and bass under it and a PDF without the mark.";
+      $("r-unlock-title").textContent = "The rest of this song with Pro";
+      $("r-unlock-lead").textContent = formatSec(dur - heard) + " more of it, with alto, tenor and bass and no watermark";
     } else {
-      $("r-unlock-title").textContent = "Take this sheet to your choir";
-      $("r-unlock-lead").textContent = "Pro adds the alto, tenor and bass under the tune, the PDF, MusicXML and MIDI with no watermark, and whole songs up to six minutes.";
+      $("r-unlock-title").textContent = "More with Pro";
+      $("r-unlock-lead").textContent = "Alto, tenor and bass, Sing it, downloads with no watermark";
     }
   }
+  $("r-upgrade").addEventListener("click", function () { track("Pro row"); openUpgrade(); });
 
   // ── How did it come out? Asked under every fresh transcription ──────────
   // One tap; "close" or "off" then asks what was off. The answer goes to the API as a "transcription"

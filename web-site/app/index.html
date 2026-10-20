@@ -571,55 +571,12 @@
         <p class="verdict-thanks hidden" id="verdict-thanks" aria-live="polite"></p>
       </div>
 
-      <!-- ── Pro: what it gives, in plain words, and a look at it through frosted glass ── -->
-      <div class="unlock hidden" id="r-upgrade">
-        <div class="unlock-rest hidden" id="r-unlock-rest" aria-hidden="true"><span class="unlock-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg><span id="r-unlock-left"></span></span></div>
-        <h2><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg><span id="r-unlock-title">Take this sheet to your choir</span></h2>
-        <p class="unlock-lead" id="r-unlock-lead">Pro adds the alto, tenor and bass under the tune, the PDF, MusicXML and MIDI with no watermark, and whole songs up to six minutes.</p>
-
-        <div class="pro-previews" role="list" aria-label="What Pro unlocks">
-          <button class="pro-tile" type="button" role="listitem" data-upgrade="parts">
-            <span class="pro-glass pro-satb" id="pro-satb" aria-hidden="true">
-              <span><em>S</em>d : r | m : f | s : – | m : d</span>
-              <span><em>A</em>s, : t, | d : r | m : – | d : s,</span>
-              <span><em>T</em>m : f | s : l | d' : – | s : m</span>
-              <span><em>B</em>d, : s, | d : f, | d : – | d : d,</span>
-            </span>
-            <span class="pro-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Pro</span>
-            <strong>Alto, tenor &amp; bass</strong>
-            <small>All four parts written under your tune, ready for the choir</small>
-          </button>
-          <button class="pro-tile" type="button" role="listitem" data-upgrade="sing">
-            <span class="pro-glass pro-marks" aria-hidden="true"><i class="hit">d</i><i class="hit">r</i><i class="near">m</i><i class="hit">f</i><i class="wrong">s</i><i class="hit">l</i><i class="near">t</i><i class="hit">d'</i></span>
-            <span class="pro-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Pro</span>
-            <strong>Sing it, get marked</strong>
-            <small>Sing your part and see every note: in tune, close or off</small>
-          </button>
-          <button class="pro-tile" type="button" role="listitem" data-upgrade="downloads">
-            <span class="pro-glass pro-pdf" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><b>PDF</b></span>
-            <span class="pro-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Pro</span>
-            <strong>PDF, MusicXML &amp; MIDI</strong>
-            <small>Print it, open it in MuseScore or Sibelius — no watermark</small>
-          </button>
-          <button class="pro-tile" type="button" role="listitem" data-upgrade="whole">
-            <span class="pro-glass pro-long" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span class="pro-lock"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>Pro</span>
-            <strong>The whole song</strong>
-            <small>Up to six minutes, twenty songs a month — not just the first minute</small>
-          </button>
-        </div>
-
-        <p class="pro-plus"><strong>Everything in Free, plus:</strong></p>
-        <ul class="pay-perks">
-          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
-          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Alto, tenor and bass written under any tune</li>
-          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>Sing your part and have every note marked</li>
-          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>PDF, MusicXML and MIDI, no watermark</li>
-          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>The priority lane: never wait in the queue</li>
-          <li><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>One payment per period — nothing renews without you</li>
-        </ul>
-        <div class="plans" id="plans"></div>
-      </div>
+      <!-- ── Pro, one row under the sheet (board m-ux-medium W2e): Play stays the one filled button; this opens the plans. ── -->
+      <button class="pro-row hidden" id="r-upgrade" type="button">
+        <span class="pro-row-ic" aria-hidden="true"><svg class="ic"><use href="/assets/icons.svg#i-crown"/></svg></span>
+        <span class="pro-row-tx"><b id="r-unlock-title">More with Pro</b><small id="r-unlock-lead">Alto, tenor and bass, Sing it, downloads with no watermark</small></span>
+        <svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev"/></svg>
+      </button>
 
       <!-- The tools themselves. They live here, out of sight, and open one at a time in the pop-up below. -->
       <div class="tool-dock" id="tool-dock" hidden>
