@@ -168,6 +168,9 @@ const PROVIDERS: Record<string, string> = { youtube: "YouTube", spotify: "Spotif
 /** The space between a guest's "Keep this sheet" card and the player above it. */
 const KEEP_GAP = 8;
 
+/** Long enough for one full-screen modal to leave before the next is shown (iOS presents one at a time). */
+const MODAL_HANDOVER_MS = 400;
+
 type Panel = "transpose" | "lyrics" | "parts" | "sing" | "export";
 
 /** The part a singer practised last on this device; Learn my part opens on it when the sheet has it. */
@@ -188,7 +191,7 @@ type SolfaStyle = "bars" | "grid" | "curwen" | "hymn";
  *   • One amber row when the model doubted some notes — the way into a review.
  *   • Round actions — transpose, lyrics, SATB, sing, export, more — each opening
  *     its panel below the row.
- *   • The player docked over the bottom; its expand button opens Rehearse.
+ *   • The player docked over the bottom; its Practise opens Learn my part (Rehearse on a sheet without parts).
  *
  * PRD honesty rule: the SURE figure is always visible and coloured by level, and
  * low-confidence notes are amber with a dotted underline so users double-check.
@@ -1388,6 +1391,15 @@ export function ResultScreen({ route, navigation }: Props) {
     else setRehearsing(true);
   }
 
+  /**
+   * Learn my part's Rehearse row: the dock's Practise opens Learn my part on a sheet with parts, so Rehearse is
+   * reached from there. Opened once Learn my part has gone, as iOS shows one modal at a time.
+   */
+  function rehearseFromPractice() {
+    closePractice();
+    setTimeout(() => setRehearsing(true), MODAL_HANDOVER_MS);
+  }
+
   // Home's "Practise this tune" opens the sheet straight on its practice.
   useEffect(() => {
     if (practise) practiseNow();
@@ -2270,7 +2282,7 @@ export function ResultScreen({ route, navigation }: Props) {
       {preview && !celebrate && (!guest || keepHeight > 0) ? (
         <PlayerDock
           practice={practice}
-          onRehearse={() => setRehearsing(true)}
+          onPractise={practiseNow}
           lift={guest ? keepHeight + KEEP_GAP : 0}
         />
       ) : null}
@@ -2306,6 +2318,7 @@ export function ResultScreen({ route, navigation }: Props) {
       {practising && parts && practiceParts ? (
         <PracticeView
           onClose={closePractice}
+          onRehearse={rehearseFromPractice}
           practice={practice}
           names={partsOf(parts)}
           part={practicePart}
