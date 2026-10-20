@@ -863,13 +863,13 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 /* What the next transcription costs: a quiet chip, and the why behind (i), only when it costs something. */
 .studio-cost { display: grid; justify-items: center; gap: 6px; margin: 14px 0 0; }
 .cost-line { display: inline-flex; align-items: center; gap: 4px; }
-.cost-chip { display: inline-flex; align-items: center; min-height: 26px; padding: 3px 10px; border-radius: 8px; background: var(--wash); color: var(--muted); font-size: 0.78rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cost-chip { display: inline-flex; align-items: center; min-height: 26px; padding: 3px 10px; border-radius: 8px; background: var(--wash); color: var(--muted); font-size: 0.8125rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 .cost-chip.is-out { background: var(--amber-soft); color: var(--ink); }
 .cost-info { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--muted); cursor: pointer; }
 .cost-info .ic { width: 16px; height: 16px; }
 .cost-info:hover, .cost-info[aria-expanded=true] { color: var(--ink); background: var(--wash); }
 .cost-info:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.cost-pop { max-width: 440px; margin: 0; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-size: 0.8rem; line-height: 1.5; text-align: left; }
+.cost-pop { max-width: 440px; margin: 0; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-size: 0.875rem; line-height: 1.5; text-align: left; }
 .cost-pop[hidden] { display: none; }
 .link-upload-row { margin: 6px 0 0; text-align: center; font-size: 0.85rem; }
 .link-upload-row .btn-link { display: inline-flex; align-items: center; gap: 6px; }
