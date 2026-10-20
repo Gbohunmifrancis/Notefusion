@@ -238,12 +238,14 @@ const makeStyles = (c: Palette) =>
       justifyContent: "center",
       backgroundColor: c.accentSoft,
     },
+    /** A fainter wash than it was (0.18), so the white words keep 4.65:1 on Night's blue (3.99 before). */
     badgeOnPrimary: {
-      backgroundColor: "rgba(255, 255, 255, 0.18)",
+      backgroundColor: "rgba(255, 255, 255, 0.10)",
     },
     badgeText: {
       fontFamily: fonts.semibold,
-      fontSize: 11,
+      // The app's smallest words: 12, never under.
+      fontSize: 12,
       color: c.link,
     },
     badgeTextOnPrimary: {
