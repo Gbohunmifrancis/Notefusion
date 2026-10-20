@@ -3706,7 +3706,7 @@
     // While a shift is on its way the button stays as it is, and so do the arrows.
     $("tr-apply").disabled = n === 0 || transposing;
     $("tr-down").disabled = $("tr-up").disabled = transposing;
-    $("tr-apply").textContent = n === 0 ? "Choose a shift" : "Transpose to " + C.shiftKeyName(r.key, n);
+    $("tr-apply").textContent = transposing ? "Transposing…" : n === 0 ? "Choose a shift" : "Transpose to " + C.shiftKeyName(r.key, n);
     var table = $("ranges"); table.innerHTML = "";
     C.rangeReport(r.notes || [], isPro() ? r.parts : null, n).forEach(function (row) {
       var tr = document.createElement("tr");
@@ -3998,8 +3998,8 @@
    */
   function saveCurrent(auto) {
     if (!current || !current.result || current.savedId) return;
-    var r = current.result, btn = $("save");
-    btn.disabled = true;
+    var r = current.result, btn = $("save"), was = btn.innerHTML;
+    btn.disabled = true; btn.textContent = "Saving…";
     request("/api/library", { method: "POST", body: {
       title: $("save-title").value.trim() || "My transcription", key: r.key, tempoBpm: r.tempo, timeSignature: r.timeSignature,
       musicXml: r.musicXml, notes: r.notes, overallConfidence: r.overallConfidence, sourceJobId: current.jobId,
@@ -4015,7 +4015,7 @@
       renderSave();
       var dismissed = false; try { dismissed = localStorage.getItem("nf.web.appBanner") === "no"; } catch (e) { /* ignore */ }
       if (!dismissed) show($("app-banner"));
-    }).catch(function (err) { alertIn($("app-alert"), "danger", "Could not save: " + (err.message || err)); })
+    }).catch(function (err) { btn.innerHTML = was; alertIn($("app-alert"), "danger", "Could not save: " + (err.message || err)); })
       .finally(function () { btn.disabled = false; });
   }
   $("save").addEventListener("click", function () { saveCurrent(false); });
@@ -4262,10 +4262,12 @@
   $("dl-pdf").addEventListener("click", function () {
     if (!current || !current.result) return;
     if (guest) { openAuth("register"); return; }
-    var btn = $("dl-pdf"); btn.disabled = true;
+    // The button says what it is doing (the engraver and the PDF library may load first, seconds on 3G), then reads as before.
+    var btn = $("dl-pdf"), was = btn.innerHTML;
+    btn.disabled = true; btn.textContent = "Making the PDF…";
     track("Downloaded PDF", isPro() ? null : "free, watermarked");
     renderPdf(current.result, !isPro()).catch(function (err) { alertIn($("app-alert"), "danger", "Could not build the PDF: " + (err.message || err)); })
-      .finally(function () { btn.disabled = false; });
+      .finally(function () { btn.disabled = false; btn.innerHTML = was; });
   });
 
   /**
