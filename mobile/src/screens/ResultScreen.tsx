@@ -171,6 +171,12 @@ const KEEP_GAP = 8;
 /** Long enough for one full-screen modal to leave before the next is shown (iOS presents one at a time). */
 const MODAL_HANDOVER_MS = 400;
 
+/** The player dock's height before it has been laid out: play (44) in 12 px of padding, and its border. */
+const DOCK_HEIGHT_GUESS = 70;
+/** Save to Library floats this far over the dock, and the sheet's end leaves room for it (48 + 12). */
+const SAVE_PILL_GAP = 12;
+const SAVE_PILL_ROOM = 48 + SAVE_PILL_GAP;
+
 type Panel = "transpose" | "lyrics" | "parts" | "sing" | "export";
 
 /** The part a singer practised last on this device; Learn my part opens on it when the sheet has it. */
@@ -245,6 +251,10 @@ export function ResultScreen({ route, navigation }: Props) {
   /** Which saved sheets are kept on the phone ("Keep offline", or keep-all in Settings). */
   const offlineCopies = useOfflineLibrary();
   const [saving, setSaving] = useState(false);
+  /** Saved to the Library during this visit: the line under the title says so. */
+  const [savedHere, setSavedHere] = useState(false);
+  /** The player dock's height, so Save to Library floats 12 px over it. */
+  const [dockHeight, setDockHeight] = useState(DOCK_HEIGHT_GUESS);
   const [renaming, setRenaming] = useState(false);
   const [exportingType, setExportingType] = useState<"musicxml" | "solfa" | "midi" | "pdf" | null>(null);
   const scoreRef = useRef<ScoreViewHandle>(null);
@@ -598,8 +608,11 @@ export function ResultScreen({ route, navigation }: Props) {
     [draft.notes, edited, result.overallConfidence, hymnSource],
   );
 
-  /** Saves the sheet to the Library. Resolves to its id, or null when it could not be saved (and the dialog said why). */
-  async function save(): Promise<string | null> {
+  /**
+   * Saves the sheet to the Library. Resolves to its id, or null when it could not be saved (and the dialog said why).
+   * `offerRename`: saved by the one tap on Save to Library, under the title shown, so the toast offers Rename.
+   */
+  async function save({ offerRename = false }: { offerRename?: boolean } = {}): Promise<string | null> {
     setSaving(true);
     try {
       const saved = await libraryApi.save({
@@ -620,6 +633,7 @@ export function ResultScreen({ route, navigation }: Props) {
       committedLyrics.current = lyrics.trim();
       setSavedId(saved.id);
       setCommittedTitle(saved.title);
+      setSavedHere(true);
       // Corrections rode along in the payload, so the server is now level with
       // the draft and a later edit only has to send the difference.
       persisted.current = draft;
@@ -629,7 +643,11 @@ export function ResultScreen({ route, navigation }: Props) {
       // The third save may bring the store-rating ask, which says the sheet was saved
       // itself; two sheets stacked on the same moment would be one too many.
       const askingForRating = await rating.recordSave();
-      if (!askingForRating) showToast("Saved to your library");
+      if (!askingForRating)
+        showToast(
+          "Saved to your Library",
+          offerRename ? { action: { label: "Rename", onPress: () => setNaming(true) } } : undefined,
+        );
       return saved.id;
     } catch (e) {
       showDialog({
@@ -1374,6 +1392,8 @@ export function ResultScreen({ route, navigation }: Props) {
 
 
   const hasScore = scoreXml.length > 0;
+  /** A sheet not in the Library (deleted and opened again, or from before option A): one tap saves it as titled. */
+  const offerSave = !guest && !savedId;
 
   const insets = useSafeAreaInsets();
   const shownTitle = committedTitle || title;
@@ -1644,7 +1664,13 @@ export function ResultScreen({ route, navigation }: Props) {
         <ScrollView
           contentContainerStyle={[
             styles.content,
-            { paddingBottom: (preview ? DOCK_CLEARANCE : spacing.xl) + insets.bottom + (guest ? keepHeight + KEEP_GAP : 0) },
+            {
+              paddingBottom:
+                (preview ? DOCK_CLEARANCE : spacing.xl) +
+                insets.bottom +
+                (guest ? keepHeight + KEEP_GAP : 0) +
+                (offerSave ? SAVE_PILL_ROOM : 0),
+            },
           ]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
@@ -1661,10 +1687,10 @@ export function ResultScreen({ route, navigation }: Props) {
                   onPress={() => void shareLink()}
                   busy={sharing}
                 />
-                {/* Already in the Library (option A): the bookmark is Rename, a pencil. */}
+                {/* The pencil names the sheet; an unsaved one is saved by the Save to Library pill over the dock. */}
                 <IconButton
-                  icon={savedId ? "rename" : "save"}
-                  label={savedId ? "Rename" : "Save to library"}
+                  icon="rename"
+                  label={savedId ? "Rename" : "Name this sheet"}
                   onPress={() => setNaming((n) => !n)}
                   active={naming}
                 />
@@ -1696,6 +1722,12 @@ export function ResultScreen({ route, navigation }: Props) {
               <Text style={styles.savedSubText}>{`${result.source ? subtitle : takeKind(result)} · `}</Text>
               <Icon name="check" size={13} color={colors.success} />
               <Text style={styles.savedSubText}> saved to your Library just now</Text>
+            </View>
+          ) : savedHere && savedId ? (
+            <View style={styles.savedSub} accessible accessibilityLabel={`${subtitle}, saved to your Library`}>
+              <Text style={styles.savedSubText}>{`${subtitle} · `}</Text>
+              <Icon name="check" size={13} color={colors.success} />
+              <Text style={styles.savedSubText}> saved to your Library</Text>
             </View>
           ) : subtitle ? (
             <Text style={styles.subtitle}>{subtitle}</Text>
@@ -2284,7 +2316,18 @@ export function ResultScreen({ route, navigation }: Props) {
           practice={practice}
           onPractise={practiseNow}
           lift={guest ? keepHeight + KEEP_GAP : 0}
+          onHeight={setDockHeight}
         />
+      ) : null}
+
+      {/* ── Not in the Library: Save to Library is the screen's one primary, over the dock where the thumb is ── */}
+      {offerSave ? (
+        <View
+          pointerEvents="box-none"
+          style={[styles.savePill, { bottom: insets.bottom + 10 + (preview ? dockHeight + SAVE_PILL_GAP : 0) }]}
+        >
+          <Button label="Save to Library" icon="save" onPress={() => void save({ offerRename: true })} loading={saving} />
+        </View>
       ) : null}
 
       {/* ── A guest's preview: what an account adds, and the two ways to one (board l-ux-high/07) ── */}
@@ -2592,6 +2635,8 @@ const makeStyles = (c: Palette) =>
     screen: { paddingHorizontal: 0, paddingBottom: 0 },
     content: { paddingHorizontal: 22 },
     /** A guest's "Keep this sheet", pinned where the player docks (the player sits on it), at the dock's width. */
+    /** Save to Library: 16 px from the edge, 12 px over the dock. */
+    savePill: { position: "absolute", right: 16 },
     keepCard: {
       position: "absolute",
       left: 14,

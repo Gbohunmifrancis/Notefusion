@@ -1,6 +1,7 @@
 /**
  * Toasts: good news that leaves by itself ("Saved", "Renamed", "Password updated", "Up to date").
- * Good news should not need a tap to clear, so it is never a sheet.
+ * Good news should not need a tap to clear, so it is never a sheet. One may carry a single text action
+ * ("Rename", "Undo"; board m-ux-medium), and then it stays 6 s instead of 2.5.
  *
  * Imperative like `showDialog`, for the same reason: it is called from the ends of async
  * handlers. `ToastHost` is mounted once, above the navigator.
@@ -11,9 +12,17 @@ import { AccessibilityInfo } from "react-native";
 import type { IconName } from "../components/Icon";
 import { Toast } from "../components/Toast";
 
+export interface ToastAction {
+  /** One short word: "Undo", "Rename". */
+  label: string;
+  onPress: () => void;
+}
+
 export interface ToastOptions {
   /** Defaults to the mint tick ("done"); any other icon is ink. */
   icon?: IconName;
+  /** The toast's one text action. */
+  action?: ToastAction;
 }
 
 interface Shown extends ToastOptions {
@@ -24,7 +33,9 @@ interface Shown extends ToastOptions {
 
 let present: ((message: string, options?: ToastOptions) => void) | null = null;
 
-/** Shows a toast above the tab bar for 2.5 s. A second one replaces the first. */
+/**
+ * Shows a toast above the tab bar for 2.5 s, or 6 s with an action. A second one replaces the first.
+ */
 export function showToast(message: string, options?: ToastOptions): void {
   present?.(message, options);
 }
@@ -36,7 +47,7 @@ export function ToastHost() {
   const show = useCallback((message: string, options?: ToastOptions) => {
     seq.current += 1;
     setShown({ message, id: seq.current, ...options });
-    AccessibilityInfo.announceForAccessibility(message);
+    AccessibilityInfo.announceForAccessibility(options?.action ? `${message}. ${options.action.label}.` : message);
   }, []);
 
   useEffect(() => {
@@ -47,6 +58,13 @@ export function ToastHost() {
   }, [show]);
 
   return shown ? (
-    <Toast key={shown.id} message={shown.message} icon={shown.icon} onDone={() => setShown(null)} />
+    <Toast
+      key={shown.id}
+      message={shown.message}
+      icon={shown.icon}
+      action={shown.action?.label}
+      onAction={shown.action?.onPress}
+      onDone={() => setShown((s) => (s?.id === shown.id ? null : s))}
+    />
   ) : null;
 }

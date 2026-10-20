@@ -21,12 +21,15 @@ export function PlayerDock({
   practice,
   onPractise,
   lift = 0,
+  onHeight,
 }: {
   practice: Practice;
   /** Learn my part, or Rehearse for a sheet without parts (ResultScreen `practiseNow`). */
   onPractise: () => void;
   /** Raised this far above its place, over a card pinned under it (a guest's "Keep this sheet"). */
   lift?: number;
+  /** The dock's height as laid out, for what floats over it (an unsaved sheet's Save to Library). */
+  onHeight?: (height: number) => void;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -37,7 +40,10 @@ export function PlayerDock({
   const played = dragFraction ?? (duration > 0 ? clamp(position / duration, 0, 1) : 0);
 
   return (
-    <View style={[styles.dock, { bottom: insets.bottom + 10 + lift }]}>
+    <View
+      style={[styles.dock, { bottom: insets.bottom + 10 + lift }]}
+      onLayout={onHeight ? (e) => onHeight(Math.round(e.nativeEvent.layout.height)) : undefined}
+    >
       <View style={styles.row}>
         <Touchable
           onPress={() => void practice.togglePlay()}
