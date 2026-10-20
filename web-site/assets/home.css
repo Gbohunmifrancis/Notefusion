@@ -20,7 +20,7 @@ html { scroll-padding-top: 80px; }
 .home .text-link:hover { text-decoration: underline; }
 
 /* Buttons */
-.home .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid transparent; border-radius: var(--r-sm); font: inherit; font-size: 15px; font-weight: 600; line-height: 1.2; text-decoration: none; white-space: nowrap; cursor: pointer; transition: background-color .15s, border-color .15s, color .15s; }
+.home .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid transparent; border-radius: var(--r-sm); font: inherit; font-size: 15px; font-weight: 600; line-height: 1.2; text-decoration: none; white-space: nowrap; cursor: pointer; transition: background-color .15s, border-color .15s, color .15s, transform .15s ease-out, opacity .15s; }
 .home .btn-primary { background: var(--page-fill); color: var(--page-on-fill); }
 .home .btn-primary:hover { background: var(--page-fill-hover); color: var(--page-on-fill); }
 .home .btn-secondary { border-color: var(--page-line-strong); background: var(--page-surface); color: var(--page-navy); }
@@ -32,6 +32,9 @@ html { scroll-padding-top: 80px; }
 .home .btn-ghost:hover:not(:disabled) { background: var(--page-wash); color: var(--page-navy); }
 .home .btn-sm { padding: 0 12px; font-size: 14px; }
 .home .btn:disabled { opacity: .55; cursor: not-allowed; }
+/* Press: the web app's one feel for a control (scale .97 over 150 ms); with reduced motion, a dip in opacity instead. */
+@media (prefers-reduced-motion: no-preference) { .home .btn:active:not(:disabled) { transform: scale(.97); } }
+@media (prefers-reduced-motion: reduce) { .home .btn:active:not(:disabled) { opacity: .8; } }
 .home .store-badge { display: inline-flex; flex: none; border-radius: var(--r-sm); }
 .home .store-badge img { width: auto; height: 44px; }
 
