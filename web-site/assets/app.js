@@ -2475,10 +2475,17 @@
       if (status === "done" && job.result) {
         stopFollowing();
         current.result = job.result;
+        // Filed in the Library the moment it finished (LibraryFiling): the page says so, and Save keeps the edits made
+        // here by replacing that copy. Seeing it counts as opening it, as on the phone.
+        if (!guest && job.savedId) {
+          current.filedId = job.savedId; current.filedTitle = job.savedTitle || ""; libraryCache = null;
+          request("/api/library/" + encodeURIComponent(job.savedId) + "/opened", { method: "POST" }).catch(function () { /* only the Library's new-sheet dot */ });
+        }
         hide($("progress"));
         announce("ready");
         track(current && current.kind === "preview" ? "Preview ready" : "Sheet ready");
         showResult(job.result);
+        if (current.filedId) alertIn($("app-alert"), "success", "Saved to your Library as “" + (current.filedTitle || "your recording") + "”. Lyrics or a new doh added here are kept when you press Save changes.");
         keepClaimedPreview();
         if (!guest) loadAccount();
         return;
@@ -3545,7 +3552,9 @@
     else {
       show($("save-form")); hide($("saved"));
       var src = current.result.source || current.source;
-      if (!$("save-title").value) $("save-title").value = src ? (src.title + (src.artist ? " — " + src.artist : "")) : "My transcription";
+      if (!$("save-title").value) $("save-title").value = current.filedTitle || (src ? (src.title + (src.artist ? " — " + src.artist : "")) : "My transcription");
+      // Already filed (see readJob): Save replaces that copy with this one, edits and all.
+      label($("save"), "save", current.filedId ? "Save changes" : "Save to my library");
     }
   }
   function renderShare() {
