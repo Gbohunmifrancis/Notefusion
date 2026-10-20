@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, useNavigation, useScrollToTop } from '@react-navigation/native';
 import { Icon } from '../components/Icon';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
@@ -346,6 +346,9 @@ export function HomeScreen({ navigation }: Props) {
 
   /** Set while a sheet loads: a second tap meanwhile would push a second Result. */
   const opening = useRef(false);
+  // Tapping Home again while on it scrolls back to the top.
+  const listRef = useRef<FlatList<SavedTranscription>>(null);
+  useScrollToTop(listRef);
 
   async function openRecent(item: SavedTranscription, opts: { practise?: boolean } = {}) {
     if (opening.current) return;
@@ -376,6 +379,7 @@ export function HomeScreen({ navigation }: Props) {
   return (
     <Screen>
       <FlatList
+        ref={listRef}
         data={recent}
         extraData={[leaving, sheetActions.actionsFor]}
         keyExtractor={(t) => t.id}

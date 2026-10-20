@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { Icon } from "../components/Icon";
-import { useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused, useNavigation, useScrollToTop } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Touchable } from "../components/Touchable";
@@ -191,6 +191,9 @@ export function LibraryScreen() {
 
   /** Set while a sheet loads (`openItem`). */
   const opening = useRef(false);
+  // Tapping Library again while on it scrolls back to the top.
+  const listRef = useRef<FlatList<SavedTranscription>>(null);
+  useScrollToTop(listRef);
 
   function closeSearch() {
     setQuery("");
@@ -509,6 +512,7 @@ export function LibraryScreen() {
   return (
     <Screen edges={["top"]}>
       <FlatList
+        ref={listRef}
         data={sortedItems}
         extraData={selected}
         keyExtractor={(t) => t.id}

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Icon } from "../components/Icon";
-import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
+import { useNavigation, useRoute, useScrollToTop, type RouteProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
@@ -70,6 +70,8 @@ export function HymnsScreen() {
   const [shelfOnly, setShelfOnly] = useState(false);
   const [filter, setFilter] = useState<HalloweenFilter>("all");
   const list = useRef<FlatList<PackHymn>>(null);
+  // Tapping Hymns again while on it scrolls back to the top.
+  useScrollToTop(list);
   const shelfList = useMemo(() => (pack && season ? seasonShelf(pack.hymns, season) : []), [pack, season]);
   const openings = useMemo(
     () => new Map(shelfList.map((h) => [h.slug, openingLine(deriveSolfa(hymnSheet(h).notes, h.key, h.time).notes)])),
