@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import { Icon, type IconName } from "../components/Icon";
+import { usePreventRemove } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Screen } from "../components/Screen";
@@ -1155,6 +1156,39 @@ export function ResultScreen({ route, navigation }: Props) {
     commitTitle();
   };
   useEffect(() => navigation.addListener("beforeRemove", () => commitOnLeave.current()), [navigation]);
+
+  // A sheet that is not in the Library keeps its changes only on this screen (a saved one keeps each as it is made),
+  // so Back asks before it takes corrections, words, a new key or tempo, a transposition or parts away with it.
+  const firstTitle = useRef(title);
+  const unsavedChanges =
+    !savedId &&
+    !guest &&
+    (edited ||
+      baseline.notes !== result.notes ||
+      key !== result.key ||
+      tempo !== result.tempo ||
+      timeSignature !== result.timeSignature ||
+      lyrics.trim() !== (result.lyrics ?? "").trim() ||
+      parts !== (result.parts ?? null) ||
+      title !== firstTitle.current);
+  usePreventRemove(unsavedChanges, ({ data }) => {
+    showDialog({
+      title: "Keep your changes?",
+      message: "This sheet isn't in your Library yet, so what you changed here goes when you leave.",
+      icon: "save",
+      actions: [
+        {
+          label: "Save to Library",
+          onPress: () =>
+            void save().then((id) => {
+              if (id) navigation.dispatch(data.action);
+            }),
+        },
+        { label: "Leave without saving", style: "destructive", onPress: () => navigation.dispatch(data.action) },
+        { label: "Keep editing", style: "cancel" },
+      ],
+    });
+  });
 
   // ── Export (MusicXML) ──────────────────────────────────────────────────────
   // Exports `scoreXml`, engraved here from the live note list, rather than the
