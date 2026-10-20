@@ -4524,8 +4524,12 @@
             ? (leadsChoir() ? "Add choir time — " : "Start your choir — ") + money(chosen) + " for " + span
             : "Pay " + money(chosen) + (span ? " for " + span + " of Pro" : " for Pro for life")));
         fine.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>';
+        // Adding time: the date it would run to, so a member sees what the payment buys before paying.
+        var until = extendedEnd(chosen);
         fine.appendChild(document.createTextNode(isSinglePlan(chosen)
           ? "Secure checkout. One payment, one transcription that never expires. No subscription."
+          : until
+            ? "Secure checkout. It starts when your current time ends: " + (isChoirPlan(chosen) ? "your choir's Pro" : "Pro") + " until " + longDate(until) + ". Nothing renews without you."
           : isChoirPlan(chosen)
             ? "Secure checkout. One payment covers the whole choir for the period; nothing renews without you. You'll get an invite link for your singers."
             : "Secure checkout. One payment covers the whole period; nothing renews without you."));
@@ -4616,6 +4620,20 @@
     });
   }
 
+  /**
+   * When a period bought now would end, for a member adding time (Pro of their own, or a director's choir): it runs on
+   * from the current end, a calendar month or year (the API's BillingPeriod: a 31st lands on a shorter month's last day).
+   * Null when nothing is being extended.
+   */
+  function extendedEnd(plan) {
+    if (isSinglePlan(plan) || isLifetimePlan(plan) || !sub) return null;
+    var end = isChoirPlan(plan) ? (leadsChoir() ? sub.choirPeriodEndUtc : null) : (isPro() && !proViaChoir() && !sub.isLifetime ? sub.currentPeriodEndUtc : null);
+    var from = end ? new Date(Math.max(Date.now(), Date.parse(end))) : null;
+    if (!from || isNaN(from)) return null;
+    var y = from.getUTCFullYear() + (isYearly(plan) ? 1 : 0), m = from.getUTCMonth() + (isYearly(plan) ? 0 : 1);
+    var lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+    return new Date(Date.UTC(y, m, Math.min(from.getUTCDate(), lastDay), from.getUTCHours(), from.getUTCMinutes()));
+  }
   function money(plan) {
     var amount = plan.amountMinor / 100;
     // narrowSymbol: "₦7,500", not "NGN 7,500", whatever the browser's own locale is.
