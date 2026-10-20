@@ -135,7 +135,10 @@
     if (voices.length > 1) {
       var box = $("voices"); show(box);
       voices.forEach(function (v) {
-        var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm on"; b.textContent = v.name[0].toUpperCase(); b.title = v.name;
+        // "S", "A", "T", "B" on the button; the voice's whole name to a screen reader (a title alone is not read out).
+        var name = v.name.charAt(0).toUpperCase() + v.name.slice(1);
+        var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm on"; b.textContent = name.charAt(0); b.title = name;
+        b.setAttribute("aria-label", name);
         b.setAttribute("aria-pressed", "true");
         b.addEventListener("click", function () { var on = b.classList.toggle("on"); b.setAttribute("aria-pressed", String(on)); player.setVoiceOn(v.name, on); });
         box.appendChild(b);
