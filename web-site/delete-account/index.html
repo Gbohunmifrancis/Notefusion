@@ -98,7 +98,8 @@
 
     <form id="deletion-form" novalidate>
       <label for="email">Account email address *</label>
-      <input id="email" type="email" autocomplete="email" placeholder="name@example.com" required>
+      <input id="email" type="email" autocomplete="email" placeholder="name@example.com" required aria-describedby="email-problem">
+      <p class="hint bad" id="email-problem" aria-live="polite" hidden></p>
 
       <label for="password">Account password (optional)</label>
       <input id="password" type="password" autocomplete="current-password" placeholder="Enter password for instant deletion">
@@ -110,13 +111,14 @@
       <textarea id="reason" placeholder="Tell us why you are leaving (e.g. no longer needed, missing features)..."></textarea>
 
       <div class="checkbox-group">
-        <input id="confirm-check" type="checkbox" required>
+        <input id="confirm-check" type="checkbox" required aria-describedby="confirm-problem">
         <label for="confirm-check">
           I understand that this action is permanent and cannot be undone. All my musical transcriptions, solfa data, and profile information will be permanently deleted.
         </label>
       </div>
+      <p class="hint bad" id="confirm-problem" aria-live="polite" hidden></p>
 
-      <button id="submit-btn" class="btn-danger" type="submit" disabled>Request account deletion</button>
+      <button id="submit-btn" class="btn-danger" type="submit">Request account deletion</button>
     </form>
   </div>
 
@@ -266,18 +268,25 @@
   }
 
   // Case 2: Web submission form
-  function validateState() {
-    var validEmail = emailInput.value.trim().length > 3 && emailInput.value.indexOf("@") > 0;
-    submitBtn.disabled = !validEmail || !confirmCheck.checked;
+  /**
+   * What is missing, said under its field when Request is pressed: the button used to stay greyed out until the
+   * address and the box were both right, without saying why. A note goes as soon as its field is put right.
+   */
+  var emailProblem = document.getElementById("email-problem");
+  var confirmProblem = document.getElementById("confirm-problem");
+  function validEmail() { var v = emailInput.value.trim(); return v.length > 3 && v.indexOf("@") > 0; }
+  function sayProblem(field, note, text) {
+    note.textContent = text;
+    note.hidden = !text;
+    if (text) field.setAttribute("aria-invalid", "true"); else field.removeAttribute("aria-invalid");
   }
-
-  emailInput.addEventListener("input", validateState);
-  confirmCheck.addEventListener("change", validateState);
+  emailInput.addEventListener("input", function () { if (validEmail()) sayProblem(emailInput, emailProblem, ""); });
+  confirmCheck.addEventListener("change", function () { if (confirmCheck.checked) sayProblem(confirmCheck, confirmProblem, ""); });
   // Opened from the web app's Account view: the signed-in address comes along in this tab (never in the URL).
   try {
     var known = sessionStorage.getItem("nf.deleteEmail");
     sessionStorage.removeItem("nf.deleteEmail");
-    if (known && !emailInput.value) { emailInput.value = known; validateState(); }
+    if (known && !emailInput.value) emailInput.value = known;
   } catch (err) { /* storage off: the address is typed as before */ }
 
   form.addEventListener("submit", function (e) {
@@ -290,11 +299,10 @@
     var password = passwordInput.value;
     var reason = reasonInput.value.trim();
 
-    if (!email || !confirmCheck.checked) {
-      errorBox.textContent = "Please enter your email address and check the confirmation box.";
-      errorBox.hidden = false;
-      return;
-    }
+    sayProblem(emailInput, emailProblem, validEmail() ? "" : "Enter the email address of your NoteFusion account.");
+    sayProblem(confirmCheck, confirmProblem, confirmCheck.checked ? "" : "Tick the box to confirm you understand this can't be undone.");
+    if (!validEmail()) { emailInput.focus(); return; }
+    if (!confirmCheck.checked) { confirmCheck.focus(); return; }
 
     submitBtn.disabled = true;
     submitBtn.textContent = password ? "Deleting account…" : "Sending request…";
