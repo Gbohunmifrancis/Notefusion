@@ -1178,6 +1178,7 @@
     return fetchLibrary(force).then(function (items) {
       hide(skel);
       list.innerHTML = "";
+      libEmptyState(false);
       if (!items.length) { show(empty); hide(list); return; }
       hide(empty); show(list);
       renderFolders(items);
@@ -1211,7 +1212,7 @@
         list.appendChild(card);
       });
       filterLibrary();
-    }).catch(function (err) { hide(skel); show(empty); $("lib-empty-text").textContent = "Your library didn't load. " + ((err && err.message) || "Check your connection and try again."); })
+    }).catch(function (err) { hide(skel); show(empty); libEmptyState(true, err); })
       .then(renderChoirLibrary);
   }
 
@@ -1376,7 +1377,22 @@
     }).catch(function (err) { if (at === epoch) libAlert("Could not open that sheet: " + (err.message || err)); });
   }
   // To the microphone: what every account can do for free (a song link never is on a free account).
-  $("lib-empty-go").addEventListener("click", function () { setView("transcribe"); selectSource("record"); $("rec-btn").focus(); });
+  /**
+   * The Library's empty card says one of two things: nothing saved yet (its button to the microphone), or that the list
+   * did not load (its button asks again, rather than sending someone off to record).
+   */
+  var libFailed = false;
+  function libEmptyState(failed, err) {
+    libFailed = failed;
+    $("lib-empty-text").textContent = failed
+      ? "Your library didn't load. " + ((err && err.message) || "Check your connection and try again.")
+      : "Nothing here yet. Every tune you transcribe lands here by itself, and in the app.";
+    label($("lib-empty-go"), failed ? "restart" : "plus", failed ? "Try again" : "New transcription");
+  }
+  $("lib-empty-go").addEventListener("click", function () {
+    if (libFailed) { loadLibrary(true); return; }
+    setView("transcribe"); selectSource("record"); $("rec-btn").focus();
+  });
   $("lib-search").addEventListener("input", filterLibrary);
   /** A saved sheet, opened into the same result view a fresh transcription uses. */
   function openSaved(id) {
