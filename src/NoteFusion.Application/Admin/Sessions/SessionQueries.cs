@@ -65,6 +65,47 @@ public static partial class SessionRules
     private static partial Regex Slug();
 
     internal static int Offset(DateTime at, DateTime start) => Math.Max(0, (int)(at - start).TotalMilliseconds);
+
+    /// <summary>How far apart Sentry's two notes of one request may land (the span at its start, the log line at its end).</summary>
+    public const int SameRequestWithinMs = 2000;
+
+    /// <summary>
+    /// Sentry notes each request twice, as a log line and as a network span, so "GET /api/me → 401" came out twice.
+    /// Steps in time order: a request with the same method and path as one kept within <see cref="SameRequestWithinMs"/>
+    /// is folded into it, keeping the earlier moment and the line that carries the status.
+    /// </summary>
+    public static IReadOnlyList<SessionStepDto> MergeRequests(IEnumerable<SessionStepDto> steps)
+    {
+        var kept = new List<SessionStepDto>();
+        foreach (var step in steps)
+        {
+            var index = step.Kind == "request" ? FindSameRequest(kept, step) : -1;
+            if (index < 0)
+            {
+                kept.Add(step);
+                continue;
+            }
+            if (!kept[index].Text.Contains(" → ", StringComparison.Ordinal) && step.Text.Contains(" → ", StringComparison.Ordinal))
+                kept[index] = kept[index] with { Text = step.Text };
+        }
+        return kept;
+    }
+
+    private static int FindSameRequest(List<SessionStepDto> kept, SessionStepDto step)
+    {
+        var key = RequestKey(step.Text);
+        for (var i = kept.Count - 1; i >= 0 && step.AtMs - kept[i].AtMs <= SameRequestWithinMs; i--)
+            if (kept[i].Kind == "request" && RequestKey(kept[i].Text) == key)
+                return i;
+        return -1;
+    }
+
+    /// <summary>"GET /api/me → 401" → "GET /api/me".</summary>
+    private static string RequestKey(string text)
+    {
+        var arrow = text.IndexOf(" → ", StringComparison.Ordinal);
+        return arrow < 0 ? text : text[..arrow];
+    }
 }
 
 /// <summary><c>GET /api/admin/sessions/recordings</c>: the phone's recordings, newest first, with whose they are.</summary>
@@ -152,10 +193,9 @@ public sealed class SessionQueryHandlers :
                 .OrderBy(v => v.StartsAt)
                 .Select(v => new SessionVideoDto(v.SegmentId, SessionRules.Offset(v.StartsAt, start), v.DurationMs))
                 .ToList(),
-            recording.Value.Steps
+            SessionRules.MergeRequests(recording.Value.Steps
                 .OrderBy(s => s.At)
-                .Select(s => new SessionStepDto(SessionRules.Offset(s.At, start), s.Kind, s.Text))
-                .ToList(),
+                .Select(s => new SessionStepDto(SessionRules.Offset(s.At, start), s.Kind, s.Text))),
             errors.OrderBy(e => e.AtMs).ToList(),
             $"https://{_sentry.Org}.sentry.io/replays/{replay.Id}/");
     }

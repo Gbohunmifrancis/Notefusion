@@ -148,6 +148,24 @@ public class SessionsTests
         Assert.False(SessionRules.RecordingNow(Last(TimeSpan.FromMinutes(3)), Now));
     }
 
+    [Fact]
+    public void A_request_sentry_noted_twice_is_one_line_with_its_status()
+    {
+        var merged = SessionRules.MergeRequests(
+        [
+            new SessionStepDto(1000, "request", "GET /api/me"),
+            new SessionStepDto(1200, "screen", "Home"),
+            new SessionStepDto(1400, "request", "GET /api/me → 401"),
+            new SessionStepDto(1500, "request", "POST /api/transcriptions → 201"),
+            // The same request again a while later is a request of its own.
+            new SessionStepDto(9000, "request", "GET /api/me → 200"),
+        ]);
+
+        Assert.Equal(
+            [(1000, "GET /api/me → 401"), (1200, "Home"), (1500, "POST /api/transcriptions → 201"), (9000, "GET /api/me → 200")],
+            merged.Select(s => (s.AtMs, s.Text)));
+    }
+
     [Theory]
     [InlineData("0123456789abcdef0123456789abcdef", true)]
     [InlineData("../../organizations/other/", false)]
