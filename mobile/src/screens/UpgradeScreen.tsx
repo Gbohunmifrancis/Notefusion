@@ -43,7 +43,7 @@ import { PRO_FEATURES } from "../lib/proFeatures";
 import type { AuthUser, CheckoutExit, MyProfile, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 import { tierOf } from "../lib/planTier";
-import { bestValuePlan, formatPrice, nairaNote, periodLabel, plansInOrder } from "../lib/price";
+import { bestValuePlan, formatPrice, nairaNote, periodLabel, plansInOrder, webFinePrint } from "../lib/price";
 import {
   parseAsked,
   rememberAsked,
@@ -660,8 +660,9 @@ export function UpgradeScreen({ navigation, route }: Props) {
               <BrandMark size={34} color="#FFFFFF" waveColor="rgba(255,255,255,0.7)" />
             </LinearGradient>
             <Text style={styles.heroTitle}>Unlock everything</Text>
+            {/* What Pro is, no more: hummed tunes are never counted, whole songs are twenty a month (PRO_FEATURES). */}
             <Text style={styles.heroSub}>
-              Go further with unlimited transcriptions and full exports.
+              Unlimited hummed tunes, twenty whole songs a month, and every download.
             </Text>
           </View>
         )}
@@ -801,10 +802,10 @@ export function UpgradeScreen({ navigation, route }: Props) {
             ) : null}
 
             <Text style={styles.finePrint}>
-              {play && selected
-                ? playFinePrint(selected)
-                : buyingSong
-                ? "One payment, one transcription that never expires. Secure checkout opens in your browser; you'll come back to your song."
+              {selected
+                ? play
+                  ? playFinePrint(selected)
+                  : webFinePrint(selected)
                 : "Secure checkout opens in your browser. You'll return here automatically."}
             </Text>
 
@@ -961,9 +962,10 @@ function ActiveState({
       onChanged();
       showDialog({
         title: "Subscription cancelled",
+        // Nothing bought on the website renews, so this never says "won't renew": only that nothing more is charged.
         message: renews
-          ? `Pro stays active until ${renews}. It won't renew after that, and you can resubscribe any time.`
-          : "Pro stays active until the end of your paid period.",
+          ? `Pro stays active until ${renews}, and nothing more is charged. Add time again whenever you like.`
+          : "Pro stays active until the end of your paid period, and nothing more is charged.",
         icon: "done",
       });
     } catch (e) {

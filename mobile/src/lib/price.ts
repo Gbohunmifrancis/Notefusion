@@ -68,6 +68,22 @@ export function bestValuePlan(plans: readonly Plan[]): Plan | undefined {
   return (inCurrency.length > 0 ? inCurrency : pro).slice().sort((a, b) => b.amountMinor - a.amountMinor)[0];
 }
 
+/**
+ * The paywall's fine print for the website's checkout: what one payment buys, and that it does not renew (nothing
+ * bought there does: a member pays again to add time). Said before paying, where it used to be said only at Cancel.
+ * Google Play's own is `playFinePrint`.
+ */
+export function webFinePrint(plan: Pick<Plan, "interval" | "choirSeats">): string {
+  if (plan.interval === "single") {
+    return "One payment, one transcription that never expires. Secure checkout opens in your browser; you'll come back to your song.";
+  }
+  const open = "Secure checkout opens in your browser; you'll come back here automatically.";
+  if (plan.interval === "lifetime") return `One payment, Pro for good. ${open}`;
+  const period = plan.interval === "yearly" ? "year" : "month";
+  const what = plan.choirSeats ? `One ${period} of Pro for your choir` : `One ${period} of Pro`;
+  return `${what}. It doesn't renew by itself: pay again whenever you want more time. ${open}`;
+}
+
 export interface LimitOffer {
   /** The one-song purchase, offered first (as the Upgrade screen preselects it at the limit). */
   single?: Plan;

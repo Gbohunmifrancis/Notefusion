@@ -1,6 +1,17 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { bestValuePlan, formatPrice, limitCopy, limitOffer, nairaNote, periodLabel, plansInOrder } from "./price.ts";
+import { bestValuePlan, formatPrice, limitCopy, limitOffer, nairaNote, periodLabel, plansInOrder, webFinePrint } from "./price.ts";
+
+test("the website's fine print says what one payment buys, and that it does not renew", () => {
+  assert.equal(
+    webFinePrint({ interval: "monthly" }),
+    "One month of Pro. It doesn't renew by itself: pay again whenever you want more time. Secure checkout opens in your browser; you'll come back here automatically.",
+  );
+  assert.match(webFinePrint({ interval: "yearly" }), /^One year of Pro\. It doesn't renew by itself/);
+  assert.match(webFinePrint({ interval: "yearly", choirSeats: 25 }), /^One year of Pro for your choir\. It doesn't renew/);
+  assert.match(webFinePrint({ interval: "single" }), /^One payment, one transcription that never expires\./);
+  assert.match(webFinePrint({ interval: "lifetime" }), /^One payment, Pro for good\./);
+});
 import type { Plan } from "../api/types";
 
 const plan = (code: string, amountMinor: number, currency: string, interval: Plan["interval"]): Plan => ({
