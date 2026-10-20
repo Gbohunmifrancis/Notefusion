@@ -50,6 +50,8 @@
 
     <form id="form" novalidate hidden>
       <p>Setting a new password for <strong id="who"></strong>.</p>
+      <!-- The account's address for password managers, so the new password is saved under it (shown above). -->
+      <input id="username" type="email" autocomplete="username" hidden>
 
       <label for="pw">New password</label>
       <input id="pw" type="password" autocomplete="new-password" minlength="8" required>
@@ -150,6 +152,7 @@
   }
 
   document.getElementById("who").textContent = email;
+  document.getElementById("username").value = email;
   form.hidden = false;
 
   form.addEventListener("submit", function (event) {
