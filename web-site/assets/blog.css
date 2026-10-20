@@ -245,7 +245,8 @@
 .blog-page .cell.hold { min-width: 1.1em; }
 .blog-page .cell b { display: block; color: var(--ink); font-size: 1rem; line-height: 1.5; }
 .blog-page .cell b.now { color: var(--now-ink); background: var(--now-bg); border-radius: 3px; }
-.blog-page .cell i { display: block; min-height: 1.1em; color: var(--muted); font-family: var(--sans); font-size: .74rem; font-style: normal; line-height: 1.5; }
+/* The words under the solfa: read as they are sung, so at 14 px in the reading colour (board m-ux-medium W4b). */
+.blog-page .cell i { display: block; min-height: 1.1em; color: var(--text); font-family: var(--sans); font-size: 14px; font-style: normal; line-height: 1.5; }
 /* Octave marks (s, d') drawn small and set low or high against the letter, as hymn books print their
    octave figures, so they never read as the quarter-beat mark. A half beat split into two quarter beats
    (a semiquaver pair, the tail of a dotted quaver) shows both syllables with the quarter-beat mark
