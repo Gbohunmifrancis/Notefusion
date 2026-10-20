@@ -865,7 +865,7 @@ export function ResultScreen({ route, navigation }: Props) {
     showDialog({
       title: "Delete this note?",
       message:
-        "It leaves the solfa, the stave and the playback. Onsets are absolute, so the notes around it keep their timing and a rest appears in its place.",
+        "It leaves the solfa, the stave and the playback. The notes around it keep their timing, and a rest takes its place.",
       icon: "delete",
       tone: "danger",
       actions: [
