@@ -22,7 +22,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, ActivityIndicator, Animated, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { AccessibilityInfo, ActivityIndicator, Animated, Linking, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { Icon } from "../components/Icon";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -89,6 +89,7 @@ import {
   tuningLine,
 } from "../lib/practiceTrack";
 import { ProblemNote } from "../components/ProblemNote";
+import { onlySettingsCanGrant } from "../lib/micPermission";
 import { CostumedArt } from "../components/season/Costume";
 import { ART } from "../components/practice/art/svgs";
 import { useSeason } from "../lib/seasonStore";
@@ -103,6 +104,7 @@ const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberO
 /** Recording runs on this long after the last note, so a held ending is not cut (the server keeps four). */
 const TAIL_SEC = 1;
 const TOAST_MS = 3200;
+const MIC_REFUSED = "Microphone permission is needed to sing the drill.";
 
 export function PracticeScreen() {
   const colors = useColors();
@@ -124,6 +126,8 @@ export function PracticeScreen() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  /** The microphone was refused for good: only the phone's settings can turn it on now. */
+  const [micBlocked, setMicBlocked] = useState(false);
   const [grade, setGrade] = useState<GradeResult | null>(null);
 
   const [picking, setPicking] = useState(false);
@@ -283,7 +287,11 @@ export function PracticeScreen() {
     setTakeUri(null);
     try {
       const perm = await requestRecordingPermissionsAsync();
-      if (!perm.granted) { setError("Microphone permission is needed to sing the drill."); return; }
+      if (!perm.granted) {
+        setError(MIC_REFUSED);
+        setMicBlocked(onlySettingsCanGrant(perm));
+        return;
+      }
       await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true, shouldRouteThroughEarpiece: false });
       const lead = leadInFor(drill.notes, drill.tempoBpm, drill.timeSignature);
       leadIn.current = lead.seconds;
@@ -534,6 +542,15 @@ export function PracticeScreen() {
 
                 {allowance ? <Text style={styles.allowance}>{allowanceLine(allowance)}</Text> : null}
                 {error ? <ProblemNote>{error}</ProblemNote> : null}
+                {error === MIC_REFUSED && micBlocked ? (
+                  <Button
+                    label="Open settings"
+                    variant="text"
+                    size="sm"
+                    onPress={() => void Linking.openSettings().catch(() => undefined)}
+                    style={styles.settingsLink}
+                  />
+                ) : null}
                 {grade?.milestone ? (
                   <View style={styles.milestone} accessibilityLiveRegion="polite">
                     <Text style={styles.milestoneTitle}>{grade.milestone.title}</Text>
@@ -1050,6 +1067,8 @@ const makeStyles = (c: Palette) =>
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.xs },
     liveLabel: { ...typography.label, color: c.textMuted },
     allowance: { ...typography.caption, color: c.textMuted },
+    /** Under the problem note, its word lined up with the note's (icon 15 + gap 6, less the button's 12 pad). */
+    settingsLink: { alignSelf: "flex-start", marginLeft: 15 + 6 - 12 },
     focusRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: spacing.sm, flexWrap: "wrap" },
     focusTuning: { ...typography.label, color: c.textMuted, fontSize: 13 },
 

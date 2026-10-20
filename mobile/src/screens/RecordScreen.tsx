@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Animated, BackHandler, StyleSheet, Text, View } from "react-native";
+import { Animated, BackHandler, Linking, StyleSheet, Text, View } from "react-native";
 import {
   useAudioRecorder,
   useAudioRecorderState,
@@ -38,6 +38,7 @@ import { importKind, importKindAnswered, loadImportKind, setImportKind } from ".
 import { setLeaveGuard } from "../lib/leaveGuard";
 import { canImport, isScoreFile } from "../lib/importFile";
 import { recordKindChoices } from "../lib/recordKind";
+import { onlySettingsCanGrant } from "../lib/micPermission";
 import { formatPrice, limitCopy, limitOffer, type LimitOffer } from "../lib/price";
 import { billingApi } from "../api/endpoints";
 import type { Plan } from "../api/types";
@@ -355,6 +356,8 @@ export function RecordScreen() {
   }, []);
   const [elapsed, setElapsed] = useState(0);
   const [permError, setPermError] = useState<string | null>(null);
+  /** The microphone was refused for good: only the phone's settings can turn it on now. */
+  const [permSettings, setPermSettings] = useState(false);
 
   // The preset follows Data saver, but never mid-take: a new preset makes a new recorder.
   const dataSaver = useDataSaver();
@@ -662,6 +665,7 @@ export function RecordScreen() {
     // prepare would otherwise start a second take and a second clock.
     if (startingRef.current) return;
     setPermError(null);
+    setPermSettings(false);
     if (blockedByTrialLimit()) return;
     startingRef.current = true;
     try {
@@ -670,6 +674,7 @@ export function RecordScreen() {
         setPermError(
           "Microphone permission is required to listen and transcribe.",
         );
+        setPermSettings(onlySettingsCanGrant(perm));
         return;
       }
       await setAudioModeAsync({
@@ -730,6 +735,7 @@ export function RecordScreen() {
 
   async function pickAudioFile() {
     setPermError(null);
+    setPermSettings(false);
     // Importing a file costs a generation exactly like recording one, and this path
     // had no gate at all — the trial was only enforced on the microphone.
     if (blockedByTrialLimit()) return;
@@ -1226,6 +1232,15 @@ export function RecordScreen() {
               <Icon name="problem" size={18} color={colors.warning} style={styles.errIcon} />
               <Text style={styles.errText}>{permError}</Text>
             </View>
+            {permSettings ? (
+              <Button
+                label="Open settings"
+                variant="text"
+                size="sm"
+                onPress={() => void Linking.openSettings().catch(() => undefined)}
+                style={styles.errAction}
+              />
+            ) : null}
           </Card>
         )}
 
@@ -1844,5 +1859,12 @@ const makeStyles = (c: Palette) =>
     fontSize: 14,
     flex: 1,
     lineHeight: 20,
+  },
+
+  /** A text button under the note, its word lined up with the note's (icon 18 + gap, less the button's 12 pad). */
+  errAction: {
+    alignSelf: "flex-start",
+    marginLeft: 18 + spacing.sm - 12,
+    marginTop: spacing.xs,
   },
 });
