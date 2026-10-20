@@ -15,11 +15,11 @@ import type { AuthStackParams } from "../navigation/types";
 type Props = NativeStackScreenProps<AuthStackParams, "Login">;
 
 /** Sign in with email and password, or Google. */
-export function LoginScreen({ navigation }: Props) {
+export function LoginScreen({ navigation, route }: Props) {
   const { signIn, signInWithGoogle } = useAuth();
   const passwordRef = useRef<TextInput>(null);
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(route.params?.email ?? "");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -144,7 +144,7 @@ export function LoginScreen({ navigation }: Props) {
 
       <Text style={[nightText.muted, styles.footer]}>
         New here?{" "}
-        <Text style={nightText.link} onPress={() => navigation.navigate("Register")} accessibilityRole="link">
+        <Text style={nightText.link} onPress={() => navigation.navigate("Register", { email: email.trim() })} accessibilityRole="link">
           Create an account
         </Text>
       </Text>

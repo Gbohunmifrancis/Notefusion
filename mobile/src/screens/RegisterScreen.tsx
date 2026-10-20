@@ -18,13 +18,13 @@ type Props = NativeStackScreenProps<AuthStackParams, "Register">;
  * no "confirm password" field — the eye in the field shows what was typed, which
  * catches a typo without making everyone type it twice.
  */
-export function RegisterScreen({ navigation }: Props) {
+export function RegisterScreen({ navigation, route }: Props) {
   const { signUp } = useAuth();
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
 
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(route.params?.email ?? "");
   const [password, setPassword] = useState("");
   const [emailTouched, setEmailTouched] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -136,7 +136,7 @@ export function RegisterScreen({ navigation }: Props) {
 
       <Text style={[nightText.muted, styles.footer]}>
         Already have one?{" "}
-        <Text style={nightText.link} onPress={() => navigation.navigate("Login")} accessibilityRole="link">
+        <Text style={nightText.link} onPress={() => navigation.navigate("Login", { email: email.trim() })} accessibilityRole="link">
           Sign in
         </Text>
       </Text>

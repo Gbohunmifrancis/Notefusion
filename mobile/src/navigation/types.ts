@@ -8,8 +8,9 @@ export type AuthStackParams = {
   Onboarding: undefined;
   /** Google, email or sign in: where the intro ends and where a signed-out return lands. */
   Welcome: undefined;
-  Login: undefined;
-  Register: undefined;
+  /** Login and Register are each seeded with the email typed on the other, when one was. */
+  Login: { email?: string } | undefined;
+  Register: { email?: string } | undefined;
   /**
    * The email is a param rather than screen state because two routes arrive here:
    * sign-up, and a login that was refused as unverified. Both know the address the
