@@ -882,7 +882,17 @@
   function showAccountUi(on) {
     ["topbar-avatar", "app-head", "side-foot"].forEach(function (id) { on ? show($(id)) : hide($(id)); });
     if (!on) closeUserMenu();
+    // The logo is the app's home (the studio) for a signed-in account, as the Home tab is; the site's for anyone else.
+    appLogos.forEach(function (a) { a.setAttribute("href", on ? "/app" : "/"); });
   }
+  var appLogos = document.querySelectorAll(".topbar .brand, .side-head .brand");
+  appLogos.forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      if (a.getAttribute("href") !== "/app" || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      goView("transcribe");
+    });
+  });
   $("menu-plans").addEventListener("click", function () { closeUserMenu(); openUpgrade(); });
   $("menu-how").addEventListener("click", function (e) { e.preventDefault(); closeUserMenu(); closeDrawer(); openOnb(); });
   $("topbar-signin").addEventListener("click", function () { openAuth("login"); });
