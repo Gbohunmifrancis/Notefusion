@@ -271,6 +271,12 @@
 
   emailInput.addEventListener("input", validateState);
   confirmCheck.addEventListener("change", validateState);
+  // Opened from the web app's Account view: the signed-in address comes along in this tab (never in the URL).
+  try {
+    var known = sessionStorage.getItem("nf.deleteEmail");
+    sessionStorage.removeItem("nf.deleteEmail");
+    if (known && !emailInput.value) { emailInput.value = known; validateState(); }
+  } catch (err) { /* storage off: the address is typed as before */ }
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();

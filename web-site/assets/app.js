@@ -1257,6 +1257,10 @@
     renderChoirPanel();
   }
   $("acct-upgrade").addEventListener("click", function () { if (playBilled()) openPlayManage(); else openUpgrade(); });
+  // The deletion page fills in the signed-in address (handed over in this tab only, never in the URL).
+  $("acct-delete").addEventListener("click", function () {
+    try { if (me && me.email) sessionStorage.setItem("nf.deleteEmail", me.email); } catch (e) { /* typed there instead */ }
+  });
 
   // ── My choir (Account & settings) ───────────────────────────────────────
   /** The account's choir, as director or singer; null when it is in none (the API answers 404). */
