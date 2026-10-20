@@ -536,11 +536,15 @@ export function LinkScreen() {
                         ? chip("Whole song", preset === "whole", () => setRange({ start: 0, end: Math.floor(duration) }))
                         : null}
                     </View>
-                    <Text style={styles.hint}>
-                      {isPro
-                        ? `Up to ${formatClock(maxSeconds)} at a time on Pro.`
-                        : `Up to ${formatClock(maxSeconds)} on the free preview — Pro takes up to 6:00 of any song.`}
-                    </Text>
+                    {/* The allowance is said once. A free account's is the pinned bar's line (the preview, or the song it
+                        bought); Pro's bar counts songs, so the length is said here. */}
+                    {isPro ? (
+                      <Text style={styles.hint}>{`Up to ${formatClock(maxSeconds)} at a time on Pro.`}</Text>
+                    ) : entitlement ? null : (
+                      <Text style={styles.hint}>
+                        {`Up to ${formatClock(maxSeconds)} on the free preview — Pro takes up to 6:00 of any song.`}
+                      </Text>
+                    )}
                   </>
                 ) : (
                   <Text style={styles.hint}>
