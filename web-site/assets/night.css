@@ -48,7 +48,12 @@
   --danger-soft: rgba(220, 38, 38, 0.10);
   --success-soft: rgba(22, 163, 74, 0.10);
   --amber-soft: rgba(217, 119, 6, 0.12);
-  --danger-text: #B91C1C;   /* red as words: 4.5:1 and more on white, the canvas and its own tint */
+  /* A signal colour as words takes the deep shade (4.5:1 and more on white, the canvas and its own tint);
+   * dots, edges and icons keep the bright hue above. */
+  --danger-text: #B91C1C;
+  --success-text: #15803D;
+  --amber-text: #B45309;
+  --success-alert-text: #166534; /* on the green tint over the canvas, where #15803D is 4.2:1 */
   --glass: rgba(255, 255, 255, 0.86);
   --scrim: rgba(15, 23, 42, 0.55);
   --radius: 12px;
@@ -97,6 +102,9 @@
   --success-soft: rgba(61, 220, 151, 0.10);
   --amber-soft: rgba(245, 181, 68, 0.12);
   --danger-text: #FF4D5E;
+  --success-text: #3DDC97;
+  --amber-text: #F5B544;
+  --success-alert-text: #3DDC97;
   --glass: rgba(14, 18, 26, 0.82);
   --scrim: rgba(3, 5, 8, 0.80);
   --ring: 0 0 0 4px rgba(47, 123, 255, 0.30);
@@ -302,9 +310,9 @@ table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
 .verdicts { display: inline-flex; flex-wrap: wrap; gap: 8px; }
 .verdict { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--wash); color: var(--ink); font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
 :root[data-theme="dark"] .verdict { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.12); }
-.verdict[aria-pressed=true][data-verdict="5"] { background: var(--success-soft); border-color: var(--success); color: var(--success); }
-.verdict[aria-pressed=true][data-verdict="3"] { background: var(--amber-soft); border-color: var(--amber); color: var(--amber); }
-.verdict[aria-pressed=true][data-verdict="1"] { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+.verdict[aria-pressed=true][data-verdict="5"] { background: var(--success-soft); border-color: var(--success); color: var(--success-text); }
+.verdict[aria-pressed=true][data-verdict="3"] { background: var(--amber-soft); border-color: var(--amber); color: var(--amber-text); }
+.verdict[aria-pressed=true][data-verdict="1"] { background: var(--danger-soft); border-color: var(--danger); color: var(--danger-text); }
 .verdict-more { flex: 1 1 100%; display: grid; gap: 10px; }
 .verdict-more[hidden] { display: none; }
 .issues { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -532,7 +540,7 @@ body:not(.is-pro):not(.guest) .act-pro { border-color: var(--premium-line); }
 .pro-satb em { font-style: normal; color: var(--blue-dark); font-weight: 700; margin-right: 6px; }
 .pro-marks { display: flex; flex-wrap: wrap; align-content: center; gap: 4px; padding: 8px; }
 .pro-marks i { font-style: normal; font-family: var(--font-mono); font-weight: 700; font-size: 0.75rem; padding: 3px 7px; border-radius: 8px; border: 1.5px solid; }
-.pro-marks .hit { color: var(--success); } .pro-marks .near { color: var(--amber); } .pro-marks .wrong { color: var(--danger); }
+.pro-marks .hit { color: var(--success-text); } .pro-marks .near { color: var(--amber-text); } .pro-marks .wrong { color: var(--danger-text); }
 .pro-pdf { position: relative; padding: 10px 14px; }
 .pro-pdf i { display: block; height: 5px; margin: 6px 0; border-radius: 3px; background: var(--line-strong); }
 .pro-pdf i:nth-child(2) { width: 80%; } .pro-pdf i:nth-child(4) { width: 65%; }
@@ -613,9 +621,9 @@ body.has-free-harmony .act[data-tool="harmony"] { border-color: var(--line); }
 :root[data-theme="dark"] .pr-bar.in { background: var(--blue-soft); }
 .pr-bar.pending { border-style: dashed; border-width: 2px; }
 .pr-bar.now { box-shadow: inset 0 0 0 2px var(--blue); }
-.pr-notes .mk-hit { color: var(--success); font-weight: 700; }
-.pr-notes .mk-near { color: var(--amber); font-weight: 700; }
-.pr-notes .mk-wrong { color: var(--danger); font-weight: 700; text-decoration: underline wavy; }
+.pr-notes .mk-hit { color: var(--success-text); font-weight: 700; }
+.pr-notes .mk-near { color: var(--amber-text); font-weight: 700; }
+.pr-notes .mk-wrong { color: var(--danger-text); font-weight: 700; text-decoration: underline wavy; }
 .pr-notes .mk-missed { color: var(--faint); text-decoration: line-through; }
 .pr-transport { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
 .pr-transport .act-lock { width: 14px; height: 14px; opacity: 0.7; }

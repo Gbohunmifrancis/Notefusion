@@ -835,7 +835,7 @@
   // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
   // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
   // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=7", "/assets/practice-progress.js?v=8", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=2", "/assets/practice-view.js?v=11"];
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=8", "/assets/practice-progress.js?v=8", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=2", "/assets/practice-view.js?v=11"];
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
   function loadAsset(url) {
@@ -2946,7 +2946,7 @@
     request("/api/transcriptions/grade", { method: "POST", form: form }).then(function (g) {
       if (at !== epoch) return;
       $("sing-status").textContent = "";
-      $("sing-score").textContent = g.score; $("sing-score").style.color = g.score >= 80 ? "var(--success)" : g.score >= 50 ? "#B45309" : "var(--danger)";
+      $("sing-score").textContent = g.score; $("sing-score").style.color = g.score >= 80 ? "var(--success-text)" : g.score >= 50 ? "var(--amber-text)" : "var(--danger-text)";
       $("sing-summary").textContent = g.summary + (g.octaveShift ? " Sung " + (g.octaveShift > 0 ? "an octave up" : "an octave down") + " — that's fine." : "");
       var marks = $("sing-marks"); marks.innerHTML = "";
       (g.notes || []).forEach(function (m) {
@@ -3189,7 +3189,7 @@
       if (practice.part !== part || practice.range !== range) return;
       practice.marks = PR.marksByNote(g, slice);
       $("pr-score").textContent = g.score;
-      $("pr-score").style.color = g.score >= 80 ? "var(--success)" : g.score >= 50 ? "var(--amber)" : "var(--danger)";
+      $("pr-score").style.color = g.score >= 80 ? "var(--success-text)" : g.score >= 50 ? "var(--amber-text)" : "var(--danger-text)";
       $("pr-summary").textContent = g.summary + (g.octaveShift ? " Sung " + (g.octaveShift > 0 ? "an octave up" : "an octave down") + " — that's fine." : "");
       renderPractice();
       show($("pr-result"));
