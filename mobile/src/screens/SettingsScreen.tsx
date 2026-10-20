@@ -55,6 +55,7 @@ export function SettingsScreen({ navigation }: Props) {
   const [profile, setProfile] = useState<MyProfile | null>(null);
   const [hapticsOn, setHapticsOn] = useState(haptics.hapticsEnabled());
   const [sheet, setSheet] = useState<Sheet>(null);
+  const [signingOut, setSigningOut] = useState(false);
 
   const dataSaver = useDataSaver();
   const dohSuggestions = useDohSuggestions();
@@ -118,15 +119,30 @@ export function SettingsScreen({ navigation }: Props) {
     });
   }
 
+  /**
+   * Signing out tells the server (the push token, the session) before it lets go, which takes a moment on a slow
+   * connection: the row says "Signing out…" meanwhile, and a second tap does nothing.
+   */
+  async function doSignOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+    try {
+      await signOut();
+    } finally {
+      setSigningOut(false);
+    }
+  }
+
   function confirmSignOut() {
+    if (signingOut) return;
     // Unconfirmed, unless recordings are still waiting to send: those go with it.
     const pending = outboxPending();
-    if (pending === 0) return void signOut();
+    if (pending === 0) return void doSignOut();
     showDialog({
       title: "Sign out?",
       message: signOutWarning(pending).trim(),
       actions: [
-        { label: "Sign out", style: "destructive", onPress: () => void signOut() },
+        { label: "Sign out", style: "destructive", onPress: () => void doSignOut() },
         { label: "Stay signed in", style: "cancel" },
       ],
     });
@@ -260,7 +276,7 @@ export function SettingsScreen({ navigation }: Props) {
       </Group>
 
       <Group style={styles.apart}>
-        <Row icon="leave" label="Sign out" onPress={confirmSignOut} />
+        <Row icon="leave" label={signingOut ? "Signing out…" : "Sign out"} dim={signingOut} onPress={confirmSignOut} />
       </Group>
 
       <Group style={styles.apart}>
