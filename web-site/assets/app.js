@@ -1933,7 +1933,7 @@
     }
     function onProgress(fraction) {
       if (following) $("p-retry-btn").textContent = "Sending again… " + Math.round(fraction * 100) + "%";
-      else setPercent(fraction);
+      else setPercent(fraction * UPLOAD_SHARE);
     }
     submitting = true;
     var at = epoch;
@@ -2303,6 +2303,12 @@
     if (job.stage) return job.stage;
     return String(job.status || "").toLowerCase() === "pending" ? "queued" : fallback;
   }
+  /**
+   * For a recording, the upload is the bar's first stretch and the job the rest, so the bar runs once from 0 to 100
+   * (it used to fill for the upload, then drop back to nothing as the job began).
+   */
+  var UPLOAD_SHARE = 0.15;
+  function jobPercent(progress) { return current && current.from === "upload" ? UPLOAD_SHARE + (1 - UPLOAD_SHARE) * (progress || 0) : progress; }
   function setPercent(fraction) {
     var pct = Math.max(0, Math.min(100, Math.round((fraction || 0) * 100)));
     $("p-bar").style.width = Math.max(3, pct) + "%";
@@ -2320,6 +2326,7 @@
     current.preview = kind === "preview";
     if (current.preview) previewId = job.jobId; else rememberJob(job.jobId);
     setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
+    setPercent(jobPercent(0));
     primeAudio();
     follow = {
       jobId: job.jobId, ctrl: null, away: false, timer: null, clock: null, noStream: !streamable(), streamFails: 0, authRetries: 0,
@@ -2525,7 +2532,7 @@
     }
     var stage = stageOf(job, "transcribing"), progress = job.progress || 0;
     setStage(stage, current.from, job.queuePosition);
-    setPercent(progress);
+    setPercent(jobPercent(progress));
     // Something moved: the stage, the bar or the line ahead. Otherwise the clock keeps running.
     var seen = stage + "|" + Math.round(progress * 100) + "|" + (job.queuePosition == null ? "" : job.queuePosition);
     if (seen !== current.seen) { current.seen = seen; current.seenAt = Date.now(); }
