@@ -96,6 +96,12 @@ export const colors = {
   success: "#16A34A",
   warning: "#D97706",
   danger: "#DC2626",
+  /** The signals as words (board l-ux-high 01b): the bright hues above read under 3.3:1 as Day text, so a word in a
+   *  signal colour takes the deep shade (≥4.68:1 on the canvas). Dots, underlines, borders and icons keep the bright hue. */
+  warningText: "#B45309",
+  successText: "#15803D",
+  /** A blue notice's words on its `accentSoft` tint. */
+  noticeText: "#1D4ED8",
 
   /** Destructive washes. These were retyped as literal `rgba(220, 38, 38, …)`
    *  in eight places, which meant dark mode painted a light-mode maroon fill
@@ -212,6 +218,10 @@ export const darkColors: Palette = {
   success: "#3DDC97",
   warning: "#F5B544",
   danger: "#FF4D5E",
+  // Night's signals already read as words, so the text tokens are the same hues.
+  warningText: "#F5B544",
+  successText: "#3DDC97",
+  noticeText: "#9CC2FF",
 
   dangerSoft: "rgba(255, 77, 94, 0.12)",
   dangerBorder: "rgba(255, 77, 94, 0.35)",

@@ -18,11 +18,14 @@ export function GradeMarks({ grade, notes }: { grade: GradeResult; notes: readon
 
   const statusColor = (s: string) =>
     s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.textMuted : colors.textFaint;
+  // The letter is a word: the deep shade in Day; the border keeps the bright hue.
+  const statusText = (s: string) =>
+    s === "hit" ? colors.successText : s === "near" ? colors.warningText : s === "wrong" ? colors.textMuted : colors.textFaint;
 
   return (
     <View style={styles.result}>
       <View style={styles.scoreRow}>
-        <Text style={[styles.score, { color: grade.score >= 80 ? colors.success : grade.score >= 50 ? colors.warning : colors.textMuted }]}>{grade.score}</Text>
+        <Text style={[styles.score, { color: grade.score >= 80 ? colors.successText : grade.score >= 50 ? colors.warningText : colors.textMuted }]}>{grade.score}</Text>
         <View style={styles.scoreText}>
           <Text style={styles.summary}>{grade.summary}</Text>
           {grade.octaveShift !== 0 ? (
@@ -36,7 +39,7 @@ export function GradeMarks({ grade, notes }: { grade: GradeResult; notes: readon
           if (!n) return null;
           return (
             <View key={g.index} style={[styles.mark, { borderColor: statusColor(g.status) }]}>
-              <Text style={[styles.markSolfa, { color: statusColor(g.status) }]}>{n.solfa}{n.octaveMark}</Text>
+              <Text style={[styles.markSolfa, { color: statusText(g.status) }]}>{n.solfa}{n.octaveMark}</Text>
               <Text style={styles.markCents}>
                 {g.status === "missed" ? "—" : g.cents == null ? "" : `${g.cents > 0 ? "+" : ""}${Math.round(g.cents)}`}
               </Text>

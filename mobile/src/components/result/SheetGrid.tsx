@@ -198,7 +198,7 @@ const makeStyles = (c: Palette) =>
       lineHeight: 26,
       color: c.text,
     },
-    syllableLow: { color: c.warning },
+    syllableLow: { color: c.warningText },
     syllableNow: { color: c.accent },
     hold: { color: c.textFaint, paddingVertical: 2 },
     dots: { flexDirection: "row", gap: 2, height: 3, marginTop: 1 },

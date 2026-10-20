@@ -1473,7 +1473,7 @@ export function ResultScreen({ route, navigation }: Props) {
           <Text
             style={[
               styles.rangeStatus,
-              { color: r.status === "ok" ? colors.success : colors.warning },
+              { color: r.status === "ok" ? colors.successText : colors.warningText },
             ]}
           >
             {r.status === "ok"
@@ -2456,7 +2456,7 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.regular,
       fontSize: 12.5,
       lineHeight: 18,
-      color: c.accentAlt,
+      color: c.noticeText,
       backgroundColor: c.accentSoft,
       borderRadius: 12,
       paddingVertical: spacing.sm,
@@ -2665,7 +2665,7 @@ const makeStyles = (c: Palette) =>
       borderColor: c.border,
     },
     checkText: { flex: 1, fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
-    checkStrong: { fontFamily: fonts.semibold, color: c.warning },
+    checkStrong: { fontFamily: fonts.semibold, color: c.warningText },
 
     // ── Actions ───────────────────────────────────────────────────────────────
     actions: { flexDirection: "row", justifyContent: "space-between", marginTop: 18 },
@@ -2689,7 +2689,7 @@ const makeStyles = (c: Palette) =>
     voiceName: { ...typography.caption, color: c.textMuted, marginBottom: 4 },
     voiceLines: { fontFamily: typography.mono.fontFamily, fontSize: 14, color: c.text, lineHeight: 22 },
     teaser: { backgroundColor: c.accentSoft, borderRadius: radii.md, padding: spacing.md },
-    teaserText: { fontFamily: fonts.regular, fontSize: 13, color: c.accentAlt, lineHeight: 19 },
+    teaserText: { fontFamily: fonts.regular, fontSize: 13, color: c.noticeText, lineHeight: 19 },
     proTag: {
       flexDirection: "row",
       alignItems: "center",

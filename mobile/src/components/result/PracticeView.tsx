@@ -300,7 +300,7 @@ export function PracticeView({
   }
 
   const statusColor = (s: string) =>
-    s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.textMuted : colors.textFaint;
+    s === "hit" ? colors.successText : s === "near" ? colors.warningText : s === "wrong" ? colors.textMuted : colors.textFaint;
   const t = take.current;
   const due = phase === "singing" && t ? noteDueAt(t.slice.notes, t.tempo, t.leadIn, elapsed) : -1;
   const first = t?.slice.notes[0];
@@ -428,7 +428,7 @@ export function PracticeView({
                 <Text
                   style={[
                     styles.score,
-                    { color: graded.grade.score >= 80 ? colors.success : graded.grade.score >= 50 ? colors.warning : colors.textMuted },
+                    { color: graded.grade.score >= 80 ? colors.successText : graded.grade.score >= 50 ? colors.warningText : colors.textMuted },
                   ]}
                 >
                   {graded.grade.score}

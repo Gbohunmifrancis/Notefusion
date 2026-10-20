@@ -1808,12 +1808,12 @@ const makeStyles = (c: Palette) =>
   },
 
   uploadStageTextDone: {
-    color: c.success,
+    color: c.successText,
   },
 
   uploadWarn: {
     ...typography.caption,
-    color: c.warning,
+    color: c.warningText,
     fontSize: 12,
     lineHeight: 17,
     marginTop: spacing.md,

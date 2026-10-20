@@ -307,7 +307,7 @@ const makeStyles = (c: Palette) =>
     segOn: { backgroundColor: c.surface, borderWidth: 1, borderColor: c.border },
     segText: { fontFamily: fonts.semibold, fontSize: 14, color: c.textMuted },
     segTextOn: { color: c.text },
-    segDone: { color: c.success },
+    segDone: { color: c.successText },
     bands: { flexDirection: "row", gap: 6, marginTop: 6 },
     band: { alignItems: "center" },
     bandLine: { alignSelf: "stretch", height: 6, borderLeftWidth: 1, borderRightWidth: 1, borderBottomWidth: 1, borderColor: c.border, marginHorizontal: 4 },

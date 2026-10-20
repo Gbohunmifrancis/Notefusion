@@ -21,6 +21,9 @@ export function StarGrade({ grade, notes }: { grade: GradeResult; notes: readonl
 
   const statusColor = (s: string) =>
     s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.textMuted : colors.textFaint;
+  // The letter is a word: the deep shade in Day; the ring keeps the bright hue.
+  const statusText = (s: string) =>
+    s === "hit" ? colors.successText : s === "near" ? colors.warningText : s === "wrong" ? colors.textMuted : colors.textFaint;
 
   return (
     <View style={styles.result}>
@@ -36,10 +39,9 @@ export function StarGrade({ grade, notes }: { grade: GradeResult; notes: readonl
         {grade.notes.map((g) => {
           const n = notes[g.index];
           if (!n) return null;
-          const color = statusColor(g.status);
           return (
-            <View key={g.index} style={[styles.mark, { borderColor: color }]}>
-              <Text style={[styles.markSolfa, { color }]}>{n.solfa}{n.octaveMark}</Text>
+            <View key={g.index} style={[styles.mark, { borderColor: statusColor(g.status) }]}>
+              <Text style={[styles.markSolfa, { color: statusText(g.status) }]}>{n.solfa}{n.octaveMark}</Text>
             </View>
           );
         })}

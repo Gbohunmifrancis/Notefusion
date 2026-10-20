@@ -323,7 +323,7 @@ const makeStyles = (c: Palette) =>
 
     queuePosition: {
       ...typography.caption,
-      color: c.warning,
+      color: c.warningText,
       fontSize: 12,
       fontFamily: fonts.medium,
     },

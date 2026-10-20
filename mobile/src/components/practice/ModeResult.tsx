@@ -49,6 +49,8 @@ export function ModeResult({
   const stars = starsFor(score);
   const earned = playful ? playfulRewardLine(reward) : rewardMoment(reward)?.line ?? null;
   const toneColor = (t: MarkTone) => (t === "hit" ? c.success : t === "near" ? c.warning : t === "off" ? c.textMuted : c.textFaint);
+  // The mark's letter is a word: the deep shade in Day; the border keeps the bright hue.
+  const toneText = (t: MarkTone) => (t === "hit" ? c.successText : t === "near" ? c.warningText : t === "off" ? c.textMuted : c.textFaint);
 
   return (
     <View style={[styles.card, playful && styles.cardPlay]} accessibilityLiveRegion="polite">
@@ -60,7 +62,7 @@ export function ModeResult({
         </View>
       ) : (
         <View style={styles.scoreRow} accessible accessibilityLabel={`Score ${score}. ${summary}${sub ? ` ${sub}` : ""}`}>
-          <Text style={[styles.score, { color: score >= 80 ? c.success : score >= 50 ? c.warning : c.textMuted }]}>{score}</Text>
+          <Text style={[styles.score, { color: score >= 80 ? c.successText : score >= 50 ? c.warningText : c.textMuted }]}>{score}</Text>
           <View style={styles.scoreText}>
             <Text style={styles.summary}>{summary}</Text>
             {sub ? <Text style={styles.sub}>{sub}</Text> : null}
@@ -78,7 +80,7 @@ export function ModeResult({
                 accessible
                 accessibilityLabel={`${m.text}: ${m.tone === "hit" ? "in tune" : m.tone === "near" ? "close" : m.tone === "off" ? "off" : "not heard"}${!playful && m.sub ? `, ${m.sub}` : ""}`}
               >
-                <Text style={[styles.markText, { color }, m.tone === "off" && styles.markOff]}>{m.text}</Text>
+                <Text style={[styles.markText, { color: toneText(m.tone) }, m.tone === "off" && styles.markOff]}>{m.text}</Text>
                 {!playful && m.sub ? <Text style={styles.markSub}>{m.sub}</Text> : null}
               </View>
             );
