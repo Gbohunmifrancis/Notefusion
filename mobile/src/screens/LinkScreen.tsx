@@ -55,7 +55,7 @@ import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
 import { useAuth } from "../lib/auth";
 import { linkJobStore } from "../lib/linkJobStore";
-import type { LinkJobOptions } from "../lib/linkJob";
+import type { LinkJobOptions, LinkSong } from "../lib/linkJob";
 import { markPractisedToday } from "../lib/practiceReminder";
 import { extractSongUrl, songLinkHint } from "../lib/songLink";
 import { defaultRange, fitsWhole, formatClock, isWholeSong, sectionLabel, type ClipRange } from "../lib/clipRange";
@@ -237,10 +237,11 @@ export function LinkScreen() {
   // A song takes minutes, and leaving the screen meanwhile used to lose its card. The link sent is kept until its
   // job ends, and on coming back the screen follows it again while it still runs.
   /** The link and options last sent, for "Try again" to keep the job it sends instead. */
-  const sent = useRef<{ url: string; opts: LinkJobOptions } | null>(null);
-  function remember(jobId: string | null, link: string, opts: LinkJobOptions) {
-    sent.current = { url: link, opts };
-    if (jobId && user) linkJobStore.save({ jobId, url: link, userId: user.id, sentAt: Date.now(), opts });
+  const sent = useRef<{ url: string; opts: LinkJobOptions; song?: LinkSong } | null>(null);
+  /** Kept with the song it is, so the Library's "On its way" names it from the start (board m-ux-medium P2e). */
+  function remember(jobId: string | null, link: string, opts: LinkJobOptions, kept?: LinkSong) {
+    sent.current = { url: link, opts, song: kept };
+    if (jobId && user) linkJobStore.save({ jobId, url: link, userId: user.id, sentAt: Date.now(), opts, song: kept });
   }
   useEffect(() => {
     if (!user) return;
@@ -249,7 +250,7 @@ export function LinkScreen() {
       if (!live || !kept) return;
       const outcome = await resumeLink(kept.jobId, kept.url, kept.opts);
       if (!live) return;
-      if (outcome === "running") sent.current = { url: kept.url, opts: kept.opts };
+      if (outcome === "running") sent.current = { url: kept.url, opts: kept.opts, song: kept.song };
       else if (outcome === "ended") linkJobStore.clear();
     });
     return () => {
@@ -269,7 +270,7 @@ export function LinkScreen() {
   /** "Try again": the same link sent afresh, and kept as the job to come back to. */
   async function sendAgain() {
     const jobId = await retry();
-    if (sent.current) remember(jobId, sent.current.url, sent.current.opts);
+    if (sent.current) remember(jobId, sent.current.url, sent.current.opts, sent.current.song);
   }
 
   const stageIndex = STAGES.findIndex((s) => s.key === state.stage);
@@ -300,7 +301,12 @@ export function LinkScreen() {
       endSeconds: section?.end,
     };
     const jobId = await startLink(found.url, opts);
-    remember(jobId, found.url, opts);
+    remember(
+      jobId,
+      found.url,
+      opts,
+      song ? { title: song.title, artist: song.artist, thumbnailUrl: song.thumbnailUrl ?? null } : undefined,
+    );
     if (jobId) setMeter(null);
   }
 

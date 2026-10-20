@@ -42,6 +42,8 @@ import { useReachability } from "../lib/connectivity";
 import { isNetworkCode } from "../lib/reachability";
 import { openTranscriptionFromNotification } from "../lib/notificationLink";
 import { PendingSends } from "../components/library/PendingSends";
+import { useSongOnItsWay } from "../lib/useSongOnItsWay";
+import { useAuth } from "../lib/auth";
 import { HEADER_AVATAR, HeaderAvatar } from "../components/HeaderAvatar";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import type { SavedTranscription } from "../api/types";
@@ -80,6 +82,8 @@ export function LibraryScreen() {
   // Takes still on their way (lib/outbox): shown above the sheets until each lands among them.
   const outbox = useOutbox();
   const sendProgress = useSendProgress();
+  // A song sent from Song link, listed with them while it is written (board m-ux-medium P2e).
+  const { user } = useAuth();
 
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -96,6 +100,7 @@ export function LibraryScreen() {
   // Doh on the empty states idles only while the Library is on show; a scroll closes his tip.
   const focused = useIsFocused();
   const [scrolls, setScrolls] = useState(0);
+  const song = useSongOnItsWay(user?.id, focused);
 
   // Share, file and delete the chosen sheets: the same actions as Home's recent rows (board a-core/11).
   const actions = useSheetActions({
@@ -149,6 +154,11 @@ export function LibraryScreen() {
       }),
     [],
   );
+
+  // The song is written: the server filed it, so it is a sheet in the list now.
+  useEffect(() => {
+    if (song.row?.state === "done") load();
+  }, [song.row?.state]);
 
   // Back online while showing the phone's copies (or an error): read the list again, quietly.
   useEffect(() => {
@@ -404,6 +414,13 @@ export function LibraryScreen() {
       <PendingSends
         items={outbox}
         progress={sendProgress}
+        song={song.row}
+        onOpenSong={() => {
+          const jobId = song.jobId;
+          if (!jobId) return;
+          void openTranscriptionFromNotification(jobId).then((opened) => opened && song.forget());
+        }}
+        onDismissSong={song.forget}
         onRetry={(t) => retryTake(t.id)}
         onOpen={(t) => {
           if (!t.jobId) return;
@@ -473,7 +490,7 @@ export function LibraryScreen() {
       )}
 
       {/* Below "On its way", the sheets themselves, so the two lists read apart (board 13). */}
-      {outbox.length > 0 && sortedItems.length > 0 ? <Text style={styles.sheetsEyebrow}>All sheets</Text> : null}
+      {(outbox.length > 0 || song.row) && sortedItems.length > 0 ? <Text style={styles.sheetsEyebrow}>All sheets</Text> : null}
     </View>
   );
 

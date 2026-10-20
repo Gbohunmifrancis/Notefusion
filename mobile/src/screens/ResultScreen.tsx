@@ -65,6 +65,7 @@ import { logAnalyticsEvent } from "../lib/analytics";
 import { isNetworkCode } from "../lib/reachability";
 import { useOfflineLibrary } from "../lib/offlineLibrary";
 import { takeOpened } from "../lib/outbox";
+import { linkJobStore } from "../lib/linkJobStore";
 import { savedToastBody, takeKind, worthAListenLine } from "../lib/savedSheet";
 import { askToDelete, deleteSheets, keepSheetOffline, renameSheet, shareSheetLinks } from "../lib/sheetActions";
 import { transposeLocally } from "../lib/localTranspose";
@@ -1613,7 +1614,10 @@ export function ResultScreen({ route, navigation }: Props) {
   const [celebrating, setCelebrating] = useState(false);
   // Opened from its job (the record screen, a push, the Library): its take in the send queue is finished with.
   useEffect(() => {
-    if (sourceJobId) takeOpened(sourceJobId);
+    if (sourceJobId) {
+      takeOpened(sourceJobId);
+      void linkJobStore.forget(sourceJobId);
+    }
     // Opened: a sheet the server filed stops showing as unopened in the Library.
     if (autoSaved && initialSavedId) void libraryApi.markOpened(initialSavedId).catch(() => undefined);
     // Once, on arrival.
