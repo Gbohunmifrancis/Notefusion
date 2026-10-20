@@ -87,8 +87,10 @@ export const colors = {
 
   // ── Typography ──────────────────────────────────────────────────────────
   text: "#0F172A", // Ink Navy   — primary text
-  textMuted: "#64748B", // Slate      — secondary / subtitles
-  textFaint: "#64748B", // Slate — placeholder / tertiary; 4.76:1 on white (#94A3B8 was 2.6:1)
+  // ≥4.87:1 on every Day surface (canvas, card and the tinted rows); #64748B was 4.43 on the canvas, 4.27 on the tint.
+  // The admin console's Day muted grey.
+  textMuted: "#5B6B82", // Slate      — secondary / subtitles
+  textFaint: "#5B6B82", // Slate — placeholder / tertiary (#94A3B8 was 2.6:1, #64748B 4.27)
   /** Row and chip icons at rest (components/Icon): a step under `text`, so the words lead. Controls use `text`. */
   icon: "#334155",
 

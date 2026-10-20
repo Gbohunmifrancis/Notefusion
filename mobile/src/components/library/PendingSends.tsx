@@ -178,5 +178,6 @@ const makeStyles = (c: Palette) =>
     },
     actionStrong: { backgroundColor: c.accentSoft, borderColor: c.accentGlow },
     actionLabel: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted },
-    actionLabelStrong: { color: c.accent },
+    // Words on the blue tint take the notice blue: `accent` there was 4.07:1 in Day.
+    actionLabelStrong: { color: c.noticeText },
   });
