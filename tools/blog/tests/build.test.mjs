@@ -147,6 +147,8 @@ test("the hymn index links every season's page (no buttons to wait for), the peo
   assert.match(html, /<nav class="hymn-browse" aria-label="Browse the hymns"><a href="\/hymns" aria-current="page">All hymns A–Z<\/a><a href="\/hymns\/occasions">Seasons and occasions<\/a><a href="\/hymns\/people">Writers and composers<\/a><a href="\/hymns\/first-lines">First lines<\/a><\/nav>/);
   assert.match(html, /<nav class="hymn-seasons" aria-label="Seasons and occasions"><a href="\/hymns\/occasions\/advent"/);
   assert.ok(!html.includes("data-filter="), "the seasons are links now, not filter buttons");
+  // Hymns or tunes: one segmented control with a choice always made, All first (board m-ux-medium W4a).
+  assert.match(html, /<div class="hymn-kinds" role="group" aria-label="Hymns or tunes"><button type="button" data-kind="" aria-pressed="true">All<\/button><button type="button" data-kind="hymn" aria-pressed="false">Hymns<\/button><button type="button" data-kind="tune" aria-pressed="false">Tunes<\/button><\/div>/);
 });
 
 test("the built PDFs pass the checker, and every new page is in the sitemap", async () => {

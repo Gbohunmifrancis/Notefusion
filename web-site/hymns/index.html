@@ -29,7 +29,7 @@
 <link rel="alternate" type="application/rss+xml" title="NoteFusion blog" href="/blog/feed.xml">
 <link rel="preload" href="/assets/fonts/source-serif-4-v15-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site-pages.css?v=5">
-<link rel="stylesheet" href="/assets/blog.css?v=9">
+<link rel="stylesheet" href="/assets/blog.css?v=10">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -1595,7 +1595,8 @@
   <div class="hymn-find hymn-find-top" id="hymn-find" hidden>
     <label class="sr-only" for="hymn-filter">Find a hymn</label>
     <input type="search" id="hymn-filter" placeholder="Title, first line, tune, writer or season" autocomplete="off" spellcheck="false">
-    <p class="hymn-seasons" aria-label="Hymns or tunes"><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></p>
+    <!-- One control, one choice always made, All to start (board m-ux-medium W4a): it reads apart from the season links below. -->
+    <div class="hymn-kinds" role="group" aria-label="Hymns or tunes"><button type="button" data-kind="" aria-pressed="true">All</button><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></div>
     <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
   </div>
   <p class="masthead-dek">250 public-domain hymns with the solfa written out under the words, and 539 more hymn tunes on their own, with the staff notation, a piano to sing along with and a free PDF of each to print. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
@@ -5691,7 +5692,7 @@
   <p>NoteFusion. Hear it. See it. Notate it. &copy; 2026 NoteFusion.</p>
 </footer>
 <script src="/assets/site-theme.js?v=2" defer></script>
-<script src="/assets/hymns-index.js?v=4" defer></script>
+<script src="/assets/hymns-index.js?v=5" defer></script>
 <script src="/assets/season.js?v=3" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 <script src="/assets/blog-track.js?v=1" defer></script>
