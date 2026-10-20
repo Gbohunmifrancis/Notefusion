@@ -350,6 +350,8 @@ export function LinkScreen() {
       onPress={onPress}
       style={[styles.chip, on && styles.chipOn]}
       radius={radii.pill}
+      // 30 px chips 8 apart: half the gap each way (their height is the design's to change).
+      hitSlop={4}
       accessibilityRole="button"
       accessibilityLabel={a11y ?? label}
       accessibilityState={{ selected: on }}
@@ -427,7 +429,7 @@ export function LinkScreen() {
                 accessibilityLabel="Song link"
               />
               {url.length > 0 ? (
-                <Touchable onPress={() => setUrl("")} hitSlop={8} ripple="borderless" accessibilityLabel="Clear">
+                <Touchable onPress={() => setUrl("")} hitSlop={12} ripple="borderless" accessibilityLabel="Clear">
                   <Icon name="close" size={20} color={colors.textMuted} />
                 </Touchable>
               ) : null}
