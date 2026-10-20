@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Linking, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Icon } from "../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NightButton } from "../components/night/NightButton";
@@ -17,6 +17,9 @@ const CODE_LENGTH = 6;
 
 /** Matches `User.EmailVerificationResendCooldown` on the server, in seconds. */
 const RESEND_COOLDOWN = 60;
+
+/** Where someone whose code never comes can write (the address the website and receipts give). */
+const HELP_EMAIL = "hello@notefusion.studio";
 
 /**
  * The six-digit code that finishes sign-up. Reached from Register, and from a Login
@@ -216,7 +219,21 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
       <Pressable onPress={changeEmail} hitSlop={13} accessibilityRole="button" style={({ pressed }) => [styles.change, pressed && pressedLink]}>
         <Text style={styles.changeText}>Change email</Text>
       </Pressable>
-      <Text style={styles.hint}>The code expires in 10 minutes. Check your spam folder if it isn&apos;t there.</Text>
+      <Text style={styles.hint}>
+        The code expires in 10 minutes. Check your spam folder if it isn&apos;t there.
+        {/* Sign-up answers a taken address as it answers a new one (no one learns who has an account); the owner is
+            emailed how to sign in instead, so the screen says that can be what arrived. */}
+        {fromSignUp ? " If this address already has an account, we've emailed you how to sign in instead." : ""}
+        {" Still nothing? Write to "}
+        <Text
+          style={styles.hintLink}
+          onPress={() => void Linking.openURL(`mailto:${HELP_EMAIL}?subject=${encodeURIComponent("My code hasn't arrived")}`).catch(() => undefined)}
+          accessibilityRole="link"
+        >
+          {HELP_EMAIL}
+        </Text>
+        .
+      </Text>
     </NightScreen>
   );
 }
@@ -286,4 +303,5 @@ const styles = StyleSheet.create({
   change: { alignSelf: "flex-start", marginTop: 12 },
   changeText: { fontSize: 13.5, fontFamily: nightFonts.medium, color: night.ice },
   hint: { marginTop: 24, fontSize: 12, lineHeight: 17, fontFamily: nightFonts.regular, color: night.faint },
+  hintLink: { color: night.muted, textDecorationLine: "underline" },
 });
