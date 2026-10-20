@@ -29,9 +29,14 @@ export function weeklyFraction(goal: WeeklyGoal): number {
   return goal.target > 0 ? clamp01(goal.daysDone / goal.target) : 0;
 }
 
-/** "12 XP to Ray", or the top level's own line. */
+/** "12 XP to Ray", "1,250 XP to Soh", or the top level's own line. */
 export function nextLevelLine(level: PracticeLevel): string {
-  return level.nextName ? `${level.xpForNext} XP to ${level.nextName}` : "Top of the ladder";
+  return level.nextName ? `${xpAmount(level.xpForNext)} to ${level.nextName}` : "Top of the ladder";
+}
+
+/** "12,450 XP": grouped by hand, as `price.formatPrice` is (Hermes may ignore toLocaleString's options). */
+export function xpAmount(xp: number): string {
+  return `${String(Math.round(xp)).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} XP`;
 }
 
 /** "4-day streak", "1-day streak", "No streak yet" — or "No streak now" when an earlier one lapsed. */

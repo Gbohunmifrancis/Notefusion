@@ -75,6 +75,7 @@ import {
   streakLine,
   streakSnapshot,
   weekdayLetter,
+  xpAmount,
 } from "../lib/practiceProgress";
 import {
   badgeArt,
@@ -720,13 +721,13 @@ export function PracticeScreen() {
                     style={styles.barTrack}
                     accessible
                     accessibilityRole="progressbar"
-                    accessibilityLabel={`${progress.xp} XP. ${nextLevelLine(progress.level)}`}
+                    accessibilityLabel={`${xpAmount(progress.xp)}. ${nextLevelLine(progress.level)}`}
                   >
                     <View style={[styles.barFill, { width: `${Math.round(levelFraction(progress.level, progress.xp) * 100)}%` }]} />
                   </View>
                   {progress.level.nextName ? <Art name={levelArt(progress.level.index + 1)} width={22} /> : null}
                 </View>
-                <Text style={styles.statSub}>{progress.xp} XP</Text>
+                <Text style={styles.statSub}>{xpAmount(progress.xp)}</Text>
                 <Text style={styles.statFoot}>{nextLevelLine(progress.level)}</Text>
               </Card>
             </View>
