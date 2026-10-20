@@ -96,7 +96,9 @@ export function LoginScreen({ navigation, route }: Props) {
         </>
       }
     >
-      <Text style={[nightText.h1, styles.title]}>Welcome back</Text>
+      <Text style={[nightText.h1, styles.title]} accessibilityRole="header">
+        Welcome back
+      </Text>
       <Text style={[nightText.lead, styles.lead]}>Sign in to your sheets and folders.</Text>
 
       <View style={styles.form}>

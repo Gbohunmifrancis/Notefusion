@@ -70,7 +70,9 @@ export function RegisterScreen({ navigation, route }: Props) {
         </>
       }
     >
-      <Text style={[nightText.h1, styles.title]}>Create your{"\n"}account</Text>
+      <Text style={[nightText.h1, styles.title]} accessibilityRole="header">
+        Create your{"\n"}account
+      </Text>
       {/* What a free account is (FreeTier): three hummed or recorded tunes every week, not one preview. */}
       <Text style={[nightText.lead, styles.lead]}>Hum or record 3 tunes free, every week.</Text>
 

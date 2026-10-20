@@ -142,7 +142,9 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
       <View style={styles.icon}>
         <Icon name="mail" size={28} color={night.ice} />
       </View>
-      <Text style={[nightText.h1, styles.title]}>Check your email</Text>
+      <Text style={[nightText.h1, styles.title]} accessibilityRole="header">
+        Check your email
+      </Text>
       <Text style={[nightText.lead, styles.lead]}>
         We sent a {CODE_LENGTH}-digit code to{"\n"}
         {/* Shown exactly as the server stored it, so a typo in the address is visible

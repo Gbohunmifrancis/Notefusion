@@ -168,7 +168,9 @@ export function OnboardingScreen({ navigation }: Props) {
                 </View>
                 <Animated.View style={{ transform: [{ translateX: drift }] }}>
                   <Text style={nightText.eyebrow}>{item.eyebrow}</Text>
-                  <Text style={[nightText.h1, styles.title]}>{item.title}</Text>
+                  <Text style={[nightText.h1, styles.title]} accessibilityRole="header">
+                    {item.title}
+                  </Text>
                   <Text style={[nightText.lead, styles.body]}>{item.body}</Text>
                 </Animated.View>
               </View>
