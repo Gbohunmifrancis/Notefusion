@@ -965,6 +965,8 @@
   });
   $("lib-folder-stop").addEventListener("click", function () {
     if (!libFolder) return;
+    // The link dies for everyone who has it, and sharing again makes a new one: asked first, like a delete.
+    if (!confirm("Stop sharing \u201c" + libFolder + "\u201d? Everyone with the link loses it, and sharing again makes a new link.")) return;
     request("/api/library/folders/share?folder=" + encodeURIComponent(libFolder), { method: "DELETE" })
       .then(function () { hide($("lib-folder-share-row")); })
       .catch(function (err) { alertIn($("app-alert"), "danger", "Could not stop sharing: " + (err.message || err)); });
@@ -3443,6 +3445,7 @@
   });
   $("share-stop").addEventListener("click", function () {
     if (!current || !current.savedId) return;
+    if (!confirm("Stop sharing this sheet? Everyone with the link loses it, and sharing again makes a new link.")) return;
     request("/api/library/" + current.savedId + "/share", { method: "DELETE" })
       .then(function () { current.shareToken = null; renderShare(); })
       .catch(function (err) { alertIn($("app-alert"), "danger", "Could not stop sharing: " + (err.message || err)); });
