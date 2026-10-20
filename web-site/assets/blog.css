@@ -321,6 +321,9 @@
 .blog-page .hymn-item h3 { margin: 0 0 4px; font-family: var(--serif); font-size: 21px; font-weight: 650; line-height: 1.25; }
 .blog-page .hymn-item h3 a { color: var(--ink); text-decoration: none; }
 .blog-page .hymn-item h3 a:hover { color: var(--accent); text-decoration: underline; }
+/* On the A–Z (rows with nothing else to press) the whole row opens the hymn, not only its title line. */
+.blog-page .hymn-item[data-search] { position: relative; }
+.blog-page .hymn-item[data-search] h3 a::after { content: ""; position: absolute; inset: 0; }
 .blog-page .hymn-item { padding: 16px 0; }
 .blog-page .hymn-item[hidden], .blog-page .hymn-letter[hidden], .blog-page .az[hidden], .blog-page .hymn-find[hidden], .blog-page .hymn-none[hidden] { display: none; }
 .blog-page .hymn-find { margin: 22px 0 6px; font-family: var(--sans); }
