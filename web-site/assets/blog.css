@@ -435,6 +435,11 @@
    and grows its hit area with padding the negative margin gives back), 16 px text in fields. A mouse on a wide
    screen gets the compact sizes back in the min-width block below. */
 .blog-page .crumbs a, .blog-page .kicker a, .blog-page .back-link a, .blog-page .hymnal-all a, .blog-page .pager a, .blog-page .side-list li a { display: inline-block; padding-block: 12px; margin-block: -12px; }
+/* The names in a hymn's facts (Words, Music): a lone name grows to a 44 px target. Where a field names several, which
+   can wrap onto lines of their own, the first grows upward and the last downward, so no name's padding covers another's
+   text. Inline padding: the lines and their wrapping stay as they were. */
+.blog-page .facts dd a:first-of-type { padding-top: 12px; }
+.blog-page .facts dd a:last-of-type { padding-bottom: 12px; }
 .blog-page .toc li { margin: 0; }
 .blog-page .toc a { display: block; padding: 12px 0; }
 .blog-page .share-links { row-gap: 0; }
