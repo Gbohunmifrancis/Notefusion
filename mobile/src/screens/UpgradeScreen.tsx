@@ -895,8 +895,8 @@ function ActiveState({
     }
   }
 
-  /** Opens the reason-survey modal — the actual cancel() only fires after
-   *  the user picks a reason and confirms. */
+  /** Opens the reason-survey modal — the actual cancel() only fires once
+   *  the user confirms; picking a reason is optional. */
   function openCancelFlow() {
     setCancelReason(null);
     setShowCancelModal(true);
@@ -1166,8 +1166,8 @@ const CANCEL_REASONS = [
 /**
  * The survey shown before the membership is cancelled, as a bottom sheet: the reasons are rows
  * you tap once, then "Cancel membership" confirms. A quiet pill, not a red one: nothing is lost,
- * Pro runs to its date. The reason is held client-side (available for future analytics or a
- * server endpoint).
+ * Pro runs to its date. A reason is optional — the server takes none yet, so cancelling never
+ * waits on one; it is held client-side (available for future analytics or a server endpoint).
  */
 function CancelReasonModal({
   visible,
@@ -1191,8 +1191,8 @@ function CancelReasonModal({
       <SheetTitle>Before you go…</SheetTitle>
       <SheetMessage>
         {renews
-          ? `Pro stays active until ${renews}: no refund, and no charge today. Why are you cancelling?`
-          : "Help us improve: why are you cancelling?"}
+          ? `Pro stays active until ${renews}: no refund, and no charge today. Why are you cancelling? (optional)`
+          : "Help us improve: why are you cancelling? (optional)"}
       </SheetMessage>
       {CANCEL_REASONS.map((reason) => (
         <ChoiceRow
@@ -1209,7 +1209,6 @@ function CancelReasonModal({
           variant="secondary"
           onPress={onConfirm}
           loading={canceling}
-          disabled={!selectedReason}
         />
       </SheetActions>
     </Sheet>
