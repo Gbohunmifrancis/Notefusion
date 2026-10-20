@@ -4823,7 +4823,7 @@
   function payTick() { if (document.visibilityState !== "hidden") checkPayment(); }
   // ── "What stopped you?" (board g-checkout): a checkout that came back unpaid, asked once ──
   var WHY_RULES = "/assets/checkout-exit.js?v=1";
-  var WHY_SHEET = ["/assets/checkout-why.css?v=1", "/assets/checkout-why.js?v=2"];
+  var WHY_SHEET = ["/assets/checkout-why.css?v=2", "/assets/checkout-why.js?v=2"];
   function lsGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
   function lsSet(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* private mode */ } }
   /**
