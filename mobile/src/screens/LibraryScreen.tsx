@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   BackHandler,
@@ -189,6 +189,9 @@ export function LibraryScreen() {
   }));
   const fadeWithSearch = useAnimatedStyle(() => ({ opacity: 1 - searchProgress.value }));
 
+  /** Set while a sheet loads (`openItem`). */
+  const opening = useRef(false);
+
   function closeSearch() {
     setQuery("");
     setSearchOpen(false);
@@ -199,6 +202,9 @@ export function LibraryScreen() {
    * at once with no download; offline, any copy does (lib/offlineLibrary).
    */
   async function openItem(item: SavedTranscription) {
+    // A second tap while the sheet loads would push a second Result.
+    if (opening.current) return;
+    opening.current = true;
     // Opened: a sheet the server filed stops being marked unopened, here and on the server.
     if (isUnopened(item)) {
       const openedAtUtc = new Date().toISOString();
@@ -218,6 +224,8 @@ export function LibraryScreen() {
         icon: isNetworkCode(err.code) ? "offline" : "problem",
         tone: isNetworkCode(err.code) ? undefined : "danger",
       });
+    } finally {
+      opening.current = false;
     }
   }
 

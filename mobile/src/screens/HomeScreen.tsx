@@ -344,7 +344,12 @@ export function HomeScreen({ navigation }: Props) {
     onDeleted: (ids) => setLeaving(new Set(ids)),
   });
 
+  /** Set while a sheet loads: a second tap meanwhile would push a second Result. */
+  const opening = useRef(false);
+
   async function openRecent(item: SavedTranscription, opts: { practise?: boolean } = {}) {
+    if (opening.current) return;
+    opening.current = true;
     try {
       // The phone's copy when it is current or the API is out of reach (lib/offlineLibrary).
       const { sheet } = await loadSheet(item);
@@ -361,6 +366,8 @@ export function HomeScreen({ navigation }: Props) {
         icon: 'problem',
         tone: 'danger',
       });
+    } finally {
+      opening.current = false;
     }
   }
 
