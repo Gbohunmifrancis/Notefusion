@@ -54,6 +54,7 @@ import {
   syllable,
 } from "../lib/solfa";
 import { buildMusicXml, resolveKeySignature } from "../lib/musicxml";
+import { midiBase64 } from "../lib/midi";
 import { synthesizeMelodyWavBase64, synthesizeVoicesWavBase64 } from "../lib/synth";
 import { hymnRows, lyricsUnderNotes, pitchName, rangeReport, shiftKeyName, VOICES, type VoiceName } from "../lib/choir";
 import { stopAudition } from "../lib/audition";
@@ -1313,11 +1314,30 @@ export function ResultScreen({ route, navigation }: Props) {
     }
   }
 
+  /**
+   * The MIDI is made here from the sheet on screen, as the MusicXML is: the notes as corrected and transposed, at the
+   * tempo, meter and key chosen, one track per part when there are parts (the tune is the soprano's). The worker's
+   * `midiBase64` was the recording as first heard and knew none of that.
+   */
   async function handleExportMidi() {
     if (!requirePro()) return;
     setExportingType("midi");
     try {
-      const outcome = await exportMidi(result.midiBase64, title);
+      const signature = resolveKeySignature(key);
+      const tracks = parts
+        ? partsOf(parts).map((v) => ({
+            name: v.charAt(0).toUpperCase() + v.slice(1),
+            notes: v === "soprano" ? partReference(parts, view.notes) : parts[v]!.notes,
+          }))
+        : [{ name: "Tune", notes: view.notes }];
+      const midi = midiBase64({
+        tempoBpm: tempo,
+        timeSignature,
+        fifths: signature.fifths,
+        minor: signature.mode === "minor",
+        tracks,
+      });
+      const outcome = await exportMidi(midi, committedTitle || title);
       if (!outcome.ok) {
         showDialog({
           title: "Could not export MIDI",
@@ -2211,7 +2231,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 pro={!isPro}
                 onPress={() => void handleExportMidi()}
                 busy={exportingType === "midi"}
-                disabled={isPro && !result.midiBase64}
+                disabled={isPro && view.notes.length === 0}
               />
               <ExportRow
                 icon="musicxml"
