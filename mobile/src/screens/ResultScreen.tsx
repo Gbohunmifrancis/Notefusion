@@ -895,7 +895,7 @@ export function ResultScreen({ route, navigation }: Props) {
     } catch (e) {
       persisted.current = rollback;
       setDraft(rollback);
-      setPreview(synthesizeMelodyWavBase64(rollback.notes, result.tempo));
+      setPreview(synthesizeMelodyWavBase64(rollback.notes, tempo));
       showDialog({
         title: "Could not save your corrections",
         message: toApiError(e).message,
@@ -911,8 +911,9 @@ export function ResultScreen({ route, navigation }: Props) {
     stopAudition();
     // Synthesising walks every sample on the JS thread, so it happens once here
     // rather than on each nudge, which would jank the stepper.
+    // At the tempo chosen, not the one heard: a fix must not undo a tempo change.
     if (draft.notes !== result.notes)
-      setPreview(synthesizeMelodyWavBase64(draft.notes, result.tempo));
+      setPreview(synthesizeMelodyWavBase64(draft.notes, tempo));
     void commitNotes(draft);
   }
 
