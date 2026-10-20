@@ -1117,6 +1117,15 @@ export function ResultScreen({ route, navigation }: Props) {
     void rename();
   }
 
+  // Back can take the screen away before a focused field reports its blur: leaving saves the lyrics and a typed
+  // name as the blur would have. Read through a ref, so the listener always sees what was typed last.
+  const commitOnLeave = useRef(() => {});
+  commitOnLeave.current = () => {
+    void commitLyrics();
+    commitTitle();
+  };
+  useEffect(() => navigation.addListener("beforeRemove", () => commitOnLeave.current()), [navigation]);
+
   // ── Export (MusicXML) ──────────────────────────────────────────────────────
   // Exports `scoreXml`, engraved here from the live note list, rather than the
   // worker's `result.musicXml` — the two are identical until the first
