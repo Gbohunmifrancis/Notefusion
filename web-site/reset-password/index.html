@@ -54,11 +54,12 @@
       <input id="username" type="email" autocomplete="username" hidden>
 
       <label for="pw">New password</label>
-      <input id="pw" type="password" autocomplete="new-password" minlength="8" required>
-      <p class="hint">At least 8 characters.</p>
+      <input id="pw" type="password" autocomplete="new-password" minlength="8" required aria-describedby="pw-hint">
+      <p class="hint" id="pw-hint" aria-live="polite">At least 8 characters.</p>
 
       <label for="pw2">Confirm new password</label>
-      <input id="pw2" type="password" autocomplete="new-password" minlength="8" required>
+      <input id="pw2" type="password" autocomplete="new-password" minlength="8" required aria-describedby="pw2-hint">
+      <p class="hint" id="pw2-hint" aria-live="polite" hidden></p>
 
       <button id="submit" type="submit">Set new password</button>
     </form>
@@ -154,6 +155,36 @@
   document.getElementById("who").textContent = email;
   document.getElementById("username").value = email;
   form.hidden = false;
+
+  /**
+   * The two checks as each field is left, under the field, not only once the form is sent: a short password, and a
+   * confirmation that does not match. A field marked is checked again as it is typed in, so the mark goes as soon as
+   * it is put right. Leaving a field empty says nothing.
+   */
+  var pwHint = document.getElementById("pw-hint");
+  var pw2Hint = document.getElementById("pw2-hint");
+  var PW_HINT = pwHint.textContent;
+  function mark(field, hint, bad, text) {
+    hint.textContent = text;
+    hint.hidden = !text;
+    hint.classList.toggle("bad", bad);
+    if (bad) field.setAttribute("aria-invalid", "true"); else field.removeAttribute("aria-invalid");
+  }
+  function checkPw() {
+    var n = pw.value.length, short = n > 0 && n < 8;
+    mark(pw, pwHint, short, short ? "At least 8 characters; this one has " + n + "." : PW_HINT);
+  }
+  function checkPw2() {
+    var bad = pw2.value.length > 0 && pw2.value !== pw.value;
+    mark(pw2, pw2Hint, bad, bad ? "Those two passwords do not match." : "");
+  }
+  pw.addEventListener("blur", checkPw);
+  pw2.addEventListener("blur", checkPw2);
+  pw.addEventListener("input", function () {
+    if (pw.hasAttribute("aria-invalid")) checkPw();
+    if (pw2.hasAttribute("aria-invalid")) checkPw2();
+  });
+  pw2.addEventListener("input", function () { if (pw2.hasAttribute("aria-invalid")) checkPw2(); });
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();

@@ -195,6 +195,7 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .site-page-main textarea { min-height: 96px; resize: vertical; }
 .site-page-main input:focus, .site-page-main textarea:focus { outline: 0; border-color: var(--page-blue); box-shadow: 0 0 0 3px var(--page-focus); }
 .site-page-main .hint { margin-top: -8px; color: var(--page-muted); font-size: 12px; }
+.site-page-main .hint.bad { color: var(--page-bad-fg); }  /* a field's own problem, said as it is left (reset-password) */
 .site-page-main .checkbox-group { display: flex; align-items: flex-start; gap: 8px; margin: 16px 0 24px; }
 .site-page-main .checkbox-group input { width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--page-danger); flex: 0 0 auto; }
 .site-page-main .checkbox-group label { margin: 0; color: var(--page-text-2); font-size: 14px; line-height: 1.55; font-weight: 400; }
