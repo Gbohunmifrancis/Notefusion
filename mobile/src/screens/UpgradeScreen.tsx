@@ -309,13 +309,26 @@ export function UpgradeScreen({ navigation, route }: Props) {
     [],
   );
 
+  /** A plan chosen from an older read of what Google Play sells: said, rather than Pay doing nothing. */
+  function notOnPlay() {
+    showDialog({
+      title: "Not on sale in Google Play",
+      message: "Google Play isn't selling this plan right now. Pull down to refresh, or choose another plan.",
+      icon: "problem",
+    });
+  }
+
   /**
    * The Android purchase (board h-play 02): Google's own sheet, then the server, which asks Google before anything is
    * granted, then the welcome the provider shows once the membership has moved on.
    */
   async function buyWithPlay(plan: Plan) {
     const offer = offerFor(plan, playOffers);
-    if (!offer || !user) return;
+    if (!offer) {
+      notOnPlay();
+      return;
+    }
+    if (!user) return;
     setBusy(true);
     beginCheckout(plan.id, subscription, plan.interval === "single", Boolean(plan.choirSeats));
     const outcome = await buyOnPlay(offer, user.id);
@@ -410,6 +423,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
     const choir = choirPlans.some((p) => p.id === planId);
     if (play) {
       if (plan) await buyWithPlay(plan);
+      else notOnPlay();
       return;
     }
     setBusy(true);
