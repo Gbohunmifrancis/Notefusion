@@ -146,6 +146,8 @@ export function Row({
       scaleTo={motion.scale.row}
       haptic={destructive ? "warning" : "light"}
       accessibilityLabel={accessibilityLabel ?? [label, value].filter(Boolean).join(", ")}
+      // The line under the name is read too (the label above replaces the row's own words).
+      accessibilityHint={hint}
     >
       {body}
     </Touchable>

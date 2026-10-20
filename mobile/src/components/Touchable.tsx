@@ -91,6 +91,8 @@ interface Props {
   /** One number for every side, or per side where a neighbour sits closer on one of them. */
   hitSlop?: number | Insets;
   accessibilityLabel?: string;
+  /** What the control does, read after its label: a row's line under its name ("Account, appearance, sign out"). */
+  accessibilityHint?: string;
   accessibilityRole?: AccessibilityRole;
   accessibilityState?: AccessibilityState;
   /**
@@ -115,6 +117,7 @@ export function Touchable({
   style,
   hitSlop,
   accessibilityLabel,
+  accessibilityHint,
   accessibilityRole = "button",
   accessibilityState,
   accessibilityActions,
@@ -150,6 +153,7 @@ export function Touchable({
       hitSlop={hitSlop}
       accessibilityRole={accessibilityRole}
       accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
       // Spread first so a real disabled state always wins over a caller's guess.
       accessibilityState={{ ...accessibilityState, disabled }}
       accessibilityActions={accessibilityActions}
