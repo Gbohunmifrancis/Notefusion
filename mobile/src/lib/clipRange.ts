@@ -92,6 +92,27 @@ export function moveWindow(range: ClipRange, start: number, duration: number): C
   return { start: s, end: s + length };
 }
 
+/** Which end of the section a step moves. */
+export type RangeEdge = "start" | "end";
+
+/**
+ * One end of the section moved by `delta` seconds: the −5 s / +5 s buttons under the picker (board m-ux-medium P3b)
+ * and the handles' screen-reader steps. The handles' own rules: whole seconds, at least five of them, never more than
+ * the allowance, the other end following — so a section already as long as allowed moves whole when its start goes
+ * earlier, or its end later.
+ */
+export function nudgeRange(range: ClipRange, edge: RangeEdge, delta: number, duration: number, maxSeconds: number): ClipRange {
+  return edge === "start"
+    ? moveStart(range, range.start + delta, duration, maxSeconds)
+    : moveEnd(range, range.end + delta, duration, maxSeconds);
+}
+
+/** False when the step would move nothing (the start at 0:00, the end at the song's end): its button is off. */
+export function canNudge(range: ClipRange, edge: RangeEdge, delta: number, duration: number, maxSeconds: number): boolean {
+  const next = nudgeRange(range, edge, delta, duration, maxSeconds);
+  return next.start !== range.start || next.end !== range.end;
+}
+
 /** "1:05–1:35 of 3:33"; "1:05–1:35" when the song's length is not known. */
 export function sectionLabel(start: number, end: number, duration?: number | null): string {
   const span = `${formatClock(start)}–${formatClock(end)}`;

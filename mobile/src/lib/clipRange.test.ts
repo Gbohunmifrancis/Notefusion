@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  canNudge,
   defaultRange,
   fitsWhole,
   formatClock,
@@ -8,6 +9,7 @@ import {
   moveEnd,
   moveStart,
   moveWindow,
+  nudgeRange,
   sectionLabel,
   sectionOf,
   selectedLabel,
@@ -60,6 +62,31 @@ test("window keeps its length and stops at either end of the song", () => {
   assert.deepEqual(moveWindow({ start: 0, end: 60 }, 30.2, 213), { start: 30, end: 90 });
   assert.deepEqual(moveWindow({ start: 0, end: 60 }, -20, 213), { start: 0, end: 60 });
   assert.deepEqual(moveWindow({ start: 0, end: 60 }, 300, 213), { start: 153, end: 213 });
+});
+
+test("±5 s: one end moves five seconds by the handles' rules, the other following at the limits", () => {
+  const song = 252;
+  // The free preview's 1:00, from 0:45: the start back five moves the whole section (it is already the longest).
+  assert.deepEqual(nudgeRange({ start: 45, end: 105 }, "start", -5, song, 60), { start: 40, end: 100 });
+  // The start on five shortens it; the end back five shortens it; the end on five moves the whole section.
+  assert.deepEqual(nudgeRange({ start: 45, end: 105 }, "start", 5, song, 60), { start: 50, end: 105 });
+  assert.deepEqual(nudgeRange({ start: 45, end: 105 }, "end", -5, song, 60), { start: 45, end: 100 });
+  assert.deepEqual(nudgeRange({ start: 45, end: 105 }, "end", 5, song, 60), { start: 50, end: 110 });
+  // Never under five seconds: the other end is pushed along.
+  assert.deepEqual(nudgeRange({ start: 45, end: 50 }, "start", 5, song, 60), { start: 50, end: 55 });
+  assert.deepEqual(nudgeRange({ start: 45, end: 50 }, "end", -5, song, 60), { start: 40, end: 45 });
+  // Held inside the song: from 0:02 the start stops at 0:00, and the end stops at the song's end.
+  assert.deepEqual(nudgeRange({ start: 2, end: 62 }, "start", -5, song, 60), { start: 0, end: 60 });
+  assert.deepEqual(nudgeRange({ start: 190, end: 250 }, "end", 5, song, 60), { start: 192, end: 252 });
+});
+
+test("±5 s: a step that would move nothing is off", () => {
+  assert.equal(canNudge({ start: 0, end: 60 }, "start", -5, 252, 60), false);
+  assert.equal(canNudge({ start: 0, end: 60 }, "start", 5, 252, 60), true);
+  assert.equal(canNudge({ start: 192, end: 252 }, "end", 5, 252, 60), false);
+  assert.equal(canNudge({ start: 192, end: 252 }, "end", -5, 252, 60), true);
+  // A clip as short as its minimum can neither shrink nor move.
+  assert.equal(canNudge({ start: 0, end: 3 }, "end", -5, 3, 60), false);
 });
 
 test("a clip shorter than five seconds is its own minimum window", () => {

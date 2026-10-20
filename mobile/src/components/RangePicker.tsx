@@ -1,7 +1,9 @@
 /**
  * RangePicker — a window over a song's waveform, choosing the section to transcribe.
  *
- * Drag either handle, or the window between them; the screen above says the times. The
+ * Drag either handle, or the window between them, or step either end by five seconds with the
+ * Starts and Ends rows under it (board m-ux-medium P3b), so no section needs a drag; the screen
+ * above says the times. The
  * bars are decorative (the song's audio is never fetched before the job, so there is no
  * real waveform to draw) — they give the drag something to read against, and the bars
  * inside the window light up. The rules — whole seconds, at least five of them, never
@@ -18,17 +20,27 @@
 import React, { useMemo, useRef, useState } from "react";
 import { PanResponder, StyleSheet, Text, View, type LayoutChangeEvent } from "react-native";
 
-import { nightFonts, spacing, type Palette } from "../design/theme";
+import { Touchable } from "./Touchable";
+import { fonts, nightFonts, radii, spacing, type Palette } from "../design/theme";
 import { useThemedStyles } from "../lib/theme";
 import * as haptics from "../lib/haptics";
-import { formatClock, moveEnd, moveStart, moveWindow, type ClipRange } from "../lib/clipRange";
+import {
+  canNudge,
+  formatClock,
+  moveEnd,
+  moveStart,
+  moveWindow,
+  nudgeRange,
+  type ClipRange,
+  type RangeEdge,
+} from "../lib/clipRange";
 
 /** Touch width of a handle; the visible grip inside it is narrower. */
 const THUMB = 28;
 const WAVE_H = 56;
 /** How far the window's frame stands proud of the bars, above and below. */
 const FRAME_OUT = 4;
-/** One arrow press or screen-reader step, in seconds. */
+/** One −5 s / +5 s press or screen-reader step, in seconds. */
 const STEP = 5;
 
 /**
@@ -109,8 +121,36 @@ export function RangePicker({ duration, maxSeconds, value, onChange, disabled = 
   const startX = px(value.start);
   const endX = px(value.end);
 
-  const nudgeStart = (delta: number) => commit(moveStart(value, value.start + delta, duration, maxSeconds));
-  const nudgeEnd = (delta: number) => commit(moveEnd(value, value.end + delta, duration, maxSeconds));
+  const nudge = (edge: RangeEdge, delta: number) => commit(nudgeRange(value, edge, delta, duration, maxSeconds));
+  const nudgeStart = (delta: number) => nudge("start", delta);
+  const nudgeEnd = (delta: number) => nudge("end", delta);
+
+  /** A Starts or Ends row: the time, and five seconds either way. */
+  const stepRow = (edge: RangeEdge, first: boolean) => {
+    const word = edge === "start" ? "Start" : "End";
+    const step = (delta: number) => {
+      const on = !disabled && canNudge(value, edge, delta, duration, maxSeconds);
+      return (
+        <Touchable
+          onPress={() => nudge(edge, delta)}
+          disabled={!on}
+          style={styles.stepBtn}
+          radius={radii.pill}
+          accessibilityLabel={`${word} ${STEP} seconds ${delta < 0 ? "earlier" : "later"}`}
+        >
+          <Text style={styles.stepBtnText}>{delta < 0 ? `−${STEP} s` : `+${STEP} s`}</Text>
+        </Touchable>
+      );
+    };
+    return (
+      <View style={[styles.stepRow, !first && styles.stepRowRule]}>
+        <Text style={styles.stepLabel}>{edge === "start" ? "Starts" : "Ends"}</Text>
+        <Text style={styles.stepValue}>{formatClock(edge === "start" ? value.start : value.end)}</Text>
+        {step(-STEP)}
+        {step(STEP)}
+      </View>
+    );
+  };
 
   return (
     <View style={[styles.root, disabled && styles.disabled]}>
@@ -168,6 +208,11 @@ export function RangePicker({ duration, maxSeconds, value, onChange, disabled = 
         <Text style={styles.edge}>0:00</Text>
         <Text style={styles.edge}>{formatClock(duration)}</Text>
       </View>
+
+      <View style={styles.steps}>
+        {stepRow("start", true)}
+        {stepRow("end", false)}
+      </View>
     </View>
   );
 }
@@ -194,4 +239,20 @@ const makeStyles = (c: Palette) =>
     grip: { width: 12, height: 30, borderRadius: 5, backgroundColor: c.text },
     footer: { flexDirection: "row", justifyContent: "space-between", marginTop: spacing.xs, paddingHorizontal: THUMB / 2 },
     edge: { fontFamily: nightFonts.mono, fontSize: 11, color: c.textFaint },
+
+    /** The Starts and Ends rows: a grouped card of 56 px rows, the time in mono, the steps on the quiet fill. */
+    steps: {
+      marginTop: spacing.sm, backgroundColor: c.surface, borderWidth: 1, borderColor: c.border,
+      borderRadius: 14, overflow: "hidden",
+    },
+    stepRow: { flexDirection: "row", alignItems: "center", gap: 10, minHeight: 56, paddingHorizontal: 14 },
+    stepRowRule: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: c.border },
+    stepLabel: { flex: 1, fontFamily: fonts.medium, fontSize: 15, color: c.text },
+    stepValue: { minWidth: 46, fontFamily: nightFonts.mono, fontSize: 16, color: c.text },
+    stepBtn: {
+      height: 44, minWidth: 64, paddingHorizontal: spacing.md, borderRadius: radii.pill,
+      alignItems: "center", justifyContent: "center",
+      backgroundColor: c.surfaceAlt, borderWidth: 1, borderColor: c.border,
+    },
+    stepBtnText: { fontFamily: fonts.semibold, fontSize: 14, color: c.text },
   });
