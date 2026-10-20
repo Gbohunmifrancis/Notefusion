@@ -294,17 +294,18 @@ ${groups.get(L).map((e) => e.html()).join("\n")}
   const body = `${breadcrumbs(crumbs)}
 <header class="masthead">
   <h1>Hymns in Tonic Solfa</h1>
+  <!-- The search first (board l-ux-high/06c): on a phone it sat some 850px down, under the chips. -->
+  <div class="hymn-find hymn-find-top" id="hymn-find" hidden>
+    <label class="sr-only" for="hymn-filter">Find a hymn</label>
+    <input type="search" id="hymn-filter" placeholder="Title, first line, tune, writer or season" autocomplete="off" spellcheck="false">
+    ${tunes.length ? `<p class="hymn-seasons" aria-label="Hymns or tunes"><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></p>` : ""}
+    <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
+  </div>
   <p class="masthead-dek">${hymns.length} public-domain hymns with the solfa written out under the words${tunes.length ? `, and ${tunes.length} more hymn tunes on their own,` : ""} with the staff notation, a piano to sing along with and a free PDF of each to print. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
   ${identifyCallout()}
 </header>
 ${browseLinks("/hymns")}
 ${occasions.length ? `<h2 class="hymn-seasons-title">Hymns for the season</h2>\n${occasionLinks(occasions)}` : ""}
-<div class="hymn-find" id="hymn-find" hidden>
-  <label for="hymn-filter">Find a hymn</label>
-  <input type="search" id="hymn-filter" placeholder="Title, first line, tune, writer or season" autocomplete="off" spellcheck="false">
-  ${tunes.length ? `<p class="hymn-seasons" aria-label="Hymns or tunes"><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></p>` : ""}
-  <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
-</div>
 <nav class="az" aria-label="Hymns by first letter">${letters.map((L) => `<a href="#letter-${L}">${L}</a>`).join("")}</nav>
 <div class="hymn-index" id="hymn-index">
 ${sections}

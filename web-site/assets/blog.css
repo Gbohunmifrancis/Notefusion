@@ -320,6 +320,8 @@
 .blog-page .hymn-item { padding: 16px 0; }
 .blog-page .hymn-item[hidden], .blog-page .hymn-letter[hidden], .blog-page .az[hidden], .blog-page .hymn-find[hidden], .blog-page .hymn-none[hidden] { display: none; }
 .blog-page .hymn-find { margin: 22px 0 6px; font-family: var(--sans); }
+.blog-page .hymn-find-top { margin: 14px 0 18px; }
+.blog-page .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .blog-page .hymn-find label { display: block; margin: 0 0 6px; color: var(--ink); font-size: 14px; font-weight: 650; }
 .blog-page .hymn-find input { box-sizing: border-box; width: 100%; max-width: 560px; min-height: 46px; padding: 0 14px; border: 1px solid var(--page-input-line, var(--rule-strong)); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; font-size: 16px; }
 .blog-page .hymn-find input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }

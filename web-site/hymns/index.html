@@ -1591,18 +1591,19 @@
 <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><span aria-current="page">Hymns</span></li></ol></nav>
 <header class="masthead">
   <h1>Hymns in Tonic Solfa</h1>
+  <!-- The search first (board l-ux-high/06c): on a phone it sat some 850px down, under the chips. -->
+  <div class="hymn-find hymn-find-top" id="hymn-find" hidden>
+    <label class="sr-only" for="hymn-filter">Find a hymn</label>
+    <input type="search" id="hymn-filter" placeholder="Title, first line, tune, writer or season" autocomplete="off" spellcheck="false">
+    <p class="hymn-seasons" aria-label="Hymns or tunes"><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></p>
+    <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
+  </div>
   <p class="masthead-dek">250 public-domain hymns with the solfa written out under the words, and 539 more hymn tunes on their own, with the staff notation, a piano to sing along with and a free PDF of each to print. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
   <p class="identify-callout"><a href="/hymns/identify" data-track="Hymns: hum to find">Can't remember the name? <strong>Hum the tune and we'll find the hymn</strong> <svg class="ic ic-16" aria-hidden="true"><use href="/assets/icons.svg#i-arrow-right"/></svg></a></p>
 </header>
 <nav class="hymn-browse" aria-label="Browse the hymns"><a href="/hymns" aria-current="page">All hymns A–Z</a><a href="/hymns/occasions">Seasons and occasions</a><a href="/hymns/people">Writers and composers</a><a href="/hymns/first-lines">First lines</a></nav>
 <h2 class="hymn-seasons-title">Hymns for the season</h2>
 <nav class="hymn-seasons" aria-label="Seasons and occasions"><a href="/hymns/occasions/advent" data-track="Occasion: Advent">Advent</a><a href="/hymns/occasions/christmas" data-track="Occasion: Christmas">Christmas</a><a href="/hymns/occasions/epiphany" data-track="Occasion: Epiphany">Epiphany</a><a href="/hymns/occasions/lent" data-track="Occasion: Lent">Lent</a><a href="/hymns/occasions/holy-week" data-track="Occasion: Holy Week">Holy Week</a><a href="/hymns/occasions/good-friday" data-track="Occasion: Good Friday">Good Friday</a><a href="/hymns/occasions/easter" data-track="Occasion: Easter">Easter</a><a href="/hymns/occasions/ascension" data-track="Occasion: Ascension">Ascension</a><a href="/hymns/occasions/halloween" data-track="Occasion: Halloween">Halloween</a><a href="/hymns/occasions/thanksgiving" data-track="Occasion: Thanksgiving">Thanksgiving</a><a href="/hymns/occasions/communion" data-track="Occasion: Holy Communion">Holy Communion</a><a href="/hymns/occasions/evening" data-track="Occasion: Evening">Evening</a><a href="/hymns/occasions/funeral" data-track="Occasion: Funeral">Funeral</a></nav>
-<div class="hymn-find" id="hymn-find" hidden>
-  <label for="hymn-filter">Find a hymn</label>
-  <input type="search" id="hymn-filter" placeholder="Title, first line, tune, writer or season" autocomplete="off" spellcheck="false">
-  <p class="hymn-seasons" aria-label="Hymns or tunes"><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></p>
-  <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
-</div>
 <nav class="az" aria-label="Hymns by first letter"><a href="#letter-A">A</a><a href="#letter-B">B</a><a href="#letter-C">C</a><a href="#letter-D">D</a><a href="#letter-E">E</a><a href="#letter-F">F</a><a href="#letter-G">G</a><a href="#letter-H">H</a><a href="#letter-I">I</a><a href="#letter-J">J</a><a href="#letter-K">K</a><a href="#letter-L">L</a><a href="#letter-M">M</a><a href="#letter-N">N</a><a href="#letter-O">O</a><a href="#letter-P">P</a><a href="#letter-Q">Q</a><a href="#letter-R">R</a><a href="#letter-S">S</a><a href="#letter-T">T</a><a href="#letter-U">U</a><a href="#letter-V">V</a><a href="#letter-W">W</a><a href="#letter-Y">Y</a><a href="#letter-Z">Z</a></nav>
 <div class="hymn-index" id="hymn-index">
 <section class="hymn-letter" id="letter-A" aria-labelledby="letter-A-title">
