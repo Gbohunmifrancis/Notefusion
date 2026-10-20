@@ -896,7 +896,8 @@ const makeStyles = (c: Palette, s: Shadows) =>
       paddingVertical: 2,
     },
     proChipText: {
-      fontSize: 9.5,
+      // The app's smallest words: 12, never under (it was 9.5), the size of the greeting beside it.
+      fontSize: 12,
       fontFamily: fonts.bold,
       color: c.premiumText,
       letterSpacing: 0.8,
