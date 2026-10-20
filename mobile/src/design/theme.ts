@@ -104,6 +104,8 @@ export const colors = {
   successText: "#15803D",
   /** A blue notice's words on its `accentSoft` tint. */
   noticeText: "#1D4ED8",
+  /** A destructive word (Delete, Discard, Sign out): `danger` is 4.33:1 on the quiet pill, this 5.81:1. */
+  dangerText: "#B91C1C",
 
   /** Destructive washes. These were retyped as literal `rgba(220, 38, 38, …)`
    *  in eight places, which meant dark mode painted a light-mode maroon fill
@@ -224,6 +226,7 @@ export const darkColors: Palette = {
   warningText: "#F5B544",
   successText: "#3DDC97",
   noticeText: "#9CC2FF",
+  dangerText: "#FF4D5E",
 
   dangerSoft: "rgba(255, 77, 94, 0.12)",
   dangerBorder: "rgba(255, 77, 94, 0.35)",

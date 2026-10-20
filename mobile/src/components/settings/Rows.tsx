@@ -110,7 +110,7 @@ export function Row({
           </View>
         ) : null}
         <View style={styles.text}>
-          <Text style={[styles.label, destructive && { color: c.danger }]} numberOfLines={1}>
+          <Text style={[styles.label, destructive && { color: c.dangerText }]} numberOfLines={1}>
             {label}
           </Text>
           {hint ? <Text style={styles.hint}>{hint}</Text> : null}

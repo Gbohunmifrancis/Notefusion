@@ -127,7 +127,7 @@ export function OptionRow({ label, icon, selected = false, destructive = false, 
           <Icon name={icon} size={18} color={destructive ? c.textMuted : c.icon} />
         </View>
       ) : null}
-      <Text style={[styles.optionLabel, destructive && { color: c.danger }]} numberOfLines={2}>
+      <Text style={[styles.optionLabel, destructive && { color: c.dangerText }]} numberOfLines={2}>
         {label}
       </Text>
       {selected ? <Icon name="check" size={20} color={c.link} /> : null}

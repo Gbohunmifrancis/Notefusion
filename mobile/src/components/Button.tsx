@@ -99,7 +99,7 @@ export function Button({
     variant === "primary"
       ? c.onAccent
       : variant === "destructive"
-        ? c.danger
+        ? c.dangerText
         : variant === "text"
           ? c.link
           : c.text;
