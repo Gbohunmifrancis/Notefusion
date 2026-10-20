@@ -394,8 +394,18 @@ export function HymnsScreen() {
         )}
         ItemSeparatorComponent={grid ? undefined : () => <View style={styles.divider} />}
         ListEmptyComponent={
-          // Without a query the list is empty only under a season filter (Spooky, All Saints) with nothing in it.
-          <Text style={styles.empty}>{query.trim() ? `Nothing matches “${query.trim()}”.` : "Nothing here yet."}</Text>
+          // Without a query the list is empty only under a season filter (Spooky, All Saints) with nothing in it. A
+          // search that found nothing says what else to try, and clears in one tap (as the Library's does).
+          query.trim() ? (
+            <View>
+              <Text style={styles.empty}>
+                {`Nothing matches “${query.trim()}”. Try fewer words, the first line or the tune's name.`}
+              </Text>
+              <Button label="Clear search" variant="secondary" onPress={() => setQuery("")} style={styles.emptyButton} />
+            </View>
+          ) : (
+            <Text style={styles.empty}>Nothing here yet.</Text>
+          )
         }
         ListFooterComponent={
           <View style={styles.footer}>
@@ -559,6 +569,7 @@ const makeStyles = (c: Palette) =>
     rowKey: { fontFamily: typography.mono.fontFamily, fontSize: 12, color: c.textFaint },
     divider: { height: StyleSheet.hairlineWidth, backgroundColor: c.border },
     empty: { ...typography.body, color: c.textMuted, textAlign: "center", marginTop: spacing.xl },
+    emptyButton: { marginTop: 18, alignSelf: "center" },
 
     footer: { alignItems: "center", gap: spacing.xs, marginTop: spacing.xl },
     footerText: { ...typography.caption, color: c.textFaint, textAlign: "center" },
