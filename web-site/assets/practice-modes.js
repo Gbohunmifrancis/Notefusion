@@ -76,12 +76,13 @@
   // ── The one line at the top (streak and level) ──────────────────────────
   /** The streak and the level in one line, where the two stat cards used to open the view (board 6a). */
   function progressStrip(p) {
-    var streak = p.streak.current > 0 ? p.streak.current + "-day streak" : "No streak yet";
+    var best = p.streak.best || 0, lapsed = p.streak.current <= 0 && best > 0;
+    var streak = p.streak.current > 0 ? p.streak.current + "-day streak" : lapsed ? "Your best: " + best + " " + (best === 1 ? "day" : "days") : "No streak yet";
     var lv = p.level;
     var span = lv.nextLevelXp == null ? 0 : lv.nextLevelXp - lv.minXp;
     var fraction = lv.nextLevelXp == null ? 1 : span > 0 ? clamp01((p.xp - lv.minXp) / span) : 1;
     var toNext = lv.nextName ? lv.xpForNext + " to " + lv.nextName : null;
-    var label = streak + ". Level " + lv.name + ", " + p.xp + " XP" + (lv.nextName ? ", " + lv.xpForNext + " XP to " + lv.nextName : "") + ".";
+    var label = (lapsed ? "No streak now. " + streak : streak) + ". Level " + lv.name + ", " + p.xp + " XP" + (lv.nextName ? ", " + lv.xpForNext + " XP to " + lv.nextName : "") + ".";
     return { streak: streak, level: lv.name, xp: p.xp + " XP", toNext: toNext, fraction: fraction, label: label };
   }
 

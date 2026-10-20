@@ -514,7 +514,7 @@
   function statsCards(p, P) {
     var T = PT(), row = el("div", "pv-stats");
     var streak = el("section", "card pv-stat pv-streak" + (p.streak.current > 0 ? " is-on" : ""));
-    streak.setAttribute("aria-label", P.streakLabel(p.streak.current));
+    streak.setAttribute("aria-label", P.streakLabel(p.streak.current, p.streak.best));
     var head = el("div", "pv-stat-head");
     head.appendChild(art(T.flameArt(p.streak), 32));
     head.appendChild(el("strong", "pv-big", String(p.streak.current)));

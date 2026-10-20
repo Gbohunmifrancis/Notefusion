@@ -29,12 +29,21 @@
   /** "185 XP to Fah", or the top level's own line. */
   function nextLevelLine(level) { return level.nextName ? level.xpForNext + " XP to " + level.nextName : "Top of the ladder"; }
 
-  /** "4-day streak", "1-day streak", "No streak yet". */
-  function streakLabel(days) { return days > 0 ? days + "-day streak" : "No streak yet"; }
+  /** "4-day streak", "1-day streak", "No streak yet" — or "No streak now" when an earlier one lapsed. */
+  function streakLabel(days, best) { return days > 0 ? days + "-day streak" : best > 0 ? "No streak now" : "No streak yet"; }
 
-  /** The streak card's line: done, at risk, or none to keep. */
+  /** "Your best: 12 days" once a streak has lapsed (the best is kept); null before the first. */
+  function bestStreakLine(streak) {
+    if (streak.current > 0 || !(streak.best > 0)) return null;
+    return "Your best: " + streak.best + " " + (streak.best === 1 ? "day" : "days");
+  }
+
+  /** The streak card's line under the count: today done, keep it going, or start one (again, after a lapse). */
   function streakLine(streak) {
-    return streak.todayDone ? "Done for today" : streak.atRisk ? "Sing today to keep it" : "Sing a drill to start one";
+    if (streak.todayDone) return "Done for today";
+    if (streak.atRisk) return "Sing today to keep it";
+    var best = bestStreakLine(streak);
+    return best ? best + ". Start a new one today." : "Sing a drill to start one";
   }
 
   /** The week's one freeze: still there, or spent. */
@@ -403,7 +412,7 @@
     kingPhrase: kingPhrase, mountainKing: mountainKing, solfaLine: solfaLine, phraseLine: phraseLine, stickerLine: stickerLine,
     TAIL_SEC: TAIL_SEC,
     levelFraction: levelFraction, weeklyFraction: weeklyFraction, nextLevelLine: nextLevelLine,
-    streakLabel: streakLabel, streakLine: streakLine, freezeLine: freezeLine,
+    streakLabel: streakLabel, bestStreakLine: bestStreakLine, streakLine: streakLine, freezeLine: freezeLine,
     sortBadges: sortBadges, badgeFraction: badgeFraction, rewardMoment: rewardMoment, rewardEvents: rewardEvents,
     weekdayLetter: weekdayLetter, dayDots: dayDots, drillsLeft: drillsLeft, allowanceLine: allowanceLine, resetTime: resetTime,
     pathLine: pathLine, unitFraction: unitFraction, nextAction: nextAction,
