@@ -10,7 +10,7 @@ import { NightButton } from "../components/night/NightButton";
 import { ErrorNote, Glow, Mark, NightLink, Wordmark, nightText } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
-import { contactUsUrl } from "../lib/authErrors";
+import { contactUsUrl, googleFailure } from "../lib/authErrors";
 import { tokenStore } from "../lib/tokenStore";
 import { guestPreviewStore } from "../lib/guestPreviewStore";
 import { GUEST_PREVIEW_TITLE } from "../lib/guestPreview";
@@ -69,7 +69,7 @@ export function WelcomeScreen({ navigation }: Props) {
     } catch (e) {
       const err = toApiError(e);
       setContact(contactUsUrl(err.code));
-      setError(err.message);
+      setError(googleFailure(err, emailLast ? "sign in with email" : "create an account with email"));
     } finally {
       setGoogleBusy(false);
     }

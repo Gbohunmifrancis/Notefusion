@@ -18,6 +18,15 @@ export function offersReset(misses: number): boolean {
   return misses >= 2;
 }
 
+/**
+ * What a failed Google sign-in says. The API's refusals keep their own words; a failure on the phone itself (Google's
+ * sheet would not open, Play services missing — `toApiError` reads any such error as UNKNOWN) offers the way on this
+ * screen has, `alternative`, instead of a bare "Something went wrong".
+ */
+export function googleFailure(err: Pick<ApiError, "code" | "message">, alternative: string): string {
+  return err.code === "UNKNOWN" ? `Google sign-in didn't work on this phone. Try again, or ${alternative}.` : err.message;
+}
+
 /** Where someone can write to us (the address the website, receipts and the code screen give). */
 const HELP_EMAIL = "hello@notefusion.studio";
 

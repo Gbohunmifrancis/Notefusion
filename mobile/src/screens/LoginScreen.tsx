@@ -7,7 +7,7 @@ import { NightField } from "../components/night/NightField";
 import { BackButton, ErrorNote, Mark, NightLink, NightScreen, OrRule, nightText, pressedLink } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
-import { contactUsUrl, missesAfter, offersReset } from "../lib/authErrors";
+import { contactUsUrl, googleFailure, missesAfter, offersReset } from "../lib/authErrors";
 import { tokenStore } from "../lib/tokenStore";
 import { googleAuthConfigured } from "../lib/env";
 import { night, nightFonts } from "../design/theme";
@@ -72,7 +72,7 @@ export function LoginScreen({ navigation, route }: Props) {
       const err = toApiError(e);
       setMisses(0);
       setContact(contactUsUrl(err.code));
-      setError(err.message);
+      setError(googleFailure(err, "sign in with your email and password"));
     } finally {
       setGoogleBusy(false);
     }
