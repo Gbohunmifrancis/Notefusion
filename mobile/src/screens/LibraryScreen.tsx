@@ -807,16 +807,17 @@ const makeStyles = (c: Palette) =>
       fontSize: 14,
       color: c.text,
     },
+    // The banner is a blue notice on its tint: its words take the notice tokens, ≥5:1 there in Day.
     bannerSub: {
       fontFamily: fonts.regular,
       fontSize: 12,
-      color: c.textMuted,
+      color: c.noticeMuted,
       marginTop: 2,
     },
     bannerAction: {
       fontFamily: fonts.medium,
       fontSize: 13,
-      color: c.accent,
+      color: c.noticeText,
     },
 
     // ── Rows ───────────────────────────────────────────────────────────────────

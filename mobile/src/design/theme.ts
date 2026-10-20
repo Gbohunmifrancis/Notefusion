@@ -110,6 +110,8 @@ export const colors = {
   successText: "#15803D",
   /** A blue notice's words on its `accentSoft` tint. */
   noticeText: "#1D4ED8",
+  /** A blue notice's quieter line on that tint (the Library's folder banner): `textMuted` is 4.42:1 there, this 5.12. */
+  noticeMuted: "#526178",
   /** A destructive word (Delete, Discard, Sign out): `danger` is 4.33:1 on the quiet pill, this 5.81:1. */
   dangerText: "#B91C1C",
 
@@ -240,6 +242,8 @@ export const darkColors: Palette = {
   warningText: "#F5B544",
   successText: "#3DDC97",
   noticeText: "#9CC2FF",
+  // Night's muted grey already reads on the tint (5.83:1).
+  noticeMuted: "#8B95AA",
   dangerText: "#FF4D5E",
 
   dangerSoft: "rgba(255, 77, 94, 0.12)",
