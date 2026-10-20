@@ -119,9 +119,13 @@ export function LibraryScreen() {
       });
   }
 
-  useEffect(() => {
-    load();
-  }, []);
+  // Read on every visit, quietly over the list shown: a sheet renamed or deleted from Home or the Result screen
+  // shows as it is now, never as a stale row that fails to open.
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, []),
+  );
 
   // A take on its way finished: the server filed it, so it is a sheet in the list now.
   useEffect(
