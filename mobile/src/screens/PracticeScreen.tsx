@@ -145,6 +145,8 @@ export function PracticeScreen() {
 
   /** The reward line, with the level's emblem or the badge's sticker beside it when it is one. */
   const [toast, setToast] = useState<{ line: string; art: ArtName | null } | null>(null);
+  /** The marked take's reward line went up in the toast, so the marks do not say it a second time. */
+  const [rewardToasted, setRewardToasted] = useState(false);
   const toastAnim = useRef(new Animated.Value(0)).current;
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -389,8 +391,12 @@ export function PracticeScreen() {
       const moment = acknowledgeGrade(result);
       const how = celebrationFor(sung.track, result.score, result.reward, !!result.milestone);
       if (how === "burst") setBurst((b) => b + 1);
-      const line = result.milestone?.title ?? (sung.track === "playful" ? playfulRewardLine(result.reward) : moment?.line);
-      if (how !== "quiet" && line) showToast(line, rewardArt(result.reward));
+      // Each line once: a milestone is said by its card, and what the take earned by the toast, or else under the marks.
+      const earned = sung.track === "playful" ? playfulRewardLine(result.reward) : moment?.line ?? null;
+      const toasted = how !== "quiet" && !result.milestone && !!earned;
+      if (toasted && earned) showToast(earned, rewardArt(result.reward));
+      setRewardToasted(toasted);
+      const line = result.milestone?.title ?? earned;
       // Android's live regions already read the toast and the milestone; iOS hears the line here.
       AccessibilityInfo.announceForAccessibility(
         gradeAnnouncement(sung.track === "playful", result, Platform.OS === "ios" ? line : null),
@@ -626,8 +632,8 @@ export function PracticeScreen() {
                     <Text style={styles.meta}>{grade.milestone.description}</Text>
                   </View>
                 ) : null}
-                {grade && playful ? <StarGrade grade={grade} notes={drill.notes} /> : null}
-                {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} /> : null}
+                {grade && playful ? <StarGrade grade={grade} notes={drill.notes} showEarned={!rewardToasted} /> : null}
+                {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} showEarned={!rewardToasted} /> : null}
                 {grade && focused ? (
                   <View style={styles.focusRow}>
                     <Text style={styles.focusTuning}>{tuningLine(grade.tuningCents)}</Text>
@@ -698,12 +704,15 @@ export function PracticeScreen() {
                 </View>
                 <Text style={styles.statLabel}>day streak</Text>
                 <Text style={styles.statSub}>{streakLine(progress.streak)}</Text>
-                <View style={styles.footRow}>
-                  <Art name="freeze" width={16} style={!progress.streak.freezeAvailable && styles.spent} />
-                  <Text style={[styles.statFoot, styles.footText]}>
-                    {progress.streak.freezeAvailable ? "Streak freeze ready this week" : "Freeze used this week"}
-                  </Text>
-                </View>
+                {/* A freeze keeps a streak: with none running there is nothing for it to keep. */}
+                {progress.streak.current > 0 ? (
+                  <View style={styles.footRow}>
+                    <Art name="freeze" width={16} style={!progress.streak.freezeAvailable && styles.spent} />
+                    <Text style={[styles.statFoot, styles.footText]}>
+                      {progress.streak.freezeAvailable ? "Streak freeze ready this week" : "Freeze used this week"}
+                    </Text>
+                  </View>
+                ) : null}
               </Card>
 
               <Card style={styles.statCard}>
