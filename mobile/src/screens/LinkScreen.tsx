@@ -63,14 +63,16 @@ import { isNetworkCode } from "../lib/reachability";
  */
 const LINK_OFFLINE =
   "Song links need the internet, so a link can't be saved to send later. Sing or hum it on Record instead — a recording waits on your phone and goes when you're back online.";
-import { transcriptionsApi } from "../api/endpoints";
+import { billingApi, transcriptionsApi } from "../api/endpoints";
 import { OFFLINE_LINE, STALLED_LINE, percentLabel, stageLabel } from "../lib/jobProgress";
 import { keyboardTranspose } from "../lib/keyboardTranspose";
 import { METER_CHOICES, meterEventValue, meterLabel, meterSummary, type Meter } from "../lib/meter";
 import { logAnalyticsEvent } from "../lib/analytics";
+import { linkEntitlement } from "../lib/linkEntitlement";
+import { formatPrice, limitOffer, type LimitOffer } from "../lib/price";
 import { fonts, motion, nightFonts, radii, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
-import type { LinkInfo, TranscriptionStage } from "../api/types";
+import type { LinkInfo, Plan, TranscriptionStage } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
 type Nav = NativeStackNavigationProp<RootStackParams>;
@@ -168,6 +170,30 @@ export function LinkScreen() {
 
   const credits = subscription?.songCreditsRemaining;
   const creditsTotal = subscription?.songCreditsTotal;
+  // What the pinned bar says and offers (board l-ux-high 02c): with nothing left for a song it offers the ways on
+  // instead of a Transcribe that could only end in a refusal card. Unknown until the subscription is read.
+  const entitlement = known
+    ? linkEntitlement({ isPro, credits, creditsTotal, boughtRemaining })
+    : null;
+
+  /**
+   * The region's one-song purchase and Pro by the month, as Record's limit sheet reads them, for the bar's
+   * "Buy this song · ₦1,500". Read once for a free account; until they arrive, or if they fail, it goes without the price.
+   */
+  const [offer, setOffer] = useState<LimitOffer>({});
+  useEffect(() => {
+    if (!known || isPro) return;
+    let live = true;
+    void Promise.all([
+      billingApi.plans().catch(() => [] as Plan[]),
+      billingApi.singlePlans().catch(() => [] as Plan[]),
+    ]).then(([pro, single]) => {
+      if (live) setOffer(limitOffer(pro, single));
+    });
+    return () => {
+      live = false;
+    };
+  }, [known, isPro]);
 
   // ── Finish ────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -213,8 +239,9 @@ export function LinkScreen() {
   }, [busy, state.progress, barWidth]);
 
   // While the link is being read the button waits, so the song and the picker are seen before
-  // anything is transcribed; a lookup that failed leaves it enabled and the server has the final say.
-  const canSubmit = found !== null && !busy && !infoBusy;
+  // anything is transcribed; a lookup that failed leaves it enabled and the server has the final say. With nothing
+  // left for a song the bar offers the ways on instead, and the keyboard's Go does not send either.
+  const canSubmit = found !== null && !busy && !infoBusy && (entitlement === null || entitlement.kind === "send");
 
   async function submit() {
     if (!found || !canSubmit) return;
@@ -568,31 +595,43 @@ export function LinkScreen() {
       </Screen>
       {docked ? (
         <View style={[styles.dock, { paddingBottom: Math.max(insets.bottom, spacing.md) }]}>
-          {known ? (
+          {entitlement ? (
             <View style={styles.entitlement}>
-              <Mark height={14} color={isPro ? colors.textMuted : colors.textFaint} />
+              {entitlement.kind === "buy" ? (
+                <Icon name="pro" size={14} color={colors.premium} />
+              ) : (
+                <Mark height={14} color={isPro ? colors.textMuted : colors.textFaint} />
+              )}
               <Text style={styles.entitlementText}>
-                {isPro
-                  ? credits == null
-                    ? `Pro: ${creditsTotal ?? 20} songs a month, in the fast lane.`
-                    : credits > 0
-                      ? `Uses 1 of your ${credits} songs left this month`
-                      : `All ${creditsTotal ?? 20} of this month's songs are used.`
-                  : boughtRemaining > 0
-                    ? "Uses the song you bought: the whole song, up to six minutes."
-                    : credits === 0
-                      ? "Your free preview is used. Buy just this song, or go Pro for full songs and downloads."
-                      : "Free preview: the first 60 seconds of one song. Buy the whole song, or go Pro."}
+                {entitlement.kind === "send" ? entitlement.line : entitlement.reason}
               </Text>
             </View>
           ) : null}
-          <Button
-            label={section && duration != null && !isWholeSong(section, duration) ? "Transcribe this part" : "Transcribe this song"}
-            variant="primary"
-            onPress={submit}
-            disabled={!canSubmit}
-            block
-          />
+          {entitlement?.kind === "buy" ? (
+            <View style={styles.dockActions}>
+              <Button
+                label={offer.single ? `Buy this song · ${formatPrice(offer.single.amountMinor, offer.single.currency)}` : "Buy this song"}
+                icon="song"
+                onPress={() => nav.navigate("Upgrade", { reason: "limit", planId: offer.single?.id })}
+                style={styles.dockMain}
+              />
+              <Button
+                label="See Pro"
+                variant="text"
+                onPress={() => nav.navigate("Upgrade", offer.monthly ? { planId: offer.monthly.id } : undefined)}
+              />
+            </View>
+          ) : entitlement?.kind === "full" ? (
+            <Button label="See your membership" variant="secondary" onPress={() => nav.navigate("Upgrade")} block />
+          ) : (
+            <Button
+              label={section && duration != null && !isWholeSong(section, duration) ? "Transcribe this part" : "Transcribe this song"}
+              variant="primary"
+              onPress={submit}
+              disabled={!canSubmit}
+              block
+            />
+          )}
         </View>
       ) : null}
     </View>
@@ -663,6 +702,8 @@ const makeStyles = (c: Palette) =>
       gap: spacing.md, paddingTop: spacing.md, paddingHorizontal: spacing.lg, backgroundColor: c.bg,
       borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: c.border,
     },
+    dockActions: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+    dockMain: { flex: 1 },
     entitlement: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: spacing.md },
     entitlementText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 12.5, lineHeight: 18, color: c.textMuted, textAlign: "center" },
     submit: { marginTop: spacing.md },
