@@ -225,7 +225,6 @@
         <button class="btn btn-primary btn-rec" id="try-record" type="button"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Record a tune</button>
         <label class="btn btn-ghost try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*"><svg class="ic"><use href="/assets/icons.svg#i-upload"/></svg>Upload a recording</label>
       </div>
-      <label class="try-meter small" for="try-meter">Beats in a bar <select id="try-meter" data-meter></select></label>
       <details class="link-more">
         <summary>Or paste a song link</summary>
         <form id="try-form" class="link-form" novalidate>
@@ -234,6 +233,9 @@
           <button class="btn btn-primary" id="try-submit" type="submit">Preview</button>
         </form>
         <button class="btn btn-ghost btn-sm" id="try-paste" type="button" hidden><svg class="ic"><use href="/assets/icons.svg#i-paste"/></svg>Paste a link</button>
+        <!-- "Beats in a bar" goes with a link from here; a recorded take is asked it in its review (assets/recorder.js),
+             and an uploaded file goes as Not sure, as on the home page. -->
+        <label class="try-meter small" for="try-meter">Beats in a bar <select id="try-meter" data-meter></select></label>
         <p class="small muted link-note">Links work for many songs, not all — YouTube sometimes blocks our downloads. If yours fails, upload the audio file instead.</p>
       </details>
       <div id="try-section"></div>
