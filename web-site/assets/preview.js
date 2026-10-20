@@ -56,10 +56,14 @@
       var xhr = new XMLHttpRequest();
       xhr.open("POST", API + path);
       xhr.setRequestHeader("X-Device-Id", deviceId());
+      // A connection that stops moving (3G under a bridge) gives up after 45 s of no progress, rather than
+      // sitting on "Uploading… 40%" with every control off until the page is reloaded.
+      var lastMove = Date.now(), watch = setInterval(function () { if (Date.now() - lastMove > 45000) xhr.abort(); }, 5000);
       if (xhr.upload) {
-        xhr.upload.addEventListener("progress", function (e) { if (e.lengthComputable && e.total > 0) onProgress(Math.min(1, e.loaded / e.total)); });
-        xhr.upload.addEventListener("load", function () { onProgress(1); });
+        xhr.upload.addEventListener("progress", function (e) { lastMove = Date.now(); if (e.lengthComputable && e.total > 0) onProgress(Math.min(1, e.loaded / e.total)); });
+        xhr.upload.addEventListener("load", function () { clearInterval(watch); onProgress(1); });
       }
+      xhr.addEventListener("loadend", function () { clearInterval(watch); });
       xhr.onerror = xhr.onabort = xhr.ontimeout = function () { reject(failure(0, null)); };
       xhr.onload = function () {
         var body = parse(xhr.responseText || "");
@@ -160,9 +164,17 @@
     send("/api/preview/link", { json: body }).then(open).catch(function (err) { busy(false); explain(err); });
   }
 
+  /** A file the API would refuse, said before it goes up: over 25 MB, or not a recording. */
+  function fileProblem(f) {
+    if (f.size > 25 * 1024 * 1024) return "That file is over 25 MB. Choose a shorter recording, or one saved as MP3 or M4A.";
+    var audio = /^audio\//.test(f.type || "") || /\.(wav|mp3|m4a|aac|flac|ogg|oga|opus|webm|mp4)$/i.test(f.name || "");
+    return audio ? null : "That doesn't look like a recording. Choose an MP3, WAV, M4A, FLAC, OGG or WebM file.";
+  }
   file.addEventListener("change", function () {
     var f = file.files && file.files[0];
     if (!f) return;
+    var problem = fileProblem(f);
+    if (problem) { say(problem, "error"); file.value = ""; return; }
     busy(true); sayUpload(0);
     track("Preview started (audio)");
     var fd = audioForm(f, f.name);

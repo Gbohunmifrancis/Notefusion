@@ -146,7 +146,13 @@
       return new Promise(function (resolve, reject) {
         var xhr = new XMLHttpRequest();
         uploadsInFlight++;
-        xhr.addEventListener("loadend", function () { uploadsInFlight--; });
+        // A connection that stops moving gives up after 45 s of no progress instead of hanging on one percentage.
+        var lastMove = Date.now(), watch = setInterval(function () { if (Date.now() - lastMove > 45000) xhr.abort(); }, 5000);
+        xhr.addEventListener("loadend", function () { uploadsInFlight--; clearInterval(watch); });
+        if (xhr.upload) {
+          xhr.upload.addEventListener("progress", function () { lastMove = Date.now(); });
+          xhr.upload.addEventListener("load", function () { clearInterval(watch); });
+        }
         xhr.open("POST", API + path);
         var base = baseHeaders();
         Object.keys(base).forEach(function (k) { xhr.setRequestHeader(k, base[k]); });
@@ -1711,10 +1717,25 @@
         explain(err);
       });
   }
+  /**
+   * A file the server would refuse, said before it is sent: over 25 MB (the API's limit) or not audio at all.
+   * Over 3G the whole file used to go up first, only to come back refused.
+   */
+  var MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
+  function fileProblem(file) {
+    if (file.size > MAX_UPLOAD_BYTES) return "That file is over 25 MB. Choose a shorter recording, or one saved as MP3 or M4A.";
+    var audio = /^audio\//.test(file.type || "") || /\.(wav|mp3|m4a|aac|flac|ogg|oga|opus|webm|mp4)$/i.test(file.name || "");
+    return audio ? null : "That doesn't look like a recording. Choose an MP3, WAV, M4A, FLAC, OGG or WebM file.";
+  }
+  function submitFile(file) {
+    var problem = fileProblem(file);
+    if (problem) { alertIn($("app-alert"), "info", problem); return; }
+    submitAudio(file, file.name);
+  }
   $("file-input").addEventListener("change", function (e) {
     var file = e.target.files && e.target.files[0];
     if (!file) return;
-    submitAudio(file, file.name);
+    submitFile(file);
     e.target.value = "";
   });
   // ── Where the music comes from: Record, Upload or a Song link, one panel at a time ──
@@ -1760,7 +1781,7 @@
     ["dragleave", "drop"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove("is-over"); }); });
     drop.addEventListener("drop", function (e) {
       var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-      if (file) submitAudio(file, file.name);
+      if (file) submitFile(file);
     });
   })();
 
