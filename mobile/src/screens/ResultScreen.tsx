@@ -86,7 +86,7 @@ import {
   type Palette,
 } from "../design/theme";
 import { ThemeOverride, useColors, useThemedStyles } from "../lib/theme";
-import { confidenceNote } from "../lib/confidence";
+import { confidenceLevel, confidenceNote } from "../lib/confidence";
 import * as haptics from "../lib/haptics";
 import type { RootStackParams } from "../navigation/types";
 
@@ -1580,6 +1580,18 @@ export function ResultScreen({ route, navigation }: Props) {
     .join(" · ");
   /** The first doubtful note, named in the amber row so the ear knows where to go. */
   const firstLow = view.notes.find((n) => n.conf < 0.5);
+  /** "Use the hymnbook version?" is on screen: its answer rewrites every note. */
+  const askingHymnbook = hymnAsk === "version" && !!result.hymnMatch && !guest;
+  /** "Which doh is it?" is on screen: its answer rewrites the pitches. */
+  const askingDoh = doubt.length > 0 && !edited && !parts && hymnAsk !== "version" && !guest;
+  /**
+   * One question at a time: the hymnbook's, then the doh's, then the notes to check. The first two rewrite the notes
+   * the last points at, so the amber row (and the first-open toast's Check) waits until they are answered.
+   */
+  const asking = askingHymnbook || askingDoh;
+  const showCheck = lowCount > 0 && !!firstLow && !guest && !asking;
+  /** The plain note under the figures, unless a question comes first or the amber row already says "check them". */
+  const shownConfNote = asking || (showCheck && confidenceLevel(overallConfidence) === "check") ? null : confNote;
 
   /** Practise this tune: Learn my part when the sheet has parts, else Rehearse's loop for the tune alone. */
   function practiseNow() {
@@ -1634,10 +1646,11 @@ export function ResultScreen({ route, navigation }: Props) {
         // says the sheet was saved itself, so the toast stands aside for it.
         if (await rating.recordSave()) return;
         if (!live) return;
-        // Notes under the check line turn the toast's one action into Check (board m-ux-medium P1f).
-        setCelebrate({ doubtful: result.notes.some((n) => n.conf < 0.5), saved: true });
+        // Notes under the check line turn the toast's one action into Check (board m-ux-medium P1f), unless the
+        // hymnbook or the doh is asked first.
+        setCelebrate({ doubtful: !asking && result.notes.some((n) => n.conf < 0.5), saved: true });
       } else {
-        setCelebrate({ doubtful: result.notes.some((n) => n.conf < 0.5) });
+        setCelebrate({ doubtful: !asking && result.notes.some((n) => n.conf < 0.5) });
       }
       setCelebrating(true);
     });
@@ -2038,7 +2051,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
           {/* No percentage: a plain note, and only when there is something to do. The
               doubtful notes are tinted on the sheet, so a middling one points at them. */}
-          {confNote ? <Text style={styles.notice}>{confNote}</Text> : null}
+          {shownConfNote ? <Text style={styles.notice}>{shownConfNote}</Text> : null}
 
           {hymnAsk && result.hymnMatch && !guest ? (
             <View style={styles.panel}>
@@ -2084,7 +2097,7 @@ export function ResultScreen({ route, navigation }: Props) {
             </View>
           ) : null}
 
-          {doubt.length > 0 && !edited && !parts && hymnAsk !== "version" && !guest ? (
+          {askingDoh ? (
             <View style={styles.panel}>
               <Text style={styles.panelEyebrow}>Which doh is it?</Text>
               <Text style={styles.panelHint}>
@@ -2172,7 +2185,7 @@ export function ResultScreen({ route, navigation }: Props) {
           {/* One amber row when the model doubted some notes. Tapping opens the piano on
               the flagged piece: a doubtful note is a *pitch* question, and the fastest
               answer to one is pressing the key and hearing it. */}
-          {lowCount > 0 && firstLow && !guest ? (
+          {showCheck && firstLow ? (
             <Touchable
               style={styles.check}
               onPress={startReview}
