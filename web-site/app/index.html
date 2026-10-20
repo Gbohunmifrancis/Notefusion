@@ -24,7 +24,7 @@
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Only what the first screen needs; the range picker's and the recorder's styles load at the end of the body. -->
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/app.css?v=33">
+<link rel="stylesheet" href="/assets/app.css?v=34">
 <link rel="stylesheet" href="/assets/night.css?v=14">
 </head>
 <body class="guest">
@@ -345,7 +345,10 @@
       <h1 class="greeting" id="greeting">Good afternoon</h1><span class="pill pill-pro greeting-pro hidden" id="greeting-pro">Pro member</span>
       <p class="muted home-sub" id="home-sub">What are we writing out today?</p>
       <!-- Practice: the streak and XP, a tap from today's drill (filled by app.js once the numbers come). -->
-      <button class="practice-chip hidden" id="practice-chip" type="button"><svg class="ic"><use href="/assets/icons.svg#i-flame"/></svg><span id="practice-chip-streak">0</span><i aria-hidden="true"></i><span id="practice-chip-xp">0 XP</span></button>
+      <button class="practice-chip hidden" id="practice-chip" type="button"><svg class="ic"><use href="/assets/icons.svg#i-flame"/></svg><span id="practice-chip-streak">0</span><i aria-hidden="true"></i><span id="practice-chip-xp">0 XP</span><span class="practice-chip-start">Start practising</span></button>
+      <!-- The chip's place, held from the app's first paint for a signed-in account (board m-ux-medium W2b): the chip
+           fills it when the numbers come, up to 3 s later, so the studio under it never moves. -->
+      <span class="practice-slot hidden" id="practice-slot" aria-hidden="true"></span>
       <!-- The season's path, while its season is on (the progress carries it): a link to Practice in the season's tint,
            the carols (pine) or the Midnight path (pumpkin). app.js fills it. -->
       <button class="season-carols hidden" id="season-carols" type="button"><svg class="ic" aria-hidden="true"><use id="season-carols-icon" href="/assets/icons.svg#i-snowflake"/></svg><span id="season-carols-text">Sing the carols</span><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-arrow-right"/></svg></button>

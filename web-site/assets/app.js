@@ -399,7 +399,7 @@
     me = null; sub = null; libraryCache = null; libFolder = null; choir = null;
     stopPaymentWatch(); hide($("top-nav")); document.body.classList.remove("is-pro");
     $("recents-list").innerHTML = "";
-    hide($("practice-chip")); hide($("season-carols")); if (window.NfPracticeView) window.NfPracticeView.reset();
+    hide($("practice-chip")); hide($("practice-slot")); hide($("season-carols")); if (window.NfPracticeView) window.NfPracticeView.reset();
   }
   /** The API refused the refresh token: back to the sign-in screen. */
   function sessionEnded() { clearTokens(); forgetAccount(); showAuth(); }
@@ -900,14 +900,20 @@
     practiceViewOpen = false;
     if (window.NfPracticeView) window.NfPracticeView.leave();
   }
-  /** The home chip: the streak and the XP, a tap from today's drill (the phone's Home chip). */
+  /**
+   * The home chip: the streak and the XP, a tap from today's drill (the phone's Home chip); "Start practising" for an
+   * account that has not practised yet. It fills the place the slot held from the first paint.
+   */
   function renderPracticeChip(p) {
     var chip = $("practice-chip");
+    hide($("practice-slot"));
     if (!p || !p.streak || !p.level) { hide(chip); hide($("season-carols")); return; }
+    var start = !p.xp && !p.streak.current && !p.streak.best;
+    chip.classList.toggle("is-start", start);
     chip.classList.toggle("is-on", p.streak.current > 0);
     $("practice-chip-streak").textContent = p.streak.current;
     $("practice-chip-xp").textContent = p.xp + " XP";
-    chip.setAttribute("aria-label", "Practice: " + p.streak.current + "-day streak, " + p.xp + " XP, level " + p.level.name);
+    chip.setAttribute("aria-label", start ? "Start practising: open Practice" : "Practice: " + p.streak.current + "-day streak, " + p.xp + " XP, level " + p.level.name);
     show(chip);
     renderSeasonCarols(p);
   }
@@ -945,7 +951,7 @@
     var at = epoch;
     var go = function () {
       if (at !== epoch || guest || !tokens()) return;
-      request("/api/practice/progress").then(function (p) { if (at === epoch) renderPracticeChip(p); }, function () { /* no chip; the menu still leads there */ });
+      request("/api/practice/progress").then(function (p) { if (at === epoch) renderPracticeChip(p); }, function () { if (at === epoch) hide($("practice-slot")); /* no chip; the menu still leads there */ });
     };
     if (window.requestIdleCallback) window.requestIdleCallback(go, { timeout: 3000 }); else setTimeout(go, 1200);
   }
@@ -1635,6 +1641,8 @@
       if (!tokens()) { showAuth(); return; }
       var wasGuest = guest;
       guest = false;
+      // The practice chip's place, until its numbers come (loadPracticeChip, below).
+      if ($("practice-chip").classList.contains("hidden")) show($("practice-slot"));
       hide($("boot-skel")); leaveAuth(); hide($("guest-bar")); show($("view-app")); show($("top-nav")); showAccountUi(true); setView("transcribe"); libraryCache = null;
       warmEngraver();
       document.body.classList.remove("guest"); hide($("topbar-signin")); show($("recents"));
