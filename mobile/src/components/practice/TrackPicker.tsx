@@ -8,6 +8,7 @@
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
+import { Button } from "../Button";
 import { Card } from "../Card";
 import { Icon } from "../Icon";
 import { Touchable } from "../Touchable";
@@ -78,10 +79,15 @@ export function TrackPicker({ current, saving, error, onPick, onCancel }: Props)
         );
       })}
       {error ? <ProblemNote>{error}</ProblemNote> : null}
+      {/* The app's one text button, not grey words that do not look tappable. */}
       {onCancel ? (
-        <Touchable onPress={onCancel} accessibilityRole="button" accessibilityLabel="Keep my practice style" style={styles.cancel}>
-          <Text style={styles.cancelText}>Keep it as it is</Text>
-        </Touchable>
+        <Button
+          label="Keep it as it is"
+          variant="text"
+          onPress={onCancel}
+          accessibilityLabel="Keep my practice style"
+          style={styles.cancel}
+        />
       ) : null}
     </Card>
   );
@@ -110,6 +116,5 @@ const makeStyles = (c: Palette) =>
     text: { flex: 1, gap: 2 },
     title: { ...typography.label, color: c.text, fontSize: 16, fontFamily: fonts.bold },
     blurb: { ...typography.caption, color: c.textMuted, lineHeight: 17 },
-    cancel: { alignSelf: "center", minHeight: 44, justifyContent: "center", paddingHorizontal: spacing.md },
-    cancelText: { ...typography.label, color: c.textMuted },
+    cancel: { alignSelf: "center" },
   });
