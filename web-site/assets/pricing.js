@@ -166,7 +166,7 @@
     card.appendChild(
       featureList([
         trialCount + " hums or recordings a week, back every Friday at 6pm (West Africa Time)",
-        "One free preview of a song link: its first minute",
+        "One free preview of a song link: a minute you choose",
         single
           ? "Song links and whole songs: Pro, or " + formatPrice(single) + " a song"
           : "Song links and whole songs: Pro, or buy just one song",
@@ -229,10 +229,10 @@
     card.appendChild(
       featureList([
         "Whole songs from a link: up to six minutes, twenty a month",
-        "Alto, tenor and bass written under every tune",
+        "Alto, tenor and bass written under any tune, when you ask",
         "Sing-along marking, note by note",
         "Clean PDF, MusicXML and MIDI downloads",
-        "Priority lane: never queued behind anyone",
+        "Fast lane: never queued behind anyone",
         billingTerm,
       ]),
     );
@@ -323,7 +323,7 @@
         "Alto, tenor and bass written under any tune, when you ask",
         "Sing-along marking, note by note",
         "Clean PDF, MusicXML and MIDI downloads",
-        "Priority lane: never queued behind anyone",
+        "Fast lane: never queued behind anyone",
       ]),
     );
     card.appendChild(action("Open the app", true, "pricing_member", "/app"));
