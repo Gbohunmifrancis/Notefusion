@@ -400,7 +400,7 @@
   /** Signed out here or in another tab, or the session ran out: nothing of the account stays on screen. */
   function forgetAccount() {
     me = null; sub = null; libraryCache = null; libFolder = null; choir = null; pendingDelete = null; dropToast();
-    founderNotes = null; renderFounder(); closeDialog();
+    founderNotes = null; renderFounder(); closeDialog(); resetChoirPanel();
     stopPaymentWatch(); hide($("top-nav")); showTabbar(false); document.body.classList.remove("is-pro");
     $("recents-list").innerHTML = "";
     hide($("practice-chip")); hide($("practice-slot")); hide($("season-carols")); if (window.NfPracticeView) window.NfPracticeView.reset();
@@ -1532,8 +1532,14 @@
     });
   }
   function longDate(iso) { return iso ? new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : ""; }
+  /** My choir before the account's choir is known: the waiting line, neither card (a new account's, or a sign-out's). */
+  function resetChoirPanel() {
+    hide($("choir-none")); hide($("choir-card"));
+    show($("choir-wait")); show($("choir-wait-skel")); hide($("choir-wait-text"));
+  }
   function renderChoirPanel() {
     return fetchChoir().then(function (c) {
+      hide($("choir-wait"));
       if (!c) { show($("choir-none")); hide($("choir-card")); return; }
       hide($("choir-none")); show($("choir-card"));
       var director = c.role === "director";
@@ -1554,7 +1560,13 @@
       director && !c.isActive ? show($("choir-renew")) : hide($("choir-renew"));
       director ? hide($("choir-leave")) : show($("choir-leave"));
       if (director) loadChoirMembers(); else hide($("choir-members-row"));
-    }).catch(function () { /* the panel keeps what it showed; the next visit asks again */ });
+    }).catch(function () {
+      // The panel keeps what it showed; the next visit asks again. Never answered yet, it says so rather than wait.
+      if ($("choir-wait").classList.contains("hidden")) return;
+      hide($("choir-wait-skel"));
+      $("choir-wait-text").textContent = "Your choir didn't load. Check your connection, then open Account again.";
+      show($("choir-wait-text"));
+    });
   }
   function loadChoirMembers() {
     request("/api/choirs/mine/members").then(function (list) {

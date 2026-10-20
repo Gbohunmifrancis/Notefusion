@@ -900,8 +900,12 @@
 
           <section aria-labelledby="acct-choir-title">
             <h2 class="group-title" id="acct-choir-title">My choir</h2>
+            <!-- Until the account's choir is known: a quiet line, never the join form a singer would wrongly see. -->
+            <div class="list-card" id="choir-wait">
+              <div class="lrow lrow-block"><div class="skel skel-line w60" id="choir-wait-skel"></div><p class="lrow-note hidden" id="choir-wait-text" style="margin:0" role="status"></p></div>
+            </div>
             <!-- In no choir: the code field, and the way to the choir plan. -->
-            <div class="list-card" id="choir-none">
+            <div class="list-card hidden" id="choir-none">
               <div class="lrow lrow-block">
                 <p class="lrow-note" style="margin:0 0 8px">Your director's choir code gives you Pro and the choir's shared sheets while the choir's plan runs.</p>
                 <form class="choir-join" id="choir-join-form" novalidate>
