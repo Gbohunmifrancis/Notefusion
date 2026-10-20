@@ -3126,8 +3126,9 @@
       row.appendChild(b);
     }
     if (what === "version") {
-      choice("Yes", true, function () { pickHymn(m); });
-      choice("No", false, function () { current.hymnAnswered = true; track("Kept transcription over hymnbook", m.slug); showResult(current.result); });
+      // Each answer says what it does, so neither needs the question read again to be sure.
+      choice("Use the hymnbook version", true, function () { pickHymn(m); });
+      choice("Keep mine", false, function () { current.hymnAnswered = true; track("Kept transcription over hymnbook", m.slug); showResult(current.result); });
     } else {
       choice("Dismiss", false, function () { current.hymnAnswered = true; hide(box); });
     }
