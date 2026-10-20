@@ -37,7 +37,7 @@ import { useIosAnnouncement } from "../lib/announce";
 import { useSubscription } from "../lib/subscription";
 import { importKind, importKindAnswered, loadImportKind, setImportKind } from "../lib/importKind";
 import { setLeaveGuard } from "../lib/leaveGuard";
-import { canImport, isScoreFile } from "../lib/importFile";
+import { audioRefused, canImport, isScoreFile } from "../lib/importFile";
 import { recordKindChoices } from "../lib/recordKind";
 import { onlySettingsCanGrant } from "../lib/micPermission";
 import { formatPrice, limitCopy, limitOffer, type LimitOffer } from "../lib/price";
@@ -507,7 +507,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
       const savedId = state.savedId ?? undefined;
       const savedTitle = state.savedTitle ?? undefined;
       // The transcription is in; the audio it came from has no further use on the phone. Kept
-      // until now (not dropped at upload) because "Retry Upload" re-sends it after a failed job.
+      // until now (not dropped at upload) because the failure card's "Try again" re-sends it after a failed job.
       rememberSubmit(null);
       reset();
       setPhase("ready");
@@ -812,6 +812,8 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
       });
       await recorder.prepareToRecordAsync();
       recorder.record();
+      // A new take puts the last one's failure card away (a take kept in the queue stays in the Library).
+      if (state.status === "failed") reset();
       setPhase("recording");
       setElapsed(0);
       if (tick.current) clearInterval(tick.current);
@@ -1462,11 +1464,16 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
               <Icon name="problem" size={18} color={colors.warning} style={styles.errIcon} />
               <Text style={styles.errText}>{state.error}</Text>
             </View>
+            {/* "Try again", as every other retry in the app says. Audio the API refused itself (unreadable, no clear
+                notes) would only be refused again, so that card offers a new take instead. */}
             <Button
-              label="Retry Upload"
+              label={audioRefused(state.errorCode) ? "Record again" : "Try again"}
                 variant="secondary"
                 onPress={() => {
-                  if (following) {
+                  if (audioRefused(state.errorCode)) {
+                    reset();
+                    setPhase("ready");
+                  } else if (following) {
                     setPhase("uploading");
                     void take.retry().then((t) => {
                       if (!t) setPhase("ready");

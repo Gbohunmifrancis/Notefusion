@@ -1,6 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { canImport, fileExtension, isScoreFile } from "./importFile.ts";
+import { audioRefused, canImport, fileExtension, isScoreFile } from "./importFile.ts";
+
+test("audio the API could not read, or heard no notes in, is recorded again rather than resent", () => {
+  assert.equal(audioRefused("UNSUPPORTED_MEDIA"), true);
+  assert.equal(audioRefused("INVALID_AUDIO"), true);
+  for (const code of ["NETWORK_OFFLINE", "SERVER_ERROR", "JOB_LOST", null, undefined]) assert.equal(audioRefused(code), false, String(code));
+});
 
 test("the ending is read in any case, and a dotfile has none", () => {
   assert.equal(fileExtension("Take 1.MP3"), "mp3");
