@@ -1876,7 +1876,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 <ScoreView
                   ref={scoreRef}
                   notes={view.notes}
-                  timeSignature={result.timeSignature}
+                  timeSignature={timeSignature}
                   musicalKey={key}
                   cursorBeat={cursorBeat}
                   onSelectNote={openNote}
