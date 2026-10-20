@@ -862,11 +862,12 @@ Sensitive so a command on your machine can read it), `SENTRY_ORG` (`fransix`) an
 An OTA update carries new JavaScript, so its maps go up with it: publish from `mobile/` with
 `eas env:exec production 'npm run update:production' --non-interactive` (`eas update`, then
 `sentry-expo-upload-sourcemaps dist`, the three values read from EAS rather than your shell).
-A store build uploads its own (`@sentry/react-native/expo` in `app.json`) once `eas.json`'s `production` and
-`store` profiles stop setting `SENTRY_DISABLE_AUTO_UPLOAD=true`. Remove those two lines in the commit of the
-next store build, never on their own: `eas.json` is part of the Android fingerprint, so changing it gives a
-new runtime, and OTA updates from that commit on reach only builds made from it (adding the plugin moved the
-fingerprint the same way).
+A store build uploads its own (`@sentry/react-native/expo` in `app.json`): the store build of 20 October 2026
+dropped `SENTRY_DISABLE_AUTO_UPLOAD=true` from `eas.json`'s `production` and `store` profiles. `eas.json` is part
+of the Android fingerprint, so that build began a new runtime, and an OTA published from this commit on reaches
+only builds made from it. While phones still run the older store build (runtime `6c685cab…`), publish each OTA
+twice: once as above, and once with the two lines put back in `eas.json` (uncommitted, then restored), which
+recomputes the old runtime for the same JavaScript.
 
 ## Backups
 

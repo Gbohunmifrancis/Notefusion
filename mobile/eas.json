@@ -19,9 +19,6 @@
       "autoIncrement": true,
       "channel": "production",
       "environment": "production",
-      "env": {
-        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
-      },
       "android": {
         "buildType": "app-bundle"
       }
@@ -36,9 +33,6 @@
       "autoIncrement": true,
       "channel": "production",
       "environment": "production",
-      "env": {
-        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
-      },
       "android": {
         "buildType": "app-bundle"
       }
