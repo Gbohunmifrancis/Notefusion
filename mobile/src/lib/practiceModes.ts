@@ -117,7 +117,7 @@ export function modesDohLine(rows: readonly ModeRow[], track: PracticeTrack | nu
 // ── The one line at the top (streak and level) ──────────────────────────────
 
 export interface ProgressStrip {
-  /** "6-day streak", or "No streak yet". */
+  /** "6-day streak", "Your best: 12 days" after a lapse, or "No streak yet". */
   streak: string;
   /** The level's name: "Me". */
   level: string;
@@ -131,13 +131,20 @@ export interface ProgressStrip {
 }
 
 /** The streak and the level in one line, where the two stat cards used to open the screen (board 6a). */
-export function progressStrip(p: { streak: Pick<PracticeStreak, "current">; level: PracticeLevel; xp: number }): ProgressStrip {
-  const streak = p.streak.current > 0 ? `${p.streak.current}-day streak` : "No streak yet";
+export function progressStrip(p: {
+  streak: Pick<PracticeStreak, "current"> & Partial<Pick<PracticeStreak, "best">>;
+  level: PracticeLevel;
+  xp: number;
+}): ProgressStrip {
+  const best = p.streak.best ?? 0;
+  const lapsed = p.streak.current <= 0 && best > 0;
+  const streak =
+    p.streak.current > 0 ? `${p.streak.current}-day streak` : lapsed ? `Your best: ${best} ${best === 1 ? "day" : "days"}` : "No streak yet";
   const lv = p.level;
   const span = lv.nextLevelXp == null ? 0 : lv.nextLevelXp - lv.minXp;
   const fraction = lv.nextLevelXp == null ? 1 : span > 0 ? clamp01((p.xp - lv.minXp) / span) : 1;
   const toNext = lv.nextName ? `${lv.xpForNext} to ${lv.nextName}` : null;
-  const label = `${streak}. Level ${lv.name}, ${p.xp} XP${lv.nextName ? `, ${lv.xpForNext} XP to ${lv.nextName}` : ""}.`;
+  const label = `${lapsed ? `No streak now. ${streak}` : streak}. Level ${lv.name}, ${p.xp} XP${lv.nextName ? `, ${lv.xpForNext} XP to ${lv.nextName}` : ""}.`;
   return { streak, level: lv.name, xp: `${p.xp} XP`, toNext, fraction, label };
 }
 

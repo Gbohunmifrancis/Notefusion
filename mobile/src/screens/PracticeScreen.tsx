@@ -69,6 +69,7 @@ import {
   unitFraction,
   sortBadges,
   streakLabel,
+  streakLine,
   streakSnapshot,
   weekdayLetter,
 } from "../lib/practiceProgress";
@@ -605,18 +606,12 @@ export function PracticeScreen() {
               <Card style={styles.statCard}>
                 <View style={styles.statHead}>
                   <Art name={flameArt(progress.streak)} width={32} />
-                  <Text style={styles.statBig} accessibilityLabel={streakLabel(progress.streak.current)}>
+                  <Text style={styles.statBig} accessibilityLabel={streakLabel(progress.streak.current, progress.streak.best)}>
                     {progress.streak.current}
                   </Text>
                 </View>
                 <Text style={styles.statLabel}>day streak</Text>
-                <Text style={styles.statSub}>
-                  {progress.streak.todayDone
-                    ? "Done for today"
-                    : progress.streak.atRisk
-                      ? "Sing today to keep it"
-                      : "Sing a drill to start one"}
-                </Text>
+                <Text style={styles.statSub}>{streakLine(progress.streak)}</Text>
                 <View style={styles.footRow}>
                   <Art name="freeze" width={16} style={!progress.streak.freezeAvailable && styles.spent} />
                   <Text style={[styles.statFoot, styles.footText]}>

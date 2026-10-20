@@ -144,6 +144,9 @@ test("the streak and level fit one line: 6-day streak | Me · 312 XP, 188 to Fah
   assert.equal(strip.label, "6-day streak. Level Me, 312 XP, 188 XP to Fah.");
   const top = progressStrip({ streak: { current: 0 }, level: { ...me, nextLevelXp: null, nextName: null, xpForNext: 0 }, xp: 9000 });
   assert.equal(top.streak, "No streak yet");
+  const lapsed = progressStrip({ streak: { current: 0, best: 30 }, level: me, xp: 312 });
+  assert.equal(lapsed.streak, "Your best: 30 days");
+  assert.equal(lapsed.label, "No streak now. Your best: 30 days. Level Me, 312 XP, 188 XP to Fah.");
   assert.equal(top.toNext, null);
   assert.equal(top.fraction, 1);
 });

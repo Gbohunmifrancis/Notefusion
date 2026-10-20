@@ -12,6 +12,7 @@ import type {
   PracticeLevel,
   PracticeProgress,
   PracticeReward,
+  PracticeStreak,
   PracticeTrack,
   WeeklyGoal,
 } from "../api/types";
@@ -33,9 +34,23 @@ export function nextLevelLine(level: PracticeLevel): string {
   return level.nextName ? `${level.xpForNext} XP to ${level.nextName}` : "Top of the ladder";
 }
 
-/** "4-day streak", "1-day streak", "No streak yet". */
-export function streakLabel(days: number): string {
-  return days > 0 ? `${days}-day streak` : "No streak yet";
+/** "4-day streak", "1-day streak", "No streak yet" — or "No streak now" when an earlier one lapsed. */
+export function streakLabel(days: number, best = 0): string {
+  return days > 0 ? `${days}-day streak` : best > 0 ? "No streak now" : "No streak yet";
+}
+
+/** "Your best: 12 days" once a streak has lapsed (the best is kept); null before the first. */
+export function bestStreakLine(streak: Pick<PracticeStreak, "current" | "best">): string | null {
+  if (streak.current > 0 || !(streak.best > 0)) return null;
+  return `Your best: ${streak.best} ${streak.best === 1 ? "day" : "days"}`;
+}
+
+/** The streak card's line under the count: today done, keep it going, or start one (again, after a lapse). */
+export function streakLine(streak: Pick<PracticeStreak, "current" | "best" | "todayDone" | "atRisk">): string {
+  if (streak.todayDone) return "Done for today";
+  if (streak.atRisk) return "Sing today to keep it";
+  const best = bestStreakLine(streak);
+  return best ? `${best}. Start a new one today.` : "Sing a drill to start one";
 }
 
 /** Earned badges first (newest first), then locked ones nearest to done. */
