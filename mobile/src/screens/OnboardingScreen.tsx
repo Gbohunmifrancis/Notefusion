@@ -149,7 +149,8 @@ export function OnboardingScreen({ navigation }: Props) {
             });
             return (
               <View style={[styles.slide, { width }]}>
-                <View style={styles.art}>
+                {/* Pictures of the product: their letters and logos are not words to read aloud. */}
+                <View style={styles.art} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
                   <item.Art width={width - 44} />
                 </View>
                 <Animated.View style={{ transform: [{ translateX: drift }] }}>
@@ -163,7 +164,12 @@ export function OnboardingScreen({ navigation }: Props) {
         />
 
         <View style={styles.footer}>
-          <View style={styles.dots} accessibilityLabel={`Card ${index + 1} of ${SLIDES.length}`}>
+          <View
+            style={styles.dots}
+            accessible
+            accessibilityLabel={`Card ${index + 1} of ${SLIDES.length}`}
+            accessibilityLiveRegion="polite"
+          >
             {SLIDES.map((s) => (
               <View key={s.key} style={styles.slot}>
                 <View style={styles.dot} />
