@@ -1653,17 +1653,24 @@
       track("Copied choir invite"); btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy link"; }, 1500);
     }, function () { $("choir-invite-url").select(); });
   });
+  // One request per press: the button rests while it is out, so a second tap on a slow line sends nothing twice.
   $("choir-invite-new").addEventListener("click", function () {
-    if (!confirm("Make a new invite code? The old code and link stop working at once. Singers already in the choir stay in.")) return;
+    var btn = $("choir-invite-new");
+    if (btn.disabled || !confirm("Make a new invite code? The old code and link stop working at once. Singers already in the choir stay in.")) return;
+    btn.disabled = true;
     request("/api/choirs/mine/invite", { method: "POST" })
       .then(function (c) { choir = c; track("New choir invite code"); renderChoirPanel(); })
-      .catch(function (err) { choirProblem("Could not make a new code: " + (err.message || err)); });
+      .catch(function (err) { choirProblem("Could not make a new code: " + (err.message || err)); })
+      .finally(function () { btn.disabled = false; });
   });
   $("choir-leave").addEventListener("click", function () {
-    if (!confirm("Leave the choir? You lose Pro through it, and the sheets you shared leave its library. They stay in yours.")) return;
+    var btn = $("choir-leave");
+    if (btn.disabled || !confirm("Leave the choir? You lose Pro through it, and the sheets you shared leave its library. They stay in yours.")) return;
+    btn.disabled = true;
     request("/api/choirs/leave", { method: "POST" })
       .then(function () { choir = null; track("Left choir"); libraryCache = null; return loadAccount().then(renderAccount); })
-      .catch(function (err) { choirProblem("Could not leave the choir: " + (err.message || err)); });
+      .catch(function (err) { choirProblem("Could not leave the choir: " + (err.message || err)); })
+      .finally(function () { btn.disabled = false; });
   });
   $("choir-plan-open").addEventListener("click", function () { openUpgrade("choir"); });
   $("choir-renew").addEventListener("click", function () { openUpgrade("choir"); });
@@ -1678,11 +1685,16 @@
       .catch(function (err) { $("acct-photo-status").textContent = (err instanceof ApiError && err.message) || "We couldn't upload that photo. Please try again."; sfx.play("error"); })
       .finally(function () { e.target.value = ""; });
   });
+  // The photo is gone for good once removed (there is no copy to put back), so it is asked first, like the choir's code.
   $("acct-photo-remove").addEventListener("click", function () {
+    var btn = $("acct-photo-remove");
+    if (btn.disabled || !confirm("Remove your photo? Your initial shows in its place until you add another.")) return;
+    btn.disabled = true;
     request("/api/me/picture", { method: "DELETE" })
       .then(function () { return request("/api/me"); })
       .then(function (profile) { me = profile; renderWho(); renderAccount(); })
-      .catch(function (err) { $("acct-photo-status").textContent = err.message || "Could not remove the photo."; });
+      .catch(function (err) { $("acct-photo-status").textContent = err.message || "Could not remove the photo."; })
+      .finally(function () { btn.disabled = false; });
   });
 
   // ── Upgrade dialog ──────────────────────────────────────────────────────
