@@ -47,6 +47,7 @@ import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { Touchable } from "../components/Touchable";
 import { RangePicker } from "../components/RangePicker";
+import { Skeleton } from "../components/Skeleton";
 import { Mark, Wordmark } from "../components/night/NightUI";
 import { ProviderMark, SourceTiles } from "../components/link/SourceTiles";
 import { PROVIDER_LABEL, SongCover } from "../components/link/SongCover";
@@ -538,9 +539,10 @@ export function LinkScreen() {
                 )}
               </>
             ) : infoBusy ? (
-              <View style={styles.reading}>
-                <ActivityIndicator size="small" color={colors.accent} />
-                <Text style={styles.readingText}>Reading the link…</Text>
+              // The cover's shape holds its place while the link is read, so the song lands where it waited.
+              <View accessible accessibilityLabel="Reading the link" accessibilityLiveRegion="polite">
+                <Skeleton height={196} radius={24} style={styles.coverSkeleton} />
+                <Text style={[styles.readingText, styles.reading]}>Reading the link…</Text>
               </View>
             ) : infoError ? (
               <View style={styles.note}>
@@ -771,8 +773,10 @@ const makeStyles = (c: Palette) =>
     },
     tip: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, textAlign: "center", marginTop: spacing.lg },
     hint: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, marginTop: spacing.sm },
-    reading: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.lg, paddingHorizontal: spacing.xs },
+    reading: { marginTop: spacing.md, paddingHorizontal: spacing.xs },
     readingText: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
+    /** SongCover's own frame (196 tall, 24 round, `lg` above). */
+    coverSkeleton: { marginTop: spacing.lg },
 
     pickHead: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginTop: 22 },
     pickTitle: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
