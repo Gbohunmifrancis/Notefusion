@@ -316,6 +316,7 @@ export function LibraryScreen() {
               <TextInput
                 style={styles.searchInput}
                 placeholder="Search your sheets"
+                accessibilityLabel="Search your sheets"
                 placeholderTextColor={colors.textFaint}
                 value={query}
                 onChangeText={setQuery}

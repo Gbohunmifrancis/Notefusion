@@ -270,6 +270,7 @@ export function HymnsScreen() {
               <TextInput
                 style={styles.searchInput}
                 placeholder="Title, first line or tune"
+                accessibilityLabel="Search hymns by title, first line or tune"
                 placeholderTextColor={colors.textFaint}
                 value={query}
                 onChangeText={setQuery}
