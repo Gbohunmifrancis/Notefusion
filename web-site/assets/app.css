@@ -334,7 +334,7 @@ textarea { resize: vertical; line-height: 1.5; }
 .bar > div { height: 100%; width: 0; background: var(--brand-gradient); border-radius: 999px; transition: width 0.6s ease; }
 .bar-pct { flex: none; min-width: 3.2em; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; font-size: 0.9rem; color: var(--blue-dark); }
 .p-status { margin: 10px 0 0; color: var(--copy); font-weight: 600; }
-.p-slow { margin: 8px 0 0; color: var(--color-warning-600); }
+.p-slow { margin: 8px 0 0; color: var(--amber-text); }
 .p-offline { margin: 8px 0 0; color: var(--danger-text); }
 .p-retry { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 12px 0 0; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--wash); color: var(--copy); }
 /* "Notify me when it's ready": one quiet button under the note, asked from a click (assets/notify.js). */
