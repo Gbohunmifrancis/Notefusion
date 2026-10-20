@@ -1236,8 +1236,44 @@ export function ResultScreen({ route, navigation }: Props) {
     return false;
   }
 
+  // ── PDF from the solfa view ───────────────────────────────────────────────
+  // The PDF is made from the engraved stave. With Staff not open, Download PDF used to stop at "Open the Staff view
+  // first"; now it opens Staff and makes the PDF as soon as the stave has drawn.
+  /** Counts the stave's draws (ScoreView `onRendered`): a change runs the PDF that was waiting for one. */
+  const [staffDraws, setStaffDraws] = useState(0);
+  const pdfWhenDrawn = useRef(false);
+  const pdfWait = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (pdfWait.current) clearTimeout(pdfWait.current);
+  }, []);
+  useEffect(() => {
+    if (!pdfWhenDrawn.current || staffDraws === 0) return;
+    pdfWhenDrawn.current = false;
+    if (pdfWait.current) clearTimeout(pdfWait.current);
+    void handleExportPdf();
+    // Runs on a draw alone.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [staffDraws]);
+
+  function pdfAfterStaffDraws() {
+    pdfWhenDrawn.current = true;
+    setExportingType("pdf");
+    setNotationView("staff");
+    if (pdfWait.current) clearTimeout(pdfWait.current);
+    pdfWait.current = setTimeout(() => {
+      if (!pdfWhenDrawn.current) return;
+      pdfWhenDrawn.current = false;
+      setExportingType(null);
+      showDialog({ title: "Not ready yet", message: "The staff is still drawing. Try again in a moment.", icon: "clock" });
+    }, 20_000);
+  }
+
   /** Free accounts get the PDF with a NoteFusion mark; it was the most-tapped locked button. */
   async function handleExportPdf() {
+    if (!scoreRef.current) {
+      pdfAfterStaffDraws();
+      return;
+    }
     setExportingType("pdf");
     try {
       let svg: string | undefined;
@@ -1985,6 +2021,7 @@ export function ResultScreen({ route, navigation }: Props) {
                   musicalKey={key}
                   cursorBeat={cursorBeat}
                   onSelectNote={guest ? undefined : openNote}
+                  onRendered={() => setStaffDraws((n) => n + 1)}
                 />
                 {/* A free account reads the sheet on screen with the preview mark; the
                     download is the Pro half. */}

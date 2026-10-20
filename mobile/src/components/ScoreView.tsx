@@ -70,6 +70,8 @@ interface Props {
   cursorBeat?: number | null;
   /** Called with the index into `notes` of the notehead that was tapped. */
   onSelectNote?: (index: number) => void;
+  /** Called each time the engraver has drawn the stave: `getSvg` answers from then on. */
+  onRendered?: () => void;
   /** Print each note's solfa syllable under its head. On by default. */
   showSolfa?: boolean;
   /** Tint each head by its confidence. On by default per the PRD honesty rule. */
@@ -88,6 +90,7 @@ const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
   musicalKey,
   cursorBeat = null,
   onSelectNote,
+  onRendered,
   showSolfa = true,
   colorByConfidence = true,
 }: Props, ref) {
@@ -207,6 +210,7 @@ const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
           setHeight(Math.max(MIN_HEIGHT, message.height));
           setRendered(true);
           setError(null);
+          onRendered?.();
           return;
         case "svg": {
           const waiter = svgWaiters.current.get(message.token);
@@ -224,7 +228,7 @@ const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
           return;
       }
     },
-    [indexByOnset, onSelectNote],
+    [indexByOnset, onSelectNote, onRendered],
   );
 
   if (notes.length === 0 || xml === null) {
