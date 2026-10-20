@@ -529,13 +529,22 @@
   // site's origin has to be listed under that client's authorised JavaScript origins in the
   // Google Cloud console, or the button renders and then refuses to sign anyone in.
   var GOOGLE_CLIENT_ID = "21738378819-3prjgka9cpf6c2l3si6q879vgm06kf6h.apps.googleusercontent.com";
+  /**
+   * A brand-new account (the code just confirmed, or a Google account made a moment ago) is greeted once, at the foot
+   * of the screen, rather than landing on the studio without a word.
+   */
+  function welcome() { if (me && !guest) showToast("You're in. Welcome to NoteFusion."); }
+  function welcomeIfNew() {
+    var made = me && Date.parse(me.createdAtUtc || me.createdAt || "");
+    if (made && Date.now() - made < 10 * 60 * 1000) welcome();
+  }
   var googleBusy = false; // Google's popup can hand back a credential twice; one sign-in at a time
   function onGoogleCredential(res) {
     if (!res || !res.credential || googleBusy) return;
     googleBusy = true;
     hide($("auth-alert"));
     request("/api/auth/google", { method: "POST", anonymous: true, body: { idToken: res.credential } })
-      .then(function (out) { saveTokens({ accessToken: out.accessToken, refreshToken: out.refreshToken }); track("Signed in with Google"); return boot(); })
+      .then(function (out) { saveTokens({ accessToken: out.accessToken, refreshToken: out.refreshToken }); track("Signed in with Google"); return boot().then(welcomeIfNew); })
       .catch(function (err) {
         // The server's "token is invalid or has expired" is plumbing; the person only needs to try again.
         var text = /token/i.test(err.message || "") ? "Google sign-in didn't finish. Please try again." : (err.message || "Google sign-in did not go through.");
@@ -730,7 +739,7 @@
         saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
         track("Verified email");
         showAuthForm("login");
-        return boot();
+        return boot().then(welcome);
       })
       .catch(function (err) { fieldError("verify-code", err.message || "That code did not match."); })
       .finally(function () { btn.disabled = false; restore(); });
