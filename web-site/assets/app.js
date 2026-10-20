@@ -488,7 +488,12 @@
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("onb").classList.contains("hidden")) closeOnb(false); });
   document.querySelectorAll(".how-link").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); openOnb(); }); });
 
-  document.querySelectorAll("[data-tab]").forEach(function (b) { b.addEventListener("click", function () { showAuthForm(b.dataset.tab); }); });
+  /** The address typed under one tab is there under the other: someone who meant the other form types it once. */
+  function carryEmail(to) {
+    var from = $(to === "register" ? "login-email" : "reg-email"), into = $(to === "register" ? "reg-email" : "login-email");
+    if (!into.value.trim() && from.value.trim()) into.value = from.value.trim();
+  }
+  document.querySelectorAll("[data-tab]").forEach(function (b) { b.addEventListener("click", function () { carryEmail(b.dataset.tab); showAuthForm(b.dataset.tab); }); });
   document.querySelectorAll("[data-eye]").forEach(function (b) {
     b.addEventListener("click", function () {
       var input = $(b.dataset.eye), showing = input.type === "text";
