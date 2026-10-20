@@ -1097,12 +1097,24 @@ export function ResultScreen({ route, navigation }: Props) {
     }
   }
 
+  /** Set synchronously: the field's blur and the Rename tap that caused it would otherwise rename twice. */
+  const renamingRef = useRef(false);
+
   async function rename() {
-    if (!savedId) return;
+    if (!savedId || renamingRef.current) return;
+    renamingRef.current = true;
     setRenaming(true);
     const kept = await renameSheet(savedId, title);
     if (kept !== null) setCommittedTitle(kept);
+    renamingRef.current = false;
     setRenaming(false);
+  }
+
+  /** A saved sheet's typed name is kept when the field is submitted or left, not only on Rename. */
+  function commitTitle() {
+    const next = title.trim();
+    if (!savedId || !next || next === committedTitle) return;
+    void rename();
   }
 
   // ── Export (MusicXML) ──────────────────────────────────────────────────────
@@ -1551,6 +1563,9 @@ export function ResultScreen({ route, navigation }: Props) {
                 label="Title"
                 value={title}
                 onChangeText={setTitle}
+                onBlur={commitTitle}
+                onSubmitEditing={commitTitle}
+                returnKeyType="done"
                 placeholder="Name this transcription…"
               />
               {savedId ? (
