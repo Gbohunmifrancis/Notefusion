@@ -1345,8 +1345,8 @@
     document.body.classList.toggle("is-pro", isPro());
     isPro() ? show($("greeting-pro")) : hide($("greeting-pro"));
     $("menu-plans-label").textContent = isPro() ? "My membership" : "Plans & billing";
-    // Until a kind is picked, a file is taken for a song only where songs are open (Pro, or a bought one left).
-    if (!guest && !chosenKind()) selectKind(songsOpen() ? "song" : "hum");
+    // Until a kind is picked, the picker shows what the tab showing would send (defaultKind).
+    if (!guest && !chosenKind()) selectKind(defaultKind(sourceShowing()));
     renderStudioCredits();
     $("menu-name").textContent = me ? (me.fullName || "") : "";
     $("menu-email").textContent = me ? (me.email || "") : "";
@@ -1561,8 +1561,14 @@
   function chosenKind() { var k = stored(KIND_KEY); return KINDS.indexOf(k) >= 0 ? k : null; }
   function checkedKind() { var el = document.querySelector('input[name="upload-kind"]:checked'); return el ? el.value : "song"; }
   function selectKind(kind) { var el = document.querySelector('input[name="upload-kind"][value="' + kind + '"]'); if (el) el.checked = true; renderKindOptions(); }
+  /**
+   * Until someone picks, the one default for where the audio comes from, used both for what the picker shows and
+   * for what is sent (they used to differ: a free account's file showed "Voice with instruments" and went as a voice,
+   * a Pro take showed it and went as a hum). A take is a voice; a file is a song where songs are open.
+   */
+  function defaultKind(source) { return source === "record" || !songsOpen() ? "hum" : "song"; }
   /** The kind a submission goes as: the person's choice, else the default for where the audio came from. */
-  function uploadKind(fromMic) { var k = chosenKind() || (fromMic || !songsOpen() ? "hum" : "song"); selectKind(k); return k; }
+  function uploadKind(fromMic) { var k = chosenKind() || defaultKind(fromMic ? "record" : "upload"); selectKind(k); return k; }
   /**
    * Whether a recording with instruments is open to this account: Pro, or a free account with a bought song
    * left (the free weekly ones are hums and recordings). A guest's preview is as before.
@@ -1715,6 +1721,7 @@
   // The three used to stack in one block with the recording options between them; asking one thing
   // at a time is calmer, and the last choice is kept for the next visit.
   var SOURCE_KEY = "nf.web.source", SOURCES = ["record", "upload", "link"];
+  function sourceShowing() { var on = SOURCES.filter(function (s) { return !$("src-" + s).hidden; })[0]; return on || "record"; }
   function selectSource(name, focus) {
     if (SOURCES.indexOf(name) < 0) name = "record";
     SOURCES.forEach(function (s) {
@@ -1725,8 +1732,8 @@
     });
     // What is in the recording matters for a recording or a file, not for a link.
     $("kind-block").hidden = name === "link";
-    // Until someone picks, the picker shows what this tab sends: a take as a voice, a file as a song.
-    if (!chosenKind() && name !== "link") selectKind(name === "record" ? "hum" : "song");
+    // Until someone picks, the picker shows what this tab sends (defaultKind).
+    if (!chosenKind() && name !== "link") selectKind(defaultKind(name));
     renderStudioCredits();
     try { localStorage.setItem(SOURCE_KEY, name); } catch (e) { /* private mode */ }
     if (focus) $("src-tab-" + name).focus();
