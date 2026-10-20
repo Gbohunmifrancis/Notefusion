@@ -2003,7 +2003,8 @@ export function ResultScreen({ route, navigation }: Props) {
                 tempoBpm={tempo}
                 timeSignature={timeSignature}
                 isPro={isPro}
-                onRequirePro={() => void requirePro()}
+                // Marking a take is what Pro adds here, so the practice words, not the downloads'.
+                onRequirePro={practiceUpsell}
                 sheetId={savedId}
               />
             ) : (
