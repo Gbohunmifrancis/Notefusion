@@ -2804,7 +2804,7 @@
       }, 100);
       sing.stopAt = setTimeout(stopSinging, (sing.leadIn + end + 1.0) * 1000);
       $("sing-status").textContent = "Recording…";
-    }).catch(function (err) { $("sing-status").textContent = "Microphone access is needed to record a take (" + (err.message || err) + ")."; });
+    }).catch(function (err) { $("sing-status").textContent = window.NfRecorder ? window.NfRecorder.micProblem(err) : "The microphone didn't open. Check that this site may use it, then try again."; });
   });
   function stopSinging() {
     if (sing.timer) clearInterval(sing.timer); if (sing.stopAt) clearTimeout(sing.stopAt);
