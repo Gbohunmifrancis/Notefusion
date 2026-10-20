@@ -113,22 +113,22 @@ const PRO_BENEFITS: {
 }[] = [
   {
     icon: "song",
-    title: "Whole Songs",
+    title: "Whole songs",
     desc: "Songs from a link or a recording, up to six minutes each, twenty a month. Hummed tunes are never counted.",
   },
   {
     icon: "parts",
-    title: "Four-Part Harmony",
+    title: "Four-part harmony",
     desc: "Alto, tenor and bass written under any tune the way a hymn arranger would — only when you ask.",
   },
   {
     icon: "export",
-    title: "Every Download",
+    title: "Every download",
     desc: "Clean PDF, MusicXML and MIDI with no watermark, ready for your choir.",
   },
   {
     icon: "quick",
-    title: "Priority Lane & Sing-Along",
+    title: "Priority lane and sing-along",
     desc: "Never queued behind anyone, and sing a take to have every note marked.",
   },
 ];
@@ -532,7 +532,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
   // new one starts when the current time ends.
   const [extending, setExtending] = useState(false);
   // Until this screen's own read lands, the app's copy of the membership says which screen this is, so a member's
-  // title does not flip from "NoteFusion Pro" to "Subscription" and the paywall's hero does not pop in once it does.
+  // title does not flip from "NoteFusion Pro" to "Membership" and the paywall's hero does not pop in once it does.
   const membership = subscription ?? liveSubscription ?? null;
   // Pro paused on Google Play's account hold shows the member screen with its fix, not the plans.
   const onHold = play && isOnHold(membership);
@@ -640,14 +640,14 @@ export function UpgradeScreen({ navigation, route }: Props) {
               {isActive ? "Account" : "Membership"}
             </Text>
             <Text style={styles.titleMain}>
-              {isActive ? "Subscription" : "NoteFusion Pro"}
+              {isActive ? "Membership" : "NoteFusion Pro"}
             </Text>
           </View>
 
           {isActive && !onHold && (
             <View style={styles.activePill}>
               <View style={styles.activeDot} />
-              <Text style={styles.activePillText}>Pro Active</Text>
+              <Text style={styles.activePillText}>Pro active</Text>
             </View>
           )}
         </View>
@@ -997,7 +997,7 @@ function ActiveState({
   const paidOnWeb = onAndroid && subscription.billedThrough === "web";
   const openPlay = () => void Linking.openURL(manageUrl(subscription.storeProductId));
 
-  const displayName = user?.fullName || profile?.fullName || "NoteFusion Member";
+  const displayName = user?.fullName || profile?.fullName || "NoteFusion member";
   const displayEmail = user?.email || profile?.email || "";
 
   async function cancel() {
@@ -1009,7 +1009,7 @@ function ActiveState({
       // and this screen's whole job is to report that date accurately.
       onChanged();
       showDialog({
-        title: "Subscription cancelled",
+        title: "Membership cancelled",
         // Nothing bought on the website renews, so this never says "won't renew": only that nothing more is charged.
         message: renews
           ? `Pro stays active until ${renews}, and nothing more is charged. Add time again whenever you like.`
@@ -1058,12 +1058,12 @@ function ActiveState({
               <Icon name="pro" size={13} color={colors.premiumDeep} />
               <Text style={styles.memberBadgeText}>
                 {lifetime
-                  ? "Lifetime Member"
+                  ? "Lifetime member"
                   : viaChoir
                     ? subscription.choirName ?? "Choir"
                   : isGift
-                    ? "Complimentary Access"
-                    : "Pro Subscriber"}
+                    ? "Complimentary access"
+                    : "Pro member"}
               </Text>
             </View>
           </View>
@@ -1073,7 +1073,7 @@ function ActiveState({
 
         <View style={styles.statsRow}>
           <View style={styles.statCol}>
-            <Text style={styles.statLabel}>STATUS</Text>
+            <Text style={styles.statLabel}>Status</Text>
             <View style={styles.statStatusRow}>
               <View
                 style={[
@@ -1082,13 +1082,13 @@ function ActiveState({
                 ]}
               />
               <Text style={styles.statValue}>
-                {play === "hold" ? "Paused" : canceled ? "Ending Soon" : "Active"}
+                {play === "hold" ? "Paused" : canceled ? "Ending soon" : "Active"}
               </Text>
             </View>
           </View>
 
           <View style={styles.statCol}>
-            <Text style={styles.statLabel}>TIER</Text>
+            <Text style={styles.statLabel}>Tier</Text>
             <Text style={styles.statValue}>
               {lifetime ? "Lifetime" : isGift ? "Gift" : tierOf(subscription)}
             </Text>
@@ -1096,7 +1096,7 @@ function ActiveState({
 
           <View style={[styles.statCol, { alignItems: "flex-end" }]}>
             <Text style={styles.statLabel}>
-              {lifetime ? "VALIDITY" : "PRO UNTIL"}
+              {lifetime ? "Validity" : "Pro until"}
             </Text>
             <Text style={styles.statValue}>
               {lifetime ? "Perpetual" : renews ? renews : "Active"}
@@ -1116,14 +1116,14 @@ function ActiveState({
         <View style={styles.noticeWarning}>
           <Icon name="problem" size={18} color={colors.warning} />
           <Text style={styles.noticeWarningText}>
-            Your subscription has been canceled and will end on {renews}. Pro features remain active until then, and all your saved music scores will stay safe in your library.
+            Your membership is cancelled and ends on {renews}. Pro stays on until then, and every saved sheet stays safe in your Library.
           </Text>
         </View>
       )}
 
       {/* ── 3. Included Pro Privileges ────────────────────────────────── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Included With Pro</Text>
+        <Text style={styles.sectionTitle}>Included with Pro</Text>
       </View>
 
       <Card style={styles.benefitsCard}>
@@ -1145,7 +1145,7 @@ function ActiveState({
 
       {/* ── 4. Plan & Billing Details ─────────────────────────────────── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Billing Details</Text>
+        <Text style={styles.sectionTitle}>Billing details</Text>
       </View>
 
       <Card style={styles.billingCard}>
@@ -1187,7 +1187,7 @@ function ActiveState({
                 ? "Complimentary"
                 : canceled
                   ? "Cancels at period end"
-                  : "Active & Paid"}
+                  : "Active and paid"}
           </Text>
         </View>
 
@@ -1246,7 +1246,7 @@ function ActiveState({
 
         {!lifetime && !isGift && !canceled && !viaChoir && !onAndroid && (
           <Button
-            label="Cancel subscription"
+            label="Cancel membership"
             variant="secondary"
             icon="clear"
             onPress={openCancelFlow}
@@ -1269,7 +1269,7 @@ function ActiveState({
             : isGift
               ? "Complimentary access granted by the NoteFusion team. No payment method is linked or billed."
               : canceled
-                ? `Subscription canceled. Pro privileges remain active until ${renews}. You can resubscribe any time.`
+                ? `Membership cancelled. Pro stays on until ${renews}. Add time again whenever you like.`
                 : "Each payment covers one period and nothing renews without you. Added time starts when your current time ends. Receipts are in your email inbox."}
         </Text>
       </Card>
@@ -1865,12 +1865,14 @@ const makeStyles = (c: Palette, s: Shadows) =>
     statCol: {
       flex: 1,
     },
+    /** Written in sentence case and set in capitals here, as the section titles are, so a screen reader hears words. */
     statLabel: {
       ...typography.caption,
       fontSize: 10,
       fontFamily: fonts.bold,
       color: c.textFaint,
       letterSpacing: 0.8,
+      textTransform: "uppercase",
       marginBottom: 2,
     },
     statStatusRow: {

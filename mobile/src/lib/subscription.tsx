@@ -321,10 +321,10 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         } else if (prev.isActive && !currentIsActive) {
           haptics.play('warning');
           showDialog({
-            title: "Pro Access Updated",
+            title: "Pro access updated",
             message: prev.isGift
-              ? "Your gifted NoteFusion Pro access has been revoked by an administrator. Your account has returned to the Free plan."
-              : "Your NoteFusion Pro subscription has ended. Your account has returned to the Free plan.",
+              ? "Your gifted NoteFusion Pro access has been revoked by an administrator. Your account has returned to the free plan."
+              : "Your NoteFusion Pro membership has ended. Your account has returned to the free plan.",
             icon: "problem",
             tone: "danger",
           });
