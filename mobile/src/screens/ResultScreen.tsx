@@ -2377,12 +2377,11 @@ export function ResultScreen({ route, navigation }: Props) {
                   <Icon name="public" size={14} color={colors.icon} />
                   <Text style={styles.sharedText}>Anyone with the link can open this sheet, with playback.</Text>
                   <Button
-                    label="Stop"
+                    label="Stop sharing"
                     variant="text"
                     size="sm"
                     onPress={stopSharing}
                     disabled={sharing}
-                    accessibilityLabel="Stop sharing"
                     style={styles.sharedStop}
                   />
                 </View>
@@ -2402,7 +2401,7 @@ export function ResultScreen({ route, navigation }: Props) {
               />
               <ExportRow
                 icon="midi"
-                label="MIDI"
+                label="Download MIDI"
                 pro={!isPro}
                 onPress={() => void handleExportMidi()}
                 busy={exportingType === "midi"}
@@ -2410,7 +2409,7 @@ export function ResultScreen({ route, navigation }: Props) {
               />
               <ExportRow
                 icon="musicxml"
-                label="MusicXML"
+                label="Download MusicXML"
                 pro={!isPro}
                 onPress={() => void exportScore()}
                 busy={exportingType === "musicxml"}
