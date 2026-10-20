@@ -2248,7 +2248,7 @@
     var following = !!follow, before = current;
     if (!following) {
       openProgress("Uploading your recording");
-      setStage("uploading", "upload", null);
+      setStage("uploading", "upload", null, song);
     }
     function onProgress(fraction) {
       if (following) $("p-retry-btn").textContent = "Sending again… " + Math.round(fraction * 100) + "%";
@@ -2263,7 +2263,7 @@
         forgetTake();
         if (again && doneMeanwhile(before)) return;
         if (!again) resetMeter();
-        startJob(Object.assign({}, job, { stage: job.stage || "queued", fileName: fromMic ? null : name }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic, true, meter); });
+        startJob(Object.assign({}, job, { stage: job.stage || "queued", fileName: fromMic ? null : name, separates: song }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic, true, meter); });
       })
       .catch(function (err) {
         if (at !== epoch) return;
@@ -2662,11 +2662,12 @@
    */
   function startJob(job, kind, from, retry) {
     stopFollowing();
-    current = { jobId: job.jobId, kind: kind, from: from || null, retry: retry || null, source: job.source || null, fileName: job.fileName || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0, failures: 0, seen: "", seenAt: Date.now() };
+    current = { jobId: job.jobId, kind: kind, from: from || null, retry: retry || null, source: job.source || null, fileName: job.fileName || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0, failures: 0, seen: "", seenAt: Date.now(),
+      separates: job.separates == null ? null : !!job.separates };
     openProgress(kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : "Transcribing your recording…");
     current.preview = kind === "preview";
     if (current.preview) previewId = job.jobId; else rememberJob(job.jobId);
-    setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
+    setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition, current.separates);
     setPercent(jobPercent(0));
     primeAudio();
     follow = {
@@ -2678,8 +2679,11 @@
     if (!guest && kind !== "preview") refreshUsage();
   }
 
-  /** Lights the row and writes the plain line under the bar. A stage this page has no name for is the last one. */
-  function setStage(stage, from, queuePosition) {
+  /**
+   * Lights the row and writes the plain line under the bar. A stage this page has no name for is the last one.
+   * `separates` is false for a recording sent without its voice taken out (a hum, chords, a choir alone).
+   */
+  function setStage(stage, from, queuePosition, separates) {
     if (STAGE_ORDER.indexOf(stage) < 0) stage = "transcribing";
     var idx = STAGE_ORDER.indexOf(stage);
     document.querySelectorAll("#p-stages .stage").forEach(function (el) {
@@ -2688,6 +2692,8 @@
       // A recording that was uploaded is never "fetched"; a link is never "uploaded".
       if (el.dataset.stage === "uploading") (from === "upload" ? show : hide)(el);
       if (el.dataset.stage === "fetching") (from === "upload" ? hide : show)(el);
+      // Nor is a hum "isolated": only a song's voice is taken out of its band (unless the worker says it is doing so).
+      if (el.dataset.stage === "separating") (separates === false && stage !== "separating" ? hide : show)(el);
       if (i < idx) el.classList.add("done");
       if (i === idx) el.classList.add("on");
     });
@@ -2872,7 +2878,7 @@
       if (job.source.thumbnailUrl) { $("p-thumb").src = job.source.thumbnailUrl; show($("p-thumb")); }
     }
     var stage = stageOf(job, "transcribing"), progress = job.progress || 0;
-    setStage(stage, current.from, job.queuePosition);
+    setStage(stage, current.from, job.queuePosition, current.separates);
     setPercent(jobPercent(progress));
     // Something moved: the stage, the bar or the line ahead. Otherwise the clock keeps running.
     var seen = stage + "|" + Math.round(progress * 100) + "|" + (job.queuePosition == null ? "" : job.queuePosition);
