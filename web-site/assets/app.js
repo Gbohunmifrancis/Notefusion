@@ -2576,7 +2576,7 @@
     if ($("r-staff").classList.contains("hidden") && $("r-solfa").classList.contains("hidden")) document.querySelector('.result-tabs [data-view="staff"]').click();
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
       var text = b.textContent.trim();
-      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="/assets/icons.svg#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock"><use href="/assets/icons.svg#i-lock"/></svg>');
+      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="/assets/icons.svg#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg>');
     });
 
     // A guest reads and rehearses; saving, sharing, transposing, singing and downloads are the account's.
@@ -3754,9 +3754,13 @@
     finally { hide(skel); $("sheet").classList.remove("hidden"); }
   }
 
-  /** Engrave ``xml`` into ``container``; part names only make sense with more than one part. */
+  /**
+   * Engrave ``xml`` into ``container``; part names only make sense with more than one part. Once drawn, the staff is
+   * one picture to a screen reader, named for what it shows (the Tonic Solfa tab has the notes as text).
+   */
   function engraveInto(container, xml, partNames) {
     container.innerHTML = "";
+    container.removeAttribute("role"); container.removeAttribute("aria-label");
     if (!xml) { container.textContent = "Nothing to engrave."; return null; }
     if (!window.opensheetmusicdisplay) {
       container.textContent = "Loading the engraver…";
@@ -3768,9 +3772,15 @@
         backend: "svg", autoResize: true, drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false, drawPartNames: !!partNames, drawMeasureNumbers: true,
         autoBeam: true, autoBeamOptions: { beam_rests: false, maintain_stem_directions: false }
       });
-      display.load(xml).then(function () { display.render(); }).catch(function (err) { container.textContent = "Could not draw the staff: " + err; });
+      display.load(xml).then(function () { display.render(); nameStaff(container, partNames); }).catch(function (err) { container.textContent = "Could not draw the staff: " + err; });
       return display;
     } catch (err) { container.textContent = "Could not draw the staff: " + err; return null; }
+  }
+  function nameStaff(container, parts) {
+    var r = current && current.result, title = $("r-title").textContent || "this sheet";
+    container.setAttribute("role", "img");
+    container.setAttribute("aria-label", (parts ? "The parts of " : "Staff notation of ") + title + (r && r.key ? ", in " + r.key : "") +
+      (r && r.timeSignature ? ", " + r.timeSignature + " time" : "") + ". The Tonic Solfa tab has the same notes as text.");
   }
 
   // ── Downloads ────────────────────────────────────────────────────────────
