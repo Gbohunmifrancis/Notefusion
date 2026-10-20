@@ -661,8 +661,10 @@ body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
 .lib-file { min-height: 44px; font-size: 16px; }
 .choir-join input { min-height: 44px; font-size: 16px; }
 /* Text buttons keep their look and take a 44 px target from an invisible layer, as .field-error's link does. */
-#auth-back, #link-upload, #p-notify-no { position: relative; }
-#auth-back::after, #link-upload::after, #p-notify-no::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
+#auth-back, #link-upload, #p-notify-no, #acct-photo-remove, #choir-invite-new { position: relative; }
+#auth-back::after, #link-upload::after, #p-notify-no::after, #acct-photo-remove::after, #choir-invite-new::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
+/* The account menu's rows and the guest bar's "How it works". */
+.user-menu-item, .user-menu-row, .side-help { min-height: 44px; }
 /* "Beats in a bar" keeps to one line; the select gives way instead. */
 .studio-meter .studio-opt { max-width: 100%; white-space: nowrap; }
 .studio-meter .studio-opt select { flex: 0 1 auto; min-width: 0; }
@@ -691,5 +693,6 @@ body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
   .choir-join input { min-height: 36px; font-size: 0.9rem; }
   .player select, .player input[type=number] { min-height: 32px; font-size: 0.875rem; }
   .result-views .tab { padding-inline: 14px; }
+  .user-menu-item, .user-menu-row, .side-help { min-height: 0; }
 }
 
