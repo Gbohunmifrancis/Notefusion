@@ -171,16 +171,17 @@ export function LibraryScreen() {
     if (folder !== null && !folders.includes(folder)) setFolder(null);
   }, [folder, folders]);
 
-  // Android back leaves select mode before it leaves the screen.
+  // Android back leaves select mode, then closes the search, before it leaves the screen.
   useFocusEffect(
     useCallback(() => {
-      if (!selecting) return undefined;
+      if (!selecting && !searchOpen) return undefined;
       const sub = BackHandler.addEventListener("hardwareBackPress", () => {
-        setSelected(new Set());
+        if (selecting) setSelected(new Set());
+        else closeSearch();
         return true;
       });
       return () => sub.remove();
-    }, [selecting]),
+    }, [selecting, searchOpen]),
   );
 
   const filteredItems = items.filter((item) => {

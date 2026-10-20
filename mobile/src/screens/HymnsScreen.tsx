@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ActivityIndicator, BackHandler, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Icon } from "../components/Icon";
-import { useNavigation, useRoute, useScrollToTop, type RouteProp } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute, useScrollToTop, type RouteProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
@@ -88,6 +88,19 @@ export function HymnsScreen() {
     list.current?.scrollToOffset({ offset: 0, animated: false });
     navigation.setParams({ shelf: undefined } as never);
   }, [route.params?.shelf, navigation]);
+
+  // Android back closes the season's "See all", then clears the search, before it leaves the tab.
+  useFocusEffect(
+    useCallback(() => {
+      if (!shelfOnly && !query) return undefined;
+      const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+        if (shelfOnly) setShelfOnly(false);
+        else setQuery("");
+        return true;
+      });
+      return () => sub.remove();
+    }, [shelfOnly, query]),
+  );
 
   // The season ending (or changing) mid-session takes its filter with it.
   useEffect(() => {
