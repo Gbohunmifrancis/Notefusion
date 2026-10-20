@@ -26,11 +26,27 @@ export function formatPrice(amountMinor: number, currency: string): string {
 }
 
 /**
- * What a price is for, after it ("₦7,500 / month"). A noun for the lifetime tier and the one-song purchase, not a
- * rate: "/ month" would be wrong and "/ lifetime" still reads like one.
+ * What a price is for, after it. On the website's checkout, what one payment buys (board m-ux-medium P4d): "₦7,500
+ * for a month", "₦60,000 for a year", "₦1,500 once" — nothing bought there renews, and "/ month" reads as a
+ * subscription that does. Google Play does renew, so there it stays a rate ("/ month"), and the lifetime tier and
+ * the one-song purchase are "one-time".
  */
-export function periodLabel(interval: BillingInterval): string {
-  return interval === "lifetime" || interval === "single" ? "one-time" : interval === "yearly" ? "/ year" : "/ month";
+export function periodLabel(interval: BillingInterval, viaPlay: boolean): string {
+  if (interval === "lifetime" || interval === "single") return viaPlay ? "one-time" : "once";
+  if (viaPlay) return interval === "yearly" ? "/ year" : "/ month";
+  return interval === "yearly" ? "for a year" : "for a month";
+}
+
+/**
+ * The Pay button on the website's checkout (board m-ux-medium P4d), one pattern for every plan: "Pay ₦60,000 for a
+ * year", "Pay ₦1,500 for this song", "Pay ₦250,000 for a choir year". Google Play's is `playButtonLabel`.
+ */
+export function payLabel(plan: Pick<Plan, "interval" | "amountMinor" | "currency" | "choirSeats">): string {
+  const price = formatPrice(plan.amountMinor, plan.currency);
+  if (plan.interval === "single") return `Pay ${price} for this song`;
+  if (plan.interval === "lifetime") return `Pay ${price} for lifetime Pro`;
+  const period = plan.interval === "yearly" ? "year" : "month";
+  return `Pay ${price} for a ${plan.choirSeats ? `choir ${period}` : period}`;
 }
 
 /**

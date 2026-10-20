@@ -9,6 +9,7 @@ import {
   limitOffer,
   nairaNote,
   paidUntilLine,
+  payLabel,
   periodLabel,
   plansInOrder,
   webFinePrint,
@@ -61,11 +62,24 @@ test("an older API that lists the song in the main list still offers it", () => 
   assert.equal(offer.monthly?.code, "pro_m");
 });
 
-test("a price says what it is for: a rate for Pro, one-time for a song or a lifetime", () => {
-  assert.equal(periodLabel("monthly"), "/ month");
-  assert.equal(periodLabel("yearly"), "/ year");
-  assert.equal(periodLabel("single"), "one-time");
-  assert.equal(periodLabel("lifetime"), "one-time");
+test("a price says what one payment buys on the website, and stays a rate on Google Play, which renews", () => {
+  assert.equal(periodLabel("monthly", false), "for a month");
+  assert.equal(periodLabel("yearly", false), "for a year");
+  assert.equal(periodLabel("single", false), "once");
+  assert.equal(periodLabel("lifetime", false), "once");
+  assert.equal(periodLabel("monthly", true), "/ month");
+  assert.equal(periodLabel("yearly", true), "/ year");
+  assert.equal(periodLabel("single", true), "one-time");
+  assert.equal(periodLabel("lifetime", true), "one-time");
+});
+
+test("the website's Pay button says what one payment buys, one pattern for every plan", () => {
+  assert.equal(payLabel(plan("pro_y", 6000000, "NGN", "yearly")), "Pay ₦60,000 for a year");
+  assert.equal(payLabel(plan("pro_m", 750000, "NGN", "monthly")), "Pay ₦7,500 for a month");
+  assert.equal(payLabel(plan("song", 150000, "NGN", "single")), "Pay ₦1,500 for this song");
+  assert.equal(payLabel({ ...plan("choir_y", 25000000, "NGN", "yearly"), choirSeats: 25 }), "Pay ₦250,000 for a choir year");
+  assert.equal(payLabel({ ...plan("choir_m", 2500000, "NGN", "monthly"), choirSeats: 25 }), "Pay ₦25,000 for a choir month");
+  assert.equal(payLabel(plan("pro_usd_y", 3999, "USD", "yearly")), "Pay $39.99 for a year");
 });
 
 test("a dollar plan on the website's checkout warns of the naira charge; naira and Google Play do not", () => {

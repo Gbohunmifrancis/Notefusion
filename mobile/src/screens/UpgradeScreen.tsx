@@ -48,6 +48,7 @@ import {
   formatPrice,
   nairaNote,
   paidUntilLine,
+  payLabel,
   periodLabel,
   plansInOrder,
   webFinePrint,
@@ -121,18 +122,6 @@ const PRO_BENEFITS: {
     desc: "Never queued behind anyone, and sing a take to have every note marked.",
   },
 ];
-
-/**
- * The price as the CTA says it. A lifetime plan is bought, not rented — billing it "/mo" would
- * both misdescribe the purchase and understate what it costs, which is the one mistake on this
- * screen a buyer would be right to complain about afterwards.
- */
-function ctaPrice(plan: Plan): string {
-  const price = formatPrice(plan.amountMinor, plan.currency);
-  return plan.interval === "lifetime" || plan.interval === "single"
-    ? `${price} once`
-    : `${price}/${plan.interval === "yearly" ? "yr" : "mo"}`;
-}
 
 /** A plan as the list and the pay bar name it: the one-song purchase and the choir plans by what they are. */
 function planTitle(plan: Plan): string {
@@ -732,6 +721,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
               <PlanOption
                 plan={singlePlan}
                 priceLabel={offerFor(singlePlan, playOffers)?.price}
+                viaPlay={play}
                 title={planTitle(singlePlan)}
                 note="One more transcription, any recording or song link. No subscription."
                 selected={singlePlan.id === selectedId}
@@ -744,6 +734,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
                 key={plan.id}
                 plan={plan}
                 priceLabel={offerFor(plan, playOffers)?.price}
+                viaPlay={play}
                 selected={plan.id === selectedId}
                 bestValue={plan.id === bestValueId}
                 // The year in money (board m-ux-medium P4b); Google Play's own prices say their own.
@@ -771,10 +762,10 @@ export function UpgradeScreen({ navigation, route }: Props) {
                   <Text style={styles.planName}>For choir directors</Text>
                   <Text style={styles.planNote}>
                     {buyingChoir && selected
-                      ? `${planTitle(selected)} · ${selectedPrice} ${periodLabel(selected.interval)}`
+                      ? `${planTitle(selected)} · ${selectedPrice} ${periodLabel(selected.interval, play)}`
                       : `Pro for you and ${choirFrom.choirSeats ?? 25} singers · from ${
                           offerFor(choirFrom, playOffers)?.price ?? formatPrice(choirFrom.amountMinor, choirFrom.currency)
-                        } ${periodLabel(choirFrom.interval)}`}
+                        } ${periodLabel(choirFrom.interval, play)}`}
                   </Text>
                 </View>
                 <Icon name="chevron" size={18} color={colors.textFaint} />
@@ -789,6 +780,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
                     key={plan.id}
                     plan={plan}
                     priceLabel={offerFor(plan, playOffers)?.price}
+                    viaPlay={play}
                     selected={plan.id === selectedId}
                     onSelect={() => setSelectedId(plan.id)}
                   />
@@ -844,6 +836,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
               key={plan.id}
               plan={plan}
               priceLabel={offerFor(plan, playOffers)?.price}
+              viaPlay={play}
               selected={plan.id === selectedId}
               onSelect={() => {
                 setSelectedId(plan.id);
@@ -864,7 +857,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
               {play ? (
                 <Text style={styles.payPrice}>
                   {selectedPrice}
-                  <Text style={styles.planPeriod}> {periodLabel(selected.interval)}</Text>
+                  <Text style={styles.planPeriod}> {periodLabel(selected.interval, play)}</Text>
                 </Text>
               ) : (
                 <Text style={styles.payUntil}>{paidUntilLine(selected, membership, new Date())}</Text>
@@ -880,12 +873,9 @@ export function UpgradeScreen({ navigation, route }: Props) {
                     subscription?.choirRole === "director",
                   )
                 : selected
-                ? buyingSong
-                  ? `Buy this song — ${formatPrice(selected.amountMinor, selected.currency)}`
-                  : buyingChoir
-                    ? `${subscription?.choirRole === "director" ? "Add choir time" : "Start your choir"} — ${ctaPrice(selected)}`
-                    : `Upgrade — ${ctaPrice(selected)}`
-                : "Upgrade"
+                  // What one payment buys, on the website's checkout (board m-ux-medium P4d).
+                  ? payLabel(selected)
+                  : "Upgrade"
             }
             icon={buyingSong ? "song" : buyingChoir ? "choir" : "pro"}
             onPress={() => void handleUpgrade()}
@@ -1304,11 +1294,13 @@ function CancelReasonModal({
 function ChoirPlanOption({
   plan,
   priceLabel,
+  viaPlay,
   selected,
   onSelect,
 }: {
   plan: Plan;
   priceLabel?: string;
+  viaPlay: boolean;
   selected: boolean;
   onSelect: () => void;
 }) {
@@ -1316,6 +1308,7 @@ function ChoirPlanOption({
     <PlanOption
       plan={plan}
       priceLabel={priceLabel}
+      viaPlay={viaPlay}
       title={planTitle(plan)}
       note={`Pro for you and up to ${plan.choirSeats ?? 25} singers, one shared library.`}
       selected={selected}
@@ -1332,6 +1325,7 @@ function PlanOption({
   title,
   note,
   priceLabel,
+  viaPlay,
   onSelect,
 }: {
   plan: Plan;
@@ -1340,6 +1334,8 @@ function PlanOption({
   bestValue?: boolean;
   /** The price as Google Play shows it, on Android, instead of the plan's own. */
   priceLabel?: string;
+  /** Sold through Google Play, which renews: the price is a rate there, and what one payment buys on the website. */
+  viaPlay: boolean;
   /** Overrides the plan's own name, as "Just this song" does for the one-song purchase. */
   title?: string;
   /** A plain line under the price. */
@@ -1348,7 +1344,7 @@ function PlanOption({
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const period = periodLabel(plan.interval);
+  const period = periodLabel(plan.interval, viaPlay);
 
   return (
     <View>
