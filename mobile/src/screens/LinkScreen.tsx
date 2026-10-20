@@ -21,14 +21,16 @@
  * The screen has three faces: ready (nothing readable pasted yet — the field and the
  * services a link can come from), found (the song and its section picker), and refused (a
  * link the API turned away by code, in its own plain sentence, beside the links that never
- * work). The app has no clipboard module, so there is no paste button: the field is
- * pasted into by hand.
+ * work). While the field is empty it carries a Paste pill (board m-ux-medium P3a): one tap reads
+ * the clipboard, only then, with React Native's own Clipboard (still in core, so no store build),
+ * and the link is looked up as if it had been typed.
  */
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
+  Clipboard,
   Image,
   StyleSheet,
   Text,
@@ -307,6 +309,16 @@ export function LinkScreen() {
     inputRef.current?.focus();
   }
 
+  /**
+   * The Paste pill: the clipboard is read on this tap and never on open, and its text goes in the field as if typed,
+   * so the link is looked up (or its hint shown) the same way. An empty clipboard opens the keyboard instead.
+   */
+  async function paste() {
+    const text = (await Clipboard.getString().catch(() => "")).trim();
+    if (text) setUrl(text);
+    else inputRef.current?.focus();
+  }
+
   /** The failure card's way on: the card goes, and the link stays in the field to change or send again. */
   function changeLink() {
     reset();
@@ -401,6 +413,7 @@ export function LinkScreen() {
               style={[
                 styles.field,
                 ready ? styles.fieldLarge : styles.fieldCompact,
+                ready && url.length === 0 && styles.fieldPaste,
                 ready && focused && styles.fieldFocused,
                 refusal && styles.fieldRefused,
               ]}
@@ -432,7 +445,16 @@ export function LinkScreen() {
                 <Touchable onPress={() => setUrl("")} hitSlop={12} ripple="borderless" accessibilityLabel="Clear">
                   <Icon name="close" size={20} color={colors.textMuted} />
                 </Touchable>
-              ) : null}
+              ) : (
+                <Touchable
+                  onPress={() => void paste()}
+                  style={styles.paste}
+                  radius={radii.pill}
+                  accessibilityLabel="Paste a song link"
+                >
+                  <Text style={styles.pasteText}>Paste</Text>
+                </Touchable>
+              )}
             </View>
           </View>
         ) : null}
@@ -448,7 +470,7 @@ export function LinkScreen() {
           <>
             <Text style={styles.eyebrow}>Works with</Text>
             <SourceTiles />
-            <Text style={styles.tip}>Tip: in any of these apps tap Share, then Copy link.</Text>
+            <Text style={styles.tip}>Tip: in any of these apps tap Share, then Copy link — then Paste here.</Text>
           </>
         ) : null}
 
@@ -724,6 +746,13 @@ const makeStyles = (c: Palette) =>
     },
     fieldLarge: { height: 60, paddingLeft: 20, paddingRight: 18 },
     fieldCompact: { height: 52, paddingLeft: 11, paddingRight: 16 },
+    /** The Paste pill sits 8 px from the field's end: 44 px inside the 60. */
+    fieldPaste: { paddingRight: 8 },
+    paste: {
+      height: 44, paddingHorizontal: spacing.lg, borderRadius: radii.pill, justifyContent: "center",
+      backgroundColor: c.accentSoft, borderWidth: 1, borderColor: c.accentGlow,
+    },
+    pasteText: { fontFamily: fonts.semibold, fontSize: 15, color: c.link },
     fieldFocused: { borderColor: c.ink },
     fieldRefused: { borderColor: c.warning + "66" },
     input: { flex: 1, fontFamily: fonts.regular, fontSize: 15, color: c.text, paddingVertical: 0 },
