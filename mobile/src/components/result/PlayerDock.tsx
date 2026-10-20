@@ -11,6 +11,9 @@ import { ProblemNote } from "../ProblemNote";
 /** How much the sheet's scroll content must leave clear under the dock. */
 export const DOCK_CLEARANCE = 112;
 
+/** How far one screen-reader step moves the scrubber. */
+const SEEK_STEP_SEC = 5;
+
 /**
  * The player docked over the bottom of the sheet: play, a scrubber with mono times,
  * and the sheet's one labelled next step, Practise (board m-ux-medium P1a): Learn my part when the sheet has
@@ -38,6 +41,12 @@ export function PlayerDock({
   const { ready, isLoading, isPlaying, position, duration, error } = practice;
 
   const played = dragFraction ?? (duration > 0 ? clamp(position / duration, 0, 1) : 0);
+
+  /** A screen reader's swipe up or down on the scrubber: five seconds on or back, as a drag cannot be done by it. */
+  const nudge = (seconds: number) => {
+    if (!ready || duration <= 0) return;
+    void practice.seekTo(clamp(position + seconds, 0, duration));
+  };
 
   return (
     <View
@@ -70,9 +79,17 @@ export function PlayerDock({
           <View
             style={styles.track}
             onLayout={(e) => onTrackWidth(e.nativeEvent.layout.width)}
+            accessible
             accessibilityRole="adjustable"
             accessibilityLabel="Playback position"
-            accessibilityValue={{ min: 0, max: Math.round(duration), now: Math.round(position) }}
+            accessibilityValue={{
+              min: 0,
+              max: Math.round(duration),
+              now: Math.round(position),
+              text: `${formatTime(position)} of ${formatTime(duration)}`,
+            }}
+            accessibilityActions={[{ name: "increment" }, { name: "decrement" }]}
+            onAccessibilityAction={(e) => nudge(e.nativeEvent.actionName === "increment" ? SEEK_STEP_SEC : -SEEK_STEP_SEC)}
             {...panResponder.panHandlers}
           >
             <View style={styles.rail}>
