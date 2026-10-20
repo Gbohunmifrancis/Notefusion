@@ -112,6 +112,8 @@ export function useJobPolling() {
   /** Reads and stream connections that failed in a row: three say the API cannot be reached. */
   const failedPolls = useRef(0);
   const lastSubmit = useRef<LastSubmit | null>(null);
+  /** False once the screen has gone: a read that answers after that starts nothing. */
+  const mounted = useRef(true);
 
   const stopClocks = useCallback(() => {
     if (clockTimer.current) clearTimeout(clockTimer.current);
@@ -447,6 +449,37 @@ export function useJobPolling() {
   );
 
   /**
+   * A song link sent before the screen was left (`lib/linkJob`): followed again from where it stands while it still
+   * runs, as if the screen had never gone, and "Try again" sends the same link. A job that has already ended is not
+   * taken up: its sheet is in the Library and its push has gone, so the screen opens as usual.
+   * "unknown" when the job could not be read (offline), so the caller keeps it for next time.
+   */
+  const resumeLink = useCallback(
+    async (
+      jobId: string,
+      url: string,
+      opts: Parameters<typeof transcriptionsApi.submitLink>[1],
+    ): Promise<"running" | "ended" | "unknown"> => {
+      const before = startedAt.current;
+      let job: TranscriptionJob;
+      try {
+        job = await transcriptionsApi.getJob(jobId);
+      } catch (e) {
+        return toApiError(e).code.startsWith("NETWORK_") ? "unknown" : "ended";
+      }
+      // The screen went, or something was sent from it meanwhile (that is the job on screen now).
+      if (!mounted.current || startedAt.current !== before) return "unknown";
+      const status = normalizeStatus(job.status);
+      if (status === "done" || status === "failed") return "ended";
+      lastSubmit.current = { kind: "link", url, opts };
+      begin("queued");
+      track({ ...job, jobId: job.jobId ?? jobId });
+      return "running";
+    },
+    [begin, track],
+  );
+
+  /**
    * "Try again" after a long wait: the same recording or link is submitted afresh. The job
    * being left behind keeps running on the server and is still followed, and its finish — or
    * the completion push — still counts, so nothing the person already paid for is thrown away.
@@ -470,17 +503,18 @@ export function useJobPolling() {
     setState(IDLE);
   }, [stopFollowing, stopSuperseded]);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
       // Unmounted mid-job: a read or submit still in flight must not bind a job to a screen that is
       // gone, and nothing is followed any more. The server finishes the job and pushes as usual.
+      mounted.current = false;
       activeJobId.current = null;
       startedAt.current = null;
       stopFollowing();
       stopSuperseded();
-    },
-    [stopFollowing, stopSuperseded],
-  );
+    };
+  }, [stopFollowing, stopSuperseded]);
 
-  return { state, start, startLink, startPreview, resumePreview, retry, reset };
+  return { state, start, startLink, startPreview, resumePreview, resumeLink, retry, reset };
 }

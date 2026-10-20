@@ -51,6 +51,9 @@ import { PROVIDER_LABEL, SongCover } from "../components/link/SongCover";
 import { NoticeCard, PillAction, RefusedLinks, linkRefusal } from "../components/link/LinkRefusal";
 import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
+import { useAuth } from "../lib/auth";
+import { linkJobStore } from "../lib/linkJobStore";
+import type { LinkJobOptions } from "../lib/linkJob";
 import { markPractisedToday } from "../lib/practiceReminder";
 import { extractSongUrl, songLinkHint } from "../lib/songLink";
 import { defaultRange, fitsWhole, formatClock, isWholeSong, sectionLabel, type ClipRange } from "../lib/clipRange";
@@ -97,8 +100,9 @@ export function LinkScreen() {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const insets = useSafeAreaInsets();
-  const { state, startLink, retry, reset } = useJobPolling();
+  const { state, startLink, resumeLink, retry, reset } = useJobPolling();
   const { isPro, known, subscription, refresh, boughtRemaining } = useSubscription();
+  const { user } = useAuth();
 
   const [url, setUrl] = useState("");
   const [focused, setFocused] = useState(false);
@@ -203,6 +207,7 @@ export function LinkScreen() {
       // Filed in the Library by the server as it finished (option A): opened as the saved sheet.
       const savedId = state.savedId ?? undefined;
       const savedTitle = state.savedTitle ?? undefined;
+      linkJobStore.clear();
       reset();
       refresh();
       void markPractisedToday();
@@ -226,6 +231,45 @@ export function LinkScreen() {
     void refresh(false);
   }, [state.status, state.jobId, refresh]);
 
+  // ── The job card comes back (lib/linkJob) ────────────────────────────────
+  // A song takes minutes, and leaving the screen meanwhile used to lose its card. The link sent is kept until its
+  // job ends, and on coming back the screen follows it again while it still runs.
+  /** The link and options last sent, for "Try again" to keep the job it sends instead. */
+  const sent = useRef<{ url: string; opts: LinkJobOptions } | null>(null);
+  function remember(jobId: string | null, link: string, opts: LinkJobOptions) {
+    sent.current = { url: link, opts };
+    if (jobId && user) linkJobStore.save({ jobId, url: link, userId: user.id, sentAt: Date.now(), opts });
+  }
+  useEffect(() => {
+    if (!user) return;
+    let live = true;
+    void linkJobStore.read(user.id).then(async (kept) => {
+      if (!live || !kept) return;
+      const outcome = await resumeLink(kept.jobId, kept.url, kept.opts);
+      if (!live) return;
+      if (outcome === "running") sent.current = { url: kept.url, opts: kept.opts };
+      else if (outcome === "ended") linkJobStore.clear();
+    });
+    return () => {
+      live = false;
+    };
+    // Once, as the screen opens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  // A failed job has nothing left to follow; the link it was sent with goes back in the field to change or resend.
+  useEffect(() => {
+    if (state.status !== "failed") return;
+    linkJobStore.clear();
+    const link = sent.current?.url;
+    if (link) setUrl((u) => u || link);
+  }, [state.status]);
+
+  /** "Try again": the same link sent afresh, and kept as the job to come back to. */
+  async function sendAgain() {
+    const jobId = await retry();
+    if (sent.current) remember(jobId, sent.current.url, sent.current.opts);
+  }
+
   const stageIndex = STAGES.findIndex((s) => s.key === state.stage);
   const barWidth = useMemo(() => new Animated.Value(0), []);
   useEffect(() => {
@@ -246,13 +290,15 @@ export function LinkScreen() {
   async function submit() {
     if (!found || !canSubmit) return;
     void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "link" });
-    const jobId = await startLink(found.url, {
+    const opts: LinkJobOptions = {
       mode: "melody",
       keyboardTranspose: keyboardTranspose() || undefined,
       timeSignature: meter ?? undefined,
       startSeconds: section?.start,
       endSeconds: section?.end,
-    });
+    };
+    const jobId = await startLink(found.url, opts);
+    remember(jobId, found.url, opts);
     if (jobId) setMeter(null);
   }
 
@@ -565,7 +611,7 @@ export function LinkScreen() {
                 label="Try again"
                 icon="retry"
                 variant="secondary"
-                onPress={() => void retry()}
+                onPress={() => void sendAgain()}
                 style={styles.submit}
               />
             ) : null}
@@ -596,7 +642,7 @@ export function LinkScreen() {
             )}
             {/* Offline, the same link is sent again; otherwise the card goes and the link is ready to change. */}
             {linkOffline ? (
-              <PillAction label="Try again" onPress={() => void retry()} />
+              <PillAction label="Try again" onPress={() => void sendAgain()} />
             ) : (
               <PillAction label="Change link" onPress={changeLink} />
             )}
