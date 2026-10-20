@@ -145,11 +145,20 @@ export function PracticeScreen() {
   /** Closed before `sing`'s first await: a second tap during the permission prompt would start a second take. */
   const startingRef = useRef(false);
 
+  // The drill on screen, read by `load`: a visit that brings a different drill clears the last one's marks.
+  const drillRef = useRef<Drill | null>(null);
+  drillRef.current = drill;
+
   const load = useCallback(async () => {
     try {
       const [p, d] = await Promise.all([practiceApi.progress(), practiceApi.nextDrill()]);
       if (!live.current) return;
       setProgress(p);
+      if (drillRef.current?.id !== d.id) {
+        setGrade(null);
+        setNext(null);
+        setTakeUri(null);
+      }
       setDrill(d);
       setLoadError(null);
       void rememberStreak(streakSnapshot(p));
