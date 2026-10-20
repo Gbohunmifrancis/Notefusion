@@ -1,6 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { codeFailure, contactUsUrl, emailFieldError, googleFailure, missesAfter, offersReset } from "./authErrors.ts";
+import { codeFailure, contactUsUrl, emailFieldError, googleFailure, looksLikeEmail, missesAfter, offersReset } from "./authErrors.ts";
+
+test("an address needs a name, an @ and a dotted domain; spaces round it are ignored", () => {
+  assert.equal(looksLikeEmail(" ada@example.com "), true);
+  assert.equal(looksLikeEmail("ada@example"), false);
+  assert.equal(looksLikeEmail("ada.example.com"), false);
+  assert.equal(looksLikeEmail("ada @example.com"), false);
+  assert.equal(looksLikeEmail(""), false);
+});
 
 test("a refused address goes on the Email field; other failures stay above Continue", () => {
   const disposable = "Please use a permanent email address. Temporary inboxes can't receive your NoteFusion sheets.";

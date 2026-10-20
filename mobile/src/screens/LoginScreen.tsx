@@ -7,7 +7,7 @@ import { NightField } from "../components/night/NightField";
 import { BackButton, ErrorNote, Mark, NightLink, NightScreen, OrRule, nightText, pressedLink } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
-import { contactUsUrl, googleFailure, missesAfter, offersReset } from "../lib/authErrors";
+import { NOT_AN_EMAIL, contactUsUrl, googleFailure, looksLikeEmail, missesAfter, offersReset } from "../lib/authErrors";
 import { tokenStore } from "../lib/tokenStore";
 import { googleAuthConfigured } from "../lib/env";
 import { night, nightFonts } from "../design/theme";
@@ -41,7 +41,10 @@ export function LoginScreen({ navigation, route }: Props) {
     });
   }, []);
 
-  const canSubmit = email.trim().length > 3 && password.length > 0;
+  /** The email field has been left once: from then a mistyped address is said under it, as on Register. */
+  const [emailTouched, setEmailTouched] = useState(false);
+  const emailOk = looksLikeEmail(email);
+  const canSubmit = emailOk && password.length > 0;
 
   async function submit() {
     if (!canSubmit) return;
@@ -111,6 +114,9 @@ export function LoginScreen({ navigation, route }: Props) {
           returnKeyType="next"
           onSubmitEditing={() => passwordRef.current?.focus()}
           submitBehavior="submit"
+          onBlur={() => setEmailTouched(true)}
+          // Said once the field is left, so a greyed Sign in always has its reason on screen.
+          error={emailTouched && email.length > 0 && !emailOk ? NOT_AN_EMAIL : undefined}
         />
         <NightField
           ref={passwordRef}

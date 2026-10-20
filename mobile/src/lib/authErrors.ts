@@ -4,7 +4,12 @@
 
 import type { ApiError } from "../api/types";
 
-const NOT_AN_EMAIL = "That doesn't look like an email address.";
+export const NOT_AN_EMAIL = "That doesn't look like an email address.";
+
+/** Something, an @, something, a dot, something: the shape Register asks of every address, so every account has it. */
+export function looksLikeEmail(typed: string): boolean {
+  return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(typed.trim());
+}
 
 /**
  * Wrong email or password, counted in a row (board l-ux-high 04d): any other answer starts the count again. From the

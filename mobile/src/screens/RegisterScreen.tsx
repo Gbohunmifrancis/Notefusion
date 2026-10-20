@@ -6,7 +6,7 @@ import { NightField } from "../components/night/NightField";
 import { BackButton, ErrorNote, NightLink, NightScreen, nightText } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
-import { emailFieldError } from "../lib/authErrors";
+import { NOT_AN_EMAIL, emailFieldError, looksLikeEmail } from "../lib/authErrors";
 import { MIN_PASSWORD, passwordStrength } from "../lib/passwordStrength";
 import { night, nightFonts } from "../design/theme";
 import type { AuthStackParams } from "../navigation/types";
@@ -36,7 +36,7 @@ export function RegisterScreen({ navigation, route }: Props) {
   // Any name the server takes (it asks only that there is one): a one-letter name no longer leaves the button
   // greyed out with nothing said.
   const nameOk = fullName.trim().length > 0;
-  const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim());
+  const emailOk = looksLikeEmail(email);
   const pwOk = password.length >= MIN_PASSWORD;
   const canSubmit = nameOk && emailOk && pwOk;
   const strength = passwordStrength(password);
@@ -108,7 +108,7 @@ export function RegisterScreen({ navigation, route }: Props) {
           submitBehavior="submit"
           // Only once they have left the field: "enter a valid email" while someone
           // is still typing the address is nagging, not help.
-          error={emailError ?? (emailTouched && email.length > 0 && !emailOk ? "That doesn't look like an email address." : undefined)}
+          error={emailError ?? (emailTouched && email.length > 0 && !emailOk ? NOT_AN_EMAIL : undefined)}
         />
         <NightField
           ref={passwordRef}
