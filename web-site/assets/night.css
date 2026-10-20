@@ -484,11 +484,13 @@ body:not(.is-pro):not(.guest) .act-pro .act-lock { display: inline-block; }
      icon-over-label tiles under it. Nothing sits off-screen behind a sideways scroll. */
   .result-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
   .result-actions #play { grid-column: 1 / -1; min-width: 0; width: 100%; }
-  .result-actions .act { flex-direction: column; justify-content: center; gap: 4px; min-height: 60px; min-width: 0; padding: 8px 2px;
-    border-radius: 12px; font-size: 0.72rem; line-height: 1.15; text-align: center; }
+  /* The labels at 13 px on every phone (board m-ux-medium W2f): four still fit across at 360 px, "Transpose" in a
+     68 px tile, and "Save & share" and "Four parts" take two lines. */
+  .result-actions .act { flex-direction: column; justify-content: center; gap: 4px; min-height: 64px; min-width: 0; padding: 8px 1px;
+    border-radius: 12px; font-size: 13px; line-height: 1.2; text-align: center; }
   .result-actions .act .ic { width: 20px; height: 20px; flex: none; }
   .result-actions .act .act-lock { position: absolute; top: 6px; right: 6px; width: 11px; height: 11px; }
-  @media (max-width: 374px) { .result-actions { gap: 6px; } .result-actions .act { font-size: 0.68rem; } }
+  @media (max-width: 374px) { .result-actions { gap: 6px; } }
   .result-head { gap: 10px; }
   .result-views { width: 100%; }
   .result-views .tabs { flex: 1; }
