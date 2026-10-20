@@ -17,7 +17,7 @@ const DESCRIPTION = "Can't remember a hymn's name? Hum or sing a few bars and No
 
 function faq(count) {
   return [
-    { q: "How do I find a hymn by humming it?", a: `Press “Hum a tune”, allow the microphone, and hum or sing the first line or two of the hymn — up to ${IDENTIFY_MAX_SECONDS} seconds. Press Stop, then “Find this hymn”. If the tune is one of ours, you get its name and a link to its page, with the tonic solfa, the words, the staff notation and a piano to sing along with.` },
+    { q: "How do I find a hymn by humming it?", a: `Press “Hum a tune”, allow the microphone, and hum or sing the first line or two of the hymn — up to ${IDENTIFY_MAX_SECONDS} seconds. Press Stop and it looks the tune up. If the tune is one of ours, you get its name and a link to its page, with the tonic solfa, the words, the staff notation and a piano to sing along with.` },
     { q: "Which hymns can it recognise?", a: `The ${count} hymns and hymn tunes in the NoteFusion hymnal, from Amazing Grace and Abide with Me to the tunes of the old hymn books, in any key and at any speed. It only names a hymn when it is sure; if it is not, it says so rather than guess.` },
     { q: "Do I need to sing the words?", a: "No. Humming, la-la or the words all work: it listens to the tune, not the words. Hum steadily and clearly, in a quiet room, starting from the beginning of the hymn or of the chorus." },
     { q: "Is it free, and what happens to my recording?", a: "It is free and needs no account. The recording is used only to find the tune and is deleted as soon as the answer is sent back; nothing about it is kept." },

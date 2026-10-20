@@ -32,8 +32,8 @@
 
 <!-- The interface font, fetched alongside the CSS rather than after it: the first screen's text is set in it. -->
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site-pages.css?v=5">
-<link rel="stylesheet" href="/assets/home.css?v=5">
+<link rel="stylesheet" href="/assets/site-pages.css?v=6">
+<link rel="stylesheet" href="/assets/home.css?v=6">
 
 <script type="application/ld+json">
 {
@@ -109,9 +109,11 @@
           <summary><svg class="ic ic-16" aria-hidden="true"><use href="/assets/icons.svg#i-link"/></svg>Or paste a song link<svg class="ic ic-16 try-link-chev" aria-hidden="true"><use href="/assets/icons.svg#i-chev-down"/></svg></summary>
           <form id="try-form" class="try-form" novalidate>
             <label class="sr-only" for="try-url">Song link</label>
-            <input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false">
+            <input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false" aria-describedby="try-url-error">
             <button class="btn btn-primary" id="try-submit" type="submit">Transcribe</button>
           </form>
+          <!-- What is wrong with the link, under the field (assets/preview.js); the line below the box keeps the rest. -->
+          <p class="try-status try-status-error" id="try-url-error" aria-live="polite" hidden></p>
           <button class="btn btn-secondary try-paste" id="try-paste" type="button" hidden><svg class="ic ic-16" aria-hidden="true"><use href="/assets/icons.svg#i-paste"/></svg>Paste a link</button>
           <!-- "Beats in a bar" goes with a link from here; a recorded take is asked it in its review (assets/recorder.js),
                and an uploaded file goes as Not sure. -->
@@ -120,7 +122,7 @@
         </details>
         <div class="try-section" id="try-section"></div>
         <p class="try-status" id="try-status" aria-live="polite"></p>
-        <p class="try-note">30-second preview, no account needed. <a class="try-signup" href="/app?signup=1">Create a free account</a> to keep the sheet, hear it in four parts and share it with your choir.</p>
+        <p class="try-note">30-second preview, no account needed; an uploaded file is cut to its first 30 seconds. <a class="try-signup" href="/app?signup=1">Create a free account</a> to keep the sheet, hear it in four parts and share it with your choir.</p>
       </div>
 
       <div class="hero-apps">
@@ -183,7 +185,7 @@
       <h2 id="how-title">How it works</h2>
       <ol class="steps">
         <li><h3>Hum, record or upload</h3><p>A tune hummed into the mic, a recording of your choir, or a file from your device. You can paste a song link too.</p></li>
-        <li><h3>Get the sheet</h3><p>The lead voice is isolated and written out: Tonic Solfa, staff notation, key and tempo, with alto, tenor and bass under it.</p></li>
+        <li><h3>Get the sheet</h3><p>The lead voice is isolated and written out: Tonic Solfa, staff notation, key and tempo, and on Pro alto, tenor and bass under it when you ask.</p></li>
         <li><h3>Rehearse, transpose, share</h3><p>Play it back, mute your part and sing against the others, move the key to suit your singers, and send the choir a link.</p></li>
       </ol>
       <p><a class="text-link" href="/app">Open the web app <svg class="ic ic-16" aria-hidden="true"><use href="/assets/icons.svg#i-arrow-right"/></svg></a></p>
@@ -262,7 +264,7 @@
   <div class="wrap">
     <div class="section-head">
       <h2 id="pricing-title">Pricing</h2>
-      <p class="section-lead">Free gives you 3 hummed or recorded transcriptions every week, back every Friday evening, and a one-minute preview of a song link. Song links and whole songs are Pro, or bought one song at a time. Pro adds full songs (up to six minutes, twenty a month), four-part harmony, sing-along marking, every download and the fast lane. Prices are shown for your region.</p>
+      <p class="section-lead">Free to start. Pro adds whole songs, four-part harmony and every download.</p>
       <p class="pricing-region" id="pricing-region" hidden></p>
     </div>
 
@@ -286,8 +288,9 @@
 
     <p class="pricing-note" id="pricing-note">
       <span id="pricing-region-note">Prices are shown in your local currency where supported.</span>
+      Leading a choir? One choir plan makes you and up to 25 singers Pro: <a href="/app?signup=1&amp;upgrade=1" data-track="Pricing: choir plan">see it in the app</a>.
       Payments are processed by Paystack in Nigeria and by card elsewhere; we never see your card details.
-      Read our <a href="/terms">terms of service</a> or email <a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a>.
+      Read our <a href="/terms">terms of service</a> and <a href="/terms#refunds">how refunds work</a>, or email <a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a>.
     </p>
   </div>
 </section>
@@ -306,7 +309,7 @@
       </details>
       <details class="faq-item">
         <summary><h3>How accurate is the transcription?</h3><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev-down"/></svg></summary>
-        <p>A clear hummed or sung line, or a single instrument in a quiet room, comes out close to note-perfect. A full song from a link depends on how cleanly the lead vocal separates from the band: solo voices and hymns are excellent, dense mixes less so. Every note carries a confidence mark so you know what to check.</p>
+        <p>A clear hummed or sung line, or a single instrument in a quiet room, comes out close to note-perfect. A full song from a link depends on how cleanly the lead vocal separates from the band: solo voices and hymns are excellent, dense mixes less so. Where notes may need a check, the sheet says so.</p>
       </details>
       <details class="faq-item">
         <summary><h3>What happens to my voice recordings?</h3><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev-down"/></svg></summary>
@@ -322,7 +325,7 @@
       </details>
       <details class="faq-item">
         <summary><h3>What does Pro include?</h3><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev-down"/></svg></summary>
-        <p>Whole songs from a link (up to six minutes, twenty a month), alto, tenor and bass written under every tune, sing-along marking, clean PDF, MusicXML and MIDI downloads, and a priority lane so your job never waits behind someone else’s. Free accounts get 3 hummed or recorded transcriptions every week (back every Friday at 6pm West Africa Time), and the sheets they can save and share.</p>
+        <p>Whole songs from a link (up to six minutes, twenty a month), alto, tenor and bass written under any tune when you ask, sing-along marking, clean PDF, MusicXML and MIDI downloads, and the fast lane, so your job never waits behind someone else’s. Free accounts get 3 hummed or recorded transcriptions every week (back every Friday at 6pm West Africa Time), and the sheets they can save and share.</p>
       </details>
       <details class="faq-item">
         <summary><h3>Who owns my transcriptions and notation?</h3><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev-down"/></svg></summary>
@@ -416,18 +419,18 @@
 
 <!-- The recorder and the song-section picker only open on a tap: their styles load here, after the page, so
      they never hold up the first paint on a phone. -->
-<link rel="stylesheet" href="/assets/rangepicker.css?v=3">
-<link rel="stylesheet" href="/assets/recorder.css?v=4">
+<link rel="stylesheet" href="/assets/rangepicker.css?v=4">
+<link rel="stylesheet" href="/assets/recorder.css?v=5">
 <script src="/assets/songlink.js?v=2" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/back.js?v=1" defer></script>
-<script src="/assets/recorder.js?v=8" defer></script>
+<script src="/assets/recorder.js?v=9" defer></script>
 <script src="/assets/meter.js?v=1" defer></script>
-<script src="/assets/preview.js?v=14" defer></script>
-<script src="/assets/pricing.js?v=17" defer></script>
+<script src="/assets/preview.js?v=15" defer></script>
+<script src="/assets/pricing.js?v=18" defer></script>
 <script src="/assets/landing.js?v=8" defer></script>
 <script src="/assets/site-theme.js?v=2" defer></script>
-<script src="/assets/season.js?v=3" defer></script>
+<script src="/assets/season.js?v=4" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>
 </html>

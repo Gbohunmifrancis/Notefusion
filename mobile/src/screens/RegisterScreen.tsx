@@ -6,7 +6,7 @@ import { NightField } from "../components/night/NightField";
 import { BackButton, ErrorNote, NightLink, NightScreen, nightText } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
-import { emailFieldError } from "../lib/authErrors";
+import { NOT_AN_EMAIL, emailFieldError, looksLikeEmail } from "../lib/authErrors";
 import { MIN_PASSWORD, passwordStrength } from "../lib/passwordStrength";
 import { night, nightFonts } from "../design/theme";
 import type { AuthStackParams } from "../navigation/types";
@@ -29,14 +29,14 @@ export function RegisterScreen({ navigation, route }: Props) {
   const [nameTouched, setNameTouched] = useState(false);
   const [emailTouched, setEmailTouched] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  /** The server refused the address itself (a throwaway inbox): said on the Email field, not above Continue. */
+  /** The server refused the address itself (a throwaway inbox): said on the Email field, not above the button. */
   const [emailError, setEmailError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  // Any name the server takes (it asks only that there is one): a one-letter name no longer leaves Continue
+  // Any name the server takes (it asks only that there is one): a one-letter name no longer leaves the button
   // greyed out with nothing said.
   const nameOk = fullName.trim().length > 0;
-  const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim());
+  const emailOk = looksLikeEmail(email);
   const pwOk = password.length >= MIN_PASSWORD;
   const canSubmit = nameOk && emailOk && pwOk;
   const strength = passwordStrength(password);
@@ -70,8 +70,11 @@ export function RegisterScreen({ navigation, route }: Props) {
         </>
       }
     >
-      <Text style={[nightText.h1, styles.title]}>Create your{"\n"}account</Text>
-      <Text style={[nightText.lead, styles.lead]}>Your first song preview is free.</Text>
+      <Text style={[nightText.h1, styles.title]} accessibilityRole="header">
+        Create your{"\n"}account
+      </Text>
+      {/* What a free account is (FreeTier): three hummed or recorded tunes every week, not one preview. */}
+      <Text style={[nightText.lead, styles.lead]}>Hum or record 3 tunes free, every week.</Text>
 
       <View style={styles.form}>
         <NightField
@@ -85,7 +88,7 @@ export function RegisterScreen({ navigation, route }: Props) {
           returnKeyType="next"
           onSubmitEditing={() => emailRef.current?.focus()}
           submitBehavior="submit"
-          // Said once the field is left empty, as the email's problem is: Continue waits for a name.
+          // Said once the field is left empty, as the email's problem is: the button waits for a name.
           error={nameTouched && !nameOk ? "Type your name to continue." : undefined}
         />
         <NightField
@@ -107,7 +110,7 @@ export function RegisterScreen({ navigation, route }: Props) {
           submitBehavior="submit"
           // Only once they have left the field: "enter a valid email" while someone
           // is still typing the address is nagging, not help.
-          error={emailError ?? (emailTouched && email.length > 0 && !emailOk ? "That doesn't look like an email address." : undefined)}
+          error={emailError ?? (emailTouched && email.length > 0 && !emailOk ? NOT_AN_EMAIL : undefined)}
         />
         <NightField
           ref={passwordRef}
@@ -138,7 +141,8 @@ export function RegisterScreen({ navigation, route }: Props) {
         </View>
       )}
 
-      <NightButton label="Continue" variant="blue" onPress={submit} loading={busy} disabled={!canSubmit} style={styles.submit} />
+      {/* Says what the tap does: the next step is the code it mails. */}
+      <NightButton label="Email me a code" variant="blue" onPress={submit} loading={busy} disabled={!canSubmit} style={styles.submit} />
 
       {/* The link its own 44 px text button (board m-ux-medium P5d); "Already have one?" stays plain text. */}
       <View style={styles.footer}>
@@ -157,7 +161,7 @@ const styles = StyleSheet.create({
   meter: { marginTop: 12 },
   bars: { flexDirection: "row", gap: 5 },
   bar: { flex: 1, height: 4, borderRadius: 2, backgroundColor: "rgba(255, 255, 255, 0.12)" },
-  hint: { marginTop: 8, fontSize: 12.5, fontFamily: nightFonts.regular, color: night.muted },
+  hint: { marginTop: 8, fontSize: 13, fontFamily: nightFonts.regular, color: night.muted },
   error: { marginTop: 18 },
   submit: { marginTop: 24 },
   footer: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center", marginTop: 12 },

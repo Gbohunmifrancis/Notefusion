@@ -75,6 +75,7 @@ import {
   streakLine,
   streakSnapshot,
   weekdayLetter,
+  xpAmount,
 } from "../lib/practiceProgress";
 import {
   badgeArt,
@@ -120,7 +121,7 @@ export function PracticeScreen() {
 
   const [progress, setProgress] = useState<PracticeProgress | null>(null);
   const [drill, setDrill] = useState<Drill | null>(null);
-  /** The path's drill after a marked take, fetched with the fresh progress: what "Next drill" opens. */
+  /** The path's drill after a marked take, fetched with the fresh progress: what "Continue" opens. */
   const [next, setNext] = useState<Drill | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -144,6 +145,8 @@ export function PracticeScreen() {
 
   /** The reward line, with the level's emblem or the badge's sticker beside it when it is one. */
   const [toast, setToast] = useState<{ line: string; art: ArtName | null } | null>(null);
+  /** The marked take's reward line went up in the toast, so the marks do not say it a second time. */
+  const [rewardToasted, setRewardToasted] = useState(false);
   const toastAnim = useRef(new Animated.Value(0)).current;
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -247,24 +250,40 @@ export function PracticeScreen() {
     }
   }
 
-  /** Saves the track, then loads the drill it offers today (each track has its own drill of the day). */
+  /**
+   * Saves the track, then loads the drill it offers (each track keeps its own place on the path). The picker closes at
+   * once, with the drill card's stand-in until the track's drill is here; a refusal puts both back and reopens it.
+   */
   async function chooseTrack(next: PracticeTrack) {
     if (phase !== "idle") return;
+    const before = { progress, drill };
     setSavingTrack(next);
     setTrackError(null);
+    setPicking(false);
+    setProgress((p) => (p ? { ...p, track: next } : p));
+    setNext(null);
+    setGrade(null);
+    setTakeUri(null);
+    let saved: PracticeProgress | null = null;
     try {
-      const p = await practiceApi.setTrack(next);
+      saved = await practiceApi.setTrack(next);
       const d = await practiceApi.nextDrill();
       if (!live.current) return;
-      setProgress(p);
+      setProgress(saved);
       setDrill(d);
-      setNext(null);
-      setGrade(null);
-      setTakeUri(null);
-      setPicking(false);
       void logAnalyticsEvent("practice_track_chosen", { track: next });
     } catch (e) {
-      if (live.current) setTrackError(toApiError(e).message);
+      if (!live.current) return;
+      if (saved) {
+        // The track is saved, only its drill did not come: "No drill yet" offers to try again.
+        setProgress(saved);
+        setDrill(null);
+        return;
+      }
+      setProgress(before.progress);
+      setDrill(before.drill);
+      setPicking(true);
+      setTrackError(toApiError(e).message);
     } finally {
       if (live.current) setSavingTrack(null);
     }
@@ -372,8 +391,12 @@ export function PracticeScreen() {
       const moment = acknowledgeGrade(result);
       const how = celebrationFor(sung.track, result.score, result.reward, !!result.milestone);
       if (how === "burst") setBurst((b) => b + 1);
-      const line = result.milestone?.title ?? (sung.track === "playful" ? playfulRewardLine(result.reward) : moment?.line);
-      if (how !== "quiet" && line) showToast(line, rewardArt(result.reward));
+      // Each line once: a milestone is said by its card, and what the take earned by the toast, or else under the marks.
+      const earned = sung.track === "playful" ? playfulRewardLine(result.reward) : moment?.line ?? null;
+      const toasted = how !== "quiet" && !result.milestone && !!earned;
+      if (toasted && earned) showToast(earned, rewardArt(result.reward));
+      setRewardToasted(toasted);
+      const line = result.milestone?.title ?? earned;
       // Android's live regions already read the toast and the milestone; iOS hears the line here.
       AccessibilityInfo.announceForAccessibility(
         gradeAnnouncement(sung.track === "playful", result, Platform.OS === "ios" ? line : null),
@@ -440,6 +463,8 @@ export function PracticeScreen() {
   const showPicker = !!progress && (track == null || picking);
   const where = drill ? pathLine(drill) : null;
   const onward = drill && grade ? nextAction(drill, next, track) : null;
+  /** Nothing left to mark today and nothing to move on to: the main button is the day's end. */
+  const doneForToday = left === 0 && !(onward && !onward.same);
   /** The kept take, while its drill is the one on screen: the main button sends it again. */
   const resendable = !!unsent && !!drill && unsent.drill.id === drill.id && !grade;
   // Doh's mood and line (Playful only): singing along, cheering, encouraging, worried, sleepy or waving.
@@ -526,13 +551,17 @@ export function PracticeScreen() {
               </View>
             ) : null}
 
-            {/* ── Today's drill ────────────────────────────────────────────── */}
-            {drill && !showPicker ? (
+            {/* ── Today's drill (its stand-in while a new track's drill comes) ── */}
+            {savingTrack && !showPicker ? (
+              <DrillSkeleton styles={styles} />
+            ) : drill && !showPicker ? (
               <Card style={playful ? { ...styles.card, ...styles.cardPlayful } : styles.card}>
                 <Text style={[styles.eyebrow, playful && styles.eyebrowPlayful]}>
                   {playful ? "Your singing game" : `Practice path · ${drill.levelName}`}
                 </Text>
-                <Text style={[styles.cardTitle, playful && styles.cardTitlePlayful]}>{drill.title}</Text>
+                <Text style={[styles.cardTitle, playful && styles.cardTitlePlayful]} accessibilityRole="header">
+                  {drill.title}
+                </Text>
                 {where ? (
                   <View accessible accessibilityLabel={where}>
                     <Text style={styles.pathLine}>{where}</Text>
@@ -572,24 +601,26 @@ export function PracticeScreen() {
                       <Button label="Send it again" icon="retry" onPress={sendAgain} style={styles.action} />
                     ) : (
                       <Button
-                        label={onward ? onward.label : playful ? "Sing it!" : "Sing it"}
-                        icon={onward && !onward.same ? "next" : "mic"}
+                        // The day's marked drills all sung: the button says the day is done, not a greyed "Sing it".
+                        label={doneForToday ? "Done for today" : onward ? onward.label : playful ? "Sing it!" : "Sing it"}
+                        icon={doneForToday ? "check" : onward && !onward.same ? "next" : "mic"}
                         onPress={() => void (onward && !onward.same ? goNext() : sing())}
-                        disabled={left === 0 && !(onward && !onward.same)}
+                        disabled={doneForToday}
                         style={styles.action}
                       />
                     )}
                   </View>
                 )}
                 {phase === "idle" && ((onward && !onward.same) || resendable) ? (
-                  <Button label={playful ? "Again!" : "Sing it again"} icon="mic" variant="secondary" onPress={() => void sing()} disabled={left === 0} />
+                  <Button label={playful ? "Sing again!" : "Sing it again"} icon="mic" variant="secondary" onPress={() => void sing()} disabled={left === 0} />
                 ) : null}
 
                 {/* Marking takes up to a minute and the button shows only its spinner, so the line under it says so. */}
                 {phase === "grading" ? (
                   <Text style={styles.allowance}>Marking your take, note by note. It can take up to a minute.</Text>
                 ) : allowance ? (
-                  <Text style={styles.allowance}>{allowanceLine(allowance)}</Text>
+                  // The count is a label (13); once they are all sung it is good news in a sentence (16).
+                  <Text style={left === 0 ? styles.body : styles.allowance}>{allowanceLine(allowance)}</Text>
                 ) : null}
                 {error ? <ProblemNote sentence>{error}</ProblemNote> : null}
                 {error === MIC_REFUSED && micBlocked ? (
@@ -607,8 +638,8 @@ export function PracticeScreen() {
                     <Text style={styles.meta}>{grade.milestone.description}</Text>
                   </View>
                 ) : null}
-                {grade && playful ? <StarGrade grade={grade} notes={drill.notes} /> : null}
-                {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} /> : null}
+                {grade && playful ? <StarGrade grade={grade} notes={drill.notes} showEarned={!rewardToasted} /> : null}
+                {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} showEarned={!rewardToasted} /> : null}
                 {grade && focused ? (
                   <View style={styles.focusRow}>
                     <Text style={styles.focusTuning}>{tuningLine(grade.tuningCents)}</Text>
@@ -619,7 +650,7 @@ export function PracticeScreen() {
                 ) : null}
               </Card>
             ) : null}
-            {!drill && !showPicker ? (
+            {!drill && !showPicker && !savingTrack ? (
               <EmptyState
                 art="empty-no-drill"
                 title="No drill yet"
@@ -668,7 +699,7 @@ export function PracticeScreen() {
             ) : null}
 
             {/* ── Your progress: streak and level, the week, the badges ────── */}
-            <Text style={styles.sectionTitle}>Your progress</Text>
+            <Text style={styles.sectionTitle} accessibilityRole="header">Your progress</Text>
             <View style={styles.statsRow}>
               <Card style={styles.statCard}>
                 <View style={styles.statHead}>
@@ -679,12 +710,15 @@ export function PracticeScreen() {
                 </View>
                 <Text style={styles.statLabel}>day streak</Text>
                 <Text style={styles.statSub}>{streakLine(progress.streak)}</Text>
-                <View style={styles.footRow}>
-                  <Art name="freeze" width={16} style={!progress.streak.freezeAvailable && styles.spent} />
-                  <Text style={[styles.statFoot, styles.footText]}>
-                    {progress.streak.freezeAvailable ? "Streak freeze ready this week" : "Freeze used this week"}
-                  </Text>
-                </View>
+                {/* A freeze keeps a streak: with none running there is nothing for it to keep. */}
+                {progress.streak.current > 0 ? (
+                  <View style={styles.footRow}>
+                    <Art name="freeze" width={16} style={!progress.streak.freezeAvailable && styles.spent} />
+                    <Text style={[styles.statFoot, styles.footText]}>
+                      {progress.streak.freezeAvailable ? "Streak freeze ready this week" : "Freeze used this week"}
+                    </Text>
+                  </View>
+                ) : null}
               </Card>
 
               <Card style={styles.statCard}>
@@ -702,13 +736,13 @@ export function PracticeScreen() {
                     style={styles.barTrack}
                     accessible
                     accessibilityRole="progressbar"
-                    accessibilityLabel={`${progress.xp} XP. ${nextLevelLine(progress.level)}`}
+                    accessibilityLabel={`${xpAmount(progress.xp)}. ${nextLevelLine(progress.level)}`}
                   >
                     <View style={[styles.barFill, { width: `${Math.round(levelFraction(progress.level, progress.xp) * 100)}%` }]} />
                   </View>
                   {progress.level.nextName ? <Art name={levelArt(progress.level.index + 1)} width={22} /> : null}
                 </View>
-                <Text style={styles.statSub}>{progress.xp} XP</Text>
+                <Text style={styles.statSub}>{xpAmount(progress.xp)}</Text>
                 <Text style={styles.statFoot}>{nextLevelLine(progress.level)}</Text>
               </Card>
             </View>
@@ -737,7 +771,7 @@ export function PracticeScreen() {
             </Card>
 
             {/* ── Badges: stickers on Playful, a plain list on Focused ──────── */}
-            <Text style={styles.sectionTitle}>{playful ? "My stickers" : "Badges"}</Text>
+            <Text style={styles.sectionTitle} accessibilityRole="header">{playful ? "My stickers" : "Badges"}</Text>
             {playful ? (
               <View style={styles.stickerGrid}>
                 {sortBadges(progress.badges).map((b) => (
@@ -877,7 +911,16 @@ function PracticeSkeleton({ styles }: { styles: Styles }) {
         <Skeleton width={20} height={20} radius={10} />
         <Skeleton width="55%" height={13} radius={radii.sm} />
       </View>
-      <Card style={styles.card}>
+      <DrillSkeleton styles={styles} />
+    </View>
+  );
+}
+
+/** The path card's stand-in: the first read's, and a new track's while its drill comes. */
+function DrillSkeleton({ styles }: { styles: Styles }) {
+  return (
+    <Card style={styles.card}>
+      <View accessible accessibilityLabel="Loading your drill" accessibilityState={{ busy: true }} style={styles.skeletonCard}>
         <Skeleton width="40%" height={11} radius={radii.sm} />
         <Skeleton width="70%" height={20} radius={radii.sm} />
         <View style={styles.solfaRow}>
@@ -889,8 +932,8 @@ function PracticeSkeleton({ styles }: { styles: Styles }) {
           <Skeleton height={48} radius={radii.pill} style={styles.action} />
           <Skeleton height={48} radius={radii.pill} style={styles.action} />
         </View>
-      </Card>
-    </View>
+      </View>
+    </Card>
   );
 }
 
@@ -1087,6 +1130,8 @@ const makeStyles = (c: Palette) =>
     },
     buddyText: { ...typography.label, color: c.text, lineHeight: 20 },
     card: { marginBottom: spacing.md, gap: spacing.sm },
+    /** The card's own gap, inside the stand-in's one accessible element. */
+    skeletonCard: { gap: spacing.sm },
     cardPlayful: { borderColor: c.playBorder, borderWidth: 1.5 },
     // Sentences are 16 px, meta and labels 13, and nothing is under 12 (board m-ux-medium P5c).
     body: { ...typography.body, color: c.textMuted, fontSize: 16, lineHeight: 23 },

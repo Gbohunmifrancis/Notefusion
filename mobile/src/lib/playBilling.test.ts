@@ -68,9 +68,9 @@ test("a base plan is bought with its own offer at its own price, never a trial's
 });
 
 test("the button and the fine print say what happens and how to stop it", () => {
-  assert.equal(playButtonLabel(plan("pro_monthly_ngn", "monthly"), "₦7,500", false), "Subscribe · ₦7,500/month");
+  assert.equal(playButtonLabel(plan("pro_monthly_ngn", "monthly"), "₦7,500", false), "Subscribe · ₦7,500 / month");
   assert.equal(playButtonLabel(plan("one_song_ngn", "single"), "₦1,500", false), "Buy this song · ₦1,500");
-  assert.equal(playButtonLabel(plan("choir_monthly_ngn", "monthly", 25), "₦25,000", false), "Start your choir · ₦25,000/month");
+  assert.equal(playButtonLabel(plan("choir_monthly_ngn", "monthly", 25), "₦25,000", false), "Start your choir · ₦25,000 / month");
   assert.match(playFinePrint(plan("pro_yearly_ngn_v2", "yearly")), /Renews every year until you cancel in Google Play/);
   assert.match(playFinePrint(plan("one_song_ngn", "single")), /never expires/);
 });

@@ -10,6 +10,7 @@ import {
   type TextInputProps,
 } from "react-native";
 import { Icon } from "../Icon";
+import { pressedLink } from "./NightUI";
 import { night, nightFonts } from "../../design/theme";
 import { SecretField, fillRow } from "../../lib/replayPrivacy";
 
@@ -49,7 +50,7 @@ export const NightField = forwardRef<TextInput, Props>(function NightField(
   const labelStyle = {
     transform: [
       { translateY: lift.interpolate({ inputRange: [0, 1], outputRange: [11, 0] }) },
-      { scale: lift.interpolate({ inputRange: [0, 1], outputRange: [15.5 / 11.5, 1] }) },
+      { scale: lift.interpolate({ inputRange: [0, 1], outputRange: [16 / 12, 1] }) },
     ],
   };
 
@@ -93,7 +94,8 @@ export const NightField = forwardRef<TextInput, Props>(function NightField(
               hitSlop={14}
               accessibilityRole="button"
               accessibilityLabel={shown ? "Hide password" : "Show password"}
-              style={styles.eye}
+              // The links' instant dim, so a tap on the eye is seen to land.
+              style={({ pressed }) => [styles.eye, pressed && pressedLink]}
             >
               <Icon name={shown ? "eye-off" : "eye"} size={20} color={night.muted} />
             </Pressable>
@@ -136,7 +138,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 16,
     top: 10,
-    fontSize: 11.5,
+    // Lifted, it is the app's smallest words: 12, never under.
+    fontSize: 12,
     fontFamily: nightFonts.medium,
     color: night.muted,
     transformOrigin: "left center",
@@ -146,7 +149,8 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
     paddingVertical: 0,
-    fontSize: 15.5,
+    // 16, as every field's typing is (and the resting label grows to match it).
+    fontSize: 16,
     fontFamily: nightFonts.regular,
     color: night.text,
   },
@@ -161,7 +165,7 @@ const styles = StyleSheet.create({
   },
   error: {
     flexShrink: 1,
-    fontSize: 12.5,
+    fontSize: 13,
     fontFamily: nightFonts.medium,
     color: night.muted,
   },

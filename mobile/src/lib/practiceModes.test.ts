@@ -149,6 +149,11 @@ test("the streak and level fit one line: 6-day streak | Me · 312 XP, 188 to Fah
   assert.equal(lapsed.label, "No streak now. Your best: 30 days. Level Me, 312 XP, 188 XP to Fah.");
   assert.equal(top.toNext, null);
   assert.equal(top.fraction, 1);
+  assert.equal(top.xp, "9,000 XP");
+  const far = progressStrip({ streak: { current: 1 }, level: { ...me, xpForNext: 1250 }, xp: 12450 });
+  assert.equal(far.xp, "12,450 XP");
+  assert.equal(far.toNext, "1,250 to Fah");
+  assert.equal(far.label, "1-day streak. Level Me, 12,450 XP, 1,250 XP to Fah.");
 });
 
 test("a take runs the count-in, the passage and a second, never past what the worker keeps", () => {

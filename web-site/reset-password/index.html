@@ -15,7 +15,7 @@
 <link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/site-pages.css?v=5">
+<link rel="stylesheet" href="/assets/site-pages.css?v=6">
 </head>
 <body class="site-document site-document--reset">
 
@@ -29,7 +29,7 @@
     <div class="site-shell-actions">
       <button type="button" class="theme-toggle" data-theme-toggle data-track="Theme toggle" aria-label="Colour theme" title="Colour theme"><svg class="ic tt-light" aria-hidden="true"><use href="/assets/icons.svg#i-sun"/></svg><svg class="ic tt-dark" aria-hidden="true"><use href="/assets/icons.svg#i-moon"/></svg><svg class="ic tt-system" aria-hidden="true"><use href="/assets/icons.svg#i-monitor"/></svg></button>
       <a class="site-shell-signin" href="/app">Sign in</a>
-      <a class="site-shell-cta" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="utility_header">Get<span class="cta-more"> the</span> app</a>
+      <a class="site-shell-cta" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="utility_header"><span>Get<span class="cta-more"> the</span> app</span></a>
     </div>
     <details class="site-shell-mobile">
       <summary aria-label="Open site navigation"><svg class="ic ic-open" aria-hidden="true"><use href="/assets/icons.svg#i-menu"/></svg><svg class="ic ic-close" aria-hidden="true"><use href="/assets/icons.svg#i-x"/></svg></summary>
@@ -50,13 +50,16 @@
 
     <form id="form" novalidate hidden>
       <p>Setting a new password for <strong id="who"></strong>.</p>
+      <!-- The account's address for password managers, so the new password is saved under it (shown above). -->
+      <input id="username" type="email" autocomplete="username" hidden>
 
       <label for="pw">New password</label>
-      <input id="pw" type="password" autocomplete="new-password" minlength="8" required>
-      <p class="hint">At least 8 characters.</p>
+      <input id="pw" type="password" autocomplete="new-password" minlength="8" required aria-describedby="pw-hint">
+      <p class="hint" id="pw-hint" aria-live="polite">At least 8 characters.</p>
 
       <label for="pw2">Confirm new password</label>
-      <input id="pw2" type="password" autocomplete="new-password" minlength="8" required>
+      <input id="pw2" type="password" autocomplete="new-password" minlength="8" required aria-describedby="pw2-hint">
+      <p class="hint" id="pw2-hint" aria-live="polite" hidden></p>
 
       <button id="submit" type="submit">Set new password</button>
     </form>
@@ -150,7 +153,38 @@
   }
 
   document.getElementById("who").textContent = email;
+  document.getElementById("username").value = email;
   form.hidden = false;
+
+  /**
+   * The two checks as each field is left, under the field, not only once the form is sent: a short password, and a
+   * confirmation that does not match. A field marked is checked again as it is typed in, so the mark goes as soon as
+   * it is put right. Leaving a field empty says nothing.
+   */
+  var pwHint = document.getElementById("pw-hint");
+  var pw2Hint = document.getElementById("pw2-hint");
+  var PW_HINT = pwHint.textContent;
+  function mark(field, hint, bad, text) {
+    hint.textContent = text;
+    hint.hidden = !text;
+    hint.classList.toggle("bad", bad);
+    if (bad) field.setAttribute("aria-invalid", "true"); else field.removeAttribute("aria-invalid");
+  }
+  function checkPw() {
+    var n = pw.value.length, short = n > 0 && n < 8;
+    mark(pw, pwHint, short, short ? "At least 8 characters; this one has " + n + "." : PW_HINT);
+  }
+  function checkPw2() {
+    var bad = pw2.value.length > 0 && pw2.value !== pw.value;
+    mark(pw2, pw2Hint, bad, bad ? "Those two passwords do not match." : "");
+  }
+  pw.addEventListener("blur", checkPw);
+  pw2.addEventListener("blur", checkPw2);
+  pw.addEventListener("input", function () {
+    if (pw.hasAttribute("aria-invalid")) checkPw();
+    if (pw2.hasAttribute("aria-invalid")) checkPw2();
+  });
+  pw2.addEventListener("input", function () { if (pw2.hasAttribute("aria-invalid")) checkPw2(); });
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -236,7 +270,7 @@
 <!-- Page Pulse Tracking Script -->
 <!-- End Page Pulse Tracking Script -->
 <script src="/assets/site-theme.js?v=2" defer></script>
-<script src="/assets/season.js?v=3" defer></script>
+<script src="/assets/season.js?v=4" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>
 

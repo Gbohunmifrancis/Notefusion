@@ -11,6 +11,9 @@ export function dohNowLine(dohLetter: string): string {
 /** "Use the hymnbook" taken. */
 export const HYMNBOOK_IN_LINE = "Hymnbook version in";
 
+/** Profile's "Remove photo". */
+export const PHOTO_REMOVED_LINE = "Photo removed";
+
 /** "“Abide with Me” deleted", or "3 sheets deleted": a held delete (board m-ux-medium P2a). */
 export function deletedLine(titles: readonly string[]): string {
   return titles.length === 1 ? `“${titles[0]}” deleted` : `${titles.length} sheets deleted`;

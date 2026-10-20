@@ -47,6 +47,7 @@ import { tierOf } from "../lib/planTier";
 import { siteUrls } from "../lib/env";
 import {
   bestValuePlan,
+  dayLabel,
   formatPrice,
   nairaNote,
   paidUntilLine,
@@ -112,22 +113,22 @@ const PRO_BENEFITS: {
 }[] = [
   {
     icon: "song",
-    title: "Whole Songs",
+    title: "Whole songs",
     desc: "Songs from a link or a recording, up to six minutes each, twenty a month. Hummed tunes are never counted.",
   },
   {
     icon: "parts",
-    title: "Four-Part Harmony",
+    title: "Four-part harmony",
     desc: "Alto, tenor and bass written under any tune the way a hymn arranger would — only when you ask.",
   },
   {
     icon: "export",
-    title: "Every Download",
+    title: "Every download",
     desc: "Clean PDF, MusicXML and MIDI with no watermark, ready for your choir.",
   },
   {
     icon: "quick",
-    title: "Priority Lane & Sing-Along",
+    title: "Priority lane and sing-along",
     desc: "Never queued behind anyone, and sing a take to have every note marked.",
   },
 ];
@@ -148,6 +149,29 @@ function withSingle(pro: Plan[], single: Plan[]): Plan[] {
   const songs = single.length > 0 ? single : pro;
   return [...pro.filter((p) => p.interval !== "single"), ...songs.filter((p) => p.interval === "single")];
 }
+
+/**
+ * The plan the paywall opens on: one a limit sheet's row already chose, the one-song purchase when the free ones have
+ * just run out, else the best value (the year).
+ */
+function preferredPlan(planList: Plan[], sub: Subscription | null, forLimit: boolean, askedPlanId?: string): Plan | undefined {
+  const single = sub?.isActive ? undefined : planList.find((p) => p.interval === "single");
+  const asked = askedPlanId ? planList.find((p) => p.id === askedPlanId) : undefined;
+  return asked ?? (forLimit && single ? single : bestValuePlan(planList) ?? single);
+}
+
+/**
+ * What the paywall last found on sale on this run of the app, for one account: shown at once when it opens again, while
+ * it is read afresh behind it (a first open on 3G waited on four calls, and on Android on Google Play too). Not kept
+ * across launches, so a price change is never shown late for long.
+ */
+let lastOnSale: {
+  userId: string;
+  plans: Plan[];
+  choirPlans: Plan[];
+  play: boolean;
+  offers: Map<string, PlayOffer>;
+} | null = null;
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -180,18 +204,23 @@ export function UpgradeScreen({ navigation, route }: Props) {
     subscription: liveSubscription,
   } = useSubscription();
   const { user } = useAuth();
+  const userId = user?.id;
   const [profile, setProfile] = useState<MyProfile | null>(null);
 
-  const [loading, setLoading] = useState(true);
-  const [plans, setPlans] = useState<Plan[]>([]);
+  // What was on sale when the paywall last opened on this run (`lastOnSale`), shown while it is read again.
+  const [cached] = useState(() => (user && lastOnSale?.userId === user.id ? lastOnSale : null));
+  const [loading, setLoading] = useState(!cached);
+  const [plans, setPlans] = useState<Plan[]>(cached?.plans ?? []);
   // The choir plans, listed apart (a director buys one for the whole choir); empty if the list fails.
-  const [choirPlans, setChoirPlans] = useState<Plan[]>([]);
+  const [choirPlans, setChoirPlans] = useState<Plan[]>(cached?.choirPlans ?? []);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(() =>
+    cached ? preferredPlan(cached.plans, liveSubscription, forLimit, askedPlanId)?.id ?? null : null,
+  );
   // On Android, what Google Play sells and at what price (board h-play): a plan without an offer is not shown there.
-  const [playOffers, setPlayOffers] = useState<Map<string, PlayOffer>>(new Map());
+  const [playOffers, setPlayOffers] = useState<Map<string, PlayOffer>>(cached?.offers ?? new Map());
   // Selling through Google Play (Android, the server ready, Play selling the products); else the website's checkout.
-  const [play, setPlay] = useState(false);
+  const [play, setPlay] = useState(cached?.play ?? false);
   const [busy, setBusy] = useState(false); // opening checkout
   // The choir plans' own sheet, opened from the "For choir directors" row (board l-ux-high 03a).
   const [choirOpen, setChoirOpen] = useState(false);
@@ -233,23 +262,24 @@ export function UpgradeScreen({ navigation, route }: Props) {
       // Through Google Play only what it sells is shown, at its price.
       const sold = (p: Plan) => !viaPlay || offerFor(p, offers) !== undefined;
       const planList = withSingle(proList, singleList).filter(sold);
+      const choirSold = choirList.filter(sold);
       setPlans(planList);
-      setChoirPlans(choirList.filter(sold));
+      setChoirPlans(choirSold);
       setSubscription(sub);
       if (prof) setProfile(prof);
+      if (userId) lastOnSale = { userId, plans: planList, choirPlans: choirSold, play: viaPlay, offers };
       // Default to the best-value (highest) plan so the recommended choice is preselected — or, when
-      // the free allowance has just run out, to the one-song purchase.
-      const single = sub.isActive ? undefined : planList.find((p) => p.interval === "single");
-      const best = bestValuePlan(planList);
-      const asked = askedPlanId ? planList.find((p) => p.id === askedPlanId) : undefined;
-      const preferred = asked ?? (forLimit && single ? single : best ?? single);
-      setSelectedId((cur) => cur ?? preferred?.id ?? null);
+      // the free allowance has just run out, to the one-song purchase. A choice no longer on sale is let go.
+      const preferred = preferredPlan(planList, sub, forLimit, askedPlanId);
+      setSelectedId((cur) =>
+        cur && (planList.some((p) => p.id === cur) || choirSold.some((p) => p.id === cur)) ? cur : preferred?.id ?? null,
+      );
     } catch {
       // A failed load leaves the empty state; the retry button re-runs this.
     } finally {
       if (mounted.current) setLoading(false);
     }
-  }, [forLimit, askedPlanId]);
+  }, [forLimit, askedPlanId, userId]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -531,7 +561,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
   // new one starts when the current time ends.
   const [extending, setExtending] = useState(false);
   // Until this screen's own read lands, the app's copy of the membership says which screen this is, so a member's
-  // title does not flip from "NoteFusion Pro" to "Subscription" and the paywall's hero does not pop in once it does.
+  // title does not flip from "NoteFusion Pro" to "Membership" and the paywall's hero does not pop in once it does.
   const membership = subscription ?? liveSubscription ?? null;
   // Pro paused on Google Play's account hold shows the member screen with its fix, not the plans.
   const onHold = play && isOnHold(membership);
@@ -638,15 +668,15 @@ export function UpgradeScreen({ navigation, route }: Props) {
             <Text style={styles.titleLabel}>
               {isActive ? "Account" : "Membership"}
             </Text>
-            <Text style={styles.titleMain}>
-              {isActive ? "Subscription" : "NoteFusion Pro"}
+            <Text style={styles.titleMain} accessibilityRole="header">
+              {isActive ? "Membership" : "NoteFusion Pro"}
             </Text>
           </View>
 
           {isActive && !onHold && (
             <View style={styles.activePill}>
               <View style={styles.activeDot} />
-              <Text style={styles.activePillText}>Pro Active</Text>
+              <Text style={styles.activePillText}>Pro active</Text>
             </View>
           )}
         </View>
@@ -662,7 +692,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
             >
               <BrandMark size={34} color="#FFFFFF" waveColor="rgba(255,255,255,0.7)" />
             </LinearGradient>
-            <Text style={styles.heroTitle}>Unlock everything</Text>
+            <Text style={styles.heroTitle} accessibilityRole="header">Unlock everything</Text>
             {/* What Pro is, no more: hummed tunes are never counted, whole songs are twenty a month (PRO_FEATURES). */}
             <Text style={styles.heroSub}>
               Unlimited hummed tunes, twenty whole songs a month, and every download.
@@ -730,7 +760,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
 
             {/* ── Plan selector ────────────────────────────────────────────── */}
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Choose a plan</Text>
+              <Text style={styles.sectionTitle} accessibilityRole="header">Choose a plan</Text>
             </View>
 
             {singlePlan ? (
@@ -789,7 +819,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
             ) : choirPlans.length > 0 ? (
               <>
                 <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>For choir directors</Text>
+                  <Text style={styles.sectionTitle} accessibilityRole="header">For choir directors</Text>
                 </View>
                 {choirSorted.map((plan) => (
                   <ChoirPlanOption
@@ -984,13 +1014,8 @@ function ActiveState({
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelReason, setCancelReason] = useState<string | null>(null);
 
-  const renews = subscription.currentPeriodEndUtc
-    ? new Date(subscription.currentPeriodEndUtc).toLocaleDateString("en", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-    : null;
+  // "20 Oct 2027", as the pay bar says a date (built by hand: Hermes on Android can ignore toLocaleDateString's options).
+  const renews = subscription.currentPeriodEndUtc ? dayLabel(new Date(subscription.currentPeriodEndUtc)) : null;
   const canceled = subscription.status === "canceled";
   const lifetime = subscription.isLifetime;
   const isGift = subscription.isGift ?? false;
@@ -1001,7 +1026,7 @@ function ActiveState({
   const paidOnWeb = onAndroid && subscription.billedThrough === "web";
   const openPlay = () => void Linking.openURL(manageUrl(subscription.storeProductId));
 
-  const displayName = user?.fullName || profile?.fullName || "NoteFusion Member";
+  const displayName = user?.fullName || profile?.fullName || "NoteFusion member";
   const displayEmail = user?.email || profile?.email || "";
 
   async function cancel() {
@@ -1013,7 +1038,7 @@ function ActiveState({
       // and this screen's whole job is to report that date accurately.
       onChanged();
       showDialog({
-        title: "Subscription cancelled",
+        title: "Membership cancelled",
         // Nothing bought on the website renews, so this never says "won't renew": only that nothing more is charged.
         message: renews
           ? `Pro stays active until ${renews}, and nothing more is charged. Add time again whenever you like.`
@@ -1062,12 +1087,12 @@ function ActiveState({
               <Icon name="pro" size={13} color={colors.premiumDeep} />
               <Text style={styles.memberBadgeText}>
                 {lifetime
-                  ? "Lifetime Member"
+                  ? "Lifetime member"
                   : viaChoir
                     ? subscription.choirName ?? "Choir"
                   : isGift
-                    ? "Complimentary Access"
-                    : "Pro Subscriber"}
+                    ? "Complimentary access"
+                    : "Pro member"}
               </Text>
             </View>
           </View>
@@ -1077,7 +1102,7 @@ function ActiveState({
 
         <View style={styles.statsRow}>
           <View style={styles.statCol}>
-            <Text style={styles.statLabel}>STATUS</Text>
+            <Text style={styles.statLabel}>Status</Text>
             <View style={styles.statStatusRow}>
               <View
                 style={[
@@ -1086,13 +1111,13 @@ function ActiveState({
                 ]}
               />
               <Text style={styles.statValue}>
-                {play === "hold" ? "Paused" : canceled ? "Ending Soon" : "Active"}
+                {play === "hold" ? "Paused" : canceled ? "Ending soon" : "Active"}
               </Text>
             </View>
           </View>
 
           <View style={styles.statCol}>
-            <Text style={styles.statLabel}>TIER</Text>
+            <Text style={styles.statLabel}>Tier</Text>
             <Text style={styles.statValue}>
               {lifetime ? "Lifetime" : isGift ? "Gift" : tierOf(subscription)}
             </Text>
@@ -1100,7 +1125,7 @@ function ActiveState({
 
           <View style={[styles.statCol, { alignItems: "flex-end" }]}>
             <Text style={styles.statLabel}>
-              {lifetime ? "VALIDITY" : "PRO UNTIL"}
+              {lifetime ? "Validity" : "Pro until"}
             </Text>
             <Text style={styles.statValue}>
               {lifetime ? "Perpetual" : renews ? renews : "Active"}
@@ -1120,14 +1145,14 @@ function ActiveState({
         <View style={styles.noticeWarning}>
           <Icon name="problem" size={18} color={colors.warning} />
           <Text style={styles.noticeWarningText}>
-            Your subscription has been canceled and will end on {renews}. Pro features remain active until then, and all your saved music scores will stay safe in your library.
+            Your membership is cancelled and ends on {renews}. Pro stays on until then, and every saved sheet stays safe in your Library.
           </Text>
         </View>
       )}
 
       {/* ── 3. Included Pro Privileges ────────────────────────────────── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Included With Pro</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">Included with Pro</Text>
       </View>
 
       <Card style={styles.benefitsCard}>
@@ -1149,7 +1174,7 @@ function ActiveState({
 
       {/* ── 4. Plan & Billing Details ─────────────────────────────────── */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Billing Details</Text>
+        <Text style={styles.sectionTitle} accessibilityRole="header">Billing details</Text>
       </View>
 
       <Card style={styles.billingCard}>
@@ -1191,7 +1216,7 @@ function ActiveState({
                 ? "Complimentary"
                 : canceled
                   ? "Cancels at period end"
-                  : "Active & Paid"}
+                  : "Active and paid"}
           </Text>
         </View>
 
@@ -1250,7 +1275,7 @@ function ActiveState({
 
         {!lifetime && !isGift && !canceled && !viaChoir && !onAndroid && (
           <Button
-            label="Cancel subscription"
+            label="Cancel membership"
             variant="secondary"
             icon="clear"
             onPress={openCancelFlow}
@@ -1273,7 +1298,7 @@ function ActiveState({
             : isGift
               ? "Complimentary access granted by the NoteFusion team. No payment method is linked or billed."
               : canceled
-                ? `Subscription canceled. Pro privileges remain active until ${renews}. You can resubscribe any time.`
+                ? `Membership cancelled. Pro stays on until ${renews}. Add time again whenever you like.`
                 : "Each payment covers one period and nothing renews without you. Added time starts when your current time ends. Receipts are in your email inbox."}
         </Text>
       </Card>
@@ -1418,7 +1443,8 @@ function PlanOption({
         radius={radii.lg}
         accessibilityRole="radio"
         accessibilityState={{ selected }}
-        accessibilityLabel={`${title ?? plan.name}, ${priceLabel ?? formatPrice(plan.amountMinor, plan.currency)} ${period}${bestValue ? ", best value" : ""}`}
+        // Everything the card shows, badge and note included: "Pro Yearly, ₦60,000 for a year, best value. ₦5,000 a month · save …".
+        accessibilityLabel={`${title ?? plan.name}, ${priceLabel ?? formatPrice(plan.amountMinor, plan.currency)} ${period}${bestValue ? ", best value" : ""}${note ? `. ${note}` : ""}`}
       >
         <View
           style={[styles.radio, selected && styles.radioSelected]}
@@ -1869,12 +1895,14 @@ const makeStyles = (c: Palette, s: Shadows) =>
     statCol: {
       flex: 1,
     },
+    /** Written in sentence case and set in capitals here, as the section titles are, so a screen reader hears words. */
     statLabel: {
       ...typography.caption,
       fontSize: 10,
       fontFamily: fonts.bold,
       color: c.textFaint,
       letterSpacing: 0.8,
+      textTransform: "uppercase",
       marginBottom: 2,
     },
     statStatusRow: {

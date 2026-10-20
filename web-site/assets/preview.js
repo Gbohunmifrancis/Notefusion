@@ -171,9 +171,15 @@
   } catch (e) { /* storage off: the API says so when asked */ }
 
   // Share text ("Listen to … on Spotify: https://…") is cut down to its link as it lands, with a plain
-  // hint when there is none; the hint clears itself without touching a recorded take shown here.
-  var hinting = false;
+  // hint when there is none; the hint clears itself without touching a recorded take shown here. Where the page has a
+  // line under the link field (the home page), the hint goes there and marks the field invalid, beside what it is about.
+  var hinting = false, urlError = $("try-url-error");
   function sayLink(text) {
+    if (urlError) {
+      urlError.textContent = text || ""; urlError.hidden = !text;
+      if (text) urlInput.setAttribute("aria-invalid", "true"); else urlInput.removeAttribute("aria-invalid");
+      return;
+    }
     if (text) { say(text, "error"); hinting = true; }
     else if (hinting) { say(""); hinting = false; }
   }
@@ -250,7 +256,11 @@
     busy(true); say("Reading the link…");
     track("Preview started (link)");
     trackMeter(meter);
-    send("/api/preview/link", { json: body }).then(open).catch(function (err) { busy(false); explain(err); });
+    send("/api/preview/link", { json: body }).then(open).catch(function (err) {
+      busy(false);
+      if (err.code === "TRANS_INVALID_LINK") { say(""); sayLink(err.message); urlInput.focus(); return; }
+      explain(err);
+    });
   }
 
   /** A file the API would refuse, said before it goes up: over 25 MB, or not a recording. */

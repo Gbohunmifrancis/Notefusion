@@ -55,7 +55,7 @@ const makeStyles = (c: Palette) =>
       color: c.textFaint,
       textTransform: "uppercase",
       letterSpacing: 1,
-      fontSize: 10,
+      // The caption's own 12: the app's smallest words, never under (it was 10).
     },
     title: { ...typography.title, color: c.text, fontSize: 22, letterSpacing: -0.4, marginTop: 1 },
     actions: { flexDirection: "row", alignItems: "center", gap: spacing.md },

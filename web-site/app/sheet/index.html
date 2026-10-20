@@ -17,8 +17,8 @@
 <link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/app.css?v=34">
-<link rel="stylesheet" href="/assets/night.css?v=14">
+<link rel="stylesheet" href="/assets/app.css?v=35">
+<link rel="stylesheet" href="/assets/night.css?v=15">
 <!-- The theme before the first paint: blocking on purpose (no async/defer). -->
 <script src="/assets/theme-boot.js?v=1"></script>
 <style>
@@ -64,7 +64,7 @@
         <div class="tabs" role="tablist" style="margin:0">
           <button class="tab" role="tab" aria-selected="true" data-view="solfa" type="button">Tonic Solfa</button>
           <button class="tab" role="tab" aria-selected="false" data-view="staff" type="button">Staff</button>
-          <button class="tab hidden" role="tab" aria-selected="false" data-view="parts" type="button" id="tab-parts">SATB</button>
+          <button class="tab hidden" role="tab" aria-selected="false" data-view="parts" type="button" id="tab-parts">Four parts</button>
         </div>
       </div>
       <div style="margin-top:16px">
@@ -80,27 +80,27 @@
         </div>
       </div>
       <div class="downloads no-print" style="margin-top:16px">
-        <button class="btn btn-ghost btn-sm" id="dl-solfa" type="button"><svg class="ic"><use href="/assets/icons.svg#i-download"/></svg>Download solfa text</button>
-        <button class="btn btn-ghost btn-sm" id="print" type="button"><svg class="ic"><use href="/assets/icons.svg#i-print"/></svg>Print</button>
+        <button class="btn btn-ghost btn-sm" id="dl-solfa" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-download"/></svg>Download solfa text</button>
+        <button class="btn btn-ghost btn-sm" id="print" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-print"/></svg>Print</button>
       </div>
     </div>
 
     <!-- Chords, when the sheet carries them: the Tonic Solfa tab shows them bar by bar over the tune. -->
     <div class="card hidden" id="chords-card">
-      <h2><svg class="ic"><use href="/assets/icons.svg#i-keys"/></svg>Chords</h2>
+      <h2><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-keys"/></svg>Chords</h2>
       <p class="card-lead">Each chord by its letter name, with its root in Tonic Solfa beneath. The Tonic Solfa tab shows them bar by bar over the tune, and the staff shows them above the notes.</p>
       <div class="chord-list" id="chord-list"></div>
     </div>
 
     <div class="card">
-      <h2><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Rehearse</h2>
+      <h2><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-play"/></svg>Rehearse</h2>
       <p class="card-lead no-print">Hear the tune or just your part. Mute a voice to sing it against the others; loop a few bars; slow it down.</p>
       <div class="player" id="player">
         <!-- On a phone, Play, From the start and Speed ride in a bar pinned to the foot of the screen, so the choir can
              start it from wherever they have scrolled (board m-ux-medium W2g); on a wider screen they stay in this row. -->
         <div class="play-bar" role="group" aria-label="Play the sheet">
-          <button class="btn btn-primary" id="play" type="button"><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
-          <button class="btn btn-ghost btn-icon" id="restart" type="button" title="From the start" aria-label="From the start"><svg class="ic"><use href="/assets/icons.svg#i-restart"/></svg></button>
+          <button class="btn btn-primary" id="play" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
+          <button class="btn btn-ghost btn-icon" id="restart" type="button" title="From the start" aria-label="From the start"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-restart"/></svg></button>
           <span class="group"><label for="rate">Speed</label>
             <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></span>
         </div>
@@ -114,8 +114,8 @@
   <!-- Both ways to make your own go to the home page's try box: a 30-second preview with no account. "Make your own"
        used to open /app, which greets a stranger with "Welcome back · Sign in". -->
   <div class="card cta-card no-print">
-    <h2><svg class="ic"><use href="/assets/icons.svg#i-sparkle"/></svg>Make your own</h2>
-    <p class="card-lead">Hum a tune or paste a YouTube link and get the Tonic Solfa in a minute — free to try, no account.</p>
+    <h2><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-sparkle"/></svg>Make your own</h2>
+    <p class="card-lead">Hum a tune or paste a YouTube link and get the Tonic Solfa in a minute. The first 30 seconds are free to try once on each device, with no account.</p>
     <a class="btn btn-primary" href="/?utm_source=shared-sheet#try">Try NoteFusion free</a>
   </div>
   <p class="foot">Transcribed with NoteFusion — hum a tune or paste a song link and get Tonic Solfa, staff notation and four-part harmony.<br><a class="cta" href="/">notefusion.studio</a></p>
@@ -124,7 +124,7 @@
 </div>
 <script src="/assets/choir.js?v=5"></script>
 <script src="/assets/chords.js?v=1"></script>
-<script src="/assets/sheet.js?v=9"></script>
+<script src="/assets/sheet.js?v=10"></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>
 </html>

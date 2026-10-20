@@ -47,6 +47,7 @@ import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { Touchable } from "../components/Touchable";
 import { RangePicker } from "../components/RangePicker";
+import { Skeleton } from "../components/Skeleton";
 import { Mark, Wordmark } from "../components/night/NightUI";
 import { ProviderMark, SourceTiles } from "../components/link/SourceTiles";
 import { PROVIDER_LABEL, SongCover } from "../components/link/SongCover";
@@ -108,6 +109,11 @@ export function LinkScreen() {
 
   const [url, setUrl] = useState("");
   const [focused, setFocused] = useState(false);
+  /**
+   * The last change came whole (the Paste pill, or the keyboard's paste): "not a song link" may be said at once. While
+   * a link is typed letter by letter it waits until the field is left, rather than nagging at every keystroke.
+   */
+  const [pasted, setPasted] = useState(false);
   /** Beats in a bar for this song; null is Not sure. Back to Not sure once a song is sent (lib/meter). */
   const [meter, setMeter] = useState<Meter | null>(null);
   /** "More options" unfolded: the Beats-in-a-bar chips, folded away by default (board l-ux-high 02b). */
@@ -321,8 +327,10 @@ export function LinkScreen() {
    */
   async function paste() {
     const text = (await Clipboard.getString().catch(() => "")).trim();
-    if (text) setUrl(text);
-    else inputRef.current?.focus();
+    if (text) {
+      setUrl(text);
+      setPasted(true);
+    } else inputRef.current?.focus();
   }
 
   /** The failure card's way on: the card goes, and the link stays in the field to change or send again. */
@@ -430,7 +438,11 @@ export function LinkScreen() {
               <TextInput
                 ref={inputRef}
                 value={url}
-                onChangeText={setUrl}
+                onChangeText={(t) => {
+                  // More than one character at once is a paste; typing adds them one by one.
+                  setPasted(t.length - url.length > 1);
+                  setUrl(t);
+                }}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 placeholder="Paste a song link"
@@ -463,7 +475,7 @@ export function LinkScreen() {
           </View>
         ) : null}
 
-        {!busy && url.trim().length > 0 && !provider ? (
+        {!busy && url.trim().length > 0 && !provider && (pasted || !focused) ? (
           <View style={styles.note}>
             <Icon name="problem" size={16} color={colors.warning} />
             <Text style={styles.noteText}>{songLinkHint(url)}</Text>
@@ -524,11 +536,15 @@ export function LinkScreen() {
                         ? chip("Whole song", preset === "whole", () => setRange({ start: 0, end: Math.floor(duration) }))
                         : null}
                     </View>
-                    <Text style={styles.hint}>
-                      {isPro
-                        ? `Up to ${formatClock(maxSeconds)} at a time on Pro.`
-                        : `Up to ${formatClock(maxSeconds)} on the free preview — Pro takes up to 6:00 of any song.`}
-                    </Text>
+                    {/* The allowance is said once. A free account's is the pinned bar's line (the preview, or the song it
+                        bought); Pro's bar counts songs, so the length is said here. */}
+                    {isPro ? (
+                      <Text style={styles.hint}>{`Up to ${formatClock(maxSeconds)} at a time on Pro.`}</Text>
+                    ) : entitlement ? null : (
+                      <Text style={styles.hint}>
+                        {`Up to ${formatClock(maxSeconds)} on the free preview — Pro takes up to 6:00 of any song.`}
+                      </Text>
+                    )}
                   </>
                 ) : (
                   <Text style={styles.hint}>
@@ -538,9 +554,10 @@ export function LinkScreen() {
                 )}
               </>
             ) : infoBusy ? (
-              <View style={styles.reading}>
-                <ActivityIndicator size="small" color={colors.accent} />
-                <Text style={styles.readingText}>Reading the link…</Text>
+              // The cover's shape holds its place while the link is read, so the song lands where it waited.
+              <View accessible accessibilityLabel="Reading the link" accessibilityLiveRegion="polite">
+                <Skeleton height={196} radius={24} style={styles.coverSkeleton} />
+                <Text style={[styles.readingText, styles.reading]}>Reading the link…</Text>
               </View>
             ) : infoError ? (
               <View style={styles.note}>
@@ -771,8 +788,10 @@ const makeStyles = (c: Palette) =>
     },
     tip: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, textAlign: "center", marginTop: spacing.lg },
     hint: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, marginTop: spacing.sm },
-    reading: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.lg, paddingHorizontal: spacing.xs },
+    reading: { marginTop: spacing.md, paddingHorizontal: spacing.xs },
     readingText: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
+    /** SongCover's own frame (196 tall, 24 round, `lg` above). */
+    coverSkeleton: { marginTop: spacing.lg },
 
     pickHead: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginTop: 22 },
     pickTitle: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },

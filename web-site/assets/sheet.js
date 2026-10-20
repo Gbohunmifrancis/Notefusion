@@ -19,8 +19,8 @@
   // A shared folder: the list of its songs, each opened through the folder's own link.
   if (!token && folderToken && !folderItem) {
     fetch(API + "/api/shared/folders/" + encodeURIComponent(folderToken)).then(function (r) {
-      if (r.status === 404) throw new Error("This folder is no longer shared.");
-      if (!r.ok) throw new Error("The folder could not be opened right now. Please try again in a moment.");
+      if (r.status === 404) throw gone("folder");
+      if (!r.ok) throw new Error("not opened");
       return r.json();
     }).then(function (data) {
       document.title = (data.folder || "Shared folder") + " — NoteFusion";
@@ -36,7 +36,7 @@
       });
       if (!(data.items || []).length) { var p = document.createElement("li"); p.className = "muted"; p.textContent = "This folder has no songs yet."; list.appendChild(p); }
       hide($("loading")); show($("folder"));
-    }).catch(function (e) { fail(e.message || String(e)); });
+    }).catch(function (e) { fail(e.said || "The folder could not be opened just now. Check your connection and try again.", !e.said); });
     return;
   }
 
@@ -45,12 +45,26 @@
     ? API + "/api/shared/" + encodeURIComponent(token)
     : API + "/api/shared/folders/" + encodeURIComponent(folderToken) + "/sheets/" + encodeURIComponent(folderItem);
   fetch(sheetUrl).then(function (r) {
-    if (r.status === 404) throw new Error("This sheet is no longer shared.");
-    if (!r.ok) throw new Error("The sheet could not be opened right now. Please try again in a moment.");
+    if (r.status === 404) throw gone("sheet");
+    if (!r.ok) throw new Error("not opened");
     return r.json();
-  }).then(render).catch(function (e) { fail(e.message || String(e)); });
+  }).then(render).catch(function (e) { fail(e.said || "The sheet could not be opened just now. Check your connection and try again.", !e.said); });
 
-  function fail(text) { hide($("loading")); $("error-text").textContent = text; show($("error")); }
+  /** A link that no longer opens anything: what to do next is to ask for a new one (nothing here would bring it back). */
+  function gone(what) { var e = new Error(what); e.said = "This " + what + " is no longer shared. Ask whoever sent you the link for a new one."; return e; }
+  /**
+   * What went wrong, with the next step: a link that is gone says whom to ask; anything else (a server fault, no
+   * connection, a reply that would not draw) offers Try again, which loads the page afresh.
+   */
+  function fail(text, retry) {
+    hide($("loading")); $("error-text").textContent = text;
+    if (retry) {
+      var again = document.createElement("button"); again.type = "button"; again.className = "btn btn-ghost btn-sm"; again.textContent = "Try again";
+      again.addEventListener("click", function () { location.reload(); });
+      $("error-text").appendChild(again);
+    }
+    show($("error"));
+  }
 
   function render(data) {
     sheet = data;
@@ -135,7 +149,10 @@
     if (voices.length > 1) {
       var box = $("voices"); show(box);
       voices.forEach(function (v) {
-        var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm on"; b.textContent = v.name[0].toUpperCase(); b.title = v.name;
+        // "S", "A", "T", "B" on the button; the voice's whole name to a screen reader (a title alone is not read out).
+        var name = v.name.charAt(0).toUpperCase() + v.name.slice(1);
+        var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm on"; b.textContent = name.charAt(0); b.title = name;
+        b.setAttribute("aria-label", name);
         b.setAttribute("aria-pressed", "true");
         b.addEventListener("click", function () { var on = b.classList.toggle("on"); b.setAttribute("aria-pressed", String(on)); player.setVoiceOn(v.name, on); });
         box.appendChild(b);
@@ -150,7 +167,7 @@
     }
     ["loop-on", "loop-from", "loop-to"].forEach(function (id) { $(id).addEventListener("change", applyLoop); });
     player.onTick(function (t) {
-      $("play").innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + (t.playing ? "pause" : "play") + '"/></svg>' + (t.playing ? "Pause" : "Play");
+      $("play").innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-' + (t.playing ? "pause" : "play") + '"/></svg>' + (t.playing ? "Pause" : "Play");
       var now = -1;
       for (var i = 0; i < cells.length; i++) if (cells[i].beat <= t.beat + 1e-6) now = i;
       cells.forEach(function (c, i) { c.el.className = t.playing && i === now ? "now" : ""; });
@@ -180,7 +197,7 @@
   function engrave(container, xml, partNames) {
     container.innerHTML = "";
     if (!xml) { container.textContent = "No score to draw."; return; }
-    container.textContent = "Loading the engraver…";
+    container.textContent = "Drawing the staff…";
     ensureOsmd().then(function () {
       container.innerHTML = "";
       var d = new opensheetmusicdisplay.OpenSheetMusicDisplay(container, { backend: "svg", autoResize: true, drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false, drawPartNames: partNames, drawMeasureNumbers: true, autoBeam: true });

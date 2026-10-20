@@ -53,6 +53,9 @@
     } catch (e) { /* the list still filters; only Back forgets it */ }
   }
   input.addEventListener("input", function () { apply(); remember(); });
+  // "Clear the search" in the no-match line: the whole list back, and the box ready for another try.
+  var clear = document.getElementById("hymn-clear");
+  if (clear) clear.addEventListener("click", function (e) { e.preventDefault(); input.value = ""; apply(); remember(); input.focus(); });
   // The phone keyboard's Search key puts the keyboard away, so the results it was covering show.
   input.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); input.blur(); } });
   kindButtons.forEach(function (b) {

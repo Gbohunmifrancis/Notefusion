@@ -106,6 +106,11 @@
       var lead = el("p", "why-lead");
       r.parts.forEach(function (p) { lead.appendChild(p.strong ? el("b", null, p.text) : document.createTextNode(p.text)); });
       body.appendChild(lead);
+      // A person to ask, under every answer: the one tap above may not have been the whole story.
+      var help = el("p", "why-lead", "Still stuck? Write to ");
+      var mail = el("a", null, "hello@notefusion.studio"); mail.href = "mailto:hello@notefusion.studio";
+      help.appendChild(mail); help.appendChild(document.createTextNode(" and we'll help you pay."));
+      body.appendChild(help);
       if (r.offerSong && o.songPrice) {
         var offer = button("why-offer");
         offer.innerHTML = '<span class="why-tile">' + icon("disc") + "</span>";
@@ -180,10 +185,10 @@
     if (then) then();
   }
 
-  /** Escape closes; Tab stays inside the sheet. */
+  /** Escape closes this sheet only (not a page's dialog under it); Tab stays inside the sheet. */
   function trap(e) {
     if (!shown) return;
-    if (e.key === "Escape") { e.preventDefault(); close(); return; }
+    if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); close(); return; }
     if (e.key !== "Tab") return;
     var items = Array.prototype.filter.call(shown.card.querySelectorAll("button, textarea"), function (x) { return !x.disabled; });
     if (!items.length) return;

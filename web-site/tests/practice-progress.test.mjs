@@ -35,6 +35,9 @@ test("the XP bar fills through the level and is full at the top", () => {
   assert.equal(P.levelFraction(ray, 50), 0);
   assert.equal(P.levelFraction(top, 3500), 1);
   assert.equal(P.nextLevelLine(ray), "100 XP to Me");
+  assert.equal(P.nextLevelLine({ ...ray, xpForNext: 1250 }), "1,250 XP to Me");
+  assert.equal(P.xpAmount(12450), "12,450 XP");
+  assert.equal(P.xpAmount(40), "40 XP");
   assert.equal(P.nextLevelLine(top), "Top of the ladder");
 });
 
@@ -176,9 +179,9 @@ test("the unit bar fills with the drills behind the singer", () => {
 });
 
 test("the main button moves on, or says try again when the path brings the same drill back", () => {
-  same(P.nextAction({ id: "a@60" }, { id: "b@62" }, null), { label: "Next drill", same: false });
+  same(P.nextAction({ id: "a@60" }, { id: "b@62" }, null), { label: "Continue", same: false });
   same(P.nextAction({ id: "a@60" }, { id: "a@60" }, "focused"), { label: "Try it again", same: true });
-  same(P.nextAction({ id: "a@60" }, null, "playful"), { label: "Next one!", same: false });
+  same(P.nextAction({ id: "a@60" }, null, "playful"), { label: "Keep going!", same: false });
   same(P.nextAction({ id: "a@60~gentle" }, { id: "a@60~gentle" }, "playful"), { label: "Try again!", same: true });
 });
 

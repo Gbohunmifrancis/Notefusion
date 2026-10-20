@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
@@ -10,6 +10,7 @@ import { NightButton } from "../components/night/NightButton";
 import { ErrorNote, Glow, Mark, NightLink, Wordmark, nightText } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
+import { contactUsUrl, googleFailure } from "../lib/authErrors";
 import { tokenStore } from "../lib/tokenStore";
 import { guestPreviewStore } from "../lib/guestPreviewStore";
 import { GUEST_PREVIEW_TITLE } from "../lib/guestPreview";
@@ -37,12 +38,17 @@ export function WelcomeScreen({ navigation }: Props) {
   const { signInWithGoogle } = useAuth();
   const [googleBusy, setGoogleBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null>(null);
+  /** A refusal only we can lift (a deactivated account): the note carries a mail to us. */
+  const [contact, setContact] = useState<string | null>(null);
+  /** Undefined until the phone has said how it last signed in. */
+  const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null | undefined>(undefined);
   const emailLast = lastAuthMethod === "email";
   const choices = welcomeChoices(googleAuthConfigured, emailLast);
+  // The buttons wait, unseen, for that answer (a moment): a "Last used" chip never pops into a label already showing.
+  const methodKnown = lastAuthMethod !== undefined;
 
   useEffect(() => {
-    tokenStore.getLastAuthMethod().then(setLastAuthMethod);
+    tokenStore.getLastAuthMethod().then(setLastAuthMethod, () => setLastAuthMethod(null));
   }, []);
 
   /**
@@ -61,7 +67,9 @@ export function WelcomeScreen({ navigation }: Props) {
     try {
       await signInWithGoogle();
     } catch (e) {
-      setError(toApiError(e).message);
+      const err = toApiError(e);
+      setContact(contactUsUrl(err.code));
+      setError(googleFailure(err, emailLast ? "sign in with email" : "create an account with email"));
     } finally {
       setGoogleBusy(false);
     }
@@ -78,8 +86,13 @@ export function WelcomeScreen({ navigation }: Props) {
           <Text style={[nightText.lead, styles.tagline]}>Hear it. See it. Notate it.</Text>
         </View>
 
-        <View style={styles.actions}>
-          {error && <ErrorNote message={error} />}
+        <View style={[styles.actions, !methodKnown && styles.waiting]} pointerEvents={methodKnown ? "auto" : "none"}>
+          {error && (
+            <ErrorNote
+              message={error}
+              action={contact ? { label: "Email us", onPress: () => void Linking.openURL(contact).catch(() => undefined) } : undefined}
+            />
+          )}
           {choices.blocks.map((block, i) =>
             block === "google" ? (
               <NightButton
@@ -160,6 +173,8 @@ const styles = StyleSheet.create({
   tagline: { marginTop: 6 },
   // 6 apart, so the 44 px link rows sit close; the buttons keep their 10 (`next`).
   actions: { paddingHorizontal: 22, paddingBottom: 20, gap: 6 },
+  /** Laid out but unseen while the last way in is read. */
+  waiting: { opacity: 0 },
   next: { marginTop: 4 },
   linkRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "center" },
   dot: { fontSize: 14, fontFamily: nightFonts.regular, color: night.dim },

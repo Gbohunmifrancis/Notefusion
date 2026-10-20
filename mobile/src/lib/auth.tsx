@@ -164,6 +164,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async signIn(email, password) {
         const res = await authApi.login(email, password);
         await tokenStore.saveLastAuthMethod('email');
+        await tokenStore.saveLastEmail(res.user.email).catch(() => undefined);
         await persistSession(res.accessToken, res.refreshToken, res.user);
         void logLogin('email');
       },
@@ -172,6 +173,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Remembered here rather than after verification: if the app dies on the code
         // screen, the next launch should still offer the email button they last used.
         await tokenStore.saveLastAuthMethod('email');
+        await tokenStore.saveLastEmail(res.email).catch(() => undefined);
         void logSignUp('email');
         return res.email;
       },

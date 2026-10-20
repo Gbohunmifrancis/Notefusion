@@ -34,6 +34,8 @@ interface Props {
   onRevert: (index: number) => void;
   onDelete: (index: number) => void;
   onClose: () => void;
+  /** The last flagged note's "Finish review", in Next's place: closes the review and says it is done. */
+  onFinishReview?: () => void;
 }
 
 /**
@@ -62,6 +64,7 @@ export function NoteEditor({
   onRevert,
   onDelete,
   onClose,
+  onFinishReview,
 }: Props) {
   const c = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -188,13 +191,18 @@ export function NoteEditor({
                   disabled={prev === undefined}
                 />
                 <Button label="Done" size="sm" onPress={onClose} />
-                <Nav
-                  icon="chevron"
-                  label="Next"
-                  onPress={() => next !== undefined && onNavigate(next)}
-                  disabled={next === undefined}
-                  trailing
-                />
+                {/* The end of a review is a step, not a greyed-out Next. */}
+                {reviewQueue && step >= 0 && next === undefined && onFinishReview ? (
+                  <Nav icon="check" label="Finish review" onPress={onFinishReview} trailing />
+                ) : (
+                  <Nav
+                    icon="chevron"
+                    label="Next"
+                    onPress={() => next !== undefined && onNavigate(next)}
+                    disabled={next === undefined}
+                    trailing
+                  />
+                )}
               </View>
             </>
           )}

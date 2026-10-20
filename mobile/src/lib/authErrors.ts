@@ -4,7 +4,12 @@
 
 import type { ApiError } from "../api/types";
 
-const NOT_AN_EMAIL = "That doesn't look like an email address.";
+export const NOT_AN_EMAIL = "That doesn't look like an email address.";
+
+/** Something, an @, something, a dot, something: the shape Register asks of every address, so every account has it. */
+export function looksLikeEmail(typed: string): boolean {
+  return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(typed.trim());
+}
 
 /**
  * Wrong email or password, counted in a row (board l-ux-high 04d): any other answer starts the count again. From the
@@ -16,6 +21,39 @@ export function missesAfter(previous: number, code: string): number {
 
 export function offersReset(misses: number): boolean {
   return misses >= 2;
+}
+
+/**
+ * What a failed Google sign-in says. The API's refusals keep their own words; a failure on the phone itself (Google's
+ * sheet would not open, Play services missing — `toApiError` reads any such error as UNKNOWN) offers the way on this
+ * screen has, `alternative`, instead of a bare "Something went wrong".
+ */
+export function googleFailure(err: Pick<ApiError, "code" | "message">, alternative: string): string {
+  return err.code === "UNKNOWN" ? `Google sign-in didn't work on this phone. Try again, or ${alternative}.` : err.message;
+}
+
+/**
+ * What a refused code says. The server has one answer for a code that is wrong, expired, used or out of tries, and it
+ * ends "Request a new one" even while Resend is still counting down; the digits are checked first, and a new code is
+ * offered only once one can be sent (`canResend`).
+ */
+export function codeFailure(err: Pick<ApiError, "code" | "message">, canResend: boolean): string {
+  if (err.code !== "AUTH_INVALID_VERIFICATION_CODE") return err.message;
+  return canResend
+    ? "That code didn't work. Check it against the newest email, or tap Resend code for a new one."
+    : "That code didn't work. Check it against the newest email and type it again.";
+}
+
+/** Where someone can write to us (the address the website, receipts and the code screen give). */
+const HELP_EMAIL = "hello@notefusion.studio";
+
+/**
+ * A refusal only we can lift — the account was deactivated, and the server's sentence ends "Contact support." — so its
+ * note carries a way to write to us (a mail to that address); null for any other.
+ */
+export function contactUsUrl(code: string): string | null {
+  if (code !== "AUTH_ACCOUNT_INACTIVE") return null;
+  return `mailto:${HELP_EMAIL}?subject=${encodeURIComponent("My account is deactivated")}`;
 }
 
 /**

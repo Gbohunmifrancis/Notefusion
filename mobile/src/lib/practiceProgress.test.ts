@@ -21,6 +21,7 @@ import {
   streakSnapshot,
   weekdayLetter,
   weeklyFraction,
+  xpAmount,
 } from "./practiceProgress.ts";
 import type { Drill, PracticeBadge, PracticeLevel, PracticeReward, PracticeStreak } from "../api/types";
 
@@ -63,7 +64,10 @@ test("the XP bar fills through the level and is full at the top", () => {
   assert.equal(levelFraction(ray, 999), 1);
   assert.equal(levelFraction(top, 3500), 1);
   assert.equal(nextLevelLine(ray), "100 XP to Me");
+  assert.equal(nextLevelLine({ ...ray, xpForNext: 1250 }), "1,250 XP to Me");
   assert.equal(nextLevelLine(top), "Top of the ladder");
+  assert.equal(xpAmount(12450), "12,450 XP");
+  assert.equal(xpAmount(40), "40 XP");
 });
 
 test("the weekly ring is days over the goal, held to 0–1", () => {
@@ -180,9 +184,9 @@ test("the unit bar fills with the drills behind the singer", () => {
 });
 
 test("the main button moves on, or says try again when the path brings the same drill back", () => {
-  assert.deepEqual(nextAction({ id: "a@60" }, { id: "b@62" }, null), { label: "Next drill", same: false });
+  assert.deepEqual(nextAction({ id: "a@60" }, { id: "b@62" }, null), { label: "Continue", same: false });
   assert.deepEqual(nextAction({ id: "a@60" }, { id: "a@60" }, "focused"), { label: "Try it again", same: true });
-  assert.deepEqual(nextAction({ id: "a@60" }, null, "playful"), { label: "Next one!", same: false });
+  assert.deepEqual(nextAction({ id: "a@60" }, null, "playful"), { label: "Keep going!", same: false });
   assert.deepEqual(nextAction({ id: "a@60~gentle" }, { id: "a@60~gentle" }, "playful"), { label: "Try again!", same: true });
 });
 

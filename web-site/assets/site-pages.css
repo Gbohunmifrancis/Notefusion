@@ -140,12 +140,12 @@
 .site-document .site-brand-name { color: var(--page-navy); font-size: 18px; line-height: 1; font-weight: 700; letter-spacing: -.03em; }
 .site-shell-links { display: flex; align-items: center; gap: 4px; margin-right: auto; }
 .site-document .site-shell-links a, .site-document .site-shell-panel a { color: var(--page-text-2); font-size: 14px; font-weight: 500; text-decoration: none; white-space: nowrap; }
-.site-document .site-shell-links a { padding: 8px 12px; border-radius: var(--r-sm); }
+.site-document .site-shell-links a { display: inline-flex; min-height: 44px; align-items: center; padding: 8px 12px; border-radius: var(--r-sm); }
 .site-document .site-shell-links a:hover { color: var(--page-navy); background: var(--page-wash); }
-.site-document .site-shell-links a[aria-current="page"] { color: var(--page-navy); }
+.site-document .site-shell-links a[aria-current="page"] { color: var(--page-navy); font-weight: 600; }  /* not by colour alone: the menu's weight too */
 .site-document .site-shell-panel a[aria-current="page"] { color: var(--page-navy); font-weight: 600; }
 .site-shell-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
-.site-document .site-shell-cta, .site-document .site-shell-signin { display: inline-flex; min-height: 36px; align-items: center; justify-content: center; gap: 8px; padding: 0 14px; border-radius: var(--r-sm); font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+.site-document .site-shell-cta, .site-document .site-shell-signin { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 8px; padding: 0 14px; border-radius: var(--r-sm); font-size: 14px; font-weight: 600; text-decoration: none; white-space: nowrap; }
 .site-document .site-shell-cta { border: 1px solid transparent; background: var(--page-fill); color: var(--page-on-fill); }
 .site-document .site-shell-cta:hover { color: var(--page-on-fill); background: var(--page-fill-hover); }
 .site-document .site-shell-signin { border: 1px solid var(--page-line-strong); background: transparent; color: var(--page-navy); }
@@ -178,14 +178,14 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .site-page-main .card { border: 1px solid var(--page-line); border-radius: var(--r-md); background: var(--page-surface); padding: clamp(24px, 3vw, 32px); margin-bottom: 16px; box-shadow: none; }
 .site-page-main h2 { margin: 0 0 12px; color: var(--page-navy); font-size: 20px; font-weight: 600; letter-spacing: -.015em; line-height: 1.35; }
 .site-page-main h3 { margin: 24px 0 8px; color: var(--page-navy); font-size: 16px; font-weight: 600; }
-.site-page-main p, .site-page-main li { color: var(--page-text-2); font-size: 15px; }
+.site-page-main p, .site-page-main li { color: var(--page-text-2); font-size: 16px; }
 .site-page-main p { margin: 0 0 16px; }
 .site-page-main li { margin-bottom: 8px; }
 .site-page-main strong { color: var(--page-navy); font-weight: 600; }
 .site-page-main ul { padding-left: 24px; margin: 0 0 16px; }
 .site-page-main .callout { border: 1px solid var(--page-wash-line); border-radius: var(--r-sm); background: var(--page-wash); padding: 16px 20px; margin: 0 0 16px; }
 .site-page-main .callout p:last-child { margin-bottom: 0; }
-.site-page-main .notice { padding: 16px; margin: 0 0 16px; border-radius: var(--r-sm); font-size: 14px; line-height: 1.5; }
+.site-page-main .notice { padding: 16px; margin: 0 0 16px; border-radius: var(--r-sm); font-size: 16px; line-height: 1.5; }
 .site-page-main .notice p:last-child { margin-bottom: 0; }
 .site-page-main .notice.bad { color: var(--page-bad-fg); background: var(--page-bad-bg); border: 1px solid var(--page-bad-line); }
 .site-page-main .notice.good { color: var(--page-good-fg); background: var(--page-good-bg); border: 1px solid var(--page-good-line); }
@@ -194,7 +194,8 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .site-page-main input[type=email], .site-page-main input[type=password], .site-page-main textarea { display: block; width: 100%; min-height: 44px; margin: 0 0 16px; padding: 10px 12px; border: 1px solid var(--page-input-line); border-radius: var(--r-sm); background: var(--page-input-bg); color: var(--page-navy); font: inherit; font-size: 16px; transition: border-color .15s, box-shadow .15s; }
 .site-page-main textarea { min-height: 96px; resize: vertical; }
 .site-page-main input:focus, .site-page-main textarea:focus { outline: 0; border-color: var(--page-blue); box-shadow: 0 0 0 3px var(--page-focus); }
-.site-page-main .hint { margin-top: -8px; color: var(--page-muted); font-size: 12px; }
+.site-page-main .hint { margin-top: -8px; color: var(--page-muted); font-size: 14px; }
+.site-page-main .hint.bad { color: var(--page-bad-fg); }  /* a field's own problem, said as it is left (reset-password) */
 .site-page-main .checkbox-group { display: flex; align-items: flex-start; gap: 8px; margin: 16px 0 24px; }
 .site-page-main .checkbox-group input { width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--page-danger); flex: 0 0 auto; }
 .site-page-main .checkbox-group label { margin: 0; color: var(--page-text-2); font-size: 14px; line-height: 1.55; font-weight: 400; }
@@ -207,6 +208,7 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .site-page-main .in-app-steps ol { margin: 0; padding-left: 20px; }
 .site-page-main .token-confirm-cta { border: 1px solid var(--page-line); border-radius: var(--r-md); background: var(--page-surface); padding: 24px; }
 .site-page-main > .card { max-width: 760px; margin-right: auto; margin-left: auto; }
+.site-page-main > .card[id] { scroll-margin-top: 80px; }  /* a link to a clause (/terms#refunds) lands below the sticky header */
 .site-document--reset .site-page-main > .card { max-width: 560px; }
 
 /* ── Footer (generated pages and policies; the home page has its own) ───── */
@@ -242,6 +244,13 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
   .site-page-main { width: calc(100% - 32px); padding: 32px 0 56px; }
   .site-page-intro { margin-bottom: 24px; }
 }
+/* Reading text is 16 px on a phone (the base above: pages' copy, notices; a field's hint 14); a wide screen keeps the
+   compact page it had. */
+@media (min-width: 801px) {
+  .site-page-main p, .site-page-main li { font-size: 15px; }
+  .site-page-main .notice { font-size: 14px; }
+  .site-page-main .hint { font-size: 12px; }
+}
 @media (max-width: 560px) {
   .site-page-main { padding: 24px 0 48px; }
   .site-document .site-page-intro h1 { font-size: 36px; }
@@ -253,6 +262,8 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
    and footer back. */
 @media (min-width: 801px) and (hover: hover) and (pointer: fine) {
   .theme-toggle { width: 36px; height: 36px; flex-basis: 36px; }
+  .site-document .site-shell-links a { min-height: 0; }
+  .site-document .site-shell-actions > .site-shell-cta, .site-document .site-shell-actions > .site-shell-signin { min-height: 36px; }
   .site-footer-links { row-gap: 8px; }
   .site-footer-links a { min-height: 0; }
 }

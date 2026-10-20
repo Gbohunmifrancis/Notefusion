@@ -6,6 +6,7 @@ import {
   filedToast,
   folderNamed,
   isUnopened,
+  offlineToast,
   savedToastBody,
   takeKind,
   worthAListenLine,
@@ -29,6 +30,11 @@ test("sharing with the choir says it was shared, or taken back out", () => {
   assert.equal(choirToast(4, true), "4 sheets shared with your choir");
   assert.equal(choirToast(1, false), "Taken out of the choir library");
   assert.equal(choirToast(2, false), "2 sheets taken out of the choir library");
+});
+
+test("keeping a sheet offline says it is on the phone, or no longer", () => {
+  assert.equal(offlineToast(true), "Kept on this phone for offline use");
+  assert.equal(offlineToast(false), "No longer kept on this phone");
 });
 
 test("the line under a fresh sheet's title names the kind of take", () => {
@@ -55,6 +61,8 @@ test("a sheet is unopened only while the server filed it and its owner has not o
 test("the row's line is the time it was filed on the phone's clock", () => {
   const d = new Date(2026, 9, 18, 18, 42);
   assert.equal(autoSavedLine(d.toISOString()), "Saved automatically · 18:42");
+  // The API's date without its zone is still UTC.
+  assert.equal(autoSavedLine(d.toISOString().replace(/Z$/, "")), "Saved automatically · 18:42");
 });
 
 test("a new folder's name finds an existing folder in any case, in that folder's spelling", () => {

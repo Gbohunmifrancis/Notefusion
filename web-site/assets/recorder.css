@@ -28,7 +28,10 @@ html.nf-rec-open, html.nf-rec-open body { overflow: hidden; }
 .nf-rec .nf-rec-opt select:focus-visible { outline: 2px solid var(--color-brand-500, #2563eb); outline-offset: 2px; }
 .nf-rec-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 /* Buttons: written out here so neither page's own .btn rules change them. */
-.nf-rec .nf-rec-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid transparent; font: 600 15px/1.2 var(--font-sans, "Geist", ui-sans-serif, system-ui, sans-serif); letter-spacing: 0; cursor: pointer; text-decoration: none; white-space: nowrap; color: var(--color-ink-950, #0b1220); background: var(--color-surface-base, #fff); box-shadow: none; transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease; }
+.nf-rec .nf-rec-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid transparent; font: 600 15px/1.2 var(--font-sans, "Geist", ui-sans-serif, system-ui, sans-serif); letter-spacing: 0; cursor: pointer; text-decoration: none; white-space: nowrap; color: var(--color-ink-950, #0b1220); background: var(--color-surface-base, #fff); box-shadow: none; transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease-out, opacity 0.15s ease; }
+/* Press: the web app's one feel (scale .97); with reduced motion, a dip in opacity instead. */
+@media (prefers-reduced-motion: no-preference) { .nf-rec .nf-rec-btn:active:not(:disabled) { transform: scale(0.97); } }
+@media (prefers-reduced-motion: reduce) { .nf-rec .nf-rec-btn:active:not(:disabled) { opacity: 0.8; } }
 .nf-rec .nf-rec-btn:focus-visible { outline: 2px solid var(--color-brand-500, #2563eb); outline-offset: 2px; }
 .nf-rec .nf-rec-ghost { border-color: var(--color-border-strong, #d2d6dc); }
 .nf-rec .nf-rec-ghost:hover { background: var(--color-surface-subtle, #f6f7f9); }

@@ -149,7 +149,8 @@
     back.addEventListener("click", function () { leave(); ctx.back(); });
     var text = el("div", "pm-top-text");
     text.appendChild(el("p", "pm-eyebrow", eyebrow));
-    var h = el("h2", "pm-title", W().pathTitle); h.id = "pc-title"; h.setAttribute("tabindex", "-1");
+    // The page's heading while the path is open, as a mode's title is (the Practice view's own h1 steps aside).
+    var h = el("h1", "pm-title", W().pathTitle); h.id = "pc-title"; h.setAttribute("tabindex", "-1");
     text.appendChild(h);
     bar.appendChild(back); bar.appendChild(text);
     return bar;

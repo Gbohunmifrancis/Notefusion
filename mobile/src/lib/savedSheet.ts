@@ -28,14 +28,20 @@ export function worthAListenLine(count: number): string {
   return count === 1 ? "1 note worth a listen" : `${count} notes worth a listen`;
 }
 
+/** Over Home's or the Library's rows when reading the list again failed: they are what was read before. */
+export const REFRESH_FAILED = "Couldn't refresh your sheets just now. Pull down to try again.";
+
 /** A sheet the server filed that its owner has not opened yet: the Library's blue dot. */
 export function isUnopened(sheet: { savedAutomatically?: boolean; openedAtUtc?: string | null }): boolean {
   return !!sheet.savedAutomatically && !sheet.openedAtUtc;
 }
 
-/** "Saved automatically · 18:42", on the phone's clock. */
+/**
+ * "Saved automatically · 18:42", on the phone's clock. A date with no zone is the API's UTC (`sheetMeta.parseUtc`'s
+ * rule, repeated here so this file keeps no imports), never the phone's local time.
+ */
 export function autoSavedLine(createdAtUtc: string): string {
-  const d = new Date(createdAtUtc);
+  const d = new Date(/(Z|[+-]\d\d:?\d\d)$/i.test(createdAtUtc) ? createdAtUtc : `${createdAtUtc}Z`);
   return `Saved automatically · ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
 
@@ -63,3 +69,11 @@ export function choirToast(count: number, share: boolean): string {
   if (share) return count === 1 ? "Shared with your choir" : `${count} sheets shared with your choir`;
   return count === 1 ? "Taken out of the choir library" : `${count} sheets taken out of the choir library`;
 }
+
+/** What "Keep offline" (or undoing it) says once it is done: a haptic alone left no word that it worked. */
+export function offlineToast(keep: boolean): string {
+  return keep ? "Kept on this phone for offline use" : "No longer kept on this phone";
+}
+
+/** What Stop sharing says once the link is off. */
+export const SHARING_STOPPED = "Sharing stopped: the link no longer opens this sheet";

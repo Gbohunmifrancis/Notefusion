@@ -1,6 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { emailFieldError, missesAfter, offersReset } from "./authErrors.ts";
+import { codeFailure, contactUsUrl, emailFieldError, googleFailure, looksLikeEmail, missesAfter, offersReset } from "./authErrors.ts";
+
+test("an address needs a name, an @ and a dotted domain; spaces round it are ignored", () => {
+  assert.equal(looksLikeEmail(" ada@example.com "), true);
+  assert.equal(looksLikeEmail("ada@example"), false);
+  assert.equal(looksLikeEmail("ada.example.com"), false);
+  assert.equal(looksLikeEmail("ada @example.com"), false);
+  assert.equal(looksLikeEmail(""), false);
+});
 
 test("a refused address goes on the Email field; other failures stay above Continue", () => {
   const disposable = "Please use a permanent email address. Temporary inboxes can't receive your NoteFusion sheets.";
@@ -23,4 +31,32 @@ test("the second wrong password in a row offers Forgot password? in the note", (
   assert.equal(offersReset(second), true);
   // Anything else between two misses starts the count again.
   assert.equal(offersReset(missesAfter(missesAfter(first, "NETWORK_OFFLINE"), "AUTH_INVALID_CREDENTIALS")), false);
+});
+
+test("Google failing on the phone offers the email way in; the API's refusals keep their words", () => {
+  assert.equal(
+    googleFailure({ code: "UNKNOWN", message: "Something went wrong. Please try again." }, "create an account with email"),
+    "Google sign-in didn't work on this phone. Try again, or create an account with email.",
+  );
+  assert.equal(
+    googleFailure({ code: "AUTH_GOOGLE_EMAIL_UNVERIFIED", message: "Google has not verified this email address." }, "x"),
+    "Google has not verified this email address.",
+  );
+  assert.equal(googleFailure({ code: "NETWORK_OFFLINE", message: "Could not reach the server." }, "x"), "Could not reach the server.");
+});
+
+test("a refused code asks for the digits first, and a new code only once Resend is open", () => {
+  const refused = { code: "AUTH_INVALID_VERIFICATION_CODE", message: "That code is incorrect or has expired. Request a new one to try again." };
+  assert.equal(codeFailure(refused, false), "That code didn't work. Check it against the newest email and type it again.");
+  assert.equal(
+    codeFailure(refused, true),
+    "That code didn't work. Check it against the newest email, or tap Resend code for a new one.",
+  );
+  assert.equal(codeFailure({ code: "NETWORK_OFFLINE", message: "Could not reach the server." }, true), "Could not reach the server.");
+});
+
+test("a deactivated account's note is the one that offers to write to us", () => {
+  assert.equal(contactUsUrl("AUTH_ACCOUNT_INACTIVE"), "mailto:hello@notefusion.studio?subject=My%20account%20is%20deactivated");
+  assert.equal(contactUsUrl("AUTH_INVALID_CREDENTIALS"), null);
+  assert.equal(contactUsUrl("NETWORK_OFFLINE"), null);
 });

@@ -47,6 +47,7 @@ import {
   dohLetter,
   dohPitchClass,
   KEY_CHOICES,
+  keyChoiceLabel,
   parseKey,
   partReference,
   referenceDoh,
@@ -66,7 +67,7 @@ import { isNetworkCode } from "../lib/reachability";
 import { useOfflineLibrary } from "../lib/offlineLibrary";
 import { takeOpened } from "../lib/outbox";
 import { linkJobStore } from "../lib/linkJobStore";
-import { savedToastBody, takeKind, worthAListenLine } from "../lib/savedSheet";
+import { savedToastBody, SHARING_STOPPED, takeKind, worthAListenLine } from "../lib/savedSheet";
 import { askToDelete, deleteSheets, keepSheetOffline, renameSheet, shareSheetLinks } from "../lib/sheetActions";
 import { transposeLocally } from "../lib/localTranspose";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -74,7 +75,7 @@ import { rating } from "../lib/rating";
 import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
 import type { HeldChange } from "../lib/heldChange";
 import { holdWithUndo, type Held } from "../lib/heldChangeRuntime";
-import { dohNowLine, HYMNBOOK_IN_LINE, movedLine } from "../lib/undoWords";
+import { deletedLine, dohNowLine, HYMNBOOK_IN_LINE, movedLine } from "../lib/undoWords";
 import { openingBars } from "../lib/solfaOpening";
 import {
   fonts,
@@ -85,7 +86,7 @@ import {
   type Palette,
 } from "../design/theme";
 import { ThemeOverride, useColors, useThemedStyles } from "../lib/theme";
-import { confidenceNote } from "../lib/confidence";
+import { confidenceLevel, confidenceNote } from "../lib/confidence";
 import * as haptics from "../lib/haptics";
 import type { RootStackParams } from "../navigation/types";
 
@@ -209,6 +210,9 @@ type Panel = "transpose" | "lyrics" | "parts" | "sing" | "export";
 /** The part a singer practised last on this device; Learn my part opens on it when the sheet has it. */
 const PRACTICE_PART_KEY = "nf.practice.part";
 type SolfaStyle = "bars" | "grid" | "curwen" | "hymn";
+/** The way of reading a sheet chosen last on this device; every sheet opens on it. */
+const NOTATION_VIEW_KEY = "nf.result.view";
+const NOTATION_VIEWS: readonly string[] = ["bars", "grid", "curwen", "hymn", "staff"];
 
 /**
  * ResultScreen — the sheet (night board 04) and, over it, Rehearse (05).
@@ -262,19 +266,32 @@ export function ResultScreen({ route, navigation }: Props) {
    */
   const autoSaved = !!fresh && !!initialSavedId;
   /**
-   * Set when a saved sheet was transposed on the phone while offline: the screen then shows notes the
-   * server does not have, so note corrections and parts are not saved from it (they would store
-   * moved pitches under the old key). Opening the sheet again, or transposing it online, clears it.
+   * Set when a saved sheet was transposed, or given another doh, on the phone while offline: the screen then shows
+   * notes the server does not have, so note corrections and parts are not saved from it (they would store moved
+   * pitches under the old key). Opening the sheet again, or transposing it online, clears it.
    */
   const movedOffline = useRef(false);
   function blockedByLocalTranspose(): boolean {
     if (!movedOffline.current) return false;
     showDialog({
-      title: "Shown transposed on this phone",
-      message: "This sheet was transposed while you were offline, so changes to it here aren't saved. Open it again from your Library to edit it.",
+      title: "Changed on this phone only",
+      message: "This sheet was changed while you were offline, so changes to it here aren't saved. Open it again from your Library to edit it.",
       icon: "offline",
     });
     return true;
+  }
+  /** A change that could not be saved, said plainly, with Try again beside OK rather than OK alone. */
+  function failedWithRetry(title: string, e: unknown, retry: () => void) {
+    showDialog({
+      title,
+      message: toApiError(e).message,
+      icon: "problem",
+      tone: "danger",
+      actions: [
+        { label: "OK", style: "cancel" },
+        { label: "Try again", onPress: retry },
+      ],
+    });
   }
   /** Which saved sheets are kept on the phone ("Keep offline", or keep-all in Settings). */
   const offlineCopies = useOfflineLibrary();
@@ -414,6 +431,21 @@ export function ResultScreen({ route, navigation }: Props) {
   );
 
   const [solfaStyle, setSolfaStyle] = useState<SolfaStyle>("bars");
+  /** A reading chosen on this visit, which the remembered one arriving late must not undo. */
+  const viewChosen = useRef(false);
+  useEffect(() => {
+    let live = true;
+    AsyncStorage.getItem(NOTATION_VIEW_KEY)
+      .then((v) => {
+        if (!live || viewChosen.current || !v || !NOTATION_VIEWS.includes(v)) return;
+        if (v === "staff") setNotationView("staff");
+        else setSolfaStyle(v as SolfaStyle);
+      })
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, []);
   const hasLyrics = lyrics.trim().length > 0;
   useEffect(() => {
     if (!hasLyrics && solfaStyle === "hymn") setSolfaStyle("grid");
@@ -760,12 +792,7 @@ export function ResultScreen({ route, navigation }: Props) {
         );
       return saved.id;
     } catch (e) {
-      showDialog({
-        title: "Could not save",
-        message: toApiError(e).message,
-        icon: "problem",
-        tone: "danger",
-      });
+      failedWithRetry("Could not save", e, () => void save({ offerRename }));
       return null;
     } finally {
       setSaving(false);
@@ -797,12 +824,7 @@ export function ResultScreen({ route, navigation }: Props) {
         return;
       }
       setKey(previous); // the label would otherwise disagree with the server
-      showDialog({
-        title: "Could not change key",
-        message: toApiError(e).message,
-        icon: "problem",
-        tone: "danger",
-      });
+      failedWithRetry("Could not change key", e, () => void applyKey(next));
     } finally {
       setRekeying(false);
     }
@@ -844,8 +866,19 @@ export function ResultScreen({ route, navigation }: Props) {
             await libraryApi.updateNotes(id, relabelled.notes);
             await libraryApi.updateKey(id, choice.key);
           } catch (e) {
+            if (isNetworkCode(toApiError(e).code)) {
+              // Offline, as a re-key: the doh stays on screen, and the saved sheet keeps its own until this is done
+              // online. Its notes are now ones the server does not have, so edits here are not saved from it.
+              movedOffline.current = true;
+              showDialog({
+                title: "You're offline",
+                message: `Showing it with doh in ${dohLetter(choice.key)} for now. The saved sheet stays with doh in ${dohLetter(before.key)} until you choose again online.`,
+                icon: "offline",
+              });
+              return;
+            }
             applySheet(before);
-            showDialog({ title: "Could not change the doh", message: toApiError(e).message, icon: "problem", tone: "danger" });
+            failedWithRetry("Could not change the doh", e, () => chooseDoh(choice));
           } finally {
             setRekeying(false);
           }
@@ -923,7 +956,7 @@ export function ResultScreen({ route, navigation }: Props) {
       setSavedId(saved.id);
       setCommittedTitle(saved.title);
     } catch (e) {
-      showDialog({ title: "Could not save", message: toApiError(e).message, icon: "problem", tone: "danger" });
+      failedWithRetry("Could not save", e, () => void saveHymnbook(sheet, notes));
     }
   }
 
@@ -942,12 +975,7 @@ export function ResultScreen({ route, navigation }: Props) {
       await libraryApi.updateTempo(savedId, nextTempo);
     } catch (e) {
       setTempo(previous);
-      showDialog({
-        title: "Could not change tempo",
-        message: toApiError(e).message,
-        icon: "problem",
-        tone: "danger",
-      });
+      failedWithRetry("Could not change tempo", e, () => void handleTempoChange(nextTempo));
     }
   }
 
@@ -962,12 +990,7 @@ export function ResultScreen({ route, navigation }: Props) {
       await libraryApi.updateTimeSignature(savedId, nextMeter);
     } catch (e) {
       setTimeSignature(previous);
-      showDialog({
-        title: "Could not change meter",
-        message: toApiError(e).message,
-        icon: "problem",
-        tone: "danger",
-      });
+      failedWithRetry("Could not change meter", e, () => void handleMeterChange(nextMeter));
     }
   }
 
@@ -1024,7 +1047,7 @@ export function ResultScreen({ route, navigation }: Props) {
       showDialog({
         title: "Can't delete this note",
         message:
-          "A transcription needs at least one note. Correct its pitch instead.",
+          "A sheet needs at least one note. Correct its pitch instead.",
         icon: "problem",
       });
       return;
@@ -1081,11 +1104,11 @@ export function ResultScreen({ route, navigation }: Props) {
       persisted.current = rollback;
       setDraft(rollback);
       setPreview(synthesizeMelodyWavBase64(rollback.notes, tempo));
-      showDialog({
-        title: "Could not save your corrections",
-        message: toApiError(e).message,
-        icon: "problem",
-        tone: "danger",
+      // Try again puts the corrections back on screen and sends them once more.
+      failedWithRetry("Could not save your corrections", e, () => {
+        setDraft(target);
+        setPreview(synthesizeMelodyWavBase64(target.notes, tempo));
+        void commitNotes(target);
       });
     }
   }
@@ -1100,6 +1123,13 @@ export function ResultScreen({ route, navigation }: Props) {
     if (draft.notes !== result.notes)
       setPreview(synthesizeMelodyWavBase64(draft.notes, tempo));
     void commitNotes(draft);
+  }
+
+  /** "Finish review" on the last flagged note: the walk is over, and a toast says so rather than a greyed-out Next. */
+  function finishReview() {
+    const count = reviewQueue?.length ?? 0;
+    closeEditor();
+    showToast(count === 1 ? "The flagged note is checked" : `All ${count} flagged notes checked`);
   }
 
   function discardCorrections() {
@@ -1163,7 +1193,7 @@ export function ResultScreen({ route, navigation }: Props) {
       // The free one is spent: re-read so the next sheet offers the plans instead.
       if (!isPro) void refreshSubscription(false);
     } catch (e) {
-      showDialog({ title: "Could not write the parts", message: toApiError(e).message, icon: "problem", tone: "danger" });
+      failedWithRetry("Could not write the parts", e, () => void writeParts());
     } finally {
       setHarmonising(false);
     }
@@ -1241,7 +1271,7 @@ export function ResultScreen({ route, navigation }: Props) {
         transposeOffline();
         return;
       }
-      showDialog({ title: "Could not transpose", message: toApiError(e).message, icon: "problem", tone: "danger" });
+      failedWithRetry("Could not transpose", e, () => void applyTranspose());
     } finally {
       setTransposing(false);
     }
@@ -1289,7 +1319,7 @@ export function ResultScreen({ route, navigation }: Props) {
       await libraryApi.updateLyrics(savedId, next);
     } catch (e) {
       committedLyrics.current = previous;
-      showDialog({ title: "Could not save the lyrics", message: toApiError(e).message, icon: "problem", tone: "danger" });
+      failedWithRetry("Could not save the lyrics", e, () => void commitLyrics());
     }
   }
 
@@ -1317,8 +1347,9 @@ export function ResultScreen({ route, navigation }: Props) {
     try {
       await libraryApi.unshare(savedId);
       setShareToken(null);
+      showToast(SHARING_STOPPED);
     } catch (e) {
-      showDialog({ title: "Could not stop sharing", message: toApiError(e).message, icon: "problem", tone: "danger" });
+      failedWithRetry("Could not stop sharing", e, () => void stopSharing());
     } finally {
       setSharing(false);
     }
@@ -1332,8 +1363,11 @@ export function ResultScreen({ route, navigation }: Props) {
     settleHeld();
     renamingRef.current = true;
     setRenaming(true);
+    // Shown at once: the server's name replaces it when it answers, or the old one comes back if it refuses.
+    const before = committedTitle;
+    setCommittedTitle(title.trim());
     const kept = await renameSheet(savedId, title);
-    if (kept !== null) setCommittedTitle(kept);
+    setCommittedTitle(kept ?? before);
     renamingRef.current = false;
     setRenaming(false);
   }
@@ -1343,6 +1377,12 @@ export function ResultScreen({ route, navigation }: Props) {
     const next = title.trim();
     if (!savedId || !next || next === committedTitle) return;
     void rename();
+  }
+
+  /** Return on the name: a saved sheet keeps it, an unsaved one is saved under it, as its Save to Library does. */
+  function submitTitle() {
+    if (savedId) commitTitle();
+    else if (title.trim() && !saving) void save();
   }
 
   // Back can take the screen away before a focused field reports its blur: leaving saves the lyrics and a typed
@@ -1579,6 +1619,18 @@ export function ResultScreen({ route, navigation }: Props) {
     .join(" · ");
   /** The first doubtful note, named in the amber row so the ear knows where to go. */
   const firstLow = view.notes.find((n) => n.conf < 0.5);
+  /** "Use the hymnbook version?" is on screen: its answer rewrites every note. */
+  const askingHymnbook = hymnAsk === "version" && !!result.hymnMatch && !guest;
+  /** "Which doh is it?" is on screen: its answer rewrites the pitches. */
+  const askingDoh = doubt.length > 0 && !edited && !parts && hymnAsk !== "version" && !guest;
+  /**
+   * One question at a time: the hymnbook's, then the doh's, then the notes to check. The first two rewrite the notes
+   * the last points at, so the amber row (and the first-open toast's Check) waits until they are answered.
+   */
+  const asking = askingHymnbook || askingDoh;
+  const showCheck = lowCount > 0 && !!firstLow && !guest && !asking;
+  /** The plain note under the figures, unless a question comes first or the amber row already says "check them". */
+  const shownConfNote = asking || (showCheck && confidenceLevel(overallConfidence) === "check") ? null : confNote;
 
   /** Practise this tune: Learn my part when the sheet has parts, else Rehearse's loop for the tune alone. */
   function practiseNow() {
@@ -1633,10 +1685,11 @@ export function ResultScreen({ route, navigation }: Props) {
         // says the sheet was saved itself, so the toast stands aside for it.
         if (await rating.recordSave()) return;
         if (!live) return;
-        // Notes under the check line turn the toast's one action into Check (board m-ux-medium P1f).
-        setCelebrate({ doubtful: result.notes.some((n) => n.conf < 0.5), saved: true });
+        // Notes under the check line turn the toast's one action into Check (board m-ux-medium P1f), unless the
+        // hymnbook or the doh is asked first.
+        setCelebrate({ doubtful: !asking && result.notes.some((n) => n.conf < 0.5), saved: true });
       } else {
-        setCelebrate({ doubtful: result.notes.some((n) => n.conf < 0.5) });
+        setCelebrate({ doubtful: !asking && result.notes.some((n) => n.conf < 0.5) });
       }
       setCelebrating(true);
     });
@@ -1714,7 +1767,7 @@ export function ResultScreen({ route, navigation }: Props) {
     showDialog({
       kind: "options",
       // The thing acted on is the title (board 7c).
-      title: shownTitle || "Transcription options",
+      title: shownTitle || "Sheet options",
       actions,
     });
   }
@@ -1724,6 +1777,8 @@ export function ResultScreen({ route, navigation }: Props) {
     askToDelete([{ id, title: shownTitle || "This sheet" }], async () => {
       settleHeld();
       if (!(await deleteSheets([{ id, title: shownTitle }]))) return;
+      // The screen goes with it, so the toast (above the navigator) is what says it worked.
+      showToast(deletedLine([shownTitle || "This sheet"]));
       if (navigation.canGoBack()) {
         navigation.goBack();
       } else {
@@ -1740,7 +1795,7 @@ export function ResultScreen({ route, navigation }: Props) {
    */
   const keyControls = (
     <View style={styles.panel}>
-      <Text style={styles.panelEyebrow}>Doh</Text>
+      <Text style={styles.panelEyebrow} accessibilityRole="header">Doh</Text>
       <Text style={styles.panelHint}>
         Change the Doh — your notes stay put, only the labels move.
       </Text>
@@ -1761,7 +1816,8 @@ export function ResultScreen({ route, navigation }: Props) {
               accessibilityState={{ selected: on }}
               accessibilityLabel={`Change key to ${k}`}
             >
-              <Text style={[styles.chipText, on && styles.chipTextOn]}>{k}</Text>
+              {/* Spelled as the DOH figure spells it, a minor with its doh (lib/solfa `keyChoiceLabel`). */}
+              <Text style={[styles.chipText, on && styles.chipTextOn]}>{keyChoiceLabel(k)}</Text>
             </Touchable>
           );
         })}
@@ -1769,7 +1825,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
       {/* Transpose for my choir: the one edit that moves the notes. */}
       <View style={styles.panelDivider} />
-      <Text style={styles.panelEyebrow}>Transpose for my choir</Text>
+      <Text style={styles.panelEyebrow} accessibilityRole="header">Transpose for my choir</Text>
       <Text style={styles.panelHint}>
         Moves every note so the parts sit in your singers' range. The solfa reads exactly as before — only Doh moves.
       </Text>
@@ -1839,6 +1895,23 @@ export function ResultScreen({ route, navigation }: Props) {
   ];
   const notationChoice = notationView === "staff" ? "staff" : solfaStyle;
   const nothingToShow = solfaStyle === "bars" ? view.notes.length === 0 : activeSolfaLines.length === 0;
+  /** No notes were heard (the editor never deletes the last one): why, and the way to another take. */
+  const emptySheet = (
+    <View style={styles.emptySheet}>
+      <Text style={styles.panelHint}>
+        No notes were heard in this recording, so there is nothing to read yet. Hum or sing a little closer to the
+        phone and record it again.
+      </Text>
+      {guest ? null : (
+        <Button
+          label="Record again"
+          icon="mic"
+          variant="secondary"
+          onPress={() => navigation.navigate("Tabs", { screen: "Record" })}
+        />
+      )}
+    </View>
+  );
 
   return (
     // Any touch on the sheet sends Doh's toast away; the touch still does what it was for.
@@ -1927,16 +2000,17 @@ export function ResultScreen({ route, navigation }: Props) {
                   <Text style={styles.savedText}>Saved to Library · you can find it in the Library tab.</Text>
                 </View>
               ) : (
-                <Text style={styles.panelHint}>Give this transcription a name so you can find it later.</Text>
+                <Text style={styles.panelHint}>Give this sheet a name so you can find it later.</Text>
               )}
               <TextField
                 label="Title"
                 value={title}
                 onChangeText={setTitle}
                 onBlur={commitTitle}
-                onSubmitEditing={commitTitle}
+                onSubmitEditing={submitTitle}
                 returnKeyType="done"
-                placeholder="Name this transcription…"
+                autoCapitalize="sentences"
+                placeholder="Name this sheet…"
               />
               {savedId ? (
                 <Button
@@ -2036,11 +2110,11 @@ export function ResultScreen({ route, navigation }: Props) {
 
           {/* No percentage: a plain note, and only when there is something to do. The
               doubtful notes are tinted on the sheet, so a middling one points at them. */}
-          {confNote ? <Text style={styles.notice}>{confNote}</Text> : null}
+          {shownConfNote ? <Text style={styles.notice}>{shownConfNote}</Text> : null}
 
           {hymnAsk && result.hymnMatch && !guest ? (
             <View style={styles.panel}>
-              <Text style={styles.panelEyebrow}>Is this a hymn?</Text>
+              <Text style={styles.panelEyebrow} accessibilityRole="header">Is this a hymn?</Text>
               <Text style={styles.panelHint}>
                 This sounds like{" "}
                 <Text style={styles.hymnName} onPress={() => Linking.openURL(result.hymnMatch!.url).catch(() => undefined)}>
@@ -2074,7 +2148,7 @@ export function ResultScreen({ route, navigation }: Props) {
                   style={styles.chip}
                   radius={radii.pill}
                   onPress={() => chooseHymnbook(false)}
-                  accessibilityLabel={hymnAsk === "version" ? "Keep your transcription" : "Dismiss"}
+                  accessibilityLabel={hymnAsk === "version" ? "Keep your own version" : "Dismiss"}
                 >
                   <Text style={styles.chipText}>{hymnAsk === "version" ? "Keep mine" : "Dismiss"}</Text>
                 </Touchable>
@@ -2082,9 +2156,9 @@ export function ResultScreen({ route, navigation }: Props) {
             </View>
           ) : null}
 
-          {doubt.length > 0 && !edited && !parts && hymnAsk !== "version" && !guest ? (
+          {askingDoh ? (
             <View style={styles.panel}>
-              <Text style={styles.panelEyebrow}>Which doh is it?</Text>
+              <Text style={styles.panelEyebrow} accessibilityRole="header">Which doh is it?</Text>
               <Text style={styles.panelHint}>
                 Your tune fits more than one doh. Here is how it starts in each; tap the one you sang in.
               </Text>
@@ -2170,7 +2244,7 @@ export function ResultScreen({ route, navigation }: Props) {
           {/* One amber row when the model doubted some notes. Tapping opens the piano on
               the flagged piece: a doubtful note is a *pitch* question, and the fastest
               answer to one is pressing the key and hearing it. */}
-          {lowCount > 0 && firstLow && !guest ? (
+          {showCheck && firstLow ? (
             <Touchable
               style={styles.check}
               onPress={startReview}
@@ -2197,7 +2271,7 @@ export function ResultScreen({ route, navigation }: Props) {
               <Action icon="parts" label="SATB" active={panel === "parts"} onPress={() => togglePanel("parts")} />
               <Action icon="sing" label="Sing" active={panel === "sing"} onPress={() => togglePanel("sing")} />
               <Action icon="export" label="Export" active={panel === "export"} onPress={() => togglePanel("export")} />
-              <Action icon="more" label="More" onPress={openOptions} accessibilityLabel="Transcription options" />
+              <Action icon="more" label="More" onPress={openOptions} accessibilityLabel="Sheet options" />
             </View>
           )}
 
@@ -2212,6 +2286,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 onChangeText={setLyrics}
                 onBlur={() => void commitLyrics()}
                 placeholder="A-ma-zing grace, how sweet the sound…"
+                autoCapitalize="sentences"
                 multiline
                 numberOfLines={3}
               />
@@ -2225,7 +2300,7 @@ export function ResultScreen({ route, navigation }: Props) {
           {panel === "parts" ? (
             <View style={styles.panel}>
               <View style={styles.panelHeader}>
-                <Text style={styles.panelTitle}>
+                <Text style={styles.panelTitle} accessibilityRole="header">
                   {result.partsSource === "heard" ? "The four parts, as sung" : "Four-part harmony"}
                 </Text>
                 {!isPro && !partsView && !freeHarmony ? <ProTag /> : null}
@@ -2292,7 +2367,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 sheetId={savedId}
               />
             ) : (
-              <Text style={styles.panelHint}>There are no notes to sing yet.</Text>
+              <Text style={styles.panelHint}>There are no notes to sing: none were heard in this recording.</Text>
             )
           ) : null}
 
@@ -2315,12 +2390,11 @@ export function ResultScreen({ route, navigation }: Props) {
                   <Icon name="public" size={14} color={colors.icon} />
                   <Text style={styles.sharedText}>Anyone with the link can open this sheet, with playback.</Text>
                   <Button
-                    label="Stop"
+                    label="Stop sharing"
                     variant="text"
                     size="sm"
                     onPress={stopSharing}
                     disabled={sharing}
-                    accessibilityLabel="Stop sharing"
                     style={styles.sharedStop}
                   />
                 </View>
@@ -2340,7 +2414,7 @@ export function ResultScreen({ route, navigation }: Props) {
               />
               <ExportRow
                 icon="midi"
-                label="MIDI"
+                label="Download MIDI"
                 pro={!isPro}
                 onPress={() => void handleExportMidi()}
                 busy={exportingType === "midi"}
@@ -2348,7 +2422,7 @@ export function ResultScreen({ route, navigation }: Props) {
               />
               <ExportRow
                 icon="musicxml"
-                label="MusicXML"
+                label="Download MusicXML"
                 pro={!isPro}
                 onPress={() => void exportScore()}
                 busy={exportingType === "musicxml"}
@@ -2371,6 +2445,8 @@ export function ResultScreen({ route, navigation }: Props) {
                 <Touchable
                   key={v.id}
                   onPress={() => {
+                    viewChosen.current = true;
+                    AsyncStorage.setItem(NOTATION_VIEW_KEY, v.id).catch(() => undefined);
                     if (v.id === "staff") {
                       setNotationView("staff");
                     } else {
@@ -2404,7 +2480,7 @@ export function ResultScreen({ route, navigation }: Props) {
             ) : null}
             {notationView === "solfa" ? (
               nothingToShow ? (
-                <Text style={styles.solfaMuted}>No solfa lines produced.</Text>
+                emptySheet
               ) : solfaStyle === "bars" ? (
                 <>
                   <SheetGrid
@@ -2455,6 +2531,8 @@ export function ResultScreen({ route, navigation }: Props) {
                   </View>
                 ))
               )
+            ) : view.notes.length === 0 ? (
+              emptySheet
             ) : (
               <View>
                 <ScoreView
@@ -2492,7 +2570,7 @@ export function ResultScreen({ route, navigation }: Props) {
           {/* ── Chords: the progression heard, symbol over its solfa ───────── */}
           {chordView ? (
             <View style={styles.chordsBlock}>
-              <Text style={styles.eyebrow}>Chords</Text>
+              <Text style={styles.eyebrow} accessibilityRole="header">Chords</Text>
               <Text style={styles.panelHint}>
                 As heard under the tune. The letter is the chord; the syllable beneath is its root in this key.
               </Text>
@@ -2602,6 +2680,7 @@ export function ResultScreen({ route, navigation }: Props) {
         onRevert={revertNote}
         onDelete={deleteNote}
         onClose={closeEditor}
+        onFinishReview={finishReview}
       />
 
       {/* ── Doh's first-open toast, where the player docks ─────────────────── */}
@@ -3192,7 +3271,8 @@ const makeStyles = (c: Palette) =>
       lineHeight: 20,
       letterSpacing: 1,
     },
-    solfaMuted: { ...typography.body, color: c.textFaint, fontStyle: "italic" },
+    /** No notes heard: the sentence, then Record again under it. */
+    emptySheet: { gap: spacing.md, alignItems: "flex-start" },
     hymnRow: { flexDirection: "row", marginBottom: spacing.sm },
     hymnBar: { flexDirection: "row", borderLeftWidth: 1, borderLeftColor: c.border, paddingHorizontal: 4 },
     hymnCell: { minWidth: 34, alignItems: "center", marginRight: 2 },

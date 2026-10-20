@@ -7,6 +7,7 @@ import { BackButton, ErrorNote, Glow, NightScreen, nightText, pressedLink } from
 import { useAuth } from "../lib/auth";
 import { authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import { codeFailure } from "../lib/authErrors";
 import { pendingVerifyStore } from "../lib/pendingVerifyStore";
 import { night, nightFonts } from "../design/theme";
 import type { AuthStackParams } from "../navigation/types";
@@ -78,7 +79,8 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
       // is nothing to navigate to from here.
       await verifyEmail(email, entered);
     } catch (e) {
-      setError(toApiError(e).message);
+      // While Resend still counts down, a new code cannot be asked for yet: the digits are checked first.
+      setError(codeFailure(toApiError(e), !counting));
       // Clear rather than leave the rejected digits sitting there: it makes the next
       // attempt a fresh typing action, and stops the effect above resubmitting them.
       setCode("");
@@ -140,7 +142,9 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
       <View style={styles.icon}>
         <Icon name="mail" size={28} color={night.ice} />
       </View>
-      <Text style={[nightText.h1, styles.title]}>Check your email</Text>
+      <Text style={[nightText.h1, styles.title]} accessibilityRole="header">
+        Check your email
+      </Text>
       <Text style={[nightText.lead, styles.lead]}>
         We sent a {CODE_LENGTH}-digit code to{"\n"}
         {/* Shown exactly as the server stored it, so a typo in the address is visible
@@ -302,6 +306,6 @@ const styles = StyleSheet.create({
   countdown: { fontSize: 14, fontFamily: nightFonts.mono, color: night.faint },
   change: { alignSelf: "flex-start", marginTop: 12 },
   changeText: { fontSize: 13.5, fontFamily: nightFonts.medium, color: night.ice },
-  hint: { marginTop: 24, fontSize: 12, lineHeight: 17, fontFamily: nightFonts.regular, color: night.faint },
+  hint: { marginTop: 24, fontSize: 13, lineHeight: 19, fontFamily: nightFonts.regular, color: night.faint },
   hintLink: { color: night.muted, textDecorationLine: "underline" },
 });

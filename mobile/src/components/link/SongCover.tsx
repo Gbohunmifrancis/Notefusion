@@ -24,7 +24,8 @@ export const PROVIDER_LABEL = { youtube: "YouTube", spotify: "Spotify", apple_mu
  * either theme, so this is a property of the photo, not of the palette.
  */
 const PHOTO_SHADE = ["rgba(0,0,0,0)", "rgba(0,0,0,0.68)"] as const;
-const PHOTO_TAG = "rgba(0,0,0,0.45)";
+/** The source and length tags' fill: white 12 px words keep 5.74:1 even over white artwork (0.45 gave 3.35). */
+const PHOTO_TAG = "rgba(0,0,0,0.6)";
 
 export function SongCover({
   song,

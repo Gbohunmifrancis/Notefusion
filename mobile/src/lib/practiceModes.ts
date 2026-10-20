@@ -143,9 +143,14 @@ export function progressStrip(p: {
   const lv = p.level;
   const span = lv.nextLevelXp == null ? 0 : lv.nextLevelXp - lv.minXp;
   const fraction = lv.nextLevelXp == null ? 1 : span > 0 ? clamp01((p.xp - lv.minXp) / span) : 1;
-  const toNext = lv.nextName ? `${lv.xpForNext} to ${lv.nextName}` : null;
-  const label = `${lapsed ? `No streak now. ${streak}` : streak}. Level ${lv.name}, ${p.xp} XP${lv.nextName ? `, ${lv.xpForNext} XP to ${lv.nextName}` : ""}.`;
-  return { streak, level: lv.name, xp: `${p.xp} XP`, toNext, fraction, label };
+  const toNext = lv.nextName ? `${grouped(lv.xpForNext)} to ${lv.nextName}` : null;
+  const label = `${lapsed ? `No streak now. ${streak}` : streak}. Level ${lv.name}, ${grouped(p.xp)} XP${lv.nextName ? `, ${grouped(lv.xpForNext)} XP to ${lv.nextName}` : ""}.`;
+  return { streak, level: lv.name, xp: `${grouped(p.xp)} XP`, toNext, fraction, label };
+}
+
+/** "12,450": XP in thousands, grouped by hand as `price.formatPrice` does (Hermes may ignore toLocaleString's options). */
+function grouped(n: number): string {
+  return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 // ── Shared arithmetic ────────────────────────────────────────────────────────

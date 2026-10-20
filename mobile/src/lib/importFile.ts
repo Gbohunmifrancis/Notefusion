@@ -28,3 +28,11 @@ export function canImport(name: string | null | undefined): boolean {
   const ext = fileExtension(name);
   return ext === "" || AUDIO_EXTENSIONS.has(ext) || SCORE_EXTENSIONS.has(ext);
 }
+
+/**
+ * The API refused the audio itself — a format it cannot read (415) or no clear notes in it (422) — so sending the same
+ * take again would be refused again: Record's failure card offers a new take instead of a retry.
+ */
+export function audioRefused(code: string | null | undefined): boolean {
+  return code === "UNSUPPORTED_MEDIA" || code === "INVALID_AUDIO";
+}

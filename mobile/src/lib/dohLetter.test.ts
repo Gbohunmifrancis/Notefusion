@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { dohHeader, dohLetter, dohPitchClass, KEY_CHOICES, parseKey } from "./solfa.ts";
+import { dohHeader, dohLetter, dohPitchClass, KEY_CHOICES, keyChoiceLabel, parseKey } from "./solfa.ts";
 
 test("a major key's doh is its tonic, spelled as its key signature spells it", () => {
   assert.equal(dohLetter("F major"), "F");
@@ -26,4 +26,15 @@ test("the sheet's doh header is spelled like the doh tile", () => {
   for (const key of [...KEY_CHOICES, "Eb major", "Ab major", "Db major"]) {
     assert.equal(dohHeader(dohPitchClass(parseKey(key)!)), `Doh is ${dohLetter(key)}`);
   }
+});
+
+test("the re-key picker names a major by its doh, and a minor with its doh, spelled as the doh tile", () => {
+  assert.equal(keyChoiceLabel("A# major"), "Doh Bb");
+  assert.equal(keyChoiceLabel("C# major"), "Doh Db");
+  assert.equal(keyChoiceLabel("F# major"), "Doh F#");
+  assert.equal(keyChoiceLabel("A minor"), "A minor · doh C");
+  assert.equal(keyChoiceLabel("A# minor"), "Bb minor · doh Db");
+  assert.equal(keyChoiceLabel("D# minor"), "D# minor · doh F#");
+  assert.equal(keyChoiceLabel("H#"), "H#");
+  for (const key of KEY_CHOICES) assert.ok(keyChoiceLabel(key).endsWith(dohLetter(key)), key);
 });

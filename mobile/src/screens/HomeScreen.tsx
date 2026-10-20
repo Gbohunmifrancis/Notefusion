@@ -21,6 +21,7 @@ import { Screen } from '../components/Screen';
 import { HeaderAvatar } from '../components/HeaderAvatar';
 import { Touchable } from '../components/Touchable';
 import { Skeleton } from '../components/Skeleton';
+import { ProblemNote } from '../components/ProblemNote';
 import { Mark, Wordmark } from '../components/night/NightUI';
 import { DohCard } from '../components/doh/DohCard';
 import { FoldAway } from '../components/FoldAway';
@@ -39,7 +40,7 @@ import { useSubscription } from '../lib/subscription';
 import { confidenceColor, fonts, motion, radii, spacing, typography, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles, useColors } from '../lib/theme';
 import type { PracticeProgress, SavedTranscription } from '../api/types';
-import { streakSnapshot } from '../lib/practiceProgress';
+import { streakSnapshot, xpAmount } from '../lib/practiceProgress';
 import { rememberStreak } from '../lib/practiceReminder';
 import { refreshProfilePicture, useAccountJoinedAt } from '../lib/profilePicture';
 import { useBreath } from '../lib/breath';
@@ -56,6 +57,7 @@ import {
 } from '../lib/dohSuggestion';
 import { loadDohMemory, saveDohMemory, useDohSuggestions } from '../lib/dohPrefs';
 import { parseUtc } from '../lib/sheetMeta';
+import { REFRESH_FAILED } from '../lib/savedSheet';
 import { PROGRESS_WAIT_MS, recentReveal, type RecentReveal } from '../lib/homeReveal';
 import { useSeason } from '../lib/seasonStore';
 import { activeSeason, costumeOf, homeTitle, seasonTint, seasonWords } from '../lib/season';
@@ -195,6 +197,8 @@ export function HomeScreen({ navigation }: Props) {
   );
 
   const fireRing = useCallback(() => {
+    // Reduce Motion: no ring growing out of the circle; the press itself and its tick still answer the finger.
+    if (reduceMotion) return;
     ring.setValue(0);
     Animated.timing(ring, {
       toValue: 1,
@@ -202,7 +206,7 @@ export function HomeScreen({ navigation }: Props) {
       easing: Easing.out(Easing.ease),
       useNativeDriver: true,
     }).start();
-  }, [ring]);
+  }, [ring, reduceMotion]);
 
   // The greeting used to be read at render, on the assumption that focus alone would
   // keep it honest. It does not: backgrounding the app with Home focused and coming
@@ -476,7 +480,7 @@ export function HomeScreen({ navigation }: Props) {
                     radius={radii.pill}
                     // A 32 px chip, 48 tall to a thumb; less to the sides, where the avatar is.
                     hitSlop={{ top: 8, bottom: 8, left: 6, right: 6 }}
-                    accessibilityLabel={`Practice: ${practice.streak.current}-day streak, ${practice.xp} XP, level ${practice.level.name}`}
+                    accessibilityLabel={`Practice: ${practice.streak.current}-day streak, ${xpAmount(practice.xp)}, level ${practice.level.name}`}
                   >
                     <Icon
                       name="streak"
@@ -485,7 +489,7 @@ export function HomeScreen({ navigation }: Props) {
                     />
                     <Text style={styles.practiceChipText}>{practice.streak.current}</Text>
                     <View style={styles.practiceChipDivider} />
-                    <Text style={styles.practiceChipText}>{practice.xp} XP</Text>
+                    <Text style={styles.practiceChipText}>{xpAmount(practice.xp)}</Text>
                   </Touchable>
                 ) : null}
                 {/* The account, as on every tab: the avatar (Pro's gold ring) opens Profile. */}
@@ -513,7 +517,9 @@ export function HomeScreen({ navigation }: Props) {
                   </View>
                 )}
               </View>
-              <Text style={styles.title}>{homeTitle(seasonFlag)}</Text>
+              <Text style={styles.title} accessibilityRole="header">
+                {homeTitle(seasonFlag)}
+              </Text>
 
               {/* ── The record button: the mark itself ────────────────── */}
               <View style={styles.stage}>
@@ -649,17 +655,23 @@ export function HomeScreen({ navigation }: Props) {
 
               {/* ── Recent ────────────────────────────────────────────── */}
               <View style={styles.recentSectionHeader}>
-                <Text style={styles.recentSectionTitle}>Recent</Text>
+                <Text style={styles.recentSectionTitle} accessibilityRole="header">
+                  Recent
+                </Text>
                 <Touchable
                   onPress={() => navigation.navigate('Library')}
                   ripple={false}
                   // A short word: 44 pt or more to a thumb without moving it.
                   hitSlop={{ top: 14, bottom: 14, left: 12, right: 12 }}
-                  accessibilityLabel="See all transcriptions"
+                  accessibilityLabel="See all your sheets"
                 >
                   <Text style={styles.seeAllText}>See all</Text>
                 </Touchable>
               </View>
+              {/* A read that failed over rows already shown: said, so they are not taken for the latest. */}
+              {loadError && revealed && recent.length > 0 ? (
+                <ProblemNote style={styles.refreshNote}>{REFRESH_FAILED}</ProblemNote>
+              ) : null}
             </Animated.View>
           </View>
         }
@@ -715,7 +727,7 @@ export function HomeScreen({ navigation }: Props) {
                       </Text>
                     ) : (
                       <Text style={styles.recentMeta} numberOfLines={1}>
-                        {item.key} · {item.tempoBpm} BPM · {item.timeSignature}
+                        {item.key} · {Math.round(item.tempoBpm)} BPM · {item.timeSignature}
                       </Text>
                     )}
                   </View>
@@ -884,7 +896,8 @@ const makeStyles = (c: Palette, s: Shadows) =>
       paddingVertical: 2,
     },
     proChipText: {
-      fontSize: 9.5,
+      // The app's smallest words: 12, never under (it was 9.5), the size of the greeting beside it.
+      fontSize: 12,
       fontFamily: fonts.bold,
       color: c.premiumText,
       letterSpacing: 0.8,
@@ -987,6 +1000,10 @@ const makeStyles = (c: Palette, s: Shadows) =>
       alignItems: 'center',
       marginTop: 28,
       marginBottom: spacing.xs,
+    },
+    refreshNote: {
+      marginTop: 0,
+      marginBottom: spacing.sm,
     },
     recentSectionTitle: {
       fontSize: 17,

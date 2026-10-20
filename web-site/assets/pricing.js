@@ -166,7 +166,7 @@
     card.appendChild(
       featureList([
         trialCount + " hums or recordings a week, back every Friday at 6pm (West Africa Time)",
-        "One free preview of a song link: its first minute",
+        "One free preview of a song link: a minute you choose",
         single
           ? "Song links and whole songs: Pro, or " + formatPrice(single) + " a song"
           : "Song links and whole songs: Pro, or buy just one song",
@@ -212,26 +212,34 @@
 
     var blurb = document.createElement("p");
     blurb.className = "blurb";
-    blurb.textContent = "Whole songs, four parts and every download, for the choir that rehearses every week.";
+    // A year is priced by the month as well, with its saving, under the price (the web app's plans say the same):
+    // the saving used to be the card's last line, and the month's figure was nowhere.
+    blurb.textContent = plan.interval === "yearly"
+      ? formatPrice({ amountMinor: Math.round(plan.amountMinor / 12), currency: plan.currency }) + " a month, paid once a year." +
+        (saving ? " Save " + saving + "% against paying monthly." : "")
+      : "Whole songs, four parts and every download, for the choir that rehearses every week.";
     card.appendChild(blurb);
 
     // One payment buys one period; nothing is charged again unless you start a new checkout.
     var billingTerm =
       plan.interval === "yearly"
-        ? (saving ? "A year of Pro; save " + saving + "% against paying monthly" : "A year of Pro, paid once")
+        ? "A year of Pro, paid once"
         : "A month of Pro, paid once; buy again whenever you like";
 
     card.appendChild(
       featureList([
         "Whole songs from a link: up to six minutes, twenty a month",
-        "Alto, tenor and bass written under every tune",
+        "Alto, tenor and bass written under any tune, when you ask",
         "Sing-along marking, note by note",
         "Clean PDF, MusicXML and MIDI downloads",
-        "Priority lane: never queued behind anyone",
+        "Fast lane: never queued behind anyone",
         billingTerm,
       ]),
     );
-    card.appendChild(action(accessToken() ? "Upgrade to Pro" : "Sign up and upgrade", true, "pricing_" + (plan.interval || "pro"), null, plan));
+    // Each button says what it buys ("Upgrade — ₦7,500 a month"): both used to read "Upgrade to Pro" (signed out, "Sign
+    // up and upgrade"), so the buttons alone, as a screen reader lists them, never said which plan was which.
+    var cost = formatPrice(plan) + (plan.interval === "yearly" ? " a year" : " a month");
+    card.appendChild(action((accessToken() ? "Upgrade — " : "Get Pro — ") + cost, true, "pricing_" + (plan.interval || "pro"), null, plan));
     return card;
   }
 
@@ -315,7 +323,7 @@
         "Alto, tenor and bass written under any tune, when you ask",
         "Sing-along marking, note by note",
         "Clean PDF, MusicXML and MIDI downloads",
-        "Priority lane: never queued behind anyone",
+        "Fast lane: never queued behind anyone",
       ]),
     );
     card.appendChild(action("Open the app", true, "pricing_member", "/app"));
@@ -425,7 +433,7 @@
   // words are assets/checkout-exit.js and the sheet assets/checkout-why.js, loaded only then.
   var openedHere = false;
   var whyBusy = false;
-  var WHY_ASSETS = ["/assets/checkout-exit.js?v=1", "/assets/checkout-why.css?v=1", "/assets/checkout-why.js?v=1"];
+  var WHY_ASSETS = ["/assets/checkout-exit.js?v=1", "/assets/checkout-why.css?v=2", "/assets/checkout-why.js?v=2"];
   var whyLoads = {};
   function loadAsset(url) {
     if (!whyLoads[url]) {

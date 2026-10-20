@@ -511,3 +511,18 @@ export const KEY_CHOICES: readonly string[] = [
   ...PITCH_NAMES.map((n) => `${n} major`),
   ...PITCH_NAMES.map((n) => `${n} minor`),
 ];
+
+/** Minor tonics as their relative major's signature spells them, so D# minor sits on doh F# (`DOH_NAMES`). */
+const MINOR_NAMES: readonly string[] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
+
+/**
+ * A re-key chip's words, under the picker's "Doh" heading (display only, not the engine): a major key is its doh,
+ * spelled as the DOH figure spells it ("Doh Bb", never "A# major"); a minor key keeps its name and says the doh that
+ * la-based minor otherwise leaves to work out ("A minor · doh C"). An unreadable key is shown as given.
+ */
+export function keyChoiceLabel(keyText: string): string {
+  const parsed = parseKey(keyText);
+  if (!parsed) return keyText;
+  const doh = DOH_NAMES[dohPitchClass(parsed)]!;
+  return parsed.mode === "major" ? `Doh ${doh}` : `${MINOR_NAMES[parsed.tonicPitchClass]} minor · doh ${doh}`;
+}

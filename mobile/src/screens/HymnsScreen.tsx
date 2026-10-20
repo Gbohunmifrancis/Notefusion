@@ -1,13 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { BackHandler, FlatList, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Icon } from "../components/Icon";
-import { useNavigation, useRoute, useScrollToTop, type RouteProp } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute, useScrollToTop, type RouteProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Sheet, SheetActions, SheetTitle } from "../components/Sheet";
 import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
+import { Skeleton } from "../components/Skeleton";
 import { TabHeader } from "../components/TabHeader";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
@@ -88,6 +89,19 @@ export function HymnsScreen() {
     list.current?.scrollToOffset({ offset: 0, animated: false });
     navigation.setParams({ shelf: undefined } as never);
   }, [route.params?.shelf, navigation]);
+
+  // Android back closes the season's "See all", then clears the search, before it leaves the tab.
+  useFocusEffect(
+    useCallback(() => {
+      if (!shelfOnly && !query) return undefined;
+      const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+        if (shelfOnly) setShelfOnly(false);
+        else setQuery("");
+        return true;
+      });
+      return () => sub.remove();
+    }, [shelfOnly, query]),
+  );
 
   // The season ending (or changing) mid-session takes its filter with it.
   useEffect(() => {
@@ -211,7 +225,19 @@ export function HymnsScreen() {
     return (
       <Screen>
         {header}
-        <ActivityIndicator color={colors.accent} style={{ marginTop: spacing.xxl }} />
+        {/* The pack is read from the phone: the list's shape holds its place meanwhile, as the Library's rows do. */}
+        <View accessible accessibilityLabel="Loading the hymns">
+          <Skeleton height={44} radius={22} style={styles.searchSkeleton} />
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <View key={i} style={styles.row}>
+              <View style={styles.rowText}>
+                <Skeleton width="62%" height={14} radius={radii.sm} />
+                <Skeleton width="44%" height={11} radius={radii.sm} style={styles.skeletonGap} />
+              </View>
+              <Skeleton width={42} height={12} radius={radii.sm} />
+            </View>
+          ))}
+        </View>
       </Screen>
     );
   }
@@ -368,8 +394,18 @@ export function HymnsScreen() {
         )}
         ItemSeparatorComponent={grid ? undefined : () => <View style={styles.divider} />}
         ListEmptyComponent={
-          // Without a query the list is empty only under a season filter (Spooky, All Saints) with nothing in it.
-          <Text style={styles.empty}>{query.trim() ? `Nothing matches “${query.trim()}”.` : "Nothing here yet."}</Text>
+          // Without a query the list is empty only under a season filter (Spooky, All Saints) with nothing in it. A
+          // search that found nothing says what else to try, and clears in one tap (as the Library's does).
+          query.trim() ? (
+            <View>
+              <Text style={styles.empty}>
+                {`Nothing matches “${query.trim()}”. Try fewer words, the first line or the tune's name.`}
+              </Text>
+              <Button label="Clear search" variant="secondary" onPress={() => setQuery("")} style={styles.emptyButton} />
+            </View>
+          ) : (
+            <Text style={styles.empty}>Nothing here yet.</Text>
+          )
         }
         ListFooterComponent={
           <View style={styles.footer}>
@@ -475,6 +511,8 @@ const makeStyles = (c: Palette) =>
       marginBottom: spacing.md,
     },
     searchInput: { flex: 1, fontFamily: fonts.regular, fontSize: 15, color: c.text, height: "100%", paddingVertical: 0 },
+    searchSkeleton: { marginBottom: spacing.md },
+    skeletonGap: { marginTop: 7 },
 
     // The season's shelf (boards d-christmas/02, j-halloween/02): a pine or pumpkin tile, cards that open with their solfa.
     shelf: { marginBottom: spacing.xs },
@@ -531,6 +569,7 @@ const makeStyles = (c: Palette) =>
     rowKey: { fontFamily: typography.mono.fontFamily, fontSize: 12, color: c.textFaint },
     divider: { height: StyleSheet.hairlineWidth, backgroundColor: c.border },
     empty: { ...typography.body, color: c.textMuted, textAlign: "center", marginTop: spacing.xl },
+    emptyButton: { marginTop: 18, alignSelf: "center" },
 
     footer: { alignItems: "center", gap: spacing.xs, marginTop: spacing.xl },
     footerText: { ...typography.caption, color: c.textFaint, textAlign: "center" },

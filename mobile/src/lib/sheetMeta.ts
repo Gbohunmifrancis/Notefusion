@@ -36,3 +36,24 @@ export function sheetMetaLine(sheet: { tempoBpm: number; timeSignature: string; 
     .filter(Boolean)
     .join(" · ");
 }
+
+/**
+ * A Library row's line when it has no opening solfa to show: "Sunday · Easter service · 72 BPM", in the actions
+ * sheet's words for the day and the tempo. `withFolder`: on "All" the folder says where the sheet lives; inside a
+ * folder it would repeat the tab.
+ */
+export function libraryRowLine(
+  sheet: { tempoBpm: number; createdAtUtc: string; folder?: string | null },
+  withFolder: boolean,
+  now: Date,
+): string {
+  const at = parseUtc(sheet.createdAtUtc);
+  const when = Number.isFinite(at) ? savedWhen(new Date(at), now) : null;
+  return [
+    when ? when.charAt(0).toUpperCase() + when.slice(1) : null,
+    withFolder ? sheet.folder : null,
+    `${Math.round(sheet.tempoBpm)} BPM`,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+}

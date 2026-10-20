@@ -44,6 +44,7 @@
 .why-card h2 { margin: 0 0 4px; padding: 0; font-family: var(--font-sans, inherit); font-size: 1.2rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.02em; color: var(--why-ink); }
 .why-lead { margin: 0 0 8px; font-size: 1rem; line-height: 1.5; color: var(--why-muted); }
 .why-lead b { font-weight: 600; color: var(--why-ink); }
+.why-lead a { color: var(--why-link); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
 
 /* The six answers: 52 px rows, a 32 px neutral tile, hairlines inset past it. */
 .why-rows { margin: 4px 0 0; }

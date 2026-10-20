@@ -13,7 +13,7 @@ import { showDialog } from "./dialog";
 import * as haptics from "./haptics";
 import { setSheetPinned } from "./offlineLibrary";
 import { isNetworkCode } from "./reachability";
-import { choirToast, filedToast } from "./savedSheet";
+import { choirToast, filedToast, offlineToast } from "./savedSheet";
 import { showToast } from "./toast";
 import { holdWithUndo } from "./heldChangeRuntime";
 import { withoutHeld } from "./heldDelete";
@@ -64,11 +64,19 @@ export async function setChoirSharing(targets: readonly Sheet[], share: boolean)
   return done;
 }
 
-/** Files the sheets in a folder (null takes them out). Returns the ones moved; all moved is a tick and a toast. */
-export async function fileSheets(targets: readonly Sheet[], folder: string | null): Promise<{ moved: Set<string>; ok: boolean }> {
+/**
+ * Files the sheets in a folder (null takes them out). Returns the ones moved; all moved is a tick and a toast. A failure
+ * is said in a dialog, or, with `inline` (the New folder sheet, still open), handed back as `error` for its field.
+ */
+export async function fileSheets(
+  targets: readonly Sheet[],
+  folder: string | null,
+  { inline = false } = {},
+): Promise<{ moved: Set<string>; ok: boolean; error?: string }> {
   const results = await Promise.allSettled(targets.map((t) => libraryApi.setFolder(t.id, folder)));
   const moved = new Set(targets.filter((_, i) => results[i]!.status === "fulfilled").map((t) => t.id));
   const failure = firstFailure(results);
+  if (failure && inline) return { moved, ok: false, error: toApiError(failure.reason).message };
   if (failure) failed("Could not move the sheet", failure.reason);
   else {
     haptics.play("success");
@@ -77,11 +85,12 @@ export async function fileSheets(targets: readonly Sheet[], folder: string | nul
   return { moved, ok: !failure };
 }
 
-/** "Keep offline" for one sheet. Resolves true when it changed. */
+/** "Keep offline" for one sheet, said with a tick and a toast. Resolves true when it changed. */
 export async function keepSheetOffline(id: string, keep: boolean): Promise<boolean> {
   try {
     await setSheetPinned(id, keep);
     haptics.play("success");
+    showToast(offlineToast(keep));
     return true;
   } catch (e) {
     const err = toApiError(e);
@@ -94,14 +103,18 @@ export async function keepSheetOffline(id: string, keep: boolean): Promise<boole
   }
 }
 
-/** Renames a saved sheet. Returns the title the server kept, or null when it failed. */
-export async function renameSheet(id: string, title: string): Promise<string | null> {
+/**
+ * Renames a saved sheet. Returns the title the server kept, or null when it failed — said in a dialog, or, with
+ * `onError` (the Rename sheet, still open), handed to it for the field.
+ */
+export async function renameSheet(id: string, title: string, onError?: (message: string) => void): Promise<string | null> {
   try {
     const updated = await libraryApi.rename(id, title.trim());
     showToast("Renamed");
     return updated.title;
   } catch (e) {
-    failed("Could not rename", e);
+    if (onError) onError(toApiError(e).message);
+    else failed("Could not rename", e);
     return null;
   }
 }
@@ -120,8 +133,8 @@ export function askToDelete(targets: readonly Sheet[], onDelete: () => void, { u
   showDialog({
     title: one ? `Delete “${one.title}”?` : `Delete ${targets.length} sheets?`,
     message: one
-      ? `It leaves your library on every device and its share link stops working.${final}`
-      : `They leave your library on every device and their share links stop working.${final}`,
+      ? `It leaves your Library on every device and its share link stops working.${final}`
+      : `They leave your Library on every device and their share links stop working.${final}`,
     actions: [
       { label: "Cancel", style: "cancel" },
       { label: "Delete", style: "destructive", onPress: onDelete },

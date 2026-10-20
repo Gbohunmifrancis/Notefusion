@@ -56,6 +56,12 @@ export function useSheetActions({ items, setItems, reload, onDone, onSelectSever
   const [newFolder, setNewFolder] = useState("");
   const [renaming, setRenaming] = useState<SavedTranscription | null>(null);
   const [newTitle, setNewTitle] = useState("");
+  /**
+   * New folder and Rename stay open until the server answers: busy on their button, and a refusal under the field
+   * with the name still typed, rather than closing at once and losing it to a dialog.
+   */
+  const [sheetBusy, setSheetBusy] = useState(false);
+  const [sheetError, setSheetError] = useState<string | null>(null);
   const [actionsFor, setActionsFor] = useState<SavedTranscription | null>(null);
   /** Rows folding away after Delete, and rows Undo put back (they unfold where they were). */
   const [leaving, setLeaving] = useState<ReadonlySet<string>>(new Set());
@@ -137,6 +143,7 @@ export function useSheetActions({ items, setItems, reload, onDone, onSelectSever
           icon: "add",
           onPress: () => {
             setNewFolder("");
+            setSheetError(null);
             setNaming(targets);
           },
         },
@@ -189,9 +196,35 @@ export function useSheetActions({ items, setItems, reload, onDone, onSelectSever
     };
   }
 
-  async function rename(target: SavedTranscription, title: string) {
-    const kept = await renameSheet(target.id, title);
-    if (kept !== null) patch(new Set([target.id]), (t) => ({ ...t, title: kept }));
+  /** New folder's Create: the sheets are filed in it, and the sheet closes once that is done. */
+  async function createFolder() {
+    const targets = naming;
+    if (!targets || sheetBusy) return;
+    const name = folderNamed(newFolder, folders);
+    setSheetBusy(true);
+    setSheetError(null);
+    const { moved, ok, error } = await fileSheets(targets, name, { inline: true });
+    setSheetBusy(false);
+    patch(moved, (t) => ({ ...t, folder: name }));
+    if (!ok) {
+      setSheetError(error ?? null);
+      return;
+    }
+    setNaming(null);
+    onDone?.();
+  }
+
+  /** Rename's Save: the sheet closes once the server has the new name. */
+  async function saveRename() {
+    const target = renaming;
+    if (!target || sheetBusy) return;
+    setSheetBusy(true);
+    setSheetError(null);
+    const kept = await renameSheet(target.id, newTitle, setSheetError);
+    setSheetBusy(false);
+    if (kept === null) return;
+    patch(new Set([target.id]), (t) => ({ ...t, title: kept }));
+    setRenaming(null);
   }
 
   /** Opens one sheet's actions (the ⋯ on Home's and the Library's rows; a long press on Home's). */
@@ -212,6 +245,7 @@ export function useSheetActions({ items, setItems, reload, onDone, onSelectSever
       one &&
       closeActions(() => {
         setNewTitle(one.title);
+        setSheetError(null);
         setRenaming(one);
       }),
     onMove: () => one && closeActions(() => chooseFolder([one])),
@@ -244,37 +278,45 @@ export function useSheetActions({ items, setItems, reload, onDone, onSelectSever
           label="Folder name"
           placeholder="Sunday choir, Easter service…"
           value={newFolder}
-          onChangeText={setNewFolder}
+          onChangeText={(t) => {
+            setNewFolder(t);
+            setSheetError(null);
+          }}
           autoFocus
           maxLength={80}
+          error={sheetError ?? undefined}
         />
         <SheetActions style={styles.actions}>
           <Button label="Cancel" variant="text" onPress={() => setNaming(null)} />
           <Button
             label="Create"
+            loading={sheetBusy}
             disabled={newFolder.trim().length === 0}
-            onPress={() => {
-              const targets = naming;
-              setNaming(null);
-              if (targets) void fileIn(targets, folderNamed(newFolder, folders));
-            }}
+            onPress={() => void createFolder()}
           />
         </SheetActions>
       </Sheet>
       {/* Rename: one field, then [Cancel] [Save]. */}
       <Sheet visible={renaming !== null} onClose={() => setRenaming(null)} avoidKeyboard>
         <SheetTitle>Rename</SheetTitle>
-        <TextField label="Name" value={newTitle} onChangeText={setNewTitle} autoFocus maxLength={200} />
+        <TextField
+          label="Name"
+          value={newTitle}
+          onChangeText={(t) => {
+            setNewTitle(t);
+            setSheetError(null);
+          }}
+          autoFocus
+          maxLength={200}
+          error={sheetError ?? undefined}
+        />
         <SheetActions style={styles.actions}>
           <Button label="Cancel" variant="text" onPress={() => setRenaming(null)} />
           <Button
             label="Save"
+            loading={sheetBusy}
             disabled={newTitle.trim().length === 0 || newTitle.trim() === renaming?.title}
-            onPress={() => {
-              const target = renaming;
-              setRenaming(null);
-              if (target) void rename(target, newTitle);
-            }}
+            onPress={() => void saveRename()}
           />
         </SheetActions>
       </Sheet>

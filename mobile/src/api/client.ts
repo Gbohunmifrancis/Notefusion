@@ -248,7 +248,11 @@ export function toApiError(err: unknown): ApiError {
   }
   if (data?.message) return data;
   if (ax?.response?.status === 415) {
-    return { code: 'UNSUPPORTED_MEDIA', message: 'Unsupported audio format. Please re-record.' };
+    // An imported file as often as a recording: both ways on are said.
+    return {
+      code: 'UNSUPPORTED_MEDIA',
+      message: "We couldn't read that audio. Record it again, or choose an MP3, M4A or WAV file.",
+    };
   }
   if (ax?.response?.status === 422) {
     return { code: 'INVALID_AUDIO', message: 'No clear notes detected. Sing or play louder.' };

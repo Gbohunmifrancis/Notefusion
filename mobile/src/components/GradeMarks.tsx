@@ -13,10 +13,19 @@ import { useColors, useThemedStyles } from "../lib/theme";
 import { rewardMoment } from "../lib/practiceProgress";
 import { FOCUSED_MARK_LEGEND, markGlyph, markLabel } from "../lib/markShape";
 
-export function GradeMarks({ grade, notes }: { grade: GradeResult; notes: readonly NoteEvent[] }) {
+export function GradeMarks({
+  grade,
+  notes,
+  showEarned = true,
+}: {
+  grade: GradeResult;
+  notes: readonly NoteEvent[];
+  /** False when the screen has already said the line it earned (Practice's reward toast): it is said once. */
+  showEarned?: boolean;
+}) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const earned = rewardMoment(grade.reward);
+  const earned = showEarned ? rewardMoment(grade.reward) : null;
 
   const statusColor = (s: string) =>
     s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.textMuted : colors.textFaint;

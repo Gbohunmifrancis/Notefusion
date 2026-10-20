@@ -36,7 +36,8 @@ import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLib
 import { resultFromSaved } from "../lib/openSheet";
 import { useOpening } from "../lib/useOpening";
 import { onTakeChange, removeTake, retryTake, useOutbox, useSendProgress } from "../lib/outbox";
-import { isUnopened } from "../lib/savedSheet";
+import { REFRESH_FAILED, isUnopened } from "../lib/savedSheet";
+import { libraryRowLine, parseUtc } from "../lib/sheetMeta";
 import { matchesWords } from "../lib/hymnPack";
 import { useReachability } from "../lib/connectivity";
 import { isNetworkCode } from "../lib/reachability";
@@ -170,16 +171,17 @@ export function LibraryScreen() {
     if (folder !== null && !folders.includes(folder)) setFolder(null);
   }, [folder, folders]);
 
-  // Android back leaves select mode before it leaves the screen.
+  // Android back leaves select mode, then closes the search, before it leaves the screen.
   useFocusEffect(
     useCallback(() => {
-      if (!selecting) return undefined;
+      if (!selecting && !searchOpen) return undefined;
       const sub = BackHandler.addEventListener("hardwareBackPress", () => {
-        setSelected(new Set());
+        if (selecting) setSelected(new Set());
+        else closeSearch();
         return true;
       });
       return () => sub.remove();
-    }, [selecting]),
+    }, [selecting, searchOpen]),
   );
 
   const filteredItems = items.filter((item) => {
@@ -191,8 +193,8 @@ export function LibraryScreen() {
 
   const sortedItems = React.useMemo(() => {
     return [...filteredItems].sort((a, b) => {
-      const tA = new Date(a.createdAtUtc).getTime();
-      const tB = new Date(b.createdAtUtc).getTime();
+      const tA = parseUtc(a.createdAtUtc);
+      const tB = parseUtc(b.createdAtUtc);
       return sortOrder === "newest" ? tB - tA : tA - tB;
     });
   }, [filteredItems, sortOrder]);
@@ -311,9 +313,8 @@ export function LibraryScreen() {
   }
 
   function subtitleFor(item: SavedTranscription) {
-    const date = new Date(item.createdAtUtc).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
     // On "All" the folder says where a sheet lives; inside a folder it would repeat the tab.
-    return [date, folder === null ? item.folder : null, `${Math.round(item.tempoBpm)} bpm`].filter(Boolean).join(" · ");
+    return libraryRowLine(item, folder === null, new Date());
   }
 
   const folderLink = folder ? folderLinks[folder] : undefined;
@@ -332,7 +333,7 @@ export function LibraryScreen() {
             radius={radii.pill}
             // 40 px circles: the slop makes them 48 dp without moving them.
             hitSlop={4}
-            accessibilityLabel="New transcription"
+            accessibilityLabel="Record a new sheet"
           >
             <Icon name="add" size={22} color={colors.text} />
           </Touchable>
@@ -409,6 +410,9 @@ export function LibraryScreen() {
           <Text style={styles.offlineText}>Offline — showing saved copies</Text>
         </View>
       )}
+
+      {/* A read that failed over rows already shown: said, so they are not taken for the latest. */}
+      {loadError && items.length > 0 ? <ProblemNote style={styles.refreshNote}>{REFRESH_FAILED}</ProblemNote> : null}
 
       {/* ── Recordings waiting to send (record now, send later) ──────────────── */}
       <PendingSends
@@ -490,7 +494,11 @@ export function LibraryScreen() {
       )}
 
       {/* Below "On its way", the sheets themselves, so the two lists read apart (board 13). */}
-      {(outbox.length > 0 || song.row) && sortedItems.length > 0 ? <Text style={styles.sheetsEyebrow}>All sheets</Text> : null}
+      {(outbox.length > 0 || song.row) && sortedItems.length > 0 ? (
+        <Text style={styles.sheetsEyebrow} accessibilityRole="header">
+          All sheets
+        </Text>
+      ) : null}
     </View>
   );
 
@@ -763,6 +771,9 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
     },
+    refreshNote: {
+      marginTop: spacing.md,
+    },
     sheetsEyebrow: {
       fontFamily: fonts.medium,
       fontSize: 12,
@@ -796,16 +807,17 @@ const makeStyles = (c: Palette) =>
       fontSize: 14,
       color: c.text,
     },
+    // The banner is a blue notice on its tint: its words take the notice tokens, ≥5:1 there in Day.
     bannerSub: {
       fontFamily: fonts.regular,
       fontSize: 12,
-      color: c.textMuted,
+      color: c.noticeMuted,
       marginTop: 2,
     },
     bannerAction: {
       fontFamily: fonts.medium,
       fontSize: 13,
-      color: c.accent,
+      color: c.noticeText,
     },
 
     // ── Rows ───────────────────────────────────────────────────────────────────

@@ -8,7 +8,7 @@ import { gridHtml, textLinesHtml } from "./grid-html.mjs";
 import { melodyToMusicXml } from "./musicxml.mjs";
 import { PD_DIED_BEFORE, PD_PUBLISHED_BEFORE } from "./content.mjs";
 import { CCEH, tuneIndexItem } from "./render-tunes.mjs";
-import { identifyCallout } from "./render-identify.mjs";
+import { identifyCallout, IDENTIFY_PATH } from "./render-identify.mjs";
 import { personKey } from "./collections.mjs";
 import { moreLinks, occasionLinks, browseLinks, personLink, pdfButton, pdfAlternate } from "./render-collections.mjs";
 import { pdfPath } from "./render-pdf.mjs";
@@ -314,7 +314,7 @@ ${occasions.length ? `<h2 class="hymn-seasons-title">Hymns for the season</h2>\n
 <div class="hymn-index" id="hymn-index">
 ${sections}
 </div>
-<p class="hymn-none" id="hymn-none" hidden>No hymn matches that. Try fewer words, or <a href="/app">transcribe the song with NoteFusion</a>.</p>
+<p class="hymn-none" id="hymn-none" hidden>No hymn matches that. Try fewer words or <a href="/hymns" id="hymn-clear" data-track="Hymns: clear search">clear the search</a>, <a href="${IDENTIFY_PATH}" data-track="Hymns: hum to find (no match)">hum the tune and we'll find it</a>, or <a href="/app">transcribe the song with NoteFusion</a>.</p>
 <p class="note">Every hymn here is out of copyright: everyone who wrote it died before ${PD_DIED_BEFORE}, and it was first published before ${PD_PUBLISHED_BEFORE}. Most come from the ${OHP.name}${tunes.length ? ` and the ${CCEH.name}` : ""}; see <a href="/hymns/credits">sources and licences</a>. Want a song that is not here? <a href="/app">Transcribe it with NoteFusion</a>.</p>
 ${ctaBox("hymns")}`;
   return page({

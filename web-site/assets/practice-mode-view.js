@@ -84,7 +84,8 @@
     back.addEventListener("click", onBack || goBack);
     var text = el("div", "pm-top-text");
     text.appendChild(el("p", "pm-eyebrow", eyebrow));
-    var h = el("h2", "pm-title", title); h.id = "pm-title"; h.setAttribute("tabindex", "-1");
+    // The page's heading while a mode is open: the Practice view's own h1 steps aside then (practice-view.css).
+    var h = el("h1", "pm-title", title); h.id = "pm-title"; h.setAttribute("tabindex", "-1");
     text.appendChild(h);
     bar.appendChild(back); bar.appendChild(text);
     if (pill) bar.appendChild(el("span", "pm-pill", pill));
@@ -997,7 +998,7 @@
       mine.t0 = audio.currentTime + 0.05;
       if (opts.ex) scheduleTake(audio, opts.ex, countIn, mine.t0, got[1], m.headphones);
       m.phase = countIn.seconds > 0 ? "leadin" : "live"; render();
-      window.scrollTo({ top: 0, behavior: "smooth" }); // the note in hand, the needle and Stop, on one phone screen
+      window.scrollTo({ top: 0 }); // the note in hand, the needle and Stop, on one phone screen (smooth by the stylesheet, unless less motion is asked for)
       document.body.classList.add("is-recording");
       mine.timer = setInterval(function () { tick(mine); }, NEEDLE_MS);
       mine.stopAt = setTimeout(function () { if (take === mine) finishTake(); }, (opts.seconds + 0.05) * 1000);
@@ -1142,7 +1143,7 @@
           track("practice_mode_marked", "mode=" + ex.mode + ";score=" + grade.score + ";xp=" + ((grade.reward && grade.reward.xpGained) || 0));
           P().rewardEvents(grade.reward).forEach(function (e) { track(e.name, e.detail); });
           render();
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          window.scrollTo({ top: 0 }); // smooth by the stylesheet, unless less motion is asked for
           load(true).then(function () { if (g === gen && m.phase === "idle") render(); });
         }, function (err) {
           if (g !== gen) return;

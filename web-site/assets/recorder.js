@@ -5,7 +5,8 @@
  *
  *   NfRecorder.open({ maxSeconds: 30, onTake: function (blob, name, seconds, meter) {…}, onError: function (text, kind) {…} })
  *
- * `useLabel` names the button that sends the take ("Transcribe this take" when it is not given).
+ * `useLabel` names the button that sends the take ("Transcribe this take" when it is not given). `review: false` sends the
+ * take as Stop is pressed (or the time runs out), with no listen-back step: the hymn finder, where a take costs nothing.
  * `meter: true` asks "Beats in a bar" in the review (assets/meter.js, starting on Not sure each time the panel is opened):
  * the singer has just sung it and knows whether it went in threes. onTake then gets the meter named ("3/4"), or null.
  * `onError` gets a plain sentence and a kind ("unsupported" | "blocked" | "nomic" | "busy" | "short"), so the page can add
@@ -195,10 +196,17 @@
         if (rec.discard) { close(); return; }
         var blob = new Blob(rec.chunks, { type: type });
         if (blob.size < 2000) { close(); fail(opts, "short", "That was too short to hear. Hum for a few seconds."); return; }
-        rec.blob = blob; rec.name = type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm"; rec.seconds = seconds;
+        var name = type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm";
+        hook(opts, "sounds", "stop");
+        if (opts.review === false) {
+          close();
+          hook(opts, "track", "Recording sent");
+          if (opts.onTake) opts.onTake(blob, name, seconds, null);
+          return;
+        }
+        rec.blob = blob; rec.name = name; rec.seconds = seconds;
         rec.url = URL.createObjectURL(blob); els.audio.src = rec.url;
         els.length.textContent = fmtClock(seconds);
-        hook(opts, "sounds", "stop");
         showLive(false);
       });
       try {

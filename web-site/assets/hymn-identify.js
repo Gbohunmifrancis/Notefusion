@@ -197,7 +197,8 @@
     if (!window.NfRecorder) { failure(null, null, -1); return; }
     window.NfRecorder.open({
       maxSeconds: MAX_SECONDS,
-      useLabel: "Find this hymn",
+      // Stop sends the hum: listening back first was a step that, for a free lookup, only slowed it down.
+      review: false,
       onTake: function (blob, name) { send(blob, name); },
       onError: function (text, kind) {
         showStart(true);

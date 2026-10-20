@@ -18,6 +18,8 @@ import { meApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { pickProfileImage } from "../lib/imagePicker";
 import { refreshProfilePicture, setProfilePicture, useProfilePicture } from "../lib/profilePicture";
+import { holdWithUndo } from "../lib/heldChangeRuntime";
+import { PHOTO_REMOVED_LINE } from "../lib/undoWords";
 import { getPushPermission, loadNotificationPrefs, pushEnabled } from "../lib/push";
 import { notificationsValue } from "../lib/pushStatus";
 import { useFeedback } from "../lib/feedback";
@@ -104,22 +106,36 @@ export function ProfileScreen() {
     }
   }
 
-  async function removePicture() {
-    if (!user) return;
-    setAvatarBusy(true);
-    try {
-      const updated = await meApi.removePicture();
-      setProfilePicture(user.id, updated.profilePictureUrl);
-    } catch (e) {
-      showDialog({
-        title: "Could not remove photo",
-        message: toApiError(e).message,
-        icon: "problem",
-        tone: "danger",
-      });
-    } finally {
-      setAvatarBusy(false);
-    }
+  /**
+   * Remove photo, held behind "Photo removed · Undo" (board m-ux-medium's held changes): the photo goes at once and the
+   * server is told when the toast leaves, so a slip is one tap back. A refusal puts the photo back and says so.
+   */
+  function removePicture() {
+    if (!user || !picture) return;
+    const userId = user.id;
+    const before = picture;
+    setProfilePicture(userId, null);
+    holdWithUndo(
+      PHOTO_REMOVED_LINE,
+      {
+        commit: async () => {
+          try {
+            const updated = await meApi.removePicture();
+            setProfilePicture(userId, updated.profilePictureUrl);
+          } catch (e) {
+            setProfilePicture(userId, before);
+            showDialog({
+              title: "Could not remove photo",
+              message: toApiError(e).message,
+              icon: "problem",
+              tone: "danger",
+            });
+          }
+        },
+        undo: () => setProfilePicture(userId, before),
+      },
+      "delete",
+    );
   }
 
   function onAvatarPress() {
@@ -225,7 +241,7 @@ export function ProfileScreen() {
         <Row
           icon="settings"
           label="Settings"
-          hint="Account, appearance, data saver, sign out"
+          hint="Account, look & feel, data saver, sign out"
           chevron
           onPress={() => nav.navigate("Settings")}
         />

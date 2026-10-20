@@ -15,11 +15,20 @@ import { playfulRewardLine, starHint, starsArt, starsFor, starWord } from "../..
 import { PLAYFUL_MARK_LEGEND, markGlyph, markLabel } from "../../lib/markShape";
 import { Art } from "./Art";
 
-export function StarGrade({ grade, notes }: { grade: GradeResult; notes: readonly NoteEvent[] }) {
+export function StarGrade({
+  grade,
+  notes,
+  showEarned = true,
+}: {
+  grade: GradeResult;
+  notes: readonly NoteEvent[];
+  /** False when the screen has already said the line it earned (Practice's reward toast): it is said once. */
+  showEarned?: boolean;
+}) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const stars = starsFor(grade.score);
-  const earned = playfulRewardLine(grade.reward);
+  const earned = showEarned ? playfulRewardLine(grade.reward) : null;
 
   const statusColor = (s: string) =>
     s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.textMuted : colors.textFaint;

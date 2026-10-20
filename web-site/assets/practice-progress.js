@@ -26,8 +26,11 @@
   /** How much of the weekly goal is done, 0–1. */
   function weeklyFraction(goal) { return goal && goal.target > 0 ? clamp01(goal.daysDone / goal.target) : 0; }
 
-  /** "185 XP to Fah", or the top level's own line. */
-  function nextLevelLine(level) { return level.nextName ? level.xpForNext + " XP to " + level.nextName : "Top of the ladder"; }
+  /** "12 XP to Ray", "1,250 XP to Soh", or the top level's own line. */
+  function nextLevelLine(level) { return level.nextName ? xpAmount(level.xpForNext) + " to " + level.nextName : "Top of the ladder"; }
+
+  /** "12,450 XP": grouped by hand, as the phone's `xpAmount` is. */
+  function xpAmount(xp) { return String(Math.round(xp)).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " XP"; }
 
   /** "4-day streak", "1-day streak", "No streak yet" — or "No streak now" when an earlier one lapsed. */
   function streakLabel(days, best) { return days > 0 ? days + "-day streak" : best > 0 ? "No streak now" : "No streak yet"; }
@@ -147,8 +150,8 @@
   /** The result's main button: on to the next drill, or the same one again when the path brings it back after a miss. */
   function nextAction(current, next, track) {
     var same = !!next && !!current && next.id === current.id;
-    if (track === "playful") return { label: same ? "Try again!" : "Next one!", same: same };
-    return { label: same ? "Try it again" : "Next drill", same: same };
+    if (track === "playful") return { label: same ? "Try again!" : "Keep going!", same: same };
+    return { label: same ? "Try it again" : "Continue", same: same };
   }
 
   function beatSec(tempo) { return 60 / Math.max(30, tempo || 0); }
@@ -411,7 +414,7 @@
     JOY_LINE: JOY_LINE, CHIME_BPM: CHIME_BPM, KING_OPENING: KING_OPENING, KING_BPM: KING_BPM, KING_PHRASE_NOTES: KING_PHRASE_NOTES,
     kingPhrase: kingPhrase, mountainKing: mountainKing, solfaLine: solfaLine, phraseLine: phraseLine, stickerLine: stickerLine,
     TAIL_SEC: TAIL_SEC,
-    levelFraction: levelFraction, weeklyFraction: weeklyFraction, nextLevelLine: nextLevelLine,
+    levelFraction: levelFraction, weeklyFraction: weeklyFraction, nextLevelLine: nextLevelLine, xpAmount: xpAmount,
     streakLabel: streakLabel, bestStreakLine: bestStreakLine, streakLine: streakLine, freezeLine: freezeLine,
     sortBadges: sortBadges, badgeFraction: badgeFraction, rewardMoment: rewardMoment, rewardEvents: rewardEvents,
     weekdayLetter: weekdayLetter, dayDots: dayDots, drillsLeft: drillsLeft, allowanceLine: allowanceLine, resetTime: resetTime,

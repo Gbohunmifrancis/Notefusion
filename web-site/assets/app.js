@@ -188,6 +188,8 @@
   function $(id) { return document.getElementById(id); }
   function show(el) { el.classList.remove("hidden"); }
   function hide(el) { el.classList.add("hidden"); }
+  /** How the page scrolls to something: smoothly, unless the device asks for less motion (then it jumps). */
+  function glide() { return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"; }
   function alertIn(el, kind, text) {
     el.className = "alert alert-" + kind;
     el.textContent = text;
@@ -207,7 +209,7 @@
     return out;
   }
   /** A button's content: an icon from the page's sprite and a label. */
-  function label(btn, icon, text) { btn.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + icon + '"/></svg>' + text; }
+  function label(btn, icon, text) { btn.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-' + icon + '"/></svg>' + text; }
   function initial(name) { return (name || "?").trim().charAt(0).toUpperCase() || "?"; }
   /** "Good morning, Francis" — the time of day, and the first name when there is one. */
   function greeting(name) {
@@ -319,7 +321,7 @@
       b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on));
     });
     var t = $("auth-theme");
-    t.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + (dark ? "sun" : "moon") + '"/></svg>';
+    t.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-' + (dark ? "sun" : "moon") + '"/></svg>';
     t.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
   }
   function setThemePref(pref) {
@@ -398,7 +400,7 @@
   /** Signed out here or in another tab, or the session ran out: nothing of the account stays on screen. */
   function forgetAccount() {
     me = null; sub = null; libraryCache = null; libFolder = null; choir = null; pendingDelete = null; dropToast();
-    founderNotes = null; renderFounder(); closeDialog();
+    founderNotes = null; renderFounder(); closeDialog(); resetChoirPanel();
     stopPaymentWatch(); hide($("top-nav")); showTabbar(false); document.body.classList.remove("is-pro");
     $("recents-list").innerHTML = "";
     hide($("practice-chip")); hide($("practice-slot")); hide($("season-carols")); if (window.NfPracticeView) window.NfPracticeView.reset();
@@ -426,7 +428,7 @@
   }
   var AUTH_COPY = {
     login: ["Welcome back", "Sign in to open your sheets on any device."],
-    register: ["Create your account", "Free to start: 3 hummed or recorded transcriptions every week."],
+    register: ["Create your account", "Free to start: 3 hummed or recorded transcriptions every week. We'll email you a code to confirm your address."],
     verify: ["Check your email", "One code and you're in."]
   };
   function showAuthForm(name) {
@@ -440,7 +442,7 @@
   /** "Just trying it out?": the 30-second preview, opened under the form. */
   function openTry() {
     show($("try-free")); hide($("try-open")); $("try-open").setAttribute("aria-expanded", "true");
-    $("try-free").scrollIntoView({ behavior: "smooth", block: "start" });
+    $("try-free").scrollIntoView({ behavior: glide(), block: "start" });
   }
   $("try-open").addEventListener("click", openTry);
   function selectAuthTab(name) { showAuthForm(name); }
@@ -486,12 +488,17 @@
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("onb").classList.contains("hidden")) closeOnb(false); });
   document.querySelectorAll(".how-link").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); openOnb(); }); });
 
-  document.querySelectorAll("[data-tab]").forEach(function (b) { b.addEventListener("click", function () { showAuthForm(b.dataset.tab); }); });
+  /** The address typed under one tab is there under the other: someone who meant the other form types it once. */
+  function carryEmail(to) {
+    var from = $(to === "register" ? "login-email" : "reg-email"), into = $(to === "register" ? "reg-email" : "login-email");
+    if (!into.value.trim() && from.value.trim()) into.value = from.value.trim();
+  }
+  document.querySelectorAll("[data-tab]").forEach(function (b) { b.addEventListener("click", function () { carryEmail(b.dataset.tab); showAuthForm(b.dataset.tab); }); });
   document.querySelectorAll("[data-eye]").forEach(function (b) {
     b.addEventListener("click", function () {
       var input = $(b.dataset.eye), showing = input.type === "text";
       input.type = showing ? "password" : "text";
-      b.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-' + (showing ? "eye" : "eye-off") + '"/></svg>';
+      b.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-' + (showing ? "eye" : "eye-off") + '"/></svg>';
       b.setAttribute("aria-label", showing ? "Show password" : "Hide password");
     });
   });
@@ -511,7 +518,7 @@
     request("/api/auth/forgot-password", { method: "POST", anonymous: true, body: { email: email } })
       .then(function () {
         alertIn($("auth-alert"), "success", "If that address has an account, a reset link is on its way.");
-        $("auth-alert").scrollIntoView({ block: "nearest", behavior: "smooth" }); // asked from under the password, it may be out of sight
+        $("auth-alert").scrollIntoView({ block: "nearest", behavior: glide() }); // asked from under the password, it may be out of sight
       })
       .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not send the reset email."); })
       .finally(function () { btn.disabled = false; });
@@ -522,13 +529,22 @@
   // site's origin has to be listed under that client's authorised JavaScript origins in the
   // Google Cloud console, or the button renders and then refuses to sign anyone in.
   var GOOGLE_CLIENT_ID = "21738378819-3prjgka9cpf6c2l3si6q879vgm06kf6h.apps.googleusercontent.com";
+  /**
+   * A brand-new account (the code just confirmed, or a Google account made a moment ago) is greeted once, at the foot
+   * of the screen, rather than landing on the studio without a word.
+   */
+  function welcome() { if (me && !guest) showToast("You're in. Welcome to NoteFusion."); }
+  function welcomeIfNew() {
+    var made = me && Date.parse(me.createdAtUtc || me.createdAt || "");
+    if (made && Date.now() - made < 10 * 60 * 1000) welcome();
+  }
   var googleBusy = false; // Google's popup can hand back a credential twice; one sign-in at a time
   function onGoogleCredential(res) {
     if (!res || !res.credential || googleBusy) return;
     googleBusy = true;
     hide($("auth-alert"));
     request("/api/auth/google", { method: "POST", anonymous: true, body: { idToken: res.credential } })
-      .then(function (out) { saveTokens({ accessToken: out.accessToken, refreshToken: out.refreshToken }); track("Signed in with Google"); return boot(); })
+      .then(function (out) { saveTokens({ accessToken: out.accessToken, refreshToken: out.refreshToken }); track("Signed in with Google"); return boot().then(welcomeIfNew); })
       .catch(function (err) {
         // The server's "token is invalid or has expired" is plumbing; the person only needs to try again.
         var text = /token/i.test(err.message || "") ? "Google sign-in didn't finish. Please try again." : (err.message || "Google sign-in did not go through.");
@@ -641,7 +657,7 @@
       .catch(function (err) {
         // The password was right but the address was never confirmed, and a fresh code is on its way:
         // straight to the code boxes, as the phone does, rather than an error with nowhere to type it.
-        if (err.code === "AUTH_EMAIL_NOT_VERIFIED") { openVerify($("login-email").value.trim(), "We've emailed you a new code. Enter it to finish setting up your account.", "login"); return; }
+        if (err.code === "AUTH_EMAIL_NOT_VERIFIED") { openVerify($("login-email").value.trim(), "login"); return; }
         var reset = null;
         if (err.code === "AUTH_INVALID_CREDENTIALS" && ++loginMisses >= 2) {
           reset = document.createElement("button");
@@ -653,11 +669,21 @@
       .finally(function () { btn.disabled = false; restore(); });
   });
   var verifyFrom = "register"; // the form the code step came from, which "Wrong address? Change it" returns to
-  function openVerify(email, note, from) {
+  /**
+   * The code step says once, under its heading, where the code went and why (no alert above saying it again): a new
+   * account's code, or a fresh one for an address that was never confirmed.
+   */
+  var VERIFY_NOTE = {
+    register: ["We emailed a six-digit code to ", ". Enter it to finish creating your account."],
+    login: ["This address isn't confirmed yet, so we've emailed a new six-digit code to ", ". Enter it to finish setting up your account."]
+  };
+  function openVerify(email, from) {
     pendingEmail = email; verifyFrom = from || "register";
-    $("verify-email-label").textContent = pendingEmail;
+    var words = VERIFY_NOTE[verifyFrom] || VERIFY_NOTE.register, note = $("verify-note"), who = document.createElement("strong");
+    who.id = "verify-email-label"; who.textContent = pendingEmail;
+    note.textContent = "";
+    note.appendChild(document.createTextNode(words[0])); note.appendChild(who); note.appendChild(document.createTextNode(words[1]));
     showAuthForm("verify");
-    alertIn($("auth-alert"), "success", note);
     resendCooldown();
     $("verify-code").focus();
   }
@@ -690,7 +716,7 @@
     request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value, source: "web" } })
       .then(function (res) {
         track("Created account");
-        openVerify((res && res.email) || $("reg-email").value.trim(), "Almost there — enter the code we just emailed you.", "register");
+        openVerify((res && res.email) || $("reg-email").value.trim(), "register");
       })
       .catch(function (err) {
         // The checks above catch what the validator would; its own words ("'Full Name' must not be empty.") stay out.
@@ -713,7 +739,7 @@
         saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
         track("Verified email");
         showAuthForm("login");
-        return boot();
+        return boot().then(welcome);
       })
       .catch(function (err) { fieldError("verify-code", err.message || "That code did not match."); })
       .finally(function () { btn.disabled = false; restore(); });
@@ -794,7 +820,7 @@
       history.replaceState(history.state, "", url.pathname + url.search + url.hash);
     } catch (e) { /* the address keeps the old view; nothing depends on it */ }
     ["transcribe", "library", "practice", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
-    // The nav says where you are, to the eye and to a screen reader; Search lights itself, not Transcriptions.
+    // The nav says where you are, to the eye and to a screen reader; Search lights itself, not Library.
     var navOn = focusSearch ? "search" : name;
     // The phone's tab bar has no Search (the Library's own box is it) and no Account (the photo, top right).
     document.querySelectorAll("#top-nav .top-link, #tabbar [data-view]").forEach(function (b) {
@@ -806,7 +832,7 @@
     if (name === "account") renderAccount();
     name === "practice" ? openPracticeView() : leavePracticeView();
     closeDrawer(); closeUserMenu();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: glide() });
   }
   /** A view chosen in the nav or the menu is a step the browser's Back undoes (assets/back.js). */
   function goView(name) {
@@ -856,7 +882,17 @@
   function showAccountUi(on) {
     ["topbar-avatar", "app-head", "side-foot"].forEach(function (id) { on ? show($(id)) : hide($(id)); });
     if (!on) closeUserMenu();
+    // The logo is the app's home (the studio) for a signed-in account, as the Home tab is; the site's for anyone else.
+    appLogos.forEach(function (a) { a.setAttribute("href", on ? "/app" : "/"); });
   }
+  var appLogos = document.querySelectorAll(".topbar .brand, .side-head .brand");
+  appLogos.forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      if (a.getAttribute("href") !== "/app" || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      goView("transcribe");
+    });
+  });
   $("menu-plans").addEventListener("click", function () { closeUserMenu(); openUpgrade(); });
   $("menu-how").addEventListener("click", function (e) { e.preventDefault(); closeUserMenu(); closeDrawer(); openOnb(); });
   $("topbar-signin").addEventListener("click", function () { openAuth("login"); });
@@ -865,7 +901,7 @@
   // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
   // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
   // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=9", "/assets/practice-progress.js?v=8", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=2", "/assets/practice-view.js?v=11"];
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=10", "/assets/practice-progress.js?v=9", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=3", "/assets/practice-view.js?v=12"];
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
   function loadAsset(url) {
@@ -918,8 +954,9 @@
     chip.classList.toggle("is-start", start);
     chip.classList.toggle("is-on", p.streak.current > 0);
     $("practice-chip-streak").textContent = p.streak.current;
-    $("practice-chip-xp").textContent = p.xp + " XP";
-    chip.setAttribute("aria-label", start ? "Start practising: open Practice" : "Practice: " + p.streak.current + "-day streak, " + p.xp + " XP, level " + p.level.name);
+    var xp = String(Math.round(p.xp)).replace(/\B(?=(\d{3})+(?!\d))/g, ","); // "12,450", as Practice writes it
+    $("practice-chip-xp").textContent = xp + " XP";
+    chip.setAttribute("aria-label", start ? "Start practising: open Practice" : "Practice: " + p.streak.current + "-day streak, " + xp + " XP, level " + p.level.name);
     show(chip);
     renderSeasonCarols(p);
   }
@@ -928,7 +965,7 @@
    * greeting to the path in Practice, in the season's tint — pine "Sing the carols · 2 of 6" (board d-christmas/06),
    * pumpkin "The Midnight path · 2 of 6" (board j-halloween/06).
    */
-  var SEASON_CSS = "/assets/season.css?v=2";
+  var SEASON_CSS = "/assets/season.css?v=4";
   function renderSeasonCarols(p) {
     var link = $("season-carols"), season = p && p.season;
     if (!season) { hide(link); return; }
@@ -1010,6 +1047,16 @@
       show($("lib-folder-bar"));
     } else hide($("lib-folder-bar"));
   }
+  /** A saved sheet's opening notes in solfa ("s, d m d m r d l,"), from the preview every read carries; "" without one. */
+  function openingSolfa(it) { return (it.preview || []).map(function (n) { return (n.solfa || "") + (n.octaveMark || ""); }).join(" "); }
+  /** "18 Oct" this year, "20 Dec 2025" before it: in the reader's own order. */
+  function shortDate(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    var opts = { day: "numeric", month: "short" };
+    if (d.getFullYear() !== new Date().getFullYear()) opts.year = "numeric";
+    return d.toLocaleDateString(undefined, opts);
+  }
   /** Search text as people type it: no accents ("noel" finds "Noël"), no case, punctuation as spaces. */
   function fold(text) {
     return String(text || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -1045,13 +1092,40 @@
   function opensOnTap(card, open) {
     card.addEventListener("click", function (e) { if (!e.target.closest("button, select, a, input, label")) open(); });
   }
+  /**
+   * A folder's name, asked in the app's own dialog (it was the browser's prompt): `title` and `action` say what it is
+   * for, `name` is what the field starts with, `onName(name)` gets the trimmed name and `onCancel` runs when none is given.
+   */
+  var folderAsk = null;
+  function askFolderName(opts) {
+    folderAsk = opts;
+    $("folder-dialog-title").textContent = opts.title;
+    $("folder-save").textContent = opts.action;
+    clearFieldError("folder-input");
+    $("folder-input").value = opts.name || "";
+    openDialog("folder-dialog", "folder-input", function () {
+      var asked = folderAsk; folderAsk = null;
+      if (asked && !asked.given && asked.onCancel) asked.onCancel();
+    });
+    $("folder-input").select();
+  }
+  $("folder-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var asked = folderAsk, name = $("folder-input").value.trim();
+    if (!asked) return;
+    if (!name) { fieldError("folder-input", "Give the folder a name."); $("folder-input").focus(); return; }
+    asked.given = true;
+    closeDialog();
+    asked.onName(name);
+  });
+  $("folder-input").addEventListener("input", function () { clearFieldError("folder-input"); });
   /** Files a sheet: an existing folder, a new one, or none. */
   function fileSheet(it, value, select) {
-    var name = value;
     if (value === "__new") {
-      name = (window.prompt("Name the new folder (for example: Sunday choir, Easter service):", "") || "").trim();
-      if (!name) { select.value = it.folder || ""; return; }
+      askFolderName({ title: "New folder", action: "Create", onName: function (name) { fileSheet(it, name, select); }, onCancel: function () { select.value = it.folder || ""; } });
+      return;
     }
+    var name = value;
     select.disabled = true;
     request("/api/library/" + it.id + "/folder", { method: "PUT", body: { folder: name || null } })
       .then(function () { it.folder = name || null; track("Filed sheet"); loadLibrary(false); })
@@ -1114,16 +1188,17 @@
   $("lib-folder-rename").addEventListener("click", function () {
     closeFolderMenu(true);
     if (!libFolder) return;
-    var to = (window.prompt("Rename “" + libFolder + "” to:", libFolder) || "").trim();
-    if (!to || to === libFolder) return;
     var from = libFolder;
-    request("/api/library/folders", { method: "PUT", body: { from: from, to: to } })
-      .then(function () {
-        // Renamed in the list as it stands, without a reload to the skeleton.
-        (libraryCache || []).forEach(function (x) { if (x.folder === from) x.folder = to; });
-        libFolder = to; loadLibrary(false);
-      })
-      .catch(function (err) { libAlert("Could not rename the folder: " + (err.message || err)); });
+    askFolderName({ title: "Rename “" + from + "”", action: "Rename", name: from, onName: function (to) {
+      if (to === from) return;
+      request("/api/library/folders", { method: "PUT", body: { from: from, to: to } })
+        .then(function () {
+          // Renamed in the list as it stands, without a reload to the skeleton.
+          (libraryCache || []).forEach(function (x) { if (x.folder === from) x.folder = to; });
+          libFolder = to; loadLibrary(false);
+        })
+        .catch(function (err) { libAlert("Could not rename the folder: " + (err.message || err)); });
+    } });
   });
 
   function loadLibrary(force) {
@@ -1132,6 +1207,7 @@
     return fetchLibrary(force).then(function (items) {
       hide(skel);
       list.innerHTML = "";
+      libEmptyState(false);
       if (!items.length) { show(empty); hide(list); return; }
       hide(empty); show(list);
       renderFolders(items);
@@ -1139,9 +1215,11 @@
       items.forEach(function (it) {
         var card = document.createElement("div"); card.className = "lib-item"; card.dataset.id = it.id; card.dataset.search = fold([it.title || "Untitled", it.folder, it.key].join(" ")); card.dataset.folder = it.folder || "";
         var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
-        var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
+        // A level under the page's h1 (the choir's cards sit under its own h2, so they stay h3).
+        var h = document.createElement("h2"); h.textContent = it.title || "Untitled"; card.appendChild(h);
         var m = document.createElement("div"); m.className = "meta";
-        m.textContent = [it.key, it.tempoBpm ? it.tempoBpm + " BPM" : "", it.timeSignature, new Date(it.createdAtUtc).toLocaleDateString()].filter(Boolean).join(" · ") + (it.shareToken ? " · shared" : "") + (it.sharedWithChoir ? " · in the choir library" : "");
+        // How the tune opens, in solfa, as the phone's rows show it, then the key and a short date ("18 Oct").
+        m.textContent = [openingSolfa(it), it.key, shortDate(it.createdAtUtc)].filter(Boolean).join(" · ") + (it.shareToken ? " · shared" : "") + (it.sharedWithChoir ? " · in the choir library" : "");
         card.appendChild(m);
         if (it.folder) { var tag = document.createElement("span"); tag.className = "lib-folder-tag"; tag.textContent = it.folder; card.appendChild(tag); }
         var a = document.createElement("div"); a.className = "actions";
@@ -1163,7 +1241,7 @@
         list.appendChild(card);
       });
       filterLibrary();
-    }).catch(function (err) { hide(skel); show(empty); $("lib-empty-text").textContent = "Your library didn't load. " + ((err && err.message) || "Check your connection and try again."); })
+    }).catch(function (err) { hide(skel); show(empty); libEmptyState(true, err); })
       .then(renderChoirLibrary);
   }
 
@@ -1280,8 +1358,7 @@
         var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
         var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
         var m = document.createElement("div"); m.className = "meta";
-        var opening = (it.preview || []).map(function (n) { return (n.solfa || "") + (n.octaveMark || ""); }).join(" ");
-        m.textContent = [it.mine ? "Shared by you" : "Shared by " + it.sharedBy, it.key, opening].filter(Boolean).join(" · ");
+        m.textContent = [it.mine ? "Shared by you" : "Shared by " + it.sharedBy, it.key, openingSolfa(it)].filter(Boolean).join(" · ");
         card.appendChild(m);
         var a = document.createElement("div"); a.className = "actions";
         var open = document.createElement("button"); open.className = "btn btn-primary btn-sm"; open.type = "button"; open.textContent = "Open";
@@ -1325,11 +1402,26 @@
       $("save-title").value = t.title || "";
       track("Opened choir sheet");
       showResult(result);
-      $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+      $("result").scrollIntoView({ behavior: glide(), block: "start" });
     }).catch(function (err) { if (at === epoch) libAlert("Could not open that sheet: " + (err.message || err)); });
   }
   // To the microphone: what every account can do for free (a song link never is on a free account).
-  $("lib-empty-go").addEventListener("click", function () { setView("transcribe"); selectSource("record"); $("rec-btn").focus(); });
+  /**
+   * The Library's empty card says one of two things: nothing saved yet (its button to the microphone), or that the list
+   * did not load (its button asks again, rather than sending someone off to record).
+   */
+  var libFailed = false;
+  function libEmptyState(failed, err) {
+    libFailed = failed;
+    $("lib-empty-text").textContent = failed
+      ? "Your library didn't load. " + ((err && err.message) || "Check your connection and try again.")
+      : "Nothing here yet. Every tune you transcribe lands here by itself, and in the app.";
+    label($("lib-empty-go"), failed ? "restart" : "plus", failed ? "Try again" : "New transcription");
+  }
+  $("lib-empty-go").addEventListener("click", function () {
+    if (libFailed) { loadLibrary(true); return; }
+    setView("transcribe"); selectSource("record"); $("rec-btn").focus();
+  });
   $("lib-search").addEventListener("input", filterLibrary);
   /** A saved sheet, opened into the same result view a fresh transcription uses. */
   function openSaved(id) {
@@ -1349,7 +1441,7 @@
       hide($("progress"));
       $("sheet-parts").innerHTML = "";
       showResult(result);
-      $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+      $("result").scrollIntoView({ behavior: glide(), block: "start" });
     }).catch(function (err) { if (at === epoch) libAlert("Could not open that sheet: " + (err.message || err)); });
   }
 
@@ -1367,13 +1459,18 @@
     $("acct-credits").textContent = u ? u.left + " of " + u.total + " left · " + (isPro() ? "resets " + resetDay() : freeNote(u).replace(/^R/, "r")) : "—";
     fillMeter($("acct-usage-fill"), u);
     var play = playBilled();
+    var soon = !play && !proViaChoir() ? daysLeft() : null, ended = lapsedOn();
     $("acct-sub-note").textContent = isPro()
-      ? periodLine() + (play ? " " + playLine() : sub && (sub.isLifetime || sub.isGift) ? "" : " Nothing renews by itself; add time whenever you like.")
-      : play ? playLine() : "Pro adds 20 songs a month, full songs up to six minutes, four-part harmony and every download format.";
+      ? periodLine() + (play ? " " + playLine() : sub && (sub.isLifetime || sub.isGift) ? ""
+        : soon !== null ? " " + (soon < 1 ? "That's today" : soon === 1 ? "That's tomorrow" : "That's in " + soon + " days") + ": add time to keep it."
+        : " Nothing renews by itself; add time whenever you like.")
+      : play ? playLine()
+      : (ended ? "Your Pro ended on " + longDate(ended) + ". " : "") + "Pro adds 20 songs a month, full songs up to six minutes, four-part harmony and every download format.";
     $("acct-upgrade-label").textContent = play ? (sub.paymentIssue ? "Fix it in Google Play" : "Manage in Google Play")
       : isPro() ? (sub && (sub.isLifetime || sub.isGift) ? "My membership" : "Add another month") : "See the plans";
     var since = me && (me.createdAtUtc || me.createdAt);
-    $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "short" }) : "—";
+    // The month spelled out, as the plan's and the choir's dates on Account are ("October 2026", "20 October 2026").
+    $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "long" }) : "—";
     fetchLibrary().then(function (items) { $("acct-saved").textContent = String(items.length); }, function () { $("acct-saved").textContent = "—"; });
     renderChoirPanel();
     // The Account group (board m-ux-medium W3d): an account that signs in with Google has no password to change.
@@ -1386,11 +1483,12 @@
   }
 
   // ── Account: the name, the password, the founder's notes (board m-ux-medium W3d) ──
-  // One small dialog each for the name and the password: focus goes in and stays in, Escape, Cancel, a tap outside or
-  // the browser's Back close it, and the focus goes back to the row that opened it.
-  var dialogOpen = null, dialogReturn = null;
-  function openDialog(id, focusId) {
-    dialogReturn = document.activeElement; dialogOpen = id;
+  // One small dialog each for the name and the password (and the Library's folder name): focus goes in and stays in,
+  // Escape, Cancel, a tap outside or the browser's Back close it, and the focus goes back to what opened it.
+  // `onClose` runs once it has closed, however it closed.
+  var dialogOpen = null, dialogReturn = null, dialogClosed = null;
+  function openDialog(id, focusId, onClose) {
+    dialogReturn = document.activeElement; dialogOpen = id; dialogClosed = onClose || null;
     show($(id));
     $(focusId).focus();
   }
@@ -1399,8 +1497,10 @@
     hide($(dialogOpen)); dialogOpen = null;
     if (dialogReturn && dialogReturn.focus && document.contains(dialogReturn)) dialogReturn.focus({ preventScroll: true });
     dialogReturn = null;
+    var after = dialogClosed; dialogClosed = null;
+    if (after) after();
   }
-  ["name-dialog", "password-dialog"].forEach(function (id) {
+  ["name-dialog", "password-dialog", "folder-dialog"].forEach(function (id) {
     var el = $(id);
     el.addEventListener("click", function (e) { if (e.target === el || e.target.closest("[data-close]")) closeDialog(); });
     el.addEventListener("keydown", function (e) {
@@ -1491,7 +1591,12 @@
       .catch(function () { founderNotes = before; showToast("That didn't save. Check your connection and try again."); })
       .finally(renderFounder);
   });
-  $("acct-upgrade").addEventListener("click", function () { if (playBilled()) openPlayManage(); else openUpgrade(); });
+  $("acct-upgrade").addEventListener("click", function () {
+    if (playBilled()) { openPlayManage(); return; }
+    openUpgrade();
+    // "Add another month" goes straight to the month: the plans open under the membership with Monthly chosen.
+    if (isPro() && !(sub && (sub.isLifetime || sub.isGift))) openExtend(true);
+  });
   // The deletion page fills in the signed-in address (handed over in this tab only, never in the URL).
   $("acct-delete").addEventListener("click", function () {
     try { if (me && me.email) sessionStorage.setItem("nf.deleteEmail", me.email); } catch (e) { /* typed there instead */ }
@@ -1506,8 +1611,14 @@
     });
   }
   function longDate(iso) { return iso ? new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : ""; }
+  /** My choir before the account's choir is known: the waiting line, neither card (a new account's, or a sign-out's). */
+  function resetChoirPanel() {
+    hide($("choir-none")); hide($("choir-card"));
+    show($("choir-wait")); show($("choir-wait-skel")); hide($("choir-wait-text"));
+  }
   function renderChoirPanel() {
     return fetchChoir().then(function (c) {
+      hide($("choir-wait")); hide($("choir-msg-row"));
       if (!c) { show($("choir-none")); hide($("choir-card")); return; }
       hide($("choir-none")); show($("choir-card"));
       var director = c.role === "director";
@@ -1522,13 +1633,26 @@
         : "The choir's plan ended on " + longDate(c.currentPeriodEndUtc) + "." + (director ? " Renew it to give your singers Pro again." : " Ask your director to renew it.");
       if (director && c.inviteCode) {
         $("choir-invite-url").value = inviteUrl(c.inviteCode);
-        $("choir-invite-code").textContent = c.inviteCode;
+        // Read out or copied by hand in fours ("ABCD 2345"); the API takes it with or without the space.
+        $("choir-invite-code").textContent = c.inviteCode.replace(/(.{4})(?=.)/g, "$1 ");
         show($("choir-invite-row"));
       } else hide($("choir-invite-row"));
       director && !c.isActive ? show($("choir-renew")) : hide($("choir-renew"));
       director ? hide($("choir-leave")) : show($("choir-leave"));
       if (director) loadChoirMembers(); else hide($("choir-members-row"));
-    }).catch(function () { /* the panel keeps what it showed; the next visit asks again */ });
+    }).catch(function () {
+      // The panel keeps what it showed; the next visit asks again. Never answered yet, it says so rather than wait.
+      if ($("choir-wait").classList.contains("hidden")) return;
+      hide($("choir-wait-skel"));
+      $("choir-wait-text").textContent = "Your choir didn't load. Check your connection, then open Account again.";
+      show($("choir-wait-text"));
+    });
+  }
+  /** A choir action that failed, said in the choir's own card on Account (the studio's alert is in another view). */
+  function choirProblem(text) {
+    $("choir-msg").textContent = text;
+    show($("choir-msg-row"));
+    $("choir-msg").scrollIntoView({ block: "nearest", behavior: glide() });
   }
   function loadChoirMembers() {
     request("/api/choirs/mine/members").then(function (list) {
@@ -1543,7 +1667,7 @@
           rm.disabled = true;
           request("/api/choirs/mine/members/" + encodeURIComponent(m.userId), { method: "DELETE" })
             .then(function () { track("Removed choir singer"); renderChoirPanel(); })
-            .catch(function (err) { alertIn($("app-alert"), "danger", "Could not remove the singer: " + (err.message || err)); rm.disabled = false; });
+            .catch(function (err) { choirProblem("Could not remove the singer: " + (err.message || err)); rm.disabled = false; });
         });
         li.appendChild(name); li.appendChild(rm); ul.appendChild(li);
       });
@@ -1562,14 +1686,16 @@
       track("Joined choir");
       $("choir-join-code").value = "";
       return loadAccount().then(function () {
+        // Said over Account, where the choir now shows (the studio's alert is in another view).
         setView("account");
-        alertIn($("app-alert"), "success", "Welcome to " + c.name + ". You have Pro while the choir's plan runs, and its shared sheets are under Transcriptions.");
+        showToast("You've joined " + c.name + ".");
         sfx.play("saved");
       });
     }).catch(function (err) {
       var text = (err && err.message) || "We couldn't join that choir just now.";
       $("choir-join-status").textContent = text;
-      alertIn($("app-alert"), "danger", "Could not join the choir: " + text);
+      // From an invite link the studio is showing, not the join form: the alert there says it.
+      if (viewNow !== "account") alertIn($("app-alert"), "danger", "Could not join the choir: " + text);
     });
   }
   /** After signing in from an invite link: asked once, because an account sings in one choir. */
@@ -1597,8 +1723,8 @@
     if (!name || (choir && name === choir.name)) return;
     var btn = $("choir-name-save"); btn.disabled = true;
     request("/api/choirs/mine", { method: "PUT", body: { name: name } })
-      .then(function (c) { choir = c; track("Renamed choir"); return loadAccount().then(renderChoirPanel); })
-      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not rename the choir: " + (err.message || err)); })
+      .then(function (c) { choir = c; track("Renamed choir"); showToast("Choir renamed"); return loadAccount().then(renderChoirPanel); })
+      .catch(function (err) { choirProblem("Could not rename the choir: " + (err.message || err)); })
       .finally(function () { btn.disabled = false; });
   });
   $("choir-invite-copy").addEventListener("click", function () {
@@ -1607,17 +1733,24 @@
       track("Copied choir invite"); btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy link"; }, 1500);
     }, function () { $("choir-invite-url").select(); });
   });
+  // One request per press: the button rests while it is out, so a second tap on a slow line sends nothing twice.
   $("choir-invite-new").addEventListener("click", function () {
-    if (!confirm("Make a new invite code? The old code and link stop working at once. Singers already in the choir stay in.")) return;
+    var btn = $("choir-invite-new");
+    if (btn.disabled || !confirm("Make a new invite code? The old code and link stop working at once. Singers already in the choir stay in.")) return;
+    btn.disabled = true;
     request("/api/choirs/mine/invite", { method: "POST" })
       .then(function (c) { choir = c; track("New choir invite code"); renderChoirPanel(); })
-      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not make a new code: " + (err.message || err)); });
+      .catch(function (err) { choirProblem("Could not make a new code: " + (err.message || err)); })
+      .finally(function () { btn.disabled = false; });
   });
   $("choir-leave").addEventListener("click", function () {
-    if (!confirm("Leave the choir? You lose Pro through it, and the sheets you shared leave its library. They stay in yours.")) return;
+    var btn = $("choir-leave");
+    if (btn.disabled || !confirm("Leave the choir? You lose Pro through it, and the sheets you shared leave its library. They stay in yours.")) return;
+    btn.disabled = true;
     request("/api/choirs/leave", { method: "POST" })
       .then(function () { choir = null; track("Left choir"); libraryCache = null; return loadAccount().then(renderAccount); })
-      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not leave the choir: " + (err.message || err)); });
+      .catch(function (err) { choirProblem("Could not leave the choir: " + (err.message || err)); })
+      .finally(function () { btn.disabled = false; });
   });
   $("choir-plan-open").addEventListener("click", function () { openUpgrade("choir"); });
   $("choir-renew").addEventListener("click", function () { openUpgrade("choir"); });
@@ -1632,20 +1765,26 @@
       .catch(function (err) { $("acct-photo-status").textContent = (err instanceof ApiError && err.message) || "We couldn't upload that photo. Please try again."; sfx.play("error"); })
       .finally(function () { e.target.value = ""; });
   });
+  // The photo is gone for good once removed (there is no copy to put back), so it is asked first, like the choir's code.
   $("acct-photo-remove").addEventListener("click", function () {
+    var btn = $("acct-photo-remove");
+    if (btn.disabled || !confirm("Remove your photo? Your initial shows in its place until you add another.")) return;
+    btn.disabled = true;
     request("/api/me/picture", { method: "DELETE" })
       .then(function () { return request("/api/me"); })
       .then(function (profile) { me = profile; renderWho(); renderAccount(); })
-      .catch(function (err) { $("acct-photo-status").textContent = err.message || "Could not remove the photo."; });
+      .catch(function (err) { $("acct-photo-status").textContent = err.message || "Could not remove the photo."; })
+      .finally(function () { btn.disabled = false; });
   });
 
   // ── Upgrade dialog ──────────────────────────────────────────────────────
   /**
    * The plans dialog. reason "limit" is the free allowance running out (the refusal after the last one):
    * the one-song purchase is then the option already chosen, since one more song is what was just asked for. Reason
-   * "choir" (My choir's links) opens on the choir plans rather than on their folded row.
+   * "choir" (My choir's links) opens on the choir plans rather than on their folded row. `want` is a plan's id or code
+   * picked on the pricing page: that plan is the one chosen here.
    */
-  function openUpgrade(reason, why) {
+  function openUpgrade(reason, why, want) {
     track("Opened plans");
     track("Plans viewed", "app"); // the checkout funnel's top step (CheckoutSteps in the API)
     // A refusal's own sentence ("back Friday at 6pm…") heads the dialog; the sales line steps aside for it.
@@ -1657,7 +1796,7 @@
     $("upgrade-title-text").textContent = "Do more with NoteFusion";
     show($("upgrade-free")); hide($("upgrade-pro"));
     // At the free limit one more song is what was asked for: the choir plans stay out of it, unless this is a director.
-    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: reason !== "limit" || leadsChoir(), choirFirst: reason === "choir" });
+    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: reason !== "limit" || leadsChoir(), choirFirst: reason === "choir", want: want });
   }
   /** Pro through a choir alone: the plan shown is the choir's, renewed by its director. */
   function proViaChoir() { return !!(sub && sub.choirRole && String(sub.planCode || "").indexOf("choir_") === 0); }
@@ -1676,6 +1815,18 @@
     if (sub.isGift) return when ? "A gift from the NoteFusion team, Pro until " + when + "." : "A gift from the NoteFusion team.";
     if (!when) return "Your membership is active.";
     return "Pro until " + when + ".";
+  }
+  /** Whole days until a membership that runs out (not for life) ends, when that is three or fewer; null otherwise. */
+  function daysLeft() {
+    var end = isPro() && sub && !sub.isLifetime && sub.currentPeriodEndUtc ? Date.parse(sub.currentPeriodEndUtc) : NaN;
+    if (isNaN(end)) return null;
+    var days = Math.floor((end - Date.now()) / 86400000);
+    return days <= 3 ? Math.max(0, days) : null;
+  }
+  /** When Pro of the account's own ended, for an account that had it and is free again; null otherwise. */
+  function lapsedOn() {
+    var end = !isPro() && sub && !sub.isLifetime && sub.currentPeriodEndUtc ? Date.parse(sub.currentPeriodEndUtc) : NaN;
+    return !isNaN(end) && end <= Date.now() ? sub.currentPeriodEndUtc : null;
   }
   function creditsLine() { return sub ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left · resets " + resetDay() : "—"; }
   /**
@@ -1715,13 +1866,17 @@
     sub && sub.isLifetime ? hide($("upgrade-extend")) : show($("upgrade-extend"));
     hide($("plans-extend"));
   }
-  $("upgrade-extend").addEventListener("click", function () {
-    if (playBilled()) { openPlayManage(); return; }
+  /** A member's plans for more time, under the membership; `monthly` starts on the monthly plan (Account's "Add another month"). */
+  function openExtend(monthly) {
     track("Opened plans to extend");
     track("Plans viewed", "app · extend");
     show($("plans-extend"));
-    loadPlans($("upgrade-panel"), $("plans-extend"), { choir: true });
-    $("plans-extend").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    loadPlans($("upgrade-panel"), $("plans-extend"), { choir: true, monthly: !!monthly });
+    $("plans-extend").scrollIntoView({ behavior: glide(), block: "nearest" });
+  }
+  $("upgrade-extend").addEventListener("click", function () {
+    if (playBilled()) { openPlayManage(); return; }
+    openExtend(false);
   });
   $("upgrade-account").addEventListener("click", function () { hide($("upgrade-panel")); setView("account"); });
   /** The pricing page sends a plan id along: once signed in, open its checkout without another click. */
@@ -1764,8 +1919,9 @@
     }).observe(panel, { attributes: true, attributeFilter: ["class"] });
     panel.addEventListener("keydown", function (e) {
       if (e.key !== "Tab") return;
+      // Out of the Tab order (tabindex -1: the plans not chosen, reached with the arrows) is out of this list too.
       var items = Array.prototype.filter.call(panel.querySelectorAll("button, a[href], input, select, textarea, [tabindex]:not([tabindex='-1'])"),
-        function (x) { return !x.disabled && x.offsetParent !== null; });
+        function (x) { return !x.disabled && x.offsetParent !== null && x.tabIndex >= 0; });
       if (!items.length) return;
       var at = items.indexOf(document.activeElement), next;
       if (at === -1) {
@@ -1882,7 +2038,7 @@
       var upgradeTo = new URLSearchParams(location.search).get("upgrade");
       // Handled once: the checkout leaves this tab, and Back must not land on a page that starts it again.
       if (upgradeTo) dropParam("upgrade");
-      if (upgradeTo && !isPro()) { openUpgrade(); if (upgradeTo !== "1") autoCheckout(upgradeTo); }
+      if (upgradeTo && !isPro()) { openUpgrade(null, null, upgradeTo !== "1" ? upgradeTo : null); if (upgradeTo !== "1") autoCheckout(upgradeTo); }
       // Back from checkout (the provider's return page adds ?paid=1), or a checkout started here not long ago.
       // Only the provider's return says a payment was made; otherwise the check runs out of sight.
       var paidReturn = !!new URLSearchParams(location.search).get("paid");
@@ -2178,7 +2334,7 @@
     var following = !!follow, before = current;
     if (!following) {
       openProgress("Uploading your recording");
-      setStage("uploading", "upload", null);
+      setStage("uploading", "upload", null, song);
     }
     function onProgress(fraction) {
       if (following) $("p-retry-btn").textContent = "Sending again… " + Math.round(fraction * 100) + "%";
@@ -2193,7 +2349,7 @@
         forgetTake();
         if (again && doneMeanwhile(before)) return;
         if (!again) resetMeter();
-        startJob(Object.assign({}, job, { stage: job.stage || "queued", fileName: fromMic ? null : name }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic, true, meter); });
+        startJob(Object.assign({}, job, { stage: job.stage || "queued", fileName: fromMic ? null : name, separates: song }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic, true, meter); });
       })
       .catch(function (err) {
         if (at !== epoch) return;
@@ -2342,7 +2498,7 @@
   $("tab-record").addEventListener("click", function () {
     track("Tab: record");
     if (viewNow !== "transcribe") goView("transcribe");
-    if (submitting || follow) { $("progress").scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+    if (submitting || follow) { $("progress").scrollIntoView({ behavior: glide(), block: "start" }); return; }
     if (!$("result").classList.contains("hidden")) newTranscription();
     selectSource("record");
     openRecorder();
@@ -2530,6 +2686,13 @@
     if (on) { sfx.prime(); NF.chime(sfx.ctx, "ready"); } // what it will sound like
   });
   renderNotifySettings();
+  // A switch's whole row turns it, not only the small switch at its end; the switch keeps the focus and says the state.
+  document.querySelectorAll("#view-account .lrow").forEach(function (row) {
+    var sw = row.querySelector(".switch");
+    if (!sw) return;
+    row.classList.add("lrow-switch");
+    row.addEventListener("click", function (e) { if (!sw.contains(e.target) && !sw.disabled) sw.click(); });
+  });
 
   // ── Progress ─────────────────────────────────────────────────────────────
   // The card says where the job really is: the recording going up, its place in the worker's
@@ -2585,11 +2748,12 @@
    */
   function startJob(job, kind, from, retry) {
     stopFollowing();
-    current = { jobId: job.jobId, kind: kind, from: from || null, retry: retry || null, source: job.source || null, fileName: job.fileName || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0, failures: 0, seen: "", seenAt: Date.now() };
+    current = { jobId: job.jobId, kind: kind, from: from || null, retry: retry || null, source: job.source || null, fileName: job.fileName || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0, failures: 0, seen: "", seenAt: Date.now(),
+      separates: job.separates == null ? null : !!job.separates };
     openProgress(kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : "Transcribing your recording…");
     current.preview = kind === "preview";
     if (current.preview) previewId = job.jobId; else rememberJob(job.jobId);
-    setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
+    setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition, current.separates);
     setPercent(jobPercent(0));
     primeAudio();
     follow = {
@@ -2601,8 +2765,11 @@
     if (!guest && kind !== "preview") refreshUsage();
   }
 
-  /** Lights the row and writes the plain line under the bar. A stage this page has no name for is the last one. */
-  function setStage(stage, from, queuePosition) {
+  /**
+   * Lights the row and writes the plain line under the bar. A stage this page has no name for is the last one.
+   * `separates` is false for a recording sent without its voice taken out (a hum, chords, a choir alone).
+   */
+  function setStage(stage, from, queuePosition, separates) {
     if (STAGE_ORDER.indexOf(stage) < 0) stage = "transcribing";
     var idx = STAGE_ORDER.indexOf(stage);
     document.querySelectorAll("#p-stages .stage").forEach(function (el) {
@@ -2611,6 +2778,8 @@
       // A recording that was uploaded is never "fetched"; a link is never "uploaded".
       if (el.dataset.stage === "uploading") (from === "upload" ? show : hide)(el);
       if (el.dataset.stage === "fetching") (from === "upload" ? hide : show)(el);
+      // Nor is a hum "isolated": only a song's voice is taken out of its band (unless the worker says it is doing so).
+      if (el.dataset.stage === "separating") (separates === false && stage !== "separating" ? hide : show)(el);
       if (i < idx) el.classList.add("done");
       if (i === idx) el.classList.add("on");
     });
@@ -2795,7 +2964,7 @@
       if (job.source.thumbnailUrl) { $("p-thumb").src = job.source.thumbnailUrl; show($("p-thumb")); }
     }
     var stage = stageOf(job, "transcribing"), progress = job.progress || 0;
-    setStage(stage, current.from, job.queuePosition);
+    setStage(stage, current.from, job.queuePosition, current.separates);
     setPercent(jobPercent(progress));
     // Something moved: the stage, the bar or the line ahead. Otherwise the clock keeps running.
     var seen = stage + "|" + Math.round(progress * 100) + "|" + (job.queuePosition == null ? "" : job.queuePosition);
@@ -2927,7 +3096,7 @@
     if ($("r-staff").classList.contains("hidden") && $("r-solfa").classList.contains("hidden")) document.querySelector('.result-tabs [data-view="staff"]').click();
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
       var text = b.textContent.trim();
-      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="/assets/icons.svg#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg>');
+      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg>');
     });
 
     // A guest reads and rehearses; saving, sharing, transposing, singing and downloads are the account's.
@@ -2941,7 +3110,7 @@
     engrave(result.musicXml);
     showParts(result);
     syncActions();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: glide() });
   }
 
   /**
@@ -3043,8 +3212,9 @@
       row.appendChild(b);
     }
     if (what === "version") {
-      choice("Yes", true, function () { pickHymn(m); });
-      choice("No", false, function () { current.hymnAnswered = true; track("Kept transcription over hymnbook", m.slug); showResult(current.result); });
+      // Each answer says what it does, so neither needs the question read again to be sure.
+      choice("Use the hymnbook version", true, function () { pickHymn(m); });
+      choice("Keep mine", false, function () { current.hymnAnswered = true; track("Kept transcription over hymnbook", m.slug); showResult(current.result); });
     } else {
       choice("Dismiss", false, function () { current.hymnAnswered = true; hide(box); });
     }
@@ -3570,7 +3740,10 @@
         live.appendChild(small);
       }, 100);
       prTake.stopAt = setTimeout(stopPracticeTake, (leadIn + PR.sliceSeconds(slice, r.tempo, speed) + PR.TAIL_SEC) * 1000);
-    }).catch(function () { if (at === epoch && !prTake.cancelled) $("pr-status").textContent = "Allow the microphone for this site to record a take, then try again."; });
+    }).catch(function (err) {
+      // Said by cause, with the way to allow it, as Sing it and the recorder say it (assets/recorder.js).
+      if (at === epoch && !prTake.cancelled) $("pr-status").textContent = window.NfRecorder ? window.NfRecorder.micProblem(err) : "Allow the microphone for this site to record a take, then try again.";
+    });
   });
   /** Ends the take; it is marked unless it was cancelled. */
   function stopPracticeTake() {
@@ -3620,7 +3793,7 @@
     // While a shift is on its way the button stays as it is, and so do the arrows.
     $("tr-apply").disabled = n === 0 || transposing;
     $("tr-down").disabled = $("tr-up").disabled = transposing;
-    $("tr-apply").textContent = n === 0 ? "Choose a shift" : "Transpose to " + C.shiftKeyName(r.key, n);
+    $("tr-apply").textContent = transposing ? "Transposing…" : n === 0 ? "Choose a shift" : "Transpose to " + C.shiftKeyName(r.key, n);
     var table = $("ranges"); table.innerHTML = "";
     C.rangeReport(r.notes || [], isPro() ? r.parts : null, n).forEach(function (row) {
       var tr = document.createElement("tr");
@@ -3680,7 +3853,7 @@
     resultReturnView = null; rememberJob(null);
     closeTool(); closeFull();
     hide($("result")); hide($("progress"));
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: glide() });
     track("New transcription");
   }
   $("r-new").addEventListener("click", newTranscription);
@@ -3912,8 +4085,8 @@
    */
   function saveCurrent(auto) {
     if (!current || !current.result || current.savedId) return;
-    var r = current.result, btn = $("save");
-    btn.disabled = true;
+    var r = current.result, btn = $("save"), was = btn.innerHTML;
+    btn.disabled = true; btn.textContent = "Saving…";
     request("/api/library", { method: "POST", body: {
       title: $("save-title").value.trim() || "My transcription", key: r.key, tempoBpm: r.tempo, timeSignature: r.timeSignature,
       musicXml: r.musicXml, notes: r.notes, overallConfidence: r.overallConfidence, sourceJobId: current.jobId,
@@ -3929,7 +4102,7 @@
       renderSave();
       var dismissed = false; try { dismissed = localStorage.getItem("nf.web.appBanner") === "no"; } catch (e) { /* ignore */ }
       if (!dismissed) show($("app-banner"));
-    }).catch(function (err) { alertIn($("app-alert"), "danger", "Could not save: " + (err.message || err)); })
+    }).catch(function (err) { btn.innerHTML = was; alertIn($("app-alert"), "danger", "Could not save: " + (err.message || err)); })
       .finally(function () { btn.disabled = false; });
   }
   $("save").addEventListener("click", function () { saveCurrent(false); });
@@ -3984,7 +4157,7 @@
     show($("tab-parts")); hide($("harmony"));
     syncActions();
     document.querySelector('.result-tabs [data-view="parts"]').click();
-    $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+    $("result").scrollIntoView({ behavior: glide(), block: "start" });
   }
   /**
    * Four-part harmony, only when asked: the transcription is the one voice we heard, and alto,
@@ -3993,7 +4166,7 @@
   /** The harmony card's label and note: "free once" for a free account that still has it. */
   function renderHarmonyOffer() {
     var free = freeHarmonyLeft();
-    $("harmony-add").innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-plus"/></svg>' + (free ? "Write the four parts (1 free)" : "Write the four parts");
+    $("harmony-add").innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-plus"/></svg>' + (free ? "Write the four parts (1 free)" : "Write the four parts");
     $("harmony-free-note").classList.toggle("hidden", !free);
     // The "Four parts" action shows no lock while the free one is left.
     document.body.classList.toggle("has-free-harmony", free);
@@ -4098,25 +4271,39 @@
     return jspdfLoading;
   }
 
+  var engraving = 0; // the latest sheet being drawn: an older one finishing late leaves the skeleton to it
   function engrave(xml) {
     // The engraver takes a moment on a long sheet (and longer the first time, while it
-    // loads): show the shape of a staff rather than an empty box.
-    var skel = $("sheet-skel"); show(skel); $("sheet").classList.add("hidden");
-    try { osmd = engraveInto($("sheet"), xml, false); }
-    finally { hide(skel); $("sheet").classList.remove("hidden"); }
+    // loads): the shape of a staff shows until the staff is drawn (or cannot be), not an empty box.
+    // The staff is drawn out of sight rather than hidden outright, so the engraver still measures the frame's width.
+    var skel = $("sheet-skel"), sheet = $("sheet"), at = ++engraving;
+    show(skel); sheet.classList.add("is-drawing");
+    osmd = engraveInto(sheet, xml, false, function () {
+      if (at !== engraving) return;
+      hide(skel); sheet.classList.remove("is-drawing");
+    });
   }
 
   /**
    * Engrave ``xml`` into ``container``; part names only make sense with more than one part. Once drawn, the staff is
-   * one picture to a screen reader, named for what it shows (the Tonic Solfa tab has the notes as text).
+   * one picture to a screen reader, named for what it shows (the Tonic Solfa tab has the notes as text). `done` runs
+   * once it is drawn or has failed. A failure is one plain sentence on the page; what the engraver said is the console's.
    */
-  function engraveInto(container, xml, partNames) {
+  var NOT_DRAWN = "The staff could not be drawn. The Tonic Solfa tab has the same notes.";
+  function engraveInto(container, xml, partNames, done) {
+    done = done || function () {};
     container.innerHTML = "";
     container.removeAttribute("role"); container.removeAttribute("aria-label");
-    if (!xml) { container.textContent = "Nothing to engrave."; return null; }
+    if (!xml) { container.textContent = "Nothing to engrave."; done(); return null; }
+    function failed(err) {
+      try { if (err) console.warn("[notefusion] staff", err); } catch (e) { /* ignore */ }
+      container.textContent = NOT_DRAWN; done();
+    }
     if (!window.opensheetmusicdisplay) {
-      container.textContent = "Loading the engraver…";
-      ensureOsmd().then(function () { engraveInto(container, xml, partNames); }, function () { container.textContent = "The staff engraver could not be loaded. The Tonic Solfa tab still works; check your connection and reload for the staff."; });
+      container.textContent = "Drawing the staff…";
+      ensureOsmd().then(function () { engraveInto(container, xml, partNames, done); }, function () {
+        container.textContent = "The staff couldn't load. The Tonic Solfa tab still works; check your connection and reload for the staff."; done();
+      });
       return null;
     }
     try {
@@ -4124,9 +4311,9 @@
         backend: "svg", autoResize: true, drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false, drawPartNames: !!partNames, drawMeasureNumbers: true,
         autoBeam: true, autoBeamOptions: { beam_rests: false, maintain_stem_directions: false }
       });
-      display.load(xml).then(function () { display.render(); nameStaff(container, partNames); }).catch(function (err) { container.textContent = "Could not draw the staff: " + err; });
+      display.load(xml).then(function () { display.render(); nameStaff(container, partNames); done(); }).catch(failed);
       return display;
-    } catch (err) { container.textContent = "Could not draw the staff: " + err; return null; }
+    } catch (err) { failed(err); return null; }
   }
   function nameStaff(container, parts) {
     var r = current && current.result, title = $("r-title").textContent || "this sheet";
@@ -4176,10 +4363,12 @@
   $("dl-pdf").addEventListener("click", function () {
     if (!current || !current.result) return;
     if (guest) { openAuth("register"); return; }
-    var btn = $("dl-pdf"); btn.disabled = true;
+    // The button says what it is doing (the engraver and the PDF library may load first, seconds on 3G), then reads as before.
+    var btn = $("dl-pdf"), was = btn.innerHTML;
+    btn.disabled = true; btn.textContent = "Making the PDF…";
     track("Downloaded PDF", isPro() ? null : "free, watermarked");
     renderPdf(current.result, !isPro()).catch(function (err) { alertIn($("app-alert"), "danger", "Could not build the PDF: " + (err.message || err)); })
-      .finally(function () { btn.disabled = false; });
+      .finally(function () { btn.disabled = false; btn.innerHTML = was; });
   });
 
   /**
@@ -4344,6 +4533,11 @@
       // A director renewing their choir starts on the choir plans; anyone else on what they would buy for themselves.
       var showingChoir = !!choirPlans.length && (opts.choirFirst || leadsChoir() || !ordered.length);
       if (showingChoir) chosen = choirPlans[0];
+      // "Add another month" (Account) starts on the month it says, a director's choir plans aside.
+      if (opts.monthly && monthly) { chosen = ownChoice = monthly; showingChoir = false; }
+      // A plan picked on the pricing page is the one chosen here too, while its checkout opens and if it cannot.
+      var wanted = opts.want ? ordered.concat(choirPlans).filter(function (x) { return String(x.id) === String(opts.want) || x.code === opts.want; })[0] : null;
+      if (wanted) { chosen = wanted; showingChoir = isChoirPlan(wanted); if (!showingChoir) ownChoice = wanted; }
       var options = document.createElement("div"); options.className = "plan-options"; options.setAttribute("role", "radiogroup"); options.setAttribute("aria-label", "Choose a plan");
       var cta = document.createElement("button"); cta.type = "button"; cta.className = "btn btn-primary btn-pay";
       function label(plan) { return isChoirPlan(plan) ? (isYearly(plan) ? "Choir · Yearly" : "Choir · Monthly") : isSinglePlan(plan) ? "Just this song" : isLifetimePlan(plan) ? "Lifetime" : isYearly(plan) ? "Yearly" : "Monthly"; }
@@ -4354,15 +4548,21 @@
       // A checkout that will not open says so here, above the button, not in the page behind the dialog.
       var payError = document.createElement("p"); payError.className = "pay-error"; payError.setAttribute("role", "alert"); payError.hidden = true;
       function renderCta() {
-        cta.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>';
+        cta.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-lock"/></svg>';
+        // What the money buys, as one period ("Pay ₦7,500 for 1 month of Pro"): "₦7,500 a month" read as a renewal.
+        var span = isLifetimePlan(chosen) ? "" : "1 " + (isYearly(chosen) ? "year" : "month");
         cta.appendChild(document.createTextNode(isSinglePlan(chosen)
           ? "Buy this song — " + money(chosen)
           : isChoirPlan(chosen)
-            ? (leadsChoir() ? "Add choir time — " : "Start your choir — ") + money(chosen) + " " + per(chosen)
-            : "Continue — " + money(chosen) + " " + per(chosen)));
-        fine.innerHTML = '<svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg>';
+            ? (leadsChoir() ? "Add choir time — " : "Start your choir — ") + money(chosen) + " for " + span
+            : "Pay " + money(chosen) + (span ? " for " + span + " of Pro" : " for Pro for life")));
+        fine.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-lock"/></svg>';
+        // Adding time: the date it would run to, so a member sees what the payment buys before paying.
+        var until = extendedEnd(chosen);
         fine.appendChild(document.createTextNode(isSinglePlan(chosen)
-          ? "Secure checkout. One payment, one transcription that never expires. No subscription."
+          ? "Secure checkout. One payment, one transcription that never expires."
+          : until
+            ? "Secure checkout. It starts when your current time ends: " + (isChoirPlan(chosen) ? "your choir's Pro" : "Pro") + " until " + longDate(until) + ". Nothing renews without you."
           : isChoirPlan(chosen)
             ? "Secure checkout. One payment covers the whole choir for the period; nothing renews without you. You'll get an invite link for your singers."
             : "Secure checkout. One payment covers the whole period; nothing renews without you."));
@@ -4415,7 +4615,7 @@
         if (isSinglePlan(plan)) { var noSub = document.createElement("span"); noSub.className = "plan-opt-tag"; noSub.textContent = "No subscription"; top.appendChild(noSub); }
         var note = document.createElement("span"); note.className = "plan-opt-note";
         note.textContent = isSinglePlan(plan)
-          ? "One more transcription, any recording or song link. No subscription."
+          ? "One more transcription, any recording or song link."
           : isChoirPlan(plan)
             ? "Pro for you and up to " + (plan.choirSeats || 25) + " singers, 60 songs a month shared, one library" + (isYearly(plan) ? ", paid once a year" : "")
           : isYearly(plan)
@@ -4425,13 +4625,25 @@
         opt.appendChild(dot); opt.appendChild(top); opt.appendChild(price); opt.appendChild(note);
         function select() {
           chosen = plan;
-          options.querySelectorAll(".plan-opt").forEach(function (o) { var on = o === opt; o.classList.toggle("on", on); o.setAttribute("aria-checked", String(on)); });
+          options.querySelectorAll(".plan-opt").forEach(function (o) { var on = o === opt; o.classList.toggle("on", on); o.setAttribute("aria-checked", String(on)); o.tabIndex = on ? 0 : -1; });
           renderCta();
         }
         opt.addEventListener("click", select);
         options.appendChild(opt);
         if (plan === chosen) { opt.classList.add("on"); opt.setAttribute("aria-checked", "true"); } else opt.setAttribute("aria-checked", "false");
+        opt.tabIndex = plan === chosen ? 0 : -1;
       }
+      // A radio group as the keyboard expects one: Tab reaches the chosen plan, the arrows move the choice (and Home, End).
+      options.addEventListener("keydown", function (e) {
+        var radios = Array.prototype.slice.call(options.querySelectorAll(".plan-opt")), at = radios.indexOf(document.activeElement);
+        if (at < 0) return;
+        var next = e.key === "ArrowDown" || e.key === "ArrowRight" ? (at + 1) % radios.length
+          : e.key === "ArrowUp" || e.key === "ArrowLeft" ? (at - 1 + radios.length) % radios.length
+          : e.key === "Home" ? 0 : e.key === "End" ? radios.length - 1 : -1;
+        if (next < 0) return;
+        e.preventDefault();
+        radios[next].focus(); radios[next].click();
+      });
       renderOptions();
       renderCta();
       cta.addEventListener("click", function () { checkout(chosen, cta); });
@@ -4453,6 +4665,20 @@
     });
   }
 
+  /**
+   * When a period bought now would end, for a member adding time (Pro of their own, or a director's choir): it runs on
+   * from the current end, a calendar month or year (the API's BillingPeriod: a 31st lands on a shorter month's last day).
+   * Null when nothing is being extended.
+   */
+  function extendedEnd(plan) {
+    if (isSinglePlan(plan) || isLifetimePlan(plan) || !sub) return null;
+    var end = isChoirPlan(plan) ? (leadsChoir() ? sub.choirPeriodEndUtc : null) : (isPro() && !proViaChoir() && !sub.isLifetime ? sub.currentPeriodEndUtc : null);
+    var from = end ? new Date(Math.max(Date.now(), Date.parse(end))) : null;
+    if (!from || isNaN(from)) return null;
+    var y = from.getUTCFullYear() + (isYearly(plan) ? 1 : 0), m = from.getUTCMonth() + (isYearly(plan) ? 0 : 1);
+    var lastDay = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+    return new Date(Date.UTC(y, m, Math.min(from.getUTCDate(), lastDay), from.getUTCHours(), from.getUTCMinutes()));
+  }
   function money(plan) {
     var amount = plan.amountMinor / 100;
     // narrowSymbol: "₦7,500", not "NGN 7,500", whatever the browser's own locale is.
@@ -4625,7 +4851,7 @@
   function payTick() { if (document.visibilityState !== "hidden") checkPayment(); }
   // ── "What stopped you?" (board g-checkout): a checkout that came back unpaid, asked once ──
   var WHY_RULES = "/assets/checkout-exit.js?v=1";
-  var WHY_SHEET = ["/assets/checkout-why.css?v=1", "/assets/checkout-why.js?v=1"];
+  var WHY_SHEET = ["/assets/checkout-why.css?v=2", "/assets/checkout-why.js?v=2"];
   function lsGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
   function lsSet(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* private mode */ } }
   /**

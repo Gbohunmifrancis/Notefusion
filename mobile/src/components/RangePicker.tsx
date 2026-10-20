@@ -27,6 +27,7 @@ import * as haptics from "../lib/haptics";
 import {
   canNudge,
   formatClock,
+  handleCentres,
   moveEnd,
   moveStart,
   moveWindow,
@@ -120,6 +121,8 @@ export function RangePicker({ duration, maxSeconds, value, onChange, disabled = 
   const px = (sec: number) => (duration > 0 && width > 0 ? (sec / duration) * width : 0);
   const startX = px(value.start);
   const endX = px(value.end);
+  // A short section on a long song: the handles are drawn apart, so the start one is never under the end one.
+  const handles = handleCentres(startX, endX, width, THUMB);
 
   const nudge = (edge: RangeEdge, delta: number) => commit(nudgeRange(value, edge, delta, duration, maxSeconds));
   const nudgeStart = (delta: number) => nudge("start", delta);
@@ -175,7 +178,7 @@ export function RangePicker({ duration, maxSeconds, value, onChange, disabled = 
               />
               <View
                 {...responders.start.panHandlers}
-                style={[styles.thumb, { left: startX - THUMB / 2 }]}
+                style={[styles.thumb, { left: handles.start - THUMB / 2 }]}
                 hitSlop={10}
                 accessible
                 accessibilityRole="adjustable"
@@ -188,7 +191,7 @@ export function RangePicker({ duration, maxSeconds, value, onChange, disabled = 
               </View>
               <View
                 {...responders.end.panHandlers}
-                style={[styles.thumb, { left: endX - THUMB / 2 }]}
+                style={[styles.thumb, { left: handles.end - THUMB / 2 }]}
                 hitSlop={10}
                 accessible
                 accessibilityRole="adjustable"

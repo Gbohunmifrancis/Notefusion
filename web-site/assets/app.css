@@ -42,6 +42,8 @@
 html { scroll-padding-top: 80px; }
 body { color: var(--ink); background: var(--bg); line-height: 1.55; }
 a { color: var(--blue-dark); }
+/* A link inside a sentence is underlined, so it reads as a link without its colour (as .foot's already are). */
+.credit a, .alert a, .auth-fine a, .pay-help a, .plans a, .try-status a, .muted a { text-decoration: underline; text-underline-offset: 2px; }
 .hidden { display: none !important; }
 [hidden] { display: none !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -140,7 +142,6 @@ body.is-recording .brand-mark, body.is-recording .home-mark { animation: heartbe
 .user-menu-item { cursor: pointer; }
 .user-menu-item .ic, .user-menu-row > .ic { width: 20px; height: 20px; color: var(--muted); }
 .user-menu-item:hover { background: var(--wash); color: var(--ink); }
-.user-menu-item.danger, .user-menu-item.danger .ic { color: var(--danger-text); }
 .user-menu-row .theme-switch, .user-menu-item .switch { margin-left: auto; }
 .user-menu-sep { height: 1px; background: var(--line); margin: 6px 4px; }
 
@@ -251,12 +252,14 @@ body.guest .topbar { display: flex; }
 
 /* ── Forms & buttons ─────────────────────────────────────────────────────── */
 label { display: block; font-size: 0.85rem; font-weight: 600; margin: 0 0 6px; color: var(--copy); }
-input[type=text], input[type=url], input[type=email], input[type=password], textarea, select {
+input[type=text], input[type=search], input[type=url], input[type=email], input[type=password], textarea, select {
   width: 100%; font: inherit; color: var(--ink); padding: 11px 14px; min-height: 46px;
   border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 input::placeholder, textarea::placeholder { color: var(--muted); }
+/* A search box keeps the fields' own shape (Safari would round it); the browser's clear button stays. */
+input[type=search] { -webkit-appearance: none; appearance: none; }
 input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: var(--ring); }
 textarea { resize: vertical; line-height: 1.5; }
 .field { margin-bottom: 14px; }
@@ -358,6 +361,8 @@ textarea { resize: vertical; line-height: 1.5; }
 .chip { padding: 4px 10px; border-radius: 8px; background: var(--wash); font-size: 0.78rem; font-weight: 600; color: var(--copy); }
 .sheet-wrap { position: relative; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: auto; min-height: 240px; }
 #sheet, #staff, #staff-parts, #sheet-parts { padding: 12px; }
+/* Being drawn under the skeleton (app.js engrave): full width for the engraver to measure, nothing showing yet. */
+#sheet.is-drawing { visibility: hidden; height: 0; padding-block: 0; overflow: hidden; }
 .watermark { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 /* The faint mark on a free account's sheet is the logo itself, tinted brand blue, turned like a stamp. */
 .watermark::before { content: ""; display: block; width: clamp(120px, 28%, 260px); aspect-ratio: 331 / 438; background: var(--blue); opacity: 0.08; transform: rotate(-24deg); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; }
@@ -444,7 +449,7 @@ table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 .lib-item:hover { border-color: rgba(37, 99, 235, 0.35); box-shadow: var(--shadow-card-hover); transform: translateY(-1px); }
 .lib-list .lib-item { cursor: pointer; } /* the whole card opens the sheet (app.js opensOnTap) */
 .lib-key { width: 42px; height: 42px; border-radius: 8px; background: var(--blue-tint); color: var(--blue-dark); font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; letter-spacing: -0.02em; margin-bottom: 6px; }
-.lib-item h3 { margin: 0; font-size: 1rem; line-height: 1.3; overflow-wrap: anywhere; }
+.lib-item h2, .lib-item h3 { display: block; margin: 0; font-size: 1rem; line-height: 1.3; overflow-wrap: anywhere; }
 .lib-item .meta { color: var(--muted); font-size: 0.825rem; }
 .lib-item .actions { display: flex; gap: 8px; margin-top: 8px; }
 .empty { text-align: center; padding: 28px 16px 20px; color: var(--muted); }
@@ -474,7 +479,7 @@ table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 .lrow-block { display: block; }
 .lrow-block .usage-row { font-size: 0.9rem; }
 .lrow-note { margin: 10px 0 0; color: var(--muted); font-size: 0.82rem; }
-.lrow-btn { cursor: pointer; }
+.lrow-btn, .lrow-switch { cursor: pointer; }
 .lrow-btn:hover { background: var(--wash); }
 /* Inside the card's rounded, clipped edge, so the keyboard's ring is not cut off at the sides. */
 .list-card :focus-visible { outline-offset: -2px; }
@@ -541,6 +546,11 @@ table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 /* A view's heading takes focus when the nav opens it (for screen readers); never a Tab stop, so no ring. */
 main h1[tabindex="-1"]:focus { outline: none; }
 @keyframes onb-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: none; } }
+/* Less motion asked for: dialogs appear in place, and the page jumps rather than glides (theme.css scrolls smoothly). */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .onb-card, .modal-card { animation: none; }
+}
 .onb-skip { position: absolute; top: 16px; right: 18px; background: none; border: none; color: var(--muted); font-weight: 600; cursor: pointer; font-size: 0.875rem; }
 .onb-skip:hover { color: var(--ink); }
 .onb-art { width: 140px; height: 140px; margin: 8px auto 20px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #dbeafe, #f4f7fc 72%); display: flex; align-items: center; justify-content: center; color: var(--blue); }
@@ -716,7 +726,7 @@ main h1[tabindex="-1"]:focus { outline: none; }
 .try-row-chev { color: var(--faint); }
 .auth-page .try-free { margin: 24px 0 0; }
 .auth-page .try-free h2 { font-size: 1rem; }
-.auth-fine { margin: 24px 0 0; text-align: center; font-size: 0.78rem; color: var(--muted); }
+.auth-fine { margin: 24px 0 0; text-align: center; font-size: 0.8125rem; color: var(--muted); }
 .auth-fine a { font-weight: 600; }
 
 @media (min-width: 961px) {
@@ -821,14 +831,14 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .plan-opt-tag { white-space: nowrap; font-size: 0.72rem; font-weight: 600; color: #065f46; background: #d1fae5; border-radius: 6px; padding: 1px 6px; }
 .plan-opt-price { grid-area: price; justify-self: end; white-space: nowrap; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); line-height: 1.2; font-variant-numeric: tabular-nums; }
 .plan-opt-price small { font-size: 0.78rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
-.plan-opt-note { grid-area: note; font-size: 0.8rem; color: var(--muted); }
+.plan-opt-note { grid-area: note; font-size: 0.8125rem; color: var(--muted); }
 @media (max-width: 420px) {
   .plan-opt { grid-template-columns: minmax(0, 1fr); grid-template-areas: "top" "price" "note"; }
   .plan-opt-price { justify-self: start; }
 }
 .btn-pay { width: 100%; margin-top: 14px; min-height: 48px; font-size: 1rem; gap: 8px; }
 .btn-pay .ic { width: 20px; height: 20px; }
-.pay-fine { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 10px 0 0; font-size: 0.78rem; color: var(--muted); text-align: center; }
+.pay-fine { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 10px 0 0; font-size: 0.8125rem; color: var(--muted); text-align: center; }
 .pay-fine .ic { width: 16px; height: 16px; flex: none; }
 /* The price, the button and their notes stay at the bottom of the dialog while the plans scroll (board l-ux-high/03b). */
 /* bottom matches the card's bottom padding, so it sits on the card's edge with nothing showing under it. */
@@ -853,18 +863,18 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 /* What the next transcription costs: a quiet chip, and the why behind (i), only when it costs something. */
 .studio-cost { display: grid; justify-items: center; gap: 6px; margin: 14px 0 0; }
 .cost-line { display: inline-flex; align-items: center; gap: 4px; }
-.cost-chip { display: inline-flex; align-items: center; min-height: 26px; padding: 3px 10px; border-radius: 8px; background: var(--wash); color: var(--muted); font-size: 0.78rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cost-chip { display: inline-flex; align-items: center; min-height: 26px; padding: 3px 10px; border-radius: 8px; background: var(--wash); color: var(--muted); font-size: 0.8125rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 .cost-chip.is-out { background: var(--amber-soft); color: var(--ink); }
 .cost-info { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--muted); cursor: pointer; }
 .cost-info .ic { width: 16px; height: 16px; }
 .cost-info:hover, .cost-info[aria-expanded=true] { color: var(--ink); background: var(--wash); }
 .cost-info:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-.cost-pop { max-width: 440px; margin: 0; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-size: 0.8rem; line-height: 1.5; text-align: left; }
+.cost-pop { max-width: 440px; margin: 0; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font-size: 0.875rem; line-height: 1.5; text-align: left; }
 .cost-pop[hidden] { display: none; }
 .link-upload-row { margin: 6px 0 0; text-align: center; font-size: 0.85rem; }
 .link-upload-row .btn-link { display: inline-flex; align-items: center; gap: 6px; }
 .link-upload-row .ic { width: 16px; height: 16px; }
-.usage-note { margin-top: 6px; font-size: 0.75rem; color: var(--muted); }
+.usage-note { margin-top: 6px; font-size: 0.8125rem; color: var(--muted); }
 .usage-note:empty { display: none; }
 
 /* ── Back from checkout: a quiet note while the payment confirms, then the welcome ── */
