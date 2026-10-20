@@ -109,6 +109,11 @@ export function LinkScreen() {
 
   const [url, setUrl] = useState("");
   const [focused, setFocused] = useState(false);
+  /**
+   * The last change came whole (the Paste pill, or the keyboard's paste): "not a song link" may be said at once. While
+   * a link is typed letter by letter it waits until the field is left, rather than nagging at every keystroke.
+   */
+  const [pasted, setPasted] = useState(false);
   /** Beats in a bar for this song; null is Not sure. Back to Not sure once a song is sent (lib/meter). */
   const [meter, setMeter] = useState<Meter | null>(null);
   /** "More options" unfolded: the Beats-in-a-bar chips, folded away by default (board l-ux-high 02b). */
@@ -322,8 +327,10 @@ export function LinkScreen() {
    */
   async function paste() {
     const text = (await Clipboard.getString().catch(() => "")).trim();
-    if (text) setUrl(text);
-    else inputRef.current?.focus();
+    if (text) {
+      setUrl(text);
+      setPasted(true);
+    } else inputRef.current?.focus();
   }
 
   /** The failure card's way on: the card goes, and the link stays in the field to change or send again. */
@@ -431,7 +438,11 @@ export function LinkScreen() {
               <TextInput
                 ref={inputRef}
                 value={url}
-                onChangeText={setUrl}
+                onChangeText={(t) => {
+                  // More than one character at once is a paste; typing adds them one by one.
+                  setPasted(t.length - url.length > 1);
+                  setUrl(t);
+                }}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 placeholder="Paste a song link"
@@ -464,7 +475,7 @@ export function LinkScreen() {
           </View>
         ) : null}
 
-        {!busy && url.trim().length > 0 && !provider ? (
+        {!busy && url.trim().length > 0 && !provider && (pasted || !focused) ? (
           <View style={styles.note}>
             <Icon name="problem" size={16} color={colors.warning} />
             <Text style={styles.noteText}>{songLinkHint(url)}</Text>
