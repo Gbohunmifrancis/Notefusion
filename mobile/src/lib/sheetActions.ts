@@ -64,11 +64,19 @@ export async function setChoirSharing(targets: readonly Sheet[], share: boolean)
   return done;
 }
 
-/** Files the sheets in a folder (null takes them out). Returns the ones moved; all moved is a tick and a toast. */
-export async function fileSheets(targets: readonly Sheet[], folder: string | null): Promise<{ moved: Set<string>; ok: boolean }> {
+/**
+ * Files the sheets in a folder (null takes them out). Returns the ones moved; all moved is a tick and a toast. A failure
+ * is said in a dialog, or, with `inline` (the New folder sheet, still open), handed back as `error` for its field.
+ */
+export async function fileSheets(
+  targets: readonly Sheet[],
+  folder: string | null,
+  { inline = false } = {},
+): Promise<{ moved: Set<string>; ok: boolean; error?: string }> {
   const results = await Promise.allSettled(targets.map((t) => libraryApi.setFolder(t.id, folder)));
   const moved = new Set(targets.filter((_, i) => results[i]!.status === "fulfilled").map((t) => t.id));
   const failure = firstFailure(results);
+  if (failure && inline) return { moved, ok: false, error: toApiError(failure.reason).message };
   if (failure) failed("Could not move the sheet", failure.reason);
   else {
     haptics.play("success");
@@ -95,14 +103,18 @@ export async function keepSheetOffline(id: string, keep: boolean): Promise<boole
   }
 }
 
-/** Renames a saved sheet. Returns the title the server kept, or null when it failed. */
-export async function renameSheet(id: string, title: string): Promise<string | null> {
+/**
+ * Renames a saved sheet. Returns the title the server kept, or null when it failed — said in a dialog, or, with
+ * `onError` (the Rename sheet, still open), handed to it for the field.
+ */
+export async function renameSheet(id: string, title: string, onError?: (message: string) => void): Promise<string | null> {
   try {
     const updated = await libraryApi.rename(id, title.trim());
     showToast("Renamed");
     return updated.title;
   } catch (e) {
-    failed("Could not rename", e);
+    if (onError) onError(toApiError(e).message);
+    else failed("Could not rename", e);
     return null;
   }
 }
