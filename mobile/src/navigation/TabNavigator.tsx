@@ -221,7 +221,9 @@ const makeStyles = (c: Palette) =>
     label: {
       marginTop: 3,
       fontFamily: fonts.medium,
-      fontSize: 11,
+      // The app's smallest words: 12, never under. Grown at most 1.2x (`maxFontSizeMultiplier`): five cells of about
+      // 62 dp on a 360 dp phone hold "Practice" whole at 14.4.
+      fontSize: 12,
       color: c.textFaint,
     },
     labelOn: {
