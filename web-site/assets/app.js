@@ -496,11 +496,14 @@
   // The password rule, ticked off as it is met rather than refused after the fact.
   $("reg-password").addEventListener("input", function () { $("reg-password-hint").classList.toggle("ok", $("reg-password").value.length >= 8); });
   $("forgot").addEventListener("click", function () {
-    var email = $("login-email").value.trim();
+    var email = $("login-email").value.trim(), btn = $("forgot");
     if (!email) { alertIn($("auth-alert"), "info", "Type your email above, then press Forgot password."); $("login-email").focus(); return; }
+    if (btn.disabled) return; // one email per press: repeated taps sent one each
+    btn.disabled = true;
     request("/api/auth/forgot-password", { method: "POST", anonymous: true, body: { email: email } })
       .then(function () { alertIn($("auth-alert"), "success", "If that address has an account, a reset link is on its way."); })
-      .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not send the reset email."); });
+      .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not send the reset email."); })
+      .finally(function () { btn.disabled = false; });
   });
 
   // ── Sign in with Google ──────────────────────────────────────────────────
@@ -508,12 +511,19 @@
   // site's origin has to be listed under that client's authorised JavaScript origins in the
   // Google Cloud console, or the button renders and then refuses to sign anyone in.
   var GOOGLE_CLIENT_ID = "21738378819-3prjgka9cpf6c2l3si6q879vgm06kf6h.apps.googleusercontent.com";
+  var googleBusy = false; // Google's popup can hand back a credential twice; one sign-in at a time
   function onGoogleCredential(res) {
-    if (!res || !res.credential) return;
+    if (!res || !res.credential || googleBusy) return;
+    googleBusy = true;
     hide($("auth-alert"));
     request("/api/auth/google", { method: "POST", anonymous: true, body: { idToken: res.credential } })
       .then(function (out) { saveTokens({ accessToken: out.accessToken, refreshToken: out.refreshToken }); track("Signed in with Google"); return boot(); })
-      .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Google sign-in did not go through."); sfx.play("error"); });
+      .catch(function (err) {
+        // The server's "token is invalid or has expired" is plumbing; the person only needs to try again.
+        var text = /token/i.test(err.message || "") ? "Google sign-in didn't finish. Please try again." : (err.message || "Google sign-in did not go through.");
+        alertIn($("auth-alert"), "danger", text); sfx.play("error");
+      })
+      .finally(function () { googleBusy = false; });
   }
   function initGoogle() {
     if (!window.google || !google.accounts || !google.accounts.id) return;
