@@ -19,6 +19,7 @@ import { Button } from "../components/Button";
 import { Sheet, SheetActions, SheetMessage, SheetTitle } from "../components/Sheet";
 import { ChoiceRow } from "../components/SheetRows";
 import { CheckoutExitSheet, type CheckoutExitAsk } from "../components/CheckoutExitSheet";
+import { Group, Row } from "../components/settings/Rows";
 import { Touchable } from "../components/Touchable";
 import { Avatar } from "../components/Avatar";
 import { PlanCardSkeleton } from "../components/Skeleton";
@@ -43,6 +44,7 @@ import { PRO_FEATURES } from "../lib/proFeatures";
 import type { AuthUser, CheckoutExit, MyProfile, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 import { tierOf } from "../lib/planTier";
+import { siteUrls } from "../lib/env";
 import {
   bestValuePlan,
   formatPrice,
@@ -94,6 +96,13 @@ const RETURN_URL = "notefusion://billing/return";
 
 /** The checkouts this device has asked "What stopped you?" about (references, newest first). */
 const ASKED_KEY = "nf.checkoutAsked";
+
+/** Where a question about paying goes: the app's help address. */
+const HELP_EMAIL = "hello@notefusion.studio";
+
+/** The refund policy as the Terms put it (§8), said where the money is asked for. */
+const REFUND_LINE =
+  "Write to us and we answer within 14 days. We refund in full where the service failed: a transcription you paid for was never delivered, the service was unavailable for a sustained period, or you were charged twice. It goes back to the same card or account.";
 
 /** Key features displayed in the active Pro subscription hub. */
 const PRO_BENEFITS: {
@@ -186,6 +195,13 @@ export function UpgradeScreen({ navigation, route }: Props) {
   const [busy, setBusy] = useState(false); // opening checkout
   // The choir plans' own sheet, opened from the "For choir directors" row (board l-ux-high 03a).
   const [choirOpen, setChoirOpen] = useState(false);
+  // "Questions? Help & refunds" (board m-ux-medium P4e), and what its row does once the sheet has gone.
+  const [helpOpen, setHelpOpen] = useState(false);
+  const afterHelp = useRef<(() => void) | null>(null);
+  const closeHelp = (then?: () => void) => {
+    afterHelp.current = then ?? null;
+    setHelpOpen(false);
+  };
   const [restoring, setRestoring] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // pull-to-refresh
 
@@ -801,6 +817,18 @@ export function UpgradeScreen({ navigation, route }: Props) {
                 <Button label="Restore purchases" variant="text" onPress={() => void restore()} loading={restoring} />
               </View>
             ) : null}
+
+            {/* A quiet row, not a link in the fine print: the pay bar keeps its one action. */}
+            <Touchable
+              onPress={() => setHelpOpen(true)}
+              style={styles.helpRow}
+              scaleTo={0.99}
+              accessibilityLabel="Questions? Help and refunds"
+            >
+              <Icon name="help" size={20} color={colors.icon} />
+              <Text style={styles.helpRowText}>Questions? Help & refunds</Text>
+              <Icon name="chevron" size={16} color={colors.textFaint} />
+            </Touchable>
           </>
         )}
 
@@ -827,6 +855,40 @@ export function UpgradeScreen({ navigation, route }: Props) {
             void handleUpgrade(song.id);
           }}
         />
+
+        <Sheet
+          visible={helpOpen}
+          onClose={() => closeHelp()}
+          onClosed={() => {
+            const run = afterHelp.current;
+            afterHelp.current = null;
+            run?.();
+          }}
+        >
+          <SheetTitle>Questions about paying?</SheetTitle>
+          <SheetMessage>{REFUND_LINE}</SheetMessage>
+          <Group cardStyle={styles.helpGroup}>
+            <Row
+              icon="mail"
+              label="Email us"
+              value={HELP_EMAIL}
+              onPress={() =>
+                closeHelp(() =>
+                  void Linking.openURL(
+                    `mailto:${HELP_EMAIL}?subject=${encodeURIComponent("Help with a payment")}`,
+                  ).catch(() => undefined),
+                )
+              }
+            />
+            <Row
+              icon="terms"
+              label="Refunds and terms"
+              external
+              onPress={() => closeHelp(() => void WebBrowser.openBrowserAsync(siteUrls.terms).catch(() => undefined))}
+            />
+            <Row icon="help" label="FAQ & Help" chevron onPress={() => closeHelp(() => navigation.navigate("Help"))} />
+          </Group>
+        </Sheet>
 
         <Sheet visible={choirOpen} onClose={() => setChoirOpen(false)}>
           <SheetTitle>For choir directors</SheetTitle>
@@ -1664,6 +1726,27 @@ const makeStyles = (c: Palette, s: Shadows) =>
     restoreRow: {
       alignItems: "center",
       marginTop: spacing.sm,
+    },
+    /** "Questions? Help & refunds": a 52 px row between hairlines, under the terms. */
+    helpRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+      minHeight: 52,
+      marginTop: 14,
+      paddingHorizontal: spacing.xs,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderColor: c.border,
+    },
+    helpRowText: {
+      flex: 1,
+      fontFamily: fonts.medium,
+      fontSize: 15,
+      color: c.text,
+    },
+    helpGroup: {
+      backgroundColor: c.sheetRow,
     },
 
     // ── Confirming a payment ────────────────────────────────────────────────
