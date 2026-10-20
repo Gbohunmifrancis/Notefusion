@@ -127,12 +127,15 @@
     <div class="in-app-steps">
       <ol>
         <li>Open the <strong>NoteFusion</strong> app and sign in.</li>
-        <li>Tap the <strong>Settings</strong> tab in the bottom navigation.</li>
-        <li>Select <strong>Account &amp; Security</strong>.</li>
-        <li>Tap <strong>Delete Account</strong> at the bottom of the screen.</li>
+        <li>Tap your photo at the top right to open <strong>Profile</strong>, then <strong>Settings</strong>.</li>
+        <li>Tap <strong>Delete account</strong> at the bottom of the screen.</li>
         <li>Confirm your decision. Your account and data will be removed instantly.</li>
       </ol>
     </div>
+    <p>
+      <strong>Paying through Google Play?</strong> Deleting your account does not cancel a Google Play subscription.
+      Cancel it in Google Play first (Play Store › your photo › Payments &amp; subscriptions › Subscriptions), or it keeps renewing.
+    </p>
   </div>
 </main>
 
@@ -293,6 +296,15 @@
       password: password ? password : null,
       reason: reason ? reason : null
     }).then(function (data) {
+      // A password that didn't match keeps the form, with the message, so only the password is typed again.
+      if (!data.confirmed && password) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Request Account Deletion";
+        showLines(errorBox, [data.message || "Your account was not deleted. Check your password and try again."]);
+        var pw = document.getElementById("password");
+        if (pw) { pw.value = ""; pw.focus(); }
+        return;
+      }
       form.hidden = true;
       if (data.confirmed) {
         successBox.innerHTML = "<p><strong>Account Successfully Deleted</strong></p><p>" + escapeHtml(data.message) + "</p>";
