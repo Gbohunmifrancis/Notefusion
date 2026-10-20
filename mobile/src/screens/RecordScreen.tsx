@@ -686,7 +686,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
         void guestPreviewStore.clear();
         return;
       }
-      guestPending.current = { jobId: pending.jobId, recordedAt: pending.recordedAt, fileName: pending.fileName };
+      guestPending.current = { jobId: pending.jobId, recordedAt: pending.recordedAt };
       setPhase("uploading");
       resumePreview(pending.jobId);
     })();
@@ -717,7 +717,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
     if (!sent) return; // left or sent again while it went up
     if ("jobId" in sent) {
       setMeter(null);
-      guestPending.current = { jobId: sent.jobId, recordedAt: Date.now(), fileName: name };
+      guestPending.current = { jobId: sent.jobId, recordedAt: Date.now() };
       // Kept from now: closing this screen, or the app, does not lose it.
       void guestPreviewStore.save({ ...guestPending.current, result: null });
       return;

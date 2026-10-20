@@ -40,11 +40,11 @@ test("a refused send is read as the website reads it", () => {
 
 test("a stored preview is read back, with its sheet once there is one", () => {
   const result = { notes: [], key: "G major" };
-  const stored = { jobId: "job-1", recordedAt: 1_760_000_000_000, fileName: "clip-12s.m4a", result };
+  const stored = { jobId: "job-1", recordedAt: 1_760_000_000_000, result };
   assert.deepEqual(readPendingPreview(JSON.stringify(stored)), stored);
   assert.deepEqual(readPendingPreview(JSON.stringify({ ...stored, result: null })), { ...stored, result: null });
+  assert.deepEqual(readPendingPreview(JSON.stringify({ jobId: "job-1", recordedAt: 1 })), { jobId: "job-1", recordedAt: 1, result: null });
   assert.equal(readPendingPreview(JSON.stringify({ ...stored, result: { key: "G major" } }))?.result, null, "no notes: not a sheet");
-  assert.equal(readPendingPreview(JSON.stringify({ ...stored, fileName: 4 }))?.fileName, "");
 });
 
 test("an unreadable stored preview is none", () => {
@@ -57,10 +57,10 @@ test("an unreadable stored preview is none", () => {
   assert.equal(readPendingPreview(JSON.stringify({ jobId: "j", recordedAt: "yesterday" })), null);
 });
 
-test("the kept sheet is named as the Library names a take", () => {
-  assert.equal(previewTitle("clip-12s.m4a", "Sun 17:10"), "Recording · Sun 17:10");
-  assert.equal(previewTitle("", "Sun 17:10"), "Recording · Sun 17:10");
-  assert.equal(previewTitle("Abide with me.mp3", "Sun 17:10"), "Abide with me");
-  assert.equal(previewTitle(".m4a", "Sun 17:10"), ".m4a", "a name that is all ending is kept");
-  assert.equal(previewTitle("x".repeat(130) + ".wav", "Sun 17:10").length, 120, "the API keeps 120 characters");
+test("the kept sheet is named as the API names a sheet it files", () => {
+  assert.equal(previewTitle(null, "Sun 17:10"), "Recording · Sun 17:10");
+  assert.equal(previewTitle(undefined, "Sun 17:10"), "Recording · Sun 17:10");
+  assert.equal(previewTitle("  ", "Sun 17:10"), "Recording · Sun 17:10");
+  assert.equal(previewTitle(" Abide with Me ", "Sun 17:10"), "Abide with Me", "the hymn it recognised");
+  assert.equal(previewTitle("x".repeat(130), "Sun 17:10").length, 120, "the API keeps 120 characters");
 });

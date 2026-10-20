@@ -56,8 +56,6 @@ export interface PendingPreview {
   jobId: string;
   /** When the take was sent (ms): the kept sheet is named from it. */
   recordedAt: number;
-  /** The take's file: "clip-12s.m4a" from the microphone, else the file that was picked. */
-  fileName: string;
   /** The finished sheet; null while the job is still running. */
   result: TranscriptionResult | null;
 }
@@ -72,23 +70,22 @@ export function readPendingPreview(raw: string | null | undefined): PendingPrevi
     return null;
   }
   if (typeof p !== "object" || p === null) return null;
-  const { jobId, recordedAt, fileName, result } = p as Record<string, unknown>;
+  const { jobId, recordedAt, result } = p as Record<string, unknown>;
   if (typeof jobId !== "string" || jobId.trim() === "") return null;
   if (typeof recordedAt !== "number" || !Number.isFinite(recordedAt)) return null;
   const sheet =
     typeof result === "object" && result !== null && Array.isArray((result as TranscriptionResult).notes)
       ? (result as TranscriptionResult)
       : null;
-  return { jobId, recordedAt, fileName: typeof fileName === "string" ? fileName : "", result: sheet };
+  return { jobId, recordedAt, result: sheet };
 }
 
 /**
- * What the kept sheet is called, as the Library names a take: "Recording · Sun 17:10" for one from the microphone
- * (`when` is that time, `sendQueue.recordedAt`), else the picked file's name without its ending.
+ * What the kept sheet is called, as the API names every sheet it files (`LibraryFiling.TitleFor`): the hymn it
+ * recognised, else "Recording · Sun 17:10" (`when` is the take's time, `sendQueue.recordedAt`). At most 120
+ * characters, as the API keeps a title.
  */
-export function previewTitle(fileName: string, when: string): string {
-  const dot = fileName.lastIndexOf(".");
-  const base = (dot > 0 ? fileName.slice(0, dot) : fileName).trim();
-  // The API keeps a title to 120 characters.
-  return base === "" || fileName.startsWith("clip-") ? `Recording · ${when}` : base.slice(0, 120);
+export function previewTitle(hymnTitle: string | null | undefined, when: string): string {
+  const hymn = (hymnTitle ?? "").trim();
+  return (hymn !== "" ? hymn : `Recording · ${when}`).slice(0, 120);
 }

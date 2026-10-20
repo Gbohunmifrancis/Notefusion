@@ -25,6 +25,7 @@ import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { PracticeModeScreen } from '../screens/practice/PracticeModeScreen';
 import { SeasonPathScreen } from '../screens/practice/SeasonPathScreen';
 import { useOutboxRunner } from '../lib/outbox';
+import { usePreviewClaim } from '../lib/previewClaim';
 import { useSeasonSync } from '../lib/seasonStore';
 import { autoRefreshPack } from '../lib/hymnPackStore';
 import { AdminRoot } from '../screens/admin/AdminNavigator';
@@ -100,6 +101,9 @@ export function RootNavigator() {
 
   // Record now, send later: recordings that could not be sent go out when the API can be reached.
   useOutboxRunner(Boolean(user));
+
+  // A guest's preview (board l-ux-high/07) is claimed by the account signed up or in to, and saved to its Library.
+  usePreviewClaim(Boolean(user));
 
   // The season flag (lib/seasonStore): read now, on every return to the app and when the account changes, and kept
   // on the phone for the next launch's splash. Off, it changes nothing anywhere.
