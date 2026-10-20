@@ -1019,7 +1019,7 @@
         list.appendChild(card);
       });
       filterLibrary();
-    }).catch(function (err) { hide(skel); show(empty); $("lib-empty-text").textContent = "Your library could not be loaded: " + (err.message || err); })
+    }).catch(function (err) { hide(skel); show(empty); $("lib-empty-text").textContent = "Your library didn't load. " + ((err && err.message) || "Check your connection and try again."); })
       .then(renderChoirLibrary);
   }
 
@@ -1099,7 +1099,8 @@
       $("result").scrollIntoView({ behavior: "smooth", block: "start" });
     }).catch(function (err) { if (at === epoch) alertIn($("app-alert"), "danger", "Could not open that sheet: " + (err.message || err)); });
   }
-  $("lib-empty-go").addEventListener("click", function () { setView("transcribe"); selectSource("link"); $("link-url").focus(); });
+  // To the microphone: what every account can do for free (a song link never is on a free account).
+  $("lib-empty-go").addEventListener("click", function () { setView("transcribe"); selectSource("record"); $("rec-btn").focus(); });
   $("lib-search").addEventListener("input", filterLibrary);
   /** A saved sheet, opened into the same result view a fresh transcription uses. */
   function openSaved(id) {
