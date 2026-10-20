@@ -4025,6 +4025,11 @@
           // Watched for the full ten minutes and nothing landed: the dashboard's "never confirmed" step.
           w.reported = true;
           track("Payment not confirmed", w.quiet ? "came back without paying (abandoned?)" : "provider sent the browser back, no payment after 10 min");
+          // The checking stops here, so the note stops promising it and says what to do if money left the account.
+          if (!w.quiet) {
+            $("pay-toast-title").textContent = "We haven't seen this payment yet.";
+            $("pay-toast-sub").textContent = "If you were charged, email hello@notefusion.studio with your receipt and we'll sort it out. Nothing is charged twice.";
+          }
         }
       });
   }
