@@ -46,6 +46,14 @@
     if (text) status.appendChild(document.createTextNode(text));
   }
   function showStart(on) { start.hidden = !on; }
+  /** A microphone the browser blocks for this site: how to let it listen again, step by step (board l-ux-high/06d). */
+  function sayBlocked() {
+    say("The microphone is blocked for this site. To hum here, allow it again:", "error");
+    var steps = el("ol", "identify-steps");
+    ["Tap the lock (or settings) icon beside the address.", "Choose Permissions › Microphone › Allow.", "Then tap Hum a tune, or choose a recording instead."]
+      .forEach(function (t) { steps.appendChild(el("li", null, t)); });
+    status.appendChild(steps);
+  }
   function clearResult() { result.hidden = true; result.className = "identify-result"; result.textContent = ""; }
 
   function againButton(label) {
@@ -164,6 +172,7 @@
       onTake: function (blob, name) { send(blob, name); },
       onError: function (text, kind) {
         showStart(true);
+        if (kind === "blocked") { sayBlocked(); return; }
         say(text + (kind === "short" ? "" : " You can choose a recording instead."), "error");
       }
     });

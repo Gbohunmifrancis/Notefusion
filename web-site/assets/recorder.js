@@ -6,7 +6,7 @@
  *   NfRecorder.open({ maxSeconds: 30, onTake: function (blob, name, seconds) {…}, onError: function (text, kind) {…} })
  *
  * `useLabel` names the button that sends the take ("Transcribe this take" when it is not given).
- * `onError` gets a plain sentence and a kind ("unsupported" | "denied" | "short"), so the page can add
+ * `onError` gets a plain sentence and a kind ("unsupported" | "blocked" | "nomic" | "busy" | "short"), so the page can add
  * its own way out ("Upload a file instead."). `sounds(name)` ("start" | "stop" | "error") and
  * `track(name)` are optional hooks. */
 (function () {
@@ -107,6 +107,13 @@
    * Why the microphone did not open, by cause, with the way back: one sentence used to cover a refusal, a device
    * with no microphone and one another app was holding, and none said how to let the site listen again.
    */
+  /** The cause as a kind a page can act on: "blocked" (the person or browser said no), "nomic" or "busy". */
+  function micKind(err) {
+    var name = err && err.name;
+    if (name === "NotFoundError" || name === "OverconstrainedError") return "nomic";
+    if (name === "NotReadableError" || name === "AbortError") return "busy";
+    return "blocked";
+  }
   function micProblem(err) {
     var name = err && err.name;
     if (name === "NotFoundError" || name === "OverconstrainedError") return "No microphone was found on this device.";
@@ -190,7 +197,7 @@
       showLive(true);
       rec.timer = setInterval(function () { els.elapsed.textContent = fmtClock((Date.now() - rec.started) / 1000); }, 250);
       rec.stopAt = setTimeout(stopRecording, maxSec * 1000);
-    }).catch(function (err) { rec.opening = false; fail(opts, "denied", micProblem(err)); });
+    }).catch(function (err) { rec.opening = false; fail(opts, micKind(err), micProblem(err)); });
   }
 
   window.NfRecorder = { open: start, isRecording: function () { return !!(rec.recorder && rec.recorder.state === "recording"); }, micProblem: micProblem };
