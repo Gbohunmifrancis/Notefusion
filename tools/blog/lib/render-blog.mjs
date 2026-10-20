@@ -132,6 +132,19 @@ function authorCard(author) {
 
 const blogScripts = () => `<script src="/assets/blog.js?v=${ASSET_VERSION.blogJs}" defer></script>`;
 
+const INLINE_CTA = `<p class="inline-cta"><a href="/app?utm_source=blog-inline" data-track="Blog: inline cta">Got a recording? Get it in solfa&nbsp;→</a></p>\n`;
+/**
+ * A post's body with the way into the app inside it (board m-ux-medium W4c): the hymn pages' inline line, before the
+ * second section heading, so a reader meets it about two screens in rather than only after the FAQ, the share links
+ * and the author. A post with fewer than two sections has it at the end of the body, before the FAQ. The CTA box at
+ * the end stays. (Headings are the only "<h2 " in a body: code and raw HTML are escaped.)
+ */
+export function withInlineCta(html) {
+  const first = html.indexOf("<h2 ");
+  const second = first < 0 ? -1 : html.indexOf("<h2 ", first + 1);
+  return second < 0 ? html + INLINE_CTA : html.slice(0, second) + INLINE_CTA + html.slice(second);
+}
+
 export function renderPost(post, { posts, authors, hymnsBySlug }) {
   const author = authors[post.author];
   const crumbs = [["/", "Home"], ["/blog", "Blog"], [post.url, post.title]];
@@ -165,7 +178,7 @@ export function renderPost(post, { posts, authors, hymnsBySlug }) {
   ${cover}
   ${tocHtml}
   <div class="post-body">
-${post.html}
+${withInlineCta(post.html)}
   </div>
   ${faqHtml}
   ${shareLinks(post)}
