@@ -129,7 +129,8 @@ export function OnboardingScreen({ navigation }: Props) {
           <Lockup />
           <Pressable
             onPress={finish}
-            hitSlop={12}
+            // A short word: the slop makes it a 44 pt target without moving it.
+            hitSlop={14}
             style={({ pressed }) => pressed && pressedLink}
             accessibilityRole="button"
             accessibilityLabel="Skip the introduction"

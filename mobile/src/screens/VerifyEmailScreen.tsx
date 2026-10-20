@@ -205,7 +205,7 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
           <Pressable
             onPress={resend}
             disabled={resending}
-            hitSlop={8}
+            hitSlop={13}
             accessibilityRole="button"
             style={({ pressed }) => pressed && pressedLink}
           >
@@ -213,7 +213,7 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
           </Pressable>
         )}
       </View>
-      <Pressable onPress={changeEmail} hitSlop={8} accessibilityRole="button" style={({ pressed }) => [styles.change, pressed && pressedLink]}>
+      <Pressable onPress={changeEmail} hitSlop={13} accessibilityRole="button" style={({ pressed }) => [styles.change, pressed && pressedLink]}>
         <Text style={styles.changeText}>Change email</Text>
       </Pressable>
       <Text style={styles.hint}>The code expires in 10 minutes. Check your spam folder if it isn&apos;t there.</Text>
