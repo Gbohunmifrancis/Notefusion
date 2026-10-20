@@ -241,8 +241,10 @@ export function DeleteAccountSheet({
         }
         await meApi.remove({ googleIdToken });
       }
-      // The session is dead server-side; signing out swaps the navigator back to the welcome screens.
+      // The session is dead server-side; signing out swaps the navigator back to the welcome screens, where the toast
+      // says it is done (it would otherwise look like any sign-out).
       await signOut();
+      showToast("Your account and its sheets are deleted");
     } catch (e) {
       const err = toApiError(e);
       setError(
