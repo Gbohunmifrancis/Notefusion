@@ -30,6 +30,7 @@ export function Toast({
   icon = "done",
   action,
   onAction,
+  leaving = false,
   onDone,
 }: {
   message: string;
@@ -37,6 +38,8 @@ export function Toast({
   /** The one text action's word. */
   action?: string;
   onAction?: () => void;
+  /** Sent away before its time: it leaves now, as it would have. */
+  leaving?: boolean;
   onDone: () => void;
 }) {
   const c = useColors();
@@ -64,13 +67,26 @@ export function Toast({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t]);
 
-  /** The action was taken: it is done with, so the toast leaves at once. */
-  function act() {
+  /** Leaves now: its action was taken, or it was sent away. */
+  function leave() {
     run.current?.stop();
-    onAction?.();
+    run.current = null;
     Animated.timing(t, { toValue: 0, duration: OUT_MS, easing: Easing.in(Easing.quad), useNativeDriver: true }).start(() =>
       done.current(),
     );
+  }
+
+  useEffect(() => {
+    if (leaving) leave();
+    // Once, when it is sent away.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leaving]);
+
+  /** The action was taken: it is done with, so the toast leaves at once. */
+  function act() {
+    if (!run.current) return;
+    onAction?.();
+    leave();
   }
 
   const bottom = Math.max(insets.bottom, spacing.sm) + spacing.xs + TAB_BAR + 16;

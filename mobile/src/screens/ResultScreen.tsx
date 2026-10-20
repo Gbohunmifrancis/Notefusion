@@ -70,6 +70,10 @@ import { transposeLocally } from "../lib/localTranspose";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { rating } from "../lib/rating";
 import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
+import type { HeldChange } from "../lib/heldChange";
+import { holdWithUndo, type Held } from "../lib/heldChangeRuntime";
+import { dohNowLine, HYMNBOOK_IN_LINE, movedLine } from "../lib/undoWords";
+import { openingBars } from "../lib/solfaOpening";
 import {
   fonts,
   motion,
@@ -121,6 +125,27 @@ function realign(next: NoteEvent[], from: Draft): Draft {
 }
 
 type Parts = NonNullable<TranscriptionResult["parts"]>;
+
+/**
+ * Everything another doh, the hymnbook version or a transposition rewrites. Each is shown at once with an Undo toast
+ * (board m-ux-medium P1e), and Undo puts back exactly this.
+ */
+interface SheetState {
+  baseline: { notes: NoteEvent[]; key: string; solfaLines: string[] };
+  draft: Draft;
+  persisted: Draft;
+  key: string;
+  timeSignature: string;
+  tempo: number;
+  lyrics: string;
+  chords: ChordSymbol[] | null;
+  parts: Parts | null;
+  partsMusicXml: string;
+  preview: string;
+  doubt: KeyAlternative[];
+  hymnSource: HymnCredit | null;
+  hymnAnswered: boolean;
+}
 
 /**
  * A part's solfa lines for a key. The worker labels the parts it returns; a saved sheet
@@ -373,6 +398,19 @@ export function ResultScreen({ route, navigation }: Props) {
     ? null
     : hymnOffer(result.hymnMatch, { saved: !!savedId && !autoSaved, answered: hymnAnswered || !!hymnSource, hasParts: !!parts });
 
+  /** How the tune starts in each doh on offer: the rewrite a tap on it makes (board m-ux-medium P1e). */
+  const dohPreviews = useMemo(
+    () =>
+      doubt.map((choice) => ({
+        choice,
+        opening: openingBars(
+          deriveSolfa(writeInKey(baseline.notes, choice), choice.key, timeSignature, result.chromaticSpelling ?? "direction").notes,
+          timeSignature,
+        ),
+      })),
+    [doubt, baseline.notes, timeSignature, result.chromaticSpelling],
+  );
+
   const [solfaStyle, setSolfaStyle] = useState<SolfaStyle>("bars");
   const hasLyrics = lyrics.trim().length > 0;
   useEffect(() => {
@@ -411,6 +449,20 @@ export function ResultScreen({ route, navigation }: Props) {
     () => (hasLyrics ? hymnRows(view.notes, lyrics, timeSignature) : []),
     [hasLyrics, view.notes, lyrics, timeSignature],
   );
+
+  /** "Use the hymnbook version?": the take's opening and the hymnbook's, each in its own meter. */
+  const hymnPreview = useMemo(() => {
+    if (hymnAsk !== "version" || !result.hymnMatch) return null;
+    const sheet = hymnbookSheet(result.hymnMatch, tempo);
+    if (!sheet) return null;
+    const book = deriveSolfa(sheet.notes, sheet.key, sheet.timeSignature, result.chromaticSpelling ?? "direction").notes;
+    return {
+      yours: openingBars(view.notes, timeSignature),
+      yoursMeter: timeSignature,
+      book: openingBars(book, sheet.timeSignature),
+      bookMeter: sheet.timeSignature,
+    };
+  }, [hymnAsk, result.hymnMatch, result.chromaticSpelling, tempo, view.notes, timeSignature]);
 
   /** The parts' solfa lines, labelled for the current key. */
   const partsView = useMemo(() => {
@@ -609,11 +661,66 @@ export function ResultScreen({ route, navigation }: Props) {
     [draft.notes, edited, result.overallConfidence, hymnSource],
   );
 
+  // ── Shown at once, sent after its Undo (board m-ux-medium P1e) ──────────────
+  /** The sheet as it stands, for an Undo to put back. */
+  function sheetState(): SheetState {
+    return {
+      baseline,
+      draft,
+      persisted: persisted.current,
+      key,
+      timeSignature,
+      tempo,
+      lyrics,
+      chords,
+      parts,
+      partsMusicXml,
+      preview,
+      doubt,
+      hymnSource,
+      hymnAnswered,
+    };
+  }
+
+  function applySheet(next: SheetState) {
+    setBaseline(next.baseline);
+    setDraft(next.draft);
+    persisted.current = next.persisted;
+    setKey(next.key);
+    setTimeSignature(next.timeSignature);
+    setTempo(next.tempo);
+    setLyrics(next.lyrics);
+    setChords(next.chords);
+    setParts(next.parts);
+    setPartsMusicXml(next.partsMusicXml);
+    setPreview(next.preview);
+    setDoubt(next.doubt);
+    setHymnSource(next.hymnSource);
+    setHymnAnswered(next.hymnAnswered);
+  }
+
+  /** The change still held behind its Undo toast, if any. */
+  const held = useRef<Held | null>(null);
+  function hold(message: string, change: HeldChange, icon: IconName) {
+    held.current = holdWithUndo(message, change, icon);
+  }
+  /**
+   * A change still held is sent before anything else on the sheet changes or is saved: its Undo would otherwise take
+   * the later edit with it, and its write would land on top of it.
+   */
+  function settleHeld() {
+    held.current?.settle();
+    held.current = null;
+  }
+  // Leaving the screen sends it: an Undo can only put back a sheet that is still open.
+  useEffect(() => () => settleHeld(), []);
+
   /**
    * Saves the sheet to the Library. Resolves to its id, or null when it could not be saved (and the dialog said why).
    * `offerRename`: saved by the one tap on Save to Library, under the title shown, so the toast offers Rename.
    */
   async function save({ offerRename = false }: { offerRename?: boolean } = {}): Promise<string | null> {
+    settleHeld();
     setSaving(true);
     try {
       const saved = await libraryApi.save({
@@ -664,6 +771,7 @@ export function ResultScreen({ route, navigation }: Props) {
   }
 
   async function applyKey(next: string) {
+    settleHeld();
     setPickingKey(false);
     setDoubt([]);
     if (sameKey(next, key)) return;
@@ -701,34 +809,49 @@ export function ResultScreen({ route, navigation }: Props) {
   /**
    * The answer to "which doh is it?". Another doh brings its own pitches — a note the singer left
    * between two scale tones is written as that key's tone — so it is the sheet as heard in that key,
-   * not a correction: the baseline moves with it, as it does for a transposition.
+   * not a correction: the baseline moves with it, as it does for a transposition. Shown at once with
+   * "Doh is D now · Undo"; a saved sheet is written when the toast leaves, so Undo sends nothing.
    */
-  async function chooseDoh(choice: KeyAlternative | null) {
+  function chooseDoh(choice: KeyAlternative | null) {
     if (!choice) {
       setDoubt([]);
       return;
     }
+    settleHeld();
+    const before = sheetState();
     const relabelled = deriveSolfa(
       writeInKey(baseline.notes, choice), choice.key, timeSignature, result.chromaticSpelling ?? "direction");
-    if (savedId) {
-      setRekeying(true);
-      try {
-        await libraryApi.updateNotes(savedId, relabelled.notes);
-        await libraryApi.updateKey(savedId, choice.key);
-      } catch (e) {
-        showDialog({ title: "Could not change the doh", message: toApiError(e).message, icon: "problem", tone: "danger" });
-        return;
-      } finally {
-        setRekeying(false);
-      }
-    }
-    setBaseline({ notes: relabelled.notes, key: choice.key, solfaLines: relabelled.solfaLines });
-    setDraft(pristine(relabelled.notes));
-    persisted.current = pristine(relabelled.notes);
-    setKey(choice.key);
-    setPreview(synthesizeMelodyWavBase64(relabelled.notes, tempo));
-    setDoubt([]);
+    applySheet({
+      ...before,
+      baseline: { notes: relabelled.notes, key: choice.key, solfaLines: relabelled.solfaLines },
+      draft: pristine(relabelled.notes),
+      persisted: pristine(relabelled.notes),
+      key: choice.key,
+      preview: synthesizeMelodyWavBase64(relabelled.notes, tempo),
+      doubt: [],
+    });
     haptics.play("success");
+    const id = savedId;
+    hold(
+      dohNowLine(dohLetter(choice.key)),
+      {
+        commit: async () => {
+          if (!id) return; // unsaved: the key and notes travel with the save payload
+          setRekeying(true);
+          try {
+            await libraryApi.updateNotes(id, relabelled.notes);
+            await libraryApi.updateKey(id, choice.key);
+          } catch (e) {
+            applySheet(before);
+            showDialog({ title: "Could not change the doh", message: toApiError(e).message, icon: "problem", tone: "danger" });
+          } finally {
+            setRekeying(false);
+          }
+        },
+        undo: () => applySheet(before),
+      },
+      "solfa",
+    );
   }
 
   /**
@@ -736,27 +859,44 @@ export function ResultScreen({ route, navigation }: Props) {
    * notes, rhythm, time signature and pickup, already in the key that was sung, at the pace it was sung,
    * with the first verse under it when no words were typed. Like another doh, it is the sheet, not a
    * correction: the baseline moves with it. What was read against the old beats (the chords) goes.
+   * Shown at once with "Hymnbook version in · Undo"; Undo puts back the take as heard, its chords and the question.
    */
   function chooseHymnbook(take: boolean) {
-    setHymnAnswered(true);
     const sheet = take && result.hymnMatch ? hymnbookSheet(result.hymnMatch, tempo) : null;
-    if (!sheet) return;
+    if (!sheet) {
+      setHymnAnswered(true);
+      return;
+    }
+    settleHeld();
+    const before = sheetState();
     const relabelled = deriveSolfa(sheet.notes, sheet.key, sheet.timeSignature, result.chromaticSpelling ?? "direction");
-    setBaseline({ notes: relabelled.notes, key: sheet.key, solfaLines: relabelled.solfaLines });
-    setDraft(pristine(relabelled.notes));
-    persisted.current = pristine(relabelled.notes);
-    setKey(sheet.key);
-    setTimeSignature(sheet.timeSignature);
-    setTempo(sheet.tempo);
-    if (!lyrics.trim() && sheet.lyrics) setLyrics(sheet.lyrics);
-    setChords(null);
-    setPreview(synthesizeMelodyWavBase64(relabelled.notes, sheet.tempo));
-    setDoubt([]);
-    setHymnSource(sheet.hymn);
+    applySheet({
+      ...before,
+      baseline: { notes: relabelled.notes, key: sheet.key, solfaLines: relabelled.solfaLines },
+      draft: pristine(relabelled.notes),
+      persisted: pristine(relabelled.notes),
+      key: sheet.key,
+      timeSignature: sheet.timeSignature,
+      tempo: sheet.tempo,
+      lyrics: !lyrics.trim() && sheet.lyrics ? sheet.lyrics : lyrics,
+      chords: null,
+      preview: synthesizeMelodyWavBase64(relabelled.notes, sheet.tempo),
+      doubt: [],
+      hymnSource: sheet.hymn,
+      hymnAnswered: true,
+    });
     haptics.play("success");
-    // On a sheet already in the Library (filed as its job finished) the swap is saved as it is made: the hymnbook
-    // version replaces the filed copy, as a Save of the same job does.
-    if (savedId) void saveHymnbook(sheet, relabelled.notes);
+    // On a sheet already in the Library (filed as its job finished) the swap is saved when the toast leaves: the
+    // hymnbook version replaces the filed copy, as a Save of the same job does.
+    const id = savedId;
+    hold(
+      HYMNBOOK_IN_LINE,
+      {
+        commit: () => (id ? saveHymnbook(sheet, relabelled.notes) : undefined),
+        undo: () => applySheet(before),
+      },
+      "hymns",
+    );
   }
 
   async function saveHymnbook(sheet: HymnbookSheet, notes: NoteEvent[]) {
@@ -787,6 +927,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   async function handleTempoChange(nextTempo: number) {
     if (nextTempo < 20 || nextTempo > 300 || nextTempo === tempo) return;
+    settleHeld();
     const previous = tempo;
     setTempo(nextTempo);
     try {
@@ -810,6 +951,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   async function handleMeterChange(nextMeter: string) {
     if (nextMeter === timeSignature) return;
+    settleHeld();
     const previous = timeSignature;
     setTimeSignature(nextMeter);
     setPickingMeter(false);
@@ -831,6 +973,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   /** A free tap on any chip. Prev/Next then walk the whole list. */
   function openNote(index: number) {
+    settleHeld();
     setReviewQueue(null);
     setEditing(index);
   }
@@ -841,6 +984,7 @@ export function ResultScreen({ route, navigation }: Props) {
       .map((n, i) => (n.conf < 0.5 ? i : -1))
       .filter((i) => i >= 0);
     if (flagged.length === 0) return;
+    settleHeld();
     setReviewQueue(flagged);
     setEditing(flagged[0]);
   }
@@ -957,6 +1101,7 @@ export function ResultScreen({ route, navigation }: Props) {
   }
 
   function discardCorrections() {
+    settleHeld();
     const original = pristine(baseline.notes);
     setDraft(original);
     setPreview(synthesizeMelodyWavBase64(baseline.notes, tempo));
@@ -983,6 +1128,7 @@ export function ResultScreen({ route, navigation }: Props) {
   async function writeParts() {
     if (harmonising || view.notes.length === 0) return;
     if (savedId && blockedByLocalTranspose()) return;
+    settleHeld();
     setHarmonising(true);
     try {
       const written = await transcriptionsApi.harmonise({ key, tempoBpm: Math.round(tempo), timeSignature, notes: view.notes });
@@ -1028,7 +1174,10 @@ export function ResultScreen({ route, navigation }: Props) {
    */
   async function applyTranspose() {
     if (semitones === 0) return;
+    settleHeld();
     setTransposing(true);
+    const before = sheetState();
+    const by = semitones;
     try {
       const moved = savedId
         ? await libraryApi.transpose(savedId, semitones).then((s) => ({
@@ -1050,20 +1199,41 @@ export function ResultScreen({ route, navigation }: Props) {
           });
       const relabelled = deriveSolfa(moved.notes, moved.key, timeSignature, result.chromaticSpelling ?? "direction");
       const notes = relabelled.notes;
-      setBaseline({ notes, key: moved.key, solfaLines: relabelled.solfaLines });
-      setDraft(pristine(notes));
-      persisted.current = pristine(notes);
-      setKey(moved.key);
-      setParts((moved.parts as Parts | null) ?? null);
-      setPartsMusicXml(moved.partsMusicXml ?? "");
-      setChords(moved.chords?.length ? moved.chords : null);
-      setPreview(synthesizeMelodyWavBase64(notes, tempo));
+      const after: SheetState = {
+        ...before,
+        baseline: { notes, key: moved.key, solfaLines: relabelled.solfaLines },
+        draft: pristine(notes),
+        persisted: pristine(notes),
+        key: moved.key,
+        parts: (moved.parts as Parts | null) ?? null,
+        partsMusicXml: moved.partsMusicXml ?? "",
+        chords: moved.chords?.length ? moved.chords : null,
+        preview: synthesizeMelodyWavBase64(notes, tempo),
+        doubt: [],
+      };
+      applySheet(after);
       setSemitones(0);
       setPickingKey(false);
-      setDoubt([]);
       // The server moved the saved sheet and the screen now shows exactly that.
       movedOffline.current = false;
       haptics.play("success");
+      // The one edit that moves the notes: its Undo moves them back, on the saved sheet too.
+      const id = savedId;
+      hold(
+        movedLine(by, moved.key),
+        {
+          commit: () => undefined, // already moved where it is kept
+          undo: () => {
+            applySheet(before);
+            if (!id) return;
+            libraryApi.transpose(id, -by).catch((e) => {
+              applySheet(after);
+              showDialog({ title: "Could not move it back", message: toApiError(e).message, icon: "problem", tone: "danger" });
+            });
+          },
+        },
+        "transpose",
+      );
     } catch (e) {
       if (isNetworkCode(toApiError(e).code)) {
         transposeOffline();
@@ -1110,6 +1280,7 @@ export function ResultScreen({ route, navigation }: Props) {
   async function commitLyrics() {
     const next = lyrics.trim();
     if (!savedId || next === committedLyrics.current) return;
+    settleHeld();
     const previous = committedLyrics.current;
     committedLyrics.current = next;
     try {
@@ -1156,6 +1327,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   async function rename() {
     if (!savedId || renamingRef.current) return;
+    settleHeld();
     renamingRef.current = true;
     setRenaming(true);
     const kept = await renameSheet(savedId, title);
@@ -1541,6 +1713,7 @@ export function ResultScreen({ route, navigation }: Props) {
   /** The same question as every delete of a saved sheet (lib/sheetActions); gone, the screen closes. */
   function confirmDeleteSheet(id: string) {
     askToDelete([{ id, title: shownTitle || "This sheet" }], async () => {
+      settleHeld();
       if (!(await deleteSheets([{ id, title: shownTitle }]))) return;
       if (navigation.canGoBack()) {
         navigation.goBack();
@@ -1868,6 +2041,15 @@ export function ResultScreen({ route, navigation }: Props) {
                   ? ". Use the hymnbook version? Its notes, rhythm and bar lines come from the published score, in the key you sang."
                   : "."}
               </Text>
+              {/* Both openings, bar lines and meter as each writes them, so the swap is seen before it is made. */}
+              {hymnPreview ? (
+                <View style={styles.compare}>
+                  <Text style={styles.compareLabel}>Yours · {hymnPreview.yoursMeter}</Text>
+                  <Text style={styles.compareLine}>{hymnPreview.yours}</Text>
+                  <Text style={[styles.compareLabel, styles.compareGap]}>Hymnbook · {hymnPreview.bookMeter}</Text>
+                  <Text style={[styles.compareLine, styles.compareBook]}>{hymnPreview.book}</Text>
+                </View>
+              ) : null}
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipScroll}>
                 {hymnAsk === "version" ? (
                   <Touchable
@@ -1876,16 +2058,16 @@ export function ResultScreen({ route, navigation }: Props) {
                     onPress={() => chooseHymnbook(true)}
                     accessibilityLabel={`Use the hymnbook version of ${result.hymnMatch.title}`}
                   >
-                    <Text style={[styles.chipText, styles.chipTextOn]}>Yes</Text>
+                    <Text style={[styles.chipText, styles.chipTextOn]}>Use the hymnbook</Text>
                   </Touchable>
                 ) : null}
                 <Touchable
                   style={styles.chip}
                   radius={radii.pill}
                   onPress={() => chooseHymnbook(false)}
-                  accessibilityLabel={hymnAsk === "version" ? "Keep the transcription" : "Dismiss"}
+                  accessibilityLabel={hymnAsk === "version" ? "Keep your transcription" : "Dismiss"}
                 >
-                  <Text style={styles.chipText}>{hymnAsk === "version" ? "No" : "Dismiss"}</Text>
+                  <Text style={styles.chipText}>{hymnAsk === "version" ? "Keep mine" : "Dismiss"}</Text>
                 </Touchable>
               </ScrollView>
             </View>
@@ -1895,32 +2077,25 @@ export function ResultScreen({ route, navigation }: Props) {
             <View style={styles.panel}>
               <Text style={styles.panelEyebrow}>Which doh is it?</Text>
               <Text style={styles.panelHint}>
-                Your tune fits more than one doh about as well. Tap the one you sang in — notes you left
-                between two tones are written in its scale.
+                Your tune fits more than one doh. Here is how it starts in each; tap the one you sang in.
               </Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipScroll}>
-                <Touchable
-                  style={[styles.chip, styles.chipOn]}
-                  radius={radii.pill}
-                  onPress={() => chooseDoh(null)}
+              {/* Each row is the rewrite a tap makes, of the first eight notes; the one shown is "Now". */}
+              <DohChoiceRow
+                letter={doh}
+                opening={openingBars(view.notes, timeSignature)}
+                now
+                disabled={rekeying}
+                onPress={() => chooseDoh(null)}
+              />
+              {dohPreviews.map(({ choice, opening }) => (
+                <DohChoiceRow
+                  key={choice.key}
+                  letter={dohLetter(choice.key)}
+                  opening={opening}
                   disabled={rekeying}
-                  accessibilityLabel={`Keep doh as ${doh}`}
-                >
-                  <Text style={[styles.chipText, styles.chipTextOn]}>Doh is {doh}</Text>
-                </Touchable>
-                {doubt.map((choice) => (
-                  <Touchable
-                    key={choice.key}
-                    style={styles.chip}
-                    radius={radii.pill}
-                    onPress={() => chooseDoh(choice)}
-                    disabled={rekeying}
-                    accessibilityLabel={`Doh is ${dohLetter(choice.key)}`}
-                  >
-                    <Text style={styles.chipText}>Doh is {dohLetter(choice.key)}</Text>
-                  </Touchable>
-                ))}
-              </ScrollView>
+                  onPress={() => chooseDoh(choice)}
+                />
+              ))}
             </View>
           ) : null}
 
@@ -2555,6 +2730,45 @@ function Stat({
   );
 }
 
+/** One answer to "Which doh is it?": the doh, how the tune starts in it, and "Now" on the one shown. */
+function DohChoiceRow({
+  letter,
+  opening,
+  now = false,
+  disabled,
+  onPress,
+}: {
+  letter: string;
+  opening: string | null;
+  now?: boolean;
+  disabled?: boolean;
+  onPress: () => void;
+}) {
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <Touchable
+      onPress={onPress}
+      disabled={disabled}
+      style={[styles.dohRow, now && styles.dohRowOn]}
+      radius={16}
+      scaleTo={motion.scale.row}
+      accessibilityRole="button"
+      accessibilityState={{ selected: now }}
+      accessibilityLabel={`${now ? `Keep doh as ${letter}` : `Doh is ${letter}`}${opening ? `. It starts ${opening}` : ""}`}
+    >
+      <View style={styles.dohRowText}>
+        <Text style={styles.dohRowName}>Doh is {letter}</Text>
+        {opening ? (
+          <Text style={styles.dohRowOpening} numberOfLines={1}>
+            {opening}
+          </Text>
+        ) : null}
+      </View>
+      {now ? <Text style={styles.nowPill}>Now</Text> : null}
+    </Touchable>
+  );
+}
+
 /** A round action with its name beneath. */
 function Action({
   icon,
@@ -2799,6 +3013,47 @@ const makeStyles = (c: Palette) =>
     chipOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
     chipText: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted },
     chipTextOn: { fontFamily: fonts.semibold, color: c.link },
+
+    // ── Which doh is it? and the hymnbook version: seen before they are taken ──
+    dohRow: {
+      minHeight: 60,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+      paddingVertical: spacing.sm,
+      paddingHorizontal: 14,
+      borderRadius: 16,
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1.5,
+      borderColor: c.border,
+    },
+    dohRowOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
+    dohRowText: { flex: 1, minWidth: 0 },
+    dohRowName: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
+    dohRowOpening: { fontFamily: typography.mono.fontFamily, fontSize: 14, letterSpacing: 0.3, color: c.accent, marginTop: 3 },
+    nowPill: {
+      fontFamily: fonts.semibold,
+      fontSize: 12,
+      color: c.link,
+      backgroundColor: c.accentSoft,
+      borderRadius: radii.pill,
+      paddingVertical: 4,
+      paddingHorizontal: 9,
+      overflow: "hidden",
+    },
+    compare: {
+      gap: 2,
+      marginTop: 2,
+      marginBottom: 4,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      borderRadius: 12,
+      backgroundColor: c.surfaceAlt,
+    },
+    compareLabel: { fontFamily: fonts.medium, fontSize: 12, color: c.textMuted },
+    compareGap: { marginTop: 6 },
+    compareLine: { fontFamily: typography.mono.fontFamily, fontSize: 14, letterSpacing: 0.3, color: c.text },
+    compareBook: { color: c.accent },
 
     transposeRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginVertical: spacing.xs },
     roundStep: {
