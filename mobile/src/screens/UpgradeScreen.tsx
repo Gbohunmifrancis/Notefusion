@@ -150,6 +150,29 @@ function withSingle(pro: Plan[], single: Plan[]): Plan[] {
   return [...pro.filter((p) => p.interval !== "single"), ...songs.filter((p) => p.interval === "single")];
 }
 
+/**
+ * The plan the paywall opens on: one a limit sheet's row already chose, the one-song purchase when the free ones have
+ * just run out, else the best value (the year).
+ */
+function preferredPlan(planList: Plan[], sub: Subscription | null, forLimit: boolean, askedPlanId?: string): Plan | undefined {
+  const single = sub?.isActive ? undefined : planList.find((p) => p.interval === "single");
+  const asked = askedPlanId ? planList.find((p) => p.id === askedPlanId) : undefined;
+  return asked ?? (forLimit && single ? single : bestValuePlan(planList) ?? single);
+}
+
+/**
+ * What the paywall last found on sale on this run of the app, for one account: shown at once when it opens again, while
+ * it is read afresh behind it (a first open on 3G waited on four calls, and on Android on Google Play too). Not kept
+ * across launches, so a price change is never shown late for long.
+ */
+let lastOnSale: {
+  userId: string;
+  plans: Plan[];
+  choirPlans: Plan[];
+  play: boolean;
+  offers: Map<string, PlayOffer>;
+} | null = null;
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
@@ -181,18 +204,23 @@ export function UpgradeScreen({ navigation, route }: Props) {
     subscription: liveSubscription,
   } = useSubscription();
   const { user } = useAuth();
+  const userId = user?.id;
   const [profile, setProfile] = useState<MyProfile | null>(null);
 
-  const [loading, setLoading] = useState(true);
-  const [plans, setPlans] = useState<Plan[]>([]);
+  // What was on sale when the paywall last opened on this run (`lastOnSale`), shown while it is read again.
+  const [cached] = useState(() => (user && lastOnSale?.userId === user.id ? lastOnSale : null));
+  const [loading, setLoading] = useState(!cached);
+  const [plans, setPlans] = useState<Plan[]>(cached?.plans ?? []);
   // The choir plans, listed apart (a director buys one for the whole choir); empty if the list fails.
-  const [choirPlans, setChoirPlans] = useState<Plan[]>([]);
+  const [choirPlans, setChoirPlans] = useState<Plan[]>(cached?.choirPlans ?? []);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(() =>
+    cached ? preferredPlan(cached.plans, liveSubscription, forLimit, askedPlanId)?.id ?? null : null,
+  );
   // On Android, what Google Play sells and at what price (board h-play): a plan without an offer is not shown there.
-  const [playOffers, setPlayOffers] = useState<Map<string, PlayOffer>>(new Map());
+  const [playOffers, setPlayOffers] = useState<Map<string, PlayOffer>>(cached?.offers ?? new Map());
   // Selling through Google Play (Android, the server ready, Play selling the products); else the website's checkout.
-  const [play, setPlay] = useState(false);
+  const [play, setPlay] = useState(cached?.play ?? false);
   const [busy, setBusy] = useState(false); // opening checkout
   // The choir plans' own sheet, opened from the "For choir directors" row (board l-ux-high 03a).
   const [choirOpen, setChoirOpen] = useState(false);
@@ -234,23 +262,24 @@ export function UpgradeScreen({ navigation, route }: Props) {
       // Through Google Play only what it sells is shown, at its price.
       const sold = (p: Plan) => !viaPlay || offerFor(p, offers) !== undefined;
       const planList = withSingle(proList, singleList).filter(sold);
+      const choirSold = choirList.filter(sold);
       setPlans(planList);
-      setChoirPlans(choirList.filter(sold));
+      setChoirPlans(choirSold);
       setSubscription(sub);
       if (prof) setProfile(prof);
+      if (userId) lastOnSale = { userId, plans: planList, choirPlans: choirSold, play: viaPlay, offers };
       // Default to the best-value (highest) plan so the recommended choice is preselected — or, when
-      // the free allowance has just run out, to the one-song purchase.
-      const single = sub.isActive ? undefined : planList.find((p) => p.interval === "single");
-      const best = bestValuePlan(planList);
-      const asked = askedPlanId ? planList.find((p) => p.id === askedPlanId) : undefined;
-      const preferred = asked ?? (forLimit && single ? single : best ?? single);
-      setSelectedId((cur) => cur ?? preferred?.id ?? null);
+      // the free allowance has just run out, to the one-song purchase. A choice no longer on sale is let go.
+      const preferred = preferredPlan(planList, sub, forLimit, askedPlanId);
+      setSelectedId((cur) =>
+        cur && (planList.some((p) => p.id === cur) || choirSold.some((p) => p.id === cur)) ? cur : preferred?.id ?? null,
+      );
     } catch {
       // A failed load leaves the empty state; the retry button re-runs this.
     } finally {
       if (mounted.current) setLoading(false);
     }
-  }, [forLimit, askedPlanId]);
+  }, [forLimit, askedPlanId, userId]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
