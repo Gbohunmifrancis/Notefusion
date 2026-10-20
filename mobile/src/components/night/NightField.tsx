@@ -50,7 +50,7 @@ export const NightField = forwardRef<TextInput, Props>(function NightField(
   const labelStyle = {
     transform: [
       { translateY: lift.interpolate({ inputRange: [0, 1], outputRange: [11, 0] }) },
-      { scale: lift.interpolate({ inputRange: [0, 1], outputRange: [16 / 11.5, 1] }) },
+      { scale: lift.interpolate({ inputRange: [0, 1], outputRange: [16 / 12, 1] }) },
     ],
   };
 
@@ -138,7 +138,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 16,
     top: 10,
-    fontSize: 11.5,
+    // Lifted, it is the app's smallest words: 12, never under.
+    fontSize: 12,
     fontFamily: nightFonts.medium,
     color: night.muted,
     transformOrigin: "left center",
