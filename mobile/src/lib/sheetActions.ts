@@ -13,7 +13,7 @@ import { showDialog } from "./dialog";
 import * as haptics from "./haptics";
 import { setSheetPinned } from "./offlineLibrary";
 import { isNetworkCode } from "./reachability";
-import { choirToast, filedToast } from "./savedSheet";
+import { choirToast, filedToast, offlineToast } from "./savedSheet";
 import { showToast } from "./toast";
 import { holdWithUndo } from "./heldChangeRuntime";
 import { withoutHeld } from "./heldDelete";
@@ -77,11 +77,12 @@ export async function fileSheets(targets: readonly Sheet[], folder: string | nul
   return { moved, ok: !failure };
 }
 
-/** "Keep offline" for one sheet. Resolves true when it changed. */
+/** "Keep offline" for one sheet, said with a tick and a toast. Resolves true when it changed. */
 export async function keepSheetOffline(id: string, keep: boolean): Promise<boolean> {
   try {
     await setSheetPinned(id, keep);
     haptics.play("success");
+    showToast(offlineToast(keep));
     return true;
   } catch (e) {
     const err = toApiError(e);

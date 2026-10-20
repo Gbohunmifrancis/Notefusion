@@ -67,7 +67,7 @@ import { isNetworkCode } from "../lib/reachability";
 import { useOfflineLibrary } from "../lib/offlineLibrary";
 import { takeOpened } from "../lib/outbox";
 import { linkJobStore } from "../lib/linkJobStore";
-import { savedToastBody, takeKind, worthAListenLine } from "../lib/savedSheet";
+import { savedToastBody, SHARING_STOPPED, takeKind, worthAListenLine } from "../lib/savedSheet";
 import { askToDelete, deleteSheets, keepSheetOffline, renameSheet, shareSheetLinks } from "../lib/sheetActions";
 import { transposeLocally } from "../lib/localTranspose";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -75,7 +75,7 @@ import { rating } from "../lib/rating";
 import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
 import type { HeldChange } from "../lib/heldChange";
 import { holdWithUndo, type Held } from "../lib/heldChangeRuntime";
-import { dohNowLine, HYMNBOOK_IN_LINE, movedLine } from "../lib/undoWords";
+import { deletedLine, dohNowLine, HYMNBOOK_IN_LINE, movedLine } from "../lib/undoWords";
 import { openingBars } from "../lib/solfaOpening";
 import {
   fonts,
@@ -1354,6 +1354,7 @@ export function ResultScreen({ route, navigation }: Props) {
     try {
       await libraryApi.unshare(savedId);
       setShareToken(null);
+      showToast(SHARING_STOPPED);
     } catch (e) {
       showDialog({ title: "Could not stop sharing", message: toApiError(e).message, icon: "problem", tone: "danger" });
     } finally {
@@ -1783,6 +1784,8 @@ export function ResultScreen({ route, navigation }: Props) {
     askToDelete([{ id, title: shownTitle || "This sheet" }], async () => {
       settleHeld();
       if (!(await deleteSheets([{ id, title: shownTitle }]))) return;
+      // The screen goes with it, so the toast (above the navigator) is what says it worked.
+      showToast(deletedLine([shownTitle || "This sheet"]));
       if (navigation.canGoBack()) {
         navigation.goBack();
       } else {

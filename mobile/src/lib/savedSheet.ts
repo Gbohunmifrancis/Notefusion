@@ -63,3 +63,11 @@ export function choirToast(count: number, share: boolean): string {
   if (share) return count === 1 ? "Shared with your choir" : `${count} sheets shared with your choir`;
   return count === 1 ? "Taken out of the choir library" : `${count} sheets taken out of the choir library`;
 }
+
+/** What "Keep offline" (or undoing it) says once it is done: a haptic alone left no word that it worked. */
+export function offlineToast(keep: boolean): string {
+  return keep ? "Kept on this phone for offline use" : "No longer kept on this phone";
+}
+
+/** What Stop sharing says once the link is off. */
+export const SHARING_STOPPED = "Sharing stopped: the link no longer opens this sheet";

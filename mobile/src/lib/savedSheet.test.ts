@@ -6,6 +6,7 @@ import {
   filedToast,
   folderNamed,
   isUnopened,
+  offlineToast,
   savedToastBody,
   takeKind,
   worthAListenLine,
@@ -29,6 +30,11 @@ test("sharing with the choir says it was shared, or taken back out", () => {
   assert.equal(choirToast(4, true), "4 sheets shared with your choir");
   assert.equal(choirToast(1, false), "Taken out of the choir library");
   assert.equal(choirToast(2, false), "2 sheets taken out of the choir library");
+});
+
+test("keeping a sheet offline says it is on the phone, or no longer", () => {
+  assert.equal(offlineToast(true), "Kept on this phone for offline use");
+  assert.equal(offlineToast(false), "No longer kept on this phone");
 });
 
 test("the line under a fresh sheet's title names the kind of take", () => {
