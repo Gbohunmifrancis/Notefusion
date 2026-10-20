@@ -362,8 +362,6 @@ export function LinkScreen() {
       onPress={onPress}
       style={[styles.chip, on && styles.chipOn]}
       radius={radii.pill}
-      // 30 px chips 8 apart: half the gap each way (their height is the design's to change).
-      hitSlop={4}
       accessibilityRole="button"
       accessibilityLabel={a11y ?? label}
       accessibilityState={{ selected: on }}
@@ -774,12 +772,13 @@ const makeStyles = (c: Palette) =>
     meterTitle: { marginTop: 22 },
     pickRange: { fontFamily: nightFonts.mono, fontSize: 12.5, color: c.accent },
     chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.md },
+    /** The section and Beats-in-a-bar chips: 44 px to a thumb, 8 apart (board m-ux-medium P3c). */
     chip: {
-      height: 30, paddingHorizontal: 12, borderRadius: radii.pill, justifyContent: "center",
+      height: 44, paddingHorizontal: spacing.lg, borderRadius: radii.pill, justifyContent: "center",
       backgroundColor: c.surfaceAlt, borderWidth: 1, borderColor: c.border,
     },
     chipOn: { backgroundColor: c.accentSoft, borderColor: c.ink },
-    chipText: { fontFamily: fonts.medium, fontSize: 12.5, color: c.textMuted },
+    chipText: { fontFamily: fonts.medium, fontSize: 14, color: c.textMuted },
     chipTextOn: { color: c.accent },
 
     moreRow: {
