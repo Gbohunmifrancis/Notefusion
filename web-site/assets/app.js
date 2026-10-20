@@ -1485,9 +1485,15 @@
   $("upgrade-account").addEventListener("click", function () { hide($("upgrade-panel")); setView("account"); });
   /** The pricing page sends a plan id along: once signed in, open its checkout without another click. */
   function autoCheckout(planId) {
-    request("/api/billing/plans").then(function (plans) {
-      var plan = (plans || []).find(function (p) { return String(p.id) === String(planId) || p.code === planId; });
-      if (!plan) return;
+    Promise.all([request("/api/billing/plans"), request("/api/billing/plans/single").catch(function () { return []; })]).then(function (lists) {
+      var plan = (lists[0] || []).concat(lists[1] || []).find(function (p) { return String(p.id) === String(planId) || p.code === planId; });
+      if (!plan) {
+        // The pricing page prices by where the browser is; an account buys at its own country's prices. A plan from
+        // the other set is not this account's, so the dialog says why it shows other prices rather than nothing.
+        $("upgrade-reason-text").textContent = "The plan you picked isn't sold for the country on your account, so these are your account's prices.";
+        show($("upgrade-reason")); hide($("upgrade-lead"));
+        return;
+      }
       checkout(plan, document.createElement("button"));
     }).catch(function () { /* the dialog is open; the user can pick a plan */ });
   }
