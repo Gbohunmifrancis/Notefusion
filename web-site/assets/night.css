@@ -688,6 +688,7 @@ body.has-free-harmony .act[data-tool="harmony"] { border-color: var(--line); }
 .studio .studio-kind label, .studio-opt { min-height: 44px; }
 .lib-chip { min-height: 44px; }
 .lib-file { min-height: 44px; font-size: 16px; }
+.choir-join input { min-height: 44px; font-size: 16px; }
 /* Text buttons keep their look and take a 44 px target from an invisible layer, as .field-error's link does. */
 #auth-back, #link-upload, #p-notify-no, #lib-folder-stop { position: relative; }
 #auth-back::after, #link-upload::after, #p-notify-no::after, #lib-folder-stop::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 44px; transform: translateY(-50%); }
@@ -716,6 +717,7 @@ body.has-free-harmony .act[data-tool="harmony"] { border-color: var(--line); }
   .studio .studio-kind label, .studio-opt { min-height: 0; }
   .lib-chip { min-height: 0; }
   .lib-file { min-height: 32px; font-size: 0.8rem; }
+  .choir-join input { min-height: 36px; font-size: 0.9rem; }
   .player select, .player input[type=number] { min-height: 32px; font-size: 0.875rem; }
   .result-views .tab { padding-inline: 14px; }
 }
