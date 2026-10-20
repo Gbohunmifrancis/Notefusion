@@ -49,6 +49,10 @@ import type { RootStackParams } from "../navigation/types";
 
 /** The circular header buttons, and the size the search pill grows from. */
 const ICON_BTN = 40;
+/** The open search pill, and every target in the header's rows: 44 px to a thumb (board m-ux-medium P2d). */
+const TARGET = 44;
+/** The title row the search pill is centred in. */
+const TITLE_ROW = 48;
 
 /**
  * LibraryScreen — the night board's "06 · Library": a big title with search and new,
@@ -193,8 +197,11 @@ export function LibraryScreen() {
   }, [searchOpen, searchProgress]);
   const pillStyle = useAnimatedStyle(() => ({
     width: interpolate(searchProgress.value, [0, 1], [ICON_BTN, Math.max(rowWidth, ICON_BTN)]),
-    // Closed, the pill is the search button beside "+" (and the avatar after it); open, it spans the row.
+    // Closed, the pill is the search button beside "+" (and the avatar after it); open, it spans the row, 44 tall.
     right: interpolate(searchProgress.value, [0, 1], [ICON_BTN + HEADER_AVATAR + 2 * spacing.sm, 0]),
+    height: interpolate(searchProgress.value, [0, 1], [ICON_BTN, TARGET]),
+    top: interpolate(searchProgress.value, [0, 1], [(TITLE_ROW - ICON_BTN) / 2, (TITLE_ROW - TARGET) / 2]),
+    borderRadius: interpolate(searchProgress.value, [0, 1], [ICON_BTN / 2, TARGET / 2]),
   }));
   const fadeWithSearch = useAnimatedStyle(() => ({ opacity: 1 - searchProgress.value }));
 
@@ -338,7 +345,8 @@ export function LibraryScreen() {
                 returnKeyType="search"
                 textAlignVertical="center"
               />
-              <Touchable onPress={closeSearch} hitSlop={{ top: 11, bottom: 11, left: 12, right: 14 }} ripple="borderless" accessibilityLabel="Close search">
+              {/* A 44 px button at the pill's end, not an icon leaning on slop past the row. */}
+              <Touchable onPress={closeSearch} style={styles.searchClear} ripple="borderless" accessibilityLabel="Close search">
                 <Icon name="clear" size={18} color={colors.textFaint} />
               </Touchable>
             </>
@@ -362,22 +370,24 @@ export function LibraryScreen() {
                 onPress={() => setFolder(f)}
                 style={styles.tab}
                 ripple={false}
-                // Wider to a thumb: half the 22 px gap to the next tab on each side.
+                // 44 tall; wider to a thumb by half the 22 px gap to the next tab on each side.
                 hitSlop={{ top: 0, bottom: 0, left: 11, right: 11 }}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: active }}
                 accessibilityLabel={`${f ? `Folder: ${f}` : "All sheets"}, ${count}`}
               >
-                <View style={styles.tabLabelRow}>
-                  <Text style={[styles.tabText, active && styles.tabTextActive]}>{f ?? "All"}</Text>
-                  {count > 0 && <Text style={[styles.tabCount, active && styles.tabCountActive]}>{count}</Text>}
+                <View style={styles.tabLabelArea}>
+                  <View style={styles.tabLabelRow}>
+                    <Text style={[styles.tabText, active && styles.tabTextActive]}>{f ?? "All"}</Text>
+                    {count > 0 && <Text style={[styles.tabCount, active && styles.tabCountActive]}>{count}</Text>}
+                  </View>
                 </View>
                 <View style={[styles.tabUnderline, active && styles.tabUnderlineActive]} />
               </Touchable>
             );
           })}
         </ScrollView>
-        <Touchable style={styles.sortBtn} hitSlop={{ top: 12, bottom: 8, left: 12, right: 14 }} ripple="borderless" accessibilityLabel="Sort library" onPress={chooseSort}>
+        <Touchable style={styles.sortBtn} ripple="borderless" accessibilityLabel="Sort library" onPress={chooseSort}>
           <Icon name="sort" size={18} color={colors.textMuted} />
         </Touchable>
       </View>
@@ -600,7 +610,7 @@ const makeStyles = (c: Palette) =>
 
     // ── Title row ──────────────────────────────────────────────────────────────
     titleRow: {
-      height: 48,
+      height: TITLE_ROW,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
@@ -626,7 +636,7 @@ const makeStyles = (c: Palette) =>
     },
     searchPill: {
       position: "absolute",
-      top: (48 - ICON_BTN) / 2,
+      top: (TITLE_ROW - ICON_BTN) / 2,
       height: ICON_BTN,
       borderRadius: ICON_BTN / 2,
       backgroundColor: c.surfaceAlt,
@@ -643,6 +653,14 @@ const makeStyles = (c: Palette) =>
       width: ICON_BTN,
       height: ICON_BTN,
       marginHorizontal: -11,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    /** The close: 44 × 44 at the open pill's end (its padding cancelled). */
+    searchClear: {
+      width: TARGET,
+      height: TARGET,
+      marginRight: -11,
       alignItems: "center",
       justifyContent: "center",
     },
@@ -668,8 +686,13 @@ const makeStyles = (c: Palette) =>
       gap: 22,
       paddingRight: spacing.md,
     },
+    /** 44 px tall: the label centred, the underline at the row's foot. */
     tab: {
-      paddingTop: spacing.xs,
+      height: TARGET,
+    },
+    tabLabelArea: {
+      flex: 1,
+      justifyContent: "center",
     },
     tabLabelRow: {
       flexDirection: "row",
@@ -697,14 +720,17 @@ const makeStyles = (c: Palette) =>
     tabUnderline: {
       height: 2,
       borderRadius: 1,
-      marginTop: 8,
     },
     tabUnderlineActive: {
       backgroundColor: c.ink,
     },
+    /** A 44 × 44 button at the row's end, its icon flush with the screen's edge. */
     sortBtn: {
-      paddingLeft: spacing.sm,
-      paddingBottom: spacing.xs,
+      width: TARGET,
+      height: TARGET,
+      marginRight: -12,
+      alignItems: "center",
+      justifyContent: "center",
     },
 
     // ── Offline banner: calm, not an error ──────────────────────────────────
