@@ -185,7 +185,8 @@ export const darkColors: Palette = {
   gold: "#5C9BFF",
   pink: "#9CC2FF",
 
-  ink: "#2F7BFF",
+  // Fills under white words are the deeper blue (5.59:1 with white; #2F7BFF was 3.89:1), board l-ux-high 01a.
+  ink: "#1B5FE0",
   accent: "#5C9BFF",
   accentAlt: "#9CC2FF",
   accentSoft: "rgba(47, 123, 255, 0.14)",
@@ -217,7 +218,7 @@ export const darkColors: Palette = {
 
   scrim: "rgba(3, 5, 9, 0.62)",
 
-  primary: "#2F7BFF",
+  primary: "#1B5FE0",
   link: "#9CC2FF",
   grabber: "rgba(255, 255, 255, 0.12)",
   sheetRow: "rgba(255, 255, 255, 0.035)",
@@ -721,6 +722,7 @@ export const night = {
   dim: "#5A6478",
 
   blue: "#2F7BFF",
+  /** The fill under white words (5.59:1 with white; `blue` is 3.89:1): `blue` stays the glow, ring and stroke. */
   blueDeep: "#1B5FE0",
   blueGlow: "rgba(47, 123, 255, 0.45)",
   /** The focus ring around an active field or code box. */

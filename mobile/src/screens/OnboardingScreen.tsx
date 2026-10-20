@@ -388,8 +388,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   partOn: {
-    backgroundColor: night.blue,
-    borderColor: night.blue,
+    backgroundColor: night.blueDeep,
+    borderColor: night.blueDeep,
     shadowColor: night.blue,
     shadowOpacity: 0.4,
     shadowRadius: 16,
