@@ -60,7 +60,7 @@
       rec.discard = true;
       if (rec.recorder && rec.recorder.state === "recording") stopRecording(); else { teardown(); close(); }
     });
-    els.discard.addEventListener("click", close);
+    els.discard.addEventListener("click", discardTake);
     els.again.addEventListener("click", function () { var opts = rec.opts; close(); start(opts); });
     els.use.addEventListener("click", function () {
       if (!rec.blob) return;
@@ -92,8 +92,18 @@
     rec.layer = window.NfBack.push(function () {
       rec.layer = null;
       if (rec.recorder && rec.recorder.state === "recording") stopRecording();
-      else if (!panel.hidden) close();
+      // Kept: Back is made ready to ask again, once back.js has finished closing layers for this Back.
+      else if (!panel.hidden && !discardTake()) setTimeout(backLayer, 0);
     });
+  }
+  /**
+   * A recorded take is thrown away only once that is confirmed (Discard, Escape or Back on the review): Discard sat
+   * beside Transcribe, and Escape and Back went straight to it, with no way to have the singing back.
+   */
+  function discardTake() {
+    if (rec.blob && !window.confirm("Discard this take? It can't be brought back.")) return false;
+    close();
+    return true;
   }
   function showLive(live) {
     if (panel.hidden) { rec.opener = document.activeElement; document.documentElement.classList.add("nf-rec-open"); }
