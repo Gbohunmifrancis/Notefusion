@@ -447,7 +447,8 @@ internal sealed partial class SentrySessionsClient : ISentrySessions
             401 or 403 => Error.Failure(
                 "SESSIONS_SENTRY_REFUSED",
                 "Sentry refused the console's token. It needs read access to Organization, Project and Issue & Event (SENTRY_API_TOKEN)."),
-            404 => SessionRules.UnknownRecording,
+            // A single recording's or event's 404 is answered before this; here it is a list, so the organisation is wrong.
+            404 => Error.Failure("SESSIONS_SENTRY_NOT_FOUND", "Sentry has no organisation by that name: check SENTRY_ORG."),
             429 => Error.Network("SESSIONS_SENTRY_BUSY", "Sentry asked us to slow down. Try again in a minute."),
             _ => Error.Network("SESSIONS_SENTRY_UNAVAILABLE", $"Sentry answered {code}."),
         };

@@ -166,7 +166,12 @@ function Player({ detail }: { detail: SessionRecordingDetail }) {
         <div className="w-[270px] rounded-[34px] bg-[#05070b] p-2 shadow-lg">
           {videos.length === 0 ? (
             <div className="grid aspect-[9/19.5] place-items-center rounded-[26px] bg-[#0d1117] px-6 text-center text-[12.5px] text-slate-400">
-              No video for this session yet.
+              <p>
+                No video for this session here yet.
+                <a href={detail.sentryUrl} target="_blank" rel="noreferrer" className="mt-2 block font-medium text-sky-300 hover:underline">
+                  Watch it in Sentry ↗
+                </a>
+              </p>
             </div>
           ) : (
             <video
@@ -248,7 +253,14 @@ function Player({ detail }: { detail: SessionRecordingDetail }) {
               Still recording: new parts appear as they arrive.
             </p>
           )}
-          {failed && <p className="mt-2 text-[12px] text-warning-deep">{failed}</p>}
+          {failed && (
+            <p className="mt-2 text-[12px] text-warning-deep">
+              {failed}{" "}
+              <a href={detail.sentryUrl} target="_blank" rel="noreferrer" className="font-medium text-brand hover:underline">
+                Watch it in Sentry ↗
+              </a>
+            </p>
+          )}
         </div>
       </div>
 
