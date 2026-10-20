@@ -1091,13 +1091,40 @@
   function opensOnTap(card, open) {
     card.addEventListener("click", function (e) { if (!e.target.closest("button, select, a, input, label")) open(); });
   }
+  /**
+   * A folder's name, asked in the app's own dialog (it was the browser's prompt): `title` and `action` say what it is
+   * for, `name` is what the field starts with, `onName(name)` gets the trimmed name and `onCancel` runs when none is given.
+   */
+  var folderAsk = null;
+  function askFolderName(opts) {
+    folderAsk = opts;
+    $("folder-dialog-title").textContent = opts.title;
+    $("folder-save").textContent = opts.action;
+    clearFieldError("folder-input");
+    $("folder-input").value = opts.name || "";
+    openDialog("folder-dialog", "folder-input", function () {
+      var asked = folderAsk; folderAsk = null;
+      if (asked && !asked.given && asked.onCancel) asked.onCancel();
+    });
+    $("folder-input").select();
+  }
+  $("folder-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var asked = folderAsk, name = $("folder-input").value.trim();
+    if (!asked) return;
+    if (!name) { fieldError("folder-input", "Give the folder a name."); $("folder-input").focus(); return; }
+    asked.given = true;
+    closeDialog();
+    asked.onName(name);
+  });
+  $("folder-input").addEventListener("input", function () { clearFieldError("folder-input"); });
   /** Files a sheet: an existing folder, a new one, or none. */
   function fileSheet(it, value, select) {
-    var name = value;
     if (value === "__new") {
-      name = (window.prompt("Name the new folder (for example: Sunday choir, Easter service):", "") || "").trim();
-      if (!name) { select.value = it.folder || ""; return; }
+      askFolderName({ title: "New folder", action: "Create", onName: function (name) { fileSheet(it, name, select); }, onCancel: function () { select.value = it.folder || ""; } });
+      return;
     }
+    var name = value;
     select.disabled = true;
     request("/api/library/" + it.id + "/folder", { method: "PUT", body: { folder: name || null } })
       .then(function () { it.folder = name || null; track("Filed sheet"); loadLibrary(false); })
@@ -1160,16 +1187,17 @@
   $("lib-folder-rename").addEventListener("click", function () {
     closeFolderMenu(true);
     if (!libFolder) return;
-    var to = (window.prompt("Rename “" + libFolder + "” to:", libFolder) || "").trim();
-    if (!to || to === libFolder) return;
     var from = libFolder;
-    request("/api/library/folders", { method: "PUT", body: { from: from, to: to } })
-      .then(function () {
-        // Renamed in the list as it stands, without a reload to the skeleton.
-        (libraryCache || []).forEach(function (x) { if (x.folder === from) x.folder = to; });
-        libFolder = to; loadLibrary(false);
-      })
-      .catch(function (err) { libAlert("Could not rename the folder: " + (err.message || err)); });
+    askFolderName({ title: "Rename “" + from + "”", action: "Rename", name: from, onName: function (to) {
+      if (to === from) return;
+      request("/api/library/folders", { method: "PUT", body: { from: from, to: to } })
+        .then(function () {
+          // Renamed in the list as it stands, without a reload to the skeleton.
+          (libraryCache || []).forEach(function (x) { if (x.folder === from) x.folder = to; });
+          libFolder = to; loadLibrary(false);
+        })
+        .catch(function (err) { libAlert("Could not rename the folder: " + (err.message || err)); });
+    } });
   });
 
   function loadLibrary(force) {
@@ -1450,11 +1478,12 @@
   }
 
   // ── Account: the name, the password, the founder's notes (board m-ux-medium W3d) ──
-  // One small dialog each for the name and the password: focus goes in and stays in, Escape, Cancel, a tap outside or
-  // the browser's Back close it, and the focus goes back to the row that opened it.
-  var dialogOpen = null, dialogReturn = null;
-  function openDialog(id, focusId) {
-    dialogReturn = document.activeElement; dialogOpen = id;
+  // One small dialog each for the name and the password (and the Library's folder name): focus goes in and stays in,
+  // Escape, Cancel, a tap outside or the browser's Back close it, and the focus goes back to what opened it.
+  // `onClose` runs once it has closed, however it closed.
+  var dialogOpen = null, dialogReturn = null, dialogClosed = null;
+  function openDialog(id, focusId, onClose) {
+    dialogReturn = document.activeElement; dialogOpen = id; dialogClosed = onClose || null;
     show($(id));
     $(focusId).focus();
   }
@@ -1463,8 +1492,10 @@
     hide($(dialogOpen)); dialogOpen = null;
     if (dialogReturn && dialogReturn.focus && document.contains(dialogReturn)) dialogReturn.focus({ preventScroll: true });
     dialogReturn = null;
+    var after = dialogClosed; dialogClosed = null;
+    if (after) after();
   }
-  ["name-dialog", "password-dialog"].forEach(function (id) {
+  ["name-dialog", "password-dialog", "folder-dialog"].forEach(function (id) {
     var el = $(id);
     el.addEventListener("click", function (e) { if (e.target === el || e.target.closest("[data-close]")) closeDialog(); });
     el.addEventListener("keydown", function (e) {
