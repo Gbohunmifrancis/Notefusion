@@ -17,8 +17,8 @@
 <link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/app.css?v=32">
-<link rel="stylesheet" href="/assets/night.css?v=12">
+<link rel="stylesheet" href="/assets/app.css?v=33">
+<link rel="stylesheet" href="/assets/night.css?v=13">
 <!-- The theme before the first paint: blocking on purpose (no async/defer). -->
 <script src="/assets/theme-boot.js?v=1"></script>
 <style>
@@ -36,7 +36,7 @@
   <header class="topbar">
     <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion <small>Shared sheet</small></a>
     <span class="side-spacer"></span>
-    <a class="btn btn-ghost btn-sm" href="/app">Make your own</a>
+    <a class="btn btn-ghost btn-sm" href="/?utm_source=shared-sheet#try">Make your own</a>
   </header>
 
   <div class="content">
@@ -107,10 +107,12 @@
     </div>
   </div>
 
+  <!-- Both ways to make your own go to the home page's try box: a 30-second preview with no account. "Make your own"
+       used to open /app, which greets a stranger with "Welcome back · Sign in". -->
   <div class="card cta-card no-print">
     <h2><svg class="ic"><use href="/assets/icons.svg#i-sparkle"/></svg>Make your own</h2>
     <p class="card-lead">Hum a tune or paste a YouTube link and get the Tonic Solfa in a minute — free to try, no account.</p>
-    <a class="btn btn-primary" href="/?utm_source=shared-sheet">Try NoteFusion free</a>
+    <a class="btn btn-primary" href="/?utm_source=shared-sheet#try">Try NoteFusion free</a>
   </div>
   <p class="foot">Transcribed with NoteFusion — hum a tune or paste a song link and get Tonic Solfa, staff notation and four-part harmony.<br><a class="cta" href="/">notefusion.studio</a></p>
   </main>

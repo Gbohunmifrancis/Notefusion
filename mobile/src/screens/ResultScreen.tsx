@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import { Icon, type IconName } from "../components/Icon";
+import { usePreventRemove } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Screen } from "../components/Screen";
@@ -53,6 +54,7 @@ import {
   syllable,
 } from "../lib/solfa";
 import { buildMusicXml, resolveKeySignature } from "../lib/musicxml";
+import { midiBase64 } from "../lib/midi";
 import { synthesizeMelodyWavBase64, synthesizeVoicesWavBase64 } from "../lib/synth";
 import { hymnRows, lyricsUnderNotes, pitchName, rangeReport, shiftKeyName, VOICES, type VoiceName } from "../lib/choir";
 import { stopAudition } from "../lib/audition";
@@ -593,7 +595,8 @@ export function ResultScreen({ route, navigation }: Props) {
     [draft.notes, edited, result.overallConfidence, hymnSource],
   );
 
-  async function save() {
+  /** Saves the sheet to the Library. Resolves to its id, or null when it could not be saved (and the dialog said why). */
+  async function save(): Promise<string | null> {
     setSaving(true);
     try {
       const saved = await libraryApi.save({
@@ -624,6 +627,7 @@ export function ResultScreen({ route, navigation }: Props) {
       // itself; two sheets stacked on the same moment would be one too many.
       const askingForRating = await rating.recordSave();
       if (!askingForRating) showToast("Saved to your library");
+      return saved.id;
     } catch (e) {
       showDialog({
         title: "Could not save",
@@ -631,6 +635,7 @@ export function ResultScreen({ route, navigation }: Props) {
         icon: "problem",
         tone: "danger",
       });
+      return null;
     } finally {
       setSaving(false);
     }
@@ -860,7 +865,7 @@ export function ResultScreen({ route, navigation }: Props) {
     showDialog({
       title: "Delete this note?",
       message:
-        "It leaves the solfa, the stave and the playback. Onsets are absolute, so the notes around it keep their timing and a rest appears in its place.",
+        "It leaves the solfa, the stave and the playback. The notes around it keep their timing, and a rest takes its place.",
       icon: "delete",
       tone: "danger",
       actions: [
@@ -934,6 +939,19 @@ export function ResultScreen({ route, navigation }: Props) {
     setDraft(original);
     setPreview(synthesizeMelodyWavBase64(baseline.notes, tempo));
     void commitNotes(original);
+  }
+
+  /** Every fix made by hand goes at once and cannot be brought back, so it asks first, as a delete does. */
+  function confirmDiscard() {
+    showDialog({
+      title: correctedCount === 1 ? "Discard your correction?" : `Discard ${correctedCount} corrections?`,
+      message: "The notes go back to how they were heard. This can't be undone.",
+      icon: "retry",
+      actions: [
+        { label: "Keep them", style: "cancel" },
+        { label: "Discard", style: "destructive", onPress: discardCorrections },
+      ],
+    });
   }
 
   /**
@@ -1081,18 +1099,20 @@ export function ResultScreen({ route, navigation }: Props) {
   }
 
   /** The public link: made once, then handed to the OS share sheet. */
+  /**
+   * A share link points at a sheet in the Library, so an unsaved sheet is saved first, then shared: one tap, where
+   * it used to stop at "Save it first".
+   */
   async function shareLink() {
-    if (!savedId) {
-      showDialog({
-        title: "Save it first",
-        message: "A share link points at a sheet in your library. Save this transcription, then share the link.",
-        icon: "save",
-      });
+    if (sharing) return;
+    setSharing(true);
+    const id = savedId ?? (await save());
+    if (!id) {
+      setSharing(false);
       return;
     }
-    setSharing(true);
-    const tokens = await shareSheetLinks([{ id: savedId, title: committedTitle || title }]);
-    if (tokens) setShareToken(tokens.get(savedId) ?? null);
+    const tokens = await shareSheetLinks([{ id, title: committedTitle || title.trim() || `${key} transcription` }]);
+    if (tokens) setShareToken(tokens.get(id) ?? null);
     setSharing(false);
   }
 
@@ -1137,6 +1157,39 @@ export function ResultScreen({ route, navigation }: Props) {
     commitTitle();
   };
   useEffect(() => navigation.addListener("beforeRemove", () => commitOnLeave.current()), [navigation]);
+
+  // A sheet that is not in the Library keeps its changes only on this screen (a saved one keeps each as it is made),
+  // so Back asks before it takes corrections, words, a new key or tempo, a transposition or parts away with it.
+  const firstTitle = useRef(title);
+  const unsavedChanges =
+    !savedId &&
+    !guest &&
+    (edited ||
+      baseline.notes !== result.notes ||
+      key !== result.key ||
+      tempo !== result.tempo ||
+      timeSignature !== result.timeSignature ||
+      lyrics.trim() !== (result.lyrics ?? "").trim() ||
+      parts !== (result.parts ?? null) ||
+      title !== firstTitle.current);
+  usePreventRemove(unsavedChanges, ({ data }) => {
+    showDialog({
+      title: "Keep your changes?",
+      message: "This sheet isn't in your Library yet, so what you changed here goes when you leave.",
+      icon: "save",
+      actions: [
+        {
+          label: "Save to Library",
+          onPress: () =>
+            void save().then((id) => {
+              if (id) navigation.dispatch(data.action);
+            }),
+        },
+        { label: "Leave without saving", style: "destructive", onPress: () => navigation.dispatch(data.action) },
+        { label: "Keep editing", style: "cancel" },
+      ],
+    });
+  });
 
   // ── Export (MusicXML) ──────────────────────────────────────────────────────
   // Exports `scoreXml`, engraved here from the live note list, rather than the
@@ -1184,8 +1237,44 @@ export function ResultScreen({ route, navigation }: Props) {
     return false;
   }
 
+  // ── PDF from the solfa view ───────────────────────────────────────────────
+  // The PDF is made from the engraved stave. With Staff not open, Download PDF used to stop at "Open the Staff view
+  // first"; now it opens Staff and makes the PDF as soon as the stave has drawn.
+  /** Counts the stave's draws (ScoreView `onRendered`): a change runs the PDF that was waiting for one. */
+  const [staffDraws, setStaffDraws] = useState(0);
+  const pdfWhenDrawn = useRef(false);
+  const pdfWait = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (pdfWait.current) clearTimeout(pdfWait.current);
+  }, []);
+  useEffect(() => {
+    if (!pdfWhenDrawn.current || staffDraws === 0) return;
+    pdfWhenDrawn.current = false;
+    if (pdfWait.current) clearTimeout(pdfWait.current);
+    void handleExportPdf();
+    // Runs on a draw alone.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [staffDraws]);
+
+  function pdfAfterStaffDraws() {
+    pdfWhenDrawn.current = true;
+    setExportingType("pdf");
+    setNotationView("staff");
+    if (pdfWait.current) clearTimeout(pdfWait.current);
+    pdfWait.current = setTimeout(() => {
+      if (!pdfWhenDrawn.current) return;
+      pdfWhenDrawn.current = false;
+      setExportingType(null);
+      showDialog({ title: "Not ready yet", message: "The staff is still drawing. Try again in a moment.", icon: "clock" });
+    }, 20_000);
+  }
+
   /** Free accounts get the PDF with a NoteFusion mark; it was the most-tapped locked button. */
   async function handleExportPdf() {
+    if (!scoreRef.current) {
+      pdfAfterStaffDraws();
+      return;
+    }
     setExportingType("pdf");
     try {
       let svg: string | undefined;
@@ -1225,11 +1314,30 @@ export function ResultScreen({ route, navigation }: Props) {
     }
   }
 
+  /**
+   * The MIDI is made here from the sheet on screen, as the MusicXML is: the notes as corrected and transposed, at the
+   * tempo, meter and key chosen, one track per part when there are parts (the tune is the soprano's). The worker's
+   * `midiBase64` was the recording as first heard and knew none of that.
+   */
   async function handleExportMidi() {
     if (!requirePro()) return;
     setExportingType("midi");
     try {
-      const outcome = await exportMidi(result.midiBase64, title);
+      const signature = resolveKeySignature(key);
+      const tracks = parts
+        ? partsOf(parts).map((v) => ({
+            name: v.charAt(0).toUpperCase() + v.slice(1),
+            notes: v === "soprano" ? partReference(parts, view.notes) : parts[v]!.notes,
+          }))
+        : [{ name: "Tune", notes: view.notes }];
+      const midi = midiBase64({
+        tempoBpm: tempo,
+        timeSignature,
+        fifths: signature.fifths,
+        minor: signature.mode === "minor",
+        tracks,
+      });
+      const outcome = await exportMidi(midi, committedTitle || title);
       if (!outcome.ok) {
         showDialog({
           title: "Could not export MIDI",
@@ -1369,7 +1477,7 @@ export function ResultScreen({ route, navigation }: Props) {
       actions.push({
         label: "Discard corrections",
         icon: "retry",
-        onPress: discardCorrections,
+        onPress: confirmDiscard,
       });
     }
     if (savedId) {
@@ -1933,6 +2041,7 @@ export function ResultScreen({ route, navigation }: Props) {
                   musicalKey={key}
                   cursorBeat={cursorBeat}
                   onSelectNote={guest ? undefined : openNote}
+                  onRendered={() => setStaffDraws((n) => n + 1)}
                 />
                 {/* A free account reads the sheet on screen with the preview mark; the
                     download is the Pro half. */}
@@ -2122,7 +2231,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 pro={!isPro}
                 onPress={() => void handleExportMidi()}
                 busy={exportingType === "midi"}
-                disabled={isPro && !result.midiBase64}
+                disabled={isPro && view.notes.length === 0}
               />
               <ExportRow
                 icon="musicxml"

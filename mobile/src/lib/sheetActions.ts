@@ -13,6 +13,7 @@ import { showDialog } from "./dialog";
 import * as haptics from "./haptics";
 import { setSheetPinned } from "./offlineLibrary";
 import { isNetworkCode } from "./reachability";
+import { choirToast, filedToast } from "./savedSheet";
 import { showToast } from "./toast";
 
 type Sheet = { id: string; title: string };
@@ -46,23 +47,29 @@ export async function shareSheetLinks(targets: readonly Sheet[]): Promise<Map<st
   }
 }
 
-/** Puts the sheets in the choir's shared library, or takes them out. Returns the ones done. */
+/** Puts the sheets in the choir's shared library, or takes them out, and says so. Returns the ones done. */
 export async function setChoirSharing(targets: readonly Sheet[], share: boolean): Promise<Set<string>> {
   const results = await Promise.allSettled(targets.map((t) => (share ? choirApi.share(t.id) : choirApi.unshare(t.id))));
   const done = new Set(targets.filter((_, i) => results[i]!.status === "fulfilled").map((t) => t.id));
   const failure = firstFailure(results);
   if (failure) failed("Could not share with your choir", failure.reason);
-  else if (share) haptics.play("success");
+  else {
+    if (share) haptics.play("success");
+    showToast(choirToast(done.size, share));
+  }
   return done;
 }
 
-/** Files the sheets in a folder (null takes them out). Returns the ones moved; all moved is a success tick. */
+/** Files the sheets in a folder (null takes them out). Returns the ones moved; all moved is a tick and a toast. */
 export async function fileSheets(targets: readonly Sheet[], folder: string | null): Promise<{ moved: Set<string>; ok: boolean }> {
   const results = await Promise.allSettled(targets.map((t) => libraryApi.setFolder(t.id, folder)));
   const moved = new Set(targets.filter((_, i) => results[i]!.status === "fulfilled").map((t) => t.id));
   const failure = firstFailure(results);
   if (failure) failed("Could not move the sheet", failure.reason);
-  else haptics.play("success");
+  else {
+    haptics.play("success");
+    showToast(filedToast(moved.size, folder));
+  }
   return { moved, ok: !failure };
 }
 

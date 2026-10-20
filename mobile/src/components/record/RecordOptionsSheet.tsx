@@ -104,6 +104,8 @@ export function RecordOptionsSheet({
                     key={k}
                     onPress={() => onKey(k)}
                     radius={radii.pill}
+                    // 36 px chips 6 apart: half the gap each way.
+                    hitSlop={3}
                     style={[styles.chip, active && styles.chipOn]}
                     accessibilityLabel={`Key: ${k}`}
                     accessibilityState={{ selected: active }}
@@ -125,6 +127,7 @@ export function RecordOptionsSheet({
                 key={m.short}
                 onPress={() => onMeter(m.value)}
                 radius={radii.pill}
+                hitSlop={3}
                 style={[styles.chip, styles.meterChip, active && styles.chipOn]}
                 accessibilityLabel={`Beats in a bar: ${m.label}`}
                 accessibilityState={{ selected: active }}
@@ -152,6 +155,7 @@ export function RecordOptionsSheet({
                     key={t}
                     onPress={() => onTranspose(t)}
                     radius={radii.pill}
+                    hitSlop={3}
                     style={[styles.chip, active && styles.chipOn]}
                     accessibilityLabel={`Keyboard transpose ${label}`}
                     accessibilityState={{ selected: active }}

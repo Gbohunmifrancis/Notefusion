@@ -12,6 +12,8 @@ import { authApi, meApi } from "../../api/endpoints";
 import { toApiError } from "../../api/client";
 import { tokenStore } from "../../lib/tokenStore";
 import { useAuth } from "../../lib/auth";
+import { useSubscription } from "../../lib/subscription";
+import { deleteAccountPlayNote, playMemberState } from "../../lib/playBilling";
 import { showToast } from "../../lib/toast";
 import { siteUrls } from "../../lib/env";
 import { fonts, spacing, type Palette } from "../../design/theme";
@@ -209,6 +211,9 @@ export function DeleteAccountSheet({
   hasPassword: boolean;
 }) {
   const { signOut, reauthWithGoogle } = useAuth();
+  const { subscription } = useSubscription();
+  // A membership Google Play still bills keeps billing after the account is gone: said before, not found later.
+  const playNote = subscription ? deleteAccountPlayNote(playMemberState(subscription)) : null;
   const styles = useThemedStyles(makeStyles);
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -254,7 +259,10 @@ export function DeleteAccountSheet({
   return (
     <Sheet visible={visible} onClose={busy ? undefined : onClose} avoidKeyboard>
       <SheetTitle>Delete your account?</SheetTitle>
-      <SheetMessage>This removes your account and every transcription in your library. It can't be undone.</SheetMessage>
+      <SheetMessage>
+        This removes your account and every transcription in your library. It can't be undone.
+        {playNote ? ` ${playNote}` : ""}
+      </SheetMessage>
       {hasPassword ? (
         <TextField
           label="Enter your password to confirm"

@@ -2,8 +2,11 @@ import React from "react";
 import {
   Pressable,
   StyleSheet,
+  type AccessibilityActionEvent,
+  type AccessibilityActionInfo,
   type AccessibilityRole,
   type AccessibilityState,
+  type Insets,
   type StyleProp,
   type ViewStyle,
 } from "react-native";
@@ -85,10 +88,17 @@ interface Props {
    */
   radius?: number;
   style?: StyleProp<ViewStyle>;
-  hitSlop?: number;
+  /** One number for every side, or per side where a neighbour sits closer on one of them. */
+  hitSlop?: number | Insets;
   accessibilityLabel?: string;
   accessibilityRole?: AccessibilityRole;
   accessibilityState?: AccessibilityState;
+  /**
+   * What else a screen reader can do with this control, as `accessibilityActions`: the way to a control nested
+   * inside it (a row's ⋯), which VoiceOver cannot reach on its own.
+   */
+  accessibilityActions?: readonly AccessibilityActionInfo[];
+  onAccessibilityAction?: (event: AccessibilityActionEvent) => void;
 }
 
 export function Touchable({
@@ -107,6 +117,8 @@ export function Touchable({
   accessibilityLabel,
   accessibilityRole = "button",
   accessibilityState,
+  accessibilityActions,
+  onAccessibilityAction,
 }: Props) {
   const colors = useColors();
   const scale = useSharedValue(1);
@@ -140,6 +152,8 @@ export function Touchable({
       accessibilityLabel={accessibilityLabel}
       // Spread first so a real disabled state always wins over a caller's guess.
       accessibilityState={{ ...accessibilityState, disabled }}
+      accessibilityActions={accessibilityActions}
+      onAccessibilityAction={onAccessibilityAction}
       android_ripple={
         ripple === false
           ? undefined

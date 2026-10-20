@@ -1,6 +1,17 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { formatPrice, limitCopy, limitOffer, nairaNote, periodLabel } from "./price.ts";
+import { bestValuePlan, formatPrice, limitCopy, limitOffer, nairaNote, periodLabel, plansInOrder, webFinePrint } from "./price.ts";
+
+test("the website's fine print says what one payment buys, and that it does not renew", () => {
+  assert.equal(
+    webFinePrint({ interval: "monthly" }),
+    "One month of Pro. It doesn't renew by itself: pay again whenever you want more time. Secure checkout opens in your browser; you'll come back here automatically.",
+  );
+  assert.match(webFinePrint({ interval: "yearly" }), /^One year of Pro\. It doesn't renew by itself/);
+  assert.match(webFinePrint({ interval: "yearly", choirSeats: 25 }), /^One year of Pro for your choir\. It doesn't renew/);
+  assert.match(webFinePrint({ interval: "single" }), /^One payment, one transcription that never expires\./);
+  assert.match(webFinePrint({ interval: "lifetime" }), /^One payment, Pro for good\./);
+});
 import type { Plan } from "../api/types";
 
 const plan = (code: string, amountMinor: number, currency: string, interval: Plan["interval"]): Plan => ({
@@ -66,4 +77,26 @@ test("the limit says when the free ones come back, and mentions bought ones when
     limitCopy(3, 2, "Friday 6pm").message,
     "You've used this week's 3 free ones and the 2 you bought. The free ones come back Friday 6pm.",
   );
+});
+
+test("plans are listed a currency at a time, cheapest first, never naira and dollars interleaved", () => {
+  const plans = [
+    plan("pro_ngn_y", 7500000, "NGN", "yearly"),
+    plan("pro_usd_m", 499, "USD", "monthly"),
+    plan("pro_ngn_m", 750000, "NGN", "monthly"),
+    plan("pro_usd_y", 3999, "USD", "yearly"),
+  ];
+  assert.deepEqual(plansInOrder(plans).map((p) => p.code), ["pro_ngn_m", "pro_ngn_y", "pro_usd_m", "pro_usd_y"]);
+});
+
+test("the plan chosen at first is the year in one currency: the song's, else the first listed", () => {
+  const pro = [
+    plan("pro_ngn_m", 750000, "NGN", "monthly"),
+    plan("pro_ngn_y", 7500000, "NGN", "yearly"),
+    plan("pro_usd_m", 499, "USD", "monthly"),
+    plan("pro_usd_y", 3999, "USD", "yearly"),
+  ];
+  assert.equal(bestValuePlan(pro)?.code, "pro_ngn_y");
+  assert.equal(bestValuePlan([...pro, plan("song_usd", 199, "USD", "single")])?.code, "pro_usd_y");
+  assert.equal(bestValuePlan([plan("song", 150000, "NGN", "single")]), undefined, "no Pro plan, nothing to choose");
 });

@@ -235,7 +235,12 @@
     return card;
   }
 
-  function showError() {
+  /**
+   * No prices to show. `unreachable`: the request itself failed (no connection, a timeout, a fault), which trying again
+   * can mend. Otherwise the API could not place the visitor (a VPN, say): no price is guessed, and trying again would
+   * only say the same, so the way on is the app, which prices by the account's own country.
+   */
+  function showError(unreachable) {
     container.className = "plans plans--single reveal is-visible";
     container.setAttribute("aria-busy", "false");
     container.replaceChildren();
@@ -243,24 +248,29 @@
     var card = document.createElement("div");
     card.className = "plan plan--loading";
     var title = document.createElement("h3");
-    title.textContent = "Pricing unavailable";
+    title.textContent = unreachable ? "Prices didn't load" : "Pricing unavailable";
     var message = document.createElement("p");
     message.className = "blurb";
-    message.textContent =
-      "We couldn't confirm your location, so we won't guess which price applies to you.";
-    var retry = document.createElement("button");
-    retry.className = "btn btn-secondary";
-    retry.type = "button";
-    retry.textContent = "Try again";
-    retry.addEventListener("click", load);
+    message.textContent = unreachable
+      ? "We couldn't reach NoteFusion just now. Check your connection, then try again."
+      : "We couldn't confirm your location, so we won't guess which price applies to you. Your account shows the prices for its country.";
     card.appendChild(title);
     card.appendChild(message);
-    card.appendChild(retry);
+    if (unreachable) {
+      var retry = document.createElement("button");
+      retry.className = "btn btn-secondary";
+      retry.type = "button";
+      retry.textContent = "Try again";
+      retry.addEventListener("click", load);
+      card.appendChild(retry);
+    } else {
+      card.appendChild(action("See the prices in the app", false, "pricing_location", "/app?upgrade=1"));
+    }
     container.appendChild(card);
 
     if (regionLabel) regionLabel.hidden = true;
     if (regionNote) {
-      regionNote.textContent = "No price is shown because your region could not be confirmed.";
+      regionNote.textContent = unreachable ? "Prices didn't load." : "No price is shown because your region could not be confirmed.";
     }
   }
 
@@ -402,7 +412,7 @@
         // A member has nothing to buy here: show the membership instead of the prices.
         return membership().then(function (sub) { sub ? renderMember(sub) : render(payload); });
       })
-      .catch(showError)
+      .catch(function () { showError(true); })
       .finally(function () {
         if (timeout !== null) window.clearTimeout(timeout);
       });

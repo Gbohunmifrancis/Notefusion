@@ -87,8 +87,10 @@ export const colors = {
 
   // ── Typography ──────────────────────────────────────────────────────────
   text: "#0F172A", // Ink Navy   — primary text
-  textMuted: "#64748B", // Slate      — secondary / subtitles
-  textFaint: "#64748B", // Slate — placeholder / tertiary; 4.76:1 on white (#94A3B8 was 2.6:1)
+  // ≥4.87:1 on every Day surface (canvas, card and the tinted rows); #64748B was 4.43 on the canvas, 4.27 on the tint.
+  // The admin console's Day muted grey.
+  textMuted: "#5B6B82", // Slate      — secondary / subtitles
+  textFaint: "#5B6B82", // Slate — placeholder / tertiary (#94A3B8 was 2.6:1, #64748B 4.27)
   /** Row and chip icons at rest (components/Icon): a step under `text`, so the words lead. Controls use `text`. */
   icon: "#334155",
 
@@ -102,6 +104,8 @@ export const colors = {
   successText: "#15803D",
   /** A blue notice's words on its `accentSoft` tint. */
   noticeText: "#1D4ED8",
+  /** A destructive word (Delete, Discard, Sign out): `danger` is 4.33:1 on the quiet pill, this 5.81:1. */
+  dangerText: "#B91C1C",
 
   /** Destructive washes. These were retyped as literal `rgba(220, 38, 38, …)`
    *  in eight places, which meant dark mode painted a light-mode maroon fill
@@ -222,6 +226,7 @@ export const darkColors: Palette = {
   warningText: "#F5B544",
   successText: "#3DDC97",
   noticeText: "#9CC2FF",
+  dangerText: "#FF4D5E",
 
   dangerSoft: "rgba(255, 77, 94, 0.12)",
   dangerBorder: "rgba(255, 77, 94, 0.35)",
@@ -729,7 +734,10 @@ export const night = {
 
   text: "#F3F6FB",
   muted: "#8B95AA",
+  /** The faintest grey: art and shapes only. As words it is 3.35:1, so tertiary words take `faint`. */
   dim: "#5A6478",
+  /** Tertiary words (legal lines, hints, the resend countdown, "or", placeholders): 5.69:1, as the in-app `textFaint`. */
+  faint: "#8089A0",
 
   blue: "#2F7BFF",
   /** The fill under white words (5.59:1 with white; `blue` is 3.89:1): `blue` stays the glow, ring and stroke. */

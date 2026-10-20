@@ -43,7 +43,7 @@ import { PRO_FEATURES } from "../lib/proFeatures";
 import type { AuthUser, CheckoutExit, MyProfile, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 import { tierOf } from "../lib/planTier";
-import { formatPrice, nairaNote, periodLabel } from "../lib/price";
+import { bestValuePlan, formatPrice, nairaNote, periodLabel, plansInOrder, webFinePrint } from "../lib/price";
 import {
   parseAsked,
   rememberAsked,
@@ -238,9 +238,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
       // Default to the best-value (highest) plan so the recommended choice is preselected — or, when
       // the free allowance has just run out, to the one-song purchase.
       const single = sub.isActive ? undefined : planList.find((p) => p.interval === "single");
-      const best = [...planList]
-        .filter((p) => p.interval !== "single")
-        .sort((a, b) => b.amountMinor - a.amountMinor)[0];
+      const best = bestValuePlan(planList);
       const asked = askedPlanId ? planList.find((p) => p.id === askedPlanId) : undefined;
       const preferred = asked ?? (forLimit && single ? single : best ?? single);
       setSelectedId((cur) => cur ?? preferred?.id ?? null);
@@ -529,9 +527,12 @@ export function UpgradeScreen({ navigation, route }: Props) {
   // A member who chose "Add more Pro time" sees the plans: each payment covers one period, and a
   // new one starts when the current time ends.
   const [extending, setExtending] = useState(false);
+  // Until this screen's own read lands, the app's copy of the membership says which screen this is, so a member's
+  // title does not flip from "NoteFusion Pro" to "Subscription" and the paywall's hero does not pop in once it does.
+  const membership = subscription ?? liveSubscription ?? null;
   // Pro paused on Google Play's account hold shows the member screen with its fix, not the plans.
-  const onHold = play && isOnHold(subscription);
-  const isActive = ((subscription?.isActive ?? false) || onHold) && !extending;
+  const onHold = play && isOnHold(membership);
+  const isActive = ((membership?.isActive ?? false) || onHold) && !extending;
   // The one-song purchase, for a free account only (the server hides it from members too); listed
   // first, beside Pro, as the smallest thing to buy.
   const singlePlan =
@@ -549,7 +550,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
   // The choir plans fold into one row when there is something else to choose; alone (a member starting a choir on
   // Android), they are the list.
   const foldChoir = proPlans.length > 0 || Boolean(singlePlan);
-  const choirSorted = choirPlans.slice().sort((a, b) => a.amountMinor - b.amountMinor);
+  const choirSorted = plansInOrder(choirPlans);
   const choirFrom = choirSorted[0];
 
   // The provider drops its checkout snapshot when the payment lands (it shows the welcome
@@ -581,6 +582,23 @@ export function UpgradeScreen({ navigation, route }: Props) {
   }, [pendingCheckout, load, liveSubscription, navigation]);
 
   // ── Render ─────────────────────────────────────────────────────────────────
+
+  /** What Pro brings: the same words before and after the plans load. */
+  const featureList = (
+    <Card style={styles.card}>
+      {PRO_FEATURES.map((f, i) => (
+        <View
+          key={f.text}
+          style={[styles.featureRow, i === 0 && styles.featureRowFirst]}
+        >
+          <View style={styles.featureIcon}>
+            <Icon name={f.icon} size={16} color={colors.icon} />
+          </View>
+          <Text style={styles.featureText}>{f.text}</Text>
+        </View>
+      ))}
+    </Card>
+  );
 
   return (
     <View style={styles.flex}>
@@ -630,8 +648,8 @@ export function UpgradeScreen({ navigation, route }: Props) {
           )}
         </View>
 
-        {/* ── Hero badge (only on paywall when not active) ─────────────────── */}
-        {!isActive && !loading && (
+        {/* ── Hero badge (only on paywall when not active), there from the first frame ── */}
+        {!isActive && (
           <View style={styles.hero}>
             <LinearGradient
               colors={gradients.brand}
@@ -642,8 +660,9 @@ export function UpgradeScreen({ navigation, route }: Props) {
               <BrandMark size={34} color="#FFFFFF" waveColor="rgba(255,255,255,0.7)" />
             </LinearGradient>
             <Text style={styles.heroTitle}>Unlock everything</Text>
+            {/* What Pro is, no more: hummed tunes are never counted, whole songs are twenty a month (PRO_FEATURES). */}
             <Text style={styles.heroSub}>
-              Go further with unlimited transcriptions and full exports.
+              Unlimited hummed tunes, twenty whole songs a month, and every download.
             </Text>
           </View>
         )}
@@ -661,10 +680,14 @@ export function UpgradeScreen({ navigation, route }: Props) {
         )}
 
         {loading ? (
-          <View style={styles.loadingBlock}>
-            <PlanCardSkeleton />
-            <PlanCardSkeleton />
-          </View>
+          <>
+            {/* The perks are fixed words: shown while the plans load, so the plans arrive under them. */}
+            {!isActive ? featureList : null}
+            <View style={styles.loadingBlock}>
+              <PlanCardSkeleton />
+              <PlanCardSkeleton />
+            </View>
+          </>
         ) : paymentCheck === "confirming" ? (
           // The provider is asking the server; there is nothing to press until it answers.
           <Card style={styles.card}>
@@ -678,7 +701,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
           </Card>
         ) : isActive ? (
           <ActiveState
-            subscription={subscription!}
+            subscription={membership!}
             profile={profile}
             user={user}
             onAndroid={play}
@@ -700,20 +723,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
           />
         ) : (
           <>
-            {/* ── Feature list ─────────────────────────────────────────────── */}
-            <Card style={styles.card}>
-              {PRO_FEATURES.map((f, i) => (
-                <View
-                  key={f.text}
-                  style={[styles.featureRow, i === 0 && styles.featureRowFirst]}
-                >
-                  <View style={styles.featureIcon}>
-                    <Icon name={f.icon} size={16} color={colors.icon} />
-                  </View>
-                  <Text style={styles.featureText}>{f.text}</Text>
-                </View>
-              ))}
-            </Card>
+            {featureList}
 
             {/* ── Plan selector ────────────────────────────────────────────── */}
             <View style={styles.sectionHeader}>
@@ -732,23 +742,20 @@ export function UpgradeScreen({ navigation, route }: Props) {
               />
             ) : null}
 
-            {proPlans
-              .slice()
-              .sort((a, b) => a.amountMinor - b.amountMinor)
-              .map((plan) => (
-                <PlanOption
-                  key={plan.id}
-                  plan={plan}
-                  priceLabel={offerFor(plan, playOffers)?.price}
-                  selected={plan.id === selectedId}
-                  badge={
-                    plan.interval === "yearly" && saving
-                      ? `Save ${saving}%`
-                      : undefined
-                  }
-                  onSelect={() => setSelectedId(plan.id)}
-                />
-              ))}
+            {plansInOrder(proPlans).map((plan) => (
+              <PlanOption
+                key={plan.id}
+                plan={plan}
+                priceLabel={offerFor(plan, playOffers)?.price}
+                selected={plan.id === selectedId}
+                badge={
+                  plan.interval === "yearly" && saving
+                    ? `Save ${saving}%`
+                    : undefined
+                }
+                onSelect={() => setSelectedId(plan.id)}
+              />
+            ))}
 
             {/* ── The choir plan: one director pays, the whole choir is Pro ───── */}
             {choirFrom && foldChoir ? (
@@ -795,10 +802,10 @@ export function UpgradeScreen({ navigation, route }: Props) {
             ) : null}
 
             <Text style={styles.finePrint}>
-              {play && selected
-                ? playFinePrint(selected)
-                : buyingSong
-                ? "One payment, one transcription that never expires. Secure checkout opens in your browser; you'll come back to your song."
+              {selected
+                ? play
+                  ? playFinePrint(selected)
+                  : webFinePrint(selected)
                 : "Secure checkout opens in your browser. You'll return here automatically."}
             </Text>
 
@@ -955,9 +962,10 @@ function ActiveState({
       onChanged();
       showDialog({
         title: "Subscription cancelled",
+        // Nothing bought on the website renews, so this never says "won't renew": only that nothing more is charged.
         message: renews
-          ? `Pro stays active until ${renews}. It won't renew after that, and you can resubscribe any time.`
-          : "Pro stays active until the end of your paid period.",
+          ? `Pro stays active until ${renews}, and nothing more is charged. Add time again whenever you like.`
+          : "Pro stays active until the end of your paid period, and nothing more is charged.",
         icon: "done",
       });
     } catch (e) {

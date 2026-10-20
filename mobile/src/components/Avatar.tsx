@@ -150,8 +150,8 @@ export function Avatar({
       // No ripple and no radius: the premium ring carries a gold glow, and clipping
       // the view to the circle would cut that shadow off. The scale carries the press.
       ripple={false}
-      // A small avatar still takes a 44 px tap.
-      hitSlop={size < 44 ? Math.ceil((44 - size) / 2) : undefined}
+      // A small avatar still takes a 48 dp tap (the header's 38 px one, on every tab).
+      hitSlop={size < 48 ? Math.ceil((48 - size) / 2) : undefined}
       accessibilityLabel={accessibilityLabel ?? (editable ? 'Change profile picture' : 'Profile picture')}
     >
       {body}

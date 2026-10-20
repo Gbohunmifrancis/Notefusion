@@ -33,6 +33,7 @@ import {
 } from "../lib/push";
 import { useJobPolling } from "../lib/useJobPolling";
 import { OFFLINE_LINE, STALLED_LINE, percentLabel, stageLabel, type ClientStage } from "../lib/jobProgress";
+import { useIosAnnouncement } from "../lib/announce";
 import { useSubscription } from "../lib/subscription";
 import { importKind, importKindAnswered, loadImportKind, setImportKind } from "../lib/importKind";
 import { setLeaveGuard } from "../lib/leaveGuard";
@@ -201,6 +202,8 @@ const LEVEL_GOOD_DBFS = -18; // comfortably loud — meter reads "good" from her
 // banner appears. Short dips (breaths, pauses between phrases) shouldn't
 // trigger a nag — only a sustained quiet stretch should.
 const QUIET_GUIDANCE_DELAY_MS = 1200;
+/** The banner's words, shown and (on iOS) said. */
+const QUIET_GUIDANCE = "Sing louder or hold closer to the mic";
 
 /**
  * Ceilings on the OS text-size setting, for the two kinds of text this screen cannot let grow freely.
@@ -1119,6 +1122,11 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
 
   const pillLabel = MODE_TITLE[mode] + (selectedKey === "Auto" ? "" : ` · ${selectedKey}`) + (meter ? ` · ${meter}` : "");
 
+  // The job's step as it changes, and the quiet nudge as it shows: Android reads them as live regions, iOS hears them here.
+  const jobTitle = resending ? "Sending it again" : stageLabel(state.stage, state.queuePosition);
+  useIosAnnouncement(isUploading && !kept ? jobTitle : null);
+  useIosAnnouncement(showQuietGuidance ? QUIET_GUIDANCE : null);
+
   return (
     // Scrolls only when it has to. `container` grows to fill the viewport, so at the default text
     // size the trace takes up the slack between the clock and the controls — the scroll is what
@@ -1133,6 +1141,8 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
               onPress={close}
               style={styles.iconBtn}
               radius={20}
+              // A 40 px circle: 48 dp to a thumb without moving it (the pill is 8 px away).
+              hitSlop={4}
               accessibilityLabel={isRecording ? "Discard recording and close" : "Close"}
             >
               <Icon name="close" size={20} color={colors.text} />
@@ -1157,6 +1167,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
               disabled={phase !== "ready"}
               style={styles.modePill}
               radius={radii.pill}
+              hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
               accessibilityLabel={`${pillLabel}. Change what you're recording`}
             >
               <Text style={styles.modePillText} numberOfLines={1} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
@@ -1221,7 +1232,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
                 {resending ? <Icon name="retry" size={26} color={colors.accent} /> : <Mark height={30} color={colors.accent} />}
               </View>
               <Text style={styles.jobTitle} accessibilityLiveRegion="polite">
-                {resending ? "Sending it again" : stageLabel(state.stage, state.queuePosition)}
+                {jobTitle}
               </Text>
               <Text style={styles.jobSub}>
                 {resending === "lost"
@@ -1334,6 +1345,8 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
                   onPress={() => nav.navigate("Upgrade")}
                   style={styles.trialPill}
                   radius={radii.pill}
+                  // A one-line pill about 27 px tall: the slop makes it 44 to a thumb.
+                  hitSlop={{ top: 9, bottom: 9, left: 8, right: 8 }}
                   accessibilityLabel={
                     trialRemaining > 0 ? "See Pro plans" : `Free ones back ${freeBack}. See Pro plans`
                   }
@@ -1378,9 +1391,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
                 accessibilityLiveRegion={showQuietGuidance ? "polite" : "none"}
               >
                 <View style={styles.guidanceDot} />
-                <Text style={styles.guidanceText}>
-                  Sing louder or hold closer to the mic
-                </Text>
+                <Text style={styles.guidanceText}>{QUIET_GUIDANCE}</Text>
               </Animated.View>
             </View>
           </>

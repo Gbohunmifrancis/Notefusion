@@ -13,7 +13,7 @@ import {
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { NoteEvent } from "../api/types";
-import { spokenPitch } from "../lib/choir";
+import { pitchName, spokenPitch } from "../lib/choir";
 
 interface Props {
   /** Index into `notes` of the note being edited. `null` keeps the sheet closed. */
@@ -113,7 +113,8 @@ export function NoteEditor({
                   {note.octaveMark}
                 </Text>
                 <View style={styles.metaRow}>
-                  <Text style={styles.meta} accessibilityLabel={spokenPitch(note.pitchMidi)}>MIDI {note.pitchMidi}</Text>
+                  {/* The note's name ("C4"), never its MIDI number: the words a singer or a pianist reads. */}
+                  <Text style={styles.meta} accessibilityLabel={spokenPitch(note.pitchMidi)}>{pitchName(note.pitchMidi)}</Text>
                   <View style={styles.metaDot} />
                   <Text style={[styles.meta, { color: confColor }]}>{conf}%</Text>
                 </View>

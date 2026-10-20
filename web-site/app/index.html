@@ -24,8 +24,8 @@
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Only what the first screen needs; the range picker's and the recorder's styles load at the end of the body. -->
 <link rel="stylesheet" href="/assets/theme.css?v=7">
-<link rel="stylesheet" href="/assets/app.css?v=32">
-<link rel="stylesheet" href="/assets/night.css?v=12">
+<link rel="stylesheet" href="/assets/app.css?v=33">
+<link rel="stylesheet" href="/assets/night.css?v=13">
 </head>
 <body class="guest">
 
@@ -207,7 +207,7 @@
           <div class="field">
             <label for="reg-password">Password</label>
             <span class="input-wrap pw-wrap"><svg class="ic"><use href="/assets/icons.svg#i-lock"/></svg><input id="reg-password" type="password" placeholder="Choose a password" autocomplete="new-password" minlength="8" required aria-describedby="reg-password-hint"><button class="pw-eye" type="button" data-eye="reg-password" aria-label="Show password"><svg class="ic"><use href="/assets/icons.svg#i-eye"/></svg></button></span>
-            <p class="pw-hint" id="reg-password-hint"><svg class="ic"><use href="/assets/icons.svg#i-check"/></svg>At least 8 characters</p>
+            <p class="pw-hint" id="reg-password-hint"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-minus"/></svg>At least 8 characters</p>
           </div>
           <button class="btn btn-primary btn-block" type="submit">Create account</button>
         </form>
@@ -239,7 +239,7 @@
       <div id="try-section"></div>
       <p class="try-status small" id="try-status" aria-live="polite"></p>
     </div>
-      <p class="auth-fine">By continuing you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy</a>.</p>
+      <p class="auth-fine">By continuing you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy</a>. Need help? <a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a></p>
     </div>
   </section>
 
@@ -296,7 +296,7 @@
         <dl class="acct-rows">
           <div><dt><svg class="ic"><use href="/assets/icons.svg#i-clock"/></svg>This month</dt><dd id="upgrade-pro-credits">—</dd></div>
         </dl>
-        <p class="muted small" style="margin:0">Each payment covers one period and nothing renews without you. Add more time whenever you like; it starts when your current time ends. Receipts come by email.</p>
+        <p class="muted small" id="upgrade-pro-note" style="margin:0">Each payment covers one period and nothing renews without you. Add more time whenever you like; it starts when your current time ends. Receipts come by email.</p>
         <div class="pay-actions">
           <button class="btn btn-primary" id="upgrade-extend" type="button"><svg class="ic"><use href="/assets/icons.svg#i-plus"/></svg>Add more Pro time</button>
           <button class="btn btn-ghost" id="upgrade-account" type="button"><svg class="ic"><use href="/assets/icons.svg#i-user"/></svg>Account settings</button>
@@ -524,8 +524,8 @@
         <button class="act" type="button" data-tool="transpose-section"><svg class="ic"><use href="/assets/icons.svg#i-shift"/></svg><span>Transpose</span></button>
         <button class="act" type="button" data-tool="lyrics-section"><svg class="ic"><use href="/assets/icons.svg#i-text"/></svg><span>Lyrics</span></button>
         <button class="act" type="button" data-tool="chords-card"><svg class="ic"><use href="/assets/icons.svg#i-keys"/></svg><span>Chords</span></button>
-        <button class="act act-pro" type="button" data-tool="harmony" data-pro="1"><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg><span>Four parts</span><svg class="ic act-lock" aria-hidden="true"><use href="/assets/icons.svg#i-lock"/></svg></button>
-        <button class="act act-pro" type="button" data-tool="sing" data-pro="1"><svg class="ic"><use href="/assets/icons.svg#i-sing"/></svg><span>Sing it</span><svg class="ic act-lock" aria-hidden="true"><use href="/assets/icons.svg#i-lock"/></svg></button>
+        <button class="act act-pro" type="button" data-tool="harmony" data-pro="1"><svg class="ic"><use href="/assets/icons.svg#i-choir"/></svg><span>Four parts</span><svg class="ic act-lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg></button>
+        <button class="act act-pro" type="button" data-tool="sing" data-pro="1"><svg class="ic"><use href="/assets/icons.svg#i-sing"/></svg><span>Sing it</span><svg class="ic act-lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg></button>
       </div>
 
       <!-- ── Guest: what an account unlocks ───────────────────────────── -->
@@ -664,7 +664,7 @@
         <div class="pr-bars" id="pr-bars" role="group" aria-label="Bars of your part"></div>
         <div class="pr-transport">
           <button class="btn btn-primary" id="pr-play" type="button"><svg class="ic"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
-          <button class="btn btn-ghost" id="pr-sing" type="button"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Sing it back<svg class="ic act-lock hidden" id="pr-sing-lock" aria-hidden="true"><use href="/assets/icons.svg#i-lock"/></svg></button>
+          <button class="btn btn-ghost" id="pr-sing" type="button"><svg class="ic"><use href="/assets/icons.svg#i-mic"/></svg>Sing it back<svg class="ic act-lock hidden" id="pr-sing-lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg></button>
           <button class="btn btn-ghost hidden" id="pr-stop" type="button"><svg class="ic"><use href="/assets/icons.svg#i-stop"/></svg>Stop</button>
         </div>
         <div id="pr-live" class="sing-live hidden" aria-live="polite"></div>
@@ -943,7 +943,7 @@
           <section aria-label="Sign out or delete your account">
             <div class="list-card">
               <button class="lrow lrow-btn" id="acct-signout" type="button"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-logout"/></svg>Sign out</span><span class="v"><svg class="ic"><use href="/assets/icons.svg#i-chev"/></svg></span></button>
-              <a class="lrow lrow-btn danger" href="/delete-account"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-trash"/></svg>Delete my account</span></a>
+              <a class="lrow lrow-btn danger" href="/delete-account" id="acct-delete"><span class="k"><svg class="ic"><use href="/assets/icons.svg#i-trash"/></svg>Delete my account</span></a>
             </div>
           </section>
         </div>
@@ -951,13 +951,13 @@
     </div>
   </section>
 
-  <p class="foot">Transcriptions are for personal and choir rehearsal use. Audio fetched from a link is deleted as soon as the job finishes. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></p>
+  <p class="foot">Transcriptions are for personal and choir rehearsal use. Audio fetched from a link is deleted as soon as the job finishes. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · Help and refunds: <a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a></p>
   </main>
   </div>
 </div>
 
 <!-- Not needed for the first screen, so not in <head>: a stylesheet here holds back no paint. -->
-<link rel="stylesheet" href="/assets/rangepicker.css?v=2">
+<link rel="stylesheet" href="/assets/rangepicker.css?v=3">
 <link rel="stylesheet" href="/assets/recorder.css?v=3">
 
 <!-- Hidden engraving surface for the PDF export: OSMD paginates to A4 on canvas here. -->
@@ -973,9 +973,9 @@
 <script src="/assets/songlink.js?v=2" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/back.js?v=1" defer></script>
-<script src="/assets/recorder.js?v=6" defer></script>
+<script src="/assets/recorder.js?v=7" defer></script>
 <script src="/assets/meter.js?v=1" defer></script>
-<script src="/assets/preview.js?v=12" defer></script>
+<script src="/assets/preview.js?v=13" defer></script>
 <script src="/assets/confidence.js?v=1" defer></script>
 <script src="/assets/hymnbook.js?v=1" defer></script>
 <script src="/assets/parts.js?v=1" defer></script>
@@ -983,7 +983,7 @@
 <script src="/assets/notify.js?v=2" defer></script>
 <script src="/assets/freeweek.js?v=1" defer></script>
 <script src="/assets/sse.js?v=1" defer></script>
-<script src="/assets/app.js?v=57" defer></script>
+<script src="/assets/app.js?v=58" defer></script>
 <script src="/assets/season.js?v=2" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>

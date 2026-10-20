@@ -22,7 +22,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, ActivityIndicator, Animated, Linking, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { AccessibilityInfo, Animated, Linking, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { Icon } from "../components/Icon";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -42,6 +42,7 @@ import {
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
+import { Skeleton } from "../components/Skeleton";
 import { Touchable } from "../components/Touchable";
 import { TabHeader } from "../components/TabHeader";
 import { GradeMarks } from "../components/GradeMarks";
@@ -52,6 +53,8 @@ import { Art } from "../components/practice/Art";
 import type { ArtName } from "../components/practice/art/svgs";
 import { practiceApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import type { AxiosError } from "axios";
+import { classifySendFailure } from "../lib/sendQueue";
 import type { Drill, GradeResult, PracticeBadge, PracticeDay, PracticeProgress, PracticeSeason, PracticeTrack, WeeklyGoal } from "../api/types";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
@@ -135,6 +138,8 @@ export function PracticeScreen() {
   const [trackError, setTrackError] = useState<string | null>(null);
   const [burst, setBurst] = useState(0);
   const [takeUri, setTakeUri] = useState<string | null>(null);
+  /** A take sung but not marked (no connection, or our fault): kept, so "Send it again" marks it without singing again. */
+  const [unsent, setUnsent] = useState<{ uri: string; drill: Drill; leadIn: number } | null>(null);
 
   /** The reward line, with the level's emblem or the badge's sticker beside it when it is one. */
   const [toast, setToast] = useState<{ line: string; art: ArtName | null } | null>(null);
@@ -285,6 +290,7 @@ export function PracticeScreen() {
     setError(null);
     setGrade(null);
     setTakeUri(null);
+    setUnsent(null);
     try {
       const perm = await requestRecordingPermissionsAsync();
       if (!perm.granted) {
@@ -326,12 +332,37 @@ export function PracticeScreen() {
   async function finish(sung: Drill) {
     cleanup();
     setPhase("grading");
+    let uri: string | null = null;
     try {
       await recorder.stop();
       await setAudioModeAsync({ allowsRecording: false, playsInSilentMode: true });
-      const uri = recorder.uri;
+      uri = recorder.uri;
       if (!uri) throw new Error("The recording was lost.");
-      const result = await practiceApi.gradeDrill(uri, sung.id, leadIn.current);
+    } catch (e) {
+      if (!live.current) return;
+      setPhase("idle");
+      setError(toApiError(e).message);
+      return;
+    }
+    await mark(sung, uri, leadIn.current);
+  }
+
+  /** "Send it again": the kept take, marked as if it had just been sung. */
+  function sendAgain() {
+    if (!unsent || phase !== "idle") return;
+    setError(null);
+    void mark(unsent.drill, unsent.uri, unsent.leadIn);
+  }
+
+  /**
+   * Sends a take to be marked and shows what it earned. A take that could not be marked for want of a connection,
+   * or by our fault, is kept to send again; one the server turned down is not (sending it again would be too).
+   */
+  async function mark(sung: Drill, uri: string, lead: number) {
+    setPhase("grading");
+    setUnsent(null);
+    try {
+      const result = await practiceApi.gradeDrill(uri, sung.id, lead);
       if (!live.current) return;
       setGrade(result);
       setTakeUri(uri);
@@ -359,7 +390,11 @@ export function PracticeScreen() {
     } catch (e) {
       if (!live.current) return;
       setPhase("idle");
-      setError(toApiError(e).message);
+      const err = toApiError(e);
+      setError(err.message);
+      if (classifySendFailure(err.code, (e as AxiosError)?.response?.status) !== "refused") {
+        setUnsent({ uri, drill: sung, leadIn: lead });
+      }
     }
   }
 
@@ -404,6 +439,8 @@ export function PracticeScreen() {
   const showPicker = !!progress && (track == null || picking);
   const where = drill ? pathLine(drill) : null;
   const onward = drill && grade ? nextAction(drill, next, track) : null;
+  /** The kept take, while its drill is the one on screen: the main button sends it again. */
+  const resendable = !!unsent && !!drill && unsent.drill.id === drill.id && !grade;
   // Doh's mood and line (Playful only): singing along, cheering, encouraging, worried, sleepy or waving.
   const scene = { picking: showPicker, recording: busy, grade, hasDrill: !!drill, drillsLeft: left };
   const buddyMood = progress ? mascotMood(progress, scene) : "wave";
@@ -449,7 +486,7 @@ export function PracticeScreen() {
         </TabHeader>
 
         {loading && !progress ? (
-          <ActivityIndicator color={colors.accent} style={styles.loading} />
+          <PracticeSkeleton styles={styles} />
         ) : loadError && !progress ? (
           offline ? (
             <EmptyState
@@ -527,20 +564,29 @@ export function PracticeScreen() {
                 ) : (
                   <View style={styles.actions}>
                     <Button label={playful ? "Listen" : "Hear it"} icon="hear" variant="secondary" onPress={hear} style={styles.action} />
-                    <Button
-                      label={onward ? onward.label : playful ? "Sing it!" : "Sing it"}
-                      icon={onward && !onward.same ? "next" : "mic"}
-                      onPress={() => void (onward && !onward.same ? goNext() : sing())}
-                      disabled={left === 0 && !(onward && !onward.same)}
-                      style={styles.action}
-                    />
+                    {resendable ? (
+                      <Button label="Send it again" icon="retry" onPress={sendAgain} style={styles.action} />
+                    ) : (
+                      <Button
+                        label={onward ? onward.label : playful ? "Sing it!" : "Sing it"}
+                        icon={onward && !onward.same ? "next" : "mic"}
+                        onPress={() => void (onward && !onward.same ? goNext() : sing())}
+                        disabled={left === 0 && !(onward && !onward.same)}
+                        style={styles.action}
+                      />
+                    )}
                   </View>
                 )}
-                {phase === "idle" && onward && !onward.same ? (
+                {phase === "idle" && ((onward && !onward.same) || resendable) ? (
                   <Button label={playful ? "Again!" : "Sing it again"} icon="mic" variant="secondary" onPress={() => void sing()} disabled={left === 0} />
                 ) : null}
 
-                {allowance ? <Text style={styles.allowance}>{allowanceLine(allowance)}</Text> : null}
+                {/* Marking takes up to a minute and the button shows only its spinner, so the line under it says so. */}
+                {phase === "grading" ? (
+                  <Text style={styles.allowance}>Marking your take, note by note. It can take up to a minute.</Text>
+                ) : allowance ? (
+                  <Text style={styles.allowance}>{allowanceLine(allowance)}</Text>
+                ) : null}
                 {error ? <ProblemNote>{error}</ProblemNote> : null}
                 {error === MIC_REFUSED && micBlocked ? (
                   <Button
@@ -816,6 +862,34 @@ function SeasonPathCard({
 }
 
 /** The streak and the level in one line at the top (board 6a); the full cards are under "Your progress". */
+/**
+ * The first read's stand-in, drawn where the streak line and the path card will sit, as the Library's rows are: a bare
+ * spinner let the hub pop in all at once.
+ */
+function PracticeSkeleton({ styles }: { styles: Styles }) {
+  return (
+    <View accessible accessibilityLabel="Loading your practice" accessibilityState={{ busy: true }}>
+      <View style={styles.progLine}>
+        <Skeleton width={20} height={20} radius={10} />
+        <Skeleton width="55%" height={13} radius={radii.sm} />
+      </View>
+      <Card style={styles.card}>
+        <Skeleton width="40%" height={11} radius={radii.sm} />
+        <Skeleton width="70%" height={20} radius={radii.sm} />
+        <View style={styles.solfaRow}>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} width={44} height={38} radius={radii.sm} />
+          ))}
+        </View>
+        <View style={styles.actions}>
+          <Skeleton height={48} radius={radii.pill} style={styles.action} />
+          <Skeleton height={48} radius={radii.pill} style={styles.action} />
+        </View>
+      </Card>
+    </View>
+  );
+}
+
 function ProgressLine({ progress, styles }: { progress: PracticeProgress; styles: Styles }) {
   const strip = progressStrip(progress);
   return (
@@ -1004,7 +1078,6 @@ const makeStyles = (c: Palette) =>
       borderColor: c.border,
     },
     buddyText: { ...typography.label, color: c.text, lineHeight: 20 },
-    loading: { marginTop: spacing.xxl },
     card: { marginBottom: spacing.md, gap: spacing.sm },
     cardPlayful: { borderColor: c.playBorder, borderWidth: 1.5 },
     body: { ...typography.body, color: c.textMuted, fontSize: 13, lineHeight: 20 },

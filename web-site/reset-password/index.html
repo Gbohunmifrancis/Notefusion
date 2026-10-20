@@ -143,8 +143,8 @@
       "<p>Open the link from the email exactly as it arrived &mdash; the address needs " +
       "the code that came with it. Copying only part of it, or retyping it by hand, " +
       "loses that code.</p>" +
-      "<p>If the link is old, request a fresh one from the app: <strong>Sign in &rarr; " +
-      "Forgot password</strong>.</p>"
+      "<p>If the link is old, request a fresh one: <a href=\"/app\">Sign in</a> &rarr; " +
+      "<strong>Forgot password</strong>.</p>"
     );
     return;
   }
@@ -192,8 +192,43 @@
       submit.disabled = false;
       submit.textContent = "Set new password";
       showLines(errorBox, problemLines(err, "Something went wrong setting your password. Try again in a moment."));
+      if (err && err.body && err.body.code === "AUTH_INVALID_RESET_TOKEN") offerNewLink();
     });
   });
+
+  /**
+   * An old or used link: "Request a new one" came with nothing to press. The form goes (this link cannot set a
+   * password), and one button sends a fresh link to the same address.
+   */
+  function offerNewLink() {
+    form.hidden = true;
+    var again = document.createElement("button");
+    again.type = "submit"; // outside any form it submits nothing; the type gives it the page's one button style
+    again.textContent = "Email me a new link";
+    again.addEventListener("click", function () {
+      again.disabled = true;
+      again.textContent = "Sending…";
+      fetch(API + "/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email })
+      }).then(function (response) {
+        if (!response.ok) throw { status: response.status, body: null };
+        errorBox.hidden = true;
+        doneBox.innerHTML = "";
+        var p = document.createElement("p");
+        p.textContent = "A new link is on its way to " + email + ". It works once, for an hour.";
+        doneBox.appendChild(p);
+        doneBox.hidden = false;
+      }, function () { throw { status: 0, body: null }; }).catch(function (e) {
+        again.disabled = false;
+        again.textContent = "Email me a new link";
+        showLines(errorBox, problemLines(e, "We couldn't send a new link just now. Try again in a moment."));
+        errorBox.appendChild(again);
+      });
+    });
+    errorBox.appendChild(again);
+  }
 })();
 </script>
 

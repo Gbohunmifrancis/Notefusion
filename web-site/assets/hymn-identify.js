@@ -102,9 +102,15 @@
     var box = el("div");
     var short = answer && answer.tooShort;
     box.appendChild(el("h2", null, short ? "That was too short to tell" : "We couldn't place that tune"));
-    box.appendChild(el("p", null, short
-      ? "We need about a line of the tune to name a hymn — a dozen notes or more. Hum the first line or two, then press Stop."
-      : "Try humming the first line slowly and clearly. It may also be a hymn we don't have yet."));
+    if (short) box.appendChild(el("p", null, "We need about a line of the tune to name a hymn — a dozen notes or more. Hum the first line or two, then press Stop."));
+    else {
+      // A tune that is not in the hymnal can still be written out: the way into the app's free try, not a dead end.
+      var lead = el("p", null, "Try humming the first line slowly and clearly. It may also be a hymn we don't have yet: ");
+      var write = el("a", null, "NoteFusion can still write it out in solfa");
+      write.href = "/?utm_source=hymn-identify#try"; write.setAttribute("data-track", "Hymn identify: write it out");
+      lead.appendChild(write); lead.appendChild(document.createTextNode("."));
+      box.appendChild(lead);
+    }
     var tips = el("ul");
     ["Start from the beginning of the hymn or of its chorus.",
       "Hum one clear note at a time, a little slower than you would sing it.",
@@ -132,8 +138,18 @@
       : code === "TIMEOUT" ? "This is taking longer than usual. Please try again in a moment."
       : status === 0 ? "We couldn't reach NoteFusion. Check your connection and try again."
       : "Something went wrong on our side. Please try again in a moment.";
-    showStart(true);
+    // Past the limit, humming again would only be refused again: the Hum button steps aside for the hymn search.
+    var limited = status === 429;
+    showStart(!limited);
     say(text, "error");
+    if (limited) {
+      var line = $("identify-status"); // `status` here is the HTTP status
+      line.appendChild(document.createTextNode(" Meanwhile, "));
+      var search = el("a", null, "find it by its title or first line");
+      search.href = "/hymns"; search.setAttribute("data-track", "Hymn identify: search instead");
+      line.appendChild(search);
+      line.appendChild(document.createTextNode("."));
+    }
     track("error;code=" + (code || (status ? "HTTP " + status : "network")));
   }
 

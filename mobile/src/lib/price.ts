@@ -44,6 +44,46 @@ export function nairaNote(currency: string, viaPlay: boolean): string | null {
     : null;
 }
 
+/**
+ * The plans in the order the list shows them: grouped by currency, each currency where the server first lists it,
+ * cheapest first within it. An account whose country is unknown is offered naira and dollars side by side, and
+ * sorting both together by their minor units (kobo against cents) interleaved the two.
+ */
+export function plansInOrder<T extends Pick<Plan, "currency" | "amountMinor">>(plans: readonly T[]): T[] {
+  const currencies = [...new Set(plans.map((p) => p.currency))];
+  return plans
+    .slice()
+    .sort((a, b) => currencies.indexOf(a.currency) - currencies.indexOf(b.currency) || a.amountMinor - b.amountMinor);
+}
+
+/**
+ * The plan chosen when the paywall opens: Pro's dearest (the year, the best value) within one currency. Picked across
+ * two, kobo outweighed cents and it always landed on naira's year. The currency is the one-song purchase's when there
+ * is one, as the limit sheet reads it (`limitOffer`), else the first the server lists.
+ */
+export function bestValuePlan(plans: readonly Plan[]): Plan | undefined {
+  const pro = plans.filter((p) => p.interval !== "single");
+  const currency = plans.find((p) => p.interval === "single")?.currency ?? pro[0]?.currency;
+  const inCurrency = pro.filter((p) => p.currency === currency);
+  return (inCurrency.length > 0 ? inCurrency : pro).slice().sort((a, b) => b.amountMinor - a.amountMinor)[0];
+}
+
+/**
+ * The paywall's fine print for the website's checkout: what one payment buys, and that it does not renew (nothing
+ * bought there does: a member pays again to add time). Said before paying, where it used to be said only at Cancel.
+ * Google Play's own is `playFinePrint`.
+ */
+export function webFinePrint(plan: Pick<Plan, "interval" | "choirSeats">): string {
+  if (plan.interval === "single") {
+    return "One payment, one transcription that never expires. Secure checkout opens in your browser; you'll come back to your song.";
+  }
+  const open = "Secure checkout opens in your browser; you'll come back here automatically.";
+  if (plan.interval === "lifetime") return `One payment, Pro for good. ${open}`;
+  const period = plan.interval === "yearly" ? "year" : "month";
+  const what = plan.choirSeats ? `One ${period} of Pro for your choir` : `One ${period} of Pro`;
+  return `${what}. It doesn't renew by itself: pay again whenever you want more time. ${open}`;
+}
+
 export interface LimitOffer {
   /** The one-song purchase, offered first (as the Upgrade screen preselects it at the limit). */
   single?: Plan;

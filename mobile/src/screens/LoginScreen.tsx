@@ -121,7 +121,8 @@ export function LoginScreen({ navigation, route }: Props) {
       <Pressable
         onPress={forgot}
         style={({ pressed }) => [styles.forgot, pressed && pressedLink]}
-        hitSlop={8}
+        // 44 pt tall without moving the link: up to the field above, and down into the gap below.
+        hitSlop={{ top: 12, bottom: 14, left: 12, right: 12 }}
         accessibilityRole="button"
       >
         <Text style={styles.forgotText}>Forgot password?</Text>

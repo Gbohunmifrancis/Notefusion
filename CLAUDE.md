@@ -555,9 +555,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   included (`lib/replayPrivacy`: `SecretField`, `PrivateArea`, `MaskIfPrivate` on `Sentry.Mask`; a build without the native
   mask view keeps masking everything), as the privacy policy says; source maps from the
   `@sentry/react-native/expo` plugin on store builds and `eas env:exec production 'npm run update:production'`
-  for OTA, which reads `SENTRY_AUTH_TOKEN`/`ORG`/`PROJECT` from EAS; store builds stay off — `eas.json`'s
-  `SENTRY_DISABLE_AUTO_UPLOAD` — until the next store build's commit removes it, since `eas.json` is part of the
-  Android fingerprint). Never the public pages. The console's Sessions page (board k-sessions, `/sessions`,
+  for OTA, which reads `SENTRY_AUTH_TOKEN`/`ORG`/`PROJECT` from EAS; the store build of 20 Oct 2026 dropped `eas.json`'s
+  `SENTRY_DISABLE_AUTO_UPLOAD`, and as `eas.json` is part of the Android fingerprint that began a new runtime: while
+  phones still run the older store build (runtime `6c685cab`), an OTA is also published with that line put back). Never the public pages. The console's Sessions page (board k-sessions, `/sessions`,
   `GET /api/admin/sessions/recordings|errors…`, `Application/Admin/Sessions`, `Infrastructure/ErrorReports` over
   `OutboundResilience.SentryApi`) reads the recordings and every project's errors with a read-only token
   (`SentryApi__Token`/`__Org` from `SENTRY_API_TOKEN`/`SENTRY_ORG`), plays a recording's MP4 pieces through the API (kept

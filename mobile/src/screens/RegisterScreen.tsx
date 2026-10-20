@@ -26,13 +26,16 @@ export function RegisterScreen({ navigation, route }: Props) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState(route.params?.email ?? "");
   const [password, setPassword] = useState("");
+  const [nameTouched, setNameTouched] = useState(false);
   const [emailTouched, setEmailTouched] = useState(false);
   const [error, setError] = useState<string | null>(null);
   /** The server refused the address itself (a throwaway inbox): said on the Email field, not above Continue. */
   const [emailError, setEmailError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const nameOk = fullName.trim().length >= 2;
+  // Any name the server takes (it asks only that there is one): a one-letter name no longer leaves Continue
+  // greyed out with nothing said.
+  const nameOk = fullName.trim().length > 0;
   const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim());
   const pwOk = password.length >= MIN_PASSWORD;
   const canSubmit = nameOk && emailOk && pwOk;
@@ -75,12 +78,15 @@ export function RegisterScreen({ navigation, route }: Props) {
           label="Your name"
           value={fullName}
           onChangeText={setFullName}
+          onBlur={() => setNameTouched(true)}
           autoCapitalize="words"
           autoComplete="name"
           textContentType="name"
           returnKeyType="next"
           onSubmitEditing={() => emailRef.current?.focus()}
           submitBehavior="submit"
+          // Said once the field is left empty, as the email's problem is: Continue waits for a name.
+          error={nameTouched && !nameOk ? "Type your name to continue." : undefined}
         />
         <NightField
           ref={emailRef}

@@ -88,6 +88,8 @@
     <h2>Submit Deletion Request</h2>
     <p>
       You can initiate permanent deletion through this web form, from the web app&rsquo;s account settings, or directly from within the mobile app.
+      Any Pro time left ends with the account and is not refunded (see our <a href="/terms">terms</a>), and a Google Play
+      subscription keeps renewing until you cancel it in Google Play.
     </p>
 
     <div id="error-box" class="notice bad" role="alert" hidden></div>
@@ -271,6 +273,12 @@
 
   emailInput.addEventListener("input", validateState);
   confirmCheck.addEventListener("change", validateState);
+  // Opened from the web app's Account view: the signed-in address comes along in this tab (never in the URL).
+  try {
+    var known = sessionStorage.getItem("nf.deleteEmail");
+    sessionStorage.removeItem("nf.deleteEmail");
+    if (known && !emailInput.value) { emailInput.value = known; validateState(); }
+  } catch (err) { /* storage off: the address is typed as before */ }
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();

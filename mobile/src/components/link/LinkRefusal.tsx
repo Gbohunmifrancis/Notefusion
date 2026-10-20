@@ -83,6 +83,8 @@ export function PillAction({
     <Touchable
       onPress={onPress}
       radius={20}
+      // 40 px pills 8 apart: half the gap each way makes them 48 dp.
+      hitSlop={4}
       style={[styles.pill, tone === "solid" ? styles.pillSolid : styles.pillQuiet]}
       accessibilityRole="button"
       accessibilityLabel={label}

@@ -40,3 +40,18 @@ export function folderNamed(typed: string, folders: readonly string[]): string {
   const key = name.toLowerCase();
   return folders.find((f) => f.trim().toLowerCase() === key) ?? name;
 }
+
+/**
+ * What a move to a folder says once it is done: "Moved to Sunday choir", "3 sheets moved to Sunday choir", "Taken out
+ * of its folder". A haptic alone left no word on screen that it worked.
+ */
+export function filedToast(count: number, folder: string | null): string {
+  if (folder) return count === 1 ? `Moved to ${folder}` : `${count} sheets moved to ${folder}`;
+  return count === 1 ? "Taken out of its folder" : `${count} sheets taken out of their folders`;
+}
+
+/** What sharing with the choir (or taking a sheet back out) says once it is done. */
+export function choirToast(count: number, share: boolean): string {
+  if (share) return count === 1 ? "Shared with your choir" : `${count} sheets shared with your choir`;
+  return count === 1 ? "Taken out of the choir library" : `${count} sheets taken out of the choir library`;
+}

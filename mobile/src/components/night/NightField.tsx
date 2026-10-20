@@ -70,7 +70,7 @@ export const NightField = forwardRef<TextInput, Props>(function NightField(
               ref={ref}
               value={value}
               secureTextEntry={secure && !shown}
-              placeholderTextColor={night.dim}
+              placeholderTextColor={night.faint}
               selectionColor={night.blue}
               cursorColor={night.ice}
               accessibilityLabel={label}
@@ -89,7 +89,8 @@ export const NightField = forwardRef<TextInput, Props>(function NightField(
           {secure && (
             <Pressable
               onPress={() => setShown((s) => !s)}
-              hitSlop={10}
+              // A 20 pt eye: the slop makes it a 48 pt target inside the field.
+              hitSlop={14}
               accessibilityRole="button"
               accessibilityLabel={shown ? "Hide password" : "Show password"}
               style={styles.eye}

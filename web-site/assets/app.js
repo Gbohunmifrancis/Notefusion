@@ -493,8 +493,13 @@
       b.setAttribute("aria-label", showing ? "Show password" : "Hide password");
     });
   });
-  // The password rule, ticked off as it is met rather than refused after the fact.
-  $("reg-password").addEventListener("input", function () { $("reg-password-hint").classList.toggle("ok", $("reg-password").value.length >= 8); });
+  // The password rule, ticked off as it is met rather than refused after the fact: a dash until then, a tick once
+  // met, so it reads without the colour.
+  $("reg-password").addEventListener("input", function () {
+    var met = $("reg-password").value.length >= 8, hint = $("reg-password-hint");
+    hint.classList.toggle("ok", met);
+    hint.querySelector("use").setAttribute("href", "/assets/icons.svg#i-" + (met ? "check" : "minus"));
+  });
   $("forgot").addEventListener("click", function () {
     var email = $("login-email").value.trim(), btn = $("forgot");
     if (!email) { alertIn($("auth-alert"), "info", "Type your email above, then press Forgot password."); $("login-email").focus(); return; }
@@ -594,9 +599,25 @@
     var rest = (input.getAttribute("aria-describedby") || "").split(" ").filter(function (x) { return x && x !== field + "-error"; }).join(" ");
     rest ? input.setAttribute("aria-describedby", rest) : input.removeAttribute("aria-describedby");
   }
+  /**
+   * The button says what it is doing while the request is out ("Signing in…"), then reads as before: on a slow
+   * connection a button that only faded looked like a tap that missed.
+   */
+  function waitLabel(btn, text) {
+    var was = btn.textContent;
+    btn.textContent = text;
+    return function () { btn.textContent = was; };
+  }
   var AUTH_FIELDS = ["login-email", "login-password", "reg-name", "reg-email", "reg-password", "verify-code"];
   function clearFieldErrors() { AUTH_FIELDS.forEach(clearFieldError); }
   AUTH_FIELDS.forEach(function (f) { $(f).addEventListener("input", function () { clearFieldError(f); }); });
+  // A mistyped address is said as soon as the field is left, not after the whole form is sent; an empty one waits.
+  ["login-email", "reg-email"].forEach(function (f) {
+    $(f).addEventListener("blur", function () {
+      var value = $(f).value.trim(), bad = value && emailProblem(value);
+      if (bad) fieldError(f, bad);
+    });
+  });
   /** Wrong passwords in a row for the address typed: from the second, the line under the field offers the reset. */
   var loginMisses = 0;
   $("login-email").addEventListener("input", function () { loginMisses = 0; });
@@ -608,6 +629,7 @@
     if (bad) { stopForm(bad, "login-email"); return; }
     if (!$("login-password").value) { stopForm("Enter your password.", "login-password"); return; }
     btn.disabled = true; hide($("auth-alert")); clearFieldErrors();
+    var restore = waitLabel(btn, "Signing in…");
     request("/api/auth/login", { method: "POST", anonymous: true, body: { email: $("login-email").value.trim(), password: $("login-password").value } })
       .then(function (res) {
         saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
@@ -626,7 +648,7 @@
         }
         fieldError("login-password", err.message || "Could not sign in.", reset);
       })
-      .finally(function () { btn.disabled = false; });
+      .finally(function () { btn.disabled = false; restore(); });
   });
   var verifyFrom = "register"; // the form the code step came from, which "Wrong address? Change it" returns to
   function openVerify(email, note, from) {
@@ -662,6 +684,7 @@
     if (badEmail) { stopForm(badEmail, "reg-email"); btn.disabled = false; return; }
     // One password field: the eye shows what was typed, so a second copy only slowed sign-up down.
     if ($("reg-password").value.length < 8) { stopForm("Use at least 8 characters for the password.", "reg-password"); btn.disabled = false; return; }
+    var restore = waitLabel(btn, "Creating your account…");
     request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value, source: "web" } })
       .then(function (res) {
         track("Created account");
@@ -673,7 +696,7 @@
         if (err.code === "AUTH_PASSWORD_WEAK") { fieldError("reg-password", err.message); return; }
         alertIn($("auth-alert"), "danger", err.details ? "Check your name, email and password, then try again." : (err.message || "Could not create the account."));
       })
-      .finally(function () { btn.disabled = false; });
+      .finally(function () { btn.disabled = false; restore(); });
   });
 
   var pendingEmail = "";
@@ -682,6 +705,7 @@
     var btn = e.target.querySelector("button[type=submit]");
     if (!/^\d{6}$/.test($("verify-code").value.replace(/\s+/g, ""))) { stopForm("Enter the 6-digit code from the email.", "verify-code"); return; }
     btn.disabled = true; hide($("auth-alert")); clearFieldErrors();
+    var restore = waitLabel(btn, "Checking the code…");
     request("/api/auth/verify-email", { method: "POST", anonymous: true, body: { email: pendingEmail, code: $("verify-code").value.replace(/\s+/g, "") } })
       .then(function (res) {
         saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
@@ -690,7 +714,7 @@
         return boot();
       })
       .catch(function (err) { fieldError("verify-code", err.message || "That code did not match."); })
-      .finally(function () { btn.disabled = false; });
+      .finally(function () { btn.disabled = false; restore(); });
   });
   $("verify-resend").addEventListener("click", function () {
     if ($("verify-resend").disabled) return;
@@ -835,7 +859,7 @@
   // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
   // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
   // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=8", "/assets/practice-progress.js?v=8", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=2", "/assets/practice-view.js?v=11"];
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=9", "/assets/practice-progress.js?v=8", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=2", "/assets/practice-view.js?v=11"];
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
   function loadAsset(url) {
@@ -997,6 +1021,13 @@
       none.hidden = shown > 0 || !document.querySelector("#lib-list .lib-item");
     }
   }
+  /**
+   * A tap anywhere on a sheet's card opens it (the title is the biggest target there is), not only the small Open
+   * button beside Delete; the card's own controls keep their jobs. Keyboards and screen readers still use Open.
+   */
+  function opensOnTap(card, open) {
+    card.addEventListener("click", function (e) { if (!e.target.closest("button, select, a, input, label")) open(); });
+  }
   /** Files a sheet: an existing folder, a new one, or none. */
   function fileSheet(it, value, select) {
     var name = value;
@@ -1037,8 +1068,13 @@
     if (!libFolder) return;
     var to = (window.prompt("Rename “" + libFolder + "” to:", libFolder) || "").trim();
     if (!to || to === libFolder) return;
-    request("/api/library/folders", { method: "PUT", body: { from: libFolder, to: to } })
-      .then(function () { libFolder = to; libraryCache = null; loadLibrary(true); })
+    var from = libFolder;
+    request("/api/library/folders", { method: "PUT", body: { from: from, to: to } })
+      .then(function () {
+        // Renamed in the list as it stands, without a reload to the skeleton.
+        (libraryCache || []).forEach(function (x) { if (x.folder === from) x.folder = to; });
+        libFolder = to; loadLibrary(false);
+      })
       .catch(function (err) { libAlert("Could not rename the folder: " + (err.message || err)); });
   });
 
@@ -1068,13 +1104,19 @@
         file.value = it.folder || "";
         file.addEventListener("change", function () { fileSheet(it, file.value, file); });
         var open = document.createElement("button"); open.className = "btn btn-primary btn-sm"; open.type = "button"; open.textContent = "Open";
+        open.setAttribute("aria-label", "Open " + (it.title || "Untitled"));
         open.addEventListener("click", function () { openSaved(it.id); });
+        opensOnTap(card, function () { openSaved(it.id); });
         var del = document.createElement("button"); del.className = "btn btn-ghost btn-sm btn-danger"; del.type = "button"; label(del, "trash", "Delete");
         del.addEventListener("click", function () {
           if (!confirm("Delete \u201c" + (it.title || "Untitled") + "\u201d from your library? This cannot be undone." +
             (isPro() ? " Deleting won't give back a song it used." : " Deleting won't give back the free transcription it used."))) return;
           del.disabled = true;
-          request("/api/library/" + it.id, { method: "DELETE" }).then(function () { libraryCache = null; loadLibrary(true); refreshUsage(); })
+          // Taken out of the list in place: a full reload went back to the skeleton and lost the scroll.
+          request("/api/library/" + it.id, { method: "DELETE" }).then(function () {
+            if (libraryCache) libraryCache = libraryCache.filter(function (x) { return x.id !== it.id; });
+            loadLibrary(false); refreshUsage();
+          })
             .catch(function (err) { libAlert("Could not delete: " + (err.message || err)); del.disabled = false; });
         });
         a.appendChild(open); a.appendChild(file);
@@ -1122,7 +1164,9 @@
         card.appendChild(m);
         var a = document.createElement("div"); a.className = "actions";
         var open = document.createElement("button"); open.className = "btn btn-primary btn-sm"; open.type = "button"; open.textContent = "Open";
+        open.setAttribute("aria-label", "Open " + (it.title || "Untitled"));
         open.addEventListener("click", function () { openChoirSheet(it.id); });
+        opensOnTap(card, function () { openChoirSheet(it.id); });
         a.appendChild(open);
         if (it.canUnshare) {
           var out = document.createElement("button"); out.className = "btn btn-ghost btn-sm"; out.type = "button"; out.textContent = "Take out";
@@ -1143,7 +1187,7 @@
   }
   /** A choir sheet, read-only, in the result view: saving it makes the singer's own copy, never touches the original. */
   function openChoirSheet(id) {
-    stopFollowing();
+    stopFollowing(); rememberJob(null);
     var at = epoch;
     request("/api/choirs/mine/sheets/" + encodeURIComponent(id)).then(function (t) {
       if (at !== epoch) return;
@@ -1168,7 +1212,7 @@
   $("lib-search").addEventListener("input", filterLibrary);
   /** A saved sheet, opened into the same result view a fresh transcription uses. */
   function openSaved(id) {
-    stopFollowing();
+    stopFollowing(); rememberJob(null);
     var at = epoch;
     request("/api/library/" + id).then(function (t) {
       if (at !== epoch) return; // signed out while it loaded
@@ -1201,16 +1245,22 @@
     $("acct-usage-label").textContent = u ? u.label : "This month";
     $("acct-credits").textContent = u ? u.left + " of " + u.total + " left · " + (isPro() ? "resets " + resetDay() : freeNote(u).replace(/^R/, "r")) : "—";
     fillMeter($("acct-usage-fill"), u);
+    var play = playBilled();
     $("acct-sub-note").textContent = isPro()
-      ? periodLine() + (sub && (sub.isLifetime || sub.isGift) ? "" : " Nothing renews by itself; add time whenever you like.")
-      : "Pro adds 20 songs a month, full songs up to six minutes, four-part harmony and every download format.";
-    $("acct-upgrade-label").textContent = isPro() ? (sub && (sub.isLifetime || sub.isGift) ? "My membership" : "Add another month") : "See the plans";
+      ? periodLine() + (play ? " " + playLine() : sub && (sub.isLifetime || sub.isGift) ? "" : " Nothing renews by itself; add time whenever you like.")
+      : play ? playLine() : "Pro adds 20 songs a month, full songs up to six minutes, four-part harmony and every download format.";
+    $("acct-upgrade-label").textContent = play ? (sub.paymentIssue ? "Fix it in Google Play" : "Manage in Google Play")
+      : isPro() ? (sub && (sub.isLifetime || sub.isGift) ? "My membership" : "Add another month") : "See the plans";
     var since = me && (me.createdAtUtc || me.createdAt);
     $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "short" }) : "—";
     fetchLibrary().then(function (items) { $("acct-saved").textContent = String(items.length); }, function () { $("acct-saved").textContent = "—"; });
     renderChoirPanel();
   }
-  $("acct-upgrade").addEventListener("click", openUpgrade);
+  $("acct-upgrade").addEventListener("click", function () { if (playBilled()) openPlayManage(); else openUpgrade(); });
+  // The deletion page fills in the signed-in address (handed over in this tab only, never in the URL).
+  $("acct-delete").addEventListener("click", function () {
+    try { if (me && me.email) sessionStorage.setItem("nf.deleteEmail", me.email); } catch (e) { /* typed there instead */ }
+  });
 
   // ── My choir (Account & settings) ───────────────────────────────────────
   /** The account's choir, as director or singer; null when it is in none (the API answers 404). */
@@ -1370,7 +1420,8 @@
     if (isPro()) { renderMembership(); show($("upgrade-panel")); return; }
     $("upgrade-title-text").textContent = "Do more with NoteFusion";
     show($("upgrade-free")); hide($("upgrade-pro"));
-    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: true });
+    // At the free limit one more song is what was asked for: the choir plans stay out of it, unless this is a director.
+    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: reason !== "limit" || leadsChoir() });
   }
   /** Pro through a choir alone: the plan shown is the choir's, renewed by its director. */
   function proViaChoir() { return !!(sub && sub.choirRole && String(sub.planCode || "").indexOf("choir_") === 0); }
@@ -1391,6 +1442,25 @@
     return "Pro until " + when + ".";
   }
   function creditsLine() { return sub ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left · resets " + resetDay() : "—"; }
+  /**
+   * A membership Google Play bills (bought in the Android app): Google renews it and it is managed there, so this page
+   * neither says nothing renews nor offers more time (the website's checkout refuses it: BILLING_MANAGED_BY_GOOGLE_PLAY).
+   * The words are the phone's (mobile lib/playBilling).
+   */
+  function playBilled() { return !!(sub && sub.billedThrough === "googlePlay"); }
+  function playLine() {
+    if (sub.paymentIssue === "hold") return "Pro is paused. Google Play still couldn't take the payment. Fix it in Google Play and Pro comes back at once.";
+    if (sub.paymentIssue === "grace") return "Google Play couldn't take this period's payment. Update your card in Google Play and Pro carries on.";
+    return sub.autoRenews
+      ? "Google Play charges you again at the end of each period until you cancel there. Receipts come from Google Play."
+      : "You cancelled in Google Play. Pro stays on until the end of the period you paid for.";
+  }
+  /** Google's page for the subscription: cancel, change card, switch plan. */
+  function openPlayManage() {
+    track("Opened Google Play subscriptions");
+    var sku = sub && sub.storeProductId ? "sku=" + encodeURIComponent(sub.storeProductId) + "&" : "";
+    window.open("https://play.google.com/store/account/subscriptions?" + sku + "package=com.notefusion.com", "_blank", "noopener");
+  }
   /** The plans dialog for a member: the membership, with nothing for sale. */
   function renderMembership() {
     $("upgrade-title-text").textContent = "Your Pro membership";
@@ -1401,11 +1471,16 @@
     // A singer's Pro is the choir's: the director renews it, so a singer is shown it rather than offered more of it.
     var singer = proViaChoir() && sub.choirRole === "member";
     if (singer) $("upgrade-pro-period").textContent = "Pro through " + sub.choirName + ". " + periodLine() + " Your choir director renews it.";
-    label($("upgrade-extend"), "plus", proViaChoir() ? (singer ? "Get Pro of my own" : "Add choir time") : "Add more Pro time");
+    var play = playBilled();
+    $("upgrade-pro-note").textContent = play ? playLine()
+      : "Each payment covers one period and nothing renews without you. Add more time whenever you like; it starts when your current time ends. Receipts come by email.";
+    if (play) label($("upgrade-extend"), "arrow-right", sub.paymentIssue ? "Fix it in Google Play" : "Manage in Google Play");
+    else label($("upgrade-extend"), "plus", proViaChoir() ? (singer ? "Get Pro of my own" : "Add choir time") : "Add more Pro time");
     sub && sub.isLifetime ? hide($("upgrade-extend")) : show($("upgrade-extend"));
     hide($("plans-extend"));
   }
   $("upgrade-extend").addEventListener("click", function () {
+    if (playBilled()) { openPlayManage(); return; }
     track("Opened plans to extend");
     track("Plans viewed", "app · extend");
     show($("plans-extend"));
@@ -1415,9 +1490,15 @@
   $("upgrade-account").addEventListener("click", function () { hide($("upgrade-panel")); setView("account"); });
   /** The pricing page sends a plan id along: once signed in, open its checkout without another click. */
   function autoCheckout(planId) {
-    request("/api/billing/plans").then(function (plans) {
-      var plan = (plans || []).find(function (p) { return String(p.id) === String(planId) || p.code === planId; });
-      if (!plan) return;
+    Promise.all([request("/api/billing/plans"), request("/api/billing/plans/single").catch(function () { return []; })]).then(function (lists) {
+      var plan = (lists[0] || []).concat(lists[1] || []).find(function (p) { return String(p.id) === String(planId) || p.code === planId; });
+      if (!plan) {
+        // The pricing page prices by where the browser is; an account buys at its own country's prices. A plan from
+        // the other set is not this account's, so the dialog says why it shows other prices rather than nothing.
+        $("upgrade-reason-text").textContent = "The plan you picked isn't sold for the country on your account, so these are your account's prices.";
+        show($("upgrade-reason")); hide($("upgrade-lead"));
+        return;
+      }
       checkout(plan, document.createElement("button"));
     }).catch(function () { /* the dialog is open; the user can pick a plan */ });
   }
@@ -1523,10 +1604,10 @@
    */
   var usageAskedAt = 0;
   function refreshUsage() {
-    if (guest || !tokens()) return;
+    if (guest || !tokens()) return Promise.resolve();
     usageAskedAt = Date.now();
     var at = epoch;
-    request("/api/billing/my-subscription").then(function (s) {
+    return request("/api/billing/my-subscription").then(function (s) {
       if (at !== epoch || !s) return;
       sub = s; renderWho();
       if (!$("view-account").classList.contains("hidden")) renderAccount();
@@ -1817,10 +1898,25 @@
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && !$("cost-pop").hidden) { setCostInfo(false); $("cost-info").focus(); }
   });
-  function submitAudio(file, name, fromMic, again, meter) {
+  function submitAudio(file, name, fromMic, again, meter, costChecked) {
     // One recording goes up at a time: a second drop or take while the first is uploading is ignored.
     if (submitting) return Promise.resolve();
     sfx.prime(); // from the click that sent it: the chime for a job that finishes out of sight can play
+    // On a free account whose chip already says this one cannot go (the week's free ones used, or a song with nothing
+    // to pay for it), the plans come first and the take is kept for after (keepTake, songBought), rather than a whole
+    // upload over 3G only to be refused. The count is read again first, in case the week has turned since.
+    if (!again && !costChecked && !guest && !isPro()) {
+      uploadKind(fromMic);
+      var cost = studioCost();
+      if (cost && cost.out) {
+        return refreshUsage().then(function () {
+          var still = studioCost();
+          if (!still || !still.out || isPro()) return submitAudio(file, name, fromMic, false, undefined, true);
+          keepTake(file, name, fromMic, chosenMeter());
+          openUpgrade("limit", still.text + ". Your recording is kept, and goes once it's paid for.");
+        });
+      }
+    }
     // Read once: "Try again" sends the meter this recording went with, not what the box says now.
     if (!again) meter = chosenMeter();
     var kind = uploadKind(fromMic), song = kind === "song" || (kind === "choir" && $("choir-band").checked);
@@ -1848,7 +1944,7 @@
     }
     function onProgress(fraction) {
       if (following) $("p-retry-btn").textContent = "Sending again… " + Math.round(fraction * 100) + "%";
-      else setPercent(fraction);
+      else setPercent(fraction * UPLOAD_SHARE);
     }
     submitting = true;
     var at = epoch;
@@ -2091,6 +2187,17 @@
       alertIn($("app-alert"), "info", err.status === 404 ? "That transcription isn't available any more." : err.message);
     });
   }
+  /**
+   * The job on the card rides in the address (?job=<id>, which boot() opens), so a reload, or a closed tab brought
+   * back, finds it running or finished instead of an empty studio. A new transcription or a saved sheet drops it.
+   */
+  function rememberJob(jobId) {
+    try {
+      var u = new URL(location.href);
+      jobId ? u.searchParams.set("job", jobId) : u.searchParams.delete("job");
+      history.replaceState(history.state, "", u.pathname + u.search + u.hash);
+    } catch (e) { /* only the address; nothing depends on it */ }
+  }
   // Looking at the tab again puts its own title and icon back (and closes a notification still showing).
   function backInView() { if (NF.cued() && !NF.isAway(document)) NF.clearCue(document); }
   document.addEventListener("visibilitychange", backInView);
@@ -2207,6 +2314,12 @@
     if (job.stage) return job.stage;
     return String(job.status || "").toLowerCase() === "pending" ? "queued" : fallback;
   }
+  /**
+   * For a recording, the upload is the bar's first stretch and the job the rest, so the bar runs once from 0 to 100
+   * (it used to fill for the upload, then drop back to nothing as the job began).
+   */
+  var UPLOAD_SHARE = 0.15;
+  function jobPercent(progress) { return current && current.from === "upload" ? UPLOAD_SHARE + (1 - UPLOAD_SHARE) * (progress || 0) : progress; }
   function setPercent(fraction) {
     var pct = Math.max(0, Math.min(100, Math.round((fraction || 0) * 100)));
     $("p-bar").style.width = Math.max(3, pct) + "%";
@@ -2222,8 +2335,9 @@
     current = { jobId: job.jobId, kind: kind, from: from || null, retry: retry || null, source: job.source || null, fileName: job.fileName || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0, failures: 0, seen: "", seenAt: Date.now() };
     openProgress(kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : "Transcribing your recording…");
     current.preview = kind === "preview";
-    if (current.preview) previewId = job.jobId;
+    if (current.preview) previewId = job.jobId; else rememberJob(job.jobId);
     setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
+    setPercent(jobPercent(0));
     primeAudio();
     follow = {
       jobId: job.jobId, ctrl: null, away: false, timer: null, clock: null, noStream: !streamable(), streamFails: 0, authRetries: 0,
@@ -2429,7 +2543,7 @@
     }
     var stage = stageOf(job, "transcribing"), progress = job.progress || 0;
     setStage(stage, current.from, job.queuePosition);
-    setPercent(progress);
+    setPercent(jobPercent(progress));
     // Something moved: the stage, the bar or the line ahead. Otherwise the clock keeps running.
     var seen = stage + "|" + Math.round(progress * 100) + "|" + (job.queuePosition == null ? "" : job.queuePosition);
     if (seen !== current.seen) { current.seen = seen; current.seenAt = Date.now(); }
@@ -2451,10 +2565,19 @@
       if (status === "done" && job.result) {
         stopFollowing();
         current.result = job.result;
+        // Filed in the Library the moment it finished (LibraryFiling): the page says so, and Save keeps the edits made
+        // here by replacing that copy. Seeing it counts as opening it, as on the phone.
+        if (!guest && job.savedId) {
+          current.filedId = job.savedId; current.filedTitle = job.savedTitle || ""; libraryCache = null;
+          request("/api/library/" + encodeURIComponent(job.savedId) + "/opened", { method: "POST" }).catch(function () { /* only the Library's new-sheet dot */ });
+        }
         hide($("progress"));
         announce("ready");
         track(current && current.kind === "preview" ? "Preview ready" : "Sheet ready");
+        // One preview a device: the try box says so next time, before anything is recorded (assets/preview.js).
+        if (current.preview && guest) { try { localStorage.setItem("nf.web.previewUsed", "1"); } catch (e) { /* private mode */ } }
         showResult(job.result);
+        if (current.filedId) alertIn($("app-alert"), "success", "Saved to your Library as “" + (current.filedTitle || "your recording") + "”. Lyrics or a new doh added here are kept when you press Save changes.");
         keepClaimedPreview();
         if (!guest) loadAccount();
         return;
@@ -2552,7 +2675,7 @@
     if ($("r-staff").classList.contains("hidden") && $("r-solfa").classList.contains("hidden")) document.querySelector('.result-tabs [data-view="staff"]').click();
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
       var text = b.textContent.trim();
-      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="/assets/icons.svg#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock"><use href="/assets/icons.svg#i-lock"/></svg>');
+      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="/assets/icons.svg#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg>');
     });
 
     // A guest reads and rehearses; saving, sharing, transposing, singing and downloads are the account's.
@@ -2618,6 +2741,23 @@
     });
     current.result = next;
     showResult(next);
+    offerUndo($("r-doh"), C.keyHeader(alt.key) + " now: the notes are written in its scale.", function () {
+      current.dohAnswered = false; current.result = r; showResult(r);
+    });
+  }
+  /**
+   * A choice that rewrote the notes (another doh, the hymnbook's version) is said in the box that asked, with Undo
+   * putting the sheet back as it was and the question with it. Gone once the sheet is saved.
+   */
+  function offerUndo(box, text, undo) {
+    box.innerHTML = "";
+    var said = document.createElement("span"); said.textContent = text;
+    var row = document.createElement("span"); row.className = "doh-choices";
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "btn btn-sm btn-ghost"; b.textContent = "Undo";
+    b.addEventListener("click", function () { hide(box); track("Undid a sheet choice"); undo(); });
+    row.appendChild(b); box.appendChild(said); box.appendChild(row);
+    show(box);
   }
 
   /**
@@ -2663,14 +2803,20 @@
   }
 
   function pickHymn(match) {
+    var before = { result: current.result, lyrics: current.lyrics, dohAnswered: current.dohAnswered };
     current.hymnAnswered = true;
     current.dohAnswered = true;
     // The first verse goes under the notes, unless words were typed already.
     if (!(current.lyrics || "").trim() && match.lyrics) current.lyrics = match.lyrics;
     track("Took hymnbook version", match.slug);
-    var next = H.swap(current.result, match);
+    var next = H.swap(current.result, match), given = current.lyrics;
     current.result = next;
     showResult(next);
+    offerUndo($("r-hymnbook"), "This is the hymnbook's version now, with its notes and words.", function () {
+      current.hymnAnswered = false; current.dohAnswered = before.dohAnswered;
+      if (current.lyrics === given) current.lyrics = before.lyrics; // words typed since are kept
+      current.result = before.result; showResult(before.result);
+    });
   }
 
   /** "Hymnbook version of “Amazing Grace”. Melody and words from …", with the hymn's page linked. */
@@ -3278,7 +3424,7 @@
   /** Back to the studio for another one. The sheet is kept in the library (or is the guest's preview). */
   function newTranscription() {
     if (follow) return; // a job still running keeps its card
-    resultReturnView = null;
+    resultReturnView = null; rememberJob(null);
     closeTool(); closeFull();
     hide($("result")); hide($("progress"));
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -3521,7 +3667,9 @@
     else {
       show($("save-form")); hide($("saved"));
       var src = current.result.source || current.source;
-      if (!$("save-title").value) $("save-title").value = src ? (src.title + (src.artist ? " — " + src.artist : "")) : "My transcription";
+      if (!$("save-title").value) $("save-title").value = current.filedTitle || (src ? (src.title + (src.artist ? " — " + src.artist : "")) : "My transcription");
+      // Already filed (see readJob): Save replaces that copy with this one, edits and all.
+      label($("save"), "save", current.filedId ? "Save changes" : "Save to my library");
     }
   }
   function renderShare() {
@@ -3550,6 +3698,7 @@
       if (auto) alertIn($("app-alert"), "success", "Your preview is saved to your library.");
       current.savedId = saved.id; current.title = saved.title; current.shareToken = saved.shareToken || null;
       libraryCache = null;
+      hide($("r-doh")); hide($("r-hymnbook")); // asked before saving; an Undo cannot reach the saved copy
       renderSave();
       var dismissed = false; try { dismissed = localStorage.getItem("nf.web.appBanner") === "no"; } catch (e) { /* ignore */ }
       if (!dismissed) show($("app-banner"));
@@ -3730,9 +3879,13 @@
     finally { hide(skel); $("sheet").classList.remove("hidden"); }
   }
 
-  /** Engrave ``xml`` into ``container``; part names only make sense with more than one part. */
+  /**
+   * Engrave ``xml`` into ``container``; part names only make sense with more than one part. Once drawn, the staff is
+   * one picture to a screen reader, named for what it shows (the Tonic Solfa tab has the notes as text).
+   */
   function engraveInto(container, xml, partNames) {
     container.innerHTML = "";
+    container.removeAttribute("role"); container.removeAttribute("aria-label");
     if (!xml) { container.textContent = "Nothing to engrave."; return null; }
     if (!window.opensheetmusicdisplay) {
       container.textContent = "Loading the engraver…";
@@ -3744,9 +3897,15 @@
         backend: "svg", autoResize: true, drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false, drawPartNames: !!partNames, drawMeasureNumbers: true,
         autoBeam: true, autoBeamOptions: { beam_rests: false, maintain_stem_directions: false }
       });
-      display.load(xml).then(function () { display.render(); }).catch(function (err) { container.textContent = "Could not draw the staff: " + err; });
+      display.load(xml).then(function () { display.render(); nameStaff(container, partNames); }).catch(function (err) { container.textContent = "Could not draw the staff: " + err; });
       return display;
     } catch (err) { container.textContent = "Could not draw the staff: " + err; return null; }
+  }
+  function nameStaff(container, parts) {
+    var r = current && current.result, title = $("r-title").textContent || "this sheet";
+    container.setAttribute("role", "img");
+    container.setAttribute("aria-label", (parts ? "The parts of " : "Staff notation of ") + title + (r && r.key ? ", in " + r.key : "") +
+      (r && r.timeSignature ? ", " + r.timeSignature + " time" : "") + ". The Tonic Solfa tab has the same notes as text.");
   }
 
   // ── Downloads ────────────────────────────────────────────────────────────
@@ -3934,7 +4093,12 @@
       // An API from before the split still lists it in the main list; either way it is shown as one song.
       var single = opts.single && !isPro() ? ((all[2] || []).find(isSinglePlan) || plans.find(isSinglePlan) || null) : null;
       plans = plans.filter(function (x) { return !isSinglePlan(x); });
-      if (!plans.length && !single && !choirPlans.length) { grid.textContent = "No plan is available for your region yet."; return; }
+      if (!plans.length && !single && !choirPlans.length) {
+        grid.textContent = "No plan is available for your region yet. Email ";
+        var mail = document.createElement("a"); mail.href = "mailto:hello@notefusion.studio"; mail.textContent = "hello@notefusion.studio";
+        grid.appendChild(mail); grid.appendChild(document.createTextNode(" and we'll help you pay."));
+        return;
+      }
       var monthly = plans.find(function (x) { return !isYearly(x) && !isLifetimePlan(x); });
       // Naira opens on the monthly plan: ₦60,000 as the first price anyone sees reads as a wall, while
       // ₦7,500 a month is a decision. Elsewhere the yearly saving leads, as before.
@@ -4020,7 +4184,14 @@
       var foot = document.createElement("div"); foot.className = "pay-foot";
       foot.appendChild(payError); foot.appendChild(cta); foot.appendChild(fx); foot.appendChild(fine);
       grid.appendChild(options); grid.appendChild(foot);
-    }).catch(function () { grid.textContent = "Plans could not be loaded right now. Please try again in a moment."; });
+    }).catch(function () {
+      // A way to ask again where the plans should be, not only the words.
+      grid.textContent = "Plans could not be loaded right now. ";
+      var again = document.createElement("button");
+      again.type = "button"; again.className = "btn btn-ghost btn-sm"; again.textContent = "Try again";
+      again.addEventListener("click", function () { loadPlans(panel, grid, opts); });
+      grid.appendChild(again);
+    });
   }
 
   function money(plan) {
@@ -4045,7 +4216,12 @@
   function checkout(plan, btn) {
     btn.disabled = true;
     var label = btn.innerHTML;
+    // Started with no button on screen (the pricing page's plan, "What stopped you?"'s Try again), the wait is said in
+    // the plans dialog's reason line when it is open, else in the page's alert.
+    var note = null;
     if (btn.isConnected) btn.textContent = "Opening secure checkout…";
+    else if (!$("upgrade-panel").classList.contains("hidden")) { note = $("upgrade-reason"); $("upgrade-reason-text").textContent = "Opening secure checkout…"; show(note); }
+    else { note = $("app-alert"); alertIn(note, "info", "Opening secure checkout…"); }
     track("Checkout started", plan.id);
     request("/api/billing/checkout", { method: "POST", body: { planId: plan.id, client: "web" } })
       .then(function (session) {
@@ -4070,6 +4246,7 @@
       })
       .catch(function (err) {
         btn.innerHTML = label; // the page stays, so the button reads as it did (on success the page is leaving)
+        if (note) hide(note);
         // An earlier checkout turned out to be paid: nothing to buy, so this is the welcome, not an error.
         if (err instanceof ApiError && err.code === "BILLING_PAYMENT_ALREADY_RECEIVED") {
           var before = { wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null, single: isSinglePlan(plan), choir: isChoirPlan(plan) };

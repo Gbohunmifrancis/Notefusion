@@ -124,7 +124,8 @@ export function PendingSends({
 
 function Action({ label, onPress, styles, strong }: { label: string; onPress: () => void; styles: ReturnType<typeof makeStyles>; strong?: boolean }) {
   return (
-    <Touchable onPress={onPress} style={[styles.action, strong && styles.actionStrong]} radius={radii.pill} accessibilityLabel={label}>
+    // 34 px pills 8 apart: the slop takes them to 42 dp without moving them.
+    <Touchable onPress={onPress} style={[styles.action, strong && styles.actionStrong]} radius={radii.pill} hitSlop={4} accessibilityLabel={label}>
       <Text style={[styles.actionLabel, strong && styles.actionLabelStrong]}>{label}</Text>
     </Touchable>
   );
@@ -177,5 +178,6 @@ const makeStyles = (c: Palette) =>
     },
     actionStrong: { backgroundColor: c.accentSoft, borderColor: c.accentGlow },
     actionLabel: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted },
-    actionLabelStrong: { color: c.accent },
+    // Words on the blue tint take the notice blue: `accent` there was 4.07:1 in Day.
+    actionLabelStrong: { color: c.noticeText },
   });

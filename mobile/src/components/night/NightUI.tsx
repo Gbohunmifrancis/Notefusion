@@ -273,5 +273,5 @@ const styles = StyleSheet.create({
   errorLink: { fontSize: 13.5, lineHeight: 19, fontFamily: nightFonts.semibold, color: night.ice },
   or: { flexDirection: "row", alignItems: "center", gap: 12, marginVertical: 20 },
   orLine: { flex: 1, height: 1, backgroundColor: night.line },
-  orText: { fontSize: 13, fontFamily: nightFonts.regular, color: night.dim },
+  orText: { fontSize: 13, fontFamily: nightFonts.regular, color: night.faint },
 });
