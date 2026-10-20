@@ -43,7 +43,8 @@
   box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25); cursor: grab; outline: none; touch-action: none; z-index: 1;
 }
 .rp-handle::after { content: ""; position: absolute; inset: -10px; }
-.rp-handle:focus-visible { box-shadow: 0 0 0 5px var(--ls-focus), 0 2px 6px rgba(15, 23, 42, 0.25); }
+/* A solid ring as well as the soft halo: the halo alone (a 10-30% tint) all but vanished on the studio's blue. */
+.rp-handle:focus-visible { outline: 2px solid var(--ls-handle-ring); outline-offset: 3px; box-shadow: 0 0 0 5px var(--ls-focus), 0 2px 6px rgba(15, 23, 42, 0.25); }
 .is-dragging .rp-handle { cursor: grabbing; }
 .rp-scale { display: flex; justify-content: space-between; margin: 2px -10px 0; font-size: 0.72rem; font-variant-numeric: tabular-nums; color: var(--ls-muted); }
 
