@@ -541,7 +541,12 @@ export function PracticeScreen() {
                   <Button label={playful ? "Again!" : "Sing it again"} icon="mic" variant="secondary" onPress={() => void sing()} disabled={left === 0} />
                 ) : null}
 
-                {allowance ? <Text style={styles.allowance}>{allowanceLine(allowance)}</Text> : null}
+                {/* Marking takes up to a minute and the button shows only its spinner, so the line under it says so. */}
+                {phase === "grading" ? (
+                  <Text style={styles.allowance}>Marking your take, note by note. It can take up to a minute.</Text>
+                ) : allowance ? (
+                  <Text style={styles.allowance}>{allowanceLine(allowance)}</Text>
+                ) : null}
                 {error ? <ProblemNote>{error}</ProblemNote> : null}
                 {error === MIC_REFUSED && micBlocked ? (
                   <Button
