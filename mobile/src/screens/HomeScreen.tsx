@@ -605,7 +605,8 @@ export function HomeScreen({ navigation }: Props) {
                 }}
                 style={[styles.recentRow, sheetActions.actionsFor?.id === item.id && styles.recentRowActive]}
                 radius={radii.md}
-                accessibilityLabel={`Open ${item.title}`}
+                // The dot is inside the row, so its words go in the row's label (as the Library's rows do).
+                accessibilityLabel={`Open ${item.title}${doubtful ? `, ${confidenceA11y(item.overallConfidence)}` : ''}`}
               >
                 <View style={styles.dohTile}>
                   <Text style={styles.dohLetter} numberOfLines={1}>
@@ -631,7 +632,7 @@ export function HomeScreen({ navigation }: Props) {
                 </View>
 
                 {doubtful ? (
-                  <View style={styles.score} accessibilityLabel={confidenceA11y(item.overallConfidence)}>
+                  <View style={styles.score}>
                     <View style={[styles.scoreDot, { backgroundColor: tone }]} />
                   </View>
                 ) : null}
