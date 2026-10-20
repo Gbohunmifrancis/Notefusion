@@ -100,7 +100,7 @@ html { scroll-padding-top: 80px; }
 .sheet .cell { display: inline-block; min-width: 1.6em; margin-right: 1px; text-align: center; vertical-align: top; }
 .sheet .cell.hold { min-width: .95em; }
 .sheet .cell b { display: block; color: var(--page-navy); font-size: 16px; font-weight: 600; line-height: 1.5; }
-.sheet .cell i { display: block; min-height: 1.2em; color: var(--page-muted); font-family: var(--font-sans); font-size: 12px; font-style: normal; line-height: 1.5; }
+.sheet .cell i { display: block; min-height: 1.2em; color: var(--page-muted); font-family: var(--font-sans); font-size: 13px; font-style: normal; line-height: 1.5; }
 .sheet .om { font-size: .78em; font-weight: 700; }
 .sheet .om-low { vertical-align: -.18em; }
 .sheet .om-high { vertical-align: .32em; line-height: 0; }
