@@ -116,6 +116,9 @@ test("every page that carries the brand reads the switch, and the home page hold
   assert.match(home, /<section class="hero"[^>]*data-season-sky>/);
   assert.match(home, /<a class="season-line" href="\/hymns\/occasions\/christmas"[^>]*data-season-show="christmas" hidden>/);
   assert.match(home, /<a class="season-line" href="\/hymns\/occasions\/halloween"[^>]*data-season-show="halloween" hidden>[\s\S]*?i-ghost[\s\S]*?<strong>Spooky songs in tonic solfa<\/strong><span class="season-line-more">: the Mountain King, Bach's Toccata and more<\/span>/);
+  // The lines open the sample's column (board m-ux-medium W1b), never above the headline, so they push nothing down.
+  assert.match(home, /<div class="hero-sheet">\s*<a class="season-line"[^>]*data-season-show="christmas"[\s\S]*?<a class="season-line"[^>]*data-season-show="halloween"[^\n]*\n<!-- home-sheet:start -->/);
+  assert.doesNotMatch(home.slice(home.indexOf('<div class="hero-copy">'), home.indexOf('<div class="hero-sheet">')), /season-line/);
   assert.match(home, /<template id="season-sheet">[\s\S]*Silent Night[\s\S]*sample-staff-silent-night\.svg[\s\S]*<\/template>/);
   // The Mountain King is published (content/hymns/tunes/in-the-hall-of-the-mountain-king.json), so the build gives the
   // home page his first bar too.

@@ -129,7 +129,7 @@
   if (typeof document === "undefined" || !document.documentElement) return;
 
   // ── The page ────────────────────────────────────────────────────────────
-  var CSS = "/assets/season.css?v=2";
+  var CSS = "/assets/season.css?v=3";
   var NS = "http://www.w3.org/2000/svg";
   // The header's mark (not the footer's: one costume a screen), the web app's top bar and sidebar, and its home's big mark.
   var MARKS = ".site-header .site-brand-mark, .topbar .brand-mark, .side-head .brand-mark, .home-mark";
@@ -232,12 +232,16 @@
     link.addEventListener("load", function () {
       var costume = costumeOf(season);
       document.querySelectorAll(MARKS).forEach(function (mark) { dressMark(mark, costume); });
+      // This lands after the first paint, so the home hero's sample column first keeps the year-round sample's height:
+      // the season's line (at the top of the column) and its shorter sample fill room already there, and nothing moves.
+      var sheet = document.getElementById(SHEETS[season]), hero = document.querySelector(".hero-sheet");
+      var swap = sheet && hero && sheet.content ? hero.querySelector(".sheet") : null;
+      if (swap) hero.style.minHeight = hero.getBoundingClientRect().height + "px";
       document.querySelectorAll("[data-season-show]").forEach(function (el) {
         var only = el.getAttribute("data-season-show");
         if (!only || only === season) el.hidden = false;
       });
-      var sheet = document.getElementById(SHEETS[season]), hero = document.querySelector(".hero-sheet");
-      if (sheet && hero && sheet.content) { hero.innerHTML = ""; hero.appendChild(sheet.content.cloneNode(true)); }
+      if (swap) swap.parentNode.replaceChild(sheet.content.cloneNode(true), swap);
       if (reducedMotion()) return;
       document.querySelectorAll("[data-season-sky]").forEach(function (box, i) {
         if (season === "halloween") bats(box, 5 + i * 13); else snow(box, 7 + i * 13);
