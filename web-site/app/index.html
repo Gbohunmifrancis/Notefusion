@@ -497,7 +497,7 @@
       <div class="song p-song">
         <img id="p-thumb" alt="" class="hidden">
         <div>
-          <div class="title" id="p-title">Reading the link…</div>
+          <div class="title" id="p-title" role="heading" aria-level="1">Reading the link…</div>
           <div class="artist" id="p-artist"></div>
         </div>
       </div>
@@ -533,11 +533,12 @@
       <div class="result-top">
         <button class="btn btn-ghost btn-sm r-new" id="r-new" type="button"><svg class="ic"><use href="/assets/icons.svg#i-back"/></svg>New transcription</button>
       </div>
+      <!-- With a job or a sheet showing, the greeting (the page's h1) folds away, so its title is the page's heading. -->
       <div class="result-head">
         <div class="song">
           <img id="r-thumb" alt="" class="hidden">
           <div style="min-width:0">
-            <div class="title" id="r-title"></div>
+            <div class="title" id="r-title" role="heading" aria-level="1"></div>
             <div class="artist" id="r-artist"></div>
             <div class="credit" id="r-credit"></div>
             <div class="chips" id="r-chips"></div>
