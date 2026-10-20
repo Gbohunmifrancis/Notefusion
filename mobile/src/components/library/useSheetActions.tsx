@@ -117,8 +117,9 @@ export function useSheetActions({ items, setItems, reload, onDone, onDeleted }: 
       kind: "options",
       title: one ? one.title : `${targets.length} sheets`,
       message: "Move to a folder",
+      // Every folder: the options sheet scrolls once the list is longer than the screen.
       actions: [
-        ...folders.slice(0, 6).map((f) => ({
+        ...folders.map((f) => ({
           label: f,
           icon: "folder" as const,
           selected: targets.every((t) => t.folder === f),
