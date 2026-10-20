@@ -1,13 +1,15 @@
 /**
  * A practice mode's marked take (boards c-practice/6b, 6c): the server's score and its own summary, then the marks,
  * then what the take earned. Focused shows the number and each note's cents; Playful shows stars and a friendly word
- * and the notes coloured without numbers. Green is in tune, amber close, grey off (never red), dashed not heard.
+ * and the notes without numbers. Each mark has a shape as well as a colour (lib/markShape): ✓ in tune, ~ close, off struck
+ * through in grey (never red), dashed with – not heard.
  */
 
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import type { PracticeReward } from "../../api/types";
 import type { MarkTone } from "../../lib/practiceModes";
+import { markGlyph } from "../../lib/markShape";
 import { rewardMoment } from "../../lib/practiceProgress";
 import { playfulRewardLine, starsArt, starsFor, starWord } from "../../lib/practiceTrack";
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
@@ -80,7 +82,10 @@ export function ModeResult({
                 accessible
                 accessibilityLabel={`${m.text}: ${m.tone === "hit" ? "in tune" : m.tone === "near" ? "close" : m.tone === "off" ? "off" : "not heard"}${!playful && m.sub ? `, ${m.sub}` : ""}`}
               >
-                <Text style={[styles.markText, { color: toneText(m.tone) }, m.tone === "off" && styles.markOff]}>{m.text}</Text>
+                <Text style={[styles.markText, { color: toneText(m.tone) }, m.tone === "off" && styles.markOff]}>
+                  {m.text}
+                  {markGlyph(m.tone === "off" ? "wrong" : m.tone)}
+                </Text>
                 {!playful && m.sub ? <Text style={styles.markSub}>{m.sub}</Text> : null}
               </View>
             );

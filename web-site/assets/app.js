@@ -2951,7 +2951,7 @@
       var c = status === "missed" || cents == null ? null : Math.round(cents), small = document.createElement("small");
       small.textContent = status === "missed" ? "—" : c == null ? "" : (c > 0 ? "+" : "") + c;
       mk.appendChild(small);
-      if (c) said += ", " + Math.abs(c) + " cents " + (c > 0 ? "sharp" : "flat");
+      if (c) said += ", " + Math.abs(c) + (Math.abs(c) === 1 ? " cent " : " cents ") + (c > 0 ? "sharp" : "flat");
     }
     mk.setAttribute("role", "img"); mk.setAttribute("aria-label", said);
     return mk;

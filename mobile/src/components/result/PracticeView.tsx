@@ -36,6 +36,7 @@ import { logAnalyticsEvent } from "../../lib/analytics";
 import * as haptics from "../../lib/haptics";
 import { acknowledgeGrade } from "../../lib/practiceReward";
 import { rewardMoment } from "../../lib/practiceProgress";
+import { markGlyph } from "../../lib/markShape";
 import {
   bars as barStrip,
   gradeTarget,
@@ -379,9 +380,10 @@ export function PracticeView({
                           return (
                             <Text
                               key={x.i}
-                              style={m ? [styles.markNote, { color: statusColor(m.status) }, m.status === "missed" && styles.missed] : undefined}
+                              style={m ? [styles.markNote, { color: statusColor(m.status) }, m.status === "wrong" && styles.struck] : undefined}
                             >
                               {syl(x.note)}
+                              {m ? markGlyph(m.status) : ""}
                               {k < b.notes.length - 1 ? " " : ""}
                             </Text>
                           );
@@ -440,7 +442,7 @@ export function PracticeView({
                   ) : null}
                 </View>
               </View>
-              <Text style={styles.meta}>Marked on your part above: green in tune · amber close · grey off the note or not sung.</Text>
+              <Text style={styles.meta}>Marked on your part above: ✓ in tune · ~ close · struck through: off the note · – not sung.</Text>
               {rewardMoment(graded.grade.reward) ? (
                 <Text style={styles.earned}>{rewardMoment(graded.grade.reward)!.line}</Text>
               ) : null}
@@ -505,7 +507,7 @@ const makeStyles = (c: Palette) =>
     barNum: { fontFamily: fonts.semibold, fontSize: 10, color: c.textMuted },
     barNotes: { fontFamily: typography.mono.fontFamily, fontSize: 15, color: c.text, marginTop: 2 },
     markNote: { fontWeight: "700" },
-    missed: { textDecorationLine: "line-through" },
+    struck: { textDecorationLine: "line-through" },
     transport: { flexDirection: "row", gap: spacing.sm, marginTop: spacing.lg },
     transportBtn: { flex: 1 },
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.md },

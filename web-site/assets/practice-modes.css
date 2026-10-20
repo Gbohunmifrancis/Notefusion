@@ -77,6 +77,7 @@
 .pm-mark.hit { border-color: var(--pm-in-line); } .pm-mark.hit b { color: var(--success-text); }
 .pm-mark.near { border-color: var(--pm-close-line); } .pm-mark.near b { color: var(--pm-close); }
 .pm-mark.hit b::after { content: "✓"; margin-left: 2px; } .pm-mark.near b::after { content: "~"; margin-left: 2px; }
+.pm-mark.missed b::after { content: "–"; margin-left: 2px; }
 .pm-mark.off b { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1.5px; }
 .pm-mark.missed { border-style: dashed; } .pm-mark.missed b { color: var(--faint); }
 .pm-legend { margin: 0; font-size: 0.75rem; color: var(--muted); line-height: 1.45; }

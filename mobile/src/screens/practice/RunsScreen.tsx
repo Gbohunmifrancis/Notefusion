@@ -210,7 +210,7 @@ export function RunsScreen({ track }: { track: PracticeTrack | null }) {
                   summary={grade.summary}
                   sub={grade.score >= PASS_SCORE ? `Clean at ${step.percent}%` : `At ${step.percent}%`}
                   marks={noteMarks(grade.marks, sung.notes).map((m) => ({ key: m.index, text: m.text, sub: m.cents, tone: m.tone }))}
-                  legend={playful ? null : "Green in tune · amber close · grey off. Numbers are cents off."}
+                  legend={playful ? null : "✓ in tune · ~ close · struck through: off. Numbers are cents off."}
                   reward={grade.reward}
                   playful={playful}
                 >

@@ -126,7 +126,7 @@ export function RhythmScreen({ track }: { track: PracticeTrack | null }) {
                   score={grade.score}
                   summary={grade.summary}
                   marks={marks.map((m, i) => ({ key: m.index, text: String(m.index + 1), sub: m.tone === "missed" ? "—" : centsText(grade.rhythm!.claps[i]?.errorMs), tone: m.tone }))}
-                  legend={playful ? "Green in time · amber close · grey off" : "Green in time · amber close · grey off. Numbers are ms early (−) or late (+)."}
+                  legend={playful ? "✓ in time · ~ close · struck through: off" : "✓ in time · ~ close · struck through: off. Numbers are ms early (−) or late (+)."}
                   reward={grade.reward}
                   playful={playful}
                 >
