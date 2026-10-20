@@ -364,7 +364,10 @@ export function HymnsScreen() {
           </Touchable>
         )}
         ItemSeparatorComponent={grid ? undefined : () => <View style={styles.divider} />}
-        ListEmptyComponent={<Text style={styles.empty}>Nothing matches “{query.trim()}”.</Text>}
+        ListEmptyComponent={
+          // Without a query the list is empty only under a season filter (Spooky, All Saints) with nothing in it.
+          <Text style={styles.empty}>{query.trim() ? `Nothing matches “${query.trim()}”.` : "Nothing here yet."}</Text>
+        }
         ListFooterComponent={
           <View style={styles.footer}>
             <Text style={styles.footerText}>
