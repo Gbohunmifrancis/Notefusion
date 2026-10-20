@@ -30,7 +30,9 @@ const Tab = createBottomTabNavigator<TabParams>();
  * because a tuning fork or a hymnal alone does not say "Practice" or "Hymns". Our own glyphs (e-icons board 01):
  * a house, a stack of sheets with a note, the tuning fork (the flame is the streak's), an open hymnal. The active
  * tab is the same line in blue over a 20% wash, never a heavier glyph. The record button is the mark on its ink
- * circle, with a slow halo behind it ({@link RecordHalo}); it has no icon.
+ * circle, with a slow halo behind it ({@link RecordHalo}); it has no icon. On the Record tab it takes the selected
+ * look instead (board m-ux-medium P3d): the mark in link blue on a 20% wash inside a blue line, no glow, so it reads
+ * "you are here" and never as a second record button under the real one.
  */
 const CELLS: Record<TabName, { label: string; icon: IconName }> = {
   Home: { label: "Home", icon: "home" },
@@ -97,9 +99,9 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                 style={styles.tabItem}
               >
                 <View style={styles.centre}>
-                  <RecordHalo breathing={!focused} />
-                  <View style={styles.centerBtn}>
-                    <Mark height={26} />
+                  {focused ? null : <RecordHalo breathing />}
+                  <View style={[styles.centerBtn, focused && styles.centerBtnHere]}>
+                    <Mark height={26} color={focused ? colors.link : undefined} />
                   </View>
                 </View>
               </Touchable>
@@ -135,8 +137,8 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
 /**
  * The record button's halo (board a-core/05): a soft blue light behind it that swells and settles every 3.6 s,
  * on the breath Home's big mic shares (`lib/breath`). The button itself never moves or changes colour, so it
- * never reads as already recording. Night 0.08 → 0.26 at the core, Day 0.05 → 0.16, scale 0.96 → 1.04. It rests
- * on the Record tab; Reduce Motion holds it at 0.14 (Day 0.09). Opacity and scale only, on the native driver.
+ * never reads as already recording. Night 0.08 → 0.26 at the core, Day 0.05 → 0.16, scale 0.96 → 1.04. It is
+ * gone on the Record tab; Reduce Motion holds it at 0.14 (Day 0.09). Opacity and scale only, on the native driver.
  */
 function RecordHalo({ breathing }: { breathing: boolean }) {
   const colors = useColors();
@@ -252,5 +254,13 @@ const makeStyles = (c: Palette) =>
       shadowOpacity: 0.5,
       shadowRadius: 14,
       elevation: 10,
+    },
+    /** On the Record tab: the tabs' selected look, the brand blue's 20% wash inside its line, no glow. */
+    centerBtnHere: {
+      backgroundColor: c.purple + "33",
+      borderWidth: 1.5,
+      borderColor: c.accent,
+      shadowOpacity: 0,
+      elevation: 0,
     },
   });
