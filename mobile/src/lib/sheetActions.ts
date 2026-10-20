@@ -121,8 +121,8 @@ export function askToDelete(targets: readonly Sheet[], onDelete: () => void, { u
   showDialog({
     title: one ? `Delete “${one.title}”?` : `Delete ${targets.length} sheets?`,
     message: one
-      ? `It leaves your library on every device and its share link stops working.${final}`
-      : `They leave your library on every device and their share links stop working.${final}`,
+      ? `It leaves your Library on every device and its share link stops working.${final}`
+      : `They leave your Library on every device and their share links stop working.${final}`,
     actions: [
       { label: "Cancel", style: "cancel" },
       { label: "Delete", style: "destructive", onPress: onDelete },

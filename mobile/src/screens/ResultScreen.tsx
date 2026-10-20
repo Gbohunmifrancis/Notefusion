@@ -1047,7 +1047,7 @@ export function ResultScreen({ route, navigation }: Props) {
       showDialog({
         title: "Can't delete this note",
         message:
-          "A transcription needs at least one note. Correct its pitch instead.",
+          "A sheet needs at least one note. Correct its pitch instead.",
         icon: "problem",
       });
       return;
@@ -1767,7 +1767,7 @@ export function ResultScreen({ route, navigation }: Props) {
     showDialog({
       kind: "options",
       // The thing acted on is the title (board 7c).
-      title: shownTitle || "Transcription options",
+      title: shownTitle || "Sheet options",
       actions,
     });
   }
@@ -1983,7 +1983,7 @@ export function ResultScreen({ route, navigation }: Props) {
                   <Text style={styles.savedText}>Saved to Library · you can find it in the Library tab.</Text>
                 </View>
               ) : (
-                <Text style={styles.panelHint}>Give this transcription a name so you can find it later.</Text>
+                <Text style={styles.panelHint}>Give this sheet a name so you can find it later.</Text>
               )}
               <TextField
                 label="Title"
@@ -1993,7 +1993,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 onSubmitEditing={submitTitle}
                 returnKeyType="done"
                 autoCapitalize="sentences"
-                placeholder="Name this transcription…"
+                placeholder="Name this sheet…"
               />
               {savedId ? (
                 <Button
@@ -2131,7 +2131,7 @@ export function ResultScreen({ route, navigation }: Props) {
                   style={styles.chip}
                   radius={radii.pill}
                   onPress={() => chooseHymnbook(false)}
-                  accessibilityLabel={hymnAsk === "version" ? "Keep your transcription" : "Dismiss"}
+                  accessibilityLabel={hymnAsk === "version" ? "Keep your own version" : "Dismiss"}
                 >
                   <Text style={styles.chipText}>{hymnAsk === "version" ? "Keep mine" : "Dismiss"}</Text>
                 </Touchable>
@@ -2254,7 +2254,7 @@ export function ResultScreen({ route, navigation }: Props) {
               <Action icon="parts" label="SATB" active={panel === "parts"} onPress={() => togglePanel("parts")} />
               <Action icon="sing" label="Sing" active={panel === "sing"} onPress={() => togglePanel("sing")} />
               <Action icon="export" label="Export" active={panel === "export"} onPress={() => togglePanel("export")} />
-              <Action icon="more" label="More" onPress={openOptions} accessibilityLabel="Transcription options" />
+              <Action icon="more" label="More" onPress={openOptions} accessibilityLabel="Sheet options" />
             </View>
           )}
 
