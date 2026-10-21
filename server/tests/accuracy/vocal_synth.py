@@ -28,7 +28,7 @@ the render inputs, so the same case always produces the same samples.
 """
 
 import zlib
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -136,6 +136,7 @@ def render(
     tempo_bpm: int,
     options: VocalOptions = VocalOptions(),
     sr: int = SAMPLE_RATE,
+    clock: Callable[[float], float] | None = None,
 ) -> tuple[np.ndarray, list[RefNote]]:
     """Render ``notes`` as a voice, returning float64 audio and the ground truth.
 
@@ -143,12 +144,20 @@ def render(
     (a breath).  Consecutive sounding notes are sung legato — joined by a glide — in
     "hum" and "ah"; in "da" each one is re-articulated with a consonant gap and an
     amplitude dip, which is how the repeated-note problem is posed.
+
+    ``clock`` is where beat ``b`` of the line falls, in seconds from the start of the
+    render: a band that speeds up or slows down (``tests.accuracy.song_clock``).  Without
+    it every beat is ``60 / tempo_bpm`` long after ``options.lead_in_sec``, and the
+    samples are what they always were.
     """
     style = _STYLES[options.style]
     rng = np.random.default_rng(_seed(notes, tempo_bpm, options))
     beat_sec = 60.0 / float(tempo_bpm)
+    if clock is None:
+        def clock(b: float) -> float:
+            return options.lead_in_sec + b * beat_sec
     total_beats = sum(float(d) for _, d in notes)
-    total_sec = options.lead_in_sec + total_beats * beat_sec + options.tail_sec
+    total_sec = clock(total_beats) + options.tail_sec
     n_total = int(round(total_sec * sr))
 
     # ── 1. Score → per-sample target pitch, voicing and ground truth ─────────
@@ -161,8 +170,8 @@ def render(
     previous_voiced = False
     for pitch, dur_beats in notes:
         dur_beats = float(dur_beats)
-        start = int(round((options.lead_in_sec + cursor * beat_sec) * sr))
-        end = min(int(round((options.lead_in_sec + (cursor + dur_beats) * beat_sec) * sr)), n_total)
+        start = int(round(clock(cursor) * sr))
+        end = min(int(round(clock(cursor + dur_beats) * sr)), n_total)
         cursor += dur_beats
         if pitch is None or end <= start:
             previous_voiced = False
