@@ -49,8 +49,11 @@ internal static class OfferFixtures
         string template = OfferTemplates.Halloween,
         DateTime? start = null,
         DateOnly? lastDay = null,
-        string? key = null)
+        string? key = null,
+        bool seasonOn = true)
     {
+        if (seasonOn)
+            Season(h, template, on: true);
         var t = OfferTemplates.Find(template)!;
         var day = lastDay ?? LastDay;
         var offer = Offer.Create(
@@ -61,6 +64,19 @@ internal static class OfferFixtures
         h.Db.Offers.Add(offer);
         h.Db.SaveChanges();
         return offer;
+    }
+
+    /// <summary>The offer's season (Feature flags) on or off for everyone; an offer shows only while its season is on.</summary>
+    public static void Season(TestHarness h, string template, bool on)
+    {
+        var flag = h.Db.FeatureFlags.FirstOrDefault(f => f.Key == template);
+        if (flag is null)
+        {
+            flag = FeatureFlag.Create(template, autoOffAtUtc: null, Start.AddDays(-30));
+            h.Db.FeatureFlags.Add(flag);
+        }
+        flag.Set(on, adminPreview: false, autoOffAtUtc: null, Guid.NewGuid(), "francis@notefusion.studio", Start.AddDays(-30));
+        h.Db.SaveChanges();
     }
 
     /// <summary>A verified account in <paramref name="country"/> (null: unknown), in <paramref name="zone"/> when given.</summary>

@@ -121,6 +121,32 @@ public class OfferPricingAndCheckoutTests
     }
 
     [Fact]
+    public async Task With_its_season_switched_off_the_offer_shows_nowhere_and_checkout_charges_the_usual_price()
+    {
+        // The Halloween offer belongs to the Halloween season: switching the season off in Feature flags takes the
+        // banner, the offer prices and the offer's checkout price with it, and switching it back on brings them back.
+        using var h = new TestHarness(Midweek);
+        var plans = AddPlans(h);
+        var offer = AddOffer(h);
+        var grace = Account(h, "grace@example.com");
+        var gateway = new FakeGateway();
+        Assert.NotNull((await Current(h, grace)).Offer);
+
+        Season(h, offer.Template, on: false);
+        Assert.Null((await Current(h, null)).Offer);
+        var linked = await Current(h, grace, key: offer.Key);
+        Assert.Null(linked.Offer);
+        Assert.Equal(new EndedOfferDto("halloween-2026", "Halloween offer"), linked.Ended);
+
+        var refused = await Checkout(h, grace, gateway, new InitiateCheckoutCommand(plans.Monthly.Id, "web", "halloween-2026"));
+        Assert.Equal("BILLING_OFFER_ENDED", refused.Error.Code);
+        Assert.Empty(gateway.Initiated);
+
+        Season(h, offer.Template, on: true);
+        Assert.Equal(new long[] { 699, 5_500 }, (await Current(h, grace)).Offer!.Plans.Select(p => p.OfferAmountMinor));
+    }
+
+    [Fact]
     public async Task A_link_to_an_offer_that_has_ended_where_they_are_says_so()
     {
         using var h = new TestHarness(new DateTime(2026, 10, 31, 12, 0, 0, DateTimeKind.Utc));

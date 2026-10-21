@@ -55,7 +55,7 @@ export function ConsoleLock() {
   );
 }
 
-/** Locks the console after 5 minutes without a key, click, scroll or touch, and ends its pass. */
+/** Locks the console after an hour without a key, click, scroll or touch, and ends its pass. */
 function useIdleLock() {
   useEffect(() => {
     let last = Date.now();
@@ -130,7 +130,7 @@ function LockScreen({ open, reason }: { open: boolean; reason: LockReason }) {
   const byPasskey = check.method === "passkey";
   const intro =
     reason === "away"
-      ? "You were away for 5 minutes. Confirm it’s you to carry on where you left off."
+      ? "You were away for an hour. Confirm it’s you to carry on where you left off."
       : "Confirm it’s you to carry on where you left off.";
 
   return (

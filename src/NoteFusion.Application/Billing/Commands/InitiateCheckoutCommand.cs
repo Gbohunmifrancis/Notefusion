@@ -189,7 +189,8 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         if (offer is not null)
         {
             var zone = OfferWindow.Resolve(user.TimeZone, _timeZone?.Current);
-            if (!OfferWindow.IsLiveFor(offer, zone, _clock.UtcNow) || !OfferPlans.Includes(offer, plan))
+            if (!OfferWindow.IsLiveFor(offer, zone, _clock.UtcNow) || !OfferPlans.Includes(offer, plan)
+                || !await OfferSeason.IsOnAsync(_db, offer, _clock.UtcNow, ct))
                 return OfferErrors.CheckoutOfferEnded(OfferErrors.LabelFor(offer.Template));
             amountMinor = OfferPricing.Price(plan.AmountMinor, offer.PercentOff);
         }

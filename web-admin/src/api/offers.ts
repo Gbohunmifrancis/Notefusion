@@ -78,6 +78,8 @@ export interface AdminOffer {
   /** The creating admin's email. */
   createdBy: string | null;
   createdAtUtc: string;
+  /** Whether its season (Feature flags) is on for everyone; while it is off the offer shows nowhere and its email waits. */
+  seasonOn: boolean;
 }
 
 /** A template's defaults for the year ahead, for "New offer". */

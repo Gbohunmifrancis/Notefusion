@@ -156,6 +156,23 @@ public class AdminOfferTests
     }
 
     [Fact]
+    public async Task The_console_is_told_when_an_offer_is_hidden_because_its_season_is_off()
+    {
+        using var h = new TestHarness(Today);
+        AddPlans(h);
+        var admin = AdminAccount(h);
+        var offer = (await Create(h, admin, new CreateOfferCommand("halloween"))).Value;
+        Assert.False(offer.SeasonOn); // no Halloween season switched on yet
+
+        Season(h, "halloween", on: true);
+        Assert.True((await List(h)).Single().SeasonOn);
+        Assert.True((await Enable(h, admin, offer.Id, true)).Value.SeasonOn);
+
+        Season(h, "halloween", on: false);
+        Assert.False((await List(h)).Single().SeasonOn);
+    }
+
+    [Fact]
     public async Task The_key_follows_the_template_until_anything_is_sent()
     {
         using var h = new TestHarness(Today);

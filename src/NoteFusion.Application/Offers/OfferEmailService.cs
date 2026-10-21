@@ -77,7 +77,8 @@ public sealed class OfferEmailService
                 await CloseQueueAsync(offer.Id, ct);
                 continue;
             }
-            if (!offer.Enabled || offer.SendPaused || !offer.HasStarted(now))
+            // Off, paused, not started or its season off: the queue waits, no try spent.
+            if (!offer.Enabled || offer.SendPaused || !offer.HasStarted(now) || !await OfferSeason.IsOnAsync(_db, offer, now, ct))
                 continue;
 
             var (count, stop) = await SendQueueAsync(offer, budget - sent, ct);

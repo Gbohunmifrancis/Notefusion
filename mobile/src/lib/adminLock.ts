@@ -3,13 +3,13 @@
  * the key behind the fingerprint, the app's comings and goings, the codes — is `lib/adminLockRuntime.ts`.
  *
  * Admin opens only with a pass the server gives for this phone's key (read with a strong fingerprint or face, never the
- * phone's PIN) or, on a phone with no such sensor, the password and an emailed code. It locks again after 5 minutes
- * without a tap, 5 minutes away, on sign-out and on an account change; leaving it within 5 minutes and coming back finds
+ * phone's PIN) or, on a phone with no such sensor, the password and an emailed code. It locks again after an hour
+ * without a tap, an hour away, on sign-out and on an account change; leaving it within the hour and coming back finds
  * it where it was. Suspend, End subscription, Revoke Pro, Change role and any feature-flag change ask again.
  */
 
 /** Away this long (the app in the background), Admin locks. */
-export const RELOCK_AFTER_MS = 5 * 60 * 1000;
+export const RELOCK_AFTER_MS = 60 * 60 * 1000;
 
 export interface LockState {
   /** When the lock last opened; null while locked. */
@@ -42,14 +42,14 @@ export function lockReducer(state: LockState, event: LockEvent): LockState {
   }
 }
 
-/** Whether Admin is open at `now`: unlocked, and not away for 5 minutes or more. */
+/** Whether Admin is open at `now`: unlocked, and not away for an hour or more. */
 export function isUnlocked(state: LockState, now: number): boolean {
   if (state.unlockedAt === null) return false;
   return state.awayAt === null || now - state.awayAt < RELOCK_AFTER_MS;
 }
 
-/** Admin on screen this long without a tap, it locks: the server's pass ends after the same 5 minutes idle. */
-export const IDLE_LOCK_MS = 5 * 60 * 1000;
+/** Admin on screen this long without a tap, it locks: the server's pass ends after the same hour idle. */
+export const IDLE_LOCK_MS = 60 * 60 * 1000;
 
 /** Whether Admin has gone untouched long enough to lock. */
 export function idleExpired(lastTouchAt: number, now: number): boolean {
@@ -111,7 +111,7 @@ export function lockedLine(method: LockMethod): string {
 export function lockedFootnote(method: LockMethod): string {
   switch (method) {
     case "biometric":
-      return "Fingerprint or face only, never the phone's PIN. Locks after 5 minutes without a tap or 5 minutes away, and when you sign out.";
+      return "Fingerprint or face only, never the phone's PIN. Locks after an hour without a tap or an hour away, and when you sign out.";
     case "setup":
       return "Only this phone's fingerprint or face can use the key it makes. Adding a fingerprint to the phone later wipes it.";
     case "rekey":

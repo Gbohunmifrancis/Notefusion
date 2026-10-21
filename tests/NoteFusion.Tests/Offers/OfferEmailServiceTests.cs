@@ -165,6 +165,11 @@ public class OfferEmailServiceTests
 
         offer.SetEnabled(true, Midweek);
         h.Db.SaveChanges();
+        Season(h, offer.Template, on: false); // the Halloween season switched off in Feature flags
+        Assert.Equal(0, await Run(h));
+        Assert.Equal(0, h.Db.OfferEmails.Single().Attempts);
+
+        Season(h, offer.Template, on: true);
         Assert.Equal(1, await Run(h));
     }
 

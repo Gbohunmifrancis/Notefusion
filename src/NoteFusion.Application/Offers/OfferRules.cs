@@ -1,5 +1,7 @@
 using System.Security.Cryptography;
 using NoteFusion.Application.Billing;
+using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Flags;
 using NoteFusion.Application.Practice;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Entities.Billing;
@@ -87,6 +89,17 @@ public static class OfferWindow
     public static DateOnly UkDate(DateTime utc) => PracticeTime.LocalDate(utc, DefaultZone);
 }
 
+
+/// <summary>
+/// An offer belongs to its season: the Halloween offer shows only while the Halloween season is on for everyone (Feature
+/// flags), the Christmas one with Christmas. Switching the season off takes the offer's banner, prices, checkout price and
+/// emails with it, as switching the offer itself off does; switching it back on brings them back while the offer runs.
+/// </summary>
+public static class OfferSeason
+{
+    public static Task<bool> IsOnAsync(IApplicationDbContext db, Offer offer, DateTime utcNow, CancellationToken ct)
+        => FeatureFlags.IsOnForEveryoneAsync(db, utcNow, offer.Template, ct);
+}
 /// <summary>Which plans an offer lowers: Pro Monthly and Pro Yearly in dollars (standard and regional), never naira, choir or one song.</summary>
 public static class OfferPlans
 {

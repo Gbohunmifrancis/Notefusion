@@ -23,7 +23,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   any non-app token (`AdminPhoneLock__EnforceConsole`, default on; the phone's own is `__Enforce`); a console sign-in
   hands an Admin the first pass in that header (CORS-exposed), and `/api/admin/console-lock` opens a fresh one with one
   of the admin's own passkeys (challenge kind `Unlock`, bound to them) or the password (the sign-in lockout's count).
-  web-admin `lib/adminLock` keeps the pass in memory only, locks after 5 min idle, and confirms Suspend, End
+  web-admin `lib/adminLock` keeps the pass in memory only, locks after an hour idle (the server's pass: an hour idle, an hour at most), and confirms Suspend, End
   subscription, Revoke Pro, Change role, flags and adding/removing a passkey (`[FreshPhoneUnlock]`).
   Web push (the web app with its tab closed): `WebPushSubscription` rows (unique endpoint, known push services only,
   `/api/push/web/key|subscriptions`), sent beside the Expo push by `NotifyTranscriptionReadyCommand` via `WebPushSender`
@@ -238,7 +238,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `admin.notefusion.studio/<path>`, whose `/payments` and `/payments/{id}` are the same Payments). Admin palette
   `adminDark`/`adminLight`; red only as a status pill or a destructive word. The lock (pure `lib/adminLock`,
   `lib/adminLockRuntime`): expo-local-authentication (biometrics or the phone's PIN; a phone with no screen lock types the
-  account password, `POST /api/admin/lock/password`) on the way in, again after 5 min away or a sign-out, and again
+  account password, `POST /api/admin/lock/password`) on the way in, again after an hour away or idle or a sign-out, and again
   before Suspend, End subscription, Revoke Pro, Change role or any flag change; expo-screen-capture keeps Admin out of
   screenshots and Recents; what Admin reads stays in memory (`lib/adminCache`) and is dropped when it locks.
   **Payment alerts**: `PaymentFulfillment` stages an `AdminPaymentAlert` (unique per payment) beside the ledger credit;
@@ -556,7 +556,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Pro price on the web only — dollar plans (standard and regional), never naira, choir, one song or Google Play.
   `OfferPricing` rounds down to the plan's own ending ($9.99→$6.99, $79→$55); `OfferWindow` ends it at midnight after
   `LastDay` in each person's own zone (`users.TimeZone`, a visitor's `X-Time-Zone`, else London; capped at UTC−12), one
-  enabled offer at a time. `GET /api/offers/current` (anonymous too) is what the clients read; checkout takes `offerKey`
+  enabled offer at a time, and only while its season flag (the template's key) is on for everyone (`OfferSeason`: off, it
+  shows nowhere, checkout charges the usual price, its email waits and a link says it has ended; the console says why). `GET /api/offers/current` (anonymous too) is what the clients read; checkout takes `offerKey`
   and stamps `PaymentTransaction.OfferId` (refused `BILLING_OFFER_ENDED`; a session opened before the end is handed back
   for the reuse window, and a payment is verified against its own amount). Web: `assets/offer.js`/`.css`, loaded only
   while one runs: /app's Home strip with the countdown for free accounts, `?offer=&m=` (click → `POST /api/offers/click`,
