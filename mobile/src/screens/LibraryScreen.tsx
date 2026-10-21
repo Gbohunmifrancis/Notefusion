@@ -33,11 +33,12 @@ import { useSheetActions } from "../components/library/useSheetActions";
 import { withoutHeldDeletes } from "../lib/sheetActions";
 import { useSubscription } from "../lib/subscription";
 import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLibrary";
-import { resultFromSaved } from "../lib/openSheet";
+import { exampleResult, resultFromSaved } from "../lib/openSheet";
 import { useOpening } from "../lib/useOpening";
 import { onTakeChange, removeTake, retryTake, useOutbox, useSendProgress } from "../lib/outbox";
 import { REFRESH_FAILED, isUnopened } from "../lib/savedSheet";
-import { libraryRowLine, parseUtc } from "../lib/sheetMeta";
+import { parseUtc, sheetCount } from "../lib/sheetMeta";
+import { EXAMPLE_HYMN, offerExample } from "../lib/exampleSheet";
 import { matchesWords } from "../lib/hymnPack";
 import { useReachability } from "../lib/connectivity";
 import { isNetworkCode } from "../lib/reachability";
@@ -45,21 +46,19 @@ import { openTranscriptionFromNotification } from "../lib/notificationLink";
 import { PendingSends } from "../components/library/PendingSends";
 import { useSongOnItsWay } from "../lib/useSongOnItsWay";
 import { useAuth } from "../lib/auth";
-import { HEADER_AVATAR, HeaderAvatar } from "../components/HeaderAvatar";
+import { TabHeader } from "../components/TabHeader";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import type { SavedTranscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
-/** The circular header buttons, and the size the search pill grows from. */
+/** The round search button, and the size the search pill grows from. */
 const ICON_BTN = 40;
 /** The open search pill, and every target in the header's rows: 44 px to a thumb (board m-ux-medium P2d). */
 const TARGET = 44;
-/** The title row the search pill is centred in. */
-const TITLE_ROW = 48;
 
 /**
- * LibraryScreen — the night board's "06 · Library": a big title with search and new,
- * folders as text tabs, the folder's one share link as a banner, and hairline rows
+ * LibraryScreen — the night board's "06 · Library": every tab's header (the count over "Library", search, the
+ * avatar; board n-ux-low Q4d), folders as text tabs, the folder's one share link as a banner, and hairline rows
  * that each read by their doh. Each row's ⋯ opens its actions, as on Home (board m-ux-medium P2c); a long press, or
  * the actions' "Select several", starts select mode, and the floating bar then deletes, files or shares the chosen
  * sheets.
@@ -201,18 +200,30 @@ export function LibraryScreen() {
 
   const selectedItems = items.filter((i) => selected.has(i.id));
 
-  // ── Search: the round icon grows into a pill across the title row ─────────
+  // ── Search: the round icon grows into a pill across the tab's header ──────
+  // The header is every tab's (TabHeader, board n-ux-low Q4d); the search button's place in it is measured, so the
+  // pill sits exactly on it closed and spans the header's row open.
   const [rowWidth, setRowWidth] = useState(0);
+  const headerRef = useRef<View>(null);
+  const searchSlotRef = useRef<View>(null);
+  const [searchSlot, setSearchSlot] = useState<{ x: number; y: number } | null>(null);
+  function measureSearchSlot() {
+    const header = headerRef.current;
+    if (!header) return;
+    searchSlotRef.current?.measureLayout(header, (x, y) => setSearchSlot({ x, y }), () => undefined);
+  }
+  const slotX = searchSlot?.x ?? 0;
+  const slotY = searchSlot?.y ?? 0;
   const searchProgress = useSharedValue(0);
   useEffect(() => {
     searchProgress.value = withTiming(searchOpen ? 1 : 0, { duration: 220, easing: Easing.out(Easing.cubic) });
   }, [searchOpen, searchProgress]);
   const pillStyle = useAnimatedStyle(() => ({
     width: interpolate(searchProgress.value, [0, 1], [ICON_BTN, Math.max(rowWidth, ICON_BTN)]),
-    // Closed, the pill is the search button beside "+" (and the avatar after it); open, it spans the row, 44 tall.
-    right: interpolate(searchProgress.value, [0, 1], [ICON_BTN + HEADER_AVATAR + 2 * spacing.sm, 0]),
+    // Closed, the pill is the search button beside the avatar; open, it spans the row, 44 tall, on the same centre.
+    left: interpolate(searchProgress.value, [0, 1], [slotX, 0]),
     height: interpolate(searchProgress.value, [0, 1], [ICON_BTN, TARGET]),
-    top: interpolate(searchProgress.value, [0, 1], [(TITLE_ROW - ICON_BTN) / 2, (TITLE_ROW - TARGET) / 2]),
+    top: interpolate(searchProgress.value, [0, 1], [slotY, slotY + (ICON_BTN - TARGET) / 2]),
     borderRadius: interpolate(searchProgress.value, [0, 1], [ICON_BTN / 2, TARGET / 2]),
   }));
   const fadeWithSearch = useAnimatedStyle(() => ({ opacity: 1 - searchProgress.value }));
@@ -312,61 +323,64 @@ export function LibraryScreen() {
     });
   }
 
-  function subtitleFor(item: SavedTranscription) {
-    // On "All" the folder says where a sheet lives; inside a folder it would repeat the tab.
-    return libraryRowLine(item, folder === null, new Date());
-  }
-
   const folderLink = folder ? folderLinks[folder] : undefined;
+
+  /** "No sheets yet" said only once the list has answered: "Your sheets" while it is read, or when it failed. */
+  const countLine = loading || (loadError && items.length === 0) ? "Your sheets" : sheetCount(items.length);
+
+  /** "See an example" (board n-ux-low Q4j): the bundled Amazing Grace on Result, not filed and nothing spent. */
+  function openExample() {
+    nav.navigate("Result", { result: exampleResult(), title: EXAMPLE_HYMN.title, example: true });
+  }
 
   const header = (
     <View style={styles.headerArea}>
-      {/* ── Title row: "Library", then search and new. Search grows over the row. ── */}
-      <View style={styles.titleRow} onLayout={(e) => setRowWidth(e.nativeEvent.layout.width)}>
-        <Animated.Text style={[styles.pageTitle, fadeWithSearch]} accessibilityRole="header">
-          Library
-        </Animated.Text>
-        <Animated.View style={[styles.titleActions, fadeWithSearch]} pointerEvents={searchOpen ? "none" : "auto"}>
-          <Touchable
-            onPress={() => nav.navigate("Tabs", { screen: "Record" })}
-            style={styles.iconBtn}
-            radius={radii.pill}
-            // 40 px circles: the slop makes them 48 dp without moving them.
-            hitSlop={4}
-            accessibilityLabel="Record a new sheet"
-          >
-            <Icon name="add" size={22} color={colors.text} />
-          </Touchable>
-          {/* The account, as on every tab: opens Profile. */}
-          <HeaderAvatar />
+      {/* ── Every tab's header: the count over "Library", search, the avatar. Search grows over the row. Record is
+          the tab bar's centre, one tap away, so the header has no "+" of its own (board n-ux-low Q4h). ── */}
+      <View
+        ref={headerRef}
+        collapsable={false}
+        onLayout={(e) => {
+          setRowWidth(e.nativeEvent.layout.width);
+          // The header grew or narrowed (larger text, a turned phone): the search button's place moved with it.
+          measureSearchSlot();
+        }}
+      >
+        <Animated.View style={fadeWithSearch} pointerEvents={searchOpen ? "none" : "box-none"}>
+          <TabHeader title="Library" eyebrow={countLine}>
+            {/* The search button's place: the pill below sits on it. */}
+            <View ref={searchSlotRef} collapsable={false} style={styles.searchSlot} onLayout={measureSearchSlot} />
+          </TabHeader>
         </Animated.View>
-        <Animated.View style={[styles.searchPill, pillStyle]}>
-          {searchOpen ? (
-            <>
-              <Icon name="search" size={18} color={colors.textMuted} />
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search your sheets"
-                accessibilityLabel="Search your sheets"
-                placeholderTextColor={colors.textFaint}
-                value={query}
-                onChangeText={setQuery}
-                autoFocus
-                autoCorrect={false}
-                returnKeyType="search"
-                textAlignVertical="center"
-              />
-              {/* A 44 px button at the pill's end, not an icon leaning on slop past the row. */}
-              <Touchable onPress={closeSearch} style={styles.searchClear} ripple="borderless" accessibilityLabel="Close search">
-                <Icon name="clear" size={18} color={colors.textFaint} />
+        {searchSlot ? (
+          <Animated.View style={[styles.searchPill, pillStyle]}>
+            {searchOpen ? (
+              <>
+                <Icon name="search" size={18} color={colors.textMuted} />
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder="Search your sheets"
+                  accessibilityLabel="Search your sheets"
+                  placeholderTextColor={colors.textFaint}
+                  value={query}
+                  onChangeText={setQuery}
+                  autoFocus
+                  autoCorrect={false}
+                  returnKeyType="search"
+                  textAlignVertical="center"
+                />
+                {/* A 44 px button at the pill's end, not an icon leaning on slop past the row. */}
+                <Touchable onPress={closeSearch} style={styles.searchClear} ripple="borderless" accessibilityLabel="Close search">
+                  <Icon name="clear" size={18} color={colors.textFaint} />
+                </Touchable>
+              </>
+            ) : (
+              <Touchable onPress={() => setSearchOpen(true)} style={styles.searchBtn} radius={radii.pill} hitSlop={4} accessibilityLabel="Search library">
+                <Icon name="search" size={20} color={colors.text} />
               </Touchable>
-            </>
-          ) : (
-            <Touchable onPress={() => setSearchOpen(true)} style={styles.searchBtn} radius={radii.pill} hitSlop={4} accessibilityLabel="Search library">
-              <Icon name="search" size={20} color={colors.text} />
-            </Touchable>
-          )}
-        </Animated.View>
+            )}
+          </Animated.View>
+        ) : null}
       </View>
 
       {/* ── Folders as text tabs, counts set small beside each name ───────────── */}
@@ -502,12 +516,6 @@ export function LibraryScreen() {
     </View>
   );
 
-  const emptyAction = (label: string, onPress: () => void) => (
-    <Touchable onPress={onPress} style={styles.emptyBtn} radius={radii.pill} accessibilityLabel={label}>
-      <Text style={styles.emptyBtnLabel}>{label}</Text>
-    </Touchable>
-  );
-
   const empty = loading ? (
     <View>
       {[0, 1, 2, 3, 4].map((i) => (
@@ -521,10 +529,14 @@ export function LibraryScreen() {
     <View style={styles.emptyContainer}>
       <Mark height={40} color={colors.textFaint} />
       <ProblemNote center>{loadError}</ProblemNote>
-      {emptyAction("Try again", () => {
-        setLoading(true);
-        load();
-      })}
+      <Button
+        label="Try again"
+        variant="secondary"
+        onPress={() => {
+          setLoading(true);
+          load();
+        }}
+      />
     </View>
   ) : (
     // Nothing here yet: Doh holding a blank sheet, a tip when tapped (board c-practice/8b).
@@ -545,13 +557,19 @@ export function LibraryScreen() {
       ) : folder !== null ? (
         <Button label="Show all" variant="secondary" onPress={() => setFolder(null)} style={styles.emptyButton} />
       ) : (
-        <Button
-          label="Record a tune"
-          variant="secondary"
-          icon="mic"
-          onPress={() => nav.navigate("Tabs", { screen: "Record" })}
-          style={styles.emptyButton}
-        />
+        // The way on from an empty Library: the screen's one primary (board n-ux-low Q4i), and an example to look at
+        // until the first sheet exists (Q4j).
+        <>
+          <Button
+            label="Record a tune"
+            icon="mic"
+            onPress={() => nav.navigate("Tabs", { screen: "Record" })}
+            style={styles.emptyButton}
+          />
+          {offerExample(items.length) ? (
+            <Button label="See an example" variant="text" size="sm" onPress={openExample} style={styles.exampleButton} />
+          ) : null}
+        </>
       )}
     </View>
   );
@@ -584,12 +602,13 @@ export function LibraryScreen() {
           <FoldAway {...actions.foldProps(item.id)}>
             <LibraryRow
               item={item}
-              subtitle={subtitleFor(item)}
+              withFolder={folder === null}
               selecting={selecting}
               selected={selected.has(item.id)}
               onPress={() => (selecting ? toggle(item) : void openItem(item))}
               onLongPress={() => startSelecting(item)}
               opening={opening.opening === item.id}
+              active={actions.actionsFor?.id === item.id}
               onMore={() => actions.openActions(item)}
               offline={
                 offline && !offlineCopies.cached.has(item.id)
@@ -628,40 +647,19 @@ const makeStyles = (c: Palette) =>
     listContentSelecting: {
       paddingBottom: 200,
     },
+    // The header sits where Practice's and Hymns' do (TabHeader's own margin above it).
     headerArea: {
-      paddingTop: 6,
       marginBottom: 6,
     },
 
-    // ── Title row ──────────────────────────────────────────────────────────────
-    titleRow: {
-      height: TITLE_ROW,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-    },
-    pageTitle: {
-      ...typography.display,
-      color: c.text,
-    },
-    titleActions: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing.sm,
-    },
-    iconBtn: {
+    // ── Search, in the tab's header ─────────────────────────────────────────────
+    /** The search button's place beside the avatar; the pill is drawn over it. */
+    searchSlot: {
       width: ICON_BTN,
       height: ICON_BTN,
-      borderRadius: ICON_BTN / 2,
-      backgroundColor: c.surfaceAlt,
-      borderWidth: 1,
-      borderColor: c.border,
-      alignItems: "center",
-      justifyContent: "center",
     },
     searchPill: {
       position: "absolute",
-      top: (TITLE_ROW - ICON_BTN) / 2,
       height: ICON_BTN,
       borderRadius: ICON_BTN / 2,
       backgroundColor: c.surfaceAlt,
@@ -699,10 +697,11 @@ const makeStyles = (c: Palette) =>
     },
 
     // ── Folder tabs ───────────────────────────────────────────────────────────
+    // 18 under the name, as under the old title: TabHeader keeps 16 below its row.
     tabsRow: {
       flexDirection: "row",
       alignItems: "center",
-      marginTop: 18,
+      marginTop: 2,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: c.border,
     },
@@ -863,19 +862,7 @@ const makeStyles = (c: Palette) =>
     emptyButton: {
       marginTop: 18,
     },
-    emptyBtn: {
-      height: 44,
-      paddingHorizontal: spacing.xl,
-      borderRadius: radii.pill,
-      backgroundColor: c.surfaceAlt,
-      borderWidth: 1,
-      borderColor: c.border,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    emptyBtnLabel: {
-      fontFamily: fonts.medium,
-      fontSize: 14,
-      color: c.text,
+    exampleButton: {
+      marginTop: spacing.xs,
     },
   });

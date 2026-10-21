@@ -24,6 +24,7 @@ import { Mark } from "../components/night/NightUI";
 import { GuestAccountCard } from "../components/GuestAccountCard";
 import { ProblemNote } from "../components/ProblemNote";
 import { GUEST_MAX_SECONDS } from "../lib/guestPreview";
+import { EXAMPLE_NOTICE, EXAMPLE_SUBTITLE } from "../lib/exampleSheet";
 import ScoreView, { type ScoreViewHandle } from "../components/ScoreView";
 import { SheetGrid, barOf } from "../components/result/SheetGrid";
 import { PlayerDock, DOCK_CLEARANCE } from "../components/result/PlayerDock";
@@ -253,13 +254,14 @@ export function ResultScreen({ route, navigation }: Props) {
     fresh,
     practise,
     guest,
+    example,
   } = route.params;
 
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const { isPro, known, subscription, refresh: refreshSubscription } = useSubscription();
-  /** A free account's one four-part harmony, until it is used; the API decides, this mirrors it. */
-  const freeHarmony = !isPro && !!subscription?.freeHarmonyAvailable;
+  /** A free account's one four-part harmony, until it is used; the API decides, this mirrors it. Never on the example. */
+  const freeHarmony = !isPro && !!subscription?.freeHarmonyAvailable && !example;
 
   /**
    * What Pro costs where a locked feature asks for it (board n-ux-low Q1h): the region's monthly plan, as the limit
@@ -1448,6 +1450,7 @@ export function ResultScreen({ route, navigation }: Props) {
   const unsavedChanges =
     !savedId &&
     !guest &&
+    !example &&
     (edited ||
       baseline.notes !== result.notes ||
       key !== result.key ||
@@ -1656,7 +1659,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   const hasScore = scoreXml.length > 0;
   /** A sheet not in the Library (deleted and opened again, or from before option A): one tap saves it as titled. */
-  const offerSave = !guest && !savedId;
+  const offerSave = !guest && !example && !savedId;
 
   const insets = useSafeAreaInsets();
   const shownTitle = committedTitle || title;
@@ -1948,7 +1951,7 @@ export function ResultScreen({ route, navigation }: Props) {
           {/* A guest's preview (board l-ux-high/07) is only read: × closes it, and nothing saves or shares. */}
           <View style={styles.topBar}>
             <IconButton icon={guest ? "close" : "back"} label={guest ? "Close" : "Go back"} onPress={goBack} />
-            {guest ? null : (
+            {guest || example ? null : (
               <View style={styles.topActions}>
                 {/* The link's one home (board n-ux-low Q1c): a shared sheet's Share offers it again or stops it. */}
                 <IconButton
@@ -1969,7 +1972,7 @@ export function ResultScreen({ route, navigation }: Props) {
           </View>
 
           {/* ── Title ───────────────────────────────────────────────────── */}
-          {guest ? (
+          {guest || example ? (
             <Text style={styles.title} accessibilityRole="header">
               {shownTitle}
             </Text>
@@ -1991,6 +1994,8 @@ export function ResultScreen({ route, navigation }: Props) {
           {/* What the take was; "saved" is said once, by the toast (board n-ux-low Q1c). */}
           {guest ? (
             <Text style={styles.subtitle}>{`${takeKind(result)} · ${key}`}</Text>
+          ) : example ? (
+            <Text style={styles.subtitle}>{EXAMPLE_SUBTITLE}</Text>
           ) : autoSaved && !result.source ? (
             <Text style={styles.subtitle}>{takeKind(result)}</Text>
           ) : subtitle ? (
@@ -2060,6 +2065,8 @@ export function ResultScreen({ route, navigation }: Props) {
             <Text style={styles.notice}>
               Free preview: the first {GUEST_MAX_SECONDS} seconds. Create a free account to keep the sheet.
             </Text>
+          ) : example ? (
+            <Text style={styles.notice}>{EXAMPLE_NOTICE}</Text>
           ) : result.source?.preview && result.source.notice ? (
             // A problem is the amber sign and plain words; blue is kept for information (board n-ux-low Q1d).
             <ProblemNote sentence={15} style={styles.problem}>{result.source.notice}</ProblemNote>
@@ -2280,8 +2287,11 @@ export function ResultScreen({ route, navigation }: Props) {
               <Action icon="lyrics" label="Lyrics" active={panel === "lyrics"} onPress={() => togglePanel("lyrics")} />
               <Action icon="parts" label="SATB" active={panel === "parts"} onPress={() => togglePanel("parts")} />
               <Action icon="sing" label="Sing" active={panel === "sing"} onPress={() => togglePanel("sing")} />
-              <Action icon="export" label="Export" active={panel === "export"} onPress={() => togglePanel("export")} />
-              <Action icon="more" label="More" onPress={openOptions} accessibilityLabel="Sheet options" />
+              {/* The example: no Export and no ⋯ (board n-ux-low Q4j). */}
+              {example ? null : (
+                <Action icon="export" label="Export" active={panel === "export"} onPress={() => togglePanel("export")} />
+              )}
+              {example ? null : <Action icon="more" label="More" onPress={openOptions} accessibilityLabel="Sheet options" />}
             </View>
           )}
 

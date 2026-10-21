@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { libraryRowLine, parseUtc, savedWhen, sheetMetaLine } from "./sheetMeta.ts";
+import { libraryRowLine, parseUtc, savedWhen, sheetCount, sheetMetaLine } from "./sheetMeta.ts";
 
 // Local dates: the line is read on the phone's calendar. 18 Oct 2026 is a Sunday.
 const now = new Date(2026, 9, 18, 9, 41);
@@ -27,6 +27,12 @@ test("a Library row's line: when, the folder on All only, the tempo in the same 
   assert.equal(libraryRowLine({ ...row, folder: null, createdAtUtc: new Date(2026, 9, 11, 10).toISOString() }, true, now), "11 Oct · 72 BPM");
   // A date with no zone is the API's UTC, read on the phone's calendar like the rest.
   assert.equal(libraryRowLine({ ...row, createdAtUtc: sunday.replace(/Z$/, "") }, false, now), "Today · 72 BPM");
+});
+
+test("the Library's count over its name", () => {
+  assert.equal(sheetCount(0), "No sheets yet");
+  assert.equal(sheetCount(1), "1 sheet");
+  assert.equal(sheetCount(12), "12 sheets");
 });
 
 test("the API's dates are UTC, with or without a zone", () => {
