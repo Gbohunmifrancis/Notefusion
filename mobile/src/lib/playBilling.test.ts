@@ -10,6 +10,7 @@ import {
   playFinePrint,
   playItemFor,
   playMemberState,
+  playStateLine,
   sellsOnPlay,
   type PlayProductLike,
 } from "./playBilling.ts";
@@ -106,4 +107,12 @@ test("the website's checkout stays until the server and Google Play are both rea
   assert.equal(sellsOnPlay(true, false, 3), false, "the server cannot confirm a Play purchase yet");
   assert.equal(sellsOnPlay(true, true, 0), false, "no products in the Play Console yet");
   assert.equal(sellsOnPlay(false, true, 3), false, "not Android");
+});
+
+test("the member hub says a Google Play membership's state and date in one line", () => {
+  assert.equal(playStateLine("renewing", "20 Oct 2027"), "Renews automatically · next charge 20 Oct 2027");
+  assert.equal(playStateLine("cancelled", "20 Oct 2027"), "Cancelled · Pro until 20 Oct 2027");
+  assert.equal(playStateLine("grace", "20 Oct 2027"), "Payment problem · Pro until 20 Oct 2027");
+  assert.equal(playStateLine("hold", "20 Oct 2027"), "Paused, payment needed", "on hold Pro is off: no date");
+  assert.equal(playStateLine("renewing", null), "Renews automatically");
 });

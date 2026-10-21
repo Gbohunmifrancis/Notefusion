@@ -53,6 +53,8 @@ export interface RowProps {
   iconNode?: React.ReactNode;
   /** The choir's violet tile and icon (share with your choir, My choir); every other tile is neutral. */
   choir?: boolean;
+  /** Pro's gold tile and crown (the member's plan on Upgrade), as violet is the choir's. */
+  pro?: boolean;
   /** A short line under the label, only where the row needs one. */
   hint?: string;
   /** Muted, on the right ("Grace Okafor", "7pm", "Always"). */
@@ -82,6 +84,7 @@ export function Row({
   icon,
   iconNode,
   choir = false,
+  pro = false,
   hint,
   value,
   chevron = false,
@@ -105,8 +108,8 @@ export function Row({
       {!first ? <View style={[styles.rule, hasTile ? styles.ruleInset : null]} /> : null}
       <View style={[styles.inner, dim && styles.dim]}>
         {hasTile ? (
-          <View style={[styles.tile, choir && { backgroundColor: c.choirSoft }]}>
-            {iconNode ?? <Icon name={icon!} size={18} color={choir ? c.choir : c.icon} />}
+          <View style={[styles.tile, choir && { backgroundColor: c.choirSoft }, pro && { backgroundColor: c.premiumSoft }]}>
+            {iconNode ?? <Icon name={icon!} size={18} color={choir ? c.choir : pro ? c.premiumDeep : c.icon} />}
           </View>
         ) : null}
         <View style={styles.text}>

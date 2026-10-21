@@ -8,7 +8,9 @@ import {
   nextAction,
   pathLine,
   resetTime,
+  unitBarFraction,
   unitFraction,
+  unitLine,
   nextLevelLine,
   reminderSlot,
   rewardEvents,
@@ -176,11 +178,27 @@ test("the path line names the grade, the unit and the drill, and says when the l
   assert.equal(pathLine(place({ unitIndex: 0 })), null);
 });
 
+test("beside the unit bar, the path line without the grade the eyebrow already says", () => {
+  assert.equal(unitLine(place()), "Unit 3 · 4 of 6");
+  assert.equal(unitLine(place({ adjustment: "easier" })), "Unit 3 · 4 of 6 · Easier");
+  assert.equal(unitLine(place({ adjustment: "harder", grade: "Advanced 1" })), "Unit 3 · 4 of 6 · Harder");
+  assert.equal(unitLine(place({ grade: "" })), null);
+  assert.equal(unitLine(place({ unitIndex: 0 })), null);
+});
+
 test("the unit bar fills with the drills behind the singer", () => {
   assert.equal(unitFraction(place({ drillIndex: 1, drillCount: 4 })), 0);
   assert.equal(unitFraction(place({ drillIndex: 3, drillCount: 4 })), 0.5);
   assert.equal(unitFraction(place({ drillIndex: 9, drillCount: 4 })), 1);
   assert.equal(unitFraction(place({ drillCount: 0 })), 0);
+});
+
+test("the phone's unit bar starts a tenth in for the drill in hand and fills the rest with the drills behind", () => {
+  assert.equal(unitBarFraction(place({ drillIndex: 1, drillCount: 4 })), 0.1);
+  assert.equal(unitBarFraction(place({ drillIndex: 3, drillCount: 4 })), 0.55);
+  assert.equal(unitBarFraction(place({ drillIndex: 4, drillCount: 6 })), 0.55);
+  assert.equal(unitBarFraction(place({ drillIndex: 9, drillCount: 4 })), 1);
+  assert.equal(unitBarFraction(place({ drillCount: 0 })), 0);
 });
 
 test("the main button moves on, or says try again when the path brings the same drill back", () => {

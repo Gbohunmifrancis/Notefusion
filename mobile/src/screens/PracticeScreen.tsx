@@ -22,7 +22,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Animated, Linking, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { AccessibilityInfo, Animated, Linking, Platform, RefreshControl, StyleSheet, Text, View, type ScrollView } from "react-native";
 import { Icon } from "../components/Icon";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -69,7 +69,8 @@ import {
   nextAction,
   nextLevelLine,
   pathLine,
-  unitFraction,
+  unitBarFraction,
+  unitLine,
   sortBadges,
   streakLabel,
   streakLine,
@@ -163,6 +164,13 @@ export function PracticeScreen() {
   // The drill on screen, read by `load`: a visit that brings a different drill clears the last one's marks.
   const drillRef = useRef<Drill | null>(null);
   drillRef.current = drill;
+
+  /** The hub's closing card takes the singer back up to the drill card (board n-ux-low Q2b e). */
+  const scrollRef = useRef<ScrollView | null>(null);
+  const drillY = useRef(0);
+  function toDrill() {
+    scrollRef.current?.scrollTo({ y: Math.max(0, drillY.current - spacing.md), animated: !reduceMotion });
+  }
 
   const load = useCallback(async () => {
     try {
@@ -490,6 +498,7 @@ export function PracticeScreen() {
     <View style={styles.flex}>
       <Screen
         scroll
+        scrollRef={scrollRef}
         contentStyle={styles.screen}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} colors={[colors.accent]} />}
       >
@@ -555,100 +564,109 @@ export function PracticeScreen() {
             {savingTrack && !showPicker ? (
               <DrillSkeleton styles={styles} />
             ) : drill && !showPicker ? (
-              <Card style={playful ? { ...styles.card, ...styles.cardPlayful } : styles.card}>
-                <Text style={[styles.eyebrow, playful && styles.eyebrowPlayful]}>
-                  {playful ? "Your singing game" : `Practice path · ${drill.levelName}`}
-                </Text>
-                <Text style={[styles.cardTitle, playful && styles.cardTitlePlayful]} accessibilityRole="header">
-                  {drill.title}
-                </Text>
-                {where ? (
-                  <View accessible accessibilityLabel={where}>
-                    <Text style={styles.pathLine}>{where}</Text>
-                    <View style={styles.unitBar}>
-                      <View style={[styles.unitBarFill, { width: `${Math.round(unitFraction(drill) * 100)}%` }]} />
+              <View onLayout={(e) => { drillY.current = e.nativeEvent.layout.y; }}>
+                <Card style={playful ? { ...styles.card, ...styles.cardPlayful } : styles.card}>
+                  {/* Ink, not blue: the eyebrow is a label, not a control (board n-ux-low Q2a c). Playful's is its orange. */}
+                  <Text style={[styles.eyebrow, playful && styles.eyebrowPlayful]}>
+                    {playful ? "Your singing game" : `Practice path · ${drill.levelName}`}
+                  </Text>
+                  {/* Above the section titles round it (18): the thing to sing reads first, a second line wraps. */}
+                  <Text style={styles.drillTitle} accessibilityRole="header">
+                    {drill.title}
+                  </Text>
+                  <Text style={styles.meta}>
+                    {playful
+                      ? `${drill.dohHeader} · ${drill.notes.length} notes`
+                      : `${drill.dohHeader} · ${drill.key} · ${drill.tempoBpm} BPM${focused ? ` · ${drill.notes.length} notes` : ""}`}
+                  </Text>
+
+                  <View style={styles.solfaRow} accessible accessibilityLabel={`Sing: ${drill.notes.map((n) => n.solfa + n.octaveMark).join(" ")}`}>
+                    {drill.notes.map((n, i) => (
+                      <View key={i} style={[styles.solfaChip, playful && styles.solfaChipPlayful, due === i && styles.solfaChipOn]}>
+                        <Text style={[styles.solfa, playful && styles.solfaPlayful, due === i && styles.solfaOn]}>{n.solfa}{n.octaveMark}</Text>
+                      </View>
+                    ))}
+                  </View>
+
+                  {/* The unit bar by the buttons (board n-ux-low Q2a a): a tenth in at a unit's first drill, 6 px, in ink on
+                      a stronger track, with the unit and drill beside it; the grade stays in the eyebrow (Playful's eyebrow
+                      has none, so its line keeps it). */}
+                  {where ? (
+                    <View style={styles.unitRow} accessible accessibilityLabel={where}>
+                      <View style={styles.unitBar}>
+                        <View style={[styles.unitBarFill, { width: `${Math.round(unitBarFraction(drill) * 100)}%` }]} />
+                      </View>
+                      <Text style={styles.unitLabel}>{playful ? where : unitLine(drill) ?? where}</Text>
                     </View>
-                  </View>
-                ) : null}
-                <Text style={styles.meta}>
-                  {playful
-                    ? `${drill.dohHeader} · ${drill.notes.length} notes`
-                    : `${drill.dohHeader} · ${drill.key} · ${drill.tempoBpm} BPM${focused ? ` · ${drill.notes.length} notes` : ""}`}
-                </Text>
+                  ) : null}
 
-                <View style={styles.solfaRow} accessible accessibilityLabel={`Sing: ${drill.notes.map((n) => n.solfa + n.octaveMark).join(" ")}`}>
-                  {drill.notes.map((n, i) => (
-                    <View key={i} style={[styles.solfaChip, playful && styles.solfaChipPlayful, due === i && styles.solfaChipOn]}>
-                      <Text style={[styles.solfa, playful && styles.solfaPlayful, due === i && styles.solfaOn]}>{n.solfa}{n.octaveMark}</Text>
+                  {phase === "leadin" || phase === "singing" ? (
+                    <View style={styles.live}>
+                      <Text style={styles.liveLabel}>{phase === "leadin" ? `Starting note… sing in ${countdown}` : "Sing!"}</Text>
+                      <Button label="Stop" variant="secondary" icon="stop" onPress={stop} />
                     </View>
-                  ))}
-                </View>
+                  ) : phase === "grading" ? (
+                    <>
+                      <Button label="Marking your take…" icon="waiting" loading />
+                      <MarkingBar />
+                    </>
+                  ) : (
+                    // The main action takes two parts of the row and Hear it one (board n-ux-low Q2a b).
+                    <View style={styles.actions}>
+                      <Button label={playful ? "Listen" : "Hear it"} icon="hear" variant="secondary" onPress={hear} style={styles.action} snug />
+                      {resendable ? (
+                        <Button label="Send it again" icon="retry" onPress={sendAgain} style={styles.actionMain} />
+                      ) : (
+                        <Button
+                          // The day's marked drills all sung: the button says the day is done, not a greyed "Sing it".
+                          label={doneForToday ? "Done for today" : onward ? onward.label : playful ? "Sing it!" : "Sing it"}
+                          icon={doneForToday ? "check" : onward && !onward.same ? "next" : "mic"}
+                          onPress={() => void (onward && !onward.same ? goNext() : sing())}
+                          disabled={doneForToday}
+                          style={styles.actionMain}
+                        />
+                      )}
+                    </View>
+                  )}
+                  {phase === "idle" && ((onward && !onward.same) || resendable) ? (
+                    <Button label={playful ? "Sing again!" : "Sing it again"} icon="mic" variant="secondary" onPress={() => void sing()} disabled={left === 0} />
+                  ) : null}
 
-                {phase === "leadin" || phase === "singing" ? (
-                  <View style={styles.live}>
-                    <Text style={styles.liveLabel}>{phase === "leadin" ? `Starting note… sing in ${countdown}` : "Sing!"}</Text>
-                    <Button label="Stop" variant="secondary" icon="stop" onPress={stop} />
-                  </View>
-                ) : phase === "grading" ? (
-                  <>
-                    <Button label="Marking your take…" icon="waiting" loading />
-                    <MarkingBar />
-                  </>
-                ) : (
-                  <View style={styles.actions}>
-                    <Button label={playful ? "Listen" : "Hear it"} icon="hear" variant="secondary" onPress={hear} style={styles.action} />
-                    {resendable ? (
-                      <Button label="Send it again" icon="retry" onPress={sendAgain} style={styles.action} />
-                    ) : (
-                      <Button
-                        // The day's marked drills all sung: the button says the day is done, not a greyed "Sing it".
-                        label={doneForToday ? "Done for today" : onward ? onward.label : playful ? "Sing it!" : "Sing it"}
-                        icon={doneForToday ? "check" : onward && !onward.same ? "next" : "mic"}
-                        onPress={() => void (onward && !onward.same ? goNext() : sing())}
-                        disabled={doneForToday}
-                        style={styles.action}
-                      />
-                    )}
-                  </View>
-                )}
-                {phase === "idle" && ((onward && !onward.same) || resendable) ? (
-                  <Button label={playful ? "Sing again!" : "Sing it again"} icon="mic" variant="secondary" onPress={() => void sing()} disabled={left === 0} />
-                ) : null}
-
-                {/* Marking takes up to a minute and the button shows only its spinner, so the line under it says so. */}
-                {phase === "grading" ? (
-                  <Text style={styles.allowance}>Marking your take, note by note. It can take up to a minute.</Text>
-                ) : allowance ? (
-                  // The count is a label (13); once they are all sung it is good news in a sentence (16).
-                  <Text style={left === 0 ? styles.body : styles.allowance}>{allowanceLine(allowance)}</Text>
-                ) : null}
-                {error ? <ProblemNote sentence>{error}</ProblemNote> : null}
-                {error === MIC_REFUSED && micBlocked ? (
-                  <Button
-                    label="Open settings"
-                    variant="text"
-                    size="sm"
-                    onPress={() => void Linking.openSettings().catch(() => undefined)}
-                    style={styles.settingsLink}
-                  />
-                ) : null}
-                {grade?.milestone ? (
-                  <View style={styles.milestone} accessibilityLiveRegion="polite">
-                    <Text style={styles.milestoneTitle}>{grade.milestone.title}</Text>
-                    <Text style={styles.meta}>{grade.milestone.description}</Text>
-                  </View>
-                ) : null}
-                {grade && playful ? <StarGrade grade={grade} notes={drill.notes} showEarned={!rewardToasted} /> : null}
-                {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} showEarned={!rewardToasted} /> : null}
-                {grade && focused ? (
-                  <View style={styles.focusRow}>
-                    <Text style={styles.focusTuning}>{tuningLine(grade.tuningCents)}</Text>
-                    {takeUri ? (
-                      <Button label="Replay my take" icon="play" variant="secondary" onPress={replay} disabled={busy} />
-                    ) : null}
-                  </View>
-                ) : null}
-              </Card>
+                  {/* Marking takes up to a minute and the button shows only its spinner, so the line under it says so. */}
+                  {phase === "grading" ? (
+                    <Text style={styles.allowance}>Marking your take, note by note. It can take up to a minute.</Text>
+                  ) : allowance ? (
+                    // The count is a label (13); once they are all sung it is good news in a sentence (16).
+                    <Text style={left === 0 ? styles.body : styles.allowance}>{allowanceLine(allowance)}</Text>
+                  ) : null}
+                  {error ? <ProblemNote sentence>{error}</ProblemNote> : null}
+                  {error === MIC_REFUSED && micBlocked ? (
+                    <Button
+                      label="Open settings"
+                      variant="text"
+                      size="sm"
+                      onPress={() => void Linking.openSettings().catch(() => undefined)}
+                      style={styles.settingsLink}
+                    />
+                  ) : null}
+                  {grade?.milestone ? (
+                    <View style={styles.milestone} accessibilityLiveRegion="polite">
+                      <Text style={styles.milestoneTitle}>{grade.milestone.title}</Text>
+                      <Text style={styles.meta}>{grade.milestone.description}</Text>
+                    </View>
+                  ) : null}
+                  {grade && playful ? <StarGrade grade={grade} notes={drill.notes} showEarned={!rewardToasted} /> : null}
+                  {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} showEarned={!rewardToasted} /> : null}
+                  {grade && focused ? (
+                    <View style={styles.focusRow}>
+                      <Text style={styles.focusTuning}>{tuningLine(grade.tuningCents)}</Text>
+                      {takeUri ? (
+                        <Button label="Replay my take" icon="play" variant="secondary" onPress={replay} disabled={busy} />
+                      ) : null}
+                    </View>
+                  ) : null}
+                </Card>
+              </View>
             ) : null}
             {!drill && !showPicker && !savingTrack ? (
               <EmptyState
@@ -765,8 +783,9 @@ export function PracticeScreen() {
                   <DayDot key={d.date} day={d} styles={styles} colors={colors} />
                 ))}
               </View>
+              {/* The rule the hub's old footnote told, after the day's XP (board n-ux-low Q2b e). */}
               <Text style={styles.meta}>
-                {progress.xpToday} of {progress.dailyXpCap} XP today
+                {progress.xpToday} of {progress.dailyXpCap} XP today · {playful ? "every singing game counts" : "every marked take counts"}
               </Text>
             </Card>
 
@@ -792,11 +811,30 @@ export function PracticeScreen() {
               </View>
             )}
 
-            <Text style={styles.foot}>
-              {playful
-                ? `Every singing game earns XP and stars. Up to ${progress.dailyXpCap} XP a day.`
-                : `Practice counts when a take is marked: a drill on your path, Sing it, or Learn my part. Up to ${progress.dailyXpCap} XP a day.`}
-            </Text>
+            {/* ── The hub ends on the next thing to do, not a footnote (board n-ux-low Q2b e): today's drill again, and a
+                way back up to it. A secondary button: the screen's one primary stays on the drill card. ── */}
+            {drill && !showPicker && !savingTrack ? (
+              <Card style={styles.closing}>
+                {left === 0 ? (
+                  <Text style={styles.cardTitle}>That's today's drills done. Back tomorrow.</Text>
+                ) : (
+                  <>
+                    <Text style={styles.cardTitle} accessibilityRole="header">
+                      {playful ? "Your singing game is waiting" : "Today's drill is waiting"}
+                    </Text>
+                    <Text style={styles.closingLine}>{allowance ? `${drill.title} · ${allowanceLine(allowance)}` : drill.title}</Text>
+                    <Button
+                      label={playful ? "Play today's game!" : "Sing today's drill"}
+                      icon="mic"
+                      variant="secondary"
+                      block
+                      onPress={toDrill}
+                      style={styles.closingButton}
+                    />
+                  </>
+                )}
+              </Card>
+            ) : null}
           </>
         ) : null}
       </Screen>
@@ -930,7 +968,7 @@ function DrillSkeleton({ styles }: { styles: Styles }) {
         </View>
         <View style={styles.actions}>
           <Skeleton height={48} radius={radii.pill} style={styles.action} />
-          <Skeleton height={48} radius={radii.pill} style={styles.action} />
+          <Skeleton height={48} radius={radii.pill} style={styles.actionMain} />
         </View>
       </View>
     </Card>
@@ -1016,13 +1054,14 @@ function DayDot({ day, styles, colors }: { day: PracticeDay; styles: Styles; col
       <View
         style={[
           styles.dayDot,
-          day.status === "done" && { backgroundColor: colors.accent, borderColor: colors.accent },
+          // Practised in mint, as the ring beside it, with the tick in the canvas colour (board n-ux-low Q2a d).
+          day.status === "done" && { backgroundColor: colors.success, borderColor: colors.success },
           day.status === "frozen" && { borderColor: "transparent" },
           day.status === "today" && { borderColor: colors.text, borderStyle: "dashed" },
           day.status === "none" && { opacity: 0.4 },
         ]}
       >
-        {day.status === "done" ? <Icon name="check" size={14} strokeWidth={2.25} color={colors.onAccent} /> : null}
+        {day.status === "done" ? <Icon name="check" size={14} strokeWidth={2.25} color={colors.bg} /> : null}
         {day.status === "frozen" ? <Art name="freeze" width={26} /> : null}
       </View>
       <Text style={styles.dayLetter}>{weekdayLetter(day.date)}</Text>
@@ -1153,17 +1192,21 @@ const makeStyles = (c: Palette) =>
     levelText: { flex: 1, minWidth: 0 },
     barRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: spacing.sm },
     barTrack: { flex: 1, height: 8, borderRadius: 4, backgroundColor: c.surfaceAlt, overflow: "hidden" },
-    barFill: { height: 8, borderRadius: 4, backgroundColor: c.accent },
+    // The bars, the eyebrow and the milestone are read, never pressed: ink, not blue (board n-ux-low Q2a c).
+    barFill: { height: 8, borderRadius: 4, backgroundColor: c.text },
 
-    eyebrow: { ...typography.caption, color: c.accent, textTransform: "uppercase", letterSpacing: 1, fontSize: 12 },
+    eyebrow: { ...typography.caption, color: c.textMuted, textTransform: "uppercase", letterSpacing: 1, fontSize: 12 },
     eyebrowPlayful: { color: c.play },
     cardTitle: { ...typography.label, color: c.text, fontSize: 16, fontFamily: fonts.bold },
-    cardTitlePlayful: { ...typography.heading, fontSize: 20 },
+    /** The drill's name, on both tracks: above the 18 px section titles round it (board n-ux-low Q2b f). */
+    drillTitle: { ...typography.heading, color: c.text, fontSize: 20 },
     meta: { ...typography.caption, color: c.textMuted, fontSize: 13, lineHeight: 18 },
-    pathLine: { ...typography.caption, color: c.textMuted, fontSize: 13, lineHeight: 18 },
-    unitBar: { height: 3, borderRadius: 2, backgroundColor: c.surfaceAlt, overflow: "hidden", marginTop: 4 },
-    unitBarFill: { height: 3, borderRadius: 2, backgroundColor: c.accent },
-    milestone: { gap: 2, padding: spacing.sm, borderRadius: radii.sm, borderWidth: 1.5, borderColor: c.accent, backgroundColor: c.accentSoft },
+    unitRow: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 2 },
+    // The track is the muted grey at 28 % (`47` in hex; both palettes' textMuted are six-digit hex): 1.56:1 to the card.
+    unitBar: { flex: 1, minWidth: 48, height: 6, borderRadius: 3, backgroundColor: `${c.textMuted}47`, overflow: "hidden" },
+    unitBarFill: { height: 6, borderRadius: 3, backgroundColor: c.text },
+    unitLabel: { ...typography.caption, color: c.textMuted, fontSize: 13, lineHeight: 18, flexShrink: 1 },
+    milestone: { gap: 2, padding: spacing.sm, borderRadius: radii.sm, borderWidth: 1.5, borderColor: c.border, backgroundColor: c.surfaceAlt },
     milestoneTitle: { ...typography.label, color: c.text, fontFamily: fonts.bold },
     solfaRow: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginVertical: spacing.xs },
     solfaChip: {
@@ -1191,6 +1234,7 @@ const makeStyles = (c: Palette) =>
     solfaOn: { color: c.accent },
     actions: { flexDirection: "row", gap: spacing.sm },
     action: { flex: 1 },
+    actionMain: { flex: 2 },
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.xs },
     liveLabel: { ...typography.label, color: c.textMuted },
     allowance: { ...typography.caption, color: c.textMuted, fontSize: 13, lineHeight: 18 },
@@ -1224,7 +1268,7 @@ const makeStyles = (c: Palette) =>
     progStrong: { fontFamily: fonts.semibold, fontSize: 13, color: c.text },
     progSep: { width: 1, height: 14, backgroundColor: c.border },
     progBar: { width: 48, height: 5, borderRadius: 3, backgroundColor: c.surfaceAlt, overflow: "hidden" },
-    progFill: { height: 5, borderRadius: 3, backgroundColor: c.accent },
+    progFill: { height: 5, borderRadius: 3, backgroundColor: c.text },
 
     carols: {
       marginBottom: spacing.md,
@@ -1243,12 +1287,12 @@ const makeStyles = (c: Palette) =>
     carolsText: { flex: 1, minWidth: 0, gap: 4 },
     carolsEyebrow: { ...typography.caption, textTransform: "uppercase", letterSpacing: 1, fontSize: 12, fontFamily: fonts.semibold },
     carolsTitle: { ...typography.heading, color: c.text, fontSize: 20 },
-    carolsBody: { ...typography.body, color: c.textMuted, fontSize: 13.5, lineHeight: 20 },
+    carolsBody: { ...typography.body, color: c.textMuted, fontSize: 14, lineHeight: 20 },
     carolsBar: { flexDirection: "row", gap: 6 },
     carolsSeg: { flex: 1, height: 5, borderRadius: 3, backgroundColor: c.surfaceAlt },
     carolsFoot: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
     carolsSung: { ...typography.label, color: c.text, fontSize: 14 },
-    carolsNext: { ...typography.caption, color: c.textMuted, fontSize: 12.5 },
+    carolsNext: { ...typography.caption, color: c.textMuted, fontSize: 13 },
 
     modes: { marginTop: spacing.sm, marginBottom: spacing.lg },
     modesHead: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginBottom: spacing.sm },
@@ -1286,7 +1330,9 @@ const makeStyles = (c: Palette) =>
     badgeRowText: { flex: 1 },
     badgeRowCount: { ...typography.caption, color: c.textFaint, fontFamily: fonts.medium },
 
-    foot: { ...typography.caption, color: c.textFaint, lineHeight: 17, marginTop: spacing.lg },
+    closing: { marginTop: spacing.lg, gap: spacing.sm },
+    closingLine: { ...typography.caption, color: c.textMuted, fontSize: 14, lineHeight: 20 },
+    closingButton: { marginTop: spacing.xs },
     empty: { marginBottom: spacing.md, gap: spacing.sm, alignItems: "center", paddingVertical: spacing.lg },
     emptyTitle: { ...typography.heading, color: c.text, textAlign: "center" },
     emptyBody: { ...typography.body, color: c.textMuted, fontSize: 16, lineHeight: 23, textAlign: "center", marginBottom: spacing.xs },

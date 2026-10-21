@@ -402,7 +402,7 @@ const makeStyles = (c: Palette) =>
     dotTextNow: { color: c.onAccent },
     stepBody: { flex: 1, minWidth: 0, paddingTop: 4 },
     stepHead: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", gap: spacing.sm },
-    stepTitle: { fontFamily: fonts.semibold, fontSize: 15.5, color: c.text },
+    stepTitle: { fontFamily: fonts.semibold, fontSize: 16, color: c.text },
     stepClock: { fontFamily: fonts.medium, fontSize: 13, color: c.textFaint },
     stepText: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 18, color: c.textMuted, marginTop: 3 },
     inner: { marginTop: spacing.md, padding: spacing.md, borderRadius: radii.md, backgroundColor: c.surface, borderWidth: 1, borderColor: c.border, gap: spacing.sm },
@@ -433,6 +433,6 @@ const makeStyles = (c: Palette) =>
     keyboard: { marginTop: spacing.lg },
     partCard: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: spacing.lg, padding: spacing.md, borderRadius: radii.md, backgroundColor: c.surfaceAlt },
     flexText: { flex: 1, minWidth: 0 },
-    partTitle: { fontFamily: fonts.semibold, fontSize: 15.5, color: c.text },
+    partTitle: { fontFamily: fonts.semibold, fontSize: 16, color: c.text },
     partSub: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted, marginTop: 2 },
   });

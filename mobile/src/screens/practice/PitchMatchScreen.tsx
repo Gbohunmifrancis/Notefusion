@@ -235,6 +235,6 @@ const makeStyles = (c: Palette) =>
     tile: { width: 36, height: 36, borderRadius: 10, backgroundColor: c.sheetTile, alignItems: "center", justifyContent: "center" },
     rowText: { flex: 1, minWidth: 0 },
     rowTitle: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
-    rowSolfa: { ...typography.mono, fontSize: 12.5, color: c.textMuted, marginTop: 2 },
-    rowValue: { fontFamily: fonts.medium, fontSize: 12.5, color: c.textFaint },
+    rowSolfa: { ...typography.mono, fontSize: 13, color: c.textMuted, marginTop: 2 },
+    rowValue: { fontFamily: fonts.medium, fontSize: 13, color: c.textFaint },
   });

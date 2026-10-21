@@ -638,7 +638,7 @@ const makeStyles = (c: Palette) =>
     chipTextOn: { color: c.link },
     chipTextTune: { color: c.textMuted, fontSize: 16 },
     syllableCell: { alignItems: "center", gap: 2, minWidth: 36 },
-    syllable: { fontFamily: fonts.regular, fontSize: 11, color: c.textMuted, maxWidth: 48 },
+    syllable: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, maxWidth: 48 },
     phones: {
       flexDirection: "row",
       alignItems: "center",
@@ -667,7 +667,7 @@ const makeStyles = (c: Palette) =>
       borderStyle: "dashed",
       borderColor: c.border,
     },
-    rewardText: { flex: 1, fontFamily: fonts.regular, fontSize: 13.5, lineHeight: 19, color: c.textMuted },
+    rewardText: { flex: 1, fontFamily: fonts.regular, fontSize: 14, lineHeight: 20, color: c.textMuted },
     rewardStrong: { fontFamily: fonts.semibold, color: c.text },
 
     sheet: { alignItems: "center", gap: spacing.sm, paddingTop: spacing.sm },
@@ -685,6 +685,6 @@ const makeStyles = (c: Palette) =>
       maxWidth: "100%",
     },
     sheetSolfa: { ...typography.mono, fontSize: 15, letterSpacing: 2, flexShrink: 1 },
-    sheetSolfaLong: { fontSize: 13.5, letterSpacing: 0.3 },
+    sheetSolfaLong: { fontSize: 13, letterSpacing: 0.3 },
     sheetActions: { alignSelf: "stretch", flexDirection: "row", justifyContent: "flex-end", alignItems: "center", gap: spacing.md, marginTop: spacing.md },
   });

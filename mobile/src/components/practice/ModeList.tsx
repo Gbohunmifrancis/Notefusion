@@ -66,7 +66,7 @@ const makeStyles = (c: Palette) =>
     tile: { width: TILE, height: TILE, borderRadius: 12, alignItems: "center", justifyContent: "center", backgroundColor: c.sheetTile },
     tilePlay: { backgroundColor: c.playSoft },
     text: { flex: 1, minWidth: 0 },
-    title: { fontFamily: fonts.semibold, fontSize: 15.5, color: c.text },
+    title: { fontFamily: fonts.semibold, fontSize: 16, color: c.text },
     subtitle: { fontFamily: fonts.regular, fontSize: 14, lineHeight: 19, color: c.textMuted, marginTop: 2 },
     value: { fontFamily: fonts.medium, fontSize: 13, color: c.textFaint, marginRight: spacing.xs },
   });
