@@ -131,9 +131,10 @@ export interface OfferAudience {
   /** The email quota as it stands (`EmailBudget`): the offer is optional mail. */
   quota: {
     dailyUsed: number;
-    dailyLimit: number;
-    /** Optional mail waits once the last 24 hours reach this. */
-    dailyOptionalLine: number;
+    /** Null when there is no daily cap. */
+    dailyLimit: number | null;
+    /** Optional mail waits once the last 24 hours reach this; null with no daily cap. */
+    dailyOptionalLine: number | null;
     monthlyUsed: number;
     /** Null when there is no 31-day cap. */
     monthlyLimit?: number | null;

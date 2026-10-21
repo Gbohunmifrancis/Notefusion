@@ -45,7 +45,8 @@ export function OfferProgressCard({ offer, onConfirm }: { offer: AdminOffer; onC
   else if (send.paused) hint += " Paused: nothing more goes out until you resume.";
   else if (p && p.queued === 0) hint += " Every email has gone out or been skipped.";
   else if (audience.data) {
-    hint += ` Sending up to ${formatCount(audience.data.quota.perDay)} a day (daily limit ${formatCount(audience.data.quota.dailyLimit)}).`;
+    const limit = audience.data.quota.dailyLimit;
+    hint += ` Sending up to ${formatCount(audience.data.quota.perDay)} a day${limit !== null ? ` (daily limit ${formatCount(limit)})` : ""}.`;
   }
 
   function askToPause(paused: boolean) {

@@ -202,6 +202,8 @@ jobs:
           EMAIL__WEEKLYLIMIT: ${{ vars.EMAIL__WEEKLYLIMIT || secrets.EMAIL__WEEKLYLIMIT }}
           EMAIL__MONTHLYLIMIT: ${{ vars.EMAIL__MONTHLYLIMIT || secrets.EMAIL__MONTHLYLIMIT }}
           EMAIL__OPTIONALSHARE: ${{ vars.EMAIL__OPTIONALSHARE || secrets.EMAIL__OPTIONALSHARE }}
+          # The company's name and postal address, one line, for the offer emails' footer (US CAN-SPAM).
+          EMAIL__POSTALADDRESS: ${{ vars.EMAIL__POSTALADDRESS || secrets.EMAIL__POSTALADDRESS }}
           # ── Google OAuth ──────────────────────────────────────────────────────
           GOOGLE__CLIENTID: ${{ secrets.GOOGLE__CLIENTID }}
           # ── Billing ───────────────────────────────────────────────────────────
@@ -325,7 +327,7 @@ jobs:
             JWT_ISSUER,JWT_AUDIENCE,JWT_PRIVATE_KEY_PEM,
             SEED_ADMIN_EMAIL,SEED_ADMIN_PASSWORD,
             RESEND_API_KEY,RESEND__APIKEY,RESEND__FROM,EMAIL__FROMADDRESS,EMAIL__ASSETBASEURL,EMAIL__USERESEND,
-            EMAIL__DAILYLIMIT,EMAIL__WEEKLYLIMIT,EMAIL__MONTHLYLIMIT,EMAIL__OPTIONALSHARE,
+            EMAIL__DAILYLIMIT,EMAIL__WEEKLYLIMIT,EMAIL__MONTHLYLIMIT,EMAIL__OPTIONALSHARE,EMAIL__POSTALADDRESS,
             GOOGLE__CLIENTID,
             BILLING__DEFAULTPROVIDER,BILLING__CHECKOUTCALLBACKURL,
             BACHS__BASEURL,BACHS__SECRETKEY,BACHS__WEBHOOKSECRET,BACHS__SUPPORTEDCURRENCIES,
@@ -443,6 +445,7 @@ jobs:
             Email__WeeklyLimit="${EMAIL__WEEKLYLIMIT}"
             Email__MonthlyLimit="${EMAIL__MONTHLYLIMIT}"
             Email__OptionalShare="${EMAIL__OPTIONALSHARE}"
+            Email__PostalAddress="${EMAIL__POSTALADDRESS}"
             Google__ClientId="${GOOGLE__CLIENTID}"
             Billing__DefaultProvider="${BILLING__DEFAULTPROVIDER}"
             Billing__CheckoutCallbackUrl="${BILLING__CHECKOUTCALLBACKURL}"

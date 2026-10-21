@@ -213,7 +213,9 @@ function Sending({
   const allInTime = reached >= total;
   const firstDay = days[0]?.date ?? today;
   const lastSendingDay = [...days].reverse().find((day) => day.count > 0)?.date ?? null;
-  const share = quota.dailyLimit > 0 ? quota.dailyOptionalLine / quota.dailyLimit : 0.6;
+  const dailyLimit = quota.dailyLimit ?? null;
+  const dailyLine = quota.dailyOptionalLine ?? null;
+  const share = dailyLimit !== null && dailyLine !== null && dailyLimit > 0 ? dailyLine / dailyLimit : 0.6;
   const monthlyLimit = quota.monthlyLimit ?? null;
   const monthlyLine = quota.monthlyOptionalLine ?? null;
   const ended = offer.state === "ended";
@@ -272,7 +274,11 @@ function Sending({
   return (
     <>
       <div className="grid gap-4 sm:grid-cols-2">
-        <QuotaTile label="Last 24 hours" used={quota.dailyUsed} limit={quota.dailyLimit} line={quota.dailyOptionalLine} />
+        {dailyLimit !== null && dailyLine !== null ? (
+          <QuotaTile label="Last 24 hours" used={quota.dailyUsed} limit={dailyLimit} line={dailyLine} />
+        ) : (
+          <StatCard label="Last 24 hours" value={formatCount(quota.dailyUsed)} sub="No daily limit" tone="neutral" />
+        )}
         {monthlyLimit !== null && monthlyLine !== null ? (
           <QuotaTile label="Last 31 days" used={quota.monthlyUsed} limit={monthlyLimit} line={monthlyLine} />
         ) : (
@@ -297,10 +303,8 @@ function Sending({
           </p>
           <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground">
             {quota.roomToday === quota.perDay
-              ? `About ${formatCount(quota.perDay)} can go a day: the optional line of ${formatCount(quota.dailyOptionalLine)}, less what the app has already sent in the last 24 hours.`
-              : `About ${formatCount(quota.roomToday)} can still go today (the optional line of ${formatCount(
-                  quota.dailyOptionalLine,
-                )}, less what the app has sent in the last 24 hours), then about ${formatCount(quota.perDay)} a day.`}{" "}
+              ? `About ${formatCount(quota.perDay)} can go a day${dailyLine !== null ? `: the optional line of ${formatCount(dailyLine)}, less what the app has already sent in the last 24 hours` : ""}.`
+              : `About ${formatCount(quota.roomToday)} can still go today${dailyLine !== null ? ` (the optional line of ${formatCount(dailyLine)}, less what the app has sent in the last 24 hours)` : ""}, then about ${formatCount(quota.perDay)} a day.`}{" "}
             {allInTime
               ? `Everyone should have it${lastSendingDay ? ` by ${formatOfferDay(lastSendingDay)}` : ""}, before the offer ends.`
               : `The offer runs ${days.length}${firstDay === startDay ? "" : " more"} ${days.length === 1 ? "day" : "days"}, so about ${formatCount(reached)} ${people(
@@ -319,7 +323,7 @@ function Sending({
               share={share}
               firstDay={firstDay}
               lastDay={offer.lastDay}
-              dailyLimit={quota.dailyLimit}
+              dailyLimit={dailyLimit}
               monthlyLimit={monthlyLimit}
             />{" "}
             <Link href="/health" className="text-brand hover:underline">
@@ -431,10 +435,10 @@ function RaiseLimits({
   share: number;
   firstDay: string;
   lastDay: string;
-  dailyLimit: number;
+  dailyLimit: number | null;
   monthlyLimit: number | null;
 }) {
-  if (dailyLimit >= RAISED_DAILY) {
+  if (dailyLimit === null || dailyLimit >= RAISED_DAILY) {
     return (
       <>
         <span className="font-medium text-foreground">To reach more people:</span> raise{" "}
