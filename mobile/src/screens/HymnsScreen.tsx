@@ -45,6 +45,7 @@ import {
 import { letterSections, sectionCellLayouts, type LetterSection } from "../lib/letterIndex";
 import { checkRemotePack, downloadPack, installedPack, remotePackMeta, removePack, usePackState } from "../lib/hymnPackStore";
 import { resultFromHymn } from "../lib/openSheet";
+import { HYMN_PREVIEW, previewOpacity } from "../lib/hymnPreview";
 import { deriveSolfa } from "../lib/solfa";
 import { useDataSaver } from "../lib/dataSaver";
 import { useSeason } from "../lib/seasonStore";
@@ -361,6 +362,25 @@ export function HymnsScreen() {
           </View>
           {dataSaver ? <Text style={styles.note}>Data saver is on: the hymns only update when you ask.</Text> : null}
         </Card>
+        {/* What the download holds, in the list's own rows, fading towards the tab bar: the page reads as the hymnbook
+            it becomes instead of one card and an empty screen. Not tappable until the hymns are on the phone. */}
+        <Text style={styles.previewHead}>In the hymnbook</Text>
+        <View pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+          {HYMN_PREVIEW.map((h, i) => (
+            <View
+              key={h.slug}
+              style={[styles.row, styles.rowDivided, { opacity: previewOpacity(i, HYMN_PREVIEW.length) }]}
+            >
+              <View style={styles.rowText}>
+                <Text style={styles.rowTitle} numberOfLines={1}>{h.title}</Text>
+                <Text style={styles.rowSub} numberOfLines={1}>
+                  {h.kind === "tune" ? `Tune · ${h.tune}` : h.firstLine}
+                </Text>
+              </View>
+              <Text style={styles.rowKey}>{keyAndTime(h)}</Text>
+            </View>
+          ))}
+        </View>
       </Screen>
     );
   }
@@ -655,6 +675,14 @@ const makeStyles = (c: Palette) =>
     sizeLine: { minHeight: 18, justifyContent: "center" },
     sizeText: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 18, color: c.textMuted },
     note: { ...typography.caption, color: c.textFaint },
+    previewHead: {
+      ...typography.caption,
+      color: c.textMuted,
+      textTransform: "uppercase",
+      letterSpacing: 1,
+      marginTop: spacing.xl,
+      marginBottom: spacing.xs,
+    },
     progressBlock: { gap: spacing.sm },
     progressTrack: { height: 6, borderRadius: 3, backgroundColor: c.surfaceAlt, overflow: "hidden" },
     progressFill: { height: 6, borderRadius: 3, backgroundColor: c.accent },
