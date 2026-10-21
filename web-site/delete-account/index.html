@@ -22,7 +22,7 @@
       <span class="site-brand-mark" aria-hidden="true"></span>
       <span class="site-brand-name">NoteFusion</span>
     </a>
-    <nav class="site-shell-links" aria-label="Primary navigation"><a href="/#how">How it works</a><a href="/#solfa">Tonic Solfa</a><a href="/#pricing">Pricing</a><a href="/blog">Blog</a><a href="/hymns">Hymns</a></nav>
+    <nav class="site-shell-links" aria-label="Primary navigation"><a href="/#pricing">Pricing</a><a href="/hymns">Hymns</a><a href="/blog">Blog</a></nav>
     <div class="site-shell-actions">
       <button type="button" class="theme-toggle" data-theme-toggle data-track="Theme toggle" aria-label="Colour theme" title="Colour theme"><svg class="ic tt-light" aria-hidden="true"><use href="/assets/icons.svg#i-sun"/></svg><svg class="ic tt-dark" aria-hidden="true"><use href="/assets/icons.svg#i-moon"/></svg><svg class="ic tt-system" aria-hidden="true"><use href="/assets/icons.svg#i-monitor"/></svg></button>
       <a class="site-shell-signin" href="/app">Sign in</a>
@@ -30,7 +30,7 @@
     </div>
     <details class="site-shell-mobile">
       <summary aria-label="Open site navigation"><svg class="ic ic-open" aria-hidden="true"><use href="/assets/icons.svg#i-menu"/></svg><svg class="ic ic-close" aria-hidden="true"><use href="/assets/icons.svg#i-x"/></svg></summary>
-      <nav class="site-shell-panel" aria-label="Mobile navigation"><a href="/#how">How it works</a><a href="/#solfa">Tonic Solfa</a><a href="/#pricing">Pricing</a><a href="/blog">Blog</a><a href="/hymns">Hymns</a>
+      <nav class="site-shell-panel" aria-label="Mobile navigation"><a href="/#pricing">Pricing</a><a href="/hymns">Hymns</a><a href="/blog">Blog</a>
         <a class="site-shell-signin" href="/app">Sign in</a>
         <a class="site-shell-cta" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="utility_mobile_header">Get the app</a>
       </nav>
@@ -40,7 +40,47 @@
 
 <main class="site-page-main">
   <section class="site-page-intro site-page-intro--center"><p class="site-page-kicker">Account settings</p><h1>Delete your account &amp; data</h1><p id="lede">Request permanent deletion of your NoteFusion account and associated musical data.</p></section>
-  <div class="card">
+  <!-- Standard Request Form Mode -->
+  <div id="form-card" class="card">
+    <h2>Submit a deletion request</h2>
+    <p>
+      You can initiate permanent deletion through this web form, from the web app&rsquo;s account settings, or directly from within the mobile app.
+      Any Pro time left ends with the account and is not refunded (see our <a href="/terms">terms</a>), and a Google Play
+      subscription keeps renewing until you cancel it in Google Play.
+    </p>
+    <p class="del-jump"><a href="#what-is-deleted">What is deleted and what is kept <span aria-hidden="true">&darr;</span></a></p>
+
+    <div id="error-box" class="notice bad" role="alert" hidden></div>
+    <div id="info-box" class="notice info" role="alert" hidden></div>
+    <div id="success-box" class="notice good" role="alert" hidden></div>
+
+    <form id="deletion-form" novalidate>
+      <label for="email">Account email address *</label>
+      <input id="email" type="email" autocomplete="email" placeholder="name@example.com" required aria-describedby="email-problem">
+      <p class="hint bad" id="email-problem" aria-live="polite" hidden></p>
+
+      <label for="password">Account password (optional)</label>
+      <input id="password" type="password" autocomplete="current-password" placeholder="Enter password for instant deletion">
+      <p class="hint">
+        If you leave password blank (or if you signed in with Google), we will email a secure 24-hour confirmation link to your address before deleting any data.
+      </p>
+
+      <label for="reason">Reason for leaving (optional)</label>
+      <textarea id="reason" placeholder="Tell us why you are leaving (e.g. no longer needed, missing features)..."></textarea>
+
+      <div class="checkbox-group">
+        <input id="confirm-check" type="checkbox" required aria-describedby="confirm-problem">
+        <label for="confirm-check">
+          I understand that this action is permanent and cannot be undone. All my musical transcriptions, solfa data, and profile information will be permanently deleted.
+        </label>
+      </div>
+      <p class="hint bad" id="confirm-problem" aria-live="polite" hidden></p>
+
+      <button id="submit-btn" class="btn-danger" type="submit">Request account deletion</button>
+    </form>
+  </div>
+
+  <div class="card" id="what-is-deleted">
     <h2>Data safety and deletion disclosures</h2>
     <p>
       At NoteFusion, your privacy and control over your personal data are paramount. Under Google Play Data Safety requirements and global privacy regulations (GDPR / NDPR), you have the right to permanently delete your account and all associated data at any time.
@@ -81,45 +121,6 @@
         <a href="/" style="display: inline-block; padding-block: 10px; margin-block: -10px;">Keep my account &mdash; return to NoteFusion</a>
       </p>
     </div>
-  </div>
-
-  <!-- Standard Request Form Mode -->
-  <div id="form-card" class="card">
-    <h2>Submit a deletion request</h2>
-    <p>
-      You can initiate permanent deletion through this web form, from the web app&rsquo;s account settings, or directly from within the mobile app.
-      Any Pro time left ends with the account and is not refunded (see our <a href="/terms">terms</a>), and a Google Play
-      subscription keeps renewing until you cancel it in Google Play.
-    </p>
-
-    <div id="error-box" class="notice bad" role="alert" hidden></div>
-    <div id="info-box" class="notice info" role="alert" hidden></div>
-    <div id="success-box" class="notice good" role="alert" hidden></div>
-
-    <form id="deletion-form" novalidate>
-      <label for="email">Account email address *</label>
-      <input id="email" type="email" autocomplete="email" placeholder="name@example.com" required aria-describedby="email-problem">
-      <p class="hint bad" id="email-problem" aria-live="polite" hidden></p>
-
-      <label for="password">Account password (optional)</label>
-      <input id="password" type="password" autocomplete="current-password" placeholder="Enter password for instant deletion">
-      <p class="hint">
-        If you leave password blank (or if you signed in with Google), we will email a secure 24-hour confirmation link to your address before deleting any data.
-      </p>
-
-      <label for="reason">Reason for leaving (optional)</label>
-      <textarea id="reason" placeholder="Tell us why you are leaving (e.g. no longer needed, missing features)..."></textarea>
-
-      <div class="checkbox-group">
-        <input id="confirm-check" type="checkbox" required aria-describedby="confirm-problem">
-        <label for="confirm-check">
-          I understand that this action is permanent and cannot be undone. All my musical transcriptions, solfa data, and profile information will be permanently deleted.
-        </label>
-      </div>
-      <p class="hint bad" id="confirm-problem" aria-live="polite" hidden></p>
-
-      <button id="submit-btn" class="btn-danger" type="submit">Request account deletion</button>
-    </form>
   </div>
 
   <!-- In-app Instructions Card -->

@@ -4,12 +4,11 @@
 import { ORIGIN, SITE_NAME, DEFAULT_OG, ADSENSE_CLIENT, ASSET_VERSION } from "./site.mjs";
 import { escapeHtml, jsonForScript } from "./util.mjs";
 
+// Three links (board n-ux-low V3a); How it works, Tonic Solfa and FAQ are sections of the home page and in its footer.
 const NAV = [
-  ["/#how", "How it works"],
-  ["/#solfa", "Tonic Solfa"],
   ["/#pricing", "Pricing"],
-  ["/blog", "Blog"],
   ["/hymns", "Hymns"],
+  ["/blog", "Blog"],
 ];
 
 function nav(active, cls, label) {

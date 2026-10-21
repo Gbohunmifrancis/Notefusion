@@ -168,6 +168,26 @@ html { scroll-padding-top: 80px; }
 .plan li .ic { margin-top: 2px; color: var(--page-blue); }
 .plan > div:last-child { margin-top: auto; }
 .plan .btn { width: 100%; }
+/* While the prices load (index.html): three still skeletons (no shimmer), each at its loaded card's height, and one for
+   the region line, so nothing under them moves when the cards arrive (board n-ux-low V3c). Heights as measured on a
+   360, 390 and 412 px phone, a tablet (one column, 14 px text) and a desk (three columns). */
+.plan--skel:nth-of-type(1) { min-height: 619px; }
+.plan--skel:nth-of-type(2) { min-height: 627px; }
+.plan--skel:nth-of-type(3) { min-height: 579px; }
+.plan--skel .sk, .pricing-region .sk { display: block; border-radius: 6px; background: var(--page-line); }
+.pricing-region .sk { display: inline-block; width: 120px; height: 13px; vertical-align: middle; }
+.plan--skel .sk-t { width: 38%; height: 16px; margin-top: 4px; }
+.plan--skel .sk-p { width: 62%; height: 36px; margin-top: 16px; }
+.plan--skel .sk-l { width: 92%; height: 13px; margin-top: 14px; }
+.plan--skel .sk-s { width: 70%; }
+.plan--skel .sk-r { display: block; height: 1px; margin: 24px 0 10px; background: var(--page-line); }
+.plan--skel .sk-b { height: 44px; margin-top: auto; border-radius: var(--r-sm); }
+@media (min-width: 390px) { .plan--skel:nth-of-type(1) { min-height: 595px; } }
+@media (min-width: 412px) {
+  .plan--skel:nth-of-type(1) { min-height: 571px; }
+  .plan--skel:nth-of-type(2) { min-height: 579px; }
+  .plan--skel:nth-of-type(3) { min-height: 555px; }
+}
 .home .pricing-note { margin-top: 24px; max-width: 72ch; color: var(--page-muted); font-size: 16px; line-height: 1.6; }
 
 /* FAQ */
@@ -243,6 +263,9 @@ html { scroll-padding-top: 80px; }
   .rekey-table td { font-size: 18px; }
   .closing { padding: 40px; }
   .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .plan--skel:nth-of-type(1) { min-height: 450px; }
+  .plan--skel:nth-of-type(2) { min-height: 458px; }
+  .plan--skel:nth-of-type(3) { min-height: 437px; }
 }
 @media (min-width: 1001px) {
   .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 64px; }
@@ -250,7 +273,8 @@ html { scroll-padding-top: 80px; }
   .split--even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .split--head { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
   .plans { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; }
-  .plans--single, .plans--loading { grid-template-columns: minmax(0, 480px); }
+  .plans--single { grid-template-columns: minmax(0, 480px); }
+  .plan--skel:nth-of-type(n) { min-height: 521px; }
   .post-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
   .closing { grid-template-columns: minmax(0, 1fr) auto; }
   .footer-grid { grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); }

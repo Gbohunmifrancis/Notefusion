@@ -25,7 +25,7 @@
       <span class="site-brand-mark" aria-hidden="true"></span>
       <span class="site-brand-name">NoteFusion</span>
     </a>
-    <nav class="site-shell-links" aria-label="Primary navigation"><a href="/#how">How it works</a><a href="/#solfa">Tonic Solfa</a><a href="/#pricing">Pricing</a><a href="/blog">Blog</a><a href="/hymns">Hymns</a></nav>
+    <nav class="site-shell-links" aria-label="Primary navigation"><a href="/#pricing">Pricing</a><a href="/hymns">Hymns</a><a href="/blog">Blog</a></nav>
     <div class="site-shell-actions">
       <button type="button" class="theme-toggle" data-theme-toggle data-track="Theme toggle" aria-label="Colour theme" title="Colour theme"><svg class="ic tt-light" aria-hidden="true"><use href="/assets/icons.svg#i-sun"/></svg><svg class="ic tt-dark" aria-hidden="true"><use href="/assets/icons.svg#i-moon"/></svg><svg class="ic tt-system" aria-hidden="true"><use href="/assets/icons.svg#i-monitor"/></svg></button>
       <a class="site-shell-signin" href="/app">Sign in</a>
@@ -33,7 +33,7 @@
     </div>
     <details class="site-shell-mobile">
       <summary aria-label="Open site navigation"><svg class="ic ic-open" aria-hidden="true"><use href="/assets/icons.svg#i-menu"/></svg><svg class="ic ic-close" aria-hidden="true"><use href="/assets/icons.svg#i-x"/></svg></summary>
-      <nav class="site-shell-panel" aria-label="Mobile navigation"><a href="/#how">How it works</a><a href="/#solfa">Tonic Solfa</a><a href="/#pricing">Pricing</a><a href="/blog">Blog</a><a href="/hymns">Hymns</a>
+      <nav class="site-shell-panel" aria-label="Mobile navigation"><a href="/#pricing">Pricing</a><a href="/hymns">Hymns</a><a href="/blog">Blog</a>
         <a class="site-shell-signin" href="/app">Sign in</a>
         <a class="site-shell-cta" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="utility_mobile_header">Get the app</a>
       </nav>
@@ -54,11 +54,11 @@
       <input id="username" type="email" autocomplete="username" hidden>
 
       <label for="pw">New password</label>
-      <input id="pw" type="password" autocomplete="new-password" minlength="8" required aria-describedby="pw-hint">
+      <span class="pw-wrap"><input id="pw" type="password" autocomplete="new-password" minlength="8" required aria-describedby="pw-hint"><button class="pw-eye" type="button" data-eye="pw" aria-label="Show password" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-eye"/></svg></button></span>
       <p class="hint" id="pw-hint" aria-live="polite">At least 8 characters.</p>
 
       <label for="pw2">Confirm new password</label>
-      <input id="pw2" type="password" autocomplete="new-password" minlength="8" required aria-describedby="pw2-hint">
+      <span class="pw-wrap"><input id="pw2" type="password" autocomplete="new-password" minlength="8" required aria-describedby="pw2-hint"><button class="pw-eye" type="button" data-eye="pw2" aria-label="Show password" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-eye"/></svg></button></span>
       <p class="hint" id="pw2-hint" aria-live="polite" hidden></p>
 
       <button id="submit" type="submit">Set new password</button>
@@ -185,6 +185,17 @@
     if (pw2.hasAttribute("aria-invalid")) checkPw2();
   });
   pw2.addEventListener("input", function () { if (pw2.hasAttribute("aria-invalid")) checkPw2(); });
+
+  // Show / hide, each field on its own (the web app's eye, board n-ux-low V3f).
+  Array.prototype.forEach.call(document.querySelectorAll("[data-eye]"), function (b) {
+    b.addEventListener("click", function () {
+      var input = document.getElementById(b.getAttribute("data-eye")), show = input.type === "password";
+      input.type = show ? "text" : "password";
+      b.setAttribute("aria-pressed", show ? "true" : "false");
+      b.setAttribute("aria-label", show ? "Hide password" : "Show password");
+      b.querySelector("use").setAttribute("href", "/assets/icons.svg#i-" + (show ? "eye-off" : "eye"));
+    });
+  });
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();

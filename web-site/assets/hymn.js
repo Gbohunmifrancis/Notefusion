@@ -78,17 +78,50 @@
     if (now) now.classList.add("now");
     lit = now;
   }
-  btn.addEventListener("click", function () {
+  // The bar at the foot of a phone's screen (board n-ux-low V3e): once the tune has started and the player above is
+  // scrolled away, it keeps Play/Pause and the speed in reach; it goes when the player is back in view or the tune
+  // ends (the player's last tick: stopped, back at beat 0). CSS shows it on phones only.
+  var mini = document.getElementById("mini-player"), miniBtn = document.getElementById("mini-play"), miniRate = document.getElementById("mini-rate");
+  var started = false, boxInView = true, miniOn = false;
+  function updateMini() {
+    var on = !!mini && started && !boxInView;
+    if (on === miniOn) return;
+    miniOn = on;
+    mini.hidden = !on;
+    document.body.classList.toggle("has-mini-player", on);
+  }
+  if (mini && "IntersectionObserver" in window) {
+    // Under the sticky header counts as out of view.
+    new IntersectionObserver(function (entries) {
+      boxInView = entries[entries.length - 1].isIntersecting;
+      updateMini();
+    }, { rootMargin: "-64px 0px 0px 0px" }).observe(box);
+  }
+  function label(text) { btn.textContent = text; if (miniBtn) miniBtn.textContent = text; }
+  function toggle() {
     // The audio context is made on the first press, inside the gesture, so the browser lets it play.
     if (!player) {
       player = C.createPlayer();
       player.load({ voices: [{ name: "melody", notes: data.notes, gain: 1 }], tempoBpm: data.tempo, timeSignature: data.time });
-      player.onTick(function (t) { btn.textContent = t.playing ? "Pause" : "Play"; light(t.beat, t.playing); });
+      player.onTick(function (t) {
+        label(t.playing ? "Pause" : "Play");
+        light(t.beat, t.playing);
+        if (t.playing) started = true; else if (t.beat === 0) started = false;
+        updateMini();
+      });
       if (rate) player.setRate(parseFloat(rate.value) || 1);
       if (window.nfTrack) window.nfTrack("Hymn played", location.pathname);
     }
-    if (!player.isPlaying()) btn.textContent = "Loading…";
+    if (!player.isPlaying()) label("Loading…");
     player.toggle();
-  });
-  if (rate) rate.addEventListener("change", function () { if (player) player.setRate(parseFloat(rate.value) || 1); });
+  }
+  btn.addEventListener("click", toggle);
+  if (miniBtn) miniBtn.addEventListener("click", toggle);
+  /** Either speed control sets the one player's rate, and the other follows. */
+  function speed(from, to) {
+    if (to) to.value = from.value;
+    if (player) player.setRate(parseFloat(from.value) || 1);
+  }
+  if (rate) rate.addEventListener("change", function () { speed(rate, miniRate); });
+  if (miniRate) miniRate.addEventListener("change", function () { speed(miniRate, rate); });
 })();

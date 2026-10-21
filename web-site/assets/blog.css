@@ -288,6 +288,21 @@
 .blog-page .player label { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; font-weight: 600; color: var(--ink); }
 .blog-page .player select { min-height: 40px; padding: 0 8px; border: 1px solid var(--page-input-line); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; font-size: 14px; }
 .blog-page .hymn-page .player-note { font-family: var(--sans); color: var(--muted); font-size: 13px; }
+/* The bar at the foot of a phone's screen once a tune has started and its player is scrolled away (hymn.js; board
+   n-ux-low V3e): Play/Pause, the tune's name and tempo, the speed. Phones only; while it shows, the page keeps room for
+   it at its end. */
+.blog-page .mini-player { display: none; }
+@media (max-width: 800px) {
+  .blog-page .mini-player { position: fixed; z-index: 90; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 12px; padding: 7px 16px calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid var(--rule-strong); background: var(--bg); font-family: var(--sans); }
+  .blog-page .mini-player .play-btn { flex: none; min-height: 48px; }
+  .blog-page .mini-title { display: flex; flex: 1; flex-direction: column; min-width: 0; line-height: 1.3; }
+  .blog-page .mini-title b, .blog-page .mini-title small { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .blog-page .mini-title b { color: var(--ink); font-size: 15px; font-weight: 650; }
+  .blog-page .mini-title small { color: var(--muted); font-size: 13px; }
+  .blog-page .mini-speed { flex: none; margin: 0; }
+  .blog-page .mini-player select { min-height: 44px; padding: 0 8px; border: 1px solid var(--page-input-line); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; font-size: 16px; }
+  .blog-page.has-mini-player { padding-bottom: 76px; }
+}
 .blog-page .solfa-text { padding: 16px 18px; border: 1px solid var(--tint-line); border-radius: 8px; background: var(--tint); }
 .blog-page .hymn-page .solfa-text .doh { margin: 0 0 8px; font-family: var(--sans); color: var(--accent); font-weight: 700; font-size: 15px; }
 /* The plain-text lines wrap the same way: a bar (its solfa, its words under it) is one unit. The words
@@ -460,5 +475,5 @@
   .blog-page .az a { min-width: 36px; min-height: 36px; }
 }
 @media print {
-  .blog-page .site-header, .blog-page footer, .blog-page .cta-box, .blog-page .player, .blog-page .crumbs, .blog-page .related, .blog-page .side-list, .blog-page .share, .blog-page .theme-toggle { display: none !important; }
+  .blog-page .site-header, .blog-page footer, .blog-page .cta-box, .blog-page .player, .blog-page .mini-player, .blog-page .crumbs, .blog-page .related, .blog-page .side-list, .blog-page .share, .blog-page .theme-toggle { display: none !important; }
 }
