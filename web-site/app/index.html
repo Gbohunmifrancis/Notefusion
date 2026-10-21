@@ -42,6 +42,9 @@
   <header class="topbar">
     <button class="btn btn-ghost btn-icon drawer-toggle" id="drawer-toggle" type="button" aria-label="Open menu" aria-controls="side" aria-expanded="false"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-menu"/></svg></button>
     <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion <small>Web</small></a>
+    <!-- Phones: the section's name beside the mark (Library, Practice, Account), the heading there; Home keeps the
+         logo's name (board n-ux-low V1l; app.js setView, app.css). -->
+    <h1 class="topbar-title" id="topbar-title"></h1>
     <span class="side-spacer"></span>
     <a class="side-help how-link" href="/#how" id="how-link"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-help"/></svg>How it works</a>
     <button class="btn btn-ghost btn-sm hidden" id="topbar-signin" type="button">Sign in</button>
@@ -601,18 +604,19 @@
         </div>
       </div>
 
-      <!-- Everything you can do with the sheet, one row; each opens in a pop-up. -->
+      <!-- Everything you can do with the sheet, one row; each opens in a pop-up. Named by what they do (board n-ux-low V1j):
+           the parts tile reads "See parts" once the sheet has them (app.js syncActions). -->
       <div class="result-actions" role="toolbar" aria-label="What to do with this sheet">
         <button class="btn btn-primary" id="play" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
         <button class="act" type="button" data-tool="practice"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg><span>Learn my part</span></button>
-        <button class="act" type="button" data-tool="rehearse"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-restart"/></svg><span>Rehearse</span></button>
+        <button class="act" type="button" data-tool="rehearse"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-restart"/></svg><span>Slow &amp; loop</span></button>
         <button class="act" type="button" data-tool="save-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-save"/></svg><span>Save &amp; share</span></button>
         <button class="act" type="button" data-tool="downloads-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-download"/></svg><span>Download</span></button>
         <button class="act" type="button" data-tool="transpose-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-shift"/></svg><span>Transpose</span></button>
-        <button class="act" type="button" data-tool="lyrics-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-text"/></svg><span>Lyrics</span></button>
-        <button class="act" type="button" data-tool="chords-card"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-keys"/></svg><span>Chords</span></button>
-        <button class="act act-pro" type="button" data-tool="harmony" data-pro="1"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg><span>Four parts</span><svg class="ic act-lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg></button>
-        <button class="act act-pro" type="button" data-tool="sing" data-pro="1"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-sing"/></svg><span>Sing it</span><svg class="ic act-lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg></button>
+        <button class="act" type="button" data-tool="lyrics-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-text"/></svg><span>Add lyrics</span></button>
+        <button class="act" type="button" data-tool="chords-card"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-keys"/></svg><span>See chords</span></button>
+        <button class="act act-pro" type="button" data-tool="harmony" data-pro="1"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg><span>Add parts</span><svg class="ic act-lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg></button>
+        <button class="act act-pro" type="button" data-tool="sing" data-pro="1"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-sing"/></svg><span>Mark my singing</span><svg class="ic act-lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg></button>
       </div>
 
       <!-- ── Guest: what an account unlocks ───────────────────────────── -->
@@ -624,38 +628,6 @@
           <button class="btn btn-ghost" id="guest-cta-signin" type="button">I have an account</button>
         </div>
       </div>
-
-      <div class="verdict-card hidden" id="r-verdict" role="group" aria-labelledby="verdict-q">
-        <p class="verdict-q" id="verdict-q">How did this transcription come out?</p>
-        <div class="verdicts">
-          <button class="verdict" type="button" data-verdict="5" aria-pressed="false">Spot on</button>
-          <button class="verdict" type="button" data-verdict="3" aria-pressed="false">Close</button>
-          <button class="verdict" type="button" data-verdict="1" aria-pressed="false">Off</button>
-        </div>
-        <div class="verdict-more" id="verdict-more" hidden>
-          <div class="issues" role="group" aria-label="What was off?">
-            <button class="issue" type="button" data-issue="notes" aria-pressed="false">Wrong notes</button>
-            <button class="issue" type="button" data-issue="key" aria-pressed="false">Wrong doh</button>
-            <button class="issue" type="button" data-issue="rhythm" aria-pressed="false">Rhythm or timing</button>
-            <button class="issue" type="button" data-issue="missing" aria-pressed="false">Notes missing</button>
-            <button class="issue" type="button" data-issue="other" aria-pressed="false">Something else</button>
-          </div>
-          <label class="sr-only" for="verdict-note">Anything else? (optional)</label>
-          <textarea id="verdict-note" rows="2" maxlength="2000" placeholder="Anything else? (optional)"></textarea>
-          <div class="verdict-row">
-            <button class="btn btn-primary btn-sm" type="button" id="verdict-send">Send</button>
-            <span class="small muted">It goes to the people who tune the engine.</span>
-          </div>
-        </div>
-        <p class="verdict-thanks hidden" id="verdict-thanks" aria-live="polite"></p>
-      </div>
-
-      <!-- ── Pro, one row under the sheet (board m-ux-medium W2e): Play stays the one filled button; this opens the plans. ── -->
-      <button class="pro-row hidden" id="r-upgrade" type="button">
-        <span class="pro-row-ic" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-crown"/></svg></span>
-        <span class="pro-row-tx"><b id="r-unlock-title">More with Pro</b><small id="r-unlock-lead">Alto, tenor and bass, Sing it, downloads with no watermark</small></span>
-        <svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev"/></svg>
-      </button>
 
       <!-- The tools themselves. They live here, out of sight, and open one at a time in the pop-up below. -->
       <div class="tool-dock" id="tool-dock" hidden>
@@ -811,6 +783,40 @@
       </div>
       </div>
     </div>
+
+    <!-- The sheet's card ends with what you can do with the sheet; the question about the app and the way to Pro follow it
+         on the page (board n-ux-low V1k). Hidden with the card (app.css #result.hidden ~). -->
+    <div class="verdict-card hidden" id="r-verdict" role="group" aria-labelledby="verdict-q">
+      <p class="verdict-q" id="verdict-q">How did this transcription come out?</p>
+      <div class="verdicts">
+        <button class="verdict" type="button" data-verdict="5" aria-pressed="false">Spot on</button>
+        <button class="verdict" type="button" data-verdict="3" aria-pressed="false">Close</button>
+        <button class="verdict" type="button" data-verdict="1" aria-pressed="false">Off</button>
+      </div>
+      <div class="verdict-more" id="verdict-more" hidden>
+        <div class="issues" role="group" aria-label="What was off?">
+          <button class="issue" type="button" data-issue="notes" aria-pressed="false">Wrong notes</button>
+          <button class="issue" type="button" data-issue="key" aria-pressed="false">Wrong doh</button>
+          <button class="issue" type="button" data-issue="rhythm" aria-pressed="false">Rhythm or timing</button>
+          <button class="issue" type="button" data-issue="missing" aria-pressed="false">Notes missing</button>
+          <button class="issue" type="button" data-issue="other" aria-pressed="false">Something else</button>
+        </div>
+        <label class="sr-only" for="verdict-note">Anything else? (optional)</label>
+        <textarea id="verdict-note" rows="2" maxlength="2000" placeholder="Anything else? (optional)"></textarea>
+        <div class="verdict-row">
+          <button class="btn btn-primary btn-sm" type="button" id="verdict-send">Send</button>
+          <span class="small muted">It goes to the people who tune the engine.</span>
+        </div>
+      </div>
+      <p class="verdict-thanks hidden" id="verdict-thanks" aria-live="polite"></p>
+    </div>
+
+    <!-- ── Pro, one row under the sheet (board m-ux-medium W2e): Play stays the one filled button; this opens the plans. ── -->
+    <button class="pro-row hidden" id="r-upgrade" type="button">
+      <span class="pro-row-ic" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-crown"/></svg></span>
+      <span class="pro-row-tx"><b id="r-unlock-title">More with Pro</b><small id="r-unlock-lead">Alto, tenor and bass, Sing it, downloads with no watermark</small></span>
+      <svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev"/></svg>
+    </button>
 
     <!-- ── One tool at a time: a sheet that rises from the bottom on a phone, a dialog on a desk ── -->
     <div class="modal tool-modal hidden" id="tool-modal" role="dialog" aria-modal="true" aria-label="Tool">

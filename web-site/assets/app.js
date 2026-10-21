@@ -820,6 +820,10 @@
       history.replaceState(history.state, "", url.pathname + url.search + url.hash);
     } catch (e) { /* the address keeps the old view; nothing depends on it */ }
     ["transcribe", "library", "practice", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
+    // A phone's top bar names the section (app.css, under 641 px); Home keeps the logo's name.
+    var section = { library: "Library", practice: "Practice", account: "Account" }[name] || "";
+    $("topbar-title").textContent = section;
+    $("topbar-title").parentNode.classList.toggle("has-title", !!section);
     // The nav says where you are, to the eye and to a screen reader; Search lights itself, not Library.
     var navOn = focusSearch ? "search" : name;
     // The phone's tab bar has no Search (the Library's own box is it) and no Account (the photo, top right).
@@ -839,8 +843,9 @@
     var from = viewNow;
     if (window.NfBack && (name === "search" ? "library" : name) !== from) NfBack.push(function () { setView(from); });
     setView(name);
-    // A screen reader hears the new view's heading (Search goes to its field instead).
+    // A screen reader hears the new view's heading (Search goes to its field instead): on a phone, the top bar's.
     var h = name !== "search" && document.querySelector("#view-" + viewNow + " h1");
+    if (h && h.offsetParent === null) h = $("topbar-title");
     if (h && h.offsetParent !== null) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
   }
   document.querySelectorAll("#top-nav .top-link, .user-menu-item[data-view], #tabbar [data-view]").forEach(function (b) { b.addEventListener("click", function () { goView(b.dataset.view); }); });
@@ -3977,6 +3982,8 @@
       var id = b.getAttribute("data-tool"), panel = $(id);
       var showsParts = id === "harmony" && !!current && P.action(current.result) === "show";
       b.hidden = !showsParts && (!panel || panel.classList.contains("hidden"));
+      // Named by what it does: it writes the parts, or opens the ones the sheet has.
+      if (id === "harmony") b.querySelector("span").textContent = showsParts ? "See parts" : "Add parts";
     });
   }
   /** A Pro-only action, from anywhere: close the pop-up and open the plans (a guest is asked to sign up first). */

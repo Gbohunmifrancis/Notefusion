@@ -166,6 +166,7 @@ body.guest .shell { grid-template-columns: minmax(0, 1fr); grid-template-rows: a
 body.guest .side { display: none; }
 body.guest .topbar { display: flex; }
 .topbar { position: sticky; top: 0; z-index: 20; height: var(--topbar-h); align-items: center; gap: 12px; padding: 0 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.topbar-title { display: none; }
 
 /* ── Home: the greeting and the studio card ──────────────────────────────── */
 .home { text-align: center; padding: clamp(12px, 5vh, 48px) 0 22px; }
@@ -675,6 +676,12 @@ main h1[tabindex="-1"]:focus { outline: none; }
   /* Toasts sit over the bar, not under it. */
   body.has-tabbar .pay-toast, body.has-tabbar .pv-toast { bottom: calc(76px + env(safe-area-inset-bottom)); }
   body.has-tabbar .why-toast { bottom: calc(88px + env(safe-area-inset-bottom)); }
+  /* The bar names the section beside the mark, and is the heading there: the page's own h1 steps aside, its lead line
+     stays (board n-ux-low V1l). The mark keeps a 44 px target without pushing the name along. */
+  body.has-tabbar .topbar.has-title .brand { flex: none; gap: 0; font-size: 0; padding-right: 14px; margin-right: -14px; }
+  body.has-tabbar .topbar.has-title .topbar-title { display: block; flex: 1; min-width: 0; margin: 0 0 0 4px; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  body.has-tabbar .topbar-title:focus { outline: none; }
+  body.has-tabbar .page-head h1 { display: none; }
 }
 .tab-cell, .tab-rec {
   position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-width: 0; min-height: 64px;

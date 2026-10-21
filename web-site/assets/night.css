@@ -310,6 +310,12 @@ table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
 .pro-row-tx b { font-size: 0.9375rem; font-weight: 600; }
 .pro-row-tx small { font-size: 0.875rem; color: var(--muted); line-height: 1.35; }
 .pro-row > .ic { width: 16px; height: 16px; color: var(--muted); }
+/* Both follow the sheet's card on the page, not inside it (board n-ux-low V1k): the question in no box of its own, then
+   Pro's row; they go with the card. */
+#result.hidden ~ #r-verdict, #result.hidden ~ #r-upgrade { display: none !important; }
+#view-transcribe > #result { margin-bottom: 0; }
+#view-transcribe > #r-verdict { margin: 18px 0 0; padding: 4px 2px 0; border: 0; background: none; }
+#view-transcribe > #r-upgrade { margin: 12px 0 0; background: var(--surface); }
 
 /* How did it come out? One tap, then (only if it was off) what was off. */
 .verdict-card { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 14px 0 0; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); }
@@ -493,7 +499,7 @@ body:not(.is-pro):not(.guest) .act-pro .act-lock { display: inline-block; }
   .result-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
   .result-actions #play { grid-column: 1 / -1; min-width: 0; width: 100%; }
   /* The labels at 13 px on every phone (board m-ux-medium W2f): four still fit across at 360 px, "Transpose" in a
-     68 px tile, and "Save & share" and "Four parts" take two lines. */
+     68 px tile; "Save & share", "Slow & loop" and "Mark my singing" take two lines (board n-ux-low V1j). */
   .result-actions .act { flex-direction: column; justify-content: center; gap: 4px; min-height: 64px; min-width: 0; padding: 8px 1px;
     border-radius: 12px; font-size: 13px; line-height: 1.2; text-align: center; }
   .result-actions .act .ic { width: 20px; height: 20px; flex: none; }
