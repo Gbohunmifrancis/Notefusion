@@ -566,8 +566,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   "Pro now" a tick; never naira, no country, opted out, store/choir Pro, or an outreach email in the last 7 days), and
   `OfferEmailWorker` sends them as optional mail (`EmailKind.Offer`, held by the quota) 09:00–19:00 in each person's time,
   lapsed first, skipping anyone who bought or ended. The email (`BrandedEmailTemplate.Offer`, header
-  `web-site/email/season-*.png`) needs `Email__PostalAddress` (the footer's company name and address; Send is refused
-  without it) and its unsubscribe is the founder-notes `EmailOptOut`, shown as "Notes and offers from NoteFusion".
+  `web-site/email/season-*.png`) needs `Email__PostalAddress` (the footer's postal address, "NoteFusion · {it}"; production's compose default is
+  651 N Broad Street, Middletown, DE 19709, USA; Send is refused while it is blank) and its unsubscribe is the founder-notes `EmailOptOut`, shown as "Notes and offers from NoteFusion".
   Clicks and purchases are counted, opens never.
 - Email quota (`Application/Common/EmailBudget`, `Infrastructure/Email/EmailQuota`): every email Resend accepts is an
   `email_sends` row (kind + time); optional mail (welcome, waitlist, checkout reminder, failed-job tips, outreach) goes only
