@@ -154,6 +154,36 @@ def test_an_unsure_dohs_alternatives_reach_the_wire(monkeypatch):
         assert "key_alternatives" not in body["result"]
 
 
+@pytest.mark.parametrize("beat_times", [[0.512, 1.118, 1.731], None])
+def test_a_songs_beat_map_reaches_the_wire_as_beat_times_sec(monkeypatch, beat_times):
+    """``beatTimesSec`` is what the clients interpolate to play the sheet over the backing: camelCase
+    when there is one, and absent (not null) when there is none, so they fall back to the line."""
+    from app.jobs import queue as queue_mod
+    from app.pipeline.transcriber import TranscriptionResult
+
+    def fake_transcribe(audio_path, mode="melody", **kwargs):
+        return TranscriptionResult(
+            key="C major", key_confidence=1.0, tempo=99, time_signature="4/4", musicxml="<score/>",
+            midi_base64="bWk=", notes=[], solfa_lines=["Doh is C"], overall_confidence=1.0,
+            beat_origin_sec=0.512, beat_times_sec=beat_times)
+
+    monkeypatch.setattr(queue_mod, "transcribe", fake_transcribe)
+
+    with TestClient(app) as client:
+        r = client.post(
+            "/v1/transcribe",
+            files={"audio": ("clip.wav", BytesIO(_make_wav(duration_sec=0.5)), "audio/wav")},
+            data={"mode": "melody"},
+        )
+        body = _wait_for_status(client, SubmitResponse.model_validate(r.json()).job_id, STATUS_DONE)
+        assert body["result"]["beatOriginSec"] == 0.512
+        if beat_times is None:
+            assert "beatTimesSec" not in body["result"]
+        else:
+            assert body["result"]["beatTimesSec"] == beat_times
+        assert "beat_times_sec" not in body["result"]
+
+
 def test_submit_rejects_empty_file():
     with TestClient(app) as client:
         r = client.post(

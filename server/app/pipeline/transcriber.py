@@ -1308,8 +1308,15 @@ class TranscriptionResult:
     parts_source: str | None = None
     # Where beat 0 falls in the source audio, in seconds. With ``backing_audio_base64``
     # it is what lets a client play the notated melody over the song's own backing in
-    # time: audio time of beat b is ``beat_origin_sec + b * 60 / tempo``.
+    # time: audio time of beat b is ``beat_origin_sec + b * 60 / tempo`` (``beat_times_sec``
+    # when there is one, which is closer).
     beat_origin_sec: float = 0.0
+    # A separated song's stem only (the queue keeps it only beside ``backing_audio_base64``):
+    # the audio time, in seconds, of notation beat i for i = 0..n, n at or past the last
+    # note's end beat, increasing; between entries the clients interpolate.  It puts each
+    # note back where the band played it, which the line above misses when the band moves or
+    # the tempo is not a whole number (``_beat_map``).  None everywhere else.
+    beat_times_sec: list[float] | None = None
     # How far step 8b moved every note into the first bar, in beats, so a tune that starts
     # on an upbeat starts on it: 0.0 when the first bar line is at the first note.  The notes'
     # ``start_beat`` already carry it (and ``beat_origin_sec`` is that much earlier); this
@@ -4623,6 +4630,138 @@ def _refine_grid(
     return best[0], best[1]
 
 
+# The beat map (``_beat_map``, ``_snap_offsets``).  Each note asks the ten written either side of
+# it where the band's beat sits against the counted grid: their offsets as phases of the grid
+# step, less the steady lean that lines them up best (at most ``_BEAT_MAP_MAX_LEAN`` beats per
+# beat, the band up to 8% off the counted tempo).  Within ``_BEAT_MAP_ON_GRID`` of a step of the
+# grid (and agreeing at all, ``_BEAT_MAP_SOME_AGREEMENT``) the band is on the grid there, and the
+# note keeps its written slot, the line's time.  Otherwise, where they agree
+# (``_BEAT_MAP_AGREEMENT``), the note moves onto their phase if that is ``_BEAT_MAP_SNAP`` of a
+# step or less from where it was heard; further, it is likelier sung off the beat on purpose
+# than misheard, and it keeps where it was heard, as does a note whose neighbours disagree.
+_BEAT_MAP_NEIGHBOURS = 10
+_BEAT_MAP_MAX_LEAN = 0.08
+_BEAT_MAP_ON_GRID = 0.08
+_BEAT_MAP_SOME_AGREEMENT = 0.3
+_BEAT_MAP_AGREEMENT = 0.6
+_BEAT_MAP_SNAP = 0.3
+# How firmly the map holds one knot's offset to the next.  It decides only the beats no note
+# pins, which then run straight between the notes either side (and keep the end notes'
+# offset before the first and after the last); where notes are, the fit follows them.
+_BEAT_MAP_SMOOTHING = 0.02
+# No beat of the map is shorter than this share of the counted one, so it always increases.
+_BEAT_MAP_MIN_BEAT = 0.25
+
+
+def _beat_map(origin: float, bpm: float, heard: Sequence[tuple[float, float]], last_beat: float,
+              step: float | None) -> list[float]:
+    """The audio time, in seconds to the ms, of every notation beat 0..n, n >= ``last_beat``.
+
+    A separated song's sheet is played over the song's own instrumental, each note at the
+    audio time of its ``start_beat``.  ``beat_origin_sec + start_beat * 60 / tempo`` misses on
+    two counts, measured on three-minute songs sung over a band on a moving clock
+    (``python -m tests.accuracy.song_clock``, ms from each note's true onset, mean / 95th):
+
+    * ``tempo`` is a whole number and the beats were counted at ``bpm``, which is not: the
+      line drifts by ``b * 60 * (1/round(bpm) - 1/bpm)``.  A steady song at 97.4 BPM is read
+      as 97: 417 / 769 ms, 801 at the end; at 97.4 it is 14 / 14.
+    * A band speeds up and slows down, and the notes were rounded to the grid at one tempo, so
+      once the band has drifted part of a step from that grid every note on its beat is written
+      up to half a step (a quarter of a beat on the eighths grid) from where it was sung, and
+      played there even at the exact ``bpm``: 54-78 / 119-179 ms on songs whose tempo moves
+      4%, which is nothing to a band.
+
+    The sheet's notes stay exactly as written.  ``heard`` is, for each of them, (the beat it is
+    written on, the beat it was heard on at ``bpm``), both from the sheet's beat 0 (after any
+    pickup), and the map puts each written beat back where the band played it: knot ``i`` sits
+    at ``origin + (i + offset_i) * 60 / bpm``, the offsets the least-squares fit of each note's
+    offset interpolated between knots as the clients interpolate them.  The offsets are read
+    through the note's neighbours (``_snap_offsets``): fitted to the heard onsets alone the map
+    was 17-19 / 38-52 ms, the onsets' own error, and worse than the line on a steady song.  As
+    read: 11-18 / 27-43 ms on the moving songs, worst 60-70 ms; on the steady ones exactly the
+    line (12 / 13 and 14 / 14); and on the sixteen studio hymn songs of ``studio_songs`` (steady
+    bands, a singer whose onsets are harder to hear) the line's own figures, 78 ms at the 95th
+    on average against 79 (median 25 against 25), the tail there being notes the sheet writes
+    in the wrong slot, which no mapping moves.  What is left on a moving band: a quaver and the
+    next beat written half a beat apart but sung a whole beat apart, where the band crosses a
+    step's edge between them, pull the one beat both ways (60-95 ms, a few notes a song); and a
+    misheard onset further from its neighbours' phase than a snap goes keeps its error (one in
+    2,400 notes, 192 ms).
+
+    ``step`` is the quantizer's grid step in beats, or None when the grid is not one step.
+    Beat 0 is still the sheet's beat 0, the start of the first bar, so a pickup sits before it
+    as ``beat_origin_sec`` has it.
+    """
+    from scipy.linalg import solve_banded
+
+    spb = 60.0 / bpm
+    n = max(1, int(np.ceil(last_beat - 1e-9)))
+    pairs = sorted((float(w), float(h)) for w, h in heard if 0.0 <= w <= n and np.isfinite(h))
+    written = np.array([w for w, _h in pairs])
+    offset = np.array([h - w for w, h in pairs])
+
+    shift = np.zeros(n + 1)
+    if written.size:
+        if step:
+            offset = _snap_offsets(written, offset, step)
+        # min |A x - offset|^2 + smoothing * |D x|^2: A interpolates the knots at each written
+        # beat, D takes one knot from the next.  The normal equations are tridiagonal; in
+        # ``solve_banded``'s layout row 0 holds the upper diagonal, 1 the main, 2 the lower.
+        bands = np.zeros((3, n + 1))
+        rhs = np.zeros(n + 1)
+        bands[1] += 2.0 * _BEAT_MAP_SMOOTHING
+        bands[1, [0, n]] -= _BEAT_MAP_SMOOTHING
+        bands[0, 1:] -= _BEAT_MAP_SMOOTHING
+        bands[2, :-1] -= _BEAT_MAP_SMOOTHING
+        left = np.minimum(np.floor(written).astype(int), n - 1)
+        frac = written - left
+        np.add.at(bands[1], left, (1.0 - frac) ** 2)
+        np.add.at(bands[1], left + 1, frac ** 2)
+        np.add.at(bands[0], left + 1, frac * (1.0 - frac))
+        np.add.at(bands[2], left, frac * (1.0 - frac))
+        np.add.at(rhs, left, (1.0 - frac) * offset)
+        np.add.at(rhs, left + 1, frac * offset)
+        shift = solve_banded((1, 1), bands, rhs)
+
+    beats = np.arange(n + 1, dtype=float)
+    times = origin + (beats + shift) * spb
+    floor = _BEAT_MAP_MIN_BEAT * spb
+    times = np.maximum.accumulate(times - beats * floor) + beats * floor
+    return [round(float(t), 3) for t in times]
+
+
+def _snap_offsets(written: np.ndarray, offset: np.ndarray, step: float) -> np.ndarray:
+    """Each note's ``offset`` (heard minus written, beats; ``written`` ascending) as the band
+    places it, read from its neighbours (see the constants above).
+
+    A note sung on a band's beat is written on the step nearest it, so its offset is where the
+    band's beat sits against the counted grid, modulo the step, plus the onset's own error;
+    the neighbours' circular mean, with the lean that lines them up best taken out, is that
+    phase without the error.  Circular, because the offsets wrap: a band drifting past the
+    edge of a step writes the next note on the other side of it.  A note moved to a free slot
+    by ``_one_note_per_slot`` is a whole step off, which the phase does not see.  Where that
+    phase is the grid's, the grid itself is the better reading: the tempo and origin it was
+    counted at were fitted to every onset in the song, which the twenty around one note are
+    not, and a song whose band keeps time is then played on the line.
+    """
+    turn = 2.0 * np.pi / step
+    phase = np.exp(1j * turn * offset)
+    leans = np.linspace(-_BEAT_MAP_MAX_LEAN, _BEAT_MAP_MAX_LEAN, 33)
+    out = offset.copy()
+    for j in range(offset.size):
+        lo, hi = max(0, j - _BEAT_MAP_NEIGHBOURS), min(offset.size, j + _BEAT_MAP_NEIGHBOURS + 1)
+        mean = (np.exp(-1j * turn * np.outer(leans, written[lo:hi] - written[j])) * phase[lo:hi]).mean(axis=1)
+        best = int(np.argmax(np.abs(mean)))
+        agreement, band = abs(mean[best]), np.angle(mean[best]) / turn
+        if abs(band) < _BEAT_MAP_ON_GRID * step and agreement >= _BEAT_MAP_SOME_AGREEMENT:
+            out[j] = 0.0
+            continue
+        if agreement < _BEAT_MAP_AGREEMENT:
+            continue
+        move = (band - offset[j] + step / 2.0) % step - step / 2.0
+        if abs(move) <= _BEAT_MAP_SNAP * step:
+            out[j] = offset[j] + move
+    return out
 @dataclass(frozen=True)
 class DecodingStrategy:
     """Named decoding strategy selecting inference thresholds and stages (W7)."""
@@ -5681,6 +5820,8 @@ def _transcribe_wav(
                 chord_spans = [replace(c, start_beat=c.start_beat + pickup) for c in chord_spans]
     time_signature = time_signature or "4/4"
     s.insert(0, meter.TimeSignature(time_signature))
+    # Each written note and the beat it was heard on, both from beat 0 (``_beat_map``).
+    heard = [(float(n.offset), heard_at[id(n)] + pickup) for n in s.notes if id(n) in heard_at]
 
     # ── 9. Key detection ──────────────────────────────────────────────────────
     # Manual override always wins (TRD par. 4.1).
@@ -5920,6 +6061,12 @@ def _transcribe_wav(
         overall_confidence=_overall_confidence(notes, headline_doh if vocal_fit is not None else None),
         audio_preview_base64=audio_preview_b64,
         beat_origin_sec=round(float(beat_origin), 4),
+        # The queue hands a mix in as ``tempo_source`` only with a separated song's stem, the
+        # one sheet that has a backing to be played over.
+        beat_times_sec=_beat_map(
+            beat_origin, bpm, heard, max(n.start_beat + n.dur_beats for n in notes),
+            step=1.0 / settings.quantize_divisors[0] if len(settings.quantize_divisors) == 1 else None)
+        if tempo_source is not None else None,
         pickup_beats=pickup,
         # Read off the events rather than re-testing duration against the cap, so this
         # cannot drift from what _pyin_track actually did: _refine_pitches sets
