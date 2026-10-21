@@ -17,6 +17,9 @@ export const HYMN_PREVIEW: PreviewHymn[] = [
   { slug: "it-is-well-with-my-soul", kind: "hymn", title: "It Is Well with My Soul", firstLine: "When peace, like a river, attendeth my way,", tune: "VILLE DU HAVRE", key: "Db major", time: "4/4" },
   { slug: "holy-holy-holy", kind: "hymn", title: "Holy, Holy, Holy! Lord God Almighty", firstLine: "Holy, holy, holy! Lord God Almighty!", tune: "NICAEA", key: "D major", time: "4/4" },
   { slug: "blessed-assurance", kind: "hymn", title: "Blessed Assurance", firstLine: "Blessed assurance, Jesus is mine!", tune: "ASSURANCE", key: "D major", time: "9/8" },
+  { slug: "o-god-our-help-in-ages-past", kind: "hymn", title: "O God, Our Help in Ages Past", firstLine: "O God, our help in ages past,", tune: "ST ANNE", key: "C major", time: "4/4" },
+  { slug: "when-i-survey-the-wondrous-cross", kind: "hymn", title: "When I Survey the Wondrous Cross", firstLine: "When I survey the wondrous cross", tune: "ROCKINGHAM", key: "D major", time: "3/4" },
+  { slug: "to-god-be-the-glory", kind: "hymn", title: "To God Be the Glory", firstLine: "To God be the glory, great things He hath done!", tune: "TO GOD BE THE GLORY", key: "Ab major", time: "3/4" },
 ];
 
 /** Each row a little fainter than the one above, so the list trails off towards the tab bar. */

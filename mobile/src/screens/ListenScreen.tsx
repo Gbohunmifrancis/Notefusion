@@ -11,7 +11,7 @@
  */
 
 import React, { useEffect } from "react";
-import { AppState, Platform, StyleSheet, Text, View } from "react-native";
+import { AppState, Platform, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -35,6 +35,10 @@ export function ListenScreen({ navigation }: Props) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  // The dial is the page's hero: seven tenths of the screen's width, the letter half the dial (a 412 dp phone: 288 / 132).
+  const dialSize = Math.round(Math.min(360, Math.max(220, width * 0.7)));
+  const dohSize = Math.round(dialSize * 0.46);
   const listener = useKeyListener();
   const { available, running, starting, hearing, silenced, doh, keyName, confidence, chord, error, start, stop } = listener;
 
@@ -93,10 +97,20 @@ export function ListenScreen({ navigation }: Props) {
           <View style={styles.backBtn} />
         </View>
 
-        <Card style={styles.stage}>
+        {/* No card round it: the dial is the page's centrepiece, as a tuner's is, with the page around it. */}
+        <View style={styles.stage}>
           <Text style={styles.stageLabel}>{doh ? "Doh is" : running ? "Listening for the doh" : "Doh"}</Text>
-          <View style={[styles.dial, doh ? styles.dialOn : null]}>
-            <Text style={[styles.doh, !doh && styles.dohEmpty]} accessibilityLabel={doh ? `Doh is ${doh}` : "No key yet"}>
+          <View
+            style={[
+              styles.dial,
+              { width: dialSize, height: dialSize, borderRadius: dialSize / 2 },
+              doh ? styles.dialOn : null,
+            ]}
+          >
+            <Text
+              style={[styles.doh, { fontSize: dohSize, lineHeight: Math.round(dohSize * 1.1) }, !doh && styles.dohEmpty]}
+              accessibilityLabel={doh ? `Doh is ${doh}` : "No key yet"}
+            >
               {doh ?? "—"}
             </Text>
           </View>
@@ -115,7 +129,7 @@ export function ListenScreen({ navigation }: Props) {
           ) : null}
 
           {statusLine ? <Text style={[styles.status, running && !hearing && styles.statusWarn]}>{statusLine}</Text> : null}
-        </Card>
+        </View>
 
         {error ? (
           <Card style={styles.card}>
@@ -188,28 +202,24 @@ const makeStyles = (c: Palette) =>
     pageTitle: { fontFamily: fonts.semibold, fontSize: 18, color: c.text },
     card: { marginBottom: spacing.md },
 
-    /** Grows into the spare height and keeps its contents in its middle; never shorter than they are. */
-    stage: { flexGrow: 1, alignItems: "center", justifyContent: "center", paddingVertical: spacing.xl, marginBottom: spacing.md },
+    /** Grows into the spare height and keeps the dial in its middle; never shorter than its contents. */
+    stage: { flexGrow: 1, alignItems: "center", justifyContent: "center", paddingVertical: spacing.lg, marginBottom: spacing.md },
     stageLabel: { ...typography.caption, color: c.textMuted, textTransform: "uppercase", letterSpacing: 1 },
-    /** The hero: one letter, as large as the card allows. System font — Poppins has no glyph this size. */
+    /** The hero: one letter, sized to its dial. System font — Poppins has no glyph this size. */
     doh: {
-      fontSize: 112,
-      lineHeight: 124,
       fontWeight: "800",
       color: c.accent,
       textShadowColor: c.accentGlow,
       textShadowOffset: { width: 0, height: 0 },
       textShadowRadius: 18,
     },
-    dohEmpty: { color: c.textFaint, textShadowRadius: 0 },
-    /** The ring the doh sits in, like a tuner's dial: neutral until a key is heard. */
+    /** A thin dash until a key is heard, however large the dial. */
+    dohEmpty: { color: c.textFaint, textShadowRadius: 0, fontWeight: "200" },
+    /** The ring the doh sits in, like a tuner's dial: neutral until a key is heard. Its size is set from the width. */
     dial: {
-      width: 196,
-      height: 196,
-      borderRadius: 98,
       borderWidth: 2,
       borderColor: c.border,
-      backgroundColor: c.surfaceAlt,
+      backgroundColor: c.surface,
       alignItems: "center",
       justifyContent: "center",
       marginVertical: spacing.md,

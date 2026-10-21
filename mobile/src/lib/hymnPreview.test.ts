@@ -22,10 +22,10 @@ test("every preview row is the pack's own: title, first line, tune, key and time
 
 test("the rows fade towards the foot: the first third whole, then fainter each row, never gone", () => {
   const n = HYMN_PREVIEW.length;
+  const whole = Math.ceil(n / 3);
   const opacities = HYMN_PREVIEW.map((_, i) => previewOpacity(i, n));
-  assert.equal(opacities[0], 1);
-  assert.equal(opacities[1], 1);
-  for (let i = 2; i < n; i++) assert.ok(opacities[i] < opacities[i - 1], `row ${i} is fainter than row ${i - 1}`);
+  for (let i = 0; i < whole; i++) assert.equal(opacities[i], 1, `row ${i} is whole`);
+  for (let i = whole; i < n; i++) assert.ok(opacities[i] < opacities[i - 1], `row ${i} is fainter than row ${i - 1}`);
   assert.ok(opacities[n - 1] >= 0.15);
   assert.equal(previewOpacity(0, 1), 1);
 });

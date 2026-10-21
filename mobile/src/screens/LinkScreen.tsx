@@ -115,6 +115,8 @@ export function LinkScreen() {
    * a link is typed letter by letter it waits until the field is left, rather than nagging at every keystroke.
    */
   const [pasted, setPasted] = useState(false);
+  /** The last step's height, so the timeline's line stops at its number rather than under its words. */
+  const [lastStepHeight, setLastStepHeight] = useState(0);
   /** Beats in a bar for this song; null is Not sure. Back to Not sure once a song is sent (lib/meter). */
   const [meter, setMeter] = useState<Meter | null>(null);
   /** "More options" unfolded: the Beats-in-a-bar chips, folded away by default (board l-ux-high 02b). */
@@ -474,7 +476,10 @@ export function LinkScreen() {
         {!busy && ready ? (
           <>
             <Text style={styles.eyebrow}>How it works</Text>
+            {/* A timeline: the steps share the height down to the small print (up to a point), joined by a line through
+                their numbers that stops at the last one. */}
             <View style={styles.steps}>
+              <View style={[styles.stepLine, { bottom: Math.max(14, lastStepHeight - 14) }]} />
               <View style={styles.step}>
                 <View style={styles.stepNumber}>
                   <Text style={styles.stepNumberText}>1</Text>
@@ -494,7 +499,7 @@ export function LinkScreen() {
                   <Text style={styles.stepText}>Then pick the part of the song you want.</Text>
                 </View>
               </View>
-              <View style={styles.step}>
+              <View style={styles.step} onLayout={(e) => setLastStepHeight(e.nativeEvent.layout.height)}>
                 <View style={styles.stepNumber}>
                   <Text style={styles.stepNumberText}>3</Text>
                 </View>
@@ -823,7 +828,9 @@ const makeStyles = (c: Palette) =>
       color: c.textMuted, marginTop: 30,
     },
     // Sentences that wrap read from the left, on the gutter (board n-ux-low Q5f): the steps, the bar's line, the legal note.
-    steps: { marginTop: spacing.md, gap: spacing.lg },
+    steps: { flexGrow: 1, maxHeight: 460, justifyContent: "space-between", gap: spacing.lg, marginTop: spacing.md },
+    /** Behind the numbers, from the first one's middle (each is 28 tall) to the last one's. */
+    stepLine: { position: "absolute", left: 13.5, top: 14, bottom: 14, width: 1, backgroundColor: c.border },
     step: { flexDirection: "row", alignItems: "flex-start", gap: spacing.md },
     stepNumber: {
       width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center",
@@ -833,6 +840,7 @@ const makeStyles = (c: Palette) =>
     stepBody: { flex: 1 },
     stepTitle: { fontFamily: fonts.semibold, fontSize: 16, lineHeight: 24, color: c.text },
     stepText: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted, marginTop: 2 },
+
     hint: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, marginTop: spacing.sm },
     reading: { marginTop: spacing.md, paddingHorizontal: spacing.xs },
     readingText: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
