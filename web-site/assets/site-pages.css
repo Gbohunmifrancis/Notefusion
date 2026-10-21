@@ -60,7 +60,7 @@
   --page-pro: #b45309;           /* Pro, as text: 5:1 on white */
   --page-pro-line: #f3c56b;
   --page-danger: #dc2626;
-  --page-danger-hover: #b91c1c;
+  --page-danger-text: #b91c1c;   /* a destructive action's words, as the web app's --danger-text: 6:1 on --page-wash */
   --page-bad-fg: #991b1b; --page-bad-bg: #fef2f2; --page-bad-line: #fecaca;
   --page-good-fg: #166534; --page-good-bg: #f0fdf4; --page-good-line: #bbf7d0;
   --page-info-fg: #1e40af; --page-info-bg: #eff6ff; --page-info-line: #bfdbfe;
@@ -109,6 +109,7 @@
   --page-focus: rgba(120, 170, 255, .6);
   --page-pro: #f5b544;
   --page-pro-line: rgba(245, 181, 68, .45);
+  --page-danger-text: #ff4d5e;
   --page-bad-fg: #fca5a5; --page-bad-bg: rgba(220, 38, 38, .12); --page-bad-line: rgba(248, 113, 113, .35);
   --page-good-fg: #86efac; --page-good-bg: rgba(22, 163, 74, .12); --page-good-line: rgba(74, 222, 128, .3);
   --page-info-fg: #b9d3ff; --page-info-bg: rgba(47, 123, 255, .12); --page-info-line: rgba(96, 152, 255, .35);
@@ -211,8 +212,12 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .site-page-main .checkbox-group { display: flex; align-items: flex-start; gap: 8px; margin: 16px 0 24px; }
 .site-page-main .checkbox-group input { width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--page-danger); flex: 0 0 auto; }
 .site-page-main .checkbox-group label { margin: 0; color: var(--page-text-2); font-size: 14px; line-height: 1.55; font-weight: 400; }
-.site-page-main button.btn-danger { width: 100%; min-height: 44px; border: 0; border-radius: var(--r-sm); background: var(--page-danger); color: #fff; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s; }
-.site-page-main button.btn-danger:hover { background: var(--page-danger-hover); }
+/* Destructive: a neutral fill and red words, as the web app's (board n-ux-low V3g); never a red slab. */
+.site-page-main button.btn-danger { width: 100%; min-height: 44px; border: 1px solid var(--page-line-strong); border-radius: var(--r-sm); background: var(--page-wash); color: var(--page-danger-text); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.site-page-main button.btn-danger:hover { background: var(--page-bad-bg); }
+/* /delete-account: the way from the request form down to what is deleted and what is kept. */
+.site-page-main .del-jump { margin: -4px 0 16px; }
+.site-page-main .del-jump a { display: inline-block; padding-block: 10px; margin-block: -10px; font-weight: 600; }  /* a 44 px target in its own line */
 .site-page-main .card button[type=submit]:not(.btn-danger) { width: 100%; min-height: 44px; border: 0; border-radius: var(--r-sm); background: var(--page-fill); color: var(--page-on-fill); font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s; }
 .site-page-main .card button[type=submit]:not(.btn-danger):hover { background: var(--page-fill-hover); }
 .site-page-main button:disabled { opacity: .54; cursor: not-allowed; box-shadow: none; }
