@@ -329,41 +329,38 @@ export function HymnsScreen() {
     // The sentence and the button never change (board n-ux-low Q4k): the count and the size arrive on a line of their
     // own under the button, its height held by a skeleton until the website answers, so nothing re-wraps or is cut.
     return (
-      <Screen scroll contentStyle={styles.offerPage}>
+      <Screen scroll contentStyle={styles.tabBarRoom}>
         {header}
-        {/* The offer sits in the middle of the screen, not under the header with the rest left empty. */}
-        <View style={styles.centerBody}>
-          <Card style={styles.card}>
-            <View style={styles.offerIcon}>
-              <Icon name="hymns" size={24} color={colors.icon} />
-            </View>
-            <Text style={styles.offerTitle}>Hymns you can use anywhere</Text>
-            <Text style={styles.offerBody}>
-              Public-domain hymns and tunes in Tonic Solfa and staff, with the words and a piano. Download them once and
-              they work with no data at all.
-            </Text>
-            {progress !== null ? (
-              <View style={styles.progressBlock} accessibilityLabel={`Downloading, ${Math.round(progress * 100)} percent`}>
-                <View style={styles.progressTrack}>
-                  <View style={[styles.progressFill, { width: `${Math.max(4, Math.round(progress * 100))}%` }]} />
-                </View>
-                <Text style={styles.progressText}>Downloading… {Math.round(progress * 100)}%</Text>
+        <Card style={styles.card}>
+          <View style={styles.offerIcon}>
+            <Icon name="hymns" size={24} color={colors.icon} />
+          </View>
+          <Text style={styles.offerTitle}>Hymns you can use anywhere</Text>
+          <Text style={styles.offerBody}>
+            Public-domain hymns and tunes in Tonic Solfa and staff, with the words and a piano. Download them once and
+            they work with no data at all.
+          </Text>
+          {progress !== null ? (
+            <View style={styles.progressBlock} accessibilityLabel={`Downloading, ${Math.round(progress * 100)} percent`}>
+              <View style={styles.progressTrack}>
+                <View style={[styles.progressFill, { width: `${Math.max(4, Math.round(progress * 100))}%` }]} />
               </View>
-            ) : (
-              <Button label="Download hymns for offline" icon="keep-offline" onPress={() => void download()} />
-            )}
-            <View style={styles.sizeLine}>
-              {meta ? (
-                <Text style={styles.sizeText} numberOfLines={1}>
-                  {`${meta.count > 0 ? `${meta.count} hymns and tunes · ` : ""}${formatBytes(meta.bytes)}`}
-                </Text>
-              ) : metaIn ? null : (
-                <Skeleton width={150} height={12} radius={radii.sm} />
-              )}
+              <Text style={styles.progressText}>Downloading… {Math.round(progress * 100)}%</Text>
             </View>
-            {dataSaver ? <Text style={styles.note}>Data saver is on: the hymns only update when you ask.</Text> : null}
-          </Card>
-        </View>
+          ) : (
+            <Button label="Download hymns for offline" icon="keep-offline" onPress={() => void download()} />
+          )}
+          <View style={styles.sizeLine}>
+            {meta ? (
+              <Text style={styles.sizeText} numberOfLines={1}>
+                {`${meta.count > 0 ? `${meta.count} hymns and tunes · ` : ""}${formatBytes(meta.bytes)}`}
+              </Text>
+            ) : metaIn ? null : (
+              <Skeleton width={150} height={12} radius={radii.sm} />
+            )}
+          </View>
+          {dataSaver ? <Text style={styles.note}>Data saver is on: the hymns only update when you ask.</Text> : null}
+        </Card>
       </Screen>
     );
   }
@@ -642,9 +639,6 @@ const makeStyles = (c: Palette) =>
   StyleSheet.create({
     /** Clears the floating tab bar. */
     tabBarRoom: { paddingBottom: 120 },
-    offerPage: { paddingBottom: 120, flexGrow: 1 },
-    /** Fills what the header leaves above the tab bar and centres the offer in it. */
-    centerBody: { flex: 1, justifyContent: "center" },
 
     card: { gap: spacing.md },
     offerIcon: {
