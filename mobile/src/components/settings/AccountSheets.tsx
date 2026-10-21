@@ -176,18 +176,15 @@ export function AboutSheet({ visible, onClose }: { visible: boolean; onClose: ()
       </View>
       <OptionRow label="Privacy policy" icon="privacy" onPress={() => void WebBrowser.openBrowserAsync(siteUrls.privacy)} />
       <OptionRow label="Terms of service" icon="terms" onPress={() => void WebBrowser.openBrowserAsync(siteUrls.terms)} />
-      {/* CC BY 3.0 asks for this credit wherever the recording is used. */}
-      <Text style={styles.credit}>
-        Piano sound: Salamander Grand Piano V3 by Alexander Holm, licensed under{" "}
-        <Text
-          style={styles.creditLink}
-          onPress={() => void WebBrowser.openBrowserAsync("https://creativecommons.org/licenses/by/3.0/")}
-          accessibilityRole="link"
-        >
-          CC BY 3.0
-        </Text>
-        . Converted to mono, resampled, trimmed and level-matched for NoteFusion.
-      </Text>
+      {/* CC BY 3.0 asks for this credit wherever the recording is used: every word of it, as a row of its own with the
+          licence a tap away (board n-ux-low Q5i). */}
+      <OptionRow
+        label="Piano sound"
+        icon="music"
+        detail="Salamander Grand Piano V3 by Alexander Holm, licensed under CC BY 3.0. Converted to mono, resampled, trimmed and level-matched for NoteFusion."
+        external
+        onPress={() => void WebBrowser.openBrowserAsync("https://creativecommons.org/licenses/by/3.0/")}
+      />
       <SheetActions style={styles.actions}>
         <Button label="Done" variant="text" onPress={onClose} />
       </SheetActions>
@@ -322,16 +319,6 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.regular,
       fontSize: 15,
       color: c.textMuted,
-    },
-    credit: {
-      fontFamily: fonts.regular,
-      fontSize: 12.5,
-      lineHeight: 18,
-      color: c.textMuted,
-      marginTop: spacing.md,
-    },
-    creditLink: {
-      color: c.link,
     },
     googleNote: {
       flexDirection: "row",

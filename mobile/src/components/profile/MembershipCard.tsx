@@ -248,11 +248,13 @@ const makeStyles = (c: Palette) =>
       letterSpacing: -0.3,
       opacity: 0.7,
     },
+    // The key line under the count ("free this week · back Friday 6pm"): 14 px at full strength, 5.59:1 on the card's
+    // blue (12.5 px at 80 % was 4.16:1), board n-ux-low Q5h.
     caption: {
-      fontSize: 12.5,
+      fontSize: 14,
+      lineHeight: 19,
       fontFamily: fonts.regular,
       color: c.onInk,
-      opacity: 0.8,
       marginTop: 5,
     },
     cta: {

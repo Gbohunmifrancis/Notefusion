@@ -21,7 +21,6 @@ import { usePackState } from "../lib/hymnPackStore";
 import { formatBytes } from "../lib/hymnPack";
 import { outboxPending } from "../lib/outbox";
 import { signOutWarning } from "../lib/sendQueue";
-import { useFeedback } from "../lib/feedback";
 import { logAnalyticsEvent } from "../lib/analytics";
 import type { MyProfile } from "../api/types";
 import { fonts, spacing, type Palette, type ThemeMode } from "../design/theme";
@@ -41,7 +40,8 @@ type Sheet = "name" | "password" | "about" | "delete" | null;
  *     not all of it is how the app looks, so the group is not called Appearance.
  *   • Data & offline — data saver, keeping every saved sheet offline, the offline hymns (the Hymns tab), and
  *     "Clear offline copies".
- *   • Help & about — help, feedback, the legal pages and About.
+ *   • About — the legal pages and About Notefusion. Help & support and Send feedback are Profile's alone (board
+ *     n-ux-low Q5i).
  *   • Sign out (it asks first only when recordings are still waiting to send: they go with it), then Delete
  *     account last: the one red word, opening a sheet where the password (or Google) is the confirmation.
  *
@@ -51,7 +51,6 @@ export function SettingsScreen({ navigation }: Props) {
   const { mode, setMode } = useTheme();
   const { user, signOut } = useAuth();
   const styles = useThemedStyles(makeStyles);
-  const { openFeedback } = useFeedback();
 
   const [profile, setProfile] = useState<MyProfile | null>(null);
   const [hapticsOn, setHapticsOn] = useState(haptics.hapticsEnabled());
@@ -247,14 +246,9 @@ export function SettingsScreen({ navigation }: Props) {
         </View>
       ) : null}
 
-      <Group title="Help & about">
-        <Row icon="help" label="Help & support" chevron onPress={() => navigation.navigate("Help")} />
-        <Row
-          icon="feedback"
-          label="Send feedback"
-          chevron
-          onPress={() => openFeedback("Settings")}
-        />
+      {/* Help & support and Send feedback are Profile's, in one place (board n-ux-low Q5i); About stays here too, as
+          the version is what support asks for. */}
+      <Group title="About">
         <Row
           icon="privacy"
           label="Privacy policy"
