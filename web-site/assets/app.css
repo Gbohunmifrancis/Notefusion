@@ -1078,3 +1078,8 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .choir-lib { margin-top: 16px; }
 .choir-lib .group-title { display: flex; align-items: center; gap: 8px; }
 .pill-ended { background: var(--danger-soft); color: var(--danger-text); }
+
+/* A guest's bar on the narrowest phones: "How it works" is its icon alone, so Sign in fits beside the name. */
+@media (max-width: 400px) {
+  body.guest .topbar .side-help { font-size: 0; gap: 0; min-width: 44px; justify-content: center; padding: 8px; }
+}
