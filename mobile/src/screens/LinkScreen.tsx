@@ -51,7 +51,8 @@ import { Skeleton } from "../components/Skeleton";
 import { Mark, Wordmark } from "../components/night/NightUI";
 import { ProviderMark, SourceTiles } from "../components/link/SourceTiles";
 import { PROVIDER_LABEL, SongCover } from "../components/link/SongCover";
-import { NoticeCard, PillAction, RefusedLinks, linkRefusal } from "../components/link/LinkRefusal";
+import { NoticeCard, RefusedLinks, linkRefusal } from "../components/link/LinkRefusal";
+import { Chip } from "../components/Chip";
 import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
 import { useAuth } from "../lib/auth";
@@ -370,18 +371,9 @@ export function LinkScreen() {
           : "pick"
       : null;
 
+  // The app's one chip (board n-ux-low Q5e), the same as Record's options.
   const chip = (label: string, on: boolean, onPress: () => void, a11y?: string) => (
-    <Touchable
-      key={label}
-      onPress={onPress}
-      style={[styles.chip, on && styles.chipOn]}
-      radius={radii.pill}
-      accessibilityRole="button"
-      accessibilityLabel={a11y ?? label}
-      accessibilityState={{ selected: on }}
-    >
-      <Text style={[styles.chipText, on && styles.chipTextOn]}>{label}</Text>
-    </Touchable>
+    <Chip key={label} label={label} selected={on} onPress={onPress} accessibilityLabel={a11y} />
   );
 
   return (
@@ -493,8 +485,8 @@ export function LinkScreen() {
         {!busy && provider && refusal && infoError ? (
           <>
             <NoticeCard icon={refusal.icon} title={refusal.title} message={infoError.message}>
-              <PillAction label="Try another link" tone="solid" onPress={tryAnother} />
-              <PillAction label="Upload a file" onPress={uploadInstead} />
+              <Button label="Try another link" variant="secondary" size="sm" onPress={tryAnother} />
+              <Button label="Upload a file" variant="text" size="sm" onPress={uploadInstead} />
             </NoticeCard>
             <RefusedLinks />
           </>
@@ -672,24 +664,27 @@ export function LinkScreen() {
             {/* The same ways on as the pinned bar, priced and with their verbs (lib/price `limitOffer`). */}
             {wantsUpgrade ? (
               <>
-                <PillAction
+                <Button
                   label={offer.single ? `Buy this song · ${formatPrice(offer.single.amountMinor, offer.single.currency)}` : "Buy this song"}
-                  tone="solid"
+                  variant="secondary"
+                  size="sm"
                   onPress={() => nav.navigate("Upgrade", { reason: "limit", planId: offer.single?.id })}
                 />
-                <PillAction
+                <Button
                   label="See Pro"
+                  variant="text"
+                  size="sm"
                   onPress={() => nav.navigate("Upgrade", offer.monthly ? { planId: offer.monthly.id } : undefined)}
                 />
               </>
             ) : (
-              <PillAction label="Upload the audio instead" tone="solid" onPress={uploadInstead} />
+              <Button label="Upload the audio instead" variant="secondary" size="sm" onPress={uploadInstead} />
             )}
             {/* Offline, the same link is sent again; otherwise the card goes and the link is ready to change. */}
             {linkOffline ? (
-              <PillAction label="Try again" onPress={() => void sendAgain()} />
+              <Button label="Try again" variant="text" size="sm" onPress={() => void sendAgain()} />
             ) : (
-              <PillAction label="Change link" onPress={changeLink} />
+              <Button label="Change link" variant="text" size="sm" onPress={changeLink} />
             )}
           </NoticeCard>
         ) : null}
@@ -703,11 +698,14 @@ export function LinkScreen() {
         <View style={[styles.dock, { paddingBottom: Math.max(insets.bottom, spacing.md) }]}>
           {entitlement ? (
             <View style={styles.entitlement}>
-              {entitlement.kind === "buy" ? (
-                <Icon name="pro" size={14} color={colors.premium} />
-              ) : (
-                <Mark height={14} color={isPro ? colors.textMuted : colors.textFaint} />
-              )}
+              {/* Beside the first line, which the sentence then reads on from (board n-ux-low Q5f). */}
+              <View style={styles.entitlementLead}>
+                {entitlement.kind === "buy" ? (
+                  <Icon name="pro" size={14} color={colors.premium} />
+                ) : (
+                  <Mark height={14} color={isPro ? colors.textMuted : colors.textFaint} />
+                )}
+              </View>
               <Text style={styles.entitlementText}>
                 {entitlement.kind === "send" ? entitlement.line : entitlement.reason}
               </Text>
@@ -786,7 +784,8 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.medium, fontSize: 12, letterSpacing: 1.7, textTransform: "uppercase",
       color: c.textMuted, marginTop: 30,
     },
-    tip: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, textAlign: "center", marginTop: spacing.lg },
+    // Sentences that wrap read from the left, on the gutter (board n-ux-low Q5f): the tip, the bar's line, the legal note.
+    tip: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, marginTop: spacing.lg },
     hint: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, marginTop: spacing.sm },
     reading: { marginTop: spacing.md, paddingHorizontal: spacing.xs },
     readingText: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
@@ -797,15 +796,8 @@ const makeStyles = (c: Palette) =>
     pickTitle: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
     meterTitle: { marginTop: 22 },
     pickRange: { fontFamily: nightFonts.mono, fontSize: 12.5, color: c.accent },
+    /** The section and Beats-in-a-bar chips, 8 apart (board m-ux-medium P3c). */
     chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.md },
-    /** The section and Beats-in-a-bar chips: 44 px to a thumb, 8 apart (board m-ux-medium P3c). */
-    chip: {
-      height: 44, paddingHorizontal: spacing.lg, borderRadius: radii.pill, justifyContent: "center",
-      backgroundColor: c.surfaceAlt, borderWidth: 1, borderColor: c.border,
-    },
-    chipOn: { backgroundColor: c.accentSoft, borderColor: c.ink },
-    chipText: { fontFamily: fonts.medium, fontSize: 14, color: c.textMuted },
-    chipTextOn: { color: c.accent },
 
     moreRow: {
       flexDirection: "row", alignItems: "center", gap: 10, minHeight: 52, marginTop: 22,
@@ -821,8 +813,11 @@ const makeStyles = (c: Palette) =>
     },
     dockActions: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
     dockMain: { flex: 1 },
-    entitlement: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: spacing.md },
-    entitlementText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, textAlign: "center" },
+    /** Set left on the bar's 16 px gutter, the mark beside the first line (board n-ux-low Q5f). */
+    entitlement: { flexDirection: "row", alignItems: "flex-start", gap: 8 },
+    /** One line of the sentence tall, so the mark sits on the first line however many follow. */
+    entitlementLead: { height: 23, justifyContent: "center" },
+    entitlementText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted },
     submit: { marginTop: spacing.md },
 
     progressCard: { marginTop: spacing.lg },
@@ -845,5 +840,5 @@ const makeStyles = (c: Palette) =>
     barPct: { fontFamily: nightFonts.mono, fontSize: 12, color: c.accent, minWidth: 42, textAlign: "right" },
     progressNote: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, marginTop: spacing.sm },
     progressWarn: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: c.warningText, marginTop: spacing.sm },
-    legal: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: c.textFaint, textAlign: "center", marginTop: spacing.xl },
+    legal: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: c.textFaint, marginTop: spacing.xl },
   });
