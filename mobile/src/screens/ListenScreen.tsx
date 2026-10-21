@@ -11,7 +11,8 @@
  */
 
 import React, { useEffect } from "react";
-import { AppState, Platform, StyleSheet, Text, View } from "react-native";
+import { AppState, Platform, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
@@ -33,6 +34,11 @@ const CAN_ADD_TILE = Platform.OS === "android" && Number(Platform.Version) >= 33
 export function ListenScreen({ navigation }: Props) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+  const insets = useSafeAreaInsets();
+  const { width } = useWindowDimensions();
+  // The dial is the page's hero: seven tenths of the screen's width, the letter half the dial (a 412 dp phone: 288 / 132).
+  const dialSize = Math.round(Math.min(360, Math.max(220, width * 0.7)));
+  const dohSize = Math.round(dialSize * 0.46);
   const listener = useKeyListener();
   const { available, running, starting, hearing, silenced, doh, keyName, confidence, chord, error, start, stop } = listener;
 
@@ -72,124 +78,154 @@ export function ListenScreen({ navigation }: Props) {
           ? "Listening — the key updates as the song goes on."
           : "Listening… the key shows after a few seconds of music.";
 
+  // The stage grows into the height the phone has and Start sits at the foot, where the thumb is (the Link screen's
+  // dock): the page reads top to bottom on a tall phone instead of stopping halfway, and still scrolls on a short one.
   return (
-    <Screen scroll>
-      <View style={styles.headerRow}>
-        <Touchable
-          onPress={() => (navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Tabs", { screen: "Home" }))}
-          style={styles.backBtn}
-          hitSlop={8}
-          ripple="borderless"
-          accessibilityLabel="Go back"
-        >
-          <Icon name="back" size={22} color={colors.text} />
-        </Touchable>
-        <Text style={styles.pageTitle}>Find the key</Text>
-        <View style={styles.backBtn} />
-      </View>
-
-      <Card style={styles.stage}>
-        <Text style={styles.stageLabel}>{doh ? "Doh is" : running ? "Listening for the doh" : "Doh"}</Text>
-        <Text style={[styles.doh, !doh && styles.dohEmpty]} accessibilityLabel={doh ? `Doh is ${doh}` : "No key yet"}>
-          {doh ?? "—"}
-        </Text>
-        <Text style={styles.keyName}>{keyName ?? (running ? "…" : "The key appears here")}</Text>
-
-        <View style={styles.confidenceTrack} accessibilityLabel={`Confidence ${Math.round(confidence * 100)} percent`}>
-          <View style={[styles.confidenceFill, { width: `${Math.round(Math.max(0, Math.min(1, confidence)) * 100)}%` }]} />
+    <View style={styles.flex}>
+      <Screen scroll contentStyle={styles.page}>
+        <View style={styles.headerRow}>
+          <Touchable
+            onPress={() => (navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Tabs", { screen: "Home" }))}
+            style={styles.backBtn}
+            hitSlop={8}
+            ripple="borderless"
+            accessibilityLabel="Go back"
+          >
+            <Icon name="back" size={22} color={colors.text} />
+          </Touchable>
+          <Text style={styles.pageTitle}>Find the key</Text>
+          <View style={styles.backBtn} />
         </View>
-        <Text style={styles.confidenceText}>{doh ? `${Math.round(confidence * 100)}% sure` : "Confidence"}</Text>
 
-        {running ? (
-          <View style={styles.chordRow}>
-            <Text style={styles.chordLabel}>Now</Text>
-            <Text style={styles.chordValue}>{chord ?? "—"}</Text>
+        {/* No card round it: the dial is the page's centrepiece, as a tuner's is, with the page around it. */}
+        <View style={styles.stage}>
+          <Text style={styles.stageLabel}>{doh ? "Doh is" : running ? "Listening for the doh" : "Doh"}</Text>
+          <View
+            style={[
+              styles.dial,
+              { width: dialSize, height: dialSize, borderRadius: dialSize / 2 },
+              doh ? styles.dialOn : null,
+            ]}
+          >
+            <Text
+              style={[styles.doh, { fontSize: dohSize, lineHeight: Math.round(dohSize * 1.1) }, !doh && styles.dohEmpty]}
+              accessibilityLabel={doh ? `Doh is ${doh}` : "No key yet"}
+            >
+              {doh ?? "—"}
+            </Text>
           </View>
+          <Text style={styles.keyName}>{keyName ?? (running ? "…" : "The key appears here")}</Text>
+
+          <View style={styles.confidenceTrack} accessibilityLabel={`Confidence ${Math.round(confidence * 100)} percent`}>
+            <View style={[styles.confidenceFill, { width: `${Math.round(Math.max(0, Math.min(1, confidence)) * 100)}%` }]} />
+          </View>
+          <Text style={styles.confidenceText}>{doh ? `${Math.round(confidence * 100)}% sure` : "Confidence"}</Text>
+
+          {running ? (
+            <View style={styles.chordRow}>
+              <Text style={styles.chordLabel}>Now</Text>
+              <Text style={styles.chordValue}>{chord ?? "—"}</Text>
+            </View>
+          ) : null}
+
+          {statusLine ? <Text style={[styles.status, running && !hearing && styles.statusWarn]}>{statusLine}</Text> : null}
+        </View>
+
+        {error ? (
+          <Card style={styles.card}>
+            <View style={styles.row}>
+              <Icon name="problem" size={18} color={colors.warning} />
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          </Card>
         ) : null}
 
-        {statusLine ? <Text style={[styles.status, running && !hearing && styles.statusWarn]}>{statusLine}</Text> : null}
-
         {available ? (
+          <Card style={styles.card}>
+            <View style={styles.row}>
+              <Icon name="phone" size={18} color={colors.icon} />
+              <Text style={styles.rowText}>
+                It keeps listening while you use other apps. The key sits in your notifications and updates as the
+                song goes on; tap Stop there when you are done.
+              </Text>
+            </View>
+            <View style={styles.row}>
+              <Icon name="hear" size={18} color={colors.icon} />
+              <Text style={styles.rowText}>
+                It hears through the microphone, so the music has to play out loud — not through headphones.
+              </Text>
+            </View>
+            {CAN_ADD_TILE ? (
+              <Button
+                label="Add to Quick Settings"
+                icon="quick"
+                variant="secondary"
+                onPress={() => void addTile()}
+                style={styles.tileButton}
+              />
+            ) : null}
+          </Card>
+        ) : (
+          <Card style={styles.card}>
+            <View style={styles.row}>
+              <Icon name="about" size={18} color={colors.icon} />
+              <Text style={styles.rowText}>
+                Background listening is on Android for now. On this phone, record or import a clip to find its key.
+              </Text>
+            </View>
+          </Card>
+        )}
+      </Screen>
+      {available ? (
+        <View style={[styles.dock, { paddingBottom: Math.max(insets.bottom, spacing.md) }]}>
           <Button
             label={running ? "Stop" : starting ? "Starting…" : "Start listening"}
             icon={running ? "stop" : "find-key"}
             variant={running ? "secondary" : "primary"}
             onPress={running ? stop : () => void start()}
             loading={starting}
-            style={styles.mainButton}
+            block
           />
-        ) : null}
-      </Card>
-
-      {error ? (
-        <Card style={styles.card}>
-          <View style={styles.row}>
-            <Icon name="problem" size={18} color={colors.warning} />
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        </Card>
+        </View>
       ) : null}
-
-      {available ? (
-        <Card style={styles.card}>
-          <View style={styles.row}>
-            <Icon name="phone" size={18} color={colors.icon} />
-            <Text style={styles.rowText}>
-              It keeps listening while you use other apps. The key sits in your notifications and updates as the
-              song goes on; tap Stop there when you are done.
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Icon name="hear" size={18} color={colors.icon} />
-            <Text style={styles.rowText}>
-              It hears through the microphone, so the music has to play out loud — not through headphones.
-            </Text>
-          </View>
-          {CAN_ADD_TILE ? (
-            <Button
-              label="Add to Quick Settings"
-              icon="quick"
-              variant="secondary"
-              onPress={() => void addTile()}
-              style={styles.tileButton}
-            />
-          ) : null}
-        </Card>
-      ) : (
-        <Card style={styles.card}>
-          <View style={styles.row}>
-            <Icon name="about" size={18} color={colors.icon} />
-            <Text style={styles.rowText}>
-              Background listening is on Android for now. On this phone, record or import a clip to find its key.
-            </Text>
-          </View>
-        </Card>
-      )}
-    </Screen>
+    </View>
   );
 }
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+    flex: { flex: 1, backgroundColor: c.bg },
+    /** At least the screen's height, so the stage can take what the header and the tips leave. */
+    page: { flexGrow: 1 },
     headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: spacing.md },
     backBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
     pageTitle: { fontFamily: fonts.semibold, fontSize: 18, color: c.text },
     card: { marginBottom: spacing.md },
 
-    stage: { alignItems: "center", paddingVertical: spacing.xl, marginBottom: spacing.md },
+    /** Grows into the spare height and keeps the dial in its middle; never shorter than its contents. */
+    stage: { flexGrow: 1, alignItems: "center", justifyContent: "center", paddingVertical: spacing.lg, marginBottom: spacing.md },
     stageLabel: { ...typography.caption, color: c.textMuted, textTransform: "uppercase", letterSpacing: 1 },
-    /** The hero: one letter, as large as the card allows. System font — Poppins has no glyph this size. */
+    /** The hero: one letter, sized to its dial. System font — Poppins has no glyph this size. */
     doh: {
-      fontSize: 112,
-      lineHeight: 124,
       fontWeight: "800",
       color: c.accent,
       textShadowColor: c.accentGlow,
       textShadowOffset: { width: 0, height: 0 },
       textShadowRadius: 18,
     },
-    dohEmpty: { color: c.textFaint, textShadowRadius: 0 },
-    keyName: { ...typography.heading, color: c.text, marginTop: -spacing.xs },
+    /** A thin dash until a key is heard, however large the dial. */
+    dohEmpty: { color: c.textFaint, textShadowRadius: 0, fontWeight: "200" },
+    /** The ring the doh sits in, like a tuner's dial: neutral until a key is heard. Its size is set from the width. */
+    dial: {
+      borderWidth: 2,
+      borderColor: c.border,
+      backgroundColor: c.surface,
+      alignItems: "center",
+      justifyContent: "center",
+      marginVertical: spacing.md,
+    },
+    dialOn: { borderColor: c.accent },
+    keyName: { ...typography.heading, color: c.text },
 
     confidenceTrack: {
       width: "70%",
@@ -217,7 +253,10 @@ const makeStyles = (c: Palette) =>
 
     status: { ...typography.body, color: c.textMuted, textAlign: "center", marginTop: spacing.lg, lineHeight: 21 },
     statusWarn: { color: c.warningText },
-    mainButton: { marginTop: spacing.lg, alignSelf: "stretch" },
+    dock: {
+      paddingTop: spacing.md, paddingHorizontal: spacing.lg, backgroundColor: c.bg,
+      borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: c.border,
+    },
 
     row: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm, marginBottom: spacing.sm },
     rowText: { ...typography.body, color: c.textMuted, flex: 1, lineHeight: 21 },

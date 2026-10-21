@@ -115,6 +115,8 @@ export function LinkScreen() {
    * a link is typed letter by letter it waits until the field is left, rather than nagging at every keystroke.
    */
   const [pasted, setPasted] = useState(false);
+  /** The last step's height, so the timeline's line stops at its number rather than under its words. */
+  const [lastStepHeight, setLastStepHeight] = useState(0);
   /** Beats in a bar for this song; null is Not sure. Back to Not sure once a song is sent (lib/meter). */
   const [meter, setMeter] = useState<Meter | null>(null);
   /** "More options" unfolded: the Beats-in-a-bar chips, folded away by default (board l-ux-high 02b). */
@@ -378,7 +380,7 @@ export function LinkScreen() {
 
   return (
     <View style={styles.flex}>
-      <Screen scroll>
+      <Screen scroll contentStyle={styles.page}>
         <View style={styles.headerRow}>
           <Touchable
             onPress={() => (nav.canGoBack() ? nav.goBack() : nav.navigate("Tabs", { screen: "Home" }))}
@@ -404,10 +406,6 @@ export function LinkScreen() {
           <>
             <Text style={styles.title} accessibilityRole="header">Song from{"\n"}a link</Text>
             <Text style={styles.lead}>We isolate the lead voice and write it out in solfa and staff.</Text>
-            {/* Said before anyone pastes: YouTube blocks server downloads for many songs, and a recording always works. */}
-            <Text style={styles.lead}>
-              Links work for many songs, not all. If yours fails, record it or import the audio file instead.
-            </Text>
           </>
         ) : null}
 
@@ -474,11 +472,45 @@ export function LinkScreen() {
           </View>
         ) : null}
 
+        {/* The three steps fill the page down to its small print, so it reads top to bottom on a tall phone. */}
         {!busy && ready ? (
           <>
-            <Text style={styles.eyebrow}>Works with</Text>
-            <SourceTiles />
-            <Text style={styles.tip}>Tip: in any of these apps tap Share, then Copy link — then Paste here.</Text>
+            <Text style={styles.eyebrow}>How it works</Text>
+            {/* A timeline: the steps share the height down to the small print (up to a point), joined by a line through
+                their numbers that stops at the last one. */}
+            <View style={styles.steps}>
+              <View style={[styles.stepLine, { bottom: Math.max(14, lastStepHeight - 14) }]} />
+              <View style={styles.step}>
+                <View style={styles.stepNumber}>
+                  <Text style={styles.stepNumberText}>1</Text>
+                </View>
+                <View style={styles.stepBody}>
+                  <Text style={styles.stepTitle}>Copy the link</Text>
+                  <Text style={styles.stepText}>In any of these apps tap Share, then Copy link.</Text>
+                  <SourceTiles />
+                </View>
+              </View>
+              <View style={styles.step}>
+                <View style={styles.stepNumber}>
+                  <Text style={styles.stepNumberText}>2</Text>
+                </View>
+                <View style={styles.stepBody}>
+                  <Text style={styles.stepTitle}>Paste it here</Text>
+                  <Text style={styles.stepText}>Then pick the part of the song you want.</Text>
+                </View>
+              </View>
+              <View style={styles.step} onLayout={(e) => setLastStepHeight(e.nativeEvent.layout.height)}>
+                <View style={styles.stepNumber}>
+                  <Text style={styles.stepNumberText}>3</Text>
+                </View>
+                <View style={styles.stepBody}>
+                  <Text style={styles.stepTitle}>Get the solfa</Text>
+                  <Text style={styles.stepText}>
+                    A full song takes a few minutes. We'll notify you when it's ready if you leave.
+                  </Text>
+                </View>
+              </View>
+            </View>
           </>
         ) : null}
 
@@ -689,10 +721,19 @@ export function LinkScreen() {
           </NoticeCard>
         ) : null}
 
-        <Text style={styles.legal}>
-          Transcriptions are for personal and choir rehearsal use. The song's audio is deleted the moment
-          the job finishes; only the notes are kept.
-        </Text>
+        {/* At the foot of the page however tall the phone; the content above starts at the top. */}
+        <View style={styles.foot}>
+          {/* Said before anyone pastes: YouTube blocks server downloads for many songs, and a recording always works. */}
+          {!busy && ready ? (
+            <Text style={styles.footNote}>
+              Links work for many songs, not all. If yours fails, record it or import the audio file instead.
+            </Text>
+          ) : null}
+          <Text style={styles.legal}>
+            Transcriptions are for personal and choir rehearsal use. The song's audio is deleted the moment
+            the job finishes; only the notes are kept.
+          </Text>
+        </View>
       </Screen>
       {docked ? (
         <View style={[styles.dock, { paddingBottom: Math.max(insets.bottom, spacing.md) }]}>
@@ -745,6 +786,8 @@ export function LinkScreen() {
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     flex: { flex: 1, backgroundColor: c.bg },
+    /** At least the screen's height, so the small print can sit at the foot. */
+    page: { flexGrow: 1 },
     headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: spacing.xs },
     backBtn: {
       width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center",
@@ -784,8 +827,20 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.medium, fontSize: 12, letterSpacing: 1.7, textTransform: "uppercase",
       color: c.textMuted, marginTop: 30,
     },
-    // Sentences that wrap read from the left, on the gutter (board n-ux-low Q5f): the tip, the bar's line, the legal note.
-    tip: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, marginTop: spacing.lg },
+    // Sentences that wrap read from the left, on the gutter (board n-ux-low Q5f): the steps, the bar's line, the legal note.
+    steps: { flexGrow: 1, maxHeight: 460, justifyContent: "space-between", gap: spacing.lg, marginTop: spacing.md },
+    /** Behind the numbers, from the first one's middle (each is 28 tall) to the last one's. */
+    stepLine: { position: "absolute", left: 13.5, top: 14, bottom: 14, width: 1, backgroundColor: c.border },
+    step: { flexDirection: "row", alignItems: "flex-start", gap: spacing.md },
+    stepNumber: {
+      width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center",
+      backgroundColor: c.surfaceAlt, borderWidth: 1, borderColor: c.border,
+    },
+    stepNumberText: { fontFamily: fonts.semibold, fontSize: 13, color: c.text },
+    stepBody: { flex: 1 },
+    stepTitle: { fontFamily: fonts.semibold, fontSize: 16, lineHeight: 24, color: c.text },
+    stepText: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted, marginTop: 2 },
+
     hint: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted, marginTop: spacing.sm },
     reading: { marginTop: spacing.md, paddingHorizontal: spacing.xs },
     readingText: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
@@ -840,5 +895,8 @@ const makeStyles = (c: Palette) =>
     barPct: { fontFamily: nightFonts.mono, fontSize: 12, color: c.accent, minWidth: 42, textAlign: "right" },
     progressNote: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, marginTop: spacing.sm },
     progressWarn: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: c.warningText, marginTop: spacing.sm },
-    legal: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: c.textFaint, marginTop: spacing.xl },
+    /** Takes the spare height above it, so it ends the page. */
+    foot: { marginTop: "auto", paddingTop: spacing.xl },
+    footNote: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted, marginBottom: spacing.md },
+    legal: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: c.textFaint },
   });
