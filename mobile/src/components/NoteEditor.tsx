@@ -153,7 +153,7 @@ export function NoteEditor({
                 />
               </View>
 
-              {/* ── Audition / undo / remove ─────────────────────────────── */}
+              {/* ── Audition / undo ──────────────────────────────────────── */}
               <View style={styles.actionRow}>
                 <Button
                   label="Hear it"
@@ -172,13 +172,16 @@ export function NoteEditor({
                   disabled={!edited}
                   style={styles.action}
                 />
+              </View>
+
+              {/* ── Remove: a row of its own, away from the thumb's Hear it–Revert sweep (board n-ux-low Q1e) ── */}
+              <View style={styles.deleteRow}>
                 <Button
-                  label="Delete"
+                  label="Delete this note"
                   variant="destructive"
                   size="sm"
                   icon="delete"
                   onPress={() => onDelete(index)}
-                  style={styles.action}
                 />
               </View>
 
@@ -412,12 +415,18 @@ const makeStyles = (c: Palette) =>
 
     actionRow: {
       flexDirection: "row",
-      gap: spacing.xs,
+      gap: spacing.sm,
       marginTop: spacing.md,
     },
 
     action: {
       flex: 1,
+    },
+
+    /** Delete hugs its words, 16 px under Hear it and Revert. */
+    deleteRow: {
+      flexDirection: "row",
+      marginTop: spacing.lg,
     },
 
     // ── Prev / Done / Next ───────────────────────────────────────────────────
