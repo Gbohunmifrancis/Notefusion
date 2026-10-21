@@ -515,14 +515,26 @@ export const KEY_CHOICES: readonly string[] = [
 /** Minor tonics as their relative major's signature spells them, so D# minor sits on doh F# (`DOH_NAMES`). */
 const MINOR_NAMES: readonly string[] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
 
+/** One doh in the doh picker (board n-ux-low Q1a). */
+export interface DohCell {
+  /** The doh, spelled as the DOH figure spells it ("Bb", never "A#"). */
+  doh: string;
+  /** The key a tap re-labels the sheet in: the doh's major, or the la-based minor on it ("E minor" on doh G). */
+  key: string;
+  /** Minor only: the key's name as its relative major's signature spells it ("Bb minor" on doh Db); null in major. */
+  minorName: string | null;
+  /** The sheet's own key. */
+  on: boolean;
+}
+
 /**
- * A re-key chip's words, under the picker's "Doh" heading (display only, not the engine): a major key is its doh,
- * spelled as the DOH figure spells it ("Doh Bb", never "A# major"); a minor key keeps its name and says the doh that
- * la-based minor otherwise leaves to work out ("A minor · doh C"). An unreadable key is shown as given.
+ * The doh picker's twelve cells, C first in pitch order (display only, not the engine). Major gives each doh its major
+ * key; Minor (la-based) the minor key whose doh it is, so doh G is E minor. Either is a re-label: the notes never move.
  */
-export function keyChoiceLabel(keyText: string): string {
-  const parsed = parseKey(keyText);
-  if (!parsed) return keyText;
-  const doh = DOH_NAMES[dohPitchClass(parsed)]!;
-  return parsed.mode === "major" ? `Doh ${doh}` : `${MINOR_NAMES[parsed.tonicPitchClass]} minor · doh ${doh}`;
+export function dohCells(current: string, mode: KeyMode): DohCell[] {
+  return DOH_NAMES.map((doh, pc) => {
+    const tonic = mode === "major" ? pc : (pc + 9) % 12;
+    const key = `${PITCH_NAMES[tonic]} ${mode}`;
+    return { doh, key, minorName: mode === "minor" ? `${MINOR_NAMES[tonic]} minor` : null, on: sameKey(key, current) };
+  });
 }

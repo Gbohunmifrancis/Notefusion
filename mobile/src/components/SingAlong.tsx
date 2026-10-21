@@ -10,7 +10,6 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Icon } from "./Icon";
 import { File, Paths } from "expo-file-system";
 import {
   createAudioPlayer,
@@ -27,13 +26,14 @@ import { transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import type { GradeResult, NoteEvent, TranscriptionPart } from "../api/types";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
-import { useColors, useThemedStyles } from "../lib/theme";
+import { useThemedStyles } from "../lib/theme";
 import { leadInFor, noteDueAt, partSeconds, targetFor } from "../lib/take";
 import { VOICES, type VoiceName } from "../lib/choir";
 import { acknowledgeGrade } from "../lib/practiceReward";
 import { GradeMarks } from "./GradeMarks";
 import { ProblemNote } from "./ProblemNote";
 import { MarkingBar } from "./practice/MarkingBar";
+import { ProPriceTag } from "./result/ProTag";
 
 interface Props {
   melody: readonly NoteEvent[];
@@ -41,6 +41,8 @@ interface Props {
   tempoBpm: number;
   timeSignature: string;
   isPro: boolean;
+  /** Pro's price for a free account's tag ("₦7,500 a month", `lib/price` `monthPrice`); null until the plans load. */
+  proPrice?: string | null;
   /** Called when a free account taps in; the caller shows its upgrade dialog. */
   onRequirePro: () => void;
   /** The saved sheet this is, so the practice is recorded against it; absent for an unsaved result. */
@@ -53,8 +55,7 @@ const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberO
 /** Recording continues this long after the last note, so a held ending is not cut. */
 const TAIL_SEC = 1.0;
 
-export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onRequirePro, sheetId }: Props) {
-  const colors = useColors();
+export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, proPrice = null, onRequirePro, sheetId }: Props) {
   const styles = useThemedStyles(makeStyles);
   const recorder = useAudioRecorder(RECORDING);
 
@@ -163,14 +164,8 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
   return (
     <View style={styles.block}>
       <View style={styles.headerRow}>
-        <Icon name="sing" size={16} color={colors.textMuted} />
-        <Text style={styles.title}>Sing it</Text>
-        {!isPro ? (
-          <View style={styles.proTag}>
-            <Icon name="pro" size={11} color={colors.premiumDeep} />
-            <Text style={styles.proTagText}>PRO</Text>
-          </View>
-        ) : null}
+        <Text style={styles.title} accessibilityRole="header">Sing it</Text>
+        {!isPro ? <ProPriceTag price={proPrice} /> : null}
       </View>
       <Text style={styles.hint}>
         Pick your voice, hear the starting note and a count-in, then sing. Every note comes back marked: in tune, close, or off.
@@ -222,19 +217,38 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
   );
 }
 
+/**
+ * In the Result's panel card, as Transpose, Lyrics, SATB and Export are (board n-ux-low Q1g): its title at the panels'
+ * 16, its sentence at their 15/22, the voices the Result's own 44 px chips in the selected look.
+ */
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    block: { marginTop: spacing.lg, gap: spacing.sm },
-    headerRow: { flexDirection: "row", alignItems: "center", gap: spacing.xs },
-    title: { ...typography.heading, color: c.text, fontSize: 16, fontFamily: fonts.bold },
-    hint: { ...typography.body, color: c.textMuted, fontSize: 13, lineHeight: 20 },
-    proTag: { marginLeft: "auto", flexDirection: "row", alignItems: "center", gap: 3, backgroundColor: c.premiumSoft, borderRadius: radii.pill, paddingHorizontal: 8, paddingVertical: 2 },
-    proTagText: { ...typography.caption, color: c.premiumText, fontFamily: fonts.semibold, fontSize: 10 },
-    voiceRow: { flexDirection: "row", gap: spacing.xs, flexWrap: "wrap" },
-    voiceChip: { paddingVertical: 6, paddingHorizontal: spacing.md, borderRadius: radii.pill, backgroundColor: c.surface, borderWidth: 1, borderColor: c.border },
-    voiceChipOn: { backgroundColor: c.ink, borderColor: c.ink },
-    voiceChipText: { ...typography.caption, color: c.text, fontFamily: fonts.semibold },
-    voiceChipTextOn: { color: c.onAccent },
+    block: {
+      marginTop: spacing.lg,
+      padding: spacing.lg,
+      gap: spacing.sm,
+      backgroundColor: c.surface,
+      borderRadius: radii.lg,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    headerRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+    title: { ...typography.heading, color: c.text, fontSize: 16, flex: 1 },
+    hint: { fontFamily: fonts.regular, color: c.textMuted, fontSize: 15, lineHeight: 22 },
+    voiceRow: { flexDirection: "row", gap: spacing.sm, flexWrap: "wrap" },
+    voiceChip: {
+      minHeight: 44,
+      justifyContent: "center",
+      paddingVertical: spacing.sm,
+      paddingHorizontal: 14,
+      borderRadius: radii.pill,
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    voiceChipOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
+    voiceChipText: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted },
+    voiceChipTextOn: { fontFamily: fonts.semibold, color: c.link },
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.sm },
     liveLabel: { ...typography.label, color: c.textMuted },
     liveNote: { ...typography.hero, color: c.accent },

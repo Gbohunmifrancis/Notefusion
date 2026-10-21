@@ -20,8 +20,10 @@
  * wire's `startBeat`. See `scripts/engraver/page.js` for the other half.
  */
 
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import { useReducedMotion } from "react-native-reanimated";
+import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 import { Asset } from "expo-asset";
 import { File } from "expo-file-system";
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
@@ -31,6 +33,7 @@ import { type Palette, radii, spacing, typography } from "../design/theme";
 import { doubtfulBeats, isDoubtfulNote } from "../lib/confidence";
 import { beatKey, buildMusicXml, onsetIndexMap, resolveKeySignature } from "../lib/musicxml";
 import { useColors, useThemedStyles } from "../lib/theme";
+import { expectedStaveHeight, MIN_STAVE_HEIGHT, skeletonStaffTops, STAFF_LINE_GAP } from "../lib/staveLayout";
 import { ProblemNote } from "./ProblemNote";
 
 const ENGRAVER_HTML = require("../../assets/engraver/index.html") as number;
@@ -75,6 +78,8 @@ interface Props {
   onRendered?: () => void;
   /** Print each note's solfa syllable under its head. On by default. */
   showSolfa?: boolean;
+  /** How many bars the tune spans: the card opens at the height they will need (board n-ux-low Q1f). */
+  bars?: number;
   /**
    * Mark the doubtful notes (board m-ux-medium P1g): their heads amber in a dotted amber ring, every other head ink,
    * so a doubtful note is found by its shape as well as its colour. On by default per the PRD honesty rule.
@@ -97,15 +102,25 @@ const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
   onRendered,
   showSolfa = true,
   colorByConfidence = true,
+  bars = 0,
 }: Props, ref) {
   const palette = useColors();
   const styles = useThemedStyles(makeStyles);
+  const reduceMotion = useReducedMotion();
 
   const webRef = useRef<WebView>(null);
   const [html, setHtml] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [rendered, setRendered] = useState(false);
-  const [height, setHeight] = useState(MIN_HEIGHT);
+  /**
+   * Until the engraver first reports, the card holds the height the bars will need with a skeleton in it (board n-ux-low
+   * Q1f); the drawn stave then fades in over it in 150 ms, and the card eases to the reported height in 200 ms.
+   */
+  const [height, setHeight] = useState(() => expectedStaveHeight(bars));
+  const box = useRef(new Animated.Value(height)).current;
+  const shown = useRef(new Animated.Value(0)).current;
+  const firstDraw = useRef(true);
+  const [drawn, setDrawn] = useState(false);
   /** The engraver's own words — logged in development, never shown. */
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -213,12 +228,22 @@ const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
         case "ready":
           setReady(true);
           return;
-        case "rendered":
-          setHeight(Math.max(MIN_HEIGHT, message.height));
+        case "rendered": {
+          const next = Math.max(MIN_STAVE_HEIGHT, message.height);
+          setHeight(next);
+          if (reduceMotion) box.setValue(next);
+          else Animated.timing(box, { toValue: next, duration: EASE_MS, easing: Easing.out(Easing.cubic), useNativeDriver: false }).start();
+          if (firstDraw.current) {
+            firstDraw.current = false;
+            Animated.timing(shown, { toValue: 1, duration: FADE_MS, easing: Easing.out(Easing.quad), useNativeDriver: true }).start(
+              () => setDrawn(true),
+            );
+          }
           setRendered(true);
           setError(null);
           onRendered?.();
           return;
+        }
         case "svg": {
           const waiter = svgWaiters.current.get(message.token);
           svgWaiters.current.delete(message.token);
@@ -235,7 +260,7 @@ const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
           return;
       }
     },
-    [indexByOnset, onSelectNote, onRendered],
+    [indexByOnset, onSelectNote, onRendered, reduceMotion, box, shown],
   );
 
   if (notes.length === 0 || xml === null) {
@@ -248,40 +273,105 @@ const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
 
   return (
     <View style={styles.wrap}>
-      {html === null ? (
-        <View style={[styles.placeholder, { height: MIN_HEIGHT }]}>
-          <ActivityIndicator color={palette.accent} />
-        </View>
-      ) : (
-        <WebView
-          ref={webRef}
-          source={{ html }}
-          onMessage={onMessage}
-          onError={({ nativeEvent }) => setError(nativeEvent.description)}
-          style={[styles.web, { height }]}
-          // The parent screen scrolls; a WebView that also scrolls would trap
-          // the gesture and leave the stave stuck mid-page.
-          scrollEnabled={false}
-          nestedScrollEnabled={false}
-          originWhitelist={["*"]}
-          javaScriptEnabled
-          // Nothing here loads, plays or stores anything.
-          allowsInlineMediaPlayback={false}
-          mediaPlaybackRequiresUserAction
-          cacheEnabled={false}
-          setSupportMultipleWindows={false}
-          androidLayerType="hardware"
-        />
-      )}
+      <Animated.View style={[styles.box, { height: box }]}>
+        {html === null ? null : (
+          <WebView
+            ref={webRef}
+            source={{ html }}
+            onMessage={onMessage}
+            onError={({ nativeEvent }) => setError(nativeEvent.description)}
+            style={[styles.web, { height }]}
+            // The parent screen scrolls; a WebView that also scrolls would trap
+            // the gesture and leave the stave stuck mid-page.
+            scrollEnabled={false}
+            nestedScrollEnabled={false}
+            originWhitelist={["*"]}
+            javaScriptEnabled
+            // Nothing here loads, plays or stores anything.
+            allowsInlineMediaPlayback={false}
+            mediaPlaybackRequiresUserAction
+            cacheEnabled={false}
+            setSupportMultipleWindows={false}
+            androidLayerType="hardware"
+          />
+        )}
+        {/* The skeleton covers the page while it loads and draws, then fades to show the stave where its lines were:
+            the WebView itself is never faded, which Android draws badly. */}
+        {drawn ? null : (
+          <Animated.View
+            style={[StyleSheet.absoluteFill, styles.skeleton, { opacity: shown.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }]}
+            pointerEvents="none"
+          >
+            <StaveSkeleton bars={bars} sweeping={!reduceMotion && error === null} />
+          </Animated.View>
+        )}
+      </Animated.View>
       {error !== null && <ProblemNote style={styles.error}>Could not draw the stave. Please try again.</ProblemNote>}
     </View>
   );
 });
 
+/** The sweep's width and one pass across the card. */
+const SWEEP_W = 120;
+const SWEEP_MS = 1400;
+
+/**
+ * The stave before it is drawn: each system's five lines in faint grey, a block where the clef will be, and a soft sweep
+ * across them (still under Reduce Motion, and once the engraver has failed).
+ */
+function StaveSkeleton({ bars, sweeping }: { bars: number; sweeping: boolean }) {
+  const palette = useColors();
+  const styles = useThemedStyles(makeStyles);
+  const [width, setWidth] = useState(0);
+  const sweep = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (!sweeping || width === 0) return;
+    sweep.setValue(0);
+    const loop = Animated.loop(
+      Animated.timing(sweep, { toValue: 1, duration: SWEEP_MS, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [sweeping, width, sweep]);
+
+  return (
+    <View style={StyleSheet.absoluteFill} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
+      {skeletonStaffTops(bars).map((top) => (
+        <React.Fragment key={top}>
+          <View style={[styles.skeletonClef, { top: top - 10 }]} />
+          {[0, 1, 2, 3, 4].map((line) => (
+            <View key={line} style={[styles.skeletonLine, { top: top + line * STAFF_LINE_GAP }]} />
+          ))}
+        </React.Fragment>
+      ))}
+      {sweeping && width > 0 ? (
+        <Animated.View
+          style={[
+            styles.sweep,
+            { transform: [{ translateX: sweep.interpolate({ inputRange: [0, 1], outputRange: [-SWEEP_W, width] }) }] },
+          ]}
+        >
+          <Svg width={SWEEP_W} height="100%">
+            <Defs>
+              <LinearGradient id="nf-stave-sweep" x1="0" y1="0" x2="1" y2="0">
+                <Stop offset="0" stopColor={palette.text} stopOpacity={0} />
+                <Stop offset="0.5" stopColor={palette.text} stopOpacity={0.06} />
+                <Stop offset="1" stopColor={palette.text} stopOpacity={0} />
+              </LinearGradient>
+            </Defs>
+            <Rect x="0" y="0" width={SWEEP_W} height="100%" fill="url(#nf-stave-sweep)" />
+          </Svg>
+        </Animated.View>
+      ) : null}
+    </View>
+  );
+}
+
 export default ScoreView;
 
-/** Enough for one system, so the WebView is never laid out at zero height. */
-const MIN_HEIGHT = 160;
+/** The drawn stave fading in over its skeleton, and the card easing to the height the engraver reports. */
+const FADE_MS = 150;
+const EASE_MS = 200;
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
@@ -293,13 +383,40 @@ const makeStyles = (c: Palette) =>
       paddingVertical: spacing.md,
       overflow: "hidden",
     },
+    /** Holds the stave's height, easing between the expected one and each reported. */
+    box: {
+      overflow: "hidden",
+    },
     web: {
       backgroundColor: "transparent",
       width: "100%",
     },
-    placeholder: {
-      alignItems: "center",
-      justifyContent: "center",
+    /** The card's own surface, so the page under it is hidden until it has drawn. */
+    skeleton: {
+      backgroundColor: c.surface,
+    },
+    skeletonLine: {
+      position: "absolute",
+      left: 10,
+      right: 10,
+      height: 1,
+      backgroundColor: c.textMuted,
+      opacity: 0.28,
+    },
+    skeletonClef: {
+      position: "absolute",
+      left: 12,
+      width: 24,
+      height: 52,
+      borderRadius: 6,
+      backgroundColor: c.surfaceAlt,
+    },
+    sweep: {
+      position: "absolute",
+      top: 0,
+      bottom: 0,
+      left: 0,
+      width: SWEEP_W,
     },
     empty: {
       ...typography.body,

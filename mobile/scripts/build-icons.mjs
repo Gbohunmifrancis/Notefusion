@@ -156,7 +156,6 @@ export const ICONS = {
   sending: "lucide:cloud-upload",
   waiting: "lucide:hourglass",
   step: "lucide:circle",
-  public: "lucide:globe",
   live: "lucide:radio",
   "video-off": "lucide:video-off",
   "not-found": "lucide:search-x",

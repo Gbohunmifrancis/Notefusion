@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { dohHeader, dohLetter, dohPitchClass, KEY_CHOICES, keyChoiceLabel, parseKey } from "./solfa.ts";
+import { dohCells, dohHeader, dohLetter, dohPitchClass, KEY_CHOICES, parseKey } from "./solfa.ts";
 
 test("a major key's doh is its tonic, spelled as its key signature spells it", () => {
   assert.equal(dohLetter("F major"), "F");
@@ -28,13 +28,29 @@ test("the sheet's doh header is spelled like the doh tile", () => {
   }
 });
 
-test("the re-key picker names a major by its doh, and a minor with its doh, spelled as the doh tile", () => {
-  assert.equal(keyChoiceLabel("A# major"), "Doh Bb");
-  assert.equal(keyChoiceLabel("C# major"), "Doh Db");
-  assert.equal(keyChoiceLabel("F# major"), "Doh F#");
-  assert.equal(keyChoiceLabel("A minor"), "A minor · doh C");
-  assert.equal(keyChoiceLabel("A# minor"), "Bb minor · doh Db");
-  assert.equal(keyChoiceLabel("D# minor"), "D# minor · doh F#");
-  assert.equal(keyChoiceLabel("H#"), "H#");
-  for (const key of KEY_CHOICES) assert.ok(keyChoiceLabel(key).endsWith(dohLetter(key)), key);
+test("the doh picker is the twelve dohs from C, spelled as the doh tile, the sheet's own key marked", () => {
+  const major = dohCells("G major", "major");
+  assert.deepEqual(major.map((c) => c.doh), ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"]);
+  assert.deepEqual(major.filter((c) => c.on).map((c) => c.doh), ["G"]);
+  assert.equal(major[7]!.key, "G major");
+  assert.equal(major[7]!.minorName, null);
+  // The API writes sharps; the cell still reads as the signature spells it, and marks the same key.
+  assert.deepEqual(dohCells("A# major", "major").filter((c) => c.on).map((c) => c.doh), ["Bb"]);
+  assert.deepEqual(dohCells("Bb major", "major").filter((c) => c.on).map((c) => c.key), ["A# major"]);
+  for (const mode of ["major", "minor"] as const) {
+    for (const cell of dohCells("C major", mode)) assert.equal(dohLetter(cell.key), cell.doh, cell.key);
+  }
+});
+
+test("in minor each doh is its la-based key, named as its relative major's signature spells it", () => {
+  const minor = dohCells("G major", "minor");
+  assert.equal(minor.some((c) => c.on), false);
+  assert.deepEqual(
+    minor.map((c) => c.minorName),
+    ["A", "Bb", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"].map((t) => `${t} minor`),
+  );
+  assert.equal(minor[7]!.key, "E minor");
+  assert.equal(minor[1]!.key, "A# minor");
+  assert.deepEqual(dohCells("E minor", "minor").filter((c) => c.on).map((c) => c.doh), ["G"]);
+  assert.deepEqual(dohCells("H#", "major").filter((c) => c.on), []);
 });

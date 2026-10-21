@@ -22,23 +22,29 @@ import { NoteEditor } from "../components/NoteEditor";
 import { SingAlong } from "../components/SingAlong";
 import { Mark } from "../components/night/NightUI";
 import { GuestAccountCard } from "../components/GuestAccountCard";
+import { ProblemNote } from "../components/ProblemNote";
 import { GUEST_MAX_SECONDS } from "../lib/guestPreview";
 import ScoreView, { type ScoreViewHandle } from "../components/ScoreView";
 import { SheetGrid, barOf } from "../components/result/SheetGrid";
 import { PlayerDock, DOCK_CLEARANCE } from "../components/result/PlayerDock";
 import { RehearseView } from "../components/result/RehearseView";
 import { PracticeView } from "../components/result/PracticeView";
+import { Segmented } from "../components/result/Segmented";
+import { DohPicker } from "../components/result/DohPicker";
+import { LayoutMenu, type LayoutSamples } from "../components/result/LayoutMenu";
+import { ProPriceTag, ProTag } from "../components/result/ProTag";
 import { usePractice } from "../components/result/usePractice";
 import { DohToast } from "../components/doh/DohToast";
 import { firstCelebration } from "../lib/dohPrefs";
-import { libraryApi, transcriptionsApi } from "../api/endpoints";
+import { billingApi, libraryApi, transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import type { ChordSymbol, HymnCredit, KeyAlternative, NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
+import type { ChordSymbol, HymnCredit, KeyAlternative, NoteEvent, Plan, TranscriptionPart, TranscriptionResult } from "../api/types";
 import { chordRows } from "../lib/chordRow";
 import { dohChoices, writeInKey } from "../lib/dohChoice";
 import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, type HymnbookSheet } from "../lib/hymnbook";
 import { showDialog, type DialogAction } from "../lib/dialog";
 import { showToast } from "../lib/toast";
+import { limitOffer, monthPrice, type LimitOffer } from "../lib/price";
 import { useSubscription } from "../lib/subscription";
 import {
   ascendingFlags,
@@ -46,8 +52,6 @@ import {
   dohHeader,
   dohLetter,
   dohPitchClass,
-  KEY_CHOICES,
-  keyChoiceLabel,
   parseKey,
   partReference,
   referenceDoh,
@@ -77,6 +81,7 @@ import type { HeldChange } from "../lib/heldChange";
 import { holdWithUndo, type Held } from "../lib/heldChangeRuntime";
 import { deletedLine, dohNowLine, HYMNBOOK_IN_LINE, movedLine } from "../lib/undoWords";
 import { openingBars } from "../lib/solfaOpening";
+import { firstBarOf, firstBarSyllables, firstHymnBar, layoutName, type SolfaLayout } from "../lib/readingLayouts";
 import {
   fonts,
   motion,
@@ -209,7 +214,7 @@ type Panel = "transpose" | "lyrics" | "parts" | "sing" | "export";
 
 /** The part a singer practised last on this device; Learn my part opens on it when the sheet has it. */
 const PRACTICE_PART_KEY = "nf.practice.part";
-type SolfaStyle = "bars" | "grid" | "curwen" | "hymn";
+type SolfaStyle = SolfaLayout;
 /** The way of reading a sheet chosen last on this device; every sheet opens on it. */
 const NOTATION_VIEW_KEY = "nf.result.view";
 const NOTATION_VIEWS: readonly string[] = ["bars", "grid", "curwen", "hymn", "staff"];
@@ -220,15 +225,16 @@ const NOTATION_VIEWS: readonly string[] = ["bars", "grid", "curwen", "hymn", "st
  * Layout (top → bottom):
  *   • Round back / share / save buttons; the sheet's name large, a muted line
  *     under it (artist, section, key) and the song's credit when it has one.
- *   • One row of the numbers that matter — DOH, BPM, TIME, SURE. The first three
- *     open their pickers (re-key and transpose, tempo, meter) beneath the row.
+ *   • One row of the numbers that matter — DOH, BPM, TIME. DOH opens the doh picker
+ *     (a sheet of the twelve dohs), BPM and TIME their pickers beneath the row.
  *   • One amber row when the model doubted some notes — the way into a review — and
  *     the round actions — transpose, lyrics, SATB, sing, export, more — each opening
  *     its panel below the row. Above the notation, so they are on the first screen
  *     however long the sheet is (board m-ux-medium P1c).
- *   • The notation: a bar to a row, a syllable to a beat, the words beneath, the
- *     mark faint behind it. The same note list can be read as the text grid, as
- *     Curwen, as a hymn layout or on the stave. Every syllable opens the editor.
+ *   • Solfa | Staff, and the Layout button naming the solfa layout in use (board
+ *     n-ux-low Q1a–b). The notation: a bar to a row, a syllable to a beat, the words
+ *     beneath, the mark faint behind it. The same note list can be read as the text
+ *     grid, as Curwen, as a hymn layout or on the stave. Every syllable opens the editor.
  *   • The player docked over the bottom; its Practise opens Learn my part (Rehearse on a sheet without parts).
  *
  * PRD honesty rule: the SURE figure is always visible and coloured by level, and
@@ -251,9 +257,29 @@ export function ResultScreen({ route, navigation }: Props) {
 
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const { isPro, subscription, refresh: refreshSubscription } = useSubscription();
+  const { isPro, known, subscription, refresh: refreshSubscription } = useSubscription();
   /** A free account's one four-part harmony, until it is used; the API decides, this mirrors it. */
   const freeHarmony = !isPro && !!subscription?.freeHarmonyAvailable;
+
+  /**
+   * What Pro costs where a locked feature asks for it (board n-ux-low Q1h): the region's monthly plan, as the limit
+   * sheet reads it. Read once for a free account; until it arrives, or if it fails, the tag says "Pro" alone.
+   */
+  const [offer, setOffer] = useState<LimitOffer>({});
+  useEffect(() => {
+    if (!known || isPro || guest) return;
+    let live = true;
+    void Promise.all([
+      billingApi.plans().catch(() => [] as Plan[]),
+      billingApi.singlePlans().catch(() => [] as Plan[]),
+    ]).then(([pro, single]) => {
+      if (live) setOffer(limitOffer(pro, single));
+    });
+    return () => {
+      live = false;
+    };
+  }, [known, isPro, guest]);
+  const proPrice = monthPrice(offer.monthly);
 
   const [title, setTitle] = useState(
     initialTitle ?? `${result.key} · ${new Date().toLocaleDateString()}`,
@@ -296,8 +322,6 @@ export function ResultScreen({ route, navigation }: Props) {
   /** Which saved sheets are kept on the phone ("Keep offline", or keep-all in Settings). */
   const offlineCopies = useOfflineLibrary();
   const [saving, setSaving] = useState(false);
-  /** Saved to the Library during this visit: the line under the title says so. */
-  const [savedHere, setSavedHere] = useState(false);
   /** The player dock's height, so Save to Library floats 12 px over it. */
   const [dockHeight, setDockHeight] = useState(DOCK_HEIGHT_GUESS);
   const [renaming, setRenaming] = useState(false);
@@ -431,6 +455,8 @@ export function ResultScreen({ route, navigation }: Props) {
   );
 
   const [solfaStyle, setSolfaStyle] = useState<SolfaStyle>("bars");
+  /** The Layout menu (board n-ux-low Q1b) is open. */
+  const [choosingLayout, setChoosingLayout] = useState(false);
   /** A reading chosen on this visit, which the remembered one arriving late must not undo. */
   const viewChosen = useRef(false);
   useEffect(() => {
@@ -483,6 +509,17 @@ export function ResultScreen({ route, navigation }: Props) {
     () => (hasLyrics ? hymnRows(view.notes, lyrics, timeSignature) : []),
     [hasLyrics, view.notes, lyrics, timeSignature],
   );
+
+  /** Each layout's sample in the Layout menu: the tune's own first bar as that layout writes it. */
+  const layoutSamples = useMemo<LayoutSamples>(() => {
+    const bar = (solfa: string | null) => (solfa ? { solfa } : null);
+    return {
+      bars: bar(firstBarSyllables(view.notes, timeSignature)),
+      grid: bar(firstBarOf(view.solfaLines)),
+      curwen: bar(firstBarOf(view.curwenLines)),
+      hymn: hasLyrics ? firstHymnBar(hymn) : null,
+    };
+  }, [view, timeSignature, hasLyrics, hymn]);
 
   /** "Use the hymnbook version?": the take's opening and the hymnbook's, each in its own meter. */
   const hymnPreview = useMemo(() => {
@@ -775,7 +812,6 @@ export function ResultScreen({ route, navigation }: Props) {
       committedLyrics.current = lyrics.trim();
       setSavedId(saved.id);
       setCommittedTitle(saved.title);
-      setSavedHere(true);
       // Corrections rode along in the payload, so the server is now level with
       // the draft and a later edit only has to send the difference.
       persisted.current = draft;
@@ -1245,7 +1281,6 @@ export function ResultScreen({ route, navigation }: Props) {
       };
       applySheet(after);
       setSemitones(0);
-      setPickingKey(false);
       // The server moved the saved sheet and the screen now shows exactly that.
       movedOffline.current = false;
       haptics.play("success");
@@ -1296,7 +1331,6 @@ export function ResultScreen({ route, navigation }: Props) {
     setChords(moved.chords?.length ? moved.chords : null);
     setPreview(synthesizeMelodyWavBase64(relabelled.notes, tempo));
     setSemitones(0);
-    setPickingKey(false);
     setDoubt([]);
     void logAnalyticsEvent("offline_transpose", { semitones });
     showDialog({
@@ -1339,6 +1373,20 @@ export function ResultScreen({ route, navigation }: Props) {
     const tokens = await shareSheetLinks([{ id, title: committedTitle || title.trim() || `${key} transcription` }]);
     if (tokens) setShareToken(tokens.get(id) ?? null);
     setSharing(false);
+  }
+
+  /** Share on a sheet already shared (board n-ux-low Q1c): its link once more, or the link taken down. */
+  function openShared() {
+    showDialog({
+      kind: "options",
+      title: "Shared with a link",
+      message: "Anyone with the link can open this sheet, with playback.",
+      actions: [
+        { label: "Share the link again", icon: "link", onPress: () => void shareLink() },
+        { label: "Stop sharing", icon: "link-off", onPress: () => void stopSharing() },
+        { label: "Cancel", style: "cancel" },
+      ],
+    });
   }
 
   async function stopSharing() {
@@ -1712,17 +1760,27 @@ export function ResultScreen({ route, navigation }: Props) {
     else navigation.navigate("Tabs", { screen: "Home" });
   }
 
-  /** The DOH stat and the Transpose action open the same controls; only one copy shows. */
-  function toggleKeyPicker() {
-    setPickingKey((p) => !p);
+  /** The DOH figure opens the doh picker (board n-ux-low Q1a); Transpose has a panel of its own. */
+  function openDohPicker() {
+    setPickingKey(true);
     setPickingTempo(false);
     setPickingMeter(false);
-    if (panel === "transpose") setPanel(null);
   }
 
   function togglePanel(next: Panel) {
     setPanel((p) => (p === next ? null : next));
-    if (next === "transpose") setPickingKey(false);
+  }
+
+  /** Solfa | Staff and the Layout menu: the way of reading chosen is the one every sheet opens on, on this device. */
+  function chooseView(next: SolfaStyle | "staff") {
+    viewChosen.current = true;
+    AsyncStorage.setItem(NOTATION_VIEW_KEY, next).catch(() => undefined);
+    if (next === "staff") {
+      setNotationView("staff");
+    } else {
+      setNotationView("solfa");
+      setSolfaStyle(next);
+    }
   }
 
   function openOptions() {
@@ -1733,11 +1791,6 @@ export function ResultScreen({ route, navigation }: Props) {
         label: "Edit notes",
         icon: "rename",
         onPress: () => (lowCount > 0 ? startReview() : openNote(0)),
-      },
-      {
-        label: "Export MusicXML",
-        icon: "musicxml",
-        onPress: () => void exportScore(),
       },
     ];
     if (edited) {
@@ -1788,43 +1841,11 @@ export function ResultScreen({ route, navigation }: Props) {
   }
 
   /**
-   * Re-key and transpose. Movable-do means re-keying is a re-labelling, not a
-   * re-transcription: the notes never move, only the syllables above them.
-   * Transposing is the one edit that moves them. Opened from the DOH stat or the
-   * Transpose action, so it is drawn by one function.
+   * Transpose for my choir: the one edit that moves the notes. Re-keying, the key's other door, is the doh picker's
+   * (a re-label: the notes never move, only the syllables above them).
    */
-  const keyControls = (
+  const transposeControls = (
     <View style={styles.panel}>
-      <Text style={styles.panelEyebrow} accessibilityRole="header">Doh</Text>
-      <Text style={styles.panelHint}>
-        Change the Doh — your notes stay put, only the labels move.
-      </Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.chipScroll}
-      >
-        {KEY_CHOICES.map((k) => {
-          const on = sameKey(k, key);
-          return (
-            <Touchable
-              key={k}
-              style={[styles.chip, on && styles.chipOn]}
-              radius={radii.pill}
-              onPress={() => (on ? undefined : applyKey(k))}
-              disabled={rekeying}
-              accessibilityState={{ selected: on }}
-              accessibilityLabel={`Change key to ${k}`}
-            >
-              {/* Spelled as the DOH figure spells it, a minor with its doh (lib/solfa `keyChoiceLabel`). */}
-              <Text style={[styles.chipText, on && styles.chipTextOn]}>{keyChoiceLabel(k)}</Text>
-            </Touchable>
-          );
-        })}
-      </ScrollView>
-
-      {/* Transpose for my choir: the one edit that moves the notes. */}
-      <View style={styles.panelDivider} />
       <Text style={styles.panelEyebrow} accessibilityRole="header">Transpose for my choir</Text>
       <Text style={styles.panelHint}>
         Moves every note so the parts sit in your singers' range. The solfa reads exactly as before — only Doh moves.
@@ -1886,14 +1907,6 @@ export function ResultScreen({ route, navigation }: Props) {
     </View>
   );
 
-  const notationChoices: { id: SolfaStyle | "staff"; label: string; a11y: string }[] = [
-    { id: "bars", label: "Solfa", a11y: "Show tonic solfa by bar" },
-    { id: "grid", label: "Grid", a11y: "Show the solfa grid" },
-    { id: "curwen", label: "Curwen", a11y: "Show Curwen solfa" },
-    ...(hasLyrics ? [{ id: "hymn" as const, label: "Hymn", a11y: "Show the hymn layout" }] : []),
-    { id: "staff", label: "Staff", a11y: "Show staff notation" },
-  ];
-  const notationChoice = notationView === "staff" ? "staff" : solfaStyle;
   const nothingToShow = solfaStyle === "bars" ? view.notes.length === 0 : activeSolfaLines.length === 0;
   /** No notes were heard (the editor never deletes the last one): why, and the way to another take. */
   const emptySheet = (
@@ -1937,10 +1950,11 @@ export function ResultScreen({ route, navigation }: Props) {
             <IconButton icon={guest ? "close" : "back"} label={guest ? "Close" : "Go back"} onPress={goBack} />
             {guest ? null : (
               <View style={styles.topActions}>
+                {/* The link's one home (board n-ux-low Q1c): a shared sheet's Share offers it again or stops it. */}
                 <IconButton
                   icon="share"
-                  label={shareToken ? "Share the link again" : "Share a link"}
-                  onPress={() => void shareLink()}
+                  label={shareToken ? "Shared with a link" : "Share a link"}
+                  onPress={shareToken ? openShared : () => void shareLink()}
                   busy={sharing}
                 />
                 {/* The pencil names the sheet; an unsaved one is saved by the Save to Library pill over the dock. */}
@@ -1974,34 +1988,18 @@ export function ResultScreen({ route, navigation }: Props) {
               <Icon name="rename" size={18} color={colors.textMuted} style={styles.titlePencil} />
             </Touchable>
           )}
+          {/* What the take was; "saved" is said once, by the toast (board n-ux-low Q1c). */}
           {guest ? (
             <Text style={styles.subtitle}>{`${takeKind(result)} · ${key}`}</Text>
-          ) : autoSaved && savedId ? (
-            <View style={styles.savedSub} accessible accessibilityLabel={`${result.source ? subtitle : takeKind(result)}, saved to your Library just now`}>
-              <Text style={styles.savedSubText}>{`${result.source ? subtitle : takeKind(result)} · `}</Text>
-              <Icon name="check" size={13} color={colors.success} />
-              <Text style={styles.savedSubText}> saved to your Library just now</Text>
-            </View>
-          ) : savedHere && savedId ? (
-            <View style={styles.savedSub} accessible accessibilityLabel={`${subtitle}, saved to your Library`}>
-              <Text style={styles.savedSubText}>{`${subtitle} · `}</Text>
-              <Icon name="check" size={13} color={colors.success} />
-              <Text style={styles.savedSubText}> saved to your Library</Text>
-            </View>
+          ) : autoSaved && !result.source ? (
+            <Text style={styles.subtitle}>{takeKind(result)}</Text>
           ) : subtitle ? (
             <Text style={styles.subtitle}>{subtitle}</Text>
           ) : null}
 
           {naming ? (
             <View style={styles.panel}>
-              {savedId ? (
-                <View style={styles.savedLine}>
-                  <Icon name="done" size={16} color={colors.success} />
-                  <Text style={styles.savedText}>Saved to Library · you can find it in the Library tab.</Text>
-                </View>
-              ) : (
-                <Text style={styles.panelHint}>Give this sheet a name so you can find it later.</Text>
-              )}
+              {savedId ? null : <Text style={styles.panelHint}>Give this sheet a name so you can find it later.</Text>}
               <TextField
                 label="Title"
                 value={title}
@@ -2063,15 +2061,29 @@ export function ResultScreen({ route, navigation }: Props) {
               Free preview: the first {GUEST_MAX_SECONDS} seconds. Create a free account to keep the sheet.
             </Text>
           ) : result.source?.preview && result.source.notice ? (
-            <Text style={styles.notice}>{result.source.notice}</Text>
+            // A problem is the amber sign and plain words; blue is kept for information (board n-ux-low Q1d).
+            <ProblemNote sentence={15} style={styles.problem}>{result.source.notice}</ProblemNote>
           ) : result.truncated ? (
-            <Text style={styles.notice}>
-              {section
-                ? "Only the first part of the section you chose fit; the rest was left out."
-                : isPro
-                  ? "The first six minutes of the song were transcribed."
-                  : "Free preview: the first minute. Upgrade to Pro for the whole song and the PDF."}
-            </Text>
+            section || isPro ? (
+              <ProblemNote sentence={15} style={styles.problem}>
+                {section
+                  ? "Only the first part of the section you chose fit; the rest was left out."
+                  : "The first six minutes of the song were transcribed."}
+              </ProblemNote>
+            ) : (
+              <View>
+                <ProblemNote sentence={15} style={styles.problem}>Free preview: the first minute.</ProblemNote>
+                <Button
+                  label="Whole song with Pro"
+                  variant="text"
+                  size="sm"
+                  icon="chevron"
+                  iconPosition="right"
+                  onPress={() => navigation.navigate("Upgrade")}
+                  style={styles.problemAction}
+                />
+              </View>
+            )
           ) : null}
 
           {/* ── The numbers that matter ─────────────────────────────────── */}
@@ -2080,7 +2092,7 @@ export function ResultScreen({ route, navigation }: Props) {
             <Stat
               value={doh}
               caption={rekeying ? "Saving" : "Doh"}
-              onPress={guest ? undefined : toggleKeyPicker}
+              onPress={guest ? undefined : openDohPicker}
               active={pickingKey}
               accessibilityLabel={`Key ${key}, doh is ${doh}.${guest ? "" : " Change key"}`}
             />
@@ -2110,7 +2122,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
           {/* No percentage: a plain note, and only when there is something to do. The
               doubtful notes are tinted on the sheet, so a middling one points at them. */}
-          {shownConfNote ? <Text style={styles.notice}>{shownConfNote}</Text> : null}
+          {shownConfNote ? <ProblemNote sentence={15} style={styles.problem}>{shownConfNote}</ProblemNote> : null}
 
           {hymnAsk && result.hymnMatch && !guest ? (
             <View style={styles.panel}>
@@ -2182,8 +2194,6 @@ export function ResultScreen({ route, navigation }: Props) {
             </View>
           ) : null}
 
-          {pickingKey ? keyControls : null}
-
           {/* ── Tempo picker (F-07) ────────────────────────────────────────── */}
           {pickingTempo ? (
             <View style={styles.panel}>
@@ -2249,7 +2259,7 @@ export function ResultScreen({ route, navigation }: Props) {
               style={styles.check}
               onPress={startReview}
               scaleTo={motion.scale.row}
-              radius={16}
+              radius={radii.md}
               accessibilityLabel={`Review ${lowCount} low-confidence notes`}
             >
               <Icon name="problem" size={18} color={colors.warning} />
@@ -2275,7 +2285,7 @@ export function ResultScreen({ route, navigation }: Props) {
             </View>
           )}
 
-          {panel === "transpose" ? keyControls : null}
+          {panel === "transpose" ? transposeControls : null}
 
           {/* ── Lyrics: the words under the solfa ──────────────────────────── */}
           {panel === "lyrics" ? (
@@ -2303,7 +2313,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 <Text style={styles.panelTitle} accessibilityRole="header">
                   {result.partsSource === "heard" ? "The four parts, as sung" : "Four-part harmony"}
                 </Text>
-                {!isPro && !partsView && !freeHarmony ? <ProTag /> : null}
+                {!isPro && !partsView && !freeHarmony ? <ProPriceTag price={proPrice} /> : null}
               </View>
               {partsView ? (
                 <Button
@@ -2339,16 +2349,28 @@ export function ResultScreen({ route, navigation }: Props) {
                   />
                 </>
               ) : (
-                <Touchable
-                  onPress={() => navigation.navigate("Upgrade")}
-                  style={styles.teaser}
-                  radius={radii.md}
-                  accessibilityLabel="Unlock four-part harmony"
-                >
-                  <Text style={styles.teaserText}>
-                    Alto, tenor and bass parts, written under this tune the way a hymn arranger would — ready for your choir. Unlock with Pro →
+                <>
+                  <Text style={styles.panelHint}>
+                    Alto, tenor and bass, written under this tune the way a hymn arranger would — ready for your choir.
                   </Text>
-                </Touchable>
+                  {/* A quiet row with Pro's crown and its price, no longer blue: blue is for information. */}
+                  <Touchable
+                    onPress={() => navigation.navigate("Upgrade", offer.monthly ? { planId: offer.monthly.id } : undefined)}
+                    style={styles.proRow}
+                    radius={radii.md}
+                    scaleTo={motion.scale.row}
+                    accessibilityLabel={`Write alto, tenor and bass. With Pro${proPrice ? `, ${proPrice}` : ""}`}
+                  >
+                    <View style={styles.proRowTile}>
+                      <Icon name="pro" size={18} color={colors.premium} />
+                    </View>
+                    <View style={styles.proRowText}>
+                      <Text style={styles.proRowTitle}>Write alto, tenor and bass</Text>
+                      <Text style={styles.proRowLine}>{proPrice ? `With Pro, ${proPrice}` : "With Pro"}</Text>
+                    </View>
+                    <Icon name="chevron" size={16} color={colors.textFaint} />
+                  </Touchable>
+                </>
               )}
             </View>
           ) : null}
@@ -2362,6 +2384,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 tempoBpm={tempo}
                 timeSignature={timeSignature}
                 isPro={isPro}
+                proPrice={proPrice}
                 // Marking a take is what Pro adds here, so the practice words, not the downloads'.
                 onRequirePro={practiceUpsell}
                 sheetId={savedId}
@@ -2377,28 +2400,20 @@ export function ResultScreen({ route, navigation }: Props) {
               <Text style={styles.panelHint}>
                 {isPro
                   ? "Share the solfa to your choir group, or download the sheet as PDF, MusicXML or MIDI."
-                  : "Sharing the solfa and the PDF are free; the PDF carries a NoteFusion mark. MusicXML, MIDI and an unmarked PDF come with Pro."}
+                  : (
+                    <>
+                      The solfa as text and the PDF are free; the PDF carries a NoteFusion mark. MusicXML, MIDI and an
+                      unmarked PDF come with Pro
+                      {/* The price said once, here; the rows keep their short PRO tag. */}
+                      {proPrice ? (
+                        <>
+                          , <Text style={styles.panelHintStrong}>{proPrice}</Text>
+                        </>
+                      ) : null}
+                      .
+                    </>
+                  )}
               </Text>
-              <ExportRow
-                icon="link"
-                label={shareToken ? "Share the link again" : "Share a link"}
-                onPress={() => void shareLink()}
-                busy={sharing}
-              />
-              {shareToken ? (
-                <View style={styles.sharedRow}>
-                  <Icon name="public" size={14} color={colors.icon} />
-                  <Text style={styles.sharedText}>Anyone with the link can open this sheet, with playback.</Text>
-                  <Button
-                    label="Stop sharing"
-                    variant="text"
-                    size="sm"
-                    onPress={stopSharing}
-                    disabled={sharing}
-                    style={styles.sharedStop}
-                  />
-                </View>
-              ) : null}
               <ExportRow
                 icon="solfa"
                 label="Share Tonic Solfa text"
@@ -2432,43 +2447,28 @@ export function ResultScreen({ route, navigation }: Props) {
             </View>
           ) : null}
 
-          {/* ── How to read it: solfa by bar, the text grid, Curwen, hymn, stave ── */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.viewsScroll}
-            contentContainerStyle={styles.views}
-          >
-            {notationChoices.map((v) => {
-              const on = notationChoice === v.id;
-              return (
-                <Touchable
-                  key={v.id}
-                  onPress={() => {
-                    viewChosen.current = true;
-                    AsyncStorage.setItem(NOTATION_VIEW_KEY, v.id).catch(() => undefined);
-                    if (v.id === "staff") {
-                      setNotationView("staff");
-                    } else {
-                      setNotationView("solfa");
-                      setSolfaStyle(v.id);
-                    }
-                  }}
-                  style={[styles.viewChip, on && styles.viewChipOn]}
-                  radius={radii.pill}
-                  haptic="none"
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: on }}
-                  accessibilityLabel={v.a11y}
-                >
-                  {v.id === "bars" || v.id === "staff" ? (
-                    <Icon name={v.id === "bars" ? "solfa" : "staff"} size={16} color={on ? colors.link : colors.textMuted} />
-                  ) : null}
-                  <Text style={[styles.viewChipText, on && styles.viewChipTextOn]}>{v.label}</Text>
-                </Touchable>
-              );
-            })}
-          </ScrollView>
+          {/* ── How to read it: Solfa | Staff, and the solfa's layout (board n-ux-low Q1a–b) ── */}
+          <View style={styles.readingRow}>
+            <Segmented
+              segments={[
+                { id: "solfa", label: "Solfa", icon: "solfa", accessibilityLabel: "Show tonic solfa" },
+                { id: "staff", label: "Staff", icon: "staff", accessibilityLabel: "Show staff notation" },
+              ]}
+              value={notationView}
+              onChange={(v) => chooseView(v === "staff" ? "staff" : solfaStyle)}
+            />
+            {notationView === "solfa" ? (
+              <Touchable
+                onPress={() => setChoosingLayout(true)}
+                style={styles.layoutPill}
+                radius={radii.pill}
+                accessibilityLabel={`Layout: ${layoutName(solfaStyle)}. Change the layout`}
+              >
+                <Text style={styles.layoutPillText}>{layoutName(solfaStyle)}</Text>
+                <Icon name="down" size={14} color={colors.textMuted} />
+              </Touchable>
+            ) : null}
+          </View>
 
           {/* ── The notation, from the same note data whichever way it is read ── */}
           <View style={styles.notation}>
@@ -2540,6 +2540,7 @@ export function ResultScreen({ route, navigation }: Props) {
                   notes={view.notes}
                   timeSignature={timeSignature}
                   musicalKey={key}
+                  bars={barCount}
                   cursorBeat={cursorBeat}
                   onSelectNote={guest ? undefined : openNote}
                   onRendered={() => setStaffDraws((n) => n + 1)}
@@ -2664,6 +2665,28 @@ export function ResultScreen({ route, navigation }: Props) {
           sheetId={savedId}
         />
       ) : null}
+
+      {/* ── Which doh? and the Layout menu (board n-ux-low Q1a–b) ──────────── */}
+      {guest ? null : (
+        <DohPicker
+          visible={pickingKey}
+          currentKey={key}
+          disabled={rekeying}
+          onChoose={(k) => void applyKey(k)}
+          onClose={() => setPickingKey(false)}
+        />
+      )}
+      <LayoutMenu
+        visible={choosingLayout}
+        current={solfaStyle}
+        hasLyrics={hasLyrics}
+        samples={layoutSamples}
+        onChoose={(layout) => {
+          setChoosingLayout(false);
+          chooseView(layout);
+        }}
+        onClose={() => setChoosingLayout(false)}
+      />
 
       {/* ── Tap-to-correct sheet (F-07) ─────────────────────────────────── */}
       <NoteEditor
@@ -2871,7 +2894,7 @@ function DohChoiceRow({
       onPress={onPress}
       disabled={disabled}
       style={[styles.dohRow, now && styles.dohRowOn]}
-      radius={16}
+      radius={radii.md}
       scaleTo={motion.scale.row}
       accessibilityRole="button"
       accessibilityState={{ selected: now }}
@@ -2925,17 +2948,6 @@ function Action({
   );
 }
 
-function ProTag() {
-  const colors = useColors();
-  const styles = useThemedStyles(makeStyles);
-  return (
-    <View style={styles.proTag}>
-      <Icon name="pro" size={11} color={colors.premiumDeep} />
-      <Text style={styles.proTagText}>PRO</Text>
-    </View>
-  );
-}
-
 /** A row in the export panel: icon, name, and a spinner, PRO tag or chevron at the end. */
 function ExportRow({
   icon,
@@ -2983,16 +2995,19 @@ function ExportRow({
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    /** The ScrollView takes the gutter so the dock can sit over the full width. */
+    /**
+     * The ScrollView takes the gutter so the dock can sit over the full width. Gaps and corners are on the scale
+     * (spacing 4 8 12 16 24 32, radii 8 14 20 28; board n-ux-low Q1g), the gutter Screen's 16.
+     */
     screen: { paddingHorizontal: 0, paddingBottom: 0 },
-    content: { paddingHorizontal: 22 },
+    content: { paddingHorizontal: spacing.lg },
     /** A guest's "Keep this sheet", pinned where the player docks (the player sits on it), at the dock's width. */
     /** Save to Library: 16 px from the edge, 12 px over the dock. */
     savePill: { position: "absolute", right: 16 },
     keepCard: {
       position: "absolute",
-      left: 14,
-      right: 14,
+      left: spacing.lg,
+      right: spacing.lg,
       shadowColor: "#000000",
       shadowOffset: { width: 0, height: 14 },
       shadowOpacity: 0.35,
@@ -3034,10 +3049,8 @@ const makeStyles = (c: Palette) =>
     // Sentences that explain are 15/22 and captions 12 at least (board m-ux-medium P1h); 15, not 16, so the solfa
     // stays the biggest thing on the sheet.
     subtitle: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted, marginTop: 6 },
-    savedSub: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", marginTop: 6 },
-    savedSubText: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted },
 
-    credit: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: 14 },
+    credit: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: spacing.lg },
     creditThumb: { width: 36, height: 36, borderRadius: 10, backgroundColor: c.surfaceAlt },
     creditThumbEmpty: { alignItems: "center", justifyContent: "center" },
     creditBody: { flex: 1, minWidth: 0 },
@@ -3050,18 +3063,22 @@ const makeStyles = (c: Palette) =>
       lineHeight: 22,
       color: c.noticeText,
       backgroundColor: c.accentSoft,
-      borderRadius: 12,
+      borderRadius: radii.md,
       paddingVertical: spacing.sm,
       paddingHorizontal: spacing.md,
-      marginTop: 14,
+      marginTop: spacing.lg,
       overflow: "hidden",
     },
+    /** A problem under the title or the figures: ProblemNote at the sentence size (board n-ux-low Q1d). */
+    problem: { marginTop: spacing.lg },
+    /** Its one way on, a text button under the words: their 15 + 8 px in, less the button's own 12. */
+    problemAction: { alignSelf: "flex-start", marginLeft: 11 },
 
     // ── Stats row ─────────────────────────────────────────────────────────────
     stats: {
       flexDirection: "row",
       justifyContent: "space-between",
-      marginTop: 18,
+      marginTop: spacing.lg,
       paddingVertical: 16,
       borderTopWidth: 1,
       borderBottomWidth: 1,
@@ -3089,11 +3106,11 @@ const makeStyles = (c: Palette) =>
 
     // ── Panels (pickers, lyrics, parts, export, the name) ────────────────────
     panel: {
-      marginTop: 14,
+      marginTop: spacing.lg,
       padding: spacing.lg,
       gap: spacing.sm,
       backgroundColor: c.surface,
-      borderRadius: 20,
+      borderRadius: radii.lg,
       borderWidth: 1,
       borderColor: c.border,
     },
@@ -3107,7 +3124,8 @@ const makeStyles = (c: Palette) =>
       color: c.textMuted,
     },
     panelHint: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted },
-    panelDivider: { height: 1, backgroundColor: c.border, marginVertical: spacing.sm },
+    /** A word a hint leans on (Pro's price in Export's sentence). */
+    panelHintStrong: { fontFamily: fonts.semibold, color: c.text },
     panelButton: { marginTop: spacing.xs },
     eyebrow: {
       fontFamily: fonts.medium,
@@ -3117,8 +3135,6 @@ const makeStyles = (c: Palette) =>
       color: c.textMuted,
       marginBottom: spacing.xs,
     },
-    savedLine: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
-    savedText: { fontFamily: fonts.medium, fontSize: 13, color: c.text, flex: 1 },
 
     /** Chips are 44 px tall and 8 px apart: big enough to hit (board l-ux-high 05a). */
     chipScroll: { gap: spacing.sm, paddingRight: spacing.md },
@@ -3145,7 +3161,7 @@ const makeStyles = (c: Palette) =>
       gap: spacing.md,
       paddingVertical: spacing.sm,
       paddingHorizontal: 14,
-      borderRadius: 16,
+      borderRadius: radii.md,
       backgroundColor: c.surfaceAlt,
       borderWidth: 1.5,
       borderColor: c.border,
@@ -3170,7 +3186,7 @@ const makeStyles = (c: Palette) =>
       marginBottom: 4,
       paddingVertical: 10,
       paddingHorizontal: 12,
-      borderRadius: 12,
+      borderRadius: radii.md,
       backgroundColor: c.surfaceAlt,
     },
     compareLabel: { fontFamily: fonts.medium, fontSize: 12, color: c.textMuted },
@@ -3214,22 +3230,19 @@ const makeStyles = (c: Palette) =>
     meterChip: { flexGrow: 1, alignItems: "center" },
 
     // ── Notation ──────────────────────────────────────────────────────────────
-    viewsScroll: { marginTop: 14, marginHorizontal: -22 },
-    views: { paddingHorizontal: 22, gap: 8 },
-    viewChip: {
+    /** Solfa | Staff on the left, the Layout button on the right. */
+    readingRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: spacing.sm, marginTop: spacing.lg },
+    /** The Layout button: a quiet 44 px pill naming the solfa layout in use. */
+    layoutPill: {
+      height: 44,
       flexDirection: "row",
       alignItems: "center",
-      gap: 5,
-      minHeight: 44,
-      paddingVertical: 6,
-      paddingHorizontal: 13,
+      gap: 6,
+      paddingHorizontal: 14,
       borderRadius: radii.pill,
-      borderWidth: 1,
-      borderColor: c.border,
+      backgroundColor: c.surfaceAlt,
     },
-    viewChipOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
-    viewChipText: { fontFamily: fonts.medium, fontSize: 12.5, color: c.textMuted },
-    viewChipTextOn: { fontFamily: fonts.semibold, color: c.link },
+    layoutPillText: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
 
     notation: { marginTop: 10, minHeight: 120, position: "relative" },
     watermark: { position: "absolute", right: -30, top: 30, opacity: 0.05 },
@@ -3298,10 +3311,10 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "space-between",
       gap: spacing.sm,
-      marginTop: 14,
+      marginTop: spacing.lg,
       paddingVertical: 12,
       paddingHorizontal: 14,
-      borderRadius: 16,
+      borderRadius: radii.md,
       backgroundColor: c.surface,
       borderWidth: 1,
       borderColor: c.border,
@@ -3310,7 +3323,7 @@ const makeStyles = (c: Palette) =>
     checkStrong: { fontFamily: fonts.semibold, color: c.warningText },
 
     // ── Actions ───────────────────────────────────────────────────────────────
-    actions: { flexDirection: "row", justifyContent: "space-between", marginTop: 18 },
+    actions: { flexDirection: "row", justifyContent: "space-between", marginTop: spacing.lg },
     action: { alignItems: "center", gap: 6, flex: 1 },
     actionCircle: {
       width: 48,
@@ -3330,39 +3343,37 @@ const makeStyles = (c: Palette) =>
     voice: { paddingTop: spacing.sm, borderTopWidth: 1, borderTopColor: c.border },
     voiceName: { ...typography.caption, color: c.textMuted, marginBottom: 4 },
     voiceLines: { fontFamily: typography.mono.fontFamily, fontSize: 14, color: c.text, lineHeight: 22 },
-    teaser: { backgroundColor: c.accentSoft, borderRadius: radii.md, padding: spacing.md },
-    teaserText: { fontFamily: fonts.regular, fontSize: 13, color: c.noticeText, lineHeight: 19 },
-    proTag: {
+    /** A locked SATB: a quiet 56 px row with Pro's crown and its price (board n-ux-low Q1h). */
+    proRow: {
+      minHeight: 56,
       flexDirection: "row",
       alignItems: "center",
-      gap: 3,
-      backgroundColor: c.premiumSoft,
-      borderRadius: radii.pill,
-      paddingHorizontal: 8,
-      paddingVertical: 2,
+      gap: spacing.md,
+      paddingVertical: 6,
+      paddingHorizontal: spacing.md,
+      borderRadius: radii.md,
+      backgroundColor: c.surfaceAlt,
     },
-    proTagText: { ...typography.caption, color: c.premiumText, fontFamily: fonts.semibold, fontSize: 10 },
+    proRowTile: {
+      width: 36,
+      height: 36,
+      borderRadius: 10,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: c.premiumSoft,
+    },
+    proRowText: { flex: 1, minWidth: 0 },
+    proRowTitle: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
+    proRowLine: { fontFamily: fonts.regular, fontSize: 14, color: c.textMuted, marginTop: 2 },
 
     // ── Export ────────────────────────────────────────────────────────────────
     exportRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingVertical: 13 },
     exportRowRule: { borderBottomWidth: 1, borderBottomColor: c.border },
     exportLabel: { flex: 1, fontFamily: fonts.medium, fontSize: 14.5, color: c.text },
     disabled: { opacity: 0.4 },
-    sharedRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing.xs,
-      backgroundColor: c.surfaceAlt,
-      borderRadius: 12,
-      paddingVertical: 8,
-      paddingHorizontal: spacing.md,
-    },
-    sharedText: { ...typography.caption, color: c.textMuted, flex: 1, lineHeight: 16 },
-    /** The text button sits in the row's own padding: its 40 px would otherwise make the row tall. */
-    sharedStop: { marginVertical: -8, marginRight: -8 },
 
     // ── Chords ────────────────────────────────────────────────────────────────
-    chordsBlock: { marginTop: 22, gap: spacing.xs },
+    chordsBlock: { marginTop: spacing.xl, gap: spacing.xs },
     /** Read, not tapped: no box or border, so nothing here looks like a button. */
     chordChips: { flexDirection: "row", flexWrap: "wrap", rowGap: 2, columnGap: 14, marginTop: spacing.xs },
     chordChip: {

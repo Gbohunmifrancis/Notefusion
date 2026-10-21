@@ -7,6 +7,7 @@ import {
   formatPrice,
   limitCopy,
   limitOffer,
+  monthPrice,
   nairaNote,
   paidUntilLine,
   payLabel,
@@ -60,6 +61,14 @@ test("an older API that lists the song in the main list still offers it", () => 
   const offer = limitOffer([plan("pro_m", 750000, "NGN", "monthly"), plan("song", 150000, "NGN", "single")], []);
   assert.equal(offer.single?.code, "song");
   assert.equal(offer.monthly?.code, "pro_m");
+});
+
+test("a locked feature names Pro's monthly price in the region's currency, and nothing until the plans load", () => {
+  const ngn = [plan("pro_ngn_m", 750000, "NGN", "monthly"), plan("pro_ngn_y", 7500000, "NGN", "yearly")];
+  assert.equal(monthPrice(limitOffer(ngn, [plan("song_ngn", 150000, "NGN", "single")]).monthly), "₦7,500 a month");
+  const regional = [plan("pro_regional_m", 499, "USD", "monthly")];
+  assert.equal(monthPrice(limitOffer(regional, [plan("song_regional", 99, "USD", "single")]).monthly), "$4.99 a month");
+  assert.equal(monthPrice(limitOffer([], []).monthly), null);
 });
 
 test("a price says what one payment buys on the website, and stays a rate on Google Play, which renews", () => {
