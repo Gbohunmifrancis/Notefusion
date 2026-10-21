@@ -79,7 +79,7 @@ public sealed class CreateOfferCommandHandler : IRequestHandler<CreateOfferComma
             return OfferErrors.Conflict;
         }
 
-        return OfferAdmin.Describe(offer, await OfferEmailComposer.OfferablePlansAsync(_db, ct), _settings, now);
+        return await OfferAdmin.DescribeAsync(_db, offer, _settings, now, ct);
     }
 }
 
@@ -146,7 +146,7 @@ public sealed class UpdateOfferCommandHandler : IRequestHandler<UpdateOfferComma
         var beforeName = offer.Name;
         var datesChanged = startsAt != offer.StartsAtUtc || lastDay != offer.LastDay;
         if (!termsChanged && !wordsChanged && name == offer.Name && lastDay == offer.LastDay)
-            return OfferAdmin.Describe(offer, await OfferEmailComposer.OfferablePlansAsync(_db, ct), _settings, now);
+            return await OfferAdmin.DescribeAsync(_db, offer, _settings, now, ct);
 
         if (offer.Enabled && datesChanged && await OfferAdmin.OverlapsAnotherAsync(_db, offer.Id, startsAt, lastDay, ct))
             return OfferErrors.Overlaps;
@@ -177,7 +177,7 @@ public sealed class UpdateOfferCommandHandler : IRequestHandler<UpdateOfferComma
             return OfferErrors.Conflict;
         }
 
-        return OfferAdmin.Describe(offer, await OfferEmailComposer.OfferablePlansAsync(_db, ct), _settings, now);
+        return await OfferAdmin.DescribeAsync(_db, offer, _settings, now, ct);
     }
 
     private static OfferWords Trimmed(OfferWords w)

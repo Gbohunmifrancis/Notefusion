@@ -43,6 +43,7 @@ public sealed record EndedOfferDto(string Key, string Label);
 /// <param name="Label">"Halloween offer".</param>
 /// <param name="EndsFirstUtc">Its end in the first time zone to reach midnight (UTC+14).</param>
 /// <param name="EndsLastUtc">Its end in the last (UTC−12): from then on it has ended everywhere.</param>
+/// <param name="SeasonOn">Whether its season (Feature flags) is on for everyone; while it is off the offer shows nowhere.</param>
 public sealed record AdminOfferDto(
     Guid Id,
     string Key,
@@ -64,7 +65,8 @@ public sealed record AdminOfferDto(
     DateTime CreatedAtUtc,
     string Label,
     DateTime EndsFirstUtc,
-    DateTime EndsLastUtc);
+    DateTime EndsLastUtc,
+    bool SeasonOn);
 
 /// <param name="Interval">"Monthly" or "Yearly".</param>
 /// <param name="Set">"standard" or "regional".</param>

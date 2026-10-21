@@ -19,8 +19,8 @@ public static class AdminPhoneLockRules
     /// <summary>The request header carrying the pass.</summary>
     public const string Header = "X-Admin-Session";
 
-    /// <summary>A pass ends this long after its last request: the phone's own 5 minutes without a tap.</summary>
-    public static readonly TimeSpan SessionIdle = TimeSpan.FromMinutes(5);
+    /// <summary>A pass ends this long after its last request: the phone's and the console's own hour without a tap.</summary>
+    public static readonly TimeSpan SessionIdle = TimeSpan.FromHours(1);
 
     /// <summary>However busy, a pass ends this long after the fingerprint that opened it.</summary>
     public static readonly TimeSpan SessionMax = TimeSpan.FromHours(1);

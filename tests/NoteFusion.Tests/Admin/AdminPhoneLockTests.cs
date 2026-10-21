@@ -155,7 +155,7 @@ public class AdminPhoneLockTests
     }
 
     [Fact]
-    public void A_pass_ends_five_minutes_after_its_last_request_and_an_hour_after_it_opened()
+    public void A_pass_ends_an_hour_after_its_last_request_and_an_hour_after_it_opened()
     {
         var phoneLock = new InMemoryAdminPhoneLock();
         var user = Guid.NewGuid();
@@ -163,8 +163,12 @@ public class AdminPhoneLockTests
 
         Assert.Null(phoneLock.Touch(pass.Token, Guid.NewGuid(), Now)); // never another account's
         Assert.NotNull(phoneLock.Touch(pass.Token, user, Now.AddMinutes(4)));
-        Assert.NotNull(phoneLock.Touch(pass.Token, user, Now.AddMinutes(8)));
-        Assert.Null(phoneLock.Touch(pass.Token, user, Now.AddMinutes(14)));
+        Assert.NotNull(phoneLock.Touch(pass.Token, user, Now.AddMinutes(45))); // left alone for most of an hour
+        Assert.Null(phoneLock.Touch(pass.Token, user, Now.AddMinutes(60)));
+
+        var quiet = phoneLock.Open(user, null, Now);
+        Assert.NotNull(phoneLock.Touch(quiet.Token, user, Now.AddMinutes(59)));
+        Assert.Null(phoneLock.Touch(quiet.Token, user, Now.AddMinutes(61)));
 
         var busy = phoneLock.Open(user, null, Now);
         for (var minute = 4; minute < 60; minute += 4)

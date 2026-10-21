@@ -28,7 +28,7 @@ test("Admin starts locked and opens only when the phone's lock says so", () => {
   assert.equal(isUnlocked(open, T0 + 10 * MIN), true, "no timer while it is in front");
 });
 
-test("back within 5 minutes: still open, where it was", () => {
+test("back within the hour: still open, where it was", () => {
   const s = run([
     { type: "unlock", at: T0 },
     { type: "background", at: T0 },
@@ -38,7 +38,7 @@ test("back within 5 minutes: still open, where it was", () => {
   assert.equal(s.awayAt, null);
 });
 
-test("back after 5 minutes or more: locked before the first frame", () => {
+test("back after an hour or more: locked before the first frame", () => {
   const away = run([
     { type: "unlock", at: T0 },
     { type: "background", at: T0 },
@@ -47,7 +47,7 @@ test("back after 5 minutes or more: locked before the first frame", () => {
   assert.equal(isUnlocked(away, T0 + RELOCK_AFTER_MS), false);
   assert.equal(isUnlocked(away, T0 + RELOCK_AFTER_MS - 1), true);
 
-  const back = lockReducer(away, { type: "foreground", at: T0 + 6 * MIN });
+  const back = lockReducer(away, { type: "foreground", at: T0 + 61 * MIN });
   assert.deepEqual(back, LOCKED);
 });
 
@@ -55,8 +55,8 @@ test("the away clock starts at the first background, not a later one", () => {
   const s = run([
     { type: "unlock", at: T0 },
     { type: "background", at: T0 },
-    { type: "background", at: T0 + 4 * MIN },
-    { type: "foreground", at: T0 + 6 * MIN },
+    { type: "background", at: T0 + 40 * MIN },
+    { type: "foreground", at: T0 + 61 * MIN },
   ]);
   assert.deepEqual(s, LOCKED);
 });
@@ -86,10 +86,10 @@ test("a strong fingerprint or face with this phone's key; no sensor, the passwor
   assert.match(lockedFootnote("biometric"), /never the phone's PIN/);
 });
 
-test("5 minutes without a tap locks Admin, as the server's pass ends", () => {
+test("an hour without a tap locks Admin, as the server's pass ends", () => {
   assert.equal(idleExpired(T0, T0 + IDLE_LOCK_MS - 1), false);
   assert.equal(idleExpired(T0, T0 + IDLE_LOCK_MS), true);
-  assert.equal(IDLE_LOCK_MS, 5 * MIN);
+  assert.equal(IDLE_LOCK_MS, 60 * MIN);
 });
 
 test("an emailed code is typed as six digits, whatever the keyboard pasted", () => {

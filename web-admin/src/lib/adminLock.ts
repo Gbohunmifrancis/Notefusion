@@ -14,7 +14,7 @@
 export const ADMIN_SESSION_HEADER = "X-Admin-Session";
 
 /** The console locks itself after this long without a key, click, scroll or touch. */
-export const IDLE_LOCK_MS = 5 * 60_000;
+export const IDLE_LOCK_MS = 60 * 60_000;
 
 /**
  * How long an unlock counts as the fresh confirmation the destructive actions want. The server allows
@@ -22,7 +22,7 @@ export const IDLE_LOCK_MS = 5 * 60_000;
  */
 export const FRESH_MS = 55_000;
 
-/** "away": 5 minutes without a touch. "required": the server said so (a reload, the hour, a new tab). */
+/** "away": an hour without a touch. "required": the server said so (a reload, the hour, a new tab). */
 export type LockReason = "away" | "required";
 
 export interface LockState {

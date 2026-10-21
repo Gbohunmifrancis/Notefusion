@@ -62,9 +62,13 @@ public sealed class AdminOfferQueryHandlers :
         var now = _clock.UtcNow;
         var plans = await OfferEmailComposer.OfferablePlansAsync(_db, ct);
         var offers = await _db.Offers.AsNoTracking().ToListAsync(ct);
+        var seasonOn = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var offer in offers.DistinctBy(o => o.Template))
+            if (await OfferSeason.IsOnAsync(_db, offer, now, ct))
+                seasonOn.Add(offer.Template);
         return offers
             .OrderByDescending(o => o.StartsAtUtc)
-            .Select(o => OfferAdmin.Describe(o, plans, _settings, now))
+            .Select(o => OfferAdmin.Describe(o, plans, _settings, now, seasonOn.Contains(o.Template)))
             .ToList();
     }
 

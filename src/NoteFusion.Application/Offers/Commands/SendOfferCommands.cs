@@ -78,7 +78,7 @@ public sealed class SendOfferCommandHandler : IRequestHandler<SendOfferCommand, 
             return OfferErrors.AlreadySent;
         }
 
-        return OfferAdmin.Describe(offer, await OfferEmailComposer.OfferablePlansAsync(_db, ct), _settings, now);
+        return await OfferAdmin.DescribeAsync(_db, offer, _settings, now, ct);
     }
 }
 

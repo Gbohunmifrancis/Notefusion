@@ -290,14 +290,14 @@ export function useAdminLock(): { unlocked: boolean; method: LockMethod | null }
   return { unlocked: isUnlocked(snapshot, Date.now()), method };
 }
 
-/** A tap anywhere in Admin: the 5 minutes without a tap start again. */
+/** A tap anywhere in Admin: the hour without a tap starts again. */
 export function noteAdminActivity(): void {
   lastTouchAt = Date.now();
 }
 
 /**
- * While Admin is on screen: the away clock (5 minutes in the background, or out of Admin, locks it), the idle clock
- * (5 minutes without a tap locks it, and ends the pass on the server too), a blank cover whenever the app is not in
+ * While Admin is on screen: the away clock (an hour in the background, or out of Admin, locks it), the idle clock
+ * (an hour without a tap locks it, and ends the pass on the server too), a blank cover whenever the app is not in
  * front (so the app switcher never shows a figure), and no screenshots. Returns whether the cover is up.
  */
 export function useAdminPresence(): boolean {
@@ -333,7 +333,7 @@ export function useAdminPresence(): boolean {
     return () => {
       sub.remove();
       if (timer.current) clearInterval(timer.current);
-      // Leaving Admin starts the same 5 minutes as leaving the app.
+      // Leaving Admin starts the same hour as leaving the app.
       dispatch({ type: "background", at: Date.now() });
       void sc?.allowScreenCaptureAsync(key).catch(() => undefined);
       if (Platform.OS === "ios") void sc?.disableAppSwitcherProtectionAsync?.().catch(() => undefined);

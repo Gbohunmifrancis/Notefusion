@@ -27,7 +27,14 @@ public static class OfferAdmin
     /// <summary>Running for real: switched on and past its start. Then only its last day may move, and only later.</summary>
     public static bool IsUnderway(Offer offer, DateTime utcNow) => offer.Enabled && offer.HasStarted(utcNow);
 
-    public static AdminOfferDto Describe(Offer offer, IReadOnlyList<Plan> plans, OfferSettings settings, DateTime utcNow)
+    /// <summary>The console's offer, with the plans it could price and whether its season is on now.</summary>
+    public static async Task<AdminOfferDto> DescribeAsync(
+        IApplicationDbContext db, Offer offer, OfferSettings settings, DateTime utcNow, CancellationToken ct)
+        => Describe(
+            offer, await OfferEmailComposer.OfferablePlansAsync(db, ct), settings, utcNow,
+            await OfferSeason.IsOnAsync(db, offer, utcNow, ct));
+
+    public static AdminOfferDto Describe(Offer offer, IReadOnlyList<Plan> plans, OfferSettings settings, DateTime utcNow, bool seasonOn)
         => new(
             offer.Id,
             offer.Key,
@@ -56,7 +63,8 @@ public static class OfferAdmin
             offer.CreatedAtUtc,
             OfferTemplates.LabelOf(offer.Template),
             offer.EarliestEndUtc,
-            offer.LatestEndUtc);
+            offer.LatestEndUtc,
+            seasonOn);
 
     /// <summary>The checks every create and update makes, in the order an admin would fix them; null when it is all right.</summary>
     public static Error? Check(

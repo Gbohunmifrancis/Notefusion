@@ -557,6 +557,18 @@ function OfferCard({ offer, onConfirm }: { offer: AdminOffer; onConfirm: (reques
             {offer.percentOff}% off Pro on the web app from {formatOfferDay(start.date)} until midnight on{" "}
             {formatOfferDay(offer.lastDay)}, in each person&apos;s own time.
           </p>
+          {offer.enabled && !offer.seasonOn && offer.state !== "ended" ? (
+            <p className="mt-2 flex max-w-[560px] items-start gap-1.5 text-xs leading-relaxed text-warning">
+              <Info size={13} className="mt-[2px] shrink-0" aria-hidden="true" />
+              <span>
+                Hidden while the {lookOf(offer.template).name} season is off: no banner, no offer prices, and its email
+                waits.{" "}
+                <Link href="/flags" className="text-brand hover:underline">
+                  Feature flags
+                </Link>
+              </span>
+            </p>
+          ) : null}
         </div>
         <label className="flex shrink-0 items-center gap-2.5 text-[13px] font-medium text-foreground">
           {/* A phone-width console keeps the name its room: the switch alone says it there. */}

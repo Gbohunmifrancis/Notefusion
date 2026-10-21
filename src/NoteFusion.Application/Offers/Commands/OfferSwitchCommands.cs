@@ -53,7 +53,7 @@ public sealed class SetOfferEnabledCommandHandler : IRequestHandler<SetOfferEnab
             await _db.SaveChangesAsync(ct);
         }
 
-        return OfferAdmin.Describe(offer, await OfferEmailComposer.OfferablePlansAsync(_db, ct), _settings, now);
+        return await OfferAdmin.DescribeAsync(_db, offer, _settings, now, ct);
     }
 }
 
@@ -94,6 +94,6 @@ public sealed class SetOfferSendingCommandHandler : IRequestHandler<SetOfferSend
             await _db.SaveChangesAsync(ct);
         }
 
-        return OfferAdmin.Describe(offer, await OfferEmailComposer.OfferablePlansAsync(_db, ct), _settings, now);
+        return await OfferAdmin.DescribeAsync(_db, offer, _settings, now, ct);
     }
 }

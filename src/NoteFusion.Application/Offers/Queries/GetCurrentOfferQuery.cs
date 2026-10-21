@@ -23,7 +23,8 @@ namespace NoteFusion.Application.Offers.Queries;
 /// </para>
 /// <para>
 /// Nothing is live for an account on naira prices, a Google Play member (Google renews it; the website's checkout
-/// refuses them) or lifetime access, outside the window, or while the offer is switched off. The same rule as the
+/// refuses them) or lifetime access, outside the window, or while the offer or its season (<see cref="OfferSeason"/>)
+/// is switched off. The same rule as the
 /// checkout's (<c>InitiateCheckoutCommand</c>), so a price shown is a price charged.
 /// </para>
 /// </remarks>
@@ -66,13 +67,18 @@ public sealed class GetCurrentOfferQueryHandler : IRequestHandler<GetCurrentOffe
         if (buyer is null)
             return none;
 
+        var seasonOn = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var offer in offers.DistinctBy(o => o.Template))
+            if (await OfferSeason.IsOnAsync(_db, offer, now, ct))
+                seasonOn.Add(offer.Template);
+
         var plans = await OfferEmailComposer.OfferablePlansAsync(_db, ct);
         List<Plan> PlansIn(Offer offer)
             => plans.Where(p => OfferPlans.Includes(offer, p) && PlanEligibility.IsOffered(p.Code, p.Currency, buyer.PriceAs)).ToList();
 
         LiveOfferDto? Live(Offer offer)
         {
-            if (!OfferWindow.IsLiveFor(offer, buyer.Zone, now))
+            if (!seasonOn.Contains(offer.Template) || !OfferWindow.IsLiveFor(offer, buyer.Zone, now))
                 return null;
             var mine = PlansIn(offer);
             return mine.Count == 0
@@ -95,10 +101,11 @@ public sealed class GetCurrentOfferQueryHandler : IRequestHandler<GetCurrentOffe
         var live = (named is null ? null : Live(named))
                    ?? offers.Where(o => o.Enabled).OrderBy(o => o.StartsAtUtc).Select(Live).FirstOrDefault(l => l is not null);
 
-        // "The Halloween offer has ended." only for someone it was ever for: it started, it is over where they are, and
-        // it covered plans they could buy.
+        // "The Halloween offer has ended." only for someone it was ever for: it started, it is over where they are (or
+        // its season was switched off), and it covered plans they could buy.
         var ended = named is not null && live?.Key != named.Key
-                    && OfferWindow.HasEndedFor(named, buyer.Zone, now) && PlansIn(named).Count > 0
+                    && (OfferWindow.HasEndedFor(named, buyer.Zone, now) || !seasonOn.Contains(named.Template))
+                    && PlansIn(named).Count > 0
             ? new EndedOfferDto(named.Key, OfferTemplates.LabelOf(named.Template))
             : null;
 
