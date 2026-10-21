@@ -42,6 +42,9 @@
   <header class="topbar">
     <button class="btn btn-ghost btn-icon drawer-toggle" id="drawer-toggle" type="button" aria-label="Open menu" aria-controls="side" aria-expanded="false"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-menu"/></svg></button>
     <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion <small>Web</small></a>
+    <!-- Phones: the section's name beside the mark (Library, Practice, Account), the heading there; Home keeps the
+         logo's name (board n-ux-low V1l; app.js setView, app.css). -->
+    <h1 class="topbar-title" id="topbar-title"></h1>
     <span class="side-spacer"></span>
     <a class="side-help how-link" href="/#how" id="how-link"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-help"/></svg>How it works</a>
     <button class="btn btn-ghost btn-sm hidden" id="topbar-signin" type="button">Sign in</button>
@@ -224,7 +227,7 @@
       <h2><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-sparkle"/></svg>Or try it first — free, no account</h2>
       <p class="card-lead">A 30-second preview of a tune you hum right now, or a recording you have.</p>
       <div class="row">
-        <button class="btn btn-primary btn-rec" id="try-record" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-mic"/></svg>Record a tune</button>
+        <button class="btn btn-ghost" id="try-record" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-mic"/></svg>Record a tune</button>
         <label class="btn btn-ghost try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-upload"/></svg>Upload a recording</label>
       </div>
       <details class="link-more">
@@ -232,7 +235,7 @@
         <form id="try-form" class="link-form" novalidate>
           <label class="sr-only" for="try-url">Song link</label>
           <span class="input-wrap"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-link"/></svg><input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false"></span>
-          <button class="btn btn-primary" id="try-submit" type="submit">Preview</button>
+          <button class="btn btn-ghost" id="try-submit" type="submit">Preview</button>
         </form>
         <button class="btn btn-ghost btn-sm" id="try-paste" type="button" hidden><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-paste"/></svg>Paste a link</button>
         <!-- "Beats in a bar" goes with a link from here; a recorded take is asked it in its review (assets/recorder.js),
@@ -243,6 +246,16 @@
       <div id="try-section"></div>
       <p class="try-status small" id="try-status" aria-live="polite"></p>
     </div>
+      <!-- Phones: the desk panel's sample, compact, after the try row so the first screen does not move (board
+           n-ux-low V1a). Decorative, as the panel is; app.css hides it where the panel shows. -->
+      <div class="auth-sample-m" aria-hidden="true">
+        <span class="auth-sample-m-k">What you get from a hummed tune</span>
+        <div class="auth-sample-m-card">
+          <div class="auth-sample-m-head"><b>Amazing Grace</b><span>Doh is G · 3/4</span></div>
+          <div class="auth-sample-m-solfa">| s, - | d - - - m d | m - - - r - | d - - - l, - | s, - - - s, - |</div>
+          <div class="auth-sample-m-staff"><img src="/assets/sample-staff.svg" width="613" height="236" alt="" loading="lazy"></div>
+        </div>
+      </div>
       <p class="auth-fine">By continuing you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy</a>. Need help? <a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a></p>
     </div>
   </section>
@@ -397,8 +410,8 @@
     <div class="alert alert-info hidden" id="guest-bar">
       <span><strong>You're trying NoteFusion free.</strong> Previews are the first 30 seconds, no account needed. Create a free account to keep the sheet, hear it in four parts and share it with your choir.</span>
       <span class="row" style="gap:8px;flex:none">
-        <button class="btn btn-primary btn-sm" id="guest-signup" type="button">Create a free account</button>
-        <button class="btn btn-ghost btn-sm" id="guest-signin" type="button">Sign in</button>
+        <button class="btn btn-ghost btn-sm" id="guest-signup" type="button">Create a free account</button>
+        <button class="btn btn-sm btn-text" id="guest-signin" type="button">Sign in</button>
       </span>
     </div>
     <div id="view-transcribe">
@@ -427,8 +440,8 @@
       <!-- The choices first, then what it costs, then the action (board m-ux-medium W2a): the record button or the
            drop zone for a recording, Transcribe for a link. -->
       <div class="source-panel" id="src-link" role="tabpanel" aria-labelledby="src-tab-link" hidden>
+      <label class="field-label" for="link-url">Song link</label>
       <form id="form-link" class="link-form studio-link" novalidate>
-        <label class="sr-only" for="link-url">Song link</label>
         <span class="input-wrap providers">
           <span class="provider-marks" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#p-youtube"/></svg><svg class="ic" aria-hidden="true"><use href="#p-spotify"/></svg><svg class="ic" aria-hidden="true"><use href="#p-apple"/></svg></span>
           <input id="link-url" type="url" placeholder="YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false" required>
@@ -441,24 +454,29 @@
       </div>
 
       <div id="kind-block">
-      <div class="upload-kind studio-kind" role="radiogroup" aria-label="What is in the recording?">
+      <div class="upload-kind studio-kind" role="radiogroup" aria-label="What is in the recording?" aria-describedby="kind-hint">
         <label><input type="radio" name="upload-kind" value="hum"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-mic"/></svg>Just a voice</label>
         <label><input type="radio" name="upload-kind" value="song" checked><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-music"/></svg>Voice with instruments</label>
-        <label title="A choir singing in parts: soprano, alto, tenor and bass come back as they were sung"><input type="radio" name="upload-kind" value="choir"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg>A choir in parts</label>
-        <label title="Piano or guitar: the chords as they were played, with the top line as the tune"><input type="radio" name="upload-kind" value="chords"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-keys"/></svg>Chords (piano, guitar)</label>
+        <label><input type="radio" name="upload-kind" value="choir"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg>A choir in parts</label>
+        <label><input type="radio" name="upload-kind" value="chords"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-keys"/></svg>Chords (piano, guitar)</label>
       </div>
+      <!-- The help that lived in title tooltips (no phone shows them), one line under its control (board n-ux-low V1f):
+           the chosen kind's, when it needs one (app.js renderKindOptions), and what the keyboard's number means. -->
+      <p class="studio-hint hidden" id="kind-hint"></p>
       <div class="studio-opts">
         <label class="studio-opt hidden" id="choir-band-row"><input type="checkbox" id="choir-band"> Instruments are playing too</label>
-        <label class="studio-opt hidden" id="kb-row" title="The transpose setting on your keyboard. At −4 you press A and hear F; the sheet is written in the keys you press.">Keyboard transpose
-          <select id="kb-transpose"></select></label>
+        <label class="studio-opt hidden" id="kb-row">Keyboard transpose
+          <select id="kb-transpose" aria-describedby="kb-hint"></select></label>
       </div>
+      <p class="studio-hint hidden" id="kb-hint">Your keyboard’s transpose setting: at −4 you press A and hear F. The sheet is written in the keys you press.</p>
       </div>
 
       <!-- Beats in a bar, on every tab: the worker cannot hear the meter yet, so a 3/4 hymn came back in 4/4. -->
       <div class="studio-opts studio-meter">
-        <label class="studio-opt" for="meter" title="How many beats each bar holds. Not sure leaves it to us.">Beats in a bar
-          <select id="meter" data-meter></select></label>
+        <label class="studio-opt" for="meter">Beats in a bar
+          <select id="meter" data-meter aria-describedby="meter-hint"></select></label>
       </div>
+      <p class="studio-hint" id="meter-hint">Not sure? Leave it, and we’ll count them.</p>
       <!-- What the next transcription costs, only when it costs something; the why behind (i). -->
       <div class="studio-cost hidden" id="studio-cost">
         <span class="cost-line"><span class="cost-chip" id="cost-chip"></span><button class="cost-info" id="cost-info" type="button" aria-expanded="false" aria-controls="cost-pop" aria-label="How this is counted"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-info"/></svg></button></span>
@@ -476,11 +494,12 @@
 
       <div class="source-panel" id="src-upload" role="tabpanel" aria-labelledby="src-tab-upload" hidden>
       <label class="drop" id="drop">
-        <input id="file-input" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,.mp4,audio/*">
+        <input id="file-input" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,.mp4,audio/*" aria-describedby="drop-types">
         <svg class="ic drop-ic" aria-hidden="true"><use href="/assets/icons.svg#i-upload"/></svg>
         <span class="btn btn-light">Upload your audio</span>
-        <span class="drop-hint" title="MP3, WAV, M4A, FLAC, OGG or WebM, up to 25 MB">or drop it here · up to 25 MB</span>
+        <span class="drop-hint">or drop it here · up to 25 MB</span>
       </label>
+      <p class="studio-hint" id="drop-types">MP3, WAV, M4A, FLAC, OGG or WebM.</p>
       </div>
 
       <!-- Out of the form's row and still its submit button: shown on the Song link tab only (app.js selectSource). -->
@@ -585,18 +604,19 @@
         </div>
       </div>
 
-      <!-- Everything you can do with the sheet, one row; each opens in a pop-up. -->
+      <!-- Everything you can do with the sheet, one row; each opens in a pop-up. Named by what they do (board n-ux-low V1j):
+           the parts tile reads "See parts" once the sheet has them (app.js syncActions). -->
       <div class="result-actions" role="toolbar" aria-label="What to do with this sheet">
         <button class="btn btn-primary" id="play" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-play"/></svg>Play</button>
         <button class="act" type="button" data-tool="practice"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg><span>Learn my part</span></button>
-        <button class="act" type="button" data-tool="rehearse"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-restart"/></svg><span>Rehearse</span></button>
+        <button class="act" type="button" data-tool="rehearse"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-restart"/></svg><span>Slow &amp; loop</span></button>
         <button class="act" type="button" data-tool="save-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-save"/></svg><span>Save &amp; share</span></button>
         <button class="act" type="button" data-tool="downloads-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-download"/></svg><span>Download</span></button>
         <button class="act" type="button" data-tool="transpose-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-shift"/></svg><span>Transpose</span></button>
-        <button class="act" type="button" data-tool="lyrics-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-text"/></svg><span>Lyrics</span></button>
-        <button class="act" type="button" data-tool="chords-card"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-keys"/></svg><span>Chords</span></button>
-        <button class="act act-pro" type="button" data-tool="harmony" data-pro="1"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg><span>Four parts</span><svg class="ic act-lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg></button>
-        <button class="act act-pro" type="button" data-tool="sing" data-pro="1"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-sing"/></svg><span>Sing it</span><svg class="ic act-lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg></button>
+        <button class="act" type="button" data-tool="lyrics-section"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-text"/></svg><span>Add lyrics</span></button>
+        <button class="act" type="button" data-tool="chords-card"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-keys"/></svg><span>See chords</span></button>
+        <button class="act act-pro" type="button" data-tool="harmony" data-pro="1"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg><span>Add parts</span><svg class="ic act-lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg></button>
+        <button class="act act-pro" type="button" data-tool="sing" data-pro="1"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-sing"/></svg><span>Mark my singing</span><svg class="ic act-lock" role="img" aria-label="Pro"><use href="/assets/icons.svg#i-lock"/></svg></button>
       </div>
 
       <!-- ── Guest: what an account unlocks ───────────────────────────── -->
@@ -608,38 +628,6 @@
           <button class="btn btn-ghost" id="guest-cta-signin" type="button">I have an account</button>
         </div>
       </div>
-
-      <div class="verdict-card hidden" id="r-verdict" role="group" aria-labelledby="verdict-q">
-        <p class="verdict-q" id="verdict-q">How did this transcription come out?</p>
-        <div class="verdicts">
-          <button class="verdict" type="button" data-verdict="5" aria-pressed="false">Spot on</button>
-          <button class="verdict" type="button" data-verdict="3" aria-pressed="false">Close</button>
-          <button class="verdict" type="button" data-verdict="1" aria-pressed="false">Off</button>
-        </div>
-        <div class="verdict-more" id="verdict-more" hidden>
-          <div class="issues" role="group" aria-label="What was off?">
-            <button class="issue" type="button" data-issue="notes" aria-pressed="false">Wrong notes</button>
-            <button class="issue" type="button" data-issue="key" aria-pressed="false">Wrong doh</button>
-            <button class="issue" type="button" data-issue="rhythm" aria-pressed="false">Rhythm or timing</button>
-            <button class="issue" type="button" data-issue="missing" aria-pressed="false">Notes missing</button>
-            <button class="issue" type="button" data-issue="other" aria-pressed="false">Something else</button>
-          </div>
-          <label class="sr-only" for="verdict-note">Anything else? (optional)</label>
-          <textarea id="verdict-note" rows="2" maxlength="2000" placeholder="Anything else? (optional)"></textarea>
-          <div class="verdict-row">
-            <button class="btn btn-primary btn-sm" type="button" id="verdict-send">Send</button>
-            <span class="small muted">It goes to the people who tune the engine.</span>
-          </div>
-        </div>
-        <p class="verdict-thanks hidden" id="verdict-thanks" aria-live="polite"></p>
-      </div>
-
-      <!-- ── Pro, one row under the sheet (board m-ux-medium W2e): Play stays the one filled button; this opens the plans. ── -->
-      <button class="pro-row hidden" id="r-upgrade" type="button">
-        <span class="pro-row-ic" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-crown"/></svg></span>
-        <span class="pro-row-tx"><b id="r-unlock-title">More with Pro</b><small id="r-unlock-lead">Alto, tenor and bass, Sing it, downloads with no watermark</small></span>
-        <svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev"/></svg>
-      </button>
 
       <!-- The tools themselves. They live here, out of sight, and open one at a time in the pop-up below. -->
       <div class="tool-dock" id="tool-dock" hidden>
@@ -659,8 +647,10 @@
           <button class="btn btn-ghost btn-icon" id="restart" type="button" title="From the start" aria-label="From the start"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-restart"/></svg></button>
           <span class="group"><label for="rate">Speed</label>
             <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></span>
-          <span class="group"><label><input type="checkbox" id="loop-on"> Loop bars</label>
-            <input type="number" id="loop-from" min="1" value="1" aria-label="From bar"> – <input type="number" id="loop-to" min="1" value="4" aria-label="To bar"></span>
+          <!-- The loop in words, each box with its own label (board n-ux-low V1e). -->
+          <span class="group loop-group"><label class="loop-on"><input type="checkbox" id="loop-on"> Loop bars</label>
+            <label>from bar <input type="number" id="loop-from" min="1" value="1"></label>
+            <label>to bar <input type="number" id="loop-to" min="1" value="4"></label></span>
           <span class="group hidden" id="voices"><label>Voices</label></span>
           <label class="group hidden" id="backing-group" title="The song's own backing, with the solfa melody played over it in time"><input type="checkbox" id="backing-on"> Play with the song</label>
         </div>
@@ -729,7 +719,7 @@
         <div id="sing-result" class="hidden">
           <div class="sing-score"><strong id="sing-score"></strong><span id="sing-summary"></span></div>
           <div class="marks" id="sing-marks"></div>
-          <p class="muted small" style="margin:8px 0 0">✓ in tune · ~ close · struck through: off the note · dashed: not sung. Numbers are cents off.</p>
+          <p class="muted small" style="margin:8px 0 0">✓ in tune · ~ close · struck through: off the note · – not sung. Numbers are cents off.</p>
         </div>
       </div>
 
@@ -754,7 +744,8 @@
       <div class="section" id="save-section">
         <h2><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-share"/></svg>Save &amp; share</h2>
         <div id="save-form" class="link-form">
-          <input id="save-title" type="text" placeholder="Name this sheet" maxlength="120" aria-label="Sheet title">
+          <label class="field-label" for="save-title">Sheet name</label>
+          <input id="save-title" type="text" placeholder="Name this sheet" maxlength="120">
           <button class="btn btn-primary" id="save" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-save"/></svg>Save to my library</button>
         </div>
         <div id="saved" class="hidden">
@@ -771,10 +762,11 @@
             <span id="share-row" class="share-row hidden">
               <input id="share-url" type="text" readonly aria-label="Share link">
               <button class="btn btn-ghost btn-sm" id="share-copy" type="button">Copy</button>
-              <button class="btn btn-ghost btn-sm" id="share-stop" type="button">Stop sharing</button>
             </span>
           </div>
           <p class="muted small" style="margin:10px 0 0">Anyone with the link can read the sheet and rehearse with playback — no account needed. Paste it into the choir group.</p>
+          <!-- Apart from Copy, on its own line, a red word (board n-ux-low V1g); it still asks first. -->
+          <button class="share-stop hidden" id="share-stop" type="button">Stop sharing this link</button>
         </div>
       </div>
 
@@ -791,6 +783,40 @@
       </div>
       </div>
     </div>
+
+    <!-- The sheet's card ends with what you can do with the sheet; the question about the app and the way to Pro follow it
+         on the page (board n-ux-low V1k). Hidden with the card (app.css #result.hidden ~). -->
+    <div class="verdict-card hidden" id="r-verdict" role="group" aria-labelledby="verdict-q">
+      <p class="verdict-q" id="verdict-q">How did this transcription come out?</p>
+      <div class="verdicts">
+        <button class="verdict" type="button" data-verdict="5" aria-pressed="false">Spot on</button>
+        <button class="verdict" type="button" data-verdict="3" aria-pressed="false">Close</button>
+        <button class="verdict" type="button" data-verdict="1" aria-pressed="false">Off</button>
+      </div>
+      <div class="verdict-more" id="verdict-more" hidden>
+        <div class="issues" role="group" aria-label="What was off?">
+          <button class="issue" type="button" data-issue="notes" aria-pressed="false">Wrong notes</button>
+          <button class="issue" type="button" data-issue="key" aria-pressed="false">Wrong doh</button>
+          <button class="issue" type="button" data-issue="rhythm" aria-pressed="false">Rhythm or timing</button>
+          <button class="issue" type="button" data-issue="missing" aria-pressed="false">Notes missing</button>
+          <button class="issue" type="button" data-issue="other" aria-pressed="false">Something else</button>
+        </div>
+        <label class="sr-only" for="verdict-note">Anything else? (optional)</label>
+        <textarea id="verdict-note" rows="2" maxlength="2000" placeholder="Anything else? (optional)"></textarea>
+        <div class="verdict-row">
+          <button class="btn btn-primary btn-sm" type="button" id="verdict-send">Send</button>
+          <span class="small muted">It goes to the people who tune the engine.</span>
+        </div>
+      </div>
+      <p class="verdict-thanks hidden" id="verdict-thanks" aria-live="polite"></p>
+    </div>
+
+    <!-- ── Pro, one row under the sheet (board m-ux-medium W2e): Play stays the one filled button; this opens the plans. ── -->
+    <button class="pro-row hidden" id="r-upgrade" type="button">
+      <span class="pro-row-ic" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-crown"/></svg></span>
+      <span class="pro-row-tx"><b id="r-unlock-title">More with Pro</b><small id="r-unlock-lead">Alto, tenor and bass, Sing it, downloads with no watermark</small></span>
+      <svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev"/></svg>
+    </button>
 
     <!-- ── One tool at a time: a sheet that rises from the bottom on a phone, a dialog on a desk ── -->
     <div class="modal tool-modal hidden" id="tool-modal" role="dialog" aria-modal="true" aria-label="Tool">

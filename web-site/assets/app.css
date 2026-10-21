@@ -166,12 +166,15 @@ body.guest .shell { grid-template-columns: minmax(0, 1fr); grid-template-rows: a
 body.guest .side { display: none; }
 body.guest .topbar { display: flex; }
 .topbar { position: sticky; top: 0; z-index: 20; height: var(--topbar-h); align-items: center; gap: 12px; padding: 0 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.topbar-title { display: none; }
 
 /* ── Home: the greeting and the studio card ──────────────────────────────── */
 .home { text-align: center; padding: clamp(12px, 5vh, 48px) 0 22px; }
 .home-mark { display: block; width: 64px; height: 64px; margin: 0 auto 16px; background: var(--brand-gradient); -webkit-mask: url(/assets/mark-mask.png) center / contain no-repeat; mask: url(/assets/mark-mask.png) center / contain no-repeat; }
 .greeting { font-size: clamp(1.7rem, 3.4vw, 2.3rem); margin: 0 0 4px; }
 .home-sub { margin: 0; }
+/* A sub-line that runs to two lines (a guest's) is a left-aligned block under the centred greeting (board n-ux-low V1d). */
+.home .home-sub-long { max-width: 32ch; margin: 8px auto 0; text-align: left; }
 /* Practice: the streak and XP under the greeting, a tap from today's drill (the view is assets/practice-view.css). */
 .practice-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 14px; padding: 6px 16px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font: inherit; font-size: 0.9rem; font-weight: 600; font-variant-numeric: tabular-nums; cursor: pointer; }
 .practice-chip .ic { width: 18px; height: 18px; color: var(--muted); }
@@ -216,6 +219,8 @@ body.guest .topbar { display: flex; }
 .studio-opt select:focus { border-color: #fff; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18); }
 .studio-opt select option { color: #0f172a; background: #fff; }
 .studio-meter { justify-content: center; }
+/* Help you can see, one muted line under its control, in place of title tooltips (board n-ux-low V1f). */
+.studio-hint { margin: 8px 2px 0; font-size: 0.875rem; line-height: 1.45; color: var(--muted); text-align: left; }
 .btn.btn-glass { background: rgba(255, 255, 255, 0.14); color: #fff; border-color: rgba(255, 255, 255, 0.45); }
 .btn.btn-glass:hover:not(:disabled) { background: rgba(255, 255, 255, 0.24); }
 .studio-status.link-hint { margin-top: 8px; font-weight: 500; }
@@ -263,6 +268,10 @@ input[type=search] { -webkit-appearance: none; appearance: none; }
 input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: var(--ring); }
 textarea { resize: vertical; line-height: 1.5; }
 .field { margin-bottom: 14px; }
+/* A label above its field, where the field had only a placeholder or a hidden label (board n-ux-low V1e). */
+.field-label { display: block; margin: 14px 2px 6px; font-size: 0.875rem; font-weight: 600; color: var(--ink); text-align: left; }
+#save-form { flex-wrap: wrap; }
+#save-form .field-label { flex-basis: 100%; margin: 6px 2px -4px; } /* 6 px over the field: the row's 10 px gap, less 4 */
 .input-wrap { position: relative; flex: 1; min-width: 0; display: block; }
 .input-wrap > .ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--faint); pointer-events: none; }
 .input-wrap input { padding-left: 42px; }
@@ -292,6 +301,9 @@ textarea { resize: vertical; line-height: 1.5; }
 .btn.on { background: var(--blue-fill, var(--blue)); color: #fff; border-color: var(--blue-fill, var(--blue)); }
 .btn-link { background: none; border: none; color: var(--blue-dark); padding: 0; font: inherit; font-weight: 600; cursor: pointer; min-height: 0; }
 .btn-link:disabled { color: var(--muted); cursor: default; }
+/* A text button: a button's size and target, a link's look (the guest bar's Sign in, board n-ux-low V1c). */
+.btn.btn-text { background: none; border-color: transparent; color: var(--blue-dark); padding-left: 10px; padding-right: 10px; }
+.btn.btn-text:hover:not(:disabled) { background: var(--blue-soft); }
 .btn .lock { width: 14px; height: 14px; opacity: 0.75; }
 .btn-rec { color: var(--danger); }
 .btn-rec .ic { color: var(--danger); }
@@ -344,7 +356,7 @@ textarea { resize: vertical; line-height: 1.5; }
 .bar > div { height: 100%; width: 0; background: var(--brand-gradient); border-radius: 999px; transition: width 0.6s ease; }
 .bar-pct { flex: none; min-width: 3.2em; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; font-size: 0.9rem; color: var(--blue-dark); }
 .p-status { margin: 10px 0 0; color: var(--copy); font-weight: 600; }
-.p-slow { margin: 8px 0 0; color: var(--amber-text); }
+.p-slow { margin: 8px 0 0; color: var(--ink); }
 .p-offline { margin: 8px 0 0; color: var(--danger-text); }
 .p-retry { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 12px 0 0; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--wash); color: var(--copy); }
 /* "Notify me when it's ready": one quiet button under the note, asked from a click (assets/notify.js). */
@@ -367,7 +379,7 @@ textarea { resize: vertical; line-height: 1.5; }
 /* The faint mark on a free account's sheet is the logo itself, tinted brand blue, turned like a stamp. */
 .watermark::before { content: ""; display: block; width: clamp(120px, 28%, 260px); aspect-ratio: 331 / 438; background: var(--blue); opacity: 0.08; transform: rotate(-24deg); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; }
 .solfa { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.95rem; line-height: 1.9; white-space: pre-wrap; background: var(--blue-tint); border: 1px solid #dbe6fb; border-radius: var(--radius-sm); padding: 16px 18px; color: var(--ink); }
-.solfa .doh { color: var(--blue-dark); font-weight: 700; }
+.solfa .doh { color: var(--ink); font-weight: 700; }
 .part { margin-top: 14px; }
 .part h3 { font-size: 0.75rem; margin: 0 0 6px; color: var(--muted); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 #hymn, #r-hymn { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -380,7 +392,7 @@ table.hymn td:last-child { border-right: 2px solid var(--ink); }
 .cell i { display: block; font-style: normal; font-family: Inter, sans-serif; font-size: 0.72rem; color: var(--muted); min-height: 1em; }
 /* Chords over the grid: the letter name with its root in solfa under it, greyed when a bar opens on a chord still sounding. */
 .chord-grid .ch { display: block; min-height: 2.15em; line-height: 1.1; padding-bottom: 3px; }
-.chord-grid .ch strong { display: block; font-family: Inter, sans-serif; font-size: 0.82rem; color: var(--blue-dark); white-space: pre; }
+.chord-grid .ch strong { display: block; font-family: Inter, sans-serif; font-size: 0.82rem; color: var(--ink); white-space: pre; }
 .chord-grid .ch small { display: block; font-size: 0.72rem; color: var(--muted); white-space: pre; }
 .chord-grid .ch.held { opacity: 0.55; }
 .chord-grid .ch.held strong::before { content: "("; }
@@ -389,7 +401,7 @@ table.hymn td:last-child { border-right: 2px solid var(--ink); }
 .chord-chip { display: inline-flex; flex-direction: column; align-items: center; min-width: 60px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--wash); line-height: 1.25; }
 .chord-chip small { font-size: 0.68rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .chord-chip strong { font-size: 1.05rem; color: var(--ink); letter-spacing: -0.01em; }
-.chord-chip em { font-style: normal; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.8rem; color: var(--blue-dark); }
+.chord-chip em { font-style: normal; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.8rem; color: var(--copy); }
 
 /* Player toolbar */
 .player { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
@@ -398,6 +410,11 @@ table.hymn td:last-child { border-right: 2px solid var(--ink); }
 .player input[type=number] { width: 54px; min-height: 30px; padding: 3px 6px; border: 1px solid var(--line); border-radius: 8px; font-size: 0.875rem; }
 .player select { width: auto; min-height: 30px; padding: 3px 26px 3px 8px; border: 1px solid var(--line); border-radius: 8px; font-size: 0.875rem; background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right 8px center no-repeat; appearance: none; -webkit-appearance: none; }
 .player input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--blue); margin: 0; }
+/* Rehearse's loop as words: "Loop bars", then "from bar [1] to bar [4]", each box with its own label (board n-ux-low V1e). */
+#player .loop-group { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; width: 100%; padding: 6px 12px 10px; }
+#player .loop-group label { gap: 8px; font-size: 0.9375rem; font-weight: 500; color: var(--ink); text-transform: none; letter-spacing: 0; }
+#player .loop-group .loop-on { flex-basis: 100%; font-weight: 600; }
+#player .loop-group input[type=number] { width: 64px; }
 
 /* Sing it */
 .sing-live { font-size: 2.6rem; font-weight: 800; color: var(--blue); text-align: center; padding: 12px 0 6px; font-family: ui-monospace, Menlo, Consolas, monospace; letter-spacing: -0.02em; }
@@ -405,13 +422,13 @@ table.hymn td:last-child { border-right: 2px solid var(--ink); }
 .sing-score { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
 .sing-score strong { font-size: 2.2rem; letter-spacing: -0.02em; min-width: 2.2ch; text-align: center; color: var(--ink); }
 .marks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-/* A note's mark carries a shape as well as a colour (app.js markSpan): ✓ in tune, ~ close, off the note struck through
- * in grey (never red), not sung dashed with –. */
+/* A note's mark carries a shape as well as a colour (app.js markSpan): ✓ in tune, ~ close in a dashed ink outline (amber
+ * is Pro's alone, board n-ux-low V1i), off the note struck through in grey (never red), not sung faint and dashed with –. */
 .mark { min-width: 42px; min-height: 44px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border: 1.5px solid var(--line); border-radius: 8px; padding: 4px 6px; font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; background: #fff; }
 .mark b { font-weight: inherit; }
 .mark small { display: block; font-weight: 500; color: var(--muted); font-size: 0.7rem; font-family: Inter, sans-serif; }
 .mark.hit { border-color: var(--success); color: var(--success-text); }
-.mark.near { border-color: var(--amber); color: var(--amber-text); }
+.mark.near { border-style: dashed; border-color: var(--ink); color: var(--ink); }
 .mark.hit b::after, .mark.near b::after, .mark.missed b::after { margin-left: 3px; font-family: var(--font-sans, sans-serif); font-weight: 600; }
 .mark.hit b::after { content: "✓"; }
 .mark.near b::after { content: "~"; }
@@ -425,11 +442,16 @@ table.ranges { border-collapse: collapse; margin-top: 12px; font-size: 0.875rem;
 table.ranges td { padding: 6px 12px 6px 0; border-top: 1px solid var(--line); }
 table.ranges td:first-child { text-transform: capitalize; color: var(--muted); }
 table.ranges .ok { color: var(--success-text); font-weight: 600; }
-table.ranges .warn { color: var(--amber-text); font-weight: 600; }
+table.ranges .warn { color: var(--ink); font-weight: 600; }
 table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 
 .share-row { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .share-row input { width: min(380px, 70vw); min-height: 36px; padding: 6px 10px; font-size: 0.875rem; }
+/* The sheet's link and Copy, side by side; Stop sharing on a line of its own, a red word (board n-ux-low V1g). */
+#share-row { display: flex; flex-wrap: nowrap; width: 100%; }
+#share-row #share-url { flex: 1; width: auto; min-width: 0; }
+.share-stop { display: flex; align-items: center; width: 100%; min-height: 48px; margin: 14px 0 0; padding: 8px 0 0; border: 0; border-top: 1px solid var(--line); background: none; font: inherit; font-size: 0.9375rem; font-weight: 600; color: var(--danger-text); text-align: left; cursor: pointer; }
+.share-stop:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .downloads { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
 .upgrade-note { background: linear-gradient(135deg, #fff7e0, #fffbef); border: 1px solid #f6e3a1; border-radius: var(--radius-sm); padding: 16px 18px; margin-top: 16px; color: var(--copy); }
 .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 14px; }
@@ -661,6 +683,12 @@ main h1[tabindex="-1"]:focus { outline: none; }
   /* Toasts sit over the bar, not under it. */
   body.has-tabbar .pay-toast, body.has-tabbar .pv-toast { bottom: calc(76px + env(safe-area-inset-bottom)); }
   body.has-tabbar .why-toast { bottom: calc(88px + env(safe-area-inset-bottom)); }
+  /* The bar names the section beside the mark, and is the heading there: the page's own h1 steps aside, its lead line
+     stays (board n-ux-low V1l). The mark keeps a 44 px target without pushing the name along. */
+  body.has-tabbar .topbar.has-title .brand { flex: none; gap: 0; font-size: 0; padding-right: 14px; margin-right: -14px; }
+  body.has-tabbar .topbar.has-title .topbar-title { display: block; flex: 1; min-width: 0; margin: 0 0 0 4px; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  body.has-tabbar .topbar-title:focus { outline: none; }
+  body.has-tabbar .page-head h1 { display: none; }
 }
 .tab-cell, .tab-rec {
   position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-width: 0; min-height: 64px;
@@ -734,6 +762,15 @@ main h1[tabindex="-1"]:focus { outline: none; }
 .auth-page .try-free { margin: 24px 0 0; }
 .auth-page .try-free h2 { font-size: 1rem; }
 .auth-fine { margin: 24px 0 0; text-align: center; font-size: 0.8125rem; color: var(--muted); }
+/* Phones: the desk panel's sample, compact, under the try row (board n-ux-low V1a); the first system of the staff only. */
+.auth-sample-m { margin: 20px 0 0; }
+.auth-sample-m-k { display: block; margin: 0 2px 8px; font-size: 0.8125rem; font-weight: 600; color: var(--muted); }
+.auth-sample-m-card { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow: hidden; }
+.auth-sample-m-head { display: flex; justify-content: space-between; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--line); font-size: 0.875rem; color: var(--muted); }
+.auth-sample-m-head b { color: var(--ink); font-weight: 600; }
+.auth-sample-m-solfa { padding: 10px 14px 12px; font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.875rem; font-weight: 600; line-height: 1.7; color: var(--ink); word-spacing: 0.08em; }
+.auth-sample-m-staff { padding: 6px 8px 2px; border-top: 1px solid var(--line); background: #fffdf8; }  /* engraved on paper in both themes */
+.auth-sample-m-staff img { display: block; width: 100%; height: auto; aspect-ratio: 613 / 122; object-fit: cover; object-position: top; }
 .auth-fine a { font-weight: 600; }
 
 @media (min-width: 961px) {
@@ -755,6 +792,7 @@ main h1[tabindex="-1"]:focus { outline: none; }
   .auth-top-brand { visibility: hidden; }
   .auth-card { margin-top: 32px; }
   .auth-fine { margin-top: auto; padding-top: 24px; }
+  .auth-sample-m { display: none; } /* the panel beside the form shows the sample here */
 }
 
 /* ── Avatars with a real photo ───────────────────────────────────────────── */
@@ -871,7 +909,8 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .studio-cost { display: grid; justify-items: center; gap: 6px; margin: 14px 0 0; }
 .cost-line { display: inline-flex; align-items: center; gap: 4px; }
 .cost-chip { display: inline-flex; align-items: center; min-height: 26px; padding: 3px 10px; border-radius: 8px; background: var(--wash); color: var(--muted); font-size: 0.8125rem; font-weight: 600; font-variant-numeric: tabular-nums; }
-.cost-chip.is-out { background: var(--amber-soft); color: var(--ink); }
+.cost-chip.is-out { background: var(--wash); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.cost-chip.is-out .ic { width: 16px; height: 16px; margin-right: 5px; color: var(--copy); }
 .cost-info { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--muted); cursor: pointer; }
 .cost-info .ic { width: 16px; height: 16px; }
 .cost-info:hover, .cost-info[aria-expanded=true] { color: var(--ink); background: var(--wash); }
@@ -964,7 +1003,6 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 [data-theme="dark"] .plan-opt-tag { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }
 [data-theme="dark"] .plan-opt.on { box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18); }
 [data-theme="dark"] .pill-free { color: var(--color-brand-500); }
-[data-theme="dark"] .chord-grid .ch strong, [data-theme="dark"] .chord-chip em { color: var(--color-brand-500); }
 [data-theme="dark"] .pay-toast { border-color: rgba(233, 185, 73, 0.35); box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6); }
 [data-theme="dark"] .pay-toast-mark { background: rgba(233, 185, 73, 0.14); color: var(--gold); }
 [data-theme="dark"] .pro-welcome-card::before { background: radial-gradient(120% 100% at 50% 0%, rgba(242, 193, 78, 0.16), transparent 70%); }
@@ -999,7 +1037,7 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .lib-sheet-menu { top: 52px; right: 8px; max-height: min(360px, 70vh); overflow-y: auto; cursor: default; }
 .lib-sheet-menu [aria-checked="true"] .ic { width: 18px; height: 18px; margin-left: auto; flex: none; }
 .lib-folder-bar .share-row { margin-top: 10px; }
-.lib-folder-tag { align-self: flex-start; font-size: 0.72rem; font-weight: 700; color: var(--blue-dark); background: var(--blue-tint); border-radius: 8px; padding: 2px 9px; }
+.lib-folder-tag { align-self: flex-start; font-size: 0.72rem; font-weight: 600; color: var(--copy); background: var(--wash); box-shadow: inset 0 0 0 1px var(--line); border-radius: 8px; padding: 2px 9px; }
 .lib-item .actions { flex-wrap: wrap; align-items: center; }
 .folder-list { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 8px; }
 .folder-list a { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); text-decoration: none; color: var(--ink); background: var(--surface); font-weight: 600; }

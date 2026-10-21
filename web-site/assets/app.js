@@ -820,6 +820,10 @@
       history.replaceState(history.state, "", url.pathname + url.search + url.hash);
     } catch (e) { /* the address keeps the old view; nothing depends on it */ }
     ["transcribe", "library", "practice", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
+    // A phone's top bar names the section (app.css, under 641 px); Home keeps the logo's name.
+    var section = { library: "Library", practice: "Practice", account: "Account" }[name] || "";
+    $("topbar-title").textContent = section;
+    $("topbar-title").parentNode.classList.toggle("has-title", !!section);
     // The nav says where you are, to the eye and to a screen reader; Search lights itself, not Library.
     var navOn = focusSearch ? "search" : name;
     // The phone's tab bar has no Search (the Library's own box is it) and no Account (the photo, top right).
@@ -839,8 +843,9 @@
     var from = viewNow;
     if (window.NfBack && (name === "search" ? "library" : name) !== from) NfBack.push(function () { setView(from); });
     setView(name);
-    // A screen reader hears the new view's heading (Search goes to its field instead).
+    // A screen reader hears the new view's heading (Search goes to its field instead): on a phone, the top bar's.
     var h = name !== "search" && document.querySelector("#view-" + viewNow + " h1");
+    if (h && h.offsetParent === null) h = $("topbar-title");
     if (h && h.offsetParent !== null) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
   }
   document.querySelectorAll("#top-nav .top-link, .user-menu-item[data-view], #tabbar [data-view]").forEach(function (b) { b.addEventListener("click", function () { goView(b.dataset.view); }); });
@@ -2071,7 +2076,7 @@
     ["topbar-avatar-img", "chip-avatar", "menu-avatar"].forEach(function (id) { setAvatar($(id), me); });
     $("chip-name").textContent = me ? ((me.fullName || "").trim().split(/\s+/)[0] || me.email || "") : "";
     $("greeting").textContent = greeting(me && me.fullName);
-    $("home-sub").textContent = homeQuestion();
+    $("home-sub").textContent = homeQuestion(); $("home-sub").classList.remove("home-sub-long");
     document.body.classList.toggle("is-pro", isPro());
     isPro() ? show($("greeting-pro")) : hide($("greeting-pro"));
     $("menu-plans-label").textContent = isPro() ? "My membership" : "Plans & billing";
@@ -2172,6 +2177,7 @@
     warmEngraver();
     document.body.classList.add("guest"); show($("topbar-signin"));
     $("greeting").textContent = greeting(""); $("home-sub").textContent = "Your free preview is on its way. Create a free account to keep transcribing.";
+    $("home-sub").classList.add("home-sub-long"); // two lines: read from the left (app.css)
     startJob({ jobId: previewId, stage: "transcribing" }, "preview");
   }
 
@@ -2313,11 +2319,20 @@
   function resetMeter() { if (window.NfMeter) window.NfMeter.reset($("meter")); }
   /** The keyboard's transpose setting, −11 to +11; 0 when it is off. */
   function kbTranspose() { var n = parseInt(stored(KB_KEY), 10); return n >= -11 && n <= 11 ? n : 0; }
+  /** What a kind does, said under the kinds when it needs saying (board n-ux-low V1f); the voice kinds say it already. */
+  var KIND_HINTS = {
+    choir: "Soprano, alto, tenor and bass come back as they were sung.",
+    chords: "Piano or guitar: the chords as they were played, with the top line as the tune."
+  };
   /** A choir with instruments behind it, and the keyboard's transpose, only where they apply (or are set). */
   function renderKindOptions() {
     var kind = checkedKind();
     kind === "choir" ? show($("choir-band-row")) : hide($("choir-band-row"));
-    kind === "chords" || kbTranspose() !== 0 ? show($("kb-row")) : hide($("kb-row"));
+    var kb = kind === "chords" || kbTranspose() !== 0;
+    kb ? show($("kb-row")) : hide($("kb-row"));
+    kb ? show($("kb-hint")) : hide($("kb-hint"));
+    $("kind-hint").textContent = KIND_HINTS[kind] || "";
+    KIND_HINTS[kind] ? show($("kind-hint")) : hide($("kind-hint"));
   }
   (function () {
     var select = $("kb-transpose");
@@ -2381,6 +2396,8 @@
     var cost = studioCost();
     if (!cost) { hide(row); setCostInfo(false); return; }
     $("cost-chip").textContent = cost.text;
+    // Used up: neutral, with a clock for its shape (amber is Pro's alone, board n-ux-low V1i).
+    if (cost.out) $("cost-chip").insertAdjacentHTML("afterbegin", '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-clock"/></svg>');
     $("cost-chip").classList.toggle("is-out", !!cost.out);
     $("cost-pop").textContent = cost.why;
     show(row);
@@ -4067,6 +4084,8 @@
       var id = b.getAttribute("data-tool"), panel = $(id);
       var showsParts = id === "harmony" && !!current && P.action(current.result) === "show";
       b.hidden = !showsParts && (!panel || panel.classList.contains("hidden"));
+      // Named by what it does: it writes the parts, or opens the ones the sheet has.
+      if (id === "harmony") b.querySelector("span").textContent = showsParts ? "See parts" : "Add parts";
     });
   }
   /** A Pro-only action, from anywhere: close the pop-up and open the plans (a guest is asked to sign up first). */
@@ -4177,8 +4196,8 @@
   function renderShare() {
     if (current.shareToken) {
       $("share-url").value = "https://notefusion.studio/app/sheet/?s=" + encodeURIComponent(current.shareToken);
-      show($("share-row")); $("share").textContent = "Share a link";
-    } else hide($("share-row"));
+      show($("share-row")); show($("share-stop")); $("share").textContent = "Share a link";
+    } else { hide($("share-row")); hide($("share-stop")); }
   }
   /**
    * Saves the sheet on screen. `auto` is the preview someone just signed up to keep: it is saved for
