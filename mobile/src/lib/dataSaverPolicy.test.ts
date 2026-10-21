@@ -33,7 +33,9 @@ test("data saver reads a job half as often without its stream, checks the queue 
 test("offline transpose: keys spelled as their signatures, chords respelled, every note moved", () => {
   assert.equal(transposeKeyName("Eb major", 2), "F major");
   assert.equal(transposeKeyName("Eb major", 7), "Bb major");
-  assert.equal(transposeKeyName("G major", -1), "Gb major");
+  assert.equal(transposeKeyName("G major", -1), "F# major");
+  assert.equal(transposeKeyName("A minor", -1), "G# minor");
+  assert.equal(transposeKeyName("C major", 1), "Db major");
   assert.equal(transposeKeyName("D minor", 2), "E minor");
   assert.equal(transposeKeyName("A minor", -2), "G minor");
   assert.equal(transposeKeyName("not a key", 3), "not a key");

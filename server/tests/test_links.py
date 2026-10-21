@@ -108,6 +108,15 @@ SPOTIFY_ID = "4cOdK2wGLETKBW3PvgPWqT"
         ("https://music.apple.com/us/album/some-album/123", "https://music.apple.com/us/album/some-album/123", None),
         ("https://example.com/watch?v=dQw4w9WgXcQ", "https://example.com/watch?v=dQw4w9WgXcQ", None),
         ("no link here", None, None),
+        # Typed without its scheme: a link to one of the services is read as https://.
+        ("youtube.com/watch?v=dQw4w9WgXcQ", "https://youtube.com/watch?v=dQw4w9WgXcQ", "youtube"),
+        ("Sing this: m.youtube.com/watch?v=dQw4w9WgXcQ", "https://m.youtube.com/watch?v=dQw4w9WgXcQ", "youtube"),
+        ("youtu.be/dQw4w9WgXcQ.", "https://youtu.be/dQw4w9WgXcQ", "youtube"),
+        (f"open.spotify.com/track/{SPOTIFY_ID}", f"https://open.spotify.com/track/{SPOTIFY_ID}", "spotify"),
+        ("(music.apple.com/gb/song/1559885424)", "https://music.apple.com/gb/song/1559885424", "apple_music"),
+        ("youtube.com/@RickAstleyYT", "https://youtube.com/@RickAstleyYT", None),
+        ("notyoutube.com/watch?v=dQw4w9WgXcQ", None, None),
+        ("example.com/watch?v=dQw4w9WgXcQ", None, None),
     ],
 )
 def test_extract_url_and_provider_of_follow_the_shared_link_rule(text, url, provider):

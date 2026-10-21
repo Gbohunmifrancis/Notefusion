@@ -132,7 +132,7 @@ public class ChoirSheetTests
 
         Assert.True(result.IsSuccess);
         var t = result.Value;
-        Assert.Equal("D# major", t.Key);
+        Assert.Equal("Eb major", t.Key);
         Assert.Equal([63, 67, 70], t.Notes!.Select(n => n.PitchMidi));
         Assert.Equal([51, 46, 51], t.Parts!["bass"].Notes.Select(n => n.PitchMidi));
         Assert.Equal(solfaBefore, t.Notes.Select(n => n.Solfa + n.OctaveMark).ToArray());
@@ -156,7 +156,7 @@ public class ChoirSheetTests
         var result = await handler.Handle(new TransposeSheetCommand("C", -2, Tune, Score, Parts, Score), default);
 
         Assert.True(result.IsSuccess);
-        Assert.Equal("A# major", result.Value.Key);
+        Assert.Equal("Bb major", result.Value.Key);
         Assert.Equal([58, 62, 65], result.Value.Notes.Select(n => n.PitchMidi));
         Assert.Equal(["d", "m", "s"], result.Value.Notes.Select(n => n.Solfa));
         Assert.Equal([46, 41, 46], result.Value.Parts!["bass"].Notes.Select(n => n.PitchMidi));

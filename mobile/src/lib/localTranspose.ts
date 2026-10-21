@@ -9,6 +9,9 @@ import type { ChordSymbol, NoteEvent } from "../api/types";
 
 const NAMES_SHARP = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 const NAMES_FLAT = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+/** Key names as their signatures spell them (Bb major, G# minor; F# and Eb at the ties), as MusicalKey.cs. */
+const MAJOR_KEY_NAMES = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+const MINOR_KEY_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
 const LETTER_PC: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 
 /** Pitch class of a key's tonic and whether its signature uses flats ("F major", "D minor" → flats). */
@@ -20,22 +23,17 @@ function keyInfo(key: string): { pc: number; flats: boolean; minor: boolean } | 
   if (m[2] === "b" || m[2] === "♭") pc -= 1;
   pc = ((pc % 12) + 12) % 12;
   const minor = /^(m|min|minor)\b/i.test(m[3]!.trim());
-  // Flat keys: F Bb Eb Ab Db (Gb) major; D G C F Bb Eb minor.
-  const majorPc = minor ? (pc + 3) % 12 : pc;
-  const flats = [5, 10, 3, 8, 1, 6].includes(majorPc);
+  // Flat keys, as the key names spell them: F Bb Eb Ab Db major (F# kept at the tie); D G C F Bb Eb minor.
+  const flats = minor ? [2, 7, 0, 5, 10, 3].includes(pc) : [5, 10, 3, 8, 1].includes(pc);
   return { pc, flats, minor };
 }
 
-/** The key `semitones` away, spelled the way its signature is ("Eb major" + 2 → "F major"). */
+/** The key `semitones` away, spelled the way its signature is ("Eb major" + 2 → "F major"), as `shiftKeyName`. */
 export function transposeKeyName(key: string, semitones: number): string {
   const k = keyInfo(key);
   if (!k) return key;
   const pc = (((k.pc + semitones) % 12) + 12) % 12;
-  const relMajor = k.minor ? (pc + 3) % 12 : pc;
-  const flats = [5, 10, 3, 8, 1, 6].includes(relMajor);
-  // F# major / D# minor read better as Gb / Eb; the hymnbook keys are the flat ones.
-  const name = (flats ? NAMES_FLAT : NAMES_SHARP)[pc]!;
-  return `${name} ${k.minor ? "minor" : "major"}`;
+  return k.minor ? `${MINOR_KEY_NAMES[pc]} minor` : `${MAJOR_KEY_NAMES[pc]} major`;
 }
 
 export function shiftPitches(notes: readonly NoteEvent[], semitones: number): NoteEvent[] {

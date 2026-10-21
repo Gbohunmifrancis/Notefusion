@@ -8,7 +8,7 @@ import vm from "node:vm";
 
 const window = {};
 vm.runInNewContext(readFileSync(new URL("../assets/choir.js", import.meta.url), "utf8"), { window });
-const { keyHeader, label, partReference } = window.NfChoir;
+const { keyHeader, label, partReference, shiftKeyName } = window.NfChoir;
 
 test("the doh header is spelled like the key signature", () => {
   assert.equal(keyHeader("A# major"), "Doh is Bb"); // doh 10, however the key was typed
@@ -96,4 +96,17 @@ test("written parts under a man's tune are marked from the soprano, which reads 
   assert.equal(partReference({ bass: parts.bass }, tune), tune);
   assert.equal(partReference(null, tune), tune);
   assert.equal(partReference(null, undefined).length, 0);
+});
+
+test("Transpose names the new key as its signature spells it, as MusicalKey.cs and the phone do", () => {
+  assert.equal(shiftKeyName("C major", 3), "Eb major");
+  assert.equal(shiftKeyName("C major", -2), "Bb major");
+  assert.equal(shiftKeyName("G major", 1), "Ab major");
+  assert.equal(shiftKeyName("C major", 1), "Db major");
+  assert.equal(shiftKeyName("G major", -1), "F# major");
+  assert.equal(shiftKeyName("A minor", -1), "G# minor");
+  assert.equal(shiftKeyName("A minor", 1), "Bb minor");
+  assert.equal(shiftKeyName("C minor", 3), "Eb minor");
+  assert.equal(shiftKeyName("Bb major", 2), "C major");
+  assert.equal(shiftKeyName("not a key", 2), "not a key");
 });

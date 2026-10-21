@@ -26,6 +26,9 @@ export const VOICE_RANGES: Record<VoiceName, readonly [number, number]> = {
 export const MELODY_RANGE: readonly [number, number] = [57, 74];
 
 const NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+/** Key names as their signatures spell them (Bb major, G# minor; F# and Eb at the ties), as MusicalKey.cs. */
+const MAJOR_KEY_NAMES = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+const MINOR_KEY_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
 
 /** "G5"-style name of a MIDI pitch. */
 export function pitchName(midi: number): string {
@@ -91,7 +94,7 @@ export function shiftKeyName(key: string, semitones: number): string {
   for (const ch of m[2]!) pc += ch === "#" || ch === "♯" ? 1 : -1;
   pc = (((pc + semitones) % 12) + 12) % 12;
   const minor = /^(m|min|minor)$/i.test(m[3]!.trim());
-  return `${NAMES[pc]} ${minor ? "minor" : "major"}`;
+  return minor ? `${MINOR_KEY_NAMES[pc]} minor` : `${MAJOR_KEY_NAMES[pc]} major`;
 }
 
 /**

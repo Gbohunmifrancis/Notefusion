@@ -40,6 +40,26 @@ public class MusicalKeyTests
     }
 
     [Fact]
+    public void Key_name_is_spelled_like_the_key_signature_and_reads_back()
+    {
+        // A saved Bb hymn, or one transposed into Eb, must not come back as "A# major" / "D# major".
+        string[] major = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+        string[] minor = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
+        for (var pc = 0; pc < 12; pc++)
+        {
+            Assert.Equal($"{major[pc]} major", new MusicalKey(pc, KeyMode.Major).ToString());
+            Assert.Equal($"{minor[pc]} minor", new MusicalKey(pc, KeyMode.Minor).ToString());
+            foreach (var mode in new[] { KeyMode.Major, KeyMode.Minor })
+            {
+                var back = KeyParser.Parse(new MusicalKey(pc, mode).ToString());
+                Assert.True(back.IsSuccess);
+                Assert.Equal(pc, back.Value.TonicPitchClass);
+                Assert.Equal(mode, back.Value.Mode);
+            }
+        }
+    }
+
+    [Fact]
     public void Rejects_out_of_range_tonic()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new MusicalKey(12, KeyMode.Major));
