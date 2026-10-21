@@ -326,7 +326,7 @@ const MIDNIGHT = (passed: number): CarolStep[] => [
   mstep(3, "midnight-climb", "The climb", "In the Hall of the Mountain King", "the Mountain King's climb", "m fe se l t se t", passed >= 3),
   mstep(4, "midnight-waltz", "Skeleton waltz", "Danse Macabre", "the skeletons' waltz", "l l s s sa sa f f m", passed >= 4),
   mstep(5, "midnight-march", "Marionette march", "Funeral March of a Marionette", "the Marionette's fall", "s t l se f m r d t,", passed >= 5),
-  mstep(6, "midnight-saints", "All Saints line", "All Saints (Darmstadt)", "All Saints, from the top doh down", "d' s l l s f m d", passed >= 6),
+  mstep(6, "midnight-chopin", "Funeral bell", "Chopin's Funeral March", "Chopin's funeral bell", "l l l l d' t t l l l l", passed >= 6),
 ];
 const midnight = (passed: number): PracticeSeason => {
   const steps = MIDNIGHT(passed);
@@ -340,7 +340,7 @@ test("the hub's pumpkin card: Halloween until 1 November, the first drill named 
   assert.equal(first.title, "The Midnight path");
   assert.equal(
     first.body,
-    "Six short drills from spooky songs: the Mountain King's tiptoe, Bach's organ turn, the skeletons' waltz, and All Saints to finish.",
+    "Six short drills from spooky songs: the Mountain King's tiptoe, Bach's organ turn, the skeletons' waltz, and Chopin's funeral march to finish.",
   );
   assert.equal(first.sung, "0 of 6 sung");
   assert.equal(first.next, "First: the Mountain King's tiptoe");
@@ -358,7 +358,7 @@ test("the Midnight path: Halloween · n of 6, Doh's word by the next song, the N
   assert.equal(v.rows[0]!.line, "In the Hall of the Mountain King · l, t, d r m d m");
   assert.equal(seasonBuddyLine(midnight(1)), "A perfect tiptoe! Now the organ's turn: m r m, quick as a wink.");
   assert.equal(seasonBuddyLine(midnight(0)), "Shh, tiptoe with me: the Mountain King's run, soft and short.");
-  assert.equal(seasonBuddyLine(midnight(5)), "Last one, for All Saints' Day: sing it from the top doh down.");
+  assert.equal(seasonBuddyLine(midnight(5)), "Last one, slow and solemn: Chopin's bell, dum, dum-da-dum.");
   assert.equal(seasonBuddyLine(midnight(6)), "You sang all six on the Midnight path. Happy Halloween!");
   // a drill this build has no line for still gets one, by its cue
   const other = midnight(0);
