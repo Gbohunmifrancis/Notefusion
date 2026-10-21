@@ -3,7 +3,7 @@ import { Linking, Pressable, StyleSheet, Text, TextInput, View } from "react-nat
 import { Icon } from "../components/Icon";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NightButton } from "../components/night/NightButton";
-import { BackButton, ErrorNote, Glow, NightScreen, nightText, pressedLink } from "../components/night/NightUI";
+import { BackButton, ErrorNote, Glow, NightScreen, StepBar, nightText, pressedLink } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
@@ -131,13 +131,8 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
   return (
     <NightScreen
       glow={<Glow y={0.18} radius={260} opacity={0.2} />}
-      header={
-        <>
-          <BackButton onPress={changeEmail} />
-          {fromSignUp ? <Text style={nightText.step}>2 of 2</Text> : <View />}
-          <View style={styles.side} />
-        </>
-      }
+      // Only the back button: sign-up's step is said by the button it leads to (StepBar, board n-ux-low Q3d).
+      header={<BackButton onPress={changeEmail} />}
     >
       <View style={styles.icon}>
         <Icon name="mail" size={28} color={night.ice} />
@@ -195,14 +190,17 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
         </Text>
       ) : null}
 
-      <NightButton
-        label="Verify"
-        variant="blue"
-        onPress={() => submit(code)}
-        loading={busy}
-        disabled={code.length !== CODE_LENGTH}
-        style={styles.submit}
-      />
+      {/* From sign-up, the last step is said just above the button that takes it; signing in has no steps. */}
+      <View style={fromSignUp ? styles.submitStepped : styles.submit}>
+        {fromSignUp ? <StepBar step={2} of={2} next="then you're in" /> : null}
+        <NightButton
+          label="Verify"
+          variant="blue"
+          onPress={() => submit(code)}
+          loading={busy}
+          disabled={code.length !== CODE_LENGTH}
+        />
+      </View>
 
       <View style={styles.resendRow}>
         <Text style={nightText.muted}>Didn&apos;t get it?</Text>
@@ -243,7 +241,6 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  side: { width: 40 },
   icon: {
     marginTop: 26,
     width: 64,
@@ -303,6 +300,8 @@ const styles = StyleSheet.create({
   resent: { color: night.mint },
   note: { marginTop: 16 },
   submit: { marginTop: 28 },
+  /** A little closer with the step bar on top, so the button stays near where it was. */
+  submitStepped: { marginTop: 22 },
   resendRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 20 },
   countdown: { fontSize: 14, fontFamily: nightFonts.mono, color: night.faint },
   change: { alignSelf: "flex-start", marginTop: 12 },

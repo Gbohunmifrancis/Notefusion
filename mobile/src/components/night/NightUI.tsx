@@ -166,6 +166,26 @@ export function OrRule({ label = "or" }: { label?: string }) {
 }
 
 /**
+ * How far through sign-up the person is, just above the button that takes the step (board n-ux-low Q3d): a 4 px
+ * segment per step, the ones reached in ink, then "Step 1 of 2 · a code by email next" with the step in ink.
+ */
+export function StepBar({ step, of, next }: { step: number; of: number; next: string }) {
+  return (
+    <View style={styles.stepBar} accessible accessibilityLabel={`Step ${step} of ${of}: ${next}`}>
+      <View style={styles.stepSegments}>
+        {Array.from({ length: of }, (_, i) => (
+          <View key={i} style={[styles.stepSegment, i < step && styles.stepSegmentOn]} />
+        ))}
+      </View>
+      <Text style={styles.stepText}>
+        <Text style={styles.stepNow}>{`Step ${step} of ${of}`}</Text>
+        {` · ${next}`}
+      </Text>
+    </View>
+  );
+}
+
+/**
  * The frame every night auth screen shares: the dark canvas, light status bar,
  * an optional bloom, keyboard avoidance and a scroll body with the 22px gutter.
  */
@@ -177,7 +197,7 @@ export function NightScreen({
 }: {
   children: React.ReactNode;
   glow?: React.ReactNode;
-  /** The row above the scroll body: back button, lock-up, step count. */
+  /** The row above the scroll body: back button, lock-up. */
   header?: React.ReactNode;
   contentStyle?: StyleProp<ViewStyle>;
 }) {
@@ -225,7 +245,6 @@ export const nightText = StyleSheet.create({
   },
   link: { fontSize: 14, fontFamily: nightFonts.semibold, color: night.text },
   muted: { fontSize: 14, fontFamily: nightFonts.regular, color: night.muted },
-  step: { fontSize: 12, fontFamily: nightFonts.mono, color: night.muted },
 });
 
 /**
@@ -296,4 +315,10 @@ const styles = StyleSheet.create({
   textButton: { minHeight: 44, paddingHorizontal: 10, justifyContent: "center" },
   textButtonLegal: { paddingHorizontal: 8 },
   legalLink: { fontSize: 13, fontFamily: nightFonts.medium, color: night.muted, textDecorationLine: "underline" },
+  stepBar: { flexDirection: "row", alignItems: "center", gap: 10, marginHorizontal: 2, marginBottom: 10 },
+  stepSegments: { flexDirection: "row", gap: 4, width: 52 },
+  stepSegment: { flex: 1, height: 4, borderRadius: 2, backgroundColor: "rgba(255, 255, 255, 0.14)" },
+  stepSegmentOn: { backgroundColor: night.text },
+  stepText: { flexShrink: 1, fontSize: 13, fontFamily: nightFonts.medium, color: night.muted },
+  stepNow: { fontFamily: nightFonts.semibold, color: night.text },
 });
