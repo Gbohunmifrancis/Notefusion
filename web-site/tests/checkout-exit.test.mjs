@@ -79,7 +79,7 @@ test("prices in their own symbol", () => {
 test("a declined card: nothing charged, bank transfer on the same page, and the one-song row", () => {
   const r = X.reply("cardDeclined", dollars);
   assert.equal(r.title, "Thanks for telling us");
-  assert.equal(text(r), "Nothing was charged. Some banks outside Nigeria turn down a card payment in naira. Bank transfer, on the same page, usually goes through.");
+  assert.equal(text(r), "Nothing was charged. Banks sometimes turn down a card payment online. Bank transfer, on the same page, usually goes through.");
   assert.deepEqual(plain(r.parts.filter((p) => p.strong).map((p) => p.text)), ["Bank transfer"]);
   assert.equal(r.offerSong, true);
   assert.equal(r.tryAgain, true);
@@ -90,7 +90,7 @@ test("a declined card: nothing charged, bank transfer on the same page, and the 
 
 test("the currency answer names their dollars and quotes no naira", () => {
   const r = X.reply("currency", dollars);
-  assert.equal(text(r), "The payment page turns your $9.99 into naira at today's rate, so you see a naira total. Your bank may add a small fee for the conversion.");
+  assert.equal(text(r), "Your $9.99 is charged in US dollars. If your card is in another currency, your bank converts it and may add a small fee.");
   assert.ok(!text(r).includes("₦"));
 });
 

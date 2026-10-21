@@ -892,7 +892,6 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 :root[data-theme="dark"] .pay-error { color: #FF9AA4; }
 /* The card's phone padding (24px 18px 20px, max-width 640px above) is matched here, after the rule it overrides. */
 @media (max-width: 640px) { .pay-foot { bottom: -20px; margin: 12px -18px -20px; padding: 4px 18px 14px; } }
-.pay-fx { margin: 8px 0 0; font-size: 0.85rem; color: var(--muted); text-align: center; }
 /* Help and refunds, and the terms, one line under the fine print (board m-ux-medium W3f); the links take a 44 px
    target from an invisible layer, and the address and Terms wrap together, side by side, on a narrow phone. */
 .pay-help { margin: 6px 0 0; text-align: center; font-size: 0.8125rem; line-height: 1.5; color: var(--muted); }

@@ -4663,8 +4663,6 @@
       function label(plan) { return isChoirPlan(plan) ? (isYearly(plan) ? "Choir · Yearly" : "Choir · Monthly") : isSinglePlan(plan) ? "Just this song" : isLifetimePlan(plan) ? "Lifetime" : isYearly(plan) ? "Yearly" : "Monthly"; }
       function per(plan) { return isSinglePlan(plan) || isLifetimePlan(plan) ? "once" : isYearly(plan) ? "a year" : "a month"; }
       var fine = document.createElement("p"); fine.className = "pay-fine";
-      // A dollar price is charged in naira at the day's rate (Bachs): said before paying, not only after.
-      var fx = document.createElement("p"); fx.className = "pay-fx";
       // A checkout that will not open says so here, above the button, not in the page behind the dialog.
       var payError = document.createElement("p"); payError.className = "pay-error"; payError.setAttribute("role", "alert"); payError.hidden = true;
       function renderCta() {
@@ -4686,9 +4684,6 @@
           : isChoirPlan(chosen)
             ? "Secure checkout. One payment covers the whole choir for the period; nothing renews without you. You'll get an invite link for your singers."
             : "Secure checkout. One payment covers the whole period; nothing renews without you."));
-        var naira = String(chosen.currency).toUpperCase() === "NGN";
-        fx.hidden = naira;
-        fx.textContent = naira ? "" : "You'll pay the naira amount at today's rate on the next page; your bank may add a fee.";
         payError.hidden = true;
       }
       var seats = (choirPlans[0] && choirPlans[0].choirSeats) || 25;
@@ -4773,7 +4768,7 @@
       // Who to ask and the terms, beside Pay (board m-ux-medium W3f).
       var help = document.createElement("p"); help.className = "pay-help";
       help.innerHTML = 'Help &amp; refunds: <span><a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a> · <a href="/terms" target="_blank" rel="noopener">Terms</a></span>';
-      foot.appendChild(payError); foot.appendChild(cta); foot.appendChild(fx); foot.appendChild(fine); foot.appendChild(help);
+      foot.appendChild(payError); foot.appendChild(cta); foot.appendChild(fine); foot.appendChild(help);
       grid.appendChild(options); grid.appendChild(foot);
     }).catch(function () {
       // A way to ask again where the plans should be, not only the words.
@@ -4970,7 +4965,7 @@
   /** The next check, unless the tab is hidden: then the next look at it asks (the visibilitychange handler below). */
   function payTick() { if (document.visibilityState !== "hidden") checkPayment(); }
   // ── "What stopped you?" (board g-checkout): a checkout that came back unpaid, asked once ──
-  var WHY_RULES = "/assets/checkout-exit.js?v=1";
+  var WHY_RULES = "/assets/checkout-exit.js?v=2";
   var WHY_SHEET = ["/assets/checkout-why.css?v=2", "/assets/checkout-why.js?v=2"];
   function lsGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
   function lsSet(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* private mode */ } }

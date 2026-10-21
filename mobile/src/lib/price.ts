@@ -49,16 +49,6 @@ export function payLabel(plan: Pick<Plan, "interval" | "amountMinor" | "currency
   return `Pay ${price} for a ${plan.choirSeats ? `choir ${period}` : period}`;
 }
 
-/**
- * The line under the Pay button for a plan priced in dollars (board l-ux-high 03c): the website's checkout charges it
- * in naira at the day's rate, so the next page shows a different figure. Google Play charges in the store's own
- * currency, so never there.
- */
-export function nairaNote(currency: string, viaPlay: boolean): string | null {
-  return !viaPlay && currency !== "NGN"
-    ? "You'll pay the naira amount at today's rate on the next page; your bank may add a fee."
-    : null;
-}
 
 /**
  * The plans in the order the list shows them: grouped by currency, each currency where the server first lists it,
