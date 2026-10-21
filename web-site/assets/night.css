@@ -665,7 +665,6 @@ body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
 .studio-opt select, .player select, .player input[type=number] { min-height: 44px; font-size: 16px; }
 .studio .studio-kind label, .studio-opt { min-height: 44px; }
 .lib-chip { min-height: 44px; }
-.lib-file { min-height: 44px; font-size: 16px; }
 .choir-join input { min-height: 44px; font-size: 16px; }
 /* Text buttons keep their look and take a 44 px target from an invisible layer, as .field-error's link does. */
 #auth-back, #link-upload, #p-notify-no, #acct-photo-remove, #choir-invite-new, .folder-back { position: relative; }
@@ -700,7 +699,6 @@ body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
   .studio-opt select { min-height: 32px; font-size: 0.85rem; }
   .studio .studio-kind label, .studio-opt { min-height: 0; }
   .lib-chip { min-height: 0; }
-  .lib-file { min-height: 32px; font-size: 0.8rem; }
   .choir-join input { min-height: 36px; font-size: 0.9rem; }
   .player select, .player input[type=number] { min-height: 32px; font-size: 0.875rem; }
   .result-views .tab { padding-inline: 14px; }
