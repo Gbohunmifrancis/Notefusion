@@ -42,6 +42,11 @@ interface Props {
   iconPosition?: "left" | "right";
   /** A small chip after the label, e.g. "Last used". */
   badge?: string;
+  /**
+   * A 1 px edge inside the pill, in this colour: for a quiet pill on a canvas as dark as its own fill, where the
+   * fill alone shows no edge (the first-run screens' `NightButton`). The pill keeps its height.
+   */
+  edgeColor?: string;
   /** A spinner replaces the word; the pill keeps its width. */
   loading?: boolean;
   disabled?: boolean;
@@ -77,6 +82,7 @@ export function Button({
   leading,
   iconPosition = "left",
   badge,
+  edgeColor,
   loading = false,
   disabled = false,
   style,
@@ -139,6 +145,7 @@ export function Button({
           { height: HEIGHT[size], paddingHorizontal: variant === "text" ? TEXT_PAD : PAD[size] },
           variant === "primary" && styles.primary,
           (variant === "secondary" || variant === "destructive") && styles.quiet,
+          edgeColor ? { borderWidth: 1, borderColor: edgeColor } : null,
         ]}
       >
         {/* The pressed face: 10 % darker on a fill, a faint blue pill under a text button. */}
