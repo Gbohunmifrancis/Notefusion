@@ -348,6 +348,30 @@ public class OfferPricingAndCheckoutTests
         Assert.Equal(Midweek, h.Db.OfferEmails.AsNoTracking().Single().ClickedAtUtc);
     }
 
+    // ── GET /api/offers/o/{token} ────────────────────────────────────────────
+
+    [Fact]
+    public async Task An_open_is_counted_once_and_any_other_token_changes_nothing()
+    {
+        using var h = new TestHarness(Midweek);
+        var offer = AddOffer(h);
+        var grace = Account(h, "grace@example.com");
+        h.Db.OfferEmails.Add(OfferEmail.Queue(offer.Id, grace.Id, OfferEmailGroup.Free, "abcdefghijklmnopqrstuv", Midweek));
+        h.Db.SaveChanges();
+        var handler = new RecordOfferOpenCommandHandler(h.Db, h.Clock);
+
+        Assert.True((await handler.Handle(new RecordOfferOpenCommand("abcdefghijklmnopqrstuv"), default)).IsSuccess);
+        h.Clock.UtcNow = Midweek.AddHours(1); // the mail app shows it again
+        await handler.Handle(new RecordOfferOpenCommand("abcdefghijklmnopqrstuv"), default);
+        Assert.True((await handler.Handle(new RecordOfferOpenCommand("nope"), default)).IsSuccess);
+        Assert.True((await handler.Handle(new RecordOfferOpenCommand(null), default)).IsSuccess);
+        Assert.True((await handler.Handle(new RecordOfferOpenCommand("zzzzzzzzzzzzzzzzzzzzzz"), default)).IsSuccess);
+
+        var row = h.Db.OfferEmails.AsNoTracking().Single();
+        Assert.Equal(Midweek, row.OpenedAtUtc);
+        Assert.Null(row.ClickedAtUtc);
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────────────
 
     private static async Task<CurrentOfferDto> Current(TestHarness h, User? user, string? key = null, string? zone = null)

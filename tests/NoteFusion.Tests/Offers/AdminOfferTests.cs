@@ -425,7 +425,7 @@ public class AdminOfferTests
     // ── Progress ─────────────────────────────────────────────────────────────
 
     [Fact]
-    public async Task Progress_counts_the_queue_the_clicks_and_what_the_offer_sold()
+    public async Task Progress_counts_the_queue_the_opens_the_clicks_and_what_the_offer_sold()
     {
         using var h = new TestHarness(Midweek);
         var plans = AddPlans(h);
@@ -435,7 +435,7 @@ public class AdminOfferTests
         var walkIn = Account(h, "walkin@example.com", "US");
         var off = Account(h, "off@example.com");
 
-        var sent = OfferEmail.Queue(offer.Id, grace.Id, OfferEmailGroup.Free, OfferTokens.New(), Start);
+        var sent = OfferEmail.Queue(offer.Id, grace.Id, OfferEmailGroup.Free, "grace-token-abcdefghijkl", Start);
         sent.MarkSent(Start.AddHours(1));
         var clicked = OfferEmail.Queue(offer.Id, kofi.Id, OfferEmailGroup.Lapsed, "kofi-token-abcdefghijklm", Start);
         clicked.MarkSent(Start.AddHours(2));
@@ -445,6 +445,11 @@ public class AdminOfferTests
         h.Db.OfferEmails.AddRange(sent, clicked, skipped, queued);
         h.Db.SaveChanges();
         await new RecordOfferClickCommandHandler(h.Db, new FixedClock(Start.AddDays(1).AddHours(3))).Handle(new RecordOfferClickCommand("kofi-token-abcdefghijklm"), default);
+        // Grace's image loads twice (Apple Mail on delivery, then her own read): one open, on the first day. Kofi's
+        // images were blocked, so his click is his open.
+        await new RecordOfferOpenCommandHandler(h.Db, new FixedClock(Start.AddHours(2))).Handle(new RecordOfferOpenCommand("grace-token-abcdefghijkl"), default);
+        await new RecordOfferOpenCommandHandler(h.Db, new FixedClock(Start.AddDays(1))).Handle(new RecordOfferOpenCommand("grace-token-abcdefghijkl"), default);
+        await new RecordOfferOpenCommandHandler(h.Db, new FixedClock(Start.AddHours(2))).Handle(new RecordOfferOpenCommand("no-such-token-abcdefgh"), default);
 
         Payment(h, kofi, plans.RegionalYearly, 2_799, offer.Id, Start.AddDays(1).AddHours(4));            // from the email
         Payment(h, walkIn, plans.Yearly, 5_500, offer.Id, Start.AddDays(1).AddHours(5));                  // the banner
@@ -453,11 +458,11 @@ public class AdminOfferTests
 
         var progress = (await Queries(h).Handle(new GetOfferProgressQuery(offer.Id), default)).Value;
 
-        Assert.Equal((1, 2, 0, 1), (progress.Queued, progress.Sent, progress.Failed, progress.Clicked));
+        Assert.Equal((1, 2, 0, 1, 2), (progress.Queued, progress.Sent, progress.Failed, progress.Clicked, progress.Opened));
         Assert.Equal(new OfferSkippedDto(1, 0, 0, 0, 0), progress.Skipped);
         Assert.Equal((2, 1, 3, 8_299L), (progress.Bought, progress.BoughtFromEmail, progress.Checkouts, progress.RevenueMinor));
         Assert.Equal(
-            new[] { new OfferDayDto(new DateOnly(2026, 10, 26), 2, 0, 0), new OfferDayDto(new DateOnly(2026, 10, 27), 0, 1, 2), new OfferDayDto(new DateOnly(2026, 10, 28), 0, 0, 0) },
+            new[] { new OfferDayDto(new DateOnly(2026, 10, 26), 2, 0, 0, 1), new OfferDayDto(new DateOnly(2026, 10, 27), 0, 1, 2, 1), new OfferDayDto(new DateOnly(2026, 10, 28), 0, 0, 0, 0) },
             progress.ByDay);
         Assert.Equal(
             new[] { new OfferPlanSalesDto("pro_yearly_usd", "Pro Yearly", "standard", 1, 5_500), new OfferPlanSalesDto("pro_yearly_usd_regional", "Pro Yearly, regional", "regional", 1, 2_799) },

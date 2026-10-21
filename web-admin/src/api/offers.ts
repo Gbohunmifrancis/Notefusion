@@ -159,6 +159,8 @@ export interface OfferProgress {
   sent: number;
   skipped: { optedOut: number; bought: number; becamePro: number; ended: number; noLongerEligible: number };
   failed: number;
+  /** Emails whose image loaded or whose button was clicked: a floor and a ceiling at once (images off; Apple Mail loads them all). */
+  opened: number;
   /** Opened the web app from the email's button. */
   clicked: number;
   /** Completed payments at the offer price, emailed or not. */
@@ -168,7 +170,7 @@ export interface OfferProgress {
   /** US cents. */
   revenueMinor: number;
   /** yyyy-mm-dd, UK days. */
-  byDay: { date: string; sent: number; clicked: number; bought: number }[];
+  byDay: { date: string; sent: number; clicked: number; bought: number; opened: number }[];
   byPlan: { code: string; name: string; set: OfferPriceSet; count: number; revenueMinor: number }[];
 }
 

@@ -19,6 +19,7 @@ public sealed record OfferEmailPrice(string Name, BillingInterval Interval, long
 /// <param name="Prices">The person's own set (standard or regional dollars), the offer's plans only.</param>
 /// <param name="OfferUrl">The button: <c>{site}/app?offer={key}&amp;m={token}</c> (no <c>m</c> in a preview or test).</param>
 /// <param name="UnsubscribeUrl">The person's signed one-click unsubscribe link (the outreach notes' own).</param>
+/// <param name="OpenPixelUrl">The 1×1 image that counts the open, <c>{api}/api/offers/o/{token}</c>; null in a preview or test.</param>
 public sealed record OfferEmailContent(
     string Key,
     string Template,
@@ -28,7 +29,8 @@ public sealed record OfferEmailContent(
     DateOnly LastDay,
     IReadOnlyList<OfferEmailPrice> Prices,
     string OfferUrl,
-    string UnsubscribeUrl);
+    string UnsubscribeUrl,
+    string? OpenPixelUrl = null);
 
 /// <summary>An offer email as it goes out: what the console's preview shows and what the sender sends.</summary>
 public sealed record RenderedOfferEmail(string Subject, string Preheader, string Html, string Text);
@@ -76,7 +78,12 @@ public static class OfferEmailComposer
             offer.LastDay,
             PricesFor(offer, plans, set),
             OfferUrl(settings, offer.Key, token),
-            unsubscribeUrl);
+            unsubscribeUrl,
+            token is null ? null : OpenPixelUrl(settings, token));
+
+    /// <summary>The image whose loading counts the email as opened (its own token, as the button's <c>m=</c>).</summary>
+    public static string OpenPixelUrl(OfferSettings settings, string token)
+        => $"{settings.ApiBaseUrl.TrimEnd('/')}/api/offers/o/{Uri.EscapeDataString(token)}";
 
     public static string OfferUrl(OfferSettings settings, string key, string? token)
         => $"{settings.SiteUrl.TrimEnd('/')}/app?offer={Uri.EscapeDataString(key)}"

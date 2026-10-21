@@ -569,7 +569,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   lapsed first, skipping anyone who bought or ended. The email (`BrandedEmailTemplate.Offer`, header
   `web-site/email/season-*.png`) needs `Email__PostalAddress` (the footer's postal address, "NoteFusion · {it}"; production's compose default is
   651 N Broad Street, Middletown, DE 19709, USA; Send is refused while it is blank) and its unsubscribe is the founder-notes `EmailOptOut`, shown as "Notes and offers from NoteFusion".
-  Clicks and purchases are counted, opens never.
+  Opens, clicks and purchases are counted: a sent email (never a preview or test) carries a 1×1 GIF,
+  `GET /api/offers/o/{token}` (`RecordOfferOpenCommand`, first load only, `OfferEmail.OpenedAtUtc`; a click counts as an open).
 - Email quota (`Application/Common/EmailBudget`, `Infrastructure/Email/EmailQuota`): every email Resend accepts is an
   `email_sends` row (kind + time); optional mail (welcome, waitlist, checkout reminder, failed-job tips, outreach) goes only
   while each capped window — last 24 h `Email__DailyLimit` (100), 7 days `Email__WeeklyLimit` (none), 31 days
