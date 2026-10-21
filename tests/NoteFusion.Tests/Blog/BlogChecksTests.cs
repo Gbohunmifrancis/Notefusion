@@ -316,6 +316,18 @@ Visit https://example.com for more.
     }
 
     [Fact]
+    public void The_drafter_writes_for_choirs_everywhere_in_the_same_solfa()
+    {
+        var system = BlogPrompt.System;
+
+        Assert.Contains("in the UK, the US, Europe and around the world", system);
+        Assert.Contains("movable doh, minor keys read la-based (a song in A minor has doh on C and lah as home), octave marks written as a comma below (s,) and an apostrophe above (d').", system);
+        Assert.DoesNotContain("Nigeria", system);
+        Assert.DoesNotContain("West Africa", system);
+        Assert.DoesNotContain("WhatsApp", system);
+    }
+
+    [Fact]
     public void The_catalogue_reads_the_imported_flag_and_defaults_it_to_hand_made()
     {
         var json = """{"hymns":[{"slug":"a","title":"A","key":"G major","header":"Doh is G","time":"4/4","bars":4,"firstLine":{"bars":2,"solfa":"| d |","words":"w"},"imported":true},{"slug":"b","title":"B","key":"G major","header":"Doh is G","time":"4/4","bars":4,"firstLine":{"bars":2,"solfa":"| d |","words":"w"}}],"pages":["/"],"authors":["francis"]}""";

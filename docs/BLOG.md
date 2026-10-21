@@ -94,8 +94,8 @@ path, the author ids). If it cannot be read, the hymn and link checks are skippe
 ### The rules the model is given
 
 The system instruction (`src/NoteFusion.Application/Blog/Drafting/BlogPrompt.cs`, ported word for word
-from the old `tools/blog/lib/prompt.mjs`) tells the model to write as Francis, for choirs in Nigeria and
-West Africa that read movable-doh, la-based-minor Tonic Solfa, and that it must never invent
+from the old `tools/blog/lib/prompt.mjs`) tells the model to write as Francis, for choirs in the UK, the
+US, Europe and worldwide that read movable-doh, la-based-minor Tonic Solfa, and that it must never invent
 statistics, studies, quotes, testimonials or anecdotes; must link only to pages on this site; may
 describe only the NoteFusion features it is given; and must never mention prices.
 

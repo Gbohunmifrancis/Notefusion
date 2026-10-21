@@ -157,7 +157,7 @@
       "slug": "choir-rehearsal-tips",
       "keyword": "choir rehearsal tips for church choirs",
       "intent": "Informational — directors looking to make weekly rehearsals more productive.",
-      "angle": "Practical structure for a 90-minute Nigerian church choir rehearsal: warm-up, new music, polishing, notes for next week.",
+      "angle": "Practical structure for a 90-minute church choir rehearsal: warm-up, new music, polishing, notes for next week.",
       "links": [
         "/blog/how-to-read-tonic-solfa"
       ],
@@ -557,7 +557,7 @@
       "slug": "history-of-tonic-solfa",
       "keyword": "history of tonic solfa",
       "intent": "Informational — readers curious where solfa came from.",
-      "angle": "Sarah Glover and John Curwen, how it spread through churches and schools, why it remains strong in West African choirs (no invented dates or numbers).",
+      "angle": "Sarah Glover and John Curwen, how it spread through churches and schools, and where choirs and classrooms still sing from it today (no invented dates or numbers).",
       "links": [
         "/blog/how-to-read-tonic-solfa"
       ],
@@ -579,7 +579,7 @@
     {
       "slug": "how-to-use-recordings-in-choir-practice",
       "keyword": "using recordings to learn choir songs",
-      "intent": "How-to — choirs that share songs on WhatsApp.",
+      "intent": "How-to — choirs that share rehearsal recordings in group chats and by email.",
       "angle": "Getting the most from a recording: slowing down, looping, separating the melody, turning it into solfa.",
       "links": [
         "/blog/how-to-learn-your-choir-part-at-home",
