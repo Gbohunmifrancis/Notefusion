@@ -446,6 +446,8 @@ body.is-focus #home, body.is-focus #studio { display: none; }
 #progress .stage { flex: none; padding: 6px 12px 6px 8px; font-size: 0.8rem; gap: 7px; border-radius: 8px; }
 #progress .stage .dot { width: 18px; height: 18px; font-size: 0.6rem; border-width: 1.5px; }
 .p-note { margin: 14px 0 0; }
+/* Notes that run to two lines start on the left; the counter and the stage stay centred (board n-ux-low V1d). */
+#progress .p-note, #progress .p-slow, #progress .p-offline { text-align: left; }
 
 /* ── Result: header, the framed sheet, one row of actions ── */
 #result { padding: 18px 20px 20px; }

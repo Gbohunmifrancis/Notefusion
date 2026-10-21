@@ -1969,7 +1969,7 @@
     ["topbar-avatar-img", "chip-avatar", "menu-avatar"].forEach(function (id) { setAvatar($(id), me); });
     $("chip-name").textContent = me ? ((me.fullName || "").trim().split(/\s+/)[0] || me.email || "") : "";
     $("greeting").textContent = greeting(me && me.fullName);
-    $("home-sub").textContent = homeQuestion();
+    $("home-sub").textContent = homeQuestion(); $("home-sub").classList.remove("home-sub-long");
     document.body.classList.toggle("is-pro", isPro());
     isPro() ? show($("greeting-pro")) : hide($("greeting-pro"));
     $("menu-plans-label").textContent = isPro() ? "My membership" : "Plans & billing";
@@ -2070,6 +2070,7 @@
     warmEngraver();
     document.body.classList.add("guest"); show($("topbar-signin"));
     $("greeting").textContent = greeting(""); $("home-sub").textContent = "Your free preview is on its way. Create a free account to keep transcribing.";
+    $("home-sub").classList.add("home-sub-long"); // two lines: read from the left (app.css)
     startJob({ jobId: previewId, stage: "transcribing" }, "preview");
   }
 

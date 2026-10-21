@@ -224,7 +224,7 @@
       <h2><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-sparkle"/></svg>Or try it first — free, no account</h2>
       <p class="card-lead">A 30-second preview of a tune you hum right now, or a recording you have.</p>
       <div class="row">
-        <button class="btn btn-primary btn-rec" id="try-record" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-mic"/></svg>Record a tune</button>
+        <button class="btn btn-ghost" id="try-record" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-mic"/></svg>Record a tune</button>
         <label class="btn btn-ghost try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-upload"/></svg>Upload a recording</label>
       </div>
       <details class="link-more">
@@ -232,7 +232,7 @@
         <form id="try-form" class="link-form" novalidate>
           <label class="sr-only" for="try-url">Song link</label>
           <span class="input-wrap"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-link"/></svg><input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false"></span>
-          <button class="btn btn-primary" id="try-submit" type="submit">Preview</button>
+          <button class="btn btn-ghost" id="try-submit" type="submit">Preview</button>
         </form>
         <button class="btn btn-ghost btn-sm" id="try-paste" type="button" hidden><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-paste"/></svg>Paste a link</button>
         <!-- "Beats in a bar" goes with a link from here; a recorded take is asked it in its review (assets/recorder.js),
@@ -243,6 +243,16 @@
       <div id="try-section"></div>
       <p class="try-status small" id="try-status" aria-live="polite"></p>
     </div>
+      <!-- Phones: the desk panel's sample, compact, after the try row so the first screen does not move (board
+           n-ux-low V1a). Decorative, as the panel is; app.css hides it where the panel shows. -->
+      <div class="auth-sample-m" aria-hidden="true">
+        <span class="auth-sample-m-k">What you get from a hummed tune</span>
+        <div class="auth-sample-m-card">
+          <div class="auth-sample-m-head"><b>Amazing Grace</b><span>Doh is G · 3/4</span></div>
+          <div class="auth-sample-m-solfa">| s, - | d - - - m d | m - - - r - | d - - - l, - | s, - - - s, - |</div>
+          <div class="auth-sample-m-staff"><img src="/assets/sample-staff.svg" width="613" height="236" alt="" loading="lazy"></div>
+        </div>
+      </div>
       <p class="auth-fine">By continuing you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy</a>. Need help? <a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a></p>
     </div>
   </section>
@@ -397,8 +407,8 @@
     <div class="alert alert-info hidden" id="guest-bar">
       <span><strong>You're trying NoteFusion free.</strong> Previews are the first 30 seconds, no account needed. Create a free account to keep the sheet, hear it in four parts and share it with your choir.</span>
       <span class="row" style="gap:8px;flex:none">
-        <button class="btn btn-primary btn-sm" id="guest-signup" type="button">Create a free account</button>
-        <button class="btn btn-ghost btn-sm" id="guest-signin" type="button">Sign in</button>
+        <button class="btn btn-ghost btn-sm" id="guest-signup" type="button">Create a free account</button>
+        <button class="btn btn-sm btn-text" id="guest-signin" type="button">Sign in</button>
       </span>
     </div>
     <div id="view-transcribe">

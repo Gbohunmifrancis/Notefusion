@@ -172,6 +172,8 @@ body.guest .topbar { display: flex; }
 .home-mark { display: block; width: 64px; height: 64px; margin: 0 auto 16px; background: var(--brand-gradient); -webkit-mask: url(/assets/mark-mask.png) center / contain no-repeat; mask: url(/assets/mark-mask.png) center / contain no-repeat; }
 .greeting { font-size: clamp(1.7rem, 3.4vw, 2.3rem); margin: 0 0 4px; }
 .home-sub { margin: 0; }
+/* A sub-line that runs to two lines (a guest's) is a left-aligned block under the centred greeting (board n-ux-low V1d). */
+.home .home-sub-long { max-width: 32ch; margin: 8px auto 0; text-align: left; }
 /* Practice: the streak and XP under the greeting, a tap from today's drill (the view is assets/practice-view.css). */
 .practice-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 14px; padding: 6px 16px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font: inherit; font-size: 0.9rem; font-weight: 600; font-variant-numeric: tabular-nums; cursor: pointer; }
 .practice-chip .ic { width: 18px; height: 18px; color: var(--muted); }
@@ -292,6 +294,9 @@ textarea { resize: vertical; line-height: 1.5; }
 .btn.on { background: var(--blue-fill, var(--blue)); color: #fff; border-color: var(--blue-fill, var(--blue)); }
 .btn-link { background: none; border: none; color: var(--blue-dark); padding: 0; font: inherit; font-weight: 600; cursor: pointer; min-height: 0; }
 .btn-link:disabled { color: var(--muted); cursor: default; }
+/* A text button: a button's size and target, a link's look (the guest bar's Sign in, board n-ux-low V1c). */
+.btn.btn-text { background: none; border-color: transparent; color: var(--blue-dark); padding-left: 10px; padding-right: 10px; }
+.btn.btn-text:hover:not(:disabled) { background: var(--blue-soft); }
 .btn .lock { width: 14px; height: 14px; opacity: 0.75; }
 .btn-rec { color: var(--danger); }
 .btn-rec .ic { color: var(--danger); }
@@ -727,6 +732,15 @@ main h1[tabindex="-1"]:focus { outline: none; }
 .auth-page .try-free { margin: 24px 0 0; }
 .auth-page .try-free h2 { font-size: 1rem; }
 .auth-fine { margin: 24px 0 0; text-align: center; font-size: 0.8125rem; color: var(--muted); }
+/* Phones: the desk panel's sample, compact, under the try row (board n-ux-low V1a); the first system of the staff only. */
+.auth-sample-m { margin: 20px 0 0; }
+.auth-sample-m-k { display: block; margin: 0 2px 8px; font-size: 0.8125rem; font-weight: 600; color: var(--muted); }
+.auth-sample-m-card { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow: hidden; }
+.auth-sample-m-head { display: flex; justify-content: space-between; gap: 12px; padding: 11px 14px; border-bottom: 1px solid var(--line); font-size: 0.875rem; color: var(--muted); }
+.auth-sample-m-head b { color: var(--ink); font-weight: 600; }
+.auth-sample-m-solfa { padding: 10px 14px 12px; font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.875rem; font-weight: 600; line-height: 1.7; color: var(--ink); word-spacing: 0.08em; }
+.auth-sample-m-staff { padding: 6px 8px 2px; border-top: 1px solid var(--line); background: #fffdf8; }  /* engraved on paper in both themes */
+.auth-sample-m-staff img { display: block; width: 100%; height: auto; aspect-ratio: 613 / 122; object-fit: cover; object-position: top; }
 .auth-fine a { font-weight: 600; }
 
 @media (min-width: 961px) {
@@ -748,6 +762,7 @@ main h1[tabindex="-1"]:focus { outline: none; }
   .auth-top-brand { visibility: hidden; }
   .auth-card { margin-top: 32px; }
   .auth-fine { margin-top: auto; padding-top: 24px; }
+  .auth-sample-m { display: none; } /* the panel beside the form shows the sample here */
 }
 
 /* ── Avatars with a real photo ───────────────────────────────────────────── */
