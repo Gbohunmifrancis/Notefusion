@@ -150,6 +150,12 @@
 .site-document .site-shell-cta:hover { color: var(--page-on-fill); background: var(--page-fill-hover); }
 .site-document .site-shell-signin { border: 1px solid var(--page-line-strong); background: transparent; color: var(--page-navy); }
 .site-document .site-shell-signin:hover { color: var(--page-navy); background: var(--page-wash); }
+/* In the header itself the call to action is an outline and Sign in a plain text button beside it (board n-ux-low
+   V3b), so a page's own primary (the hero's Record a tune) is the one filled blue on its first screen. The phone
+   menu's keeps its fill: there it is the only action. */
+.site-document .site-shell-actions > .site-shell-cta { border-color: var(--page-blue); background: transparent; color: var(--page-blue); }
+.site-document .site-shell-actions > .site-shell-cta:hover { border-color: var(--page-blue); background: var(--page-wash); color: var(--page-blue); }
+.site-document .site-shell-actions > .site-shell-signin { border-color: transparent; }
 .site-shell-mobile { display: none; }
 
 /* The colour-theme toggle (site-theme.js). Shown only once theme-boot.js has run, since without script it could
