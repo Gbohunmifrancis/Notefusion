@@ -2289,6 +2289,8 @@
     var cost = studioCost();
     if (!cost) { hide(row); setCostInfo(false); return; }
     $("cost-chip").textContent = cost.text;
+    // Used up: neutral, with a clock for its shape (amber is Pro's alone, board n-ux-low V1i).
+    if (cost.out) $("cost-chip").insertAdjacentHTML("afterbegin", '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-clock"/></svg>');
     $("cost-chip").classList.toggle("is-out", !!cost.out);
     $("cost-pop").textContent = cost.why;
     show(row);

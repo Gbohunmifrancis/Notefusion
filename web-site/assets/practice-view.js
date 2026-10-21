@@ -646,7 +646,7 @@
       marks.appendChild(ctx.mark((n.solfa || "") + (n.octaveMark || ""), m.status, null, true));
     });
     box.appendChild(marks);
-    box.appendChild(el("p", "pv-legend", "✓ spot on · ~ close · struck through: try again · dashed: not heard"));
+    box.appendChild(el("p", "pv-legend", "✓ spot on · ~ close · struck through: try again · – not heard"));
     var earned = T.playfulRewardLine(g.reward);
     if (earned) box.appendChild(el("p", "pv-earned", earned));
     return box;
@@ -689,7 +689,7 @@
       marks.appendChild(ctx.mark((n.solfa || "") + (n.octaveMark || ""), m.status, m.cents, false));
     });
     box.appendChild(marks);
-    box.appendChild(el("p", "pv-legend", "✓ in tune · ~ close · struck through: off the note · dashed: not sung. Numbers are cents off."));
+    box.appendChild(el("p", "pv-legend", "✓ in tune · ~ close · struck through: off the note · – not sung. Numbers are cents off."));
     var earned = P.rewardMoment(g.reward);
     if (earned) {
       var e = el("p", "pv-earned");

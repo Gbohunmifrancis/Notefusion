@@ -355,7 +355,7 @@ textarea { resize: vertical; line-height: 1.5; }
 .bar > div { height: 100%; width: 0; background: var(--brand-gradient); border-radius: 999px; transition: width 0.6s ease; }
 .bar-pct { flex: none; min-width: 3.2em; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; font-size: 0.9rem; color: var(--blue-dark); }
 .p-status { margin: 10px 0 0; color: var(--copy); font-weight: 600; }
-.p-slow { margin: 8px 0 0; color: var(--amber-text); }
+.p-slow { margin: 8px 0 0; color: var(--ink); }
 .p-offline { margin: 8px 0 0; color: var(--danger-text); }
 .p-retry { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 12px 0 0; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--wash); color: var(--copy); }
 /* "Notify me when it's ready": one quiet button under the note, asked from a click (assets/notify.js). */
@@ -378,7 +378,7 @@ textarea { resize: vertical; line-height: 1.5; }
 /* The faint mark on a free account's sheet is the logo itself, tinted brand blue, turned like a stamp. */
 .watermark::before { content: ""; display: block; width: clamp(120px, 28%, 260px); aspect-ratio: 331 / 438; background: var(--blue); opacity: 0.08; transform: rotate(-24deg); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; }
 .solfa { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.95rem; line-height: 1.9; white-space: pre-wrap; background: var(--blue-tint); border: 1px solid #dbe6fb; border-radius: var(--radius-sm); padding: 16px 18px; color: var(--ink); }
-.solfa .doh { color: var(--blue-dark); font-weight: 700; }
+.solfa .doh { color: var(--ink); font-weight: 700; }
 .part { margin-top: 14px; }
 .part h3 { font-size: 0.75rem; margin: 0 0 6px; color: var(--muted); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 #hymn, #r-hymn { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -391,7 +391,7 @@ table.hymn td:last-child { border-right: 2px solid var(--ink); }
 .cell i { display: block; font-style: normal; font-family: Inter, sans-serif; font-size: 0.72rem; color: var(--muted); min-height: 1em; }
 /* Chords over the grid: the letter name with its root in solfa under it, greyed when a bar opens on a chord still sounding. */
 .chord-grid .ch { display: block; min-height: 2.15em; line-height: 1.1; padding-bottom: 3px; }
-.chord-grid .ch strong { display: block; font-family: Inter, sans-serif; font-size: 0.82rem; color: var(--blue-dark); white-space: pre; }
+.chord-grid .ch strong { display: block; font-family: Inter, sans-serif; font-size: 0.82rem; color: var(--ink); white-space: pre; }
 .chord-grid .ch small { display: block; font-size: 0.72rem; color: var(--muted); white-space: pre; }
 .chord-grid .ch.held { opacity: 0.55; }
 .chord-grid .ch.held strong::before { content: "("; }
@@ -400,7 +400,7 @@ table.hymn td:last-child { border-right: 2px solid var(--ink); }
 .chord-chip { display: inline-flex; flex-direction: column; align-items: center; min-width: 60px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--wash); line-height: 1.25; }
 .chord-chip small { font-size: 0.68rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .chord-chip strong { font-size: 1.05rem; color: var(--ink); letter-spacing: -0.01em; }
-.chord-chip em { font-style: normal; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.8rem; color: var(--blue-dark); }
+.chord-chip em { font-style: normal; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.8rem; color: var(--copy); }
 
 /* Player toolbar */
 .player { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
@@ -421,13 +421,13 @@ table.hymn td:last-child { border-right: 2px solid var(--ink); }
 .sing-score { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
 .sing-score strong { font-size: 2.2rem; letter-spacing: -0.02em; min-width: 2.2ch; text-align: center; color: var(--ink); }
 .marks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-/* A note's mark carries a shape as well as a colour (app.js markSpan): ✓ in tune, ~ close, off the note struck through
- * in grey (never red), not sung dashed with –. */
+/* A note's mark carries a shape as well as a colour (app.js markSpan): ✓ in tune, ~ close in a dashed ink outline (amber
+ * is Pro's alone, board n-ux-low V1i), off the note struck through in grey (never red), not sung faint and dashed with –. */
 .mark { min-width: 42px; min-height: 44px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border: 1.5px solid var(--line); border-radius: 8px; padding: 4px 6px; font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 700; background: #fff; }
 .mark b { font-weight: inherit; }
 .mark small { display: block; font-weight: 500; color: var(--muted); font-size: 0.7rem; font-family: Inter, sans-serif; }
 .mark.hit { border-color: var(--success); color: var(--success-text); }
-.mark.near { border-color: var(--amber); color: var(--amber-text); }
+.mark.near { border-style: dashed; border-color: var(--ink); color: var(--ink); }
 .mark.hit b::after, .mark.near b::after, .mark.missed b::after { margin-left: 3px; font-family: var(--font-sans, sans-serif); font-weight: 600; }
 .mark.hit b::after { content: "✓"; }
 .mark.near b::after { content: "~"; }
@@ -441,7 +441,7 @@ table.ranges { border-collapse: collapse; margin-top: 12px; font-size: 0.875rem;
 table.ranges td { padding: 6px 12px 6px 0; border-top: 1px solid var(--line); }
 table.ranges td:first-child { text-transform: capitalize; color: var(--muted); }
 table.ranges .ok { color: var(--success-text); font-weight: 600; }
-table.ranges .warn { color: var(--amber-text); font-weight: 600; }
+table.ranges .warn { color: var(--ink); font-weight: 600; }
 table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 
 .share-row { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -895,7 +895,8 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .studio-cost { display: grid; justify-items: center; gap: 6px; margin: 14px 0 0; }
 .cost-line { display: inline-flex; align-items: center; gap: 4px; }
 .cost-chip { display: inline-flex; align-items: center; min-height: 26px; padding: 3px 10px; border-radius: 8px; background: var(--wash); color: var(--muted); font-size: 0.8125rem; font-weight: 600; font-variant-numeric: tabular-nums; }
-.cost-chip.is-out { background: var(--amber-soft); color: var(--ink); }
+.cost-chip.is-out { background: var(--wash); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.cost-chip.is-out .ic { width: 16px; height: 16px; margin-right: 5px; color: var(--copy); }
 .cost-info { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--muted); cursor: pointer; }
 .cost-info .ic { width: 16px; height: 16px; }
 .cost-info:hover, .cost-info[aria-expanded=true] { color: var(--ink); background: var(--wash); }
@@ -983,7 +984,6 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 [data-theme="dark"] .plan-opt-tag { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }
 [data-theme="dark"] .plan-opt.on { box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18); }
 [data-theme="dark"] .pill-free { color: var(--color-brand-500); }
-[data-theme="dark"] .chord-grid .ch strong, [data-theme="dark"] .chord-chip em { color: var(--color-brand-500); }
 [data-theme="dark"] .pay-toast { border-color: rgba(233, 185, 73, 0.35); box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6); }
 [data-theme="dark"] .pay-toast-mark { background: rgba(233, 185, 73, 0.14); color: var(--gold); }
 [data-theme="dark"] .pro-welcome-card::before { background: radial-gradient(120% 100% at 50% 0%, rgba(242, 193, 78, 0.16), transparent 70%); }
@@ -1010,7 +1010,7 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .lib-menu-sep { display: block; margin: 4px 6px; border-top: 1px solid var(--line); }
 @media (min-width: 641px) and (hover: hover) and (pointer: fine) { .lib-more { width: 38px; } .lib-menu [role=menuitem] { min-height: 40px; } }
 .lib-folder-bar .share-row { margin-top: 10px; }
-.lib-folder-tag { align-self: flex-start; font-size: 0.72rem; font-weight: 700; color: var(--blue-dark); background: var(--blue-tint); border-radius: 8px; padding: 2px 9px; }
+.lib-folder-tag { align-self: flex-start; font-size: 0.72rem; font-weight: 600; color: var(--copy); background: var(--wash); box-shadow: inset 0 0 0 1px var(--line); border-radius: 8px; padding: 2px 9px; }
 .lib-item .actions { flex-wrap: wrap; align-items: center; }
 .lib-file { width: auto; max-width: 100%; min-width: 0; min-height: 32px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px; }
 .folder-list { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 8px; }

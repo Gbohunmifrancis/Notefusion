@@ -289,8 +289,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 .result-card { padding: 22px; }
 .song .title { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.03em; }
 .sheet-wrap { border-radius: 12px; border-color: var(--line); }
-.solfa { font-family: var(--font-mono); font-weight: 500; background: var(--blue-tint); border-color: var(--line); border-radius: 12px; }
-:root[data-theme="dark"] .solfa .doh { color: var(--blue-dark); }
+.solfa { font-family: var(--font-mono); font-weight: 500; background: var(--wash); border-color: var(--line); border-radius: 12px; } /* a label, not a link: no blue panel */
 table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
 .cell i, .chord-grid .ch strong, .sing-live small, .mark small { font-family: var(--font-sans); }
 :root[data-theme="dark"] table.hymn td { border-left-color: rgba(255, 255, 255, 0.55); }
@@ -320,7 +319,8 @@ table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
 .verdict { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--wash); color: var(--ink); font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
 :root[data-theme="dark"] .verdict { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.12); }
 .verdict[aria-pressed=true][data-verdict="5"] { background: var(--success-soft); border-color: var(--success); color: var(--success-text); }
-.verdict[aria-pressed=true][data-verdict="3"] { background: var(--amber-soft); border-color: var(--amber); color: var(--amber-text); }
+.verdict[aria-pressed=true][data-verdict="3"] { background: var(--wash); border-color: var(--ink); color: var(--ink); }
+.verdict[aria-pressed=true][data-verdict="3"]::before { content: "~"; content: "~" / ""; margin-right: 5px; font-weight: 700; } /* its shape; amber is Pro's alone */
 .verdict[aria-pressed=true][data-verdict="1"] { background: var(--danger-soft); border-color: var(--danger); color: var(--danger-text); }
 .verdict-more { flex: 1 1 100%; display: grid; gap: 10px; }
 .verdict-more[hidden] { display: none; }
@@ -602,7 +602,7 @@ body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
 .pr-bar.now { box-shadow: inset 0 0 0 2px var(--blue); }
 /* Marked on the part, a shape as well as a colour (as app.css .mark): ✓ in tune, ~ close, struck through off, – not sung. */
 .pr-notes .mk-hit { color: var(--success-text); font-weight: 700; }
-.pr-notes .mk-near { color: var(--amber-text); font-weight: 700; }
+.pr-notes .mk-near { color: var(--ink); font-weight: 700; }
 .pr-notes .mk-hit::after { content: "✓"; } .pr-notes .mk-near::after { content: "~"; } .pr-notes .mk-missed::after { content: "–"; }
 .pr-notes .mk-wrong { color: var(--muted); font-weight: 700; text-decoration: line-through; text-decoration-thickness: 1.5px; }
 .pr-notes .mk-missed { color: var(--faint); }
