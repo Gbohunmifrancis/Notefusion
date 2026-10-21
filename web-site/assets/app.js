@@ -134,6 +134,20 @@
       });
     });
   }
+  /** A GET of bytes rather than JSON (a song's backing): the same headers, token refresh and ApiError as request(). */
+  function requestBytes(path) {
+    function send() {
+      var headers = baseHeaders(), t = tokens();
+      if (t && t.accessToken) headers.Authorization = "Bearer " + t.accessToken;
+      return fetch(API + path, { headers: headers }).catch(function () { throw new ApiError(0, null); });
+    }
+    return send().then(function (r) {
+      return r.status === 401 ? refresh().then(send, refreshFailed) : r;
+    }).then(function (r) {
+      if (r.ok) return r.arrayBuffer();
+      return r.json().catch(function () { return null; }).then(function (body) { throw new ApiError(r.status, body); });
+    });
+  }
 
   /**
    * A multipart upload that reports how much of it has gone up: fetch cannot, so this one request
@@ -389,7 +403,7 @@
     epoch++;
     stopFollowing();
     current = null; keepPreviewJob = null; submitting = false; transposing = false;
-    if (player) player.stop();
+    if (player) { player.stop(); player.setBacking(null); }
     cancelSinging(); cancelPracticeTake();
     closeTool(); closeFull();
     hide($("result")); hide($("progress"));
@@ -1531,9 +1545,12 @@
         key: t.key, tempo: t.tempoBpm, timeSignature: t.timeSignature, notes: t.notes || [], musicXml: t.musicXml || "",
         overallConfidence: t.overallConfidence || 0, parts: t.parts || null, partsMusicXml: t.partsMusicXml || "",
         chords: t.chords || null, chordsSource: t.chords && t.chords.length ? "heard" : null,
-        solfaLines: C.renderLines(t.notes || [], C.keyHeader(t.key), t.timeSignature), source: null, hymn: t.hymn || null
+        solfaLines: C.renderLines(t.notes || [], C.keyHeader(t.key), t.timeSignature), source: null, hymn: t.hymn || null,
+        // The song's backing, kept with an upload's sheet (fetched apart: loadBacking); where its beats fall in it.
+        hasBacking: t.hasBacking === true, beatOriginSec: t.beatOriginSec || 0, beatTimesSec: t.beatTimesSec || null
       };
-      current = { jobId: null, kind: "library", source: null, result: result, startedAt: Date.now(), savedId: t.id, title: t.title, shareToken: t.shareToken || null, lyrics: t.lyrics || "", semitones: 0 };
+      current = { jobId: null, kind: "library", source: null, result: result, startedAt: Date.now(), savedId: t.id, title: t.title, shareToken: t.shareToken || null, lyrics: t.lyrics || "", semitones: 0,
+        transposedBy: t.transposedBy || 0, fromLink: t.fromLink === true };
       resultReturnView = viewNow;
       setView("transcribe");
       hide($("progress"));
@@ -2708,7 +2725,7 @@
     }
     if (current && current.jobId === jobId) { setView("transcribe"); return; }
     setView("transcribe");
-    request("/api/transcriptions/jobs/" + encodeURIComponent(jobId)).then(function (job) {
+    request("/api/transcriptions/jobs/" + encodeURIComponent(jobId) + "?backing=false").then(function (job) {
       startJob({ jobId: jobId, stage: job && job.stage, queuePosition: job && job.queuePosition, source: job && job.source }, "job");
     }, function (err) {
       alertIn($("app-alert"), "info", err.status === 404 ? "That transcription isn't available any more." : err.message);
@@ -3097,7 +3114,9 @@
     var jobId = f.jobId, at = epoch;
     /** The reply is still wanted: nobody signed out meanwhile and this is still the job on the card. */
     function wanted() { return at === epoch && (guest || !!tokens()) && follow === f && !!current && current.jobId === jobId; }
-    request(jobPath(jobId), { anonymous: current.preview && guest }).then(function (job) {
+    // Without the backing's audio in it: the sheet opens at once and the audio comes on its own (loadBacking). A preview,
+    // and an API from before that, carry it inline as they always did.
+    request(jobPath(jobId) + (current.preview ? "" : "?backing=false"), { anonymous: current.preview && guest }).then(function (job) {
       if (!wanted()) return;
       current.failures = 0; hide($("p-offline"));
       render(job);
@@ -3453,7 +3472,6 @@
       $("restart").addEventListener("click", function () { player.stop(); player.play(); });
       $("rate").addEventListener("change", function () { player.setRate(parseFloat($("rate").value)); });
       ["loop-on", "loop-from", "loop-to"].forEach(function (id) { $(id).addEventListener("change", applyLoop); });
-      $("backing-on").addEventListener("change", function () { player.setBackingOn($("backing-on").checked); });
       player.onTick(function (t) {
         [$("play"), $("rehearse-play")].forEach(function (b) { label(b, t.playing ? "pause" : "play", t.playing ? "Pause" : "Play"); });
         var now = -1;
@@ -3463,15 +3481,9 @@
       });
     }
     var voices = rehearsalVoices(result);
-    player.load({ voices: voices, tempoBpm: result.tempo, timeSignature: result.timeSignature });
-    // The song's own backing, when the worker isolated the voice: the solfa melody plays
-    // over the instrumental, in time, instead of a piano on its own.
-    var backing = $("backing-group");
-    if (result.backingAudioBase64) {
-      show(backing);
-      player.setBacking(base64ToBytes(result.backingAudioBase64).buffer, result.beatOriginSec || 0);
-      $("backing-on").checked = true; player.setBackingOn(true);
-    } else { hide(backing); player.setBacking(null, 0); player.setBackingOn(false); }
+    // The beats placed in the song's recording, so its backing and the notes keep one clock (assets/backing-clock.js).
+    player.load({ voices: voices, tempoBpm: result.tempo, timeSignature: result.timeSignature, beatOriginSec: result.beatOriginSec, beatTimesSec: result.beatTimesSec });
+    loadBacking(result);
     var bars = C.barCount(result.notes || [], result.timeSignature);
     $("loop-from").max = bars; $("loop-to").max = bars; $("loop-to").value = Math.min(4, bars); $("loop-from").value = 1; $("loop-on").checked = false;
     var box = $("voices"), hear = $("part-mix-voices");
@@ -3528,6 +3540,133 @@
     if ($("loop-on").checked) player.setLoopBars(parseInt($("loop-from").value, 10) || 1, parseInt($("loop-to").value, 10) || 1);
     else player.setLoopBars(null, null);
   }
+
+  // ── The song's backing (boards o-backing O4a/O4b) ────────────────────────
+  // A sheet whose song was separated from its band plays that band quietly under the solfa, in time (choir.js's player
+  // on assets/backing-clock.js). One control, drawn twice — the strip just above Play and its twin in Slow & loop — with
+  // the app's switch and a Solfa · Backing balance, both remembered per browser. The audio comes apart from the sheet,
+  // once, as the sheet opens: the fresh job's while the API holds it, else the saved sheet's (only an upload keeps it; a
+  // song from a link never does). A transposed sheet's backing sits out, with a way back to the song's key.
+  var BACKING_KEY = "nf.web.backing";
+  var BALANCE_DEFAULT = Math.round(((window.NfBackingClock && window.NfBackingClock.DEFAULT_BALANCE) || 0.4) * 100);
+  var backingPref = null;
+  function backingPrefs() {
+    if (backingPref) return backingPref;
+    var p = null;
+    try { p = JSON.parse(localStorage.getItem(BACKING_KEY) || "null"); } catch (e) { p = null; }
+    var balance = p && typeof p.balance === "number" && p.balance >= 0 && p.balance <= 100 ? Math.round(p.balance) : BALANCE_DEFAULT;
+    backingPref = { on: !(p && p.on === false), balance: balance };
+    return backingPref;
+  }
+  function setBackingPrefs(change) {
+    backingPref = Object.assign({}, backingPrefs(), change);
+    try { localStorage.setItem(BACKING_KEY, JSON.stringify(backingPref)); } catch (e) { /* private mode: kept for this visit */ }
+  }
+  /** The sheet says it has a backing (inline, or to fetch), and it has not turned out to be gone. */
+  function backingHeld(result) {
+    return !!result && !!(result.backingAudioBase64 || result.hasBacking === true) && !(current.backing && current.backing.gone);
+  }
+  /** Where the sheet's backing is asked for: the job's while it is fresh (then the copy filed from it), or the saved sheet's. */
+  function backingPaths() {
+    if (!current || current.preview || guest) return [];
+    function saved(id) { return "/api/library/" + encodeURIComponent(id) + "/backing"; }
+    if (current.kind === "library") return current.savedId ? [saved(current.savedId)] : [];
+    if (!current.jobId) return [];
+    var paths = ["/api/transcriptions/jobs/" + encodeURIComponent(current.jobId) + "/backing"];
+    if (current.filedId) paths.push(saved(current.filedId));
+    return paths;
+  }
+  /** Hands the player the sheet's backing: inline from a preview or an older API, else fetched once, bytes only. */
+  function loadBacking(result) {
+    var b = current.backing || (current.backing = { bytes: null, loading: false, gone: false });
+    if (!backingHeld(result)) { player.setBacking(null); return; }
+    if (!b.bytes && result.backingAudioBase64) b.bytes = base64ToBytes(result.backingAudioBase64).buffer;
+    if (b.bytes) { player.setBacking(b.bytes); return; }
+    player.setBacking(null);
+    if (b.loading) return;
+    var paths = backingPaths(), owner = current, at = epoch;
+    if (!paths.length) { b.gone = true; return; }
+    b.loading = true;
+    (function ask(i) {
+      requestBytes(paths[i]).then(function (bytes) {
+        b.loading = false; b.bytes = bytes;
+        if (at !== epoch || current !== owner) return;
+        if (backingHeld(current.result)) player.setBacking(bytes);
+        renderBacking();
+      }, function (err) {
+        if (err.status === 404 && i + 1 < paths.length) { ask(i + 1); return; }
+        // Gone (BACKING_NOT_FOUND) or out of reach: the sheet plays as it always did, with no control for a band it lacks.
+        b.loading = false; b.gone = true;
+        if (at === epoch && current === owner) { renderBacking(); renderTranspose(); }
+      });
+    })(0);
+  }
+  /** "none", "unkept" (a link's: said in one line), "on" (the strip), or "out" (transposed: greyed, with the way back). */
+  function backingState() {
+    var r = current && current.result;
+    if (!r) return "none";
+    if (!backingHeld(r)) return current.fromLink || ((r.source || current.source) && current.backing && current.backing.gone) ? "unkept" : "none";
+    return (current.transposedBy || 0) !== 0 ? "out" : "on";
+  }
+  function drawBackingControl(box, out, on, balance, backKey) {
+    box.classList.toggle("is-out", out);
+    var sw = box.querySelector(".bk-on");
+    sw.setAttribute("aria-checked", String(on)); sw.disabled = out;
+    (on ? show : hide)(box.querySelector(".bk-bal"));
+    var range = box.querySelector(".bk-balance");
+    if (document.activeElement !== range) range.value = String(balance);
+    // The louder end in ink: at the middle both play at full.
+    box.querySelector(".bk-end-solfa").classList.toggle("on", balance <= 50);
+    box.querySelector(".bk-end-backing").classList.toggle("on", balance >= 50);
+    var back = box.querySelector(".bk-back");
+    (out ? show : hide)(box.querySelector(".bk-why")); (out ? show : hide)(back);
+    back.disabled = transposing;
+    box.querySelector(".bk-back-label").textContent = "Back to " + backKey;
+    var hint = box.querySelector(".bk-hint");
+    if (hint) (out ? hide : show)(hint);
+  }
+  function renderBacking() {
+    if (!current || !current.result || !player) return;
+    var state = backingState(), p = backingPrefs(), wrap = $("bk-wrap"), twin = $("backing-group"), line = $("bk-line");
+    if (state === "none") { hide(wrap); hide(twin); player.setBackingOn(false); return; }
+    show(wrap);
+    if (state === "unkept") {
+      hide($("bk-strip")); hide(twin);
+      $("bk-line-text").textContent = "Songs from a link don’t keep their backing.";
+      show($("bk-line-icon")); line.classList.add("is-alone"); show(line);
+      player.setBackingOn(false);
+      return;
+    }
+    var out = state === "out", on = !out && p.on;
+    var backKey = C.shiftKeyName(current.result.key, -(current.transposedBy || 0));
+    [$("bk-strip"), twin].forEach(function (box) { drawBackingControl(box, out, on, p.balance, backKey); show(box); });
+    // A song from a link: its backing plays while the page is open and is never kept.
+    if (current.result.source || current.source) {
+      $("bk-line-text").textContent = "Plays while this page is open. Songs from a link don’t keep their backing.";
+      hide($("bk-line-icon")); line.classList.remove("is-alone"); show(line);
+    } else hide(line);
+    player.setBalance(p.balance / 100);
+    player.setBackingOn(on);
+  }
+  document.querySelectorAll(".bk-on").forEach(function (sw) {
+    sw.addEventListener("click", function () {
+      if (sw.disabled || !current) return;
+      var on = sw.getAttribute("aria-checked") !== "true";
+      setBackingPrefs({ on: on });
+      renderBacking();
+      track("Song backing", on ? "on" : "off");
+    });
+  });
+  document.querySelectorAll(".bk-balance").forEach(function (range) {
+    range.addEventListener("input", function () {
+      setBackingPrefs({ balance: Math.min(100, Math.max(0, Math.round(Number(range.value) || 0))) });
+      renderBacking();
+    });
+  });
+  // "Back to Eb major": today's transpose, by as much as the sheet was moved, and the band on again at its balance.
+  document.querySelectorAll(".bk-back").forEach(function (btn) {
+    btn.addEventListener("click", function () { if (current && current.transposedBy) transposeBy(-current.transposedBy, true); });
+  });
 
   // ── Sing it: a take, marked note by note ─────────────────────────────────
   var sing = { voice: "soprano", recorder: null, stream: null, ctx: null, timer: null, stopAt: null, startedAt: 0, leadIn: 0, notes: [] };
@@ -3922,23 +4061,38 @@
       c.textContent = row.status === "ok" ? "comfortable" : row.status === "wide" ? "too wide" : row.overBy + (row.overBy === 1 ? " semitone" : " semitones") + " too " + row.status;
       tr.appendChild(a); tr.appendChild(b); tr.appendChild(c); table.appendChild(tr);
     });
+    // On a sheet with backing, said before applying: the band cannot move with the notes (board o-backing O3). Not when
+    // the shift chosen takes the sheet back to the song's own key, nor once it already sits out (the strip says so).
+    var moved = current.transposedBy || 0, state = backingState();
+    var warn = (state === "on" || state === "out") && (n === 0 ? moved === 0 : moved + n !== 0);
+    (warn ? show : hide)($("tr-backing-note"));
+    renderBacking();
   }
   $("tr-down").addEventListener("click", function () { if (!current || transposing) return; current.semitones = Math.max(-12, (current.semitones || 0) - 1); renderTranspose(); });
   $("tr-up").addEventListener("click", function () { if (!current || transposing) return; current.semitones = Math.min(12, (current.semitones || 0) + 1); renderTranspose(); });
-  $("tr-apply").addEventListener("click", function () {
-    if (!current || !current.result || !current.semitones || transposing) return;
-    var r = current.result, n = current.semitones, owner = current, at = epoch;
+  $("tr-apply").addEventListener("click", function () { if (current) transposeBy(current.semitones || 0, false); });
+  /**
+   * Moves the sheet by `n` semitones: the saved sheet on the server, a fresh one through the stateless call. `toSong` is
+   * the backing strip's "Back to <key>": the band comes on again with the sheet, at the balance it had.
+   */
+  function transposeBy(n, toSong) {
+    if (!current || !current.result || !n || transposing) return;
+    var r = current.result, owner = current, at = epoch;
     transposing = true;
     renderTranspose();
     var req = current.savedId
       ? request("/api/library/" + current.savedId + "/transpose", { method: "POST", body: { semitones: n } })
       : request("/api/transcriptions/transpose", { method: "POST", body: { key: r.key, semitones: n, notes: r.notes, musicXml: r.musicXml, parts: r.parts || null, partsMusicXml: r.partsMusicXml || null, chords: r.chords || null } });
-    track("Transposed");
+    track(toSong ? "Transposed back to the song's key" : "Transposed");
     req.then(function (moved) {
       if (at !== epoch) return; // signed out meanwhile
       transposing = false;
       if (current !== owner) { if (current && current.result) renderTranspose(); return; } // another sheet opened meanwhile
       current.semitones = 0;
+      // How far the sheet now sits from the key it was heard in: the saved sheet's own count when the API sends it,
+      // else counted here (a fresh sheet moved and not yet saved counts too).
+      current.transposedBy = current.savedId && moved && typeof moved.transposedBy === "number" ? moved.transposedBy : (current.transposedBy || 0) + n;
+      if (toSong) setBackingPrefs({ on: true });
       var next = Object.assign({}, r, {
         key: moved.key, notes: moved.notes || [], musicXml: moved.musicXml || "",
         parts: moved.parts || null, partsMusicXml: moved.partsMusicXml || "", chords: moved.chords || null,
@@ -3953,7 +4107,7 @@
       if (current && current.result) renderTranspose();
       alertIn($("app-alert"), "danger", "Could not transpose: " + (err.message || err));
     });
-  });
+  }
 
   // ── One screen at a time: focus mode, the framed sheet, the tools in pop-ups ──
   /** Restarts the one-off entrance on an element that is shown again (CSS .rise, reduced-motion aware). */
