@@ -414,7 +414,7 @@
   /** Signed out here or in another tab, or the session ran out: nothing of the account stays on screen. */
   function forgetAccount() {
     me = null; sub = null; libraryCache = null; libFolder = null; choir = null; pendingDelete = null; dropToast();
-    founderNotes = null; renderFounder(); closeDialog(); resetChoirPanel();
+    founderNotes = null; renderFounder(); closeDialog(); resetChoirPanel(); forgetOffer();
     stopPaymentWatch(); hide($("top-nav")); showTabbar(false); document.body.classList.remove("is-pro");
     $("recents-list").innerHTML = "";
     hide($("practice-chip")); hide($("practice-slot")); hide($("season-carols")); if (window.NfPracticeView) window.NfPracticeView.reset();
@@ -1683,7 +1683,8 @@
       })
       .finally(function () { done(); btn.disabled = false; });
   });
-  /** "Notes from the founder by email": the account's choice (EmailOptOut), read when Account opens; null until then. */
+  /** "Notes and offers from NoteFusion" (the founder's notes and the occasional offer, by email): the account's choice
+   * (EmailOptOut), read when Account opens; null until then. */
   var founderNotes = null;
   function renderFounder() {
     var s = $("acct-founder");
@@ -1916,11 +1917,18 @@
     $("upgrade-reason-text").textContent = said ? why : "";
     said ? show($("upgrade-reason")) : hide($("upgrade-reason"));
     said ? hide($("upgrade-lead")) : show($("upgrade-lead"));
-    if (isPro()) { renderMembership(); show($("upgrade-panel")); return; }
+    if (isPro()) {
+      renderMembership(); show($("upgrade-panel"));
+      // A member the offer was sent to (web-billed Pro): more time at the offer's price, Monthly chosen.
+      if (reason === "offer" && offerLive() && !playBilled() && !(sub && sub.isLifetime)) openExtend(true);
+      syncOfferLine();
+      return;
+    }
     $("upgrade-title-text").textContent = "Do more with NoteFusion";
     show($("upgrade-free")); hide($("upgrade-pro"));
     // At the free limit one more song is what was asked for: the choir plans stay out of it, unless this is a director.
-    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: reason !== "limit" || leadsChoir(), choirFirst: reason === "choir", want: want });
+    // From the offer (reason "offer": its email's button, Home's strip) Pro leads with Monthly chosen.
+    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: reason !== "limit" || leadsChoir(), choirFirst: reason === "choir", want: want, fromOffer: reason === "offer" });
   }
   /** Pro through a choir alone: the plan shown is the choir's, renewed by its director. */
   function proViaChoir() { return !!(sub && sub.choirRole && String(sub.planCode || "").indexOf("choir_") === 0); }
@@ -1989,6 +1997,7 @@
     else label($("upgrade-extend"), "plus", proViaChoir() ? (singer ? "Get Pro of my own" : "Add choir time") : "Add more Pro time");
     sub && sub.isLifetime ? hide($("upgrade-extend")) : show($("upgrade-extend"));
     hide($("plans-extend"));
+    syncOfferLine();
   }
   /** A member's plans for more time, under the membership; `monthly` starts on the monthly plan (Account's "Add another month"). */
   function openExtend(monthly) {
@@ -2097,6 +2106,7 @@
     document.body.classList.toggle("is-pro", isPro());
     isPro() ? show($("greeting-pro")) : hide($("greeting-pro"));
     $("menu-plans-label").textContent = isPro() ? "My membership" : "Plans & billing";
+    renderOfferBanner(); // free accounts only: it goes the moment the account is Pro
     // Until a kind is picked, the picker shows what the tab showing would send (defaultKind).
     if (!guest && !chosenKind()) selectKind(defaultKind(sourceShowing()));
     renderStudioCredits();
@@ -2146,6 +2156,8 @@
       showAuth(); return Promise.resolve();
     }
     leaveAuth(); show($("boot-skel"));
+    // Beside the account, so Home's strip and the plans' prices are ready with it (the seasonal offer, below).
+    readOffer();
     return loadAccount().then(function () {
       // The API refused the session while the account loaded: the sign-in screen is already up.
       if (!tokens()) { showAuth(); return; }
@@ -2160,9 +2172,27 @@
       // Signed in from a choir invite (or already signed in when it was opened): join now.
       maybeJoinFromInvite();
       var upgradeTo = new URLSearchParams(location.search).get("upgrade");
+      // The offer's email button (?offer=<key>&m=<token>), or the pricing page's card during an offer (&offer=<key>).
+      var fromOffer = offerLinkKey;
       // Handled once: the checkout leaves this tab, and Back must not land on a page that starts it again.
       if (upgradeTo) dropParam("upgrade");
-      if (upgradeTo && !isPro()) { openUpgrade(null, null, upgradeTo !== "1" ? upgradeTo : null); if (upgradeTo !== "1") autoCheckout(upgradeTo); }
+      if (fromOffer) { dropParam("offer"); dropParam("m"); }
+      if ((upgradeTo && !isPro()) || fromOffer) {
+        // The plans open once the offer's answer is in (at most 4 s), at the prices that apply: the offer's, or the usual
+        // ones with the line that says it has ended.
+        var opening = epoch;
+        offerSettled().then(function () {
+          offerLinkKey = null;
+          if (opening !== epoch || !tokens()) return;
+          var want = upgradeTo && upgradeTo !== "1" ? upgradeTo : null;
+          if (isPro()) { openUpgrade("offer"); return; }
+          if (fromOffer) track("Offer: opened from a link", fromOffer);
+          openUpgrade(fromOffer ? "offer" : null, null, want);
+          // A plan picked at an offer's price whose offer has ended by now: the plans, never a checkout at a price the
+          // person was not shown.
+          if (want && !(fromOffer && !offerLive())) autoCheckout(want);
+        });
+      }
       // Back from checkout (the provider's return page adds ?paid=1), or a checkout started here not long ago.
       // Only the provider's return says a payment was made; otherwise the check runs out of sight.
       var paidReturn = !!new URLSearchParams(location.search).get("paid");
@@ -4744,6 +4774,184 @@
     });
   }
 
+  // ── The seasonal offer (board p-halloween-offer) ─────────────────────────
+  // GET /api/offers/current says what runs for this account: each plan's offer price, and the moment it ends (midnight
+  // at the end of its last day, in the account's own time zone). While one runs, or a link names one that has ended,
+  // assets/offer.js and offer.css load (never otherwise) and the page shows Home's strip to a free account, the offer's
+  // line and prices in the plans, and checks out at the offer's price (offerKey). The countdown is the browser's clock
+  // against that end; at zero, and whenever the tab comes back, the API is asked again.
+  var OFFER_ASSETS = ["/assets/offer.css?v=1", "/assets/offer.js?v=1"];
+  var offerNow = null;     // the offer running for this account; null when none (or not known yet)
+  var offerEnded = null;   // { key, label } of one that has ended: an old link's, or one that ran out on this page
+  var offerRefused = {};   // keys the checkout refused as ended (BILLING_OFFER_ENDED): not shown again on this page
+  var offerHidden = {};    // keys whose strip was closed here, should the browser keep no storage
+  var offerLinkKey = null; // ?offer=<key> (the email's button) until it has opened the plans
+  var offerRead = null;    // the last ask; never rejects, settles once its answer is on the page
+  var offerReadAt = 0;
+  var offerWatching = false;
+  var lastPlans = null;    // the plans on screen { panel, grid, opts, chosenId }: drawn again when the offer changes
+
+  // The email's button (/app?offer=<key>&m=<token>): its click is counted once per tab, signed in or not; the address
+  // keeps both through sign-in, and boot() opens the plans.
+  (function offerLink() {
+    var q = new URLSearchParams(location.search), key = q.get("offer"), m = q.get("m");
+    if (key && /^[a-z0-9][a-z0-9-]{0,63}$/i.test(key)) offerLinkKey = key;
+    if (!m || !/^[A-Za-z0-9_-]{16,200}$/.test(m)) return;
+    var counted = null;
+    try { counted = sessionStorage.getItem("nf.offerClick"); } catch (e) { counted = null; }
+    if (counted === m) return;
+    try { sessionStorage.setItem("nf.offerClick", m); } catch (e) { /* private mode: a reload may count it again */ }
+    request("/api/offers/click", { method: "POST", anonymous: true, body: { token: m } }).catch(function () { /* a lost click is only a missing count */ });
+  })();
+
+  function offerLive() { return !!(offerNow && window.NfOffer && window.NfOffer.isLive(offerNow, Date.now())); }
+  /** A plan's price under the running offer, in minor units; null when no offer covers it. */
+  function offerFor(plan) { return offerLive() ? window.NfOffer.offerPrice(plan, offerNow) : null; }
+  function offerDismissed(key) {
+    if (offerHidden[key]) return true;
+    try { return localStorage.getItem(window.NfOffer.dismissKey(key)) === "1"; } catch (e) { return false; }
+  }
+  function offerSig() {
+    return offerLive() ? offerNow.key + "|" + offerNow.endsAtUtc + "|" + JSON.stringify(offerNow.plans) : "none|" + (offerEnded ? offerEnded.key : "");
+  }
+
+  /**
+   * Asks what runs for this account (`key`: an offer to ask after by name, for the line that says it has ended). The
+   * files load only when the answer has something to show; a failure keeps what the page showed.
+   */
+  function readOffer(key) {
+    if (!tokens()) return Promise.resolve();
+    var at = epoch, ask = key || offerLinkKey;
+    offerReadAt = Date.now();
+    offerRead = request("/api/offers/current" + (ask ? "?key=" + encodeURIComponent(ask) : ""))
+      .then(function (r) {
+        if (at !== epoch) return;
+        var o = r && r.offer, ended = r && r.ended && r.ended.key ? { key: r.ended.key, label: r.ended.label } : null;
+        var live = o && o.key && !offerRefused[o.key] && Date.parse(o.endsAtUtc) > Date.now() && Array.isArray(o.plans) && o.plans.length ? o : null;
+        if (!live && !ended && !offerNow) return;
+        return Promise.all(OFFER_ASSETS.map(loadAsset)).then(function () {
+          if (at !== epoch) return;
+          if (!offerWatching) { offerWatching = true; window.NfOffer.watch(offerRanOut); }
+          // One that was running and is not any more has ended, whatever the reason (its day is over, it was switched off).
+          var gone = !live && offerNow ? { key: offerNow.key, label: offerNow.label } : null;
+          setOffer(live, ended || gone);
+        });
+      })
+      .catch(function () { /* offline or refused: the page keeps what it showed; the next look asks again */ });
+    return offerRead;
+  }
+  /** The ask in flight, waited on for at most 4 s (the plans open at their usual prices rather than not at all). */
+  function offerSettled() {
+    return offerRead ? Promise.race([offerRead, new Promise(function (r) { setTimeout(r, 4000); })]) : Promise.resolve();
+  }
+
+  /** The offer changes: the page's dress, Home's strip, and the plans when they are on screen follow it. */
+  function setOffer(offer, ended) {
+    var before = offerSig();
+    offerNow = offer;
+    if (ended) offerEnded = ended;
+    if (offerLive()) window.NfOffer.dress(offerNow);
+    // Gone: the strip fades in the template's colours first, so the dress comes off after it.
+    else if (window.NfOffer) setTimeout(function () { if (!offerLive()) window.NfOffer.dress(null); }, 220);
+    renderOfferBanner();
+    if (offerSig() !== before) redrawPlans(); else syncOfferLine();
+    if (window.NfOffer) window.NfOffer.tick();
+  }
+  /** The countdown reached zero: the strip fades out (200 ms), the prices go back, and the API is asked again. */
+  function offerRanOut(end) {
+    if (!offerNow || window.NfOffer.endsAt(offerNow) !== end) return;
+    var was = offerNow;
+    setOffer(null, { key: was.key, label: was.label });
+    setTimeout(function () { readOffer(was.key); }, 2000);
+  }
+  /** The checkout refused the offer's price (its end passed for this account): the usual prices, and the line that says so. */
+  function offerWasRefused(o) {
+    if (!o) { readOffer(); return; }
+    offerRefused[o.key] = true;
+    setOffer(offerNow && offerNow.key === o.key ? null : offerNow, { key: o.key, label: o.label });
+    readOffer(o.key);
+  }
+  /** Signed out: nothing of the offer stays (an email's link in the address waits for the next sign-in). */
+  function forgetOffer() {
+    offerNow = null; offerEnded = null; offerRefused = {}; offerRead = null; lastPlans = null;
+    ["offer-bar", "offer-line", "offer-ended-line"].forEach(function (id) { var x = $(id); if (x) x.remove(); });
+    if (window.NfOffer) window.NfOffer.dress(null);
+  }
+  // Back to the tab: a day may have turned, or the offer been switched off, while it was away.
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible" && me && !guest && Date.now() - offerReadAt > 15000) readOffer();
+  });
+
+  /**
+   * Home's strip (P2): free accounts only, while the offer runs, until it is closed on this browser. "See the offer"
+   * opens the plans as the email's button does; the close hides the strip for this offer, and the plans keep its prices.
+   */
+  function renderOfferBanner() {
+    var bar = $("offer-bar");
+    var want = offerLive() && !guest && !!tokens() && !!sub && !isPro() && !offerDismissed(offerNow.key);
+    if (!want) { if (bar) dropOfferBanner(bar); return; }
+    var sig = offerNow.key + "|" + offerNow.endsAtUtc + "|" + offerNow.percentOff;
+    if (bar && bar.getAttribute("data-sig") === sig && !bar.classList.contains("is-leaving")) return;
+    if (bar) bar.remove();
+    bar = window.NfOffer.banner(offerNow);
+    bar.id = "offer-bar";
+    bar.setAttribute("data-sig", sig);
+    var key = offerNow.key;
+    bar.querySelector(".offer-go").addEventListener("click", function () { track("Offer: see the offer", key); openUpgrade("offer"); });
+    bar.querySelector(".offer-x").addEventListener("click", function () {
+      offerHidden[key] = true;
+      try { localStorage.setItem(window.NfOffer.dismissKey(key), "1"); } catch (e) { /* private mode: hidden for this page */ }
+      track("Offer: hid the strip", key);
+      var hadFocus = bar.contains(document.activeElement);
+      bar.remove();
+      // The close is gone from under the keyboard: the page's heading takes the focus rather than the document.
+      if (hadFocus) { $("greeting").setAttribute("tabindex", "-1"); $("greeting").focus({ preventScroll: true }); }
+    });
+    var view = $("view-transcribe");
+    view.insertBefore(bar, view.firstChild);
+    window.NfOffer.tick();
+  }
+  function dropOfferBanner(bar) {
+    if (bar.classList.contains("is-leaving")) return;
+    if (glide() === "auto") { bar.remove(); return; }
+    bar.classList.add("is-leaving");
+    setTimeout(function () { bar.remove(); }, 200);
+  }
+
+  /**
+   * The plans' first line, under their title: the offer's line while it runs (P3), else, once one has ended, "The
+   * Halloween offer has ended." (P5). Only while the dialog shows plans: a member's membership alone has neither.
+   */
+  function syncOfferLine() {
+    var head = document.querySelector("#upgrade-panel .pay-head"), line = $("offer-line"), note = $("offer-ended-line");
+    var plansShown = !$("upgrade-panel").classList.contains("hidden") &&
+      (!$("upgrade-free").classList.contains("hidden") || !$("plans-extend").classList.contains("hidden"));
+    var live = plansShown && offerLive(), ended = plansShown && !offerLive() && !!offerEnded && !!window.NfOffer;
+    var sig = live ? offerNow.key + "|" + offerNow.endsAtUtc : "";
+    if (line && (!live || line.getAttribute("data-sig") !== sig)) { line.remove(); line = null; }
+    if (live && !line) {
+      line = window.NfOffer.plansLine(offerNow);
+      line.id = "offer-line"; line.setAttribute("data-sig", sig);
+      head.parentNode.insertBefore(line, head.nextSibling);
+      window.NfOffer.tick();
+    }
+    if (note && (!ended || note.getAttribute("data-key") !== offerEnded.key)) { note.remove(); note = null; }
+    if (ended && !note) {
+      note = window.NfOffer.endedNote(offerEnded);
+      note.id = "offer-ended-line"; note.setAttribute("data-key", offerEnded.key);
+      head.parentNode.insertBefore(note, head.nextSibling);
+    }
+  }
+  /** The plans on screen, drawn again at the prices that now apply, the plan chosen kept. */
+  function redrawPlans() {
+    var lp = lastPlans;
+    if (!lp || $("upgrade-panel").classList.contains("hidden") || lp.grid.offsetParent === null) { syncOfferLine(); return; }
+    var opts = {};
+    for (var k in lp.opts) opts[k] = lp.opts[k];
+    opts.want = lp.chosenId; opts.fromOffer = false;
+    loadPlans(lp.panel, lp.grid, opts);
+  }
+
   // ── Upgrade ──────────────────────────────────────────────────────────────
   var plansCache = null;
   var choirPlansCache = null;
@@ -4768,6 +4976,7 @@
   function loadPlans(panel, grid, opts) {
     opts = opts || {};
     show(panel);
+    lastPlans = { panel: panel, grid: grid, opts: opts, chosenId: null };
     if (!plansCache) { grid.innerHTML = ""; for (var i = 0; i < 2; i++) { var sk = document.createElement("div"); sk.className = "skel skel-plan"; grid.appendChild(sk); } }
     var p = plansCache ? Promise.resolve(plansCache) : request("/api/billing/plans").then(function (list) { plansCache = list; return list; });
     // The choir plans are listed apart by the API; a failure there leaves the Pro plans on sale.
@@ -4778,7 +4987,9 @@
     var ps = !(opts.single && !isPro()) ? Promise.resolve([])
       : singlePlansCache ? Promise.resolve(singlePlansCache)
       : request("/api/billing/plans/single").then(function (list) { singlePlansCache = list || []; return singlePlansCache; }, function () { return []; });
-    Promise.all([p, pc, ps]).then(function (all) {
+    // The offer's answer, when one is on its way, so the plans open at the prices that apply (offerSettled).
+    Promise.all([p, pc, ps, offerSettled()]).then(function (all) {
+      if (lastPlans && lastPlans.grid !== grid) return; // other plans were opened meanwhile
       var plans = all[0], choirPlans = (all[1] || []).slice().sort(function (a, b) { return a.amountMinor - b.amountMinor; });
       grid.innerHTML = "";
       grid.classList.add("plan-picker");
@@ -4799,9 +5010,14 @@
         var ya = isYearly(a) ? 1 : 0, yb = isYearly(b) ? 1 : 0;
         return monthlyFirst ? ya - yb : yb - ya;
       });
-      // Just this song goes first: the smallest, simplest thing to buy, next to Pro.
-      if (single) ordered.unshift(single);
-      var chosen = single && (opts.singleFirst || !plans.length) ? single : ordered[single ? 1 : 0];
+      // Just this song goes first: the smallest, simplest thing to buy, next to Pro. While an offer prices Pro, Pro leads
+      // and the song follows it (P3), unless the free limit opened the plans: one more song is what was asked for then.
+      var proFirst = !opts.singleFirst && plans.some(function (x) { return offerFor(x); });
+      if (single) { if (proFirst) ordered.push(single); else ordered.unshift(single); }
+      var firstOwn = ordered.filter(function (x) { return x !== single; })[0];
+      var chosen = single && (opts.singleFirst || !plans.length) ? single : (firstOwn || ordered[0]);
+      // From the offer (its email's button, Home's strip) Pro Monthly is the one chosen, at its offer price.
+      if (opts.fromOffer && monthly && offerFor(monthly)) chosen = monthly;
       // The choir plans fold into one row under the rest, "For choir directors ›", which swaps the list to them with a
       // Back (board m-ux-medium W3e; the phone's Upgrade does the same): one director pays and the whole choir is Pro.
       var choirMonthly = choirPlans.find(function (x) { return !isYearly(x); });
@@ -4822,14 +5038,17 @@
       // A checkout that will not open says so here, above the button, not in the page behind the dialog.
       var payError = document.createElement("p"); payError.className = "pay-error"; payError.setAttribute("role", "alert"); payError.hidden = true;
       function renderCta() {
+        if (lastPlans && lastPlans.grid === grid) lastPlans.chosenId = chosen.id;
         cta.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-lock"/></svg>';
         // What the money buys, as one period ("Pay ₦7,500 for 1 month of Pro"): "₦7,500 a month" read as a renewal.
+        // Under an offer, its price ("Pay $6.99 for 1 month of Pro").
         var span = isLifetimePlan(chosen) ? "" : "1 " + (isYearly(chosen) ? "year" : "month");
+        var offered = offerFor(chosen), cost = offered ? money({ amountMinor: offered, currency: chosen.currency }) : money(chosen);
         cta.appendChild(document.createTextNode(isSinglePlan(chosen)
           ? "Buy this song — " + money(chosen)
           : isChoirPlan(chosen)
             ? (leadsChoir() ? "Add choir time — " : "Start your choir — ") + money(chosen) + " for " + span
-            : "Pay " + money(chosen) + (span ? " for " + span + " of Pro" : " for Pro for life")));
+            : "Pay " + cost + (span ? " for " + span + " of Pro" : " for Pro for life")));
         fine.innerHTML = '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-lock"/></svg>';
         // Adding time: the date it would run to, so a member sees what the payment buys before paying.
         var until = extendedEnd(chosen);
@@ -4837,6 +5056,8 @@
           ? "Secure checkout. One payment, one transcription that never expires."
           : until
             ? "Secure checkout. It starts when your current time ends: " + (isChoirPlan(chosen) ? "your choir's Pro" : "Pro") + " until " + longDate(until) + ". Nothing renews without you."
+          : offered
+            ? window.NfOffer.payFine(chosen.interval)
           : isChoirPlan(chosen)
             ? "Secure checkout. One payment covers the whole choir for the period; nothing renews without you. You'll get an invite link for your singers."
             : "Secure checkout. One payment covers the whole period; nothing renews without you."));
@@ -4880,8 +5101,18 @@
         top.appendChild(name);
         var base = isChoirPlan(plan) ? choirMonthly : monthly;
         var saving = isYearly(plan) && base ? Math.round(100 - (plan.amountMinor / (base.amountMinor * 12)) * 100) : 0;
-        if (saving > 0) { var tag = document.createElement("span"); tag.className = "plan-opt-tag"; tag.textContent = "Save " + saving + "%"; top.appendChild(tag); }
-        var price = document.createElement("span"); price.className = "plan-opt-price"; price.textContent = money(plan);
+        // Under an offer the plan's tag is the offer's ("Halloween · 30% off", in the season's wash) in place of the
+        // saving, and its old price is struck before the new one (P3).
+        var offered = offerFor(plan);
+        if (offered) { var otag = document.createElement("span"); otag.className = "plan-opt-tag offer-tag"; otag.textContent = window.NfOffer.tagText(offerNow); top.appendChild(otag); }
+        else if (saving > 0) { var tag = document.createElement("span"); tag.className = "plan-opt-tag"; tag.textContent = "Save " + saving + "%"; top.appendChild(tag); }
+        var price = document.createElement("span"); price.className = "plan-opt-price";
+        if (offered) {
+          var was = document.createElement("s"); was.innerHTML = '<span class="sr-only">Was </span>'; was.appendChild(document.createTextNode(money(plan)));
+          var nowSr = document.createElement("span"); nowSr.className = "sr-only"; nowSr.textContent = ", now ";
+          price.appendChild(was); price.appendChild(nowSr);
+          price.appendChild(document.createTextNode(money({ amountMinor: offered, currency: plan.currency })));
+        } else price.textContent = money(plan);
         var small = document.createElement("small"); small.textContent = isSinglePlan(plan) ? " once" : " / " + (isLifetimePlan(plan) ? "once" : isYearly(plan) ? "year" : "month"); price.appendChild(small);
         if (isSinglePlan(plan)) { var noSub = document.createElement("span"); noSub.className = "plan-opt-tag"; noSub.textContent = "No subscription"; top.appendChild(noSub); }
         var note = document.createElement("span"); note.className = "plan-opt-note";
@@ -4890,7 +5121,7 @@
           : isChoirPlan(plan)
             ? "Pro for you and up to " + (plan.choirSeats || 25) + " singers, 60 songs a month shared, one library" + (isYearly(plan) ? ", paid once a year" : "")
           : isYearly(plan)
-            ? money({ amountMinor: Math.round(plan.amountMinor / 12), currency: plan.currency }) + " a month, paid once a year"
+            ? money({ amountMinor: Math.round((offered || plan.amountMinor) / 12), currency: plan.currency }) + " a month, paid once a year"
             : isLifetimePlan(plan) ? "Pay once, Pro for good" : "Pay month by month";
         var dot = document.createElement("span"); dot.className = "plan-opt-dot"; dot.setAttribute("aria-hidden", "true");
         opt.appendChild(dot); opt.appendChild(top); opt.appendChild(price); opt.appendChild(note);
@@ -4926,6 +5157,7 @@
       help.innerHTML = 'Help &amp; refunds: <span><a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a> · <a href="/terms" target="_blank" rel="noopener">Terms</a></span>';
       foot.appendChild(payError); foot.appendChild(cta); foot.appendChild(fine); foot.appendChild(help);
       grid.appendChild(options); grid.appendChild(foot);
+      syncOfferLine();
     }).catch(function () {
       // A way to ask again where the plans should be, not only the words.
       grid.textContent = "Plans could not be loaded right now. ";
@@ -4979,7 +5211,11 @@
     else if (!$("upgrade-panel").classList.contains("hidden")) { note = $("upgrade-reason"); $("upgrade-reason-text").textContent = "Opening secure checkout…"; show(note); }
     else { note = $("app-alert"); alertIn(note, "info", "Opening secure checkout…"); }
     track("Checkout started", plan.id);
-    request("/api/billing/checkout", { method: "POST", body: { planId: plan.id, client: "web" } })
+    // At an offer's price the checkout names the offer; the API prices it again for this account and refuses it once
+    // the offer has ended for them (BILLING_OFFER_ENDED).
+    var body = { planId: plan.id, client: "web" }, offerAsked = offerFor(plan) ? offerNow : null;
+    if (offerAsked) body.offerKey = offerAsked.key;
+    request("/api/billing/checkout", { method: "POST", body: body })
       .then(function (session) {
         if (!session || !trustedCheckout(session.checkoutUrl)) throw new ApiError(502, { code: "BILLING_CHECKOUT_URL" });
         var provider = "";
@@ -5010,7 +5246,13 @@
             .catch(function () { alertIn($("app-alert"), "success", err.message); });
         }
         track("Checkout failed", (err instanceof ApiError ? err.code + " (HTTP " + err.status + ")" : (err && err.message) || "Network error") + " · app");
-        var text = (err instanceof ApiError && err.message) || "We couldn't open the payment page just now. Please try again in a minute.";
+        // The offer ended before the checkout opened: the plans at their usual prices, with the line that says so (P5).
+        if (err instanceof ApiError && err.code === "BILLING_OFFER_ENDED") {
+          offerWasRefused(offerAsked);
+          if ($("upgrade-panel").classList.contains("hidden")) alertIn($("app-alert"), "info", err.message);
+          return;
+        }
+        var text =(err instanceof ApiError && err.message) || "We couldn't open the payment page just now. Please try again in a minute.";
         var box = !$("upgrade-panel").classList.contains("hidden") && document.querySelector("#upgrade-panel .plans:not(.hidden) .pay-error");
         if (box) { box.textContent = text; box.hidden = false; }
         else alertIn($("app-alert"), "danger", text);
