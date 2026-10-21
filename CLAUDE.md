@@ -230,7 +230,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Restore purchases, and for a Play member Manage/Resubscribe/Fix in Google Play (never Add time or Cancel on Android);
   SubscriptionProvider hands over unacknowledged purchases at sign-in and on every foreground.
   The Hymns screen reads `web-site/hymns/pack.json` (built by `tools/blog/lib/hymn-pack.mjs`, version in `pack-version.json`, checked by `check.mjs`).
-  Data saver (default on, `lib/dataSaver`/`dataPolicy`): 32 kbps AAC uploads (`recordingPreset`, measured), no avatars/artwork, slower polls, hymn updates only on tap.
+  Data saver (default off, `lib/dataSaver`/`dataPolicy`): 32 kbps AAC uploads (`recordingPreset`, measured), no avatars/artwork, slower polls, hymn updates only on tap.
   **Phone admin** (`screens/admin`, `components/admin`, boards f-admin): Profile › Admin (row and route for an Admin only;
   every admin endpoint re-reads the role from the database) is its own section with its own bar, Overview · Payments
   (Webhooks and Ledger as tabs, a payment's sheet, "Needs a look" + Reconcile) · Users (an account and its actions) ·
@@ -533,7 +533,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   notes from the founder (email with Reply-To the founder + a one-line push when a device is registered) to four
   segments in priority order — unpaid checkout ≥3 days old (and ≥2 days after `RemindAbandonedCheckouts`, which in
   turn holds off a day after any outreach), active free user, tried once then quiet 5 days, never transcribed after
-  2 days — once per segment per account ever, at most one a week, 09:00–19:00 WAT, `Outreach__BatchSize` (5) per run.
+  2 days — once per segment per account ever, at most one a week, 09:00–19:00 in the account's own `users.TimeZone` (WAT when unknown), `Outreach__BatchSize` (5) per run.
   `OutreachMessage` rows are the claim (unique user+segment+channel) and the audit trail (`GET /api/admin/outreach`);
   a failed send is retried once. Email respects `EmailOptOut` (signed one-click `GET/POST /api/email/unsubscribe`, or the
   app's "Notes from the founder" switch, `GET/PUT /api/me/email-preferences`);
