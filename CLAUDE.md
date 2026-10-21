@@ -452,6 +452,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `FromLink`), the separated instrumental (`IBackingStorage`: R2 photo bucket, unguessable `BackingKey`, not backed up;
   Save moves it), owner-only at `GET /api/library/{id}/backing`; jobs say `hasBacking`, take `?backing=false`, serve
   `…/jobs/{id}/backing` while held; `BackingCleanupInterceptor` deletes it with the sheet or the account.
+  The worker's `beat_times_sec` (separated songs with a backing only; `transcriber._beat_map`, bench
+  `python -m tests.accuracy.song_clock`) is notation beat i's time in the recording, so a band that drifts stays in
+  step (the rounded `tempo` alone drifts by beats); clients map a beat through it (`lib/backingClock.ts` ↔
+  `assets/backing-clock.js`, same tests), play the backing pitch-kept under the solfa with a Solfa↔Backing balance, and
+  sit it out while `transposedBy` ≠ 0 (Save sends `transposedBy` for a client-side transpose).
   Every finished transcription is filed in its owner's library the moment its job is settled Done (option A,
   board 12: `Library/LibraryFiling`, from `GetTranscriptionJobQuery` and `NotifyTranscriptionReadyCommand` under the
   save lock, one sheet per job, a deleted one stays deleted; `AutoSaveFinishedTranscriptionsCommand` is the fallback):
