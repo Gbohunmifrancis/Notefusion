@@ -10,12 +10,13 @@ import { toApiError } from "../api/client";
 import { NOT_AN_EMAIL, contactUsUrl, googleFailure, looksLikeEmail, missesAfter, offersReset } from "../lib/authErrors";
 import { tokenStore } from "../lib/tokenStore";
 import { googleAuthConfigured } from "../lib/env";
+import { loginGoogleFirst } from "../lib/welcomeChoices";
 import { night, nightFonts } from "../design/theme";
 import type { AuthStackParams } from "../navigation/types";
 
 type Props = NativeStackScreenProps<AuthStackParams, "Login">;
 
-/** Sign in with email and password, or Google. */
+/** Sign in with email and password, or Google; whichever this phone signed in with last comes first. */
 export function LoginScreen({ navigation, route }: Props) {
   const { signIn, signInWithGoogle } = useAuth();
   const passwordRef = useRef<TextInput>(null);
@@ -29,8 +30,12 @@ export function LoginScreen({ navigation, route }: Props) {
   const [contact, setContact] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
-  /** Undefined until the phone has said how it last signed in: Google's button waits, unseen, for its chip. */
+  /** Undefined until the phone has said how it last signed in (saved on every sign-in, `tokenStore`). */
   const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null | undefined>(undefined);
+  /** Google was the last way in: it comes first as the one primary, the form under it (board n-ux-low Q3e). */
+  const googleFirst = loginGoogleFirst(googleAuthConfigured, lastAuthMethod);
+  // Without Google there is no order to wait for.
+  const methodKnown = !googleAuthConfigured || lastAuthMethod !== undefined;
 
   useEffect(() => {
     tokenStore.getLastAuthMethod().then(setLastAuthMethod, () => setLastAuthMethod(null));
@@ -86,6 +91,17 @@ export function LoginScreen({ navigation, route }: Props) {
     }
   }
 
+  const googleButton = googleAuthConfigured ? (
+    <NightButton
+      label="Continue with Google"
+      variant={googleFirst ? "blue" : "ghost"}
+      icon={<GoogleG size={20} />}
+      badge={lastAuthMethod === "google" ? "Last used" : undefined}
+      onPress={google}
+      loading={googleBusy}
+    />
+  ) : null;
+
   return (
     <NightScreen
       header={
@@ -101,83 +117,93 @@ export function LoginScreen({ navigation, route }: Props) {
       </Text>
       <Text style={[nightText.lead, styles.lead]}>Sign in to your sheets and folders.</Text>
 
-      <View style={styles.form}>
-        <NightField
-          label="Email"
-          value={email}
-          onChangeText={(t) => {
-            setEmail(t);
-            setError(null);
-          }}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-          textContentType="emailAddress"
-          returnKeyType="next"
-          onSubmitEditing={() => passwordRef.current?.focus()}
-          submitBehavior="submit"
-          onBlur={() => setEmailTouched(true)}
-          // Said once the field is left, so a greyed Sign in always has its reason on screen.
-          error={emailTouched && email.length > 0 && !emailOk ? NOT_AN_EMAIL : undefined}
-        />
-        <NightField
-          ref={passwordRef}
-          label="Password"
-          value={password}
-          onChangeText={(t) => {
-            setPassword(t);
-            setError(null);
-          }}
-          secure
-          autoCapitalize="none"
-          autoComplete="current-password"
-          textContentType="password"
-          returnKeyType="go"
-          onSubmitEditing={submit}
-        />
-      </View>
+      {/* The ways in wait, unseen, for how this phone last signed in (a moment): their order hangs on it. */}
+      <View style={[styles.ways, !methodKnown && styles.waiting]} pointerEvents={methodKnown ? "auto" : "none"}>
+        {googleFirst && (
+          <>
+            {googleButton}
+            <OrRule label="or use your email" />
+          </>
+        )}
 
-      <Pressable
-        onPress={forgot}
-        style={({ pressed }) => [styles.forgot, pressed && pressedLink]}
-        // 44 pt tall without moving the link: up to the field above, and down into the gap below.
-        hitSlop={{ top: 12, bottom: 14, left: 12, right: 12 }}
-        accessibilityRole="button"
-      >
-        <Text style={styles.forgotText}>Forgot password?</Text>
-      </Pressable>
-
-      {error && (
-        <View style={styles.error}>
-          <ErrorNote
-            message={error}
-            action={
-              offersReset(misses)
-                ? { label: "Forgot password?", onPress: forgot }
-                : contact
-                  ? { label: "Email us", onPress: () => void Linking.openURL(contact).catch(() => undefined) }
-                  : undefined
-            }
+        <View style={styles.form}>
+          <NightField
+            label="Email"
+            value={email}
+            onChangeText={(t) => {
+              setEmail(t);
+              setError(null);
+            }}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            textContentType="emailAddress"
+            returnKeyType="next"
+            onSubmitEditing={() => passwordRef.current?.focus()}
+            submitBehavior="submit"
+            onBlur={() => setEmailTouched(true)}
+            // Said once the field is left, so a greyed Sign in always has its reason on screen.
+            error={emailTouched && email.length > 0 && !emailOk ? NOT_AN_EMAIL : undefined}
+          />
+          <NightField
+            ref={passwordRef}
+            label="Password"
+            value={password}
+            onChangeText={(t) => {
+              setPassword(t);
+              setError(null);
+            }}
+            secure
+            autoCapitalize="none"
+            autoComplete="current-password"
+            textContentType="password"
+            returnKeyType="go"
+            onSubmitEditing={submit}
           />
         </View>
-      )}
 
-      <NightButton label="Sign in" variant="blue" onPress={submit} loading={busy} disabled={!canSubmit} style={styles.submit} />
+        <Pressable
+          onPress={forgot}
+          style={({ pressed }) => [styles.forgot, pressed && pressedLink]}
+          // 44 pt tall without moving the link: up to the field above, and down into the gap below.
+          hitSlop={{ top: 12, bottom: 14, left: 12, right: 12 }}
+          accessibilityRole="button"
+        >
+          <Text style={styles.forgotText}>Forgot password?</Text>
+        </Pressable>
 
-      {googleAuthConfigured && (
-        <>
-          <OrRule />
-          <NightButton
-            label="Continue with Google"
-            variant="ghost"
-            icon={<GoogleG size={20} />}
-            badge={lastAuthMethod === "google" ? "Last used" : undefined}
-            onPress={google}
-            loading={googleBusy}
-            style={lastAuthMethod === undefined && styles.waiting}
-          />
-        </>
-      )}
+        {error && (
+          <View style={styles.error}>
+            <ErrorNote
+              message={error}
+              action={
+                offersReset(misses)
+                  ? { label: "Forgot password?", onPress: forgot }
+                  : contact
+                    ? { label: "Email us", onPress: () => void Linking.openURL(contact).catch(() => undefined) }
+                    : undefined
+              }
+            />
+          </View>
+        )}
+
+        {/* The quiet button under Google when Google comes first: one primary on the screen. */}
+        <NightButton
+          label="Sign in"
+          variant={googleFirst ? "ghost" : "blue"}
+          onPress={submit}
+          loading={busy}
+          disabled={!canSubmit}
+          style={styles.submit}
+        />
+
+        {googleButton && !googleFirst && (
+          <>
+            <OrRule />
+            {googleButton}
+          </>
+        )}
+      </View>
 
       {/* The link its own 44 px text button (board m-ux-medium P5d); "New here?" stays plain text. */}
       <View style={styles.footer}>
@@ -192,7 +218,8 @@ const styles = StyleSheet.create({
   side: { width: 40 },
   title: { marginTop: 26 },
   lead: { marginTop: 8 },
-  form: { marginTop: 30, gap: 12 },
+  ways: { marginTop: 30 },
+  form: { gap: 12 },
   forgot: { alignSelf: "flex-end", marginTop: 12 },
   forgotText: { fontSize: 13.5, fontFamily: nightFonts.medium, color: night.ice },
   error: { marginTop: 18 },

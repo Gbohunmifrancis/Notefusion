@@ -154,11 +154,12 @@ export function ErrorNote({
   );
 }
 
-export function OrRule() {
+/** The rule between two ways in: "or", or what the way under it is ("or use your email", board n-ux-low Q3e). */
+export function OrRule({ label = "or" }: { label?: string }) {
   return (
     <View style={styles.or}>
       <View style={styles.orLine} />
-      <Text style={styles.orText}>or</Text>
+      <Text style={styles.orText}>{label}</Text>
       <View style={styles.orLine} />
     </View>
   );

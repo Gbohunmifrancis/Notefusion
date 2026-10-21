@@ -18,6 +18,15 @@ export interface WelcomeChoices {
   links: WelcomeLink[];
 }
 
+/**
+ * Login's order (board n-ux-low Q3e): Google first, as the screen's one primary, when it is set up and was this
+ * phone's last way in; else the email form first with Google under "or", as before — also while the last way in is
+ * not known yet (`undefined`) or never was (`null`).
+ */
+export function loginGoogleFirst(googleConfigured: boolean, lastAuthMethod: "google" | "email" | null | undefined): boolean {
+  return googleConfigured && lastAuthMethod === "google";
+}
+
 export function welcomeChoices(googleConfigured: boolean, emailLast: boolean): WelcomeChoices {
   if (!googleConfigured) {
     return emailLast
