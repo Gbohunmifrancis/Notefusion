@@ -41,5 +41,7 @@ public sealed class PaymentTransactionConfiguration : IEntityTypeConfiguration<P
         builder.HasIndex(t => t.Reference).IsUnique();
         builder.HasIndex(t => t.IdempotencyKey).IsUnique();
         builder.HasIndex(t => new { t.UserId, t.Status });
+        // A seasonal offer's progress reads its payments; most rows have none (a partial index on Postgres).
+        builder.HasIndex(t => t.OfferId).HasFilter("\"OfferId\" IS NOT NULL");
     }
 }

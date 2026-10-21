@@ -49,6 +49,13 @@ public sealed class EmailSettings
     public string AssetBaseUrl { get; set; } = "https://notefusion.studio";
 
     /// <summary>
+    /// The company's name and postal address on one line (<c>Email__PostalAddress</c>), the legal footer marketing mail
+    /// carries: the offer emails show it as "NoteFusion · {this}". Blank until the owner sets it; until then the offer
+    /// preview and test show a placeholder and the console's Send is refused.
+    /// </summary>
+    public string PostalAddress { get; set; } = string.Empty;
+
+    /// <summary>
     /// Binds the <c>Email</c> section and then accepts the key under every name it has been deployed
     /// as: <c>Email__ApiKey</c>, <c>Resend__ApiKey</c> (what the deploy wrote for months while the
     /// app only read the first, so no mail ever left) and the plain <c>RESEND_API_KEY</c>. A key with
@@ -71,6 +78,7 @@ public sealed class EmailSettings
             SupportEmail = FirstSet(section["SupportEmail"], defaults.SupportEmail),
             AppUrl = FirstSet(section["AppUrl"], defaults.AppUrl),
             AssetBaseUrl = FirstSet(section["AssetBaseUrl"], defaults.AssetBaseUrl),
+            PostalAddress = FirstSet(section["PostalAddress"]),
         };
         email.UseResend = bool.TryParse(section["UseResend"], out var explicitUse)
             ? explicitUse

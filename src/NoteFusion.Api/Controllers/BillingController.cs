@@ -60,7 +60,7 @@ public sealed class BillingController : ApiControllerBase
     [HttpPost("checkout")]
     [EnableRateLimiting(AuthRateLimiting.Billing)]
     public async Task<IActionResult> Checkout(CheckoutBody body, CancellationToken ct)
-        => HandleResult(await _sender.Send(new InitiateCheckoutCommand(body.PlanId, body.Client), ct));
+        => HandleResult(await _sender.Send(new InitiateCheckoutCommand(body.PlanId, body.Client, body.OfferKey), ct));
 
     /// <summary>
     /// The https landing page hosted checkout returns the browser to, whose only job is to hand off to
@@ -128,9 +128,10 @@ public sealed class BillingController : ApiControllerBase
 
     /// <summary>
     /// Body for a checkout request (plan chosen by id; provider is picked server-side). <c>Client</c> is
-    /// optional; <c>"web"</c> returns the browser to the website after paying instead of to the app.
+    /// optional; <c>"web"</c> returns the browser to the website after paying instead of to the app. <c>OfferKey</c>
+    /// (optional) asks for a live seasonal offer's price; 409 <c>BILLING_OFFER_ENDED</c> when it no longer applies.
     /// </summary>
-    public sealed record CheckoutBody(Guid PlanId, string? Client = null);
+    public sealed record CheckoutBody(Guid PlanId, string? Client = null, string? OfferKey = null);
 
     /// <summary>
     /// Body for a checkout's exit: seconds the payment page was open by the client's clock, and the one-tap reason

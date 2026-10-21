@@ -411,6 +411,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<string>("InitiateRaw")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("OfferId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("PlanId")
                         .HasColumnType("uuid");
 
@@ -450,6 +453,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("IdempotencyKey")
                         .IsUnique();
+
+                    b.HasIndex("OfferId")
+                        .HasFilter("\"OfferId\" IS NOT NULL");
 
                     b.HasIndex("Reference")
                         .IsUnique();
@@ -1152,6 +1158,164 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("folder_shares", (string)null);
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.Offer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(1200)
+                        .HasColumnType("character varying(1200)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CreatedByEmail")
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Headline")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<bool>("IncludesMonthly")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IncludesYearly")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.Property<DateOnly>("LastDay")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<int>("PercentOff")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Preheader")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<bool>("SendIncludesFree")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("SendIncludesLapsed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("SendIncludesProNow")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("SendPaused")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("SendStartedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("SendStartedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("StartsAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("Template")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Key")
+                        .IsUnique();
+
+                    b.ToTable("offers", (string)null);
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.OfferEmail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("ClickedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Group")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("OfferId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("QueuedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("SentAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SkipReason")
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("OfferId", "Status");
+
+                    b.HasIndex("OfferId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("offer_emails", (string)null);
                 });
 
             modelBuilder.Entity("NoteFusion.Core.Entities.OutreachMessage", b =>
@@ -2359,6 +2523,21 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("NoteFusion.Core.Entities.EmailOptOut", b =>
                 {
+                    b.HasOne("NoteFusion.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.OfferEmail", b =>
+                {
+                    b.HasOne("NoteFusion.Core.Entities.Offer", null)
+                        .WithMany()
+                        .HasForeignKey("OfferId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("NoteFusion.Core.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")

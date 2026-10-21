@@ -63,4 +63,9 @@ public enum EmailKind
 
     /// <summary>Security notice: a passkey was added to an admin account.</summary>
     AdminPasskeyAdded = 15,
+
+    // Optional again.
+
+    /// <summary>A seasonal Pro offer (Halloween, Christmas): marketing mail, held by the quota like outreach.</summary>
+    Offer = 16,
 }

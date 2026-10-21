@@ -13,6 +13,7 @@ using NoteFusion.Infrastructure.ErrorReports;
 using NoteFusion.Infrastructure.Geo;
 using NoteFusion.Infrastructure.Http;
 using NoteFusion.Infrastructure.Media;
+using NoteFusion.Infrastructure.Offers;
 using NoteFusion.Infrastructure.Outreach;
 using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Practice;
@@ -45,6 +46,7 @@ public static class DependencyInjection
         services.AddBilling(configuration);
         services.AddGeo(configuration);
         services.AddOutreach(configuration);
+        services.AddOffers(configuration);
         services.AddPracticeReminders(configuration);
         services.AddPracticeModes(configuration);
         services.AddBlog(configuration);

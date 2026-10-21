@@ -19,7 +19,7 @@ public sealed record EmailWindowUsage(string Window, int Sent, int Limit, int Op
 /// The provider caps mail per day and per month (Resend's free plan: 100 and 3,000), and the essential mail an
 /// account cannot work without (a verification code, a reset link, a receipt) must never be the email that finds
 /// the cap used up. So the optional mail (welcome, waitlist confirmation, checkout reminder, transcription tips,
-/// outreach) goes only while every capped window is under <see cref="EmailQuotaSettings.OptionalShare"/> of its
+/// outreach, seasonal offers) goes only while every capped window is under <see cref="EmailQuotaSettings.OptionalShare"/> of its
 /// limit, counting mail of every kind; past that only essential mail is sent, and it always is.
 /// </summary>
 /// <remarks>
@@ -60,7 +60,8 @@ public static class EmailBudget
         or EmailKind.WaitlistConfirmation
         or EmailKind.CheckoutReminder
         or EmailKind.TranscriptionTips
-        or EmailKind.Outreach;
+        or EmailKind.Outreach
+        or EmailKind.Offer;
 
     /// <summary>The windows that have a limit, shortest first.</summary>
     public static IReadOnlyList<EmailWindow> Windows(EmailQuotaSettings settings)

@@ -72,5 +72,23 @@ public enum AdminAuditAction
     SetFeatureFlag = 24,
 
     /// <summary>An admin set Admin up on a phone (password, emailed code, then the phone's fingerprint or face).</summary>
-    SetUpAdminPhone = 25
+    SetUpAdminPhone = 25,
+
+    /// <summary>An admin created a seasonal offer (Operations › Offers).</summary>
+    CreateOffer = 26,
+
+    /// <summary>An admin changed an offer's price, dates, name or email words.</summary>
+    UpdateOffer = 27,
+
+    /// <summary>An admin switched an offer on or off.</summary>
+    SetOfferEnabled = 28,
+
+    /// <summary>An admin pressed Send: the offer email was queued for its audience (the count is in the summary).</summary>
+    SendOffer = 29,
+
+    /// <summary>An admin sent the offer email to their own address as a test.</summary>
+    SendOfferTest = 30,
+
+    /// <summary>An admin paused or resumed an offer's sending.</summary>
+    SetOfferSending = 31
 }
