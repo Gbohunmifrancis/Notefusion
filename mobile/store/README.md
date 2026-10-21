@@ -26,12 +26,23 @@ node mobile/store/video.mjs
 |---|---|---|
 | App icon | `out/icon-512.png` | 512×512, 32-bit PNG, under 1024 KB |
 | Feature graphic | `out/feature-graphic.png` | 1024×500, 24-bit PNG, no alpha |
-| Phone screenshots | `out/screenshots/01-home.png` … `06-library.png` | 1080×1920, six of them, in that order |
+| Phone screenshots | `out/screenshots/01-hum-it.png` … `08-whole-choir.png` | 1080×1920, 24-bit PNG, no alpha, eight of them, in that order |
 
 Play needs at least two screenshots to publish and shows up to eight. The
 filenames are numbered because the listing displays them in the order you upload
-them, and the order is the pitch: what the app makes, then how little it asks of
-you to make it.
+them, and the order is the pitch: what it does (hum it, solfa and staff), the
+newest thing (the song's own band), choirs (SATB), the daily habit (practice), the
+hymn library, song links, and the choir again.
+
+The eight are one 8640×1920 panorama cut at every 1080 px (board q-store, October
+2026): each frame's own phone sits whole inside it, and a second phone, turned in
+3D, straddles each cut, so the listing scrolls on from one screenshot into the next
+over one night-navy background. Every screen in them is drawn from `mobile/src`
+(Night, a Pro account in a choir, seasons off); the headlines keep Play's rules: no
+ranking or price claims, no calls to action, text in the top quarter only. The
+feature graphic reuses screens 2 and 4. `render.mjs` and `graphics.py` below build
+the earlier single-phone set and write `feature-graphic.png` over this one, so do
+not run them for the current listing.
 
 ## What not to upload
 
