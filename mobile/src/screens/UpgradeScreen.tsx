@@ -48,7 +48,6 @@ import {
   bestValuePlan,
   dayLabel,
   formatPrice,
-  nairaNote,
   paidUntilLine,
   payLabel,
   periodLabel,
@@ -953,9 +952,6 @@ export function UpgradeScreen({ navigation, route }: Props) {
             disabled={!selectedId}
             block
           />
-          {selected && nairaNote(selected.currency, play) ? (
-            <Text style={styles.nairaLine}>{nairaNote(selected.currency, play)}</Text>
-          ) : null}
         </View>
       ) : null}
     </View>
@@ -1551,13 +1547,6 @@ const makeStyles = (c: Palette, s: Shadows) =>
       fontFamily: fonts.semibold,
       fontSize: 13.5,
       color: c.text,
-    },
-    nairaLine: {
-      ...typography.caption,
-      color: c.textMuted,
-      textAlign: "center",
-      lineHeight: 17,
-      paddingHorizontal: spacing.md,
     },
     finePrint: {
       fontFamily: fonts.regular,

@@ -80,19 +80,16 @@
    */
   function reply(reason, ctx) {
     var offerSong = !ctx.buyingSong && !!ctx.songPrice;
-    var dollars = String(ctx.currency || "").toUpperCase() === "USD";
     switch (reason) {
       case "cardDeclined":
         return { kind: "answer", title: THANKS, offerSong: offerSong, tryAgain: true, parts: [
-          { text: dollars
-            ? "Nothing was charged. Some banks outside Nigeria turn down a card payment in naira. "
-            : "Nothing was charged. Banks sometimes turn down a card payment online. " },
+          { text: "Nothing was charged. Banks sometimes turn down a card payment online. " },
           { text: "Bank transfer", strong: true },
           { text: ", on the same page, usually goes through." }
         ] };
       case "currency":
         return { kind: "answer", title: THANKS, offerSong: false, tryAgain: true, parts: [
-          { text: "The payment page turns your " + ctx.price + " into naira at today's rate, so you see a naira total. Your bank may add a small fee for the conversion." }
+          { text: "Your " + ctx.price + " is charged in US dollars. If your card is in another currency, your bank converts it and may add a small fee." }
         ] };
       case "slow":
         return { kind: "answer", title: "Sorry it was slow", offerSong: false, tryAgain: true, parts: [

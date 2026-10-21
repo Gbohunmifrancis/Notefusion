@@ -8,7 +8,6 @@ import {
   limitCopy,
   limitOffer,
   monthPrice,
-  nairaNote,
   paidUntilLine,
   payLabel,
   periodLabel,
@@ -91,14 +90,6 @@ test("the website's Pay button says what one payment buys, one pattern for every
   assert.equal(payLabel(plan("pro_usd_y", 3999, "USD", "yearly")), "Pay $39.99 for a year");
 });
 
-test("a dollar plan on the website's checkout warns of the naira charge; naira and Google Play do not", () => {
-  assert.equal(
-    nairaNote("USD", false),
-    "You'll pay the naira amount at today's rate on the next page; your bank may add a fee.",
-  );
-  assert.equal(nairaNote("NGN", false), null);
-  assert.equal(nairaNote("USD", true), null);
-});
 
 test("no plans loaded: no prices, the rows go without them", () => {
   assert.deepEqual(limitOffer([], []), { single: undefined, monthly: undefined });

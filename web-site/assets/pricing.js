@@ -443,7 +443,7 @@
   // words are assets/checkout-exit.js and the sheet assets/checkout-why.js, loaded only then.
   var openedHere = false;
   var whyBusy = false;
-  var WHY_ASSETS = ["/assets/checkout-exit.js?v=1", "/assets/checkout-why.css?v=2", "/assets/checkout-why.js?v=2"];
+  var WHY_ASSETS = ["/assets/checkout-exit.js?v=2", "/assets/checkout-why.css?v=2", "/assets/checkout-why.js?v=2"];
   var whyLoads = {};
   function loadAsset(url) {
     if (!whyLoads[url]) {
