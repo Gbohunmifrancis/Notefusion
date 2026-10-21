@@ -217,6 +217,16 @@ test("the home page shows the newest posts between its markers", () => {
   assert.equal(read(`${INDEXNOW_KEY}.txt`).trim(), INDEXNOW_KEY);
 });
 
+test("every page's header names three places, Pricing, Hymns and Blog; the hand-written copies too (board n-ux-low V3a)", () => {
+  for (const rel of ["index.html", "blog/index.html", "hymns/amazing-grace/index.html", "privacy/index.html", "terms/index.html", "delete-account/index.html", "reset-password/index.html"]) {
+    const html = read(rel);
+    for (const nav of ["site-shell-links", "site-shell-panel"]) {
+      const links = new RegExp(`<nav class="${nav}"[^>]*>([\\s\\S]*?)(?:</nav>|<a class=)`).exec(html)[1];
+      assert.deepEqual([...links.matchAll(/>([^<]+)<\/a>/g)].map((m) => m[1]), ["Pricing", "Hymns", "Blog"], `${rel} ${nav}`);
+    }
+  }
+});
+
 test("the checker catches broken links, missing ids and stale output", () => {
   const copy = fs.mkdtempSync(path.join(os.tmpdir(), "nf-broken-"));
   fs.cpSync(dir, copy, { recursive: true });
