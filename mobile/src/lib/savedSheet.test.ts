@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   autoSavedLine,
+  autoSavedRowLine,
   choirToast,
   filedToast,
   folderNamed,
@@ -63,6 +64,13 @@ test("the row's line is the time it was filed on the phone's clock", () => {
   assert.equal(autoSavedLine(d.toISOString()), "Saved automatically · 18:42");
   // The API's date without its zone is still UTC.
   assert.equal(autoSavedLine(d.toISOString().replace(/Z$/, "")), "Saved automatically · 18:42");
+});
+
+test("under the opening, a filed sheet's line names its folder on All, never inside the folder", () => {
+  const createdAtUtc = new Date(2026, 9, 18, 17, 10).toISOString();
+  assert.equal(autoSavedRowLine({ createdAtUtc, folder: "Choir" }, true), "Saved automatically · 17:10 · Choir");
+  assert.equal(autoSavedRowLine({ createdAtUtc, folder: "Choir" }, false), "Saved automatically · 17:10");
+  assert.equal(autoSavedRowLine({ createdAtUtc, folder: null }, true), "Saved automatically · 17:10");
 });
 
 test("a new folder's name finds an existing folder in any case, in that folder's spelling", () => {

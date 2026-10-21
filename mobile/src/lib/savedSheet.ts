@@ -46,6 +46,14 @@ export function autoSavedLine(createdAtUtc: string): string {
 }
 
 /**
+ * A filed, unopened sheet's line in a Library row, under its opening (board n-ux-low Q4g): "Saved automatically ·
+ * 17:10", and on "All" its folder too ("… · Choir"), as the day line names it on every other row.
+ */
+export function autoSavedRowLine(sheet: { createdAtUtc: string; folder?: string | null }, withFolder: boolean): string {
+  return [autoSavedLine(sheet.createdAtUtc), withFolder ? sheet.folder : null].filter(Boolean).join(" · ");
+}
+
+/**
  * The folder a typed name files into: an existing folder spelt any other case ("sunday choir" for "Sunday choir")
  * is that folder, in its own spelling, so one folder never splits in two. Otherwise the name as typed, trimmed.
  */
