@@ -548,6 +548,8 @@ export const libraryApi = {
     chords?: ChordSymbol[] | null;
     /** The hymn whose hymnbook version this is, as the job offered it; the API keeps its credit. */
     hymnSlug?: string | null;
+    /** How far the notes were moved from the key the recording was heard in, so a kept backing sits out under them. */
+    transposedBy?: number;
   }) => api.post<SavedTranscription>("/api/library", body).then((r) => sheetSaved(r.data)),
 
   rename: (id: string, title: string) =>

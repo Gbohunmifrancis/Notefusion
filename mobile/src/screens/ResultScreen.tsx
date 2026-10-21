@@ -916,6 +916,7 @@ export function ResultScreen({ route, navigation }: Props) {
         partsMusicXml: partsMusicXml || undefined,
         chords: chords ?? undefined,
         hymnSlug: hymnSource?.slug ?? null,
+        transposedBy,
       });
       committedLyrics.current = lyrics.trim();
       setSavedId(saved.id);

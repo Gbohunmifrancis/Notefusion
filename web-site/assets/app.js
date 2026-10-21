@@ -4365,7 +4365,9 @@
       title: $("save-title").value.trim() || "My transcription", key: r.key, tempoBpm: r.tempo, timeSignature: r.timeSignature,
       musicXml: r.musicXml, notes: r.notes, overallConfidence: r.overallConfidence, sourceJobId: current.jobId,
       lyrics: (current.lyrics || "").trim(), parts: r.parts || null, partsMusicXml: r.partsMusicXml || null,
-      chords: r.chords || null, hymnSlug: r.hymn ? r.hymn.slug : null
+      chords: r.chords || null, hymnSlug: r.hymn ? r.hymn.slug : null,
+      // A result transposed here before saving says how far, so the kept backing sits out under the moved notes.
+      transposedBy: current.transposedBy || 0
     } }).then(function (saved) {
       sfx.play("saved");
       track("Saved sheet", auto ? "preview kept at sign-up" : null);

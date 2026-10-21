@@ -192,6 +192,16 @@ public class Transcription : BaseEntity
         BackingKey = name;
     }
 
+    /// <summary>The furthest a sheet's running transposition is taken as meaning anything (four octaves either way).</summary>
+    public const int MaxTransposedBy = 48;
+
+    /// <summary>
+    /// How far, in all, the client moved this sheet's notes from the key the recording was heard in before saving it
+    /// (a transpose done without the server); replaces the running total.
+    /// </summary>
+    public void RecordTransposedBy(int semitones)
+        => TransposedBy = Guard.InRange(semitones, -MaxTransposedBy, MaxTransposedBy);
+
     /// <summary>
     /// Takes over what the copy the server filed for the same job knew of the recording — its beat clock, whether it
     /// came from a link, how far it has been transposed, and its backing, which moves here: the filed copy is about

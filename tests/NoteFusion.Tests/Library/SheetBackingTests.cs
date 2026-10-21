@@ -360,6 +360,25 @@ public class SheetBackingTests
     }
 
     [Fact]
+    public async Task A_result_transposed_in_the_client_before_saving_says_how_far_and_the_backing_then_sits_out()
+    {
+        using var h = new TestHarness();
+        var (user, job) = await SeedAsync(h, TranscriptionJobKind.Song);
+        await Poll(h, user, Worker(job, Result()), job);
+
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(user.Id), h.QuotaGate).Handle(
+            new SaveTranscriptionCommand("Our song", "C major", 96, "4/4", "<score-partwise version=\"4.0\" />",
+                [new NoteEventDto(72, 0, 1, 1, "d", "", 0.95)], 0.9, job.JobId, TransposedBy: 3), default);
+
+        Assert.True(saved.IsSuccess);
+        Assert.Equal(3, saved.Value.TransposedBy);
+        Assert.True(saved.Value.HasBacking);
+        Assert.False(new SaveTranscriptionCommandValidator().Validate(
+            new SaveTranscriptionCommand("x", "C major", 96, "4/4", "<score-partwise />", [], 0.9, null,
+                TransposedBy: Transcription.MaxTransposedBy + 1)).IsValid);
+    }
+
+    [Fact]
     public async Task Saving_a_link_job_whose_filed_copy_was_deleted_still_says_it_came_from_a_link()
     {
         using var h = new TestHarness();
