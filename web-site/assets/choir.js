@@ -11,6 +11,8 @@
   var PITCH_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
   // Doh names as key signatures spell them ("Bb", never "A#"; F# kept), as mobile's DOH_NAMES.
   var DOH_NAMES = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+  // Minor tonics as their signatures spell them (G# minor, Bb minor; Eb at the tie), as MusicalKey.cs.
+  var MINOR_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
   var ASC = ["d", "de", "r", "re", "m", "f", "fe", "s", "se", "l", "le", "t"];
   var DESC = ["d", "ra", "r", "ma", "m", "f", "sa", "s", "la", "l", "ta", "t"];
   var DEGREE = [1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6, 7];
@@ -196,7 +198,8 @@
   function shiftKeyName(key, semitones) {
     var k = parseKey(key);
     if (!k) return key;
-    return PITCH_NAMES[(((k.tonicPitchClass + semitones) % 12) + 12) % 12] + " " + k.mode;
+    var pc = (((k.tonicPitchClass + semitones) % 12) + 12) % 12;
+    return (k.mode === "minor" ? MINOR_NAMES : DOH_NAMES)[pc] + " " + k.mode;
   }
 
   // ── Piano voice ──────────────────────────────────────────────────────────

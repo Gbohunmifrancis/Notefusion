@@ -15,16 +15,21 @@ public enum KeyMode
 /// </summary>
 public sealed record MusicalKey
 {
-    private static readonly string[] PitchNames =
-        ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-
     /// <summary>
     /// Doh names spelled as the key signature spells them: each major key takes its spelling
     /// with fewer accidentals, so a Bb sheet (two flats) reads "Doh is Bb", never "A#" (ten
-    /// sharps). F# and Gb tie at six; F# is kept.
+    /// sharps). F# and Gb tie at six; F# is kept. The major keys are named the same way.
     /// </summary>
     private static readonly string[] DohNames =
         ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+
+    /// <summary>
+    /// Minor tonics as their signature spells them: C# minor (four sharps) not Db, G# minor (five sharps) not Ab,
+    /// Bb minor (five flats) not A#. D# and Eb tie at six; Eb is kept, as the worker writes it. The same names as
+    /// the worker's hymn matcher (<c>hymn_match._MINOR_NAMES</c>).
+    /// </summary>
+    private static readonly string[] MinorNames =
+        ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"];
 
     /// <summary>Pitch class of the tonic, 0 = C … 11 = B.</summary>
     public int TonicPitchClass { get; }
@@ -57,6 +62,8 @@ public sealed record MusicalKey
     /// <summary>The 'Doh is F' header shown on the result screen and exported solfa sheets.</summary>
     public string DohHeader() => $"Doh is {DohNames[DohPitchClass]}";
 
-    public override string ToString() =>
-        $"{PitchNames[TonicPitchClass]} {(Mode == KeyMode.Major ? "major" : "minor")}";
+    /// <summary>"Bb major", "G# minor": the key named as its signature spells it, readable by <see cref="KeyParser"/>.</summary>
+    public override string ToString() => Mode == KeyMode.Major
+        ? $"{DohNames[TonicPitchClass]} major"
+        : $"{MinorNames[TonicPitchClass]} minor";
 }
