@@ -2493,6 +2493,7 @@ export function ResultScreen({ route, navigation }: Props) {
                   notes={view.notes}
                   timeSignature={timeSignature}
                   musicalKey={key}
+                  bars={barCount}
                   cursorBeat={cursorBeat}
                   onSelectNote={guest ? undefined : openNote}
                   onRendered={() => setStaffDraws((n) => n + 1)}

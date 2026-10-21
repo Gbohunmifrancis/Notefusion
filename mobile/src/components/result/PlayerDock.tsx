@@ -1,5 +1,6 @@
-import React from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { ActivityIndicator, Animated, Easing, StyleSheet, Text, View } from "react-native";
+import { useReducedMotion } from "react-native-reanimated";
 import { Icon } from "../Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Touchable } from "../Touchable";
@@ -13,6 +14,10 @@ export const DOCK_CLEARANCE = 112;
 
 /** How far one screen-reader step moves the scrubber. */
 const SEEK_STEP_SEC = 5;
+
+/** The dock's arrival: in from 8 px low over 200 ms, the move Doh's first-open toast leaves with (board n-ux-low Q1f). */
+const ENTER_MS = 200;
+const ENTER_RISE = 8;
 
 /**
  * The player docked over the bottom of the sheet: play, a scrubber with mono times,
@@ -39,6 +44,14 @@ export function PlayerDock({
   const insets = useSafeAreaInsets();
   const { panResponder, dragFraction, onTrackWidth } = useSeekDrag(practice);
   const { ready, isLoading, isPlaying, position, duration, error } = practice;
+  const reduceMotion = useReducedMotion();
+
+  // Fades in and rises as it mounts (after the first-open toast, or with the sheet), rather than appearing in one frame.
+  const enter = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(enter, { toValue: 1, duration: ENTER_MS, easing: Easing.out(Easing.cubic), useNativeDriver: true }).start();
+  }, [enter]);
+  const rise = enter.interpolate({ inputRange: [0, 1], outputRange: [reduceMotion ? 0 : ENTER_RISE, 0] });
 
   const played = dragFraction ?? (duration > 0 ? clamp(position / duration, 0, 1) : 0);
 
@@ -49,8 +62,8 @@ export function PlayerDock({
   };
 
   return (
-    <View
-      style={[styles.dock, { bottom: insets.bottom + 10 + lift }]}
+    <Animated.View
+      style={[styles.dock, { bottom: insets.bottom + 10 + lift, opacity: enter, transform: [{ translateY: rise }] }]}
       onLayout={onHeight ? (e) => onHeight(Math.round(e.nativeEvent.layout.height)) : undefined}
     >
       <View style={styles.row}>
@@ -117,7 +130,7 @@ export function PlayerDock({
       </View>
       {/* The hook's error can be a platform message; the dock says it plainly instead. */}
       {error ? <ProblemNote>This sheet could not be played. Try closing it and opening it again.</ProblemNote> : null}
-    </View>
+    </Animated.View>
   );
 }
 
