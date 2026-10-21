@@ -320,7 +320,7 @@ public class JobEventsTests
         var api = Substitute.For<ITranscriptionApi>();
         api.GetJobAsync(job.JobId, Arg.Any<CancellationToken>())
             .Returns(Result<TranscriptionJobDto>.Success(new TranscriptionJobDto(job.JobId, TranscriptionStatus.Done, 1, Done())));
-        var query = new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(owner.Id), h.Clock, h.QuotaGate);
+        var query = new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(owner.Id), h.Clock, h.QuotaGate, h.Backing);
 
         var fresh = await query.Handle(new GetTranscriptionJobQuery(job.JobId), default);
         h.Clock.UtcNow += TimeSpan.FromMinutes(20);
@@ -397,7 +397,7 @@ public class JobEventsTests
         var notifier = new SignalRTranscriptionNotifier(
             Substitute.For<Microsoft.AspNetCore.SignalR.IHubContext<NoteFusion.Api.Hubs.TranscriptionHub, NoteFusion.Api.Hubs.ITranscriptionClient>>(),
             events);
-        var done = await new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, notifier, h.WebPush, h.QuotaGate)
+        var done = await new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, notifier, h.WebPush, h.QuotaGate, h.Backing)
             .Handle(new NotifyTranscriptionReadyCommand(job.Id), default);
         Assert.True(done.IsSuccess);
     }

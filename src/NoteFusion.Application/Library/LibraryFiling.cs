@@ -7,6 +7,7 @@ using NoteFusion.Application.Practice;
 using NoteFusion.Application.Transcriptions;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Entities;
+using NoteFusion.Core.Enums;
 using NoteFusion.Core.Solfa;
 
 namespace NoteFusion.Application.Library;
@@ -24,6 +25,12 @@ namespace NoteFusion.Application.Library;
 /// (<see cref="TranscriptionJob.AutoSavedAtUtc"/>), so a sheet the owner deletes stays deleted. The sweep
 /// (<see cref="AutoSaveFinishedTranscriptionsCommand"/>) remains as the fallback for a job this missed.
 /// A free owner is filed what the poll hands them (<see cref="ProGate.ForFree"/>), never more.
+/// <para>
+/// The sheet keeps the job's beat clock, and for the owner's own upload of a song the backing the worker separated
+/// (<see cref="IBackingStorage"/>): this is the one moment the bytes are in hand, since the job's banked copy
+/// (<see cref="TranscriptionResultCache"/>) drops them and the worker forgets the job within minutes. A pasted
+/// link's sheet never keeps it (<see cref="Transcription.FromLink"/>).
+/// </para>
 /// </remarks>
 public static class LibraryFiling
 {
@@ -32,7 +39,7 @@ public static class LibraryFiling
     /// filed before and the sheet deleted since, when the account is gone, or when the result has nothing to write.
     /// </summary>
     public static async Task<Transcription?> FileAsync(
-        IApplicationDbContext db, IQuotaGate gate, IDateTimeProvider clock, TranscriptionJob job,
+        IApplicationDbContext db, IQuotaGate gate, IDateTimeProvider clock, IBackingStorage backing, TranscriptionJob job,
         TranscriptionResultDto result, CancellationToken ct)
     {
         await using var lease = await gate.AcquireAsync(QuotaGateExtensions.SaveKey(job.UserId), ct);
@@ -58,7 +65,10 @@ public static class LibraryFiling
             var kept = await ProStatus.IsProAsync(db, clock, job.UserId, ct) ? result : ProGate.ForFree(result);
             sheet = ToSheet(job, kept, PracticeTime.Resolve(owner.TimeZone));
             if (sheet is not null)
+            {
+                await KeepBackingAsync(backing, sheet, result, ct);
                 db.Transcriptions.Add(sheet);
+            }
         }
 
         await db.SaveChangesAsync(ct);
@@ -109,9 +119,70 @@ public static class LibraryFiling
         sheet.SetParts(PartNotes.FromDtos(result.Parts),
             string.IsNullOrWhiteSpace(result.PartsMusicXml) ? null : result.PartsMusicXml);
         sheet.SetChords(SheetChords.FromDtos(result.Chords));
+        sheet.KeepTiming(result.BeatOriginSec, result.BeatTimesSec);
+        if (IsFromLink(job, result))
+            sheet.MarkFromLink();
         sheet.MarkSavedAutomatically();
         return sheet;
     }
+
+    /// <summary>A job for a pasted song link (its kind, or the song it names), as opposed to the owner's own audio.</summary>
+    public static bool IsFromLink(TranscriptionJob job, TranscriptionResultDto result)
+        => job.Kind == TranscriptionJobKind.Link || result.Source is not null;
+
+    /// <summary>The largest backing kept: a ten-minute song at the worker's 48 kbps is under 4 MB.</summary>
+    internal const int MaxBackingBytes = 16 * 1024 * 1024;
+
+    /// <summary>
+    /// Stores the result's backing and keeps it with <paramref name="sheet"/>, for the owner's own upload only. A
+    /// backing that cannot be stored (the store is off or unreachable) is left out, never the sheet: the sheet is the job.
+    /// </summary>
+    private static async Task KeepBackingAsync(
+        IBackingStorage backing, Transcription sheet, TranscriptionResultDto result, CancellationToken ct)
+    {
+        if (sheet.FromLink || string.IsNullOrEmpty(result.BackingAudioBase64))
+            return;
+
+        byte[] mp3;
+        try
+        {
+            mp3 = Convert.FromBase64String(result.BackingAudioBase64);
+        }
+        catch (FormatException)
+        {
+            return;
+        }
+        if (mp3.Length == 0 || mp3.Length > MaxBackingBytes)
+            return;
+
+        var stored = await backing.SaveAsync(sheet.UserId, mp3, ct);
+        if (!stored.IsSuccess)
+            return;
+        sheet.KeepBacking(stored.Value);
+
+        // A sheet with a backing always keeps the beats' times, written out from the tempo it was heard at when the
+        // worker tracked none: a later tempo edit changes how the notes are written, never where the recording is.
+        if (sheet.BeatTimesSec is null)
+            sheet.KeepTiming(result.BeatOriginSec,
+                SteadyBeatTimes(result.BeatOriginSec, result.Tempo > 0 ? result.Tempo : sheet.TempoBpm, LastBeat(sheet)));
+    }
+
+    /// <summary>
+    /// The audio time of beats 0 to ⌈<paramref name="lastBeat"/>⌉ + 4 at a steady <paramref name="tempoBpm"/> from
+    /// <paramref name="originSec"/> (beat i at origin + i × 60 / tempo), to the millisecond.
+    /// </summary>
+    internal static List<double> SteadyBeatTimes(double originSec, double tempoBpm, double lastBeat)
+    {
+        var beats = (int)Math.Ceiling(Math.Max(0, lastBeat)) + 4;
+        return [.. Enumerable.Range(0, beats + 1).Select(i => Math.Round(originSec + i * 60.0 / tempoBpm, 3))];
+    }
+
+    /// <summary>Where the sheet's last note (of the tune or any part) ends, in beats.</summary>
+    private static double LastBeat(Transcription sheet)
+        => sheet.Notes.Concat(sheet.Parts?.Values.SelectMany(p => p) ?? [])
+            .Select(n => n.StartBeat + n.DurationBeats)
+            .DefaultIfEmpty(0)
+            .Max();
 
     /// <summary>
     /// The hymn the job recognised; else "Song — Artist" for a linked song; else when it was sent in the owner's

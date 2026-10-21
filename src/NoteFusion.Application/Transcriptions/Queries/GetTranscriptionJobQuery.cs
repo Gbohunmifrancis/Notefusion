@@ -13,7 +13,11 @@ using NoteFusion.Shared.Results;
 namespace NoteFusion.Application.Transcriptions.Queries;
 
 /// <summary>Polls the ML service for a job's status/result (GET /v1/jobs/{jobId}).</summary>
-public sealed record GetTranscriptionJobQuery(string JobId) : IRequest<Result<TranscriptionJobDto>>;
+/// <param name="IncludeBacking">
+/// False (<c>?backing=false</c>) leaves the backing's bytes out of the result: a client that asks this way fetches
+/// them apart, from <c>jobs/{id}/backing</c>, when <see cref="TranscriptionResultDto.HasBacking"/> says there is one.
+/// </param>
+public sealed record GetTranscriptionJobQuery(string JobId, bool IncludeBacking = true) : IRequest<Result<TranscriptionJobDto>>;
 
 /// <summary>
 /// Also where a free account's trial is spent, and where a client poll banks the finished result.
@@ -44,19 +48,22 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _clock;
     private readonly IQuotaGate _gate;
+    private readonly IBackingStorage _backing;
 
     public GetTranscriptionJobQueryHandler(
         ITranscriptionApi api,
         IApplicationDbContext db,
         ICurrentUser currentUser,
         IDateTimeProvider clock,
-        IQuotaGate gate)
+        IQuotaGate gate,
+        IBackingStorage backing)
     {
         _api = api;
         _db = db;
         _currentUser = currentUser;
         _clock = clock;
         _gate = gate;
+        _backing = backing;
     }
 
     public async Task<Result<TranscriptionJobDto>> Handle(
@@ -75,7 +82,7 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
 
         if (job is { SettledAtUtc: { } settledAt, ResultJson: { } banked } && _clock.UtcNow - settledAt > WorkerKeepsJobsFor
             && Settled(request.JobId, banked, job.FailureCode) is { Result: not null } kept)
-            return await FromRowAsync(job, kept, cancellationToken);
+            return await FromRowAsync(job, kept, request.IncludeBacking, cancellationToken);
 
         var result = await _api.GetJobAsync(request.JobId, cancellationToken);
         if (result.IsFailure)
@@ -104,7 +111,7 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
             var settled = Settled(request.JobId, job.ResultJson, job.FailureCode);
             if (settled.Result is null)
                 return settled;
-            return await FromRowAsync(job, settled, cancellationToken);
+            return await FromRowAsync(job, settled, request.IncludeBacking, cancellationToken);
         }
 
         if (result.Value.Status == TranscriptionStatus.Failed)
@@ -142,7 +149,7 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
                 ? result
                 : await FiledAsync(job, result.Value.Result, await IsProAsync(job.UserId, cancellationToken)
                     ? result.Value
-                    : result.Value with { Result = ProGate.ForFree(result.Value.Result) }, cancellationToken);
+                    : result.Value with { Result = ProGate.ForFree(result.Value.Result) }, request.IncludeBacking, cancellationToken);
         }
 
         // Pro at the moment of success, so nothing to charge. Asked here rather than recorded at submit
@@ -163,7 +170,7 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
         var shown = isPro || result.Value.Result is null
             ? result.Value
             : result.Value with { Result = ProGate.ForFree(result.Value.Result) };
-        return result.Value.Result is null ? shown : await FiledAsync(job, result.Value.Result, shown, cancellationToken);
+        return result.Value.Result is null ? shown : await FiledAsync(job, result.Value.Result, shown, request.IncludeBacking, cancellationToken);
     }
 
     /// <summary>
@@ -171,14 +178,37 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
     /// done, or the one filed (or saved) before (<see cref="LibraryFiling"/>).
     /// </summary>
     private async Task<TranscriptionJobDto> FiledAsync(
-        TranscriptionJob job, TranscriptionResultDto finished, TranscriptionJobDto shown, CancellationToken ct)
-        => LibraryFiling.WithSheet(shown, await LibraryFiling.FileAsync(_db, _gate, _clock, job, finished, ct));
+        TranscriptionJob job, TranscriptionResultDto finished, TranscriptionJobDto shown, bool includeBacking, CancellationToken ct)
+    {
+        var sheet = await LibraryFiling.FileAsync(_db, _gate, _clock, _backing, job, finished, ct);
+        return LibraryFiling.WithSheet(WithBacking(shown, sheet, includeBacking), sheet);
+    }
+
+    /// <summary>
+    /// Says whether the job has a backing to be had now — in this answer, or kept with the sheet it was filed as (an
+    /// upload's, which outlives the worker's copy) — and leaves the bytes out when the client fetches them apart.
+    /// </summary>
+    internal static TranscriptionJobDto WithBacking(TranscriptionJobDto dto, Transcription? sheet, bool includeBacking)
+    {
+        if (dto.Result is not { } result)
+            return dto;
+        var hasBacking = !string.IsNullOrEmpty(result.BackingAudioBase64) || sheet is { HasBacking: true };
+        return dto with
+        {
+            Result = result with
+            {
+                HasBacking = hasBacking,
+                BackingAudioBase64 = includeBacking ? result.BackingAudioBase64 : "",
+            },
+        };
+    }
 
     /// <summary>A settled job's answer from our own copy, as its owner may see it, with the sheet it is filed as.</summary>
-    private async Task<TranscriptionJobDto> FromRowAsync(TranscriptionJob job, TranscriptionJobDto settled, CancellationToken ct)
+    private async Task<TranscriptionJobDto> FromRowAsync(
+        TranscriptionJob job, TranscriptionJobDto settled, bool includeBacking, CancellationToken ct)
         => await FiledAsync(job, settled.Result!, await IsProAsync(job.UserId, ct)
             ? settled
-            : settled with { Result = ProGate.ForFree(settled.Result!) }, ct);
+            : settled with { Result = ProGate.ForFree(settled.Result!) }, includeBacking, ct);
 
     private static TranscriptionJobDto Lost(string jobId)
         => new(jobId, TranscriptionStatus.Failed, 0, null, LostSentence, ErrorCode: TranscriptionJob.LostCode);

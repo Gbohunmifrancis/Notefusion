@@ -1515,6 +1515,19 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("BackingKey")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("backing_key");
+
+                    b.Property<double?>("BeatOriginSec")
+                        .HasColumnType("double precision")
+                        .HasColumnName("beat_origin_sec");
+
+                    b.Property<string>("BeatTimesSec")
+                        .HasColumnType("text")
+                        .HasColumnName("beat_times_json");
+
                     b.Property<Guid?>("ChoirId")
                         .HasColumnType("uuid")
                         .HasColumnName("choir_id");
@@ -1530,6 +1543,12 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)")
                         .HasColumnName("folder");
+
+                    b.Property<bool>("FromLink")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("from_link");
 
                     b.Property<string>("HymnCredit")
                         .HasMaxLength(1000)
@@ -1617,6 +1636,12 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<int>("TransposedBy")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("transposed_by");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");

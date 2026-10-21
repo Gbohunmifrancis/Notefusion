@@ -127,6 +127,87 @@ public class Transcription : BaseEntity
 
     public IReadOnlyList<NoteEvent> Notes => _notes.AsReadOnly();
 
+    /// <summary>
+    /// Where beat 0 falls in the recording, in seconds, kept from the job's result: with the tempo it was heard at it
+    /// puts the notes on the recording's clock (beat b at BeatOriginSec + b × 60 / tempo). Null on sheets filed before
+    /// it was kept.
+    /// </summary>
+    public double? BeatOriginSec { get; private set; }
+
+    /// <summary>
+    /// The audio time, in seconds, of each notated beat (entry i is beat i), when the worker tracked the beats: a
+    /// clock that follows a live band's drift, which <see cref="BeatOriginSec"/> and one tempo cannot. A sheet that keeps
+    /// a backing always has them (written out from the tempo it was heard at when none were tracked), so editing
+    /// <see cref="TempoBpm"/> never moves the notes against the recording. Null otherwise.
+    /// </summary>
+    public List<double>? BeatTimesSec { get; private set; }
+
+    /// <summary>
+    /// The sheet came from a pasted song link (YouTube, Spotify, Apple Music). Such a sheet never keeps the song's
+    /// audio, the backing included: it is someone else's recording.
+    /// </summary>
+    public bool FromLink { get; private set; }
+
+    /// <summary>
+    /// The stored backing's name in the file store (an unguessable path, never handed to a client), or null when
+    /// the sheet keeps none. Only the owner's own uploads of a song keep one.
+    /// </summary>
+    public string? BackingKey { get; private set; }
+
+    /// <summary>The song's own instrumental is kept with this sheet, to play under the tune.</summary>
+    public bool HasBacking => BackingKey is not null;
+
+    /// <summary>
+    /// Semitones "Transpose for my choir" has moved the sheet from the key it was heard in; 0 is as heard, and only
+    /// then does the backing still match the notes.
+    /// </summary>
+    public int TransposedBy { get; private set; }
+
+    public const int BackingKeyMaxLength = 200;
+
+    /// <summary>Keeps the job's beat clock: where beat 0 is, and each beat's time when the worker tracked them.</summary>
+    public void KeepTiming(double beatOriginSec, IEnumerable<double>? beatTimesSec)
+    {
+        BeatOriginSec = beatOriginSec;
+        List<double> times = beatTimesSec is null ? [] : [.. beatTimesSec];
+        BeatTimesSec = times.Count > 0 ? times : null;
+    }
+
+    /// <summary>Marks the sheet as made from a pasted link: it can never keep a backing.</summary>
+    public void MarkFromLink()
+    {
+        if (BackingKey is not null)
+            throw new InvalidOperationException("A sheet that keeps a backing cannot be from a pasted link.");
+        FromLink = true;
+    }
+
+    /// <summary>Keeps the backing stored under <paramref name="key"/> with this sheet (an upload's, never a link's).</summary>
+    public void KeepBacking(string key)
+    {
+        if (FromLink)
+            throw new InvalidOperationException("A sheet from a pasted link never keeps the song's audio.");
+        var name = Guard.NotNullOrWhiteSpace(key);
+        if (name.Length > BackingKeyMaxLength)
+            throw new ArgumentException($"A backing key is at most {BackingKeyMaxLength} characters.", nameof(key));
+        BackingKey = name;
+    }
+
+    /// <summary>
+    /// Takes over what the copy the server filed for the same job knew of the recording — its beat clock, whether it
+    /// came from a link, how far it has been transposed, and its backing, which moves here: the filed copy is about
+    /// to be replaced by this one (a Save), and the backing must outlive it.
+    /// </summary>
+    public void TakePlaybackFrom(Transcription filed)
+    {
+        Guard.NotNull(filed);
+        BeatOriginSec = filed.BeatOriginSec;
+        BeatTimesSec = filed.BeatTimesSec is null ? null : [.. filed.BeatTimesSec];
+        FromLink = filed.FromLink;
+        TransposedBy = filed.TransposedBy;
+        BackingKey = filed.BackingKey;
+        filed.BackingKey = null;
+    }
+
     public void SetLyrics(string lyrics) => Lyrics = Guard.NotNull(lyrics).Trim();
 
     public void SetParts(Dictionary<string, List<NoteEvent>>? parts, string? partsMusicXml)
@@ -157,12 +238,14 @@ public class Transcription : BaseEntity
     /// Transpose for a choir's range: the one edit that moves the notes. Every pitch — melody and
     /// parts — and every chord shifts by <paramref name="semitones"/>, the key moves with them, and both
     /// engraved scores are respelled for the new key so the staff still matches the note list. Solfa is
-    /// untouched by design: in movable-do only Doh moves.
+    /// untouched by design: in movable-do only Doh moves. <see cref="TransposedBy"/> keeps the running total, so a
+    /// client can offer the way back to the key the recording (and its backing) is in.
     /// </summary>
     public void Transpose(int semitones)
     {
         Guard.InRange(semitones, -12, 12);
         if (semitones == 0) return;
+        TransposedBy += semitones;
         Key = new MusicalKey(((Key.TonicPitchClass + semitones) % 12 + 12) % 12, Key.Mode, Key.Confidence);
         for (int i = 0; i < _notes.Count; i++)
             _notes[i] = Shift(_notes[i], semitones);

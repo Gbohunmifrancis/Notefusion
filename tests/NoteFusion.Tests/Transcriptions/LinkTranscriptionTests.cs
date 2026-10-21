@@ -692,7 +692,7 @@ public class LinkTranscriptionTests
 
     private static Task<Result<TranscriptionJobDto>> Poll(
         TestHarness h, User user, string jobId, FakeTranscriptionApi api)
-        => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, h.QuotaGate)
+        => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, h.QuotaGate, h.Backing)
             .Handle(new GetTranscriptionJobQuery(jobId), CancellationToken.None);
 
     private static async Task<Application.Billing.Dtos.SubscriptionDto> Shown(TestHarness h, User user)

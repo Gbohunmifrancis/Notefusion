@@ -38,6 +38,31 @@ public class WorkerContractTests
     }
 
     [Fact]
+    public void A_job_result_carries_its_beat_times_and_says_it_has_a_backing()
+    {
+        const string payload = """
+            {"status":"done","progress":1.0,
+             "result":{"key":"C major","keyConfidence":0.9,"tempo":100,"timeSignature":"4/4","musicxml":"<s/>","midiBase64":"",
+                       "notes":[],"solfaLines":[],"overallConfidence":0.9,"separated":true,
+                       "beatOriginSec":0.42,"beatTimesSec":[0.42,1.02,1.61],"backingAudioBase64":"//uQZA=="}}
+            """;
+        const string older = """
+            {"status":"done","result":{"key":"C major","keyConfidence":0.9,"tempo":100,"timeSignature":"4/4","musicxml":"<s/>",
+             "midiBase64":"","notes":[],"solfaLines":[],"overallConfidence":0.9,"beatOriginSec":0.42}}
+            """;
+
+        var job = TranscriptionApiClient.MapJob("job-1", JsonSerializer.Deserialize(payload, ApiJsonContext.Default.JobResponse)!).Value;
+        var before = TranscriptionApiClient.MapJob("job-2", JsonSerializer.Deserialize(older, ApiJsonContext.Default.JobResponse)!).Value;
+
+        Assert.Equal([0.42, 1.02, 1.61], job.Result!.BeatTimesSec!);
+        Assert.Equal(0.42, job.Result.BeatOriginSec);
+        Assert.True(job.Result.HasBacking);
+        // A worker without the beat list (or a result with no backing) leaves them out: the clock is then origin + tempo.
+        Assert.Null(before.Result!.BeatTimesSec);
+        Assert.False(before.Result.HasBacking);
+    }
+
+    [Fact]
     public void A_choir_result_says_its_parts_were_heard()
     {
         const string payload = """

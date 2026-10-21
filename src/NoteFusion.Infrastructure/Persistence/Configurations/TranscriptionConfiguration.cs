@@ -77,6 +77,24 @@ public sealed class TranscriptionConfiguration : IEntityTypeConfiguration<Transc
                     v => JsonSerializer.Serialize(v, JsonOptions).GetHashCode(),
                     v => JsonSerializer.Deserialize<List<ChordEvent>>(JsonSerializer.Serialize(v, JsonOptions), JsonOptions)));
 
+        // The recording the sheet came from: its beat clock, whether it was a pasted link, how far the sheet has been
+        // transposed from it, and (an upload's only) the backing kept in the file store under an unguessable name.
+        // Old rows: no clock, not a link, as heard, no backing.
+        builder.Property(t => t.BeatOriginSec).HasColumnName("beat_origin_sec");
+        builder.Property(t => t.BeatTimesSec)
+            .HasColumnName("beat_times_json")
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, JsonOptions),
+                v => JsonSerializer.Deserialize<List<double>>(v, JsonOptions),
+                new ValueComparer<List<double>?>(
+                    (a, b) => a == null ? b == null : b != null && a.SequenceEqual(b),
+                    v => v == null ? 0 : v.Aggregate(0, (hash, x) => HashCode.Combine(hash, x)),
+                    v => v == null ? null : v.ToList()));
+        builder.Property(t => t.FromLink).HasColumnName("from_link").HasDefaultValue(false);
+        builder.Property(t => t.TransposedBy).HasColumnName("transposed_by").HasDefaultValue(0);
+        builder.Property(t => t.BackingKey).HasColumnName("backing_key").HasMaxLength(Transcription.BackingKeyMaxLength);
+        builder.Ignore(t => t.HasBacking);
+
         // Movable-do key as flattened columns on the same table.
         builder.OwnsOne(t => t.Key, key =>
         {

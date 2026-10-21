@@ -143,7 +143,10 @@ internal sealed record JobResultResponse(
     IReadOnlyList<WireChord>? Chords = null,
     string? ChordsSource = null,
     IReadOnlyList<WireKeyAlternative>? KeyAlternatives = null,
-    WireHymnMatch? HymnMatch = null);
+    WireHymnMatch? HymnMatch = null,
+    // ``beat_times_sec``: the audio time of each notated beat, when the worker tracked them. Optional: a worker
+    // that predates it sends nothing, and the clock is then beatOriginSec + b × 60 / tempo.
+    IReadOnlyList<double>? BeatTimesSec = null);
 
 /// <summary>
 /// A hymn the tune clearly matches (<c>app.pipeline.hymn_match</c>): for <c>kind</c> "score" with its
