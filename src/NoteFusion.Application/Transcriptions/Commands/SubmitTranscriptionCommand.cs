@@ -168,12 +168,13 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 // one. A song with the voice isolated is not a free one: only a bought one pays for it (as for
                 // a whole linked song). Each bought one is the account's own, so it is marked on the job and
                 // never spent by another account on the same phone.
-                var country = await _db.Users
+                // The country sets the allowance; the zone is where a refusal says the free ones come back.
+                var account = await _db.Users
                     .Where(u => u.Id == userId)
-                    .Select(u => u.Country)
+                    .Select(u => new { u.Country, u.TimeZone })
                     .FirstOrDefaultAsync(cancellationToken);
 
-                var allowance = await TrialUsage.ReadAsync(_db, userId, fingerprint, country, _clock.UtcNow, cancellationToken);
+                var allowance = await TrialUsage.ReadAsync(_db, userId, fingerprint, account?.Country, _clock.UtcNow, cancellationToken);
                 var song = request.Separate && !isScore;
 
                 if (song)
@@ -188,7 +189,8 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                     {
                         // Told the numbers that actually applied to them, not a global one: a refusal that names
                         // a different count than the trial pill did is indistinguishable from a billing bug.
-                        return (BillingErrors.FreeTierLimitReached(allowance.Free, allowance.Bought), false);
+                        return (BillingErrors.FreeTierLimitReached(
+                            allowance.Free, allowance.Bought, allowance.FreeResetsAtUtc, account?.TimeZone), false);
                     }
 
                     paidByCredit = allowance.FreeRemaining == 0;

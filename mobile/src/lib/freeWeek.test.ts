@@ -14,7 +14,7 @@ function inZone<T>(tz: string, fn: () => T): T {
   }
 }
 
-// Fri 16 Oct 2026, 18:00 West Africa Time.
+// Fri 16 Oct 2026, 17:00 UTC.
 const RESET = "2026-10-16T17:00:00Z";
 
 test("the reset reads as Friday 6pm in Lagos", () => {
@@ -22,14 +22,17 @@ test("the reset reads as Friday 6pm in Lagos", () => {
 });
 
 test("the reset is shown in the phone's own time", () => {
+  assert.equal(inZone("Europe/London", () => freeResetLabel(RESET)), "Friday 6pm"); // BST is UTC+1 too
   assert.equal(inZone("America/New_York", () => freeResetLabel(RESET)), "Friday 1pm");
+  assert.equal(inZone("Australia/Sydney", () => freeResetLabel(RESET)), "Saturday 4am");
   assert.equal(inZone("Asia/Kolkata", () => freeResetLabel(RESET)), "Friday 10:30pm");
   assert.equal(inZone("Pacific/Auckland", () => freeResetLabel(RESET)), "Saturday 6am");
 });
 
-test("without a moment from the API, the rule itself", () => {
+test("without a moment from the API, the rule itself, in UTC and never another zone", () => {
   assert.equal(freeResetLabel(null), FREE_RESET_FALLBACK);
   assert.equal(freeResetLabel("nonsense"), FREE_RESET_FALLBACK);
+  assert.equal(FREE_RESET_FALLBACK, "Friday 17:00 UTC");
 });
 
 test("this week's free ones come from the weekly fields, bought ones apart", () => {

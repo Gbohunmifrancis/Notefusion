@@ -73,4 +73,24 @@ public class FreeTierWeekTests
             Assert.Equal(TimeSpan.FromHours(18), wat.TimeOfDay);
         }
     }
+
+    [Theory]
+    [InlineData("Europe/London", 10, 23, "Friday at 6pm")]       // BST
+    [InlineData("Europe/London", 10, 30, "Friday at 5pm")]       // GMT, the clocks gone back
+    [InlineData("America/New_York", 10, 23, "Friday at 1pm")]    // EDT
+    [InlineData("America/New_York", 11, 6, "Friday at 12pm")]    // EST
+    [InlineData("Australia/Sydney", 8, 21, "Saturday at 3am")]   // AEST
+    [InlineData("Australia/Sydney", 10, 23, "Saturday at 4am")]  // AEDT
+    [InlineData("Asia/Kolkata", 10, 23, "Friday at 10:30pm")]
+    [InlineData("Africa/Lagos", 10, 23, "Friday at 6pm")]
+    [InlineData("-05:00", 10, 23, "Friday at 12pm")]
+    public void The_reset_is_said_in_the_account_s_own_time(string zone, int month, int day, string expected)
+        => Assert.Equal(expected, FreeTier.ResetWhen(FreeTier.NextReset(Utc(2026, month, day, 9)), zone));
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("Mars/Olympus_Mons")]
+    public void Without_a_known_zone_the_reset_is_said_in_utc_never_a_guessed_zone(string? zone)
+        => Assert.Equal("Friday at 17:00 UTC", FreeTier.ResetWhen(Utc(2026, 10, 23, 17), zone));
 }

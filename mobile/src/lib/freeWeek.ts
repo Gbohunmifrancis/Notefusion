@@ -2,15 +2,15 @@
  * A free account's weekly transcriptions: how many are left and when they come back.
  *
  * Free accounts get 3 hummed or recorded transcriptions a week; the week turns every Friday
- * at 18:00 West Africa Time for everyone (`FreeTier` in the API). The API sends the moment as
- * `freeResetsAtUtc`; this shows it in the phone's own time ("Friday 6pm"). The web app keeps
- * its own copy in `web-site/assets/freeweek.js`.
+ * at 17:00 UTC for everyone (`FreeTier` in the API). The API sends the moment as
+ * `freeResetsAtUtc`; this shows it in the phone's own time ("Friday 1pm" in New York), never in
+ * another zone's. The web app keeps its own copy in `web-site/assets/freeweek.js`.
  */
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-/** What to say when the API did not send the moment (an older API): the rule itself. */
-export const FREE_RESET_FALLBACK = "Friday 6pm (West Africa Time)";
+/** What to say when the API did not send the moment (an older API): the rule itself, in UTC. */
+export const FREE_RESET_FALLBACK = "Friday 17:00 UTC";
 
 /** "6pm", "6:30pm", "12am": short, and the same whatever the phone's language. */
 function clock(d: Date): string {

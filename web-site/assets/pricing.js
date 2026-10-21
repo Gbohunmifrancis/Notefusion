@@ -142,8 +142,17 @@
   }
 
   /**
-   * The free plan: hums and recordings every week (back Friday 18:00 WAT, FreeTier in the API), one short
-   * song-link preview, and songs for Pro or one at a time at the region's one-song price when the API sent it.
+   * When the free ones come back, in the visitor's own time ("Friday 1pm" in New York): every Friday 17:00 UTC
+   * (FreeTier in the API, assets/freeweek.js). The rule itself, in UTC, should freeweek.js not have loaded.
+   */
+  function freeBack() {
+    var fw = window.NfFreeWeek;
+    return fw ? fw.when(fw.next()) : "Friday 17:00 UTC";
+  }
+
+  /**
+   * The free plan: hums and recordings every week (back every Friday 17:00 UTC, shown in the visitor's time), one
+   * short song-link preview, and songs for Pro or one at a time at the region's one-song price when the API sent it.
    */
   function freeCard(trialCount, single) {
     var card = document.createElement("div");
@@ -160,12 +169,12 @@
 
     var blurb = document.createElement("p");
     blurb.className = "blurb";
-    blurb.textContent = trialCount + " hummed or recorded transcriptions every week, back every Friday evening. No card needed.";
+    blurb.textContent = trialCount + " hummed or recorded transcriptions every week. No card needed.";
     card.appendChild(blurb);
 
     card.appendChild(
       featureList([
-        trialCount + " hums or recordings a week, back every Friday at 6pm (West Africa Time)",
+        trialCount + " hums or recordings a week, back every " + freeBack(),
         "One free preview of a song link: a minute you choose",
         single
           ? "Song links and whole songs: Pro, or " + formatPrice(single) + " a song"
