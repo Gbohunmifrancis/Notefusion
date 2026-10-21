@@ -337,11 +337,19 @@ export function LibraryScreen() {
     <View style={styles.headerArea}>
       {/* ── Every tab's header: the count over "Library", search, the avatar. Search grows over the row. Record is
           the tab bar's centre, one tap away, so the header has no "+" of its own (board n-ux-low Q4h). ── */}
-      <View ref={headerRef} onLayout={(e) => setRowWidth(e.nativeEvent.layout.width)}>
+      <View
+        ref={headerRef}
+        collapsable={false}
+        onLayout={(e) => {
+          setRowWidth(e.nativeEvent.layout.width);
+          // The header grew or narrowed (larger text, a turned phone): the search button's place moved with it.
+          measureSearchSlot();
+        }}
+      >
         <Animated.View style={fadeWithSearch} pointerEvents={searchOpen ? "none" : "box-none"}>
           <TabHeader title="Library" eyebrow={countLine}>
             {/* The search button's place: the pill below sits on it. */}
-            <View ref={searchSlotRef} style={styles.searchSlot} onLayout={measureSearchSlot} />
+            <View ref={searchSlotRef} collapsable={false} style={styles.searchSlot} onLayout={measureSearchSlot} />
           </TabHeader>
         </Animated.View>
         {searchSlot ? (
