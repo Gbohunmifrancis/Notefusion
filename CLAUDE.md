@@ -317,7 +317,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `TranscriptionJob.PaidByCredit`. A bought transcription covers anything a free one does and is the only thing that
   pays for a song on a free account: an upload with isolation (else `BILLING_SONG_NOT_FREE`) or a whole linked song
   (up to Pro's six minutes, normal lane, charged to the trial ledger and never as the one free preview). The refusal
-  says "back Friday at 6pm (West Africa Time)"; `SubscriptionDto` carries `freeTranscriptionsRemaining`/
+  says when in the account's own time zone ("back on Friday at 1pm"; "Friday at 17:00 UTC" when none is known,
+  `FreeTier.ResetWhen`), never in West Africa Time; `SubscriptionDto` carries `freeTranscriptionsRemaining`/
   `freeTranscriptionsPerWeek`/`freeResetsAtUtc` (clients show it in local time: `web-site/assets/freeweek.js`,
   mobile `lib/freeWeek.ts`) beside `boughtTranscriptionsRemaining`/`boughtTranscriptionsTotal`, and keeps
   `trialGenerations*` (week's free + bought) for shipped apps. `public-plans` carries the region's one-song `single`.
