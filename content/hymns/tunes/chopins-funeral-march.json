@@ -1,0 +1,41 @@
+{
+  "name": "Funeral March",
+  "title": "Chopin's Funeral March",
+  "form": "theme",
+  "alsoKnownAs": [
+    "Marche funèbre",
+    "Funeral March from Piano Sonata No. 2, Op. 35"
+  ],
+  "music": [
+    {
+      "name": "Frédéric Chopin",
+      "born": 1810,
+      "died": 1849,
+      "role": "Music (1837), Piano Sonata No. 2, Op. 35"
+    }
+  ],
+  "musicPublished": 1840,
+  "occasions": [
+    "Halloween"
+  ],
+  "key": "Bb minor",
+  "time": "4/4",
+  "tempo": 54,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Bb3:1 Bb3:.75 Bb3:.25 Bb3:2 | Bb3:1 Bb3:.75 Bb3:.25 Bb3:2 | Bb3:1 Bb3:.75 Bb3:.25 Bb3:1 Db4:.75 C4:.25 | C4:.75 Bb3:.25 Bb3:.75 Bb3:.25 Bb3:2 | Db4:1 Db4:.75 Db4:.25 Db4:1 F4:.75 Eb4:.25 | Eb4:.75 Db4:.25 Db4:.75 Db4:.25 Db4:2 | Bb4:.75 Ab4:.25 Gb4:.75 F4:.25 F4:1 Db4:1 | Bb4:.75 Ab4:.25 Gb4:.75 F4:.25 F4:1 Db4:1 | Bb3:1 Bb3:.75 Bb3:.25 Bb3:1 Db4:.75 C4:.25 | C4:.75 Bb3:.25 Bb3:.75 Bb3:.25 Bb3:2",
+  "about": [
+    "Frédéric Chopin wrote his Funeral March in 1837 and made it the slow third movement of his Piano Sonata No. 2 in B flat minor, Op. 35, published in 1840. It was played at Chopin's own funeral in Paris in 1849, and its opening, one low note tolling in a slow dotted rhythm like a bell, has been the sound of a funeral procession ever since, in concert halls, cartoons and haunted houses alike.",
+    "This is the march's opening theme, its first ten bars, read from Jan Kleczyński's Warsaw edition of the march and checked against a St. Louis printing of 1897: the tolling B flats, the turn down from D flat, the same again a third higher, and the answer that falls from the B flat above before the bell comes back. The piano plays it in chords over a rocking bass; this page has the tune alone, and the grace notes are left out."
+  ],
+  "reviewed": false,
+  "confidence": "hand-encoded from a public-domain score, unchecked",
+  "draft": false,
+  "source": "Internet Archive (Jagiellonian Library)",
+  "sourceUrl": "https://archive.org/details/jbc.bj.uj.edu.pl.NDIGMUZ024770",
+  "scoreUrl": "https://archive.org/download/jbc.bj.uj.edu.pl.NDIGMUZ024770/NDIGMUZ024770.pdf",
+  "licence": "Public domain. Chopin died in 1849 and Jan Kleczyński, who edited the Warsaw edition the tune is read from, in 1895; the score scanned is Gebethner & Wolff's edition, digitised by the Jagiellonian Library (Kraków), which marks it public domain, at the Internet Archive.",
+  "credits": "Melody read from the Marche funèbre, Op. 35, in Jan Kleczyński's edition of Chopin's works (Warsaw: Gebethner & Wolff), the Jagiellonian Library's copy at the Internet Archive, checked against Spang & Luhn's St. Louis edition (1897); public domain.",
+  "reviewNotes": "Hand-encoded from Kleczyński's edition (Gebethner & Wolff, Internet Archive jbc.bj.uj.edu.pl.NDIGMUZ024770: PDF page 5, music page 3, the first two systems): bars 1–10, read off a 400 dpi render, and checked note for note and beat for beat against Spang & Luhn's edition (St. Louis, 1897, Internet Archive b10312481, page [3]), which agrees. In bars 1–3 and 9 the tune is the top note of the right hand's chords, printed on the bass staff (the B flat below middle C); from the last beat of bar 3 it is on the treble staff. Bar 4 is printed C. B♭ B♭. B♭ | B♭ in both editions (the semiquaver is B flat, not A). Bars 5–6 are the top of the right hand's thirds; bars 7 and 8 are the same. Left out: the grace notes (F before bar 6, A flat before the G flat of bars 7 and 8, D flat before bar 10, and in Spang & Luhn only one before the C of bar 4), the chords, the bass and the staccato dots. Bars 9–10 repeat bars 3–4: the page stops at the B flat that closes the first strain, before the forte phrase of bar 11. Tempo 54 is ours: neither edition prints a tempo mark. Dates: 1837 (written) and 1840 (the sonata first published) are the commonly given ones; check them. The edition's date (c. 1890) is the Jagiellonian Library's. Drill 6 of the Midnight path (src/NoteFusion.Application/Practice/HalloweenPath.cs, midnight-chopin) is bars 3–4 of this page; change it with the melody. Check against another printed score, then set \"reviewed\": true.",
+  "updated": "2026-10-21"
+}

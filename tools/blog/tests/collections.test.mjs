@@ -9,7 +9,7 @@ import { loadAll, loadTunes, loadHymns } from "../lib/content.mjs";
 import { prepareHymn } from "../lib/render-hymns.mjs";
 import { prepareTune } from "../lib/render-tunes.mjs";
 import { OCCASIONS, MIN_OCCASION, inOccasion, occasionPages, collectPeople, peopleAddresses, personKey, surname, firstLineEntries, firstLineSortKey, cleanFirstLine } from "../lib/collections.mjs";
-import { renderOccasion, renderOccasionsHub, renderPerson, renderPeopleHub, renderFirstLines, neighbours, moreLinks, occasionTitle } from "../lib/render-collections.mjs";
+import { renderOccasion, renderOccasionsHub, renderPerson, renderPeopleHub, renderFirstLines, neighbours, moreLinks, occasionTitle, occasionItems } from "../lib/render-collections.mjs";
 
 const { hymns, tunes } = loadAll();
 hymns.forEach(prepareHymn);
@@ -76,6 +76,33 @@ test("an occasion page: its hymns with their PDFs, the other occasions, Collecti
   const hub = renderOccasionsHub(occasions);
   for (const x of occasions) assert.match(hub, new RegExp(`<a href="${x.url}">`));
   assert.equal(ld(hub)[0].mainEntity.numberOfItems, occasions.length);
+});
+
+test("the Halloween page speaks to someone looking for spooky songs: the best known first, the All Saints hymns last", () => {
+  const all = occasionPages(hymns, tunePages);
+  const o = all.find((x) => x.slug === "halloween");
+  const html = renderOccasion(o, { occasions: all });
+  assert.match(html, /<title>Halloween songs to sing and play: spooky classics \| NoteFusion<\/title>/);
+  assert.ok(occasionTitle(o).length <= 70);
+  assert.match(html, /<h1>Halloween songs to sing and play<\/h1>/);
+  assert.ok(o.description.length <= 155, o.description);
+  const order = occasionItems(o).map((x) => (x.view && x.view.url) || `/hymns/${x.slug}`);
+  // Every piece the page puts first is published, and comes first in that order; the All Saints hymns close the list.
+  assert.deepEqual(order.slice(0, o.first.length), o.first);
+  const saints = occasionItems(o).filter((x) => (x.occasions || []).includes("All Saints"));
+  assert.ok(saints.length >= 3);
+  assert.deepEqual(occasionItems(o).slice(-saints.length), saints);
+  // The page lists them in that order, and the description and intro name only pieces on it.
+  const listed = [...html.matchAll(/<h3><a href="([^"]+)">/g)].map((m) => m[1]);
+  assert.deepEqual(listed, order);
+  for (const title of ["In the Hall of the Mountain King", "Chopin's Funeral March"]) {
+    assert.ok(o.description.includes(title) && o.intro.includes(title), title);
+    assert.ok(occasionItems(o).some((x) => (x.view ? x.view.title : x.title) === title), title);
+  }
+  // Every other occasion keeps its A–Z list.
+  const christmas = all.find((x) => x.slug === "christmas");
+  const titles = occasionItems(christmas).map((x) => (x.view ? x.view.title : x.title));
+  assert.deepEqual(titles, [...titles].sort((a, b) => a.localeCompare(b)));
 });
 
 // ── People ──────────────────────────────────────────────────────────────────

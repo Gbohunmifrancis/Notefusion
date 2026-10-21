@@ -60,12 +60,21 @@ function collectionLd(path, name, description, list) {
 const fit = (...options) => options.find((d) => d.length <= 155) || options[options.length - 1].slice(0, 155);
 
 // ── Seasons and occasions ───────────────────────────────────────────────────
-/** An occasion's hymns and tune pages (occasionPages gives both; a tune page has no words), A–Z by title. */
-const occasionItems = (o) => [...o.hymns, ...(o.tunes || [])].sort((a, b) => itemTitle(a).localeCompare(itemTitle(b)));
+/**
+ * An occasion's hymns and tune pages (occasionPages gives both; a tune page has no words), A–Z by title; where the
+ * occasion orders its list (Halloween), the ones its `first` names in that order, then the rest A–Z, then those of its
+ * `last` occasion A–Z.
+ */
+export const occasionItems = (o) => {
+  const first = o.first || [];
+  const rank = (x) => (first.includes(itemUrl(x)) ? first.indexOf(itemUrl(x)) : o.last && (x.occasions || []).includes(o.last) ? first.length + 1 : first.length);
+  return [...o.hymns, ...(o.tunes || [])].sort((a, b) => rank(a) - rank(b) || itemTitle(a).localeCompare(itemTitle(b)));
+};
 const itemTitle = (x) => (x.view && x.view.url ? x.view.title : x.title);
 const itemUrl = (x) => (x.view && x.view.url ? x.view.url : hymnUrl(x));
 
 export function occasionTitle(o) {
+  if (o.title) return `${o.title} | NoteFusion`;
   if (o.tunes?.length) return `${o.name} ${o.what || "hymns"} in Tonic Solfa | NoteFusion`;
   const t = `${o.name} hymns in Tonic Solfa — ${o.hymns.length} ${o.slug === "christmas" ? "carols" : "hymns"} with words | NoteFusion`;
   return t.length <= 70 ? t : `${o.name} hymns in Tonic Solfa | NoteFusion`;
@@ -74,11 +83,11 @@ export function occasionTitle(o) {
 export function renderOccasion(o, { occasions }) {
   const path = o.url;
   const crumbs = [["/", "Home"], ["/hymns", "Hymns"], [OCCASIONS_PATH, "Seasons and occasions"], [path, o.name]];
-  const heading = `${o.name} ${o.what || "hymns"} in Tonic Solfa`;
+  const heading = o.heading || `${o.name} ${o.what || "hymns"} in Tonic Solfa`;
   const items = occasionItems(o), n = items.length;
   // A tune page has no words to write the solfa under.
   const withWords = o.tunes?.length ? "the solfa (under the words, where there are words)" : "the solfa written under the words";
-  const description = fit(
+  const description = o.description || fit(
     o.tunes?.length
       ? `${n} ${o.name} ${o.noun} in Tonic Solfa: the doh, the solfa, staff notation, a piano to sing along with and a free PDF to print.`
       : `${n} ${o.name} ${o.noun} in Tonic Solfa: the doh, the solfa under the words, staff notation, a piano to sing along with and a free PDF to print.`,
@@ -100,9 +109,9 @@ ${ctaBox("occasion")}`;
   return page({ path, title: occasionTitle(o), description, body, active: "/hymns", jsonLd: [collectionLd(path, heading, description, list), breadcrumbLd(crumbs)] });
 }
 
-/** "Silent Night, Away in a Manger, Hark! The Herald Angels Sing and 22 more": the hand-encoded hymns first. */
+/** "Silent Night, Away in a Manger, Hark! The Herald Angels Sing and 22 more": the hand-encoded hymns first (an ordered list's own order). */
 function sample(o) {
-  const all = [...o.hymns, ...(o.tunes || [])];
+  const all = o.first ? occasionItems(o) : [...o.hymns, ...(o.tunes || [])];
   const first = [...all.filter((h) => !h.importedFrom), ...all.filter((h) => h.importedFrom)].slice(0, 3).map(itemTitle);
   const more = all.length - first.length;
   return more ? `${first.join(", ")} and ${more} more` : `${first.slice(0, -1).join(", ")} and ${first[first.length - 1]}`;

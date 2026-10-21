@@ -157,20 +157,24 @@ const king = hymn("tune-in-the-hall-of-the-mountain-king", "In the Hall of the M
 const toccata = hymn("tune-toccata-in-d-minor", "Toccata in D minor", { ...spooky, kind: "tune", key: "D minor" });
 const bones = hymn("dem-bones", "Dem Bones", { ...spooky, firstLine: "Ezekiel connected dem dry bones" });
 const hearse = hymn("the-hearse-song", "The Hearse Song", spooky);
+const chopin = hymn("tune-chopins-funeral-march", "Chopin's Funeral March", { ...spooky, kind: "tune", key: "Bb minor" });
+const diesIrae = hymn("tune-dies-irae", "Dies Irae", { ...spooky, kind: "tune", key: "D minor" });
 const darmstadt = hymn("tune-all-saints-darmstadt", "All Saints (Darmstadt)", {
   ...saints, kind: "tune", tune: "ALL SAINTS (DARMSTADT)",
   notes: [[72, 0, 1], [67, 1, 1], [69, 2, 1], [69, 3, 1], [67, 4, 1.5], [65, 5.5, 0.5], [64, 6, 1], [60, 7, 1]],
 });
 const allSaintsNew = hymn("tune-all-saints-new", "All Saints, New", { ...saints, kind: "tune", key: "Bb major" });
 const lookYe = hymn("look-ye-saints-the-sight-is-glorious", "Look, Ye Saints, the Sight Is Glorious");
-const halloweenPack = [allSaintsNew, hearse, ag, darmstadt, bones, silent, toccata, lookYe, king, hymn("odd", "Odd", { occasions: "Halloween" as unknown as string[] })];
+const halloweenPack = [allSaintsNew, diesIrae, hearse, ag, darmstadt, bones, silent, toccata, chopin, lookYe, king, hymn("odd", "Odd", { occasions: "Halloween" as unknown as string[] })];
 
 test("the Halloween shelf: the spooky songs first, the best known first, and the All Saints tunes close it", () => {
   assert.deepEqual(halloween(halloweenPack).map((h) => h.slug), [
     "tune-in-the-hall-of-the-mountain-king",
     "tune-toccata-in-d-minor",
+    "tune-chopins-funeral-march",
     "dem-bones",
     "the-hearse-song",
+    "tune-dies-irae",
     "tune-all-saints-darmstadt",
     "tune-all-saints-new",
   ]);
@@ -183,15 +187,17 @@ test("the Halloween shelf: the spooky songs first, the best known first, and the
 
 test("See all's filters: All, Spooky and All Saints", () => {
   const songs = halloween(halloweenPack);
-  assert.equal(filterHalloween(songs, "all").length, 6);
-  assert.deepEqual(filterHalloween(songs, "spooky").map((h) => h.slug), ["tune-in-the-hall-of-the-mountain-king", "tune-toccata-in-d-minor", "dem-bones", "the-hearse-song"]);
+  assert.equal(filterHalloween(songs, "all").length, 8);
+  assert.deepEqual(filterHalloween(songs, "spooky").map((h) => h.slug), [
+    "tune-in-the-hall-of-the-mountain-king", "tune-toccata-in-d-minor", "tune-chopins-funeral-march", "dem-bones", "the-hearse-song", "tune-dies-irae",
+  ]);
   assert.deepEqual(filterHalloween(songs, "saints").map((h) => h.slug), ["tune-all-saints-darmstadt", "tune-all-saints-new"]);
 });
 
 test("search finds the songs for Halloween by 'halloween', 'spooky' or 'all saints'", () => {
   const names = (q: string) => searchHymns(halloweenPack, q).map((h) => h.slug);
   assert.deepEqual(names("halloween"), names("spooky"));
-  assert.equal(names("spooky").length, 6);
+  assert.equal(names("spooky").length, 8);
   assert.deepEqual(names("all saints"), ["tune-all-saints-darmstadt", "tune-all-saints-new"]);
   // a title still outranks an occasion
   assert.equal(names("bones")[0], "dem-bones");

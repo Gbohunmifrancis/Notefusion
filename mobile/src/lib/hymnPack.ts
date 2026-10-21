@@ -198,9 +198,10 @@ export function carols(hymns: readonly PackHymn[]): PackHymn[] {
 /**
  * The best known spooky songs, first on the Halloween shelf in this order (by title: they are being written into the
  * pack as this ships); the rest follow by title, and the All Saints tunes close it (All Hallows' Eve is the night
- * before All Saints' Day).
+ * before All Saints' Day). The website's Halloween page lists the published ones in the same order
+ * (tools/blog/lib/collections.mjs, the occasion's `first`).
  */
-const HALLOWEEN_ORDER = ["mountain king", "toccata", "ghost of john", "dem bones", "marionette", "danse macabre", "hearse song"];
+const HALLOWEEN_ORDER = ["mountain king", "toccata", "chopin", "ghost of john", "dem bones", "marionette", "danse macabre", "hearse song", "dies irae"];
 
 /** A song for All Saints' Day (tagged "All Saints"), which the Halloween shelf ends with. */
 export function isAllSaints(h: PackHymn): boolean {

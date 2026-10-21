@@ -1,0 +1,40 @@
+{
+  "name": "Dies Irae",
+  "title": "Dies Irae",
+  "form": "chant",
+  "alsoKnownAs": [
+    "Day of Wrath",
+    "Dies irae, dies illa"
+  ],
+  "music": [
+    {
+      "name": "Gregorian Chant",
+      "traditional": true,
+      "role": "Melody, the sequence of the Requiem Mass"
+    }
+  ],
+  "musicPublished": 1908,
+  "occasions": [
+    "Halloween"
+  ],
+  "key": "D minor",
+  "time": "8/4",
+  "tempo": 80,
+  "pickup": 0,
+  "lineBars": 1,
+  "melody": "F4:1 E4:1 F4:1 D4:1 E4:1 C4:1 D4:1 D4:1 | F4:1 F4:.5 G4:.5 F4:.5 E4:.5 D4:.5 C4:.5 E4:1 F4:1 E4:1 D4:1 | A3:1 C4:.5 D4:.5 D4:1 D4:.5 C4:.5 E4:1 F4:1 E4:1 D4:1",
+  "about": [
+    "Dies irae, “Day of wrath”, is the medieval Latin poem of the Last Judgement that was sung at the Requiem Mass, the Mass for the dead, for centuries. Its plainchant tune has become the sound of doom itself: Berlioz quoted it in the witches' sabbath of his Symphonie fantastique, Saint-Saëns in Danse Macabre, Rachmaninoff again and again, and film scores still borrow its first four notes whenever something terrible is coming.",
+    "This is its first verse, “Dies irae, dies illa, solvet saeclum in favilla, teste David cum Sibylla”, read from the Vatican edition of the Graduale (Rome, 1908) and checked against the Liber Usualis of 1904. Chant has no beat and no bar lines: here every syllable takes one beat, so where two notes are sung to one syllable they share it, and each line of the poem is one bar."
+  ],
+  "reviewed": false,
+  "confidence": "hand-encoded from a public-domain chant book, rhythm ours (the chant is unmeasured), unchecked",
+  "draft": false,
+  "source": "Internet Archive",
+  "sourceUrl": "https://archive.org/details/gradualesacrosan0000cath",
+  "scoreUrl": "https://archive.org/download/gradualesacrosan0000cath/gradualesacrosan0000cath.pdf",
+  "licence": "Public domain. The chant is medieval and anonymous; the book it is read from is the Vatican edition of the Graduale (Rome: Typis Vaticanis, 1908), digitised by the Internet Archive.",
+  "credits": "Melody read from the Graduale Sacrosanctae Romanae Ecclesiae (Rome: Typis Vaticanis, 1908), the Mass for the Dead, at the Internet Archive, checked against the Liber Usualis (Desclée, 1904); public domain.",
+  "reviewNotes": "Hand-encoded from the Graduale, Vatican edition (Rome, 1908; Internet Archive gradualesacrosan0000cath, PDF page 875, page 83* of the Missa pro Defunctis): the Sequence, mode I, its first verse (Dies irae … Teste David cum Sibylla), read off a 600 dpi render, C clef on the top line, and checked note for note against the Liber Usualis (Desclée, 1904; Internet Archive liberusualismiss0000vari, PDF page 1137, page 1099), which agrees. Chant has no fixed pitch: the final is written as D4, so the verse runs from A3 to G4. THE RHYTHM IS OURS. The chant is unmeasured; it is written a beat a syllable, the two-note neumes as two quavers (Sol-VET F–G, SAE-clum F–E, sae-CLUM D–C, TE-ste … te-STE C–D, da-VID D–C), so each line of the poem (eight syllables) is one 8/4 bar, as the site's other plainsong is barred a line a bar (tunes/conditor-alme-siderum.json). Solesmes singers give every note much the same length, which would make the neumes' notes crotchets too, and lengthen each line's last note (dotted in the 1904 book); neither is written here — decide whether the page should instead be in plain equal notes. The words are not under the notes (a tune page has none); the about text quotes the first verse. CCEH's page for the tune DIES IRAE (PLAINSONG) (tune 000645, no score) gives an incipit whose second line ends F G F E, where both books print E F E D: a hymnal's variant, not followed. Tempo 80 is ours. musicPublished 1908 is the edition read; the chant itself is centuries older. Check, then set \"reviewed\": true.",
+  "updated": "2026-10-21"
+}
