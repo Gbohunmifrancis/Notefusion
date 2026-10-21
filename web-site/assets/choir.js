@@ -356,42 +356,131 @@
   /** Velocity from confidence, as on the server: 0.55 + 0.35·conf. */
   function velocity(conf) { var c = typeof conf === "number" && isFinite(conf) ? Math.min(Math.max(conf, 0), 1) : 1; return 0.55 + 0.35 * c; }
 
+  // ── The transport: which notes sound when, on one clock ──────────────────
+  /**
+   * Where a beat falls in time: assets/backing-clock.js on a page that plays a song's backing (its beat times
+   * included), the tempo alone on pages that never do (the hymn pages, a shared sheet) — the same clock without them.
+   */
+  var TEMPO_CLOCK = {
+    audioTimeOfBeat: function (beat, clock) { return (clock.beatOriginSec || 0) + (beat * 60) / clock.tempo; },
+    beatOfAudioTime: function (sec, clock) { return ((sec - (clock.beatOriginSec || 0)) * clock.tempo) / 60; }
+  };
+  function clockMaths() { return (typeof window !== "undefined" && window.NfBackingClock) || TEMPO_CLOCK; }
+
+  /**
+   * Which notes to strike, and when. Pure: the caller says what time it is. `events` are sorted by `beat`; `clock` is
+   * { tempo, beatOriginSec, beatTimesSec }. From an anchor (a beat sounding at a time, at a speed), beat b sounds at
+   * time + (A(b) − A(beat)) / speed, A being where the beat falls in the recording, and the recording is then at
+   * A(beat) + (t − time) · speed: the notes and the song's backing keep one clock at any speed. A loop's wrap and a new
+   * speed take effect as a new anchor at the end of what has already been handed out, never inside it, so every note of
+   * the sheet, or of the loop, is handed out exactly once per pass (web-site/tests/backing-clock.test.mjs).
+   */
+  function createTransport(events, endBeat, clock) {
+    var M = clockMaths(), EPS = 1e-6, T_EPS = 1e-9;
+    var anchors = [], cursor = 0, loop = null, rate = 1, handed = 0, running = false;
+    function place(beat) { return M.audioTimeOfBeat(beat, clock); }
+    function firstIndexAt(beat) { var i = 0; while (i < events.length && events[i].beat < beat - EPS) i++; return i; }
+    function anchorAt(t) { for (var i = anchors.length - 1; i > 0; i--) if (anchors[i].time <= t + T_EPS) return anchors[i]; return anchors[0]; }
+    function timeOf(beat, a) { return a.time + (place(beat) - place(a.beat)) / a.rate; }
+    function audioAt(t) { var a = anchorAt(t); return place(a.beat) + (t - a.time) * a.rate; }
+    function beatAt(t) { return M.beatOfAudioTime(audioAt(t), clock); }
+    /** A new anchor; a jump (a wrap, a loop moved away from the playhead) also moves the next note to its beat. */
+    function anchor(beat, time, jump) {
+      anchors.push({ beat: beat, time: time, rate: rate, jump: !!jump });
+      if (jump) cursor = firstIndexAt(beat);
+    }
+    return {
+      /** Starts at `fromBeat` (its loop's start when outside the loop), sounding at `time`; returns the beat it starts on. */
+      start: function (fromBeat, time) {
+        if (loop && (fromBeat < loop.start - EPS || fromBeat >= loop.end - EPS)) fromBeat = loop.start;
+        anchors = []; anchor(fromBeat, time, true); handed = time; running = true;
+        return fromBeat;
+      },
+      stop: function () { running = false; },
+      running: function () { return running; },
+      /** The beat sounding at time `t`, and where the recording is then. */
+      beatAt: beatAt,
+      audioAt: audioAt,
+      rateAt: function (t) { return anchorAt(t).rate; },
+      /** The anchor that takes over after time `t` ({time, jump}), or null. */
+      nextChange: function (t) { for (var i = 0; i < anchors.length; i++) if (anchors[i].time > t + T_EPS) return anchors[i]; return null; },
+      /** Forgets the anchors time `t` has left behind. */
+      prune: function (t) { while (anchors.length > 1 && anchors[1].time <= t + T_EPS) anchors.shift(); },
+      /** Everything due up to `horizon`, in order: {kind: "note", event, when}, {kind: "wrap", beat, when}, {kind: "end", when}. */
+      pull: function (horizon) {
+        var out = [];
+        while (running) {
+          var a = anchors[anchors.length - 1], stopBeat = loop ? loop.end : endBeat;
+          if (cursor >= events.length || events[cursor].beat >= stopBeat - EPS) {
+            var at = timeOf(stopBeat, a);
+            if (at > horizon) break;
+            if (loop) { anchor(loop.start, at, true); out.push({ kind: "wrap", beat: loop.start, when: at }); continue; }
+            running = false; out.push({ kind: "end", when: at }); break;
+          }
+          var ev = events[cursor], when = timeOf(ev.beat, a);
+          if (when > horizon) break;
+          out.push({ kind: "note", event: ev, when: when });
+          cursor++;
+        }
+        if (horizon > handed) handed = horizon;
+        return out;
+      },
+      /** The speed, from the end of what has been handed out. */
+      setRate: function (r) { rate = r; if (running) anchor(beatAt(handed), handed, false); },
+      /** Beats [start, end) to repeat (null clears it); playing outside them moves to their start. */
+      setLoop: function (start, end) {
+        loop = start == null || end == null || end <= start + EPS ? null : { start: start, end: end };
+        if (!loop || !running) return;
+        var b = beatAt(handed);
+        if (b < loop.start - EPS || b >= loop.end - EPS) anchor(loop.start, handed, true);
+      }
+    };
+  }
+
   // ── Rehearsal player (Web Audio) ─────────────────────────────────────────
-  // Schedules each note a little ahead on an AudioContext clock. Voices have their own
-  // gain so a part can be muted mid-bar ("minus one"); the loop and the speed are
-  // handled in beat time, so a passage repeats cleanly at any rate.
+  // Schedules each note a little ahead on an AudioContext clock (the transport above). Voices have their own gain so a
+  // part can be muted mid-bar ("minus one"); the loop and the speed are the transport's, so a passage repeats cleanly
+  // at any rate.
+  //
+  // The song's own backing (the instrumental the worker separated from the voice, boards o-backing O1–O4) plays under
+  // the notes on the same clock, from an <audio> element routed into the same context: unlike an AudioBufferSource it
+  // keeps its key when slowed (preservesPitch). It starts at the transport's place in the recording, seeks back with a
+  // loop's wrap, takes a new speed when the notes do, and is put back in step whenever it drifts more than 40 ms. If it
+  // is still loading, the notes start alone and the band joins in step. The balance sets the piano's level and the
+  // backing's (assets/backing-clock.js balanceGains: the louder side at full).
+  var BACKING_LEVEL = 0.85; // the backing at "full": the level it has always played at under the piano
+  var DRIFT_SEC = 0.04, SETTLE_SEC = 0.15;
+  /**
+   * An <audio> routed into the context is heard about this long after the place its currentTime reports (measured in
+   * Chromium, which most of our listeners use: 25–40 ms at every speed, the file itself exact), so it is kept that far
+   * ahead of the notes' place in the recording. Measured by what the graph actually plays (a click on every beat,
+   * timestamped by an AudioWorklet against the notes' scheduled times), the backing then lands within ±30 ms at 1×,
+   * 0.75× and 0.5×, through loops and changes of speed. currentTime alone is not a measure of what is heard while the
+   * audio is time-stretched, so nothing here learns from it beyond the 40 ms re-sync.
+   */
+  var ELEMENT_LAG_SEC = 0.03;
+  function balanceGains(balance) {
+    var BC = typeof window !== "undefined" ? window.NfBackingClock : null;
+    return BC ? BC.balanceGains(balance) : { solfa: 1, backing: 1 };
+  }
   function createPlayer() {
     var ctx = null, master = null;
     var voices = [], tempo = 100, ts = "4/4", rate = 1, loop = null, bars = 0;
-    var playing = false, startCtxTime = 0, startBeat = 0, cursorIdx = 0, timer = null, tickCb = null, endBeat = 0, pendingPlay = null;
+    var playing = false, startBeat = 0, timer = null, tickCb = null, endBeat = 0, pendingPlay = null;
     var LOOKAHEAD = 0.25, INTERVAL = 60;
     var events = []; // {beat, dur, midi, voice, vel}
-    // The song's own backing (an instrumental), played under the notes in time: audio
-    // time of beat b is originSec + b * 60 / tempo. Started and stopped with the
-    // transport, restarted on a loop wrap or a rate change, and pitch follows the rate.
-    var backing = { buffer: null, originSec: 0, on: false, src: null, gain: null, pending: null };
+    var clock = { tempo: 100, beatOriginSec: 0, beatTimesSec: null }, transport = createTransport([], 0, clock);
+    var backing = {
+      el: null, gain: null, bytes: null, url: null, ready: false, on: false, balance: 0.4, unlocked: false, blocked: false, reseek: false,
+      settleUntil: 0, waitTimer: null, changeTimer: null, changeAt: null, endTimer: null
+    };
 
     function ensure() {
       if (ctx) return;
       ctx = new (window.AudioContext || window.webkitAudioContext)();
       master = createPianoOutput(ctx);
     }
-    function beatSec() { return (60 / Math.max(30, tempo)) / rate; }
-    function stopBacking() {
-      if (backing.src) { try { backing.src.stop(); } catch (e) { /* already stopped */ } backing.src = null; }
-    }
-    function startBacking(fromBeat, when) {
-      stopBacking();
-      if (!backing.on || !backing.buffer || !ctx) return;
-      var audioAt = backing.originSec + fromBeat * (60 / Math.max(30, tempo));
-      var src = ctx.createBufferSource(); src.buffer = backing.buffer; src.playbackRate.value = rate;
-      if (!backing.gain) { backing.gain = ctx.createGain(); backing.gain.gain.value = 0.85; backing.gain.connect(ctx.destination); }
-      src.connect(backing.gain);
-      if (audioAt >= 0) src.start(when, Math.min(audioAt, backing.buffer.duration));
-      else src.start(when - audioAt / rate, 0);
-      backing.src = src;
-    }
-    function nowBeat() { return playing ? startBeat + (ctx.currentTime - startCtxTime) / beatSec() : startBeat; }
+    function nowBeat() { return playing ? transport.beatAt(ctx.currentTime) : startBeat; }
     function rebuild() {
       events = [];
       endBeat = 0;
@@ -404,40 +493,135 @@
       });
       events.sort(function (a, b) { return a.beat - b.beat; });
       bars = Math.max(1, Math.ceil(endBeat / beatsPerBar(ts) - 1e-9));
+      transport = createTransport(events, endBeat, clock);
+      transport.setRate(rate);
+      if (loop) transport.setLoop(loop.start, loop.end);
     }
     function strike(ev, when) {
-      pianoNote(ctx, voices[ev.voice].gainNode, ev.midi, ev.dur * beatSec(), when, ev.vel);
+      var M = clockMaths();
+      var durSec = (M.audioTimeOfBeat(ev.beat + ev.dur, clock) - M.audioTimeOfBeat(ev.beat, clock)) / transport.rateAt(when);
+      pianoNote(ctx, voices[ev.voice].gainNode, ev.midi, durSec, when, ev.vel);
     }
     function schedule() {
       if (!playing) return;
-      var horizon = ctx.currentTime + LOOKAHEAD;
-      while (true) {
-        if (cursorIdx >= events.length || events[cursorIdx].beat >= (loop ? loop.end : endBeat) - 1e-6) {
-          // End of the piece or the passage.
-          var wrapBeat = loop ? loop.end : endBeat;
-          var wrapTime = startCtxTime + (wrapBeat - startBeat) * beatSec();
-          if (wrapTime > horizon) break;
-          if (loop) { startBeat = loop.start; startCtxTime = wrapTime; cursorIdx = firstIndexAt(loop.start); startBacking(loop.start, wrapTime); continue; }
-          playing = false; startBeat = 0; stopTimer(); stopBacking(); if (tickCb) tickCb({ beat: 0, playing: false }); return;
-        }
-        var ev = events[cursorIdx];
-        var when = startCtxTime + (ev.beat - startBeat) * beatSec();
-        if (when > horizon) break;
-        if (voices[ev.voice].on) strike(ev, Math.max(when, ctx.currentTime));
-        cursorIdx++;
+      var now = ctx.currentTime;
+      transport.prune(now);
+      var due = transport.pull(now + LOOKAHEAD);
+      for (var i = 0; i < due.length; i++) {
+        var d = due[i];
+        if (d.kind === "note") { if (voices[d.event.voice].on) strike(d.event, Math.max(d.when, now)); }
+        else if (d.kind === "end") { finish(d.when); return; }
       }
+      followBacking(now);
       if (tickCb) tickCb({ beat: nowBeat(), playing: true });
     }
-    function firstIndexAt(beat) { var i = 0; while (i < events.length && events[i].beat < beat - 1e-6) i++; return i; }
+    /** The end of the piece: the last notes ring on, and the backing stops where they end. */
+    function finish(at) {
+      playing = false; startBeat = 0; stopTimer(); clearBackingTimers();
+      backing.endTimer = setTimeout(pauseBacking, Math.max(0, (at - ctx.currentTime) * 1000));
+      if (tickCb) tickCb({ beat: 0, playing: false });
+    }
     function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
 
+    // ── The backing ──
+    function backingElement() {
+      if (backing.el) return backing.el;
+      var el = document.createElement("audio");
+      el.preload = "auto";
+      el.preservesPitch = true; el.mozPreservesPitch = true; el.webkitPreservesPitch = true;
+      el.addEventListener("loadedmetadata", function () {
+        if (!backing.url || el.src !== backing.url) return;
+        backing.ready = true; applyGains();
+        if (playing) followBacking(ctx.currentTime);
+      });
+      el.addEventListener("error", function () { if (el.getAttribute("src")) { backing.ready = false; applyGains(); } });
+      // Started from a pause while slowed, the time-stretcher lands anywhere within ±80 ms; a seek once it is playing
+      // lands where a seek always does.
+      el.addEventListener("playing", function () { if (backing.reseek) { backing.reseek = false; if (playing) syncBacking(true); } });
+      var node = ctx.createMediaElementSource(el);
+      backing.gain = ctx.createGain(); backing.gain.gain.value = 0;
+      node.connect(backing.gain); backing.gain.connect(ctx.destination);
+      backing.el = el;
+      return el;
+    }
+    function backingLive() { return backing.on && backing.ready; }
+    function applyGains() {
+      if (!ctx) return;
+      var g = balanceGains(backing.balance), live = backingLive(), t = ctx.currentTime;
+      master.gain.setTargetAtTime(live ? g.solfa : 1, t, 0.03);
+      if (backing.gain) backing.gain.gain.setTargetAtTime(live ? g.backing * BACKING_LEVEL : 0, t, 0.03);
+    }
+    function pauseBacking() { if (backing.el && !backing.el.paused) backing.el.pause(); }
+    function clearBackingTimers() {
+      clearTimeout(backing.waitTimer); clearTimeout(backing.changeTimer); clearTimeout(backing.endTimer);
+      backing.waitTimer = backing.changeTimer = backing.endTimer = null; backing.changeAt = null;
+    }
+    function seekBacking(aim) {
+      backing.el.currentTime = Math.max(0, aim);
+      backing.settleUntil = ctx.currentTime + SETTLE_SEC;
+    }
+    function startElement(r) {
+      backing.reseek = r !== 1;
+      var p = backing.el.play();
+      // The browser wants a press first: the solfa plays on alone until the next Play.
+      if (p && p.catch) p.catch(function (err) { if (err && err.name === "NotAllowedError") backing.blocked = true; });
+    }
+    /**
+     * Puts the backing where the transport says the recording is now: started there, seeked there (a jump, or a drift
+     * past 40 ms once a seek has settled), or left alone.
+     */
+    function syncBacking(jump) {
+      var el = backing.el;
+      clearTimeout(backing.waitTimer); backing.waitTimer = null;
+      if (!el || !backing.ready) return;
+      if (!playing || !backing.on) { pauseBacking(); return; }
+      var now = ctx.currentTime, want = transport.audioAt(now), r = transport.rateAt(now);
+      if (el.playbackRate !== r) { el.defaultPlaybackRate = r; el.playbackRate = r; }
+      // A note before the recording starts (a pickup sung alone): the band waits for its moment. Past its end, it is done.
+      if (want < 0) { pauseBacking(); backing.waitTimer = setTimeout(function () { syncBacking(false); }, (-want / r) * 1000); return; }
+      if (!(want < el.duration - 0.05)) { pauseBacking(); return; }
+      var aim = want + ELEMENT_LAG_SEC * r;
+      if (el.paused) { if (!backing.blocked) { seekBacking(aim); startElement(r); } return; }
+      if (jump) { seekBacking(aim); return; }
+      if (el.seeking || now < backing.settleUntil) return;
+      if (Math.abs(el.currentTime - aim) > DRIFT_SEC) seekBacking(aim);
+    }
+    /** Every tick: in step, and ready for the next wrap or speed, which takes over between ticks at its own moment. */
+    function followBacking(now) {
+      if (!backingLive()) return;
+      syncBacking(false);
+      var next = transport.nextChange(now);
+      if (!next || next.time === backing.changeAt) return;
+      clearTimeout(backing.changeTimer); backing.changeAt = next.time;
+      backing.changeTimer = setTimeout(function fire() {
+        var left = next.time - ctx.currentTime;
+        if (left > 0.002) { backing.changeTimer = setTimeout(fire, left * 1000); return; }
+        backing.changeAt = null; syncBacking(next.jump);
+      }, Math.max(0, (next.time - now) * 1000));
+    }
+    /** Safari lets an <audio> play later only once it has played on a press: on the first Play, a silent start and stop. */
+    function unlockBacking() {
+      var el = backing.el;
+      if (!el || !backing.ready || backing.unlocked) return;
+      backing.unlocked = true;
+      el.muted = true;
+      var p = el.play(), done = function () { if (!playing) el.pause(); el.muted = false; };
+      if (p && p.then) p.then(done, function () { el.muted = false; }); else done();
+    }
+
     return {
-      /** voicesIn: [{name, notes, gain, on}] in the tune's beats. */
+      /**
+       * voicesIn: [{name, notes, gain, on}] in the tune's beats. `beatOriginSec` / `beatTimesSec` place the beats in the
+       * song's recording (assets/backing-clock.js); without them the tempo is the clock.
+       */
       load: function (opts) {
         ensure();
         loadPiano(ctx).catch(function () { /* play() reports it */ });
         voices.forEach(function (v) { try { v.gainNode.disconnect(); } catch (e) { /* ignore */ } });
         tempo = opts.tempoBpm || 100; ts = opts.timeSignature || "4/4";
+        clock.tempo = Math.max(30, tempo);
+        clock.beatOriginSec = Number(opts.beatOriginSec) || 0;
+        clock.beatTimesSec = Array.isArray(opts.beatTimesSec) && opts.beatTimesSec.length ? opts.beatTimesSec : null;
         voices = (opts.voices || []).map(function (v) {
           var g = ctx.createGain(); g.gain.value = v.gain == null ? 1 : v.gain; g.connect(master);
           return { name: v.name, notes: v.notes || [], on: v.on !== false, gainNode: g, full: g.gain.value, level: 1 };
@@ -451,40 +635,71 @@
         if (!events.length || playing || pendingPlay) return;
         // Resumed here, on the gesture, not after the await: browsers only honour it then.
         if (ctx.state === "suspended") ctx.resume();
+        backing.blocked = false;
+        unlockBacking();
         var mine = pendingPlay = {};
         loadPiano(ctx).then(function () {
           if (pendingPlay !== mine) return;
           pendingPlay = null;
-          var from = startBeat;
-          if (loop && (from < loop.start || from >= loop.end)) from = loop.start;
-          startBeat = from; startCtxTime = ctx.currentTime + 0.05; cursorIdx = firstIndexAt(from); playing = true;
-          startBacking(from, startCtxTime);
+          clearBackingTimers();
+          startBeat = transport.start(startBeat, ctx.currentTime + 0.05);
+          playing = true;
           stopTimer(); timer = setInterval(schedule, INTERVAL); schedule();
         }, function () { if (pendingPlay === mine) pendingPlay = null; if (tickCb) tickCb({ beat: startBeat, playing: false }); });
       },
-      pause: function () { pendingPlay = null; if (!playing) return; startBeat = nowBeat(); playing = false; stopTimer(); stopBacking(); if (tickCb) tickCb({ beat: startBeat, playing: false }); },
-      stop: function () { pendingPlay = null; playing = false; stopTimer(); stopBacking(); startBeat = loop ? loop.start : 0; if (tickCb) tickCb({ beat: startBeat, playing: false }); },
+      pause: function () {
+        pendingPlay = null;
+        if (!playing) return;
+        startBeat = nowBeat(); playing = false; transport.stop(); stopTimer(); clearBackingTimers(); pauseBacking();
+        if (tickCb) tickCb({ beat: startBeat, playing: false });
+      },
+      stop: function () {
+        pendingPlay = null; playing = false; transport.stop(); stopTimer(); clearBackingTimers(); pauseBacking();
+        startBeat = loop ? loop.start : 0;
+        if (tickCb) tickCb({ beat: startBeat, playing: false });
+      },
       toggle: function () { playing ? this.pause() : this.play(); },
       isPlaying: function () { return playing; },
-      setRate: function (r) { var b = nowBeat(); rate = Math.min(2, Math.max(0.5, r)); startBeat = b; startCtxTime = ctx ? ctx.currentTime : 0; if (playing) { cursorIdx = firstIndexAt(b); startBacking(b, startCtxTime); } },
-      /** The song's instrumental as encoded audio bytes (an ArrayBuffer), with where beat 0 falls in it; null clears it. */
-      setBacking: function (bytes, originSec) {
-        stopBacking(); backing.buffer = null; backing.originSec = originSec || 0;
-        if (!bytes) return;
-        ensure();
-        var mine = backing.pending = {};
-        ctx.decodeAudioData(bytes.slice(0)).then(function (buf) { if (backing.pending === mine) { backing.buffer = buf; if (playing) startBacking(nowBeat(), ctx.currentTime); } }, function () { /* undecodable: play the piano alone */ });
+      setRate: function (r) {
+        rate = Math.min(2, Math.max(0.5, r));
+        transport.setRate(rate);
+        if (playing) followBacking(ctx.currentTime);
       },
-      setBackingOn: function (on) { backing.on = !!on; if (playing) { if (on) startBacking(nowBeat(), ctx.currentTime); else stopBacking(); } },
-      hasBacking: function () { return !!backing.buffer; },
+      /**
+       * The song's instrumental as encoded audio bytes (an ArrayBuffer of MP3); null clears it. The same bytes again
+       * change nothing. A number after it moves where beat 0 falls in it (as `load`'s beatOriginSec).
+       */
+      setBacking: function (bytes, originSec) {
+        if (typeof originSec === "number") clock.beatOriginSec = originSec;
+        if ((bytes || null) === backing.bytes) return;
+        backing.bytes = bytes || null; backing.ready = false;
+        pauseBacking(); applyGains();
+        if (backing.url) { URL.revokeObjectURL(backing.url); backing.url = null; }
+        if (!bytes) { if (backing.el) { backing.el.removeAttribute("src"); backing.el.load(); } return; }
+        ensure();
+        var el = backingElement();
+        backing.url = URL.createObjectURL(new Blob([bytes], { type: "audio/mpeg" }));
+        el.src = backing.url;
+      },
+      setBackingOn: function (on) {
+        backing.on = !!on; applyGains();
+        if (!playing) return;
+        if (backing.on) followBacking(ctx.currentTime); else pauseBacking();
+      },
+      /** The balance: 0 the solfa alone, 1 the backing alone (0.4 by default). Only heard while the backing plays. */
+      setBalance: function (b) { backing.balance = Math.min(1, Math.max(0, Number(b) || 0)); applyGains(); },
+      hasBacking: function () { return backing.ready; },
       getRate: function () { return rate; },
       /** Bars are 1-based and inclusive; null clears the passage. */
       setLoopBars: function (from, to) {
-        if (from == null || to == null) { loop = null; return; }
-        var bpb = beatsPerBar(ts);
-        loop = { start: Math.max(0, (from - 1) * bpb), end: Math.min(endBeat + 1e-6, to * bpb) };
-        if (loop.end <= loop.start + 1e-6) loop = null;
-        if (loop && playing) { var b = nowBeat(); if (b < loop.start || b >= loop.end) { startBeat = loop.start; startCtxTime = ctx.currentTime; cursorIdx = firstIndexAt(loop.start); } }
+        if (from == null || to == null) loop = null;
+        else {
+          var bpb = beatsPerBar(ts);
+          loop = { start: Math.max(0, (from - 1) * bpb), end: Math.min(endBeat + 1e-6, to * bpb) };
+          if (loop.end <= loop.start + 1e-6) loop = null;
+        }
+        transport.setLoop(loop ? loop.start : null, loop ? loop.end : null);
+        if (playing) followBacking(ctx.currentTime);
       },
       setVoiceOn: function (name, on) { voices.forEach(function (v) { if (v.name === name) { v.on = on; v.gainNode.gain.setTargetAtTime(on ? v.full * v.level : 0, ctx.currentTime, 0.02); } }); },
       /** A voice's loudness against its own (1 = as loaded, 0.25 = soft under another part), mid-note. */
@@ -499,6 +714,6 @@
     parseKey: parseKey, label: label, partReference: partReference, keyHeader: keyHeader, renderLines: renderLines, hymnRows: hymnRows,
     syllabify: syllabify, lyricsUnderNotes: lyricsUnderNotes, barCount: barCount, beatsPerBar: beatsPerBar,
     VOICES: VOICES, rangeReport: rangeReport, pitchName: pitchName, shiftKeyName: shiftKeyName,
-    createPlayer: createPlayer, createPianoOutput: createPianoOutput, loadPiano: loadPiano, pianoNote: pianoNote
+    createPlayer: createPlayer, createTransport: createTransport, createPianoOutput: createPianoOutput, loadPiano: loadPiano, pianoNote: pianoNote
   };
 })();

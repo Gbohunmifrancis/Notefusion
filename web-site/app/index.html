@@ -604,6 +604,20 @@
         </div>
       </div>
 
+      <!-- The song's own backing under the solfa (boards o-backing O4a/O4b), only on a sheet that has it: the app's switch and
+           a Solfa · Backing balance. Its twin is in Slow & loop (#backing-group); app.js renderBacking draws both. A song
+           from a link says in one line that its backing is not kept. -->
+      <div class="bk-wrap hidden" id="bk-wrap">
+        <div class="bk-strip" id="bk-strip" role="group" aria-labelledby="bk-name">
+          <span class="bk-name" id="bk-name"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-disc"/></svg>Song backing</span>
+          <button class="switch bk-on" type="button" role="switch" aria-checked="true" aria-labelledby="bk-name" aria-describedby="bk-why"></button>
+          <span class="bk-bal"><span class="bk-end bk-end-solfa">Solfa</span><span class="bk-rail"><input class="bk-balance" type="range" min="0" max="100" step="1" value="40" aria-label="Balance between the solfa and the backing"></span><span class="bk-end bk-end-backing">Backing</span></span>
+          <span class="bk-why hidden" id="bk-why">The backing plays in the song’s own key — it’s off while the sheet is transposed.</span>
+          <button class="btn btn-ghost btn-sm bk-back hidden" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-shift"/></svg><span class="bk-back-label">Back to the song’s key</span></button>
+        </div>
+        <p class="bk-line hidden" id="bk-line"><svg class="ic hidden" id="bk-line-icon" aria-hidden="true"><use href="/assets/icons.svg#i-disc"/></svg><span id="bk-line-text"></span></p>
+      </div>
+
       <!-- Everything you can do with the sheet, one row; each opens in a pop-up. Named by what they do (board n-ux-low V1j):
            the parts tile reads "See parts" once the sheet has them (app.js syncActions). -->
       <div class="result-actions" role="toolbar" aria-label="What to do with this sheet">
@@ -652,7 +666,17 @@
             <label>from bar <input type="number" id="loop-from" min="1" value="1"></label>
             <label>to bar <input type="number" id="loop-to" min="1" value="4"></label></span>
           <span class="group hidden" id="voices"><label>Voices</label></span>
-          <label class="group hidden" id="backing-group" title="The song's own backing, with the solfa melody played over it in time"><input type="checkbox" id="backing-on"> Play with the song</label>
+          <!-- The song's backing, the same setting as the strip above Play (board o-backing O4a). -->
+          <div class="group bk-group hidden" id="backing-group" role="group" aria-labelledby="bk-name2">
+            <div class="bk-top">
+              <span class="bk-name" id="bk-name2"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-disc"/></svg>Song backing</span>
+              <button class="switch bk-on" type="button" role="switch" aria-checked="true" aria-labelledby="bk-name2" aria-describedby="bk-why2"></button>
+            </div>
+            <span class="bk-bal"><span class="bk-end bk-end-solfa">Solfa</span><span class="bk-rail"><input class="bk-balance" type="range" min="0" max="100" step="1" value="40" aria-label="Balance between the solfa and the backing"></span><span class="bk-end bk-end-backing">Backing</span></span>
+            <p class="bk-hint">It follows the loop and the speed, and stays in the song’s key.</p>
+            <p class="bk-why hidden" id="bk-why2">The backing plays in the song’s own key — it’s off while the sheet is transposed.</p>
+            <button class="btn btn-ghost btn-sm bk-back hidden" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-shift"/></svg><span class="bk-back-label">Back to the song’s key</span></button>
+          </div>
         </div>
       </div>
 
@@ -738,6 +762,7 @@
           <button class="btn btn-ghost btn-icon" id="tr-up" type="button" aria-label="A semitone higher"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-plus"/></svg></button>
           <button class="btn btn-primary btn-sm" id="tr-apply" type="button" disabled>Transpose</button>
         </div>
+        <p class="bk-line hidden" id="tr-backing-note"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-disc"/></svg><span>The song’s backing can’t move with it, so it will be off until you move it back.</span></p>
         <table class="ranges" id="ranges"></table>
       </div>
 
@@ -1081,6 +1106,7 @@
 <script src="https://accounts.google.com/gsi/client" id="gsi-client" async defer></script>
 <!-- The engraver (once the app is open) and the PDF library (on the first PDF) are loaded by app.js from pinned,
      integrity-checked CDN URLs. -->
+<script src="/assets/backing-clock.js?v=1" defer></script>
 <script src="/assets/choir.js?v=6" defer></script>
 <script src="/assets/chords.js?v=1" defer></script>
 <script src="/assets/songlink.js?v=3" defer></script>
