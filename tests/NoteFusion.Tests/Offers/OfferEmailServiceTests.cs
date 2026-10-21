@@ -39,6 +39,7 @@ public class OfferEmailServiceTests
         Assert.Equal(new long[] { 349, 2_799 }, kofi.Prices.Select(p => p.OfferAmountMinor));
         var token = rows.Single(r => r.UserId == recentFree.Id).Token;
         Assert.Equal($"https://notefusion.studio/app?offer=halloween-2026&m={token}", kofi.OfferUrl);
+        Assert.Equal($"https://api.notefusion.studio/api/offers/o/{token}", kofi.OpenPixelUrl);
         Assert.StartsWith("https://api.notefusion.studio/api/email/unsubscribe?token=", kofi.UnsubscribeUrl);
         Assert.Equal(recentFree.Id, new HmacEmailUnsubscribeTokens(h.Keys).Read(kofi.UnsubscribeUrl.Split("token=")[1]));
         Assert.All(h.Db.OfferEmails.AsNoTracking(), r => Assert.Equal((OfferEmailStatus.Sent, 1), (r.Status, r.Attempts)));

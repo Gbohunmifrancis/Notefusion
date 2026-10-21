@@ -11,7 +11,7 @@ namespace NoteFusion.Api.Controllers;
 
 /// <summary>
 /// The seasonal offer as the website and the web app read it: what is live for the caller and at what price, and the
-/// email button's click. Anonymous allowed; a signed-in caller is priced by their own account.
+/// email's open and its button's click. Anonymous allowed; a signed-in caller is priced by their own account.
 /// </summary>
 [AllowAnonymous]
 [Route("api/offers")]
@@ -41,6 +41,22 @@ public sealed class OffersController : ApiControllerBase
         await _sender.Send(new RecordOfferClickCommand(body?.Token), ct);
         return NoContent();
     }
+
+    /// <summary>
+    /// The email's 1×1 image (its own token): counts the email as opened, once, and answers the same transparent GIF
+    /// whatever the token. Not rate limited: Gmail and Apple fetch images from shared addresses, and one lookup by a
+    /// unique token is all it costs.
+    /// </summary>
+    [HttpGet("o/{token}")]
+    public async Task<IActionResult> Open(string token, CancellationToken ct)
+    {
+        await _sender.Send(new RecordOfferOpenCommand(token), ct);
+        Response.Headers.CacheControl = "no-store, no-cache, must-revalidate, private";
+        return File(TransparentGif, "image/gif");
+    }
+
+    /// <summary>A 1×1 transparent GIF.</summary>
+    private static readonly byte[] TransparentGif = Convert.FromBase64String("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
 
     /// <summary>Body of <c>POST /api/offers/click</c>.</summary>
     public sealed record OfferClickBody(string? Token);

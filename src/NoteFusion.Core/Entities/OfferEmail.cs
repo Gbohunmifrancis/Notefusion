@@ -35,6 +35,12 @@ public sealed class OfferEmail : BaseEntity
     /// <summary>The first time the email's button opened the web app.</summary>
     public DateTime? ClickedAtUtc { get; private set; }
 
+    /// <summary>
+    /// The first time the email's tracking image was loaded: an open, or a mail app fetching images on delivery (Apple
+    /// Mail does, so the count reads high). A click counts as an open too, as images may be blocked.
+    /// </summary>
+    public DateTime? OpenedAtUtc { get; private set; }
+
     /// <summary>Why the last attempt failed, capped. Admin-only.</summary>
     public string? LastError { get; private set; }
 

@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { OFFERS_KEY, lookOf, offerError, offerKeys, people } from "./offerLook";
 
 /**
- * How it's going (board P6c), once the email is sent: queued, sent, opened (not tracked: no pixel in our mail),
+ * How it's going (board P6c), once the email is sent: queued, sent, opened (the email's 1×1 image, or a click),
  * clicked, bought and the revenue, then by day and by plan, and Pause/Resume. Read again every minute while it sends.
  */
 export function OfferProgressCard({ offer, onConfirm }: { offer: AdminOffer; onConfirm: (request: ConfirmRequest) => void }) {
@@ -125,21 +125,14 @@ export function OfferProgressCard({ offer, onConfirm }: { offer: AdminOffer; onC
   );
 }
 
-function Tile({ label, value, sub, dot, muted }: { label: string; value: string; sub: string; dot: string; muted?: boolean }) {
+function Tile({ label, value, sub, dot }: { label: string; value: string; sub: string; dot: string }) {
   return (
     <div className="nf-panel min-w-0 p-4">
       <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
         <span aria-hidden="true" className={cn("size-1.5 shrink-0 rounded-full", dot)} />
         {label}
       </p>
-      <p
-        className={cn(
-          "mt-2 text-[24px] font-semibold leading-none tracking-[-0.02em] tabular-nums",
-          muted ? "text-faint" : "text-foreground",
-        )}
-      >
-        {value}
-      </p>
+      <p className="mt-2 text-[24px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">{value}</p>
       <p className="mt-2 text-xs leading-snug text-muted-foreground">{sub}</p>
     </div>
   );
@@ -183,7 +176,7 @@ function Figures({ offer, progress: p, paused }: { offer: AdminOffer; progress: 
           sub={`of ${formatCount(total)}${p.failed > 0 ? ` · ${formatCount(p.failed)} failed` : ""}`}
           dot="bg-brand"
         />
-        <Tile label="Opened" value="—" sub="Not tracked: no pixel in our mail" dot="bg-faint" muted />
+        <Tile label="Opened" value={formatCount(p.opened)} sub={`${share(p.opened)} of sent`} dot="bg-brand" />
         <Tile label="Clicked" value={formatCount(p.clicked)} sub={`${share(p.clicked)} of sent`} dot="bg-brand" />
         <Tile
           label="Bought"
@@ -213,6 +206,7 @@ function Figures({ offer, progress: p, paused }: { offer: AdminOffer; progress: 
                 <tr className="text-left text-xs text-faint">
                   <th className="pb-1.5 font-medium">Day</th>
                   <th className="pb-1.5 text-right font-medium">Sent</th>
+                  <th className="pb-1.5 text-right font-medium">Opened</th>
                   <th className="pb-1.5 text-right font-medium">Clicked</th>
                   <th className="pb-1.5 text-right font-medium">Bought</th>
                 </tr>
@@ -225,6 +219,7 @@ function Figures({ offer, progress: p, paused }: { offer: AdminOffer; progress: 
                       {day.date === today && ", so far"}
                     </td>
                     <td className="py-2 text-right tabular-nums text-muted-foreground">{formatCount(day.sent)}</td>
+                    <td className="py-2 text-right tabular-nums text-muted-foreground">{formatCount(day.opened)}</td>
                     <td className="py-2 text-right tabular-nums text-muted-foreground">{formatCount(day.clicked)}</td>
                     <td className="py-2 text-right tabular-nums text-muted-foreground">{formatCount(day.bought)}</td>
                   </tr>
@@ -261,7 +256,8 @@ function Figures({ offer, progress: p, paused }: { offer: AdminOffer; progress: 
       <p className="mt-4 flex items-start gap-2 rounded-[6px] bg-muted px-3.5 py-2.5 text-[12.5px] leading-normal text-muted-foreground">
         <Info size={14} className="mt-px shrink-0" aria-hidden="true" />
         <span>
-          Clicked: opened the web app from this email&apos;s button. Bought: paid the offer price, whether emailed or not
+          Opened: the email&apos;s image loaded, or its button was clicked; Apple Mail loads every image on delivery, so
+          read it as a rough count. Clicked: opened the web app from this email&apos;s button. Bought: paid the offer price, whether emailed or not
           {others > 0 ? ` (${formatCount(others)} came by the banner or the pricing page)` : ""}. All of it is ordinary Pro revenue
           in Growth and the Ledger.
         </span>

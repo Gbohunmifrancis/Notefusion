@@ -189,7 +189,7 @@ public sealed class AdminOfferQueryHandlers :
 
         var emails = await _db.OfferEmails.AsNoTracking()
             .Where(e => e.OfferId == offer.Id)
-            .Select(e => new { e.UserId, e.Status, e.SkipReason, e.SentAtUtc, e.ClickedAtUtc })
+            .Select(e => new { e.UserId, e.Status, e.SkipReason, e.SentAtUtc, e.ClickedAtUtc, e.OpenedAtUtc })
             .ToListAsync(ct);
         var payments = await _db.PaymentTransactions.AsNoTracking()
             .Where(t => t.OfferId == offer.Id)
@@ -206,8 +206,14 @@ public sealed class AdminOfferQueryHandlers :
         // By UK day, from the first day anything happened (or the start) to the last (or today, while it runs).
         var sentDays = emails.Where(e => e.SentAtUtc is not null).Select(e => OfferWindow.UkDate(e.SentAtUtc!.Value)).ToList();
         var clickDays = emails.Where(e => e.ClickedAtUtc is not null).Select(e => OfferWindow.UkDate(e.ClickedAtUtc!.Value)).ToList();
+        // Opened when its image loaded or, images blocked, when its button was clicked: whichever came first.
+        var openDays = emails
+            .Select(e => e.OpenedAtUtc is { } o && e.ClickedAtUtc is { } c ? (o < c ? o : c) : e.OpenedAtUtc ?? e.ClickedAtUtc)
+            .Where(at => at is not null)
+            .Select(at => OfferWindow.UkDate(at!.Value))
+            .ToList();
         var boughtDays = bought.Select(p => OfferWindow.UkDate(p.UpdatedAtUtc)).ToList();
-        var every = sentDays.Concat(clickDays).Concat(boughtDays).ToList();
+        var every = sentDays.Concat(openDays).Concat(clickDays).Concat(boughtDays).ToList();
         var byDay = new List<OfferDayDto>();
         if (every.Count > 0)
         {
@@ -216,7 +222,9 @@ public sealed class AdminOfferQueryHandlers :
             var runsTo = today < offer.LastDay ? today : offer.LastDay;
             var to = every.Max() > runsTo ? every.Max() : runsTo;
             for (var day = from; day <= to; day = day.AddDays(1))
-                byDay.Add(new OfferDayDto(day, sentDays.Count(d => d == day), clickDays.Count(d => d == day), boughtDays.Count(d => d == day)));
+                byDay.Add(new OfferDayDto(
+                    day, sentDays.Count(d => d == day), clickDays.Count(d => d == day), boughtDays.Count(d => d == day),
+                    openDays.Count(d => d == day)));
         }
 
         var byPlan = bought
@@ -250,6 +258,7 @@ public sealed class AdminOfferQueryHandlers :
             payments.Count,
             bought.Where(p => string.Equals(p.Currency, "USD", StringComparison.OrdinalIgnoreCase)).Sum(p => p.AmountMinor),
             byDay,
-            byPlan);
+            byPlan,
+            openDays.Count);
     }
 }

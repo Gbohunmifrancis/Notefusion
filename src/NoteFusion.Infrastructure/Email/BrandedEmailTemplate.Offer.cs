@@ -83,6 +83,10 @@ public sealed partial class BrandedEmailTemplate
         var endLine = $"The offer ends at midnight on {endsOn}, your time. Each payment buys {buys} of Pro; nothing renews by itself.";
         var button = $"Get {pct}% off Pro";
         var address = string.IsNullOrWhiteSpace(_settings.PostalAddress) ? PostalAddressPlaceholder : _settings.PostalAddress.Trim();
+        // The 1×1 image that counts the open (real sends only; never in a preview or a test).
+        var pixel = offer.OpenPixelUrl is { } pixelUrl
+            ? $"<img src=\"{Encode(pixelUrl)}\" width=\"1\" height=\"1\" alt=\"\" style=\"display:block;width:1px;height:1px;border:0\" />"
+            : string.Empty;
         var site = _settings.AppUrl.Replace("https://", string.Empty).Replace("http://", string.Empty).TrimEnd('/');
         var art = SeasonArtUrl(offer.Template);
 
@@ -233,6 +237,7 @@ public sealed partial class BrandedEmailTemplate
                   </td>
                 </tr>
               </table>
+              {{pixel}}
             </body>
             </html>
             """;

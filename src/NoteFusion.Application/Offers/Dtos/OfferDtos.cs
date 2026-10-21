@@ -133,13 +133,17 @@ public sealed record OfferEstimateDto(int? Days, int ReachedBeforeEnd);
 
 // ── Progress ────────────────────────────────────────────────────────────────
 
-/// <summary><c>GET /api/admin/offers/{id}/progress</c>: the email's queue, clicks and what the offer sold.</summary>
+/// <summary><c>GET /api/admin/offers/{id}/progress</c>: the email's queue, opens, clicks and what the offer sold.</summary>
 /// <param name="Clicked">Emails whose button opened the web app.</param>
 /// <param name="Bought">Completed payments at this offer's price, emailed or not (the banner and the pricing page sell it too).</param>
 /// <param name="BoughtFromEmail">Of those, payments by accounts it was emailed to, after it was sent.</param>
 /// <param name="Checkouts">Checkouts opened at this offer's price, paid or not.</param>
 /// <param name="RevenueMinor">The completed payments' total, in US cents.</param>
 /// <param name="ByDay">By UK calendar day.</param>
+/// <param name="Opened">
+/// Emails opened: their 1×1 image loaded, or their button clicked. Reads high, as Apple Mail loads every image on
+/// delivery, and low where images are blocked.
+/// </param>
 public sealed record OfferProgressDto(
     int Queued,
     int Sent,
@@ -151,11 +155,12 @@ public sealed record OfferProgressDto(
     int Checkouts,
     long RevenueMinor,
     IReadOnlyList<OfferDayDto> ByDay,
-    IReadOnlyList<OfferPlanSalesDto> ByPlan);
+    IReadOnlyList<OfferPlanSalesDto> ByPlan,
+    int Opened);
 
 public sealed record OfferSkippedDto(int OptedOut, int Bought, int BecamePro, int Ended, int NoLongerEligible);
 
-public sealed record OfferDayDto(DateOnly Date, int Sent, int Clicked, int Bought);
+public sealed record OfferDayDto(DateOnly Date, int Sent, int Clicked, int Bought, int Opened);
 
 /// <param name="Set">"standard" or "regional".</param>
 public sealed record OfferPlanSalesDto(string Code, string Name, string Set, int Count, long RevenueMinor);

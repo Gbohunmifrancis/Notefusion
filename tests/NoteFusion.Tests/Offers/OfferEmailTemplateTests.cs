@@ -94,6 +94,18 @@ public class OfferEmailTemplateTests
     }
 
     [Fact]
+    public void A_sent_email_carries_its_open_pixel_and_a_preview_or_test_none()
+    {
+        var pixel = "https://api.notefusion.studio/api/offers/o/tok_123";
+        var sent = Template(PostalAddress).RenderOffer(new EmailRecipient("grace@example.com", "Grace"), Content(Standard()) with { OpenPixelUrl = pixel }).Html;
+        Assert.Contains($"<img src=\"{pixel}\" width=\"1\" height=\"1\" alt=\"\"", sent);
+        Assert.True(sent.IndexOf(pixel, StringComparison.Ordinal) > sent.IndexOf("Unsubscribe", StringComparison.Ordinal)); // after the footer
+
+        var preview = Template(PostalAddress).RenderOffer(new EmailRecipient("grace@example.com", "Grace"), Content(Standard())).Html;
+        Assert.DoesNotContain("/api/offers/o/", preview);
+    }
+
+    [Fact]
     public async Task An_offer_email_waits_for_the_quota_but_an_admins_test_always_goes()
     {
         var transport = new RecordingTransport();

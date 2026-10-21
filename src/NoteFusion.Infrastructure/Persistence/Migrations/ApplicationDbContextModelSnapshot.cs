@@ -1280,6 +1280,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("OfferId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime?>("OpenedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime>("QueuedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
