@@ -153,6 +153,13 @@ test("a hymn page: the engine's solfa as text, MusicComposition JSON-LD, the sco
   assert.equal(data.notes.length, 32);
 });
 
+test("a hymn page's player has the bar for a phone's foot: Play/Pause, the name and tempo, the same speeds (board n-ux-low V3e)", () => {
+  const html = read("hymns/amazing-grace/index.html");
+  assert.match(html, /<div class="mini-player" id="mini-player" role="group" aria-label="Player" hidden>\s*<button type="button" class="play-btn" id="mini-play" data-track="Hymn: mini player">Play<\/button>\s*<span class="mini-title"><b>Amazing Grace<\/b><small>Piano · 76 beats a minute<\/small><\/span>\s*<label class="mini-speed"><span class="sr-only">Speed<\/span><select id="mini-rate">/);
+  const speeds = (id) => new RegExp(`<select id="${id}">(.*?)</select>`).exec(html)[1];
+  assert.equal(speeds("mini-rate"), speeds("rate"));
+});
+
 test("a hymn page names its PDF (button, <link rel=alternate>, JSON-LD) and links its writers and seasons", () => {
   const html = read("hymns/amazing-grace/index.html");
   assert.match(html, /<link rel="alternate" type="application\/pdf" href="\/hymns\/amazing-grace\/amazing-grace-tonic-solfa\.pdf" title="Amazing Grace in Tonic Solfa \(PDF\)">/);
