@@ -18,47 +18,50 @@
   /** Where the balance starts: 40 % toward Backing, so the solfa is on top and the band sits under it. */
   var DEFAULT_BALANCE = 0.4;
 
-  function beatTimes(clock) {
-    var t = clock && clock.beatTimesSec;
-    return Array.isArray(t) && t.length ? t : null;
-  }
   function secondsPerBeat(clock) {
-    var tempo = clock && Number(clock.tempo);
-    return 60 / (tempo > 0 ? tempo : 100);
+    var tempo = Number(clock.tempo);
+    return 60 / (isFinite(tempo) && tempo > 0 ? tempo : 120);
   }
-  function origin(clock) { return (clock && Number(clock.beatOriginSec)) || 0; }
-  /** The step past either end: the first or the last interval; a beat at the tempo when there is only one entry. */
-  function edgeStep(times, first, clock) {
-    var n = times.length - 1;
-    var d = n < 1 ? 0 : first ? times[1] - times[0] : times[n] - times[n - 1];
-    return d > 0 ? d : secondsPerBeat(clock);
+  /** The beat times when they are usable (finite and increasing), else null and the tempo stands. */
+  function beatTimes(clock) {
+    var t = clock.beatTimesSec;
+    if (!t || !t.length) return null;
+    for (var i = 0; i < t.length; i++) {
+      if (typeof t[i] !== "number" || !isFinite(t[i])) return null;
+      if (i > 0 && !(t[i] > t[i - 1])) return null;
+    }
+    return t;
   }
+  /** True when the song carries its own beat times (a tempo that moves), not just an origin and a tempo. */
+  function hasBeatTimes(clock) { return !!clock && beatTimes(clock) !== null; }
 
-  /** The recording's time (s) of notation beat `beat`. `clock`: { tempo, beatOriginSec, beatTimesSec }. */
+  /** Where notation beat `beat` falls in the recording, in seconds. `clock`: { tempo, beatOriginSec, beatTimesSec }. */
   function audioTimeOfBeat(beat, clock) {
-    var times = beatTimes(clock);
-    if (!times) return origin(clock) + beat * secondsPerBeat(clock);
-    var n = times.length - 1;
-    if (beat <= 0) return times[0] + beat * edgeStep(times, true, clock);
-    if (beat >= n) return times[n] + (beat - n) * edgeStep(times, false, clock);
+    var t = beatTimes(clock);
+    if (!t) return (clock.beatOriginSec || 0) + beat * secondsPerBeat(clock);
+    // One entry gives no interval to follow: the tempo carries on from it.
+    if (t.length === 1) return t[0] + beat * secondsPerBeat(clock);
+    var last = t.length - 1;
+    if (beat <= 0) return t[0] + beat * (t[1] - t[0]);
+    if (beat >= last) return t[last] + (beat - last) * (t[last] - t[last - 1]);
     var i = Math.floor(beat);
-    return times[i] + (beat - i) * (times[i + 1] - times[i]);
+    return t[i] + (beat - i) * (t[i + 1] - t[i]);
   }
 
-  /** The notation beat at the recording's time `sec`: audioTimeOfBeat's inverse. */
+  /** The notation beat heard at `sec` in the recording: the inverse of `audioTimeOfBeat`. */
   function beatOfAudioTime(sec, clock) {
-    var times = beatTimes(clock);
-    if (!times) return (sec - origin(clock)) / secondsPerBeat(clock);
-    var n = times.length - 1;
-    if (sec <= times[0]) return (sec - times[0]) / edgeStep(times, true, clock);
-    if (sec >= times[n]) return n + (sec - times[n]) / edgeStep(times, false, clock);
-    var lo = 0, hi = n; // times[lo] <= sec < times[hi]
+    var t = beatTimes(clock);
+    if (!t) return (sec - (clock.beatOriginSec || 0)) / secondsPerBeat(clock);
+    if (t.length === 1) return (sec - t[0]) / secondsPerBeat(clock);
+    var last = t.length - 1;
+    if (sec <= t[0]) return (sec - t[0]) / (t[1] - t[0]);
+    if (sec >= t[last]) return last + (sec - t[last]) / (t[last] - t[last - 1]);
+    var lo = 0, hi = last;
     while (hi - lo > 1) {
       var mid = (lo + hi) >> 1;
-      if (times[mid] <= sec) lo = mid; else hi = mid;
+      if (t[mid] <= sec) lo = mid; else hi = mid;
     }
-    var span = times[hi] - times[lo];
-    return lo + (span > 0 ? (sec - times[lo]) / span : 0);
+    return lo + (sec - t[lo]) / (t[lo + 1] - t[lo]);
   }
 
   /**
@@ -73,7 +76,7 @@
 
   var api = {
     DEFAULT_BALANCE: DEFAULT_BALANCE,
-    audioTimeOfBeat: audioTimeOfBeat, beatOfAudioTime: beatOfAudioTime, balanceGains: balanceGains
+    audioTimeOfBeat: audioTimeOfBeat, beatOfAudioTime: beatOfAudioTime, hasBeatTimes: hasBeatTimes, balanceGains: balanceGains
   };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   if (typeof window !== "undefined") window.NfBackingClock = api;
