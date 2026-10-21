@@ -437,8 +437,8 @@
       <!-- The choices first, then what it costs, then the action (board m-ux-medium W2a): the record button or the
            drop zone for a recording, Transcribe for a link. -->
       <div class="source-panel" id="src-link" role="tabpanel" aria-labelledby="src-tab-link" hidden>
+      <label class="field-label" for="link-url">Song link</label>
       <form id="form-link" class="link-form studio-link" novalidate>
-        <label class="sr-only" for="link-url">Song link</label>
         <span class="input-wrap providers">
           <span class="provider-marks" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#p-youtube"/></svg><svg class="ic" aria-hidden="true"><use href="#p-spotify"/></svg><svg class="ic" aria-hidden="true"><use href="#p-apple"/></svg></span>
           <input id="link-url" type="url" placeholder="YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false" required>
@@ -451,24 +451,29 @@
       </div>
 
       <div id="kind-block">
-      <div class="upload-kind studio-kind" role="radiogroup" aria-label="What is in the recording?">
+      <div class="upload-kind studio-kind" role="radiogroup" aria-label="What is in the recording?" aria-describedby="kind-hint">
         <label><input type="radio" name="upload-kind" value="hum"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-mic"/></svg>Just a voice</label>
         <label><input type="radio" name="upload-kind" value="song" checked><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-music"/></svg>Voice with instruments</label>
-        <label title="A choir singing in parts: soprano, alto, tenor and bass come back as they were sung"><input type="radio" name="upload-kind" value="choir"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg>A choir in parts</label>
-        <label title="Piano or guitar: the chords as they were played, with the top line as the tune"><input type="radio" name="upload-kind" value="chords"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-keys"/></svg>Chords (piano, guitar)</label>
+        <label><input type="radio" name="upload-kind" value="choir"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg>A choir in parts</label>
+        <label><input type="radio" name="upload-kind" value="chords"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-keys"/></svg>Chords (piano, guitar)</label>
       </div>
+      <!-- The help that lived in title tooltips (no phone shows them), one line under its control (board n-ux-low V1f):
+           the chosen kind's, when it needs one (app.js renderKindOptions), and what the keyboard's number means. -->
+      <p class="studio-hint hidden" id="kind-hint"></p>
       <div class="studio-opts">
         <label class="studio-opt hidden" id="choir-band-row"><input type="checkbox" id="choir-band"> Instruments are playing too</label>
-        <label class="studio-opt hidden" id="kb-row" title="The transpose setting on your keyboard. At −4 you press A and hear F; the sheet is written in the keys you press.">Keyboard transpose
-          <select id="kb-transpose"></select></label>
+        <label class="studio-opt hidden" id="kb-row">Keyboard transpose
+          <select id="kb-transpose" aria-describedby="kb-hint"></select></label>
       </div>
+      <p class="studio-hint hidden" id="kb-hint">Your keyboard’s transpose setting: at −4 you press A and hear F. The sheet is written in the keys you press.</p>
       </div>
 
       <!-- Beats in a bar, on every tab: the worker cannot hear the meter yet, so a 3/4 hymn came back in 4/4. -->
       <div class="studio-opts studio-meter">
-        <label class="studio-opt" for="meter" title="How many beats each bar holds. Not sure leaves it to us.">Beats in a bar
-          <select id="meter" data-meter></select></label>
+        <label class="studio-opt" for="meter">Beats in a bar
+          <select id="meter" data-meter aria-describedby="meter-hint"></select></label>
       </div>
+      <p class="studio-hint" id="meter-hint">Not sure? Leave it, and we’ll count them.</p>
       <!-- What the next transcription costs, only when it costs something; the why behind (i). -->
       <div class="studio-cost hidden" id="studio-cost">
         <span class="cost-line"><span class="cost-chip" id="cost-chip"></span><button class="cost-info" id="cost-info" type="button" aria-expanded="false" aria-controls="cost-pop" aria-label="How this is counted"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-info"/></svg></button></span>
@@ -486,11 +491,12 @@
 
       <div class="source-panel" id="src-upload" role="tabpanel" aria-labelledby="src-tab-upload" hidden>
       <label class="drop" id="drop">
-        <input id="file-input" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,.mp4,audio/*">
+        <input id="file-input" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,.mp4,audio/*" aria-describedby="drop-types">
         <svg class="ic drop-ic" aria-hidden="true"><use href="/assets/icons.svg#i-upload"/></svg>
         <span class="btn btn-light">Upload your audio</span>
-        <span class="drop-hint" title="MP3, WAV, M4A, FLAC, OGG or WebM, up to 25 MB">or drop it here · up to 25 MB</span>
+        <span class="drop-hint">or drop it here · up to 25 MB</span>
       </label>
+      <p class="studio-hint" id="drop-types">MP3, WAV, M4A, FLAC, OGG or WebM.</p>
       </div>
 
       <!-- Out of the form's row and still its submit button: shown on the Song link tab only (app.js selectSource). -->
@@ -669,8 +675,10 @@
           <button class="btn btn-ghost btn-icon" id="restart" type="button" title="From the start" aria-label="From the start"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-restart"/></svg></button>
           <span class="group"><label for="rate">Speed</label>
             <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></span>
-          <span class="group"><label><input type="checkbox" id="loop-on"> Loop bars</label>
-            <input type="number" id="loop-from" min="1" value="1" aria-label="From bar"> – <input type="number" id="loop-to" min="1" value="4" aria-label="To bar"></span>
+          <!-- The loop in words, each box with its own label (board n-ux-low V1e). -->
+          <span class="group loop-group"><label class="loop-on"><input type="checkbox" id="loop-on"> Loop bars</label>
+            <label>from bar <input type="number" id="loop-from" min="1" value="1"></label>
+            <label>to bar <input type="number" id="loop-to" min="1" value="4"></label></span>
           <span class="group hidden" id="voices"><label>Voices</label></span>
           <label class="group hidden" id="backing-group" title="The song's own backing, with the solfa melody played over it in time"><input type="checkbox" id="backing-on"> Play with the song</label>
         </div>
@@ -764,7 +772,8 @@
       <div class="section" id="save-section">
         <h2><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-share"/></svg>Save &amp; share</h2>
         <div id="save-form" class="link-form">
-          <input id="save-title" type="text" placeholder="Name this sheet" maxlength="120" aria-label="Sheet title">
+          <label class="field-label" for="save-title">Sheet name</label>
+          <input id="save-title" type="text" placeholder="Name this sheet" maxlength="120">
           <button class="btn btn-primary" id="save" type="button"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-save"/></svg>Save to my library</button>
         </div>
         <div id="saved" class="hidden">
@@ -781,10 +790,11 @@
             <span id="share-row" class="share-row hidden">
               <input id="share-url" type="text" readonly aria-label="Share link">
               <button class="btn btn-ghost btn-sm" id="share-copy" type="button">Copy</button>
-              <button class="btn btn-ghost btn-sm" id="share-stop" type="button">Stop sharing</button>
             </span>
           </div>
           <p class="muted small" style="margin:10px 0 0">Anyone with the link can read the sheet and rehearse with playback — no account needed. Paste it into the choir group.</p>
+          <!-- Apart from Copy, on its own line, a red word (board n-ux-low V1g); it still asks first. -->
+          <button class="share-stop hidden" id="share-stop" type="button">Stop sharing this link</button>
         </div>
       </div>
 

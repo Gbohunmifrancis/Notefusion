@@ -218,6 +218,8 @@ body.guest .topbar { display: flex; }
 .studio-opt select:focus { border-color: #fff; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18); }
 .studio-opt select option { color: #0f172a; background: #fff; }
 .studio-meter { justify-content: center; }
+/* Help you can see, one muted line under its control, in place of title tooltips (board n-ux-low V1f). */
+.studio-hint { margin: 8px 2px 0; font-size: 0.875rem; line-height: 1.45; color: var(--muted); text-align: left; }
 .btn.btn-glass { background: rgba(255, 255, 255, 0.14); color: #fff; border-color: rgba(255, 255, 255, 0.45); }
 .btn.btn-glass:hover:not(:disabled) { background: rgba(255, 255, 255, 0.24); }
 .studio-status.link-hint { margin-top: 8px; font-weight: 500; }
@@ -265,6 +267,10 @@ input[type=search] { -webkit-appearance: none; appearance: none; }
 input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: var(--ring); }
 textarea { resize: vertical; line-height: 1.5; }
 .field { margin-bottom: 14px; }
+/* A label above its field, where the field had only a placeholder or a hidden label (board n-ux-low V1e). */
+.field-label { display: block; margin: 14px 2px 6px; font-size: 0.875rem; font-weight: 600; color: var(--ink); text-align: left; }
+#save-form { flex-wrap: wrap; }
+#save-form .field-label { flex-basis: 100%; margin: 6px 2px -4px; } /* 6 px over the field: the row's 10 px gap, less 4 */
 .input-wrap { position: relative; flex: 1; min-width: 0; display: block; }
 .input-wrap > .ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--faint); pointer-events: none; }
 .input-wrap input { padding-left: 42px; }
@@ -403,6 +409,11 @@ table.hymn td:last-child { border-right: 2px solid var(--ink); }
 .player input[type=number] { width: 54px; min-height: 30px; padding: 3px 6px; border: 1px solid var(--line); border-radius: 8px; font-size: 0.875rem; }
 .player select { width: auto; min-height: 30px; padding: 3px 26px 3px 8px; border: 1px solid var(--line); border-radius: 8px; font-size: 0.875rem; background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right 8px center no-repeat; appearance: none; -webkit-appearance: none; }
 .player input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--blue); margin: 0; }
+/* Rehearse's loop as words: "Loop bars", then "from bar [1] to bar [4]", each box with its own label (board n-ux-low V1e). */
+#player .loop-group { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; width: 100%; padding: 6px 12px 10px; }
+#player .loop-group label { gap: 8px; font-size: 0.9375rem; font-weight: 500; color: var(--ink); text-transform: none; letter-spacing: 0; }
+#player .loop-group .loop-on { flex-basis: 100%; font-weight: 600; }
+#player .loop-group input[type=number] { width: 64px; }
 
 /* Sing it */
 .sing-live { font-size: 2.6rem; font-weight: 800; color: var(--blue); text-align: center; padding: 12px 0 6px; font-family: ui-monospace, Menlo, Consolas, monospace; letter-spacing: -0.02em; }
@@ -435,6 +446,11 @@ table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 
 .share-row { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .share-row input { width: min(380px, 70vw); min-height: 36px; padding: 6px 10px; font-size: 0.875rem; }
+/* The sheet's link and Copy, side by side; Stop sharing on a line of its own, a red word (board n-ux-low V1g). */
+#share-row { display: flex; flex-wrap: nowrap; width: 100%; }
+#share-row #share-url { flex: 1; width: auto; min-width: 0; }
+.share-stop { display: flex; align-items: center; width: 100%; min-height: 48px; margin: 14px 0 0; padding: 8px 0 0; border: 0; border-top: 1px solid var(--line); background: none; font: inherit; font-size: 0.9375rem; font-weight: 600; color: var(--danger-text); text-align: left; cursor: pointer; }
+.share-stop:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .downloads { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
 .upgrade-note { background: linear-gradient(135deg, #fff7e0, #fffbef); border: 1px solid #f6e3a1; border-radius: var(--radius-sm); padding: 16px 18px; margin-top: 16px; color: var(--copy); }
 .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 14px; }

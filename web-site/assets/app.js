@@ -2212,11 +2212,20 @@
   function resetMeter() { if (window.NfMeter) window.NfMeter.reset($("meter")); }
   /** The keyboard's transpose setting, −11 to +11; 0 when it is off. */
   function kbTranspose() { var n = parseInt(stored(KB_KEY), 10); return n >= -11 && n <= 11 ? n : 0; }
+  /** What a kind does, said under the kinds when it needs saying (board n-ux-low V1f); the voice kinds say it already. */
+  var KIND_HINTS = {
+    choir: "Soprano, alto, tenor and bass come back as they were sung.",
+    chords: "Piano or guitar: the chords as they were played, with the top line as the tune."
+  };
   /** A choir with instruments behind it, and the keyboard's transpose, only where they apply (or are set). */
   function renderKindOptions() {
     var kind = checkedKind();
     kind === "choir" ? show($("choir-band-row")) : hide($("choir-band-row"));
-    kind === "chords" || kbTranspose() !== 0 ? show($("kb-row")) : hide($("kb-row"));
+    var kb = kind === "chords" || kbTranspose() !== 0;
+    kb ? show($("kb-row")) : hide($("kb-row"));
+    kb ? show($("kb-hint")) : hide($("kb-hint"));
+    $("kind-hint").textContent = KIND_HINTS[kind] || "";
+    KIND_HINTS[kind] ? show($("kind-hint")) : hide($("kind-hint"));
   }
   (function () {
     var select = $("kb-transpose");
@@ -4076,8 +4085,8 @@
   function renderShare() {
     if (current.shareToken) {
       $("share-url").value = "https://notefusion.studio/app/sheet/?s=" + encodeURIComponent(current.shareToken);
-      show($("share-row")); $("share").textContent = "Share a link";
-    } else hide($("share-row"));
+      show($("share-row")); show($("share-stop")); $("share").textContent = "Share a link";
+    } else { hide($("share-row")); hide($("share-stop")); }
   }
   /**
    * Saves the sheet on screen. `auto` is the preview someone just signed up to keep: it is saved for
