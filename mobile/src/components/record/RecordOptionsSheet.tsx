@@ -2,9 +2,10 @@ import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Icon, type IconName } from "../Icon";
 import { Button } from "../Button";
+import { Chip } from "../Chip";
 import { Sheet, SheetActions } from "../Sheet";
 import { Touchable } from "../Touchable";
-import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
+import { fonts, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import { METER_CHOICES, meterLabel, type Meter } from "../../lib/meter";
 
@@ -97,42 +98,30 @@ export function RecordOptionsSheet({
           <>
             <Text style={[styles.eyebrow, styles.eyebrowGap]}>Key signature</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
-              {keys.map((k) => {
-                const active = selectedKey === k;
-                return (
-                  <Touchable
-                    key={k}
-                    onPress={() => onKey(k)}
-                    radius={radii.pill}
-                    style={[styles.chip, active && styles.chipOn]}
-                    accessibilityLabel={`Key: ${k}`}
-                    accessibilityState={{ selected: active }}
-                  >
-                    <Text style={[styles.chipText, active && styles.chipTextOn]}>{k}</Text>
-                  </Touchable>
-                );
-              })}
+              {keys.map((k) => (
+                <Chip
+                  key={k}
+                  label={k}
+                  selected={selectedKey === k}
+                  onPress={() => onKey(k)}
+                  accessibilityLabel={`Key: ${k}`}
+                />
+              ))}
             </ScrollView>
           </>
         ) : null}
 
         <Text style={[styles.eyebrow, styles.eyebrowGap]}>Beats in a bar</Text>
         <View style={styles.chipsWrap}>
-          {METER_CHOICES.map((m) => {
-            const active = meter === m.value;
-            return (
-              <Touchable
-                key={m.short}
-                onPress={() => onMeter(m.value)}
-                radius={radii.pill}
-                style={[styles.chip, styles.meterChip, active && styles.chipOn]}
-                accessibilityLabel={`Beats in a bar: ${m.label}`}
-                accessibilityState={{ selected: active }}
-              >
-                <Text style={[styles.chipText, active && styles.chipTextOn]}>{m.short}</Text>
-              </Touchable>
-            );
-          })}
+          {METER_CHOICES.map((m) => (
+            <Chip
+              key={m.short}
+              label={m.short}
+              selected={meter === m.value}
+              onPress={() => onMeter(m.value)}
+              accessibilityLabel={`Beats in a bar: ${m.label}`}
+            />
+          ))}
         </View>
         <Text style={styles.meterHint}>{meterLabel(meter)}</Text>
 
@@ -145,19 +134,16 @@ export function RecordOptionsSheet({
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
               {transposeChoices.map((t) => {
-                const active = transpose === t;
                 const label = transposeLabel(t);
                 return (
-                  <Touchable
+                  <Chip
                     key={t}
+                    label={label}
+                    mono
+                    selected={transpose === t}
                     onPress={() => onTranspose(t)}
-                    radius={radii.pill}
-                    style={[styles.chip, active && styles.chipOn]}
                     accessibilityLabel={`Keyboard transpose ${label}`}
-                    accessibilityState={{ selected: active }}
-                  >
-                    <Text style={[styles.chipText, styles.chipMono, active && styles.chipTextOn]}>{label}</Text>
-                  </Touchable>
+                  />
                 );
               })}
             </ScrollView>
@@ -244,38 +230,10 @@ const makeStyles = (c: Palette) =>
       flexWrap: "wrap",
       gap: spacing.sm,
     },
-    meterChip: {
-      minWidth: 52,
-    },
     meterHint: {
       ...typography.caption,
       letterSpacing: 0,
       color: c.textMuted,
       marginTop: spacing.sm,
-    },
-    chip: {
-      height: 44,
-      paddingHorizontal: spacing.lg,
-      borderRadius: radii.pill,
-      backgroundColor: c.surfaceAlt,
-      borderWidth: 1,
-      borderColor: c.border,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    chipOn: {
-      backgroundColor: c.ink,
-      borderColor: c.ink,
-    },
-    chipText: {
-      fontFamily: fonts.medium,
-      fontSize: 14,
-      color: c.textMuted,
-    },
-    chipMono: {
-      fontFamily: typography.mono.fontFamily,
-    },
-    chipTextOn: {
-      color: c.onInk,
     },
   });

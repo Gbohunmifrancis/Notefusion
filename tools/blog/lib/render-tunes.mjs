@@ -10,7 +10,7 @@ import { gridHtml, textLinesHtml } from "./grid-html.mjs";
 import { melodyToMusicXml } from "./musicxml.mjs";
 import { PD_DIED_BEFORE, PD_PUBLISHED_BEFORE } from "./content.mjs";
 import { personKey } from "./collections.mjs";
-import { moreLinks, personLink, pdfButton, pdfAlternate, tuneForm } from "./render-collections.mjs";
+import { moreLinks, personLink, pdfButton, pdfAlternate, playerHtml, tuneForm } from "./render-collections.mjs";
 import { pdfPath } from "./render-pdf.mjs";
 
 export const CCEH = { name: "Christian Classics Ethereal Hymnary", short: "CCEH", url: "https://www.ccel.org/cceh/index.htm", terms: "https://www.ccel.org/cceh/cceh_cpr.htm" };
@@ -143,11 +143,7 @@ ${facts.map(([k, val, html]) => `  <div><dt>${k}</dt><dd>${html ? val : escapeHt
   <div class="hymn-grid" id="hymn-grid">
 ${gridHtml(v.lines, { beats: true, words: false })}
   </div>
-  <div class="player" id="player" hidden>
-    <button type="button" class="play-btn" id="play" data-track="Tune: play">Play</button>
-    <label>Speed <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></label>
-    <span class="player-note">Piano, ${escapeHtml(String(v.tempo))} beats a minute. The note being played lights up.</span>
-  </div>
+${playerHtml({ name: v.title, tempo: v.tempo, track: "Tune" })}
 </section>
 
 <section aria-labelledby="lines-title">

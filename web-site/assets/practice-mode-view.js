@@ -129,7 +129,7 @@
   }
 
   /**
-   * A marked take: the server's score and summary (Playful: stars and a word), the marks — green in tune, amber close,
+   * A marked take: the server's score and summary (Playful: stars and a word), the marks — green in tune, ink close,
    * grey off (struck through, never red), dashed not heard — and what it earned.
    */
   function resultCard(o) {
@@ -303,7 +303,7 @@
     return stage;
   }
 
-  /** The tuner's dial: grey beyond, amber close (80 cents), green in tune (35 cents); flat left, sharp right. */
+  /** The tuner's dial: grey beyond, ink close (80 cents), green in tune (35 cents); flat left, sharp right. */
   function gauge() {
     var cx = 120, cy = 118, r = 96;
     function pt(a) { var rad = a * Math.PI / 180; return (cx + r * Math.sin(rad)).toFixed(1) + " " + (cy - r * Math.cos(rad)).toFixed(1); }

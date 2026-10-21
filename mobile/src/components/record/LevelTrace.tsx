@@ -15,18 +15,18 @@ const PAD = 18;
  *
  * `levels` are 0..1 fractions, oldest first; `capacity` is how many fit across, so a fresh take
  * grows in from the right rather than stretching its first few readings over the whole width.
- * `headColor` carries the meter's traffic light (too quiet / soft / good) onto the head dot.
+ * The head dot stays in the line's own light blue (board n-ux-low Q5b): the level is said in words
+ * beside the trace, not by a colour (mint is the app's tick, amber its alert).
  */
 export function LevelTrace({
   levels,
   capacity,
-  headColor,
 }: {
   levels: readonly number[];
   capacity: number;
-  headColor: string;
 }) {
   const c = useColors();
+  const headColor = c.accentAlt;
   const [size, setSize] = useState({ w: 0, h: 0 });
 
   const onLayout = (e: LayoutChangeEvent) => {

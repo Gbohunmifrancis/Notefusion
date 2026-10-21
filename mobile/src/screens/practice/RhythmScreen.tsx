@@ -89,7 +89,8 @@ export function RhythmScreen({ track }: { track: PracticeTrack | null }) {
                 ))}
                 {layout.blocks.map((b) => {
                   const m = marks[b.index];
-                  const tone = m ? (m.tone === "hit" ? c.success : m.tone === "near" ? c.warning : c.textFaint) : null;
+                  // "Close" is a dashed ink outline, as the marks draw it: amber is left to the problem sign.
+                  const tone = m && m.tone !== "near" ? (m.tone === "hit" ? c.success : c.textFaint) : null;
                   return (
                     <View
                       key={b.index}
@@ -98,6 +99,7 @@ export function RhythmScreen({ track }: { track: PracticeTrack | null }) {
                         { left: `${b.x * 100}%`, width: `${Math.max(3, b.w * 100 - 1.2)}%` },
                         due === b.index && styles.clapOn,
                         tone ? { backgroundColor: tone } : null,
+                        m?.tone === "near" && styles.clapNear,
                         m?.tone === "missed" && styles.clapMissed,
                       ]}
                     />
@@ -192,6 +194,7 @@ const makeStyles = (c: Palette) =>
     barLine: { backgroundColor: c.textFaint, top: 0, bottom: 0 },
     clap: { position: "absolute", top: 10, height: 24, borderRadius: 6, backgroundColor: c.primary },
     clapOn: { backgroundColor: c.accentAlt, transform: [{ scaleY: 1.25 }] },
+    clapNear: { backgroundColor: "transparent", borderWidth: 1.5, borderStyle: "dashed", borderColor: c.text },
     clapMissed: { backgroundColor: "transparent", borderWidth: 1.5, borderStyle: "dashed", borderColor: c.textFaint },
     syllables: { height: 22, position: "relative", marginTop: 6 },
     syllable: { position: "absolute", fontFamily: fonts.medium, fontSize: 12, color: c.textMuted },
@@ -202,8 +205,8 @@ const makeStyles = (c: Palette) =>
     list: { backgroundColor: c.surface, borderWidth: 1, borderColor: c.border, borderRadius: radii.md, overflow: "hidden" },
     row: { flexDirection: "row", alignItems: "center", gap: spacing.md, minHeight: 58, paddingHorizontal: spacing.md, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: c.border },
     rowText: { flex: 1, minWidth: 0 },
-    rowTitle: { fontFamily: fonts.medium, fontSize: 15.5, color: c.text },
+    rowTitle: { fontFamily: fonts.medium, fontSize: 16, color: c.text },
     rowTitleOn: { color: c.link },
     rowSub: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted, marginTop: 2 },
-    rowValue: { fontFamily: fonts.medium, fontSize: 12.5, color: c.textFaint },
+    rowValue: { fontFamily: fonts.medium, fontSize: 13, color: c.textFaint },
   });

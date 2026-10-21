@@ -13,7 +13,7 @@ import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, w
 import { Button } from "../Button";
 import { Icon, type IconName } from "../Icon";
 import { Doh, type DohPose } from "./Doh";
-import { fonts, type Palette } from "../../design/theme";
+import { fonts, radii, spacing, type Palette } from "../../design/theme";
 import { useThemedStyles } from "../../lib/theme";
 
 /** How long the toast stays before it leaves by itself. */
@@ -108,10 +108,11 @@ export function DohToast({
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+    /** In the player dock's place, at its width; corners on the scale (board n-ux-low Q1g). */
     wrap: {
       position: "absolute",
-      left: 14,
-      right: 14,
+      left: spacing.lg,
+      right: spacing.lg,
     },
     toast: {
       minHeight: 68,
@@ -121,7 +122,7 @@ const makeStyles = (c: Palette) =>
       paddingLeft: DOH + 12,
       paddingRight: 4,
       paddingVertical: 10,
-      borderRadius: 22,
+      borderRadius: radii.lg,
       backgroundColor: c.toast,
       borderWidth: 1,
       borderColor: c.border,

@@ -28,5 +28,5 @@ export function markLabel(syllable: string, status: GradeStatus, cents: number |
 }
 
 /** The legends under the marks name the shapes, never the colours alone. */
-export const FOCUSED_MARK_LEGEND = "✓ in tune · ~ close · struck through: off the note · dashed: not sung. Numbers are cents off.";
-export const PLAYFUL_MARK_LEGEND = "✓ spot on · ~ close · struck through: try again · dashed: not heard";
+export const FOCUSED_MARK_LEGEND = "✓ in tune · ~ close · struck through: off the note · – not sung. Numbers are cents off.";
+export const PLAYFUL_MARK_LEGEND = "✓ spot on · ~ close · struck through: try again · – not heard";

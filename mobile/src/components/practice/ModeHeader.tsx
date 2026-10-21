@@ -67,7 +67,7 @@ const makeStyles = (c: Palette) =>
       borderColor: c.border,
     },
     text: { flex: 1, minWidth: 0 },
-    eyebrow: { ...typography.caption, color: c.textFaint, textTransform: "uppercase", letterSpacing: 1, fontSize: 11 },
+    eyebrow: { ...typography.caption, color: c.textFaint, textTransform: "uppercase", letterSpacing: 1, fontSize: 12 },
     title: { fontFamily: fonts.semibold, fontSize: 22, letterSpacing: -0.3, color: c.text, marginTop: 2 },
     pill: {
       flexDirection: "row",

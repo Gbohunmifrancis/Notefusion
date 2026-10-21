@@ -28,7 +28,7 @@ test("the legends name the shapes, and Playful's never says red", () => {
   for (const legend of [FOCUSED_MARK_LEGEND, PLAYFUL_MARK_LEGEND]) {
     assert.match(legend, /✓/);
     assert.match(legend, /struck through/);
-    assert.match(legend, /dashed/);
+    assert.match(legend, /– not (sung|heard)/);
     assert.doesNotMatch(legend, /red/i);
   }
 });

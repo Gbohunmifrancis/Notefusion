@@ -75,14 +75,14 @@
 .pv-score-row { display: flex; align-items: center; gap: 14px; }
 .pv-score { font-size: 2.2rem; font-weight: 700; min-width: 2.4ch; text-align: center; line-height: 1; font-variant-numeric: tabular-nums; }
 .pv-score.good { color: var(--success-text); }
-.pv-score.fair { color: var(--amber-text); }
+.pv-score.fair { color: var(--ink); }
 .pv-score.poor { color: var(--danger-text); }
 .pv-summary { margin: 0; font-size: 0.9rem; color: var(--ink); line-height: 1.45; }
 .pv-result .marks { margin: 0; }
 .pv-result .mark { background: var(--surface); }
 .pv-legend { margin: 0; font-size: 0.8125rem; color: var(--muted); line-height: 1.45; }
-.pv-earned { margin: 0; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.9rem; color: var(--blue-dark); }
-.pv-earned .ic { width: 16px; height: 16px; color: var(--blue-dark); }
+.pv-earned { margin: 0; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.9rem; color: var(--ink); } /* a label: blue is for what can be pressed */
+.pv-earned .ic { width: 16px; height: 16px; color: var(--ink); }
 
 /* ── This week ───────────────────────────────────────────────────────────── */
 .pv-week { display: flex; flex-direction: column; gap: 12px; }

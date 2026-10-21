@@ -130,6 +130,9 @@ test("the blog's front page: the newest post set large, the rest beside it, topi
   assert.match(html, /<nav class="topics" aria-label="Topics"><a href="\/blog" aria-current="page">All<\/a>/);
   assert.match(html, /data-reads-path="\/blog\/how-to-find-the-doh-of-a-song" data-reads-format="compact"/);
   assert.match(html, /<section class="hymnal"[\s\S]*?href="\/hymns\/amazing-grace"/);
+  // The site's call to action, once, after the stories and before the hymnal (board n-ux-low V3d).
+  assert.equal([...html.matchAll(/<aside class="cta-box"/g)].length, 1);
+  assert.match(html, /<div class="front-top[\s\S]*?<aside class="cta-box" aria-labelledby="cta-blog-index">[\s\S]*?href="\/app\?utm_source=blog-index"[\s\S]*?<\/aside>\s*<section class="hymnal"/);
 });
 
 test("a hymn page: the engine's solfa as text, MusicComposition JSON-LD, the score as data", () => {
@@ -148,6 +151,13 @@ test("a hymn page: the engine's solfa as text, MusicComposition JSON-LD, the sco
   const data = JSON.parse(/<script type="application\/json" id="hymn-data">([\s\S]*?)<\/script>/.exec(html)[1]);
   assert.equal(xmlError(data.musicXml), null);
   assert.equal(data.notes.length, 32);
+});
+
+test("a hymn page's player has the bar for a phone's foot: Play/Pause, the name and tempo, the same speeds (board n-ux-low V3e)", () => {
+  const html = read("hymns/amazing-grace/index.html");
+  assert.match(html, /<div class="mini-player" id="mini-player" role="group" aria-label="Player" hidden>\s*<button type="button" class="play-btn" id="mini-play" data-track="Hymn: mini player">Play<\/button>\s*<span class="mini-title"><b>Amazing Grace<\/b><small>Piano · 76 beats a minute<\/small><\/span>\s*<label class="mini-speed"><span class="sr-only">Speed<\/span><select id="mini-rate">/);
+  const speeds = (id) => new RegExp(`<select id="${id}">(.*?)</select>`).exec(html)[1];
+  assert.equal(speeds("mini-rate"), speeds("rate"));
 });
 
 test("a hymn page names its PDF (button, <link rel=alternate>, JSON-LD) and links its writers and seasons", () => {
@@ -215,6 +225,16 @@ test("the home page shows the newest posts between its markers", () => {
   const block = html.slice(html.indexOf("<!-- blog-latest:start -->"), html.indexOf("<!-- blog-latest:end -->"));
   assert.match(block, /href="\/blog\/how-to-read-tonic-solfa"/);
   assert.equal(read(`${INDEXNOW_KEY}.txt`).trim(), INDEXNOW_KEY);
+});
+
+test("every page's header names three places, Pricing, Hymns and Blog; the hand-written copies too (board n-ux-low V3a)", () => {
+  for (const rel of ["index.html", "blog/index.html", "hymns/amazing-grace/index.html", "privacy/index.html", "terms/index.html", "delete-account/index.html", "reset-password/index.html"]) {
+    const html = read(rel);
+    for (const nav of ["site-shell-links", "site-shell-panel"]) {
+      const links = new RegExp(`<nav class="${nav}"[^>]*>([\\s\\S]*?)(?:</nav>|<a class=)`).exec(html)[1];
+      assert.deepEqual([...links.matchAll(/>([^<]+)<\/a>/g)].map((m) => m[1]), ["Pricing", "Hymns", "Blog"], `${rel} ${nav}`);
+    }
+  }
 });
 
 test("the checker catches broken links, missing ids and stale output", () => {

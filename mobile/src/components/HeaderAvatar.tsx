@@ -5,6 +5,7 @@ import { Avatar } from "./Avatar";
 import { useAuth } from "../lib/auth";
 import { useSubscription } from "../lib/subscription";
 import { refreshProfilePicture, useProfilePicture } from "../lib/profilePicture";
+import { leaveThrough } from "../lib/leaveGuard";
 import type { RootStackParams } from "../navigation/types";
 
 /** The avatar's size in every tab header. */
@@ -12,7 +13,8 @@ export const HEADER_AVATAR = 38;
 
 /**
  * The account, at the top right of every tab: the picture (or initials), with Pro's gold ring from the same
- * `isPro` every Pro check reads, and a tap that pushes Profile — so back returns to the tab you were on.
+ * `isPro` every Pro check reads, and a tap that pushes Profile — so back returns to the tab you were on. On Record
+ * mid-take it asks first, as the tab bar does (lib/leaveGuard); everywhere else nothing is guarded and it goes at once.
  */
 export function HeaderAvatar() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
@@ -33,7 +35,7 @@ export function HeaderAvatar() {
       name={user?.fullName}
       size={HEADER_AVATAR}
       premium={isPro}
-      onPress={() => nav.navigate("Profile")}
+      onPress={() => leaveThrough(() => nav.navigate("Profile"))}
       accessibilityLabel="Profile and settings"
     />
   );

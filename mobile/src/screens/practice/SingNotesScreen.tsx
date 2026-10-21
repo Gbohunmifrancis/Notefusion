@@ -227,8 +227,8 @@ const makeStyles = (c: Palette) =>
     list: { backgroundColor: c.surface, borderWidth: 1, borderColor: c.border, borderRadius: radii.md, overflow: "hidden" },
     row: { flexDirection: "row", alignItems: "center", gap: spacing.md, minHeight: 58, paddingHorizontal: spacing.md, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: c.border },
     rowText: { flex: 1, minWidth: 0 },
-    rowTitle: { fontFamily: fonts.medium, fontSize: 15.5, color: c.text },
+    rowTitle: { fontFamily: fonts.medium, fontSize: 16, color: c.text },
     rowTitleOn: { color: c.link },
     rowSub: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted, marginTop: 2 },
-    rowValue: { fontFamily: fonts.medium, fontSize: 12.5, color: c.textFaint },
+    rowValue: { fontFamily: fonts.medium, fontSize: 13, color: c.textFaint },
   });

@@ -32,8 +32,8 @@
 
 <!-- The interface font, fetched alongside the CSS rather than after it: the first screen's text is set in it. -->
 <link rel="preload" href="/assets/fonts/geist-v5-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site-pages.css?v=6">
-<link rel="stylesheet" href="/assets/home.css?v=6">
+<link rel="stylesheet" href="/assets/site-pages.css?v=7">
+<link rel="stylesheet" href="/assets/home.css?v=7">
 
 <script type="application/ld+json">
 {
@@ -64,7 +64,7 @@
       <span class="site-brand-mark" aria-hidden="true"></span>
       <span class="site-brand-name">NoteFusion</span>
     </a>
-    <nav class="site-shell-links" aria-label="Primary navigation"><a href="#how">How it works</a><a href="#solfa">Tonic Solfa</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="/blog">Blog</a><a href="/hymns">Hymns</a></nav>
+    <nav class="site-shell-links" aria-label="Primary navigation"><a href="#pricing">Pricing</a><a href="/hymns">Hymns</a><a href="/blog">Blog</a></nav>
     <div class="site-shell-actions">
       <button type="button" class="theme-toggle" data-theme-toggle data-track="Theme toggle" aria-label="Colour theme" title="Colour theme"><svg class="ic tt-light" aria-hidden="true"><use href="/assets/icons.svg#i-sun"/></svg><svg class="ic tt-dark" aria-hidden="true"><use href="/assets/icons.svg#i-moon"/></svg><svg class="ic tt-system" aria-hidden="true"><use href="/assets/icons.svg#i-monitor"/></svg></button>
       <a class="site-shell-signin" href="/app">Sign in</a>
@@ -72,7 +72,7 @@
     </div>
     <details class="site-shell-mobile">
       <summary aria-label="Open site navigation"><svg class="ic ic-open" aria-hidden="true"><use href="/assets/icons.svg#i-menu"/></svg><svg class="ic ic-close" aria-hidden="true"><use href="/assets/icons.svg#i-x"/></svg></summary>
-      <nav class="site-shell-panel" aria-label="Mobile navigation"><a href="#how">How it works</a><a href="#solfa">Tonic Solfa</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="/blog">Blog</a><a href="/hymns">Hymns</a>
+      <nav class="site-shell-panel" aria-label="Mobile navigation"><a href="#pricing">Pricing</a><a href="/hymns">Hymns</a><a href="/blog">Blog</a>
         <a class="site-shell-signin" href="/app">Sign in</a>
         <a class="site-shell-cta" href="/app?signup=1">Create a free account</a>
         <a class="store-badge" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="mobile_menu"><img src="/assets/google-play-badge.png" width="646" height="250" alt="Get it on Google Play"></a>
@@ -265,14 +265,16 @@
     <div class="section-head">
       <h2 id="pricing-title">Pricing</h2>
       <p class="section-lead">Free to start. Pro adds whole songs, four-part harmony and every download.</p>
-      <p class="pricing-region" id="pricing-region" hidden></p>
+      <p class="pricing-region" id="pricing-region"><span class="sk" aria-hidden="true"></span></p>
     </div>
 
-    <div class="plans plans--loading" id="pricing-plans" aria-live="polite" aria-busy="true">
-      <div class="plan" role="status">
-        <h3>Loading prices…</h3>
-        <p class="blurb">Checking the plans offered in your country.</p>
-      </div>
+    <!-- While the prices load: three still skeletons, each at its card's loaded height, so the note and the questions
+         under them stay where they are when pricing.js puts the cards in their place (board n-ux-low V3c). -->
+    <div class="plans plans--skel" id="pricing-plans" aria-live="polite" aria-busy="true">
+      <p class="sr-only" role="status">Loading prices…</p>
+      <div class="plan plan--skel" aria-hidden="true"><span class="sk sk-t"></span><span class="sk sk-p"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk-r"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk sk-l"></span><span class="sk sk-b"></span></div>
+      <div class="plan plan--skel" aria-hidden="true"><span class="sk sk-t"></span><span class="sk sk-p"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk-r"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk sk-l"></span><span class="sk sk-b"></span></div>
+      <div class="plan plan--skel" aria-hidden="true"><span class="sk sk-t"></span><span class="sk sk-p"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk-r"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk sk-l"></span><span class="sk sk-b"></span></div>
     </div>
 
     <noscript>
@@ -380,6 +382,7 @@
         <li><a href="#solfa">Tonic Solfa</a></li>
         <li><a href="#features">Features</a></li>
         <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#faq">FAQ</a></li>
         <li><a href="/app?signup=1">Create a free account</a></li>
         <li><a href="/app">Sign in</a></li>
         <li><a href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="footer">Android app (Google Play)</a></li>
@@ -389,7 +392,6 @@
     <nav aria-labelledby="f-company">
       <h2 class="footer-head" id="f-company">Company</h2>
       <ul>
-        <li><a href="#faq">FAQ</a></li>
         <li><a href="/blog">Blog</a></li>
         <li><a href="/hymns">Hymns in Tonic Solfa</a></li>
         <li><a href="/hymns/identify">Hum to find a hymn</a></li>

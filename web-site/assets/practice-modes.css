@@ -2,10 +2,10 @@
  * warm up and the range finder, pitch match with its live needle, riffs & runs, intervals, harmony and rhythm
  * (boards c-practice/6b–6d). Loaded the first time a mode is opened, never with the app.
  * Phone first: these are the 360–414 px styles; min-width queries go upward. Colours are the app's tokens (app.css,
- * night.css), so Day and Night follow the theme switch. The marks: green in tune, amber close, grey off — never red. */
+ * night.css), so Day and Night follow the theme switch. The marks: green in tune, ink close (dashed, with ~), grey off — never red; amber is Pro's alone. */
 
-:root { --pm-in: var(--success); --pm-close: #b45309; --pm-close-line: rgba(180, 83, 9, 0.5); --pm-in-line: rgba(22, 163, 74, 0.5); }
-:root[data-theme="dark"] { --pm-close: #f5b544; --pm-close-line: rgba(245, 181, 68, 0.6); --pm-in-line: rgba(61, 220, 151, 0.55); }
+:root { --pm-in: var(--success); --pm-close: var(--ink); --pm-close-line: var(--ink); --pm-in-line: rgba(22, 163, 74, 0.5); }
+:root[data-theme="dark"] { --pm-in-line: rgba(61, 220, 151, 0.55); }
 
 .pm { display: flex; flex-direction: column; gap: 14px; }
 .pm .btn { min-height: 48px; justify-content: center; }
@@ -75,7 +75,7 @@
 .pm-mark b { font-size: 1.05rem; font-weight: 500; color: var(--ink); }
 .pm-mark small { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.7rem; color: var(--muted); }
 .pm-mark.hit { border-color: var(--pm-in-line); } .pm-mark.hit b { color: var(--success-text); }
-.pm-mark.near { border-color: var(--pm-close-line); } .pm-mark.near b { color: var(--pm-close); }
+.pm-mark.near { border-color: var(--pm-close-line); border-style: dashed; } .pm-mark.near b { color: var(--pm-close); }
 .pm-mark.hit b::after { content: "✓"; margin-left: 2px; } .pm-mark.near b::after { content: "~"; margin-left: 2px; }
 .pm-mark.missed b::after { content: "–"; margin-left: 2px; }
 .pm-mark.off b { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1.5px; }

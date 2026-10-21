@@ -820,6 +820,10 @@
       history.replaceState(history.state, "", url.pathname + url.search + url.hash);
     } catch (e) { /* the address keeps the old view; nothing depends on it */ }
     ["transcribe", "library", "practice", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
+    // A phone's top bar names the section (app.css, under 641 px); Home keeps the logo's name.
+    var section = { library: "Library", practice: "Practice", account: "Account" }[name] || "";
+    $("topbar-title").textContent = section;
+    $("topbar-title").parentNode.classList.toggle("has-title", !!section);
     // The nav says where you are, to the eye and to a screen reader; Search lights itself, not Library.
     var navOn = focusSearch ? "search" : name;
     // The phone's tab bar has no Search (the Library's own box is it) and no Account (the photo, top right).
@@ -839,8 +843,9 @@
     var from = viewNow;
     if (window.NfBack && (name === "search" ? "library" : name) !== from) NfBack.push(function () { setView(from); });
     setView(name);
-    // A screen reader hears the new view's heading (Search goes to its field instead).
+    // A screen reader hears the new view's heading (Search goes to its field instead): on a phone, the top bar's.
     var h = name !== "search" && document.querySelector("#view-" + viewNow + " h1");
+    if (h && h.offsetParent === null) h = $("topbar-title");
     if (h && h.offsetParent !== null) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
   }
   document.querySelectorAll("#top-nav .top-link, .user-menu-item[data-view], #tabbar [data-view]").forEach(function (b) { b.addEventListener("click", function () { goView(b.dataset.view); }); });
@@ -901,7 +906,7 @@
   // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
   // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
   // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=10", "/assets/practice-progress.js?v=9", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=3", "/assets/practice-view.js?v=12"];
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=11", "/assets/practice-progress.js?v=9", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=4", "/assets/practice-view.js?v=13"];
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
   function loadAsset(url) {
@@ -1078,6 +1083,10 @@
       card.classList.toggle("hidden", !match);
       if (match) shown++;
     });
+    // A date's heading only over sheets still shown (inside a folder and while searching too).
+    document.querySelectorAll("#lib-list .lib-group-h").forEach(function (gh) {
+      gh.classList.toggle("hidden", !document.querySelector('#lib-list .lib-item[data-group="' + gh.dataset.group + '"]:not(.hidden)'));
+    });
     // A search that hides every sheet says so, rather than leaving an empty page.
     var none = $("lib-no-match");
     if (none) {
@@ -1086,11 +1095,14 @@
     }
   }
   /**
-   * A tap anywhere on a sheet's card opens it (the title is the biggest target there is), not only the small Open
-   * button beside Delete; the card's own controls keep their jobs. Keyboards and screen readers still use Open.
+   * A tap anywhere on a sheet's card opens it (the title is the biggest target there is); the card's own controls and
+   * its ⋯ menu keep their jobs, and a tap that only closed that menu opens nothing. Keyboards and screen readers use
+   * Open (in the ⋯ menu on the account's own sheets).
    */
   function opensOnTap(card, open) {
-    card.addEventListener("click", function (e) { if (!e.target.closest("button, select, a, input, label")) open(); });
+    card.addEventListener("click", function (e) {
+      if (e !== sheetMenuClosedBy && !e.target.closest("button, select, a, input, label, .lib-menu")) open();
+    });
   }
   /**
    * A folder's name, asked in the app's own dialog (it was the browser's prompt): `title` and `action` say what it is
@@ -1119,18 +1131,22 @@
     asked.onName(name);
   });
   $("folder-input").addEventListener("input", function () { clearFieldError("folder-input"); });
-  /** Files a sheet: an existing folder, a new one, or none. */
-  function fileSheet(it, value, select) {
+  /** Files a sheet: an existing folder, a new one ("__new" asks its name), or none (null). */
+  function fileSheet(it, value) {
     if (value === "__new") {
-      askFolderName({ title: "New folder", action: "Create", onName: function (name) { fileSheet(it, name, select); }, onCancel: function () { select.value = it.folder || ""; } });
+      askFolderName({ title: "New folder", action: "Create", onName: function (name) { fileSheet(it, name); } });
       return;
     }
     var name = value;
-    select.disabled = true;
     request("/api/library/" + it.id + "/folder", { method: "PUT", body: { folder: name || null } })
-      .then(function () { it.folder = name || null; track("Filed sheet"); loadLibrary(false); })
-      .catch(function (err) { libAlert("Could not move the sheet: " + (err.message || err)); select.value = it.folder || ""; })
-      .finally(function () { select.disabled = false; });
+      .then(function () {
+        it.folder = name || null; track("Filed sheet");
+        // Drawn again, the card's ⋯ is a new button: the keyboard goes back to it, unless it went somewhere meanwhile.
+        loadLibrary(false).then(function () {
+          var card = sheetCard(it.id), more = card && !card.classList.contains("hidden") && card.querySelector(".lib-card-more");
+          if (more && (!document.activeElement || document.activeElement === document.body)) more.focus({ preventScroll: true });
+        });
+      }, function (err) { libAlert("Could not move the sheet: " + (err.message || err)); });
   }
   $("lib-folder-share").addEventListener("click", function () {
     if (!libFolder) return;
@@ -1201,44 +1217,124 @@
     } });
   });
 
+  // ── A sheet's ⋯ menu (board n-ux-low V2a): Open, Move to a folder…, Share with the choir (in one), Delete ──
+  // The folder's menu's ways: Enter, Space or a tap opens it on its first item, the arrows move between items, and
+  // Escape, Tab or a tap outside closes it (Escape hands the focus back to ⋯). "Move to a folder…" turns the same menu
+  // into the folders, then New folder….
+  var sheetMenu = null; // { el, more, it } while one is open
+  var sheetMenuClosedBy = null; // the tap that closed it, which opens nothing else (opensOnTap)
+  function sheetCard(id) {
+    return Array.prototype.filter.call(document.querySelectorAll("#lib-list .lib-item"), function (c) { return c.dataset.id === String(id); })[0];
+  }
+  /** How the tune opens, in solfa, as the phone's rows show it, then the key and a short date ("18 Oct"). */
+  function sheetMeta(it) {
+    return [openingSolfa(it), it.key, shortDate(it.createdAtUtc)].filter(Boolean).join(" · ") + (it.shareToken ? " · shared" : "") + (it.sharedWithChoir ? " · in the choir library" : "");
+  }
+  function sheetMenuItems() { return sheetMenu ? Array.prototype.slice.call(sheetMenu.el.querySelectorAll("[role^=menuitem]")) : []; }
+  function closeSheetMenu(focusBack) {
+    var m = sheetMenu;
+    if (!m) return;
+    sheetMenu = null;
+    m.el.remove(); m.more.setAttribute("aria-expanded", "false"); m.more.removeAttribute("aria-controls");
+    if (focusBack) m.more.focus();
+  }
+  function openSheetMenu(card, more, it) {
+    closeFolderMenu(false);
+    var el = document.createElement("span"); el.className = "lib-menu lib-sheet-menu"; el.id = "lib-sheet-menu";
+    el.setAttribute("role", "menu"); el.setAttribute("aria-label", it.title || "Untitled");
+    el.addEventListener("keydown", function (e) {
+      var items = sheetMenuItems(), at = items.indexOf(document.activeElement);
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); items[(at + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus(); }
+      else if (e.key === "Home" || e.key === "End") { e.preventDefault(); items[e.key === "Home" ? 0 : items.length - 1].focus(); }
+      else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); closeSheetMenu(true); }
+      else if (e.key === "Tab") closeSheetMenu(false);
+    });
+    card.appendChild(el);
+    sheetMenu = { el: el, more: more, it: it };
+    more.setAttribute("aria-expanded", "true"); more.setAttribute("aria-controls", el.id);
+    sheetMenuMain(it);
+  }
+  function menuItem(text, onPick, opts) {
+    var b = document.createElement("button"); b.type = "button"; b.textContent = text;
+    b.setAttribute("role", opts && opts.checked != null ? "menuitemradio" : "menuitem");
+    if (opts && opts.checked != null) {
+      b.setAttribute("aria-checked", String(opts.checked));
+      if (opts.checked) b.insertAdjacentHTML("beforeend", '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-check"/></svg>');
+    }
+    if (opts && opts.danger) b.className = "danger";
+    b.addEventListener("click", onPick);
+    return b;
+  }
+  function menuSep() { var s = document.createElement("span"); s.className = "lib-menu-sep"; s.setAttribute("role", "separator"); return s; }
+  /** The menu's items, the keyboard on the first, the whole menu on screen (above the tab bar). */
+  function fillSheetMenu(items) {
+    var el = sheetMenu.el; el.textContent = "";
+    items.forEach(function (x) { el.appendChild(x); });
+    sheetMenuItems()[0].focus({ preventScroll: true });
+    if (el.scrollIntoView) el.scrollIntoView({ block: "nearest" });
+  }
+  function sheetMenuMain(it) {
+    var items = [
+      menuItem("Open", function () { closeSheetMenu(false); openSaved(it.id); }),
+      menuItem("Move to a folder…", function () { sheetMenuFolders(it); })
+    ];
+    if (sub && sub.choirName) items.push(menuItem(it.sharedWithChoir ? "Take it out of the choir library" : "Share with " + sub.choirName, function () { closeSheetMenu(true); shareWithChoir(it); }));
+    items.push(menuSep(), menuItem("Delete", function () { closeSheetMenu(false); deleteSheet(it); }, { danger: true }));
+    fillSheetMenu(items);
+  }
+  /** The folders as a short list (the sheet's own ticked, and No folder to take it out of one), then New folder…. */
+  function sheetMenuFolders(it) {
+    var items = (it.folder ? [null] : []).concat(foldersOf(libraryCache).map(function (f) { return f.name; })).map(function (name) {
+      return menuItem(name || "No folder", function () {
+        closeSheetMenu(true);
+        if (name !== (it.folder || null)) fileSheet(it, name);
+      }, { checked: name === (it.folder || null) });
+    });
+    if (items.length) items.push(menuSep());
+    items.push(menuItem("New folder…", function () { closeSheetMenu(true); fileSheet(it, "__new"); }));
+    fillSheetMenu(items);
+  }
+  // A tap anywhere else closes it; seen first (capture), so the folder's ⋯ and a card's own tap find it closed.
+  document.addEventListener("click", function (e) {
+    if (sheetMenu && !sheetMenu.el.contains(e.target) && !sheetMenu.more.contains(e.target)) { sheetMenuClosedBy = e; closeSheetMenu(false); }
+  }, true);
+  function sheetMore(card, it) {
+    var more = document.createElement("button"); more.type = "button"; more.className = "lib-card-more";
+    more.setAttribute("aria-haspopup", "menu"); more.setAttribute("aria-expanded", "false"); more.setAttribute("aria-label", "More for " + (it.title || "Untitled"));
+    more.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>';
+    more.addEventListener("click", function () {
+      if (sheetMenu && sheetMenu.more === more) closeSheetMenu(true);
+      else openSheetMenu(card, more, it);
+    });
+    return more;
+  }
+
   function loadLibrary(force) {
     var list = $("lib-list"), empty = $("lib-empty"), skel = $("lib-skel");
     if (!libraryCache || force) { show(skel); hide(list); hide(empty); }
     return fetchLibrary(force).then(function (items) {
       hide(skel);
+      closeSheetMenu(false);
       list.innerHTML = "";
       libEmptyState(false);
       if (!items.length) { show(empty); hide(list); return; }
       hide(empty); show(list);
       renderFolders(items);
-      var folders = foldersOf(items);
-      items.forEach(function (it) {
-        var card = document.createElement("div"); card.className = "lib-item"; card.dataset.id = it.id; card.dataset.search = fold([it.title || "Untitled", it.folder, it.key].join(" ")); card.dataset.folder = it.folder || "";
-        var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
-        // A level under the page's h1 (the choir's cards sit under its own h2, so they stay h3).
-        var h = document.createElement("h2"); h.textContent = it.title || "Untitled"; card.appendChild(h);
-        var m = document.createElement("div"); m.className = "meta";
-        // How the tune opens, in solfa, as the phone's rows show it, then the key and a short date ("18 Oct").
-        m.textContent = [openingSolfa(it), it.key, shortDate(it.createdAtUtc)].filter(Boolean).join(" · ") + (it.shareToken ? " · shared" : "") + (it.sharedWithChoir ? " · in the choir library" : "");
-        card.appendChild(m);
-        if (it.folder) { var tag = document.createElement("span"); tag.className = "lib-folder-tag"; tag.textContent = it.folder; card.appendChild(tag); }
-        var a = document.createElement("div"); a.className = "actions";
-        var file = document.createElement("select"); file.className = "lib-file"; file.setAttribute("aria-label", "Folder for " + (it.title || "Untitled"));
-        [["", "No folder"]].concat(folders.map(function (f) { return [f.name, f.name]; })).concat([["__new", "New folder…"]]).forEach(function (o) {
-          var opt = document.createElement("option"); opt.value = o[0]; opt.textContent = o[1]; file.appendChild(opt);
+      // Under Today, This week and Earlier, on the reader's own calendar (board n-ux-low V2b).
+      window.NfLibraryGroups.group(items).forEach(function (g) {
+        var gh = document.createElement("h2"); gh.className = "lib-group-h"; gh.dataset.group = g.key; gh.textContent = g.title; list.appendChild(gh);
+        g.items.forEach(function (it) {
+          var card = document.createElement("div"); card.className = "lib-item"; card.dataset.id = it.id; card.dataset.search = fold([it.title || "Untitled", it.folder, it.key].join(" ")); card.dataset.folder = it.folder || ""; card.dataset.group = g.key;
+          var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
+          // A level under its date's h2, as the choir's cards are under the choir's own.
+          var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
+          var m = document.createElement("div"); m.className = "meta"; m.textContent = sheetMeta(it); card.appendChild(m);
+          if (it.folder) { var tag = document.createElement("span"); tag.className = "lib-folder-tag"; tag.textContent = it.folder; card.appendChild(tag); }
+          // Its key, title, opening, key and date, and folder; everything else is behind ⋯, and a tap opens it.
+          card.appendChild(sheetMore(card, it));
+          opensOnTap(card, function () { openSaved(it.id); });
+          list.appendChild(card);
         });
-        file.value = it.folder || "";
-        file.addEventListener("change", function () { fileSheet(it, file.value, file); });
-        var open = document.createElement("button"); open.className = "btn btn-primary btn-sm"; open.type = "button"; open.textContent = "Open";
-        open.setAttribute("aria-label", "Open " + (it.title || "Untitled"));
-        open.addEventListener("click", function () { openSaved(it.id); });
-        opensOnTap(card, function () { openSaved(it.id); });
-        var del = document.createElement("button"); del.className = "btn btn-ghost btn-sm btn-danger"; del.type = "button"; label(del, "trash", "Delete");
-        del.addEventListener("click", function () { deleteSheet(it); });
-        a.appendChild(open); a.appendChild(file);
-        if (sub && sub.choirName) a.appendChild(choirShareButton(it));
-        a.appendChild(del); card.appendChild(a);
-        list.appendChild(card);
       });
       filterLibrary();
     }).catch(function (err) { hide(skel); show(empty); libEmptyState(true, err); })
@@ -1308,9 +1404,9 @@
     if (pendingDelete === pd) pendingDelete = null;
     track("Undid delete");
     restoreSheet(pd).then(function () {
-      // Back where it was, and the keyboard with it.
-      var open = Array.prototype.filter.call(document.querySelectorAll("#lib-list .lib-item"), function (c) { return c.dataset.id === String(pd.it.id); })[0];
-      if (open && open.querySelector(".btn-primary")) open.querySelector(".btn-primary").focus({ preventScroll: true });
+      // Back where it was, and the keyboard with it (on its ⋯, where Delete was).
+      var open = sheetCard(pd.it.id);
+      if (open && open.querySelector(".lib-card-more")) open.querySelector(".lib-card-more").focus({ preventScroll: true });
     });
   }
   function restoreSheet(pd) {
@@ -1329,20 +1425,22 @@
   document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") flushDelete(); });
 
   // ── The choir's shared library ──────────────────────────────────────────
-  /** "Share with choir" on one of the account's own sheets, or "In choir library" to take it out again. */
-  function choirShareButton(it) {
-    var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm";
-    function paint() { b.textContent = it.sharedWithChoir ? "In choir library ✓" : "Share with choir"; b.title = it.sharedWithChoir ? "Take it out of the choir library" : "Share it with everyone in " + sub.choirName; }
-    paint();
-    b.addEventListener("click", function () {
-      var on = !it.sharedWithChoir;
-      b.disabled = true;
-      request("/api/choirs/mine/sheets/" + encodeURIComponent(it.id), { method: on ? "PUT" : "DELETE" })
-        .then(function () { it.sharedWithChoir = on; paint(); track(on ? "Shared with choir" : "Unshared from choir"); if (on) sfx.play("saved"); renderChoirLibrary(); })
-        .catch(function (err) { libAlert("Could not share with your choir: " + (err.message || err)); })
-        .finally(function () { b.disabled = false; });
-    });
-    return b;
+  /**
+   * The ⋯ menu's "Share with <choir>" on one of the account's own sheets, or "Take it out of the choir library": the
+   * card's line says which it is now, and a note says it was done.
+   */
+  function shareWithChoir(it) {
+    var on = !it.sharedWithChoir;
+    request("/api/choirs/mine/sheets/" + encodeURIComponent(it.id), { method: on ? "PUT" : "DELETE" })
+      .then(function () {
+        it.sharedWithChoir = on;
+        var card = sheetCard(it.id);
+        if (card) card.querySelector(".meta").textContent = sheetMeta(it);
+        track(on ? "Shared with choir" : "Unshared from choir"); if (on) sfx.play("saved");
+        showToast(on ? "Shared with " + ((sub && sub.choirName) || "your choir") : "Taken out of the choir library");
+        renderChoirLibrary();
+      })
+      .catch(function (err) { libAlert("Could not share with your choir: " + (err.message || err)); });
   }
   /** The sheets the choir shared, under the account's own; only while the choir's plan runs. */
   function renderChoirLibrary() {
@@ -1615,7 +1713,15 @@
   function resetChoirPanel() {
     hide($("choir-none")); hide($("choir-card"));
     show($("choir-wait")); show($("choir-wait-skel")); hide($("choir-wait-text"));
+    choirCodeOpen(false);
   }
+  /** In no choir, the code field waits behind "Have a choir code?" (board n-ux-low V2c): no filled button until asked. */
+  function choirCodeOpen(open, focus) {
+    $("choir-code-ask").setAttribute("aria-expanded", String(open));
+    $("choir-code-box").classList.toggle("hidden", !open);
+    if (open && focus) $("choir-join-code").focus();
+  }
+  $("choir-code-ask").addEventListener("click", function () { choirCodeOpen($("choir-code-ask").getAttribute("aria-expanded") !== "true", true); });
   function renderChoirPanel() {
     return fetchChoir().then(function (c) {
       hide($("choir-wait")); hide($("choir-msg-row"));
@@ -1694,6 +1800,7 @@
     }).catch(function (err) {
       var text = (err && err.message) || "We couldn't join that choir just now.";
       $("choir-join-status").textContent = text;
+      choirCodeOpen(true); // the reason shows under the field, which is open to try again
       // From an invite link the studio is showing, not the join form: the alert there says it.
       if (viewNow !== "account") alertIn($("app-alert"), "danger", "Could not join the choir: " + text);
     });
@@ -1969,7 +2076,7 @@
     ["topbar-avatar-img", "chip-avatar", "menu-avatar"].forEach(function (id) { setAvatar($(id), me); });
     $("chip-name").textContent = me ? ((me.fullName || "").trim().split(/\s+/)[0] || me.email || "") : "";
     $("greeting").textContent = greeting(me && me.fullName);
-    $("home-sub").textContent = homeQuestion();
+    $("home-sub").textContent = homeQuestion(); $("home-sub").classList.remove("home-sub-long");
     document.body.classList.toggle("is-pro", isPro());
     isPro() ? show($("greeting-pro")) : hide($("greeting-pro"));
     $("menu-plans-label").textContent = isPro() ? "My membership" : "Plans & billing";
@@ -2070,6 +2177,7 @@
     warmEngraver();
     document.body.classList.add("guest"); show($("topbar-signin"));
     $("greeting").textContent = greeting(""); $("home-sub").textContent = "Your free preview is on its way. Create a free account to keep transcribing.";
+    $("home-sub").classList.add("home-sub-long"); // two lines: read from the left (app.css)
     startJob({ jobId: previewId, stage: "transcribing" }, "preview");
   }
 
@@ -2211,11 +2319,20 @@
   function resetMeter() { if (window.NfMeter) window.NfMeter.reset($("meter")); }
   /** The keyboard's transpose setting, −11 to +11; 0 when it is off. */
   function kbTranspose() { var n = parseInt(stored(KB_KEY), 10); return n >= -11 && n <= 11 ? n : 0; }
+  /** What a kind does, said under the kinds when it needs saying (board n-ux-low V1f); the voice kinds say it already. */
+  var KIND_HINTS = {
+    choir: "Soprano, alto, tenor and bass come back as they were sung.",
+    chords: "Piano or guitar: the chords as they were played, with the top line as the tune."
+  };
   /** A choir with instruments behind it, and the keyboard's transpose, only where they apply (or are set). */
   function renderKindOptions() {
     var kind = checkedKind();
     kind === "choir" ? show($("choir-band-row")) : hide($("choir-band-row"));
-    kind === "chords" || kbTranspose() !== 0 ? show($("kb-row")) : hide($("kb-row"));
+    var kb = kind === "chords" || kbTranspose() !== 0;
+    kb ? show($("kb-row")) : hide($("kb-row"));
+    kb ? show($("kb-hint")) : hide($("kb-hint"));
+    $("kind-hint").textContent = KIND_HINTS[kind] || "";
+    KIND_HINTS[kind] ? show($("kind-hint")) : hide($("kind-hint"));
   }
   (function () {
     var select = $("kb-transpose");
@@ -2279,6 +2396,8 @@
     var cost = studioCost();
     if (!cost) { hide(row); setCostInfo(false); return; }
     $("cost-chip").textContent = cost.text;
+    // Used up: neutral, with a clock for its shape (amber is Pro's alone, board n-ux-low V1i).
+    if (cost.out) $("cost-chip").insertAdjacentHTML("afterbegin", '<svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-clock"/></svg>');
     $("cost-chip").classList.toggle("is-out", !!cost.out);
     $("cost-pop").textContent = cost.why;
     show(row);
@@ -3534,7 +3653,7 @@
     request("/api/transcriptions/grade", { method: "POST", form: form }).then(function (g) {
       if (at !== epoch) return;
       $("sing-status").textContent = "";
-      $("sing-score").textContent = g.score; $("sing-score").style.color = g.score >= 80 ? "var(--success-text)" : g.score >= 50 ? "var(--amber-text)" : "var(--danger-text)";
+      $("sing-score").textContent = g.score; $("sing-score").style.color = g.score >= 80 ? "var(--success-text)" : g.score >= 50 ? "var(--ink)" : "var(--danger-text)";
       $("sing-summary").textContent = g.summary + (g.octaveShift ? " Sung " + (g.octaveShift > 0 ? "an octave up" : "an octave down") + " — that's fine." : "");
       var marks = $("sing-marks"); marks.innerHTML = "";
       (g.notes || []).forEach(function (m) {
@@ -3778,7 +3897,7 @@
       if (practice.part !== part || practice.range !== range) return;
       practice.marks = PR.marksByNote(g, slice);
       $("pr-score").textContent = g.score;
-      $("pr-score").style.color = g.score >= 80 ? "var(--success-text)" : g.score >= 50 ? "var(--amber-text)" : "var(--danger-text)";
+      $("pr-score").style.color = g.score >= 80 ? "var(--success-text)" : g.score >= 50 ? "var(--ink)" : "var(--danger-text)";
       $("pr-summary").textContent = g.summary + (g.octaveShift ? " Sung " + (g.octaveShift > 0 ? "an octave up" : "an octave down") + " — that's fine." : "");
       renderPractice();
       show($("pr-result"));
@@ -3965,6 +4084,8 @@
       var id = b.getAttribute("data-tool"), panel = $(id);
       var showsParts = id === "harmony" && !!current && P.action(current.result) === "show";
       b.hidden = !showsParts && (!panel || panel.classList.contains("hidden"));
+      // Named by what it does: it writes the parts, or opens the ones the sheet has.
+      if (id === "harmony") b.querySelector("span").textContent = showsParts ? "See parts" : "Add parts";
     });
   }
   /** A Pro-only action, from anywhere: close the pop-up and open the plans (a guest is asked to sign up first). */
@@ -4075,8 +4196,8 @@
   function renderShare() {
     if (current.shareToken) {
       $("share-url").value = "https://notefusion.studio/app/sheet/?s=" + encodeURIComponent(current.shareToken);
-      show($("share-row")); $("share").textContent = "Share a link";
-    } else hide($("share-row"));
+      show($("share-row")); show($("share-stop")); $("share").textContent = "Share a link";
+    } else { hide($("share-row")); hide($("share-stop")); }
   }
   /**
    * Saves the sheet on screen. `auto` is the preview someone just signed up to keep: it is saved for
@@ -4945,6 +5066,7 @@
     });
     hide($("pro-welcome-perks"));
     $("pro-welcome-go").textContent = "Transcribe it";
+    welcomeDress(true);
     welcomeReturn = document.activeElement;
     show($("pro-welcome"));
     $("pro-welcome-go").focus();
@@ -4960,7 +5082,7 @@
     hide($("upgrade-panel"));
     setView("account");
     if (current && current.result) showResult(current.result);
-    show($("pro-welcome-perks")); $("pro-welcome-go").textContent = "Invite your singers";
+    show($("pro-welcome-perks")); $("pro-welcome-go").textContent = "Invite your singers"; welcomeDress(false);
     $("pro-welcome-title").textContent = snap && snap.choirPeriodEnd ? "More choir time added" : "Your choir is ready";
     var when = s.choirPeriodEndUtc ? new Date(s.choirPeriodEndUtc).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "";
     $("pro-welcome-plan").textContent = "Copy the invite link under My choir and send it to your singers." + (when ? " Pro for the whole choir until " + when + "." : "");
@@ -4970,7 +5092,7 @@
     sfx.play("saved");
   }
   function openProWelcome(snap) {
-    show($("pro-welcome-perks")); $("pro-welcome-go").textContent = "Start using Pro";
+    show($("pro-welcome-perks")); $("pro-welcome-go").textContent = "Start using Pro"; welcomeDress(false);
     $("pro-welcome-title").textContent = snap && snap.wasActive ? "More Pro time added" : "Welcome to NoteFusion Pro";
     var when = sub.currentPeriodEndUtc ? new Date(sub.currentPeriodEndUtc).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "";
     $("pro-welcome-plan").textContent = planLabel() + (sub.isLifetime ? " · Pro for life" : when ? " · Pro until " + when : "");
@@ -4978,6 +5100,15 @@
     show($("pro-welcome"));
     $("pro-welcome-go").focus();
     sfx.play("saved");
+  }
+  /**
+   * The pop-up's dress: Pro's gold crown, glow and button for Pro and the choir; one song bought is not Pro, so a plain
+   * card with a neutral tick and the ordinary blue button (board n-ux-low V2f).
+   */
+  function welcomeDress(single) {
+    $("pro-welcome").classList.toggle("is-single", single);
+    $("pro-welcome").querySelector(".pro-welcome-mark use").setAttribute("href", "/assets/icons.svg#i-" + (single ? "check" : "crown"));
+    $("pro-welcome-go").className = "btn btn-pill " + (single ? "btn-primary" : "btn-pro");
   }
   function closeProWelcome() {
     hide($("pro-welcome"));

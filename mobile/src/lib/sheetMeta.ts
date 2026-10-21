@@ -57,3 +57,12 @@ export function libraryRowLine(
     .filter(Boolean)
     .join(" · ");
 }
+
+/**
+ * The Library's line over its name (board n-ux-low Q4d, as Hymns says "789 hymns and tunes"): "12 sheets", "1 sheet",
+ * "No sheets yet".
+ */
+export function sheetCount(count: number): string {
+  if (count <= 0) return "No sheets yet";
+  return count === 1 ? "1 sheet" : `${count} sheets`;
+}

@@ -289,8 +289,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 .result-card { padding: 22px; }
 .song .title { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.03em; }
 .sheet-wrap { border-radius: 12px; border-color: var(--line); }
-.solfa { font-family: var(--font-mono); font-weight: 500; background: var(--blue-tint); border-color: var(--line); border-radius: 12px; }
-:root[data-theme="dark"] .solfa .doh { color: var(--blue-dark); }
+.solfa { font-family: var(--font-mono); font-weight: 500; background: var(--wash); border-color: var(--line); border-radius: 12px; } /* a label, not a link: no blue panel */
 table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
 .cell i, .chord-grid .ch strong, .sing-live small, .mark small { font-family: var(--font-sans); }
 :root[data-theme="dark"] table.hymn td { border-left-color: rgba(255, 255, 255, 0.55); }
@@ -311,6 +310,12 @@ table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
 .pro-row-tx b { font-size: 0.9375rem; font-weight: 600; }
 .pro-row-tx small { font-size: 0.875rem; color: var(--muted); line-height: 1.35; }
 .pro-row > .ic { width: 16px; height: 16px; color: var(--muted); }
+/* Both follow the sheet's card on the page, not inside it (board n-ux-low V1k): the question in no box of its own, then
+   Pro's row; they go with the card. */
+#result.hidden ~ #r-verdict, #result.hidden ~ #r-upgrade { display: none !important; }
+#view-transcribe > #result { margin-bottom: 0; }
+#view-transcribe > #r-verdict { margin: 18px 0 0; padding: 4px 2px 0; border: 0; background: none; }
+#view-transcribe > #r-upgrade { margin: 12px 0 0; background: var(--surface); }
 
 /* How did it come out? One tap, then (only if it was off) what was off. */
 .verdict-card { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 14px 0 0; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); }
@@ -320,7 +325,8 @@ table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
 .verdict { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--wash); color: var(--ink); font: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
 :root[data-theme="dark"] .verdict { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.12); }
 .verdict[aria-pressed=true][data-verdict="5"] { background: var(--success-soft); border-color: var(--success); color: var(--success-text); }
-.verdict[aria-pressed=true][data-verdict="3"] { background: var(--amber-soft); border-color: var(--amber); color: var(--amber-text); }
+.verdict[aria-pressed=true][data-verdict="3"] { background: var(--wash); border-color: var(--ink); color: var(--ink); }
+.verdict[aria-pressed=true][data-verdict="3"]::before { content: "~"; content: "~" / ""; margin-right: 5px; font-weight: 700; } /* its shape; amber is Pro's alone */
 .verdict[aria-pressed=true][data-verdict="1"] { background: var(--danger-soft); border-color: var(--danger); color: var(--danger-text); }
 .verdict-more { flex: 1 1 100%; display: grid; gap: 10px; }
 .verdict-more[hidden] { display: none; }
@@ -446,6 +452,8 @@ body.is-focus #home, body.is-focus #studio { display: none; }
 #progress .stage { flex: none; padding: 6px 12px 6px 8px; font-size: 0.8rem; gap: 7px; border-radius: 8px; }
 #progress .stage .dot { width: 18px; height: 18px; font-size: 0.6rem; border-width: 1.5px; }
 .p-note { margin: 14px 0 0; }
+/* Notes that run to two lines start on the left; the counter and the stage stay centred (board n-ux-low V1d). */
+#progress .p-note, #progress .p-slow, #progress .p-offline { text-align: left; }
 
 /* ── Result: header, the framed sheet, one row of actions ── */
 #result { padding: 18px 20px 20px; }
@@ -491,7 +499,7 @@ body:not(.is-pro):not(.guest) .act-pro .act-lock { display: inline-block; }
   .result-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
   .result-actions #play { grid-column: 1 / -1; min-width: 0; width: 100%; }
   /* The labels at 13 px on every phone (board m-ux-medium W2f): four still fit across at 360 px, "Transpose" in a
-     68 px tile, and "Save & share" and "Four parts" take two lines. */
+     68 px tile; "Save & share", "Slow & loop" and "Mark my singing" take two lines (board n-ux-low V1j). */
   .result-actions .act { flex-direction: column; justify-content: center; gap: 4px; min-height: 64px; min-width: 0; padding: 8px 1px;
     border-radius: 12px; font-size: 13px; line-height: 1.2; text-align: center; }
   .result-actions .act .ic { width: 20px; height: 20px; flex: none; }
@@ -600,7 +608,7 @@ body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
 .pr-bar.now { box-shadow: inset 0 0 0 2px var(--blue); }
 /* Marked on the part, a shape as well as a colour (as app.css .mark): ✓ in tune, ~ close, struck through off, – not sung. */
 .pr-notes .mk-hit { color: var(--success-text); font-weight: 700; }
-.pr-notes .mk-near { color: var(--amber-text); font-weight: 700; }
+.pr-notes .mk-near { color: var(--ink); font-weight: 700; }
 .pr-notes .mk-hit::after { content: "✓"; } .pr-notes .mk-near::after { content: "~"; } .pr-notes .mk-missed::after { content: "–"; }
 .pr-notes .mk-wrong { color: var(--muted); font-weight: 700; text-decoration: line-through; text-decoration-thickness: 1.5px; }
 .pr-notes .mk-missed { color: var(--faint); }
@@ -665,7 +673,6 @@ body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
 .studio-opt select, .player select, .player input[type=number] { min-height: 44px; font-size: 16px; }
 .studio .studio-kind label, .studio-opt { min-height: 44px; }
 .lib-chip { min-height: 44px; }
-.lib-file { min-height: 44px; font-size: 16px; }
 .choir-join input { min-height: 44px; font-size: 16px; }
 /* Text buttons keep their look and take a 44 px target from an invisible layer, as .field-error's link does. */
 #auth-back, #link-upload, #p-notify-no, #acct-photo-remove, #choir-invite-new, .folder-back { position: relative; }
@@ -700,7 +707,6 @@ body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
   .studio-opt select { min-height: 32px; font-size: 0.85rem; }
   .studio .studio-kind label, .studio-opt { min-height: 0; }
   .lib-chip { min-height: 0; }
-  .lib-file { min-height: 32px; font-size: 0.8rem; }
   .choir-join input { min-height: 36px; font-size: 0.9rem; }
   .player select, .player input[type=number] { min-height: 32px; font-size: 0.875rem; }
   .result-views .tab { padding-inline: 14px; }

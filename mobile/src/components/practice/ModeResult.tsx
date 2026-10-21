@@ -1,8 +1,9 @@
 /**
  * A practice mode's marked take (boards c-practice/6b, 6c): the server's score and its own summary, then the marks,
  * then what the take earned. Focused shows the number and each note's cents; Playful shows stars and a friendly word
- * and the notes without numbers. Each mark has a shape as well as a colour (lib/markShape): ✓ in tune, ~ close, off struck
- * through in grey (never red), dashed with – not heard.
+ * and the notes without numbers. Each mark has a shape as well as a colour (lib/markShape): ✓ in tune, ~ close in ink on a
+ * dashed ink outline, off struck through in grey (never red), dashed grey with – not heard. Amber is left to the problem
+ * sign, so "close" and a score in the 50s–70s are neutral (board n-ux-low Q2a d).
  */
 
 import React from "react";
@@ -50,9 +51,9 @@ export function ModeResult({
   const styles = useThemedStyles(makeStyles);
   const stars = starsFor(score);
   const earned = playful ? playfulRewardLine(reward) : rewardMoment(reward)?.line ?? null;
-  const toneColor = (t: MarkTone) => (t === "hit" ? c.success : t === "near" ? c.warning : t === "off" ? c.textMuted : c.textFaint);
+  const toneColor = (t: MarkTone) => (t === "hit" ? c.success : t === "near" ? c.text : t === "off" ? c.textMuted : c.textFaint);
   // The mark's letter is a word: the deep shade in Day; the border keeps the bright hue.
-  const toneText = (t: MarkTone) => (t === "hit" ? c.successText : t === "near" ? c.warningText : t === "off" ? c.textMuted : c.textFaint);
+  const toneText = (t: MarkTone) => (t === "hit" ? c.successText : t === "near" ? c.text : t === "off" ? c.textMuted : c.textFaint);
 
   return (
     <View style={[styles.card, playful && styles.cardPlay]} accessibilityLiveRegion="polite">
@@ -64,7 +65,7 @@ export function ModeResult({
         </View>
       ) : (
         <View style={styles.scoreRow} accessible accessibilityLabel={`Score ${score}. ${summary}${sub ? ` ${sub}` : ""}`}>
-          <Text style={[styles.score, { color: score >= 80 ? c.successText : score >= 50 ? c.warningText : c.textMuted }]}>{score}</Text>
+          <Text style={[styles.score, { color: score >= 80 ? c.successText : score >= 50 ? c.text : c.textMuted }]}>{score}</Text>
           <View style={styles.scoreText}>
             <Text style={styles.summary}>{summary}</Text>
             {sub ? <Text style={styles.sub}>{sub}</Text> : null}
@@ -78,7 +79,7 @@ export function ModeResult({
             return (
               <View
                 key={m.key}
-                style={[styles.mark, { borderColor: m.tone === "off" || m.tone === "missed" ? c.border : color }, m.tone === "missed" && styles.markMissed]}
+                style={[styles.mark, { borderColor: m.tone === "off" || m.tone === "missed" ? c.border : color }, (m.tone === "missed" || m.tone === "near") && styles.markDashed]}
                 accessible
                 accessibilityLabel={`${m.text}: ${m.tone === "hit" ? "in tune" : m.tone === "near" ? "close" : m.tone === "off" ? "off" : "not heard"}${!playful && m.sub ? `, ${m.sub}` : ""}`}
               >
@@ -131,12 +132,12 @@ const makeStyles = (c: Palette) =>
       justifyContent: "center",
       gap: 2,
     },
-    markMissed: { borderStyle: "dashed" },
+    markDashed: { borderStyle: "dashed" },
     markText: { ...typography.mono, fontSize: 17 },
     markOff: { textDecorationLine: "line-through" },
-    markSub: { ...typography.mono, fontSize: 11, color: c.textFaint },
+    markSub: { ...typography.mono, fontSize: 12, color: c.textFaint },
     legend: { ...typography.caption, color: c.textFaint, lineHeight: 16 },
     earnedRow: { flexDirection: "row", alignItems: "center", gap: 6 },
     earnedCenter: { justifyContent: "center" },
-    earned: { fontFamily: fonts.semibold, fontSize: 14, color: c.link },
+    earned: { fontFamily: fonts.semibold, fontSize: 14, color: c.text },
   });

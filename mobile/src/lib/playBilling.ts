@@ -161,6 +161,16 @@ export function playStatusLine(state: PlayMemberState): string {
   }
 }
 
+/**
+ * The member hub's plan line for a Google Play membership (board n-ux-low Q2b g): its state and, but on hold, its date
+ * ("Renews automatically · next charge 20 Oct 2027", "Cancelled · Pro until 20 Oct 2027").
+ */
+export function playStateLine(state: PlayMemberState, until: string | null): string {
+  const word = playStatusLine(state);
+  if (state === "hold" || !until) return word;
+  return `${word} · ${state === "renewing" ? "next charge" : "Pro until"} ${until}`;
+}
+
 /** The amber note above the card, for a renewal Google could not take. */
 export function playProblemNote(state: PlayMemberState): string | null {
   if (state === "grace")

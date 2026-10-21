@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import { Button } from "../Button";
 import { ThemeOverride } from "../../lib/theme";
+import { night } from "../../design/theme";
 
 type Variant = "white" | "blue" | "ghost";
 
@@ -10,7 +11,8 @@ interface Props {
   onPress?: () => void;
   /**
    * `white` and `blue` are both the one primary now (the shared blue `Button`); `ghost` is the
-   * secondary choice beside it. The two primary names stay so the first-run screens read as before.
+   * secondary choice beside it, edged (below). The two primary names stay so the first-run screens
+   * read as before.
    */
   variant?: Variant;
   loading?: boolean;
@@ -48,6 +50,9 @@ export function NightButton({
         // Google's G keeps its colours on a white disc: its own blue would vanish on the blue pill.
         leading={icon ? primary ? <View style={styles.disc}>{icon}</View> : icon : undefined}
         badge={badge}
+        // The quiet pill's fill is 1.16:1 on Welcome's deep canvas, so its edge could not be seen: a 1 px night.dim
+        // hairline gives it one at 3.39:1 (board n-ux-low Q3b).
+        edgeColor={primary ? undefined : night.dim}
         loading={loading}
         disabled={disabled}
         style={style}

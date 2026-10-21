@@ -166,7 +166,7 @@
    * The modes' screens and the live pitch meter: loaded the first time a mode is opened, never with the view.
    * practice-modes.js (the words and arithmetic) comes with the view, for the hub's list.
    */
-  var MODE_ASSETS = ["/assets/practice-modes.css?v=2", "/assets/pitch-track.js?v=1", "/assets/practice-mode-view.js?v=4"];
+  var MODE_ASSETS = ["/assets/practice-modes.css?v=3", "/assets/pitch-track.js?v=1", "/assets/practice-mode-view.js?v=5"];
   /** The modes' icons, drawn inline (24 × 24, stroked): the app's sprite has none of these. */
   var MODE_ICONS = {
     "warm-up": '<circle cx="12" cy="4.6" r="1.9"/><path d="M4.5 9l7.5 1.6L19.5 9M12 10.6V15m0 0l-3.6 6M12 15l3.6 6"/>',
@@ -282,7 +282,7 @@
 
   // ── The season's path (boards d-christmas/03, j-halloween/03), only while its season is on for the singer ─────
   /** The path's screen (either season's): its script and styles load the first time it is opened, never with the view. */
-  var SEASON_ASSETS = ["/assets/practice-modes.css?v=2", "/assets/practice-carols.css?v=2", "/assets/practice-carols.js?v=4"];
+  var SEASON_ASSETS = ["/assets/practice-modes.css?v=3", "/assets/practice-carols.css?v=2", "/assets/practice-carols.js?v=4"];
   // Three tiny still bats in the Midnight path card's corner: [left, top, width, degrees] (the phone's CARD_BATS).
   var CARD_BATS = [[4, 10, 14, -10], [58, 0, 11, 8], [80, 30, 9, -4]];
   var BAT_PATH = "M20 8L18.4 4.8L17.4 8.6C14.5 4.4 8.5 3.2 1.5 7.2C4.6 8.2 5.8 10.8 5.6 13.8C7.6 12 9.8 12 11 14C12.6 12 14.8 12.1 15.8 15C17 13.2 18.6 13.4 20 15.6C21.4 13.4 23 13.2 24.2 15C25.2 12.1 27.4 12 29 14C30.2 12 32.4 12 34.4 13.8C34.2 10.8 35.4 8.2 38.5 7.2C31.5 3.2 25.5 4.4 22.6 8.6L21.6 4.8Z";
@@ -646,7 +646,7 @@
       marks.appendChild(ctx.mark((n.solfa || "") + (n.octaveMark || ""), m.status, null, true));
     });
     box.appendChild(marks);
-    box.appendChild(el("p", "pv-legend", "✓ spot on · ~ close · struck through: try again · dashed: not heard"));
+    box.appendChild(el("p", "pv-legend", "✓ spot on · ~ close · struck through: try again · – not heard"));
     var earned = T.playfulRewardLine(g.reward);
     if (earned) box.appendChild(el("p", "pv-earned", earned));
     return box;
@@ -689,7 +689,7 @@
       marks.appendChild(ctx.mark((n.solfa || "") + (n.octaveMark || ""), m.status, m.cents, false));
     });
     box.appendChild(marks);
-    box.appendChild(el("p", "pv-legend", "✓ in tune · ~ close · struck through: off the note · dashed: not sung. Numbers are cents off."));
+    box.appendChild(el("p", "pv-legend", "✓ in tune · ~ close · struck through: off the note · – not sung. Numbers are cents off."));
     var earned = P.rewardMoment(g.reward);
     if (earned) {
       var e = el("p", "pv-earned");

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Animated, BackHandler, Linking, StyleSheet, Text, View } from "react-native";
+import { Animated, BackHandler, Linking, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   useAudioRecorder,
   useAudioRecorderState,
@@ -15,6 +16,8 @@ import { useFocusEffect, useNavigation, useRoute, type RouteProp } from "@react-
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
+import { TabHeader } from "../components/TabHeader";
+import { HEADER_AVATAR } from "../components/HeaderAvatar";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
@@ -51,6 +54,14 @@ import {
   setKeyboardTranspose,
 } from "../lib/keyboardTranspose";
 import { meterEventValue, type Meter } from "../lib/meter";
+import {
+  LEVEL_QUIET_DBFS,
+  LEVEL_SILENCE_DBFS,
+  levelText,
+  nextLevelLine,
+  type LevelLine,
+} from "../lib/recordLevel";
+import { dockedExtraRoom } from "../lib/tabBarLayout";
 import { logAnalyticsEvent } from "../lib/analytics";
 import { useDataSaver } from "../lib/dataSaver";
 import { recordingProfile } from "../lib/recordingPreset";
@@ -187,16 +198,9 @@ const MAX_RECORD_SEC = 180;
 // ordinary "tap when you're done" hint.
 const RECORD_WARN_AT_SEC = 15;
 
-// ── Voice-level guidance thresholds (dBFS, 0 = loudest, -160 = silence) ───────
+// ── Voice-level guidance ──────────────────────────────────────────────────────
 //
-// expo-audio's metering value is an averaged power level in dBFS. Typical
-// speaking/singing voice close to a phone mic sits around -20 to -6 dBFS;
-// a quiet or distant voice drops below about -40 dBFS. These thresholds were
-// chosen empirically against the Phase 0 spike recordings (spike/README.md)
-// and err on the side of nudging the user rather than staying silent.
-const LEVEL_SILENCE_DBFS = -50; // effectively nothing reaching the mic
-const LEVEL_QUIET_DBFS = -34; // audible but too soft for confident transcription
-const LEVEL_GOOD_DBFS = -18; // comfortably loud — meter reads "good" from here up
+// The thresholds (dBFS) and the level's word beside the trace live in lib/recordLevel.
 
 // How long the level must stay below LEVEL_QUIET_DBFS before the guidance
 // banner appears. Short dips (breaths, pauses between phrases) shouldn't
@@ -215,9 +219,10 @@ const QUIET_GUIDANCE = "Sing louder or hold closer to the mic";
  * would only cost layout. Everything that carries instructions (the status line, the error text, the
  * guidance banner) is deliberately left uncapped and wraps or scrolls instead.
  *
- * CHROME caps the labels that share a fixed row — the mode pill between the close button and the
- * Fast lane badge, and the captions under the 56px side buttons — which cannot grow without pushing
- * their neighbours off the edge. Each repeats something the sheet or the button's own label says.
+ * CHROME caps the labels that share a fixed row — the mode pill between the tab's title and the avatar
+ * (a guest's, beside the close button), the Fast lane badge, and the captions under the 56px side buttons —
+ * which cannot grow without pushing their neighbours off the edge. Each repeats something the sheet or the
+ * button's own label says.
  */
 const MAX_TEXT_SCALE_DISPLAY = 1.3;
 const MAX_TEXT_SCALE_CHROME = 1.15;
@@ -232,13 +237,6 @@ const TRACE_POINTS = 60;
 function meteringToFraction(dbfs: number): number {
   const clamped = Math.max(LEVEL_SILENCE_DBFS, Math.min(0, dbfs));
   return (clamped - LEVEL_SILENCE_DBFS) / (0 - LEVEL_SILENCE_DBFS);
-}
-
-/** The trace's head colour for the current metering level: mint, amber, then grey for nothing heard. */
-function meteringToColor(dbfs: number, c: Palette): string {
-  if (dbfs >= LEVEL_GOOD_DBFS) return c.success; // comfortably loud
-  if (dbfs >= LEVEL_QUIET_DBFS) return c.warning; // audible but soft
-  return c.textMuted; // too quiet / far from the mic: the amber "Sing louder" pill says so
 }
 
 /** Removes a local take or imported cache copy; one that is already gone is nothing to report. */
@@ -292,10 +290,13 @@ async function offerBackgroundAlerts(): Promise<void> {
 /**
  * RecordScreen — audio capture & transcription trigger, in the night design.
  *
- *   • Top bar        : close, the mode pill (opens the options sheet: mode, key, keyboard
- *                      transpose), and the Fast lane badge for Pro.
- *   • Timer          : large monospace clock with one status line under it.
- *   • Level trace    : the mic level as a thin glowing line over faint guides.
+ *   • Header         : a tab's (board n-ux-low Q5c): "Record", then the mode pill (opens the options sheet:
+ *                      mode, key, keyboard transpose) and the avatar. A tab has nowhere to close to: throwing
+ *                      a take away is Start over's, and leaving mid-take by a tab, the avatar or Back asks
+ *                      first (lib/leaveGuard). A guest's Record is not a tab, so it keeps its close button.
+ *   • Timer          : large monospace clock with one status line under it, and the free count (Pro: the
+ *                      Fast lane badge) under that.
+ *   • Level trace    : the mic level as a thin glowing line over faint guides, said in a word at its top right.
  *   • Controls       : import / start over · record–stop · done.
  *   • Uploading      : one calm card — the mark, the stage, the steps, a thin progress bar.
  *
@@ -343,6 +344,8 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
   const songNeedsCredit = known && !isPro && boughtRemaining <= 0;
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+  const { width: windowWidth, fontScale } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
 
   /**
    * The region's own prices for the limit sheet's two rows (the one-song purchase and Pro by the
@@ -480,6 +483,10 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
   const quietSinceRef = useRef<number | null>(null);
   /** Recent level readings, 0..1, oldest first — what the trace draws. */
   const [levels, setLevels] = useState<number[]>([]);
+  /** The level said in a word beside the trace (lib/recordLevel): changes at most once a second. */
+  const [levelLine, setLevelLine] = useState<LevelLine | null>(null);
+  /** The status line under the clock runs to two lines or more (`statusLeft` below). */
+  const [statusWraps, setStatusWraps] = useState(false);
   const guidanceOpacity = useRef(new Animated.Value(0)).current;
 
   // ── Navigate to Result ────────────────────────────────────────────────────
@@ -541,13 +548,18 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
   );
 
   const showTrialExhausted = useCallback((kept = false) => {
-    // Board 7b: when they come back, then two ways on, the song first (as Upgrade preselects it).
+    // Board 7b: when they come back, then two ways on, the song first (as Upgrade preselects it). Board n-ux-low Q5a:
+    // one of them is marked, and it is the song, offered first wherever the free limit is hit, with why in its line.
     const copy = limitCopy(freePerWeek, boughtTotal, freeBack);
     showDialog({
       title: copy.title,
       message: copy.message + (kept ? KEPT_LINE : ""),
       choices: [
-        songChoice(),
+        {
+          ...songChoice(),
+          detail: "Pay once for the one you need now. No subscription.",
+          chips: [{ label: "Recommended", tone: "accent" as const }],
+        },
         {
           label: "NoteFusion Pro",
           detail: "Unlimited hums · 20 songs a month",
@@ -746,14 +758,16 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
       quietSinceRef.current = null;
       if (showQuietGuidance) setShowQuietGuidance(false);
       setLevels((l) => (l.length ? [] : l));
+      setLevelLine(null);
       return;
     }
 
     const dbfs = recorderState.metering ?? LEVEL_SILENCE_DBFS;
+    const now = Date.now();
 
     setLevels((l) => [...l.slice(-(TRACE_POINTS - 1)), meteringToFraction(dbfs)]);
+    setLevelLine((line) => nextLevelLine(line, dbfs, now));
 
-    const now = Date.now();
     if (dbfs < LEVEL_QUIET_DBFS) {
       if (quietSinceRef.current === null) {
         quietSinceRef.current = now;
@@ -778,12 +792,6 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
       useNativeDriver: true,
     }).start();
   }, [showQuietGuidance, guidanceOpacity]);
-
-  const currentMeterDbfs =
-    phase === "recording"
-      ? (recorderState.metering ?? LEVEL_SILENCE_DBFS)
-      : LEVEL_SILENCE_DBFS;
-  const meterColor = meteringToColor(currentMeterDbfs, colors);
 
   // ── Recording controls ────────────────────────────────────────────────────
 
@@ -1123,11 +1131,60 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
   const uploadStageIndex = uploadStages.findIndex((s) => s.key === state.stage);
 
   const pillLabel = MODE_TITLE[mode] + (selectedKey === "Auto" ? "" : ` · ${selectedKey}`) + (meter ? ` · ${meter}` : "");
+  /**
+   * In the tab's header the pill gives way before the title does: TabHeader's title takes only what the row leaves, so
+   * a long "Polyphonic · Bb major · 4" would otherwise cut "Record" short. What is left once the title (22 px, grown
+   * with the text setting), the two gaps and the avatar have their room.
+   */
+  const pillMaxWidth = Math.max(
+    120,
+    windowWidth - 2 * spacing.lg - HEADER_TITLE_ROOM * Math.max(1, fontScale) - 2 * spacing.md - HEADER_AVATAR,
+  );
 
-  // The job's step as it changes, and the quiet nudge as it shows: Android reads them as live regions, iOS hears them here.
+  // The level said in a word (board n-ux-low Q5b): while recording, and never under the quiet banner, which says it.
+  const levelWord = isRecording && !showQuietGuidance ? (levelLine?.word ?? null) : null;
+  /** The status line is set left only while recording, and only once it wraps (board n-ux-low Q5f). */
+  const statusLeft = isRecording && statusWraps;
+
+  // The job's step as it changes, the quiet nudge as it shows and the level's word as it changes: Android reads them
+  // as live regions, iOS hears them here.
   const jobTitle = resending ? "Sending it again" : stageLabel(state.stage, state.queuePosition);
   useIosAnnouncement(isUploading && !kept ? jobTitle : null);
   useIosAnnouncement(showQuietGuidance ? QUIET_GUIDANCE : null);
+  useIosAnnouncement(levelWord ? levelText(levelWord) : null);
+
+  /** Room under the content for the tab bar, and the few more dp it stands higher once it docks (lib/tabBarLayout). */
+  const tabBarRoom = TAB_BAR_ROOM + dockedExtraRoom(fontScale, insets.bottom);
+
+  /** The mode pill: what the next take is, and the way to the options sheet. Gone while a take is on its way. */
+  const modePill = isUploading ? null : (
+    <Touchable
+      onPress={() => setOptionsOpen(true)}
+      // Locked once recording starts. Passing `disabled` rather than gating inside
+      // onPress is what stops the pill springing and buzzing at a tap that does
+      // nothing — and it fades to the same 0.4 every other disabled control uses.
+      disabled={phase !== "ready"}
+      style={[styles.modePill, !guest && styles.modePillTab, !guest && { maxWidth: pillMaxWidth }]}
+      radius={radii.pill}
+      hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
+      accessibilityLabel={`${pillLabel}. Change what you're recording`}
+    >
+      <Text style={styles.modePillText} numberOfLines={1} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
+        {pillLabel}
+      </Text>
+      <Icon name="down" size={14} color={colors.textMuted} />
+    </Touchable>
+  );
+
+  /** The connection dropped and the take waits on the phone (board 13). */
+  const offlinePill = kept ? (
+    <View style={styles.offlinePill} accessibilityLabel="Offline">
+      <Icon name="offline" size={14} color={colors.textMuted} />
+      <Text style={styles.offlinePillText} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
+        Offline
+      </Text>
+    </View>
+  ) : null;
 
   return (
     // Scrolls only when it has to. `container` grows to fill the viewport, so at the default text
@@ -1135,62 +1192,34 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
     // absorbs a large Font size or Display size setting instead of pushing the controls off the
     // bottom edge behind the tab bar.
     <Screen edges={guest ? ["top", "bottom"] : ["top"]} scroll contentStyle={styles.scrollContent}>
-      <View style={[styles.container, guest && styles.containerGuest]}>
-        {/* ── Top bar ─────────────────────────────────────────────────────── */}
-        <View style={styles.topBar}>
-          <View style={styles.topSide}>
-            <Touchable
-              onPress={close}
-              style={styles.iconBtn}
-              radius={20}
-              // A 40 px circle: 48 dp to a thumb without moving it (the pill is 8 px away).
-              hitSlop={4}
-              accessibilityLabel={isRecording ? "Discard recording and close" : "Close"}
-            >
-              <Icon name="close" size={20} color={colors.text} />
-            </Touchable>
-          </View>
-
-          {kept ? (
-            <View style={styles.offlinePill} accessibilityLabel="Offline">
-              <Icon name="offline" size={14} color={colors.textMuted} />
-              <Text style={styles.offlinePillText} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
-                Offline
-              </Text>
+      <View style={[styles.container, guest ? styles.containerGuest : { paddingBottom: tabBarRoom }]}>
+        {guest ? (
+          /* ── A guest's top bar: not a tab, so it closes back to Welcome ─── */
+          <View style={styles.topBar}>
+            <View style={styles.topSide}>
+              <Touchable
+                onPress={close}
+                style={styles.iconBtn}
+                radius={20}
+                // A 40 px circle: 48 dp to a thumb without moving it (the pill is 8 px away).
+                hitSlop={4}
+                accessibilityLabel={isRecording ? "Discard recording and close" : "Close"}
+              >
+                <Icon name="close" size={20} color={colors.text} />
+              </Touchable>
             </View>
-          ) : null}
-
-          {!isUploading && (
-            <Touchable
-              onPress={() => setOptionsOpen(true)}
-              // Locked once recording starts. Passing `disabled` rather than gating inside
-              // onPress is what stops the pill springing and buzzing at a tap that does
-              // nothing — and it fades to the same 0.4 every other disabled control uses.
-              disabled={phase !== "ready"}
-              style={styles.modePill}
-              radius={radii.pill}
-              hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
-              accessibilityLabel={`${pillLabel}. Change what you're recording`}
-            >
-              <Text style={styles.modePillText} numberOfLines={1} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
-                {pillLabel}
-              </Text>
-              <Icon name="down" size={14} color={colors.textMuted} />
-            </Touchable>
-          )}
-
-          <View style={[styles.topSide, styles.topSideEnd]}>
-            {/* Pro jobs run in the queue's high-priority lane. */}
-            {isPro && (
-              <View style={styles.fastLane} accessibilityLabel="Fast lane: Pro recordings go first">
-                <Icon name="pro" size={12} color={colors.premiumDeep} />
-                <Text style={styles.fastLaneText} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
-                  Fast lane
-                </Text>
-              </View>
-            )}
+            {offlinePill}
+            {modePill}
+            {/* Equal sides keep the pill centred. */}
+            <View style={styles.topSide} />
           </View>
-        </View>
+        ) : (
+          /* ── The tab's header (board n-ux-low Q5c): "Record", the pill and the avatar ─── */
+          <TabHeader title="Record">
+            {offlinePill}
+            {modePill}
+          </TabHeader>
+        )}
 
         {isUploading && kept ? (
           /* Kept on this phone (board 13): the connection dropped, so the take waits in the app's storage and goes
@@ -1306,7 +1335,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
         ) : (
           <>
             {/* ── Clock and status ──────────────────────────────────────────── */}
-            <View style={styles.clockArea}>
+            <View style={[styles.clockArea, !guest && styles.clockAreaTab]}>
               <Text
                 style={styles.timerText}
                 maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}
@@ -1314,9 +1343,15 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
               >
                 {clock}
               </Text>
-              <View style={styles.statusRow}>
-                {isRecording && <View style={styles.recDot} />}
-                <Text style={styles.statusLine}>
+              {/* A line said while recording that wraps is set left, the red dot leading it (board n-ux-low Q5f):
+                  centred, each line starts somewhere new. One line stays centred under the clock, and so does the
+                  clock's own "Tap to record…", whatever the width. */}
+              <View style={[styles.statusRow, statusLeft && styles.statusRowLeft]}>
+                {isRecording && <View style={[styles.recDot, statusLeft && styles.recDotFirstLine]} />}
+                <Text
+                  style={[styles.statusLine, statusLeft && styles.statusLineLeft]}
+                  onTextLayout={(e) => setStatusWraps(e.nativeEvent.lines.length > 1)}
+                >
                   {phase === "ready"
                     ? "Tap to record · sing, hum or play near the mic"
                     : guest
@@ -1352,6 +1387,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
                   accessibilityLabel={
                     trialRemaining > 0 ? "See Pro plans" : `Free ones back ${freeBack}. See Pro plans`
                   }
+                  accessibilityRole="button"
                 >
                   {/* Spent is said plainly, in the quiet pill: no lock, no red. */}
                   <Text style={[styles.trialPillText, trialRemaining <= 0 && styles.trialPillTextSpent]}>
@@ -1361,7 +1397,20 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
                         ? `${boughtRemaining} bought left · free back ${freeBack}`
                         : `Free ones back ${freeBack}`}
                   </Text>
+                  {/* It opens the plans, so it says so (board n-ux-low Q5d). */}
+                  <Icon name="chevron" size={14} color={colors.textMuted} />
                 </Touchable>
+              )}
+
+              {/* Pro's account context, in the free count's place: its jobs run in the queue's high-priority lane.
+                  Under the clock rather than in the header, where beside the pill it would cut the tab's title short. */}
+              {!guest && isPro && (
+                <View style={[styles.fastLane, styles.fastLaneUnderClock]} accessibilityLabel="Fast lane: Pro recordings go first">
+                  <Icon name="pro" size={12} color={colors.premiumDeep} />
+                  <Text style={styles.fastLaneText} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
+                    Fast lane
+                  </Text>
+                </View>
               )}
 
               {/* The transpose rides along with every submit, so it stays in view whenever it
@@ -1375,11 +1424,16 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
 
             {/* ── Level trace ────────────────────────────────────────────────── */}
             <View style={styles.traceArea}>
-              <LevelTrace
-                levels={levels}
-                capacity={TRACE_POINTS}
-                headColor={meterColor}
-              />
+              <LevelTrace levels={levels} capacity={TRACE_POINTS} />
+
+              {/* The level in a word at the trace's top right (board n-ux-low Q5b), not by a colour: good, or the
+                  amber sign and a little soft. Too quiet is the banner's to say. */}
+              {levelWord ? (
+                <View style={styles.levelLine} pointerEvents="none" accessibilityLiveRegion="polite">
+                  {levelWord === "soft" ? <Icon name="problem" size={15} color={colors.warning} /> : null}
+                  <Text style={styles.levelText}>{levelText(levelWord)}</Text>
+                </View>
+              ) : null}
 
               {/* "Sing louder / move closer" guidance banner — fades in after a
                   sustained quiet stretch while recording. Over the top of the trace,
@@ -1592,6 +1646,10 @@ export function GuestRecordScreen() {
 
 const RECORD_SIZE = 84;
 const SIDE_SIZE = 56;
+/** Clears the floating tab bar, which is absolutely positioned over the bottom of the screen. */
+const TAB_BAR_ROOM = 110;
+/** "Record" in the tab's header at 22 px, with a little to spare: what the mode pill leaves it. */
+const HEADER_TITLE_ROOM = 84;
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
@@ -1603,8 +1661,7 @@ const makeStyles = (c: Palette) =>
 
   container: {
     flexGrow: 1,
-    // Clears the floating tab bar, which is absolutely positioned over the bottom of the screen.
-    paddingBottom: 110,
+    paddingBottom: TAB_BAR_ROOM,
   },
 
   /** A guest has no tab bar to clear. */
@@ -1621,13 +1678,10 @@ const makeStyles = (c: Palette) =>
     gap: spacing.sm,
   },
 
-  /** Equal-width sides, so the pill stays centred whether or not the badge is there. */
+  /** Equal-width sides, so a guest's pill stays centred. */
   topSide: {
     flex: 1,
     flexDirection: "row",
-  },
-  topSideEnd: {
-    justifyContent: "flex-end",
   },
 
   iconBtn: {
@@ -1654,6 +1708,10 @@ const makeStyles = (c: Palette) =>
     // "Polyphonic · Bb major" on a narrow handset gives up the label's tail rather than the
     // close button.
     flexShrink: 1,
+  },
+  /** In the tab's header: the header's 40 px controls. */
+  modePillTab: {
+    height: 40,
   },
 
   modePillText: {
@@ -1682,12 +1740,22 @@ const makeStyles = (c: Palette) =>
     color: c.premiumText,
   },
 
+  /** Pro's badge under the clock, where a free account's count is. */
+  fastLaneUnderClock: {
+    marginTop: spacing.md,
+  },
+
   // ── Clock & status ────────────────────────────────────────────────────────
 
   clockArea: {
     alignItems: "center",
     marginTop: spacing.xxxl - spacing.xs,
     paddingHorizontal: spacing.sm,
+  },
+
+  /** Under the tab's header, which keeps its own 16 below: the clock stays where it stood under the old bar (92 down). */
+  clockAreaTab: {
+    marginTop: spacing.xl - spacing.xs,
   },
 
   timerText: {
@@ -1707,6 +1775,14 @@ const makeStyles = (c: Palette) =>
     justifyContent: "center",
     gap: 7,
     marginTop: spacing.xs,
+    // Out to the screen's 16 px gutter, centred or set left alike, so a line wraps at the same width either way.
+    marginHorizontal: -spacing.sm,
+  },
+  /** A line that wraps: set left on the gutter, under the centred clock. */
+  statusRowLeft: {
+    alignSelf: "stretch",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
   },
 
   recDot: {
@@ -1714,6 +1790,10 @@ const makeStyles = (c: Palette) =>
     height: 7,
     borderRadius: 4,
     backgroundColor: c.danger,
+  },
+  /** Leading a wrapped line: centred on its first line (23 tall). */
+  recDotFirstLine: {
+    marginTop: 8,
   },
 
   // The one instruction on the screen is a 16 px sentence; labels are 13 and up (board m-ux-medium P3f).
@@ -1724,6 +1804,9 @@ const makeStyles = (c: Palette) =>
     color: c.textMuted,
     textAlign: "center",
     flexShrink: 1,
+  },
+  statusLineLeft: {
+    textAlign: "left",
   },
 
   settingLine: {
@@ -1747,6 +1830,8 @@ const makeStyles = (c: Palette) =>
     borderColor: c.border,
     borderRadius: radii.pill,
     paddingHorizontal: spacing.md,
+    // The chevron sits closer to the end than the words to the start.
+    paddingRight: spacing.sm,
     paddingVertical: 5,
     marginTop: spacing.md,
     // "Free ones back Friday 6pm — see Pro plans" is wider than a narrow handset once the text setting is
@@ -1803,6 +1888,23 @@ const makeStyles = (c: Palette) =>
     marginHorizontal: -spacing.lg, // runs edge to edge, as the guides do on the board
     justifyContent: "flex-start",
     alignItems: "center",
+  },
+  /** "Level: good" at the trace's top right, on the screen's gutter. */
+  levelLine: {
+    position: "absolute",
+    top: spacing.sm,
+    left: spacing.lg,
+    right: spacing.lg,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 6,
+  },
+  levelText: {
+    fontFamily: fonts.medium,
+    fontSize: 13,
+    color: c.textMuted,
+    flexShrink: 1,
   },
 
   // ── Voice-level guidance banner ───────────────────────────────────────────

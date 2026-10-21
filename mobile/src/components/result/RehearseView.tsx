@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Touchable } from "../Touchable";
 import { Glow } from "../night/NightUI";
 import * as haptics from "../../lib/haptics";
-import { fonts, motion, typography, type Palette } from "../../design/theme";
+import { fonts, motion, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import type { VoiceName } from "../../lib/choir";
 import type { NoteEvent } from "../../api/types";
@@ -283,6 +283,8 @@ export function RehearseView({
             </Touchable>
 
             {barCount > 0 ? (
+              // The loop says what it does, and while on which bars (board n-ux-low Q1d): the bare glyph was the dock's
+              // Practise too.
               <Touchable
                 onPress={() => p.setLoopOn((v) => !v)}
                 disabled={!p.ready}
@@ -290,9 +292,18 @@ export function RehearseView({
                 radius={22}
                 accessibilityRole="button"
                 accessibilityState={{ selected: p.loopOn }}
-                accessibilityLabel="Loop a passage"
+                accessibilityLabel={p.loopOn ? `Loop, bars ${p.loopFrom} to ${p.loopTo}` : "Loop a passage"}
               >
-                <Icon name="rehearse" size={20} color={p.loopOn ? colors.link : p.ready ? colors.text : colors.textFaint} />
+                <Icon name="rehearse" size={18} color={p.loopOn ? colors.link : p.ready ? colors.text : colors.textFaint} />
+                {/* Two-digit bars on a 360 px phone: the words give a little rather than push the row off the edge. */}
+                <Text
+                  style={[styles.loopText, p.loopOn && styles.loopTextOn, !p.ready && styles.loopTextIdle]}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.85}
+                >
+                  {p.loopOn ? `Loop ${p.loopFrom}–${p.loopTo}` : "Loop"}
+                </Text>
               </Touchable>
             ) : (
               <View style={styles.loopBtnSpacer} />
@@ -344,7 +355,8 @@ export function RehearseView({
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: c.bg },
-    body: { flexGrow: 1, paddingHorizontal: 22 },
+    /** Screen's gutter, as the Result's (board n-ux-low Q1g). */
+    body: { flexGrow: 1, paddingHorizontal: spacing.lg },
     header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 },
     iconBtn: {
       width: 40,
@@ -453,16 +465,24 @@ const makeStyles = (c: Palette) =>
     },
     playIdle: { backgroundColor: c.surfaceAlt },
     playGlyph: { marginLeft: 3 },
+    /** A 44 px quiet pill with its word; on, the selected look (wash, accent line, link words). */
     loopBtn: {
-      width: 44,
       height: 44,
-      borderRadius: 22,
+      flexDirection: "row",
       alignItems: "center",
-      justifyContent: "center",
+      gap: 6,
+      paddingLeft: 12,
+      paddingRight: 14,
+      borderRadius: 22,
+      backgroundColor: c.surfaceAlt,
       borderWidth: 1,
-      borderColor: "transparent",
+      borderColor: c.border,
+      flexShrink: 1,
     },
-    loopBtnOn: { backgroundColor: c.accentSoft, borderColor: c.accentGlow },
+    loopBtnOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
+    loopText: { flexShrink: 1, fontFamily: fonts.semibold, fontSize: 14, color: c.text },
+    loopTextOn: { color: c.link },
+    loopTextIdle: { color: c.textFaint },
     loopBtnSpacer: { width: 44 },
     voices: { flexDirection: "row", justifyContent: "center", gap: 10, marginTop: 30 },
     voice: { width: 56, height: 56, borderRadius: 28, alignItems: "center", justifyContent: "center", borderWidth: 1 },

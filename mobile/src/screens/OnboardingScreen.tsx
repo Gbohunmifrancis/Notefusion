@@ -297,7 +297,18 @@ function SourcesArt({ width }: { width: number }) {
   );
 }
 
-/** The syllable sounding now, the four parts, and the choir tools. */
+/**
+ * The four parts as a score: S A T B as the app writes them, one solfa line under another, the tune's line bright.
+ * Drawn as the sheet looks, never as the voice buttons it has, so nothing in the picture looks tappable.
+ */
+const SCORE: { part: string; notes: string[] }[] = [
+  { part: "S", notes: ["m", "f", "s", "–"] },
+  { part: "A", notes: ["d", "r", "m", "–"] },
+  { part: "T", notes: ["s,", "t,", "d", "–"] },
+  { part: "B", notes: ["d,", "s,", "d,", "–"] },
+];
+
+/** The syllable sounding now, the four parts as a score, and the choir tools as a plain caption (board n-ux-low Q3c). */
 function RehearseArt() {
   return (
     <View style={styles.rehearse}>
@@ -308,21 +319,19 @@ function RehearseArt() {
         <Text style={[styles.syl, styles.sylNear]}>f</Text>
         <Text style={[styles.syl, styles.sylFar]}>s</Text>
       </View>
-      <View style={styles.parts}>
-        {["S", "A", "T", "B"].map((p, i) => (
-          <View key={p} style={[styles.part, i === 0 && styles.partOn]}>
-            <Text style={styles.partText}>{p}</Text>
+      <View style={styles.score}>
+        {SCORE.map(({ part, notes }, row) => (
+          <View key={part} style={styles.scoreRow}>
+            <Text style={[styles.scorePart, row === 0 && styles.scorePartTune]}>{part}</Text>
+            {notes.map((n, i) => (
+              <Text key={i} style={[styles.scoreNote, row === 0 && styles.scoreNoteTune]}>
+                {n}
+              </Text>
+            ))}
           </View>
         ))}
       </View>
-      <View style={styles.tags}>
-        <View style={[styles.tag, styles.tagBlue]}>
-          <Text style={[styles.tagText, { color: night.ice }]}>Transpose for my choir</Text>
-        </View>
-        <View style={styles.tag}>
-          <Text style={styles.tagText}>Share a folder</Text>
-        </View>
-      </View>
+      <Text style={styles.caption}>Transpose for my choir · Share a folder</Text>
     </View>
   );
 }
@@ -386,36 +395,12 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(156, 194, 255, 0.5)",
     textShadowRadius: 30,
   },
-  parts: { flexDirection: "row", gap: 10, marginTop: 30 },
-  part: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    borderWidth: 1,
-    borderColor: night.line2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  partOn: {
-    backgroundColor: night.blueDeep,
-    borderColor: night.blueDeep,
-    shadowColor: night.blue,
-    shadowOpacity: 0.4,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
-  },
-  partText: { fontSize: 17, fontFamily: nightFonts.semibold, color: night.text },
-  tags: { flexDirection: "row", gap: 8, marginTop: 22 },
-  tag: {
-    height: 26,
-    paddingHorizontal: 10,
-    borderRadius: 999,
-    justifyContent: "center",
-    backgroundColor: night.surface2,
-    borderWidth: 1,
-    borderColor: night.line,
-  },
-  tagBlue: { backgroundColor: "rgba(47, 123, 255, 0.12)", borderColor: "rgba(47, 123, 255, 0.3)" },
-  tagText: { fontSize: 12, fontFamily: nightFonts.medium, color: night.muted },
+  // The score: the art's own greys (night.dim is for art and shapes), the tune's line in ink.
+  score: { marginTop: 26, gap: 6 },
+  scoreRow: { flexDirection: "row", alignItems: "baseline", gap: 10 },
+  scorePart: { width: 22, fontSize: 12, letterSpacing: 0.5, fontFamily: nightFonts.semibold, color: night.dim },
+  scorePartTune: { color: night.muted },
+  scoreNote: { width: 34, textAlign: "center", fontSize: 18, fontFamily: nightFonts.mono, color: night.dim },
+  scoreNoteTune: { color: night.text },
+  caption: { marginTop: 18, fontSize: 13, letterSpacing: 0.2, fontFamily: nightFonts.medium, color: night.dim },
 });

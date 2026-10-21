@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   Animated,
   AppState,
   Easing,
@@ -20,24 +19,25 @@ import { useReducedMotion } from 'react-native-reanimated';
 import { Screen } from '../components/Screen';
 import { HeaderAvatar } from '../components/HeaderAvatar';
 import { Touchable } from '../components/Touchable';
-import { Skeleton } from '../components/Skeleton';
+import { Button } from '../components/Button';
 import { ProblemNote } from '../components/ProblemNote';
 import { Mark, Wordmark } from '../components/night/NightUI';
 import { DohCard } from '../components/doh/DohCard';
 import { FoldAway } from '../components/FoldAway';
 import { useSheetActions } from '../components/library/useSheetActions';
-import { practiceApi } from '../api/endpoints';
+import { LibraryRow, LibraryRowSkeleton } from '../components/library/LibraryRow';
+import { libraryApi, practiceApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
-import { dohLetter } from '../lib/solfa';
 import { loadLibraryList, loadSheet } from '../lib/offlineLibrary';
 import { withoutHeldDeletes } from '../lib/sheetActions';
-import { resultFromSaved } from '../lib/openSheet';
+import { exampleResult, resultFromSaved } from '../lib/openSheet';
+import { EXAMPLE_HYMN, offerExample } from '../lib/exampleSheet';
 import { useOpening } from '../lib/useOpening';
 import { useAuth } from '../lib/auth';
 import { showDialog } from '../lib/dialog';
 import * as haptics from '../lib/haptics';
 import { useSubscription } from '../lib/subscription';
-import { confidenceColor, fonts, motion, radii, spacing, typography, type Palette, type Shadows } from '../design/theme';
+import { fonts, motion, radii, spacing, typography, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles, useColors } from '../lib/theme';
 import type { PracticeProgress, SavedTranscription } from '../api/types';
 import { streakSnapshot, xpAmount } from '../lib/practiceProgress';
@@ -45,8 +45,6 @@ import { rememberStreak } from '../lib/practiceReminder';
 import { refreshProfilePicture, useAccountJoinedAt } from '../lib/profilePicture';
 import { useBreath } from '../lib/breath';
 import type { RootStackParams, TabParams } from '../navigation/types';
-import { solfaOpening } from '../lib/solfaOpening';
-import { confidenceA11y, confidenceLevel } from '../lib/confidence';
 import {
   EMPTY_DOH_MEMORY,
   chooseDohCard,
@@ -57,7 +55,7 @@ import {
 } from '../lib/dohSuggestion';
 import { loadDohMemory, saveDohMemory, useDohSuggestions } from '../lib/dohPrefs';
 import { parseUtc } from '../lib/sheetMeta';
-import { REFRESH_FAILED } from '../lib/savedSheet';
+import { REFRESH_FAILED, isUnopened } from '../lib/savedSheet';
 import { PROGRESS_WAIT_MS, recentReveal, type RecentReveal } from '../lib/homeReveal';
 import { useSeason } from '../lib/seasonStore';
 import { activeSeason, costumeOf, homeTitle, seasonTint, seasonWords } from '../lib/season';
@@ -420,6 +418,12 @@ export function HomeScreen({ navigation }: Props) {
 
   async function openRecent(item: SavedTranscription, opts: { practise?: boolean } = {}) {
     if (!opening.begin(item.id)) return;
+    // Opened: a sheet the server filed loses its blue dot here and on the server, as it does from the Library.
+    if (isUnopened(item)) {
+      const openedAtUtc = new Date().toISOString();
+      setAll((list) => list.map((i) => (i.id === item.id ? { ...i, openedAtUtc } : i)));
+      void libraryApi.markOpened(item.id).catch(() => undefined);
+    }
     try {
       // The phone's copy when it is current or the API is out of reach (lib/offlineLibrary).
       const { sheet } = await loadSheet(item);
@@ -439,6 +443,11 @@ export function HomeScreen({ navigation }: Props) {
     } finally {
       opening.end();
     }
+  }
+
+  /** "See an example" (board n-ux-low Q4j): the bundled Amazing Grace on Result, not filed and nothing spent. */
+  function openExample() {
+    rootNav.navigate('Result', { result: exampleResult(), title: EXAMPLE_HYMN.title, example: true });
   }
 
   const firstName = user?.fullName?.split(' ')[0] ?? 'there';
@@ -658,15 +667,15 @@ export function HomeScreen({ navigation }: Props) {
                 <Text style={styles.recentSectionTitle} accessibilityRole="header">
                   Recent
                 </Text>
-                <Touchable
+                {/* The app's text button, as Hymns' "See all" (board n-ux-low Q4e). */}
+                <Button
+                  label="See all"
+                  variant="text"
+                  size="sm"
                   onPress={() => navigation.navigate('Library')}
-                  ripple={false}
-                  // A short word: 44 pt or more to a thumb without moving it.
-                  hitSlop={{ top: 14, bottom: 14, left: 12, right: 12 }}
+                  style={styles.seeAll}
                   accessibilityLabel="See all your sheets"
-                >
-                  <Text style={styles.seeAllText}>See all</Text>
-                </Touchable>
+                />
               </View>
               {/* A read that failed over rows already shown: said, so they are not taken for the latest. */}
               {loadError && revealed && recent.length > 0 ? (
@@ -676,117 +685,40 @@ export function HomeScreen({ navigation }: Props) {
           </View>
         }
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={({ item }) => {
-          const solfa = solfaOpening(item.notes ?? item.preview, item.timeSignature);
-          // Tapped and still loading (board m-ux-medium P2b): tinted, "Opening…", a spinner in the ⋯'s place.
-          const isOpening = opening.opening === item.id;
-          // No percentage on a row: a tone dot, and only when the sheet is worth a second look.
-          const doubtful = confidenceLevel(item.overallConfidence) !== 'clear';
-          const tone = confidenceColor(item.overallConfidence, colors);
-          return (
-            <Animated.View style={{ opacity: revealFade }}>
-              <FoldAway {...sheetActions.foldProps(item.id)}>
-                <Touchable
-                  onPress={() => openRecent(item)}
-                  onLongPress={() => {
-                    haptics.play('light');
-                    sheetActions.openActions(item);
-                  }}
-                  style={[
-                    styles.recentRow,
-                    (sheetActions.actionsFor?.id === item.id || isOpening) && styles.recentRowActive,
-                  ]}
-                  radius={radii.md}
-                  // The dot is inside the row, so its words go in the row's label (as the Library's rows do).
-                  accessibilityLabel={`Open ${item.title}${doubtful ? `, ${confidenceA11y(item.overallConfidence)}` : ''}`}
-                  // VoiceOver never reaches the ⋯ inside the row, so its sheet is one of the row's own actions.
-                  accessibilityActions={[{ name: 'more', label: `More for ${item.title}` }]}
-                  onAccessibilityAction={(e) => {
-                    if (e.nativeEvent.actionName === 'more') sheetActions.openActions(item);
-                  }}
-                >
-                  <View style={styles.dohTile}>
-                    <Text style={styles.dohLetter} numberOfLines={1}>
-                      {dohLetter(item.key)}
-                    </Text>
-                    <Text style={styles.dohCaption}>DOH</Text>
-                  </View>
-
-                  <View style={styles.recentInfo}>
-                    <Text style={styles.recentTitle} numberOfLines={1}>
-                      {item.title}
-                    </Text>
-                    {isOpening ? (
-                      <Text style={styles.openingText} numberOfLines={1}>
-                        Opening…
-                      </Text>
-                    ) : solfa ? (
-                      <Text style={styles.solfaPreview} numberOfLines={1}>
-                        <Text style={styles.solfaLead}>{solfa.first}</Text>
-                        {solfa.rest ? ` │ ${solfa.rest}` : ''}
-                      </Text>
-                    ) : (
-                      <Text style={styles.recentMeta} numberOfLines={1}>
-                        {item.key} · {Math.round(item.tempoBpm)} BPM · {item.timeSignature}
-                      </Text>
-                    )}
-                  </View>
-
-                  {doubtful && !isOpening ? (
-                    <View style={styles.score}>
-                      <View style={[styles.scoreDot, { backgroundColor: tone }]} />
-                    </View>
-                  ) : null}
-
-                  {/* The piece's actions: share, rename, file, keep offline, delete (also a long press). The ⋯ steps
-                      aside for the spinner while the sheet opens. */}
-                  {isOpening ? (
-                    <View style={styles.more}>
-                      <ActivityIndicator size="small" color={colors.accent} />
-                    </View>
-                  ) : (
-                    <Touchable
-                      onPress={() => sheetActions.openActions(item)}
-                      style={styles.more}
-                      hitSlop={2}
-                      ripple="borderless"
-                      accessibilityLabel={`More for ${item.title}`}
-                    >
-                      <Icon name="more" size={20} color={colors.textMuted} />
-                    </Touchable>
-                  )}
-                </Touchable>
-              </FoldAway>
-            </Animated.View>
-          );
-        }}
+        renderItem={({ item }) => (
+          // The Library's own row, brief: the title and its opening, the ⋯ (also a long press), "Opening…" while it
+          // loads (board n-ux-low Q4d).
+          <Animated.View style={{ opacity: revealFade }}>
+            <FoldAway {...sheetActions.foldProps(item.id)}>
+              <LibraryRow
+                item={item}
+                brief
+                selecting={false}
+                selected={false}
+                onPress={() => void openRecent(item)}
+                onLongPress={() => {
+                  haptics.play('light');
+                  sheetActions.openActions(item);
+                }}
+                opening={opening.opening === item.id}
+                active={sheetActions.actionsFor?.id === item.id}
+                onMore={() => sheetActions.openActions(item)}
+              />
+            </FoldAway>
+          </Animated.View>
+        )}
         ListEmptyComponent={
           !revealed || loadingRecent ? (
             <View>
               {[0, 1, 2].map((i) => (
-                <View key={i} style={styles.recentRow}>
-                  <Skeleton width={44} height={48} radius={radii.md} />
-                  <View style={styles.recentInfo}>
-                    <Skeleton width="60%" height={14} radius={radii.sm} style={styles.skeletonTitle} />
-                    <Skeleton width="40%" height={11} radius={radii.sm} />
-                  </View>
-                  <Skeleton width={34} height={12} radius={radii.pill} />
-                </View>
+                <LibraryRowSkeleton key={i} brief />
               ))}
             </View>
           ) : loadError ? (
             <View style={styles.empty}>
               <Icon name="offline" size={26} color={colors.textMuted} />
               <Text style={styles.emptyText}>{loadError}</Text>
-              <Touchable
-                onPress={reload}
-                style={styles.emptyAction}
-                radius={radii.pill}
-                hitSlop={4}
-                accessibilityLabel="Try again"
-              >
-                <Text style={styles.emptyActionLabel}>Try again</Text>
-              </Touchable>
+              <Button label="Try again" variant="secondary" onPress={reload} style={styles.emptyButton} />
             </View>
           ) : (
             <View style={styles.empty}>
@@ -794,15 +726,16 @@ export function HomeScreen({ navigation }: Props) {
               <Text style={styles.emptyText}>
                 Your sheets land here. Hum a line and see it in solfa.
               </Text>
-              <Touchable
+              <Button
+                label="Record your first tune"
+                variant="secondary"
                 onPress={() => navigation.navigate('Record')}
-                style={styles.emptyAction}
-                radius={radii.pill}
-                hitSlop={4}
-                accessibilityLabel="Record your first tune"
-              >
-                <Text style={styles.emptyActionLabel}>Record your first tune</Text>
-              </Touchable>
+                style={styles.emptyButton}
+              />
+              {/* What the app makes, before the first sheet (board n-ux-low Q4j): Amazing Grace, nothing filed. */}
+              {offerExample(all.length) ? (
+                <Button label="See an example" variant="text" size="sm" onPress={openExample} style={styles.exampleButton} />
+              ) : null}
             </View>
           )
         }
@@ -994,12 +927,16 @@ const makeStyles = (c: Palette, s: Shadows) =>
     sky: { top: -spacing.lg, left: -spacing.lg, right: -spacing.lg, height: 300 },
 
     // ── Recent ────────────────────────────────────────────────────────────────
+    // "Recent" and its "See all", whose 40 px text button sets the row's height (it was a 22 px word with slop).
     recentSectionHeader: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginTop: 28,
-      marginBottom: spacing.xs,
+      marginTop: 19,
+    },
+    /** The text button's own padding stepped out to the gutter, so "See all" ends where the rows do. */
+    seeAll: {
+      marginRight: -12,
     },
     refreshNote: {
       marginTop: 0,
@@ -1011,101 +948,9 @@ const makeStyles = (c: Palette, s: Shadows) =>
       letterSpacing: -0.3,
       color: c.text,
     },
-    seeAllText: {
-      fontSize: 13,
-      fontFamily: fonts.medium,
-      color: c.accent,
-    },
     separator: {
       height: StyleSheet.hairlineWidth,
       backgroundColor: c.border,
-    },
-    recentRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 14,
-      paddingVertical: 12,
-    },
-    /** The row whose actions are open: a faint tint under the sheet, so it is plain which piece they act on. */
-    recentRowActive: {
-      backgroundColor: c.surfaceAlt,
-      marginHorizontal: -spacing.sm,
-      paddingHorizontal: spacing.sm,
-      borderRadius: radii.md,
-    },
-    /** The ⋯ at the row's end: a 44 px target, flush with the screen's edge. */
-    more: {
-      width: 44,
-      height: 44,
-      marginRight: -12,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    dohTile: {
-      width: 44,
-      height: 48,
-      borderRadius: radii.md,
-      backgroundColor: c.surfaceAlt,
-      borderWidth: 1,
-      borderColor: c.border,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    dohLetter: {
-      fontFamily: typography.mono.fontFamily,
-      fontSize: 16,
-      color: c.text,
-    },
-    dohCaption: {
-      fontSize: 8.5,
-      fontFamily: fonts.medium,
-      letterSpacing: 1,
-      color: c.textMuted,
-      marginTop: 2,
-    },
-    recentInfo: {
-      flex: 1,
-    },
-    recentTitle: {
-      fontSize: 15,
-      fontFamily: fonts.medium,
-      letterSpacing: -0.15,
-      color: c.text,
-    },
-    solfaPreview: {
-      fontFamily: typography.mono.fontFamily,
-      fontSize: 12.5,
-      letterSpacing: 0.5,
-      color: c.textMuted,
-      marginTop: 3,
-    },
-    solfaLead: {
-      color: c.accent,
-    },
-    openingText: {
-      fontSize: 13,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      marginTop: 3,
-    },
-    recentMeta: {
-      fontSize: 12.5,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      marginTop: 3,
-    },
-    score: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 6,
-    },
-    scoreDot: {
-      width: 6,
-      height: 6,
-      borderRadius: 3,
-    },
-    skeletonTitle: {
-      marginBottom: 6,
     },
 
     // ── Empty and error states ────────────────────────────────────────────────
@@ -1122,19 +967,10 @@ const makeStyles = (c: Palette, s: Shadows) =>
       marginTop: spacing.md,
       maxWidth: 280,
     },
-    emptyAction: {
+    emptyButton: {
       marginTop: spacing.lg,
-      height: 40,
-      paddingHorizontal: 18,
-      justifyContent: 'center',
-      borderRadius: radii.pill,
-      backgroundColor: c.surfaceAlt,
-      borderWidth: 1,
-      borderColor: c.border,
     },
-    emptyActionLabel: {
-      fontSize: 13.5,
-      fontFamily: fonts.semibold,
-      color: c.accent,
+    exampleButton: {
+      marginTop: spacing.xs,
     },
   });

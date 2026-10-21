@@ -210,7 +210,7 @@ test("notes are named as a singer says them, and spelled as the key spells them"
   assert.equal(noteCaption(n(74, 0, 1, "d", "'"), 3, 8, false), "high doh · D5 · note 4 of 8");
 });
 
-test("marks: green in tune, amber close, grey off (never red), dashed not sung; cents with a real minus", () => {
+test("marks: green in tune, ink close, grey off (never red), dashed not sung; cents with a real minus", () => {
   assert.equal(markTone("hit"), "hit");
   assert.equal(markTone("near"), "near");
   assert.equal(markTone("wrong"), "off");

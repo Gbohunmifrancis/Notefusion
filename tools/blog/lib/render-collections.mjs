@@ -271,6 +271,24 @@ export function personLink(p, personByKey) {
 export function pdfButton(pagePath, track) {
   return `<p class="pdf-download"><a class="pdf-button" href="${pdfPath(pagePath)}" type="application/pdf" data-track="${track}">${icon("download")}Download the solfa (PDF)</a><span>A4, free to print and share with your choir</span></p>`;
 }
+/**
+ * The piano under a hymn's or tune's solfa grid (assets/hymn.js shows it where the browser can play), and the bar that
+ * keeps Play/Pause and the speed at the foot of a phone's screen while the tune plays and the player is scrolled away
+ * (board n-ux-low V3e). One player plays both; `track` names the page kind for the click events ("Hymn", "Tune").
+ */
+export function playerHtml({ name, tempo, track }) {
+  const speeds = `<option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option>`;
+  return `  <div class="player" id="player" hidden>
+    <button type="button" class="play-btn" id="play" data-track="${track}: play">Play</button>
+    <label>Speed <select id="rate">${speeds}</select></label>
+    <span class="player-note">Piano, ${escapeHtml(String(tempo))} beats a minute. The note being played lights up.</span>
+  </div>
+  <div class="mini-player" id="mini-player" role="group" aria-label="Player" hidden>
+    <button type="button" class="play-btn" id="mini-play" data-track="${track}: mini player">Play</button>
+    <span class="mini-title"><b>${escapeHtml(name)}</b><small>Piano · ${escapeHtml(String(tempo))} beats a minute</small></span>
+    <label class="mini-speed"><span class="sr-only">Speed</span><select id="mini-rate">${speeds}</select></label>
+  </div>`;
+}
 /** The <link rel="alternate"> in a page's head that names its PDF to crawlers. */
 export function pdfAlternate(pagePath, title) {
   return `<link rel="alternate" type="application/pdf" href="${pdfPath(pagePath)}" title="${escapeHtml(title)} in Tonic Solfa (PDF)">`;

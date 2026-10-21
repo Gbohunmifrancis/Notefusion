@@ -246,7 +246,8 @@ export function renderBlogIndex(posts, { pageNo, pages, hymns }) {
   const head = [prev ? `<link rel="prev" href="${ORIGIN + prev}">` : "", next ? `<link rel="next" href="${ORIGIN + next}">` : ""].filter(Boolean).join("\n");
   const pager = pages > 1 ? `<nav class="pager" aria-label="More posts">${prev ? `<a href="${prev}" rel="prev">← Newer posts</a>` : "<span></span>"}<span>Page ${pageNo} of ${pages}</span>${next ? `<a href="${next}" rel="next">Older posts →</a>` : "<span></span>"}</nav>` : "";
   const crumbs = [["/", "Home"], ["/blog", "Blog"]];
-  // Page one reads like a front page: the newest post set large, the next few beside it, the rest below.
+  // Page one reads like a front page: the newest post set large, the next few beside it, the rest below, then the
+  // site's one call to action (board n-ux-low V3d) before the hymns. Later pages are a plain list.
   const first = pageNo === 1 ? slice[0] : null;
   const side = first ? slice.slice(1, 5) : [];
   const rest = first ? slice.slice(5) : slice;
@@ -275,6 +276,7 @@ ${rest.map((p) => story(p, 3)).join("\n")}
 ${top}
 ${restHtml}
 ${pager}
+${pageNo === 1 ? ctaBox("blog-index") : ""}
 ${pageNo === 1 && hymns.length ? hymnal(hymns) : ""}`;
   return page({
     path, title: pageNo === 1 ? "Blog: Tonic Solfa, choirs and church music | NoteFusion" : `Blog, page ${pageNo} | NoteFusion`,

@@ -10,7 +10,7 @@ import { PD_DIED_BEFORE, PD_PUBLISHED_BEFORE } from "./content.mjs";
 import { CCEH, tuneIndexItem } from "./render-tunes.mjs";
 import { identifyCallout, IDENTIFY_PATH } from "./render-identify.mjs";
 import { personKey } from "./collections.mjs";
-import { moreLinks, occasionLinks, browseLinks, personLink, pdfButton, pdfAlternate } from "./render-collections.mjs";
+import { moreLinks, occasionLinks, browseLinks, personLink, pdfButton, pdfAlternate, playerHtml } from "./render-collections.mjs";
 import { pdfPath } from "./render-pdf.mjs";
 
 const DIATONIC = ["d", "r", "m", "f", "s", "l", "t"];
@@ -153,11 +153,7 @@ export function renderHymn(h, { hymns, posts, occasions = [], personByKey = new 
   <div class="hymn-grid" id="hymn-grid">
 ${gridHtml(v.lines, { beats: true })}
   </div>
-  <div class="player" id="player" hidden>
-    <button type="button" class="play-btn" id="play" data-track="Hymn: play">Play</button>
-    <label>Speed <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></label>
-    <span class="player-note">Piano, ${escapeHtml(String(v.tempo))} beats a minute. The note being played lights up.</span>
-  </div>
+${playerHtml({ name: n, tempo: v.tempo, track: "Hymn" })}
 </section>
 <!-- The solfa first, then the way into the app beside it, then the PDF and the facts (board l-ux-high/06b): on a phone
      the solfa used to start some 1,100px down, and the only way into the app was at the very end. -->
