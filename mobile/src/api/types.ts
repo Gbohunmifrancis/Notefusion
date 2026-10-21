@@ -186,7 +186,20 @@ export interface TranscriptionResult {
    * time of beat b is beatOriginSec + b * 60 / tempo. Mirrors the C# DTO.
    */
   beatOriginSec?: number;
-  /** Separated jobs only: the instrumental (mix minus the isolated vocal) as a small mono MP3. */
+  /**
+   * Optional: entry i is the audio time (s) of notation beat i, increasing, for a song whose tempo moves. Null or
+   * absent: beat b is at beatOriginSec + b * 60 / tempo (lib/backingClock). Mirrors the C# DTO.
+   */
+  beatTimesSec?: number[] | null;
+  /**
+   * The job has the song's backing: it was separated and a voice was found. The app asks for the job with
+   * `?backing=false` and fetches the audio on its own (`transcriptionsApi.backing`). Absent from an older server.
+   */
+  hasBacking?: boolean;
+  /**
+   * Separated jobs only: the instrumental (mix minus the isolated vocal) as a small mono MP3. Left out when the job is
+   * read with `?backing=false`, as the app reads it; an older server may still send it.
+   */
   backingAudioBase64?: string;
   /** Chromatic spelling convention used by the worker; old results default to direction. */
   chromaticSpelling?: "direction" | "ascending" | "descending";
@@ -829,6 +842,22 @@ export interface SavedTranscription {
   savedAutomatically?: boolean;
   /** When its owner first opened or renamed it; null until then (`libraryApi.markOpened`). */
   openedAtUtc?: string | null;
+  /**
+   * The song's backing is kept with the sheet (`libraryApi.backing`): only the owner's own uploads whose song was
+   * separated, never a pasted link's. Absent from an older server.
+   */
+  hasBacking?: boolean;
+  /** The sheet came from a pasted link (YouTube, Spotify, Apple Music): its backing is never kept. */
+  fromLink?: boolean;
+  /** Where beat 0 falls in the song, kept from the job's result when the sheet was filed. */
+  beatOriginSec?: number | null;
+  /** The song's own beat times, kept from the job's result (see `TranscriptionResult.beatTimesSec`). */
+  beatTimesSec?: number[] | null;
+  /**
+   * Semitones "Transpose for my choir" has moved the sheet from the key it was heard in (0 = that key). The backing
+   * plays only at 0; "Back to <key>" transposes by −transposedBy.
+   */
+  transposedBy?: number;
 }
 
 // --- Choirs -------------------------------------------------------------

@@ -7,6 +7,11 @@
  * share `AUTO_CACHE_CAP_BYTES`, oldest-opened going first. A sheet the person pinned ("Keep
  * offline"), or every sheet while "Keep all saved sheets offline" is on, is never evicted.
  *
+ * A sheet from the owner's own upload may keep the song's backing beside it (an MP3 of about a megabyte for three
+ * minutes, boards o-backing O3/5). A kept sheet's backing is kept with it, exempt like the sheet; the automatic copies'
+ * backings share a small room of their own, `AUTO_BACKING_CAP_BYTES` (the last few songs played), so they never
+ * crowd out the sheets themselves.
+ *
  * The index belongs to one account. Read back under another account id it is empty, and the files
  * it named are the caller's to delete: a phone handed to someone else must not show the last
  * person's songs.
@@ -28,6 +33,10 @@ export interface CacheEntry {
   signature: string;
   /** An edit came back without the whole sheet: the copy still opens, and is re-read when online. */
   stale?: boolean;
+  /** The sheet has a backing the server keeps for it (the owner's own upload, separated): it may be kept beside it. */
+  hasBacking?: boolean;
+  /** Size of the song's backing kept beside the copy (`<id>.backing.mp3`); absent when there is none on the phone. */
+  backingBytes?: number;
 }
 
 export interface CacheIndex {
@@ -40,6 +49,12 @@ export interface CacheIndex {
 
 /** Room for automatic copies. A sheet is 10–80 KB, so this is a few hundred; pins are on top. */
 export const AUTO_CACHE_CAP_BYTES = 8 * 1024 * 1024;
+
+/**
+ * Room for the backings of automatic copies: about four three-minute songs. A kept sheet's backing is on top, as the
+ * sheet is.
+ */
+export const AUTO_BACKING_CAP_BYTES = 4 * 1024 * 1024;
 
 /** A kept copy older than this is re-read on the next sync even when its row looks the same. */
 export const KEPT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
@@ -102,10 +117,11 @@ export interface Usage {
   pinned: number;
 }
 
+/** Everything on the phone counts, the backings with their sheets. */
 export function usage(index: CacheIndex): Usage {
   const all = Object.values(index.entries);
   return {
-    bytes: all.reduce((s, e) => s + e.bytes, 0),
+    bytes: all.reduce((s, e) => s + e.bytes + (e.backingBytes ?? 0), 0),
     sheets: all.length,
     pinned: all.filter((e) => e.pinned).length,
   };
@@ -146,7 +162,57 @@ export function withSheet(
     pinned: prev?.pinned ?? false,
     signature: rowSignature(sheet),
   };
+  if (sheet.hasBacking && !sheet.fromLink) entry.hasBacking = true;
+  // The backing beside it stays while the sheet still has one (a refreshed copy does not take it away).
+  if (prev?.backingBytes && sheet.hasBacking !== false) entry.backingBytes = prev.backingBytes;
   return { ...index, entries: { ...index.entries, [sheet.id]: entry } };
+}
+
+/**
+ * The automatic copies whose backings go so the rest fit in `cap`: least recently opened first. A kept sheet's
+ * backing is neither evicted nor counted; the sheet itself stays either way.
+ */
+export function backingEvictionPlan(index: CacheIndex, cap = AUTO_BACKING_CAP_BYTES): string[] {
+  if (index.keepAll) return [];
+  const auto = Object.values(index.entries).filter((e) => !e.pinned && (e.backingBytes ?? 0) > 0);
+  let total = auto.reduce((s, e) => s + (e.backingBytes ?? 0), 0);
+  const drop: string[] = [];
+  for (const e of [...auto].sort((a, b) => a.openedAt - b.openedAt || a.id.localeCompare(b.id))) {
+    if (total <= cap) break;
+    drop.push(e.id);
+    total -= e.backingBytes ?? 0;
+  }
+  return drop;
+}
+
+/** The index with a backing recorded beside a copy already there (a backing without its sheet is not kept). */
+export function withBacking(index: CacheIndex, id: string, bytes: number): CacheIndex {
+  const e = index.entries[id];
+  if (!e || bytes <= 0) return index;
+  return { ...index, entries: { ...index.entries, [id]: { ...e, backingBytes: bytes } } };
+}
+
+/** The index with these sheets' backings gone (their copies stay). */
+export function withoutBackings(index: CacheIndex, ids: readonly string[]): CacheIndex {
+  let entries: Record<string, CacheEntry> | null = null;
+  for (const id of ids) {
+    const e = index.entries[id];
+    if (!e || e.backingBytes === undefined) continue;
+    entries ??= { ...index.entries };
+    const { backingBytes: _gone, ...rest } = e;
+    entries[id] = rest;
+  }
+  return entries ? { ...index, entries } : index;
+}
+
+/**
+ * Whether a copy should have its backing fetched now, with no Play to ask for it: only a kept sheet ("Keep offline",
+ * or keep-all) from the owner's own upload that has one and has none on the phone yet, and never on Data saver
+ * (there the backing comes down at the first Play, and is kept then).
+ */
+export function wantsBackingCopy(entry: CacheEntry | undefined, index: CacheIndex, dataSaver: boolean): boolean {
+  if (!entry || dataSaver || !isKept(entry, index) || !entry.hasBacking) return false;
+  return !((entry.backingBytes ?? 0) > 0);
 }
 
 export function withoutSheets(index: CacheIndex, ids: readonly string[]): CacheIndex {

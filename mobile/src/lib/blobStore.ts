@@ -36,6 +36,18 @@ export function writeText(dir: Directory, name: string, text: string): number {
   }
 }
 
+/** Writes bytes (a song's backing); returns the file's uri and size, or null when it could not be written. */
+export function writeBytes(dir: Directory, name: string, bytes: Uint8Array): { uri: string; bytes: number } | null {
+  try {
+    const file = new File(ensureDir(dir), name);
+    if (!file.exists) file.create({ overwrite: true });
+    file.write(bytes);
+    return { uri: file.uri, bytes: file.size ?? bytes.byteLength };
+  } catch {
+    return null;
+  }
+}
+
 export async function readText(dir: Directory, name: string): Promise<string | null> {
   try {
     const file = new File(dir, name);
