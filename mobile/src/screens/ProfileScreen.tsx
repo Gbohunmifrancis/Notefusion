@@ -5,7 +5,6 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Avatar } from "../components/Avatar";
-import { Touchable } from "../components/Touchable";
 import { Skeleton } from "../components/Skeleton";
 import { MembershipCard } from "../components/profile/MembershipCard";
 import { BackButton, Group, Row } from "../components/settings/Rows";
@@ -37,11 +36,10 @@ import type { RootStackParams } from "../navigation/types";
  *    and the way to the plans
  * 3. My choir
  * 4. Notifications (On/Off) and Settings (its own pages), Help & support, Send feedback, Rate (Android), and
- *    Admin for admins
- * 5. The version, which opens About
+ *    About Notefusion with the version (board n-ux-low Q5h); then Admin for admins
  *
- * Name, email, password, appearance, data, sign out and delete live in Settings; Library, Practice and Hymns are
- * tabs, so none of them repeats here.
+ * Help and feedback live here only (Settings has the legal pages and About). Name, email, password, appearance,
+ * data, sign out and delete live in Settings; Library, Practice and Hymns are tabs, so none of them repeats here.
  */
 export function ProfileScreen() {
   const { user, isAdmin } = useAuth();
@@ -256,6 +254,14 @@ export function ProfileScreen() {
         {Platform.OS === "android" ? (
           <Row icon="rate" label="Rate Notefusion" chevron onPress={() => void rating.rate()} />
         ) : null}
+        {/* A row like the ones above it, as it opens About (board n-ux-low Q5h); the version is what support asks for. */}
+        <Row
+          icon="about"
+          label="About Notefusion"
+          value={version || undefined}
+          chevron
+          onPress={() => setAbout(true)}
+        />
       </Group>
 
       {/* Admin in a group of its own (board f-admin/10), only for an admin: a customer's Profile has no row, no
@@ -272,16 +278,6 @@ export function ProfileScreen() {
           />
         </Group>
       ) : null}
-
-      {/* ── 5. The version, which opens About ───────────────────────────────── */}
-      <Touchable
-        onPress={() => setAbout(true)}
-        ripple={false}
-        style={styles.footer}
-        accessibilityLabel="About Notefusion"
-      >
-        <Text style={styles.footerText}>{`${["Notefusion", version].filter(Boolean).join(" ")} · About`}</Text>
-      </Touchable>
 
       <AboutSheet visible={about} onClose={() => setAbout(false)} />
     </Screen>
@@ -359,17 +355,5 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.regular,
       fontSize: 14,
       color: c.textMuted,
-    },
-    footer: {
-      alignSelf: "center",
-      minHeight: 44,
-      justifyContent: "center",
-      paddingHorizontal: spacing.md,
-      marginTop: spacing.md,
-    },
-    footerText: {
-      fontFamily: fonts.regular,
-      fontSize: 12,
-      color: c.textFaint,
     },
   });

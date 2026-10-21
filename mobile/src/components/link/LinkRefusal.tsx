@@ -9,7 +9,6 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Icon, type IconName } from "../Icon";
 
-import { Touchable } from "../Touchable";
 import { fonts, spacing, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
 
@@ -37,7 +36,8 @@ const NEVER = [
 
 /**
  * An icon, a heading, the plain sentence, and what to do next. The icon names what happened on a neutral tile;
- * only the alert sign is amber and only Pro's crown gold.
+ * only the alert sign is amber and only Pro's crown gold. The next steps are the shared Button (board n-ux-low Q5e):
+ * the one to take `secondary` and `sm`, the other a `text` button, so nothing in the card reads as a second primary.
  */
 export function NoticeCard({
   icon,
@@ -65,32 +65,6 @@ export function NoticeCard({
       <Text style={styles.message}>{message}</Text>
       {children ? <View style={styles.actions}>{children}</View> : null}
     </View>
-  );
-}
-
-/** A small pill for a notice's next step: `solid` for the one to take, `quiet` for the other. */
-export function PillAction({
-  label,
-  onPress,
-  tone = "quiet",
-}: {
-  label: string;
-  onPress: () => void;
-  tone?: "solid" | "quiet";
-}) {
-  const styles = useThemedStyles(makeStyles);
-  return (
-    <Touchable
-      onPress={onPress}
-      radius={20}
-      // 40 px pills 8 apart: half the gap each way makes them 48 dp.
-      hitSlop={4}
-      style={[styles.pill, tone === "solid" ? styles.pillSolid : styles.pillQuiet]}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-    >
-      <Text style={[styles.pillText, tone === "solid" && styles.pillTextSolid]}>{label}</Text>
-    </Touchable>
   );
 }
 
@@ -125,12 +99,7 @@ const makeStyles = (c: Palette) =>
     },
     title: { fontFamily: fonts.semibold, fontSize: 19, letterSpacing: -0.4, color: c.text, marginTop: 14 },
     message: { fontFamily: fonts.regular, fontSize: 14, lineHeight: 21, color: c.textMuted, marginTop: 6 },
-    actions: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.lg },
-    pill: { height: 40, paddingHorizontal: 16, borderRadius: 20, alignItems: "center", justifyContent: "center" },
-    pillSolid: { backgroundColor: c.text },
-    pillQuiet: { backgroundColor: c.surfaceAlt, borderWidth: 1, borderColor: c.border },
-    pillText: { fontFamily: fonts.medium, fontSize: 14, color: c.text },
-    pillTextSolid: { color: c.bg },
+    actions: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: spacing.sm, marginTop: spacing.lg },
     list: { marginTop: 28 },
     eyebrow: {
       fontFamily: fonts.medium, fontSize: 12, letterSpacing: 1.7, textTransform: "uppercase",

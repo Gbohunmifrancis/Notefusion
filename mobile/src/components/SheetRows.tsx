@@ -97,6 +97,10 @@ export function ChoiceRow({
 export interface OptionRowProps {
   label: string;
   icon?: IconName;
+  /** A line under the label, in full (About's piano credit, which the licence asks for word for word). */
+  detail?: string;
+  /** An arrow out: the row opens the browser. */
+  external?: boolean;
   /** A tick on the current choice (the sort order, the folder a sheet is in). */
   selected?: boolean;
   /** A loss: the word in red, the icon left neutral. Opens a destructive confirm, never acts at once. */
@@ -107,9 +111,26 @@ export interface OptionRowProps {
 }
 
 /** One action in an options sheet (board 7c): a small icon, the action, a tick if it is the current one. */
-export function OptionRow({ label, icon, selected = false, destructive = false, first = false, onPress }: OptionRowProps) {
+export function OptionRow({
+  label,
+  icon,
+  detail,
+  external = false,
+  selected = false,
+  destructive = false,
+  first = false,
+  onPress,
+}: OptionRowProps) {
   const c = useColors();
   const styles = useThemedStyles(makeStyles);
+  const labelText = (
+    <Text
+      style={[styles.optionLabel, detail ? styles.optionLabelOver : null, destructive && { color: c.dangerText }]}
+      numberOfLines={2}
+    >
+      {label}
+    </Text>
+  );
   return (
     <Touchable
       onPress={onPress}
@@ -117,9 +138,10 @@ export function OptionRow({ label, icon, selected = false, destructive = false, 
       scaleTo={0.99}
       radius={10}
       haptic={destructive ? "warning" : "light"}
-      style={styles.option}
+      style={[styles.option, detail ? styles.optionTall : null]}
+      accessibilityRole={external ? "link" : undefined}
       accessibilityState={{ selected }}
-      accessibilityLabel={label}
+      accessibilityLabel={detail ? `${label}. ${detail}` : label}
     >
       {!first ? <View style={[styles.rule, icon ? styles.ruleInset : null]} /> : null}
       {icon ? (
@@ -127,10 +149,18 @@ export function OptionRow({ label, icon, selected = false, destructive = false, 
           <Icon name={icon} size={18} color={destructive ? c.textMuted : c.icon} />
         </View>
       ) : null}
-      <Text style={[styles.optionLabel, destructive && { color: c.dangerText }]} numberOfLines={2}>
-        {label}
-      </Text>
+      {detail ? (
+        <View style={styles.optionText}>
+          {labelText}
+          <Text style={styles.optionDetail}>{detail}</Text>
+        </View>
+      ) : (
+        labelText
+      )}
       {selected ? <Icon name="check" size={20} color={c.link} /> : null}
+      {external ? (
+        <Icon name="external" size={15} color={c.textFaint} style={detail ? styles.optionArrowTop : undefined} />
+      ) : null}
     </Touchable>
   );
 }
@@ -257,5 +287,31 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.medium,
       fontSize: 16,
       color: c.text,
+    },
+    /** A row with a line under its label: the icon, label and arrow hold the top, the line runs on below. */
+    optionTall: {
+      alignItems: "flex-start",
+      paddingVertical: 12,
+    },
+    /** The label and its line; the label's first line centred on the 30 px tile. */
+    optionText: {
+      flex: 1,
+      paddingTop: 5,
+    },
+    /** Over its line, the label takes its own height in the column rather than flexing. */
+    optionLabelOver: {
+      flex: 0,
+      lineHeight: 20,
+    },
+    optionDetail: {
+      fontFamily: fonts.regular,
+      fontSize: 14,
+      lineHeight: 20,
+      color: c.textMuted,
+      marginTop: 2,
+    },
+    /** The arrow on the label's first line. */
+    optionArrowTop: {
+      marginTop: 8,
     },
   });

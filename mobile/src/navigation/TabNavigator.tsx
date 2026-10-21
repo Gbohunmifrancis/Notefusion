@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Animated, Keyboard, Platform, StyleSheet, Text, View } from "react-native";
+import { Animated, Keyboard, Platform, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   createBottomTabNavigator,
@@ -20,6 +20,13 @@ import { useColors, useTheme, useThemedStyles } from "../lib/theme";
 import { useBreath } from "../lib/breath";
 import { TAB_ORDER, type TabName } from "../lib/navTargets";
 import { leaveThrough } from "../lib/leaveGuard";
+import {
+  TAB_BAR_DOCKED_HEIGHT,
+  TAB_BAR_HEIGHT,
+  TAB_DOCKED_CENTRE,
+  TAB_DOCKED_SIDE,
+  tabBarLayout,
+} from "../lib/tabBarLayout";
 import type { TabParams } from "../navigation/types";
 
 const Tab = createBottomTabNavigator<TabParams>();
@@ -33,6 +40,11 @@ const Tab = createBottomTabNavigator<TabParams>();
  * circle, with a slow halo behind it ({@link RecordHalo}); it has no icon. On the Record tab it takes the selected
  * look instead (board m-ux-medium P3d): the mark in link blue on a 20% wash inside a blue line, no glow, so it reads
  * "you are here" and never as a second record button under the real one.
+ *
+ * Large text (board n-ux-low Q5j, lib/tabBarLayout): five floating cells of about 62 dp hold "Practice" only up to
+ * 1.2x. From 1.3x system text the bar docks instead — edge to edge on the safe area, square ends, 72 tall, the centre
+ * cell 64 dp and the four labelled ones sharing the rest (72 dp each at 360) — and the labels grow to 1.5x. Below
+ * 1.3x nothing changes.
  */
 const CELLS: Record<TabName, { label: string; icon: IconName }> = {
   Home: { label: "Home", icon: "home" },
@@ -50,6 +62,9 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+  const { fontScale } = useWindowDimensions();
+  const layout = tabBarLayout(fontScale);
+  const docked = layout.docked;
 
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -68,10 +83,16 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
 
   return (
     <View
-      style={[styles.wrap, { paddingBottom: Math.max(insets.bottom, spacing.sm) + spacing.xs }]}
-      pointerEvents="box-none"
+      style={[
+        styles.wrap,
+        docked
+          ? [styles.wrapDocked, { paddingBottom: insets.bottom }]
+          : { paddingBottom: Math.max(insets.bottom, spacing.sm) + spacing.xs },
+      ]}
+      // Floating, the gap around the pill lets touches through to the screen; docked, the glass is all bar.
+      pointerEvents={docked ? "auto" : "box-none"}
     >
-      <View style={styles.bar}>
+      <View style={[styles.bar, docked && styles.barDocked]}>
         {TAB_ORDER.map((name) => {
           const cell = CELLS[name];
           const route = state.routes.find((r) => r.name === name);
@@ -96,7 +117,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                 haptic="medium"
                 scaleTo={motion.scale.large}
                 ripple={false}
-                style={styles.tabItem}
+                style={[styles.tabItem, docked && styles.centreDocked]}
               >
                 <View style={styles.centre}>
                   {focused ? null : <RecordHalo breathing />}
@@ -122,7 +143,11 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
               <Text
                 style={[styles.label, focused && styles.labelOn]}
                 numberOfLines={1}
-                maxFontSizeMultiplier={1.2}
+                maxFontSizeMultiplier={layout.labelMaxScale}
+                // Docked, a phone narrower than 360 dp (a large Display size) still keeps the word whole, a little
+                // smaller, rather than cutting it.
+                adjustsFontSizeToFit={docked}
+                minimumFontScale={docked ? 0.8 : undefined}
               >
                 {cell.label}
               </Text>
@@ -196,11 +221,18 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: spacing.lg,
       backgroundColor: "transparent",
     },
+    /** Docked (1.3x text and up): the glass runs edge to edge and down over the safe area, under a hairline. */
+    wrapDocked: {
+      paddingHorizontal: 0,
+      backgroundColor: c.glass,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: c.border,
+    },
     /** A floating glass pill: semi-opaque rather than blurred, so it ships over the air. */
     bar: {
       flexDirection: "row",
       alignItems: "center",
-      height: 64,
+      height: TAB_BAR_HEIGHT,
       borderRadius: 32,
       paddingHorizontal: spacing.sm,
       backgroundColor: c.glass,
@@ -212,17 +244,32 @@ const makeStyles = (c: Palette) =>
       shadowRadius: 24,
       elevation: 12,
     },
+    /** Docked: square ends and no lift of its own; the glass is the wrap's. */
+    barDocked: {
+      height: TAB_BAR_DOCKED_HEIGHT,
+      borderRadius: 0,
+      borderWidth: 0,
+      paddingHorizontal: TAB_DOCKED_SIDE,
+      backgroundColor: "transparent",
+      shadowOpacity: 0,
+      elevation: 0,
+    },
     tabItem: {
       flex: 1,
       height: "100%",
       alignItems: "center",
       justifyContent: "center",
     },
+    /** Docked, the record cell keeps 64 dp and the four labelled cells share the rest: 72 each on a 360 dp phone. */
+    centreDocked: {
+      flex: 0,
+      width: TAB_DOCKED_CENTRE,
+    },
     label: {
       marginTop: 3,
       fontFamily: fonts.medium,
-      // The app's smallest words: 12, never under. Grown at most 1.2x (`maxFontSizeMultiplier`): five cells of about
-      // 62 dp on a 360 dp phone hold "Practice" whole at 14.4.
+      // The app's smallest words: 12, never under. Grown at most 1.2x (`maxFontSizeMultiplier`) while the bar floats:
+      // five cells of about 62 dp on a 360 dp phone hold "Practice" whole at 14.4. Docked, 1.5x (18 px) in 72 dp.
       fontSize: 12,
       color: c.textFaint,
     },
