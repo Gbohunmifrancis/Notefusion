@@ -292,6 +292,21 @@ public class OutreachTests
         Assert.Equal(sends ? 1 : 0, await Run(h));
     }
 
+    [Theory]
+    [InlineData(10, false)] // 06:00 in New York (11:00 WAT): too early there
+    [InlineData(14, true)]  // 10:00 in New York
+    [InlineData(22, true)]  // 18:00 in New York (23:00 WAT)
+    [InlineData(23, false)] // 19:00 in New York
+    public async Task An_account_with_a_time_zone_is_written_to_in_its_own_daytime(int utcHour, bool sends)
+    {
+        var at = new DateTime(2026, 10, 13, utcHour, 0, 0, DateTimeKind.Utc); // New York is UTC-4 in October
+        using var h = new TestHarness(at);
+        var id = Account(h, "jo@example.com", "Jo", at.AddDays(-3));
+        await h.Db.Users.Where(u => u.Id == id).ExecuteUpdateAsync(s => s.SetProperty(u => u.TimeZone, "America/New_York"));
+
+        Assert.Equal(sends ? 1 : 0, await Run(h));
+    }
+
     [Fact]
     public async Task A_backlog_goes_out_a_batch_at_a_time_highest_priority_first()
     {
