@@ -38,7 +38,7 @@ public class BillingSeederTests
         Assert.Equal(
             ["choir_monthly_ngn", "choir_monthly_usd", "choir_monthly_usd_regional",
              "choir_yearly_ngn", "choir_yearly_usd", "choir_yearly_usd_regional",
-             "one_song_ngn", "one_song_usd", "one_song_usd_regional",
+             "one_song_ngn", "one_song_usd", "one_song_usd_regional_v2",
              "pro_monthly_ngn", "pro_monthly_usd", "pro_monthly_usd_regional",
              "pro_yearly_ngn_v2", "pro_yearly_usd", "pro_yearly_usd_regional"],
             plans.Select(p => p.Code));
@@ -166,6 +166,44 @@ public class BillingSeederTests
     }
 
     [Fact]
+    public async Task The_regional_one_song_moves_to_a_dollar_as_a_new_code()
+    {
+        // $0.99 was under Bachs' minimum checkout of 1 USD, so every regional one-song checkout was refused before
+        // the payment page opened. The old row comes off sale at the price it was listed at; the new one is $1.00
+        // and is the only one song the regional paywall offers.
+        using var h = new TestHarness(Now);
+        h.Db.Plans.Add(Plan.Create(Guid.NewGuid(), "one_song_usd_regional", "One song", 99, "USD", BillingInterval.Single));
+        await h.Db.SaveChangesAsync();
+
+        await Seed(h);
+
+        var previous = await h.Db.Plans.SingleAsync(p => p.Code == "one_song_usd_regional");
+        Assert.False(previous.IsActive);
+        Assert.Equal(99, previous.AmountMinor);
+
+        var offered = (await h.Db.Plans.Where(p => p.IsActive).ToListAsync())
+            .Where(p => PlanEligibility.IsOffered(p.Code, p.Currency, "KE"))
+            .ToList();
+        var single = Assert.Single(offered, p => p.Interval == BillingInterval.Single);
+        Assert.Equal("one_song_usd_regional_v2", single.Code);
+        Assert.Equal(100, single.AmountMinor);
+    }
+
+    [Fact]
+    public async Task Every_plan_on_sale_meets_the_gateways_minimum_charge()
+    {
+        // Bachs refuses a checkout under 1 USD, and NGN's floor is ₦100 (minor units: 100 cents, 10,000 kobo).
+        using var h = new TestHarness(Now);
+        await Seed(h);
+
+        var minimum = new Dictionary<string, long> { ["USD"] = 100, ["NGN"] = 10_000 };
+        var onSale = await h.Db.Plans.Where(p => p.IsActive).ToListAsync();
+        Assert.NotEmpty(onSale);
+        Assert.All(onSale, p => Assert.True(
+            p.AmountMinor >= minimum[p.Currency], $"{p.Code} is {p.AmountMinor} {p.Currency}, under the gateway's minimum"));
+    }
+
+    [Fact]
     public async Task Lifetime_is_withdrawn_but_its_buyers_keep_their_plan_row()
     {
         using var h = new TestHarness(Now);
@@ -224,7 +262,7 @@ public class BillingSeederTests
         Assert.Equal(3_999, plans["pro_yearly_usd_regional"].AmountMinor); // $39.99
         Assert.Equal(150_000, plans["one_song_ngn"].AmountMinor);          // ₦1,500, in kobo
         Assert.Equal(199, plans["one_song_usd"].AmountMinor);              // $1.99
-        Assert.Equal(99, plans["one_song_usd_regional"].AmountMinor);      // $0.99
+        Assert.Equal(100, plans["one_song_usd_regional_v2"].AmountMinor);  // $1.00, Bachs' minimum
         Assert.All(plans.Values.Where(p => p.Code.StartsWith("one_song")), p => Assert.Equal(BillingInterval.Single, p.Interval));
     }
 

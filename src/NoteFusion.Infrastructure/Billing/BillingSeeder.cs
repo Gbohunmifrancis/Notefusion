@@ -53,7 +53,7 @@ public sealed class BillingSeeder : IHostedService
         ("pro_yearly_usd_regional",  "NoteFusion Pro (Yearly)",  3_999,     "USD", BillingInterval.Yearly, null),
         ("one_song_ngn",             "One song",                 150_000,   "NGN", BillingInterval.Single, null),
         ("one_song_usd",             "One song",                 199,       "USD", BillingInterval.Single, null),
-        ("one_song_usd_regional",    "One song",                 99,        "USD", BillingInterval.Single, null),
+        ("one_song_usd_regional_v2", "One song",                 100,       "USD", BillingInterval.Single, null),
         ("choir_monthly_ngn",          "NoteFusion Choir (Monthly)", 2_500_000,  "NGN", BillingInterval.Monthly, ChoirSeats),
         ("choir_yearly_ngn",           "NoteFusion Choir (Yearly)",  25_000_000, "NGN", BillingInterval.Yearly,  ChoirSeats),
         ("choir_monthly_usd",          "NoteFusion Choir (Monthly)", 1_999,      "USD", BillingInterval.Monthly, ChoirSeats),
@@ -77,8 +77,12 @@ public sealed class BillingSeeder : IHostedService
     // pro_lifetime_v2 and pro_yearly_ngn are retired the same way: lifetime is withdrawn as a product (an
     // existing lifetime subscription keeps its far-future period end and stays Pro), and the naira yearly
     // moved from ₦75,000 to ₦60,000, which ships as pro_yearly_ngn_v2 rather than an edit.
+    //
+    // one_song_usd_regional was $0.99, under Bachs' minimum checkout (1 USD; 100 NGN): every one of its checkouts
+    // was refused before the payment page. It moved to $1.00 as one_song_usd_regional_v2, keeping the marker.
     private static readonly string[] RetiredCodes =
-        ["pro_monthly", "pro_yearly", "test_ngn_monthly", "pro_lifetime", "pro_lifetime_v2", "pro_yearly_ngn"];
+        ["pro_monthly", "pro_yearly", "test_ngn_monthly", "pro_lifetime", "pro_lifetime_v2", "pro_yearly_ngn",
+         "one_song_usd_regional"];
 
     private readonly IServiceProvider _services;
     private readonly ILogger<BillingSeeder> _logger;
