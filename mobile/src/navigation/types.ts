@@ -37,6 +37,16 @@ export type ResultParams = {
   savedId?: string;
   title?: string;
   /**
+   * A saved sheet from a pasted link (boards o-backing O3/4): its backing is never kept, and the dock says so. A
+   * fresh result knows it from `result.source`.
+   */
+  fromLink?: boolean;
+  /**
+   * Semitones a saved sheet has been moved by "Transpose for my choir" from the key it was heard in: its song's
+   * backing plays only at 0 (boards o-backing O3/3).
+   */
+  transposedBy?: number;
+  /**
    * Opened straight from its finished job (the record or link flow, or the job's notification): Doh's toast
    * celebrates it, once per job. Never set on a reopen from the Library or Home.
    */

@@ -12,6 +12,7 @@ import type { NoteEvent } from "../../api/types";
 import { barOf } from "./SheetGrid";
 import { clamp, RATE_STEPS, useSeekDrag, type Practice } from "./usePractice";
 import { ProblemNote } from "../ProblemNote";
+import { BackingControl, type BackingControlProps } from "./BackingControl";
 
 const VOICE_SHORT: Record<VoiceName, string> = { soprano: "S", alto: "A", tenor: "T", bass: "B" };
 
@@ -46,7 +47,9 @@ function phrase(
  * its neighbours fading either side, the words run beneath it, and the practice
  * controls the player already had — the passage loop in bars, the speed, and the
  * parts to mute — sit below. It drives the same player as the dock, so closing it
- * leaves the music where it was.
+ * leaves the music where it was. On a sheet with the song's backing the dock's switch and
+ * balance sit in a card under the transport (board o-backing O2a): the same setting, and the
+ * band follows the loop and the speed.
  */
 export function RehearseView({
   visible,
@@ -62,6 +65,7 @@ export function RehearseView({
   doh,
   voices,
   onToggleVoice,
+  backing,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -77,6 +81,8 @@ export function RehearseView({
   /** The rehearsal mix; undefined when the sheet has no parts. */
   voices?: readonly { name: VoiceName; on: boolean }[];
   onToggleVoice: (name: VoiceName) => void;
+  /** The song's backing, as the dock has it; absent on a sheet without one. */
+  backing?: BackingControlProps;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -96,30 +102,31 @@ export function RehearseView({
   );
 
   // ── The loop track: a scrubber over the piece with the passage drawn on it ──
-  const total = p.duration > 0 ? p.duration : barCount * p.barSec;
+  // Bars in the clip's seconds come from the player: on a song with its own beat times they are not all one length.
+  const total = p.duration > 0 ? p.duration : p.secOfBar(barCount + 1);
   const toX = (sec: number, width: number) => (total > 0 ? clamp(sec / total, 0, 1) * width : 0);
   const grabbed = useRef<"from" | "to" | null>(null);
   const { panResponder, dragFraction, onTrackWidth } = useSeekDrag(p, {
     onGrant: (x, width) => {
       grabbed.current = null;
       if (!p.loopOn || barCount <= 0) return true;
-      const fromX = toX((p.loopFrom - 1) * p.barSec, width);
-      const toEdge = toX(p.loopTo * p.barSec, width);
+      const fromX = toX(p.secOfBar(p.loopFrom), width);
+      const toEdge = toX(p.secOfBar(p.loopTo + 1), width);
       if (Math.abs(x - toEdge) <= HANDLE_REACH) grabbed.current = "to";
       else if (Math.abs(x - fromX) <= HANDLE_REACH) grabbed.current = "from";
       return grabbed.current === null;
     },
     onOther: (x, width) => {
       if (width <= 0 || p.barSec <= 0) return;
-      const bars = (clamp(x / width, 0, 1) * total) / p.barSec;
+      const bars = p.barsAt(clamp(x / width, 0, 1) * total);
       if (grabbed.current === "from") p.setLoopFrom(clamp(Math.round(bars) + 1, 1, p.loopTo));
       else if (grabbed.current === "to") p.setLoopTo(clamp(Math.round(bars), p.loopFrom, barCount));
     },
   });
   const played = dragFraction ?? (total > 0 ? clamp(p.position / total, 0, 1) : 0);
-  const loopLeft = total > 0 ? clamp(((p.loopFrom - 1) * p.barSec) / total, 0, 1) : 0;
-  const loopRight = total > 0 ? clamp((p.loopTo * p.barSec) / total, 0, 1) : 0;
-  const barNow = p.barSec > 0 ? clamp(Math.floor((played * total) / p.barSec) + 1, 1, Math.max(1, barCount)) : 1;
+  const loopLeft = total > 0 ? clamp(p.secOfBar(p.loopFrom) / total, 0, 1) : 0;
+  const loopRight = total > 0 ? clamp(p.secOfBar(p.loopTo + 1) / total, 0, 1) : 0;
+  const barNow = p.barSec > 0 ? clamp(p.barAt(played * total), 1, Math.max(1, barCount)) : 1;
 
   const near = (offset: number) => notes[current + offset];
   const label = (n: NoteEvent | undefined) => (n ? `${n.solfa}${n.octaveMark}` : "");
@@ -309,6 +316,9 @@ export function RehearseView({
               <View style={styles.loopBtnSpacer} />
             )}
           </View>
+
+          {/* ── The song's backing: the dock's switch and balance, in a card of its own ── */}
+          {backing ? <BackingControl place="rehearse" {...backing} /> : null}
 
           {/* ── The parts: tap one to mute it and sing it yourself ───────────── */}
           {voices && voices.length > 0 ? (

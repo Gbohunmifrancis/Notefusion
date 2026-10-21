@@ -4,6 +4,7 @@ import {
   useAudioPlayer,
   useAudioPlayerStatus,
   setAudioModeAsync,
+  type AudioPlayer,
 } from "expo-audio";
 import type { NoteEvent } from "../api/types";
 import { beatSecOf } from "./synth";
@@ -73,6 +74,21 @@ export interface UseNotePlayerResult extends NotePlayerState {
   setLoopRange: (range: LoopRange | null) => void;
   /** Back to the beginning, still playing if it was. */
   skipToStart: () => void;
+  /**
+   * The native player itself, for what must be read at the same instant as another player (the song's backing kept
+   * in step reads both clocks back to back: `audio.currentTime`). Not for driving playback: use the calls above.
+   */
+  audio: AudioPlayer;
+}
+
+export interface NotePlayerOptions {
+  /** 0–1: the solfa's share of the Solfa · Backing balance. 1 when there is no backing. */
+  volume?: number;
+  /**
+   * Hears every move this player makes on its own or is asked to make — a seek, the A–B loop going back, Back to the
+   * start — with the position it moves to, so a second player can move with it in the same tick.
+   */
+  onSeek?: (seconds: number) => void;
 }
 
 /**
@@ -110,10 +126,15 @@ export interface LoopRange {
  */
 export function useNotePlayer(
   audioPreviewBase64: string | null | undefined,
-  notes: NoteEvent[],
+  notes: readonly Pick<NoteEvent, "startBeat" | "durBeats">[],
   tempoBpm: number,
   leadInSec = 0,
+  options: NotePlayerOptions = {},
 ): UseNotePlayerResult {
+  const volume = options.volume ?? 1;
+  const onSeekRef = useRef(options.onSeek);
+  onSeekRef.current = options.onSeek;
+  const moved = (seconds: number) => onSeekRef.current?.(seconds);
   const [fileUri, setFileUri] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -241,6 +262,7 @@ export function useNotePlayer(
     if (!range || !status.playing) return;
     if (status.currentTime >= range.end - 0.02 || status.currentTime < range.start - 1.0) {
       void player.seekTo(range.start);
+      moved(range.start);
     }
   }, [status.currentTime, status.playing, player]);
 
@@ -268,6 +290,11 @@ export function useNotePlayer(
     player.loop = loop;
   }, [player, rate, loop]);
 
+  // The Solfa · Backing balance; a new native player starts at full volume, so this follows `player` too.
+  useEffect(() => {
+    player.volume = Math.min(1, Math.max(0, volume));
+  }, [player, volume]);
+
   // Compute the current note index from playback position
   const currentNoteIndex = status.playing
     ? findNoteIndexAt(noteWindowsRef.current, status.currentTime)
@@ -285,12 +312,17 @@ export function useNotePlayer(
   const stop = useCallback(() => {
     player.pause();
     void player.seekTo(0);
+    moved(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player]);
 
   const seekTo = useCallback(
     async (seconds: number) => {
-      await player.seekTo(Math.max(0, seconds));
+      const to = Math.max(0, seconds);
+      moved(to);
+      await player.seekTo(to);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [player]
   );
 
@@ -317,8 +349,10 @@ export function useNotePlayer(
       // Entering a passage from outside it starts at its beginning.
       if (valid && (status.currentTime < valid.start || status.currentTime >= valid.end)) {
         void player.seekTo(valid.start);
+        moved(valid.start);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [player, status.currentTime],
   );
 
@@ -326,7 +360,10 @@ export function useNotePlayer(
   // to press play afterwards breaks the rhythm of practising a passage. With a
   // passage set, "the start" is the passage's.
   const skipToStart = useCallback(() => {
-    void player.seekTo(loopRangeRef.current?.start ?? 0);
+    const to = loopRangeRef.current?.start ?? 0;
+    void player.seekTo(to);
+    moved(to);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player]);
 
   return {
@@ -349,6 +386,7 @@ export function useNotePlayer(
     setLoop,
     setLoopRange,
     skipToStart,
+    audio: player,
   };
 }
 

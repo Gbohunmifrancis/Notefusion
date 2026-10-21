@@ -30,7 +30,7 @@ import { libraryApi, practiceApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { loadLibraryList, loadSheet } from '../lib/offlineLibrary';
 import { withoutHeldDeletes } from '../lib/sheetActions';
-import { exampleResult, resultFromSaved } from '../lib/openSheet';
+import { exampleResult, savedSheetParams } from '../lib/openSheet';
 import { EXAMPLE_HYMN, offerExample } from '../lib/exampleSheet';
 import { useOpening } from '../lib/useOpening';
 import { useAuth } from '../lib/auth';
@@ -427,12 +427,7 @@ export function HomeScreen({ navigation }: Props) {
     try {
       // The phone's copy when it is current or the API is out of reach (lib/offlineLibrary).
       const { sheet } = await loadSheet(item);
-      rootNav.navigate('Result', {
-        result: resultFromSaved(sheet),
-        savedId: sheet.id,
-        title: sheet.title,
-        practise: opts.practise,
-      });
+      rootNav.navigate('Result', { ...savedSheetParams(sheet), practise: opts.practise });
     } catch (e) {
       showDialog({
         title: 'Could not open',

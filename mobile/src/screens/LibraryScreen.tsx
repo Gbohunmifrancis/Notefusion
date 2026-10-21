@@ -33,7 +33,7 @@ import { useSheetActions } from "../components/library/useSheetActions";
 import { withoutHeldDeletes } from "../lib/sheetActions";
 import { useSubscription } from "../lib/subscription";
 import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLibrary";
-import { exampleResult, resultFromSaved } from "../lib/openSheet";
+import { exampleResult, savedSheetParams } from "../lib/openSheet";
 import { useOpening } from "../lib/useOpening";
 import { onTakeChange, removeTake, retryTake, useOutbox, useSendProgress } from "../lib/outbox";
 import { REFRESH_FAILED, isUnopened } from "../lib/savedSheet";
@@ -254,7 +254,7 @@ export function LibraryScreen() {
     }
     try {
       const { sheet } = await loadSheet(item);
-      nav.navigate("Result", { result: resultFromSaved(sheet), savedId: sheet.id, title: sheet.title });
+      nav.navigate("Result", savedSheetParams(sheet));
     } catch (e) {
       const err = toApiError(e);
       showDialog({

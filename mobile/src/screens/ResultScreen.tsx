@@ -34,7 +34,9 @@ import { Segmented } from "../components/result/Segmented";
 import { DohPicker } from "../components/result/DohPicker";
 import { LayoutMenu, type LayoutSamples } from "../components/result/LayoutMenu";
 import { ProPriceTag, ProTag } from "../components/result/ProTag";
-import { usePractice } from "../components/result/usePractice";
+import { usePractice, type SongBacking } from "../components/result/usePractice";
+import { BackingSync } from "../components/result/useBacking";
+import type { BackingControlProps } from "../components/result/BackingControl";
 import { DohToast } from "../components/doh/DohToast";
 import { firstCelebration } from "../lib/dohPrefs";
 import { billingApi, libraryApi, transcriptionsApi } from "../api/endpoints";
@@ -62,7 +64,19 @@ import {
 } from "../lib/solfa";
 import { buildMusicXml, resolveKeySignature } from "../lib/musicxml";
 import { midiBase64 } from "../lib/midi";
-import { synthesizeMelodyWavBase64, synthesizeVoicesWavBase64 } from "../lib/synth";
+import { synthesizeVoicesWavBase64, type SynthVoice } from "../lib/synth";
+import { onSongClock, type BeatClock } from "../lib/backingClock";
+import {
+  BACKING_WORDS,
+  backingCanPlay,
+  backingRows,
+  showsBackingRows,
+  warnsBeforeTranspose,
+} from "../lib/backingSync";
+import { useBackingPrefs } from "../lib/backingPrefs";
+import { useBackingFile, type BackingOrigin } from "../lib/backingAudio";
+import { useDataSaver } from "../lib/dataSaver";
+import { backingLoadsBeforePlay } from "../lib/dataPolicy";
 import { hymnRows, lyricsUnderNotes, pitchName, rangeReport, shiftKeyName, VOICES, type VoiceName } from "../lib/choir";
 import { stopAudition } from "../lib/audition";
 import { sectionOf } from "../lib/clipRange";
@@ -154,6 +168,8 @@ interface SheetState {
   doubt: KeyAlternative[];
   hymnSource: HymnCredit | null;
   hymnAnswered: boolean;
+  /** Semitones from the key the song's backing plays in (0 = its own key); a transposition's Undo puts it back. */
+  transposedBy: number;
 }
 
 /**
@@ -255,6 +271,8 @@ export function ResultScreen({ route, navigation }: Props) {
     practise,
     guest,
     example,
+    fromLink: savedFromLink,
+    transposedBy: savedTransposedBy,
   } = route.params;
 
   const colors = useColors();
@@ -362,7 +380,6 @@ export function ResultScreen({ route, navigation }: Props) {
    * sheet the hymnbook version, and `hymnSource` then credits it (on a saved sheet, from the library).
    */
   const [hymnAnswered, setHymnAnswered] = useState(false);
-  const [hymnSource, setHymnSource] = useState<HymnCredit | null>(result.hymn ?? null);
 
   // ── Transpose for my choir ────────────────────────────────────────────────
   // The one edit that moves the notes. After it, the *baseline* the corrections are
@@ -422,12 +439,45 @@ export function ResultScreen({ route, navigation }: Props) {
   const [reviewQueue, setReviewQueue] = useState<number[] | null>(null);
   /** Last draft the server acknowledged — the rollback target if a correction fails to save. */
   const persisted = useRef<Draft>(draft);
+  // ── The song's backing (boards o-backing O1–O3) ───────────────────────────
+  /**
+   * The band with the voice taken out, played quietly under the solfa: a fresh job's while the server holds it, an
+   * upload's kept with its sheet, never a pasted link's once the sheet is closed. Its clock is fixed with the screen:
+   * the tempo it was heard at, its beat 0 and its beat times, as they came.
+   */
+  const fromLink = savedFromLink ?? !!result.source;
+  /** There is a backing to play and a way to it: sent inline, the job's (fresh), or kept with an upload's sheet. */
+  const backingAvailable =
+    !!result.backingAudioBase64 || (!!result.hasBacking && (!!sourceJobId || (!!initialSavedId && !fromLink)));
+  const songClock = useMemo<BeatClock | null>(
+    () =>
+      backingAvailable
+        ? { tempo: result.tempo, beatOriginSec: result.beatOriginSec ?? 0, beatTimesSec: result.beatTimesSec ?? null }
+        : null,
+    // From the route params: fixed for the screen's life.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+  /** Semitones from the song's key; the backing plays only at 0. A transposition made on this phone counts too. */
+  const [transposedBy, setTransposedBy] = useState(savedTransposedBy ?? 0);
+  const [hymnSource, setHymnSource] = useState<HymnCredit | null>(result.hymn ?? null);
+  /**
+   * The clock the solfa is rendered on: the song's, so a song with its own beat times has the piano where the band
+   * plays each beat (lib/backingClock `onSongClock`; the notes as written when there are none). A hymnbook version is
+   * the book's notes, not the take's, so it keeps its own even beats.
+   */
+  const timingClock = hymnSource ? null : songClock;
+  /** The melody as the player plays it: on the timing clock (the same notes, unbent, on every other sheet). */
+  function renderMelody(notes: readonly NoteEvent[], bpm: number, clock: BeatClock | null = timingClock): string {
+    return synthesizeVoicesWavBase64([{ notes: onSongClock(notes, clock), gain: 1 }], bpm);
+  }
+
   /**
    * Synthesised melody for the player; re-made when the notes change. Always rendered
    * here, never the server's `audioPreviewBase64`: that is the old additive voice, and
    * the piano must not change underfoot between the first play and the first edit.
    */
-  const [preview, setPreview] = useState(() => synthesizeMelodyWavBase64(result.notes, result.tempo));
+  const [preview, setPreview] = useState(() => renderMelody(result.notes, result.tempo));
 
   // Counts deletions as well as pitch changes: both are corrections the exported
   // score doesn't know about, and both are what "Discard" would undo. Zero means
@@ -574,9 +624,12 @@ export function ResultScreen({ route, navigation }: Props) {
     if (practising) {
       // My part at its own level, the others by the balance; slower is the notes played slower.
       const lv = levels(partsOf(parts), practicePart, practiceBalance);
-      const mix = partsOf(parts)
+      const mix: SynthVoice[] = partsOf(parts)
         .filter((v) => lv[v]! > 0)
-        .map((v) => ({ notes: v === "soprano" ? partReference(parts, view.notes) : parts[v]!.notes, gain: (v === "soprano" ? 1 : 0.8) * lv[v]! }));
+        .map((v) => ({
+          notes: onSongClock(v === "soprano" ? partReference(parts, view.notes) : parts[v]!.notes, timingClock),
+          gain: (v === "soprano" ? 1 : 0.8) * lv[v]!,
+        }));
       try {
         setPreview(synthesizeVoicesWavBase64(mix, practiceTempo(tempo, practiceSpeed)));
       } catch {
@@ -586,17 +639,17 @@ export function ResultScreen({ route, navigation }: Props) {
     }
     // The tune is the soprano: the parts' own when written (a man's tune sits an octave up there,
     // over the alto, tenor and bass written for it), the melody otherwise.
-    const voices = [{ notes: voiceOn.soprano ? partReference(parts, view.notes) : [], gain: 1 }];
+    const voices: SynthVoice[] = [{ notes: onSongClock(voiceOn.soprano ? partReference(parts, view.notes) : [], timingClock), gain: 1 }];
     for (const name of VOICES) {
       if (name === "soprano" || !voiceOn[name] || !parts[name]) continue;
-      voices.push({ notes: parts[name].notes, gain: 0.8 });
+      voices.push({ notes: onSongClock(parts[name].notes, timingClock), gain: 0.8 });
     }
     try {
       setPreview(synthesizeVoicesWavBase64(voices, tempo));
     } catch {
       // preview synthesis is non-fatal
     }
-  }, [hasParts, parts, voiceOn, view.notes, tempo, practising, practicePart, practiceBalance, practiceSpeed]);
+  }, [hasParts, parts, voiceOn, view.notes, tempo, practising, practicePart, practiceBalance, practiceSpeed, timingClock]);
 
   const activeSolfaLines = useMemo(() => {
     return solfaStyle === "curwen" && view.curwenLines.length > 0
@@ -627,6 +680,56 @@ export function ResultScreen({ route, navigation }: Props) {
     [view.notes],
   );
 
+  // The backing's switch and balance (per phone), what the dock says about it, and its file.
+  const backingPrefs = useBackingPrefs();
+  const dataSaver = useDataSaver();
+  /** Play was pressed on this screen: on Data saver that is when the backing is fetched. */
+  const [playedOnce, setPlayedOnce] = useState(false);
+  const backingFacts = {
+    available: backingAvailable,
+    gone: false,
+    fromLink,
+    reopened: !!initialSavedId && !fresh,
+    transposedBy,
+    hymnbook: !!hymnSource,
+    originalKey: shiftKeyName(key, -transposedBy),
+  };
+  const wantBacking =
+    backingPrefs.on && backingCanPlay(backingRows(backingFacts)) && (backingLoadsBeforePlay(dataSaver) || playedOnce);
+  const backingOrigin = useMemo<BackingOrigin | null>(
+    () =>
+      backingAvailable
+        ? {
+            jobId: sourceJobId,
+            savedId: initialSavedId,
+            savedKeepsIt: !fromLink,
+            inlineBase64: result.backingAudioBase64 || undefined,
+          }
+        : null,
+    // From the route params: fixed for the screen's life.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+  const backingFile = useBackingFile(backingOrigin, wantBacking);
+  const rows = backingRows({ ...backingFacts, gone: backingFile.state === "gone" });
+  const retryBacking = backingFile.retry;
+  const song: SongBacking | null = useMemo(
+    () =>
+      timingClock
+        ? {
+            clock: timingClock,
+            uri: backingFile.uri,
+            active: backingPrefs.on && backingCanPlay(rows),
+            balance: backingPrefs.balance,
+            onPlay: () => {
+              setPlayedOnce(true);
+              retryBacking();
+            },
+          }
+        : null,
+    [timingClock, backingFile.uri, backingPrefs.on, backingPrefs.balance, rows.kind, retryBacking],
+  );
+
   // One player for the dock and Rehearse; the note it reports drives the sheet's
   // highlight and the stave's cursor.
   const practice = usePractice(
@@ -635,6 +738,7 @@ export function ResultScreen({ route, navigation }: Props) {
     practising ? practiceTempo(tempo, practiceSpeed) : tempo,
     timeSignature,
     barCount,
+    song,
   );
 
   /** The parts Learn my part offers, each labelled from the soprano's doh, as the parts panel is. */
@@ -752,6 +856,7 @@ export function ResultScreen({ route, navigation }: Props) {
       doubt,
       hymnSource,
       hymnAnswered,
+      transposedBy,
     };
   }
 
@@ -770,6 +875,7 @@ export function ResultScreen({ route, navigation }: Props) {
     setDoubt(next.doubt);
     setHymnSource(next.hymnSource);
     setHymnAnswered(next.hymnAnswered);
+    setTransposedBy(next.transposedBy);
   }
 
   /** The change still held behind its Undo toast, if any. */
@@ -889,7 +995,7 @@ export function ResultScreen({ route, navigation }: Props) {
       draft: pristine(relabelled.notes),
       persisted: pristine(relabelled.notes),
       key: choice.key,
-      preview: synthesizeMelodyWavBase64(relabelled.notes, tempo),
+      preview: renderMelody(relabelled.notes, tempo),
       doubt: [],
     });
     haptics.play("success");
@@ -953,7 +1059,8 @@ export function ResultScreen({ route, navigation }: Props) {
       tempo: sheet.tempo,
       lyrics: !lyrics.trim() && sheet.lyrics ? sheet.lyrics : lyrics,
       chords: null,
-      preview: synthesizeMelodyWavBase64(relabelled.notes, sheet.tempo),
+      // The hymnbook's notes keep their own even beats (they are not the take's), as `timingClock` will say.
+      preview: renderMelody(relabelled.notes, sheet.tempo, null),
       doubt: [],
       hymnSource: sheet.hymn,
       hymnAnswered: true,
@@ -1004,7 +1111,7 @@ export function ResultScreen({ route, navigation }: Props) {
     const previous = tempo;
     setTempo(nextTempo);
     try {
-      setPreview(synthesizeMelodyWavBase64(view.notes, nextTempo));
+      setPreview(renderMelody(view.notes, nextTempo));
     } catch {
       // preview synthesis is non-fatal
     }
@@ -1141,11 +1248,11 @@ export function ResultScreen({ route, navigation }: Props) {
     } catch (e) {
       persisted.current = rollback;
       setDraft(rollback);
-      setPreview(synthesizeMelodyWavBase64(rollback.notes, tempo));
+      setPreview(renderMelody(rollback.notes, tempo));
       // Try again puts the corrections back on screen and sends them once more.
       failedWithRetry("Could not save your corrections", e, () => {
         setDraft(target);
-        setPreview(synthesizeMelodyWavBase64(target.notes, tempo));
+        setPreview(renderMelody(target.notes, tempo));
         void commitNotes(target);
       });
     }
@@ -1159,7 +1266,7 @@ export function ResultScreen({ route, navigation }: Props) {
     // rather than on each nudge, which would jank the stepper.
     // At the tempo chosen, not the one heard: a fix must not undo a tempo change.
     if (draft.notes !== result.notes)
-      setPreview(synthesizeMelodyWavBase64(draft.notes, tempo));
+      setPreview(renderMelody(draft.notes, tempo));
     void commitNotes(draft);
   }
 
@@ -1174,7 +1281,7 @@ export function ResultScreen({ route, navigation }: Props) {
     settleHeld();
     const original = pristine(baseline.notes);
     setDraft(original);
-    setPreview(synthesizeMelodyWavBase64(baseline.notes, tempo));
+    setPreview(renderMelody(baseline.notes, tempo));
     void commitNotes(original);
   }
 
@@ -1242,25 +1349,25 @@ export function ResultScreen({ route, navigation }: Props) {
    * source of truth); an unsaved result goes through the stateless endpoint so the
    * engraving is respelled by the same code. Either way the solfa reads as before.
    */
-  async function applyTranspose() {
-    if (semitones === 0) return;
+  async function applyTranspose(by: number = semitones) {
+    if (by === 0) return;
     settleHeld();
     setTransposing(true);
     const before = sheetState();
-    const by = semitones;
     try {
       const moved = savedId
-        ? await libraryApi.transpose(savedId, semitones).then((s) => ({
+        ? await libraryApi.transpose(savedId, by).then((s) => ({
             key: s.key,
             notes: s.notes ?? [],
             musicXml: s.musicXml ?? "",
             parts: s.parts ?? null,
             partsMusicXml: s.partsMusicXml ?? null,
             chords: s.chords ?? null,
+            transposedBy: s.transposedBy,
           }))
         : await transcriptionsApi.transpose({
             key,
-            semitones,
+            semitones: by,
             notes: view.notes,
             musicXml: scoreXml || result.musicXml,
             parts,
@@ -1278,8 +1385,10 @@ export function ResultScreen({ route, navigation }: Props) {
         parts: (moved.parts as Parts | null) ?? null,
         partsMusicXml: moved.partsMusicXml ?? "",
         chords: moved.chords?.length ? moved.chords : null,
-        preview: synthesizeMelodyWavBase64(notes, tempo),
+        preview: renderMelody(notes, tempo),
         doubt: [],
+        // The server's count when it keeps one; else this move added to the last.
+        transposedBy: "transposedBy" in moved && typeof moved.transposedBy === "number" ? moved.transposedBy : before.transposedBy + by,
       };
       applySheet(after);
       setSemitones(0);
@@ -1305,10 +1414,10 @@ export function ResultScreen({ route, navigation }: Props) {
       );
     } catch (e) {
       if (isNetworkCode(toApiError(e).code)) {
-        transposeOffline();
+        transposeOffline(by);
         return;
       }
-      failedWithRetry("Could not transpose", e, () => void applyTranspose());
+      failedWithRetry("Could not transpose", e, () => void applyTranspose(by));
     } finally {
       setTransposing(false);
     }
@@ -1319,9 +1428,9 @@ export function ResultScreen({ route, navigation }: Props) {
    * (lib/localTranspose), so a saved copy can be sung from in another key offline. The view only —
    * the saved sheet is moved when this is done online.
    */
-  function transposeOffline() {
+  function transposeOffline(by: number) {
     if (savedId) movedOffline.current = true;
-    const moved = transposeLocally({ key, notes: view.notes, parts: parts as Parts | null, chords }, semitones);
+    const moved = transposeLocally({ key, notes: view.notes, parts: parts as Parts | null, chords }, by);
     const relabelled = deriveSolfa(moved.notes, moved.key, timeSignature, result.chromaticSpelling ?? "direction");
     setBaseline({ notes: relabelled.notes, key: moved.key, solfaLines: relabelled.solfaLines });
     setDraft(pristine(relabelled.notes));
@@ -1331,10 +1440,12 @@ export function ResultScreen({ route, navigation }: Props) {
     // The engraved parts score was in the old key; the stave is drawn from the notes either way.
     setPartsMusicXml("");
     setChords(moved.chords?.length ? moved.chords : null);
-    setPreview(synthesizeMelodyWavBase64(relabelled.notes, tempo));
+    setPreview(renderMelody(relabelled.notes, tempo));
     setSemitones(0);
     setDoubt([]);
-    void logAnalyticsEvent("offline_transpose", { semitones });
+    // Moved on the phone only, but moved all the same: the song's backing sits out until it is back.
+    setTransposedBy((t) => t + by);
+    void logAnalyticsEvent("offline_transpose", { semitones: by });
     showDialog({
       title: "Transposed on this phone",
       message: savedId
@@ -1662,6 +1773,25 @@ export function ResultScreen({ route, navigation }: Props) {
   const offerSave = !guest && !example && !savedId;
 
   const insets = useSafeAreaInsets();
+  /**
+   * The song's backing on the dock and in Rehearse: one setting, the switch and the balance remembered on the phone.
+   * Shown once the remembered choice is read, so a switch left off never appears on and folds away.
+   */
+  const backingControl: BackingControlProps | undefined =
+    backingPrefs.ready && showsBackingRows(rows)
+      ? {
+          rows,
+          on: backingPrefs.on,
+          onToggle: backingPrefs.setOn,
+          balance: backingPrefs.balance,
+          onBalance: backingPrefs.setBalance,
+          onBack: () => void applyTranspose(-transposedBy),
+          backBusy: transposing,
+        }
+      : undefined;
+  /** The sheet's end leaves room for the taller dock, as tall as it is laid out (DOCK_CLEARANCE + 101 with the balance). */
+  const backingClearance = backingControl ? Math.max(0, dockHeight - DOCK_HEIGHT_GUESS) : 0;
+
   const shownTitle = committedTitle || title;
   const doh = dohLetter(key);
   const confNote = confidenceNote(overallConfidence, lowCount > 0);
@@ -1902,11 +2032,18 @@ export function ResultScreen({ route, navigation }: Props) {
       <Button
         label={semitones === 0 ? "Choose a shift" : `Transpose to ${shiftKeyName(key, semitones)}`}
         icon="transpose"
-        onPress={applyTranspose}
+        onPress={() => void applyTranspose()}
         loading={transposing}
         disabled={semitones === 0}
         style={styles.panelButton}
       />
+      {/* The song's backing cannot move with the notes (board o-backing O3/3): said before, only where there is one. */}
+      {warnsBeforeTranspose(rows, transposedBy, semitones) ? (
+        <View style={styles.backingWarning}>
+          <Icon name="song" size={16} color={colors.textFaint} style={styles.backingWarningIcon} />
+          <Text style={styles.backingWarningText}>{BACKING_WORDS.beforeTranspose}</Text>
+        </View>
+      ) : null}
     </View>
   );
 
@@ -1938,7 +2075,7 @@ export function ResultScreen({ route, navigation }: Props) {
             styles.content,
             {
               paddingBottom:
-                (preview ? DOCK_CLEARANCE : spacing.xl) +
+                (preview ? DOCK_CLEARANCE + backingClearance : spacing.xl) +
                 insets.bottom +
                 (guest ? keepHeight + KEEP_GAP : 0) +
                 (offerSave ? SAVE_PILL_ROOM : 0),
@@ -2606,8 +2743,11 @@ export function ResultScreen({ route, navigation }: Props) {
           onPractise={practiseNow}
           lift={guest ? keepHeight + KEEP_GAP : 0}
           onHeight={setDockHeight}
+          backing={backingControl}
         />
       ) : null}
+      {/* The band's own player, only on a sheet whose backing is on the phone. */}
+      {practice.backingSync ? <BackingSync {...practice.backingSync} /> : null}
 
       {/* ── Not in the Library: Save to Library is the screen's one primary, over the dock where the thumb is ── */}
       {offerSave ? (
@@ -2644,6 +2784,7 @@ export function ResultScreen({ route, navigation }: Props) {
         doh={doh}
         voices={hasParts ? VOICES.filter((v) => v === "soprano" || parts?.[v]).map((v) => ({ name: v, on: voiceOn[v] })) : undefined}
         onToggleVoice={(v) => setVoiceOn((s) => ({ ...s, [v]: !s[v] }))}
+        backing={backingControl}
       />
 
       {/* ── Learn my part: my part loud, a few bars looped and slowed, sung back and marked ── */}
@@ -3137,6 +3278,17 @@ const makeStyles = (c: Palette) =>
     /** A word a hint leans on (Pro's price in Export's sentence). */
     panelHintStrong: { fontFamily: fonts.semibold, color: c.text },
     panelButton: { marginTop: spacing.xs },
+    /** Under Transpose's button, over a hairline: the song's backing will sit out (board o-backing O3/3). */
+    backingWarning: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 8,
+      paddingTop: 8,
+      borderTopWidth: 1,
+      borderTopColor: c.border,
+    },
+    backingWarningIcon: { marginTop: 1 },
+    backingWarningText: { flex: 1, fontFamily: fonts.regular, fontSize: 13, lineHeight: 18, color: c.textMuted },
     eyebrow: {
       fontFamily: fonts.medium,
       fontSize: 12,
