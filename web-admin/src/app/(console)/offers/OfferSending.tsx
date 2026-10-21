@@ -1,8 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Info, Send, TriangleAlert } from "lucide-react";
-import Link from "next/link";
+import { Send, TriangleAlert } from "lucide-react";
 import { useId, useState } from "react";
 import type { ReactNode } from "react";
 import { toast } from "sonner";
@@ -22,8 +21,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { formatCount } from "@/lib/format";
 import {
-  atRaisedLimits,
-  daysBetween,
   formatOfferDay,
   sendingDays,
   ukToday,
@@ -34,9 +31,6 @@ import { cn } from "@/lib/utils";
 
 import { OFFERS_KEY, lookOf, offerError, offerKeys, people, setPrices, startOf } from "./offerLook";
 
-/** Resend's free plan, where the console's default limits come from. */
-const RAISED_DAILY = 1000;
-const RAISED_MONTHLY = 50_000;
 
 const GROUPS: { key: keyof OfferAudienceChoice; name: string; detail: string }[] = [
   { key: "free", name: "Free accounts", detail: "Have never paid" },
@@ -215,7 +209,6 @@ function Sending({
   const lastSendingDay = [...days].reverse().find((day) => day.count > 0)?.date ?? null;
   const dailyLimit = quota.dailyLimit ?? null;
   const dailyLine = quota.dailyOptionalLine ?? null;
-  const share = dailyLimit !== null && dailyLine !== null && dailyLimit > 0 ? dailyLine / dailyLimit : 0.6;
   const monthlyLimit = quota.monthlyLimit ?? null;
   const monthlyLine = quota.monthlyOptionalLine ?? null;
   const ended = offer.state === "ended";
@@ -315,24 +308,6 @@ function Sending({
         </div>
       )}
 
-      {total > 0 && !allInTime && (
-        <div className="mt-3">
-          <Note icon={<Info size={14} className="mt-[3px] shrink-0" aria-hidden="true" />}>
-            <RaiseLimits
-              total={total}
-              share={share}
-              firstDay={firstDay}
-              lastDay={offer.lastDay}
-              dailyLimit={dailyLimit}
-              monthlyLimit={monthlyLimit}
-            />{" "}
-            <Link href="/health" className="text-brand hover:underline">
-              System Health › Email quota
-            </Link>
-          </Note>
-        </div>
-      )}
-
       <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
         Each email goes between 09:00 and 19:00 in the person&apos;s own time (UK time when unknown), so London and Los Angeles
         each get it in their morning.
@@ -420,57 +395,4 @@ function DayBars({ days, waiting, today }: { days: SendingDay[]; waiting: number
 function barsLabel(days: SendingDay[], waiting: number): string {
   const sent = days.map((day) => `${formatOfferDay(day.date)}: ${day.count}`).join(", ");
   return waiting > 0 ? `${sent}; about ${waiting} still waiting when it ends.` : `${sent}.`;
-}
-
-/** What to change for everyone to have it in time, and what the page would then say. */
-function RaiseLimits({
-  total,
-  share,
-  firstDay,
-  lastDay,
-  dailyLimit,
-  monthlyLimit,
-}: {
-  total: number;
-  share: number;
-  firstDay: string;
-  lastDay: string;
-  dailyLimit: number | null;
-  monthlyLimit: number | null;
-}) {
-  if (dailyLimit === null || dailyLimit >= RAISED_DAILY) {
-    return (
-      <>
-        <span className="font-medium text-foreground">To reach more people:</span> raise{" "}
-        <code className="text-[12px] text-foreground">Email__DailyLimit</code>
-        {monthlyLimit !== null && (
-          <>
-            {" "}
-            and <code className="text-[12px] text-foreground">Email__MonthlyLimit</code>
-          </>
-        )}{" "}
-        on the server to what the Resend plan allows. This page reads the new limits at once.
-      </>
-    );
-  }
-  const raised = atRaisedLimits({ total, share, firstDay, lastDay, dailyLimit: RAISED_DAILY });
-  const raiseMonthly = monthlyLimit !== null && monthlyLimit < RAISED_MONTHLY;
-  return (
-    <>
-      <span className="font-medium text-foreground">
-        {raised.allBy ? `To reach everyone by ${daysBetween(firstDay, raised.allBy) === 0 ? "the first day" : weekdayOf(raised.allBy)}:` : "To reach more people:"}
-      </span>{" "}
-      move Resend to its paid plan (its free plan is where {formatCount(dailyLimit)} a day
-      {monthlyLimit !== null ? ` and ${formatCount(monthlyLimit)} a month` : ""} come from), then raise{" "}
-      <code className="text-[12px] text-foreground">Email__DailyLimit</code> to {formatCount(RAISED_DAILY)}
-      {raiseMonthly && (
-        <>
-          {" "}
-          and <code className="text-[12px] text-foreground">Email__MonthlyLimit</code> to {formatCount(RAISED_MONTHLY)}
-        </>
-      )}{" "}
-      on the server. This page reads the new limits at once: {formatCount(raised.perDay)} a day,{" "}
-      {raised.allBy ? `all sent by ${formatOfferDay(raised.allBy)}.` : `about ${formatCount(raised.inTime)} before it ends.`}
-    </>
-  );
 }
