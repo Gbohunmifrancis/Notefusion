@@ -299,8 +299,6 @@ export function ResultScreen({ route, navigation }: Props) {
   /** Which saved sheets are kept on the phone ("Keep offline", or keep-all in Settings). */
   const offlineCopies = useOfflineLibrary();
   const [saving, setSaving] = useState(false);
-  /** Saved to the Library during this visit: the line under the title says so. */
-  const [savedHere, setSavedHere] = useState(false);
   /** The player dock's height, so Save to Library floats 12 px over it. */
   const [dockHeight, setDockHeight] = useState(DOCK_HEIGHT_GUESS);
   const [renaming, setRenaming] = useState(false);
@@ -791,7 +789,6 @@ export function ResultScreen({ route, navigation }: Props) {
       committedLyrics.current = lyrics.trim();
       setSavedId(saved.id);
       setCommittedTitle(saved.title);
-      setSavedHere(true);
       // Corrections rode along in the payload, so the server is now level with
       // the draft and a later edit only has to send the difference.
       persisted.current = draft;
@@ -1355,6 +1352,20 @@ export function ResultScreen({ route, navigation }: Props) {
     setSharing(false);
   }
 
+  /** Share on a sheet already shared (board n-ux-low Q1c): its link once more, or the link taken down. */
+  function openShared() {
+    showDialog({
+      kind: "options",
+      title: "Shared with a link",
+      message: "Anyone with the link can open this sheet, with playback.",
+      actions: [
+        { label: "Share the link again", icon: "link", onPress: () => void shareLink() },
+        { label: "Stop sharing", icon: "link-off", onPress: () => void stopSharing() },
+        { label: "Cancel", style: "cancel" },
+      ],
+    });
+  }
+
   async function stopSharing() {
     if (!savedId) return;
     setSharing(true);
@@ -1758,11 +1769,6 @@ export function ResultScreen({ route, navigation }: Props) {
         icon: "rename",
         onPress: () => (lowCount > 0 ? startReview() : openNote(0)),
       },
-      {
-        label: "Export MusicXML",
-        icon: "musicxml",
-        onPress: () => void exportScore(),
-      },
     ];
     if (edited) {
       actions.push({
@@ -1921,10 +1927,11 @@ export function ResultScreen({ route, navigation }: Props) {
             <IconButton icon={guest ? "close" : "back"} label={guest ? "Close" : "Go back"} onPress={goBack} />
             {guest ? null : (
               <View style={styles.topActions}>
+                {/* The link's one home (board n-ux-low Q1c): a shared sheet's Share offers it again or stops it. */}
                 <IconButton
                   icon="share"
-                  label={shareToken ? "Share the link again" : "Share a link"}
-                  onPress={() => void shareLink()}
+                  label={shareToken ? "Shared with a link" : "Share a link"}
+                  onPress={shareToken ? openShared : () => void shareLink()}
                   busy={sharing}
                 />
                 {/* The pencil names the sheet; an unsaved one is saved by the Save to Library pill over the dock. */}
@@ -1958,34 +1965,18 @@ export function ResultScreen({ route, navigation }: Props) {
               <Icon name="rename" size={18} color={colors.textMuted} style={styles.titlePencil} />
             </Touchable>
           )}
+          {/* What the take was; "saved" is said once, by the toast (board n-ux-low Q1c). */}
           {guest ? (
             <Text style={styles.subtitle}>{`${takeKind(result)} · ${key}`}</Text>
-          ) : autoSaved && savedId ? (
-            <View style={styles.savedSub} accessible accessibilityLabel={`${result.source ? subtitle : takeKind(result)}, saved to your Library just now`}>
-              <Text style={styles.savedSubText}>{`${result.source ? subtitle : takeKind(result)} · `}</Text>
-              <Icon name="check" size={13} color={colors.success} />
-              <Text style={styles.savedSubText}> saved to your Library just now</Text>
-            </View>
-          ) : savedHere && savedId ? (
-            <View style={styles.savedSub} accessible accessibilityLabel={`${subtitle}, saved to your Library`}>
-              <Text style={styles.savedSubText}>{`${subtitle} · `}</Text>
-              <Icon name="check" size={13} color={colors.success} />
-              <Text style={styles.savedSubText}> saved to your Library</Text>
-            </View>
+          ) : autoSaved && !result.source ? (
+            <Text style={styles.subtitle}>{takeKind(result)}</Text>
           ) : subtitle ? (
             <Text style={styles.subtitle}>{subtitle}</Text>
           ) : null}
 
           {naming ? (
             <View style={styles.panel}>
-              {savedId ? (
-                <View style={styles.savedLine}>
-                  <Icon name="done" size={16} color={colors.success} />
-                  <Text style={styles.savedText}>Saved to Library · you can find it in the Library tab.</Text>
-                </View>
-              ) : (
-                <Text style={styles.panelHint}>Give this sheet a name so you can find it later.</Text>
-              )}
+              {savedId ? null : <Text style={styles.panelHint}>Give this sheet a name so you can find it later.</Text>}
               <TextField
                 label="Title"
                 value={title}
@@ -2359,28 +2350,8 @@ export function ResultScreen({ route, navigation }: Props) {
               <Text style={styles.panelHint}>
                 {isPro
                   ? "Share the solfa to your choir group, or download the sheet as PDF, MusicXML or MIDI."
-                  : "Sharing the solfa and the PDF are free; the PDF carries a NoteFusion mark. MusicXML, MIDI and an unmarked PDF come with Pro."}
+                  : "The solfa as text and the PDF are free; the PDF carries a NoteFusion mark. MusicXML, MIDI and an unmarked PDF come with Pro."}
               </Text>
-              <ExportRow
-                icon="link"
-                label={shareToken ? "Share the link again" : "Share a link"}
-                onPress={() => void shareLink()}
-                busy={sharing}
-              />
-              {shareToken ? (
-                <View style={styles.sharedRow}>
-                  <Icon name="public" size={14} color={colors.icon} />
-                  <Text style={styles.sharedText}>Anyone with the link can open this sheet, with playback.</Text>
-                  <Button
-                    label="Stop sharing"
-                    variant="text"
-                    size="sm"
-                    onPress={stopSharing}
-                    disabled={sharing}
-                    style={styles.sharedStop}
-                  />
-                </View>
-              ) : null}
               <ExportRow
                 icon="solfa"
                 label="Share Tonic Solfa text"
@@ -3023,8 +2994,6 @@ const makeStyles = (c: Palette) =>
     // Sentences that explain are 15/22 and captions 12 at least (board m-ux-medium P1h); 15, not 16, so the solfa
     // stays the biggest thing on the sheet.
     subtitle: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted, marginTop: 6 },
-    savedSub: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", marginTop: 6 },
-    savedSubText: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted },
 
     credit: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: 14 },
     creditThumb: { width: 36, height: 36, borderRadius: 10, backgroundColor: c.surfaceAlt },
@@ -3105,8 +3074,6 @@ const makeStyles = (c: Palette) =>
       color: c.textMuted,
       marginBottom: spacing.xs,
     },
-    savedLine: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
-    savedText: { fontFamily: fonts.medium, fontSize: 13, color: c.text, flex: 1 },
 
     /** Chips are 44 px tall and 8 px apart: big enough to hit (board l-ux-high 05a). */
     chipScroll: { gap: spacing.sm, paddingRight: spacing.md },
@@ -3333,18 +3300,6 @@ const makeStyles = (c: Palette) =>
     exportRowRule: { borderBottomWidth: 1, borderBottomColor: c.border },
     exportLabel: { flex: 1, fontFamily: fonts.medium, fontSize: 14.5, color: c.text },
     disabled: { opacity: 0.4 },
-    sharedRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing.xs,
-      backgroundColor: c.surfaceAlt,
-      borderRadius: 12,
-      paddingVertical: 8,
-      paddingHorizontal: spacing.md,
-    },
-    sharedText: { ...typography.caption, color: c.textMuted, flex: 1, lineHeight: 16 },
-    /** The text button sits in the row's own padding: its 40 px would otherwise make the row tall. */
-    sharedStop: { marginVertical: -8, marginRight: -8 },
 
     // ── Chords ────────────────────────────────────────────────────────────────
     chordsBlock: { marginTop: 22, gap: spacing.xs },
