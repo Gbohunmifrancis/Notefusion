@@ -8,6 +8,7 @@ import { fonts, motion, radii, spacing, typography, type Palette } from "../../d
 import { useColors, useThemedStyles } from "../../lib/theme";
 import { clamp, formatTime, useSeekDrag, type Practice } from "./usePractice";
 import { ProblemNote } from "../ProblemNote";
+import { BackingControl, type BackingControlProps } from "./BackingControl";
 
 /** How much the sheet's scroll content must leave clear under the dock. */
 export const DOCK_CLEARANCE = 112;
@@ -23,13 +24,16 @@ const ENTER_RISE = 8;
  * The player docked over the bottom of the sheet: play, a scrubber with mono times,
  * and the sheet's one labelled next step, Practise (board m-ux-medium P1a): Learn my part when the sheet has
  * parts, else Rehearse's loop — what the first-open toast offers, kept on screen after it goes. The audio is
- * always the piano rendering of the notes — the only source a sheet on the phone has — so there is no source switch.
+ * the piano rendering of the notes; on a sheet with the song's backing (boards o-backing O1, O3) the dock grows a
+ * hairline and "Song backing" with its switch and the Solfa · Backing balance, and play, pause and the scrubber drive
+ * both on one clock. Every other sheet's dock is exactly as it was.
  */
 export function PlayerDock({
   practice,
   onPractise,
   lift = 0,
   onHeight,
+  backing,
 }: {
   practice: Practice;
   /** Learn my part, or Rehearse for a sheet without parts (ResultScreen `practiseNow`). */
@@ -38,6 +42,8 @@ export function PlayerDock({
   lift?: number;
   /** The dock's height as laid out, for what floats over it (an unsaved sheet's Save to Library). */
   onHeight?: (height: number) => void;
+  /** The song's backing rows; absent (or `none`) on every sheet without a backing to speak of. */
+  backing?: BackingControlProps;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -128,6 +134,7 @@ export function PlayerDock({
           <Text style={styles.practiseLabel}>Practise</Text>
         </Touchable>
       </View>
+      {backing ? <BackingControl place="dock" {...backing} /> : null}
       {/* The hook's error can be a platform message; the dock says it plainly instead. */}
       {error ? <ProblemNote>This sheet could not be played. Try closing it and opening it again.</ProblemNote> : null}
     </Animated.View>

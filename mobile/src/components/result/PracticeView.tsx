@@ -174,7 +174,7 @@ export function PracticeView({
   const marks = graded && graded.key === rangeKey ? graded.marks : null;
   const strip = useMemo(() => barStrip(partNotes, timeSignature, barCount), [partNotes, timeSignature, barCount]);
   const busy = phase !== "idle";
-  const barNow = p.isPlaying && p.barSec > 0 ? Math.floor(p.position / p.barSec + 1e-6) + 1 : 0;
+  const barNow = p.isPlaying && p.barSec > 0 ? p.barAt(p.position) : 0;
 
   useEffect(() => {
     live.current = true;

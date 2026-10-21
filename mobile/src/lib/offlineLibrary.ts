@@ -3,10 +3,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import type { SavedTranscription } from "../api/types";
-import { dirAt, readText, removeDir, removeFile, writeText } from "./blobStore";
+import { dirAt, fileExists, readText, removeDir, removeFile, uriIn, writeBytes, writeText } from "./blobStore";
+import { dataSaverOn } from "./dataSaver";
 import { isNetworkCode, onReachability } from "./reachability";
 import { onSheetEvent } from "./sheetEvents";
 import {
+  backingEvictionPlan,
   canOpenFromCache,
   emptyIndex,
   evictionPlan,
@@ -15,10 +17,13 @@ import {
   parseIndex,
   syncPlan,
   usage,
+  wantsBackingCopy,
+  withBacking,
   withOpened,
   withPin,
   withSheet,
   withStale,
+  withoutBackings,
   withoutSheets,
   type CacheIndex,
   type Usage,
@@ -31,6 +36,7 @@ import { logAnalyticsEvent } from "./analytics";
  * this module reads and writes:
  *
  *   documents/offline/sheets/<userId>/<id>.json   each sheet as the API returned it
+ *   documents/offline/sheets/<userId>/<id>.backing.mp3   its song's backing, for a sheet from the owner's own upload
  *   documents/offline/sheets/<userId>/_list.json  the library list, for the Library and Home
  *   AsyncStorage "nf.offline.index"               the index: sizes, pins, keep-all, the account
  *
@@ -42,6 +48,25 @@ import { logAnalyticsEvent } from "./analytics";
 
 const INDEX_KEY = "nf.offline.index";
 const LIST_FILE = "_list.json";
+
+function backingFile(id: string): string {
+  return `${id}.backing.mp3`;
+}
+
+/** A sheet's copy and its backing leave together. */
+function removeCopies(ids: readonly string[]): void {
+  for (const id of ids) {
+    removeFile(sheetsDir(), `${id}.json`);
+    removeFile(sheetsDir(), backingFile(id));
+  }
+}
+
+/** The automatic copies' backings past their own room go; their sheets stay. */
+function trimBackings(): void {
+  const drop = backingEvictionPlan(index!);
+  for (const id of drop) removeFile(sheetsDir(), backingFile(id));
+  index = withoutBackings(index!, drop);
+}
 
 let userId: string | null = null;
 let index: CacheIndex | null = null;
@@ -136,11 +161,15 @@ function storeSheet(sheet: SavedTranscription, opts: { opened?: boolean; stale?:
   if (!ready() || !sheet.notes) return;
   const bytes = writeText(sheetsDir(), `${sheet.id}.json`, JSON.stringify(sheet));
   if (bytes === 0) return;
+  const hadBacking = (index!.entries[sheet.id]?.backingBytes ?? 0) > 0;
   let next = withSheet(index!, sheet, bytes, Date.now(), { opened: opts.opened });
+  // The sheet no longer has a backing (the server says so): the file beside it goes.
+  if (hadBacking && !next.entries[sheet.id]?.backingBytes) removeFile(sheetsDir(), backingFile(sheet.id));
   if (opts.stale) next = withStale(next, sheet.id);
   const drop = evictionPlan(next);
-  for (const id of drop) removeFile(sheetsDir(), `${id}.json`);
+  removeCopies(drop);
   index = withoutSheets(next, drop);
+  trimBackings();
 }
 
 export function rememberSheet(sheet: SavedTranscription, opts: { opened?: boolean } = {}): Promise<void> {
@@ -229,12 +258,15 @@ export async function setSheetPinned(id: string, pinned: boolean): Promise<void>
     index = withPin(index!, id, pinned);
     if (!pinned) {
       const drop = evictionPlan(index);
-      for (const id of drop) removeFile(sheetsDir(), `${id}.json`);
+      removeCopies(drop);
       index = withoutSheets(index, drop);
+      trimBackings();
     }
     await persist();
   });
   void logAnalyticsEvent(pinned ? "sheet_kept_offline" : "sheet_unkept_offline");
+  // Kept offline: the song's backing comes down beside it, so the band plays with no signal too (board O3, 5).
+  if (pinned) void fetchKeptBacking(id);
 }
 
 /** Settings → "Keep all saved sheets offline". Turning it on fetches what is missing in the background. */
@@ -244,8 +276,9 @@ export async function setKeepAllOffline(on: boolean): Promise<void> {
     index = { ...index!, keepAll: on };
     if (!on) {
       const drop = evictionPlan(index);
-      for (const id of drop) removeFile(sheetsDir(), `${id}.json`);
+      removeCopies(drop);
       index = withoutSheets(index, drop);
+      trimBackings();
     }
     await persist();
   });
@@ -258,11 +291,57 @@ export async function clearAutomaticCopies(): Promise<void> {
   await serial(async () => {
     if (!ready()) return;
     const drop = Object.values(index!.entries).filter((e) => !e.pinned).map((e) => e.id);
-    for (const id of drop) removeFile(sheetsDir(), `${id}.json`);
+    removeCopies(drop);
     index = { ...withoutSheets(index!, drop), keepAll: false };
     await persist();
   });
   void logAnalyticsEvent("offline_cache_cleared");
+}
+
+/**
+ * The song's backing kept beside a sheet's copy, as a file uri, or null when there is none on the phone. Plays with
+ * no connection (board O3, 5).
+ */
+export async function keptBacking(id: string): Promise<string | null> {
+  await chain.catch(() => undefined);
+  const entry = ready()?.entries[id];
+  if (!entry || !((entry.backingBytes ?? 0) > 0)) return null;
+  const uri = uriIn(sheetsDir(), backingFile(id));
+  return fileExists(uri) ? uri : null;
+}
+
+/**
+ * Keeps a song's backing beside its sheet's copy, after the Result fetched it to play: for a kept sheet always, for
+ * an automatic copy within the backings' own room (the oldest-opened go first). Resolves to the kept file's uri, or
+ * null when it was not kept (no copy of the sheet, no room, the disk full); the caller then plays it from the cache.
+ */
+export function rememberBacking(id: string, bytes: Uint8Array): Promise<string | null> {
+  return serial(async () => {
+    if (!ready() || !index!.entries[id] || bytes.byteLength === 0) return null;
+    const written = writeBytes(sheetsDir(), backingFile(id), bytes);
+    if (!written) return null;
+    index = withBacking(index!, id, written.bytes);
+    trimBackings();
+    await persist();
+    return (index!.entries[id]?.backingBytes ?? 0) > 0 ? written.uri : null;
+  });
+}
+
+/**
+ * Fetches a kept sheet's backing when it should be on the phone and is not (sheetCache `wantsBackingCopy`): after
+ * "Keep offline", and on each sync for kept sheets. A failure leaves it for the next time; `quiet: false` lets a
+ * network failure stop the sync that called it.
+ */
+async function fetchKeptBacking(id: string, opts: { quiet?: boolean } = {}): Promise<void> {
+  try {
+    const ix = ready();
+    if (!ix || !wantsBackingCopy(ix.entries[id], ix, dataSaverOn())) return;
+    const bytes = await libraryApi.backing(id);
+    await rememberBacking(id, bytes);
+  } catch (e) {
+    if (opts.quiet === false && isNetworkCode(toApiError(e).code)) throw e;
+    // Gone on the server, or out of reach: the sheet still opens, and the Result fetches it at its first Play.
+  }
 }
 
 let syncing: Promise<void> | null = null;
@@ -292,7 +371,7 @@ export function syncOfflineLibrary(list?: readonly SavedTranscription[]): Promis
       const plan = syncPlan(index!, fresh, Date.now());
       if (plan.drop.length) {
         await serial(async () => {
-          for (const id of plan.drop) removeFile(sheetsDir(), `${id}.json`);
+          removeCopies(plan.drop);
           index = withoutSheets(index!, plan.drop);
           await persist();
         });
@@ -304,6 +383,13 @@ export function syncOfflineLibrary(list?: readonly SavedTranscription[]): Promis
           storeSheet(sheet);
           await persist();
         });
+      }
+      // Kept sheets' backings, one at a time after the sheets themselves (never on Data saver).
+      const ix = ready();
+      const wanting = ix ? Object.values(ix.entries).filter((e) => wantsBackingCopy(e, ix, dataSaverOn())) : [];
+      for (const e of wanting) {
+        if (!ready()) return;
+        await fetchKeptBacking(e.id, { quiet: false });
       }
     } catch {
       // Offline again, or the server said no: the copies stand as they were.
@@ -324,7 +410,7 @@ onSheetEvent((e) => {
       const list = await cachedLibraryList();
       await serial(async () => {
         if (!ready()) return;
-        removeFile(sheetsDir(), `${e.id}.json`);
+        removeCopies([e.id]);
         if (list) writeText(sheetsDir(), LIST_FILE, JSON.stringify(list.filter((s) => s.id !== e.id)));
         index = withoutSheets(index!, [e.id]);
         await persist();
