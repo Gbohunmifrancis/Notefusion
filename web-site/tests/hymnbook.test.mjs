@@ -30,7 +30,7 @@ const heard = {
   notes: [{ pitchMidi: 64, startBeat: 0, durBeats: 1, degree: 1, solfa: "d", octaveMark: "", conf: 0.6 }],
   solfaLines: ["Doh is E"], chords: [{ startBeat: 0, durBeats: 4, root: 4, quality: "maj", bass: null, symbol: "E", solfa: "d" }],
   chordsSource: "heard", keyAlternatives: [{ key: "A major", pitches: [64], musicXml: "<a/>" }],
-  backingAudioBase64: "bWlj", beatOriginSec: 1.2, hymnMatch: match,
+  backingAudioBase64: "bWlj", hasBacking: true, beatOriginSec: 1.2, beatTimesSec: [1.2, 1.8, 2.4], hymnMatch: match,
 };
 
 test("a whole score is offered once, on a fresh sheet without parts", () => {
@@ -62,7 +62,9 @@ test("Yes swaps notes, rhythm, time signature, key, score and solfa, and drops w
   assert.equal(next.chords, null);
   assert.equal(next.keyAlternatives, null);
   assert.equal(next.backingAudioBase64, "");
+  assert.equal(next.hasBacking, false, "the song's backing does not follow the hymnbook's beats");
   assert.equal(next.beatOriginSec, 0);
+  assert.equal(next.beatTimesSec, null);
   assert.deepEqual({ ...next.hymn }, { slug: "amazing-grace", title: "Amazing Grace", url: match.url, credit: match.credit });
   assert.equal(heard.key, "E major", "the transcription itself is untouched");
   // The solfa engine reads the swapped notes as the hymnbook does: s, | d - - m d | in 3/4, doh is A.

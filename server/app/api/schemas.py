@@ -156,8 +156,16 @@ class ResultDto(ApiModel):
     # "heard" (a choir recording, mode="choir") or "written" (arranged on request); null without parts.
     parts_source: str | None = None
     # Audio time of beat 0, in seconds, so the notated melody can be played over the
-    # backing in time: audio time of beat b is beat_origin_sec + b * 60 / tempo.
+    # backing in time: audio time of beat b is beat_origin_sec + b * 60 / tempo when there
+    # is no beat_times_sec.
     beat_origin_sec: float = 0.0
+    # With backing_audio_base64 only (absent otherwise): entry i is the audio time, in seconds
+    # to the ms, of notation beat i, i = 0..n with n at or past the last note's end beat,
+    # increasing.  Interpolate linearly between entries; before 0 (a pickup) extrapolate with
+    # the first interval, past n with the last.  Beat 0 is beat_origin_sec's beat 0, the start
+    # of the first bar.  It follows the band where it speeds up or slows down and the tempo's
+    # fraction that ``tempo`` rounds away.
+    beat_times_sec: list[float] | None = None
     # Separated jobs only: the instrumental as a small mono MP3 (base64).
     backing_audio_base64: str = ""
     # The chords heard: always in mode "chords", and in melody mode for a song with

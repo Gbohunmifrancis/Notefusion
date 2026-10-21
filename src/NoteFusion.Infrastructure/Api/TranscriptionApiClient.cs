@@ -588,7 +588,9 @@ internal sealed partial class TranscriptionApiClient(
                 .ToList(),
             wire.Result.ChordsSource,
             wire.Result.KeyAlternatives?.Select(k => new KeyAlternativeDto(k.Key, k.Pitches, k.MusicXml ?? "")).ToList(),
-            MapHymnMatch(wire.Result.HymnMatch));
+            MapHymnMatch(wire.Result.HymnMatch),
+            wire.Result.BeatTimesSec is { Count: > 0 } beats ? beats : null,
+            HasBacking: !string.IsNullOrEmpty(wire.Result.BackingAudioBase64));
 
         return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error, wire.Stage, MapSource(wire.Source), wire.QueuePosition,
             ErrorCode: status == TranscriptionStatus.Failed ? Application.Transcriptions.JobFailures.CodeFor(wire.Error) : null);

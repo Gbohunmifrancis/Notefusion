@@ -68,10 +68,11 @@ public sealed class NotifyTranscriptionReadyCommandHandler
     private readonly ITranscriptionNotifier _notifier;
     private readonly IWebPushSender _webPush;
     private readonly IQuotaGate _gate;
+    private readonly IBackingStorage _backing;
 
     public NotifyTranscriptionReadyCommandHandler(
         IApplicationDbContext db, ITranscriptionApi api, IDateTimeProvider clock, IPushSender push,
-        ITranscriptionNotifier notifier, IWebPushSender webPush, IQuotaGate gate)
+        ITranscriptionNotifier notifier, IWebPushSender webPush, IQuotaGate gate, IBackingStorage backing)
     {
         _db = db;
         _api = api;
@@ -80,6 +81,7 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         _notifier = notifier;
         _webPush = webPush;
         _gate = gate;
+        _backing = backing;
     }
 
     public async Task<Result> Handle(NotifyTranscriptionReadyCommand request, CancellationToken ct)
@@ -155,12 +157,16 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         await _db.SaveChangesAsync(ct);
 
         // Filed in the owner's library now, before anyone is told: the push opens a sheet that is already theirs.
-        var sheet = await Library.LibraryFiling.FileAsync(_db, _gate, _clock, job, result, ct);
+        // An upload's backing is kept with the sheet here, while the worker's answer still carries it.
+        var sheet = await Library.LibraryFiling.FileAsync(_db, _gate, _clock, _backing, job, result, ct);
 
         // What the owner is sent over the live connection is what their poll would answer: a free account's copy
         // without the Pro parts (MIDI, harmony), which only the stored result keeps.
         var shown = await IsProAsync(job.UserId, ct) ? result : ProGate.ForFree(result);
-        var dto = Library.LibraryFiling.WithSheet(new TranscriptionJobDto(job.JobId, TranscriptionStatus.Done, 1, shown), sheet);
+        var dto = Library.LibraryFiling.WithSheet(
+            Queries.GetTranscriptionJobQueryHandler.WithBacking(
+                new TranscriptionJobDto(job.JobId, TranscriptionStatus.Done, 1, shown), sheet, includeBacking: true),
+            sheet);
         await _notifier.NotifyJobCompletedAsync(job.UserId, dto, ct);
 
         // A client watching the job's stream is told and fetches it: they are looking at it, so no push follows, as

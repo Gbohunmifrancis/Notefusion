@@ -28,6 +28,30 @@ export function resultFromSaved(full: SavedTranscription): TranscriptionResult {
     shareToken: full.shareToken ?? null,
     chords: full.chords ?? null,
     hymn: full.hymn ?? null,
+    // The song's backing kept with the sheet, and its clock (boards o-backing O1, O3).
+    hasBacking: !!full.hasBacking && !full.fromLink,
+    beatOriginSec: full.beatOriginSec ?? undefined,
+    beatTimesSec: full.beatTimesSec ?? null,
+  };
+}
+
+/**
+ * A saved sheet's Result params, opened from the Library or Home: the sheet, and what its backing needs to know —
+ * whether it came from a link (whose backing is never kept) and how far it has been transposed from the song's key.
+ */
+export function savedSheetParams(full: SavedTranscription): {
+  result: TranscriptionResult;
+  savedId: string;
+  title: string;
+  fromLink: boolean;
+  transposedBy: number;
+} {
+  return {
+    result: resultFromSaved(full),
+    savedId: full.id,
+    title: full.title,
+    fromLink: !!full.fromLink,
+    transposedBy: full.transposedBy ?? 0,
   };
 }
 

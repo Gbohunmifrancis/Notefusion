@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { DATA_SAVER_PROFILE, STANDARD_PROFILE, estimatedBytes, recordingProfile } from "./recordingPreset.ts";
-import { jobFallbackPollMs, loadsImages, outboxTickMs } from "./dataPolicy.ts";
+import { backingLoadsBeforePlay, jobFallbackPollMs, loadsImages, outboxTickMs } from "./dataPolicy.ts";
 import { transposeChord, transposeKeyName, transposeLocally } from "./localTranspose.ts";
 
 test("data saver records the same AAC the worker reads (22.05 kHz mono) at a quarter of the bit rate", () => {
@@ -47,4 +47,9 @@ test("offline transpose: keys spelled as their signatures, chords respelled, eve
   assert.equal(moved.notes[0]!.pitchMidi, 63);
   assert.equal(moved.parts!.alto!.notes[0]!.pitchMidi, 58);
   assert.equal(moved.chords, null);
+});
+
+test("a song's backing comes down as the sheet opens, or on data saver only at the first Play", () => {
+  assert.equal(backingLoadsBeforePlay(false), true);
+  assert.equal(backingLoadsBeforePlay(true), false);
 });

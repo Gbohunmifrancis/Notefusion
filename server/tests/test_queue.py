@@ -5,6 +5,7 @@ the worker boundary: status transitions, error surfacing, and the privacy
 guarantee that the audio file is deleted once the job ends (TRD par. 9).
 """
 
+import shutil
 import tempfile
 import threading
 import time
@@ -244,6 +245,68 @@ def test_backing_is_encoded_as_mp3_when_ffmpeg_is_present(tmp_path):
     else:
         assert encoded == ""
     assert _encode_backing(tmp_path / "missing.wav") == ""
+
+
+@pytest.mark.skipif(not shutil.which("ffmpeg"), reason="ffmpeg is not installed")
+def test_the_backing_mp3_starts_where_the_instrumental_does(tmp_path):
+    """The notes are placed on the instrumental's own clock, so its MP3 must decode with no lead-in.
+    An MP3 encoder leads with 1105 samples of its own (50 ms at 22.05 kHz) and says so in the
+    Xing/LAME header, which ffmpeg writes only to a file it can seek: piped, the clicks below
+    decoded 52 ms late; written to a file, where they are."""
+    import base64
+    import subprocess
+
+    import numpy as np
+    import soundfile as sf
+
+    from app.jobs.queue import _encode_backing
+
+    sr, clicks = 44_100, (1.0, 2.0, 3.0)
+    y = np.zeros(4 * sr, dtype=np.float32)
+    for at in clicks:
+        y[int(at * sr): int(at * sr) + 9] = 0.9  # a 0.2 ms click
+    wav = tmp_path / "backing.wav"
+    sf.write(str(wav), np.stack([y, y]).T, sr)
+    mp3 = tmp_path / "out.mp3"
+    mp3.write_bytes(base64.b64decode(_encode_backing(wav)))
+    pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", str(mp3), "-f", "f32le", "-ac", "1", "-ar", "22050", "pipe:1"],
+                         capture_output=True, check=True).stdout
+    x = np.frombuffer(pcm, dtype=np.float32)
+    assert len(x) / 22_050 == pytest.approx(4.0, abs=0.03)
+    for at in clicks:
+        lo = int((at - 0.2) * 22_050)
+        heard = (lo + int(np.argmax(np.abs(x[lo: lo + int(0.4 * 22_050)])))) / 22_050
+        assert heard == pytest.approx(at, abs=0.003)
+    assert not list(tmp_path.glob("*-backing.mp3")), "the encoder's file is not left behind"
+
+
+def test_a_separated_song_keeps_its_beat_map_only_beside_its_backing(monkeypatch):
+    """``beat_times_sec`` is for playing the sheet over the backing: a separated song whose backing
+    was encoded keeps it; one whose backing could not be, or a song read from the mixture, has
+    none to play over and sends none."""
+    def run(voice_db: float, backing: str):
+        _fake_separation(monkeypatch, peaks=0.0, voice_db=voice_db)
+        monkeypatch.setattr("app.jobs.queue._encode_backing", lambda path: backing)
+
+        def transcribe(path, **kw):
+            result = _result(8)
+            result.beat_times_sec = [0.5, 1.0, 1.5]  # whatever the transcriber says, the queue decides
+            return result
+
+        monkeypatch.setattr("app.jobs.queue.transcribe", transcribe)
+        queue = JobQueue(workers=1)
+        try:
+            job = _await_status(queue, queue.submit(_temp_audio(), mode="melody", key=None, tempo=None, separate=True),
+                                STATUS_DONE)
+            return job.result
+        finally:
+            queue.shutdown(wait=True)
+
+    kept = run(-3.0, "QUJD")
+    assert kept.separated and kept.beat_times_sec == [0.5, 1.0, 1.5]
+    assert run(-3.0, "").beat_times_sec is None
+    mixture = run(-40.0, "QUJD")
+    assert not mixture.separated and mixture.beat_times_sec is None
 
 
 def _fake_separation(monkeypatch, peaks: float, voice_db: float) -> list:

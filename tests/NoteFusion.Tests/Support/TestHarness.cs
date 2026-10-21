@@ -29,8 +29,11 @@ public sealed class TestHarness : IDisposable
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
 
+        // With the backing clean-up production composes in, so a test that deletes a sheet or an account sees its
+        // stored backings go as they would.
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseSqlite(_connection)
+            .AddInterceptors(new BackingCleanupInterceptor(Backing))
             .Options;
 
         Options = options;
@@ -107,6 +110,9 @@ public sealed class TestHarness : IDisposable
 
     public StubClientApp ClientApp { get; } = new();
 
+    /// <summary>The file store the backings kept with sheets go to, in memory, recording what was kept and deleted.</summary>
+    public RecordingBackingStorage Backing { get; } = new();
+
     /// <summary>The submit handlers' per-subject lock, the same in-process one production registers.</summary>
     public InProcessQuotaGate QuotaGate { get; } = new();
 
@@ -145,6 +151,55 @@ public sealed class TestHarness : IDisposable
         Db.Dispose();
         Keys.Dispose();
         _connection.Dispose();
+    }
+}
+
+/// <summary>
+/// An <see cref="IBackingStorage"/> in memory: what is stored, under the same per-account folder names the R2 store
+/// uses, and what was deleted. <see cref="Refuse"/> stands in for a store that is off or unreachable.
+/// </summary>
+public sealed class RecordingBackingStorage : IBackingStorage
+{
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte[]> _files = new();
+
+    public IReadOnlyDictionary<string, byte[]> Files => _files;
+
+    public System.Collections.Concurrent.ConcurrentQueue<string> Deleted { get; } = new();
+
+    public System.Collections.Concurrent.ConcurrentQueue<Guid> SweptAccounts { get; } = new();
+
+    public bool Refuse { get; set; }
+
+    public Task<NoteFusion.Shared.Results.Result<string>> SaveAsync(Guid userId, byte[] mp3, CancellationToken ct)
+    {
+        if (Refuse)
+            return Task.FromResult<NoteFusion.Shared.Results.Result<string>>(NoteFusion.Application.Common.Errors.ProviderErrors.Unavailable);
+        var key = $"backing/{userId:N}/{Guid.NewGuid():N}.mp3";
+        _files[key] = mp3;
+        return Task.FromResult<NoteFusion.Shared.Results.Result<string>>(key);
+    }
+
+    public Task<NoteFusion.Shared.Results.Result<byte[]>> ReadAsync(string key, CancellationToken ct)
+        => Task.FromResult<NoteFusion.Shared.Results.Result<byte[]>>(_files.TryGetValue(key, out var mp3)
+            ? mp3
+            : NoteFusion.Application.Common.Errors.LibraryErrors.BackingNotFound);
+
+    public Task DeleteAsync(IReadOnlyCollection<string> keys, CancellationToken ct)
+    {
+        foreach (var key in keys)
+        {
+            Deleted.Enqueue(key);
+            _files.TryRemove(key, out _);
+        }
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteAllForUserAsync(Guid userId, CancellationToken ct)
+    {
+        SweptAccounts.Enqueue(userId);
+        foreach (var key in _files.Keys.Where(k => k.StartsWith($"backing/{userId:N}/", StringComparison.Ordinal)))
+            _files.TryRemove(key, out _);
+        return Task.CompletedTask;
     }
 }
 

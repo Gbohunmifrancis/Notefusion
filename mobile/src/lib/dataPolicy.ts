@@ -21,3 +21,12 @@ export function outboxTickMs(dataSaver: boolean): number {
 export function loadsImages(dataSaver: boolean): boolean {
   return !dataSaver;
 }
+
+/**
+ * A sheet's song backing (about a megabyte): fetched as the sheet opens, so Play starts the band with the solfa; on
+ * data saver only when Play is first pressed (the solfa starts alone and the band joins in step once it is here).
+ * A backing already on the phone (kept with an offline copy) plays either way.
+ */
+export function backingLoadsBeforePlay(dataSaver: boolean): boolean {
+  return !dataSaver;
+}

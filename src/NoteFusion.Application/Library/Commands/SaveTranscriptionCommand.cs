@@ -34,7 +34,8 @@ public sealed record SaveTranscriptionCommand(
     IReadOnlyDictionary<string, PartDto>? Parts = null,
     string? PartsMusicXml = null,
     IReadOnlyList<ChordSymbolDto>? Chords = null,
-    string? HymnSlug = null) : IRequest<Result<SavedTranscriptionDto>>;
+    string? HymnSlug = null,
+    int? TransposedBy = null) : IRequest<Result<SavedTranscriptionDto>>;
 
 public sealed class SaveTranscriptionCommandValidator : AbstractValidator<SaveTranscriptionCommand>
 {
@@ -52,6 +53,7 @@ public sealed class SaveTranscriptionCommandValidator : AbstractValidator<SaveTr
         RuleFor(x => x.PartsMusicXml).WithinScoreSize();
         RuleForEach(x => x.Chords).SetValidator(new ChordSymbolDtoValidator()).When(x => x.Chords is not null);
         RuleFor(x => x.HymnSlug).MaximumLength(200);
+        RuleFor(x => x.TransposedBy).InclusiveBetween(-Transcription.MaxTransposedBy, Transcription.MaxTransposedBy);
     }
 }
 
@@ -114,13 +116,38 @@ public sealed class SaveTranscriptionCommandHandler : IRequestHandler<SaveTransc
             var kept = await _db.Transcriptions
                 .Where(t => t.UserId == userId && t.SourceJobId == request.SourceJobId)
                 .ToListAsync(cancellationToken);
+            // The replaced copy knew the recording: its beat clock, whether it came from a link, how far it has been
+            // transposed, and the backing kept with it, which moves to this one rather than going with the old row.
+            if (kept.FirstOrDefault() is { } filed)
+                transcription.TakePlaybackFrom(filed);
+            else
+                await KeepRecordingFactsAsync(transcription, userId, request.SourceJobId, cancellationToken);
             _db.Transcriptions.RemoveRange(kept);
         }
+        // A result transposed in the client before this Save (the stateless transpose) says how far it moved, so the
+        // backing knows it no longer matches the notes; a client that does not say keeps what the filed copy knew.
+        if (request.TransposedBy is int moved)
+            transcription.RecordTransposedBy(moved);
 
         _db.Transcriptions.Add(transcription);
         await _db.SaveChangesAsync(cancellationToken);
 
         return SavedTranscriptionMapper.ToDto(transcription, includeNotes: true);
+    }
+
+    /// <summary>
+    /// For a sheet saved from a job with no filed copy left (its owner deleted it): the beat clock and whether it came
+    /// from a link, from the job's banked result. Never the backing: that went with the deleted copy.
+    /// </summary>
+    private async Task KeepRecordingFactsAsync(Transcription sheet, Guid userId, string jobId, CancellationToken ct)
+    {
+        var job = await _db.TranscriptionJobs.AsNoTracking()
+            .FirstOrDefaultAsync(j => j.JobId == jobId && j.UserId == userId && j.ResultJson != null, ct);
+        if (job is null || TranscriptionResultCache.Deserialize(job.ResultJson!) is not { } result)
+            return;
+        sheet.KeepTiming(result.BeatOriginSec, result.BeatTimesSec);
+        if (LibraryFiling.IsFromLink(job, result))
+            sheet.MarkFromLink();
     }
 
     /// <summary>The hymn the request names, when the job it came from offered that hymn's score.</summary>

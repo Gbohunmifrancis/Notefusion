@@ -21,6 +21,21 @@ namespace NoteFusion.Application.Library.Dtos;
 /// clients mark it unopened ("Saved automatically", a blue dot).
 /// </param>
 /// <param name="OpenedAtUtc">When its owner first opened or renamed it; null until then.</param>
+/// <param name="HasBacking">
+/// The song's own instrumental is kept with the sheet (<c>GET api/library/{id}/backing</c>): only the owner's own
+/// upload of a song whose voice was separated, never a pasted link's.
+/// </param>
+/// <param name="FromLink">The sheet came from a pasted song link, so it never keeps the backing.</param>
+/// <param name="BeatOriginSec">Where beat 0 falls in the recording, in seconds; null on sheets filed before it was kept.</param>
+/// <param name="BeatTimesSec">
+/// The recording's time of each notated beat (entry i is beat i): the worker's when it tracked them, and always present
+/// for a sheet with a backing (written out from the tempo it was heard at), so a tempo edit never moves the backing.
+/// On detail reads only.
+/// </param>
+/// <param name="TransposedBy">
+/// Semitones "Transpose for my choir" has moved the sheet from the key it was heard in (0: as heard; the backing
+/// plays only then, and transposing by minus this goes back).
+/// </param>
 public sealed record SavedTranscriptionDto(
     Guid Id,
     string Title,
@@ -41,7 +56,12 @@ public sealed record SavedTranscriptionDto(
     bool SharedWithChoir = false,
     HymnCreditDto? Hymn = null,
     bool SavedAutomatically = false,
-    DateTime? OpenedAtUtc = null);
+    DateTime? OpenedAtUtc = null,
+    bool HasBacking = false,
+    bool FromLink = false,
+    double? BeatOriginSec = null,
+    IReadOnlyList<double>? BeatTimesSec = null,
+    int TransposedBy = 0);
 
 /// <summary>
 /// The hymn a sheet is the hymnbook version of: its title, its page and the credit line that page shows
@@ -107,7 +127,12 @@ public static class SavedTranscriptionMapper
             t.ChoirId is not null,
             HymnCreditDto.Of(t),
             t.SavedAutomatically,
-            t.OpenedAtUtc);
+            t.OpenedAtUtc,
+            t.HasBacking,
+            t.FromLink,
+            t.BeatOriginSec,
+            includeNotes ? t.BeatTimesSec : null,
+            t.TransposedBy);
 
     public static SharedSheetDto ToShared(Transcription t, string sharedBy)
         => new(

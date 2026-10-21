@@ -49,7 +49,9 @@
       chordsSource: null,
       keyAlternatives: null,
       backingAudioBase64: "",
+      hasBacking: false,
       beatOriginSec: 0,
+      beatTimesSec: null,
       hymn: { slug: match.slug, title: match.title, url: match.url, credit: match.credit }
     });
   }

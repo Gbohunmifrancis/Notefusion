@@ -253,7 +253,18 @@ public sealed record TranscriptionResultDto(
     /// Only when the tune clearly matches a hymn in the library: the hymn, and (for a whole score) its
     /// hymnbook version in the key that was sung, for the "Use the hymnbook version?" prompt. Null otherwise.
     /// </summary>
-    HymnMatchDto? HymnMatch = null);
+    HymnMatchDto? HymnMatch = null,
+    /// <summary>
+    /// The audio time, in seconds, of each notated beat (entry i is beat i), when the worker tracked the beats;
+    /// null otherwise, and the clock is then <see cref="BeatOriginSec"/> + b × 60 / <see cref="Tempo"/>.
+    /// </summary>
+    IReadOnlyList<double>? BeatTimesSec = null,
+    /// <summary>
+    /// The job has a backing (separated, a voice found) that can be had now: in <see cref="BackingAudioBase64"/>, or
+    /// from <c>GET /api/transcriptions/jobs/{id}/backing</c> when the job was read with <c>?backing=false</c> or the
+    /// backing was kept with the sheet the job was filed as.
+    /// </summary>
+    bool HasBacking = false);
 
 /// <summary>
 /// A hymn in the library the transcribed tune clearly matches (the worker's <c>hymn_match</c>). <c>Kind</c>

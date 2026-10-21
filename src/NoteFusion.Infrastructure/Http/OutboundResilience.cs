@@ -200,6 +200,21 @@ internal static class OutboundResilience
         MaxRetryAttempts = 2,
     };
 
+    /// <summary>
+    /// The file store (Cloudflare R2, over the S3 API) for the backings kept with sheets: a PUT of a few megabytes when
+    /// a sheet is filed, a GET when it is played, DELETEs with the sheet. Reads (and the listing of a closed account's
+    /// files) are retried; a PUT or DELETE is not, here — a filing without its backing, or a delete left for the
+    /// account's sweep, is the worst a failure costs.
+    /// </summary>
+    public static readonly OutboundResilienceOptions FileStore = new()
+    {
+        Provider = OutboundProviders.FileStore,
+        AttemptTimeout = TimeSpan.FromSeconds(20),
+        ReadAttemptTimeout = TimeSpan.FromSeconds(10),
+        TotalTimeout = TimeSpan.FromSeconds(30),
+        MaxRetryAttempts = 2,
+    };
+
     /// <summary>Registers the shared breaker-state tracker (idempotent).</summary>
     public static IServiceCollection AddProviderHealth(this IServiceCollection services)
     {

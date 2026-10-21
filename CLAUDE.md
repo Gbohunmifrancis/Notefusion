@@ -446,7 +446,17 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   opened through the folder link (`GET /api/shared/folders/{token}/sheets/{id}`, only while filed in it); a
   folder share never gives a sheet a token of its own. "Transpose for my
   choir" is the one edit that moves the notes: `Transcription.Transpose` shifts melody, parts
-  and key and respells both scores with `Core/Notation/MusicXmlTransposer`.
+  and key and respells both scores with `Core/Notation/MusicXmlTransposer`, and counts `TransposedBy` (0 = as heard).
+  Song backing (board o-backing): filing keeps `BeatOriginSec`/`BeatTimesSec` (written out at the heard tempo when a sheet
+  with a backing has none, so tempo edits never move it) and, for the owner's own upload only (never
+  `FromLink`), the separated instrumental (`IBackingStorage`: R2 photo bucket, unguessable `BackingKey`, not backed up;
+  Save moves it), owner-only at `GET /api/library/{id}/backing`; jobs say `hasBacking`, take `?backing=false`, serve
+  `…/jobs/{id}/backing` while held; `BackingCleanupInterceptor` deletes it with the sheet or the account.
+  The worker's `beat_times_sec` (separated songs with a backing only; `transcriber._beat_map`, bench
+  `python -m tests.accuracy.song_clock`) is notation beat i's time in the recording, so a band that drifts stays in
+  step (the rounded `tempo` alone drifts by beats); clients map a beat through it (`lib/backingClock.ts` ↔
+  `assets/backing-clock.js`, same tests), play the backing pitch-kept under the solfa with a Solfa↔Backing balance, and
+  sit it out while `transposedBy` ≠ 0 (Save sends `transposedBy` for a client-side transpose).
   Every finished transcription is filed in its owner's library the moment its job is settled Done (option A,
   board 12: `Library/LibraryFiling`, from `GetTranscriptionJobQuery` and `NotifyTranscriptionReadyCommand` under the
   save lock, one sheet per job, a deleted one stays deleted; `AutoSaveFinishedTranscriptionsCommand` is the fallback):

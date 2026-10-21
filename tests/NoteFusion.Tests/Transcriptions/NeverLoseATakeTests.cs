@@ -362,11 +362,11 @@ public class NeverLoseATakeTests
     }
 
     private static Task<Result<TranscriptionJobDto>> Poll(TestHarness h, User user, Worker api, string jobId = "job-1")
-        => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, h.QuotaGate)
+        => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, h.QuotaGate, h.Backing)
             .Handle(new GetTranscriptionJobQuery(jobId), CancellationToken.None);
 
     private static Task<Result> Notify(TestHarness h, TranscriptionJob job, Worker api, Notifier notifier)
-        => new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, notifier, h.WebPush, h.QuotaGate)
+        => new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, notifier, h.WebPush, h.QuotaGate, h.Backing)
             .Handle(new NotifyTranscriptionReadyCommand(job.Id), CancellationToken.None);
 
     private static Task<Result<string>> Submit(TestHarness h, User user, Worker api, string? key)

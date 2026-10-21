@@ -356,10 +356,20 @@ export const transcriptionsApi = {
     chords?: ChordSymbol[] | null;
   }) => api.post<TransposedSheet>("/api/transcriptions/transpose", body).then((r) => r.data),
 
+  /**
+   * A job, without the song's backing in it (`?backing=false`): a megabyte of base64 in every read, and through the
+   * Result's navigation params, is what the backing route below exists to avoid. An older server ignores the query.
+   */
   getJob: (jobId: string) =>
     api
-      .get<TranscriptionJob>(`/api/transcriptions/jobs/${jobId}`)
+      .get<TranscriptionJob>(`/api/transcriptions/jobs/${jobId}`, { params: { backing: false } })
       .then((r) => r.data),
+
+  /**
+   * The song's backing for a finished job (`audio/mpeg`, the owner's only) while the server still holds it; 404
+   * `BACKING_NOT_FOUND` when there is none or it has gone.
+   */
+  backing: (jobId: string) => getAudio(`/api/transcriptions/jobs/${encodeURIComponent(jobId)}/backing`),
 
   /**
    * What a pasted link points at — title, artist, artwork, length — and how much of
@@ -538,6 +548,8 @@ export const libraryApi = {
     chords?: ChordSymbol[] | null;
     /** The hymn whose hymnbook version this is, as the job offered it; the API keeps its credit. */
     hymnSlug?: string | null;
+    /** How far the notes were moved from the key the recording was heard in, so a kept backing sits out under them. */
+    transposedBy?: number;
   }) => api.post<SavedTranscription>("/api/library", body).then((r) => sheetSaved(r.data)),
 
   rename: (id: string, title: string) =>
@@ -598,7 +610,23 @@ export const libraryApi = {
   share: (id: string) => api.post<ShareLink>(`/api/library/${id}/share`).then((r) => r.data),
 
   unshare: (id: string) => api.delete(`/api/library/${id}/share`).then(() => undefined),
+
+  /**
+   * The song's backing kept with a saved sheet (`audio/mpeg`, the owner's only, never a link's); 404
+   * `BACKING_NOT_FOUND` when there is none.
+   */
+  backing: (id: string) => getAudio(`/api/library/${encodeURIComponent(id)}/backing`),
 };
+
+/**
+ * An audio file from the API as bytes, through the client (the token, its refresh and the device id ride along as on
+ * every call). Two minutes: a song's backing is about a megabyte, which a slow connection takes a while over.
+ */
+function getAudio(url: string): Promise<Uint8Array> {
+  return api
+    .get<ArrayBuffer>(url, { responseType: "arraybuffer", timeout: 120_000, headers: { Accept: "audio/mpeg" } })
+    .then((r) => new Uint8Array(r.data));
+}
 
 export const billingApi = {
   /** Plans shown on the paywall, cheapest first. */

@@ -562,6 +562,10 @@ class JobQueue:
         result.separated = separated
         if separated:
             result.backing_audio_base64 = _encode_backing(backing)
+        if not result.backing_audio_base64:
+            # The beat map is for playing the sheet over the backing (``_beat_map``); a sheet
+            # read from the mixture, or a backing ffmpeg could not encode, has none to play.
+            result.beat_times_sec = None
         return result
 
     def _run_link(self, job: Job, url: str, mode: str,
@@ -838,6 +842,13 @@ def _encode_backing(wav_path: Path) -> str:
     An empty string is a feature quietly missing rather than a failed job: the sheet and
     the piano playback are still there, and a client that sees no backing simply does not
     offer to play over the song.
+
+    Written to a file, not a pipe: ffmpeg writes the MP3's Xing/LAME header, which says how
+    many samples of encoder delay lead the audio (1105, 50 ms at 22.05 kHz) and pad its end,
+    only when it can seek back to the start.  Piped, the header was missing, and every player
+    started the instrumental 52 ms late against the notes it is played under; with it, a
+    decoder that reads the header (ffmpeg does) cuts the delay and the clicks of a test track
+    decode where they were (``tests/test_queue.py``).  One that ignores it is no worse off.
     """
     import base64
     import subprocess
@@ -845,15 +856,19 @@ def _encode_backing(wav_path: Path) -> str:
     ffmpeg = shutil.which("ffmpeg")
     if not ffmpeg or not wav_path.is_file():
         return ""
+    mp3 = wav_path.with_name(wav_path.stem + "-backing.mp3")
     try:
-        done = subprocess.run(
-            [ffmpeg, "-v", "error", "-nostdin", "-i", str(wav_path), "-ac", "1", "-ar", "22050",
-             "-codec:a", "libmp3lame", "-b:a", _BACKING_BITRATE, "-f", "mp3", "pipe:1"],
+        subprocess.run(
+            [ffmpeg, "-v", "error", "-nostdin", "-y", "-i", str(wav_path), "-ac", "1", "-ar", "22050",
+             "-codec:a", "libmp3lame", "-b:a", _BACKING_BITRATE, "-f", "mp3", str(mp3)],
             capture_output=True, timeout=120, check=True)
+        data = mp3.read_bytes()
     except Exception as exc:  # noqa: BLE001 - the backing is a nicety; the sheet is the job
         logger.warning("Backing track not encoded: %s", exc)
         return ""
-    return base64.b64encode(done.stdout).decode("ascii")
+    finally:
+        mp3.unlink(missing_ok=True)
+    return base64.b64encode(data).decode("ascii")
 
 
 def _source_dict(source) -> dict:

@@ -42,6 +42,8 @@ public static class OutboundProviders
     public const string Website = "website";
     /// <summary>Sentry's REST API, read only: the console's Sessions page.</summary>
     public const string SentryApi = "sentry-api";
+    /// <summary>The file store (R2) the backings kept with sheets live in.</summary>
+    public const string FileStore = "file-store";
 
     /// <summary>"paystack", "bachs", "flutterwave": also the name of that provider's HttpClient.</summary>
     public static string Payment(PaymentProvider provider) => provider.ToString().ToLowerInvariant();

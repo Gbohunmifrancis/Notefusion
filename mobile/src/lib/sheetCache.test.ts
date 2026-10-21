@@ -2,8 +2,10 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { SavedTranscription } from "../api/types";
 import {
+  AUTO_BACKING_CAP_BYTES,
   AUTO_CACHE_CAP_BYTES,
   KEPT_MAX_AGE_MS,
+  backingEvictionPlan,
   canOpenFromCache,
   emptyIndex,
   evictionPlan,
@@ -13,10 +15,13 @@ import {
   rowSignature,
   syncPlan,
   usage,
+  wantsBackingCopy,
+  withBacking,
   withOpened,
   withPin,
   withSheet,
   withStale,
+  withoutBackings,
   withoutSheets,
   type CacheIndex,
 } from "./sheetCache.ts";
@@ -127,4 +132,66 @@ test("the row signature moves with every edit the app makes", () => {
     assert.notEqual(rowSignature(sheet("a", over as Partial<SavedTranscription>)), sig, JSON.stringify(over));
   }
   assert.equal(rowSignature(sheet("a")), sig);
+});
+
+test("a song's backing: kept sheets keep theirs, automatic copies share their own small room, oldest opened first", () => {
+  let ix: CacheIndex = emptyIndex("u");
+  const song = (id: string) => sheet(id, { hasBacking: true });
+  ix = withSheet(ix, song("old"), 50_000, 1, { opened: true });
+  ix = withSheet(ix, song("mid"), 50_000, 2, { opened: true });
+  ix = withSheet(ix, song("kept"), 50_000, 0, { opened: true });
+  ix = withPin(ix, "kept", true);
+  ix = withSheet(ix, song("new"), 50_000, 3, { opened: true });
+  // A backing is only recorded beside a copy that is there.
+  assert.equal(withBacking(ix, "missing", MB), ix);
+  for (const id of ["old", "mid", "kept", "new"]) ix = withBacking(ix, id, 1.5 * MB);
+  // 4.5 MB of automatic backings against 4 MB: the oldest opened goes; the kept sheet's is not counted.
+  assert.deepEqual(backingEvictionPlan(ix, AUTO_BACKING_CAP_BYTES), ["old"]);
+  assert.deepEqual(backingEvictionPlan(ix, 1 * MB), ["old", "mid", "new"]);
+  assert.deepEqual(backingEvictionPlan({ ...ix, keepAll: true }, 1), []);
+  // Backings do not crowd out sheets: the sheets' own cap reads only the sheets.
+  assert.deepEqual(evictionPlan(ix, AUTO_CACHE_CAP_BYTES), []);
+  // Everything on the phone shows in the space used.
+  assert.equal(usage(ix).bytes, 4 * 50_000 + 6 * MB);
+  // A backing evicted leaves its sheet.
+  const trimmed = withoutBackings(ix, ["old"]);
+  assert.equal(trimmed.entries.old!.backingBytes, undefined);
+  assert.equal(trimmed.entries.old!.bytes, 50_000);
+  assert.equal(withoutBackings(trimmed, ["old"]), trimmed);
+});
+
+test("a refreshed copy keeps its backing while the sheet still has one, and a link's sheet never has one to fetch", () => {
+  let ix: CacheIndex = emptyIndex("u");
+  ix = withSheet(ix, sheet("a", { hasBacking: true }), 1000, 1, { opened: true });
+  assert.equal(ix.entries.a!.hasBacking, true);
+  ix = withBacking(ix, "a", MB);
+  ix = withSheet(ix, sheet("a", { hasBacking: true, key: "F major" }), 1000, 2);
+  assert.equal(ix.entries.a!.backingBytes, MB);
+  // An older server says nothing: the file stays.
+  ix = withSheet(ix, sheet("a"), 1000, 3);
+  assert.equal(ix.entries.a!.backingBytes, MB);
+  // The server says it has none now: the record goes (the caller deletes the file).
+  ix = withSheet(ix, sheet("a", { hasBacking: false }), 1000, 4);
+  assert.equal(ix.entries.a!.backingBytes, undefined);
+  const link = withSheet(emptyIndex("u"), sheet("l", { hasBacking: true, fromLink: true }), 1000, 1);
+  assert.equal(link.entries.l!.hasBacking, undefined);
+});
+
+test("a kept sheet's backing is fetched with it, except on Data saver, for a link, or once it is there", () => {
+  let ix: CacheIndex = emptyIndex("u");
+  ix = withSheet(ix, sheet("song", { hasBacking: true }), 1000, 1);
+  ix = withSheet(ix, sheet("hummed"), 1000, 1);
+  ix = withSheet(ix, sheet("link", { hasBacking: true, fromLink: true }), 1000, 1);
+  // Automatic copies wait for a Play.
+  assert.equal(wantsBackingCopy(ix.entries.song, ix, false), false);
+  ix = withPin(withPin(withPin(ix, "song", true), "hummed", true), "link", true);
+  assert.equal(wantsBackingCopy(ix.entries.song, ix, false), true);
+  assert.equal(wantsBackingCopy(ix.entries.song, ix, true), false, "data saver: at the first Play");
+  assert.equal(wantsBackingCopy(ix.entries.hummed, ix, false), false);
+  assert.equal(wantsBackingCopy(ix.entries.link, ix, false), false);
+  assert.equal(wantsBackingCopy(withBacking(ix, "song", MB).entries.song, ix, false), false);
+  // Keep-all keeps it too.
+  const all = { ...withPin(ix, "song", false), keepAll: true };
+  assert.equal(wantsBackingCopy(all.entries.song, all, false), true);
+  assert.equal(wantsBackingCopy(undefined, all, false), false);
 });

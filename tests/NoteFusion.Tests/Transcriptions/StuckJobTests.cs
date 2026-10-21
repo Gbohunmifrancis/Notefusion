@@ -146,7 +146,7 @@ public class StuckJobTests
 
         // The worker finishes after all, and the record screen is still polling.
         h.Clock.UtcNow = Now + PastDeadline + TimeSpan.FromMinutes(2);
-        var poll = await new GetTranscriptionJobQueryHandler(new Worker { Status = TranscriptionStatus.Done }, h.Db, new StubCurrentUser(user.Id), h.Clock, h.QuotaGate)
+        var poll = await new GetTranscriptionJobQueryHandler(new Worker { Status = TranscriptionStatus.Done }, h.Db, new StubCurrentUser(user.Id), h.Clock, h.QuotaGate, h.Backing)
             .Handle(new GetTranscriptionJobQuery(job.JobId), default);
 
         Assert.Equal(TranscriptionStatus.Done, poll.Value.Status);
@@ -320,7 +320,7 @@ public class StuckJobTests
     }
 
     private static Task<Result> Notify(TestHarness h, TranscriptionJob job, Worker api)
-        => new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, new NoNotifier(), h.WebPush, h.QuotaGate)
+        => new NotifyTranscriptionReadyCommandHandler(h.Db, api, h.Clock, h.Push, new NoNotifier(), h.WebPush, h.QuotaGate, h.Backing)
             .Handle(new NotifyTranscriptionReadyCommand(job.Id), CancellationToken.None);
 
     private static Task<Result> Settle(TestHarness h, PreviewJob preview, Worker api)

@@ -208,9 +208,22 @@ public sealed class TranscriptionsController : ApiControllerBase
     public async Task<IActionResult> Harmonise([FromBody] HarmoniseSheetCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
 
+    /// <summary>
+    /// Polls a transcription job for status, progress, and the result once done. <c>?backing=false</c> leaves the
+    /// backing's bytes out of the result (<c>hasBacking</c> still says whether there is one, fetched from
+    /// <c>jobs/{jobId}/backing</c>); without it the result carries them, as it always has.
+    /// </summary>
     [HttpGet("jobs/{jobId}")]
-    public async Task<IActionResult> GetJob(string jobId, CancellationToken ct)
-        => HandleResult(await _sender.Send(new GetTranscriptionJobQuery(jobId), ct));
+    public async Task<IActionResult> GetJob(string jobId, [FromQuery] bool backing = true, CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetTranscriptionJobQuery(jobId, backing), ct));
+
+    /// <summary>
+    /// The finished job's backing, the song's instrumental, as <c>audio/mpeg</c>: for the job's owner, while it is
+    /// held (kept with an upload's sheet; a link's only while the job is fresh). 404 <c>BACKING_NOT_FOUND</c> otherwise.
+    /// </summary>
+    [HttpGet("jobs/{jobId}/backing")]
+    public async Task<IActionResult> GetJobBacking(string jobId, CancellationToken ct)
+        => Backing(await _sender.Send(new GetJobBackingQuery(jobId), ct));
 
     /// <summary>
     /// The job's live events (<c>text/event-stream</c>), held while a client watches it instead of polling
