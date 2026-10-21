@@ -347,7 +347,8 @@
       payload && typeof payload.countryCode === "string"
         ? payload.countryCode.toUpperCase()
         : null;
-    if (!country || !Array.isArray(payload.plans)) {
+    // No country (the visitor's location could not be read): the API sends the standard dollar prices.
+    if (!payload || !Array.isArray(payload.plans)) {
       showError();
       return;
     }

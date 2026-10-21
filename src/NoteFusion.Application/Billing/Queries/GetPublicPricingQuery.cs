@@ -18,6 +18,9 @@ public sealed class GetPublicPricingQueryHandler : IRequestHandler<GetPublicPric
     private readonly IApplicationDbContext _db;
     private readonly ICountryResolver _country;
 
+    /// <summary>Any country of the standard dollar set; the one an unresolved visitor is priced as.</summary>
+    private const string StandardPriceCountry = "US";
+
     public GetPublicPricingQueryHandler(IApplicationDbContext db, ICountryResolver country)
     {
         _db = db;
@@ -28,10 +31,11 @@ public sealed class GetPublicPricingQueryHandler : IRequestHandler<GetPublicPric
     {
         var country = await _country.ResolveAsync(ct);
 
-        // The public page must never render both regional prices. An unresolved geo result is an honest
-        // loading/error state; checkout still determines the authoritative account offer after sign-in.
-        if (string.IsNullOrWhiteSpace(country))
-            return new PublicPricingDto(null, []);
+        // The public page must never render both regional prices. A visitor whose location could not be read (a
+        // VPN, a lookup that failed) is shown the standard dollar set, what most of the world pays, rather than no
+        // prices at all; the country stays null, so nothing claims to know where they are. Checkout still
+        // decides the account's own offer after sign-in.
+        var priceAs = string.IsNullOrWhiteSpace(country) ? StandardPriceCountry : country;
 
         var all = await _db.Plans
             .AsNoTracking()
@@ -39,12 +43,12 @@ public sealed class GetPublicPricingQueryHandler : IRequestHandler<GetPublicPric
             .OrderBy(p => p.AmountMinor)
             .Select(p => new PlanDto(p.Id, p.Code, p.Name, p.AmountMinor, p.Currency, p.Interval))
             .ToListAsync(ct);
-        var offered = all.Where(p => PlanEligibility.IsOffered(p.Code, p.Currency, country)).ToList();
+        var offered = all.Where(p => PlanEligibility.IsOffered(p.Code, p.Currency, priceAs)).ToList();
 
         // The choir plans and the one-song purchase are not in Plans: the public page renders each plan there
         // as Pro Monthly or Pro Yearly. The one-song price rides apart, for the free card's wording.
         return new PublicPricingDto(
-            country,
+            string.IsNullOrWhiteSpace(country) ? null : country,
             offered.Where(p => p.Interval != BillingInterval.Single).ToList(),
             offered.FirstOrDefault(p => p.Interval == BillingInterval.Single));
     }
