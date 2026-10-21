@@ -28,5 +28,10 @@ regexTarget = "line"
 regexes = ['''"Api\.[A-Za-z]+",\s*"v1/''']
 
 [[allowlists]]
+description = "Not a key: a seasonal offer's public slug (it is in the email's link), e.g. key: \"christmas-2026\""
+regexTarget = "line"
+regexes = ['''\bkey:\s*"(halloween|christmas)-\d{4}"''']
+
+[[allowlists]]
 description = "Never committed: build output and installed packages on a developer's machine"
 paths = ['''(^|/)(node_modules|\.next|bin|obj|\.git|\.expo|dist|build)/''']

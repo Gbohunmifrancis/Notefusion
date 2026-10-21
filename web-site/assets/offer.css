@@ -1,0 +1,77 @@
+/* A seasonal Pro offer (board p-halloween-offer): /app's strip on Home and its line in the plans, the tags and struck
+ * prices, the website's pricing cards, the countdown and the "has ended" line. Loaded by app.js and pricing.js only
+ * while an offer is in the API's answer, as season.css is: none of it is downloaded the rest of the year.
+ *
+ * The template's tints come from <html data-offer>: Halloween is pumpkin as a wash and a hairline only (never a fill,
+ * never an icon in pumpkin), its label moon cream on Night and a darker pumpkin on Day (4.5:1 on its wash), the bat
+ * pale on Night and slate on Day; Christmas is pine, its label candle on Night, the snowflake the same. Never Pro's
+ * gold; blue is the one action ("See the offer", Pay). Phone first: min-width queries go upward. */
+
+:root { --offer-soft: rgba(100, 116, 139, 0.08); --offer-line: rgba(100, 116, 139, 0.26); --offer-label: currentColor; --offer-glyph: currentColor; }
+:root[data-offer="halloween"] { --offer-soft: rgba(180, 83, 28, 0.08); --offer-line: rgba(180, 83, 28, 0.26); --offer-label: #AC4E1A; --offer-glyph: #475569; }
+:root[data-offer="halloween"][data-theme="dark"] { --offer-soft: rgba(242, 138, 58, 0.12); --offer-line: rgba(242, 138, 58, 0.32); --offer-label: #EDE6CF; --offer-glyph: #C9D1E0; }
+:root[data-offer="christmas"] { --offer-soft: rgba(31, 107, 80, 0.08); --offer-line: rgba(31, 107, 80, 0.24); --offer-label: #1F6B50; --offer-glyph: #1F6B50; }
+:root[data-offer="christmas"][data-theme="dark"] { --offer-soft: rgba(46, 138, 102, 0.14); --offer-line: rgba(46, 138, 102, 0.36); --offer-label: #F3DFB4; --offer-glyph: #F3DFB4; }
+
+/* ── The strip (and the plans' line) ── */
+.offer-bar {
+  position: relative; display: grid; grid-template-columns: 26px minmax(0, 1fr) 44px; align-items: center; column-gap: 10px;
+  margin: 0 0 4px; padding: 2px 2px 2px 12px; border-radius: 14px; background: var(--offer-soft); border: 1px solid var(--offer-line);
+  color: var(--ink); font-size: 0.9375rem; line-height: 1.35; text-align: left; transition: opacity 0.2s ease;
+}
+.offer-bar.is-leaving { opacity: 0; }
+.offer-glyph { grid-row: 1; grid-column: 1; display: block; width: 26px; height: 13px; color: var(--offer-glyph); }
+.offer-glyph svg { display: block; width: 100%; height: 100%; }
+.offer-glyph .ic { width: 16px; height: 16px; margin: -1.5px auto 0; }
+.offer-msg { grid-row: 1; grid-column: 2; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; min-width: 0; margin: 0; }
+.offer-msg strong { flex-basis: 100%; color: var(--offer-label); font-weight: 600; }
+.offer-sep { color: var(--faint); }
+/* The smallest phones: the label on a line of its own (a dot left at a line's end reads as a stray). */
+.offer-sep-1 { display: none; }
+@media (min-width: 380px) { .offer-msg strong { flex-basis: auto; } .offer-sep-1 { display: inline; } }
+.offer-ends { color: var(--muted); white-space: nowrap; }
+.offer-count { font-family: var(--font-mono, ui-monospace, monospace); font-variant-numeric: tabular-nums; font-weight: 500; font-size: 0.92em; color: var(--ink, var(--page-navy, currentColor)); }
+.offer-wide { display: none; }
+/* Phone: the words beside the close; the countdown and the link on the line under them. */
+.offer-foot { grid-row: 2; grid-column: 2 / 4; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; column-gap: 12px; min-width: 0; }
+.offer-narrow { font-size: 0.875rem; }
+.offer-go {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-left: auto; padding: 0 10px; border: 0; border-radius: 10px;
+  background: none; color: var(--blue-dark); font: inherit; font-weight: 600; white-space: nowrap; cursor: pointer;
+}
+.offer-go .ic { width: 16px; height: 16px; }
+.offer-x { grid-row: 1; grid-column: 3; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 10px; background: none; color: var(--muted); cursor: pointer; }
+.offer-x .ic { width: 16px; height: 16px; }
+.offer-go:hover, .offer-x:hover { background: var(--offer-soft); }
+.offer-go:focus-visible, .offer-x:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+/* A sheet or a job on screen folds Home's greeting away (night.css): the strip goes with it. */
+body.is-focus .offer-bar.on-home { display: none; }
+
+/* In the plans: the same line, no link and no close (it is the offer); the countdown under the words on a phone. */
+.offer-bar.in-plans { display: flex; gap: 10px; min-height: 44px; margin: 2px 0 14px; padding: 8px 12px; }
+.in-plans .offer-msg { flex: 1; }
+.in-plans .offer-line-ends { flex-basis: 100%; }
+
+@media (min-width: 641px) {
+  .offer-bar { display: flex; gap: 10px; min-height: 50px; margin: 0 0 6px; padding: 3px 3px 3px 14px; }
+  .offer-wide { display: inline; }
+  .offer-narrow { display: none; }
+  .offer-foot { display: contents; }
+  .offer-go { padding: 0 12px; }
+  .offer-bar.in-plans { margin: 2px 0 14px; padding: 8px 14px; }
+  .in-plans .offer-line-ends { flex-basis: auto; }
+}
+@media (prefers-reduced-motion: reduce) { .offer-bar { transition: none; } }
+
+/* ── The plans: each Pro plan's tag and its old price ── */
+:root .plan-opt-tag.offer-tag { color: var(--offer-label); background: var(--offer-soft); box-shadow: inset 0 0 0 1px var(--offer-line); }
+.plan-opt-price s { color: var(--muted); font-weight: 500; font-size: 0.8em; margin-right: 6px; text-decoration-thickness: 1.5px; }
+/* After it ends, an old link's one line (P5): muted, a clock, no colour. */
+.offer-ended { display: flex; align-items: center; gap: 8px; margin: 2px 0 12px; font-size: 0.9rem; color: var(--muted); }
+.offer-ended .ic { width: 16px; height: 16px; flex: none; }
+
+/* ── The website's pricing cards (P4): the tag as a pill, the struck price, the countdown under it ── */
+.home .plan-tag.offer-tag { top: 21px; padding: 2px 9px; border-radius: 999px; font-size: 13px; color: var(--offer-label); background: var(--offer-soft); box-shadow: inset 0 0 0 1px var(--offer-line); }
+.home .plan .price s.was { color: var(--page-muted); font-weight: 500; font-size: 0.5em; vertical-align: 0.42em; margin-right: 8px; text-decoration-thickness: 2px; letter-spacing: 0; }
+.offer-plan-ends { display: flex; align-items: center; gap: 6px; margin: 8px 0 0; font-size: 0.875rem; color: var(--page-muted, var(--muted)); }
+.offer-plan-ends .ic { width: 15px; height: 15px; flex: none; }

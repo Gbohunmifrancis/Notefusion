@@ -1,3 +1,4 @@
+using NoteFusion.Application.Offers;
 using NoteFusion.Application.Outreach;
 using NoteFusion.Shared.Results;
 
@@ -154,4 +155,11 @@ public interface IEmailSender
     /// how it went: the outreach audit trail records a failed delivery, and tries it once more. Never throws.
     /// </summary>
     Task<Result> SendOutreachAsync(EmailRecipient to, OutreachEmail email, CancellationToken ct = default);
+
+    /// <summary>
+    /// A seasonal offer's email (<see cref="OfferEmailContent"/>), optional mail held by the quota like outreach, with
+    /// the one-click unsubscribe headers. Reports how it went, for the offer's queue; never throws. A
+    /// <paramref name="test"/> send (an admin's own copy) is recorded as written-for-one-case mail and always goes.
+    /// </summary>
+    Task<Result> SendOfferAsync(EmailRecipient to, OfferEmailContent email, bool test = false, CancellationToken ct = default);
 }

@@ -396,7 +396,11 @@ export type AuditAction =
   | "RemovePasskey"
   | "PasskeySignIn"
   | "SetFeatureFlag"
-  | "SetUpAdminPhone";
+  | "SetUpAdminPhone"
+  | "CreateOffer"
+  | "UpdateOffer"
+  | "SetOfferEnabled"
+  | "SendOffer";
 
 /**
  * One line of the audit trail. The emails are stored snapshots rather than joins, so a row still

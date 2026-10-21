@@ -162,7 +162,7 @@ export const meApi = {
   remove: (proof: { password: string } | { googleIdToken: string }) =>
     api.delete("/api/me", { data: proof }).then(() => undefined),
 
-  /** The "Notes from the founder" email switch (the same opt-out the email's unsubscribe link records). */
+  /** The "Notes and offers from NoteFusion" email switch (the same opt-out the email's unsubscribe link records). */
   emailPreferences: () =>
     api.get<EmailPreferences>("/api/me/email-preferences").then((r) => r.data),
   setEmailPreferences: (prefs: EmailPreferences) =>

@@ -551,6 +551,24 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   app's "Notes from the founder" switch, `GET/PUT /api/me/email-preferences`);
   push respects the app's switch (it unregisters the device). Off unless `Outreach__Enabled` + `FounderName` +
   `ReplyTo` are set (prod defaults them on; the code default is off).
+- Seasonal offers (board p-halloween-offer; `Application/Offers`, `Infrastructure/Offers`): an `Offer` row (template
+  `halloween`/`christmas`, percent, Pro Monthly/Yearly, `StartsAtUtc`, `LastDay`, the email's words with `{pct}`) is a lower
+  Pro price on the web only — dollar plans (standard and regional), never naira, choir, one song or Google Play.
+  `OfferPricing` rounds down to the plan's own ending ($9.99→$6.99, $79→$55); `OfferWindow` ends it at midnight after
+  `LastDay` in each person's own zone (`users.TimeZone`, a visitor's `X-Time-Zone`, else London; capped at UTC−12), one
+  enabled offer at a time. `GET /api/offers/current` (anonymous too) is what the clients read; checkout takes `offerKey`
+  and stamps `PaymentTransaction.OfferId` (refused `BILLING_OFFER_ENDED`; a session opened before the end is handed back
+  for the reuse window, and a payment is verified against its own amount). Web: `assets/offer.js`/`.css`, loaded only
+  while one runs: /app's Home strip with the countdown for free accounts, `?offer=&m=` (click → `POST /api/offers/click`,
+  then the plans), offer tags and struck prices in the plans, and the website's Pro cards. Console Operations › Offers
+  (`web-admin/src/app/(console)/offers`; `/api/admin/offers`: create from a template, preview, test, audience, send and
+  switch on behind a fresh unlock, pause, progress). Send snapshots `OfferEmail` rows (free and lapsed Pro by default;
+  "Pro now" a tick; never naira, no country, opted out, store/choir Pro, or an outreach email in the last 7 days), and
+  `OfferEmailWorker` sends them as optional mail (`EmailKind.Offer`, held by the quota) 09:00–19:00 in each person's time,
+  lapsed first, skipping anyone who bought or ended. The email (`BrandedEmailTemplate.Offer`, header
+  `web-site/email/season-*.png`) needs `Email__PostalAddress` (the footer's company name and address; Send is refused
+  without it) and its unsubscribe is the founder-notes `EmailOptOut`, shown as "Notes and offers from NoteFusion".
+  Clicks and purchases are counted, opens never.
 - Email quota (`Application/Common/EmailBudget`, `Infrastructure/Email/EmailQuota`): every email Resend accepts is an
   `email_sends` row (kind + time); optional mail (welcome, waitlist, checkout reminder, failed-job tips, outreach) goes only
   while each capped window — last 24 h `Email__DailyLimit` (100), 7 days `Email__WeeklyLimit` (none), 31 days

@@ -121,5 +121,11 @@ public interface IApplicationDbContext
     /// <summary>Google Play purchase tokens and the account each belongs to (the Android app's purchases).</summary>
     DbSet<GooglePlayPurchase> GooglePlayPurchases { get; }
 
+    /// <summary>Seasonal Pro offers (Operations › Offers): the price, the dates and the email's words.</summary>
+    DbSet<Offer> Offers { get; }
+
+    /// <summary>Each person's queued, sent or skipped copy of an offer's email, and whether its button was clicked.</summary>
+    DbSet<OfferEmail> OfferEmails { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

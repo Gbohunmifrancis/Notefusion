@@ -58,6 +58,8 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<FeatureFlag> FeatureFlags => Set<FeatureFlag>();
     public DbSet<AdminPaymentAlert> AdminPaymentAlerts => Set<AdminPaymentAlert>();
     public DbSet<GooglePlayPurchase> GooglePlayPurchases => Set<GooglePlayPurchase>();
+    public DbSet<Offer> Offers => Set<Offer>();
+    public DbSet<OfferEmail> OfferEmails => Set<OfferEmail>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
