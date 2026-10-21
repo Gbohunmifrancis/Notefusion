@@ -26,6 +26,10 @@ public static partial class SongLinks
     [GeneratedRegex("""https?://[^\s<>"]+""", RegexOptions.IgnoreCase)]
     private static partial Regex UrlInText();
 
+    // A link to one of the services typed without its scheme ("youtube.com/watch?v=…"), read as https://.
+    [GeneratedRegex("""(?:^|[\s(\[<"'“‘«])((?:[a-z0-9-]+\.)*(?:youtube\.com|youtu\.be|spotify\.com|spotify\.link|app\.link|apple\.com)/[^\s<>"]+)""", RegexOptions.IgnoreCase)]
+    private static partial Regex BareLink();
+
     [GeneratedRegex("^[A-Za-z0-9_-]{11}$")]
     private static partial Regex VideoId();
 
@@ -33,17 +37,26 @@ public static partial class SongLinks
     private static partial Regex SpotifyTrackPath();
 
     /// <summary>
-    /// The first http(s) link in <paramref name="text"/>, trailing punctuation trimmed, when it is a song
-    /// on a supported service; false (and an empty <paramref name="url"/>) otherwise.
+    /// The first http(s) link in <paramref name="text"/> (or, without one, the first link to a supported service typed
+    /// without its scheme, read as https://), trailing punctuation trimmed, when it is a song on a supported service;
+    /// false (and an empty <paramref name="url"/>) otherwise.
     /// </summary>
     public static bool TryExtract(string? text, out string url)
     {
         url = string.Empty;
         var match = UrlInText().Match(text ?? string.Empty);
-        if (!match.Success)
-            return false;
+        string raw;
+        if (match.Success)
+            raw = match.Value;
+        else
+        {
+            var bare = BareLink().Match(text ?? string.Empty);
+            if (!bare.Success)
+                return false;
+            raw = "https://" + bare.Groups[1].Value;
+        }
 
-        var candidate = match.Value.TrimEnd(Trailing.ToCharArray());
+        var candidate = raw.TrimEnd(Trailing.ToCharArray());
         if (candidate.Length <= "https://".Length || candidate.Length > MaxLength)
             return false;
         if (!Uri.TryCreate(candidate, UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))

@@ -10,13 +10,20 @@
 export type SongProvider = "youtube" | "spotify" | "apple_music";
 
 const URL_IN_TEXT = /https?:\/\/[^\s<>"]+/i;
+// A link to one of the services typed without its scheme ("youtube.com/watch?v=…"), read as https://.
+const BARE_LINK = /(?:^|[\s(\[<"'“‘«])((?:[a-z0-9-]+\.)*(?:youtube\.com|youtu\.be|spotify\.com|spotify\.link|app\.link|apple\.com)\/[^\s<>"]+)/i;
 const TRAILING = /[.,;:!?'")\]}>»”’…]+$/;
 const VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
 
-/** The first http(s) link in the text, with sentence punctuation trimmed off its end; or null. */
+/**
+ * The first http(s) link in the text, or else the first link to a service typed without "https://", with sentence
+ * punctuation trimmed off its end; or null.
+ */
 export function firstUrl(text: string | null | undefined): string | null {
   const m = URL_IN_TEXT.exec(text ?? "");
-  const url = m ? m[0].replace(TRAILING, "") : null;
+  const bare = m ? null : BARE_LINK.exec(text ?? "");
+  const raw = m ? m[0] : bare ? `https://${bare[1]}` : null;
+  const url = raw ? raw.replace(TRAILING, "") : null;
   // A bare scheme ("https://.") is not a link, as the worker also rules.
   return url && url.length > "https://".length ? url : null;
 }

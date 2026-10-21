@@ -119,6 +119,11 @@ class FetchedAudio(NamedTuple):
 
 _VIDEO_ID = re.compile(r"^[A-Za-z0-9_-]{11}$")
 _URL_IN_TEXT = re.compile(r"https?://[^\s<>\"]+", re.I)
+# A link to one of the services typed without its scheme ("youtube.com/watch?v=…"), read as https://.
+_BARE_LINK = re.compile(
+    r"""(?:^|[\s(\[<"'“‘«])((?:[a-z0-9-]+\.)*(?:youtube\.com|youtu\.be|spotify\.com|spotify\.link|app\.link|apple\.com)/[^\s<>"]+)""",
+    re.I,
+)
 # A link that ends a sentence or sits in brackets drags these along when pasted.
 _TRAILING = ".,;:!?)]}>'\"’”»…"
 _SPOTIFY_TRACK_PATH = re.compile(r"^/(?:intl-[A-Za-z-]+/)?track/([A-Za-z0-9]+)/?$")
@@ -166,12 +171,19 @@ def extract_url(text: str) -> str | None:
     """The first http(s) link in pasted text, trailing punctuation trimmed; None without one.
 
     Share sheets wrap the link in words ("Listen to … on Spotify: https://…"), and a link
-    that ends a sentence brings its full stop.  The C# API and both clients mirror this.
+    that ends a sentence brings its full stop.  Without an http(s) link, a link to one of the
+    services typed without its scheme ("youtube.com/watch?v=…") is read as https://.  The C#
+    API and both clients mirror this.
     """
     m = _URL_IN_TEXT.search(text or "")
-    if not m:
-        return None
-    url = m.group(0).rstrip(_TRAILING)
+    if m:
+        url = m.group(0)
+    else:
+        bare = _BARE_LINK.search(text or "")
+        if not bare:
+            return None
+        url = "https://" + bare.group(1)
+    url = url.rstrip(_TRAILING)
     return url if len(url) > len("https://") else None
 
 

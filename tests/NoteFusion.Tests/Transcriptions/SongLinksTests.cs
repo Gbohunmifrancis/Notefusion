@@ -58,10 +58,25 @@ public class SongLinksTests
     }
 
     [Theory]
+    [InlineData("youtube.com/watch?v=dQw4w9WgXcQ", "https://youtube.com/watch?v=dQw4w9WgXcQ")]
+    [InlineData("www.youtube.com/watch?v=dQw4w9WgXcQ", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")]
+    [InlineData("Sing this: m.youtube.com/watch?v=dQw4w9WgXcQ", "https://m.youtube.com/watch?v=dQw4w9WgXcQ")]
+    [InlineData("youtu.be/dQw4w9WgXcQ.", "https://youtu.be/dQw4w9WgXcQ")]
+    [InlineData("open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT", "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT")]
+    [InlineData("(music.apple.com/gb/song/1559885424)", "https://music.apple.com/gb/song/1559885424")]
+    public void A_link_typed_without_its_scheme_is_read_as_https(string text, string expected)
+    {
+        Assert.True(SongLinks.TryExtract(text, out var url));
+        Assert.Equal(expected, url);
+    }
+
+    [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("not a link")]
-    [InlineData("youtube.com/watch?v=dQw4w9WgXcQ")]                       // no scheme
+    [InlineData("notyoutube.com/watch?v=dQw4w9WgXcQ")]                    // no scheme, and not YouTube
+    [InlineData("example.com/watch?v=dQw4w9WgXcQ")]
+    [InlineData("youtube.com/@RickAstleyYT")]                             // no scheme, a channel
     [InlineData("ftp://example.com/song")]
     [InlineData("https://")]
     [InlineData("https://example.com/watch?v=dQw4w9WgXcQ")]

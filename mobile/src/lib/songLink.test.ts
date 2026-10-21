@@ -61,3 +61,20 @@ test("the hint tells a wrong link from no link", () => {
   assert.match(songLinkHint("https://open.spotify.com/album/1"), /isn't a single song/);
   assert.match(songLinkHint("hello"), /^Paste a link/);
 });
+
+test("a link typed without https:// is read as https, as the worker, the API and the web do", () => {
+  assert.equal(firstUrl("youtube.com/watch?v=dQw4w9WgXcQ"), "https://youtube.com/watch?v=dQw4w9WgXcQ");
+  assert.equal(firstUrl("Sing this: m.youtube.com/watch?v=dQw4w9WgXcQ"), "https://m.youtube.com/watch?v=dQw4w9WgXcQ");
+  assert.equal(firstUrl("youtu.be/dQw4w9WgXcQ."), "https://youtu.be/dQw4w9WgXcQ");
+  assert.deepEqual(extractSongUrl("open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT"), {
+    url: "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT",
+    provider: "spotify",
+  });
+  assert.deepEqual(extractSongUrl("(music.apple.com/gb/song/1559885424)"), {
+    url: "https://music.apple.com/gb/song/1559885424",
+    provider: "apple_music",
+  });
+  assert.equal(firstUrl("notyoutube.com/watch?v=dQw4w9WgXcQ"), null);
+  assert.equal(firstUrl("example.com/watch?v=dQw4w9WgXcQ"), null);
+  assert.match(songLinkHint("youtube.com/@RickAstleyYT"), /isn't a single song/);
+});
