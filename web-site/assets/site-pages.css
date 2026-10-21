@@ -197,9 +197,15 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .site-page-main .notice.good { color: var(--page-good-fg); background: var(--page-good-bg); border: 1px solid var(--page-good-line); }
 .site-page-main .notice.info { color: var(--page-info-fg); background: var(--page-info-bg); border: 1px solid var(--page-info-line); }
 .site-page-main label { display: block; margin: 0 0 8px; color: var(--page-navy); font-size: 14px; font-weight: 600; }
-.site-page-main input[type=email], .site-page-main input[type=password], .site-page-main textarea { display: block; width: 100%; min-height: 44px; margin: 0 0 16px; padding: 10px 12px; border: 1px solid var(--page-input-line); border-radius: var(--r-sm); background: var(--page-input-bg); color: var(--page-navy); font: inherit; font-size: 16px; transition: border-color .15s, box-shadow .15s; }
+.site-page-main input[type=email], .site-page-main input[type=password], .site-page-main .pw-wrap input, .site-page-main textarea { display: block; width: 100%; min-height: 44px; margin: 0 0 16px; padding: 10px 12px; border: 1px solid var(--page-input-line); border-radius: var(--r-sm); background: var(--page-input-bg); color: var(--page-navy); font: inherit; font-size: 16px; transition: border-color .15s, box-shadow .15s; }
 .site-page-main textarea { min-height: 96px; resize: vertical; }
 .site-page-main input:focus, .site-page-main textarea:focus { outline: 0; border-color: var(--page-blue); box-shadow: 0 0 0 3px var(--page-focus); }
+/* Show / hide on a password field (reset-password; /app's .pw-eye, board n-ux-low V3f): a 44 px eye inside the field's
+   right edge. The field keeps its look while it shows the password as text. */
+.site-page-main .pw-wrap { position: relative; display: block; margin: 0 0 16px; }
+.site-page-main .pw-wrap input { margin: 0; padding-right: 52px; }
+.site-page-main .pw-eye { position: absolute; top: 50%; right: 2px; display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: var(--r-sm); background: none; color: var(--page-muted); cursor: pointer; transform: translateY(-50%); }
+.site-page-main .pw-eye:hover { background: var(--page-wash); color: var(--page-navy); }
 .site-page-main .hint { margin-top: -8px; color: var(--page-muted); font-size: 14px; }
 .site-page-main .hint.bad { color: var(--page-bad-fg); }  /* a field's own problem, said as it is left (reset-password) */
 .site-page-main .checkbox-group { display: flex; align-items: flex-start; gap: 8px; margin: 16px 0 24px; }
