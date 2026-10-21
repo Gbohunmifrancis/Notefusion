@@ -347,7 +347,7 @@ and the refusal is in the API log as a warning.
 | `Email__DailyLimit` / `EMAIL__DAILYLIMIT` | optional | The plan's cap for the last 24 hours. Defaults to `100` (Resend free). `0` = no daily cap. |
 | `Email__WeeklyLimit` / `EMAIL__WEEKLYLIMIT` | optional | Cap for the last 7 days. Unset by default (no weekly cap). |
 | `Email__MonthlyLimit` / `EMAIL__MONTHLYLIMIT` | optional | Cap for the last 31 days (Resend does not say which day its month starts, so 31 rolling days hold under either). Defaults to `3000`. `0` = no monthly cap. |
-| `Email__PostalAddress` / `EMAIL__POSTALADDRESS` | before an offer is sent | One line: the company's name and postal address, the legal footer every seasonal offer email carries ("NoteFusion · {this}", §3.3). Until it is set the console's preview and test show "[the company's postal address]" and **Send is refused** (`OFFER_POSTAL_ADDRESS_MISSING`). Not a secret, and only the offer emails show it. |
+| `Email__PostalAddress` / `EMAIL__POSTALADDRESS` | set in production | One line: the company's postal address, the legal footer every seasonal offer email carries ("NoteFusion · {this}", §3.3). `docker-compose.prod.yml` defaults it to `651 N Broad Street, Middletown, DE 19709, USA`; the variable replaces it. Where it is blank (local runs) the console's preview and test show "[the company's postal address]" and **Send is refused** (`OFFER_POSTAL_ADDRESS_MISSING`). Not a secret, and only the offer emails show it. |
 | `Email__OptionalShare` / `EMAIL__OPTIONALSHARE` | optional | Optional mail (welcome, waitlist, checkout reminder, failed-transcription tips, outreach, seasonal offers) goes only while every capped window is under this share of its cap, counting all mail; the rest is kept for verification codes, resets, receipts and security notices, which always send. Defaults to `0.6`. Held batch mail stays due for a later run. Sends are counted in `email_sends`; System Health shows the usage. |
 
 > **Rotate the Resend key that was shared during development before using it** — treat it
@@ -445,7 +445,7 @@ switch and link ("Notes and offers from NoteFusion").
 
 | GitHub var/secret | Container var | Default | Notes |
 |-------------------|---------------|---------|-------|
-| `EMAIL__POSTALADDRESS` | `Email__PostalAddress` | blank | **Set before the first Send** (see §3). |
+| `EMAIL__POSTALADDRESS` | `Email__PostalAddress` | `651 N Broad Street, Middletown, DE 19709, USA` (compose) | Set it only to change the address (see §3). |
 | `OFFERS_ENABLED` | `Offers__Enabled` | `true` (compose and code) | `false` stops the offer email worker (queued emails wait); prices on the web still follow an enabled offer. The API logs a line at startup when it is off. |
 | — | `Offers__BatchSize` | `200` | Most offer emails one run sends (code default). |
 | — | `Offers__IntervalMinutes` | `5` | Minutes between runs (code default). |

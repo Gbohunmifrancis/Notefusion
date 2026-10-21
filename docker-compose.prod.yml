@@ -188,9 +188,9 @@ services:
       Email__WeeklyLimit: ${Email__WeeklyLimit}
       Email__MonthlyLimit: ${Email__MonthlyLimit}
       Email__OptionalShare: ${Email__OptionalShare}
-      # The seasonal offers' legal footer (docs/DEPLOYMENT.md §3.3): one line, the company's name and postal address.
-      # Blank until set; the console refuses to send an offer email without it.
-      Email__PostalAddress: ${Email__PostalAddress:-}
+      # The seasonal offers' legal footer (docs/DEPLOYMENT.md §3.3), shown as "NoteFusion · {this}": the company's postal
+      # address, one line. EMAIL__POSTALADDRESS replaces it; the console refuses to send an offer email while it is blank.
+      Email__PostalAddress: "${Email__PostalAddress:-651 N Broad Street, Middletown, DE 19709, USA}"
       # The offer email worker (on unless false); queued offer emails wait while it is off.
       Offers__Enabled: ${Offers__Enabled:-true}
       Google__ClientId: ${Google__ClientId}
