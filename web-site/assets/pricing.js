@@ -395,13 +395,13 @@
     if (yearly) container.appendChild(paidCard(yearly, true, saving));
 
     if (regionLabel) {
-      regionLabel.textContent = isNigeria ? "Pricing for Nigeria" : "International pricing";
+      regionLabel.textContent = isNigeria ? "Pricing for Nigeria" : "Prices in US dollars";
       regionLabel.hidden = false;
     }
     if (regionNote) {
       regionNote.textContent = isNigeria
         ? "Nigerian pricing is shown in naira. One payment buys one month or one year of Pro; nothing is charged again unless you buy another period."
-        : "International pricing is shown in US dollars. One payment buys one month or one year of Pro; nothing is charged again unless you buy another period.";
+        : "Prices are in US dollars. One payment buys one month or one year of Pro; nothing is charged again unless you buy another period.";
     }
   }
 
