@@ -68,6 +68,12 @@ public class PaymentTransaction : BaseEntity
     /// </summary>
     public CheckoutAttempt? ProviderAttempt { get; private set; }
 
+    /// <summary>
+    /// The seasonal offer that priced this checkout (<see cref="AmountMinor"/> is then the offer price), or null for a
+    /// checkout at the plan's own price. Read by the offer's progress; fulfilment reads only the amount.
+    /// </summary>
+    public Guid? OfferId { get; private set; }
+
     public bool IsTerminal => Status is PaymentStatus.Completed or PaymentStatus.Failed;
 
     /// <summary>Monetary representation as a strongly typed domain Value Object.</summary>
@@ -97,7 +103,8 @@ public class PaymentTransaction : BaseEntity
         long amountMinor,
         string currency,
         DateTime utcNow,
-        CheckoutClient client = CheckoutClient.Phone)
+        CheckoutClient client = CheckoutClient.Phone,
+        Guid? offerId = null)
         => new()
         {
             Id = Guid.NewGuid(),
@@ -113,7 +120,8 @@ public class PaymentTransaction : BaseEntity
             Status = PaymentStatus.Pending,
             CreatedAtUtc = utcNow,
             UpdatedAtUtc = utcNow,
-            Client = client
+            Client = client,
+            OfferId = offerId
         };
 
     /// <summary>

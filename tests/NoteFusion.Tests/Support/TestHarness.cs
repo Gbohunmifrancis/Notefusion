@@ -373,6 +373,22 @@ public sealed class RecordingEmailSender : IEmailSender
             ? NoteFusion.Shared.Results.Result.Failure(NoteFusion.Shared.Results.Error.Failure("EMAIL_DELIVERY_FAILED", error))
             : NoteFusion.Shared.Results.Result.Success());
     }
+
+    /// <summary>The offer emails, with what each said and whether it was an admin's test; <see cref="OfferError"/> makes delivery fail.</summary>
+    public List<(EmailRecipient To, NoteFusion.Application.Offers.OfferEmailContent Email, bool Test)> Offers { get; } = [];
+
+    /// <summary>When set, offer sends report exactly this error (and are still recorded).</summary>
+    public NoteFusion.Shared.Results.Error? OfferError { get; set; }
+
+    public Task<NoteFusion.Shared.Results.Result> SendOfferAsync(
+        EmailRecipient to, NoteFusion.Application.Offers.OfferEmailContent email, bool test = false, CancellationToken ct = default)
+    {
+        Sent.Add((test ? "offer-test" : "offer", to));
+        Offers.Add((to, email, test));
+        return Task.FromResult(OfferError is { } refused
+            ? NoteFusion.Shared.Results.Result.Failure(refused)
+            : NoteFusion.Shared.Results.Result.Success());
+    }
 }
 
 /// <summary>

@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Offers;
 using NoteFusion.Application.Outreach;
 using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
@@ -120,6 +121,36 @@ public sealed class EmailSender : IEmailSender
         }
 
         await _quota.RecordSentAsync(EmailKind.Outreach);
+        return Result.Success();
+    }
+
+    public async Task<Result> SendOfferAsync(
+        EmailRecipient to, OfferEmailContent email, bool test = false, CancellationToken ct = default)
+    {
+        // A test goes to the admin who asked for it, whatever the quota: written for one case, as an admin's message is.
+        var kind = test ? EmailKind.Custom : EmailKind.Offer;
+        if (!test && !await _quota.AllowsOptionalAsync(kind, ct))
+            return Result.Failure(EmailBudget.Held);
+
+        var message = _template.Offer(to, email);
+        try
+        {
+            await _transport.SendAsync(message, ct);
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Could not send offer email \"{Subject}\" to {Recipient}.", message.Subject, message.ToEmail);
+            // Not sent at all: the queue keeps it for a later run instead of spending a try.
+            if (ex is EmailDeliveryException { ProviderUnavailable: true })
+                return Result.Failure(ProviderErrors.Unavailable);
+            return Result.Failure(Error.Failure("EMAIL_DELIVERY_FAILED", ex.Message));
+        }
+
+        await _quota.RecordSentAsync(kind);
         return Result.Success();
     }
 

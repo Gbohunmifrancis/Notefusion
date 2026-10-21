@@ -51,9 +51,12 @@ public static class OutreachRules
     /// Whether <paramref name="utcNow"/> is between 09:00 and 19:00 where the account is: its own time zone
     /// (<c>users.TimeZone</c>), or West Africa Time when none is known — never a 3am note in New York.
     /// </summary>
-    public static bool IsSendingHour(DateTime utcNow, string? timeZone)
+    public static bool IsSendingHour(DateTime utcNow, string? timeZone) => IsSendingHour(utcNow, PracticeTime.Resolve(timeZone));
+
+    /// <summary>The same hours in a zone the caller resolved itself (an offer's fallback is the UK's, not West Africa's).</summary>
+    public static bool IsSendingHour(DateTime utcNow, TimeZoneInfo zone)
     {
-        var hour = TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utcNow, DateTimeKind.Utc), PracticeTime.Resolve(timeZone)).Hour;
+        var hour = TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utcNow, DateTimeKind.Utc), zone).Hour;
         return hour >= SendFromHour && hour < SendUntilHour;
     }
 

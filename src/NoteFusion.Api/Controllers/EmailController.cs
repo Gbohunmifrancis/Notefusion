@@ -8,7 +8,7 @@ using NoteFusion.Application.Outreach.Commands;
 namespace NoteFusion.Api.Controllers;
 
 /// <summary>
-/// The unsubscribe link in outreach emails. Anonymous by design: whoever reads the email clicks it without
+/// The unsubscribe link in the founder's notes and the offer emails. Anonymous by design: whoever reads the email clicks it without
 /// signing in, and the signed token is the credential. GET is the link in the footer and answers with a
 /// small page; POST is the mail client's own one-click unsubscribe (RFC 8058, the List-Unsubscribe-Post
 /// header) and answers with an empty 200.
@@ -28,7 +28,7 @@ public sealed class EmailController : ApiControllerBase
         var result = await _sender.Send(new UnsubscribeEmailCommand(token), ct);
         return result.IsSuccess
             ? Page(StatusCodes.Status200OK, "You're unsubscribed",
-                "You won't get emails like that from NoteFusion again. Receipts, password resets and other emails about your account still arrive.")
+                "You won't get notes and offers from NoteFusion again. Receipts, password resets and other emails about your account still arrive.")
             : Page(StatusCodes.Status400BadRequest, "That link didn't work", result.Error.Message);
     }
 

@@ -71,7 +71,7 @@ public class EmailQuotaTests
     public void Only_the_mail_an_account_can_do_without_is_optional()
     {
         Assert.Equal(
-            new[] { EmailKind.Welcome, EmailKind.WaitlistConfirmation, EmailKind.CheckoutReminder, EmailKind.TranscriptionTips, EmailKind.Outreach },
+            new[] { EmailKind.Welcome, EmailKind.WaitlistConfirmation, EmailKind.CheckoutReminder, EmailKind.TranscriptionTips, EmailKind.Outreach, EmailKind.Offer },
             Enum.GetValues<EmailKind>().Where(EmailBudget.IsOptional));
     }
 

@@ -650,5 +650,6 @@ public class OutreachTests
         public Task SendCustomEmailAsync(EmailRecipient to, string subject, string heading, string bodyHtml, string? ctaText = null, string? ctaUrl = null, CancellationToken ct = default) => throw new NotSupportedException();
         public Task SendWaitlistConfirmationAsync(EmailRecipient to, CancellationToken ct = default) => throw new NotSupportedException();
         public Task SendTranscriptionFailedAsync(EmailRecipient to, bool onPro, CancellationToken ct = default) => throw new NotSupportedException();
+        public Task<Result> SendOfferAsync(EmailRecipient to, NoteFusion.Application.Offers.OfferEmailContent email, bool test = false, CancellationToken ct = default) => throw new NotSupportedException();
     }
 }

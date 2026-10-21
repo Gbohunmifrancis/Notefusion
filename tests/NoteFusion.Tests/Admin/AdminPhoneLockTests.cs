@@ -245,7 +245,8 @@ public class AdminPhoneLockTests
             .Select(a => $"{a.Type.Name}.{a.Method.Name}").OrderBy(n => n).ToList();
         Assert.Equal(
             ["AdminController.EndSubscription", "AdminController.RevokePro", "AdminController.Role",
-             "AdminController.Suspend", "AdminFeaturesController.Set"],
+             "AdminController.Suspend", "AdminFeaturesController.Set", "AdminOffersController.Send",
+             "AdminOffersController.SetEnabled"],
             fresh);
 
         var open = actions.Where(a => a.Method.GetCustomAttribute<AllowLockedPhoneAttribute>() is not null

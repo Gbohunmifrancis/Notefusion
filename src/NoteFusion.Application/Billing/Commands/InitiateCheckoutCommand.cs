@@ -6,6 +6,8 @@ using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
+using NoteFusion.Application.Offers;
+using NoteFusion.Core.Entities;
 using NoteFusion.Core.Entities.Billing;
 using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
@@ -24,7 +26,14 @@ namespace NoteFusion.Application.Billing.Commands;
 /// Where the customer is paying from. <c>"web"</c> sends the browser back to the website after checkout
 /// instead of handing off to the app's deep link; anything else (or nothing) is the app.
 /// </param>
-public sealed record InitiateCheckoutCommand(Guid PlanId, string? Client = null) : IRequest<Result<CheckoutSessionDto>>;
+/// <param name="OfferKey">
+/// A seasonal offer's key (<c>halloween-2026</c>): charge the offer's price instead of the plan's own. Only while that
+/// offer is live for this account (its own time zone) and covers the plan; else <c>BILLING_OFFER_ENDED</c> and the
+/// client shows the usual price. A checkout opened at the offer price keeps it for the reuse window, even past the end.
+/// Without a key the plan's own price, and only checkouts opened at it are reused: the two never share a session.
+/// </param>
+public sealed record InitiateCheckoutCommand(Guid PlanId, string? Client = null, string? OfferKey = null)
+    : IRequest<Result<CheckoutSessionDto>>;
 
 public sealed class InitiateCheckoutCommandValidator : AbstractValidator<InitiateCheckoutCommand>
 {
@@ -40,6 +49,7 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
     private readonly IDateTimeProvider _clock;
     private readonly BillingSettings _settings;
     private readonly IEmailSender _email;
+    private readonly IClientTimeZone? _timeZone;
 
     public InitiateCheckoutCommandHandler(
         IApplicationDbContext db,
@@ -47,7 +57,8 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         IPaymentGatewayFactory gateways,
         IDateTimeProvider clock,
         BillingSettings settings,
-        IEmailSender email)
+        IEmailSender email,
+        IClientTimeZone? timeZone = null)
     {
         _db = db;
         _currentUser = currentUser;
@@ -55,6 +66,7 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         _clock = clock;
         _settings = settings;
         _email = email;
+        _timeZone = timeZone;
     }
 
     public async Task<Result<CheckoutSessionDto>> Handle(InitiateCheckoutCommand request, CancellationToken ct)
@@ -116,12 +128,26 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             return ChoirErrors.MemberOfAnotherChoir;
         }
 
+        // A seasonal offer asked for by key. An unknown key is an ended offer to the client: the usual price.
+        Offer? offer = null;
+        var offerKey = request.OfferKey?.Trim().ToLowerInvariant();
+        if (!string.IsNullOrEmpty(offerKey))
+        {
+            offer = await _db.Offers.AsNoTracking().FirstOrDefaultAsync(o => o.Key == offerKey, ct);
+            if (offer is null)
+                return OfferErrors.CheckoutOfferEnded(null);
+        }
+        var offerId = offer?.Id;
+
         // Retry-safe: an existing in-flight checkout for this user+plan is reused, so tapping "Upgrade"
-        // twice returns the same session instead of opening a second charge.
+        // twice returns the same session instead of opening a second charge. Only one opened at the same price:
+        // a checkout at the offer's price and one at the plan's own are never handed out for each other, and one at
+        // the offer's price is handed back even when the offer has ended since (it keeps its price for the window).
         var fromWeb = IsWebClient(request.Client);
         var inFlight = await _db.PaymentTransactions
             .Where(t => t.UserId == userId
                         && t.PlanId == plan.Id
+                        && t.OfferId == offerId
                         && t.Status == PaymentStatus.Processing
                         && t.CheckoutUrl != null)
             .OrderByDescending(t => t.CreatedAtUtc)
@@ -157,6 +183,17 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             }
         }
 
+        // The offer's price, while it is live where this account is and covers this plan (Pro Monthly or Yearly in
+        // dollars; the region was checked above). Past that, the client is told and shows the usual price again.
+        var amountMinor = plan.AmountMinor;
+        if (offer is not null)
+        {
+            var zone = OfferWindow.Resolve(user.TimeZone, _timeZone?.Current);
+            if (!OfferWindow.IsLiveFor(offer, zone, _clock.UtcNow) || !OfferPlans.Includes(offer, plan))
+                return OfferErrors.CheckoutOfferEnded(OfferErrors.LabelFor(offer.Template));
+            amountMinor = OfferPricing.Price(plan.AmountMinor, offer.PercentOff);
+        }
+
         // A currency nothing can collect is a configuration fault, not something the customer can act on,
         // so it reads as the same plain "could not open the payment page" as any other initiation failure.
         var gatewayResult = _gateways.SelectForCurrency(plan.Currency);
@@ -182,7 +219,8 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
                         && t.PlanId == plan.Id
                         && t.Status == PaymentStatus.Pending
                         && t.Provider == gateway.Provider
-                        && t.AmountMinor == plan.AmountMinor
+                        && t.AmountMinor == amountMinor
+                        && t.OfferId == offerId
                         && t.Currency == plan.Currency);
         pending = fromWeb
             ? pending.Where(t => t.IdempotencyKey.EndsWith(WebKeySuffix))
@@ -201,8 +239,9 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             transaction = PaymentTransaction.Create(
                 userId, plan.Id, gateway.Provider,
                 fromWeb ? $"checkout:{reference}{WebKeySuffix}" : $"checkout:{reference}", reference,
-                plan.AmountMinor, plan.Currency, now,
-                fromWeb ? CheckoutClient.Web : CheckoutClient.Phone);
+                amountMinor, plan.Currency, now,
+                fromWeb ? CheckoutClient.Web : CheckoutClient.Phone,
+                offerId);
 
             // Persist PENDING before the provider is ever contacted (spec: durable audit row first).
             _db.PaymentTransactions.Add(transaction);
@@ -211,7 +250,7 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
 
         var initiation = await gateway.InitiateAsync(
             new GatewayInitiationRequest(
-                transaction.Reference, plan.AmountMinor, plan.Currency, user.Email,
+                transaction.Reference, transaction.AmountMinor, plan.Currency, user.Email,
                 CallbackUrlFor(request.Client, _settings.CheckoutCallbackUrl),
                 // Every plan is a single charge for one period, priced from our own plan row. Bachs
                 // subscription checkouts must be paid by a card it can save, and this account offers

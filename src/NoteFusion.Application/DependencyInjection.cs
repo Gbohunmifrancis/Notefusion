@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.AddScoped<ITrialDeviceRecorder, TrialDeviceRecorder>();
         services.AddScoped<Activity.ActivityRecorder>();
         services.AddScoped<Outreach.OutreachService>();
+        services.AddScoped<Offers.OfferEmailService>();
         services.AddScoped<Practice.PracticeRecorder>();
         services.AddScoped<Practice.Reminders.PracticeReminderService>();
         services.AddScoped<Blog.Drafting.BlogDraftWriter>();
