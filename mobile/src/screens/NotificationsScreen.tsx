@@ -232,8 +232,8 @@ export function NotificationsScreen() {
       <Group title="Email">
         <Row
           icon="mail"
-          label="Notes from the founder"
-          hint="Now and then, asking how it's going"
+          label="Notes and offers from NoteFusion"
+          hint="Now and then: how it's going, and the odd seasonal offer"
           toggle={
             founderNotes === null
               ? undefined
