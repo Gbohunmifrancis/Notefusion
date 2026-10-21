@@ -265,14 +265,16 @@
     <div class="section-head">
       <h2 id="pricing-title">Pricing</h2>
       <p class="section-lead">Free to start. Pro adds whole songs, four-part harmony and every download.</p>
-      <p class="pricing-region" id="pricing-region" hidden></p>
+      <p class="pricing-region" id="pricing-region"><span class="sk" aria-hidden="true"></span></p>
     </div>
 
-    <div class="plans plans--loading" id="pricing-plans" aria-live="polite" aria-busy="true">
-      <div class="plan" role="status">
-        <h3>Loading prices…</h3>
-        <p class="blurb">Checking the plans offered in your country.</p>
-      </div>
+    <!-- While the prices load: three still skeletons, each at its card's loaded height, so the note and the questions
+         under them stay where they are when pricing.js puts the cards in their place (board n-ux-low V3c). -->
+    <div class="plans plans--skel" id="pricing-plans" aria-live="polite" aria-busy="true">
+      <p class="sr-only" role="status">Loading prices…</p>
+      <div class="plan plan--skel" aria-hidden="true"><span class="sk sk-t"></span><span class="sk sk-p"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk-r"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk sk-l"></span><span class="sk sk-b"></span></div>
+      <div class="plan plan--skel" aria-hidden="true"><span class="sk sk-t"></span><span class="sk sk-p"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk-r"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk sk-l"></span><span class="sk sk-b"></span></div>
+      <div class="plan plan--skel" aria-hidden="true"><span class="sk sk-t"></span><span class="sk sk-p"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk-r"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk sk-l"></span><span class="sk sk-l sk-s"></span><span class="sk sk-l"></span><span class="sk sk-b"></span></div>
     </div>
 
     <noscript>
