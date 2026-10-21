@@ -16,6 +16,10 @@ export const PEOPLE_ADDRESSES_PATH = "hymns/people/addresses.json";
  * A tune page (content/hymns/tunes, a tune without words) is filed the same way by its own `occasions` list, and
  * counts toward that minimum. `intro` is the page's opening, in plain facts about the day; nothing about any one
  * hymn. `what` names the page's list where it is more than hymns (Halloween's songs and hymns).
+ * A page written for readers who come looking for something other than hymns (Halloween's, for spooky songs to sing
+ * and play) may carry its own `title`, `heading` and `description`, an intro that names its best-known pieces, and its
+ * list's order: `first` (the addresses of the best known, in that order; the rest follow A–Z) and `last` (an occasion
+ * whose songs close the list: Halloween's All Saints hymns).
  */
 export const OCCASIONS = [
   { slug: "advent", name: "Advent", categories: ["Advent"], noun: "hymns", intro: "Advent is the four Sundays before Christmas, when the church prepares to celebrate the coming of Christ. Its hymns look forward: to his birth at Bethlehem and to his coming again." },
@@ -29,7 +33,23 @@ export const OCCASIONS = [
   { slug: "pentecost", name: "Pentecost", categories: ["Pentecost"], noun: "hymns", intro: "Pentecost, fifty days after Easter, remembers the Holy Spirit coming upon the apostles in Jerusalem. Its hymns pray for the Spirit's breath, light and fire." },
   { slug: "trinity", name: "Trinity", categories: ["Trinity"], noun: "hymns", intro: "Trinity Sunday, the Sunday after Pentecost, praises one God: Father, Son and Holy Spirit." },
   { slug: "harvest", name: "Harvest", categories: ["Harvest"], noun: "hymns", intro: "Harvest thanksgiving, when a church brings the fruits of the year to God and gives thanks for them." },
-  { slug: "halloween", name: "Halloween", categories: [], noun: "songs and hymns", what: "songs and hymns", intro: "Halloween, on 31 October, is All Hallows' Eve: the night before All Saints' Day, when the church remembers all the saints. The night has its spooky classics and folk songs, and the day that follows its All Saints hymns." },
+  {
+    slug: "halloween", name: "Halloween", categories: [], noun: "songs and hymns", what: "songs and hymns",
+    title: "Halloween songs to sing and play: spooky classics",
+    heading: "Halloween songs to sing and play",
+    description: "Halloween songs to sing and play: In the Hall of the Mountain King, Bach's Toccata, Chopin's Funeral March and more spooky classics, with free sheet music.",
+    intro: "Spooky classics to sing and play on Halloween night, the best known first. In the Hall of the Mountain King, Bach's Toccata in D minor, Chopin's Funeral March, the Alfred Hitchcock march, the skeletons' Danse Macabre, the Hearse Song that children sing and the Dies irae that horror films quote. Halloween, on 31 October, is All Hallows' Eve, the night before All Saints' Day, so the All Saints hymns come last.",
+    first: [
+      "/hymns/tunes/in-the-hall-of-the-mountain-king",
+      "/hymns/tunes/toccata-in-d-minor",
+      "/hymns/tunes/chopins-funeral-march",
+      "/hymns/tunes/funeral-march-of-a-marionette",
+      "/hymns/tunes/danse-macabre",
+      "/hymns/the-hearse-song",
+      "/hymns/tunes/dies-irae",
+    ],
+    last: "All Saints",
+  },
   { slug: "all-saints", name: "All Saints", categories: [], noun: "hymns", intro: "All Saints' Day, on 1 November, remembers all the saints, known and unknown, who have gone before in the faith." },
   { slug: "thanksgiving", name: "Thanksgiving", categories: ["Thanksgiving"], noun: "hymns", intro: "Hymns of thanks to God, for a thanksgiving service, a harvest, an anniversary or any Sunday a church sets aside to give thanks." },
   { slug: "communion", name: "Holy Communion", categories: ["Lord’s Supper"], noun: "hymns", intro: "Hymns for the Lord's Supper, also called Holy Communion or the Eucharist, sung before and while the bread and wine are shared." },

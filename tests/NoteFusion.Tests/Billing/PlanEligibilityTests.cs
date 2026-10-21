@@ -123,15 +123,20 @@ public class PlanEligibilityTests
     }
 
     [Fact]
-    public async Task The_public_site_shows_no_price_when_location_is_unknown()
+    public async Task The_public_site_shows_the_standard_dollar_prices_when_location_is_unknown()
     {
         using var h = new TestHarness(Now);
         SeedPlans(h);
+        h.Country.Country = "US";
+        var standard = (await PublicPlans(h)).Plans.Select(p => p.Code).ToList();
+        h.Country.Country = null;
 
         var result = await PublicPlans(h);
 
         Assert.Null(result.CountryCode);
-        Assert.Empty(result.Plans);
+        Assert.NotEmpty(result.Plans);
+        Assert.Equal(standard, result.Plans.Select(p => p.Code).ToList());
+        Assert.All(result.Plans, p => Assert.Equal("USD", p.Currency));
     }
 
     [Fact]

@@ -4,15 +4,17 @@ namespace NoteFusion.Application.Practice;
 
 /// <summary>
 /// The Halloween season's Midnight path: six short drills from the songs for Halloween we publish (the Mountain King's
-/// tiptoe and its climb, Bach's Toccata turn, the skeletons' waltz from Danse Macabre, the Marionette's fall, and All
-/// Saints to finish, on the eve of All Saints' Day), served only while the season is on, as the carols path is at
+/// tiptoe and its climb, Bach's Toccata turn, the skeletons' waltz from Danse Macabre, the Marionette's fall, and
+/// Chopin's Funeral March to finish), served only while the season is on, as the carols path is at
 /// Christmas (<see cref="SeasonPath"/>). All six passed earn the "Night Singer" badge, earned only in season and kept for good.
 /// </summary>
 /// <remarks>
 /// Every drill is a run of its tune as its page publishes it (a test reads <c>web-site/hymns/pack.json</c>), labelled by
 /// the solfa engine. The minor tunes are written la-based, from their relative major's doh, as the hymn book writes them;
 /// a raised note is named for where it goes (<c>fe</c>, <c>se</c>), a lowered one too (<c>sa</c>). The Marionette's fall is
-/// sung a fourth lower than the page prints it, to stay in the comfortable range (its doh moves with it).
+/// sung a fourth lower than the page prints it, to stay in the comfortable range (its doh moves with it). Chopin's march
+/// keeps its semiquavers, so it is sung at 50 crotchets a minute, the fastest at which a semiquaver lasts
+/// <see cref="PracticeRules.ShortestNoteSeconds"/>.
 /// </remarks>
 public static class HalloweenPath
 {
@@ -45,10 +47,11 @@ public static class HalloweenPath
         new(5, "midnight-march", "Marionette march", "Funeral March of a Marionette", "tune-funeral-march-of-a-marionette",
             "the Marionette's fall", null, 60, "6/8", 2, 96,
             "s t l se f m r d t,", ".5 1 .5 .5 .5 .5 .5 .5 .5"),
-        // ALL SAINTS (DARMSTADT), C major: its opening line, falling from the top doh (the eve of All Saints' Day).
-        new(6, "midnight-saints", "All Saints line", "All Saints (Darmstadt)", "tune-all-saints-darmstadt",
-            "All Saints, from the top doh down", null, 60, "4/4", 0, 92,
-            "d' s l l s f m d", "1 1 1 1 1.5 .5 1 1"),
+        // CHOPIN'S FUNERAL MARCH, B♭ minor (doh D♭): the tolling bell, dum, dum-da-dum on lah, then the turn down from
+        // doh through te (bars 3–4). The tune sits about lah, so the unmarked octave starts at the doh below it.
+        new(6, "midnight-chopin", "Funeral bell", "Chopin's Funeral March", "tune-chopins-funeral-march",
+            "Chopin's funeral bell", null, 49, "4/4", 0, 50,
+            "l l l l d' t t l l l l", "1 .75 .25 1 .75 .25 .75 .25 .75 .25 2"),
     ];
 
     public static readonly SeasonPath Path = new(

@@ -249,7 +249,7 @@
     },
     halloween: {
       name: "Halloween", pathTitle: "The Midnight path",
-      cardBody: "Six short drills from spooky songs: the Mountain King's tiptoe, Bach's organ turn, the skeletons' waltz, and All Saints to finish.",
+      cardBody: "Six short drills from spooky songs: the Mountain King's tiptoe, Bach's organ turn, the skeletons' waltz, and Chopin's funeral march to finish.",
       sticker: "Night Singer", stickerBody: "You sang all six on the Midnight path. This sticker stays in your book after Halloween.",
       allSungLine: "You sang all six on the Midnight path. Happy Halloween!",
       away: "The Midnight path is back next Halloween.", failed: "The Midnight path didn't load. Please try again.",
@@ -307,7 +307,7 @@
     "midnight-climb": "Up we go: the Mountain King climbs through fe and se.",
     "midnight-waltz": "Waltz with the skeletons: down one semitone at a time.",
     "midnight-march": "Tiptoe like a puppet: the Marionette's fall.",
-    "midnight-saints": "Last one, for All Saints' Day: sing it from the top doh down."
+    "midnight-chopin": "Last one, slow and solemn: Chopin's bell, dum, dum-da-dum."
   };
 
   /** Doh's word over the Midnight path (Playful), for the drill that is next. */

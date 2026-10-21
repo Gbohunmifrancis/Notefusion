@@ -41,7 +41,7 @@ public class MailboxQuotaTests
 
         Assert.True(result.IsFailure);
         Assert.Equal("BILLING_FREE_TIER_LIMIT", result.Error.Code);
-        Assert.Equal("You've used this week's 3 free transcriptions. They come back on Friday at 6pm (West Africa Time). Buy just this song, or upgrade to Pro for unlimited transcriptions.",
+        Assert.Equal("You've used this week's 3 free transcriptions. They come back on Friday at 17:00 UTC. Buy just this song, or upgrade to Pro for unlimited transcriptions.",
             result.Error.Message);
         Assert.Equal(0, await Remaining(h, b, "private-window"));
     }

@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /**
- * The Data saver switch (Settings → Offline & data). On by default: most of our singers are on
- * mobile data, and a phone cannot tell us here whether it is on Wi-Fi (that needs netinfo, a native
- * module this over-the-air update cannot add), so the careful setting is the one we start with.
+ * The Data saver switch (Settings → Offline & data). Off by default: most of our singers are on
+ * plans and connections that carry a full-quality recording and artwork without trouble, and the
+ * better upload transcribes better; anyone on a tight data plan turns it on.
  *
  * What it changes is in `dataPolicy.ts` (pure) and its callers: a smaller recording upload
  * (`recordingPreset.ts`), no profile pictures or song artwork, slower job polling, and the hymn
@@ -13,7 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const KEY = "nf.dataSaver";
 
-let on = true;
+let on = false;
 let loaded: Promise<void> | null = null;
 const listeners = new Set<(on: boolean) => void>();
 

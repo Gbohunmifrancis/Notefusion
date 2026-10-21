@@ -142,8 +142,17 @@
   }
 
   /**
-   * The free plan: hums and recordings every week (back Friday 18:00 WAT, FreeTier in the API), one short
-   * song-link preview, and songs for Pro or one at a time at the region's one-song price when the API sent it.
+   * When the free ones come back, in the visitor's own time ("Friday 1pm" in New York): every Friday 17:00 UTC
+   * (FreeTier in the API, assets/freeweek.js). The rule itself, in UTC, should freeweek.js not have loaded.
+   */
+  function freeBack() {
+    var fw = window.NfFreeWeek;
+    return fw ? fw.when(fw.next()) : "Friday 17:00 UTC";
+  }
+
+  /**
+   * The free plan: hums and recordings every week (back every Friday 17:00 UTC, shown in the visitor's time), one
+   * short song-link preview, and songs for Pro or one at a time at the region's one-song price when the API sent it.
    */
   function freeCard(trialCount, single) {
     var card = document.createElement("div");
@@ -160,12 +169,12 @@
 
     var blurb = document.createElement("p");
     blurb.className = "blurb";
-    blurb.textContent = trialCount + " hummed or recorded transcriptions every week, back every Friday evening. No card needed.";
+    blurb.textContent = trialCount + " hummed or recorded transcriptions every week. No card needed.";
     card.appendChild(blurb);
 
     card.appendChild(
       featureList([
-        trialCount + " hums or recordings a week, back every Friday at 6pm (West Africa Time)",
+        trialCount + " hums or recordings a week, back every " + freeBack(),
         "One free preview of a song link: a minute you choose",
         single
           ? "Song links and whole songs: Pro, or " + formatPrice(single) + " a song"
@@ -338,7 +347,8 @@
       payload && typeof payload.countryCode === "string"
         ? payload.countryCode.toUpperCase()
         : null;
-    if (!country || !Array.isArray(payload.plans)) {
+    // No country (the visitor's location could not be read): the API sends the standard dollar prices.
+    if (!payload || !Array.isArray(payload.plans)) {
       showError();
       return;
     }
@@ -386,13 +396,13 @@
     if (yearly) container.appendChild(paidCard(yearly, true, saving));
 
     if (regionLabel) {
-      regionLabel.textContent = isNigeria ? "Pricing for Nigeria" : "International pricing";
+      regionLabel.textContent = isNigeria ? "Pricing for Nigeria" : "Prices in US dollars";
       regionLabel.hidden = false;
     }
     if (regionNote) {
       regionNote.textContent = isNigeria
         ? "Nigerian pricing is shown in naira. One payment buys one month or one year of Pro; nothing is charged again unless you buy another period."
-        : "International pricing is shown in US dollars. One payment buys one month or one year of Pro; nothing is charged again unless you buy another period.";
+        : "Prices are in US dollars. One payment buys one month or one year of Pro; nothing is charged again unless you buy another period.";
     }
   }
 

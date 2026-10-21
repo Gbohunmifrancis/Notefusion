@@ -6,7 +6,7 @@ using NoteFusion.Infrastructure.Persistence;
 namespace NoteFusion.Infrastructure.Outreach;
 
 /// <summary>
-/// One outreach run: nothing unless outreach is configured and it is sending hours (09:00–19:00 WAT); then
+/// One outreach run: nothing unless outreach is configured; then, to accounts in their own sending hours (09:00–19:00),
 /// the failed sends due their one retry, then the accounts due a message, at most
 /// <see cref="OutreachSettings.BatchSize"/> in all, so the backlog after the first deploy trickles out.
 /// Each account is isolated: one that throws is logged, its half-staged changes dropped, and the run goes on.
@@ -36,7 +36,8 @@ public sealed class OutreachRunner
     /// <returns>How many accounts were written to (retries included).</returns>
     public async Task<int> RunAsync(CancellationToken ct)
     {
-        if (!_settings.IsActive || !OutreachRules.IsSendingHour(_clock.UtcNow))
+        // Each account's own sending hours are applied where it is chosen (FindDueAsync, FindRetriesAsync).
+        if (!_settings.IsActive)
             return 0;
 
         var budget = Math.Max(1, _settings.BatchSize);

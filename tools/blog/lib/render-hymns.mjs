@@ -107,7 +107,7 @@ function faqFor(h) {
   return [
     { q: `What is the doh of ${n}?`, a: `In this version, in ${v.key}, doh is ${v.doh}. If your choir sings it in another key, doh moves to the new key note and every solfa syllable stays the same — that is what movable doh means.` },
     { q: `What note does ${n} start on?`, a: `It starts on ${v.first.solfa} (${v.first.letter} in ${v.key})${v.pickupWord ? `, a pickup on ${v.pickupWord} before the first full bar` : ""}. Find doh first, then sing up or down to ${v.first.solfa}.` },
-    { q: `Is ${n} in the public domain?`, a: `Yes. ${pdPeople.length ? `${pdPeople.map(diedPhrase).join(", ")}; ` : ""}the words were first published in ${h.textPublished} and the music in ${h.tuneData.musicPublished}. Everyone named died before ${PD_DIED_BEFORE} and both were published before ${PD_PUBLISHED_BEFORE}, so the hymn is out of copyright in Nigeria, the UK, the EU and the United States. Modern arrangements and translations can still be under copyright.` },
+    { q: `Is ${n} in the public domain?`, a: `Yes. ${pdPeople.length ? `${pdPeople.map(diedPhrase).join(", ")}; ` : ""}the words were first published in ${h.textPublished} and the music in ${h.tuneData.musicPublished}. Everyone named died before ${PD_DIED_BEFORE} and both were published before ${PD_PUBLISHED_BEFORE}, so the hymn is out of copyright in the UK, the EU, the United States and Nigeria. Modern arrangements and translations can still be under copyright.` },
   ];
 }
 
@@ -167,7 +167,7 @@ ${facts.map(([k, val, html]) => `  <div><dt>${k}</dt><dd>${html ? val : escapeHt
 
 <section aria-labelledby="lines-title">
   <h2 id="lines-title">The solfa line by line</h2>
-  <p>The same solfa as plain text, a line of the hymn at a time, with the words of the first verse under it — easy to copy into your own notes or a WhatsApp message to the choir. To print it, <a href="${pdf}" type="application/pdf" data-track="Hymn: download PDF (text)">download the solfa as a PDF</a>.</p>
+  <p>The same solfa as plain text, a line of the hymn at a time, with the words of the first verse under it — easy to copy into your own notes or a message to the choir. To print it, <a href="${pdf}" type="application/pdf" data-track="Hymn: download PDF (text)">download the solfa as a PDF</a>.</p>
   <div class="solfa-text">
 <p class="doh">${escapeHtml(v.header)} · ${escapeHtml(v.time)}</p>
 ${textLinesHtml(v.lines)}
@@ -365,7 +365,7 @@ ${tunes.length ? `<section aria-labelledby="cceh-title">
 
 ` : ""}<section aria-labelledby="rule-title">
   <h2 id="rule-title">Our public-domain rule</h2>
-  <p>A hymn is published here only if everyone named — composer, arranger, author and translator — died before ${PD_DIED_BEFORE} (or the source is anonymous or traditional), and both the words and the music were first published before ${PD_PUBLISHED_BEFORE}. That keeps every page out of copyright in Nigeria and the UK and EU (the writer's life plus 70 years) and in the United States (published before ${PD_PUBLISHED_BEFORE}). Hymns whose dates the source does not give are held back until they are checked, and hymns still in copyright anywhere are not copied at all.</p>
+  <p>A hymn is published here only if everyone named — composer, arranger, author and translator — died before ${PD_DIED_BEFORE} (or the source is anonymous or traditional), and both the words and the music were first published before ${PD_PUBLISHED_BEFORE}. That keeps every page out of copyright in the UK, the EU and Nigeria (the writer's life plus 70 years) and in the United States (published before ${PD_PUBLISHED_BEFORE}). Hymns whose dates the source does not give are held back until they are checked, and hymns still in copyright anywhere are not copied at all.</p>
   <p>Modern arrangements and translations of old hymns can still be under copyright, so a hymn book's version may differ from the one here.</p>
 </section>
 

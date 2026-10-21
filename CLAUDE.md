@@ -230,7 +230,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Restore purchases, and for a Play member Manage/Resubscribe/Fix in Google Play (never Add time or Cancel on Android);
   SubscriptionProvider hands over unacknowledged purchases at sign-in and on every foreground.
   The Hymns screen reads `web-site/hymns/pack.json` (built by `tools/blog/lib/hymn-pack.mjs`, version in `pack-version.json`, checked by `check.mjs`).
-  Data saver (default on, `lib/dataSaver`/`dataPolicy`): 32 kbps AAC uploads (`recordingPreset`, measured), no avatars/artwork, slower polls, hymn updates only on tap.
+  Data saver (default off, `lib/dataSaver`/`dataPolicy`): 32 kbps AAC uploads (`recordingPreset`, measured), no avatars/artwork, slower polls, hymn updates only on tap.
   **Phone admin** (`screens/admin`, `components/admin`, boards f-admin): Profile › Admin (row and route for an Admin only;
   every admin endpoint re-reads the role from the database) is its own section with its own bar, Overview · Payments
   (Webhooks and Ledger as tabs, a payment's sheet, "Needs a look" + Reconcile) · Users (an account and its actions) ·
@@ -317,7 +317,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `TranscriptionJob.PaidByCredit`. A bought transcription covers anything a free one does and is the only thing that
   pays for a song on a free account: an upload with isolation (else `BILLING_SONG_NOT_FREE`) or a whole linked song
   (up to Pro's six minutes, normal lane, charged to the trial ledger and never as the one free preview). The refusal
-  says "back Friday at 6pm (West Africa Time)"; `SubscriptionDto` carries `freeTranscriptionsRemaining`/
+  says when in the account's own time zone ("back on Friday at 1pm"; "Friday at 17:00 UTC" when none is known,
+  `FreeTier.ResetWhen`), never in West Africa Time; `SubscriptionDto` carries `freeTranscriptionsRemaining`/
   `freeTranscriptionsPerWeek`/`freeResetsAtUtc` (clients show it in local time: `web-site/assets/freeweek.js`,
   mobile `lib/freeWeek.ts`) beside `boughtTranscriptionsRemaining`/`boughtTranscriptionsTotal`, and keeps
   `trialGenerations*` (week's free + bought) for shipped apps. `public-plans` carries the region's one-song `single`.
@@ -425,11 +426,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Halloween (`halloween`, board j-halloween) is the second season on the same pieces: one season at a time (turning one on
   switches the other off, in the trail; Christmas wins an admin's double preview), its default last day 1 Nov, All Saints' Day
   (`FeatureFlags.DefaultLastDay(key, …)`). A season's practice path is a `SeasonPath` (`CarolPath`; `HalloweenPath`, the
-  Midnight path: six drills from the songs for Halloween, `midnight-` codes, `GET /api/practice/seasons/{season}` beside
+  Midnight path: six drills from the songs for Halloween, the last Chopin's Funeral March, `midnight-` codes, `GET /api/practice/seasons/{season}` beside
   `/carols`); progress, badges (`carol_singer`, `night_singer`), the recorder and grading read the season on (`string? season`);
   `PracticeReminderCopy.HalloweenPlayful/Plain` (`{song}`) plus `HalloweenLastNight` on the path's last day for a singer who
   started it; `ReadyPushCopy.ForSeason`. The songs carry `occasions: ["Halloween"]` (the All Saints tunes `["All Saints",
-  "Halloween"]`; page `/hymns/occasions/halloween`). Clients: the witch hat (`season-hat`; its purple #5B3A9E on the hat only)
+  "Halloween"]`; page `/hymns/occasions/halloween`, written for US/UK readers after spooky songs to sing and play: its own
+  title, heading and description, the best known first and the All Saints hymns last, `first`/`last` in `collections.mjs`
+  OCCASIONS, the app's Halloween shelf in the same order, `lib/hymnPack` `HALLOWEEN_ORDER`). Clients: the witch hat (`season-hat`; its purple #5B3A9E on the hat only)
   on the mark and Doh, Boo (`boo*`, on the Midnight path only, always beside Doh), bats (`bat` in currentColor,
   `confetti-bat`), pumpkin tints only (#F28A3A Night / #B4531C Day, never an icon or flame; moon #EDE6CF labels), the Mountain
   King chime (`l, t, d r m d m`) once a season; mobile `components/season/Costume|Bats|Crescent`, `lib/season.ts` per season,
@@ -532,7 +535,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   notes from the founder (email with Reply-To the founder + a one-line push when a device is registered) to four
   segments in priority order — unpaid checkout ≥3 days old (and ≥2 days after `RemindAbandonedCheckouts`, which in
   turn holds off a day after any outreach), active free user, tried once then quiet 5 days, never transcribed after
-  2 days — once per segment per account ever, at most one a week, 09:00–19:00 WAT, `Outreach__BatchSize` (5) per run.
+  2 days — once per segment per account ever, at most one a week, 09:00–19:00 in the account's own `users.TimeZone` (WAT when unknown), `Outreach__BatchSize` (5) per run.
   `OutreachMessage` rows are the claim (unique user+segment+channel) and the audit trail (`GET /api/admin/outreach`);
   a failed send is retried once. Email respects `EmailOptOut` (signed one-click `GET/POST /api/email/unsubscribe`, or the
   app's "Notes from the founder" switch, `GET/PUT /api/me/email-preferences`);

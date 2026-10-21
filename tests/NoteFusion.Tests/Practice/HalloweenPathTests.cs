@@ -58,7 +58,7 @@ public class HalloweenPathTests
     public void Every_drill_is_a_run_of_its_tune_as_the_page_publishes_it()
     {
         Assert.Equal(
-            ["Mountain King run", "Toccata turn", "The climb", "Skeleton waltz", "Marionette march", "All Saints line"],
+            ["Mountain King run", "Toccata turn", "The climb", "Skeleton waltz", "Marionette march", "Funeral bell"],
             HalloweenPath.Drills.Select(d => d.Title));
         Assert.All(HalloweenPath.Drills, d => Assert.StartsWith(HalloweenPath.CodePrefix, d.Code));
 
@@ -124,6 +124,10 @@ public class HalloweenPathTests
         Assert.Equal(6, path.Drills.Count);
         Assert.Equal(("Doh is D", "4/4"), (path.Drills[0].Drill.DohHeader, path.Drills[0].Drill.TimeSignature));
         Assert.Equal(2, path.Drills[4].PickupBeats);
+        // The last is Chopin's funeral bell: la-based from doh D♭, its semiquavers kept at 50 crotchets a minute.
+        var chopin = path.Drills[5];
+        Assert.Equal(("Chopin's Funeral March", "Doh is Db", 50), (chopin.Step.Carol, chopin.Drill.DohHeader, chopin.Drill.TempoBpm));
+        Assert.Equal("l l l l d' t t l l l l", chopin.Step.Detail);
         // Christmas's path is not served at Halloween.
         Assert.True((await new GetSeasonPathQueryHandler(h.Db, SeasonFlagTests.Caller(singer), h.Clock, new StubClientTimeZone())
             .Handle(new GetSeasonPathQuery(), default)).IsFailure);

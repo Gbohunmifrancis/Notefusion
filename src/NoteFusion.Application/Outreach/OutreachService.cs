@@ -103,8 +103,11 @@ public sealed class OutreachService
                 u.EmailVerified,
                 Seen = u.LastSeenAtUtc ?? u.LastLoginAt,
                 u.CheckoutReminderSentAtUtc,
+                u.TimeZone,
             })
             .ToListAsync(ct);
+        // Only accounts in their own sending hours; the rest are asked again on a later run.
+        users = users.Where(u => OutreachRules.IsSendingHour(now, u.TimeZone)).ToList();
         if (users.Count == 0 || limit <= 0)
             return [];
 
@@ -276,13 +279,19 @@ public sealed class OutreachService
     {
         if (limit <= 0)
             return [];
-        var since = _clock.UtcNow - OutreachRules.RetryWithin;
-        return await _db.OutreachMessages.AsNoTracking()
+        var now = _clock.UtcNow;
+        var since = now - OutreachRules.RetryWithin;
+        var due = await _db.OutreachMessages.AsNoTracking()
             .Where(m => m.Status == OutreachStatus.Failed && m.Attempts < OutreachMessage.MaxAttempts && m.CreatedAtUtc >= since)
+            .OrderBy(m => m.CreatedAtUtc)
+            .Join(_db.Users, m => m.UserId, u => u.Id, (m, u) => new { m.Id, m.CreatedAtUtc, u.TimeZone })
+            .ToListAsync(ct);
+        // A retry also waits for the account's own sending hours.
+        return due.Where(m => OutreachRules.IsSendingHour(now, m.TimeZone))
             .OrderBy(m => m.CreatedAtUtc)
             .Take(limit)
             .Select(m => m.Id)
-            .ToListAsync(ct);
+            .ToList();
     }
 
     /// <summary>

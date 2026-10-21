@@ -1,3 +1,5 @@
+using NoteFusion.Application.Practice;
+
 namespace NoteFusion.Application.Outreach;
 
 /// <summary>
@@ -5,9 +7,9 @@ namespace NoteFusion.Application.Outreach;
 /// and the tests read the same numbers.
 /// </summary>
 /// <remarks>
-/// Sending hours are West Africa Time for everyone (UTC+1 all year, no daylight saving). Most accounts are
-/// Nigerian, a stored country does not name a time zone for the big multi-zone countries, and a note from a
-/// person that lands at 3 a.m. reads like a robot sent it; WAT office hours are the simple, honest choice.
+/// Sending hours are 09:00–19:00 in the account's own time zone (the one its clients send as <c>X-Time-Zone</c>,
+/// kept as <c>users.TimeZone</c>), West Africa Time when none is known: a note from a person that lands at 3 a.m.
+/// reads like a robot sent it. The day an account was active on (<see cref="LocalDate"/>) stays a WAT day.
 /// </remarks>
 public static class OutreachRules
 {
@@ -39,16 +41,19 @@ public static class OutreachRules
     /// <summary>A failed send is retried once, and only while it is this fresh.</summary>
     public static readonly TimeSpan RetryWithin = TimeSpan.FromDays(2);
 
-    /// <summary>West Africa Time; see the remarks on this type.</summary>
+    /// <summary>West Africa Time, the day <see cref="LocalDate"/> counts in.</summary>
     public static readonly TimeSpan LocalOffset = TimeSpan.FromHours(1);
 
     public const int SendFromHour = 9;
     public const int SendUntilHour = 19;
 
-    /// <summary>Whether <paramref name="utcNow"/> is between 09:00 and 19:00 WAT.</summary>
-    public static bool IsSendingHour(DateTime utcNow)
+    /// <summary>
+    /// Whether <paramref name="utcNow"/> is between 09:00 and 19:00 where the account is: its own time zone
+    /// (<c>users.TimeZone</c>), or West Africa Time when none is known — never a 3am note in New York.
+    /// </summary>
+    public static bool IsSendingHour(DateTime utcNow, string? timeZone)
     {
-        var hour = (utcNow + LocalOffset).Hour;
+        var hour = TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utcNow, DateTimeKind.Utc), PracticeTime.Resolve(timeZone)).Hour;
         return hour >= SendFromHour && hour < SendUntilHour;
     }
 

@@ -42,7 +42,7 @@ internal sealed class OutreachWorker : BackgroundService
         }
 
         _logger.LogInformation(
-            "Customer-research outreach is on: up to {Batch} accounts every {Minutes} min, 09:00-19:00 WAT, from {Founder}.",
+            "Customer-research outreach is on: up to {Batch} accounts every {Minutes} min, 09:00-19:00 in each account's own time zone (WAT when unknown), from {Founder}.",
             _settings.BatchSize, _settings.IntervalMinutes, _settings.FounderName);
 
         var delay = FirstRunDelay;

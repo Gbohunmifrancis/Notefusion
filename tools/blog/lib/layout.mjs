@@ -72,7 +72,7 @@ export function page({ path, title, description, ogType = "website", image = DEF
     robots ? `<meta name="robots" content="${robots}">` : "",
     `<meta property="og:type" content="${ogType}">`,
     `<meta property="og:site_name" content="${SITE_NAME}">`,
-    `<meta property="og:locale" content="en_NG">`,
+    `<meta property="og:locale" content="en_GB">`,
     `<meta property="og:title" content="${escapeHtml(title)}">`,
     `<meta property="og:description" content="${escapeHtml(description)}">`,
     `<meta property="og:url" content="${escapeHtml(url)}">`,

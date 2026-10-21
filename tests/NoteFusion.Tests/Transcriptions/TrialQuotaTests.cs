@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Billing.Queries;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
@@ -506,7 +507,7 @@ public class TrialQuotaTests
     }
 
     [Fact]
-    public async Task The_refusal_says_the_free_ones_come_back_on_friday_evening()
+    public async Task Without_a_known_zone_the_refusal_says_the_reset_in_utc()
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
@@ -516,7 +517,26 @@ public class TrialQuotaTests
 
         Assert.Equal("BILLING_FREE_TIER_LIMIT", refused.Error.Code);
         Assert.Contains("this week's 3 free transcriptions", refused.Error.Message);
-        Assert.Contains("Friday at 6pm (West Africa Time)", refused.Error.Message);
+        Assert.Contains("They come back on Friday at 17:00 UTC.", refused.Error.Message);
+        Assert.DoesNotContain("West Africa", refused.Error.Message);
+    }
+
+    [Theory]
+    [InlineData("Europe/London", "Friday at 6pm")]       // Fri 21 Aug 17:00 UTC is 18:00 BST
+    [InlineData("America/New_York", "Friday at 1pm")]    // 13:00 EDT
+    [InlineData("Australia/Sydney", "Saturday at 3am")]  // 03:00 AEST the next morning
+    public async Task The_refusal_says_when_the_free_ones_come_back_in_the_account_s_own_time(string zone, string back)
+    {
+        using var h = new TestHarness(Now);
+        var user = SeedAbroad(h);
+        await h.Db.Users.Where(u => u.Id == user.Id).ExecuteUpdateAsync(s => s.SetProperty(u => u.TimeZone, zone));
+        Spend(h, user, 3);
+
+        var refused = await Submit(h, user);
+
+        Assert.Equal("BILLING_FREE_TIER_LIMIT", refused.Error.Code);
+        Assert.Equal($"You've used this week's 3 free transcriptions. They come back on {back}. " +
+                     "Buy just this song, or upgrade to Pro for unlimited transcriptions.", refused.Error.Message);
     }
 
     // ---------------------------------------------------------------- where the handset is

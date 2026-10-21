@@ -42,7 +42,7 @@ public sealed partial class BrandedEmailTemplate
                 new[]
                 {
                     $"{founder} here from NoteFusion. You're one of our most active users — thank you!",
-                    "I'd love 10 minutes on WhatsApp to hear what you use it for and what would make it better. As a thank-you I'll give you a free month of Pro.",
+                    "I'd love a 10-minute call (phone, video or WhatsApp, whichever suits you) to hear what you use it for and what would make it better. As a thank-you I'll give you a free month of Pro.",
                     "Just reply with a time that suits you this week.",
                 },
                 null),
