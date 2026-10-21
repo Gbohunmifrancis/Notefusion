@@ -163,8 +163,7 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
   return (
     <View style={styles.block}>
       <View style={styles.headerRow}>
-        <Icon name="sing" size={16} color={colors.textMuted} />
-        <Text style={styles.title}>Sing it</Text>
+        <Text style={styles.title} accessibilityRole="header">Sing it</Text>
         {!isPro ? (
           <View style={styles.proTag}>
             <Icon name="pro" size={11} color={colors.premiumDeep} />
@@ -222,19 +221,40 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
   );
 }
 
+/**
+ * In the Result's panel card, as Transpose, Lyrics, SATB and Export are (board n-ux-low Q1g): its title at the panels'
+ * 16, its sentence at their 15/22, the voices the Result's own 44 px chips in the selected look.
+ */
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    block: { marginTop: spacing.lg, gap: spacing.sm },
-    headerRow: { flexDirection: "row", alignItems: "center", gap: spacing.xs },
-    title: { ...typography.heading, color: c.text, fontSize: 16, fontFamily: fonts.bold },
-    hint: { ...typography.body, color: c.textMuted, fontSize: 13, lineHeight: 20 },
-    proTag: { marginLeft: "auto", flexDirection: "row", alignItems: "center", gap: 3, backgroundColor: c.premiumSoft, borderRadius: radii.pill, paddingHorizontal: 8, paddingVertical: 2 },
+    block: {
+      marginTop: spacing.lg,
+      padding: spacing.lg,
+      gap: spacing.sm,
+      backgroundColor: c.surface,
+      borderRadius: radii.lg,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    headerRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+    title: { ...typography.heading, color: c.text, fontSize: 16, flex: 1 },
+    hint: { fontFamily: fonts.regular, color: c.textMuted, fontSize: 15, lineHeight: 22 },
+    proTag: { flexDirection: "row", alignItems: "center", gap: 3, backgroundColor: c.premiumSoft, borderRadius: radii.pill, paddingHorizontal: 8, paddingVertical: 2 },
     proTagText: { ...typography.caption, color: c.premiumText, fontFamily: fonts.semibold, fontSize: 10 },
-    voiceRow: { flexDirection: "row", gap: spacing.xs, flexWrap: "wrap" },
-    voiceChip: { paddingVertical: 6, paddingHorizontal: spacing.md, borderRadius: radii.pill, backgroundColor: c.surface, borderWidth: 1, borderColor: c.border },
-    voiceChipOn: { backgroundColor: c.ink, borderColor: c.ink },
-    voiceChipText: { ...typography.caption, color: c.text, fontFamily: fonts.semibold },
-    voiceChipTextOn: { color: c.onAccent },
+    voiceRow: { flexDirection: "row", gap: spacing.sm, flexWrap: "wrap" },
+    voiceChip: {
+      minHeight: 44,
+      justifyContent: "center",
+      paddingVertical: spacing.sm,
+      paddingHorizontal: 14,
+      borderRadius: radii.pill,
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    voiceChipOn: { backgroundColor: c.selectedWash, borderColor: c.accent },
+    voiceChipText: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted },
+    voiceChipTextOn: { fontFamily: fonts.semibold, color: c.link },
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.sm },
     liveLabel: { ...typography.label, color: c.textMuted },
     liveNote: { ...typography.hero, color: c.accent },

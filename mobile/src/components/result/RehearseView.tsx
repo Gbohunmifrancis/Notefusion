@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Touchable } from "../Touchable";
 import { Glow } from "../night/NightUI";
 import * as haptics from "../../lib/haptics";
-import { fonts, motion, typography, type Palette } from "../../design/theme";
+import { fonts, motion, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import type { VoiceName } from "../../lib/choir";
 import type { NoteEvent } from "../../api/types";
@@ -355,7 +355,8 @@ export function RehearseView({
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     root: { flex: 1, backgroundColor: c.bg },
-    body: { flexGrow: 1, paddingHorizontal: 22 },
+    /** Screen's gutter, as the Result's (board n-ux-low Q1g). */
+    body: { flexGrow: 1, paddingHorizontal: spacing.lg },
     header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 },
     iconBtn: {
       width: 40,

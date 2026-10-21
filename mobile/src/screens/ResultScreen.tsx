@@ -2237,7 +2237,7 @@ export function ResultScreen({ route, navigation }: Props) {
               style={styles.check}
               onPress={startReview}
               scaleTo={motion.scale.row}
-              radius={16}
+              radius={radii.md}
               accessibilityLabel={`Review ${lowCount} low-confidence notes`}
             >
               <Icon name="problem" size={18} color={colors.warning} />
@@ -2847,7 +2847,7 @@ function DohChoiceRow({
       onPress={onPress}
       disabled={disabled}
       style={[styles.dohRow, now && styles.dohRowOn]}
-      radius={16}
+      radius={radii.md}
       scaleTo={motion.scale.row}
       accessibilityRole="button"
       accessibilityState={{ selected: now }}
@@ -2959,16 +2959,19 @@ function ExportRow({
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    /** The ScrollView takes the gutter so the dock can sit over the full width. */
+    /**
+     * The ScrollView takes the gutter so the dock can sit over the full width. Gaps and corners are on the scale
+     * (spacing 4 8 12 16 24 32, radii 8 14 20 28; board n-ux-low Q1g), the gutter Screen's 16.
+     */
     screen: { paddingHorizontal: 0, paddingBottom: 0 },
-    content: { paddingHorizontal: 22 },
+    content: { paddingHorizontal: spacing.lg },
     /** A guest's "Keep this sheet", pinned where the player docks (the player sits on it), at the dock's width. */
     /** Save to Library: 16 px from the edge, 12 px over the dock. */
     savePill: { position: "absolute", right: 16 },
     keepCard: {
       position: "absolute",
-      left: 14,
-      right: 14,
+      left: spacing.lg,
+      right: spacing.lg,
       shadowColor: "#000000",
       shadowOffset: { width: 0, height: 14 },
       shadowOpacity: 0.35,
@@ -3011,7 +3014,7 @@ const makeStyles = (c: Palette) =>
     // stays the biggest thing on the sheet.
     subtitle: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted, marginTop: 6 },
 
-    credit: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: 14 },
+    credit: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: spacing.lg },
     creditThumb: { width: 36, height: 36, borderRadius: 10, backgroundColor: c.surfaceAlt },
     creditThumbEmpty: { alignItems: "center", justifyContent: "center" },
     creditBody: { flex: 1, minWidth: 0 },
@@ -3024,14 +3027,14 @@ const makeStyles = (c: Palette) =>
       lineHeight: 22,
       color: c.noticeText,
       backgroundColor: c.accentSoft,
-      borderRadius: 12,
+      borderRadius: radii.md,
       paddingVertical: spacing.sm,
       paddingHorizontal: spacing.md,
-      marginTop: 14,
+      marginTop: spacing.lg,
       overflow: "hidden",
     },
     /** A problem under the title or the figures: ProblemNote at the sentence size (board n-ux-low Q1d). */
-    problem: { marginTop: 14 },
+    problem: { marginTop: spacing.lg },
     /** Its one way on, a text button under the words: their 15 + 8 px in, less the button's own 12. */
     problemAction: { alignSelf: "flex-start", marginLeft: 11 },
 
@@ -3039,7 +3042,7 @@ const makeStyles = (c: Palette) =>
     stats: {
       flexDirection: "row",
       justifyContent: "space-between",
-      marginTop: 18,
+      marginTop: spacing.lg,
       paddingVertical: 16,
       borderTopWidth: 1,
       borderBottomWidth: 1,
@@ -3067,11 +3070,11 @@ const makeStyles = (c: Palette) =>
 
     // ── Panels (pickers, lyrics, parts, export, the name) ────────────────────
     panel: {
-      marginTop: 14,
+      marginTop: spacing.lg,
       padding: spacing.lg,
       gap: spacing.sm,
       backgroundColor: c.surface,
-      borderRadius: 20,
+      borderRadius: radii.lg,
       borderWidth: 1,
       borderColor: c.border,
     },
@@ -3120,7 +3123,7 @@ const makeStyles = (c: Palette) =>
       gap: spacing.md,
       paddingVertical: spacing.sm,
       paddingHorizontal: 14,
-      borderRadius: 16,
+      borderRadius: radii.md,
       backgroundColor: c.surfaceAlt,
       borderWidth: 1.5,
       borderColor: c.border,
@@ -3145,7 +3148,7 @@ const makeStyles = (c: Palette) =>
       marginBottom: 4,
       paddingVertical: 10,
       paddingHorizontal: 12,
-      borderRadius: 12,
+      borderRadius: radii.md,
       backgroundColor: c.surfaceAlt,
     },
     compareLabel: { fontFamily: fonts.medium, fontSize: 12, color: c.textMuted },
@@ -3190,7 +3193,7 @@ const makeStyles = (c: Palette) =>
 
     // ── Notation ──────────────────────────────────────────────────────────────
     /** Solfa | Staff on the left, the Layout button on the right. */
-    readingRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: spacing.sm, marginTop: 14 },
+    readingRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: spacing.sm, marginTop: spacing.lg },
     /** The Layout button: a quiet 44 px pill naming the solfa layout in use. */
     layoutPill: {
       height: 44,
@@ -3270,10 +3273,10 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "space-between",
       gap: spacing.sm,
-      marginTop: 14,
+      marginTop: spacing.lg,
       paddingVertical: 12,
       paddingHorizontal: 14,
-      borderRadius: 16,
+      borderRadius: radii.md,
       backgroundColor: c.surface,
       borderWidth: 1,
       borderColor: c.border,
@@ -3282,7 +3285,7 @@ const makeStyles = (c: Palette) =>
     checkStrong: { fontFamily: fonts.semibold, color: c.warningText },
 
     // ── Actions ───────────────────────────────────────────────────────────────
-    actions: { flexDirection: "row", justifyContent: "space-between", marginTop: 18 },
+    actions: { flexDirection: "row", justifyContent: "space-between", marginTop: spacing.lg },
     action: { alignItems: "center", gap: 6, flex: 1 },
     actionCircle: {
       width: 48,
@@ -3322,7 +3325,7 @@ const makeStyles = (c: Palette) =>
     disabled: { opacity: 0.4 },
 
     // ── Chords ────────────────────────────────────────────────────────────────
-    chordsBlock: { marginTop: 22, gap: spacing.xs },
+    chordsBlock: { marginTop: spacing.xl, gap: spacing.xs },
     /** Read, not tapped: no box or border, so nothing here looks like a button. */
     chordChips: { flexDirection: "row", flexWrap: "wrap", rowGap: 2, columnGap: 14, marginTop: spacing.xs },
     chordChip: {

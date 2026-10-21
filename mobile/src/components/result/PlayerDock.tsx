@@ -4,7 +4,7 @@ import { useReducedMotion } from "react-native-reanimated";
 import { Icon } from "../Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Touchable } from "../Touchable";
-import { fonts, motion, typography, type Palette } from "../../design/theme";
+import { fonts, motion, radii, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import { clamp, formatTime, useSeekDrag, type Practice } from "./usePractice";
 import { ProblemNote } from "../ProblemNote";
@@ -136,12 +136,13 @@ export function PlayerDock({
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+    /** At the Result's gutter, its corners on the scale (board n-ux-low Q1g). */
     dock: {
       position: "absolute",
-      left: 14,
-      right: 14,
+      left: spacing.lg,
+      right: spacing.lg,
       backgroundColor: c.glass,
-      borderRadius: 26,
+      borderRadius: radii.xl,
       borderWidth: 1,
       borderColor: c.border,
       paddingVertical: 12,
