@@ -76,6 +76,10 @@ import { keyboardTranspose } from "../lib/keyboardTranspose";
 import { METER_CHOICES, meterEventValue, meterLabel, meterSummary, type Meter } from "../lib/meter";
 import { logAnalyticsEvent } from "../lib/analytics";
 import { linkEntitlement } from "../lib/linkEntitlement";
+import { EXAMPLE_HYMN } from "../lib/exampleSheet";
+import { hymnSheet, openingLine } from "../lib/hymnPack";
+import { exampleResult } from "../lib/openSheet";
+import { deriveSolfa } from "../lib/solfa";
 import { formatPrice, limitOffer, type LimitOffer } from "../lib/price";
 import { fonts, motion, nightFonts, radii, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
@@ -115,6 +119,11 @@ export function LinkScreen() {
    * a link is typed letter by letter it waits until the field is left, rather than nagging at every keystroke.
    */
   const [pasted, setPasted] = useState(false);
+  /** The example's opening in solfa ("s, d m d m r d l,"), as exampleSheet.test.ts reads it. */
+  const exampleOpening = useMemo(() => {
+    const sheet = hymnSheet(EXAMPLE_HYMN);
+    return openingLine(deriveSolfa(sheet.notes, sheet.key, sheet.timeSignature).notes);
+  }, []);
   /** The last step's height, so the timeline's line stops at its number rather than under its words. */
   const [lastStepHeight, setLastStepHeight] = useState(0);
   /** Beats in a bar for this song; null is Not sure. Back to Not sure once a song is sent (lib/meter). */
@@ -476,8 +485,7 @@ export function LinkScreen() {
         {!busy && ready ? (
           <>
             <Text style={styles.eyebrow}>How it works</Text>
-            {/* A timeline: the steps share the height down to the small print (up to a point), joined by a line through
-                their numbers that stops at the last one. */}
+            {/* A timeline: the steps joined by a line through their numbers that stops at the last one. */}
             <View style={styles.steps}>
               <View style={[styles.stepLine, { bottom: Math.max(14, lastStepHeight - 14) }]} />
               <View style={styles.step}>
@@ -511,6 +519,24 @@ export function LinkScreen() {
                 </View>
               </View>
             </View>
+
+            {/* What a link becomes, before anyone pastes one: the bundled example (Library's "See an example"). */}
+            <Text style={styles.eyebrow}>What you get</Text>
+            <Card style={styles.example}>
+              <Text style={styles.exampleTitle}>{EXAMPLE_HYMN.title}</Text>
+              <Text style={styles.exampleMeta}>
+                Doh is {EXAMPLE_HYMN.key.replace(" major", "")} · {EXAMPLE_HYMN.time} · {EXAMPLE_HYMN.tempo} BPM
+              </Text>
+              <Text style={styles.exampleSolfa}>{exampleOpening}</Text>
+              <Text style={styles.exampleWords}>{EXAMPLE_HYMN.firstLine}</Text>
+              <Button
+                label="See the whole sheet"
+                variant="secondary"
+                size="sm"
+                onPress={() => nav.navigate("Result", { result: exampleResult(), title: EXAMPLE_HYMN.title, example: true })}
+                style={styles.exampleButton}
+              />
+            </Card>
           </>
         ) : null}
 
@@ -828,7 +854,7 @@ const makeStyles = (c: Palette) =>
       color: c.textMuted, marginTop: 30,
     },
     // Sentences that wrap read from the left, on the gutter (board n-ux-low Q5f): the steps, the bar's line, the legal note.
-    steps: { flexGrow: 1, maxHeight: 460, justifyContent: "space-between", gap: spacing.lg, marginTop: spacing.md },
+    steps: { gap: spacing.lg, marginTop: spacing.md },
     /** Behind the numbers, from the first one's middle (each is 28 tall) to the last one's. */
     stepLine: { position: "absolute", left: 13.5, top: 14, bottom: 14, width: 1, backgroundColor: c.border },
     step: { flexDirection: "row", alignItems: "flex-start", gap: spacing.md },
@@ -895,6 +921,12 @@ const makeStyles = (c: Palette) =>
     barPct: { fontFamily: nightFonts.mono, fontSize: 12, color: c.accent, minWidth: 42, textAlign: "right" },
     progressNote: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, marginTop: spacing.sm },
     progressWarn: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: c.warningText, marginTop: spacing.sm },
+    example: { marginTop: spacing.md },
+    exampleTitle: { fontFamily: fonts.semibold, fontSize: 16, lineHeight: 22, color: c.text },
+    exampleMeta: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 18, color: c.textMuted, marginTop: 2 },
+    exampleSolfa: { fontFamily: nightFonts.mono, fontSize: 20, lineHeight: 28, color: c.text, marginTop: spacing.md },
+    exampleWords: { fontFamily: fonts.regular, fontSize: 14, lineHeight: 20, color: c.textMuted, marginTop: 2 },
+    exampleButton: { alignSelf: "flex-start", marginTop: spacing.md },
     /** Takes the spare height above it, so it ends the page. */
     foot: { marginTop: "auto", paddingTop: spacing.xl },
     footNote: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted, marginBottom: spacing.md },
