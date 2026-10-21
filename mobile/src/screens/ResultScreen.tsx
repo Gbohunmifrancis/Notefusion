@@ -32,17 +32,19 @@ import { PracticeView } from "../components/result/PracticeView";
 import { Segmented } from "../components/result/Segmented";
 import { DohPicker } from "../components/result/DohPicker";
 import { LayoutMenu, type LayoutSamples } from "../components/result/LayoutMenu";
+import { ProPriceTag, ProTag } from "../components/result/ProTag";
 import { usePractice } from "../components/result/usePractice";
 import { DohToast } from "../components/doh/DohToast";
 import { firstCelebration } from "../lib/dohPrefs";
-import { libraryApi, transcriptionsApi } from "../api/endpoints";
+import { billingApi, libraryApi, transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import type { ChordSymbol, HymnCredit, KeyAlternative, NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
+import type { ChordSymbol, HymnCredit, KeyAlternative, NoteEvent, Plan, TranscriptionPart, TranscriptionResult } from "../api/types";
 import { chordRows } from "../lib/chordRow";
 import { dohChoices, writeInKey } from "../lib/dohChoice";
 import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, type HymnbookSheet } from "../lib/hymnbook";
 import { showDialog, type DialogAction } from "../lib/dialog";
 import { showToast } from "../lib/toast";
+import { limitOffer, monthPrice, type LimitOffer } from "../lib/price";
 import { useSubscription } from "../lib/subscription";
 import {
   ascendingFlags,
@@ -255,9 +257,29 @@ export function ResultScreen({ route, navigation }: Props) {
 
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const { isPro, subscription, refresh: refreshSubscription } = useSubscription();
+  const { isPro, known, subscription, refresh: refreshSubscription } = useSubscription();
   /** A free account's one four-part harmony, until it is used; the API decides, this mirrors it. */
   const freeHarmony = !isPro && !!subscription?.freeHarmonyAvailable;
+
+  /**
+   * What Pro costs where a locked feature asks for it (board n-ux-low Q1h): the region's monthly plan, as the limit
+   * sheet reads it. Read once for a free account; until it arrives, or if it fails, the tag says "Pro" alone.
+   */
+  const [offer, setOffer] = useState<LimitOffer>({});
+  useEffect(() => {
+    if (!known || isPro || guest) return;
+    let live = true;
+    void Promise.all([
+      billingApi.plans().catch(() => [] as Plan[]),
+      billingApi.singlePlans().catch(() => [] as Plan[]),
+    ]).then(([pro, single]) => {
+      if (live) setOffer(limitOffer(pro, single));
+    });
+    return () => {
+      live = false;
+    };
+  }, [known, isPro, guest]);
+  const proPrice = monthPrice(offer.monthly);
 
   const [title, setTitle] = useState(
     initialTitle ?? `${result.key} · ${new Date().toLocaleDateString()}`,
@@ -2291,7 +2313,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 <Text style={styles.panelTitle} accessibilityRole="header">
                   {result.partsSource === "heard" ? "The four parts, as sung" : "Four-part harmony"}
                 </Text>
-                {!isPro && !partsView && !freeHarmony ? <ProTag /> : null}
+                {!isPro && !partsView && !freeHarmony ? <ProPriceTag price={proPrice} /> : null}
               </View>
               {partsView ? (
                 <Button
@@ -2327,16 +2349,28 @@ export function ResultScreen({ route, navigation }: Props) {
                   />
                 </>
               ) : (
-                <Touchable
-                  onPress={() => navigation.navigate("Upgrade")}
-                  style={styles.teaser}
-                  radius={radii.md}
-                  accessibilityLabel="Unlock four-part harmony"
-                >
-                  <Text style={styles.teaserText}>
-                    Alto, tenor and bass parts, written under this tune the way a hymn arranger would — ready for your choir. Unlock with Pro →
+                <>
+                  <Text style={styles.panelHint}>
+                    Alto, tenor and bass, written under this tune the way a hymn arranger would — ready for your choir.
                   </Text>
-                </Touchable>
+                  {/* A quiet row with Pro's crown and its price, no longer blue: blue is for information. */}
+                  <Touchable
+                    onPress={() => navigation.navigate("Upgrade", offer.monthly ? { planId: offer.monthly.id } : undefined)}
+                    style={styles.proRow}
+                    radius={radii.md}
+                    scaleTo={motion.scale.row}
+                    accessibilityLabel={`Write alto, tenor and bass. With Pro${proPrice ? `, ${proPrice}` : ""}`}
+                  >
+                    <View style={styles.proRowTile}>
+                      <Icon name="pro" size={18} color={colors.premium} />
+                    </View>
+                    <View style={styles.proRowText}>
+                      <Text style={styles.proRowTitle}>Write alto, tenor and bass</Text>
+                      <Text style={styles.proRowLine}>{proPrice ? `With Pro, ${proPrice}` : "With Pro"}</Text>
+                    </View>
+                    <Icon name="chevron" size={16} color={colors.textFaint} />
+                  </Touchable>
+                </>
               )}
             </View>
           ) : null}
@@ -2350,6 +2384,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 tempoBpm={tempo}
                 timeSignature={timeSignature}
                 isPro={isPro}
+                proPrice={proPrice}
                 // Marking a take is what Pro adds here, so the practice words, not the downloads'.
                 onRequirePro={practiceUpsell}
                 sheetId={savedId}
@@ -2365,7 +2400,19 @@ export function ResultScreen({ route, navigation }: Props) {
               <Text style={styles.panelHint}>
                 {isPro
                   ? "Share the solfa to your choir group, or download the sheet as PDF, MusicXML or MIDI."
-                  : "The solfa as text and the PDF are free; the PDF carries a NoteFusion mark. MusicXML, MIDI and an unmarked PDF come with Pro."}
+                  : (
+                    <>
+                      The solfa as text and the PDF are free; the PDF carries a NoteFusion mark. MusicXML, MIDI and an
+                      unmarked PDF come with Pro
+                      {/* The price said once, here; the rows keep their short PRO tag. */}
+                      {proPrice ? (
+                        <>
+                          , <Text style={styles.panelHintStrong}>{proPrice}</Text>
+                        </>
+                      ) : null}
+                      .
+                    </>
+                  )}
               </Text>
               <ExportRow
                 icon="solfa"
@@ -2901,17 +2948,6 @@ function Action({
   );
 }
 
-function ProTag() {
-  const colors = useColors();
-  const styles = useThemedStyles(makeStyles);
-  return (
-    <View style={styles.proTag}>
-      <Icon name="pro" size={11} color={colors.premiumDeep} />
-      <Text style={styles.proTagText}>PRO</Text>
-    </View>
-  );
-}
-
 /** A row in the export panel: icon, name, and a spinner, PRO tag or chevron at the end. */
 function ExportRow({
   icon,
@@ -3088,6 +3124,8 @@ const makeStyles = (c: Palette) =>
       color: c.textMuted,
     },
     panelHint: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted },
+    /** A word a hint leans on (Pro's price in Export's sentence). */
+    panelHintStrong: { fontFamily: fonts.semibold, color: c.text },
     panelButton: { marginTop: spacing.xs },
     eyebrow: {
       fontFamily: fonts.medium,
@@ -3305,18 +3343,28 @@ const makeStyles = (c: Palette) =>
     voice: { paddingTop: spacing.sm, borderTopWidth: 1, borderTopColor: c.border },
     voiceName: { ...typography.caption, color: c.textMuted, marginBottom: 4 },
     voiceLines: { fontFamily: typography.mono.fontFamily, fontSize: 14, color: c.text, lineHeight: 22 },
-    teaser: { backgroundColor: c.accentSoft, borderRadius: radii.md, padding: spacing.md },
-    teaserText: { fontFamily: fonts.regular, fontSize: 13, color: c.noticeText, lineHeight: 19 },
-    proTag: {
+    /** A locked SATB: a quiet 56 px row with Pro's crown and its price (board n-ux-low Q1h). */
+    proRow: {
+      minHeight: 56,
       flexDirection: "row",
       alignItems: "center",
-      gap: 3,
-      backgroundColor: c.premiumSoft,
-      borderRadius: radii.pill,
-      paddingHorizontal: 8,
-      paddingVertical: 2,
+      gap: spacing.md,
+      paddingVertical: 6,
+      paddingHorizontal: spacing.md,
+      borderRadius: radii.md,
+      backgroundColor: c.surfaceAlt,
     },
-    proTagText: { ...typography.caption, color: c.premiumText, fontFamily: fonts.semibold, fontSize: 10 },
+    proRowTile: {
+      width: 36,
+      height: 36,
+      borderRadius: 10,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: c.premiumSoft,
+    },
+    proRowText: { flex: 1, minWidth: 0 },
+    proRowTitle: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
+    proRowLine: { fontFamily: fonts.regular, fontSize: 14, color: c.textMuted, marginTop: 2 },
 
     // ── Export ────────────────────────────────────────────────────────────────
     exportRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingVertical: 13 },

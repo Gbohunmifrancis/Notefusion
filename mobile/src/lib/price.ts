@@ -194,6 +194,15 @@ export function limitOffer(proPlans: readonly Plan[], singlePlans: readonly Plan
 }
 
 /**
+ * Pro's price where a locked feature asks for it (the Result's Pro tag, SATB's row, Export's sentence; board n-ux-low
+ * Q1h): the limit offer's monthly plan as "₦7,500 a month", "a month" not "/ month" since nothing bought on the
+ * website renews. Null until the plans have loaded, and the tag then says "Pro" alone.
+ */
+export function monthPrice(monthly: Pick<Plan, "amountMinor" | "currency"> | undefined): string | null {
+  return monthly ? `${formatPrice(monthly.amountMinor, monthly.currency)} a month` : null;
+}
+
+/**
  * The limit sheet's words: when the free ones come back, and that nothing already made is lost.
  * With bought ones also spent, the line says so.
  */
