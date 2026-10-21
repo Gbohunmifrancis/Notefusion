@@ -425,11 +425,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Halloween (`halloween`, board j-halloween) is the second season on the same pieces: one season at a time (turning one on
   switches the other off, in the trail; Christmas wins an admin's double preview), its default last day 1 Nov, All Saints' Day
   (`FeatureFlags.DefaultLastDay(key, …)`). A season's practice path is a `SeasonPath` (`CarolPath`; `HalloweenPath`, the
-  Midnight path: six drills from the songs for Halloween, `midnight-` codes, `GET /api/practice/seasons/{season}` beside
+  Midnight path: six drills from the songs for Halloween, the last Chopin's Funeral March, `midnight-` codes, `GET /api/practice/seasons/{season}` beside
   `/carols`); progress, badges (`carol_singer`, `night_singer`), the recorder and grading read the season on (`string? season`);
   `PracticeReminderCopy.HalloweenPlayful/Plain` (`{song}`) plus `HalloweenLastNight` on the path's last day for a singer who
   started it; `ReadyPushCopy.ForSeason`. The songs carry `occasions: ["Halloween"]` (the All Saints tunes `["All Saints",
-  "Halloween"]`; page `/hymns/occasions/halloween`). Clients: the witch hat (`season-hat`; its purple #5B3A9E on the hat only)
+  "Halloween"]`; page `/hymns/occasions/halloween`, written for US/UK readers after spooky songs to sing and play: its own
+  title, heading and description, the best known first and the All Saints hymns last, `first`/`last` in `collections.mjs`
+  OCCASIONS, the app's Halloween shelf in the same order, `lib/hymnPack` `HALLOWEEN_ORDER`). Clients: the witch hat (`season-hat`; its purple #5B3A9E on the hat only)
   on the mark and Doh, Boo (`boo*`, on the Midnight path only, always beside Doh), bats (`bat` in currentColor,
   `confetti-bat`), pumpkin tints only (#F28A3A Night / #B4531C Day, never an icon or flame; moon #EDE6CF labels), the Mountain
   King chime (`l, t, d r m d m`) once a season; mobile `components/season/Costume|Bats|Crescent`, `lib/season.ts` per season,

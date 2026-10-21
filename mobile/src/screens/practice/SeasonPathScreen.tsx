@@ -6,8 +6,8 @@
  *   Herald's leap and the First Noel's climb. All six earn the Carol singer sticker: snowflakes and quavers, and the
  *   whole first line of Joy to the World.
  * - Halloween, the Midnight path (board j-halloween/03): six short drills from the songs for Halloween — the Mountain
- *   King's tiptoe and climb, Bach's organ turn, the skeletons' waltz, the Marionette's fall and All Saints to
- *   finish. All six earn the Night Singer sticker: bats and quavers, and the Mountain King's first phrase.
+ *   King's tiptoe and climb, Bach's organ turn, the skeletons' waltz, the Marionette's fall and Chopin's funeral
+ *   march to finish. All six earn the Night Singer sticker: bats and quavers, and the Mountain King's first phrase.
  *
  * A side-path with its own place: each drill is heard, counted in, sung and marked by `drills/grade` like any drill
  * (XP, the day's allowance and the streak as ever) and never moves the main path. The next unsung drill is open; any
