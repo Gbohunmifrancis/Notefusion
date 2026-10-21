@@ -347,7 +347,8 @@ and the refusal is in the API log as a warning.
 | `Email__DailyLimit` / `EMAIL__DAILYLIMIT` | optional | The plan's cap for the last 24 hours. Defaults to `100` (Resend free). `0` = no daily cap. |
 | `Email__WeeklyLimit` / `EMAIL__WEEKLYLIMIT` | optional | Cap for the last 7 days. Unset by default (no weekly cap). |
 | `Email__MonthlyLimit` / `EMAIL__MONTHLYLIMIT` | optional | Cap for the last 31 days (Resend does not say which day its month starts, so 31 rolling days hold under either). Defaults to `3000`. `0` = no monthly cap. |
-| `Email__OptionalShare` / `EMAIL__OPTIONALSHARE` | optional | Optional mail (welcome, waitlist, checkout reminder, failed-transcription tips, outreach) goes only while every capped window is under this share of its cap, counting all mail; the rest is kept for verification codes, resets, receipts and security notices, which always send. Defaults to `0.6`. Held batch mail stays due for a later run. Sends are counted in `email_sends`; System Health shows the usage. |
+| `Email__PostalAddress` / `EMAIL__POSTALADDRESS` | before an offer is sent | One line: the company's name and postal address, the legal footer every seasonal offer email carries ("NoteFusion · {this}", §3.3). Until it is set the console's preview and test show "[the company's postal address]" and **Send is refused** (`OFFER_POSTAL_ADDRESS_MISSING`). Not a secret, and only the offer emails show it. |
+| `Email__OptionalShare` / `EMAIL__OPTIONALSHARE` | optional | Optional mail (welcome, waitlist, checkout reminder, failed-transcription tips, outreach, seasonal offers) goes only while every capped window is under this share of its cap, counting all mail; the rest is kept for verification codes, resets, receipts and security notices, which always send. Defaults to `0.6`. Held batch mail stays due for a later run. Sends are counted in `email_sends`; System Health shows the usage. |
 
 > **Rotate the Resend key that was shared during development before using it** — treat it
 > as burned. Create a new key in the Resend dashboard and set only that value above.
@@ -424,6 +425,30 @@ API within 15 minutes, so a site without its blog is never published.
 On Heroku: `heroku config:set Gemini__ApiKey='…' GitHub__Token='github_pat_…' --app <your-heroku-app>`.
 
 ---
+
+### 3.3 Seasonal offers (Operations › Offers)
+
+An offer is a lower Pro price for a few days (Halloween, Christmas): 30% off Pro Monthly and Pro Yearly on the dollar
+plans (standard and regional; never naira, choir or one song), rounded down, from its start until midnight at the end of
+its last day in each person's own time zone (the UK's when unknown). The web app and the website's pricing read it at
+`GET /api/offers/current`, and the checkout charges it when sent `offerKey` (the payment row keeps the offer's id). An
+admin creates, switches on, previews, tests and sends it in the console (`/api/admin/offers`, Admins only, behind the
+console lock; switching on and Send want a fresh unlock; every change is in the Audit Log). One enabled offer at a time.
+
+The email is optional mail (`EmailKind.Offer`), so it waits on the same quota as outreach (§3, `Email__OptionalShare`):
+Send queues everyone at once (`offer_emails`), and `OfferEmailWorker` sends every 5 minutes, 09:00–19:00 in each person's
+own time, lapsed Pro first, then free accounts by last seen, then Pro members if ticked; nobody is sent it after their
+own end, or after buying, becoming Pro or turning email off. On Resend's free plan (100 a day) that is about 57 a day:
+move Resend to its paid plan and raise `Email__DailyLimit` (e.g. `1000`) and `Email__MonthlyLimit` (e.g. `50000`) before
+sending to a large audience; the console reads the new limits at once. Unsubscribing uses the founder's notes' own
+switch and link ("Notes and offers from NoteFusion").
+
+| GitHub var/secret | Container var | Default | Notes |
+|-------------------|---------------|---------|-------|
+| `EMAIL__POSTALADDRESS` | `Email__PostalAddress` | blank | **Set before the first Send** (see §3). |
+| `OFFERS_ENABLED` | `Offers__Enabled` | `true` (compose and code) | `false` stops the offer email worker (queued emails wait); prices on the web still follow an enabled offer. The API logs a line at startup when it is off. |
+| — | `Offers__BatchSize` | `200` | Most offer emails one run sends (code default). |
+| — | `Offers__IntervalMinutes` | `5` | Minutes between runs (code default). |
 
 ## 4. Profile pictures (Cloudflare R2)
 

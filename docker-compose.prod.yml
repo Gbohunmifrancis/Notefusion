@@ -188,6 +188,11 @@ services:
       Email__WeeklyLimit: ${Email__WeeklyLimit}
       Email__MonthlyLimit: ${Email__MonthlyLimit}
       Email__OptionalShare: ${Email__OptionalShare}
+      # The seasonal offers' legal footer (docs/DEPLOYMENT.md §3.3): one line, the company's name and postal address.
+      # Blank until set; the console refuses to send an offer email without it.
+      Email__PostalAddress: ${Email__PostalAddress:-}
+      # The offer email worker (on unless false); queued offer emails wait while it is off.
+      Offers__Enabled: ${Offers__Enabled:-true}
       Google__ClientId: ${Google__ClientId}
       # Billing model: naira plans are Paystack subscriptions, dollar plans are Bachs subscriptions.
       # Currency routes the charge — Paystack lists NGN, Bachs lists USD — and the default provider only
