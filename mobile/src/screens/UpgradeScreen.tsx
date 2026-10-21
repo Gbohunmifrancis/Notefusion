@@ -19,12 +19,11 @@ import { Button } from "../components/Button";
 import { Sheet, SheetActions, SheetMessage, SheetTitle } from "../components/Sheet";
 import { ChoiceRow } from "../components/SheetRows";
 import { CheckoutExitSheet, type CheckoutExitAsk } from "../components/CheckoutExitSheet";
-import { Group, Row } from "../components/settings/Rows";
+import { BackButton, Group, GroupNote, PageTitle, Row } from "../components/settings/Rows";
 import { Touchable } from "../components/Touchable";
-import { Avatar } from "../components/Avatar";
 import { PlanCardSkeleton } from "../components/Skeleton";
 import { BrandMark } from "../components/BrandMark";
-import { billingApi, meApi } from "../api/endpoints";
+import { billingApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { showDialog } from "../lib/dialog";
 import { showToast } from "../lib/toast";
@@ -41,9 +40,9 @@ import { useColors, useThemedStyles } from "../lib/theme";
 import { useAuth } from "../lib/auth";
 import { useSubscription } from "../lib/subscription";
 import { PRO_FEATURES } from "../lib/proFeatures";
-import type { AuthUser, CheckoutExit, MyProfile, Plan, Subscription } from "../api/types";
+import type { CheckoutExit, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
-import { tierOf } from "../lib/planTier";
+import { memberPlanLabel, memberStateLine } from "../lib/planTier";
 import { siteUrls } from "../lib/env";
 import {
   bestValuePlan,
@@ -73,7 +72,7 @@ import {
   playHint,
   playMemberState,
   playProblemNote,
-  playStatusLine,
+  playStateLine,
   sellsOnPlay,
   type PlayOffer,
 } from "../lib/playBilling";
@@ -205,7 +204,6 @@ export function UpgradeScreen({ navigation, route }: Props) {
   } = useSubscription();
   const { user } = useAuth();
   const userId = user?.id;
-  const [profile, setProfile] = useState<MyProfile | null>(null);
 
   // What was on sale when the paywall last opened on this run (`lastOnSale`), shown while it is read again.
   const [cached] = useState(() => (user && lastOnSale?.userId === user.id ? lastOnSale : null));
@@ -244,10 +242,9 @@ export function UpgradeScreen({ navigation, route }: Props) {
 
   const load = useCallback(async () => {
     try {
-      const [proList, sub, prof, choirList, singleList, ready] = await Promise.all([
+      const [proList, sub, choirList, singleList, ready] = await Promise.all([
         billingApi.plans(),
         billingApi.mySubscription(),
-        meApi.get().catch(() => null),
         billingApi.choirPlans().catch(() => [] as Plan[]),
         // The one-song purchase is listed apart; a failure there leaves Pro on sale.
         billingApi.singlePlans().catch(() => [] as Plan[]),
@@ -266,7 +263,6 @@ export function UpgradeScreen({ navigation, route }: Props) {
       setPlans(planList);
       setChoirPlans(choirSold);
       setSubscription(sub);
-      if (prof) setProfile(prof);
       if (userId) lastOnSale = { userId, plans: planList, choirPlans: choirSold, play: viaPlay, offers };
       // Default to the best-value (highest) plan so the recommended choice is preselected — or, when
       // the free allowance has just run out, to the one-song purchase. A choice no longer on sale is let go.
@@ -284,7 +280,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      // Reconcile and confirm any in-flight checkout with the provider, and refresh plans/profile
+      // Reconcile and confirm any in-flight checkout with the provider, and refresh the plans
       const [sub] = await Promise.all([
         billingApi.confirm().catch(() => billingApi.mySubscription()),
         Promise.all([billingApi.plans(), billingApi.singlePlans().catch(() => [] as Plan[])])
@@ -293,7 +289,6 @@ export function UpgradeScreen({ navigation, route }: Props) {
             setPlans(withSingle(proList, singleList).filter((p) => !play || offerFor(p, playOffers) !== undefined)),
           )
           .catch(() => undefined),
-        meApi.get().then((p) => setProfile(p)).catch(() => null),
       ]);
       if (!mounted.current) return;
       if (sub) {
@@ -647,39 +642,24 @@ export function UpgradeScreen({ navigation, route }: Props) {
           />
         }
       >
-        {/* ── Header row ─────────────────────────────────────────────────────── */}
-        <View style={styles.headerRow}>
-          <Touchable
-            onPress={() =>
-              navigation.canGoBack()
-                ? navigation.goBack()
-                : navigation.navigate("Tabs", { screen: "Home" })
-            }
-            accessibilityLabel="Go back"
-            hitSlop={8}
-            ripple="borderless"
-          >
-            <View style={styles.backCircle}>
-              <Icon name="back" size={20} color={colors.text} />
-            </View>
-          </Touchable>
-
-          <View style={styles.titleBlock}>
-            <Text style={styles.titleLabel}>
-              {isActive ? "Account" : "Membership"}
-            </Text>
-            <Text style={styles.titleMain} accessibilityRole="header">
-              {isActive ? "Membership" : "NoteFusion Pro"}
-            </Text>
+        {/* ── Header: the app's shared back button (board n-ux-low Q2b g). A member's page opens as Settings and
+            Notifications do, with its title under it; the paywall keeps its title beside it. ── */}
+        {isActive ? (
+          <View style={styles.memberHead}>
+            <BackButton />
+            <PageTitle>Membership</PageTitle>
           </View>
-
-          {isActive && !onHold && (
-            <View style={styles.activePill}>
-              <View style={styles.activeDot} />
-              <Text style={styles.activePillText}>Pro active</Text>
+        ) : (
+          <View style={styles.headerRow}>
+            <BackButton />
+            <View style={styles.titleBlock}>
+              <Text style={styles.titleLabel}>Membership</Text>
+              <Text style={styles.titleMain} accessibilityRole="header">
+                NoteFusion Pro
+              </Text>
             </View>
-          )}
-        </View>
+          </View>
+        )}
 
         {/* ── Hero badge (only on paywall when not active), there from the first frame ── */}
         {!isActive && (
@@ -735,8 +715,6 @@ export function UpgradeScreen({ navigation, route }: Props) {
         ) : isActive ? (
           <ActiveState
             subscription={membership!}
-            profile={profile}
-            user={user}
             onAndroid={play}
             onExtend={() => setExtending(true)}
             onOpenChoir={() => navigation.navigate("Choir")}
@@ -987,21 +965,18 @@ export function UpgradeScreen({ navigation, route }: Props) {
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 /**
- * Clean, focused member hub for a user with active Pro status.
- * Displays their current plan details, included privileges, and billing management.
+ * The member hub (board n-ux-low Q2b g), drawn as Settings and Notifications are: each fact once — the plan, its state
+ * and date, the songs left — then the one primary (Add more Pro time) with Cancel as a text button under it, what Pro
+ * includes, and the choir in a group of its own. Profile already shows who is signed in, so this page does not.
  */
 function ActiveState({
   subscription,
-  profile,
-  user,
   onAndroid,
   onChanged,
   onExtend,
   onOpenChoir,
 }: {
   subscription: Subscription;
-  profile: MyProfile | null;
-  user: AuthUser | null;
   /** The Android app, which pays through Google Play only: no website time is sold or cancelled here. */
   onAndroid: boolean;
   onChanged: () => void;
@@ -1025,9 +1000,10 @@ function ActiveState({
   const play = onAndroid ? playMemberState(subscription) : null;
   const paidOnWeb = onAndroid && subscription.billedThrough === "web";
   const openPlay = () => void Linking.openURL(manageUrl(subscription.storeProductId));
-
-  const displayName = user?.fullName || profile?.fullName || "NoteFusion member";
-  const displayEmail = user?.email || profile?.email || "";
+  // A singer's Pro is the choir's: their director renews it, so there is nothing for them to add. On Android time is
+  // never sold here: Google Play renews its own memberships, and the app may not point elsewhere.
+  const canAdd = !lifetime && !onAndroid && !(viaChoir && subscription.choirRole === "member");
+  const canCancel = !lifetime && !isGift && !canceled && !viaChoir && !onAndroid;
 
   async function cancel() {
     setCanceling(true);
@@ -1064,244 +1040,97 @@ function ActiveState({
     setShowCancelModal(true);
   }
 
-
   return (
     <View style={styles.hubContainer}>
-      {/* ── 1. Membership Status Card ─────────────────────────────────── */}
-      <Card style={styles.memberCard}>
-        <View style={styles.memberHeader}>
-          <Avatar
-            uri={profile?.profilePictureUrl}
-            name={displayName}
-            size={56}
-            premium={true}
-          />
-          <View style={styles.memberInfo}>
-            <Text style={styles.memberName} numberOfLines={1}>
-              {displayName}
-            </Text>
-            <Text style={styles.memberEmail} numberOfLines={1}>
-              {displayEmail}
-            </Text>
-            <View style={styles.memberBadge}>
-              <Icon name="pro" size={13} color={colors.premiumDeep} />
-              <Text style={styles.memberBadgeText}>
-                {lifetime
-                  ? "Lifetime member"
-                  : viaChoir
-                    ? subscription.choirName ?? "Choir"
-                  : isGift
-                    ? "Complimentary access"
-                    : "Pro member"}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.memberDivider} />
-
-        <View style={styles.statsRow}>
-          <View style={styles.statCol}>
-            <Text style={styles.statLabel}>Status</Text>
-            <View style={styles.statStatusRow}>
-              <View
-                style={[
-                  styles.statDot,
-                  { backgroundColor: canceled ? colors.warning : colors.success },
-                ]}
-              />
-              <Text style={styles.statValue}>
-                {play === "hold" ? "Paused" : canceled ? "Ending soon" : "Active"}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.statCol}>
-            <Text style={styles.statLabel}>Tier</Text>
-            <Text style={styles.statValue}>
-              {lifetime ? "Lifetime" : isGift ? "Gift" : tierOf(subscription)}
-            </Text>
-          </View>
-
-          <View style={[styles.statCol, { alignItems: "flex-end" }]}>
-            <Text style={styles.statLabel}>
-              {lifetime ? "Validity" : "Pro until"}
-            </Text>
-            <Text style={styles.statValue}>
-              {lifetime ? "Perpetual" : renews ? renews : "Active"}
-            </Text>
-          </View>
-        </View>
-      </Card>
-
-      {/* ── 2. Notice Callout (a renewal Google Play could not take, or cancelled) ───── */}
+      {/* ── A renewal Google Play could not take: the one amber note, a problem ── */}
       {play && playProblemNote(play) ? (
         <View style={styles.noticeWarning}>
           <Icon name="problem" size={18} color={colors.warning} />
           <Text style={styles.noticeWarningText}>{playProblemNote(play)}</Text>
         </View>
       ) : null}
-      {canceled && renews && !play && (
-        <View style={styles.noticeWarning}>
-          <Icon name="problem" size={18} color={colors.warning} />
-          <Text style={styles.noticeWarningText}>
-            Your membership is cancelled and ends on {renews}. Pro stays on until then, and every saved sheet stays safe in your Library.
-          </Text>
+
+      {/* ── The plan, its state and its date, and the songs left: each said once ── */}
+      <Group style={styles.hubFirst}>
+        <Row
+          icon="pro"
+          pro
+          label={memberPlanLabel(subscription)}
+          hint={play ? playStateLine(play, renews) : memberStateLine(subscription, renews)}
+        />
+        {play ? <Row icon="card" label="Paid through" value="Google Play" /> : null}
+        {typeof subscription.songCreditsTotal === "number" ? (
+          <Row
+            icon="song"
+            label="Songs this month"
+            value={`${subscription.songCreditsRemaining ?? subscription.songCreditsTotal} of ${subscription.songCreditsTotal} left`}
+          />
+        ) : null}
+      </Group>
+      <GroupNote>
+        {play
+          ? playHint(play, renews)
+          : paidOnWeb && !viaChoir
+          ? "This Pro was bought on the NoteFusion website. When it ends, this phone offers Pro through Google Play."
+          : lifetime
+          ? "Lifetime access — there is nothing to renew or cancel. Invoices and receipts were sent to your email."
+          : viaChoir
+            ? subscription.choirRole === "member"
+              ? `You have Pro through ${subscription.choirName}. Your choir director renews the choir's plan.`
+              : "Your singers are Pro while the choir's plan runs. Each payment adds one period after the time left."
+          : isGift
+            ? "Complimentary access granted by the NoteFusion team. No payment method is linked or billed."
+            : canceled
+              ? "Nothing more is charged, and every saved sheet stays safe in your Library. Add time again whenever you like."
+              : "Each payment covers one period and nothing renews without you. Added time starts when your current time ends. Receipts are in your email inbox."}
+      </GroupNote>
+
+      {/* ── The one primary, and Cancel quietly under it (nothing is lost: Pro runs to its date) ── */}
+      {play || canAdd || canCancel ? (
+        <View style={styles.hubActions}>
+          {/* Google Play: the fix, the way back, or the page where it is managed. */}
+          {play === "grace" || play === "hold" ? (
+            <Button label="Fix payment in Google Play" icon="card" onPress={openPlay} />
+          ) : play === "cancelled" ? (
+            <Button label="Resubscribe in Google Play" variant="secondary" icon="sync" onPress={openPlay} />
+          ) : play === "renewing" ? (
+            <Button label="Manage in Google Play" variant="secondary" icon="external" onPress={openPlay} />
+          ) : null}
+          {canAdd ? <Button label={viaChoir ? "Add choir time" : "Add more Pro time"} icon="add" onPress={onExtend} /> : null}
+          {canCancel ? (
+            <Button
+              label="Cancel membership"
+              variant="text"
+              onPress={openCancelFlow}
+              loading={canceling}
+              style={styles.hubCancel}
+            />
+          ) : null}
         </View>
-      )}
+      ) : null}
 
-      {/* ── 3. Included Pro Privileges ────────────────────────────────── */}
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle} accessibilityRole="header">Included with Pro</Text>
-      </View>
-
-      <Card style={styles.benefitsCard}>
-        {PRO_BENEFITS.map((item, index) => (
-          <View
-            key={item.title}
-            style={[styles.benefitRow, index > 0 && styles.benefitRowBorder]}
-          >
-            <View style={styles.benefitIconCircle}>
-              <Icon name={item.icon} size={20} color={colors.icon} />
-            </View>
-            <View style={styles.benefitContent}>
-              <Text style={styles.benefitTitle}>{item.title}</Text>
-              <Text style={styles.benefitDesc}>{item.desc}</Text>
-            </View>
-          </View>
+      {/* ── What Pro includes ── */}
+      <Group title="Included with Pro">
+        {PRO_BENEFITS.map((item) => (
+          <Row key={item.title} icon={item.icon} label={item.title} hint={item.desc} />
         ))}
-      </Card>
+      </Group>
 
-      {/* ── 4. Plan & Billing Details ─────────────────────────────────── */}
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle} accessibilityRole="header">Billing details</Text>
-      </View>
-
-      <Card style={styles.billingCard}>
-        <View style={styles.billingRow}>
-          <Text style={styles.billingLabel}>Plan</Text>
-          <Text style={styles.billingValue}>
-            {lifetime
-              ? "NoteFusion Pro — Lifetime"
-              : isGift
-                ? "NoteFusion Pro — Gift"
-                : subscription.planName || "NoteFusion Pro"}
-          </Text>
-        </View>
-
-        {play || paidOnWeb ? (
-          <View style={styles.billingRow}>
-            <Text style={styles.billingLabel}>{play ? "Paid through" : "Paid on"}</Text>
-            <Text style={styles.billingValue}>{play ? "Google Play" : "NoteFusion website"}</Text>
-          </View>
-        ) : null}
-
-        {typeof subscription.songCreditsTotal === "number" && (
-          <View style={styles.billingRow}>
-            <Text style={styles.billingLabel}>Songs this month</Text>
-            <Text style={styles.billingValue}>
-              {subscription.songCreditsRemaining ?? subscription.songCreditsTotal} of {subscription.songCreditsTotal} left
-            </Text>
-          </View>
-        )}
-
-        <View style={styles.billingRow}>
-          <Text style={styles.billingLabel}>Status</Text>
-          <Text style={styles.billingValue}>
-            {play
-              ? playStatusLine(play)
-              : lifetime
-              ? "Paid in full"
-              : isGift
-                ? "Complimentary"
-                : canceled
-                  ? "Cancels at period end"
-                  : "Active and paid"}
-          </Text>
-        </View>
-
-        {renews && !lifetime && play !== "hold" && (
-          <View style={styles.billingRow}>
-            <Text style={styles.billingLabel}>
-              {play === "renewing" ? "Next charge" : "Pro until"}
-            </Text>
-            <Text style={styles.billingValue}>{renews}</Text>
-          </View>
-        )}
-
-        {/* Google Play: the fix, the way back, or the page where it is managed. */}
-        {play === "grace" || play === "hold" ? (
-          <Button label="Fix payment in Google Play" icon="card" onPress={openPlay} style={styles.cancelBtn} />
-        ) : play === "cancelled" ? (
-          <Button
-            label="Resubscribe in Google Play"
-            variant="secondary"
-            icon="sync"
-            onPress={openPlay}
-            style={styles.cancelBtn}
-          />
-        ) : play === "renewing" ? (
-          <Button label="Manage in Google Play" variant="secondary" icon="external" onPress={openPlay} style={styles.cancelBtn} />
-        ) : null}
-
-        {/* A singer's Pro is the choir's: their director renews it, so there is nothing for them to add. On Android
-            time is never sold here: Google Play renews its own memberships, and the app may not point elsewhere. */}
-        {!lifetime && !onAndroid && !(viaChoir && subscription.choirRole === "member") && (
-          <Button
-            label={viaChoir ? "Add choir time" : "Add more Pro time"}
-            icon="add"
-            onPress={onExtend}
-            style={styles.cancelBtn}
-          />
-        )}
-
+      {/* ── The choir apart, in its violet: not a third button among the billing ── */}
+      <Group title="Choir">
         {subscription.choirRole ? (
-          <Button
-            label="My choir"
-            variant="secondary"
-            icon="choir"
-            onPress={onOpenChoir}
-            style={styles.cancelBtn}
-          />
+          <Row icon="choir" choir label="My choir" hint={subscription.choirName ?? undefined} chevron onPress={onOpenChoir} />
         ) : (
-          <Button
-            label="Start a choir"
-            variant="secondary"
+          <Row
             icon="choir"
+            choir
+            label="Start a choir"
+            hint="Pro for you and up to 25 singers, one shared library"
+            chevron
             onPress={onExtend}
-            style={styles.cancelBtn}
           />
         )}
-
-        {!lifetime && !isGift && !canceled && !viaChoir && !onAndroid && (
-          <Button
-            label="Cancel membership"
-            variant="secondary"
-            icon="clear"
-            onPress={openCancelFlow}
-            loading={canceling}
-            style={styles.cancelBtn}
-          />
-        )}
-
-        <Text style={styles.billingHint}>
-          {play
-            ? playHint(play, renews)
-            : paidOnWeb && !viaChoir
-            ? "This Pro was bought on the NoteFusion website. When it ends, this phone offers Pro through Google Play."
-            : lifetime
-            ? "Lifetime access — there is nothing to renew or cancel. Invoices and receipts were sent to your email."
-            : viaChoir
-              ? subscription.choirRole === "member"
-                ? `You have Pro through ${subscription.choirName}. Your choir director renews the choir's plan.`
-                : "Your singers are Pro while the choir's plan runs. Each payment adds one period after the time left."
-            : isGift
-              ? "Complimentary access granted by the NoteFusion team. No payment method is linked or billed."
-              : canceled
-                ? `Membership cancelled. Pro stays on until ${renews}. Add time again whenever you like.`
-                : "Each payment covers one period and nothing renews without you. Added time starts when your current time ends. Receipts are in your email inbox."}
-        </Text>
-      </Card>
+      </Group>
 
       {/* ── Cancel Reason Survey Modal ───────────────────────────────── */}
       <CancelReasonModal
@@ -1507,16 +1336,6 @@ const makeStyles = (c: Palette, s: Shadows) =>
       alignItems: "center",
       marginTop: spacing.sm,
       marginBottom: spacing.xl,
-    },
-    backCircle: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
-      alignItems: "center",
-      justifyContent: "center",
     },
     titleBlock: {
       flex: 1,
@@ -1811,114 +1630,25 @@ const makeStyles = (c: Palette, s: Shadows) =>
       color: c.text,
     },
 
-    // ── Header active badge ─────────────────────────────────────────────────
-    activePill: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 6,
-      backgroundColor: c.accentSoft,
-      borderWidth: 1,
-      borderColor: c.accentGlow,
-      paddingHorizontal: 10,
-      paddingVertical: 5,
-      borderRadius: radii.pill,
-    },
-    activeDot: {
-      width: 7,
-      height: 7,
-      borderRadius: 4,
-      backgroundColor: c.success,
-    },
-    activePillText: {
-      ...typography.caption,
-      color: c.accent,
-      fontSize: 11,
-      fontFamily: fonts.bold,
-      letterSpacing: 0.3,
-    },
-
     // ── Active Pro Member Hub ───────────────────────────────────────────────
     hubContainer: {
       marginBottom: spacing.md,
     },
-    memberCard: {
-      marginBottom: spacing.xl,
+    /** Settings' spacing: the back button a step under the safe area, the title under it. */
+    memberHead: {
+      marginTop: spacing.xs,
     },
-    memberHeader: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing.md,
+    hubFirst: {
+      marginTop: 20,
     },
-    memberInfo: {
-      flex: 1,
+    /** One primary, and Cancel as a text button under it with its word on the page's edge (the text pad, 12). */
+    hubActions: {
+      alignItems: "flex-start",
+      gap: spacing.xs,
+      marginTop: spacing.lg,
     },
-    memberName: {
-      ...typography.heading,
-      fontSize: 18,
-      color: c.text,
-      marginBottom: 2,
-    },
-    memberEmail: {
-      ...typography.caption,
-      fontSize: 13,
-      color: c.textMuted,
-      marginBottom: spacing.sm,
-    },
-    memberBadge: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 5,
-      alignSelf: "flex-start",
-      backgroundColor: c.premiumSoft,
-      borderWidth: 1,
-      borderColor: c.premiumBorder,
-      paddingHorizontal: spacing.sm + 2,
-      paddingVertical: 3,
-      borderRadius: radii.pill,
-    },
-    memberBadgeText: {
-      ...typography.caption,
-      fontSize: 11,
-      fontFamily: fonts.bold,
-      color: c.premiumText,
-    },
-    memberDivider: {
-      height: 1,
-      backgroundColor: c.border,
-      marginVertical: spacing.md,
-    },
-    statsRow: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    statCol: {
-      flex: 1,
-    },
-    /** Written in sentence case and set in capitals here, as the section titles are, so a screen reader hears words. */
-    statLabel: {
-      ...typography.caption,
-      fontSize: 10,
-      fontFamily: fonts.bold,
-      color: c.textFaint,
-      letterSpacing: 0.8,
-      textTransform: "uppercase",
-      marginBottom: 2,
-    },
-    statStatusRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 5,
-    },
-    statDot: {
-      width: 7,
-      height: 7,
-      borderRadius: 4,
-    },
-    statValue: {
-      ...typography.label,
-      fontSize: 13,
-      color: c.text,
+    hubCancel: {
+      marginLeft: -12,
     },
 
     // ── Notice callout ──────────────────────────────────────────────────────
@@ -1931,7 +1661,8 @@ const makeStyles = (c: Palette, s: Shadows) =>
       borderColor: c.warning + "35",
       borderRadius: radii.lg,
       padding: spacing.md,
-      marginBottom: spacing.xl,
+      // Under the title, above the plan's group (which keeps its own 20 above it).
+      marginTop: 20,
     },
     noticeWarningText: {
       ...typography.body,
@@ -1939,80 +1670,6 @@ const makeStyles = (c: Palette, s: Shadows) =>
       fontSize: 13,
       lineHeight: 19,
       color: c.text,
-    },
-
-    // ── Included benefits ───────────────────────────────────────────────────
-    benefitsCard: {
-      marginBottom: spacing.xl,
-      paddingHorizontal: 0,
-      paddingVertical: spacing.xs,
-    },
-    benefitRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingVertical: spacing.md,
-      paddingHorizontal: spacing.lg,
-    },
-    benefitRowBorder: {
-      borderTopWidth: 1,
-      borderTopColor: c.borderLight,
-    },
-    benefitIconCircle: {
-      width: 36,
-      height: 36,
-      borderRadius: 18,
-      backgroundColor: c.sheetTile,
-      alignItems: "center",
-      justifyContent: "center",
-      marginRight: spacing.md,
-    },
-    benefitContent: {
-      flex: 1,
-      paddingRight: spacing.sm,
-    },
-    benefitTitle: {
-      ...typography.label,
-      fontSize: 14,
-      color: c.text,
-      marginBottom: 2,
-    },
-    benefitDesc: {
-      ...typography.caption,
-      fontSize: 12,
-      lineHeight: 17,
-      color: c.textMuted,
-    },
-
-    // ── Billing details ─────────────────────────────────────────────────────
-    billingCard: {
-      marginBottom: spacing.xl,
-    },
-    billingRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingVertical: spacing.sm,
-    },
-    billingLabel: {
-      ...typography.body,
-      color: c.textMuted,
-      fontSize: 14,
-    },
-    billingValue: {
-      ...typography.label,
-      color: c.text,
-      fontSize: 14,
-    },
-    billingHint: {
-      ...typography.caption,
-      color: c.textFaint,
-      fontSize: 12,
-      lineHeight: 18,
-      marginTop: spacing.md,
-    },
-    cancelBtn: {
-      alignSelf: "center",
-      marginTop: spacing.lg,
     },
 
     // ── Empty state ─────────────────────────────────────────────────────────
