@@ -22,6 +22,7 @@ import { NoteEditor } from "../components/NoteEditor";
 import { SingAlong } from "../components/SingAlong";
 import { Mark } from "../components/night/NightUI";
 import { GuestAccountCard } from "../components/GuestAccountCard";
+import { ProblemNote } from "../components/ProblemNote";
 import { GUEST_MAX_SECONDS } from "../lib/guestPreview";
 import ScoreView, { type ScoreViewHandle } from "../components/ScoreView";
 import { SheetGrid, barOf } from "../components/result/SheetGrid";
@@ -2038,15 +2039,29 @@ export function ResultScreen({ route, navigation }: Props) {
               Free preview: the first {GUEST_MAX_SECONDS} seconds. Create a free account to keep the sheet.
             </Text>
           ) : result.source?.preview && result.source.notice ? (
-            <Text style={styles.notice}>{result.source.notice}</Text>
+            // A problem is the amber sign and plain words; blue is kept for information (board n-ux-low Q1d).
+            <ProblemNote sentence={15} style={styles.problem}>{result.source.notice}</ProblemNote>
           ) : result.truncated ? (
-            <Text style={styles.notice}>
-              {section
-                ? "Only the first part of the section you chose fit; the rest was left out."
-                : isPro
-                  ? "The first six minutes of the song were transcribed."
-                  : "Free preview: the first minute. Upgrade to Pro for the whole song and the PDF."}
-            </Text>
+            section || isPro ? (
+              <ProblemNote sentence={15} style={styles.problem}>
+                {section
+                  ? "Only the first part of the section you chose fit; the rest was left out."
+                  : "The first six minutes of the song were transcribed."}
+              </ProblemNote>
+            ) : (
+              <View>
+                <ProblemNote sentence={15} style={styles.problem}>Free preview: the first minute.</ProblemNote>
+                <Button
+                  label="Whole song with Pro"
+                  variant="text"
+                  size="sm"
+                  icon="chevron"
+                  iconPosition="right"
+                  onPress={() => navigation.navigate("Upgrade")}
+                  style={styles.problemAction}
+                />
+              </View>
+            )
           ) : null}
 
           {/* ── The numbers that matter ─────────────────────────────────── */}
@@ -2085,7 +2100,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
           {/* No percentage: a plain note, and only when there is something to do. The
               doubtful notes are tinted on the sheet, so a middling one points at them. */}
-          {shownConfNote ? <Text style={styles.notice}>{shownConfNote}</Text> : null}
+          {shownConfNote ? <ProblemNote sentence={15} style={styles.problem}>{shownConfNote}</ProblemNote> : null}
 
           {hymnAsk && result.hymnMatch && !guest ? (
             <View style={styles.panel}>
@@ -3014,6 +3029,10 @@ const makeStyles = (c: Palette) =>
       marginTop: 14,
       overflow: "hidden",
     },
+    /** A problem under the title or the figures: ProblemNote at the sentence size (board n-ux-low Q1d). */
+    problem: { marginTop: 14 },
+    /** Its one way on, a text button under the words: their 15 + 8 px in, less the button's own 12. */
+    problemAction: { alignSelf: "flex-start", marginLeft: 11 },
 
     // ── Stats row ─────────────────────────────────────────────────────────────
     stats: {
