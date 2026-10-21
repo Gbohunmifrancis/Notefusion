@@ -2,6 +2,7 @@ import type { SavedTranscription, TranscriptionResult } from "../api/types";
 import { deriveSolfa } from "./solfa";
 import { synthesizeMelodyWavBase64 } from "./synth";
 import { hymnSheet, type PackHymn } from "./hymnPack";
+import { EXAMPLE_HYMN } from "./exampleSheet";
 
 /**
  * A saved sheet as the Result screen takes it. The solfa is labelled here, for the stored key, and
@@ -48,4 +49,12 @@ export function resultFromHymn(h: PackHymn): TranscriptionResult {
     lyrics: sheet.lyrics,
     hymn: sheet.hymn,
   };
+}
+
+/**
+ * "See an example" (board n-ux-low Q4j): the bundled Amazing Grace as Result opens it with `example`, without the
+ * hymn's credit line: the example's own blue line says what it is.
+ */
+export function exampleResult(): TranscriptionResult {
+  return { ...resultFromHymn(EXAMPLE_HYMN), hymn: null };
 }

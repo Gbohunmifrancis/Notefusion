@@ -23,6 +23,7 @@ import { SingAlong } from "../components/SingAlong";
 import { Mark } from "../components/night/NightUI";
 import { GuestAccountCard } from "../components/GuestAccountCard";
 import { GUEST_MAX_SECONDS } from "../lib/guestPreview";
+import { EXAMPLE_NOTICE, EXAMPLE_SUBTITLE } from "../lib/exampleSheet";
 import ScoreView, { type ScoreViewHandle } from "../components/ScoreView";
 import { SheetGrid, barOf } from "../components/result/SheetGrid";
 import { PlayerDock, DOCK_CLEARANCE } from "../components/result/PlayerDock";
@@ -247,13 +248,14 @@ export function ResultScreen({ route, navigation }: Props) {
     fresh,
     practise,
     guest,
+    example,
   } = route.params;
 
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const { isPro, subscription, refresh: refreshSubscription } = useSubscription();
-  /** A free account's one four-part harmony, until it is used; the API decides, this mirrors it. */
-  const freeHarmony = !isPro && !!subscription?.freeHarmonyAvailable;
+  /** A free account's one four-part harmony, until it is used; the API decides, this mirrors it. Never on the example. */
+  const freeHarmony = !isPro && !!subscription?.freeHarmonyAvailable && !example;
 
   const [title, setTitle] = useState(
     initialTitle ?? `${result.key} · ${new Date().toLocaleDateString()}`,
@@ -1400,6 +1402,7 @@ export function ResultScreen({ route, navigation }: Props) {
   const unsavedChanges =
     !savedId &&
     !guest &&
+    !example &&
     (edited ||
       baseline.notes !== result.notes ||
       key !== result.key ||
@@ -1608,7 +1611,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   const hasScore = scoreXml.length > 0;
   /** A sheet not in the Library (deleted and opened again, or from before option A): one tap saves it as titled. */
-  const offerSave = !guest && !savedId;
+  const offerSave = !guest && !example && !savedId;
 
   const insets = useSafeAreaInsets();
   const shownTitle = committedTitle || title;
@@ -1935,7 +1938,7 @@ export function ResultScreen({ route, navigation }: Props) {
           {/* A guest's preview (board l-ux-high/07) is only read: × closes it, and nothing saves or shares. */}
           <View style={styles.topBar}>
             <IconButton icon={guest ? "close" : "back"} label={guest ? "Close" : "Go back"} onPress={goBack} />
-            {guest ? null : (
+            {guest || example ? null : (
               <View style={styles.topActions}>
                 <IconButton
                   icon="share"
@@ -1955,7 +1958,7 @@ export function ResultScreen({ route, navigation }: Props) {
           </View>
 
           {/* ── Title ───────────────────────────────────────────────────── */}
-          {guest ? (
+          {guest || example ? (
             <Text style={styles.title} accessibilityRole="header">
               {shownTitle}
             </Text>
@@ -1976,6 +1979,8 @@ export function ResultScreen({ route, navigation }: Props) {
           )}
           {guest ? (
             <Text style={styles.subtitle}>{`${takeKind(result)} · ${key}`}</Text>
+          ) : example ? (
+            <Text style={styles.subtitle}>{EXAMPLE_SUBTITLE}</Text>
           ) : autoSaved && savedId ? (
             <View style={styles.savedSub} accessible accessibilityLabel={`${result.source ? subtitle : takeKind(result)}, saved to your Library just now`}>
               <Text style={styles.savedSubText}>{`${result.source ? subtitle : takeKind(result)} · `}</Text>
@@ -2062,6 +2067,8 @@ export function ResultScreen({ route, navigation }: Props) {
             <Text style={styles.notice}>
               Free preview: the first {GUEST_MAX_SECONDS} seconds. Create a free account to keep the sheet.
             </Text>
+          ) : example ? (
+            <Text style={styles.notice}>{EXAMPLE_NOTICE}</Text>
           ) : result.source?.preview && result.source.notice ? (
             <Text style={styles.notice}>{result.source.notice}</Text>
           ) : result.truncated ? (
@@ -2270,8 +2277,11 @@ export function ResultScreen({ route, navigation }: Props) {
               <Action icon="lyrics" label="Lyrics" active={panel === "lyrics"} onPress={() => togglePanel("lyrics")} />
               <Action icon="parts" label="SATB" active={panel === "parts"} onPress={() => togglePanel("parts")} />
               <Action icon="sing" label="Sing" active={panel === "sing"} onPress={() => togglePanel("sing")} />
-              <Action icon="export" label="Export" active={panel === "export"} onPress={() => togglePanel("export")} />
-              <Action icon="more" label="More" onPress={openOptions} accessibilityLabel="Sheet options" />
+              {/* The example: no Export and no ⋯ (board n-ux-low Q4j). */}
+              {example ? null : (
+                <Action icon="export" label="Export" active={panel === "export"} onPress={() => togglePanel("export")} />
+              )}
+              {example ? null : <Action icon="more" label="More" onPress={openOptions} accessibilityLabel="Sheet options" />}
             </View>
           )}
 

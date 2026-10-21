@@ -48,6 +48,12 @@ export type ResultParams = {
    * shares, exports or edits, and the "Keep this sheet" card. Only ever in the signed-out stack.
    */
   guest?: boolean;
+  /**
+   * "See an example" (board n-ux-low Q4j): the bundled Amazing Grace (`openSheet.exampleResult`), marked "An example —
+   * not in your Library". It plays, rehearses and reads in every layout; Save, share, export and the sheet's options
+   * are hidden and nothing is filed or spent (no free harmony).
+   */
+  example?: boolean;
 };
 
 /**
