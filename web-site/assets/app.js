@@ -2051,7 +2051,7 @@
 
   /**
    * What this month (Pro) or this week (free) has left, as numbers for the meters. A free account's meter is
-   * this week's free hums and recordings (back every Friday 6pm WAT, `back` in the reader's time); the songs
+   * this week's free hums and recordings (back every Friday 17:00 UTC, `back` in the reader's time); the songs
    * it bought are counted apart (boughtLeft), since they never expire.
    */
   function usage() {
@@ -2378,8 +2378,7 @@
         : { text: "Free preview used", out: true, why: "Your one free song-link preview has been used. Pro, or one bought song, transcribes whole songs; hums and recordings use your free transcriptions each week." };
     }
     var u = usage(), bought = boughtLeft();
-    var weekly = "Hums and recordings use your " + u.total + " free transcriptions a week. They come back every Friday at 6pm West Africa Time" +
-      (u.back !== window.NfFreeWeek.FALLBACK && u.back !== "Friday 6pm" ? " (" + u.back + " where you are)" : "") + ".";
+    var weekly = "Hums and recordings use your " + u.total + " free transcriptions a week. They come back each week, next on " + u.back + ".";
     if (kind === "song" || (kind === "choir" && $("choir-band").checked)) {
       // A recording with instruments has its voice isolated first: a song, which the free weekly ones do not cover.
       return bought > 0

@@ -91,7 +91,7 @@ function faqFor(t, fits) {
     { q: `What note does ${v.title} start on?`, a: `It starts on ${v.first.solfa} (${v.first.letter} in ${v.key})${t.pickup ? ", a pickup before the first full bar" : ""}. Find doh first, then sing up or down to ${v.first.solfa}.` },
   ];
   if (t.metre && t.metre !== "Irregular") out.push({ q: `What words can be sung to ${v.title}?`, a: `${v.title} is in the metre ${metreLabel(t.metre)}: lines of ${t.metre.replace(/ \+ /g, ", then ").replace(/ /g, ", ")} syllables. Words written in the same metre fit it${fits.length ? `, such as ${fits.slice(0, 3).map((h) => h.title).join(", ")}` : ""}; check where the stresses fall before you sing them together.` });
-  out.push({ q: `Is ${v.title} in the public domain?`, a: `Yes. ${pd.length ? `${pd.map((p) => (p.lived ? `${p.name} lived in the ${p.lived}` : !p.died && p.activeBy ? `${p.name}'s work dates from ${p.activeBy}` : `${p.name} died in ${p.died}`)).join(", ")}; ` : ""}the tune was first published in ${t.musicPublished}. Everyone named died before ${PD_DIED_BEFORE} and it was published before ${PD_PUBLISHED_BEFORE}, so the tune is out of copyright in Nigeria, the UK, the EU and the United States. Modern arrangements of it can still be under copyright.` });
+  out.push({ q: `Is ${v.title} in the public domain?`, a: `Yes. ${pd.length ? `${pd.map((p) => (p.lived ? `${p.name} lived in the ${p.lived}` : !p.died && p.activeBy ? `${p.name}'s work dates from ${p.activeBy}` : `${p.name} died in ${p.died}`)).join(", ")}; ` : ""}the tune was first published in ${t.musicPublished}. Everyone named died before ${PD_DIED_BEFORE} and it was published before ${PD_PUBLISHED_BEFORE}, so the tune is out of copyright in the UK, the EU, the United States and Nigeria. Modern arrangements of it can still be under copyright.` });
   return out;
 }
 
@@ -148,7 +148,7 @@ ${playerHtml({ name: v.title, tempo: v.tempo, track: "Tune" })}
 
 <section aria-labelledby="lines-title">
   <h2 id="lines-title">The solfa line by line</h2>
-  <p>The same solfa as plain text, easy to copy into your own notes or a WhatsApp message to the choir. To print it, <a href="${pdf}" type="application/pdf" data-track="Tune: download PDF (text)">download the solfa as a PDF</a>.</p>
+  <p>The same solfa as plain text, easy to copy into your own notes or a message to the choir. To print it, <a href="${pdf}" type="application/pdf" data-track="Tune: download PDF (text)">download the solfa as a PDF</a>.</p>
   <div class="solfa-text">
 <p class="doh">${escapeHtml(v.header)} · ${escapeHtml(v.time)}</p>
 ${textLinesHtml(v.lines, { words: false })}

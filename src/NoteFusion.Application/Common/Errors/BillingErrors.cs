@@ -104,14 +104,18 @@ public static class BillingErrors
     /// <summary>
     /// This week's free transcriptions are spent, bought transcriptions included. Takes both numbers that were
     /// actually enforced, so the refusal agrees with the count the app had been showing, and says when the free
-    /// ones come back (<see cref="FreeTier.NextReset"/>; the app shows that moment in the user's own time).
+    /// ones come back (<paramref name="resetsAtUtc"/>, <see cref="FreeTier.NextReset"/>) in the account's own
+    /// <paramref name="timeZone"/>, or in UTC when none is known (<see cref="FreeTier.ResetWhen"/>).
     /// </summary>
-    public static Error FreeTierLimitReached(int free, int bought = 0) =>
-        Error.Forbidden("BILLING_FREE_TIER_LIMIT",
+    public static Error FreeTierLimitReached(int free, int bought, DateTime resetsAtUtc, string? timeZone)
+    {
+        var back = FreeTier.ResetWhen(resetsAtUtc, timeZone);
+        return Error.Forbidden("BILLING_FREE_TIER_LIMIT",
             (bought > 0
-                ? $"You've used this week's {free} free transcriptions and the {bought} you bought. The free ones come back on Friday at 6pm (West Africa Time). "
-                : $"You've used this week's {free} free transcriptions. They come back on Friday at 6pm (West Africa Time). ")
+                ? $"You've used this week's {free} free transcriptions and the {bought} you bought. The free ones come back on {back}. "
+                : $"You've used this week's {free} free transcriptions. They come back on {back}. ")
             + "Buy just this song, or upgrade to Pro for unlimited transcriptions.");
+    }
 
     /// <summary>
     /// A free account with no bought transcription left asked for a song with the voice isolated. The free
