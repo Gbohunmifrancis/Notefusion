@@ -23,6 +23,7 @@ import {
   Settings,
   Sparkles,
   Sun,
+  TicketPercent,
   TrendingUp,
   Users2,
   Webhook,
@@ -79,6 +80,7 @@ const SECONDARY_NAV = [
   { to: "/webhooks", label: "Webhooks", icon: Webhook },
   { to: "/ledger", label: "Ledger", icon: Scale },
   { to: "/flags", label: "Feature flags", icon: Flag, badge: "New" },
+  { to: "/offers", label: "Offers", icon: TicketPercent, badge: "New" },
   { to: "/sessions", label: "Sessions", icon: MonitorPlay, badge: "New" },
 ] as const;
 
