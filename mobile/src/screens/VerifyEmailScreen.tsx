@@ -219,7 +219,7 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
         )}
       </View>
       <Pressable onPress={changeEmail} hitSlop={13} accessibilityRole="button" style={({ pressed }) => [styles.change, pressed && pressedLink]}>
-        <Text style={styles.changeText}>Change email</Text>
+        <Text style={nightText.link}>Change email</Text>
       </Pressable>
       <Text style={styles.hint}>
         The code expires in 10 minutes. Check your spam folder if it isn&apos;t there.
@@ -305,7 +305,10 @@ const styles = StyleSheet.create({
   resendRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 20 },
   countdown: { fontSize: 14, fontFamily: nightFonts.mono, color: night.faint },
   change: { alignSelf: "flex-start", marginTop: 12 },
-  changeText: { fontSize: 13.5, fontFamily: nightFonts.medium, color: night.ice },
   hint: { marginTop: 24, fontSize: 13, lineHeight: 19, fontFamily: nightFonts.regular, color: night.faint },
-  hintLink: { color: night.muted, textDecorationLine: "underline" },
+  /**
+   * The one link look, underlined as well: inside a sentence, ice beside the grey words is only 1.96:1, so colour
+   * alone would not say "link" (board n-ux-low Q3a).
+   */
+  hintLink: { color: night.ice, fontFamily: nightFonts.semibold, textDecorationLine: "underline" },
 });

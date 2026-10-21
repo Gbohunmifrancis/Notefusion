@@ -243,7 +243,8 @@ export const nightText = StyleSheet.create({
     fontFamily: nightFonts.medium,
     color: night.muted,
   },
-  link: { fontSize: 14, fontFamily: nightFonts.semibold, color: night.text },
+  /** The one link look on these screens (board n-ux-low Q3a): ice, semibold, 14 (10.98:1 on the canvas). */
+  link: { fontSize: 14, fontFamily: nightFonts.semibold, color: night.ice },
   muted: { fontSize: 14, fontFamily: nightFonts.regular, color: night.muted },
 });
 
@@ -254,9 +255,9 @@ export const nightText = StyleSheet.create({
 export const pressedLink = { opacity: 0.55 } as const;
 
 /**
- * A link as its own text button (board m-ux-medium P5d): the words and colour of a link in a sentence, but 44 px tall
- * with 10 px either side, so a thumb can hit it. Its lead-in ("New here?") stays plain text beside it. `legal` is the
- * legal line's: 13 px, underlined, in the muted grey.
+ * A link as its own text button (board m-ux-medium P5d): the one link look (`nightText.link`), but 44 px tall with
+ * 10 px either side, so a thumb can hit it. Its lead-in ("New here?") stays plain text beside it. `legal` is the legal
+ * line's: the same ice at 13 px, no underline, as it is a button of its own (board n-ux-low Q3a).
  */
 export function NightLink({ label, onPress, legal = false }: { label: string; onPress: () => void; legal?: boolean }) {
   return (
@@ -308,13 +309,13 @@ const styles = StyleSheet.create({
   /** The words and the link on one line while they fit, the link wrapping under them when not. */
   errorBody: { flex: 1, flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 4 },
   errorWords: { fontSize: 13.5, lineHeight: 19, fontFamily: nightFonts.medium, color: night.text },
-  errorLink: { fontSize: 13.5, lineHeight: 19, fontFamily: nightFonts.semibold, color: night.ice },
+  errorLink: { fontSize: 14, lineHeight: 19, fontFamily: nightFonts.semibold, color: night.ice },
   or: { flexDirection: "row", alignItems: "center", gap: 12, marginVertical: 20 },
   orLine: { flex: 1, height: 1, backgroundColor: night.line },
   orText: { fontSize: 13, fontFamily: nightFonts.regular, color: night.faint },
   textButton: { minHeight: 44, paddingHorizontal: 10, justifyContent: "center" },
   textButtonLegal: { paddingHorizontal: 8 },
-  legalLink: { fontSize: 13, fontFamily: nightFonts.medium, color: night.muted, textDecorationLine: "underline" },
+  legalLink: { fontSize: 13, fontFamily: nightFonts.semibold, color: night.ice },
   stepBar: { flexDirection: "row", alignItems: "center", gap: 10, marginHorizontal: 2, marginBottom: 10 },
   stepSegments: { flexDirection: "row", gap: 4, width: 52 },
   stepSegment: { flex: 1, height: 4, borderRadius: 2, backgroundColor: "rgba(255, 255, 255, 0.14)" },

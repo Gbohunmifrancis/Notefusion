@@ -11,7 +11,6 @@ import { NOT_AN_EMAIL, contactUsUrl, googleFailure, looksLikeEmail, missesAfter,
 import { tokenStore } from "../lib/tokenStore";
 import { googleAuthConfigured } from "../lib/env";
 import { loginGoogleFirst } from "../lib/welcomeChoices";
-import { night, nightFonts } from "../design/theme";
 import type { AuthStackParams } from "../navigation/types";
 
 type Props = NativeStackScreenProps<AuthStackParams, "Login">;
@@ -169,7 +168,7 @@ export function LoginScreen({ navigation, route }: Props) {
           hitSlop={{ top: 12, bottom: 14, left: 12, right: 12 }}
           accessibilityRole="button"
         >
-          <Text style={styles.forgotText}>Forgot password?</Text>
+          <Text style={nightText.link}>Forgot password?</Text>
         </Pressable>
 
         {error && (
@@ -221,7 +220,6 @@ const styles = StyleSheet.create({
   ways: { marginTop: 30 },
   form: { gap: 12 },
   forgot: { alignSelf: "flex-end", marginTop: 12 },
-  forgotText: { fontSize: 13.5, fontFamily: nightFonts.medium, color: night.ice },
   error: { marginTop: 18 },
   submit: { marginTop: 22 },
   /** Laid out but unseen while the last way in is read. */
