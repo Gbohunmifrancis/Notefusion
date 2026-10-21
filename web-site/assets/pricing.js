@@ -13,6 +13,9 @@
       : "https://api.notefusion.studio/api/billing/public-plans";
   var api = window.location.hostname === "localhost" ? "http://localhost:5080" : "https://api.notefusion.studio";
   var TOKENS_KEY = "nf.web.tokens";
+  // A seasonal offer (board p-halloween-offer, P4): its rules and words, and its styles, loaded only while one runs.
+  var OFFER_ASSETS = ["/assets/offer.css?v=1", "/assets/offer.js?v=1"];
+  var TIME_ZONE = (function () { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) { return ""; } })();
 
   /** Checkout funnel steps for the dashboard; the names match CheckoutSteps in the API. */
   function track(name, detail) { try { if (window.nfTrack) window.nfTrack(name, detail); } catch (e) { /* ignore */ } }
@@ -48,9 +51,15 @@
     } catch (e) { return false; }
   }
 
-  function startCheckout(plan, button) {
+  /**
+   * `offerKey`: the card showed the plan at a running offer's price. The checkout names the offer and the API prices it
+   * for the account (or refuses it, BILLING_OFFER_ENDED, once it has ended for them); /app is told too, so a sign-up on
+   * the way still pays the offer's price, and an offer that ended meanwhile opens the plans there rather than a checkout.
+   */
+  function startCheckout(plan, button, offerKey) {
     var token = accessToken();
-    var fallback = "/app?signup=1&upgrade=" + encodeURIComponent(plan.id);
+    var offerParam = offerKey ? "&offer=" + encodeURIComponent(offerKey) : "";
+    var fallback = "/app?signup=1&upgrade=" + encodeURIComponent(plan.id) + offerParam;
     if (!token) { trackThenGo("Chose a plan signed out", plan.id, fallback); return; }
     track("Checkout started", plan.id);
     button.disabled = true;
@@ -60,7 +69,7 @@
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
       // "web": the provider's return page brings the browser back to /app?paid=1, not to the phone app.
-      body: JSON.stringify({ planId: plan.id, client: "web" }),
+      body: JSON.stringify(offerKey ? { planId: plan.id, client: "web", offerKey: offerKey } : { planId: plan.id, client: "web" }),
     })
       .then(function (r) {
         if (r.ok) return r.json();
@@ -80,7 +89,7 @@
         try {
           localStorage.setItem("nf.checkout", JSON.stringify({
             planId: plan.id, startedAt: Date.now(), wasActive: false, periodEnd: null, lifetime: false, planCode: null,
-            reference: session.reference, from: "home", single: plan.interval === "single",
+            reference: session.reference, from: "home", single: plan.interval === "single", offerKey: offerKey || null,
             plan: { id: plan.id, code: plan.code, name: plan.name, amountMinor: plan.amountMinor, currency: plan.currency, interval: plan.interval }
           }));
         } catch (e) { /* private mode: the ?paid=1 return still confirms */ }
@@ -92,7 +101,7 @@
       .catch(function (err) {
         // An expired session, a plan the account cannot buy, or a provider hiccup: the app sorts it out.
         trackThenGo("Checkout failed", (err && err.message ? err.message : "Network error") + " · home",
-          "/app?upgrade=" + encodeURIComponent(plan.id));
+          "/app?upgrade=" + encodeURIComponent(plan.id) + offerParam);
       })
       .finally(function () { button.disabled = false; button.textContent = label; });
   }
@@ -122,14 +131,14 @@
     return list;
   }
 
-  function action(label, featured, source, href, plan) {
+  function action(label, featured, source, href, plan, offerKey) {
     var wrapper = document.createElement("div");
     var cls = "btn " + (featured ? "btn-primary" : "btn-secondary");
     var control;
     if (plan) {
       control = document.createElement("button");
       control.type = "button";
-      control.addEventListener("click", function () { startCheckout(plan, control); });
+      control.addEventListener("click", function () { startCheckout(plan, control, offerKey); });
     } else {
       control = document.createElement("a");
       control.href = href || "/app?signup=1";
@@ -196,14 +205,19 @@
     return symbol + major;
   }
 
-  function paidCard(plan, featured, saving) {
+  /**
+   * A Pro card. `offer` and `offerMinor`: a running offer's price for this plan (P4): its tag in place of "Best value",
+   * the old price struck before the new one, the countdown under it, and the button's amount.
+   */
+  function paidCard(plan, featured, saving, offer, offerMinor) {
     var card = document.createElement("div");
     card.className = "plan" + (featured ? " plan--featured" : "");
+    var cost = offerMinor ? { amountMinor: offerMinor, currency: plan.currency } : plan;
 
-    if (featured) {
+    if (offerMinor || featured) {
       var tag = document.createElement("span");
-      tag.className = "plan-tag";
-      tag.textContent = "Best value";
+      tag.className = offerMinor ? "plan-tag offer-tag" : "plan-tag";
+      tag.textContent = offerMinor ? window.NfOffer.tagText(offer) : "Best value";
       card.appendChild(tag);
     }
 
@@ -213,18 +227,33 @@
 
     var price = document.createElement("div");
     price.className = "price";
-    price.appendChild(document.createTextNode(formatPrice(plan) + " "));
+    if (offerMinor) {
+      var was = document.createElement("s");
+      was.className = "was";
+      var wasSr = document.createElement("span");
+      wasSr.className = "sr-only";
+      wasSr.textContent = "Was ";
+      was.appendChild(wasSr);
+      was.appendChild(document.createTextNode(formatPrice(plan)));
+      price.appendChild(was);
+      var nowSr = document.createElement("span");
+      nowSr.className = "sr-only";
+      nowSr.textContent = ", now ";
+      price.appendChild(nowSr);
+    }
+    price.appendChild(document.createTextNode(formatPrice(cost) + " "));
     var period = document.createElement("small");
     period.textContent = plan.interval === "yearly" ? "/ year" : "/ month";
     price.appendChild(period);
     card.appendChild(price);
+    if (offerMinor) card.appendChild(window.NfOffer.cardEnds(offer));
 
     var blurb = document.createElement("p");
     blurb.className = "blurb";
     // A year is priced by the month as well, with its saving, under the price (the web app's plans say the same):
     // the saving used to be the card's last line, and the month's figure was nowhere.
     blurb.textContent = plan.interval === "yearly"
-      ? formatPrice({ amountMinor: Math.round(plan.amountMinor / 12), currency: plan.currency }) + " a month, paid once a year." +
+      ? formatPrice({ amountMinor: Math.round(cost.amountMinor / 12), currency: plan.currency }) + " a month, paid once a year." +
         (saving ? " Save " + saving + "% against paying monthly." : "")
       : "Whole songs, four parts and every download, for the choir that rehearses every week.";
     card.appendChild(blurb);
@@ -247,8 +276,9 @@
     );
     // Each button says what it buys ("Upgrade — ₦7,500 a month"): both used to read "Upgrade to Pro" (signed out, "Sign
     // up and upgrade"), so the buttons alone, as a screen reader lists them, never said which plan was which.
-    var cost = formatPrice(plan) + (plan.interval === "yearly" ? " a year" : " a month");
-    card.appendChild(action((accessToken() ? "Upgrade — " : "Get Pro — ") + cost, true, "pricing_" + (plan.interval || "pro"), null, plan));
+    // At an offer's price the period is what the money buys ("Get Pro — $6.99 for a month").
+    var amount = formatPrice(cost) + (offerMinor ? (plan.interval === "yearly" ? " for a year" : " for a month") : (plan.interval === "yearly" ? " a year" : " a month"));
+    card.appendChild(action((accessToken() ? "Upgrade — " : "Get Pro — ") + amount, true, "pricing_" + (plan.interval || "pro"), null, plan, offerMinor ? offer.key : null));
     return card;
   }
 
@@ -342,7 +372,9 @@
     if (regionNote) regionNote.textContent = "You're signed in as a Pro member; there is nothing to buy here.";
   }
 
-  function render(payload) {
+  var lastPayload = null, offerWatching = false;
+  function render(payload, offer) {
+    lastPayload = payload;
     var country =
       payload && typeof payload.countryCode === "string"
         ? payload.countryCode.toUpperCase()
@@ -375,9 +407,17 @@
       return;
     }
 
+    // A running offer prices the Pro cards it covers (by plan id), never naira; at zero they go back to these prices.
+    var O = window.NfOffer;
+    var live = offer && O && O.isLive(offer) ? offer : null;
+    var monthlyOffer = live && monthly ? O.offerPrice(monthly, live) : null;
+    var yearlyOffer = live && yearly ? O.offerPrice(yearly, live) : null;
+    if (!monthlyOffer && !yearlyOffer) live = null;
+    if (O) O.dress(live);
+
     var saving = null;
     if (monthly && yearly) {
-      saving = Math.round((1 - yearly.amountMinor / (monthly.amountMinor * 12)) * 100);
+      saving = Math.round((1 - (yearlyOffer || yearly.amountMinor) / ((monthlyOffer || monthly.amountMinor) * 12)) * 100);
       if (saving <= 0) saving = null;
     }
 
@@ -392,8 +432,12 @@
         ? payload.single
         : null;
     container.appendChild(freeCard(3, single));
-    if (monthly) container.appendChild(paidCard(monthly, !yearly, saving));
-    if (yearly) container.appendChild(paidCard(yearly, true, saving));
+    if (monthly) container.appendChild(paidCard(monthly, !yearly, saving, live, monthlyOffer));
+    if (yearly) container.appendChild(paidCard(yearly, true, saving, live, yearlyOffer));
+    if (live) {
+      if (!offerWatching) { offerWatching = true; O.watch(function () { if (lastPayload) render(lastPayload, null); }); }
+      O.tick();
+    }
 
     if (regionLabel) {
       regionLabel.textContent = isNigeria ? "Pricing for Nigeria" : "Prices in US dollars";
@@ -402,8 +446,43 @@
     if (regionNote) {
       regionNote.textContent = isNigeria
         ? "Nigerian pricing is shown in naira. One payment buys one month or one year of Pro; nothing is charged again unless you buy another period."
-        : "Prices are in US dollars. One payment buys one month or one year of Pro; nothing is charged again unless you buy another period.";
+        : "Prices are in US dollars. " + (live ? O.holdsLine(live) + " " : "") + "One payment buys one month or one year of Pro; nothing is charged again unless you buy another period.";
     }
+  }
+
+  /** Loads a stylesheet or script once (the offer's files, "What stopped you?"'s). */
+  var assetLoads = {};
+  function loadAsset(url) {
+    if (!assetLoads[url]) {
+      assetLoads[url] = new Promise(function (resolve, reject) {
+        var css = /\.css(\?|$)/.test(url), tag = document.createElement(css ? "link" : "script");
+        if (css) { tag.rel = "stylesheet"; tag.href = url; } else { tag.src = url; tag.async = false; }
+        tag.onload = resolve;
+        tag.onerror = function () { tag.remove(); delete assetLoads[url]; reject(new Error("failed " + url)); };
+        document.head.appendChild(tag);
+      });
+    }
+    return assetLoads[url];
+  }
+
+  /**
+   * The offer running for this visitor (GET /api/offers/current, anonymous, with the browser's time zone so it ends at
+   * their own midnight), its files loaded; null when none runs, or the answer is slow (3 s) or fails: the cards then
+   * show today's prices, as they would anyway.
+   */
+  function readOffer() {
+    if (!window.fetch || !window.Promise) return Promise.resolve(null);
+    var headers = { Accept: "application/json" };
+    if (TIME_ZONE) headers["X-Time-Zone"] = TIME_ZONE;
+    var asked = fetch(api + "/api/offers/current", { method: "GET", headers: headers, credentials: "omit", cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (answer) {
+        var o = answer && answer.offer;
+        if (!o || !(Date.parse(o.endsAtUtc) > Date.now()) || !Array.isArray(o.plans) || !o.plans.length) return null;
+        return Promise.all(OFFER_ASSETS.map(loadAsset)).then(function () { return o; });
+      })
+      .catch(function () { return null; });
+    return Promise.race([asked, new Promise(function (resolve) { setTimeout(function () { resolve(null); }, 3000); })]);
   }
 
   function load() {
@@ -415,6 +494,7 @@
         }, 8000)
       : null;
 
+    var offerAsked = readOffer();
     fetch(pricingApi, {
       method: "GET",
       headers: { Accept: "application/json" },
@@ -428,7 +508,7 @@
       })
       .then(function (payload) {
         // A member has nothing to buy here: show the membership instead of the prices.
-        return membership().then(function (sub) { sub ? renderMember(sub) : render(payload); });
+        return Promise.all([membership(), offerAsked]).then(function (got) { got[0] ? renderMember(got[0]) : render(payload, got[1]); });
       })
       .catch(function () { showError(true); })
       .finally(function () {
@@ -444,19 +524,6 @@
   var openedHere = false;
   var whyBusy = false;
   var WHY_ASSETS = ["/assets/checkout-exit.js?v=2", "/assets/checkout-why.css?v=2", "/assets/checkout-why.js?v=2"];
-  var whyLoads = {};
-  function loadAsset(url) {
-    if (!whyLoads[url]) {
-      whyLoads[url] = new Promise(function (resolve, reject) {
-        var css = /\.css(\?|$)/.test(url), tag = document.createElement(css ? "link" : "script");
-        if (css) { tag.rel = "stylesheet"; tag.href = url; } else { tag.src = url; tag.async = false; }
-        tag.onload = resolve;
-        tag.onerror = function () { tag.remove(); delete whyLoads[url]; reject(new Error("failed " + url)); };
-        document.head.appendChild(tag);
-      });
-    }
-    return whyLoads[url];
-  }
   function authed(path, body) {
     var token = accessToken();
     if (!token) return Promise.reject(new Error("signed out"));
@@ -507,7 +574,7 @@
             authed(exitPath, body).catch(function () { /* a lost answer is only a missing row */ });
           },
           // The same plan: the API hands back the same checkout while it is kept.
-          onTryAgain: function () { if (snap.plan) startCheckout(snap.plan, document.createElement("button")); },
+          onTryAgain: function () { if (snap.plan) startCheckout(snap.plan, document.createElement("button"), snap.offerKey || null); },
           onSong: function () { if (song) startCheckout(song, document.createElement("button")); }
         });
       });

@@ -1045,8 +1045,10 @@
             <div class="list-card">
               <div class="lrow"><span class="k" id="acct-notify-label"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-bell"/></svg>Notify me when a transcription is ready</span><span class="v"><button class="switch" id="acct-notify" type="button" role="switch" aria-checked="false" aria-labelledby="acct-notify-label" aria-describedby="acct-notify-note"></button></span></div>
               <div class="lrow lrow-block"><p class="lrow-note acct-notify-note" id="acct-notify-note" aria-live="polite">For a transcription that finishes while you're in another tab or window.</p></div>
-              <!-- The account's choice, the one the unsubscribe link in those emails makes (GET/PUT /api/me/email-preferences). -->
-              <div class="lrow"><span class="k" id="acct-founder-label"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-message"/></svg>Notes from the founder by email</span><span class="v"><button class="switch" id="acct-founder" type="button" role="switch" aria-checked="false" aria-labelledby="acct-founder-label" disabled></button></span></div>
+              <!-- The account's choice, the one the unsubscribe link in those emails makes (GET/PUT /api/me/email-preferences):
+                   the founder's notes and the occasional offer, one switch. -->
+              <div class="lrow"><span class="k" id="acct-founder-label"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-message"/></svg>Notes and offers from NoteFusion</span><span class="v"><button class="switch" id="acct-founder" type="button" role="switch" aria-checked="false" aria-labelledby="acct-founder-label" aria-describedby="acct-founder-note" disabled></button></span></div>
+              <div class="lrow lrow-block"><p class="lrow-note" id="acct-founder-note">By email: a note from the founder now and then, and the occasional offer, such as a seasonal discount on Pro. Every one has a link to stop them.</p></div>
             </div>
           </section>
 
@@ -1123,7 +1125,7 @@
 <script src="/assets/freeweek.js?v=2" defer></script>
 <script src="/assets/sse.js?v=1" defer></script>
 <script src="/assets/library-groups.js?v=1" defer></script>
-<script src="/assets/app.js?v=64" defer></script>
+<script src="/assets/app.js?v=65" defer></script>
 <script src="/assets/season.js?v=4" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>
