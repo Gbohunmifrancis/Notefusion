@@ -30,16 +30,16 @@
     },
     {
       "id": "building-for-choirs-in-nigeria",
-      "title": "Building for choirs in Nigeria",
-      "angle": "Who NoteFusion is for: choir directors and church musicians in Nigeria first, and what that changed in how it is built.",
+      "title": "Building for choir directors",
+      "angle": "Who NoteFusion is for: choir directors and church musicians who teach parts, and what that changed in how it is built.",
       "facts": [
-        "NoteFusion is built in Nigeria for choir directors and church musicians.",
-        "Prices are in naira in Nigeria, paid through Paystack.",
+        "NoteFusion is built for choir directors, choristers and church musicians.",
         "A sheet can be shared with a link that the choir opens without an account.",
-        "A choir director can bring the whole choir onto one plan, and share sheets with the choir's library."
+        "A choir director can bring the whole choir onto one plan, and share sheets with the choir's library.",
+        "Each singer can learn their own part: their line loud, the others soft, two bars on a loop."
       ],
       "scene": "shared-sheet",
-      "fallback": "Building NoteFusion for choir directors in Nigeria first changed a lot: prices in naira, and a sheet the director shares as a link that every chorister can open without an account.\n\n#buildinpublic"
+      "fallback": "Building NoteFusion for choir directors changed a lot: a sheet the director shares as a link that every chorister opens without an account, and the whole choir on one plan.\n\n#buildinpublic"
     },
     {
       "id": "harmoniser-measured",

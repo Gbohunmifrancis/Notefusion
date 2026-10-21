@@ -214,7 +214,7 @@ export async function shoot({ scene, viewport = "phone", theme = "dark", out, si
   try {
     const ctx = await browser.newContext({
       viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: vp.deviceScaleFactor, isMobile: vp.isMobile, hasTouch: vp.hasTouch,
-      colorScheme: theme, reducedMotion: "reduce", locale: "en-GB", timezoneId: "Africa/Lagos",
+      colorScheme: theme, reducedMotion: "reduce", locale: "en-GB", timezoneId: "Europe/London",
     });
     await ctx.route(BLOCKED, (r) => r.abort());
     if (relayCdn) await ctx.route(CDN, relay);
