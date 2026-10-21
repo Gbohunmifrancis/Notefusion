@@ -109,9 +109,26 @@ export function pathLine(drill: Pick<Drill, "grade" | "unitIndex" | "drillIndex"
   return `${drill.grade} · Unit ${drill.unitIndex} · ${drill.drillIndex} of ${drill.drillCount}${moved}`;
 }
 
+/**
+ * "Unit 3 · 4 of 6", with "· Harder" or "· Easier": the path line without its grade, beside the unit bar where the
+ * card's eyebrow already names the grade (board n-ux-low Q2a). Null without a place.
+ */
+export function unitLine(drill: Pick<Drill, "grade" | "unitIndex" | "drillIndex" | "drillCount" | "adjustment">): string | null {
+  const line = pathLine(drill);
+  return line ? line.slice(drill.grade.length + " · ".length) : null;
+}
+
 /** How much of the unit is behind the singer, 0–1: the thin bar under the path line. */
 export function unitFraction(drill: Pick<Drill, "drillIndex" | "drillCount">): number {
   return drill.drillCount > 0 ? clamp01((drill.drillIndex - 1) / drill.drillCount) : 0;
+}
+
+/**
+ * The phone's unit bar, beside the drill's buttons (board n-ux-low Q2a): a tenth for the drill in hand, so a unit's
+ * first drill already shows it begun, and the other nine tenths filled as `unitFraction` (drill 4 of 6: 55 %).
+ */
+export function unitBarFraction(drill: Pick<Drill, "drillIndex" | "drillCount">): number {
+  return drill.drillCount > 0 ? 0.1 + 0.9 * unitFraction(drill) : 0;
 }
 
 /**

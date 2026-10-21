@@ -1,8 +1,8 @@
 /**
  * StarGrade — a marked take as Playful shows it: one to three stars and a friendly word instead of the number, each
- * note told by shape as well as colour (lib/markShape: ✓ spot on, ~ close, struck through try again, dashed not
- * heard) without the cents, and the line it earned. The marks are the same as Focused's (`GradeMarks`); only the
- * telling differs.
+ * note told by shape as well as colour (lib/markShape: ✓ spot on, ~ close in ink on a dashed ink ring, struck through
+ * try again, dashed grey not heard) without the cents, and the line it earned. Amber is left to the problem sign. The
+ * marks are the same as Focused's (`GradeMarks`); only the telling differs.
  */
 
 import React from "react";
@@ -31,10 +31,10 @@ export function StarGrade({
   const earned = showEarned ? playfulRewardLine(grade.reward) : null;
 
   const statusColor = (s: string) =>
-    s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.textMuted : colors.textFaint;
+    s === "hit" ? colors.success : s === "near" ? colors.text : s === "wrong" ? colors.textMuted : colors.textFaint;
   // The letter is a word: the deep shade in Day; the ring keeps the bright hue.
   const statusText = (s: string) =>
-    s === "hit" ? colors.successText : s === "near" ? colors.warningText : s === "wrong" ? colors.textMuted : colors.textFaint;
+    s === "hit" ? colors.successText : s === "near" ? colors.text : s === "wrong" ? colors.textMuted : colors.textFaint;
 
   return (
     <View style={styles.result}>
@@ -54,7 +54,7 @@ export function StarGrade({
           return (
             <View
               key={g.index}
-              style={[styles.mark, { borderColor: statusColor(g.status) }, g.status === "missed" && styles.markMissed]}
+              style={[styles.mark, { borderColor: statusColor(g.status) }, (g.status === "missed" || g.status === "near") && styles.markDashed]}
               accessible
               accessibilityLabel={markLabel(`${n.solfa}${n.octaveMark}`, g.status, g.cents, true)}
             >
@@ -90,11 +90,11 @@ const makeStyles = (c: Palette) =>
     hint: { ...typography.body, color: c.textMuted, textAlign: "center", lineHeight: 20 },
     marks: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 6, marginTop: spacing.xs },
     mark: { minWidth: 44, minHeight: 44, paddingHorizontal: 8, alignItems: "center", justifyContent: "center", borderRadius: 22, borderWidth: 2, backgroundColor: c.surface },
-    markMissed: { borderStyle: "dashed" },
+    markDashed: { borderStyle: "dashed" },
     markRow: { flexDirection: "row", alignItems: "baseline", gap: 2 },
     markSolfa: { ...typography.mono, fontSize: 17 },
     markOff: { textDecorationLine: "line-through" },
-    markGlyph: { fontFamily: fonts.bold, fontSize: 11 },
+    markGlyph: { fontFamily: fonts.bold, fontSize: 12 },
     legend: { ...typography.caption, color: c.textFaint, textAlign: "center", fontSize: 13, lineHeight: 18 },
     earned: { ...typography.label, color: c.play, fontFamily: fonts.bold, textAlign: "center", fontSize: 15 },
   });

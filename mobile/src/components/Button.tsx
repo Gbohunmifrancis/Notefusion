@@ -42,6 +42,11 @@ interface Props {
   iconPosition?: "left" | "right";
   /** A small chip after the label, e.g. "Last used". */
   badge?: string;
+  /**
+   * A small inset either side in place of the pill's own, for a button given a set share of a row that is narrower
+   * than its padded word (Practice's Hear it, a third of the row beside Sing it).
+   */
+  snug?: boolean;
   /** A spinner replaces the word; the pill keeps its width. */
   loading?: boolean;
   disabled?: boolean;
@@ -54,6 +59,8 @@ const HEIGHT = { md: 48, sm: 40 } as const;
 const PAD = { md: 22, sm: 16 } as const;
 /** A text button needs less room either side: it has no fill to frame. */
 const TEXT_PAD = 12;
+/** `snug`: the pill's width is set by its row, so it only keeps its word off the edges. */
+const SNUG_PAD = 8;
 /** Press timing: 120 ms, no bounce. */
 const PRESS_MS = 120;
 
@@ -77,6 +84,7 @@ export function Button({
   leading,
   iconPosition = "left",
   badge,
+  snug = false,
   loading = false,
   disabled = false,
   style,
@@ -136,7 +144,7 @@ export function Button({
         accessibilityState={{ disabled: inactive, busy: loading }}
         style={[
           styles.base,
-          { height: HEIGHT[size], paddingHorizontal: variant === "text" ? TEXT_PAD : PAD[size] },
+          { height: HEIGHT[size], paddingHorizontal: variant === "text" ? TEXT_PAD : snug ? SNUG_PAD : PAD[size] },
           variant === "primary" && styles.primary,
           (variant === "secondary" || variant === "destructive") && styles.quiet,
         ]}

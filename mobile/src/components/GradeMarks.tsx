@@ -1,8 +1,9 @@
 /**
  * GradeMarks — a marked take, as Sing it and the daily drill show it: the score, the one-line verdict, every
- * note with its cents off, told by shape as well as colour (lib/markShape): ✓ green in tune, ~ amber close,
- * struck through grey off the note, dashed with – not sung — and, when the server recorded the take as
- * practice, the one line it earned (XP, streak, a badge or a level).
+ * note with its cents off, told by shape as well as colour (lib/markShape): ✓ green in tune, ~ close in ink on a
+ * dashed ink outline, struck through grey off the note, dashed grey with – not sung — and, when the server recorded
+ * the take as practice, the one line it earned (XP, streak, a badge or a level), in ink. Amber is left to the
+ * problem sign, so "close" and a score in the 50s–70s are neutral (board n-ux-low Q2a d, as the web's marks).
  */
 
 import React from "react";
@@ -28,15 +29,15 @@ export function GradeMarks({
   const earned = showEarned ? rewardMoment(grade.reward) : null;
 
   const statusColor = (s: string) =>
-    s === "hit" ? colors.success : s === "near" ? colors.warning : s === "wrong" ? colors.textMuted : colors.textFaint;
+    s === "hit" ? colors.success : s === "near" ? colors.text : s === "wrong" ? colors.textMuted : colors.textFaint;
   // The letter is a word: the deep shade in Day; the border keeps the bright hue.
   const statusText = (s: string) =>
-    s === "hit" ? colors.successText : s === "near" ? colors.warningText : s === "wrong" ? colors.textMuted : colors.textFaint;
+    s === "hit" ? colors.successText : s === "near" ? colors.text : s === "wrong" ? colors.textMuted : colors.textFaint;
 
   return (
     <View style={styles.result}>
       <View style={styles.scoreRow}>
-        <Text style={[styles.score, { color: grade.score >= 80 ? colors.successText : grade.score >= 50 ? colors.warningText : colors.textMuted }]}>{grade.score}</Text>
+        <Text style={[styles.score, { color: grade.score >= 80 ? colors.successText : grade.score >= 50 ? colors.text : colors.textMuted }]}>{grade.score}</Text>
         <View style={styles.scoreText}>
           <Text style={styles.summary}>{grade.summary}</Text>
           {grade.octaveShift !== 0 ? (
@@ -52,7 +53,7 @@ export function GradeMarks({
           return (
             <View
               key={g.index}
-              style={[styles.mark, { borderColor: statusColor(g.status) }, g.status === "missed" && styles.markMissed]}
+              style={[styles.mark, { borderColor: statusColor(g.status) }, (g.status === "missed" || g.status === "near") && styles.markDashed]}
               accessible
               accessibilityLabel={markLabel(`${n.solfa}${n.octaveMark}`, g.status, g.cents)}
             >
@@ -85,12 +86,12 @@ const makeStyles = (c: Palette) =>
     meta: { ...typography.caption, color: c.textMuted, marginTop: 2 },
     marks: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
     mark: { minWidth: 40, alignItems: "center", paddingVertical: 4, paddingHorizontal: 6, borderRadius: radii.sm, borderWidth: 1.5, backgroundColor: c.surface },
-    markMissed: { borderStyle: "dashed" },
+    markDashed: { borderStyle: "dashed" },
     markRow: { flexDirection: "row", alignItems: "baseline", gap: 2 },
     markSolfa: { ...typography.mono, fontSize: 15 },
     markOff: { textDecorationLine: "line-through" },
-    markGlyph: { fontFamily: fonts.bold, fontSize: 11 },
-    markCents: { ...typography.caption, color: c.textFaint, fontSize: 10 },
+    markGlyph: { fontFamily: fonts.bold, fontSize: 12 },
+    markCents: { ...typography.caption, color: c.textFaint, fontSize: 12 },
     legend: { ...typography.caption, color: c.textFaint, fontSize: 13, lineHeight: 18 },
-    earned: { ...typography.label, color: c.accent, fontFamily: fonts.semibold },
+    earned: { ...typography.label, color: c.text, fontFamily: fonts.semibold },
   });
