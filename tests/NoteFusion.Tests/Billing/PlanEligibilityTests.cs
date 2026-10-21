@@ -43,8 +43,8 @@ public class PlanEligibilityTests
     [InlineData("KE", "pro_monthly_usd_regional", "USD", true)]  // Africa outside Nigeria
     [InlineData("KE", "pro_monthly_usd", "USD", false)]
     [InlineData("KE", "pro_monthly_ngn", "NGN", false)]
-    [InlineData("IN", "one_song_usd_regional", "USD", true)]     // South Asia
-    [InlineData("PH", "one_song_usd_regional", "USD", true)]     // Southeast Asia
+    [InlineData("IN", "one_song_usd_regional_v2", "USD", true)]     // South Asia
+    [InlineData("PH", "one_song_usd_regional_v2", "USD", true)]     // Southeast Asia
     [InlineData("IN", "one_song_usd", "USD", false)]
     public void Region_decides_which_tier_is_on_offer(string? country, string code, string currency, bool offered)
     {
