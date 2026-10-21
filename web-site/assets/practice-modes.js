@@ -196,7 +196,7 @@
     return c > 0 ? "+" + c : c < 0 ? "−" + Math.abs(c) : "0";
   }
 
-  /** How a mark is drawn: green in tune, amber close, grey off (never red), dashed not sung. */
+  /** How a mark is drawn: green in tune, ink close (dashed, with ~), grey off (never red), dashed grey not sung. */
   function markTone(status) { return status === "wrong" ? "off" : status; }
 
   /** A notes-graded take's marks, one per note sung, labelled as the screen draws them. */

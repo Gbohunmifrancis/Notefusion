@@ -3653,7 +3653,7 @@
     request("/api/transcriptions/grade", { method: "POST", form: form }).then(function (g) {
       if (at !== epoch) return;
       $("sing-status").textContent = "";
-      $("sing-score").textContent = g.score; $("sing-score").style.color = g.score >= 80 ? "var(--success-text)" : g.score >= 50 ? "var(--amber-text)" : "var(--danger-text)";
+      $("sing-score").textContent = g.score; $("sing-score").style.color = g.score >= 80 ? "var(--success-text)" : g.score >= 50 ? "var(--ink)" : "var(--danger-text)";
       $("sing-summary").textContent = g.summary + (g.octaveShift ? " Sung " + (g.octaveShift > 0 ? "an octave up" : "an octave down") + " — that's fine." : "");
       var marks = $("sing-marks"); marks.innerHTML = "";
       (g.notes || []).forEach(function (m) {
@@ -3897,7 +3897,7 @@
       if (practice.part !== part || practice.range !== range) return;
       practice.marks = PR.marksByNote(g, slice);
       $("pr-score").textContent = g.score;
-      $("pr-score").style.color = g.score >= 80 ? "var(--success-text)" : g.score >= 50 ? "var(--amber-text)" : "var(--danger-text)";
+      $("pr-score").style.color = g.score >= 80 ? "var(--success-text)" : g.score >= 50 ? "var(--ink)" : "var(--danger-text)";
       $("pr-summary").textContent = g.summary + (g.octaveShift ? " Sung " + (g.octaveShift > 0 ? "an octave up" : "an octave down") + " — that's fine." : "");
       renderPractice();
       show($("pr-result"));
