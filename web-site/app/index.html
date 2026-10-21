@@ -851,7 +851,7 @@
         <h2 class="group-title"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg>Choir library · <span id="choir-lib-name"></span></h2>
         <p class="muted small" style="margin:0 0 10px">Sheets your choir shared. Open one to rehearse; save it to keep a copy of your own.</p>
         <div class="lib-list" id="choir-lib-list"></div>
-        <p class="muted small hidden" id="choir-lib-empty" style="margin:0">Nothing shared yet. Press <strong>Share with choir</strong> on any of your sheets above.</p>
+        <p class="muted small hidden" id="choir-lib-empty" style="margin:0">Nothing shared yet. To share one of your sheets, open its <strong>⋯</strong> above.</p>
       </div>
     </div>
 
@@ -921,15 +921,17 @@
             <div class="list-card" id="choir-wait">
               <div class="lrow lrow-block"><div class="skel skel-line w60" id="choir-wait-skel"></div><p class="lrow-note hidden" id="choir-wait-text" style="margin:0" role="status"></p></div>
             </div>
-            <!-- In no choir: the code field, and the way to the choir plan. -->
+            <!-- In no choir: "Have a choir code?", which opens the field (board n-ux-low V2c), and the way to the choir plan. -->
             <div class="list-card hidden" id="choir-none">
-              <div class="lrow lrow-block">
-                <p class="lrow-note" style="margin:0 0 8px">Your director's choir code gives you Pro and the choir's shared sheets while the choir's plan runs.</p>
+              <button class="lrow lrow-btn" id="choir-code-ask" type="button" aria-expanded="false" aria-controls="choir-code-box"><span class="k"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-choir"/></svg>Have a choir code?</span><span class="v"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev-down"/></svg></span></button>
+              <div class="lrow lrow-block choir-code-box hidden" id="choir-code-box">
+                <label class="choir-field-label" for="choir-join-code">Choir code</label>
                 <form class="choir-join" id="choir-join-form" novalidate>
-                  <input id="choir-join-code" type="text" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Choir code" aria-label="Choir code">
+                  <input id="choir-join-code" type="text" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="For example: K7PQ2MZD">
                   <button class="btn btn-primary btn-sm" type="submit" id="choir-join-btn">Join choir</button>
                 </form>
                 <p class="small muted" id="choir-join-status" aria-live="polite" style="margin:6px 0 0"></p>
+                <p class="lrow-note" style="margin:8px 0 0">Your director's choir code gives you Pro and the choir's shared sheets while the choir's plan runs.</p>
               </div>
               <button class="lrow lrow-btn" id="choir-plan-open" type="button"><span class="k link">Lead a choir? See the choir plan</span><span class="v"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev"/></svg></span></button>
             </div>
@@ -939,8 +941,9 @@
               <!-- What went wrong with a rename, a new code, a removal or leaving, said here (the studio's alert is out of sight). -->
               <div class="lrow lrow-block hidden" id="choir-msg-row"><p class="field-error" id="choir-msg" role="alert" style="margin:0"></p></div>
               <div class="lrow lrow-block hidden" id="choir-rename-row">
+                <label class="choir-field-label" for="choir-name">Choir name</label>
                 <form class="choir-join" id="choir-rename-form" novalidate>
-                  <input id="choir-name" type="text" maxlength="80" autocomplete="off" aria-label="Choir name">
+                  <input id="choir-name" type="text" maxlength="80" autocomplete="off">
                   <button class="btn btn-ghost btn-sm" type="submit" id="choir-name-save">Rename</button>
                 </form>
               </div>
@@ -973,7 +976,16 @@
                   <button type="button" role="radio" data-theme-pref="dark">Dark</button>
                   <button type="button" role="radio" data-theme-pref="system">System</button>
                 </span></span></div>
-              <div class="lrow"><span class="k"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-volume"/></svg>Sounds</span><span class="v"><button class="switch" id="acct-sounds" type="button" role="switch" aria-checked="true" aria-label="Sounds"></button></span></div>
+            </div>
+          </section>
+
+          <!-- Both sounds in one group, named for what they play (board n-ux-low V2d); the same switches and settings. -->
+          <section aria-labelledby="acct-sound-title">
+            <h2 class="group-title" id="acct-sound-title">Sounds</h2>
+            <div class="list-card">
+              <div class="lrow"><span class="k" id="acct-sounds-label"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-volume"/></svg>App sounds</span><span class="v"><button class="switch" id="acct-sounds" type="button" role="switch" aria-checked="true" aria-labelledby="acct-sounds-label"></button></span></div>
+              <div class="lrow"><span class="k" id="acct-notify-sound-label"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-volume"/></svg>A sound when a transcription is ready</span><span class="v"><button class="switch" id="acct-notify-sound" type="button" role="switch" aria-checked="true" aria-labelledby="acct-notify-sound-label"></button></span></div>
+              <div class="lrow lrow-block"><p class="lrow-note" style="margin:0">Taps, the count-in and the chime when a sheet is ready, on this browser.</p></div>
             </div>
           </section>
 
@@ -981,10 +993,16 @@
             <h2 class="group-title" id="acct-notify-title">Notifications</h2>
             <div class="list-card">
               <div class="lrow"><span class="k" id="acct-notify-label"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-bell"/></svg>Notify me when a transcription is ready</span><span class="v"><button class="switch" id="acct-notify" type="button" role="switch" aria-checked="false" aria-labelledby="acct-notify-label" aria-describedby="acct-notify-note"></button></span></div>
-              <div class="lrow"><span class="k" id="acct-notify-sound-label"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-volume"/></svg>Play a sound when it's ready</span><span class="v"><button class="switch" id="acct-notify-sound" type="button" role="switch" aria-checked="true" aria-labelledby="acct-notify-sound-label"></button></span></div>
               <div class="lrow lrow-block"><p class="lrow-note acct-notify-note" id="acct-notify-note" aria-live="polite">For a transcription that finishes while you're in another tab or window.</p></div>
               <!-- The account's choice, the one the unsubscribe link in those emails makes (GET/PUT /api/me/email-preferences). -->
               <div class="lrow"><span class="k" id="acct-founder-label"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-message"/></svg>Notes from the founder by email</span><span class="v"><button class="switch" id="acct-founder" type="button" role="switch" aria-checked="false" aria-labelledby="acct-founder-label" disabled></button></span></div>
+            </div>
+          </section>
+
+          <!-- Sign out alone, well apart from Delete my account (board n-ux-low V2e). -->
+          <section aria-label="Sign out">
+            <div class="list-card">
+              <button class="lrow lrow-btn" id="acct-signout" type="button"><span class="k"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-logout"/></svg>Sign out</span><span class="v"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev"/></svg></span></button>
             </div>
           </section>
 
@@ -996,11 +1014,13 @@
             </div>
           </section>
 
-          <section aria-label="Sign out or delete your account">
+          <!-- The one way out for good, in a group of its own at the very end. -->
+          <section class="acct-delete-group" aria-labelledby="acct-delete-title">
+            <h2 class="group-title" id="acct-delete-title">Delete account</h2>
             <div class="list-card">
-              <button class="lrow lrow-btn" id="acct-signout" type="button"><span class="k"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-logout"/></svg>Sign out</span><span class="v"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-chev"/></svg></span></button>
-              <a class="lrow lrow-btn danger" href="/delete-account" id="acct-delete"><span class="k"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-trash"/></svg>Delete my account</span></a>
+              <a class="lrow lrow-btn danger" href="/delete-account" id="acct-delete" aria-describedby="acct-delete-note"><span class="k"><svg class="ic" aria-hidden="true"><use href="/assets/icons.svg#i-trash"/></svg>Delete my account</span></a>
             </div>
+            <p class="lrow-note" id="acct-delete-note">Your sheets, recordings and plan go with it, for good. You are asked again first.</p>
           </section>
         </div>
       </div>
@@ -1050,6 +1070,7 @@
 <script src="/assets/notify.js?v=2" defer></script>
 <script src="/assets/freeweek.js?v=1" defer></script>
 <script src="/assets/sse.js?v=1" defer></script>
+<script src="/assets/library-groups.js?v=1" defer></script>
 <script src="/assets/app.js?v=60" defer></script>
 <script src="/assets/season.js?v=4" defer></script>
 <script src="/assets/track.js?v=5" defer></script>

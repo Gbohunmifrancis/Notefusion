@@ -449,9 +449,12 @@ table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 .lib-item:hover { border-color: rgba(37, 99, 235, 0.35); box-shadow: var(--shadow-card-hover); transform: translateY(-1px); }
 .lib-list .lib-item { cursor: pointer; } /* the whole card opens the sheet (app.js opensOnTap) */
 .lib-key { width: 42px; height: 42px; border-radius: 8px; background: var(--blue-tint); color: var(--blue-dark); font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; letter-spacing: -0.02em; margin-bottom: 6px; }
-.lib-item h2, .lib-item h3 { display: block; margin: 0; font-size: 1rem; line-height: 1.3; overflow-wrap: anywhere; }
+.lib-item h3 { display: block; margin: 0; font-size: 1rem; line-height: 1.3; overflow-wrap: anywhere; }
 .lib-item .meta { color: var(--muted); font-size: 0.825rem; }
 .lib-item .actions { display: flex; gap: 8px; margin-top: 8px; }
+/* Today, This week, Earlier (board n-ux-low V2b): quiet headings across the whole grid. */
+.lib-group-h { grid-column: 1 / -1; margin: 10px 2px -4px; font-size: 0.8125rem; font-weight: 600; line-height: 1.4; letter-spacing: 0.02em; color: var(--muted); }
+.lib-group-h:first-child { margin-top: 2px; }
 .empty { text-align: center; padding: 28px 16px 20px; color: var(--muted); }
 .empty > .ic { width: 24px; height: 24px; color: var(--blue); margin: 0 auto 10px; }
 .empty p { max-width: 42ch; margin: 0 auto 14px; }
@@ -484,6 +487,10 @@ table.ranges .bad { color: var(--danger-text); font-weight: 600; }
 /* Inside the card's rounded, clipped edge, so the keyboard's ring is not cut off at the sides. */
 .list-card :focus-visible { outline-offset: -2px; }
 .lrow-btn.danger, .lrow-btn.danger .k > .ic { color: var(--danger-text); }
+/* Delete my account in a group of its own, at the end (board n-ux-low V2e): the words red, the icon ink. */
+.acct-delete-group { margin-top: 12px; }
+.acct-delete-group .lrow-btn.danger .k > .ic { color: var(--copy); }
+.acct-delete-group .lrow-note { margin: 8px 4px 0; }
 .pill-active { background: var(--success-soft); color: var(--success-text); }
 /* The Account group's values (board m-ux-medium W3d): quiet, on one line, cut short rather than wrapped. */
 .acct-val { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: 0.9375rem; font-weight: 500; }
@@ -920,6 +927,11 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .btn-pro { background: linear-gradient(135deg, #fbe39a, #e9b949); color: #3b2a00; font-weight: 700; box-shadow: 0 8px 20px rgba(233, 185, 73, 0.35); }
 .btn-pro:hover:not(:disabled) { box-shadow: 0 12px 26px rgba(233, 185, 73, 0.45); transform: translateY(-1px); }
 .btn-pro:focus-visible { outline: 3px solid rgba(233, 185, 73, 0.55); outline-offset: 3px; }
+/* One song bought is not Pro (board n-ux-low V2f): no glow, ring or crown; a neutral tick on a plain card. */
+.pro-welcome.is-single .pro-welcome-card { animation: none; }
+.pro-welcome.is-single .pro-welcome-card::before, .pro-welcome.is-single .pro-welcome-mark::after { display: none; }
+.pro-welcome.is-single .pro-welcome-mark { width: 64px; height: 64px; background: var(--wash); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); animation: none; }
+.pro-welcome.is-single .pro-welcome-mark .ic { width: 28px; height: 28px; }
 @keyframes pro-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes pro-in { from { opacity: 0; transform: translateY(14px) scale(0.94); } to { opacity: 1; transform: none; } }
 @keyframes pro-mark-in { from { opacity: 0; transform: scale(0.4) rotate(-12deg); } to { opacity: 1; transform: none; } }
@@ -973,15 +985,22 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 .lib-more .ic circle { fill: currentColor; stroke: none; }
 .lib-menu { position: absolute; z-index: 10; right: 0; top: calc(100% + 6px); display: block; width: 232px; padding: 6px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 16px 40px rgba(15, 23, 42, 0.16); }
 :root[data-theme="dark"] .lib-menu { background: #151A24; border-color: rgba(255, 255, 255, 0.08); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6); }
-.lib-menu [role=menuitem] { display: flex; align-items: center; width: 100%; min-height: 48px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: var(--ink); font: inherit; font-size: 0.9375rem; font-weight: 500; text-align: left; cursor: pointer; }
-.lib-menu [role=menuitem]:hover, .lib-menu [role=menuitem]:focus-visible { background: var(--wash); outline: none; }
-.lib-menu [role=menuitem].danger { color: var(--danger-text); }
+.lib-menu [role^=menuitem] { display: flex; align-items: center; width: 100%; min-height: 48px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: var(--ink); font: inherit; font-size: 0.9375rem; font-weight: 500; text-align: left; cursor: pointer; }
+.lib-menu [role^=menuitem]:hover, .lib-menu [role^=menuitem]:focus-visible { background: var(--wash); outline: none; }
+.lib-menu [role^=menuitem].danger { color: var(--danger-text); }
 .lib-menu-sep { display: block; margin: 4px 6px; border-top: 1px solid var(--line); }
-@media (min-width: 641px) and (hover: hover) and (pointer: fine) { .lib-more { width: 38px; } .lib-menu [role=menuitem] { min-height: 40px; } }
+@media (min-width: 641px) and (hover: hover) and (pointer: fine) { .lib-more { width: 38px; } .lib-menu [role^=menuitem] { min-height: 40px; } }
+/* A sheet's ⋯ (board n-ux-low V2a): 44 px in its card's top right corner, its menu under it. */
+.lib-card-more { position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 10px; background: none; color: var(--copy); cursor: pointer; }
+@media (hover: hover) { .lib-card-more:hover { background: var(--wash); } }
+.lib-card-more:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+.lib-card-more .ic { width: 20px; height: 20px; }
+.lib-card-more .ic circle { fill: currentColor; stroke: none; }
+.lib-sheet-menu { top: 52px; right: 8px; max-height: min(360px, 70vh); overflow-y: auto; cursor: default; }
+.lib-sheet-menu [aria-checked="true"] .ic { width: 18px; height: 18px; margin-left: auto; flex: none; }
 .lib-folder-bar .share-row { margin-top: 10px; }
 .lib-folder-tag { align-self: flex-start; font-size: 0.72rem; font-weight: 700; color: var(--blue-dark); background: var(--blue-tint); border-radius: 8px; padding: 2px 9px; }
 .lib-item .actions { flex-wrap: wrap; align-items: center; }
-.lib-file { width: auto; max-width: 100%; min-width: 0; min-height: 32px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px; }
 .folder-list { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 8px; }
 .folder-list a { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); text-decoration: none; color: var(--ink); background: var(--surface); font-weight: 600; }
 .folder-list a:hover { border-color: var(--blue); }
@@ -1009,6 +1028,12 @@ body.auth-only .foot, .nf-boot:not(.nf-in) .foot { display: none; }
 /* ── The choir plan: the join and rename forms, the director's singers, the choir library ── */
 .choir-join { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .choir-join input { flex: 1 1 160px; min-width: 0; min-height: 36px; padding: 6px 10px; font-size: 0.9rem; }
+/* "Have a choir code?" and the field it opens (board n-ux-low V2c); the code and the choir's name labelled above. */
+#choir-code-ask .v .ic { transition: transform 150ms ease-out; }
+#choir-code-ask[aria-expanded="true"] .v .ic { transform: rotate(180deg); }
+.choir-code-box { padding-top: 4px; }
+.choir-field-label { font-size: 0.875rem; color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { #choir-code-ask .v .ic { transition: none; } }
 .choir-members { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .choir-members li { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 0.9rem; }
 .choir-members li span { min-width: 0; overflow-wrap: anywhere; }
