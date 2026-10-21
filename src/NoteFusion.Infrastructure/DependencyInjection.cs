@@ -68,9 +68,13 @@ public static class DependencyInjection
         // The loops that work saved rows are rung as the rows are saved (WorkSignalInterceptor).
         services.AddSingleton<Common.WorkSignals>();
         services.AddSingleton<WorkSignalInterceptor>();
+        // A deleted sheet's (or closed account's) backings are deleted from the file store as the delete commits.
+        services.AddSingleton<BackingCleanupInterceptor>();
         services.AddDbContext<ApplicationDbContext>((sp, options) => options
             .UseNpgsql(ConnectionStringResolver.Resolve(database))
-            .AddInterceptors(sp.GetRequiredService<WorkSignalInterceptor>()));
+            .AddInterceptors(
+                sp.GetRequiredService<WorkSignalInterceptor>(),
+                sp.GetRequiredService<BackingCleanupInterceptor>()));
 
         // Bridge the concrete context to the Application contract.
         services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
@@ -241,10 +245,15 @@ public static class DependencyInjection
         if (r2.IsConfigured)
         {
             services.AddSingleton<IImageStorage, R2ImageStorage>();
+
+            // The backings kept with sheets, in the same bucket, through the shared resilience pipeline.
+            services.AddHttpClient(R2BackingStorage.HttpClientName).AddOutboundResilience(OutboundResilience.FileStore);
+            services.AddSingleton<IBackingStorage, R2BackingStorage>();
         }
         else
         {
             services.AddSingleton<IImageStorage, LoggingImageStorage>();
+            services.AddSingleton<IBackingStorage, LoggingBackingStorage>();
         }
     }
 

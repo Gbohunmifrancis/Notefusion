@@ -52,6 +52,18 @@ public abstract class ApiControllerBase : ControllerBase
         return new EmptyResult();
     }
 
+    /// <summary>
+    /// A backing track (MP3) for its owner: seekable by range, kept by the browser or phone for this person only
+    /// (never a shared cache), or the mapped error.
+    /// </summary>
+    protected IActionResult Backing(Result<byte[]> result)
+    {
+        if (result.IsFailure)
+            return Problem(result.Error);
+        Response.Headers.CacheControl = "private, max-age=86400";
+        return File(result.Value, "audio/mpeg", enableRangeProcessing: true);
+    }
+
     private IActionResult Problem(Error error)
     {
         var status = StatusFor(error.Type);

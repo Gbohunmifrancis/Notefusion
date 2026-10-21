@@ -56,14 +56,17 @@
 </header>
 
 <main class="site-page-main">
-  <section class="site-page-intro"><p class="site-page-kicker">Privacy</p><h1>Privacy Policy</h1><p>Last updated 20 October 2026</p></section>
+  <section class="site-page-intro"><p class="site-page-kicker">Privacy</p><h1>Privacy Policy</h1><p>Last updated 21 October 2026</p></section>
 
   <div class="card">
     <h2>The short version</h2>
     <div class="callout">
       <p><strong>Your recordings are not kept.</strong> Audio you submit is transcribed
       and then deleted from our servers, usually within seconds and always as soon as
-      the job finishes. We keep the resulting notation, not the sound.</p>
+      the job finishes. We keep the resulting notation, not the sound. The one exception:
+      when you upload a whole song, we keep its instrumental (the music without the voice)
+      with that sheet so you can practise over it, until you delete the sheet or your
+      account. Audio from a link you paste is never kept.</p>
     </div>
     <p>We do not sell your data, and we do not use your recordings or transcriptions to
     train machine-learning models. Our public web pages show ads from Google; the app and
@@ -105,11 +108,18 @@
     <strong>deleted once the job completes</strong>. It is not archived, not backed up,
     and not reviewed by a person. Transcription runs on our own infrastructure; your
     audio is not sent to a third-party AI service.</p>
+    <p>One exception: when you upload a whole song and we separate the voice from the
+    music, we keep the instrumental (the backing, without the voice) with the sheet it
+    made, so you can practise over it later, offline too. It is stored with our media host,
+    <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare</a> (R2 object
+    storage), only you can play it, it is not backed up, and it is deleted when you delete
+    that sheet or close your account.</p>
 
     <h3>Songs you link to</h3>
     <p>When you paste a YouTube, Spotify or Apple Music link, our server fetches the
     song&rsquo;s audio, isolates the voice, transcribes it, and deletes the audio the
-    moment the job finishes, exactly as with a recording. We keep the song&rsquo;s title
+    moment the job finishes; none of it is kept with your sheet, not even the
+    instrumental. We keep the song&rsquo;s title
     and artist so the sheet can credit them. The link you pasted is not kept against
     your account beyond the job.</p>
 
@@ -256,7 +266,8 @@
     <h2>How long we keep it</h2>
     <ul>
       <li><strong>Audio recordings</strong> are deleted as soon as the transcription
-      job finishes.</li>
+      job finishes. The instrumental of a whole song you upload is kept with its sheet
+      until you delete the sheet or close your account.</li>
       <li><strong>Saved transcriptions and account data</strong> stay until you delete
       them or close your account.</li>
       <li><strong>Session tokens</strong> last until they expire, you sign out, or you

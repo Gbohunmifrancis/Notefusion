@@ -10,7 +10,9 @@
 #     env-names.txt       the names of every setting in the server's .env and whether each is set —
 #                         never a value (written by the deploy).
 # The worker's job journal is deliberately not backed up: it holds users' uploaded audio for minutes,
-# and the product promises that audio is deleted after each job.
+# and the product promises that audio is deleted after each job. Nor are the song backings kept with
+# sheets (backing/ in the same bucket): the privacy policy promises they are not backed up, so deleting a
+# sheet or an account deletes its backing for good.
 set -Eeuo pipefail
 # shellcheck source=nf-backup-lib.sh
 . /usr/local/bin/nf-backup-lib.sh
@@ -34,13 +36,13 @@ problems=()
 paths=("$NF_WORK/files")
 
 if [ -n "${FILES_S3_BUCKET:-}" ]; then
-  remote_bytes=$(rclone size "files:$FILES_S3_BUCKET" --json 2>"$NF_STATE/files.err" | jq -r '.bytes // 0') \
+  remote_bytes=$(rclone size "files:$FILES_S3_BUCKET" --exclude 'backing/**' --json 2>"$NF_STATE/files.err" | jq -r '.bytes // 0') \
     || fail "cannot read the photo bucket $FILES_S3_BUCKET: $(tail -c 300 "$NF_STATE/files.err" | tr '\n' ' ')"
   local_bytes=$(du -sb "$mirror" | cut -f1)
   need=$((remote_bytes - local_bytes + 256 * 1024 * 1024))
   free=$(nf_free_bytes "$NF_WORK")
   [ "$free" -ge "$need" ] || fail "not enough free disk to mirror the photos: $(nf_human_bytes "$free") free, want $(nf_human_bytes "$need")"
-  rclone sync "files:$FILES_S3_BUCKET" "$mirror" --checksum --transfers 4 --checkers 8 \
+  rclone sync "files:$FILES_S3_BUCKET" "$mirror" --exclude 'backing/**' --checksum --transfers 4 --checkers 8 \
     >"$NF_STATE/files-sync.out" 2>&1 \
     || fail "rclone sync of the photo bucket failed: $(tail -c 400 "$NF_STATE/files-sync.out" | tr '\n' ' ')"
   notes+=("$(find "$mirror" -type f | wc -l) photos")

@@ -22,9 +22,14 @@ public static class TranscriptionResultCache
     /// long recording, and it would be stored per job forever. The client already re-synthesises the
     /// same melody locally (<c>lib/synth.ts</c>), which is exactly how it plays saved library items,
     /// so keeping the bytes here would buy nothing and cost the database a great deal.
+    /// <para>
+    /// The backing goes too, and with it <see cref="TranscriptionResultDto.HasBacking"/>: this copy no longer holds
+    /// one. An upload's backing is kept with its sheet (<c>LibraryFiling</c>), which is what a read of this copy
+    /// says instead; a link's is never kept.
+    /// </para>
     /// </remarks>
     public static string Serialize(TranscriptionResultDto result)
-        => JsonSerializer.Serialize(result with { AudioPreviewBase64 = "", BackingAudioBase64 = "" }, Options);
+        => JsonSerializer.Serialize(result with { AudioPreviewBase64 = "", BackingAudioBase64 = "", HasBacking = false }, Options);
 
     /// <summary>
     /// Reads a cached result back, or null if the stored JSON cannot be understood — a row written by

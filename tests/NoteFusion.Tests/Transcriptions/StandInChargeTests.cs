@@ -58,7 +58,7 @@ public class StandInChargeTests
         var (user, job) = Seed(h, paidByCredit: false);
         var api = Worker(job, Result(standIn: true));
 
-        var read = await new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, h.QuotaGate)
+        var read = await new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, h.QuotaGate, h.Backing)
             .Handle(new GetTranscriptionJobQuery(job.JobId), default);
 
         Assert.Equal(TranscriptionStatus.Done, read.Value.Status);
@@ -136,7 +136,7 @@ public class StandInChargeTests
     private static async Task Notify(TestHarness h, TranscriptionJob job, TranscriptionResultDto result)
     {
         var done = await new NotifyTranscriptionReadyCommandHandler(
-                h.Db, Worker(job, result), h.Clock, h.Push, Substitute.For<ITranscriptionNotifier>(), h.WebPush, h.QuotaGate)
+                h.Db, Worker(job, result), h.Clock, h.Push, Substitute.For<ITranscriptionNotifier>(), h.WebPush, h.QuotaGate, h.Backing)
             .Handle(new NotifyTranscriptionReadyCommand(job.Id), default);
         Assert.True(done.IsSuccess);
     }

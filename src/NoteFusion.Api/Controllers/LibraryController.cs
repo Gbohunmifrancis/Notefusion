@@ -129,6 +129,15 @@ public sealed class LibraryController : ApiControllerBase
     /// <summary>Where a shared sheet opens: the website's public sheet page.</summary>
     public static string SharedSheetUrl(string token) => $"https://notefusion.studio/app/sheet/?s={Uri.EscapeDataString(token)}";
 
+    /// <summary>
+    /// The backing kept with the sheet (the song's instrumental, from the owner's own upload), as <c>audio/mpeg</c> with
+    /// range requests, for its owner only: a choir member or a shared link's reader never gets it. 404
+    /// <c>BACKING_NOT_FOUND</c> for a sheet that keeps none.
+    /// </summary>
+    [HttpGet("{id:guid}/backing")]
+    public async Task<IActionResult> GetBacking(Guid id, CancellationToken ct)
+        => Backing(await _sender.Send(new GetSheetBackingQuery(id), ct));
+
     /// <summary>Marks a sheet opened: one saved automatically is no longer shown as unopened.</summary>
     [HttpPost("{id:guid}/opened")]
     public async Task<IActionResult> MarkOpened(Guid id, CancellationToken ct)

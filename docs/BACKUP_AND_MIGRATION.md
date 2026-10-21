@@ -50,7 +50,7 @@ repeats once a day while anything is still wrong, and a push says when it is fix
   subscriptions and choirs, transcription jobs and their results, saved sheets, the blog (it lives in
   the database), analytics, push subscriptions, passkeys, the audit log — plus the roles (without their
   password hashes; the app's password is the `POSTGRES_PASSWORD` secret).
-- **Profile photos** (the R2 photo bucket, `R2__BucketName`): the whole bucket.
+- **Profile photos** (the R2 photo bucket, `R2__BucketName`): the whole bucket but `backing/` (below).
 - **`jwt_private_key.pem`**: signs every login; the web-push keys and the account-deletion secret are
   derived from it. Losing it signs everyone out and breaks web push. Stored encrypted in restic, and it
   is also the `JWT_PRIVATE_KEY_PEM` GitHub secret.
@@ -62,6 +62,9 @@ repeats once a day while anything is still wrong, and a push says when it is fix
 - **The worker's job journal** (`job-data`): it holds users' uploaded audio for the minutes a job runs,
   and we promise audio is deleted after each job. A restore loses at most the jobs running at that
   moment; the API's sweep closes them without charging anyone.
+- **Song backings** (`backing/` in the photo bucket): the instrumental kept with a sheet from an uploaded
+  song. The privacy policy promises they are not backed up, so a deleted sheet's or account's backing is gone
+  for good. A lost bucket loses them; the sheets are in the database and still play without them.
 - **`caddy-data`** (TLS certificates): Caddy fetches new ones by itself. **`dozzle-data`**: log viewer.
 - **Secrets**: they live in GitHub (Settings → Secrets and variables → Actions) and are written to the
   server by the deploy. GitHub is not part of AWS or Cloudflare, so losing either does not lose them.

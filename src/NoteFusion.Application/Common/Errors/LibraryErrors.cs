@@ -32,4 +32,11 @@ public static class LibraryErrors
 
     public static readonly Error EmptyFolder =
         Error.Validation("LIBRARY_EMPTY_FOLDER", "There are no sheets in that folder to share.");
+
+    /// <summary>
+    /// No backing to play: none was kept, it has gone (a link's is held only while its job is fresh), or the sheet or
+    /// job is not the caller's — one answer for all of these, so nobody learns what someone else has.
+    /// </summary>
+    public static readonly Error BackingNotFound =
+        Error.NotFound("BACKING_NOT_FOUND", "There is no backing track to play for this.");
 }

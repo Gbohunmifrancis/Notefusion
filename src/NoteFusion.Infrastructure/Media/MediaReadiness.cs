@@ -24,13 +24,13 @@ public sealed class MediaReadiness : IHostedService
     public Task StartAsync(CancellationToken cancellationToken)
     {
         if (_settings.IsConfigured)
-            _logger.LogInformation("Profile photos are stored in R2 bucket {Bucket} and served from {PublicBaseUrl}.", _settings.BucketName, _settings.PublicBaseUrl);
+            _logger.LogInformation("Profile photos are stored in R2 bucket {Bucket} and served from {PublicBaseUrl}; song backings are kept with sheets in the same bucket.", _settings.BucketName, _settings.PublicBaseUrl);
         else if (_settings.UseR2)
-            _logger.LogError("R2__UseR2 is on but R2__AccountId, R2__AccessKeyId, R2__SecretAccessKey, R2__BucketName or R2__PublicBaseUrl is missing; profile photo uploads are disabled.");
+            _logger.LogError("R2__UseR2 is on but R2__AccountId, R2__AccessKeyId, R2__SecretAccessKey, R2__BucketName or R2__PublicBaseUrl is missing; profile photo uploads are disabled and song backings are not kept with sheets.");
         else if (_environment.IsDevelopment())
-            _logger.LogInformation("Profile photo uploads are disabled: R2 is not configured.");
+            _logger.LogInformation("Profile photo uploads are disabled and song backings are not kept with sheets: R2 is not configured.");
         else
-            _logger.LogWarning("Profile photo uploads are disabled because R2 is not configured: set R2__UseR2=true with R2__AccountId, R2__AccessKeyId, R2__SecretAccessKey, R2__BucketName and R2__PublicBaseUrl.");
+            _logger.LogWarning("Profile photo uploads are disabled and song backings are not kept with sheets because R2 is not configured: set R2__UseR2=true with R2__AccountId, R2__AccessKeyId, R2__SecretAccessKey, R2__BucketName and R2__PublicBaseUrl.");
         return Task.CompletedTask;
     }
 
