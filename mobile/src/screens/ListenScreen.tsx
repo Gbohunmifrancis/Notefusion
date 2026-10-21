@@ -73,7 +73,7 @@ export function ListenScreen({ navigation }: Props) {
           : "Listening… the key shows after a few seconds of music.";
 
   return (
-    <Screen scroll contentStyle={styles.page}>
+    <Screen scroll>
       <View style={styles.headerRow}>
         <Touchable
           onPress={() => (navigation.canGoBack() ? navigation.goBack() : navigation.navigate("Tabs", { screen: "Home" }))}
@@ -88,95 +88,89 @@ export function ListenScreen({ navigation }: Props) {
         <View style={styles.backBtn} />
       </View>
 
-      {/* The listener and its notes sit in the middle of the screen, not bunched under the header. */}
-      <View style={styles.centerBody}>
-        <Card style={styles.stage}>
-          <Text style={styles.stageLabel}>{doh ? "Doh is" : running ? "Listening for the doh" : "Doh"}</Text>
-          <Text style={[styles.doh, !doh && styles.dohEmpty]} accessibilityLabel={doh ? `Doh is ${doh}` : "No key yet"}>
-            {doh ?? "—"}
-          </Text>
-          <Text style={styles.keyName}>{keyName ?? (running ? "…" : "The key appears here")}</Text>
+      <Card style={styles.stage}>
+        <Text style={styles.stageLabel}>{doh ? "Doh is" : running ? "Listening for the doh" : "Doh"}</Text>
+        <Text style={[styles.doh, !doh && styles.dohEmpty]} accessibilityLabel={doh ? `Doh is ${doh}` : "No key yet"}>
+          {doh ?? "—"}
+        </Text>
+        <Text style={styles.keyName}>{keyName ?? (running ? "…" : "The key appears here")}</Text>
 
-          <View style={styles.confidenceTrack} accessibilityLabel={`Confidence ${Math.round(confidence * 100)} percent`}>
-            <View style={[styles.confidenceFill, { width: `${Math.round(Math.max(0, Math.min(1, confidence)) * 100)}%` }]} />
+        <View style={styles.confidenceTrack} accessibilityLabel={`Confidence ${Math.round(confidence * 100)} percent`}>
+          <View style={[styles.confidenceFill, { width: `${Math.round(Math.max(0, Math.min(1, confidence)) * 100)}%` }]} />
+        </View>
+        <Text style={styles.confidenceText}>{doh ? `${Math.round(confidence * 100)}% sure` : "Confidence"}</Text>
+
+        {running ? (
+          <View style={styles.chordRow}>
+            <Text style={styles.chordLabel}>Now</Text>
+            <Text style={styles.chordValue}>{chord ?? "—"}</Text>
           </View>
-          <Text style={styles.confidenceText}>{doh ? `${Math.round(confidence * 100)}% sure` : "Confidence"}</Text>
+        ) : null}
 
-          {running ? (
-            <View style={styles.chordRow}>
-              <Text style={styles.chordLabel}>Now</Text>
-              <Text style={styles.chordValue}>{chord ?? "—"}</Text>
-            </View>
-          ) : null}
+        {statusLine ? <Text style={[styles.status, running && !hearing && styles.statusWarn]}>{statusLine}</Text> : null}
 
-          {statusLine ? <Text style={[styles.status, running && !hearing && styles.statusWarn]}>{statusLine}</Text> : null}
+        {available ? (
+          <Button
+            label={running ? "Stop" : starting ? "Starting…" : "Start listening"}
+            icon={running ? "stop" : "find-key"}
+            variant={running ? "secondary" : "primary"}
+            onPress={running ? stop : () => void start()}
+            loading={starting}
+            style={styles.mainButton}
+          />
+        ) : null}
+      </Card>
 
-          {available ? (
+      {error ? (
+        <Card style={styles.card}>
+          <View style={styles.row}>
+            <Icon name="problem" size={18} color={colors.warning} />
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        </Card>
+      ) : null}
+
+      {available ? (
+        <Card style={styles.card}>
+          <View style={styles.row}>
+            <Icon name="phone" size={18} color={colors.icon} />
+            <Text style={styles.rowText}>
+              It keeps listening while you use other apps. The key sits in your notifications and updates as the
+              song goes on; tap Stop there when you are done.
+            </Text>
+          </View>
+          <View style={styles.row}>
+            <Icon name="hear" size={18} color={colors.icon} />
+            <Text style={styles.rowText}>
+              It hears through the microphone, so the music has to play out loud — not through headphones.
+            </Text>
+          </View>
+          {CAN_ADD_TILE ? (
             <Button
-              label={running ? "Stop" : starting ? "Starting…" : "Start listening"}
-              icon={running ? "stop" : "find-key"}
-              variant={running ? "secondary" : "primary"}
-              onPress={running ? stop : () => void start()}
-              loading={starting}
-              style={styles.mainButton}
+              label="Add to Quick Settings"
+              icon="quick"
+              variant="secondary"
+              onPress={() => void addTile()}
+              style={styles.tileButton}
             />
           ) : null}
         </Card>
-
-        {error ? (
-          <Card style={styles.card}>
-            <View style={styles.row}>
-              <Icon name="problem" size={18} color={colors.warning} />
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
-          </Card>
-        ) : null}
-
-        {available ? (
-          <Card style={styles.card}>
-            <View style={styles.row}>
-              <Icon name="phone" size={18} color={colors.icon} />
-              <Text style={styles.rowText}>
-                It keeps listening while you use other apps. The key sits in your notifications and updates as the
-                song goes on; tap Stop there when you are done.
-              </Text>
-            </View>
-            <View style={styles.row}>
-              <Icon name="hear" size={18} color={colors.icon} />
-              <Text style={styles.rowText}>
-                It hears through the microphone, so the music has to play out loud — not through headphones.
-              </Text>
-            </View>
-            {CAN_ADD_TILE ? (
-              <Button
-                label="Add to Quick Settings"
-                icon="quick"
-                variant="secondary"
-                onPress={() => void addTile()}
-                style={styles.tileButton}
-              />
-            ) : null}
-          </Card>
-        ) : (
-          <Card style={styles.card}>
-            <View style={styles.row}>
-              <Icon name="about" size={18} color={colors.icon} />
-              <Text style={styles.rowText}>
-                Background listening is on Android for now. On this phone, record or import a clip to find its key.
-              </Text>
-            </View>
-          </Card>
-        )}
-      </View>
+      ) : (
+        <Card style={styles.card}>
+          <View style={styles.row}>
+            <Icon name="about" size={18} color={colors.icon} />
+            <Text style={styles.rowText}>
+              Background listening is on Android for now. On this phone, record or import a clip to find its key.
+            </Text>
+          </View>
+        </Card>
+      )}
     </Screen>
   );
 }
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    page: { flexGrow: 1 },
-    /** Fills what the header leaves and centres the cards in it, a little above the middle. */
-    centerBody: { flex: 1, justifyContent: "center", paddingBottom: spacing.xl },
     headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: spacing.md },
     backBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
     pageTitle: { fontFamily: fonts.semibold, fontSize: 18, color: c.text },
