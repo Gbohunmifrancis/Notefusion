@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { welcomeChoices } from "./welcomeChoices.ts";
+import { loginGoogleFirst, welcomeChoices } from "./welcomeChoices.ts";
 
 test("Welcome offers Google, then trying it first, with email in the line (board 07)", () => {
   assert.deepEqual(welcomeChoices(true, false), {
@@ -37,4 +37,14 @@ test("there are never more than two block buttons, and every way in is offered o
       assert.ok([email, ...c.links].includes("create"));
     }
   }
+});
+
+test("Login puts Google first only when it is set up and was this phone's last way in (board n-ux-low Q3e)", () => {
+  assert.equal(loginGoogleFirst(true, "google"), true);
+  // Email last, never signed in here, or not read yet: the email form first, as before.
+  assert.equal(loginGoogleFirst(true, "email"), false);
+  assert.equal(loginGoogleFirst(true, null), false);
+  assert.equal(loginGoogleFirst(true, undefined), false);
+  // No Google on this build: there is no Google button to put first.
+  assert.equal(loginGoogleFirst(false, "google"), false);
 });

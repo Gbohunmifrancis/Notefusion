@@ -3,7 +3,7 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NightButton } from "../components/night/NightButton";
 import { NightField } from "../components/night/NightField";
-import { BackButton, ErrorNote, NightLink, NightScreen, nightText } from "../components/night/NightUI";
+import { BackButton, ErrorNote, NightLink, NightScreen, StepBar, nightText } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
 import { NOT_AN_EMAIL, emailFieldError, looksLikeEmail } from "../lib/authErrors";
@@ -62,13 +62,8 @@ export function RegisterScreen({ navigation, route }: Props) {
 
   return (
     <NightScreen
-      header={
-        <>
-          {navigation.canGoBack() ? <BackButton onPress={() => navigation.goBack()} /> : <View style={styles.side} />}
-          <Text style={nightText.step}>1 of 2</Text>
-          <View style={styles.side} />
-        </>
-      }
+      // Only the back button: the step is said by the button it leads to (StepBar, board n-ux-low Q3d).
+      header={navigation.canGoBack() ? <BackButton onPress={() => navigation.goBack()} /> : <View style={styles.side} />}
     >
       <Text style={[nightText.h1, styles.title]} accessibilityRole="header">
         Create your{"\n"}account
@@ -141,8 +136,11 @@ export function RegisterScreen({ navigation, route }: Props) {
         </View>
       )}
 
-      {/* Says what the tap does: the next step is the code it mails. */}
-      <NightButton label="Email me a code" variant="blue" onPress={submit} loading={busy} disabled={!canSubmit} style={styles.submit} />
+      {/* Says what the tap does: the next step is the code it mails, and the bar above says how much is left. */}
+      <View style={styles.submit}>
+        <StepBar step={1} of={2} next="a code by email next" />
+        <NightButton label="Email me a code" variant="blue" onPress={submit} loading={busy} disabled={!canSubmit} />
+      </View>
 
       {/* The link its own 44 px text button (board m-ux-medium P5d); "Already have one?" stays plain text. */}
       <View style={styles.footer}>

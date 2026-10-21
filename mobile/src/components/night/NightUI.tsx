@@ -154,12 +154,33 @@ export function ErrorNote({
   );
 }
 
-export function OrRule() {
+/** The rule between two ways in: "or", or what the way under it is ("or use your email", board n-ux-low Q3e). */
+export function OrRule({ label = "or" }: { label?: string }) {
   return (
     <View style={styles.or}>
       <View style={styles.orLine} />
-      <Text style={styles.orText}>or</Text>
+      <Text style={styles.orText}>{label}</Text>
       <View style={styles.orLine} />
+    </View>
+  );
+}
+
+/**
+ * How far through sign-up the person is, just above the button that takes the step (board n-ux-low Q3d): a 4 px
+ * segment per step, the ones reached in ink, then "Step 1 of 2 · a code by email next" with the step in ink.
+ */
+export function StepBar({ step, of, next }: { step: number; of: number; next: string }) {
+  return (
+    <View style={styles.stepBar} accessible accessibilityLabel={`Step ${step} of ${of}: ${next}`}>
+      <View style={styles.stepSegments}>
+        {Array.from({ length: of }, (_, i) => (
+          <View key={i} style={[styles.stepSegment, i < step && styles.stepSegmentOn]} />
+        ))}
+      </View>
+      <Text style={styles.stepText}>
+        <Text style={styles.stepNow}>{`Step ${step} of ${of}`}</Text>
+        {` · ${next}`}
+      </Text>
     </View>
   );
 }
@@ -176,7 +197,7 @@ export function NightScreen({
 }: {
   children: React.ReactNode;
   glow?: React.ReactNode;
-  /** The row above the scroll body: back button, lock-up, step count. */
+  /** The row above the scroll body: back button, lock-up. */
   header?: React.ReactNode;
   contentStyle?: StyleProp<ViewStyle>;
 }) {
@@ -222,9 +243,9 @@ export const nightText = StyleSheet.create({
     fontFamily: nightFonts.medium,
     color: night.muted,
   },
-  link: { fontSize: 14, fontFamily: nightFonts.semibold, color: night.text },
+  /** The one link look on these screens (board n-ux-low Q3a): ice, semibold, 14 (10.98:1 on the canvas). */
+  link: { fontSize: 14, fontFamily: nightFonts.semibold, color: night.ice },
   muted: { fontSize: 14, fontFamily: nightFonts.regular, color: night.muted },
-  step: { fontSize: 12, fontFamily: nightFonts.mono, color: night.muted },
 });
 
 /**
@@ -234,9 +255,9 @@ export const nightText = StyleSheet.create({
 export const pressedLink = { opacity: 0.55 } as const;
 
 /**
- * A link as its own text button (board m-ux-medium P5d): the words and colour of a link in a sentence, but 44 px tall
- * with 10 px either side, so a thumb can hit it. Its lead-in ("New here?") stays plain text beside it. `legal` is the
- * legal line's: 13 px, underlined, in the muted grey.
+ * A link as its own text button (board m-ux-medium P5d): the one link look (`nightText.link`), but 44 px tall with
+ * 10 px either side, so a thumb can hit it. Its lead-in ("New here?") stays plain text beside it. `legal` is the legal
+ * line's: the same ice at 13 px, no underline, as it is a button of its own (board n-ux-low Q3a).
  */
 export function NightLink({ label, onPress, legal = false }: { label: string; onPress: () => void; legal?: boolean }) {
   return (
@@ -288,11 +309,17 @@ const styles = StyleSheet.create({
   /** The words and the link on one line while they fit, the link wrapping under them when not. */
   errorBody: { flex: 1, flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 4 },
   errorWords: { fontSize: 13.5, lineHeight: 19, fontFamily: nightFonts.medium, color: night.text },
-  errorLink: { fontSize: 13.5, lineHeight: 19, fontFamily: nightFonts.semibold, color: night.ice },
+  errorLink: { fontSize: 14, lineHeight: 19, fontFamily: nightFonts.semibold, color: night.ice },
   or: { flexDirection: "row", alignItems: "center", gap: 12, marginVertical: 20 },
   orLine: { flex: 1, height: 1, backgroundColor: night.line },
   orText: { fontSize: 13, fontFamily: nightFonts.regular, color: night.faint },
   textButton: { minHeight: 44, paddingHorizontal: 10, justifyContent: "center" },
   textButtonLegal: { paddingHorizontal: 8 },
-  legalLink: { fontSize: 13, fontFamily: nightFonts.medium, color: night.muted, textDecorationLine: "underline" },
+  legalLink: { fontSize: 13, fontFamily: nightFonts.semibold, color: night.ice },
+  stepBar: { flexDirection: "row", alignItems: "center", gap: 10, marginHorizontal: 2, marginBottom: 10 },
+  stepSegments: { flexDirection: "row", gap: 4, width: 52 },
+  stepSegment: { flex: 1, height: 4, borderRadius: 2, backgroundColor: "rgba(255, 255, 255, 0.14)" },
+  stepSegmentOn: { backgroundColor: night.text },
+  stepText: { flexShrink: 1, fontSize: 13, fontFamily: nightFonts.medium, color: night.muted },
+  stepNow: { fontFamily: nightFonts.semibold, color: night.text },
 });
