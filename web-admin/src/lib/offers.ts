@@ -168,30 +168,3 @@ export function sendingDays({
   const drawn = days.reduce((sum, day) => sum + day.count, 0);
   return { days, waiting: Math.max(0, total - drawn) };
 }
-
-/**
- * What raising the limits would do: `Email__DailyLimit` at `dailyLimit` and the optional share as now (the line over
- * the limit), counted from the first sending day. `allBy` is the day the last one goes, or null when even that
- * would not reach everyone before the last day; `inTime` is then how many would.
- */
-export function atRaisedLimits({
-  total,
-  share,
-  firstDay,
-  lastDay,
-  dailyLimit = 1000,
-}: {
-  total: number;
-  share: number;
-  firstDay: string;
-  lastDay: string;
-  dailyLimit?: number;
-}): { perDay: number; allBy: string | null; inTime: number } {
-  const perDay = Math.max(1, Math.floor(dailyLimit * share));
-  const daysNeeded = Math.max(1, Math.ceil(total / perDay));
-  const allBy = addCalendarDays(firstDay, daysNeeded - 1);
-  const daysLeft = Math.max(0, daysBetween(firstDay, lastDay) + 1);
-  return daysBetween(allBy, lastDay) >= 0
-    ? { perDay, allBy, inTime: total }
-    : { perDay, allBy: null, inTime: Math.min(total, perDay * daysLeft) };
-}
