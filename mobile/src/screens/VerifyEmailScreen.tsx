@@ -266,7 +266,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: night.surface2,
     borderWidth: 1,
-    borderColor: night.line,
+    // A box you can see before it is filled: 3.35:1 on the canvas, as NightField's edge (board n-ux-low Q3f).
+    borderColor: night.dim,
     alignItems: "center",
     justifyContent: "center",
   },

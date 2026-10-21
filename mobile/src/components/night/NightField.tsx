@@ -118,7 +118,9 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: night.surface2,
     borderWidth: 1,
-    borderColor: night.line,
+    // An edge you can find at rest: night.dim is 3.35:1 on the canvas (the old 7 % white hairline was 1.21:1). A
+    // border, not a brighter fill, so the typing keeps its 16:1 (board n-ux-low Q3f).
+    borderColor: night.dim,
     paddingHorizontal: 16,
   },
   fieldFocused: { borderColor: night.blueRing },
