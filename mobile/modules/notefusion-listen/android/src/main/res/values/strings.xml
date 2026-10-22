@@ -59,5 +59,10 @@
   <string name="nf_reminder_body">NoteFusion stops and sends by itself at %1$s, or when the music stops.</string>
   <string name="nf_button_channel">Floating button</string>
   <string name="nf_button_channel_description">Shown while the floating button is on; Android requires it</string>
+  <string name="nf_kind_melody">Singing</string>
+  <string name="nf_kind_poly">Instrument</string>
+  <string name="nf_kind_chords">Chords</string>
+  <string name="nf_kind_action">For: %1$s</string>
+  <string name="nf_kind_chip_description">Listening for %1$s. Tap to change.</string>
   <string name="nf_take_failed">NoteFusion couldn’t record — try again.</string>
 </resources>

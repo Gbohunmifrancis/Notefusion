@@ -228,6 +228,23 @@ public class WorkerContractTests
     }
 
     [Fact]
+    public async Task A_listen_take_asks_for_chords_when_no_voice_is_heard_and_nothing_else_does()
+    {
+        var handler = new CapturingHandler();
+        var client = Client(handler);
+
+        await client.SubmitAsync(new MemoryStream([1, 2, 3]), "take.m4a", new TranscribeOptions { NoVoiceAsChords = true });
+        Assert.Equal("true", FormField(handler.Body, "no_voice_as_chords"));
+
+        // A take the person said was chords or an instrument is read as that already: the flag is a melody's alone.
+        await client.SubmitAsync(new MemoryStream([1, 2, 3]), "take.m4a", new TranscribeOptions { Mode = TranscriptionMode.Chords, NoVoiceAsChords = true });
+        Assert.DoesNotContain("no_voice_as_chords", handler.Body);
+
+        await client.SubmitAsync(new MemoryStream([1, 2, 3]), "hum.wav", new TranscribeOptions());
+        Assert.DoesNotContain("no_voice_as_chords", handler.Body);
+    }
+
+    [Fact]
     public async Task A_link_sends_its_length_cap_once()
     {
         var handler = new CapturingHandler();

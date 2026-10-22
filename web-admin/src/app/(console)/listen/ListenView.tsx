@@ -35,6 +35,7 @@ const ENTRY_LABELS: Record<string, string> = {
   tile: "Quick Settings tile",
 };
 const SOURCE_LABELS: Record<string, string> = { room: "The room (microphone)", phone: "This phone’s sound" };
+const KIND_LABELS: Record<string, string> = { melody: "Singing (a tune)", poly: "Instrument (several notes)", chords: "Chords" };
 const ENDING_LABELS: Record<string, string> = {
   stop: "Stopped by the person",
   cap: "Reached the length limit",
@@ -224,6 +225,13 @@ function WaysInSection({ d }: { d: ListenAnalytics }) {
           table={<DataTable head={["Source", "Started", "Sent", "People"]} rows={d.bySource.map((b) => [label(SOURCE_LABELS, b.key), b.started, b.sent, b.people])} />}
         >
           <RankedBars rows={breakdownRows(d.bySource, SOURCE_LABELS)} colorIndex={2} empty="No takes in these dates" />
+        </ChartCard>
+        <ChartCard
+          title="Listen for"
+          info="What takes were sent as: Singing (a voice or one instrument's tune; read as chords when no voice is heard), Instrument, or Chords. Counted on the takes that ended, since the pill's chip can change it mid-take."
+          table={<DataTable head={["Sent as", "Ended", "Sent", "People"]} rows={d.byKind.map((b) => [label(KIND_LABELS, b.key), b.started, b.sent, b.people])} />}
+        >
+          <RankedBars rows={breakdownRows(d.byKind, KIND_LABELS)} colorIndex={4} empty="No takes ended in these dates" />
         </ChartCard>
       </div>
     </Section>

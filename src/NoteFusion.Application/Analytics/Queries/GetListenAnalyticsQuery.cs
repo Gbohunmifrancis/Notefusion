@@ -101,6 +101,10 @@ public sealed class GetListenAnalyticsQueryHandler : IRequestHandler<GetListenAn
 
         var byEntry = Breakdown(starts, sent, "from", ["bubble", "notification", "tile"]);
         var bySource = Breakdown(starts, sent, "source", ["room", "phone"]);
+        // The kind can change during a take (the pill's chip), so it is read off how the take ended. Takes from builds
+        // before "Listen for" carry none: they were all sent as Singing.
+        var endsByKind = ends.Select(r => r.D.ContainsKey("kind") ? r : r with { D = WithKind(r.D, "melody") }).ToList();
+        var byKind = Breakdown(endsByKind, endsByKind.Where(r => Get(r, "sent") == "1").ToList(), "kind", ["melody", "poly", "chords"]);
 
         var endings = ends
             .GroupBy(r => Get(r, "reason") ?? "unknown")
@@ -129,7 +133,7 @@ public sealed class GetListenAnalyticsQueryHandler : IRequestHandler<GetListenAn
                 rows.Where(On).Select(r => r.UserId).Distinct().Count()));
         }
 
-        return new ListenAnalyticsDto(range.FromUtc, range.ToUtc, summary, byEntry, bySource, endings, refusals, settings, days);
+        return new ListenAnalyticsDto(range.FromUtc, range.ToUtc, summary, byEntry, bySource, byKind, endings, refusals, settings, days);
     }
 
     /// <summary>
@@ -193,6 +197,9 @@ public sealed class GetListenAnalyticsQueryHandler : IRequestHandler<GetListenAn
                 starts.Where(r => Get(r, key) == k).Select(r => r.UserId).Distinct().Count()))
             .ToList();
     }
+
+    private static IReadOnlyDictionary<string, string> WithKind(IReadOnlyDictionary<string, string> d, string kind)
+        => new Dictionary<string, string>(d, StringComparer.Ordinal) { ["kind"] = kind };
 
     private static string? Get(Row r, string key) => r.D.TryGetValue(key, out var v) ? v : null;
 

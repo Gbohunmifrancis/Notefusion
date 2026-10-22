@@ -11,6 +11,7 @@ public sealed record ListenAnalyticsDto(
     ListenSummaryDto Summary,
     IReadOnlyList<ListenBreakdownDto> ByEntry,
     IReadOnlyList<ListenBreakdownDto> BySource,
+    IReadOnlyList<ListenBreakdownDto> ByKind,
     IReadOnlyList<ListenCountDto> Endings,
     IReadOnlyList<ListenCountDto> Refusals,
     ListenSettingsDto Settings,
@@ -52,7 +53,10 @@ public sealed record ListenSummaryDto(
     int NoticeHidden,
     int BuySongTaps);
 
-/// <summary>One way in (<c>bubble</c>, <c>notification</c>, <c>tile</c>) or source (<c>room</c>, <c>phone</c>).</summary>
+/// <summary>
+/// One way in (<c>bubble</c>, <c>notification</c>, <c>tile</c>), source (<c>room</c>, <c>phone</c>) or "Listen for" kind
+/// (<c>melody</c>, <c>poly</c>, <c>chords</c>; counted on the takes that ended, as what they were sent as).
+/// </summary>
 public sealed record ListenBreakdownDto(string Key, int Started, int Sent, int People);
 
 /// <summary>A reason and how often: how takes ended (<c>Sent</c> of them sent), or why one could not start.</summary>

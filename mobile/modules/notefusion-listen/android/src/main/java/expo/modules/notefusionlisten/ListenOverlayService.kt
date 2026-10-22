@@ -94,6 +94,7 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
       ACTION_TAKE_START -> beginTake(intent)
       ACTION_TAKE_STOP -> finishTake(End.STOP, intent.getStringExtra(EXTRA_VIA))
       ACTION_TAKE_CANCEL -> finishTake(End.CANCEL, intent.getStringExtra(EXTRA_VIA))
+      ACTION_CYCLE_KIND -> cycleKind(intent.getStringExtra(EXTRA_VIA) ?: "notification")
       ACTION_TAKE_DONE -> {
         pendingTask = false
         applyState()
@@ -123,6 +124,7 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
     if (ListenPrefs.buttonWanted(this)) {
       val ui = overlay ?: OverlayUi(this, this).also { overlay = it }
       if (!ui.shown) ui.show()
+      ui.setKind(ListenPrefs.kindLabel(this, ListenPrefs.kind(this)))
       ui.setListening(listening, if (listening) line(ListenPrefs.allowance(this)) else "")
     } else {
       overlay?.hide()
@@ -272,7 +274,10 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
       settleStart(false, "E_MIC_UNAVAILABLE")
       return
     }
-    ListenPrefs.logEvent(this, "listen_take_start", mapOf("from" to from, "source" to source, "pro" to if (allowance.isPro) 1 else 0))
+    ListenPrefs.logEvent(
+      this, "listen_take_start",
+      mapOf("from" to from, "source" to source, "kind" to ListenPrefs.kind(this), "pro" to if (allowance.isPro) 1 else 0),
+    )
     settleStart(true, null)
   }
 
@@ -302,6 +307,7 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
     ListenPrefs.setTakeListening(this, true)
     ListenPrefs.setTakeElapsed(this, 0)
     requestTileState()
+    overlay?.setKind(ListenPrefs.kindLabel(this, ListenPrefs.kind(this)))
     overlay?.setListening(true, line(allowance))
     // The take's notification (with its chronometer) is posted once here, not every second.
     enterForeground()
@@ -345,10 +351,12 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
       else -> null
     }
     val auto = end == End.CAP || end == End.MUSIC_STOPPED || end == End.NOTHING_HEARD
+    // What it is sent as: the choice as it stands when the take ends (the chip may have been tapped meanwhile).
+    val kind = ListenPrefs.kind(this)
     ListenPrefs.logEvent(
       this, "listen_take_end",
       mapOf(
-        "from" to from, "source" to source, "reason" to end.code, "via" to via,
+        "from" to from, "source" to source, "kind" to kind, "reason" to end.code, "via" to via,
         "sec" to result.durationSec.toInt(), "heard" to result.heardSec.toInt(),
         "sent" to if (outcome == null) 1 else 0, "unsent" to outcome, "reminders" to remindersShown,
       ),
@@ -375,7 +383,9 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
       applyState()
     }.also { main.postDelayed(it, PENDING_TASK_MAX_MS) }
     applyState()
-    val handed = startHeadless(file!!, result.durationSec)
+    // The choice rides in the file's name too, so a take the app sweeps in later is sent as what it was.
+    val named = File(file!!.parentFile, "${file.nameWithoutExtension}-$kind.m4a").takeIf { file.renameTo(it) } ?: file
+    val handed = startHeadless(named, result.durationSec, kind)
     val text = when {
       !handed -> getString(R.string.nf_take_kept)
       end == End.CAP -> getString(R.string.nf_take_cap_sent, cap)
@@ -389,13 +399,14 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
   }
 
   /** Hands the file to JS (lib/listenAnywhereBridge). A file still in the take folder later is one JS never got: the app sweeps it in. */
-  private fun startHeadless(file: File, durationSec: Double): Boolean {
+  private fun startHeadless(file: File, durationSec: Double, kind: String): Boolean {
     val i = Intent(this, ListenTakeHeadlessService::class.java)
       .putExtra("uri", Uri.fromFile(file).toString())
       .putExtra("fileName", file.name)
       .putExtra("durationSec", durationSec)
       .putExtra("source", source)
       .putExtra("from", from)
+      .putExtra("kind", kind)
     return runCatching { startService(i) }.isSuccess
   }
 
@@ -428,6 +439,18 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
         android.content.ComponentName(this, ListenTakeTileService::class.java)
       )
     }
+  }
+
+  // ── Listen for ────────────────────────────────────────────────────────────
+
+  /** The next of Singing, Instrument, Chords: kept for later takes too, and shown wherever the take is. */
+  private fun cycleKind(via: String) {
+    val next = ListenPrefs.nextKind(ListenPrefs.kind(this))
+    ListenPrefs.setKind(this, next)
+    overlay?.setKind(ListenPrefs.kindLabel(this, next))
+    if (listening) enterForeground()
+    requestTileState()
+    ListenPrefs.logEvent(this, "listen_kind", mapOf("to" to next, "via" to via, "during" to if (listening) "take" else "idle"))
   }
 
   // ── A take that runs on ───────────────────────────────────────────────────
@@ -503,6 +526,10 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
     ListenPrefs.logEvent(this, "listen_button_hidden")
     Toast.makeText(this, getString(R.string.nf_bubble_hidden), Toast.LENGTH_LONG).show()
     applyState()
+  }
+
+  override fun onKind() {
+    cycleKind("bubble")
   }
 
   override fun onBuySong() {
@@ -609,6 +636,11 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
         .setUsesChronometer(true)
         .addAction(0, getString(R.string.nf_take_stop_send), takeAction(ACTION_TAKE_STOP, "notification", 24))
         .addAction(0, getString(R.string.nf_take_cancel), takeAction(ACTION_TAKE_CANCEL, "notification", 25))
+        .addAction(
+          0,
+          getString(R.string.nf_kind_action, ListenPrefs.kindLabel(this, ListenPrefs.kind(this))),
+          takeAction(ACTION_CYCLE_KIND, "notification", 30),
+        )
     } else {
       b.setContentTitle(getString(R.string.nf_anywhere_title))
         .setShowWhen(false)
@@ -625,6 +657,7 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
     const val ACTION_TAKE_STOP = "expo.modules.notefusionlisten.TAKE_STOP"
     const val ACTION_TAKE_CANCEL = "expo.modules.notefusionlisten.TAKE_CANCEL"
     const val ACTION_TAKE_DONE = "expo.modules.notefusionlisten.TAKE_DONE"
+    const val ACTION_CYCLE_KIND = "expo.modules.notefusionlisten.CYCLE_KIND"
     const val EXTRA_SOURCE = "source"
     const val EXTRA_FROM = "from"
     const val EXTRA_VIA = "via"

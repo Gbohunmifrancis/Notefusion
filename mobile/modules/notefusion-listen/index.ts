@@ -23,6 +23,9 @@ export interface ListenStatus {
 /** "Listen from anywhere" (boards r-listen): what the room's microphone hears, or what the phone itself plays. */
 export type ListenSource = 'room' | 'phone';
 
+/** "Listen for": the Record screen's mode a take is sent as (Singing, Instrument, Chords). */
+export type ListenKind = 'melody' | 'poly' | 'chords';
+
 export interface AnywhereState {
   /** The floating button switch. It shows only while `overlayPermitted` too. */
   button: boolean;
@@ -42,6 +45,8 @@ export interface AnywhereState {
    * then (the switches keep their place). The tile is everyone's.
    */
   pro?: boolean;
+  /** What a take is sent as; absent on store builds before build 61 (then Singing). */
+  kind?: ListenKind;
 }
 
 /** Something the native side did with no JS running, for the admin console (lib/appEvents sends it). */
@@ -69,7 +74,7 @@ declare class Native extends NativeModule<Events> {
   setLastKey(key: string, doh: string): void;
   requestAddTile(): Promise<TileResult>;
   getAnywhere(): AnywhereState;
-  setAnywhere(options: { button?: boolean; notification?: boolean; source?: ListenSource }): AnywhereState;
+  setAnywhere(options: { button?: boolean; notification?: boolean; source?: ListenSource; kind?: ListenKind }): AnywhereState;
   hasOverlayPermission(): boolean;
   openOverlaySettings(): boolean;
   setAllowance(json: string | null): void;
@@ -147,7 +152,7 @@ export function getAnywhere(): AnywhereState | null {
 }
 
 /** Sets what is given, leaves the rest, and starts or stops the service to match. */
-export function setAnywhere(options: { button?: boolean; notification?: boolean; source?: ListenSource }): AnywhereState | null {
+export function setAnywhere(options: { button?: boolean; notification?: boolean; source?: ListenSource; kind?: ListenKind }): AnywhereState | null {
   return native ? native.setAnywhere(options) : null;
 }
 

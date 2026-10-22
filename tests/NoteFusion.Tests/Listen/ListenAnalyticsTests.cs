@@ -163,6 +163,10 @@ public class ListenAnalyticsTests
         Assert.Equal((3, 1, 2), Triple(page.BySource, "room"));
         Assert.Equal((1, 1, 1), Triple(page.BySource, "phone"));
 
+        // Kinds are read off the endings; these takes predate "Listen for", so all four count as Singing.
+        Assert.Equal(["melody", "poly", "chords"], page.ByKind.Select(b => b.Key));
+        Assert.Equal((4, 2, 2), Triple(page.ByKind, "melody"));
+
         Assert.Equal(4, page.Endings.Sum(e => e.Count));
         Assert.Equal(1, page.Endings.Single(e => e.Key == "music_stopped").Sent);
         Assert.Equal("not_pro", Assert.Single(page.Refusals).Key);
@@ -209,6 +213,26 @@ public class ListenAnalyticsTests
         Assert.Equal(3, settings.ProLockTaps);
         Assert.Equal(2, settings.ProLockPeople);
         Assert.Equal(1, settings.UpgradedAfterLock);
+    }
+
+    [Fact]
+    public async Task Takes_are_counted_by_what_they_were_sent_as()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h, "pat@example.com");
+        var at = Now.AddDays(-1);
+        // Started as Singing, the chip tapped to Chords during the take: it counts as Chords.
+        Add(h, user, "listen_take_start", "from=bubble;source=room;kind=melody;pro=1", at);
+        Add(h, user, "listen_take_end", "from=bubble;source=room;kind=chords;reason=stop;sec=30;heard=28;sent=1", at.AddSeconds(30));
+        Add(h, user, "listen_take_start", "from=tile;source=room;kind=poly;pro=1", at.AddHours(1));
+        Add(h, user, "listen_take_end", "from=tile;source=room;kind=poly;reason=cancel;sec=10;heard=9;sent=0", at.AddHours(1).AddSeconds(10));
+        h.Db.SaveChanges();
+
+        var byKind = (await Query(h)).Value.ByKind;
+
+        Assert.Equal((0, 0, 0), Triple(byKind, "melody"));
+        Assert.Equal((1, 0, 1), Triple(byKind, "poly"));
+        Assert.Equal((1, 1, 1), Triple(byKind, "chords"));
     }
 
     [Fact]

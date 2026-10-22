@@ -269,7 +269,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   5 s. A take that runs on: "Still listening" at 2:00 and "One minute left" before the cap (`listen_reminders`, heads-up,
   Stop & send / Cancel); nothing above −52 dBFS in the first minute ends it unsent, 45 s quiet after 10 s heard ends it
   sent, the cap ends it sent, and under 2 s heard is never sent (`TakeRecorder.Listener.onQuiet`); a take that ended by itself
-  leaves a note in the shade. Every step is logged on the phone (`ListenPrefs.logEvent`, `listen_*` names, flat
+  leaves a note in the shade. "Listen for" (`ListenPrefs.kind`: Singing = melody, Instrument = poly, Chords; Settings'
+  row, the pill's chip and the take notification's "For: …" step through them; the kind rides in the take's file name
+  for a swept take) is what a take is sent as; a Singing take also carries `noVoiceAsChords`, so the worker reads one
+  whose separated stem holds no voice as chords (`queue._separate_and_transcribe`, `no_voice_as_chords`, on the mixture
+  only; `result.read_as_chords`, never offered a hymn). Every step is logged on the phone (`ListenPrefs.logEvent`, `listen_*` names, flat
   `key=value` details, at most 300 kept) and sent by `lib/appEvents` (with Settings' own `listen_setting`/`listen_pro_lock`
   and `listen_take_queued`, which names the job) to `POST /api/app/events` (signed in, `AppEvent` rows, 50 a call,
   purged with the website's events and with the account); the console's Listen anywhere page (`/listen`,

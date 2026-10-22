@@ -421,6 +421,8 @@ internal sealed partial class TranscriptionApiClient(
         // Only audio is played on a keyboard; a score file is already written in its own key.
         if (withMode && options.KeyboardTranspose != 0)
             form.Add(new StringContent(options.KeyboardTranspose.ToString(System.Globalization.CultureInfo.InvariantCulture)), "keyboard_transpose");
+        if (withMode && options.NoVoiceAsChords && options.Mode == TranscriptionMode.Melody)
+            form.Add(new StringContent("true"), "no_voice_as_chords");
 
         var baseUrl = config["TranscriptionApi:WebhookBaseUrl"] ?? "http://api:8080";
         var callbackUrl = $"{baseUrl.TrimEnd('/')}/api/internal/webhooks/transcription/{{job_id}}";

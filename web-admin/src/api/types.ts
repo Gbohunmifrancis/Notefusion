@@ -1739,6 +1739,8 @@ export interface ListenAnalytics {
   summary: ListenSummary;
   byEntry: ListenBreakdown[];
   bySource: ListenBreakdown[];
+  /** "Listen for": what the takes that ended were sent as (`melody`, `poly`, `chords`). */
+  byKind: ListenBreakdown[];
   endings: ListenCount[];
   refusals: ListenCount[];
   settings: ListenSettings;

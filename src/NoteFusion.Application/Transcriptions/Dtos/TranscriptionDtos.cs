@@ -63,6 +63,13 @@ public sealed record TranscribeOptions
     /// </summary>
     public int KeyboardTranspose { get; init; }
 
+    /// <summary>
+    /// Melody mode only: when the take turns out to hold no voice (an instrument playing chords), the worker reads it as
+    /// chords instead of a melody, whose reading of chords is only the top note of each. Listen from anywhere sends it:
+    /// its takes are music caught over another app, with no idea what it is.
+    /// </summary>
+    public bool NoVoiceAsChords { get; init; }
+
     /// <summary>The furthest a keyboard's transpose setting goes either way, in semitones.</summary>
     public const int MaxKeyboardTranspose = 11;
 

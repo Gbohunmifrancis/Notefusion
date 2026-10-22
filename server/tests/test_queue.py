@@ -379,6 +379,67 @@ def test_a_band_with_no_voice_in_it_is_transcribed_as_the_mixture(monkeypatch):
         queue.shutdown(wait=True)
 
 
+@pytest.mark.parametrize("flag, voice_db, modes", [
+    (True, -40.0, ["chords"]),            # no voice: the mixture is read as chords
+    (True, -3.0, ["melody"]),             # a voice: the stem is read as a melody, as ever
+    (False, -40.0, ["melody"]),           # not asked: the mixture is read as a melody, as ever
+])
+def test_a_listen_take_with_no_voice_in_it_is_read_as_chords(monkeypatch, flag, voice_db, modes):
+    """Listen from anywhere sends its takes as a melody with no_voice_as_chords: music caught with no idea what it
+    is. A take whose vocal stem holds no voice (an instrument playing chords) is read in chords mode, where a melody
+    read is only the top note of each chord; one with a voice in it is read as before."""
+    _fake_separation(monkeypatch, peaks=7.5, voice_db=voice_db)
+    seen = []
+    monkeypatch.setattr("app.jobs.queue.transcribe", lambda path, **kw: seen.append(kw["mode"]) or _result(8))
+    queue = JobQueue(workers=1)
+    try:
+        job = _await_status(queue, queue.submit(_temp_audio(), mode="melody", key=None, tempo=None,
+                                                no_voice_as_chords=flag), STATUS_DONE)
+        assert seen == modes
+        assert job.result.read_as_chords is (modes == ["chords"])
+    finally:
+        queue.shutdown(wait=True)
+
+
+def test_a_listen_take_whose_stem_gives_no_tune_compares_against_the_mixture_as_chords(monkeypatch):
+    """A strummed chord the separator took for a voice gives the stem a note or two; the mixture read alongside it is
+    then read as chords, and kept when it has more."""
+    _fake_separation(monkeypatch, peaks=7.5, voice_db=-3.0)
+    seen = []
+
+    def fake_transcribe(path, **kw):
+        seen.append((Path(path).name, kw["mode"]))
+        return _result(1 if Path(path).name == "vocals.wav" else 12)
+
+    monkeypatch.setattr("app.jobs.queue.transcribe", fake_transcribe)
+    queue = JobQueue(workers=1)
+    try:
+        audio = _temp_audio()
+        job = _await_status(queue, queue.submit(audio, mode="melody", key=None, tempo=None,
+                                                no_voice_as_chords=True), STATUS_DONE)
+        assert seen == [("vocals.wav", "melody"), (audio.name, "chords")]
+        assert job.result.read_as_chords is True
+        assert len(job.result.notes) == 12
+    finally:
+        queue.shutdown(wait=True)
+
+
+def test_a_chords_reading_is_never_offered_a_hymn(monkeypatch):
+    """The hymnbook version keeps the tune's own beats, which chords mode does not; as for a chords upload, no offer."""
+    _fake_separation(monkeypatch, peaks=7.5, voice_db=-40.0)
+    offered = []
+    monkeypatch.setenv("NF_HYMN_MATCH", "1")
+    import app.pipeline.hymn_match as hm
+    monkeypatch.setattr(hm, "offer", lambda result: offered.append(result) or None)
+    queue = JobQueue(workers=1)
+    try:
+        _await_status(queue, queue.submit(_temp_audio(), mode="melody", key=None, tempo=None,
+                                          no_voice_as_chords=True), STATUS_DONE)
+        assert offered == []
+    finally:
+        queue.shutdown(wait=True)
+
+
 @pytest.mark.parametrize("voice_db, isolated", [(-3.0, True), (-40.0, False)])
 def test_an_explicit_song_upload_keeps_its_stem_only_when_a_voice_is_in_it(monkeypatch, voice_db, isolated):
     """separate=true ("a song with instruments") on instruments recorded alone: the stem is

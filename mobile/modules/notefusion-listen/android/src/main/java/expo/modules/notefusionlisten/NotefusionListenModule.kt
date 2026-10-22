@@ -65,6 +65,7 @@ class NotefusionListenModule : Module() {
     "tileAdded" to ListenPrefs.tileAdded(context),
     "listening" to ListenOverlayService.isListening(),
     "pro" to ListenPrefs.proActive(context),
+    "kind" to ListenPrefs.kind(context),
   )
 
   private fun requestTile(service: Class<*>, label: String, icon: Int, promise: Promise) {
@@ -179,6 +180,7 @@ class NotefusionListenModule : Module() {
       (options["button"] as? Boolean)?.let { ListenPrefs.setButtonOn(context, it) }
       (options["notification"] as? Boolean)?.let { ListenPrefs.setNotificationOn(context, it) }
       (options["source"] as? String)?.let { ListenPrefs.setSource(context, it) }
+      (options["kind"] as? String)?.let { ListenPrefs.setKind(context, it) }
       ListenOverlayService.sync(context)
       anywhereState()
     }

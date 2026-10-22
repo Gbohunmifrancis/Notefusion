@@ -5,7 +5,7 @@ import { logAnalyticsEvent } from "./analytics";
 import { flushAppEvents, logAppEvent } from "./appEvents";
 import { removeUri } from "./blobStore";
 import { freeWeek } from "./freeWeek";
-import { listenAllowance, type AllowanceSource, type ListenAllowance } from "./listenAnywhere";
+import { listenAllowance, takeSubmitOptions, type AllowanceSource, type ListenAllowance } from "./listenAnywhere";
 import { bindOutbox, enqueueTake, pump, sendTakeNow, takeById } from "./outbox";
 import { tokenStore } from "./tokenStore";
 
@@ -32,6 +32,8 @@ export interface ListenTakeData {
   durationSec?: number;
   source?: string;
   from?: string;
+  /** What it was taken for (`ListenKind`); older native builds send none, and it is Singing then. */
+  kind?: string;
 }
 
 export async function listenTakeTask(data: ListenTakeData): Promise<void> {
@@ -44,7 +46,8 @@ export async function listenTakeTask(data: ListenTakeData): Promise<void> {
       return;
     }
     await bindOutbox(user.id);
-    const id = enqueueTake({ fileUri: data.uri, fileName: data.fileName, opts: { mode: "melody" } });
+    const opts = takeSubmitOptions(data.kind, data.fileName);
+    const id = enqueueTake({ fileUri: data.uri, fileName: data.fileName, opts });
     if (!id) {
       removeUri(data.uri);
       return;
@@ -57,6 +60,7 @@ export async function listenTakeTask(data: ListenTakeData): Promise<void> {
     await sendTakeNow(id);
     // The job it became, so the console can follow a take from the button to a finished sheet.
     logAppEvent("listen_take_queued", {
+      kind: opts.mode,
       from: data.from ?? "bubble",
       source: data.source ?? "room",
       sec: Math.round(data.durationSec ?? 0),
@@ -79,7 +83,7 @@ export async function drainPendingTakes(): Promise<void> {
   if (!Listen.available) return;
   let queued = 0;
   for (const take of Listen.pendingTakes()) {
-    const id = enqueueTake({ fileUri: take.uri, fileName: take.fileName, opts: { mode: "melody" } });
+    const id = enqueueTake({ fileUri: take.uri, fileName: take.fileName, opts: takeSubmitOptions(undefined, take.fileName) });
     if (id) queued += 1;
     else removeUri(take.uri);
   }

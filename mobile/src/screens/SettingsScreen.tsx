@@ -31,6 +31,8 @@ import {
   SOURCE_CHOICES,
   SOURCE_NOTE,
   PRO_ONLY_HINT,
+  KIND_CHOICES,
+  kindLabel,
   groupNote,
   listenAllowance,
   nextSetupStep,
@@ -197,6 +199,22 @@ export function SettingsScreen({ navigation }: Props) {
           setAnywhere(Listen.setAnywhere({ source: ch.source }));
           void logAnalyticsEvent("listen_anywhere_setting", { setting: "source", value: ch.source });
           logAppEvent("listen_setting", { setting: "source", value: ch.source });
+        },
+      })),
+    });
+  }
+
+  function chooseListenKind() {
+    showDialog({
+      title: "Listen for",
+      message: "What a take is sent as. You can also change it on the listening pill, or from the take’s notification.",
+      choices: KIND_CHOICES.map((k) => ({
+        label: k.label,
+        detail: k.detail,
+        icon: k.kind === "chords" ? "chords" : k.kind === "poly" ? "instrument" : "sing",
+        onPress: () => {
+          setAnywhere(Listen.setAnywhere({ kind: k.kind }));
+          logAppEvent("listen_kind", { to: k.kind, via: "settings", during: "idle" });
         },
       })),
     });
@@ -415,6 +433,7 @@ export function SettingsScreen({ navigation }: Props) {
               onPress={anywhere.tileAdded ? undefined : () => void addListenTile()}
             />
             <Row icon="hear" label="Listen to" value={sourceLabel(anywhere.source)} chevron onPress={chooseListenSource} />
+            <Row icon="instrument" label="Listen for" value={kindLabel(anywhere.kind)} chevron onPress={chooseListenKind} />
           </Group>
           <GroupNote>{groupNote(allowance)}</GroupNote>
         </>

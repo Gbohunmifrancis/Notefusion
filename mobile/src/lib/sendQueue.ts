@@ -35,6 +35,8 @@ export interface QueuedOptions {
   timeSignature?: string;
   separate?: boolean;
   keyboardTranspose?: number;
+  /** Listen from anywhere's melody takes: no voice in it means read it as chords (mirrors `SubmitOptions`). */
+  noVoiceAsChords?: boolean;
 }
 
 export interface QueuedSend {

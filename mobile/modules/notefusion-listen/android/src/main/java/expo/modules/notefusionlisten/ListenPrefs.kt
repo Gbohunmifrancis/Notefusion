@@ -103,6 +103,32 @@ internal object ListenPrefs {
     return raw
   }
 
+  // ── What a take is sent as ────────────────────────────────────────────────
+
+  /** Singing (one line: a voice, or one instrument playing a tune), an instrument's several notes, or chords. */
+  const val KIND_MELODY = "melody"
+  const val KIND_POLY = "poly"
+  const val KIND_CHORDS = "chords"
+  private val KINDS = listOf(KIND_MELODY, KIND_POLY, KIND_CHORDS)
+
+  /** "Listen for": the Record screen's mode a take is sent as. Singing until the person says otherwise. */
+  fun kind(context: Context): String =
+    prefs(context).getString("kind", KIND_MELODY).takeIf { it in KINDS } ?: KIND_MELODY
+
+  fun setKind(context: Context, kind: String) =
+    prefs(context).edit().putString("kind", if (kind in KINDS) kind else KIND_MELODY).apply()
+
+  /** The pill's chip and the notification's "For:" step through the three in order. */
+  fun nextKind(kind: String): String = KINDS[(KINDS.indexOf(kind).coerceAtLeast(0) + 1) % KINDS.size]
+
+  fun kindLabel(context: Context, kind: String): String = context.getString(
+    when (kind) {
+      KIND_POLY -> R.string.nf_kind_poly
+      KIND_CHORDS -> R.string.nf_kind_chords
+      else -> R.string.nf_kind_melody
+    }
+  )
+
   /** Playback capture (Android 10+): what "This phone's sound" records. */
   fun phoneSoundAvailable(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 

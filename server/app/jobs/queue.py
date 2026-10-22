@@ -190,18 +190,21 @@ class JobQueue:
                separate: bool = False,
                audio_preview: bool = True,
                harmony: bool = False,
-               keyboard_transpose: int = 0) -> str:
+               keyboard_transpose: int = 0,
+               no_voice_as_chords: bool = False) -> str:
         job = self._new_job(correlation_id, callback_url, priority)
         if self._journal is not None:
             audio_path = self._journal.keep(job.id, audio_path)
         self._journal_write(job, kind="upload", audio=str(audio_path), mode=mode, key=key, tempo=tempo,
                             time_signature=time_signature, song_seconds=song_seconds, separate=separate,
-                            audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose)
-        logger.info("Job %s queued: mode=%s key=%s tempo=%s meter=%s priority=%s separate=%s harmony=%s transpose=%d%s",
+                            audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose,
+                            no_voice_as_chords=no_voice_as_chords)
+        logger.info("Job %s queued: mode=%s key=%s tempo=%s meter=%s priority=%s separate=%s harmony=%s transpose=%d%s%s",
                     job.id[:8], mode, key or "auto", tempo or "auto", time_signature or "auto",
-                    job.priority, separate, harmony, keyboard_transpose, self._trail(job))
+                    job.priority, separate, harmony, keyboard_transpose,
+                    " no-voice-as-chords" if no_voice_as_chords else "", self._trail(job))
         self._enqueue(job, lambda: self._run(job, audio_path, mode, key, tempo, time_signature, song_seconds, separate,
-                                             audio_preview, harmony, keyboard_transpose))
+                                             audio_preview, harmony, keyboard_transpose, no_voice_as_chords))
         return job.id
 
     def submit_link(self, url: str, mode: str,
@@ -348,7 +351,7 @@ class JobQueue:
                 job, audio, record.get("mode") or "melody", record.get("key"), record.get("tempo"),
                 record.get("time_signature") or None, record.get("song_seconds"), bool(record.get("separate", False)),
                 bool(record.get("audio_preview", True)), bool(record.get("harmony", False)),
-                int(record.get("keyboard_transpose") or 0))
+                int(record.get("keyboard_transpose") or 0), bool(record.get("no_voice_as_chords", False)))
         if kind == "score":
             score = Path(str(record.get("score") or ""))
             if not score.is_file():
@@ -421,7 +424,7 @@ class JobQueue:
              key: str | None, tempo: int | None,
              time_signature: str | None = None, song_seconds: float | None = None,
              separate_vocals: bool = False, audio_preview: bool = True,
-             harmony: bool = False, keyboard_transpose: int = 0) -> None:
+             harmony: bool = False, keyboard_transpose: int = 0, no_voice_as_chords: bool = False) -> None:
         # The attempt is on disk before the job is seen as processing, so anyone who sees it running
         # (a poll, a test) also sees the attempt counted.
         self._journal_started(job)
@@ -440,7 +443,8 @@ class JobQueue:
                     work_dir = Path(tempfile.mkdtemp(prefix="nf-upload-"))
                     job.result = self._separate_and_transcribe(
                         job, audio_path, work_dir, mode, key, tempo, time_signature, progress_from=0.0,
-                        audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose)
+                        audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose,
+                        no_voice_as_chords=no_voice_as_chords)
                 else:
                     job.stage = STAGE_TRANSCRIBING
                     job.result = transcribe(
@@ -453,7 +457,7 @@ class JobQueue:
                     # The route kept only the head of a longer clip (a preview).
                     job.result.song_duration_sec = round(song_seconds, 1)
                     job.result.truncated = True
-                _offer_hymn(job, mode)
+                _offer_hymn(job, "chords" if job.result.read_as_chords else mode)
             finally:
                 # Stamped on every path out of transcribe() and before any terminal
                 # status is written. _purge_expired ignores a job whose finished_at is
@@ -480,7 +484,7 @@ class JobQueue:
                                  key: str | None, tempo: int | None, time_signature: str | None,
                                  progress_from: float, audio_preview: bool = True,
                                  harmony: bool = False, keyboard_transpose: int = 0,
-                                 song_start: bool = True) -> TranscriptionResult:
+                                 song_start: bool = True, no_voice_as_chords: bool = False) -> TranscriptionResult:
         """Isolate the vocal, transcribe it with the beat read from the mix, keep the backing.
 
         Shared by uploaded songs and linked ones. ``progress_from`` is where the job's
@@ -493,10 +497,18 @@ class JobQueue:
         used to come back as one or two notes. The mixture is then read on the normal lane,
         whose Basic Pitch melody floor keeps the tune above the chords. In melody mode the
         chords are read from the instrumental, or from the mix when there is no instrumental.
+
+        ``no_voice_as_chords`` (a Listen from anywhere take, caught with no idea what it is): when
+        the take holds no voice, the mixture is read in chords mode instead (chords per beat, the
+        top line as the tune), since a melody read of strummed or comped chords is only the
+        highest note of each chord. ``result.read_as_chords`` then says so.
         """
         from app.pipeline import separate
 
         span = 0.55 - progress_from
+        # What the mixture is read as when the vocal stem is not used: the job's own mode, or chords
+        # for a melody take that asked for it (see ``no_voice_as_chords`` above).
+        mixture_mode = "chords" if no_voice_as_chords and mode == "melody" else mode
         if separate.available():
             job.stage = STAGE_SEPARATING
             try:
@@ -507,8 +519,8 @@ class JobQueue:
                 separated = True
                 share = separate.voice_share_db(vocals, work_dir / "backing.wav")
                 if share < separate.VOICE_MIN_SHARE_DB:
-                    logger.info("Job %s: no voice in the vocal stem (%.0f dB); transcribing the mixture",
-                                job.id[:8], share)
+                    logger.info("Job %s: no voice in the vocal stem (%.0f dB); transcribing the mixture%s",
+                                job.id[:8], share, " as chords" if mixture_mode != mode else "")
                     vocals, separated = wav, False
             except (MemoryError, separate.SeparationFailed) as ex:
                 # Better a sheet read from the mixture than no sheet: the worker stays up
@@ -525,11 +537,12 @@ class JobQueue:
         backing = work_dir / "backing.wav"
 
         def read(path: Path, stem: bool) -> TranscriptionResult:
+            read_mode = mode if stem else mixture_mode
             chord_source = None
-            if mode == "melody":
+            if read_mode == "melody":
                 chord_source = backing if stem and backing.is_file() else wav
-            return transcribe(
-                path, mode=mode, key_override=key, tempo_override=tempo,
+            result = transcribe(
+                path, mode=read_mode, key_override=key, tempo_override=tempo,
                 time_signature=time_signature,
                 progress=lambda fraction: setattr(job, "progress", 0.55 + 0.45 * fraction),
                 # The fast lane drops the mixture guard, which a mixture with a band in it needs.
@@ -537,6 +550,8 @@ class JobQueue:
                 tempo_source=wav if stem else None,
                 audio_preview=audio_preview, harmony=harmony,
                 keyboard_transpose=keyboard_transpose, chord_source=chord_source, song_start=song_start)
+            result.read_as_chords = read_mode == "chords" and mode != "chords"
+            return result
 
         if not separated:
             result = read(wav, False)

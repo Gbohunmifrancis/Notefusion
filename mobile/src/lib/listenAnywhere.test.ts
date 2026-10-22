@@ -7,6 +7,9 @@ import {
   canStartTake,
   formatTakeCap,
   groupNote,
+  KIND_CHOICES,
+  kindLabel,
+  takeSubmitOptions,
   listenAllowance,
   nextSetupStep,
   noneLeftLine,
@@ -67,3 +70,27 @@ test("setup goes microphone, notifications, display over other apps, and the but
   assert.equal(setupDone(all), true);
   assert.equal(setupButtonLabel(all), "Done");
 });
+
+test("a Listen take is sent as what it was taken for, and Singing carries the chords safety net", () => {
+  assert.deepEqual(takeSubmitOptions("melody"), { mode: "melody", noVoiceAsChords: true });
+  assert.deepEqual(takeSubmitOptions("poly"), { mode: "poly" });
+  assert.deepEqual(takeSubmitOptions("chords"), { mode: "chords" });
+  // Older native builds send no kind: Singing, as every take was before.
+  assert.deepEqual(takeSubmitOptions(undefined), { mode: "melody", noVoiceAsChords: true });
+  assert.deepEqual(takeSubmitOptions("nonsense"), { mode: "melody", noVoiceAsChords: true });
+});
+
+test("a take swept in later is sent as the kind its file name carries", () => {
+  assert.deepEqual(takeSubmitOptions(undefined, "take-1767225600000-chords.m4a"), { mode: "chords" });
+  assert.deepEqual(takeSubmitOptions(undefined, "take-1767225600000-poly.m4a"), { mode: "poly" });
+  assert.deepEqual(takeSubmitOptions(undefined, "take-1767225600000.m4a"), { mode: "melody", noVoiceAsChords: true });
+  // What the native side said wins over the name.
+  assert.deepEqual(takeSubmitOptions("melody", "take-1-chords.m4a"), { mode: "melody", noVoiceAsChords: true });
+});
+
+test("the Listen-for choices step Singing, Instrument, Chords", () => {
+  assert.deepEqual(KIND_CHOICES.map((k) => k.kind), ["melody", "poly", "chords"]);
+  assert.equal(kindLabel("poly"), "Instrument");
+  assert.equal(kindLabel(undefined), "Singing");
+});
+
