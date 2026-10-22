@@ -88,7 +88,8 @@ export const SOURCE_CHOICES: readonly { source: ListenSource; label: string; det
   { source: "phone", label: "This phone’s sound", detail: "The app that’s playing, clean — even with headphones in." },
 ];
 
-export const SOURCE_NOTE = "Android asks every time you start — tap Start. Only the sound is recorded, never the screen.";
+export const SOURCE_NOTE =
+  "Android asks every time you start — tap Start — and shows its screen-sharing sign while it listens. Only the sound is recorded, never the screen.";
 
 // ── Setup (R3/2) ────────────────────────────────────────────────────────────
 
