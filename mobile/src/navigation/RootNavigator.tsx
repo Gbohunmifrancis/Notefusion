@@ -11,6 +11,7 @@ import { useChoirDeepLink } from '../lib/choirLink';
 import { logScreenView } from '../lib/analytics';
 import * as Sentry from '@sentry/react-native';
 import { SplashScreen } from '../screens/SplashScreen';
+import { OpeningResult } from '../components/result/OpeningResult';
 import { AuthNavigator } from './AuthNavigator';
 import { TabNavigator } from './TabNavigator';
 import { ResultScreen } from '../screens/ResultScreen';
@@ -64,7 +65,7 @@ export function RootNavigator() {
   // Tapping a "transcription ready" push opens that transcription as an unsaved draft. Held until
   // the authenticated stack exists, because a tap is what launches the app in the case this feature
   // is for.
-  useNotificationDeepLink(Boolean(user), isAdmin);
+  const taps = useNotificationDeepLink(Boolean(user), isAdmin);
 
   // Admin locks, and everything it read is dropped, on sign-out and on an account change.
   useAdminSession(user?.id ?? null);
@@ -119,7 +120,9 @@ export function RootNavigator() {
   // Hold the splash for the stored theme as well as the session: mounting the
   // navigator light and repainting it dark a frame later is the flash the
   // preference exists to avoid.
-  if (initializing || themeLoading) return <SplashScreen />;
+  // And for the notification that may have launched the app: a "ready" push tapped from cold goes from the
+  // splash straight to its opening screen, never by way of Home.
+  if (initializing || themeLoading || !taps.checked) return <SplashScreen />;
 
   return (
     // Owns "where did you hear about us?", the rating prompt and the feedback form; signed-in only.
@@ -224,6 +227,8 @@ export function RootNavigator() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    {/* Over every screen from a tapped transcription to its Result (lib/notificationLink). */}
+    <OpeningResult visible={taps.opening} />
     </FeedbackProvider>
   );
 }

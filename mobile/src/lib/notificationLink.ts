@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { createNavigationContainerRef } from '@react-navigation/native';
 import { transcriptionsApi } from '../api/endpoints';
 import { safeReason, toApiError } from '../api/client';
@@ -26,11 +26,36 @@ export const navigationRef = createNavigationContainerRef<RootStackParams>();
 const COLD_START_FRESH_MS = 10 * 60 * 1000;
 
 /**
+ * How many transcriptions are being fetched to be opened right now. While any is, RootNavigator shows
+ * `OpeningResult` over the screen, so the tap reads as opening it rather than as a stop on Home.
+ */
+let opening = 0;
+const openingListeners = new Set<() => void>();
+
+function setOpening(delta: number): void {
+  opening = Math.max(0, opening + delta);
+  openingListeners.forEach((l) => l());
+}
+
+/** True while a transcription is being fetched to be opened (a push tapped, or a take opened from the Library). */
+export function useOpeningTranscription(): boolean {
+  return useSyncExternalStore(
+    (l) => {
+      openingListeners.add(l);
+      return () => openingListeners.delete(l);
+    },
+    () => opening > 0,
+  );
+}
+
+/**
  * Opens the transcription behind a "ready" notification, as the same unsaved draft the record screen
  * would have shown. The result comes from our own API, which caches it — the ML service forgets a job
  * within minutes, and the whole point of the notification is that the user came back later.
  */
 export async function openTranscriptionFromNotification(jobId: string): Promise<boolean> {
+  // Counted before the first await, so the cover is up in the same frame as the tap.
+  setOpening(1);
   try {
     const job = await transcriptionsApi.getJob(jobId);
 
@@ -85,6 +110,8 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
       tone: 'danger',
     });
     return false;
+  } finally {
+    setOpening(-1);
   }
 }
 
@@ -125,14 +152,30 @@ function openScreen(screen: string, opts: { isAdmin: boolean; paymentId?: string
 type PendingTap = { kind: 'job' | 'screen' | 'mute'; value: string; id?: string; paymentId?: string; userId?: string };
 
 /**
+ * How long a cold start waits to hear whether a notification launched it before showing the app. The answer is
+ * usually there in a few milliseconds; the cap only stops a slow one from holding the splash.
+ */
+const COLD_TAP_WAIT_MS = 1200;
+
+/**
+ * What the notification taps mean for the screen. `checked`: whether a cold start has heard if a tap launched
+ * it; until then RootNavigator keeps the splash up, so a tapped "ready" push never shows Home on the way.
+ * `opening`: a tapped transcription is waiting to be opened (for the authenticated stack, or for its fetch),
+ * which RootNavigator covers with `OpeningResult`.
+ */
+export type NotificationTapState = { checked: boolean; opening: boolean };
+
+/**
  * Wires notification taps to the screens they refer to.
  *
  * @param ready Whether the authenticated stack is mounted. A tap that launched the app arrives while
  * the session is still being restored, and navigating then would target the sign-in stack — so taps
  * are held until this turns true rather than dropped.
  */
-export function useNotificationDeepLink(ready: boolean, isAdmin = false): void {
+export function useNotificationDeepLink(ready: boolean, isAdmin = false): NotificationTapState {
   const [pending, setPending] = useState<PendingTap | null>(null);
+  const [checked, setChecked] = useState(isExpoGo);
+  const fetching = useOpeningTranscription();
 
   // Both sources below can report the same tap. Without this the drain effect would run twice and
   // push Result on top of itself.
@@ -179,6 +222,7 @@ export function useNotificationDeepLink(ready: boolean, isAdmin = false): void {
     // The listener above covers a running app. A tap that started the app from cold may already have
     // been consumed before this JS ran, and only this call can still see it.
     let cancelled = false;
+    const giveUp = setTimeout(() => setChecked(true), COLD_TAP_WAIT_MS);
     Notifications.getLastNotificationResponseAsync()
       .then((response) => {
         if (cancelled || !response) return;
@@ -186,10 +230,16 @@ export function useNotificationDeepLink(ready: boolean, isAdmin = false): void {
         const tap = tapOf(response);
         if (tap) setPending(tap);
       })
-      .catch(() => undefined);
+      .catch(() => undefined)
+      // The tap (if any) is pending before the app is shown, so the cover is up from the first frame.
+      .finally(() => {
+        clearTimeout(giveUp);
+        if (!cancelled) setChecked(true);
+      });
 
     return () => {
       cancelled = true;
+      clearTimeout(giveUp);
       sub.remove();
     };
   }, []);
@@ -224,4 +274,8 @@ export function useNotificationDeepLink(ready: boolean, isAdmin = false): void {
     if (navigationRef.isReady())
       openScreen(pending.value, { isAdmin, paymentId: pending.paymentId, userId: pending.userId });
   }, [ready, pending, isAdmin]);
+
+  // A tapped transcription is covered from the tap to its screen; signed out, the sign-in screen stays visible
+  // and the tap waits for the account.
+  return { checked, opening: ready && (pending?.kind === 'job' || fetching) };
 }
