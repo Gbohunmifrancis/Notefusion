@@ -125,6 +125,10 @@ export const ICONS = {
   day: "lucide:sun",
   haptics: "lucide:vibrate",
   "data-saver": "lucide:gauge",
+  // Listen from anywhere (Settings): the floating button, "Display over other apps", the Quick Settings tile
+  float: "nf:float",
+  overlay: "lucide:layers",
+  "qs-tile": "lucide:zap",
   bell: "lucide:bell",
   "bell-off": "lucide:bell-off",
   sound: "lucide:volume-2",

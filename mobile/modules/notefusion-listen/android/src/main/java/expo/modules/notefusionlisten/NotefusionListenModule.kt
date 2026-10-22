@@ -3,21 +3,27 @@ package expo.modules.notefusionlisten
 import android.Manifest
 import android.app.StatusBarManager
 import android.content.ComponentName
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Icon
+import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import java.io.File
 
 /**
  * JS face of the listener: starts and stops {@link KeyListenerService}, forwards its PCM chunks and
- * status as events, and keeps the tile and widget informed.
+ * status as events, keeps the tile and widget informed — and, for "Listen from anywhere", sets the
+ * switches that {@link ListenOverlayService} reads, hands it what the account may send, and sweeps in
+ * any take the headless task never got.
  */
 class NotefusionListenModule : Module() {
   private val context get() = requireNotNull(appContext.reactContext)
@@ -47,6 +53,40 @@ class NotefusionListenModule : Module() {
     startTimeout?.let { main.removeCallbacks(it) }
     startTimeout = null
     if (running) promise.resolve(null) else promise.reject(code ?: "E_START_FAILED", message, null)
+  }
+
+  /** The feature's state as Settings shows it. */
+  private fun anywhereState(): Map<String, Any?> = mapOf(
+    "button" to ListenPrefs.buttonOn(context),
+    "notification" to ListenPrefs.notificationOn(context),
+    "source" to ListenPrefs.source(context),
+    "overlayPermitted" to ListenPrefs.overlayPermitted(context),
+    "phoneSoundAvailable" to ListenPrefs.phoneSoundAvailable(),
+    "tileAdded" to ListenPrefs.tileAdded(context),
+    "listening" to ListenOverlayService.isListening(),
+  )
+
+  private fun requestTile(service: Class<*>, label: String, icon: Int, promise: Promise) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+      promise.resolve("unsupported")
+      return
+    }
+    val sbm = context.getSystemService(StatusBarManager::class.java)
+    sbm.requestAddTileService(
+      ComponentName(context, service),
+      label,
+      Icon.createWithResource(context, icon),
+      context.mainExecutor
+    ) { result ->
+      promise.resolve(
+        when (result) {
+          StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ADDED -> "added"
+          StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ALREADY_ADDED -> "already_added"
+          StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_NOT_ADDED -> "declined"
+          else -> "error"
+        }
+      )
+    }
   }
 
   override fun definition() = ModuleDefinition {
@@ -117,26 +157,70 @@ class NotefusionListenModule : Module() {
     }
 
     AsyncFunction("requestAddTile") { promise: Promise ->
-      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-        promise.resolve("unsupported")
-        return@AsyncFunction
-      }
-      val sbm = context.getSystemService(StatusBarManager::class.java)
-      sbm.requestAddTileService(
-        ComponentName(context, ListenTileService::class.java),
-        context.getString(R.string.nf_tile_label),
-        Icon.createWithResource(context, R.drawable.nf_tile_icon),
-        context.mainExecutor
-      ) { result ->
-        promise.resolve(
-          when (result) {
-            StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ADDED -> "added"
-            StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ALREADY_ADDED -> "already_added"
-            StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_NOT_ADDED -> "declined"
-            else -> "error"
-          }
-        )
-      }
+      requestTile(ListenTileService::class.java, context.getString(R.string.nf_tile_label), R.drawable.nf_tile_icon, promise)
+    }
+
+    // ── Listen from anywhere ────────────────────────────────────────────────
+
+    Function("getAnywhere") { anywhereState() }
+
+    /** Sets what is given (the rest stays), then starts or stops the service to match. */
+    Function("setAnywhere") { options: Map<String, Any?> ->
+      (options["button"] as? Boolean)?.let { ListenPrefs.setButtonOn(context, it) }
+      (options["notification"] as? Boolean)?.let { ListenPrefs.setNotificationOn(context, it) }
+      (options["source"] as? String)?.let { ListenPrefs.setSource(context, it) }
+      ListenOverlayService.sync(context)
+      anywhereState()
+    }
+
+    Function("hasOverlayPermission") { ListenPrefs.overlayPermitted(context) }
+
+    /** Android's own "Display over other apps" page for this app; the person switches it on there and comes back. */
+    Function("openOverlaySettings") {
+      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return@Function false
+      val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${context.packageName}"))
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+      runCatching { context.startActivity(intent) }.isSuccess
+    }
+
+    /** What the account may send, as lib/listenAnywhere writes it; null forgets it. */
+    Function("setAllowance") { json: String? ->
+      ListenPrefs.setAllowance(context, json)
+    }
+
+    Function("setAccount") { signedIn: Boolean ->
+      ListenPrefs.setSignedIn(context, signedIn)
+      if (!signedIn) ListenPrefs.setAllowance(context, null)
+    }
+
+    Function("setDataSaver") { on: Boolean ->
+      ListenPrefs.setDataSaver(context, on)
+    }
+
+    AsyncFunction("requestAddTakeTile") { promise: Promise ->
+      requestTile(ListenTakeTileService::class.java, context.getString(R.string.nf_take_tile_label), R.drawable.nf_mark, promise)
+    }
+
+    Function("setTakeTileAdded") { added: Boolean ->
+      ListenPrefs.setTileAdded(context, added)
+    }
+
+    /** The headless task is done with its take (queued, or given up): the service need not stay for it. */
+    Function("takeHandled") {
+      ListenOverlayService.takeHandled(context)
+    }
+
+    /**
+     * Takes still in the take folder: ones the headless task never received (the process died between the
+     * two). JS moves each into the send queue; what it cannot, it deletes.
+     */
+    Function("pendingTakes") {
+      val dir = File(context.cacheDir, ListenOverlayService.TAKE_DIR)
+      // Older than the headless task could still be running for (ten minutes): one it is handling now is not listed twice.
+      val stale = System.currentTimeMillis() - 15L * 60_000L
+      (dir.listFiles() ?: emptyArray())
+        .filter { it.isFile && it.name.endsWith(".m4a") && it.length() > 0 && it.lastModified() < stale }
+        .map { mapOf("uri" to Uri.fromFile(it).toString(), "fileName" to it.name) }
     }
   }
 }

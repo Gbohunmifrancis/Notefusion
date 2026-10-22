@@ -13,3 +13,9 @@ android {
     versionName "1.0.0"
   }
 }
+
+dependencies {
+  // The headless task that hands a take to JS (ListenTakeHeadlessService). Versioned by React Native's own
+  // Gradle plugin, as expo's module takes it.
+  implementation 'com.facebook.react:react-android'
+}

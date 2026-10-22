@@ -20,6 +20,27 @@ export interface ListenStatus {
   code: string | null;
 }
 
+/** "Listen from anywhere" (boards r-listen): what the room's microphone hears, or what the phone itself plays. */
+export type ListenSource = 'room' | 'phone';
+
+export interface AnywhereState {
+  /** The floating button switch. It shows only while `overlayPermitted` too. */
+  button: boolean;
+  /** The quiet notification with Listen. */
+  notification: boolean;
+  source: ListenSource;
+  /** Android's "Display over other apps", granted on its own Settings page. */
+  overlayPermitted: boolean;
+  /** Playback capture exists (Android 10+). */
+  phoneSoundAvailable: boolean;
+  /** The Listen tile was added through the system prompt (or found already there). */
+  tileAdded: boolean;
+  /** A take is being recorded right now. */
+  listening: boolean;
+}
+
+export type TileResult = 'added' | 'already_added' | 'declined' | 'error' | 'unsupported';
+
 type Events = {
   onBuffer(buffer: ListenBuffer): void;
   onStatus(status: ListenStatus): void;
@@ -32,7 +53,18 @@ declare class Native extends NativeModule<Events> {
   updateNotification(title: string, body: string): void;
   setListening(listening: boolean): void;
   setLastKey(key: string, doh: string): void;
-  requestAddTile(): Promise<'added' | 'already_added' | 'declined' | 'error' | 'unsupported'>;
+  requestAddTile(): Promise<TileResult>;
+  getAnywhere(): AnywhereState;
+  setAnywhere(options: { button?: boolean; notification?: boolean; source?: ListenSource }): AnywhereState;
+  hasOverlayPermission(): boolean;
+  openOverlaySettings(): boolean;
+  setAllowance(json: string | null): void;
+  setAccount(signedIn: boolean): void;
+  setDataSaver(on: boolean): void;
+  requestAddTakeTile(): Promise<TileResult>;
+  setTakeTileAdded(added: boolean): void;
+  takeHandled(): void;
+  pendingTakes(): { uri: string; fileName: string }[];
 }
 
 // Null in Expo Go, on iOS and on web: every call below is then a no-op and `available` is false.
@@ -89,4 +121,56 @@ export function addBufferListener(fn: (buffer: ListenBuffer) => void): ListenSub
 
 export function addStatusListener(fn: (status: ListenStatus) => void): ListenSubscription | null {
   return native ? native.addListener('onStatus', fn) : null;
+}
+
+// ── Listen from anywhere ─────────────────────────────────────────────────────
+
+/** The feature's state, or null where it does not exist (iOS, Expo Go, web). */
+export function getAnywhere(): AnywhereState | null {
+  return native ? native.getAnywhere() : null;
+}
+
+/** Sets what is given, leaves the rest, and starts or stops the service to match. */
+export function setAnywhere(options: { button?: boolean; notification?: boolean; source?: ListenSource }): AnywhereState | null {
+  return native ? native.setAnywhere(options) : null;
+}
+
+export function hasOverlayPermission(): boolean {
+  return native?.hasOverlayPermission() ?? false;
+}
+
+/** Android's own "Display over other apps" page for this app. */
+export function openOverlaySettings(): boolean {
+  return native?.openOverlaySettings() ?? false;
+}
+
+/** What the account may send, as JSON (lib/listenAnywhere `listenAllowance`); null forgets it. */
+export function setAllowance(json: string | null): void {
+  native?.setAllowance(json);
+}
+
+export function setAccount(signedIn: boolean): void {
+  native?.setAccount(signedIn);
+}
+
+export function setDataSaver(on: boolean): void {
+  native?.setDataSaver(on);
+}
+
+export async function requestAddTakeTile(): Promise<TileResult> {
+  return native ? native.requestAddTakeTile() : 'unsupported';
+}
+
+export function setTakeTileAdded(added: boolean): void {
+  native?.setTakeTileAdded(added);
+}
+
+/** The headless task has queued (or given up on) its take. */
+export function takeHandled(): void {
+  native?.takeHandled();
+}
+
+/** Takes the headless task never received (the process died in between), for the app to queue. */
+export function pendingTakes(): { uri: string; fileName: string }[] {
+  return native?.pendingTakes() ?? [];
 }
