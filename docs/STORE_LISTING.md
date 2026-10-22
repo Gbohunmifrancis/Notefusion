@@ -17,19 +17,23 @@ NoteFusion: Tonic Solfa Notes
 
 Hum, sing or paste a song link and get its tonic solfa and sheet music.
 
-## Full description (2657)
+## Full description (2706)
 
+Copy everything inside the box, as it is: the line breaks are part of it, and Play shows `<b>…</b>` as bold headings.
+(Copied from a rendered view of this page, the lines outside a box run together.)
+
+```text
 Hum a tune, sing a hymn, record your choir or paste a song link. NoteFusion writes it out in tonic solfa (movable doh) and staff notation, with the words under the notes.
 
 Made for choir directors, church musicians, worship teams, music teachers and every singer who reads solfa.
 
-Try it properly, for free
+<b>Try it properly, for free</b>
 • 3 full transcriptions every week, no card needed
 • A recording is read for its first three minutes, not a 20-second taste
 • No ads in the app
 • Need one more song this week? Buy that one song, with no subscription
 
-What you get
+<b>What you get</b>
 • Tonic solfa written the hymn-book way: doh from the key, la-based minor, chromatics named de, ra, fe, ta and the rest
 • Staff notation of the same notes, in bars, with the key and time signature
 • Not sure of the doh? NoteFusion shows the likely ones and lets you choose, instead of guessing
@@ -38,28 +42,28 @@ What you get
 • Download a PDF to print or share
 • Every sheet is kept in your Library, and the ones you open stay on your phone for when you are offline
 
-From any source
+<b>From any source</b>
 • Hum, sing or play into the microphone
 • Upload a recording or a video from your phone
 • Paste a YouTube, Spotify or Apple Music link and choose the part of the song you want (Pro, or a song you buy)
 • Import sheet music (MusicXML, MIDI or ABC) and read it in tonic solfa
 
-For choirs
+<b>For choirs</b>
 • Record your choir singing in parts: soprano, alto, tenor and bass come back as separate lines
 • Alto, tenor and bass written under any tune, the way a hymn book prints them (Pro; one free to try)
 • Learn my part: your part loud and the others soft, two bars looped, slowed to half speed if you need it
 • The choir plan: one plan for a director and up to 25 singers, with sheets shared to the whole choir
 
-Hymns
+<b>Hymns</b>
 • 250 hymns with their words and over 500 more hymn tunes in tonic solfa and staff notation, on your phone
 • Sing a hymn we hold and NoteFusion recognises it and offers you the hymnbook's version
 
-Practice
+<b>Practice</b>
 • An ear-training and sight-singing path in ten grades, with streaks and badges
 • Pitch matching, intervals, rhythm, harmony and runs
 • Sing it back: your take is marked note by note (Pro)
 
-Pro
+<b>Pro</b>
 • Songs from links, and recordings with a band with the voice taken out: 20 songs a month, up to six minutes each
 • Your transcriptions go first in the queue
 • Alto, tenor and bass under any tune, whenever you ask
@@ -68,6 +72,7 @@ Pro
 The same account works on the web at notefusion.studio/app.
 
 Questions or ideas? Write to us from Profile › Send feedback in the app. We read every message.
+```
 
 ## Elsewhere in the listing
 
