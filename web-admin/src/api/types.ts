@@ -1549,6 +1549,45 @@ export type CheckoutExitReason = "currency" | "cardDeclined" | "slow" | "tooExpe
 
 export type CheckoutExitProvider = "all" | "bachs" | "paystack";
 
+/** One checkout opened and not paid, with the person behind it (C# `UnpaidCheckoutDto`). */
+export interface UnpaidCheckout {
+  paymentId: string;
+  userId: string;
+  /** Null when the account has been deleted (its payment record stays). */
+  name: string | null;
+  email: string | null;
+  /** "bachs", "paystack", "flutterwave" or "googleplay". */
+  provider: string;
+  planName: string | null;
+  amountMinor: number;
+  currency: string;
+  openedAtUtc: string;
+  /** Pending (open or never paid), processing (money on its way) or failed (closed). */
+  status: "pending" | "processing" | "failed";
+  /** What the provider's page saw; null when it was never read. */
+  attempt: "none" | "declined" | "transferStarted" | null;
+  client: "phone" | "web";
+  /** The app or website reported coming back from the page without paying. */
+  cameBack: boolean;
+  secondsOpen: number | null;
+  reason: CheckoutExitReason | null;
+  note: string | null;
+  answeredAtUtc: string | null;
+  /** When the account next completed a payment, at or after this checkout. */
+  paidLaterAtUtc: string | null;
+}
+
+/** The Unpaid checkouts page (C# `UnpaidCheckoutsDto`). */
+export interface UnpaidCheckouts {
+  fromUtc: string;
+  toUtc: string;
+  reportingOffsetMinutes: number;
+  quickSeconds: number;
+  /** Unpaid checkouts in the window; at most 200 are listed. */
+  total: number;
+  rows: UnpaidCheckout[];
+}
+
 /** One provider's checkouts in the window and why they ended unpaid (C# `CheckoutExitSliceDto`). */
 export interface CheckoutExitSlice {
   provider: CheckoutExitProvider;

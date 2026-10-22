@@ -56,6 +56,7 @@ import type {
   TranscriptionLogPage,
   WebhookStatus,
   ListenAnalytics,
+  UnpaidCheckouts,
 } from "@/api/types";
 import type { WebAuthnJson } from "@/lib/webauthn";
 
@@ -490,6 +491,10 @@ export const getPracticeReminderLog = (take = 30, signal?: AbortSignal) =>
 /** The Growth page: renewals, free-to-paid by price set, transcription failures by kind, app versions. */
 export const getGrowth = (from?: string, to?: string, signal?: AbortSignal) =>
   request<Growth>(`/api/admin/analytics/growth${query({ from, to })}`, signal ? { signal } : {});
+
+/** The Unpaid checkouts page: every checkout opened and not paid, with the person, what the page saw and their answer. */
+export const getUnpaidCheckouts = (from?: string, to?: string, signal?: AbortSignal) =>
+  request<UnpaidCheckouts>(`/api/admin/analytics/unpaid-checkouts${query({ from, to })}`, signal ? { signal } : {});
 
 /** The Listen from anywhere page: takes, ways in, endings, reminders, settings and Pro locks over a window. */
 export const getListenAnalytics = (from?: string, to?: string, signal?: AbortSignal) =>

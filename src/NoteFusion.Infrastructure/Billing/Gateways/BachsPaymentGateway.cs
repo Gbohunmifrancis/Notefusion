@@ -400,12 +400,20 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
 
             if (chargeInSessionCurrency)
             {
-                // Same currency, so the two figures are directly comparable, and they should agree. When both
-                // are readable and they do not, we do not know which one the customer was charged — so
-                // neither is used. Escalating beats fulfilling against the wrong money, and beats declining a
-                // payment that may be good.
+                // Same currency, so the two figures are directly comparable. A charge above the session's price
+                // is Bachs' processing fee passed on to the payer (the account's "customer pays fees" setting:
+                // $1.99 charged as $2.49): they paid at least what we priced, so it verifies at the session's
+                // price, which is what we recorded. A charge below it is a contradiction we cannot read — we do
+                // not know which one the customer was charged — so neither is used. Escalating beats fulfilling
+                // against the wrong money, and beats declining a payment that may be good.
                 var chargeMinor = CurrencyUnits.TryToMinor(chargeAmountStr, currency);
-                if (sessionAmountStr is not null && chargeMinor is not null && chargeMinor != amountMinor)
+                if (sessionAmountStr is not null && chargeMinor is not null && chargeMinor > amountMinor)
+                {
+                    _logger.LogInformation(
+                        "Bachs checkout {CheckoutId}: charged {ChargeAmount} for a session priced {SessionAmount} {Currency} (fee passed to the payer).",
+                        checkoutId, chargeMinor.Value, amountMinor.Value, currency);
+                }
+                else if (sessionAmountStr is not null && chargeMinor is not null && chargeMinor != amountMinor)
                 {
                     _logger.LogError(
                         "Bachs checkout {CheckoutId} reports session amount {SessionAmount} but charge amount {ChargeAmount}.",

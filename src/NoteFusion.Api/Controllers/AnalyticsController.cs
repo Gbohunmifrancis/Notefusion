@@ -91,6 +91,15 @@ public sealed class AnalyticsController : ApiControllerBase
         => HandleResult(await _sender.Send(new GetListenAnalyticsQuery(from, to), ct));
 
     /// <summary>
+    /// The Unpaid checkouts page: every checkout opened and not paid in the window, one row each, with the account, what
+    /// the provider's page saw, the answer to "What stopped you?" and whether they paid later
+    /// (see <see cref="GetUnpaidCheckoutsQuery"/>).
+    /// </summary>
+    [HttpGet("unpaid-checkouts")]
+    public async Task<IActionResult> UnpaidCheckouts([FromQuery] DateTime? from, [FromQuery] DateTime? to, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetUnpaidCheckoutsQuery(from, to), ct));
+
+    /// <summary>
     /// The Growth page: renewals (memberships ending soon, the renewal rate of those that ended in the window),
     /// free-to-paid by price set, transcription failures by kind, and app versions on phones.
     /// </summary>

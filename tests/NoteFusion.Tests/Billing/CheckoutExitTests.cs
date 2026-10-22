@@ -539,6 +539,51 @@ public class CheckoutExitTests
         Assert.Empty(g.Value.CheckoutExits.Notes);
     }
 
+    // ---------------------------------------------------------------- the Unpaid checkouts list
+
+    [Fact]
+    public async Task The_unpaid_list_names_each_person_with_what_the_page_saw_their_answer_and_a_later_payment()
+    {
+        using var h = new TestHarness(Now);
+        var plan = Plan.Create(Guid.NewGuid(), "one_song_usd", "One song", 199, "USD", BillingInterval.Single);
+        h.Db.Plans.Add(plan);
+        var ada = User.Create("Ada Obi", "ada@example.com", "x", Now.AddDays(-20));
+        var ben = User.Create("Ben Ade", "ben@example.com", "x", Now.AddDays(-20));
+        var cy = User.Create("Cy Eze", "cy@example.com", "x", Now.AddDays(-20));
+        var staff = User.Create("Team", "team@example.com", "x", Now.AddDays(-20));
+        staff.SetInternal(true);
+        h.Db.Users.AddRange(ada, ben, cy, staff);
+        h.Db.SaveChanges();
+
+        // Ada: declined, answered with a note, then paid two hours later. Ben: closed the tab, never came back.
+        // Cy: paid at once (not listed). The team's own test and a page never handed out are not listed either.
+        Checkout(h, ada, plan, PaymentProvider.Bachs, Now.AddDays(-3), attempt: CheckoutAttempt.Declined,
+            exit: (42, CheckoutExitReason.SomethingElse, "My bank blocks dollar payments"));
+        Checkout(h, ada, plan, PaymentProvider.Bachs, Now.AddDays(-3).AddHours(2), paid: true);
+        Checkout(h, ben, plan, PaymentProvider.Bachs, Now.AddDays(-1));
+        Checkout(h, cy, plan, PaymentProvider.Bachs, Now.AddDays(-2), paid: true);
+        Checkout(h, staff, plan, PaymentProvider.Bachs, Now.AddDays(-1), exit: (5, CheckoutExitReason.Slow, null));
+        Checkout(h, cy, plan, PaymentProvider.Bachs, Now.AddDays(-1), opened: false);
+
+        var result = await new GetUnpaidCheckoutsQueryHandler(h.Db, h.Clock).Handle(new GetUnpaidCheckoutsQuery(), default);
+        Assert.True(result.IsSuccess, result.IsFailure ? result.Error.Message : null);
+        var list = result.Value;
+
+        Assert.Equal(2, list.Total);
+        Assert.Equal(["ben@example.com", "ada@example.com"], list.Rows.Select(r => r.Email));
+
+        var benRow = list.Rows[0];
+        Assert.Equal(("Ben Ade", false, (CheckoutExitReason?)null, (DateTime?)null),
+            (benRow.Name, benRow.CameBack, benRow.Reason, benRow.PaidLaterAtUtc));
+
+        var adaRow = list.Rows[1];
+        Assert.Equal(("bachs", "One song", 199L, "USD"), (adaRow.Provider, adaRow.PlanName, adaRow.AmountMinor, adaRow.Currency));
+        Assert.Equal((CheckoutAttempt.Declined, true, 42), (adaRow.Attempt!.Value, adaRow.CameBack, adaRow.SecondsOpen!.Value));
+        Assert.Equal((CheckoutExitReason.SomethingElse, "My bank blocks dollar payments"), (adaRow.Reason!.Value, adaRow.Note));
+        Assert.Equal(Now.AddDays(-3).AddHours(2), adaRow.PaidLaterAtUtc);
+        Assert.Equal(DateTimeKind.Utc, adaRow.OpenedAtUtc.Kind);
+    }
+
     // ---------------------------------------------------------------- fixtures
 
     private static Task<Result<CheckoutExitDto>> Exit(
