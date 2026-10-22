@@ -15,6 +15,7 @@ import { setSheetPinned } from "./offlineLibrary";
 import { isNetworkCode } from "./reachability";
 import { choirToast, filedToast, offlineToast } from "./savedSheet";
 import { showToast } from "./toast";
+import { withBusy } from "./busy";
 import { holdWithUndo } from "./heldChangeRuntime";
 import { withoutHeld } from "./heldDelete";
 import { deletedLine } from "./undoWords";
@@ -38,7 +39,9 @@ function firstFailure(results: PromiseSettledResult<unknown>[]): PromiseRejected
 export async function shareSheetLinks(targets: readonly Sheet[]): Promise<Map<string, string> | null> {
   if (targets.length === 0) return null;
   try {
-    const links = await Promise.all(targets.map((t) => libraryApi.share(t.id)));
+    const links = await withBusy(targets.length === 1 ? "Making the link…" : "Making the links…", () =>
+      Promise.all(targets.map((t) => libraryApi.share(t.id))),
+    );
     const one = targets.length === 1 ? links[0]! : null;
     const message = one
       ? `${targets[0]!.title} — Tonic Solfa on NoteFusion\n${one.url}`
@@ -53,7 +56,9 @@ export async function shareSheetLinks(targets: readonly Sheet[]): Promise<Map<st
 
 /** Puts the sheets in the choir's shared library, or takes them out, and says so. Returns the ones done. */
 export async function setChoirSharing(targets: readonly Sheet[], share: boolean): Promise<Set<string>> {
-  const results = await Promise.allSettled(targets.map((t) => (share ? choirApi.share(t.id) : choirApi.unshare(t.id))));
+  const results = await withBusy(share ? "Sharing with your choir…" : "Taking it out…", () =>
+    Promise.allSettled(targets.map((t) => (share ? choirApi.share(t.id) : choirApi.unshare(t.id)))),
+  );
   const done = new Set(targets.filter((_, i) => results[i]!.status === "fulfilled").map((t) => t.id));
   const failure = firstFailure(results);
   if (failure) failed("Could not share with your choir", failure.reason);
@@ -73,7 +78,9 @@ export async function fileSheets(
   folder: string | null,
   { inline = false } = {},
 ): Promise<{ moved: Set<string>; ok: boolean; error?: string }> {
-  const results = await Promise.allSettled(targets.map((t) => libraryApi.setFolder(t.id, folder)));
+  // The New folder sheet shows its own busy button; a pick from the list gets the card.
+  const move = () => Promise.allSettled(targets.map((t) => libraryApi.setFolder(t.id, folder)));
+  const results = inline ? await move() : await withBusy(folder ? "Moving…" : "Taking it out of the folder…", move);
   const moved = new Set(targets.filter((_, i) => results[i]!.status === "fulfilled").map((t) => t.id));
   const failure = firstFailure(results);
   if (failure && inline) return { moved, ok: false, error: toApiError(failure.reason).message };
@@ -88,7 +95,7 @@ export async function fileSheets(
 /** "Keep offline" for one sheet, said with a tick and a toast. Resolves true when it changed. */
 export async function keepSheetOffline(id: string, keep: boolean): Promise<boolean> {
   try {
-    await setSheetPinned(id, keep);
+    await withBusy(keep ? "Keeping it offline…" : "Removing the offline copy…", () => setSheetPinned(id, keep));
     haptics.play("success");
     showToast(offlineToast(keep));
     return true;

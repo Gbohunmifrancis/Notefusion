@@ -59,10 +59,10 @@ export function useGrade(take: Take) {
     setError(null);
     const countIn = countInFor(ex);
     try {
-      const clip = takeClip(ex, countIn, headphones);
       void logAnalyticsEvent("practice_mode_started", { mode: ex.mode, exercise: ex.id });
       const got = await take.record({
-        clipBase64: clip,
+        // Built once the button shows its spinner: synthesising it first held the tap with nothing on screen.
+        clipBase64: () => takeClip(ex, countIn, headphones),
         leadInSec: countIn.seconds,
         seconds: takeSeconds(ex, countIn.seconds),
         send: (uri) => practiceApi.gradeMode(uri, ex.id, countIn.seconds),

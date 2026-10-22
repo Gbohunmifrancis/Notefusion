@@ -187,7 +187,7 @@ export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
             <Button label="Measuring…" loading />
           ) : heard ? (
             <>
-              <Button label="Again" variant="secondary" onPress={() => void measure(end)} />
+              <Button label="Again" variant="secondary" onPress={() => void measure(end)} loading={take.starting} />
               <Button
                 label={end === "low" ? "Now your highest" : "See my range"}
                 icon="next"
@@ -196,7 +196,7 @@ export function WarmUpScreen({ track }: { track: PracticeTrack | null }) {
               />
             </>
           ) : (
-            <Button label="Start" icon="mic" onPress={() => void measure(end)} />
+            <Button label="Start" icon="mic" onPress={() => void measure(end)} loading={take.starting} />
           )}
         </ModeFooter>
       </View>

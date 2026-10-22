@@ -26,6 +26,7 @@ import * as Listen from "../../modules/notefusion-listen";
 import { ListenAnywhereSheet } from "../components/settings/ListenAnywhereSheet";
 import { useSubscription } from "../lib/subscription";
 import { showToast } from "../lib/toast";
+import { withBusy } from "../lib/busy";
 import {
   SETUP_WORDS,
   SOURCE_CHOICES,
@@ -252,7 +253,7 @@ export function SettingsScreen({ navigation }: Props) {
     if (fetchingProfile.current) return;
     fetchingProfile.current = true;
     try {
-      setProfile(await meApi.get());
+      setProfile(await withBusy("Opening…", () => meApi.get()));
       setSheet("delete");
     } catch (e) {
       showDialog({ title: "Couldn't open this", message: toApiError(e).message, icon: "problem", tone: "danger" });
@@ -281,7 +282,14 @@ export function SettingsScreen({ navigation }: Props) {
         "Sheets kept on this phone are removed, except the ones you chose to keep offline. Your library itself is untouched, and anything you open again is kept again.",
       // Reversible, so an ordinary confirm, not a red word.
       actions: [
-        { label: "Clear", onPress: () => void clearAutomaticCopies() },
+        {
+          label: "Clear",
+          onPress: () =>
+            void withBusy("Clearing…", () => clearAutomaticCopies()).then(
+              () => showToast("Offline copies cleared"),
+              () => undefined,
+            ),
+        },
         { label: "Cancel", style: "cancel" },
       ],
     });

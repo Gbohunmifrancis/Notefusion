@@ -205,7 +205,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   the night redesign (`night`/`nightFonts` in `src/design/theme.ts`, primitives in
   `src/components/night/`; splash, onboarding and sign-in use it in either mode), one popup: every dialog is the
   bottom sheet (`showDialog` → `components/AppDialog` on `components/Sheet`; `lib/sheetKind` reads confirm,
-  destructive, info, options, offer or celebrate off the options) and good news is a toast (`lib/toast` `showToast`),
+  destructive, info, options, offer or celebrate off the options) and good news is a toast (`lib/toast` `showToast`); a tap that waits says so: its button's `loading` spinner, or the
+  "Sharing…" card over a veil that takes taps (`lib/busy` `withBusy`, shown after 250 ms; `now` paints it before work that holds
+  the thread), and Result builds its player's audio after it is drawn, never the opener before it navigates,
   one `components/Button` (primary · secondary · text · destructive, md 48 / sm 40, `block` for a flow's last action;
   red only as a destructive word and the live REC dot, problems an amber icon: `ProblemNote`),
   one icon family, no icon font: `components/Icon` (react-native-svg, typed `IconName`) draws `design/iconGlyphs.ts`,

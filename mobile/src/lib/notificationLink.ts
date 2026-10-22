@@ -4,7 +4,6 @@ import { transcriptionsApi } from '../api/endpoints';
 import { safeReason, toApiError } from '../api/client';
 import { openStoreListing } from './appUpdate';
 import { showDialog } from './dialog';
-import { synthesizeMelodyWavBase64 } from './synth';
 import { isExpoGo } from './env';
 import { isAdminScreen, notificationTarget } from './navTargets';
 import { MUTE_HOUR_ACTION, MUTE_MINUTES } from './paymentAlerts';
@@ -85,16 +84,11 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
 
     const result = job.result;
 
-    // The cached copy carries no audio: it is a WAV the size of the recording, and the same melody
-    // re-synthesises locally in a few milliseconds — exactly how the library plays a saved item. A
-    // preview does come back on the rare tap fast enough that the ML service still holds the job.
-    const audioPreviewBase64 =
-      result.audioPreviewBase64 || synthesizeMelodyWavBase64(result.notes, result.tempo);
-
     if (!navigationRef.isReady()) return false;
 
     navigationRef.navigate('Result', {
-      result: { ...result, audioPreviewBase64 },
+      // Result synthesises its own player once it is on screen; the server's WAV is never played.
+      result: { ...result, audioPreviewBase64: undefined },
       sourceJobId: jobId,
       fresh: true,
       // Filed in the Library as it finished (option A): opened as the saved sheet.

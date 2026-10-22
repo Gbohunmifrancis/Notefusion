@@ -177,12 +177,14 @@ export function SeasonPathScreen() {
     const plan = leadInPlan(d.drill.tempoBpm, d.drill.timeSignature);
     const countIn = { beats: plan.beats, holdBeats: plan.holdBeats, beatsPerBar: plan.beatsPerBar, beatSec: plan.beatSec, seconds: plan.seconds };
     const sound = takeSound({ mode: d.backing ? "harmony" : "intervals", notes: d.drill.notes, backing: d.backing ?? [] }, countIn, headphones);
-    const clip = synthesizeVoicesWavBase64(sound.voices, d.drill.tempoBpm, {
-      countInBeats: sound.countInBeats,
-      beatsPerBar: sound.beatsPerBar,
-      // The first bar line falls after the pickup, so the count-in's accent lands where the carol's would.
-      downbeat: d.pickupBeats,
-    });
+    // Built inside the take, once the button shows its spinner.
+    const clip = () =>
+      synthesizeVoicesWavBase64(sound.voices, d.drill.tempoBpm, {
+        countInBeats: sound.countInBeats,
+        beatsPerBar: sound.beatsPerBar,
+        // The first bar line falls after the pickup, so the count-in's accent lands where the carol's would.
+        downbeat: d.pickupBeats,
+      });
     const natural = plan.seconds + partSeconds(d.drill.notes, d.drill.tempoBpm) + MODE_TAIL_SEC;
     const seconds = d.drill.maxTakeSeconds > 0 ? Math.min(d.drill.maxTakeSeconds, natural) : natural;
     void logAnalyticsEvent(words.started, { drill: d.drill.id, step: d.step.index });
@@ -522,7 +524,7 @@ function OpenDrill({
         </View>
       ) : onNext ? (
         <View style={styles.actions}>
-          <Button label={playful ? "Again!" : "Sing it again"} icon="mic" variant="secondary" onPress={onSing} disabled={left === 0} style={styles.action} />
+          <Button label={playful ? "Again!" : "Sing it again"} icon="mic" variant="secondary" onPress={onSing} loading={take.starting} disabled={left === 0} style={styles.action} />
           <Button label={nextLabel} icon="next" iconPosition="right" onPress={onNext} style={styles.action} />
         </View>
       ) : (
@@ -534,7 +536,7 @@ function OpenDrill({
             onPress={onHear}
             style={styles.action}
           />
-          <Button label={playful ? "Sing it!" : "Sing it"} icon="mic" onPress={onSing} disabled={left === 0} style={styles.action} />
+          <Button label={playful ? "Sing it!" : "Sing it"} icon="mic" onPress={onSing} loading={take.starting} disabled={left === 0} style={styles.action} />
         </View>
       )}
 

@@ -12,6 +12,7 @@ import { adminApi } from "../../api/endpoints";
 import { toApiError } from "../../api/client";
 import type { PaymentAlertSettings } from "../../api/types";
 import { showDialog } from "../../lib/dialog";
+import { withBusy } from "../../lib/busy";
 import { showToast } from "../../lib/toast";
 import { getPushPermission } from "../../lib/push";
 import {
@@ -175,7 +176,7 @@ export function AdminAlertsScreen() {
           <Text style={s.mutedText}>{muted}</Text>
           <LinkText
             label="Unmute"
-            onPress={() => void mutePaymentAlerts(0).then((st) => st && setServer(st))}
+            onPress={() => void withBusy("Unmuting…", () => mutePaymentAlerts(0)).then((st) => st && setServer(st))}
           />
         </View>
       ) : null}

@@ -53,6 +53,7 @@ import { useDataSaver } from "../lib/dataSaver";
 import { useSeason } from "../lib/seasonStore";
 import { activeSeason, seasonTint, seasonWords } from "../lib/season";
 import { showDialog } from "../lib/dialog";
+import { withBusy } from "../lib/busy";
 import { showToast } from "../lib/toast";
 import { logAnalyticsEvent } from "../lib/analytics";
 import type { RootStackParams, TabParams } from "../navigation/types";
@@ -292,7 +293,7 @@ export function HymnsScreen() {
         {
           label: "Remove",
           onPress: () =>
-            void removePack().then(() => {
+            void withBusy("Removing…", () => removePack()).then(() => {
               setPack(null);
               setQuery("");
               void askMeta(() => true);

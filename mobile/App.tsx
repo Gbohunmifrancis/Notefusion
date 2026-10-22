@@ -6,6 +6,7 @@ import * as NativeSplash from 'expo-splash-screen';
 import { AuthProvider } from './src/lib/auth';
 import { DialogProvider } from './src/lib/dialog';
 import { ToastHost } from './src/lib/toast';
+import { BusyHost } from './src/lib/busy';
 import { SubscriptionProvider } from './src/lib/subscription';
 import { ThemeProvider, useTheme } from './src/lib/theme';
 import { useAppReady } from './src/lib/appReady';
@@ -91,6 +92,7 @@ function Themed() {
           <RootNavigator />
         </ErrorBoundary>
         <ToastHost />
+        <BusyHost />
       </DialogProvider>
     </GestureHandlerRootView>
   );
