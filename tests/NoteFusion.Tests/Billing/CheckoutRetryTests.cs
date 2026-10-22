@@ -73,6 +73,34 @@ public class CheckoutRetryTests
     }
 
     [Fact]
+    public async Task A_replayed_key_the_provider_calls_a_conflict_closes_the_row_and_opens_a_fresh_one_in_the_same_call()
+    {
+        // A Pending row (the provider never answered the first attempt) is replayed under its own key. If the body
+        // has since changed — the customer renamed their profile — the provider refuses the key for good, and the
+        // customer still needs a checkout: a fresh row, a fresh key, in the same call, once.
+        using var h = new TestHarness(Now);
+        var (user, plan, _) = SeedCheckoutInFlight(h);
+        var stale = PaymentTransaction.Create(
+            user.Id, plan.Id, PaymentProvider.Bachs, "checkout:NF_stale", "NF_stale", 499, "USD", Now.AddMinutes(-10));
+        h.Db.PaymentTransactions.Add(stale);
+        await h.Db.SaveChangesAsync();
+        var gateway = new FakeGateway(Answer(Succeeded: false, Terminal: false))
+        {
+            RefuseKeys = { "checkout:NF_stale" },
+        };
+
+        var checkout = await CheckoutHandler(h, user, gateway)
+            .Handle(new InitiateCheckoutCommand(plan.Id), CancellationToken.None);
+
+        Assert.True(checkout.IsSuccess);
+        Assert.Equal(PaymentStatus.Failed, stale.Status);
+        Assert.Contains("409", stale.FailureReason);
+        Assert.Equal(["NF_stale", checkout.Value.Reference], gateway.InitiatedReferences);
+        Assert.NotEqual("NF_stale", checkout.Value.Reference);
+        Assert.DoesNotContain(h.Email.Sent, m => m.Kind == "payment-failed"); // the customer has a checkout; nothing failed for them
+    }
+
+    [Fact]
     public async Task Reconciliation_closes_an_expired_checkout_when_the_webhook_never_arrived()
     {
         using var h = new TestHarness(Now);
@@ -419,10 +447,16 @@ public class CheckoutRetryTests
 
         public int Verifications { get; private set; }
 
+        /// <summary>Idempotency keys the provider answers with a key conflict (bound to another body).</summary>
+        public HashSet<string> RefuseKeys { get; } = [];
+
         public Task<Result<GatewayInitiation>> InitiateAsync(GatewayInitiationRequest request, CancellationToken ct)
         {
             InitiatedReferences.Add(request.Reference);
             CallbackUrls.Add(request.CallbackUrl);
+            if (RefuseKeys.Contains(request.IdempotencyKey))
+                return Task.FromResult(Result.Failure<GatewayInitiation>(
+                    Error.Conflict("Bachs.Initiate.KeyConflict", "Bachs returned 409: IDEMPOTENCY_CONFLICT")));
             var n = InitiatedReferences.Count;
             return Task.FromResult(Result.Success(
                 new GatewayInitiation($"https://pay.test/session-{n}", $"chk_{n}", "{}")));

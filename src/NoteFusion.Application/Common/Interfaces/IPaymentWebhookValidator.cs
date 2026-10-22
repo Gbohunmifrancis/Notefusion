@@ -22,7 +22,17 @@ public interface IPaymentWebhookValidator
 }
 
 /// <summary>The raw webhook as received: exact body plus headers (lookups are case-insensitive).</summary>
-public sealed record WebhookRequest(string RawBody, IReadOnlyDictionary<string, string> Headers);
+/// <param name="RawBytes">
+/// The body's bytes exactly as they arrived, for a validator that signs over bytes. Decoding to
+/// <paramref name="RawBody"/> and encoding back is byte-identical for the UTF-8 JSON providers send, but the
+/// signature is defined over what was received, so a validator hashes these when they are given.
+/// </param>
+public sealed record WebhookRequest(string RawBody, IReadOnlyDictionary<string, string> Headers, byte[]? RawBytes = null);
 
 /// <summary>The fields lifted from a verified webhook, enough to persist and route it.</summary>
-public sealed record WebhookMessage(string ProviderEventId, string EventType, string? PaymentReference);
+/// <param name="Settles">
+/// Whether this event can settle a payment (a checkout completed or expired, money collected). One that
+/// cannot — a payout, a dispute, a subscription notice — is stored and acknowledged at once rather than handed
+/// to the worker, which would retry it until it parked as failed.
+/// </param>
+public sealed record WebhookMessage(string ProviderEventId, string EventType, string? PaymentReference, bool Settles = true);

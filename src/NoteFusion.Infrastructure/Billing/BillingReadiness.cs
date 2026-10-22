@@ -40,6 +40,11 @@ public static class BillingReadiness
 
             // No catalog product is needed: every checkout is a one-off priced from the plan row.
         }
+
+        // A configured Bachs whose key and host belong to different environments is as good as a stub.
+        if (bachs?.EnvironmentMismatch is { } mismatch)
+            problems.Add(mismatch);
+
         return problems;
     }
 

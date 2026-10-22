@@ -111,9 +111,11 @@ internal sealed class BachsWebhookValidator : IPaymentWebhookValidator
         // Signature before freshness, deliberately: a stale timestamp on a body we have not authenticated
         // tells us nothing, and an unsigned request must be rejected as unsigned whatever it claims the
         // time is. The timestamp goes into the message re-printed from the parsed value, which is what
-        // Bachs' own Python/Node/Java samples hash.
+        // Bachs' own Python/Node/Java samples hash. The body goes in as the bytes received when the
+        // controller hands them over: the signature is defined over the wire bytes, not a decoded string.
         var expected = ComputeHmacSha256Hex(
-            $"{sentAtUnix.ToString(CultureInfo.InvariantCulture)}.{request.RawBody}");
+            sentAtUnix.ToString(CultureInfo.InvariantCulture),
+            request.RawBytes ?? Encoding.UTF8.GetBytes(request.RawBody));
         var expectedBytes = Encoding.UTF8.GetBytes(expected);
 
         var match = false;
@@ -170,13 +172,25 @@ internal sealed class BachsWebhookValidator : IPaymentWebhookValidator
                 }
             }
 
-            return new WebhookMessage(eventId, eventType, reference);
+            return new WebhookMessage(eventId, eventType, reference, Settles(eventType));
         }
         catch (JsonException)
         {
             return Error.Validation("Bachs.Webhook", "Webhook body was not valid JSON.");
         }
     }
+
+    /// <summary>
+    /// The events that can settle a checkout: paid (<c>checkout.completed</c> and <c>collection.succeeded</c>, either
+    /// may come first) or dead (<c>checkout.expired</c>). Each is answered by re-reading the session, which is
+    /// terminal in every one of these cases. Anything else — a declined attempt on a session still open, a payout,
+    /// a dispute, a subscription notice — has no verified outcome for the worker to record, so it is acknowledged
+    /// and stored as handled rather than retried until it parks as failed.
+    /// </summary>
+    private static readonly string[] SettlingEvents = ["checkout.completed", "checkout.expired", "collection.succeeded"];
+
+    internal static bool Settles(string eventType)
+        => Array.Exists(SettlingEvents, e => string.Equals(e, eventType, StringComparison.OrdinalIgnoreCase));
 
     private static (string? Timestamp, List<string> Signatures) ParseV2Header(string header)
     {
@@ -222,10 +236,15 @@ internal sealed class BachsWebhookValidator : IPaymentWebhookValidator
             ? value.GetString()
             : null;
 
-    private string ComputeHmacSha256Hex(string message)
+    /// <summary>HMAC-SHA256 over <c>"{timestamp}." + body</c>, the body as bytes.</summary>
+    private string ComputeHmacSha256Hex(string timestamp, byte[] body)
     {
+        var prefix = Encoding.UTF8.GetBytes(timestamp + ".");
+        var message = new byte[prefix.Length + body.Length];
+        prefix.CopyTo(message, 0);
+        body.CopyTo(message, prefix.Length);
+
         using var hmac = new HMACSHA256(_secret);
-        var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(message));
-        return Convert.ToHexStringLower(hash);
+        return Convert.ToHexStringLower(hmac.ComputeHash(message));
     }
 }

@@ -75,6 +75,32 @@ public sealed class BachsOptions
         && !string.IsNullOrWhiteSpace(BaseUrl)
         && !string.IsNullOrWhiteSpace(WebhookSecret);
 
+    /// <summary>
+    /// A sandbox key against the live host or a live key against the sandbox host, said in one line for the
+    /// startup readiness log (the key itself is never printed); null when they agree or the key's prefix is
+    /// unknown. Going live is a key swap and a host swap, and a deployment that made one without the other
+    /// refuses every checkout with nothing more than "could not open the payment page".
+    /// </summary>
+    public string? EnvironmentMismatch
+    {
+        get
+        {
+            var sandboxKey = SecretKey.StartsWith("sk_sandbox_", StringComparison.OrdinalIgnoreCase);
+            var liveKey = SecretKey.StartsWith("sk_live_", StringComparison.OrdinalIgnoreCase);
+            if (!sandboxKey && !liveKey)
+                return null;
+
+            var sandboxHost = Uri.TryCreate(BaseUrl, UriKind.Absolute, out var uri)
+                && uri.Host.Contains("sandbox", StringComparison.OrdinalIgnoreCase);
+            if (sandboxKey == sandboxHost)
+                return null;
+
+            return sandboxKey
+                ? $"Bachs__SecretKey is a sandbox key (sk_sandbox_…) but Bachs__BaseUrl is the live host {BaseUrl}; every checkout will be refused."
+                : $"Bachs__SecretKey is a live key (sk_live_…) but Bachs__BaseUrl is the sandbox host {BaseUrl}; every checkout will be refused.";
+        }
+    }
+
     public IReadOnlyCollection<string> Currencies => SupportedCurrencies
         .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
         .Select(c => c.ToUpperInvariant())

@@ -242,17 +242,53 @@ public class BachsPaymentGatewayTests
     [InlineData(HttpStatusCode.ServiceUnavailable)]
     [InlineData(HttpStatusCode.InternalServerError)]
     [InlineData(HttpStatusCode.RequestTimeout)]
-    // 409 means our key was reused with a different body: the ORIGINAL session may be alive and paid, so
-    // burning the transaction would retire the only key that can still reach it.
+    // 409 without a stated key conflict (IDEMPOTENCY_IN_PROGRESS: our key is still being handled) leaves the
+    // ORIGINAL session possibly alive and paid, so burning the transaction would retire the only key that can
+    // still reach it.
     [InlineData(HttpStatusCode.Conflict)]
     public async Task A_reply_that_leaves_the_outcome_unknown_stays_transient(HttpStatusCode status)
     {
-        var handler = StubHttpMessageHandler.Returning(status, """{"detail":"nope","error_code":"CONFLICT"}""");
+        var handler = StubHttpMessageHandler.Returning(status, """{"detail":"nope","error_code":"IDEMPOTENCY_IN_PROGRESS"}""");
 
         var result = await Gateway(handler).InitiateAsync(Initiation(), CancellationToken.None);
 
         Assert.True(result.IsFailure);
         Assert.Equal(ErrorType.Network, result.Error.Type);
+    }
+
+    [Fact]
+    public async Task A_key_bound_to_a_different_body_is_a_definite_conflict_not_an_unknown_outcome()
+    {
+        // The replayed body changed (a renamed profile): nothing sent with it can ever reach the session the
+        // key opened, so the caller is told to close its row and open a fresh one rather than retry forever.
+        var handler = StubHttpMessageHandler.Returning(
+            HttpStatusCode.Conflict, """{"detail":"Idempotency key already used with a different request","error_code":"IDEMPOTENCY_CONFLICT"}""");
+
+        var result = await Gateway(handler).InitiateAsync(Initiation(), CancellationToken.None);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal(ErrorType.Conflict, result.Error.Type);
+        Assert.Equal(BachsPaymentGateway.KeyConflictCode, result.Error.Code);
+    }
+
+    [Fact]
+    public async Task A_refusal_names_its_code_and_detail_but_never_carries_the_body()
+    {
+        // A validation reply can echo what we sent, the customer's email included; the message goes to the
+        // transaction's failure reason and the same words to the logs, so the body itself stays out of both.
+        var body = """{"error_code":"VALIDATION_ERROR","detail":"email is invalid","echo":{"customer":{"email":"jane@example.com"}}}""";
+        var handler = StubHttpMessageHandler.Returning(HttpStatusCode.BadRequest, body);
+
+        var result = await Gateway(handler).InitiateAsync(Initiation(), CancellationToken.None);
+
+        Assert.True(result.IsFailure);
+        Assert.Contains("VALIDATION_ERROR email is invalid", result.Error.Message);
+        Assert.DoesNotContain("jane@example.com", result.Error.Message);
+
+        var unreadable = StubHttpMessageHandler.Returning(HttpStatusCode.BadRequest, "<html>jane@example.com</html>");
+        var plain = await Gateway(unreadable).InitiateAsync(Initiation(), CancellationToken.None);
+        Assert.DoesNotContain("jane@example.com", plain.Error.Message);
+        Assert.Contains("unreadable body", plain.Error.Message);
     }
 
     [Theory]
