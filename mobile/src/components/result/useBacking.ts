@@ -7,6 +7,7 @@ import {
   SYNC_TICK_MS,
   needsResync,
   rateKeepsBacking,
+  solfaAtBackingRead,
   watchDrift,
 } from "../../lib/backingSync";
 
@@ -35,7 +36,9 @@ function read<T>(get: () => T, fallback: T): T {
  *
  * - Play, pause and every seek of the solfa (a tap on the scrubber, the A–B loop going back, Back to the start) move
  *   the backing in the same tick: usePractice calls `followPlay`, `followPause` and `followSeek`.
- * - Every 250 ms while they play the two clocks are read back to back. A move while playing is a skip the ear hears,
+ * - Every 250 ms while they play the backing is read between two reads of the solfa, and compared only when those two
+ *   land close together (lib/backingSync `solfaAtBackingRead`: each read waits on the main thread, and a busy one made
+ *   drifts the music did not have). A move while playing is a skip the ear hears,
  *   so the backing is moved back into step (a little ahead, by what a seek takes, so it lands where the solfa is by
  *   then) only past 80 ms held for 400 ms, and a small drift no sooner than 3 s after the last move (lib/backingSync
  *   `watchDrift`); at 40 ms every jitter of the two clocks was a skip, several a second.
@@ -192,22 +195,25 @@ export function useBacking({
     const timer = setInterval(() => {
       const s = sync.current;
       if (s.seeking || Date.now() < s.quietUntil) return;
-      const clip = read(() => main.currentTime, 0);
+      const before = read(() => main.currentTime, 0);
       const at = read(() => player.currentTime, 0);
-      const to = live.current.positionOf(clip);
+      const after = read(() => main.currentTime, 0);
       if (!backingPlaying()) {
         // Joining: loaded late, or the solfa has reached the backing's start.
-        place(clip, true, true);
+        place(after, true, true);
         return;
       }
       const length = end();
-      if (length > 0 && to >= length - 0.05) {
+      if (length > 0 && live.current.positionOf(after) >= length - 0.05) {
         player.pause();
         return;
       }
-      const step = watchDrift(drift.current, at - to, Date.now());
+      // The main thread was busy between the reads: they cannot be compared, and the next tick reads again.
+      const clip = solfaAtBackingRead(before, after);
+      if (clip === null) return;
+      const step = watchDrift(drift.current, at - live.current.positionOf(clip), Date.now());
       drift.current = step.watch;
-      if (step.pull) place(clip, true, true);
+      if (step.pull) place(after, true, true);
     }, SYNC_TICK_MS);
     return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
