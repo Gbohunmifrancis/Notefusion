@@ -50,6 +50,19 @@
     this.code = (body && body.code) || "UNKNOWN";
     this.message = friendlyMessage(status, this.code, body && body.message);
     this.details = (body && body.details) || null;
+    lastFailure = { code: failCode(this), at: Date.now() };
+  }
+  /** The last API failure, so an error put on screen a moment later is counted with its code. */
+  var lastFailure = null;
+  /** A failure as the analytics detail carries it: the API's code and status, "network", or "error"; never its words. */
+  function failCode(err) {
+    if (!(err instanceof ApiError)) return "error";
+    return err.status ? err.code + " (HTTP " + err.status + ")" : "network";
+  }
+  /** An error put on screen: counted by where it showed and the API's code just behind it, never what it said. */
+  function trackShown(where) {
+    var recent = lastFailure && Date.now() - lastFailure.at < 3000 ? lastFailure.code : null;
+    track("Error shown", where + (recent ? " · " + recent : ""));
   }
   /**
    * What a person reads when something fails. The API's own messages for expected failures are
@@ -205,6 +218,7 @@
   /** How the page scrolls to something: smoothly, unless the device asks for less motion (then it jumps). */
   function glide() { return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"; }
   function alertIn(el, kind, text) {
+    if (kind === "danger") trackShown(el.id || "alert");
     el.className = "alert alert-" + kind;
     el.textContent = text;
     show(el);
@@ -531,10 +545,11 @@
     btn.disabled = true;
     request("/api/auth/forgot-password", { method: "POST", anonymous: true, body: { email: email } })
       .then(function () {
+        track("Asked for a password reset");
         alertIn($("auth-alert"), "success", "If that address has an account, a reset link is on its way.");
         $("auth-alert").scrollIntoView({ block: "nearest", behavior: glide() }); // asked from under the password, it may be out of sight
       })
-      .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not send the reset email."); })
+      .catch(function (err) { track("Password reset request failed", failCode(err)); alertIn($("auth-alert"), "danger", err.message || "Could not send the reset email."); })
       .finally(function () { btn.disabled = false; });
   });
 
@@ -560,6 +575,7 @@
     request("/api/auth/google", { method: "POST", anonymous: true, body: { idToken: res.credential } })
       .then(function (out) { saveTokens({ accessToken: out.accessToken, refreshToken: out.refreshToken }); track("Signed in with Google"); return boot().then(welcomeIfNew); })
       .catch(function (err) {
+        track("Sign-in failed", "google · " + failCode(err));
         // The server's "token is invalid or has expired" is plumbing; the person only needs to try again.
         var text = /token/i.test(err.message || "") ? "Google sign-in didn't finish. Please try again." : (err.message || "Google sign-in did not go through.");
         alertIn($("auth-alert"), "danger", text); sfx.play("error");
@@ -669,6 +685,7 @@
         return boot();
       })
       .catch(function (err) {
+        track("Sign-in failed", "password · " + failCode(err));
         // The password was right but the address was never confirmed, and a fresh code is on its way:
         // straight to the code boxes, as the phone does, rather than an error with nowhere to type it.
         if (err.code === "AUTH_EMAIL_NOT_VERIFIED") { openVerify($("login-email").value.trim(), "login"); return; }
@@ -733,6 +750,7 @@
         openVerify((res && res.email) || $("reg-email").value.trim(), "register");
       })
       .catch(function (err) {
+        track("Sign-up failed", failCode(err));
         // The checks above catch what the validator would; its own words ("'Full Name' must not be empty.") stay out.
         if (err.code === "USER_EMAIL_EXISTS" || err.code === "AUTH_DISPOSABLE_EMAIL") { fieldError("reg-email", err.message); return; }
         if (err.code === "AUTH_PASSWORD_WEAK") { fieldError("reg-password", err.message); return; }
@@ -755,7 +773,7 @@
         showAuthForm("login");
         return boot().then(welcome);
       })
-      .catch(function (err) { fieldError("verify-code", err.message || "That code did not match."); })
+      .catch(function (err) { track("Email code failed", failCode(err)); fieldError("verify-code", err.message || "That code did not match."); })
       .finally(function () { btn.disabled = false; restore(); });
   });
   $("verify-resend").addEventListener("click", function () {
@@ -793,6 +811,8 @@
   $("signout").addEventListener("click", function () {
     if (signingOut) return;
     signingOut = true;
+    // Sent now, with the tokens still here: what this account did before signing out stays its own.
+    trackNow("Signed out");
     flushDelete(); // a sheet deleted a moment ago goes while the session is still here to send it
     var t = tokens();
     var told = t && t.refreshToken
@@ -826,6 +846,7 @@
     var focusSearch = name === "search";
     if (focusSearch) name = "library";
     if (name === "practice" && (guest || !tokens())) name = "transcribe"; // practice is for a signed-in account
+    if (name !== viewNow) track("Opened view", name);
     viewNow = name;
     try {
       // The view rides in the address, so a reload (or a shared link) opens it again.
@@ -1552,6 +1573,7 @@
       current = { jobId: null, kind: "library", source: null, result: result, startedAt: Date.now(), savedId: t.id, title: t.title, shareToken: t.shareToken || null, lyrics: t.lyrics || "", semitones: 0,
         transposedBy: t.transposedBy || 0, fromLink: t.fromLink === true };
       resultReturnView = viewNow;
+      track("Opened saved sheet");
       setView("transcribe");
       hide($("progress"));
       $("sheet-parts").innerHTML = "";
@@ -1774,6 +1796,7 @@
   }
   /** A choir action that failed, said in the choir's own card on Account (the studio's alert is in another view). */
   function choirProblem(text) {
+    trackShown("choir-msg");
     $("choir-msg").textContent = text;
     show($("choir-msg-row"));
     $("choir-msg").scrollIntoView({ block: "nearest", behavior: glide() });
@@ -1886,8 +1909,8 @@
     $("acct-photo-status").textContent = "Uploading…";
     request("/api/me/picture", { method: "POST", form: form })
       .then(function (profile) { return profile || request("/api/me"); })
-      .then(function (profile) { me = profile; $("acct-photo-status").textContent = ""; renderWho(); renderAccount(); sfx.play("saved"); })
-      .catch(function (err) { $("acct-photo-status").textContent = (err instanceof ApiError && err.message) || "We couldn't upload that photo. Please try again."; sfx.play("error"); })
+      .then(function (profile) { me = profile; $("acct-photo-status").textContent = ""; renderWho(); renderAccount(); sfx.play("saved"); track("Added photo"); })
+      .catch(function (err) { track("Photo upload failed", failCode(err)); $("acct-photo-status").textContent = (err instanceof ApiError && err.message) || "We couldn't upload that photo. Please try again."; sfx.play("error"); })
       .finally(function () { e.target.value = ""; });
   });
   // The photo is gone for good once removed (there is no copy to put back), so it is asked first, like the choir's code.
@@ -1897,8 +1920,8 @@
     btn.disabled = true;
     request("/api/me/picture", { method: "DELETE" })
       .then(function () { return request("/api/me"); })
-      .then(function (profile) { me = profile; renderWho(); renderAccount(); })
-      .catch(function (err) { $("acct-photo-status").textContent = err.message || "Could not remove the photo."; })
+      .then(function (profile) { me = profile; renderWho(); renderAccount(); track("Removed photo"); })
+      .catch(function (err) { track("Photo remove failed", failCode(err)); $("acct-photo-status").textContent = err.message || "Could not remove the photo."; })
       .finally(function () { btn.disabled = false; });
   });
 
@@ -2320,7 +2343,7 @@
   function sendLink(body, again) {
     sfx.prime(); // from the click that sent it: the chime for a job that finishes out of sight can play
     linkInfo.sending = true; syncLinkSubmit(); hide($("app-alert"));
-    track(guest ? "Preview started (link)" : "Song link transcribed");
+    track(guest ? "Preview started (link)" : "Song link submitted");
     if (!again && window.NfMeter) track(window.NfMeter.eventName(body.timeSignature));
     var following = !!follow, before = current;
     request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: body })
@@ -2330,6 +2353,7 @@
         startJob(job, guest ? "preview" : "link", "link", function () { sendLink(body, true); });
       })
       .catch(function (err) {
+        track("Song link failed", (guest ? "preview · " : "") + failCode(err));
         if (following) resetRetry();
         explain(err);
         if (/upload/i.test(err.message || "")) addUploadInstead($("app-alert"));
@@ -2519,6 +2543,7 @@
       .catch(function (err) {
         if (at !== epoch) return;
         submitting = false;
+        track("Upload failed", (guest ? "preview · " : "") + failCode(err));
         if (following) resetRetry();
         else { hide($("progress")); if (current && current.result) show($("result")); }
         keepTake(file, name, fromMic, meter);
@@ -2650,7 +2675,7 @@
       maxSeconds: guest ? 30 : 180, // a guest gets the same thirty seconds as on the home page
       track: track,
       sounds: function (name) { sfx.play(name); },
-      onError: function (text, kind) { $("rec-status").textContent = kind === "short" ? text : text + " Upload a file instead."; },
+      onError: function (text, kind) { track("Recording problem", kind || null); $("rec-status").textContent = kind === "short" ? text : text + " Upload a file instead."; },
       onTake: function (blob, name) { submitAudio(blob, name, true); }
     });
   }
@@ -3163,6 +3188,7 @@
         hide($("progress"));
         announce("ready");
         track(current && current.kind === "preview" ? "Preview ready" : "Sheet ready");
+        if (current.from === "link" && !current.preview) track("Song link transcribed");
         // One preview a device: the try box says so next time, before anything is recorded (assets/preview.js).
         if (current.preview && guest) { try { localStorage.setItem("nf.web.previewUsed", "1"); } catch (e) { /* private mode */ } }
         showResult(job.result);
@@ -3179,6 +3205,7 @@
         // A link that fails is most often a download YouTube refused: the way round is the file itself.
         if (current.from === "link" && !/upload/i.test(failed)) failed += " YouTube sometimes blocks our downloads; upload the audio file instead.";
         announce("failed", failed);
+        track("Transcription failed", (current.preview ? "preview · " : "") + (current.from || current.kind || "job") + (job.errorCode ? " · " + job.errorCode : ""));
         alertIn($("app-alert"), "danger", failed);
         if (/upload/i.test(failed)) addUploadInstead($("app-alert"));
         // A failed job costs nothing: the place it held comes back.
@@ -3497,6 +3524,8 @@
     }
     return voices;
   }
+  /** Whether the player was playing at its last tick: a play is counted once, when it starts. */
+  var wasPlaying = false;
   function setupRehearsal(result) {
     if (!player) {
       player = C.createPlayer();
@@ -3506,6 +3535,8 @@
       $("rate").addEventListener("change", function () { player.setRate(parseFloat($("rate").value)); });
       ["loop-on", "loop-from", "loop-to"].forEach(function (id) { $(id).addEventListener("change", applyLoop); });
       player.onTick(function (t) {
+        if (t.playing && !wasPlaying) track("Played sheet");
+        wasPlaying = !!t.playing;
         [$("play"), $("rehearse-play")].forEach(function (b) { label(b, t.playing ? "pause" : "play", t.playing ? "Pause" : "Play"); });
         var now = -1;
         for (var i = 0; i < hymnCells.length; i++) if (hymnCells[i].beat <= t.beat + 1e-6) now = i;
@@ -4646,11 +4677,13 @@
   }
 
   $("dl-xml").addEventListener("click", gated(function (r) {
+    track("Downloaded MusicXML");
     download(baseName() + ".musicxml", new Blob([r.musicXml], { type: "application/vnd.recordare.musicxml+xml" }));
   }));
   $("dl-midi").addEventListener("click", gated(function (r) {
     if (!r.midiBase64) { alertIn($("app-alert"), "info", "No MIDI was produced for this transcription."); return; }
     var bytes = Uint8Array.from(atob(r.midiBase64), function (c) { return c.charCodeAt(0); });
+    track("Downloaded MIDI");
     download(baseName() + ".mid", new Blob([bytes], { type: "audio/midi" }));
   }));
   $("dl-solfa").addEventListener("click", function () {
@@ -4661,10 +4694,12 @@
       ? ((r.solfaLines || [])[0] || "") + "\n\n" + N.textRows(N.grid(r.notes || [], current.lyrics, r.chords, r.timeSignature), !!words).join("\n")
       : (r.solfaLines || []).join("\n") + (words ? "\n\n" + words : "");
     text += "\n\n" + $("r-credit").textContent + "\n";
+    track("Downloaded solfa");
     download(baseName() + "-solfa.txt", new Blob([text], { type: "text/plain" }));
   });
   $("dl-parts").addEventListener("click", gated(function (r) {
     if (!r.partsMusicXml) return;
+    track("Downloaded SATB parts");
     download(baseName() + "-satb.musicxml", new Blob([r.partsMusicXml], { type: "application/vnd.recordare.musicxml+xml" }));
   }));
   // The PDF is free with a NoteFusion mark; Pro removes it. It was the most-clicked locked button
@@ -4676,7 +4711,7 @@
     var btn = $("dl-pdf"), was = btn.innerHTML;
     btn.disabled = true; btn.textContent = "Making the PDF…";
     track("Downloaded PDF", isPro() ? null : "free, watermarked");
-    renderPdf(current.result, !isPro()).catch(function (err) { alertIn($("app-alert"), "danger", "Could not build the PDF: " + (err.message || err)); })
+    renderPdf(current.result, !isPro()).catch(function (err) { track("PDF failed", (err && err.name) || "error"); alertIn($("app-alert"), "danger", "Could not build the PDF: " + (err.message || err)); })
       .finally(function () { btn.disabled = false; btn.innerHTML = was; });
   });
 
@@ -5328,6 +5363,8 @@
       checkPayment(); return;
     }
     payWatch = { snap: readCheckout(), started: Date.now(), checks: 0, timer: null, busy: false, slow: false, quiet: !!quiet, mayAsk: !!mayAsk };
+    // Back from the payment page, by the provider's return or Back: its own step, before anything is confirmed.
+    if (!quiet || mayAsk) track("Checkout returned", (quiet ? "back" : "provider return") + (payWatch.snap && payWatch.snap.planId ? " · " + payWatch.snap.planId : ""));
     if (!quiet) showPayToast(false);
     checkPayment();
   }

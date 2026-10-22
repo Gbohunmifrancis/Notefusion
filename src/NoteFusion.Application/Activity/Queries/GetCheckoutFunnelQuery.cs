@@ -21,6 +21,7 @@ public static class CheckoutSteps
     public const string ChoseSignedOut = "Chose a plan signed out";
     public const string Started = "Checkout started";
     public const string Opened = "Checkout opened";
+    public const string Returned = "Checkout returned";
     public const string Confirmed = "Payment confirmed";
     public const string Failed = "Checkout failed";
     public const string NotConfirmed = "Payment not confirmed";
@@ -59,7 +60,7 @@ public sealed class GetCheckoutFunnelQueryHandler : IRequestHandler<GetCheckoutF
         string[] stepNames =
         [
             CheckoutSteps.PlansViewed, CheckoutSteps.ChoseSignedOut, CheckoutSteps.Started, CheckoutSteps.Opened,
-            CheckoutSteps.Confirmed, CheckoutSteps.Failed, CheckoutSteps.NotConfirmed
+            CheckoutSteps.Returned, CheckoutSteps.Confirmed, CheckoutSteps.Failed, CheckoutSteps.NotConfirmed
         ];
         var counts = await actions
             .Where(e => stepNames.Contains(e.Name!))
@@ -78,6 +79,7 @@ public sealed class GetCheckoutFunnelQueryHandler : IRequestHandler<GetCheckoutF
             Step(CheckoutSteps.ChoseSignedOut, "Picked a plan while signed out and was sent to sign in first"),
             Step(CheckoutSteps.Started, "Picked a plan while signed in; the API was asked for a checkout"),
             Step(CheckoutSteps.Opened, "The API answered with a checkout page and the browser went to the payment provider"),
+            Step(CheckoutSteps.Returned, "Came back from the provider's page, paid or not (the browser's Back button too)"),
             Step(CheckoutSteps.Confirmed, "Came back from the provider and the payment was confirmed"),
             Step(CheckoutSteps.Failed, "The checkout request failed before the provider's page opened"),
             Step(CheckoutSteps.NotConfirmed, "Came back from the provider but the payment was never confirmed"),

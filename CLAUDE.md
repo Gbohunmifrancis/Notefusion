@@ -533,8 +533,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   turns those rows into the admin dashboard's web funnel. Page views, clicks and web-app actions
   are first-party: `web-site/assets/track.js` batches them to the anonymous `POST /api/web/events`
   (`WebEvent` rows, account-linked when a token is sent; `window.nfTrack("Saved sheet")` names an
-  action) and the overview's `WebTraffic` section reads them back; a hidden or left page's anonymous batch goes by
-  `sendBeacon` to `POST /api/web/events/beacon` (text/plain JSON, device id in the body). Blog, hymn, free tool and comparison pages add
+  action) and the overview's `WebTraffic` section reads them back; the queue is kept in localStorage (`nf.web.events`, ids
+  per event, removed only after a 2xx, retried, a week at most) and a hidden or left page's batches go by `sendBeacon` to
+  `POST /api/web/events/beacon` (text/plain JSON, device id and, signed in, the token in the body). Blog, hymn, free tool and comparison pages add
   `assets/blog-track.js` (`blog_view` with source/UTM, `blog_read` = ≥50% of the article AND ≥30 s visible,
   `blog_read_complete`, `blog_engagement`, `blog_cta_click`, `blog_share`, `hymn_play`; details `k=v;…` with a `pv`
   page-load id), read by the console's Blog analytics (`GetBlogAnalyticsQuery`, `GET /api/admin/analytics/blog`; kinds
