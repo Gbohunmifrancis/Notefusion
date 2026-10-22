@@ -161,6 +161,7 @@
 .blog-page .cta-box { margin: 40px 0 10px; padding: 24px clamp(20px, 4vw, 30px); border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--tint); }
 .blog-page .cta-box h2 { margin: 0 0 6px; font-family: var(--serif); font-size: 23px; font-weight: 650; letter-spacing: -.01em; color: var(--ink); }
 .blog-page .cta-box p { margin: 0 0 16px; font-family: var(--sans); font-size: 15.5px; line-height: 1.6; color: var(--text); }
+.blog-page .cta-box .cta-alt { margin: 16px 0 0; font-size: 14.5px; color: var(--muted); }
 .blog-page .cta-button { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 18px; border-radius: 8px; background: var(--page-fill); color: var(--page-on-fill) !important; font-family: var(--sans); font-weight: 650; text-decoration: none; }
 .blog-page .cta-button:hover { background: var(--page-fill-hover); }
 

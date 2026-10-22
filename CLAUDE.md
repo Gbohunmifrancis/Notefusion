@@ -223,7 +223,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (share a link or with the choir, rename, folder, keep offline, delete with one confirm) are one implementation
   (`lib/sheetActions`, `components/library/useSheetActions`) for the Library's selection bar, Home's recent rows (⋯ or a
   long press opens `SheetActionsSheet`; a deleted row folds away) and the Result screen. Splash: cover only until
-  the fonts load, the 1.6 s intro on the first launch (`nf.hasLaunched`), 0.6 s on every later cold start. A rating ask after the third saved sheet (`lib/ratingPolicy` decides when; the sheet in `lib/feedback` sends the stars to the API and offers Google Play to 4–5★),
+  the fonts load, the 1.6 s intro on the first launch (`nf.hasLaunched`), 0.6 s on every later cold start. A rating ask after the third saved sheet (`lib/ratingPolicy` decides when, again at most every 90 days): Google's in-app review card (`lib/rating`, expo-store-review, loaded lazily so an older store build skips it), never a question of ours before it; Profile's Rate opens the listing,
   expo-notifications push. OTA via EAS Update (`production` channel) with the `fingerprint`
   runtime policy: any native change (a new Expo module, a permission, a plugin) gives a new
   runtime, so an update can only reach builds that have its native code — anything native
@@ -494,6 +494,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   first touch, 30 days, over browsers whose first blog page is in the window; a browser is tied to an account by its
   token-carrying events or its device id on a job/preview (floors: the phone app and other devices are missed).
   No third-party analytics.
+- Free tools and comparisons (`tools/blog/lib/render-tools.mjs`, built with the hymns; `/tools`, `/tools/<tool>`,
+  `/compare/<app>-alternative`): one page per search people make that NoteFusion answers (convert a song to Tonic Solfa,
+  hum to sheet music, YouTube to sheet music, sheet music to solfa, the solfa of worship songs), each the home page's own
+  try box (same ids, its assets at the home page's versions in `ASSET_VERSION`: bump both together) and real sample
+  sheet. A comparison says of the other app only what its own listing or website says, names that source and date, never
+  its price or ratings. No AdSense on the home page or these pages (`page({ ads: false })`); the blog and hymn pages keep
+  it. Every post's and hymn's CTA box points to the converter. The Play listing's words live in `docs/STORE_LISTING.md`.
 - The blog (`docs/BLOG.md`): posts live in the database (`BlogPost`; `Application/Blog`), written, checked and
   published in the admin console's Blog section — no post files in the repo. Publishing, unpublishing, archiving,
   a live edit or a scheduled post going live stages a `BlogSiteRebuild`; the `BlogSiteWorker` coalesces them into

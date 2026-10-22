@@ -21,7 +21,7 @@ import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { SITE_DIR, ORIGIN } from "./lib/site.mjs";
-import { writeSite } from "./build.mjs";
+import { writeSite, GENERATED_DIRS } from "./build.mjs";
 import { GENERATED_NOTE } from "./lib/layout.mjs";
 import { HYMN_INDEX_PATH } from "./lib/hymn-index.mjs";
 import { pdfText, pdfInfo, PDF_MAX_BYTES, PDF_MAX_PAGES } from "./lib/render-pdf.mjs";
@@ -205,7 +205,7 @@ export async function checkPdfs(siteDir) {
 
 /** Files the build writes or owns that differ between a fresh build and the committed site (PDFs are never committed). */
 export function staleFiles(freshDir, siteDir) {
-  const owned = (dir) => ["blog", "hymns"].flatMap((d) => (fs.existsSync(path.join(dir, d)) ? walk(path.join(dir, d)) : [])).filter((f) => !f.endsWith(".pdf")).map((f) => path.relative(dir, f));
+  const owned = (dir) => GENERATED_DIRS.flatMap((d) => (fs.existsSync(path.join(dir, d)) ? walk(path.join(dir, d)) : [])).filter((f) => !f.endsWith(".pdf")).map((f) => path.relative(dir, f));
   const names = new Set([...owned(freshDir), ...owned(siteDir), "sitemap.xml", "index.html", "assets/icons.svg", "assets/icons-LICENSE.txt", ...fs.readdirSync(freshDir).filter((f) => /^[0-9a-f]{32}\.txt$/.test(f))]);
   const stale = [];
   for (const rel of [...names].sort()) {

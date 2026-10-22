@@ -1,9 +1,9 @@
-// web-site/sitemap.xml (regenerated: hand-written entries kept, blog and hymn entries rebuilt) and
+// web-site/sitemap.xml (regenerated: hand-written entries kept, blog, hymn and tool entries rebuilt) and
 // the blog's RSS feed.
 import { ORIGIN } from "./site.mjs";
 import { escapeXml, rfc822 } from "./util.mjs";
 
-const GENERATED_PREFIXES = ["/blog", "/hymns"];
+const GENERATED_PREFIXES = ["/blog", "/hymns", "/tools", "/compare"];
 
 /** The entries of an existing sitemap that the build does not own, verbatim. */
 export function handWrittenEntries(xml) {
