@@ -15,6 +15,7 @@ import {
   parseBackingPrefs,
   rateKeepsBacking,
   showsBackingRows,
+  solfaAtBackingRead,
   stepBalance,
   warnsBeforeTranspose,
   watchDrift,
@@ -122,6 +123,47 @@ test("a big drift (a stall) is pulled back as soon as it has held, cooldown or n
   const stall = [0.0, 0.1, 0.1, 0.1, 0.0, 0.4, 0.4, 0.4];
   assert.deepEqual(pulls(stall), [750, 1750]);
   assert.equal(watchDrift(NEW_DRIFT_WATCH, Number.NaN, 0).pull, false, "an unreadable clock is no drift");
+});
+
+/**
+ * The tick as useBacking reads it, both players in step unless `realDrift` says otherwise: the solfa, then the backing
+ * `delays[i][0]` s later (the main thread busy), then the solfa again `delays[i][1]` s after that. `bracketed` false is
+ * the old way: the solfa then the backing, compared as read. Returns when the band was moved.
+ */
+function busyPulls(delays: [number, number][], bracketed: boolean, realDrift = 0): number[] {
+  let watch: DriftWatch = NEW_DRIFT_WATCH;
+  const at: number[] = [];
+  delays.forEach(([toBacking, toSolfa], i) => {
+    const t = i * 0.25;
+    const before = t;
+    const backing = t + toBacking + realDrift;
+    const after = t + toBacking + toSolfa;
+    const clip = bracketed ? solfaAtBackingRead(before, after) : before;
+    if (clip === null) return;
+    const step = watchDrift(watch, backing - clip, i * 250);
+    watch = step.watch;
+    if (step.pull) at.push(i * 250);
+  });
+  return at;
+}
+
+test("a busy main thread is no drift: the backing is read between two reads of the solfa, and a far-apart pair is skipped", () => {
+  // Dragging the balance: every read waits 60–300 ms on the main thread, the music in step all along.
+  const dragging: [number, number][] = [[0.002, 0.002], [0.12, 0.09], [0.15, 0.11], [0.3, 0.2], [0.09, 0.1], [0.11, 0.13], [0.002, 0.003]];
+  assert.ok(busyPulls(dragging, false).length > 0, "read back to back, the wait itself reads as a drift and moves the band");
+  assert.deepEqual(busyPulls(dragging, true), [], "bracketed, the busy readings are skipped and the quiet ones agree");
+  // A quiet phone: reads a few ms apart are compared, the solfa taken at their middle.
+  near(solfaAtBackingRead(10, 10.004)!, 10.002);
+  assert.equal(solfaAtBackingRead(10, 10.05), null, "50 ms apart: too far to compare");
+  assert.equal(solfaAtBackingRead(10, 4), null, "went back (the A–B loop jumped): not a reading");
+  assert.equal(solfaAtBackingRead(10, Number.NaN), null);
+});
+
+test("a real drift is still pulled back on a quiet phone, and once the busy moment passes", () => {
+  const quiet: [number, number][] = Array.from({ length: 6 }, () => [0.003, 0.003]);
+  assert.deepEqual(busyPulls(quiet, true, 0.12), [250 * 2], "past the limit from the first reading, held 400 ms by the third");
+  const busyThenQuiet: [number, number][] = [[0.2, 0.2], [0.2, 0.2], [0.003, 0.003], [0.003, 0.003], [0.003, 0.003], [0.003, 0.003]];
+  assert.deepEqual(busyPulls(busyThenQuiet, true, 0.12), [250 * 4]);
 });
 
 const UPLOAD: BackingFacts = {

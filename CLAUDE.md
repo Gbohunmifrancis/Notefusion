@@ -467,7 +467,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `assets/backing-clock.js`, same tests), play the backing pitch-kept under the solfa with a Solfa↔Backing balance (the
   backing its share and the solfa the rest, never adding up past full: two at full clipped on every loud beat; the web's
   backing goes through the piano's soft limiter), move it while both play only for a drift that holds (`watchDrift`: past
-  80 ms for 400 ms, a small one at most every 3 s; a silent 40 ms placement before it starts), and
+  80 ms for 400 ms, a small one at most every 3 s; a silent 40 ms placement before it starts; the phone reads the backing
+  between two reads of the solfa and compares only a pair within 40 ms, `solfaAtBackingRead`: each native read waits on
+  the main thread, and while the balance was dragged or four parts drawn the wait read as a drift and moved the band), and
   sit it out while `transposedBy` ≠ 0 (Save sends `transposedBy` for a client-side transpose).
   Every finished transcription is filed in its owner's library the moment its job is settled Done (option A,
   board 12: `Library/LibraryFiling`, from `GetTranscriptionJobQuery` and `NotifyTranscriptionReadyCommand` under the

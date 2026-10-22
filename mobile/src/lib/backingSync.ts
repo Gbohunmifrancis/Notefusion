@@ -44,6 +44,25 @@ export function watchDrift(watch: DriftWatch, driftSec: number, nowMs: number): 
 }
 
 /**
+ * Every clock read on Android waits its turn on the app's main thread, and that thread is busiest exactly while the
+ * balance is dragged or four parts are drawn. A solfa read and the backing read after it then landed tens, even
+ * hundreds, of milliseconds apart: a drift the music did not have, and the band was moved for it, a skip heard as a
+ * crackle. So the backing is read between two reads of the solfa, and the pair is compared only when those two are
+ * this close (in the solfa's seconds): the solfa stood at their middle, to within half of it, when the backing was read.
+ */
+export const READ_SPREAD_LIMIT_SEC = 0.04;
+
+/**
+ * Where the solfa stood when the backing was read between its reads `before` and `after`; null when they are too far
+ * apart to say (a busy moment) or went backwards (it jumped).
+ */
+export function solfaAtBackingRead(before: number, after: number): number | null {
+  const spread = after - before;
+  if (!Number.isFinite(spread) || spread < 0 || spread > READ_SPREAD_LIMIT_SEC) return null;
+  return before + spread / 2;
+}
+
+/**
  * The rates the backing plays at with its pitch kept. expo-audio keeps the pitch at any rate it takes, 0.1–2 on
  * Android (ExoPlayer's PlaybackParameters, speed with pitch 1) and 0–2 on iOS (AVPlayer's spectral time-pitch); below
  * half speed a stretched band warbles more than it helps, so it sits out there, as the solfa's own floor is 0.5.
