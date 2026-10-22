@@ -27,6 +27,7 @@ import {
   TrendingUp,
   Users2,
   Webhook,
+  Radio,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -62,6 +63,7 @@ const PRIMARY_NAV = [
   { to: "/insights", label: "Insights", icon: ChartNoAxesCombined },
   { to: "/growth", label: "Growth", icon: TrendingUp },
   { to: "/practice", label: "Practice", icon: MicVocal },
+  { to: "/listen", label: "Listen anywhere", icon: Radio },
   { to: "/blog", label: "Blog posts", icon: Newspaper },
   { to: "/blog-analytics", label: "Blog analytics", icon: BookOpenText },
   { to: "/users", label: "Users", icon: Users2 },

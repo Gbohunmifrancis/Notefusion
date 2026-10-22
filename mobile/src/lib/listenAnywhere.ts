@@ -74,9 +74,12 @@ export function noneLeftLine(a: ListenAllowance): string {
 export function groupNote(a: ListenAllowance): string {
   const head = "Each take is a transcription, like one from the Record screen.";
   return a.isPro
-    ? `${head} Pro: up to ${formatTakeCap(PRO_TAKE_SECONDS)} each, no weekly limit.`
-    : `${head} Free: ${a.freePerWeek} a week, up to ${formatTakeCap(FREE_TAKE_SECONDS)} each.`;
+    ? `${head} Pro: up to ${formatTakeCap(PRO_TAKE_SECONDS)} each, no weekly limit. It stops by itself when the music does.`
+    : `${head} Free: ${a.freePerWeek} a week, up to ${formatTakeCap(FREE_TAKE_SECONDS)} each, from the tile. The floating button and the notification are part of Pro.`;
 }
+
+/** The floating button and Listen in notifications are Pro's; this is what a free account's row says instead. */
+export const PRO_ONLY_HINT = "Part of Pro";
 
 export function sourceLabel(source: ListenSource): string {
   return source === "phone" ? "This phone’s sound" : "The room";

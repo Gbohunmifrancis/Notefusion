@@ -30,6 +30,7 @@ import {
   SETUP_WORDS,
   SOURCE_CHOICES,
   SOURCE_NOTE,
+  PRO_ONLY_HINT,
   groupNote,
   listenAllowance,
   nextSetupStep,
@@ -39,6 +40,7 @@ import {
 } from "../lib/listenAnywhere";
 import { signOutWarning } from "../lib/sendQueue";
 import { logAnalyticsEvent } from "../lib/analytics";
+import { logAppEvent } from "../lib/appEvents";
 import type { MyProfile } from "../api/types";
 import { fonts, spacing, type Palette, type ThemeMode } from "../design/theme";
 import { useTheme, useThemedStyles } from "../lib/theme";
@@ -118,12 +120,14 @@ export function SettingsScreen({ navigation }: Props) {
     if (!on) {
       setAnywhere(Listen.setAnywhere({ button: false }));
       void logAnalyticsEvent("listen_anywhere_setting", { setting: "button", on: false });
+      logAppEvent("listen_setting", { setting: "button", on: false });
       return;
     }
     const state = await readSetup();
     if (setupDone(state)) {
       setAnywhere(Listen.setAnywhere({ button: true }));
       void logAnalyticsEvent("listen_anywhere_setting", { setting: "button", on: true });
+      logAppEvent("listen_setting", { setting: "button", on: true });
       return;
     }
     setSetup({ open: true, state, busy: false });
@@ -136,6 +140,7 @@ export function SettingsScreen({ navigation }: Props) {
       setSetup((s) => ({ ...s, open: false }));
       setAnywhere(Listen.setAnywhere({ button: true }));
       void logAnalyticsEvent("listen_anywhere_setting", { setting: "button", on: true });
+      logAppEvent("listen_setting", { setting: "button", on: true });
       return;
     }
     setSetup((s) => ({ ...s, busy: true }));
@@ -162,6 +167,7 @@ export function SettingsScreen({ navigation }: Props) {
     }
     setAnywhere(Listen.setAnywhere({ notification: on }));
     void logAnalyticsEvent("listen_anywhere_setting", { setting: "notification", on });
+    logAppEvent("listen_setting", { setting: "notification", on });
   }
 
   async function addListenTile() {
@@ -171,6 +177,7 @@ export function SettingsScreen({ navigation }: Props) {
       setAnywhere(Listen.getAnywhere());
       showToast(SETUP_WORDS.tileAdded);
       void logAnalyticsEvent("listen_anywhere_setting", { setting: "tile", on: true });
+      logAppEvent("listen_setting", { setting: "tile", on: true });
     } else if (result === "unsupported") {
       // Android 12 and older have no prompt: the shade's own editor does it.
       showDialog({ title: "Add the Listen tile", message: SETUP_WORDS.tileByHand });
@@ -189,12 +196,21 @@ export function SettingsScreen({ navigation }: Props) {
         onPress: () => {
           setAnywhere(Listen.setAnywhere({ source: ch.source }));
           void logAnalyticsEvent("listen_anywhere_setting", { setting: "source", value: ch.source });
+          logAppEvent("listen_setting", { setting: "source", value: ch.source });
         },
       })),
     });
   }
 
   const allowance = listenAllowance(subscription);
+  // The floating button and the notification are Pro's: what the server last said, or the phone's own copy of it
+  // before the subscription has been read this launch. The tile is everyone's.
+  const listenPro = allowance.known ? allowance.isPro : (anywhere?.pro ?? false);
+
+  function openListenUpgrade(setting: "button" | "notification") {
+    logAppEvent("listen_pro_lock", { setting });
+    navigation.navigate("Upgrade");
+  }
 
   // Which proof deletes the account, and whether there is a password to change, come from the profile.
   useEffect(() => {
@@ -350,23 +366,48 @@ export function SettingsScreen({ navigation }: Props) {
       {anywhere ? (
         <>
           <Group title="Listen from anywhere">
-            <Row
-              icon="float"
-              label="Floating button"
-              hint={
-                anywhere.button && !anywhere.overlayPermitted
-                  ? "Needs “Display over other apps” — tap to set it up"
-                  : "Over other apps — tap it to listen"
-              }
-              toggle={{ value: anywhere.button && anywhere.overlayPermitted, onChange: (on) => void toggleFloatingButton(on) }}
-              onPress={anywhere.button && !anywhere.overlayPermitted ? () => void toggleFloatingButton(true) : undefined}
-            />
-            <Row
-              icon="bell"
-              label="Listen in notifications"
-              hint="A quiet notification with Listen"
-              toggle={{ value: anywhere.notification, onChange: (on) => void toggleListenNotification(on) }}
-            />
+            {listenPro ? (
+              <>
+                <Row
+                  icon="float"
+                  label="Floating button"
+                  hint={
+                    anywhere.button && !anywhere.overlayPermitted
+                      ? "Needs “Display over other apps” — tap to set it up"
+                      : "Over other apps — tap it to listen"
+                  }
+                  toggle={{ value: anywhere.button && anywhere.overlayPermitted, onChange: (on) => void toggleFloatingButton(on) }}
+                  onPress={anywhere.button && !anywhere.overlayPermitted ? () => void toggleFloatingButton(true) : undefined}
+                />
+                <Row
+                  icon="bell"
+                  label="Listen in notifications"
+                  hint="Swipe it away any time — it’s back when you open NoteFusion"
+                  toggle={{ value: anywhere.notification, onChange: (on) => void toggleListenNotification(on) }}
+                />
+              </>
+            ) : (
+              <>
+                <Row
+                  icon="float"
+                  label="Floating button"
+                  hint="Over other apps — tap it to listen"
+                  pro
+                  value={PRO_ONLY_HINT}
+                  chevron
+                  onPress={() => openListenUpgrade("button")}
+                />
+                <Row
+                  icon="bell"
+                  label="Listen in notifications"
+                  hint="A notification with Listen"
+                  pro
+                  value={PRO_ONLY_HINT}
+                  chevron
+                  onPress={() => openListenUpgrade("notification")}
+                />
+              </>
+            )}
             <Row
               icon="qs-tile"
               label="Quick Settings tile"

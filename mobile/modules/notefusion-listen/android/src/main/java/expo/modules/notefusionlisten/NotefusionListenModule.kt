@@ -64,6 +64,7 @@ class NotefusionListenModule : Module() {
     "phoneSoundAvailable" to ListenPrefs.phoneSoundAvailable(),
     "tileAdded" to ListenPrefs.tileAdded(context),
     "listening" to ListenOverlayService.isListening(),
+    "pro" to ListenPrefs.proActive(context),
   )
 
   private fun requestTile(service: Class<*>, label: String, icon: Int, promise: Promise) {
@@ -95,6 +96,15 @@ class NotefusionListenModule : Module() {
     Events("onBuffer", "onStatus")
 
     OnCreate { KeyListenerService.listener = listener }
+
+    // Opening the app brings back a Listen notification swiped away since, and squares the button and notice with the
+    // account as the phone last heard it.
+    OnActivityEntersForeground {
+      runCatching {
+        ListenPrefs.setNoticeDismissed(context, false)
+        ListenOverlayService.sync(context)
+      }
+    }
 
     OnDestroy {
       // JS is gone, so nothing could read the buffers: stop rather than listen for nothing.
@@ -184,14 +194,22 @@ class NotefusionListenModule : Module() {
     }
 
     /** What the account may send, as lib/listenAnywhere writes it; null forgets it. */
+    /** Also where Pro arrives or lapses for the button and the notice: they appear or go as it says. */
     Function("setAllowance") { json: String? ->
       ListenPrefs.setAllowance(context, json)
+      ListenOverlayService.sync(context)
     }
 
     Function("setAccount") { signedIn: Boolean ->
       ListenPrefs.setSignedIn(context, signedIn)
-      if (!signedIn) ListenPrefs.setAllowance(context, null)
+      if (!signedIn) {
+        ListenPrefs.setAllowance(context, null)
+        ListenOverlayService.sync(context)
+      }
     }
+
+    /** What the native side logged since the last call, as JSON (`[{name, detail, at}]`), and the log emptied. */
+    Function("drainEvents") { ListenPrefs.drainEvents(context) }
 
     Function("setDataSaver") { on: Boolean ->
       ListenPrefs.setDataSaver(context, on)

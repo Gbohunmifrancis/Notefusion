@@ -63,6 +63,8 @@ import type {
   TransposedSheet,
   VoiceRange,
   WarmUp,
+  AppEventsRequest,
+  AppEventsResult,
 } from "./types";
 
 /** Typed wrappers over the C# Web API endpoints. One function per route. */
@@ -225,6 +227,12 @@ export const appApi = {
    * preview. A few bytes, cached by the API for a minute (lib/seasonStore keeps the last answer on the phone).
    */
   season: () => api.get<AppSeason>("/api/app/season").then((r) => r.data),
+
+  /**
+   * What the app (and the native Listen from anywhere service) did, for the admin console: at most 50 a call, each a
+   * name and flat `key=value` details, never about the person. Signed in only; `lib/appEvents` batches and retries.
+   */
+  events: (body: AppEventsRequest) => api.post<AppEventsResult>("/api/app/events", body).then((r) => r.data),
 };
 
 export interface SubmitOptions {

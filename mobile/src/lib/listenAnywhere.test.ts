@@ -47,8 +47,8 @@ test("the caps and the Settings note", () => {
   assert.equal(formatTakeCap(180), "3:00");
   assert.equal(formatTakeCap(360), "6:00");
   assert.equal(formatTakeCap(65), "1:05");
-  assert.equal(groupNote(listenAllowance(FREE)), "Each take is a transcription, like one from the Record screen. Free: 3 a week, up to 3:00 each.");
-  assert.equal(groupNote(listenAllowance({ ...FREE, isPro: true })), "Each take is a transcription, like one from the Record screen. Pro: up to 6:00 each, no weekly limit.");
+  assert.equal(groupNote(listenAllowance(FREE)), "Each take is a transcription, like one from the Record screen. Free: 3 a week, up to 3:00 each, from the tile. The floating button and the notification are part of Pro.");
+  assert.equal(groupNote(listenAllowance({ ...FREE, isPro: true })), "Each take is a transcription, like one from the Record screen. Pro: up to 6:00 each, no weekly limit. It stops by itself when the music does.");
   assert.equal(sourceLabel("room"), "The room");
   assert.equal(sourceLabel("phone"), "This phone’s sound");
 });

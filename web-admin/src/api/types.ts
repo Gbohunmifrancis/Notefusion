@@ -1677,3 +1677,70 @@ export interface SessionIssue {
   lastSeen: string;
   sentryUrl: string;
 }
+
+// ── Listen from anywhere (GET /api/admin/analytics/listen; mirrors ListenAnalyticsDto) ─────────────
+
+export interface ListenSummary {
+  people: number;
+  proPeople: number;
+  takesStarted: number;
+  takesSent: number;
+  takesUnsent: number;
+  transcriptions: number;
+  transcriptionsFailed: number;
+  transcriptionsPending: number;
+  reminders: number;
+  stoppedFromReminder: number;
+  endedByThemselves: number;
+  averageSentSeconds: number;
+  captureBlocked: number;
+  buttonHidden: number;
+  noticeDismissed: number;
+  noticeHidden: number;
+  buySongTaps: number;
+}
+
+/** One way in (`bubble`, `notification`, `tile`) or source (`room`, `phone`). */
+export interface ListenBreakdown {
+  key: string;
+  started: number;
+  sent: number;
+  people: number;
+}
+
+/** How takes ended (`sent` of them sent), or why one could not start. */
+export interface ListenCount {
+  key: string;
+  count: number;
+  sent: number;
+}
+
+export interface ListenSettings {
+  buttonOn: number;
+  notificationOn: number;
+  tileAdded: number;
+  phoneSound: number;
+  proLockTaps: number;
+  proLockPeople: number;
+  upgradedAfterLock: number;
+}
+
+export interface ListenDay {
+  /** "2026-10-22", a reporting day (WAT). */
+  date: string;
+  started: number;
+  sent: number;
+  people: number;
+}
+
+export interface ListenAnalytics {
+  fromUtc: string;
+  toUtc: string;
+  summary: ListenSummary;
+  byEntry: ListenBreakdown[];
+  bySource: ListenBreakdown[];
+  endings: ListenCount[];
+  refusals: ListenCount[];
+  settings: ListenSettings;
+  days: ListenDay[];
+}

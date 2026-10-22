@@ -37,6 +37,20 @@ export interface AnywhereState {
   tileAdded: boolean;
   /** A take is being recorded right now. */
   listening: boolean;
+  /**
+   * The account is Pro as the phone last heard it: the floating button and the notification are Pro's and show only
+   * then (the switches keep their place). The tile is everyone's.
+   */
+  pro?: boolean;
+}
+
+/** Something the native side did with no JS running, for the admin console (lib/appEvents sends it). */
+export interface NativeEvent {
+  name: string;
+  /** Flat `key=value;…` pairs: where it came from, how long, why it ended. Nothing about the person. */
+  detail: string;
+  /** Epoch milliseconds, the phone's clock. */
+  at: number;
 }
 
 export type TileResult = 'added' | 'already_added' | 'declined' | 'error' | 'unsupported';
@@ -65,6 +79,8 @@ declare class Native extends NativeModule<Events> {
   setTakeTileAdded(added: boolean): void;
   takeHandled(): void;
   pendingTakes(): { uri: string; fileName: string }[];
+  /** Absent on store builds before build 61: an OTA running there drains nothing. */
+  drainEvents?(): string;
 }
 
 // Null in Expo Go, on iOS and on web: every call below is then a no-op and `available` is false.
@@ -173,4 +189,18 @@ export function takeHandled(): void {
 /** Takes the headless task never received (the process died in between), for the app to queue. */
 export function pendingTakes(): { uri: string; fileName: string }[] {
   return native?.pendingTakes() ?? [];
+}
+
+/** The native side's events since the last call, the log emptied (lib/appEvents). */
+export function drainEvents(): NativeEvent[] {
+  const raw = native?.drainEvents?.();
+  if (!raw) return [];
+  try {
+    const list = JSON.parse(raw) as unknown;
+    return Array.isArray(list)
+      ? list.filter((e): e is NativeEvent => !!e && typeof e.name === 'string' && typeof e.at === 'number')
+      : [];
+  } catch {
+    return [];
+  }
 }

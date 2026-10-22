@@ -2,10 +2,11 @@ import * as Listen from "../../modules/notefusion-listen";
 import { billingApi } from "../api/endpoints";
 import type { Subscription } from "../api/types";
 import { logAnalyticsEvent } from "./analytics";
+import { flushAppEvents, logAppEvent } from "./appEvents";
 import { removeUri } from "./blobStore";
 import { freeWeek } from "./freeWeek";
 import { listenAllowance, type AllowanceSource, type ListenAllowance } from "./listenAnywhere";
-import { bindOutbox, enqueueTake, pump, sendTakeNow } from "./outbox";
+import { bindOutbox, enqueueTake, pump, sendTakeNow, takeById } from "./outbox";
 import { tokenStore } from "./tokenStore";
 
 /**
@@ -54,7 +55,15 @@ export async function listenTakeTask(data: ListenTakeData): Promise<void> {
       seconds: Math.round(data.durationSec ?? 0),
     });
     await sendTakeNow(id);
+    // The job it became, so the console can follow a take from the button to a finished sheet.
+    logAppEvent("listen_take_queued", {
+      from: data.from ?? "bubble",
+      source: data.source ?? "room",
+      sec: Math.round(data.durationSec ?? 0),
+      job: takeById(id)?.jobId ?? null,
+    });
     await refreshAllowance();
+    await flushAppEvents();
   } catch {
     // The queue keeps whatever was written; the app's runner sends it next time it comes forward.
   } finally {
@@ -76,6 +85,7 @@ export async function drainPendingTakes(): Promise<void> {
   }
   if (queued > 0) {
     void logAnalyticsEvent("listen_anywhere_take_recovered", { count: queued });
+    logAppEvent("listen_take_recovered", { count: queued });
     void pump({ force: true });
   }
 }
