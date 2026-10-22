@@ -20,9 +20,11 @@ in doubt, and so does a bar whose chords change mid-way; a song's music starts o
 (its intro is whole bars), so ``start`` - where the instrumental begins, when the clip begins
 where the song does - settles that (``START_WEIGHT``).
 
-Measured on the dev songs of ``tests.accuracy.studio_songs`` with the meter and the offset
-counted right only when the bar lines fall on the band's own downbeats: the singer's rule
-16 of 30, the band alone 24 of 35, the band with its start 33 of 35 (and the meter 35 of 35).
+Measured with ``python -m tests.accuracy.report --songs`` against the singer's rule (with the
+band's bleed gated out of the stem, ``transcriber._gate_bleed``): the hymn songs' held-out half
+meter 0.775 -> 0.900, pickup 0.500 -> 0.700, notes in the right bar 0.592 -> 0.694; the real
+studio takes' dev half meter 0.826 -> 0.957, pickup 0.391 -> 0.609, in the right bar 0.586 ->
+0.745; notes, doh and tempo level unchanged or better.
 """
 
 from __future__ import annotations
