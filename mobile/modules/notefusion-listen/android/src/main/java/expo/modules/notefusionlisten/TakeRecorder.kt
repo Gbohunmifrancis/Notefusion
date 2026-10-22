@@ -56,14 +56,12 @@ internal class TakeRecorder(
     /** Phone sound: nothing came through for the first seconds while music plays (the app blocks capture). */
     fun onCaptureSilent()
     /**
-     * A forgotten take, by its sound: NOTHING_HEARD when the first minute held nothing above the quiet line, MUSIC_STOPPED
-     * when at least ten seconds were heard and then 45 went quiet. Reported once each; the service ends the take.
+     * A forgotten take, by its sound: `nothingHeard` when the first minute held nothing above the quiet line, otherwise the
+     * music stopped (at least ten seconds were heard and then 45 went quiet). Reported once; the service ends the take.
      */
-    fun onQuiet(kind: Quiet)
+    fun onQuiet(nothingHeard: Boolean)
     fun onFailed(code: String, message: String?)
   }
-
-  enum class Quiet { NOTHING_HEARD, MUSIC_STOPPED }
 
   /** `heardSec`: how much of the take was above the quiet line; a take with almost none is not worth a transcription. */
   class Result(val durationSec: Double, val ok: Boolean, val heardSec: Double = 0.0)
@@ -245,8 +243,7 @@ internal class TakeRecorder(
           val stopped = heardFrames >= MUSIC_HEARD_SEC * SAMPLE_RATE && quietRunFrames >= MUSIC_STOPPED_SEC * SAMPLE_RATE
           if (nothing || stopped) {
             quietReported = true
-            val kind = if (nothing) Quiet.NOTHING_HEARD else Quiet.MUSIC_STOPPED
-            main.post { listener.onQuiet(kind) }
+            main.post { listener.onQuiet(nothing) }
           }
         }
 

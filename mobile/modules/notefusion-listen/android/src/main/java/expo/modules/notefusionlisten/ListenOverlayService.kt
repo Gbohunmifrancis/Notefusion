@@ -538,9 +538,9 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
     finishTake(End.CAP, "cap")
   }
 
-  override fun onQuiet(kind: TakeRecorder.Quiet) {
+  override fun onQuiet(nothingHeard: Boolean) {
     if (!listening) return
-    finishTake(if (kind == TakeRecorder.Quiet.NOTHING_HEARD) End.NOTHING_HEARD else End.MUSIC_STOPPED, "quiet")
+    finishTake(if (nothingHeard) End.NOTHING_HEARD else End.MUSIC_STOPPED, "quiet")
   }
 
   override fun onCaptureSilent() {
