@@ -93,17 +93,37 @@ test("beatOfAudioTime undoes audioTimeOfBeat everywhere: a pickup, between entri
   }
 });
 
-test("the balance keeps the louder side at full: 40 % is the backing at two-thirds", () => {
-  assert.deepEqual({ ...BC.balanceGains(0.5) }, { solfa: 1, backing: 1 });
+test("the balance never adds up past full: the backing its share, the solfa the rest; 40 % is 0.6 : 0.4", () => {
+  assert.deepEqual({ ...BC.balanceGains(0.5) }, { solfa: 0.5, backing: 0.5 });
   assert.deepEqual({ ...BC.balanceGains(0) }, { solfa: 1, backing: 0 }, "all the way to Solfa: the piano alone");
   assert.deepEqual({ ...BC.balanceGains(1) }, { solfa: 0, backing: 1 }, "all the way to Backing: the band alone");
   const def = BC.balanceGains(BC.DEFAULT_BALANCE);
   assert.equal(BC.DEFAULT_BALANCE, 0.4);
-  near(def.solfa, 1); near(def.backing, 2 / 3);
+  near(def.solfa, 0.6); near(def.backing, 0.4);
   const toBand = BC.balanceGains(0.75);
-  near(toBand.solfa, 1 / 3); near(toBand.backing, 1);
+  near(toBand.solfa, 0.25); near(toBand.backing, 0.75);
+  for (let x = 0; x <= 1; x += 0.05) { const g = BC.balanceGains(x); assert.ok(g.solfa + g.backing <= 1 + 1e-9, String(x)); }
   assert.deepEqual({ ...BC.balanceGains("nonsense") }, { ...def }, "anything else is the default");
   assert.deepEqual({ ...BC.balanceGains(7) }, { solfa: 0, backing: 1 }, "clamped");
+});
+
+/** The drift watch read every 250 ms with these drifts; the times (ms from the start) it moved the band. */
+function pulls(drifts) {
+  let watch = { overSince: null, lastPullAt: null };
+  const at = [];
+  drifts.forEach((d, i) => { const step = BC.watchDrift(watch, d, i * 250); watch = step.watch; if (step.pull) at.push(i * 250); });
+  return at;
+}
+
+test("while both play, the clocks' jitter never moves the band (mobile backingSync's watchDrift, same cases)", () => {
+  assert.deepEqual(pulls([0.05, -0.07, 0.06, 0.079, -0.05, 0.02, 0.07, -0.078]), []);
+  assert.deepEqual(pulls([0.03, 0.12, 0.02, -0.11, 0.01, 0.13, 0.0, 0.09, 0.03]), [], "a lone reading past the limit is a jitter");
+});
+
+test("a drift that holds moves the band after 400 ms, a small one again only after 3 s, a stall at once", () => {
+  assert.deepEqual(pulls([0.0, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]), [750, 3750]);
+  assert.deepEqual(pulls([0.0, 0.1, 0.1, 0.1, 0.0, 0.4, 0.4, 0.4]), [750, 1750]);
+  assert.equal(BC.watchDrift({ overSince: null, lastPullAt: null }, NaN, 0).pull, false, "an unreadable clock is no drift");
 });
 
 // ── Scheduling: choir.js's transport on that clock ──────────────────────────

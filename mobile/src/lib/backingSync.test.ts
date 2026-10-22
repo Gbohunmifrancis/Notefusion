@@ -10,13 +10,16 @@ import {
   balanceValueText,
   balanceVolumes,
   louderEnd,
+  NEW_DRIFT_WATCH,
   needsResync,
   parseBackingPrefs,
   rateKeepsBacking,
   showsBackingRows,
   stepBalance,
   warnsBeforeTranspose,
+  watchDrift,
   type BackingFacts,
+  type DriftWatch,
 } from "./backingSync.ts";
 import { SPEEDS } from "./practice.ts";
 
@@ -25,17 +28,21 @@ const RATE_STEPS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
 const near = (a: number, b: number) => assert.ok(Math.abs(a - b) < 1e-9, `${a} is not ${b}`);
 
-test("the balance: the louder side at full, the other its share; 40 % is the solfa on top and the band at two-thirds", () => {
+test("the balance: the backing its share and the solfa the rest, never adding up past full; 40 % is 0.6 : 0.4", () => {
   assert.equal(DEFAULT_BALANCE, 0.4);
   assert.deepEqual(balanceVolumes(0), { solfa: 1, backing: 0 });
   const def = balanceVolumes(0.4);
-  assert.equal(def.solfa, 1);
-  near(def.backing, 2 / 3);
-  assert.deepEqual(balanceVolumes(0.5), { solfa: 1, backing: 1 });
+  near(def.solfa, 0.6);
+  near(def.backing, 0.4);
+  assert.deepEqual(balanceVolumes(0.5), { solfa: 0.5, backing: 0.5 });
   const lean = balanceVolumes(0.8);
-  near(lean.solfa, 0.25);
-  assert.equal(lean.backing, 1);
+  near(lean.solfa, 0.2);
+  near(lean.backing, 0.8);
   assert.deepEqual(balanceVolumes(1), { solfa: 0, backing: 1 });
+  for (let b = 0; b <= 1; b += 0.05) {
+    const v = balanceVolumes(b);
+    assert.ok(v.solfa + v.backing <= 1 + 1e-9, `${b}: the two add up past full`);
+  }
   // Out of range or unreadable: clamped, or the default.
   assert.deepEqual(balanceVolumes(-3), { solfa: 1, backing: 0 });
   assert.deepEqual(balanceVolumes(Number.NaN), balanceVolumes(DEFAULT_BALANCE));
@@ -80,11 +87,41 @@ test("the backing keeps its pitch at every speed Rehearse and Learn my part offe
   assert.equal(rateKeepsBacking(Number.NaN), false);
 });
 
-test("the band is pulled back into step only past 40 ms", () => {
+test("before it starts, the band is put in step past 40 ms (a silent move)", () => {
   assert.equal(needsResync(10.03, 10), false);
   assert.equal(needsResync(10.039, 10), false);
   assert.equal(needsResync(10.05, 10), true);
   assert.equal(needsResync(9.95, 10), true);
+});
+
+/** The drift watch read every 250 ms from `start` with these drifts; the times (ms from start) it moved the band. */
+function pulls(drifts: number[], start = 0): number[] {
+  let watch: DriftWatch = NEW_DRIFT_WATCH;
+  const at: number[] = [];
+  drifts.forEach((d, i) => {
+    const step = watchDrift(watch, d, start + i * 250);
+    watch = step.watch;
+    if (step.pull) at.push(i * 250);
+  });
+  return at;
+}
+
+test("while both play, the clocks' jitter never moves the band: under 80 ms, or past it for one reading only", () => {
+  assert.deepEqual(pulls([0.05, -0.07, 0.06, 0.079, -0.05, 0.02, 0.07, -0.078]), []);
+  assert.deepEqual(pulls([0.03, 0.12, 0.02, -0.11, 0.01, 0.13, 0.0, 0.09, 0.03]), [], "a lone reading past the limit is a jitter");
+});
+
+test("a drift that holds is pulled back once it has held 400 ms, then a small one waits 3 s before the next move", () => {
+  // Past the limit from the second reading on: first move at 500 ms (held 250 ms, then 500 ms); it keeps drifting,
+  // and the next move waits for the cooldown: 3.5 s.
+  const drifting = [0.0, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1];
+  assert.deepEqual(pulls(drifting), [750, 3750]);
+});
+
+test("a big drift (a stall) is pulled back as soon as it has held, cooldown or not", () => {
+  const stall = [0.0, 0.1, 0.1, 0.1, 0.0, 0.4, 0.4, 0.4];
+  assert.deepEqual(pulls(stall), [750, 1750]);
+  assert.equal(watchDrift(NEW_DRIFT_WATCH, Number.NaN, 0).pull, false, "an unreadable clock is no drift");
 });
 
 const UPLOAD: BackingFacts = {
