@@ -180,9 +180,9 @@ function recordingOptionsFor(dataSaver: boolean): RecordingOptions {
 
 // ── Recording length cap ──────────────────────────────────────────────────────
 //
-// Mirrors the server's NF_MAX_CLIP_SECONDS (180), which is a hard 413: a longer recording
-// is not degraded, it is refused, and the user would lose the whole take. Stopping at the
-// limit and submitting is the only outcome that keeps the audio.
+// Three minutes, what the server reads of a free account's file (FreeTier.UploadSeconds; Pro's
+// files are read for six). Stopping at the limit and submitting keeps every second that will
+// be read, rather than a take whose end is cut off without a word.
 //
 // This was 60 s and the reason was different — NF_PYIN_MAX_SECONDS was also 60, and above
 // it _pyin_track returned empty arrays, taking out pyin_refine and pyin_semitone together

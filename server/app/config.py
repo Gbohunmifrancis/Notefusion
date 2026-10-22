@@ -5,8 +5,9 @@ from dataclasses import dataclass
 
 
 class Settings:
-    # PRD F-01: clips are 10 s - 3 min; enforced server-side as defence in depth
-    max_clip_seconds: float = float(os.getenv("NF_MAX_CLIP_SECONDS", "180"))
+    # The most of an upload a job reads: six minutes, a Pro account's whole song (as for a linked
+    # one).  The API passes a free account's three minutes (``max_seconds``) below this.
+    max_clip_seconds: float = float(os.getenv("NF_MAX_CLIP_SECONDS", "360"))
     # Compressed uploads are ~1 MB/30 s; 20 MB allows a 3-min WAV during the beta
     # 25 MB, the same ceiling the C# API enforces (TranscriptionsController.MaxAudioBytes). It
     # was 20 MB here, so a 22 MB file passed the API, spent a minute uploading, and was then
@@ -134,9 +135,11 @@ class Settings:
     def pyin_max_seconds(self) -> float:
         """Longest clip that gets pyin refinement; longer ones keep Basic Pitch's pitches.
 
-        **Now equal to ``max_clip_seconds``, so nothing the API accepts is skipped.**  This
-        was 60 s, and the paragraphs below are kept because they are the measurement that
-        justified paying to raise it — not history for its own sake.
+        **Equal to a free account's three minutes, so nothing a free upload sends is skipped.**
+        A Pro file runs to ``max_clip_seconds`` (six minutes); past three its Basic Pitch notes
+        keep their own pitches, but a sung or hummed line is read by the voice engine, which this
+        does not cap.  This was 60 s, and the paragraphs below are kept because they are the
+        measurement that justified paying to raise it — not history for its own sake.
 
         pyin is the most expensive thing in the pipeline and it runs on a single worker
         (``inference_workers``), so this cap was a latency guarantee: on the pinned librosa
@@ -653,6 +656,18 @@ class Settings:
         keeping the switch dynamic lets the accuracy harness compare it in-process.
         """
         return os.getenv("NF_CONTOUR_GAP_MERGE", "0").strip().lower() not in ("0", "false", "no")
+
+    @property
+    def band_bars(self) -> bool:
+        """A separated song's bar lines and meter from its band's downbeats (``downbeats``)
+        rather than the singer's held notes.  ``NF_BAND_BARS=0`` restores the singer's rule."""
+        return os.getenv("NF_BAND_BARS", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
+    def song_bleed(self) -> bool:
+        """Silence the band leaking into a separated song's vocal stem before its pitches are read
+        (``transcriber._gate_bleed``).  ``NF_SONG_BLEED=0`` reads the stem as it came."""
+        return os.getenv("NF_SONG_BLEED", "1").strip().lower() not in ("0", "false", "no")
 
     @property
     def quantize_divisors(self) -> tuple[int, ...]:

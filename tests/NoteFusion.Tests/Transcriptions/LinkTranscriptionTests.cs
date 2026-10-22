@@ -299,6 +299,25 @@ public class LinkTranscriptionTests
         Assert.Equal(TranscribePriority.High, api.LastOptions!.Priority);
     }
 
+    [Fact]
+    public async Task A_pro_upload_is_read_up_to_six_minutes_and_a_free_one_its_first_three()
+    {
+        // Pro gets the whole song from a file as from a link, song or tune; a free account's file is cut at three minutes.
+        using var h = new TestHarness(Now);
+        var pro = Seed(h, "pro@example.com");
+        GoPro(h, pro);
+        var free = Seed(h);
+        var api = new FakeTranscriptionApi();
+
+        await SubmitUpload(h, pro, api, separate: true);
+        Assert.Equal(SongCredits.ProMaxSeconds, api.LastOptions!.MaxSeconds);
+        await SubmitUpload(h, pro, api, separate: false);
+        Assert.Equal(SongCredits.ProMaxSeconds, api.LastOptions.MaxSeconds);
+
+        Assert.True((await SubmitUpload(h, free, api, separate: false)).IsSuccess);
+        Assert.Equal(FreeTier.UploadSeconds, api.LastOptions.MaxSeconds);
+    }
+
     // ---------------------------------------------------------------- song uploads
 
     [Fact]

@@ -59,7 +59,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off
-  unless `NF_ENABLE_DOCS=1`. Every upload is cut to its cap with ffmpeg `-t` whatever its header says, and read only as the containers people send
+  unless `NF_ENABLE_DOCS=1`. Every upload is cut to its cap with ffmpeg `-t` whatever its header says (six minutes, `NF_MAX_CLIP_SECONDS`
+  360, for Pro and a bought song; the API sends a free account's three, `FreeTier.UploadSeconds`), and read only as the containers people send
   (`app/pipeline/ffmpeg_input.INPUT_GUARD`: `-protocol_whitelist file -format_whitelist …` on every ffmpeg/ffprobe of an
   outside file, and audioread's ffmpeg wrapped the same way), so a DASH/HLS manifest sent as a recording fetches nothing;
   pending jobs are capped (`NF_MAX_PENDING_JOBS`, 503 past it); completion webhooks go only to
@@ -102,7 +103,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   "auto"); otherwise 3/4 only when a three-beat bar puts clearly more of the held length on its
   downbeats than four does (`TRIPLE_LIFT`), else 4/4 — never 2, 6 or compound — and the first bar
   line is placed by the same durational accent, so an upbeat is written as a pickup
-  (`TranscriptionResult.pickup_beats`, not on the wire; `beat_origin_sec` moves with it). Accuracy is
+  (`TranscriptionResult.pickup_beats`, not on the wire; `beat_origin_sec` moves with it). A separated song's
+  band decides both instead when it marks its downbeats plainly (`app/pipeline/downbeats.py`: onsets under 180 Hz,
+  chord and bass changes, z-scored per half beat; clear = salience 1.0 and 3 standard errors over chance; 3/4 when
+  three-beat downbeats stand out more; a bar line where the music starts when the clip starts at the song's start,
+  `transcribe(song_start=…)`, false for a link's section or the store's preview; `NF_BAND_BARS=0` off). Accuracy is
   measured four times: the sung corpus, intended notes known, including untrained-singer styles
   (`python -m tests.accuracy.report --vocal`, baseline in `tests/accuracy/vocal_baseline.json`;
   `--slices` scores the long-drift, wide-detune, first-phrase and legato stress slices), and real
@@ -125,7 +130,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   so the model runs in a child process that hands the memory back — `NF_SEPARATE_IN_PROCESS=1` restores
   the in-process run), then transcribed; a song's separated vocal (the queue passes the mix as `tempo_source` only
   then) also has its singer's slides folded into the notes they reach (`vocal.absorb_scoops`: a span of at most 0.35 s
-  that starts a syllable and runs, unre-struck, up at most 2.5 st into a note 1.5x as long; `NF_SONG_SCOOPS=0` off).
+  that starts a syllable and runs, unre-struck, up at most 2.5 st into a note 1.5x as long; `NF_SONG_SCOOPS=0` off),
+  and the band leaking into that stem silenced before any pitch is read (`transcriber._gate_bleed`: frames
+  `BLEED_BELOW_DB` 14 under the song's vocal-to-instrumental level where the instrumental sounds; the intro's
+  leaked notes used to start the sheet before the singer; `NF_SONG_BLEED=0` off).
   Every separation (a link, `separate=true`, or a band the queue heard in a
   melody upload) checks the stem for a voice (`separate.voice_share_db`): a stem with none gives way to the mixture, and
   one whose sheet has fewer than max(4, seconds/10) notes to the mixture's sheet when that has more; a mixture is
@@ -289,7 +297,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   keep them in lock-step (see `server/app/pipeline` and its `_parse_key_override`; the shared
   table is `HymnBookSolfaTests` and its copies in each language's tests).
 - A free account gets 3 hummed or recorded transcriptions a week (`FreeTier`): plain uploads and mic takes, any mode
-  (melody, chords, choir), never a link or an upload with vocal isolation. The week turns every Friday 18:00 West Africa
+  (melody, chords, choir), never a link or an upload with vocal isolation; a file is read for its first three minutes
+  (`FreeTier.UploadSeconds`), Pro's (and a bought song's) for six, as a linked song. The week turns every Friday 18:00 West Africa
   Time (17:00 UTC, for everyone; `FreeTier.WeekStart`/`NextReset`, the one place for the maths), and a job counts in
   the week it was submitted. Counted per account, per inbox and per device from `TranscriptionJob` rows
   (`TrialUsage`); old rows simply fall out of the window, nothing to migrate. The inbox is `users.CanonicalEmail` (`Core/ValueObjects/Mailbox`:

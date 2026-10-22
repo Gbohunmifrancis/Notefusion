@@ -583,8 +583,10 @@ def _main_songs(args, parser) -> int:
     groups = ss.groups(outcomes)
     document = {
         "schema": SCHEMA_VERSION,
-        # The song path's own switches beside the shared ones (``settings.song_doh``/``song_scoops``).
-        "flags": {**_effective_flags(), "song_doh": settings.song_doh, "song_scoops": settings.song_scoops},
+        # The song path's own switches beside the shared ones (``settings.song_doh``/``song_scoops``/
+        # ``band_bars``/``song_bleed``).
+        "flags": {**_effective_flags(), "song_doh": settings.song_doh, "song_scoops": settings.song_scoops,
+                  "band_bars": settings.band_bars, "song_bleed": settings.song_bleed},
         "corpus": {
             "kind": "studio_songs",
             "n_cases": len(cases),

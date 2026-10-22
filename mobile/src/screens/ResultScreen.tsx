@@ -2217,7 +2217,10 @@ export function ResultScreen({ route, navigation }: Props) {
               </ProblemNote>
             ) : (
               <View>
-                <ProblemNote sentence={15} style={styles.problem}>Free preview: the first minute.</ProblemNote>
+                <ProblemNote sentence={15} style={styles.problem}>
+                  {/* A free account's file is read for three minutes; a link's free preview is a minute. */}
+                  {result.source ? "Free preview: the first minute." : "The first three minutes were transcribed."}
+                </ProblemNote>
                 <Button
                   label="Whole song with Pro"
                   variant="text"

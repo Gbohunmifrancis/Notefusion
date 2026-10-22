@@ -31,6 +31,13 @@ public static class FreeTier
     /// </summary>
     public static int TrialGenerationsFor(string? country) => TrialGenerations;
 
+    /// <summary>
+    /// The most of an uploaded file a free account's transcription reads: its first three minutes. Pro reads up to
+    /// <see cref="SongCredits.ProMaxSeconds"/>, as it does of a linked song, and so does a song a free account pays
+    /// for with a bought transcription.
+    /// </summary>
+    public const double UploadSeconds = 180;
+
     /// <summary>The weekday the free allowance comes back on.</summary>
     public const DayOfWeek ResetDay = DayOfWeek.Friday;
 
