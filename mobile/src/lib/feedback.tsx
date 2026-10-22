@@ -4,20 +4,17 @@ import Constants from "expo-constants";
 
 import { feedbackApi, type FeedbackCategory, type HeardAboutSource } from "../api/endpoints";
 import { Button } from "../components/Button";
-import { Icon } from "../components/Icon";
 import { ProblemNote } from "../components/ProblemNote";
 import { Sheet, SheetActions, SheetMessage, SheetTitle } from "../components/Sheet";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { logAnalyticsEvent as logEvent } from "./analytics";
 import * as haptics from "./haptics";
-import { rating } from "./rating";
 import { useColors, useThemedStyles } from "./theme";
 
 /**
- * Asking users things: "where did you hear about us?" once, a rating now and then, and a feedback
- * form whenever they want one. The API decides when "heard about" is due (GET /api/feedback/prompts).
- * The rating is asked on the third saved sheet by `lib/rating` (see `ratingPolicy`); this file shows
- * it and sends the answer to the API, so the admin console sees every rating and dismissal.
+ * Asking users things: "where did you hear about us?" once, and a feedback form whenever they want
+ * one. The API decides when "heard about" is due (GET /api/feedback/prompts). The store rating is not
+ * asked here: `lib/rating` asks Google for its own review card, with no question of ours before it.
  */
 
 /** Words only: an icon (or a brand's logo) on each chip would say nothing the word does not. */
@@ -45,7 +42,7 @@ const CATEGORIES: { value: FeedbackCategory; label: string }[] = [
 
 const appVersion = Constants.expoConfig?.version ?? undefined;
 
-type Sheet = "heard" | "rating" | "feedback" | null;
+type Sheet = "heard" | "feedback" | null;
 
 interface FeedbackApi {
   /** Opens the feedback form. `screen` says where it was opened from, for the console. */
@@ -60,13 +57,12 @@ export function useFeedback(): FeedbackApi {
 
 /**
  * Mounted once, inside the signed-in app. Asks "where did you hear about us?" a few seconds into the
- * first session that has not answered it, and owns the rating sheet and the feedback form.
+ * first session that has not answered it, and owns the feedback form.
  */
 export function FeedbackProvider({ enabled, children }: { enabled: boolean; children: ReactNode }) {
   const [sheet, setSheet] = useState<Sheet>(null);
   const screenRef = useRef("App");
   const heardChecked = useRef(false);
-  const [saves, setSaves] = useState(0);
 
   // "Where did you hear about us?" — once a session at most, and not over the splash or the first frame.
   useEffect(() => {
@@ -88,18 +84,6 @@ export function FeedbackProvider({ enabled, children }: { enabled: boolean; chil
     setSheet("feedback");
   }, []);
 
-  // The rating ask comes from a save (`rating.recordSave`), which already checked the policy.
-  // It wins over "heard about": the save flow left out its "Saved" dialog because of it.
-  useEffect(() => {
-    if (!enabled) return;
-    return rating.subscribe((count) => {
-      screenRef.current = "Result";
-      setSaves(count);
-      setSheet("rating");
-      void logEvent("rating_prompt_shown");
-    });
-  }, [enabled]);
-
   const value = useMemo(() => ({ openFeedback }), [openFeedback]);
   const close = () => setSheet(null);
 
@@ -107,7 +91,6 @@ export function FeedbackProvider({ enabled, children }: { enabled: boolean; chil
     <FeedbackContext.Provider value={value}>
       {children}
       <HeardAboutSheet visible={sheet === "heard"} onDone={close} />
-      <RatingSheet visible={sheet === "rating"} saves={saves} screen={screenRef.current} onDone={close} />
       <FeedbackSheet visible={sheet === "feedback"} screen={screenRef.current} onDone={close} />
     </FeedbackContext.Provider>
   );
@@ -234,115 +217,6 @@ function HeardAboutSheet({ visible, onDone }: { visible: boolean; onDone: () => 
   );
 }
 
-/* ── Rating ─────────────────────────────────────────────────────────────────── */
-
-function RatingSheet({
-  visible,
-  saves,
-  screen,
-  onDone,
-}: {
-  visible: boolean;
-  saves: number;
-  screen: string;
-  onDone: () => void;
-}) {
-  const c = useColors();
-  const styles = useThemedStyles(makeStyles);
-  const [stars, setStars] = useState(0);
-  const [comment, setComment] = useState("");
-  const [sent, setSent] = useState(false);
-  const [sending, setSending] = useState(false);
-
-  useEffect(() => {
-    if (visible) {
-      setStars(0);
-      setComment("");
-      setSent(false);
-    }
-  }, [visible]);
-
-  const notNow = () => {
-    if (!sent) {
-      void rating.snooze();
-      feedbackApi.submit({ kind: "rating_dismissed", client: "app", appVersion, screen }).catch(() => undefined);
-      void logEvent("rating_prompt_dismissed");
-    }
-    onDone();
-  };
-
-  const submit = () => {
-    if (stars === 0) return;
-    setSending(true);
-    void rating.markRated();
-    feedbackApi
-      .submit({ kind: "rating", rating: stars, message: comment.trim() || undefined, client: "app", appVersion, screen })
-      .catch(() => undefined)
-      .finally(() => {
-        setSending(false);
-        setSent(true);
-        void logEvent("rating_submitted", { rating: stars });
-        // A low rating is a conversation, not a store review: thank them and close.
-        if (stars < 4) onDone();
-      });
-  };
-
-  const openStore = () => {
-    void logEvent("rating_opened_store");
-    void rating.rate();
-    onDone();
-  };
-
-  if (sent && stars >= 4) {
-    return (
-      <Frame visible={visible} onDismiss={onDone} title="Thank you!" message="Would you share that on Google Play? It helps other choirs find NoteFusion.">
-        <SheetActions>
-          <Button label="Maybe later" variant="text" onPress={onDone} />
-          <Button label="Rate on Google Play" onPress={openStore} />
-        </SheetActions>
-      </Frame>
-    );
-  }
-
-  return (
-    <Frame visible={visible} onDismiss={notNow} title="Enjoying NoteFusion?" message={`Saved — that's ${saves} sheets in your library. How would you rate the app so far?`}>
-      {/* Blue, not gold: gold is Pro's. */}
-      <View style={styles.stars} accessibilityRole="adjustable" accessibilityLabel={`${stars} of 5 stars`}>
-        {[1, 2, 3, 4, 5].map((s) => (
-          <Pressable
-            key={s}
-            hitSlop={4}
-            onPress={() => {
-              haptics.play("light");
-              setStars(s);
-            }}
-            style={styles.star}
-            accessibilityRole="button"
-            accessibilityLabel={`${s} star${s === 1 ? "" : "s"}`}
-          >
-            <Icon name="rate" size={34} filled={s <= stars} color={s <= stars ? c.link : c.textFaint} />
-          </Pressable>
-        ))}
-      </View>
-      {stars > 0 && stars < 4 ? (
-        <TextInput
-          value={comment}
-          onChangeText={setComment}
-          placeholder="What could be better? (optional)"
-          placeholderTextColor={c.textFaint}
-          multiline
-          maxLength={2000}
-          style={[styles.input, styles.multiline]}
-        />
-      ) : null}
-      <SheetActions style={styles.actions}>
-        <Button label="Not now" variant="text" onPress={notNow} />
-        <Button label="Send" onPress={submit} disabled={stars === 0} loading={sending} />
-      </SheetActions>
-    </Frame>
-  );
-}
-
 /* ── Feedback form ──────────────────────────────────────────────────────────── */
 
 function FeedbackSheet({ visible, screen, onDone }: { visible: boolean; screen: string; onDone: () => void }) {
@@ -430,8 +304,6 @@ const makeStyles = (c: Palette) =>
     chipPressed: { opacity: 0.8 },
     chipText: { fontFamily: fonts.medium, fontSize: 13.5, color: c.text },
     chipTextOn: { color: c.link },
-    stars: { flexDirection: "row", gap: spacing.xs, marginTop: -spacing.xs },
-    star: { padding: 4 },
     input: {
       ...typography.body,
       fontSize: 16,
