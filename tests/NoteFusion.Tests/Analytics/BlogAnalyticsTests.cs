@@ -272,7 +272,43 @@ public class BlogAnalyticsTests
     [InlineData("/hymns", "index")]
     [InlineData("/blog/how-to-read-tonic-solfa", "post")]
     [InlineData("/hymns/abide-with-me", "hymn")]
+    [InlineData("/tools", "index")]
+    [InlineData("/tools/tonic-solfa-converter", "tool")]
+    [InlineData("/compare/sing2notes-alternative", "compare")]
     public void Pages_are_told_apart(string path, string kind) => Assert.Equal(kind, BlogEvents.KindOf(path));
+
+    [Fact]
+    public async Task A_free_tool_page_is_content_its_reads_and_converter_tries_counted_and_credited()
+    {
+        using var h = new TestHarness(Now);
+        const string Tool = "/tools/tonic-solfa-converter";
+        const string Compare = "/compare/melody-scanner-alternative";
+
+        // v1 found the converter on Google, read it, tried a recording and a link from its try box, then signed up.
+        var t1 = Now.AddDays(-3);
+        await Track(h, t1, "v1", null, "dev-t",
+            View(Tool, "www.google.com"),
+            Act(BlogEvents.View, Tool, "pv=t1;src=search;ref=www.google.com;type=tool;slug=tonic-solfa-converter"),
+            Act(BlogEvents.Read, Tool, "pv=t1;depth=60;active=40"),
+            new WebEventInput("action", BlogEvents.ConverterTryAudio, Tool, null, null, "mobile", null),
+            new WebEventInput("action", BlogEvents.ConverterTryLink, Tool, null, null, "mobile", null));
+        var ada = Signup(h, "ada@example.com", t1.AddMinutes(20));
+        Job(h, ada, t1.AddHours(1), "dev-t");
+        // v2 read a comparison page; a home-page preview (not content) is no tool page's try.
+        await Track(h, t1, "v2", null, null,
+            View(Compare, "duckduckgo.com"),
+            new WebEventInput("action", BlogEvents.ConverterTryAudio, "/", null, null, "desktop", null));
+
+        var d = await Read(h);
+
+        var tool = d.Posts.Single(p => p.Path == Tool);
+        Assert.Equal(("tool", 1, 1, 2), (tool.Kind, tool.Views, tool.Readers, tool.ConverterTries));
+        Assert.Equal((1, 1, 1), (tool.EntryVisitors, tool.Signups, tool.Transcribers));
+        Assert.Equal("compare", d.Posts.Single(p => p.Path == Compare).Kind);
+        Assert.Equal(2, d.Kpis.ConverterTries);
+        Assert.Equal(2, d.Kpis.NewVisitors);
+        Assert.Equal(1, d.Kpis.SignupsFromBlog);
+    }
 
     [Fact]
     public async Task A_beacon_is_read_as_json_from_a_plain_text_body_with_its_device_id_hashed()

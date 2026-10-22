@@ -70,11 +70,16 @@
     return "other";
   }
 
-  /** "post" (/blog/slug), "hymn" (/hymns/slug) or "index" (lists, tags, authors, pages), with the slug. */
+  /**
+   * "post" (/blog/slug), "hymn" (/hymns/slug), "tool" (/tools/slug), "compare" (/compare/slug) or "index" (lists,
+   * tags, authors, pages, the tools' list), with the slug. The server reads the same kinds (BlogEvents.KindOf).
+   */
   function pageInfo(pathname) {
     var parts = String(pathname || "").toLowerCase().replace(/\/index\.html$/, "").split("/").filter(Boolean);
     if (parts.length === 2 && parts[0] === "hymns") return { type: "hymn", slug: parts[1] };
     if (parts.length === 2 && parts[0] === "blog" && parts[1] !== "page") return { type: "post", slug: parts[1] };
+    if (parts.length === 2 && parts[0] === "tools") return { type: "tool", slug: parts[1] };
+    if (parts.length === 2 && parts[0] === "compare") return { type: "compare", slug: parts[1] };
     return { type: "index", slug: null };
   }
 

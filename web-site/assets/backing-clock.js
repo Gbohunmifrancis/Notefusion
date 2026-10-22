@@ -65,18 +65,38 @@
   }
 
   /**
-   * The two levels the balance sets (0 = the solfa alone, 1 = the backing alone): the louder side at full, the other at
-   * its share of it. 0.4 is the solfa at full and the backing at two-thirds of it (40 : 60); the middle is both at full.
+   * The two levels the balance sets (0 = the solfa alone, 1 = the backing alone): the backing its share and the solfa the
+   * rest, so the two never add up past full (mobile lib/backingSync balanceVolumes). 0.4 is 0.6 : 0.4. Both at full on
+   * one side of the middle added up past what the speakers can play, and every note on a loud beat clipped.
    */
   function balanceGains(balance) {
     var b = Math.min(1, Math.max(0, Number(balance)));
     if (!isFinite(b)) b = DEFAULT_BALANCE;
-    return { solfa: b <= 0.5 ? 1 : (1 - b) / b, backing: b >= 0.5 ? 1 : b / (1 - b) };
+    return { solfa: 1 - b, backing: b };
+  }
+
+  /**
+   * While both play, a move of the backing is a skip the ear hears, and a clock read between ticks can be tens of
+   * milliseconds out with the music in step. So a drift is acted on only past PLAY_DRIFT_SEC, held HOLD_MS, and a
+   * small one no sooner than COOLDOWN_MS after the last move; one past BIG_DRIFT_SEC (a stall) once it has held. The
+   * same rule as mobile lib/backingSync `watchDrift`, held to the same tests. `watch` is { overSince, lastPullAt }
+   * (both null to start), `nowMs` a clock in milliseconds; returns { pull, watch }.
+   */
+  var PLAY_DRIFT_SEC = 0.08, HOLD_MS = 400, COOLDOWN_MS = 3000, BIG_DRIFT_SEC = 0.25;
+  function watchDrift(watch, driftSec, nowMs) {
+    var w = watch || { overSince: null, lastPullAt: null }, drift = Math.abs(driftSec);
+    if (!isFinite(drift) || drift <= PLAY_DRIFT_SEC) return { pull: false, watch: { overSince: null, lastPullAt: w.lastPullAt } };
+    var overSince = w.overSince === null ? nowMs : w.overSince;
+    var held = nowMs - overSince >= HOLD_MS;
+    var rested = w.lastPullAt === null || nowMs - w.lastPullAt >= COOLDOWN_MS || drift > BIG_DRIFT_SEC;
+    if (held && rested) return { pull: true, watch: { overSince: null, lastPullAt: nowMs } };
+    return { pull: false, watch: { overSince: overSince, lastPullAt: w.lastPullAt } };
   }
 
   var api = {
     DEFAULT_BALANCE: DEFAULT_BALANCE,
-    audioTimeOfBeat: audioTimeOfBeat, beatOfAudioTime: beatOfAudioTime, hasBeatTimes: hasBeatTimes, balanceGains: balanceGains
+    audioTimeOfBeat: audioTimeOfBeat, beatOfAudioTime: beatOfAudioTime, hasBeatTimes: hasBeatTimes, balanceGains: balanceGains,
+    watchDrift: watchDrift
   };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   if (typeof window !== "undefined") window.NfBackingClock = api;

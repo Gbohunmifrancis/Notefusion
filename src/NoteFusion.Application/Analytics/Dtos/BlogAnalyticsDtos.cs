@@ -27,6 +27,7 @@ public sealed record BlogAnalyticsDto(
 /// <param name="AssistedSignups">Accounts created in the window whose browser had seen any blog page before signing up.</param>
 /// <param name="AssistedTranscribers">Of those, the accounts with a transcription or claimed preview.</param>
 /// <param name="AssistedPayers">Of those, the accounts with a verified payment.</param>
+/// <param name="ConverterTries">30-second previews started from a free tool page's try box in the window.</param>
 public sealed record BlogKpisDto(
     int Views,
     int Visitors,
@@ -41,15 +42,17 @@ public sealed record BlogKpisDto(
     int PayersFromBlog,
     int AssistedSignups,
     int AssistedTranscribers,
-    int AssistedPayers);
+    int AssistedPayers,
+    int ConverterTries);
 
 /// <param name="Key">Stable id for the step: visitors, readers, cta, app, signup, transcribed, paid.</param>
 /// <param name="Approximate">True when the step leans on a join that can miss or over-match (see <paramref name="Join"/>).</param>
 /// <param name="Join">How a visitor is tied to this step, in a sentence for the console.</param>
 public sealed record BlogFunnelStageDto(string Key, string Label, int Count, bool Approximate, string Join);
 
-/// <summary>One blog or hymn page over the window.</summary>
-/// <param name="Kind">"post", "hymn" or "index".</param>
+/// <summary>One blog, hymn, free tool or comparison page over the window.</summary>
+/// <param name="Kind">"post", "hymn", "tool", "compare" or "index".</param>
+/// <param name="ConverterTries">30-second previews started from this page's try box (tool and comparison pages).</param>
 /// <param name="EntryVisitors">New visitors whose first blog page was this one (first touch).</param>
 /// <param name="Signups">First-touch sign-ups credited to this page; likewise transcribers and payers.</param>
 public sealed record BlogPostRowDto(
@@ -68,7 +71,8 @@ public sealed record BlogPostRowDto(
     int EntryVisitors,
     int Signups,
     int Transcribers,
-    int Payers);
+    int Payers,
+    int ConverterTries);
 
 /// <summary>New visitors by where their first blog page came from.</summary>
 /// <param name="Source">search, social, direct, internal or other.</param>

@@ -332,6 +332,8 @@
     input.connect(scale);
     input.connect(board); board.connect(scale);
     scale.connect(limiter); limiter.connect(ctx.destination);
+    // Where another source joins the safety stage without the piano's level or soundboard: the song's backing.
+    input.limiterInput = scale;
     return input;
   }
 
@@ -445,18 +447,21 @@
   // The song's own backing (the instrumental the worker separated from the voice, boards o-backing O1–O4) plays under
   // the notes on the same clock, from an <audio> element routed into the same context: unlike an AudioBufferSource it
   // keeps its key when slowed (preservesPitch). It starts at the transport's place in the recording, seeks back with a
-  // loop's wrap, takes a new speed when the notes do, and is put back in step whenever it drifts more than 40 ms. If it
-  // is still loading, the notes start alone and the band joins in step. The balance sets the piano's level and the
-  // backing's (assets/backing-clock.js balanceGains: the louder side at full).
+  // loop's wrap and takes a new speed when the notes do. While both play, a seek is a skip the ear hears, so a drift is
+  // put right only when it holds (assets/backing-clock.js watchDrift: past 80 ms for 400 ms, a small one at most every
+  // 3 s); at 40 ms the element's clock read between ticks set off a skip several times a second. If it is still
+  // loading, the notes start alone and the band joins in step. The balance sets the piano's level and the backing's
+  // (balanceGains: they never add up past full), and the backing joins the piano's soft limiter rather than going
+  // straight to the speakers, where piano and band together clipped on every loud beat.
   var BACKING_LEVEL = 0.85; // the backing at "full": the level it has always played at under the piano
-  var DRIFT_SEC = 0.04, SETTLE_SEC = 0.15;
+  var SETTLE_SEC = 0.15;
   /**
    * An <audio> routed into the context is heard about this long after the place its currentTime reports (measured in
    * Chromium, which most of our listeners use: 25–40 ms at every speed, the file itself exact), so it is kept that far
    * ahead of the notes' place in the recording. Measured by what the graph actually plays (a click on every beat,
    * timestamped by an AudioWorklet against the notes' scheduled times), the backing then lands within ±30 ms at 1×,
    * 0.75× and 0.5×, through loops and changes of speed. currentTime alone is not a measure of what is heard while the
-   * audio is time-stretched, so nothing here learns from it beyond the 40 ms re-sync.
+   * audio is time-stretched, so nothing here learns from it beyond putting right a drift that holds.
    */
   var ELEMENT_LAG_SEC = 0.03;
   function balanceGains(balance) {
@@ -472,6 +477,7 @@
     var clock = { tempo: 100, beatOriginSec: 0, beatTimesSec: null }, transport = createTransport([], 0, clock);
     var backing = {
       el: null, gain: null, bytes: null, url: null, ready: false, on: false, balance: 0.4, unlocked: false, blocked: false, reseek: false,
+      drift: { overSince: null, lastPullAt: null },
       settleUntil: 0, waitTimer: null, changeTimer: null, changeAt: null, endTimer: null
     };
 
@@ -540,7 +546,7 @@
       el.addEventListener("playing", function () { if (backing.reseek) { backing.reseek = false; if (playing) syncBacking(true); } });
       var node = ctx.createMediaElementSource(el);
       backing.gain = ctx.createGain(); backing.gain.gain.value = 0;
-      node.connect(backing.gain); backing.gain.connect(ctx.destination);
+      node.connect(backing.gain); backing.gain.connect(master.limiterInput || ctx.destination);
       backing.el = el;
       return el;
     }
@@ -568,7 +574,7 @@
     }
     /**
      * Puts the backing where the transport says the recording is now: started there, seeked there (a jump, or a drift
-     * past 40 ms once a seek has settled), or left alone.
+     * that holds once a seek has settled: backing-clock.js watchDrift), or left alone.
      */
     function syncBacking(jump) {
       var el = backing.el;
@@ -581,10 +587,14 @@
       if (want < 0) { pauseBacking(); backing.waitTimer = setTimeout(function () { syncBacking(false); }, (-want / r) * 1000); return; }
       if (!(want < el.duration - 0.05)) { pauseBacking(); return; }
       var aim = want + ELEMENT_LAG_SEC * r;
-      if (el.paused) { if (!backing.blocked) { seekBacking(aim); startElement(r); } return; }
-      if (jump) { seekBacking(aim); return; }
+      if (el.paused) { if (!backing.blocked) { seekBacking(aim); startElement(r); } backing.drift = { overSince: null, lastPullAt: null }; return; }
+      if (jump) { seekBacking(aim); backing.drift = { overSince: null, lastPullAt: null }; return; }
       if (el.seeking || now < backing.settleUntil) return;
-      if (Math.abs(el.currentTime - aim) > DRIFT_SEC) seekBacking(aim);
+      var BC = window.NfBackingClock;
+      if (!BC || !BC.watchDrift) return;
+      var step = BC.watchDrift(backing.drift, el.currentTime - aim, Date.now());
+      backing.drift = step.watch;
+      if (step.pull) seekBacking(aim);
     }
     /** Every tick: in step, and ready for the next wrap or speed, which takes over between ticks at its own moment. */
     function followBacking(now) {

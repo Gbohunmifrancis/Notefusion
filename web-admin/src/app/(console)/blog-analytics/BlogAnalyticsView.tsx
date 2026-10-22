@@ -16,7 +16,7 @@ import { StateView } from "@/components/StateView";
 import { useChartPalette } from "@/lib/chart";
 import { addDays, formatCount, formatDayLong, formatDayShort, formatPercent, reportingToday } from "@/lib/format";
 
-/* Blog analytics: who reads the blog and the hymns, and whether they go on to open the app, sign up,
+/* Blog analytics: who reads the blog, the hymns and the free tool pages, and whether they go on to open the app, sign up,
  * transcribe and pay. Everything here is first-party (assets/track.js + assets/blog-track.js on the site);
  * the funnel follows the window's new blog visitors with first-touch credit (see "How this is counted"). */
 
@@ -34,17 +34,20 @@ const KINDS = [
   { value: "all", label: "All" },
   { value: "post", label: "Posts" },
   { value: "hymn", label: "Hymns" },
+  { value: "tool", label: "Tools" },
+  { value: "compare", label: "Compare" },
   { value: "index", label: "Lists" },
 ] as const;
 type KindFilter = (typeof KINDS)[number]["value"];
 
-type SortKey = "views" | "visitors" | "readRate" | "avgActiveSeconds" | "ctaClicks" | "entryVisitors" | "signups" | "transcribers" | "payers";
+type SortKey = "views" | "visitors" | "readRate" | "avgActiveSeconds" | "ctaClicks" | "converterTries" | "entryVisitors" | "signups" | "transcribers" | "payers";
 const COLUMNS: { key: SortKey; label: string; hint: string }[] = [
   { key: "views", label: "Views", hint: "Page views in the window" },
   { key: "visitors", label: "Visitors", hint: "Distinct browsers that viewed the page" },
   { key: "readRate", label: "Read rate", hint: "Visitors who read it: half the article and 30 s visible" },
   { key: "avgActiveSeconds", label: "Avg time", hint: "Mean seconds with the tab visible, per page view that reported it" },
   { key: "ctaClicks", label: "To app", hint: "Clicks on a link to /app from this page" },
+  { key: "converterTries", label: "Tries", hint: "30-second previews started from this page's try box (the free tool and comparison pages)" },
   { key: "entryVisitors", label: "Entries", hint: "New visitors whose first blog page was this one" },
   { key: "signups", label: "Sign-ups", hint: "First-touch sign-ups credited to this page (a floor)" },
   { key: "transcribers", label: "Transcribed", hint: "First-touch first transcriptions or previews credited to this page" },
@@ -61,6 +64,7 @@ function seconds(s: number | null): string {
 function pageName(path: string): string {
   if (path === "/blog") return "Blog front page";
   if (path === "/hymns") return "Hymn list";
+  if (path === "/tools") return "Free tools list";
   const parts = path.split("/").filter(Boolean);
   if (parts.length === 3 && parts[1] === "tag") return `Topic: ${parts[2]!.replace(/-/g, " ")}`;
   if (parts.length === 3 && parts[1] === "author") return `Author: ${parts[2]}`;
@@ -99,7 +103,7 @@ export function BlogAnalyticsView() {
     <div className="animate-fade-in space-y-5">
       <PageHeader
         title="Blog analytics"
-        subtitle="Blog and hymn readers, and whether they go on to try the app, transcribe and pay."
+        subtitle="Blog, hymn and free tool readers, and whether they go on to try the app, transcribe and pay."
         breadcrumb={["Dashboard", "Blog analytics"]}
       />
       <div className="flex flex-wrap items-center gap-3 nf-panel p-3">
@@ -134,8 +138,8 @@ function BlogBody({ d }: { d: BlogAnalytics }) {
         <Kpi
           label="Blog visitors"
           value={formatCount(k.visitors)}
-          note={`${formatCount(k.newVisitors)} new · ${formatCount(k.views)} page views`}
-          hint="Distinct browsers on a blog or hymn page in this window. New: their first blog page on record was in it."
+          note={`${formatCount(k.newVisitors)} new · ${formatCount(k.views)} page views · ${formatCount(k.converterTries)} converter tries`}
+          hint="Distinct browsers on a blog, hymn, free tool or comparison page in this window. New: their first such page on record was in it. Converter tries: 30-second previews started from a tool page's try box."
         />
         <Kpi
           label="Read rate"
@@ -329,7 +333,7 @@ function DailyLines({ data }: { data: BlogAnalytics["daily"] }) {
   );
 }
 
-/** Every blog and hymn page in the window, sortable, each linked to the live page. */
+/** Every blog, hymn, free tool and comparison page in the window, sortable, each linked to the live page. */
 function PostTable({ posts }: { posts: BlogPostRow[] }) {
   const [sort, setSort] = useState<{ key: SortKey; desc: boolean }>({ key: "views", desc: true });
   const [kind, setKind] = useState<KindFilter>("all");
@@ -342,13 +346,13 @@ function PostTable({ posts }: { posts: BlogPostRow[] }) {
 
   return (
     <Card
-      title="Posts and hymns"
+      title="Posts, hymns and tools"
       info="Views, reads and clicks are this window's activity on each page, from every visitor. Entries, sign-ups, transcribed and paid are first-touch credit from the window's new visitors."
       action={<Segmented label="Page type" options={KINDS} value={kind} onChange={setKind} />}
       bleed
     >
       <div className="overflow-x-auto pb-2">
-        <table className="w-full min-w-[920px] text-left text-xs">
+        <table className="w-full min-w-[980px] text-left text-xs">
           <thead className="text-muted-foreground">
             <tr className="border-b border-border">
               <th className="px-5 py-2.5 font-medium">Page</th>
@@ -388,6 +392,7 @@ function PostTable({ posts }: { posts: BlogPostRow[] }) {
                 </td>
                 <td className="px-2 py-2.5 text-right tabular-nums text-foreground">{seconds(p.avgActiveSeconds)}</td>
                 <td className="px-2 py-2.5 text-right tabular-nums text-foreground">{formatCount(p.ctaClicks)}</td>
+                <td className="px-2 py-2.5 text-right tabular-nums text-foreground">{p.kind === "tool" || p.kind === "compare" ? formatCount(p.converterTries) : "—"}</td>
                 <td className="px-2 py-2.5 text-right tabular-nums text-foreground">{formatCount(p.entryVisitors)}</td>
                 <td className="px-2 py-2.5 text-right tabular-nums text-foreground">{formatCount(p.signups)}</td>
                 <td className="px-2 py-2.5 text-right tabular-nums text-foreground">{formatCount(p.transcribers)}</td>

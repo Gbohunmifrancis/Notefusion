@@ -5,10 +5,43 @@
  * `components/result/useBacking.ts`; the file behind it is `backingAudio.ts`.
  */
 
-/** Past this the backing is pulled back into step with the solfa (board O1b: checked every 250 ms). */
+/** Past this a backing that is about to start is put in step first (a silent move: it is not playing yet). */
 export const DRIFT_LIMIT_SEC = 0.04;
 /** How often the two players are compared while they play. */
 export const SYNC_TICK_MS = 250;
+
+/**
+ * While both play, moving the backing is a skip the ear hears, and two native clocks read a tick apart can disagree by
+ * tens of milliseconds without the music being apart at all. So a drift is acted on only past this…
+ */
+export const PLAY_DRIFT_LIMIT_SEC = 0.08;
+/** …once it has held this long (two readings at the 250 ms tick)… */
+export const DRIFT_HOLD_MS = 400;
+/** …and, for a small one, no sooner than this after the last move. A drift past BIG_DRIFT_SEC (a stall) goes at once. */
+export const PULL_COOLDOWN_MS = 3000;
+export const BIG_DRIFT_SEC = 0.25;
+
+/** What the drift watch remembers between readings: when the drift went past the limit, and when it last moved it. */
+export interface DriftWatch {
+  overSince: number | null;
+  lastPullAt: number | null;
+}
+
+export const NEW_DRIFT_WATCH: DriftWatch = { overSince: null, lastPullAt: null };
+
+/**
+ * One reading of the drift while both play (`driftSec`: where the backing is less where it should be; `nowMs`: a
+ * clock in ms). Says whether to move the backing back into step now, and what to remember for the next reading.
+ */
+export function watchDrift(watch: DriftWatch, driftSec: number, nowMs: number): { pull: boolean; watch: DriftWatch } {
+  const drift = Math.abs(driftSec);
+  if (!Number.isFinite(drift) || drift <= PLAY_DRIFT_LIMIT_SEC) return { pull: false, watch: { ...watch, overSince: null } };
+  const overSince = watch.overSince ?? nowMs;
+  const held = nowMs - overSince >= DRIFT_HOLD_MS;
+  const rested = watch.lastPullAt === null || nowMs - watch.lastPullAt >= PULL_COOLDOWN_MS || drift > BIG_DRIFT_SEC;
+  if (held && rested) return { pull: true, watch: { overSince: null, lastPullAt: nowMs } };
+  return { pull: false, watch: { ...watch, overSince } };
+}
 
 /**
  * The rates the backing plays at with its pitch kept. expo-audio keeps the pitch at any rate it takes, 0.1–2 on
@@ -40,14 +73,14 @@ export function clampBalance(value: number): number {
 }
 
 /**
- * The two volumes for a balance (0 = the solfa alone, 0.5 = even, 1 = the backing alone). The louder side is
- * always at full volume and the other at its share of it: at 40 % the solfa is full and the backing two-thirds
- * (40 : 60), at either end the other side is silent.
+ * The two volumes for a balance (0 = the solfa alone, 0.5 = even, 1 = the backing alone): the backing its share and the
+ * solfa the rest, so the two never add up past full. At 40 % the solfa is 0.6 and the backing 0.4 (40 : 60); at either
+ * end the other side is silent. Two players at full volume each (the louder side was kept at full) added up past what
+ * the speaker can play, and every note landing on a loud beat clipped: a crackle, three times a second on a mastered song.
  */
 export function balanceVolumes(balance: number): { solfa: number; backing: number } {
   const v = clampBalance(balance);
-  if (v <= 0.5) return { solfa: 1, backing: v / (1 - v) };
-  return { solfa: (1 - v) / v, backing: 1 };
+  return { solfa: 1 - v, backing: v };
 }
 
 /** Which end is louder, and so shows in the text colour; neither at the middle mark. */

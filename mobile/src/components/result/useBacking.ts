@@ -3,9 +3,11 @@ import { useAudioPlayer, useAudioPlayerStatus, type AudioPlayer } from "expo-aud
 import {
   BACKING_RATE_MAX,
   BACKING_RATE_MIN,
+  NEW_DRIFT_WATCH,
   SYNC_TICK_MS,
   needsResync,
   rateKeepsBacking,
+  watchDrift,
 } from "../../lib/backingSync";
 
 /** A seek's own time, before it has been measured: what the backing is moved ahead by so it lands in step. */
@@ -33,8 +35,10 @@ function read<T>(get: () => T, fallback: T): T {
  *
  * - Play, pause and every seek of the solfa (a tap on the scrubber, the A–B loop going back, Back to the start) move
  *   the backing in the same tick: usePractice calls `followPlay`, `followPause` and `followSeek`.
- * - Every 250 ms while they play the two clocks are read back to back; past 40 ms apart the backing is moved back
- *   into step (a little ahead, by what a seek takes, so it lands where the solfa is by then).
+ * - Every 250 ms while they play the two clocks are read back to back. A move while playing is a skip the ear hears,
+ *   so the backing is moved back into step (a little ahead, by what a seek takes, so it lands where the solfa is by
+ *   then) only past 80 ms held for 400 ms, and a small drift no sooner than 3 s after the last move (lib/backingSync
+ *   `watchDrift`); at 40 ms every jitter of the two clocks was a skip, several a second.
  * - A backing still downloading when Play is pressed joins in step when it arrives; before its start (a pickup) or
  *   after its end it waits, silent.
  * - Its rate follows the solfa's speed with the pitch kept (expo-audio's pitch correction: ExoPlayer on Android, the
@@ -72,6 +76,8 @@ export function useBacking({
   const live = useRef({ usable, rate, positionOf });
   live.current = { usable, rate, positionOf };
   const sync = useRef({ seeking: false, quietUntil: 0, seekSec: FIRST_SEEK_GUESS_SEC });
+  /** The drift while both play: how long it has been past the limit, and when it last moved the backing. */
+  const drift = useRef(NEW_DRIFT_WATCH);
   /**
    * The solfa was asked to play and has not stopped since. Its status says so only a tick later, and a seek that
    * finishes in between must know whether to start the backing.
@@ -179,9 +185,10 @@ export function useBacking({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mainPlaying, usable, player, main]);
 
-  // Kept in step while they play: both clocks read back to back, the backing moved past 40 ms apart.
+  // Kept in step while they play: both clocks read back to back, the backing moved only for a drift that holds.
   useEffect(() => {
     if (!mainPlaying || !usable) return;
+    drift.current = NEW_DRIFT_WATCH;
     const timer = setInterval(() => {
       const s = sync.current;
       if (s.seeking || Date.now() < s.quietUntil) return;
@@ -198,7 +205,9 @@ export function useBacking({
         player.pause();
         return;
       }
-      if (needsResync(at, to)) place(clip, true, true);
+      const step = watchDrift(drift.current, at - to, Date.now());
+      drift.current = step.watch;
+      if (step.pull) place(clip, true, true);
     }, SYNC_TICK_MS);
     return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps

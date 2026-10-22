@@ -32,11 +32,13 @@ export interface BlogKpis {
   assistedSignups: number;
   assistedTranscribers: number;
   assistedPayers: number;
+  /** 30-second previews started from a free tool page's try box in the window. */
+  converterTries: number;
 }
 
 export interface BlogPostRow {
   path: string;
-  /** "post", "hymn" or "index" */
+  /** "post", "hymn", "tool", "compare" or "index" */
   kind: string;
   views: number;
   visitors: number;
@@ -53,6 +55,8 @@ export interface BlogPostRow {
   signups: number;
   transcribers: number;
   payers: number;
+  /** 30-second previews started from this page's try box (tool and comparison pages). */
+  converterTries: number;
 }
 
 export interface BlogSourceRow {
