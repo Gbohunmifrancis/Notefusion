@@ -7,24 +7,30 @@ import {
   ChevronRight,
   Download,
   Loader2,
+  Lock,
   Mail,
   Paperclip,
   Reply,
+  Send,
   X,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import {
   getInbox,
   getInboxAttachments,
   getInboxEmail,
+  getSentEmail,
+  getSentMail,
   replyToEmail,
 } from "@/api/endpoints";
 import type {
   InboxAttachment,
   InboxEmailDetail,
   InboxEmailSummary,
-  InboxPage,
+  SentEmailDetail,
+  SentEmailSummary,
 } from "@/api/types";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -390,71 +396,220 @@ function EmailListItem({
   );
 }
 
-// ── Main view ─────────────────────────────────────────────────────────────────
+// ── Sent mail ─────────────────────────────────────────────────────────────────
 
-export function InboxView() {
-  const [page, setPage] = useState(1);
-  const [inboxData, setInboxData] = useState<InboxPage | null>(null);
+/** Resend's latest event, as a word and a tone: delivered and read green, trouble amber, waiting grey. */
+const SENT_STATUS: Record<string, { label: string; tone: "good" | "bad" | "wait" }> = {
+  delivered: { label: "Delivered", tone: "good" },
+  opened: { label: "Opened", tone: "good" },
+  clicked: { label: "Clicked", tone: "good" },
+  sent: { label: "Sent", tone: "wait" },
+  queued: { label: "Queued", tone: "wait" },
+  scheduled: { label: "Scheduled", tone: "wait" },
+  delivery_delayed: { label: "Delayed", tone: "bad" },
+  bounced: { label: "Bounced", tone: "bad" },
+  complained: { label: "Marked spam", tone: "bad" },
+  failed: { label: "Failed", tone: "bad" },
+  suppressed: { label: "Suppressed", tone: "bad" },
+  canceled: { label: "Cancelled", tone: "wait" },
+};
+
+function StatusPill({ status, selected = false }: { status: string | null; selected?: boolean }) {
+  if (!status) return null;
+  const known = SENT_STATUS[status] ?? { label: status.replace(/_/g, " "), tone: "wait" as const };
+  const tone = selected
+    ? "bg-white/20 text-white"
+    : known.tone === "good"
+      ? "bg-green-50 text-green-700 dark:bg-green-950/40 dark:text-green-400"
+      : known.tone === "bad"
+        ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
+        : "bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300";
+  return (
+    <span className={`inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${tone}`}>
+      {known.label}
+    </span>
+  );
+}
+
+function SentListItem({
+  email,
+  selected,
+  onClick,
+}: {
+  email: SentEmailSummary;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full rounded-[8px] px-4 py-3 text-left transition ${
+        selected ? "bg-blue-600 text-white shadow-md shadow-blue-900/20" : "hover:bg-slate-100 dark:hover:bg-white/5"
+      }`}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <span className={`truncate text-sm font-semibold ${selected ? "text-white" : "text-slate-800 dark:text-slate-100"}`}>
+          To {email.to || "(no recipient)"}
+        </span>
+        <span className={`shrink-0 text-xs ${selected ? "text-blue-200" : "text-slate-400"}`}>
+          {formatRelative(email.sentAt)}
+        </span>
+      </div>
+      <div className="mt-0.5 flex items-center justify-between gap-2">
+        <p className={`truncate text-sm ${selected ? "text-blue-100" : "text-slate-600 dark:text-slate-400"}`}>
+          {email.subject}
+        </p>
+        <StatusPill status={email.status} selected={selected} />
+      </div>
+    </button>
+  );
+}
+
+function SentDetailPanel({ summary, onClose }: { summary: SentEmailSummary; onClose: () => void }) {
+  const [detail, setDetail] = useState<SentEmailDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selected, setSelected] = useState<InboxEmailSummary | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+    setError(null);
+    getSentEmail(summary.id, controller.signal)
+      .then(setDetail)
+      .catch((err: unknown) => {
+        if ((err as { name?: string }).name !== "AbortError") setError("Failed to load email. Please try again.");
+      })
+      .finally(() => setLoading(false));
+    return () => controller.abort();
+  }, [summary.id]);
+
+  const from = extractDisplay(detail?.from ?? summary.from);
+
+  return (
+    <div className="flex min-h-0 flex-col">
+      <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-6 py-4 dark:border-white/10">
+        <div className="min-w-0">
+          <h2 className="truncate text-base font-semibold text-slate-900 dark:text-white">{summary.subject}</h2>
+          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
+            To&nbsp;<span className="font-medium text-slate-700 dark:text-slate-300">{summary.to}</span>
+            &nbsp;·&nbsp;from {from.name !== from.email ? from.name : from.email}
+            &nbsp;·&nbsp;{new Date(summary.sentAt).toLocaleString()}
+          </p>
+          <div className="mt-1.5">
+            <StatusPill status={detail?.status ?? summary.status} />
+          </div>
+        </div>
+        <button
+          onClick={onClose}
+          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"
+          aria-label="Close email"
+        >
+          <X size={16} />
+        </button>
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto p-6">
+        {loading && (
+          <div className="flex justify-center py-16">
+            <Loader2 className="animate-spin text-blue-500" size={20} />
+          </div>
+        )}
+        {error && <ErrorBanner message={error} />}
+        {detail && !loading && (
+          detail.bodyWithheld ? (
+            <div className="flex items-start gap-2 rounded-[8px] border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-white/10 dark:bg-slate-800 dark:text-slate-300">
+              <Lock size={16} aria-hidden="true" className="mt-0.5 shrink-0 text-slate-400" />
+              This email holds a sign-in code or a one-time link, so its body is not shown here.
+            </div>
+          ) : detail.htmlBody ? (
+            <iframe
+              srcDoc={EMAIL_CSP + detail.htmlBody}
+              sandbox=""
+              title="Email body"
+              className="h-[480px] w-full rounded-[8px] border border-slate-200 bg-white dark:border-white/10"
+              style={{ colorScheme: "light" }}
+            />
+          ) : (
+            <pre className="whitespace-pre-wrap rounded-[8px] border border-slate-200 bg-slate-50 p-4 font-mono text-sm text-slate-700 dark:border-white/10 dark:bg-slate-800 dark:text-slate-300">
+              {detail.textBody ?? "(No body)"}
+            </pre>
+          )
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── One mailbox: a paged list on the left, the open email on the right ─────────
+
+interface Paged<T> {
+  items: T[];
+  total: number;
+  totalPages: number;
+}
+
+function Mailbox<T extends { id: string }>({
+  load,
+  noun,
+  empty,
+  renderItem,
+  renderDetail,
+}: {
+  load: (page: number, pageSize: number, signal: AbortSignal) => Promise<Paged<T>>;
+  noun: string;
+  empty: ReactNode;
+  renderItem: (item: T, selected: boolean, onClick: () => void) => ReactNode;
+  renderDetail: (item: T, onClose: () => void) => ReactNode;
+}) {
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState<Paged<T> | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selected, setSelected] = useState<T | null>(null);
 
   const PAGE_SIZE = 50;
   const abortRef = useRef<AbortController | null>(null);
 
-  const load = useCallback(
+  const go = useCallback(
     (p: number) => {
       abortRef.current?.abort();
       const ctrl = new AbortController();
       abortRef.current = ctrl;
-
       setLoading(true);
       setError(null);
-
-      getInbox(p, PAGE_SIZE, ctrl.signal)
-        .then((data) => {
-          setInboxData(data);
+      load(p, PAGE_SIZE, ctrl.signal)
+        .then((d) => {
+          setData(d);
           setPage(p);
         })
         .catch((err: unknown) => {
           if ((err as { name?: string }).name !== "AbortError") {
-            const msg = err instanceof Error ? err.message : "Could not load inbox.";
-            setError(msg);
+            setError(err instanceof Error ? err.message : `Could not load ${noun}.`);
           }
         })
         .finally(() => setLoading(false));
     },
-    [],
+    [load, noun],
   );
 
   useEffect(() => {
-    load(1);
+    go(1);
     return () => abortRef.current?.abort();
-  }, [load]);
+  }, [go]);
 
-  const emails = inboxData?.items ?? [];
-  const totalPages = inboxData?.totalPages ?? 1;
+  const items = data?.items ?? [];
+  const totalPages = data?.totalPages ?? 1;
 
   return (
-    <div className="space-y-4">
-      {/* page title */}
-      <div>
-        <h1 className="text-xl font-bold text-slate-900 dark:text-white">Inbox</h1>
-        <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
-          Received emails from your Resend inbound route
-          {inboxData ? ` · ${inboxData.total} total` : ""}
-        </p>
-      </div>
-
+    <>
       {error && <ErrorBanner message={error} />}
 
       <div className="flex min-h-[600px] overflow-hidden nf-panel">
         {/* left panel — list */}
         <div className="flex w-80 shrink-0 flex-col border-r border-slate-200 dark:border-white/10">
-          <div className="border-b border-slate-100 px-4 py-3 dark:border-white/10">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-              Messages
-            </p>
+          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-white/10">
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">Messages</p>
+            {data && <span className="text-xs text-slate-400">{data.total} total</span>}
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto p-2">
@@ -463,15 +618,13 @@ export function InboxView() {
                 <Loader2 className="animate-spin text-blue-500" size={20} />
               </div>
             )}
-            {!loading && emails.length === 0 && <EmptyState />}
-            {!loading && emails.map((email) => (
-              <EmailListItem
-                key={email.id}
-                email={email}
-                selected={selected?.id === email.id}
-                onClick={() => setSelected(email)}
-              />
-            ))}
+            {!loading && !error && items.length === 0 && empty}
+            {!loading &&
+              items.map((item) => (
+                <div key={item.id}>
+                  {renderItem(item, selected?.id === item.id, () => setSelected(item))}
+                </div>
+              ))}
           </div>
 
           {/* pagination */}
@@ -479,7 +632,7 @@ export function InboxView() {
             <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 dark:border-white/10">
               <button
                 disabled={page === 1}
-                onClick={() => load(page - 1)}
+                onClick={() => go(page - 1)}
                 className="inline-flex items-center gap-0.5 text-xs font-medium text-brand disabled:opacity-40 hover:underline"
               >
                 <ChevronLeft size={14} aria-hidden="true" />
@@ -490,7 +643,7 @@ export function InboxView() {
               </span>
               <button
                 disabled={page === totalPages}
-                onClick={() => load(page + 1)}
+                onClick={() => go(page + 1)}
                 className="inline-flex items-center gap-0.5 text-xs font-medium text-brand disabled:opacity-40 hover:underline"
               >
                 Next
@@ -503,23 +656,93 @@ export function InboxView() {
         {/* right panel — detail */}
         <div className="min-w-0 flex-1">
           {selected ? (
-            <EmailDetailPanel
-              key={selected.id}
-              summary={selected}
-              onClose={() => setSelected(null)}
-            />
+            <div key={selected.id} className="h-full">
+              {renderDetail(selected, () => setSelected(null))}
+            </div>
           ) : (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <Mail size={20} className="mx-auto mb-3 text-slate-300 dark:text-slate-600" />
-                <p className="text-sm text-slate-400 dark:text-slate-500">
-                  Select an email to read it
-                </p>
+                <p className="text-sm text-slate-400 dark:text-slate-500">Select an email to read it</p>
               </div>
             </div>
           )}
         </div>
       </div>
+    </>
+  );
+}
+
+// ── Main view ─────────────────────────────────────────────────────────────────
+
+type Box = "inbox" | "sent";
+
+const BOXES: { key: Box; label: string; icon: typeof Mail; note: string }[] = [
+  { key: "inbox", label: "Inbox", icon: Mail, note: "Received through the Resend inbound route" },
+  { key: "sent", label: "Sent", icon: Send, note: "Everything the app sent: codes, receipts, replies, notes and offers" },
+];
+
+export function InboxView() {
+  const params = useSearchParams();
+  const router = useRouter();
+  const box: Box = params.get("box") === "sent" ? "sent" : "inbox";
+  const current = BOXES.find((b) => b.key === box) ?? BOXES[0]!;
+
+  const loadInbox = useCallback((p: number, size: number, signal: AbortSignal) => getInbox(p, size, signal), []);
+  const loadSent = useCallback((p: number, size: number, signal: AbortSignal) => getSentMail(p, size, signal), []);
+
+  return (
+    <div className="space-y-4">
+      {/* page title */}
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white">Mail</h1>
+          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">{current.note}</p>
+        </div>
+        <div role="tablist" aria-label="Mailbox" className="inline-flex rounded-[10px] border border-slate-200 bg-white p-1 dark:border-white/10 dark:bg-white/5">
+          {BOXES.map(({ key, label, icon: Icon }) => (
+            <button
+              key={key}
+              role="tab"
+              aria-selected={box === key}
+              onClick={() => router.replace(key === "inbox" ? "/inbox" : "/inbox?box=sent", { scroll: false })}
+              className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-[8px] px-3 text-sm font-medium transition ${
+                box === key
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10"
+              }`}
+            >
+              <Icon size={14} aria-hidden="true" />
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {box === "inbox" ? (
+        <Mailbox<InboxEmailSummary>
+          key="inbox"
+          load={loadInbox}
+          noun="inbox"
+          empty={<EmptyState />}
+          renderItem={(email, selected, onClick) => <EmailListItem email={email} selected={selected} onClick={onClick} />}
+          renderDetail={(email, onClose) => <EmailDetailPanel summary={email} onClose={onClose} />}
+        />
+      ) : (
+        <Mailbox<SentEmailSummary>
+          key="sent"
+          load={loadSent}
+          noun="sent mail"
+          empty={
+            <div className="flex h-full flex-col items-center justify-center gap-3 py-10 text-center">
+              <Send size={20} className="text-slate-400" aria-hidden="true" />
+              <p className="font-medium text-slate-700 dark:text-slate-200">Nothing sent yet</p>
+            </div>
+          }
+          renderItem={(email, selected, onClick) => <SentListItem email={email} selected={selected} onClick={onClick} />}
+          renderDetail={(email, onClose) => <SentDetailPanel summary={email} onClose={onClose} />}
+        />
+      )}
     </div>
   );
 }

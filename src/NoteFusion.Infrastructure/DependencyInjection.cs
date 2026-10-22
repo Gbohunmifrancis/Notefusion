@@ -232,6 +232,9 @@ public static class DependencyInjection
         // is configured in Resend (so the page renders gracefully without crashing).
         services.AddHttpClient<IResendInboxService, ResendInboxService>()
             .AddOutboundResilience(OutboundResilience.EmailInbox);
+        // The sent mail's log, for the console's Sent mail: the same reads-only pipeline.
+        services.AddHttpClient<ISentMailService, ResendSentMailService>()
+            .AddOutboundResilience(OutboundResilience.EmailInbox);
     }
 
     private static void AddMedia(this IServiceCollection services, IConfiguration configuration)

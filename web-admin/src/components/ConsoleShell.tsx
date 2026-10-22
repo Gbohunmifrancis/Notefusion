@@ -77,7 +77,7 @@ const PRIMARY_NAV = [
 
 const SECONDARY_NAV = [
   { to: "/waitlist", label: "Waitlist", icon: Sparkles },
-  { to: "/inbox", label: "Inbox", icon: Inbox },
+  { to: "/inbox", label: "Mail", icon: Inbox },
   { to: "/audit-log", label: "Audit Log", icon: ScrollText },
   { to: "/payments", label: "Payments", icon: CreditCard, badge: "New" },
   { to: "/checkouts", label: "Unpaid checkouts", icon: ShoppingCart, badge: "New" },

@@ -195,7 +195,7 @@ function QuickJobRow({ icon: Icon, label, note }: { icon: LucideIcon; label: str
 const QUICK_LINKS: { label: string; note: string; href: string; icon: LucideIcon }[] = [
   { label: "Find a user", note: "Search accounts by name or email", href: "/users", icon: UserRoundSearch },
   { label: "Outreach log", note: "Founder notes and replies", href: "/feedback", icon: Send },
-  { label: "Inbox", note: "Messages from users", href: "/inbox", icon: Inbox },
+  { label: "Mail", note: "Messages in and out", href: "/inbox", icon: Inbox },
   { label: "System health", note: "API, database, jobs, webhooks", href: "/health", icon: HeartPulse },
 ];
 

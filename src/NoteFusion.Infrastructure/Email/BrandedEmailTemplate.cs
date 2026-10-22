@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Net;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Inbox.Sent;
 
 namespace NoteFusion.Infrastructure.Email;
 
@@ -178,7 +179,7 @@ public sealed partial class BrandedEmailTemplate
 
         return Compose(
             to,
-            subject: "Reset your NoteFusion password",
+            subject: SentMailPrivacy.PasswordResetSubject,
             preheader: "Use this link to reset your password. It expires in 1 hour.",
             heading: "Reset your password",
             bodyHtml: body,
@@ -214,7 +215,7 @@ public sealed partial class BrandedEmailTemplate
             to,
             // Some clients preview the subject only, so the code goes in it: one glance from the
             // notification shade is enough to type it, without opening the mail at all.
-            subject: $"{code} is your NoteFusion verification code",
+            subject: code + SentMailPrivacy.VerificationCodeSuffix,
             preheader: "Enter this code to confirm your email address. It expires in 10 minutes.",
             heading: "Confirm your email",
             bodyHtml: body,
@@ -248,7 +249,7 @@ public sealed partial class BrandedEmailTemplate
 
         return Compose(
             to,
-            subject: $"{code} is your NoteFusion Admin code",
+            subject: code + SentMailPrivacy.AdminCodeSuffix,
             preheader: $"Enter it in the app to {what}. It expires in 10 minutes.",
             heading: setup ? "Set up Admin on a phone" : "Open Admin",
             bodyHtml: body,

@@ -955,6 +955,34 @@ export interface InboxPage {
   totalPages: number;
 }
 
+// ── Sent mail (what the app sent, from Resend's log) ───────────────────────────────────────────────
+
+/** Resend's latest event for a sent email ("delivered", "opened", "bounced"…); null before it has one. */
+export interface SentEmailSummary {
+  id: string;
+  /** A sign-in code in it is masked. */
+  subject: string;
+  from: string;
+  to: string;
+  sentAt: string;
+  status: string | null;
+}
+
+export interface SentEmailDetail extends SentEmailSummary {
+  htmlBody: string | null;
+  textBody: string | null;
+  /** It holds a code or a one-time link: the server sends no body. */
+  bodyWithheld: boolean;
+}
+
+export interface SentPage {
+  items: SentEmailSummary[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
 /* ── Activity: transcription log, journeys, checkout funnel ───────────────── */
 
 export type TranscriptionLogStatus = "submitted" | "refused" | "done" | "failed";

@@ -8,6 +8,7 @@ using NoteFusion.Application.Admin.Queries;
 using NoteFusion.Application.Billing.Commands;
 using NoteFusion.Application.Inbox.Commands;
 using NoteFusion.Application.Inbox.Queries;
+using NoteFusion.Application.Inbox.Sent;
 using NoteFusion.Core.Enums;
 
 namespace NoteFusion.Api.Controllers;
@@ -108,6 +109,19 @@ public sealed class AdminController : ApiControllerBase
     [HttpGet("inbox/{id:guid}/attachments")]
     public async Task<IActionResult> InboxAttachments(Guid id, CancellationToken ct)
         => HandleResult(await _sender.Send(new GetInboxAttachmentsQuery(id), ct));
+
+    /// <summary>Email the app sent, newest first, with the provider's latest word on each; a code in a subject masked.</summary>
+    [HttpGet("inbox/sent")]
+    public async Task<IActionResult> SentMail(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetSentMailQuery(page, pageSize), ct));
+
+    /// <summary>One sent email; the body of one holding a code or a one-time link is withheld.</summary>
+    [HttpGet("inbox/sent/{id:guid}")]
+    public async Task<IActionResult> SentEmail(Guid id, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetSentEmailQuery(id), ct));
 
     /// <summary>Sends a branded reply to the original sender of the specified received email.</summary>
     [HttpPost("inbox/{id:guid}/reply")]
