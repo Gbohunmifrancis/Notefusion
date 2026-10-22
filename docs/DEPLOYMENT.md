@@ -819,6 +819,16 @@ deliberately to upgrade.
 
 Using both asks for two passwords; one is enough.
 
+## Building the Android app on GitHub (when EAS's cloud builds are used up)
+
+`.github/workflows/android-build.yml` runs `eas build --local` on GitHub's Ubuntu runner, started by hand (Actions ›
+Android build › Run workflow, profile `production-apk` for an APK to install or `production` for the Play Store bundle).
+It is EAS's own build, not a copy of it: the keystore and the EAS environment's variables (the Sentry upload) come from
+EAS, and the version code is the next one EAS hands out, exactly as a cloud build takes it. The file is the run's
+artifact, kept 14 days. It needs one repository secret, **EXPO_TOKEN** (expo.dev › Account settings › Access tokens;
+Settings › Secrets and variables › Actions › New repository secret). The repository is public, so its logs and
+artifacts are too: the build prints no secret, and the APK is the same app the Play Store hands out.
+
 ## Secret scanning (no deploy with a key in the code)
 
 `.github/workflows/secret-scan.yml` runs [gitleaks](https://github.com/gitleaks/gitleaks) (its own rules plus the

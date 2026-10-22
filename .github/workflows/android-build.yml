@@ -1,0 +1,71 @@
+name: Android build
+
+# Builds the phone app on GitHub's runner with `eas build --local`: EAS's own build steps, the production keystore and
+# the EAS environment's variables (Sentry source maps included), the version code taken from EAS as a cloud build takes
+# it. For when EAS's cloud builds are used up, or are slower than this. Run it from the Actions tab; the APK (or the Play
+# Store bundle) is the run's artifact. Needs the repository secret EXPO_TOKEN (an Expo access token for the account).
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "eas.json profile: production-apk (an APK to install) or production (the bundle for the Play Store)"
+        type: choice
+        options: [production-apk, production]
+        default: production-apk
+
+permissions:
+  contents: read
+
+# One build at a time: each takes the next version code from EAS.
+concurrency:
+  group: android-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: eas build --local (${{ inputs.profile }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # A release build of every ABI needs more room than the image leaves; these toolchains are never used here.
+      - name: Free disk space
+        working-directory: .
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/.ghcup /usr/share/swift /usr/local/share/boost /opt/hostedtoolcache/CodeQL
+          df -h /
+
+      # The React Native Gradle plugin asks for a Java 17 toolchain, as EAS's own images run.
+      - name: Java 17
+        run: echo "JAVA_HOME=$JAVA_HOME_17_X64" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          PROFILE: ${{ inputs.profile }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then echo "::error::Add the repository secret EXPO_TOKEN (expo.dev › Account settings › Access tokens)."; exit 1; fi
+          ext=apk; [ "$PROFILE" = production ] && ext=aab
+          mkdir -p "$RUNNER_TEMP/out"
+          npx --yes eas-cli@25.3.0 build --local --platform android --profile "$PROFILE" --non-interactive \
+            --output "$RUNNER_TEMP/out/notefusion-$PROFILE-${{ github.run_number }}.$ext"
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: notefusion-${{ inputs.profile }}-${{ github.run_number }}
+          path: ${{ runner.temp }}/out/*
+          retention-days: 14
+          if-no-files-found: error
