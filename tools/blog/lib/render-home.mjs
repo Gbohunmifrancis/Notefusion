@@ -19,9 +19,10 @@ export const HALLOWEEN_SAMPLE_TUNE = "in-the-hall-of-the-mountain-king";
 
 /**
  * One sample sheet: `hymn` has been through prepareHymn or prepareTune (its `view` holds the lines of bars). `bars`
- * keeps only that many bars of the first line (the Mountain King's one); `words` false for a tune without them.
+ * keeps only that many bars of the first line (the Mountain King's one); `words` false for a tune without them. The
+ * free tool pages (lib/render-tools.mjs) show the year-round one too.
  */
-function sheetFigure(hymn, { id, staff, staffHeight, staffAlt, open, caption, bars = null, words = true }) {
+export function sheetFigure(hymn, { id, staff, staffHeight, staffAlt, open, caption, bars = null, words = true }) {
   const v = hymn.view;
   const line = bars ? v.lines[0].slice(0, bars) : v.lines[0];
   const href = v.url || `/hymns/${hymn.slug}`;

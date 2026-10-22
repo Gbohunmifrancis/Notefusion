@@ -927,14 +927,12 @@ export function ResultScreen({ route, navigation }: Props) {
       // Fired here rather than from the button's press-in: the success pattern
       // means "it happened", and on press-in nothing has happened yet.
       haptics.play("success");
-      // The third save may bring the store-rating ask, which says the sheet was saved
-      // itself; two sheets stacked on the same moment would be one too many.
-      const askingForRating = await rating.recordSave();
-      if (!askingForRating)
-        showToast(
-          "Saved to your Library",
-          offerRename ? { action: { label: "Rename", onPress: () => setNaming(true) } } : undefined,
-        );
+      // The third save may bring Google's review card, a moment after this toast.
+      void rating.recordSave();
+      showToast(
+        "Saved to your Library",
+        offerRename ? { action: { label: "Rename", onPress: () => setNaming(true) } } : undefined,
+      );
       return saved.id;
     } catch (e) {
       failedWithRetry("Could not save", e, () => void save({ offerRename }));
@@ -1860,13 +1858,11 @@ export function ResultScreen({ route, navigation }: Props) {
   useEffect(() => {
     if (!fresh || !sourceJobId || result.notes.length === 0) return;
     let live = true;
-    void firstCelebration(sourceJobId).then(async (first) => {
+    void firstCelebration(sourceJobId).then((first) => {
       if (!live || !first) return;
       if (autoSaved) {
-        // A sheet the person has now opened counts toward the rating ask (as a Save did); the ask, when it comes,
-        // says the sheet was saved itself, so the toast stands aside for it.
-        if (await rating.recordSave()) return;
-        if (!live) return;
+        // A sheet the person has now opened counts toward the rating ask (as a Save did).
+        void rating.recordSave();
         // Notes under the check line turn the toast's one action into Check (board m-ux-medium P1f), unless the
         // hymnbook or the doh is asked first.
         setCelebrate({ doubtful: !asking && result.notes.some((n) => n.conf < 0.5), saved: true });

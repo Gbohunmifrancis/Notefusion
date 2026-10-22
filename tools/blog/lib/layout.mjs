@@ -59,7 +59,7 @@ export function icon(id, cls = "") {
 /** The header's Light / Dark / System button (assets/site-theme.js; styled in site-pages.css). */
 export const THEME_TOGGLE = `<button type="button" class="theme-toggle" data-theme-toggle data-track="Theme toggle" aria-label="Colour theme" title="Colour theme">${icon("sun", "tt-light")}${icon("moon", "tt-dark")}${icon("monitor", "tt-system")}</button>`;
 
-export function page({ path, title, description, ogType = "website", image = DEFAULT_OG, jsonLd = [], robots = null, head = "", body, active = null, scripts = "", article = null, bodyClass = "" }) {
+export function page({ path, title, description, ogType = "website", image = DEFAULT_OG, jsonLd = [], robots = null, head = "", body, active = null, scripts = "", article = null, bodyClass = "", ads = true }) {
   const url = ORIGIN + path;
   const img = image.src.startsWith("http") ? image.src : ORIGIN + image.src;
   const meta = [
@@ -98,7 +98,7 @@ export function page({ path, title, description, ogType = "website", image = DEF
     `<link rel="stylesheet" href="/assets/blog.css?v=${ASSET_VERSION.blogCss}">`,
     head,
     ...jsonLd.map((d) => `<script type="application/ld+json">\n${jsonForScript(d)}\n</script>`),
-    ADSENSE_CLIENT ? `<!-- Google AdSense (public pages only; never the signed-in /app). -->\n<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>` : "",
+    ADSENSE_CLIENT && ads ? `<!-- Google AdSense (blog and hymn pages; never the home page, the free tools or the signed-in /app). -->\n<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>` : "",
   ].filter(Boolean).join("\n");
 
   return `<!DOCTYPE html>
@@ -116,7 +116,7 @@ ${body}
 </main>
 
 <footer class="wrap">
-  <p class="site-footer-links"><a href="/blog">Blog</a><a href="/hymns">Hymns in Tonic Solfa</a><a href="/hymns/identify">Hum to find a hymn</a><a href="/app">Web app</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="mailto:hello@notefusion.studio">Contact</a></p>
+  <p class="site-footer-links"><a href="/blog">Blog</a><a href="/hymns">Hymns in Tonic Solfa</a><a href="/tools/tonic-solfa-converter">Tonic Solfa converter</a><a href="/tools">Free tools</a><a href="/hymns/identify">Hum to find a hymn</a><a href="/app">Web app</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="mailto:hello@notefusion.studio">Contact</a></p>
   <p>NoteFusion. Hear it. See it. Notate it. &copy; 2026 NoteFusion.</p>
 </footer>
 <script src="/assets/site-theme.js?v=${ASSET_VERSION.siteTheme}" defer></script>
@@ -149,11 +149,15 @@ export const PUBLISHER = {
   logo: { "@type": "ImageObject", url: ORIGIN + "/assets/icon-512.png", width: 512, height: 512 },
 };
 
-/** The call to action at the end of every post and hymn page. */
+/**
+ * The call to action at the end of every post and hymn page, with a way to the Tonic Solfa converter that needs no
+ * account (left out where the page already has the try box: the tool pages' sources start "tool" or "compare").
+ */
 export function ctaBox(source) {
+  const converter = /^(tool|compare)/.test(source) ? "" : `\n  <p class="cta-alt">Or try 30 seconds in the <a href="/tools/tonic-solfa-converter" data-track="CTA: ${source} converter">free Tonic Solfa converter</a>, no account needed.</p>`;
   return `<aside class="cta-box" aria-labelledby="cta-${source}">
   <h2 id="cta-${source}">Transcribe your own song in seconds</h2>
   <p>Hum a tune, upload a recording or paste a song link, and NoteFusion writes it out in Tonic Solfa and staff notation for your choir. Free to try, no card needed.</p>
-  <a class="cta-button" href="/app?utm_source=${source}" data-track="CTA: ${source}">Transcribe a song now ${icon("arrow-right", "ic-16")}</a>
+  <a class="cta-button" href="/app?utm_source=${source}" data-track="CTA: ${source}">Transcribe a song now ${icon("arrow-right", "ic-16")}</a>${converter}
 </aside>`;
 }

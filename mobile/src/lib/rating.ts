@@ -10,8 +10,8 @@ import {
 
 const KEY = "nf.rating";
 
-type Listener = (saves: number) => void;
-let listener: Listener | null = null;
+/** Long enough for the sheet to be on screen and read before Google's card slides over it. */
+const REVIEW_DELAY_MS = 2500;
 
 async function read(): Promise<RatingState> {
   try {
@@ -26,35 +26,43 @@ function write(s: RatingState): void {
 }
 
 /**
- * The rating ask. Screens only report what happened — a sheet saved, a job
- * failed — and the rating sheet in `lib/feedback` (mounted once, with the signed-in
- * app) shows itself when `ratingPolicy` says the moment has come. The sheet sends
- * the stars to the API for the admin console and offers the store to happy raters.
+ * Google's in-app review card, asked with no question before it (Google's in-app review guidance: no "do you like
+ * the app?" ahead of the card, so every rating reaches the store, not only the happy ones). Google decides whether the
+ * card shows (a quota per person) and never says whether they rated. Loaded only here, inside the try: a store build
+ * older than the module has no native side, and an update published to its runtime must not crash on start.
+ */
+async function requestInAppReview(): Promise<void> {
+  try {
+    const StoreReview = await import("expo-store-review");
+    if (await StoreReview.isAvailableAsync()) await StoreReview.requestReview();
+  } catch {
+    // No module in this build, or Play could not show it: nothing to say to the person.
+  }
+}
+
+/**
+ * The rating ask. Screens only report what happened — a sheet saved, a job failed — and Google's card is asked for
+ * when `ratingPolicy` says the moment has come; feedback stays the person's own choice (Profile › Send feedback).
  *
- * Android only for now: the ask opens the Play Store listing. Google's in-app
- * review sheet needs a native module, which waits for the next store build.
+ * Android only for now: there is no App Store listing yet.
  */
 export const rating = {
-  /** The prompt registers here; one at a time. */
-  subscribe(fn: Listener): () => void {
-    listener = fn;
-    return () => {
-      if (listener === fn) listener = null;
-    };
-  },
-
   /**
-   * Counts a saved sheet. True when the rating ask is about to show, so the caller
-   * can leave out its own "Saved" message: the ask already says the sheet was saved.
+   * Counts a saved sheet, and on the third (then no sooner than ninety days later) asks Google for its review card,
+   * a moment after the sheet is on screen.
    */
-  async recordSave(): Promise<boolean> {
-    if (Platform.OS !== "android") return false;
+  async recordSave(): Promise<void> {
+    if (Platform.OS !== "android") return;
     const s = await read();
+    const now = Date.now();
     const next = { ...s, saves: s.saves + 1 };
-    write(next);
-    if (!listener || !shouldAskForRating(next, Date.now())) return false;
-    listener(next.saves);
-    return true;
+    if (!shouldAskForRating(next, now)) {
+      write(next);
+      return;
+    }
+    // Whether they rated is never known, so the ask waits its ninety days rather than ending.
+    write({ ...next, snoozedUntil: now + SNOOZE_MS });
+    setTimeout(() => void requestInAppReview(), REVIEW_DELAY_MS);
   },
 
   async recordFailure(): Promise<void> {
@@ -62,18 +70,10 @@ export const rating = {
     write({ ...s, lastFailureAt: Date.now() });
   },
 
-  async snooze(): Promise<void> {
-    const s = await read();
-    write({ ...s, snoozedUntil: Date.now() + SNOOZE_MS });
-  },
-
-  /** Rated in the app (any score): never ask again. */
-  async markRated(): Promise<void> {
-    const s = await read();
-    write({ ...s, done: true });
-  },
-
-  /** Opens the listing and never asks again, whether or not they leave a rating. */
+  /**
+   * Profile's "Rate Notefusion": opens the listing and never asks again, whether or not they leave a rating. Not
+   * Google's card, which may not show at all when asked from a button.
+   */
   async rate(): Promise<void> {
     const s = await read();
     write({ ...s, done: true });

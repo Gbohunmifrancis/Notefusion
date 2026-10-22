@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Builds the blog and hymn pages into web-site/ from content/ and, with --api, from the API's posts:
-//   web-site/blog/**, web-site/hymns/**   (wholly generated: rebuilt from scratch every time; tune pages at /hymns/tunes/<slug>,
+//   web-site/blog/**, web-site/hymns/**, web-site/tools/**, web-site/compare/**
+//                                         (wholly generated: rebuilt from scratch every time; tune pages at /hymns/tunes/<slug>,
 //                                          the hum-to-find page at /hymns/identify, the seasons and occasions at
 //                                          /hymns/occasions/<slug>, writers and composers at /hymns/people/<slug>,
 //                                          the first lines at /hymns/first-lines)
@@ -36,6 +37,7 @@ import { preparePosts, renderPost, renderBlogIndex, renderTag, renderAuthor, ren
 import { prepareHymn, renderHymn, renderHymnIndex, renderHymnCredits, hymnName } from "./lib/render-hymns.mjs";
 import { prepareTune, renderTune } from "./lib/render-tunes.mjs";
 import { renderIdentify, IDENTIFY_PATH, IDENTIFY_UPDATED } from "./lib/render-identify.mjs";
+import { renderToolPages, toolSitemapEntries } from "./lib/render-tools.mjs";
 import { occasionPages, collectPeople, peopleAddresses, PEOPLE_ADDRESSES_PATH, firstLineEntries } from "./lib/collections.mjs";
 import { renderOccasion, renderOccasionsHub, renderPerson, renderPeopleHub, renderFirstLines, OCCASIONS_PATH, PEOPLE_PATH, FIRST_LINES_PATH } from "./lib/render-collections.mjs";
 import { buildSolfaPdf, hymnPdfItem, tunePdfItem, pdfPath } from "./lib/render-pdf.mjs";
@@ -46,6 +48,9 @@ import { hymnIndexJson, HYMN_INDEX_PATH } from "./lib/hymn-index.mjs";
 import { hymnPackFiles, PACK_PATH, PACK_VERSION_PATH } from "./lib/hymn-pack.mjs";
 import { spriteSvg, licenseText } from "./icons.mjs";
 import { renderHomeSheet, SHEET_START, SHEET_END, SAMPLE_HYMN, SEASON_SAMPLE_HYMN, HALLOWEEN_SAMPLE_TUNE } from "./lib/render-home.mjs";
+
+/** The folders of web-site/ the build owns outright: cleared and rebuilt every time (check.mjs compares them whole). */
+export const GENERATED_DIRS = ["blog", "hymns", "tools", "compare"];
 
 /** Pages under /hymns that a hymn's slug must never take. */
 const RESERVED_HYMN_PATHS = ["/hymns/credits", IDENTIFY_PATH, "/hymns/tunes", OCCASIONS_PATH, PEOPLE_PATH, FIRST_LINES_PATH];
@@ -108,6 +113,8 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
   put(FIRST_LINES_PATH, renderFirstLines(firstLines));
   for (const h of hymns) put(`/hymns/${h.slug}`, renderHymn(h, { hymns, posts, occasions, personByKey }));
   for (const t of tunePages) put(t.view.url, renderTune(t, { hymns, posts, personByKey }));
+  // The free tools (/tools, each with the home page's try box) and the comparisons (/compare).
+  for (const [urlPath, html] of renderToolPages({ hymnsBySlug, posts })) put(urlPath, html);
   // The printable solfa next to each hymn and tune page, built by writeSite (pdf-lib is asynchronous).
   const named = (list) => list.filter((p) => !p.traditional).map((p) => p.name);
   const pdfs = [
@@ -127,6 +134,7 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
     ...Object.values(authors).map((a) => ({ loc: ORIGIN + a.url, lastmod: newest(posts.filter((p) => p.author === a.id).map((p) => p.modified)), changefreq: "monthly", priority: "0.3" })),
     { loc: ORIGIN + "/hymns", lastmod: newest([...hymns.map((h) => h.updated), ...tunePages.map((t) => t.updated)]), changefreq: "weekly", priority: "0.8" },
     { loc: ORIGIN + IDENTIFY_PATH, lastmod: IDENTIFY_UPDATED, changefreq: "monthly", priority: "0.8" },
+    ...toolSitemapEntries(),
     { loc: ORIGIN + "/hymns/credits", lastmod: newest([...hymns.map((h) => h.updated), ...tunePages.map((t) => t.updated)]), changefreq: "monthly", priority: "0.3" },
     { loc: ORIGIN + OCCASIONS_PATH, lastmod: newest(occasions.flatMap((o) => o.hymns.map((h) => h.updated))), changefreq: "monthly", priority: "0.6" },
     ...occasions.map((o) => ({ loc: ORIGIN + o.url, lastmod: newest(o.hymns.map((h) => h.updated)), changefreq: "monthly", priority: "0.6" })),
@@ -183,7 +191,7 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
  */
 export async function writeSite({ siteDir = SITE_DIR, includeDrafts = false, api = null, indexPath = siteDir === SITE_DIR && !includeDrafts ? HYMN_INDEX_PATH : null, pdfs = true } = {}) {
   const { files, pdfs: jobs, hymnIndex, summary } = buildSite({ siteDir, includeDrafts, api });
-  for (const dir of ["blog", "hymns"]) fs.rmSync(path.join(siteDir, dir), { recursive: true, force: true });
+  for (const dir of GENERATED_DIRS) fs.rmSync(path.join(siteDir, dir), { recursive: true, force: true });
   for (const [rel, content] of files) writeFile(path.join(siteDir, rel), content);
   if (indexPath) writeFile(indexPath, hymnIndex);
   summary.pdfs = 0;

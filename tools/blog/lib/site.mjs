@@ -24,8 +24,8 @@ export const DEFAULT_OG = { src: "/assets/og-card.jpg", width: 1200, height: 630
 export const INDEXNOW_KEY = "5a9e36b09808e88154439d37c4b945f1";
 
 /**
- * Google AdSense auto ads, on the public pages only (the same client id as the home page and the
- * policies). Set to null to keep ads off the blog and hymn pages.
+ * Google AdSense auto ads, on the blog and hymn pages (and the policies); never the home page, the free tool pages
+ * (`page({ ads: false })`) or the signed-in /app. Set to null to keep ads off the blog and hymn pages too.
  */
 export const ADSENSE_CLIENT = "ca-pub-4167159170101513";
 
@@ -36,7 +36,9 @@ export const OSMD = {
 };
 
 /** Cache-busting versions for the hand-written assets the generated pages load (/assets is cached a week). */
-export const ASSET_VERSION = { blogCss: 12, sitePagesCss: 7, hymnJs: 3, hymnsIndexJs: 6, choirJs: 7, track: 5, themeBoot: 2, siteTheme: 2, blogJs: 1, blogTrack: 1, recorderJs: 9, backJs: 1, recorderCss: 5, hymnIdentifyJs: 5, hymnIdentifyCss: 4, seasonJs: 4 };
+export const ASSET_VERSION = { blogCss: 13, sitePagesCss: 7, hymnJs: 3, hymnsIndexJs: 6, choirJs: 7, track: 5, themeBoot: 2, siteTheme: 2, blogJs: 1, blogTrack: 1, recorderJs: 9, backJs: 1, recorderCss: 5, hymnIdentifyJs: 5, hymnIdentifyCss: 4, seasonJs: 4,
+  // The home page's try box on the tool pages (lib/render-tools.mjs): the same files at the same versions as web-site/index.html loads.
+  homeCss: 7, previewJs: 15, songlinkJs: 3, rangepickerJs: 1, rangepickerCss: 4, meterJs: 1, toolsCss: 1 };
 
 /** The call to action every post and hymn page ends with. */
 export const APP_URL = "/app";

@@ -220,6 +220,46 @@ test("the hum-to-find page: a WebApplication with its FAQ, the recorder and the 
   assert.match(read("sitemap.xml"), /<loc>https:\/\/notefusion\.studio\/hymns\/identify<\/loc>\n\s*<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/);
 });
 
+test("the free tools: the home page's try box at its versions, a WebApplication with its FAQ, no ads, linked and in the sitemap", () => {
+  const html = read("tools/tonic-solfa-converter/index.html");
+  assert.match(html, /<link rel="canonical" href="https:\/\/notefusion\.studio\/tools\/tonic-solfa-converter">/);
+  const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
+  assert.equal(ld.find((d) => d["@type"] === "WebApplication").url, "https://notefusion.studio/tools/tonic-solfa-converter");
+  assert.ok(ld.find((d) => d["@type"] === "FAQPage").mainEntity.length >= 4);
+  // assets/preview.js finds the box by these ids, and loads at the version the home page loads it (one cache, one script).
+  for (const id of ["try", "try-record", "try-file", "try-form", "try-url", "try-submit", "try-meter", "try-section", "try-status"]) assert.match(html, new RegExp(`id="${id}"`), id);
+  const versions = (page) => Object.fromEntries([...page.matchAll(/\/assets\/((?:home|preview|songlink|rangepicker|recorder|meter|back)\.(?:js|css))\?v=(\d+)/g)].map((m) => [m[1], m[2]]));
+  const home = versions(read("index.html")), tool = versions(html);
+  assert.equal(Object.keys(tool).length, 9);
+  for (const [file, v] of Object.entries(tool)) assert.equal(v, home[file], file);
+  // The page about links opens its link field; no ads on any tool page or on the home page; the blog keeps them.
+  assert.match(read("tools/youtube-to-sheet-music/index.html"), /<details class="try-link" id="try-link" open>/);
+  for (const rel of ["index.html", "tools/index.html", "tools/tonic-solfa-converter/index.html", "compare/scorecloud-alternative/index.html"]) assert.doesNotMatch(read(rel), /googlesyndication/, rel);
+  assert.match(read("blog/how-to-read-tonic-solfa/index.html"), /googlesyndication/);
+  // A guide is linked once the build has the post: the deploy's build, not the committed one.
+  assert.match(html, /<a href="\/blog\/how-to-find-the-doh-of-a-song">/);
+  assert.doesNotMatch(fs.readFileSync(path.join(offline, "tools/tonic-solfa-converter/index.html"), "utf8"), /\/blog\/how-to-find-the-doh-of-a-song/);
+  // A comparison names where its facts come from, and never a price.
+  const compare = read("compare/sing2notes-alternative/index.html");
+  assert.match(compare, /comes from Sing2Notes' Google Play and App Store listings, as of October 2026/);
+  assert.doesNotMatch(compare.slice(compare.indexOf("<main"), compare.indexOf("</main>")), /[$£€₦]\s?\d/);
+  // Every hymn and post points to the converter; the home page and every footer link the tools.
+  assert.match(read("hymns/amazing-grace/index.html"), /<p class="cta-alt">Or try 30 seconds in the <a href="\/tools\/tonic-solfa-converter"/);
+  assert.match(read("index.html"), /<a href="\/tools\/tonic-solfa-converter">Tonic Solfa converter<\/a>/);
+  assert.match(read("blog/index.html"), /<a href="\/tools">Free tools<\/a>/);
+  const sitemap = read("sitemap.xml");
+  for (const p of ["tools", "tools/tonic-solfa-converter", "tools/hum-to-sheet-music", "tools/youtube-to-sheet-music", "tools/sheet-music-to-tonic-solfa", "tools/tonic-solfa-of-worship-songs", "compare/sing2notes-alternative", "compare/melody-scanner-alternative", "compare/scorecloud-alternative"]) {
+    assert.equal(sitemap.split(`<loc>https://notefusion.studio/${p}</loc>`).length, 2, p);
+  }
+});
+
+test("the home page tells search engines who we are: the app, the organisation and the site", () => {
+  const ld = [...read("index.html").matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
+  assert.deepEqual(ld.map((d) => d["@type"]), ["MobileApplication", "Organization", "WebSite"]);
+  assert.deepEqual(ld[0].offers, { "@type": "Offer", price: "0", priceCurrency: "USD" });
+  assert.equal(ld[1].logo, "https://notefusion.studio/assets/icon-512.png");
+});
+
 test("the home page shows the newest posts between its markers", () => {
   const html = read("index.html");
   const block = html.slice(html.indexOf("<!-- blog-latest:start -->"), html.indexOf("<!-- blog-latest:end -->"));
