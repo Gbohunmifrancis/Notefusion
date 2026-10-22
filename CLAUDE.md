@@ -645,6 +645,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `Email__MonthlyLimit` (3000) — is under `Email__OptionalShare` (0.6) of its cap, counting every kind; codes, resets,
   receipts, security, expiry, admin and backup mail always send. Batches ask `IEmailQuota` before claiming, so held mail
   stays due (outreach holds both channels); inline welcome/waitlist is skipped. Usage on System Health.
+  The console's Mail (`/inbox`): Inbox (Resend inbound) and Sent (`?box=sent`, Resend's own sent log read by
+  `ResendSentMailService`, `GET /api/admin/inbox/sent[/{id}]`, each with its latest event): a code in a subject is masked and
+  the body of a code, password reset or deletion-confirmation email is never sent (`SentMailPrivacy`, whose subjects the templates use).
 - The activity log (board-less; `Core/Entities/UserActivity`, `Application/Activity`): what accounts do, recorded where it
   happens so no client can lose it. `TokenIssuer.IssueForSignIn` writes every fresh sign-in (`sign_in`, method + client;
   a refresh or password change issues tokens but is not one; sign-ups `sign_up`), and `Api/Common/UserActivityFilter`

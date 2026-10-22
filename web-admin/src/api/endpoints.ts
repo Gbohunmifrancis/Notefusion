@@ -35,6 +35,8 @@ import type {
   InboxAttachment,
   InboxEmailDetail,
   InboxPage,
+  SentEmailDetail,
+  SentPage,
   LedgerDirection,
   LedgerReason,
   ConsoleSession,
@@ -390,6 +392,12 @@ export const getInboxEmail = (id: string, signal?: AbortSignal) =>
 
 export const getInboxAttachments = (id: string, signal?: AbortSignal) =>
   request<InboxAttachment[]>(`/api/admin/inbox/${id}/attachments`, signal ? { signal } : {});
+
+export const getSentMail = (page: number, pageSize: number, signal?: AbortSignal) =>
+  request<SentPage>(`/api/admin/inbox/sent${query({ page, pageSize })}`, signal ? { signal } : {});
+
+export const getSentEmail = (id: string, signal?: AbortSignal) =>
+  request<SentEmailDetail>(`/api/admin/inbox/sent/${id}`, signal ? { signal } : {});
 
 export const replyToEmail = (id: string, subject: string, bodyHtml: string) =>
   request<void>(`/api/admin/inbox/${id}/reply`, {

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Auth.Services;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Inbox.Sent;
 using NoteFusion.Application.Common.Settings;
 using NoteFusion.Core.Entities;
 using NoteFusion.Shared.Results;
@@ -168,7 +169,7 @@ public sealed class DeleteAccountRequestCommandHandler
         {
             await _email.SendCustomEmailAsync(
                 new EmailRecipient(user.Email, user.FullName),
-                subject: "Confirm your NoteFusion account deletion request",
+                subject: SentMailPrivacy.DeletionConfirmSubject,
                 heading: "Account Deletion Request",
                 bodyHtml: "Hello,\n\nWe received a request from the web deletion portal to permanently delete your NoteFusion account and all associated musical transcriptions and recordings.\n\nTo confirm this request and permanently delete your account and all data, please tap the button below. This action is permanent and cannot be undone.\n\nIf you did not request account deletion, you can ignore this email — your account and data remain safe.",
                 ctaText: "Confirm Permanent Deletion",
