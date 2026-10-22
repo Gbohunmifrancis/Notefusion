@@ -231,41 +231,34 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             .FirstOrDefaultAsync(ct);
 
         if (transaction is null)
+            transaction = await OpenRowAsync(userId, plan, gateway.Provider, amountMinor, fromWeb, offerId, now, ct);
+
+        for (var attempt = 1; ; attempt++)
         {
-            var reference = $"NF_{Guid.NewGuid():N}";
+            var initiation = await gateway.InitiateAsync(
+                new GatewayInitiationRequest(
+                    transaction.Reference, transaction.AmountMinor, plan.Currency, user.Email,
+                    CallbackUrlFor(request.Client, _settings.CheckoutCallbackUrl),
+                    // Every plan is a single charge for one period, priced from our own plan row. Bachs
+                    // subscription checkouts must be paid by a card it can save, and this account offers
+                    // no card method for USD, so a recurring session is refused outright
+                    // (CHECKOUT_CANNOT_SAVE_PAYMENT_METHOD); Paystack is initialised as a plain transaction
+                    // either way. A one-off needs no catalog product, so changing a price is a plan-row
+                    // change and nothing else.
+                    Recurring: false,
+                    transaction.IdempotencyKey, plan.Code,
+                    user.FullName),
+                ct);
 
-            // Derived from the reference, not from a fresh Guid: the key must be stable across retries of
-            // THIS initiation, and the reference already identifies it uniquely. The suffix records which
-            // client started it, for the narrowing above.
-            transaction = PaymentTransaction.Create(
-                userId, plan.Id, gateway.Provider,
-                fromWeb ? $"checkout:{reference}{WebKeySuffix}" : $"checkout:{reference}", reference,
-                amountMinor, plan.Currency, now,
-                fromWeb ? CheckoutClient.Web : CheckoutClient.Phone,
-                offerId);
+            if (initiation.IsSuccess)
+            {
+                transaction.AttachCheckout(
+                    initiation.Value.ProviderReference, initiation.Value.CheckoutUrl, initiation.Value.Raw, _clock.UtcNow);
+                await _db.SaveChangesAsync(ct);
 
-            // Persist PENDING before the provider is ever contacted (spec: durable audit row first).
-            _db.PaymentTransactions.Add(transaction);
-            await _db.SaveChangesAsync(ct);
-        }
+                return new CheckoutSessionDto(transaction.Reference, transaction.CheckoutUrl!, transaction.Provider);
+            }
 
-        var initiation = await gateway.InitiateAsync(
-            new GatewayInitiationRequest(
-                transaction.Reference, transaction.AmountMinor, plan.Currency, user.Email,
-                CallbackUrlFor(request.Client, _settings.CheckoutCallbackUrl),
-                // Every plan is a single charge for one period, priced from our own plan row. Bachs
-                // subscription checkouts must be paid by a card it can save, and this account offers
-                // no card method for USD, so a recurring session is refused outright
-                // (CHECKOUT_CANNOT_SAVE_PAYMENT_METHOD); Paystack is initialised as a plain transaction
-                // either way. A one-off needs no catalog product, so changing a price is a plan-row
-                // change and nothing else.
-                Recurring: false,
-                transaction.IdempotencyKey, plan.Code,
-                user.FullName),
-            ct);
-
-        if (initiation.IsFailure)
-        {
             // Transient vs permanent, because the two need opposite treatment. A network error carries no
             // information about whether the provider opened a session, so burning the row to Failed would
             // strand a possibly-live checkout AND retire the only idempotency key that could reclaim it —
@@ -278,6 +271,17 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             transaction.MarkFailed(initiation.Error.Message, _clock.UtcNow);
             await _db.SaveChangesAsync(ct);
 
+            // The replayed key was bound to an earlier body (a renamed profile, a changed return page), so
+            // nothing with this body can ever reach the session it opened — if it opened one at all. That
+            // is definite, and the row is closed above; what the customer needs is a checkout, so a fresh
+            // row with a key of its own is opened in the same call, once. (The stale sweep would have done
+            // the same two hours later, after refusing every attempt in between.)
+            if (initiation.Error.Type == ErrorType.Conflict && attempt == 1)
+            {
+                transaction = await OpenRowAsync(userId, plan, gateway.Provider, amountMinor, fromWeb, offerId, _clock.UtcNow, ct);
+                continue;
+            }
+
             // The upgrade never started, so tell the user rather than leaving them watching a checkout
             // that will never open. Best-effort and post-commit: a mail failure must not turn a handled
             // decline into a 500 the client shows as "try again", risking a real second charge later.
@@ -285,12 +289,29 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
 
             return BillingErrors.GatewayInitiationFailed;
         }
+    }
 
-        transaction.AttachCheckout(
-            initiation.Value.ProviderReference, initiation.Value.CheckoutUrl, initiation.Value.Raw, _clock.UtcNow);
+    /// <summary>
+    /// A new Pending row with a reference and idempotency key of its own, saved before the provider is ever
+    /// contacted (a durable audit row first). The key is derived from the reference, not from a fresh Guid: it
+    /// must be stable across retries of THIS initiation, and the reference already identifies it uniquely. The
+    /// suffix records which client started it, for the narrowing in <see cref="Handle"/>.
+    /// </summary>
+    private async Task<PaymentTransaction> OpenRowAsync(
+        Guid userId, Plan plan, PaymentProvider provider, long amountMinor, bool fromWeb, Guid? offerId, DateTime now,
+        CancellationToken ct)
+    {
+        var reference = $"NF_{Guid.NewGuid():N}";
+        var transaction = PaymentTransaction.Create(
+            userId, plan.Id, provider,
+            fromWeb ? $"checkout:{reference}{WebKeySuffix}" : $"checkout:{reference}", reference,
+            amountMinor, plan.Currency, now,
+            fromWeb ? CheckoutClient.Web : CheckoutClient.Phone,
+            offerId);
+
+        _db.PaymentTransactions.Add(transaction);
         await _db.SaveChangesAsync(ct);
-
-        return new CheckoutSessionDto(transaction.Reference, transaction.CheckoutUrl!, transaction.Provider);
+        return transaction;
     }
 
     /// <summary>

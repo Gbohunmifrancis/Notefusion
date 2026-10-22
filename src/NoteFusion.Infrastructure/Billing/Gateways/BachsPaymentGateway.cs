@@ -175,6 +175,14 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
                     "Bachs checkout-session create failed: {Status} {Detail}",
                     (int)response.StatusCode, Describe(raw));
 
+                // Our key was reused with a different body (the customer renamed their profile, the return
+                // page changed): definite, not unknown. Nothing sent with this body can ever replay through
+                // this key, so the caller closes its row and opens a fresh one rather than refusing every
+                // attempt until the stale sweep. An IDEMPOTENCY_IN_PROGRESS 409 is the same key still being
+                // handled and stays transient, as documented.
+                if (response.StatusCode == HttpStatusCode.Conflict && IsKeyConflict(raw))
+                    return Error.Conflict(KeyConflictCode, $"Bachs returned 409: {Describe(raw)}");
+
                 return LeavesOutcomeUnknown(response.StatusCode)
                     ? Error.Network("Bachs.Initiate", $"Bachs returned {(int)response.StatusCode}: {Describe(raw)}")
                     : Error.Validation("Bachs.Initiate", $"Bachs returned {(int)response.StatusCode}: {Describe(raw)}");
@@ -446,11 +454,22 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
         }
     }
 
+    /// <summary>The error code of an idempotency key bound to a different body; see <see cref="IsKeyConflict"/>.</summary>
+    internal const string KeyConflictCode = "Bachs.Initiate.KeyConflict";
+
+    /// <summary>
+    /// Bachs' <c>IDEMPOTENCY_CONFLICT</c>: the key was already bound to another method, path or body. Only that
+    /// code, read from the envelope; any other 409 (<c>IDEMPOTENCY_IN_PROGRESS</c>, or one with no readable code)
+    /// is treated as outcome unknown.
+    /// </summary>
+    private static bool IsKeyConflict(string raw)
+        => string.Equals(ReadString(raw, "error_code"), "IDEMPOTENCY_CONFLICT", StringComparison.OrdinalIgnoreCase);
+
     /// <summary>
     /// True when the status code leaves it unknown whether Bachs acted. 429 and 5xx are the plain
-    /// transient cases; 409 is included because it means our idempotency key was reused with a different
-    /// body — the original session may be alive and paid, and burning the transaction would retire the
-    /// only key that can still reach it.
+    /// transient cases; 409 is included because, short of a stated key conflict, it means our idempotency
+    /// key is still being handled or was reused — the original session may be alive and paid, and burning
+    /// the transaction would retire the only key that can still reach it.
     /// </summary>
     private static bool LeavesOutcomeUnknown(HttpStatusCode status)
         => (int)status >= 500
@@ -510,8 +529,10 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
     }
 
     /// <summary>
-    /// Renders a Bachs error envelope for logs and messages. The documented pages disagree on its shape,
-    /// so <c>detail</c>/<c>error_code</c> are read if present and the body is used verbatim otherwise.
+    /// Renders a Bachs error envelope for logs and messages: the <c>error_code</c> and a short <c>detail</c>
+    /// when the envelope carries them, else only how long the body was. The body itself is never written
+    /// out — a validation reply can echo what we sent, the customer's email included, and these lines go
+    /// to the logs and on to Sentry.
     /// </summary>
     private static string Describe(string raw)
     {
@@ -519,13 +540,13 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
         var detail = ReadString(raw, "detail");
 
         if (code is null && detail is null)
-            return string.IsNullOrWhiteSpace(raw) ? "(no body)" : Truncate(raw);
+            return string.IsNullOrWhiteSpace(raw) ? "(no body)" : $"(unreadable body of {raw.Length} characters)";
 
-        return string.Join(' ', new[] { code, detail }.Where(p => !string.IsNullOrWhiteSpace(p)));
+        return string.Join(' ', new[] { code, detail is null ? null : Truncate(detail) }.Where(p => !string.IsNullOrWhiteSpace(p)));
     }
 
     private static string Truncate(string value)
-        => value.Length <= 500 ? value : string.Concat(value.AsSpan(0, 500), "…");
+        => value.Length <= 200 ? value : string.Concat(value.AsSpan(0, 200), "…");
 
     private static string? ReadString(string raw, params string[] path)
     {

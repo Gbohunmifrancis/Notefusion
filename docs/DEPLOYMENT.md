@@ -64,17 +64,18 @@ heroku config:set Squad__SecretKey='...' Squad__BaseUrl='https://api-d.squadco.c
 Bachs needs more than a key and a URL, so it has its own section and its own required set.
 **All three of `SecretKey`, `BaseUrl` and `WebhookSecret` must be present or the adapter
 stays a stub** — a deployment missing the signing secret could take payments it can never
-verify. `ProductMap` is required only for *recurring* plans: a product exists to carry a
-`billing_cycle`, and the lifetime tier is a one-off charge that never consults the map. So
-a Bachs deployment selling only lifetime needs no map at all, which is why the adapter no
-longer gates on one.
+verify. Every checkout is a one-off charge priced from our own plan row (a member buys the
+next period again; nothing renews by itself), so no catalog product is consulted and
+`ProductMap` is not needed: it is kept only for a recurring plan, should one ever be
+reinstated. The key and the host must belong to the same environment; the API's startup log
+says so (`Billing is not ready: Bachs__SecretKey is a sandbox key…`) when they do not.
 
 | Var | Required? | Notes |
 |-----|-----------|-------|
 | `Bachs__SecretKey` | **yes** | `sk_sandbox_…` or `sk_live_…`. Sent as `Authorization: Bearer`. |
 | `Bachs__BaseUrl` | **yes** | `https://sandbox-api.bachs.io` or `https://api.bachs.io`. There is no version header — going live is a key swap **and** a host swap. |
 | `Bachs__WebhookSecret` | **yes** | The endpoint's `whsec_…` **signing secret**, which is a different credential from the API key and differs between sandbox and live. Copy it from the webhook endpoint in the Bachs dashboard; it is not retrievable via the API. Never set the API key here — a wrong key makes genuine and forged deliveries indistinguishable. |
-| `Bachs__ProductMap__<plan_code>` | **yes, for both USD plans** | Our plan code → Bachs catalog product id: `Bachs__ProductMap__pro_monthly_usd` and `Bachs__ProductMap__pro_yearly_usd` (a bare `pro_monthly` / `pro_yearly` key is honoured as a fallback). Recurrence comes from the product's `billing_cycle`, and that is immutable, so **monthly and yearly are two separate products**. Each product's catalog price must equal the plan price in `BillingSeeder` ($9.99 and $79, billed in USD); a drift is caught at verification and blocks fulfilment rather than granting a subscription for the wrong money. The API logs `Billing is not ready` at startup for any USD plan with no product mapped. |
+| `Bachs__ProductMap__<plan_code>` | no | Only for a *recurring* plan, which none is today: our plan code → Bachs catalog product id (`Bachs__ProductMap__pro_monthly_usd`, `…pro_yearly_usd`; a bare `pro_monthly` / `pro_yearly` key is honoured as a fallback). Recurrence comes from the product's `billing_cycle`, which is immutable, so monthly and yearly would be two products, each priced exactly as the plan in `BillingSeeder`. The deploy workflow still passes these secrets through; leaving them blank changes nothing. |
 | `Bachs__SupportedCurrencies` | optional | Comma-separated ISO-4217. Defaults to `USD`. |
 | `Bachs__WebhookToleranceSeconds` | optional | Replay window for the signature timestamp, two-sided. Defaults to `300`. |
 | `Bachs__CheckoutExpiryMinutes` | optional | 1–1440. Defaults to `60`, matching Bachs' own default. |
@@ -85,21 +86,20 @@ heroku config:set \
   Bachs__BaseUrl='https://api.bachs.io' \
   Bachs__WebhookSecret='whsec_xxx' \
   Bachs__SupportedCurrencies='USD' \
-  Bachs__ProductMap__pro_monthly_usd='prod_xxx' \
-  Bachs__ProductMap__pro_yearly_usd='prod_yyy' \
   --app <your-heroku-app>
 ```
 
-**The billing model.** Nigerian accounts subscribe in naira through Paystack
-(`Paystack__SupportedCurrencies='NGN'`); everyone else subscribes in dollars through Bachs
-(`Bachs__SupportedCurrencies='USD'`). Currency routes the charge, so the two lists must not
+**The billing model.** Nigerian accounts pay in naira through Paystack
+(`Paystack__SupportedCurrencies='NGN'`); everyone else pays in dollars through Bachs
+(`Bachs__SupportedCurrencies='USD'`), each payment a one-off for one period of Pro, a choir
+plan, or one song. Currency routes the charge, so the two lists must not
 overlap; `Billing__DefaultProvider='Bachs'` only breaks a tie if they ever do. On the EC2
 deploy these are written to `.env` by `.github/workflows/deploy.yml` from the GitHub secrets
 of the same names, and `docker-compose.prod.yml` defaults the base URLs and currency lists so a
 missing secret cannot silently turn a provider into a stub. Before the dollar tier goes on sale,
-confirm in the Bachs dashboard that the account can bill **USD cards on a schedule**
-(`USD_CARD` enabled): Bachs subscriptions are card-only, and the catalog products must be priced
-in USD at $9.99 and $79.
+confirm in the Bachs dashboard that the account is verified and can collect **one-off USD
+payments** (a dollar price may be charged to the payer in naira by FX conversion; the adapter
+verifies against the session's own USD amount).
 
 Configuring Bachs does **not** by itself route checkouts through it if Paystack also lists USD —
 the factory prefers `Billing__DefaultProvider`. To send USD traffic to Bachs, set that too (see
@@ -109,9 +109,8 @@ the table at the end of this section):
 heroku config:set Billing__DefaultProvider='Bachs' --app <your-heroku-app>
 ```
 
-**Creating the catalog products** — *only if a recurring USD plan is reinstated.* The shipped
-USD tier is a lifetime one-off, which carries its amount on the checkout itself and needs no
-catalog entry. For a recurring plan, `ProductMap` needs `prod_…` ids, and a fresh Bachs
+**Creating the catalog products** — *only if a recurring USD plan is reinstated.* Every
+checkout shipped today carries its amount on the session itself and needs no catalog entry. For a recurring plan, `ProductMap` needs `prod_…` ids, and a fresh Bachs
 account's catalog is empty, so the product has to exist before the map can point at it. Bachs
 publishes no OpenAPI document and `docs.bachs.io` refuses unauthenticated fetches, so the
 request shape is recorded here — `price` and `billing_cycle` are objects, not scalars, and
@@ -121,23 +120,22 @@ request shape is recorded here — `price` and `billing_cycle` are objects, not 
 curl -X POST https://api.bachs.io/v1/products \
   -H "Authorization: Bearer $BACHS_SECRET_KEY" -H 'Content-Type: application/json' \
   -d '{"name":"NoteFusion Pro (Monthly)",
-       "price":{"currency":"USD","amount":"4.99"},
+       "price":{"currency":"USD","amount":"9.99"},
        "billing_cycle":{"interval":"month","frequency":1}}'
 ```
 
-The yearly product is the same call with `"amount":"49.90"` and `"interval":"year"`. Prices
+The yearly product is the same call with the yearly price and `"interval":"year"`. Prices
 are decimal strings in major units and **must** equal the `BillingSeeder` plan price, since
 `BillingSeeder` is insert-only — it never revisits a plan row, so changing a price there
 does nothing to an existing deployment and the drift surfaces only as a blocked
 fulfilment. Omitting `price.amount` is rejected (`amount is required for a fixed price`)
 rather than defaulting to zero, so a malformed call cannot create a free product.
 
-In the Bachs dashboard subscribe the webhook endpoint to `collection.succeeded` (the
-fulfilment signal) and `checkout.expired` (so an abandoned session is closed out rather than
-left for the reconciliation worker). **Subscriptions** need enabling there only for a
-recurring plan — a subscription checkout is otherwise rejected with `SUBSCRIPTIONS_NOT_ENABLED`
-(403), which is exactly the wall the lifetime tier exists to route around
-(`docs/geo-billing-plan.md`).
+In the Bachs dashboard subscribe the webhook endpoint to `checkout.completed` and
+`collection.succeeded` (the fulfilment signal: either may come first, and the handler re-reads
+the session for both) and `checkout.expired` (so an abandoned session is closed out rather than
+left for the reconciliation worker). Subscriptions need enabling there only for a recurring
+plan, which none is today.
 
 Only `checkout.completed`, `collection.succeeded` and `checkout.expired` are handed to the
 webhook worker, which re-reads the session for each (`BachsWebhookValidator.Settles`). Every
