@@ -4,7 +4,8 @@ namespace NoteFusion.Application.Analytics;
 
 /// <summary>
 /// The blog's own web-app actions, as <c>web-site/assets/blog-track.js</c> records them through track.js
-/// (<see cref="WebEvent.Action"/> rows on a blog or hymn page's path), and how their details are read.
+/// (<see cref="WebEvent.Action"/> rows on a blog, hymn, free tool or comparison page's path), and how their details
+/// are read.
 /// </summary>
 /// <remarks>
 /// A detail is a short <c>key=value;key=value</c> list (<see cref="ParseDetail"/>); every one carries
@@ -21,6 +22,12 @@ public static class BlogEvents
     public const string CtaClick = "blog_cta_click";
     public const string Share = "blog_share";
     public const string HymnPlay = "hymn_play";
+
+    /// <summary>
+    /// A 30-second preview started from the try box a free tool page carries (the home page's own,
+    /// <c>web-site/assets/preview.js</c>): a recording or a file, or a song link.
+    /// </summary>
+    public const string ConverterTryAudio = "Preview started (audio)", ConverterTryLink = "Preview started (link)";
 
     /// <summary>A read: at least this share of the article scrolled past…</summary>
     public const int ReadDepthPercent = 50;
@@ -65,11 +72,12 @@ public static class BlogEvents
         => depthPercent >= ReadDepthPercent && activeSeconds >= ReadActiveSeconds;
 
     /// <summary>
-    /// Whether a path is one of the blog's or the hymns' pages, as track.js records it (no query string, no
-    /// trailing slash). Written as a plain expression so it translates to SQL.
+    /// Whether a path is one of the blog's, the hymns', the free tools' or the comparisons' pages, as track.js records
+    /// it (no query string, no trailing slash). Written as a plain expression so it translates to SQL.
     /// </summary>
     public static bool IsContentPath(string path)
-        => path == "/blog" || path.StartsWith("/blog/") || path == "/hymns" || path.StartsWith("/hymns/");
+        => path == "/blog" || path.StartsWith("/blog/") || path == "/hymns" || path.StartsWith("/hymns/")
+           || path == "/tools" || path.StartsWith("/tools/") || path.StartsWith("/compare/");
 
     /// <summary>The path as it is grouped: lowercase, no trailing slash, no <c>/index.html</c>.</summary>
     public static string NormalisePath(string path)
@@ -81,7 +89,10 @@ public static class BlogEvents
         return p.Length == 0 ? "/" : p;
     }
 
-    /// <summary>"post", "hymn", or "index" (the front page, its pages, tags, authors and the hymn list).</summary>
+    /// <summary>
+    /// "post", "hymn", "tool" (a free tool page), "compare" (NoteFusion beside another app), or "index" (the front
+    /// page, its pages, tags, authors, the hymn list and the tools' list).
+    /// </summary>
     public static string KindOf(string normalisedPath)
     {
         var parts = normalisedPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
@@ -89,6 +100,10 @@ public static class BlogEvents
             return "hymn";
         if (parts.Length == 2 && parts[0] == "blog" && parts[1] != "page")
             return "post";
+        if (parts.Length == 2 && parts[0] == "tools")
+            return "tool";
+        if (parts.Length == 2 && parts[0] == "compare")
+            return "compare";
         return "index";
     }
 

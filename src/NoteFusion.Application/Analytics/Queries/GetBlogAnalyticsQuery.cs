@@ -12,8 +12,9 @@ using NoteFusion.Shared.Results;
 namespace NoteFusion.Application.Analytics.Queries;
 
 /// <summary>
-/// The blog's funnel for a window: who read the blog and hymn pages, and whether they went on to open the
-/// app, sign up, transcribe and pay. Dates are inclusive reporting-local days, as on the overview.
+/// The blog's funnel for a window: who read the blog, hymn, free tool and comparison pages, and whether they went on
+/// to open the app, sign up, transcribe and pay. Dates are inclusive reporting-local days, as on the overview. A free
+/// tool page's own try box counts too: each 30-second preview started from it is a converter try on that page.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -60,9 +61,15 @@ public sealed class GetBlogAnalyticsQueryHandler : IRequestHandler<GetBlogAnalyt
     private static readonly string[] BlogActionNames =
         [BlogEvents.View, BlogEvents.Read, BlogEvents.ReadComplete, BlogEvents.Engagement, BlogEvents.CtaClick, BlogEvents.Share, BlogEvents.HymnPlay];
 
+    /// <summary>The actions read here: the blog's own, and a preview started from a tool page's try box.</summary>
+    private static readonly string[] ReadActionNames = [.. BlogActionNames, BlogEvents.ConverterTryAudio, BlogEvents.ConverterTryLink];
+
     /// <summary><see cref="BlogEvents.IsContentPath"/> as an expression, so it runs in the database.</summary>
     private static readonly Expression<Func<WebEvent, bool>> OnContent =
-        e => e.Path == "/blog" || e.Path.StartsWith("/blog/") || e.Path == "/hymns" || e.Path.StartsWith("/hymns/");
+        e => e.Path == "/blog" || e.Path.StartsWith("/blog/") || e.Path == "/hymns" || e.Path.StartsWith("/hymns/")
+             || e.Path == "/tools" || e.Path.StartsWith("/tools/") || e.Path.StartsWith("/compare/");
+
+    private static bool IsConverterTry(string? name) => name is BlogEvents.ConverterTryAudio or BlogEvents.ConverterTryLink;
 
     private readonly IApplicationDbContext _db;
     private readonly IDateTimeProvider _clock;
@@ -103,7 +110,7 @@ public sealed class GetBlogAnalyticsQueryHandler : IRequestHandler<GetBlogAnalyt
         // ── The window's own activity on the blog and hymn pages: every visitor, new or returning. ──
         var rows = (await content
                 .Where(e => e.OccurredAtUtc >= range.FromUtc && e.OccurredAtUtc < range.ToUtc)
-                .Where(e => e.Kind == WebEvent.Pageview || (e.Kind == WebEvent.Action && BlogActionNames.Contains(e.Name!)))
+                .Where(e => e.Kind == WebEvent.Pageview || (e.Kind == WebEvent.Action && ReadActionNames.Contains(e.Name!)))
                 .Select(e => new { e.VisitorId, e.Kind, e.Name, e.Path, e.Detail, e.Referrer, e.OccurredAtUtc })
                 .ToListAsync(ct))
             .Select(e => new Row(e.VisitorId, e.Kind, e.Name, BlogEvents.NormalisePath(e.Path), e.Detail, e.Referrer, e.OccurredAtUtc))
@@ -111,7 +118,7 @@ public sealed class GetBlogAnalyticsQueryHandler : IRequestHandler<GetBlogAnalyt
 
         var views = rows.Where(r => r.Kind == WebEvent.Pageview).ToList();
         var actions = rows.Where(r => r.Kind == WebEvent.Action).ToList();
-        var loads = Loads(actions);
+        var loads = Loads(actions.Where(a => !IsConverterTry(a.Name)));
 
         // ── The funnel's cohort: browsers whose first blog page on record is in the window. ──
         var visitors = views.Select(v => v.VisitorId).Distinct().ToList();
@@ -184,7 +191,8 @@ public sealed class GetBlogAnalyticsQueryHandler : IRequestHandler<GetBlogAnalyt
                     EntryVisitors: entries.Count,
                     Signups: entries.Count(outcomes.SignedUp.Contains),
                     Transcribers: entries.Count(outcomes.Transcribed.Contains),
-                    Payers: entries.Count(outcomes.Paid.Contains));
+                    Payers: entries.Count(outcomes.Paid.Contains),
+                    ConverterTries: actionsByPath[path].Count(a => IsConverterTry(a.Name)));
             })
             .OrderByDescending(p => p.Views).ThenByDescending(p => p.EntryVisitors).ThenBy(p => p.Path, StringComparer.Ordinal)
             .ToList();
@@ -204,7 +212,8 @@ public sealed class GetBlogAnalyticsQueryHandler : IRequestHandler<GetBlogAnalyt
             PayersFromBlog: outcomes.Paid.Count,
             AssistedSignups: assisted.Accounts.Count,
             AssistedTranscribers: assisted.Transcribers,
-            AssistedPayers: assisted.Payers);
+            AssistedPayers: assisted.Payers,
+            ConverterTries: actions.Count(a => IsConverterTry(a.Name)));
 
         const string BrowserJoin = "The browser's own id, kept in its storage (one person on two browsers is two visitors).";
         const string AccountJoin = "The browser later signed in to the web app, or its web-app device id ran a transcription or claimed a preview for the account. Sign-ups on another device or in the phone app are missed, so this is a floor.";

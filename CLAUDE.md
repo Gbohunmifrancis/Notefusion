@@ -464,7 +464,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   The worker's `beat_times_sec` (separated songs with a backing only; `transcriber._beat_map`, bench
   `python -m tests.accuracy.song_clock`) is notation beat i's time in the recording, so a band that drifts stays in
   step (the rounded `tempo` alone drifts by beats); clients map a beat through it (`lib/backingClock.ts` ↔
-  `assets/backing-clock.js`, same tests), play the backing pitch-kept under the solfa with a Solfa↔Backing balance, and
+  `assets/backing-clock.js`, same tests), play the backing pitch-kept under the solfa with a Solfa↔Backing balance (the
+  backing its share and the solfa the rest, never adding up past full: two at full clipped on every loud beat; the web's
+  backing goes through the piano's soft limiter), move it while both play only for a drift that holds (`watchDrift`: past
+  80 ms for 400 ms, a small one at most every 3 s; a silent 40 ms placement before it starts), and
   sit it out while `transposedBy` ≠ 0 (Save sends `transposedBy` for a client-side transpose).
   Every finished transcription is filed in its owner's library the moment its job is settled Done (option A,
   board 12: `Library/LibraryFiling`, from `GetTranscriptionJobQuery` and `NotifyTranscriptionReadyCommand` under the
@@ -487,10 +490,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   are first-party: `web-site/assets/track.js` batches them to the anonymous `POST /api/web/events`
   (`WebEvent` rows, account-linked when a token is sent; `window.nfTrack("Saved sheet")` names an
   action) and the overview's `WebTraffic` section reads them back; a hidden or left page's anonymous batch goes by
-  `sendBeacon` to `POST /api/web/events/beacon` (text/plain JSON, device id in the body). Blog and hymn pages add
+  `sendBeacon` to `POST /api/web/events/beacon` (text/plain JSON, device id in the body). Blog, hymn, free tool and comparison pages add
   `assets/blog-track.js` (`blog_view` with source/UTM, `blog_read` = ≥50% of the article AND ≥30 s visible,
   `blog_read_complete`, `blog_engagement`, `blog_cta_click`, `blog_share`, `hymn_play`; details `k=v;…` with a `pv`
-  page-load id), read by the console's Blog analytics (`GetBlogAnalyticsQuery`, `GET /api/admin/analytics/blog`):
+  page-load id), read by the console's Blog analytics (`GetBlogAnalyticsQuery`, `GET /api/admin/analytics/blog`; kinds
+  post/hymn/tool/compare/index, and a tool page's converter tries: the try box's "Preview started" actions on it):
   first touch, 30 days, over browsers whose first blog page is in the window; a browser is tied to an account by its
   token-carrying events or its device id on a job/preview (floors: the phone app and other devices are missed).
   No third-party analytics.

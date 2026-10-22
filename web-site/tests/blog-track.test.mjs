@@ -47,7 +47,9 @@ test("a referrer is put under search, social, direct, internal or other", () => 
 test("pages, buckets and details are written the way the API reads them", () => {
   assert.deepEqual({ ...pageInfo("/blog/how-to-read-tonic-solfa") }, { type: "post", slug: "how-to-read-tonic-solfa" });
   assert.deepEqual({ ...pageInfo("/hymns/abide-with-me") }, { type: "hymn", slug: "abide-with-me" });
-  for (const p of ["/blog", "/blog/page/2", "/blog/tag/choir", "/blog/author/francis", "/hymns"]) assert.equal(pageInfo(p).type, "index", p);
+  for (const p of ["/blog", "/blog/page/2", "/blog/tag/choir", "/blog/author/francis", "/hymns", "/tools"]) assert.equal(pageInfo(p).type, "index", p);
+  assert.deepEqual({ ...pageInfo("/tools/tonic-solfa-converter") }, { type: "tool", slug: "tonic-solfa-converter" });
+  assert.deepEqual({ ...pageInfo("/compare/scorecloud-alternative/index.html") }, { type: "compare", slug: "scorecloud-alternative" });
   assert.deepEqual([0, 0.24, 0.25, 0.5, 0.74, 0.89, 0.9, 1].map(depthBucket), [0, 0, 25, 50, 50, 75, 100, 100]);
   assert.equal(encodeDetail({ pv: "a1", src: "search", ref: "", cta: "Try it; free=now", n: 0, gone: null }), "pv=a1;src=search;cta=Try it free now;n=0");
 });
