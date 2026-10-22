@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
@@ -7,7 +8,7 @@ using NoteFusion.Shared.Results;
 namespace NoteFusion.Application.AppEvents.Commands;
 
 /// <summary>One event as the app sends it (mobile <c>AppEventInput</c>). The entity decides what is kept.</summary>
-public sealed record AppEventInput(string? Name, string? Detail, DateTime? OccurredAt);
+public sealed record AppEventInput(string? Name, string? Detail, DateTime? OccurredAt, string? Id = null);
 
 /// <summary>What a batch kept.</summary>
 public sealed record AppEventsResult(int Accepted);
@@ -45,17 +46,32 @@ public sealed class RecordAppEventsCommandHandler : IRequestHandler<RecordAppEve
             return UserErrors.NotFound;
 
         var now = _clock.UtcNow;
+        var batch = request.Events.Take(MaxBatch).ToList();
+        // A batch the phone was not sure arrived comes again: what is already stored (by the phone's own id) is not
+        // stored twice, and counts as kept so the phone lets it go.
+        var ids = batch.Select(e => ClientEventIds.Clean(e.Id)).OfType<string>().Distinct().ToList();
+        var seen = ids.Count == 0
+            ? new HashSet<string>()
+            : (await _db.AppEvents.Where(e => e.UserId == userId && e.ClientId != null && ids.Contains(e.ClientId))
+                .Select(e => e.ClientId!).ToListAsync(cancellationToken)).ToHashSet();
         var kept = 0;
-        foreach (var input in request.Events.Take(MaxBatch))
+        var added = 0;
+        foreach (var input in batch)
         {
-            var evt = AppEvent.TryCreate(userId, input.Name, input.Detail, input.OccurredAt, request.DeviceHash, request.Build, now);
+            if (ClientEventIds.Clean(input.Id) is { } id && !seen.Add(id))
+            {
+                kept++;
+                continue;
+            }
+            var evt = AppEvent.TryCreate(userId, input.Name, input.Detail, input.OccurredAt, request.DeviceHash, request.Build, now, input.Id);
             if (evt is null)
                 continue;
+            added++;
             _db.AppEvents.Add(evt);
             kept++;
         }
 
-        if (kept > 0)
+        if (added > 0)
             await _db.SaveChangesAsync(cancellationToken);
 
         return new AppEventsResult(kept);

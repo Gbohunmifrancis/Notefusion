@@ -3,12 +3,14 @@
  * folder, keep offline, rename, delete — each as one function: the API call, the success tick, and a plain sentence
  * when it fails. The Library (its selection bar), Home's recent rows (board a-core/11) and the Result screen's options
  * all call these, so a sheet behaves the same wherever it is acted on. The list state each caller keeps is its own:
- * these return what changed. A delete from a list is held behind "… deleted · Undo" (`deleteWithUndo`).
+ * these return what changed. A delete from a list is held behind "… deleted · Undo" (`deleteWithUndo`). Each done
+ * action is one event for the console's activity feed (lib/appEvents): how many sheets, never their titles.
  */
 
 import { Share } from "react-native";
 import { choirApi, libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import { logAppEvent } from "./appEvents";
 import { showDialog } from "./dialog";
 import * as haptics from "./haptics";
 import { setSheetPinned } from "./offlineLibrary";
@@ -47,6 +49,7 @@ export async function shareSheetLinks(targets: readonly Sheet[]): Promise<Map<st
       ? `${targets[0]!.title} — Tonic Solfa on NoteFusion\n${one.url}`
       : ["Tonic Solfa on NoteFusion", ...targets.map((t, i) => `${t.title}\n${links[i]!.url}`)].join("\n\n");
     await Share.share(one ? { message, url: one.url } : { message });
+    logAppEvent("sheet_shared", { to: "link", count: targets.length });
     return new Map(targets.map((t, i) => [t.id, links[i]!.token]));
   } catch (e) {
     failed("Could not share", e);
@@ -66,6 +69,7 @@ export async function setChoirSharing(targets: readonly Sheet[], share: boolean)
     if (share) haptics.play("success");
     showToast(choirToast(done.size, share));
   }
+  if (done.size) logAppEvent(share ? "sheet_shared" : "sheet_unshared", share ? { to: "choir", count: done.size } : { from: "choir", count: done.size });
   return done;
 }
 
@@ -82,6 +86,7 @@ export async function fileSheets(
   const move = () => Promise.allSettled(targets.map((t) => libraryApi.setFolder(t.id, folder)));
   const results = inline ? await move() : await withBusy(folder ? "Moving…" : "Taking it out of the folder…", move);
   const moved = new Set(targets.filter((_, i) => results[i]!.status === "fulfilled").map((t) => t.id));
+  if (moved.size) logAppEvent("sheet_filed", { count: moved.size, out: folder === null });
   const failure = firstFailure(results);
   if (failure && inline) return { moved, ok: false, error: toApiError(failure.reason).message };
   if (failure) failed("Could not move the sheet", failure.reason);
@@ -117,6 +122,7 @@ export async function keepSheetOffline(id: string, keep: boolean): Promise<boole
 export async function renameSheet(id: string, title: string, onError?: (message: string) => void): Promise<string | null> {
   try {
     const updated = await libraryApi.rename(id, title.trim());
+    logAppEvent("sheet_renamed");
     showToast("Renamed");
     return updated.title;
   } catch (e) {
@@ -151,7 +157,10 @@ export function askToDelete(targets: readonly Sheet[], onDelete: () => void, { u
 
 /** Deletes the sheets. False (after saying so) when any could not be deleted. */
 export async function deleteSheets(targets: readonly Sheet[]): Promise<boolean> {
-  const failure = firstFailure(await Promise.allSettled(targets.map((t) => libraryApi.remove(t.id))));
+  const results = await Promise.allSettled(targets.map((t) => libraryApi.remove(t.id)));
+  const deleted = results.filter((r) => r.status === "fulfilled").length;
+  if (deleted) logAppEvent("sheet_deleted", { count: deleted });
+  const failure = firstFailure(results);
   if (failure) failed("Could not delete", failure.reason);
   return !failure;
 }

@@ -185,6 +185,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<int>("AppBuild")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ClientId")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
                     b.Property<string>("Detail")
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
@@ -212,6 +216,8 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.HasIndex("OccurredAtUtc");
 
                     b.HasIndex("Name", "OccurredAtUtc");
+
+                    b.HasIndex("UserId", "ClientId");
 
                     b.HasIndex("UserId", "OccurredAtUtc");
 
@@ -2259,6 +2265,41 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("users", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.UserActivity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Client")
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
+
+                    b.Property<string>("Detail")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<DateTime>("OccurredAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OccurredAtUtc");
+
+                    b.HasIndex("Name", "OccurredAtUtc");
+
+                    b.HasIndex("UserId", "OccurredAtUtc");
+
+                    b.ToTable("user_activities", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.UserFeedback", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2358,6 +2399,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ClientId")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
                     b.Property<string>("Detail")
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
@@ -2418,6 +2463,8 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.HasIndex("Kind", "OccurredAtUtc");
 
                     b.HasIndex("UserId", "OccurredAtUtc");
+
+                    b.HasIndex("VisitorId", "ClientId");
 
                     b.HasIndex("VisitorId", "OccurredAtUtc");
 

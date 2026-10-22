@@ -6,11 +6,25 @@ import {
   setUserProperty as fbSetUserProperty,
   type Analytics,
 } from '@react-native-firebase/analytics';
+import { logAppEvent } from './appEvents';
 
 /**
  * Centralized Google Analytics / Firebase Analytics service.
  * Safe-wrapped: will never crash UI if native modules are not linked or running in development.
+ *
+ * Every event and screen logged here also goes to our own server (lib/appEvents), which is what the admin console
+ * reads; Firebase is never read there. So params must stay what appEvents allows: ids, kinds, counts, screen names and
+ * error codes, never anything the person wrote, sang or named.
  */
+
+/** Firebase-only names: their first-party twin is logged beside them under the name the console already reads. */
+const NOT_MIRRORED = new Set([
+  'listen_anywhere_setting',
+  'listen_anywhere_take',
+  'listen_anywhere_take_recovered',
+  'data_saver',
+  'keep_all_offline',
+]);
 
 let analyticsInstance: Analytics | null = null;
 
@@ -31,6 +45,7 @@ function getSafeAnalytics(): Analytics | null {
  * Log a screen transition. Called automatically by NavigationContainer onStateChange.
  */
 export async function logScreenView(screenName: string, screenClassOverride?: string): Promise<void> {
+  logAppEvent('screen_view', { screen: screenName });
   try {
     if (__DEV__) {
       console.log(`[Analytics] Screen: ${screenName}`);
@@ -86,6 +101,7 @@ export async function logAnalyticsEvent(
   name: string,
   params?: Record<string, string | number | boolean>,
 ): Promise<void> {
+  if (!NOT_MIRRORED.has(name)) logAppEvent(name, params);
   try {
     if (__DEV__) {
       console.log(`[Analytics] Event ${name}:`, params);
@@ -139,7 +155,7 @@ export async function logSolfaRekeyed(params: {
   await logAnalyticsEvent('solfa_rekeyed', params);
 }
 
-export async function logExport(format: 'musicxml' | 'midi' | 'pdf'): Promise<void> {
+export async function logExport(format: 'musicxml' | 'midi' | 'pdf' | 'solfa'): Promise<void> {
   await logAnalyticsEvent('score_exported', { format });
 }
 

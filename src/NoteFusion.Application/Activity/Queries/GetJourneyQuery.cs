@@ -1,5 +1,6 @@
 using System.Globalization;
 using MediatR;
+using NoteFusion.Application.Activity;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Activity.Dtos;
 using NoteFusion.Application.Common.Errors;
@@ -27,6 +28,8 @@ public sealed record GetJourneyQuery(Guid? UserId = null, string? Device = null,
     public const int MaxWebEvents = 1500;
     public const int MaxLogs = 500;
     public const int MaxPayments = 200;
+    public const int MaxAppEvents = 1500;
+    public const int MaxActivities = 500;
     private const int MaxIdentities = 25;
 
     internal static int IdentityCap => MaxIdentities;
@@ -115,18 +118,42 @@ public sealed class GetJourneyQueryHandler : IRequestHandler<GetJourneyQuery, Re
             .Take(GetJourneyQuery.MaxPayments + 1)
             .ToListAsync(ct);
 
+        // The phone's own events and what the server saw the account do: an account's, so only for an account's journey.
+        var appEvents = userId is { } appUser
+            ? await _db.AppEvents.AsNoTracking()
+                .Where(e => e.UserId == appUser && e.OccurredAtUtc >= from && e.OccurredAtUtc < to)
+                .OrderByDescending(e => e.OccurredAtUtc)
+                .Take(GetJourneyQuery.MaxAppEvents + 1)
+                .ToListAsync(ct)
+            : [];
+        var activities = userId is { } activityUser
+            ? await _db.UserActivities.AsNoTracking()
+                .Where(a => a.UserId == activityUser && a.OccurredAtUtc >= from && a.OccurredAtUtc < to)
+                .OrderByDescending(a => a.OccurredAtUtc)
+                .Take(GetJourneyQuery.MaxActivities + 1)
+                .ToListAsync(ct)
+            : [];
+
         var user = userId is { } id
             ? await _db.Users.AsNoTracking().Where(u => u.Id == id).Select(u => new { u.FullName, u.Email, u.CreatedAt }).FirstOrDefaultAsync(ct)
             : null;
 
         var truncated = events.Count > GetJourneyQuery.MaxWebEvents
             || logs.Count > GetJourneyQuery.MaxLogs
-            || payments.Count > GetJourneyQuery.MaxPayments;
+            || payments.Count > GetJourneyQuery.MaxPayments
+            || appEvents.Count > GetJourneyQuery.MaxAppEvents
+            || activities.Count > GetJourneyQuery.MaxActivities;
 
         var items = new List<JourneyItemDto>();
         items.AddRange(events.Take(GetJourneyQuery.MaxWebEvents).Select(FromWebEvent));
         items.AddRange(logs.Take(GetJourneyQuery.MaxLogs).Select(l => FromLog(l, l.JobId is not null && savedJobs.Contains(l.JobId))));
         items.AddRange(payments.Take(GetJourneyQuery.MaxPayments).Select(FromPayment));
+        items.AddRange(appEvents.Take(GetJourneyQuery.MaxAppEvents).Select(e => new JourneyItemDto(
+            e.OccurredAtUtc, "app", ActivityNames.TitleOrName(e.Name), ActivityNames.DetailLine(e.Detail, null),
+            null, null, "phone", ToneOf(e.Name.Replace('_', ' ')), null)));
+        items.AddRange(activities.Take(GetJourneyQuery.MaxActivities).Select(a => new JourneyItemDto(
+            a.OccurredAtUtc, a.Name == UserActivity.SignIn ? "login" : "activity", ActivityNames.TitleOrName(a.Name),
+            ActivityNames.DetailLine(a.Detail, null), null, null, a.Client, a.Name == UserActivity.AccountDeleted ? "warn" : "ok", null)));
         if (user is not null && user.CreatedAt >= from && user.CreatedAt < to)
             items.Add(new JourneyItemDto(user.CreatedAt, "signup", "Created the account", user.Email, null, null, null, "ok", null));
 

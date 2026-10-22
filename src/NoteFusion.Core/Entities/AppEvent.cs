@@ -46,13 +46,17 @@ public partial class AppEvent : BaseEntity
 
     public DateTime ReceivedAtUtc { get; private set; }
 
+    /// <summary>The phone's own id for the event (<see cref="ClientEventIds"/>): a batch sent twice is stored once.</summary>
+    public string? ClientId { get; private set; }
+
     /// <summary>
     /// An event from what the phone sent, or null when it is not worth keeping: a name that is not lower-case words and
     /// underscores, or an event older than <see cref="MaxAge"/>. Every string is cut to its column and control characters
     /// are dropped, so a hostile payload cannot fail the batch.
     /// </summary>
     public static AppEvent? TryCreate(
-        Guid userId, string? name, string? detail, DateTime? occurredAtUtc, string? deviceHash, int appBuild, DateTime nowUtc)
+        Guid userId, string? name, string? detail, DateTime? occurredAtUtc, string? deviceHash, int appBuild, DateTime nowUtc,
+        string? clientId = null)
     {
         name = name?.Trim();
         if (string.IsNullOrEmpty(name) || name.Length > NameMaxLength || !NamePattern().IsMatch(name))
@@ -74,6 +78,7 @@ public partial class AppEvent : BaseEntity
             AppBuild = Math.Clamp(appBuild, 0, 1_000_000),
             OccurredAtUtc = at,
             ReceivedAtUtc = nowUtc,
+            ClientId = ClientEventIds.Clean(clientId),
         };
     }
 

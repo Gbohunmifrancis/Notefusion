@@ -69,6 +69,9 @@ public class WebEvent : BaseEntity
 
     public DateTime OccurredAtUtc { get; private set; }
 
+    /// <summary>The browser's own id for the event (<see cref="ClientEventIds"/>): a batch sent twice is stored once.</summary>
+    public string? ClientId { get; private set; }
+
     /// <summary>
     /// Builds an event from what the browser sent, or returns null when the record is not worth
     /// keeping: an unknown kind, a click or action with no name, or missing browser ids. Every
@@ -77,7 +80,7 @@ public class WebEvent : BaseEntity
     public static WebEvent? TryCreate(
         string? kind, string? name, string? path, string? target, string? referrer,
         string? visitorId, string? sessionId, Guid? userId, string? device, DateTime occurredAtUtc,
-        string? detail = null, string? deviceHash = null)
+        string? detail = null, string? deviceHash = null, string? clientId = null)
     {
         kind = kind?.Trim().ToLowerInvariant();
         if (kind is not (Pageview or Click or Action))
@@ -106,7 +109,8 @@ public class WebEvent : BaseEntity
             Detail = kind == Action ? Clip(detail, DetailMaxLength) : null,
             DeviceHash = Clip(deviceHash, IdMaxLength),
             Device = device?.Trim().ToLowerInvariant() == "mobile" ? "mobile" : "desktop",
-            OccurredAtUtc = occurredAtUtc
+            OccurredAtUtc = occurredAtUtc,
+            ClientId = ClientEventIds.Clean(clientId)
         };
     }
 

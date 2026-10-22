@@ -28,5 +28,7 @@ public sealed class WebEventConfiguration : IEntityTypeConfiguration<WebEvent>
         builder.HasIndex(e => new { e.UserId, e.OccurredAtUtc });
         builder.HasIndex(e => new { e.VisitorId, e.OccurredAtUtc });
         builder.HasIndex(e => new { e.DeviceHash, e.OccurredAtUtc });
+        builder.Property(e => e.ClientId).HasMaxLength(ClientEventIds.MaxLength);
+        builder.HasIndex(e => new { e.VisitorId, e.ClientId });
     }
 }

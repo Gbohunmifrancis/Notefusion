@@ -111,6 +111,9 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
         var code = EmailVerificationCodes.Issue(user, _tokenGen, _clock.UtcNow);
 
         _db.Users.Add(user);
+        _db.UserActivities.Add(UserActivity.Record(
+            user.Id, UserActivity.SignUp, "method=password",
+            request.Source switch { "mobile" => "phone", "web" => "web", _ => null }, _clock.UtcNow));
         await _db.SaveChangesAsync(cancellationToken);
 
         // The code, after the commit and best-effort by contract. The welcome email waits for

@@ -34,6 +34,7 @@ public sealed class AccountController : ApiControllerBase
     /// </summary>
     [EnableRateLimiting(AuthRateLimiting.EmailDispatch)]
     [HttpPost("delete/confirm")]
+    [NoActivity]
     public async Task<IActionResult> ConfirmDelete(DeleteAccountRequestCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
 }

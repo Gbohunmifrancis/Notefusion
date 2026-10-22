@@ -87,6 +87,18 @@ public static class AnalyticsScope
         return db.TranscriptionLogs.Where(l => l.UserId == null || !internalIds.Contains(l.UserId.Value));
     }
 
+    public static IQueryable<UserActivity> RealActivities(this IApplicationDbContext db)
+    {
+        var internalIds = db.InternalUserIds();
+        return db.UserActivities.Where(a => !internalIds.Contains(a.UserId));
+    }
+
+    public static IQueryable<AppEvent> RealAppEvents(this IApplicationDbContext db)
+    {
+        var internalIds = db.InternalUserIds();
+        return db.AppEvents.Where(e => !internalIds.Contains(e.UserId));
+    }
+
     public static IQueryable<PracticeSession> RealPracticeSessions(this IApplicationDbContext db)
     {
         var internalIds = db.InternalUserIds();

@@ -46,6 +46,19 @@ export function sheetKind(o: KindInput): SheetKind {
   return "confirm";
 }
 
+/**
+ * Whether a sheet tells the person something went wrong, for the `error_shown` event: the amber problem icon, or a
+ * `danger` tone drawn as an info sheet (a destructive confirm is a question, not an error).
+ */
+export function isProblemSheet(o: KindInput & { icon?: string }): boolean {
+  return o.icon === "problem" || (o.tone === "danger" && sheetKind(o) === "info");
+}
+
+/** A title as the `error_shown` event carries it: the app's own words, one line, cut short. */
+export function shownTitle(title: string): string {
+  return title.replace(/\s+/g, " ").trim().slice(0, 60);
+}
+
 export interface Arranged<A> {
   /** One row each (an options sheet). */
   rows: A[];

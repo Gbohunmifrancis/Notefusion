@@ -75,6 +75,7 @@ import { OFFLINE_LINE, STALLED_LINE, percentLabel, stageLabel } from "../lib/job
 import { keyboardTranspose } from "../lib/keyboardTranspose";
 import { METER_CHOICES, meterEventValue, meterLabel, meterSummary, type Meter } from "../lib/meter";
 import { logAnalyticsEvent } from "../lib/analytics";
+import { logAppEvent } from "../lib/appEvents";
 import { linkEntitlement } from "../lib/linkEntitlement";
 import { EXAMPLE_HYMN } from "../lib/exampleSheet";
 import { hymnSheet, openingLine } from "../lib/hymnPack";
@@ -311,6 +312,11 @@ export function LinkScreen() {
   async function submit() {
     if (!found || !canSubmit) return;
     void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "link" });
+    // Where the song is from and how much of it, never the link itself.
+    logAppEvent("link_submitted", {
+      provider: found.provider,
+      sec: section ? Math.round(section.end - section.start) : null,
+    });
     const opts: LinkJobOptions = {
       mode: "melody",
       keyboardTranspose: keyboardTranspose() || undefined,

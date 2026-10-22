@@ -38,6 +38,7 @@ public interface IApplicationDbContext
     /// <summary>Page views, clicks and app actions from the website; the dashboard's web traffic.</summary>
     DbSet<WebEvent> WebEvents { get; }
     DbSet<AppEvent> AppEvents { get; }
+    DbSet<UserActivity> UserActivities { get; }
 
     /// <summary>Every transcription asked for, saved or not: what was sent and how it ended; the activity log.</summary>
     DbSet<TranscriptionLog> TranscriptionLogs { get; }

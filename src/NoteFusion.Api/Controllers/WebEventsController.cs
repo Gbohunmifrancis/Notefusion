@@ -1,4 +1,7 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +22,23 @@ namespace NoteFusion.Api.Controllers;
 /// </summary>
 [AllowAnonymous]
 [Route("api/web")]
+[NoActivity]
 public sealed class WebEventsController : ApiControllerBase
 {
     /// <summary>A batch is a few dozen short strings; anything larger is not the tracker.</summary>
     private const long MaxBodyBytes = 64 * 1024;
 
-    private readonly ISender _sender;
+    /// <summary>An access token is a few hundred characters; anything far longer is not one.</summary>
+    private const int MaxTokenLength = 4096;
 
-    public WebEventsController(ISender sender) => _sender = sender;
+    private readonly ISender _sender;
+    private readonly IOptionsMonitor<JwtBearerOptions>? _jwt;
+
+    public WebEventsController(ISender sender, IOptionsMonitor<JwtBearerOptions>? jwt = null)
+    {
+        _sender = sender;
+        _jwt = jwt;
+    }
 
     /// <summary>
     /// Records a batch of events. 204 whatever was in it: the tracker has nobody to show an error to. The one
@@ -46,9 +58,10 @@ public sealed class WebEventsController : ApiControllerBase
     /// <summary>
     /// The same batch sent with <c>navigator.sendBeacon</c> as the page is left: the one request a browser keeps
     /// through a navigation or a closed tab. A beacon cannot set headers, so the body is JSON sent as
-    /// <c>text/plain</c> (which needs no CORS preflight) and carries the device id itself; it carries no token,
-    /// so these events are a visitor's (track.js sends a signed-in browser's last batch the usual way instead).
-    /// 204 whatever was in it, malformed JSON included.
+    /// <c>text/plain</c> (which needs no CORS preflight) and carries the device id itself, and, for a signed-in browser,
+    /// its access token: validated here exactly as the header would be, so a signed-in visitor's last clicks before they
+    /// leave are theirs (a keepalive fetch with a header needs a preflight, which a closing tab rarely finishes). An
+    /// invalid or expired token is ignored and the events are the visitor's. 204 whatever was in it, malformed JSON included.
     /// </summary>
     [HttpPost("events/beacon")]
     [EnableRateLimiting(AuthRateLimiting.WebEvents)]
@@ -66,8 +79,29 @@ public sealed class WebEventsController : ApiControllerBase
         }
         if (request is not null)
             await _sender.Send(new RecordWebEventsCommand(
-                request.VisitorId, request.SessionId, request.Events ?? [], RequestDeviceFingerprint.Hash(request.DeviceId)), ct);
+                request.VisitorId, request.SessionId, request.Events ?? [], RequestDeviceFingerprint.Hash(request.DeviceId),
+                await UserFromTokenAsync(request.Token)), ct);
         return NoContent();
+    }
+
+    /// <summary>The account a beacon's token names, validated as the bearer header would be; null for none or an invalid one.</summary>
+    private async Task<Guid?> UserFromTokenAsync(string? token)
+    {
+        if (_jwt is null || string.IsNullOrWhiteSpace(token) || token.Length > MaxTokenLength)
+            return null;
+        try
+        {
+            var parameters = _jwt.Get(JwtBearerDefaults.AuthenticationScheme).TokenValidationParameters;
+            var result = await new JsonWebTokenHandler().ValidateTokenAsync(token, parameters);
+            if (!result.IsValid)
+                return null;
+            var sub = result.ClaimsIdentity.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+            return Guid.TryParse(sub, out var id) ? id : null;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
     private static readonly JsonSerializerOptions BeaconJson = new(JsonSerializerDefaults.Web);
@@ -75,5 +109,6 @@ public sealed class WebEventsController : ApiControllerBase
     public sealed record WebEventsRequest(string? VisitorId, string? SessionId, IReadOnlyList<WebEventInput>? Events);
 
     /// <summary>A beacon's body: the batch plus the device id the headers would have carried.</summary>
-    public sealed record BeaconRequest(string? VisitorId, string? SessionId, string? DeviceId, IReadOnlyList<WebEventInput>? Events);
+    public sealed record BeaconRequest(
+        string? VisitorId, string? SessionId, string? DeviceId, IReadOnlyList<WebEventInput>? Events, string? Token = null);
 }

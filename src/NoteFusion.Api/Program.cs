@@ -115,7 +115,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 // port or it does nothing at all — which is the failure that looks exactly like success.
 builder.Services.AddHttpsRedirection(options => options.HttpsPort = 443);
 
-builder.Services.AddControllers()
+builder.Services.AddControllers(options => options.Filters.Add<NoteFusion.Api.Common.UserActivityFilter>())
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase));

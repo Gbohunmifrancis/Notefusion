@@ -416,7 +416,7 @@ export function PracticeView({
               <Button
                 label={p.isPlaying ? "Pause" : "Play"}
                 icon={p.isPlaying ? "pause" : "play"}
-                onPress={() => void p.togglePlay()}
+                onPress={() => void p.togglePlay("learn_part")}
                 disabled={!p.ready || busy}
                 style={styles.transportBtn}
               />

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { arrangeActions, sheetKind, titleIcon } from "./sheetKind.ts";
+import { arrangeActions, isProblemSheet, sheetKind, shownTitle, titleIcon } from "./sheetKind.ts";
 
 const cancel = (label: string) => ({ label, style: "cancel" as const });
 const act = (label: string) => ({ label });
@@ -88,4 +88,18 @@ test("amber, mint and gold belong to their shapes: any other icon on an info she
   assert.equal(titleIcon("info", "danger", "offline"), "ink");
   assert.equal(titleIcon("info", undefined, "about"), "ink");
   assert.equal(titleIcon("confirm", "premium", "gift"), null);
+});
+
+test("a problem sheet is the amber icon or a danger info sheet, never a destructive question", () => {
+  assert.equal(isProblemSheet({ icon: "problem" }), true);
+  assert.equal(isProblemSheet({ tone: "danger" }), true);
+  assert.equal(isProblemSheet({ tone: "danger", actions: [act("Try again"), cancel("Close")] }), true);
+  assert.equal(isProblemSheet({ tone: "danger", actions: [destroy("Delete"), cancel("Keep")] }), false);
+  assert.equal(isProblemSheet({ actions: [act("OK")] }), false);
+  assert.equal(isProblemSheet({ tone: "premium" }), false);
+});
+
+test("a shown title is one line, cut short", () => {
+  assert.equal(shownTitle("  Could not\n save  "), "Could not save");
+  assert.equal(shownTitle("x".repeat(100)).length, 60);
 });

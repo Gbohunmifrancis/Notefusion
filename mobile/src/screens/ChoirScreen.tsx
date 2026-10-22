@@ -17,6 +17,7 @@ import { deriveSolfa } from "../lib/solfa";
 import { solfaOpening } from "../lib/solfaOpening";
 import { useSubscription } from "../lib/subscription";
 import { useColors, useThemedStyles } from "../lib/theme";
+import { logAppEvent } from "../lib/appEvents";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import type { Choir, ChoirMember, ChoirSheet, TranscriptionResult } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
@@ -99,6 +100,7 @@ export function ChoirScreen({ navigation, route }: Props) {
     setJoining(true);
     try {
       const joined = await choirApi.join(clean);
+      logAppEvent("choir_joined");
       if (!mounted.current) return;
       setChoir(joined);
       setCode("");
@@ -141,6 +143,7 @@ export function ChoirScreen({ navigation, route }: Props) {
       message: `Join ${choir.name} on NoteFusion — Pro for every singer and our shared sheets.\n${link}\nChoir code: ${choir.inviteCode}`,
       url: link,
     }).catch(() => undefined);
+    logAppEvent("choir_invite_shared");
   }
 
   function confirmNewCode() {
@@ -179,6 +182,7 @@ export function ChoirScreen({ navigation, route }: Props) {
             try {
               await withBusy("Removing…", async () => {
                 await choirApi.removeMember(member.userId);
+                logAppEvent("choir_member_removed");
                 await load();
               });
             } catch (e) {
@@ -205,6 +209,7 @@ export function ChoirScreen({ navigation, route }: Props) {
             setBusy(true);
             try {
               await choirApi.leave();
+              logAppEvent("choir_left");
               refreshSubscription(true).catch(() => undefined);
               await load();
             } catch (e) {
@@ -243,7 +248,7 @@ export function ChoirScreen({ navigation, route }: Props) {
         chords: full.chords ?? null,
         hymn: full.hymn ?? null,
       };
-      navigation.navigate("Result", { result, title: full.title });
+      navigation.navigate("Result", { result, title: full.title, openedFrom: "choir" });
     } catch (e) {
       showDialog({ title: "Could not open", message: toApiError(e).message, icon: "problem", tone: "danger" });
     }

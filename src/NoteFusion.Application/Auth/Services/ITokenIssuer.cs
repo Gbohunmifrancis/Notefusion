@@ -16,4 +16,12 @@ public interface ITokenIssuer
     /// spent token's own, so a token keeps the client it was first issued to.
     /// </param>
     TokenPairResponse Issue(User user, string? client = null);
+
+    /// <summary>
+    /// <see cref="Issue"/> for a fresh sign-in, recorded in the account's activity (<see cref="UserActivity.SignIn"/>,
+    /// with how and from which client): a refresh or a password change issues tokens too, but only a sign-in is one.
+    /// </summary>
+    /// <param name="method">"password", "google", "passkey" or "email_code".</param>
+    /// <param name="newAccount">The sign-in also created the account (Google's first sign-in): a sign-up is recorded too.</param>
+    TokenPairResponse IssueForSignIn(User user, string method, bool newAccount = false);
 }

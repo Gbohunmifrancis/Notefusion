@@ -273,7 +273,7 @@ export function RehearseView({
             </Touchable>
 
             <Touchable
-              onPress={() => void p.togglePlay()}
+              onPress={() => void p.togglePlay("rehearse")}
               disabled={!p.ready || p.isLoading}
               style={[styles.play, !p.ready && styles.playIdle]}
               radius={34}

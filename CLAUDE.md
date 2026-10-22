@@ -644,6 +644,22 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `Email__MonthlyLimit` (3000) — is under `Email__OptionalShare` (0.6) of its cap, counting every kind; codes, resets,
   receipts, security, expiry, admin and backup mail always send. Batches ask `IEmailQuota` before claiming, so held mail
   stays due (outreach holds both channels); inline welcome/waitlist is skipped. Usage on System Health.
+- The activity log (board-less; `Core/Entities/UserActivity`, `Application/Activity`): what accounts do, recorded where it
+  happens so no client can lose it. `TokenIssuer.IssueForSignIn` writes every fresh sign-in (`sign_in`, method + client;
+  a refresh or password change issues tokens but is not one; sign-ups `sign_up`), and `Api/Common/UserActivityFilter`
+  (global) writes every successful signed-in POST/PUT/PATCH/DELETE as `controller.action` with its route ids — never the
+  body — plus GETs marked `[RecordActivity]` (opening a sheet); admin routes (their own audit log) and `[NoActivity]`
+  ones (already recorded elsewhere: submits, saves, sign-ins, events, device heartbeats) are left out. Readable lines in
+  `ActivityNames` (a name without one shows as itself). The phone sends every action first-party too
+  (`lib/appEvents`: each `logAnalyticsEvent`, screen views, record/play/save/share/export, checkout, settings, errors
+  shown; ids per event, kept until a 2xx, retried, cleared after a sign-out flush), and the website's `track.js` keeps its
+  queue in storage with ids and retries (a page-leave beacon carries the token, validated by `WebEventsController`).
+  `AppEvent`/`WebEvent.ClientId` make a resent event count once; web `ageMs` is believed up to a week; the web-events
+  limit is 300 a minute per address. The Activity feed (`GetActivityFeedQuery`: kinds signup, login = every sign-in,
+  transcription, saved, payment, activity, app, action), the overview's Recent activity and an account's journey read it
+  all (phone events the server also records, `ActivityNames.ServerTwinAppEvents`, are left out of the feeds). Kept
+  `UserActivity.RetentionDays` (730); deleting an account deletes its rows and leaves one nameless `account_deleted`.
+  The migration backfilled past sign-ins from refresh tokens that replaced none.
 - Error reports go to Sentry (docs/DEPLOYMENT.md, "Error reports"), one project per surface, each off until its DSN is
   set: the API (`Sentry__Dsn` from `SENTRY_DSN_API`; unhandled exceptions and `LogError` lines, SendDefaultPii off, every
   email address masked by `Api/Common/SentryScrub`; the SDK's own background transport is the one outside client not

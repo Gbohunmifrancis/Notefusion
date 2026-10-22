@@ -27,11 +27,13 @@ public sealed class LibraryController : ApiControllerBase
 
     /// <summary>Gets one saved transcription, including its full note list.</summary>
     [HttpGet("{id:guid}", Name = nameof(GetTranscription))]
+    [RecordActivity]
     public async Task<IActionResult> GetTranscription(Guid id, CancellationToken ct)
         => HandleResult(await _sender.Send(new GetTranscriptionQuery(id), ct));
 
     /// <summary>Saves a completed transcription result to the library.</summary>
     [HttpPost]
+    [NoActivity]
     public async Task<IActionResult> Save(SaveTranscriptionCommand command, CancellationToken ct)
     {
         var result = await _sender.Send(command, ct);
@@ -140,6 +142,7 @@ public sealed class LibraryController : ApiControllerBase
 
     /// <summary>Marks a sheet opened: one saved automatically is no longer shown as unopened.</summary>
     [HttpPost("{id:guid}/opened")]
+    [NoActivity]
     public async Task<IActionResult> MarkOpened(Guid id, CancellationToken ct)
         => HandleNoContent(await _sender.Send(new MarkSheetOpenedCommand(id), ct));
 

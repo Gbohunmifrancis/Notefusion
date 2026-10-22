@@ -64,6 +64,7 @@ import {
 } from "../lib/recordLevel";
 import { dockedExtraRoom } from "../lib/tabBarLayout";
 import { logAnalyticsEvent } from "../lib/analytics";
+import { logAppEvent } from "../lib/appEvents";
 import { useDataSaver } from "../lib/dataSaver";
 import { recordingProfile } from "../lib/recordingPreset";
 import { enqueueTake, parkTake, releaseTake, takeById } from "../lib/outbox";
@@ -451,7 +452,12 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
   const startDirect = direct.start;
   const submitOrQueue = useCallback(
     async (uri: string, name: string, opts: SubmitOptions, heldId: string | null = null): Promise<string | null> => {
-      void logAnalyticsEvent("recording_upload", { data_saver: dataSaver });
+      void logAnalyticsEvent("recording_upload", {
+        data_saver: dataSaver,
+        mode: opts.mode,
+        song: Boolean(opts.separate),
+        source: name.startsWith("clip-") ? "mic" : "file",
+      });
       if (heldId && !releaseTake(heldId, opts)) {
         // Deleted from the Library while the question was open: nothing left to send.
         setPhase("ready");
@@ -677,7 +683,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
   // depending on it would re-run this effect on each one. A guest's take stops at the preview's
   // thirty seconds, which is all the API transcribes of it.
   useEffect(() => {
-    if (phase === "recording" && (guest ? guestTakeFull(elapsed) : elapsed >= MAX_RECORD_SEC)) void stopAndSubmit();
+    if (phase === "recording" && (guest ? guestTakeFull(elapsed) : elapsed >= MAX_RECORD_SEC)) void stopAndSubmit("cap");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, elapsed]);
 
@@ -824,6 +830,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
       });
       await recorder.prepareToRecordAsync();
       recorder.record();
+      logAppEvent("record_started", { mode, guest });
       // A new take puts the last one's failure card away (a take kept in the queue stays in the Library).
       if (state.status === "failed") reset();
       setPhase("recording");
@@ -909,6 +916,8 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
       }
 
       const asset = res.assets[0];
+      // The kind of file only (never its name): a recording, or a score/MIDI read as it is.
+      logAppEvent("file_picked", { kind: isScoreFile(asset.name) ? "score" : canImport(asset.name) ? "audio" : "unreadable", guest });
       if (guest) {
         // The preview reads a recording, as the website's does: no scores, and 25 MB at most.
         if (!canImport(asset.name) || isScoreFile(asset.name)) {
@@ -968,7 +977,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
   }, [route.params?.autoPickAudio, phase]);
 
 
-  async function stopAndSubmit() {
+  async function stopAndSubmit(how: "tap" | "cap" = "tap") {
     if (tick.current) clearInterval(tick.current);
     quietSinceRef.current = null;
     setShowQuietGuidance(false);
@@ -976,6 +985,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
     setPhase("uploading");
     try {
       await recorder.stop();
+      logAppEvent("record_stopped", { mode, sec: elapsed, how, guest });
       const uri = recorder.uri;
       if (!uri) {
         setPhase("ready");
@@ -1028,14 +1038,15 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
 
   const handleButtonPress = () => {
     if (phase === "ready") startRecording();
-    else if (phase === "recording") stopAndSubmit();
+    else if (phase === "recording") void stopAndSubmit("tap");
   };
 
   /**
    * Throws the take away without sending it: the recorder stops, the clock resets and nothing
    * reaches the server, so nothing is spent.
    */
-  async function discardTake() {
+  async function discardTake(why: "start_over" | "close" | "leave") {
+    if (phase === "recording") logAppEvent("record_cancelled", { mode, sec: elapsed, why });
     if (tick.current) clearInterval(tick.current);
     tick.current = null;
     quietSinceRef.current = null;
@@ -1073,7 +1084,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
   /** The ghost button while recording: drop this take and start a fresh one. */
   function startOver() {
     confirmDiscard("Start over?", "Start over", () => {
-      void discardTake().then(startRecording);
+      void discardTake("start_over").then(startRecording);
     });
   }
 
@@ -1084,7 +1095,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
   function close() {
     if (phase === "recording") {
       confirmDiscard("Discard this recording?", "Discard", () => {
-        void discardTake();
+        void discardTake("close");
         leave();
       });
       return;
@@ -1100,7 +1111,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
   const leaveAsk = useRef<(proceed: () => void) => void>(() => {});
   leaveAsk.current = (proceed) =>
     confirmDiscard("Discard this recording?", "Discard", () => {
-      void discardTake();
+      void discardTake("leave");
       proceed();
     });
   useEffect(() => {

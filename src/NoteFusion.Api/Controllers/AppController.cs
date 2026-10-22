@@ -85,6 +85,7 @@ public sealed class AppController : ControllerBase
     [EnableRateLimiting(AuthRateLimiting.WebEvents)]
     [RequestSizeLimit(MaxEventsBodyBytes)]
     [ProducesResponseType(typeof(AppEventsResult), StatusCodes.Status200OK)]
+    [NoActivity]
     public async Task<IActionResult> Events(
         [FromBody] AppEventsRequest request, [FromServices] IDeviceFingerprint device, CancellationToken ct)
     {
