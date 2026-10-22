@@ -239,6 +239,27 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   SubscriptionProvider hands over unacknowledged purchases at sign-in and on every foreground.
   The Hymns screen reads `web-site/hymns/pack.json` (built by `tools/blog/lib/hymn-pack.mjs`, version in `pack-version.json`, checked by `check.mjs`).
   Data saver (default off, `lib/dataSaver`/`dataPolicy`): 32 kbps AAC uploads (`recordingPreset`, measured), no avatars/artwork, slower polls, hymn updates only on tap.
+  **Listen from anywhere** (Android, boards r-listen; `modules/notefusion-listen`, beside "Find the key"): a take recorded
+  over any other app and sent as a Record-screen take. Three ways in: the floating button (`OverlayUi`, plain Android
+  views in `TYPE_APPLICATION_OVERLAY` windows, docked half off an edge, dragged, hidden on the ×; tapped it is the pill
+  with the REC dot, the clock, the account's line and a ring on the level), the quiet notification's Listen, and the
+  Listen tile (`ListenTakeTileService`, tapped again = stop and send). `ListenOverlayService` is the foreground service
+  (`specialUse` while it waits, `microphone` / `mediaProjection` for the take: Play needs the specialUse declaration);
+  `TakeRecorder` writes AAC at 22,050 Hz mono, 128 or data saver's 32 kbps, from the mic ("The room") or, Android 10+,
+  playback capture ("This phone's sound": Android's consent each time; an app that opts out comes through as silence
+  while music plays, and the take goes on from the room, said so). Android 14+ starts a microphone service only from
+  the front: the notification action is its own exemption, the overlay counts while the button is on screen, and the
+  tile and the consent go through `ListenTakeActivity`, a translucent activity in front for the moment the recording
+  starts (the button's fallback too). Stop (or the cap: 3:00 free, 6:00 Pro, `listenAnywhere.ts`; under 3 s is not
+  sent) hands the file to `ListenTakeHeadlessService` → `AppRegistry.registerHeadlessTask` (index.ts) →
+  `lib/listenAnywhereBridge.listenTakeTask`: `bindOutbox` the cached account, `enqueueTake` as a melody take, `sendTakeNow`;
+  the ready push is unchanged; a file the task never got is swept in at sign-in (`drainPendingTakes`, files older
+  than 15 min). The allowance the overlay shows (`ListenPrefs`, written by `SubscriptionProvider` through
+  `syncListenAllowance`: the pill's "Free: 2 of 3 left this week · up to 3:00", the "none left" card whose Buy one song
+  opens `notefusion://upgrade`) fails open until the server has answered; the server still decides. Settings › Listen
+  from anywhere (Android only): Floating button (a setup sheet, `ListenAnywhereSheet`: microphone, notifications,
+  "Display over other apps" on Android's own page, in order, the one button naming the next), Listen in notifications,
+  Quick Settings tile (Add), Listen to. Native code: a store build, not an OTA.
   **Phone admin** (`screens/admin`, `components/admin`, boards f-admin): Profile › Admin (row and route for an Admin only;
   every admin endpoint re-reads the role from the database) is its own section with its own bar, Overview · Payments
   (Webhooks and Ledger as tabs, a payment's sheet, "Needs a look" + Reconcile) · Users (an account and its actions) ·

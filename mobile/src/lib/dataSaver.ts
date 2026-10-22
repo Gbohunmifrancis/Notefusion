@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Listen from "../../modules/notefusion-listen";
 
 /**
  * The Data saver switch (Settings → Offline & data). Off by default: most of our singers are on
@@ -36,6 +37,8 @@ function setLocal(next: boolean): void {
   if (next === on) return;
   on = next;
   for (const fn of listeners) fn(on);
+  // A take from "Listen from anywhere" (Android) is recorded natively at the same bit rate as the Record screen's.
+  Listen.setDataSaver(on);
 }
 
 export function dataSaverOn(): boolean {

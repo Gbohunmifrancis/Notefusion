@@ -4,19 +4,24 @@ import { navigationRef } from './notificationLink';
 
 /**
  * notefusion://listen?src=tile|widget|notification — what the Quick Settings tile, the home-screen
- * widget and the listening notification open.
+ * widget and the listening notification open — and notefusion://upgrade, which the floating button's
+ * "Buy one song" card opens (board r-listen R3/4) at the one-song purchase.
  *
  * A regex, not `new URL()`: React Native's URL polyfill does not implement `host` for custom schemes.
- * Only `listen` matches, so `notefusion://billing/return` (consumed by WebBrowser.openAuthSessionAsync
+ * Only these two paths match, so `notefusion://billing/return` (consumed by WebBrowser.openAuthSessionAsync
  * on the Upgrade screen) is never touched.
  */
 export function isListenUrl(url: string | null | undefined): boolean {
   return !!url && /^notefusion:\/\/\/?listen(?:[/?#]|$)/i.test(url);
 }
 
+export function isUpgradeUrl(url: string | null | undefined): boolean {
+  return !!url && /^notefusion:\/\/\/?upgrade(?:[/?#]|$)/i.test(url);
+}
+
 /**
- * Routes a shortcut tap to the Listen screen. Held until the authenticated stack exists, like a
- * notification tap.
+ * Routes a shortcut tap to the Listen screen, or the card's tap to Upgrade. Held until the authenticated
+ * stack exists, like a notification tap.
  *
  * It never starts the microphone: any app or web page can open notefusion://listen, and the
  * `src` the tile, widget and notification add is just as forgeable, so a link cannot tell a real
@@ -28,11 +33,11 @@ export function useListenDeepLink(ready: boolean): void {
   useEffect(() => {
     Linking.getInitialURL()
       .then((url) => {
-        if (isListenUrl(url)) setPending(url);
+        if (isListenUrl(url) || isUpgradeUrl(url)) setPending(url);
       })
       .catch(() => undefined);
     const sub = Linking.addEventListener('url', ({ url }) => {
-      if (isListenUrl(url)) setPending(url);
+      if (isListenUrl(url) || isUpgradeUrl(url)) setPending(url);
     });
     return () => sub.remove();
   }, []);
@@ -40,6 +45,7 @@ export function useListenDeepLink(ready: boolean): void {
   useEffect(() => {
     if (!ready || !pending || !navigationRef.isReady()) return;
     setPending(null);
-    navigationRef.navigate('Listen');
+    if (isUpgradeUrl(pending)) navigationRef.navigate('Upgrade', { reason: 'limit' });
+    else navigationRef.navigate('Listen');
   }, [ready, pending]);
 }

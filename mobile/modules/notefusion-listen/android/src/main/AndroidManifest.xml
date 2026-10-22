@@ -3,6 +3,11 @@
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+  <!-- Listen from anywhere: the floating button over other apps, the waiting service's type, the phone's sound. -->
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+  <uses-permission android:name="android.permission.VIBRATE" />
 
   <application>
     <!-- The microphone foreground service that keeps listening for the key while another app plays. -->
@@ -34,5 +39,45 @@
       </intent-filter>
       <meta-data android:name="android.appwidget.provider" android:resource="@xml/nf_listen_widget_info" />
     </receiver>
+
+    <!-- Listen from anywhere: the floating button and the quiet notification, and the take they start. specialUse
+         while it only waits (a button over other apps, started and stopped by the user), the microphone or the
+         phone's sound (mediaProjection) for the take itself. -->
+    <service
+      android:name="expo.modules.notefusionlisten.ListenOverlayService"
+      android:exported="false"
+      android:foregroundServiceType="specialUse|microphone|mediaProjection">
+      <property
+        android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+        android:value="A floating button the user switched on, drawn over other apps, that starts and stops a recording at the user's tap" />
+    </service>
+
+    <!-- The Listen tile: a take from Quick Settings. -->
+    <service
+      android:name="expo.modules.notefusionlisten.ListenTakeTileService"
+      android:exported="true"
+      android:icon="@drawable/nf_mark"
+      android:label="@string/nf_take_tile_label"
+      android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+      <intent-filter>
+        <action android:name="android.service.quicksettings.action.QS_TILE" />
+      </intent-filter>
+      <meta-data android:name="android.service.quicksettings.TOGGLEABLE_TILE" android:value="true" />
+    </service>
+
+    <!-- The finished take, handed to the app's send queue in JS with no screen open. -->
+    <service
+      android:name="expo.modules.notefusionlisten.ListenTakeHeadlessService"
+      android:exported="false" />
+
+    <!-- In front for the moment a take starts (the tile; Android's consent for the phone's sound), then gone. -->
+    <activity
+      android:name="expo.modules.notefusionlisten.ListenTakeActivity"
+      android:exported="false"
+      android:excludeFromRecents="true"
+      android:launchMode="singleTask"
+      android:noHistory="true"
+      android:taskAffinity=""
+      android:theme="@style/NfListenTranslucent" />
   </application>
 </manifest>

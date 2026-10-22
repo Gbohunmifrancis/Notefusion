@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { AppState, StyleSheet, Text, View } from "react-native";
 import * as Application from "expo-application";
+import { getRecordingPermissionsAsync, requestRecordingPermissionsAsync } from "expo-audio";
+import * as Notifications from "expo-notifications";
 import * as WebBrowser from "expo-web-browser";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
@@ -20,6 +22,21 @@ import { clearAutomaticCopies, setKeepAllOffline, useOfflineLibrary } from "../l
 import { usePackState } from "../lib/hymnPackStore";
 import { formatBytes } from "../lib/hymnPack";
 import { outboxPending } from "../lib/outbox";
+import * as Listen from "../../modules/notefusion-listen";
+import { ListenAnywhereSheet } from "../components/settings/ListenAnywhereSheet";
+import { useSubscription } from "../lib/subscription";
+import { showToast } from "../lib/toast";
+import {
+  SETUP_WORDS,
+  SOURCE_CHOICES,
+  SOURCE_NOTE,
+  groupNote,
+  listenAllowance,
+  nextSetupStep,
+  setupDone,
+  sourceLabel,
+  type SetupState,
+} from "../lib/listenAnywhere";
 import { signOutWarning } from "../lib/sendQueue";
 import { logAnalyticsEvent } from "../lib/analytics";
 import type { MyProfile } from "../api/types";
@@ -61,6 +78,123 @@ export function SettingsScreen({ navigation }: Props) {
   const dohSuggestions = useDohSuggestions();
   const offline = useOfflineLibrary();
   const hymnPack = usePackState();
+
+  // ── Listen from anywhere (Android; boards r-listen R3) ──────────────────────
+  // The switches live on the phone, in the native module's own store, so the floating button, the notification and
+  // the Listen tile read them with no JS running. Read again whenever the app comes forward: the button can be
+  // hidden by dragging it onto the ×, and "Display over other apps" is granted on Android's own page.
+  const subscription = useSubscription();
+  const [anywhere, setAnywhere] = useState(() => Listen.getAnywhere());
+  const [setup, setSetup] = useState<{ open: boolean; state: SetupState; busy: boolean }>({
+    open: false,
+    state: { mic: false, notifications: false, overlay: false },
+    busy: false,
+  });
+  const setupOpen = useRef(false);
+  setupOpen.current = setup.open;
+  useEffect(() => {
+    if (!Listen.available) return;
+    const refresh = () => {
+      setAnywhere(Listen.getAnywhere());
+      if (setupOpen.current) void readSetup().then((state) => setSetup((s) => (s.open ? { ...s, state } : s)));
+    };
+    const sub = AppState.addEventListener("change", (next) => {
+      if (next === "active") refresh();
+    });
+    const unfocus = navigation.addListener("focus", refresh);
+    return () => {
+      sub.remove();
+      unfocus();
+    };
+  }, [navigation]);
+
+  async function readSetup(): Promise<SetupState> {
+    const mic = (await getRecordingPermissionsAsync()).granted;
+    const notifications = (await Notifications.getPermissionsAsync()).status === "granted";
+    return { mic, notifications, overlay: Listen.hasOverlayPermission() };
+  }
+
+  async function toggleFloatingButton(on: boolean) {
+    if (!on) {
+      setAnywhere(Listen.setAnywhere({ button: false }));
+      void logAnalyticsEvent("listen_anywhere_setting", { setting: "button", on: false });
+      return;
+    }
+    const state = await readSetup();
+    if (setupDone(state)) {
+      setAnywhere(Listen.setAnywhere({ button: true }));
+      void logAnalyticsEvent("listen_anywhere_setting", { setting: "button", on: true });
+      return;
+    }
+    setSetup({ open: true, state, busy: false });
+  }
+
+  /** The sheet's one button: the next permission, Android's overlay page, or Done. */
+  async function setupStep() {
+    const step = nextSetupStep(setup.state);
+    if (step === null) {
+      setSetup((s) => ({ ...s, open: false }));
+      setAnywhere(Listen.setAnywhere({ button: true }));
+      void logAnalyticsEvent("listen_anywhere_setting", { setting: "button", on: true });
+      return;
+    }
+    setSetup((s) => ({ ...s, busy: true }));
+    try {
+      if (step === "mic") {
+        const r = await requestRecordingPermissionsAsync();
+        if (!r.granted && !r.canAskAgain) {
+          showDialog({ title: "Microphone", message: SETUP_WORDS.micRefused, icon: "problem", tone: "danger" });
+        }
+      } else if (step === "notifications") {
+        await Notifications.requestPermissionsAsync();
+      } else {
+        Listen.openOverlaySettings(); // read again when the app comes back (the AppState listener above)
+      }
+    } finally {
+      const state = await readSetup();
+      setSetup((s) => ({ ...s, state, busy: false }));
+    }
+  }
+
+  async function toggleListenNotification(on: boolean) {
+    if (on && (await Notifications.getPermissionsAsync()).status !== "granted") {
+      if ((await Notifications.requestPermissionsAsync()).status !== "granted") return;
+    }
+    setAnywhere(Listen.setAnywhere({ notification: on }));
+    void logAnalyticsEvent("listen_anywhere_setting", { setting: "notification", on });
+  }
+
+  async function addListenTile() {
+    const result = await Listen.requestAddTakeTile();
+    if (result === "added" || result === "already_added") {
+      Listen.setTakeTileAdded(true);
+      setAnywhere(Listen.getAnywhere());
+      showToast(SETUP_WORDS.tileAdded);
+      void logAnalyticsEvent("listen_anywhere_setting", { setting: "tile", on: true });
+    } else if (result === "unsupported") {
+      // Android 12 and older have no prompt: the shade's own editor does it.
+      showDialog({ title: "Add the Listen tile", message: SETUP_WORDS.tileByHand });
+    }
+  }
+
+  function chooseListenSource() {
+    const phone = anywhere?.phoneSoundAvailable ?? false;
+    showDialog({
+      title: "Listen to",
+      message: phone ? SOURCE_NOTE : undefined,
+      choices: SOURCE_CHOICES.filter((ch) => phone || ch.source === "room").map((ch) => ({
+        label: ch.label,
+        detail: ch.detail,
+        icon: ch.source === "phone" ? "sound" : "mic",
+        onPress: () => {
+          setAnywhere(Listen.setAnywhere({ source: ch.source }));
+          void logAnalyticsEvent("listen_anywhere_setting", { setting: "source", value: ch.source });
+        },
+      })),
+    });
+  }
+
+  const allowance = listenAllowance(subscription);
 
   // Which proof deletes the account, and whether there is a password to change, come from the profile.
   useEffect(() => {
@@ -211,6 +345,40 @@ export function SettingsScreen({ navigation }: Props) {
         />
       </Group>
 
+      {/* Android only (the native module is null elsewhere): the floating button over other apps, the quiet notification
+          with Listen, the Listen tile beside Find the key, and what a take hears. Each take is a Record-screen take. */}
+      {anywhere ? (
+        <>
+          <Group title="Listen from anywhere">
+            <Row
+              icon="float"
+              label="Floating button"
+              hint={
+                anywhere.button && !anywhere.overlayPermitted
+                  ? "Needs “Display over other apps” — tap to set it up"
+                  : "Over other apps — tap it to listen"
+              }
+              toggle={{ value: anywhere.button && anywhere.overlayPermitted, onChange: (on) => void toggleFloatingButton(on) }}
+              onPress={anywhere.button && !anywhere.overlayPermitted ? () => void toggleFloatingButton(true) : undefined}
+            />
+            <Row
+              icon="bell"
+              label="Listen in notifications"
+              hint="A quiet notification with Listen"
+              toggle={{ value: anywhere.notification, onChange: (on) => void toggleListenNotification(on) }}
+            />
+            <Row
+              icon="qs-tile"
+              label="Quick Settings tile"
+              value={anywhere.tileAdded ? "Added" : "Add"}
+              onPress={anywhere.tileAdded ? undefined : () => void addListenTile()}
+            />
+            <Row icon="hear" label="Listen to" value={sourceLabel(anywhere.source)} chevron onPress={chooseListenSource} />
+          </Group>
+          <GroupNote>{groupNote(allowance)}</GroupNote>
+        </>
+      ) : null}
+
       <Group title="Data & offline">
         <Row
           icon="data-saver"
@@ -287,6 +455,13 @@ export function SettingsScreen({ navigation }: Props) {
       <NameSheet visible={sheet === "name"} onClose={() => setSheet(null)} />
       <PasswordSheet visible={sheet === "password"} onClose={() => setSheet(null)} />
       <AboutSheet visible={sheet === "about"} onClose={() => setSheet(null)} />
+      <ListenAnywhereSheet
+        visible={setup.open}
+        state={setup.state}
+        busy={setup.busy}
+        onNotNow={() => setSetup((s) => ({ ...s, open: false }))}
+        onStep={() => void setupStep()}
+      />
       <DeleteAccountSheet
         visible={sheet === "delete"}
         onClose={() => setSheet(null)}

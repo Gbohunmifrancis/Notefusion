@@ -15,6 +15,7 @@ import {
 import type { AuthUser } from '../api/types';
 import { bindOfflineLibrary, clearOfflineLibrary } from '../lib/offlineLibrary';
 import { bindOutbox, clearOutbox } from '../lib/outbox';
+import { drainPendingTakes } from '../lib/listenAnywhereBridge';
 
 interface AuthState {
   user: AuthUser | null;
@@ -118,7 +119,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (initializing) return;
     void bindOfflineLibrary(user?.id ?? null);
-    void bindOutbox(user?.id ?? null);
+    // Then any take "Listen from anywhere" recorded that never reached its headless task (the process died in
+    // between) joins the queue.
+    void bindOutbox(user?.id ?? null).then(() => {
+      if (user?.id) void drainPendingTakes();
+    });
+    Listen.setAccount(Boolean(user?.id));
   }, [user?.id, initializing]);
 
   useEffect(() => onSessionExpired(() => {

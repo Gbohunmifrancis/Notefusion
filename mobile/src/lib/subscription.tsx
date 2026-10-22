@@ -19,6 +19,8 @@ import { welcomeStep } from './proWelcome';
 import { PRO_FEATURES } from './proFeatures';
 import type { Subscription } from '../api/types';
 import { FREE_RESET_FALLBACK, freeWeek } from './freeWeek';
+import { listenAllowance } from './listenAnywhere';
+import { syncListenAllowance } from './listenAnywhereBridge';
 import type { PaymentCheckResult } from './checkoutExit';
 import { paymentCheckDelayMs } from './paymentWatch';
 import { restorePlayPurchases, usesPlayBilling } from './playStore';
@@ -608,6 +610,19 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   }, [userId, load]);
 
   const week = useMemo(() => freeWeek(subscription), [subscription]);
+
+  // "Listen from anywhere" (Android) shows the allowance with no JS running — the pill's line, the "none left"
+  // card — so the native side is handed it whenever it changes (lib/listenAnywhereBridge).
+  const isPro = subscription?.isActive ?? false;
+  const freeRemaining = week?.left ?? DEFAULT_TRIAL_TOTAL;
+  const freePerWeek = week?.total ?? DEFAULT_TRIAL_TOTAL;
+  const freeBack = week?.back ?? FREE_RESET_FALLBACK;
+  const boughtRemaining = isPro ? 0 : (subscription?.boughtTranscriptionsRemaining ?? 0);
+  useEffect(() => {
+    if (!userId) return;
+    syncListenAllowance(listenAllowance({ isPro, known, freeRemaining, freePerWeek, freeBack, boughtRemaining }));
+  }, [userId, isPro, known, freeRemaining, freePerWeek, freeBack, boughtRemaining]);
+
   const value = useMemo<SubscriptionState>(
     () => ({
       subscription,
