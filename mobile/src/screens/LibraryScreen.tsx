@@ -27,6 +27,7 @@ import { SelectionBar } from "../components/library/SelectionBar";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import { logAppEvent } from "../lib/appEvents";
 import { showDialog } from "../lib/dialog";
 import * as haptics from "../lib/haptics";
 import { useSheetActions } from "../components/library/useSheetActions";
@@ -292,6 +293,7 @@ export function LibraryScreen() {
       const link = await libraryApi.shareFolder(folder);
       setFolderLinks((prev) => ({ ...prev, [folder]: link.url }));
       await Share.share({ message: `${folder} — songs on NoteFusion: ${link.url}` });
+      logAppEvent("folder_shared");
     } catch (e) {
       showDialog({ title: "Could not share the folder", message: toApiError(e).message, icon: "problem", tone: "danger" });
     } finally {

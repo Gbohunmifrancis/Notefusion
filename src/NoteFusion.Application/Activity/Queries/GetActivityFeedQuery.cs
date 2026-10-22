@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Activity.Dtos;
+using NoteFusion.Application.Activity;
 using NoteFusion.Application.Analytics.Dtos;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
@@ -12,8 +13,9 @@ namespace NoteFusion.Application.Activity.Queries;
 
 /// <summary>
 /// The full user activity feed behind the overview's "Recent activity" panel, newest first and paged:
-/// sign-ups, latest sign-ins, every transcription asked for, saved sheets, payments, and the actions
-/// signed-in web users take. <paramref name="Kind"/> narrows it to one of <see cref="Kinds"/>.
+/// sign-ups, every sign-in, every transcription asked for, saved sheets, payments, what accounts did as the server saw
+/// it (<see cref="UserActivity"/>: renames, deletes, folders, choirs, checkouts, practice, settings), what they did in
+/// the phone app (<see cref="AppEvent"/>) and on the website. <paramref name="Kind"/> narrows it to one of <see cref="Kinds"/>.
 /// </summary>
 /// <remarks>
 /// The sources are separate tables, so each is read newest-first up to the end of the requested page
@@ -25,7 +27,7 @@ public sealed record GetActivityFeedQuery(int Page = 1, int PageSize = 30, strin
 {
     public const int MaxPageSize = 100;
     public const int MaxDepth = 3000;
-    public static readonly string[] Kinds = ["signup", "login", "transcription", "saved", "payment", "action"];
+    public static readonly string[] Kinds = ["signup", "login", "transcription", "saved", "payment", "activity", "app", "action"];
 }
 
 public sealed class GetActivityFeedQueryHandler : IRequestHandler<GetActivityFeedQuery, Result<PagedResultDto<FeedItemDto>>>
@@ -55,11 +57,12 @@ public sealed class GetActivityFeedQueryHandler : IRequestHandler<GetActivityFee
 
         if (Wants("login"))
         {
-            // The schema keeps each account's latest sign-in only, so an account appears here once.
-            total += await _db.RealUsers().CountAsync(u => u.LastLoginAt != null, ct);
-            rows.AddRange((await _db.RealUsers().AsNoTracking().Where(u => u.LastLoginAt != null).OrderByDescending(u => u.LastLoginAt).Take(depth)
-                    .Select(u => new { At = u.LastLoginAt!.Value, u.Id }).ToListAsync(ct))
-                .Select(u => (u.At, "login", (Guid?)u.Id, "Signed in (latest)", (string?)null, "ok")));
+            // Every sign-in, as the server recorded it (a token refresh is not one).
+            var signIns = _db.RealActivities().Where(a => a.Name == UserActivity.SignIn);
+            total += await signIns.CountAsync(ct);
+            rows.AddRange((await signIns.AsNoTracking().OrderByDescending(a => a.OccurredAtUtc).Take(depth)
+                    .Select(a => new { a.OccurredAtUtc, a.UserId, a.Detail, a.Client }).ToListAsync(ct))
+                .Select(a => (a.OccurredAtUtc, "login", (Guid?)a.UserId, "Signed in", ActivityNames.DetailLine(a.Detail, a.Client), "ok")));
         }
 
         if (Wants("transcription"))
@@ -100,6 +103,30 @@ public sealed class GetActivityFeedQueryHandler : IRequestHandler<GetActivityFee
                     p.Status == PaymentStatus.Completed ? "ok" : "error")));
         }
 
+        if (Wants("activity"))
+        {
+            // What accounts did as the server saw it, sign-ups and sign-ins aside (their own kinds above).
+            var done = _db.RealActivities().Where(a => a.Name != UserActivity.SignIn && a.Name != UserActivity.SignUp);
+            total += await done.CountAsync(ct);
+            rows.AddRange((await done.AsNoTracking().OrderByDescending(a => a.OccurredAtUtc).Take(depth)
+                    .Select(a => new { a.OccurredAtUtc, a.UserId, a.Name, a.Detail, a.Client }).ToListAsync(ct))
+                .Select(a => (a.OccurredAtUtc, "activity", (Guid?)a.UserId, ActivityNames.TitleOrName(a.Name),
+                    ActivityNames.DetailLine(a.Detail, a.Client), ActivityTone(a.Name))));
+        }
+
+        if (Wants("app"))
+        {
+            // What they did in the phone app, from its own events (every screen, take, play, save, share, export…).
+            // The server's own row stands for an action it records too, so it is not listed twice.
+            var twins = ActivityNames.ServerTwinAppEvents;
+            var events = _db.RealAppEvents().Where(e => !twins.Contains(e.Name));
+            total += await events.CountAsync(ct);
+            rows.AddRange((await events.AsNoTracking().OrderByDescending(e => e.OccurredAtUtc).Take(depth)
+                    .Select(e => new { e.OccurredAtUtc, e.UserId, e.Name, e.Detail }).ToListAsync(ct))
+                .Select(e => (e.OccurredAtUtc, "app", (Guid?)e.UserId, ActivityNames.TitleOrName(e.Name),
+                    ActivityNames.DetailLine(e.Detail, "phone"), JourneyTone(e.Name))));
+        }
+
         if (Wants("action"))
         {
             var actions = _db.RealWebEvents().Where(e => e.Kind == WebEvent.Action && e.UserId != null);
@@ -125,5 +152,11 @@ public sealed class GetActivityFeedQueryHandler : IRequestHandler<GetActivityFee
         return new PagedResultDto<FeedItemDto>(items, page, pageSize, Math.Min(total, GetActivityFeedQuery.MaxDepth));
     }
 
-    private static string JourneyTone(string? name) => GetJourneyQueryHandler.ToneOf(name);
+    private static string JourneyTone(string? name) => GetJourneyQueryHandler.ToneOf(name?.Replace('_', ' '));
+
+    private static string ActivityTone(string name) => name switch
+    {
+        UserActivity.AccountDeleted or "billing.cancel" or "choirs.leave" => "warn",
+        _ => "ok",
+    };
 }

@@ -38,6 +38,7 @@ public sealed class AuthController : ApiControllerBase
     [AllowAnonymous]
     [EnableRateLimiting(AuthRateLimiting.Registration)]
     [HttpPost("register")]
+    [NoActivity]
     public async Task<IActionResult> Register(RegisterCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
 
@@ -48,6 +49,7 @@ public sealed class AuthController : ApiControllerBase
     [AllowAnonymous]
     [EnableRateLimiting(AuthRateLimiting.Credentials)]
     [HttpPost("verify-email")]
+    [NoActivity]
     public async Task<IActionResult> VerifyEmail(VerifyEmailCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
 
@@ -58,6 +60,7 @@ public sealed class AuthController : ApiControllerBase
     [AllowAnonymous]
     [EnableRateLimiting(AuthRateLimiting.EmailDispatch)]
     [HttpPost("resend-verification")]
+    [NoActivity]
     public async Task<IActionResult> ResendVerification(
         ResendEmailVerificationCommand command, CancellationToken ct)
         => HandleNoContent(await _sender.Send(command, ct));
@@ -69,6 +72,7 @@ public sealed class AuthController : ApiControllerBase
     [AllowAnonymous]
     [EnableRateLimiting(AuthRateLimiting.Credentials)]
     [HttpPost("login")]
+    [NoActivity]
     public async Task<IActionResult> Login(LoginCommand command, CancellationToken ct)
     {
         var result = await _sender.Send(command, ct);
@@ -89,6 +93,7 @@ public sealed class AuthController : ApiControllerBase
     [AllowAnonymous]
     [EnableRateLimiting(AuthRateLimiting.Registration)]
     [HttpPost("google")]
+    [NoActivity]
     public async Task<IActionResult> Google(GoogleSignInCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
 
@@ -103,6 +108,7 @@ public sealed class AuthController : ApiControllerBase
     [AllowAnonymous]
     [EnableRateLimiting(AuthRateLimiting.TokenRefresh)]
     [HttpPost("refresh")]
+    [NoActivity]
     public async Task<IActionResult> Refresh(RefreshTokenCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
 
@@ -127,6 +133,7 @@ public sealed class AuthController : ApiControllerBase
     [AllowAnonymous]
     [EnableRateLimiting(AuthRateLimiting.EmailDispatch)]
     [HttpPost("forgot-password")]
+    [NoActivity]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordCommand command, CancellationToken ct)
         => HandleNoContent(await _sender.Send(command, ct));
 
@@ -137,6 +144,7 @@ public sealed class AuthController : ApiControllerBase
     [AllowAnonymous]
     [EnableRateLimiting(AuthRateLimiting.Credentials)]
     [HttpPost("reset-password")]
+    [NoActivity]
     public async Task<IActionResult> ResetPassword(ResetPasswordCommand command, CancellationToken ct)
         => HandleNoContent(await _sender.Send(command, ct));
 }

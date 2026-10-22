@@ -290,10 +290,11 @@ public sealed class RateLimitSettings
     public int RefreshWindowSeconds { get; set; } = 60;
 
     /// <summary>
-    /// The site's analytics beacon. The tracker batches, so a busy reader sends a handful a minute; sixty is
-    /// room for several tabs and a shared address, and a ceiling on how fast anyone can fill the table.
+    /// The site's analytics beacon. The tracker batches, so a busy reader sends a handful a minute, but the limit is per
+    /// address, and a school, an office or a mobile carrier puts many readers behind one: at sixty a shared address lost
+    /// whole batches to 429s. Three hundred is room for that, and still a ceiling on how fast anyone can fill the table.
     /// </summary>
-    public int WebEventsPermits { get; set; } = 60;
+    public int WebEventsPermits { get; set; } = 300;
 
     public int WebEventsWindowSeconds { get; set; } = 60;
 

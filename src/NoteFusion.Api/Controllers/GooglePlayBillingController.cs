@@ -51,6 +51,7 @@ public sealed class GooglePlayBillingController : ApiControllerBase
     [AllowAnonymous]
     [HttpPost("notifications")]
     [RequestSizeLimit(64 * 1024)]
+    [NoActivity]
     public async Task<IActionResult> Notification(CancellationToken ct)
     {
         if (!await _pushes.VerifyAsync(Request.Headers.Authorization.ToString(), ct))

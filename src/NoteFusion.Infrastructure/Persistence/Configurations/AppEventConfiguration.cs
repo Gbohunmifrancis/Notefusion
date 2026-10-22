@@ -22,5 +22,7 @@ public sealed class AppEventConfiguration : IEntityTypeConfiguration<AppEvent>
         builder.HasIndex(e => new { e.Name, e.OccurredAtUtc });
         builder.HasIndex(e => new { e.UserId, e.OccurredAtUtc });
         builder.HasIndex(e => e.OccurredAtUtc);
+        builder.Property(e => e.ClientId).HasMaxLength(ClientEventIds.MaxLength);
+        builder.HasIndex(e => new { e.UserId, e.ClientId });
     }
 }

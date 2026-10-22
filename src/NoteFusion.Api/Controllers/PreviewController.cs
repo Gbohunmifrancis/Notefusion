@@ -34,6 +34,7 @@ public sealed class PreviewController : ApiControllerBase
     [HttpPost]
     [Consumes("multipart/form-data")]
     [RequestSizeLimit(MaxAudioBytes)]
+    [NoActivity]
     public async Task<IActionResult> Submit([FromForm] PreviewUploadRequest request, CancellationToken ct)
     {
         if (request.Audio is null || request.Audio.Length == 0)
@@ -48,6 +49,7 @@ public sealed class PreviewController : ApiControllerBase
 
     /// <summary>A song behind a link; the first thirty seconds of the lead vocal.</summary>
     [HttpPost("link")]
+    [NoActivity]
     public async Task<IActionResult> SubmitLink([FromBody] PreviewLinkRequest request, CancellationToken ct)
     {
         var result = await _sender.Send(

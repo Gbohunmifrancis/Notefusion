@@ -114,6 +114,7 @@ public sealed class TranscriptionsController : ApiControllerBase
     [HttpPost]
     [Consumes("multipart/form-data")]
     [RequestSizeLimit(MaxAudioBytes)]
+    [NoActivity]
     public async Task<IActionResult> Submit(
         [FromForm] SubmitTranscriptionRequest request,
         [FromHeader(Name = "Idempotency-Key")] string? idempotencyKey,
@@ -146,6 +147,7 @@ public sealed class TranscriptionsController : ApiControllerBase
     /// one-minute preview to see what it does. Returns the job envelope to poll, like an upload.
     /// </summary>
     [HttpPost("link")]
+    [NoActivity]
     public async Task<IActionResult> SubmitLink([FromBody] SubmitLinkRequest request, CancellationToken ct)
     {
         var result = await _sender.Send(

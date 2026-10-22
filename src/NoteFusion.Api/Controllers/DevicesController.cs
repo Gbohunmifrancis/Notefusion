@@ -16,6 +16,7 @@ public sealed class DevicesController : ApiControllerBase
 
     /// <summary>Registers (or refreshes) an expo push token for the current user's device.</summary>
     [HttpPost]
+    [NoActivity]
     public async Task<IActionResult> Register(RegisterDeviceCommand command, CancellationToken ct)
         => HandleNoContent(await _sender.Send(command, ct));
 

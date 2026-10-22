@@ -78,7 +78,7 @@ public sealed class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailComma
             return AuthErrors.AccountInactive;
 
         user.RecordSuccessfulLogin(now);
-        var tokens = _tokenIssuer.Issue(user);
+        var tokens = _tokenIssuer.IssueForSignIn(user, "email_code");
         await _db.SaveChangesAsync(cancellationToken);
 
         // Welcome them now rather than at sign-up: this is the first moment we know the address works.

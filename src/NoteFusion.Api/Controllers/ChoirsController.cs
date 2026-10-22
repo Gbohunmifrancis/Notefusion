@@ -65,6 +65,7 @@ public sealed class ChoirsController : ApiControllerBase
 
     /// <summary>One sheet of the choir's library, read-only.</summary>
     [HttpGet("mine/sheets/{id:guid}")]
+    [RecordActivity]
     public async Task<IActionResult> Sheet(Guid id, CancellationToken ct)
         => HandleResult(await _sender.Send(new GetChoirSheetQuery(id), ct));
 

@@ -1,3 +1,4 @@
+using NoteFusion.Application.Activity;
 using NoteFusion.Application.Auth.Dtos;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
@@ -51,5 +52,16 @@ public sealed class TokenIssuer : ITokenIssuer
         // (the stored hash is not itself queryable). Only the secret half is hashed.
         var plainRefresh = CompositeTokenCodec.Compose(refreshToken.Id, secret);
         return new TokenPairResponse(access.Value, plainRefresh, access.ExpiresInSeconds);
+    }
+
+    public TokenPairResponse IssueForSignIn(User user, string method, bool newAccount = false)
+    {
+        var tokens = Issue(user);
+        var client = ActivityClient.From(_clientApp?.Current);
+        var detail = $"method={method}";
+        if (newAccount)
+            _db.UserActivities.Add(UserActivity.Record(user.Id, UserActivity.SignUp, detail, client, _clock.UtcNow));
+        _db.UserActivities.Add(UserActivity.Record(user.Id, UserActivity.SignIn, detail, client, _clock.UtcNow));
+        return tokens;
     }
 }

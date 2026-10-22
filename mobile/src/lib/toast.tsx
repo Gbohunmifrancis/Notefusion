@@ -11,6 +11,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AccessibilityInfo } from "react-native";
 import type { IconName } from "../components/Icon";
 import { Toast } from "../components/Toast";
+import { logAppEvent } from "./appEvents";
+import { shownTitle } from "./sheetKind";
 
 export interface ToastAction {
   /** One short word: "Undo", "Rename". */
@@ -46,6 +48,8 @@ let dismiss: ((id: number) => void) | null = null;
  * for `hideToast`; 0 when no host is mounted.
  */
 export function showToast(message: string, options?: ToastOptions): number {
+  // A toast is good news; one with the problem icon is not, and goes to the console's activity feed as one.
+  if (options?.icon === "problem") logAppEvent("error_shown", { via: "toast", title: shownTitle(message) });
   return present?.(message, options) ?? 0;
 }
 

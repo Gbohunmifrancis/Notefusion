@@ -19,6 +19,8 @@ import {
   type DialogOptions,
   type DialogOutcome,
 } from "../components/AppDialog";
+import { logAppEvent } from "./appEvents";
+import { isProblemSheet, shownTitle } from "./sheetKind";
 
 export type { DialogAction, DialogChoice, DialogOptions };
 
@@ -34,6 +36,8 @@ let present: ((options: DialogOptions) => void) | null = null;
  * leaving rises once it has gone.
  */
 export function showDialog(options: DialogOptions): void {
+  // Problems people were shown reach the console's activity feed: the app's own title only, never the message.
+  if (isProblemSheet(options)) logAppEvent("error_shown", { via: "sheet", title: shownTitle(options.title) });
   if (present) {
     present(options);
     return;

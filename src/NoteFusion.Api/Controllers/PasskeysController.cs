@@ -43,6 +43,7 @@ public sealed class PasskeysController : ApiControllerBase
     [FreshPhoneUnlock]
     [EnableRateLimiting(AuthRateLimiting.Passkeys)]
     [HttpPost("register/options")]
+    [NoActivity]
     public async Task<IActionResult> RegisterOptions(CancellationToken ct)
         => HandleResult(await _sender.Send(new BeginPasskeyRegistrationCommand(), ct));
 
@@ -84,6 +85,7 @@ public sealed class PasskeysController : ApiControllerBase
     [AllowAnonymous]
     [EnableRateLimiting(AuthRateLimiting.Passkeys)]
     [HttpPost("login/options")]
+    [NoActivity]
     public async Task<IActionResult> LoginOptions(CancellationToken ct)
         => HandleResult(await _sender.Send(new BeginPasskeySignInCommand(), ct));
 
@@ -94,6 +96,7 @@ public sealed class PasskeysController : ApiControllerBase
     [AllowAnonymous]
     [EnableRateLimiting(AuthRateLimiting.Credentials)]
     [HttpPost("login")]
+    [NoActivity]
     public async Task<IActionResult> Login(PasskeyLoginRequest body, CancellationToken ct)
     {
         var result = await _sender.Send(new PasskeySignInCommand(body.Credential), ct);

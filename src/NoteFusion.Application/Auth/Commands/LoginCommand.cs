@@ -107,7 +107,7 @@ public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<L
             user.RecordCountry(await _country.ResolveAsync(cancellationToken));
 
         user.RecordSuccessfulLogin(now);
-        var tokens = _tokenIssuer.Issue(user);
+        var tokens = _tokenIssuer.IssueForSignIn(user, "password");
         await _db.SaveChangesAsync(cancellationToken);
 
         return new LoginResponse(

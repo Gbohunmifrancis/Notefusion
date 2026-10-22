@@ -51,6 +51,11 @@ export type ResultParams = {
    * celebrates it, once per job. Never set on a reopen from the Library or Home.
    */
   fresh?: boolean;
+  /**
+   * Where it was opened from when the other params cannot say (a hymn from the book, a choir's shared sheet, a ready
+   * push): only for the `result_opened` event in the console's activity feed.
+   */
+  openedFrom?: "hymn" | "choir" | "notification";
   /** Open on Learn my part (or, with no parts, Rehearse's loop): Home's "Practise this tune". */
   practise?: boolean;
   /**

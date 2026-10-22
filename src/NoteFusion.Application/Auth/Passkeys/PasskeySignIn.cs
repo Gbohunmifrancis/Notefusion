@@ -124,7 +124,7 @@ public sealed class PasskeySignInCommandHandler : IRequestHandler<PasskeySignInC
         }
 
         user.RecordSuccessfulLogin(now);
-        var tokens = _tokenIssuer.Issue(user);
+        var tokens = _tokenIssuer.IssueForSignIn(user, "passkey");
 
         // The audit logger reads its actor from the request's token, and this request has none yet: the
         // account signing in is the actor and the target.

@@ -26,7 +26,7 @@ import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { PracticeModeScreen } from '../screens/practice/PracticeModeScreen';
 import { SeasonPathScreen } from '../screens/practice/SeasonPathScreen';
 import { useOutboxRunner } from '../lib/outbox';
-import { useAppEventsFlush } from '../lib/appEvents';
+import { useAppEventsFlush, useAppLifecycleEvents } from '../lib/appEvents';
 import { usePreviewClaim } from '../lib/previewClaim';
 import { useSeasonSync } from '../lib/seasonStore';
 import { autoRefreshPack } from '../lib/hymnPackStore';
@@ -104,8 +104,10 @@ export function RootNavigator() {
   // Record now, send later: recordings that could not be sent go out when the API can be reached.
   useOutboxRunner(Boolean(user));
 
-  // The phone's own events (Listen from anywhere, for the admin console) go when the app comes forward.
+  // The phone's own events (for the admin console's activity feed) go when the app comes forward or goes back; the
+  // launch and each return are events of their own, logged signed out too (they go with whoever signs in).
   useAppEventsFlush(Boolean(user));
+  useAppLifecycleEvents();
 
   // A guest's preview (board l-ux-high/07) is claimed by the account signed up or in to, and saved to its Library.
   usePreviewClaim(Boolean(user));

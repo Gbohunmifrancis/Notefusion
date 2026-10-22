@@ -1,4 +1,4 @@
-import { CreditCard, Eye, MousePointerClick, Music2, UserPlus, Zap } from "lucide-react";
+import { CreditCard, Eye, LogIn, MousePointerClick, Music2, ServerCog, Smartphone, UserPlus, Zap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import type { JourneyItem, JourneyItemType } from "@/api/types";
@@ -11,6 +11,9 @@ const ICONS: Record<JourneyItemType, LucideIcon> = {
   transcription: Music2,
   payment: CreditCard,
   signup: UserPlus,
+  app: Smartphone,
+  activity: ServerCog,
+  login: LogIn,
 };
 
 const TONE: Record<JourneyItem["tone"], string> = {

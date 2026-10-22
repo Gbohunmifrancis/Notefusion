@@ -82,7 +82,8 @@ import { hymnRows, lyricsUnderNotes, pitchName, rangeReport, shiftKeyName, VOICE
 import { stopAudition } from "../lib/audition";
 import { sectionOf } from "../lib/clipRange";
 import { choosePart, defaultRange, levels, partsOf, practiceTempo, speedsFor, type Balance } from "../lib/practice";
-import { logAnalyticsEvent } from "../lib/analytics";
+import { logAnalyticsEvent, logExport } from "../lib/analytics";
+import { logAppEvent } from "../lib/appEvents";
 import { isNetworkCode } from "../lib/reachability";
 import { useOfflineLibrary } from "../lib/offlineLibrary";
 import { takeOpened } from "../lib/outbox";
@@ -274,7 +275,21 @@ export function ResultScreen({ route, navigation }: Props) {
     example,
     fromLink: savedFromLink,
     transposedBy: savedTransposedBy,
+    openedFrom,
   } = route.params;
+
+  // Once per screen, for the console's activity feed: how this sheet was reached, by its ids and counts only.
+  useEffect(() => {
+    logAppEvent("result_opened", {
+      source: guest ? "guest" : example ? "example" : openedFrom ?? (fresh ? "fresh" : initialSavedId ? "saved" : "other"),
+      job: sourceJobId,
+      sheet: initialSavedId,
+      notes: result.notes?.length ?? 0,
+      parts: Boolean(result.parts),
+    });
+    // From the route params: fixed for the screen's life.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -948,6 +963,7 @@ export function ResultScreen({ route, navigation }: Props) {
       // Fired here rather than from the button's press-in: the success pattern
       // means "it happened", and on press-in nothing has happened yet.
       haptics.play("success");
+      logAppEvent("sheet_saved", { sheet: saved.id, parts: Boolean(parts) });
       // The third save may bring Google's review card, a moment after this toast.
       void rating.recordSave();
       showToast(
@@ -971,6 +987,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
     const previous = key;
     setKey(next); // re-label immediately — no round-trip needed to read solfa
+    logAppEvent("key_changed", { from: previous, to: next, saved: Boolean(savedId) });
 
     if (!savedId) return; // unsaved: the key travels with the save payload
     setRekeying(true);
@@ -1061,6 +1078,7 @@ export function ResultScreen({ route, navigation }: Props) {
    * Shown at once with "Hymnbook version in · Undo"; Undo puts back the take as heard, its chords and the question.
    */
   function chooseHymnbook(take: boolean) {
+    logAppEvent("hymnbook_answered", { take, hymn: result.hymnMatch?.slug });
     const sheet = take && result.hymnMatch ? hymnbookSheet(result.hymnMatch, tempo) : null;
     if (!sheet) {
       setHymnAnswered(true);
@@ -1120,6 +1138,7 @@ export function ResultScreen({ route, navigation }: Props) {
       committedLyrics.current = saved.lyrics ?? "";
       setSavedId(saved.id);
       setCommittedTitle(saved.title);
+      logAppEvent("sheet_saved", { sheet: saved.id, hymnbook: true, hymn: sheet.hymn.slug });
     } catch (e) {
       failedWithRetry("Could not save", e, () => void saveHymnbook(sheet, notes));
     }
@@ -1420,6 +1439,7 @@ export function ResultScreen({ route, navigation }: Props) {
       // The server moved the saved sheet and the screen now shows exactly that.
       movedOffline.current = false;
       haptics.play("success");
+      logAppEvent("sheet_transposed", { by, to: moved.key, saved: Boolean(savedId) });
       // The one edit that moves the notes: its Undo moves them back, on the saved sheet too.
       const id = savedId;
       hold(
@@ -1532,6 +1552,7 @@ export function ResultScreen({ route, navigation }: Props) {
     setSharing(true);
     try {
       await libraryApi.unshare(savedId);
+      logAppEvent("sheet_unshared", { from: "link" });
       setShareToken(null);
       showToast(SHARING_STOPPED);
     } catch (e) {
@@ -1628,7 +1649,8 @@ export function ResultScreen({ route, navigation }: Props) {
         tempo,
         timeSignature,
       });
-      if (!outcome.ok) {
+      if (outcome.ok) void logExport("solfa");
+      else {
         showDialog({
           title: "Could not share solfa",
           message: outcome.message,
@@ -1729,9 +1751,8 @@ export function ResultScreen({ route, navigation }: Props) {
         parts: partsView?.filter((p) => p.name !== "soprano").map((p) => ({ name: p.name, lines: p.lines })),
         watermark: !isPro,
       });
-      if (!outcome.ok) {
-        showDialog({ title: "Could not export PDF", message: outcome.message, icon: "problem", tone: "danger" });
-      }
+      if (outcome.ok) void logExport("pdf");
+      else showDialog({ title: "Could not export PDF", message: outcome.message, icon: "problem", tone: "danger" });
     } finally {
       setExportingType(null);
     }
@@ -1761,7 +1782,8 @@ export function ResultScreen({ route, navigation }: Props) {
         tracks,
       });
       const outcome = await exportMidi(midi, committedTitle || title);
-      if (!outcome.ok) {
+      if (outcome.ok) void logExport("midi");
+      else {
         showDialog({
           title: "Could not export MIDI",
           message: outcome.message,
@@ -1779,7 +1801,8 @@ export function ResultScreen({ route, navigation }: Props) {
     setExportingType("musicxml");
     try {
       const outcome = await exportMusicXml(scoreXml, title);
-      if (!outcome.ok) {
+      if (outcome.ok) void logExport("musicxml");
+      else {
         showDialog({
           title: "Could not export",
           message: outcome.message,

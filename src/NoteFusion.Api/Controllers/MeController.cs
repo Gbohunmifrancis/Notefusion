@@ -100,6 +100,7 @@ public sealed class MeController : ApiControllerBase
     /// the current password is re-checked in the handler before anything is removed.
     /// </summary>
     [HttpDelete]
+    [NoActivity]
     public async Task<IActionResult> Delete(DeleteMyAccountCommand command, CancellationToken ct)
         => HandleNoContent(await _sender.Send(command, ct));
 }

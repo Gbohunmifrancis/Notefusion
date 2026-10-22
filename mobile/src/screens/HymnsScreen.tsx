@@ -307,7 +307,7 @@ export function HymnsScreen() {
   function openSheet(h: PackHymn) {
     setOpen(null);
     void logAnalyticsEvent("hymn_opened", { slug: h.slug, kind: h.kind });
-    navigation.navigate("Result", { result: resultFromHymn(h), title: h.title });
+    navigation.navigate("Result", { result: resultFromHymn(h), title: h.title, openedFrom: "hymn" });
   }
 
   const header = <TabHeader title="Hymns" eyebrow={pack ? `${pack.count} hymns and tunes · offline` : "Hymnbook"} />;

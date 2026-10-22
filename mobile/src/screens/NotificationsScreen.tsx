@@ -31,6 +31,7 @@ import { meApi } from "../api/endpoints";
 import { showDialog } from "../lib/dialog";
 import { showToast } from "../lib/toast";
 import * as haptics from "../lib/haptics";
+import { logAppEvent } from "../lib/appEvents";
 import { fonts, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 
@@ -107,9 +108,11 @@ export function NotificationsScreen() {
         setPermission(result);
         // Only the granted path turns anything on; otherwise the line under the switch says why.
         setPushOn(result === "granted" && pushEnabled());
+        logAppEvent("setting_changed", { setting: "push", on: true, permission: result });
       } else {
         await disablePush();
         setPushOn(false);
+        logAppEvent("setting_changed", { setting: "push", on: false });
       }
     } finally {
       setPushBusy(false);
@@ -118,6 +121,7 @@ export function NotificationsScreen() {
 
   async function toggleSound(on: boolean) {
     setSoundOn(on);
+    logAppEvent("setting_changed", { setting: "sound", on });
     await setSoundEnabled(on);
     // Practice reminders are pushed by the server, so it is told too: off sends them silently.
     void syncReminderSound(on);
@@ -128,7 +132,7 @@ export function NotificationsScreen() {
     if (!(await setReminderEnabled(on))) {
       setReminderOn(!on);
       notSaved();
-    }
+    } else logAppEvent("setting_changed", { setting: "practice_reminder", on });
   }
 
   async function pickHour(next: number) {
@@ -140,6 +144,7 @@ export function NotificationsScreen() {
     flash.setValue(1);
     Animated.timing(flash, { toValue: 0, duration: FLASH_MS, delay: 200, useNativeDriver: true }).start();
     if (await setReminderHour(next)) {
+      logAppEvent("setting_changed", { setting: "reminder_hour", value: next });
       showToast(reminderMovedLine(next));
     } else {
       setHour(before);
@@ -153,6 +158,7 @@ export function NotificationsScreen() {
     try {
       const saved = await meApi.setEmailPreferences({ founderNotes: on });
       setFounderNotes(saved.founderNotes);
+      logAppEvent("setting_changed", { setting: "founder_emails", on: saved.founderNotes });
     } catch {
       setFounderNotes(before);
       notSaved();

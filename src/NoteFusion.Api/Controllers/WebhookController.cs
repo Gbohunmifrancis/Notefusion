@@ -3,6 +3,7 @@ using System.Text;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NoteFusion.Api.Common;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Preview.Commands;
 using NoteFusion.Application.Transcriptions.Commands;
@@ -21,6 +22,7 @@ namespace NoteFusion.Api.Controllers;
 [ApiController]
 [Route("api/internal/webhooks")]
 [AllowAnonymous]
+[NoActivity]
 public sealed class WebhookController : ControllerBase
 {
     private const string ApiKeyHeader = "X-Api-Key";

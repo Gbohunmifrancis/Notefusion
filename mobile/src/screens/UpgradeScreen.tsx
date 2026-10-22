@@ -26,6 +26,8 @@ import { BrandMark } from "../components/BrandMark";
 import { billingApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { showDialog } from "../lib/dialog";
+import { logPaywallViewed } from "../lib/analytics";
+import { logAppEvent } from "../lib/appEvents";
 import { showToast } from "../lib/toast";
 import {
   fonts,
@@ -305,6 +307,19 @@ export function UpgradeScreen({ navigation, route }: Props) {
     load();
   }, [load]);
 
+  // Once per opening, with why it opened (the free limit, or a plan already named).
+  useEffect(() => {
+    void logPaywallViewed(forLimit ? "limit" : askedPlanId ? "plan" : "other");
+    // From the route params: fixed for the screen's life.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /** A plan tapped in the list (not the default the screen opens on). */
+  function choosePlan(plan: Plan) {
+    setSelectedId(plan.id);
+    logAppEvent("plan_selected", { plan: plan.code });
+  }
+
   // ── "What stopped you?": asked once per checkout that comes back unpaid (board g-checkout) ──
   const [exitAsk, setExitAsk] = useState<CheckoutExitAsk | null>(null);
   /** The checkout asked about: what the answer is posted with, and the plan "Try again" reopens. */
@@ -366,7 +381,9 @@ export function UpgradeScreen({ navigation, route }: Props) {
     if (!user) return;
     setBusy(true);
     beginCheckout(plan.id, subscription, plan.interval === "single", Boolean(plan.choirSeats));
+    logAppEvent("play_purchase_started", { plan: plan.code });
     const outcome = await buyOnPlay(offer, user.id);
+    logAppEvent("play_purchase_result", { plan: plan.code, result: outcome.kind });
     if (outcome.kind !== "purchased") {
       abandonCheckout();
       if (mounted.current) setBusy(false);
@@ -387,6 +404,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
     }
     try {
       await registerPlayPurchase(outcome.purchase);
+      logAppEvent("play_purchase_registered", { plan: plan.code });
       // The server has it: the provider's next read sees the membership move on and shows the welcome.
       watchPayment();
     } catch (e) {
@@ -401,6 +419,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
   async function restore() {
     setRestoring(true);
     const found = await restorePlayPurchases(true);
+    logAppEvent("purchases_restored", { restored: found.restored, other_account: Boolean(found.otherAccount), failed: Boolean(found.failed) });
     if (!mounted.current) return;
     setRestoring(false);
     if (found.restored > 0) {
@@ -456,6 +475,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
     const plan = plans.find((p) => p.id === planId) ?? choirPlans.find((p) => p.id === planId);
     const single = plan?.interval === "single";
     const choir = choirPlans.some((p) => p.id === planId);
+    logAppEvent("checkout_started", { plan: plan?.code, via: play ? "google_play" : "web", single, choir });
     if (play) {
       if (plan) await buyWithPlay(plan);
       else notOnPlay();
@@ -478,6 +498,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
       // Before the browser opens: what the provider compares the server's answer against, so a
       // member adding time is told apart from one whose checkout simply closed.
       beginCheckout(planId, subscription, single, choir);
+      logAppEvent("checkout_opened", { plan: plan?.code, reference: session.reference });
 
       // Open Paystack hosted checkout in the in-app browser sheet. Every outcome —
       // returned via the deep link, dismissed, or the sheet failing to open — falls
@@ -505,6 +526,8 @@ export function UpgradeScreen({ navigation, route }: Props) {
         });
       }
       const seconds = secondsOpen(openedAt, Date.now());
+      // Back from the provider's page: sent back by it (`returned`) or closed by hand; payment is the server's to say.
+      logAppEvent("checkout_returned", { plan: plan?.code, reference: session.reference, returned, sec: seconds, watched: watchedClose });
 
       // The provider confirms from here, and owns the welcome when the payment lands, so it
       // carries on if this screen is left. Closed by hand, its first answer is the quick check
@@ -748,7 +771,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
                 title={planTitle(singlePlan)}
                 note="One more transcription, any recording or song link. No subscription."
                 selected={singlePlan.id === selectedId}
-                onSelect={() => setSelectedId(singlePlan.id)}
+                onSelect={() => choosePlan(singlePlan)}
               />
             ) : null}
 
@@ -762,7 +785,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
                 bestValue={plan.id === bestValueId}
                 // The year in money (board m-ux-medium P4b); Google Play's own prices say their own.
                 note={play ? undefined : yearNote(plan, plans) ?? undefined}
-                onSelect={() => setSelectedId(plan.id)}
+                onSelect={() => choosePlan(plan)}
               />
             ))}
 
@@ -805,7 +828,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
                     priceLabel={offerFor(plan, playOffers)?.price}
                     viaPlay={play}
                     selected={plan.id === selectedId}
-                    onSelect={() => setSelectedId(plan.id)}
+                    onSelect={() => choosePlan(plan)}
                   />
                 ))}
               </>
@@ -908,7 +931,7 @@ export function UpgradeScreen({ navigation, route }: Props) {
               viaPlay={play}
               selected={plan.id === selectedId}
               onSelect={() => {
-                setSelectedId(plan.id);
+                choosePlan(plan);
                 setChoirOpen(false);
               }}
             />
@@ -1006,6 +1029,7 @@ function ActiveState({
     setShowCancelModal(false);
     try {
       await billingApi.cancel();
+      logAppEvent("membership_cancelled", { plan: subscription.planCode });
       // Re-read rather than patch the local copy: the server decides how long access runs,
       // and this screen's whole job is to report that date accurately.
       onChanged();

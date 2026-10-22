@@ -8,6 +8,7 @@ import {
   CreditCard,
   HeartPulse,
   Inbox,
+  LogIn,
   Mail,
   MailCheck,
   MessageSquare,
@@ -15,7 +16,9 @@ import {
   Music2,
   PenSquare,
   Send,
+  ServerCog,
   Share2,
+  Smartphone,
   Sparkles,
   TriangleAlert,
   UserRoundPlus,
@@ -537,6 +540,7 @@ const ACTIVITY_FILTERS = [
   { value: "transcriptions", label: "Transcriptions" },
   { value: "signups", label: "Sign-ups" },
   { value: "money", label: "Payments" },
+  { value: "actions", label: "Actions" },
   { value: "feedback", label: "Feedback" },
 ] as const;
 type ActivityFilter = (typeof ACTIVITY_FILTERS)[number]["value"];
@@ -551,6 +555,12 @@ const ACTIVITY_KINDS: Record<string, { icon: LucideIcon; style: string; group: A
   share: { icon: Share2, style: "text-muted-foreground", group: "transcriptions" },
   /** The founder's customer-research emails (GET /api/admin/outreach lists them all). */
   outreach: { icon: MailCheck, style: "text-muted-foreground", group: "feedback" },
+  /** Every sign-in, as the server recorded it (UserActivity). */
+  login: { icon: LogIn, style: "text-muted-foreground", group: "signups" },
+  /** What the server saw an account do: renames, deletes, folders, choirs, checkouts, practice, settings. */
+  activity: { icon: ServerCog, style: "text-muted-foreground", group: "actions" },
+  /** What they did in the phone app (its own events), the screen-by-screen trail left to the Activity feed. */
+  app: { icon: Smartphone, style: "text-muted-foreground", group: "actions" },
 };
 
 function regionName(code: string | null | undefined): string {
@@ -563,8 +573,8 @@ function regionName(code: string | null | undefined): string {
 }
 
 /**
- * The newest things customers did, each as a sentence: who, what, where, when. Sign-ins are not here
- * (the API no longer sends them: one stored time per account could not say when anyone signed in).
+ * The newest things customers did, each as a sentence: who, what, where, when: every sign-in, transcription,
+ * payment and piece of feedback, and what the server and the phone app recorded them doing.
  * The list scrolls inside a card the height of the chart beside it; a row opens that person's journey.
  */
 function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivity"] }) {

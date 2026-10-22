@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Core.Entities;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Me.Commands;
@@ -35,17 +36,20 @@ public sealed class DeleteMyAccountCommandHandler : IRequestHandler<DeleteMyAcco
     private readonly IPasswordHasher _hasher;
     private readonly IGoogleTokenValidator _googleTokenValidator;
     private readonly ICurrentUser _currentUser;
+    private readonly IDateTimeProvider? _clock;
 
     public DeleteMyAccountCommandHandler(
         IApplicationDbContext db,
         IPasswordHasher hasher,
         IGoogleTokenValidator googleTokenValidator,
-        ICurrentUser currentUser)
+        ICurrentUser currentUser,
+        IDateTimeProvider? clock = null)
     {
         _db = db;
         _hasher = hasher;
         _googleTokenValidator = googleTokenValidator;
         _currentUser = currentUser;
+        _clock = clock;
     }
 
     public async Task<Result> Handle(DeleteMyAccountCommand request, CancellationToken cancellationToken)
@@ -73,8 +77,11 @@ public sealed class DeleteMyAccountCommandHandler : IRequestHandler<DeleteMyAcco
         // whoever next registers this address (the id is derived from it) and files sheets under that name.
         _db.FolderShares.RemoveRange(await _db.FolderShares.Where(f => f.UserId == userId).ToListAsync(cancellationToken));
 
-        // The phone's own events are the account's: they go with it.
+        // The phone's own events and the activity log are the account's: they go with it, and one nameless row says
+        // the account was deleted, so the console's feed does not simply go quiet about someone who left.
         _db.AppEvents.RemoveRange(await _db.AppEvents.Where(e => e.UserId == userId).ToListAsync(cancellationToken));
+        _db.UserActivities.RemoveRange(await _db.UserActivities.Where(e => e.UserId == userId).ToListAsync(cancellationToken));
+        _db.UserActivities.Add(UserActivity.Record(userId, UserActivity.AccountDeleted, "via=app", null, _clock?.UtcNow ?? DateTime.UtcNow));
 
         _db.Users.Remove(user);
         await _db.SaveChangesAsync(cancellationToken);

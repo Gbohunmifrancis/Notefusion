@@ -1,7 +1,7 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { CreditCard, LogIn, Music2, Save, Search, UserRoundPlus, Zap } from "lucide-react";
+import { CreditCard, LogIn, Music2, Save, Search, ServerCog, Smartphone, UserRoundPlus, Zap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -89,6 +89,8 @@ const FEED_ICONS: Record<FeedKind, LucideIcon> = {
   transcription: Music2,
   saved: Save,
   payment: CreditCard,
+  activity: ServerCog,
+  app: Smartphone,
   action: Zap,
 };
 
@@ -116,9 +118,9 @@ function FeedTab() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="max-w-2xl text-[13px] text-muted-foreground">
-          Everything users do, newest first: sign-ups, sign-ins, every transcription asked for (saved or not),
-          saved sheets, payments, and the actions signed-in web users take. Sign-ins show each account&apos;s
-          latest only.
+          Everything users do, newest first: sign-ups, every sign-in, every transcription asked for (saved or not),
+          saved sheets, payments, what the server recorded them doing (renames, deletes, folders, choirs, checkouts,
+          practice, settings), what they did in the phone app, and the actions signed-in web users take.
         </p>
         <select aria-label="Type" value={kind} onChange={(e) => setKind(e.target.value as FeedKind | "")} className={SELECT}>
           <option value="">Everything</option>
@@ -127,6 +129,8 @@ function FeedTab() {
           <option value="transcription">Transcriptions</option>
           <option value="saved">Saved sheets</option>
           <option value="payment">Payments</option>
+          <option value="activity">Account actions (server)</option>
+          <option value="app">Phone app actions</option>
           <option value="action">Web app actions</option>
         </select>
       </div>

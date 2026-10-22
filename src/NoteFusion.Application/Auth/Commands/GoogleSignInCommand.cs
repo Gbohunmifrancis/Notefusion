@@ -115,7 +115,7 @@ public sealed class GoogleSignInCommandHandler : IRequestHandler<GoogleSignInCom
         if (user.Country is null)
             user.RecordCountry(await _country.ResolveAsync(cancellationToken));
 
-        var tokens = _tokenIssuer.Issue(user);
+        var tokens = _tokenIssuer.IssueForSignIn(user, "google", newAccount: isNewAccount);
         await _db.SaveChangesAsync(cancellationToken);
 
         // Only the first Google sign-in creates an account, and only that one earns a welcome —

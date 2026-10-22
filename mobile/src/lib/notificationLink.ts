@@ -4,6 +4,7 @@ import { transcriptionsApi } from '../api/endpoints';
 import { safeReason, toApiError } from '../api/client';
 import { openStoreListing } from './appUpdate';
 import { showDialog } from './dialog';
+import { logAppEvent } from './appEvents';
 import { isExpoGo } from './env';
 import { isAdminScreen, notificationTarget } from './navTargets';
 import { MUTE_HOUR_ACTION, MUTE_MINUTES } from './paymentAlerts';
@@ -91,6 +92,7 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
       result: { ...result, audioPreviewBase64: undefined },
       sourceJobId: jobId,
       fresh: true,
+      openedFrom: 'notification',
       // Filed in the Library as it finished (option A): opened as the saved sheet.
       savedId: job.savedId ?? undefined,
       title: job.savedTitle ?? undefined,
@@ -245,6 +247,12 @@ export function useNotificationDeepLink(ready: boolean, isAdmin = false): Notifi
     if (handled.current === key) return;
     handled.current = key;
     setPending(null);
+    // Once per tap (the key above): what was tapped, by its job id or the screen it names.
+    logAppEvent('notification_tapped', {
+      kind: pending.kind,
+      screen: pending.kind === 'job' ? 'Result' : pending.value,
+      job: pending.kind === 'job' ? pending.value : null,
+    });
 
     if (pending.kind === 'job') {
       void openTranscriptionFromNotification(pending.value);

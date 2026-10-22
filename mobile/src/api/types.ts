@@ -1878,6 +1878,8 @@ export interface SystemAnnouncement {
 
 /** One thing the app did, for the admin console (mirrors `AppEventInput`). */
 export interface AppEventInput {
+  /** The phone's own id for it, 8–40 of [A-Za-z0-9_-]: the server keeps one per id per account, so sending again is safe. */
+  id?: string;
   /** Lower-case words and underscores, at most 60 (`listen_take_end`). */
   name: string;
   /** Flat `key=value;…` pairs, at most 300 characters; nothing about the person. */

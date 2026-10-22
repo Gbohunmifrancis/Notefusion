@@ -1025,7 +1025,8 @@ export interface TranscriptionLogFilters {
   device?: string | undefined;
 }
 
-export type JourneyItemType = "pageview" | "click" | "action" | "transcription" | "payment" | "signup";
+export type JourneyItemType =
+  | "pageview" | "click" | "action" | "transcription" | "payment" | "signup" | "app" | "activity" | "login";
 
 export interface JourneyItem {
   atUtc: string;
@@ -1095,7 +1096,8 @@ export interface CheckoutFunnel {
   recentProblems: CheckoutProblem[];
 }
 
-export type FeedKind = "signup" | "login" | "transcription" | "saved" | "payment" | "action";
+/** `login` is every sign-in; `activity` what the server saw an account do; `app` the phone app; `action` the website. */
+export type FeedKind = "signup" | "login" | "transcription" | "saved" | "payment" | "activity" | "app" | "action";
 
 /** One entry in the full user activity feed (C# FeedItemDto). */
 export interface FeedItem {

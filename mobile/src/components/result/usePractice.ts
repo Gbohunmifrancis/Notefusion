@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PanResponder, type PanResponderInstance } from "react-native";
 import { useNotePlayer } from "../../lib/useNotePlayer";
+import { logAppEvent } from "../../lib/appEvents";
 import { beatSecOf } from "../../lib/synth";
 import { backingTarget, beatOfClipSec, clipSecOfBeat, onSongClock, type BeatClock } from "../../lib/backingClock";
 import { balanceVolumes } from "../../lib/backingSync";
@@ -184,8 +185,11 @@ export function usePractice(
     [rate, setRate],
   );
 
-  /** Toggles play/pause, restarting from the beginning if the clip already finished. */
-  const togglePlay = useCallback(async () => {
+  /**
+   * Toggles play/pause, restarting from the beginning if the clip already finished. `from` names the control for the
+   * console's activity feed (`result_play`, once per press of play; a scrub's resume is not one).
+   */
+  const togglePlay = useCallback(async (from: "dock" | "rehearse" | "learn_part" = "dock") => {
     if (isPlaying) {
       pause();
       return;
@@ -194,7 +198,8 @@ export function usePractice(
       await seekTo(0);
     }
     play();
-  }, [isPlaying, position, duration, pause, seekTo, play]);
+    logAppEvent("result_play", { from, backing: Boolean(songRef.current?.active), rate });
+  }, [isPlaying, position, duration, pause, seekTo, play, rate]);
 
   return {
     ...player,

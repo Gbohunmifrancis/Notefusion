@@ -1,4 +1,5 @@
 using MediatR;
+using NoteFusion.Application.Activity;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Analytics.Dtos;
 using NoteFusion.Application.Common.Errors;
@@ -31,7 +32,7 @@ public sealed class GetAnalyticsOverviewQueryHandler
     private const int RetentionWeeks = 12;
 
     /// <summary>Entries in the recent-activity feed. Enough to fill the rail without a scrollbar.</summary>
-    private const int RecentActivityCount = 20;
+    private const int RecentActivityCount = 50;
 
     private readonly IApplicationDbContext _db;
     private readonly IDateTimeProvider _clock;
@@ -650,7 +651,40 @@ public sealed class GetAnalyticsOverviewQueryHandler
                 _ => "was asked what's in the way of a first song",
             })));
 
+        // What accounts did as the server saw it (every sign-in, renames, deletes, folders, choirs, checkouts, practice,
+        // settings) and what they did in the phone app, its screen-by-screen trail left to the Activity page's feed.
+        var done = await _db.RealActivities()
+            .Where(a => a.Name != UserActivity.SignUp)
+            .OrderByDescending(a => a.OccurredAtUtc)
+            .Take(RecentActivityCount)
+            .Join(_db.RealUsers(), a => a.UserId, u => u.Id,
+                (a, u) => new { u.Id, u.FullName, u.Email, u.Country, a.Name, a.Detail, a.Client, a.OccurredAtUtc })
+            .ToListAsync(ct);
+        items.AddRange(done.Select(a => new ActivityItemDto(
+            a.Name == UserActivity.SignIn ? "login" : "activity", a.FullName, a.Email, Utc(a.OccurredAtUtc), a.Id, a.Email, a.Country,
+            Sentence(a.Name, a.Detail, a.Client))));
+
+        var quiet = ActivityNames.QuietAppEvents.Concat(ActivityNames.ServerTwinAppEvents).ToArray();
+        var app = await _db.RealAppEvents()
+            .Where(e => !quiet.Contains(e.Name))
+            .OrderByDescending(e => e.OccurredAtUtc)
+            .Take(RecentActivityCount)
+            .Join(_db.RealUsers(), e => e.UserId, u => u.Id,
+                (e, u) => new { u.Id, u.FullName, u.Email, u.Country, e.Name, e.Detail, e.OccurredAtUtc })
+            .ToListAsync(ct);
+        items.AddRange(app.Select(e => new ActivityItemDto(
+            "app", e.FullName, e.Email, Utc(e.OccurredAtUtc), e.Id, e.Email, e.Country, Sentence(e.Name, e.Detail, "phone"))));
+
         return [.. items.OfType<ActivityItemDto>().OrderByDescending(a => a.OccurredAtUtc).Take(RecentActivityCount)];
+    }
+
+    /// <summary>"signed in · with Google · on the phone": the row's title read as the rest of a sentence after the name.</summary>
+    private static string Sentence(string name, string? detail, string? client)
+    {
+        var title = ActivityNames.TitleOrName(name);
+        var line = ActivityNames.DetailLine(detail, client);
+        var lead = title.Length > 0 ? char.ToLowerInvariant(title[0]) + title[1..] : title;
+        return line is null ? lead : $"{lead} · {line}";
     }
 
     private static string FormatMoney(long amountMinor, string currency)

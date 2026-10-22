@@ -192,6 +192,10 @@ public sealed class DeleteAccountRequestCommandHandler
         _db.Transcriptions.RemoveRange(transcriptions);
         // Folder links too: they would otherwise reopen for whoever next registers this address (DeleteMyAccountCommand).
         _db.FolderShares.RemoveRange(await _db.FolderShares.Where(f => f.UserId == user.Id).ToListAsync(ct));
+        // The phone's events and the activity log go with the account too (DeleteMyAccountCommand), leaving one nameless row.
+        _db.AppEvents.RemoveRange(await _db.AppEvents.Where(e => e.UserId == user.Id).ToListAsync(ct));
+        _db.UserActivities.RemoveRange(await _db.UserActivities.Where(e => e.UserId == user.Id).ToListAsync(ct));
+        _db.UserActivities.Add(UserActivity.Record(user.Id, UserActivity.AccountDeleted, "via=web", null, _clock.UtcNow));
         _db.Users.Remove(user);
         await _db.SaveChangesAsync(ct);
 

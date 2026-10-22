@@ -12,6 +12,7 @@ import {
   logLogin,
   logSignUp,
 } from '../lib/analytics';
+import { flushAndForgetAppEvents, forgetAppEvents, logAppEvent } from '../lib/appEvents';
 import type { AuthUser } from '../api/types';
 import { bindOfflineLibrary, clearOfflineLibrary } from '../lib/offlineLibrary';
 import { bindOutbox, clearOutbox } from '../lib/outbox';
@@ -133,6 +134,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // again. The microphone, at least, belongs to the session that just ended.
     Listen.stop();
     void setAnalyticsUserId(null);
+    // The phone's own events kept for that session can no longer be sent with its token, and must not go out under
+    // whoever signs in next.
+    void forgetAppEvents();
     setUserState(null);
   }), []);
 
@@ -173,6 +177,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await tokenStore.saveLastEmail(res.user.email).catch(() => undefined);
         await persistSession(res.accessToken, res.refreshToken, res.user);
         void logLogin('email');
+        logAppEvent('sign_in', { method: 'password' });
       },
       async signUp(fullName, email, password) {
         const res = await authApi.register(fullName, email, password);
@@ -181,12 +186,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await tokenStore.saveLastAuthMethod('email');
         await tokenStore.saveLastEmail(res.email).catch(() => undefined);
         void logSignUp('email');
+        // Logged signed out: it waits on the phone and goes with the account once its code is entered.
+        logAppEvent('sign_up', { method: 'password' });
         return res.email;
       },
       async verifyEmail(email, code) {
         const res = await authApi.verifyEmail(email, code);
         await persistSession(res.accessToken, res.refreshToken, res.user);
         void logLogin('email');
+        logAppEvent('sign_in', { method: 'email_code' });
       },
       /**
        * Opens Google's consent screen and exchanges the returned ID token for a
@@ -209,6 +217,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           session.user,
         );
         void logLogin('google');
+        // The server alone knows whether this Google account is new; the console reads that off the account.
+        logAppEvent('sign_in', { method: 'google' });
       },
       async reauthWithGoogle() {
         // Force the chooser: the SDK would otherwise hand back the cached account
@@ -219,7 +229,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Both before the tokens go: the listener belongs to this session, and unregistering the
         // push token is an authenticated call. Neither failure stops the sign-out.
         Listen.stop();
-        await unregisterPushAsync();
+        // This account's events go now, while its token still works (2 s at most), and the rest are forgotten.
+        logAppEvent('sign_out');
+        await Promise.all([unregisterPushAsync(), flushAndForgetAppEvents()]);
         const refresh = await tokenStore.getRefresh();
         if (refresh) await authApi.logout(refresh).catch(() => undefined);
         await tokenStore.clear();

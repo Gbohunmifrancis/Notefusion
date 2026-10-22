@@ -264,6 +264,7 @@ export function SettingsScreen({ navigation }: Props) {
 
   async function toggleHaptics(on: boolean) {
     setHapticsOn(on);
+    logAppEvent("setting_changed", { setting: "haptics", on });
     // Persist before the demo buzz below: `play` reads the module cache, which this sets.
     await haptics.setHapticsEnabled(on);
     // Turning it on demonstrates itself. Turning it off obviously can't.
@@ -272,7 +273,19 @@ export function SettingsScreen({ navigation }: Props) {
 
   function toggleDataSaver(on: boolean) {
     void setDataSaver(on);
+    // Firebase keeps its own name; the console reads every switch here as one `setting_changed`.
     void logAnalyticsEvent("data_saver", { on });
+    logAppEvent("setting_changed", { setting: "data_saver", on });
+  }
+
+  function chooseTheme(next: ThemeMode) {
+    setMode(next);
+    logAppEvent("setting_changed", { setting: "theme", value: next });
+  }
+
+  function toggleDohSuggestions(on: boolean) {
+    void setDohSuggestions(on);
+    logAppEvent("setting_changed", { setting: "doh_suggestions", on });
   }
 
   function confirmClearOffline() {
@@ -363,7 +376,7 @@ export function SettingsScreen({ navigation }: Props) {
             <Segmented<ThemeMode>
               label="Theme"
               value={mode}
-              onChange={setMode}
+              onChange={chooseTheme}
               options={[
                 { value: "dark", label: "Night", icon: "night" },
                 { value: "light", label: "Day", icon: "day" },
@@ -383,7 +396,7 @@ export function SettingsScreen({ navigation }: Props) {
           icon="doh"
           label="Doh's suggestions"
           hint="A card on Home now and then"
-          toggle={{ value: dohSuggestions, onChange: (on) => void setDohSuggestions(on) }}
+          toggle={{ value: dohSuggestions, onChange: toggleDohSuggestions }}
         />
       </Group>
 
@@ -462,7 +475,13 @@ export function SettingsScreen({ navigation }: Props) {
               ? "Sheets you open are kept on this phone"
               : `${usage.sheets} ${usage.sheets === 1 ? "sheet" : "sheets"} on this phone · ${formatBytes(usage.bytes)}`
           }
-          toggle={{ value: offline.keepAll, onChange: (on) => void setKeepAllOffline(on) }}
+          toggle={{
+            value: offline.keepAll,
+            onChange: (on) => {
+              void setKeepAllOffline(on);
+              logAppEvent("setting_changed", { setting: "keep_all_offline", on });
+            },
+          }}
         />
         <Row
           icon="hymns"
