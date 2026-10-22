@@ -139,16 +139,26 @@ recurring plan — a subscription checkout is otherwise rejected with `SUBSCRIPT
 (403), which is exactly the wall the lifetime tier exists to route around
 (`docs/geo-billing-plan.md`).
 
+Only `checkout.completed`, `collection.succeeded` and `checkout.expired` are handed to the
+webhook worker, which re-reads the session for each (`BachsWebhookValidator.Settles`). Every
+other event Bachs is subscribed to (`collection.failed` on a session still open, payouts,
+disputes, subscription notices) is verified, kept in the inbox already `Processed` and answered
+200, so it never retries into a parked failure. A delivery the inbox could not store is answered
+503 — Bachs retries a 5xx and drops a 4xx — and the signature is checked over the request's bytes
+as received. The readiness log also says at startup when `Bachs__SecretKey` and `Bachs__BaseUrl`
+belong to different environments (a sandbox key against the live host or the reverse): every
+checkout would be refused with nothing more than "could not open the payment page".
+
 > Two known gaps, both fail-safe rather than fail-open:
 >
-> - **`collection.failed` is not worth subscribing yet.** A declined payment leaves the
->   session `open`, which is not a terminal Bachs state, so the event has no verified
->   outcome to record: it would retry and park as `Failed` in the inbox. Nothing is
->   fulfilled either way, and the reconciliation worker closes the transaction out.
-> - **Subscription renewals (`invoice.paid`) are not fulfilled yet.** That event carries no
+> - **A declined payment (`collection.failed`) is acknowledged, not recorded.** It leaves the
+>   session `open`, which is not a terminal Bachs state, so there is no verified outcome to
+>   write; nothing is fulfilled either way, and the reconciliation worker closes the
+>   transaction out.
+> - **Subscription renewals (`invoice.paid`) are not fulfilled.** That event carries no
 >   reference of any kind and can only be correlated by subscription id, which the webhook
->   handler does not do. Renewals will park as `Failed` in the inbox. First-cycle checkouts
->   are unaffected.
+>   handler does not do; it is acknowledged like any other non-settling event. First-cycle
+>   checkouts are unaffected.
 >
 > A log line reading `disagrees with its own charge about the amount` (or `the currency`)
 > means the checkout session and the charge inside it reported two different figures. Bachs'

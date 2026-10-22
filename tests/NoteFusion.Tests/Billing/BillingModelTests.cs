@@ -98,6 +98,33 @@ public class BillingModelTests
         Assert.Empty(problems);
     }
 
+    [Theory]
+    [InlineData("sk_sandbox_bachs", "https://api.bachs.io", "sandbox key")]
+    [InlineData("sk_live_bachs", "https://sandbox-api.bachs.io", "live key")]
+    public void A_key_from_one_environment_against_the_other_hosts_url_is_reported_at_startup(string key, string baseUrl, string said)
+    {
+        // Going live is a key swap AND a host swap; one without the other refuses every checkout with nothing
+        // more than "could not open the payment page", so the readiness log names it, without the key.
+        var config = Production();
+        config["Bachs:SecretKey"] = key;
+        config["Bachs:BaseUrl"] = baseUrl;
+        using var sp = Build(config);
+
+        var problems = BillingReadiness.Check(Catalogue, sp.GetRequiredService<IPaymentGatewayFactory>(), sp.GetService<BachsOptions>());
+
+        var problem = Assert.Single(problems);
+        Assert.Contains(said, problem);
+        Assert.Contains(baseUrl, problem);
+        Assert.DoesNotContain(key, problem);
+    }
+
+    [Theory]
+    [InlineData("sk_sandbox_bachs", "https://sandbox-api.bachs.io")]
+    [InlineData("sk_live_bachs", "https://api.bachs.io")]
+    [InlineData("some_other_shape", "https://api.bachs.io")] // an unknown prefix gives no verdict
+    public void A_key_and_host_from_the_same_environment_pass(string key, string baseUrl)
+        => Assert.Null(new BachsOptions { SecretKey = key, BaseUrl = baseUrl }.EnvironmentMismatch);
+
     [Fact]
     public void A_currency_suffixed_plan_code_falls_back_to_the_bare_product_mapping()
     {

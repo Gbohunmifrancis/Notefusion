@@ -1,3 +1,4 @@
+using System.Text;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -47,30 +48,37 @@ public sealed class PaymentWebhooksController : ControllerBase
             return NotFound();
         }
 
-        // Read the body verbatim. Signatures are byte-exact, so we must NOT let model binding
-        // re-serialize it — that is why there is no [FromBody] parameter here.
-        string rawBody;
-        using (var reader = new StreamReader(Request.Body))
-            rawBody = await reader.ReadToEndAsync(ct);
+        // Read the body verbatim, as bytes. Signatures are byte-exact, so we must NOT let model binding
+        // re-serialize it — that is why there is no [FromBody] parameter here — and the validator is handed
+        // the bytes themselves, not a string decoded from them.
+        byte[] rawBytes;
+        using (var buffer = new MemoryStream())
+        {
+            await Request.Body.CopyToAsync(buffer, ct);
+            rawBytes = buffer.ToArray();
+        }
+        var rawBody = Encoding.UTF8.GetString(rawBytes);
 
         var headers = Request.Headers.ToDictionary(
             h => h.Key, h => h.Value.ToString(), StringComparer.OrdinalIgnoreCase);
 
         // Validate signature FIRST. An unsigned or mis-signed request never reaches the inbox.
-        var validation = validator.Validate(new WebhookRequest(rawBody, headers));
+        var validation = validator.Validate(new WebhookRequest(rawBody, headers, rawBytes));
         if (validation.IsFailure)
             return StatusCode(ApiControllerBase.StatusFor(validation.Error.Type), new ApiError(validation.Error.Code, validation.Error.Message));
 
         var message = validation.Value;
 
         var ingest = await _sender.Send(
-            new IngestWebhookCommand(parsed, message.ProviderEventId, message.EventType, message.PaymentReference, rawBody),
+            new IngestWebhookCommand(
+                parsed, message.ProviderEventId, message.EventType, message.PaymentReference, rawBody, message.Settles),
             ct);
 
         // A persisted event (including a recognised duplicate) is a 200 so the provider stops retrying;
-        // the worker takes it from here.
+        // the worker takes it from here. One we could not store is our failure, not the provider's: a 503,
+        // which every provider retries, where a 4xx would make them drop a delivery we never kept.
         return ingest.IsSuccess
             ? Ok(new { received = true })
-            : StatusCode(ApiControllerBase.StatusFor(ingest.Error.Type), new ApiError(ingest.Error.Code, ingest.Error.Message));
+            : StatusCode(StatusCodes.Status503ServiceUnavailable, new ApiError(ingest.Error.Code, ingest.Error.Message));
     }
 }

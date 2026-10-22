@@ -334,6 +334,43 @@ public class BachsWebhookValidatorTests
     }
 
     /// <summary>Signs a body the way Bachs does, for cases where a fixed vector would be unreadable.</summary>
+    [Theory]
+    [InlineData("checkout.completed", true)]
+    [InlineData("collection.succeeded", true)]
+    [InlineData("checkout.expired", true)]
+    [InlineData("collection.failed", false)] // the session stays open: nothing terminal to record
+    [InlineData("payout.paid", false)]
+    [InlineData("customer.subscription.updated", false)]
+    [InlineData("dispute.opened", false)]
+    public void Only_an_event_that_can_settle_a_checkout_is_handed_to_the_worker(string type, bool settles)
+    {
+        var body = $$$"""{"id":"evt_t","type":"{{{type}}}","data":{"reference":"NF_abc"}}""";
+
+        var result = Validator().Validate(Request(body: body, signature: Sign(body)));
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(settles, result.Value.Settles);
+    }
+
+    [Fact]
+    public void The_signature_is_checked_over_the_bytes_received_not_the_decoded_string()
+    {
+        // The controller hands over the wire bytes beside the string it decoded from them. Given both, the bytes
+        // are what is hashed: a string that no longer matches them must not verify, and the bytes alone must.
+        var bytes = System.Text.Encoding.UTF8.GetBytes(Body);
+        var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["X-Bachs-Signature"] = ValidSignature,
+            ["X-Bachs-Timestamp"] = Timestamp,
+        };
+
+        Assert.True(Validator().Validate(new WebhookRequest(Body, headers, bytes)).IsSuccess);
+
+        var altered = Body.Replace("NF_abc", "NF_xyz");
+        Assert.True(Validator().Validate(new WebhookRequest(altered, headers, bytes)).IsSuccess); // bytes win
+        Assert.False(Validator().Validate(new WebhookRequest(Body, headers, System.Text.Encoding.UTF8.GetBytes(altered))).IsSuccess);
+    }
+
     private static string Sign(string body)
     {
         using var hmac = new System.Security.Cryptography.HMACSHA256(

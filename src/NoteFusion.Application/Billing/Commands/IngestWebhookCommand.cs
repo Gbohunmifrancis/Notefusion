@@ -14,12 +14,17 @@ namespace NoteFusion.Application.Billing.Commands;
 /// event id) returns the existing row's id instead of inserting a duplicate, which is what makes
 /// downstream processing exactly-once. Returns the inbox row id so the caller can enqueue it.
 /// </summary>
+/// <param name="Settles">
+/// False for an event that cannot settle a payment (see <c>WebhookMessage.Settles</c>): it is kept for the
+/// record but stored already handled, so the worker never retries it into a parked failure.
+/// </param>
 public sealed record IngestWebhookCommand(
     PaymentProvider Provider,
     string ProviderEventId,
     string EventType,
     string? PaymentReference,
-    string Payload) : IRequest<Result<Guid>>;
+    string Payload,
+    bool Settles = true) : IRequest<Result<Guid>>;
 
 public sealed class IngestWebhookCommandHandler : IRequestHandler<IngestWebhookCommand, Result<Guid>>
 {
@@ -42,6 +47,11 @@ public sealed class IngestWebhookCommandHandler : IRequestHandler<IngestWebhookC
         var e = WebhookEvent.Receive(
             request.Provider, request.ProviderEventId, request.EventType,
             request.PaymentReference, request.Payload, _clock.UtcNow);
+
+        // Acknowledged, not processed: nothing to verify or fulfil, so it is handled the moment it is kept.
+        if (!request.Settles)
+            e.MarkProcessed(_clock.UtcNow);
+
         _db.WebhookEvents.Add(e);
 
         try
