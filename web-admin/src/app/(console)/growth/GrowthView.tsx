@@ -16,6 +16,7 @@ import { RangePicker, type Range } from "@/components/RangePicker";
 import { Segmented } from "@/components/Segmented";
 import { EmptyView, StateView } from "@/components/StateView";
 import { useChartPalette } from "@/lib/chart";
+import { REASON_LABELS } from "@/lib/checkoutExits";
 import { addDays, formatCount, formatInstantDate, formatPercent, reportingToday, UNKNOWN } from "@/lib/format";
 
 /* Growth: the numbers the subscription business turns on that no other page had — renewals (nothing renews by
@@ -314,14 +315,6 @@ const PROVIDERS = [
   { value: "paystack", label: "Paystack" },
 ] as const satisfies readonly { value: CheckoutExitProvider; label: string }[];
 
-const REASON_LABELS: Record<CheckoutExitReason, string> = {
-  currency: "The price wasn't in my currency",
-  cardDeclined: "My card was declined",
-  slow: "The page was slow or didn't load",
-  tooExpensive: "It costs too much",
-  justLooking: "I'm just looking",
-  somethingElse: "Something else",
-};
 
 /**
  * "Why checkouts end unpaid" (board g-checkout 05): opened → came back unpaid → answered, the answers to "What
@@ -437,6 +430,9 @@ function CheckoutExitsCard({ d, offset }: { d: Growth; offset: number }) {
             : provider === "paystack"
               ? `${pct(rate(count("cardDeclined"), s.answered))} of answers are a declined card. `
               : `${pct(rate(moneyAnswers, s.answered))} of answers are the currency or a declined card. `}
+        <Link href="/checkouts" className="font-medium text-brand hover:underline">
+          See who, one by one →
+        </Link>{" "}
         {notes.length > 0 && (
           <button
             type="button"

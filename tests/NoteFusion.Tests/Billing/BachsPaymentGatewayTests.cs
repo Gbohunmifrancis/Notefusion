@@ -638,12 +638,30 @@ public class BachsPaymentGatewayTests
     }
 
     [Theory]
+    // Bachs' processing fee passed on to the payer: the one-song checkout priced at $1.99 was put to the card as
+    // $2.49. They paid at least our price, so it verifies at the price we recorded.
+    [InlineData("1.99", "2.49", 199)]
+    [InlineData("29.00", "29.87", 2900)]
+    public async Task A_charge_with_the_fee_on_top_verifies_at_the_session_price(
+        string sessionAmount, string chargeAmount, long expectedMinor)
+    {
+        var handler = StubHttpMessageHandler.Returning(
+            HttpStatusCode.OK, SessionWithCharge(sessionAmount, chargeAmount, "USD"));
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value.Succeeded);
+        Assert.Equal(expectedMinor, result.Value.AmountMinor);
+    }
+
+    [Theory]
     // Bachs' own documented example shows a session total and a charge amount that differ, while warning
-    // against assuming they are equal. In the same currency they should agree; when they do not, we do not
-    // know which one the customer was charged, and fulfilling on a guess is how a subscription gets granted
-    // for the wrong money.
-    [InlineData("29.00", "50.00", "USD")]
+    // against assuming they are equal. A charge below the session's price in the same currency is one we cannot
+    // read: we do not know which one the customer was charged, and fulfilling on a guess is how a subscription
+    // gets granted for the wrong money.
     [InlineData("50.00", "29.00", "USD")]
+    [InlineData("2.49", "1.99", "USD")]
     public async Task A_charge_that_contradicts_its_session_is_escalated(
         string sessionAmount, string chargeAmount, string chargeCurrency)
     {

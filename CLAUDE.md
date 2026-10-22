@@ -604,7 +604,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   web `assets/checkout-exit.js` + `checkout-why.js`): `POST /api/billing/checkouts/{reference}/exit` re-verifies, records the
   return and seconds open and the one-tap answer on a `CheckoutExit` row (goes with the account), and asks only on the
   provider's fresh word; every verification keeps the page's strongest signal (`PaymentTransaction.ProviderAttempt`, never
-  read by fulfilment) for Growth's "Why checkouts end unpaid".
+  read by fulfilment) for Growth's "Why checkouts end unpaid" (anonymous counts) and the console's Unpaid checkouts page
+  (`/checkouts`, `GET /api/admin/analytics/unpaid-checkouts`, `GetUnpaidCheckoutsQuery`: every checkout opened and not paid, one
+  row each with the account, what the page saw, the answer and whether they paid later). A same-currency Bachs charge above
+  the session's price (the processing fee passed to the payer) verifies at the session's price; one below it is escalated.
 - Founder outreach (`Application/Outreach`, `Infrastructure/Outreach`): an hourly worker writes customer-research
   notes from the founder (email with Reply-To the founder + a one-line push when a device is registered) to four
   segments in priority order — unpaid checkout ≥3 days old (and ≥2 days after `RemindAbandonedCheckouts`, which in
