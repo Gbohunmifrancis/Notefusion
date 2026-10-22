@@ -229,6 +229,9 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
             Separate = request.Separate,
             AudioPreview = request.AudioPreview,
             KeyboardTranspose = request.KeyboardTranspose,
+            // Pro reads the whole file up to six minutes, as it does a linked song, and so does a song paid for with a
+            // bought transcription; anything else its first three minutes.
+            MaxSeconds = isPro || (request.Separate && paidByCredit) ? SongCredits.ProMaxSeconds : FreeTier.UploadSeconds,
             // Pro work goes to the front of the worker's queue and takes its fast lane.
             Priority = isPro ? TranscribePriority.High : TranscribePriority.Normal
         };

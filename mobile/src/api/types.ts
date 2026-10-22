@@ -213,7 +213,7 @@ export interface TranscriptionResult {
   /**
    * False when the worker skipped its pyin refinement stage. No longer reachable
    * by recording a long clip: the worker's pyin budget now equals the duration it
-   * accepts (180 s, which MAX_RECORD_SEC in RecordScreen mirrors), so the two
+   * reads of a free account's file (180 s, which MAX_RECORD_SEC in RecordScreen mirrors), so the two
    * remaining causes are a failed decode and a clip with no voiced frame at all.
    *
    * Worth surfacing rather than swallowing: with that stage dark, the worker's

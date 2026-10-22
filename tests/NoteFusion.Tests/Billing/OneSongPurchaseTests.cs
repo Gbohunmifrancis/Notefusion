@@ -200,6 +200,7 @@ public class OneSongPurchaseTests
 
         Assert.True(result.IsSuccess);
         Assert.True(api.LastOptions!.Separate);
+        Assert.Equal(SongCredits.ProMaxSeconds, api.LastOptions.MaxSeconds); // the whole song, as a linked one
     }
 
     [Fact]

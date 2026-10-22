@@ -56,7 +56,7 @@ services:
     restart: always
     logging: *default-logging
     environment:
-      NF_MAX_CLIP_SECONDS: ${NF_MAX_CLIP_SECONDS:-180}
+      NF_MAX_CLIP_SECONDS: ${NF_MAX_CLIP_SECONDS:-360}
       NF_MAX_UPLOAD_BYTES: ${NF_MAX_UPLOAD_BYTES:-26214400}
       NF_JOB_TTL_SECONDS: ${NF_JOB_TTL_SECONDS:-900}
       NF_API_KEY: ${TRANSCRIPTION_API_KEY}

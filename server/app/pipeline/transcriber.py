@@ -44,6 +44,7 @@ import numpy as np
 from app.config import TEMP_PREFIX, settings
 from app.pipeline.ffmpeg_input import INPUT_GUARD
 from app.pipeline import chords
+from app.pipeline import downbeats
 from app.pipeline import solfa
 from app.pipeline import solfa_render
 from app.pipeline import vocal
@@ -3818,6 +3819,7 @@ def _transcribe_inner(
     harmony: bool = False,
     keyboard_transpose: int = 0,
     chord_source: Path | None = None,
+    song_start: bool = True,
 ) -> TranscriptionResult:
     target_path, is_temp_wav = _ensure_wav_path(audio_path)
     tempo_path, tempo_is_temp = (None, False)
@@ -3841,7 +3843,7 @@ def _transcribe_inner(
             fast=fast,
             tempo_source=tempo_path,
             audio_preview=audio_preview, harmony=harmony,
-            keyboard_transpose=keyboard_transpose, chord_source=chord_path,
+            keyboard_transpose=keyboard_transpose, chord_source=chord_path, song_start=song_start,
         )
     finally:
         if is_temp_wav:
@@ -3864,6 +3866,7 @@ def transcribe(
     harmony: bool = False,
     keyboard_transpose: int = 0,
     chord_source: Path | None = None,
+    song_start: bool = True,
 ) -> TranscriptionResult:
     """Audio file -> ``TranscriptionResult``.
 
@@ -3897,6 +3900,10 @@ def transcribe(
     tempo and beat phase from ``tempo_source``, and ``beat_origin_sec`` ties the two
     back to the audio's own clock.
 
+    ``song_start`` says the recording begins where the song does (an upload, or a link's
+    section from 0 s): a song's music starts on a downbeat, which places its bar lines
+    (``downbeats``).  False for a section cut from inside a song.
+
     ``fast`` is the Pro lane: in melody mode the voice engine is run alone and Basic
     Pitch is skipped, which is the whole of the inference cost on a hummed clip (the
     ONNX pass is 2-4 s per 30 s of audio; pyin is already paid for either way).  It
@@ -3923,7 +3930,7 @@ def transcribe(
         res = _transcribe_inner(
             audio_path, mode, key_override, tempo_override, time_signature, progress, fast=fast,
             tempo_source=tempo_source, audio_preview=audio_preview, harmony=harmony,
-            keyboard_transpose=keyboard_transpose, chord_source=chord_source,
+            keyboard_transpose=keyboard_transpose, chord_source=chord_source, song_start=song_start,
         )
         return res
     except Exception as e:
@@ -5187,6 +5194,64 @@ def _choir_parts(
     return parts, parts_musicxml
 
 
+# ── The band in a song's vocal stem (``_gate_bleed``) ─────────────────────────
+# A frame this far under the song's typical vocal-to-instrumental level is the band leaking into
+# the vocal stem, not the singer.  On the studio songs' dev half the singer's notes sit at a
+# median of -3 dB against the instrumental (5% under -13), the intro's leaked notes at -22.
+BLEED_BELOW_DB = 14.0
+# Frames the gate stays open either side of a sung one, so a note's soft edges are kept.
+BLEED_HOLD_FRAMES = 3
+# Only a stretch this long under the floor is gated: the band alone, an intro or a break.  A
+# sung note dipping under a loud bar for a moment is not (on the real takes' model stems 1-12%
+# of the frames inside sung notes fall under the floor, in short dips; the intros' all do).
+BLEED_MIN_SEC = 0.5
+_BLEED_HOP = 512
+
+
+def _gate_bleed(vocal_y: np.ndarray, band_y: np.ndarray, sr: int) -> np.ndarray:
+    """A separated song's vocal stem with the frames where it is only the band leaking through
+    silenced: those ``BLEED_BELOW_DB`` under the song's typical vocal-to-instrumental level, read
+    over the frames where the stem is loud (the singing).  An a cappella stem, whose instrumental
+    is silent, is never gated."""
+    n = min(vocal_y.size, band_y.size)
+    if n < 8 * _BLEED_HOP:
+        return vocal_y
+    frames = n // _BLEED_HOP
+    v = vocal_y[: frames * _BLEED_HOP].reshape(frames, _BLEED_HOP)
+    b = band_y[: frames * _BLEED_HOP].reshape(frames, _BLEED_HOP)
+    v_db = 10.0 * np.log10(np.mean(v.astype(np.float64) ** 2, axis=1) + 1e-12)
+    b_db = 10.0 * np.log10(np.mean(b.astype(np.float64) ** 2, axis=1) + 1e-12)
+    ratio = v_db - b_db
+    singing = v_db >= float(np.percentile(v_db, 95)) - 15.0
+    if singing.sum() < 8:
+        return vocal_y
+    floor = float(np.median(ratio[singing])) - BLEED_BELOW_DB
+    # Only where the band is sounding is there anything to leak: a silent instrumental (a song
+    # sung a cappella, the gap before the band comes in) gates nothing.
+    sounding = b_db > max(float(np.percentile(b_db, 95)) - 30.0, -60.0)
+    open_ = (ratio >= floor) | ~sounding
+    # Held open around every sung frame.
+    for k in range(1, BLEED_HOLD_FRAMES + 1):
+        open_[k:] |= open_[:-k].copy()
+        open_[:-k] |= open_[k:].copy()
+    # ...and through every closed stretch too short to be the band on its own.
+    shortest = int(np.ceil(BLEED_MIN_SEC * sr / _BLEED_HOP))
+    edges = np.flatnonzero(np.diff(np.concatenate(([1], open_.astype(np.int8), [1]))))
+    for a, b in zip(edges[::2], edges[1::2]):
+        if b - a < shortest:
+            open_[a:b] = True
+    if open_.all():
+        return vocal_y
+    gain = np.repeat(open_.astype(np.float32), _BLEED_HOP)
+    # A frame's ramp, so a gate edge is not an onset (the ends held, so they are not ramps).
+    half = _BLEED_HOP // 2
+    ramp = np.ones(_BLEED_HOP, dtype=np.float32) / _BLEED_HOP
+    gain = np.convolve(np.pad(gain, (half, _BLEED_HOP - half - 1), mode="edge"), ramp, mode="valid").astype(np.float32)
+    out = vocal_y.astype(np.float32, copy=True)
+    out[: gain.size] *= gain
+    return out
+
+
 # ── Meter and bar phase (``_meter_and_pickup``) ───────────────────────────────
 # Read off the quantized line, in beats, after the tempo and the beat phase are settled.
 # The cue is durational accent: a note held longer than its neighbours (counting the breath
@@ -5240,9 +5305,9 @@ def _downbeat_share(starts: Sequence[float], iois: Sequence[float], beats: int) 
     )
 
 
-def _bar_phase(starts: Sequence[float], iois: Sequence[float], beats: int) -> float:
-    """The offset, in beats (a multiple of a half), that puts the bar lines where the held notes
-    say they go: ``start + offset`` is each note's place on a grid whose bars start at 0."""
+def _bar_scores(starts: Sequence[float], iois: Sequence[float], beats: int) -> dict[float, float]:
+    """How much of the held length each bar offset (a multiple of a half beat) puts on strong
+    beats: ``start + offset`` is each note's place on a grid whose bars start at 0."""
     weights = _BAR_WEIGHTS[beats]
     total = float(sum(iois[:-1])) or 1.0
 
@@ -5254,17 +5319,44 @@ def _bar_phase(starts: Sequence[float], iois: Sequence[float], beats: int) -> fl
                 acc += x * weights[int(round(p)) % beats]
         return acc / total + (PICKUP_PRIOR if offset == 0.0 else 0.0)
 
-    return max((k / 2.0 for k in range(2 * beats)), key=lambda o: (score(o), -o))
+    return {k / 2.0: score(k / 2.0) for k in range(2 * beats)}
+
+
+def _bar_phase(starts: Sequence[float], iois: Sequence[float], beats: int) -> float:
+    """The offset, in beats (a multiple of a half), that puts the bar lines where the held notes
+    say they go: ``start + offset`` is each note's place on a grid whose bars start at 0."""
+    scores = _bar_scores(starts, iois, beats)
+    return max(scores, key=lambda o: (scores[o], -o))
+
+
+def _band_bar_phase(starts: Sequence[float], iois: Sequence[float], beats: int, band: "downbeats.BandAccents") -> float:
+    """The offset whose bar lines fall where the band marks its downbeats (``downbeats``): its
+    salience there, a bar line where the music starts, and the singer's accents as a tie-break."""
+    voice = _bar_scores(starts, iois, beats)
+    spread = float(np.std(list(voice.values())))
+    mean = float(np.mean(list(voice.values())))
+
+    def score(offset: float) -> float:
+        v = (voice[offset] - mean) / spread if spread > 1e-9 else 0.0
+        return (band.score(beats, offset) + (downbeats.START_WEIGHT if band.starts_bar(beats, offset) else 0.0)
+                + downbeats.VOICE_WEIGHT * v)
+
+    return max(voice, key=lambda o: (score(o), -o))
 
 
 def _meter_and_pickup(
-    starts: Sequence[float], durs: Sequence[float], time_signature: str | None
+    starts: Sequence[float], durs: Sequence[float], time_signature: str | None,
+    band: "downbeats.BandAccents | None" = None,
 ) -> tuple[str, float]:
     """(time signature, pickup offset in beats) for a line already on the beat grid.
 
     ``time_signature`` given is kept; only the bar phase is read then.  Otherwise 3/4 is
     written when a three-beat bar puts clearly more of the held length on its downbeats than a
     four-beat bar does, each against what chance gives it (``TRIPLE_LIFT``), and 4/4 when not.
+
+    A song's ``band``, when it marks its downbeats plainly (``BandAccents.clear``), decides
+    both instead: 3/4 when a three-beat bar's downbeats stand out more than a four-beat bar's,
+    and the offset whose bar lines fall on them (``_band_bar_phase``).
     """
     order = sorted(range(len(starts)), key=lambda i: starts[i])
     starts = [float(starts[i]) for i in order]
@@ -5272,8 +5364,12 @@ def _meter_and_pickup(
     if len(starts) < METER_MIN_NOTES:
         return time_signature or "4/4", 0.0
     iois = _iois(starts, durs)
+    if band is not None and not band.clear():
+        band = None
     chosen = time_signature
-    if chosen is None:
+    if chosen is None and band is not None:
+        chosen = "3/4" if max(band.scores(3).values()) > max(band.scores(4).values()) else "4/4"
+    elif chosen is None:
         triple = 3.0 * _downbeat_share(starts, iois, 3)
         quadruple = 4.0 * _downbeat_share(starts, iois, 4)
         chosen = "3/4" if triple > TRIPLE_LIFT * quadruple else "4/4"
@@ -5284,6 +5380,8 @@ def _meter_and_pickup(
     beats = num * 4.0 / den
     if beats not in (3.0, 4.0):
         return chosen, 0.0
+    if band is not None:
+        return chosen, _band_bar_phase(starts, iois, int(beats), band)
     return chosen, _bar_phase(starts, iois, int(beats))
 
 
@@ -5380,6 +5478,7 @@ def _transcribe_wav(
     harmony: bool = False,
     keyboard_transpose: int = 0,
     chord_source: Path | None = None,
+    song_start: bool = True,
 ) -> TranscriptionResult:
     from music21 import key as m21key
     from music21 import meter, stream
@@ -5431,6 +5530,17 @@ def _transcribe_wav(
     # slides onto notes are folded into them (``vocal.absorb_scoops``) and an unsure doh is
     # settled by its band (step 7c).  A hum, or a song read from its mixture, keeps the rest.
     song_stem = mode == "melody" and tempo_source is not None
+
+    # The band leaking into a song's vocal stem is silenced before anything reads a pitch from
+    # it (``_gate_bleed``): read as the tune it began the sheet before the singer did, and the
+    # pitch tracker followed the intro's bass into the singer's first notes.
+    band_y: np.ndarray | None = None
+    if song_stem and chord_source is not None and settings.song_bleed:
+        try:
+            band_y = _load_audio(chord_source, sr=sr)[0]
+            y = _gate_bleed(y, band_y, sr)
+        except Exception as exc:  # noqa: BLE001 - the stem is read as it came
+            print(f"[notefusion] bleed gate skipped: {exc!r}", flush=True)
 
     # The fast lane (see ``transcribe``) tries the voice engine before paying for Basic
     # Pitch at all, and skips it when the engine found the line.
@@ -5810,8 +5920,19 @@ def _transcribe_wav(
     # three beats read at 1.5x the tempo is four and a half.
     pickup = 0.0
     if mode == "melody" and settings.meter_detect:
-        time_signature, pickup = _meter_and_pickup(
-            [float(n.offset) for n in s.notes], [float(n.duration.quarterLength) for n in s.notes], time_signature)
+        offsets = [float(n.offset) for n in s.notes]
+        lengths = [float(n.duration.quarterLength) for n in s.notes]
+        # A song's band says where its bars start better than its singer does (``downbeats``).
+        band = None
+        if song_stem and chord_source is not None and settings.band_bars and offsets:
+            try:
+                if band_y is None:
+                    band_y = _load_audio(chord_source, sr=sr)[0]
+                band = downbeats.read(band_y, sr, beat_origin, bpm, min(offsets),
+                                      max(o + d for o, d in zip(offsets, lengths)), song_start=song_start)
+            except Exception as exc:  # noqa: BLE001 - the singer's accents still place the bars
+                print(f"[notefusion] band bars skipped: {exc!r}", flush=True)
+        time_signature, pickup = _meter_and_pickup(offsets, lengths, time_signature, band=band)
         if pickup:
             s.shiftElements(pickup, classFilterList=[m21note.Note])
             # Beat 0 is where the first bar starts, a pickup's length before the first note.

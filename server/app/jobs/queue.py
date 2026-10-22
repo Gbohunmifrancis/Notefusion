@@ -479,7 +479,8 @@ class JobQueue:
     def _separate_and_transcribe(self, job: Job, wav: Path, work_dir: Path, mode: str,
                                  key: str | None, tempo: int | None, time_signature: str | None,
                                  progress_from: float, audio_preview: bool = True,
-                                 harmony: bool = False, keyboard_transpose: int = 0) -> TranscriptionResult:
+                                 harmony: bool = False, keyboard_transpose: int = 0,
+                                 song_start: bool = True) -> TranscriptionResult:
         """Isolate the vocal, transcribe it with the beat read from the mix, keep the backing.
 
         Shared by uploaded songs and linked ones. ``progress_from`` is where the job's
@@ -535,7 +536,7 @@ class JobQueue:
                 fast=job.priority == PRIORITY_HIGH and stem,
                 tempo_source=wav if stem else None,
                 audio_preview=audio_preview, harmony=harmony,
-                keyboard_transpose=keyboard_transpose, chord_source=chord_source)
+                keyboard_transpose=keyboard_transpose, chord_source=chord_source, song_start=song_start)
 
         if not separated:
             result = read(wav, False)
@@ -597,7 +598,9 @@ class JobQueue:
 
                 job.result = self._separate_and_transcribe(
                     job, wav, work_dir, mode, key, tempo, time_signature, progress_from=0.10,
-                    audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose)
+                    audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose,
+                    # A section from inside the song, or the store's preview, starts mid-bar.
+                    song_start=not fetched.preview and not fetched.start_seconds)
                 job.result.source = job.source
                 job.result.song_duration_sec = round(song_seconds, 1)
                 job.result.truncated = fetched.truncated

@@ -3232,7 +3232,10 @@
         ? "Free preview: the first 30 seconds of " + formatSec(result.songDurationSec) + ". Create a free account for more."
         : isPro()
           ? "This song runs " + formatSec(result.songDurationSec) + "; the first six minutes were transcribed."
-          : "Free preview: the first minute of a " + formatSec(result.songDurationSec) + " song. Upgrade to Pro for the whole song and the download.");
+          : result.source
+            ? "Free preview: the first minute of a " + formatSec(result.songDurationSec) + " song. Upgrade to Pro for the whole song and the download."
+            // A free account's file is read for three minutes; Pro reads six.
+            : "This recording runs " + formatSec(result.songDurationSec) + "; the first three minutes were transcribed. Pro transcribes up to six minutes.");
     } else hide(trunc);
 
     renderHymnAsk(result);
