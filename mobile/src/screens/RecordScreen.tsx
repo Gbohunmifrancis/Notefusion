@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Animated, BackHandler, Linking, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { ActivityIndicator, Animated, BackHandler, Linking, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   useAudioRecorder,
@@ -25,6 +25,7 @@ import { Mark } from "../components/night/NightUI";
 import { LevelTrace } from "../components/record/LevelTrace";
 import { RecordOptionsSheet, type ModeOption } from "../components/record/RecordOptionsSheet";
 import { showDialog } from "../lib/dialog";
+import { withBusy } from "../lib/busy";
 import { markPractisedToday } from "../lib/practiceReminder";
 import * as haptics from "../lib/haptics";
 import {
@@ -411,6 +412,8 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
   const tick = useRef<ReturnType<typeof setInterval> | null>(null);
   /** True from a Start tap until the recorder is running (or has failed to). */
   const startingRef = useRef(false);
+  /** The same, drawn: the button's spinner and "Getting the mic ready…" while the recorder gets ready. */
+  const [starting, setStarting] = useState(false);
   const lastSubmitArgs = useRef<{uri: string, name: string, opts: any} | null>(null);
   /** Replaces the remembered submit, deleting the file it pointed at unless it is the same one. */
   const rememberSubmit = useCallback((next: {uri: string, name: string, opts: any} | null) => {
@@ -805,6 +808,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
     setGuestRefused((r) => (r?.refusal === "used" ? r : null));
     if (blockedByTrialLimit()) return;
     startingRef.current = true;
+    setStarting(true);
     try {
       const perm = await requestRecordingPermissionsAsync();
       if (!perm.granted) {
@@ -830,6 +834,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
       setPermError("Could not start recording. Please try again.");
     } finally {
       startingRef.current = false;
+      setStarting(false);
     }
   }
 
@@ -879,7 +884,8 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
     // had no gate at all — the trial was only enforced on the microphone.
     if (blockedByTrialLimit()) return;
     try {
-      const res = await DocumentPicker.getDocumentAsync({
+      // The picker copies the file before it answers: a long recording takes a moment after the picker closes.
+      const res = await withBusy("Getting the file…", () => DocumentPicker.getDocumentAsync({
         type: [
           "audio/*",
           "audio/mpeg",
@@ -896,7 +902,7 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
           "*/*",
         ],
         copyToCacheDirectory: true,
-      });
+      }));
 
       if (res.canceled || !res.assets || res.assets.length === 0) {
         return;
@@ -1352,7 +1358,9 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
                   style={[styles.statusLine, statusLeft && styles.statusLineLeft]}
                   onTextLayout={(e) => setStatusWraps(e.nativeEvent.lines.length > 1)}
                 >
-                  {phase === "ready"
+                  {phase === "ready" && starting
+                    ? "Getting the mic ready…"
+                    : phase === "ready"
                     ? "Tap to record · sing, hum or play near the mic"
                     : guest
                       ? guestRecordingLine(elapsed)
@@ -1585,6 +1593,8 @@ export function RecordScreen({ guest = false }: { guest?: boolean }) {
               >
                 {isRecording ? (
                   <View style={styles.stopSquare} />
+                ) : starting ? (
+                  <ActivityIndicator color={colors.onInk} size="large" />
                 ) : (
                   <Mark height={38} color={colors.onInk} />
                 )}

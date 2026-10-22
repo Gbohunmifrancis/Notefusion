@@ -38,6 +38,10 @@ export function useModeTake() {
   const [elapsed, setElapsed] = useState(0);
   /** What is playing without the microphone ("Hear it", a guide, a replay): its tag, or null. */
   const [playing, setPlaying] = useState<string | null>(null);
+  /** From a Sing tap until the microphone is listening (permission, audio mode, the clip, the recorder): a spinner. */
+  const [starting, setStarting] = useState(false);
+  /** The same, read in the tap: a second tap meanwhile would start a second take. */
+  const startingRef = useRef(false);
 
   const player = useRef<AudioPlayer | null>(null);
   const clip = useRef<File | null>(null);
@@ -149,33 +153,42 @@ export function useModeTake() {
 
   /**
    * Records `seconds` while `clipBase64` plays (the count-in and anything the mode plays under the singer; null plays
-   * nothing), then hands the recording to `send`. Resolves with what `send` answered and the take's uri, or null when
+   * nothing; a function is built once the button's spinner is showing), then hands the recording to `send`. Resolves with what `send` answered and the take's uri, or null when
    * the take was cancelled. A refused microphone throws `MicDenied`; anything `send` throws comes through.
    */
   const record = useCallback(async <T,>(opts: {
-    clipBase64: string | null;
+    clipBase64: string | null | (() => string | null);
     leadInSec: number;
     seconds: number;
     send: (uri: string) => Promise<T>;
   }): Promise<{ value: T; uri: string } | null> => {
-    if (phaseRef.current !== "idle") return null;
-    release();
-    setPlaying(null);
-    const perm = await requestRecordingPermissionsAsync();
-    if (!perm.granted) throw new MicDenied();
-    await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true, shouldRouteThroughEarpiece: false });
-    if (opts.clipBase64) clip.current = writeClip(opts.clipBase64, "take");
-    await recorder.prepareToRecordAsync();
-    const done = new Promise<string | null>((resolve) => { settle.current = resolve; });
-    recorder.record();
-    startedAt.current = Date.now();
-    leadIn.current = opts.leadInSec;
-    if (clip.current) {
-      player.current = createAudioPlayer({ uri: clip.current.uri });
-      player.current.play();
+    if (phaseRef.current !== "idle" || startingRef.current) return null;
+    startingRef.current = true;
+    setStarting(true);
+    let done: Promise<string | null>;
+    try {
+      release();
+      setPlaying(null);
+      const perm = await requestRecordingPermissionsAsync();
+      if (!perm.granted) throw new MicDenied();
+      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true, shouldRouteThroughEarpiece: false });
+      const clipBase64 = typeof opts.clipBase64 === "function" ? opts.clipBase64() : opts.clipBase64;
+      if (clipBase64) clip.current = writeClip(clipBase64, "take");
+      await recorder.prepareToRecordAsync();
+      done = new Promise<string | null>((resolve) => { settle.current = resolve; });
+      recorder.record();
+      startedAt.current = Date.now();
+      leadIn.current = opts.leadInSec;
+      if (clip.current) {
+        player.current = createAudioPlayer({ uri: clip.current.uri });
+        player.current.play();
+      }
+      setElapsed(0);
+      setPhase(opts.leadInSec > 0 ? "leadin" : "live");
+    } finally {
+      startingRef.current = false;
+      if (live.current) setStarting(false);
     }
-    setElapsed(0);
-    setPhase(opts.leadInSec > 0 ? "leadin" : "live");
     tick.current = setInterval(() => {
       const t = (Date.now() - startedAt.current) / 1000;
       setElapsed(t);
@@ -193,5 +206,5 @@ export function useModeTake() {
     }
   }, [recorder, release, finish]);
 
-  return { phase, elapsed, playing, play, replay, stopPlaying, record, finish, cancel };
+  return { phase, starting, elapsed, playing, play, replay, stopPlaying, record, finish, cancel };
 }

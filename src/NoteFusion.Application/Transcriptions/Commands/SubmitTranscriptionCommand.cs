@@ -38,7 +38,9 @@ public sealed record SubmitTranscriptionCommand(
     /// The client's <c>Idempotency-Key</c> (the phone sends its take's own id): a repeat from the same account is
     /// handed the job the first one started, never a second job or a second charge. See <see cref="TranscriptionJob.IdempotencyKey"/>.
     /// </summary>
-    string? IdempotencyKey = null) : IRequest<Result<string>>;
+    string? IdempotencyKey = null,
+    /// <summary>Melody only: no voice in the take means read it as chords. See <see cref="TranscribeOptions.NoVoiceAsChords"/>.</summary>
+    bool NoVoiceAsChords = false) : IRequest<Result<string>>;
 
 public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTranscriptionCommand, Result<string>>
 {
@@ -229,6 +231,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
             Separate = request.Separate,
             AudioPreview = request.AudioPreview,
             KeyboardTranspose = request.KeyboardTranspose,
+            NoVoiceAsChords = request.NoVoiceAsChords && request.Mode == TranscriptionMode.Melody,
             // Pro reads the whole file up to six minutes, as it does a linked song, and so does a song paid for with a
             // bought transcription; anything else its first three minutes.
             MaxSeconds = isPro || (request.Separate && paidByCredit) ? SongCredits.ProMaxSeconds : FreeTier.UploadSeconds,

@@ -133,6 +133,7 @@ async def submit_transcription(
     audio_preview: bool = Form(True, description="Synthesise the piano preview WAV; a client that renders its own playback sends false"),
     harmony: bool = Form(False, description="Also write alto, tenor and bass under the tune (off: one voice is transcribed as one voice)"),
     keyboard_transpose: int = Form(0, description="The transpose setting on the player's keyboard, -11..11; the sheet is written in the key they play in"),
+    no_voice_as_chords: bool = Form(False, description="A melody take that turns out to hold no voice is read as chords (Listen from anywhere: music caught with no idea what it is)"),
 ) -> SubmitResponse:
     mode = _mode(mode)
     keyboard_transpose = _keyboard_transpose(keyboard_transpose)
@@ -190,7 +191,8 @@ async def submit_transcription(
                               correlation_id=_correlation_id(request),
                               callback_url=callback_url, priority=priority,
                               song_seconds=song_seconds, separate=separate, audio_preview=audio_preview,
-                              harmony=harmony, keyboard_transpose=keyboard_transpose)
+                              harmony=harmony, keyboard_transpose=keyboard_transpose,
+                              no_voice_as_chords=no_voice_as_chords and mode == "melody")
     except QueueFull:
         tmp_path.unlink(missing_ok=True)
         raise _queue_full()

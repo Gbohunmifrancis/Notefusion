@@ -35,6 +35,7 @@ import { EXAMPLE_HYMN, offerExample } from '../lib/exampleSheet';
 import { useOpening } from '../lib/useOpening';
 import { useAuth } from '../lib/auth';
 import { showDialog } from '../lib/dialog';
+import { withBusy } from '../lib/busy';
 import * as haptics from '../lib/haptics';
 import { useSubscription } from '../lib/subscription';
 import { fonts, motion, radii, spacing, typography, type Palette, type Shadows } from '../design/theme';
@@ -426,7 +427,9 @@ export function HomeScreen({ navigation }: Props) {
     }
     try {
       // The phone's copy when it is current or the API is out of reach (lib/offlineLibrary).
-      const { sheet } = await loadSheet(item);
+      // A row says "Opening…" itself; a sheet opened from Doh's card may have no row on Home, and gets the card.
+      const onHome = recent.some((r) => r.id === item.id);
+      const { sheet } = await (onHome ? loadSheet(item) : withBusy('Opening…', () => loadSheet(item)));
       rootNav.navigate('Result', { ...savedSheetParams(sheet), practise: opts.practise });
     } catch (e) {
       showDialog({

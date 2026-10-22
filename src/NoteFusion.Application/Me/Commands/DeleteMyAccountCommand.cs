@@ -73,6 +73,9 @@ public sealed class DeleteMyAccountCommandHandler : IRequestHandler<DeleteMyAcco
         // whoever next registers this address (the id is derived from it) and files sheets under that name.
         _db.FolderShares.RemoveRange(await _db.FolderShares.Where(f => f.UserId == userId).ToListAsync(cancellationToken));
 
+        // The phone's own events are the account's: they go with it.
+        _db.AppEvents.RemoveRange(await _db.AppEvents.Where(e => e.UserId == userId).ToListAsync(cancellationToken));
+
         _db.Users.Remove(user);
         await _db.SaveChangesAsync(cancellationToken);
 

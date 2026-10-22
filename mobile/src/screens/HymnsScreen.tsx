@@ -2,12 +2,14 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   BackHandler,
   FlatList,
+  PixelRatio,
   ScrollView,
   SectionList,
   StyleSheet,
   Text,
   TextInput,
   View,
+  useWindowDimensions,
   type LayoutChangeEvent,
   type SectionListData,
 } from "react-native";
@@ -51,6 +53,7 @@ import { useDataSaver } from "../lib/dataSaver";
 import { useSeason } from "../lib/seasonStore";
 import { activeSeason, seasonTint, seasonWords } from "../lib/season";
 import { showDialog } from "../lib/dialog";
+import { withBusy } from "../lib/busy";
 import { showToast } from "../lib/toast";
 import { logAnalyticsEvent } from "../lib/analytics";
 import type { RootStackParams, TabParams } from "../navigation/types";
@@ -208,12 +211,16 @@ export function HymnsScreen() {
     return letterSections(results, (h) => titleKey(h.title)).map((s) => ({ ...s, key: s.letter }));
   }, [lettered, results]);
 
-  // Every row is drawn the same height (its divider inside it), and every letter's header too, so the list knows
-  // where each letter starts before the rows on the way are drawn: measured once, then counted.
+  // Every row is drawn the same height (its divider inside it, its lines a fixed height), and every letter's header
+  // too, so the list knows where each letter starts before the rows on the way are drawn: measured once, then counted.
+  // A row and a header are measured only until known (again when the text size changes): measuring every row as it
+  // scrolled in let a fraction of a pixel's difference rebuild the whole layout mid-scroll, and the list jumped.
+  const { fontScale } = useWindowDimensions();
   const [metrics, setMetrics] = useState({ top: 0, header: 0, row: 0 });
+  useEffect(() => setMetrics((m) => (m.header || m.row ? { ...m, header: 0, row: 0 } : m)), [fontScale]);
   const measure = (key: keyof typeof metrics) => (e: LayoutChangeEvent) => {
-    const h = e.nativeEvent.layout.height;
-    setMetrics((m) => (m[key] === h ? m : { ...m, [key]: h }));
+    const h = PixelRatio.roundToNearestPixel(e.nativeEvent.layout.height);
+    setMetrics((m) => (Math.abs(m[key] - h) < 0.5 ? m : { ...m, [key]: h }));
   };
   const cells = useMemo(
     () =>
@@ -286,7 +293,7 @@ export function HymnsScreen() {
         {
           label: "Remove",
           onPress: () =>
-            void removePack().then(() => {
+            void withBusy("Removing…", () => removePack()).then(() => {
               setPack(null);
               setQuery("");
               void askMeta(() => true);
@@ -572,7 +579,7 @@ export function HymnsScreen() {
             ListHeaderComponent={listHeader}
             renderSectionHeader={({ section }) =>
               section.letter ? (
-                <View style={[styles.letterHeader, styles.besideRail]} onLayout={measure("header")}>
+                <View style={[styles.letterHeader, styles.besideRail]} onLayout={metrics.header ? undefined : measure("header")}>
                   <Text style={styles.letterText} accessibilityRole="header">
                     {section.letter}
                   </Text>
@@ -580,7 +587,7 @@ export function HymnsScreen() {
               ) : null
             }
             renderItem={({ item }) => (
-              <View style={book && styles.besideRail} onLayout={measure("row")}>
+              <View style={book && styles.besideRail} onLayout={metrics.row ? undefined : measure("row")}>
                 <Touchable onPress={() => setOpen(item)} style={[styles.row, styles.rowDivided]} radius={radii.md} accessibilityLabel={`${item.title}, ${item.key}`}>
                   <View style={styles.rowText}>
                     <Text style={styles.rowTitle} numberOfLines={1}>{item.title}</Text>
@@ -763,15 +770,16 @@ const makeStyles = (c: Palette) =>
     rail: { position: "absolute", right: RAIL_INSET },
     /** A letter's header, 13 px, sticking to the top while its hymns scroll under it. */
     letterHeader: { backgroundColor: c.bg, paddingTop: spacing.md, paddingBottom: spacing.xs },
-    letterText: { fontFamily: fonts.semibold, fontSize: 13, color: c.textMuted },
+    letterText: { fontFamily: fonts.semibold, fontSize: 13, lineHeight: 18, color: c.textMuted },
 
     row: { flexDirection: "row", alignItems: "center", paddingVertical: 12, gap: spacing.md },
     /** A list row's divider is its own, so every row is the same height and the rail can count its way to a letter. */
     rowDivided: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: c.border },
     rowText: { flex: 1 },
-    rowTitle: { fontFamily: fonts.medium, fontSize: 15, color: c.text },
-    rowSub: { fontFamily: fonts.regular, fontSize: 12.5, color: c.textMuted, marginTop: 2 },
-    rowKey: { fontFamily: typography.mono.fontFamily, fontSize: 12, color: c.textFaint },
+    // Fixed line heights: a title with a letter from a fallback font would otherwise draw its row taller.
+    rowTitle: { fontFamily: fonts.medium, fontSize: 15, lineHeight: 20, color: c.text },
+    rowSub: { fontFamily: fonts.regular, fontSize: 12.5, lineHeight: 17, color: c.textMuted, marginTop: 2 },
+    rowKey: { fontFamily: typography.mono.fontFamily, fontSize: 12, lineHeight: 16, color: c.textFaint },
     empty: { ...typography.body, color: c.textMuted, textAlign: "center", marginTop: spacing.xl },
     emptyButton: { marginTop: 18, alignSelf: "center" },
 

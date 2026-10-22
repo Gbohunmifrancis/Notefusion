@@ -70,6 +70,11 @@
       android:name="expo.modules.notefusionlisten.ListenTakeHeadlessService"
       android:exported="false" />
 
+    <!-- The Listen notification's Hide and its swipe-away: nothing runs behind the notification itself. -->
+    <receiver
+      android:name="expo.modules.notefusionlisten.ListenNoticeReceiver"
+      android:exported="false" />
+
     <!-- In front for the moment a take starts (the tile; Android's consent for the phone's sound), then gone. -->
     <activity
       android:name="expo.modules.notefusionlisten.ListenTakeActivity"

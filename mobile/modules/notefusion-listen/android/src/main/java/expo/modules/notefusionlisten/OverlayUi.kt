@@ -59,6 +59,8 @@ internal class OverlayUi(private val context: Context, private val host: Host) {
     /** Dragged onto the ×. */
     fun onHidden()
     fun onBuySong()
+    /** The pill's "Listen for" chip: the next of Singing, Instrument, Chords. */
+    fun onKind()
   }
 
   enum class Card { SENT, PROBLEM, NONE_LEFT }
@@ -80,6 +82,7 @@ internal class OverlayUi(private val context: Context, private val host: Host) {
   private var ring: RingView? = null
   private var clockText: TextView? = null
   private var lineText: TextView? = null
+  private var kindChip: TextView? = null
   private var recDot: View? = null
   private var recBlink: ValueAnimator? = null
   private var snap: ValueAnimator? = null
@@ -262,13 +265,25 @@ internal class OverlayUi(private val context: Context, private val host: Host) {
     }
     recDot = dot
     top.addView(dot)
-    val textWidth = screen().width() - dp(156f) // the pill's margins, the mark, the paddings and Stop
+    val textWidth = screen().width() - dp(156f + KIND_CHIP_DP) // the pill's margins, the mark, the paddings, the chip and Stop
     val clock = text(15f, TEXT, semibold).apply {
       maxWidth = textWidth
       ellipsize = android.text.TextUtils.TruncateAt.END
     }
     clockText = clock
     top.addView(clock)
+    // What the take will be sent as: one tap steps Singing → Instrument → Chords.
+    val chip = text(11f, TEXT, semibold).apply {
+      background = rounded(CHIP, 10f, 1f, LINE)
+      setPadding(dp(8f), dp(2f), dp(8f), dp(3f))
+      layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+        marginStart = dp(8f)
+      }
+      minHeight = dp(22f)
+      setOnClickListener { host.onKind() }
+    }
+    kindChip = chip
+    top.addView(chip)
     lines.addView(top)
     val line = text(12f, MUTED, medium).apply {
       maxWidth = textWidth
@@ -347,6 +362,20 @@ internal class OverlayUi(private val context: Context, private val host: Host) {
 
   fun setLine(line: String) {
     lineText?.text = line
+  }
+
+  /** The chip's word; the pill keeps to its docked edge when the word's width changes. */
+  fun setKind(label: String) {
+    val chip = kindChip ?: return
+    chip.text = "$label ▾"
+    chip.contentDescription = context.getString(R.string.nf_kind_chip_description, label)
+    if (!listening) return
+    val root = bubble ?: return
+    val p = pill ?: return
+    val lp = bubbleParams ?: return
+    p.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+    lp.x = pillX(p.measuredWidth)
+    runCatching { wm.updateViewLayout(root, lp) }
   }
 
   fun setLevel(level: Float) {
@@ -655,6 +684,10 @@ internal class OverlayUi(private val context: Context, private val host: Host) {
     private val MINT = Color.parseColor("#3DDC97")
     private val AMBER = Color.parseColor("#F5B544")
     private val ICE = Color.parseColor("#9CC2FF")
+    /** The "Listen for" chip: a step lighter than the pill's glass. */
+    private val CHIP = Color.parseColor("#1AFFFFFF")
+    /** Room kept beside the clock for the chip ("Instrument ▾", the longest). */
+    private const val KIND_CHIP_DP = 92f
 
     fun formatClock(seconds: Int): String = "${seconds / 60}:${(seconds % 60).toString().padStart(2, '0')}"
   }

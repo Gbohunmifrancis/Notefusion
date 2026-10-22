@@ -23,6 +23,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<TrialDevice> TrialDevices => Set<TrialDevice>();
     public DbSet<PreviewJob> PreviewJobs => Set<PreviewJob>();
     public DbSet<WebEvent> WebEvents => Set<WebEvent>();
+    public DbSet<AppEvent> AppEvents => Set<AppEvent>();
     public DbSet<TranscriptionLog> TranscriptionLogs => Set<TranscriptionLog>();
     public DbSet<UserFeedback> UserFeedback => Set<UserFeedback>();
     public DbSet<FolderShare> FolderShares => Set<FolderShare>();

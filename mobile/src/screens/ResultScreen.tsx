@@ -47,6 +47,7 @@ import { dohChoices, writeInKey } from "../lib/dohChoice";
 import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer, type HymnbookSheet } from "../lib/hymnbook";
 import { showDialog, type DialogAction } from "../lib/dialog";
 import { showToast } from "../lib/toast";
+import { withBusy } from "../lib/busy";
 import { limitOffer, monthPrice, type LimitOffer } from "../lib/price";
 import { useSubscription } from "../lib/subscription";
 import {
@@ -476,8 +477,28 @@ export function ResultScreen({ route, navigation }: Props) {
    * Synthesised melody for the player; re-made when the notes change. Always rendered
    * here, never the server's `audioPreviewBase64`: that is the old additive voice, and
    * the piano must not change underfoot between the first play and the first edit.
+   * Built once the screen is drawn, not while it opens: a long sheet's audio held the tap that opened it, and the
+   * screen it came from sat still until it was done. The player arrives a beat after the sheet.
    */
-  const [preview, setPreview] = useState(() => renderMelody(result.notes, result.tempo));
+  const [preview, setPreview] = useState("");
+  /** The melody re-made after a tempo tap, a frame later, so the new number shows first. */
+  const previewTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try {
+        // The parts' mix may already be playing (made as the screen mounted); it is not replaced.
+        setPreview((p) => p || renderMelody(result.notes, result.tempo));
+      } catch {
+        // preview synthesis is non-fatal
+      }
+    }, 0);
+    return () => {
+      clearTimeout(t);
+      if (previewTimer.current) clearTimeout(previewTimer.current);
+    };
+    // Once, as the screen opens; every later change sets the preview itself.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Counts deletions as well as pitch changes: both are corrections the exported
   // score doesn't know about, and both are what "Discard" would undo. Zero means
@@ -1109,11 +1130,16 @@ export function ResultScreen({ route, navigation }: Props) {
     settleHeld();
     const previous = tempo;
     setTempo(nextTempo);
-    try {
-      setPreview(renderMelody(view.notes, nextTempo));
-    } catch {
-      // preview synthesis is non-fatal
-    }
+    const notes = view.notes;
+    if (previewTimer.current) clearTimeout(previewTimer.current);
+    previewTimer.current = setTimeout(() => {
+      previewTimer.current = null;
+      try {
+        setPreview(renderMelody(notes, nextTempo));
+      } catch {
+        // preview synthesis is non-fatal
+      }
+    }, 0);
     if (!savedId) return;
     try {
       await libraryApi.updateTempo(savedId, nextTempo);
@@ -1959,7 +1985,7 @@ export function ResultScreen({ route, navigation }: Props) {
   function confirmDeleteSheet(id: string) {
     askToDelete([{ id, title: shownTitle || "This sheet" }], async () => {
       settleHeld();
-      if (!(await deleteSheets([{ id, title: shownTitle }]))) return;
+      if (!(await withBusy("Deleting…", () => deleteSheets([{ id, title: shownTitle }])))) return;
       // The screen goes with it, so the toast (above the navigator) is what says it worked.
       showToast(deletedLine([shownTitle || "This sheet"]));
       if (navigation.canGoBack()) {

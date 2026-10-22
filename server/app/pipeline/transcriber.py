@@ -1301,6 +1301,9 @@ class TranscriptionResult:
     song_duration_sec: float = 0.0
     truncated: bool = False
     separated: bool = False
+    # A melody take with no voice in it, read as chords instead (``JobQueue._separate_and_transcribe``,
+    # ``no_voice_as_chords``). Not on the wire: the sheet itself carries the chords.
+    read_as_chords: bool = False
     # Four-part harmony (``app.pipeline.harmony``): part name -> {"notes": [...], "solfa_lines": [...]}.
     parts: dict | None = None
     parts_musicxml: str = ""

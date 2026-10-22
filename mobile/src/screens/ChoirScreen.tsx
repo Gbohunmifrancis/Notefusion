@@ -10,11 +10,11 @@ import { Touchable } from "../components/Touchable";
 import { choirApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { showDialog } from "../lib/dialog";
+import { isBusy, withBusy } from "../lib/busy";
 import { siteUrls } from "../lib/env";
 import { normaliseChoirCode, choirCodeFromText } from "../lib/choirCode";
 import { deriveSolfa } from "../lib/solfa";
 import { solfaOpening } from "../lib/solfaOpening";
-import { synthesizeMelodyWavBase64 } from "../lib/synth";
 import { useSubscription } from "../lib/subscription";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
@@ -153,7 +153,7 @@ export function ChoirScreen({ navigation, route }: Props) {
           label: "New code",
           onPress: async () => {
             try {
-              const updated = await choirApi.regenerateInvite();
+              const updated = await withBusy("Making a new code…", () => choirApi.regenerateInvite());
               if (mounted.current) setChoir(updated);
             } catch (e) {
               showDialog({ title: "Could not make a new code", message: toApiError(e).message, icon: "problem", tone: "danger" });
@@ -177,8 +177,10 @@ export function ChoirScreen({ navigation, route }: Props) {
           style: "destructive",
           onPress: async () => {
             try {
-              await choirApi.removeMember(member.userId);
-              await load();
+              await withBusy("Removing…", async () => {
+                await choirApi.removeMember(member.userId);
+                await load();
+              });
             } catch (e) {
               showDialog({ title: "Could not remove", message: toApiError(e).message, icon: "problem", tone: "danger" });
             }
@@ -219,8 +221,10 @@ export function ChoirScreen({ navigation, route }: Props) {
 
   /** Opens a shared sheet read-only: it shows like a fresh transcription, so saving makes the singer's own copy. */
   async function openSheet(sheet: ChoirSheet) {
+    // A second tap while the first is still opening would push a second Result.
+    if (isBusy()) return;
     try {
-      const full = await choirApi.sheet(sheet.id);
+      const full = await withBusy("Opening…", () => choirApi.sheet(sheet.id));
       const derived = deriveSolfa(full.notes ?? [], full.key, full.timeSignature);
       const result: TranscriptionResult = {
         key: full.key,
@@ -232,7 +236,6 @@ export function ChoirScreen({ navigation, route }: Props) {
         notes: derived.notes,
         solfaLines: derived.solfaLines,
         overallConfidence: 1,
-        audioPreviewBase64: synthesizeMelodyWavBase64(derived.notes, full.tempoBpm),
         lyrics: full.lyrics ?? "",
         parts: (full.parts as TranscriptionResult["parts"]) ?? null,
         partsMusicXml: full.partsMusicXml ?? "",
@@ -256,7 +259,7 @@ export function ChoirScreen({ navigation, route }: Props) {
           label: "Take out",
           onPress: async () => {
             try {
-              await choirApi.unshare(sheet.id);
+              await withBusy("Taking it out…", () => choirApi.unshare(sheet.id));
               setSheets((prev) => prev.filter((s) => s.id !== sheet.id));
             } catch (e) {
               showDialog({ title: "Could not take it out", message: toApiError(e).message, icon: "problem", tone: "danger" });

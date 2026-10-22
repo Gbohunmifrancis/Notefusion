@@ -188,13 +188,13 @@ export function PitchMatchScreen({ track }: { track: PracticeTrack | null }) {
             <Button label="Marking…" loading />
           ) : grade ? (
             <>
-              <Button label="Again" variant="secondary" onPress={() => void start()} disabled={noneLeft(data)} />
+              <Button label="Again" variant="secondary" onPress={() => void start()} loading={take.starting} disabled={noneLeft(data)} />
               {next ? <Button label="Next set" onPress={() => open(exercises.indexOf(next))} /> : null}
             </>
           ) : (
             <>
               <Button label={take.playing === "hear" ? "Stop" : "Hear it"} icon={take.playing === "hear" ? "stop" : "hear"} variant="secondary" onPress={hear} />
-              <Button label={playful ? "Sing it!" : "Start"} icon="mic" onPress={() => void start()} disabled={noneLeft(data)} />
+              <Button label={playful ? "Sing it!" : "Start"} icon="mic" onPress={() => void start()} loading={take.starting} disabled={noneLeft(data)} />
             </>
           )}
         </ModeFooter>

@@ -169,13 +169,13 @@ export function RhythmScreen({ track }: { track: PracticeTrack | null }) {
             <Button label="Marking…" loading />
           ) : grade ? (
             <>
-              <Button label="Again" variant="secondary" onPress={() => void start()} disabled={noneLeft(data)} />
+              <Button label="Again" variant="secondary" onPress={() => void start()} loading={take.starting} disabled={noneLeft(data)} />
               {next ? <Button label="Next rhythm" onPress={() => open((index + 1) % exercises.length)} /> : null}
             </>
           ) : (
             <>
               <Button label={take.playing === "hear" ? "Stop" : playful ? "Listen" : "Hear it"} icon={take.playing === "hear" ? "stop" : "hear"} variant="secondary" onPress={hear} />
-              <Button label="Clap it" icon="rhythm" onPress={() => void start()} disabled={noneLeft(data)} />
+              <Button label="Clap it" icon="rhythm" onPress={() => void start()} loading={take.starting} disabled={noneLeft(data)} />
             </>
           )}
         </ModeFooter>

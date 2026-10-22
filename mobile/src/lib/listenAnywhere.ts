@@ -7,6 +7,9 @@
 
 export type ListenSource = "room" | "phone";
 
+/** "Listen for": the Record screen's mode a Listen take is sent as (mirrors the native `ListenKind`). */
+export type ListenKind = "melody" | "poly" | "chords";
+
 /** A free account's take is cut at three minutes, Pro's at six: `FreeTier.UploadSeconds` and the Pro cap on the API. */
 export const FREE_TAKE_SECONDS = 180;
 export const PRO_TAKE_SECONDS = 360;
@@ -74,9 +77,12 @@ export function noneLeftLine(a: ListenAllowance): string {
 export function groupNote(a: ListenAllowance): string {
   const head = "Each take is a transcription, like one from the Record screen.";
   return a.isPro
-    ? `${head} Pro: up to ${formatTakeCap(PRO_TAKE_SECONDS)} each, no weekly limit.`
-    : `${head} Free: ${a.freePerWeek} a week, up to ${formatTakeCap(FREE_TAKE_SECONDS)} each.`;
+    ? `${head} Pro: up to ${formatTakeCap(PRO_TAKE_SECONDS)} each, no weekly limit. It stops by itself when the music does.`
+    : `${head} Free: ${a.freePerWeek} a week, up to ${formatTakeCap(FREE_TAKE_SECONDS)} each, from the tile. The floating button and the notification are part of Pro.`;
 }
+
+/** The floating button and Listen in notifications are Pro's; this is what a free account's row says instead. */
+export const PRO_ONLY_HINT = "Part of Pro";
 
 export function sourceLabel(source: ListenSource): string {
   return source === "phone" ? "This phone’s sound" : "The room";
@@ -87,6 +93,27 @@ export const SOURCE_CHOICES: readonly { source: ListenSource; label: string; det
   { source: "room", label: "The room", detail: "What the microphone hears: music playing near you, or another phone’s speaker." },
   { source: "phone", label: "This phone’s sound", detail: "The app that’s playing, clean — even with headphones in." },
 ];
+
+/** "Listen for" (R4): what a take is sent as, in the order the pill's chip steps through them. */
+export const KIND_CHOICES: readonly { kind: ListenKind; label: string; detail: string }[] = [
+  { kind: "melody", label: "Singing", detail: "A voice, or one instrument playing a tune. If no voice is heard, it’s read as chords." },
+  { kind: "poly", label: "Instrument", detail: "An instrument playing several notes at once, like a piano piece." },
+  { kind: "chords", label: "Chords", detail: "Piano or guitar chords: the chords are written over the solfa." },
+];
+
+export function kindLabel(kind: ListenKind | undefined): string {
+  return KIND_CHOICES.find((k) => k.kind === kind)?.label ?? "Singing";
+}
+
+/**
+ * What a Listen take is sent as: the kind it was taken for (from the native side, or the swept file's name, which ends
+ * `-<kind>.m4a`), Singing when unknown. A Singing take carries the worker's safety net: no voice heard, read as chords.
+ */
+export function takeSubmitOptions(kind: string | undefined, fileName?: string): { mode: ListenKind; noVoiceAsChords?: boolean } {
+  const fromName = fileName?.match(/-(melody|poly|chords)\.m4a$/)?.[1];
+  const k = (KIND_CHOICES.some((c) => c.kind === kind) ? kind : fromName ?? "melody") as ListenKind;
+  return k === "melody" ? { mode: "melody", noVoiceAsChords: true } : { mode: k };
+}
 
 export const SOURCE_NOTE =
   "Android asks every time you start — tap Start — and shows its screen-sharing sign while it listens. Only the sound is recorded, never the screen.";

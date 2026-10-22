@@ -55,16 +55,26 @@ internal class TakeRecorder(
     fun onCapReached()
     /** Phone sound: nothing came through for the first seconds while music plays (the app blocks capture). */
     fun onCaptureSilent()
+    /**
+     * A forgotten take, by its sound: `nothingHeard` when the first minute held nothing above the quiet line, otherwise the
+     * music stopped (at least ten seconds were heard and then 45 went quiet). Reported once; the service ends the take.
+     */
+    fun onQuiet(nothingHeard: Boolean)
     fun onFailed(code: String, message: String?)
   }
 
-  class Result(val durationSec: Double, val ok: Boolean)
+  /** `heardSec`: how much of the take was above the quiet line; a take with almost none is not worth a transcription. */
+  class Result(val durationSec: Double, val ok: Boolean, val heardSec: Double = 0.0)
 
   private val main = Handler(Looper.getMainLooper())
   private var record: AudioRecord? = null
   private var thread: Thread? = null
   @Volatile private var capturing = false
   @Volatile private var result: Result = Result(0.0, false)
+  /** Frames above the quiet line, and the frames since the last one; read by the capture thread only. */
+  private var heardFrames = 0L
+  private var quietRunFrames = 0L
+  private var quietReported = false
 
   val isCapturing: Boolean get() = capturing
 
@@ -216,8 +226,26 @@ internal class TakeRecorder(
           if (abs(v) > peak) peak = abs(v)
         }
         val rms = sqrt(sum / n)
-        val level = if (rms < 1.0) 0f else ((20.0 * log10(rms / 32768.0) + LEVEL_FLOOR_DB) / LEVEL_FLOOR_DB).toFloat().coerceIn(0f, 1f)
+        val db = if (rms < 1.0) -120.0 else 20.0 * log10(rms / 32768.0)
+        val level = ((db + LEVEL_FLOOR_DB) / LEVEL_FLOOR_DB).toFloat().coerceIn(0f, 1f)
         main.post { listener.onLevel(level) }
+
+        // What was heard, for a forgotten take: nothing in the first minute ends it unsent; the music stopping after it
+        // was heard ends it sent. A phone's own noise floor sits well under the line; music near the phone well over.
+        if (db >= HEARD_DB) {
+          heardFrames += n
+          quietRunFrames = 0
+        } else {
+          quietRunFrames += n
+        }
+        if (!quietReported) {
+          val nothing = frames + n >= NOTHING_HEARD_SEC * SAMPLE_RATE && heardFrames < MIN_HEARD_SEC * SAMPLE_RATE
+          val stopped = heardFrames >= MUSIC_HEARD_SEC * SAMPLE_RATE && quietRunFrames >= MUSIC_STOPPED_SEC * SAMPLE_RATE
+          if (nothing || stopped) {
+            quietReported = true
+            main.post { listener.onQuiet(nothing) }
+          }
+        }
 
         // Phone sound: a sound coming through settles it; none after the first seconds while music plays
         // means the app opted out of capture, said once.
@@ -274,7 +302,7 @@ internal class TakeRecorder(
       val duration = frames.toDouble() / SAMPLE_RATE
       val ok = muxing && outFile.length() > 0
       if (!ok) runCatching { outFile.delete() }
-      result = Result(duration, ok)
+      result = Result(duration, ok, heardFrames.toDouble() / SAMPLE_RATE)
     }
   }
 
@@ -288,5 +316,14 @@ internal class TakeRecorder(
     /** Phone sound: silence this long while music plays means the app does not allow capture. */
     private const val CAPTURE_CHECK_SEC = 2.5
     private const val SILENCE_PEAK = 8
+    /** The quiet line: a chunk at or above it counts as heard. A phone's own noise is near −60 dBFS or below. */
+    const val HEARD_DB = -52.0
+    /** Under this much heard, a take is silence: never sent. */
+    const val MIN_HEARD_SEC = 2.0
+    /** The first minute with nothing heard: the take ends, unsent. */
+    private const val NOTHING_HEARD_SEC = 60.0
+    /** After this much was heard, MUSIC_STOPPED_SEC of quiet ends the take and sends it. */
+    private const val MUSIC_HEARD_SEC = 10.0
+    private const val MUSIC_STOPPED_SEC = 45.0
   }
 }

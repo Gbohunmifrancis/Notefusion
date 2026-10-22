@@ -70,6 +70,8 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, proPr
   );
 
   const [phase, setPhase] = useState<Phase>("idle");
+  /** From the tap until the microphone is listening: the button's spinner, and no second take meanwhile. */
+  const [starting, setStarting] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [grade, setGrade] = useState<GradeResult | null>(null);
@@ -96,9 +98,10 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, proPr
 
   async function start() {
     if (!isPro) { onRequirePro(); return; }
-    if (notes.length === 0) return;
+    if (notes.length === 0 || starting) return;
     setError(null);
     setGrade(null);
+    setStarting(true);
     try {
       const perm = await requestRecordingPermissionsAsync();
       if (!perm.granted) { setError("Microphone permission is needed to record a take."); return; }
@@ -127,6 +130,8 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, proPr
       setPhase("idle");
       if (__DEV__) console.warn("[sing-along] start failed", e);
       setError("Could not start recording. Please try again.");
+    } finally {
+      setStarting(false);
     }
   }
 
@@ -193,6 +198,7 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, proPr
           label={phase === "done" ? "Sing it again" : "Record my take"}
           icon={isPro ? "mic" : "lock"}
           onPress={() => void start()}
+          loading={starting}
           disabled={notes.length === 0}
         />
       ) : phase === "grading" ? (

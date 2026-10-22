@@ -180,13 +180,13 @@ export function SingNotesScreen({ mode, track }: { mode: "intervals" | "harmony"
             <Button label="Marking…" loading />
           ) : grade ? (
             <>
-              <Button label="Again" variant="secondary" onPress={() => void start()} disabled={noneLeft(data)} />
+              <Button label="Again" variant="secondary" onPress={() => void start()} loading={take.starting} disabled={noneLeft(data)} />
               {next ? <Button label={mode === "intervals" ? (playful ? "Next jump" : "Next interval") : "Next line"} onPress={() => open((index + 1) % exercises.length)} /> : null}
             </>
           ) : (
             <>
               <Button label={take.playing === "hear" ? "Stop" : playful ? "Listen" : "Hear it"} icon={take.playing === "hear" ? "stop" : "hear"} variant="secondary" onPress={hear} />
-              <Button label={playful ? "Sing it!" : "Sing it"} icon="mic" onPress={() => void start()} disabled={noneLeft(data)} />
+              <Button label={playful ? "Sing it!" : "Sing it"} icon="mic" onPress={() => void start()} loading={take.starting} disabled={noneLeft(data)} />
             </>
           )}
         </ModeFooter>

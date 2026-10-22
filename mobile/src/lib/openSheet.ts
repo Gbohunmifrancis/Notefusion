@@ -1,13 +1,12 @@
 import type { SavedTranscription, TranscriptionResult } from "../api/types";
 import { deriveSolfa } from "./solfa";
-import { synthesizeMelodyWavBase64 } from "./synth";
 import { hymnSheet, type PackHymn } from "./hymnPack";
 import { EXAMPLE_HYMN } from "./exampleSheet";
 
 /**
- * A saved sheet as the Result screen takes it. The solfa is labelled here, for the stored key, and
- * the player's audio is synthesised on the phone — so a copy kept offline plays exactly as a fresh
- * one does. Shared by the Library and Home, which used to build this each on their own.
+ * A saved sheet as the Result screen takes it. The solfa is labelled here, for the stored key; the player's audio
+ * is synthesised by Result itself once it is on screen (building it here held the tap until it was done). Shared
+ * by the Library and Home, which used to build this each on their own.
  */
 export function resultFromSaved(full: SavedTranscription): TranscriptionResult {
   const derived = deriveSolfa(full.notes ?? [], full.key, full.timeSignature);
@@ -21,7 +20,6 @@ export function resultFromSaved(full: SavedTranscription): TranscriptionResult {
     notes: derived.notes,
     solfaLines: derived.solfaLines,
     overallConfidence: full.overallConfidence,
-    audioPreviewBase64: synthesizeMelodyWavBase64(derived.notes, full.tempoBpm),
     lyrics: full.lyrics ?? "",
     parts: (full.parts as TranscriptionResult["parts"]) ?? null,
     partsMusicXml: full.partsMusicXml ?? "",
@@ -69,7 +67,6 @@ export function resultFromHymn(h: PackHymn): TranscriptionResult {
     notes: derived.notes,
     solfaLines: derived.solfaLines,
     overallConfidence: 1,
-    audioPreviewBase64: synthesizeMelodyWavBase64(derived.notes, sheet.tempo),
     lyrics: sheet.lyrics,
     hymn: sheet.hymn,
   };

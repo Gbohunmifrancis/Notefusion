@@ -263,7 +263,7 @@ export function RunsScreen({ track }: { track: PracticeTrack | null }) {
             <Button label="Marking…" loading />
           ) : grade ? (
             <>
-              <Button label="Again" variant="secondary" onPress={() => void start()} disabled={noneLeft(data)} />
+              <Button label="Again" variant="secondary" onPress={() => void start()} loading={take.starting} disabled={noneLeft(data)} />
               {next ? (
                 <Button label={`Try ${next.percent}%`} onPress={() => choose(next.percent)} />
               ) : nextRun ? (
@@ -273,7 +273,7 @@ export function RunsScreen({ track }: { track: PracticeTrack | null }) {
           ) : (
             <>
               <Button label={take.playing === "hear" ? "Stop" : "Hear it"} icon={take.playing === "hear" ? "stop" : "hear"} variant="secondary" onPress={() => hear(false)} />
-              <Button label="Sing it" icon="mic" onPress={() => void start()} disabled={noneLeft(data)} />
+              <Button label="Sing it" icon="mic" onPress={() => void start()} loading={take.starting} disabled={noneLeft(data)} />
             </>
           )}
         </ModeFooter>

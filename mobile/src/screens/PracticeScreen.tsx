@@ -160,6 +160,8 @@ export function PracticeScreen() {
   const live = useRef(true);
   /** Closed before `sing`'s first await: a second tap during the permission prompt would start a second take. */
   const startingRef = useRef(false);
+  /** Which button is getting a take (or the next drill) ready: it shows a spinner until the mic is listening. */
+  const [starting, setStarting] = useState<"main" | "again" | null>(null);
 
   // The drill on screen, read by `load`: a visit that brings a different drill clears the last one's marks.
   const drillRef = useRef<Drill | null>(null);
@@ -311,9 +313,10 @@ export function PracticeScreen() {
     }
   }
 
-  async function sing() {
+  async function sing(from: "main" | "again" = "main") {
     if (!drill || phase !== "idle" || startingRef.current) return;
     startingRef.current = true;
+    setStarting(from);
     cleanup();
     setError(null);
     setGrade(null);
@@ -354,6 +357,7 @@ export function PracticeScreen() {
       setError("Could not start recording. Please try again.");
     } finally {
       startingRef.current = false;
+      if (live.current) setStarting(null);
     }
   }
 
@@ -432,7 +436,9 @@ export function PracticeScreen() {
 
   /** On along the path: the drill fetched after the take (or fetched now), its marks cleared. */
   async function goNext() {
-    if (phase !== "idle") return;
+    if (phase !== "idle" || startingRef.current) return;
+    startingRef.current = true;
+    if (!next) setStarting("main");
     cleanup();
     setError(null);
     try {
@@ -444,6 +450,9 @@ export function PracticeScreen() {
       setTakeUri(null);
     } catch (e) {
       if (live.current) setError(toApiError(e).message);
+    } finally {
+      startingRef.current = false;
+      if (live.current) setStarting(null);
     }
   }
 
@@ -622,14 +631,15 @@ export function PracticeScreen() {
                           label={doneForToday ? "Done for today" : onward ? onward.label : playful ? "Sing it!" : "Sing it"}
                           icon={doneForToday ? "check" : onward && !onward.same ? "next" : "mic"}
                           onPress={() => void (onward && !onward.same ? goNext() : sing())}
-                          disabled={doneForToday}
+                          loading={starting === "main"}
+                          disabled={doneForToday || starting === "again"}
                           style={styles.actionMain}
                         />
                       )}
                     </View>
                   )}
                   {phase === "idle" && ((onward && !onward.same) || resendable) ? (
-                    <Button label={playful ? "Sing again!" : "Sing it again"} icon="mic" variant="secondary" onPress={() => void sing()} disabled={left === 0} />
+                    <Button label={playful ? "Sing again!" : "Sing it again"} icon="mic" variant="secondary" onPress={() => void sing("again")} loading={starting === "again"} disabled={left === 0 || starting === "main"} />
                   ) : null}
 
                   {/* Marking takes up to a minute and the button shows only its spinner, so the line under it says so. */}

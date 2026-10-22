@@ -173,7 +173,9 @@ export function PracticeView({
   const rangeKey = `${part}:${p.loopFrom}-${p.loopTo}`;
   const marks = graded && graded.key === rangeKey ? graded.marks : null;
   const strip = useMemo(() => barStrip(partNotes, timeSignature, barCount), [partNotes, timeSignature, barCount]);
-  const busy = phase !== "idle";
+  /** From Sing it back until the microphone is listening: the button's spinner. */
+  const [starting, setStarting] = useState(false);
+  const busy = phase !== "idle" || starting;
   const barNow = p.isPlaying && p.barSec > 0 ? p.barAt(p.position) : 0;
 
   useEffect(() => {
@@ -239,6 +241,7 @@ export function PracticeView({
       return;
     }
     p.pause();
+    setStarting(true);
     try {
       const perm = await requestRecordingPermissionsAsync();
       if (!perm.granted) { setStatus("Microphone permission is needed to record a take."); return; }
@@ -267,6 +270,8 @@ export function PracticeView({
       setPhase("idle");
       if (__DEV__) console.warn("[practice] start failed", e);
       setStatus("Could not start recording. Please try again.");
+    } finally {
+      setStarting(false);
     }
   }
 
@@ -419,7 +424,7 @@ export function PracticeView({
                 label={phase === "grading" ? "Marking…" : "Sing it back"}
                 variant="secondary"
                 icon={isPro ? "mic" : "lock"}
-                loading={phase === "grading"}
+                loading={phase === "grading" || starting}
                 onPress={() => void sing()}
                 style={styles.transportBtn}
               />

@@ -63,6 +63,8 @@ import type {
   TransposedSheet,
   VoiceRange,
   WarmUp,
+  AppEventsRequest,
+  AppEventsResult,
 } from "./types";
 
 /** Typed wrappers over the C# Web API endpoints. One function per route. */
@@ -225,6 +227,12 @@ export const appApi = {
    * preview. A few bytes, cached by the API for a minute (lib/seasonStore keeps the last answer on the phone).
    */
   season: () => api.get<AppSeason>("/api/app/season").then((r) => r.data),
+
+  /**
+   * What the app (and the native Listen from anywhere service) did, for the admin console: at most 50 a call, each a
+   * name and flat `key=value` details, never about the person. Signed in only; `lib/appEvents` batches and retries.
+   */
+  events: (body: AppEventsRequest) => api.post<AppEventsResult>("/api/app/events", body).then((r) => r.data),
 };
 
 export interface SubmitOptions {
@@ -244,6 +252,11 @@ export interface SubmitOptions {
    * A shapes sound F). The sheet is written as played. Omitted or 0 when it is off.
    */
   keyboardTranspose?: number;
+  /**
+   * Melody only: when the take turns out to hold no voice, the worker reads it as chords instead. Sent by Listen from
+   * anywhere, whose takes are music caught over another app. Mirrors `SubmitTranscriptionRequest.NoVoiceAsChords`.
+   */
+  noVoiceAsChords?: boolean;
 }
 
 /** A recording or score on the phone as a multipart part: React Native's FormData takes a {uri,name,type} descriptor. */
@@ -292,6 +305,7 @@ export const transcriptionsApi = {
     if (opts.timeSignature) form.append("timeSignature", opts.timeSignature);
     if (opts.separate) form.append("separate", "true");
     if (opts.keyboardTranspose) form.append("keyboardTranspose", String(opts.keyboardTranspose));
+    if (opts.noVoiceAsChords && opts.mode === "melody") form.append("noVoiceAsChords", "true");
     // The app plays results with its own sampled piano, so the worker's rendered preview is never used.
     form.append("audioPreview", "false");
 

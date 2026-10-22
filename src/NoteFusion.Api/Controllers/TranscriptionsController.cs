@@ -57,6 +57,12 @@ public sealed class SubmitTranscriptionRequest
 
     /// <summary>The transpose setting on the player's keyboard, -11 to 11 semitones; 0 when it is off.</summary>
     public int KeyboardTranspose { get; init; }
+
+    /// <summary>
+    /// Melody only: a take that turns out to hold no voice is read as chords. Sent by Listen from anywhere, whose takes
+    /// are music caught with no idea what it is (see <see cref="TranscribeOptions.NoVoiceAsChords"/>).
+    /// </summary>
+    public bool NoVoiceAsChords { get; init; }
 }
 
 /// <summary>JSON body for transcribing a song behind a streaming link.</summary>
@@ -118,7 +124,8 @@ public sealed class TranscriptionsController : ApiControllerBase
                 Application.Common.Errors.TranscriptionErrors.InvalidAudio));
 
         await using var stream = request.Audio.OpenReadStream();
-        var command = new SubmitTranscriptionCommand(stream, request.Audio.FileName, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.Separate, request.AudioPreview, request.KeyboardTranspose, request.Audio.ContentType, request.Audio.Length, idempotencyKey);
+        var command = new SubmitTranscriptionCommand(stream, request.Audio.FileName, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.Separate, request.AudioPreview, request.KeyboardTranspose, request.Audio.ContentType, request.Audio.Length, idempotencyKey,
+            NoVoiceAsChords: request.NoVoiceAsChords);
         var result = await _sender.Send(command, ct);
 
         if (result.IsFailure)

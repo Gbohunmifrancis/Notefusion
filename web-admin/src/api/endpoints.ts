@@ -55,6 +55,7 @@ import type {
   TranscriptionLogFilters,
   TranscriptionLogPage,
   WebhookStatus,
+  ListenAnalytics,
 } from "@/api/types";
 import type { WebAuthnJson } from "@/lib/webauthn";
 
@@ -489,6 +490,10 @@ export const getPracticeReminderLog = (take = 30, signal?: AbortSignal) =>
 /** The Growth page: renewals, free-to-paid by price set, transcription failures by kind, app versions. */
 export const getGrowth = (from?: string, to?: string, signal?: AbortSignal) =>
   request<Growth>(`/api/admin/analytics/growth${query({ from, to })}`, signal ? { signal } : {});
+
+/** The Listen from anywhere page: takes, ways in, endings, reminders, settings and Pro locks over a window. */
+export const getListenAnalytics = (from?: string, to?: string, signal?: AbortSignal) =>
+  request<ListenAnalytics>(`/api/admin/analytics/listen${query({ from, to })}`, signal ? { signal } : {});
 
 /** The most active accounts and how engaged users were over a window. */
 export const getEngagement =(from?: string, to?: string, top = 20, signal?: AbortSignal) =>

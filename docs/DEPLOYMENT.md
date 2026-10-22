@@ -843,10 +843,11 @@ The Android app's "Listen from anywhere" (the floating button over other apps, t
 `mobile/modules/notefusion-listen`) adds three things the Play Console wants declared before the build is reviewed
 (App content › Foreground service permissions, and Permissions declaration):
 
-- **Foreground service, `specialUse`** — the service that keeps the floating button on screen while it waits. Play asks
-  what it is for and for a short video: "A floating button the user switched on in Settings, drawn over other apps,
-  that starts and stops a recording at the user's tap; it is the app's own Shazam-style shortcut." The video is the
-  button being switched on, tapped over another app, and stopped.
+- **Foreground service, `specialUse`** — the service that keeps the floating button on screen while it waits (Pro
+  members only; nothing runs for the Listen notification on its own). Play asks what it is for and for a short video: "A
+  floating button the user switched on in Settings, drawn over other apps, that starts and stops a recording at the
+  user's tap; it is the app's own Shazam-style shortcut." The video is the button being switched on, tapped over another
+  app, and stopped.
 - **Foreground service, `mediaProjection`** — "This phone's sound": the take records what the phone plays, with
   Android's own consent dialog every time. Declare it as audio capture for transcription; the screen is never recorded.
 - **`SYSTEM_ALERT_WINDOW`** (Display over other apps) — the floating button. The user grants it on Android's own

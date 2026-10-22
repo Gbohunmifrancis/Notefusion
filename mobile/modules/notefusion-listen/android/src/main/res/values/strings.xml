@@ -14,7 +14,7 @@
 
   <!-- Listen from anywhere (boards r-listen R1–R3). -->
   <string name="nf_anywhere_channel">Listen from anywhere</string>
-  <string name="nf_anywhere_channel_description">The floating button and the quiet Listen notification, and a take while it listens</string>
+  <string name="nf_anywhere_channel_description">The Listen notification, and a take while it listens</string>
   <string name="nf_anywhere_title">Listen from anywhere</string>
   <string name="nf_anywhere_body">Tap Listen to transcribe what’s playing</string>
   <string name="nf_anywhere_button_on">The floating button is on</string>
@@ -48,5 +48,21 @@
   <string name="nf_take_signed_out">Sign in to NoteFusion first.</string>
   <string name="nf_take_no_mic">Allow the microphone in NoteFusion’s Settings first.</string>
   <string name="nf_take_not_allowed">Android wouldn’t let NoteFusion listen from here — open the app and try again.</string>
+  <string name="nf_take_pro_only">The floating button and the Listen notification are part of Pro. The Listen tile still works.</string>
+  <string name="nf_take_nothing_heard">Nothing was heard, so nothing was sent or used.</string>
+  <string name="nf_take_music_stopped_sent">The music stopped, so we sent what we heard (%1$s). We’ll tell you when it’s ready.</string>
+  <string name="nf_ended_title">Stopped listening</string>
+  <string name="nf_reminder_channel">Still listening</string>
+  <string name="nf_reminder_channel_description">A reminder when a take from Listen from anywhere is still running</string>
+  <string name="nf_reminder_title">Still listening · %1$s</string>
+  <string name="nf_reminder_last_minute">One minute left</string>
+  <string name="nf_reminder_body">NoteFusion stops and sends by itself at %1$s, or when the music stops.</string>
+  <string name="nf_button_channel">Floating button</string>
+  <string name="nf_button_channel_description">Shown while the floating button is on; Android requires it</string>
+  <string name="nf_kind_melody">Singing</string>
+  <string name="nf_kind_poly">Instrument</string>
+  <string name="nf_kind_chords">Chords</string>
+  <string name="nf_kind_action">For: %1$s</string>
+  <string name="nf_kind_chip_description">Listening for %1$s. Tap to change.</string>
   <string name="nf_take_failed">NoteFusion couldn’t record — try again.</string>
 </resources>

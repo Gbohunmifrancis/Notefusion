@@ -1876,3 +1876,24 @@ export interface SystemAnnouncement {
   updatedAtUtc: string;
 }
 
+/** One thing the app did, for the admin console (mirrors `AppEventInput`). */
+export interface AppEventInput {
+  /** Lower-case words and underscores, at most 60 (`listen_take_end`). */
+  name: string;
+  /** Flat `key=value;…` pairs, at most 300 characters; nothing about the person. */
+  detail?: string | null;
+  /** When it happened, ISO 8601 UTC by the phone's clock (the server keeps it within a sensible range). */
+  occurredAt: string;
+}
+
+/** Body of `POST /api/app/events` (mirrors `AppEventsRequest`). */
+export interface AppEventsRequest {
+  /** The installed native build (`nativeBuildVersion`), 0 when unknown. */
+  build: number;
+  events: AppEventInput[];
+}
+
+/** What `POST /api/app/events` kept (mirrors `AppEventsResult`). */
+export interface AppEventsResult {
+  accepted: number;
+}

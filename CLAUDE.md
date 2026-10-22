@@ -205,7 +205,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   the night redesign (`night`/`nightFonts` in `src/design/theme.ts`, primitives in
   `src/components/night/`; splash, onboarding and sign-in use it in either mode), one popup: every dialog is the
   bottom sheet (`showDialog` → `components/AppDialog` on `components/Sheet`; `lib/sheetKind` reads confirm,
-  destructive, info, options, offer or celebrate off the options) and good news is a toast (`lib/toast` `showToast`),
+  destructive, info, options, offer or celebrate off the options) and good news is a toast (`lib/toast` `showToast`); a tap that waits says so: its button's `loading` spinner, or the
+  "Sharing…" card over a veil that takes taps (`lib/busy` `withBusy`, shown after 250 ms; `now` paints it before work that holds
+  the thread), and Result builds its player's audio after it is drawn, never the opener before it navigates,
   one `components/Button` (primary · secondary · text · destructive, md 48 / sm 40, `block` for a flow's last action;
   red only as a destructive word and the live REC dot, problems an amber icon: `ProblemNote`),
   one icon family, no icon font: `components/Icon` (react-native-svg, typed `IconName`) draws `design/iconGlyphs.ts`,
@@ -260,6 +262,25 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   from anywhere (Android only): Floating button (a setup sheet, `ListenAnywhereSheet`: microphone, notifications,
   "Display over other apps" on Android's own page, in order, the one button naming the next), Listen in notifications,
   Quick Settings tile (Add), Listen to. Native code: a store build, not an OTA.
+  The floating button and the Listen notification are Pro's (`ListenPrefs.proActive`: the allowance known and Pro, a
+  choir seat included; Settings shows them as Pro rows opening Upgrade; the switches keep their place through a lapse);
+  the tile is everyone's. Nothing runs to wait: the notification alone is a plain swipeable one (`ListenNotice`, its
+  Hide and swipe-away to `ListenNoticeReceiver`; swiped, it is back when the app next opens), and the service runs only
+  for the button on screen, a take, or a take on its way to JS (then on the `listen_button` MIN channel unless the notice
+  rides on it). During a take the notification's clock is the system chronometer; the tile and stored clock move every
+  5 s. A take that runs on: "Still listening" at 2:00 and "One minute left" before the cap (`listen_reminders`, heads-up,
+  Stop & send / Cancel); nothing above −52 dBFS in the first minute ends it unsent, 45 s quiet after 10 s heard ends it
+  sent, the cap ends it sent, and under 2 s heard is never sent (`TakeRecorder.Listener.onQuiet`); a take that ended by itself
+  leaves a note in the shade. "Listen for" (`ListenPrefs.kind`: Singing = melody, Instrument = poly, Chords; Settings'
+  row, the pill's chip and the take notification's "For: …" step through them; the kind rides in the take's file name
+  for a swept take) is what a take is sent as; a Singing take also carries `noVoiceAsChords`, so the worker reads one
+  whose separated stem holds no voice as chords (`queue._separate_and_transcribe`, `no_voice_as_chords`, on the mixture
+  only; `result.read_as_chords`, never offered a hymn). Every step is logged on the phone (`ListenPrefs.logEvent`, `listen_*` names, flat
+  `key=value` details, at most 300 kept) and sent by `lib/appEvents` (with Settings' own `listen_setting`/`listen_pro_lock`
+  and `listen_take_queued`, which names the job) to `POST /api/app/events` (signed in, `AppEvent` rows, 50 a call,
+  purged with the website's events and with the account); the console's Listen anywhere page (`/listen`,
+  `GET /api/admin/analytics/listen`, `GetListenAnalyticsQuery`) reads takes by way in and source, what they became,
+  endings, reminders, refusals, settings as last left and Pro-lock taps with the upgrades that followed.
   **Phone admin** (`screens/admin`, `components/admin`, boards f-admin): Profile › Admin (row and route for an Admin only;
   every admin endpoint re-reads the role from the database) is its own section with its own bar, Overview · Payments
   (Webhooks and Ledger as tabs, a payment's sheet, "Needs a look" + Reconcile) · Users (an account and its actions) ·

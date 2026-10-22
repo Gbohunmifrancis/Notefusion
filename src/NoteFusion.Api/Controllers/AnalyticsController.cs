@@ -82,6 +82,15 @@ public sealed class AnalyticsController : ApiControllerBase
         => HandleResult(await _sender.Send(new GetPracticeAnalyticsQuery(from, to), ct));
 
     /// <summary>
+    /// The Listen from anywhere page: who uses it and through which way in, what each take became, how takes end (the
+    /// forgotten ones included), the reminders, the settings people keep on and the Pro locks free accounts tap. Read off
+    /// the phone's own events (see <see cref="GetListenAnalyticsQuery"/>).
+    /// </summary>
+    [HttpGet("listen")]
+    public async Task<IActionResult> Listen([FromQuery] DateTime? from, [FromQuery] DateTime? to, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetListenAnalyticsQuery(from, to), ct));
+
+    /// <summary>
     /// The Growth page: renewals (memberships ending soon, the renewal rate of those that ended in the window),
     /// free-to-paid by price set, transcription failures by kind, and app versions on phones.
     /// </summary>

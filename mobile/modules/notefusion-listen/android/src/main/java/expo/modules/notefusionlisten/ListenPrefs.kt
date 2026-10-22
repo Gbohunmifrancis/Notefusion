@@ -3,6 +3,7 @@ package expo.modules.notefusionlisten
 import android.content.Context
 import android.os.Build
 import android.provider.Settings
+import org.json.JSONArray
 import org.json.JSONObject
 
 /**
@@ -52,6 +53,81 @@ internal object ListenPrefs {
   fun setSignedIn(context: Context, signedIn: Boolean) = prefs(context).edit().putBoolean("signedIn", signedIn).apply()
   fun setDataSaver(context: Context, on: Boolean) = prefs(context).edit().putBoolean("dataSaver", on).apply()
   fun setTileAdded(context: Context, added: Boolean) = prefs(context).edit().putBoolean("tileAdded", added).apply()
+
+  /**
+   * The floating button and the Listen notification are Pro's (a member, or a singer in a running choir), and only once
+   * the server has said so: a fresh install, a lapsed membership or a signed-out phone shows neither. The switches keep
+   * their place, so a member who renews finds them as they left them. The Listen tile is everyone's.
+   */
+  fun proActive(context: Context): Boolean = allowance(context).let { it.known && it.isPro }
+
+  /** The floating button is drawn: switched on, allowed by Android, and the account is Pro. */
+  fun buttonWanted(context: Context): Boolean = buttonOn(context) && overlayPermitted(context) && proActive(context)
+
+  /** The Listen notification is shown: switched on, the account is Pro, and not swiped away since the app was last opened. */
+  fun noticeWanted(context: Context): Boolean = notificationOn(context) && proActive(context) && !noticeDismissed(context)
+
+  /** Swiped away (or cleared with the rest): it stays away until the app is next opened, and its switch stays on. */
+  fun noticeDismissed(context: Context) = prefs(context).getBoolean("noticeDismissed", false)
+  fun setNoticeDismissed(context: Context, dismissed: Boolean) = prefs(context).edit().putBoolean("noticeDismissed", dismissed).apply()
+
+  // ── Events (for the admin console's Listen from anywhere page) ─────────────
+
+  private const val EVENTS = "events"
+  /** Kept until the app sends them; past this the oldest go first (a phone that never opens the app). */
+  private const val MAX_EVENTS = 300
+
+  /**
+   * One thing that happened with no JS running: a take started, refused, reminded or ended, the button hidden, the
+   * notification dismissed. `detail` is flat key=value pairs (no names, no audio, nothing about the person). The app
+   * drains them (`drainEvents`) and sends them with the account's token; nothing leaves the phone from here.
+   */
+  @Synchronized
+  fun logEvent(context: Context, name: String, detail: Map<String, Any?> = emptyMap()) {
+    val p = prefs(context)
+    val list = runCatching { JSONArray(p.getString(EVENTS, "[]")) }.getOrDefault(JSONArray())
+    val d = detail.entries.filter { it.value != null }.joinToString(";") { "${it.key}=${it.value}" }
+    list.put(JSONObject().put("name", name).put("detail", d).put("at", System.currentTimeMillis()))
+    val kept = if (list.length() > MAX_EVENTS) JSONArray().also { out ->
+      for (i in list.length() - MAX_EVENTS until list.length()) out.put(list.get(i))
+    } else list
+    p.edit().putString(EVENTS, kept.toString()).apply()
+  }
+
+  /** Everything logged since the last drain, as a JSON array, and the log emptied. */
+  @Synchronized
+  fun drainEvents(context: Context): String {
+    val p = prefs(context)
+    val raw = p.getString(EVENTS, "[]") ?: "[]"
+    p.edit().remove(EVENTS).apply()
+    return raw
+  }
+
+  // ── What a take is sent as ────────────────────────────────────────────────
+
+  /** Singing (one line: a voice, or one instrument playing a tune), an instrument's several notes, or chords. */
+  const val KIND_MELODY = "melody"
+  const val KIND_POLY = "poly"
+  const val KIND_CHORDS = "chords"
+  private val KINDS = listOf(KIND_MELODY, KIND_POLY, KIND_CHORDS)
+
+  /** "Listen for": the Record screen's mode a take is sent as. Singing until the person says otherwise. */
+  fun kind(context: Context): String =
+    prefs(context).getString("kind", KIND_MELODY).takeIf { it in KINDS } ?: KIND_MELODY
+
+  fun setKind(context: Context, kind: String) =
+    prefs(context).edit().putString("kind", if (kind in KINDS) kind else KIND_MELODY).apply()
+
+  /** The pill's chip and the notification's "For:" step through the three in order. */
+  fun nextKind(kind: String): String = KINDS[(KINDS.indexOf(kind).coerceAtLeast(0) + 1) % KINDS.size]
+
+  fun kindLabel(context: Context, kind: String): String = context.getString(
+    when (kind) {
+      KIND_POLY -> R.string.nf_kind_poly
+      KIND_CHORDS -> R.string.nf_kind_chords
+      else -> R.string.nf_kind_melody
+    }
+  )
 
   /** Playback capture (Android 10+): what "This phone's sound" records. */
   fun phoneSoundAvailable(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
