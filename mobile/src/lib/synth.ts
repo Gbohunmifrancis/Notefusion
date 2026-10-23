@@ -459,34 +459,41 @@ function renderVoice(
  * allpass is y[n] = -g·x[n] + x[n-D] + g·y[n-D]. Mirrors `_soundboard` on the
  * server, which runs the same recurrences a block at a time.
  */
-function soundboard(dry: Float64Array): Float64Array {
+function* soundboard(dry: Float64Array): Generator<void, Float64Array, void> {
+  // One pass, in place, with each loop's memory a ring the length of its delay: the same recurrences in the same
+  // order, so the same samples, without a song-length array per loop (a three-minute song made seven of ~30 MB each).
   const n = dry.length;
-  const wet = new Float64Array(n);
-  for (const delaySec of BOARD_DELAYS_SEC) {
+  const combs = BOARD_DELAYS_SEC.map((delaySec) => {
     const d = Math.round(delaySec * SAMPLE_RATE);
     // Feedback for the loop to fall 60 dB in RT60.
-    const g = Math.pow(10, (-3 * d) / (BOARD_RT60_SEC * SAMPLE_RATE));
-    const y = new Float64Array(n);
-    let s = 0;
-    for (let i = 0; i < n; i++) {
-      const back = i >= d ? y[i - d]! : 0;
-      s = (1 - BOARD_DAMP) * back + BOARD_DAMP * s;
-      y[i] = dry[i]! + g * s;
-      wet[i] = wet[i]! + y[i]!;
-    }
-  }
-
+    return { d, g: Math.pow(10, (-3 * d) / (BOARD_RT60_SEC * SAMPLE_RATE)), ring: new Float64Array(d), at: 0, s: 0 };
+  });
   const ap = Math.round(BOARD_ALLPASS_SEC * SAMPLE_RATE);
-  const out = new Float64Array(n);
-  for (let i = 0; i < n; i++) {
-    const xBack = i >= ap ? wet[i - ap]! : 0;
-    const yBack = i >= ap ? out[i - ap]! : 0;
-    out[i] = -BOARD_ALLPASS_GAIN * wet[i]! + xBack + BOARD_ALLPASS_GAIN * yBack;
-  }
+  const wetRing = new Float64Array(ap);
+  const outRing = new Float64Array(ap);
+  let apAt = 0;
 
-  const mixed = new Float64Array(n);
-  for (let i = 0; i < n; i++) mixed[i] = dry[i]! + BOARD_WET * out[i]!;
-  return mixed;
+  for (let i = 0; i < n; i++) {
+    if (i > 0 && i % SLICE_SAMPLES === 0) yield;
+    const x = dry[i]!;
+    let wet = 0;
+    for (const c of combs) {
+      const back = i >= c.d ? c.ring[c.at]! : 0;
+      c.s = (1 - BOARD_DAMP) * back + BOARD_DAMP * c.s;
+      const y = x + c.g * c.s;
+      c.ring[c.at] = y;
+      c.at = c.at + 1 === c.d ? 0 : c.at + 1;
+      wet = wet + y;
+    }
+    const xBack = i >= ap ? wetRing[apAt]! : 0;
+    const yBack = i >= ap ? outRing[apAt]! : 0;
+    const out = -BOARD_ALLPASS_GAIN * wet + xBack + BOARD_ALLPASS_GAIN * yBack;
+    wetRing[apAt] = wet;
+    outRing[apAt] = out;
+    apAt = apAt + 1 === ap ? 0 : apAt + 1;
+    dry[i] = x + BOARD_WET * out;
+  }
+  return dry;
 }
 
 /**
@@ -499,11 +506,12 @@ function soundboard(dry: Float64Array): Float64Array {
  * interpolation is exact where it matters and smooth everywhere else. Mirrors
  * `_ride_gain` on the server.
  */
-function rideGain(x: Float64Array): Float64Array {
+function* rideGain(x: Float64Array): Generator<void, Float64Array, void> {
   const n = x.length;
   const blocks = Math.ceil(n / LIMIT_BLOCK);
   const peak = new Float64Array(blocks);
   for (let i = 0; i < n; i++) {
+    if (i > 0 && i % SLICE_SAMPLES === 0) yield;
     const b = (i / LIMIT_BLOCK) | 0;
     const a = Math.abs(x[i]!);
     if (a > peak[b]!) peak[b] = a;
@@ -517,20 +525,23 @@ function rideGain(x: Float64Array): Float64Array {
     gainB[b] = Math.min(1, LIMIT_CEILING / Math.max(held, 1e-9));
   }
 
-  const out = new Float64Array(n);
+  // In place: the input is the soundboard's own buffer, read at i only before i is written.
   if (blocks === 1) {
-    for (let i = 0; i < n; i++) out[i] = x[i]! * gainB[0]!;
-    return out;
+    for (let i = 0; i < n; i++) x[i] = x[i]! * gainB[0]!;
+    return x;
   }
   const half = LIMIT_BLOCK / 2;
+  // The raised cosine depends only on how far into its block a sample is: one value per offset, not a cos per sample.
+  const ramp = new Float64Array(LIMIT_BLOCK + 1);
+  for (let k = 0; k <= LIMIT_BLOCK; k++) ramp[k] = 0.5 - 0.5 * Math.cos(Math.PI * (k / LIMIT_BLOCK));
   for (let i = 0; i < n; i++) {
+    if (i > 0 && i % SLICE_SAMPLES === 0) yield;
     // Flat before the first block centre and after the last.
     const idx = Math.min(Math.max(Math.floor((i - half) / LIMIT_BLOCK), 0), blocks - 2);
-    const frac = Math.min(Math.max((i - (idx * LIMIT_BLOCK + half)) / LIMIT_BLOCK, 0), 1);
-    const w = 0.5 - 0.5 * Math.cos(Math.PI * frac);
-    out[i] = x[i]! * (gainB[idx]! + (gainB[idx + 1]! - gainB[idx]!) * w);
+    const w = ramp[Math.min(Math.max(i - (idx * LIMIT_BLOCK + half), 0), LIMIT_BLOCK)]!;
+    x[i] = x[i]! * (gainB[idx]! + (gainB[idx + 1]! - gainB[idx]!) * w);
   }
-  return out;
+  return x;
 }
 
 /**
@@ -644,9 +655,34 @@ export function synthesizeVoicesWavBase64(
   tempoBpm: number,
   opts: SynthOptions = {},
 ): string {
+  const bytes = drain(voicesWav(voices, tempoBpm, opts));
+  return bytes ? uint8ToBase64(bytes) : "";
+}
+
+/** Samples of work between a render's pauses: a few milliseconds each, so a caller can let the screen draw between them. */
+const SLICE_SAMPLES = 8_192;
+
+/** Runs a render to its end at once. */
+export function drain<T>(render: Generator<void, T, void>): T {
+  for (;;) {
+    const step = render.next();
+    if (step.done) return step.value;
+  }
+}
+
+/**
+ * The same clip as `synthesizeVoicesWavBase64`, as the WAV file's bytes (null for no notes), made in slices: it pauses
+ * (`yield`) every few milliseconds of work, so a caller can let the screen draw and take taps between them
+ * (lib/melodyAudio). A three-minute song took seconds on a phone in one go, and the app stood still for all of them.
+ */
+export function* voicesWav(
+  voices: readonly SynthVoice[],
+  tempoBpm: number,
+  opts: SynthOptions = {},
+): Generator<void, Uint8Array | null, void> {
   const notes: { note: NoteEvent; gain: number }[] = [];
   for (const v of voices) for (const note of v.notes) notes.push({ note, gain: v.gain });
-  if (notes.length === 0) return "";
+  if (notes.length === 0) return null;
 
   const beatSec = beatSecOf(tempoBpm);
   const lead = leadInSec(tempoBpm, opts);
@@ -664,6 +700,7 @@ export function synthesizeVoicesWavBase64(
   const totalSamples = Math.ceil((lead + maxBeat * beatSec + RELEASE_SEC) * SAMPLE_RATE);
   const mix = new Float64Array(totalSamples);
   const cache = new Map<string, Float64Array>();
+  let work = 0;
 
   for (const { note, gain: voiceGain } of notes) {
     if (note.pitchMidi <= 0) continue;
@@ -695,6 +732,11 @@ export function synthesizeVoicesWavBase64(
     const n = Math.min(durSamples + tailSamples, totalSamples - startSample);
     for (let i = 0; i < n; i++) {
       mix[startSample + i] = mix[startSample + i]! + voice[i]! * gain;
+    }
+    work += n;
+    if (work >= SLICE_SAMPLES) {
+      work = 0;
+      yield;
     }
   }
 
@@ -730,17 +772,35 @@ export function synthesizeVoicesWavBase64(
   // board adds is bounded too. Limit rather than rescale by the peak: a pile-up of
   // overlapping notes then compresses into the headroom it needs instead of
   // dragging the level of every other note down with it.
-  const limited = rideGain(soundboard(mix));
-  const buffer = new Int16Array(totalSamples);
+  const limited = yield* rideGain(yield* soundboard(mix));
+  // Straight into the file's bytes, a slice at a time: the same samples wavBytes would write, without a last pass over
+  // the whole clip that no slice could break up.
+  const { bytes, view } = wavHeader(totalSamples);
+  const pcm = new Int16Array(1);
   for (let i = 0; i < totalSamples; i++) {
-    buffer[i] = Math.round(softLimit(limited[i]!) * 32767);
+    if (i > 0 && i % SLICE_SAMPLES === 0) yield;
+    pcm[0] = Math.round(softLimit(limited[i]!) * 32767);
+    view.setInt16(44 + i * 2, pcm[0]!, true);
   }
-  return wavBase64(buffer);
+  return bytes;
 }
 
 /** A mono 16-bit PCM buffer at SAMPLE_RATE as a base64 WAV file. */
 function wavBase64(buffer: Int16Array): string {
-  const totalSamples = buffer.length;
+  return uint8ToBase64(wavBytes(buffer));
+}
+
+/** A mono 16-bit PCM buffer at SAMPLE_RATE as a WAV file's bytes. */
+function wavBytes(buffer: Int16Array): Uint8Array {
+  const { bytes, view } = wavHeader(buffer.length);
+  for (let i = 0; i < buffer.length; i++) {
+    view.setInt16(44 + i * 2, buffer[i]!, true);
+  }
+  return bytes;
+}
+
+/** A WAV file for `totalSamples` mono 16-bit samples at SAMPLE_RATE: the header written, the samples left to fill. */
+function wavHeader(totalSamples: number): { bytes: Uint8Array; view: DataView } {
   // Build WAV header
   const dataSize = totalSamples * 2;
   const headerSize = 44;
@@ -766,13 +826,7 @@ function wavBase64(buffer: Int16Array): string {
   writeString(view, 36, "data");
   view.setUint32(40, dataSize, true);
 
-  // Write PCM audio data
-  for (let i = 0; i < totalSamples; i++) {
-    view.setInt16(44 + i * 2, buffer[i]!, true);
-  }
-
-  // Convert Uint8Array to base64 string
-  return uint8ToBase64(wavBytes);
+  return { bytes: wavBytes, view };
 }
 
 function toPcm(mix: Float64Array): Int16Array {

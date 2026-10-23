@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { File, Paths } from "expo-file-system";
 import {
   useAudioPlayer,
@@ -7,6 +7,8 @@ import {
 } from "expo-audio";
 import type { NoteEvent } from "../api/types";
 import { usePlayerStatus } from "./playerStatus";
+import { wavFileFor } from "./melodyAudio";
+import { sourceKey, type VoicesSource } from "./melodySource";
 import { beatSecOf } from "./synth";
 
 /**
@@ -110,9 +112,10 @@ export interface LoopRange {
 }
 
 /**
- * @param audioPreviewBase64  Base64 WAV payload from the transcription result
- *                            (`TranscriptionResult.audioPreviewBase64`). Pass
- *                            `undefined`/`null`/`""` to render "no preview".
+ * @param audioPreviewBase64  What to play: a base64 WAV payload, or a recipe
+ *                            (lib/melodyAudio `VoicesSource`) that is made in
+ *                            slices and kept on the phone, so the screen never
+ *                            waits for it. `undefined`/`null`/`""`: nothing.
  * @param notes               The transcription's note list — used only for
  *                            computing playback highlight windows, never
  *                            mutated.
@@ -125,7 +128,7 @@ export interface LoopRange {
  *                            `lib/synth.ts`'s `leadInSec`, which computes it.
  */
 export function useNotePlayer(
-  audioPreviewBase64: string | null | undefined,
+  audioPreviewBase64: string | VoicesSource | null | undefined,
   notes: readonly Pick<NoteEvent, "startBeat" | "durBeats">[],
   tempoBpm: number,
   leadInSec = 0,
@@ -176,9 +179,18 @@ export function useNotePlayer(
     };
   }, []);
 
+  // A recipe is named by what it plays, so a new object for the same notes is not a new clip.
+  const sourceId = useMemo(
+    () => (typeof audioPreviewBase64 === "object" && audioPreviewBase64 ? sourceKey(audioPreviewBase64) : audioPreviewBase64),
+    [audioPreviewBase64],
+  );
+  const sourceRef = useRef(audioPreviewBase64);
+  sourceRef.current = audioPreviewBase64;
+
   // Write base64 to cache file whenever the payload changes
   useEffect(() => {
     let cancelled = false;
+    const source = sourceRef.current;
 
     async function prepareFile() {
       // Clean up the previously-written clip, if any.
@@ -186,7 +198,7 @@ export function useNotePlayer(
       fileRef.current = null;
       deleteQuietly(previous);
 
-      if (!audioPreviewBase64 || audioPreviewBase64.length === 0) {
+      if (!source || (typeof source === "string" && source.length === 0)) {
         setFileUri(null);
         setIsLoading(false);
         setError(null);
@@ -195,6 +207,25 @@ export function useNotePlayer(
 
       setIsLoading(true);
       setError(null);
+
+      if (typeof source === "object") {
+        // Made in slices (or found kept) while the screen stays live; the file belongs to lib/melodyAudio's cache.
+        try {
+          const uri = await wavFileFor(source, () => cancelled || !mountedRef.current);
+          if (cancelled || !mountedRef.current) return;
+          await setAudioModeAsync({ playsInSilentMode: true, allowsRecording: false });
+          if (cancelled || !mountedRef.current) return;
+          setFileUri(uri);
+          setIsLoading(false);
+        } catch (e) {
+          if (!cancelled && mountedRef.current) {
+            setError(e instanceof Error ? e.message : "Could not load the audio preview.");
+            setIsLoading(false);
+          }
+        }
+        return;
+      }
+      const audioPreviewBase64 = source;
 
       try {
         // A unique filename per load avoids reading a stale cached clip if the
@@ -234,7 +265,7 @@ export function useNotePlayer(
     return () => {
       cancelled = true;
     };
-  }, [audioPreviewBase64]);
+  }, [sourceId]);
 
   // Clean up the last cache file on unmount.
   useEffect(() => {

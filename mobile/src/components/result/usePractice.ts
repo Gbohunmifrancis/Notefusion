@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PanResponder, type PanResponderInstance } from "react-native";
 import { useNotePlayer } from "../../lib/useNotePlayer";
+import type { VoicesSource } from "../../lib/melodySource";
 import { logAppEvent } from "../../lib/appEvents";
 import { beatSecOf } from "../../lib/synth";
 import { backingTarget, beatOfClipSec, clipSecOfBeat, onSongClock, type BeatClock } from "../../lib/backingClock";
@@ -62,7 +63,7 @@ export interface SongBacking {
  * differs from a sheet that never had one.
  */
 export function usePractice(
-  audioPreviewBase64: string | null | undefined,
+  audioPreviewBase64: string | VoicesSource | null | undefined,
   notes: NoteEvent[],
   tempoBpm: number,
   timeSignature: string,
