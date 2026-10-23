@@ -432,8 +432,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   no drill allowance, never the path, never "Spot on"). Mobile `screens/practice/PracticeGameScreen`, pure `lib/practiceGames`;
   web the Practice view's Quick games row, `assets/practice-game-view.js` + `practice-games.css` (on first open), pure
   `assets/practice-games.js` (same tests), the rehearsal piano for sound.
-  The tab (board s1): the drill card, the season card, Quick games, the modes; the top line (streak · level · week) opens
-  `PracticeProgress` (`components/practice/ProgressCards`: stat cards, week, badges). The marking moment (board s2):
+  The tab (board s1): the strip card (flame + days · level emblem + XP · week ring, opens `PracticeProgress`:
+  `components/practice/ProgressCards`, stat cards, week, badges), the drill card (Playful's Doh inside it, no bubble row),
+  the season card as one compact row, Quick games, and the modes as a two-column grid (`ModeList grid`; "Sing more",
+  Playful "More ways to play"). The marking moment (board s2):
   "Listening back…" while the take uploads, "Checking each note…", "Still marking — slow connection" after 8 s; then
   `useMarkReveal` lands the marks 120 ms apart (in tune pops with a light buzz and plays as a run, sound on), counts the
   score up, and the reward toast and confetti wait for it; Reduce Motion shows it at once.
