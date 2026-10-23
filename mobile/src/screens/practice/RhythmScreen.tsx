@@ -28,7 +28,7 @@ const HEAR_COUNT_IN_BEATS = 4;
 export function RhythmScreen({ track }: { track: PracticeTrack | null }) {
   const c = useColors();
   const styles = useThemedStyles(makeStyles);
-  const take = useModeTake();
+  const take = useModeTake({ claps: true });
   const { sing, error } = useGrade(take);
   const { data, error: loadError, loading, reload, refresh } = useModeExercises("rhythm");
   const [index, setIndex] = useState(0);

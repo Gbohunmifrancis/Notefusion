@@ -19,6 +19,7 @@ import {
   useAudioRecorder,
   type AudioPlayer,
 } from "expo-audio";
+import { PRACTICE_PROFILE } from "../lib/recordingPreset";
 
 import { Button } from "./Button";
 import { Touchable } from "./Touchable";
@@ -51,7 +52,8 @@ interface Props {
 
 type Phase = "idle" | "leadin" | "singing" | "grading" | "done";
 
-const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberOfChannels: 1 };
+/** A practice take: the voice at 32 kbps, a third of the upload for the same marks (lib/recordingPreset). */
+const RECORDING = { ...RecordingPresets.HIGH_QUALITY, ...PRACTICE_PROFILE };
 /** Recording continues this long after the last note, so a held ending is not cut. */
 const TAIL_SEC = 1.0;
 

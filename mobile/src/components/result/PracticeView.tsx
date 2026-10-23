@@ -22,6 +22,7 @@ import {
   useAudioRecorder,
   type AudioPlayer,
 } from "expo-audio";
+import { PRACTICE_PROFILE } from "../../lib/recordingPreset";
 
 import { Button } from "../Button";
 import { Touchable } from "../Touchable";
@@ -54,7 +55,8 @@ import type { Practice } from "./usePractice";
 import { ProblemNote } from "../ProblemNote";
 import { MarkingBar } from "../practice/MarkingBar";
 
-const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberOfChannels: 1 };
+/** A practice take: the voice at 32 kbps, a third of the upload for the same marks (lib/recordingPreset). */
+const RECORDING = { ...RecordingPresets.HIGH_QUALITY, ...PRACTICE_PROFILE };
 const BALANCE_LABELS: { value: Balance; label: string }[] = [
   { value: "balance", label: "Mine loud" },
   { value: "alone", label: "Mine alone" },

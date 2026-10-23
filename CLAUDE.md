@@ -245,6 +245,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   SubscriptionProvider hands over unacknowledged purchases at sign-in and on every foreground.
   The Hymns screen reads `web-site/hymns/pack.json` (built by `tools/blog/lib/hymn-pack.mjs`, version in `pack-version.json`, checked by `check.mjs`).
   Data saver (default off, `lib/dataSaver`/`dataPolicy`): 32 kbps AAC uploads (`recordingPreset`, measured), no avatars/artwork, slower polls, hymn updates only on tap.
+  Every practice take is that 32 kbps AAC whatever the switch (`PRACTICE_PROFILE`: the same marks as 128 kbps at a third of
+  the upload, the wait before a mark on a slow connection); claps (rhythm, `useModeTake({ claps: true })`) keep the standard rate.
   **Listen from anywhere** (Android, boards r-listen; `modules/notefusion-listen`, beside "Find the key"): a take recorded
   over any other app and sent as a Record-screen take. Three ways in: the floating button (`OverlayUi`, plain Android
   views in `TYPE_APPLICATION_OVERLAY` windows, docked half off an edge, dragged, hidden on the ×; tapped it is the pill
