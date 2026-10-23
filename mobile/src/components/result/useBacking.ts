@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
-import { useAudioPlayer, useAudioPlayerStatus, type AudioPlayer } from "expo-audio";
+import { useAudioPlayer, type AudioPlayer } from "expo-audio";
+import { usePlayerStatus } from "../../lib/playerStatus";
 import {
   BACKING_RATE_MAX,
   BACKING_RATE_MIN,
@@ -72,7 +73,7 @@ export function useBacking({
   positionOf: (clipSec: number) => number;
 }) {
   const player = useAudioPlayer(uri ? { uri } : undefined, { updateInterval: SYNC_TICK_MS });
-  const status = useAudioPlayerStatus(player);
+  const status = usePlayerStatus(player);
   const loaded = !!uri && status.isLoaded;
   const usable = active && loaded && rateKeepsBacking(rate);
 
