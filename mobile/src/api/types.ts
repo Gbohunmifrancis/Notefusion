@@ -622,6 +622,74 @@ export interface RunSpeed {
   bestScore: number | null;
 }
 
+// ── Quick games (GET /api/practice/games/{game}, POST /api/practice/games/grade) ─────────────────────────────────
+
+/** The quick games beside the sung practice: tapped, not sung, about a minute each. */
+export type PracticeGameId = "which-note" | "staff" | "hymn";
+
+/** A note a game plays, in quarter-note beats. */
+export interface GameNote {
+  pitchMidi: number;
+  startBeat: number;
+  durBeats: number;
+}
+
+/** A hymn offered as a choice: its slug (an answer's form), title and first line (null for a tune page). */
+export interface GameHymn {
+  slug: string;
+  title: string;
+  firstLine: string | null;
+}
+
+/**
+ * One round, with its answer so a tap is told at once (the server marks the answers that count). Which note: play
+ * `dohMidi` then `noteMidi`. Staff to solfa: draw `noteName` ("F#4") on a treble stave with `fifths` in the signature.
+ * Name that hymn: play `notes` at `tempoBpm`; `hymns` names each choice; `key` labels its solfa when revealed.
+ */
+export interface PracticeGameRound {
+  index: number;
+  answer: string;
+  choices: string[];
+  doh: string | null;
+  key: string | null;
+  fifths: number | null;
+  dohMidi: number | null;
+  noteMidi: number | null;
+  noteName: string | null;
+  tempoBpm: number | null;
+  timeSignature: string | null;
+  notes: GameNote[] | null;
+  hymns: GameHymn[] | null;
+}
+
+/** A fresh deal; `timeLimitSeconds` is set for a race (Staff to solfa). `gamesToday` of `gamesPerDay` earned XP today. */
+export interface PracticeGame {
+  game: PracticeGameId;
+  dealId: string;
+  track: PracticeTrack | null;
+  timeLimitSeconds: number | null;
+  gamesToday: number;
+  gamesPerDay: number;
+  rounds: PracticeGameRound[];
+}
+
+/**
+ * A deal's answers marked by the server. `counted`: it earned XP and is a day of practice; when not, `notCounted` says
+ * why ("daily": the day's games that earn XP are used; "few": too few rounds answered) and `reward` is null.
+ */
+export interface PracticeGameGrade {
+  game: PracticeGameId;
+  dealId: string;
+  score: number;
+  right: number;
+  answered: number;
+  rounds: number;
+  marks: boolean[];
+  counted: boolean;
+  notCounted: "daily" | "few" | null;
+  reward: PracticeReward | null;
+}
+
 /**
  * POST /api/practice/modes/grade (C# `PracticeModeGradeDto`): the take marked by the server and recorded as practice.
  * `score`/`summary` whatever marked it; the grader's own answer is in `marks` ("notes"), `run` or `rhythm`.

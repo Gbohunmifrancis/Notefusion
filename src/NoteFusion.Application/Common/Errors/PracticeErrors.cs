@@ -54,4 +54,20 @@ public static class PracticeErrors
     /// <summary>The account has had its day's drills marked (<see cref="Practice.PracticeRules.DrillGradesPerDay"/>).</summary>
     public static Error DailyDrillLimit(int limit) =>
         Error.Forbidden("PRACTICE_DAILY_LIMIT", $"That's all {limit} of today's marked drills. Well sung! More from midnight.");
+
+    /// <summary>A quick game the server does not have ("which-note", "staff", "hymn").</summary>
+    public static readonly Error GameUnknown =
+        Error.NotFound("PRACTICE_GAME_UNKNOWN", "That game isn't here. Open Practice to see the games.");
+
+    /// <summary>Answers sent for a deal the server never dealt.</summary>
+    public static readonly Error GameDealUnknown =
+        Error.Validation("PRACTICE_GAME_UNKNOWN_DEAL", "That game couldn't be marked. Start a new one from Practice.");
+
+    /// <summary>No answers, or more answers than the deal has rounds.</summary>
+    public static readonly Error GameAnswers =
+        Error.Validation("PRACTICE_GAME_ANSWERS", "That game's answers didn't come through. Start a new one from Practice.");
+
+    /// <summary>A deal already marked: each game counts once.</summary>
+    public static readonly Error GameMarked =
+        Error.Conflict("PRACTICE_GAME_MARKED", "That game has been marked already. Start a new one from Practice.");
 }

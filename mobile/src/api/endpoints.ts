@@ -46,6 +46,9 @@ import type {
   Plan,
   PracticeMode,
   PracticeModeGrade,
+  PracticeGame,
+  PracticeGameGrade,
+  PracticeGameId,
   PracticeModeId,
   PracticeProgress,
   PracticeReminders,
@@ -478,12 +481,22 @@ export const practiceApi = {
    * Marks a sung drill (free, a session a day) and returns the marks with what the take earned and any milestone.
    * `leadInSec` is the count-in the take starts with (lib/take `leadInFor`), so the server finds beat one where it was.
    */
-  gradeDrill: (fileUri: string, drillId: string, leadInSec: number) => {
+  gradeDrill: (fileUri: string, drillId: string, leadInSec: number, onUploaded?: () => void) => {
     const form = new FormData();
     form.append("audio", { uri: fileUri, name: "drill.m4a", type: "audio/m4a" } as unknown as Blob);
     form.append("drillId", drillId);
     form.append("leadInSec", String(leadInSec));
-    return api.post<GradeResult>("/api/practice/drills/grade", form, { timeout: 60_000 }).then((r) => r.data);
+    return api
+      .post<GradeResult>("/api/practice/drills/grade", form, {
+        timeout: 60_000,
+        // The take is up: what is left is the marking (the screen says "Checking each note").
+        onUploadProgress: onUploaded
+          ? (e) => {
+              if (e.total && e.loaded >= e.total) onUploaded();
+            }
+          : undefined,
+      })
+      .then((r) => r.data);
   },
 
   /** XP, level, streak, weekly goal, badges, the last seven days and the track (null until chosen). */
@@ -539,6 +552,16 @@ export const practiceApi = {
     form.append("leadInSec", String(leadInSec));
     return api.post<PracticeModeGrade>("/api/practice/modes/grade", form, { timeout: 90_000 }).then((r) => r.data);
   },
+
+  /** A fresh deal of a quick game on the singer's track: its rounds, each with its answer. */
+  game: (game: PracticeGameId) => api.get<PracticeGame>(`/api/practice/games/${game}`).then((r) => r.data),
+
+  /**
+   * Sends a game's answers (one per round from the first, null for one left unanswered) to be marked by the server; a
+   * game that counts earns XP. Each deal once.
+   */
+  gradeGame: (dealId: string, answers: (string | null)[], seconds: number) =>
+    api.post<PracticeGameGrade>("/api/practice/games/grade", { dealId, answers, seconds }).then((r) => r.data),
 };
 
 export const libraryApi = {

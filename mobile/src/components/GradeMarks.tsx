@@ -7,26 +7,31 @@
  */
 
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Animated, StyleSheet, Text, View } from "react-native";
 import type { GradeResult, NoteEvent } from "../api/types";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { rewardMoment } from "../lib/practiceProgress";
 import { FOCUSED_MARK_LEGEND, markGlyph, markLabel } from "../lib/markShape";
+import { useMarkReveal } from "./practice/useMarkReveal";
 
 export function GradeMarks({
   grade,
   notes,
   showEarned = true,
+  fresh = false,
 }: {
   grade: GradeResult;
   notes: readonly NoteEvent[];
   /** False when the screen has already said the line it earned (Practice's reward toast): it is said once. */
   showEarned?: boolean;
+  /** A mark that has just come back: its notes land one by one and the score counts up (`useMarkReveal`). */
+  fresh?: boolean;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const earned = showEarned ? rewardMoment(grade.reward) : null;
+  const reveal = useMarkReveal(grade, notes, fresh);
 
   const statusColor = (s: string) =>
     s === "hit" ? colors.success : s === "near" ? colors.text : s === "wrong" ? colors.textMuted : colors.textFaint;
@@ -37,7 +42,12 @@ export function GradeMarks({
   return (
     <View style={styles.result}>
       <View style={styles.scoreRow}>
-        <Text style={[styles.score, { color: grade.score >= 80 ? colors.successText : grade.score >= 50 ? colors.text : colors.textMuted }]}>{grade.score}</Text>
+        <Text
+          style={[styles.score, { color: grade.score >= 80 ? colors.successText : grade.score >= 50 ? colors.text : colors.textMuted }]}
+          accessibilityLabel={String(grade.score)}
+        >
+          {reveal.score}
+        </Text>
         <View style={styles.scoreText}>
           <Text style={styles.summary}>{grade.summary}</Text>
           {grade.octaveShift !== 0 ? (
@@ -46,14 +56,14 @@ export function GradeMarks({
         </View>
       </View>
       <View style={styles.marks}>
-        {grade.notes.map((g) => {
+        {grade.notes.map((g, i) => {
           const n = notes[g.index];
           if (!n) return null;
           const glyph = markGlyph(g.status);
           return (
-            <View
+            <Animated.View
               key={g.index}
-              style={[styles.mark, { borderColor: statusColor(g.status) }, (g.status === "missed" || g.status === "near") && styles.markDashed]}
+              style={[styles.mark, { borderColor: statusColor(g.status) }, (g.status === "missed" || g.status === "near") && styles.markDashed, reveal.markStyle(i)]}
               accessible
               accessibilityLabel={markLabel(`${n.solfa}${n.octaveMark}`, g.status, g.cents)}
             >
@@ -66,12 +76,12 @@ export function GradeMarks({
               <Text style={styles.markCents}>
                 {g.status === "missed" ? "—" : g.cents == null ? "" : `${g.cents > 0 ? "+" : ""}${Math.round(g.cents)}`}
               </Text>
-            </View>
+            </Animated.View>
           );
         })}
       </View>
       <Text style={styles.legend}>{FOCUSED_MARK_LEGEND}</Text>
-      {earned ? <Text style={styles.earned}>{earned.line}</Text> : null}
+      {earned && reveal.done ? <Text style={styles.earned}>{earned.line}</Text> : null}
     </View>
   );
 }

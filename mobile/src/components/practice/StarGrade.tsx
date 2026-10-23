@@ -6,7 +6,7 @@
  */
 
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Animated, StyleSheet, Text, View } from "react-native";
 
 import type { GradeResult, NoteEvent } from "../../api/types";
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
@@ -14,21 +14,28 @@ import { useColors, useThemedStyles } from "../../lib/theme";
 import { playfulRewardLine, starHint, starsArt, starsFor, starWord } from "../../lib/practiceTrack";
 import { PLAYFUL_MARK_LEGEND, markGlyph, markLabel } from "../../lib/markShape";
 import { Art } from "./Art";
+import { useMarkReveal } from "./useMarkReveal";
 
 export function StarGrade({
   grade,
   notes,
   showEarned = true,
+  fresh = false,
 }: {
   grade: GradeResult;
   notes: readonly NoteEvent[];
   /** False when the screen has already said the line it earned (Practice's reward toast): it is said once. */
   showEarned?: boolean;
+  /** A mark that has just come back: its notes land one by one, then the stars and the word (`useMarkReveal`). */
+  fresh?: boolean;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const stars = starsFor(grade.score);
   const earned = showEarned ? playfulRewardLine(grade.reward) : null;
+  const reveal = useMarkReveal(grade, notes, fresh);
+  // The stars and the word wait for the notes, in their place, so nothing below them moves when they come.
+  const after = { opacity: reveal.done ? 1 : 0 };
 
   const statusColor = (s: string) =>
     s === "hit" ? colors.success : s === "near" ? colors.text : s === "wrong" ? colors.textMuted : colors.textFaint;
@@ -38,23 +45,23 @@ export function StarGrade({
 
   return (
     <View style={styles.result}>
-      <View accessible accessibilityRole="image" accessibilityLabel={`${stars} of 3 stars. ${starWord(stars)}`}>
+      <View style={after} accessible accessibilityRole="image" accessibilityLabel={`${stars} of 3 stars. ${starWord(stars)}`}>
         <Art name={starsArt(stars)} width={148} />
       </View>
-      <Text style={styles.word}>{starWord(stars)}</Text>
-      <Text style={styles.hint}>{starHint(grade, stars)}</Text>
+      <Text style={[styles.word, after]}>{starWord(stars)}</Text>
+      <Text style={[styles.hint, after]}>{starHint(grade, stars)}</Text>
       {grade.octaveShift !== 0 ? (
         <Text style={styles.hint}>You sang it {grade.octaveShift > 0 ? "higher up" : "lower down"}. That's fine!</Text>
       ) : null}
       <View style={styles.marks}>
-        {grade.notes.map((g) => {
+        {grade.notes.map((g, i) => {
           const n = notes[g.index];
           if (!n) return null;
           const glyph = markGlyph(g.status);
           return (
-            <View
+            <Animated.View
               key={g.index}
-              style={[styles.mark, { borderColor: statusColor(g.status) }, (g.status === "missed" || g.status === "near") && styles.markDashed]}
+              style={[styles.mark, { borderColor: statusColor(g.status) }, (g.status === "missed" || g.status === "near") && styles.markDashed, reveal.markStyle(i)]}
               accessible
               accessibilityLabel={markLabel(`${n.solfa}${n.octaveMark}`, g.status, g.cents, true)}
             >
@@ -64,12 +71,12 @@ export function StarGrade({
                 </Text>
                 {glyph ? <Text style={[styles.markGlyph, { color: statusText(g.status) }]}>{glyph}</Text> : null}
               </View>
-            </View>
+            </Animated.View>
           );
         })}
       </View>
       <Text style={styles.legend}>{PLAYFUL_MARK_LEGEND}</Text>
-      {earned ? <Text style={styles.earned}>{earned}</Text> : null}
+      {earned && reveal.done ? <Text style={styles.earned}>{earned}</Text> : null}
     </View>
   );
 }

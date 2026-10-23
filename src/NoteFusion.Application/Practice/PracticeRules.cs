@@ -30,6 +30,15 @@ public static class PracticeRules
     /// <summary>On top of <see cref="PartXp"/> for a part marked <see cref="GoodScore"/> or better.</summary>
     public const int PartGoodBonus = 10;
 
+    /// <summary>A quick game that counts (Which note?, Staff to solfa, Name that hymn), whatever the score: tapping is lighter work than singing.</summary>
+    public const int GameXp = 5;
+
+    /// <summary>On top of <see cref="GameXp"/> for a game scored <see cref="GoodScore"/> or better.</summary>
+    public const int GameGoodBonus = 3;
+
+    /// <summary>Quick games a local day that earn XP and count as practice; more are played for fun.</summary>
+    public const int GamesPerDay = 6;
+
     public const int GoodScore = 80;
     public const int PerfectScore = 100;
 
@@ -134,6 +143,7 @@ public static class PracticeRules
     public static int BaseXp(PracticeKind kind, int score) => kind switch
     {
         PracticeKind.Part => PartXp + (score >= GoodScore ? PartGoodBonus : 0),
+        PracticeKind.Game => GameXp + (score >= GoodScore ? GameGoodBonus : 0),
         _ when UsesDrillAllowance(kind) => DrillXp
             + (score >= GoodScore ? DrillGoodBonus : 0)
             + (score >= PerfectScore ? DrillPerfectBonus : 0),

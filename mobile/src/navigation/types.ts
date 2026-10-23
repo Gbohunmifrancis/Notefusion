@@ -1,5 +1,5 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
-import type { PracticeModeId, PracticeTrack, TranscriptionResult } from '../api/types';
+import type { PracticeGameId, PracticeModeId, PracticeTrack, TranscriptionResult } from '../api/types';
 import type { SeasonName } from '../lib/season';
 
 /** Central navigation type map — every screen's params in one place. */
@@ -123,6 +123,13 @@ export type RootStackParams = {
    * Night Singer sticker). Six short drills, each heard, sung and marked like a drill.
    */
   SeasonPath: { season: SeasonName; track?: PracticeTrack | null };
+  /**
+   * A quick game, pushed from the Practice tab's "Quick games" row (board s-practice-fun/s3): Which note?, Staff to
+   * solfa (Playful's Note race) or Name that hymn. Tapped, not sung. `track` names it as the tab did.
+   */
+  PracticeGame: { game: PracticeGameId; track?: PracticeTrack | null };
+  /** "Your progress": streak, level, the week and the badges, from the Practice tab's top line (board s-practice-fun/s1). */
+  PracticeProgress: undefined;
   /**
    * The account page: plan, choir, Notifications, Settings, help and feedback. Pushed from the avatar
    * at the top right of every tab, so back returns to the tab you were on.

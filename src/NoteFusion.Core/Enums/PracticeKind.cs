@@ -29,5 +29,11 @@ public enum PracticeKind
     Run = 5,
 
     /// <summary>A rhythm clapped (or tapped) back, marked clap by clap.</summary>
-    Rhythm = 6
+    Rhythm = 6,
+
+    /// <summary>
+    /// A quick game, tapped not sung (<c>POST /api/practice/games/grade</c>): Which note?, Staff to solfa, Name that hymn.
+    /// Earns less than a drill and spends none of the day's marked drills.
+    /// </summary>
+    Game = 7
 }

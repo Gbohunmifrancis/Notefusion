@@ -25,6 +25,8 @@ import { ProfileScreen } from '../screens/ProfileScreen';
 import { NotificationsScreen } from '../screens/NotificationsScreen';
 import { PracticeModeScreen } from '../screens/practice/PracticeModeScreen';
 import { SeasonPathScreen } from '../screens/practice/SeasonPathScreen';
+import { PracticeGameScreen } from '../screens/practice/PracticeGameScreen';
+import { PracticeProgressScreen } from '../screens/practice/PracticeProgressScreen';
 import { useOutboxRunner } from '../lib/outbox';
 import { useAppEventsFlush, useAppLifecycleEvents } from '../lib/appEvents';
 import { usePreviewClaim } from '../lib/previewClaim';
@@ -186,6 +188,17 @@ export function RootNavigator() {
             <Stack.Screen
               name="PracticeMode"
               component={PracticeModeScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            {/* The quick games and Your progress, from the Practice tab (board s-practice-fun). */}
+            <Stack.Screen
+              name="PracticeGame"
+              component={PracticeGameScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="PracticeProgress"
+              component={PracticeProgressScreen}
               options={{ animation: 'slide_from_right' }}
             />
             {/* A season's path (the carols, the Midnight path), from the Practice hub's season card while it is on. */}

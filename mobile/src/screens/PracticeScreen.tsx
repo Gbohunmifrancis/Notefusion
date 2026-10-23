@@ -12,9 +12,10 @@
  * Focused — the exact score and cents, the take's overall tuning, "Replay my take", and less fuss. The server picks
  * each track's drills; XP, levels, streaks and badges are the same on both.
  *
- * Board c-practice/6a: the path card stays the hero, the streak and level one line above it, then "More ways to
- * practise" (Playful: "More ways to play") — the modes the server says are live (`progress.modes`), each pushing
- * `PracticeMode` (screens/practice) — and the stat cards, the week and the badges below as "Your progress". One Doh on
+ * Board s-practice-fun/s1 (after c-practice/6a): the path card stays the hero, with the streak, level and week one line
+ * above it that opens "Your progress" (`PracticeProgress`: the stat cards, the week and the badges, which used to make
+ * this tab a long scroll); then "Quick games" (`PracticeGame`: tapped, not sung) and "More ways to practise" (Playful:
+ * "More ways to play") — the modes the server says are live (`progress.modes`), each pushing `PracticeMode`. One Doh on
  * screen: Playful's buddy at the top (the track pill takes an icon), Focused's one small Doh beside the modes.
  *
  * A tab (board a-core/04), reached from the tab bar, Home's streak chip and every practice reminder. A tab stays
@@ -22,13 +23,13 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Animated, Linking, Platform, RefreshControl, StyleSheet, Text, View, type ScrollView } from "react-native";
+import { AccessibilityInfo, Animated, Linking, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { Icon } from "../components/Icon";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useReducedMotion } from "react-native-reanimated";
-import Svg, { Circle, Path, SvgXml } from "react-native-svg";
+import { SvgXml } from "react-native-svg";
 import { File, Paths } from "expo-file-system";
 import {
   createAudioPlayer,
@@ -56,7 +57,7 @@ import { practiceApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import type { AxiosError } from "axios";
 import { classifySendFailure } from "../lib/sendQueue";
-import type { Drill, GradeResult, PracticeBadge, PracticeDay, PracticeProgress, PracticeSeason, PracticeTrack, WeeklyGoal } from "../api/types";
+import type { Drill, GradeResult, PracticeProgress, PracticeSeason, PracticeTrack } from "../api/types";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { leadInFor, noteDueAt, partSeconds } from "../lib/take";
@@ -66,21 +67,13 @@ import { acknowledgeGrade } from "../lib/practiceReward";
 import { rememberStreak } from "../lib/practiceReminder";
 import {
   allowanceLine,
-  levelFraction,
   nextAction,
-  nextLevelLine,
   pathLine,
   unitBarFraction,
   unitLine,
-  sortBadges,
-  streakLabel,
-  streakLine,
   streakSnapshot,
-  weekdayLetter,
-  xpAmount,
 } from "../lib/practiceProgress";
 import {
-  badgeArt,
   celebrationFor,
   flameArt,
   gradeAnnouncement,
@@ -90,7 +83,6 @@ import {
   mascotMood,
   playfulRewardLine,
   rewardArt,
-  stickerTilt,
   trackTitle,
   tuningLine,
 } from "../lib/practiceTrack";
@@ -101,7 +93,9 @@ import { ART } from "../components/practice/art/svgs";
 import { useSeason } from "../lib/seasonStore";
 import { activeSeason, costumeOf, seasonCard, seasonOf, seasonTint, seasonWords, type Costume } from "../lib/season";
 import { ModeList } from "../components/practice/ModeList";
+import { GameTiles } from "../components/practice/GameTiles";
 import { MarkingBar } from "../components/practice/MarkingBar";
+import { MARK_STEP_MS } from "../components/practice/useMarkReveal";
 import { hubModes, modesDohLine, modesHeading, progressStrip } from "../lib/practiceModes";
 import type { RootStackParams } from "../navigation/types";
 
@@ -113,6 +107,9 @@ const RECORDING = { ...RecordingPresets.HIGH_QUALITY, ...PRACTICE_PROFILE };
 const TAIL_SEC = 1;
 const TOAST_MS = 3200;
 const MIC_REFUSED = "Microphone permission is needed to sing the drill.";
+/** A take still not marked after this long: "Still marking — slow connection". */
+const SLOW_MARK_MS = 8000;
+const MARKING_LINE = { upload: "Listening back…", check: "Checking each note…", slow: "Still marking — slow connection" } as const;
 
 export function PracticeScreen() {
   const colors = useColors();
@@ -137,6 +134,8 @@ export function PracticeScreen() {
   /** The microphone was refused for good: only the phone's settings can turn it on now. */
   const [micBlocked, setMicBlocked] = useState(false);
   const [grade, setGrade] = useState<GradeResult | null>(null);
+  /** While a take is marked (board s-practice-fun/s2): sending it, the server checking it, or a slow connection's wait. */
+  const [marking, setMarking] = useState<"upload" | "check" | "slow">("upload");
 
   const [picking, setPicking] = useState(false);
   const [savingTrack, setSavingTrack] = useState<PracticeTrack | null>(null);
@@ -168,13 +167,6 @@ export function PracticeScreen() {
   // The drill on screen, read by `load`: a visit that brings a different drill clears the last one's marks.
   const drillRef = useRef<Drill | null>(null);
   drillRef.current = drill;
-
-  /** The hub's closing card takes the singer back up to the drill card (board n-ux-low Q2b e). */
-  const scrollRef = useRef<ScrollView | null>(null);
-  const drillY = useRef(0);
-  function toDrill() {
-    scrollRef.current?.scrollTo({ y: Math.max(0, drillY.current - spacing.md), animated: !reduceMotion });
-  }
 
   const load = useCallback(async () => {
     try {
@@ -395,8 +387,14 @@ export function PracticeScreen() {
   async function mark(sung: Drill, uri: string, lead: number) {
     setPhase("grading");
     setUnsent(null);
+    setMarking("upload");
+    // Past this the take is still on its way or being marked: the line says the connection is slow, not that it broke.
+    const slow = setTimeout(() => { if (live.current) setMarking("slow"); }, SLOW_MARK_MS);
     try {
-      const result = await practiceApi.gradeDrill(uri, sung.id, lead);
+      const result = await practiceApi.gradeDrill(uri, sung.id, lead, () => {
+        if (live.current) setMarking((m) => (m === "upload" ? "check" : m));
+      });
+      clearTimeout(slow);
       if (!live.current) return;
       setGrade(result);
       setTakeUri(uri);
@@ -404,11 +402,16 @@ export function PracticeScreen() {
       void logAnalyticsEvent("drill_completed", { drill: sung.id, score: result.score, xp: result.reward?.xpGained ?? 0 });
       const moment = acknowledgeGrade(result);
       const how = celebrationFor(sung.track, result.score, result.reward, !!result.milestone);
-      if (how === "burst") setBurst((b) => b + 1);
+      // The confetti and the reward line wait for the marks to land and the score to count up (board s-practice-fun/s2).
+      const landed = reduceMotion ? 0 : result.notes.length * MARK_STEP_MS + 700;
       // Each line once: a milestone is said by its card, and what the take earned by the toast, or else under the marks.
       const earned = sung.track === "playful" ? playfulRewardLine(result.reward) : moment?.line ?? null;
       const toasted = how !== "quiet" && !result.milestone && !!earned;
-      if (toasted && earned) showToast(earned, rewardArt(result.reward));
+      setTimeout(() => {
+        if (!live.current) return;
+        if (how === "burst") setBurst((b) => b + 1);
+        if (toasted && earned) showToast(earned, rewardArt(result.reward));
+      }, landed);
       setRewardToasted(toasted);
       const line = result.milestone?.title ?? earned;
       // Android's live regions already read the toast and the milestone; iOS hears the line here.
@@ -426,6 +429,7 @@ export function PracticeScreen() {
       }
       setNext(upcoming);
     } catch (e) {
+      clearTimeout(slow);
       if (!live.current) return;
       setPhase("idle");
       const err = toApiError(e);
@@ -509,7 +513,6 @@ export function PracticeScreen() {
     <View style={styles.flex}>
       <Screen
         scroll
-        scrollRef={scrollRef}
         contentStyle={styles.screen}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} colors={[colors.accent]} />}
       >
@@ -550,7 +553,15 @@ export function PracticeScreen() {
           )
         ) : progress ? (
           <>
-            <ProgressLine progress={progress} styles={styles} />
+            <ProgressLine
+              progress={progress}
+              styles={styles}
+              colors={colors}
+              onOpen={() => {
+                if (busy) return;
+                nav.navigate("PracticeProgress");
+              }}
+            />
 
             {showPicker ? (
               <TrackPicker
@@ -575,7 +586,7 @@ export function PracticeScreen() {
             {savingTrack && !showPicker ? (
               <DrillSkeleton styles={styles} />
             ) : drill && !showPicker ? (
-              <View onLayout={(e) => { drillY.current = e.nativeEvent.layout.y; }}>
+              <View>
                 <Card style={playful ? { ...styles.card, ...styles.cardPlayful } : styles.card}>
                   {/* Ink, not blue: the eyebrow is a label, not a control (board n-ux-low Q2a c). Playful's is its orange. */}
                   <Text style={[styles.eyebrow, playful && styles.eyebrowPlayful]}>
@@ -618,7 +629,7 @@ export function PracticeScreen() {
                     </View>
                   ) : phase === "grading" ? (
                     <>
-                      <Button label="Marking your take…" icon="waiting" loading />
+                      <Button label={MARKING_LINE[marking]} icon="waiting" loading />
                       <MarkingBar />
                     </>
                   ) : (
@@ -646,7 +657,9 @@ export function PracticeScreen() {
 
                   {/* Marking takes up to a minute and the button shows only its spinner, so the line under it says so. */}
                   {phase === "grading" ? (
-                    <Text style={styles.allowance}>Marking your take, note by note. It can take up to a minute.</Text>
+                    <Text style={styles.allowance} accessibilityLiveRegion="polite">
+                      {marking === "slow" ? "Your take is safe. On a slow connection it can take up to a minute." : "Marking your take, note by note."}
+                    </Text>
                   ) : allowance ? (
                     // The count is a label (13); once they are all sung it is good news in a sentence (16).
                     <Text style={left === 0 ? styles.body : styles.allowance}>{allowanceLine(allowance)}</Text>
@@ -667,8 +680,8 @@ export function PracticeScreen() {
                       <Text style={styles.meta}>{grade.milestone.description}</Text>
                     </View>
                   ) : null}
-                  {grade && playful ? <StarGrade grade={grade} notes={drill.notes} showEarned={!rewardToasted} /> : null}
-                  {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} showEarned={!rewardToasted} /> : null}
+                  {grade && playful ? <StarGrade grade={grade} notes={drill.notes} showEarned={!rewardToasted} fresh /> : null}
+                  {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} showEarned={!rewardToasted} fresh /> : null}
                   {grade && focused ? (
                     <View style={styles.focusRow}>
                       <Text style={styles.focusTuning}>{tuningLine(grade.tuningCents)}</Text>
@@ -706,6 +719,24 @@ export function PracticeScreen() {
               />
             ) : null}
 
+            {/* ── Quick games: tapped, not sung, about a minute each (board s-practice-fun/s3) ── */}
+            {!showPicker ? (
+              <View style={styles.games}>
+                <View style={styles.gamesHead}>
+                  <Text style={styles.modesTitle} accessibilityRole="header">Quick games</Text>
+                  <Text style={styles.gamesNote}>No mic · about a minute</Text>
+                </View>
+                <GameTiles
+                  track={track}
+                  onOpen={(game) => {
+                    if (busy) return;
+                    void logAnalyticsEvent("practice_game_opened", { game });
+                    nav.navigate("PracticeGame", { game, track });
+                  }}
+                />
+              </View>
+            ) : null}
+
             {/* ── More ways to practise: the modes the server says are live ── */}
             {modeRows.length > 0 && !showPicker ? (
               <View style={styles.modes}>
@@ -728,125 +759,6 @@ export function PracticeScreen() {
               </View>
             ) : null}
 
-            {/* ── Your progress: streak and level, the week, the badges ────── */}
-            <Text style={styles.sectionTitle} accessibilityRole="header">Your progress</Text>
-            <View style={styles.statsRow}>
-              <Card style={styles.statCard}>
-                <View style={styles.statHead}>
-                  <Art name={flameArt(progress.streak)} width={32} />
-                  <Text style={styles.statBig} accessibilityLabel={streakLabel(progress.streak.current, progress.streak.best)}>
-                    {progress.streak.current}
-                  </Text>
-                </View>
-                <Text style={styles.statLabel}>day streak</Text>
-                <Text style={styles.statSub}>{streakLine(progress.streak)}</Text>
-                {/* A freeze keeps a streak: with none running there is nothing for it to keep. */}
-                {progress.streak.current > 0 ? (
-                  <View style={styles.footRow}>
-                    <Art name="freeze" width={16} style={!progress.streak.freezeAvailable && styles.spent} />
-                    <Text style={[styles.statFoot, styles.footText]}>
-                      {progress.streak.freezeAvailable ? "Streak freeze ready this week" : "Freeze used this week"}
-                    </Text>
-                  </View>
-                ) : null}
-              </Card>
-
-              <Card style={styles.statCard}>
-                <View style={styles.levelHead}>
-                  <Art name={levelArt(progress.level.index)} width={44} />
-                  <View style={styles.levelText}>
-                    <Text style={[styles.levelName, progress.level.name.length > 6 && styles.levelNameLong]} numberOfLines={2}>
-                      {progress.level.name}
-                    </Text>
-                    <Text style={styles.statLabel}>level {progress.level.index + 1} of 8</Text>
-                  </View>
-                </View>
-                <View style={styles.barRow}>
-                  <View
-                    style={styles.barTrack}
-                    accessible
-                    accessibilityRole="progressbar"
-                    accessibilityLabel={`${xpAmount(progress.xp)}. ${nextLevelLine(progress.level)}`}
-                  >
-                    <View style={[styles.barFill, { width: `${Math.round(levelFraction(progress.level, progress.xp) * 100)}%` }]} />
-                  </View>
-                  {progress.level.nextName ? <Art name={levelArt(progress.level.index + 1)} width={22} /> : null}
-                </View>
-                <Text style={styles.statSub}>{xpAmount(progress.xp)}</Text>
-                <Text style={styles.statFoot}>{nextLevelLine(progress.level)}</Text>
-              </Card>
-            </View>
-
-            {/* ── This week ────────────────────────────────────────────────── */}
-            <Card style={styles.card}>
-              <View style={styles.weekRow}>
-                <GoalRing goal={progress.weeklyGoal} styles={styles} colors={colors} />
-                <View style={styles.weekText}>
-                  <Text style={styles.cardTitle}>
-                    {progress.weeklyGoal.daysDone} of {progress.weeklyGoal.target} days this week
-                  </Text>
-                  <Text style={styles.weekLine}>
-                    {progress.weeklyGoal.daysDone >= progress.weeklyGoal.target ? "Weekly goal met." : "Practise five days a week to meet the goal."}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.days}>
-                {progress.lastSevenDays.map((d) => (
-                  <DayDot key={d.date} day={d} styles={styles} colors={colors} />
-                ))}
-              </View>
-              {/* The rule the hub's old footnote told, after the day's XP (board n-ux-low Q2b e). */}
-              <Text style={styles.meta}>
-                {progress.xpToday} of {progress.dailyXpCap} XP today · {playful ? "every singing game counts" : "every marked take counts"}
-              </Text>
-            </Card>
-
-            {/* ── Badges: stickers on Playful, a plain list on Focused ──────── */}
-            <Text style={styles.sectionTitle} accessibilityRole="header">{playful ? "My stickers" : "Badges"}</Text>
-            {playful ? (
-              <View style={styles.stickerGrid}>
-                {sortBadges(progress.badges).map((b) => (
-                  <Sticker key={b.code} badge={b} styles={styles} />
-                ))}
-              </View>
-            ) : focused ? (
-              <Card style={styles.badgeList} padded={false}>
-                {sortBadges(progress.badges).map((b, i) => (
-                  <BadgeRow key={b.code} badge={b} first={i === 0} styles={styles} colors={colors} />
-                ))}
-              </Card>
-            ) : (
-              <View style={styles.badgeGrid}>
-                {sortBadges(progress.badges).map((b) => (
-                  <BadgeTile key={b.code} badge={b} styles={styles} />
-                ))}
-              </View>
-            )}
-
-            {/* ── The hub ends on the next thing to do, not a footnote (board n-ux-low Q2b e): today's drill again, and a
-                way back up to it. A secondary button: the screen's one primary stays on the drill card. ── */}
-            {drill && !showPicker && !savingTrack ? (
-              <Card style={styles.closing}>
-                {left === 0 ? (
-                  <Text style={styles.cardTitle}>That's today's drills done. Back tomorrow.</Text>
-                ) : (
-                  <>
-                    <Text style={styles.cardTitle} accessibilityRole="header">
-                      {playful ? "Your singing game is waiting" : "Today's drill is waiting"}
-                    </Text>
-                    <Text style={styles.closingLine}>{allowance ? `${drill.title} · ${allowanceLine(allowance)}` : drill.title}</Text>
-                    <Button
-                      label={playful ? "Play today's game!" : "Sing today's drill"}
-                      icon="mic"
-                      variant="secondary"
-                      block
-                      onPress={toDrill}
-                      style={styles.closingButton}
-                    />
-                  </>
-                )}
-              </Card>
-            ) : null}
           </>
         ) : null}
       </Screen>
@@ -987,10 +899,13 @@ function DrillSkeleton({ styles }: { styles: Styles }) {
   );
 }
 
-function ProgressLine({ progress, styles }: { progress: PracticeProgress; styles: Styles }) {
+/** The streak, the level and the week in one line at the top; it opens "Your progress" (board s-practice-fun/s1). */
+function ProgressLine({ progress, styles, colors, onOpen }: { progress: PracticeProgress; styles: Styles; colors: Palette; onOpen: () => void }) {
   const strip = progressStrip(progress);
+  const week = progress.weeklyGoal;
   return (
-    <View style={styles.progLine} accessible accessibilityLabel={strip.label}>
+    <Touchable onPress={onOpen} radius={radii.md} accessibilityRole="button" accessibilityLabel={`${strip.label}. ${week.daysDone} of ${week.target} days this week. Your progress`}>
+    <View style={styles.progLine}>
       <Art name={flameArt(progress.streak)} width={20} />
       <Text style={styles.progStrong} numberOfLines={1}>{strip.streak}</Text>
       <View style={styles.progSep} />
@@ -1001,139 +916,11 @@ function ProgressLine({ progress, styles }: { progress: PracticeProgress; styles
         <View style={[styles.progFill, { width: `${Math.round(strip.fraction * 100)}%` }]} />
       </View>
       {strip.toNext ? <Text style={styles.progText} numberOfLines={1}>{strip.toNext}</Text> : null}
+      <View style={styles.progSep} />
+      <Text style={styles.progStrong}>{week.daysDone}/{week.target}</Text>
+      <Icon name="chevron" size={14} color={colors.textFaint} />
     </View>
-  );
-}
-
-/**
- * The weekly goal as the art draws it: one arc per practice day of the goal, lit as the days are sung, and a ticked
- * disc in the middle once the week is met.
- */
-function GoalRing({ goal, styles, colors }: { goal: WeeklyGoal; styles: Styles; colors: Palette }) {
-  const size = 64;
-  const stroke = 7;
-  const c = size / 2;
-  const r = c - stroke / 2 - 1;
-  const n = Math.max(1, Math.min(7, goal.target));
-  const done = Math.min(goal.daysDone, n);
-  const met = goal.daysDone >= goal.target && goal.target > 0;
-  const seg = 360 / n;
-  const gap = n > 1 ? 14 : 0;
-  const at = (deg: number) => {
-    const a = ((deg - 90) * Math.PI) / 180;
-    return `${(c + r * Math.cos(a)).toFixed(2)} ${(c + r * Math.sin(a)).toFixed(2)}`;
-  };
-  return (
-    <View
-      style={styles.ring}
-      accessible
-      accessibilityRole="progressbar"
-      accessibilityLabel={`Weekly goal: ${goal.daysDone} of ${goal.target} days${met ? ", met" : ""}`}
-    >
-      <Svg width={size} height={size}>
-        {n === 1 ? (
-          <Circle cx={c} cy={c} r={r} stroke={done ? colors.success : colors.surfaceAlt} strokeWidth={stroke} fill="none" />
-        ) : (
-          Array.from({ length: n }, (_, i) => (
-            <Path
-              key={i}
-              d={`M${at(i * seg + gap / 2)}A${r} ${r} 0 0 1 ${at((i + 1) * seg - gap / 2)}`}
-              stroke={i < done ? colors.success : colors.surfaceAlt}
-              strokeWidth={stroke}
-              strokeLinecap="round"
-              fill="none"
-            />
-          ))
-        )}
-        {met ? <Circle cx={c} cy={c} r={r - 9} fill={colors.success} /> : null}
-      </Svg>
-      {met ? <Icon name="check" size={22} strokeWidth={2.25} color={colors.bg} style={styles.ringTick} /> : null}
-    </View>
-  );
-}
-
-const DAY_A11Y: Record<PracticeDay["status"], string> = {
-  done: "practised",
-  frozen: "missed, kept by the streak freeze",
-  missed: "missed",
-  today: "today, not practised yet",
-  none: "before your first practice",
-};
-
-function DayDot({ day, styles, colors }: { day: PracticeDay; styles: Styles; colors: Palette }) {
-  return (
-    <View style={styles.day} accessible accessibilityLabel={`${day.date}: ${DAY_A11Y[day.status]}`}>
-      <View
-        style={[
-          styles.dayDot,
-          // Practised in mint, as the ring beside it, with the tick in the canvas colour (board n-ux-low Q2a d).
-          day.status === "done" && { backgroundColor: colors.success, borderColor: colors.success },
-          day.status === "frozen" && { borderColor: "transparent" },
-          day.status === "today" && { borderColor: colors.text, borderStyle: "dashed" },
-          day.status === "none" && { opacity: 0.4 },
-        ]}
-      >
-        {day.status === "done" ? <Icon name="check" size={14} strokeWidth={2.25} color={colors.bg} /> : null}
-        {day.status === "frozen" ? <Art name="freeze" width={26} /> : null}
-      </View>
-      <Text style={styles.dayLetter}>{weekdayLetter(day.date)}</Text>
-    </View>
-  );
-}
-
-function badgeLabel(badge: PracticeBadge, sticker = false): string {
-  return `${badge.title}${sticker ? " sticker" : ""}. ${badge.description} ${badge.earned ? "Earned." : `${badge.progress} of ${badge.target}.`}`;
-}
-
-/**
- * No track chosen yet: the badges as tiles under the picker. A locked one fades its picture only (board m-ux-medium
- * P5b), and its title goes muted: what it takes and how far along it is stay at full strength, to be read.
- */
-function BadgeTile({ badge, styles }: { badge: PracticeBadge; styles: Styles }) {
-  const locked = !badge.earned;
-  return (
-    <View style={styles.badge} accessible accessibilityLabel={badgeLabel(badge)}>
-      <Art name={badgeArt(badge.code, badge.earned)} width={40} style={locked && styles.badgeArtLocked} />
-      <Text style={[styles.badgeTitle, locked && styles.badgeTitleLocked]} numberOfLines={1}>{badge.title}</Text>
-      <Text style={styles.badgeDesc} numberOfLines={2}>{badge.description}</Text>
-      {locked ? (
-        <View style={styles.badgeProgressRow}>
-          <View style={styles.badgeTrack}>
-            <View style={[styles.badgeFill, { width: `${Math.round((badge.progress / Math.max(1, badge.target)) * 100)}%` }]} />
-          </View>
-          <Text style={styles.badgeCount}>{badge.progress}/{badge.target}</Text>
-        </View>
-      ) : null}
-    </View>
-  );
-}
-
-/** Playful's sticker book: each badge its own die-cut sticker, tilted as if stuck by hand; locked ones grey and flat. */
-function Sticker({ badge, styles }: { badge: PracticeBadge; styles: Styles }) {
-  return (
-    <View style={styles.sticker} accessible accessibilityLabel={badgeLabel(badge, true)}>
-      <Art
-        name={badgeArt(badge.code, badge.earned)}
-        width={76}
-        style={badge.earned ? { transform: [{ rotate: `${stickerTilt(badge.code)}deg` }] } : undefined}
-      />
-      <Text style={[styles.stickerTitle, !badge.earned && { color: styles.badgeDesc.color }]} numberOfLines={2}>{badge.title}</Text>
-      {!badge.earned ? <Text style={styles.badgeCount}>{badge.progress}/{badge.target}</Text> : null}
-    </View>
-  );
-}
-
-/** Focused's badges: the same stickers, small and flat, in a plain list. */
-function BadgeRow({ badge, first, styles, colors }: { badge: PracticeBadge; first: boolean; styles: Styles; colors: Palette }) {
-  return (
-    <View style={[styles.badgeRow, !first && styles.badgeRowRule]} accessible accessibilityLabel={badgeLabel(badge)}>
-      <Art name={badgeArt(badge.code, badge.earned)} width={34} />
-      <View style={styles.badgeRowText}>
-        <Text style={[styles.badgeTitle, !badge.earned && { color: colors.textMuted }]}>{badge.title}</Text>
-        <Text style={styles.badgeDesc} numberOfLines={1}>{badge.description}</Text>
-      </View>
-      <Text style={styles.badgeRowCount}>{badge.earned ? "Earned" : `${badge.progress}/${badge.target}`}</Text>
-    </View>
+    </Touchable>
   );
 }
 
@@ -1187,25 +974,6 @@ const makeStyles = (c: Palette) =>
     // Sentences are 16 px, meta and labels 13, and nothing is under 12 (board m-ux-medium P5c).
     body: { ...typography.body, color: c.textMuted, fontSize: 16, lineHeight: 23 },
 
-    statsRow: { flexDirection: "row", gap: spacing.md, marginBottom: spacing.md },
-    statCard: { flex: 1, gap: 2 },
-    statHead: { flexDirection: "row", alignItems: "center", gap: spacing.xs },
-    statBig: { ...typography.title, color: c.text, fontSize: 30 },
-    levelName: { ...typography.title, color: c.text, fontSize: 24 },
-    /** "Choir-ready" beside its emblem in half a phone's width: smaller, and free to break at the hyphen. */
-    levelNameLong: { fontSize: 18, lineHeight: 21 },
-    statLabel: { ...typography.caption, color: c.textMuted },
-    statSub: { ...typography.label, color: c.text, fontSize: 13, marginTop: spacing.xs },
-    statFoot: { ...typography.caption, color: c.textFaint, fontSize: 12 },
-    footRow: { flexDirection: "row", alignItems: "center", gap: 5, marginTop: 2 },
-    footText: { flex: 1 },
-    spent: { opacity: 0.4 },
-    levelHead: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
-    levelText: { flex: 1, minWidth: 0 },
-    barRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: spacing.sm },
-    barTrack: { flex: 1, height: 8, borderRadius: 4, backgroundColor: c.surfaceAlt, overflow: "hidden" },
-    // The bars, the eyebrow and the milestone are read, never pressed: ink, not blue (board n-ux-low Q2a c).
-    barFill: { height: 8, borderRadius: 4, backgroundColor: c.text },
 
     eyebrow: { ...typography.caption, color: c.textMuted, textTransform: "uppercase", letterSpacing: 1, fontSize: 12 },
     eyebrowPlayful: { color: c.play },
@@ -1255,25 +1023,7 @@ const makeStyles = (c: Palette) =>
     focusRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: spacing.sm, flexWrap: "wrap" },
     focusTuning: { ...typography.label, color: c.textMuted, fontSize: 13 },
 
-    weekRow: { flexDirection: "row", alignItems: "center", gap: spacing.md },
-    weekText: { flex: 1, gap: 2 },
-    weekLine: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted },
-    ring: { width: 64, height: 64, alignItems: "center", justifyContent: "center" },
-    ringTick: { position: "absolute" },
-    days: { flexDirection: "row", justifyContent: "space-between", marginTop: spacing.xs },
-    day: { alignItems: "center", gap: 4 },
-    dayDot: {
-      width: 28,
-      height: 28,
-      borderRadius: 14,
-      borderWidth: 1.5,
-      borderColor: c.border,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    dayLetter: { ...typography.caption, color: c.textFaint, fontSize: 12 },
 
-    sectionTitle: { ...typography.heading, color: c.text, marginTop: spacing.sm, marginBottom: spacing.sm },
 
     progLine: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: -spacing.sm, marginBottom: spacing.md },
     progText: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted, flexShrink: 1 },
@@ -1306,45 +1056,17 @@ const makeStyles = (c: Palette) =>
     carolsSung: { ...typography.label, color: c.text, fontSize: 14 },
     carolsNext: { ...typography.caption, color: c.textMuted, fontSize: 13 },
 
+    games: { marginTop: spacing.sm, marginBottom: spacing.lg },
+    gamesHead: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", gap: spacing.sm, marginBottom: spacing.sm },
+    gamesNote: { ...typography.caption, color: c.textFaint, fontSize: 13 },
     modes: { marginTop: spacing.sm, marginBottom: spacing.lg },
     modesHead: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginBottom: spacing.sm },
     modesHeadText: { flex: 1, minWidth: 0, gap: 4 },
     modesTitle: { ...typography.heading, color: c.text },
     modesDoh: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted },
-    badgeGrid: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
-    badge: {
-      width: "48%",
-      flexGrow: 1,
-      backgroundColor: c.surface,
-      borderRadius: radii.md,
-      borderWidth: 1,
-      borderColor: c.border,
-      padding: spacing.md,
-      gap: 4,
-    },
-    /** A locked tile: the sticker (already the grey "-locked" art) at half strength, never the words. */
-    badgeArtLocked: { opacity: 0.5 },
-    badgeTitle: { ...typography.label, color: c.text, fontSize: 13 },
-    badgeTitleLocked: { color: c.textMuted },
-    badgeDesc: { ...typography.caption, color: c.textMuted, fontSize: 12, lineHeight: 16 },
-    badgeProgressRow: { flexDirection: "row", alignItems: "center", gap: spacing.xs, marginTop: 2 },
-    badgeTrack: { flex: 1, height: 4, borderRadius: 2, backgroundColor: c.surfaceAlt, overflow: "hidden" },
-    badgeFill: { height: 4, borderRadius: 2, backgroundColor: c.textMuted },
-    badgeCount: { ...typography.caption, color: c.textFaint, fontSize: 12 },
 
-    stickerGrid: { flexDirection: "row", flexWrap: "wrap", rowGap: spacing.md },
-    sticker: { width: "33.33%", paddingHorizontal: spacing.xs, alignItems: "center", gap: 6 },
-    stickerTitle: { ...typography.caption, color: c.text, textAlign: "center", fontFamily: fonts.semibold, lineHeight: 15 },
 
-    badgeList: { overflow: "hidden" },
-    badgeRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingVertical: spacing.sm, paddingHorizontal: spacing.md, minHeight: 48 },
-    badgeRowRule: { borderTopWidth: 1, borderTopColor: c.border },
-    badgeRowText: { flex: 1 },
-    badgeRowCount: { ...typography.caption, color: c.textFaint, fontFamily: fonts.medium },
 
-    closing: { marginTop: spacing.lg, gap: spacing.sm },
-    closingLine: { ...typography.caption, color: c.textMuted, fontSize: 14, lineHeight: 20 },
-    closingButton: { marginTop: spacing.xs },
     empty: { marginBottom: spacing.md, gap: spacing.sm, alignItems: "center", paddingVertical: spacing.lg },
     emptyTitle: { ...typography.heading, color: c.text, textAlign: "center" },
     emptyBody: { ...typography.body, color: c.textMuted, fontSize: 16, lineHeight: 23, textAlign: "center", marginBottom: spacing.xs },
