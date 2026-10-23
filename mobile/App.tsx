@@ -27,9 +27,11 @@ Sentry.init({
   // Enable Logs
   enableLogs: true,
 
-  // Configure Session Replay
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1,
+  // Configure Session Replay. A session picked for either is screenshotted every second on Android from its start (an
+  // error replay keeps the last minute in case one comes), which taps felt: at 1 for errors that was every session. Now
+  // about 85% of sessions carry no recording at all.
+  replaysSessionSampleRate: 0.05,
+  replaysOnErrorSampleRate: 0.1,
   // Recordings show the screen as it was, except password fields and Admin (src/lib/replayPrivacy). A build that
   // cannot mask one view keeps blanking everything, as before.
   integrations: [

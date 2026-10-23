@@ -234,7 +234,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   runtime policy: any native change (a new Expo module, a permission, a plugin) gives a new
   runtime, so an update can only reach builds that have its native code — anything native
   needs a store build first.
-  Offline, JS only (no netinfo): opened/saved sheets are kept per account in `documents/offline/` (`lib/offlineLibrary`, pure `sheetCache`; pins exempt from the 8 MB cap; wiped on sign-out) and used on NETWORK_* errors. No take is lost (board 13): every one (never a link) is written ahead into `lib/outbox` (pure `sendQueue`) before its upload — audio moved to app storage beside a synchronous `<id>.json` record, a mic take `held` from the moment it stops while it is asked what it is — sent at once under an `Idempotency-Key` (`sendKey`: the take's id, a new suffix per job it left behind) and followed on the Record screen by `lib/useTakeSend` ("Kept on this phone" card when the connection drops, "Sending it again" card when the job is lost; no dialogs), and in the Library's "On its way" group; the audio stays until the job is done. A job lost (`errorCode: "JOB_LOST"`; the old sentences only as a fallback) or unanswered 4.5 h after sending is re-sent at once, a 5xx on the backoff, at most twice; the network is waited out however long; the recording's failures and refusals wait for Try again/Delete.
+  Offline, JS only (no netinfo): opened/saved sheets are kept per account in `documents/offline/` (`lib/offlineLibrary`, pure `sheetCache`; pins exempt from the 8 MB cap; wiped on sign-out) and used on NETWORK_* errors. No take is lost (board 13): every one (never a link) is written ahead into `lib/outbox` (pure `sendQueue`) before its upload — audio moved to app storage beside a synchronous `<id>.json` record, a mic take `held` from the moment it stops while it is asked what it is — sent at once under an `Idempotency-Key` (`sendKey`: the take's id, a new suffix per job it left behind) and followed on the Record screen by `lib/useTakeSend` ("Kept on this phone" card when the connection drops, "Sending it again" card when the job is lost; no dialogs), and in "On its way" (`components/library/OnItsWay`: the Library above its sheets, Home above Recent, so a Listen take sent with the app closed is in sight on the screen it opens on); the audio stays until the job is done. A job lost (`errorCode: "JOB_LOST"`; the old sentences only as a fallback) or unanswered 4.5 h after sending is re-sent at once, a 5xx on the backoff, at most twice; the network is waited out however long; the recording's failures and refusals wait for Try again/Delete.
   Android pays through Google Play (board h-play; a store build, expo-iap pinned) once `sellsOnPlay`: the server can
   confirm Play purchases (`GET /api/billing/google-play/status`, its service account set) and Play sells the products;
   until then it keeps the website's checkout (Paystack, Bachs) exactly as before. `lib/playStore` (connect, Play
@@ -660,7 +660,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   ones (already recorded elsewhere: submits, saves, sign-ins, events, device heartbeats) are left out. Readable lines in
   `ActivityNames` (a name without one shows as itself). The phone sends every action first-party too
   (`lib/appEvents`: each `logAnalyticsEvent`, screen views, record/play/save/share/export, checkout, settings, errors
-  shown; ids per event, kept until a 2xx, retried, cleared after a sign-out flush), and the website's `track.js` keeps its
+  shown; ids per event, written to the phone 600 ms after the tap (one write for the taps of a moment, at once on going to the background), kept until a 2xx, retried, cleared after a sign-out flush), and the website's `track.js` keeps its
   queue in storage with ids and retries (a page-leave beacon carries the token, validated by `WebEventsController`).
   `AppEvent`/`WebEvent.ClientId` make a resent event count once; web `ageMs` is believed up to a week; the web-events
   limit is 300 a minute per address. The Activity feed (`GetActivityFeedQuery`: kinds signup, login = every sign-in,
@@ -674,8 +674,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   behind OutboundResilience), the worker (`NF_SENTRY_DSN`, `app.telemetry`: crashed jobs and 5xx only, no bodies or
   locals, URLs and emails masked), `/app` only on the web (`assets/errors.js`: nothing loads until the site's own code
   throws, then the self-hosted `assets/vendor` bundle; `deploy-web.yml` writes `SENTRY_DSN_WEB` into the deployed page)
-  and the phone (`App.tsx`, IP address, the account's id (`Sentry.setUser`, nothing else) and recordings of 1 in 10
-  sessions and every one with an error that show the screen as it was except password fields and Admin, its sheets
+  and the phone (`App.tsx`, IP address, the account's id (`Sentry.setUser`, nothing else) and recordings of 1 in 20
+  sessions and 1 in 10 with an error (a sampled session is screenshotted every second from its start, which taps felt) that show the screen as it was except password fields and Admin, its sheets
   included (`lib/replayPrivacy`: `SecretField`, `PrivateArea`, `MaskIfPrivate` on `Sentry.Mask`; a build without the native
   mask view keeps masking everything), as the privacy policy says; source maps from the
   `@sentry/react-native/expo` plugin on store builds and `eas env:exec production 'npm run update:production'`

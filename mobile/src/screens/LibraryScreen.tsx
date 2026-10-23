@@ -37,15 +37,14 @@ import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLib
 import { withBusy } from "../lib/busy";
 import { exampleResult, savedSheetParams } from "../lib/openSheet";
 import { useOpening } from "../lib/useOpening";
-import { onTakeChange, removeTake, retryTake, useOutbox, useSendProgress } from "../lib/outbox";
+import { onTakeChange, useOutbox, useSendProgress } from "../lib/outbox";
 import { REFRESH_FAILED, isUnopened } from "../lib/savedSheet";
 import { parseUtc, sheetCount } from "../lib/sheetMeta";
 import { EXAMPLE_HYMN, offerExample } from "../lib/exampleSheet";
 import { matchesWords } from "../lib/hymnPack";
 import { useReachability } from "../lib/connectivity";
 import { isNetworkCode } from "../lib/reachability";
-import { openTranscriptionFromNotification } from "../lib/notificationLink";
-import { PendingSends } from "../components/library/PendingSends";
+import { OnItsWay } from "../components/library/OnItsWay";
 import { useSongOnItsWay } from "../lib/useSongOnItsWay";
 import { useAuth } from "../lib/auth";
 import { TabHeader } from "../components/TabHeader";
@@ -433,36 +432,7 @@ export function LibraryScreen() {
       {loadError && items.length > 0 ? <ProblemNote style={styles.refreshNote}>{REFRESH_FAILED}</ProblemNote> : null}
 
       {/* ── Recordings waiting to send (record now, send later) ──────────────── */}
-      <PendingSends
-        items={outbox}
-        progress={sendProgress}
-        song={song.row}
-        onOpenSong={() => {
-          const jobId = song.jobId;
-          if (!jobId) return;
-          void openTranscriptionFromNotification(jobId).then((opened) => opened && song.forget());
-        }}
-        onDismissSong={song.forget}
-        onRetry={(t) => retryTake(t.id)}
-        onOpen={(t) => {
-          if (!t.jobId) return;
-          void openTranscriptionFromNotification(t.jobId).then((opened) => opened && removeTake(t.id));
-        }}
-        onDelete={(t) =>
-          t.status === "done"
-            ? removeTake(t.id)
-            : showDialog({
-                title: "Delete this recording?",
-                message: "It hasn't been sent, so nothing is used up — but the audio is gone for good.",
-                icon: "delete",
-                tone: "danger",
-                actions: [
-                  { label: "Delete", style: "destructive", onPress: () => removeTake(t.id) },
-                  { label: "Keep it", style: "cancel" },
-                ],
-              })
-        }
-      />
+      <OnItsWay items={outbox} progress={sendProgress} song={song} />
 
       {/* ── The choir's shared library, on "All", for someone in a running choir ─── */}
       {folder === null && choirName && (
