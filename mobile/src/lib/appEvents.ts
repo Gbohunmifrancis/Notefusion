@@ -75,16 +75,41 @@ async function persist(): Promise<void> {
   }
 }
 
-/** Records one event now and sends it with the next batch (a few seconds from now). */
+/** How long after a tap its event is written to the phone: the taps of one moment share one write. */
+const SAVE_AFTER_MS = 600;
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+
+/** Writes the kept list once, a moment from now, not inside the tap that logged it. */
+function persistSoon(): void {
+  if (saveTimer) return;
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    void persist();
+  }, SAVE_AFTER_MS);
+}
+
+/** A write still waiting, done now (the app is leaving the screen, or a send is about to read the list). */
+function persistNow(): Promise<void> {
+  if (!saveTimer) return Promise.resolve();
+  clearTimeout(saveTimer);
+  saveTimer = null;
+  return persist();
+}
+
+/**
+ * Records one event and sends it with the next batch (a few seconds from now). The tap pays only for adding it to the
+ * list in memory; the list is written to the phone a moment later, once for every event of that moment, and at once
+ * when the app goes to the background. A tap used to wait on writing the whole kept list.
+ */
 export function logAppEvent(name: string, detail?: Detail): void {
   const event = makeEvent(name, detail);
-  const add = async () => {
+  const add = () => {
     queue = mergeQueue(queue ?? [], [event]);
-    await persist();
+    persistSoon();
     // While a failed send waits its turn (or waits for the app to move), a new event does not hurry it.
     if (failures === 0) scheduleFlush();
   };
-  if (queue) void add();
+  if (queue) add();
   else void load().then(add);
 }
 
@@ -114,6 +139,7 @@ export function flushAppEvents(): Promise<void> {
     try {
       const native = Listen.drainEvents().map(nativeToInput);
       await load();
+      await persistNow();
       if (epoch !== started) return;
       if (native.length) {
         queue = mergeQueue(queue ?? [], native);
@@ -166,6 +192,10 @@ export async function forgetAppEvents(): Promise<void> {
   epoch += 1;
   queue = [];
   failures = 0;
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+  }
   if (timer) {
     clearTimeout(timer);
     timer = null;
@@ -203,6 +233,8 @@ export function useAppLifecycleEvents(): void {
     let last: AppStateStatus = AppState.currentState;
     const sub = AppState.addEventListener("change", (next) => {
       if (next === "active" && last === "background") logAppEvent("app_foreground");
+      // Leaving the screen, signed in or not: a write still waiting goes now, in case the app is not seen again.
+      if (next === "background") void persistNow();
       last = next;
     });
     return () => sub.remove();

@@ -26,6 +26,9 @@ import { DohCard } from '../components/doh/DohCard';
 import { FoldAway } from '../components/FoldAway';
 import { useSheetActions } from '../components/library/useSheetActions';
 import { LibraryRow, LibraryRowSkeleton } from '../components/library/LibraryRow';
+import { OnItsWay } from '../components/library/OnItsWay';
+import { onTakeChange, useOutbox, useSendProgress } from '../lib/outbox';
+import { useSongOnItsWay } from '../lib/useSongOnItsWay';
 import { libraryApi, practiceApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { loadLibraryList, loadSheet } from '../lib/offlineLibrary';
@@ -241,6 +244,24 @@ export function HomeScreen({ navigation }: Props) {
       .catch(listFailed)
       .finally(() => setLoadingRecent(false));
   }, [listRead, listFailed]);
+
+  // Takes on their way, above Recent: one sent while the app was closed (Listen from anywhere) is in sight here,
+  // still being written, as in the Library. Its sheet joins Recent the moment the server has filed it.
+  const outbox = useOutbox();
+  const sendProgress = useSendProgress();
+  const song = useSongOnItsWay(user?.id, focused);
+  useEffect(
+    () =>
+      onTakeChange((_before, after) => {
+        if (after.status === "done") reload();
+      }),
+    [reload],
+  );
+  useEffect(() => {
+    if (song.row?.state === "done") reload();
+    // Only when the song's state moves on.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [song.row?.state]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -659,6 +680,9 @@ export function HomeScreen({ navigation }: Props) {
                   </FoldAway>
                 </Animated.View>
               ) : null}
+
+              {/* ── On its way: takes still being sent or written, a Listen take among them ── */}
+              <OnItsWay items={outbox} progress={sendProgress} song={song} />
 
               {/* ── Recent ────────────────────────────────────────────── */}
               <View style={styles.recentSectionHeader}>
