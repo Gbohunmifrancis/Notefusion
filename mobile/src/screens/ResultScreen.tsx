@@ -65,7 +65,8 @@ import {
 } from "../lib/solfa";
 import { buildMusicXml, resolveKeySignature } from "../lib/musicxml";
 import { midiBase64 } from "../lib/midi";
-import { synthesizeVoicesWavBase64, type SynthVoice } from "../lib/synth";
+import type { SynthVoice } from "../lib/synth";
+import { voicesSource, type VoicesSource } from "../lib/melodySource";
 import { onSongClock, type BeatClock } from "../lib/backingClock";
 import {
   BACKING_WORDS,
@@ -166,7 +167,7 @@ interface SheetState {
   chords: ChordSymbol[] | null;
   parts: Parts | null;
   partsMusicXml: string;
-  preview: string;
+  preview: VoicesSource | null;
   doubt: KeyAlternative[];
   hymnSource: HymnCredit | null;
   hymnAnswered: boolean;
@@ -483,37 +484,20 @@ export function ResultScreen({ route, navigation }: Props) {
    * the book's notes, not the take's, so it keeps its own even beats.
    */
   const timingClock = hymnSource ? null : songClock;
-  /** The melody as the player plays it: on the timing clock (the same notes, unbent, on every other sheet). */
-  function renderMelody(notes: readonly NoteEvent[], bpm: number, clock: BeatClock | null = timingClock): string {
-    return synthesizeVoicesWavBase64([{ notes: onSongClock(notes, clock), gain: 1 }], bpm);
+  /**
+   * The melody as the player plays it: on the timing clock (the same notes, unbent, on every other sheet). A recipe, not
+   * the audio: the player makes it in slices and keeps it (lib/melodyAudio), so no tap waits for the piano.
+   */
+  function renderMelody(notes: readonly NoteEvent[], bpm: number, clock: BeatClock | null = timingClock): VoicesSource | null {
+    return voicesSource([{ notes: onSongClock(notes, clock), gain: 1 }], bpm);
   }
 
   /**
-   * Synthesised melody for the player; re-made when the notes change. Always rendered
-   * here, never the server's `audioPreviewBase64`: that is the old additive voice, and
-   * the piano must not change underfoot between the first play and the first edit.
-   * Built once the screen is drawn, not while it opens: a long sheet's audio held the tap that opened it, and the
-   * screen it came from sat still until it was done. The player arrives a beat after the sheet.
+   * What the player plays; re-made when the notes change. Always the phone's piano, never the server's
+   * `audioPreviewBase64`: that is the old additive voice, and the piano must not change underfoot between the first
+   * play and the first edit. A recipe: the player makes the audio without holding the screen (lib/melodyAudio).
    */
-  const [preview, setPreview] = useState("");
-  /** The melody re-made after a tempo tap, a frame later, so the new number shows first. */
-  const previewTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    const t = setTimeout(() => {
-      try {
-        // The parts' mix may already be playing (made as the screen mounted); it is not replaced.
-        setPreview((p) => p || renderMelody(result.notes, result.tempo));
-      } catch {
-        // preview synthesis is non-fatal
-      }
-    }, 0);
-    return () => {
-      clearTimeout(t);
-      if (previewTimer.current) clearTimeout(previewTimer.current);
-    };
-    // Once, as the screen opens; every later change sets the preview itself.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const [preview, setPreview] = useState<VoicesSource | null>(() => renderMelody(result.notes, result.tempo));
 
   // Counts deletions as well as pitch changes: both are corrections the exported
   // score doesn't know about, and both are what "Discard" would undo. Zero means
@@ -666,11 +650,7 @@ export function ResultScreen({ route, navigation }: Props) {
           notes: onSongClock(v === "soprano" ? partReference(parts, view.notes) : parts[v]!.notes, timingClock),
           gain: (v === "soprano" ? 1 : 0.8) * lv[v]!,
         }));
-      try {
-        setPreview(synthesizeVoicesWavBase64(mix, practiceTempo(tempo, practiceSpeed)));
-      } catch {
-        // preview synthesis is non-fatal
-      }
+      setPreview(voicesSource(mix, practiceTempo(tempo, practiceSpeed)));
       return;
     }
     // The tune is the soprano: the parts' own when written (a man's tune sits an octave up there,
@@ -680,11 +660,7 @@ export function ResultScreen({ route, navigation }: Props) {
       if (name === "soprano" || !voiceOn[name] || !parts[name]) continue;
       voices.push({ notes: onSongClock(parts[name].notes, timingClock), gain: 0.8 });
     }
-    try {
-      setPreview(synthesizeVoicesWavBase64(voices, tempo));
-    } catch {
-      // preview synthesis is non-fatal
-    }
+    setPreview(voicesSource(voices, tempo));
   }, [hasParts, parts, voiceOn, view.notes, tempo, practising, practicePart, practiceBalance, practiceSpeed, timingClock]);
 
   const activeSolfaLines = useMemo(() => {
@@ -1149,16 +1125,7 @@ export function ResultScreen({ route, navigation }: Props) {
     settleHeld();
     const previous = tempo;
     setTempo(nextTempo);
-    const notes = view.notes;
-    if (previewTimer.current) clearTimeout(previewTimer.current);
-    previewTimer.current = setTimeout(() => {
-      previewTimer.current = null;
-      try {
-        setPreview(renderMelody(notes, nextTempo));
-      } catch {
-        // preview synthesis is non-fatal
-      }
-    }, 0);
+    setPreview(renderMelody(view.notes, nextTempo));
     if (!savedId) return;
     try {
       await libraryApi.updateTempo(savedId, nextTempo);

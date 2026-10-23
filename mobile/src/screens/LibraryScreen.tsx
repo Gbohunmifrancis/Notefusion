@@ -34,6 +34,7 @@ import { useSheetActions } from "../components/library/useSheetActions";
 import { withoutHeldDeletes } from "../lib/sheetActions";
 import { useSubscription } from "../lib/subscription";
 import { loadLibraryList, loadSheet, useOfflineLibrary } from "../lib/offlineLibrary";
+import { withBusy } from "../lib/busy";
 import { exampleResult, savedSheetParams } from "../lib/openSheet";
 import { useOpening } from "../lib/useOpening";
 import { onTakeChange, removeTake, retryTake, useOutbox, useSendProgress } from "../lib/outbox";
@@ -254,7 +255,8 @@ export function LibraryScreen() {
       void libraryApi.markOpened(item.id).catch(() => undefined);
     }
     try {
-      const { sheet } = await loadSheet(item);
+      // A sheet not on the phone yet comes over the network: the card says so after 250 ms, as Home's does.
+      const { sheet } = await withBusy("Opening…", () => loadSheet(item));
       nav.navigate("Result", savedSheetParams(sheet));
     } catch (e) {
       const err = toApiError(e);

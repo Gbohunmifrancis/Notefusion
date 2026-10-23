@@ -207,7 +207,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   bottom sheet (`showDialog` → `components/AppDialog` on `components/Sheet`; `lib/sheetKind` reads confirm,
   destructive, info, options, offer or celebrate off the options) and good news is a toast (`lib/toast` `showToast`); a tap that waits says so: its button's `loading` spinner, or the
   "Sharing…" card over a veil that takes taps (`lib/busy` `withBusy`, shown after 250 ms; `now` paints it before work that holds
-  the thread), and Result builds its player's audio after it is drawn, never the opener before it navigates,
+  the thread), and no screen waits for the piano: the player is handed a recipe (`lib/melodySource` `VoicesSource`) that
+  `lib/melodyAudio` makes in slices (synth `voicesWav`, byte-identical to `synthesizeVoicesWavBase64`, the screen drawn
+  between them) and keeps in the cache's `nf-audio` (newest 30; bump `SOUND_VERSION` when the synth's sound changes),
   and every player's status is `lib/playerStatus` (never expo's `useAudioPlayerStatus`: Android says "loaded" once, and a
   player that loaded before its listener was attached left the play button grey for good),
   one `components/Button` (primary · secondary · text · destructive, md 48 / sm 40, `block` for a flow's last action;
