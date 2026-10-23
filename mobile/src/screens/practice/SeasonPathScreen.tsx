@@ -542,8 +542,8 @@ function OpenDrill({
 
       {allowanceText ? <Text style={styles.allowance}>{allowanceText}</Text> : null}
       {error ? <ProblemNote>{error}</ProblemNote> : null}
-      {grade && playful ? <StarGrade grade={grade} notes={drill.notes} /> : null}
-      {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} /> : null}
+      {grade && playful ? <StarGrade grade={grade} notes={drill.notes} fresh /> : null}
+      {grade && !playful ? <GradeMarks grade={grade} notes={drill.notes} fresh /> : null}
     </View>
   );
 }

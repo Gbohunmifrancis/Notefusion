@@ -42,6 +42,12 @@ public sealed class MeasureVoiceRangeRequest
     public string? End { get; set; }
 }
 
+/// <summary>
+/// JSON body of <c>POST games/grade</c>: the deal's id from <c>GET games/{game}</c>, the answers from its first round (null
+/// for a round left unanswered) and the seconds played.
+/// </summary>
+public sealed record GradePracticeGameRequest(string? DealId, IReadOnlyList<string?>? Answers, double? Seconds);
+
 /// <summary>JSON body of <c>PUT track</c>: "playful" or "focused".</summary>
 public sealed record SetPracticeTrackRequest(string? Track);
 
@@ -161,6 +167,22 @@ public sealed class PracticeController : ApiControllerBase
         return HandleResult(await _sender.Send(
             new GradePracticeModeCommand(stream, request.Audio.FileName, request.ExerciseId ?? string.Empty, leadIn), ct));
     }
+
+    /// <summary>
+    /// A fresh deal of a quick game, tapped not sung ("which-note", "staff", "hymn"; 404 <c>PRACTICE_GAME_UNKNOWN</c>):
+    /// its rounds on the caller's track, each with its answer, and the day's games that earned XP.
+    /// </summary>
+    [HttpGet("games/{game}")]
+    public async Task<IActionResult> Game(string game, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetPracticeGameQuery(game), ct));
+
+    /// <summary>
+    /// Marks a quick game's answers against the deal rebuilt from its id and, when it counts, records it as practice
+    /// (XP, streak). Each deal once (409 <c>PRACTICE_GAME_MARKED</c>).
+    /// </summary>
+    [HttpPost("games/grade")]
+    public async Task<IActionResult> GradeGame(GradePracticeGameRequest body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GradePracticeGameCommand(body.DealId, body.Answers, body.Seconds), ct));
 
     /// <summary>
     /// The Christmas carols path, while the season is on for the caller (404 <c>PRACTICE_SEASON_OFF</c> otherwise): six

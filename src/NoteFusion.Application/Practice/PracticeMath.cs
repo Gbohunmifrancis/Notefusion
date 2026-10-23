@@ -108,7 +108,7 @@ public static class PracticeMath
         return new(
             facts.Count(f => f.Kind == PracticeKind.Drill),
             facts.Count(f => f.Kind == PracticeKind.Part),
-            facts.Count(f => f.Score >= PracticeRules.PerfectScore),
+            facts.Count(f => f.Kind != PracticeKind.Game && f.Score >= PracticeRules.PerfectScore), // a sung take, not a game
             facts.Count(f => f.Kind == PracticeKind.Part && f.WholePart && f.Score >= PracticeRules.GoodScore),
             Streak(facts.Select(f => f.LocalDate), today).Best,
             days.Count(d => d >= weekStart),
