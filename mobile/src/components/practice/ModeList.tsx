@@ -1,6 +1,6 @@
 /**
  * "More ways to practise" (board c-practice/6a): one quiet grouped list of the modes the server says are live, each a
- * tile, a name and a line, and a chevron. A list, never a wall of tiles: the path card stays the hero above it.
+ * tile, a name and a line, and a chevron; or, `grid`, two columns of an icon and the name (board s-practice-fun/s1). A list, never a wall of tiles: the path card stays the hero above it.
  * Playful's tiles take the warm play colour; Focused's are neutral with ink icons (e-icons board 05): the blue stays
  * on the one thing to press. Each mode is drawn as what you do in it.
  */
@@ -23,10 +23,44 @@ export const MODE_ICON: Record<PracticeModeId, IconName> = {
   rhythm: "rhythm",
 };
 
-export function ModeList({ rows, track, onOpen }: { rows: readonly ModeRow[]; track: PracticeTrack | null; onOpen: (id: PracticeModeId) => void }) {
+export function ModeList({
+  rows,
+  track,
+  onOpen,
+  grid = false,
+}: {
+  rows: readonly ModeRow[];
+  track: PracticeTrack | null;
+  onOpen: (id: PracticeModeId) => void;
+  /** Two columns of small tiles, an icon and the name (board s-practice-fun/s1): the Practice tab's compact form. */
+  grid?: boolean;
+}) {
   const c = useColors();
   const styles = useThemedStyles(makeStyles);
   const playful = track === "playful";
+  if (grid) {
+    return (
+      <View style={styles.grid}>
+        {rows.map((r) => (
+          <Touchable
+            key={r.id}
+            onPress={() => onOpen(r.id)}
+            scaleTo={motion.scale.row}
+            haptic="light"
+            radius={14}
+            accessibilityRole="button"
+            accessibilityLabel={[r.title, r.subtitle, r.value].filter(Boolean).join(". ")}
+            style={styles.cell}
+          >
+            <View style={styles.cellInner}>
+              <Icon name={MODE_ICON[r.id]} size={20} color={playful ? c.play : c.icon} />
+              <Text style={styles.cellTitle} numberOfLines={1}>{r.title}</Text>
+            </View>
+          </Touchable>
+        ))}
+      </View>
+    );
+  }
   return (
     <View style={styles.group}>
       {rows.map((r, i) => (
@@ -69,4 +103,18 @@ const makeStyles = (c: Palette) =>
     title: { fontFamily: fonts.semibold, fontSize: 16, color: c.text },
     subtitle: { fontFamily: fonts.regular, fontSize: 14, lineHeight: 19, color: c.textMuted, marginTop: 2 },
     value: { fontFamily: fonts.medium, fontSize: 13, color: c.textFaint, marginRight: spacing.xs },
+    grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+    cell: { width: "48%", flexGrow: 1 },
+    cellInner: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+      minHeight: 52,
+      paddingHorizontal: 14,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.surface,
+    },
+    cellTitle: { flex: 1, fontFamily: fonts.semibold, fontSize: 15, color: c.text },
   });

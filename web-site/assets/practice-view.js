@@ -15,7 +15,9 @@
  * Under the path, "More ways to practise" (boards c-practice/6a–6d): the modes the server says are live, each opening
  * its own screen in the view's place (assets/practice-mode-view.js, with the live pitch meter assets/pitch-track.js and
  * practice-modes.css, loaded the first time a mode is opened through `loadAsset`); the stat cards, the week and the
- * badges sit below as "Your progress", the streak and level one line at the top.
+ * badges sit below as "Your progress", the streak and level one line at the top. Above the modes, "Quick games" (board
+ * s-practice-fun/s3): Which note?, Staff to solfa and Name that hymn, tapped not sung, each opening in the view's place
+ * (assets/practice-game-view.js and practice-games.css, loaded on the first open; practice-games.js comes with the view).
  *
  * While a season is on for the singer (the progress carries `season`): one card under today's drill opening the season's
  * path (assets/practice-carols.js and .css, loaded on its first open), and Doh in the season's costume — at Christmas
@@ -175,6 +177,9 @@
     intervals: '<path d="M7 20V4M3.5 7.5L7 4l3.5 3.5M17 4v16M13.5 16.5L17 20l3.5-3.5"/>',
     harmony: '<path d="M12 3.5l8.5 4.6L12 12.7 3.5 8.1z"/><path d="M3.5 12.4l8.5 4.6 8.5-4.6M3.5 16.4l8.5 4.6 8.5-4.6"/>',
     rhythm: '<path d="M8 13V6.5a1.5 1.5 0 0 1 3 0V12m0-1V4.5a1.5 1.5 0 0 1 3 0V11m0 0V6a1.5 1.5 0 0 1 3 0v7.5c0 4-2.6 6.5-6 6.5-2.4 0-3.9-1.2-5.3-3.2l-2.4-3.3a1.5 1.5 0 0 1 2.4-1.8L8 14"/>',
+    // The app's own glyphs (mobile/assets/icons-src/notefusion staff.svg and hymnal.svg), as the phone's game tiles draw them.
+    staff: '<path d="M12.6 21.4c-1.2.9-3 .1-2.7-1.3.2-1 1.6-1.3 2.3-.5"/><path d="M12.4 19.8 10.9 4.9c-.2-1.7 1.5-2.6 2.4-1.2 1 1.7-.6 4.4-3.3 6.8-2.5 2.2-3.1 4.7-1.7 6.5 1.5 1.9 5 1.7 6.2-.4 1.1-1.9-.2-4.2-2.4-4-1.9.2-2.9 2-2 3.4"/>',
+    hymn: '<path d="M12 7.6v12.9"/><path d="M12 7.6C10.4 5.9 7.9 5 3.5 5v13c4.4 0 6.9.8 8.5 2.5"/><path d="M12 7.6c1.6-1.7 4.1-2.6 8.5-2.6v13c-4.4 0-6.9.8-8.5 2.5"/><path d="M17.1 14.4V9.2c1.2.3 2 1 2.2 2"/><circle fill="currentColor" stroke="none" cx="15.65" cy="14.5" r="1.55"/>',
     headphones: '<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.2" height="6.5" rx="1.6"/><rect x="16.8" y="14" width="4.2" height="6.5" rx="1.6"/>',
     smile: '<circle cx="12" cy="12" r="9"/><path d="M8.3 14.3c1 1.3 2.3 2 3.7 2s2.7-.7 3.7-2"/><path d="M9 9.6v.6M15 9.6v.6"/>',
     people: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6M18 14.6c1.8.9 3 2.9 3 5.4"/>'
@@ -239,6 +244,58 @@
     return sec;
   }
 
+  // ── Quick games (board s-practice-fun/s3), tapped not sung ──────────────
+  /** A game's screen and styles: loaded the first time a game is opened, never with the view. */
+  var GAME_ASSETS = ["/assets/practice-modes.css?v=3", "/assets/practice-games.css?v=1", "/assets/practice-game-view.js?v=1"];
+  var GAME_ICON = { "which-note": "intervals", staff: "staff", hymn: "hymn" };
+
+  /** "Quick games": three tiles, each its icon, its name on the track and one line. */
+  function gamesSection(tr) {
+    var sec = el("section", "pv-games"), head = el("div", "pv-games-head");
+    sec.setAttribute("aria-labelledby", "pv-games-title");
+    var h = el("h2", "pv-section", "Quick games"); h.id = "pv-games-title";
+    head.appendChild(h);
+    head.appendChild(el("span", "pv-games-note", "No mic · about a minute"));
+    sec.appendChild(head);
+    var row = el("div", "pv-game-row");
+    window.NfPracticeGames.gameTiles(tr).forEach(function (t) {
+      var b = el("button", "pv-game"); b.type = "button"; b.setAttribute("data-game", t.id);
+      b.setAttribute("aria-label", t.title + ". " + t.line);
+      b.appendChild(modeIcon(GAME_ICON[t.id], "pv-mode-tile"));
+      b.appendChild(el("strong", null, t.title));
+      b.appendChild(el("span", null, t.line));
+      b.addEventListener("click", function () { openGame(t.id); });
+      row.appendChild(b);
+    });
+    sec.appendChild(row);
+    return sec;
+  }
+
+  /** Opens a game in the view's place, as a mode's screen opens (its script loads the first time); back returns to the hub. */
+  function openGame(id) {
+    if (s.phase !== "idle" || s.mode) return;
+    stopHear(); stopReplay(); hideToast();
+    var gen = s.gen;
+    s.mode = "game"; inMode(true);
+    if (window.NfBack) modeLayer = window.NfBack.push(function () { modeLayer = null; closeMode(); });
+    track("practice_game_opened", "game=" + id);
+    root.innerHTML = "";
+    var sk = el("div", "pv-skel");
+    for (var i = 0; i < 3; i++) sk.appendChild(el("div", "skel"));
+    root.appendChild(sk);
+    window.scrollTo({ top: 0 });
+    Promise.all(GAME_ASSETS.map(ctx.loadAsset)).then(function () {
+      if (gen !== s.gen || s.mode !== "game" || !root) return;
+      window.NfPracticeGameView.open(root, {
+        request: ctx.request, track: ctx.track, choir: ctx.choir, game: id, practiceTrack: currentTrack(),
+        art: art, burst: burst, back: closeMode
+      });
+    }, function () {
+      if (gen !== s.gen || s.mode !== "game") return;
+      modeDone(); s.mode = null; inMode(false); s.error = "That didn't load. Check your connection and try again."; render();
+    });
+  }
+
   /** A mode's screen is a pushed screen: the view's own heading steps aside while it is open. */
   function inMode(on) { if (root && root.parentNode) root.parentNode.classList.toggle("pv-in-mode", on); }
 
@@ -273,6 +330,7 @@
     modeDone();
     if (!s.mode) return;
     if (s.mode === "season") { if (window.NfPracticeCarols) window.NfPracticeCarols.leave(); }
+    else if (s.mode === "game") { if (window.NfPracticeGameView) window.NfPracticeGameView.leave(); }
     else if (window.NfPracticeModeView) window.NfPracticeModeView.leave();
     s.mode = null; inMode(false);
     render();
@@ -411,6 +469,7 @@
     if (s.drill && !showPicker()) box.appendChild(drillCard(s.drill, P));
     if (!s.drill && !showPicker()) box.appendChild(emptyState("empty-no-drill", "No drill yet", "Today's drill isn't here yet. Try again in a moment.", function () { load(); }));
     if (p.season && !showPicker()) box.appendChild(seasonPathCard(p.season, cardDoh));
+    if (!showPicker() && window.NfPracticeGames) box.appendChild(gamesSection(tr));
     var modes = showPicker() ? null : modesSection(p, tr, cardDoh);
     if (modes) box.appendChild(modes);
     // Your progress: the two stat cards, the week and the badges, under the ways to practise (board 6a).
@@ -1081,6 +1140,7 @@
     hideToast();
     if (s.mode) {
       if (s.mode === "season") { if (window.NfPracticeCarols) window.NfPracticeCarols.leave(); }
+      else if (s.mode === "game") { if (window.NfPracticeGameView) window.NfPracticeGameView.leave(); }
       else if (window.NfPracticeModeView) window.NfPracticeModeView.leave();
       modeDone(); s.mode = null; inMode(false);
     }
@@ -1091,6 +1151,7 @@
     leave();
     if (window.NfPracticeModeView) window.NfPracticeModeView.reset();
     if (window.NfPracticeCarols) window.NfPracticeCarols.reset();
+    if (window.NfPracticeGameView) window.NfPracticeGameView.reset();
     dropTakeUrl();
     s.progress = null; s.drill = null; s.next = null; s.grade = null; s.error = null; s.loadError = null; s.loading = false; s.phase = "idle";
     s.picking = false; s.savingTrack = null; s.trackError = null;

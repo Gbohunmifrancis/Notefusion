@@ -32,7 +32,7 @@ export function GameTiles({ track, onOpen }: { track: PracticeTrack | null; onOp
         >
           <View style={[styles.card, playful && styles.cardPlay]}>
             <View style={[styles.tile, playful && styles.tilePlay]}>
-              <Icon name={g.icon} size={22} color={playful ? c.play : c.icon} />
+              <Icon name={g.icon} size={19} color={playful ? c.play : c.icon} />
             </View>
             <Text style={styles.title} numberOfLines={2}>{g.title}</Text>
             <Text style={styles.line} numberOfLines={2}>{g.line}</Text>
@@ -47,10 +47,10 @@ const makeStyles = (c: Palette) =>
   StyleSheet.create({
     row: { flexDirection: "row", gap: 10 },
     cell: { flex: 1 },
-    card: { flex: 1, minHeight: 128, padding: 12, gap: 6, borderRadius: radii.lg, borderWidth: 1, borderColor: c.border, backgroundColor: c.surface },
+    card: { flex: 1, padding: 12, gap: 6, borderRadius: radii.lg, borderWidth: 1, borderColor: c.border, backgroundColor: c.surface },
     cardPlay: { borderColor: c.playBorder },
-    tile: { width: 40, height: 40, borderRadius: 12, alignItems: "center", justifyContent: "center", backgroundColor: c.sheetTile },
+    tile: { width: 34, height: 34, borderRadius: 10, alignItems: "center", justifyContent: "center", backgroundColor: c.sheetTile },
     tilePlay: { backgroundColor: c.playSoft },
     title: { fontFamily: fonts.semibold, fontSize: 15, lineHeight: 19, color: c.text },
-    line: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 17, color: c.textMuted },
+    line: { fontFamily: fonts.regular, fontSize: 12, lineHeight: 16, color: c.textMuted },
   });

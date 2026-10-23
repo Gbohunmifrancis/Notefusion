@@ -29,7 +29,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useReducedMotion } from "react-native-reanimated";
-import { SvgXml } from "react-native-svg";
+import Svg, { Circle } from "react-native-svg";
 import { File, Paths } from "expo-file-system";
 import {
   createAudioPlayer,
@@ -89,14 +89,13 @@ import {
 import { ProblemNote } from "../components/ProblemNote";
 import { onlySettingsCanGrant } from "../lib/micPermission";
 import { CostumedArt } from "../components/season/Costume";
-import { ART } from "../components/practice/art/svgs";
 import { useSeason } from "../lib/seasonStore";
 import { activeSeason, costumeOf, seasonCard, seasonOf, seasonTint, seasonWords, type Costume } from "../lib/season";
 import { ModeList } from "../components/practice/ModeList";
 import { GameTiles } from "../components/practice/GameTiles";
 import { MarkingBar } from "../components/practice/MarkingBar";
 import { MARK_STEP_MS } from "../components/practice/useMarkReveal";
-import { hubModes, modesDohLine, modesHeading, progressStrip } from "../lib/practiceModes";
+import { hubModes, modesHeading, progressStrip } from "../lib/practiceModes";
 import type { RootStackParams } from "../navigation/types";
 
 type Phase = "idle" | "leadin" | "singing" | "grading";
@@ -506,7 +505,6 @@ export function PracticeScreen() {
   const pathSeason = seasonPath ? seasonOf(seasonPath.season) : null;
   const costume = costumeOf(pathSeason ?? activeSeason(seasonFlag));
   const cardDoh = !!seasonPath && !showPicker && (pathSeason === "halloween" ? playful : !playful);
-  const dohLine = cardDoh ? null : modesDohLine(modeRows, track);
   const buddyShown = playful && !showPicker && !!drill && !(cardDoh && pathSeason === "halloween");
 
   return (
@@ -516,7 +514,7 @@ export function PracticeScreen() {
         contentStyle={styles.screen}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.accent} colors={[colors.accent]} />}
       >
-        <TabHeader title="Practice" eyebrow="Practice path">
+        <TabHeader title="Practice">
           {track && !showPicker && !busy ? (
             <Touchable
               onPress={() => { setTrackError(null); setPicking(true); }}
@@ -573,14 +571,6 @@ export function PracticeScreen() {
               />
             ) : null}
 
-            {buddyShown ? (
-              <View style={styles.buddy} accessible accessibilityLabel={`Doh, your practice buddy, says: ${buddy.line}`}>
-                <CostumedArt name={mascotArt(buddy.mood)} width={68} costume={costume} />
-                <View style={styles.buddyBubble}>
-                  <Text style={styles.buddyText}>{buddy.line}</Text>
-                </View>
-              </View>
-            ) : null}
 
             {/* ── Today's drill (its stand-in while a new track's drill comes) ── */}
             {savingTrack && !showPicker ? (
@@ -589,18 +579,28 @@ export function PracticeScreen() {
               <View>
                 <Card style={playful ? { ...styles.card, ...styles.cardPlayful } : styles.card}>
                   {/* Ink, not blue: the eyebrow is a label, not a control (board n-ux-low Q2a c). Playful's is its orange. */}
-                  <Text style={[styles.eyebrow, playful && styles.eyebrowPlayful]}>
-                    {playful ? "Your singing game" : `Practice path · ${drill.levelName}`}
-                  </Text>
-                  {/* Above the section titles round it (18): the thing to sing reads first, a second line wraps. */}
-                  <Text style={styles.drillTitle} accessibilityRole="header">
-                    {drill.title}
-                  </Text>
-                  <Text style={styles.meta}>
-                    {playful
-                      ? `${drill.dohHeader} · ${drill.notes.length} notes`
-                      : `${drill.dohHeader} · ${drill.key} · ${drill.tempoBpm} BPM${focused ? ` · ${drill.notes.length} notes` : ""}`}
-                  </Text>
+                  {/* Playful's Doh sits in the card as its one bird (board s-practice-fun/s1), not in a bubble above it. */}
+                  <View style={styles.drillHead}>
+                    <View style={styles.drillHeadText}>
+                      <Text style={[styles.eyebrow, playful && styles.eyebrowPlayful]}>
+                        {playful ? "Your singing game" : `Practice path · ${drill.levelName}`}
+                      </Text>
+                      {/* Above the section titles round it (18): the thing to sing reads first, a second line wraps. */}
+                      <Text style={styles.drillTitle} accessibilityRole="header">
+                        {drill.title}
+                      </Text>
+                      <Text style={styles.meta}>
+                        {playful
+                          ? `${drill.dohHeader} · ${drill.notes.length} notes`
+                          : `${drill.dohHeader} · ${drill.key} · ${drill.tempoBpm} BPM${focused ? ` · ${drill.notes.length} notes` : ""}`}
+                      </Text>
+                    </View>
+                    {buddyShown ? (
+                      <View accessible accessibilityLabel={`Doh, your practice buddy, says: ${buddy.line}`}>
+                        <CostumedArt name={mascotArt(buddy.mood)} width={60} costume={costume} />
+                      </View>
+                    ) : null}
+                  </View>
 
                   <View style={styles.solfaRow} accessible accessibilityLabel={`Sing: ${drill.notes.map((n) => n.solfa + n.octaveMark).join(" ")}`}>
                     {drill.notes.map((n, i) => (
@@ -740,14 +740,11 @@ export function PracticeScreen() {
             {/* ── More ways to practise: the modes the server says are live ── */}
             {modeRows.length > 0 && !showPicker ? (
               <View style={styles.modes}>
-                <View style={styles.modesHead}>
-                  <View style={styles.modesHeadText}>
-                    <Text style={styles.modesTitle} accessibilityRole="header">{modesHeading(track)}</Text>
-                    {dohLine ? <Text style={styles.modesDoh}>“{dohLine}”</Text> : null}
-                  </View>
-                  {dohLine ? <CostumedArt name="doh-wave" width={56} costume={costume} /> : null}
-                </View>
+                <Text style={[styles.modesTitle, styles.modesHead]} accessibilityRole="header">
+                  {playful ? modesHeading(track) : "Sing more"}
+                </Text>
                 <ModeList
+                  grid
                   rows={modeRows}
                   track={track}
                   onOpen={(mode) => {
@@ -788,18 +785,11 @@ export function PracticeScreen() {
 
 type Styles = ReturnType<typeof makeStyles>;
 
-/** Three tiny still bats in the Midnight path card's corner: [left, top, width, degrees], px within the corner. */
-const CARD_BATS: [number, number, number, number][] = [
-  [4, 10, 14, -10],
-  [58, 0, 11, 8],
-  [80, 30, 9, -4],
-];
-
 /**
- * The season's card (boards d-christmas/03, j-halloween/03): until when, six segments for six drills, how many are
- * sung and what is next, and the way in. The carols' card is pine and the Midnight path's pumpkin, each a tint here,
- * never a second accent; candle or moon cream labels it on Night. The Midnight path's corner holds three tiny still
- * bats and, with `doh`, Doh in his witch hat with Boo beside him.
+ * The season's card (boards d-christmas/03, j-halloween/03), one compact row since board s-practice-fun/s1: Doh (with
+ * `doh`; at Halloween in his witch hat with Boo), until when, the title, how many are sung and what is next, the way
+ * in, and six segments for six drills. The carols' card is pine and the Midnight path's pumpkin, each a tint here,
+ * never a second accent; candle or moon cream labels it on Night.
  */
 function SeasonPathCard({
   season,
@@ -821,47 +811,31 @@ function SeasonPathCard({
   const halloween = card.season === "halloween";
   return (
     <View style={[styles.carols, { backgroundColor: tint.soft, borderColor: tint.line }]} accessible={false}>
-      {halloween ? (
-        <View style={styles.cardBats} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-          {CARD_BATS.map(([left, top, width, deg], i) => (
-            <View key={i} style={{ position: "absolute", left, top, opacity: 0.45, transform: [{ rotate: `${deg}deg` }] }}>
-              <SvgXml xml={ART.bat} width={width} height={width / 2} color={c.bat} />
-            </View>
-          ))}
-        </View>
-      ) : null}
       <View style={styles.carolsTop}>
-        <View style={styles.carolsText}>
-          <Text style={[styles.carolsEyebrow, { color: tint.label }]}>{card.eyebrow}</Text>
-          <Text style={styles.carolsTitle} accessibilityRole="header">{card.title}</Text>
-          <Text style={styles.carolsBody}>{card.body}</Text>
-        </View>
         {doh && halloween ? (
           <View style={styles.cardPair}>
-            <CostumedArt name="doh-wave" width={72} costume={costume} />
-            <Art name="boo" width={34} style={styles.cardBoo} />
+            <CostumedArt name="doh-wave" width={48} costume={costume} />
+            <Art name="boo" width={22} style={styles.cardBoo} />
           </View>
         ) : doh ? (
-          <CostumedArt name="doh-wave" width={88} costume={costume} />
+          <CostumedArt name="doh-wave" width={52} costume={costume} />
         ) : null}
+        <View style={styles.carolsText}>
+          <Text style={[styles.carolsEyebrow, { color: tint.label }]} numberOfLines={1}>{card.eyebrow}</Text>
+          <Text style={styles.carolsTitle} accessibilityRole="header" numberOfLines={1}>{card.title}</Text>
+          <Text style={styles.carolsNext} numberOfLines={1}>{card.sung} · {card.next}</Text>
+        </View>
+        <Button label={card.action} icon="next" iconPosition="right" variant="secondary" size="sm" onPress={onOpen} />
       </View>
       <View style={styles.carolsBar} accessible accessibilityRole="progressbar" accessibilityLabel={card.label}>
         {card.segments.map((on, i) => (
           <View key={i} style={[styles.carolsSeg, on && { backgroundColor: tint.label }]} />
         ))}
       </View>
-      <View style={styles.carolsFoot}>
-        <View style={styles.carolsText}>
-          <Text style={styles.carolsSung}>{card.sung}</Text>
-          <Text style={styles.carolsNext} numberOfLines={2}>{card.next}</Text>
-        </View>
-        <Button label={card.action} icon="next" iconPosition="right" variant="secondary" size="sm" onPress={onOpen} />
-      </View>
     </View>
   );
 }
 
-/** The streak and the level in one line at the top (board 6a); the full cards are under "Your progress". */
 /**
  * The first read's stand-in, drawn where the streak line and the path card will sit, as the Library's rows are: a bare
  * spinner let the hub pop in all at once.
@@ -899,28 +873,65 @@ function DrillSkeleton({ styles }: { styles: Styles }) {
   );
 }
 
-/** The streak, the level and the week in one line at the top; it opens "Your progress" (board s-practice-fun/s1). */
+/**
+ * The streak, the level and the week as one card at the top (board s-practice-fun/s1): the flame and the days, the
+ * level's emblem with its name and XP, the week's ring with its days, and a chevron — it opens "Your progress".
+ */
 function ProgressLine({ progress, styles, colors, onOpen }: { progress: PracticeProgress; styles: Styles; colors: Palette; onOpen: () => void }) {
   const strip = progressStrip(progress);
   const week = progress.weeklyGoal;
+  const days = progress.streak.current;
   return (
-    <Touchable onPress={onOpen} radius={radii.md} accessibilityRole="button" accessibilityLabel={`${strip.label}. ${week.daysDone} of ${week.target} days this week. Your progress`}>
-    <View style={styles.progLine}>
-      <Art name={flameArt(progress.streak)} width={20} />
-      <Text style={styles.progStrong} numberOfLines={1}>{strip.streak}</Text>
-      <View style={styles.progSep} />
-      <Text style={styles.progText} numberOfLines={1}>
-        <Text style={styles.progStrong}>{strip.level}</Text> · {strip.xp}
-      </Text>
-      <View style={styles.progBar}>
-        <View style={[styles.progFill, { width: `${Math.round(strip.fraction * 100)}%` }]} />
+    <Touchable
+      onPress={onOpen}
+      radius={16}
+      style={styles.stripWrap}
+      accessibilityRole="button"
+      accessibilityLabel={`${strip.label}. ${week.daysDone} of ${week.target} days this week. Your progress`}
+    >
+      <View style={styles.strip}>
+        <View style={styles.stripChunk}>
+          <Art name={flameArt(progress.streak)} width={20} />
+          <Text style={styles.stripStrong}>{days}</Text>
+          <Text style={styles.stripMuted}>{days === 1 ? "day" : "days"}</Text>
+        </View>
+        <View style={styles.stripChunk}>
+          <Art name={levelArt(progress.level.index)} width={20} />
+          <Text style={styles.stripStrong} numberOfLines={1}>{progress.level.name}</Text>
+          <Text style={styles.stripMuted} numberOfLines={1}>{progress.xp} XP</Text>
+        </View>
+        <View style={styles.stripChunk}>
+          <WeekRing done={week.daysDone} target={week.target} colors={colors} />
+          <Text style={styles.stripStrong}>{week.daysDone}/{week.target}</Text>
+          <Text style={styles.stripMuted}>wk</Text>
+        </View>
+        <Icon name="chevron" size={16} color={colors.textFaint} />
       </View>
-      {strip.toNext ? <Text style={styles.progText} numberOfLines={1}>{strip.toNext}</Text> : null}
-      <View style={styles.progSep} />
-      <Text style={styles.progStrong}>{week.daysDone}/{week.target}</Text>
-      <Icon name="chevron" size={14} color={colors.textFaint} />
-    </View>
     </Touchable>
+  );
+}
+
+/** The week's goal as a small ring: the days practised of the goal, in the tick's mint. */
+function WeekRing({ done, target, colors }: { done: number; target: number; colors: Palette }) {
+  const size = 20, stroke = 3, r = (size - stroke) / 2, length = 2 * Math.PI * r;
+  const share = target > 0 ? Math.min(1, done / target) : 0;
+  return (
+    <Svg width={size} height={size}>
+      <Circle cx={size / 2} cy={size / 2} r={r} stroke={colors.surfaceAlt} strokeWidth={stroke} fill="none" />
+      {share > 0 ? (
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          stroke={colors.success}
+          strokeWidth={stroke}
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray={`${length * share} ${length}`}
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+      ) : null}
+    </Svg>
   );
 }
 
@@ -955,18 +966,8 @@ const makeStyles = (c: Palette) =>
     trackPillPlayful: { borderColor: c.playBorder, backgroundColor: c.playSoft },
     trackPillText: { ...typography.label, color: c.text, fontSize: 13 },
 
-    buddy: { flexDirection: "row", alignItems: "center", gap: spacing.xs, marginBottom: spacing.md },
-    buddyBubble: {
-      flex: 1,
-      paddingVertical: spacing.sm,
-      paddingHorizontal: spacing.md,
-      borderRadius: radii.lg,
-      borderTopLeftRadius: 4,
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
-    },
-    buddyText: { ...typography.label, color: c.text, lineHeight: 20 },
+    drillHead: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm },
+    drillHeadText: { flex: 1, minWidth: 0, gap: spacing.xs },
     card: { marginBottom: spacing.md, gap: spacing.sm },
     /** The card's own gap, inside the stand-in's one accessible element. */
     skeletonCard: { gap: spacing.sm },
@@ -1025,45 +1026,51 @@ const makeStyles = (c: Palette) =>
 
 
 
-    progLine: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: -spacing.sm, marginBottom: spacing.md },
-    progText: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted, flexShrink: 1 },
-    progStrong: { fontFamily: fonts.semibold, fontSize: 13, color: c.text },
-    progSep: { width: 1, height: 14, backgroundColor: c.border },
-    progBar: { width: 48, height: 5, borderRadius: 3, backgroundColor: c.surfaceAlt, overflow: "hidden" },
-    progFill: { height: 5, borderRadius: 3, backgroundColor: c.text },
+    /** The first read's stand-in for the strip. */
+    progLine: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: spacing.md },
+    stripWrap: { marginBottom: spacing.md },
+    strip: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 8,
+      minHeight: 52,
+      paddingHorizontal: 14,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.surface,
+    },
+    stripChunk: { flexDirection: "row", alignItems: "center", gap: 5, flexShrink: 1, minWidth: 0 },
+    stripStrong: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
+    stripMuted: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted, flexShrink: 1 },
 
     carols: {
       marginBottom: spacing.md,
-      padding: spacing.lg,
-      gap: spacing.md,
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.md,
+      gap: spacing.sm,
       borderRadius: radii.lg,
       borderWidth: 1,
       overflow: "hidden",
     },
-    carolsTop: { flexDirection: "row", alignItems: "flex-start", gap: spacing.sm },
-    /** The Midnight path card's top right corner, where the still bats hang. */
-    cardBats: { position: "absolute", top: 10, right: 12, width: 96, height: 44 },
+    carolsTop: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
     /** Doh with Boo at his shoulder (Halloween, Playful). */
-    cardPair: { width: 72 + 22, height: 80, marginTop: spacing.sm },
-    cardBoo: { position: "absolute", right: 0, top: -6 },
-    carolsText: { flex: 1, minWidth: 0, gap: 4 },
-    carolsEyebrow: { ...typography.caption, textTransform: "uppercase", letterSpacing: 1, fontSize: 12, fontFamily: fonts.semibold },
-    carolsTitle: { ...typography.heading, color: c.text, fontSize: 20 },
-    carolsBody: { ...typography.body, color: c.textMuted, fontSize: 14, lineHeight: 20 },
+    cardPair: { width: 48 + 14, height: 52 },
+    cardBoo: { position: "absolute", right: 0, top: -4 },
+    carolsText: { flex: 1, minWidth: 0, gap: 2 },
+    carolsEyebrow: { ...typography.caption, textTransform: "uppercase", letterSpacing: 1, fontSize: 11, fontFamily: fonts.semibold },
+    carolsTitle: { ...typography.label, color: c.text, fontSize: 17, fontFamily: fonts.semibold },
     carolsBar: { flexDirection: "row", gap: 6 },
-    carolsSeg: { flex: 1, height: 5, borderRadius: 3, backgroundColor: c.surfaceAlt },
-    carolsFoot: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
-    carolsSung: { ...typography.label, color: c.text, fontSize: 14 },
+    carolsSeg: { flex: 1, height: 4, borderRadius: 2, backgroundColor: c.surfaceAlt },
     carolsNext: { ...typography.caption, color: c.textMuted, fontSize: 13 },
 
     games: { marginTop: spacing.sm, marginBottom: spacing.lg },
     gamesHead: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", gap: spacing.sm, marginBottom: spacing.sm },
     gamesNote: { ...typography.caption, color: c.textFaint, fontSize: 13 },
     modes: { marginTop: spacing.sm, marginBottom: spacing.lg },
-    modesHead: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginBottom: spacing.sm },
-    modesHeadText: { flex: 1, minWidth: 0, gap: 4 },
+    modesHead: { marginBottom: spacing.sm },
     modesTitle: { ...typography.heading, color: c.text },
-    modesDoh: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23, color: c.textMuted },
 
 
 
