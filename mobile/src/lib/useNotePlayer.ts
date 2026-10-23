@@ -2,11 +2,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { File, Paths } from "expo-file-system";
 import {
   useAudioPlayer,
-  useAudioPlayerStatus,
   setAudioModeAsync,
   type AudioPlayer,
 } from "expo-audio";
 import type { NoteEvent } from "../api/types";
+import { usePlayerStatus } from "./playerStatus";
 import { beatSecOf } from "./synth";
 
 /**
@@ -249,7 +249,7 @@ export function useNotePlayer(
   // 100 ms ticks: an A–B loop is only as tight as the status interval, and half a
   // second past the end of a passage is a whole beat at rehearsal speed.
   const player = useAudioPlayer(fileUri ? { uri: fileUri } : undefined, { updateInterval: 100 });
-  const status = useAudioPlayerStatus(player);
+  const status = usePlayerStatus(player);
 
   // The A–B loop. Done from the status tick rather than a native loop because the
   // platform players only loop whole clips.
