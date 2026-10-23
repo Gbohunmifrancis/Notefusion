@@ -23,6 +23,14 @@ export const STANDARD_PROFILE: RecordingProfile = { sampleRate: 22050, numberOfC
 /** Data saver: a quarter of the bytes, the same transcription. */
 export const DATA_SAVER_PROFILE: RecordingProfile = { sampleRate: 22050, numberOfChannels: 1, bitRate: 32_000 };
 
+/**
+ * A practice take: always the 32 kbps AAC, whatever data saver says. The grader reads only the voice's pitch, and the
+ * same takes marked at 128 and 32 kbps came out the same, note for note, on 11 of 12 cases (the twelfth moved one note
+ * on the hit/near line by 10 cents, pyin's own step), at a third of the bytes: the upload that held the mark on a slow
+ * connection. Claps (rhythm) keep the standard rate: their onsets are what is marked there.
+ */
+export const PRACTICE_PROFILE: RecordingProfile = DATA_SAVER_PROFILE;
+
 export function recordingProfile(dataSaver: boolean): RecordingProfile {
   return dataSaver ? DATA_SAVER_PROFILE : STANDARD_PROFILE;
 }

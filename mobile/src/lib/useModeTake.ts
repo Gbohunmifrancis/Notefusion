@@ -19,9 +19,12 @@ import {
   useAudioRecorder,
   type AudioPlayer,
 } from "expo-audio";
+import { PRACTICE_PROFILE, STANDARD_PROFILE } from "./recordingPreset";
 
-/** As the daily drill records: one voice at 22 kHz, which is all the grader reads. */
-const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberOfChannels: 1 };
+/** As the daily drill records: one voice at 22 kHz and 32 kbps, which is all the grader reads (lib/recordingPreset). */
+const RECORDING = { ...RecordingPresets.HIGH_QUALITY, ...PRACTICE_PROFILE };
+/** Claps: the standard rate, as their onsets are what is marked. */
+const CLAPS = { ...RecordingPresets.HIGH_QUALITY, ...STANDARD_PROFILE };
 
 export type TakePhase = "idle" | "leadin" | "live" | "sending";
 
@@ -31,8 +34,8 @@ export class MicDenied extends Error {
   }
 }
 
-export function useModeTake() {
-  const recorder = useAudioRecorder(RECORDING);
+export function useModeTake(opts: { claps?: boolean } = {}) {
+  const recorder = useAudioRecorder(opts.claps ? CLAPS : RECORDING);
   const [phase, setPhase] = useState<TakePhase>("idle");
   /** Seconds since the recording (or the clip) started. */
   const [elapsed, setElapsed] = useState(0);

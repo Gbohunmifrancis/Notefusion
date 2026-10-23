@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { DATA_SAVER_PROFILE, STANDARD_PROFILE, estimatedBytes, recordingProfile } from "./recordingPreset.ts";
+import { DATA_SAVER_PROFILE, STANDARD_PROFILE, estimatedBytes, recordingProfile, PRACTICE_PROFILE } from "./recordingPreset.ts";
 import { backingLoadsBeforePlay, jobFallbackPollMs, loadsImages, outboxTickMs } from "./dataPolicy.ts";
 import { transposeChord, transposeKeyName, transposeLocally } from "./localTranspose.ts";
 
@@ -52,4 +52,9 @@ test("offline transpose: keys spelled as their signatures, chords respelled, eve
 test("a song's backing comes down as the sheet opens, or on data saver only at the first Play", () => {
   assert.equal(backingLoadsBeforePlay(false), true);
   assert.equal(backingLoadsBeforePlay(true), false);
+});
+
+test("a practice take is the voice at 32 kbps whatever data saver says: a third of the upload or less", () => {
+  assert.deepEqual(PRACTICE_PROFILE, { sampleRate: 22050, numberOfChannels: 1, bitRate: 32_000 });
+  assert.ok(estimatedBytes(15, PRACTICE_PROFILE) * 3 < estimatedBytes(15, STANDARD_PROFILE));
 });

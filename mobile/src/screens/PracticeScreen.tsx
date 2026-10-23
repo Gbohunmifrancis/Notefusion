@@ -38,6 +38,7 @@ import {
   useAudioRecorder,
   type AudioPlayer,
 } from "expo-audio";
+import { PRACTICE_PROFILE } from "../lib/recordingPreset";
 
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
@@ -106,7 +107,8 @@ import type { RootStackParams } from "../navigation/types";
 
 type Phase = "idle" | "leadin" | "singing" | "grading";
 
-const RECORDING = { ...RecordingPresets.HIGH_QUALITY, sampleRate: 22050, numberOfChannels: 1 };
+/** A practice take: the voice at 32 kbps, a third of the upload for the same marks (lib/recordingPreset). */
+const RECORDING = { ...RecordingPresets.HIGH_QUALITY, ...PRACTICE_PROFILE };
 /** Recording runs on this long after the last note, so a held ending is not cut (the server keeps four). */
 const TAIL_SEC = 1;
 const TOAST_MS = 3200;
