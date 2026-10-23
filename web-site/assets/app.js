@@ -941,7 +941,7 @@
   // ── Practice (assets/practice-view.js): the daily drill, the streak, XP and badges ──
   // The view's script, its arithmetic and its stylesheet load the first time it is opened, never with the
   // app; the home chip needs only the numbers, asked for once the app is up and the phone is idle.
-  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=11", "/assets/practice-progress.js?v=10", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=4", "/assets/practice-view.js?v=14"];
+  var PRACTICE_ASSETS = ["/assets/practice-view.css?v=12", "/assets/practice-progress.js?v=10", "/assets/practice-track.js?v=6", "/assets/practice-modes.js?v=4", "/assets/practice-games.js?v=1", "/assets/practice-view.js?v=15"];
   var assetLoads = {};
   /** One stylesheet or script, once per page; a failed one is tried again next time. Scripts run in the order asked. */
   function loadAsset(url) {

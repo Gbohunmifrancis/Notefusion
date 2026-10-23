@@ -423,13 +423,15 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `assets/practice-modes.js` (same tests). Pitch match: a live needle on the web only (`pitch-track.js`, YIN on the mic,
   the grader's 35/80 cents, reports nothing); phones hold and mark until a store build adds a pitch stream. Harmony plays
   the tune under a take only with headphones on. Wrong notes are grey. The range card's two switches are not built yet.
-  Quick games (board s-practice-fun/s3; `Application/Practice/Games`, phone only so far): Which note? (doh then a note,
+  Quick games (board s-practice-fun/s3; `Application/Practice/Games`, phone and web): Which note? (doh then a note,
   tapped on the modulator), Staff to solfa (Playful "Note race": a note on the treble stave, its syllable, 60 s) and Name
   that hymn (`HymnOpenings`: 49 well-known hymns' openings cut from the pack by `Cut`, a test checks them against
   `pack.json`). `GET /api/practice/games/{game}` deals rounds rebuilt from the deal id (`game:p|f:seed`, mulberry32) with
   their answers, so the phone tells a tap at once; `POST …/games/grade` marks the answers against the server's deal, once
   per deal, and records a `PracticeKind.Game` session (`GameXp` 5, +3 at 80; `GamesPerDay` 6 count, the rest are for fun;
-  no drill allowance, never the path, never "Spot on"). Mobile `screens/practice/PracticeGameScreen`, pure `lib/practiceGames`.
+  no drill allowance, never the path, never "Spot on"). Mobile `screens/practice/PracticeGameScreen`, pure `lib/practiceGames`;
+  web the Practice view's Quick games row, `assets/practice-game-view.js` + `practice-games.css` (on first open), pure
+  `assets/practice-games.js` (same tests), the rehearsal piano for sound.
   The tab (board s1): the drill card, the season card, Quick games, the modes; the top line (streak · level · week) opens
   `PracticeProgress` (`components/practice/ProgressCards`: stat cards, week, badges). The marking moment (board s2):
   "Listening back…" while the take uploads, "Checking each note…", "Still marking — slow connection" after 8 s; then
