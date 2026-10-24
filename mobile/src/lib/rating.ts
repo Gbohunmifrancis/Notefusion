@@ -33,7 +33,8 @@ function write(s: RatingState): void {
  */
 async function requestInAppReview(): Promise<void> {
   try {
-    const StoreReview = await import("expo-store-review");
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const StoreReview = require("expo-store-review") as typeof import("expo-store-review");
     if (await StoreReview.isAvailableAsync()) await StoreReview.requestReview();
   } catch {
     // No module in this build, or Play could not show it: nothing to say to the person.
