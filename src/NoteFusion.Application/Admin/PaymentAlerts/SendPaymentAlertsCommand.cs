@@ -45,14 +45,17 @@ public sealed class SendPaymentAlertsCommandHandler : IRequestHandler<SendPaymen
     private readonly IPushSender _push;
     private readonly IDateTimeProvider _clock;
     private readonly ILogger<SendPaymentAlertsCommandHandler> _logger;
+    private readonly IWebPushSender? _webPush;
 
     public SendPaymentAlertsCommandHandler(
-        IApplicationDbContext db, IPushSender push, IDateTimeProvider clock, ILogger<SendPaymentAlertsCommandHandler> logger)
+        IApplicationDbContext db, IPushSender push, IDateTimeProvider clock, ILogger<SendPaymentAlertsCommandHandler> logger,
+        IWebPushSender? webPush = null)
     {
         _db = db;
         _push = push;
         _clock = clock;
         _logger = logger;
+        _webPush = webPush;
     }
 
     public async Task<Result<PaymentAlertRun>> Handle(SendPaymentAlertsCommand request, CancellationToken ct)
@@ -74,10 +77,20 @@ public sealed class SendPaymentAlertsCommandHandler : IRequestHandler<SendPaymen
         if (due.Count == 0)
             return PaymentAlertRun.Nothing;
 
+        // The console is told once per payment, on the first try only (a phone retry is not news there).
+        var firstTry = due.Where(a => a.Attempts == 0).Select(a => a.PaymentTransactionId).ToList();
+
         // Claimed before anything is sent: a crash after the push service took it cannot become a second push.
         foreach (var alert in due)
             alert.BeginAttempt(now);
         await _db.SaveChangesAsync(ct);
+
+        if (_webPush is not null && firstTry.Count > 0)
+        {
+            var paid = await FactsAsync(firstTry, now, ct);
+            if (paid.Count > 0)
+                await ConsoleAlerts.AdminConsolePush.SendToAdminsAsync(_db, _webPush, ConsoleAlerts.AdminConsoleAlertCopy.Payment(paid), ct);
+        }
 
         var devices = await AdminAlertDevices.PaymentAlertsAsync(_db, ct);
         if (devices.Count == 0)

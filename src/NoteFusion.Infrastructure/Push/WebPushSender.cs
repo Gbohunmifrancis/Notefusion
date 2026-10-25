@@ -48,7 +48,7 @@ public sealed class WebPushSender : IWebPushSender
 
     private enum Outcome { Delivered, Gone, Refused, Unanswered }
 
-    public async Task SendAsync(Guid userId, WebPushNotification notification, CancellationToken ct = default)
+    public async Task SendAsync(Guid userId, WebPushNotification notification, CancellationToken ct = default, string audience = WebPushSubscription.AppAudience)
     {
         if (!_keys.IsOn)
             return;
@@ -57,7 +57,7 @@ public sealed class WebPushSender : IWebPushSender
         try
         {
             subscriptions = await _db.WebPushSubscriptions
-                .Where(s => s.UserId == userId)
+                .Where(s => s.UserId == userId && s.Audience == audience)
                 .OrderByDescending(s => s.UpdatedAtUtc)
                 .Take(WebPush.MaxSubscriptionsPerUser)
                 .ToListAsync(ct);

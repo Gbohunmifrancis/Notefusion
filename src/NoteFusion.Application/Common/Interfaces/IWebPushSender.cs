@@ -14,7 +14,8 @@ public sealed record WebPushNotification(string Title, string Body, string Tag, 
 /// </summary>
 public interface IWebPushSender
 {
-    Task SendAsync(Guid userId, WebPushNotification notification, CancellationToken ct = default);
+    /// <summary>To the account's browsers of one audience: the web app's ("app") or the admin console's ("console").</summary>
+    Task SendAsync(Guid userId, WebPushNotification notification, CancellationToken ct = default, string audience = "app");
 }
 
 /// <summary>The VAPID application server key browsers subscribe with; null when web push is off.</summary>

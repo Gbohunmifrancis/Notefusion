@@ -21,6 +21,7 @@ public sealed class WebPushSubscriptionConfiguration : IEntityTypeConfiguration<
         builder.Property(s => s.FailureCount).IsRequired();
 
         builder.HasIndex(s => s.Endpoint).IsUnique();
+        builder.Property(s => s.Audience).HasMaxLength(10).IsRequired().HasDefaultValue(WebPushSubscription.AppAudience);
         builder.HasIndex(s => s.UserId);
 
         builder.HasOne<User>().WithMany().HasForeignKey(s => s.UserId).OnDelete(DeleteBehavior.Cascade);

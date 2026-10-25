@@ -187,6 +187,14 @@ public static class DependencyInjection
         if (configuration.GetValue("AdminActivityAlerts:Enabled", true))
             services.AddHostedService<AdminActivityAlertWorker>();
 
+        // What needs an admin's look, on the console's web push: failed payment attempts, a wave of accounts, one inbox
+        // making several, a flood of transcriptions. AdminConsoleAlerts__* sets the numbers; __Enabled=false is off.
+        var consoleAlerts = configuration.GetSection("AdminConsoleAlerts").Get<NoteFusion.Application.Admin.ConsoleAlerts.AdminConsoleAlertSettings>()
+            ?? new NoteFusion.Application.Admin.ConsoleAlerts.AdminConsoleAlertSettings();
+        services.AddSingleton(consoleAlerts);
+        if (consoleAlerts.Enabled)
+            services.AddHostedService<AdminConsoleAlertWorker>();
+
         // Web push for the web app: the VAPID pair is configured or derived from the JWT signing key
         // (see VapidKeys), so it needs no setup; WebPush__Enabled=false turns it off.
         var webPush = configuration.GetSection("WebPush").Get<WebPushSettings>() ?? new WebPushSettings();

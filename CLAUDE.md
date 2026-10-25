@@ -35,6 +35,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   drop it). VAPID pair from `WebPush__PublicKey`/`__PrivateKey`, else derived from the JWT signing key (`VapidKeys`, no
   setup); `WebPush__Enabled=false` turns it off. `web-site/sw.js` (scope `/app/`, push only) shows it under the tab's
   `nf-job-<id>` tag and a click opens `/app?job=<id>`.
+  The admin console has its own web push (`WebPushSubscription.Audience` "console", `/api/admin/push/subscriptions|test`,
+  web-admin `public/sw.js` + `lib/consolePush`, Settings › Notifications): a payment (beside the phone alert, first try only),
+  and from `AdminConsoleAlertWorker` (1 min, cooldown memory per key) failed payment attempts, a wave of accounts, one inbox
+  making several, and transcription floods per account, per phone and in all (`AdminConsoleAlerts__*`, admins/internal left out).
   Expo push: a ticket only says Expo took a push; `PushReceiptWorker` (2 min) reads each ticket's receipt
   (`PushTicketLog`, in memory), drops DeviceNotRegistered tokens, logs a key problem (InvalidCredentials = no FCM V1
   key on Expo, MismatchSenderId, a 401 wanting `Push__ExpoAccessToken`) as an error at most hourly, and System Health's
