@@ -262,7 +262,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   with the REC dot, the clock, the account's line and a ring on the level), the quiet notification's Listen, and the
   Listen tile (`ListenTakeTileService`, tapped again = stop and send). `ListenOverlayService` is the foreground service
   (`specialUse` while it waits, `microphone` / `mediaProjection` for the take: Play needs the specialUse declaration);
-  `TakeRecorder` writes AAC at 22,050 Hz mono, 128 or data saver's 32 kbps, from the microphone only, as Shazam listens
+  `TakeRecorder` writes AAC at 22,050 Hz mono, 128 or data saver's 32 kbps, from the microphone only, as Shazam listens,
+  on Android's `VOICE_RECOGNITION` source (noise suppression and auto gain required off; MIC's push held notes down, as do
+  Find the key and the Record screen's `audioSource`)
   (`ListenPrefs.source` is always the room: "This phone's sound" asked Android's screen-sharing consent at every take,
   ended with the sharing and recorded silence from apps that block capture, YouTube among them; JS `microphoneOnly`
   moves an older setting back once). Android 14+ starts a microphone service only from

@@ -101,7 +101,10 @@ internal class TakeRecorder(
           .setAudioPlaybackCaptureConfig(capture)
           .build()
       } else {
-        AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferBytes)
+        // VOICE_RECOGNITION, not MIC: Android requires its noise suppression and automatic gain off, and a phone's
+        // MIC path keeps them for calls, where a held note is "noise" to be pushed down (a song heard through the
+        // speaker came back in pieces). Calibrated near -22 dBFS at 90 dB SPL, so HEARD_DB is still ~60 dB SPL.
+        AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferBytes)
       }
     } catch (e: Exception) {
       fail("E_MIC_UNAVAILABLE", e.message)

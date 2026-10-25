@@ -175,6 +175,9 @@ function recordingOptionsFor(dataSaver: boolean): RecordingOptions {
     sampleRate: profile.sampleRate,
     numberOfChannels: profile.numberOfChannels,
     bitRate: profile.bitRate,
+    // Android's VOICE_RECOGNITION source: its noise suppression and automatic gain are required off, and the default
+    // MIC path's treat a held note as noise to push down (the same choice as Listen from anywhere's TakeRecorder).
+    android: { ...RecordingPresets.HIGH_QUALITY.android, audioSource: "voice_recognition" },
     web: { ...RecordingPresets.HIGH_QUALITY.web, bitsPerSecond: profile.bitRate },
     isMeteringEnabled: true,
   };
