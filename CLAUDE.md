@@ -675,7 +675,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   a refresh or password change issues tokens but is not one; sign-ups `sign_up`), and `Api/Common/UserActivityFilter`
   (global) writes every successful signed-in POST/PUT/PATCH/DELETE as `controller.action` with its route ids — never the
   body — plus GETs marked `[RecordActivity]` (opening a sheet); admin routes (their own audit log) and `[NoActivity]`
-  ones (already recorded elsewhere: submits, saves, sign-ins, events, device heartbeats) are left out. Readable lines in
+  ones (already recorded elsewhere: submits, saves, sign-ins, events, device heartbeats) are left out; `POST /api/billing/confirm`,
+  asked on every return to the app, writes "Came back from a checkout" itself only for a checkout in flight, once per
+  checkout, naming its plan (`ConfirmPaymentCommandHandler.RecordReturnAsync`). Readable lines in
   `ActivityNames` (a name without one shows as itself). The phone sends every action first-party too
   (`lib/appEvents`: each `logAnalyticsEvent`, screen views, record/play/save/share/export, checkout, settings, errors
   shown; ids per event, written to the phone 600 ms after the tap (one write for the taps of a moment, at once on going to the background), kept until a 2xx, retried, cleared after a sign-out flush), and the website's `track.js` keeps its

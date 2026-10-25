@@ -97,6 +97,7 @@ public sealed class BillingController : ApiControllerBase
     /// </summary>
     [HttpPost("confirm")]
     [EnableRateLimiting(AuthRateLimiting.Billing)]
+    [NoActivity] // asked on every return to the app: the handler records a return only when a checkout was open
     public async Task<IActionResult> Confirm(CancellationToken ct)
         => HandleResult(await _sender.Send(new ConfirmPaymentCommand(), ct));
 
