@@ -51,6 +51,7 @@ export const ICONS = {
   "learn-part": "nf:learn-part",
   transpose: "nf:transpose",
   "find-key": "lucide:ear",
+  chat: "lucide:message-circle",
   import: "lucide:file-music",
   sing: "lucide:mic-vocal",
   mic: "lucide:mic",

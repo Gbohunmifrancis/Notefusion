@@ -1967,3 +1967,21 @@ export interface AppEventsRequest {
 export interface AppEventsResult {
   accepted: number;
 }
+
+// ── Live support (C# Application/Support) ─────────────────────────────────────────────────────────────────────────
+
+/** C# `SupportMessageDto`. */
+export interface SupportMessage {
+  id: string;
+  fromAdmin: boolean;
+  adminName: string | null;
+  body: string;
+  createdAtUtc: string;
+}
+
+/** C# `SupportThreadDto`: `conversationId` is null until the first message. */
+export interface SupportThread {
+  conversationId: string | null;
+  closed: boolean;
+  messages: SupportMessage[];
+}

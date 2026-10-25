@@ -17,6 +17,7 @@ import { TabNavigator } from './TabNavigator';
 import { ResultScreen } from '../screens/ResultScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { HelpScreen } from '../screens/HelpScreen';
+import { SupportChatScreen } from '../screens/SupportChatScreen';
 import { UpgradeScreen } from '../screens/UpgradeScreen';
 import { LinkScreen } from '../screens/LinkScreen';
 import { ListenScreen } from '../screens/ListenScreen';
@@ -210,6 +211,11 @@ export function RootNavigator() {
             <Stack.Screen
               name="Help"
               component={HelpScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="SupportChat"
+              component={SupportChatScreen}
               options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen

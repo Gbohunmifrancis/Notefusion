@@ -26,7 +26,7 @@ export const ADMIN_TAB_ORDER = ["Overview", "Payments", "Users", "Health", "More
 export type AdminTabName = (typeof ADMIN_TAB_ORDER)[number];
 
 /** Root-stack routes a notification may open directly. */
-type PushedRoute = Extract<keyof RootStackParams, "Upgrade">;
+type PushedRoute = Extract<keyof RootStackParams, "Upgrade" | "SupportChat">;
 
 export type NavTarget =
   /** Switch to a tab: `navigate('Tabs', { screen })`, since a tab is nested in the root stack. */
@@ -41,7 +41,9 @@ export type NavTarget =
   /** One account's page in Admin, over Users (behind the admin lock). Resolves for an admin only. */
   | { kind: "adminUser"; userId: string }
   /** Not a screen: the store listing (an out-of-date app has nothing in it to show). */
-  | { kind: "store" };
+  | { kind: "store" }
+  /** A web console page, opened in the in-app browser (`lib/adminConsole`). Resolves for an admin only. */
+  | { kind: "console"; path: string };
 
 type Entry = { admin?: boolean; target: (data: { paymentId?: unknown; userId?: unknown }) => NavTarget | null };
 
@@ -79,6 +81,10 @@ const NOTIFICATION_TARGETS: Record<string, Entry> = {
   },
   /** The same, for several people at once: the Users list. */
   AdminUsers: { admin: true, target: () => ({ kind: "admin", tab: "Users" }) },
+  /** Live support's answer to this person (`ReplySupportCommand`): their chat. */
+  SupportChat: { target: () => ({ kind: "route", route: "SupportChat" }) },
+  /** A customer wrote to support (`SendSupportMessageCommand`): the console's Support page. */
+  AdminSupport: { admin: true, target: () => ({ kind: "console", path: "/support" }) },
   /** `NotifyAppUpdateCommand`. */
   AppUpdate: { target: () => ({ kind: "store" }) },
   /** The founder's first-song note and the phone's own fallback reminder. */

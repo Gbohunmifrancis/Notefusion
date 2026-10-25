@@ -243,6 +243,7 @@ export function ProfileScreen() {
           chevron
           onPress={() => nav.navigate("Settings")}
         />
+        <Row icon="chat" label="Chat with us" chevron onPress={() => nav.navigate("SupportChat")} />
         <Row icon="help" label="Help & support" chevron onPress={() => nav.navigate("Help")} />
         <Row
           icon="feedback"

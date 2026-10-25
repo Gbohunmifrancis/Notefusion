@@ -725,6 +725,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   or once read), an answer pushes the customer's phone (`data.screen` "SupportChat") and web app (`/app?support=1`) only when their
   chat is not open. The website and /app carry `assets/support.js` (the button inline, the chat and `support.css` on the first tap;
   above the tab bar and the mini player); web-admin `/support`. Threads go with their account.
+  The phone: `screens/SupportChatScreen` (route `SupportChat`, its stream by XHR while in front, a read every 15 s otherwise),
+  the one floating `components/SupportBubble` on Home only (a dot for an unread answer, `lib/supportSeen`), and "Chat with us" in
+  Profile and Help; pushes `SupportChat` (the customer) and `AdminSupport` (an admin: the console's Support page).
+  Home's one-time `components/WhatsNew` sheet (Android, never the first session or over another sheet, `lib/whatsNew`) shows
+  transcribing from any app (Listen tile / floating button) and Find the key.
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - No secret ever in the repository: `.github/workflows/secret-scan.yml` (gitleaks, `.gitleaks.toml`) fails pull requests,

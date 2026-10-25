@@ -43,6 +43,10 @@ import { primeSeason } from "./seasonStore";
 
 const LAUNCHED_KEY = "nf.hasLaunched";
 
+/** True for the whole of the first session on this install (read by the one-time "what's new" sheet, `lib/whatsNew`). */
+let firstSession = false;
+export const isFirstSession = (): boolean => firstSession;
+
 /**
  * How long the branded splash holds once the fonts are ready.
  *
@@ -120,6 +124,7 @@ export function useAppReady(): AppReady {
         if (dressed === "intro" && on) AsyncStorage.setItem(seasonIntroKey(on), seasonKey(now, on)).catch(() => undefined);
         setFirstLaunch(seen === null);
         if (seen === null) {
+          firstSession = true;
           // Best-effort: a failed write costs a returning user one long splash,
           // which is a far better failure than blocking the boot on storage.
           AsyncStorage.setItem(LAUNCHED_KEY, "1").catch(() => undefined);

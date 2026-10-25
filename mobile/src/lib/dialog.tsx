@@ -27,6 +27,10 @@ export type { DialogAction, DialogChoice, DialogOptions };
 /** Set while a provider is mounted. Module-level because the callers are not components. */
 let present: ((options: DialogOptions) => void) | null = null;
 
+/** True while a sheet is on screen: something optional (the "what's new" sheet) waits rather than replace it. */
+let showing = false;
+export const isDialogShowing = (): boolean => showing;
+
 /**
  * Shows a dialog as the app's bottom sheet. Fire-and-forget, like `Alert.alert`: handlers hang
  * off the actions rather than a returned promise.
@@ -56,6 +60,9 @@ export function showDialog(options: DialogOptions): void {
 export function DialogProvider({ children }: { children: React.ReactNode }) {
   /** What the sheet shows; null while it is closed or leaving. */
   const [options, setOptions] = useState<DialogOptions | null>(null);
+  useEffect(() => {
+    showing = options !== null;
+  }, [options]);
   /** An action was chosen and its sheet is leaving. */
   const closing = useRef(false);
   /** Asked for while a sheet was leaving: shown once it has gone. */
