@@ -1869,3 +1869,40 @@ export interface SupportThread {
   closed: boolean;
   messages: SupportMessage[];
 }
+
+// ── Hymns recognised (GET /api/admin/analytics/hymns; mirrors RecognisedHymnsDto) ─────────────
+
+export interface RecognisedHymnRow {
+  slug: string;
+  title: string;
+  /** "score": its hymnbook version was offered; "incipit": named and linked only. */
+  kind: string;
+  url: string;
+  times: number;
+  accounts: number;
+  kept: number;
+  lastAtUtc: string;
+}
+
+export interface HymnRecognition {
+  atUtc: string;
+  slug: string;
+  title: string;
+  kind: string;
+  confidence: number;
+  userId: string;
+  email: string;
+  kept: boolean;
+}
+
+export interface RecognisedHymns {
+  fromUtc: string;
+  toUtc: string;
+  includesInternal: boolean;
+  finished: number;
+  recognised: number;
+  accounts: number;
+  kept: number;
+  hymns: RecognisedHymnRow[];
+  recent: HymnRecognition[];
+}

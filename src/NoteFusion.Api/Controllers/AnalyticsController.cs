@@ -91,6 +91,16 @@ public sealed class AnalyticsController : ApiControllerBase
         => HandleResult(await _sender.Send(new GetListenAnalyticsQuery(from, to), ct));
 
     /// <summary>
+    /// The Hymns recognised page: which hymns people's takes matched, how often, by how many accounts, and how many
+    /// kept the hymnbook version (see <see cref="GetRecognisedHymnsQuery"/>). <paramref name="internal"/> counts the
+    /// team's own accounts too.
+    /// </summary>
+    [HttpGet("hymns")]
+    public async Task<IActionResult> Hymns([FromQuery] DateTime? from, [FromQuery] DateTime? to,
+        [FromQuery(Name = "internal")] bool includeInternal, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetRecognisedHymnsQuery(from, to, includeInternal), ct));
+
+    /// <summary>
     /// The Unpaid checkouts page: every checkout opened and not paid in the window, one row each, with the account, what
     /// the provider's page saw, the answer to "What stopped you?" and whether they paid later
     /// (see <see cref="GetUnpaidCheckoutsQuery"/>).
