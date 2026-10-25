@@ -37,7 +37,11 @@ public interface IAdminPhoneLock
 
     void RecordFailure(Guid userId, DateTime utcNow);
 
-    AdminPhoneSession Open(Guid userId, Guid? keyId, DateTime utcNow);
+    /// <summary>
+    /// A new pass. <paramref name="fresh"/> false (a remembered browser) opens it without the fresh confirmation the
+    /// destructive actions want: those still ask for the passkey or password.
+    /// </summary>
+    AdminPhoneSession Open(Guid userId, Guid? keyId, DateTime utcNow, bool fresh = true);
 
     /// <summary>The caller's open pass, moved on to now; null when it is not theirs, has ended or never was.</summary>
     AdminPhoneSession? Touch(string? token, Guid userId, DateTime utcNow);

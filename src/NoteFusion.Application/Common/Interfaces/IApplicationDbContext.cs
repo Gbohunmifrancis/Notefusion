@@ -14,6 +14,7 @@ public interface IApplicationDbContext
     DbSet<RefreshToken> RefreshTokens { get; }
     DbSet<DeviceToken> DeviceTokens { get; }
     DbSet<AdminPhoneKey> AdminPhoneKeys { get; }
+    DbSet<AdminTrustedBrowser> AdminTrustedBrowsers { get; }
 
     /// <summary>Browsers subscribed to web push (the web app's notifications when its tab is closed).</summary>
     DbSet<WebPushSubscription> WebPushSubscriptions { get; }

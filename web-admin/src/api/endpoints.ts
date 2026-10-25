@@ -1,6 +1,8 @@
 import { query, request, requestBlob } from "@/api/client";
 import type {
   AdminLedgerRow,
+  ConsoleTrust,
+  TrustedBrowser,
   Insights,
   LiveActivity,
   AdminPaymentDetail,
@@ -130,6 +132,25 @@ export const unlockConsoleWithPasskey = (credential: WebAuthnJson) =>
 
 export const unlockConsoleWithPassword = (password: string) =>
   request<ConsoleSession>("/api/admin/console-lock/password", { method: "POST", body: { password } });
+
+/** Remembers this browser: a token the console keeps to reopen itself without a passkey (wants a pass from the last minute). */
+export const rememberConsoleBrowser = () =>
+  request<ConsoleTrust>("/api/admin/console-lock/trust", { method: "POST" });
+
+/** A remembered browser's token traded for a pass (never a fresh confirmation). */
+export const openConsoleFromTrust = (token: string) =>
+  request<ConsoleSession>("/api/admin/console-lock/trusted", { method: "POST", body: { token } });
+
+/** Forgets this browser (signing out). */
+export const forgetConsoleBrowser = (token: string) =>
+  request<void>("/api/admin/console-lock/trust/forget", { method: "POST", body: { token } });
+
+/** The admin's remembered browsers; `token` marks this one. */
+export const getConsoleBrowsers = (token: string | null) =>
+  request<TrustedBrowser[]>("/api/admin/console-lock/browsers", { method: "POST", body: { token } });
+
+export const forgetConsoleBrowserById = (id: string) =>
+  request<void>(`/api/admin/console-lock/browsers/${encodeURIComponent(id)}`, { method: "DELETE" });
 
 /** Ends a pass the console has let go of (5 minutes away, signing out). */
 export const lockConsoleSession = (pass: string) =>

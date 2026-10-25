@@ -6,6 +6,7 @@ import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react"
 import type { FormEvent } from "react";
 
 import { lockConsoleSession } from "@/api/endpoints";
+import { isRemembered } from "@/lib/consoleTrust";
 import { IdentityFields, useIdentityCheck } from "@/components/IdentityCheck";
 import {
   AlertDialog,
@@ -68,6 +69,9 @@ function useIdleLock() {
         return;
       }
       if (!idleExpired(last, Date.now())) return;
+      // A remembered browser is not locked for being away: its pass lapses on the server, and the next call opens a
+      // new one without asking (lib/consoleTrust).
+      if (isRemembered()) return;
       const ended = lockConsole("away");
       if (ended) void lockConsoleSession(ended).catch(() => undefined);
     };

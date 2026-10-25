@@ -177,6 +177,46 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("admin_phone_keys", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.AdminTrustedBrowser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<DateTime>("LastUsedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("RevokedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("admin_trusted_browsers", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.AppEvent", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2575,6 +2615,15 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                 });
 
             modelBuilder.Entity("NoteFusion.Core.Entities.AdminPhoneKey", b =>
+                {
+                    b.HasOne("NoteFusion.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.AdminTrustedBrowser", b =>
                 {
                     b.HasOne("NoteFusion.Core.Entities.User", null)
                         .WithMany()

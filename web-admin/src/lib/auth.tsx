@@ -24,6 +24,7 @@ import {
 } from "@/api/endpoints";
 import type { AuthUser, LoginResponse } from "@/api/types";
 import { getAdminPass, resetAdminLock } from "@/lib/adminLock";
+import { forgetThisBrowser, rememberThisBrowser } from "@/lib/consoleTrust";
 import {
   clearSession,
   getRefreshToken,
@@ -127,6 +128,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setTokens(response.accessToken, response.refreshToken, remember);
     storeUser(response.user);
     setUser(response.user);
+    // The sign-in's pass is fresh: remember this browser, so a reload or a new tab does not ask again.
+    void rememberThisBrowser();
   }, []);
 
   const signIn = useCallback(
@@ -156,6 +159,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // The console's pass ends with the session, and nothing is left waiting behind the lock.
     const pass = getAdminPass();
     resetAdminLock();
+    await forgetThisBrowser();
     if (pass) {
       try {
         await lockConsoleSession(pass);

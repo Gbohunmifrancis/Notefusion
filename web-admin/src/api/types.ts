@@ -78,6 +78,22 @@ export interface ConsoleSession {
   expiresAtUtc: string;
 }
 
+/** A remembered browser's token (`POST /api/admin/console-lock/trust`). */
+export interface ConsoleTrust {
+  token: string;
+  expiresAtUtc: string;
+}
+
+/** A browser the console remembers, for Settings. */
+export interface TrustedBrowser {
+  id: string;
+  label: string;
+  createdAtUtc: string;
+  lastUsedAtUtc: string;
+  expiresAtUtc: string;
+  thisBrowser: boolean;
+}
+
 export interface UserMetrics {
   totalUsers: number;
   newUsers: number;
