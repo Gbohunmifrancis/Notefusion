@@ -40,8 +40,13 @@ internal object ListenPrefs {
 
   fun buttonOn(context: Context) = prefs(context).getBoolean("button", false)
   fun notificationOn(context: Context) = prefs(context).getBoolean("notification", false)
-  fun source(context: Context): String =
-    prefs(context).getString("source", SOURCE_ROOM).let { if (it == SOURCE_PHONE && phoneSoundAvailable()) it else SOURCE_ROOM }
+  /**
+   * The microphone, always, as Shazam listens: "This phone's sound" asked Android's screen-sharing consent at every take,
+   * ended whenever the sharing did, and recorded silence from apps that block capture. A stored "phone" from an older
+   * version is read as the room.
+   */
+  @Suppress("UNUSED_PARAMETER")
+  fun source(context: Context): String = SOURCE_ROOM
   fun signedIn(context: Context) = prefs(context).getBoolean("signedIn", false)
   fun dataSaver(context: Context) = prefs(context).getBoolean("dataSaver", false)
   fun tileAdded(context: Context) = prefs(context).getBoolean("tileAdded", false)

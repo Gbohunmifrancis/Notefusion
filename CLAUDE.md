@@ -262,21 +262,22 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   with the REC dot, the clock, the account's line and a ring on the level), the quiet notification's Listen, and the
   Listen tile (`ListenTakeTileService`, tapped again = stop and send). `ListenOverlayService` is the foreground service
   (`specialUse` while it waits, `microphone` / `mediaProjection` for the take: Play needs the specialUse declaration);
-  `TakeRecorder` writes AAC at 22,050 Hz mono, 128 or data saver's 32 kbps, from the mic ("The room") or, Android 10+,
-  playback capture ("This phone's sound": Android's consent each time; an app that opts out comes through as silence
-  while music plays, and the take goes on from the room, said so). Android 14+ starts a microphone service only from
+  `TakeRecorder` writes AAC at 22,050 Hz mono, 128 or data saver's 32 kbps, from the microphone only, as Shazam listens
+  (`ListenPrefs.source` is always the room: "This phone's sound" asked Android's screen-sharing consent at every take,
+  ended with the sharing and recorded silence from apps that block capture, YouTube among them; JS `microphoneOnly`
+  moves an older setting back once). Android 14+ starts a microphone service only from
   the front: the notification action is its own exemption, the overlay counts while the button is on screen, and the
   tile and the consent go through `ListenTakeActivity`, a translucent activity in front for the moment the recording
   starts (the button's fallback too). Stop (or the cap: 3:00 free, 6:00 Pro, `listenAnywhere.ts`; under 3 s is not
   sent) hands the file to `ListenTakeHeadlessService` → `AppRegistry.registerHeadlessTask` (index.ts) →
   `lib/listenAnywhereBridge.listenTakeTask`: `bindOutbox` the cached account, `enqueueTake` as a melody take, `sendTakeNow`;
   the ready push is unchanged; a file the task never got is swept in at sign-in (`drainPendingTakes`, files older
-  than 15 min). The allowance the overlay shows (`ListenPrefs`, written by `SubscriptionProvider` through
+  than 15 min), and a take Android stopped mid-way (the service destroyed) is kept as `kept-…` and swept in at once. The allowance the overlay shows (`ListenPrefs`, written by `SubscriptionProvider` through
   `syncListenAllowance`: the pill's "Free: 2 of 3 left this week · up to 3:00", the "none left" card whose Buy one song
   opens `notefusion://upgrade`) fails open until the server has answered; the server still decides. Settings › Listen
   from anywhere (Android only): Floating button (a setup sheet, `ListenAnywhereSheet`: microphone, notifications,
   "Display over other apps" on Android's own page, in order, the one button naming the next), Listen in notifications,
-  Quick Settings tile (Add), Listen to. Native code: a store build, not an OTA.
+  Quick Settings tile (Add), Listen for. Native code: a store build, not an OTA.
   The floating button and the Listen notification are Pro's (`ListenPrefs.proActive`: the allowance known and Pro, a
   choir seat included; Settings shows them as Pro rows opening Upgrade; the switches keep their place through a lapse);
   the tile is everyone's. Nothing runs to wait: the notification alone is a plain swipeable one (`ListenNotice`, its

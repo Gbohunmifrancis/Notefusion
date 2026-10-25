@@ -28,7 +28,8 @@ class ListenTakeActivity : Activity() {
     super.onCreate(savedInstanceState)
     @Suppress("DEPRECATION")
     overridePendingTransition(0, 0)
-    source = intent.getStringExtra(ListenOverlayService.EXTRA_SOURCE) ?: ListenPrefs.source(this)
+    // Not the intent's: one built by an older version may still say "phone" (ListenPrefs.source).
+    source = ListenPrefs.source(this)
     from = intent.getStringExtra(ListenOverlayService.EXTRA_FROM) ?: "tile"
     if (ListenOverlayService.isListening()) {
       // The tile tapped again: stop and send.
