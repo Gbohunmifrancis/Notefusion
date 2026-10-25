@@ -5,8 +5,6 @@
  * is modules/notefusion-listen (ListenPrefs reads the allowance this writes).
  */
 
-export type ListenSource = "room" | "phone";
-
 /** "Listen for": the Record screen's mode a Listen take is sent as (mirrors the native `ListenKind`). */
 export type ListenKind = "melody" | "poly" | "chords";
 
@@ -84,16 +82,6 @@ export function groupNote(a: ListenAllowance): string {
 /** The floating button and Listen in notifications are Pro's; this is what a free account's row says instead. */
 export const PRO_ONLY_HINT = "Part of Pro";
 
-export function sourceLabel(source: ListenSource): string {
-  return source === "phone" ? "This phone’s sound" : "The room";
-}
-
-/** The "Listen to" sheet's two rows, in order (R2/5). */
-export const SOURCE_CHOICES: readonly { source: ListenSource; label: string; detail: string }[] = [
-  { source: "room", label: "The room", detail: "What the microphone hears: music playing near you, or another phone’s speaker." },
-  { source: "phone", label: "This phone’s sound", detail: "The app that’s playing, clean — even with headphones in." },
-];
-
 /** "Listen for" (R4): what a take is sent as, in the order the pill's chip steps through them. */
 export const KIND_CHOICES: readonly { kind: ListenKind; label: string; detail: string }[] = [
   { kind: "melody", label: "Singing", detail: "A voice, or one instrument playing a tune. If no voice is heard, it’s read as chords." },
@@ -114,9 +102,6 @@ export function takeSubmitOptions(kind: string | undefined, fileName?: string): 
   const k = (KIND_CHOICES.some((c) => c.kind === kind) ? kind : fromName ?? "melody") as ListenKind;
   return k === "melody" ? { mode: "melody", noVoiceAsChords: true } : { mode: k };
 }
-
-export const SOURCE_NOTE =
-  "Android asks every time you start — tap Start — and shows its screen-sharing sign while it listens. Only the sound is recorded, never the screen.";
 
 // ── Setup (R3/2) ────────────────────────────────────────────────────────────
 

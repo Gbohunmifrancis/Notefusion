@@ -94,6 +94,16 @@ export async function drainPendingTakes(): Promise<void> {
   }
 }
 
+/**
+ * Takes listen with the microphone only, as Shazam does: "This phone's sound" asked Android's screen-sharing consent at
+ * every take, stopped whenever the sharing did, and recorded silence from apps that block capture (YouTube among
+ * them). A phone still set to it from an older version is moved back to the room, once, at start.
+ */
+export function microphoneOnly(): void {
+  if (!Listen.available) return;
+  if (Listen.getAnywhere()?.source === "phone") Listen.setAnywhere({ source: "room" });
+}
+
 /** Hands the overlay what the account may send; `syncListenAllowance(null)` forgets it (sign-out). */
 export function syncListenAllowance(a: ListenAllowance | null): void {
   if (!Listen.available) return;

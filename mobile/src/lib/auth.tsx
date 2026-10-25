@@ -16,7 +16,7 @@ import { flushAndForgetAppEvents, forgetAppEvents, logAppEvent } from '../lib/ap
 import type { AuthUser } from '../api/types';
 import { bindOfflineLibrary, clearOfflineLibrary } from '../lib/offlineLibrary';
 import { bindOutbox, clearOutbox } from '../lib/outbox';
-import { drainPendingTakes } from '../lib/listenAnywhereBridge';
+import { drainPendingTakes, microphoneOnly } from '../lib/listenAnywhereBridge';
 
 interface AuthState {
   user: AuthUser | null;
@@ -126,6 +126,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (user?.id) void drainPendingTakes();
     });
     Listen.setAccount(Boolean(user?.id));
+    microphoneOnly();
   }, [user?.id, initializing]);
 
   useEffect(() => onSessionExpired(() => {
