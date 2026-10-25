@@ -710,6 +710,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - No secret ever in the repository: `.github/workflows/secret-scan.yml` (gitleaks, `.gitleaks.toml`) fails pull requests,
   main and the first job of every deploy on a finding (docs/DEPLOYMENT.md, "Secret scanning").
+  **Never commit or push an `appsettings*.json`** (`appsettings.json`, `appsettings.Development.json`, any project's):
+  they are in `.gitignore`, never `git add -f` one, and secret-scan's first step fails a change that tracks one; their
+  keys belong in the environment.
   Every workflow action is pinned to a commit SHA (version in a comment), and the SSH steps check the server's ECDSA
   host key against the variable `EC2_HOST_FINGERPRINT` (docs/DEPLOYMENT.md, "Pinning the server's host key").
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).

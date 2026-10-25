@@ -535,10 +535,10 @@ mobile/google-play-service-account.json
 # well — a key present in neither silently falls back to a default in C#.
 # Untracking is not unpublishing: the key is still readable in every earlier commit, so
 # it has to be rotated regardless.
-src/NoteFusion.Api/appsettings.json
-# Same file, local overrides — it holds the dev Postgres password. Untracked from the
-# start but never ignored, so a single `git add -A` would have committed it.
-src/NoteFusion.Api/appsettings.Development.json
+# Every appsettings file, in every project, is ignored and never pushed — the Development
+# overrides too (the dev Postgres password); secret-scan.yml fails a change that adds one.
+**/appsettings.json
+**/appsettings.*.json
 
 # ── NoteFusion: accuracy harness output ──────────────────────
 # Rewritten by every `python -m tests.accuracy.report` run, and a filtered run leaves
