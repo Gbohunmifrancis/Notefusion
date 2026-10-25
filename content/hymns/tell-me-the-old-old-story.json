@@ -1,0 +1,80 @@
+{
+  "title": "Tell Me the Old, Old Story",
+  "tune": "evangel-doane",
+  "text": [
+    {
+      "name": "Katherine Hankey",
+      "born": 1834,
+      "died": 1911,
+      "role": "Words (1866)"
+    }
+  ],
+  "textPublished": 1866,
+  "description": "Tell Me the Old, Old Story in Tonic Solfa to EVANGEL (DOANE): the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Katherine Hankey wrote the poem The Old, Old Story in 1866; these words are taken from it. The tune, EVANGEL (DOANE), is by William H. Doane (1870)."
+  ],
+  "underlay": "Tell me the old, old sto-ry, Of un-seen things a_-bove Of Je-sus and_ his_ glo_-ry, Of Je-sus_ and his_ love. Tell_ me the sto-ry sim-ply_, As to_ a_ lit-tle child, For I am weak_ and_ wea_-ry, And help-less_ and de_-filed. Tell me the old, old sto-ry, Tell me the old, old sto-ry Tell me the old, old sto-ry, Of Je-sus and_ his love.",
+  "verses": [
+    {
+      "lines": [
+        "Tell me the old, old story,",
+        "Of unseen things above",
+        "Of Jesus and his glory,",
+        "Of Jesus and his love.",
+        "Tell me the story simply,",
+        "As to a little child,",
+        "For I am weak and weary,",
+        "And helpless and defiled."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Tell me the old, old story,",
+        "Tell me the old, old story",
+        "Tell me the old, old story,",
+        "Of Jesus and his love."
+      ]
+    },
+    {
+      "lines": [
+        "Tell me the story slowly,",
+        "That I may take it in—",
+        "That wonderful redemption,",
+        "God’s remedy for sin.",
+        "Tell me the story often,",
+        "For I forget too soon,",
+        "The ‘early dew’ of morning",
+        "Has passed away at noon."
+      ]
+    },
+    {
+      "lines": [
+        "Tell me the story softly,",
+        "With earnest tones, and grave;",
+        "Remember! I’m the sinner",
+        "Whom Jesus came to save;",
+        "Tell me the story always,",
+        "If you would really be,",
+        "In any time of trouble,",
+        "A Comforter to me."
+      ]
+    },
+    {
+      "lines": [
+        "Tell me the same old story,",
+        "When you have cause to fear",
+        "That this world’s empty glory",
+        "Is costing me too dear.",
+        "Yes, and when that world’s glory",
+        "Is dawning on my soul,",
+        "Tell me the old, old story:",
+        "‘Christ Jesus makes thee whole.’"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

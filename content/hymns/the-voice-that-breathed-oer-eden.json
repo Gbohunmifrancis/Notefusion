@@ -1,0 +1,74 @@
+{
+  "title": "The Voice That Breathed o’er Eden",
+  "tune": "blairgowrie",
+  "text": [
+    {
+      "name": "John Keble",
+      "born": 1792,
+      "died": 1866,
+      "role": "Words (1857)"
+    }
+  ],
+  "textPublished": 1857,
+  "occasions": [
+    "Wedding"
+  ],
+  "description": "The Voice That Breathed o’er Eden in Tonic Solfa to BLAIRGOWRIE: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "John Keble wrote the words, first published in the Salisbury Hymn Book in 1857. John Bacchus Dykes wrote the tune BLAIRGOWRIE."
+  ],
+  "underlay": "The voice that breathed o’er E-den, That ear-liest wed-ding day, The pri-mal mar-riage bless-ing, It hath not passed a-way. Still in the pure es-pous-al Of Chris-tian man and maid, The ho-ly Three are with us, The three-fold grace_ is__ said,",
+  "verses": [
+    {
+      "lines": [
+        "The voice that breathed o’er Eden,",
+        "That earliest wedding day,",
+        "The primal marriage blessing,",
+        "It hath not passed away.",
+        "Still in the pure espousal",
+        "Of Christian man and maid,",
+        "The holy Three are with us,",
+        "The threefold grace is said,"
+      ]
+    },
+    {
+      "lines": [
+        "For dower of blessed children,",
+        "For love and faith’s sweet sake,",
+        "For high mysterious union",
+        "Which naught on earth may break.",
+        "Be present, awful Father,",
+        "To give away this bride,",
+        "As Eve Thou gav’st to Adam",
+        "Out of his own pierced side:"
+      ]
+    },
+    {
+      "lines": [
+        "Be present, Son of Mary,",
+        "To join their loving hands,",
+        "As Thou didst bind two natures",
+        "In Thine eternal hands!",
+        "Be present, holiest Spirit,",
+        "To bless them as they kneel,",
+        "As Thou, for Christ the Bridegroom,",
+        "The heavenly Spouse dost seal!"
+      ]
+    },
+    {
+      "lines": [
+        "O spread Thy pure wing o’er them,",
+        "Let no ill power find place,",
+        "When onward to Thine altar",
+        "Their hallowed path they trace.",
+        "To cast their crowns before Thee",
+        "In perfect sacrifice,",
+        "Till to the home of gladness",
+        "With Christ’s own Bride they rise."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

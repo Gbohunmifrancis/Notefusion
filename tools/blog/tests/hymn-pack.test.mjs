@@ -76,11 +76,12 @@ test("packErrors catches a version file that disagrees with the pack", () => {
 test("the carols and the Halloween songs carry their occasions, for the app's season shelves", () => {
   const carols = pack.hymns.filter((h) => h.occasions?.includes("Christmas")).map((h) => h.slug).sort();
   assert.deepEqual(carols, [
-    "angels-from-the-realms-of-glory", "angels-we-have-heard-on-high", "away-in-a-manger", "far-far-away-on-judeas-plains",
+    "angels-from-the-realms-of-glory", "angels-we-have-heard-on-high", "away-in-a-manger", "christians-awake-salute-the-happy-morn",
+    "far-far-away-on-judeas-plains",
     "gentle-mary-laid-her-child", "good-king-wenceslas", "hark-the-herald-angels-sing", "i-heard-the-bells-on-christmas-day",
     "it-came-upon-a-midnight-clear", "joy-to-the-world", "o-come-all-ye-faithful", "o-little-town-of-bethlehem",
     "of-the-fathers-love-begotten-divinum-mysterium-isorythmic", "once-in-royal-davids-city", "see-amid-the-winters-snow",
-    "silent-night", "the-first-noel", "to-shepherds-as-they-watched-by-night",
+    "silent-night", "the-first-noel", "to-shepherds-as-they-watched-by-night", "while-shepherds-watched-their-flocks",
   ]);
   assert.ok(pack.hymns.every((h) => h.occasions === undefined || h.occasions.length > 0));
   // The Halloween shelf: hymns and tune pages alike carry the occasion, the All Saints tunes with "All Saints" too.

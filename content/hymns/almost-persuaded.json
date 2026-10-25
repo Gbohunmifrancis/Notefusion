@@ -1,0 +1,53 @@
+{
+  "title": "Almost Persuaded",
+  "tune": "almost-persuaded",
+  "text": [
+    {
+      "name": "Philip P. Bliss",
+      "born": 1838,
+      "died": 1876,
+      "role": "Words (1871)"
+    }
+  ],
+  "textPublished": 1871,
+  "description": "Almost Persuaded in Tonic Solfa to ALMOST PERSUADED: the solfa with the words, staff notation, the three verses, and a piano.",
+  "about": [
+    "Philip P. Bliss wrote both the words and the tune ALMOST PERSUADED, published in 1871."
+  ],
+  "underlay": "“Al-most per-suad-ed” now to be-lieve; “Al-most per-suad-ed” Christ to re-ceive; Seems now some soul to say, “Go, Spi-rit, go Thy way, Some more con-ven-ient day On Thee I’ll call.”",
+  "verses": [
+    {
+      "lines": [
+        "“Almost persuaded” now to believe;",
+        "“Almost persuaded” Christ to receive;",
+        "Seems now some soul to say,",
+        "“Go, Spirit, go Thy way,",
+        "Some more convenient day",
+        "On Thee I’ll call.”"
+      ]
+    },
+    {
+      "lines": [
+        "“Almost persuaded,” come, come today;",
+        "“Almost persuaded,” turn not away;",
+        "Jesus invites you here,",
+        "Angels are ling’ring near,",
+        "Prayers rise from hearts so dear;",
+        "O wand’rer, come!"
+      ]
+    },
+    {
+      "lines": [
+        "“Almost persuaded,” harvest is past!",
+        "“Almost persuaded,” doom comes at last!",
+        "“Almost” cannot avail;",
+        "“Almost” is but to fail!",
+        "Sad, sad, that bitter wail—",
+        "“Almost,” but lost!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

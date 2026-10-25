@@ -1,0 +1,83 @@
+{
+  "title": "Jesus Paid It All",
+  "tune": "all-to-christ",
+  "text": [
+    {
+      "name": "Elvina M. Hall",
+      "born": 1820,
+      "died": 1889,
+      "role": "Words (1865)"
+    }
+  ],
+  "textPublished": 1865,
+  "occasions": [
+    "Holy Communion"
+  ],
+  "description": "Jesus Paid It All in Tonic Solfa to ALL TO CHRIST: the solfa with the words, staff notation, the six verses and the refrain, and a piano.",
+  "about": [
+    "Elvina M. Hall wrote the words; the tune ALL TO CHRIST is by John T. Grape (1868)."
+  ],
+  "underlay": "I hear the Sa-viour say, “Thy strength in-deed is_ small; Child of weak-ness, watch and pray, Find in Me thine all in all.” Je-sus paid it all, All to Him I owe; Sin had left a crim-son stain, He washed it white as snow.",
+  "verses": [
+    {
+      "lines": [
+        "I hear the Saviour say,",
+        "“Thy strength indeed is small;",
+        "Child of weakness, watch and pray,",
+        "Find in Me thine all in all.”"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Jesus paid it all,",
+        "All to Him I owe;",
+        "Sin had left a crimson stain,",
+        "He washed it white as snow."
+      ]
+    },
+    {
+      "lines": [
+        "For nothing good have I",
+        "Whereby Thy grace to claim;",
+        "I’ll wash my garments white",
+        "In the blood of Calv’ry’s Lamb."
+      ]
+    },
+    {
+      "lines": [
+        "And now complete in Him,",
+        "My robe, His righteousness,",
+        "Close sheltered ’neath His side,",
+        "I am divinely blest."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, now indeed I find",
+        "Thy pow’r, and Thine alone,",
+        "Can change the leper’s spots",
+        "And melt the heart of stone."
+      ]
+    },
+    {
+      "lines": [
+        "When from my dying bed",
+        "My ransomed soul shall rise,",
+        "“Jesus died my soul to save,”",
+        "Shall rend the vaulted skies."
+      ]
+    },
+    {
+      "lines": [
+        "And when before the throne",
+        "I stand in Him complete,",
+        "I’ll lay my trophies down,",
+        "All down at Jesus’ feet."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

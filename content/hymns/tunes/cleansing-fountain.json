@@ -5,10 +5,10 @@
     {
       "name": "American Traditional",
       "traditional": true,
-      "role": "Melody"
+      "role": "Melody (in print by 1874)"
     }
   ],
-  "musicPublished": null,
+  "musicPublished": 1874,
   "metre": "8 6 8 6 + 6 6 8 6",
   "key": "C major",
   "time": "4/4",
@@ -19,13 +19,13 @@
   "incipit": "dmslsddls|dmsslsmdr",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0001/x000107.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0001/000107a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000107; public domain.",
-  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000107 (the melody read from 000107a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000107a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000107 (the melody read from 000107a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000107a.nwc). The year is the earliest dated printing found: \"American melody, arr., pub. 1874\" at https://library.timelesstruths.org/music/There_Is_a_Fountain/ (one modern hymnal, https://www.hymnary.org/hymn/TPH2018/340, credits Lowell Mason, 1830); it is also in print in The Little Evangel, 1925 (https://hymnary.org/hymn/LE1925/69).",
   "importedFrom": "cceh:000107",
-  "updated": "2026-10-16"
+  "updated": "2026-10-25"
 }

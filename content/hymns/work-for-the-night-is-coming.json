@@ -1,0 +1,59 @@
+{
+  "title": "Work, for the Night Is Coming",
+  "tune": "work-song",
+  "text": [
+    {
+      "name": "Anna L. Coghill",
+      "born": 1836,
+      "died": 1907,
+      "role": "Words (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "Work, for the Night Is Coming in Tonic Solfa to WORK SONG: the solfa with the words, staff notation, the three verses, and a piano.",
+  "about": [
+    "Anna L. Coghill wrote the words in Canada in 1854. Lowell Mason wrote the tune WORK SONG in 1864."
+  ],
+  "underlay": "Work, for the night is com-ing, Work through the mor-ning hours; Work while the dew is spark-ling, Work ’mid spring-ing flow’rs. Work when the day grows bright_-er, Work in the glow-ing sun; Work, for the night is com-ing, When man’s work is done.",
+  "verses": [
+    {
+      "lines": [
+        "Work, for the night is coming,",
+        "Work through the morning hours;",
+        "Work while the dew is sparkling,",
+        "Work ’mid springing flow’rs.",
+        "Work when the day grows brighter,",
+        "Work in the glowing sun;",
+        "Work, for the night is coming,",
+        "When man’s work is done."
+      ]
+    },
+    {
+      "lines": [
+        "Work, for the night is coming,",
+        "Work through the sunny noon;",
+        "Fill brightest hours with labour,",
+        "Rest comes sure and soon.",
+        "Give every flying minute",
+        "Something to keep in store;",
+        "Work, for the night is coming,",
+        "When man works no more."
+      ]
+    },
+    {
+      "lines": [
+        "Work, for the night is coming,",
+        "Under the sunset skies;",
+        "While their bright tints are glowing,",
+        "Work, for daylight flies.",
+        "Work till the last beam fadeth,",
+        "Fadeth to shine no more;",
+        "Work, while the night is dark’ning,",
+        "When man’s work is o’er."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,46 @@
+{
+  "title": "Bread of Heaven, on Thee We Feed",
+  "tune": "arfon",
+  "text": [
+    {
+      "name": "Josiah Conder",
+      "born": 1789,
+      "died": 1855,
+      "role": "Words (1824)"
+    }
+  ],
+  "textPublished": 1824,
+  "occasions": [
+    "Holy Communion"
+  ],
+  "description": "Bread of Heaven, on Thee We Feed in Tonic Solfa to ARFON: the solfa with the words, staff notation, the two verses, and a piano.",
+  "about": [
+    "Josiah Conder’s words were published in his collection The Star in the East in 1824; he wrote them in the first person (“on Thee I feed”), and hymn books later changed them to “we”. The tune ARFON is a Welsh folk melody, printed in Edward Jones’s Relicks of the Welsh Bards in 1784."
+  ],
+  "underlay": "Bread of heav’n_ on_ Thee we feed, For Thy flesh is meat_ in_-deed: Ev-er_ may our souls be fed With this_ true and liv-ing Bread_; Day by day_ with_ strength sup-plied, Through the life of Him_ who_ died.",
+  "verses": [
+    {
+      "lines": [
+        "Bread of heaven, on Thee we feed,",
+        "For Thy flesh is meat indeed:",
+        "Ever may our souls be fed",
+        "With this true and living Bread;",
+        "Day by day with strength supplied,",
+        "Through the life of Him who died."
+      ]
+    },
+    {
+      "lines": [
+        "Vine of heaven, Thy blood supplies",
+        "This blest cup of sacrifice,",
+        "Lord, Thy wounds our healing give,",
+        "To Thy cross we look and live:",
+        "Jesus, may we ever be",
+        "Grafted, rooted, built in Thee."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

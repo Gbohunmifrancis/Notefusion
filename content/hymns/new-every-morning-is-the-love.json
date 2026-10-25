@@ -1,0 +1,90 @@
+{
+  "title": "New Every Morning Is the Love",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "John Keble",
+      "born": 1792,
+      "died": 1866,
+      "role": "Words (1822)"
+    }
+  ],
+  "textPublished": 1827,
+  "occasions": [
+    "Morning"
+  ],
+  "description": "New Every Morning Is the Love in Tonic Solfa to MELCOMBE: the solfa with the words, staff notation, the eight verses, and a piano.",
+  "about": [
+    "John Keble wrote these verses as part of his poem for the morning, “Hues of the rich unfolding morn”, published in The Christian Year in 1827. The tune MELCOMBE is by Samuel Webbe (1782)."
+  ],
+  "underlay": "New ev-ery morn-ing is the love Our wak-ening and up-ris-ing prove; Through sleep and dark-ness safe-ly brought, Re-stored to life, and power, and thought.",
+  "verses": [
+    {
+      "lines": [
+        "New every morning is the love",
+        "Our wakening and uprising prove;",
+        "Through sleep and darkness safely brought,",
+        "Restored to life, and power, and thought."
+      ]
+    },
+    {
+      "lines": [
+        "New mercies, each returning day,",
+        "Hover around us while we pray;",
+        "New perils past, new sins forgiven,",
+        "New thoughts of God, new hopes of Heaven."
+      ]
+    },
+    {
+      "lines": [
+        "If on our daily course our mind",
+        "Be set to hallow all we find,",
+        "New treasures still, of countless price,",
+        "God will provide for sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "Old friends, old scenes will lovelier be,",
+        "As more of Heaven in each we see:",
+        "Some softening gleam of love and prayer",
+        "Shall dawn on every cross and care."
+      ]
+    },
+    {
+      "lines": [
+        "We need not bid, for cloistered cell,",
+        "Our neighbour and our work farewell,",
+        "Nor strive to wind ourselves too high",
+        "For sinful man beneath the sky:"
+      ]
+    },
+    {
+      "lines": [
+        "The trivial round, the common task,",
+        "Would furnish all we ought to ask;",
+        "Room to deny ourselves; a road",
+        "To bring us daily nearer God."
+      ]
+    },
+    {
+      "lines": [
+        "Seek we no more; content with these,",
+        "Let present Rapture, Comfort, Ease,",
+        "As Heaven shall bid them, come and go:—",
+        "The secret this of Rest below."
+      ]
+    },
+    {
+      "lines": [
+        "Only, O Lord, in Thy dear love",
+        "Fit us for perfect Rest above;",
+        "And help us, this and every day,",
+        "To live more nearly as we pray."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

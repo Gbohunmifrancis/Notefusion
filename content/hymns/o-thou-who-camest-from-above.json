@@ -1,0 +1,55 @@
+{
+  "title": "O Thou Who Camest from Above",
+  "tune": "hereford",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1762)"
+    }
+  ],
+  "textPublished": 1762,
+  "description": "O Thou Who Camest from Above in Tonic Solfa to HEREFORD: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "Charles Wesley published these words in Short Hymns on Select Passages of the Holy Scriptures (1762). The tune HEREFORD is by Samuel Sebastian Wesley (1872); it repeats the last line of each verse."
+  ],
+  "underlay": "O Thou who cam-est from a-bove__, The pure ce-les-tial fire to im-part, Kin-dle a flame of sa-cred love Up-on_ the mean al__-tar of my heart, Up-on the mean__ al-tar_ of my heart_.",
+  "verses": [
+    {
+      "lines": [
+        "O Thou who camest from above,",
+        "The pure celestial fire to impart,",
+        "Kindle a flame of sacred love",
+        "Upon the mean altar of my heart."
+      ]
+    },
+    {
+      "lines": [
+        "There let it for Thy glory burn",
+        "With inextinguishable blaze,",
+        "And trembling to its source return,",
+        "In humble prayer and fervent praise."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, confirm my heart’s desire",
+        "To work and speak and think for Thee;",
+        "Still let me guard the holy fire,",
+        "And still stir up Thy gift in me."
+      ]
+    },
+    {
+      "lines": [
+        "Ready for all Thy perfect will,",
+        "My acts of faith and love repeat,",
+        "Till death Thy endless mercies seal,",
+        "And make my sacrifice complete."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

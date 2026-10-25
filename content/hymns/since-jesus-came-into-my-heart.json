@@ -1,0 +1,72 @@
+{
+  "title": "Since Jesus Came into My Heart",
+  "tune": "mcdaniel",
+  "text": [
+    {
+      "name": "Rufus H. McDaniel",
+      "born": 1850,
+      "died": 1940,
+      "role": "Words (1914)"
+    }
+  ],
+  "textPublished": 1914,
+  "description": "Since Jesus Came into My Heart in Tonic Solfa to MCDANIEL: the solfa with the words, staff notation, the five verses and the refrain, and a piano.",
+  "about": [
+    "Rufus H. McDaniel wrote the words and Charles H. Gabriel the tune; the song was published in 1914."
+  ],
+  "underlay": "What a won-der-ful change in my life has been wrought Since Je-sus came in-to my heart; I have light in my soul for which long I have sought, Since Je-sus came in-to my heart. Since Je-sus came in-to my heart, Since Je-sus came in-to my heart; Floods of joy o’er my soul like the sea bil-lows roll, Since Je-sus came in-to my heart.",
+  "verses": [
+    {
+      "lines": [
+        "What a wonderful change in my life has been wrought",
+        "Since Jesus came into my heart;",
+        "I have light in my soul for which long I have sought,",
+        "Since Jesus came into my heart."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Since Jesus came into my heart,",
+        "Since Jesus came into my heart;",
+        "Floods of joy o’er my soul like the sea billows roll,",
+        "Since Jesus came into my heart."
+      ]
+    },
+    {
+      "lines": [
+        "I have ceased from my wand’ring and going astray,",
+        "Since Jesus came into my heart;",
+        "And my sins which were many are all washed away,",
+        "Since Jesus came into my heart."
+      ]
+    },
+    {
+      "lines": [
+        "I’m possessed of a hope that is steadfast and sure,",
+        "Since Jesus came into my heart;",
+        "And no dark clouds of doubt now my pathway obscure,",
+        "Since Jesus came into my heart."
+      ]
+    },
+    {
+      "lines": [
+        "There’s a light in the valley of death now for me,",
+        "Since Jesus came into my heart;",
+        "And the gates of the City beyond I can see,",
+        "Since Jesus came into my heart."
+      ]
+    },
+    {
+      "lines": [
+        "I shall go there to dwell in that City I know,",
+        "Since Jesus came into my heart;",
+        "And I’m happy, so happy as onward I go,",
+        "Since Jesus came into my heart."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

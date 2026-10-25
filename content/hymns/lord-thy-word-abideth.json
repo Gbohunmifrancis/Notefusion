@@ -1,0 +1,71 @@
+{
+  "title": "Lord, Thy Word Abideth",
+  "tune": "ravenshaw",
+  "text": [
+    {
+      "name": "Henry Williams Baker",
+      "born": 1821,
+      "died": 1877,
+      "role": "Words (1861)"
+    }
+  ],
+  "textPublished": 1861,
+  "description": "Lord, Thy Word Abideth in Tonic Solfa to RAVENSHAW: the solfa with the words, staff notation, the six verses, and a piano.",
+  "about": [
+    "Henry W. Baker wrote these words for Hymns Ancient and Modern (1861). The tune RAVENSHAW was arranged by William Henry Monk in 1861 from a melody in Michael Weisse’s hymn book of 1531."
+  ],
+  "underlay": "Lord, Thy Word a-bid-eth, And our foot-steps guid_-eth; Who its truth be-liev_-eth Light and joy re-ceiv-eth.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, Thy Word abideth,",
+        "And our footsteps guideth;",
+        "Who its truth believeth",
+        "Light and joy receiveth."
+      ]
+    },
+    {
+      "lines": [
+        "When our foes are near us,",
+        "Then Thy Word doth cheer us,",
+        "Word of consolation,",
+        "Message of salvation."
+      ]
+    },
+    {
+      "lines": [
+        "When the storms are o’er us,",
+        "And dark clouds before us,",
+        "Then its light directeth,",
+        "And our way protecteth."
+      ]
+    },
+    {
+      "lines": [
+        "Who can tell the pleasure,",
+        "Who recount the treasure,",
+        "By Thy Word imparted",
+        "To the simple hearted?"
+      ]
+    },
+    {
+      "lines": [
+        "Word of mercy, giving",
+        "Succor to the living;",
+        "Word of life, supplying",
+        "Comfort to the dying!"
+      ]
+    },
+    {
+      "lines": [
+        "O that we, discerning,",
+        "Its most holy learning,",
+        "Lord, may love and fear Thee,",
+        "Evermore be near Thee!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

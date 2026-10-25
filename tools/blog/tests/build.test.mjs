@@ -129,7 +129,7 @@ test("the blog's front page: the newest post set large, the rest beside it, topi
   assert.match(html, /<section class="front-side"[\s\S]*?href="\/blog\/how-to-find-the-doh-of-a-song"/);
   assert.match(html, /<nav class="topics" aria-label="Topics"><a href="\/blog" aria-current="page">All<\/a>/);
   assert.match(html, /data-reads-path="\/blog\/how-to-find-the-doh-of-a-song" data-reads-format="compact"/);
-  assert.match(html, /<section class="hymnal"[\s\S]*?href="\/hymns\/amazing-grace"/);
+  assert.match(html, /<section class="hymnal"[\s\S]*?href="\/hymns\/[a-z0-9-]+"[\s\S]*?All \d+ hymns/);
   // The site's call to action, once, after the stories and before the hymnal (board n-ux-low V3d).
   assert.equal([...html.matchAll(/<aside class="cta-box"/g)].length, 1);
   assert.match(html, /<div class="front-top[\s\S]*?<aside class="cta-box" aria-labelledby="cta-blog-index">[\s\S]*?href="\/app\?utm_source=blog-index"[\s\S]*?<\/aside>\s*<section class="hymnal"/);

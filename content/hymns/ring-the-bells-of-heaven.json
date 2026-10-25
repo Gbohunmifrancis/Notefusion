@@ -1,0 +1,59 @@
+{
+  "title": "Ring the Bells of Heaven",
+  "tune": "ring-the-bells",
+  "text": [
+    {
+      "name": "William O. Cushing",
+      "born": 1823,
+      "died": 1902,
+      "role": "Words (1870)"
+    }
+  ],
+  "textPublished": 1870,
+  "description": "Ring the Bells of Heaven in Tonic Solfa to RING THE BELLS: the solfa with the words, staff notation, the three verses and the refrain, and a piano.",
+  "about": [
+    "William O. Cushing wrote the words in 1870 to a melody by George F. Root."
+  ],
+  "underlay": "Ring the bells of heav-en! There is joy to-day, For a soul, re-turn-ing from the wild! See, the Fa-ther meets him out up-on the way, Wel-com-ing His wea-ry, wan-d’ring child. Glo-ry! Glo-ry! How the an-gels sing: Glo-ry! Glo-ry! How the loud harps ring! ’Tis the ran-somed ar-my, like a might-y sea, Peal-ing forth the an-them of the free.",
+  "verses": [
+    {
+      "lines": [
+        "Ring the bells of heaven!",
+        "There is joy today,",
+        "For a soul, returning from the wild!",
+        "See, the Father meets him out upon the way,",
+        "Welcoming His weary, wandering child."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Glory! Glory! How the angels sing:",
+        "Glory! Glory! How the loud harps ring!",
+        "’Tis the ransomed army, like a mighty sea,",
+        "Pealing forth the anthem of the free."
+      ]
+    },
+    {
+      "lines": [
+        "Ring the bells of heaven!",
+        "There is joy today,",
+        "For the wanderer now is reconciled;",
+        "Yes, a soul is rescued from his sinful way,",
+        "And is born anew, a ransomed child."
+      ]
+    },
+    {
+      "lines": [
+        "Ring the bells of heaven!",
+        "Spread the feast today!",
+        "Angels, swell the glad triumphant strain!",
+        "Tell the joyful tidings, bear it far away!",
+        "For a precious soul is born again."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

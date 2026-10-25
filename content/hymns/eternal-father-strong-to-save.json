@@ -1,0 +1,66 @@
+{
+  "title": "Eternal Father, Strong to Save",
+  "alsoKnownAs": [
+    "For Those in Peril on the Sea"
+  ],
+  "tune": "melita",
+  "text": [
+    {
+      "name": "William Whiting",
+      "born": 1825,
+      "died": 1878,
+      "role": "Words (1861)"
+    }
+  ],
+  "textPublished": 1861,
+  "description": "Eternal Father, Strong to Save in Tonic Solfa to MELITA: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "William Whiting wrote the words; they were printed in Hymns Ancient and Modern in 1861. The tune, MELITA, is by John Bacchus Dykes (1861)."
+  ],
+  "underlay": "E-ter-nal Fa-ther, strong to save, Whose arm hath bound the rest-less wave, Who bidd’st the might-y o-cean deep Its own ap-point-ed lim-its keep; Oh, hear us when we cry to Thee, For those in per-il on the sea!",
+  "verses": [
+    {
+      "lines": [
+        "Eternal Father, strong to save,",
+        "Whose arm hath bound the restless wave,",
+        "Who bidd’st the mighty ocean deep",
+        "Its own appointed limits keep;",
+        "Oh, hear us when we cry to Thee,",
+        "For those in peril on the sea!"
+      ]
+    },
+    {
+      "lines": [
+        "O Christ! Whose voice the waters heard",
+        "And hushed their raging at Thy word,",
+        "Who walkedst on the foaming deep,",
+        "And calm amidst its rage didst sleep;",
+        "Oh, hear us when we cry to Thee,",
+        "For those in peril on the sea!"
+      ]
+    },
+    {
+      "lines": [
+        "Most Holy Spirit! Who didst brood",
+        "Upon the chaos dark and rude,",
+        "And bid its angry tumult cease,",
+        "And give, for wild confusion, peace;",
+        "Oh, hear us when we cry to Thee,",
+        "For those in peril on the sea!"
+      ]
+    },
+    {
+      "lines": [
+        "O Trinity of love and power!",
+        "Our brethren’s shield in danger’s hour;",
+        "From rock and tempest, fire and foe,",
+        "Protect them wheresoe’er they go;",
+        "Thus evermore shall rise to Thee",
+        "Glad hymns of praise from land and sea."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

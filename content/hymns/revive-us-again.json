@@ -1,0 +1,75 @@
+{
+  "title": "Revive Us Again",
+  "alsoKnownAs": [
+    "We Praise Thee, O God"
+  ],
+  "tune": "revive-us-again",
+  "text": [
+    {
+      "name": "William P. Mackay",
+      "born": 1839,
+      "died": 1885,
+      "role": "Words (1863)"
+    }
+  ],
+  "textPublished": 1863,
+  "description": "Revive Us Again in Tonic Solfa to REVIVE US AGAIN: the solfa with the words, staff notation, the five verses and the refrain, and a piano.",
+  "about": [
+    "William P. Mackay wrote the words in 1863. The tune is by John J. Husband."
+  ],
+  "underlay": "We praise Thee, O God! For the Son of Thy love, For Je-sus Who died, And is now gone a-bove_. Hal-le-lu-jah! Thine the glo-ry. Hal-le-lu-jah! A-men. Hal-le-lu-jah! Thine the glo-ry. Re-vive us a-gain.",
+  "verses": [
+    {
+      "lines": [
+        "We praise Thee, O God!",
+        "For the Son of Thy love,",
+        "For Jesus Who died,",
+        "And is now gone above."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Hallelujah! Thine the glory.",
+        "Hallelujah! Amen.",
+        "Hallelujah! Thine the glory.",
+        "Revive us again."
+      ]
+    },
+    {
+      "lines": [
+        "We praise Thee, O God!",
+        "For Thy Spirit of light,",
+        "Who hath shown us our Saviour,",
+        "And scattered our night."
+      ]
+    },
+    {
+      "lines": [
+        "All glory and praise",
+        "To the Lamb that was slain,",
+        "Who hath borne all our sins,",
+        "And hath cleansed every stain."
+      ]
+    },
+    {
+      "lines": [
+        "All glory and praise",
+        "To the God of all grace,",
+        "Who hast brought us, and sought us,",
+        "And guided our ways."
+      ]
+    },
+    {
+      "lines": [
+        "Revive us again;",
+        "Fill each heart with Thy love;",
+        "May each soul be rekindled",
+        "With fire from above."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

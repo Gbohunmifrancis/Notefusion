@@ -1,0 +1,56 @@
+{
+  "title": "Lead Us, Heavenly Father, Lead Us",
+  "tune": "mannheim",
+  "text": [
+    {
+      "name": "James Edmeston",
+      "born": 1791,
+      "died": 1867,
+      "role": "Words (1821)"
+    }
+  ],
+  "textPublished": 1821,
+  "occasions": [
+    "Wedding"
+  ],
+  "description": "Lead Us, Heavenly Father, Lead Us in Tonic Solfa to MANNHEIM: the solfa with the words, staff notation, the three verses, and a piano.",
+  "about": [
+    "James Edmeston wrote the words in 1821 for the children of the London Orphanage Asylum; they appeared in his Sacred Lyrics. The tune MANNHEIM is by Friedrich Filitz, from his chorale book of 1847."
+  ],
+  "underlay": "Lead us, heav’n-ly Fa-ther, lead us O’er the world’s tem-pes-tuous sea; Guard us, guide us, keep us, feed us, For we have no help but Thee; Yet pos-sess-ing ev-’ry bless-ing If our God our Fa-ther be.",
+  "verses": [
+    {
+      "lines": [
+        "Lead us, heavenly Father, lead us",
+        "O’er the world’s tempestuous sea;",
+        "Guard us, guide us, keep us, feed us,",
+        "For we have no help but Thee;",
+        "Yet possessing every blessing",
+        "If our God our Father be."
+      ]
+    },
+    {
+      "lines": [
+        "Saviour, breathe forgiveness o’er us;",
+        "All our weakness Thou dost know;",
+        "Thou didst tread this earth before us,",
+        "Thou didst feel its keenest woe;",
+        "Lone and dreary, faint and weary,",
+        "Through the desert Thou didst go."
+      ]
+    },
+    {
+      "lines": [
+        "Spirit of our God, descending,",
+        "Fill our hearts with heavenly joy,",
+        "Love with every passion blending,",
+        "Pleasure that can never cloy;",
+        "Thus provided, pardoned, guided,",
+        "Nothing can our peace destroy."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

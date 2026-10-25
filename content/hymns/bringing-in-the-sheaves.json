@@ -1,0 +1,59 @@
+{
+  "title": "Bringing in the Sheaves",
+  "tune": "harvest",
+  "text": [
+    {
+      "name": "Knowles Shaw",
+      "born": 1834,
+      "died": 1878,
+      "role": "Words (1874)"
+    }
+  ],
+  "textPublished": 1874,
+  "occasions": [
+    "Harvest"
+  ],
+  "description": "Bringing in the Sheaves in Tonic Solfa to HARVEST: the solfa with the words, staff notation, the three verses and the refrain, and a piano.",
+  "about": [
+    "Knowles Shaw wrote the words in 1874, on Psalm 126:6. Shaw also wrote music for them, but they are now sung to George A. Minor’s tune of 1880."
+  ],
+  "underlay": "Sow-ing in the mor-ning, sow-ing seeds of kind-ness, Sow-ing in the noon-tide and the dew-y eve; Wait-ing for the har-vest, and the time of reap-ing, We shall come re-joic-ing, bring-ing in the sheaves. Bring-ing in the sheaves, bring-ing in the sheaves, We shall come re-joic-ing, bring-ing in the sheaves; Bring-ing in the sheaves, bring-ing in the sheaves, We shall come re-joic-ing, bring-ing in the sheaves.",
+  "verses": [
+    {
+      "lines": [
+        "Sowing in the morning, sowing seeds of kindness,",
+        "Sowing in the noontide and the dewy eve;",
+        "Waiting for the harvest, and the time of reaping,",
+        "We shall come rejoicing, bringing in the sheaves."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Bringing in the sheaves, bringing in the sheaves,",
+        "We shall come rejoicing, bringing in the sheaves;",
+        "Bringing in the sheaves, bringing in the sheaves,",
+        "We shall come rejoicing, bringing in the sheaves."
+      ]
+    },
+    {
+      "lines": [
+        "Sowing in the sunshine, sowing in the shadows,",
+        "Fearing neither clouds nor winter’s chilling breeze;",
+        "By and by the harvest, and the labour ended,",
+        "We shall come rejoicing, bringing in the sheaves."
+      ]
+    },
+    {
+      "lines": [
+        "Going forth with weeping, sowing for the Master,",
+        "Though the loss sustained our spirit often grieves;",
+        "When our weeping’s over, He will bid us welcome,",
+        "We shall come rejoicing, bringing in the sheaves."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

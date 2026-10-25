@@ -1,0 +1,68 @@
+{
+  "title": "The Day of Resurrection",
+  "tune": "ellacombe",
+  "text": [
+    {
+      "name": "John of Damascus",
+      "born": 675,
+      "died": 749,
+      "role": "Words"
+    },
+    {
+      "name": "John Mason Neale",
+      "born": 1818,
+      "died": 1866,
+      "role": "Translated (1862)"
+    }
+  ],
+  "textPublished": 1862,
+  "occasions": [
+    "Easter"
+  ],
+  "description": "The Day of Resurrection in Tonic Solfa to ELLACOMBE: the solfa with the words, staff notation, the three verses, and a piano.",
+  "about": [
+    "John Mason Neale’s English translation of this Greek Easter hymn by John of Damascus was published in 1862. The tune ELLACOMBE comes from a hymn book of the ducal court chapel of Württemberg (1784)."
+  ],
+  "underlay": "The day of_ re-sur-rec_-tion! Earth, tell_ it out a-broad; The Pass-o_-ver of glad_-ness, The Pass_-o-ver of God. From_ death to life e-ter__-nal, From_ earth un-to the sky, Our Christ hath_ brought us o_-ver, With hymns_ of vic-to-ry.",
+  "verses": [
+    {
+      "lines": [
+        "The day of resurrection!",
+        "Earth, tell it out abroad;",
+        "The Passover of gladness,",
+        "The Passover of God.",
+        "From death to life eternal,",
+        "From earth unto the sky,",
+        "Our Christ hath brought us over,",
+        "With hymns of victory."
+      ]
+    },
+    {
+      "lines": [
+        "Our hearts be pure from evil,",
+        "That we may see aright",
+        "The Lord in rays eternal",
+        "Of resurrection light;",
+        "And list’ning to His accents,",
+        "May hear, so calm and plain,",
+        "His own “All hail!” and, hearing,",
+        "May raise the victor strain."
+      ]
+    },
+    {
+      "lines": [
+        "Now let the heav’ns be joyful!",
+        "Let earth the song begin!",
+        "Let the round world keep triumph,",
+        "And all that is therein!",
+        "Let all things seen and unseen",
+        "Their notes in gladness blend,",
+        "For Christ the Lord hath risen,",
+        "Our joy that hath no end."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

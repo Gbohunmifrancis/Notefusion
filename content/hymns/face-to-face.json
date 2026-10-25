@@ -1,0 +1,67 @@
+{
+  "title": "Face to Face",
+  "tune": "face-to-face",
+  "text": [
+    {
+      "name": "Carrie E. Breck",
+      "born": 1855,
+      "died": 1934,
+      "role": "Words (1898)"
+    }
+  ],
+  "textPublished": 1898,
+  "occasions": [
+    "Funeral"
+  ],
+  "description": "Face to Face in Tonic Solfa to FACE TO FACE: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Carrie E. Breck wrote the words, published in 1898 with the tune FACE TO FACE by Grant Colfax Tullar."
+  ],
+  "underlay": "Face to face with Christ, my Sa-viour, Face to face— what will it be, When with rap-ture I be-hold Him, Je-sus Christ who died for me? Face to face I shall be-hold Him, Far be-yond the star-ry sky; Face to face in all His glo-ry, I shall see Him by and by!",
+  "verses": [
+    {
+      "lines": [
+        "Face to face with Christ, my Saviour,",
+        "Face to face—what will it be,",
+        "When with rapture I behold Him,",
+        "Jesus Christ who died for me?"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Face to face I shall behold Him,",
+        "Far beyond the starry sky;",
+        "Face to face in all His glory,",
+        "I shall see Him by and by!"
+      ]
+    },
+    {
+      "lines": [
+        "Only faintly now I see Him,",
+        "With the darkened veil between,",
+        "But a blessed day is coming,",
+        "When His glory shall be seen."
+      ]
+    },
+    {
+      "lines": [
+        "What rejoicing in His presence,",
+        "When are banished grief and pain;",
+        "Death is swallowed up in vict’ry,",
+        "And the dark things shall be plain."
+      ]
+    },
+    {
+      "lines": [
+        "Face to face—oh, blissful moment!",
+        "Face to face—to see and know;",
+        "Face to face with my Redeemer,",
+        "Jesus Christ who loves me so."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

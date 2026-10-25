@@ -1,0 +1,75 @@
+{
+  "title": "Showers of Blessing",
+  "alsoKnownAs": [
+    "There Shall Be Showers of Blessing"
+  ],
+  "tune": "showers-of-blessing",
+  "text": [
+    {
+      "name": "Daniel W. Whittle",
+      "born": 1840,
+      "died": 1901,
+      "role": "Words (1883)"
+    }
+  ],
+  "textPublished": 1883,
+  "description": "Showers of Blessing in Tonic Solfa to SHOWERS OF BLESSING: the solfa with the words, staff notation, the five verses and the refrain, and a piano.",
+  "about": [
+    "Daniel W. Whittle wrote the words, first published in 1883. The tune, SHOWERS OF BLESSING, is by James McGranahan (1883)."
+  ],
+  "underlay": "There shall be show-ers of bless-ing: This is the prom-ise of love; There shall be sea-sons re-fresh-ing, Sent from the Sav-ior a-bove. Show-ers of bless-ing, Show-ers of bless-ing we need: Mer-cy-drops round us are fall-ing, But for the show-ers we plead.",
+  "verses": [
+    {
+      "lines": [
+        "There shall be showers of blessing:",
+        "This is the promise of love;",
+        "There shall be seasons refreshing,",
+        "Sent from the Savior above."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Showers of blessing,",
+        "Showers of blessing we need:",
+        "Mercy-drops round us are falling,",
+        "But for the showers we plead."
+      ]
+    },
+    {
+      "lines": [
+        "There shall be showers of blessing,",
+        "Precious reviving again;",
+        "Over the hills and the valleys,",
+        "Sound of abundance of rain."
+      ]
+    },
+    {
+      "lines": [
+        "There shall be showers of blessing;",
+        "Send them upon us, O Lord;",
+        "Grant to us now a refreshing,",
+        "Come, and now honor Thy Word."
+      ]
+    },
+    {
+      "lines": [
+        "There shall be showers of blessing:",
+        "Oh, that today they might fall,",
+        "Now as to God we’re confessing,",
+        "Now as on Jesus we call!"
+      ]
+    },
+    {
+      "lines": [
+        "There shall be showers of blessing,",
+        "If we but trust and obey;",
+        "There shall be seasons refreshing,",
+        "If we let God have His way."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

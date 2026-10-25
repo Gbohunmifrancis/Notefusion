@@ -1,0 +1,74 @@
+{
+  "title": "My God, and Is Thy Table Spread",
+  "tune": "rockingham",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words (1755)"
+    }
+  ],
+  "textPublished": 1755,
+  "occasions": [
+    "Holy Communion"
+  ],
+  "description": "My God, and Is Thy Table Spread in Tonic Solfa to ROCKINGHAM: the solfa with the words, staff notation, the six verses, and a piano.",
+  "about": [
+    "Philip Doddridge’s words were published after his death in Hymns Founded on Various Texts in the Holy Scriptures (1755), edited by Job Orton. The tune ROCKINGHAM was adapted by Edward Miller in 1790."
+  ],
+  "underlay": "My God,_ and is Thy ta-ble spread, And does Thy cup with love_ o’er-flow?_ Thi-ther be all Thy child_-ren led, And let them all its sweet__-ness know.",
+  "verses": [
+    {
+      "lines": [
+        "My God, and is Thy table spread,",
+        "And does Thy cup with love o’erflow?",
+        "Thither be all Thy children led,",
+        "And let them all its sweetness know."
+      ]
+    },
+    {
+      "lines": [
+        "Hail, sacred feast, which Jesus makes!",
+        "Rich banquet of His flesh and blood!",
+        "Thrice happy he, who here partakes",
+        "That sacred stream, that heav’nly food!"
+      ]
+    },
+    {
+      "lines": [
+        "Why are its dainties all in vain",
+        "Before unwilling hearts displayed?",
+        "Was not for you the Victim slain?",
+        "Are you forbid the children’s bread?"
+      ]
+    },
+    {
+      "lines": [
+        "O let Thy table honored be,",
+        "And furnished well with joyful guests;",
+        "And may each soul salvation see,",
+        "That here its sacred pledges tastes."
+      ]
+    },
+    {
+      "lines": [
+        "Let crowds approach, with hearts prepared;",
+        "With hearts inflamed let all attend;",
+        "Nor, when we leave our Father’s board,",
+        "The pleasure, or the profit end."
+      ]
+    },
+    {
+      "lines": [
+        "Revive thy dying churches, Lord,",
+        "And bid our drooping graces live;",
+        "And more that energy afford,",
+        "A Savior’s blood alone can give."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -203,7 +203,9 @@ def _cases() -> tuple[SongCase, ...]:
     cases = []
     tunes = hc.load_tunes()
     for split in ("dev", "test"):
-        chosen = sorted((t for t in tunes if hc.split_of(t[0]) == split), key=lambda t: _h(t[0], "order"))[:PER_SPLIT]
+        # The tunes it was measured on, frozen (hymn_corpus_frozen.json): drawn by hash order from the
+        # published tunes, a new hymn's tune would push one of them out.
+        chosen = [t for t in tunes if hc.split_of(t[0]) == split and t[0] in hc.FROZEN["studio_songs"]]
         for slug, tune, melody, underlay in sorted(chosen, key=lambda t: t[0]):
             if not melody.notes:
                 continue

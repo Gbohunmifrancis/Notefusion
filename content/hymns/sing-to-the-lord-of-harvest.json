@@ -1,0 +1,74 @@
+{
+  "title": "Sing to the Lord of Harvest",
+  "tune": "wie-lieblich-ist-der-maien",
+  "text": [
+    {
+      "name": "John Samuel Bewley Monsell",
+      "born": 1811,
+      "died": 1875,
+      "role": "Words (1866)"
+    }
+  ],
+  "textPublished": 1866,
+  "occasions": [
+    "Harvest"
+  ],
+  "description": "Sing to the Lord of Harvest in Tonic Solfa to WIE LIEBLICH IST DER MAIEN: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "John S. B. Monsell published these words in the second edition of his Hymns of Love and Praise (1866). The tune WIE LIEBLICH IST DER MAIEN is by Johann Steurlein (1575)."
+  ],
+  "underlay": "Sing to the Lord_ of_ har-vest, Sing songs of love and praise; With joy-ful hearts_ and_ voi-ces Your al-le-lu-ias raise. By Him the roll-ing_ sea-sons In fruit-ful or_-der_ move; Sing to the Lord_ of_ har-vest, A joy-ous song of love.",
+  "verses": [
+    {
+      "lines": [
+        "Sing to the Lord of harvest,",
+        "Sing songs of love and praise;",
+        "With joyful hearts and voices",
+        "Your alleluias raise.",
+        "By Him the rolling seasons",
+        "In fruitful order move;",
+        "Sing to the Lord of harvest,",
+        "A joyous song of love."
+      ]
+    },
+    {
+      "lines": [
+        "By Him the clouds drop fatness,",
+        "The deserts bloom and spring,",
+        "The hills leap up in gladness,",
+        "The valleys laugh and sing.",
+        "He filleth with His fullness",
+        "All things with large increase,",
+        "He crowns the year with goodness,",
+        "With plenty and with peace."
+      ]
+    },
+    {
+      "lines": [
+        "Bring to His sacred altar",
+        "The gifts His goodness gave,",
+        "The golden sheaves of harvest,",
+        "The souls He died to save.",
+        "Your hearts lay down before Him",
+        "When at His feet you fall,",
+        "And with your lives adore Him,",
+        "Who gave His life for all."
+      ]
+    },
+    {
+      "lines": [
+        "To God the gracious Father,",
+        "Who made us very good,",
+        "To Christ, who, when we wandered,",
+        "Restored us with His blood,",
+        "And to the Holy Spirit,",
+        "Who doth upon us pour",
+        "His blessèd dews and sunshine,",
+        "Be praise forevermore!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

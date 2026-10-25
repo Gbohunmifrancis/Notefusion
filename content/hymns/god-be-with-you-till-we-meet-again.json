@@ -1,0 +1,64 @@
+{
+  "title": "God Be with You Till We Meet Again",
+  "tune": "god-be-with-you",
+  "text": [
+    {
+      "name": "Jeremiah E. Rankin",
+      "born": 1828,
+      "died": 1904,
+      "role": "Words (1880)"
+    }
+  ],
+  "textPublished": 1880,
+  "description": "God Be with You Till We Meet Again in Tonic Solfa to GOD BE WITH YOU: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Jeremiah E. Rankin wrote the words, first published in 1880. The tune, GOD BE WITH YOU, is by William G. Tomer (1880)."
+  ],
+  "underlay": "God be with you till we meet a-gain, By His coun-sels guide, up-hold you, With His sheep se-cure-ly fold you, God be with you till we meet a-gain. Till we meet__, till we meet_, Till we meet at Je_-sus’_ feet; Till we meet__, till we meet_, God be with you till we meet a-gain.",
+  "verses": [
+    {
+      "lines": [
+        "God be with you till we meet again,",
+        "By His counsels guide, uphold you,",
+        "With His sheep securely fold you,",
+        "God be with you till we meet again."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Till we meet, till we meet,",
+        "Till we meet at Jesus’ feet;",
+        "Till we meet, till we meet,",
+        "God be with you till we meet again."
+      ]
+    },
+    {
+      "lines": [
+        "God be with you till we meet again,",
+        "’Neath His wings securely hide you,",
+        "Daily manna still provide you,",
+        "God be with you till we meet again."
+      ]
+    },
+    {
+      "lines": [
+        "God be with you till we meet again,",
+        "When life’s perils thick confound you,",
+        "Put His arms unfailing round you,",
+        "God be with you till we meet again."
+      ]
+    },
+    {
+      "lines": [
+        "God be with you till we meet again,",
+        "Keep love’s banner floating o’er you,",
+        "Smite death’s threat’ning wave before you,",
+        "God be with you till we meet again."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

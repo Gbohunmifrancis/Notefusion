@@ -1,0 +1,50 @@
+{
+  "title": "O Perfect Love",
+  "tune": "perfect-love",
+  "text": [
+    {
+      "name": "Dorothy F. Gurney",
+      "born": 1858,
+      "died": 1932,
+      "role": "Words (1883)"
+    }
+  ],
+  "textPublished": 1883,
+  "occasions": [
+    "Wedding"
+  ],
+  "description": "O Perfect Love in Tonic Solfa to PERFECT LOVE: the solfa with the words, staff notation, the three verses, and a piano.",
+  "about": [
+    "Dorothy F. Gurney wrote the words in 1883. The tune PERFECT LOVE is by Joseph Barnby (1889)."
+  ],
+  "underlay": "O per-fect Love, all hu-man thought tran-scend-ing, Low-ly we kneel in prayer be-fore Thy throne, That theirs may be the love which knows no end-ing, Whom Thou for ev-er-more dost join in one.",
+  "verses": [
+    {
+      "lines": [
+        "O perfect Love, all human thought transcending,",
+        "Lowly we kneel in prayer before Thy throne,",
+        "That theirs may be the love which knows no ending,",
+        "Whom Thou for evermore dost join in one."
+      ]
+    },
+    {
+      "lines": [
+        "O perfect Life, be Thou their full assurance",
+        "Of tender charity and steadfast faith,",
+        "Of patient hope, and quiet brave endurance,",
+        "With childlike trust that fears nor pain nor death."
+      ]
+    },
+    {
+      "lines": [
+        "Grant them the joy which brightens earthly sorrow,",
+        "Grant them the peace which calms all earthly strife;",
+        "And to life’s day the glorious unknown morrow",
+        "That dawns upon eternal love and life."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

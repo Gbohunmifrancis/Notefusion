@@ -1,0 +1,73 @@
+{
+  "title": "Trust and Obey",
+  "alsoKnownAs": [
+    "When We Walk with the Lord"
+  ],
+  "tune": "trust-and-obey",
+  "text": [
+    {
+      "name": "John H. Sammis",
+      "born": 1846,
+      "died": 1919,
+      "role": "Words (1887)"
+    }
+  ],
+  "textPublished": 1887,
+  "description": "Trust and Obey in Tonic Solfa to TRUST AND OBEY: the solfa with the words, staff notation, the five verses and the refrain, and a piano.",
+  "about": [
+    "John H. Sammis wrote the words, first published in 1887. The tune, TRUST AND OBEY, is by Daniel Brink Towner (1887)."
+  ],
+  "underlay": "When we walk with the Lord in the light of His Word, What a glo-ry He sheds on our way! While we do His good will, He a-bides with us still, And with all who will trust and o-bey. Trust and o-bey, for there’s no oth-er way To be hap-py in Je-sus, but to trust and o-bey.",
+  "verses": [
+    {
+      "lines": [
+        "When we walk with the Lord in the light of His Word,",
+        "What a glory He sheds on our way!",
+        "While we do His good will, He abides with us still,",
+        "And with all who will trust and obey."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Trust and obey, for there’s no other way",
+        "To be happy in Jesus, but to trust and obey."
+      ]
+    },
+    {
+      "lines": [
+        "Not a shadow can rise, not a cloud in the skies,",
+        "But His smile quickly drives it away;",
+        "Not a doubt or a fear, not a sigh or a tear,",
+        "Can abide while we trust and obey."
+      ]
+    },
+    {
+      "lines": [
+        "Not a burden we bear, not a sorrow we share,",
+        "But our toil He doth richly repay;",
+        "Not a grief or a loss, not a frown or a cross,",
+        "But is blessed if we trust and obey."
+      ]
+    },
+    {
+      "lines": [
+        "But we never can prove the delights of His love",
+        "Until all on the altar we lay;",
+        "For the favor He shows, for the joy He bestows,",
+        "Are for them who will trust and obey."
+      ]
+    },
+    {
+      "lines": [
+        "Then in fellowship sweet we will sit at His feet,",
+        "Or we’ll walk by His side in the way;",
+        "What He says we will do, where He sends we will go;",
+        "Never fear, only trust and obey."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

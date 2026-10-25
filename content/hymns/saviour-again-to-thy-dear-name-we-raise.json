@@ -1,0 +1,58 @@
+{
+  "title": "Saviour, Again to Thy Dear Name We Raise",
+  "tune": "ellers",
+  "text": [
+    {
+      "name": "John Ellerton",
+      "born": 1826,
+      "died": 1893,
+      "role": "Words (1866)"
+    }
+  ],
+  "textPublished": 1866,
+  "occasions": [
+    "Evening"
+  ],
+  "description": "Saviour, Again to Thy Dear Name We Raise in Tonic Solfa to ELLERS: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "John Ellerton wrote the hymn in 1866 for a choral festival and revised it into four verses for the Appendix to Hymns Ancient and Modern in 1868. Edward John Hopkins wrote the tune ELLERS."
+  ],
+  "underlay": "Sa-viour, a-gain to Thy dear name we raise, With one ac-cord our part-ing hymn of praise; We stand to bless Thee ere our wor-ship cease, Then, low-ly kneel-ing, wait Thy word of peace.",
+  "verses": [
+    {
+      "lines": [
+        "Saviour, again to Thy dear name we raise,",
+        "With one accord our parting hymn of praise;",
+        "We stand to bless Thee ere our worship cease,",
+        "Then, lowly kneeling, wait Thy word of peace."
+      ]
+    },
+    {
+      "lines": [
+        "Grant us Thy peace upon our homeward way;",
+        "With Thee began, with Thee shall end the day;",
+        "Guard Thou the lips from sin, the hearts from shame,",
+        "That in this house have called upon Thy name."
+      ]
+    },
+    {
+      "lines": [
+        "Grant us Thy peace through this approaching night;",
+        "Turn Thou for us its darkness into light;",
+        "From harm and danger keep Thy children free,",
+        "For dark and light are both alike to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Grant us Thy peace throughout our earthly life,",
+        "Our balm in sorrow, and our stay in strife;",
+        "Then, when Thy voice shall bid our conflict cease,",
+        "Call us, O Lord, to Thine eternal peace."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

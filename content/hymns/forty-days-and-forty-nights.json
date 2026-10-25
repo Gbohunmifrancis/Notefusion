@@ -1,0 +1,74 @@
+{
+  "title": "Forty Days and Forty Nights",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "George H. Smyttan",
+      "born": 1822,
+      "died": 1870,
+      "role": "Words (1856)"
+    }
+  ],
+  "textPublished": 1856,
+  "occasions": [
+    "Lent"
+  ],
+  "description": "Forty Days and Forty Nights in Tonic Solfa to HEINLEIN: the solfa with the words, staff notation, the six verses, and a piano.",
+  "about": [
+    "George H. Smyttan’s Lenten hymn was published in 1856. The tune HEINLEIN was printed in Nuremberg in 1676 and is attributed to Martin Herbst."
+  ],
+  "underlay": "For-ty days and for-ty nights Thou wast fast-ing in the wild; For-ty days and for-ty nights Tempt-ed, and yet un-de-filed.",
+  "verses": [
+    {
+      "lines": [
+        "Forty days and forty nights",
+        "Thou wast fasting in the wild;",
+        "Forty days and forty nights",
+        "Tempted, and yet undefiled."
+      ]
+    },
+    {
+      "lines": [
+        "Sunbeams scorching all the day;",
+        "Chilly dew-drops nightly shed;",
+        "Prowling beasts about Thy way;",
+        "Stones Thy pillow; earth Thy bed."
+      ]
+    },
+    {
+      "lines": [
+        "Shall not we Thy sorrow share,",
+        "And from earthly joys abstain,",
+        "Fasting with unceasing prayer,",
+        "Glad with Thee to suffer pain?"
+      ]
+    },
+    {
+      "lines": [
+        "And if Satan, vexing sore,",
+        "Flesh or spirit should assail,",
+        "Thou, his Vanquisher before,",
+        "Grant we may not faint nor fail."
+      ]
+    },
+    {
+      "lines": [
+        "So shall we have peace Divine;",
+        "Holier gladness ours shall be;",
+        "Round us too shall Angels shine,",
+        "Such as ministered to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Keep, O keep us, Saviour dear,",
+        "Ever constant by Thy side;",
+        "That with Thee we may appear",
+        "At the eternal Eastertide."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

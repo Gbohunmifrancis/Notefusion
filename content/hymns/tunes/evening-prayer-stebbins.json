@@ -6,10 +6,10 @@
       "name": "George C. Stebbins",
       "born": 1846,
       "died": 1945,
-      "role": "Music"
+      "role": "Music (1878)"
     }
   ],
-  "musicPublished": null,
+  "musicPublished": 1878,
   "metre": "8 7 8 7",
   "key": "Bb major",
   "time": "2/4",
@@ -26,7 +26,7 @@
   "scoreUrl": "https://www.ccel.org/cceh/0005/000587a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000587; public domain.",
-  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000587 (the melody read from 000587a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. George C. Stebbins's dates (1846–1945) are from https://en.wikipedia.org/wiki/George_Coles_Stebbins; CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000587a.nwc). The tune ends on F, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "reviewNotes": "Imported from CCEH tune 000587 (the melody read from 000587a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. George C. Stebbins's dates (1846–1945) are from https://en.wikipedia.org/wiki/George_Coles_Stebbins; CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000587a.nwc). The tune ends on F, neither doh nor lah: it may be modal; the doh is the key signature's. The year (1878) is from https://hymnary.org/tune/evening_prayer_stebbins (Composer: George C. Stebbins (1878)). Held back (25 Oct 2026): the line ends on soh and its second phrase has 10 notes for 7 syllables; check it against a printed copy before publishing.",
   "importedFrom": "cceh:000587",
-  "updated": "2026-10-17"
+  "updated": "2026-10-25"
 }

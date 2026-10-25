@@ -1,0 +1,57 @@
+{
+  "title": "Lead, Kindly Light",
+  "tune": "lux-benigna",
+  "text": [
+    {
+      "name": "John Henry Newman",
+      "born": 1801,
+      "died": 1890,
+      "role": "Words (1833)"
+    }
+  ],
+  "textPublished": 1833,
+  "occasions": [
+    "Funeral",
+    "Evening"
+  ],
+  "description": "Lead, Kindly Light in Tonic Solfa to LUX BENIGNA: the solfa with the words, staff notation, the three verses, and a piano.",
+  "about": [
+    "John Henry Newman wrote the words as a poem in 1833. The tune, LUX BENIGNA, is by John Bacchus Dykes (1865)."
+  ],
+  "underlay": "Lead, kind-ly Light, a-mid th’en-cir-cling gloom_, Lead Thou me on; The night is dark, and I am far from home_, Lead Thou me on_. Keep Thou my feet; I do not ask_ to_ see The dis-tant scene; one step e-nough_ for me_.",
+  "verses": [
+    {
+      "lines": [
+        "Lead, kindly Light, amid th’ encircling gloom,",
+        "Lead Thou me on;",
+        "The night is dark, and I am far from home,",
+        "Lead Thou me on.",
+        "Keep Thou my feet; I do not ask to see",
+        "The distant scene; one step enough for me."
+      ]
+    },
+    {
+      "lines": [
+        "I was not ever thus, nor prayed that Thou",
+        "Shouldst lead me on;",
+        "I loved to choose and see my path; but now",
+        "Lead Thou me on.",
+        "I loved the garish day; and, spite of fears,",
+        "Pride ruled my will: remember not past years."
+      ]
+    },
+    {
+      "lines": [
+        "So long Thy power hath blest me, sure it still",
+        "Will lead me on",
+        "O’er moor and fen, o’er crag and torrent, till",
+        "The night is gone,",
+        "And with the morn those angel faces smile,",
+        "Which I have loved long since, and lost a while."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

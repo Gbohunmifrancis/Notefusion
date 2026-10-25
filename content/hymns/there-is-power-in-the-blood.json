@@ -1,0 +1,67 @@
+{
+  "title": "There Is Power in the Blood",
+  "alsoKnownAs": [
+    "Would You Be Free from the Burden of Sin?"
+  ],
+  "tune": "power-in-the-blood",
+  "text": [
+    {
+      "name": "Lewis E. Jones",
+      "born": 1865,
+      "died": 1936,
+      "role": "Words (1899)"
+    }
+  ],
+  "textPublished": 1899,
+  "description": "There Is Power in the Blood in Tonic Solfa to POWER IN THE BLOOD: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Lewis E. Jones wrote the words, first published in 1899. The tune, POWER IN THE BLOOD, is by Lewis E. Jones (1899)."
+  ],
+  "underlay": "Would you be free from the bur-den of sin? There’s pow’r in the blood, pow’r in the blood; Would you o’er e-vil a vic-to-ry win? There’s won-der-ful pow’r in the blood. There is pow’r, pow’r, won-der-work-ing pow’r In the blood of the Lamb; There is pow’r, pow’r, won-der-work-ing pow’r In the pre-cious blood of the Lamb.",
+  "verses": [
+    {
+      "lines": [
+        "Would you be free from the burden of sin?",
+        "There’s pow’r in the blood, pow’r in the blood;",
+        "Would you o’er evil a victory win?",
+        "There’s wonderful pow’r in the blood."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "There is pow’r, pow’r, wonder-working pow’r",
+        "In the blood of the Lamb;",
+        "There is pow’r, pow’r, wonder-working pow’r",
+        "In the precious blood of the Lamb."
+      ]
+    },
+    {
+      "lines": [
+        "Would you be free from your passion and pride?",
+        "There’s pow’r in the blood, pow’r in the blood;",
+        "Come for a cleansing to Calvary’s tide;",
+        "There’s wonderful pow’r in the blood."
+      ]
+    },
+    {
+      "lines": [
+        "Would you be whiter, much whiter than snow?",
+        "There’s pow’r in the blood, pow’r in the blood;",
+        "Sin-stains are lost in its life-giving flow;",
+        "There’s wonderful pow’r in the blood."
+      ]
+    },
+    {
+      "lines": [
+        "Would you do service for Jesus your King?",
+        "There’s pow’r in the blood, pow’r in the blood;",
+        "Would you live daily His praises to sing?",
+        "There’s wonderful pow’r in the blood."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

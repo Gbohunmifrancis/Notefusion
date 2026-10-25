@@ -1,0 +1,78 @@
+{
+  "title": "The Great Physician",
+  "tune": "great-physician",
+  "text": [
+    {
+      "name": "William Hunter",
+      "born": 1811,
+      "died": 1877,
+      "role": "Words (1859)"
+    },
+    {
+      "name": "Richard Kempenfelt",
+      "born": 1718,
+      "died": 1782,
+      "role": "Refrain (1777)"
+    }
+  ],
+  "textPublished": 1859,
+  "description": "The Great Physician in Tonic Solfa to GREAT PHYSICIAN: the solfa with the words, staff notation, the five verses and the refrain, and a piano.",
+  "about": [
+    "William Hunter’s verses were published in 1859; the refrain is credited to Richard Kempenfelt (1777). John H. Stockton wrote the tune."
+  ],
+  "underlay": "The great Phy-si-cian now is near, The sym-pa-thiz-ing Je-sus; He speaks the droop-ing heart to cheer, Oh, hear the voice of Je-sus. Sweet-est note in ser-aph_ song, Sweet-est name on mor-tal_ tongue; Sweet-est car-ol ev-er sung, Je-sus, bless-ed Je-sus.",
+  "verses": [
+    {
+      "lines": [
+        "The great Physician now is near,",
+        "The sympathizing Jesus;",
+        "He speaks the drooping heart to cheer,",
+        "Oh, hear the voice of Jesus."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Sweetest note in seraph song,",
+        "Sweetest name on mortal tongue;",
+        "Sweetest carol ever sung,",
+        "Jesus, blessed Jesus."
+      ]
+    },
+    {
+      "lines": [
+        "Your many sins are all forgiv’n,",
+        "Oh, hear the voice of Jesus;",
+        "Go on your way in peace to heav’n,",
+        "And wear a crown with Jesus."
+      ]
+    },
+    {
+      "lines": [
+        "All glory to the dying Lamb!",
+        "I now believe in Jesus;",
+        "I love the blessed Saviour’s name,",
+        "I love the name of Jesus."
+      ]
+    },
+    {
+      "lines": [
+        "His name dispels my guilt and fear,",
+        "No other name but Jesus;",
+        "Oh, how my soul delights to hear",
+        "The charming name of Jesus."
+      ]
+    },
+    {
+      "lines": [
+        "And when to that bright world above,",
+        "We rise to see our Jesus,",
+        "We’ll sing around the throne of love",
+        "His name, the name of Jesus."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

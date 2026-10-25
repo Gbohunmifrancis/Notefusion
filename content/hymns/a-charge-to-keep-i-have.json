@@ -1,0 +1,55 @@
+{
+  "title": "A Charge to Keep I Have",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1762)"
+    }
+  ],
+  "textPublished": 1762,
+  "description": "A Charge to Keep I Have in Tonic Solfa to BOYLSTON: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "Charles Wesley’s words were published in 1762. Lowell Mason wrote the tune BOYLSTON in 1832."
+  ],
+  "underlay": "A charge to keep I have, A God to glo-ri-fy, A nev-er-dy-ing soul to save, And fit it for the sky.",
+  "verses": [
+    {
+      "lines": [
+        "A charge to keep I have,",
+        "A God to glorify,",
+        "A never-dying soul to save,",
+        "And fit it for the sky."
+      ]
+    },
+    {
+      "lines": [
+        "To serve the present age,",
+        "My calling to fulfil:",
+        "Oh, may it all my pow’rs engage",
+        "To do my Master’s will!"
+      ]
+    },
+    {
+      "lines": [
+        "Arm me with jealous care,",
+        "As in Thy sight to live;",
+        "And O Thy servant, Lord, prepare",
+        "A strict account to give!"
+      ]
+    },
+    {
+      "lines": [
+        "Help me to watch and pray,",
+        "And on Thyself rely,",
+        "Assured, if I my trust betray,",
+        "I shall forever die."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

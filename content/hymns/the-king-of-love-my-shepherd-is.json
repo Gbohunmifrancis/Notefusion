@@ -1,0 +1,75 @@
+{
+  "title": "The King of Love My Shepherd Is",
+  "tune": "dominus-regit-me",
+  "text": [
+    {
+      "name": "Henry Williams Baker",
+      "born": 1821,
+      "died": 1877,
+      "role": "Words (1868)"
+    }
+  ],
+  "textPublished": 1868,
+  "occasions": [
+    "Funeral",
+    "Wedding"
+  ],
+  "description": "The King of Love My Shepherd Is in Tonic Solfa to DOMINUS REGIT ME: the solfa with the words, staff notation, the six verses, and a piano.",
+  "about": [
+    "Henry Williams Baker wrote the words, first published in 1868. The tune, DOMINUS REGIT ME, is by John Bacchus Dykes (1868)."
+  ],
+  "underlay": "The King of love my shep-herd is, Whose good-ness fail-eth nev-er. I noth-ing_ lack if I am_ his, And he is mine for-ev_-er.",
+  "verses": [
+    {
+      "lines": [
+        "The King of love my shepherd is,",
+        "Whose goodness faileth never.",
+        "I nothing lack if I am his,",
+        "And he is mine forever."
+      ]
+    },
+    {
+      "lines": [
+        "Where streams of living water flow,",
+        "My ransomed soul he leadeth;",
+        "And where the verdant pastures grow,",
+        "With food celestial feedeth."
+      ]
+    },
+    {
+      "lines": [
+        "Perverse and foolish, oft I strayed,",
+        "But yet in love he sought me;",
+        "And on his shoulder gently laid,",
+        "And home, rejoicing, brought me."
+      ]
+    },
+    {
+      "lines": [
+        "In death’s dark vale I fear no ill,",
+        "With thee, dear Lord, beside me;",
+        "Thy rod and staff my comfort still,",
+        "Thy cross before to guide me."
+      ]
+    },
+    {
+      "lines": [
+        "Thou spreadst a table in my sight;",
+        "Thy unction grace bestoweth;",
+        "And oh, what transport of delight",
+        "From thy pure chalice floweth!"
+      ]
+    },
+    {
+      "lines": [
+        "And so through all the length of days,",
+        "Thy goodness faileth never;",
+        "Good Shepherd, may I sing thy praise",
+        "Within thy house forever."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Sweet Hour of Prayer",
+  "tune": "sweet-hour",
+  "text": [
+    {
+      "name": "William W. Walford",
+      "born": 1772,
+      "died": 1850,
+      "role": "Words (1845)"
+    }
+  ],
+  "textPublished": 1845,
+  "description": "Sweet Hour of Prayer in Tonic Solfa to SWEET HOUR: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "William W. Walford wrote the words, first published in 1845. The tune, SWEET HOUR, is by William Batchelder Bradbury (1861)."
+  ],
+  "underlay": "Sweet hour of prayer! sweet hour of prayer! That calls me from_ a world of care, And bids me at my Fa-ther’s throne Make all my wants_ and wish-es known. In sea-sons of dis-tress and grief, My soul has of-ten found re-lief, And oft es-caped the temp-ter’s snare, By thy re-turn_, sweet hour of prayer!",
+  "verses": [
+    {
+      "lines": [
+        "Sweet hour of prayer! sweet hour of prayer!",
+        "That calls me from a world of care,",
+        "And bids me at my Father’s throne",
+        "Make all my wants and wishes known.",
+        "In seasons of distress and grief,",
+        "My soul has often found relief,",
+        "And oft escaped the tempter’s snare,",
+        "By thy return, sweet hour of prayer!"
+      ]
+    },
+    {
+      "lines": [
+        "Sweet hour of prayer! sweet hour of prayer!",
+        "The joys I feel, the bliss I share,",
+        "Of those whose anxious spirits burn",
+        "With strong desires for thy return!",
+        "With such I hasten to the place",
+        "Where God my Savior shows His face,",
+        "And gladly take my station there,",
+        "And wait for thee, sweet hour of prayer!"
+      ]
+    },
+    {
+      "lines": [
+        "Sweet hour of prayer! sweet hour of prayer!",
+        "Thy wings shall my petition bear",
+        "To Him whose truth and faithfulness",
+        "Engage the waiting soul to bless.",
+        "And since He bids me seek His face,",
+        "Believe His Word and trust His grace,",
+        "I’ll cast on Him my every care,",
+        "And wait for thee, sweet hour of prayer!"
+      ]
+    },
+    {
+      "lines": [
+        "Sweet hour of prayer! sweet hour of prayer!",
+        "May I thy consolation share,",
+        "Till, from Mount Pisgah’s lofty height,",
+        "I view my home and take my flight.",
+        "This robe of flesh I’ll drop, and rise",
+        "To seize the everlasting prize,",
+        "And shout, while passing through the air,",
+        "“Farewell, farewell, sweet hour of prayer!”"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,58 @@
+{
+  "title": "Saviour, Breathe an Evening Blessing",
+  "tune": "evening-prayer-stebbins",
+  "text": [
+    {
+      "name": "James Edmeston",
+      "born": 1791,
+      "died": 1867,
+      "role": "Words (1820)"
+    }
+  ],
+  "textPublished": 1820,
+  "occasions": [
+    "Evening"
+  ],
+  "description": "Saviour, Breathe an Evening Blessing in Tonic Solfa to EVENING PRAYER (STEBBINS): the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "James Edmeston’s words appeared in his Sacred Lyrics in 1820. George C. Stebbins wrote the tune EVENING PRAYER in 1878."
+  ],
+  "underlay": "Sa-viour, breathe an eve-ning bless-ing, Ere re-pose our_ spi-rits_ seal_; Sin and want we come con-fess-ing; Thou canst save, and Thou canst heal.",
+  "verses": [
+    {
+      "lines": [
+        "Saviour, breathe an evening blessing,",
+        "Ere repose our spirits seal;",
+        "Sin and want we come confessing;",
+        "Thou canst save, and Thou canst heal."
+      ]
+    },
+    {
+      "lines": [
+        "Tho’ destruction walk around us,",
+        "Tho’ the arrows past us fly,",
+        "Angel guards from Thee surround us,",
+        "We are safe if Thou art nigh."
+      ]
+    },
+    {
+      "lines": [
+        "Tho’ the night be dark and dreary,",
+        "Darkness cannot hide from Thee;",
+        "Thou art He who, never weary,",
+        "Watchest where Thy people be."
+      ]
+    },
+    {
+      "lines": [
+        "Should swift death this night o’ertake us,",
+        "And our couch become our tomb,",
+        "May the morn in heaven awake us,",
+        "Clad in bright and deathless bloom."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": true
+}

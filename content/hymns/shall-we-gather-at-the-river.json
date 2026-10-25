@@ -1,0 +1,76 @@
+{
+  "title": "Shall We Gather at the River?",
+  "tune": "hanson-place",
+  "text": [
+    {
+      "name": "Robert Lowry",
+      "born": 1826,
+      "died": 1899,
+      "role": "Words (1864)"
+    }
+  ],
+  "textPublished": 1864,
+  "occasions": [
+    "Funeral",
+    "Baptism"
+  ],
+  "description": "Shall We Gather at the River? in Tonic Solfa to HANSON PLACE: the solfa with the words, staff notation, the five verses and the refrain, and a piano.",
+  "about": [
+    "Robert Lowry wrote the words, first published in 1864. The tune, HANSON PLACE, is by Robert Lowry (1864)."
+  ],
+  "underlay": "Shall we gath-er at the riv-er, Where bright an-gel feet have trod_, With its crys-tal tide for-ev-er Flow-ing by the_ throne of_ God? Yes, we’ll gath-er at the riv-er, The beau-ti-ful, the beau-ti-ful_ riv-er; Gath-er with the saints_ at the riv-er That flows by the throne of_ God.",
+  "verses": [
+    {
+      "lines": [
+        "Shall we gather at the river,",
+        "Where bright angel feet have trod,",
+        "With its crystal tide forever",
+        "Flowing by the throne of God?"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Yes, we’ll gather at the river,",
+        "The beautiful, the beautiful river;",
+        "Gather with the saints at the river",
+        "That flows by the throne of God."
+      ]
+    },
+    {
+      "lines": [
+        "On the margin of the river,",
+        "Washing up its silver spray,",
+        "We will talk and worship ever,",
+        "All the happy golden day."
+      ]
+    },
+    {
+      "lines": [
+        "Ere we reach the shining river,",
+        "Lay we every burden down;",
+        "Grace our spirits will deliver,",
+        "And provide a robe and crown."
+      ]
+    },
+    {
+      "lines": [
+        "At the smiling of the river,",
+        "Mirror of the Savior’s face,",
+        "Saints, whom death will never sever,",
+        "Lift their songs of saving grace."
+      ]
+    },
+    {
+      "lines": [
+        "Soon we’ll reach the silver river,",
+        "Soon our pilgrimage will cease;",
+        "Soon our happy hearts will quiver",
+        "With the melody of peace."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

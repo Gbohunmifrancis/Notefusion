@@ -1,0 +1,65 @@
+{
+  "title": "Wonderful Words of Life",
+  "alsoKnownAs": [
+    "Sing Them Over Again to Me"
+  ],
+  "tune": "words-of-life",
+  "text": [
+    {
+      "name": "Philip P. Bliss",
+      "born": 1838,
+      "died": 1876,
+      "role": "Words (1874)"
+    }
+  ],
+  "textPublished": 1874,
+  "description": "Wonderful Words of Life in Tonic Solfa to WORDS OF LIFE: the solfa with the words, staff notation, the three verses and the refrain, and a piano.",
+  "about": [
+    "Philip P. Bliss wrote both the words and the tune; the song was published in 1874."
+  ],
+  "underlay": "Sing them o-ver a-gain to me, Won-der-ful words of life_; Let me more of their beau-ty see, Won-der-ful words of life. Words of life and_ beau-ty Teach me faith and_ du-ty; Beau-ti-ful words, won-der-ful words, Won-der-ful words of life__; Beau-ti-ful words, won-der-ful words, Won-der-ful words of life.",
+  "verses": [
+    {
+      "lines": [
+        "Sing them over again to me,",
+        "Wonderful words of life;",
+        "Let me more of their beauty see,",
+        "Wonderful words of life.",
+        "Words of life and beauty",
+        "Teach me faith and duty;"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Beautiful words, wonderful words,",
+        "Wonderful words of life;",
+        "Beautiful words, wonderful words,",
+        "Wonderful words of life."
+      ]
+    },
+    {
+      "lines": [
+        "Christ, the blessed One, gives to all",
+        "Wonderful words of life;",
+        "Sinner, list to the loving call,",
+        "Wonderful words of life.",
+        "All so freely given,",
+        "Wooing us to heaven;"
+      ]
+    },
+    {
+      "lines": [
+        "Sweetly echo the Gospel call,",
+        "Wonderful words of life;",
+        "Offer pardon and peace to all,",
+        "Wonderful words of life.",
+        "Jesus, only Saviour,",
+        "Sanctify forever;"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

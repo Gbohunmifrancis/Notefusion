@@ -1,0 +1,75 @@
+{
+  "title": "Redeemed, How I Love to Proclaim It",
+  "alsoKnownAs": [
+    "Redeemed"
+  ],
+  "tune": "redeemed",
+  "text": [
+    {
+      "name": "Fanny Crosby",
+      "born": 1820,
+      "died": 1915,
+      "role": "Words (1882)"
+    }
+  ],
+  "textPublished": 1882,
+  "description": "Redeemed, How I Love to Proclaim It in Tonic Solfa to REDEEMED: the solfa with the words, staff notation, the five verses and the refrain, and a piano.",
+  "about": [
+    "Fanny Crosby wrote the words and William J. Kirkpatrick the tune; the song was published in 1882."
+  ],
+  "underlay": "Re-deemed, how I love to pro-claim it! Re-deemed by the blood of the Lamb; Re-deemed through His in-fi-nite mer-cy, His child and for-ev-er I am. Re-deemed, re-deemed, Re-deemed by the blood of the Lamb; Re-deemed_, re-deemed_, His child and for-ev-er I am.",
+  "verses": [
+    {
+      "lines": [
+        "Redeemed, how I love to proclaim it!",
+        "Redeemed by the blood of the Lamb;",
+        "Redeemed through His infinite mercy,",
+        "His child and forever I am."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Redeemed, redeemed,",
+        "Redeemed by the blood of the Lamb;",
+        "Redeemed, redeemed,",
+        "His child and forever I am."
+      ]
+    },
+    {
+      "lines": [
+        "Redeemed, and so happy in Jesus,",
+        "No language my rapture can tell;",
+        "I know that the light of His presence",
+        "With me doth continually dwell."
+      ]
+    },
+    {
+      "lines": [
+        "I think of my blessed Redeemer,",
+        "I think of Him all the day long:",
+        "I sing, for I cannot be silent;",
+        "His love is the theme of my song."
+      ]
+    },
+    {
+      "lines": [
+        "I know I shall see in His beauty",
+        "The King in whose law I delight;",
+        "Who lovingly guardeth my footsteps,",
+        "And giveth me songs in the night."
+      ]
+    },
+    {
+      "lines": [
+        "I know there’s a crown that is waiting",
+        "In yonder bright mansion for me,",
+        "And soon, with the spirits made perfect,",
+        "At home with the Lord I shall be."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,64 @@
+{
+  "title": "Are You Washed in the Blood?",
+  "tune": "washed-in-the-blood",
+  "text": [
+    {
+      "name": "Elisha A. Hoffman",
+      "born": 1839,
+      "died": 1929,
+      "role": "Words (1878)"
+    }
+  ],
+  "textPublished": 1878,
+  "description": "Are You Washed in the Blood? in Tonic Solfa to WASHED IN THE BLOOD: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Elisha A. Hoffman wrote the words and the tune WASHED IN THE BLOOD, published in 1878."
+  ],
+  "underlay": "Have you been to Je-sus for the cleans-ing pow’r? Are you washed in the blood of the Lamb? Are you ful-ly trust-ing in His grace this hour? Are you washed in the blood of the Lamb? Are you washed in the blood, In the soul-cleans-ing blood of the Lamb? Are your gar-ments spot-less? Are they white as snow? Are you washed in the blood of the Lamb?",
+  "verses": [
+    {
+      "lines": [
+        "Have you been to Jesus for the cleansing pow’r?",
+        "Are you washed in the blood of the Lamb?",
+        "Are you fully trusting in His grace this hour?",
+        "Are you washed in the blood of the Lamb?"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Are you washed in the blood,",
+        "In the soul-cleansing blood of the Lamb?",
+        "Are your garments spotless? Are they white as snow?",
+        "Are you washed in the blood of the Lamb?"
+      ]
+    },
+    {
+      "lines": [
+        "Are you walking daily by the Saviour’s side?",
+        "Are you washed in the blood of the Lamb?",
+        "Do you rest each moment in the Crucified?",
+        "Are you washed in the blood of the Lamb?"
+      ]
+    },
+    {
+      "lines": [
+        "When the Bridegroom cometh will your robes be white?",
+        "Are you washed in the blood of the Lamb?",
+        "Will your soul be ready for the mansions bright,",
+        "And be washed in the blood of the Lamb?"
+      ]
+    },
+    {
+      "lines": [
+        "Lay aside the garments that are stained with sin,",
+        "And be washed in the blood of the Lamb;",
+        "There’s a fountain flowing for the soul unclean,",
+        "Oh, be washed in the blood of the Lamb!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

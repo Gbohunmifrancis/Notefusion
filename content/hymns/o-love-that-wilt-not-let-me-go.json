@@ -1,0 +1,62 @@
+{
+  "title": "O Love That Wilt Not Let Me Go",
+  "tune": "st-margaret",
+  "text": [
+    {
+      "name": "George Matheson",
+      "born": 1842,
+      "died": 1906,
+      "role": "Words (1882)"
+    }
+  ],
+  "textPublished": 1883,
+  "occasions": [
+    "Funeral"
+  ],
+  "description": "O Love That Wilt Not Let Me Go in Tonic Solfa to ST. MARGARET: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "George Matheson wrote the words in 1882; they first appeared in the Church of Scotland magazine Life and Work in 1883. Albert Lister Peace set them to music for the Scottish Hymnal of 1884."
+  ],
+  "underlay": "O Love that wilt not let me go, I rest my wea-ry soul in thee_; I give thee back the life I owe_, That in thine o-cean depths its flow_ May rich-er, full-er be.",
+  "verses": [
+    {
+      "lines": [
+        "O Love that wilt not let me go,",
+        "I rest my weary soul in thee;",
+        "I give thee back the life I owe,",
+        "That in thine ocean depths its flow",
+        "May richer, fuller be."
+      ]
+    },
+    {
+      "lines": [
+        "O Light that followest all my way,",
+        "I yield my flickering torch to thee;",
+        "My heart restores its borrowed ray,",
+        "That in thy sunshine’s blaze its day",
+        "May brighter, fairer be."
+      ]
+    },
+    {
+      "lines": [
+        "O Joy that seekest me through pain,",
+        "I cannot close my heart to thee;",
+        "I trace the rainbow through the rain,",
+        "And feel the promise is not vain",
+        "That morn shall tearless be."
+      ]
+    },
+    {
+      "lines": [
+        "O Cross that liftest up my head,",
+        "I dare not ask to fly from thee;",
+        "I lay in dust life’s glory dead,",
+        "And from the ground there blossoms red",
+        "Life that shall endless be."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}
