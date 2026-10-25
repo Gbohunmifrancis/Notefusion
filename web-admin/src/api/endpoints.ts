@@ -63,6 +63,7 @@ import type {
   TranscriptionLogPage,
   WebhookStatus,
   ListenAnalytics,
+  RecognisedHymns,
   UnpaidCheckouts,
 } from "@/api/types";
 import type { WebAuthnJson } from "@/lib/webauthn";
@@ -531,6 +532,13 @@ export const getUnpaidCheckouts = (from?: string, to?: string, signal?: AbortSig
 /** The Listen from anywhere page: takes, ways in, endings, reminders, settings and Pro locks over a window. */
 export const getListenAnalytics = (from?: string, to?: string, signal?: AbortSignal) =>
   request<ListenAnalytics>(`/api/admin/analytics/listen${query({ from, to })}`, signal ? { signal } : {});
+
+/** The Hymns recognised page: which hymns takes matched, how often, by whom, and how many kept the hymnbook version. */
+export const getRecognisedHymns = (from?: string, to?: string, includeInternal?: boolean, signal?: AbortSignal) =>
+  request<RecognisedHymns>(
+    `/api/admin/analytics/hymns${query({ from, to, internal: includeInternal || undefined })}`,
+    signal ? { signal } : {},
+  );
 
 /** The most active accounts and how engaged users were over a window. */
 export const getEngagement =(from?: string, to?: string, top = 20, signal?: AbortSignal) =>

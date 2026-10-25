@@ -12,6 +12,7 @@ import {
   Inbox,
   ChartNoAxesCombined,
   LayoutDashboard,
+  ListMusic,
   LogOut,
   MessageSquareHeart,
   MicVocal,
@@ -96,6 +97,7 @@ const NAV_GROUPS: { key: string; label: string; items: NavEntry[] }[] = [
       { to: "/traffic", label: "Traffic", icon: Footprints },
       { to: "/practice", label: "Practice", icon: MicVocal },
       { to: "/listen", label: "Listen anywhere", icon: Radio },
+      { to: "/hymns", label: "Hymns recognised", icon: ListMusic },
     ],
   },
   {
