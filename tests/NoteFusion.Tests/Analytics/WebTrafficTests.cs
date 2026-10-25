@@ -1,4 +1,6 @@
 using NoteFusion.Application.Analytics.Queries;
+using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Web;
 using NoteFusion.Application.Web.Commands;
 using NoteFusion.Core.Entities;
 using NoteFusion.Tests.Support;
@@ -64,6 +66,98 @@ public class WebTrafficTests
 
         Assert.Equal(RecordWebEventsCommandHandler.MaxBatch, result.Value);
         Assert.All(h.Db.WebEvents, e => Assert.Equal(user, e.UserId));
+    }
+
+    private const string AndroidChrome = "Mozilla/5.0 (Linux; Android 14; SM-A145F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36";
+
+    private sealed class FixedCountry(string? country) : ICountryResolver
+    {
+        public int Calls { get; private set; }
+        public Task<string?> ResolveAsync(CancellationToken ct = default) { Calls++; return Task.FromResult(country); }
+    }
+
+    [Fact]
+    public async Task A_visit_keeps_its_link_tags_on_the_first_page_view_and_the_browser_system_and_country_on_every_event()
+    {
+        using var h = new TestHarness(Now);
+        var country = new FixedCountry("ng");
+        var handler = new RecordWebEventsCommandHandler(h.Db, new StubCurrentUser(), h.Clock, country);
+
+        await handler.Handle(new RecordWebEventsCommand("v", "s",
+        [
+            Ev("pageview", referrer: "t.co") with { UtmSource = "X", UtmMedium = "Social", UtmCampaign = "Launch tweet", UtmTerm = "solfa app", Ref = "launch" },
+            Ev("click", "Try it", "/", "/app") with { UtmSource = "x" },   // tags on anything but a page view are ignored
+        ], UserAgent: AndroidChrome), default);
+
+        var view = h.Db.WebEvents.Single(e => e.Kind == WebEvent.Pageview);
+        Assert.Equal(("x", "social", "Launch tweet", "solfa app", "launch"), (view.UtmSource, view.UtmMedium, view.UtmCampaign, view.UtmTerm, view.Ref));
+        Assert.Null(h.Db.WebEvents.Single(e => e.Kind == WebEvent.Click).UtmSource);
+        Assert.All(h.Db.WebEvents, e => Assert.Equal(("NG", "Chrome", "Android"), (e.Country, e.Browser, e.Os)));
+        Assert.Equal(1, country.Calls);   // once per batch
+    }
+
+    [Theory]
+    [InlineData("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")]
+    [InlineData("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/129.0.0.0 Safari/537.36")]
+    [InlineData("Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36 Chrome-Lighthouse")]
+    public async Task A_crawler_that_runs_scripts_is_not_a_visitor(string agent)
+    {
+        using var h = new TestHarness(Now);
+        var country = new FixedCountry("US");
+        var handler = new RecordWebEventsCommandHandler(h.Db, new StubCurrentUser(), h.Clock, country);
+
+        var result = await handler.Handle(new RecordWebEventsCommand("v", "s", [Ev("pageview")], UserAgent: agent), default);
+
+        Assert.Equal(0, result.Value);
+        Assert.Empty(h.Db.WebEvents);
+        Assert.Equal(0, country.Calls);
+    }
+
+    [Fact]
+    public async Task A_batch_with_nothing_worth_keeping_never_asks_for_a_country()
+    {
+        using var h = new TestHarness(Now);
+        var country = new FixedCountry("US");
+        var handler = new RecordWebEventsCommandHandler(h.Db, new StubCurrentUser(), h.Clock, country);
+
+        await handler.Handle(new RecordWebEventsCommand("v", "s", [Ev("hover", "x")], UserAgent: AndroidChrome), default);
+
+        Assert.Equal(0, country.Calls);
+    }
+
+    [Theory]
+    [InlineData(AndroidChrome, "Chrome", "Android")]
+    [InlineData("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1", "Safari", "iOS")]
+    [InlineData("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/129.0 Mobile/15E148 Safari/604.1", "Chrome", "iOS")]
+    [InlineData("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0", "Edge", "Windows")]
+    [InlineData("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0", "Firefox", "macOS")]
+    [InlineData("Opera/9.80 (Android; Opera Mini/36.2.2254/119.132; U; id) Presto/2.12.423 Version/12.16", "Opera Mini", "Android")]
+    [InlineData("Mozilla/5.0 (Linux; Android 13; SAMSUNG SM-A536B) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/26.0 Chrome/122.0.0.0 Mobile Safari/537.36", "Samsung Internet", "Android")]
+    [InlineData("Mozilla/5.0 (Linux; Android 14; Infinix X6833B) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/129.0 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/484.0.0.53.104;]", "Facebook in-app", "Android")]
+    [InlineData("Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36", "Chrome", "ChromeOS")]
+    [InlineData("SomethingElse/1.0", "Other", "Other")]
+    public void A_user_agent_is_read_as_a_browser_and_system_family(string agent, string browser, string os)
+    {
+        var read = UserAgentFamily.Read(agent);
+        Assert.False(read.IsBot);
+        Assert.Equal((browser, os), (read.Browser, read.Os));
+    }
+
+    [Fact]
+    public void No_user_agent_reads_as_nothing_known()
+    {
+        Assert.Equal(new UserAgentFamily.Agent(null, null, false), UserAgentFamily.Read(null));
+        Assert.Equal(new UserAgentFamily.Agent(null, null, false), UserAgentFamily.Read("  "));
+    }
+
+    [Fact]
+    public void A_country_that_is_not_two_letters_is_not_kept()
+    {
+        var e = WebEvent.TryCreate("pageview", null, "/", null, null, "v", "s", null, "desktop", Now)!;
+        Assert.Null(e.WithVisit(null, "Undefined", null, null).Country);
+        Assert.Null(e.WithVisit(null, "1A", null, null).Country);
+        Assert.Equal("GB", e.WithVisit(null, "gb", null, null).Country);
+        Assert.Null(WebCampaign.From(null, " ", null, null, null, null));
     }
 
     [Fact]

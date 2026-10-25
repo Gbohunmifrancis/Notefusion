@@ -19,7 +19,14 @@ public sealed record WebEventInput(
     /// <summary>What else an action carries (an error code, a provider); ignored for page views and clicks.</summary>
     string? Detail = null,
     /// <summary>The browser's own id for the event: a batch sent twice is stored once (<see cref="ClientEventIds"/>).</summary>
-    string? Id = null);
+    string? Id = null,
+    // The campaign tags and ?ref= of the link the visit came in on; the tracker sends them on a page load's first page view.
+    string? UtmSource = null,
+    string? UtmMedium = null,
+    string? UtmCampaign = null,
+    string? UtmTerm = null,
+    string? UtmContent = null,
+    string? Ref = null);
 
 /// <summary>
 /// A batch of page views, clicks and app actions from one browser. Anonymous: a visitor is counted
@@ -38,7 +45,9 @@ public sealed record RecordWebEventsCommand(
     /// <summary>The browser's device id, already hashed by the Api layer; null when it sent none.</summary>
     string? DeviceHash = null,
     /// <summary>The account a page-leave beacon's token named (a beacon carries no header); null uses the request's own.</summary>
-    Guid? UserId = null) : IRequest<Result<int>>;
+    Guid? UserId = null,
+    /// <summary>The request's User-Agent: read for the browser and system families, never stored; a bot's batch is dropped.</summary>
+    string? UserAgent = null) : IRequest<Result<int>>;
 
 public sealed class RecordWebEventsCommandHandler : IRequestHandler<RecordWebEventsCommand, Result<int>>
 {
@@ -54,16 +63,23 @@ public sealed class RecordWebEventsCommandHandler : IRequestHandler<RecordWebEve
     private readonly IApplicationDbContext _db;
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _clock;
+    private readonly ICountryResolver? _country;
 
-    public RecordWebEventsCommandHandler(IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock)
+    public RecordWebEventsCommandHandler(IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock,
+        ICountryResolver? country = null)
     {
         _db = db;
         _currentUser = currentUser;
         _clock = clock;
+        _country = country;
     }
 
     public async Task<Result<int>> Handle(RecordWebEventsCommand request, CancellationToken cancellationToken)
     {
+        var agent = UserAgentFamily.Read(request.UserAgent);
+        // A crawler that runs scripts (Google's renderer, a headless browser, Lighthouse) is not a visitor.
+        if (agent.IsBot)
+            return 0;
         var now = _clock.UtcNow;
         var userId = request.UserId ?? _currentUser.UserId;
         var batch = request.Events.Take(MaxBatch).ToList();
@@ -74,7 +90,7 @@ public sealed class RecordWebEventsCommandHandler : IRequestHandler<RecordWebEve
             ? new HashSet<string>()
             : (await _db.WebEvents.Where(e => e.VisitorId == request.VisitorId && e.ClientId != null && ids.Contains(e.ClientId))
                 .Select(e => e.ClientId!).ToListAsync(cancellationToken)).ToHashSet();
-        var kept = 0;
+        var kept = new List<(WebEvent Event, WebEventInput Input)>();
 
         foreach (var input in batch)
         {
@@ -87,13 +103,20 @@ public sealed class RecordWebEventsCommandHandler : IRequestHandler<RecordWebEve
                 input.Detail, request.DeviceHash, input.Id);
             if (evt is null)
                 continue;
-            _db.WebEvents.Add(evt);
-            kept++;
+            kept.Add((evt, input));
         }
 
-        if (kept > 0)
-            await _db.SaveChangesAsync(cancellationToken);
+        if (kept.Count == 0)
+            return 0;
 
-        return kept;
+        // One country per batch (the lookup is cached per address), and only for a batch worth keeping.
+        var country = _country is null ? null : await _country.ResolveAsync(cancellationToken);
+        foreach (var (evt, input) in kept)
+        {
+            var campaign = WebCampaign.From(input.UtmSource, input.UtmMedium, input.UtmCampaign, input.UtmTerm, input.UtmContent, input.Ref);
+            _db.WebEvents.Add(evt.WithVisit(campaign, country, agent.Browser, agent.Os));
+        }
+        await _db.SaveChangesAsync(cancellationToken);
+        return kept.Count;
     }
 }

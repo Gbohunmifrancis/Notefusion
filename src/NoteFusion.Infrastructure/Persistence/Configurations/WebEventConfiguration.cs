@@ -30,5 +30,14 @@ public sealed class WebEventConfiguration : IEntityTypeConfiguration<WebEvent>
         builder.HasIndex(e => new { e.DeviceHash, e.OccurredAtUtc });
         builder.Property(e => e.ClientId).HasMaxLength(ClientEventIds.MaxLength);
         builder.HasIndex(e => new { e.VisitorId, e.ClientId });
+        builder.Property(e => e.UtmSource).HasMaxLength(WebEvent.CampaignMaxLength);
+        builder.Property(e => e.UtmMedium).HasMaxLength(WebEvent.CampaignMaxLength);
+        builder.Property(e => e.UtmCampaign).HasMaxLength(WebEvent.CampaignNameMaxLength);
+        builder.Property(e => e.UtmTerm).HasMaxLength(WebEvent.CampaignNameMaxLength);
+        builder.Property(e => e.UtmContent).HasMaxLength(WebEvent.CampaignNameMaxLength);
+        builder.Property(e => e.Ref).HasMaxLength(WebEvent.CampaignMaxLength);
+        builder.Property(e => e.Country).HasMaxLength(2);
+        builder.Property(e => e.Browser).HasMaxLength(WebEvent.FamilyMaxLength);
+        builder.Property(e => e.Os).HasMaxLength(WebEvent.FamilyMaxLength);
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Infrastructure.Http;
@@ -16,21 +17,38 @@ namespace NoteFusion.Infrastructure.Geo;
 /// </remarks>
 internal sealed class HttpGeoIpLookup : IGeoIpLookup
 {
+    // An address keeps its country for hours, and the web tracker asks once per batch: an answer is remembered for
+    // AnswerFor, and a failure for FailureFor (long enough not to ask a struggling service again for every page view).
+    private static readonly TimeSpan AnswerFor = TimeSpan.FromHours(12);
+    private static readonly TimeSpan FailureFor = TimeSpan.FromMinutes(10);
+
     private readonly HttpClient _http;
     private readonly GeoSettings _settings;
     private readonly ILogger<HttpGeoIpLookup> _logger;
+    private readonly IMemoryCache? _cache;
 
-    public HttpGeoIpLookup(HttpClient http, GeoSettings settings, ILogger<HttpGeoIpLookup> logger)
+    public HttpGeoIpLookup(HttpClient http, GeoSettings settings, ILogger<HttpGeoIpLookup> logger, IMemoryCache? cache = null)
     {
         _http = http;
         _settings = settings;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task<string?> CountryForAsync(string ipAddress, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(ipAddress))
             return null;
+        var key = "geo:" + ipAddress;
+        if (_cache is not null && _cache.TryGetValue(key, out string? known))
+            return known;
+        var country = await LookupAsync(ipAddress, ct);
+        _cache?.Set(key, country, country is null ? FailureFor : AnswerFor);
+        return country;
+    }
+
+    private async Task<string?> LookupAsync(string ipAddress, CancellationToken ct)
+    {
 
         var url = _settings.LookupUrl.Replace("{ip}", Uri.EscapeDataString(ipAddress), StringComparison.Ordinal);
 

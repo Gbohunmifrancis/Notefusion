@@ -51,7 +51,8 @@ public sealed class WebEventsController : ApiControllerBase
     public async Task<IActionResult> Record(
         [FromBody] WebEventsRequest request, [FromServices] IDeviceFingerprint device, CancellationToken ct)
     {
-        await _sender.Send(new RecordWebEventsCommand(request.VisitorId, request.SessionId, request.Events ?? [], device.Current), ct);
+        await _sender.Send(new RecordWebEventsCommand(request.VisitorId, request.SessionId, request.Events ?? [], device.Current,
+            UserAgent: Request.Headers.UserAgent.ToString()), ct);
         return NoContent();
     }
 
@@ -80,7 +81,7 @@ public sealed class WebEventsController : ApiControllerBase
         if (request is not null)
             await _sender.Send(new RecordWebEventsCommand(
                 request.VisitorId, request.SessionId, request.Events ?? [], RequestDeviceFingerprint.Hash(request.DeviceId),
-                await UserFromTokenAsync(request.Token)), ct);
+                await UserFromTokenAsync(request.Token), Request.Headers.UserAgent.ToString()), ct);
         return NoContent();
     }
 
