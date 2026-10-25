@@ -88,7 +88,8 @@ class KeyListenerService : Service() {
     val chunk = SAMPLE_RATE / 4 // 250 ms
     val recorder = try {
       AudioRecord(
-        MediaRecorder.AudioSource.MIC,
+        // As TakeRecorder: the source whose noise suppression and automatic gain Android requires off.
+        MediaRecorder.AudioSource.VOICE_RECOGNITION,
         SAMPLE_RATE,
         AudioFormat.CHANNEL_IN_MONO,
         AudioFormat.ENCODING_PCM_FLOAT,
