@@ -22,7 +22,7 @@
   <string name="nf_anywhere_listen">Listen</string>
   <string name="nf_anywhere_hide">Hide</string>
   <string name="nf_take_tile_label" translatable="false">Listen</string>
-  <string name="nf_source_room">The room</string>
+  <string name="nf_source_room">Speaker &amp; room</string>
   <string name="nf_source_phone">This phone’s sound</string>
   <string name="nf_bubble_description">Listen with NoteFusion</string>
   <string name="nf_bubble_stop_description">Stop and send</string>
@@ -33,7 +33,7 @@
   <string name="nf_take_line_free">Free: %1$d of %2$d left this week · up to %3$s</string>
   <string name="nf_take_line_bought">%1$d bought left · up to %2$s</string>
   <string name="nf_take_line_pro">Up to %1$s · sends when you stop</string>
-  <string name="nf_take_from_room">From the room</string>
+  <string name="nf_take_from_room">Hearing your speaker and the room</string>
   <string name="nf_take_from_phone">From this phone’s sound</string>
   <string name="nf_take_notification_body">%1$s · up to %2$s</string>
   <string name="nf_take_stop_send">Stop &amp; send</string>
