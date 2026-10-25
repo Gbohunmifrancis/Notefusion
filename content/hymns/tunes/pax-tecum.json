@@ -1,0 +1,28 @@
+{
+  "name": "PAX TECUM",
+  "music": [
+    {
+      "name": "George Thomas Caldbeck",
+      "born": 1852,
+      "died": 1918,
+      "role": "Music (1877)"
+    },
+    {
+      "name": "Charles Vincent",
+      "born": 1852,
+      "died": 1934,
+      "role": "Arranged (1877)"
+    }
+  ],
+  "musicPublished": 1877,
+  "metre": "10 10",
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 76,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "G4:2 G4:1 G4:1 | G4:3 G4:1 | A4:1 A4:1 A4:1 G4:1 | G4:3 G4:1 | C5:2 D5:2 | E5:1 D5:1 C5:1 A4:1 | G4:2 G4:1 F4:1 | E4:4",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of Peace, Perfect Peace (https://library.timelesstruths.org/music/Peace_Perfect_Peace/, “Pax Tecum”, George T. Caldbeck, arr. by Charles J. Vincent), whose music it marks public domain; only the tune was taken, not the harmony. Its opening agrees with hymnary.org’s incipit 55555 66655 51232 (https://hymnary.org/tune/pax_tecum_caldbeck) and CCEH’s ssssslllss|sdrmrdlssfm (https://www.ccel.org/cceh/0007/x000769.htm). No hand fixes. The year 1877 is CCEH’s (“George Thomas Caldbeck arr., harm., Dr. Charles Vincent, 1877”; Timeless Truths gives 1876, hymnary.org 1878); Caldbeck’s dates (1852–1918) are from https://hymnary.org/tune/pax_tecum_caldbeck and Vincent’s (1852–1934) from https://hymnary.org/person/Vincent_Charles."
+}

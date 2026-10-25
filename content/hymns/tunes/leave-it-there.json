@@ -1,0 +1,22 @@
+{
+  "name": "LEAVE IT THERE",
+  "music": [
+    {
+      "name": "Charles Albert Tindley",
+      "born": 1851,
+      "died": 1933,
+      "role": "Music (1916)"
+    }
+  ],
+  "musicPublished": 1916,
+  "metre": "14 11 14 11 + i",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 80,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "G4:.75 A4:.25 | B4:.75 B4:.25 B4:.75 B4:.25 B4:1 A4:.75 G4:.25 | A4:.75 G4:.25 G4:.75 E4:.25 G4:1 G4:.75 A4:.25 | B4:.75 B4:.25 B4:.75 B4:.25 B4:.75 B4:.25 A4:.75 G4:.25 | A4:3 G4:.75 A4:.25 | B4:.75 B4:.25 B4:.75 B4:.25 B4:1 A4:.75 G4:.25 | A4:.75 G4:.25 G4:.75 E4:.25 G4:1 G4:.75 A4:.25 | B4:.75 B4:.25 B4:.75 B4:.25 A4:.75 G4:.25 A4:.75 B4:.25 | G4:3 B4:.75 C5:.25 | D5:3 B4:.75 A4:.25 | G4:3 A4:.75 B4:.25 | C5:.75 C5:.25 C5:.75 C5:.25 C5:.75 C5:.25 B4:.75 A#4:.25 | B4:3 B4:.75 C5:.25 | D5:.75 D5:.25 D5:.75 D5:.25 D5:1 B4:.75 A4:.25 | G4:.75 A4:.25 G4:.75 E4:.25 G4:1 G4:.75 A4:.25 | B4:.75 B4:.25 B4:.75 G4:.25 A4:.75 G#4:.25 A4:.75 B4:.25 | G4:3",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of Leave It There (https://library.timelesstruths.org/music/Leave_It_There/, Leave_It_There.xml, whose rights line reads “WORDS and MUSIC: Charles A. Tindley, 1916. Public Domain.”), verse and refrain; only the tune was taken, not the harmony. Its opening agrees with hymnary.org's incipit 12333 33212 11611 (https://hymnary.org/tune/leave_it_there_tindley) and CCEH's drmmmmmrdrddld|drmmmmmmrdr (https://www.ccel.org/cceh/0009/x000901.htm). CCEH credits the harmony (“arr., Charles A. Tindley, Jr., 1916”) to Tindley's son, whose dates no source gives (https://hymnary.org/person/Tindley_CAJr); his harmony is not used here, only the melody, which every source gives to Charles Albert Tindley. No hand fixes. Tindley's dates (1851–1933) and the year 1916 are from the hymnary.org tune page."
+}

@@ -303,6 +303,13 @@ test("dedupe: the same tune in another key is the same tune; another tune is not
   const variant = [...r.parsed.notes.slice(0, 5), { ...r.parsed.notes[4], pitchMidi: r.parsed.notes[4].pitchMidi + 2 }, ...r.parsed.notes.slice(5, 9), { ...r.parsed.notes[9], pitchMidi: r.parsed.notes[9].pitchMidi - 1 }, ...r.parsed.notes.slice(10)];
   const dv = sameMelody(variant, r.parsed.notes);
   assert.ok(dv !== null && dv <= 3, String(dv));
+  // Two tunes that open alike and then part are different tunes: the same first 24 notes, then another line.
+  const opening = r.parsed.notes.slice(0, 24);
+  const parted = [...opening, ...r.parsed.notes.slice(24).map((x, i) => ({ ...x, pitchMidi: x.pitchMidi + [3, -2, 5, 1, -4][i % 5] }))];
+  const same = [...opening, ...r.parsed.notes.slice(24)];
+  assert.ok(r.parsed.notes.length >= 40, "the fixture is long enough to part after its opening");
+  assert.equal(sameMelody(same, r.parsed.notes), 0);
+  assert.equal(sameMelody(parted, r.parsed.notes), null);
   // No two different tunes in our library are taken for each other.
   for (const [a, b] of [["new-britain", "italian-hymn"], ["old-hundredth", "duke-street"], ["nicaea", "hyfrydol"]]) assert.equal(sameMelody(ours[a].parsed.notes, ours[b].parsed.notes), null, `${a} / ${b}`);
 });

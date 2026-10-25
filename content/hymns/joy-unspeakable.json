@@ -1,0 +1,67 @@
+{
+  "title": "Joy Unspeakable",
+  "alsoKnownAs": [
+    "I Have Found His Grace Is All Complete"
+  ],
+  "tune": "joy-unspeakable",
+  "text": [
+    {
+      "name": "Barney Elliott Warren",
+      "born": 1867,
+      "died": 1951,
+      "role": "Words (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "description": "Joy Unspeakable in Tonic Solfa to JOY UNSPEAKABLE: the solfa with the words, staff notation, the 4 verses and the refrain, and a piano.",
+  "about": [
+    "Barney E. Warren, an American hymn writer and minister of the Church of God (Anderson), wrote both the words and the tune JOY UNSPEAKABLE in 1900."
+  ],
+  "underlay": "I have found His grace is all com-plete, He sup-pli-eth eve-ry need; While I sit and learn at Je-sus’ feet, I am free, yes, free in-deed. It is joy un-speak-a-ble and full of glo-ry, Full of glo-ry, full of glo-ry; It is joy un-speak-a-ble and full of glo-ry, Oh, the half has nev-er yet been told.",
+  "verses": [
+    {
+      "lines": [
+        "I have found His grace is all complete,",
+        "He supplieth every need;",
+        "While I sit and learn at Jesus’ feet,",
+        "I am free, yes, free indeed."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "It is joy unspeakable and full of glory,",
+        "Full of glory, full of glory;",
+        "It is joy unspeakable and full of glory,",
+        "Oh, the half has never yet been told."
+      ]
+    },
+    {
+      "lines": [
+        "I have found the pleasure I once craved,",
+        "It is joy and peace within;",
+        "What a wondrous blessing, I am saved",
+        "From the awful gulf of sin."
+      ]
+    },
+    {
+      "lines": [
+        "I have found that hope so bright and clear,",
+        "Living in the realm of grace;",
+        "Oh, the Saviour’s presence is so near,",
+        "I can see His smiling face."
+      ]
+    },
+    {
+      "lines": [
+        "I have found the joy no tongue can tell,",
+        "How its waves of glory roll;",
+        "It is like a great o’erflowing well,",
+        "Springing up within my soul."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

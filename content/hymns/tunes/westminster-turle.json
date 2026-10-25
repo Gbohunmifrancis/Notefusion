@@ -1,0 +1,22 @@
+{
+  "name": "WESTMINSTER",
+  "music": [
+    {
+      "name": "James Turle",
+      "born": 1802,
+      "died": 1882,
+      "role": "Music (1835)"
+    }
+  ],
+  "musicPublished": 1835,
+  "metre": "8 6 8 6",
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 84,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "E4:1 | G4:1 G4:1 C4:1 C5:1 | B4:1 A4:1 G4:1 G4:1 | E5:1 B4:1 C5:1 D5:1 | G4:3 G4:1 | B4:1 A4:1 G#4:1 A4:1 | C5:1 B4:1 A4:1 A4:1 | G4:1 C4:1 D4:1 F4:1 | E4:3",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of My God, How Wonderful Thou Art (https://library.timelesstruths.org/music/My_God_How_Wonderful_Thou_Art/, My_God_How_Wonderful_Thou_Art.xml, whose rights line reads “MUSIC: “Westminster”; James Turle, 1835. Public Domain.”); only the tune was taken, not the harmony. Its opening agrees with hymnary.org's incipit 35511 76553 71255 (https://hymnary.org/tune/westminster_turle). This is Turle's WESTMINSTER, not WESTMINSTER ABBEY. No hand fixes. Turle's dates (1802–1882) and the year 1835 are from the hymnary.org tune page (Timeless Truths also gives 1835)."
+}

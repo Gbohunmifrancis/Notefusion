@@ -1,0 +1,67 @@
+{
+  "title": "Jesus Wants Me for a Sunbeam",
+  "alsoKnownAs": [
+    "I’ll Be a Sunbeam"
+  ],
+  "tune": "sunbeam",
+  "text": [
+    {
+      "name": "Nellie Talbot",
+      "born": 1861,
+      "died": 1950,
+      "role": "Words (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "description": "Jesus Wants Me for a Sunbeam in Tonic Solfa to SUNBEAM: the solfa with the words, staff notation, the 4 verses and the refrain, and a piano.",
+  "about": [
+    "Nellie Talbot (Ellen Alice Talbot, 1861–1950), a Sunday school worker in Portsmouth, England, wrote the words after a Sunday school convention in 1898; they were in print by 1900. Edwin O. Excell wrote the tune SUNBEAM in 1900."
+  ],
+  "underlay": "Je-sus wants me for a sun-beam, To shine for Him each day; In eve-ry way try to please Him, At home, at school, at play. A sun-beam, a sun-beam, Je-sus wants me for a sun-beam; A sun-beam, a sun-beam, I’ll be a sun-beam for Him.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus wants me for a sunbeam,",
+        "To shine for Him each day;",
+        "In every way try to please Him,",
+        "At home, at school, at play."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "A sunbeam, a sunbeam,",
+        "Jesus wants me for a sunbeam;",
+        "A sunbeam, a sunbeam,",
+        "I’ll be a sunbeam for Him."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus wants me to be loving,",
+        "And kind to all I see;",
+        "Showing how pleasant and happy,",
+        "His little one can be."
+      ]
+    },
+    {
+      "lines": [
+        "I will ask Jesus to help me",
+        "To keep my heart from sin;",
+        "Ever reflecting His goodness,",
+        "And always shine for Him."
+      ]
+    },
+    {
+      "lines": [
+        "I’ll be a sunbeam for Jesus,",
+        "I can if I but try;",
+        "Serving Him moment by moment,",
+        "Then live for Him on high."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

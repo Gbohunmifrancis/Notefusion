@@ -1,0 +1,74 @@
+{
+  "title": "To Thee, O Lord, Our Hearts We Raise",
+  "tune": "golden-sheaves",
+  "text": [
+    {
+      "name": "William Chatterton Dix",
+      "born": 1837,
+      "died": 1898,
+      "role": "Words (1864)"
+    }
+  ],
+  "textPublished": 1864,
+  "occasions": [
+    "Harvest"
+  ],
+  "description": "To Thee, O Lord, Our Hearts We Raise in Tonic Solfa to GOLDEN SHEAVES: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "William Chatterton Dix wrote the words, first published in 1864 in Hymns for the Service of the Church (St. Raphael’s, Bristol). Arthur Sullivan’s tune GOLDEN SHEAVES dates from 1874, and Hymns Ancient and Modern sets the words to it."
+  ],
+  "underlay": "To Thee, O Lord, our hearts we raise In hymns of a-dor-a-tion, To Thee bring sac-ri-fice of praise With shouts of ex-ul-ta-tion; Bright robes of gold the fields a-dorn, The hills with joy are_ ring-ing, The_ val-leys stand so thick with corn That e-ven they are sing-ing.",
+  "verses": [
+    {
+      "lines": [
+        "To Thee, O Lord, our hearts we raise",
+        "In hymns of adoration,",
+        "To Thee bring sacrifice of praise",
+        "With shouts of exultation;",
+        "Bright robes of gold the fields adorn,",
+        "The hills with joy are ringing,",
+        "The valleys stand so thick with corn",
+        "That even they are singing."
+      ]
+    },
+    {
+      "lines": [
+        "And now, on this our festal day,",
+        "Thy bounteous Hand confessing,",
+        "Upon Thine Altar, Lord, we lay",
+        "The first-fruits of Thy blessing;",
+        "By Thee the souls of men are fed",
+        "With gifts of grace supernal,",
+        "Thou, Who dost give us earthly bread,",
+        "Give us the Bread Eternal."
+      ]
+    },
+    {
+      "lines": [
+        "We bear the burden of the day,",
+        "And often toil seems dreary;",
+        "But labour ends with sunset ray,",
+        "And rest comes for the weary;",
+        "May we, the Angel-reaping o’er,",
+        "Stand at the last accepted,",
+        "Christ’s golden sheaves for evermore",
+        "To garners bright elected."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, blessed is that land of God,",
+        "Where Saints abide for ever;",
+        "Where golden fields spread far and broad,",
+        "Where flows the crystal river:",
+        "The strains of all its holy throng",
+        "With ours to-day are blending;",
+        "Thrice blessed is that harvest-song",
+        "Which never hath an ending."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

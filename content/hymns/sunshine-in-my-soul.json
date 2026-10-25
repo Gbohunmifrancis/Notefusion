@@ -1,0 +1,67 @@
+{
+  "title": "Sunshine in My Soul",
+  "alsoKnownAs": [
+    "There Is Sunshine in My Soul Today"
+  ],
+  "tune": "sunshine",
+  "text": [
+    {
+      "name": "Eliza Edmunds Hewitt",
+      "born": 1851,
+      "died": 1920,
+      "role": "Words (1887)"
+    }
+  ],
+  "textPublished": 1887,
+  "description": "Sunshine in My Soul in Tonic Solfa to SUNSHINE: the solfa with the words, staff notation, the 4 verses and the refrain, and a piano.",
+  "about": [
+    "Eliza E. Hewitt wrote the words, and John R. Sweney the tune SUNSHINE; both were first published in Glad Hallelujahs (Philadelphia, 1887), edited by William J. Kirkpatrick and Sweney."
+  ],
+  "underlay": "There is sun-shine in my soul to-day, More_ glo-ri-ous and bright Than_ glows in an-y earth-ly sky, For Je-sus is my light. Oh, there’s sun-shine, bless_-ed sun-shine, When the peace-ful, hap-py mo-ments roll; When_ Je-sus shows His smil_-ing_ face, There is sun-shine in my soul.",
+  "verses": [
+    {
+      "lines": [
+        "There is sunshine in my soul today,",
+        "More glorious and bright",
+        "Than glows in any earthly sky,",
+        "For Jesus is my light."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Oh, there’s sunshine, blessed sunshine,",
+        "When the peaceful, happy moments roll;",
+        "When Jesus shows His smiling face,",
+        "There is sunshine in my soul."
+      ]
+    },
+    {
+      "lines": [
+        "There is music in my soul today,",
+        "A carol to my King;",
+        "And Jesus, listening, can hear",
+        "The songs I cannot sing."
+      ]
+    },
+    {
+      "lines": [
+        "There is springtime in my soul today,",
+        "For, when the Lord is near,",
+        "The dove of peace sings in my heart,",
+        "The flow’rs of grace appear."
+      ]
+    },
+    {
+      "lines": [
+        "There is gladness in my soul today,",
+        "And hope and praise and love,",
+        "For blessings which He gives me now,",
+        "For joys laid up above."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

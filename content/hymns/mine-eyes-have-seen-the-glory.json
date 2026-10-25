@@ -1,0 +1,75 @@
+{
+  "title": "Mine Eyes Have Seen the Glory",
+  "alsoKnownAs": [
+    "Battle Hymn of the Republic"
+  ],
+  "tune": "battle-hymn",
+  "text": [
+    {
+      "name": "Julia Ward Howe",
+      "born": 1819,
+      "died": 1910,
+      "role": "Words (1861)"
+    }
+  ],
+  "textPublished": 1862,
+  "description": "Mine Eyes Have Seen the Glory in Tonic Solfa to BATTLE HYMN: the solfa with the words, staff notation, the 5 verses and the refrain, and a piano.",
+  "about": [
+    "Julia Ward Howe wrote the words, the Battle Hymn of the Republic, in Washington in November 1861, and The Atlantic Monthly published them in February 1862. They are sung to an American camp-meeting tune of about 1856, often attributed to William Steffe."
+  ],
+  "underlay": "Mine_ eyes have seen the glo-ry of the com-ing of the Lord: He is tramp-ling out the vin-tage where the grapes of wrath are stored; He hath loosed the fate-ful light-ning of His ter-ri-ble swift sword: His truth is march-ing on. Glo-ry! glo-ry! Hal-le-lu-jah! Glo-ry! glo-ry! Hal-le-lu-jah! Glo-ry! glo-ry! Hal-le-lu-jah! His truth is march-ing on.",
+  "verses": [
+    {
+      "lines": [
+        "Mine eyes have seen the glory of the coming of the Lord:",
+        "He is trampling out the vintage where the grapes of wrath are stored;",
+        "He hath loosed the fateful lightning of His terrible swift sword:",
+        "His truth is marching on."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Glory! glory! Hallelujah!",
+        "Glory! glory! Hallelujah!",
+        "Glory! glory! Hallelujah!",
+        "His truth is marching on."
+      ]
+    },
+    {
+      "lines": [
+        "I have seen Him in the watch-fires of a hundred circling camps,",
+        "They have builded Him an altar in the evening dews and damps;",
+        "I can read His righteous sentence by the dim and flaring lamps:",
+        "His day is marching on."
+      ]
+    },
+    {
+      "lines": [
+        "I have read a fiery gospel writ in burnished rows of steel:",
+        "“As ye deal with my contemners, so with you My grace shall deal;",
+        "Let the Hero, born of woman, crush the serpent with his heel,",
+        "Since God is marching on.”"
+      ]
+    },
+    {
+      "lines": [
+        "He has sounded forth the trumpet that shall never call retreat;",
+        "He is sifting out the hearts of men before His judgment-seat:",
+        "Oh, be swift, my soul, to answer Him! be jubilant, my feet!",
+        "Our God is marching on."
+      ]
+    },
+    {
+      "lines": [
+        "In the beauty of the lilies Christ was born across the sea,",
+        "With a glory in his bosom that transfigures you and me:",
+        "As He died to make men holy, let us die to make men free,",
+        "While God is marching on."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

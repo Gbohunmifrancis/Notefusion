@@ -1,0 +1,22 @@
+{
+  "name": "JESUS BIDS US SHINE",
+  "music": [
+    {
+      "name": "Edwin Othello Excell",
+      "born": 1851,
+      "died": 1921,
+      "role": "Music (1884)"
+    }
+  ],
+  "musicPublished": 1884,
+  "metre": "5 5 6 5 6 3 6 4",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "G4:.5 D4:.5 D4:.5 D4:.5 D4:1 G4:.5 A4:.5 | G4:1 F#4:1 F#4:2 | A4:.5 D4:.5 D4:.5 D4:.5 D4:1 A4:1 | A4:.5 G4:.5 G4:.5 A4:.5 B4:2 | B4:.5 C5:.5 B4:.5 A4:.5 G4:1 B3:1 | E4:.5 G4:.5 F#4:.5 E4:.5 D4:2 | D4:.5 D4:.5 G4:.5 A4:.5 B4:.5 D5:1 C5:.5 | B4:1 A4:1 G4:2",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of Jesus Bids Us Shine (https://library.timelesstruths.org/music/Jesus_Bids_Us_Shine/, its first score, “Jesus Bids Us Shine (Excell)”, Edwin O. Excell, 1884, not Hackleman’s), whose music it marks public domain; only the tune was taken, not the harmony. Its opening agrees with hymnary.org’s incipit 15555 12177 25555 (https://hymnary.org/tune/jesus_bids_us_shine_excell). No hand fixes. Excell’s dates (1851–1921) and the year 1884 are from https://hymnary.org/tune/jesus_bids_us_shine_excell."
+}
