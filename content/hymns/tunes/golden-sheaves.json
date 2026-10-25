@@ -1,0 +1,22 @@
+{
+  "name": "GOLDEN SHEAVES",
+  "music": [
+    {
+      "name": "Arthur Seymour Sullivan",
+      "born": 1842,
+      "died": 1900,
+      "role": "Music (1874)"
+    }
+  ],
+  "musicPublished": 1874,
+  "metre": "8 7 8 7 8 7 8 7",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 92,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "D4:1 | B4:1 D5:1 D5:1 C5:1 | B4:1 A4:1 G4:1 G4:1 | A4:1 B4:1 C5:1 E4:1 | F#4:2 G4:1 D4:1 | B4:1 D5:1 D5:1 C5:1 | B4:1 A4:1 G4:1 B4:1 | B4:1 A4:1 B4:1 C#5:1 | E5:2 D5:1 A4:1 | A4:1.5 A4:.5 D5:1 B4:1 | A4:1 G#4:1 B4:1 E4:1 | C5:1 C5:1 D5:1 C5:.5 D5:.5 | E5:2 E5:1 C5:.5 D5:.5 | E5:1 E5:1 D5:1 G4:1 | C5:1 C5:1 B4:1 G4:1 | A4:1 B4:1 C5:1 E4:1 | F#4:2 G4:1",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of I’ve Found a Friend set to GOLDEN SHEAVES (https://library.timelesstruths.org/music/Ive_Found_a_Friend/, second score, Ive_Found_a_Friend_2.xml, whose rights line reads “MUSIC: “Golden Sheaves”; Arthur S. Sullivan, pub.1874. Public Domain.”); only the tune was taken, not the harmony. Timeless Truths has no page for To Thee, O Lord, Our Hearts We Raise, so the tune was taken from the other words it sets. Its opening agrees with hymnary.org's incipit 53554 32112 34671 (https://hymnary.org/tune/golden_sheaves_sullivan). The tempo follows the crotchet = 92 that Hymns Ancient and Modern (Hymn 384, https://archive.org/details/hymnsanci00chur) prints over it. No hand fixes. Sullivan's dates (1842–1900) and the year 1874 are from the hymnary.org tune page."
+}

@@ -1,0 +1,80 @@
+{
+  "title": "All Things Bright and Beautiful",
+  "tune": "all-things-bright",
+  "text": [
+    {
+      "name": "Cecil Frances Alexander",
+      "born": 1818,
+      "died": 1895,
+      "role": "Words (1848)"
+    }
+  ],
+  "textPublished": 1848,
+  "description": "All Things Bright and Beautiful in Tonic Solfa to ALL THINGS BRIGHT: the solfa with the words, staff notation, the 6 verses and the refrain, and a piano.",
+  "about": [
+    "Cecil Frances Alexander wrote the words, published in 1848. This page sets them to William Henry Monk’s tune of 1887, sung refrain first; many school hymn books use the tune ROYAL OAK instead."
+  ],
+  "underlay": "All things bright and beau-ti-ful, All crea-tures great and small, All things wise and won-der-ful, The Lord God made them all. Each lit-tle flower that o-pens, Each lit-tle bird that sings, He made their glow-ing col-ours, He made their ti-ny wings. All things bright and beau-ti-ful, All crea-tures great and small, All things wise and won-der-ful, The Lord God made them all.",
+  "verses": [
+    {
+      "lines": [
+        "Each little flower that opens,",
+        "Each little bird that sings,",
+        "He made their glowing colours,",
+        "He made their tiny wings."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "All things bright and beautiful,",
+        "All creatures great and small,",
+        "All things wise and wonderful,",
+        "The Lord God made them all."
+      ]
+    },
+    {
+      "lines": [
+        "The rich man in his castle,",
+        "The poor man at his gate,",
+        "God made them, high or lowly,",
+        "And order’d their estate."
+      ]
+    },
+    {
+      "lines": [
+        "The purple-headed mountain,",
+        "The river running by,",
+        "The sunset and the morning,",
+        "That brightens up the sky;—"
+      ]
+    },
+    {
+      "lines": [
+        "The cold wind in the winter,",
+        "The pleasant summer sun,",
+        "The ripe fruits in the garden,—",
+        "He made them every one;"
+      ]
+    },
+    {
+      "lines": [
+        "The tall trees in the greenwood,",
+        "The meadows where we play,",
+        "The rushes by the water,",
+        "We gather every day;—"
+      ]
+    },
+    {
+      "lines": [
+        "He gave us eyes to see them,",
+        "And lips that we might tell,",
+        "How great is God Almighty,",
+        "Who has made all things well."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

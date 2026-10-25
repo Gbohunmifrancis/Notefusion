@@ -61,17 +61,24 @@ function editDistance(a, b) {
 /**
  * Whether two melodies are the same tune, whatever their keys: their first 24 notes (or as many as the
  * shorter has, at least 10; repeated notes run together), as pitch classes moved into the key that fits
- * best, differ by at most one note in six — one book's passing note or altered note is the same tune.
- * Returns the number of differing notes, or null when they are different tunes.
+ * best, differ by at most one note in six — one book's passing note or altered note is the same tune —
+ * and so do the whole melodies in that key: two tunes can open alike and then part (PAX TECUM and ERFURT,
+ * SWEET BY AND BY and ROLL CALL were taken for each other on their openings alone).
+ * Returns the number of differing notes in the opening, or null when they are different tunes.
  */
 export function sameMelody(a, b) {
   const pcs = (notes) => notes.map((n) => n.pitchMidi).filter((p, i, arr) => !i || p !== arr[i - 1]).map((p) => ((p % 12) + 12) % 12);
   const pa = pcs(a), pb = pcs(b);
   const n = Math.min(pa.length, pb.length, 24);
   if (n < 10) return null;
-  let d = Infinity;
-  for (let t = 0; t < 12; t++) d = Math.min(d, editDistance(pa.slice(0, n), pb.slice(0, n).map((p) => (p + t) % 12)));
-  return d <= Math.round(n / 6) ? d : null;
+  let d = Infinity, shift = 0;
+  for (let t = 0; t < 12; t++) {
+    const dt = editDistance(pa.slice(0, n), pb.slice(0, n).map((p) => (p + t) % 12));
+    if (dt < d) { d = dt; shift = t; }
+  }
+  if (d > Math.round(n / 6)) return null;
+  const whole = editDistance(pa, pb.map((p) => (p + shift) % 12));
+  return whole <= Math.round(Math.max(pa.length, pb.length) / 6) ? d : null;
 }
 
 /**

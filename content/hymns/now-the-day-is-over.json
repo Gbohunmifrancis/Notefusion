@@ -1,0 +1,90 @@
+{
+  "title": "Now the Day Is Over",
+  "tune": "merrial",
+  "text": [
+    {
+      "name": "Sabine Baring-Gould",
+      "born": 1834,
+      "died": 1924,
+      "role": "Words (1865)"
+    }
+  ],
+  "textPublished": 1865,
+  "occasions": [
+    "Evening"
+  ],
+  "description": "Now the Day Is Over in Tonic Solfa to MERRIAL: the solfa with the words, staff notation, the 8 verses, and a piano.",
+  "about": [
+    "Sabine Baring-Gould wrote the words in 1865, and they were printed in the Church Times that year; Hymns Ancient and Modern took them into its 1868 Appendix. Joseph Barnby wrote the tune MERRIAL in 1868."
+  ],
+  "underlay": "Now the day is o-ver, Night is draw-ing_ nigh,_ Shad-ows of the eve-ning Steal a-cross the sky.",
+  "verses": [
+    {
+      "lines": [
+        "Now the day is over,",
+        "Night is drawing nigh,",
+        "Shadows of the evening",
+        "Steal across the sky."
+      ]
+    },
+    {
+      "lines": [
+        "Now the darkness gathers,",
+        "Stars begin to peep,",
+        "Birds, and beasts and flowers",
+        "Soon will be asleep."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, give the weary",
+        "Calm and sweet repose;",
+        "With Thy tend’rest blessing",
+        "May mine eyelids close."
+      ]
+    },
+    {
+      "lines": [
+        "Grant to little children",
+        "Visions bright of Thee;",
+        "Guard the sailors tossing",
+        "On the deep, blue sea."
+      ]
+    },
+    {
+      "lines": [
+        "Comfort every suff’rer",
+        "Watching late in pain;",
+        "Those who plan some evil",
+        "From their sin restrain."
+      ]
+    },
+    {
+      "lines": [
+        "Through the long night watches",
+        "May Thine angels spread",
+        "Their white wings above me,",
+        "Watching round my bed."
+      ]
+    },
+    {
+      "lines": [
+        "When the morning wakens,",
+        "Then may I arise",
+        "Pure, and fresh, and sinless",
+        "In Thy holy eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to the Father,",
+        "Glory to the Son,",
+        "And to Thee, blest Spirit,",
+        "While all ages run."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

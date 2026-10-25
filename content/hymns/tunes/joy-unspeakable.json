@@ -1,0 +1,22 @@
+{
+  "name": "JOY UNSPEAKABLE",
+  "music": [
+    {
+      "name": "Barney Elliott Warren",
+      "born": 1867,
+      "died": 1951,
+      "role": "Music (1900)"
+    }
+  ],
+  "musicPublished": 1900,
+  "metre": "9 7 9 7 + i",
+  "key": "Bb major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:.5 F4:.5 | Bb4:1 Bb4:1 D5:1 Bb4:1 | Bb4:1 G4:1 F4:1 F4:.5 F4:.5 | F4:1 G4:1 A4:1 Bb4:1 | C5:3 F4:.5 F4:.5 | Bb4:1 Bb4:1 D5:1 Bb4:1 | Bb4:1 G4:1 F4:1 D5:.5 D5:.5 | C5:1 Bb4:1 A4:1 G4:1 | F4:3 F4:.5 F4:.5 | Bb4:1 Bb4:1 D5:.5 C5:.5 Bb4:.5 G4:.5 | F4:1 D4:1 F4:1 Bb4:1 | A4:1 F4:1 A4:1 C5:1 | Bb4:1 F4:1 Bb4:.5 D5:.5 F4:.5 F4:.5 | Bb4:1 Bb4:1 D5:.5 C5:.5 Bb4:.5 G4:.5 | F4:1 D4:1 F4:.5 Bb4:.5 Bb4:.5 A4:.5 | G4:1 C5:1 Bb4:.5 A4:.5 G4:.5 A4:.5 | Bb4:3",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of Joy Unspeakable (https://library.timelesstruths.org/music/Joy_Unspeakable/, Joy_Unspeakable.xml, whose rights line reads “WORDS and MUSIC: Barney E. Warren, 1900. Public Domain.”), verse and refrain; only the tune was taken, not the harmony. Its opening agrees with hymnary.org's incipit 55113 11655 55671 (https://hymnary.org/tune/i_have_found_his_grace_is_all_warren). No hand fixes. The year 1900 is from the hymnary.org tune page and Timeless Truths; Warren's dates (1867–1951) are from hymnary.org (https://hymnary.org/person/Warren_BE)."
+}

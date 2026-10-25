@@ -1,0 +1,21 @@
+{
+  "name": "BATTLE HYMN",
+  "music": [
+    {
+      "name": "Traditional American camp-meeting tune",
+      "traditional": true,
+      "role": "Melody (c.1856)"
+    }
+  ],
+  "musicPublished": 1856,
+  "metre": "15 15 15 6 + i",
+  "key": "Bb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:.75 F4:.25 | F4:.75 F4:.25 F4:.75 Eb4:.25 D4:.75 F4:.25 Bb4:.75 C5:.25 | D5:.75 D5:.25 D5:.75 C5:.25 Bb4:1 Bb4:.75 A4:.25 | G4:.75 G4:.25 G4:.75 A4:.25 Bb4:.75 A4:.25 Bb4:.75 G4:.25 | F4:.75 G4:.25 F4:.75 D4:.25 F4:1 F4:.75 F4:.25 | F4:.75 F4:.25 F4:.75 Eb4:.25 D4:.75 F4:.25 Bb4:.75 C5:.25 | D5:.75 D5:.25 D5:.75 C5:.25 Bb4:1 Bb4:1 | C5:1 C5:1 Bb4:1 A4:1 | Bb4:3 r:1 | F4:1.5 Eb4:.5 D4:.75 F4:.25 Bb4:.75 C5:.25 | D5:2 Bb4:2 | G4:1.5 A4:.5 Bb4:.75 A4:.25 Bb4:.75 G4:.25 | F4:2 D4:2 | F4:1.5 Eb4:.5 D4:.75 F4:.25 Bb4:.75 C5:.25 | D5:2 Bb4:1 Bb4:1 | C5:1 C5:1 Bb4:1 A4:1 | Bb4:3",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of Battle Hymn (https://library.timelesstruths.org/music/Battle_Hymn/, Battle_Hymn.xml, whose rights line reads “WORDS: Julia W. Howe, 1861; alt. MUSIC: “Glory, Hallelujah”; William Steffe, ca.1856. Public Domain.”), verse and refrain; only the tune was taken, not the harmony. Its opening agrees with hymnary.org's incipit 55554 35123 33211 (https://hymnary.org/tune/battle_hymn_of_the_republic), except that the score sets “Mine” on the two pickup notes (the other verses sing two syllables there), so its line has one more repeated F at the start. Hand fix: the score ends the refrain with a D.S. back to “His truth is marching on”; that last line is written out after the third “Glory, glory, hallelujah”. The camp-meeting tune of about 1856 is credited to William Steffe by Timeless Truths, hymnary.org and The Army and Navy Hymnal (1920); his dates (c.1830–c.1890, given here as 1830 and 1890) are from Wikipedia (https://en.wikipedia.org/wiki/William_Steffe), as hymnary.org has none. The year is approximate (c.1856). The tune is often attributed to William Steffe, whose dates are known only roughly (about 1830 to about 1890), so he is named here rather than credited."
+}

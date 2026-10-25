@@ -1,0 +1,70 @@
+{
+  "title": "Will Your Anchor Hold?",
+  "alsoKnownAs": [
+    "We Have an Anchor"
+  ],
+  "tune": "will-your-anchor-hold",
+  "text": [
+    {
+      "name": "Priscilla J. Owens",
+      "born": 1829,
+      "died": 1907,
+      "role": "Words (1882)"
+    }
+  ],
+  "textPublished": 1882,
+  "occasions": [
+    "Funeral"
+  ],
+  "description": "Will Your Anchor Hold? in Tonic Solfa to WILL YOUR ANCHOR HOLD: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Priscilla J. Owens wrote the words and William J. Kirkpatrick the tune; both date from 1882. The verses here are as Sankey’s Sacred Songs and Solos prints them."
+  ],
+  "underlay": "Will your an-chor hold in the storms of life? When the clouds un-fold their_ wings of strife; When the strong tides lift and the ca-bles strain, Will your an-chor drift,_ or_ firm re-main? We have an an-chor that keeps the soul Stead-fast and sure while the bil-lows roll; Fast-ened to the Rock which can-not move, Ground-ed firm and deep in the Sav-iour’s love!",
+  "verses": [
+    {
+      "lines": [
+        "Will your anchor hold in the storms of life?",
+        "When the clouds unfold their wings of strife;",
+        "When the strong tides lift and the cables strain,",
+        "Will your anchor drift, or firm remain?"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "We have an anchor that keeps the soul",
+        "Steadfast and sure while the billows roll;",
+        "Fastened to the Rock which cannot move,",
+        "Grounded firm and deep in the Saviour’s love!"
+      ]
+    },
+    {
+      "lines": [
+        "Will your anchor hold in the straits of fear,",
+        "When the breakers roar and the reef is near;",
+        "While the surges rave, and the wild winds blow,",
+        "Shall the angry waves then your bark o’erflow?"
+      ]
+    },
+    {
+      "lines": [
+        "Will your anchor hold in the floods of death,",
+        "When the waters cold chill your latest breath?",
+        "On the rising tide you can never fail,",
+        "While your anchor holds within the veil."
+      ]
+    },
+    {
+      "lines": [
+        "Will your eyes behold through the morning light",
+        "The city of gold, and the harbour bright?",
+        "Will you anchor safe by the heavenly shore,",
+        "When life’s storms are past for evermore?"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

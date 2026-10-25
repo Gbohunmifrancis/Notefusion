@@ -1,0 +1,59 @@
+{
+  "title": "Soldiers of Christ, Arise",
+  "tune": "diademata",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1749)"
+    }
+  ],
+  "textPublished": 1749,
+  "description": "Soldiers of Christ, Arise in Tonic Solfa to DIADEMATA: the solfa with the words, staff notation, the three verses, and a piano.",
+  "about": [
+    "Charles Wesley’s words on Ephesians 6 were published in Hymns and Sacred Poems in 1749, sixteen verses long; hymn books sing a few of them. Many Nigerian books set them to FROM STRENGTH TO STRENGTH or ST. ETHELWALD; here they are sung to George J. Elvey’s DIADEMATA (1868), which fits the same metre."
+  ],
+  "underlay": "Sol-diers of Christ, a-rise, And put your ar-mour on, Strong in the strength which God sup_-plies Through His e-ter-nal Son. Strong in the Lord of hosts, And in His might-y pow’r, Who in the strength of Je-sus trusts Is more than con-quer-or.",
+  "verses": [
+    {
+      "lines": [
+        "Soldiers of Christ, arise,",
+        "And put your armour on,",
+        "Strong in the strength which God supplies",
+        "Through His eternal Son.",
+        "Strong in the Lord of hosts,",
+        "And in His mighty pow’r,",
+        "Who in the strength of Jesus trusts",
+        "Is more than conqueror."
+      ]
+    },
+    {
+      "lines": [
+        "Stand then in His great might,",
+        "With all His strength endued,",
+        "And take, to arm you for the fight,",
+        "The panoply of God;",
+        "That, having all things done,",
+        "And all your conflicts passed,",
+        "Ye may o’ercome through Christ alone,",
+        "And stand entire at last."
+      ]
+    },
+    {
+      "lines": [
+        "Leave no unguarded place,",
+        "No weakness of the soul,",
+        "Take every virtue, every grace,",
+        "And fortify the whole.",
+        "From strength to strength go on,",
+        "Wrestle and fight and pray,",
+        "Tread all the pow’rs of darkness down",
+        "And win the well-fought day."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

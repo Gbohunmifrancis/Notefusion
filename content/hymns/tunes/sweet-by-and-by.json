@@ -1,0 +1,22 @@
+{
+  "name": "SWEET BY AND BY",
+  "music": [
+    {
+      "name": "Joseph Philbrick Webster",
+      "born": 1819,
+      "died": 1875,
+      "role": "Music (1868)"
+    }
+  ],
+  "musicPublished": 1868,
+  "metre": "9 9 9 9 + 6 9 6 9",
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 88,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "G4:.75 A4:.25 | B4:1 A4:.5 G4:.5 A4:1 G4:.75 E4:.25 | D4:3 G4:.75 A4:.25 | B4:1 B4:.5 B4:.5 D5:1 D5:.75 B4:.25 | A4:3 G4:.75 A4:.25 | B4:1 A4:.5 G4:.5 A4:1 G4:.75 E4:.25 | D4:3 G4:.75 A4:.25 | B4:1 A4:.5 G4:.5 A4:1 G4:.5 F#4:.5 | G4:3 B4:.75 C5:.25 | D5:3 D5:.75 B4:.25 | A4:3 A4:.5 B4:.5 | C5:1 C5:.5 C5:.5 C5:1 B4:.5 A4:.5 | B4:3 B4:.75 C5:.25 | D5:3 B4:.75 A4:.25 | G4:3 F#4:.5 E4:.5 | D4:1 G4:.5 B4:.5 A4:1 G4:.5 F#4:.5 | G4:3",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of In the Sweet By and By (https://library.timelesstruths.org/music/In_the_Sweet_By_and_By/, “Sweet By and By”, Joseph P. Webster, 1868), whose music it marks public domain; only the tune was taken, not the harmony (the lower voices’ echoes in the refrain are left out). Its opening agrees with hymnary.org’s incipit 12321 21651 23335 (https://hymnary.org/tune/sweet_by_and_by_webster) and CCEH’s drmrdrdls (https://www.ccel.org/cceh/0004/x000495.htm). No hand fixes. Webster’s dates (1819–1875) and the year 1868 are from https://hymnary.org/tune/sweet_by_and_by_webster."
+}

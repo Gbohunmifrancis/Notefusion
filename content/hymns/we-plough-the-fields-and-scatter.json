@@ -1,0 +1,80 @@
+{
+  "title": "We Plough the Fields and Scatter",
+  "alsoKnownAs": [
+    "We Plow the Fields and Scatter"
+  ],
+  "tune": "wir-pflugen",
+  "text": [
+    {
+      "name": "Matthias Claudius",
+      "born": 1740,
+      "died": 1815,
+      "role": "Words (1782)"
+    },
+    {
+      "name": "Jane Montgomery Campbell",
+      "born": 1817,
+      "died": 1878,
+      "role": "Translated (1861)"
+    }
+  ],
+  "textPublished": 1861,
+  "occasions": [
+    "Harvest"
+  ],
+  "description": "We Plough the Fields and Scatter in Tonic Solfa to WIR PFLÜGEN: the solfa with the words, staff notation, the 3 verses and the refrain, and a piano.",
+  "about": [
+    "Matthias Claudius wrote the German poem in 1782, and Jane Montgomery Campbell’s English translation dates from 1861. The tune WIR PFLÜGEN is by Johann Abraham Peter Schulz, from 1800."
+  ],
+  "underlay": "We plough the fields, and scat-ter The good seed on the land, But it is fed and wa_-ter’d By God’s Al-might-y Hand; He sends the snow in win-ter, The warmth to swell the grain, The breez-es, and the sun-shine, And soft re-fresh-ing rain. All good gifts a-round us Are sent from Heav’n a-bove, Then thank the Lord, O thank the Lord, For all__ His love.",
+  "verses": [
+    {
+      "lines": [
+        "We plough the fields, and scatter",
+        "The good seed on the land,",
+        "But it is fed and water’d",
+        "By God’s Almighty Hand;",
+        "He sends the snow in winter,",
+        "The warmth to swell the grain,",
+        "The breezes, and the sunshine,",
+        "And soft refreshing rain."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "All good gifts around us",
+        "Are sent from Heav’n above,",
+        "Then thank the Lord, O thank the Lord,",
+        "For all His love."
+      ]
+    },
+    {
+      "lines": [
+        "He only is the Maker",
+        "Of all things near and far;",
+        "He paints the wayside flower,",
+        "He lights the evening star;",
+        "The winds and waves obey Him,",
+        "By Him the birds are fed;",
+        "Much more to us, His children,",
+        "He gives our daily bread."
+      ]
+    },
+    {
+      "lines": [
+        "We thank Thee then, O Father,",
+        "For all things bright and good,",
+        "The seed-time and the harvest,",
+        "Our life, our health, our food;",
+        "Accept the gifts we offer",
+        "For all Thy love imparts,",
+        "And, what Thou most desirest,",
+        "Our humble, thankful hearts."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

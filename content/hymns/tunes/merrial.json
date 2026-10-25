@@ -1,0 +1,22 @@
+{
+  "name": "MERRIAL",
+  "music": [
+    {
+      "name": "Joseph Barnby",
+      "born": 1838,
+      "died": 1896,
+      "role": "Music (1868)"
+    }
+  ],
+  "musicPublished": 1868,
+  "metre": "6 5 6 5",
+  "key": "A major",
+  "time": "4/4",
+  "tempo": 76,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "E4:1 E4:1 E4:1 E4:1 | E4:2 E4:2 | F#4:1 F#4:1 E#4:1 F#4:.5 G#4:.5 | F#4:2 A4:2 | A4:1.5 A4:.5 G#4:1 F#4:1 | E4:2 E4:2 | E4:1.5 E4:.5 E4:1 E4:1 | E4:4",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of Now the Day Is Over (https://library.timelesstruths.org/music/Now_the_Day_Is_Over/, Now_the_Day_Is_Over.xml, whose rights line reads “WORDS: Sabine Baring-Gould, pub.1865. MUSIC: “Merrial”; Joseph Barnby, 1868. Public Domain.”); only the tune was taken, not the harmony. Its opening agrees with hymnary.org's incipit 55555 56656 76111 (https://hymnary.org/tune/merrial_barnby) and CCEH's ssssss|llsltld|ddtlss (https://www.ccel.org/cceh/0009/x000917.htm). No hand fixes. Barnby's dates (1838–1896) and the year 1868 are from the hymnary.org tune page."
+}

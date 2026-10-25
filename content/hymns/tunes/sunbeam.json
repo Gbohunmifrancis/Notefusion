@@ -1,0 +1,22 @@
+{
+  "name": "SUNBEAM",
+  "music": [
+    {
+      "name": "Edwin Othello Excell",
+      "born": 1851,
+      "died": 1921,
+      "role": "Music (1900)"
+    }
+  ],
+  "musicPublished": 1900,
+  "metre": "8 6 8 6 + 6 8 6 7",
+  "key": "G major",
+  "time": "6/8",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "D4:.5 E4:.5 F#4:.5 G4:.5 E4:.5 G4:.5 | F#4:1.5 D5:1 E4:.5 | D4:1 C5:.5 B4:1 A4:.5 | B4:1.5~ B4:1 r:.5 | D4:.5 E4:.5 F#4:.5 G4:.5 E4:.5 G4:.5 | F#4:1.5 D5:1 E4:.5 | D4:1 C5:.5 B4:1 A4:.5 | G4:1.5~ G4:1 D4:.5 | G4:1.5 B4:1 D5:.5 | D5:1.5 F#4:1.5 | D5:.5 C5:.5 A4:.5 F#4:.5 A4:.5 C5:.5 | E5:1.5 D5:1 D4:.5 | G4:1.5 B4:1 D5:.5 | D5:1.5 F#4:1.5 | D5:.5 F#4:.5 A4:.5 C5:.5 B4:.5 A4:.5 | G4:1.5~ G4:1 r:.5",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of I’ll Be a Sunbeam (Jesus Wants Me for a Sunbeam) (https://library.timelesstruths.org/music/Ill_Be_a_Sunbeam/, Ill_Be_a_Sunbeam.xml, whose rights line reads “WORDS: Nellie Talbot, ca.1900. MUSIC: “Sunbeam”; Edwin O. Excell, 1900. Public Domain.”), verse and refrain; only the tune was taken, not the harmony. Its opening agrees with hymnary.org's incipit 56716 17565 43235 (https://hymnary.org/tune/sunbeam_excell); the leaps on “sun-beam, To shine” (F#4 D5 E4 D4 C5) are as the score prints them (checked against Timeless Truths' PDF). No hand fixes. Excell's dates (1851–1921) and the year 1900 are from the hymnary.org tune page."
+}

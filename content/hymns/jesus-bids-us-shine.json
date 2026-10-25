@@ -1,0 +1,47 @@
+{
+  "title": "Jesus Bids Us Shine",
+  "tune": "jesus-bids-us-shine",
+  "text": [
+    {
+      "name": "Susan Warner",
+      "born": 1819,
+      "died": 1885,
+      "role": "Words (1868)"
+    }
+  ],
+  "textPublished": 1868,
+  "description": "Jesus Bids Us Shine in Tonic Solfa to JESUS BIDS US SHINE: the solfa with the words, staff notation, the 3 verses, and a piano.",
+  "about": [
+    "Susan Warner wrote the words; the Cyber Hymnal gives The Little Corporal (Chicago, 1868) as their source. Edwin Othello Excell wrote the tune in 1884."
+  ],
+  "underlay": "Je-sus bids us shine with a clear, pure light, Like a lit-tle can-dle burn-ing in the night; In this world of dark-ness, we_ must_ shine, You in your small cor-ner, and I in mine.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus bids us shine with a clear, pure light,",
+        "Like a little candle burning in the night;",
+        "In this world of darkness, we must shine,",
+        "You in your small corner, and I in mine."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus bids us shine, first of all for Him;",
+        "Well He sees and knows it if our light is dim;",
+        "He looks down from heaven, sees us shine,",
+        "You in your small corner, and I in mine."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus bids us shine, then, for all around",
+        "Many kinds of darkness in this world abound:",
+        "Sin, and want, and sorrow—we must shine,",
+        "You in your small corner, and I in mine."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

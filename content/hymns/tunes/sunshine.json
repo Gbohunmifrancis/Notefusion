@@ -1,0 +1,22 @@
+{
+  "name": "SUNSHINE",
+  "music": [
+    {
+      "name": "John R. Sweney",
+      "born": 1837,
+      "died": 1899,
+      "role": "Music (1887)"
+    }
+  ],
+  "musicPublished": 1887,
+  "metre": "9 6 8 6 + i",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Ab4:.75 Bb4:.25 | C5:1 Eb4:1 F4:.75 G4:.25 Ab4:.75 Bb4:.25 | C5:3 C5:.75 Db5:.25 | C5:1 Bb4:1 Eb4:1 Bb4:1 | Ab4:3 Ab4:.75 Bb4:.25 | C5:1 Eb4:1 F4:.75 G4:.25 Ab4:.75 Bb4:.25 | C5:3 C5:1 | Bb4:1.5 Bb4:.5 C5:1 D5:1 | Eb5:3 Eb5:.75 Db5:.25 | C5:2 Ab4:1 Bb4:.25 Ab4:.25 F4:.5 | Eb4:2 C4:1 C4:.75 Db4:.25 | Eb4:1 Ab4:1 C5:.75 Eb5:.25 Db5:.75 C5:.25 | Bb4:3 Eb5:.75 Db5:.25 | C5:1 C5:1 Db5:1.5 C5:.5 | C5:.5 Bb4:.5 Ab4:.5 F4:.5 Eb4:1 Ab4:.5 Bb4:.5 | C5:.5 C5:1.5 Bb4:1 Bb4:1 | Ab4:3",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of Sunshine in My Soul (https://library.timelesstruths.org/music/Sunshine_in_My_Soul/, Sunshine_in_My_Soul.xml, whose rights line reads “WORDS: Eliza E. Hewitt, pub.1887. MUSIC: “Sunshine”; John R. Sweney, pub.1887. Public Domain.”), verse and refrain; only the tune was taken, not the harmony. Its opening agrees with hymnary.org's incipit 12356 71233 43252 (https://hymnary.org/tune/sunshine_sweney). Hand fix: in the refrain the score sets “bless-ed” on a quaver triplet (Bb4 Ab4 on “bless”, F4 on “ed”); it is written on the semiquaver grid as two semiquavers and a quaver (Bb4:.25 Ab4:.25 F4:.5). Sweney's dates (1837–1899) and the year 1887 are from the hymnary.org tune page."
+}

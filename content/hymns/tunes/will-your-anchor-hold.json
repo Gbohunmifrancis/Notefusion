@@ -1,0 +1,22 @@
+{
+  "name": "WILL YOUR ANCHOR HOLD",
+  "music": [
+    {
+      "name": "William J. Kirkpatrick",
+      "born": 1838,
+      "died": 1921,
+      "role": "Music (1882)"
+    }
+  ],
+  "musicPublished": 1882,
+  "metre": "10 9 10 9 + i",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "F4:.75 G4:.25 | A4:1 F4:1 D4:1 G4:.75 G4:.25 | F4:1 E4:1 F4:1 A4:.75 A4:.25 | G4:.5~ G4:.5 G4:1 C5:1 E4:.5 F4:.5 | E4:1 D4:1 C4:1 C4:.75 C4:.25 | F4:1 A4:1 G4:1 C4:.75 C4:.25 | G4:1 Bb4:1 A4:1 F4:.75 A4:.25 | C5:1 C5:1 C5:.5 Bb4:.5 F4:.5 G4:.5 | A4:1 G4:1 F4:2 | C5:1 C5:.75 C5:.25 C5:.5 C5:1 C5:.5 | D5:1 C5:1 C5:2 | A4:1 A4:.5 A4:.5 C5:1 C5:.75 A4:.25 | F4:1 A4:1 G4:2 | C5:.5 C5:.5 C5:.75 C5:.25 C5:1 A4:1 | Bb4:1 C5:1 D5:2 | C5:.5 C5:.5 A4:.5 F4:.5 C4:1 Bb4:.75 Bb4:.25 | A4:1 G4:1 F4:1",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of We Have an Anchor (https://library.timelesstruths.org/music/We_Have_an_Anchor/, We_Have_an_Anchor.xml, whose rights line reads “MUSIC: William J. Kirkpatrick, 1882. Public Domain.”), verse and refrain; only the tune was taken, not the harmony. Its opening agrees with hymnary.org's incipit 12316 22171 33225 (https://hymnary.org/tune/will_your_anchor_hold_kirkpatrick). No hand fixes. Kirkpatrick's dates (1838–1921) and the year 1882 are from the hymnary.org tune page."
+}

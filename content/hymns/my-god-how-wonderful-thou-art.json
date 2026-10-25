@@ -1,0 +1,79 @@
+{
+  "title": "My God, How Wonderful Thou Art",
+  "tune": "westminster-turle",
+  "text": [
+    {
+      "name": "Frederick William Faber",
+      "born": 1814,
+      "died": 1863,
+      "role": "Words (1849)"
+    }
+  ],
+  "textPublished": 1849,
+  "description": "My God, How Wonderful Thou Art in Tonic Solfa to WESTMINSTER: the solfa with the words, staff notation, the seven verses, and a piano.",
+  "about": [
+    "Frederick William Faber wrote the words, published in 1849. James Turle’s tune WESTMINSTER dates from 1835; Hymns Ancient and Modern sets the words to it."
+  ],
+  "underlay": "My God, how won-der-ful Thou art, Thy maj-es-ty how bright, How beau-ti-ful Thy mer-cy-seat, In depths of burn-ing light!",
+  "verses": [
+    {
+      "lines": [
+        "My God, how wonderful Thou art,",
+        "Thy majesty how bright,",
+        "How beautiful Thy mercy-seat,",
+        "In depths of burning light!"
+      ]
+    },
+    {
+      "lines": [
+        "How dread are Thine eternal years,",
+        "O everlasting Lord,",
+        "By prostrate spirits day and night",
+        "Incessantly adored!"
+      ]
+    },
+    {
+      "lines": [
+        "How wonderful, how beautiful,",
+        "The sight of Thee must be,",
+        "Thine endless wisdom, boundless power,",
+        "And awful purity!"
+      ]
+    },
+    {
+      "lines": [
+        "Oh, how I fear Thee, Living God,",
+        "With deepest, tenderest fears,",
+        "And worship Thee with trembling hope,",
+        "And penitential tears!"
+      ]
+    },
+    {
+      "lines": [
+        "Yet I may love Thee too, O Lord,",
+        "Almighty as Thou art,",
+        "For Thou hast stoop’d to ask of me",
+        "The love of my poor heart."
+      ]
+    },
+    {
+      "lines": [
+        "No earthly father loves like Thee,",
+        "No mother, e’er so mild,",
+        "Bears and forbears as Thou hast done",
+        "With me Thy sinful child."
+      ]
+    },
+    {
+      "lines": [
+        "Father of Jesus, love’s reward,",
+        "What rapture will it be,",
+        "Prostrate before Thy Throne to lie,",
+        "And gaze and gaze on Thee!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,22 @@
+{
+  "name": "PILOT",
+  "music": [
+    {
+      "name": "John Edgar Gould",
+      "born": 1821,
+      "died": 1875,
+      "role": "Music (1871)"
+    }
+  ],
+  "musicPublished": 1871,
+  "metre": "7 7 7 7 7 7",
+  "key": "Bb major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "D5:.75 C5:.25 | Bb4:1.5 A4:.5 C5:.25 Bb4:.25 G4:.5 | F4:2 Eb5:.75 D5:.25 | D5:1.5 C5:.5 Bb4:.5 A4:.5 | Bb4:2 C5:.75 C5:.25 | C5:1.5 F4:.5 G4:.5 F4:.5 | Bb4:2 C5:.75 C5:.25 | C5:1.5 F4:.5 G4:.5 F4:.5 | Bb4:2 D5:.75 C5:.25 | Bb4:1.5 A4:.5 C5:.25 Bb4:.25 G4:.5 | F4:2 Eb5:.75 D5:.25 | D5:1.5 C5:.5 Bb4:.5 A4:.5 | Bb4:2",
+  "reviewed": false,
+  "confidence": "read from a public-domain score, unchecked",
+  "reviewNotes": "The melody line read from the Timeless Truths score of Jesus, Savior, Pilot Me (https://library.timelesstruths.org/music/Jesus_Savior_Pilot_Me/, Jesus_Savior_Pilot_Me.xml, whose rights line reads “MUSIC: “Pilot”; John E. Gould, 1871. Public Domain.”); only the tune was taken, not the harmony. Its opening agrees with hymnary.org's incipit 32172 16543 32171 (https://hymnary.org/tune/pilot_gould) and CCEH's mrdtrdls|fmmrdtd (https://www.ccel.org/cceh/0007/x000765.htm). Hand fix: the score sets C–B♭–G on “pilot” (bars 2 and 11) as a quaver triplet, off our semiquaver grid; it is written here as two semiquavers and a quaver (C5:.25 B♭4:.25 G4:.5), keeping the beat and the notes. Gould's dates (1821–1875) are from https://hymnary.org/person/Gould_JE and the year 1871 from the hymnary.org tune page."
+}

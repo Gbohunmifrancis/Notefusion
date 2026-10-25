@@ -1,0 +1,53 @@
+{
+  "title": "Jesus, Saviour, Pilot Me",
+  "tune": "pilot",
+  "text": [
+    {
+      "name": "Edward Hopper",
+      "born": 1816,
+      "died": 1888,
+      "role": "Words (1871)"
+    }
+  ],
+  "textPublished": 1871,
+  "description": "Jesus, Saviour, Pilot Me in Tonic Solfa to PILOT: the solfa with the words, staff notation, the three verses, and a piano.",
+  "about": [
+    "Edward Hopper, a Presbyterian minister who pastored the Church of Sea and Land, a church for sailors in New York, wrote the words; they were published in 1871. John Edgar Gould composed the tune PILOT for them the same year."
+  ],
+  "underlay": "Je-sus, Sav-iour, pi_-lot me, O-ver life’s tem-pes-tuous sea; Un-known waves be-fore me roll, Hid-ing rock and treach-’rous shoal; Chart and com-pass come_ from Thee: Je-sus, Sav-iour, pi-lot me!",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, Saviour, pilot me,",
+        "Over life’s tempestuous sea;",
+        "Unknown waves before me roll,",
+        "Hiding rock and treacherous shoal;",
+        "Chart and compass come from Thee:",
+        "Jesus, Saviour, pilot me!"
+      ]
+    },
+    {
+      "lines": [
+        "As a mother stills her child,",
+        "Thou canst hush the ocean wild;",
+        "Boisterous waves obey Thy will",
+        "When Thou say’st to them, “Be still!”",
+        "Wondrous Sovereign of the sea,",
+        "Jesus, Saviour, pilot me!"
+      ]
+    },
+    {
+      "lines": [
+        "When at last I near the shore,",
+        "And the fearful breakers roar",
+        "’Twixt me and the peaceful rest—",
+        "Then, while leaning on Thy breast,",
+        "May I hear Thee say to me,",
+        "“Fear not! I will pilot thee!”"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

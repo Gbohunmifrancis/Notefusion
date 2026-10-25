@@ -1,0 +1,68 @@
+{
+  "title": "Peace, Perfect Peace",
+  "tune": "pax-tecum",
+  "text": [
+    {
+      "name": "Edward Henry Bickersteth",
+      "born": 1825,
+      "died": 1906,
+      "role": "Words (1875)"
+    }
+  ],
+  "textPublished": 1875,
+  "occasions": [
+    "Funeral"
+  ],
+  "description": "Peace, Perfect Peace in Tonic Solfa to PAX TECUM: the solfa with the words, staff notation, the 7 verses, and a piano.",
+  "about": [
+    "Edward Henry Bickersteth wrote the words in 1875. The tune PAX TECUM is by George Thomas Caldbeck, arranged and harmonised by Charles Vincent in 1877."
+  ],
+  "underlay": "Peace, per-fect peace, in this dark world of sin? The Blood of Je-sus whis-pers peace with_-in.",
+  "verses": [
+    {
+      "lines": [
+        "Peace, perfect peace, in this dark world of sin?",
+        "The Blood of Jesus whispers peace within."
+      ]
+    },
+    {
+      "lines": [
+        "Peace, perfect peace, by thronging duties press’d?",
+        "To do the will of Jesus, this is rest."
+      ]
+    },
+    {
+      "lines": [
+        "Peace, perfect peace, with sorrows surging round?",
+        "On Jesus’ Bosom nought but calm is found."
+      ]
+    },
+    {
+      "lines": [
+        "Peace, perfect peace, with loved ones far away?",
+        "In Jesus’ keeping we are safe and they."
+      ]
+    },
+    {
+      "lines": [
+        "Peace, perfect peace, our future all unknown?",
+        "Jesus we know, and He is on the Throne."
+      ]
+    },
+    {
+      "lines": [
+        "Peace, perfect peace, death shadowing us and ours?",
+        "Jesus has vanquish’d death and all its powers."
+      ]
+    },
+    {
+      "lines": [
+        "It is enough: earth’s struggles soon shall cease,",
+        "And Jesus call us to Heav’n’s perfect peace."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}
