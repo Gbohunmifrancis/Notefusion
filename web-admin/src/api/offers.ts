@@ -1,5 +1,5 @@
 /**
- * Seasonal offers (board p-halloween-offer): wire types and calls for Operations › Offers. The types mirror the C#
+ * Seasonal offers (board p-halloween-offer): wire types and calls for Money › Offers. The types mirror the C#
  * `AdminOfferDto` and friends behind `/api/admin/offers` (camelCase). Change both together.
  *
  * An offer is a lower Pro price (Pro Monthly and/or Yearly, dollar plans only) for a few days on the web app and the

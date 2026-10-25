@@ -37,7 +37,7 @@ export const AUDIT_ACTIONS: readonly { value: AuditAction; label: string; tone: 
   // Changes what everyone sees (the Christmas season), so it reads as a change.
   { value: "SetFeatureFlag", label: "Feature flag", tone: "blue" },
   { value: "SetUpAdminPhone", label: "Phone set up for Admin", tone: "blue" },
-  // Operations › Offers: a price everyone on dollars sees, and the email that tells them.
+  // Money › Offers: a price everyone on dollars sees, and the email that tells them.
   { value: "CreateOffer", label: "Create offer", tone: "neutral" },
   { value: "UpdateOffer", label: "Change offer", tone: "neutral" },
   { value: "SetOfferEnabled", label: "Offer on/off", tone: "blue" },

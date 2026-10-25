@@ -4,7 +4,7 @@ using NoteFusion.Shared.Guards;
 namespace NoteFusion.Core.Entities;
 
 /// <summary>
-/// A switch that changes what everyone sees, turned by an admin in the console (Operations › Feature flags): one row
+/// A switch that changes what everyone sees, turned by an admin in the console (System › Feature flags): one row
 /// per <see cref="Key"/>, made the first time it is changed (until then it is off). The season flags
 /// (<see cref="Christmas"/>, <see cref="Halloween"/>) are the first. Every change is written to the audit log by the
 /// command that makes it.

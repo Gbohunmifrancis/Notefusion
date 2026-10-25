@@ -74,7 +74,7 @@ public enum AdminAuditAction
     /// <summary>An admin set Admin up on a phone (password, emailed code, then the phone's fingerprint or face).</summary>
     SetUpAdminPhone = 25,
 
-    /// <summary>An admin created a seasonal offer (Operations › Offers).</summary>
+    /// <summary>An admin created a seasonal offer (Money › Offers).</summary>
     CreateOffer = 26,
 
     /// <summary>An admin changed an offer's price, dates, name or email words.</summary>

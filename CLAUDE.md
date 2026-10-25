@@ -480,7 +480,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   day, paths replayed through `PracticePath.Read`'s observer, streak breaks from `PracticeMath.StreakBreaks`) and `…/analytics/growth`
   (`GetGrowthQuery`, `/growth`: renewals rebuilt from membership charges, free-to-paid by price set via the shared `FreeLimitReach`, failures by kind, phones by build).
 - The season flag (`Core/Entities/FeatureFlag`, `Application/Flags`): a `feature_flags` row per key (`christmas`, `halloween`), off until an
-  admin turns it on in the console (Operations › Feature flags, `GET/PUT /api/admin/features[/{key}]`, every change in the audit
+  admin turns it on in the console (System › Feature flags, `GET/PUT /api/admin/features[/{key}]`, every change in the audit
   log as `SetFeatureFlag`). On for everyone while enabled and before its switch-off (the midnight WAT after its last day, the
   next 6 Jan by default; one that switched itself off stays off until turned on again); an admin also sees it while
   `AdminPreview` is on (the role confirmed in the database, not the token). Every surface reads the anonymous `GET /api/app/season`
@@ -666,7 +666,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   and stamps `PaymentTransaction.OfferId` (refused `BILLING_OFFER_ENDED`; a session opened before the end is handed back
   for the reuse window, and a payment is verified against its own amount). Web: `assets/offer.js`/`.css`, loaded only
   while one runs: /app's Home strip with the countdown for free accounts, `?offer=&m=` (click → `POST /api/offers/click`,
-  then the plans), offer tags and struck prices in the plans, and the website's Pro cards. Console Operations › Offers
+  then the plans), offer tags and struck prices in the plans, and the website's Pro cards. Console Money › Offers
   (`web-admin/src/app/(console)/offers`; `/api/admin/offers`: create from a template, preview, test, audience, send and
   switch on behind a fresh unlock, pause, progress). Send snapshots `OfferEmail` rows (free and lapsed Pro by default;
   "Pro now" a tick; never naira, no country, opted out, store/choir Pro, or an outreach email in the last 7 days), and
