@@ -789,13 +789,17 @@ class JobQueue:
                 return
 
 
-# Fewer notes than this from a vocal stem is no tune: at least four, and one per ten seconds of
+# Fewer notes than this from a vocal stem is no tune: at least four, and one per three seconds of
 # the clip (a sung line runs at one to three a second). Measured on instruments recorded alone
 # as a browser sends them: a strummed guitar's stem passed the voice check on a two-second
-# burst and gave one note, where the mixture gives 14 of 16. The quietest stem a real voice
-# left in the song bench (a "da" singer under a band 6 dB louder) still gave 8 in 18 seconds.
+# burst and gave one note, where the mixture gives 14 of 16. An orchestra caught from a video
+# (a Listen from anywhere take) passes it too: MDX takes a flute or the strings for a voice, and
+# the stem gave 9 and 11 notes in a minute (0.15-0.18 a second), the rest gated away as bleed,
+# where the mixture reads hundreds. The sparsest stem a real voice left across the whole song
+# bench (127 songs) gave 0.70 notes a second, so one per three seconds (0.33) parts them with
+# room on both sides; under it the mixture is read as well and the fuller sheet kept.
 _STEM_MIN_NOTES = 4
-_STEM_SECONDS_PER_NOTE = 10.0
+_STEM_SECONDS_PER_NOTE = 3.0
 
 
 def _offer_hymn(job: Job, mode: str) -> None:
