@@ -2,6 +2,9 @@ import { query, request, requestBlob } from "@/api/client";
 import type {
   AdminLedgerRow,
   ConsoleTrust,
+  SupportMessage,
+  SupportRow,
+  SupportThread,
   TrustedBrowser,
   Insights,
   LiveActivity,
@@ -566,3 +569,19 @@ export const getSessionErrors = (source: SessionSource | null, signal?: AbortSig
 /** The recording of an error's latest event, if it was recorded. */
 export const getSessionErrorRecording = (issueId: string) =>
   request<{ recordingId: string | null }>(`/api/admin/sessions/errors/${encodeURIComponent(issueId)}/recording`);
+
+// ── Live support ─────────────────────────────────────────────────────────────────────────────────────────────────
+
+export const getSupportInbox = (signal?: AbortSignal) =>
+  request<SupportRow[]>("/api/admin/support/conversations", signal ? { signal } : {});
+
+export const getSupportUnread = (signal?: AbortSignal) => request<number>("/api/admin/support/unread", signal ? { signal } : {});
+
+export const getSupportThread = (id: string, signal?: AbortSignal) =>
+  request<SupportThread>(`/api/admin/support/conversations/${encodeURIComponent(id)}`, signal ? { signal } : {});
+
+export const replySupport = (id: string, body: string) =>
+  request<SupportMessage>(`/api/admin/support/conversations/${encodeURIComponent(id)}/messages`, { method: "POST", body: { body } });
+
+export const setSupportClosed = (id: string, closed: boolean) =>
+  request<void>(`/api/admin/support/conversations/${encodeURIComponent(id)}/${closed ? "close" : "reopen"}`, { method: "POST" });

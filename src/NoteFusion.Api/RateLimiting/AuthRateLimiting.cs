@@ -62,6 +62,9 @@ public static class AuthRateLimiting
     /// <summary>Opening, confirming and leaving a checkout: each one asks the payment provider.</summary>
     public const string Billing = "billing";
 
+    /// <summary>Live support: a customer's messages (open to website visitors, so per address).</summary>
+    public const string Support = "support";
+
     public static IServiceCollection AddNoteFusionRateLimiting(
         this IServiceCollection services, IConfiguration configuration)
     {
@@ -107,6 +110,9 @@ public static class AuthRateLimiting
 
             options.AddPolicy(Billing, context => SlidingWindow(
                 context, settings, settings.BillingPermits, settings.BillingWindowSeconds));
+
+            options.AddPolicy(Support, context => SlidingWindow(
+                context, settings, settings.SupportPermits, settings.SupportWindowSeconds));
 
             options.OnRejected = (context, cancellationToken) => new ValueTask(WriteRejectedAsync(
                 context.HttpContext, context.Lease, seconds => $"Too many attempts from this device. Try again in {Describe(seconds)}.",
@@ -314,6 +320,11 @@ public sealed class RateLimitSettings
 
     public int PasskeyWindowSeconds { get; set; } = 60;
 
+    /// <summary>Support messages: a person typing fast sends a few a minute; twenty is room and a ceiling on a script.</summary>
+    public int SupportPermits { get; set; } = 20;
+
+    public int SupportWindowSeconds { get; set; } = 60;
+
     /// <summary>Linked-song lookups: a person checks a song or two before choosing a section.</summary>
     public int LinkInfoPermits { get; set; } = 20;
 
@@ -364,6 +375,7 @@ public sealed class RateLimitSettings
         PasskeyPermits = int.MaxValue,
         LinkInfoPermits = int.MaxValue,
         BillingPermits = int.MaxValue,
+        SupportPermits = int.MaxValue,
         HymnIdentifyPermits = int.MaxValue,
         HymnIdentifyDailyPermits = int.MaxValue,
         PracticeDrillPermits = int.MaxValue,

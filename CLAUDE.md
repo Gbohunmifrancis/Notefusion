@@ -717,6 +717,14 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `OutboundResilience.SentryApi`) reads the recordings and every project's errors with a read-only token
   (`SentryApi__Token`/`__Org` from `SENTRY_API_TOKEN`/`SENTRY_ORG`), plays a recording's MP4 pieces through the API (kept
   nowhere) and links each account; Admins only, behind the console lock; read again every 30 s while open.
+- Live support (`Application/Support`, `SupportController` + `AdminSupportController`): one thread per account (`SupportConversation`,
+  `UserId` unique) or per website visitor (`X-Support-Key`, a random key the browser keeps; only its SHA-256), `SupportMessage`s of at
+  most 2000 characters, 15 a customer in 5 minutes (and the `support` rate limit per address). Each message is told live on the
+  `IJobEvents` key `support:{id}` (the customer's `GET /api/support/events`) and to the console (`AdminLiveFeed` "support": the
+  Support page and its nav badge); a customer's run of messages pushes the admins' consoles and phones once (again after 2 minutes
+  or once read), an answer pushes the customer's phone (`data.screen` "SupportChat") and web app (`/app?support=1`) only when their
+  chat is not open. The website and /app carry `assets/support.js` (the button inline, the chat and `support.css` on the first tap;
+  above the tab bar and the mini player); web-admin `/support`. Threads go with their account.
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - No secret ever in the repository: `.github/workflows/secret-scan.yml` (gitleaks, `.gitleaks.toml`) fails pull requests,

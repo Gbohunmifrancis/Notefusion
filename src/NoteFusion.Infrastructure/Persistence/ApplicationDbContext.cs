@@ -18,6 +18,8 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<DeviceToken> DeviceTokens => Set<DeviceToken>();
     public DbSet<AdminPhoneKey> AdminPhoneKeys => Set<AdminPhoneKey>();
     public DbSet<AdminTrustedBrowser> AdminTrustedBrowsers => Set<AdminTrustedBrowser>();
+    public DbSet<SupportConversation> SupportConversations => Set<SupportConversation>();
+    public DbSet<SupportMessage> SupportMessages => Set<SupportMessage>();
     public DbSet<WebPushSubscription> WebPushSubscriptions => Set<WebPushSubscription>();
     public DbSet<Transcription> Transcriptions => Set<Transcription>();
     public DbSet<TranscriptionJob> TranscriptionJobs => Set<TranscriptionJob>();

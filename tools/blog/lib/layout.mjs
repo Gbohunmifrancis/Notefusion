@@ -124,6 +124,7 @@ ${scripts}
 <script src="/assets/season.js?v=${ASSET_VERSION.seasonJs}" defer></script>
 <script src="/assets/track.js?v=${ASSET_VERSION.track}" defer></script>
 <script src="/assets/blog-track.js?v=${ASSET_VERSION.blogTrack}" defer></script>
+<script src="/assets/support.js?v=${ASSET_VERSION.supportJs}" defer></script>
 </body>
 </html>
 `;

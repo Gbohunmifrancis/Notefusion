@@ -1831,3 +1831,41 @@ export interface ListenAnalytics {
   settings: ListenSettings;
   days: ListenDay[];
 }
+
+// ── Live support (`/api/admin/support`) ─────────────────────────────────────────────────────────────────────────────
+
+export interface SupportMessage {
+  id: string;
+  fromAdmin: boolean;
+  adminName: string | null;
+  body: string;
+  createdAtUtc: string;
+}
+
+export interface SupportRow {
+  id: string;
+  userId: string | null;
+  name: string;
+  email: string | null;
+  /** "site" (the website), "web" (the web app) or "app" (the phone). */
+  source: string;
+  lastMessage: string | null;
+  lastFromAdmin: boolean;
+  lastMessageAtUtc: string;
+  unread: boolean;
+  closed: boolean;
+}
+
+export interface SupportThread {
+  id: string;
+  userId: string | null;
+  name: string;
+  email: string | null;
+  source: string;
+  path: string | null;
+  isPro: boolean;
+  country: string | null;
+  createdAtUtc: string;
+  closed: boolean;
+  messages: SupportMessage[];
+}
