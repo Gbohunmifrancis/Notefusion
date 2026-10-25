@@ -557,7 +557,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (`WebEvent` rows, account-linked when a token is sent; `window.nfTrack("Saved sheet")` names an
   action) and the overview's `WebTraffic` section reads them back; the queue is kept in localStorage (`nf.web.events`, ids
   per event, removed only after a 2xx, retried, a week at most) and a hidden or left page's batches go by `sendBeacon` to
-  `POST /api/web/events/beacon` (text/plain JSON, device id and, signed in, the token in the body). Blog, hymn, free tool and comparison pages add
+  `POST /api/web/events/beacon` (text/plain JSON, device id and, signed in, the token in the body). A page load's first page
+  view also carries its link's campaign tags (`utm_*`, `?ref=`/`?via=`, `campaignFrom`); the API keeps the browser and system
+  families (`Web/UserAgentFamily`, never the user agent; a bot's batch is dropped) and the country (geo lookup cached 12 h
+  per address, never the address) on every `WebEvent`. Blog, hymn, free tool and comparison pages add
   `assets/blog-track.js` (`blog_view` with source/UTM, `blog_read` = ≥50% of the article AND ≥30 s visible,
   `blog_read_complete`, `blog_engagement`, `blog_cta_click`, `blog_share`, `hymn_play`; details `k=v;…` with a `pv`
   page-load id), read by the console's Blog analytics (`GetBlogAnalyticsQuery`, `GET /api/admin/analytics/blog`; kinds

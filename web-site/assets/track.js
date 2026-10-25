@@ -5,8 +5,9 @@
    for each clicked link or button, the link's destination, "mobile" or "desktop", and two random
    ids this script makes up and keeps in the browser's own storage, the browser's device id (the
    same one the web app sends, hashed by the API before it is stored), and for an action a short
-   detail such as a checkout's error code or a script error's message. No cookies, no user agent,
-   no screen size. When the web app has a session, the access token goes with the batch so the
+   detail such as a checkout's error code or a script error's message, and on a page load's first
+   page view the campaign tags of the link it came from (utm_*, ?ref=). No cookies, no screen size;
+   the API reads the browser and system families and the country from the request, and keeps only those. When the web app has a session, the access token goes with the batch so the
    events are attached to the account; otherwise they are a visitor's.
 
    Other scripts call window.nfTrack("Saved sheet") to record an action, or
@@ -44,6 +45,8 @@
   var LEASE_MS = 30000;
   var BACKOFF_MS = [5000, 30000, 120000];
   var WIRE_FIELDS = ["id", "kind", "name", "path", "target", "referrer", "device", "detail"];
+  /** Sent only when the page's link carried them, so the usual event costs nothing more. */
+  var CAMPAIGN_FIELDS = ["utmSource", "utmMedium", "utmCampaign", "utmTerm", "utmContent", "ref"];
 
   /** Drops what is past keeping: events older than the API honours, then the oldest past MAX_KEPT. */
   function trim(events, now) {
@@ -78,6 +81,7 @@
   function wire(e, now) {
     var out = {};
     WIRE_FIELDS.forEach(function (k) { out[k] = e[k] == null ? null : e[k]; });
+    CAMPAIGN_FIELDS.forEach(function (k) { if (e[k] != null) out[k] = e[k]; });
     out.ageMs = Math.max(0, now - e.at);
     return out;
   }
@@ -115,8 +119,24 @@
   /** 2xx: stored. 400/413 (and any other refusal): never will be. 0 (no answer), 408, 429, 5xx: try again later. */
   function settled(status) { return status >= 200 && status < 500 && status !== 408 && status !== 429; }
 
+  /**
+   * The campaign tags of a page's query string (utm_source … utm_content, and ?ref= or its alias ?via=), as the event's
+   * campaign fields: only those present, each at most 200 characters. Plain string work, so it runs anywhere.
+   */
+  var CAMPAIGN_PARAMS = { utm_source: "utmSource", utm_medium: "utmMedium", utm_campaign: "utmCampaign", utm_term: "utmTerm", utm_content: "utmContent", ref: "ref", via: "ref" };
+  function campaignFrom(search) {
+    var out = {};
+    String(search || "").replace(/^\?/, "").split("&").forEach(function (pair) {
+      var i = pair.indexOf("="), key = (i < 0 ? pair : pair.slice(0, i)).toLowerCase(), field = CAMPAIGN_PARAMS[key];
+      if (!field || out[field]) return;
+      var value;
+      try { value = decodeURIComponent((i < 0 ? "" : pair.slice(i + 1)).replace(/\+/g, " ")).trim(); } catch (e) { return; }
+      if (value) out[field] = value.slice(0, 200);
+    });
+    return out;
+  }
   if (typeof module !== "undefined" && module.exports) {
-    module.exports = { trim: trim, nextBatch: nextBatch, nextDue: nextDue, wire: wire, fit: fit, reopen: reopen, readToken: readToken, tokenFor: tokenFor, settled: settled, MAX_KEPT: MAX_KEPT, MAX_BATCH: MAX_BATCH, LEASE_MS: LEASE_MS };
+    module.exports = { trim: trim, nextBatch: nextBatch, nextDue: nextDue, wire: wire, fit: fit, reopen: reopen, readToken: readToken, tokenFor: tokenFor, settled: settled, campaignFrom: campaignFrom, MAX_KEPT: MAX_KEPT, MAX_BATCH: MAX_BATCH, LEASE_MS: LEASE_MS };
     return;
   }
 
@@ -264,6 +284,10 @@
   function push(kind, name, target, detail) {
     var now = Date.now();
     var e = { id: id(), kind: kind, name: name || null, path: path(), target: target || null, detail: detail || null, referrer: firstPage ? referrer() : null, device: device(), at: now, s: sessionId };
+    if (firstPage && kind === "pageview") {
+      var tags = campaignFrom(location.search);
+      Object.keys(tags).forEach(function (k) { e[k] = tags[k]; });
+    }
     var u = account();
     if (u) e.u = u;
     firstPage = false;

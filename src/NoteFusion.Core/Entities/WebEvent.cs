@@ -11,7 +11,9 @@ namespace NoteFusion.Core.Entities;
 /// <remarks>
 /// Nothing here identifies a person on its own: the visitor and session ids are random strings
 /// the browser made up and keeps in its own storage, the referrer is a host name, and the user
-/// id is set only from a validated access token. No user agent, no address, no screen size.
+/// id is set only from a validated access token. The browser and system are kept as family names
+/// ("Chrome", "Android") and the country as its two letters: never the user agent, the address or
+/// the screen size.
 /// </remarks>
 public class WebEvent : BaseEntity
 {
@@ -25,6 +27,9 @@ public class WebEvent : BaseEntity
     public const int ReferrerMaxLength = 120;
     public const int IdMaxLength = 64;
     public const int DetailMaxLength = 300;
+    public const int CampaignMaxLength = 100;
+    public const int CampaignNameMaxLength = 200;
+    public const int FamilyMaxLength = 40;
 
     private WebEvent() { } // EF Core
 
@@ -72,6 +77,23 @@ public class WebEvent : BaseEntity
     /// <summary>The browser's own id for the event (<see cref="ClientEventIds"/>): a batch sent twice is stored once.</summary>
     public string? ClientId { get; private set; }
 
+    // The link a visit came in on: its campaign tags and ?ref= (or ?via=), on the page view that began the visit only.
+    public string? UtmSource { get; private set; }
+    public string? UtmMedium { get; private set; }
+    public string? UtmCampaign { get; private set; }
+    public string? UtmTerm { get; private set; }
+    public string? UtmContent { get; private set; }
+    public string? Ref { get; private set; }
+
+    /// <summary>The visitor's country (two letters), from their address at the time; the address itself is never kept.</summary>
+    public string? Country { get; private set; }
+
+    /// <summary>The browser's family, read from its user agent on arrival ("Chrome", "Safari", "Opera Mini").</summary>
+    public string? Browser { get; private set; }
+
+    /// <summary>The system's family, read the same way ("Android", "iOS", "Windows").</summary>
+    public string? Os { get; private set; }
+
     /// <summary>
     /// Builds an event from what the browser sent, or returns null when the record is not worth
     /// keeping: an unknown kind, a click or action with no name, or missing browser ids. Every
@@ -114,11 +136,45 @@ public class WebEvent : BaseEntity
         };
     }
 
+    /// <summary>
+    /// What the request says about the visit beside the event itself: where the browser was (its country), what it is
+    /// (browser and system families), and, on a page view, the campaign tags of the link it came in on.
+    /// </summary>
+    public WebEvent WithVisit(WebCampaign? campaign, string? country, string? browser, string? os)
+    {
+        if (Kind == Pageview && campaign is not null)
+        {
+            UtmSource = Clip(campaign.Source, CampaignMaxLength)?.ToLowerInvariant();
+            UtmMedium = Clip(campaign.Medium, CampaignMaxLength)?.ToLowerInvariant();
+            UtmCampaign = Clip(campaign.Campaign, CampaignNameMaxLength);
+            UtmTerm = Clip(campaign.Term, CampaignNameMaxLength);
+            UtmContent = Clip(campaign.Content, CampaignNameMaxLength);
+            Ref = Clip(campaign.Ref, CampaignMaxLength);
+        }
+        // Exactly two letters or nothing: "Undefined" clipped to two would be a country nobody is in.
+        country = country?.Trim().ToUpperInvariant();
+        Country = country is { Length: 2 } && char.IsAsciiLetter(country[0]) && char.IsAsciiLetter(country[1]) ? country : null;
+        Browser = Clip(browser, FamilyMaxLength);
+        Os = Clip(os, FamilyMaxLength);
+        return this;
+    }
+
     private static string? Clip(string? value, int max)
     {
         if (string.IsNullOrWhiteSpace(value))
             return null;
         value = value.Trim();
         return value.Length <= max ? value : value[..max];
+    }
+}
+
+/// <summary>The campaign tags of the link a visit came in on (utm_source … utm_content) and its ?ref= or ?via= tag.</summary>
+public sealed record WebCampaign(string? Source, string? Medium, string? Campaign, string? Term, string? Content, string? Ref)
+{
+    /// <summary>Null when the link carried none of them.</summary>
+    public static WebCampaign? From(string? source, string? medium, string? campaign, string? term, string? content, string? @ref)
+    {
+        var c = new WebCampaign(source, medium, campaign, term, content, @ref);
+        return new[] { source, medium, campaign, term, content, @ref }.All(string.IsNullOrWhiteSpace) ? null : c;
     }
 }

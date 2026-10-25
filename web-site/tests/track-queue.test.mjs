@@ -9,7 +9,7 @@ import vm from "node:vm";
 const src = readFileSync(new URL("../assets/track.js", import.meta.url), "utf8");
 const module = { exports: {} };
 vm.runInNewContext(src, { module });
-const { trim, nextBatch, nextDue, wire, fit, reopen, readToken, tokenFor, settled, MAX_KEPT, LEASE_MS } = module.exports;
+const { trim, nextBatch, nextDue, wire, fit, reopen, readToken, tokenFor, settled, campaignFrom, MAX_KEPT, LEASE_MS } = module.exports;
 
 /** The module runs in its own realm: compare its objects by value. */
 const plain = (x) => JSON.parse(JSON.stringify(x));
@@ -51,6 +51,22 @@ test("on the wire: the API's fields and the event's age at this send, none of th
   const e = { id: "abcdefgh", kind: "click", name: "Go", path: "/app", target: null, referrer: "x.com", device: "mobile", detail: undefined, at: 1000, s: "s1", u: "ada", b: 5, f: 6 };
   assert.deepEqual(plain(wire(e, 61_000)), { id: "abcdefgh", kind: "click", name: "Go", path: "/app", target: null, referrer: "x.com", device: "mobile", detail: null, ageMs: 60_000 });
   assert.equal(wire(e, 0).ageMs, 0);   // a clock set back never sends a negative age
+});
+
+test("campaign tags go on the wire only when the link carried them", () => {
+  const e = { id: "abcdefgh", kind: "pageview", name: null, path: "/", target: null, referrer: "t.co", device: "mobile", detail: null, at: 0, utmSource: "x", utmCampaign: "launch" };
+  assert.deepEqual(plain(wire(e, 0)), { id: "abcdefgh", kind: "pageview", name: null, path: "/", target: null, referrer: "t.co", device: "mobile", detail: null, utmSource: "x", utmCampaign: "launch", ageMs: 0 });
+});
+
+test("a link's campaign tags: utm_*, ?ref= or ?via=, decoded, the first of each, nothing else", () => {
+  assert.deepEqual(plain(campaignFrom("?utm_source=x&utm_medium=social&utm_campaign=Launch+Tweet&utm_term=solfa%20app&utm_content=v2")),
+    { utmSource: "x", utmMedium: "social", utmCampaign: "Launch Tweet", utmTerm: "solfa app", utmContent: "v2" });
+  assert.deepEqual(plain(campaignFrom("?via=choir-newsletter")), { ref: "choir-newsletter" });
+  assert.deepEqual(plain(campaignFrom("?ref=a&via=b&ref=c")), { ref: "a" });
+  assert.deepEqual(plain(campaignFrom("?job=123&UTM_SOURCE=google&utm_term=")), { utmSource: "google" });
+  assert.deepEqual(plain(campaignFrom("?utm_source=%E0%A4%A")), {});      // a broken escape is no tag
+  assert.equal(campaignFrom("?ref=" + "a".repeat(300)).ref.length, 200);
+  assert.deepEqual(plain(campaignFrom("")), {});
 });
 
 test("a page load reopens what an earlier page beaconed", () => {
