@@ -563,7 +563,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   turns those rows into the admin dashboard's web funnel. Page views, clicks and web-app actions
   are first-party: `web-site/assets/track.js` batches them to the anonymous `POST /api/web/events`
   (`WebEvent` rows, account-linked when a token is sent; `window.nfTrack("Saved sheet")` names an
-  action) and the overview's `WebTraffic` section reads them back; the queue is kept in localStorage (`nf.web.events`, ids
+  action) and the overview's `WebTraffic` section reads them back, as does the console's Traffic page (`/traffic`,
+  `GET /api/admin/analytics/traffic[/live]`, `GetTrafficQuery`: a visit is a tab session, every list is a filter that picks
+  whole visits, sources and link tags, pages, entry/exit, countries, browsers, systems, screens, goals, who is on now); the queue is kept in localStorage (`nf.web.events`, ids
   per event, removed only after a 2xx, retried, a week at most) and a hidden or left page's batches go by `sendBeacon` to
   `POST /api/web/events/beacon` (text/plain JSON, device id and, signed in, the token in the body). A page load's first page
   view also carries its link's campaign tags (`utm_*`, `?ref=`/`?via=`, `campaignFrom`); the API keeps the browser and system
