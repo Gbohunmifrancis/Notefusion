@@ -329,6 +329,40 @@ public class ConfirmPaymentTests
         Assert.Equal(1, h.Db.LedgerEntries.AsNoTracking().Count()); // fulfilled once, by the winner
     }
 
+    // ---------------------------------------------------------------- the account's activity
+
+    [Fact]
+    public async Task A_return_with_no_checkout_open_writes_nothing_to_the_activity_log()
+    {
+        // The app asks on every return to the front; the console's feed read "Came back from a checkout" for each.
+        using var h = new TestHarness(Now);
+        var (user, _, _) = Seed(h);
+
+        await Confirm(h, user, Paid());
+        await Confirm(h, user, Paid());
+
+        Assert.Empty(h.Db.UserActivities);
+    }
+
+    [Fact]
+    public async Task A_return_from_an_open_checkout_is_logged_once_naming_its_plan()
+    {
+        using var h = new TestHarness(Now);
+        var (user, _, tx) = Seed(h);
+        Open(h, tx);
+
+        // One line however often the app asks while the checkout's page is up, and none for the asks after it is paid.
+        var unpaid = new CountingGatewayFactory(Result.Success(Unpaid(terminal: false)));
+        await Confirm(h, user, unpaid);
+        await Confirm(h, user, unpaid);
+        await Confirm(h, user, Paid());
+        await Confirm(h, user, Paid());
+
+        var row = Assert.Single(h.Db.UserActivities);
+        Assert.Equal((ConfirmPaymentCommandHandler.ActivityName, "plan=NoteFusion Pro;checkout=NF_conf", user.Id), (row.Name, row.Detail, row.UserId));
+        Assert.Equal(PaymentStatus.Completed, tx.Status);
+    }
+
     // ---------------------------------------------------------------- fixtures
 
     private static Task<Result<Application.Billing.Dtos.SubscriptionDto>> Confirm(

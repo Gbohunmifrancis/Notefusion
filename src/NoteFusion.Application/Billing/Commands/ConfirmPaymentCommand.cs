@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Billing.Dtos;
 using NoteFusion.Application.Billing.Queries;
 using NoteFusion.Application.Common.Errors;
+using NoteFusion.Application.Activity;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Core.Entities;
 using NoteFusion.Core.Entities.Billing;
 using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
@@ -53,15 +55,20 @@ public sealed class ConfirmPaymentCommandHandler : IRequestHandler<ConfirmPaymen
     private readonly ICurrentUser _currentUser;
     private readonly ISender _sender;
     private readonly IDateTimeProvider _clock;
+    private readonly IClientApp? _client;
 
     public ConfirmPaymentCommandHandler(
-        IApplicationDbContext db, ICurrentUser currentUser, ISender sender, IDateTimeProvider clock)
+        IApplicationDbContext db, ICurrentUser currentUser, ISender sender, IDateTimeProvider clock, IClientApp? client = null)
     {
         _db = db;
         _currentUser = currentUser;
         _sender = sender;
         _clock = clock;
+        _client = client;
     }
+
+    /// <summary>The activity row a return from a checkout writes (<c>ActivityNames</c>: "Came back from a checkout").</summary>
+    public const string ActivityName = "billing.confirm";
 
     public async Task<Result<SubscriptionDto>> Handle(ConfirmPaymentCommand request, CancellationToken ct)
     {
@@ -83,6 +90,7 @@ public sealed class ConfirmPaymentCommandHandler : IRequestHandler<ConfirmPaymen
 
         // Nothing in flight is the happy path, not an error: a webhook that beat us here has already
         // completed the row.
+        await RecordReturnAsync(userId, inFlight, now, ct);
         if (await ReconcileUntilOneCompletesAsync(inFlight, ct))
             return await _sender.Send(new GetMySubscriptionQuery(), ct);
 
@@ -102,6 +110,25 @@ public sealed class ConfirmPaymentCommandHandler : IRequestHandler<ConfirmPaymen
         await ReconcileUntilOneCompletesAsync(recentlyFailed, ct);
 
         return await _sender.Send(new GetMySubscriptionQuery(), ct);
+    }
+
+    /// <summary>
+    /// "Came back from a checkout" in the account's activity, only when there was one: the app asks this on every return
+    /// to the front and every few seconds while a checkout is open, so the request alone says nothing (the activity
+    /// filter leaves the route out). One row per checkout, naming its plan, written before the provider is asked so it
+    /// never shares a save with fulfilment; a payment shows in the feed as its own row.
+    /// </summary>
+    private async Task RecordReturnAsync(Guid userId, IReadOnlyList<PaymentTransaction> inFlight, DateTime now, CancellationToken ct)
+    {
+        if (inFlight.Count == 0)
+            return;
+        var tx = inFlight[0];
+        var plan = await _db.Plans.Where(p => p.Id == tx.PlanId).Select(p => p.Name).FirstOrDefaultAsync(ct) ?? "a plan";
+        var detail = $"plan={plan};checkout={tx.Reference}";
+        if (await _db.UserActivities.AnyAsync(a => a.UserId == userId && a.Name == ActivityName && a.Detail == detail, ct))
+            return;
+        _db.UserActivities.Add(UserActivity.Record(userId, ActivityName, detail, ActivityClient.From(_client?.Current), now));
+        await _db.SaveChangesAsync(ct);
     }
 
     /// <summary>True as soon as one of <paramref name="candidates"/> is fulfilled; the rest are not asked.</summary>
