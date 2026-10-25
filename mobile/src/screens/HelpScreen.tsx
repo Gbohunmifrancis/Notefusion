@@ -44,11 +44,8 @@ const FAQ: { q: string; a: string }[] = [
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
- * HelpScreen — static FAQ behind Profile's "FAQ & Help" row.
- *
- * Deliberately content-only: there is no support inbox or ticketing behind the
- * app, so this answers the questions the transcription flow actually raises
- * rather than pretending to offer a channel that does not exist.
+ * HelpScreen — the FAQ behind Profile's "Help & support" row: answers to the questions the transcription flow
+ * raises, and "Chat with us" (live support, answered by a person from the admin console) for anything else.
  */
 export function HelpScreen({ navigation }: Props) {
   const colors = useColors();
@@ -93,7 +90,8 @@ export function HelpScreen({ navigation }: Props) {
       {/* ── Feedback ─────────────────────────────────────────────────────── */}
       <Card style={styles.card}>
         <Text style={styles.question}>Something not answered here?</Text>
-        <Text style={styles.answer}>Report a problem, suggest an idea or tell us how a transcription went.</Text>
+        <Text style={styles.answer}>Chat with a person from NoteFusion, or send us feedback on how a transcription went.</Text>
+        <Button label="Chat with us" icon="chat" onPress={() => navigation.navigate("SupportChat")} />
         <Button label="Send feedback" icon="feedback" variant="secondary" onPress={() => openFeedback("Help")} />
       </Card>
     </Screen>

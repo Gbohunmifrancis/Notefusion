@@ -16,6 +16,8 @@ import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useReducedMotion } from 'react-native-reanimated';
+import { SupportBubble } from '../components/SupportBubble';
+import { useWhatsNew } from '../components/WhatsNew';
 import { Screen } from '../components/Screen';
 import { HeaderAvatar } from '../components/HeaderAvatar';
 import { Touchable } from '../components/Touchable';
@@ -97,6 +99,7 @@ function currentGreeting(): string {
  */
 export function HomeScreen({ navigation }: Props) {
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  useWhatsNew();
   const { user } = useAuth();
   const { isPro, known, freeRemaining, boughtRemaining, refresh: refreshSubscription } = useSubscription();
   const focused = useIsFocused();
@@ -763,6 +766,7 @@ export function HomeScreen({ navigation }: Props) {
         }
       />
       {sheetActions.element}
+      <SupportBubble />
     </Screen>
   );
 }

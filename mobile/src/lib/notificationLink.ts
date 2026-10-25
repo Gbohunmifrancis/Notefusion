@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { createNavigationContainerRef } from '@react-navigation/native';
 import { transcriptionsApi } from '../api/endpoints';
+import { openConsole } from './adminConsole';
 import { safeReason, toApiError } from '../api/client';
 import { openStoreListing } from './appUpdate';
 import { showDialog } from './dialog';
@@ -121,6 +122,7 @@ function openScreen(screen: string, opts: { isAdmin: boolean; paymentId?: string
   const target = notificationTarget(screen, opts);
   if (!target) return;
   if (target.kind === 'store') void openStoreListing();
+  else if (target.kind === 'console') openConsole(target.path);
   else if (target.kind === 'tab') navigationRef.navigate('Tabs', { screen: target.tab });
   else if (target.kind === 'adminUser')
     // Not as Admin's first screen: its tabs stay under it, so back lands in Admin rather than leaving it.

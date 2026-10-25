@@ -136,6 +136,8 @@ export type RootStackParams = {
    */
   Profile: undefined;
   Help: undefined;
+  /** Live support: the account's thread, answered from the admin console; a support push opens it. */
+  SupportChat: undefined;
   /**
    * `reason: "limit"` when a free account has just been refused for having nothing left:
    * the one-song purchase is then the option already chosen. `planId` chooses a plan outright:

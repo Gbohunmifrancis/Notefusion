@@ -3,6 +3,8 @@ import { emitSheetEvent, sheetSaved } from "../lib/sheetEvents";
 import type { SeasonName } from "../lib/season";
 import type {
   AdminLedgerRow,
+  SupportMessage,
+  SupportThread,
   AdminPaymentDetail,
   AdminPaymentRow,
   AdminReconcileResult,
@@ -200,6 +202,13 @@ export const feedbackApi = {
       .get<{ askHeardAbout: boolean; askRating: boolean }>("/api/feedback/prompts", { params: { client: "app" } })
       .then((r) => r.data),
   submit: (body: FeedbackSubmission) => api.post("/api/feedback", body).then(() => undefined),
+};
+
+/** Live support: the account's one thread (the same on the web), a message, and its stream (`/api/support/events`). */
+export const supportApi = {
+  thread: () => api.get<SupportThread>("/api/support/thread").then((r) => r.data),
+  send: (body: string, path?: string) =>
+    api.post<SupportMessage>("/api/support/messages", { body, source: "app", path: path ?? null }).then((r) => r.data),
 };
 
 export const devicesApi = {
