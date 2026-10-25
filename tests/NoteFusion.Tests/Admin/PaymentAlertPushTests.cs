@@ -102,6 +102,28 @@ public class PaymentAlertPushTests
     }
 
     [Fact]
+    public async Task A_payment_also_reaches_the_admins_console_once_even_with_no_admin_phone()
+    {
+        using var h = new TestHarness(Now);
+        var admin = Admin(h);
+        h.Db.WebPushSubscriptions.Add(WebPushSubscription.Create(admin.Id, "https://fcm.googleapis.com/fcm/send/console", "p", "a", null, Now,
+            WebPushSubscription.ConsoleAudience));
+        h.Db.SaveChanges();
+        var (_, tx) = SeedPayment(h, Customer(h));
+        await Fulfil(h, tx);
+        var handler = new SendPaymentAlertsCommandHandler(h.Db, h.Push, h.Clock, NullLogger<SendPaymentAlertsCommandHandler>.Instance, h.WebPush);
+
+        await handler.Handle(new SendPaymentAlertsCommand(), default);
+        await handler.Handle(new SendPaymentAlertsCommand(), default);
+
+        var (to, push) = Assert.Single(h.WebPush.SentToConsole);
+        Assert.Equal(admin.Id, to);
+        Assert.Equal("₦7,500 · Pro Monthly · first payment", push.Title);
+        Assert.Equal($"/payments/{tx.Id}", push.Url);
+        Assert.Empty(h.WebPush.Sent);
+    }
+
+    [Fact]
     public async Task Payment_pushes_never_reach_a_customers_phone()
     {
         using var h = new TestHarness(Now);

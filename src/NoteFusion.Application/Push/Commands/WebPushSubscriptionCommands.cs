@@ -16,7 +16,10 @@ public sealed record WebPushSubscriptionKeysDto(string P256dh, string Auth);
 /// <c>subscription.toJSON()</c>; <c>expirationTime</c> is ignored). <paramref name="UserAgent"/> is set by
 /// the controller from the request, never read from the body.
 /// </summary>
-public sealed record SaveWebPushSubscriptionCommand(string Endpoint, WebPushSubscriptionKeysDto? Keys, string? UserAgent = null)
+public sealed record SaveWebPushSubscriptionCommand(
+    string Endpoint, WebPushSubscriptionKeysDto? Keys, string? UserAgent = null,
+    /// <summary><c>WebPushSubscription.AppAudience</c> (the web app) or <c>ConsoleAudience</c> (the admin console, set by its route).</summary>
+    string Audience = WebPushSubscription.AppAudience)
     : IRequest<Result>;
 
 public sealed class SaveWebPushSubscriptionCommandValidator : AbstractValidator<SaveWebPushSubscriptionCommand>
@@ -68,13 +71,13 @@ public sealed class SaveWebPushSubscriptionCommandHandler : IRequestHandler<Save
         // account's notifications from now on, never the previous one's (as RegisterDevice does for phones).
         var existing = await _db.WebPushSubscriptions.FirstOrDefaultAsync(s => s.Endpoint == request.Endpoint, ct);
         if (existing is null)
-            _db.WebPushSubscriptions.Add(WebPushSubscription.Create(userId, request.Endpoint, p256dh, auth, request.UserAgent, now));
+            _db.WebPushSubscriptions.Add(WebPushSubscription.Create(userId, request.Endpoint, p256dh, auth, request.UserAgent, now, request.Audience));
         else
-            existing.Refresh(userId, p256dh, auth, request.UserAgent, now);
+            existing.Refresh(userId, p256dh, auth, request.UserAgent, now, request.Audience);
 
         // Bounded per account: each browser that ever said yes is a row, and a send goes to all of them.
         var stale = await _db.WebPushSubscriptions
-            .Where(s => s.UserId == userId && s.Endpoint != request.Endpoint)
+            .Where(s => s.UserId == userId && s.Endpoint != request.Endpoint && s.Audience == request.Audience)
             .OrderByDescending(s => s.UpdatedAtUtc)
             .Skip(WebPush.MaxSubscriptionsPerUser - 1)
             .ToListAsync(ct);

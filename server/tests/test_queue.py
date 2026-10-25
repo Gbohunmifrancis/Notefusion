@@ -472,6 +472,32 @@ def test_the_pro_lane_keeps_the_mixture_guard_when_the_mixture_is_transcribed(mo
         queue.shutdown(wait=True)
 
 
+def test_a_minute_long_take_whose_stem_holds_a_few_notes_gives_way_to_the_mixture(monkeypatch, tmp_path):
+    """An orchestra caught by Listen from anywhere: the separator takes a flute or the strings for a voice, the stem keeps
+    11 notes in a minute and the bleed gate silences the rest. One per three seconds is the floor, so the mixture (read as
+    chords for a Listen take) is read as well and kept for having far more."""
+    import numpy as np
+    import soundfile as sf
+
+    _fake_separation(monkeypatch, peaks=8.5, voice_db=-3.0)
+    seen = []
+
+    def fake_transcribe(path, **kw):
+        seen.append((Path(path).name, kw["mode"]))
+        return _result(11 if Path(path).name == "vocals.wav" else 270)
+
+    monkeypatch.setattr("app.jobs.queue.transcribe", fake_transcribe)
+    take = tmp_path / "orchestra.wav"
+    sf.write(str(take), np.zeros(22_050 * 60, dtype=np.float32), 22_050)
+    queue = JobQueue(workers=1)
+    try:
+        job = _await_status(queue, queue.submit(take, mode="melody", key=None, tempo=None, no_voice_as_chords=True), STATUS_DONE)
+        assert seen == [("vocals.wav", "melody"), ("orchestra.wav", "chords")]
+        assert len(job.result.notes) == 270 and job.result.read_as_chords is True and job.result.separated is False
+    finally:
+        queue.shutdown(wait=True)
+
+
 @pytest.mark.parametrize("stem_notes, mix_notes, kept", [(1, 14, "mix"), (1, 0, "stem"), (8, 14, "stem")])
 def test_a_stem_with_no_tune_in_it_gives_way_to_the_mixture(monkeypatch, stem_notes, mix_notes, kept):
     """A strummed chord the separator took for a voice passes the voice check, and the stem
