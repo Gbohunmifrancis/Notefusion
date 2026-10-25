@@ -16,6 +16,7 @@ import {
   needsPassHeader,
   requestConfirmation,
   setAdminPass,
+  tryReopen,
   waitForUnlock,
 } from "@/lib/adminLock";
 import {
@@ -160,6 +161,8 @@ async function sendPastLock(path: string, options: RequestOptions): Promise<Resp
 
   const refusal = await parseError(response.clone());
   if (refusal.code === "ADMIN_LOCKED") {
+    // A remembered browser opens the console again without asking (lib/consoleTrust); otherwise lock and ask.
+    if (await tryReopen()) return send(path, options);
     lockConsole("required");
     await waitForUnlock();
     return send(path, options);

@@ -112,6 +112,31 @@ export function lockConsole(reason: LockReason): string | null {
   return ended;
 }
 
+/**
+ * How the console opens itself without asking, when it can (a remembered browser, `lib/consoleTrust`): set once at
+ * start-up. It resolves true with the pass already set, false when there is nothing to open with.
+ */
+let reopener: (() => Promise<boolean>) | null = null;
+let reopening: Promise<boolean> | null = null;
+
+export function setReopener(next: (() => Promise<boolean>) | null) {
+  reopener = next;
+}
+
+/**
+ * Tries the reopener before the lock is shown: calls refused together share one try. True means the pass is open
+ * again (not a fresh confirmation); false means lock and ask.
+ */
+export function tryReopen(): Promise<boolean> {
+  if (!reopener) return Promise.resolve(false);
+  reopening ??= reopener()
+    .catch(() => false)
+    .finally(() => {
+      reopening = null;
+    });
+  return reopening;
+}
+
 /** Resolves when the console is next unlocked; at once when it is not locked. */
 export function waitForUnlock(): Promise<void> {
   if (!state.locked) return Promise.resolve();

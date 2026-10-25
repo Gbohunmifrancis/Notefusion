@@ -12,10 +12,12 @@ import {
 } from "@/api/endpoints";
 import type { ConsoleSession, Passkey } from "@/api/types";
 import { setAdminPass } from "@/lib/adminLock";
+import { rememberThisBrowser } from "@/lib/consoleTrust";
 import { assertionToJson, passkeyErrorMessage, passkeysSupported, toRequestOptions } from "@/lib/webauthn";
 
 function accept(session: ConsoleSession) {
   setAdminPass(session.session, { fresh: true });
+  void rememberThisBrowser();
 }
 
 export async function unlockWithPasskey(): Promise<void> {

@@ -25,6 +25,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   of the admin's own passkeys (challenge kind `Unlock`, bound to them) or the password (the sign-in lockout's count).
   web-admin `lib/adminLock` keeps the pass in memory only, locks after an hour idle (the server's pass: an hour idle, an hour at most), and confirms Suspend, End
   subscription, Revoke Pro, Change role, flags and adding/removing a passkey (`[FreshPhoneUnlock]`).
+  A remembered browser does not ask again: after an unlock or a sign-in the console keeps a token (`AdminTrustedBrowser`, its hash
+  only, 30 days, ten per admin; `lib/consoleTrust`, `POST …/console-lock/trust`) and trades it for a pass whenever it finds itself
+  locked (`…/trusted`; a reload, a new tab, the hour, an API restart). That pass is never fresh, so the confirmations above still
+  ask; sign-out forgets the browser, and Settings › Remembered browsers lists and forgets them.
   Web push (the web app with its tab closed): `WebPushSubscription` rows (unique endpoint, known push services only,
   `/api/push/web/key|subscriptions`), sent beside the Expo push by `NotifyTranscriptionReadyCommand` via `WebPushSender`
   (Lib.Net.Http.WebPush over `OutboundResilience.WebPush`, a breaker per push service; 404/410 deletes the row, 5 refusals

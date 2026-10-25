@@ -94,11 +94,11 @@ public sealed class InMemoryAdminPhoneLock : IAdminPhoneLock
         }
     }
 
-    public AdminPhoneSession Open(Guid userId, Guid? keyId, DateTime utcNow)
+    public AdminPhoneSession Open(Guid userId, Guid? keyId, DateTime utcNow, bool fresh = true)
     {
         Sweep(utcNow);
         var token = Token(32);
-        var session = new AdminPhoneSession(token, userId, keyId, utcNow, utcNow, Ends(utcNow, utcNow));
+        var session = new AdminPhoneSession(token, userId, keyId, utcNow, fresh ? utcNow : DateTime.MinValue, Ends(utcNow, utcNow));
         _sessions[Hash(token)] = session with { Token = "" };
         return session;
     }
