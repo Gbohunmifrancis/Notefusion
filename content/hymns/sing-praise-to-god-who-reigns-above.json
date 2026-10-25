@@ -1,0 +1,87 @@
+{
+  "title": "Sing Praise to God Who Reigns Above",
+  "tune": "mit-freuden-zart",
+  "text": [
+    {
+      "name": "Johann Jakob Schütz",
+      "born": 1640,
+      "died": 1690,
+      "role": "Words (1675)"
+    },
+    {
+      "name": "Frances Elizabeth Cox",
+      "born": 1812,
+      "died": 1897,
+      "role": "Translated (1864)"
+    }
+  ],
+  "textPublished": 1864,
+  "occasions": [
+    "Thanksgiving"
+  ],
+  "description": "Sing Praise to God Who Reigns Above in Tonic Solfa to MIT FREUDEN ZART: the solfa with the words, staff notation, the five verses, and a piano.",
+  "about": [
+    "Johann Jakob Schütz published the German hymn “Sei Lob und Ehr dem höchsten Gut” in his Christliches Gedenkbüchlein (Frankfurt, 1675); Frances E. Cox’s English translation dates from 1864. The tune MIT FREUDEN ZART comes from the Bohemian Brethren’s Kirchengesänge (1566)."
+  ],
+  "underlay": "Sing praise to God who reigns a-bove, The_ God of all cre_-a-tion, The God of power, the God of love, The_ God of our sal_-va-tion. With heal-ing balm my soul is filled And ev-ery faith-less mur-mur stilled: To God all praise and_ glo-ry.",
+  "verses": [
+    {
+      "lines": [
+        "Sing praise to God who reigns above,",
+        "The God of all creation,",
+        "The God of power, the God of love,",
+        "The God of our salvation.",
+        "With healing balm my soul is filled",
+        "And every faithless murmur stilled:",
+        "To God all praise and glory."
+      ]
+    },
+    {
+      "lines": [
+        "What God’s almighty power hath made",
+        "His gracious mercy keepeth,",
+        "By morning glow or evening shade",
+        "His watchful eye ne’er sleepeth;",
+        "Within the kingdom of His might,",
+        "Lo! all is just and all is right:",
+        "To God all praise and glory."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord is never far away,",
+        "But through all grief distressing,",
+        "An ever present help and stay,",
+        "Our peace and joy and blessing.",
+        "As with a mother’s tender hand,",
+        "God gently leads the chosen band:",
+        "To God all praise and glory."
+      ]
+    },
+    {
+      "lines": [
+        "Thus, all my toilsome way along,",
+        "I sing aloud Thy praises,",
+        "That earth may hear the grateful song",
+        "My voice unwearied raises.",
+        "Be joyful in the Lord, my heart,",
+        "Both soul and body bear your part:",
+        "To God all praise and glory."
+      ]
+    },
+    {
+      "lines": [
+        "Let all who name Christ’s holy name",
+        "Give God all praise and glory;",
+        "Let all who own His power proclaim",
+        "Aloud the wondrous story!",
+        "Cast each false idol from its throne,",
+        "For Christ is Lord, and Christ alone:",
+        "To God all praise and glory."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,62 @@
+{
+  "title": "In the Garden",
+  "alsoKnownAs": [
+    "I Come to the Garden Alone"
+  ],
+  "tune": "garden",
+  "text": [
+    {
+      "name": "C. Austin Miles",
+      "born": 1868,
+      "died": 1946,
+      "role": "Words (1912)"
+    }
+  ],
+  "textPublished": 1912,
+  "occasions": [
+    "Funeral"
+  ],
+  "description": "In the Garden in Tonic Solfa to GARDEN: the solfa with the words, staff notation, the three verses and the refrain, and a piano.",
+  "about": [
+    "C. Austin Miles wrote both the words and the tune GARDEN, published in 1912."
+  ],
+  "underlay": "I come to the gar-den a-lone, While the dew is still on the ro-ses, And the voice I hear fall-ing on my ear The Son of God dis-clo-ses. And He walks with me, and He talks with me, And He tells me I am His_ own; And the joy we share as we tar-ry there, None oth-er has ev-er known.",
+  "verses": [
+    {
+      "lines": [
+        "I come to the garden alone,",
+        "While the dew is still on the roses,",
+        "And the voice I hear falling on my ear",
+        "The Son of God discloses."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "And He walks with me, and He talks with me,",
+        "And He tells me I am His own;",
+        "And the joy we share as we tarry there,",
+        "None other has ever known."
+      ]
+    },
+    {
+      "lines": [
+        "He speaks, and the sound of His voice",
+        "Is so sweet the birds hush their singing,",
+        "And the melody that He gave to me",
+        "Within my heart is ringing."
+      ]
+    },
+    {
+      "lines": [
+        "I’d stay in the garden with Him,",
+        "Though the night around me be falling,",
+        "But He bids me go; through the voice of woe",
+        "His voice to me is calling."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

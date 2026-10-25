@@ -1,0 +1,56 @@
+{
+  "title": "Yield Not to Temptation",
+  "tune": "fortitude-palmer",
+  "text": [
+    {
+      "name": "Horatio R. Palmer",
+      "born": 1834,
+      "died": 1907,
+      "role": "Words (1868)"
+    }
+  ],
+  "textPublished": 1868,
+  "description": "Yield Not to Temptation in Tonic Solfa to FORTITUDE (PALMER): the solfa with the words, staff notation, the three verses and the refrain, and a piano.",
+  "about": [
+    "Horatio R. Palmer wrote the words and the tune in 1868; they were first published in the National Sunday School Teachers’ Magazine."
+  ],
+  "underlay": "Yield not to temp-ta-tion, for yield-ing is sin; Each vict’-ry will help you some oth-er to win; Fight man-ful-ly on-ward, dark pas-sions sub-due; Look ev-er to Je-sus, He will car-ry you through. Ask the Sa-viour to help you, Com-fort, strength-en, and keep you; He is will-ing to aid you, He will car-ry you through.",
+  "verses": [
+    {
+      "lines": [
+        "Yield not to temptation, for yielding is sin;",
+        "Each vict’ry will help you some other to win;",
+        "Fight manfully onward, dark passions subdue;",
+        "Look ever to Jesus, He will carry you through."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Ask the Saviour to help you,",
+        "Comfort, strengthen, and keep you;",
+        "He is willing to aid you,",
+        "He will carry you through."
+      ]
+    },
+    {
+      "lines": [
+        "Shun evil companions, bad language disdain,",
+        "God’s name hold in rev’rence, nor take it in vain;",
+        "Be thoughtful and earnest, kindhearted and true;",
+        "Look ever to Jesus, He will carry you through."
+      ]
+    },
+    {
+      "lines": [
+        "To him that o’ercometh, God giveth a crown,",
+        "Through faith we will conquer, though often cast down;",
+        "He who is our Saviour, our strength will renew;",
+        "Look ever to Jesus, He will carry you through."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

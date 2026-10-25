@@ -1,0 +1,67 @@
+{
+  "title": "Glory to His Name",
+  "alsoKnownAs": [
+    "Down at the Cross"
+  ],
+  "tune": "glory-to-his-name",
+  "text": [
+    {
+      "name": "Elisha A. Hoffman",
+      "born": 1839,
+      "died": 1929,
+      "role": "Words (1878)"
+    }
+  ],
+  "textPublished": 1878,
+  "description": "Glory to His Name in Tonic Solfa to GLORY TO HIS NAME: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Elisha A. Hoffman wrote the words, published in 1878 with the tune GLORY TO HIS NAME by John H. Stockton."
+  ],
+  "underlay": "Down at the cross where my Sa-viour died, Down where for cleans-ing from sin I cried, There to my heart was the blood ap-plied; Glo-ry to His Name! Glo-ry to His Name,__ Glo-ry to His Name:__ There to my heart was the blood ap-plied; Glo-ry to His Name!",
+  "verses": [
+    {
+      "lines": [
+        "Down at the cross where my Saviour died,",
+        "Down where for cleansing from sin I cried,",
+        "There to my heart was the blood applied;",
+        "Glory to His Name!"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Glory to His Name,",
+        "Glory to His Name:",
+        "There to my heart was the blood applied;",
+        "Glory to His Name!"
+      ]
+    },
+    {
+      "lines": [
+        "I am so wondrously saved from sin,",
+        "Jesus so sweetly abides within,",
+        "There at the cross where He took me in;",
+        "Glory to His Name!"
+      ]
+    },
+    {
+      "lines": [
+        "Oh, precious fountain that saves from sin,",
+        "I am so glad I have entered in;",
+        "There Jesus saves me and keeps me clean;",
+        "Glory to His Name!"
+      ]
+    },
+    {
+      "lines": [
+        "Come to this fountain so rich and sweet,",
+        "Cast thy poor soul at the Saviour’s feet;",
+        "Plunge in today, and be made complete;",
+        "Glory to His Name!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

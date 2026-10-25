@@ -1,0 +1,67 @@
+{
+  "title": "Near the Cross",
+  "alsoKnownAs": [
+    "Jesus, Keep Me Near the Cross"
+  ],
+  "tune": "near-the-cross",
+  "text": [
+    {
+      "name": "Fanny Crosby",
+      "born": 1820,
+      "died": 1915,
+      "role": "Words (1869)"
+    }
+  ],
+  "textPublished": 1869,
+  "description": "Near the Cross in Tonic Solfa to NEAR THE CROSS: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Fanny Crosby wrote the words, first published in 1869. The tune, NEAR THE CROSS, is by William H. Doane (1869)."
+  ],
+  "underlay": "Je-sus, keep me near the cross, There a pre-cious foun-tain— Free to all, a heal-ing stream— Flows from Cal-v’ry’s moun-tain. In the cross, in the cross, Be my glo-ry ev-er; Till my rap-tured soul shall find Rest be-yond the riv-er.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, keep me near the cross,",
+        "There a precious fountain—",
+        "Free to all, a healing stream—",
+        "Flows from Calv’ry’s mountain."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "In the cross, in the cross,",
+        "Be my glory ever;",
+        "Till my raptured soul shall find",
+        "Rest beyond the river."
+      ]
+    },
+    {
+      "lines": [
+        "Near the cross, a trembling soul,",
+        "Love and Mercy found me;",
+        "There the bright and morning star",
+        "Sheds its beams around me."
+      ]
+    },
+    {
+      "lines": [
+        "Near the cross! O Lamb of God,",
+        "Bring its scenes before me;",
+        "Help me walk from day to day,",
+        "With its shadows o’er me."
+      ]
+    },
+    {
+      "lines": [
+        "Near the cross I’ll watch and wait",
+        "Hoping, trusting ever,",
+        "Till I reach the golden strand,",
+        "Just beyond the river."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

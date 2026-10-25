@@ -1,0 +1,83 @@
+{
+  "title": "Lord, I’m Coming Home",
+  "alsoKnownAs": [
+    "I’ve Wandered Far Away from God"
+  ],
+  "tune": "coming-home",
+  "text": [
+    {
+      "name": "William James Kirkpatrick",
+      "born": 1838,
+      "died": 1921,
+      "role": "Words (1892)"
+    }
+  ],
+  "textPublished": 1892,
+  "description": "Lord, I’m Coming Home in Tonic Solfa to COMING HOME: the solfa with the words, staff notation, the six verses and the refrain, and a piano.",
+  "about": [
+    "William J. Kirkpatrick wrote the words and the tune COMING HOME at a camp meeting in Rawlinsville, Pennsylvania; the song was published in Winning Songs (Philadelphia, 1892)."
+  ],
+  "underlay": "I’ve wan-dered far a-way_ from God, Now I’m com-ing home; The paths of sin too long_ I’ve trod, Lord, I’m com-ing home. Com-ing home, com-ing home, Nev-er-more to roam; O-pen wide Thine arms_ of love, Lord, I’m com-ing home.",
+  "verses": [
+    {
+      "lines": [
+        "I’ve wandered far away from God,",
+        "Now I’m coming home;",
+        "The paths of sin too long I’ve trod,",
+        "Lord, I’m coming home."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Coming home, coming home,",
+        "Nevermore to roam;",
+        "Open wide Thine arms of love,",
+        "Lord, I’m coming home."
+      ]
+    },
+    {
+      "lines": [
+        "I’ve wasted many precious years,",
+        "Now I’m coming home;",
+        "I now repent with bitter tears,",
+        "Lord, I’m coming home."
+      ]
+    },
+    {
+      "lines": [
+        "I’m tired of sin and straying, Lord,",
+        "Now I’m coming home;",
+        "I’ll trust Thy love, believe Thy word,",
+        "Lord, I’m coming home."
+      ]
+    },
+    {
+      "lines": [
+        "My soul is sick, my heart is sore,",
+        "Now I’m coming home;",
+        "My strength renew, my hope restore,",
+        "Lord, I’m coming home."
+      ]
+    },
+    {
+      "lines": [
+        "My only hope, my only plea,",
+        "Now I’m coming home;",
+        "That Jesus died, and died for me,",
+        "Lord, I’m coming home."
+      ]
+    },
+    {
+      "lines": [
+        "I need His cleansing blood I know,",
+        "Now I’m coming home;",
+        "Oh, wash me whiter than the snow,",
+        "Lord, I’m coming home."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

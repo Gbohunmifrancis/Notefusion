@@ -1,0 +1,55 @@
+{
+  "title": "Stand Up, Stand Up for Jesus",
+  "tune": "morning-light",
+  "text": [
+    {
+      "name": "George Duffield Jr.",
+      "born": 1818,
+      "died": 1888,
+      "role": "Words (1858)"
+    }
+  ],
+  "textPublished": 1858,
+  "description": "Stand Up, Stand Up for Jesus in Tonic Solfa to MORNING LIGHT: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "George Duffield Jr. wrote the words, first published in 1858. The tune, MORNING LIGHT, is by George J. Webb (1837)."
+  ],
+  "underlay": "Stand up, stand up for Je-sus! ye sol-diers of the cross; Lift high His roy-al ban-ner, it must not suf-fer loss: From vic-t’ry un-to vic-t’ry, His ar-my shall He lead_, Till ev-ery foe is van-quished, and Christ is Lord in-deed.",
+  "verses": [
+    {
+      "lines": [
+        "Stand up, stand up for Jesus! ye soldiers of the cross;",
+        "Lift high His royal banner, it must not suffer loss:",
+        "From vict’ry unto vict’ry, His army shall He lead,",
+        "Till every foe is vanquished, and Christ is Lord indeed."
+      ]
+    },
+    {
+      "lines": [
+        "Stand up, stand up for Jesus! The trumpet call obey:",
+        "Forth to the mighty conflict, in this His glorious day;",
+        "Ye that are men now serve Him against unnumbered foes;",
+        "Let courage rise with danger, and strength to strength oppose."
+      ]
+    },
+    {
+      "lines": [
+        "Stand up, stand up for Jesus! Stand in His strength alone,",
+        "The arm of flesh will fail you, ye dare not trust your own;",
+        "Put on the gospel armor, and watching unto prayer,",
+        "Where calls the voice of duty, be never wanting there."
+      ]
+    },
+    {
+      "lines": [
+        "Stand up, stand up for Jesus! the strife will not be long;",
+        "This day the noise of battle, the next the victor’s song;",
+        "To him that overcometh a crown of life shall be;",
+        "He with the King of glory shall reign eternally."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

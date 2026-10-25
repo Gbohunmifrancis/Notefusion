@@ -256,14 +256,26 @@ def _transpose_into(notes: tuple[ParsedNote, ...], shift: int, low: int, high: i
     return shift
 
 
+# What the corpora were measured on (hymn_corpus_frozen.json): the hymn whose words each tune is
+# sung with, and the studio-songs corpus's tunes. A later words page for a tune already here would
+# otherwise change its breaths, and so its audio, and the baselines' per-case history with it.
+FROZEN = json.loads((Path(__file__).with_name("hymn_corpus_frozen.json")).read_text(encoding="utf-8"))
+
+
 def load_tunes(hymns_dir: Path = HYMNS_DIR) -> list[tuple[str, dict, ParsedMelody, str]]:
     """(slug, tune json, parsed, underlay) for every tune a published hymn is sung to, sorted by
-    slug; the underlay is the first such hymn's (by file name)."""
+    slug; the underlay is the hymn's ``FROZEN["underlay_from"]`` names for the tune, else the
+    first such hymn's (by file name)."""
     used: dict[str, str] = {}
+    hymns: dict[str, dict] = {}
     for f in sorted(hymns_dir.glob("*.json")):
         h = json.loads(f.read_text(encoding="utf-8"))
         if not h.get("draft"):
+            hymns[f.stem] = h
             used.setdefault(h["tune"], h.get("underlay") or "")
+    for tune, hymn in FROZEN["underlay_from"].items():
+        if tune in used and hymns.get(hymn, {}).get("tune") == tune:
+            used[tune] = hymns[hymn].get("underlay") or ""
     out = []
     for slug in sorted(used):
         t = json.loads((hymns_dir / "tunes" / f"{slug}.json").read_text(encoding="utf-8"))

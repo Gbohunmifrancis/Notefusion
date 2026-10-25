@@ -1,0 +1,63 @@
+{
+  "title": "Ten Thousand Times Ten Thousand",
+  "tune": "alford",
+  "text": [
+    {
+      "name": "Henry Alford",
+      "born": 1810,
+      "died": 1871,
+      "role": "Words (1867)"
+    }
+  ],
+  "textPublished": 1867,
+  "occasions": [
+    "All Saints",
+    "Funeral"
+  ],
+  "description": "Ten Thousand Times Ten Thousand in Tonic Solfa to ALFORD: the solfa with the words, staff notation, the three verses, and a piano.",
+  "about": [
+    "Henry Alford’s words first appeared in 1867. John Bacchus Dykes wrote the tune ALFORD in 1875."
+  ],
+  "underlay": "Ten thou-sand times ten thou-sand In spark-ling rai-ment bright, The ar-mies of the ran-somed saints Throng up the steeps of light: ’Tis fin-ished, all is fin-ished, Their fight with death and_ sin: Fling o-pen wide the gold-en gates, And let the vic-tors in.",
+  "verses": [
+    {
+      "lines": [
+        "Ten thousand times ten thousand",
+        "In sparkling raiment bright,",
+        "The armies of the ransomed saints",
+        "Throng up the steeps of light:",
+        "’Tis finished, all is finished,",
+        "Their fight with death and sin:",
+        "Fling open wide the golden gates,",
+        "And let the victors in."
+      ]
+    },
+    {
+      "lines": [
+        "What rush of alleluias",
+        "Fills all the earth and sky!",
+        "What ringing of a thousand harps",
+        "Bespeaks the triumph nigh!",
+        "O day, for which creation",
+        "And all its tribes were made;",
+        "O joy, for all its former woes",
+        "A thousandfold repaid!"
+      ]
+    },
+    {
+      "lines": [
+        "O then what raptured greetings",
+        "On Canaan’s happy shore!",
+        "What knitting severed friendships up,",
+        "Where partings are no more!",
+        "Then eyes with joy shall sparkle,",
+        "That brimmed with tears of late,",
+        "Orphans no longer fatherless,",
+        "Nor widows desolate."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

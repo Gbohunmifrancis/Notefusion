@@ -1,0 +1,71 @@
+{
+  "title": "Jesus Saves!",
+  "tune": "jesus-saves",
+  "text": [
+    {
+      "name": "Priscilla J. Owens",
+      "born": 1829,
+      "died": 1907,
+      "role": "Words (1882)"
+    }
+  ],
+  "textPublished": 1882,
+  "description": "Jesus Saves! in Tonic Solfa to JESUS SAVES: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "Priscilla J. Owens wrote the words, published in 1882 with the tune JESUS SAVES by William J. Kirkpatrick."
+  ],
+  "underlay": "We have heard the joy-ful sound: Je-sus saves! Je-sus saves! Spread the tid-ings all a-round: Je-sus saves! Je-sus saves! Bear the news to ev-ery land, Climb the moun-tains, cross the waves; On-ward! ’tis our Lord’s com-mand; Je-sus saves! Je-sus saves!",
+  "verses": [
+    {
+      "lines": [
+        "We have heard the joyful sound:",
+        "Jesus saves! Jesus saves!",
+        "Spread the tidings all around:",
+        "Jesus saves! Jesus saves!",
+        "Bear the news to every land,",
+        "Climb the mountains, cross the waves;",
+        "Onward! ’tis our Lord’s command;",
+        "Jesus saves! Jesus saves!"
+      ]
+    },
+    {
+      "lines": [
+        "Waft it on the rolling tide:",
+        "Jesus saves! Jesus saves!",
+        "Tell to sinners far and wide:",
+        "Jesus saves! Jesus saves!",
+        "Sing, you islands of the sea;",
+        "Echo back, you ocean caves;",
+        "Earth shall keep her jubilee:",
+        "Jesus saves! Jesus saves!"
+      ]
+    },
+    {
+      "lines": [
+        "Sing above the battle strife:",
+        "Jesus saves! Jesus saves!",
+        "By His death and endless life",
+        "Jesus saves! Jesus saves!",
+        "Shout it brightly through the gloom,",
+        "When the heart for mercy craves;",
+        "Sing in triumph o’er the tomb:",
+        "Jesus saves! Jesus saves!"
+      ]
+    },
+    {
+      "lines": [
+        "Give the winds a mighty voice:",
+        "Jesus saves! Jesus saves!",
+        "Let the nations now rejoice:",
+        "Jesus saves! Jesus saves!",
+        "Shout salvation full and free;",
+        "Highest hills and deepest caves;",
+        "This our song of victory:",
+        "Jesus saves! Jesus saves!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,82 @@
+{
+  "title": "Let Us, with a Gladsome Mind",
+  "tune": "monkland",
+  "text": [
+    {
+      "name": "John Milton",
+      "born": 1608,
+      "died": 1674,
+      "role": "Words (1623)"
+    }
+  ],
+  "textPublished": 1645,
+  "occasions": [
+    "Harvest",
+    "Thanksgiving"
+  ],
+  "description": "Let Us, with a Gladsome Mind in Tonic Solfa to MONKLAND: the solfa with the words, staff notation, the eight verses and the refrain, and a piano.",
+  "about": [
+    "John Milton wrote these words, a paraphrase of Psalm 136, in 1623, when he was fifteen; they were first printed in his Poems of 1645. The tune MONKLAND comes from a melody by John Antes, arranged by John Bernard Wilkes for Hymns Ancient and Modern (1861)."
+  ],
+  "underlay": "Let us, with a glad_-some_ mind, Praise the Lord, for He is kind. For His_ mer-cies aye en-dure, Ev-er_ faith-ful, ev-er sure.",
+  "verses": [
+    {
+      "lines": [
+        "Let us, with a gladsome mind,",
+        "Praise the Lord, for He is kind."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "For His mercies aye endure,",
+        "Ever faithful, ever sure."
+      ]
+    },
+    {
+      "lines": [
+        "Let us blaze His name abroad,",
+        "For of gods He is the God."
+      ]
+    },
+    {
+      "lines": [
+        "He with all commanding might",
+        "Filled the new made world with light."
+      ]
+    },
+    {
+      "lines": [
+        "He hath, with a piteous eye,",
+        "Looked upon our misery."
+      ]
+    },
+    {
+      "lines": [
+        "He the golden tressèd sun",
+        "Caused all day his course to run."
+      ]
+    },
+    {
+      "lines": [
+        "Th’hornèd moon to shine by night;",
+        "’Mid her spangled sisters bright."
+      ]
+    },
+    {
+      "lines": [
+        "All things living He doth feed,",
+        "His full hand supplies their need."
+      ]
+    },
+    {
+      "lines": [
+        "Let us, with a gladsome mind,",
+        "Praise the Lord, for He is kind."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

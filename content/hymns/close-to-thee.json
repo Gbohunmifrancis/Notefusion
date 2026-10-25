@@ -1,0 +1,59 @@
+{
+  "title": "Close to Thee",
+  "alsoKnownAs": [
+    "Thou My Everlasting Portion"
+  ],
+  "tune": "close-to-thee",
+  "text": [
+    {
+      "name": "Fanny Crosby",
+      "born": 1820,
+      "died": 1915,
+      "role": "Words (1874)"
+    }
+  ],
+  "textPublished": 1874,
+  "description": "Close to Thee in Tonic Solfa to CLOSE TO THEE: the solfa with the words, staff notation, the three verses and the refrain, and a piano.",
+  "about": [
+    "Fanny Crosby wrote the words, published in 1874 with the tune CLOSE TO THEE by Silas J. Vail."
+  ],
+  "underlay": "Thou my ev-er-last-ing por-tion, More than friend or life to me, All a-long my pil-grim jour-ney, Sa-viour, let me walk with Thee. Close to Thee, close to Thee, Close to Thee, close to Thee; All a-long my pil-grim jour-ney, Sa-viour, let me walk with Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Thou my everlasting portion,",
+        "More than friend or life to me,",
+        "All along my pilgrim journey,",
+        "Saviour, let me walk with Thee."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Close to Thee, close to Thee,",
+        "Close to Thee, close to Thee;",
+        "All along my pilgrim journey,",
+        "Saviour, let me walk with Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Not for ease or worldly pleasure,",
+        "Nor for fame my prayer shall be;",
+        "Gladly will I toil and suffer,",
+        "Only let me walk with Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Lead me through the vale of shadows,",
+        "Bear me o’er life’s fitful sea;",
+        "Then the gate of life eternal",
+        "May I enter, Lord, with Thee."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

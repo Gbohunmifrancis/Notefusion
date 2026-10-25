@@ -1,0 +1,67 @@
+{
+  "title": "Take the Name of Jesus with You",
+  "alsoKnownAs": [
+    "Precious Name"
+  ],
+  "tune": "precious-name",
+  "text": [
+    {
+      "name": "Lydia Baxter",
+      "born": 1809,
+      "died": 1874,
+      "role": "Words (1870)"
+    }
+  ],
+  "textPublished": 1870,
+  "description": "Take the Name of Jesus with You in Tonic Solfa to PRECIOUS NAME: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Lydia Baxter wrote the words in 1870; William H. Doane wrote the tune PRECIOUS NAME."
+  ],
+  "underlay": "Take the Name of Je-sus with you, Child of sor-row and of woe, It will joy and com-fort give you; Take it then, where-’er you go. Pre-cious Name, oh, how sweet! Hope of earth and joy of Heav’n; Pre-cious Name, oh, how sweet_! Hope of earth and joy of Heav’n.",
+  "verses": [
+    {
+      "lines": [
+        "Take the Name of Jesus with you,",
+        "Child of sorrow and of woe,",
+        "It will joy and comfort give you;",
+        "Take it then, where’er you go."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Precious Name, oh, how sweet!",
+        "Hope of earth and joy of Heav’n;",
+        "Precious Name, oh, how sweet!",
+        "Hope of earth and joy of Heav’n."
+      ]
+    },
+    {
+      "lines": [
+        "Take the Name of Jesus ever,",
+        "As a shield from every snare;",
+        "If temptations round you gather,",
+        "Breathe that holy Name in prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, the precious Name of Jesus!",
+        "How it thrills our souls with joy,",
+        "When His loving arms receive us,",
+        "And His songs our tongues employ!"
+      ]
+    },
+    {
+      "lines": [
+        "At the Name of Jesus bowing,",
+        "Falling prostrate at His feet,",
+        "King of kings in heav’n we’ll crown Him,",
+        "When our journey is complete."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

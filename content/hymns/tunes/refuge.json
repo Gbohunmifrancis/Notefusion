@@ -9,10 +9,10 @@
       "name": "William H. Doane",
       "born": 1832,
       "died": 1915,
-      "role": "Music"
+      "role": "Music (1868)"
     }
   ],
-  "musicPublished": null,
+  "musicPublished": 1868,
   "metre": "7 6 7 6",
   "key": "G major",
   "time": "4/4",
@@ -23,13 +23,13 @@
   "incipit": "mrdsdmfm|slsmdr|mrdsdmfs",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0009/x000951.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0009/000951a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000951; public domain.",
-  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000951 (the melody read from 000951a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William H. Doane's dates (1832–1915) are from our page for the tune MORE LOVE TO THEE (content/hymns/tunes/more-love-to-thee.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000951a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000951 (the melody read from 000951a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William H. Doane's dates (1832–1915) are from our page for the tune MORE LOVE TO THEE (content/hymns/tunes/more-love-to-thee.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000951a.nwc). The year (1868) is from https://hymnary.org/tune/safe_in_the_arms_of_jesus_doane (Composer: W. Howard Doane (1868)) and https://library.timelesstruths.org/music/Safe_in_the_Arms_of_Jesus/ (William H. Doane, 1868).",
   "importedFrom": "cceh:000951",
-  "updated": "2026-10-18"
+  "updated": "2026-10-25"
 }

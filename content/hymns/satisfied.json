@@ -1,0 +1,67 @@
+{
+  "title": "Satisfied",
+  "alsoKnownAs": [
+    "All My Life I Had a Longing"
+  ],
+  "tune": "satisfied-hudson",
+  "text": [
+    {
+      "name": "Clara Tear Williams",
+      "born": 1858,
+      "died": 1937,
+      "role": "Words (1875)"
+    }
+  ],
+  "textPublished": 1875,
+  "description": "Satisfied in Tonic Solfa to SATISFIED (HUDSON): the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Clara Tear Williams wrote the words in 1875 at Ralph E. Hudson’s request, for a book he was preparing; Hudson wrote the tune the same year."
+  ],
+  "underlay": "All my life I had a long-ing For a drink from some clear spring, That I hoped would quench the burn-ing Of the thirst I felt with-in. Hal-le-lu-jah! I have found Him Whom my soul so long has craved! Je-sus sat-is-fies my long-ings, Through His blood I now am saved.",
+  "verses": [
+    {
+      "lines": [
+        "All my life I had a longing",
+        "For a drink from some clear spring,",
+        "That I hoped would quench the burning",
+        "Of the thirst I felt within."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Hallelujah! I have found Him",
+        "Whom my soul so long has craved!",
+        "Jesus satisfies my longings,",
+        "Through His blood I now am saved."
+      ]
+    },
+    {
+      "lines": [
+        "Feeding on the husks around me,",
+        "Till my strength was almost gone,",
+        "Longed my soul for something better,",
+        "Only still to hunger on."
+      ]
+    },
+    {
+      "lines": [
+        "Poor I was, and sought for riches,",
+        "Something that would satisfy,",
+        "But the dust I gathered round me",
+        "Only mocked my soul’s sad cry."
+      ]
+    },
+    {
+      "lines": [
+        "Well of water, ever springing,",
+        "Bread of life so rich and free,",
+        "Untold wealth that never faileth,",
+        "My Redeemer is to me."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

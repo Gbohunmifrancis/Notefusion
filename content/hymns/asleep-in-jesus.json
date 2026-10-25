@@ -1,0 +1,66 @@
+{
+  "title": "Asleep in Jesus",
+  "tune": "rest-bradbury",
+  "text": [
+    {
+      "name": "Margaret Mackay",
+      "born": 1802,
+      "died": 1887,
+      "role": "Words (1832)"
+    }
+  ],
+  "textPublished": 1832,
+  "occasions": [
+    "Funeral"
+  ],
+  "description": "Asleep in Jesus in Tonic Solfa to REST (BRADBURY): the solfa with the words, staff notation, the five verses, and a piano.",
+  "about": [
+    "Margaret Mackay’s words were published in 1832. The tune REST is by William B. Bradbury (1843)."
+  ],
+  "underlay": "A-sleep in Je-sus! Bless-ed sleep, From which none ev-er wakes to weep; A calm and un-dis-turbed re-pose, Un-bro-ken by the last of foes.",
+  "verses": [
+    {
+      "lines": [
+        "Asleep in Jesus! Blessed sleep,",
+        "From which none ever wakes to weep;",
+        "A calm and undisturbed repose,",
+        "Unbroken by the last of foes."
+      ]
+    },
+    {
+      "lines": [
+        "Asleep in Jesus! Oh, how sweet,",
+        "To be for such a slumber meet,",
+        "With holy confidence to sing",
+        "That death has lost his venomed sting!"
+      ]
+    },
+    {
+      "lines": [
+        "Asleep in Jesus! Peaceful rest,",
+        "Whose waking is supremely blest;",
+        "No fear, no woe, shall dim that hour",
+        "That manifests the Saviour’s pow’r."
+      ]
+    },
+    {
+      "lines": [
+        "Asleep in Jesus! Oh, for me",
+        "May such a blessed refuge be!",
+        "Securely shall my ashes lie,",
+        "And wait the summons from on high."
+      ]
+    },
+    {
+      "lines": [
+        "Asleep in Jesus! Far from thee",
+        "Thy kindred and their graves may be;",
+        "But there is still a blessed sleep,",
+        "From which none ever wakes to weep."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,82 @@
+{
+  "title": "Our Blest Redeemer, Ere He Breathed",
+  "tune": "st-cuthbert",
+  "text": [
+    {
+      "name": "Harriet Auber",
+      "born": 1773,
+      "died": 1862,
+      "role": "Words (1829)"
+    }
+  ],
+  "textPublished": 1829,
+  "occasions": [
+    "Pentecost"
+  ],
+  "description": "Our Blest Redeemer, Ere He Breathed in Tonic Solfa to ST. CUTHBERT: the solfa with the words, staff notation, the seven verses, and a piano.",
+  "about": [
+    "Harriet Auber published these words in The Spirit of the Psalms in 1829. John Bacchus Dykes wrote the tune ST. CUTHBERT for them in 1861."
+  ],
+  "underlay": "Our blest Re-deem-er, ere He breathed His ten-der last fare-well, A guide, a com-fort-er, be-queathed With us to dwell.",
+  "verses": [
+    {
+      "lines": [
+        "Our blest Redeemer, ere He breathed",
+        "His tender last farewell,",
+        "A guide, a comforter, bequeathed",
+        "With us to dwell."
+      ]
+    },
+    {
+      "lines": [
+        "He came in semblance of a dove,",
+        "With sheltering wings outspread,",
+        "The holy balm of peace and love",
+        "On earth to shed."
+      ]
+    },
+    {
+      "lines": [
+        "He came in tongues of living flame",
+        "To teach, convince, subdue,",
+        "All powerful as the wind He came",
+        "As viewless too."
+      ]
+    },
+    {
+      "lines": [
+        "He came sweet influence to impart,",
+        "A gracious, willing guest,",
+        "While He can find one humble heart",
+        "Wherein to rest."
+      ]
+    },
+    {
+      "lines": [
+        "And His that gentle voice we hear,",
+        "Soft as the breath of even,",
+        "That checks each fault, that calms each fear,",
+        "And speaks of Heav’n."
+      ]
+    },
+    {
+      "lines": [
+        "And every virtue we possess,",
+        "And every conquest won,",
+        "And every thought of holiness,",
+        "Are His alone."
+      ]
+    },
+    {
+      "lines": [
+        "Spirit of purity and grace,",
+        "Our weakness, pitying, see:",
+        "O make our hearts Thy dwelling place",
+        "And worthier Thee."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,61 @@
+{
+  "title": "Blest Are the Pure in Heart",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "John Keble",
+      "born": 1792,
+      "died": 1866,
+      "role": "Words, verses 1 and 3 (1819)"
+    },
+    {
+      "name": "William John Hall",
+      "born": 1793,
+      "died": 1861,
+      "role": "Verses 2 and 4, Mitre Hymn Book (1836)"
+    }
+  ],
+  "textPublished": 1836,
+  "description": "Blest Are the Pure in Heart in Tonic Solfa to FRANCONIA: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "John Keble wrote the first and third verses, dated 10 October 1819, as part of a longer poem published in The Christian Year in 1827; the second and fourth come from the Mitre Hymn Book (1836), edited by William John Hall. The tune FRANCONIA was published by Johann Balthasar König in 1738."
+  ],
+  "underlay": "Blest are the pure in heart, For they shall see our God; The se-cret of the Lord is theirs; Their soul is Christ’s a-bode.",
+  "verses": [
+    {
+      "lines": [
+        "Blest are the pure in heart,",
+        "For they shall see our God;",
+        "The secret of the Lord is theirs;",
+        "Their soul is Christ’s abode."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord, who left the heavens",
+        "Our life and peace to bring,",
+        "To dwell in lowliness with men",
+        "Their pattern and their king."
+      ]
+    },
+    {
+      "lines": [
+        "Still to the lowly soul",
+        "He doth Himself impart;",
+        "And for His cradle and His throne",
+        "Chooseth the pure in heart."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, we Thy presence seek;",
+        "May ours this blessing be;",
+        "Give us a pure and lowly heart,",
+        "A temple meet for Thee."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

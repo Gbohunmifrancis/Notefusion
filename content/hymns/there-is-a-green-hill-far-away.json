@@ -1,0 +1,67 @@
+{
+  "title": "There Is a Green Hill Far Away",
+  "tune": "horsley",
+  "text": [
+    {
+      "name": "Cecil Frances Alexander",
+      "born": 1818,
+      "died": 1895,
+      "role": "Words (1848)"
+    }
+  ],
+  "textPublished": 1848,
+  "occasions": [
+    "Lent",
+    "Good Friday"
+  ],
+  "description": "There Is a Green Hill Far Away in Tonic Solfa to HORSLEY: the solfa with the words, staff notation, the five verses, and a piano.",
+  "about": [
+    "Cecil Frances Alexander wrote the words, first published in 1848. The tune, HORSLEY, is by William Horsley (1844)."
+  ],
+  "underlay": "There is a green hill far a_-way, With-out a ci-ty wall, Where the dear Lord was cru-ci-fied_, Who died to save us all.",
+  "verses": [
+    {
+      "lines": [
+        "There is a green hill far away,",
+        "Without a city wall,",
+        "Where the dear Lord was crucified,",
+        "Who died to save us all."
+      ]
+    },
+    {
+      "lines": [
+        "We may not know, we cannot tell",
+        "What pains he had to bear;",
+        "But we believe it was for us",
+        "He hung and suffered there."
+      ]
+    },
+    {
+      "lines": [
+        "He died that we might be forgiven,",
+        "He died to make us good,",
+        "That we might go at last to heaven,",
+        "Saved by his precious blood."
+      ]
+    },
+    {
+      "lines": [
+        "There was no other good enough",
+        "To pay the price of sin;",
+        "He only could unlock the gate",
+        "Of heaven, and let us in."
+      ]
+    },
+    {
+      "lines": [
+        "Oh dearly, dearly has he loved,",
+        "And we must love him too,",
+        "And trust in his redeeming blood,",
+        "And try his works to do."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

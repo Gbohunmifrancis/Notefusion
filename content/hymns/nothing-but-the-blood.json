@@ -1,0 +1,86 @@
+{
+  "title": "Nothing but the Blood",
+  "alsoKnownAs": [
+    "What Can Wash Away My Sin?"
+  ],
+  "tune": "plainfield",
+  "text": [
+    {
+      "name": "Robert Lowry",
+      "born": 1826,
+      "died": 1899,
+      "role": "Words (1876)"
+    }
+  ],
+  "textPublished": 1876,
+  "occasions": [
+    "Holy Communion"
+  ],
+  "description": "Nothing but the Blood in Tonic Solfa to PLAINFIELD: the solfa with the words, staff notation, the six verses and the refrain, and a piano.",
+  "about": [
+    "Robert Lowry wrote both the words and the tune; the song was published in 1876."
+  ],
+  "underlay": "What can wash a-way my sin? Noth-ing but the blood of Je-sus; What can make me whole a-gain? Noth-ing but the blood of Je-sus. Oh! pre-cious is the flow That makes me white as snow_; No oth-er fount I know, Noth-ing but the blood of Je-sus.",
+  "verses": [
+    {
+      "lines": [
+        "What can wash away my sin?",
+        "Nothing but the blood of Jesus;",
+        "What can make me whole again?",
+        "Nothing but the blood of Jesus."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Oh! precious is the flow",
+        "That makes me white as snow;",
+        "No other fount I know,",
+        "Nothing but the blood of Jesus."
+      ]
+    },
+    {
+      "lines": [
+        "For my pardon, this I see,",
+        "Nothing but the blood of Jesus;",
+        "For my cleansing this my plea,",
+        "Nothing but the blood of Jesus."
+      ]
+    },
+    {
+      "lines": [
+        "Nothing can for sin atone,",
+        "Nothing but the blood of Jesus;",
+        "Naught of good that I have done,",
+        "Nothing but the blood of Jesus."
+      ]
+    },
+    {
+      "lines": [
+        "This is all my hope and peace,",
+        "Nothing but the blood of Jesus;",
+        "This is all my righteousness,",
+        "Nothing but the blood of Jesus."
+      ]
+    },
+    {
+      "lines": [
+        "Now by this I’ll overcome—",
+        "Nothing but the blood of Jesus;",
+        "Now by this I’ll reach my home—",
+        "Nothing but the blood of Jesus."
+      ]
+    },
+    {
+      "lines": [
+        "Glory! Glory! This I sing—",
+        "Nothing but the blood of Jesus,",
+        "All my praise for this I bring—",
+        "Nothing but the blood of Jesus."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

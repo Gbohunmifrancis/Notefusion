@@ -1,0 +1,91 @@
+{
+  "title": "When Morning Gilds the Skies",
+  "tune": "laudes-domini",
+  "text": [
+    {
+      "name": "Anonymous German (Beim frühen Morgenlicht)",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "Edward Caswall",
+      "born": 1814,
+      "died": 1878,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "occasions": [
+    "Morning"
+  ],
+  "description": "When Morning Gilds the Skies in Tonic Solfa to LAUDES DOMINI: the solfa with the words, staff notation, the six verses, and a piano.",
+  "about": [
+    "Edward Caswall’s translation of the anonymous German hymn “Beim frühen Morgenlicht” was first published in Henry Formby’s Catholic Hymns (London, 1854). Joseph Barnby wrote the tune LAUDES DOMINI for it in Hymns Ancient and Modern (1868)."
+  ],
+  "underlay": "When morn-ing gilds the skies, My heart a-wak-ing cries_: May Je-sus Christ be praised! A-like at work and prayer, To Je-sus I re-pair; May Je-sus Christ be praised!",
+  "verses": [
+    {
+      "lines": [
+        "When morning gilds the skies,",
+        "My heart awaking cries:",
+        "May Jesus Christ be praised!",
+        "Alike at work and prayer,",
+        "To Jesus I repair;",
+        "May Jesus Christ be praised!"
+      ]
+    },
+    {
+      "lines": [
+        "Does sadness fill my mind?",
+        "A solace here I find,",
+        "May Jesus Christ be praised!",
+        "Or fades my earthly bliss?",
+        "My comfort still is this,",
+        "May Jesus Christ be praised!"
+      ]
+    },
+    {
+      "lines": [
+        "When sleep her balm denies,",
+        "My silent spirit sighs,",
+        "May Jesus Christ be praised!",
+        "When evil thoughts molest,",
+        "With this I shield my breast:",
+        "May Jesus Christ be praised!"
+      ]
+    },
+    {
+      "lines": [
+        "The night becomes as day",
+        "When from the heart we say:",
+        "May Jesus Christ be praised!",
+        "The pow’rs of darkness fear",
+        "When this sweet chant they hear:",
+        "May Jesus Christ be praised!"
+      ]
+    },
+    {
+      "lines": [
+        "In heav’n’s eternal bliss",
+        "The loveliest strain is this,",
+        "May Jesus Christ be praised!",
+        "Let earth, and sea, and sky",
+        "From depth to height reply,",
+        "May Jesus Christ be praised!"
+      ]
+    },
+    {
+      "lines": [
+        "Be this, while life is mine,",
+        "My canticle divine:",
+        "May Jesus Christ be praised!",
+        "Sing this eternal song",
+        "Through all the ages long:",
+        "May Jesus Christ be praised!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

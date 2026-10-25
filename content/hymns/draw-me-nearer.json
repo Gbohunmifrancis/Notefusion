@@ -1,0 +1,67 @@
+{
+  "title": "Draw Me Nearer",
+  "alsoKnownAs": [
+    "I Am Thine, O Lord"
+  ],
+  "tune": "i-am-thine",
+  "text": [
+    {
+      "name": "Fanny Crosby",
+      "born": 1820,
+      "died": 1915,
+      "role": "Words (1875)"
+    }
+  ],
+  "textPublished": 1875,
+  "description": "Draw Me Nearer in Tonic Solfa to I AM THINE: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Fanny Crosby wrote the words, published in 1875 with the tune I AM THINE by William H. Doane."
+  ],
+  "underlay": "I am Thine, O Lord, I have heard Thy voice, And it told Thy love to_ me; But I long to rise in the arms of faith And be clos-er drawn to Thee. Draw me near-er, near-er bless-ed Lord, To the cross where Thou hast died; Draw me near-er, near-er, near-er bless-ed Lord, To Thy pre-cious, bleed-ing side.",
+  "verses": [
+    {
+      "lines": [
+        "I am Thine, O Lord, I have heard Thy voice,",
+        "And it told Thy love to me;",
+        "But I long to rise in the arms of faith",
+        "And be closer drawn to Thee."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Draw me nearer, nearer blessed Lord,",
+        "To the cross where Thou hast died;",
+        "Draw me nearer, nearer, nearer blessed Lord,",
+        "To Thy precious, bleeding side."
+      ]
+    },
+    {
+      "lines": [
+        "Consecrate me now to Thy service, Lord,",
+        "By the pow’r of grace divine;",
+        "Let my soul look up with a steadfast hope,",
+        "And my will be lost in Thine."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, the pure delight of a single hour",
+        "That before Thy throne I spend,",
+        "When I kneel in prayer, and with Thee, my God",
+        "I commune as friend with friend!"
+      ]
+    },
+    {
+      "lines": [
+        "There are depths of love that I cannot know",
+        "Till I cross the narrow sea;",
+        "There are heights of joy that I may not reach",
+        "Till I rest in peace with Thee."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

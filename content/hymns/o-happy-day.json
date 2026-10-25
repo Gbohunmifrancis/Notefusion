@@ -1,0 +1,82 @@
+{
+  "title": "O Happy Day",
+  "tune": "happy-day",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words (1755)"
+    },
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Refrain (1854)"
+    }
+  ],
+  "textPublished": 1755,
+  "occasions": [
+    "Baptism"
+  ],
+  "description": "O Happy Day in Tonic Solfa to HAPPY DAY: the solfa with the words, staff notation, the five verses and the refrain, and a piano.",
+  "about": [
+    "Philip Doddridge’s words were published in 1755 in his Hymns Founded on Various Texts. The refrain and the tune HAPPY DAY were printed in 1854."
+  ],
+  "underlay": "O hap-py day, that fixed my choice On Thee, my Sa-viour and my God! Well may this glow-ing heart re-joice, And tell its rap-tures all a-broad. Hap-py day, hap-py day, When Je-sus washed my sins a-way! He taught me how to watch and pray, And live re-joic-ing ev-ery day: Hap-py day, hap-py day, When Je-sus washed my sins a-way!",
+  "verses": [
+    {
+      "lines": [
+        "O happy day, that fixed my choice",
+        "On Thee, my Saviour and my God!",
+        "Well may this glowing heart rejoice,",
+        "And tell its raptures all abroad."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Happy day, happy day,",
+        "When Jesus washed my sins away!",
+        "He taught me how to watch and pray,",
+        "And live rejoicing every day:",
+        "Happy day, happy day,",
+        "When Jesus washed my sins away!"
+      ]
+    },
+    {
+      "lines": [
+        "O happy bond, that seals my vows",
+        "To Him who merits all my love!",
+        "Let cheerful anthems fill His house,",
+        "While to that sacred shrine I move."
+      ]
+    },
+    {
+      "lines": [
+        "’Tis done, the great transaction’s done!—",
+        "I am the Lord’s and He is mine;",
+        "He drew me and I followed on,",
+        "Charmed to confess the voice divine."
+      ]
+    },
+    {
+      "lines": [
+        "Now rest, my long-divided heart,",
+        "Fixed on this blissful centre, rest;",
+        "Here have I found a nobler part;",
+        "Here heav’nly pleasures fill my breast."
+      ]
+    },
+    {
+      "lines": [
+        "High heav’n, that heard the solemn vow,",
+        "That vow renewed shall daily hear,",
+        "Till in life’s latest hour I bow",
+        "And bless in death a bond so dear."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

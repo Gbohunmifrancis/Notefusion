@@ -1,0 +1,62 @@
+{
+  "title": "Leaning on the Everlasting Arms",
+  "tune": "showalter",
+  "text": [
+    {
+      "name": "Elisha A. Hoffman",
+      "born": 1839,
+      "died": 1929,
+      "role": "Words (1887)"
+    },
+    {
+      "name": "Anthony J. Showalter",
+      "born": 1858,
+      "died": 1924,
+      "role": "Refrain (1887)"
+    }
+  ],
+  "textPublished": 1887,
+  "description": "Leaning on the Everlasting Arms in Tonic Solfa to SHOWALTER: the solfa with the words, staff notation, the three verses and the refrain, and a piano.",
+  "about": [
+    "Elisha A. Hoffman wrote the verses and Anthony J. Showalter the refrain and the tune; the song was published in 1887."
+  ],
+  "underlay": "What a fel-low-ship, what a joy di-vine, Lean-ing on the ev-er-last-ing arms; What a bless-ed-ness, what a peace is mine, Lean-ing on the ev-er-last-ing arms. Lean-ing, lean-ing, Safe and se-cure from all a-larms; Lean-ing, lean-ing, Lean-ing on the ev-er-last-ing arms.",
+  "verses": [
+    {
+      "lines": [
+        "What a fellowship, what a joy divine,",
+        "Leaning on the everlasting arms;",
+        "What a blessedness, what a peace is mine,",
+        "Leaning on the everlasting arms."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Leaning, leaning,",
+        "Safe and secure from all alarms;",
+        "Leaning, leaning,",
+        "Leaning on the everlasting arms."
+      ]
+    },
+    {
+      "lines": [
+        "O how sweet to walk in this pilgrim way,",
+        "Leaning on the everlasting arms;",
+        "O how bright the path grows from day to day,",
+        "Leaning on the everlasting arms."
+      ]
+    },
+    {
+      "lines": [
+        "What have I to dread, what have I to fear,",
+        "Leaning on the everlasting arms?",
+        "I have blessed peace with my Lord so near,",
+        "Leaning on the everlasting arms."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

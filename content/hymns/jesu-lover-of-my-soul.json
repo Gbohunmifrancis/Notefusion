@@ -1,0 +1,89 @@
+{
+  "title": "Jesu, Lover of My Soul",
+  "alsoKnownAs": [
+    "Jesus, Lover of My Soul"
+  ],
+  "tune": "aberystwyth-parry",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1740)"
+    }
+  ],
+  "textPublished": 1740,
+  "occasions": [
+    "Funeral"
+  ],
+  "description": "Jesu, Lover of My Soul in Tonic Solfa to ABERYSTWYTH (PARRY): the solfa with the words, staff notation, the five verses, and a piano.",
+  "about": [
+    "Charles Wesley wrote the words, first published in Hymns and Sacred Poems in 1740. The tune, ABERYSTWYTH (PARRY), is by Joseph Parry (1879)."
+  ],
+  "underlay": "Je-sus_, lov_-er of my soul, Let me to Thy bo_-som fly, While the_ near_-er wa-ters roll, While the_ tem-pest still is high. Hide me, O my Sav-ior_, hide, Till the storm of life is_ past; Safe in-to the ha-ven guide; Oh, re_-ceive_ my soul at last.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, lover of my soul,",
+        "Let me to Thy bosom fly,",
+        "While the nearer waters roll,",
+        "While the tempest still is high.",
+        "Hide me, O my Savior, hide,",
+        "Till the storm of life is past;",
+        "Safe into the haven guide;",
+        "Oh, receive my soul at last."
+      ]
+    },
+    {
+      "lines": [
+        "Other refuge have I none,",
+        "Hangs my helpless soul on Thee;",
+        "Leave, ah! leave me not alone,",
+        "Still support and comfort me.",
+        "All my trust on Thee is stayed,",
+        "All my help from Thee I bring;",
+        "Cover my defenseless head",
+        "With the shadow of Thy wing."
+      ]
+    },
+    {
+      "lines": [
+        "Wilt Thou not regard my call?",
+        "Wilt Thou not accept my prayer?",
+        "Lo! I sink, I faint, I fall—",
+        "Lo! on Thee I cast my care.",
+        "Reach me out Thy gracious hand!",
+        "While I of Thy strength receive,",
+        "Hoping against hope I stand,",
+        "Dying, and behold, I live."
+      ]
+    },
+    {
+      "lines": [
+        "Thou, O Christ, art all I want,",
+        "More than all in Thee I find;",
+        "Raise the fallen, cheer the faint,",
+        "Heal the sick, and lead the blind.",
+        "Just and holy is Thy Name,",
+        "Source of all true righteousness;",
+        "Thou art evermore the same,",
+        "Thou art full of truth and grace."
+      ]
+    },
+    {
+      "lines": [
+        "Plenteous grace with Thee is found,",
+        "Grace to cover all my sin;",
+        "Let the healing streams abound;",
+        "Make and keep me pure within.",
+        "Thou of life the fountain art,",
+        "Freely let me take of Thee;",
+        "Spring Thou up within my heart;",
+        "Rise to all eternity."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

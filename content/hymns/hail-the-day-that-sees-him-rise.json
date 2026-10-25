@@ -1,0 +1,98 @@
+{
+  "title": "Hail the Day That Sees Him Rise",
+  "tune": "llanfair",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1739)"
+    }
+  ],
+  "textPublished": 1739,
+  "occasions": [
+    "Ascension"
+  ],
+  "description": "Hail the Day That Sees Him Rise in Tonic Solfa to LLANFAIR: the solfa with the words, staff notation, the six verses, and a piano.",
+  "about": [
+    "Charles Wesley’s Ascension hymn was published in 1739. The tune LLANFAIR is by Robert Williams (1817)."
+  ],
+  "underlay": "Hail the day that sees Him_ rise, Al__-le_-lu-ia! To His Throne a-bove_ the skies; Al__-le_-lu-ia! Christ, the Lamb for sin_-ners_ given, Al__-le-lu-ia! En-ters now the high-est_ heaven. Al__-le_-lu-ia!",
+  "verses": [
+    {
+      "lines": [
+        "Hail the day that sees Him rise",
+        "Alleluia!",
+        "To His Throne above the skies;",
+        "Alleluia!",
+        "Christ, the Lamb for sinners given,",
+        "Alleluia!",
+        "Enters now the highest heaven.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "There for Him high triumph waits;",
+        "Alleluia!",
+        "Lift your heads, eternal gates;",
+        "Alleluia!",
+        "He hath conquered death and sin;",
+        "Alleluia!",
+        "Take the King of glory in.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Lo! the heaven its Lord receives,",
+        "Alleluia!",
+        "Yet He loves the earth He leaves;",
+        "Alleluia!",
+        "Though returning to His Throne,",
+        "Alleluia!",
+        "Still He calls mankind His own.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "See! He lifts His Hands above;",
+        "Alleluia!",
+        "See! He shews the prints of love;",
+        "Alleluia!",
+        "Hark! His gracious lips bestow",
+        "Alleluia!",
+        "Blessings on His Church below.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Still for us He intercedes,",
+        "Alleluia!",
+        "His prevailing death He pleads,",
+        "Alleluia!",
+        "Near Himself prepares our place,",
+        "Alleluia!",
+        "He the first-fruits of our race.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, though parted from our sight",
+        "Alleluia!",
+        "Far above the starry height,",
+        "Alleluia!",
+        "Grant our hearts may thither rise,",
+        "Alleluia!",
+        "Seeking Thee above the skies.",
+        "Alleluia!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

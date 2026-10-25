@@ -1,0 +1,74 @@
+{
+  "title": "While Shepherds Watched Their Flocks",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Nahum Tate",
+      "born": 1652,
+      "died": 1715,
+      "role": "Words (1700)"
+    }
+  ],
+  "textPublished": 1700,
+  "occasions": [
+    "Christmas"
+  ],
+  "description": "While Shepherds Watched Their Flocks in Tonic Solfa to WINCHESTER OLD: the solfa with the words, staff notation, the six verses, and a piano.",
+  "about": [
+    "Nahum Tate’s words date from 1700. The tune WINCHESTER OLD comes from Thomas Este’s Whole Book of Psalmes (1592)."
+  ],
+  "underlay": "While shep-herds watched their flocks by night, All seat-ed on the ground, The An-gel of the Lord came down, And glo-ry shone a-round.",
+  "verses": [
+    {
+      "lines": [
+        "While shepherds watched their flocks by night,",
+        "All seated on the ground,",
+        "The Angel of the Lord came down,",
+        "And glory shone around."
+      ]
+    },
+    {
+      "lines": [
+        "“Fear not,” said he; for mighty dread",
+        "Had seized their troubled mind;",
+        "“Glad tidings of great joy I bring",
+        "To you and all mankind."
+      ]
+    },
+    {
+      "lines": [
+        "“To you in David’s town this day",
+        "Is born of David’s line",
+        "A Saviour, Who is Christ the Lord;",
+        "And this shall be the sign:"
+      ]
+    },
+    {
+      "lines": [
+        "“The heavenly Babe you there shall find",
+        "To human view displayed,",
+        "All meanly wrapped in swathing bands,",
+        "And in a manger laid.”"
+      ]
+    },
+    {
+      "lines": [
+        "Thus spake the seraph; and forthwith",
+        "Appeared a shining throng",
+        "Of Angels praising God, who thus",
+        "Addressed their joyful song:"
+      ]
+    },
+    {
+      "lines": [
+        "“All glory be to God on high,",
+        "And on the earth be peace;",
+        "Good will henceforth from heaven to men",
+        "Begin and never cease.”"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

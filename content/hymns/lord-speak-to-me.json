@@ -1,0 +1,82 @@
+{
+  "title": "Lord, Speak to Me",
+  "alsoKnownAs": [
+    "Lord, Speak to Me, That I May Speak"
+  ],
+  "tune": "canonbury",
+  "text": [
+    {
+      "name": "Frances Ridley Havergal",
+      "born": 1836,
+      "died": 1879,
+      "role": "Words (1872)"
+    }
+  ],
+  "textPublished": 1872,
+  "description": "Lord, Speak to Me in Tonic Solfa to CANONBURY: the solfa with the words, staff notation, the seven verses, and a piano.",
+  "about": [
+    "Frances Ridley Havergal wrote these words in 1872 at Winterdyne, Bewdley, Worcestershire, for the use of lay helpers in the church. The tune CANONBURY is adapted from Robert Schumann’s Nachtstück, Opus 23, No. 4 (1839)."
+  ],
+  "underlay": "Lord, speak to me, that_ I may_ speak In liv-ing ech-oes of Thy tone; As Thou has sought, so_ let me_ seek Thine err-ing child-ren_ lost and lone.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, speak to me, that I may speak",
+        "In living echoes of Thy tone;",
+        "As Thou has sought, so let me seek",
+        "Thine erring children lost and lone."
+      ]
+    },
+    {
+      "lines": [
+        "O lead me, Lord, that I may lead",
+        "The wandering and the wavering feet;",
+        "O feed me, Lord, that I may feed",
+        "Thy hungering ones with manna sweet."
+      ]
+    },
+    {
+      "lines": [
+        "O strengthen me, that while I stand",
+        "Firm on the rock, and strong in Thee,",
+        "I may stretch out a loving hand",
+        "To wrestlers with the troubled sea."
+      ]
+    },
+    {
+      "lines": [
+        "O teach me, Lord, that I may teach",
+        "The precious things Thou dost impart;",
+        "And wing my words, that they may reach",
+        "The hidden depths of many a heart."
+      ]
+    },
+    {
+      "lines": [
+        "O give Thine own sweet rest to me,",
+        "That I may speak with soothing power",
+        "A word in season, as from Thee,",
+        "To weary ones in needful hour."
+      ]
+    },
+    {
+      "lines": [
+        "O fill me with Thy fullness, Lord,",
+        "Until my very heart overflow",
+        "In kindling thought and glowing word,",
+        "Thy love to tell, Thy praise to show."
+      ]
+    },
+    {
+      "lines": [
+        "O use me, Lord, use even me,",
+        "Just as Thou wilt, and when, and where,",
+        "Until Thy blessèd face I see,",
+        "Thy rest, Thy joy, Thy glory share."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,75 @@
+{
+  "title": "I Surrender All",
+  "alsoKnownAs": [
+    "All to Jesus I Surrender"
+  ],
+  "tune": "surrender",
+  "text": [
+    {
+      "name": "Judson W. Van DeVenter",
+      "born": 1855,
+      "died": 1939,
+      "role": "Words (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "description": "I Surrender All in Tonic Solfa to SURRENDER: the solfa with the words, staff notation, the five verses and the refrain, and a piano.",
+  "about": [
+    "Judson W. Van DeVenter wrote the words, first published in 1896. The tune, SURRENDER, is by Winfield S. Weeden (1896)."
+  ],
+  "underlay": "All to Je-sus I sur-ren-der, All to Him I free-ly give; I will ev-er love and trust Him, In His pres-ence dai-ly live. I sur-ren-der all, I sur-ren-der all; All to Thee, my bless-ed Sav-ior, I sur-ren-der all.",
+  "verses": [
+    {
+      "lines": [
+        "All to Jesus I surrender,",
+        "All to Him I freely give;",
+        "I will ever love and trust Him,",
+        "In His presence daily live."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "I surrender all,",
+        "I surrender all;",
+        "All to Thee, my blessed Savior,",
+        "I surrender all."
+      ]
+    },
+    {
+      "lines": [
+        "All to Jesus I surrender,",
+        "Humbly at His feet I bow;",
+        "Worldly pleasures all forsaken,",
+        "Take me, Jesus, take me now."
+      ]
+    },
+    {
+      "lines": [
+        "All to Jesus I surrender,",
+        "Make me, Savior, wholly Thine;",
+        "Let me feel the Holy Spirit,",
+        "Truly know that Thou art mine."
+      ]
+    },
+    {
+      "lines": [
+        "All to Jesus I surrender,",
+        "Lord, I give myself to Thee;",
+        "Fill me with Thy love and power,",
+        "Let Thy blessing fall on me."
+      ]
+    },
+    {
+      "lines": [
+        "All to Jesus I surrender,",
+        "Now I feel the sacred flame;",
+        "Oh, the joy of full salvation!",
+        "Glory, glory, to His Name!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,56 @@
+{
+  "title": "Christ, Whose Glory Fills the Skies",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1740)"
+    }
+  ],
+  "textPublished": 1740,
+  "occasions": [
+    "Morning"
+  ],
+  "description": "Christ, Whose Glory Fills the Skies in Tonic Solfa to RATISBON (WERNER): the solfa with the words, staff notation, the three verses, and a piano.",
+  "about": [
+    "Charles Wesley published these words in 1740. The tune RATISBON comes from Werner’s Choralbuch (Leipzig, 1815), harmonised by William Henry Havergal in 1861."
+  ],
+  "underlay": "Christ, whose glo-ry fills the skies, Christ, the true, the on-ly Light, Sun of Right-eous-ness, a-rise, Tri-umph o’er the shades of night; Day-spring from on high, be near; Day-star, in my heart ap-pear.",
+  "verses": [
+    {
+      "lines": [
+        "Christ, whose glory fills the skies,",
+        "Christ, the true, the only Light,",
+        "Sun of Righteousness, arise,",
+        "Triumph o’er the shades of night;",
+        "Dayspring from on high, be near;",
+        "Day-star, in my heart appear."
+      ]
+    },
+    {
+      "lines": [
+        "Dark and cheerless is the morn",
+        "Unaccompanied by Thee;",
+        "Joyless is the day’s return",
+        "Till Thy mercy’s beams I see;",
+        "Till they inward light impart,",
+        "Glad my eyes, and warm my heart."
+      ]
+    },
+    {
+      "lines": [
+        "Visit then this soul of mine,",
+        "Pierce the gloom of sin and grief;",
+        "Fill me, Radiancy divine,",
+        "Scatter all my unbelief;",
+        "More and more Thyself display,",
+        "Shining to the perfect day."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

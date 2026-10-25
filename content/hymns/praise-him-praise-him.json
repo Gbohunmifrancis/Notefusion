@@ -1,0 +1,60 @@
+{
+  "title": "Praise Him! Praise Him!",
+  "tune": "joyful-song",
+  "text": [
+    {
+      "name": "Fanny Crosby",
+      "born": 1820,
+      "died": 1915,
+      "role": "Words (1869)"
+    }
+  ],
+  "textPublished": 1869,
+  "description": "Praise Him! Praise Him! in Tonic Solfa to JOYFUL SONG: the solfa with the words, staff notation, the three verses and the refrain, and a piano.",
+  "about": [
+    "Fanny Crosby wrote the words, first published in 1869. The tune, JOYFUL SONG, is by Chester G. Allen (1869)."
+  ],
+  "underlay": "Praise Him! Praise Him! Je-sus, our bless-ed Re-deem-er! Sing, O earth— His won-der-ful love pro-claim! Hail Him! Hail Him! High-est arch-an-gels in glo-ry; Strength and hon-or give to His ho-ly Name! Like a shep_-herd, Je-sus will guard His chil-dren, In His arms He car-ries them all day long. Praise Him! Praise Him! Tell of His ex-cel-lent great-ness; Praise Him! Praise Him! Ev-er in joy-ful song!",
+  "verses": [
+    {
+      "lines": [
+        "Praise Him! Praise Him! Jesus, our blessed Redeemer!",
+        "Sing, O earth—His wonderful love proclaim!",
+        "Hail Him! Hail Him! Highest archangels in glory;",
+        "Strength and honor give to His holy Name!",
+        "Like a shepherd, Jesus will guard His children,",
+        "In His arms He carries them all day long."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Praise Him! Praise Him! Tell of His excellent greatness;",
+        "Praise Him! Praise Him! Ever in joyful song!"
+      ]
+    },
+    {
+      "lines": [
+        "Praise Him! Praise Him! Jesus, our blessed Redeemer!",
+        "For our sins He suffered, and bled, and died.",
+        "He our Rock, our hope of eternal salvation,",
+        "Hail Him! Hail Him! Jesus the Crucified.",
+        "Sound His praises! Jesus who bore our sorrows,",
+        "Love unbounded, wonderful, deep and strong."
+      ]
+    },
+    {
+      "lines": [
+        "Praise Him! Praise Him! Jesus, our blessed Redeemer!",
+        "Heav’nly portals loud with hosannas ring!",
+        "Jesus, Savior, reigneth forever and ever;",
+        "Crown Him! Crown Him! Prophet, and Priest, and King!",
+        "Christ is coming! over the world victorious,",
+        "Pow’r and glory unto the Lord belong."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

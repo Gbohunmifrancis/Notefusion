@@ -1,0 +1,59 @@
+{
+  "title": "Heavenly Sunlight",
+  "alsoKnownAs": [
+    "Walking in Sunlight"
+  ],
+  "tune": "sunlight",
+  "text": [
+    {
+      "name": "Henry J. Zelley",
+      "born": 1859,
+      "died": 1942,
+      "role": "Words (1899)"
+    }
+  ],
+  "textPublished": 1899,
+  "description": "Heavenly Sunlight in Tonic Solfa to SUNLIGHT: the solfa with the words, staff notation, the three verses and the refrain, and a piano.",
+  "about": [
+    "Henry J. Zelley wrote the words, published in 1899 with the tune SUNLIGHT by G. H. Cook."
+  ],
+  "underlay": "Walk-ing in sun-light all of my jour-ney, O-ver the moun-tains, through the deep vale; Je-sus has said, I’ll nev-er for-sake thee— Pro-mise di-vine that nev-er can fail. Heav-en-ly sun-light! Heav-en-ly sun-light! Flood-ing my soul with glo-ry di-vine_; Hal-le-lu-jah! I am re-joic-ing_, Sing-ing His prais-es, Je-sus is mine!",
+  "verses": [
+    {
+      "lines": [
+        "Walking in sunlight all of my journey,",
+        "Over the mountains, through the deep vale;",
+        "Jesus has said, I’ll never forsake thee—",
+        "Promise divine that never can fail."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Heavenly sunlight! Heavenly sunlight!",
+        "Flooding my soul with glory divine;",
+        "Hallelujah! I am rejoicing,",
+        "Singing His praises, Jesus is mine!"
+      ]
+    },
+    {
+      "lines": [
+        "Shadows around me, shadows above me",
+        "Never conceal my Saviour and Guide;",
+        "He is the light, in Him is no darkness,",
+        "Ever I’m walking close to His side."
+      ]
+    },
+    {
+      "lines": [
+        "In the bright sunlight, ever rejoicing,",
+        "Pressing my way to mansions above;",
+        "Singing His praises, gladly I’m walking,",
+        "Walking in sunlight, sunlight of love."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

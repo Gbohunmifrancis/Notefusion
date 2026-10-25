@@ -1,0 +1,80 @@
+{
+  "title": "Come, Thou Almighty King",
+  "tune": "italian-hymn",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words (by 1757)"
+    }
+  ],
+  "textPublished": 1757,
+  "occasions": [
+    "Trinity"
+  ],
+  "description": "Come, Thou Almighty King in Tonic Solfa to ITALIAN HYMN: the solfa with the words, staff notation, the five verses, and a piano.",
+  "about": [
+    "The author of these words is unknown; they were printed in a leaflet bound into the 1757 edition of George Whitefield’s Collection of Hymns for Social Worship. Felice de Giardini wrote the tune ITALIAN HYMN for them, published in 1769."
+  ],
+  "underlay": "Come, Thou al-might_-y King, Help us Thy name__ to sing, Help us to praise! Fa-ther all glo-ri-ous, O’er all vic-to-ri-ous, Come and reign o-ver us, An-cient of Days!",
+  "verses": [
+    {
+      "lines": [
+        "Come, Thou almighty King,",
+        "Help us Thy name to sing,",
+        "Help us to praise!",
+        "Father all glorious,",
+        "O’er all victorious,",
+        "Come and reign over us,",
+        "Ancient of Days!"
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, our Lord, arise,",
+        "Scatter our enemies,",
+        "And make them fall;",
+        "Let Thine almighty aid",
+        "Our sure defense be made,",
+        "Our souls on Thee be stayed;",
+        "Lord, hear our call."
+      ]
+    },
+    {
+      "lines": [
+        "Come, Thou incarnate Word,",
+        "Gird on Thy mighty sword,",
+        "Our prayer attend!",
+        "Come, and Thy people bless,",
+        "And give Thy Word success,",
+        "Spirit of holiness,",
+        "On us descend!"
+      ]
+    },
+    {
+      "lines": [
+        "Come, holy Comforter,",
+        "Thy sacred witness bear",
+        "In this glad hour.",
+        "Thou who almighty art,",
+        "Now rule in every heart,",
+        "And ne’er from us depart,",
+        "Spirit of power!"
+      ]
+    },
+    {
+      "lines": [
+        "To Thee, great One in Three,",
+        "Eternal praises be,",
+        "Hence, evermore.",
+        "Thy sovereign majesty",
+        "May we in glory see,",
+        "And to eternity",
+        "Love and adore!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,55 @@
+{
+  "title": "Holy Bible, Book Divine",
+  "tune": "aletta",
+  "text": [
+    {
+      "name": "John Burton",
+      "born": 1773,
+      "died": 1822,
+      "role": "Words (1803)"
+    }
+  ],
+  "textPublished": 1803,
+  "description": "Holy Bible, Book Divine in Tonic Solfa to ALETTA: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "John Burton’s words date from 1803. The tune ALETTA is by William B. Bradbury (1858)."
+  ],
+  "underlay": "Ho-ly Bi-ble, book di__-vine, Pre-cious trea-sure, thou art__ mine; Mine, to tell me whence I came, Mine, to teach me what I__ am;",
+  "verses": [
+    {
+      "lines": [
+        "Holy Bible, book divine,",
+        "Precious treasure, thou art mine;",
+        "Mine, to tell me whence I came,",
+        "Mine, to teach me what I am;"
+      ]
+    },
+    {
+      "lines": [
+        "Mine, to chide me when I rove,",
+        "Mine, to show a Saviour’s love;",
+        "Mine art thou, to guide my feet,",
+        "Mine, to judge, condemn, acquit;"
+      ]
+    },
+    {
+      "lines": [
+        "Mine, to comfort in distress,",
+        "If the Holy Spirit bless;",
+        "Mine, to show by living faith",
+        "Man can triumph over death;"
+      ]
+    },
+    {
+      "lines": [
+        "Mine, to tell of joys to come,",
+        "And the rebel sinner’s doom;",
+        "Holy Bible, book divine,",
+        "Precious treasure, thou art mine!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -5,10 +5,10 @@
     {
       "name": "Welsh Hymn Tune",
       "traditional": true,
-      "role": "Melody"
+      "role": "Melody (1784)"
     }
   ],
-  "musicPublished": null,
+  "musicPublished": 1784,
   "metre": "7 7 7 7 7 7",
   "key": "G minor",
   "time": "4/4",
@@ -19,13 +19,13 @@
   "incipit": "mllsfmltd|rdtldtlsl",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0006/x000669.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0006/000669a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000669; public domain.",
-  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000669 (the melody read from 000669a.mid, checked against the page's do-re-mi incipit, 3 notes off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000669a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000669 (the melody read from 000669a.mid, checked against the page's do-re-mi incipit, 3 notes off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000669a.nwc). The year (1784, Edward Jones's Relicks of the Welsh Bards, as the folk tune \"Tros y Garreg\") is from https://www.hymnary.org/tune/arfon_minor, whose incipit (51176 51234 32132) is this page's.",
   "importedFrom": "cceh:000669",
-  "updated": "2026-10-17"
+  "updated": "2026-10-25"
 }

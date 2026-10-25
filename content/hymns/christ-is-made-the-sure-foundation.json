@@ -1,0 +1,73 @@
+{
+  "title": "Christ Is Made the Sure Foundation",
+  "tune": "westminster-abbey-1090",
+  "text": [
+    {
+      "name": "John Mason Neale",
+      "born": 1818,
+      "died": 1866,
+      "role": "Translated (1851)"
+    }
+  ],
+  "textPublished": 1851,
+  "description": "Christ Is Made the Sure Foundation in Tonic Solfa to WESTMINSTER ABBEY: the solfa with the words, staff notation, the five verses, and a piano.",
+  "about": [
+    "John Mason Neale translated the Latin hymn in 1851; Hymns Ancient and Modern prints these verses as the second part of his translation. The tune WESTMINSTER ABBEY comes from Henry Purcell (1680)."
+  ],
+  "underlay": "Christ is made the sure Foun-da-tion, Christ the Head_ and Cor-ner-stone, Cho-sen of the Lord, and pre-cious, Bind-ing all_ the Church in one, Ho-ly Si-on’s help for ev-er, And her con-fi-dence a-lone.",
+  "verses": [
+    {
+      "lines": [
+        "Christ is made the sure Foundation,",
+        "Christ the Head and Corner-stone,",
+        "Chosen of the Lord, and precious,",
+        "Binding all the Church in one,",
+        "Holy Sion’s help for ever,",
+        "And her confidence alone."
+      ]
+    },
+    {
+      "lines": [
+        "All that dedicated city,",
+        "Dearly loved of God on high,",
+        "In exultant jubilation",
+        "Pours perpetual melody,",
+        "God the One in Three adoring",
+        "In glad hymns eternally."
+      ]
+    },
+    {
+      "lines": [
+        "To this temple, where we call Thee,",
+        "Come, O Lord of hosts, to-day;",
+        "With Thy wonted loving-kindness",
+        "Hear Thy servants, as they pray;",
+        "And Thy fullest benediction",
+        "Shed within its walls alway."
+      ]
+    },
+    {
+      "lines": [
+        "Here vouchsafe to all Thy servants",
+        "What they ask of Thee to gain,",
+        "What they gain from Thee for ever",
+        "With the Blessed to retain,",
+        "And hereafter in Thy glory",
+        "Evermore with Thee to reign."
+      ]
+    },
+    {
+      "lines": [
+        "Laud and honour to the Father,",
+        "Laud and honour to the Son,",
+        "Laud and honour to the Spirit,",
+        "Ever Three, and ever One,",
+        "Consubstantial, Co-eternal,",
+        "While unending ages run."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

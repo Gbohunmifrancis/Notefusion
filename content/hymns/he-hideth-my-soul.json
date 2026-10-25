@@ -1,0 +1,68 @@
+{
+  "title": "He Hideth My Soul",
+  "alsoKnownAs": [
+    "A Wonderful Saviour Is Jesus My Lord"
+  ],
+  "tune": "kirkpatrick",
+  "text": [
+    {
+      "name": "Fanny Crosby",
+      "born": 1820,
+      "died": 1915,
+      "role": "Words (1890)"
+    }
+  ],
+  "textPublished": 1890,
+  "description": "He Hideth My Soul in Tonic Solfa to KIRKPATRICK: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Fanny Crosby wrote the words, published in 1890 with the tune KIRKPATRICK by William J. Kirkpatrick."
+  ],
+  "underlay": "A won-der-ful Sa-viour is Je-sus my Lord, A won-der-ful Sa-viour to me; He hid-eth my soul in the cleft of the rock, Where riv-ers of plea-sure I see. He hid-eth my soul in the cleft of the rock, That sha-dows a dry, thirst-y land; He hid-eth my life in the depths of His love, And cov-ers me there with His hand, And cov-ers me there with_ His hand.",
+  "verses": [
+    {
+      "lines": [
+        "A wonderful Saviour is Jesus my Lord,",
+        "A wonderful Saviour to me;",
+        "He hideth my soul in the cleft of the rock,",
+        "Where rivers of pleasure I see."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "He hideth my soul in the cleft of the rock,",
+        "That shadows a dry, thirsty land;",
+        "He hideth my life in the depths of His love,",
+        "And covers me there with His hand,",
+        "And covers me there with His hand."
+      ]
+    },
+    {
+      "lines": [
+        "A wonderful Saviour is Jesus my Lord,",
+        "He taketh my burden away,",
+        "He holdeth me up and I shall not be moved,",
+        "He giveth me strength as my day."
+      ]
+    },
+    {
+      "lines": [
+        "With numberless blessings each moment He crowns,",
+        "And filled with His fullness divine,",
+        "I sing in my rapture, oh, glory to God!",
+        "For such a Redeemer as mine."
+      ]
+    },
+    {
+      "lines": [
+        "When clothed with His brightness transported I rise",
+        "To meet Him in clouds of the sky,",
+        "His perfect salvation, His wonderful love,",
+        "I’ll shout with the millions on high."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

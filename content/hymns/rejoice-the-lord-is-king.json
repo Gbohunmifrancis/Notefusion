@@ -1,0 +1,66 @@
+{
+  "title": "Rejoice, the Lord Is King",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1744)"
+    }
+  ],
+  "textPublished": 1744,
+  "occasions": [
+    "Ascension"
+  ],
+  "description": "Rejoice, the Lord Is King in Tonic Solfa to DARWALL: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "Charles Wesley’s words were first published in John Wesley’s Moral and Sacred Poems in 1744. John Darwall wrote the tune in 1770."
+  ],
+  "underlay": "Re-joice, the Lord is King! Your Lord and King a-dore; Re-joice, give thanks, and sing, And tri-umph ev-er-more; Lift up your heart, lift up your voice; Re-joice, a-gain I say, re-joice!",
+  "verses": [
+    {
+      "lines": [
+        "Rejoice, the Lord is King!",
+        "Your Lord and King adore;",
+        "Rejoice, give thanks, and sing,",
+        "And triumph evermore;",
+        "Lift up your heart, lift up your voice;",
+        "Rejoice, again I say, rejoice!"
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, the Saviour, reigns,",
+        "The God of truth and love;",
+        "When He had purged our stains",
+        "He took His seat above;",
+        "Lift up your heart, lift up your voice;",
+        "Rejoice, again I say, rejoice!"
+      ]
+    },
+    {
+      "lines": [
+        "His kingdom cannot fail,",
+        "He rules o’er earth and Heav’n,",
+        "The keys of death and hell",
+        "Are to our Jesus giv’n;",
+        "Lift up your heart, lift up your voice;",
+        "Rejoice, again I say, rejoice!"
+      ]
+    },
+    {
+      "lines": [
+        "Rejoice in glorious hope!",
+        "Jesus the Judge shall come,",
+        "And take His servants up",
+        "To their eternal home;",
+        "We soon shall hear th’ archangel’s voice;",
+        "The trump of God shall sound, rejoice!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

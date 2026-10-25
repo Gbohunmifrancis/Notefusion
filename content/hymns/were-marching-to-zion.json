@@ -1,0 +1,89 @@
+{
+  "title": "We’re Marching to Zion",
+  "alsoKnownAs": [
+    "Come, We That Love the Lord"
+  ],
+  "tune": "marching-to-zion",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    },
+    {
+      "name": "Robert Lowry",
+      "born": 1826,
+      "died": 1899,
+      "role": "Refrain (1867)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "We’re Marching to Zion in Tonic Solfa to MARCHING TO ZION: the solfa with the words, staff notation, the six verses and the refrain, and a piano.",
+  "about": [
+    "Isaac Watts’s words were published in 1707. Robert Lowry added the refrain and wrote the tune in 1867."
+  ],
+  "underlay": "Come, we that love the Lord, And let our joys be known__; Join in a song with sweet ac-cord, Join in a song with sweet ac-cord, And thus sur-round the throne, And thus sur-round the throne. We’re march-ing to Zi-on, Beau-ti-ful, beau-ti-ful Zi-on; We’re march-ing up-ward to Zi-on, The beau-ti-ful cit-y of_ God.",
+  "verses": [
+    {
+      "lines": [
+        "Come, we that love the Lord,",
+        "And let our joys be known;",
+        "Join in a song with sweet accord,",
+        "And thus surround the throne."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "We’re marching to Zion,",
+        "Beautiful, beautiful Zion;",
+        "We’re marching upward to Zion,",
+        "The beautiful city of God."
+      ]
+    },
+    {
+      "lines": [
+        "The sorrows of the mind",
+        "Be banished from the place;",
+        "Religion never was designed",
+        "To make our pleasures less."
+      ]
+    },
+    {
+      "lines": [
+        "Let those refuse to sing,",
+        "Who never knew our God;",
+        "But children of the heav’nly King",
+        "May speak their joys abroad."
+      ]
+    },
+    {
+      "lines": [
+        "The men of grace have found",
+        "Glory begun below;",
+        "Celestial fruits on earthly ground",
+        "From faith and hope may grow."
+      ]
+    },
+    {
+      "lines": [
+        "The hill of Zion yields",
+        "A thousand sacred sweets",
+        "Before we reach the heav’nly fields,",
+        "Or walk the golden streets."
+      ]
+    },
+    {
+      "lines": [
+        "Then let our songs abound,",
+        "And every tear be dry;",
+        "We’re marching through Immanuel’s ground",
+        "To fairer worlds on high."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

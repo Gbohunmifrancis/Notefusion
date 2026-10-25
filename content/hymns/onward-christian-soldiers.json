@@ -1,0 +1,70 @@
+{
+  "title": "Onward, Christian Soldiers",
+  "tune": "st-gertrude",
+  "text": [
+    {
+      "name": "Sabine Baring-Gould",
+      "born": 1834,
+      "died": 1924,
+      "role": "Words (1865)"
+    }
+  ],
+  "textPublished": 1865,
+  "description": "Onward, Christian Soldiers in Tonic Solfa to ST. GERTRUDE: the solfa with the words, staff notation, the five verses and the refrain, and a piano.",
+  "about": [
+    "Sabine Baring-Gould wrote the words, first published in 1865. The tune, ST. GERTRUDE, is by Arthur Seymour Sullivan (1871)."
+  ],
+  "underlay": "On-ward, Chris-tian sol_-diers, march-ing as to war, With the cross of Je-sus go-ing on be-fore. Christ, the roy-al Mas_-ter, leads a-gainst the foe; For-ward in-to bat_-tle_ see His ban-ners go! On-ward, Chris-tian sol__-diers_, march-ing as to_ war, With the cross of Je-sus go-ing on be-fore.",
+  "verses": [
+    {
+      "lines": [
+        "Onward, Christian soldiers, marching as to war,",
+        "With the cross of Jesus going on before.",
+        "Christ, the royal Master, leads against the foe;",
+        "Forward into battle see His banners go!"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Onward, Christian soldiers, marching as to war,",
+        "With the cross of Jesus going on before."
+      ]
+    },
+    {
+      "lines": [
+        "At the sign of triumph Satan’s host doth flee;",
+        "On then, Christian soldiers, on to victory!",
+        "Hell’s foundations quiver at the shout of praise;",
+        "Brothers, lift your voices, loud your anthems raise."
+      ]
+    },
+    {
+      "lines": [
+        "Like a mighty army moves the church of God;",
+        "Brothers, we are treading where the saints have trod.",
+        "We are not divided, all one body we,",
+        "One in hope and doctrine, one in charity."
+      ]
+    },
+    {
+      "lines": [
+        "Crowns and thrones may perish, kingdoms rise and wane,",
+        "But the church of Jesus constant will remain.",
+        "Gates of hell can never ’gainst that church prevail;",
+        "We have Christ’s own promise, and that cannot fail."
+      ]
+    },
+    {
+      "lines": [
+        "Onward then, ye people, join our happy throng,",
+        "Blend with ours your voices in the triumph song.",
+        "Glory, laud, and honor unto Christ the King,",
+        "This through countless ages men and angels sing."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

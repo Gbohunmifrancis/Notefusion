@@ -1,0 +1,81 @@
+{
+  "title": "At the Cross",
+  "alsoKnownAs": [
+    "Alas! and Did My Saviour Bleed"
+  ],
+  "tune": "hudson",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    },
+    {
+      "name": "Ralph E. Hudson",
+      "born": 1843,
+      "died": 1901,
+      "role": "Refrain (1885)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "At the Cross in Tonic Solfa to HUDSON: the solfa with the words, staff notation, the five verses and the refrain, and a piano.",
+  "about": [
+    "The verses are Isaac Watts’s “Alas! and did my Saviour bleed” (1707); Ralph E. Hudson added the refrain and the tune HUDSON in 1885."
+  ],
+  "underlay": "A-las! and did my Sa-viour bleed, And did my Sov’-reign die? Would He de-vote that sa-cred head For such a worm as I? At the cross, at the cross where I first_ saw the light, And the bur-den of my heart rolled a-way, It was there by faith I re-ceived my_ sight, And now I am hap-py all the day!",
+  "verses": [
+    {
+      "lines": [
+        "Alas! and did my Saviour bleed",
+        "And did my Sov’reign die?",
+        "Would He devote that sacred head",
+        "For such a worm as I?"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "At the cross, at the cross where I first saw the light,",
+        "And the burden of my heart rolled away,",
+        "It was there by faith I received my sight,",
+        "And now I am happy all the day!"
+      ]
+    },
+    {
+      "lines": [
+        "Was it for crimes that I had done",
+        "He groaned upon the tree?",
+        "Amazing pity! grace unknown!",
+        "And love beyond degree!"
+      ]
+    },
+    {
+      "lines": [
+        "Well might the sun in darkness hide",
+        "And shut his glories in,",
+        "When Christ, the mighty Maker died,",
+        "For man the creature’s sin."
+      ]
+    },
+    {
+      "lines": [
+        "Thus might I hide my blushing face",
+        "While His dear cross appears,",
+        "Dissolve my heart in thankfulness,",
+        "And melt my eyes to tears."
+      ]
+    },
+    {
+      "lines": [
+        "But drops of grief can ne’er repay",
+        "The debt of love I owe:",
+        "Here, Lord, I give myself away,",
+        "’Tis all that I can do."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

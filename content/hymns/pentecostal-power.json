@@ -1,0 +1,70 @@
+{
+  "title": "Pentecostal Power",
+  "alsoKnownAs": [
+    "Lord, Send the Old-Time Power"
+  ],
+  "tune": "old-time-power-gabriel",
+  "text": [
+    {
+      "name": "Charles H. Gabriel",
+      "born": 1856,
+      "died": 1932,
+      "role": "Words (1912)"
+    }
+  ],
+  "textPublished": 1912,
+  "occasions": [
+    "Pentecost"
+  ],
+  "description": "Pentecostal Power in Tonic Solfa to OLD-TIME POWER (GABRIEL): the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Charles H. Gabriel wrote both the words and the tune OLD-TIME POWER; the song was published in 1912."
+  ],
+  "underlay": "Lord, as of old, at Pen-te-cost, Thou didst Thy pow’r dis-play— With cleans-ing, pu-ri-fy-ing flame, De-scend on us to-day. Lord, send the old-time pow-er, the Pen-te-cos-tal pow-er! Thy flood-gates of bless-ing, on us throw o-pen wide! Lord, send the old-time pow-er, the Pen-te-cos-tal pow-er! That sin-ners be con-vert-ed and Thy Name glo-ri-fied!",
+  "verses": [
+    {
+      "lines": [
+        "Lord, as of old, at Pentecost,",
+        "Thou didst Thy pow’r display—",
+        "With cleansing, purifying flame,",
+        "Descend on us today."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Lord, send the old-time power, the Pentecostal power!",
+        "Thy floodgates of blessing, on us throw open wide!",
+        "Lord, send the old-time power, the Pentecostal power!",
+        "That sinners be converted and Thy Name glorified!"
+      ]
+    },
+    {
+      "lines": [
+        "For mighty works for Thee, prepare",
+        "And strengthen every heart;",
+        "Come, take possession of Thine own,",
+        "And nevermore depart."
+      ]
+    },
+    {
+      "lines": [
+        "All self consume, all sin destroy!",
+        "With earnest zeal endue",
+        "Each waiting heart to work for Thee;",
+        "O Lord, our faith renew!"
+      ]
+    },
+    {
+      "lines": [
+        "Speak, Lord! before Thy throne we wait,",
+        "Thy promise we believe,",
+        "And will not let Thee go until",
+        "The blessing we receive."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -6,10 +6,10 @@
       "name": "Ralph E. Hudson",
       "born": 1843,
       "died": 1901,
-      "role": "Music"
+      "role": "Music (1875)"
     }
   ],
-  "musicPublished": null,
+  "musicPublished": 1875,
   "metre": "8 7 8 7",
   "key": "Eb major",
   "time": "3/4",
@@ -20,13 +20,13 @@
   "incipit": "drmdrfmd",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0003/x000345.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0003/000345a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000345; public domain.",
-  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000345 (the melody read from 000345a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ralph E. Hudson's dates (1843–1901) are from https://en.wikipedia.org/wiki/Ralph_E._Hudson; CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000345a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000345 (the melody read from 000345a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ralph E. Hudson's dates (1843–1901) are from https://en.wikipedia.org/wiki/Ralph_E._Hudson; CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000345a.nwc). The year (1875) is from https://hymnary.org/tune/satisfied_hudson (Composer: R. E. Hudson (c. 1875)) and https://library.timelesstruths.org/music/Satisfied/ (Ralph E. Hudson, 1875).",
   "importedFrom": "cceh:000345",
-  "updated": "2026-10-17"
+  "updated": "2026-10-25"
 }

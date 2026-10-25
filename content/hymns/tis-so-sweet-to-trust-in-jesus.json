@@ -1,0 +1,64 @@
+{
+  "title": "’Tis So Sweet to Trust in Jesus",
+  "tune": "trust-in-jesus",
+  "text": [
+    {
+      "name": "Louisa M. R. Stead",
+      "born": 1846,
+      "died": 1917,
+      "role": "Words (1882)"
+    }
+  ],
+  "textPublished": 1882,
+  "description": "’Tis So Sweet to Trust in Jesus in Tonic Solfa to TRUST IN JESUS: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Louisa M. R. Stead wrote the words, first published in 1882. The tune, TRUST IN JESUS, is by William James Kirkpatrick (1882)."
+  ],
+  "underlay": "’Tis so sweet to trust in Je-sus, Just to take Him at His Word; Just to rest up-on His prom-ise, And to know, “Thus saith the Lord!” Je-sus, Je-sus, how I trust Him! How I’ve proved Him o’er and o’er; Je-sus, Je-sus, pre-cious Je-sus! Oh, for grace to trust Him more!",
+  "verses": [
+    {
+      "lines": [
+        "’Tis so sweet to trust in Jesus,",
+        "Just to take Him at His Word;",
+        "Just to rest upon His promise,",
+        "And to know, “Thus saith the Lord!”"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Jesus, Jesus, how I trust Him!",
+        "How I’ve proved Him o’er and o’er;",
+        "Jesus, Jesus, precious Jesus!",
+        "Oh, for grace to trust Him more!"
+      ]
+    },
+    {
+      "lines": [
+        "Oh, how sweet to trust in Jesus,",
+        "Just to trust His cleansing blood;",
+        "And in simple faith to plunge me",
+        "’Neath the healing, cleansing flood!"
+      ]
+    },
+    {
+      "lines": [
+        "Yes, ’tis sweet to trust in Jesus,",
+        "Just from sin and self to cease;",
+        "Just from Jesus simply taking",
+        "Life and rest, and joy and peace."
+      ]
+    },
+    {
+      "lines": [
+        "I’m so glad I learned to trust Thee,",
+        "Precious Jesus, Savior, Friend;",
+        "And I know that Thou art with me,",
+        "Wilt be with me to the end."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

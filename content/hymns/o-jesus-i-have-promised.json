@@ -1,0 +1,71 @@
+{
+  "title": "O Jesus, I Have Promised",
+  "tune": "angels-story",
+  "text": [
+    {
+      "name": "John Ernest Bode",
+      "born": 1816,
+      "died": 1874,
+      "role": "Words (1868)"
+    }
+  ],
+  "textPublished": 1868,
+  "description": "O Jesus, I Have Promised in Tonic Solfa to ANGEL'S STORY: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "John Ernest Bode wrote the words, first published in 1868. The tune, ANGEL'S STORY, is by Arthur Henry Mann (1881)."
+  ],
+  "underlay": "O Je-sus, I have prom-ised To serve Thee to the end; Be Thou for-ev-er near me, My Mas-ter and my Friend; I shall not fear the bat-tle If Thou art by my side, Nor wan-der from the path-way If Thou wilt be my Guide.",
+  "verses": [
+    {
+      "lines": [
+        "O Jesus, I have promised",
+        "To serve Thee to the end;",
+        "Be Thou forever near me,",
+        "My Master and my Friend;",
+        "I shall not fear the battle",
+        "If Thou art by my side,",
+        "Nor wander from the pathway",
+        "If Thou wilt be my Guide."
+      ]
+    },
+    {
+      "lines": [
+        "O let me feel Thee near me,",
+        "The world is ever near;",
+        "I see the sights that dazzle,",
+        "The tempting sounds I hear;",
+        "My foes are ever near me,",
+        "Around me and within;",
+        "But, Jesus, draw Thou nearer,",
+        "And shield my soul from sin."
+      ]
+    },
+    {
+      "lines": [
+        "O let me hear Thee speaking",
+        "In accents clear and still,",
+        "Above the storms of passion,",
+        "The murmurs of self-will;",
+        "O speak to reassure me,",
+        "To hasten or control!",
+        "O speak, and make me listen,",
+        "Thou Guardian of my soul!"
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus, Thou hast promised",
+        "To all who follow Thee",
+        "That where Thou art in glory",
+        "There shall Thy servant be;",
+        "And, Jesus, I have promised",
+        "To serve Thee to the end;",
+        "O give me grace to follow,",
+        "My Master and my Friend!"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

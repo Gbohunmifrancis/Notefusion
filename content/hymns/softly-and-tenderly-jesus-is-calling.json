@@ -1,0 +1,67 @@
+{
+  "title": "Softly and Tenderly Jesus Is Calling",
+  "alsoKnownAs": [
+    "Softly and Tenderly"
+  ],
+  "tune": "thompson",
+  "text": [
+    {
+      "name": "Will L. Thompson",
+      "born": 1847,
+      "died": 1909,
+      "role": "Words (1880)"
+    }
+  ],
+  "textPublished": 1880,
+  "description": "Softly and Tenderly Jesus Is Calling in Tonic Solfa to THOMPSON: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Will L. Thompson wrote both the words and the tune; the song was published in 1880."
+  ],
+  "underlay": "Soft-ly and ten-der-ly Je-sus is call-ing, Call-ing for you and for me; See, on the por-tals He’s wait-ing and watch-ing, Watch-ing for you and for me. Come home_, come home_, You who are wea-ry, come home__; Ear-nest-ly, ten-der-ly, Je-sus is call-ing, Call-ing, O sin-ner, come home!",
+  "verses": [
+    {
+      "lines": [
+        "Softly and tenderly Jesus is calling,",
+        "Calling for you and for me;",
+        "See, on the portals He’s waiting and watching,",
+        "Watching for you and for me."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Come home, come home,",
+        "You who are weary, come home;",
+        "Earnestly, tenderly, Jesus is calling,",
+        "Calling, O sinner, come home!"
+      ]
+    },
+    {
+      "lines": [
+        "Why should we tarry when Jesus is pleading,",
+        "Pleading for you and for me?",
+        "Why should we linger and heed not His mercies,",
+        "Mercies for you and for me?"
+      ]
+    },
+    {
+      "lines": [
+        "Time is now fleeting, the moments are passing,",
+        "Passing from you and from me;",
+        "Shadows are gathering, deathbeds are coming,",
+        "Coming for you and for me."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, for the wonderful love He has promised,",
+        "Promised for you and for me!",
+        "Though we have sinned, He has mercy and pardon,",
+        "Pardon for you and for me."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

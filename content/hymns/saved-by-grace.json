@@ -1,0 +1,70 @@
+{
+  "title": "Saved by Grace",
+  "alsoKnownAs": [
+    "Some Day the Silver Cord Will Break"
+  ],
+  "tune": "saved-by-grace",
+  "text": [
+    {
+      "name": "Fanny Crosby",
+      "born": 1820,
+      "died": 1915,
+      "role": "Words (1891)"
+    }
+  ],
+  "textPublished": 1891,
+  "occasions": [
+    "Funeral"
+  ],
+  "description": "Saved by Grace in Tonic Solfa to SAVED BY GRACE: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Fanny Crosby wrote these words in 1891; some hymnals credit them to Ida Scott Taylor, one of her pen names. The tune is by George C. Stebbins (1894)."
+  ],
+  "underlay": "Some day the sil-ver cord will break, And I no more as now shall sing; But oh, the joy when I shall wake With-in the pal-ace of the King! And I shall see Him face to face, And tell the sto-ry— Saved by grace; And I shall see Him face to face, And tell the sto-ry— Saved by grace.",
+  "verses": [
+    {
+      "lines": [
+        "Some day the silver cord will break,",
+        "And I no more as now shall sing;",
+        "But oh, the joy when I shall wake",
+        "Within the palace of the King!"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "And I shall see Him face to face,",
+        "And tell the story—Saved by grace;",
+        "And I shall see Him face to face,",
+        "And tell the story—Saved by grace."
+      ]
+    },
+    {
+      "lines": [
+        "Some day my earthly house will fall.",
+        "I cannot tell how soon ’twill be;",
+        "But this I know—my All in All",
+        "Has now a place in Heav’n for me."
+      ]
+    },
+    {
+      "lines": [
+        "Some day, when fades the golden sun",
+        "Beneath the rosy tinted west,",
+        "My blessèd Lord will say, “Well done!”",
+        "And I shall enter into rest."
+      ]
+    },
+    {
+      "lines": [
+        "Some day: till then I’ll watch and wait,",
+        "My lamp all trimmed and burning bright,",
+        "That when my Savior opes the gate,",
+        "My soul to Him may take its flight."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

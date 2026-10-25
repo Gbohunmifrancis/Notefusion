@@ -1,0 +1,64 @@
+{
+  "title": "My Faith Has Found a Resting Place",
+  "tune": "landas",
+  "text": [
+    {
+      "name": "Eliza E. Hewitt",
+      "born": 1851,
+      "died": 1920,
+      "role": "Words (1891)"
+    }
+  ],
+  "textPublished": 1891,
+  "description": "My Faith Has Found a Resting Place in Tonic Solfa to LANDAS: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Eliza E. Hewitt wrote the words under the name Lidie H. Edmunds; they were published in 1891. The tune is a Norwegian folk melody arranged by William J. Kirkpatrick."
+  ],
+  "underlay": "My faith has found a rest-ing place, Not in de-vice or creed; I trust the ev-er-liv-ing One, His wounds for me shall plead. I need no oth-er ar-gu-ment, I need no oth-er plea_, It is e-nough that Je-sus died, And that He died for me.",
+  "verses": [
+    {
+      "lines": [
+        "My faith has found a resting place,",
+        "Not in device or creed;",
+        "I trust the ever-living One,",
+        "His wounds for me shall plead."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "I need no other argument,",
+        "I need no other plea,",
+        "It is enough that Jesus died,",
+        "And that He died for me."
+      ]
+    },
+    {
+      "lines": [
+        "Enough for me that Jesus saves,",
+        "This ends my fear and doubt;",
+        "A sinful soul I came to Him,",
+        "He’ll never cast me out."
+      ]
+    },
+    {
+      "lines": [
+        "My heart is leaning on the Word,",
+        "The living Word of God,",
+        "Salvation by my Saviour’s name,",
+        "Salvation through His blood."
+      ]
+    },
+    {
+      "lines": [
+        "My great physician heals the sick,",
+        "The lost He came to save;",
+        "For me His precious blood He shed,",
+        "For me His life He gave."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

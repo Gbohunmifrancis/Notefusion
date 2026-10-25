@@ -1,0 +1,72 @@
+{
+  "title": "All the Way My Saviour Leads Me",
+  "alsoKnownAs": [
+    "All the Way My Savior Leads Me"
+  ],
+  "tune": "all-the-way",
+  "text": [
+    {
+      "name": "Fanny Crosby",
+      "born": 1820,
+      "died": 1915,
+      "role": "Words (1875)"
+    }
+  ],
+  "textPublished": 1875,
+  "occasions": [
+    "Thanksgiving",
+    "Funeral"
+  ],
+  "description": "All the Way My Saviour Leads Me in Tonic Solfa to ALL THE WAY: the solfa with the words, staff notation, the three verses, and a piano.",
+  "about": [
+    "Fanny Crosby wrote the words, first published in 1875. The tune, ALL THE WAY, is by Robert Lowry (1875)."
+  ],
+  "underlay": "All the way my Sav-ior leads me, What have I to ask be-side? Can I doubt His ten-der mer-cy, Who through life has been my Guide? Heav’n-ly peace, di-vin-est com-fort, Here by faith in Him to dwell! For I know, what-e’er be-fall me, Je-sus do-eth all things well; For I know, what-e’er be-fall me, Je-sus do-eth all things well.",
+  "verses": [
+    {
+      "lines": [
+        "All the way my Savior leads me,",
+        "What have I to ask beside?",
+        "Can I doubt His tender mercy,",
+        "Who through life has been my Guide?",
+        "Heav’nly peace, divinest comfort,",
+        "Here by faith in Him to dwell!",
+        "For I know, whate’er befall me,",
+        "Jesus doeth all things well;",
+        "For I know, whate’er befall me,",
+        "Jesus doeth all things well."
+      ]
+    },
+    {
+      "lines": [
+        "All the way my Savior leads me,",
+        "Cheers each winding path I tread,",
+        "Gives me grace for every trial,",
+        "Feeds me with the living Bread.",
+        "Though my weary steps may falter",
+        "And my soul athirst may be,",
+        "Gushing from the Rock before me,",
+        "Lo! A spring of joy I see;",
+        "Gushing from the Rock before me,",
+        "Lo! A spring of joy I see."
+      ]
+    },
+    {
+      "lines": [
+        "All the way my Savior leads me,",
+        "Oh, the fullness of His love!",
+        "Perfect rest to me is promised",
+        "In my Father’s house above.",
+        "When my spirit, clothed immortal,",
+        "Wings its flight to realms of day",
+        "This my song through endless ages:",
+        "Jesus led me all the way;",
+        "This my song through endless ages:",
+        "Jesus led me all the way."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

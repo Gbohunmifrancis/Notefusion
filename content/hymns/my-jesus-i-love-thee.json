@@ -1,0 +1,55 @@
+{
+  "title": "My Jesus, I Love Thee",
+  "tune": "gordon",
+  "text": [
+    {
+      "name": "William Ralph Featherstone",
+      "born": 1846,
+      "died": 1873,
+      "role": "Words (1864)"
+    }
+  ],
+  "textPublished": 1864,
+  "description": "My Jesus, I Love Thee in Tonic Solfa to GORDON: the solfa with the words, staff notation, the four verses, and a piano.",
+  "about": [
+    "William Ralph Featherstone wrote these words as a young man; Adoniram J. Gordon found them in a London hymnal of 1870 and wrote the tune GORDON for them in 1876."
+  ],
+  "underlay": "My Je-sus, I love_ Thee, I know Thou art mine; For Thee all the fol_-lies of sin I re-sign; My gra-cious Re-deem-er_, my Sa_-vior art Thou_; If ev-er I loved_ Thee, my Je_-sus, ’tis now.",
+  "verses": [
+    {
+      "lines": [
+        "My Jesus, I love Thee, I know Thou art mine;",
+        "For Thee all the follies of sin I resign;",
+        "My gracious Redeemer, my Savior art Thou;",
+        "If ever I loved Thee, my Jesus, ’tis now."
+      ]
+    },
+    {
+      "lines": [
+        "I love Thee because Thou hast first loved me,",
+        "And purchased my pardon on Calvary’s tree;",
+        "I love Thee for wearing the thorns on Thy brow;",
+        "If ever I loved Thee, my Jesus, ’tis now."
+      ]
+    },
+    {
+      "lines": [
+        "I’ll love Thee in life, I will love Thee in death,",
+        "And praise Thee as long as Thou lendest me breath;",
+        "And say when the death dew lies cold on my brow,",
+        "If ever I loved Thee, my Jesus, ’tis now."
+      ]
+    },
+    {
+      "lines": [
+        "In mansions of glory and endless delight,",
+        "I’ll ever adore Thee in heaven so bright;",
+        "I’ll sing with the glittering crown on my brow,",
+        "If ever I loved Thee, my Jesus, ’tis now."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

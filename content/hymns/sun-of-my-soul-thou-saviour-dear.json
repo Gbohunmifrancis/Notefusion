@@ -1,0 +1,74 @@
+{
+  "title": "Sun of My Soul, Thou Saviour Dear",
+  "tune": "hursley",
+  "text": [
+    {
+      "name": "John Keble",
+      "born": 1792,
+      "died": 1866,
+      "role": "Words (1820)"
+    }
+  ],
+  "textPublished": 1827,
+  "occasions": [
+    "Evening"
+  ],
+  "description": "Sun of My Soul, Thou Saviour Dear in Tonic Solfa to HURSLEY: the solfa with the words, staff notation, the six verses, and a piano.",
+  "about": [
+    "John Keble wrote these verses in 1820 as part of his evening poem beginning “’Tis gone, that bright and orbèd blaze”, first published in The Christian Year in 1827. The tune HURSLEY comes from a Katholisches Gesangbuch (Vienna, 1774)."
+  ],
+  "underlay": "Sun of my soul_! Thou Sa_-viour dear, It is not night_ if Thou_ be near: Oh, may no earth-born cloud a-rise To hide Thee from Thy ser_-vant’s eyes!",
+  "verses": [
+    {
+      "lines": [
+        "Sun of my soul! Thou Saviour dear,",
+        "It is not night if Thou be near:",
+        "Oh, may no earth-born cloud arise",
+        "To hide Thee from Thy servant’s eyes!"
+      ]
+    },
+    {
+      "lines": [
+        "When the soft dews of kindly sleep",
+        "My wearied eyelids gently steep,",
+        "Be my last thought, how sweet to rest",
+        "For ever on my Saviour’s breast."
+      ]
+    },
+    {
+      "lines": [
+        "Abide with me from morn till eve,",
+        "For without Thee I cannot live:",
+        "Abide with me when night is nigh,",
+        "For without Thee I dare not die."
+      ]
+    },
+    {
+      "lines": [
+        "If some poor wandering child of Thine",
+        "Have spurned to-day the voice divine,",
+        "Now, Lord, the gracious work begin;",
+        "Let him no more lie down in sin."
+      ]
+    },
+    {
+      "lines": [
+        "Watch by the sick: enrich the poor",
+        "With blessings from Thy boundless store:",
+        "Be every mourner’s sleep to-night,",
+        "Like infants’ slumbers, pure and light."
+      ]
+    },
+    {
+      "lines": [
+        "Come near and bless us when we wake,",
+        "Ere through the world our way we take;",
+        "Till in the ocean of Thy love",
+        "We lose ourselves, in Heaven above."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

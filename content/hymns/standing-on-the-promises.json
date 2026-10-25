@@ -1,0 +1,72 @@
+{
+  "title": "Standing on the Promises",
+  "tune": "promises",
+  "text": [
+    {
+      "name": "R. Kelso Carter",
+      "born": 1849,
+      "died": 1928,
+      "role": "Words (1886)"
+    }
+  ],
+  "textPublished": 1886,
+  "description": "Standing on the Promises in Tonic Solfa to PROMISES: the solfa with the words, staff notation, the five verses and the refrain, and a piano.",
+  "about": [
+    "R. Kelso Carter wrote both the words and the tune; the song was published in 1886."
+  ],
+  "underlay": "Stand-ing on the prom-is-es of Christ my King, Through e-ter-nal a-ges let His prais-es ring, Glo-ry in the high-est, I will shout and sing, Stand-ing on the prom-is-es of God. Stand-ing_, stand-ing_, Stand-ing on the prom-is-es of God my Sa-viour; Stand-ing_, stand-ing_, I’m stand-ing on the prom-is-es of God.",
+  "verses": [
+    {
+      "lines": [
+        "Standing on the promises of Christ my King,",
+        "Through eternal ages let His praises ring,",
+        "Glory in the highest, I will shout and sing,",
+        "Standing on the promises of God."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Standing, standing,",
+        "Standing on the promises of God my Saviour;",
+        "Standing, standing,",
+        "I’m standing on the promises of God."
+      ]
+    },
+    {
+      "lines": [
+        "Standing on the promises that cannot fail,",
+        "When the howling storms of doubt and fear assail,",
+        "By the living Word of God I shall prevail,",
+        "Standing on the promises of God."
+      ]
+    },
+    {
+      "lines": [
+        "Standing on the promises I now can see",
+        "Perfect, present cleansing in the blood for me;",
+        "Standing in the liberty where Christ makes free,",
+        "Standing on the promises of God."
+      ]
+    },
+    {
+      "lines": [
+        "Standing on the promises of Christ the Lord,",
+        "Bound to Him eternally by love’s strong cord,",
+        "Overcoming daily with the Spirit’s sword,",
+        "Standing on the promises of God."
+      ]
+    },
+    {
+      "lines": [
+        "Standing on the promises I cannot fall,",
+        "List’ning every moment to the Spirit’s call,",
+        "Resting in my Saviour as my all in all,",
+        "Standing on the promises of God."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,77 @@
+{
+  "title": "O Worship the King",
+  "alsoKnownAs": [
+    "O Worship the King, All Glorious Above"
+  ],
+  "tune": "lyons",
+  "text": [
+    {
+      "name": "Robert Grant",
+      "born": 1779,
+      "died": 1838,
+      "role": "Words (1833)"
+    }
+  ],
+  "textPublished": 1833,
+  "occasions": [
+    "Thanksgiving"
+  ],
+  "description": "O Worship the King in Tonic Solfa to LYONS: the solfa with the words, staff notation, the six verses, and a piano.",
+  "about": [
+    "Robert Grant’s words, on Psalm 104, were published in Edward Henry Bickersteth’s Christian Psalmody in 1833. The tune here is LYONS, after Johann Michael Haydn, from William Gardiner’s Sacred Melodies (1815); many British and Nigerian books set it to HANOVER instead."
+  ],
+  "underlay": "Oh wor-ship the King, all-glo-rious a-bove; Oh grate-ful-ly sing his pow’r_ and his love; Our Shield and De-fen-der, the An-cient of days, Pa-vil-ioned in splen-dour, and gird_-ed with praise.",
+  "verses": [
+    {
+      "lines": [
+        "Oh worship the King, all-glorious above;",
+        "Oh gratefully sing his power and his love;",
+        "Our Shield and Defender, the Ancient of days,",
+        "Pavilioned in splendour, and girded with praise."
+      ]
+    },
+    {
+      "lines": [
+        "Oh tell of his might, oh sing of his grace,",
+        "Whose robe is the light, whose canopy space;",
+        "His chariots of wrath the deep thunder-clouds form,",
+        "And dark is his path on the wings of the storm."
+      ]
+    },
+    {
+      "lines": [
+        "The earth with its store of wonders untold,",
+        "Almighty, thy power hath founded of old,",
+        "Hath stablished it fast by a changeless decree,",
+        "And round it hath cast, like a mantle, the sea."
+      ]
+    },
+    {
+      "lines": [
+        "Thy bountiful care what tongue can recite?",
+        "It breathes in the air, it shines in the light;",
+        "It streams from the hills, it descends to the plain,",
+        "And sweetly distils in the dew and the rain."
+      ]
+    },
+    {
+      "lines": [
+        "Frail children of dust, and feeble as frail,",
+        "In thee do we trust, nor find thee to fail;",
+        "Thy mercies how tender! how firm to the end!",
+        "Our Maker, Defender, Redeemer, and Friend."
+      ]
+    },
+    {
+      "lines": [
+        "O measureless Might, ineffable Love,",
+        "While angels delight to hymn thee above,",
+        "The humbler creation, though feeble their lays,",
+        "With true adoration shall lisp to thy praise."
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}

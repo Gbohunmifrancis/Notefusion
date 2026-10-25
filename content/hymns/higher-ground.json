@@ -1,0 +1,67 @@
+{
+  "title": "Higher Ground",
+  "alsoKnownAs": [
+    "I’m Pressing on the Upward Way"
+  ],
+  "tune": "higher-ground",
+  "text": [
+    {
+      "name": "Johnson Oatman Jr.",
+      "born": 1856,
+      "died": 1922,
+      "role": "Words (1898)"
+    }
+  ],
+  "textPublished": 1898,
+  "description": "Higher Ground in Tonic Solfa to HIGHER GROUND: the solfa with the words, staff notation, the four verses and the refrain, and a piano.",
+  "about": [
+    "Johnson Oatman Jr. wrote the words, first published in 1898. The tune, HIGHER GROUND, is by Charles Hutchinson Gabriel (1902)."
+  ],
+  "underlay": "I’m press-ing on the up-ward way, New heights I’m gain-ing ev-ery day; Still pray-ing as I’m on-ward bound, “Lord, plant my feet on high-er ground.” Lord, lift me up and let me stand, By faith, on Heav-en’s ta-ble-land, A high-er plane than I have found; Lord, plant my feet on high-er ground.",
+  "verses": [
+    {
+      "lines": [
+        "I’m pressing on the upward way,",
+        "New heights I’m gaining every day;",
+        "Still praying as I’m onward bound,",
+        "“Lord, plant my feet on higher ground.”"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Lord, lift me up and let me stand,",
+        "By faith, on Heaven’s tableland,",
+        "A higher plane than I have found;",
+        "Lord, plant my feet on higher ground."
+      ]
+    },
+    {
+      "lines": [
+        "My heart has no desire to stay",
+        "Where doubts arise and fears dismay;",
+        "Though some may dwell where those abound,",
+        "My prayer, my aim, is higher ground."
+      ]
+    },
+    {
+      "lines": [
+        "I want to live above the world,",
+        "Though Satan’s darts at me are hurled;",
+        "For faith has caught the joyful sound,",
+        "The song of saints on higher ground."
+      ]
+    },
+    {
+      "lines": [
+        "I want to scale the utmost height",
+        "And catch a gleam of glory bright;",
+        "But still I’ll pray till heav’n I’ve found,",
+        "“Lord, plant my feet on higher ground.”"
+      ]
+    }
+  ],
+  "updated": "2026-10-25",
+  "reviewed": false,
+  "draft": false
+}
