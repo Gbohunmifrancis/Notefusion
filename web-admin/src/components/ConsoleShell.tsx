@@ -29,6 +29,7 @@ import {
   Users2,
   Webhook,
   Radio,
+  MessagesSquare,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -37,6 +38,9 @@ import { useEffect, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 
 import { Avatar } from "@/components/Avatar";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { getSupportUnread } from "@/api/endpoints";
 import { ConsoleLock } from "@/components/ConsoleLock";
 import { LiveNotices } from "@/components/LiveNotices";
 import { NotificationBell } from "@/components/NotificationBell";
@@ -57,10 +61,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/auth";
+import { followLiveFeed } from "@/lib/liveFeed";
 import { cn } from "@/lib/utils";
 
 const PRIMARY_NAV = [
   { to: "/", label: "Overview", icon: LayoutDashboard },
+  { to: "/support", label: "Support", icon: MessagesSquare },
   { to: "/insights", label: "Insights", icon: ChartNoAxesCombined },
   { to: "/growth", label: "Growth", icon: TrendingUp },
   { to: "/practice", label: "Practice", icon: MicVocal },
@@ -87,6 +93,14 @@ const SECONDARY_NAV = [
   { to: "/offers", label: "Offers", icon: TicketPercent, badge: "New" },
   { to: "/sessions", label: "Sessions", icon: MonitorPlay, badge: "New" },
 ] as const;
+
+/** Support threads with something unread, kept live by the feed's `support` event. */
+function useSupportUnread(): number {
+  const queryClient = useQueryClient();
+  const unread = useQuery({ queryKey: ["support-unread"], queryFn: ({ signal }) => getSupportUnread(signal) });
+  useEffect(() => followLiveFeed(() => void queryClient.invalidateQueries({ queryKey: ["support-unread"] }), "support"), [queryClient]);
+  return unread.data ?? 0;
+}
 
 function isActivePath(pathname: string, to: string): boolean {
   if (to === "/") return pathname === "/";
@@ -268,13 +282,21 @@ function NavItem({
 
 function ConsoleNav() {
   const pathname = usePathname();
+  const supportUnread = useSupportUnread();
 
   return (
     <SidebarContent className="gap-4 px-2 py-3">
       <SidebarGroup className="p-0">
         <SidebarMenu className="gap-0.5">
           {PRIMARY_NAV.map(({ to, label, icon }) => (
-            <NavItem key={`${to}-${label}`} to={to} label={label} icon={icon} active={isActivePath(pathname, to)} />
+            <NavItem
+              key={`${to}-${label}`}
+              to={to}
+              label={label}
+              icon={icon}
+              active={isActivePath(pathname, to)}
+              {...(to === "/support" && supportUnread > 0 ? { badge: String(supportUnread) } : {})}
+            />
           ))}
         </SidebarMenu>
       </SidebarGroup>
