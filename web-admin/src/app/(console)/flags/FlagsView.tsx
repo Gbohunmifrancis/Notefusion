@@ -118,7 +118,7 @@ function lookOf(flag: FeatureFlag): string {
 }
 
 /**
- * Operations › Feature flags: the switches that change what everyone sees, each off until an admin turns it on. The
+ * System › Feature flags: the switches that change what everyone sees, each off until an admin turns it on. The
  * seasons (board j-halloween/05), Halloween then Christmas, each its own card: what it turns on and when each surface
  * sees it, the switch (confirmed both ways), a preview for admins only, the date it switches itself off after, and the
  * audit line. The one that is on (else the one changed last) is open; the other folds to one line with its switch.

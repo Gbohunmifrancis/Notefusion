@@ -92,7 +92,7 @@ import {
 } from "./offerLook";
 
 /**
- * Operations › Offers (board p-halloween-offer, P6a–P6c): a lower Pro price for a few days on the web app, and the
+ * Money › Offers (board p-halloween-offer, P6a–P6c): a lower Pro price for a few days on the web app, and the
  * one email that tells people. One offer runs at a time.
  *
  * The list on top; the chosen offer opens below as the Feature flags' cards do: its switch (confirmed both ways with

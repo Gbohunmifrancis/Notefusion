@@ -4,7 +4,7 @@ using NoteFusion.Shared.Guards;
 namespace NoteFusion.Core.Entities;
 
 /// <summary>
-/// A seasonal Pro discount (Operations › Offers): a percentage off Pro Monthly and/or Pro Yearly on the dollar plans,
+/// A seasonal Pro discount (Money › Offers): a percentage off Pro Monthly and/or Pro Yearly on the dollar plans,
 /// from <see cref="StartsAtUtc"/> until midnight at the end of <see cref="LastDay"/> in each person's own time zone, and
 /// the email that tells people. A <see cref="Template"/> (<c>halloween</c>, <c>christmas</c>) is only a skin: the
 /// email's header art, colours and default words.

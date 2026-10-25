@@ -65,36 +65,98 @@ import { useAuth } from "@/lib/auth";
 import { followLiveFeed } from "@/lib/liveFeed";
 import { cn } from "@/lib/utils";
 
-const PRIMARY_NAV = [
+type NavEntry = { to: string; label: string; icon: typeof LayoutDashboard; badge?: string };
+
+/** Always open at the top: where the day starts and the inbox that needs a person. */
+const TOP_NAV: NavEntry[] = [
   { to: "/", label: "Overview", icon: LayoutDashboard },
   { to: "/support", label: "Support", icon: MessagesSquare },
-  { to: "/insights", label: "Insights", icon: ChartNoAxesCombined },
-  { to: "/growth", label: "Growth", icon: TrendingUp },
-  { to: "/traffic", label: "Traffic", icon: Footprints },
-  { to: "/practice", label: "Practice", icon: MicVocal },
-  { to: "/listen", label: "Listen anywhere", icon: Radio },
-  { to: "/blog", label: "Blog posts", icon: Newspaper },
-  { to: "/blog-analytics", label: "Blog analytics", icon: BookOpenText },
-  { to: "/users", label: "Users", icon: Users2 },
-  { to: "/transcriptions", label: "Transcriptions", icon: Music2 },
-  { to: "/activity", label: "Activity", icon: Activity },
-  { to: "/feedback", label: "Feedback", icon: MessageSquareHeart },
-  { to: "/health", label: "System Health", icon: HeartPulse },
-  { to: "/settings", label: "Settings", icon: Settings },
-] as const;
+];
 
-const SECONDARY_NAV = [
-  { to: "/waitlist", label: "Waitlist", icon: Sparkles },
-  { to: "/inbox", label: "Mail", icon: Inbox },
-  { to: "/audit-log", label: "Audit Log", icon: ScrollText },
-  { to: "/payments", label: "Payments", icon: CreditCard, badge: "New" },
-  { to: "/checkouts", label: "Unpaid checkouts", icon: ShoppingCart, badge: "New" },
-  { to: "/webhooks", label: "Webhooks", icon: Webhook },
-  { to: "/ledger", label: "Ledger", icon: Scale },
-  { to: "/flags", label: "Feature flags", icon: Flag, badge: "New" },
-  { to: "/offers", label: "Offers", icon: TicketPercent, badge: "New" },
-  { to: "/sessions", label: "Sessions", icon: MonitorPlay, badge: "New" },
-] as const;
+/** The rest, by what you came to do. A group folds away; the one holding the open page never does. */
+const NAV_GROUPS: { key: string; label: string; items: NavEntry[] }[] = [
+  {
+    key: "people",
+    label: "People",
+    items: [
+      { to: "/users", label: "Users", icon: Users2 },
+      { to: "/transcriptions", label: "Transcriptions", icon: Music2 },
+      { to: "/activity", label: "Activity", icon: Activity },
+      { to: "/sessions", label: "Sessions", icon: MonitorPlay },
+      { to: "/feedback", label: "Feedback", icon: MessageSquareHeart },
+      { to: "/waitlist", label: "Waitlist", icon: Sparkles },
+    ],
+  },
+  {
+    key: "analytics",
+    label: "Analytics",
+    items: [
+      { to: "/insights", label: "Insights", icon: ChartNoAxesCombined },
+      { to: "/growth", label: "Growth", icon: TrendingUp },
+      { to: "/traffic", label: "Traffic", icon: Footprints },
+      { to: "/practice", label: "Practice", icon: MicVocal },
+      { to: "/listen", label: "Listen anywhere", icon: Radio },
+    ],
+  },
+  {
+    key: "money",
+    label: "Money",
+    items: [
+      { to: "/payments", label: "Payments", icon: CreditCard },
+      { to: "/checkouts", label: "Unpaid checkouts", icon: ShoppingCart },
+      { to: "/offers", label: "Offers", icon: TicketPercent },
+      { to: "/ledger", label: "Ledger", icon: Scale },
+      { to: "/webhooks", label: "Webhooks", icon: Webhook },
+    ],
+  },
+  {
+    key: "content",
+    label: "Content & mail",
+    items: [
+      { to: "/blog", label: "Blog posts", icon: Newspaper },
+      { to: "/blog-analytics", label: "Blog analytics", icon: BookOpenText },
+      { to: "/inbox", label: "Mail", icon: Inbox },
+    ],
+  },
+  {
+    key: "system",
+    label: "System",
+    items: [
+      { to: "/health", label: "System Health", icon: HeartPulse },
+      { to: "/flags", label: "Feature flags", icon: Flag },
+      { to: "/audit-log", label: "Audit Log", icon: ScrollText },
+      { to: "/settings", label: "Settings", icon: Settings },
+    ],
+  },
+];
+
+/** The groups folded away in this browser (a convenience: unreadable storage just opens them all). */
+const FOLDED_KEY = "nf.console.navFolded";
+
+function useFoldedGroups(): [Set<string>, (key: string) => void] {
+  const [folded, setFolded] = useState<Set<string>>(() => new Set());
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(FOLDED_KEY) ?? "[]");
+      if (Array.isArray(stored)) setFolded(new Set(stored.filter((k): k is string => typeof k === "string")));
+    } catch {
+      // Private window or blocked storage: every group open.
+    }
+  }, []);
+  function toggle(key: string) {
+    setFolded((current) => {
+      const next = new Set(current);
+      if (!next.delete(key)) next.add(key);
+      try {
+        localStorage.setItem(FOLDED_KEY, JSON.stringify([...next]));
+      } catch {
+        // Kept for this visit only.
+      }
+      return next;
+    });
+  }
+  return [folded, toggle];
+}
 
 /** Support threads with something unread, kept live by the feed's `support` event. */
 function useSupportUnread(): number {
@@ -245,7 +307,7 @@ function NavItem({
 }: {
   to: string;
   label: string;
-  icon: (typeof PRIMARY_NAV)[number]["icon"];
+  icon: NavEntry["icon"];
   active: boolean;
   /** A small blue pill after the label ("New"); hidden when the sidebar is folded to icons. */
   badge?: string;
@@ -285,14 +347,18 @@ function NavItem({
 function ConsoleNav() {
   const pathname = usePathname();
   const supportUnread = useSupportUnread();
+  const [folded, toggle] = useFoldedGroups();
+  const { state, isMobile } = useSidebar();
+  // Folded to icons there are no group headings to open, so every icon shows.
+  const iconsOnly = !isMobile && state === "collapsed";
 
   return (
-    <SidebarContent className="gap-4 px-2 py-3">
+    <SidebarContent className="gap-3 px-2 py-3">
       <SidebarGroup className="p-0">
         <SidebarMenu className="gap-0.5">
-          {PRIMARY_NAV.map(({ to, label, icon }) => (
+          {TOP_NAV.map(({ to, label, icon }) => (
             <NavItem
-              key={`${to}-${label}`}
+              key={to}
               to={to}
               label={label}
               icon={icon}
@@ -303,21 +369,45 @@ function ConsoleNav() {
         </SidebarMenu>
       </SidebarGroup>
 
-      <SidebarGroup className="p-0">
-        <SidebarGroupLabel className="h-7 px-2.5 text-xs font-medium text-faint">Operations</SidebarGroupLabel>
-        <SidebarMenu className="gap-0.5">
-          {SECONDARY_NAV.map((item) => (
-            <NavItem
-              key={`${item.to}-${item.label}`}
-              to={item.to}
-              label={item.label}
-              icon={item.icon}
-              active={isActivePath(pathname, item.to)}
-              {...("badge" in item ? { badge: item.badge } : {})}
-            />
-          ))}
-        </SidebarMenu>
-      </SidebarGroup>
+      {NAV_GROUPS.map((group) => {
+        const holdsActive = group.items.some((item) => isActivePath(pathname, item.to));
+        const open = iconsOnly || holdsActive || !folded.has(group.key);
+        return (
+          <SidebarGroup key={group.key} className="p-0">
+            <SidebarGroupLabel asChild className="h-7 px-2.5 text-xs font-medium text-faint">
+              <button
+                type="button"
+                onClick={() => toggle(group.key)}
+                disabled={holdsActive}
+                aria-expanded={open}
+                className="w-full justify-between hover:text-foreground disabled:cursor-default disabled:hover:text-faint"
+              >
+                {group.label}
+                {!holdsActive && (
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={cn("transition-transform", !open && "-rotate-90")}
+                  />
+                )}
+              </button>
+            </SidebarGroupLabel>
+            {open && (
+              <SidebarMenu className="gap-0.5">
+                {group.items.map((item) => (
+                  <NavItem
+                    key={item.to}
+                    to={item.to}
+                    label={item.label}
+                    icon={item.icon}
+                    active={isActivePath(pathname, item.to)}
+                    {...(item.badge ? { badge: item.badge } : {})}
+                  />
+                ))}
+              </SidebarMenu>
+            )}
+          </SidebarGroup>
+        );
+      })}
     </SidebarContent>
   );
 }
