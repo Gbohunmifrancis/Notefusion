@@ -188,7 +188,8 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
       settleStart(true, null)
       return
     }
-    source = intent.getStringExtra(EXTRA_SOURCE) ?: ListenPrefs.source(this)
+    // Not the intent's: a notification or tile built by an older version may still say "phone" (ListenPrefs.source).
+    source = ListenPrefs.source(this)
     from = intent.getStringExtra(EXTRA_FROM) ?: "bubble"
     viaActivity = intent.getBooleanExtra(EXTRA_VIA_ACTIVITY, false)
     val projectionCode = intent.getIntExtra(EXTRA_PROJECTION_CODE, 0)
@@ -361,6 +362,16 @@ class ListenOverlayService : Service(), OverlayUi.Host, TakeRecorder.Listener {
         "sent" to if (outcome == null) 1 else 0, "unsent" to outcome, "reminders" to remindersShown,
       ),
     )
+
+    // Android stopped the service mid-take (battery management, a low-memory kill): what was heard stays in the take
+    // folder, which the app sweeps into the send queue the next time it opens (drainPendingTakes), rather than going.
+    if (end == End.KILLED && file != null && result.ok && result.durationSec >= MIN_TAKE_SEC && heardEnough) {
+      // "kept-": no headless task will ever have it, so the app may take it at once (NotefusionListenModule.pendingTakes).
+      file.renameTo(File(file.parentFile, "kept-${file.nameWithoutExtension}-$kind.m4a"))
+      ListenPrefs.logEvent(this, "listen_take_kept", mapOf("from" to from, "sec" to result.durationSec.toInt()))
+      ListenNotice.ended(this, getString(R.string.nf_ended_title), getString(R.string.nf_take_interrupted))
+      return
+    }
 
     if (outcome != null) {
       file?.delete()

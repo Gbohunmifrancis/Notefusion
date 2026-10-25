@@ -239,7 +239,8 @@ class NotefusionListenModule : Module() {
       // Older than the headless task could still be running for (ten minutes): one it is handling now is not listed twice.
       val stale = System.currentTimeMillis() - 15L * 60_000L
       (dir.listFiles() ?: emptyArray())
-        .filter { it.isFile && it.name.endsWith(".m4a") && it.length() > 0 && it.lastModified() < stale }
+        // A "kept-" take (Android stopped the service mid-take) never had a headless task: it is listed at once.
+        .filter { it.isFile && it.name.endsWith(".m4a") && it.length() > 0 && (it.lastModified() < stale || it.name.startsWith("kept-")) }
         .map { mapOf("uri" to Uri.fromFile(it).toString(), "fileName" to it.name) }
     }
   }

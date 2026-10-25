@@ -41,6 +41,7 @@
   <string name="nf_take_sent">Sent — we’ll tell you when it’s ready.</string>
   <string name="nf_take_cap_sent">That’s %1$s — sent. We’ll tell you when it’s ready.</string>
   <string name="nf_take_kept">Kept on this phone — it goes when you’re back online.</string>
+  <string name="nf_take_interrupted">Android stopped listening. What was heard is kept, and it goes when you next open NoteFusion.</string>
   <string name="nf_take_too_short">Too short to send — tap and let it listen a little longer.</string>
   <string name="nf_take_none_left">No free transcriptions left this week — back on %1$s</string>
   <string name="nf_take_buy_song">Buy one song</string>
