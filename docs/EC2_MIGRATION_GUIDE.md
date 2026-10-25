@@ -11,7 +11,7 @@ Backups are the `backup` service in docker-compose.prod.yml: encrypted database 
 3. Open your terminal locally (in the project root) and run the one-shot setup script:
    `ash
    # Replace YOUR_EC2_IP with your actual EC2 public IP
-   scp -i /path/to/your/notefusion.pem deploy/setup-ec2.sh ec2-user@YOUR_EC2_IP:~/setup-ec2.sh
+   scp -i /path/to/your/notefusion.pem ops/ec2/setup-ec2.sh ec2-user@YOUR_EC2_IP:~/setup-ec2.sh
    ssh -i /path/to/your/notefusion.pem ec2-user@YOUR_EC2_IP "bash ~/setup-ec2.sh"
    `
 
@@ -20,7 +20,7 @@ Backups are the `backup` service in docker-compose.prod.yml: encrypted database 
 Locally on your machine, run the key generator to create a secure RSA token signing key. 
 If you are on Windows, you can use WSL or Git Bash:
 `ash
-bash deploy/generate-rsa-key.sh
+bash ops/ec2/generate-rsa-key.sh
 `
 Copy the ENTIRE output (including -----BEGIN PRIVATE KEY----- and -----END PRIVATE KEY-----).
 

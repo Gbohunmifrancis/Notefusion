@@ -23,7 +23,7 @@ Outputs (checked in):
   web-site/assets/piano/<Note>.mp3   64 kbps, ~28 KB each
   <both>/tuning.json, <both>/LICENSE.txt
 
-Usage: python scripts/build-piano-samples.py [--cache DIR]
+Usage: python tools/build-piano-samples.py [--cache DIR]
 Needs ffmpeg (with libmp3lame), numpy and soundfile. --cache keeps the downloaded
 originals between runs (default: .cache/salamander under the repo).
 """

@@ -5,8 +5,8 @@ C# Web API (`src/`), Python ML worker (`server/`), RN/Expo mobile client (`mobil
 Items from the old native-Android backlog were superseded by the pivot (see git history).
 
 ## ML pipeline (server/)
-- [ ] Record ~20 real phone clips in target environments, drop in `spike/recordings/`,
-      rerun, and grade per the rubric in `spike/README.md` → go/no-go decision.
+- [ ] Record ~20 real phone clips in target environments, drop in `spike/recordings/` (the Phase 0
+      spike, removed from the tree; see git history), rerun, grade per its rubric → go/no-go.
 - [ ] Tune post-processing thresholds (extra split notes cost precision on all 3 test
       clips); consider onset merging for repeated same-pitch fragments.
 - [ ] Key detection on short clips is the weak spot (Happy Birthday in G detected as

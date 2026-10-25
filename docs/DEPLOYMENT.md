@@ -523,91 +523,28 @@ they are not part of this task and should not be printed back:
 - `Jwt__*`, `Cors__AllowedOrigins__0` (the admin dashboard origin), `TranscriptionApi__BaseUrl`
   (the internal ML worker), and the `Seed__*` admin bootstrap.
 
-## 6. The transcriber service — `WEB_CONCURRENCY=1` is not optional
+## 6. The transcriber service — one process, always
 
-The Python ML worker is a **separate service** from the API. It runs on **Heroku**
-(`notefusion-transcriber`), and it needs exactly one web process:
+The Python ML worker is a separate service from the API: the `transcriber` service of
+`docker-compose.prod.yml` on the EC2 host, built and deployed with the API by `deploy.yml`
+(images on GHCR). Only the API reaches it, at `http://transcriber:8000` on the compose network
+(`TranscriptionApi__BaseUrl`); clients never call it.
 
-```bash
-heroku config:set WEB_CONCURRENCY=1 --app notefusion-transcriber
-```
-
-On Railway, which the worker was briefly pointed at and which still stands by with the same
-code, the same setting is:
-
-```bash
-railway variable set WEB_CONCURRENCY=1 --service notefusion-transcriber
-```
-
-`JobQueue` keeps its jobs in a plain in-process dict (`server/app/jobs/queue.py`), so each
-uvicorn worker process has its own. `POST /v1/transcribe` lands the job in whichever process
-the router picked, and the client's `GET /v1/jobs/{id}` polls are spread across all of them —
-so with *N* workers, (N−1)/N of the polls hit a process that has never heard of that job and
-answer **404**. Heroku's default `WEB_CONCURRENCY` is derived from dyno memory rather than
-from anything this app knows, which is how the setting goes missing: it looks like a
-performance knob and is actually a correctness one. Measured on the deployed app before it
-was set, roughly 70% of polls 404'd and a transcription that had in fact succeeded looked to
-the mobile client like a job that vanished.
+It runs exactly **one uvicorn process** (`server/Dockerfile`'s `CMD`, no `--workers`), and that is a
+correctness setting, not a performance one. `JobQueue` keeps its jobs in a plain in-process dict
+(`server/app/jobs/queue.py`), so each process has its own: with *N* processes, (N−1)/N of the
+`GET /v1/jobs/{id}` polls land on a process that has never heard of the job and answer **404**.
+Measured on an earlier deployment that ran several, roughly 70% of polls 404'd and a transcription
+that had succeeded looked to the phone like a job that vanished. Never add `--workers` or set
+`WEB_CONCURRENCY` above 1, and never run a second replica, until `JobQueue` moves to a shared store
+(Redis/Postgres).
 
 Parallelism inside the one process is `NF_INFERENCE_WORKERS` (default 1, deliberately — see
-`pyin_max_seconds` in `server/app/config.py` for the latency budget that assumes it). That is
-the knob to reach for, not `WEB_CONCURRENCY`.
+`pyin_max_seconds` in `server/app/config.py` for the latency budget that assumes it) and the Pro
+lane (`NF_PRO_LANE_WORKERS`). Those are the knobs to reach for.
 
-On Railway the same constraint is pinned as `numReplicas = 1` in `server/railway.toml`, and
-scaling replicas there is a one-click change in the dashboard — which is exactly how this
-regresses. Raising it needs `JobQueue` moved to a shared store (Redis/Postgres) first.
-
-### Deploying the transcriber to Heroku
-
-`notefusion-transcriber` is a **buildpack** app on `heroku-24` — `heroku/python` behind
-`heroku-buildpack-apt`, which installs `server/Aptfile` (ffmpeg, libsndfile1, libpulse0). It
-does **not** build `server/Dockerfile`, and the root `heroku.yml` names the *API's* Dockerfile,
-so a plain `git push heroku HEAD:main` would build the wrong image into it. Push the `server/`
-subtree instead, so `requirements.txt`, `runtime.txt`, `Procfile` and `Aptfile` land at the root
-of what Heroku sees:
-
-```bash
-git push heroku "$(git subtree split --prefix=server HEAD)":main
-```
-
-The split is deterministic, so the SHA it prints doubles as the check on whether a deploy is
-needed at all: if it already matches the current release's `Deploy <sha>`, the worker is current.
-
-> `deploy-heroku.ps1` drives this same app through the Docker registry instead
-> (`heroku stack:set container` + `container:release`). That route works too, but it switches the
-> app's stack — so the two are not interchangeable mid-flight. Pick one and stay on it.
-
-### Deploying the transcriber to Railway (standby)
-
-The Railway service builds from `server/Dockerfile`. Railway's CLI has no `--root-directory`
-flag, so the deploy is driven from inside `server/` rather than from a GitHub connection — which
-also means **pushing to GitHub does not deploy it**; this command does:
-
-```bash
-cd server && railway up --ci --service notefusion-transcriber
-```
-
-Root Directory is only settable in the dashboard. Set it to `server/` there if you want
-push-to-deploy, which is what the `watchPatterns = ["server/**"]` in `railway.toml` is for.
-
-> Watch the output for `no changes detected in watch paths, build will skip`. Run from inside
-> `server/`, the upload root *is* `server`, so files arrive as `app/…` and `watchPatterns =
-> ["server/**"]` matches nothing — the deploy exits 0 having built nothing. Upload from a parent
-> directory that still contains `server/`, or clear the watch paths.
-
-Current wiring, which is what makes the worker reachable at all — clients never call it
-directly, so only the C# API needs its URL:
-
-| | |
-|---|---|
-| Transcriber (Heroku) | `https://notefusion-transcriber-ef80c63d506f.herokuapp.com` |
-| Transcriber (Railway, standby) | `https://notefusion-transcriber-production-76ad.up.railway.app` |
-| C# API (Heroku) | `https://notefusion-api-3c2513a1e974.herokuapp.com` |
-| The link | `TranscriptionApi__BaseUrl` on the API, set to the Heroku URL above |
-
-```bash
-heroku config:set TranscriptionApi__BaseUrl=https://notefusion-transcriber-ef80c63d506f.herokuapp.com -a notefusion-api
-```
+The worker used to run on Heroku, with Railway as a standby; both setups (Procfile, Aptfile,
+`railway.toml`, the Heroku scripts) were retired with the move to EC2 and are in the git history.
 
 ## Verify
 
