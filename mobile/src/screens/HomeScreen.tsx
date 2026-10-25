@@ -782,9 +782,9 @@ const makeStyles = (c: Palette, s: Shadows) =>
     headerArea: {
       paddingTop: spacing.xs,
     },
-    // Clears the floating tab bar.
+    // Clears the floating tab bar and the support bubble standing above it, so the last row's ⋯ is never under it.
     listContent: {
-      paddingBottom: 120,
+      paddingBottom: 176,
     },
 
     // ── Top bar ───────────────────────────────────────────────────────────────

@@ -5,13 +5,15 @@
  * read at most every two minutes for that.
  */
 import React, { useCallback, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { supportApi } from "../api/endpoints";
 import { spacing, type Palette } from "../design/theme";
 import { hasUnreadAnswer, supportSeenAt } from "../lib/supportSeen";
+import { tabBarTop } from "../lib/tabBarLayout";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { RootStackParams } from "../navigation/types";
 import { Icon } from "./Icon";
@@ -26,6 +28,10 @@ export function SupportBubble() {
   const styles = useThemedStyles(makeStyles);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const [unread, setUnread] = useState(lastCheck.unread);
+  // The tab bar floats over Home's content, so the bubble stands above the bar's top, not the screen's edge.
+  const { fontScale } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const bottom = tabBarTop(fontScale, insets.bottom) + spacing.md;
 
   useFocusEffect(
     useCallback(() => {
@@ -50,7 +56,7 @@ export function SupportBubble() {
   );
 
   return (
-    <View style={styles.anchor} pointerEvents="box-none">
+    <View style={[styles.anchor, { bottom }]} pointerEvents="box-none">
       <Touchable
         onPress={() => {
           lastCheck = { at: Date.now(), unread: false };
@@ -70,7 +76,7 @@ export function SupportBubble() {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    anchor: { position: "absolute", right: spacing.lg, bottom: spacing.lg },
+    anchor: { position: "absolute", right: spacing.lg },
     button: {
       width: SIZE,
       height: SIZE,
