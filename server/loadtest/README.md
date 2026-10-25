@@ -169,4 +169,4 @@ Do not mix the two arms in one server process unless the service records the fla
 
 Run against staging or an explicitly authorized production slice. Avoid uncontrolled traffic against a public production endpoint. Use a dedicated load-test account, a fixed test bucket, and a time-bounded run.
 
-The load test measures service performance. It does not measure false accidentals or ghost notes because the API response has no ground-truth label. Use the labelled corpus harness for accuracy, and use the telemetry plan in `docs/vocal-ab-test-accuracy-latency-telemetry-report.md` for production candidate-ghost monitoring.
+The load test measures service performance. It does not measure false accidentals or ghost notes because the API response has no ground-truth label. Use the labelled corpus harness for accuracy, and use the telemetry plan in `docs/research/vocal-ab-test-accuracy-latency-telemetry-report.md` for production candidate-ghost monitoring.

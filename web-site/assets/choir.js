@@ -204,7 +204,7 @@
 
   // ── Piano voice ──────────────────────────────────────────────────────────
   // Recorded piano, the same 17 Salamander Grand soft-layer notes mobile/src/lib/synth.ts
-  // plays (scripts/build-piano-samples.py makes both packs from one source; keep the two
+  // plays (tools/build-piano-samples.py makes both packs from one source; keep the two
   // players in lock-step). A note is the nearest sample (never more than a semitone away)
   // run at the rate that puts it on pitch — the interval to the sample plus the cents in
   // tuning.json, which undo the piano's stretch tuning — held until note-off, then let go

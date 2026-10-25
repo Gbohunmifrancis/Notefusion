@@ -7,7 +7,7 @@
 // Voice-level thresholds (dBFS, 0 = loudest, -160 = silence). expo-audio's metering value is an averaged power
 // level in dBFS. Typical speaking/singing voice close to a phone mic sits around -20 to -6 dBFS; a quiet or distant
 // voice drops below about -40 dBFS. These were chosen empirically against the Phase 0 spike recordings
-// (spike/README.md) and err on the side of nudging the user rather than staying silent.
+// (spike/README.md, in git history) and err on the side of nudging the user rather than staying silent.
 /** Effectively nothing reaching the mic. */
 export const LEVEL_SILENCE_DBFS = -50;
 /** Audible but too soft for confident transcription. */

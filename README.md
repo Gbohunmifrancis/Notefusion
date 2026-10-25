@@ -1,101 +1,106 @@
 # NoteFusion
 
-**Hear it. See it. Play it.** NoteFusion listens to live or recorded music and
-transcribes it into **Tonic Solfa** (movable-do) and **standard staff notation**.
+**Hear it. See it. Play it.** NoteFusion listens to live or recorded music (humming, singing,
+an instrument, a choir, a song link) and writes it out as **Tonic Solfa** (movable-do) and
+**staff notation**, with parts, practice and a hymn library around it.
 
-Product and technical requirements live in [docs/](docs/):
-- `NoteFusion_PRD.docx` — product requirements (features, personas, metrics)
-- `NoteFusion_TRD.docx` — architecture, ML pipeline, stack selection
-
-> **Extract the text before reading the .docx files** — they are the source of truth
-> for features and stack decisions.
+- Website and web app: <https://notefusion.studio>
+- Android app: Google Play (`mobile/`)
+- Requirements: [`docs/NoteFusion_PRD.docx`](docs/NoteFusion_PRD.docx) and
+  [`docs/NoteFusion_TRD.docx`](docs/NoteFusion_TRD.docx), the source of truth for features and stack
+  decisions (extract the text before reading).
+- Working on the code? Read [`CLAUDE.md`](CLAUDE.md) first: it is the full, current map of every
+  feature and the rules that hold across the repository.
 
 ## Architecture
 
-Three tiers. The clients talk **only** to the C# Web API; the API is the sole gateway
-to the Python ML service.
+Clients talk **only** to the C# Web API; the API is the single gateway to the Python ML worker.
 
 ```
-mobile/   React Native + Expo client (iOS / Android / web)
-   │  HTTPS + JWT
-   ▼
-src/      C# .NET 10 Web API  — modular monolith, clean architecture, the only gateway
-   │  HTTP (internal)                         Postgres ◄─ EF Core
-   ▼
-server/   Python FastAPI ML worker — Basic Pitch / ONNX CPU inference (internal only)
+mobile/  web-site/  web-admin/        Android app · website + web app · admin console
+            │  HTTPS + JWT
+            ▼
+src/      C# .NET 10 Web API          modular monolith, clean architecture   ──► Postgres (EF Core)
+            │  HTTP, internal only
+            ▼
+server/   Python FastAPI ML worker    Basic Pitch / ONNX on CPU, one job queue
 ```
 
-- **API (`src/`)** — a headless modular monolith. The same image serves the mobile
-  client today and a web client later, unchanged. Layers point inward:
-  `Shared ← Core ← Application ← Infrastructure ← Api`.
-- **Solfa engine (`src/NoteFusion.Core/Solfa`)** is the product's core IP: movable-do,
-  la-based for minor, `doh` derived from the key. A key change re-labels the note list;
-  it never re-transcribes.
-- **ML worker (`server/`)** does audio → note events → MusicXML + solfa. It is reached
-  only by the API — never by a client directly. Audio is deleted immediately after a job.
-- **Mobile (`mobile/`)** — Expo SDK 52, TypeScript strict, JWT access/refresh, dark theme.
-  See [mobile/README.md](mobile/README.md).
+- **API (`src/`)**: headless; layers point inward, `Shared ← Core ← Application ← Infrastructure ← Api`.
+  JWT access + rotating refresh tokens, billing (Paystack, Bachs, Google Play), push, email.
+- **Solfa engine (`src/NoteFusion.Core/Solfa`)**: the product's core IP. Movable-do, la-based minor,
+  the doh from the key; a key change re-labels, never re-transcribes. Mirrored in the worker, the
+  phone (`mobile/src/lib/solfa.ts`) and the web (`web-site/assets/choir.js`), in lock-step.
+- **ML worker (`server/`)**: audio → notes → MusicXML + solfa, vocal isolation for songs, chords,
+  SATB harmony, grading for practice. Reached only by the API; audio is deleted after each job.
+- **Mobile (`mobile/`)**: React Native + Expo SDK 56, TypeScript strict, OTA updates through EAS.
+
+## Repository layout
 
 ```
-NoteFusion.slnx
-└── src/
-    ├── NoteFusion.Shared          Result/Error primitives, guards (no dependencies)
-    ├── NoteFusion.Core            Entities, enums, the solfa engine (core IP) → Shared
-    ├── NoteFusion.Application     Use cases, feature folders, DTOs, interfaces → Core
-    ├── NoteFusion.Infrastructure  EF Core/Postgres, JWT, push, ML API client → Application
-    └── NoteFusion.Api             Controllers, middleware, DI composition root, Swagger
-tests/
-    └── NoteFusion.Tests           xUnit; solfa engine, KeyParser, auth, library
+src/            C# Web API: Shared, Core, Application, Infrastructure, Api (NoteFusion.slnx)
+tests/          xUnit tests for the API (SQLite in-memory, no database needed)
+server/         Python ML worker: app/ (pipeline, jobs, ingest), tests/ (incl. accuracy benchmarks), loadtest/
+mobile/         Expo app: src/, its native module (modules/), store listing renders (store/)
+web-site/       Static website and the /app web client (Vercel)
+web-admin/      Next.js admin console (Vercel)
+content/        Hymns and authors the website's pages are built from
+tools/          Build tooling: blog/ (site and hymn pages), social/ (X journal), asset and piano-sample builders
+design/         Source art: practice illustrations, website redesign
+ops/            Production operations: backup/ (restic + WAL-G), db/ (database roles), ec2/ (server setup)
+docs/           Deployment and operations guides, store listing, curriculum; research/ holds past reports
+.github/        CI, deploys, secret scan, the backup drill, scheduled jobs
 ```
 
-## Run the whole backend (Docker)
+## Run the backend locally
 
 ```bash
-docker compose up --build
+docker compose up --build          # db (Postgres 16) :5432 · transcriber :8000 · api :5080
 ```
 
-Brings up three services — `db` (Postgres 16), `transcriber` (Python FastAPI), and
-`api` (C# Web API) — wired together. Then:
+- API on <http://localhost:5080> (Swagger at `/swagger` in Development); liveness `GET /health`.
+- Point the app at `http://10.0.2.2:5080` (Android emulator) or your machine's LAN IP.
+- Dev defaults, for local use only: Postgres password `notefusion_dev` (`POSTGRES_PASSWORD`), seed admin
+  `admin@notefusion.app` / `ChangeMe!123` (`SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`).
 
-- API: <http://localhost:5080> (Swagger UI at `/swagger` when `ASPNETCORE_ENVIRONMENT=Development`)
-- Liveness: `GET /health`
-- Point the mobile app at `http://10.0.2.2:5080` (Android emulator) or your machine's
-  LAN IP (physical device) — see `mobile/app.json` → `expo.extra.apiBaseUrl`.
+Configuration comes from the environment (nested keys use `__`, e.g. `Database__Host`). Never commit an
+`appsettings*.json` or any secret: the secret scan refuses both.
 
-Dev credentials (override via environment / a gitignored `.env` for anything real):
-- Postgres password: `notefusion_dev` (`POSTGRES_PASSWORD`)
-- Seed admin: `admin@notefusion.app` / `ChangeMe!123` (`SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`)
-
-For the production Heroku env vars left out of source — payment-provider keys, Google
-sign-in, and Resend email — see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). The two web
-front-ends (static marketing site, and the Next.js admin dashboard at
-`web-admin-blue-two.vercel.app`) deploy to Vercel — see
-[docs/DEPLOYMENT_WEB.md](docs/DEPLOYMENT_WEB.md).
-
-## Build & test each tier
+## Build and test
 
 ```bash
 # C# API
 dotnet build NoteFusion.slnx -c Release
-dotnet test  NoteFusion.slnx                 # 59 tests, no database needed (SQLite in-memory)
+dotnet test  NoteFusion.slnx
 
-# Python ML worker  (server/)
-pip install -r server/requirements.txt
-pip install --no-deps basic-pitch==0.4.0     # tensorflow pin has no 3.12 wheels; ONNX runtime is provided
+# Python ML worker
+pip install -r server/requirements.txt && pip install --no-deps basic-pitch==0.4.0
 cd server && python -m pytest -q
+cd server && python -m tests.accuracy.report --vocal     # sung/hummed accuracy benchmark (slow)
 
-# Mobile  (mobile/)
-cd mobile && npm ci && npm run lint          # tsc --noEmit (strict type-check)
+# Mobile
+cd mobile && npm ci && npm run lint && npm test
+
+# Website
+node --test web-site/tests/*.test.mjs
 ```
 
-CI runs all three on every push/PR — see [.github/workflows/ci.yml](.github/workflows/ci.yml).
+CI ([`ci.yml`](.github/workflows/ci.yml)) runs all of these on every pull request, beside the secret scan.
 
-## Key conventions
+## Deploying
 
-- **Movable-do everywhere**: solfa syllables are derived from the key at render time.
-  A key change is a re-labelling, never a re-transcription.
-- **Result over exceptions** for expected failures (network, low confidence); guards
-  throw only for programmer errors.
-- **The note list is the source of truth**: staff and solfa both derive from it.
-- **Honest confidence**: low-confidence audio surfaces a clear message rather than
-  emitting garbage notation (PRD requirement).
+| What | How | Guide |
+|---|---|---|
+| API + ML worker | `deploy.yml`: images to GHCR, `docker-compose.prod.yml` on the EC2 host, on every merge to `main` that touches them | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) |
+| Website and web app | `deploy-web.yml` to Vercel | [docs/DEPLOYMENT_WEB.md](docs/DEPLOYMENT_WEB.md) |
+| Admin console | `deploy-admin.yml` to Vercel | [docs/DEPLOYMENT_WEB.md](docs/DEPLOYMENT_WEB.md) |
+| Android app | EAS: store builds, and OTA updates on the `production` channel | [docs/DEPLOYMENT_MOBILE.md](docs/DEPLOYMENT_MOBILE.md) |
+| Backups | the compose `backup` service; restored weekly by `backup-restore-drill.yml` | [docs/BACKUP_AND_MIGRATION.md](docs/BACKUP_AND_MIGRATION.md) |
+
+## Conventions
+
+- `main` is the only long-lived branch: work goes through a pull request, squash-merged with a written message.
+- Every commit is authored by the owner alone (see `CLAUDE.md`).
+- The note list is the source of truth: staff and solfa both derive from it.
+- Expected failures are `Result`/`Error`, never exceptions; low-confidence audio says so plainly.
+- Mobile first: every screen is judged on a mid-range Android phone first.

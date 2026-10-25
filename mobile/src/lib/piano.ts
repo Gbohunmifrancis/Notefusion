@@ -3,7 +3,7 @@ import { File } from "expo-file-system";
 
 /**
  * The recorded piano the synth plays notes with: 17 Salamander Grand soft-layer notes,
- * C2..C6 every three semitones, built by scripts/build-piano-samples.py (the web plays
+ * C2..C6 every three semitones, built by tools/build-piano-samples.py (the web plays
  * the same notes as MP3s — keep the two in lock-step). Bundled as WAV assets, read once
  * through expo-asset the way ScoreView reads the engraver, parsed here into
  * Float32Arrays and kept for the session: 2.6 MB of PCM is nothing next to the WAVs the

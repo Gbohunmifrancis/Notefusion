@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# deploy/setup-ec2.sh — One-shot bootstrap for an Amazon Linux 2023 EC2 instance.
+# ops/ec2/setup-ec2.sh — One-shot bootstrap for an Amazon Linux 2023 EC2 instance.
 #
 # Run once after launching the instance (SSH key = notefusion.pem):
-#   scp -i notefusion.pem deploy/setup-ec2.sh ec2-user@YOUR_EC2_IP:~/setup-ec2.sh
+#   scp -i notefusion.pem ops/ec2/setup-ec2.sh ec2-user@YOUR_EC2_IP:~/setup-ec2.sh
 #   ssh -i notefusion.pem ec2-user@YOUR_EC2_IP "bash ~/setup-ec2.sh"
 
 set -euo pipefail

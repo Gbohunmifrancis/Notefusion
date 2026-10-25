@@ -33,6 +33,7 @@ jobs:
             echo "== stats"; docker stats --no-stream
             for c in $(docker ps --format '{{.Names}}' | grep -v caddy); do echo "== logs $c"; docker logs "$c" --tail 60 2>&1 | grep -v "GET /healthz" | tail -60; done
             echo "== worker: job, link and yt-dlp lines (last 60, with times)"; docker logs -t notefusion-prod-transcriber-1 2>&1 | grep -i -E "yt-dlp|link_attempt|ytdlp_cookies|link job|journal|recover|job [0-9a-f]{8}|vocal engine|accompaniment|transcription_completed|warning|error" | grep -v "GET /healthz" | tail -60 | cut -c1-400
+            echo "== yt-dlp cookies (line count only, never the contents)"; docker exec notefusion-prod-transcriber-1 sh -c 'f="${NF_YTDLP_COOKIES_FILE:-unset}"; printf "%s: " "$f"; if [ -s "$f" ]; then printf "%s lines, %s youtube.com rows\n" "$(wc -l < "$f")" "$(grep -c "youtube.com" "$f")"; else echo "missing or empty"; fi' || true
             # What the last few transcriptions came out as: the activity log's own columns, then the
             # stored result of the newest finished jobs (key, tempo, meter, confidence, the first notes
             # as pitch@beat x length, the solfa lines). Metadata only: no audio, no names, no addresses.
