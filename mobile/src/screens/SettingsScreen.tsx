@@ -29,8 +29,6 @@ import { showToast } from "../lib/toast";
 import { withBusy } from "../lib/busy";
 import {
   SETUP_WORDS,
-  SOURCE_CHOICES,
-  SOURCE_NOTE,
   PRO_ONLY_HINT,
   KIND_CHOICES,
   kindLabel,
@@ -38,7 +36,6 @@ import {
   listenAllowance,
   nextSetupStep,
   setupDone,
-  sourceLabel,
   type SetupState,
 } from "../lib/listenAnywhere";
 import { signOutWarning } from "../lib/sendQueue";
@@ -185,24 +182,6 @@ export function SettingsScreen({ navigation }: Props) {
       // Android 12 and older have no prompt: the shade's own editor does it.
       showDialog({ title: "Add the Listen tile", message: SETUP_WORDS.tileByHand });
     }
-  }
-
-  function chooseListenSource() {
-    const phone = anywhere?.phoneSoundAvailable ?? false;
-    showDialog({
-      title: "Listen to",
-      message: phone ? SOURCE_NOTE : undefined,
-      choices: SOURCE_CHOICES.filter((ch) => phone || ch.source === "room").map((ch) => ({
-        label: ch.label,
-        detail: ch.detail,
-        icon: ch.source === "phone" ? "sound" : "mic",
-        onPress: () => {
-          setAnywhere(Listen.setAnywhere({ source: ch.source }));
-          void logAnalyticsEvent("listen_anywhere_setting", { setting: "source", value: ch.source });
-          logAppEvent("listen_setting", { setting: "source", value: ch.source });
-        },
-      })),
-    });
   }
 
   function chooseListenKind() {
@@ -453,7 +432,6 @@ export function SettingsScreen({ navigation }: Props) {
               value={anywhere.tileAdded ? "Added" : "Add"}
               onPress={anywhere.tileAdded ? undefined : () => void addListenTile()}
             />
-            <Row icon="hear" label="Listen to" value={sourceLabel(anywhere.source)} chevron onPress={chooseListenSource} />
             <Row icon="instrument" label="Listen for" value={kindLabel(anywhere.kind)} chevron onPress={chooseListenKind} />
           </Group>
           <GroupNote>{groupNote(allowance)}</GroupNote>
