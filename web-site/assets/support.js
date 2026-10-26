@@ -170,7 +170,7 @@
 
   function esc(t) { var d = document.createElement("div"); d.textContent = t; return d.innerHTML; }
 
-  var ICON = {
+  var GLYPH = {
     home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
     messages: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
     help: '<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
@@ -178,8 +178,8 @@
     search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
     out: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>'
   };
-  function icon(name, size) {
-    return '<svg viewBox="0 0 24 24" width="' + (size || 20) + '" height="' + (size || 20) + '" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + ICON[name] + "</svg>";
+  function glyph(name, size) {
+    return '<svg viewBox="0 0 24 24" width="' + (size || 20) + '" height="' + (size || 20) + '" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + GLYPH[name] + "</svg>";
   }
 
   function build() {
@@ -194,11 +194,11 @@
       '<div class="nf-support-top"><button type="button" class="nf-support-x" aria-label="Close">&times;</button></div>' +
       '<div class="nf-support-scroll">' +
       '<button type="button" class="nf-support-card nf-support-start" data-go="messages"><span><strong class="nf-support-start-title">Send us a message</strong>' +
-      '<span class="nf-support-promise">We usually reply within a few hours</span></span>' + icon("chevron", 22) + '</button>' +
-      '<div class="nf-support-card nf-support-faq"><label class="nf-support-search">' + icon("search") +
+      '<span class="nf-support-promise">We usually reply within a few hours</span></span>' + glyph("chevron", 22) + '</button>' +
+      '<div class="nf-support-card nf-support-faq"><label class="nf-support-search">' + glyph("search") +
       '<input type="search" placeholder="Search for help" aria-label="Search for help" enterkeyhint="search"></label>' +
       '<ul class="nf-support-qs"></ul></div>' +
-      '<a class="nf-support-card nf-support-follow" href="' + X_URL + '" target="_blank" rel="noopener">Follow us on X for the latest updates' + icon("out") + '</a>' +
+      '<a class="nf-support-card nf-support-follow" href="' + X_URL + '" target="_blank" rel="noopener">Follow us on X for the latest updates' + glyph("out") + '</a>' +
       '</div></div>' +
       // Messages
       '<div class="nf-support-view" data-view="messages" hidden>' +
@@ -214,17 +214,17 @@
       // Help
       '<div class="nf-support-view" data-view="help" hidden>' +
       '<header class="nf-support-head"><div><strong>Help</strong></div><button type="button" class="nf-support-x" aria-label="Close">&times;</button></header>' +
-      '<div class="nf-support-scroll"><label class="nf-support-search">' + icon("search") +
+      '<div class="nf-support-scroll"><label class="nf-support-search">' + glyph("search") +
       '<input type="search" placeholder="Search for help" aria-label="Search for help" enterkeyhint="search"></label>' +
       '<div class="nf-support-answers"></div>' +
       '<p class="nf-support-none" hidden>Nothing here matches. Send us a message and we\u2019ll answer you.</p>' +
       '<button type="button" class="nf-support-card nf-support-still" data-go="messages"><span><strong>Still need help?</strong>' +
-      '<span>Send us a message</span></span>' + icon("chevron", 22) + '</button></div></div>' +
+      '<span>Send us a message</span></span>' + glyph("chevron", 22) + '</button></div></div>' +
       // Tabs
       '<nav class="nf-support-tabs" aria-label="Support">' +
-      '<button type="button" data-tab="home">' + icon("home", 22) + '<span>Home</span></button>' +
-      '<button type="button" data-tab="messages">' + icon("messages", 22) + '<span>Messages</span></button>' +
-      '<button type="button" data-tab="help">' + icon("help", 22) + '<span>Help</span></button></nav>';
+      '<button type="button" data-tab="home">' + glyph("home", 22) + '<span>Home</span></button>' +
+      '<button type="button" data-tab="messages">' + glyph("messages", 22) + '<span>Messages</span></button>' +
+      '<button type="button" data-tab="help">' + glyph("help", 22) + '<span>Help</span></button></nav>';
     document.body.appendChild(panel);
     list = panel.querySelector(".nf-support-list");
     form = panel.querySelector("form");
@@ -241,7 +241,7 @@
     var qs = panel.querySelector(".nf-support-qs");
     HELP.slice(0, 4).forEach(function (it, i) {
       var li = document.createElement("li");
-      li.innerHTML = '<button type="button"><span>' + esc(it.q) + "</span>" + icon("chevron", 18) + "</button>";
+      li.innerHTML = '<button type="button"><span>' + esc(it.q) + "</span>" + glyph("chevron", 18) + "</button>";
       li.firstChild.addEventListener("click", function () { show("help"); renderHelp("", i); });
       qs.appendChild(li);
     });
@@ -265,7 +265,7 @@
     found.forEach(function (it) {
       var d = document.createElement("details");
       d.className = "nf-support-answer";
-      d.innerHTML = "<summary><span>" + esc(it.q) + "</span>" + icon("chevron", 18) + "</summary><p>" + esc(it.a) + "</p>";
+      d.innerHTML = "<summary><span>" + esc(it.q) + "</span>" + glyph("chevron", 18) + "</summary><p>" + esc(it.a) + "</p>";
       if (openIndex != null && HELP.indexOf(it) === openIndex) d.open = true;
       d.addEventListener("toggle", function () { if (d.open && window.nfTrack) window.nfTrack("Support help opened"); });
       box.appendChild(d);
