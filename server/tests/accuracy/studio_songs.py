@@ -82,7 +82,7 @@ SALT = "notefusion-studio-songs-v1"
 # Songs per half, the first by a hash of the slug: 40 + 40 of the hymn corpus's 224 tunes.
 PER_SPLIT = 40
 # Bumped whenever the renderer changes what a case sounds like, so cached audio is redone.
-RENDER_VERSION = {"hymn": 2, "csd": 1}
+RENDER_VERSION = {"hymn": 2, "csd": 1, "afro": 1}
 # Pytest's handful (``tests/test_studio_songs.py``, their opening phrases on simulated stems), dev
 # songs all: a man's doubled lead, a woman's 3/4 with a pickup and a melisma, and a hymn whose
 # piano plays the tune under the singer.
@@ -164,7 +164,7 @@ class SongCase:
     legato: tuple[bool, ...]  # per sounding note: slurred from the note before (a melisma)
     production: Production
     tags: tuple[str, ...]
-    kind: str = "hymn"  # "hymn" (the synthetic singer) or "csd" (a real studio take)
+    kind: str = "hymn"  # "hymn" (the synthetic singer), "csd" (a real studio take) or "afro" (afro_songs)
     # A real take's notes as sung: (pitch, onset s, offset s, beat on the bar grid, written beats).
     ref: tuple[tuple[int, float, float, float, float], ...] = ()
     tempo_exact: float = 0.0  # a real take's tempo, unrounded (the band plays at it)
@@ -396,6 +396,10 @@ SETS = ("csd", "hymns")
 def select(split: str = "", name_filter: str = "", slugs: tuple[str, ...] = (), sets: tuple[str, ...] = ("hymns",),
            data: Path = DEFAULT_DATA) -> tuple[SongCase, ...]:
     pool = (csd_cases(data) if "csd" in sets else ()) + (CASES if "hymns" in sets else ())
+    if "afro" in sets:
+        from tests.accuracy import afro_songs
+
+        pool += afro_songs.cases()
     return tuple(c for c in pool if (not split or c.split == split) and name_filter in c.name
                  and (not slugs or c.slug in slugs))
 
@@ -809,6 +813,10 @@ class Rendered:
 def render(case: SongCase, data: Path = DEFAULT_DATA) -> Rendered:
     if case.kind == "csd":
         return _render_csd(case, data)
+    if case.kind == "afro":
+        from tests.accuracy import afro_songs
+
+        return afro_songs.render(case)
     p = case.production
     spb, origin = _grid(case)
     tune = _tune(case)
