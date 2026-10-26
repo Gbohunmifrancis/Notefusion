@@ -1,0 +1,54 @@
+{
+  "title": "Come, Dearest Lord, Descend and Dwell",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Come, Dearest Lord, Descend and Dwell in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 135, headed “The love of Christ shed abroad in the heart, Eph. 3. 16 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Come, dear-est Lord, de-scend and dwell By faith and love in ev-ery breast; Then shall we know, and taste, and feel The joys that can-not be ex-prest.",
+  "verses": [
+    {
+      "lines": [
+        "Come, dearest Lord, descend and dwell",
+        "By faith and love in every breast;",
+        "Then shall we know, and taste, and feel",
+        "The joys that cannot be exprest."
+      ]
+    },
+    {
+      "lines": [
+        "Come, fill our hearts with inward strength,",
+        "Make our enlarged souls possess,",
+        "And learn the height, and breadth, and length",
+        "Of thine unmeasurable grace."
+      ]
+    },
+    {
+      "lines": [
+        "Now to the God whose power can do",
+        "More than our thoughts or wishes know,",
+        "Be everlasting honours done",
+        "By all the church, thro' Christ his Son."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:135"
+}

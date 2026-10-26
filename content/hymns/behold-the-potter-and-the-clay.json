@@ -1,0 +1,94 @@
+{
+  "title": "Behold the Potter and the Clay",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Behold the Potter and the Clay in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 117, headed “Election sovereign and free, Rom. 9. 21 22 23 20”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold the pot-ter and the clay, He forms his ves-sels as he please: Such is our God, and such are we, The sub-jects of his high de-crees.",
+  "verses": [
+    {
+      "lines": [
+        "Behold the potter and the clay,",
+        "He forms his vessels as he please:",
+        "Such is our God, and such are we,",
+        "The subjects of his high decrees."
+      ]
+    },
+    {
+      "lines": [
+        "Doth not the workman's power extend",
+        "O'er all the mass, which part to choose,",
+        "And mould it for a nobler end,",
+        "And which to leave for viler use?"
+      ]
+    },
+    {
+      "lines": [
+        "May not the sovereign Lord on high",
+        "Dispense his favours as he will,",
+        "Choose some to life while others die,",
+        "And yet be just and gracious still?"
+      ]
+    },
+    {
+      "lines": [
+        "What if to make his terror known",
+        "He lets his patience long endure,",
+        "Suffering vile rebels to go on",
+        "And seal their own destruction sure!"
+      ]
+    },
+    {
+      "lines": [
+        "What if he means to shew his grace,",
+        "And his electing love employs",
+        "To mark out some of mortal race,",
+        "And form them fit for heavenly joys!"
+      ]
+    },
+    {
+      "lines": [
+        "Shall man reply against the Lord,",
+        "And call his Maker's ways unjust,",
+        "The thunder of whose dreadful word",
+        "Can crush a thousand worlds to dust?"
+      ]
+    },
+    {
+      "lines": [
+        "But, O my soul, if truths so bright",
+        "Should dazzle and confound thy sight",
+        "Yet still his written will obey,",
+        "And wait the great decisive day."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall he make his justice known,",
+        "And the whole world before his throne",
+        "With joy or terror shall confess",
+        "The glory of his righteousness."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:117"
+}

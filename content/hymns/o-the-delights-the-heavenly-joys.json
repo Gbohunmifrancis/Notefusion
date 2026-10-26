@@ -1,0 +1,166 @@
+{
+  "title": "O the Delights, the Heavenly Joys",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "O the Delights, the Heavenly Joys in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 17 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 91, headed “The glory of Christ in heaven”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O the de-lights, the heav-enly joys, The glo-ries of the place Where Je-sus sheds the bright-est beams Of his o'er-flow-ing grace.",
+  "verses": [
+    {
+      "lines": [
+        "O the delights, the heavenly joys,",
+        "The glories of the place",
+        "Where Jesus sheds the brightest beams",
+        "Of his o'erflowing grace."
+      ]
+    },
+    {
+      "lines": [
+        "Sweet majesty and awful love",
+        "Sit smiling on his brow,",
+        "And all the glorious ranks above",
+        "At humble distance bow."
+      ]
+    },
+    {
+      "lines": [
+        "Princes to his imperial Name",
+        "Bend their bright sceptres down,",
+        "Dominions, thrones, and powers rejoice",
+        "To see him wear the crown."
+      ]
+    },
+    {
+      "lines": [
+        "Archangels sound his lofty praise",
+        "Thro' every heavenly street,",
+        "And lay their highest honours down",
+        "Submissive at his feet."
+      ]
+    },
+    {
+      "lines": [
+        "Those soft, those blessed feet of his",
+        "That once rude iron tore,",
+        "High on a throne of light they stand,",
+        "And all the saints adore."
+      ]
+    },
+    {
+      "lines": [
+        "His head, the dear majestic head",
+        "That cruel thorns did wound,",
+        "See what immortal glories shine,",
+        "And circle it around."
+      ]
+    },
+    {
+      "lines": [
+        "This is the Man, th' exalted Man,",
+        "Whom we unseen adore;",
+        "But when our eyes behold his face,",
+        "Our hearts shall love him more."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, how our souls are all on fire",
+        "To see thy bless'd abode,",
+        "Our tongues rejoice in tunes of praise",
+        "To our incarnate God."
+      ]
+    },
+    {
+      "lines": [
+        "And whilst our faith enjoys this sight,",
+        "We long to leave our clay,",
+        "And wish thy fiery chariots, Lord,",
+        "To fetch our souls away."
+      ]
+    },
+    {
+      "lines": [
+        "Shout to the Lord, and let our joys",
+        "Thro' the whole nation run;",
+        "Ye British skies, resound the noise",
+        "Beyond the rising sun."
+      ]
+    },
+    {
+      "lines": [
+        "Thee, mighty God, our souls admire,",
+        "Thee our glad voices sing,",
+        "And join with the celestial choir",
+        "To praise th' eternal King."
+      ]
+    },
+    {
+      "lines": [
+        "Thy power the whole creation rules,",
+        "And on the starry skies",
+        "Sits smiling at the weak designs",
+        "Thine envious foes devise."
+      ]
+    },
+    {
+      "lines": [
+        "Thy scorn derides their feeble rage,",
+        "And with an awful frown",
+        "Flings vast confusion on their plots,",
+        "And shakes their Babel down."
+      ]
+    },
+    {
+      "lines": [
+        "Their secret fires in caverns lay,",
+        "And we the sacrifice:",
+        "But gloomy caverns strove in vain",
+        "To 'scape all-searching eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Their dark designs were all reveal'd,",
+        "Their treasons all betray'd:",
+        "Praise to the God that broke the snare",
+        "Their cursed hands had laid."
+      ]
+    },
+    {
+      "lines": [
+        "In vain the busy sons of hell",
+        "Still new rebellions try,",
+        "Their souls shall pine with envious rage,",
+        "And vex away and die."
+      ]
+    },
+    {
+      "lines": [
+        "Almighty grace defends our land",
+        "From their malicious power,",
+        "Let Britain with united songs",
+        "Almighty grace adore."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:91"
+}

@@ -1,0 +1,94 @@
+{
+  "title": "Jesus, in Thee Our Eyes Behold",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Jesus, in Thee Our Eyes Behold in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 145, headed “Christ and Aaron. Taken from Heb. 7. and 9”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, in thee our eyes be-hold A thou-sand glo-ries more Than the rich gems and pol-ish'd gold The sons of Aa-ron wore.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, in thee our eyes behold",
+        "A thousand glories more",
+        "Than the rich gems and polish'd gold",
+        "The sons of Aaron wore."
+      ]
+    },
+    {
+      "lines": [
+        "They first their own burnt-offerings brought",
+        "To purge themselves from sin;",
+        "Thy life was pure without a spot,",
+        "And all thy nature clean."
+      ]
+    },
+    {
+      "lines": [
+        "Fresh blood as constant as the day",
+        "Was on their altar spilt;",
+        "But thy one offering takes away",
+        "For ever all our guilt."
+      ]
+    },
+    {
+      "lines": [
+        "Their priesthood ran thro' several hands.",
+        "For mortal was their race;",
+        "Thy never-changing office stands",
+        "Eternal as thy days."
+      ]
+    },
+    {
+      "lines": [
+        "Once in the circuit of a year",
+        "With blood, but not his own,",
+        "Aaron within the veil appears",
+        "Before the golden throne;"
+      ]
+    },
+    {
+      "lines": [
+        "But Christ by his own powerful blood",
+        "Ascends above the skies,",
+        "And in the presence of our God",
+        "Shews his own sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, the King of Glory, reigns",
+        "On Sion's heavenly hill,",
+        "Looks like a lamb that has been slain,",
+        "And wears his priesthood still."
+      ]
+    },
+    {
+      "lines": [
+        "He ever lives to intercede",
+        "Before his Father's face;",
+        "Give him, my soul, thy cause to plead,",
+        "Nor doubt the Father's grace."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:145"
+}

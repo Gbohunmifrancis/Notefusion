@@ -1,0 +1,110 @@
+{
+  "title": "Why Is My Heart So Far from Thee",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Why Is My Heart So Far from Thee in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 20, headed “Backslidings and returns; or, The inconstancy of our love”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Why is my heart so far from thee, My God, my chief de-light? Why are my thoughts no more by day With thee, no more by night?",
+  "verses": [
+    {
+      "lines": [
+        "Why is my heart so far from thee,",
+        "My God, my chief delight?",
+        "Why are my thoughts no more by day",
+        "With thee, no more by night?"
+      ]
+    },
+    {
+      "lines": [
+        "Why should my foolish passions rove?",
+        "Where can such sweetness be",
+        "As I have tasted in thy love;",
+        "As I have found in thee?"
+      ]
+    },
+    {
+      "lines": [
+        "When my forgetful soul renews",
+        "The savour of thy grace,",
+        "My heart presumes I cannot lose",
+        "The relish all my days."
+      ]
+    },
+    {
+      "lines": [
+        "But ere one fleeting hour is pass'd,",
+        "The flattering world employs",
+        "Some sensual bait to seize my taste,",
+        "And to pollute my joys."
+      ]
+    },
+    {
+      "lines": [
+        "Trifles of nature or of art",
+        "With fair deceitful charms",
+        "Intrude upon my thoughtless heart,",
+        "And thrust thee from my arms."
+      ]
+    },
+    {
+      "lines": [
+        "Then I repent and vex my soul",
+        "That I should leave thee so,",
+        "Where will those wild affections roll",
+        "That let a Saviour go?"
+      ]
+    },
+    {
+      "lines": [
+        "Sin's promis'd joys are turn'd to pain,",
+        "And I am drown'd in grief;",
+        "But my dear Lord returns again,",
+        "He flies to my relief."
+      ]
+    },
+    {
+      "lines": [
+        "Seizing my soul with sweet surprise",
+        "He draws with loving bands;",
+        "Divine compassion in his eyes,",
+        "And pardon in his hands."
+      ]
+    },
+    {
+      "lines": [
+        "Wretch that I am to wander thus",
+        "In chase of false delight!",
+        "Let me be fasten'd to thy cross,",
+        "Rather than lose thy sight."
+      ]
+    },
+    {
+      "lines": [
+        "Make haste, my days, to reach the goal,",
+        "And bring my heart to rest",
+        "On the dear centre of my soul,",
+        "My God, my Saviour's breast."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:20"
+}

@@ -1,0 +1,54 @@
+{
+  "title": "Thus Saith the Wisdom of the Lord",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Thus Saith the Wisdom of the Lord in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 93, headed “Christ, or wisdom, obeyed or resisted, Prov. 8. 31 35 36”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thus saith the wis-dom of the Lord, \"Bless'd is the man that hears my word, \"Keeps dail-y watch be-fore my gates, \"And at my feet for mer-cy waits.",
+  "verses": [
+    {
+      "lines": [
+        "Thus saith the wisdom of the Lord,",
+        "\"Bless'd is the man that hears my word,",
+        "\"Keeps daily watch before my gates,",
+        "\"And at my feet for mercy waits."
+      ]
+    },
+    {
+      "lines": [
+        "\"The soul that seeks me shall obtain",
+        "\"Immortal wealth and heavenly gain;",
+        "\"Immortal life is his reward,",
+        "\"Life, and the favour of the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "\"But the vile wretch that flies from me",
+        "\"Doth his own soul an injury;",
+        "Fools that against my grace rebel",
+        "\"Seek death, and love the road to hell.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:93"
+}

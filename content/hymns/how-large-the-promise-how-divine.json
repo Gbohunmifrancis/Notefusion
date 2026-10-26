@@ -1,0 +1,62 @@
+{
+  "title": "How Large the Promise! How Divine",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Large the Promise! How Divine in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 113, headed “Abraham's blessings on the Gentiles, Gen. 17. 7. Rom. 15. 8. Mark 10. 14”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How large the pro-mise! how di-vine, To A-bra'am and his seed! \"I'll be a God to thee and thine, \"Sup-ply-ing all their need.\"",
+  "verses": [
+    {
+      "lines": [
+        "How large the promise! how divine,",
+        "To Abra'am and his seed!",
+        "\"I'll be a God to thee and thine,",
+        "\"Supplying all their need.\""
+      ]
+    },
+    {
+      "lines": [
+        "The words of his extensive love",
+        "From age to age endure;",
+        "The angel of the covenant proves,",
+        "And seals the blessing sure."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus the ancient faith confirms",
+        "To our great fathers given;",
+        "He takes young children to his arms,",
+        "And calls them heirs of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Our God, how faithful are his ways!",
+        "His love endures the same;",
+        "Nor from the promise of his grace",
+        "Blots out the children's name."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:113"
+}

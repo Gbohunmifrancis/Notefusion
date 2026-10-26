@@ -1,0 +1,126 @@
+{
+  "title": "Come Let Us Lift Our Voices High",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Come Let Us Lift Our Voices High in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 12 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 21, headed “The triumphal feast for Christ's victory over sin, and death, and hell”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Come let us lift our voi-ces high, High as our joys a-rise, And join the songs a-bove the sky, Where plea-sure nev-er dies.",
+  "verses": [
+    {
+      "lines": [
+        "Come let us lift our voices high,",
+        "High as our joys arise,",
+        "And join the songs above the sky,",
+        "Where pleasure never dies."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, the God that fought and bled,",
+        "And conquer'd when he fell;",
+        "That rose, and at his chariot-wheels",
+        "Dragg'd all the powers of hell."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus the God invites us here",
+        "To this triumphal feast,",
+        "And brings immortal blessings down",
+        "For each redeemed guest."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord! how glorious is his face!",
+        "How kind his smiles appear!",
+        "And O what melting words he says",
+        "To every humble ear!"
+      ]
+    },
+    {
+      "lines": [
+        "\"For you, the children of my love,",
+        "\"It was for you I dy'd;",
+        "\"Behold my hands, behold my feet,",
+        "\"And look into my side."
+      ]
+    },
+    {
+      "lines": [
+        "\"These are the wounds for you I bore,",
+        "\"The tokens of my pains,",
+        "\"When I came down to free your souls",
+        "\"From misery and chains."
+      ]
+    },
+    {
+      "lines": [
+        "\"Justice unsheath'd its fiery sword,",
+        "And plung'd it in my heart;",
+        "\"Infinite pangs for you I bore,",
+        "\"And most tormenting smart."
+      ]
+    },
+    {
+      "lines": [
+        "\"When hell and all its spiteful powers",
+        "\"Stood dreadful in my way,",
+        "\"To rescue those dear lives of yours",
+        "\"I gave my own away."
+      ]
+    },
+    {
+      "lines": [
+        "\"But while I bled, and groan'd, and dy'd,",
+        "\"I ruin'd Satan's throne;",
+        "\"High on my cross I hung, and spy'd",
+        "\"The monster tumbling down."
+      ]
+    },
+    {
+      "lines": [
+        "\"Now you must triumph at my feast,",
+        "\"And taste my flesh, my blood;",
+        "\"And live eternal ages bless'd,",
+        "\"For 'tis immortal food.\""
+      ]
+    },
+    {
+      "lines": [
+        "Victorious God! what can we pay",
+        "For favours so divine?",
+        "We would devote our hearts away",
+        "To be for ever thine."
+      ]
+    },
+    {
+      "lines": [
+        "We give thee, Lord, our highest praise,",
+        "The tribute of our tongues;",
+        "But themes so infinite as these",
+        "Exceed our noblest songs."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:21"
+}

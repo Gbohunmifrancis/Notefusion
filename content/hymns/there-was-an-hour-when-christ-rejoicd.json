@@ -1,0 +1,78 @@
+{
+  "title": "There Was an Hour When Christ Rejoic'd",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "There Was an Hour When Christ Rejoic'd in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 11, headed “The humble enlightened, and carnal reason humbled; or, The sovereignty of grace, Luke 10. 21 22”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "There was an hour when Christ re-joic'd, And spoke his joy in words of praise; \"Fa-ther, I thank thee, might-y God, \"Lord of the earth, and heavens, and seas.",
+  "verses": [
+    {
+      "lines": [
+        "There was an hour when Christ rejoic'd,",
+        "And spoke his joy in words of praise;",
+        "\"Father, I thank thee, mighty God,",
+        "\"Lord of the earth, and heavens, and seas."
+      ]
+    },
+    {
+      "lines": [
+        "\"I thank thy sovereign power and love,",
+        "\"That crowns my doctrine with success;",
+        "\"And makes the babes in knowledge learn",
+        "\"The heights, and breadths, and lengths of grace."
+      ]
+    },
+    {
+      "lines": [
+        "\"But all this glory lies conceal'd",
+        "\"From men of prudence and of wit;",
+        "\"The prince of darkness blinds their eyes,",
+        "\"And their own pride resists the light."
+      ]
+    },
+    {
+      "lines": [
+        "\"Father, 'tis thus, because thy will",
+        "\"Chose and ordain'd it should be so;",
+        "\"T'is thy delight t' abase the proud,",
+        "\"And lay the haughty scorner low."
+      ]
+    },
+    {
+      "lines": [
+        "\"There's none can know the Father right",
+        "\"But those who learn it from the Son;",
+        "\"Nor can the Son be well receiv'd,",
+        "But where the Father makes him known.\""
+      ]
+    },
+    {
+      "lines": [
+        "Then let our souls adore our God",
+        "That deals his graces as he please,",
+        "Nor gives to mortals an account",
+        "Or of his actions, or decrees."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:11"
+}

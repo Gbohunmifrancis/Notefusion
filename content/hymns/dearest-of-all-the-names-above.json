@@ -1,0 +1,70 @@
+{
+  "title": "Dearest of All the Names Above",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Dearest of All the Names Above in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 148, headed “God reconciled in Christ”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Dear-est of all the names a-bove My Je-sus, and my God, Who can re-sist thy heav-enly love, Or tri-fle with thy blood?",
+  "verses": [
+    {
+      "lines": [
+        "Dearest of all the names above",
+        "My Jesus, and my God,",
+        "Who can resist thy heavenly love,",
+        "Or trifle with thy blood?"
+      ]
+    },
+    {
+      "lines": [
+        "'Tis by the merits of thy death",
+        "The Father smiles again;",
+        "'Tis by thine interceding breath",
+        "The Spirit dwells with men."
+      ]
+    },
+    {
+      "lines": [
+        "Till God in human flesh I see,",
+        "My thoughts no comfort find;",
+        "The holy, just, and sacred Three",
+        "Are terrors to my mind."
+      ]
+    },
+    {
+      "lines": [
+        "But if Immanuel's face appear,",
+        "My hope, my joy, begins;",
+        "His Name forbids my slavish fear,",
+        "His grace removes my sins."
+      ]
+    },
+    {
+      "lines": [
+        "While Jews on their own law rely,",
+        "And Greeks of wisdom boast,",
+        "I love th' incarnate mystery,",
+        "And there I fix my trust."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:148"
+}

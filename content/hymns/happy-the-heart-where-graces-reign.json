@@ -1,0 +1,70 @@
+{
+  "title": "Happy the Heart Where Graces Reign",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Happy the Heart Where Graces Reign in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 38, headed “Love to God”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Hap-py the heart where gra-ces reign, Where love in-spires the breast; Love is the bright-est of the train, And strength-ens all the rest.",
+  "verses": [
+    {
+      "lines": [
+        "Happy the heart where graces reign,",
+        "Where love inspires the breast;",
+        "Love is the brightest of the train,",
+        "And strengthens all the rest."
+      ]
+    },
+    {
+      "lines": [
+        "Knowledge, alas! 'Tis all in vain,",
+        "And all in vain our fear,",
+        "Our stubborn sins will fight and reign",
+        "If love be absent there."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis love that makes our cheerful feet",
+        "In swift obedience move,",
+        "The devils know and tremble too,",
+        "But Satan cannot love."
+      ]
+    },
+    {
+      "lines": [
+        "This is the grace that lives and sings",
+        "When faith and hope shall cease,",
+        "'Tis this shall strike our joyful strings",
+        "In the sweet realms of bliss."
+      ]
+    },
+    {
+      "lines": [
+        "Before we quite forsake our clay,",
+        "Or leave this dark abode,",
+        "The wings of love bear us away",
+        "To see our smiling God."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:38"
+}

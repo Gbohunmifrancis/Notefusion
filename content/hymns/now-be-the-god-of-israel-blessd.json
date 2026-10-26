@@ -1,0 +1,94 @@
+{
+  "title": "Now Be the God of Israel Bless'd",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Now Be the God of Israel Bless'd in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 50, headed “The song of Zacharias, and the message of John the Baptist; or, Light and salvation by Jesus Christ, Luke 1. 68 &c. John 1. 29. 32”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Now be the God of Is-rael bless'd Who makes his truth ap-pear, His might-y hand ful-fils his word, And all the oaths he sware.",
+  "verses": [
+    {
+      "lines": [
+        "Now be the God of Israel bless'd",
+        "Who makes his truth appear,",
+        "His mighty hand fulfils his word,",
+        "And all the oaths he sware."
+      ]
+    },
+    {
+      "lines": [
+        "Now he bedews old David's root",
+        "With blessings from the skies;",
+        "He makes the branch of promise grow,",
+        "The promis'd horn arise."
+      ]
+    },
+    {
+      "lines": [
+        "John was the prophet of the Lord",
+        "To go before his face,",
+        "The herald which our Saviour God",
+        "Sent to prepare his ways."
+      ]
+    },
+    {
+      "lines": [
+        "He makes the great salvation known,",
+        "He speaks of pardon'd sins;",
+        "While grace divine and heavenly love",
+        "In its own glory shines."
+      ]
+    },
+    {
+      "lines": [
+        "\"Behold the Lamb of God,\" he cries,",
+        "\"That takes our guilt away:",
+        "\"I saw the Spirit o'er his head",
+        "\"On his baptizing day."
+      ]
+    },
+    {
+      "lines": [
+        "\"Be every vale exalted high,",
+        "\"Sink every mountain low,",
+        "\"The proud must stoop, and humble souls",
+        "\"Shall his salvation know."
+      ]
+    },
+    {
+      "lines": [
+        "\"The heathen realms with Israel's land",
+        "\"Shall join in sweet accord;",
+        "\"And all that's born of man shall see",
+        "\"The glory of the Lord."
+      ]
+    },
+    {
+      "lines": [
+        "\"Behold the morning star arise,",
+        "\"Ye that in darkness sit;",
+        "\"He marks the path that leads to peace,",
+        "\"And guides our doubtful feet.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:50"
+}

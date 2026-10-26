@@ -1,0 +1,78 @@
+{
+  "title": "Up to the Fields Where Angels Lie",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Up to the Fields Where Angels Lie in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 41, headed “A sight of God mortifies us to the world”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Up to the fields where an-gels lie, And liv-ing wa-ters gen-tly roll, Fain would my thoughts leap out and fly, But sin hangs hea-vy on my soul.",
+  "verses": [
+    {
+      "lines": [
+        "Up to the fields where angels lie,",
+        "And living waters gently roll,",
+        "Fain would my thoughts leap out and fly,",
+        "But sin hangs heavy on my soul."
+      ]
+    },
+    {
+      "lines": [
+        "Thy wondrous blood, dear dying Christ,",
+        "Can make this load of guilt remove;",
+        "And thou canst bear me where thou fly'st,",
+        "On thy kind wings, celestial Dove!"
+      ]
+    },
+    {
+      "lines": [
+        "O might I once mount up and see",
+        "The glories of th' eternal skies,",
+        "What little things these worlds would be!",
+        "How despicable to my eyes!"
+      ]
+    },
+    {
+      "lines": [
+        "Had I a glance of thee, my God,",
+        "Kingdoms and men would vanish soon,",
+        "Vanish, as tho' I saw them not,",
+        "As a dim candle dies at noon."
+      ]
+    },
+    {
+      "lines": [
+        "Then they might fight, and rage, and rave,",
+        "I should perceive the noise no more",
+        "Than we can hear a shaking leaf,",
+        "While rattling thunders round us roar."
+      ]
+    },
+    {
+      "lines": [
+        "Great All in All, eternal King,",
+        "Let me but view thy lovely face,",
+        "And all my powers shall bow and sing",
+        "Thine endless grandeur and thy grace."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:41"
+}

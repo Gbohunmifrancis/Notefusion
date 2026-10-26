@@ -1,0 +1,62 @@
+{
+  "title": "Why Should This Earth Delight Us So",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Why Should This Earth Delight Us So in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 164, headed “The end of the world”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Why should this earth de-light us so? Why should we fix our eyes On these low grounds where sor-rows grow, And ev-ery plea-sure dies?",
+  "verses": [
+    {
+      "lines": [
+        "Why should this earth delight us so?",
+        "Why should we fix our eyes",
+        "On these low grounds where sorrows grow,",
+        "And every pleasure dies?"
+      ]
+    },
+    {
+      "lines": [
+        "While time his sharpest teeth prepares",
+        "Our comforts to devour,",
+        "There is a land above the stars,",
+        "And joys above his power."
+      ]
+    },
+    {
+      "lines": [
+        "Nature shall be dissolv'd and die,",
+        "The sun must end his race,",
+        "The earth and sea for ever fly",
+        "Before my Saviour's face."
+      ]
+    },
+    {
+      "lines": [
+        "When will that glorious morning rise!",
+        "When the last trumpet sound,",
+        "And call the nations to the skies",
+        "From underneath the ground?"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:164"
+}

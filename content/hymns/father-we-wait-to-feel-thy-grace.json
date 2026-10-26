@@ -1,0 +1,70 @@
+{
+  "title": "Father, We Wait to Feel Thy Grace",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Father, We Wait to Feel Thy Grace in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 24, headed “Pardon and strength from Christ”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther, we wait to feel thy grace, To see thy glo-ries shine; The Lord will his own ta-ble bless, And make the feast di-vine.",
+  "verses": [
+    {
+      "lines": [
+        "Father, we wait to feel thy grace,",
+        "To see thy glories shine;",
+        "The Lord will his own table bless,",
+        "And make the feast divine."
+      ]
+    },
+    {
+      "lines": [
+        "We touch, we taste the heavenly bread,",
+        "We drink the sacred Cup;",
+        "With outward forms our sense is fed,",
+        "Our souls rejoice in hope."
+      ]
+    },
+    {
+      "lines": [
+        "We shall appear before the throne",
+        "Of our forgiving God,",
+        "Dress'd in the garments of his Son,",
+        "And sprinkled with his blood."
+      ]
+    },
+    {
+      "lines": [
+        "We shall be strong to run the race,",
+        "And climb the upper sky;",
+        "Christ will provide our souls with grace,",
+        "He bought a large supply."
+      ]
+    },
+    {
+      "lines": [
+        "Let us indulge a cheerful frame,",
+        "For joy becomes a feast;",
+        "We love the memory of his Name,",
+        "More than the wine we taste."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:24"
+}

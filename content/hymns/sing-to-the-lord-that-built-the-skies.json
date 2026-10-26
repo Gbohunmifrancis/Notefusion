@@ -1,0 +1,70 @@
+{
+  "title": "Sing to the Lord That Built the Skies",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Sing to the Lord That Built the Skies in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 13, headed “The creation, preservation, dissolution, and restoration of this world”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Sing to the Lord that built the skies, The Lord that rear'd this state-ly frame; Let half the na-tions sound his praise, And lands un-known re-peat his Name.",
+  "verses": [
+    {
+      "lines": [
+        "Sing to the Lord that built the skies,",
+        "The Lord that rear'd this stately frame;",
+        "Let half the nations sound his praise,",
+        "And lands unknown repeat his Name."
+      ]
+    },
+    {
+      "lines": [
+        "He form'd the seas, and form'd the hills,",
+        "Made every drop and every dust,",
+        "Nature and time with all their wheels,",
+        "And push'd them into motion first."
+      ]
+    },
+    {
+      "lines": [
+        "Now from his high imperial throne",
+        "He looks far down upon the spheres;",
+        "He bids the shining orbs roll on,",
+        "And round he turns our hasty years."
+      ]
+    },
+    {
+      "lines": [
+        "Thus shall this moving engine last",
+        "Till all his saints are gather'd in,",
+        "Then for the trumpet's dreadful blast",
+        "To shake it all to dust again!"
+      ]
+    },
+    {
+      "lines": [
+        "Yet when the sound shall tear the skies,",
+        "And lightning burn the globe below,",
+        "Saints, you may lift your joyful eyes,",
+        "There's a new heaven and earth for you."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:13"
+}

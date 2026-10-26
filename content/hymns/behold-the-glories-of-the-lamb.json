@@ -1,0 +1,94 @@
+{
+  "title": "Behold the Glories of the Lamb",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Behold the Glories of the Lamb in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 1, headed “A new song to the Lamb that was slain. Rev. 5. 6 8 9 10 12”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold the glo-ries of the Lamb A-midst his Fa-ther's throne Pre-pare new ho-nours for his name, And songs be-fore un-known.",
+  "verses": [
+    {
+      "lines": [
+        "Behold the glories of the Lamb",
+        "Amidst his Father's throne",
+        "Prepare new honours for his name,",
+        "And songs before unknown."
+      ]
+    },
+    {
+      "lines": [
+        "Let elders worship at his feet,",
+        "The church adore around,",
+        "With vials full of odours sweet,",
+        "And harps of sweeter sound."
+      ]
+    },
+    {
+      "lines": [
+        "Those are the prayers of the saints,",
+        "And these the hymns they raise:",
+        "Jesus is kind to our complaints,",
+        "He loves to hear our praise."
+      ]
+    },
+    {
+      "lines": [
+        "Eternal Father, who shall look",
+        "Into thy secret will?",
+        "Who but the Son shall take that book",
+        "And open every seal?"
+      ]
+    },
+    {
+      "lines": [
+        "He shall fulfil thy great decrees,",
+        "The Son deserves it well;",
+        "Lo, in his hand the sovereign keys",
+        "Of heaven, and death, and hell!"
+      ]
+    },
+    {
+      "lines": [
+        "Now to the Lamb that once was slain",
+        "Be endless blessings paid;",
+        "Salvation, glory, joy remain",
+        "For ever on thy head."
+      ]
+    },
+    {
+      "lines": [
+        "Thou hast redeem'd our souls with blood,",
+        "Hast set the pris'ners free,",
+        "Hast made us kings and priests to God,",
+        "And we shall reign with thee."
+      ]
+    },
+    {
+      "lines": [
+        "The worlds of nature and of grace",
+        "Are put beneath thy power;",
+        "Then shorten these delaying days,",
+        "And bring the promis'd hour."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:1"
+}

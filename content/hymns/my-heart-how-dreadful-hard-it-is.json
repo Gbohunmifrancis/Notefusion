@@ -1,0 +1,78 @@
+{
+  "title": "My Heart, How Dreadful Hard It Is",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "My Heart, How Dreadful Hard It Is in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 98, headed “Hardness of heart complained of”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My heart, how dread-ful hard it is! How hea-vy here it lies, Hea-vy and cold with-in my breast Just like a rock of ice!",
+  "verses": [
+    {
+      "lines": [
+        "My heart, how dreadful hard it is!",
+        "How heavy here it lies,",
+        "Heavy and cold within my breast",
+        "Just like a rock of ice!"
+      ]
+    },
+    {
+      "lines": [
+        "Sin like a raging tyrant sits",
+        "Upon this flinty throne,",
+        "And every grace lies buried deep",
+        "Beneath this heart of stone."
+      ]
+    },
+    {
+      "lines": [
+        "How seldom do I rise to God,",
+        "Or taste the joys above!",
+        "This mountain presses down my faith,",
+        "And chills my flaming love."
+      ]
+    },
+    {
+      "lines": [
+        "When smiling mercy courts my soul",
+        "With all its heavenly charms,",
+        "This stubborn, this relentless thing",
+        "Would thrust it from my arms."
+      ]
+    },
+    {
+      "lines": [
+        "Against the thunders of thy word",
+        "Rebellious I have stood,",
+        "My heart it shakes not at the wrath",
+        "And terrors of a God."
+      ]
+    },
+    {
+      "lines": [
+        "Dear Saviour, steep this rock of mine",
+        "In thine own crimson sea:",
+        "None but a bath of blood divine",
+        "Can melt the flint away."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:98"
+}

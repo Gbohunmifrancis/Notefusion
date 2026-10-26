@@ -1,0 +1,70 @@
+{
+  "title": "The True Messiah Now Appears",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "The True Messiah Now Appears in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 12, headed “Christ is the substance of the Levitical priesthood”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The true Mes-si-ah now ap-pears, The types are all with-drawn; So fly the sha-dows and the stars Be-fore the ris-ing dawn.",
+  "verses": [
+    {
+      "lines": [
+        "The true Messiah now appears,",
+        "The types are all withdrawn;",
+        "So fly the shadows and the stars",
+        "Before the rising dawn."
+      ]
+    },
+    {
+      "lines": [
+        "No smoking sweets, nor bleeding lambs,",
+        "Nor kid, nor bullock slain,",
+        "Incense and spice of costly names",
+        "Would all be burnt in vain."
+      ]
+    },
+    {
+      "lines": [
+        "Aaron must lay his robes away;",
+        "His mitre and his vest,",
+        "When God himself comes down to be",
+        "The offering and the priest."
+      ]
+    },
+    {
+      "lines": [
+        "He took our mortal flesh to show",
+        "The wonders of his love;",
+        "For us he paid his life below,",
+        "And prays for us above."
+      ]
+    },
+    {
+      "lines": [
+        "\"Father, (he cries) forgive their sins,",
+        "\"For I myself have dy'd,\"",
+        "And then he shews his open'd veins,",
+        "And pleads his wounded side."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:12"
+}

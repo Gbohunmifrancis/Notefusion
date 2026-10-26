@@ -1,0 +1,70 @@
+{
+  "title": "The Lord, Descending from Above",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "The Lord, Descending from Above in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 126, headed “God glorified in the gospel”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Lord, de-scend-ing from a-bove, In-vites his child-ren near, While power and truth and bound-less love Dis-play their glo-ries here.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord, descending from above,",
+        "Invites his children near,",
+        "While power and truth and boundless love",
+        "Display their glories here."
+      ]
+    },
+    {
+      "lines": [
+        "Here in thy gospel's wondrous frame",
+        "Fresh wisdom we pursue;",
+        "A thousand angels learn thy Name",
+        "Beyond whate'er they knew."
+      ]
+    },
+    {
+      "lines": [
+        "Thy Name is writ in fairest lines,",
+        "Thy wonders here we trace;",
+        "Wisdom thro' all the mystery shines,",
+        "And shines in Jesu's face."
+      ]
+    },
+    {
+      "lines": [
+        "The law its best obedience owes",
+        "To our incarnate God;",
+        "And thy revenging justice shows",
+        "Its honours in his blood."
+      ]
+    },
+    {
+      "lines": [
+        "But still the lustre of thy grace",
+        "Our warmer thoughts employs,",
+        "Gilds the whole scene with brighter rays,",
+        "And more exalts our joys."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:126"
+}

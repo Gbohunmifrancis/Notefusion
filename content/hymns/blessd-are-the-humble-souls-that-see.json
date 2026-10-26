@@ -1,0 +1,94 @@
+{
+  "title": "Bless'd Are the Humble Souls That See",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Bless'd Are the Humble Souls That See in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 102, headed “The beatitudes, Matt. 5. 3-12”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Bless'd are the hum-ble souls that see Their e-mpti-ness and po-ver-ty; Trea-sures of grace to them are given, And crowns of joy laid up in heaven.",
+  "verses": [
+    {
+      "lines": [
+        "Bless'd are the humble souls that see",
+        "Their emptiness and poverty;",
+        "Treasures of grace to them are given,",
+        "And crowns of joy laid up in heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Bless'd are the men of broken heart,",
+        "Who mourn for sin with inward smart;",
+        "The blood of Christ divinely flows,",
+        "A healing balm for all their woes."
+      ]
+    },
+    {
+      "lines": [
+        "Bless'd are the meek, who stand afar",
+        "From rage and passion, noise and war;",
+        "God will secure their happy state,",
+        "And plead their cause against the great."
+      ]
+    },
+    {
+      "lines": [
+        "Bless'd are the souls that thirst for grace,",
+        "Hunger and long for righteousness,",
+        "They shall be well supply'd and fed,",
+        "With living streams and living bread."
+      ]
+    },
+    {
+      "lines": [
+        "Bless'd are the men whose bowels move",
+        "And melt with sympathy and love;",
+        "From Christ the Lord shall they obtain",
+        "Like sympathy and love again."
+      ]
+    },
+    {
+      "lines": [
+        "Bless'd are the pure, whose hearts are clean",
+        "From the defiling powers of sin,",
+        "With endless pleasure they shall see",
+        "A God of spotless purity."
+      ]
+    },
+    {
+      "lines": [
+        "Bless'd are the men of peaceful life",
+        "Who quench the coals of growing strife,",
+        "They shall be call'd the heirs of bliss,",
+        "The sons of God, the God of peace."
+      ]
+    },
+    {
+      "lines": [
+        "Bless'd are the sufferers who partake",
+        "Of pain and shame for Jesus' sake;",
+        "Their souls shall triumph in the Lord,",
+        "Glory and joy are their reward."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:102"
+}

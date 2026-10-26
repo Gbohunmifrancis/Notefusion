@@ -1,0 +1,86 @@
+{
+  "title": "Bright King of Glory, Dreadful God",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Bright King of Glory, Dreadful God in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 51, headed “God the Son equal with the Father”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Bright King of Glo-ry, dread-ful God! Our spi-rits bow be-fore thy seat, To thee we lift an hum-ble thought, And wor-ship at thine aw-ful feet.",
+  "verses": [
+    {
+      "lines": [
+        "Bright King of Glory, dreadful God!",
+        "Our spirits bow before thy seat,",
+        "To thee we lift an humble thought,",
+        "And worship at thine awful feet."
+      ]
+    },
+    {
+      "lines": [
+        "Thy power hath form'd, thy wisdom sways",
+        "All nature with a sovereign word;",
+        "And the bright world of stars obeys",
+        "The will of their superior Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Mercy and truth unite in one,",
+        "And smiling sit at thy right-hand;",
+        "Eternal justice guards thy throne,",
+        "And vengeance waits thy dread command."
+      ]
+    },
+    {
+      "lines": [
+        "A thousand seraphs strong and bright",
+        "Stand round the glorious Deity;",
+        "But who amongst the sons of light",
+        "Pretends comparison with thee?"
+      ]
+    },
+    {
+      "lines": [
+        "Yet there is one of human frame,",
+        "Jesus, array'd in flesh and blood,",
+        "Thinks it no robbery to claim",
+        "A full equality with God."
+      ]
+    },
+    {
+      "lines": [
+        "Their glory shines with equal beams;",
+        "Their essence is for ever one,",
+        "Tho' they are known by different names",
+        "The Father God, and God the Son."
+      ]
+    },
+    {
+      "lines": [
+        "Then let the name of Christ our King",
+        "With equal honours be ador'd;",
+        "His praise let every angel sing,",
+        "And all the nations own their Lord."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:51"
+}

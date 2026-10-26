@@ -1,0 +1,62 @@
+{
+  "title": "Now by the Bowels of My God",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Now by the Bowels of My God in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 130, headed “Love and hatred, Phil. 2. 2. Eph. 4. 30 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now by the bow-els of my God, His sharp dis-tress, his sore com-plaints, By his last groans, his dy-ing blood, I charge my soul to love the saints.",
+  "verses": [
+    {
+      "lines": [
+        "Now by the bowels of my God,",
+        "His sharp distress, his sore complaints,",
+        "By his last groans, his dying blood,",
+        "I charge my soul to love the saints."
+      ]
+    },
+    {
+      "lines": [
+        "Clamour, and wrath, and war be gone,",
+        "Envy and spite for ever cease,",
+        "Let bitter words no more be known",
+        "Amongst the saints, the sons of peace."
+      ]
+    },
+    {
+      "lines": [
+        "The Spirit, like a peaceful dove,",
+        "Flies from the realms of noise and strife;",
+        "Why should we vex and grieve his love,",
+        "Who seals our souls to heavenly life?"
+      ]
+    },
+    {
+      "lines": [
+        "Tender and kind be all our thoughts,",
+        "Thro' all our lives let mercy run;",
+        "So God forgives our numerous faults",
+        "For the clear sake of Christ his Son."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:130"
+}

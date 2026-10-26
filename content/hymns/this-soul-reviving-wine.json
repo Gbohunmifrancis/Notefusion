@@ -1,0 +1,86 @@
+{
+  "title": "This Soul Reviving Wine",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "This Soul Reviving Wine in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 17, headed “Incomparable food; or, The flesh and blood of Christ”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "This soul re-viv-ing wine, Dear Sa-viour, 'tis thy blood; We thank that sa-cred flesh of thine For this im-mor-tal food.",
+  "verses": [
+    {
+      "lines": [
+        "This soul reviving wine,",
+        "Dear Saviour, 'tis thy blood;",
+        "We thank that sacred flesh of thine",
+        "For this immortal food."
+      ]
+    },
+    {
+      "lines": [
+        "The banquet that we eat",
+        "Is made of heavenly things,",
+        "Earth hath no dainties half so sweet",
+        "As our Redeemer brings."
+      ]
+    },
+    {
+      "lines": [
+        "In vain had Adam sought",
+        "And search'd his garden round,",
+        "For there was no such blessed fruit",
+        "In all the happy ground."
+      ]
+    },
+    {
+      "lines": [
+        "Th' angelic host above",
+        "Can never taste this food,",
+        "They feast upon their Maker's love,",
+        "But not a Saviour's blood."
+      ]
+    },
+    {
+      "lines": [
+        "On us th' Almighty Lord",
+        "Bestows this matchless grace,",
+        "And meets us with some cheering word,",
+        "With pleasure in his face."
+      ]
+    },
+    {
+      "lines": [
+        "Come, all ye drooping saints,",
+        "And banquet with the King,",
+        "This wine will drown your sad complaints,",
+        "And tune your voice to sing."
+      ]
+    },
+    {
+      "lines": [
+        "Salvation to the Name",
+        "Of our adored Christ:",
+        "Thro' the wide earth his grace proclaim",
+        "His glory in the high'st."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:17"
+}

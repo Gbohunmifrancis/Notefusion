@@ -1,0 +1,70 @@
+{
+  "title": "How Heavy Is the Night",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Heavy Is the Night in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 98, headed “The same”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "How hea-vy is the night That hangs up-on our eyes, Till Christ with his re-viv-ing light, O-ver our souls a-rise!",
+  "verses": [
+    {
+      "lines": [
+        "How heavy is the night",
+        "That hangs upon our eyes,",
+        "Till Christ with his reviving light,",
+        "Over our souls arise!"
+      ]
+    },
+    {
+      "lines": [
+        "Our guilty spirits dread",
+        "To meet the wrath of heaven",
+        "But, in his righteousness array'd,",
+        "We see our sins forgiven."
+      ]
+    },
+    {
+      "lines": [
+        "Unholy and impure",
+        "Are all our thoughts and ways;",
+        "His hands infected nature cure",
+        "With sanctifying grace."
+      ]
+    },
+    {
+      "lines": [
+        "The powers of hell agree",
+        "To hold our souls in vain;",
+        "He sets the sons of bondage free,",
+        "And breaks the cursed chain."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, we adore thy ways",
+        "To bring us near to God,",
+        "Thy sovereign power, thy healing grace,",
+        "And thine atoning blood."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:98"
+}

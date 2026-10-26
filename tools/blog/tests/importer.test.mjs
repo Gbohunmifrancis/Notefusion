@@ -204,8 +204,9 @@ const { hymns, allHymns } = loadAll({ includeDrafts: true });
 const published = hymns.filter((h) => !h.draft);
 
 test("the import: well over a hundred published, every one unreviewed, with its source, licence and confidence", () => {
-  const imported = allHymns.filter((h) => h.importedFrom);
-  assert.ok(published.filter((h) => h.importedFrom).length >= 150);
+  // The Open Hymnal's; words set by metre (import/watts.mjs) have a test of their own (watts.test.mjs).
+  const imported = allHymns.filter((h) => h.importedFrom && !h.setByMetre);
+  assert.ok(published.filter((h) => h.importedFrom && !h.setByMetre).length >= 150);
   for (const h of imported) {
     assert.equal(h.reviewed, false, h.slug);
     assert.equal(h.tuneData.reviewed, false, h.slug);

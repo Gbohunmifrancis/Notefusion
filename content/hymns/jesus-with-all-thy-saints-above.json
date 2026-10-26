@@ -1,0 +1,62 @@
+{
+  "title": "Jesus, with All Thy Saints Above",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Jesus, with All Thy Saints Above in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 29, headed “Redemption by price and power”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, with all thy saints a-bove My tongue would bear her part, Would sound a-loud thy sa-ving love, And sing thy bleed-ing heart.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, with all thy saints above",
+        "My tongue would bear her part,",
+        "Would sound aloud thy saving love,",
+        "And sing thy bleeding heart."
+      ]
+    },
+    {
+      "lines": [
+        "Bless'd be the Lamb, my dearest Lord,",
+        "Who bought me with his blood,",
+        "And quench'd his Father's flaming sword",
+        "In his own vital blood:"
+      ]
+    },
+    {
+      "lines": [
+        "The Lamb that freed my captive soul",
+        "From Satan's heavy chains,",
+        "And sent the lion down to howl",
+        "Where hell and horror reigns."
+      ]
+    },
+    {
+      "lines": [
+        "All glory to the dying Lamb,",
+        "And never ceasing praise,",
+        "While angels live to know his Name,",
+        "Or saints to feel his grace."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:29"
+}

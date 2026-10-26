@@ -1,0 +1,94 @@
+{
+  "title": "My God, My Portion, and My Love",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "My God, My Portion, and My Love in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 94, headed “God my only happiness, Psalm 73. 25”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My God, my por-tion, and my love, My ev-er-last-ing all, I've none but thee in heaven a-bove, Or on this earth-ly ball.",
+  "verses": [
+    {
+      "lines": [
+        "My God, my portion, and my love,",
+        "My everlasting all,",
+        "I've none but thee in heaven above,",
+        "Or on this earthly ball."
+      ]
+    },
+    {
+      "lines": [
+        "What empty things are all the skies,",
+        "And this inferior clod!",
+        "There's nothing here deserves my joys,",
+        "There's nothing like my God."
+      ]
+    },
+    {
+      "lines": [
+        "In vain the bright, the burning sun",
+        "Scatters his feeble light;",
+        "'Tis thy sweet beams create my noon;",
+        "If thou withdraw, 'tis night."
+      ]
+    },
+    {
+      "lines": [
+        "And whilst upon my restless bed,",
+        "Amongst the shades I roll,",
+        "If my Redeemer shew his head",
+        "'Tis morning with my soul."
+      ]
+    },
+    {
+      "lines": [
+        "To thee we owe our wealth and friends,",
+        "And health, and safe abode;",
+        "Thanks to thy Name for meaner things,",
+        "But they are not my God."
+      ]
+    },
+    {
+      "lines": [
+        "How vain a toy is glittering wealth,",
+        "If once compar'd to thee;",
+        "Or what's my safety, or my health,",
+        "Or all my friends to me?"
+      ]
+    },
+    {
+      "lines": [
+        "Were I possessor of the earth,",
+        "And call'd the stars my own",
+        "Without thy graces and thyself",
+        "I were a wretch undone."
+      ]
+    },
+    {
+      "lines": [
+        "Let others stretch their arms like seas,",
+        "And grasp in all the shore,",
+        "Grant me the visits of thy face,",
+        "And I desire no more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:94"
+}

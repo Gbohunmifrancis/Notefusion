@@ -1,0 +1,70 @@
+{
+  "title": "Bury'd in Shadows of the Night",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Bury'd in Shadows of the Night in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 97, headed “Christ our wisdom, righteousness, &c. 1 Cor. 1. 30”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Bu-ry'd in sha-dows of the night We lie till Christ re-stores the light: Wis-dom de-scends to heal the blind, And chase the dark-ness of the mind.",
+  "verses": [
+    {
+      "lines": [
+        "Bury'd in shadows of the night",
+        "We lie till Christ restores the light:",
+        "Wisdom descends to heal the blind,",
+        "And chase the darkness of the mind."
+      ]
+    },
+    {
+      "lines": [
+        "Our guilty souls are drown'd in tears",
+        "Till his atoning blood appears,",
+        "Then we awake from deep distress,",
+        "And sing, \"The Lord our Righteousness.\""
+      ]
+    },
+    {
+      "lines": [
+        "Our very frame is mix'd with sin,",
+        "His Spirit makes our natures clean;",
+        "Such virtues from his sufferings flow,",
+        "At once to cleanse and pardon too."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus beholds where Satan reigns,",
+        "Binding his slaves in heavy chains;",
+        "He sets the prisoners free, and breaks",
+        "The iron bondage from our necks."
+      ]
+    },
+    {
+      "lines": [
+        "Poor helpless worms in thee possess",
+        "Grace, wisdom, power, and righteousness;",
+        "Thou art our mighty All, and we",
+        "Give our whole selves, O Lord, to thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:97"
+}

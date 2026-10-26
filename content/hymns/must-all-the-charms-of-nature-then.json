@@ -1,0 +1,78 @@
+{
+  "title": "Must All the Charms of Nature Then",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Must All the Charms of Nature Then in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 23, headed “[Supplement.] A hopeful youth falling short of heaven, Mark 10. 21”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Must all the charms of na-ture then So hope-less to sal-va-tion prove? Can hell de-mand, can heaven con-demn The man whom Je-sus deigns to love?",
+  "verses": [
+    {
+      "lines": [
+        "Must all the charms of nature then",
+        "So hopeless to salvation prove?",
+        "Can hell demand, can heaven condemn",
+        "The man whom Jesus deigns to love?"
+      ]
+    },
+    {
+      "lines": [
+        "The man who sought the ways of truth,",
+        "Paid friends and neighbours all their due,",
+        "(A modest, sober, lovely youth)",
+        "And thought he wanted nothing now."
+      ]
+    },
+    {
+      "lines": [
+        "But mark the change! thus spake the Lord,",
+        "\"Come, part with earth for heaven to-day,\"",
+        "The youth astonish'd at the word,",
+        "In silent sadness went his way."
+      ]
+    },
+    {
+      "lines": [
+        "Poor virtues that he boasted so,",
+        "This test unable to endure;",
+        "Let Christ, and grace, and glory go",
+        "To make his land and money sure."
+      ]
+    },
+    {
+      "lines": [
+        "Ah foolish choice of treasures here!",
+        "Ah fatal love of tempting gold!",
+        "Must this base world be bought so dear?",
+        "Are life and heaven so cheaply sold?"
+      ]
+    },
+    {
+      "lines": [
+        "In vain the charms of nature shine,",
+        "If this vile passion govern me:",
+        "Transform my soul, O love divine,",
+        "And make me part with all for thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:23"
+}

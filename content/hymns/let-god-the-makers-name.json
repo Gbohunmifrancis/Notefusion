@@ -1,0 +1,46 @@
+{
+  "title": "Let God the Maker's Name",
+  "tune": "st-bride",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Let God the Maker's Name in Tonic Solfa to ST. BRIDE, doh is Bb: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 31, headed “2d. S. M”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to ST. BRIDE; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Let God the Mak-er's name Have ho-nour, love and fear, To God the Sa-viour pay the same, And God the Com-fort-er.",
+  "verses": [
+    {
+      "lines": [
+        "Let God the Maker's name",
+        "Have honour, love and fear,",
+        "To God the Saviour pay the same,",
+        "And God the Comforter."
+      ]
+    },
+    {
+      "lines": [
+        "Father of lights above,",
+        "Thy mercy we adore,",
+        "The Son of thy eternal love",
+        "And Spirit of thy power."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. BRIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:31"
+}

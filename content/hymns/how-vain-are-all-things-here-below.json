@@ -1,0 +1,70 @@
+{
+  "title": "How Vain Are All Things Here Below",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Vain Are All Things Here Below in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 48, headed “Love to the creatures is dangerous”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How vain are all things here be-low! How false, and yet how fair! Each plea-sure hath its poi-son too, And ev-ery sweet a snare.",
+  "verses": [
+    {
+      "lines": [
+        "How vain are all things here below!",
+        "How false, and yet how fair!",
+        "Each pleasure hath its poison too,",
+        "And every sweet a snare."
+      ]
+    },
+    {
+      "lines": [
+        "The brightest things below the sky",
+        "Give but a flattering light;",
+        "We should suspect some danger nigh",
+        "Where we possess delight."
+      ]
+    },
+    {
+      "lines": [
+        "Our dearest joys, and nearest friends,",
+        "The partners of our blood,",
+        "How they divide our wavering minds,",
+        "And leave but half for God!"
+      ]
+    },
+    {
+      "lines": [
+        "The fondness of a creature's love,",
+        "How strong it strikes the sense!",
+        "Thither the warm affections move,",
+        "Nor can we call them thence."
+      ]
+    },
+    {
+      "lines": [
+        "Dear Saviour, let thy beauties be",
+        "My soul's eternal food;",
+        "And grace command my heart away",
+        "From all created good."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:48"
+}

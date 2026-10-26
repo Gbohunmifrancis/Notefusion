@@ -1,0 +1,62 @@
+{
+  "title": "Hence from My Soul, Sad Thoughts, Be Gone",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Hence from My Soul, Sad Thoughts, Be Gone in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 73, headed “Doubts scattered; or, Spiritual joy restored”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Hence from my soul, sad thoughts, be gone, And leave me to my joys, My tongue shall tri-umph in my God, And make a joy-ful noise.",
+  "verses": [
+    {
+      "lines": [
+        "Hence from my soul, sad thoughts, be gone,",
+        "And leave me to my joys,",
+        "My tongue shall triumph in my God,",
+        "And make a joyful noise."
+      ]
+    },
+    {
+      "lines": [
+        "Darkness and doubts had veil'd my mind,",
+        "And drown'd my head in tears,",
+        "Till sovereign grace with shining rays",
+        "Dispell'd my gloomy fears."
+      ]
+    },
+    {
+      "lines": [
+        "O what immortal joys I felt,",
+        "And raptures all divine,",
+        "When Jesus told me, I was his,",
+        "And my Beloved mine."
+      ]
+    },
+    {
+      "lines": [
+        "In vain the tempter frights my soul,",
+        "And breaks my peace in vain,",
+        "One glimpse, dear Saviour, of thy face,",
+        "Revives my joys again."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:73"
+}

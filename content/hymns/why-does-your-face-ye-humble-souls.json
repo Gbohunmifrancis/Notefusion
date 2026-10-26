@@ -1,0 +1,78 @@
+{
+  "title": "Why Does Your Face, Ye Humble Souls",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Why Does Your Face, Ye Humble Souls in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 85, headed “Sufficiency of pardon”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Why does your face, ye hum-ble souls, Those mourn-ful col-ours wear? What doubts are these that waste your faith, And nour-ish your de-spair?",
+  "verses": [
+    {
+      "lines": [
+        "Why does your face, ye humble souls,",
+        "Those mournful colours wear?",
+        "What doubts are these that waste your faith,",
+        "And nourish your despair?"
+      ]
+    },
+    {
+      "lines": [
+        "What tho' your numerous sins exceed",
+        "The stars that fill the skies,",
+        "And aiming at th' eternal throne,",
+        "Like pointed mountains rise?"
+      ]
+    },
+    {
+      "lines": [
+        "What tho' your mighty guilt beyond",
+        "The wide creation swell,",
+        "And has its curs'd foundations laid",
+        "Low as the deeps of hell?"
+      ]
+    },
+    {
+      "lines": [
+        "See here an endless ocean flows",
+        "Of never-failing grace,",
+        "Behold a dying Saviour's veins",
+        "The sacred flood increase:"
+      ]
+    },
+    {
+      "lines": [
+        "It rises high and drowns the hills,",
+        "'T has neither shore nor bound:",
+        "Nor if we search to find our sins,",
+        "Our sins can ne'er be found."
+      ]
+    },
+    {
+      "lines": [
+        "Awake, our hearts, adore the grace",
+        "That buries all our faults,",
+        "And pardoning blood that swells above",
+        "Our follies and our thoughts."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:85"
+}

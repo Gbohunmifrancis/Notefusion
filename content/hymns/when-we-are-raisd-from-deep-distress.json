@@ -1,0 +1,78 @@
+{
+  "title": "When We Are Rais'd from Deep Distress",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "When We Are Rais'd from Deep Distress in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 55, headed “Hesekiah's song; or, Sickness and recovery, Isa. 38.9 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When we are rais'd from deep dis-tress Our God de-serves a song; We take the pat-tern of our praise From He-ze-ki-ah's tongue.",
+  "verses": [
+    {
+      "lines": [
+        "When we are rais'd from deep distress",
+        "Our God deserves a song;",
+        "We take the pattern of our praise",
+        "From Hezekiah's tongue."
+      ]
+    },
+    {
+      "lines": [
+        "The gates of the devouring grave",
+        "Are open'd wide in vain,",
+        "If he that holds the keys of death",
+        "Commands them fast again."
+      ]
+    },
+    {
+      "lines": [
+        "Pains of the flesh are wont t' abuse",
+        "Our minds with slavish fears,",
+        "\"Our days are past, and we shall lose",
+        "\"The remnant of our years.\""
+      ]
+    },
+    {
+      "lines": [
+        "We chatter with a swallow's voice,",
+        "Or like a dove we mourn,",
+        "With bitterness instead of joys,",
+        "Afflicted and forlorn."
+      ]
+    },
+    {
+      "lines": [
+        "Jehovah speaks the healing word,",
+        "And no disease withstands;",
+        "Fevers and plagues obey the Lord,",
+        "And fly at his commands."
+      ]
+    },
+    {
+      "lines": [
+        "If half the strings of life should break,",
+        "He can our frame restore;",
+        "He casts our sins behind his back,",
+        "And they are found no more."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:55"
+}

@@ -1,0 +1,70 @@
+{
+  "title": "\"The Promise of My Father's Love",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "\"The Promise of My Father's Love in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 3, headed “The new testament in the blood of Christ; or, The new covenant sealed”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "\"The pro-mise of my Fa-ther's love \"Shall stand for ev-er good;\" He said, and gave his soul to death, And seal'd the grace with blood.",
+  "verses": [
+    {
+      "lines": [
+        "\"The promise of my Father's love",
+        "\"Shall stand for ever good;\"",
+        "He said, and gave his soul to death,",
+        "And seal'd the grace with blood."
+      ]
+    },
+    {
+      "lines": [
+        "To this dear covenant of thy word",
+        "I set my worthless name;",
+        "I seal th' engagement to my Lord,",
+        "And make my humble claim."
+      ]
+    },
+    {
+      "lines": [
+        "Thy light, and strength, and pardoning grace,",
+        "And glory shall be mine;",
+        "My life and soul, my heart and flesh,",
+        "And all my powers are thine."
+      ]
+    },
+    {
+      "lines": [
+        "I call that legacy my own",
+        "Which Jesus did bequeath;",
+        "'Twas purchas'd with a dying groan,",
+        "And ratify'd in death."
+      ]
+    },
+    {
+      "lines": [
+        "Sweet is the memory of his Name,",
+        "Who bless'd us in his will,",
+        "And to his testament of love",
+        "Made his own life the seal."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:3"
+}

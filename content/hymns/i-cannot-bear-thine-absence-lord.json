@@ -1,0 +1,54 @@
+{
+  "title": "I Cannot Bear Thine Absence, Lord",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "I Cannot Bear Thine Absence, Lord in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 117, headed “Living and dying with God present”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "I can-not bear thine ab-sence, Lord, My life ex-pires if thou de-part; Be thou, my heart, still near my God, And thou, my God, be near my heart.",
+  "verses": [
+    {
+      "lines": [
+        "I cannot bear thine absence, Lord,",
+        "My life expires if thou depart;",
+        "Be thou, my heart, still near my God,",
+        "And thou, my God, be near my heart."
+      ]
+    },
+    {
+      "lines": [
+        "I was not born for earth and sin,",
+        "Nor can I live on things so vile;",
+        "Yet I would stay my Father's time,",
+        "And hope and wait for heaven a while."
+      ]
+    },
+    {
+      "lines": [
+        "Then, dearest Lord, in thine embrace",
+        "Let me resign my fleeting breath,",
+        "And with a smile upon my face",
+        "Pass the important hour of death."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:117"
+}

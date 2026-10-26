@@ -1,0 +1,54 @@
+{
+  "title": "Firm as the Earth Thy Gospel Stands",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Firm as the Earth Thy Gospel Stands in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 138, headed “Saints in the hands of Christ, John 10. 28 29”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Firm as the earth thy gos-pel stands, My Lord, my hope, my trust; If I am found in Je-sus' hands, My soul can ne'er be lost.",
+  "verses": [
+    {
+      "lines": [
+        "Firm as the earth thy gospel stands,",
+        "My Lord, my hope, my trust;",
+        "If I am found in Jesus' hands,",
+        "My soul can ne'er be lost."
+      ]
+    },
+    {
+      "lines": [
+        "His honour is engag'd to save",
+        "The meanest of his sheep,",
+        "All that his heavenly Father gave",
+        "His hands securely keep."
+      ]
+    },
+    {
+      "lines": [
+        "Nor death, nor hell shall e'er remove",
+        "His favourites from his breast;",
+        "In the dear bosom of his love",
+        "They must for ever rest."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:138"
+}

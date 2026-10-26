@@ -1,0 +1,102 @@
+{
+  "title": "God! the Eternal Awful Name",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "God! the Eternal Awful Name in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 27, headed “Praise ye him, all his angels, Psalm 148. 2”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God! the e-ter-nal aw-ful Name That the whole heav-enly ar-my fears, That shakes the wide cre-a-tion's frame, And Sa-tan trem-bles when he hears.",
+  "verses": [
+    {
+      "lines": [
+        "God! the eternal awful Name",
+        "That the whole heavenly army fears,",
+        "That shakes the wide creation's frame,",
+        "And Satan trembles when he hears."
+      ]
+    },
+    {
+      "lines": [
+        "Like flames of fire his servants are,",
+        "And light surrounds his dwelling place;",
+        "But, O ye fiery flames, declare",
+        "The brighter glories of his face."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis not for such poor worms as we",
+        "To speak so infinite a thing,",
+        "But your immortal eyes survey",
+        "The beauties of your sovereign King."
+      ]
+    },
+    {
+      "lines": [
+        "Tell how he shews his smiling face,",
+        "And clothes all heaven in bright array;",
+        "Triumph and joy run thro' the place,",
+        "And songs eternal as the day."
+      ]
+    },
+    {
+      "lines": [
+        "Speak, (for you feel his burning love)",
+        "What zeal it spreads thro' all your frame:",
+        "That sacred fire dwells all above,",
+        "For we on earth have lost the name."
+      ]
+    },
+    {
+      "lines": [
+        "Sing of his power and justice too,",
+        "That infinite right-hand of his",
+        "That vanquish'd Satan and his crew,",
+        "And thunder drove them down from bliss."
+      ]
+    },
+    {
+      "lines": [
+        "What mighty storms of poison'd darts",
+        "Were hurl'd upon the rebels there!",
+        "What deadly jav'lins nail'd their hearts",
+        "Fast to the racks of long despair!"
+      ]
+    },
+    {
+      "lines": [
+        "Shout to your King, you heavenly host,",
+        "You that beheld the sinking foe;",
+        "Firmly ye stood when they were lost;",
+        "Praise the rich grace that kept you so."
+      ]
+    },
+    {
+      "lines": [
+        "Proclaim his wonders from the skies,",
+        "Let every distant nation hear;",
+        "And while you sound his lofty praise,",
+        "Let humble mortals bow and fear."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:27"
+}

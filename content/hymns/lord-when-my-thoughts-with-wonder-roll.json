@@ -1,0 +1,70 @@
+{
+  "title": "Lord, When My Thoughts with Wonder Roll",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Lord, When My Thoughts with Wonder Roll in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 5, headed “Longing to praise Christ better”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Lord, when my thoughts with won-der roll O'er the sharp sor-rows of thy soul, And read my Mak-er's bro-ken laws Re-pair'd and ho-nour'd by thy cross;",
+  "verses": [
+    {
+      "lines": [
+        "Lord, when my thoughts with wonder roll",
+        "O'er the sharp sorrows of thy soul,",
+        "And read my Maker's broken laws",
+        "Repair'd and honour'd by thy cross;"
+      ]
+    },
+    {
+      "lines": [
+        "When I behold death, hell and sin,",
+        "Vanquish'd by that dear blood of thine,",
+        "And see the man that groan'd and dy'd",
+        "Sit glorious by his Father's side;"
+      ]
+    },
+    {
+      "lines": [
+        "My passions rise and soar above,",
+        "I'm wing'd with faith and fir'd with love;",
+        "Fain would I reach eternal things,",
+        "And learn the notes that Gabriel sings."
+      ]
+    },
+    {
+      "lines": [
+        "But my heart fails, my tongue complains,",
+        "For want of their immortal strains;",
+        "And in such humble notes as these",
+        "Must fall below thy victories."
+      ]
+    },
+    {
+      "lines": [
+        "Well, the kind minute must appear",
+        "When we shall leave these bodies here,",
+        "These clogs of clay, and mount on high,",
+        "To join the songs above the sky."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:5"
+}

@@ -1,0 +1,70 @@
+{
+  "title": "The Law by Moses Came",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "The Law by Moses Came in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 118, headed “Moses and Christ; or, Sins against the law and gospel, John 1. 17. Heb. 3. 3 5 6 and 10. 28 29”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "The law by Mo-ses came, But peace, and truth, and love, Were brought by Christ, a no-bler name, De-scend-ing from a-bove.",
+  "verses": [
+    {
+      "lines": [
+        "The law by Moses came,",
+        "But peace, and truth, and love,",
+        "Were brought by Christ, a nobler name,",
+        "Descending from above."
+      ]
+    },
+    {
+      "lines": [
+        "Amidst the house of God",
+        "Their different works were done;",
+        "Moses a faithful servant stood,",
+        "But Christ a faithful Son."
+      ]
+    },
+    {
+      "lines": [
+        "Then to his new commands",
+        "Be strict obedience paid;",
+        "O'er all his Father's house he stands",
+        "The sovereign and the head."
+      ]
+    },
+    {
+      "lines": [
+        "The man that durst despise",
+        "The law that Moses brought,",
+        "Behold! how terribly he dies",
+        "For his presumptuous fault."
+      ]
+    },
+    {
+      "lines": [
+        "But sorer vengeance falls",
+        "On that rebellious race,",
+        "Who hate to hear when Jesus calls,",
+        "And dare resist his grace."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:118"
+}

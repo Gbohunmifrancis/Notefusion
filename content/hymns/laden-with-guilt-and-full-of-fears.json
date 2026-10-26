@@ -1,0 +1,78 @@
+{
+  "title": "Laden with Guilt, and Full of Fears",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Laden with Guilt, and Full of Fears in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 119, headed “The holy scriptures”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "La-den with guilt, and full of fears, I fly to thee, my Lord, And not a glimpse of hope ap-pears, But in thy writ-ten word.",
+  "verses": [
+    {
+      "lines": [
+        "Laden with guilt, and full of fears,",
+        "I fly to thee, my Lord,",
+        "And not a glimpse of hope appears,",
+        "But in thy written word."
+      ]
+    },
+    {
+      "lines": [
+        "The volume of my Father's grace",
+        "Does all my griefs assuage:",
+        "Here I behold my Saviour's face",
+        "Almost in every page."
+      ]
+    },
+    {
+      "lines": [
+        "This is the field where hidden lies",
+        "The pearl of price unknown,",
+        "That merchant is divinely wise",
+        "Who makes the pearl his own."
+      ]
+    },
+    {
+      "lines": [
+        "Here consecrated water flows",
+        "To quench my thirst of sin;",
+        "Here the fair tree of knowledge grows,",
+        "Nor danger dwells therein."
+      ]
+    },
+    {
+      "lines": [
+        "This is the Judge that ends the strife,",
+        "Where wit and reason fail;",
+        "My guide to everlasting life,",
+        "Thro' all this gloomy vale."
+      ]
+    },
+    {
+      "lines": [
+        "O may thy counsels, mighty God,",
+        "My roving feet command;",
+        "Nor I forsake the happy road",
+        "That leads to thy right-hand."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:119"
+}

@@ -1,0 +1,86 @@
+{
+  "title": "Thee We Adore, Eternal Name",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Thee We Adore, Eternal Name in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 55, headed “Frail life and succeeding eternity”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Thee we a-dore, e-ter-nal Name, And hum-bly own to thee, How fee-ble is our mor-tal frame! What dy-ing worms are we!",
+  "verses": [
+    {
+      "lines": [
+        "Thee we adore, eternal Name,",
+        "And humbly own to thee,",
+        "How feeble is our mortal frame!",
+        "What dying worms are we!"
+      ]
+    },
+    {
+      "lines": [
+        "Our wasting lives grow shorter still",
+        "As months and days increase;",
+        "And every beating pulse we tell",
+        "Leaves but the number less."
+      ]
+    },
+    {
+      "lines": [
+        "The year rolls round, and steals away",
+        "The breath that first it gave;",
+        "Whate'er we do, where'er we be,",
+        "We're travelling to the grave."
+      ]
+    },
+    {
+      "lines": [
+        "Dangers stand thick thro' all the ground",
+        "To push us to the tomb,",
+        "And fierce diseases wait around",
+        "To hurry mortals home."
+      ]
+    },
+    {
+      "lines": [
+        "Good God! on what a slender thread",
+        "Hang everlasting things!",
+        "Th' eternal states of all the dead",
+        "Upon life's feeble strings."
+      ]
+    },
+    {
+      "lines": [
+        "Infinite joy or endless woe",
+        "Attends on every breath;",
+        "And yet how unconcern'd we go",
+        "Upon the brink of death!"
+      ]
+    },
+    {
+      "lines": [
+        "Waken, O Lord, our drowsy sense",
+        "To walk this dangerous road;",
+        "And if our souls are hurried hence,",
+        "May they be found with God!"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:55"
+}

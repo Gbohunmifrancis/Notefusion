@@ -1,0 +1,70 @@
+{
+  "title": "Shall the Vile Race of Flesh and Blood",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Shall the Vile Race of Flesh and Blood in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 82, headed “God far above creatures; or, Man vain and mortal, Job 4. 77-21”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Shall the vile race of flesh and blood Con-tend with their cre-a-tor, God? Shall mor-tal worms pre-sume to be More ho-ly, wise, or just than he?",
+  "verses": [
+    {
+      "lines": [
+        "Shall the vile race of flesh and blood",
+        "Contend with their creator, God?",
+        "Shall mortal worms presume to be",
+        "More holy, wise, or just than he?"
+      ]
+    },
+    {
+      "lines": [
+        "Behold he puts his trust in none",
+        "Of all the spirits round his throne;",
+        "Their natures, when compar'd with his",
+        "Are neither holy, just nor wise."
+      ]
+    },
+    {
+      "lines": [
+        "But how much meaner things are they",
+        "Who spring from dust and dwell in clay!",
+        "Touch'd by the finger of thy wrath,",
+        "We faint and vanish like the moth."
+      ]
+    },
+    {
+      "lines": [
+        "From night to day, from day to night,",
+        "We die by thousands in thy sight;",
+        "Bury'd in dust whole nations lie",
+        "Like a forgotten vanity."
+      ]
+    },
+    {
+      "lines": [
+        "Almighty power, to thee we bow;",
+        "How frail are we, how glorious thou!",
+        "No more the sons of earth shall dare",
+        "With an eternal God compare."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:82"
+}

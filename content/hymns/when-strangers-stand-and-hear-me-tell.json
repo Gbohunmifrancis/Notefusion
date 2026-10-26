@@ -1,0 +1,78 @@
+{
+  "title": "When Strangers Stand and Hear Me Tell",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "When Strangers Stand and Hear Me Tell in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 76, headed “Christ dwells in heaven, but visits on earth, Cant. 6. 1 2 3 12”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When stra-ngers stand and hear me tell What beau-ties in my Sa-viour dwell; Where he is gone, they fain would know, That they may seek and love him too.",
+  "verses": [
+    {
+      "lines": [
+        "When strangers stand and hear me tell",
+        "What beauties in my Saviour dwell;",
+        "Where he is gone, they fain would know,",
+        "That they may seek and love him too."
+      ]
+    },
+    {
+      "lines": [
+        "My best beloved keeps his throne",
+        "On hills of light in worlds unknown",
+        "But he descends, and shews his face",
+        "In the young gardens of his grace."
+      ]
+    },
+    {
+      "lines": [
+        "In vineyards planted by his hand,",
+        "Where fruitful trees in order stand;",
+        "He feeds among the spicy beds,",
+        "Where lilies shew their spotless heads."
+      ]
+    },
+    {
+      "lines": [
+        "He has engross'd my warmest love,",
+        "No earthly charms my soul can move:",
+        "I have a mansion in his heart,",
+        "Nor death nor hell shall make us part."
+      ]
+    },
+    {
+      "lines": [
+        "He takes my soul ere I'm aware,",
+        "And shews me where his glories are;",
+        "No chariot of Amminadib",
+        "The heavenly rapture can describe."
+      ]
+    },
+    {
+      "lines": [
+        "O may my spirit daily rise",
+        "On wings of faith above the skies,",
+        "Till death shall make my last remove",
+        "To dwell for ever with my love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:76"
+}

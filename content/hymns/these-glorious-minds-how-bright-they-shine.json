@@ -1,0 +1,78 @@
+{
+  "title": "\"These Glorious Minds, How Bright They Shine",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "\"These Glorious Minds, How Bright They Shine in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 41, headed “The same; or, The martyrs glorified, Rev. 7. 13 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "\"These glo-rious minds, how bright they shine \"Whence all their white ar-ray? \"How came they to the hap-py seats \"Of ev-er-last-ing day?\"",
+  "verses": [
+    {
+      "lines": [
+        "\"These glorious minds, how bright they shine",
+        "\"Whence all their white array?",
+        "\"How came they to the happy seats",
+        "\"Of everlasting day?\""
+      ]
+    },
+    {
+      "lines": [
+        "From tort'ring pains to endless joys",
+        "On fiery wheels they rode,",
+        "And strangely wash'd their raiment white",
+        "In Jesus' dying blood."
+      ]
+    },
+    {
+      "lines": [
+        "Now they approach a spotless God,",
+        "And bow before his throne",
+        "Their warbling harps and sacred songs",
+        "Adore the Holy One."
+      ]
+    },
+    {
+      "lines": [
+        "The unveil'd glories of his face",
+        "Amongst his saints reside,",
+        "While the rich treasure of his grace",
+        "Sees all their wants supply'd."
+      ]
+    },
+    {
+      "lines": [
+        "Tormenting thirst shall leave their souls,",
+        "And hunger flee as fast;",
+        "The fruit of life's immortal tree",
+        "Shall be their sweet repast."
+      ]
+    },
+    {
+      "lines": [
+        "The Lamb shall lead his heavenly flock",
+        "Where living fountains rise,",
+        "And love divine shall wipe away",
+        "The sorrows of their eyes."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:41"
+}

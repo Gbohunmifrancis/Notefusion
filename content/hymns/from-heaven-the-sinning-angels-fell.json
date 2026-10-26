@@ -1,0 +1,54 @@
+{
+  "title": "From Heaven the Sinning Angels Fell",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "From Heaven the Sinning Angels Fell in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 97, headed “The same”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "From heaven the sin-ning an-gels fell, And wrath and dark-ness chain'd them down; But man, vile man, for-sook his bliss, And mer-cy lifts him to a crown.",
+  "verses": [
+    {
+      "lines": [
+        "From heaven the sinning angels fell,",
+        "And wrath and darkness chain'd them down;",
+        "But man, vile man, forsook his bliss,",
+        "And mercy lifts him to a crown."
+      ]
+    },
+    {
+      "lines": [
+        "Amazing work of sovereign grace",
+        "That could distinguish rebels so!",
+        "Our guilty treasons call'd aloud",
+        "For everlasting fetters too."
+      ]
+    },
+    {
+      "lines": [
+        "To thee, to thee, Almighty Love,",
+        "Our souls, ourselves, our all we pay:",
+        "Millions of tongues shall sound thy praise",
+        "On the bright hills of heavenly day."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:97"
+}

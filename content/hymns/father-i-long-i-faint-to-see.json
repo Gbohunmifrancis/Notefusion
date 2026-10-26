@@ -1,0 +1,86 @@
+{
+  "title": "Father, I Long, I Faint to See",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Father, I Long, I Faint to See in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 68, headed “The humble worship of heaven”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Fa-ther, I long, I faint to see The place of thine a-bode, I'd leave thy earth-ly courts and flee Up to thy seat, my God!",
+  "verses": [
+    {
+      "lines": [
+        "Father, I long, I faint to see",
+        "The place of thine abode,",
+        "I'd leave thy earthly courts and flee",
+        "Up to thy seat, my God!"
+      ]
+    },
+    {
+      "lines": [
+        "Here I behold thy distant face,",
+        "And 'tis a pleasing sight;",
+        "But to abide in thine embrace",
+        "Is infinite delight."
+      ]
+    },
+    {
+      "lines": [
+        "I'd part with all the joys of sense",
+        "To gaze upon thy throne;",
+        "Pleasure springs fresh for ever thence,",
+        "Unspeakable, unknown."
+      ]
+    },
+    {
+      "lines": [
+        "There all the heavenly hosts are seen,",
+        "In shining ranks they move,",
+        "And drink immortal vigour in,",
+        "With wonder and with love."
+      ]
+    },
+    {
+      "lines": [
+        "Then at thy feet with awful fear",
+        "Th' adoring armies fall",
+        "With joy they shrink to nothing there,",
+        "Before th' Eternal All."
+      ]
+    },
+    {
+      "lines": [
+        "There I would vie with all the host",
+        "In duty and in bliss,",
+        "While less than nothing I could boast,",
+        "And vanity confess. 1"
+      ]
+    },
+    {
+      "lines": [
+        "The more thy glories strike mine eyes,",
+        "The humbler I shall lie;",
+        "Thus while I sink, my joys shall rise",
+        "Unmeasurably high."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:68"
+}

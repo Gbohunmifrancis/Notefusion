@@ -1,0 +1,70 @@
+{
+  "title": "How Short and Hasty Is Our Life",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Short and Hasty Is Our Life in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 32, headed “Frailty and Folly”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How short and ha-sty is our life! How vast our souls' af-fairs! Yet sense-less mor-tals vain-ly strive To lav-ish out their years.",
+  "verses": [
+    {
+      "lines": [
+        "How short and hasty is our life!",
+        "How vast our souls' affairs!",
+        "Yet senseless mortals vainly strive",
+        "To lavish out their years."
+      ]
+    },
+    {
+      "lines": [
+        "Our days run thoughtlessly along,",
+        "Without a moment's stay;",
+        "Just like a story or a song",
+        "We pass our lives away."
+      ]
+    },
+    {
+      "lines": [
+        "God from on high invites us home,",
+        "But we march heedless on,",
+        "And ever hastening to the tomb,",
+        "Stoop downwards as we run."
+      ]
+    },
+    {
+      "lines": [
+        "How we deserve the deepest hell",
+        "That slight the joys above!",
+        "What chains of vengeance should we feel",
+        "That break such cords of love!"
+      ]
+    },
+    {
+      "lines": [
+        "Draw us, O God, with sovereign grace,",
+        "And lift our thoughts on high,",
+        "That we may end this mortal race",
+        "And see salvation nigh."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:32"
+}

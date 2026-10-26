@@ -1,0 +1,70 @@
+{
+  "title": "Let God the Father Live",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Let God the Father Live in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 28, headed “1st. S. M”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Let God the Fa-ther live For ev-er on our tongues; Sin-ners from his first love de-rive The ground of all their songs.",
+  "verses": [
+    {
+      "lines": [
+        "Let God the Father live",
+        "For ever on our tongues;",
+        "Sinners from his first love derive",
+        "The ground of all their songs."
+      ]
+    },
+    {
+      "lines": [
+        "Ye saints, employ your breath",
+        "In honour to the Son,",
+        "Who bought your souls from hell and death",
+        "By offering up his own."
+      ]
+    },
+    {
+      "lines": [
+        "Give to the Spirit praise",
+        "Of an immortal strain,",
+        "Whose light and power and grace conveys",
+        "Salvation down to men."
+      ]
+    },
+    {
+      "lines": [
+        "While God the Comforter",
+        "Reveals our pardon'd sin,",
+        "O may the blood and water bear",
+        "The same record within."
+      ]
+    },
+    {
+      "lines": [
+        "To the great One and Three",
+        "That seal this grace in heaven,",
+        "The Father, Son, and Spirit, be",
+        "Eternal glory given."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:28"
+}

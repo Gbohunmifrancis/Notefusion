@@ -1,0 +1,86 @@
+{
+  "title": "Behold the Wretch Whose Lust and Wine",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Behold the Wretch Whose Lust and Wine in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 123, headed “The repenting prodigal, Luke 15. 13 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold the wretch whose lust and wine Had wast-ed his es-tate, He begs a share a-mong the swine, To taste the husks they eat!",
+  "verses": [
+    {
+      "lines": [
+        "Behold the wretch whose lust and wine",
+        "Had wasted his estate,",
+        "He begs a share among the swine,",
+        "To taste the husks they eat!"
+      ]
+    },
+    {
+      "lines": [
+        "\"I die with hunger here (he cries)",
+        "\"I starve in foreign lands,",
+        "\"My father's house has large supplies,",
+        "\"And bounteous are his hands."
+      ]
+    },
+    {
+      "lines": [
+        "\"I'll go, and with a mournful tongue",
+        "\"Fall down before his face,",
+        "\"Father, I've done thy justice wrong,",
+        "\"Nor can deserve thy grace.\""
+      ]
+    },
+    {
+      "lines": [
+        "He said, and hasten'd to his home,",
+        "To seek his father's love;",
+        "The father saw the rebel come,",
+        "And all his bowels move."
+      ]
+    },
+    {
+      "lines": [
+        "He ran, and fell upon his neck,",
+        "Embrac'd and kiss'd his son;",
+        "The rebel's heart with sorrow brake",
+        "For follies he had done."
+      ]
+    },
+    {
+      "lines": [
+        "\"Take off his clothes of shame and sin,\"",
+        "(The father gives command)",
+        "\"Dress him in garments white and clean,",
+        "\"With rings adorn his hand."
+      ]
+    },
+    {
+      "lines": [
+        "\"A day of feasting I ordain,",
+        "\"Let mirth and joy abound;",
+        "\"My son was dead, and lives again,",
+        "\"Was lost, and now is found.\""
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:123"
+}

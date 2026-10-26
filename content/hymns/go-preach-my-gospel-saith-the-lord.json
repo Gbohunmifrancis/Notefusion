@@ -1,0 +1,62 @@
+{
+  "title": "\"Go Preach My Gospel, (Saith the Lord,)",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "\"Go Preach My Gospel, (Saith the Lord,) in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 128, headed “The Apostles' commission; or, The gospel attested by miracles, Mark 16. 15 &c. Matt. 28. 18 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "\"Go preach my gos-pel, (saith the Lord,) \"Bid the whole earth my grace re-ceive; \"He shall be sav'd that trusts my word, \"He shall be damn'd that won't be-lieve.",
+  "verses": [
+    {
+      "lines": [
+        "\"Go preach my gospel, (saith the Lord,)",
+        "\"Bid the whole earth my grace receive;",
+        "\"He shall be sav'd that trusts my word,",
+        "\"He shall be damn'd that won't believe."
+      ]
+    },
+    {
+      "lines": [
+        "\"I'll make your great commission known,",
+        "\"And ye shall prove my gospel true",
+        "\"By all the works that I have done,",
+        "\"By all the wonders ye shall do."
+      ]
+    },
+    {
+      "lines": [
+        "\"Go heal the sick, go raise the dead,",
+        "\"Go cast out devils in my name;",
+        "\"Nor let my prophets be afraid,",
+        "\"Tho' Greeks reproach, and Jews blaspheme."
+      ]
+    },
+    {
+      "lines": [
+        "\"Teach all the nations my commands,",
+        "\"I'm with you till the world shall end;",
+        "\"All power is trusted to my hands,",
+        "\"I can destroy, and I defend.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:128"
+}

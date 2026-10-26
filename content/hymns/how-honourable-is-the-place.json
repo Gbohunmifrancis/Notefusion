@@ -1,0 +1,86 @@
+{
+  "title": "How Honourable Is the Place",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Honourable Is the Place in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 8, headed “The safety and protection of the church, Isa. 26. 1-6”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How ho-n-ou-rable is the place Where we a-dor-ing stand, Zi-on the glo-ry of the earth, And beau-ty of the land!",
+  "verses": [
+    {
+      "lines": [
+        "How honourable is the place",
+        "Where we adoring stand,",
+        "Zion the glory of the earth,",
+        "And beauty of the land!"
+      ]
+    },
+    {
+      "lines": [
+        "Bulwarks of mighty grace defend",
+        "The city where we dwell,",
+        "The walls of strong salvation made,",
+        "Defy th' assaults of hell."
+      ]
+    },
+    {
+      "lines": [
+        "Lift up the everlasting gates,",
+        "The doors wide open fling,",
+        "Enter, ye nations, that obey",
+        "The statutes of our King."
+      ]
+    },
+    {
+      "lines": [
+        "Here you shall taste unmingled joys,",
+        "And live in perfect peace,",
+        "You that have known Jehovah's name,",
+        "And ventur'd on his grace."
+      ]
+    },
+    {
+      "lines": [
+        "Trust in the Lord, for ever trust,",
+        "And banish all your fears;",
+        "Strength in the Lord Jehovah dwells,",
+        "Eternal as his years."
+      ]
+    },
+    {
+      "lines": [
+        "What tho' the rebels dwell on high,",
+        "His arm shall bring them low,",
+        "Low' as the caverns of the grave",
+        "Their lofty heads shall bow."
+      ]
+    },
+    {
+      "lines": [
+        "On Babylon our feet shall tread",
+        "In that rejoicing hour,",
+        "The ruins of her walls shall spread",
+        "A pavement for the poor."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:8"
+}

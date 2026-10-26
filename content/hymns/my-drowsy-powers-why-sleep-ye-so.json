@@ -1,0 +1,78 @@
+{
+  "title": "My Drowsy Powers, Why Sleep Ye So",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "My Drowsy Powers, Why Sleep Ye So in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 25, headed “Complaining of spiritual sloth”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My dro-wsy powers, why sleep ye so? A-wake, my slug-gish soul! Noth-ing has half thy work to do, Yet noth-ing's half so dull.",
+  "verses": [
+    {
+      "lines": [
+        "My drowsy powers, why sleep ye so?",
+        "Awake, my sluggish soul!",
+        "Nothing has half thy work to do,",
+        "Yet nothing's half so dull."
+      ]
+    },
+    {
+      "lines": [
+        "The little ants for one poor grain",
+        "Labour, and tug, and strive,",
+        "Yet we who have a heaven t' obtain,",
+        "How negligent we live!"
+      ]
+    },
+    {
+      "lines": [
+        "We for whose sake all nature stands",
+        "And stars their courses move;",
+        "We for whose guard the angel bands",
+        "Come flying from above;"
+      ]
+    },
+    {
+      "lines": [
+        "We for whom God the Son came down,",
+        "And labour'd for our good,",
+        "How careless to secure that crown",
+        "He purchas'd with his blood!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, shall we lie so sluggish still,",
+        "And never act our parts?",
+        "Come, holy Dove, from th' heavenly hill,",
+        "And sit and warm our hearts."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall our active spirits move,",
+        "Upward our souls shall rise:",
+        "With hands of faith and wings of love",
+        "We'll fly and take the prize."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:25"
+}

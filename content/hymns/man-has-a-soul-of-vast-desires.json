@@ -1,0 +1,62 @@
+{
+  "title": "Man Has a Soul of Vast Desires",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Man Has a Soul of Vast Desires in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 146, headed “The vanity of creatures; or, No rest on earth”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Man has a soul of vast de-sires, He burns with-in with rest-less fires; Tost to and fro, his pas-sions fly From van-i-ty to van-i-ty.",
+  "verses": [
+    {
+      "lines": [
+        "Man has a soul of vast desires,",
+        "He burns within with restless fires;",
+        "Tost to and fro, his passions fly",
+        "From vanity to vanity."
+      ]
+    },
+    {
+      "lines": [
+        "In vain on earth we hope to find",
+        "Some solid good to fill the mind,",
+        "We try new pleasures, but we feel",
+        "The inward thirst and torment still."
+      ]
+    },
+    {
+      "lines": [
+        "So when a raging fever burns",
+        "We shift from side to side by turns,",
+        "And 'tis a poor relief we gain",
+        "To change the place, but keep the pain."
+      ]
+    },
+    {
+      "lines": [
+        "Great God, subdue this vicious thirst,",
+        "This love to vanity and dust;",
+        "Cure the vile fever of the mind,",
+        "And feed our souls with joys refin'd."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:146"
+}

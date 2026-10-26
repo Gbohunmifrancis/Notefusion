@@ -1,0 +1,94 @@
+{
+  "title": "My God, My Life, My Love",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "My God, My Life, My Love in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 93, headed “God all, and in all, Psalm 73. 25”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "My God, my life, my love, To thee, to thee I call, I can-not live if thou re-move, For thou art all in all.",
+  "verses": [
+    {
+      "lines": [
+        "My God, my life, my love,",
+        "To thee, to thee I call,",
+        "I cannot live if thou remove,",
+        "For thou art all in all."
+      ]
+    },
+    {
+      "lines": [
+        "Thy shining grace can cheer,",
+        "This dungeon where I dwell;",
+        "'Tis paradise when thou art here;",
+        "If thou depart, 'tis hell."
+      ]
+    },
+    {
+      "lines": [
+        "The smilings of thy face,",
+        "How amiable they are!",
+        "'Tis heaven to rest in thine embrace,",
+        "And no where else but there."
+      ]
+    },
+    {
+      "lines": [
+        "To thee, and thee alone,",
+        "The angels owe their bliss;",
+        "They sit around thy gracious throne,",
+        "And dwell where Jesus is."
+      ]
+    },
+    {
+      "lines": [
+        "Not all the harps above",
+        "Can make a heavenly place,",
+        "If God his residence remove,",
+        "Or but conceal his face."
+      ]
+    },
+    {
+      "lines": [
+        "Nor earth nor all the sky",
+        "Can one delight afford;",
+        "No not a drop of real joy,",
+        "Without thy presence, Lord."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art the sea of love,",
+        "Where all my pleasures roll,",
+        "The circle where my passions move,",
+        "And centre of my soul."
+      ]
+    },
+    {
+      "lines": [
+        "To thee my spirits fly",
+        "With infinite desire;",
+        "And yet how far from thee I lie!",
+        "Dear Jesus, raise me higher!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:93"
+}

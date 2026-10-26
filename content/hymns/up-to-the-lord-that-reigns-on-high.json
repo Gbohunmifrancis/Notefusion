@@ -1,0 +1,86 @@
+{
+  "title": "Up to the Lord That Reigns on High",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Up to the Lord That Reigns on High in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 46, headed “God's condescension to human affairs”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Up to the Lord that reigns on high, And views the na-tions from a-far, Let ev-er-last-ing prais-es fly, And tell how large his boun-ties are.",
+  "verses": [
+    {
+      "lines": [
+        "Up to the Lord that reigns on high,",
+        "And views the nations from afar,",
+        "Let everlasting praises fly,",
+        "And tell how large his bounties are."
+      ]
+    },
+    {
+      "lines": [
+        "He that can shake the worlds he made,",
+        "Or with his word, or with his rod,",
+        "His goodness how amazing great!",
+        "And what a condescending God!"
+      ]
+    },
+    {
+      "lines": [
+        "God that must stoop to view the skies,",
+        "And how to see what angels do,",
+        "Down to our earth he casts his eyes,",
+        "And bends his footsteps downward too."
+      ]
+    },
+    {
+      "lines": [
+        "He over-rules all mortal things,",
+        "And manages our mean affairs;",
+        "On humble souls the King of kings",
+        "Bestows his counsels and his cares."
+      ]
+    },
+    {
+      "lines": [
+        "Our sorrows and our tears we pour",
+        "Into the bosom of our God,",
+        "He hears us in the mournful hour,",
+        "And helps us bear the heavy load."
+      ]
+    },
+    {
+      "lines": [
+        "In vain might lofty princes try",
+        "Such condescension to perform;",
+        "For worms were never rais'd so high",
+        "Above their meanest fellow-worm."
+      ]
+    },
+    {
+      "lines": [
+        "O could our thankful hearts devise",
+        "A tribute equal to thy grace,",
+        "To the third heaven our songs should rise,",
+        "And teach the golden harps thy praise."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:46"
+}

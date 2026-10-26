@@ -1,0 +1,110 @@
+{
+  "title": "Let All Our Tongues Be One",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Let All Our Tongues Be One in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 9, headed “The Spirit, the water, and the blood, John 5. 6”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Let all our tongues be one To praise our God on high, Who from his bo-som sent his Son To fetch us stra-ngers nigh.",
+  "verses": [
+    {
+      "lines": [
+        "Let all our tongues be one",
+        "To praise our God on high,",
+        "Who from his bosom sent his Son",
+        "To fetch us strangers nigh."
+      ]
+    },
+    {
+      "lines": [
+        "Nor let our voices cease",
+        "To sing the Saviour's Name;",
+        "Jesus th' ambassador of peace,",
+        "How cheerfully he came!"
+      ]
+    },
+    {
+      "lines": [
+        "It cost him cries and tears",
+        "To bring us near to God;",
+        "Great was our debt, and he appears",
+        "To make the payment good."
+      ]
+    },
+    {
+      "lines": [
+        "My Saviour's pierced side,",
+        "Pour'd out a double flood;",
+        "By water we are purify'd",
+        "And pardon'd by the blood."
+      ]
+    },
+    {
+      "lines": [
+        "Infinite was our guilt,",
+        "But he our Priest atones;",
+        "On the cold ground his life was spilt,",
+        "And offer'd with his groans."
+      ]
+    },
+    {
+      "lines": [
+        "Look up, my soul, to him",
+        "Whose death was thy desert,",
+        "And humbly view the living stream",
+        "Flow from his breaking heart."
+      ]
+    },
+    {
+      "lines": [
+        "There on the cursed tree",
+        "In dying pangs he lies,",
+        "Fulfils his Father's great decree,",
+        "And all our wants supplies."
+      ]
+    },
+    {
+      "lines": [
+        "Thus the Redeemer came",
+        "By water and by blood;",
+        "And when the Spirit speaks the same",
+        "We feel his witness good."
+      ]
+    },
+    {
+      "lines": [
+        "While the eternal Three",
+        "Bear their record above,",
+        "Here I believe he dy'd for me,",
+        "And seal my Saviour's love."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, cleanse my soul from sin,",
+        "Nor let thy grace depart;",
+        "Great Comforter, abide within,",
+        "And witness to my heart."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:9"
+}

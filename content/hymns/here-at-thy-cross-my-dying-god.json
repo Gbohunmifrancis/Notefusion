@@ -1,0 +1,70 @@
+{
+  "title": "Here at Thy Cross, My Dying God",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Here at Thy Cross, My Dying God in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 4, headed “Salvation in the cross”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Here at thy cross, my dy-ing God, I lay my soul be-neath thy love, Be-neath the drop-pings of thy blood, Je-sus, nor shall it e'er re-move.",
+  "verses": [
+    {
+      "lines": [
+        "Here at thy cross, my dying God,",
+        "I lay my soul beneath thy love,",
+        "Beneath the droppings of thy blood,",
+        "Jesus, nor shall it e'er remove."
+      ]
+    },
+    {
+      "lines": [
+        "Not all that tyrants think or say,",
+        "With rage and lightning in their eyes,",
+        "Nor hell shall fright my heart away,",
+        "Should hell with all its legions rise."
+      ]
+    },
+    {
+      "lines": [
+        "Should worlds conspire to drive me thence,",
+        "Moveless and firm this heart should lie;",
+        "Resolv'd (for that's my last defence)",
+        "If I must perish, there to die."
+      ]
+    },
+    {
+      "lines": [
+        "But speak, my Lord, and calm my fear,",
+        "Am I not safe beneath thy, shade?",
+        "Thy vengeance will not strike me here,",
+        "Nor Satan dares my soul invade."
+      ]
+    },
+    {
+      "lines": [
+        "Yes, I'm secure beneath thy blood,",
+        "And all my foes shall lose their aim,",
+        "Hosanna to my dying God,",
+        "And my best honours to his Name."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:4"
+}

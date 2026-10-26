@@ -1,0 +1,78 @@
+{
+  "title": "And Is This Life Prolong'd to Me",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "And Is This Life Prolong'd to Me in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 44, headed “[Supplement.] The true improvement of life”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "And is this life pro-long'd to me? Are days and sea-sons given? O let me then pre-pare to be A fit-ter heir of heaven.",
+  "verses": [
+    {
+      "lines": [
+        "And is this life prolong'd to me?",
+        "Are days and seasons given?",
+        "O let me then prepare to be",
+        "A fitter heir of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "In vain these moments shall not pass,",
+        "These golden hours be gone:",
+        "Lord, I accept thine offered grace,",
+        "I bow before thy throne."
+      ]
+    },
+    {
+      "lines": [
+        "Now cleanse my soul from every sin,",
+        "By my Redeemer's blood:",
+        "Now let my flesh and soul begin",
+        "The honours of my God."
+      ]
+    },
+    {
+      "lines": [
+        "Let me no more my soul beguile",
+        "With sin's deceitful toys:",
+        "Let cheerful hope increasing still",
+        "Approach to heavenly joys."
+      ]
+    },
+    {
+      "lines": [
+        "My thankful lips shall loud proclaim",
+        "The wonders of thy praise,",
+        "And spread the savour of thy Name",
+        "Where'er I spend my days."
+      ]
+    },
+    {
+      "lines": [
+        "On earth let my example shine,",
+        "And when I leave this state,",
+        "May heaven receive this soul of mine",
+        "To bliss supremely great."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:44"
+}

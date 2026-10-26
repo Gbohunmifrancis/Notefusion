@@ -1,0 +1,110 @@
+{
+  "title": "So New Born Babes Desire the Breast",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "So New Born Babes Desire the Breast in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 143, headed “Characters of the children of God, from several scriptures”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "So new born babes de-sire the breast To feed, and grow, and thrive: So saints with joy the gos-pel taste, And by the gos-pel live.",
+  "verses": [
+    {
+      "lines": [
+        "So new born babes desire the breast",
+        "To feed, and grow, and thrive:",
+        "So saints with joy the gospel taste,",
+        "And by the gospel live."
+      ]
+    },
+    {
+      "lines": [
+        "With inward gust their heart approves",
+        "All that the word relates;",
+        "They love the men their Father loves,",
+        "And hate the works he hates."
+      ]
+    },
+    {
+      "lines": [
+        "Not all the flattering baits on earth",
+        "Can make them slaves to lust;",
+        "They can't forget their heavenly birth,",
+        "Nor grovel in the dust."
+      ]
+    },
+    {
+      "lines": [
+        "Not all the chains that tyrants use",
+        "Shall bind their souls to vice;",
+        "Faith like a conqueror can produce",
+        "A thousand victories."
+      ]
+    },
+    {
+      "lines": [
+        "Grace like an uncorrupting seed",
+        "Abides and reigns within;",
+        "Immortal principles forbid",
+        "The sons of God to sin."
+      ]
+    },
+    {
+      "lines": [
+        "Not by the terrors of a slave",
+        "Do they perform his will,",
+        "But with the noblest powers they have",
+        "His sweet commands fulfil."
+      ]
+    },
+    {
+      "lines": [
+        "They find access at every hour,",
+        "To God within the veil;",
+        "Hence they derive a quickening power,",
+        "And joys that never fail."
+      ]
+    },
+    {
+      "lines": [
+        "O happy souls! O glorious state",
+        "Of overflowing grace!",
+        "To dwell so near their Father's seat,",
+        "And see his lovely face."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, I address thy heavenly throne;",
+        "Call me a child of thine,",
+        "Send down the Spirit of thy Son",
+        "To form my heart divine."
+      ]
+    },
+    {
+      "lines": [
+        "There shed thy choicest loves abroad,",
+        "And make my comforts strong:",
+        "Then shall I say, \"My Father God,\"",
+        "With an unwavering tongue."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:143"
+}

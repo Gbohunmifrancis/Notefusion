@@ -1,0 +1,94 @@
+{
+  "title": "Raise Thee, My Soul, Fly Up, and Run",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Raise Thee, My Soul, Fly Up, and Run in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 33, headed “The blessed society in heaven”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Raise thee, my soul, fly up, and run Thro' ev-ery heav-enly street, And say, there's nought be-low the sun That's wor-thy of thy feet.",
+  "verses": [
+    {
+      "lines": [
+        "Raise thee, my soul, fly up, and run",
+        "Thro' every heavenly street,",
+        "And say, there's nought below the sun",
+        "That's worthy of thy feet."
+      ]
+    },
+    {
+      "lines": [
+        "Thus will we mount on sacred wings,",
+        "And tread the courts above;",
+        "Nor earth, nor all her mightiest things",
+        "Shall tempt our meanest love."
+      ]
+    },
+    {
+      "lines": [
+        "There on a high majestic throne",
+        "Th' Almighty Father reigns,",
+        "And sheds his glorious goodness down",
+        "On all the blissful plains."
+      ]
+    },
+    {
+      "lines": [
+        "Bright like a sun the Saviour sits,",
+        "And spreads eternal noon,",
+        "No evenings there, nor gloomy nights,",
+        "To want the feeble moon."
+      ]
+    },
+    {
+      "lines": [
+        "Amidst those ever-shining skies",
+        "Behold the sacred Dove,",
+        "While banish'd sin and sorrow flies",
+        "From all the realms of love."
+      ]
+    },
+    {
+      "lines": [
+        "The glorious tenants of the place",
+        "Stand bending round the throne;",
+        "And saints and seraphs sing and praise",
+        "The infinite Three One."
+      ]
+    },
+    {
+      "lines": [
+        "But O what beams of heavenly grace",
+        "Transport them all the while!",
+        "Ten thousand smiles from Jesus' face,",
+        "And love in every smile!"
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, and when shall that dear day,",
+        "That joyful hour appear,",
+        "When I shall leave this house of clay",
+        "To dwell amongst them there?"
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:33"
+}

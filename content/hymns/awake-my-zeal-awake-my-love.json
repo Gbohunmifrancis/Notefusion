@@ -1,0 +1,70 @@
+{
+  "title": "Awake, My Zeal, Awake, My Love",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Awake, My Zeal, Awake, My Love in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 46, headed “[Supplement.] The privileges of the living above the dead”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A-wake, my zeal, a-wake, my love, To serve my Sa-viour here be-low, In works which per-fect saints a-bove And ho-ly an-gels can-not do.",
+  "verses": [
+    {
+      "lines": [
+        "Awake, my zeal, awake, my love,",
+        "To serve my Saviour here below,",
+        "In works which perfect saints above",
+        "And holy angels cannot do."
+      ]
+    },
+    {
+      "lines": [
+        "Awake my charity, to feed",
+        "The hungry soul, and clothe the poor:",
+        "In heaven are found no sons of need,",
+        "There all these duties are no more."
+      ]
+    },
+    {
+      "lines": [
+        "Subdue thy passions, O my soul!",
+        "Maintain the fight, thy work pursue,",
+        "Daily thy rising sins control,",
+        "And be thy victories ever new."
+      ]
+    },
+    {
+      "lines": [
+        "The land of triumph lies on high,",
+        "There are no foes t' encounter there:",
+        "Lord, I would conquer till I die,",
+        "And finish all the glorious war."
+      ]
+    },
+    {
+      "lines": [
+        "Let every flying hour confess",
+        "I gain thy gospel fresh renown;",
+        "And when my life and labour cease,",
+        "May I possess the promis'd crown."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:46"
+}

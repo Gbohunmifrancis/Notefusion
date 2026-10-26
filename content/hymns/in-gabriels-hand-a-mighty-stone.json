@@ -1,0 +1,46 @@
+{
+  "title": "In Gabriel's Hand a Mighty Stone",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "In Gabriel's Hand a Mighty Stone in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 2 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 59, headed “Babylon fallen, Rev. 18. 20 21”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "In Gab-riel's hand a might-y stone Lies, a fair type of Ba-by-lon ''Pro-phets, re-joice, and, all ye saints, \"God shall a-venge your long com-plaints.\"",
+  "verses": [
+    {
+      "lines": [
+        "In Gabriel's hand a mighty stone",
+        "Lies, a fair type of Babylon",
+        "''Prophets, rejoice, and, all ye saints,",
+        "\"God shall avenge your long complaints.\""
+      ]
+    },
+    {
+      "lines": [
+        "He said, and dreadful as he stood,",
+        "He sunk the milstone in the flood:",
+        "\"Thus terribly shall Babel fall;",
+        "\"Thus, and no more be found at all.\""
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:59"
+}

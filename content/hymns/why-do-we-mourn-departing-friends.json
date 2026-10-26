@@ -1,0 +1,78 @@
+{
+  "title": "Why Do We Mourn Departing Friends",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Why Do We Mourn Departing Friends in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 3, headed “The death and burial of a saint”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Why do we mourn de-part-ing friends Or shake at death's a-larms? 'Tis but the voice that Je-sus sends To call them to his arms.",
+  "verses": [
+    {
+      "lines": [
+        "Why do we mourn departing friends",
+        "Or shake at death's alarms?",
+        "'Tis but the voice that Jesus sends",
+        "To call them to his arms."
+      ]
+    },
+    {
+      "lines": [
+        "Are we not tending upward too",
+        "As fast as time can move?",
+        "Nor would we wish the hours more slow",
+        "To keep us from our love."
+      ]
+    },
+    {
+      "lines": [
+        "Why should we tremble to convey",
+        "Their bodies to the tomb?",
+        "There the dear flesh of Jesus lay,",
+        "And left a long perfume."
+      ]
+    },
+    {
+      "lines": [
+        "The graves of all his saints he bless'd,",
+        "And soften'd every bed;",
+        "Where should the dying members rest,",
+        "But with the dying head?"
+      ]
+    },
+    {
+      "lines": [
+        "Thence he arose, ascending high,",
+        "And shew'd our feet the way;",
+        "Up to the Lord our flesh shall fly",
+        "At the great rising day."
+      ]
+    },
+    {
+      "lines": [
+        "Then let the last loud trumpet sound,",
+        "And bid our kindred rise,",
+        "Awake, ye nations under ground,",
+        "Ye saints, ascend the skies."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:3"
+}

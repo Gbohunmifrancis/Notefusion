@@ -1,0 +1,70 @@
+{
+  "title": "High as the Heavens Above the Ground",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "High as the Heavens Above the Ground in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 115, headed “God the avenger of his saints; or, His kingdom”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "High as the heavens a-bove the ground Reigns the Cre-a-tor God; Wide as the whole cre-a-tion's bound Ex-tends his aw-ful rod.",
+  "verses": [
+    {
+      "lines": [
+        "High as the heavens above the ground",
+        "Reigns the Creator God;",
+        "Wide as the whole creation's bound",
+        "Extends his awful rod."
+      ]
+    },
+    {
+      "lines": [
+        "Let princes of exalted state",
+        "To him ascribe their crown,",
+        "Render their homage at his feet,",
+        "And cast their glories down."
+      ]
+    },
+    {
+      "lines": [
+        "Know that his kingdom is supreme,",
+        "Your lofty thoughts are vain;",
+        "He calls you gods, that awful name,",
+        "But ye must die like men."
+      ]
+    },
+    {
+      "lines": [
+        "Then let the sovereigns of the globe",
+        "Not dare to vex the just;",
+        "He puts on vengeance like a robe,",
+        "And treads the worms to dust."
+      ]
+    },
+    {
+      "lines": [
+        "Ye judges of the earth, be wise,",
+        "And think on heaven with fear;",
+        "The meanest saint that you despise",
+        "Has an avenger there."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:115"
+}

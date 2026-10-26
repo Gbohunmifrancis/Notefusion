@@ -1,0 +1,102 @@
+{
+  "title": "Behold, the Grace Appears",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Behold, the Grace Appears in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 3, headed “The nativity of Christ, Luke 1. 30 &c. Luke 2, 10 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold, the grace ap-pears, The pro-mise is ful-fill'd; Ma-ry the won-drous vir-gin bears, And Je-sus is the child.",
+  "verses": [
+    {
+      "lines": [
+        "Behold, the grace appears,",
+        "The promise is fulfill'd;",
+        "Mary the wondrous virgin bears,",
+        "And Jesus is the child."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord, the highest God,",
+        "Calls him his only Son;",
+        "He bids him rule the lands abroad,",
+        "And gives, him David's throne."
+      ]
+    },
+    {
+      "lines": [
+        "O'er Jacob shall he reign",
+        "With a peculiar sway;",
+        "The nations shall his grace obtain,",
+        "His kingdom ne'er decay."
+      ]
+    },
+    {
+      "lines": [
+        "To bring the glorious news",
+        "A heavenly form appears;",
+        "He tells the shepherds of their joys,",
+        "And banishes their fears."
+      ]
+    },
+    {
+      "lines": [
+        "\"Go, humble swains,\" said he,",
+        "\"To David's city fly;",
+        "\"The promis'd infant born to-day,",
+        "\"Doth in a manger lie."
+      ]
+    },
+    {
+      "lines": [
+        "\"With looks and heart serene,",
+        "\"Go visit Christ your King;\"",
+        "And straight, a flaming troop was seen;",
+        "The shepherds heard them sing:"
+      ]
+    },
+    {
+      "lines": [
+        "\"Glory to God on high,",
+        "\"And heavenly peace on earth,",
+        "\"Good-will to men, to angels joy,",
+        "\"At the Redeemer's birth!\""
+      ]
+    },
+    {
+      "lines": [
+        "In worship so divine",
+        "Let saints employ their tongues,",
+        "With the celestial host we join,",
+        "And loud repeat their songs:"
+      ]
+    },
+    {
+      "lines": [
+        "\"Glory to God on high,",
+        "\"And heavenly peace on earth,",
+        "\"Good-will to men, to angels joy,",
+        "\"At our Redeemer's Birth.\""
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:3"
+}

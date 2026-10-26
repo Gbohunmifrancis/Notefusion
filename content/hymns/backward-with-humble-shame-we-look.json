@@ -1,0 +1,94 @@
+{
+  "title": "Backward with Humble Shame We Look",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Backward with Humble Shame We Look in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 57, headed “Original sin; or, The first and second Adam, Rom. 5. 12. Psalm 51. 5. Job 11. 4”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Back-ward with hum-ble shame we look On our o-rig-i-nal; How is our na-ture dash'd and broke In our first fa-ther's fall!",
+  "verses": [
+    {
+      "lines": [
+        "Backward with humble shame we look",
+        "On our original;",
+        "How is our nature dash'd and broke",
+        "In our first father's fall!"
+      ]
+    },
+    {
+      "lines": [
+        "To all that's good averse and blind,",
+        "But prone to all that's ill",
+        "What dreadful darkness veils our mind!",
+        "How obstinate our will!"
+      ]
+    },
+    {
+      "lines": [
+        "Conceiv'd in sin (O wretched state!)",
+        "Before we draw our breath,",
+        "The first young pulse begins to beat",
+        "Iniquity and death."
+      ]
+    },
+    {
+      "lines": [
+        "How strong in our degenerate blood",
+        "The old corruption reigns,",
+        "And, mingling with the crooked flood,",
+        "Wanders thro' all our veins!"
+      ]
+    },
+    {
+      "lines": [
+        "Wild and unwholesome as the root",
+        "Will all the branches be;",
+        "How can we hope for living fruit",
+        "From such a deadly tree?"
+      ]
+    },
+    {
+      "lines": [
+        "What mortal power from things unclean",
+        "Can pure productions bring?",
+        "Who can command a vital stream",
+        "From an infected spring?"
+      ]
+    },
+    {
+      "lines": [
+        "Yet, mighty God, thy wondrous love",
+        "Can make our nature clean,",
+        "While Christ and grace prevail above",
+        "The tempter, death, and sin."
+      ]
+    },
+    {
+      "lines": [
+        "The second Adam shall restore",
+        "The ruins of the first,",
+        "Hosanna to that sovereign power",
+        "That new creates our dust."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:57"
+}

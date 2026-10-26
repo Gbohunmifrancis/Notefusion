@@ -411,6 +411,28 @@ wrote (and removes those it no longer produces for a page it has read).
 in `lib/render-tunes.mjs` gives it as a `"score"` entry in the matcher's index format (slug
 `tune-<slug>`, title, tune, url, source, licence, credit, key, time, pickup, tempo, notes, empty lyrics).
 
+### Words set by metre: Watts' Hymns and Spiritual Songs
+
+Words-only hymn books printed no tunes: a hymn in Common Metre was sung to any Common Metre tune. `tools/blog/import/watts.mjs`
+does the same for Isaac Watts' *Hymns and Spiritual Songs* (1707; Watts died in 1748). The source is the book's plain text
+(Project Gutenberg eBook #13341, an 1818 London printing), downloaded into a directory of its own; the pages name the book,
+not the transcription.
+
+```bash
+mkdir -p /tmp/watts && curl -L -o /tmp/watts/watts.txt https://www.gutenberg.org/cache/epub/13341/pg13341.txt
+node tools/blog/import/watts.mjs --src /tmp/watts/watts.txt --date 2026-10-26             # drafts; --dry-run for the counts
+node tools/blog/import/watts.mjs --src /tmp/watts/watts.txt --date 2026-10-26 --publish   # once a person has read them
+```
+
+Each hymn's metre is read off its lines (Common, Long or Short; four-line verses only), and its first verse is laid under a
+tune of that metre that sings one syllable to a note (`TUNES` in watts.mjs, checked against the melodies at every run),
+picked by the page's slug so a page keeps its tune. Syllables come from `import/syllables.mjs`: how our own hymns already
+split a word, then the TeX English hyphenation patterns (the `hyphen` package), then the metre: a line must come to its
+metre's count, a word sung short in the old books ("heaven", "power") may give a syllable to one read short ("a-broad"),
+and a line that cannot be fitted honestly refuses the hymn (listed in `watts-report.json`, nothing written). A hymn we
+already have (first line, title or other title) is left alone. The pages carry `"setByMetre": true`, which keeps them out
+of hymn recognition (a hummed ST ANNE is offered "O God, Our Help", not every text sung to it) and out of the app's pack.
+
 ### Status of the seeded hymns
 
 Every hymn is `"reviewed": false` until you have checked the melody against a hymn book you trust;

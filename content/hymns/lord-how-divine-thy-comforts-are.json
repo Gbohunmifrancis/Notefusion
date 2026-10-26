@@ -1,0 +1,86 @@
+{
+  "title": "Lord, How Divine Thy Comforts Are",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Lord, How Divine Thy Comforts Are in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book III, prepared for the Lord's Supper, hymn 11, headed “Pardon brought in our senses”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Lord, how di-vine thy com-forts are! How heav-enly is the place Where Je-sus spreads the sa-cred feast Of his re-deem-ing grace!",
+  "verses": [
+    {
+      "lines": [
+        "Lord, how divine thy comforts are!",
+        "How heavenly is the place",
+        "Where Jesus spreads the sacred feast",
+        "Of his redeeming grace!"
+      ]
+    },
+    {
+      "lines": [
+        "There the rich bounties of our God,",
+        "And sweetest glories shine;",
+        "There Jesus says, that \"I am his,",
+        "\"And my Beloved's mine.\""
+      ]
+    },
+    {
+      "lines": [
+        "\"Here,\" (says the kind redeeming Lord,",
+        "And shews his wounded side)",
+        "\"See here the spring of all your joys,",
+        "\"That open'd when I dy'd.\""
+      ]
+    },
+    {
+      "lines": [
+        "He smiles and cheers my mournful heart",
+        "And tells of all his pain,",
+        "\"All this,\" says he, \"I bore for thee;\"",
+        "And then he smiles again."
+      ]
+    },
+    {
+      "lines": [
+        "What shall we pay our heavenly King",
+        "For grace so vast as this?",
+        "He brings our pardon to our eyes,",
+        "And seals it with a kiss."
+      ]
+    },
+    {
+      "lines": [
+        "Let such amazing loves as these",
+        "Be sounded all abroad,",
+        "Such favours are beyond degrees,",
+        "And worthy of a God."
+      ]
+    },
+    {
+      "lines": [
+        "To him that wash'd us in his blood",
+        "Be everlasting praise,",
+        "Salvation, honour, glory, power,",
+        "Eternal as his days."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:3:11"
+}

@@ -1,0 +1,62 @@
+{
+  "title": "'Twas by an Order from the Lord",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "'Twas by an Order from the Lord in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 151, headed “Prophesy and inspiration”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "'Twas by an or-der from the Lord The an-cient pro-phets spoke his word; His Spir-it did their tongues in-spire, And warm'd their hearts with heav-enly fire.",
+  "verses": [
+    {
+      "lines": [
+        "'Twas by an order from the Lord",
+        "The ancient prophets spoke his word;",
+        "His Spirit did their tongues inspire,",
+        "And warm'd their hearts with heavenly fire."
+      ]
+    },
+    {
+      "lines": [
+        "The works and wonders which they wrought",
+        "Confirm'd the messages they brought;",
+        "The prophet's pen succeeds his breath",
+        "To save the holy words from death."
+      ]
+    },
+    {
+      "lines": [
+        "Great God, mine eyes with pleasure look",
+        "On the dear volume of thy book;",
+        "There my Redeemer's face I see,",
+        "And read his name who dy'd for me."
+      ]
+    },
+    {
+      "lines": [
+        "Let the false raptures of the mind",
+        "Be lost and vanish in the wind;",
+        "Here I can fix my hopes secure,",
+        "This is thy word, and must endure."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:151"
+}

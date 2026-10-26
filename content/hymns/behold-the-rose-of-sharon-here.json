@@ -1,0 +1,78 @@
+{
+  "title": "Behold the Rose of Sharon Here",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Behold the Rose of Sharon Here in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 68, headed “The banquet of love, Cant. 2. 1 2 3 4 6 7”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Be-hold the Rose of Sha-ron here, The Li-ly which the val-lies bear; Be-hold the Tree of Life, that gives Re-fresh-ing fruit and heal-ing leaves.",
+  "verses": [
+    {
+      "lines": [
+        "Behold the Rose of Sharon here,",
+        "The Lily which the vallies bear;",
+        "Behold the Tree of Life, that gives",
+        "Refreshing fruit and healing leaves."
+      ]
+    },
+    {
+      "lines": [
+        "Amongst the thorns so lilies shine,",
+        "Amongst wild gourds the noble vine;",
+        "So in mine eyes my Saviour proves",
+        "Amidst a thousand meaner loves."
+      ]
+    },
+    {
+      "lines": [
+        "Beneath his cooling shade I sat",
+        "To shield me from the burning heat;",
+        "Of heavenly fruit he spreads a feast",
+        "To feed my eyes and please my taste."
+      ]
+    },
+    {
+      "lines": [
+        "Kindly he brought me to the place",
+        "Where stands the banquet of his grace,",
+        "He saw me faint, and o'er my head",
+        "The banner of his love he spread."
+      ]
+    },
+    {
+      "lines": [
+        "With living bread and generous wine",
+        "He cheers this sinking heart of mine;",
+        "And opening his own heart to me,",
+        "He shews his thoughts how kind they be."
+      ]
+    },
+    {
+      "lines": [
+        "O never let my Lord depart,",
+        "Lie down and rest upon my heart;",
+        "I charge my sins not once to move",
+        "Nor stir, nor wake, nor grieve my Love."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:68"
+}

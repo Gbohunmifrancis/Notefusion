@@ -1,0 +1,78 @@
+{
+  "title": "Awake, My Heart, Arise, My Tongue",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Awake, My Heart, Arise, My Tongue in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 20, headed “Spiritual apparel; namely, the robe of righteousness, and garments of salvation, Isa. 61. 10”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "A-wake, my heart, a-rise, my tongue, Pre-pare a tune-ful voice, In God the life of all my joys, A-loud will I re-joice.",
+  "verses": [
+    {
+      "lines": [
+        "Awake, my heart, arise, my tongue,",
+        "Prepare a tuneful voice,",
+        "In God the life of all my joys,",
+        "Aloud will I rejoice."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis he adorn'd my naked soul,",
+        "And made salvation mine,",
+        "Upon a poor polluted worm",
+        "He makes his graces shine."
+      ]
+    },
+    {
+      "lines": [
+        "And lest the shadow of a spot",
+        "Should on my soul be found,",
+        "He took the robe the Saviour wrought,",
+        "And cast it all around."
+      ]
+    },
+    {
+      "lines": [
+        "How far the heavenly robe exceeds",
+        "What earthly princes wear!",
+        "These ornaments, how bright they shine!",
+        "How white the garments are!"
+      ]
+    },
+    {
+      "lines": [
+        "The Spirit wrought my faith and love,",
+        "And hope, and every grace;",
+        "But Jesus spent his life to work",
+        "The robe of righteousness."
+      ]
+    },
+    {
+      "lines": [
+        "Strangely, my soul, art thou array'd",
+        "By the great sacred Three:",
+        "In sweetest harmony of praise",
+        "Let all thy powers agree."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": true,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:20"
+}
