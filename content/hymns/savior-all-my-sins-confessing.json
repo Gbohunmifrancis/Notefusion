@@ -1,0 +1,55 @@
+{
+  "title": "Savior, All My Sins Confessing",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Thomas Haweis",
+      "born": 1734,
+      "died": 1820,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Savior, All My Sins Confessing in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Thomas Haweis wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 14.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to ALL FOR JESUS; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Sa-vior, all my sins con-fes-sing, Gra-cious hear me when I cry; Give through faith the pro-mised bless-ing, Free-ly, ful-ly jus-ti-fy.",
+  "verses": [
+    {
+      "lines": [
+        "Savior, all my sins confessing,",
+        "Gracious hear me when I cry;",
+        "Give through faith the promised blessing,",
+        "Freely, fully justify."
+      ]
+    },
+    {
+      "lines": [
+        "By Thy Holy Spirit’s leading,",
+        "Bring me to Thy bosom nigh;",
+        "In Thy blessed footsteps treading,",
+        "Soul and body sanctify."
+      ]
+    },
+    {
+      "lines": [
+        "So, the days of conflict ended,",
+        "In the mansions of the sky,",
+        "Whither, Lord, Thou art ascended,",
+        "With Thyself me glorify."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Thomas Haweis died in 1820.",
+  "credits": "Words by Thomas Haweis (1734–1820), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:14"
+}

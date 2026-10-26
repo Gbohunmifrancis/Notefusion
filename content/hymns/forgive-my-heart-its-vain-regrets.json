@@ -1,0 +1,76 @@
+{
+  "title": "Forgive My Heart Its Vain Regrets",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Forgive My Heart Its Vain Regrets in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "For-give my heart its vain re-grets, And, as I cast my eyes be-hind, Sub-due the spir-it, Lord, that frets, Be-cause the light with dark is twined.",
+  "verses": [
+    {
+      "lines": [
+        "Forgive my heart its vain regrets,",
+        "And, as I cast my eyes behind,",
+        "Subdue the spirit, Lord, that frets,",
+        "Because the light with dark is twined."
+      ]
+    },
+    {
+      "lines": [
+        "I cannot understand the way",
+        "By which unerring wisdom leads;",
+        "Nor do I know for what to pray,",
+        "Unconscious of my deepest needs."
+      ]
+    },
+    {
+      "lines": [
+        "Thou, Whose almighty power upholds",
+        "The stars that in their courses move, —",
+        "Whose eye creation's need beholds",
+        "To prompt the outflow of Thy love; —"
+      ]
+    },
+    {
+      "lines": [
+        "Teach me in calm content to live",
+        "'Mid all the changes life contains,",
+        "Assured that, love and wisdom give",
+        "The blessing that for aye remains."
+      ]
+    },
+    {
+      "lines": [
+        "And in the darkness and the light,",
+        "And in the gladness and the pain,",
+        "Make me to know that all is right,",
+        "And every loss my truest gain."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:50"
+}

@@ -1,0 +1,117 @@
+{
+  "title": "Seems It in My Anguish Lone",
+  "tune": "innocents",
+  "text": [
+    {
+      "name": "Christoph Titius",
+      "born": 1641,
+      "died": 1703,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Seems It in My Anguish Lone in Tonic Solfa to INNOCENTS, doh is D: the solfa with the words, staff notation, 10 verses and a piano.",
+  "about": [
+    "Christoph Titius wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 516.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to INNOCENTS; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Seems it in my an-guish lone As if God for-sook His own, Yet I hold the knowl-edge fast God will sure-ly help at last.",
+  "verses": [
+    {
+      "lines": [
+        "Seems it in my anguish lone",
+        "As if God forsook His own,",
+        "Yet I hold the knowledge fast",
+        "God will surely help at last."
+      ]
+    },
+    {
+      "lines": [
+        "Though awhile it be delayed,",
+        "He denieth not His aid;",
+        "Though it come not oft with speed,",
+        "It will surely come at need."
+      ]
+    },
+    {
+      "lines": [
+        "As a father not too soon",
+        "Grants his child the longed-for boon,",
+        "So our God gives when He will;",
+        "Wait His pleasure and be still."
+      ]
+    },
+    {
+      "lines": [
+        "I can rest in thoughts of Him",
+        "When all courage else grows dim,",
+        "For I know my soul shall prove",
+        "His is more than father’s love."
+      ]
+    },
+    {
+      "lines": [
+        "Would the powers of ill affright,",
+        "I can smile at all their might;",
+        "Or the cross be pressing sore,",
+        "God, my God, lives evermore."
+      ]
+    },
+    {
+      "lines": [
+        "Man may hate me causelessly,",
+        "Man may plot to ruin me,",
+        "Foes my heart may pierce and rend;",
+        "God in heaven is still my Friend."
+      ]
+    },
+    {
+      "lines": [
+        "Earth against me may declare,",
+        "For her love I do not care;",
+        "Though the world bear me a grudge,",
+        "God, my Father, is my Judge."
+      ]
+    },
+    {
+      "lines": [
+        "Earth may all her gifts deny,",
+        "Safe my treasure is on high;",
+        "And if heaven at last be mine,",
+        "All things else I can resign."
+      ]
+    },
+    {
+      "lines": [
+        "I renounce thee willingly,",
+        "World, I hate what pleases thee.",
+        "Baneful every gift of thine;",
+        "Only be, my God, still mine."
+      ]
+    },
+    {
+      "lines": [
+        "Ah! Lord, if but Thee I have,",
+        "Naught of other good I crave;",
+        "Bright is even death’s dark road",
+        "If but Thou art there, my God."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Christoph Titius died in 1703; Catherine Winkworth died in 1878.",
+  "credits": "Words by Christoph Titius (1641–1703), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to INNOCENTS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:516"
+}

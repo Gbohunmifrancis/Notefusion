@@ -1,0 +1,69 @@
+{
+  "title": "The New-born Child This Early Morn",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Cyriacus Schneegass",
+      "born": 1546,
+      "died": 1597,
+      "role": "Words"
+    },
+    {
+      "name": "Emanuel Cronenwett",
+      "born": 1841,
+      "died": 1931,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "The New-born Child This Early Morn in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Cyriacus Schneegass wrote these words in German. Emanuel Cronenwett's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 169.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The new born Child this ear-ly morn, The dear Christ child, of vir-gin born, A-gain brings from His heav-enly home A new year to all Chris-ten-dom.",
+  "verses": [
+    {
+      "lines": [
+        "The new-born Child this early morn,",
+        "The dear Christ-child, of virgin born,",
+        "Again brings from His heavenly home",
+        "A new year to all Christendom."
+      ]
+    },
+    {
+      "lines": [
+        "This causes joy to angels fair,",
+        "Who love to keep us in their care;",
+        "They sing that in this wondrous Child",
+        "God now with man is reconciled."
+      ]
+    },
+    {
+      "lines": [
+        "Since God is reconciled with men,",
+        "What harm can Satan do us, then?",
+        "O’er Satan and the gates of hell",
+        "This Christ-child shall for us prevail."
+      ]
+    },
+    {
+      "lines": [
+        "He brings the year of jubilee!",
+        "Why doubt we yet despondently?",
+        "Rejoice! This is a happy day;",
+        "The Christ-child drives all care away."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Cyriacus Schneegass died in 1597; Emanuel Cronenwett died in 1931.",
+  "credits": "Words by Cyriacus Schneegass (1546–1597), translated by Emanuel Cronenwett (1841–1931), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:169"
+}

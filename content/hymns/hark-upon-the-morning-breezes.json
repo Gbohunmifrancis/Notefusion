@@ -1,0 +1,76 @@
+{
+  "title": "Hark! upon the Morning Breezes",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Hark! upon the Morning Breezes in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Christmas”.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "Hark! up-on the morn-ing breez-es, In the dark-ness, ere the wa-king, Mu-sic sweet the sens-es pleas-es, Soft up-on the still-ness break-ing; \"Glo-ry, Glo-ry!\" this the sing-ing, Wel-come to Im-ma-nuel bring-ing.",
+  "verses": [
+    {
+      "lines": [
+        "Hark! upon the morning breezes,",
+        "In the darkness, ere the waking,",
+        "Music sweet the senses pleases,",
+        "Soft upon the stillness breaking; —",
+        "\"Glory, Glory!\" this the singing,",
+        "Welcome to Immanuel bringing."
+      ]
+    },
+    {
+      "lines": [
+        "Shepherds at their watch beholding",
+        "Angels clad in glistening whiteness,",
+        "Heard the wondrous news unfolding",
+        "'Mid that dazzling scene of brightness; —",
+        "\"Glory, Glory!\" peace, and kindness,",
+        "Light is breaking on our blindness."
+      ]
+    },
+    {
+      "lines": [
+        "Glorious morn! The sun uprising,",
+        "Shone upon a world rejoicing;",
+        "God is with us, truth surprising;",
+        "List to song the message voicing, —",
+        "\"Glory, Glory!\" ages told it,",
+        "Heavenly voices now unfold it."
+      ]
+    },
+    {
+      "lines": [
+        "God adored, our nature wearing!",
+        "Ah, such condescending meekness!",
+        "Stooping to a world despairing,",
+        "Full of pity for our weakness; —",
+        "\"Glory, Glory!\" praises swelling,",
+        "God hath made with man His dwelling."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:2"
+}

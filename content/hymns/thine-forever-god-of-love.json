@@ -1,0 +1,71 @@
+{
+  "title": "Thine Forever, God of Love",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "Mary Fawler Maude",
+      "born": 1819,
+      "died": 1913,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Thine Forever, God of Love in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Mary Fawler Maude wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 411.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Thine for-ev-er, God of Love! Hear us from Thy throne a-bove, Thine for-ev-er may we be Here and in e-ter-ni-ty.",
+  "verses": [
+    {
+      "lines": [
+        "Thine forever, God of Love!",
+        "Hear us from Thy throne above,",
+        "Thine forever may we be",
+        "Here and in eternity."
+      ]
+    },
+    {
+      "lines": [
+        "Thine forever, Lord of Life!",
+        "Shield us through our earthly strife;",
+        "Thou, the Life, the Truth, the Way,",
+        "Guide us to the realms of day."
+      ]
+    },
+    {
+      "lines": [
+        "Thine forever! O how blest",
+        "They who find in Thee their rest!",
+        "Savior, Guardian, heavenly Friend,",
+        "O defend us to the end!"
+      ]
+    },
+    {
+      "lines": [
+        "Thine forever! Savior, keep",
+        "These Thy frail and trembling sheep!",
+        "Safe alone beneath Thy care,",
+        "Let us all Thy goodness share."
+      ]
+    },
+    {
+      "lines": [
+        "Thine forever! Thou our Guide,",
+        "All our wants by Thee supplied,",
+        "All our sins by Thee forgiven;",
+        "Lead us, Lord, from earth to heaven."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Mary Fawler Maude died in 1913.",
+  "credits": "Words by Mary Fawler Maude (1819–1913), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:411"
+}

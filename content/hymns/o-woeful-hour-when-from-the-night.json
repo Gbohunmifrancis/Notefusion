@@ -1,0 +1,92 @@
+{
+  "title": "O Woeful Hour! When from the Night",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "O Woeful Hour! When from the Night in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911), headed “Easter”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O woe-ful hour! when from the night E-merged in wrath Sa-tan-ic might, To crush the Christ, whom God in heaven, To raise our fall-en race, had given.",
+  "verses": [
+    {
+      "lines": [
+        "O woeful hour! when from the night",
+        "Emerged in wrath Satanic might,",
+        "To crush the Christ, whom God in heaven,",
+        "To raise our fallen race, had given."
+      ]
+    },
+    {
+      "lines": [
+        "O woeful hour! when, with the scorn",
+        "Of sinful men, His soul was torn;",
+        "When sin exulting bowed the knee,",
+        "And stung the Christ with mockery."
+      ]
+    },
+    {
+      "lines": [
+        "O woeful hour! when to the tree",
+        "The Christ was nailed in agony;",
+        "When anguish for our sin He bore,",
+        "And thorns His throbbing temples tore."
+      ]
+    },
+    {
+      "lines": [
+        "O woeful hour! O darkest day!",
+        "The God-Man, still, entombed lay,",
+        "For death his cruel shaft had driven",
+        "To quell the hope our God had given."
+      ]
+    },
+    {
+      "lines": [
+        "O saddened soul! the night is past,",
+        "The morn, bright morn, has come at last;",
+        "The rage of sin its worst hath done,",
+        "Yet lives in power th' eternal Son."
+      ]
+    },
+    {
+      "lines": [
+        "The dark hath vanished in the light;",
+        "O futile now, Satanic might;",
+        "Sin wounded lies, and death is slain",
+        "By Him who lives in power again."
+      ]
+    },
+    {
+      "lines": [
+        "Hail, glorious morn! the Christ hath risen;",
+        "Hail Victor from the darkest prison!",
+        "Up, up, my soul! thy praises pour",
+        "To Christ, Thy God, for evermore."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:11"
+}

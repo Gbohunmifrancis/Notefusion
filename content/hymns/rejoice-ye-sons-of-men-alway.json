@@ -1,0 +1,69 @@
+{
+  "title": "Rejoice, Ye Sons of Men Alway",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Cornelius Freund",
+      "born": 1535,
+      "died": 1591,
+      "role": "Words"
+    },
+    {
+      "name": "August Crull",
+      "born": 1845,
+      "died": 1923,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Rejoice, Ye Sons of Men Alway in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Cornelius Freund wrote these words in German. August Crull's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 151.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Re-joice, ye sons of men al-way! God comes to you from heaven to day; The Lord is born a lit-tle child Of Ma-ry, cho-sen vir-gin mild.",
+  "verses": [
+    {
+      "lines": [
+        "Rejoice, ye sons of men alway!",
+        "God comes to you from heaven to-day;",
+        "The Lord is born a little child",
+        "Of Mary, chosen virgin mild."
+      ]
+    },
+    {
+      "lines": [
+        "He is the Branch of Jesse’s tree,",
+        "The Lion out of Judah He,",
+        "The Gentiles’ Light, the promised Seed",
+        "Who was to bruise the Serpent’s head."
+      ]
+    },
+    {
+      "lines": [
+        "He brings us peace and happiness",
+        "And heals all sorrow and distress",
+        "Which on account of Adam’s fall",
+        "Forever weighed upon us all."
+      ]
+    },
+    {
+      "lines": [
+        "Through His low birth and holy blood",
+        "We all are saved by Christ, true God;",
+        "The angels’ glory we shall share",
+        "And in His kingdom live fore’er."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Cornelius Freund died in 1591; August Crull died in 1923.",
+  "credits": "Words by Cornelius Freund (1535–1591), translated by August Crull (1845–1923), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:151"
+}

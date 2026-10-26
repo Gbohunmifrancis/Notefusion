@@ -1,0 +1,71 @@
+{
+  "title": "To Thy Temple I Repair",
+  "tune": "innocents",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "To Thy Temple I Repair in Tonic Solfa to INNOCENTS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 8.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to INNOCENTS; any other Sevens tune fits them as well."
+  ],
+  "underlay": "To Thy tem-ple I re-pair; Lord, I love to wor-ship there. While Thy glo-rious praise is sung, Touch my lips, un-loose my tongue.",
+  "verses": [
+    {
+      "lines": [
+        "To Thy temple I repair;",
+        "Lord, I love to worship there.",
+        "While Thy glorious praise is sung,",
+        "Touch my lips, unloose my tongue."
+      ]
+    },
+    {
+      "lines": [
+        "While the prayers of saints ascend,",
+        "God of Love, to mine attend.",
+        "Hear me, for Thy Spirit pleads;",
+        "Hear, for Jesus intercedes."
+      ]
+    },
+    {
+      "lines": [
+        "While I hearken to Thy Law,",
+        "Fill my soul with humble awe,",
+        "Till Thy Gospel bring to me",
+        "Life and immortality."
+      ]
+    },
+    {
+      "lines": [
+        "While Thy ministers proclaim",
+        "Peace and pardon in Thy name,",
+        "Through their voice, by faith, may I",
+        "Hear Thee speaking from the sky."
+      ]
+    },
+    {
+      "lines": [
+        "From Thy house, when I return,",
+        "May my heart within me burn;",
+        "And at evening let me say,",
+        "“I have walked with God to-day.”"
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to INNOCENTS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:8"
+}

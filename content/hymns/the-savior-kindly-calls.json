@@ -1,0 +1,55 @@
+{
+  "title": "The Savior Kindly Calls",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Henry Ustick Onderdonk",
+      "born": 1789,
+      "died": 1858,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "The Savior Kindly Calls in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Henry Ustick Onderdonk wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 406.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "The Sa-vior kind-ly calls Our child-ren to His breast; He folds them in His gra-cious arms, Him-self de-clares them blest.",
+  "verses": [
+    {
+      "lines": [
+        "The Savior kindly calls",
+        "Our children to His breast;",
+        "He folds them in His gracious arms,",
+        "Himself declares them blest."
+      ]
+    },
+    {
+      "lines": [
+        "“Let them approach,” He cries,",
+        "“Nor scorn their humble claim;",
+        "The heirs of heaven are such as these,",
+        "For such as these I came.”"
+      ]
+    },
+    {
+      "lines": [
+        "With joy we bring them, Lord,",
+        "Devoting them to Thee,",
+        "Imploring that, as we are Thine,",
+        "Thine may our offspring be."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Henry Ustick Onderdonk died in 1858.",
+  "credits": "Words by Henry Ustick Onderdonk (1789–1858), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:406"
+}

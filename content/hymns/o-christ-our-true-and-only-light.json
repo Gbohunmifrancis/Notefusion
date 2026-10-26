@@ -1,0 +1,85 @@
+{
+  "title": "O Christ, Our True and Only Light",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Johann Heermann",
+      "born": 1585,
+      "died": 1647,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O Christ, Our True and Only Light in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Johann Heermann wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 475.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Christ, our true and on-ly Light, En-light-en those who sit in night; Let those a-far now hear Thy voice And in Thy fold with us re-joice.",
+  "verses": [
+    {
+      "lines": [
+        "O Christ, our true and only Light,",
+        "Enlighten those who sit in night;",
+        "Let those afar now hear Thy voice",
+        "And in Thy fold with us rejoice."
+      ]
+    },
+    {
+      "lines": [
+        "Fill with the radiance of Thy grace",
+        "The souls now lost in error’s maze",
+        "And all whom in their secret minds",
+        "Some dark delusion haunts and blinds."
+      ]
+    },
+    {
+      "lines": [
+        "And all who else have strayed from Thee,",
+        "O gently seek! Thy healing be",
+        "To every wounded conscience given",
+        "And let them also share Thy heaven."
+      ]
+    },
+    {
+      "lines": [
+        "O make the deaf to hear Thy Word",
+        "And teach the dumb to speak, dear Lord,",
+        "Who dare not yet the faith avow,",
+        "Though secretly they hold it now."
+      ]
+    },
+    {
+      "lines": [
+        "Shine on the darkened and the cold,",
+        "Recall the wanderers from Thy fold,",
+        "Unite all those who walk apart,",
+        "Confirm the weak and doubting heart."
+      ]
+    },
+    {
+      "lines": [
+        "So they with us may evermore",
+        "Such grace with wondering thanks adore,",
+        "And endless praise to Thee be given",
+        "By all Thy Church in earth and heaven."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Johann Heermann died in 1647; Catherine Winkworth died in 1878.",
+  "credits": "Words by Johann Heermann (1585–1647), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:475"
+}

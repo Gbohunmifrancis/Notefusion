@@ -1,0 +1,79 @@
+{
+  "title": "Jesus, My Truth, My Way",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Jesus, My Truth, My Way in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 373.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Je-sus, my Truth, my Way, My sure un-err-ing Light, On Thee my fee-ble soul I stay, Which Thou wilt lead a-right.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, my Truth, my Way,",
+        "My sure unerring Light,",
+        "On Thee my feeble soul I stay,",
+        "Which Thou wilt lead aright."
+      ]
+    },
+    {
+      "lines": [
+        "My Wisdom and my Guide,",
+        "My Counselor Thou art;",
+        "O let me never leave Thy side",
+        "Nor from Thy paths depart!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou seest my feebleness;",
+        "Jesus, be Thou my Power,",
+        "My Help and Refuge in distress,",
+        "My Fortress and my Tower."
+      ]
+    },
+    {
+      "lines": [
+        "Give me to trust in Thee;",
+        "Be Thou my sure Abode;",
+        "My Horn and Rock and Buckler be,",
+        "My Savior and my God."
+      ]
+    },
+    {
+      "lines": [
+        "Myself I cannot save,",
+        "Myself I cannot keep;",
+        "But strength in Thee I surely have,",
+        "Whose eyelids never sleep."
+      ]
+    },
+    {
+      "lines": [
+        "My soul to Thee alone",
+        "Now, therefore, I commend.",
+        "Thou, Jesus, having loved Thine own,",
+        "Wilt love me to the end!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:373"
+}

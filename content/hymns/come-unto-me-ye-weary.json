@@ -1,0 +1,79 @@
+{
+  "title": "“Come unto Me, Ye Weary",
+  "tune": "angels-story",
+  "text": [
+    {
+      "name": "William Chatterton Dix",
+      "born": 1837,
+      "died": 1898,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "“Come unto Me, Ye Weary in Tonic Solfa to ANGEL'S STORY, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Chatterton Dix wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 49.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to ANGEL'S STORY; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "“Come un-to Me, ye wea-ry, And I will give you rest.” O bless-ed voice of Je-sus, Which comes to hearts op-prest! It tells of be-ne-dic-tion, Of par-don, grace, and peace, Of joy that hath no end-ing, Of love which can-not cease.",
+  "verses": [
+    {
+      "lines": [
+        "“Come unto Me, ye weary,",
+        "And I will give you rest.”",
+        "O blessed voice of Jesus,",
+        "Which comes to hearts opprest!",
+        "It tells of benediction,",
+        "Of pardon, grace, and peace,",
+        "Of joy that hath no ending,",
+        "Of love which cannot cease."
+      ]
+    },
+    {
+      "lines": [
+        "“Come unto Me, dear children,",
+        "And I will give you light.”",
+        "O loving voice of Jesus,",
+        "Which comes to cheer the night!",
+        "Our hearts were filled with sadness,",
+        "And we had lost our way;",
+        "But He has brought us gladness",
+        "And songs at break of day."
+      ]
+    },
+    {
+      "lines": [
+        "“Come unto Me, ye weary,",
+        "And I will give you life,”",
+        "O cheering voice of Jesus,",
+        "Which comes to aid our strife!",
+        "The Foe is stern and eager,",
+        "The fight is fierce and long;",
+        "But Thou hast made us mighty",
+        "And stronger than the strong."
+      ]
+    },
+    {
+      "lines": [
+        "“And whosoever cometh,",
+        "I will not cast him out.”",
+        "O welcome voice of Jesus,",
+        "Which drives away our doubt,",
+        "Which calls us, very sinners,",
+        "Unworthy though we be",
+        "Of love so free and boundless,",
+        "To come, dear Lord, to Thee!"
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: William Chatterton Dix died in 1898.",
+  "credits": "Words by William Chatterton Dix (1837–1898), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ANGEL'S STORY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:49"
+}

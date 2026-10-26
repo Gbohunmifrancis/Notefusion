@@ -1,0 +1,66 @@
+{
+  "title": "Jesus, Brightness of the Father",
+  "tune": "kalmar",
+  "text": [
+    {
+      "name": "Rabanus Maurus",
+      "died": 856,
+      "role": "Words"
+    },
+    {
+      "name": "Edward Caswall",
+      "born": 1814,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Jesus, Brightness of the Father in Tonic Solfa to KALMAR, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Rabanus Maurus wrote these words in Latin. Edward Caswall's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 287.",
+    "The book printed the words without tunes, marked 8.7.8.7.7.7, to be sung to any tune of that metre. This page sets them to KALMAR; any other 8.7.8.7.7.7 tune fits them as well."
+  ],
+  "underlay": "Je-sus, Bright-ness of the Fa-ther, Life and Strength of all who live! In the pre-sence of the an-gels Glo-ry in Thy name we give: And Thy won-drous praise re-hearse, Sing-ing in har-mo-nious verse.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, Brightness of the Father,",
+        "Life and Strength of all who live!",
+        "In the presence of the angels",
+        "Glory in Thy name we give:",
+        "And Thy wondrous praise rehearse,",
+        "Singing in harmonious verse."
+      ]
+    },
+    {
+      "lines": [
+        "Blessed Lord, by their protection",
+        "Shelter us from harm this day;",
+        "Keep us pure in flesh and spirit;",
+        "Save us from the Foe, we pray:",
+        "And vouchsafe us by Thy grace",
+        "In Thy paradise a place."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to th’ almighty Father,",
+        "Sing we with the heavenly host;",
+        "Glory to the great Redeemer,",
+        "Glory to the Holy Ghost;",
+        "Three in One, and One in Three,",
+        "Throughout all eternity!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Rabanus Maurus died in 856; Edward Caswall died in 1878.",
+  "credits": "Words by Rabanus Maurus (died 856), translated by Edward Caswall (1814–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to KALMAR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:287"
+}

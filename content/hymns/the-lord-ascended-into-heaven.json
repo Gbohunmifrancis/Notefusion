@@ -1,0 +1,76 @@
+{
+  "title": "The Lord Ascended into Heaven",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "The Lord Ascended into Heaven in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904), headed “Stichera of The Ascension”.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Lord as-cend-ed in-to heaven That He might from a-bove Send down the pro-mised Par-a-clete On mis-sion of His love.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord ascended into heaven",
+        "That He might from above",
+        "Send down the promised Paraclete",
+        "On mission of His love."
+      ]
+    },
+    {
+      "lines": [
+        "And there the Father for His Son",
+        "Had decked a glorious throne;",
+        "And clouds, His chariots, bore Him up,",
+        "That He might claim His own."
+      ]
+    },
+    {
+      "lines": [
+        "O strangest wonder e'er beheld,",
+        "Since ages hoar began,",
+        "The angels saw the highest place",
+        "Given to a Son of Man."
+      ]
+    },
+    {
+      "lines": [
+        "\"O all ye angels praise the Lord,\"",
+        "The Holy Spirit commands,",
+        "\"Lift up your gates, ye princes high,",
+        "Ye nations, clap your hands.\""
+      ]
+    },
+    {
+      "lines": [
+        "To God the Father throned on high,",
+        "And to the Son be praise,",
+        "And to the Spirit — Three in One,",
+        "From age to age, always."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:14"
+}

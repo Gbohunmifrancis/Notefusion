@@ -1,0 +1,107 @@
+{
+  "title": "O Love, Who Formedst Me to Wear",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Johann Scheffler",
+      "born": 1624,
+      "died": 1677,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O Love, Who Formedst Me to Wear in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Johann Scheffler wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 348.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "O Love, who for-medst me to wear The i-mage of Thy God-head here; Who sought-est me with ten-der care Through all my wand’-rings wild and drear,— O Love, I give my-self to Thee, Thine ev-er, on-ly Thine, to be.",
+  "verses": [
+    {
+      "lines": [
+        "O Love, who formedst me to wear",
+        "The image of Thy Godhead here;",
+        "Who soughtest me with tender care",
+        "Through all my wand’rings wild and drear,—",
+        "O Love, I give myself to Thee,",
+        "Thine ever, only Thine, to be."
+      ]
+    },
+    {
+      "lines": [
+        "O Love, who ere life’s earliest dawn",
+        "On me Thy choice hast gently laid;",
+        "O Love, who here as man wast born",
+        "And like to us in all things made,—",
+        "O Love, I give myself to Thee,",
+        "Thine ever, only Thine, to be."
+      ]
+    },
+    {
+      "lines": [
+        "O Love, who once in time wast slain,",
+        "Pierced through and through with bitter woe;",
+        "O Love, who, wrestling thus, didst gain",
+        "That we eternal joy might know,—",
+        "O Love, I give myself to Thee,",
+        "Thine ever, only Thine, to be."
+      ]
+    },
+    {
+      "lines": [
+        "O Love, of whom in truth and light,",
+        "The Word and Spirit, life and power,",
+        "Whose heart was bared to them that smite,",
+        "To shield us in our trial hour,—",
+        "O Love, I give myself to Thee,",
+        "Thine ever, only Thine, to be."
+      ]
+    },
+    {
+      "lines": [
+        "O Love, who thus hast bound me fast",
+        "Beneath that gentle yoke of Thine;",
+        "Love, who hast conquered me at last,",
+        "Enrapturing this heart of mine,—",
+        "O Love, I give myself to Thee,",
+        "Thine ever, only Thine, to be."
+      ]
+    },
+    {
+      "lines": [
+        "O Love, who lovest me for aye,",
+        "Who for my soul dost ever plead;",
+        "O Love, who didst my ransom pay,",
+        "Who for me e’er dost intercede,—",
+        "O Love, I give myself to Thee,",
+        "Thine ever, only Thine, to be."
+      ]
+    },
+    {
+      "lines": [
+        "O Love, who once shalt bid me rise",
+        "From out this dying life of ours;",
+        "O Love, who once above yon skies",
+        "Shalt set me in the fadeless bowers,—",
+        "O Love, I give myself to Thee,",
+        "Thine ever, only Thine, to be."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Johann Scheffler died in 1677; Catherine Winkworth died in 1878.",
+  "credits": "Words by Johann Scheffler (1624–1677), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:348"
+}

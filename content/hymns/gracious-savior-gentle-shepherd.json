@@ -1,0 +1,81 @@
+{
+  "title": "Gracious Savior, Gentle Shepherd",
+  "tune": "mannheim",
+  "text": [
+    {
+      "name": "Jane Eliza Leeson",
+      "born": 1809,
+      "died": 1881,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Gracious Savior, Gentle Shepherd in Tonic Solfa to MANNHEIM, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Jane Eliza Leeson wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 447.",
+    "The book printed the words without tunes, marked Eights and Sevens, six lines (8.7.8.7.8.7), to be sung to any tune of that metre. This page sets them to MANNHEIM; any other Eights and Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Gra-cious Sa-vior, gen-tle Shep-herd, Child-ren all are dear to Thee; Ga-thered with Thine arms and car-ried In Thy bo-som may they be; Sweet-ly, fond-ly, safe-ly tend-ed, From all want and dan-ger free.",
+  "verses": [
+    {
+      "lines": [
+        "Gracious Savior, gentle Shepherd,",
+        "Children all are dear to Thee;",
+        "Gathered with Thine arms and carried",
+        "In Thy bosom may they be;",
+        "Sweetly, fondly, safely tended,",
+        "From all want and danger free."
+      ]
+    },
+    {
+      "lines": [
+        "Tender Shepherd, never leave them",
+        "From Thy fold to go astray;",
+        "By Thy warning love directed,",
+        "May they walk the narrow way!",
+        "Thus direct them, thus defend them,",
+        "Lest they fall an easy prey."
+      ]
+    },
+    {
+      "lines": [
+        "Cleanse their hearts from sinful folly",
+        "In the stream Thy love supplied,",
+        "Mingled stream of blood and water",
+        "Flowing from Thy wounded side;",
+        "And to heavenly pastures lead them,",
+        "Where Thine own still waters glide."
+      ]
+    },
+    {
+      "lines": [
+        "Let Thy holy Word instruct them;",
+        "Fill their minds with heavenly light;",
+        "Let Thy powerful grace constrain them",
+        "To approve whate’er is right;",
+        "Let them feel Thy yoke is easy,",
+        "Let them prove Thy burden light."
+      ]
+    },
+    {
+      "lines": [
+        "Taught to lisp Thy holy praises",
+        "Which on earth Thy children sing,",
+        "Both with lips and hearts, unfeignèd,",
+        "Glad thank-offerings may they bring;",
+        "Then with all the saints in glory",
+        "Join to praise their Lord and King."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Jane Eliza Leeson died in 1881.",
+  "credits": "Words by Jane Eliza Leeson (1809–1881), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MANNHEIM by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:447"
+}

@@ -1,0 +1,61 @@
+{
+  "title": "Zion Stands with Hills Surrounded",
+  "tune": "st-austin",
+  "text": [
+    {
+      "name": "Thomas Kelly",
+      "born": 1769,
+      "died": 1855,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Zion Stands with Hills Surrounded in Tonic Solfa to ST. AUSTIN, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Thomas Kelly wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 465.",
+    "The book printed the words without tunes, marked 8.7.8.7.4.7, to be sung to any tune of that metre. This page sets them to ST. AUSTIN; any other 8.7.8.7.4.7 tune fits them as well."
+  ],
+  "underlay": "Zi-on stands with hills sur-round-ed, Zi-on, kept by power di-vine; All her foes shall be con-found-ed, Though the world in arms com-bine. Hap-py Zi-on, What a hap-py lot is thine!",
+  "verses": [
+    {
+      "lines": [
+        "Zion stands with hills surrounded,",
+        "Zion, kept by power divine;",
+        "All her foes shall be confounded,",
+        "Though the world in arms combine.",
+        "Happy Zion,",
+        "What a happy lot is thine!"
+      ]
+    },
+    {
+      "lines": [
+        "Every human tie may perish,",
+        "Friend to friend unfaithful prove,",
+        "Brothers cease their own to cherish,",
+        "Heaven and earth at last remove;",
+        "But no changes",
+        "Can attend Jehovah’s love."
+      ]
+    },
+    {
+      "lines": [
+        "In the furnace God may prove thee,",
+        "Thence to bring thee forth more bright,",
+        "But can never cease to love thee;",
+        "Thou art precious in His sight;",
+        "God is with thee,",
+        "God, thine everlasting Light."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 4 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Thomas Kelly died in 1855.",
+  "credits": "Words by Thomas Kelly (1769–1855), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. AUSTIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:465"
+}

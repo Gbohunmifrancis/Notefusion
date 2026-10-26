@@ -1,0 +1,66 @@
+{
+  "title": "I Have No Tears to Shed",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "I Have No Tears to Shed in Tonic Solfa to DARWALL, doh is D: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Hallelujah Metre (6.6.6.6.8.8), and this page sets them to DARWALL; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "I have no tears to shed, For grief my soul hath none; My heart hath nev-er bled, For ought that I have done; I weep not when I hear Thee say That sin hath car-ried me a-way.",
+  "verses": [
+    {
+      "lines": [
+        "I have no tears to shed,",
+        "For grief my soul hath none;",
+        "My heart hath never bled,",
+        "For ought that I have done;",
+        "I weep not when I hear Thee say",
+        "That sin hath carried me away."
+      ]
+    },
+    {
+      "lines": [
+        "I have no tears to shed;",
+        "Wilt Thou not touch my heart,",
+        "And bid sin's wounds run red,",
+        "And throb with bitter smart? —",
+        "Then shall I lift my prayer and say,",
+        "\"Lord, take my many sins away.\""
+      ]
+    },
+    {
+      "lines": [
+        "For Thou, O Lord, dost will",
+        "That all should seek Thy face,",
+        "That Thou mayest well fulfil",
+        "The promise of Thy grace.",
+        "Who ever sought Thy love in vain,",
+        "Or failed Thy pardon to obtain?"
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to DARWALL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:23"
+}

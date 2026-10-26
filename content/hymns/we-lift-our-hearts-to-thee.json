@@ -1,0 +1,71 @@
+{
+  "title": "We Lift Our Hearts to Thee",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "We Lift Our Hearts to Thee in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 25.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "We lift our hearts to Thee, O Day star from on high! The sun it-self is but Thy shade, Yet cheers both earth and sky.",
+  "verses": [
+    {
+      "lines": [
+        "We lift our hearts to Thee,",
+        "O Day-star from on high!",
+        "The sun itself is but Thy shade,",
+        "Yet cheers both earth and sky."
+      ]
+    },
+    {
+      "lines": [
+        "O let Thy rising beams",
+        "The night of sin disperse,",
+        "The mists of error and of vice,",
+        "Which shade the universe."
+      ]
+    },
+    {
+      "lines": [
+        "How beauteous nature now!",
+        "How dark and sad before!",
+        "With joy we view the pleasing change",
+        "And nature’s God adore."
+      ]
+    },
+    {
+      "lines": [
+        "O may no gloomy crime",
+        "Pollute the rising day;",
+        "May Jesus’ blood, like morning dew,",
+        "Wash all our stains away."
+      ]
+    },
+    {
+      "lines": [
+        "May we this life improve",
+        "To mourn for errors past",
+        "And live this short, revolving day",
+        "As if it were our last."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:25"
+}

@@ -1,0 +1,103 @@
+{
+  "title": "Awake, My Soul, to Joyful Lays",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Samuel Medley",
+      "born": 1738,
+      "died": 1799,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Awake, My Soul, to Joyful Lays in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Samuel Medley wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 92.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "A-wake, my soul, to joy-ful lays And sing Thy great Re-deem-er’s praise; He just-ly claims a song from me,— His lov-ing kind-ness, O how free!",
+  "verses": [
+    {
+      "lines": [
+        "Awake, my soul, to joyful lays",
+        "And sing Thy great Redeemer’s praise;",
+        "He justly claims a song from me,—",
+        "His loving-kindness, O how free!"
+      ]
+    },
+    {
+      "lines": [
+        "He saw me ruined in the Fall,",
+        "Yet loved me notwithstanding all;",
+        "He saved me from my lost estate,—",
+        "His loving-kindness, O how great!"
+      ]
+    },
+    {
+      "lines": [
+        "When I was Satan’s easy prey",
+        "And deep in debt and bondage lay,",
+        "He paid His life for my discharge,—",
+        "His loving-kindness, O how large!"
+      ]
+    },
+    {
+      "lines": [
+        "Though numerous hosts of mighty foes,",
+        "Though earth and hell my way oppose,",
+        "He safely leads my soul along,—",
+        "His loving-kindness, O how strong!"
+      ]
+    },
+    {
+      "lines": [
+        "When trouble, like a gloomy cloud,",
+        "Has gathered thick and thundered loud,",
+        "He near my soul has always stood,—",
+        "His loving-kindness, O how good!"
+      ]
+    },
+    {
+      "lines": [
+        "When earthly friends forsake me quite",
+        "And I have neither skill nor might,",
+        "He’s sure my Helper to appear,—",
+        "His loving-kindness, O how near!"
+      ]
+    },
+    {
+      "lines": [
+        "Often I feel my sinful heart",
+        "Prone from my Jesus to depart;",
+        "But though I have Him oft forgot,",
+        "His loving-kindness changes not."
+      ]
+    },
+    {
+      "lines": [
+        "When I shall pass death’s gloomy vale",
+        "And all my mortal power must fail,",
+        "O may my last, expiring breath",
+        "His loving-kindness sing in death!"
+      ]
+    },
+    {
+      "lines": [
+        "Then shall I mount and soar away",
+        "To the bright world of endless day",
+        "And sing with rapture and surprise",
+        "His loving-kindness in the skies."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Samuel Medley died in 1799.",
+  "credits": "Words by Samuel Medley (1738–1799), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:92"
+}

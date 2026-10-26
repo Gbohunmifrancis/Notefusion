@@ -1,0 +1,84 @@
+{
+  "title": "Even as Thou Saidst, the Spirit Came",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Even as Thou Saidst, the Spirit Came in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911), headed “Pentecost”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Even as Thou saidst, the Spi-rit came, In fie-ry tongues of liv-ing flame; And men were moved to spread a-broad, The Wis-dom of th'In-car-nate God.",
+  "verses": [
+    {
+      "lines": [
+        "Even as Thou saidst, the Spirit came,",
+        "In fiery tongues of living flame;",
+        "And men were moved to spread abroad,",
+        "The Wisdom of th' Incarnate God."
+      ]
+    },
+    {
+      "lines": [
+        "And nations heard the truth, and gave",
+        "Their souls to Him who came to save;",
+        "And toiling in their sins, arose",
+        "The power of Satan to oppose."
+      ]
+    },
+    {
+      "lines": [
+        "Even as Thou saidst; the Spirit's power",
+        "Came at the Pentecostal hour,",
+        "And drooping souls with zeal were fired,",
+        "And felt the life that power inspired."
+      ]
+    },
+    {
+      "lines": [
+        "Even as Thou saidst, the Spirit's voice",
+        "Spake to dull hearts, and bade rejoice;",
+        "And men that dwelt in sorrow's night,",
+        "Felt hope awake as morning light."
+      ]
+    },
+    {
+      "lines": [
+        "Even as Thou saidst; His power can still",
+        "Our empty lives to fulness fill;",
+        "Can charge with hope, with zeal inspire,",
+        "And kindle life, and light, and fire."
+      ]
+    },
+    {
+      "lines": [
+        "Even as Thou saidst! — O Spirit, come,",
+        "Make with Thy people here Thy home;",
+        "In all their need Thy gifts supply,",
+        "And Christ our Lord still glorify."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:26"
+}

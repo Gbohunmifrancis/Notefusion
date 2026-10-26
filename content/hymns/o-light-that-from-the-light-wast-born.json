@@ -1,0 +1,92 @@
+{
+  "title": "O Light That from the Light Wast Born",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "O Light That from the Light Wast Born in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “O Nata Lux De Lumine”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Light that from the light wast born, Re-deem-er of the world for-lorn, In mer-cy now Thy sup-pliants spare, Our praise ac-cept, and hear our prayer.",
+  "verses": [
+    {
+      "lines": [
+        "O Light that from the light wast born,",
+        "Redeemer of the world forlorn,",
+        "In mercy now Thy suppliants spare,",
+        "Our praise accept, and hear our prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Thou who didst wear our flesh below,",
+        "To save our souls from endless woe,",
+        "Of Thy blest Body, Lord, would we",
+        "Efficient members ever be."
+      ]
+    },
+    {
+      "lines": [
+        "More bright than sun Thine aspect gleamed,",
+        "As snowdrift white Thy garments seemed,",
+        "When on the mount Thy glory shone,",
+        "To faithful witnesses alone."
+      ]
+    },
+    {
+      "lines": [
+        "There did the seers of old confer",
+        "With those who Thy disciples were;",
+        "And Thou on both didst shed abroad",
+        "The glory of the eternal God."
+      ]
+    },
+    {
+      "lines": [
+        "From heaven the Father’s voice was heard",
+        "That Thee the eternal Son declared;",
+        "And faithful hearts now love to own",
+        "Thy glory, King of heaven, alone."
+      ]
+    },
+    {
+      "lines": [
+        "Grant us, we pray, to walk in light,",
+        "Clad in Thy virtues sparkling bright,",
+        "That, upward borne by deeds of love,",
+        "Our souls may win the bliss above."
+      ]
+    },
+    {
+      "lines": [
+        "Loud praise to Thee our homage brings,",
+        "Eternal God, Thou King of kings,",
+        "Who reignest one, Thou one in three,",
+        "From age to age eternally."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:2"
+}

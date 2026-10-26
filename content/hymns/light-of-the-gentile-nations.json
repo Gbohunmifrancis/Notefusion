@@ -1,0 +1,109 @@
+{
+  "title": "Light of the Gentile Nations",
+  "tune": "greenland",
+  "text": [
+    {
+      "name": "Johann Franck",
+      "born": 1618,
+      "died": 1677,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Light of the Gentile Nations in Tonic Solfa to GREENLAND, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Johann Franck wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 190.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to GREENLAND; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "Light of the Gen-tile na-tions, Thy peo-ple’s Joy and Love! Drawn by Thy Spir-it hith-er, We glad-ly come to prove Thy pre-sence in Thy tem-ple And seek with ear-nest mind, As Sime-on once had wait-ed His Sa-vior God to find.",
+  "verses": [
+    {
+      "lines": [
+        "Light of the Gentile nations,",
+        "Thy people’s Joy and Love!",
+        "Drawn by Thy Spirit hither,",
+        "We gladly come to prove",
+        "Thy presence in Thy temple",
+        "And seek with earnest mind,",
+        "As Simeon once had waited",
+        "His Savior God to find."
+      ]
+    },
+    {
+      "lines": [
+        "Yea, Lord, Thy servants meet Thee,",
+        "E’en now, in every place",
+        "Where Thy true Word hath promised",
+        "That they should see Thy face.",
+        "Thou yet wilt gladly grant us,",
+        "Who gather round Thee here,",
+        "In faith’s strong arms to bear Thee,",
+        "As did that aged seer."
+      ]
+    },
+    {
+      "lines": [
+        "Be Thou our Joy, our Brightness,",
+        "That shines mid pain and loss,",
+        "Our Sun in times of terror,",
+        "The Glory round our cross;",
+        "A Glow in sinking spirits,",
+        "A Sunbeam in distress,",
+        "Physician, Friend, in sickness;",
+        "In death, our Happiness."
+      ]
+    },
+    {
+      "lines": [
+        "Let us, O Lord, be faithful",
+        "Like Simeon to the end,",
+        "So that his dying anthem",
+        "May from our hearts ascend:",
+        "“O Lord, now let Thy servant",
+        "Depart in peace, I pray,",
+        "Since I have seen my Savior,",
+        "Have here beheld His day.”"
+      ]
+    },
+    {
+      "lines": [
+        "My Savior, I behold Thee",
+        "Now with the eye of faith;",
+        "No foe of Thee can rob me,",
+        "Though bitter words he saith.",
+        "Within Thy heart abiding,",
+        "As Thou dost dwell in me,",
+        "No pain, no death, has terrors",
+        "To part my soul from Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, here on earth Thou seemest",
+        "At times to frown on me,",
+        "And through my tears I often",
+        "Can scarce distinguish Thee;",
+        "But in the heavenly mansions",
+        "Shall nothing dim my sight,",
+        "And I shall see forever",
+        "Thine always glorious light."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Johann Franck died in 1677; Catherine Winkworth died in 1878.",
+  "credits": "Words by Johann Franck (1618–1677), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to GREENLAND by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:190"
+}

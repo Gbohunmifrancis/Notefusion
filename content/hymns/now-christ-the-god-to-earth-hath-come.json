@@ -1,0 +1,76 @@
+{
+  "title": "Now Christ the God to Earth Hath Come",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Now Christ the God to Earth Hath Come in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Now Christ the God to earth hath come, And made our dwell-ing place His home; And in our flesh the God Man gives The life by which His peo-ple lives.",
+  "verses": [
+    {
+      "lines": [
+        "Now Christ the God to earth hath come,",
+        "And made our dwelling place His home;",
+        "And in our flesh the God-Man gives",
+        "The life by which His people lives."
+      ]
+    },
+    {
+      "lines": [
+        "Bound to the Cross He bleeding dies,",
+        "That man from sin forgiven may rise;",
+        "And by the grace of God set free,",
+        "Live in His service endlessly."
+      ]
+    },
+    {
+      "lines": [
+        "They who in Adam sinning fell,",
+        "With Christ ascend with God to dwell;",
+        "And through the pain the Saviour bore,",
+        "Are freed from pain for evermore."
+      ]
+    },
+    {
+      "lines": [
+        "And where the Christ 'mong myriads bright",
+        "Sits on His throne of peerless light,",
+        "There dwell the saints who by His grace",
+        "Share on the throne the victor's place."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to Thee, our Father, God,",
+        "Who dwell'st in heaven, Thy high abode;",
+        "Glory to Thee, O Christ the Son,",
+        "And Holy Ghost, blest Three in One."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:36"
+}

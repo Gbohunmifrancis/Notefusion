@@ -1,0 +1,68 @@
+{
+  "title": "Waving in the Autumn Breeze",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Waving in the Autumn Breeze in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Elevation of the Cross”.",
+    "The book printed the words without tunes. They are in Sevens (7.7.7.7), and this page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Wav-ing in the au-tumn breeze, Clap your hands, ye for-est trees, For the arms that now en-twine Nee-dy souls, were stretched on thine.",
+  "verses": [
+    {
+      "lines": [
+        "Waving in the autumn breeze,",
+        "Clap your hands, ye forest trees,",
+        "For the arms that now entwine",
+        "Needy souls, were stretched on thine."
+      ]
+    },
+    {
+      "lines": [
+        "And the cross that bore the weight",
+        "Of the Christ, Creator great,",
+        "By the power that still remains,",
+        "All the universe sustains."
+      ]
+    },
+    {
+      "lines": [
+        "Emblem, by the Church adored;",
+        "Might, that wields the kingly sword;",
+        "Glory, of the ransomed host;",
+        "Agony, of spirits lost."
+      ]
+    },
+    {
+      "lines": [
+        "Cross of Christ! we lift our eyes",
+        "And behold the sacrifice;",
+        "For the arms that now entwine",
+        "Needy souls, were stretched on thine."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:35"
+}

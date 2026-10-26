@@ -1,0 +1,132 @@
+{
+  "title": "Yea, as I Live, Jehovah Saith",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Nikolaus Herman",
+      "died": 1561,
+      "role": "Words"
+    },
+    {
+      "name": "Matthias Loy",
+      "born": 1828,
+      "died": 1915,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Yea, as I Live, Jehovah Saith in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 12 verses and a piano.",
+  "about": [
+    "Nikolaus Herman wrote these words in German. Matthias Loy's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 426.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Yea, as I live, Je-ho-vah saith, I do not wish the sin-ner’s death, But that he turn from er-ror’s ways, Re-pent, and live through end-less days.",
+  "verses": [
+    {
+      "lines": [
+        "Yea, as I live, Jehovah saith,",
+        "I do not wish the sinner’s death,",
+        "But that he turn from error’s ways,",
+        "Repent, and live through endless days."
+      ]
+    },
+    {
+      "lines": [
+        "Hence Christ His servants gave command:",
+        "“Go forth and preach in every land;",
+        "Forgiveness to each soul extend",
+        "That mourns, believes, and will amend."
+      ]
+    },
+    {
+      "lines": [
+        "“Whose sins soever ye remit,",
+        "I truly pardon and acquit;",
+        "Whose sins soever ye retain,",
+        "Condemned and guilty shall remain."
+      ]
+    },
+    {
+      "lines": [
+        "“What ye shall bind, that bound shall be;",
+        "What ye shall loose, that shall be free;",
+        "To all alike the keys are given",
+        "To ope and close the gates of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "“They who believe, when ye proclaim",
+        "The joyful tidings in My name,",
+        "That I for them My blood have shed,",
+        "Are free from guilt and Judgment dread.”"
+      ]
+    },
+    {
+      "lines": [
+        "The words which absolution give",
+        "Are His who died that we might live;",
+        "The minister whom Christ has sent",
+        "Is but His humble instrument."
+      ]
+    },
+    {
+      "lines": [
+        "However great our sin may be,",
+        "The absolution sets us free,",
+        "Appointed by God’s own dear Son",
+        "To bring the pardon He has won."
+      ]
+    },
+    {
+      "lines": [
+        "When ministers lay on their hands,",
+        "Absolved by Christ the sinner stands;",
+        "He who by grace the Word believes",
+        "The purchase of His blood receives."
+      ]
+    },
+    {
+      "lines": [
+        "This is the power of holy keys,",
+        "It binds and doth again release;",
+        "The Church retains them at her side,",
+        "Our mother and Christ’s holy bride."
+      ]
+    },
+    {
+      "lines": [
+        "Let those who stings of conscience bear,",
+        "Whom sin would drive to dark despair,",
+        "To Jesus come with trustful mind",
+        "And peace in absolution find."
+      ]
+    },
+    {
+      "lines": [
+        "All praise, eternal Son, to Thee",
+        "For absolution full and free,",
+        "In which Thou showest forth Thy grace;",
+        "From false indulgence guard our race."
+      ]
+    },
+    {
+      "lines": [
+        "Praise God the Father and the Son",
+        "And Holy Spirit, Three in One,",
+        "As ’twas, is now, and so shall be,",
+        "World without end, eternally!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Nikolaus Herman died in 1561; Matthias Loy died in 1915.",
+  "credits": "Words by Nikolaus Herman (died 1561), translated by Matthias Loy (1828–1915), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:426"
+}

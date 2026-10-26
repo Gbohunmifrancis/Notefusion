@@ -1,0 +1,84 @@
+{
+  "title": "If in the Cause of Right I Must",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "If in the Cause of Right I Must in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "If in the cause of right I must, Do bat-tle with the sword, Then, let me fol-low Him I trust, My cho-sen King and Lord.",
+  "verses": [
+    {
+      "lines": [
+        "If in the cause of right I must,",
+        "Do battle with the sword,",
+        "Then, let me follow Him I trust,",
+        "My chosen King and Lord."
+      ]
+    },
+    {
+      "lines": [
+        "As Captain in the mortal fight,",
+        "He knows the foe I fear;",
+        "His presence fires my soul with might,",
+        "And fills my heart with cheer."
+      ]
+    },
+    {
+      "lines": [
+        "If I should see Him ever near,",
+        "When blows unceasing fall,",
+        "I shall no flaunting banner fear,",
+        "Nor loudest battle call."
+      ]
+    },
+    {
+      "lines": [
+        "And in the thickest of the strife,",
+        "No polished shaft I'll dread,",
+        "For He preserves my soul in life,",
+        "In battle shields my head."
+      ]
+    },
+    {
+      "lines": [
+        "No power shall in the fight prevail,",
+        "No subtle gin ensnare,",
+        "Though all the hosts of hell assail,",
+        "And guile the fraud prepare."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, gird me with Thy armour bright,",
+        "And lead me forth to win,",
+        "For I would battle for the right",
+        "Against the might of sin."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:70"
+}

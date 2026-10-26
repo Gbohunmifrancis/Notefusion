@@ -468,8 +468,26 @@ public-domain answer says the words were "in print by" 1848 (1866 for that book'
 never a made-up first publication. A header the transcription spaced oddly is still read as a header, so no hymn's verses
 run into the one before. Skipped hymns and why are in `hymns-<book>-report.json`.
 
+John Brownlie's five books of translations from the Greek service books and the Latin hymns of the early Church
+(`--book early-church` 1896, `greek-church` 1900, `greek-office` 1904, `east` (undated; the 1911 book calls itself the
+sixth series after it, so "in print by 1911"), `morningland` 1911; Gutenberg #44039, #27848, #31157, #28479, #29480)
+print no metre: `parseNumbered` reads verses numbered I, II on lines of their own, and `inferPattern` takes the metre
+most of the lines sing of those we hold tunes for. The words are credited as hymn books credit them, "Traditional
+Greek" (or Latin) translated by John Brownlie (1857–1925), and the page quotes whom the book names ("By St. Cosmas, 760
+A.D.", "Attributed to Francis Xavier").
+
+The *Evangelical Lutheran Hymn-Book* (abridged edition, Concordia, St. Louis 1927; Gutenberg #76498; `--book lutheran`,
+`import/lutheran-1927.mjs`) prints each hymn's metre and, at its end, who wrote it in full or with initials ("H. Bonar,
+1846.", "B. Schmolck, 1734; C. Winkworth, tr., 1862."). `NAMES` names them in full with their dates and the language they
+wrote in; a hymn from German or Latin is taken only with its translator named, so the translations the book prints
+without one (its own committee's, mostly) are left out. The pages say "in print by 1927".
+
+Every book is held to the stresses of its tunes: the 8.7 metres' tunes we hold are trochaic, so words whose 8-syllable
+lines mostly end on a stressed syllable ("Alas, my God! my sins are great") are iambs and are left out
+(`iambsOnTrochees`), rather than sung with every stress wrong.
+
 A hymn several books print is the first book's page, in `SET_BY_METRE_ORDER` (watts.mjs): Watts' hymns, his psalms,
-Olney, the 1848 book, the 1846 book. Each importer leaves alone what is hand-set or in a book before it and takes no notice of the
+Olney, the 1848 book, the 1846 book, Brownlie's, then the 1927 Lutheran book. Each importer leaves alone what is hand-set or in a book before it and takes no notice of the
 books after it, so the pages do not depend on which ran last; run them in that order.
 
 *The Christian Hymn Book* (Campbell, 1865) prints no authors and the *St. Gregory Hymnal* (1920) gives each hymn its own

@@ -1,0 +1,79 @@
+{
+  "title": "An Awful Mystery Is Here",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Matthias Loy",
+      "born": 1828,
+      "died": 1915,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "An Awful Mystery Is Here in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Matthias Loy wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 437.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "An aw-ful mys-ter-y is here To cha-llenge faith and wa-ken fear; The Sa-vior comes as food di-vine, Con-cealed in earth-ly bread and wine.",
+  "verses": [
+    {
+      "lines": [
+        "An awful mystery is here",
+        "To challenge faith and waken fear;",
+        "The Savior comes as food divine,",
+        "Concealed in earthly bread and wine."
+      ]
+    },
+    {
+      "lines": [
+        "This world is loveless—but above,",
+        "What wondrous boundlessness of love!",
+        "The King of Glory stoops to me",
+        "My spirit’s Life and Strength to be."
+      ]
+    },
+    {
+      "lines": [
+        "In consecrated wine and bread",
+        "No eye perceives the mystery dread;",
+        "But Jesus’ words are strong and clear:",
+        "“My body and My blood are here.”"
+      ]
+    },
+    {
+      "lines": [
+        "How dull are all the powers of sense,",
+        "Employed on proofs of love immense!",
+        "The richest food remains unseen,",
+        "And highest gifts appear how mean!"
+      ]
+    },
+    {
+      "lines": [
+        "But here we have no boon on earth,",
+        "And faith alone discerns its worth;",
+        "The Word, not sense, must be our guide",
+        "And faith assure, since sight’s denied."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, show us still that Thou art good",
+        "And grant us evermore this food;",
+        "Give faith to ev’ry wav’ring soul",
+        "And make each wounded spirit whole."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Matthias Loy died in 1915.",
+  "credits": "Words by Matthias Loy (1828–1915), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:437"
+}

@@ -1,0 +1,76 @@
+{
+  "title": "When Thou Shalt Come, O Lord",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "When Thou Shalt Come, O Lord in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900).",
+    "The book printed the words without tunes. They are in Short Metre (6.6.8.6), and this page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "When Thou shalt come, O Lord, Wrapt in Thy glo-ry bright, Then shall the earth in ter-ror quake, The sun with-hold his light.",
+  "verses": [
+    {
+      "lines": [
+        "When Thou shalt come, O Lord,",
+        "Wrapt in Thy glory bright,",
+        "Then shall the earth in terror quake,",
+        "The sun withhold his light."
+      ]
+    },
+    {
+      "lines": [
+        "When Thou shalt come, O Lord,",
+        "Then to Thy judgment-bar,",
+        "Even as a mighty stream, shall flow",
+        "The sons of men from far."
+      ]
+    },
+    {
+      "lines": [
+        "When Thou shalt come, O Lord,",
+        "Then shall the books be spread,",
+        "And from their secrets Thou shalt judge",
+        "The living and the dead."
+      ]
+    },
+    {
+      "lines": [
+        "When Thou shalt come, O Lord,",
+        "Then save me by Thy power,",
+        "Let not the flames of wrath o'ertake",
+        "Thy servant in that hour."
+      ]
+    },
+    {
+      "lines": [
+        "When Thou shalt come, O Lord,",
+        "In mercy let me stand —",
+        "No guilt upon my conscience laid —",
+        "Approved, at Thy right hand."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:25"
+}

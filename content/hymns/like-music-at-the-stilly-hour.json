@@ -1,0 +1,76 @@
+{
+  "title": "Like Music at the Stilly Hour",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Like Music at the Stilly Hour in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Like mu-sic at the stil-ly hour, When twi-light veils the light of day, A gen-tle voice, with win-ning power, Al-lured me from the world a-way.",
+  "verses": [
+    {
+      "lines": [
+        "Like music at the stilly hour,",
+        "When twilight veils the light of day,",
+        "A gentle voice, with winning power,",
+        "Allured me from the world away."
+      ]
+    },
+    {
+      "lines": [
+        "It made me sad, because I thought",
+        "That love undying I could spurn;",
+        "It made me glad, because it brought",
+        "A loving message in return."
+      ]
+    },
+    {
+      "lines": [
+        "Ah, then the Christ my sin revealed,",
+        "And bade me cast the barrier down,",
+        "And rise to things from eyes concealed,",
+        "More lasting than the world's renown."
+      ]
+    },
+    {
+      "lines": [
+        "I found the pathway to the cross,",
+        "And lo, my blindness passed away,",
+        "For radiant sunlight swept across",
+        "The darkness that had led astray."
+      ]
+    },
+    {
+      "lines": [
+        "'Twas then that Christ, in all His love,",
+        "In all His beauty won my soul; —",
+        "Now, for the treasures stored above,",
+        "I thrust aside the world's control."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:72"
+}

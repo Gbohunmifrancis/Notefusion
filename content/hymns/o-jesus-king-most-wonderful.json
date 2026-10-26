@@ -1,0 +1,77 @@
+{
+  "title": "O Jesus, King Most Wonderful",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Bernard of Clairvaux",
+      "born": 1090,
+      "died": 1153,
+      "role": "Words"
+    },
+    {
+      "name": "Edward Caswall",
+      "born": 1814,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O Jesus, King Most Wonderful in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Bernard of Clairvaux wrote these words in Latin. Edward Caswall's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 90.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O Je-sus, King most won-der-ful, Thou Con-quer-or re-nowned, Thou Sweet-ness most in-ef-fa-ble, In whom all joys are found!",
+  "verses": [
+    {
+      "lines": [
+        "O Jesus, King most wonderful,",
+        "Thou Conqueror renowned,",
+        "Thou Sweetness most ineffable,",
+        "In whom all joys are found!"
+      ]
+    },
+    {
+      "lines": [
+        "When once Thou visitest the heart,",
+        "Then truth begins to shine,",
+        "Then earthly vanities depart,",
+        "Then kindles love divine."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus, Light of all below,",
+        "Thou Fount of life and fire,",
+        "Surpassing all the joys we know,",
+        "All that we can desire,—"
+      ]
+    },
+    {
+      "lines": [
+        "May every heart confess Thy name,",
+        "And ever Thee adore,",
+        "And, seeking Thee, itself inflame",
+        "To seek Thee more and more."
+      ]
+    },
+    {
+      "lines": [
+        "Thee may our tongues forever bless,",
+        "Thee may we love alone,",
+        "And ever in our lives express",
+        "The image of Thine own."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Bernard of Clairvaux died in 1153; Edward Caswall died in 1878.",
+  "credits": "Words by Bernard of Clairvaux (1090–1153), translated by Edward Caswall (1814–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:90"
+}

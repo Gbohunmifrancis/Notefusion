@@ -1,0 +1,79 @@
+{
+  "title": "Hark! What Mean Those Holy Voices",
+  "tune": "stuttgart",
+  "text": [
+    {
+      "name": "John Cawood",
+      "born": 1775,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Hark! What Mean Those Holy Voices in Tonic Solfa to STUTTGART, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Cawood wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 160.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to STUTTGART; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Hark! what mean those ho-ly voi-ces Sweet-ly sound-ing through the skies? Lo! th’an-gel-ic host re-joi-ces, Heav-enly hal-le-lu-jahs rise.",
+  "verses": [
+    {
+      "lines": [
+        "Hark! what mean those holy voices",
+        "Sweetly sounding through the skies?",
+        "Lo! th’ angelic host rejoices,",
+        "Heavenly hallelujahs rise."
+      ]
+    },
+    {
+      "lines": [
+        "Listen to the wondrous story",
+        "Which they chant in hymns of joy,",
+        "Glory in the highest, glory!",
+        "Glory be to God most high!"
+      ]
+    },
+    {
+      "lines": [
+        "Peace on earth, good will from heaven,",
+        "Reaching far as man is found;",
+        "Souls redeemed and sins forgiven!",
+        "Loud our golden harps shall sound."
+      ]
+    },
+    {
+      "lines": [
+        "Christ is born, the great Anointed;",
+        "Heaven and earth, His praises sing!",
+        "O receive whom God appointed",
+        "For your Prophet, Priest, and King."
+      ]
+    },
+    {
+      "lines": [
+        "Hasten, mortals, to adore Him,",
+        "Learn His name and taste His joy,",
+        "Till in heaven ye sing before Him,",
+        "Glory be to God most high!"
+      ]
+    },
+    {
+      "lines": [
+        "Let us learn the wondrous story",
+        "Of our great Redeemer’s birth;",
+        "Spread the brightness of His glory",
+        "Till it cover all the earth."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: John Cawood died in 1852.",
+  "credits": "Words by John Cawood (1775–1852), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to STUTTGART by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:160"
+}

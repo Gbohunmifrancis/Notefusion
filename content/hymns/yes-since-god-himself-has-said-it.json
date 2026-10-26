@@ -1,0 +1,81 @@
+{
+  "title": "Yes! Since God Himself Has Said It",
+  "tune": "kalmar",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Yes! Since God Himself Has Said It in Tonic Solfa to KALMAR, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book III, hymn 52, “Confidence”.",
+    "The book printed the words without tunes, marked 8.7.8.7.7.7, to be sung to any tune of that metre. This page sets them to KALMAR; any other 8.7.8.7.7.7 tune fits them as well."
+  ],
+  "underlay": "Yes! since God him-self has said it, On the pro-mise I re-ly; His good word de-mands my cred-it, What can un-be-lief re-ply? He is strong and can ful-fill, He is truth and there-fore will.",
+  "verses": [
+    {
+      "lines": [
+        "Yes! since God himself has said it,",
+        "On the promise I rely;",
+        "His good word demands my credit,",
+        "What can unbelief reply?",
+        "He is strong and can fulfill,",
+        "He is truth and therefore will."
+      ]
+    },
+    {
+      "lines": [
+        "As to all the doubts and questions,",
+        "Which my spirit often grieve,",
+        "These are Satan's sly suggestions,",
+        "And I need no answer give;",
+        "He would fain destroy my hope,",
+        "But the promise bears it up."
+      ]
+    },
+    {
+      "lines": [
+        "Sure the Lord thus far has brought me",
+        "By his watchful tender care;",
+        "Sure 'tis he himself has taught me",
+        "How to seek his face by prayer:",
+        "After so much mercy past,",
+        "Will he give me up at last?"
+      ]
+    },
+    {
+      "lines": [
+        "True, I've been a foolish creature;",
+        "And have sinned against his grace;",
+        "But forgiveness is his nature,",
+        "Though he justly hides his face:",
+        "Ere he called me well he knew,",
+        "What a heart like mine would do."
+      ]
+    },
+    {
+      "lines": [
+        "In my Savior's intercession",
+        "Therefore I will still confide;",
+        "Lord accept my free contrition,",
+        "I have sinned, but thou hast died:",
+        "This is all I have to plead,",
+        "This is all the plea I need."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to KALMAR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:3:52"
+}

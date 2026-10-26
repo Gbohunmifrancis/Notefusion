@@ -1,0 +1,87 @@
+{
+  "title": "For Thy Mercy and Thy Grace",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "Henry Downton",
+      "born": 1818,
+      "died": 1885,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "For Thy Mercy and Thy Grace in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Henry Downton wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 168.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "For Thy mer-cy and Thy grace, Con-stant through an-oth-er year, Hear our song of thank-ful-ness; Je-sus, our Re-deem-er, hear!",
+  "verses": [
+    {
+      "lines": [
+        "For Thy mercy and Thy grace,",
+        "Constant through another year,",
+        "Hear our song of thankfulness;",
+        "Jesus, our Redeemer, hear!"
+      ]
+    },
+    {
+      "lines": [
+        "Lo! our sins on Thee we cast,",
+        "Thee, our perfect Sacrifice,",
+        "And, forgetting all the past,",
+        "Press unto our glorious prize."
+      ]
+    },
+    {
+      "lines": [
+        "Dark the future; let Thy light",
+        "Guide us, bright and Morning Star:",
+        "Fierce our foes and hard the fight;",
+        "Arm us, Savior, for the war."
+      ]
+    },
+    {
+      "lines": [
+        "In our weakness and distress,",
+        "Rock of strength, be Thou our Stay;",
+        "In the pathless wilderness",
+        "Be our true and living Way."
+      ]
+    },
+    {
+      "lines": [
+        "Who of us death’s awful road",
+        "In the coming year shall tread?",
+        "With Thy rod and staff, O God,",
+        "Comfort Thou his dying bed."
+      ]
+    },
+    {
+      "lines": [
+        "Keep us faithful, keep us pure,",
+        "Keep us evermore Thine own;",
+        "Help, O help us to endure;",
+        "Fit us for the promised crown."
+      ]
+    },
+    {
+      "lines": [
+        "So within Thy palace gate",
+        "We shall praise, on golden strings,",
+        "Thee the only Potentate,",
+        "Lord of lords and King of kings."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Henry Downton died in 1885.",
+  "credits": "Words by Henry Downton (1818–1885), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:168"
+}

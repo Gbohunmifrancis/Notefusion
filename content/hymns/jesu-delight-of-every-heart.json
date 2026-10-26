@@ -1,0 +1,84 @@
+{
+  "title": "Jesu, Delight of Every Heart",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Jesu, Delight of Every Heart in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “Jesu, Dulcedo Cordium”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Je-su, de-light of ev-ery heart, Thou font of life, Thou source of light, Earth can no joy so real im-part, No soul can form a hope so bright.",
+  "verses": [
+    {
+      "lines": [
+        "Jesu, delight of every heart,",
+        "Thou font of life, Thou source of light,",
+        "Earth can no joy so real impart,",
+        "No soul can form a hope so bright."
+      ]
+    },
+    {
+      "lines": [
+        "Abide with us, O Lord, we pray,",
+        "And cause Thy heavenly light to glow;",
+        "Drive from our minds the clouds away,",
+        "And let the world Thy sweetness know."
+      ]
+    },
+    {
+      "lines": [
+        "When Thou dost seek the humble heart,",
+        "Thy heavenly truth is freely given;",
+        "Then vanities of earth depart,",
+        "Then glows the fervent love of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus, of Thy wondrous grace,",
+        "Make us Thy boundless love to know;",
+        "And when we see Thee face to face,",
+        "To us Thy matchless glory show."
+      ]
+    },
+    {
+      "lines": [
+        "They know how sweet the Lord can be,",
+        "Who deeply drink His love divine;",
+        "How blest, who find their all in Thee,",
+        "Nor thirst for other joys than Thine."
+      ]
+    },
+    {
+      "lines": [
+        "O Thou the spring whence pity flows!",
+        "Light from the Fatherland to cheer!",
+        "To us Thy glorious light disclose,",
+        "Nor let dark clouds afflict us here."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:52"
+}

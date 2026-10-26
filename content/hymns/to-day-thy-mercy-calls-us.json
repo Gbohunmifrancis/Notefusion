@@ -1,0 +1,79 @@
+{
+  "title": "To-day Thy Mercy Calls Us",
+  "tune": "angels-story",
+  "text": [
+    {
+      "name": "Oswald Allen",
+      "born": 1816,
+      "died": 1878,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "To-day Thy Mercy Calls Us in Tonic Solfa to ANGEL'S STORY, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Oswald Allen wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 50.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to ANGEL'S STORY; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "To day Thy mer-cy calls us To wash a-way our sin. How-ev-er great our tres-pass, What-ev-er we have been; How-ev-er long from mer-cy Our hearts have turned a-way, Thy pre-cious blood can cleanse us And make us white to day.",
+  "verses": [
+    {
+      "lines": [
+        "To-day Thy mercy calls us",
+        "To wash away our sin.",
+        "However great our trespass,",
+        "Whatever we have been;",
+        "However long from mercy",
+        "Our hearts have turned away,",
+        "Thy precious blood can cleanse us",
+        "And make us white to-day."
+      ]
+    },
+    {
+      "lines": [
+        "To-day Thy gate is open,",
+        "And all who enter in",
+        "Shall find a Father’s welcome",
+        "And pardon for their sin.",
+        "The past shall be forgotten,",
+        "A present joy be giv’n,",
+        "A future grace be promised,",
+        "A glorious crown in heav’n."
+      ]
+    },
+    {
+      "lines": [
+        "To-day our Father calls us,",
+        "His Holy Spirit waits;",
+        "His blessed angels gather",
+        "Around the heavenly gates.",
+        "No question will be asked us",
+        "How often we have come;",
+        "Although we oft have wandered,",
+        "It is our Father’s home."
+      ]
+    },
+    {
+      "lines": [
+        "O all-embracing Mercy,",
+        "O ever-open Door,",
+        "What should we do without Thee",
+        "When heart and eye run o’er?",
+        "When all things seem against us,",
+        "To drive us to despair,",
+        "We know one gate is open,",
+        "One ear will hear our prayer."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Oswald Allen died in 1878.",
+  "credits": "Words by Oswald Allen (1816–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ANGEL'S STORY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:50"
+}

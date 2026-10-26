@@ -1,0 +1,71 @@
+{
+  "title": "Look from Thy Sphere of Endless Day",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "William Cullen Bryant",
+      "born": 1794,
+      "died": 1878,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Look from Thy Sphere of Endless Day in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Cullen Bryant wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 479.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Look from Thy sphere of end-less day, O God of mer-cy and of might! In pi-ty look on those who stray Be-night-ed in this land of light.",
+  "verses": [
+    {
+      "lines": [
+        "Look from Thy sphere of endless day,",
+        "O God of mercy and of might!",
+        "In pity look on those who stray",
+        "Benighted in this land of light."
+      ]
+    },
+    {
+      "lines": [
+        "In peopled vale, in lonely glen,",
+        "In crowded mart, by stream or sea,",
+        "How many of the sons of men",
+        "Hear not the message sent from Thee!"
+      ]
+    },
+    {
+      "lines": [
+        "Send forth Thy heralds, Lord, to call",
+        "The thoughtless young, the hardened old,",
+        "A scattered, homeless flock, till all",
+        "Be gathered to Thy peaceful fold."
+      ]
+    },
+    {
+      "lines": [
+        "Send them Thy mighty Word to speak,",
+        "Till faith shall dawn and doubt depart,",
+        "To awe the bold, to stay the weak,",
+        "And bind and heal the broken heart."
+      ]
+    },
+    {
+      "lines": [
+        "Then all these wastes, a dreary scene,",
+        "That makes us sadden as we gaze,",
+        "Shall grow with living waters green",
+        "And lift to heaven the voice of praise."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: William Cullen Bryant died in 1878.",
+  "credits": "Words by William Cullen Bryant (1794–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:479"
+}

@@ -1,0 +1,86 @@
+{
+  "title": "Let Us Tune Our Hearts and Voices",
+  "tune": "stabat-mater-mainz",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Let Us Tune Our Hearts and Voices in Tonic Solfa to STABAT MATER (MAINZ), doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By Adam of St. Victor”, headed “_Christmas_”.",
+    "The book printed the words without tunes. They are in 8.8.7.8.8.7, and this page sets them to STABAT MATER (MAINZ); any other 8.8.7.8.8.7 tune fits them as well."
+  ],
+  "underlay": "Let us tune our hearts and voi-ces— All cre-a-tion wide re-joi-ces, For a Sa-viour has been born; Given to man, his weak-ness wear-ing, Dwell-ing with the sad de-spair-ing, Light and health our life a-dorn.",
+  "verses": [
+    {
+      "lines": [
+        "Let us tune our hearts and voices—",
+        "All creation wide rejoices,",
+        "For a Saviour has been born;",
+        "Given to man, his weakness wearing,",
+        "Dwelling with the sad despairing,",
+        "Light and health our life adorn."
+      ]
+    },
+    {
+      "lines": [
+        "From the midst of Eden’s gladness",
+        "Came the dower of death and sadness,",
+        "But the Saviour’s life is ours.",
+        "Banished now are death and sorrow;",
+        "Life and joy from Christ we borrow,",
+        "More dwelt in Eden’s bowers."
+      ]
+    },
+    {
+      "lines": [
+        "From the height of heaven above us,",
+        "God looked down on earth to love us,",
+        "And He sent His only Son.",
+        "Now no more His face concealing,",
+        "Bridegroom like, His grace revealing,",
+        "Came He forth His work begun."
+      ]
+    },
+    {
+      "lines": [
+        "Swift and strong, a giant glorious,",
+        "O’er our death He came victorious,",
+        "Girt with power His course to run.",
+        "Came he forth salvation willing,",
+        "Law and prophecy fulfilling,",
+        "Till the task assayed is done."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, who hast brought salvation,",
+        "Healing balm for every nation,",
+        "Thou our glory art and peace.",
+        "Praise Thy glorious deeds shall mention,",
+        "Who in humble condescension,",
+        "Cam’st Thy servants to release."
+      ]
+    }
+  ],
+  "metre": "8 8 7 8 8 7",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to STABAT MATER (MAINZ) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:22"
+}

@@ -1,0 +1,84 @@
+{
+  "title": "Let All the World Abroad",
+  "tune": "quam-dilecta",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Let All the World Abroad in Tonic Solfa to QUAM DILECTA, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Sixes (6.6.6.6), and this page sets them to QUAM DILECTA; any other Sixes tune fits them as well."
+  ],
+  "underlay": "Let all the world a-broad In cheer-ful praise u-nite To bless the name of God, Cre-a-tor, Lord of might.",
+  "verses": [
+    {
+      "lines": [
+        "Let all the world abroad",
+        "In cheerful praise unite",
+        "To bless the name of God,",
+        "Creator, Lord of might."
+      ]
+    },
+    {
+      "lines": [
+        "He made the sea and land,",
+        "The pastures rolling wide,",
+        "The mountains towering, grand,",
+        "The streams that ceaseless glide;"
+      ]
+    },
+    {
+      "lines": [
+        "The cattle on the hills,",
+        "The flocks afield that rove,",
+        "The birds, whose music fills",
+        "The silence of the grove;"
+      ]
+    },
+    {
+      "lines": [
+        "The heavens that, day and night,",
+        "His matchless power declare,",
+        "The sun and moon, whose light",
+        "Illumines everywhere."
+      ]
+    },
+    {
+      "lines": [
+        "Let man, creation's lord,",
+        "His rightful homage give",
+        "To Him Whose mighty word",
+        "First called his soul to live."
+      ]
+    },
+    {
+      "lines": [
+        "And with the heavenly host,",
+        "Our Sovereign Lord adore,",
+        "And Son, and Holy Ghost,",
+        "Both now, and evermore."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to QUAM DILECTA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:55"
+}

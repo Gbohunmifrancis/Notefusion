@@ -1,0 +1,60 @@
+{
+  "title": "Before Thy Cross We Take Our Place",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Before Thy Cross We Take Our Place in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904), headed “Troparia of The Sixth Hour”.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Be-fore Thy Cross we take our place, With all our load of guilt, And plead for-give-ness of Thy grace Be-cause Thy blood was spilt.",
+  "verses": [
+    {
+      "lines": [
+        "Before Thy Cross we take our place,",
+        "With all our load of guilt,",
+        "And plead forgiveness of Thy grace",
+        "Because Thy blood was spilt."
+      ]
+    },
+    {
+      "lines": [
+        "For Thou, to free us from our foes,",
+        "Didst bear that cruel Cross,",
+        "And by its agony and woes",
+        "Bring gain for all our loss."
+      ]
+    },
+    {
+      "lines": [
+        "Therefore we raise with one accord",
+        "Our songs right thankfully,",
+        "For joy and peace, O Christ our Lord,",
+        "We owe in full to Thee."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:9"
+}

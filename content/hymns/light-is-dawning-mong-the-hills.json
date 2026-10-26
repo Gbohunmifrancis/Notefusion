@@ -1,0 +1,68 @@
+{
+  "title": "Light Is Dawning 'Mong the Hills",
+  "tune": "heinlein",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Light Is Dawning 'Mong the Hills in Tonic Solfa to HEINLEIN, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Sevens (7.7.7.7), and this page sets them to HEINLEIN; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Light is daw-ning 'mong the hills, Light of light Thy beams dis-play, All the dark-ness chase a-way, Light that dawned up-on our ills.",
+  "verses": [
+    {
+      "lines": [
+        "Light is dawning 'mong the hills,",
+        "Light of light Thy beams display,",
+        "All the darkness chase away,",
+        "Light that dawned upon our ills."
+      ]
+    },
+    {
+      "lines": [
+        "Dark the day the Cross was raised",
+        "By the hands of cruel men;",
+        "Great Thy load of sorrow then;",
+        "Angel hosts were sore amazed."
+      ]
+    },
+    {
+      "lines": [
+        "Dark the world while in the tomb,",
+        "Lone in death the Saviour lay,",
+        "Till the stone was rolled away,",
+        "And His Rising quelled the gloom."
+      ]
+    },
+    {
+      "lines": [
+        "Fadeless now, O Light of light,",
+        "Glory of the Father, Thou,",
+        "Shine upon Thy people now,",
+        "Rise upon their darkest night."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to HEINLEIN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:18"
+}

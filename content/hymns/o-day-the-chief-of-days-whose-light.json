@@ -1,0 +1,92 @@
+{
+  "title": "O Day, the Chief of Days, Whose Light",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "O Day, the Chief of Days, Whose Light in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By Charles Coffin”, headed “_Hymns of the Early Church_”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O day, the chief of days, whose light Sprang from the dark em-brace of night, On which our Lord from death’s grim thrall A-rose, True Light, to light-en all.",
+  "verses": [
+    {
+      "lines": [
+        "O day, the chief of days, whose light",
+        "Sprang from the dark embrace of night,",
+        "On which our Lord from death’s grim thrall",
+        "Arose, True Light, to lighten all."
+      ]
+    },
+    {
+      "lines": [
+        "Death trembling heard the mighty Lord,",
+        "And darkness quick obeyed His word;—",
+        "O shame on us! our tardy will",
+        "Is slow His summons to fulfil."
+      ]
+    },
+    {
+      "lines": [
+        "While Nature yet unconscious lies,",
+        "Come, let us, sons of light, arise,",
+        "And cheerful raise our matin lay",
+        "To chase the dark of night away."
+      ]
+    },
+    {
+      "lines": [
+        "While all the world around is still,",
+        "Come, and with songs the temple fill,",
+        "Taught by the saints of bygone days,",
+        "Whose words were song, whose songs were praise."
+      ]
+    },
+    {
+      "lines": [
+        "Loud trump of Heaven, our languor shake,",
+        "And bid our slumbering spirits wake;",
+        "Teach us the nobler life, and give,",
+        "O Christ, the needed grace to live."
+      ]
+    },
+    {
+      "lines": [
+        "O Font of love! Our steps attend;",
+        "Those needed gifts in mercy send;",
+        "And where Thy word is heard this day,",
+        "Give Thou the Spirit’s power, we pray."
+      ]
+    },
+    {
+      "lines": [
+        "To Father and to Son be praise,",
+        "To Thee, O Holy Ghost, always,",
+        "Whose presence still the heart inspires",
+        "With sacred light and glowing fires."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:1"
+}

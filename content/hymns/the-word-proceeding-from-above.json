@@ -1,0 +1,84 @@
+{
+  "title": "The Word, Proceeding from Above",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "The Word, Proceeding from Above in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By St. Thomas of Aquino, the Angelical Doctor”, headed “Verbum Supernum Prodiens”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The Word, pro-ceed-ing from a-bove, Yet still at God’s right hand in heaven, Came to His work im-pelled by love, And soon life’s day de-clined to even.",
+  "verses": [
+    {
+      "lines": [
+        "The Word, proceeding from above,",
+        "Yet still at God’s right hand in heaven,",
+        "Came to His work impelled by love,",
+        "And soon life’s day declined to even."
+      ]
+    },
+    {
+      "lines": [
+        "A traitor in His chosen band",
+        "Betrays his Lord to death and grave;",
+        "But ere He died, with His own hand",
+        "Himself as food to man He gave."
+      ]
+    },
+    {
+      "lines": [
+        "In double form the gift was made;",
+        "He gave them of His flesh and blood,",
+        "That so the feast His love purveyed,",
+        "Might prove for man sufficient food."
+      ]
+    },
+    {
+      "lines": [
+        "By birth a friend in Him we find;",
+        "As food He fills the festal board;",
+        "In death the ransom of our kind;",
+        "In heaven He is our great reward."
+      ]
+    },
+    {
+      "lines": [
+        "O Saving Sacrifice! that made",
+        "The gates of heaven stand open wide,",
+        "Be Thou our strength, come to our aid,",
+        "When foes would crush on every side."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee, Good Shepherd, who for meat",
+        "Dost give Thy flesh to feed Thine own,",
+        "To Father, and to Paraclete,",
+        "Be praise through ages yet unknown."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:53"
+}

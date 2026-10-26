@@ -1,0 +1,79 @@
+{
+  "title": "O Word of God Incarnate",
+  "tune": "ewing",
+  "text": [
+    {
+      "name": "William Walsham How",
+      "born": 1823,
+      "died": 1897,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O Word of God Incarnate in Tonic Solfa to EWING, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Walsham How wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 113.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to EWING; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "O Word of God In-car-nate, O Wis-dom from on high, O Truth un-changed, un-chang-ing, O Light of our dark sky,— We praise Thee for the ra-diance That from the hal-lowed page, A lan-tern to our foot-steps, Shines on from age to age.",
+  "verses": [
+    {
+      "lines": [
+        "O Word of God Incarnate,",
+        "O Wisdom from on high,",
+        "O Truth unchanged, unchanging,",
+        "O Light of our dark sky,—",
+        "We praise Thee for the radiance",
+        "That from the hallowed page,",
+        "A lantern to our footsteps,",
+        "Shines on from age to age."
+      ]
+    },
+    {
+      "lines": [
+        "The Church from her dear Master",
+        "Received the gift divine,",
+        "And still that light she lifteth",
+        "O’er all the earth to shine.",
+        "It is the golden casket,",
+        "Where gems of truth are stored;",
+        "It is the heaven-drawn picture",
+        "Of Christ, the living Word."
+      ]
+    },
+    {
+      "lines": [
+        "It floateth like a banner",
+        "Before God’s host unfurled;",
+        "It shineth like a beacon",
+        "Above the darkling world;",
+        "It is the chart and compass",
+        "That o’er life’s surging sea,",
+        "Mid mists and rocks and quicksands,",
+        "Still guides, O Christ, to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, make Thy Church, dear Savior,",
+        "A lamp of burnished gold,",
+        "To bear before the nations",
+        "Thy true light as of old;",
+        "Oh, teach Thy wandering pilgrims",
+        "By this their path to trace,",
+        "Till, clouds and darkness ended,",
+        "They see Thee face to face."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: William Walsham How died in 1897.",
+  "credits": "Words by William Walsham How (1823–1897), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to EWING by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:113"
+}

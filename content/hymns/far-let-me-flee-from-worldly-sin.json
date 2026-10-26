@@ -1,0 +1,68 @@
+{
+  "title": "Far Let Me Flee from Worldly Sin",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Far Let Me Flee from Worldly Sin in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Far let me flee from world-ly sin, Nor look be-hind, but on-ward press; Lest the de-ceit that lurks with-in, Should link the soul to world-li-ness.",
+  "verses": [
+    {
+      "lines": [
+        "Far let me flee from worldly sin,",
+        "Nor look behind, but onward press;",
+        "Lest the deceit that lurks within,",
+        "Should link the soul to worldliness."
+      ]
+    },
+    {
+      "lines": [
+        "Ah! whither shall I flee, my God?",
+        "There is no refuge but in Thee,",
+        "And Thy command exceeding broad,",
+        "Condemns my soul's perversity."
+      ]
+    },
+    {
+      "lines": [
+        "But in Thy grace my troubled soul",
+        "Would find forgiveness freely given;",
+        "And in Thy Spirit's firm control,",
+        "A power to lift me nearer heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Thus shall I flee from worldly sin,",
+        "Nor look behind, but onward press,",
+        "And daily fight, and daily win",
+        "The rich reward of righteousness."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:51"
+}

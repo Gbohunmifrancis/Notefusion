@@ -1,0 +1,79 @@
+{
+  "title": "O God of Mercy, God of Might",
+  "tune": "just-as-i-am",
+  "text": [
+    {
+      "name": "Godfrey Thring",
+      "born": 1823,
+      "died": 1903,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O God of Mercy, God of Might in Tonic Solfa to JUST AS I AM, doh is Ab: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Godfrey Thring wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 362.",
+    "The book printed the words without tunes, marked 8.8.8.6, to be sung to any tune of that metre. This page sets them to JUST AS I AM; any other 8.8.8.6 tune fits them as well."
+  ],
+  "underlay": "O God of mer-cy, God of might, In love and pi-ty in-fin-ite, Teach us, as ev-er in Thy sight, To live our life to Thee.",
+  "verses": [
+    {
+      "lines": [
+        "O God of mercy, God of might,",
+        "In love and pity infinite,",
+        "Teach us, as ever in Thy sight,",
+        "To live our life to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "And Thou, who cam’st on earth to die",
+        "That fallen man might live thereby,",
+        "O hear us, for to Thee we cry,",
+        "In hope, O Lord, to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Teach us the lesson Thou hast taught,",
+        "To feel for those Thy blood hath bought,",
+        "That every word and deed and thought",
+        "May work a work for Thee."
+      ]
+    },
+    {
+      "lines": [
+        "For all are brethren, far and wide,",
+        "Since Thou, O Lord, for all hast died;",
+        "Then teach us, whatsoe’er betide,",
+        "To love them all in Thee."
+      ]
+    },
+    {
+      "lines": [
+        "In sickness, sorrow, want, or care,",
+        "Whate’er it be, ’tis ours to share;",
+        "May we, where help is needed, there",
+        "Give help as unto Thee!"
+      ]
+    },
+    {
+      "lines": [
+        "And may Thy Holy Spirit move",
+        "All those who live to live in love,",
+        "Till Thou shalt greet in heaven above",
+        "All those who give to Thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Godfrey Thring died in 1903.",
+  "credits": "Words by Godfrey Thring (1823–1903), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to JUST AS I AM by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:362"
+}

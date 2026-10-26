@@ -1,0 +1,68 @@
+{
+  "title": "O May My Soul, Uncrushed by Care",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "O May My Soul, Uncrushed by Care in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O may my soul, un-crushed by care, Di-rect her gaze to where Thou art, And in Thy splen-dour find, O Christ, The strength of life Thou canst im-part.",
+  "verses": [
+    {
+      "lines": [
+        "O may my soul, uncrushed by care,",
+        "Direct her gaze to where Thou art,",
+        "And in Thy splendour find, O Christ,",
+        "The strength of life Thou canst impart."
+      ]
+    },
+    {
+      "lines": [
+        "And freed from sin's depressing load,",
+        "May I pursue the path divine,",
+        "And rise above the cares of earth",
+        "Until my life is merged in Thine."
+      ]
+    },
+    {
+      "lines": [
+        "Unsullied life Thy servant grant",
+        "Who tunes his harp to sound Thy praise,",
+        "And still my life shall hymn Thy love,",
+        "And glory to the Father raise."
+      ]
+    },
+    {
+      "lines": [
+        "And when I rest in glory bright,",
+        "The burden of my labour past,",
+        "In hymns I'll praise Thee more and more",
+        "While the eternal ages last."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:35"
+}

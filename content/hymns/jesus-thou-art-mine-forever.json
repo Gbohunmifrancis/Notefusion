@@ -1,0 +1,79 @@
+{
+  "title": "Jesus, Thou Art Mine Forever",
+  "tune": "omni-die",
+  "text": [
+    {
+      "name": "Matthias Loy",
+      "born": 1828,
+      "died": 1915,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Jesus, Thou Art Mine Forever in Tonic Solfa to OMNI DIE, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Matthias Loy wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 97.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to OMNI DIE; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Je-sus, Thou art mine for-ev-er, Dear-er far than earth to me; Nei-ther life nor death shall sev-er Those sweet ties which bind to Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, Thou art mine forever,",
+        "Dearer far than earth to me;",
+        "Neither life nor death shall sever",
+        "Those sweet ties which bind to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "All were drear to me and lonely,",
+        "If Thy presence gladdened not;",
+        "While I sing to Thee, Thee only,",
+        "Mine’s an ever blissful lot."
+      ]
+    },
+    {
+      "lines": [
+        "Thou alone art all my Treasure,",
+        "Who hast died that I may live;",
+        "Thou conferrest noblest pleasure,",
+        "Who dost all my sins forgive."
+      ]
+    },
+    {
+      "lines": [
+        "Brightest gems and fairest flowers",
+        "Lose their beauty in Thy frown;",
+        "Joy and peace, like balmy showers,",
+        "In Thy smile come gently down."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, Thou art mine forever,",
+        "Suffer not myself to stray;",
+        "Let me in my weakness never",
+        "Cast my priceless pearl away."
+      ]
+    },
+    {
+      "lines": [
+        "Lamb of God, I do implore Thee,",
+        "Guard, support me, lest I fall;",
+        "Let me evermore adore Thee,",
+        "Be my everlasting All!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Matthias Loy died in 1915.",
+  "credits": "Words by Matthias Loy (1828–1915), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to OMNI DIE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:97"
+}

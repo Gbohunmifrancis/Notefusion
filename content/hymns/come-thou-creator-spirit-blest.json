@@ -1,0 +1,84 @@
+{
+  "title": "Come, Thou Creator Spirit Blest",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Come, Thou Creator Spirit Blest in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “_Whitsuntide_”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Come, Thou Cre-a-tor Spir-it blest, And with Thy grace our minds per-vade; May Thy sweet pre-sence ev-er dwell With-in the souls which Thou hast made.",
+  "verses": [
+    {
+      "lines": [
+        "Come, Thou Creator Spirit blest,",
+        "And with Thy grace our minds pervade;",
+        "May Thy sweet presence ever dwell",
+        "Within the souls which Thou hast made."
+      ]
+    },
+    {
+      "lines": [
+        "Thou Holy Paraclete! the Gift",
+        "Sent down to earth from God Most High,",
+        "Thou Font of Life and fire and love,",
+        "Thy holy unction now apply."
+      ]
+    },
+    {
+      "lines": [
+        "Sevenfold Thy gifts to us are given,",
+        "Of God’s right hand the Finger Thou;",
+        "The promise of the Father’s grace,",
+        "With gifts of tongues, Thou dost endow."
+      ]
+    },
+    {
+      "lines": [
+        "Make our dull sense enraptured glow,",
+        "And let our hearts o’erflow with love;",
+        "The weakness of our flesh inspire",
+        "With heavenly valour from above."
+      ]
+    },
+    {
+      "lines": [
+        "Far from our souls the foe repel,",
+        "And let us know the bliss of peace;",
+        "Guide Thou our steps, that evermore",
+        "Our hearts may learn from sin to cease."
+      ]
+    },
+    {
+      "lines": [
+        "Lead us the Father’s love to know;",
+        "Reveal to us the Eternal Son;",
+        "And Thee, the Sent of both, we’ll praise,",
+        "While everlasting ages run."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:42"
+}

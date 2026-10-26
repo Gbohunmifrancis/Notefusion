@@ -1,0 +1,63 @@
+{
+  "title": "Almighty God, Thy Word Is Cast",
+  "tune": "york",
+  "text": [
+    {
+      "name": "John Cawood",
+      "born": 1775,
+      "died": 1852,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Almighty God, Thy Word Is Cast in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Cawood wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 13.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Al-might-y God, Thy Word is cast Like seed in-to the ground; Now let the dew of heaven de-scend And right-eous fruits a-bound.",
+  "verses": [
+    {
+      "lines": [
+        "Almighty God, Thy Word is cast",
+        "Like seed into the ground;",
+        "Now let the dew of heaven descend",
+        "And righteous fruits abound."
+      ]
+    },
+    {
+      "lines": [
+        "Let not the foe of Christ and man",
+        "This holy seed remove,",
+        "But give it root in every heart",
+        "To bring forth fruits of love."
+      ]
+    },
+    {
+      "lines": [
+        "Let not the world’s deceitful cares",
+        "The rising plant destroy,",
+        "But let it yield a hundredfold",
+        "The fruits of peace and joy."
+      ]
+    },
+    {
+      "lines": [
+        "Oft as the precious seed is sown,",
+        "Thy quickening grace bestow,",
+        "That all whose souls the truth receive",
+        "Its saving power may know."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: John Cawood died in 1852.",
+  "credits": "Words by John Cawood (1775–1852), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:13"
+}

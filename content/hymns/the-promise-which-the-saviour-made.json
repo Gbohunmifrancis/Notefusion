@@ -1,0 +1,76 @@
+{
+  "title": "The Promise Which the Saviour Made",
+  "tune": "selena",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "The Promise Which the Saviour Made in Tonic Solfa to SELENA, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to SELENA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "The pro-mise which the Sa-viour made When His dis-ci-ples sor-rowed most, That He would send to com-fort them The life in-spir-ing Ho-ly Ghost, Found its ful-fil-ment when they met Up-on the hal-lowed Pen-te-cost.",
+  "verses": [
+    {
+      "lines": [
+        "The promise which the Saviour made",
+        "When His disciples sorrowed most,",
+        "That He would send to comfort them",
+        "The life inspiring Holy Ghost,",
+        "Found its fulfilment when they met",
+        "Upon the hallowed Pentecost."
+      ]
+    },
+    {
+      "lines": [
+        "And ever through the linked years,",
+        "From then till now the Gift is sure;",
+        "And they who sorrow for their sin,",
+        "Or trial's bitter pangs endure,",
+        "And they who mourn, and they who weep,",
+        "Find in the Gift a peace secure."
+      ]
+    },
+    {
+      "lines": [
+        "Vainly we mourn our absent Lord,",
+        "If Thou, the Comforter be near;",
+        "For it is Thine to take of His,",
+        "And make us feel that He is here;",
+        "We still may joy when others grieve,",
+        "And hope when threatening clouds appear."
+      ]
+    },
+    {
+      "lines": [
+        "Come, Holy Ghost, with us reside,",
+        "Let Thy sweet presence calm our soul;",
+        "And make us strong to fight and win,",
+        "And all our wayward wills control;",
+        "To give us comfort when we weep,",
+        "And bind our hearts, and make them whole."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to SELENA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:43"
+}

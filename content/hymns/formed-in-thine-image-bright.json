@@ -1,0 +1,92 @@
+{
+  "title": "Formed in Thine Image Bright",
+  "tune": "quam-dilecta",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Formed in Thine Image Bright in Tonic Solfa to QUAM DILECTA, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Sixes (6.6.6.6), and this page sets them to QUAM DILECTA; any other Sixes tune fits them as well."
+  ],
+  "underlay": "Formed in Thine i-mage bright, With glo-ry on my head, I lived with-in Thy light, And on Thy boun-ty fed.",
+  "verses": [
+    {
+      "lines": [
+        "Formed in Thine image bright,",
+        "With glory on my head,",
+        "I lived within Thy light,",
+        "And on Thy bounty fed."
+      ]
+    },
+    {
+      "lines": [
+        "But ah! that evil day!",
+        "The tempter's silvery tone",
+        "Lured me from God away,",
+        "To seek for bliss alone."
+      ]
+    },
+    {
+      "lines": [
+        "Dark came the night of sin,",
+        "I mourned my woeful plight,",
+        "For all was dark within,",
+        "And all around was night."
+      ]
+    },
+    {
+      "lines": [
+        "Shorn of Thy beauty fair,",
+        "Gift at my wondrous birth,",
+        "Hope fled before despair,",
+        "Gone was the joy of earth."
+      ]
+    },
+    {
+      "lines": [
+        "Yea, though the prayer be vain,",
+        "Now will I lift mine eyes,",
+        "Call me, God, back again,",
+        "Back to Thy paradise."
+      ]
+    },
+    {
+      "lines": [
+        "Came there a voice to me,",
+        "Yea, 'twas Thy voice, my God,",
+        "Bidding me come to Thee,",
+        "Up to Thy pure abode."
+      ]
+    },
+    {
+      "lines": [
+        "Trusting Thy mercy great,",
+        "Up from my woes I'll rise,",
+        "Seeking the golden gate",
+        "Opening to paradise."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to QUAM DILECTA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:27"
+}

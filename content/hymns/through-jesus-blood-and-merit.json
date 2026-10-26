@@ -1,0 +1,85 @@
+{
+  "title": "Through Jesus’ Blood and Merit",
+  "tune": "angels-story",
+  "text": [
+    {
+      "name": "Simon Dach",
+      "born": 1605,
+      "died": 1659,
+      "role": "Words"
+    },
+    {
+      "name": "August Crull",
+      "born": 1845,
+      "died": 1923,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Through Jesus’ Blood and Merit in Tonic Solfa to ANGEL'S STORY, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Simon Dach wrote these words in German. August Crull's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 323.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to ANGEL'S STORY; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "Through Je-sus’ blood and mer-it I am at peace with God; What, then, can daunt my spir-it, How-ev-er dark my road? My cou-rage shall not fail me, For God is on my side; Though hell it-self as-sail me, Its rage I may de-ride.",
+  "verses": [
+    {
+      "lines": [
+        "Through Jesus’ blood and merit",
+        "I am at peace with God;",
+        "What, then, can daunt my spirit,",
+        "However dark my road?",
+        "My courage shall not fail me,",
+        "For God is on my side;",
+        "Though hell itself assail me,",
+        "Its rage I may deride."
+      ]
+    },
+    {
+      "lines": [
+        "There’s nothing that can sever",
+        "Me from the love of God;",
+        "No want, no pain whatever,",
+        "No famine, peril, blood.",
+        "Though thousand foes surround me",
+        "And in their base design",
+        "A sheep for slaughter count me,",
+        "The victory still is mine."
+      ]
+    },
+    {
+      "lines": [
+        "Yea, neither life’s temptation",
+        "Nor death’s terrific hour,",
+        "Nor angels of high station,",
+        "Nor any other power,",
+        "Nor things that now are present,",
+        "Nor things that are to come,",
+        "Nor height, however pleasant,",
+        "Nor depth of deepest gloom,"
+      ]
+    },
+    {
+      "lines": [
+        "Nor any creature ever",
+        "Shall from the love of God",
+        "This wretched sinner sever;",
+        "For in my Savior’s blood",
+        "This love its fountain taketh;",
+        "He hears my faithful prayer",
+        "And nevermore forsaketh",
+        "This child of His and heir."
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Simon Dach died in 1659; August Crull died in 1923.",
+  "credits": "Words by Simon Dach (1605–1659), translated by August Crull (1845–1923), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ANGEL'S STORY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:323"
+}

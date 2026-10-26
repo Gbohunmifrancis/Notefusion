@@ -1,0 +1,96 @@
+{
+  "title": "When in the Clouds the Lord Appears",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "When in the Clouds the Lord Appears in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911), headed “Judgment”.",
+    "The book printed the words without tunes. They are in Long Metre, six lines (8.8.8.8.8.8), and this page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "When in the clouds the Lord ap-pears, And an-gels stand a-round His throne; When judg-ment fills the soul with fears, And none can aught of sin dis-own; Spare me, O Lord, Thy crea-ture spare, And let my soul Thy mer-cy share.",
+  "verses": [
+    {
+      "lines": [
+        "When in the clouds the Lord appears,",
+        "And angels stand around His throne;",
+        "When judgment fills the soul with fears,",
+        "And none can aught of sin disown; —",
+        "Spare me, O Lord, Thy creature spare,",
+        "And let my soul Thy mercy share."
+      ]
+    },
+    {
+      "lines": [
+        "Even in Thy judgment mercy shew; —",
+        "But ere that awful day awakes,",
+        "Make me my guilty state to know,",
+        "And from my evil courses break; —",
+        "Spare me, O Lord, Thy creature spare,",
+        "And let my soul Thy mercy share."
+      ]
+    },
+    {
+      "lines": [
+        "For Thou art pitiful and kind,",
+        "And Thou hast died, O Judge of men,",
+        "That, ere the Judgment, I may find",
+        "The path that leads to life again; —",
+        "Spare me, O Lord, Thy creature spare,",
+        "And let my soul Thy mercy share."
+      ]
+    },
+    {
+      "lines": [
+        "I have no penitence nor tears,",
+        "I have no merit of my own;",
+        "But, ah! my soul is filled with fears,",
+        "And gladly would its sin disown; —",
+        "Spare me, O Lord, Thy creature spare,",
+        "And let my soul Thy mercy share."
+      ]
+    },
+    {
+      "lines": [
+        "And bring me nigh the throne of grace,",
+        "That, ere the day of Judgment dire,",
+        "I may behold Thy loving face,",
+        "And flee Thine all consuming ire; —",
+        "Spare me, O Lord, Thy creature spare,",
+        "And let my soul Thy mercy share."
+      ]
+    },
+    {
+      "lines": [
+        "Swift draws the day of Judgment nigh;",
+        "Wake, wake, my soul, the Judge is near!",
+        "And call for mercy while thy cry",
+        "Can enter His inclining ear; —",
+        "Spare me, O Lord, Thy creature spare,",
+        "And let my soul Thy mercy share."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:30"
+}

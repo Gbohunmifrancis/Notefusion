@@ -1,0 +1,79 @@
+{
+  "title": "Let Every Ear Attend",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Let Every Ear Attend in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 53.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Let ev-ery ear at-tend And ev-ery heart re-joice; The trum-pet of the Gos-pel sounds With an in-vit-ing voice.",
+  "verses": [
+    {
+      "lines": [
+        "Let every ear attend",
+        "And every heart rejoice;",
+        "The trumpet of the Gospel sounds",
+        "With an inviting voice."
+      ]
+    },
+    {
+      "lines": [
+        "Ho! all ye starving souls,",
+        "That feed upon the wind",
+        "And vainly strive with earthly toys",
+        "To fill an empty mind."
+      ]
+    },
+    {
+      "lines": [
+        "Here Wisdom has prepared",
+        "A soul-reviving feast",
+        "And bids your longing appetites",
+        "The rich provision taste."
+      ]
+    },
+    {
+      "lines": [
+        "Ho! ye that pant for streams",
+        "And pine away and die,",
+        "Here you may quench your raging thirst",
+        "With springs that never dry."
+      ]
+    },
+    {
+      "lines": [
+        "Rivers of mercy here",
+        "In a rich ocean join;",
+        "Salvation in abundance flows",
+        "Like floods of milk and wine."
+      ]
+    },
+    {
+      "lines": [
+        "The gates of Gospel grace",
+        "Stand open night and day.",
+        "Lord, we are come to seek supplies",
+        "And drive our wants away."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:53"
+}

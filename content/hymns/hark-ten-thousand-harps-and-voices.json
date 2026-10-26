@@ -1,0 +1,91 @@
+{
+  "title": "Hark! Ten Thousand Harps and Voices",
+  "tune": "kalmar",
+  "text": [
+    {
+      "name": "Thomas Kelly",
+      "born": 1769,
+      "died": 1855,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Hark! Ten Thousand Harps and Voices in Tonic Solfa to KALMAR, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Thomas Kelly wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 238.",
+    "The book printed the words without tunes, marked 8.7.8.7.7.7, to be sung to any tune of that metre. This page sets them to KALMAR; any other 8.7.8.7.7.7 tune fits them as well."
+  ],
+  "underlay": "Hark! ten thou-sand harps and voi-ces Sound the note of praise a-bove; Je-sus reigns, and Heaven re-joi-ces,— Je-sus reigns, the God of Love. See, He sits on yon-der throne: Je-sus rules the world a-lone.",
+  "verses": [
+    {
+      "lines": [
+        "Hark! ten thousand harps and voices",
+        "Sound the note of praise above;",
+        "Jesus reigns, and Heaven rejoices,—",
+        "Jesus reigns, the God of Love.",
+        "See, He sits on yonder throne:",
+        "Jesus rules the world alone."
+      ]
+    },
+    {
+      "lines": [
+        "Christians, come, unite your praises",
+        "With the angels round His throne;",
+        "Soon, we hope, our God will raise us",
+        "To the place where He is gone.",
+        "Meet it is that we should sing,",
+        "“Glory, glory, to our King!”"
+      ]
+    },
+    {
+      "lines": [
+        "Sing how Jesus came from heaven,",
+        "How He bore the cross below,",
+        "How all power to Him is given,",
+        "How He reigns in glory now;",
+        "’Tis a great and endless theme,",
+        "Oh, ’tis sweet to sing of Him!"
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, hail! whose glory brightens",
+        "All above and makes it fair.",
+        "Lord of Life, Thy smile enlightens,",
+        "Cheers, and charms Thy people here.",
+        "When we think of love like Thine,",
+        "Lord, we own it love divine."
+      ]
+    },
+    {
+      "lines": [
+        "King of Glory, reign forever;",
+        "Thine an everlasting crown.",
+        "Nothing from Thy love shall sever",
+        "Those whom Thou hast made Thine own,",
+        "Happy objects of Thy grace,",
+        "Destined to behold Thy face."
+      ]
+    },
+    {
+      "lines": [
+        "Savior, hasten Thine appearing;",
+        "Bring, O bring the glorious day",
+        "When, the awful summons hearing,",
+        "Heaven and earth shall pass away;",
+        "Then with golden harps we’ll sing,",
+        "“Glory, glory, to our King!”"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Thomas Kelly died in 1855.",
+  "credits": "Words by Thomas Kelly (1769–1855), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to KALMAR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:238"
+}

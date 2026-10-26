@@ -1,0 +1,76 @@
+{
+  "title": "O Love of God, Surpassing Far",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "O Love of God, Surpassing Far in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "O Love of God, sur-pass-ing far The loves that hu-man hearts u-nite, Far from our ken as yon-der star That sheds its ra-diance on the night;",
+  "verses": [
+    {
+      "lines": [
+        "O Love of God, surpassing far",
+        "The loves that human hearts unite,",
+        "Far from our ken as yonder star",
+        "That sheds its radiance on the night;"
+      ]
+    },
+    {
+      "lines": [
+        "High as the heavens, and deep as hell,",
+        "Broad as the world's infinite need, —",
+        "None but the Christ that love can tell,",
+        "And none its winning power impede."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to God! that love exprest",
+        "Came in the gift our need required,",
+        "And in the Christ our lives are blest,",
+        "And by His love are souls inspired."
+      ]
+    },
+    {
+      "lines": [
+        "And from the manger to the cross,",
+        "And at the noon-day and the night,",
+        "He bore the burden of our loss,",
+        "Nor shunned the anguish and despite."
+      ]
+    },
+    {
+      "lines": [
+        "And 'twas the love of God He showed,",
+        "When, crowned with shame, He meekly died; —",
+        "No gifts by bleeding love bestowed,",
+        "So great as Jesus crucified."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:58"
+}

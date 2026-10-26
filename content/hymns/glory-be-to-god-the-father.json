@@ -1,0 +1,71 @@
+{
+  "title": "Glory Be to God the Father",
+  "tune": "st-raphael",
+  "text": [
+    {
+      "name": "Horatius Bonar",
+      "born": 1808,
+      "died": 1889,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Glory Be to God the Father in Tonic Solfa to ST. RAPHAEL, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Horatius Bonar wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 268.",
+    "The book printed the words without tunes, marked 8.7.8.7.4.7, to be sung to any tune of that metre. This page sets them to ST. RAPHAEL; any other 8.7.8.7.4.7 tune fits them as well."
+  ],
+  "underlay": "Glo-ry be to God the Fa-ther, Glo-ry be to God the Son, Glo-ry be to God the Spir-it; Great Je-ho-vah, Three in One! Glo-ry, glo-ry, While e-ter-nal a-ges run!",
+  "verses": [
+    {
+      "lines": [
+        "Glory be to God the Father,",
+        "Glory be to God the Son,",
+        "Glory be to God the Spirit;",
+        "Great Jehovah, Three in One!",
+        "Glory, glory,",
+        "While eternal ages run!"
+      ]
+    },
+    {
+      "lines": [
+        "Glory be to Him who loved us,",
+        "Washed us from each spot and stain;",
+        "Glory be to Him who bought us,",
+        "Made us kings with Him to reign!",
+        "Glory, glory,",
+        "To the Lamb that once was slain!"
+      ]
+    },
+    {
+      "lines": [
+        "Glory to the King of angels,",
+        "Glory to the Church’s King,",
+        "Glory to the King of nations;",
+        "Heaven and earth, your praises bring!",
+        "Glory, glory,",
+        "To the King of Glory bring!"
+      ]
+    },
+    {
+      "lines": [
+        "Glory, blessing, praise eternal!",
+        "Thus the choir of angels sings;",
+        "Honor, riches, power, dominion!",
+        "Thus its praise creation brings;",
+        "Glory, glory,",
+        "Glory to the King of kings!"
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 4 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Horatius Bonar died in 1889.",
+  "credits": "Words by Horatius Bonar (1808–1889), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. RAPHAEL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:268"
+}

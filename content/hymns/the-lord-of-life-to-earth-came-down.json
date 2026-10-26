@@ -1,0 +1,92 @@
+{
+  "title": "The Lord of Life to Earth Came Down",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "The Lord of Life to Earth Came Down in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911), headed “Christmas”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The Lord of Life to earth came down, Come, gai-ly sound His prais-es high; O 'twas a day of high re-nown, While an-gels praise Him in the sky.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord of Life to earth came down, —",
+        "Come, gaily sound His praises high;",
+        "O 'twas a day of high renown,",
+        "While angels praise Him in the sky."
+      ]
+    },
+    {
+      "lines": [
+        "Say, came He forth by myriads led? —",
+        "Come, gaily sound his praises high;",
+        "A crown of gold upon his head?",
+        "While angels praise Him in the sky."
+      ]
+    },
+    {
+      "lines": [
+        "Of earthly pomp the Lord had none, —",
+        "Come, gaily sound His praises high;",
+        "His kingly crown had not been won,",
+        "While angels praise Him in the sky."
+      ]
+    },
+    {
+      "lines": [
+        "A little child the Lord became, —",
+        "Come, gaily sound His praises high,",
+        "To bear our guilt, and share our shame,",
+        "While angels praise Him in the sky."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesu, Who in manger lay, —",
+        "Come, gaily sound his praises high,",
+        "Make me a little child to-day,",
+        "While angels praise Thee in the sky."
+      ]
+    },
+    {
+      "lines": [
+        "And may I come, with spirit meet, —",
+        "Come, gaily sound His praises high,",
+        "To lay my tribute at Thy feet,",
+        "While angels praise Thee in the sky."
+      ]
+    },
+    {
+      "lines": [
+        "To Father, Spirit, One with Christ, —",
+        "Come, gaily sound His praises high,",
+        "Be endless praise, Whose love sufficed,",
+        "While angels praise Him in the sky."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:7"
+}

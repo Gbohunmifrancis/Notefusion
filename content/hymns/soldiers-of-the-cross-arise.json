@@ -1,0 +1,87 @@
+{
+  "title": "Soldiers of the Cross, Arise",
+  "tune": "vienna",
+  "text": [
+    {
+      "name": "William Walsham How",
+      "born": 1823,
+      "died": 1897,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Soldiers of the Cross, Arise in Tonic Solfa to VIENNA, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "William Walsham How wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 482.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to VIENNA; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Sol-diers of the Cross, a-rise, Gird you with your ar-mor bright; Might-y are your en-e-mies, Hard the bat-tle ye must fight.",
+  "verses": [
+    {
+      "lines": [
+        "Soldiers of the Cross, arise,",
+        "Gird you with your armor bright;",
+        "Mighty are your enemies,",
+        "Hard the battle ye must fight."
+      ]
+    },
+    {
+      "lines": [
+        "O’er a faithless, fallen world",
+        "Raise your banner in the sky;",
+        "Let it float there wide unfurled;",
+        "Bear it onward, lift it high."
+      ]
+    },
+    {
+      "lines": [
+        "Mid the homes of want and woe,",
+        "Strangers to the living Word,",
+        "Let the Savior’s heralds go,",
+        "Let the voice of hope be heard."
+      ]
+    },
+    {
+      "lines": [
+        "Where the shadows deepest lie,",
+        "Carry truth’s unsullied ray;",
+        "Where are crimes of blackest dye,",
+        "There the saving sign display."
+      ]
+    },
+    {
+      "lines": [
+        "To the weary and the worn",
+        "Tell of realms where sorrows cease;",
+        "To the outcast and forlorn",
+        "Speak of mercy and of peace."
+      ]
+    },
+    {
+      "lines": [
+        "Guard the helpless; seek the strayed;",
+        "Comfort troubles; banish grief;",
+        "In the might of God arrayed,",
+        "Scatter sin and unbelief."
+      ]
+    },
+    {
+      "lines": [
+        "Be the banner still unfurled,",
+        "Still unsheathed the Spirit’s Sword,",
+        "Till the kingdoms of the world",
+        "Are the kingdom of the Lord."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: William Walsham How died in 1897.",
+  "credits": "Words by William Walsham How (1823–1897), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to VIENNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:482"
+}

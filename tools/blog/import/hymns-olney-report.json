@@ -255,6 +255,13 @@
       "author": "William Cowper"
     },
     {
+      "ref": "1:53",
+      "slug": "one-there-is-above-all-others",
+      "metre": "8 7 8 7 7 7",
+      "tune": "kalmar",
+      "author": "John Newton"
+    },
+    {
       "ref": "1:54",
       "slug": "the-evils-that-beset-our-path",
       "metre": "8 6 8 6",
@@ -1137,6 +1144,13 @@
       "author": "William Cowper"
     },
     {
+      "ref": "2:63",
+      "slug": "precious-bible-what-a-treasure",
+      "metre": "8 7 8 7 7 7",
+      "tune": "kalmar",
+      "author": "John Newton"
+    },
+    {
       "ref": "2:64",
       "slug": "the-gathring-clouds-with-aspect-dark",
       "metre": "8 6 8 6",
@@ -1585,6 +1599,13 @@
       "author": "William Cowper"
     },
     {
+      "ref": "3:52",
+      "slug": "yes-since-god-himself-has-said-it",
+      "metre": "8 7 8 7 7 7",
+      "tune": "kalmar",
+      "author": "John Newton"
+    },
+    {
       "ref": "3:53",
       "slug": "o-speak-that-gracious-word-again",
       "metre": "8 6 8 6",
@@ -1751,6 +1772,13 @@
       "metre": "8 8 8 8",
       "tune": "uxbridge",
       "author": "William Cowper"
+    },
+    {
+      "ref": "3:82",
+      "slug": "let-us-love-and-sing-and-wonder",
+      "metre": "8 7 8 7 7 7",
+      "tune": "kalmar",
+      "author": "John Newton"
     },
     {
       "ref": "3:83",
@@ -1948,11 +1976,6 @@
       "why": "no tune we hold for “8,8,8,8a” in 8-line verses"
     },
     {
-      "ref": "1:53",
-      "first": "One there is, above all others,",
-      "why": "no tune we hold for “8,7,8,7,7,7” in 6-line verses"
-    },
-    {
       "ref": "1:66",
       "first": "As parched in the barren sands",
       "why": "its first verse cannot be sung as 8.6.8.6"
@@ -2056,11 +2079,6 @@
       "ref": "2:59",
       "first": "Refreshed by the bread and wine,",
       "why": "its first verse cannot be sung as 8.8.8.8"
-    },
-    {
-      "ref": "2:63",
-      "first": "Precious Bible! what a treasure",
-      "why": "no tune we hold for “8,7,8,7,7,7” in 6-line verses"
     },
     {
       "ref": "2:77",
@@ -2178,11 +2196,6 @@
       "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
     },
     {
-      "ref": "3:52",
-      "first": "Yes! since God himself has said it,",
-      "why": "no tune we hold for “8,7,8,7,7,7” in 6-line verses"
-    },
-    {
       "ref": "3:56",
       "first": "When the wounded spirit hears",
       "why": "no tune we hold for “7,6,7,6,7,7,7,6” in 8-line verses"
@@ -2208,11 +2221,6 @@
       "why": "verses of different lengths"
     },
     {
-      "ref": "3:82",
-      "first": "Let us love, and sing, and wonder,",
-      "why": "no tune we hold for “8,7,8,7,7,7” in 6-line verses"
-    },
-    {
       "ref": "3:86",
       "first": "Now may the Lord reveal his face,",
       "why": "its first verse cannot be sung as 8.6.8.6.8.6.8.6"
@@ -2234,7 +2242,7 @@
     {
       "ref": "3:94",
       "first": "Not to hear the fiery Law,",
-      "why": "only 4 of 8 lines sing as 8.7.8.7"
+      "why": "words in iambs; the Eights and Sevens tunes we hold are in trochees"
     },
     {
       "ref": "3:95",
@@ -2271,9 +2279,9 @@
   ],
   "counts": {
     "hymns": 348,
-    "written": 263,
+    "written": 267,
     "alreadyOurs": 6,
-    "skipped": 79,
+    "skipped": 75,
     "removed": 0
   }
 }

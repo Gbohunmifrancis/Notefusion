@@ -1,0 +1,63 @@
+{
+  "title": "This Day at Thy Creating Word",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "William Walsham How",
+      "born": 1823,
+      "died": 1897,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "This Day at Thy Creating Word in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "William Walsham How wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 127.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "This day at Thy cre-a-ting word First o’er the earth the light was poured. O Lord, this day up-on us shine And fill our souls with light di-vine.",
+  "verses": [
+    {
+      "lines": [
+        "This day at Thy creating word",
+        "First o’er the earth the light was poured.",
+        "O Lord, this day upon us shine",
+        "And fill our souls with light divine."
+      ]
+    },
+    {
+      "lines": [
+        "This day the Lord for sinners slain",
+        "In might victorious rose again.",
+        "O Jesus, may we raised be",
+        "From death of sin to life in Thee."
+      ]
+    },
+    {
+      "lines": [
+        "This day the Holy Spirit came",
+        "With fiery tongues of cloven flame.—",
+        "O Spirit, fill our hearts this day",
+        "With grace to hear and grace to pray."
+      ]
+    },
+    {
+      "lines": [
+        "O day of light and life and grace,",
+        "From earthly toils sweet resting-place,",
+        "Thy hallowed hours, best gift of love,",
+        "Give we again to God above!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: William Walsham How died in 1897.",
+  "credits": "Words by William Walsham How (1823–1897), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:127"
+}

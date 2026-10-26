@@ -1,0 +1,63 @@
+{
+  "title": "Drawn to the Cross, Which Thou Hast Blessed",
+  "tune": "just-as-i-am",
+  "text": [
+    {
+      "name": "Genevieve M. Irons",
+      "born": 1855,
+      "died": 1928,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Drawn to the Cross, Which Thou Hast Blessed in Tonic Solfa to JUST AS I AM, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Genevieve M. Irons wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 321.",
+    "The book printed the words without tunes, marked 8.8.8.6, to be sung to any tune of that metre. This page sets them to JUST AS I AM; any other 8.8.8.6 tune fits them as well."
+  ],
+  "underlay": "Drawn to the cross, which Thou hast blessed With heal-ing gifts for souls dis-tressed, To find in Thee my life, my rest, Christ Cru-ci-fied, I come.",
+  "verses": [
+    {
+      "lines": [
+        "Drawn to the cross, which Thou hast blessed",
+        "With healing gifts for souls distressed,",
+        "To find in Thee my life, my rest,",
+        "Christ Crucified, I come."
+      ]
+    },
+    {
+      "lines": [
+        "Thou knowest all my griefs and fears,",
+        "Thy grace abused, my misspent years;",
+        "Yet now to Thee with contrite tears,",
+        "Christ Crucified, I come."
+      ]
+    },
+    {
+      "lines": [
+        "Wash me and take away each stain;",
+        "Let nothing of my sin remain;",
+        "For cleansing, though it be through pain,",
+        "Christ Crucified, I come."
+      ]
+    },
+    {
+      "lines": [
+        "And then for work to do for Thee,",
+        "Which shall so sweet a service be",
+        "That angels well might envy me,",
+        "Christ Crucified, I come."
+      ]
+    }
+  ],
+  "metre": "8 8 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Genevieve M. Irons died in 1928.",
+  "credits": "Words by Genevieve M. Irons (1855–1928), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to JUST AS I AM by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:321"
+}

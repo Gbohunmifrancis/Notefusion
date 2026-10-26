@@ -1,0 +1,60 @@
+{
+  "title": "Hail, Full of Grace, Virgin Theotokos",
+  "tune": "penitentia",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Hail, Full of Grace, Virgin Theotokos in Tonic Solfa to PENITENTIA, doh is Eb: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904), headed “Theotokion”.",
+    "The book printed the words without tunes. They are in Tens (10.10.10.10), and this page sets them to PENITENTIA; any other Tens tune fits them as well."
+  ],
+  "underlay": "Hail, full of grace, Vir-gin The-o-to-kos, Har-bour of all who on the bil-lows toss; Re-fuge of those who help-less seek Thy grace, Hope-less and sin stained of our fall-en race.",
+  "verses": [
+    {
+      "lines": [
+        "Hail, full of grace, Virgin Theotokos,",
+        "Harbour of all who on the billows toss;",
+        "Refuge of those who helpless seek Thy grace,",
+        "Hopeless and sin-stained of our fallen race."
+      ]
+    },
+    {
+      "lines": [
+        "From thee the Lord Incarnate came to free",
+        "Those who are held in bands of misery.",
+        "Hail! Virgin Mother, for alone thou art",
+        "Blessèd for ever, by each human heart."
+      ]
+    },
+    {
+      "lines": [
+        "Say to the Christ that strife of sin should cease,",
+        "That to this world should come the bliss of peace.",
+        "Hail! full of grace, Virgin to thee be praise,",
+        "Now and for ever through the endless days."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to PENITENTIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:18"
+}

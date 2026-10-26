@@ -1,0 +1,68 @@
+{
+  "title": "When Jesus to the Jordan Came",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "When Jesus to the Jordan Came in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Various”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When Je-sus to the Jor-dan came To hon-our there the rite di-vine, Then, to the world, His aw-ful claim Was wit-nessed by the God-head Trine.",
+  "verses": [
+    {
+      "lines": [
+        "When Jesus to the Jordan came",
+        "To honour there the rite divine,",
+        "Then, to the world, His awful claim",
+        "Was witnessed by the Godhead Trine."
+      ]
+    },
+    {
+      "lines": [
+        "From heaven the Father's voice declared",
+        "His pleasure and paternal love;",
+        "And lo! the Holy Ghost appeared,",
+        "And wore the likeness of a Dove."
+      ]
+    },
+    {
+      "lines": [
+        "Thrice holy, Jesus Christ, art Thou,",
+        "By Father and by Spirit blessed;",
+        "We see Thee at the Jordan now,",
+        "And hear Thy Godhead there expressed."
+      ]
+    },
+    {
+      "lines": [
+        "Now to the Father glory be,",
+        "And to the Son beloved by God,",
+        "And to the Spirit, endlessly,",
+        "In heaven and all the earth abroad."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:32"
+}

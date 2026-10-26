@@ -1,0 +1,71 @@
+{
+  "title": "With Broken Heart and Contrite Sigh",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Cornelius Elven",
+      "born": 1797,
+      "died": 1873,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "With Broken Heart and Contrite Sigh in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Cornelius Elven wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 418.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "With bro-ken heart and con-trite sigh, A trem-bling sin-ner, Lord, I cry; Thy par-doning grace is rich and free; O God, be mer-ci-ful to me!",
+  "verses": [
+    {
+      "lines": [
+        "With broken heart and contrite sigh,",
+        "A trembling sinner, Lord, I cry;",
+        "Thy pardoning grace is rich and free;",
+        "O God, be merciful to me!"
+      ]
+    },
+    {
+      "lines": [
+        "I smite upon my troubled breast,",
+        "With deep and conscious guilt opprest;",
+        "Christ and His Cross my only plea;",
+        "O God, be merciful to me!"
+      ]
+    },
+    {
+      "lines": [
+        "Far off I stand with tearful eyes",
+        "Nor dare uplift them to the skies;",
+        "But Thou dost all my anguish see;",
+        "O God, be merciful to me!"
+      ]
+    },
+    {
+      "lines": [
+        "Nor alms nor deeds that I have done",
+        "Can for a single sin atone;",
+        "To Calvary alone I flee;",
+        "O God, be merciful to me!"
+      ]
+    },
+    {
+      "lines": [
+        "And when, redeemed from sin and hell,",
+        "With all the ransomed throng I dwell,",
+        "My raptured song shall ever be,",
+        "God has been merciful to me!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Cornelius Elven died in 1873.",
+  "credits": "Words by Cornelius Elven (1797–1873), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:418"
+}

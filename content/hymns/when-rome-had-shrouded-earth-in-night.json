@@ -1,0 +1,71 @@
+{
+  "title": "When Rome Had Shrouded Earth in Night",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Matthias Loy",
+      "born": 1828,
+      "died": 1915,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "When Rome Had Shrouded Earth in Night in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Matthias Loy wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 283.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When Rome had shroud-ed earth in night, God said a-gain, Let there be light! And Lu-ther with the Gos-pel came To spread the truth in Je-sus’ name.",
+  "verses": [
+    {
+      "lines": [
+        "When Rome had shrouded earth in night,",
+        "God said again, Let there be light!",
+        "And Luther with the Gospel came",
+        "To spread the truth in Jesus’ name."
+      ]
+    },
+    {
+      "lines": [
+        "When Rome the saints of God oppressed,",
+        "And burdened souls could find no rest,",
+        "Through Luther God deliv’rance sent",
+        "By His pure Word and Sacrament."
+      ]
+    },
+    {
+      "lines": [
+        "Though hosts against us stand arrayed,",
+        "Christ bids us still, Be not afraid.",
+        "Though all its powers the truth assail,",
+        "The gates of hell shall not prevail."
+      ]
+    },
+    {
+      "lines": [
+        "To-day with joyful hearts we sing",
+        "The guardian care of Christ, our King,",
+        "Who through His chosen instrument",
+        "To us hath this salvation sent."
+      ]
+    },
+    {
+      "lines": [
+        "O Lord, whose mercies still endure,",
+        "Preserve to us Thy Gospel pure;",
+        "Let it alone within us reign",
+        "That Thine the glory may remain."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Matthias Loy died in 1915.",
+  "credits": "Words by Matthias Loy (1828–1915), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:283"
+}

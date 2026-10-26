@@ -1,0 +1,76 @@
+{
+  "title": "Broken Are the Bands That Bound Us",
+  "tune": "stabat-mater-mainz",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Broken Are the Bands That Bound Us in Tonic Solfa to STABAT MATER (MAINZ), doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By Adam of St. Victor”, headed “Postquam Hostem Et Inferna”.",
+    "The book printed the words without tunes. They are in 8.8.7.8.8.7, and this page sets them to STABAT MATER (MAINZ); any other 8.8.7.8.8.7 tune fits them as well."
+  ],
+  "underlay": "Bro-ken are the bands that bound us, Spoiled are Sa-tan’s realms a-round us, And to joys su-per-nal now, Christ re-turns with hosts at-tend-ing, And, as when at first de-scend-ing, An-gel guards their hom-age bow.",
+  "verses": [
+    {
+      "lines": [
+        "Broken are the bands that bound us,",
+        "Spoiled are Satan’s realms around us,",
+        "And to joys supernal now,",
+        "Christ returns with hosts attending,",
+        "And, as when at first descending,",
+        "Angel guards their homage bow."
+      ]
+    },
+    {
+      "lines": [
+        "Far above the stars ascending,",
+        "Faith alone His course attending,",
+        "Passing now from mortal sight;",
+        "To His hand all power is given,",
+        "One with God He rules in heaven,",
+        "One in honour and in might."
+      ]
+    },
+    {
+      "lines": [
+        "Victor on His throne uplifted,",
+        "See all rule to Him is gifted,",
+        "O’er Creation’s wide domain.",
+        "Now for evermore He liveth,",
+        "Nevermore His life He giveth—",
+        "Once the sacrifice was slain."
+      ]
+    },
+    {
+      "lines": [
+        "Once He wore our flesh in weakness,",
+        "Once He suffered, once in meekness",
+        "Gave Himself for sin to die.",
+        "Now no longer pain He knoweth:",
+        "Perfect peace for ever floweth,",
+        "Perfect joy is ever nigh."
+      ]
+    }
+  ],
+  "metre": "8 8 7 8 8 7",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to STABAT MATER (MAINZ) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:39"
+}

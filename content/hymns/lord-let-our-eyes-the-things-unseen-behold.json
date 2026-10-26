@@ -1,0 +1,68 @@
+{
+  "title": "Lord, Let Our Eyes the Things Unseen Behold",
+  "tune": "eventide",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Lord, Let Our Eyes the Things Unseen Behold in Tonic Solfa to EVENTIDE, doh is Eb: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Aspirations”.",
+    "The book printed the words without tunes. They are in Tens (10.10.10.10), and this page sets them to EVENTIDE; any other Tens tune fits them as well."
+  ],
+  "underlay": "Lord, let our eyes the things un-seen be-hold, And, 'mid the glo-ry that like sun-set dies, Fair to the sight the won-drous bliss un-fold That lives in beau-ty un-der cloud-less skies.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, let our eyes the things unseen behold,",
+        "And, 'mid the glory that like sunset dies,",
+        "Fair to the sight the wondrous bliss unfold",
+        "That lives in beauty under cloudless skies."
+      ]
+    },
+    {
+      "lines": [
+        "And let our ears the things unuttered hear,",
+        "That silent voices to the soul can tell;",
+        "That heart can whisper when a heart is near",
+        "Of love that scorns in uttered tones to dwell."
+      ]
+    },
+    {
+      "lines": [
+        "Teach us to know that things unseen are real,",
+        "That earth no bloom of fadeless beauty gives,",
+        "That far beyond the things that sense can feel,",
+        "The joy of being, and of having, lives."
+      ]
+    },
+    {
+      "lines": [
+        "Lord Who hast risen, nor left the world behind,",
+        "Daily incline our sense-bound souls to soar,",
+        "Till 'mong the things all hidden we may find",
+        "Possessions that abide for evermore."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to EVENTIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:62"
+}

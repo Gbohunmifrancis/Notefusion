@@ -1,0 +1,86 @@
+{
+  "title": "Holy Spirit, Come with Power",
+  "tune": "ratisbon-werner",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Holy Spirit, Come with Power in Tonic Solfa to RATISBON (WERNER), doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “Veni, Sancte Spiritus Et Emitte Cœlitus”.",
+    "The book printed the words without tunes. They are in Sevens, six lines (7.7.7.7.7.7), and this page sets them to RATISBON (WERNER); any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Ho-ly Spirit, come with po-wer; Let Thy light, in dark-est hour, Shine up-on our on-ward way. Fa-ther of the hum-ble heart, Come, Thy choic-est gifts im-part— Light our hearts with heav-enly ray.",
+  "verses": [
+    {
+      "lines": [
+        "Holy Spirit, come with power;",
+        "Let Thy light, in darkest hour,",
+        "Shine upon our onward way.",
+        "Father of the humble heart,",
+        "Come, Thy choicest gifts impart—",
+        "Light our hearts with heavenly ray."
+      ]
+    },
+    {
+      "lines": [
+        "Thou canst best the heart console;",
+        "Sweet Thy sojourn with the soul—",
+        "Cooling breath at noon of day,",
+        "Calm Thy rest in toil and care,",
+        "Soft Thy shade in noontide glare—",
+        "Thou dost chase our tears away."
+      ]
+    },
+    {
+      "lines": [
+        "O! Thou blessed Light of light!",
+        "Let Thy beams in radiance bright",
+        "Fill our inmost heart for aye.",
+        "If Thou come not with Thy grace,",
+        "Nought of worth can take Thy place,",
+        "Nought but leads the soul astray."
+      ]
+    },
+    {
+      "lines": [
+        "What is filthy, come, renew;",
+        "What is parched, with grace bedew;",
+        "Heal the wounded in the way.",
+        "What is stubborn, gently bend;",
+        "To the chilled the life-glow send;",
+        "Bring the erring ’neath Thy sway."
+      ]
+    },
+    {
+      "lines": [
+        "To the faithful who repose",
+        "In the love Thy grace bestows,",
+        "Be Thy sevenfold gift alway—",
+        "Rich reward for service given,",
+        "Hope in death and joy in heaven,",
+        "Joy untold that lasteth aye."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to RATISBON (WERNER) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:43"
+}

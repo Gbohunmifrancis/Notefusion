@@ -1,0 +1,3242 @@
+{
+  "source": "Evangelical Lutheran Hymn-Book, abridged edition (Concordia Publishing House, St. Louis, 1927)",
+  "date": "2026-10-26",
+  "written": [
+    {
+      "ref": "6",
+      "slug": "lord-when-we-bend-before-thy-throne",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Joseph Dacre Carlyle"
+    },
+    {
+      "ref": "8",
+      "slug": "to-thy-temple-i-repair",
+      "metre": "7 7 7 7",
+      "tune": "innocents",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "13",
+      "slug": "almighty-god-thy-word-is-cast",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "John Cawood"
+    },
+    {
+      "ref": "14",
+      "slug": "savior-all-my-sins-confessing",
+      "metre": "8 7 8 7",
+      "tune": "all-for-jesus",
+      "author": "Thomas Haweis"
+    },
+    {
+      "ref": "19",
+      "slug": "when-streaming-from-the-eastern-skies",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "William Shrubsole"
+    },
+    {
+      "ref": "25",
+      "slug": "we-lift-our-hearts-to-thee",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "43",
+      "slug": "through-the-day-thy-love-hath-spared-us",
+      "metre": "8 7 8 7 7 7",
+      "tune": "kalmar",
+      "author": "Thomas Kelly"
+    },
+    {
+      "ref": "46",
+      "slug": "i-heard-the-voice-of-jesus-say",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "materna",
+      "author": "Horatius Bonar"
+    },
+    {
+      "ref": "47",
+      "slug": "the-savior-calls-let-every-ear",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Anne Steele"
+    },
+    {
+      "ref": "48",
+      "slug": "sinners-turn-why-will-ye-die",
+      "metre": "7 7 7 7",
+      "tune": "innocents",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "49",
+      "slug": "come-unto-me-ye-weary",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "angels-story",
+      "author": "William Chatterton Dix"
+    },
+    {
+      "ref": "50",
+      "slug": "to-day-thy-mercy-calls-us",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "angels-story",
+      "author": "Oswald Allen"
+    },
+    {
+      "ref": "51",
+      "slug": "behold-a-stranger-at-the-door",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Joseph Grigg"
+    },
+    {
+      "ref": "53",
+      "slug": "let-every-ear-attend",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Isaac Watts"
+    },
+    {
+      "ref": "54",
+      "slug": "return-o-wanderer-return",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Bengo Collyer"
+    },
+    {
+      "ref": "55",
+      "slug": "hasten-o-sinner-to-be-wise",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Thomas Scott"
+    },
+    {
+      "ref": "66",
+      "slug": "thee-we-adore-eternal-lord",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Thomas Cotterill"
+    },
+    {
+      "ref": "71",
+      "slug": "god-of-mercy-god-of-grace",
+      "metre": "7 7 7 7 7 7",
+      "tune": "spanish-hymn",
+      "author": "Henry Francis Lyte"
+    },
+    {
+      "ref": "72",
+      "slug": "when-all-thy-mercies-o-my-god",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Joseph Addison"
+    },
+    {
+      "ref": "73",
+      "slug": "ill-praise-my-maker-whilst-ive-breath",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Isaac Watts"
+    },
+    {
+      "ref": "81",
+      "slug": "lamb-of-god-we-fall-before-thee",
+      "metre": "8 7 8 7",
+      "tune": "all-for-jesus",
+      "author": "Joseph Hart"
+    },
+    {
+      "ref": "90",
+      "slug": "o-jesus-king-most-wonderful",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Bernard of Clairvaux and Edward Caswall"
+    },
+    {
+      "ref": "92",
+      "slug": "awake-my-soul-to-joyful-lays",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Samuel Medley"
+    },
+    {
+      "ref": "94",
+      "slug": "thou-art-the-way-to-thee-alone",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "George Washington Doane"
+    },
+    {
+      "ref": "97",
+      "slug": "jesus-thou-art-mine-forever",
+      "metre": "8 7 8 7",
+      "tune": "omni-die",
+      "author": "Matthias Loy"
+    },
+    {
+      "ref": "101",
+      "slug": "to-our-redeemers-glorious-name",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Anne Steele"
+    },
+    {
+      "ref": "113",
+      "slug": "o-word-of-god-incarnate",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "ewing",
+      "author": "William Walsham How"
+    },
+    {
+      "ref": "117",
+      "slug": "father-of-mercies-in-thy-word",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Anne Steele"
+    },
+    {
+      "ref": "118",
+      "slug": "when-israel-through-the-desert-passed",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Benjamin Beddome"
+    },
+    {
+      "ref": "120",
+      "slug": "we-have-a-sure-prophetic-word",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Emanuel Cronenwett"
+    },
+    {
+      "ref": "122",
+      "slug": "in-vain-would-boasting-reason-find",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Anne Steele"
+    },
+    {
+      "ref": "127",
+      "slug": "this-day-at-thy-creating-word",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Walsham How"
+    },
+    {
+      "ref": "128",
+      "slug": "with-joy-we-hail-the-sacred-day",
+      "metre": "8 6 8 6",
+      "tune": "st-peter",
+      "author": "Harriet Auber"
+    },
+    {
+      "ref": "144",
+      "slug": "jesus-thy-church-with-longing-eyes",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "William Hiley Bathurst"
+    },
+    {
+      "ref": "146",
+      "slug": "let-the-earth-now-praise-the-lord",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "Heinrich Held and Catherine Winkworth"
+    },
+    {
+      "ref": "151",
+      "slug": "rejoice-ye-sons-of-men-alway",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Cornelius Freund and August Crull"
+    },
+    {
+      "ref": "155",
+      "slug": "to-us-a-child-of-hope-is-born",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "John Morison"
+    },
+    {
+      "ref": "157",
+      "slug": "praise-god-the-lord-ye-sons-of-men",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Nikolaus Herman and August Crull"
+    },
+    {
+      "ref": "160",
+      "slug": "hark-what-mean-those-holy-voices",
+      "metre": "8 7 8 7",
+      "tune": "stuttgart",
+      "author": "John Cawood"
+    },
+    {
+      "ref": "165",
+      "slug": "thou-who-rollst-the-year-around",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Ray Palmer"
+    },
+    {
+      "ref": "168",
+      "slug": "for-thy-mercy-and-thy-grace",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "Henry Downton"
+    },
+    {
+      "ref": "169",
+      "slug": "the-new-born-child-this-early-morn",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Cyriacus Schneegass and Emanuel Cronenwett"
+    },
+    {
+      "ref": "171",
+      "slug": "help-me-o-lord-behold-i-enter",
+      "metre": "9 8 9 8 8 8",
+      "tune": "neumark",
+      "author": "Johann Rist and Catherine Winkworth"
+    },
+    {
+      "ref": "173",
+      "slug": "the-old-year-now-hath-passed-away",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Johann Steuerlein and Catherine Winkworth"
+    },
+    {
+      "ref": "174",
+      "slug": "now-let-us-come-before-him",
+      "metre": "7 7 7 7",
+      "tune": "st-bees",
+      "author": "Paul Gerhardt and John Kelly"
+    },
+    {
+      "ref": "175",
+      "slug": "the-year-begins-with-thee",
+      "metre": "6 6 8 6",
+      "tune": "franconia",
+      "author": "John Keble"
+    },
+    {
+      "ref": "178",
+      "slug": "jesus-name-of-wondrous-love",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "William Walsham How"
+    },
+    {
+      "ref": "190",
+      "slug": "light-of-the-gentile-nations",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "greenland",
+      "author": "Johann Franck and Catherine Winkworth"
+    },
+    {
+      "ref": "192",
+      "slug": "jesus-i-will-ponder-now",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "aurelia",
+      "author": "Sigmund von Birken and August Crull"
+    },
+    {
+      "ref": "202",
+      "slug": "enslaved-by-sin-and-bound-in-chains",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Anne Steele"
+    },
+    {
+      "ref": "206",
+      "slug": "thy-soul-o-jesus-hallow-me",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Johann Scheffler and Matthias Loy"
+    },
+    {
+      "ref": "211",
+      "slug": "behold-the-savior-of-mankind",
+      "metre": "8 6 8 6",
+      "tune": "st-flavian",
+      "author": "Samuel Wesley"
+    },
+    {
+      "ref": "223",
+      "slug": "who-is-this-that-comes-from-edom",
+      "metre": "8 7 8 7 7 7",
+      "tune": "kalmar",
+      "author": "Thomas Kelly"
+    },
+    {
+      "ref": "227",
+      "slug": "where-wilt-thou-go-since-night-draws-near",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Ernst Christoph Homburg and August Crull"
+    },
+    {
+      "ref": "228",
+      "slug": "welcome-thou-victor-in-the-strife",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Benjamin Schmolck and Catherine Winkworth"
+    },
+    {
+      "ref": "232",
+      "slug": "our-lord-is-risen-from-the-dead",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "237",
+      "slug": "the-head-that-once-was-crowned-with-thorns",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Thomas Kelly"
+    },
+    {
+      "ref": "238",
+      "slug": "hark-ten-thousand-harps-and-voices",
+      "metre": "8 7 8 7 7 7",
+      "tune": "kalmar",
+      "author": "Thomas Kelly"
+    },
+    {
+      "ref": "240",
+      "slug": "arise-my-soul-arise",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "241",
+      "slug": "th-atoning-work-is-done",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "Thomas Kelly"
+    },
+    {
+      "ref": "250",
+      "slug": "spirit-of-mercy-truth-and-love",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "258",
+      "slug": "come-holy-spirit-come",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Joseph Hart"
+    },
+    {
+      "ref": "265",
+      "slug": "god-of-my-life-thy-boundless-grace",
+      "metre": "8 8 8 6",
+      "tune": "just-as-i-am",
+      "author": "Charlotte Elliott"
+    },
+    {
+      "ref": "267",
+      "slug": "father-of-glory-to-thy-name",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Isaac Watts"
+    },
+    {
+      "ref": "268",
+      "slug": "glory-be-to-god-the-father",
+      "metre": "8 7 8 7 4 7",
+      "tune": "st-raphael",
+      "author": "Horatius Bonar"
+    },
+    {
+      "ref": "269",
+      "slug": "father-of-heavn-whose-love-profound",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Edward Cooper"
+    },
+    {
+      "ref": "270",
+      "slug": "father-in-whom-we-live",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "275",
+      "slug": "thine-honor-rescue-christ-our-lord",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Johann Heermann and Matthias Loy"
+    },
+    {
+      "ref": "283",
+      "slug": "when-rome-had-shrouded-earth-in-night",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Matthias Loy"
+    },
+    {
+      "ref": "287",
+      "slug": "jesus-brightness-of-the-father",
+      "metre": "8 7 8 7 7 7",
+      "tune": "kalmar",
+      "author": "Rabanus Maurus and Edward Caswall"
+    },
+    {
+      "ref": "291",
+      "slug": "o-lord-whose-bounteous-hand-again",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "293",
+      "slug": "we-sing-th-almighty-power-of-god",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Isaac Watts"
+    },
+    {
+      "ref": "296",
+      "slug": "christ-by-heavnly-hosts-adored",
+      "metre": "7 7 7 7 7 7 7 7",
+      "tune": "martyn",
+      "author": "Henry Harbaugh"
+    },
+    {
+      "ref": "297",
+      "slug": "praise-o-praise-our-god-and-king",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Henry Williams Baker"
+    },
+    {
+      "ref": "300",
+      "slug": "o-bless-thou-heavenly-potentate",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Anonymous"
+    },
+    {
+      "ref": "301",
+      "slug": "what-our-father-does-is-well",
+      "metre": "7 7 7 7 7 7",
+      "tune": "spanish-hymn",
+      "author": "Benjamin Schmolck and Henry Williams Baker"
+    },
+    {
+      "ref": "304",
+      "slug": "to-thee-our-god-we-fly",
+      "metre": "6 6 6 6 8 8",
+      "tune": "darwall",
+      "author": "William Walsham How"
+    },
+    {
+      "ref": "308",
+      "slug": "all-that-i-was-my-sin-my-guilt",
+      "metre": "8 6 8 6",
+      "tune": "st-anne",
+      "author": "Horatius Bonar"
+    },
+    {
+      "ref": "309",
+      "slug": "blest-is-the-man-forever-blest",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Isaac Watts"
+    },
+    {
+      "ref": "320",
+      "slug": "not-what-these-hands-have-done",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Horatius Bonar"
+    },
+    {
+      "ref": "321",
+      "slug": "drawn-to-the-cross-which-thou-hast-blessed",
+      "metre": "8 8 8 6",
+      "tune": "just-as-i-am",
+      "author": "Genevieve M. Irons"
+    },
+    {
+      "ref": "323",
+      "slug": "through-jesus-blood-and-merit",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "angels-story",
+      "author": "Simon Dach and August Crull"
+    },
+    {
+      "ref": "327",
+      "slug": "our-god-so-loved-the-world-that-he",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Johann Olearius and August Crull"
+    },
+    {
+      "ref": "329",
+      "slug": "thy-works-not-mine-o-christ",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "Horatius Bonar"
+    },
+    {
+      "ref": "335",
+      "slug": "jesus-i-my-cross-have-taken",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "lux-eoi",
+      "author": "Henry Francis Lyte"
+    },
+    {
+      "ref": "348",
+      "slug": "o-love-who-formedst-me-to-wear",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Johann Scheffler and Catherine Winkworth"
+    },
+    {
+      "ref": "360",
+      "slug": "almighty-father-heavn-and-earth",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Edward Arthur Dayman"
+    },
+    {
+      "ref": "361",
+      "slug": "we-give-thee-but-thine-own",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "William Walsham How"
+    },
+    {
+      "ref": "362",
+      "slug": "o-god-of-mercy-god-of-might",
+      "metre": "8 8 8 6",
+      "tune": "just-as-i-am",
+      "author": "Godfrey Thring"
+    },
+    {
+      "ref": "364",
+      "slug": "o-god-of-jacob-by-whose-hand",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Philip Doddridge"
+    },
+    {
+      "ref": "369",
+      "slug": "my-spirit-on-thy-care",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Henry Francis Lyte"
+    },
+    {
+      "ref": "371",
+      "slug": "to-thee-o-dear-dear-savior",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "angels-story",
+      "author": "John Samuel Bewley Monsell"
+    },
+    {
+      "ref": "373",
+      "slug": "jesus-my-truth-my-way",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "390",
+      "slug": "lord-grant-that-we-eer-pure-retain",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Ludwig Helmbold and Matthias Loy"
+    },
+    {
+      "ref": "403",
+      "slug": "now-christ-the-very-son-of-god",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Nikolaus Selnecker and Conrad Herman Louis Schuette"
+    },
+    {
+      "ref": "406",
+      "slug": "the-savior-kindly-calls",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Henry Ustick Onderdonk"
+    },
+    {
+      "ref": "407",
+      "slug": "stand-soldier-of-the-cross",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Edward Henry Bickersteth"
+    },
+    {
+      "ref": "408",
+      "slug": "let-me-be-thine-forever",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "ewing",
+      "author": "Nikolaus Selnecker and Matthias Loy"
+    },
+    {
+      "ref": "411",
+      "slug": "thine-forever-god-of-love",
+      "metre": "7 7 7 7",
+      "tune": "heinlein",
+      "author": "Mary Fawler Maude"
+    },
+    {
+      "ref": "412",
+      "slug": "my-god-accept-my-heart-this-day",
+      "metre": "8 6 8 6",
+      "tune": "caithness",
+      "author": "Matthew Bridges"
+    },
+    {
+      "ref": "418",
+      "slug": "with-broken-heart-and-contrite-sigh",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Cornelius Elven"
+    },
+    {
+      "ref": "423",
+      "slug": "out-of-the-deep-i-call",
+      "metre": "6 6 8 6",
+      "tune": "st-bride",
+      "author": "Henry Williams Baker"
+    },
+    {
+      "ref": "426",
+      "slug": "yea-as-i-live-jehovah-saith",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Nikolaus Herman and Matthias Loy"
+    },
+    {
+      "ref": "435",
+      "slug": "o-living-bread-from-heaven",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "ewing",
+      "author": "Johann Rist and Catherine Winkworth"
+    },
+    {
+      "ref": "437",
+      "slug": "an-awful-mystery-is-here",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Matthias Loy"
+    },
+    {
+      "ref": "438",
+      "slug": "invited-lord-by-boundless-grace",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Emanuel Cronenwett"
+    },
+    {
+      "ref": "447",
+      "slug": "gracious-savior-gentle-shepherd",
+      "metre": "8 7 8 7 8 7",
+      "tune": "mannheim",
+      "author": "Jane Eliza Leeson"
+    },
+    {
+      "ref": "450",
+      "slug": "o-lord-of-hosts-whose-glory-fills",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "John Mason Neale"
+    },
+    {
+      "ref": "451",
+      "slug": "in-the-name-which-earth-and-heaven",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "lux-eoi",
+      "author": "John Ellerton"
+    },
+    {
+      "ref": "455",
+      "slug": "come-jesus-from-the-sapphire-throne",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Ray Palmer"
+    },
+    {
+      "ref": "457",
+      "slug": "in-loud-exalted-strains",
+      "metre": "6 6 6 6 8 8",
+      "tune": "st-john-parish-choir",
+      "author": "Benjamin Francis"
+    },
+    {
+      "ref": "459",
+      "slug": "here-in-thy-name-eternal-god",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "James Montgomery"
+    },
+    {
+      "ref": "465",
+      "slug": "zion-stands-with-hills-surrounded",
+      "metre": "8 7 8 7 4 7",
+      "tune": "st-austin",
+      "author": "Thomas Kelly"
+    },
+    {
+      "ref": "468",
+      "slug": "i-love-thy-zion-lord",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Timothy Dwight"
+    },
+    {
+      "ref": "471",
+      "slug": "the-morning-light-is-breaking",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "greenland",
+      "author": "Samuel Francis Smith"
+    },
+    {
+      "ref": "475",
+      "slug": "o-christ-our-true-and-only-light",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Johann Heermann and Catherine Winkworth"
+    },
+    {
+      "ref": "476",
+      "slug": "hark-the-voice-of-jesus-crying",
+      "metre": "8 7 8 7 8 7 8 7",
+      "tune": "rustington",
+      "author": "Daniel March"
+    },
+    {
+      "ref": "479",
+      "slug": "look-from-thy-sphere-of-endless-day",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "William Cullen Bryant"
+    },
+    {
+      "ref": "482",
+      "slug": "soldiers-of-the-cross-arise",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "William Walsham How"
+    },
+    {
+      "ref": "491",
+      "slug": "lord-of-the-harvest-hear",
+      "metre": "6 6 8 6",
+      "tune": "southwell",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "496",
+      "slug": "lord-it-belongs-not-to-my-care",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Richard Baxter"
+    },
+    {
+      "ref": "500",
+      "slug": "oft-in-sorrow-oft-in-woe",
+      "metre": "7 7 7 7",
+      "tune": "pleyels-hymn",
+      "author": "Henry Kirke White"
+    },
+    {
+      "ref": "502",
+      "slug": "dear-refuge-of-my-weary-soul",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Anne Steele"
+    },
+    {
+      "ref": "504",
+      "slug": "in-weariness-and-pain",
+      "metre": "6 6 8 6",
+      "tune": "st-bride",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "515",
+      "slug": "when-in-the-hour-of-utmost-need",
+      "metre": "8 8 8 8",
+      "tune": "old-hundredth",
+      "author": "Paul Eber and Catherine Winkworth"
+    },
+    {
+      "ref": "516",
+      "slug": "seems-it-in-my-anguish-lone",
+      "metre": "7 7 7 7",
+      "tune": "innocents",
+      "author": "Christoph Titius and Catherine Winkworth"
+    },
+    {
+      "ref": "517",
+      "slug": "lord-god-who-art-my-father-dear",
+      "metre": "8 8 8 8",
+      "tune": "uxbridge",
+      "author": "Johann Mathesius and August Crull"
+    },
+    {
+      "ref": "521",
+      "slug": "and-let-this-feeble-body-fail",
+      "metre": "8 6 8 6 8 6 8 6",
+      "tune": "materna",
+      "author": "Charles Wesley"
+    },
+    {
+      "ref": "527",
+      "slug": "lord-jesus-christ-true-man-and-god",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Paul Eber and Catherine Winkworth"
+    },
+    {
+      "ref": "531",
+      "slug": "one-sweetly-solemn-thought",
+      "metre": "6 6 8 6",
+      "tune": "st-bride",
+      "author": "Phoebe Cary"
+    },
+    {
+      "ref": "543",
+      "slug": "o-lord-my-god-i-cry-to-thee",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Nikolaus Selnecker and Catherine Winkworth"
+    },
+    {
+      "ref": "554",
+      "slug": "and-will-the-judge-descend",
+      "metre": "6 6 8 6",
+      "tune": "boylston",
+      "author": "Philip Doddridge"
+    }
+  ],
+  "alreadyOurs": [
+    {
+      "ref": "3",
+      "first": "Blessed Jesus, at Thy word",
+      "page": "blessed-jesus-at-thy-word"
+    },
+    {
+      "ref": "4",
+      "first": "Thy presence, gracious God, afford,",
+      "page": "thy-presence-gracious-god-afford"
+    },
+    {
+      "ref": "5",
+      "first": "Open now Thy gates of beauty,",
+      "page": "open-now-thy-gates-of-beauty"
+    },
+    {
+      "ref": "7",
+      "first": "Lord, we come before Thee now,",
+      "page": "lord-we-come-before-thee-now"
+    },
+    {
+      "ref": "9",
+      "first": "Abide, O dearest Jesus,",
+      "page": "abide-o-dearest-jesus"
+    },
+    {
+      "ref": "11",
+      "first": "On what has now been sown",
+      "page": "on-what-has-now-been-sown"
+    },
+    {
+      "ref": "15",
+      "first": "Now may He who from the dead",
+      "page": "now-may-he-who-from-the-dead"
+    },
+    {
+      "ref": "16",
+      "first": "Savior, again to Thy dear name we raise",
+      "page": "saviour-again-to-thy-dear-name-we-raise"
+    },
+    {
+      "ref": "17",
+      "first": "Lord, dismiss us with Thy blessing,",
+      "page": "lord-dismiss-us-with-thy-blessing"
+    },
+    {
+      "ref": "20",
+      "first": "O holy, blessed Trinity,",
+      "page": "o-holy-blessed-trinity"
+    },
+    {
+      "ref": "23",
+      "first": "God, who madest earth and heaven,",
+      "page": "god-that-madest-earth-and-heaven"
+    },
+    {
+      "ref": "26",
+      "first": "Now the shades of night are gone,",
+      "page": "now-the-shades-of-night-are-gone"
+    },
+    {
+      "ref": "27",
+      "first": "Lord of my life, O may Thy praise",
+      "page": "lord-of-my-life-o-may-thy-praise"
+    },
+    {
+      "ref": "28",
+      "first": "Every morning mercies new",
+      "page": "every-morning-mercies-new"
+    },
+    {
+      "ref": "29",
+      "first": "Awake, my soul, and with the sun",
+      "page": "awake-my-soul-and-with-the-sun"
+    },
+    {
+      "ref": "36",
+      "first": "Glory to Thee, my God, this night",
+      "page": "glory-to-thee-my-god-this-night"
+    },
+    {
+      "ref": "37",
+      "first": "Savior, breathe an evening blessing",
+      "page": "saviour-breathe-an-evening-blessing"
+    },
+    {
+      "ref": "39",
+      "first": "Thus far the Lord has led me on,",
+      "page": "thus-far-the-lord-has-led-me-on"
+    },
+    {
+      "ref": "40",
+      "first": "Abide with me! fast falls the eventide;",
+      "page": "abide-with-me"
+    },
+    {
+      "ref": "41",
+      "first": "The day is past and gone,",
+      "page": "the-day-is-past-and-gone"
+    },
+    {
+      "ref": "42",
+      "first": "Sun of my soul, Thou Savior dear,",
+      "page": "sun-of-my-soul-thou-saviour-dear"
+    },
+    {
+      "ref": "44",
+      "first": "God, who madest earth and heaven,",
+      "page": "god-that-madest-earth-and-heaven"
+    },
+    {
+      "ref": "45",
+      "first": "Now the day is over,",
+      "page": "now-the-day-is-over"
+    },
+    {
+      "ref": "52",
+      "first": "The Spirit in our hearts",
+      "page": "the-spirit-in-our-hearts"
+    },
+    {
+      "ref": "56",
+      "first": "Come, my soul, thy suit prepare,",
+      "page": "come-my-soul-thy-suit-prepare"
+    },
+    {
+      "ref": "59",
+      "first": "My soul, now bless thy Maker!",
+      "page": "my-soul-now-praise-thy-maker"
+    },
+    {
+      "ref": "61",
+      "first": "Songs of immortal praise belong",
+      "page": "songs-of-immortal-praise-belong"
+    },
+    {
+      "ref": "63",
+      "first": "Praise to the Lord, the Almighty, the King of creation!",
+      "page": "praise-to-the-lord-the-almighty"
+    },
+    {
+      "ref": "64",
+      "first": "Now thank we all our God",
+      "page": "now-thank-we-all-our-god"
+    },
+    {
+      "ref": "68",
+      "first": "Songs of praise the angels sang,",
+      "page": "songs-of-praise-the-angels-sang"
+    },
+    {
+      "ref": "70",
+      "first": "Give to our God immortal praise!",
+      "page": "give-to-our-god-immortal-praise"
+    },
+    {
+      "ref": "74",
+      "first": "To God be glory, peace on earth,",
+      "page": "to-god-be-glory-peace-on-earth"
+    },
+    {
+      "ref": "75",
+      "first": "Through all the changing scenes of life,",
+      "page": "through-all-the-changing-scenes-of-life"
+    },
+    {
+      "ref": "76",
+      "first": "O bless the Lord, my soul!",
+      "page": "o-bless-the-lord-my-soul"
+    },
+    {
+      "ref": "77",
+      "first": "My soul, repeat His praise,",
+      "page": "my-soul-repeat-his-praise"
+    },
+    {
+      "ref": "78",
+      "first": "Before Jehovah’s awful throne,",
+      "page": "before-jehovahs-awful-throne"
+    },
+    {
+      "ref": "79",
+      "first": "From all that dwell below the skies",
+      "page": "from-all-that-dwell-below-the-skies"
+    },
+    {
+      "ref": "83",
+      "first": "One thing’s needful! then, Lord Jesus,",
+      "page": "one-things-needful"
+    },
+    {
+      "ref": "84",
+      "first": "Jesus, Thy boundless love to me",
+      "page": "jesus-thy-boundless-love-to-me"
+    },
+    {
+      "ref": "85",
+      "first": "The Lord my pasture shall prepare",
+      "page": "the-lord-my-pasture-shall-prepare"
+    },
+    {
+      "ref": "91",
+      "first": "Jesus, and shall it ever be,",
+      "page": "jesus-and-shall-it-ever-be"
+    },
+    {
+      "ref": "93",
+      "first": "All hail the power of Jesus’ name!",
+      "page": "all-hail-the-power-of-jesus-name"
+    },
+    {
+      "ref": "95",
+      "first": "In the Cross of Christ I glory,",
+      "page": "in-the-cross-of-christ-i-glory"
+    },
+    {
+      "ref": "96",
+      "first": "How sweet the name of Jesus sounds",
+      "page": "how-sweet-the-name-of-jesus-sounds"
+    },
+    {
+      "ref": "98",
+      "first": "Jesus, the very thought of Thee",
+      "page": "jesus-the-very-thought-of-thee"
+    },
+    {
+      "ref": "100",
+      "first": "Christ, whose glory fills the skies,",
+      "page": "christ-whose-glory-fills-the-skies"
+    },
+    {
+      "ref": "102",
+      "first": "Come, let us join our cheerful songs",
+      "page": "come-let-us-join-our-cheerful-songs"
+    },
+    {
+      "ref": "104",
+      "first": "Crown Him with many crowns,",
+      "page": "crown-him-with-many-crowns"
+    },
+    {
+      "ref": "107",
+      "first": "Jesus, Lover of my soul,",
+      "page": "jesu-lover-of-my-soul"
+    },
+    {
+      "ref": "108",
+      "first": "O for a thousand tongues to sing",
+      "page": "o-for-a-thousand-tongues"
+    },
+    {
+      "ref": "111",
+      "first": "How precious is the Book Divine,",
+      "page": "how-precious-is-the-book-divine"
+    },
+    {
+      "ref": "112",
+      "first": "How shall the young secure their hearts",
+      "page": "how-shall-the-young-secure-their-hearts"
+    },
+    {
+      "ref": "114",
+      "first": "The heavens declare Thy glory, Lord,",
+      "page": "the-heavens-declare-thy-glory-lord"
+    },
+    {
+      "ref": "115",
+      "first": "The Law of God is good and wise",
+      "page": "the-law-of-god-is-good-and-wise"
+    },
+    {
+      "ref": "116",
+      "first": "The Gospel shows the Father’s grace,",
+      "page": "the-gospel-shows-the-fathers-grace"
+    },
+    {
+      "ref": "119",
+      "first": "Lamp of our feet, whereby we trace",
+      "page": "lamp-of-our-feet"
+    },
+    {
+      "ref": "125",
+      "first": "Safely through another week",
+      "page": "safely-through-another-week"
+    },
+    {
+      "ref": "129",
+      "first": "This is the day the Lord hath made;",
+      "page": "this-is-the-day-the-lord-hath-made"
+    },
+    {
+      "ref": "130",
+      "first": "Comfort, comfort ye My people,",
+      "page": "comfort-comfort-ye-my-people"
+    },
+    {
+      "ref": "131",
+      "first": "Jesus came, the heav’ns adoring,",
+      "page": "jesus-came-the-heavens-adoring"
+    },
+    {
+      "ref": "132",
+      "first": "Hail to the Lord’s Anointed,",
+      "page": "hail-to-the-lords-anointed"
+    },
+    {
+      "ref": "134",
+      "first": "The Bridegroom soon will call us:",
+      "page": "the-bridegroom-soon-will-call-us"
+    },
+    {
+      "ref": "136",
+      "first": "O Lord, how shall I meet Thee,",
+      "page": "o-lord-how-shall-i-meet-thee"
+    },
+    {
+      "ref": "137",
+      "first": "The Advent of our God",
+      "page": "the-advent-of-our-god"
+    },
+    {
+      "ref": "138",
+      "first": "Lift up your heads, ye mighty gates!",
+      "page": "lift-up-your-heads-ye-mighty-gates"
+    },
+    {
+      "ref": "139",
+      "first": "Hark the glad sound! the Savior comes,",
+      "page": "hark-the-glad-sound"
+    },
+    {
+      "ref": "145",
+      "first": "All my heart this night rejoices,",
+      "page": "all-my-heart-this-night-rejoices"
+    },
+    {
+      "ref": "147",
+      "first": "All praise to Jesus’ hallowed name,",
+      "page": "all-praise-to-jesus-hallowed-name"
+    },
+    {
+      "ref": "148",
+      "first": "Now praise we Christ, the Holy One,",
+      "page": "now-praise-we-christ-the-holy-one"
+    },
+    {
+      "ref": "149",
+      "first": "A great and mighty wonder",
+      "page": "a-great-and-mighty-wonder"
+    },
+    {
+      "ref": "150",
+      "first": "From heaven above to earth I come",
+      "page": "from-heaven-above-to-earth-i-come"
+    },
+    {
+      "ref": "154",
+      "first": "Hark! the herald-angels sing,",
+      "page": "hark-the-herald-angels-sing"
+    },
+    {
+      "ref": "158",
+      "first": "Joy to the world, the Lord is come!",
+      "page": "joy-to-the-world"
+    },
+    {
+      "ref": "162",
+      "first": "To shepherds, as they watched by night,",
+      "page": "to-shepherds-as-they-watched-by-night"
+    },
+    {
+      "ref": "163",
+      "first": "While with ceaseless course the sun",
+      "page": "while-with-ceaseless-course-the-sun"
+    },
+    {
+      "ref": "167",
+      "first": "Great God, we sing that mighty Hand",
+      "page": "great-god-we-sing-that-mighty-hand"
+    },
+    {
+      "ref": "172",
+      "first": "O God, our Help in ages past,",
+      "page": "o-god-our-help-in-ages-past"
+    },
+    {
+      "ref": "180",
+      "first": "The Star proclaims the King is here;",
+      "page": "the-star-proclaims-the-king-is-here"
+    },
+    {
+      "ref": "181",
+      "first": "Brightest and best of the sons of the morning,",
+      "page": "brightest-and-best-of-the-sons-of-the-morning"
+    },
+    {
+      "ref": "183",
+      "first": "As with gladness men of old",
+      "page": "as-with-gladness-men-of-old"
+    },
+    {
+      "ref": "184",
+      "first": "Songs of thankfulness and praise,",
+      "page": "songs-of-thankfulness-and-praise"
+    },
+    {
+      "ref": "185",
+      "first": "In peace and joy I now depart",
+      "page": "in-peace-and-joy-i-now-depart"
+    },
+    {
+      "ref": "186",
+      "first": "In His Temple now behold Him,",
+      "page": "in-his-temple-now-behold-him"
+    },
+    {
+      "ref": "187",
+      "first": "Angels, from the realms of glory,",
+      "page": "angels-from-the-realms-of-glory"
+    },
+    {
+      "ref": "191",
+      "first": "A lamb goes uncomplaining forth,",
+      "page": "a-lamb-goes-uncomplaining-forth"
+    },
+    {
+      "ref": "199",
+      "first": "Go to dark Gethsemane,",
+      "page": "go-to-dark-gethsemane"
+    },
+    {
+      "ref": "200",
+      "first": "There is a fountain filled with blood,",
+      "page": "there-is-a-fountain-filled-with-blood"
+    },
+    {
+      "ref": "204",
+      "first": "When I survey the wondrous cross",
+      "page": "when-i-survey-the-wondrous-cross"
+    },
+    {
+      "ref": "209",
+      "first": "Stricken, smitten, and afflicted,",
+      "page": "stricken-smitten-and-afflicted"
+    },
+    {
+      "ref": "213",
+      "first": "Savior, when in dust to Thee",
+      "page": "savior-when-in-dust-to-thee"
+    },
+    {
+      "ref": "214",
+      "first": "Alas! and did my Savior bleed,",
+      "page": "at-the-cross"
+    },
+    {
+      "ref": "218",
+      "first": "Awake, my heart, with gladness,",
+      "page": "awake-my-heart-with-gladness"
+    },
+    {
+      "ref": "229",
+      "first": "I know that my Redeemer lives!",
+      "page": "i-know-that-my-redeemer-lives"
+    },
+    {
+      "ref": "231",
+      "first": "See, the Conqueror mounts in triumph;",
+      "page": "see-the-lord-ascends-in-triumph"
+    },
+    {
+      "ref": "235",
+      "first": "A hymn of glory let us sing;",
+      "page": "a-hymn-of-glory-let-us-sing"
+    },
+    {
+      "ref": "243",
+      "first": "Hail the day that sees Him rise,",
+      "page": "hail-the-day-that-sees-him-rise"
+    },
+    {
+      "ref": "245",
+      "first": "I know that my Redeemer lives",
+      "page": "i-know-that-my-redeemer-lives"
+    },
+    {
+      "ref": "247",
+      "first": "O Holy Spirit, enter in,",
+      "page": "o-holy-spirit-enter-in"
+    },
+    {
+      "ref": "249",
+      "first": "Come, God, Creator, Holy Ghost,",
+      "page": "come-god-creator-holy-ghost"
+    },
+    {
+      "ref": "255",
+      "first": "Come, Holy Spirit, heavenly Dove,",
+      "page": "come-holy-spirit-heavenly-dove"
+    },
+    {
+      "ref": "257",
+      "first": "Come, Holy Ghost, God and Lord!",
+      "page": "come-holy-spirit-lord-our-god"
+    },
+    {
+      "ref": "259",
+      "first": "Holy Ghost, with light divine",
+      "page": "holy-ghost-with-light-divine"
+    },
+    {
+      "ref": "262",
+      "first": "Come, Thou almighty King,",
+      "page": "come-thou-almighty-king"
+    },
+    {
+      "ref": "263",
+      "first": "Holy, holy, holy! Lord God Almighty!",
+      "page": "holy-holy-holy"
+    },
+    {
+      "ref": "266",
+      "first": "Thou who art Three in unity,",
+      "page": "o-trinity-of-blessed-light"
+    },
+    {
+      "ref": "271",
+      "first": "God the Father, be our Stay",
+      "page": "god-the-father-be-our-stay"
+    },
+    {
+      "ref": "273",
+      "first": "A Mighty Fortress is our God,",
+      "page": "a-mighty-fortress-is-our-god"
+    },
+    {
+      "ref": "276",
+      "first": "Fear not, O little flock, the Foe",
+      "page": "fear-not-o-little-flock"
+    },
+    {
+      "ref": "277",
+      "first": "The mouth of fools doth God confess,",
+      "page": "the-mouth-of-fools-doth-god-confess"
+    },
+    {
+      "ref": "278",
+      "first": "O God, from heaven look down and see,",
+      "page": "look-down-o-lord-from-heaven-behold-es-ist-das-heil-uns-kommen-her"
+    },
+    {
+      "ref": "282",
+      "first": "Had God not come, may Israel say,",
+      "page": "if-god-had-not-been-on-our-side-war-gott-nicht-mit-uns-diese-zeit-1537"
+    },
+    {
+      "ref": "288",
+      "first": "Ten thousand times ten thousand",
+      "page": "ten-thousand-times-ten-thousand"
+    },
+    {
+      "ref": "290",
+      "first": "Hark! the sound of holy voices",
+      "page": "hark-the-sound-of-holy-voices"
+    },
+    {
+      "ref": "292",
+      "first": "O Lord, I sing with lips and heart,",
+      "page": "rejoice-my-heart-be-glad-and-sing"
+    },
+    {
+      "ref": "294",
+      "first": "To Thee, O Lord, our hearts we raise",
+      "page": "to-thee-o-lord-our-hearts-we-raise"
+    },
+    {
+      "ref": "295",
+      "first": "Come, ye thankful people, come,",
+      "page": "come-ye-thankful-people-come"
+    },
+    {
+      "ref": "298",
+      "first": "Praise to God, immortal praise,",
+      "page": "praise-to-god-immortal-praise"
+    },
+    {
+      "ref": "299",
+      "first": "Swell the anthem, raise the song,",
+      "page": "swell-the-anthem-raise-the-song"
+    },
+    {
+      "ref": "302",
+      "first": "Lord, while for all mankind we pray,",
+      "page": "lord-while-for-all-mankind-we-pray"
+    },
+    {
+      "ref": "303",
+      "first": "Almighty Lord, before Thy throne",
+      "page": "almighty-lord-before-thy-throne"
+    },
+    {
+      "ref": "305",
+      "first": "God bless our native land!",
+      "page": "god-bless-our-native-land"
+    },
+    {
+      "ref": "306",
+      "first": "My hope is built on nothing less",
+      "page": "my-hope-is-built"
+    },
+    {
+      "ref": "307",
+      "first": "Lord, we confess our numerous faults,",
+      "page": "lord-we-confess-our-numerous-faults"
+    },
+    {
+      "ref": "310",
+      "first": "Dear Christians, one and all rejoice,",
+      "page": "dear-christians-one-and-all-rejoice-nun-freut-euch"
+    },
+    {
+      "ref": "311",
+      "first": "By grace I’m saved, grace free and boundless!",
+      "page": "by-grace-im-saved"
+    },
+    {
+      "ref": "313",
+      "first": "Who shall the Lord’s elect condemn?",
+      "page": "who-shall-the-lords-elect-condemn"
+    },
+    {
+      "ref": "318",
+      "first": "Just as I am, without one plea",
+      "page": "just-as-i-am-without-one-plea"
+    },
+    {
+      "ref": "319",
+      "first": "Not all the blood of beasts",
+      "page": "not-all-the-blood-of-beasts"
+    },
+    {
+      "ref": "324",
+      "first": "Nearer, my God, to Thee!",
+      "page": "nearer-my-god-to-thee"
+    },
+    {
+      "ref": "325",
+      "first": "Rock of Ages, cleft for me,",
+      "page": "rock-of-ages"
+    },
+    {
+      "ref": "328",
+      "first": "Grace! ’tis a charming sound,",
+      "page": "grace-tis-a-charming-sound"
+    },
+    {
+      "ref": "332",
+      "first": "God of my life, whose gracious power",
+      "page": "god-of-my-life-whose-gracious-power"
+    },
+    {
+      "ref": "333",
+      "first": "Let us ever walk with Jesus,",
+      "page": "let-us-ever-walk-with-jesus"
+    },
+    {
+      "ref": "336",
+      "first": "Holy Father! Thou hast taught me",
+      "page": "holy-father-thou-hast-taught-me"
+    },
+    {
+      "ref": "340",
+      "first": "Guide me, O Thou great Jehovah,",
+      "page": "guide-me-o-thou-great-jehovah"
+    },
+    {
+      "ref": "341",
+      "first": "The man is ever blest",
+      "page": "the-man-is-ever-blest"
+    },
+    {
+      "ref": "342",
+      "first": "O that the Lord would guide my ways",
+      "page": "o-that-the-lord-would-guide-my-ways"
+    },
+    {
+      "ref": "351",
+      "first": "My faith looks up to Thee,",
+      "page": "my-faith-looks-up-to-thee"
+    },
+    {
+      "ref": "354",
+      "first": "O for a faith that will not shrink,",
+      "page": "o-for-a-faith-that-will-not-shrink"
+    },
+    {
+      "ref": "355",
+      "first": "Take my life and let it be",
+      "page": "take-my-life-and-let-it-be"
+    },
+    {
+      "ref": "359",
+      "first": "Lord, lead the way the Savior went,",
+      "page": "lord-lead-the-way-the-saviour-went"
+    },
+    {
+      "ref": "363",
+      "first": "All depends on our possessing",
+      "page": "all-depends-on-our-possessing"
+    },
+    {
+      "ref": "367",
+      "first": "The Lord’s my Shepherd, I’ll not want;",
+      "page": "the-lords-my-shepherd"
+    },
+    {
+      "ref": "374",
+      "first": "The Lord my Shepherd is,",
+      "page": "the-lord-my-shepherd-is"
+    },
+    {
+      "ref": "375",
+      "first": "How firm a foundation, ye saints of the Lord,",
+      "page": "how-firm-a-foundation"
+    },
+    {
+      "ref": "376",
+      "first": "Fight the good fight with all thy might;",
+      "page": "fight-the-good-fight"
+    },
+    {
+      "ref": "377",
+      "first": "Stand up!—stand up for Jesus!",
+      "page": "stand-up-stand-up-for-jesus"
+    },
+    {
+      "ref": "378",
+      "first": "Am I a soldier of the Cross,",
+      "page": "am-i-a-soldier-of-the-cross"
+    },
+    {
+      "ref": "380",
+      "first": "Soldiers of Christ, arise",
+      "page": "soldiers-of-christ-arise"
+    },
+    {
+      "ref": "382",
+      "first": "Ye servants of the Lord,",
+      "page": "ye-servants-of-the-lord"
+    },
+    {
+      "ref": "385",
+      "first": "What is the world to me",
+      "page": "what-is-the-world-to-me"
+    },
+    {
+      "ref": "387",
+      "first": "My Jesus, as Thou wilt!",
+      "page": "my-jesus-as-thou-wilt"
+    },
+    {
+      "ref": "389",
+      "first": "O Lord, my best desire fulfil",
+      "page": "o-lord-my-best-desire-fulfil"
+    },
+    {
+      "ref": "391",
+      "first": "That man a godly life might live,",
+      "page": "that-men-a-godly-life-might-live"
+    },
+    {
+      "ref": "392",
+      "first": "Wilt thou, O man, live happily",
+      "page": "wilt-thou-o-man-live-happily"
+    },
+    {
+      "ref": "393",
+      "first": "We all believe in one true God,",
+      "page": "we-all-believe-in-one-true-god"
+    },
+    {
+      "ref": "394",
+      "first": "We all believe in one true God,",
+      "page": "we-all-believe-in-one-true-god"
+    },
+    {
+      "ref": "395",
+      "first": "What a Friend we have in Jesus,",
+      "page": "what-a-friend-we-have-in-jesus"
+    },
+    {
+      "ref": "396",
+      "first": "Our Father, Thou in heaven above,",
+      "page": "our-father-thou-in-heaven-above"
+    },
+    {
+      "ref": "397",
+      "first": "Our heavenly Father, hear",
+      "page": "our-heavenly-father-hear"
+    },
+    {
+      "ref": "398",
+      "first": "Prayer is the soul’s sincere desire,",
+      "page": "prayer-is-the-souls-sincere-desire"
+    },
+    {
+      "ref": "399",
+      "first": "Approach, my soul, the mercy-seat,",
+      "page": "approach-my-soul-the-mercy-seat"
+    },
+    {
+      "ref": "400",
+      "first": "Baptized into Thy name most holy,",
+      "page": "baptized-into-thy-name-most-holy"
+    },
+    {
+      "ref": "401",
+      "first": "To Jordan came our Lord, the Christ,",
+      "page": "to-jordan-came-our-lord-the-christ"
+    },
+    {
+      "ref": "404",
+      "first": "This child we dedicate to Thee,",
+      "page": "this-child-we-dedicate-to-thee"
+    },
+    {
+      "ref": "414",
+      "first": "“Jesus sinners doth receive!”",
+      "page": "jesus-sinners-doth-receive"
+    },
+    {
+      "ref": "429",
+      "first": "My God, and is Thy table spread?",
+      "page": "my-god-and-is-thy-table-spread"
+    },
+    {
+      "ref": "431",
+      "first": "May God be praised henceforth and blest forever,",
+      "page": "o-lord-we-praise-thee"
+    },
+    {
+      "ref": "439",
+      "first": "’Twas on that dark, that doleful night,",
+      "page": "twas-on-that-dark-that-doleful-night"
+    },
+    {
+      "ref": "440",
+      "first": "At Thy command, our dearest Lord,",
+      "page": "at-thy-command-our-dearest-lord"
+    },
+    {
+      "ref": "441",
+      "first": "Jesus Christ, our blessed Savior,",
+      "page": "jesus-christ-our-blessed-savior-jesus-christus-unser-heiland-der-von-uns-walter"
+    },
+    {
+      "ref": "442",
+      "first": "The voice that breathed o’er Eden,",
+      "page": "the-voice-that-breathed-oer-eden"
+    },
+    {
+      "ref": "443",
+      "first": "Lord, who at Cana’s wedding-feast",
+      "page": "lord-who-at-canas-wedding-feast"
+    },
+    {
+      "ref": "444",
+      "first": "O perfect Love, all human thought transcending,",
+      "page": "o-perfect-love"
+    },
+    {
+      "ref": "446",
+      "first": "Happy the man who feareth God,",
+      "page": "happy-the-man-who-feareth-god-wo-gott-zum-haus"
+    },
+    {
+      "ref": "448",
+      "first": "Shepherd of tender youth,",
+      "page": "shepherd-of-tender-youth"
+    },
+    {
+      "ref": "449",
+      "first": "Savior, who Thy flock art feeding",
+      "page": "savior-who-thy-flock-art-feeding"
+    },
+    {
+      "ref": "452",
+      "first": "Behold the sure Foundation-stone",
+      "page": "behold-the-sure-foundation-stone"
+    },
+    {
+      "ref": "458",
+      "first": "Great is the Lord, our God,",
+      "page": "great-is-the-lord-our-god"
+    },
+    {
+      "ref": "462",
+      "first": "Blest be the tie that binds",
+      "page": "blest-be-the-tie-that-binds-dennis"
+    },
+    {
+      "ref": "463",
+      "first": "The saints on earth and those above",
+      "page": "the-saints-on-earth-and-those-above"
+    },
+    {
+      "ref": "464",
+      "first": "Glorious things of thee are spoken,",
+      "page": "glorious-things-of-thee-are-spoken"
+    },
+    {
+      "ref": "466",
+      "first": "The Church’s one foundation",
+      "page": "the-churchs-one-foundation"
+    },
+    {
+      "ref": "469",
+      "first": "Lord of the worlds above,",
+      "page": "lord-of-the-worlds-above"
+    },
+    {
+      "ref": "473",
+      "first": "O Spirit of the living God,",
+      "page": "o-spirit-of-the-living-god"
+    },
+    {
+      "ref": "478",
+      "first": "Rise, crowned with light, imperial Salem, rise!",
+      "page": "rise-crowned-with-light-imperial-salem-rise"
+    },
+    {
+      "ref": "480",
+      "first": "May God bestow on us His grace,",
+      "page": "may-god-bestow-on-us-his-grace"
+    },
+    {
+      "ref": "483",
+      "first": "Jesus shall reign where’er the sun",
+      "page": "jesus-shall-reign"
+    },
+    {
+      "ref": "489",
+      "first": "We bid thee welcome in the name",
+      "page": "we-bid-thee-welcome-in-the-name"
+    },
+    {
+      "ref": "490",
+      "first": "How beauteous are their feet",
+      "page": "how-beauteous-are-their-feet"
+    },
+    {
+      "ref": "501",
+      "first": "Why should sorrow ever grieve me;",
+      "page": "why-should-cross-and-trial-grieve-me"
+    },
+    {
+      "ref": "509",
+      "first": "From God shall naught divide me,",
+      "page": "from-god-shall-naught-divide-me"
+    },
+    {
+      "ref": "510",
+      "first": "God is Love; His mercy brightens",
+      "page": "god-is-love-his-mercy-brightens"
+    },
+    {
+      "ref": "512",
+      "first": "Come, ye disconsolate, where’er ye languish,",
+      "page": "come-ye-disconsolate-whereer-ye-languish"
+    },
+    {
+      "ref": "514",
+      "first": "Thy ways, O Lord, with wise design",
+      "page": "thy-ways-o-lord-with-wise-design"
+    },
+    {
+      "ref": "519",
+      "first": "My Father! cheering name!",
+      "page": "my-father-cheering-name"
+    },
+    {
+      "ref": "520",
+      "first": "Nearer, my God, to Thee,",
+      "page": "nearer-my-god-to-thee"
+    },
+    {
+      "ref": "522",
+      "first": "God of my life, to Thee I call;",
+      "page": "god-of-my-life-to-thee-i-call"
+    },
+    {
+      "ref": "524",
+      "first": "God moves in a mysterious way",
+      "page": "god-moves-in-a-mysterious-way"
+    },
+    {
+      "ref": "526",
+      "first": "If God Himself be for me,",
+      "page": "if-god-himself-be-for-me"
+    },
+    {
+      "ref": "534",
+      "first": "And must this body die,",
+      "page": "and-must-this-body-die"
+    },
+    {
+      "ref": "536",
+      "first": "Hark! a voice divides the sky:",
+      "page": "hark-a-voice-divides-the-sky"
+    },
+    {
+      "ref": "540",
+      "first": "Asleep in Jesus! Blessed sleep,",
+      "page": "asleep-in-jesus"
+    },
+    {
+      "ref": "542",
+      "first": "Why do we mourn departing friends",
+      "page": "why-do-we-mourn-departing-friends"
+    },
+    {
+      "ref": "549",
+      "first": "Wake, awake, for night is flying,",
+      "page": "wake-awake-for-night-is-flying"
+    },
+    {
+      "ref": "552",
+      "first": "The day is surely drawing near",
+      "page": "the-day-is-surely-drawing-near"
+    },
+    {
+      "ref": "556",
+      "first": "Jerusalem the golden,",
+      "page": "jerusalem-the-golden"
+    },
+    {
+      "ref": "560",
+      "first": "There is a land of pure delight,",
+      "page": "there-is-a-land-of-pure-delight"
+    },
+    {
+      "ref": "563",
+      "first": "I’m but a stranger here,",
+      "page": "im-but-a-stranger-here"
+    },
+    {
+      "ref": "567",
+      "first": "“Forever with the Lord!”",
+      "page": "forever-with-the-lord"
+    },
+    {
+      "ref": "578",
+      "first": "Praise God, from whom all blessings flow;",
+      "page": "praise-god-from-whom-all-blessings-flow"
+    }
+  ],
+  "skipped": [
+    {
+      "ref": "1",
+      "first": "Lord Jesus Christ, to us attend,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "2",
+      "first": "Lord, open Thou my heart to hear",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "10",
+      "first": "Now our worship sweet is o’er—",
+      "why": "someone we cannot name in full: “M. H. Schenck”"
+    },
+    {
+      "ref": "12",
+      "first": "Sweet Savior, bless us ere we go;",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "18",
+      "first": "Lord of my life, whose tender care",
+      "why": "someone we cannot name in full: ““Ω Chelsea,” 1838”"
+    },
+    {
+      "ref": "21",
+      "first": "While yet the morn is breaking,",
+      "why": "someone we cannot name in full: “J. Muehlmann”"
+    },
+    {
+      "ref": "22",
+      "first": "My inmost heart now raises,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "24",
+      "first": "How lovely now the morning star",
+      "why": "someone we cannot name in full: “B. Wiesenmeyer”"
+    },
+    {
+      "ref": "30",
+      "first": "Since now the day has reached its close",
+      "why": "someone we cannot name in full: “J. T. Herzog”"
+    },
+    {
+      "ref": "31",
+      "first": "Sink not yet, my soul, to slumber,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "32",
+      "first": "The happy sunshine now is gone,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "33",
+      "first": "Now rest beneath night’s shadows,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "34",
+      "first": "Christ, everlasting Source of light,",
+      "why": "someone we cannot name in full: “From Ambrose’s _Christe, qui lux es et dies_: W. Meusslin”"
+    },
+    {
+      "ref": "35",
+      "first": "Before Thy throne I now appear,",
+      "why": "someone we cannot name in full: “B. von Hodenberg. 1640”"
+    },
+    {
+      "ref": "38",
+      "first": "Now God be with us, for the night is closing;",
+      "why": "someone we cannot name in full: “Bohemian Brethren”"
+    },
+    {
+      "ref": "57",
+      "first": "Delay not, delay not, O sinner, draw near,",
+      "why": "no tune we hold for “11s” in 4-line verses"
+    },
+    {
+      "ref": "58",
+      "first": "Come, ye weary sinners, come,",
+      "why": "its first verse cannot be sung as 7.7.7.7"
+    },
+    {
+      "ref": "60",
+      "first": "To God, the Father of all love,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "62",
+      "first": "O that I had a thousand voices,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "65",
+      "first": "I will sing my Maker’s praises",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "67",
+      "first": "Jehovah, let me now adore Thee,",
+      "why": "someone we cannot name in full: “Bartholomew Crasselius”"
+    },
+    {
+      "ref": "69",
+      "first": "Lord, ’tis not that I did choose Thee,",
+      "why": "no tune we hold for “8,5” in 8-line verses"
+    },
+    {
+      "ref": "80",
+      "first": "The Lord hath helped me hitherto",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "82",
+      "first": "Jesus, priceless Treasure,",
+      "why": "no tune we hold for “6,6,5,6,6,5,7,8,6” in 9-line verses"
+    },
+    {
+      "ref": "86",
+      "first": "Jesus, Jesus, Jesus only",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "87",
+      "first": "I leave Thee not; Thou art my Jesus ever,",
+      "why": "no tune we hold for “11,4,4,11,6,6,6,7,8” in 9-line verses"
+    },
+    {
+      "ref": "88",
+      "first": "My dear Jesus I’ll not leave,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "89",
+      "first": "Jesus, Thou my heart’s Delight,",
+      "why": "someone we cannot name in full: “J. Flittner”"
+    },
+    {
+      "ref": "99",
+      "first": "Chief of sinners though I be,",
+      "why": "someone we cannot name in full: “Wm. McComb”"
+    },
+    {
+      "ref": "103",
+      "first": "O Morning Star, how fair and bright",
+      "why": "no tune we hold for “8,8,7,8,8,7,4,8,4,8” in 10-line verses"
+    },
+    {
+      "ref": "105",
+      "first": "I was a wandering sheep,",
+      "why": "no tune we hold for “S. M.” in 8-line verses"
+    },
+    {
+      "ref": "106",
+      "first": "Jesus, Savior, come to me!",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "109",
+      "first": "O friend of souls, how blest am I",
+      "why": "no tune we hold for “8s” in 10-line verses"
+    },
+    {
+      "ref": "110",
+      "first": "Lord Jesus Christ, with us abide,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "121",
+      "first": "Christians, come, in sweetest measures,",
+      "why": "someone we cannot name in full: “Adam of St. Victor”"
+    },
+    {
+      "ref": "123",
+      "first": "Father, who the light this day",
+      "why": "someone we cannot name in full: “Julia A. Elliott”"
+    },
+    {
+      "ref": "124",
+      "first": "Welcome, delightful morn,",
+      "why": "someone we cannot name in full: “Hayward, in Dobell’s New Sel”"
+    },
+    {
+      "ref": "126",
+      "first": "On this day, the first of days,",
+      "why": "someone we cannot name in full: “_Die Parente Temporum_”"
+    },
+    {
+      "ref": "133",
+      "first": "Hark! a thrilling voice is sounding:",
+      "why": "someone we cannot name in full: “From the Latin (c. 5th cent.)”"
+    },
+    {
+      "ref": "135",
+      "first": "Come, Thou precious Ransom, come!",
+      "why": "no tune we hold for “7,8,7,8,7,7” in 6-line verses"
+    },
+    {
+      "ref": "140",
+      "first": "Again is come the new church-year;",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "141",
+      "first": "Savior of the heathen, come,",
+      "why": "someone we cannot name in full: “From the Latin of Ambrose”"
+    },
+    {
+      "ref": "142",
+      "first": "Arise, sons of the kingdom!",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "143",
+      "first": "Once He came in blessing,",
+      "why": "someone we cannot name in full: “J. Horn (Roh)”"
+    },
+    {
+      "ref": "152",
+      "first": "O rejoice, ye Christians, loudly,",
+      "why": "no tune we hold for “8,7,7,8,7,7,8,8,8,8” in 10-line verses"
+    },
+    {
+      "ref": "153",
+      "first": "Let us all with gladsome voice",
+      "why": "someone we cannot name in full: “U. Langhanns”"
+    },
+    {
+      "ref": "156",
+      "first": "We Christians may Rejoice to-day,",
+      "why": "someone we cannot name in full: “Caspar Fueger”"
+    },
+    {
+      "ref": "159",
+      "first": "Come hither, ye faithful, triumphantly sing;",
+      "why": "someone we cannot name in full: “Latin, 17th cent”"
+    },
+    {
+      "ref": "161",
+      "first": "Immanuel, we sing Thy praise,",
+      "why": "no tune we hold for “L. M.” in 5-line verses"
+    },
+    {
+      "ref": "164",
+      "first": "Across the sky the shades of night",
+      "why": "no tune we hold for “8,7,8,7,8,8,7” in 7-line verses"
+    },
+    {
+      "ref": "166",
+      "first": "Father, let me dedicate",
+      "why": "no tune we hold for “7,5” in 8-line verses"
+    },
+    {
+      "ref": "170",
+      "first": "O Lord, our Father, thanks to Thee",
+      "why": "no tune we hold for “8,7,8,7,8,8,7” in 7-line verses"
+    },
+    {
+      "ref": "176",
+      "first": "The ancient Law departs,",
+      "why": "someone we cannot name in full: “Abbé Besnault”"
+    },
+    {
+      "ref": "177",
+      "first": "O sacred day, when first was poured",
+      "why": "someone we cannot name in full: “Abbé Besnault”"
+    },
+    {
+      "ref": "179",
+      "first": "O Jesus, King of Glory!",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "182",
+      "first": "Hail, Thou Source of every blessing,",
+      "why": "its first verse cannot be sung as 8.7.8.7.8.7.8.7"
+    },
+    {
+      "ref": "188",
+      "first": "O dearest Jesus, Thee I pray:",
+      "why": "someone we cannot name in full: “John Mylius”"
+    },
+    {
+      "ref": "189",
+      "first": "Thank God! my Jesus cleanseth me",
+      "why": "no tune we hold for “8,7,8,7,8,8,7” in 7-line verses"
+    },
+    {
+      "ref": "193",
+      "first": "To Thee, Lord Jesus, thanks we give,",
+      "why": "someone we cannot name in full: “Chr. Fischer”"
+    },
+    {
+      "ref": "194",
+      "first": "Jesus, grant that balm and healing",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "195",
+      "first": "Lord Jesus Christ, my Life, my Light,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "196",
+      "first": "Christ, the Life of all the living,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "197",
+      "first": "When o’er my sins I sorrow,",
+      "why": "no tune we hold for “7,6,7,6,8,7,6” in 7-line verses"
+    },
+    {
+      "ref": "198",
+      "first": "Beloved Jesus, what law hast Thou broken",
+      "why": "someone we cannot name in full: “From the Latin of Anselm of Canterbury”"
+    },
+    {
+      "ref": "201",
+      "first": "O bleeding Head, and wounded,",
+      "why": "someone we cannot name in full: “From the Latin of Bernard of Clairvaux”"
+    },
+    {
+      "ref": "203",
+      "first": "O Lamb of God most holy,",
+      "why": "someone we cannot name in full: “N. Decius”"
+    },
+    {
+      "ref": "205",
+      "first": "See, world, thy Life assailèd,",
+      "why": "no tune we hold for “7,7,6,7,7,8” in 6-line verses"
+    },
+    {
+      "ref": "207",
+      "first": "Sev’n times our blessed Savior spoke",
+      "why": "someone we cannot name in full: “Johann Boeschenstein, 15th cent”"
+    },
+    {
+      "ref": "208",
+      "first": "Glory be to Jesus,",
+      "why": "someone we cannot name in full: “Italian, 18th cent”"
+    },
+    {
+      "ref": "210",
+      "first": "Jesus, Refuge of the weary,",
+      "why": "someone we cannot name in full: “Jerome Savonarola”"
+    },
+    {
+      "ref": "212",
+      "first": "Come to Calvary’s holy mountain,",
+      "why": "its first verse cannot be sung as 8.7.8.7.7.7"
+    },
+    {
+      "ref": "215",
+      "first": "O darkest woe!",
+      "why": "someone we cannot name in full: “First stanza, anon”"
+    },
+    {
+      "ref": "216",
+      "first": "So rest, my Rest,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "217",
+      "first": "Lord Jesus, who, our souls to save,",
+      "why": "someone we cannot name in full: “G. Werner”"
+    },
+    {
+      "ref": "219",
+      "first": "Father of Jesus Christ, my Lord,",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "220",
+      "first": "Jesus Christ, my sure Defense",
+      "why": "someone we cannot name in full: “Berlin”"
+    },
+    {
+      "ref": "221",
+      "first": "“Christ the Lord is risen to-day,”",
+      "why": "its first verse cannot be sung as 7.7.7.7"
+    },
+    {
+      "ref": "222",
+      "first": "Jesus lives! No longer now",
+      "why": "no tune we hold for “7,8,7,8,7,7” in 6-line verses"
+    },
+    {
+      "ref": "224",
+      "first": "In death’s strong grasp the Savior lay,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "225",
+      "first": "Christ the Lord is risen again!",
+      "why": "someone we cannot name in full: “Bohemian Brethren, M. Weiss”"
+    },
+    {
+      "ref": "226",
+      "first": "I am content! My Jesus liveth still,",
+      "why": "someone we cannot name in full: “J. J. Moeller”"
+    },
+    {
+      "ref": "230",
+      "first": "Lord Jesus Christ, strong Hero Thou,",
+      "why": "someone we cannot name in full: “B. Helder”"
+    },
+    {
+      "ref": "233",
+      "first": "Lo, God to heaven ascendeth!",
+      "why": "no tune we hold for “7,6,7,6,6,7,7,6” in 8-line verses"
+    },
+    {
+      "ref": "234",
+      "first": "Draw us to Thee,",
+      "why": "no tune we hold for “4,4,7,4,4,7” in 6-line verses"
+    },
+    {
+      "ref": "236",
+      "first": "Since Christ has gone to heaven, His home,",
+      "why": "someone we cannot name in full: “J. Wegelin”"
+    },
+    {
+      "ref": "239",
+      "first": "We thank Thee, Jesus, dearest Friend,",
+      "why": "someone we cannot name in full: “Praetorius’s _Musae Sioniae_”"
+    },
+    {
+      "ref": "242",
+      "first": "Hail, Thou once despisèd Jesus!",
+      "why": "someone we cannot name in full: “John Bakewell”"
+    },
+    {
+      "ref": "244",
+      "first": "Jesus, my great High Priest,",
+      "why": "its first verse cannot be sung as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "246",
+      "first": "Come, O come, Thou quickening Spirit,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "248",
+      "first": "Send, O God, a gentle shower,",
+      "why": "someone we cannot name in full: “M. Kraemer”"
+    },
+    {
+      "ref": "251",
+      "first": "O Holy Ghost, eternal God,",
+      "why": "someone we cannot name in full: “B. Helder”"
+    },
+    {
+      "ref": "252",
+      "first": "O enter, Lord, Thy temple,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "253",
+      "first": "Gracious Spirit, Dove Divine,",
+      "why": "someone we cannot name in full: “John Stocker”"
+    },
+    {
+      "ref": "254",
+      "first": "Let songs of praises fill the sky:",
+      "why": "no tune we hold for “8,6,8,6,8,8” in 6-line verses"
+    },
+    {
+      "ref": "256",
+      "first": "Holy Spirit, hear us",
+      "why": "someone we cannot name in full: “J. Mohr”"
+    },
+    {
+      "ref": "260",
+      "first": "Now do we pray God the Holy Ghost",
+      "why": "someone we cannot name in full: “Stanza 1, 13th century”"
+    },
+    {
+      "ref": "261",
+      "first": "All glory be to God on high,",
+      "why": "someone we cannot name in full: “N. Decius”"
+    },
+    {
+      "ref": "264",
+      "first": "The mystery hidden from the eyes",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "272",
+      "first": "The Lord, my God, be praised,",
+      "why": "no tune we hold for “6,7,6,7,6,6,6,6” in 8-line verses"
+    },
+    {
+      "ref": "274",
+      "first": "Lord, keep us in Thy Word and work,",
+      "why": "someone we cannot name in full: “Stanzas 4 and 5, J. Jonas”"
+    },
+    {
+      "ref": "279",
+      "first": "Christ, Thou the Champion of the band who own",
+      "why": "someone we cannot name in full: “M. A. von Loewenstern”"
+    },
+    {
+      "ref": "280",
+      "first": "Ah! Lord, our God, let them not be confounded",
+      "why": "no tune we hold for “11,11,11,5” in 4-line verses"
+    },
+    {
+      "ref": "281",
+      "first": "No change of time shall ever shock",
+      "why": "someone we cannot name in full: “Tate and Brady”"
+    },
+    {
+      "ref": "284",
+      "first": "If God were not upon our side",
+      "why": "someone we cannot name in full: “Justus Jonas”"
+    },
+    {
+      "ref": "285",
+      "first": "Stars of the morning, so gloriously bright,",
+      "why": "someone we cannot name in full: “Joseph of the Studium, c. 850”"
+    },
+    {
+      "ref": "286",
+      "first": "Lord God, we all to Thee give praise,",
+      "why": "someone we cannot name in full: “From the Latin of Philip Melanchthon. Paul Eber”"
+    },
+    {
+      "ref": "289",
+      "first": "For all Thy saints, O Lord,",
+      "why": "its first verse cannot be sung as 6.6.8.6"
+    },
+    {
+      "ref": "312",
+      "first": "Now I have found the sure foundation",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "314",
+      "first": "Salvation unto us has come",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "315",
+      "first": "Blessed are the sons of God,",
+      "why": "someone we cannot name in full: “J. Humphreys”"
+    },
+    {
+      "ref": "316",
+      "first": "I do not come because my soul",
+      "why": "someone we cannot name in full: “F. B. St. John”"
+    },
+    {
+      "ref": "317",
+      "first": "O how great is Thy compassion,",
+      "why": "no tune we hold for “8,7,7,8,7,7” in 6-line verses"
+    },
+    {
+      "ref": "322",
+      "first": "I lay my sins on Jesus,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "326",
+      "first": "Jesus, Thy blood and righteousness,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "330",
+      "first": "O Mystery of Love Divine",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "331",
+      "first": "Jesus, still lead on",
+      "why": "no tune we hold for “5,5,8,8,5,5” in 6-line verses"
+    },
+    {
+      "ref": "334",
+      "first": "Come, follow Me, the Savior spake,",
+      "why": "no tune we hold for “8,7,8,7,8,8” in 6-line verses"
+    },
+    {
+      "ref": "337",
+      "first": "Savior, I follow on,",
+      "why": "no tune we hold for “6,4,6,4,6,6,6,4” in 8-line verses"
+    },
+    {
+      "ref": "338",
+      "first": "O Thou who wouldst not have",
+      "why": "no tune we hold for “S. M.” in 8-line verses"
+    },
+    {
+      "ref": "339",
+      "first": "May we Thy precepts, Lord, fulfil",
+      "why": "no tune we hold for “8,8,6,8,8,6” in 6-line verses"
+    },
+    {
+      "ref": "343",
+      "first": "God, from all eternity",
+      "why": "someone we cannot name in full: “C. Neumann”"
+    },
+    {
+      "ref": "344",
+      "first": "How can I thank Thee, Lord,",
+      "why": "someone we cannot name in full: “G. Gesenius”"
+    },
+    {
+      "ref": "345",
+      "first": "Soul, what return has God, thy Savior,",
+      "why": "someone we cannot name in full: “C. F. Lochner”"
+    },
+    {
+      "ref": "346",
+      "first": "O God, Thou faithful God,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "347",
+      "first": "O God, forsake me not!",
+      "why": "no tune we hold for “6,7,6,7,6,6,6,6” in 8-line verses"
+    },
+    {
+      "ref": "349",
+      "first": "Thee will I love, my Strength, my Tower,",
+      "why": "no tune we hold for “9,8,9,8,8,6” in 6-line verses"
+    },
+    {
+      "ref": "350",
+      "first": "Renew me, O eternal Light,",
+      "why": "someone we cannot name in full: “J. F. Ruopp”"
+    },
+    {
+      "ref": "352",
+      "first": "Thy life was giv’n for me,",
+      "why": "no tune we hold for “6s” in 6-line verses"
+    },
+    {
+      "ref": "353",
+      "first": "Savior, Thy dying love",
+      "why": "no tune we hold for “6,4,6,4,6,6,6,4” in 8-line verses"
+    },
+    {
+      "ref": "356",
+      "first": "Jesus, Shepherd of the sheep,",
+      "why": "someone we cannot name in full: “Henry Cook”"
+    },
+    {
+      "ref": "357",
+      "first": "O Lord of heaven and earth and sea,",
+      "why": "no tune we hold for “8,8,8,4” in 4-line verses"
+    },
+    {
+      "ref": "358",
+      "first": "Lord of Glory, Thou hast bought us",
+      "why": "someone we cannot name in full: “E. S. Alderson”"
+    },
+    {
+      "ref": "365",
+      "first": "Lord, hear the voice of my complaint,",
+      "why": "someone we cannot name in full: “J. Agricola”"
+    },
+    {
+      "ref": "366",
+      "first": "O Lord, I love Thee from my heart;",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "368",
+      "first": "When I can read my title clear",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "370",
+      "first": "I am trusting Thee, Lord Jesus,",
+      "why": "no tune we hold for “8,5,8,3” in 4-line verses"
+    },
+    {
+      "ref": "372",
+      "first": "Where’er I go, whate’er my task,",
+      "why": "no tune we hold for “8,8,6,8,8,6” in 6-line verses"
+    },
+    {
+      "ref": "379",
+      "first": "My soul, be on thy guard;",
+      "why": "someone we cannot name in full: “George Heath”"
+    },
+    {
+      "ref": "381",
+      "first": "Rise, my soul, to watch and pray,",
+      "why": "someone we cannot name in full: “J. B. Freystein”"
+    },
+    {
+      "ref": "383",
+      "first": "Lord, as Thou wilt, deal Thou with me,",
+      "why": "someone we cannot name in full: “C. Melissander”"
+    },
+    {
+      "ref": "384",
+      "first": "Thy way, not mine, O Lord,",
+      "why": "no tune we hold for “6s” in 8-line verses"
+    },
+    {
+      "ref": "386",
+      "first": "My God, my Father, while I stray",
+      "why": "no tune we hold for “8,8,8,4” in 4-line verses"
+    },
+    {
+      "ref": "388",
+      "first": "Blest be Thy love, dear Lord,",
+      "why": "someone we cannot name in full: “John Austin”"
+    },
+    {
+      "ref": "402",
+      "first": "Blessed Jesus, here we stand,",
+      "why": "no tune we hold for “7,8,7,8,8,8” in 6-line verses"
+    },
+    {
+      "ref": "405",
+      "first": "Father of heaven, who hast created all",
+      "why": "someone we cannot name in full: “A. Knapp”"
+    },
+    {
+      "ref": "409",
+      "first": "In the hour of trial,",
+      "why": "no tune we hold for “6,5” in 8-line verses"
+    },
+    {
+      "ref": "410",
+      "first": "Arm these Thy soldiers, mighty Lord,",
+      "why": "no tune we hold for “L. M.” in 8-line verses"
+    },
+    {
+      "ref": "413",
+      "first": "Lord Jesus Christ, in Thee alone",
+      "why": "someone we cannot name in full: “J. Schneesing”"
+    },
+    {
+      "ref": "415",
+      "first": "Out of the depths I cry to Thee,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "416",
+      "first": "Lord, to Thee I make confession,",
+      "why": "no tune we hold for “8,7,8,7,8,8” in 6-line verses"
+    },
+    {
+      "ref": "417",
+      "first": "O Jesus, Lamb of God, who art",
+      "why": "someone we cannot name in full: “B. Helder”"
+    },
+    {
+      "ref": "419",
+      "first": "O Thou that hear’st when sinners cry,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "420",
+      "first": "Th’ abyss of many a former sin",
+      "why": "someone we cannot name in full: “Joseph of the Studium, c. 860”"
+    },
+    {
+      "ref": "421",
+      "first": "Alas, my God! my sins are great,",
+      "why": "words in iambs; the Eights and Sevens tunes we hold are in trochees"
+    },
+    {
+      "ref": "422",
+      "first": "And wilt Thou pardon, Lord,",
+      "why": "someone we cannot name in full: “Joseph of the Studium, c. 860”"
+    },
+    {
+      "ref": "424",
+      "first": "O God, Thou righteous, faithful Lord,",
+      "why": "someone we cannot name in full: “Anon”"
+    },
+    {
+      "ref": "425",
+      "first": "O faithful God, we worship Thee!",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "427",
+      "first": "Draw nigh and take the body of your Lord",
+      "why": "someone we cannot name in full: “Latin, c. 680”"
+    },
+    {
+      "ref": "428",
+      "first": "O Jesus, bruised and wounded more",
+      "why": "someone we cannot name in full: “Mrs. C. F. Alexander”"
+    },
+    {
+      "ref": "430",
+      "first": "Thy table I approach,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "432",
+      "first": "Deck thyself, my soul, with gladness,",
+      "why": "no tune we hold for “L. M.” in 8-line verses"
+    },
+    {
+      "ref": "433",
+      "first": "Lo, upon the altar lies",
+      "why": "its first verse cannot be sung as 7.7.7.7"
+    },
+    {
+      "ref": "434",
+      "first": "The death of Jesus Christ, our Lord,",
+      "why": "someone we cannot name in full: “H. Spegel”"
+    },
+    {
+      "ref": "436",
+      "first": "Lord Jesus, Thou art truly good;",
+      "why": "someone we cannot name in full: “S. Kinner”"
+    },
+    {
+      "ref": "445",
+      "first": "O blest the house, whate’er befall,",
+      "why": "someone we cannot name in full: “C. C. von Pfeil”"
+    },
+    {
+      "ref": "453",
+      "first": "Christ is our Corner-stone,",
+      "why": "someone we cannot name in full: “From the Latin, 6th or 7th cent”"
+    },
+    {
+      "ref": "454",
+      "first": "Christ, Thou art the sure Foundation,",
+      "why": "someone we cannot name in full: “From the Latin”"
+    },
+    {
+      "ref": "456",
+      "first": "Eternal Son of God, O Thou,",
+      "why": "someone we cannot name in full: “From the Latin”"
+    },
+    {
+      "ref": "460",
+      "first": "There is within this heart of mine",
+      "why": "someone we cannot name in full: “From the Latin of B. Walther”"
+    },
+    {
+      "ref": "461",
+      "first": "Lord, in Thy kingdom there shall be",
+      "why": "words in iambs; the Eights and Sevens tunes we hold are in trochees"
+    },
+    {
+      "ref": "467",
+      "first": "Hark! the Church proclaims her honor,",
+      "why": "someone we cannot name in full: “S. Preiswerk”"
+    },
+    {
+      "ref": "470",
+      "first": "Saints of God, the dawn is brightening,",
+      "why": "someone we cannot name in full: “M. Maxwell”"
+    },
+    {
+      "ref": "472",
+      "first": "Our country’s voice is pleading,",
+      "why": "someone we cannot name in full: “Maria F. Anderson”"
+    },
+    {
+      "ref": "474",
+      "first": "From Greenland’s icy mountains,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "477",
+      "first": "Savior, sprinkle many nations;",
+      "why": "someone we cannot name in full: “A. C. Coxe”"
+    },
+    {
+      "ref": "481",
+      "first": "Awake, Thou Spirit, who didst fire",
+      "why": "someone we cannot name in full: “C. H. Bogatzky”"
+    },
+    {
+      "ref": "484",
+      "first": "Send Thou, O Lord, to every place",
+      "why": "someone we cannot name in full: “Mrs. M. E. Gates”"
+    },
+    {
+      "ref": "485",
+      "first": "Lord of the Church, we humbly pray",
+      "why": "no tune we hold for “8,8,6,8,8,6” in 6-line verses"
+    },
+    {
+      "ref": "486",
+      "first": "God of the prophets, bless the prophets’ sons;",
+      "why": "someone we cannot name in full: “D. Wortman”"
+    },
+    {
+      "ref": "487",
+      "first": "Lord, when at Thy command",
+      "why": "no tune we hold for “S. M.” in 8-line verses"
+    },
+    {
+      "ref": "488",
+      "first": "Lord, pour Thy Spirit from on high",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "492",
+      "first": "Thou who the night in prayer didst spend",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "493",
+      "first": "Bow down Thine ear, almighty Lord,",
+      "why": "someone we cannot name in full: “T. E. Powell”"
+    },
+    {
+      "ref": "494",
+      "first": "Whate’er God will, let that be done;",
+      "why": "someone we cannot name in full: “Anon”"
+    },
+    {
+      "ref": "495",
+      "first": "In Thee, Lord, have I put my trust,",
+      "why": "someone we cannot name in full: “Adam Reusner”"
+    },
+    {
+      "ref": "497",
+      "first": "O Thou, from whom all goodness flows,",
+      "why": "someone we cannot name in full: “Thomas Haweis and Thomas Cotterill”"
+    },
+    {
+      "ref": "498",
+      "first": "If thou but suffer God to guide thee",
+      "why": "someone we cannot name in full: “Ps. 55, 23. George Neumark”"
+    },
+    {
+      "ref": "499",
+      "first": "I leave all things to God’s direction,",
+      "why": "someone we cannot name in full: “Anon., 17th cent”"
+    },
+    {
+      "ref": "503",
+      "first": "O God, my days are dark indeed,",
+      "why": "someone we cannot name in full: “Conrad Hojer”"
+    },
+    {
+      "ref": "505",
+      "first": "Zion mourns in fear and anguish,",
+      "why": "no tune we hold for “8,7,8,7,7,7,8,8” in 8-line verses"
+    },
+    {
+      "ref": "506",
+      "first": "Let not such a thought e’er pain thee",
+      "why": "no tune we hold for “8,7,8,7,7,7,8,8” in 8-line verses"
+    },
+    {
+      "ref": "507",
+      "first": "Whatever God ordains is good!",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "508",
+      "first": "In God, my faithful God,",
+      "why": "someone we cannot name in full: “S. Weingaertner”"
+    },
+    {
+      "ref": "511",
+      "first": "Who puts his trust In God most just",
+      "why": "someone we cannot name in full: “J. Magdeburg”"
+    },
+    {
+      "ref": "513",
+      "first": "God liveth still!",
+      "why": "someone we cannot name in full: “J. F. Zihn”"
+    },
+    {
+      "ref": "518",
+      "first": "Beloved, “It is well!”",
+      "why": "only 12 of 16 lines sing as 6.6.8.6"
+    },
+    {
+      "ref": "523",
+      "first": "Help me, O Lord, in fear and need,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "525",
+      "first": "Commit whatever grieves thee",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "528",
+      "first": "When my last hour is close at hand",
+      "why": "no tune we hold for “8,7,8,7,8,8,7” in 7-line verses"
+    },
+    {
+      "ref": "529",
+      "first": "For me to live is Jesus,",
+      "why": "someone we cannot name in full: “Anon”"
+    },
+    {
+      "ref": "530",
+      "first": "Hark! a voice saith, “All are mortal.”",
+      "why": "someone we cannot name in full: “J. G. Albinus”"
+    },
+    {
+      "ref": "532",
+      "first": "Farewell! I say with gladness,",
+      "why": "its first verse cannot be sung as 7.6.7.6.7.6.7.6"
+    },
+    {
+      "ref": "533",
+      "first": "It is not death to die,",
+      "why": "someone we cannot name in full: “M. A. C. Malan”"
+    },
+    {
+      "ref": "535",
+      "first": "I would not live alway; I ask not to stay",
+      "why": "no tune we hold for “11s” in 4-line verses"
+    },
+    {
+      "ref": "537",
+      "first": "Gentle Shepherd, Thou hast stilled",
+      "why": "someone we cannot name in full: “J. W. Meinhold”"
+    },
+    {
+      "ref": "538",
+      "first": "Now lay we calmly in the grave",
+      "why": "someone we cannot name in full: “M. Weiss”"
+    },
+    {
+      "ref": "539",
+      "first": "Now hush your cries and shed no tear,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "541",
+      "first": "Jesus, I live to Thee,",
+      "why": "its first verse cannot be sung as 6.6.8.6"
+    },
+    {
+      "ref": "544",
+      "first": "Who knows how near my end may be?",
+      "why": "someone we cannot name in full: “Countess Emilie Juliane”"
+    },
+    {
+      "ref": "545",
+      "first": "I fall asleep in Jesus’ wounds,",
+      "why": "someone we cannot name in full: “Probably Paul Eber”"
+    },
+    {
+      "ref": "546",
+      "first": "When the day of toil is done,",
+      "why": "no tune we hold for “7,7,7,5” in 4-line verses"
+    },
+    {
+      "ref": "547",
+      "first": "O how blest are ye whose toils are ended!",
+      "why": "no tune we hold for “10,10,5,10” in 4-line verses"
+    },
+    {
+      "ref": "548",
+      "first": "O’er the distant mountains breaking",
+      "why": "its first verse cannot be sung as 8.7.8.7.8.7"
+    },
+    {
+      "ref": "550",
+      "first": "Let thoughtless thousands choose the road",
+      "why": "someone we cannot name in full: “J. Haskins”"
+    },
+    {
+      "ref": "551",
+      "first": "That day of wrath, that dreadful day,",
+      "why": "someone we cannot name in full: “Thomas of Celano, 13th cent”"
+    },
+    {
+      "ref": "553",
+      "first": "Great God, what do I see and hear?",
+      "why": "no tune we hold for “8,7,8,7,8,8,7” in 7-line verses"
+    },
+    {
+      "ref": "555",
+      "first": "Day of wrath, that day of mourning!",
+      "why": "someone we cannot name in full: “Thomas of Celano”"
+    },
+    {
+      "ref": "557",
+      "first": "Brief life is here our portion;",
+      "why": "someone we cannot name in full: “Bernard of Cluny, 12th cent”"
+    },
+    {
+      "ref": "558",
+      "first": "Jerusalem, my happy home,",
+      "why": "someone we cannot name in full: “From an ancient hymn, anon”"
+    },
+    {
+      "ref": "559",
+      "first": "Jerusalem, thou city fair and high,",
+      "why": "someone we cannot name in full: “J. M. Meyfart”"
+    },
+    {
+      "ref": "561",
+      "first": "O Paradise, O Paradise,",
+      "why": "no tune we hold for “8,6,8,6,6,6,6,6” in 8-line verses"
+    },
+    {
+      "ref": "562",
+      "first": "The Homeland! O the Homeland!",
+      "why": "someone we cannot name in full: “H. R. Haweis”"
+    },
+    {
+      "ref": "564",
+      "first": "There is an hour of peaceful rest,",
+      "why": "no tune we hold for “8,6,8,8,6” in 5-line verses"
+    },
+    {
+      "ref": "565",
+      "first": "A slumber I know, in Jesus’ name,",
+      "why": "a translation whose translator the book does not name"
+    },
+    {
+      "ref": "566",
+      "first": "Yes, there remaineth still a rest!",
+      "why": "someone we cannot name in full: “J. S. Kunth”"
+    },
+    {
+      "ref": "568",
+      "first": "Congregation:—",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "569",
+      "why": "no verses"
+    },
+    {
+      "ref": "570",
+      "why": "no verses"
+    },
+    {
+      "ref": "571",
+      "why": "no verses"
+    },
+    {
+      "ref": "572",
+      "why": "no verses"
+    },
+    {
+      "ref": "573",
+      "why": "no verses"
+    },
+    {
+      "ref": "574",
+      "why": "no verses"
+    },
+    {
+      "ref": "575",
+      "why": "no verses"
+    },
+    {
+      "ref": "576",
+      "why": "no verses"
+    },
+    {
+      "ref": "577",
+      "why": "no verses"
+    },
+    {
+      "ref": "579",
+      "first": "To God the Father, God the Son,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "580",
+      "first": "To Father, Son, and Holy Ghost,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "581",
+      "first": "Father, Son, and Spirit,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "582",
+      "first": "To Father, Son, and Spirit,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "583",
+      "first": "Glory be to God Most High,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "584",
+      "first": "O mighty God and holy,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "585",
+      "first": "Thee, eternal God Most High,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "586",
+      "first": "Holy Father, holy Son,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "587",
+      "first": "To God the Father, Son,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "588",
+      "first": "O Blessed, Holy One!",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "589",
+      "first": "Eternal, holy Lord!",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "590",
+      "first": "Praise the Father, earth and heaven,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "591",
+      "first": "Praise and honor to the Father,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "592",
+      "first": "Glory be to God the Father,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "593",
+      "first": "Great Jehovah, we adore Thee,",
+      "why": "the book names no one"
+    },
+    {
+      "ref": "594",
+      "first": "Glory be to God the Father,",
+      "why": "the book names no one"
+    }
+  ],
+  "counts": {
+    "hymns": 594,
+    "written": 132,
+    "alreadyOurs": 211,
+    "skipped": 251,
+    "removed": 0
+  }
+}

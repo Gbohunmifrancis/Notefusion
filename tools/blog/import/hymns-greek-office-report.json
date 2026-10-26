@@ -1,0 +1,307 @@
+{
+  "source": "John Brownlie, Hymns from the Greek Office Books (Paisley, 1904)",
+  "date": "2026-10-26",
+  "written": [
+    {
+      "ref": "1",
+      "slug": "o-destitute-of-all-defence",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "2",
+      "slug": "within-thy-courts-my-praise-shall-rise",
+      "metre": "8 8 8 8 8 8",
+      "tune": "melita",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "6",
+      "slug": "the-radiance-of-the-brightness",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "7",
+      "slug": "thy-mighty-word-commanding",
+      "metre": "7 6 7 6",
+      "tune": "st-alphege",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "9",
+      "slug": "before-thy-cross-we-take-our-place",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "10",
+      "slug": "o-christ-who-art-the-peerless-light",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "11",
+      "slug": "all-hail-life-bearing-cross",
+      "metre": "6 6 8 6",
+      "tune": "st-bride",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "12",
+      "slug": "come-mortals-come-behold",
+      "metre": "6 6 6 6",
+      "tune": "quam-dilecta",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "14",
+      "slug": "the-lord-ascended-into-heaven",
+      "metre": "8 6 8 6",
+      "tune": "york",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "17",
+      "slug": "even-as-thou-saidst-o-christ",
+      "metre": "6 6 6 6",
+      "tune": "quam-dilecta",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "18",
+      "slug": "hail-full-of-grace-virgin-theotokos",
+      "metre": "10 10 10 10",
+      "tune": "penitentia",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "19",
+      "slug": "tossed-on-the-sea-of-life",
+      "metre": "6 6 8 6",
+      "tune": "aylesbury",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "21",
+      "slug": "i-brought-my-darkest-sin-to-mind",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "22",
+      "slug": "o-god-of-light-and-glory",
+      "metre": "7 6 7 6",
+      "tune": "st-alphege",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "23",
+      "slug": "i-have-no-tears-to-shed",
+      "metre": "6 6 6 6 8 8",
+      "tune": "darwall",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "24",
+      "slug": "thy-love-hath-sweetened-me",
+      "metre": "6 6 8 6",
+      "tune": "st-bride",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "26",
+      "slug": "have-pity-lord-for-thou-are-great",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "27",
+      "slug": "formed-in-thine-image-bright",
+      "metre": "6 6 6 6",
+      "tune": "quam-dilecta",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "28",
+      "slug": "come-with-the-load-of-sorrow-thou-art-bearing",
+      "metre": "11 10 11 10",
+      "tune": "wesley-mason",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "30",
+      "slug": "o-light-of-light-when-other-lights-are-fading",
+      "metre": "11 10 11 10",
+      "tune": "perfect-love",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "34",
+      "slug": "o-christ-to-thy-disciples-then",
+      "metre": "8 8 8 8",
+      "tune": "winchester-new",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "35",
+      "slug": "may-thy-bright-spirit-as-of-old",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "36",
+      "slug": "now-christ-the-god-to-earth-hath-come",
+      "metre": "8 8 8 8",
+      "tune": "melcombe",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "37",
+      "slug": "morn-of-beauty-joyous-morn",
+      "metre": "7 7 7 7",
+      "tune": "vienna",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "38",
+      "slug": "o-ever-ready-to-forgive",
+      "metre": "8 6 8 6",
+      "tune": "winchester-old",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "40",
+      "slug": "the-christ-of-god-to-sorrowing-hearts",
+      "metre": "8 6 8 6",
+      "tune": "st-agnes",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "43",
+      "slug": "the-promise-which-the-saviour-made",
+      "metre": "8 8 8 8 8 8",
+      "tune": "selena",
+      "author": "Traditional Greek and John Brownlie"
+    },
+    {
+      "ref": "46",
+      "slug": "the-joy-of-earth-is-fleeting",
+      "metre": "7 6 7 6 7 6 7 6",
+      "tune": "ewing",
+      "author": "Traditional Greek and John Brownlie"
+    }
+  ],
+  "alreadyOurs": [],
+  "skipped": [
+    {
+      "ref": "3",
+      "first": "Why do we fade?",
+      "why": "only 6 of 12 lines sing as 6.6.6.6"
+    },
+    {
+      "ref": "4",
+      "first": "All human things decay,",
+      "why": "only 12 of 18 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "5",
+      "first": "Thou, Lord, hast power to heal,",
+      "why": "no tune we hold for “unmarked” in 1-line verses"
+    },
+    {
+      "ref": "8",
+      "first": "The early dawn awakes,",
+      "why": "no tune we hold for “unmarked” in 5-line verses"
+    },
+    {
+      "ref": "13",
+      "first": "O Christ the God, Who art our life,",
+      "why": "its first verse cannot be sung as 8.8.8.8"
+    },
+    {
+      "ref": "15",
+      "first": "Blessed art Thou, O Christ, our God,",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "16",
+      "first": "O Mystery, hidden from the world",
+      "why": "only 8 of 12 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "20",
+      "first": "At early dawn, with pious thought,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    },
+    {
+      "ref": "25",
+      "first": "Lo! He gave Himself to die,",
+      "why": "only 10 of 16 lines sing as 7.7.7.7"
+    },
+    {
+      "ref": "29",
+      "first": "We hymn Thy triumph on the Cross,",
+      "why": "its first verse cannot be sung as 8.6.8.6"
+    },
+    {
+      "ref": "31",
+      "first": "Hence, slumber, from mine eyes,",
+      "why": "only 12 of 24 lines sing as 6.6.6.6.8.8"
+    },
+    {
+      "ref": "32",
+      "first": "The Lord came down from heaven,",
+      "why": "only 9 of 12 lines sing as 6.6.6.6"
+    },
+    {
+      "ref": "33",
+      "first": "Come, let us sing with joyful mirth",
+      "why": "only 15 of 24 lines sing as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "39",
+      "first": "O Son of God, on Thee we call,",
+      "why": "only 20 of 30 lines sing as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "41",
+      "first": "My sin was very great,",
+      "why": "only 24 of 32 lines sing as 8.6.8.6.8.6.8.6"
+    },
+    {
+      "ref": "42",
+      "first": "When the morn comes o'er the hills",
+      "why": "only 17 of 24 lines sing as 7.7.7.7.7.7"
+    },
+    {
+      "ref": "44",
+      "first": "When sorrow's clouds are circling near,",
+      "why": "its first verse cannot be sung as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "45",
+      "first": "He came to earth who came from God,",
+      "why": "only 11 of 18 lines sing as 8.8.8.8.8.8"
+    },
+    {
+      "ref": "47",
+      "first": "Safe in the comfort of Thy grace,",
+      "why": "words in iambs; the 8.8.7.8.8.7 tunes we hold are in trochees"
+    }
+  ],
+  "counts": {
+    "hymns": 47,
+    "written": 28,
+    "alreadyOurs": 0,
+    "skipped": 19,
+    "removed": 0
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Our Lord Is Risen from the Dead",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Our Lord Is Risen from the Dead in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 232.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Our Lord is ri-sen from the dead, Our Je-sus is gone up on high; The powers of hell are cap-tive led, The Vic-tor ris-es to the sky.",
+  "verses": [
+    {
+      "lines": [
+        "Our Lord is risen from the dead,",
+        "Our Jesus is gone up on high;",
+        "The powers of hell are captive led,",
+        "The Victor rises to the sky."
+      ]
+    },
+    {
+      "lines": [
+        "There His triumphal chariot waits,",
+        "And angels chant the solemn lay:",
+        "“Lift up your heads, ye heavenly gates!",
+        "Ye everlasting doors, give way!”"
+      ]
+    },
+    {
+      "lines": [
+        "Loose all your bars of massy light",
+        "And wide unfold the radiant scene.",
+        "He claims these mansions as His right;",
+        "Receive the King of Glory in."
+      ]
+    },
+    {
+      "lines": [
+        "Who is the King of Glory, who?",
+        "The Lord, who all His foes o’ercame,",
+        "The world, sin, death, and hell o’erthrew;",
+        "And Jesus is the Conqueror’s name."
+      ]
+    },
+    {
+      "lines": [
+        "Lo! His triumphal chariot waits,",
+        "And angels chant the solemn lay:",
+        "“Lift up your heads, ye heavenly gates;",
+        "Ye everlasting doors, give way!”"
+      ]
+    },
+    {
+      "lines": [
+        "Who is the King of Glory, who?",
+        "The Lord, of glorious power possest,",
+        "The King of saints and angels too,",
+        "God over all, forever blest!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:232"
+}

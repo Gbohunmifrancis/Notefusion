@@ -1,0 +1,76 @@
+{
+  "title": "Lord, a Band of Foes Increasing",
+  "tune": "galilee-jude",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Lord, a Band of Foes Increasing in Tonic Solfa to GALILEE (JUDE), doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Psalm II”.",
+    "The book printed the words without tunes. They are in Eights and Sevens (8.7.8.7), and this page sets them to GALILEE (JUDE); any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Lord, a band of foes in-creas-ing Ter-ror to my heart would bring; For they tell my soul un-ceas-ing, That no help from God can spring.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, a band of foes increasing",
+        "Terror to my heart would bring;",
+        "For they tell my soul unceasing,",
+        "That no help from God can spring."
+      ]
+    },
+    {
+      "lines": [
+        "Yet Thou art my shield about me,",
+        "Till the time of strife is past;",
+        "And though cruel foes may flout me,",
+        "Thou wilt hear my prayer at last."
+      ]
+    },
+    {
+      "lines": [
+        "On my couch when night was falling,",
+        "Lay I down devoid of fear;",
+        "And when morning light was calling,",
+        "I awoke, for thou wert near."
+      ]
+    },
+    {
+      "lines": [
+        "Tens of thousands round my dwelling",
+        "Stand arrayed to do me harm;",
+        "But my trust when foes are swelling,",
+        "Rests in Thine almighty arm."
+      ]
+    },
+    {
+      "lines": [
+        "Rise, O Lord, for Thou, victorious,",
+        "Hast the might of sin o'erthrown,",
+        "And amid Thy triumph glorious,",
+        "Bless the people Thou dost own."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to GALILEE (JUDE) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:40"
+}

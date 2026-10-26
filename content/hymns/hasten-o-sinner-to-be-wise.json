@@ -1,0 +1,63 @@
+{
+  "title": "Hasten, O Sinner, to Be Wise",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Thomas Scott",
+      "born": 1705,
+      "died": 1775,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Hasten, O Sinner, to Be Wise in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Thomas Scott wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 55.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Has-ten, O sin-ner, to be wise And stay not for the mor-row’s sun, The lon-ger wis-dom you de-spise, The hard-er is she to be won.",
+  "verses": [
+    {
+      "lines": [
+        "Hasten, O sinner, to be wise",
+        "And stay not for the morrow’s sun,",
+        "The longer wisdom you despise,",
+        "The harder is she to be won."
+      ]
+    },
+    {
+      "lines": [
+        "O hasten, mercy to implore",
+        "And stay not for the morrow’s sun,",
+        "For fear thy season should be o’er",
+        "Before this evening’s course be run."
+      ]
+    },
+    {
+      "lines": [
+        "Hasten, O sinner, to return",
+        "And stay not for the morrow’s sun,",
+        "For fear thy lamp should fail to burn",
+        "Before the needful work is done."
+      ]
+    },
+    {
+      "lines": [
+        "Hasten, O sinner, to be blest",
+        "And stay not for the morrow’s sun,",
+        "For fear the curse should thee arrest",
+        "Before the morrow is begun."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Thomas Scott died in 1775.",
+  "credits": "Words by Thomas Scott (1705–1775), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:55"
+}

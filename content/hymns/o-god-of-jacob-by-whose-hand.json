@@ -1,0 +1,71 @@
+{
+  "title": "O God of Jacob, by Whose Hand",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Philip Doddridge",
+      "born": 1702,
+      "died": 1751,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "O God of Jacob, by Whose Hand in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Philip Doddridge wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 364.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O God of Ja-cob, by whose hand Thy peo-ple still are fed; Who through this wea-ry pil-grim-age Hast all our fa-thers led;",
+  "verses": [
+    {
+      "lines": [
+        "O God of Jacob, by whose hand",
+        "Thy people still are fed;",
+        "Who through this weary pilgrimage",
+        "Hast all our fathers led;"
+      ]
+    },
+    {
+      "lines": [
+        "To Thee our humble vows we raise,",
+        "To Thee address our prayer",
+        "And in Thy kind and faithful breast",
+        "Deposit all our care."
+      ]
+    },
+    {
+      "lines": [
+        "Through each perplexing path of life",
+        "Our wandering footsteps guide;",
+        "Give us each day our daily bread",
+        "And raiment fit provide."
+      ]
+    },
+    {
+      "lines": [
+        "O spread Thy covering wings around",
+        "Till all our wanderings cease",
+        "And at our Father’s loved abode",
+        "Our souls arrive in peace."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee, as to our covenant God,",
+        "We’ll our whole selves resign",
+        "And thankful own that all we are,",
+        "And all we have, is Thine."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Philip Doddridge died in 1751.",
+  "credits": "Words by Philip Doddridge (1702–1751), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:364"
+}

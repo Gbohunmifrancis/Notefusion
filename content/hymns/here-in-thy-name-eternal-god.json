@@ -1,0 +1,71 @@
+{
+  "title": "Here in Thy Name, Eternal God",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Here in Thy Name, Eternal God in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "James Montgomery wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 459.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Here in Thy name, e-ter-nal God, We build this earth-ly house for Thee; Oh, choose it for Thy fixed a-bode And keep it from all er-ror free!",
+  "verses": [
+    {
+      "lines": [
+        "Here in Thy name, eternal God,",
+        "We build this earthly house for Thee;",
+        "Oh, choose it for Thy fixed abode",
+        "And keep it from all error free!"
+      ]
+    },
+    {
+      "lines": [
+        "Here, when Thy people seek Thy face",
+        "And dying sinners pray to live,",
+        "Hear Thou in heaven, Thy dwelling-place;",
+        "And when Thou hearest, Lord, forgive."
+      ]
+    },
+    {
+      "lines": [
+        "Here, when Thy messengers proclaim",
+        "The blessed Gospel of Thy Son,",
+        "Still by the power of His great name",
+        "Be mighty signs and wonders done."
+      ]
+    },
+    {
+      "lines": [
+        "When children’s voices raise the song,",
+        "“Hosanna to the heavenly King!”",
+        "Let heaven with earth the strain prolong,",
+        "Hosanna! let the angels sing."
+      ]
+    },
+    {
+      "lines": [
+        "Thy glory never hence depart;",
+        "Yet choose not, Lord, this house alone:",
+        "Thy kingdom come to every heart,",
+        "In every bosom fix Thy throne."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: James Montgomery died in 1854.",
+  "credits": "Words by James Montgomery (1771–1854), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:459"
+}

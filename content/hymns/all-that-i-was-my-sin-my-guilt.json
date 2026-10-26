@@ -1,0 +1,71 @@
+{
+  "title": "All That I Was, My Sin, My Guilt",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Horatius Bonar",
+      "born": 1808,
+      "died": 1889,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "All That I Was, My Sin, My Guilt in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Horatius Bonar wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 308.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "All that I was, my sin, my guilt, My death, was all my own; All that I am, I owe to Thee, My gra-cious God, a-lone.",
+  "verses": [
+    {
+      "lines": [
+        "All that I was, my sin, my guilt,",
+        "My death, was all my own;",
+        "All that I am, I owe to Thee,",
+        "My gracious God, alone."
+      ]
+    },
+    {
+      "lines": [
+        "The evil of my former state",
+        "Was mine, and only mine;",
+        "The good in which I now rejoice",
+        "Is Thine, and only Thine."
+      ]
+    },
+    {
+      "lines": [
+        "The darkness of my former state,",
+        "The bondage, all was mine;",
+        "The light of life in which I walk,",
+        "The liberty, is Thine."
+      ]
+    },
+    {
+      "lines": [
+        "Thy grace first made me feel my sin,",
+        "It taught me to believe;",
+        "Then, in believing, peace I found,",
+        "And now I live, I live!"
+      ]
+    },
+    {
+      "lines": [
+        "All that I am, e’en here on earth,",
+        "All that I hope to be",
+        "When Jesus comes and glory dawns,",
+        "I owe it, Lord, to Thee."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Horatius Bonar died in 1889.",
+  "credits": "Words by Horatius Bonar (1808–1889), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:308"
+}

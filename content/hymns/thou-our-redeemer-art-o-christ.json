@@ -1,0 +1,76 @@
+{
+  "title": "Thou Our Redeemer Art, O Christ",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Thou Our Redeemer Art, O Christ in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “_Epiphany_”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thou our Re-deem-er art, O Christ, Our heart’s de-sire, our fer-vent love; Cre-a-tor of the worlds, Thou cam’st To wear our flesh, from heaven a-bove.",
+  "verses": [
+    {
+      "lines": [
+        "Thou our Redeemer art, O Christ,",
+        "Our heart’s desire, our fervent love;",
+        "Creator of the worlds, Thou cam’st",
+        "To wear our flesh, from heaven above."
+      ]
+    },
+    {
+      "lines": [
+        "’Twas love that brought Thee to our aid,",
+        "To bear the burden of our woe,",
+        "To bow the head in shameful death,",
+        "And life, immortal life, bestow."
+      ]
+    },
+    {
+      "lines": [
+        "Asunder burst the bands of hell,",
+        "The captives hailed the glorious day;",
+        "And by Thy mighty triumph crowned,",
+        "Thou art at God’s right hand for aye."
+      ]
+    },
+    {
+      "lines": [
+        "O may Thy mercy still abound,",
+        "That, by the goodness of Thy grace,",
+        "We daily o’er our sin may rise,",
+        "And see the beauty of Thy face."
+      ]
+    },
+    {
+      "lines": [
+        "Spring of our joy, be Thou, O Christ;",
+        "Our great reward, hereafter be;",
+        "And while the endless ages run,",
+        "Our praises shall be all of Thee."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:26"
+}

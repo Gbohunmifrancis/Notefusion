@@ -1,0 +1,68 @@
+{
+  "title": "When Evening Shades Around Us Close",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "When Evening Shades Around Us Close in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By Charles Coffin”, headed “In Noctis Umbra Desides”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When eve-ning shades a-round us close, And bound in sleep our limbs re-pose, The watch-ful soul, from slum-ber free, Shall breathe its ear-nest prayer to Thee.",
+  "verses": [
+    {
+      "lines": [
+        "When evening shades around us close,",
+        "And bound in sleep our limbs repose,",
+        "The watchful soul, from slumber free,",
+        "Shall breathe its earnest prayer to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Desire of Nations, Word of God,",
+        "Thou Saviour of the World abroad,",
+        "Hear Thou our mournful prayer at length,",
+        "And raise the fallen by Thy strength."
+      ]
+    },
+    {
+      "lines": [
+        "Be near, Redeemer; by Thy grace",
+        "Forgive our erring sinful race,",
+        "Bound in the prison-house of sin—",
+        "O, open heaven and lead us in."
+      ]
+    },
+    {
+      "lines": [
+        "O Thou who cam’st to set us free,",
+        "To Thee, the Son, all praises be;",
+        "To Father, Spirit, Three in One,",
+        "While the eternal ages run."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:20"
+}

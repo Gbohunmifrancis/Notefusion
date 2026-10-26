@@ -1,0 +1,76 @@
+{
+  "title": "Surpassing Great the Gift of God",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Surpassing Great the Gift of God in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sur-pass-ing great the gift of God To err-ing mor-tals given, A way that, from their dark a-bode, Leads to the light of heaven.",
+  "verses": [
+    {
+      "lines": [
+        "Surpassing great the gift of God",
+        "To erring mortals given,",
+        "A way that, from their dark abode,",
+        "Leads to the light of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "O Christ Who art the living way,",
+        "Plant Thou my feet therein,",
+        "And lead me lest I go astray",
+        "In luring paths of sin."
+      ]
+    },
+    {
+      "lines": [
+        "Too long I've found a sad delight",
+        "In wandering from Thy care,",
+        "Nor feared the sudden fall of night,",
+        "The darkness, and the snare."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus Christ, to Thee my soul",
+        "In conscious weakness clings;",
+        "Teach me to seek the kind control",
+        "That peace and safety brings."
+      ]
+    },
+    {
+      "lines": [
+        "And lead me upwards day by day,",
+        "Till, night and danger past,",
+        "I reach by Thee the living way,",
+        "The Father's house at last."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:66"
+}

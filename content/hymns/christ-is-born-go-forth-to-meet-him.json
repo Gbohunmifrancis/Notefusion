@@ -1,0 +1,76 @@
+{
+  "title": "Christ Is Born, Go Forth to Meet Him",
+  "tune": "kalmar",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "Christ Is Born, Go Forth to Meet Him in Tonic Solfa to KALMAR, doh is G: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900), where he gives them as “By St. Cosmas, 760 A.D”.",
+    "The book printed the words without tunes. They are in 8.7.8.7.7.7, and this page sets them to KALMAR; any other 8.7.8.7.7.7 tune fits them as well."
+  ],
+  "underlay": "Christ is born, go forth to meet Him, Christ by all the heaven a-dored; Sing-ing songs of wel-come, greet Him, For the earth re-ceives her Lord. All ye na-tions shout and sing; For He comes, your glo-rious King.",
+  "verses": [
+    {
+      "lines": [
+        "Christ is born, go forth to meet Him,",
+        "Christ by all the heaven adored;",
+        "Singing songs of welcome, greet Him,",
+        "For the earth receives her Lord.",
+        "All ye nations shout and sing;",
+        "For He comes, your glorious King."
+      ]
+    },
+    {
+      "lines": [
+        "Once His heavenly image bearing,",
+        "Man has sunk to depths of sin;",
+        "Now defiled, debased, despairing,",
+        "Clad in rags and foul within;",
+        "But our God, who beauty gave,",
+        "Lifts the soul He comes to save."
+      ]
+    },
+    {
+      "lines": [
+        "From the height of heaven beholding,",
+        "Pity filled the heart of grace,",
+        "And our Lord, His love unfolding,",
+        "Made the earth His dwelling-place;",
+        "And a virgin mother gave",
+        "God Incarnate, man to save."
+      ]
+    },
+    {
+      "lines": [
+        "Wisdom, Might, and Word Eternal,",
+        "Glory of the Father, Thou!",
+        "Hid from man and powers supernal,",
+        "Lo, He wears our nature now!",
+        "To the Lord your worship bring,",
+        "Praise Him, your victorious King."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 7 7",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to KALMAR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:5"
+}

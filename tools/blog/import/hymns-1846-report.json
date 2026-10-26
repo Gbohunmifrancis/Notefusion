@@ -465,6 +465,13 @@
       "author": "Charles Wesley"
     },
     {
+      "ref": "137",
+      "slug": "the-god-who-reigns-alone",
+      "metre": "6 6 6 6",
+      "tune": "quam-dilecta",
+      "author": "William Drummond of Hawthornden"
+    },
+    {
       "ref": "138",
       "slug": "jehovah-god-thy-gracious-power",
       "metre": "8 6 8 6",
@@ -3083,6 +3090,13 @@
       "author": "James Edmeston"
     },
     {
+      "ref": "944",
+      "slug": "the-mellow-eve-is-gliding",
+      "metre": "7 6 7 6",
+      "tune": "st-alphege",
+      "author": "Anonymous"
+    },
+    {
       "ref": "946",
       "slug": "glory-to-thee-my-god-this-night",
       "metre": "8 8 8 8",
@@ -4525,11 +4539,6 @@
       "why": "an author we cannot name in full: “Wm. Taylor”"
     },
     {
-      "ref": "137",
-      "first": "The God who reigns alone",
-      "why": "no tune we hold for “6s. M.” in 4-line verses"
-    },
-    {
       "ref": "141",
       "first": "Thou art, almighty Lord of all,",
       "why": "an author we cannot name in full: “W. Ray”"
@@ -4622,7 +4631,7 @@
     {
       "ref": "179",
       "first": "Lo! the lilies of the field!",
-      "why": "only 10 of 16 lines sing as 8.7.8.7.8.7.8.7"
+      "why": "words in iambs; the Eights and Sevens Double tunes we hold are in trochees"
     },
     {
       "ref": "180",
@@ -5282,7 +5291,7 @@
     {
       "ref": "600",
       "first": "Farewell, thou once a mortal,",
-      "why": "no tune we hold for “7s. & 6s. M.” in 4-line verses"
+      "why": "its first verse cannot be sung as 7.6.7.6"
     },
     {
       "ref": "601",
@@ -5874,11 +5883,6 @@
       "why": "no tune we hold for “L. M.” in 8-line verses"
     },
     {
-      "ref": "944",
-      "first": "The mellow eve is gliding",
-      "why": "no tune we hold for “7s. & 6s. M.” in 4-line verses"
-    },
-    {
       "ref": "948",
       "first": "'Tis gone, that bright and orbéd blaze,",
       "why": "its first verse cannot be sung as 8.8.8.8"
@@ -5985,9 +5989,9 @@
   ],
   "counts": {
     "hymns": 1005,
-    "written": 477,
+    "written": 479,
     "alreadyOurs": 201,
-    "skipped": 327,
+    "skipped": 325,
     "removed": 0
   }
 }

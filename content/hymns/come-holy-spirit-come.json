@@ -1,0 +1,71 @@
+{
+  "title": "Come, Holy Spirit, Come",
+  "tune": "boylston",
+  "text": [
+    {
+      "name": "Joseph Hart",
+      "born": 1712,
+      "died": 1768,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Come, Holy Spirit, Come in Tonic Solfa to BOYLSTON, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Joseph Hart wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 258.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to BOYLSTON; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Come, Ho-ly Spir-it, come! Let Thy bright beams a-rise; Dis-pel the sor-row from our minds, The dark-ness from our eyes.",
+  "verses": [
+    {
+      "lines": [
+        "Come, Holy Spirit, come!",
+        "Let Thy bright beams arise;",
+        "Dispel the sorrow from our minds,",
+        "The darkness from our eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Revive our drooping faith,",
+        "Our doubts and fears remove,",
+        "And kindle in our breasts the flame",
+        "Of never-dying love."
+      ]
+    },
+    {
+      "lines": [
+        "Convince us of our sin,",
+        "Then lead to Jesus’ blood,",
+        "And to our wondering view reveal",
+        "The mercies of our God."
+      ]
+    },
+    {
+      "lines": [
+        "’Tis Thine to cleanse the heart,",
+        "To sanctify the soul,",
+        "To pour fresh life on every part,",
+        "And new-create the whole."
+      ]
+    },
+    {
+      "lines": [
+        "Dwell, therefore, in our hearts;",
+        "Our minds from bondage free;",
+        "Then shall we know and praise and love",
+        "The Father, Son, and Thee."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Joseph Hart died in 1768.",
+  "credits": "Words by Joseph Hart (1712–1768), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to BOYLSTON by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:258"
+}

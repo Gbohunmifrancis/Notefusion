@@ -1,0 +1,71 @@
+{
+  "title": "I’ll Praise My Maker Whilst I’ve Breath",
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "I’ll Praise My Maker Whilst I’ve Breath in Tonic Solfa to MELITA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 73.",
+    "The book printed the words without tunes, marked Long Metre, six lines (8.8.8.8.8.8), to be sung to any tune of that metre. This page sets them to MELITA; any other Long Metre, six lines tune fits them as well."
+  ],
+  "underlay": "I’ll praise my Mak-er whilst I’ve breath; And when my voice is lost in death, Praise shall em-ploy my no-bler powers. My days of praise shall ne’er be past While life and thought and be-ing last Or im-mor-tal-i-ty en-dures.",
+  "verses": [
+    {
+      "lines": [
+        "I’ll praise my Maker whilst I’ve breath;",
+        "And when my voice is lost in death,",
+        "Praise shall employ my nobler powers.",
+        "My days of praise shall ne’er be past",
+        "While life and thought and being last",
+        "Or immortality endures."
+      ]
+    },
+    {
+      "lines": [
+        "Happy the man whose hopes rely",
+        "On Israel’s God, who made the sky",
+        "And earth and seas with all their train;",
+        "His truth forever stands secure;",
+        "He saves th’ oppressed, He feeds the poor,",
+        "And none shall find His promise vain."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord gives eyesight to the blind;",
+        "The Lord supports the sinking mind;",
+        "He sends the laboring conscience peace;",
+        "He helps the stranger in distress,",
+        "The widow and the fatherless,",
+        "And grants the prisoner sweet release."
+      ]
+    },
+    {
+      "lines": [
+        "I’ll praise Him while He lends me breath;",
+        "And when my voice is lost in death,",
+        "Praise shall employ my nobler powers:",
+        "My days of praise shall ne’er be past,",
+        "While life and thought and being last",
+        "Or immortality endures."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELITA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:73"
+}

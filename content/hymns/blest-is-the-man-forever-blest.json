@@ -1,0 +1,63 @@
+{
+  "title": "Blest Is the Man, Forever Blest",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Blest Is the Man, Forever Blest in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 309.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Blest is the man, for-ev-er blest, Whose guilt is par-doned by his God, Whose sins with sor-row are con-fessed And cov-ered with his Sa-vior’s blood.",
+  "verses": [
+    {
+      "lines": [
+        "Blest is the man, forever blest,",
+        "Whose guilt is pardoned by his God,",
+        "Whose sins with sorrow are confessed",
+        "And covered with his Savior’s blood."
+      ]
+    },
+    {
+      "lines": [
+        "Blest is the man to whom the Lord",
+        "Imputes not his iniquities;",
+        "He pleads no merit of reward",
+        "And not on works, but grace relies."
+      ]
+    },
+    {
+      "lines": [
+        "From guile his heart and lips are free,",
+        "His humble joy, his holy fear,",
+        "With deep repentance well agree",
+        "And join to prove his faith sincere."
+      ]
+    },
+    {
+      "lines": [
+        "How glorious is that righteousness",
+        "That hides and cancels all his sins,",
+        "While a bright evidence of grace",
+        "Through his whole life appears and shines!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:309"
+}

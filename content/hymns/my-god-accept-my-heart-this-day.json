@@ -1,0 +1,71 @@
+{
+  "title": "My God, Accept My Heart This Day",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Matthew Bridges",
+      "born": 1800,
+      "died": 1894,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "My God, Accept My Heart This Day in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Matthew Bridges wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 412.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "My God, ac-cept my heart this day And make it al-ways Thine That I from Thee no more may stray, No more from Thee de-cline.",
+  "verses": [
+    {
+      "lines": [
+        "My God, accept my heart this day",
+        "And make it always Thine",
+        "That I from Thee no more may stray,",
+        "No more from Thee decline."
+      ]
+    },
+    {
+      "lines": [
+        "Before the cross of Him who died,",
+        "Behold, I prostrate fall;",
+        "Let every sin be crucified,",
+        "Let Christ be all in all!"
+      ]
+    },
+    {
+      "lines": [
+        "Anoint me with Thy heavenly grace,",
+        "Adopt me for Thine own,",
+        "That I may see Thy glorious face",
+        "And worship at Thy throne!"
+      ]
+    },
+    {
+      "lines": [
+        "May the dear blood, once shed for me,",
+        "My blest atonement prove",
+        "That I from first to last may be",
+        "The purchase of Thy love!"
+      ]
+    },
+    {
+      "lines": [
+        "Let every thought and work and word",
+        "To Thee be ever given;",
+        "Then life shall be Thy service, Lord,",
+        "And death the gate of heaven."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Matthew Bridges died in 1894.",
+  "credits": "Words by Matthew Bridges (1800–1894), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:412"
+}

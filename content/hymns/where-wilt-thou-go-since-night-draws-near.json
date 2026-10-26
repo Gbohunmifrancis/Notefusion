@@ -1,0 +1,77 @@
+{
+  "title": "Where Wilt Thou Go Since Night Draws Near",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Ernst Christoph Homburg",
+      "born": 1605,
+      "died": 1681,
+      "role": "Words"
+    },
+    {
+      "name": "August Crull",
+      "born": 1845,
+      "died": 1923,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Where Wilt Thou Go Since Night Draws Near in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Ernst Christoph Homburg wrote these words in German. August Crull's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 227.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Where wilt Thou go since night draws near, O Je-sus Christ, Thou Pil-grim dear? Lord, make me hap-py, be my Guest, And in my heart, oh, deign to rest.",
+  "verses": [
+    {
+      "lines": [
+        "Where wilt Thou go since night draws near,",
+        "O Jesus Christ, Thou Pilgrim dear?",
+        "Lord, make me happy, be my Guest,",
+        "And in my heart, oh, deign to rest."
+      ]
+    },
+    {
+      "lines": [
+        "Grant my request, O dearest Friend,",
+        "For truly I Thy best intend;",
+        "Thou knowest that Thou ever art",
+        "A welcome Guest unto my heart."
+      ]
+    },
+    {
+      "lines": [
+        "The day is now far spent and gone,",
+        "The shades of night come quickly on;",
+        "Then stay with me, Thou heavenly Light,",
+        "And do not leave me in this night."
+      ]
+    },
+    {
+      "lines": [
+        "Enlighten me that from the way",
+        "That leads to heaven I may not stray,",
+        "That I may never be misled,",
+        "Though night of sin is round me spread."
+      ]
+    },
+    {
+      "lines": [
+        "And when I on my death-bed lie,",
+        "Help me and let me gently die.",
+        "Abide! I will not let Thee go!",
+        "Thou wilt not leave me, Lord, I know."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Ernst Christoph Homburg died in 1681; August Crull died in 1923.",
+  "credits": "Words by Ernst Christoph Homburg (1605–1681), translated by August Crull (1845–1923), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:227"
+}

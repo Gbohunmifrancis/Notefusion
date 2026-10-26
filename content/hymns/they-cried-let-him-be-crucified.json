@@ -1,0 +1,76 @@
+{
+  "title": "They Cried, \"Let Him Be Crucified!\"",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "They Cried, \"Let Him Be Crucified!\" in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "They cried, \"Let Him be cru-ci-fied!\" And surg-ing crowds a-round Him pressed; With break-ing heart, and soul dis-tressed, He bore the cross on which He died.",
+  "verses": [
+    {
+      "lines": [
+        "They cried, \"Let Him be crucified!\"",
+        "And surging crowds around Him pressed;",
+        "With breaking heart, and soul distressed,",
+        "He bore the cross on which He died."
+      ]
+    },
+    {
+      "lines": [
+        "They cried, \"Let Him be crucified!\"",
+        "And He the well-beloved Son,",
+        "The Son of God Who should have won",
+        "The love He never once denied."
+      ]
+    },
+    {
+      "lines": [
+        "They cried, \"Let Him be crucified!\"",
+        "And to the wood His hands were nailed,",
+        "And mocking words His ears assailed,",
+        "That God, Who looked from heaven, defied."
+      ]
+    },
+    {
+      "lines": [
+        "They cried, \"Let Him be crucified!\"",
+        "And when the deed of night was done,",
+        "The light was blotted from the sun,",
+        "And hell's abode exulting, cried."
+      ]
+    },
+    {
+      "lines": [
+        "They cried, \"Let Him be crucified!\"",
+        "Ah, Lord, my soul with anguish burns,",
+        "As to that cruel cross it turns,",
+        "For 'twas for me the Saviour died."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:14"
+}

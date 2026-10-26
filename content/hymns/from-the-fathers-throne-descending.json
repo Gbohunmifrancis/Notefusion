@@ -1,0 +1,100 @@
+{
+  "title": "From the Father’s Throne Descending",
+  "tune": "stuttgart",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "From the Father’s Throne Descending in Tonic Solfa to STUTTGART, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “Thursday Morning”.",
+    "The book printed the words without tunes. They are in Eights and Sevens (8.7.8.7), and this page sets them to STUTTGART; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "From the Fa-ther’s throne de-scend-ing, Light from out the realms of light; Font of light, all light tran-scend-ing, Bright-er day in day most bright.",
+  "verses": [
+    {
+      "lines": [
+        "From the Father’s throne descending,",
+        "Light from out the realms of light;",
+        "Font of light, all light transcending,",
+        "Brighter day in day most bright."
+      ]
+    },
+    {
+      "lines": [
+        "Shine, True Light, in radiant brightness,",
+        "Flashing forth perpetual ray;",
+        "May Thy Spirit’s searching lightness,",
+        "Fill our souls with endless day."
+      ]
+    },
+    {
+      "lines": [
+        "Father, come we humbly bending,—",
+        "Father of Almighty grace,",
+        "Who hast glory never ending,",
+        "Banish every sinful trace."
+      ]
+    },
+    {
+      "lines": [
+        "When to do Thy will inclining,",
+        "Quell for us the tempter’s wrath;",
+        "Ne’er in trial’s hour repining,",
+        "Lead us in the upward path."
+      ]
+    },
+    {
+      "lines": [
+        "May Thy rule our minds enlighten;",
+        "Let no sin our lives defile;",
+        "Fervent faith our spirits brighten,",
+        "Knowing nought of fraud or guile."
+      ]
+    },
+    {
+      "lines": [
+        "Christ, the Bread of Life bestowing,",
+        "Faith our daily cup shall fill;",
+        "Draughts of joy for ever flowing,",
+        "Drink we from the Spirit’s rill."
+      ]
+    },
+    {
+      "lines": [
+        "Thus our life in beauty gliding—",
+        "Purity like dawn of day,",
+        "Faith like sun at noon abiding,",
+        "Eve that knows no twilight grey."
+      ]
+    },
+    {
+      "lines": [
+        "Forth in beauty rides the Morning—",
+        "Be Thy glory on us poured;",
+        "Son, the Father’s love adorning,",
+        "Father in th’ Eternal Word."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to STUTTGART by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:13"
+}

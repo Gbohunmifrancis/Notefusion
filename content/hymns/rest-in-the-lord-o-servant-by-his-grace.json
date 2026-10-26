@@ -1,0 +1,76 @@
+{
+  "title": "Rest in the Lord, O Servant by His Grace",
+  "tune": "penitentia",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Rest in the Lord, O Servant by His Grace in Tonic Solfa to PENITENTIA, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Burial of a priest”.",
+    "The book printed the words without tunes. They are in Tens (10.10.10.10), and this page sets them to PENITENTIA; any other Tens tune fits them as well."
+  ],
+  "underlay": "Rest in the Lord, O ser-vant by His grace, Dwell in His courts, and gaze up-on His face, Know nought of toil, of wea-ri-ness, or woe, They rest who serve, not wea-ry, as be-low.",
+  "verses": [
+    {
+      "lines": [
+        "Rest in the Lord, O servant by His grace,",
+        "Dwell in His courts, and gaze upon His face,",
+        "Know nought of toil, of weariness, or woe,",
+        "They rest who serve, not weary, as below."
+      ]
+    },
+    {
+      "lines": [
+        "Rest in the Lord, the strife of war is past,",
+        "Wear now the wreath of victory at last;",
+        "E'en death is slain, — the cross of Christ sufficed,",
+        "Death is not death, to those who live in Christ."
+      ]
+    },
+    {
+      "lines": [
+        "Rest in the Lord, the goal of life is won,",
+        "To thee 'tis given to hear the glad \"Well done\";",
+        "Great their reward, who, till their Lord appear,",
+        "Serve in the vineyard of the Master, here."
+      ]
+    },
+    {
+      "lines": [
+        "Rest in the Lord; none can His honour claim,",
+        "They honour have, who honour most His name;",
+        "Thine this reward who counted gain but loss,",
+        "Nor felt it shame to glory in the cross."
+      ]
+    },
+    {
+      "lines": [
+        "Rest in the Lord; swift comes the happy time,",
+        "When we who strive shall reach Thy fairer clime;",
+        "Christ, give us welcome when the toil is past,",
+        "And bring us to the bliss of heaven, at last."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to PENITENTIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:37"
+}

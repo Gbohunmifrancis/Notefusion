@@ -1,0 +1,87 @@
+{
+  "title": "What Our Father Does Is Well",
+  "tune": "spanish-hymn",
+  "text": [
+    {
+      "name": "Benjamin Schmolck",
+      "born": 1672,
+      "died": 1737,
+      "role": "Words"
+    },
+    {
+      "name": "Henry Williams Baker",
+      "born": 1821,
+      "died": 1877,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "What Our Father Does Is Well in Tonic Solfa to SPANISH HYMN, doh is Ab: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Benjamin Schmolck wrote these words in German. Henry Williams Baker's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 301.",
+    "The book printed the words without tunes, marked Sevens, six lines (7.7.7.7.7.7), to be sung to any tune of that metre. This page sets them to SPANISH HYMN; any other Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "What our Fa-ther does is well: Bless-ed truth His child-ren tell! Though He send, for plen-ty, want, Though the har-vest store be scant, Yet we rest up-on His love, Seek-ing bet-ter things a-bove.",
+  "verses": [
+    {
+      "lines": [
+        "What our Father does is well:",
+        "Blessed truth His children tell!",
+        "Though He send, for plenty, want,",
+        "Though the harvest-store be scant,",
+        "Yet we rest upon His love,",
+        "Seeking better things above."
+      ]
+    },
+    {
+      "lines": [
+        "What our Father does is well:",
+        "Shall the wilful heart rebel",
+        "If a blessing He withhold",
+        "In the field or in the fold?",
+        "Is He not Himself to be",
+        "All our store eternally?"
+      ]
+    },
+    {
+      "lines": [
+        "What our Father does is well:",
+        "Though He sadden hill and dell,",
+        "Upward yet our praises rise",
+        "For the strength His Word supplies.",
+        "He has called us sons of God;",
+        "Can we murmur at His rod?"
+      ]
+    },
+    {
+      "lines": [
+        "What our Father does is well:",
+        "May the thought within us dwell;",
+        "Though nor milk nor honey flow",
+        "In our barren Canaan now,",
+        "God can save us in our need,",
+        "God can bless us, God can feed."
+      ]
+    },
+    {
+      "lines": [
+        "Therefore unto Him we raise",
+        "Hymns of glory, songs of praise.",
+        "To the Father and the Son",
+        "And the Spirit, Three in One,",
+        "Honor, might, and glory be",
+        "Now and through eternity."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Benjamin Schmolck died in 1737; Henry Williams Baker died in 1877.",
+  "credits": "Words by Benjamin Schmolck (1672–1737), translated by Henry Williams Baker (1821–1877), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to SPANISH HYMN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:301"
+}

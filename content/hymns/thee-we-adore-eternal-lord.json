@@ -1,0 +1,71 @@
+{
+  "title": "Thee We Adore, Eternal Lord",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Thomas Cotterill",
+      "born": 1779,
+      "died": 1823,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Thee We Adore, Eternal Lord in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Thomas Cotterill wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 66.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Thee we a-dore, e-ter-nal Lord! We praise Thy name with one ac-cord; Thy saints, who here Thy good-ness see, Through all the world do wor-ship Thee.",
+  "verses": [
+    {
+      "lines": [
+        "Thee we adore, eternal Lord!",
+        "We praise Thy name with one accord;",
+        "Thy saints, who here Thy goodness see,",
+        "Through all the world do worship Thee."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee aloud all angels cry,",
+        "The heavens and all the powers on high;",
+        "Thee, “Holy, Holy, Holy King,",
+        "Lord God of hosts!” they ever sing."
+      ]
+    },
+    {
+      "lines": [
+        "Th’ apostles join the glorious throng;",
+        "The prophets swell th’ immortal song;",
+        "Thy martyrs’ noble army raise",
+        "Eternal anthems to Thy praise."
+      ]
+    },
+    {
+      "lines": [
+        "From day to day, O Lord, do we",
+        "Highly exalt and honor Thee.",
+        "Thy name we worship and adore",
+        "World without end, forevermore!"
+      ]
+    },
+    {
+      "lines": [
+        "Vouchsafe, O Lord, we humbly pray,",
+        "To keep us safe from sin this day;",
+        "Have mercy, Lord! We trust in Thee;",
+        "O let us ne’er confounded be!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Thomas Cotterill died in 1823.",
+  "credits": "Words by Thomas Cotterill (1779–1823), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:66"
+}

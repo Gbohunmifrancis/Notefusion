@@ -1,0 +1,92 @@
+{
+  "title": "Nailed to the Cross the Saviour Dies",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Nailed to the Cross the Saviour Dies in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Nailed to the cross the Sa-viour dies, While earth is moved with sore dis-may, And e'en the sun, though high at noon, In an-guish veils the light of day.",
+  "verses": [
+    {
+      "lines": [
+        "Nailed to the cross the Saviour dies,",
+        "While earth is moved with sore dismay,",
+        "And e'en the sun, though high at noon,",
+        "In anguish veils the light of day."
+      ]
+    },
+    {
+      "lines": [
+        "Then hell and darkness riot held,",
+        "And sin and death combined their power",
+        "To crush the Christ Whom sinful men",
+        "Had hastened to that awful hour."
+      ]
+    },
+    {
+      "lines": [
+        "But O, 'twas darkness deeper still",
+        "Than o'er the earth in blackness lay,",
+        "When God beheld the suffering Son,",
+        "And turned from Him His face away."
+      ]
+    },
+    {
+      "lines": [
+        "Ah! whence that suffering? Whence that woe?",
+        "The horror felt by earth and sky?",
+        "The victory of the powers of night,",
+        "That doomed the God-man there to die?"
+      ]
+    },
+    {
+      "lines": [
+        "My soul distressed, look up! behold!",
+        "With light from heaven the earth is filled; —",
+        "The Christ that awful conflict met,",
+        "Because a God of wisdom willed."
+      ]
+    },
+    {
+      "lines": [
+        "Now sin its latest shaft has hurled,",
+        "And death put forth its utmost might,",
+        "But, lo, the Christ the conflict stood,",
+        "And sin and death are vanquished, quite."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to Thee our souls proclaim,",
+        "Great Son of God, Thou Victor strong;",
+        "Thy love inspires our hearts to sing,",
+        "The victory fills our endless song."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:16"
+}

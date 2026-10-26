@@ -1,0 +1,77 @@
+{
+  "title": "The Old Year Now Hath Passed Away",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Johann Steuerlein",
+      "born": 1546,
+      "died": 1613,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "The Old Year Now Hath Passed Away in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Johann Steuerlein wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 173.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "The old year now hath passed a-way, We thank Thee, Christ, our Lord, to day That Thou hast kept us through the year When dan-ger and dis-tress were near.",
+  "verses": [
+    {
+      "lines": [
+        "The old year now hath passed away,",
+        "We thank Thee, Christ, our Lord, to-day",
+        "That Thou hast kept us through the year",
+        "When danger and distress were near."
+      ]
+    },
+    {
+      "lines": [
+        "We pray Thee, O eternal Son,",
+        "Who with the Father reign’st as one,",
+        "To guard and rule Thy Christendom",
+        "Through all the ages yet to come."
+      ]
+    },
+    {
+      "lines": [
+        "Take not Thy saving Word away,",
+        "Our souls’ true comfort, staff, and stay;",
+        "Abide with us and keep us free",
+        "From all false doctrines graciously."
+      ]
+    },
+    {
+      "lines": [
+        "O help us to forsake all sin,",
+        "A new and holier course begin;",
+        "From last year’s sins, Lord, hide Thy face,",
+        "In this new year grant us Thy grace,"
+      ]
+    },
+    {
+      "lines": [
+        "That as true Christians we may live",
+        "Or die in peace that Thou wilt give,",
+        "To rise again when Thou shalt come,",
+        "And enter our eternal home."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Johann Steuerlein died in 1613; Catherine Winkworth died in 1878.",
+  "credits": "Words by Johann Steuerlein (1546–1613), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:173"
+}

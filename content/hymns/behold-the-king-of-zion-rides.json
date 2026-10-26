@@ -1,0 +1,84 @@
+{
+  "title": "Behold, the King of Zion Rides",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Behold, the King of Zion Rides in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Palm Sunday”.",
+    "The book printed the words without tunes. They are in Common Metre Double (8.6.8.6.8.6.8.6), and this page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "Be-hold, the King of Zi-on rides, But not in vain ar-ray; The peo-ple wave their good-ly palms, With gar-ments strew the way; And loud ho-san-nas fill the air From crowds that, surg-ing, throng; 'Tis meet to hon-our Him Who rides With cheer, and shout, and song.",
+  "verses": [
+    {
+      "lines": [
+        "Behold, the King of Zion rides,",
+        "But not in vain array;",
+        "The people wave their goodly palms,",
+        "With garments strew the way;",
+        "And loud hosannas fill the air",
+        "From crowds that, surging, throng;",
+        "'Tis meet to honour Him Who rides",
+        "With cheer, and shout, and song."
+      ]
+    },
+    {
+      "lines": [
+        "O Zion, of your God beloved,",
+        "The day of strife is nigh,",
+        "Yet comes He not with armour clad,",
+        "And sword upon His thigh;",
+        "The weapons of your mighty King",
+        "No other hand could wield,",
+        "The might of God is in His arm,",
+        "The will of God His shield."
+      ]
+    },
+    {
+      "lines": [
+        "See, on the cross, without the wall,",
+        "The King Immortal dies;",
+        "Not now hosannas fill the air, —",
+        "The shouts of hell arise;",
+        "But in that hour of triumph, deemed,",
+        "Satanic might is slain,",
+        "For He Who bows the head in death,",
+        "Shall rise to life again."
+      ]
+    },
+    {
+      "lines": [
+        "O Zion, hail your mighty King,",
+        "Your palms around Him wave,",
+        "And strew your garments in the way",
+        "Of Him Who rides to save;",
+        "And when He mounts His regal throne,",
+        "By bloody conflict won,",
+        "Give homage to the King of heaven,",
+        "God's One Eternal Son."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:34"
+}

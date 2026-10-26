@@ -1,0 +1,76 @@
+{
+  "title": "Up, Up, My Soul! with Gladness Rise",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Up, Up, My Soul! with Gladness Rise in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Up, up, my soul! with glad-ness rise, And greet th'ev-er bright-e-ning skies. The morn hath come, sweet morn, a-wake! And from thy pin-ions slum-ber shake.",
+  "verses": [
+    {
+      "lines": [
+        "Up, up, my soul! with gladness rise,",
+        "And greet the ever-brightening skies.",
+        "The morn hath come, sweet morn, awake!",
+        "And from thy pinions slumber shake."
+      ]
+    },
+    {
+      "lines": [
+        "Pure as the morn God's presence shines;",
+        "Love like its beams, thy life entwines;",
+        "Richer the gifts thy God bestows",
+        "Than morning beauty can disclose."
+      ]
+    },
+    {
+      "lines": [
+        "Sweet as the breath that fans the bowers,",
+        "And stirs the leaves and opening flowers,",
+        "Comes with the morn, the breath divine",
+        "To stir thee, slumbering soul of mine."
+      ]
+    },
+    {
+      "lines": [
+        "O Thou, the Morn, the Light, the Sun,",
+        "With Thee be every day begun;",
+        "Brightness shall clothe my life always,",
+        "And fill my soul with grateful praise."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to Thee, O Christ! my Lord,",
+        "Light of my soul, Incarnate Word!",
+        "Come with the morn, abide alway,",
+        "And cheer my course to endless day."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:2"
+}

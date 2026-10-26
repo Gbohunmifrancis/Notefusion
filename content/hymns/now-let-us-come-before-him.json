@@ -1,0 +1,149 @@
+{
+  "title": "Now Let Us Come Before Him",
+  "tune": "st-bees",
+  "text": [
+    {
+      "name": "Paul Gerhardt",
+      "born": 1607,
+      "died": 1676,
+      "role": "Words"
+    },
+    {
+      "name": "John Kelly",
+      "born": 1833,
+      "died": 1890,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Now Let Us Come Before Him in Tonic Solfa to ST. BEES, doh is Ab: the solfa with the words, staff notation, 14 verses and a piano.",
+  "about": [
+    "Paul Gerhardt wrote these words in German. John Kelly's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 174.",
+    "The book printed the words without tunes, marked Sevens (7.7.7.7), to be sung to any tune of that metre. This page sets them to ST. BEES; any other Sevens tune fits them as well."
+  ],
+  "underlay": "Now let us come be-fore Him, With songs and prayers a-dore Him, Who to our life from hea-ven All need-ed strength hath giv-en.",
+  "verses": [
+    {
+      "lines": [
+        "Now let us come before Him,",
+        "With songs and prayers adore Him,",
+        "Who to our life from heaven",
+        "All needed strength hath given."
+      ]
+    },
+    {
+      "lines": [
+        "The stream of years is flowing,",
+        "And we are onward going,",
+        "From old to new surviving,",
+        "And by His mercy thriving."
+      ]
+    },
+    {
+      "lines": [
+        "In woe we often languish",
+        "And pass through times of anguish,",
+        "Of wars and trepidation,",
+        "Alarming every nation."
+      ]
+    },
+    {
+      "lines": [
+        "A faithful mother keepeth",
+        "Guard while her infant sleepeth,",
+        "Its fear and grief assuaging",
+        "When angry storms are raging."
+      ]
+    },
+    {
+      "lines": [
+        "Thus God His children shieldeth",
+        "And full protection yieldeth;",
+        "When need and woe distress them,",
+        "His loving arms caress them."
+      ]
+    },
+    {
+      "lines": [
+        "In vain is all our doing;",
+        "The labor we’re pursuing",
+        "In our hands prospers never",
+        "Unless God watches ever."
+      ]
+    },
+    {
+      "lines": [
+        "Our song to Thee ascendeth,",
+        "Whose mercy never endeth;",
+        "Our thanks to Thee we render,",
+        "Who art our strong Defender."
+      ]
+    },
+    {
+      "lines": [
+        "O God of mercy, hear us;",
+        "Our Father, be Thou near us;",
+        "Mid crosses and in sadness",
+        "Be Thou our Fount of gladness."
+      ]
+    },
+    {
+      "lines": [
+        "To all that bow before Thee",
+        "And for Thy grace implore Thee,",
+        "O grant Thy benediction",
+        "And patience in affliction."
+      ]
+    },
+    {
+      "lines": [
+        "With richest blessings crown us.",
+        "In all our ways, Lord, own us;",
+        "Give grace, who grace bestowest",
+        "To all, e’en to the lowest."
+      ]
+    },
+    {
+      "lines": [
+        "To all forlorn be Father,",
+        "Thy erring children gather,",
+        "And of the poor and needy",
+        "Be Thou the Helper speedy."
+      ]
+    },
+    {
+      "lines": [
+        "Grant help to all afflicted;",
+        "And to the souls dejected,",
+        "By melancholy haunted,",
+        "May cheerful thoughts be granted!"
+      ]
+    },
+    {
+      "lines": [
+        "O Lord, assistance lend us,",
+        "Thy Holy Spirit send us",
+        "That He may make us glorious",
+        "And lead to Thee victorious."
+      ]
+    },
+    {
+      "lines": [
+        "All this Thy hand bestoweth,",
+        "Thou Life, whence our life floweth;",
+        "To me and all believers",
+        "Grant, Lord, these New Year’s favors."
+      ]
+    }
+  ],
+  "metre": "7 7 7 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Paul Gerhardt died in 1676; John Kelly died in 1890.",
+  "credits": "Words by Paul Gerhardt (1607–1676), translated by John Kelly (1833–1890), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. BEES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:174"
+}

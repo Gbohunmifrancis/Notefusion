@@ -1,0 +1,79 @@
+{
+  "title": "Come, Jesus, from the Sapphire Throne",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Ray Palmer",
+      "born": 1808,
+      "died": 1887,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Come, Jesus, from the Sapphire Throne in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Ray Palmer wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 455.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Come, Je-sus, from the sap-phire throne, Where Thy re-deemed be-hold Thy face; En-ter this tem-ple, now Thine own, And let Thy glo-ry fill the place.",
+  "verses": [
+    {
+      "lines": [
+        "Come, Jesus, from the sapphire throne,",
+        "Where Thy redeemed behold Thy face;",
+        "Enter this temple, now Thine own,",
+        "And let Thy glory fill the place."
+      ]
+    },
+    {
+      "lines": [
+        "We praise Thee that to-day we see",
+        "Its sacred walls before Thee stand;",
+        "’Tis Thine for us; ’tis ours for Thee,",
+        "Reared by Thy kind, assisting hand."
+      ]
+    },
+    {
+      "lines": [
+        "Oft as returns the day of rest,",
+        "Let heartfelt worship here ascend;",
+        "With Thine own joy fill every breast,",
+        "With Thine own power Thy Word attend."
+      ]
+    },
+    {
+      "lines": [
+        "Here in the dark and sorrowing day",
+        "Bid Thou the throbbing heart be still;",
+        "Oh, wipe the mourner’s tears away",
+        "And give new strength to meet Thy will!"
+      ]
+    },
+    {
+      "lines": [
+        "When at Thine altar we shall meet",
+        "And keep the feast of dying love,",
+        "Be our communion ever sweet",
+        "With Thee and with Thy Church above."
+      ]
+    },
+    {
+      "lines": [
+        "Come, faithful Shepherd, feed Thy sheep;",
+        "In Thine own arms the lambs infold;",
+        "Give help to climb the heavenward steep",
+        "Till Thy full glory we behold."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Ray Palmer died in 1887.",
+  "credits": "Words by Ray Palmer (1808–1887), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:455"
+}

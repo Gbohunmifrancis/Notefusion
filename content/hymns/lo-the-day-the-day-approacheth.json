@@ -1,0 +1,132 @@
+{
+  "title": "Lo, the Day, the Day Approacheth",
+  "tune": "galilee-jude",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Lo, the Day, the Day Approacheth in Tonic Solfa to GALILEE (JUDE), doh is Ab: the solfa with the words, staff notation, 12 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “Appropinquat Enim Dies in Qua Justes Erit Quies”.",
+    "The book printed the words without tunes. They are in Eights and Sevens (8.7.8.7), and this page sets them to GALILEE (JUDE); any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Lo, the day, the day ap-proa-cheth When the just shall rest in peace, When the pa-tient souls shall tri-umph, And the vile from trou-bling cease.",
+  "verses": [
+    {
+      "lines": [
+        "Lo, the day, the day approacheth",
+        "When the just shall rest in peace,",
+        "When the patient souls shall triumph,",
+        "And the vile from troubling cease."
+      ]
+    },
+    {
+      "lines": [
+        "Day of life, who can abide it?",
+        "Day of light, unseen before;",
+        "Death, the fell destroyer, dieth,",
+        "Night and darkness are no more."
+      ]
+    },
+    {
+      "lines": [
+        "See He comes whom ages longed for—",
+        "Long expected King of kings—",
+        "Now He tarries not, and with Him",
+        "All His great salvation brings."
+      ]
+    },
+    {
+      "lines": [
+        "O how blessed! O how joyful!",
+        "O what sweetness it shall be!",
+        "When the eyes of those who loved Him",
+        "Shall their Lord and Master see."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus then with sweet affection,",
+        "And in tones of tenderest love,",
+        "Shall invite His faithful people",
+        "To the joys prepared above."
+      ]
+    },
+    {
+      "lines": [
+        "“Ye who held My truth unsullied,",
+        "Faithful stood in world of sin,",
+        "Suffered for the name ye honoured,",
+        "See the joys ye sought to win."
+      ]
+    },
+    {
+      "lines": [
+        "“See the heavenly kingdom promised,",
+        "Long reserved, but now revealed;",
+        "Now behold it, now possess it,",
+        "Now the princely sceptre wield.”"
+      ]
+    },
+    {
+      "lines": [
+        "O how sweet our earthly losses,",
+        "In the midst of gain like this!",
+        "O how vain the world’s possessions,",
+        "At the cost of so much bliss!"
+      ]
+    },
+    {
+      "lines": [
+        "O how blessèd then the mourners,",
+        "Who for Christ earth’s sorrow bore,",
+        "By a scornful world neglected!",
+        "They shall reign for evermore."
+      ]
+    },
+    {
+      "lines": [
+        "Now no terror grim shall haunt them—",
+        "Tears and sorrows are no more;",
+        "Grinding want shall ne’er afflict them,",
+        "Crippled age nor weakness sore."
+      ]
+    },
+    {
+      "lines": [
+        "Peace eternal there abideth,",
+        "Hearts with festive gladness bound;",
+        "There is youth with perfect vigour,",
+        "And with bloom unfading crowned."
+      ]
+    },
+    {
+      "lines": [
+        "O just Judge! in boundless mercy",
+        "Call me heavenward by-and-by,",
+        "For my soul is faint with longing,",
+        "And I wait with tearful eye."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to GALILEE (JUDE) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:55"
+}

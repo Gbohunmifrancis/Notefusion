@@ -206,7 +206,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   by `check.mjs`); `kind:"incipit"` entries (`content/hymns/incipits/`) are recognition only — named and linked, never swapped.
   Words set by metre (`"setByMetre": true`; `tools/blog/import/watts.mjs`, Watts' *Hymns and Spiritual Songs* and `--book psalms` his *Psalms of David
   Imitated*, and `words-books.mjs`,
-  Longfellow & Johnson's *Book of Hymns* (1848), Adams & Chapin's *Hymns for Christian Devotion* (1846) and the *Olney Hymns* (1779) (authors named in full or
+  Longfellow & Johnson's *Book of Hymns* (1848), Adams & Chapin's *Hymns for Christian Devotion* (1846) the *Olney Hymns* (1779) John Brownlie's five books of translations (metre read off the lines) and the 1927 *Evangelical Lutheran Hymn-Book*
+  (a translation only with its translator named; iambs never on the trochaic 8.7 tunes, `iambsOnTrochees`) (authors named in full or
   left out; `"textPublishedBy"`: the words "in print by" the book's year; a hymn two books print is the first's, `SET_BY_METRE_ORDER`),
   each from a plain text, its first verse fitted one syllable to a note by `import/syllables.mjs`; docs/BLOG.md) are pages
   only: never in the index or the app's pack.

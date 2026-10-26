@@ -1,0 +1,86 @@
+{
+  "title": "O Light That Knew No Dawn",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "O Light That Knew No Dawn in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900), headed “St. Gregory”.",
+    "The book printed the words without tunes. They are in Hallelujah Metre (6.6.6.6.8.8), and this page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "O Light that knew no dawn, That shines to end-less day, All things in earth and heaven Are lus-tred by Thy ray; No eye can to Thy throne as-cend, Nor mind Thy bright-ness com-pre-hend.",
+  "verses": [
+    {
+      "lines": [
+        "O Light that knew no dawn,",
+        "That shines to endless day,",
+        "All things in earth and heaven",
+        "Are lustred by Thy ray;",
+        "No eye can to Thy throne ascend,",
+        "Nor mind Thy brightness comprehend."
+      ]
+    },
+    {
+      "lines": [
+        "Thy grace, O Father, give,",
+        "That I may serve in fear;",
+        "Above all boons, I pray,",
+        "Grant me Thy voice to hear;",
+        "From sin Thy child in mercy free,",
+        "And let me dwell in light with Thee."
+      ]
+    },
+    {
+      "lines": [
+        "That, cleansed from filthy stain,",
+        "I may meet homage give,",
+        "And, pure in heart, behold",
+        "And serve Thee while I live;",
+        "Clean hands in holy worship raise,",
+        "And Thee, O Christ my Saviour, praise."
+      ]
+    },
+    {
+      "lines": [
+        "In supplication meek",
+        "To Thee I bend the knee;",
+        "O Christ, when Thou shalt come,",
+        "In love remember me,",
+        "And in Thy kingdom, by Thy grace,",
+        "Grant me a humble servant's place."
+      ]
+    },
+    {
+      "lines": [
+        "Thy grace, O Father, give,",
+        "I humbly Thee implore;",
+        "And let Thy mercy bless",
+        "Thy servant more and more.",
+        "All grace and glory be to Thee",
+        "From age to age eternally."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:29"
+}

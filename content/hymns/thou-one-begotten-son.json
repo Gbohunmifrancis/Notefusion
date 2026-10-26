@@ -1,0 +1,68 @@
+{
+  "title": "Thou One Begotten Son",
+  "tune": "aylesbury",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "Thou One Begotten Son in Tonic Solfa to AYLESBURY, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900), headed “(From the Liturgy of St. John Chrysostom)”.",
+    "The book printed the words without tunes. They are in Short Metre (6.6.8.6), and this page sets them to AYLESBURY; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Thou one Be-got-ten Son, E-ter-nal Word a-dored, Im-mor-tal while the a-ges run, And our Al-might-y Lord;",
+  "verses": [
+    {
+      "lines": [
+        "Thou one Begotten Son,",
+        "Eternal Word adored,",
+        "Immortal while the ages run,",
+        "And our Almighty Lord;"
+      ]
+    },
+    {
+      "lines": [
+        "To bring Salvation nigh,",
+        "To vanquish death and sin,",
+        "Thou didst in cruel anguish die,",
+        "And life for mortals win."
+      ]
+    },
+    {
+      "lines": [
+        "Save us, O Christ our God,",
+        "Save by Thy Cross, we pray;",
+        "Thou who didst bear the Father's rod,",
+        "And death by dying slay."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art the Eternal Son,",
+        "One in the glorious Three;",
+        "Co-equal praise while ages run",
+        "Shall ever rise to thee."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to AYLESBURY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:11"
+}

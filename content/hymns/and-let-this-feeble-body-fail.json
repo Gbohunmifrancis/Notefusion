@@ -1,0 +1,79 @@
+{
+  "title": "And Let This Feeble Body Fail",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "And Let This Feeble Body Fail in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 521.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "And let this fee-ble bo-dy fail And let it faint or die; My soul shall quit the mourn-ful vale And soar to worlds on high; Shall join the dis-em-bod-ied saints And find its long sought rest, That on-ly bliss for which it pants, In my Re-deem-er’s breast.",
+  "verses": [
+    {
+      "lines": [
+        "And let this feeble body fail",
+        "And let it faint or die;",
+        "My soul shall quit the mournful vale",
+        "And soar to worlds on high;",
+        "Shall join the disembodied saints",
+        "And find its long-sought rest,",
+        "That only bliss for which it pants,",
+        "In my Redeemer’s breast."
+      ]
+    },
+    {
+      "lines": [
+        "In hope of that immortal crown",
+        "I now the cross sustain",
+        "And gladly wander up and down",
+        "And smile at toil and pain.",
+        "I suffer on my threescore years",
+        "Till my Deliverer come",
+        "And wipe away His servant’s tears",
+        "And take His exile home."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, what hath Jesus bought for me!",
+        "Before my ravished eyes",
+        "Rivers of life divine I see",
+        "And trees of paradise!",
+        "I see a world of spirits bright",
+        "Who reap the pleasures there;",
+        "They all are robed in spotless white,",
+        "And conquering palms they bear."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, what are all my sufferings here",
+        "If, Lord, Thou count me meet",
+        "With that enraptured host t’appear",
+        "And worship at Thy feet!",
+        "Give joy or grief, give ease or pain,",
+        "Take life or friends away,",
+        "But let me find them all again",
+        "In that eternal day."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:521"
+}

@@ -1,0 +1,76 @@
+{
+  "title": "O Christ, Who Art Ascended Now",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "O Christ, Who Art Ascended Now in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), headed “Alleluia!”.",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "O Christ, who art as-cend-ed now To realms of bliss a-bove, In-spire our souls to rise to Thee, Up-borne by faith and love.",
+  "verses": [
+    {
+      "lines": [
+        "O Christ, who art ascended now",
+        "To realms of bliss above,",
+        "Inspire our souls to rise to Thee,",
+        "Upborne by faith and love."
+      ]
+    },
+    {
+      "lines": [
+        "Make us to seek those holy joys,",
+        "That they who love receive;",
+        "That earthly mind can never know,",
+        "Nor faithless soul perceive."
+      ]
+    },
+    {
+      "lines": [
+        "There, where Thou art, they reap reward",
+        "Who toiled at duty’s call;",
+        "For Thou dost give Thyself to them,",
+        "And Thou art all in all."
+      ]
+    },
+    {
+      "lines": [
+        "By power divine, O let us come",
+        "Where glory cannot fade;",
+        "And from Thy heavenly throne send down",
+        "The Spirit to our aid."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee who art at God’s right hand,",
+        "O Christ, to Thee be praise,",
+        "To Father, and to Holy Ghost,",
+        "Be glory given always."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:41"
+}

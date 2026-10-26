@@ -1,0 +1,91 @@
+{
+  "title": "Precious Bible! What a Treasure",
+  "tune": "kalmar",
+  "text": [
+    {
+      "name": "John Newton",
+      "born": 1725,
+      "died": 1807,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1779,
+  "textPublishedBy": true,
+  "description": "Precious Bible! What a Treasure in Tonic Solfa to KALMAR, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Newton wrote these words. They were printed in Olney Hymns (London, 1779), Book II, hymn 63, “The word more precious than gold”.",
+    "The book printed the words without tunes, marked 8.7.8.7.7.7, to be sung to any tune of that metre. This page sets them to KALMAR; any other 8.7.8.7.7.7 tune fits them as well."
+  ],
+  "underlay": "Pre-cious Bi-ble! what a trea-sure Does the word of God af-ford? All I want for life or plea-sure, Food and Med'-Cine, Shield and Sword: Let the world ac-count me poor, Hav-ing this I need no more.",
+  "verses": [
+    {
+      "lines": [
+        "Precious Bible! what a treasure",
+        "Does the word of God afford?",
+        "All I want for life or pleasure,",
+        "Food and Med'Cine, Shield and Sword:",
+        "Let the world account me poor,",
+        "Having this I need no more."
+      ]
+    },
+    {
+      "lines": [
+        "Food to which the world's a stranger,",
+        "Here my hungry soul enjoys",
+        "Of excess there is no danger,",
+        "Though it fills, it never cloys:",
+        "On a dying Christ I feed,",
+        "He is meat and drink indeed."
+      ]
+    },
+    {
+      "lines": [
+        "When my faith is faint and sickly,",
+        "Or when Satan wounds my mind,",
+        "Cordials, to revive me quickly,",
+        "Healing Med'Cines here I find:",
+        "To the promises I flee,",
+        "Each affords a remedy."
+      ]
+    },
+    {
+      "lines": [
+        "In the hour of dark temptation",
+        "Satan cannot make me yield;",
+        "For the word of consolation",
+        "Is to me a mighty Shield",
+        "While the scripture-truths are sure,",
+        "From his malice I'm secure."
+      ]
+    },
+    {
+      "lines": [
+        "Vain his threats to overcome me,",
+        "When I take the Spirits' Sword;",
+        "Then with ease I drive him from me.",
+        "Satan trembles at the word:",
+        "'Tis a sword for conquest made,",
+        "Keen the edge, and strong the blade."
+      ]
+    },
+    {
+      "lines": [
+        "Shall I envy then the miser",
+        "Doting on his golden store?",
+        "Sure I am, or should be, wiser,",
+        "I am Rich, 'tis he is Poor:",
+        "Jesus gives me in his word,",
+        "Food and Med'Cine, Shield and Sword."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 7 7",
+  "source": "John Newton and William Cowper, Olney Hymns (1779)",
+  "licence": "Public domain: John Newton died in 1807.",
+  "credits": "Words by John Newton (1725–1807), public domain, as printed in Olney Hymns (1779); set to KALMAR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "olney-1779:2:63"
+}

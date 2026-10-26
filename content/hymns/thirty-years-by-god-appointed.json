@@ -1,0 +1,96 @@
+{
+  "title": "Thirty Years by God Appointed",
+  "tune": "mannheim",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Thirty Years by God Appointed in Tonic Solfa to MANNHEIM, doh is E: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By some attributed to St. Ambrose, but generally and with greater probability to Fortunatus”, headed “Lustra Sex Qui Jam Peregit”.",
+    "The book printed the words without tunes. They are in Eights and Sevens, six lines (8.7.8.7.8.7), and this page sets them to MANNHEIM; any other Eights and Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Thir-ty years by God ap-point-ed, And there dawns the woe-ful day, When the great Re-deem-er girds Him For the tu-mult of the fray; And up-on the cross up-lift-ed, Bears our load of guilt a-way.",
+  "verses": [
+    {
+      "lines": [
+        "Thirty years by God appointed,",
+        "And there dawns the woeful day,",
+        "When the great Redeemer girds Him",
+        "For the tumult of the fray;",
+        "And upon the cross uplifted,",
+        "Bears our load of guilt away."
+      ]
+    },
+    {
+      "lines": [
+        "Ah! ’tis bitter gall He drinketh,",
+        "When His heart in anguish fails;—",
+        "From the thorns His life-blood trickles,",
+        "From the spear wound and the nails;",
+        "But that crimson stream for cleansing,",
+        "O’er creation wide prevails."
+      ]
+    },
+    {
+      "lines": [
+        "Faithful Cross! in all the woodland,",
+        "Standeth not a nobler tree;",
+        "In thy leaf, and flower, and fruitage,",
+        "None can e’er thy equal be;",
+        "Sweet the wood, and sweet the iron,",
+        "Sweet the load that hung on thee."
+      ]
+    },
+    {
+      "lines": [
+        "Noble tree! unbend thy branches,",
+        "Let thy stubborn fibres bend,",
+        "Cast thy native rigour from thee,",
+        "Be a gentle, loving friend;",
+        "Bear Him in thine arms, and softly,",
+        "Christ, the King eternal, tend."
+      ]
+    },
+    {
+      "lines": [
+        "Only thou could’st bear the burden",
+        "Of the ransom of our race;",
+        "Only thou could’st be a refuge,",
+        "Like the ark, a hiding-place,",
+        "By the sacred blood anointed,",
+        "Of the Covenant of Grace."
+      ]
+    },
+    {
+      "lines": [
+        "Blessing, blessing everlasting,",
+        "To the glorious Trinity;",
+        "To the Father, Son, and Spirit,",
+        "Equal glory let there be;",
+        "Universal praise be given,",
+        "To the Blessed One in Three."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to MANNHEIM by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:31"
+}

@@ -1,0 +1,81 @@
+{
+  "title": "To Thee, Our God, We Fly",
+  "tune": "darwall",
+  "text": [
+    {
+      "name": "William Walsham How",
+      "born": 1823,
+      "died": 1897,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "To Thee, Our God, We Fly in Tonic Solfa to DARWALL, doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "William Walsham How wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 304.",
+    "The book printed the words without tunes, marked Hallelujah Metre (6.6.6.6.8.8), to be sung to any tune of that metre. This page sets them to DARWALL; any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "To Thee, our God, we fly For mer-cy and for grace; Oh, hear our low-ly cry And hide not Thou Thy face! O Lord, stretch forth Thy might-y hand And guard and bless our Fa-ther-land.",
+  "verses": [
+    {
+      "lines": [
+        "To Thee, our God, we fly",
+        "For mercy and for grace;",
+        "Oh, hear our lowly cry",
+        "And hide not Thou Thy face!",
+        "O Lord, stretch forth Thy mighty hand",
+        "And guard and bless our Fatherland."
+      ]
+    },
+    {
+      "lines": [
+        "Arise, O Lord of hosts,",
+        "Be jealous for Thy name,",
+        "And drive from out our coasts",
+        "The sins that put to shame.",
+        "O Lord, stretch forth Thy mighty hand",
+        "And guard and bless our Fatherland."
+      ]
+    },
+    {
+      "lines": [
+        "Thy best gifts from on high",
+        "In rich abundance pour",
+        "That we may magnify",
+        "And praise Thee more and more.",
+        "O Lord, stretch forth Thy mighty hand",
+        "And guard and bless our Fatherland."
+      ]
+    },
+    {
+      "lines": [
+        "The powers ordained by Thee",
+        "With heavenly wisdom bless;",
+        "May they Thy servants be",
+        "And rule in righteousness.",
+        "O Lord, stretch forth Thy mighty hand",
+        "And guard and bless our Fatherland."
+      ]
+    },
+    {
+      "lines": [
+        "The Church of Thy dear Son",
+        "Inflame with love’s pure fire;",
+        "Bind her once more in one",
+        "And life and truth inspire.",
+        "O Lord, stretch forth Thy mighty hand",
+        "And guard and bless our Fatherland."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: William Walsham How died in 1897.",
+  "credits": "Words by William Walsham How (1823–1897), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to DARWALL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:304"
+}

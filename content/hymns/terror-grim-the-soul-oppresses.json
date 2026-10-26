@@ -1,0 +1,116 @@
+{
+  "title": "Terror Grim the Soul Oppresses",
+  "tune": "mannheim",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "textPublishedBy": true,
+  "description": "Terror Grim the Soul Oppresses in Tonic Solfa to MANNHEIM, doh is E: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Latin hymns of the early Church for Hymns of the Early Church (London, 1896), where he gives them as “By Peter Damiani”, headed “_Death and Judgment_”.",
+    "The book printed the words without tunes. They are in Eights and Sevens, six lines (8.7.8.7.8.7), and this page sets them to MANNHEIM; any other Eights and Sevens, six lines tune fits them as well."
+  ],
+  "underlay": "Ter-ror grim the soul op-press-es When the day of death is near; Sighs the heart, the reins are sun-dered, Quakes each part with anx-ious fear; While the mind the woe de-tai-leth Of the con-flict to ap-pear.",
+  "verses": [
+    {
+      "lines": [
+        "Terror grim the soul oppresses",
+        "When the day of death is near;",
+        "Sighs the heart, the reins are sundered,",
+        "Quakes each part with anxious fear;",
+        "While the mind the woe detaileth",
+        "Of the conflict to appear."
+      ]
+    },
+    {
+      "lines": [
+        "Spectacle all woe inspiring",
+        "Who its terror can pourtray?",
+        "See, the course of life is ended,",
+        "And the sickening flesh gives way,",
+        "For the wrestling soul in triumph",
+        "Breaks the bands that bid her stay."
+      ]
+    },
+    {
+      "lines": [
+        "Sense decays, and fails expression;",
+        "Dark the world to melting eye;",
+        "And the troubled breast in anguish,",
+        "Gasping, breathes her burdened sigh;",
+        "Grace of form and glow of beauty,",
+        "From the withering body die."
+      ]
+    },
+    {
+      "lines": [
+        "Thoughts, and words, and deeds forgotten,",
+        "Crowd around in grim array;",
+        "And unwilling eyes behold them,",
+        "Be they closed or turned away;",
+        "In the heart they seem to rankle,",
+        "Turn he wheresoe’er he may."
+      ]
+    },
+    {
+      "lines": [
+        "Vain the vow of new obedience—",
+        "Time for vowing is no more;",
+        "Vain the sorrow of repentance,",
+        "For the day of grace is o’er;",
+        "Conscience now the tortured sinner",
+        "Gnaws with pangs unfelt before."
+      ]
+    },
+    {
+      "lines": [
+        "Draughts of sweet deluding pleasure",
+        "Give the bitter dregs at last;",
+        "Come, unending pain and anguish,",
+        "With the short-lived rapture past;",
+        "Then, what once appeared so worthy,",
+        "Is aside as worthless cast."
+      ]
+    },
+    {
+      "lines": [
+        "Then, O Christ, Thou King victorious,",
+        "Come with succour in my plight;",
+        "When the soul is freed from bondage,",
+        "In its hour of darkest night;",
+        "Come, O Christ, Thy help extending,",
+        "Free me from the accuser’s might."
+      ]
+    },
+    {
+      "lines": [
+        "Headlong may the Prince of Darkness",
+        "With the hosts infernal fall!",
+        "Thou, the Shepherd of Salvation,",
+        "Bid me follow at Thy call,",
+        "To the land where fulness dwelleth,",
+        "And those eyes shall see it all."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 8 7",
+  "source": "John Brownlie, Hymns of the Early Church (1896)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Latin, public domain, as printed in Hymns of the Early Church; set to MANNHEIM by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1896:54"
+}

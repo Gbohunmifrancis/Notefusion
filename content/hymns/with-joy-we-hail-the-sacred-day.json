@@ -1,0 +1,71 @@
+{
+  "title": "With Joy We Hail the Sacred Day",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Harriet Auber",
+      "born": 1773,
+      "died": 1862,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "With Joy We Hail the Sacred Day in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Harriet Auber wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 128.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "With joy we hail the sa-cred day Which we have called God’s own; With joy the sum-mons we o-bey To wor-ship at His throne.",
+  "verses": [
+    {
+      "lines": [
+        "With joy we hail the sacred day",
+        "Which we have called God’s own;",
+        "With joy the summons we obey",
+        "To worship at His throne."
+      ]
+    },
+    {
+      "lines": [
+        "Thy chosen temple, Lord, how fair!",
+        "As here Thy servants throng",
+        "To breathe the humble, fervent prayer",
+        "And pour the choral song."
+      ]
+    },
+    {
+      "lines": [
+        "Spirit of Grace, O deign to dwell",
+        "Within Thy Church below;",
+        "Make her in holiness excel,",
+        "With pure devotion glow."
+      ]
+    },
+    {
+      "lines": [
+        "Let peace within her walls be found;",
+        "Let all her sons unite",
+        "To spread with holy zeal around",
+        "Her clear and shining light."
+      ]
+    },
+    {
+      "lines": [
+        "Great God, we hail the sacred day",
+        "Which we have called Thine own;",
+        "With joy the summons we obey",
+        "To worship at Thy throne."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Harriet Auber died in 1862.",
+  "credits": "Words by Harriet Auber (1773–1862), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:128"
+}

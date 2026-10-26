@@ -1,0 +1,91 @@
+{
+  "title": "To Thee, O Dear, Dear Savior",
+  "tune": "angels-story",
+  "text": [
+    {
+      "name": "John Samuel Bewley Monsell",
+      "born": 1811,
+      "died": 1875,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "To Thee, O Dear, Dear Savior in Tonic Solfa to ANGEL'S STORY, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Samuel Bewley Monsell wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 371.",
+    "The book printed the words without tunes, marked Sevens and Sixes Double (7.6.7.6.7.6.7.6), to be sung to any tune of that metre. This page sets them to ANGEL'S STORY; any other Sevens and Sixes Double tune fits them as well."
+  ],
+  "underlay": "To Thee, O dear, dear Sa-vior, My spir-it turns for rest, My peace is in Thy fa-vor, My pil-low on Thy breast; Though all the world de-ceive me, I know that I am Thine, And Thou wilt nev-er leave me, O blessed Sa-vi-or mine.",
+  "verses": [
+    {
+      "lines": [
+        "To Thee, O dear, dear Savior,",
+        "My spirit turns for rest,",
+        "My peace is in Thy favor,",
+        "My pillow on Thy breast;",
+        "Though all the world deceive me,",
+        "I know that I am Thine,",
+        "And Thou wilt never leave me,",
+        "O blessed Savior mine."
+      ]
+    },
+    {
+      "lines": [
+        "In Thee my trust abideth,",
+        "On Thee my hope relies,",
+        "O Thou whose love provideth",
+        "For all beneath the skies;",
+        "O Thou whose mercy found me,",
+        "From bondage set me free,",
+        "And then forever bound me",
+        "With threefold cords to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "My grief is in the dulness",
+        "With which this sluggish heart",
+        "Doth open to the fulness",
+        "Of all Thou wouldst impart;",
+        "My joy is in Thy beauty",
+        "Of holiness divine,",
+        "My comfort in the duty",
+        "That binds my life in Thine."
+      ]
+    },
+    {
+      "lines": [
+        "Alas, that I should ever",
+        "Have failed in love to Thee,",
+        "The only One who never",
+        "Forgot or slighted me!",
+        "Oh, for a heart to love Thee",
+        "More truly as I ought",
+        "And nothing place above Thee",
+        "In deed or word or thought!"
+      ]
+    },
+    {
+      "lines": [
+        "Oh, for that choicest blessing",
+        "Of living in Thy love",
+        "And thus on earth possessing",
+        "The peace of heaven above!",
+        "Oh, for the bliss that by it",
+        "The soul securely knows",
+        "The holy calm and quiet",
+        "Of faith’s serene repose!"
+      ]
+    }
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: John Samuel Bewley Monsell died in 1875.",
+  "credits": "Words by John Samuel Bewley Monsell (1811–1875), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ANGEL'S STORY by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:371"
+}

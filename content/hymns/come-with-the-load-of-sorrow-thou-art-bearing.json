@@ -1,0 +1,68 @@
+{
+  "title": "Come, with the Load of Sorrow Thou Art Bearing",
+  "tune": "wesley-mason",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "textPublishedBy": true,
+  "description": "Come, with the Load of Sorrow Thou Art Bearing in Tonic Solfa to WESLEY (MASON), doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Greek Office Books (Paisley, 1904).",
+    "The book printed the words without tunes. They are in Elevens and Tens (11.10.11.10), and this page sets them to WESLEY (MASON); any other Elevens and Tens tune fits them as well."
+  ],
+  "underlay": "Come, with the load of sor-row thou art bear-ing, Lay it on Him who ev-ery bur-den bears; Let not thy soul in trou-ble sink de-spair-ing, He who hath sor-rowed, ev-ery sor-row shares.",
+  "verses": [
+    {
+      "lines": [
+        "Come, with the load of sorrow thou art bearing,",
+        "Lay it on Him who every burden bears;",
+        "Let not thy soul in trouble sink despairing,",
+        "He who hath sorrowed, every sorrow shares."
+      ]
+    },
+    {
+      "lines": [
+        "Look for the morn when night is dark and weary,",
+        "Morning shall come when hours of night are spent;",
+        "Clouds hide the sun, and make the noontide dreary,",
+        "Gladness shall cheer you when the clouds are rent."
+      ]
+    },
+    {
+      "lines": [
+        "Look for His smile who gilds the hills at morning,",
+        "Surely it comes as comes the morning sun;",
+        "Beauty shall grace thy life with bright adorning,",
+        "Even as the sunlight, till thy day is done."
+      ]
+    },
+    {
+      "lines": [
+        "Then, when the morn that makes the hilltops golden",
+        "Round the Jerusalem thy spirit gains",
+        "Breaks on thy view, shall come the gladness olden",
+        "Shared by the dwellers in those blest domains."
+      ]
+    }
+  ],
+  "metre": "11 10 11 10",
+  "source": "John Brownlie, Hymns from the Greek Office Books (1904)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Greek Office Books; set to WESLEY (MASON) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1904:28"
+}

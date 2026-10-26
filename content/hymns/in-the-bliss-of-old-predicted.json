@@ -1,0 +1,66 @@
+{
+  "title": "In the Bliss of Old Predicted",
+  "tune": "kalmar",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "In the Bliss of Old Predicted in Tonic Solfa to KALMAR, doh is G: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900).",
+    "The book printed the words without tunes. They are in 8.7.8.7.7.7, and this page sets them to KALMAR; any other 8.7.8.7.7.7 tune fits them as well."
+  ],
+  "underlay": "In the bliss of old pre-dict-ed, Heaven and earth to day re-joice; Men and an-gels, one in spir-it, Shout a-loud in glee-ful voice; For, to those in dark-ness drear, God in hu-man flesh is near.",
+  "verses": [
+    {
+      "lines": [
+        "In the bliss of old predicted,",
+        "Heaven and earth to-day rejoice;",
+        "Men and angels, one in spirit,",
+        "Shout aloud in gleeful voice;",
+        "For, to those in darkness drear,",
+        "God in human flesh is near."
+      ]
+    },
+    {
+      "lines": [
+        "Cave and manger show the mystery;",
+        "Shepherds tell the wondrous tale;",
+        "Bearing gifts to lay before Him",
+        "From the East the Magi hail;",
+        "Taught by angel words to sing,",
+        "We unworthy praises bring."
+      ]
+    },
+    {
+      "lines": [
+        "Glory be to God eternal!",
+        "Peace on earth its reign begin!",
+        "For the one Desire of nations",
+        "Comes to save us from our sin;",
+        "Freedom He will now bestow",
+        "From the bondage of the foe."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7 7 7",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to KALMAR by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:7"
+}

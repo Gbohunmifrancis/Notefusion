@@ -1,0 +1,76 @@
+{
+  "title": "Lord, I Am Thine, for Thou Hast Died for Me",
+  "tune": "eventide",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Lord, I Am Thine, for Thou Hast Died for Me in Tonic Solfa to EVENTIDE, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Tens (10.10.10.10), and this page sets them to EVENTIDE; any other Tens tune fits them as well."
+  ],
+  "underlay": "Lord, I am Thine, for Thou hast died for me; Thy claim I own, and give my-self to Thee; Not with the price of gold, of gold most fine Hast Thou re-deemed my soul, and made me Thine.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, I am Thine, for Thou hast died for me;",
+        "Thy claim I own, and give myself to Thee;",
+        "Not with the price of gold, of gold most fine",
+        "Hast Thou redeemed my soul, and made me Thine."
+      ]
+    },
+    {
+      "lines": [
+        "Thy blood was shed upon the awful tree;",
+        "I marvel at the love there shown for me",
+        "All loveless, and to sin and self a slave; —",
+        "Thy gifts enriched me, yet I nothing gave."
+      ]
+    },
+    {
+      "lines": [
+        "Now in its wonder would my soul arise,",
+        "Shorn of all pride, but precious in Thine eyes,",
+        "Who for its life Thy glory laidst aside,",
+        "And wore its shame, and for its purchase died;"
+      ]
+    },
+    {
+      "lines": [
+        "And fired with love, that wondrous love proclaim",
+        "In life, in death, in fealty to Thy name;",
+        "In loving service, for such service given,",
+        "Here upon earth, and yonder in Thy heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, I am Thine, Thy love hath won my soul;",
+        "Now shall my life obey such sweet control; —",
+        "No, not mine own, the purchase is complete,",
+        "I bring my all to lay it at Thy feet."
+      ]
+    }
+  ],
+  "metre": "10 10 10 10",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to EVENTIDE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:61"
+}

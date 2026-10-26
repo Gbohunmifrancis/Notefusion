@@ -1,0 +1,93 @@
+{
+  "title": "When in the Hour of Utmost Need",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Paul Eber",
+      "born": 1511,
+      "died": 1569,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "When in the Hour of Utmost Need in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Paul Eber wrote these words in German. Catherine Winkworth's translation was printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 515.",
+    "The book printed the words without tunes, marked Long Metre (8.8.8.8), to be sung to any tune of that metre. This page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When in the hour of ut-most need We know not where to look for aid; When days and nights of anx-ious thought Nor help nor coun-sel yet have brought,",
+  "verses": [
+    {
+      "lines": [
+        "When in the hour of utmost need",
+        "We know not where to look for aid;",
+        "When days and nights of anxious thought",
+        "Nor help nor counsel yet have brought,"
+      ]
+    },
+    {
+      "lines": [
+        "Then this our comfort is alone,",
+        "That we may meet before Thy throne",
+        "And cry, O faithful God, to Thee",
+        "For rescue from our misery;"
+      ]
+    },
+    {
+      "lines": [
+        "To Thee may raise our hearts and eyes,",
+        "Repenting sore with bitter sighs,",
+        "And seek Thy pardon for our sin",
+        "And respite from our griefs within."
+      ]
+    },
+    {
+      "lines": [
+        "For Thou hast promised graciously",
+        "To hear all those who cry to Thee,",
+        "Through Him whose name alone is great,",
+        "Our Savior and our Advocate."
+      ]
+    },
+    {
+      "lines": [
+        "And thus we come, O God, to-day",
+        "And all our woes before Thee lay;",
+        "For tried, afflicted, lo! we stand,",
+        "Perils and foes on every hand."
+      ]
+    },
+    {
+      "lines": [
+        "Ah! hide not for our sins Thy face,",
+        "Absolve us through Thy boundless grace,",
+        "Be with us in our anguish still,",
+        "Free us at last from every ill,"
+      ]
+    },
+    {
+      "lines": [
+        "That so with all our hearts we may",
+        "Once more our glad thanksgivings pay",
+        "And walk obedient to Thy Word",
+        "And now and ever praise Thee, Lord."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Paul Eber died in 1569; Catherine Winkworth died in 1878.",
+  "credits": "Words by Paul Eber (1511–1569), translated by Catherine Winkworth (1827–1878), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:515"
+}

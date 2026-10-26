@@ -1,0 +1,71 @@
+{
+  "title": "The Savior Calls; Let Every Ear",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "The Savior Calls; Let Every Ear in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Anne Steele wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 47.",
+    "The book printed the words without tunes, marked Common Metre (8.6.8.6), to be sung to any tune of that metre. This page sets them to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The Sa-vior calls; let ev-ery ear At-tend the heav-enly sound, Ye doubt-ing souls, dis-miss your fear; Hope smiles re-viv-ing round.",
+  "verses": [
+    {
+      "lines": [
+        "The Savior calls; let every ear",
+        "Attend the heavenly sound,",
+        "Ye doubting souls, dismiss your fear;",
+        "Hope smiles reviving round."
+      ]
+    },
+    {
+      "lines": [
+        "For every thirsty, longing heart",
+        "Here streams of bounty flow",
+        "And life and health and bliss impart",
+        "To banish mortal woe."
+      ]
+    },
+    {
+      "lines": [
+        "Here springs of sacred pleasures rise",
+        "To ease your every pain;",
+        "Immortal fountain! full supplies!",
+        "Nor shall you thirst in vain."
+      ]
+    },
+    {
+      "lines": [
+        "Ye sinners, come, ’tis Mercy’s voice;",
+        "The gracious call obey;",
+        "Mercy invites to heavenly joys,",
+        "And can you yet delay?"
+      ]
+    },
+    {
+      "lines": [
+        "Dear Savior, draw reluctant hearts;",
+        "To Thee let sinners fly",
+        "And take the bliss Thy love imparts",
+        "And drink and never die."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Anne Steele died in 1778.",
+  "credits": "Words by Anne Steele (1717–1778), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:47"
+}

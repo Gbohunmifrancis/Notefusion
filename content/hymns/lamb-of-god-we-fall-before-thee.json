@@ -1,0 +1,79 @@
+{
+  "title": "Lamb of God, We Fall Before Thee",
+  "tune": "all-for-jesus",
+  "text": [
+    {
+      "name": "Joseph Hart",
+      "born": 1712,
+      "died": 1768,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Lamb of God, We Fall Before Thee in Tonic Solfa to ALL FOR JESUS, doh is D: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Joseph Hart wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 81.",
+    "The book printed the words without tunes, marked Eights and Sevens (8.7.8.7), to be sung to any tune of that metre. This page sets them to ALL FOR JESUS; any other Eights and Sevens tune fits them as well."
+  ],
+  "underlay": "Lamb of God, we fall be-fore Thee, Hum-bly trust-ing in Thy cross; That a-lone be all our glo-ry, All things else are on-ly dross.",
+  "verses": [
+    {
+      "lines": [
+        "Lamb of God, we fall before Thee,",
+        "Humbly trusting in Thy cross;",
+        "That alone be all our glory,",
+        "All things else are only dross."
+      ]
+    },
+    {
+      "lines": [
+        "Thee we own a perfect Savior,",
+        "Only Source of all that’s good.",
+        "Every grace and every favor",
+        "Comes to us through Jesus’ blood."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus gives us true repentance,",
+        "By His Spirit sent from heav’n;",
+        "Whispers this transporting sentence,",
+        "“Son, thy sins are all forgiv’n.”"
+      ]
+    },
+    {
+      "lines": [
+        "Faith He grants us to believe it,",
+        "Grateful hearts His love to prize;",
+        "Want we wisdom? He must give it;",
+        "Hearing ears and seeing eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus gives us pure affections,",
+        "Wills to do what He requires,",
+        "Makes us follow His directions,",
+        "And what He commands, inspires."
+      ]
+    },
+    {
+      "lines": [
+        "All our prayers and all our praises,",
+        "Rightly offered in His name,—",
+        "He that dictates them is Jesus;",
+        "He that answers is the same."
+      ]
+    }
+  ],
+  "metre": "8 7 8 7",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Joseph Hart died in 1768.",
+  "credits": "Words by Joseph Hart (1712–1768), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to ALL FOR JESUS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:81"
+}

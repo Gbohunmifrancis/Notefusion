@@ -1,0 +1,60 @@
+{
+  "title": "When Darkness Falls and Night Is Here",
+  "tune": "uxbridge",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1900)"
+    }
+  ],
+  "textPublished": 1900,
+  "textPublishedBy": true,
+  "description": "When Darkness Falls and Night Is Here in Tonic Solfa to UXBRIDGE, doh is E: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns of the Greek Church (Edinburgh and London, 1900), headed “Synesius”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to UXBRIDGE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "When dark-ness falls and night is here, My hymns of praise in si-lence rise This knows the moon, whose sil-ver sphere Shines in the star be-span-gled skies.",
+  "verses": [
+    {
+      "lines": [
+        "When darkness falls and night is here,",
+        "My hymns of praise in silence rise —",
+        "This knows the moon, whose silver sphere",
+        "Shines in the star-bespangled skies."
+      ]
+    },
+    {
+      "lines": [
+        "When morning breaks, and glorious day",
+        "Shines in the dawn and noontide fair —",
+        "This knows the sun — a grateful lay",
+        "Springs from my heart in fervent prayer."
+      ]
+    },
+    {
+      "lines": [
+        "When fails the light at sunset gray,",
+        "And twilight listens for my song —",
+        "This know the stars — in bright array",
+        "My praises mingle with their throng."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns of the Greek Church (1900)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns of the Greek Church; set to UXBRIDGE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1900:34"
+}

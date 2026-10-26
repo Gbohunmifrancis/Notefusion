@@ -1,0 +1,92 @@
+{
+  "title": "I Lift My Hands, and with My Heart",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (by 1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "I Lift My Hands, and with My Heart in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the East (Paisley, in print by 1911).",
+    "The book printed the words without tunes. They are in Common Metre (8.6.8.6), and this page sets them to ST ANNE; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "I lift my hands, and with my heart, My prayer a-scends to Thee; In mer-cy take a sin-ner's part, Lord, send Thy help to me.",
+  "verses": [
+    {
+      "lines": [
+        "I lift my hands, and with my heart,",
+        "My prayer ascends to Thee;",
+        "In mercy take a sinner's part,",
+        "Lord, send Thy help to me."
+      ]
+    },
+    {
+      "lines": [
+        "Lo! in the mire of sin I lie,",
+        "My raiment all defiled;",
+        "O come and set me up on high,",
+        "And save Thy fallen child."
+      ]
+    },
+    {
+      "lines": [
+        "I cannot cleanse the filthy stains, —",
+        "I can but mourn and sigh;",
+        "Do what I may, the guilt remains,",
+        "I fail oft' as I try."
+      ]
+    },
+    {
+      "lines": [
+        "In mercy, Lord, Thy mercy send,",
+        "For merciful art Thou;",
+        "And prove Thyself the sinner's Friend, —",
+        "O come and help me now."
+      ]
+    },
+    {
+      "lines": [
+        "And let my life be ordered quite,",
+        "As Thou wouldst have it be;",
+        "When I am wrong, O set me right, —",
+        "Lord, come and succour me."
+      ]
+    },
+    {
+      "lines": [
+        "And hold me up, lest to the mire",
+        "Of sin my soul return;",
+        "O let Thy love my spirit fire,",
+        "And base affections burn."
+      ]
+    },
+    {
+      "lines": [
+        "And glory to my God I'll give,",
+        "And glory to the Son,",
+        "And to the Spirit while I live,",
+        "Great, Blessed, Three in One."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "John Brownlie, Hymns from the East (by 1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the East; set to ST ANNE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-east:38"
+}

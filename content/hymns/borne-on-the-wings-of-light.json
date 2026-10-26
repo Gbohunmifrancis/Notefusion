@@ -1,0 +1,86 @@
+{
+  "title": "Borne on the Wings of Light",
+  "tune": "st-john-parish-choir",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "Borne on the Wings of Light in Tonic Solfa to ST. JOHN (PARISH CHOIR), doh is D: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911).",
+    "The book printed the words without tunes. They are in Hallelujah Metre (6.6.6.6.8.8), and this page sets them to ST. JOHN (PARISH CHOIR); any other Hallelujah Metre tune fits them as well."
+  ],
+  "underlay": "Borne on the wings of light, Be-hold the Lord as-cend, Up to the por-tals bright Where heav-enly powers at-tend, And fling the gates of glo-ry wide, While prais-es rise like flow-ing tide.",
+  "verses": [
+    {
+      "lines": [
+        "Borne on the wings of light,",
+        "Behold the Lord ascend,",
+        "Up to the portals bright",
+        "Where heavenly powers attend,",
+        "And fling the gates of glory wide,",
+        "While praises rise like flowing tide."
+      ]
+    },
+    {
+      "lines": [
+        "Back to the Father's bliss",
+        "From war and strife below,",
+        "From toil and loneliness",
+        "'Mid scenes of sin and woe; —",
+        "Loud plaudits hail the Victor now,",
+        "Who comes with triumph on His brow."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, in the peace of heaven,",
+        "Far from our toil and pain,",
+        "Think of the promise given,",
+        "And come to us again; —",
+        "Remember, Thou, the toilsome road,",
+        "That brought Thee to Thy blest abode."
+      ]
+    },
+    {
+      "lines": [
+        "And see the toils we bear,",
+        "And hear the prayers we send;",
+        "In answer to our prayers,",
+        "Our needy souls befriend; —",
+        "We need not languish in the night,",
+        "Though heaven receive Thee from our sight."
+      ]
+    },
+    {
+      "lines": [
+        "O Promised Spirit, come,",
+        "And fill the empty place,",
+        "Till in our heavenly home",
+        "We look upon His face,",
+        "Who fought with us in earthly strife,",
+        "And won for us immortal life."
+      ]
+    }
+  ],
+  "metre": "6 6 6 6 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to ST. JOHN (PARISH CHOIR) by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:26"
+}

@@ -1,0 +1,108 @@
+{
+  "title": "My God, Shall Sin Its Power Maintain",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Traditional Greek",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "textPublishedBy": true,
+  "description": "My God, Shall Sin Its Power Maintain in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "John Brownlie translated these words from the Greek service books for Hymns from the Morningland (Paisley, 1911), headed “Hymns”.",
+    "The book printed the words without tunes. They are in Long Metre (8.8.8.8), and this page sets them to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "My God, shall sin its power main-tain, And in my soul de-fi-ant live! 'Tis not e-nough that Thou for-give, The cross must rise, and self be slain.",
+  "verses": [
+    {
+      "lines": [
+        "My God, shall sin its power maintain,",
+        "And in my soul defiant live!",
+        "'Tis not enough that Thou forgive,",
+        "The cross must rise, and self be slain."
+      ]
+    },
+    {
+      "lines": [
+        "Then in my life Thy love reveal, —",
+        "As by The Christ Who bore the cross,",
+        "So by my sacrifice and loss,",
+        "And by the bitter pangs I feel."
+      ]
+    },
+    {
+      "lines": [
+        "O God of love, Thy love declare, —",
+        "'Tis not enough that Christ should die,",
+        "I too, with Him, in death must lie,",
+        "And in my death His anguish share."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, is it nothing now, to Thee? —",
+        "Yea, it is much, that well I know,",
+        "For Thou hast memory of the woe",
+        "That filled Thy soul at Calvary."
+      ]
+    },
+    {
+      "lines": [
+        "And Thou wilt come with gracious aid,",
+        "When, burdened on the awful road,",
+        "I fall beneath the grievous load",
+        "Upon my fainting spirit laid."
+      ]
+    },
+    {
+      "lines": [
+        "Nor let me feel Thou hast no care,",
+        "Though arrows fly, and darkness fall;",
+        "Sin must be slain, but when I call",
+        "Thou art attentive to my prayer."
+      ]
+    },
+    {
+      "lines": [
+        "O God of love, Thy power disclose, —",
+        "'Tis not enough that Christ should rise,",
+        "I, too, must seek the brightening skies,",
+        "And rise from death, as Christ arose."
+      ]
+    },
+    {
+      "lines": [
+        "And from the cross, and to the grave",
+        "Descend; and when the morning breaks,",
+        "To life anew the soul awakes",
+        "That sin nor death shall e'er enslave."
+      ]
+    },
+    {
+      "lines": [
+        "The cross is love: the Christ's, and mine; —",
+        "'Tis life to die, and death to live,",
+        "And not enough that God forgive,",
+        "If I would live the life divine."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "John Brownlie, Hymns from the Morningland (1911)",
+  "licence": "Public domain: John Brownlie died in 1925.",
+  "credits": "Translated by John Brownlie (1857–1925) from the Greek, public domain, as printed in Hymns from the Morningland; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "brownlie-1911:1"
+}

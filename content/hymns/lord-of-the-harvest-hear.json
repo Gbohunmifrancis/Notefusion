@@ -1,0 +1,63 @@
+{
+  "title": "Lord of the Harvest, Hear",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "Lord of the Harvest, Hear in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Charles Wesley wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 491.",
+    "The book printed the words without tunes, marked Short Metre (6.6.8.6), to be sung to any tune of that metre. This page sets them to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Lord of the har-vest, hear Thy nee-dy ser-vants cry; An-swer our faith’s ef-fec-tual prayer And all our wants sup-ply.",
+  "verses": [
+    {
+      "lines": [
+        "Lord of the harvest, hear",
+        "Thy needy servants cry;",
+        "Answer our faith’s effectual prayer",
+        "And all our wants supply."
+      ]
+    },
+    {
+      "lines": [
+        "On Thee we humbly wait,",
+        "Our wants are in Thy view.",
+        "The harvest, truly, Lord, is great,",
+        "The laborers are few."
+      ]
+    },
+    {
+      "lines": [
+        "Convert and send forth more",
+        "Into Thy Church abroad",
+        "And let them speak Thy Word of Power",
+        "As workers with their God."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, let them spread Thy name,",
+        "Their mission fully prove,",
+        "Thy universal grace proclaim,",
+        "Thine all-redeeming love!"
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Charles Wesley died in 1788.",
+  "credits": "Words by Charles Wesley (1707–1788), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:491"
+}

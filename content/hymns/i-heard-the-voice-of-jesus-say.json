@@ -1,0 +1,67 @@
+{
+  "title": "I Heard the Voice of Jesus Say",
+  "tune": "materna",
+  "text": [
+    {
+      "name": "Horatius Bonar",
+      "born": 1808,
+      "died": 1889,
+      "role": "Words"
+    }
+  ],
+  "textPublished": 1927,
+  "textPublishedBy": true,
+  "description": "I Heard the Voice of Jesus Say in Tonic Solfa to MATERNA, doh is C: the solfa with the words, staff notation, 3 verses and a piano.",
+  "about": [
+    "Horatius Bonar wrote these words. They were printed in the Evangelical Lutheran Hymn-Book (St. Louis, 1927), as hymn 46.",
+    "The book printed the words without tunes, marked Common Metre Double (8.6.8.6.8.6.8.6), to be sung to any tune of that metre. This page sets them to MATERNA; any other Common Metre Double tune fits them as well."
+  ],
+  "underlay": "I heard the voice of Je-sus say, “Come un-to Me and rest; Lay down, thou wea-ry one, lay down Thy head up-on My breast!” I came to Je-sus as I was, Wea-ry and worn and sad; I found in Him a rest-ing place, And He has made me glad.",
+  "verses": [
+    {
+      "lines": [
+        "I heard the voice of Jesus say,",
+        "“Come unto Me and rest;",
+        "Lay down, thou weary one, lay down",
+        "Thy head upon My breast!”",
+        "I came to Jesus as I was,",
+        "Weary and worn and sad;",
+        "I found in Him a resting-place,",
+        "And He has made me glad."
+      ]
+    },
+    {
+      "lines": [
+        "I heard the voice of Jesus say,",
+        "“Behold, I freely give",
+        "The living water; thirsty one,",
+        "Stoop down and drink and live!”",
+        "I came to Jesus, and I drank",
+        "Of that life-giving stream;",
+        "My thirst was quenched, my soul revived,",
+        "And now I live in Him."
+      ]
+    },
+    {
+      "lines": [
+        "I heard the voice of Jesus say,",
+        "“I am this dark world’s Light;",
+        "Look unto Me, thy morn shall rise",
+        "And all thy day be bright!”",
+        "I looked to Jesus, and I found",
+        "In Him my Star, my Sun;",
+        "And in that Light of Life I’ll walk",
+        "Till traveling days are done."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Evangelical Lutheran Hymn-Book (St. Louis, 1927)",
+  "licence": "Public domain: Horatius Bonar died in 1889.",
+  "credits": "Words by Horatius Bonar (1808–1889), public domain, as printed in the Evangelical Lutheran Hymn-Book (1927); set to MATERNA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "lutheran-1927:46"
+}
