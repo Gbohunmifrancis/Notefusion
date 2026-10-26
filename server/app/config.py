@@ -670,6 +670,13 @@ class Settings:
         return os.getenv("NF_SONG_BLEED", "1").strip().lower() not in ("0", "false", "no")
 
     @property
+    def sixteenths(self) -> bool:
+        """Write a line on sixteenths when its notes start between the eighths
+        (``transcriber._sixteenths``); only over the default eighth grid.  ``NF_SIXTEENTHS=0``
+        keeps every line on eighths."""
+        return os.getenv("NF_SIXTEENTHS", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
     def quantize_divisors(self) -> tuple[int, ...]:
         """music21 quantize grid, as divisions per quarter note.
 

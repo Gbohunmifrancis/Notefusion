@@ -96,6 +96,7 @@ def _effective_flags() -> dict:
         "grid_refine": settings.grid_refine,
         "f0_merge": settings.f0_merge,
         "quantize_divisors": list(settings.quantize_divisors),
+        "sixteenths": settings.sixteenths,
     }
 
 
