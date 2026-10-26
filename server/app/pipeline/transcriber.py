@@ -5820,23 +5820,28 @@ def _transcribe_wav(
         rhythm_y, rhythm_events, tempo_override, post=post, sr=sr, mix=from_mix
     )
     beat_origin = _beat_origin(beat_times, rhythm_events[0].start, bpm) if settings.beat_align else 0.0
-    if settings.grid_refine:
+    onsets = _tempo_onsets(rhythm_events)[0]
+
+    def refined(divisors: tuple[int, ...]) -> tuple[float, float]:
+        if not settings.grid_refine:
+            return bpm, beat_origin
         # A tap-in override says how fast the piece is (TRD par. 5), so band=0.0 leaves the
         # BPM alone and refines only the phase — which the override says nothing about.
         # Nor do the singer's onsets get to move a BPM measured on the whole mix.
-        bpm, beat_origin = _refine_grid(
-            _tempo_onsets(rhythm_events)[0],
-            bpm,
-            beat_origin,
-            settings.quantize_divisors,
+        return _refine_grid(
+            onsets, bpm, beat_origin, divisors,
             band=0.0 if tempo_override is not None or from_mix else _GRID_REFINE_BAND,
         )
+
     grid = settings.quantize_divisors
-    if settings.sixteenths and grid == (2,) and _sixteenths(_tempo_onsets(rhythm_events)[0], bpm, beat_origin):
+    on_eighths = refined(grid)
+    if settings.sixteenths and grid == (2,) and _sixteenths(onsets, *on_eighths):
+        # Measured again from the start on the grid the notes will snap to: refined on the
+        # eighths first, the beat's phase sits where the notes between them pulled it.
         grid = (4,)
-        if settings.grid_refine:
-            # The phase only, now that it is a sixteenth that has to land.
-            bpm, beat_origin = _refine_grid(_tempo_onsets(rhythm_events)[0], bpm, beat_origin, grid, band=0.0)
+        bpm, beat_origin = refined(grid)
+    else:
+        bpm, beat_origin = on_eighths
     sec_to_beats = bpm / 60.0
 
     # ── 7b. Chords ────────────────────────────────────────────────────────────
