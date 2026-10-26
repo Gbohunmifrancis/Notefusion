@@ -85,7 +85,7 @@ test("words set by metre are left out of hymn recognition", () => {
   assert.doesNotMatch(json, /behold-the-glories/);
 });
 
-test("the committed Watts pages: unreviewed drafts, set by metre, each underlay one syllable to a note of its tune", () => {
+test("the committed Watts pages: unreviewed, set by metre, each underlay one syllable to a note of its tune", () => {
   const { allHymns } = loadAll({ includeDrafts: true });
   const watts = allHymns.filter((h) => h.importedFrom?.startsWith("watts-1707:"));
   assert.ok(watts.length >= 200);

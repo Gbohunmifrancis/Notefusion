@@ -21,9 +21,11 @@ test("the committed index is what the build writes (the CI staleness check cover
 
 test("every published hymn is a score entry, and no draft is", () => {
   const slugs = new Set(index.entries.map((e) => e.slug));
-  for (const h of hymns) assert.ok(slugs.has(h.slug), h.slug);
-  for (const h of allHymns.filter((x) => x.draft)) assert.ok(!slugs.has(h.slug), `draft ${h.slug} is in the index`);
-  assert.equal(index.entries.filter((e) => e.kind === "score" && !e.slug.startsWith("tune-")).length, hymns.length);
+  // Words set by metre to a tune we hold (import/watts.mjs) are pages, never recognised as a hymn.
+  const scored = hymns.filter((h) => !h.setByMetre);
+  for (const h of scored) assert.ok(slugs.has(h.slug), h.slug);
+  for (const h of allHymns.filter((x) => x.draft || x.setByMetre)) assert.ok(!slugs.has(h.slug), `${h.slug} is in the index`);
+  assert.equal(index.entries.filter((e) => e.kind === "score" && !e.slug.startsWith("tune-")).length, scored.length);
 });
 
 test("every entry says where it came from, under what licence, with the credit line its page shows", () => {

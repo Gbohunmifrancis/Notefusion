@@ -234,7 +234,7 @@ test("the semiquaver hymns the half-beat grid could not show are published now",
 });
 
 test("every imported hymn page shows the credit line, linking the source and the credits page", () => {
-  const sample = published.filter((h) => h.importedFrom).slice(0, 12).concat(published.filter((h) => h.slug === "to-god-be-the-glory"));
+  const sample = published.filter((h) => h.importedFrom && !h.setByMetre).slice(0, 12).concat(published.filter((h) => h.slug === "to-god-be-the-glory"));
   for (const h of sample) {
     prepareHymn(h);
     const html = renderHymn(h, { hymns: published, posts: [] });

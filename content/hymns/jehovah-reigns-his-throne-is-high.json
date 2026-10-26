@@ -56,7 +56,7 @@
   "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
   "updated": "2026-10-26",
   "reviewed": false,
-  "draft": true,
+  "draft": false,
   "setByMetre": true,
   "importedFrom": "watts-1707:2:168"
 }
