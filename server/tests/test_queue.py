@@ -365,6 +365,26 @@ def test_only_melody_mode_is_isolated_on_its_own(monkeypatch):
         queue.shutdown(wait=True)
 
 
+@pytest.mark.parametrize("mode", ["poly", "chords"])
+def test_a_song_in_polyphonic_or_chords_mode_is_read_whole_never_its_vocal_stem(monkeypatch, mode):
+    """A linked song or a song upload in an instrument mode: the saxophone or the piano is in the backing, so the
+    vocal stem would keep only the singer (and only where they sing). The mixture is read, and nothing is isolated."""
+    _fake_separation(monkeypatch, peaks=9.0, voice_db=-3.0)
+    from app.pipeline import separate
+
+    monkeypatch.setattr(separate, "separate_file", lambda *a, **k: pytest.fail("the vocals were isolated"))
+    seen = []
+    monkeypatch.setattr("app.jobs.queue.transcribe", lambda path, **kw: seen.append((Path(path).name, kw["mode"])) or _result(8))
+    queue = JobQueue(workers=1)
+    try:
+        audio = _temp_audio()
+        job = _await_status(queue, queue.submit(audio, mode=mode, key=None, tempo=None, separate=True), STATUS_DONE)
+        assert seen == [(audio.name, mode)]
+        assert job.result.separated is False and job.result.read_as_chords is False
+    finally:
+        queue.shutdown(wait=True)
+
+
 def test_a_band_with_no_voice_in_it_is_transcribed_as_the_mixture(monkeypatch):
     """An instrumental upload reads as accompanied too, but its vocal stem comes back empty;
     the tune is then in the mixture, so that is what gets transcribed."""

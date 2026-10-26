@@ -143,6 +143,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   and the band leaking into that stem silenced before any pitch is read (`transcriber._gate_bleed`: frames
   `BLEED_BELOW_DB` 14 under the song's vocal-to-instrumental level where the instrumental sounds; the intro's
   leaked notes used to start the sheet before the singer; `NF_SONG_BLEED=0` off).
+  Polyphonic and chords mode never isolate: a song in them (a link, `separate=true`) is read whole
+  (`queue._MIXTURE_MODES`), as the vocal stem kept only the singer and threw the saxophone or piano out with the backing.
   Every separation (a link, `separate=true`, or a band the queue heard in a
   melody upload) checks the stem for a voice (`separate.voice_share_db`): a stem with none gives way to the mixture, and
   one whose sheet has fewer than max(4, seconds/10) notes to the mixture's sheet when that has more; a mixture is
