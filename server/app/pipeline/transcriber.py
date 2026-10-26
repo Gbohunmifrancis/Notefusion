@@ -4187,9 +4187,8 @@ def _sixteenths(onsets: np.ndarray, bpm: float, beat_origin: float) -> bool:
         return False
     steps = (onsets - beat_origin) * (bpm / 60.0) * 2.0
     off = np.abs(steps - np.round(steps)) > _SIXTEENTH_OFF
-    share = float(np.mean(off))
-    print(f"[notefusion] sixteenths share={share:.3f} n={onsets.size}", flush=True)  # TEMP
-    return share >= _SIXTEENTH_SHARE
+    return float(np.mean(off)) >= _SIXTEENTH_SHARE
+
 
 # ── Level refinement (``_level_residual``) ────────────────────────────────────
 # How far a *candidate* tempo may move before its grid fit is measured for the level

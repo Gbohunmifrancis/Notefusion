@@ -713,8 +713,9 @@ class Settings:
         grid was rounding that shortfall back up.
 
         So the grid is chosen per line instead (``sixteenths``): eighths unless a fifth of
-        the onsets sit between them, as an Afrobeats line's do.  No clip of the sung,
-        instrument or hymn corpora's 4/4 tunes crosses that, and on the Afrobeats set it is
+        the onsets sit between them, as an Afrobeats line's do.  No clip of the sung or
+        instrument corpora crosses that, 21 of the hymn corpus's 752 do (notes.f1 +0.002,
+        pickup +0.003, meter unchanged over all 752), and on the Afrobeats set it is
         notes.f1 +0.06 and rhythm.ioi_exact +0.30.
 
         Unparseable entries are dropped rather than raising, so a typo in a deploy
