@@ -75,6 +75,12 @@
       "tune": "old-hundredth"
     },
     {
+      "ref": "1:16",
+      "slug": "hosanna-to-the-royal-son",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
       "ref": "1:17",
       "slug": "o-for-an-overcoming-faith",
       "metre": "CM",
@@ -83,6 +89,12 @@
     {
       "ref": "1:18",
       "slug": "hear-what-the-voice-from-heaven-proclaims",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
+      "ref": "1:19",
+      "slug": "lord-at-thy-temple-we-appear",
       "metre": "CM",
       "tune": "st-anne"
     },
@@ -111,6 +123,18 @@
       "tune": "old-hundredth"
     },
     {
+      "ref": "1:24",
+      "slug": "in-vain-the-wealthy-mortals-toil",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "1:25",
+      "slug": "all-mortal-vanities-be-gone",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
       "ref": "1:29",
       "slug": "i-lift-my-banners-saith-the-lord",
       "metre": "CM",
@@ -127,6 +151,12 @@
       "slug": "whence-do-our-mournful-thoughts-arise",
       "metre": "CM",
       "tune": "st-flavian"
+    },
+    {
+      "ref": "1:34",
+      "slug": "jesus-thy-blessings-are-not-few",
+      "metre": "CM",
+      "tune": "caithness"
     },
     {
       "ref": "1:36",
@@ -225,6 +255,12 @@
       "tune": "old-hundredth"
     },
     {
+      "ref": "1:53",
+      "slug": "god-who-in-various-methods-told",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
       "ref": "1:54",
       "slug": "jesus-we-bless-thy-fathers-name",
       "metre": "LM",
@@ -267,6 +303,12 @@
       "tune": "old-hundredth"
     },
     {
+      "ref": "1:63",
+      "slug": "what-equal-honours-shall-we-bring",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
       "ref": "1:64",
       "slug": "behold-what-wondrous-grace",
       "metre": "SM",
@@ -297,6 +339,18 @@
       "tune": "winchester-new"
     },
     {
+      "ref": "1:74",
+      "slug": "we-are-a-garden-walld-around",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "1:75",
+      "slug": "the-wondering-world-enquires-to-know",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
       "ref": "1:76",
       "slug": "when-strangers-stand-and-hear-me-tell",
       "metre": "LM",
@@ -307,6 +361,12 @@
       "slug": "god-of-the-morning-at-whose-voice",
       "metre": "LM",
       "tune": "melcombe"
+    },
+    {
+      "ref": "1:80",
+      "slug": "thus-far-the-lord-has-led-me-on",
+      "metre": "LM",
+      "tune": "uxbridge"
     },
     {
       "ref": "1:81",
@@ -345,6 +405,12 @@
       "tune": "winchester-new"
     },
     {
+      "ref": "1:88",
+      "slug": "life-is-the-time-to-serve-the-lord",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
       "ref": "1:89",
       "slug": "ye-sons-of-adam-vain-and-young",
       "metre": "LM",
@@ -355,6 +421,12 @@
       "slug": "lo-the-young-tribes-of-adam-rise",
       "metre": "CM",
       "tune": "st-agnes"
+    },
+    {
+      "ref": "1:91",
+      "slug": "now-in-the-heat-of-youthful-blood",
+      "metre": "LM",
+      "tune": "uxbridge"
     },
     {
       "ref": "1:92",
@@ -465,6 +537,18 @@
       "tune": "st-peter"
     },
     {
+      "ref": "1:111",
+      "slug": "lord-we-confess-our-numerous-faults",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
+      "ref": "1:112",
+      "slug": "so-did-the-hebrew-prophet-raise",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
       "ref": "1:113",
       "slug": "how-large-the-promise-how-divine",
       "metre": "CM",
@@ -517,6 +601,12 @@
       "slug": "behold-the-wretch-whose-lust-and-wine",
       "metre": "CM",
       "tune": "caithness"
+    },
+    {
+      "ref": "1:124",
+      "slug": "deep-in-the-dust-before-thy-throne",
+      "metre": "LM",
+      "tune": "winchester-new"
     },
     {
       "ref": "1:127",
@@ -621,10 +711,22 @@
       "tune": "st-agnes"
     },
     {
+      "ref": "1:146",
+      "slug": "go-worship-at-immanuels-feet",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
       "ref": "1:147",
       "slug": "tis-from-the-treasures-of-his-word",
       "metre": "LM",
       "tune": "old-hundredth"
+    },
+    {
+      "ref": "1:149",
+      "slug": "join-all-the-names-of-love-and-power",
+      "metre": "LM",
+      "tune": "winchester-new"
     },
     {
       "ref": "2:1",
@@ -717,6 +819,18 @@
       "tune": "winchester-new"
     },
     {
+      "ref": "2:22",
+      "slug": "terrible-god-that-reignst-on-high",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "2:23",
+      "slug": "descend-from-heaven-immortal-dove",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
       "ref": "2:24",
       "slug": "when-the-great-builder-archd-the-skies",
       "metre": "LM",
@@ -753,6 +867,12 @@
       "tune": "st-flavian"
     },
     {
+      "ref": "2:31",
+      "slug": "why-should-we-start-and-fear-to-die",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
       "ref": "2:32",
       "slug": "how-short-and-hasty-is-our-life",
       "metre": "CM",
@@ -765,16 +885,34 @@
       "tune": "winchester-old"
     },
     {
+      "ref": "2:34",
+      "slug": "come-holy-spirit-heavenly-dove",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
       "ref": "2:35",
       "slug": "let-them-neglect-thy-glory-lord",
       "metre": "CM",
       "tune": "st-agnes"
     },
     {
+      "ref": "2:36",
+      "slug": "well-the-redeemers-gone",
+      "metre": "SM",
+      "tune": "franconia"
+    },
+    {
       "ref": "2:38",
       "slug": "happy-the-heart-where-graces-reign",
       "metre": "CM",
       "tune": "st-anne"
+    },
+    {
+      "ref": "2:39",
+      "slug": "our-days-alas-our-mortal-days",
+      "metre": "CM",
+      "tune": "caithness"
     },
     {
       "ref": "2:40",
@@ -789,14 +927,32 @@
       "tune": "uxbridge"
     },
     {
+      "ref": "2:42",
+      "slug": "my-god-what-endless-pleasures-dwell",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
       "ref": "2:43",
       "slug": "now-for-a-tune-of-lofty-praise",
       "metre": "LM",
       "tune": "old-hundredth"
     },
     {
+      "ref": "2:45",
+      "slug": "thy-favours-lord-surprise-our-souls",
+      "metre": "LM",
+      "tune": "uxbridge"
+    },
+    {
       "ref": "2:46",
       "slug": "up-to-the-lord-that-reigns-on-high",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
+      "ref": "2:47",
+      "slug": "now-to-the-lord-a-noble-song",
       "metre": "LM",
       "tune": "old-hundredth"
     },
@@ -867,6 +1023,12 @@
       "tune": "caithness"
     },
     {
+      "ref": "2:62",
+      "slug": "sing-to-the-lord-ye-heavenly-hosts",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
       "ref": "2:63",
       "slug": "hark-from-the-tombs-a-doleful-sound",
       "metre": "CM",
@@ -901,6 +1063,12 @@
       "slug": "begin-my-tongue-some-heavenly-theme",
       "metre": "CM",
       "tune": "st-agnes"
+    },
+    {
+      "ref": "2:70",
+      "slug": "god-of-the-seas-thy-thundering-voice",
+      "metre": "LM",
+      "tune": "winchester-new"
     },
     {
       "ref": "2:71",
@@ -939,10 +1107,22 @@
       "tune": "st-agnes"
     },
     {
+      "ref": "2:79",
+      "slug": "plungd-in-a-gulph-of-dark-despair",
+      "metre": "CM",
+      "tune": "st-anne"
+    },
+    {
       "ref": "2:80",
       "slug": "o-the-almighty-lord",
       "metre": "SM",
       "tune": "aylesbury"
+    },
+    {
+      "ref": "2:81",
+      "slug": "and-now-the-scales-have-left-mine-eyes",
+      "metre": "CM",
+      "tune": "st-agnes"
     },
     {
       "ref": "2:82",
@@ -957,10 +1137,28 @@
       "tune": "caithness"
     },
     {
+      "ref": "2:84",
+      "slug": "come-all-harmonious-tongues",
+      "metre": "SM",
+      "tune": "franconia"
+    },
+    {
       "ref": "2:85",
       "slug": "why-does-your-face-ye-humble-souls",
       "metre": "CM",
       "tune": "st-agnes"
+    },
+    {
+      "ref": "2:86",
+      "slug": "our-sins-alas-how-strong-they-be",
+      "metre": "CM",
+      "tune": "st-agnes"
+    },
+    {
+      "ref": "2:87",
+      "slug": "how-wondrous-great-how-glorious-bright",
+      "metre": "CM",
+      "tune": "st-flavian"
     },
     {
       "ref": "2:90",
@@ -1011,6 +1209,24 @@
       "tune": "caithness"
     },
     {
+      "ref": "2:101",
+      "slug": "when-in-the-light-of-faith-divine",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
+      "ref": "2:102",
+      "slug": "no-ill-repine-at-death-no-more",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "2:103",
+      "slug": "come-happy-souls-approach-your-god",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
       "ref": "2:104",
       "slug": "raise-your-triumphant-songs",
       "metre": "SM",
@@ -1029,10 +1245,28 @@
       "tune": "winchester-old"
     },
     {
+      "ref": "2:107",
+      "slug": "that-awful-day-will-surely-come",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
       "ref": "2:108",
       "slug": "come-let-us-lift-our-joyful-eyes",
       "metre": "CM",
       "tune": "caithness"
+    },
+    {
+      "ref": "2:109",
+      "slug": "lord-we-adore-thy-vast-designs",
+      "metre": "LM",
+      "tune": "winchester-new"
+    },
+    {
+      "ref": "2:110",
+      "slug": "and-must-this-body-die",
+      "metre": "SM",
+      "tune": "southwell"
     },
     {
       "ref": "2:111",
@@ -1045,6 +1279,12 @@
       "slug": "great-god-to-what-a-glorious-height",
       "metre": "LM",
       "tune": "melcombe"
+    },
+    {
+      "ref": "2:113",
+      "slug": "the-majesty-of-solomon",
+      "metre": "CM",
+      "tune": "caithness"
     },
     {
       "ref": "2:114",
@@ -1131,6 +1371,12 @@
       "tune": "old-hundredth"
     },
     {
+      "ref": "2:128",
+      "slug": "blessd-with-the-joy-of-innocence",
+      "metre": "CM",
+      "tune": "st-peter"
+    },
+    {
       "ref": "2:129",
       "slug": "tis-by-the-faith-of-joys-to-come",
       "metre": "LM",
@@ -1159,6 +1405,18 @@
       "slug": "eternal-spirit-we-confess",
       "metre": "LM",
       "tune": "melcombe"
+    },
+    {
+      "ref": "2:134",
+      "slug": "the-promise-was-divinely-free",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "2:135",
+      "slug": "behold-the-womans-promisd-seed",
+      "metre": "LM",
+      "tune": "old-hundredth"
     },
     {
       "ref": "2:136",
@@ -1221,6 +1479,12 @@
       "tune": "winchester-old"
     },
     {
+      "ref": "2:150",
+      "slug": "sin-has-a-thousand-treacherous-arts",
+      "metre": "CM",
+      "tune": "york"
+    },
+    {
       "ref": "2:151",
       "slug": "twas-by-an-order-from-the-lord",
       "metre": "LM",
@@ -1233,10 +1497,16 @@
       "tune": "st-agnes"
     },
     {
+      "ref": "2:153",
+      "slug": "sin-like-a-venomous-disease",
+      "metre": "CM",
+      "tune": "winchester-old"
+    },
+    {
       "ref": "2:154",
-      "slug": "where-are-the-mourners-1-saith-the-lord",
+      "slug": "where-are-the-mourners-saith-the-lord",
       "metre": "LM",
-      "tune": "old-hundredth"
+      "tune": "winchester-new"
     },
     {
       "ref": "2:155",
@@ -1245,10 +1515,22 @@
       "tune": "st-flavian"
     },
     {
+      "ref": "2:156",
+      "slug": "i-hate-the-tempter-and-his-charms",
+      "metre": "CM",
+      "tune": "st-flavian"
+    },
+    {
       "ref": "2:157",
       "slug": "now-satan-comes-with-dreadful-roar",
       "metre": "CM",
       "tune": "st-anne"
+    },
+    {
+      "ref": "2:160",
+      "slug": "let-the-wild-leopards-of-the-wood",
+      "metre": "LM",
+      "tune": "winchester-new"
     },
     {
       "ref": "2:161",
@@ -1269,6 +1551,18 @@
       "tune": "st-agnes"
     },
     {
+      "ref": "2:166",
+      "slug": "how-shall-i-praise-th-eternal-god",
+      "metre": "CM",
+      "tune": "caithness"
+    },
+    {
+      "ref": "2:167",
+      "slug": "great-god-thy-glories-shall-employ",
+      "metre": "LM",
+      "tune": "old-hundredth"
+    },
+    {
       "ref": "2:168",
       "slug": "jehovah-reigns-his-throne-is-high",
       "metre": "LM",
@@ -1276,15 +1570,21 @@
     },
     {
       "ref": "2:170",
-      "slug": "can-creatures-to-perfection-find-1",
+      "slug": "can-creatures-to-perfection-find",
       "metre": "LM",
-      "tune": "old-hundredth"
+      "tune": "winchester-new"
     },
     {
       "ref": "3:3",
       "slug": "the-promise-of-my-fathers-love",
       "metre": "CM",
       "tune": "caithness"
+    },
+    {
+      "ref": "3:5",
+      "slug": "let-us-adore-th-eternal-word",
+      "metre": "CM",
+      "tune": "st-peter"
     },
     {
       "ref": "3:6",
@@ -1321,6 +1621,12 @@
       "slug": "how-sweet-and-awful-is-the-place",
       "metre": "CM",
       "tune": "st-flavian"
+    },
+    {
+      "ref": "3:14",
+      "slug": "now-have-our-hearts-embracd-our-god",
+      "metre": "LM",
+      "tune": "uxbridge"
     },
     {
       "ref": "3:17",
@@ -1405,6 +1711,18 @@
       "slug": "let-god-the-makers-name",
       "metre": "SM",
       "tune": "st-bride"
+    },
+    {
+      "ref": "3:42",
+      "slug": "hosanna-to-king-davids-son",
+      "metre": "LM",
+      "tune": "melcombe"
+    },
+    {
+      "ref": "3:44",
+      "slug": "to-christ-th-anointed-king",
+      "metre": "SM",
+      "tune": "southwell"
     }
   ],
   "alreadyOurs": [
@@ -1446,26 +1764,6 @@
       "why": "verses that are not four lines"
     },
     {
-      "ref": "1:16",
-      "first": "Hosanna to the royal Son",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "1:19",
-      "first": "Lord at thy temple we appear,",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "1:24",
-      "first": "In vain the wealthy mortals toil,",
-      "why": "no metre fits: at best 11 of 16 lines as Long Metre"
-    },
-    {
-      "ref": "1:25",
-      "first": "All mortal vanities, be gone,",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
       "ref": "1:26",
       "first": "Peter 1. 3-5.",
       "why": "verses that are not four lines"
@@ -1491,11 +1789,6 @@
       "why": "verses that are not four lines"
     },
     {
-      "ref": "1:34",
-      "first": "Jesus, thy blessings are not few,",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
       "ref": "1:35",
       "first": "Let those who bear the Christian name",
       "why": "its first verse cannot be sung as Common Metre"
@@ -1506,18 +1799,8 @@
       "why": "its first verse cannot be sung as Common Metre"
     },
     {
-      "ref": "1:53",
-      "first": "God who in various methods told",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
       "ref": "1:58",
       "first": "Let mortal tongues attempt to sing",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
-      "ref": "1:63",
-      "first": "What equal honours shall we bring",
       "why": "its first verse cannot be sung as Long Metre"
     },
     {
@@ -1546,16 +1829,6 @@
       "why": "its first verse cannot be sung as Long Metre"
     },
     {
-      "ref": "1:74",
-      "first": "We are a garden wall'd around,",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
-      "ref": "1:75",
-      "first": "The wondering world enquires to know",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
       "ref": "1:77",
       "first": "Now in the galleries of his grace",
       "why": "its first verse cannot be sung as Long Metre"
@@ -1566,38 +1839,13 @@
       "why": "its first verse cannot be sung as Long Metre"
     },
     {
-      "ref": "1:80",
-      "first": "Thus far the Lord has led me on,",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
       "ref": "1:84",
       "first": "Jehovah speaks, let Israel hear,",
       "why": "its first verse cannot be sung as Long Metre"
     },
     {
-      "ref": "1:88",
-      "first": "Life is the time to serve the Lord,",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
-      "ref": "1:91",
-      "first": "Now in the heat of youthful blood",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
       "ref": "1:104",
       "first": "Not the malicious or profane,",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "1:111",
-      "first": "Lord, we confess our numerous faults,",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "1:112",
-      "first": "So did the Hebrew prophet raise",
       "why": "its first verse cannot be sung as Common Metre"
     },
     {
@@ -1609,11 +1857,6 @@
       "ref": "1:121",
       "first": "15 33. (For those who practise infant Baptism.)",
       "why": "verses that are not four lines"
-    },
-    {
-      "ref": "1:124",
-      "first": "Deep in the dust before thy throne",
-      "why": "its first verse cannot be sung as Long Metre"
     },
     {
       "ref": "1:125",
@@ -1636,19 +1879,9 @@
       "why": "its first verse cannot be sung as Short Metre"
     },
     {
-      "ref": "1:146",
-      "first": "Go, worship at Immanuel's feet,",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
       "ref": "1:148",
       "first": "With cheerful voice I sing",
       "why": "verses that are not four lines"
-    },
-    {
-      "ref": "1:149",
-      "first": "Join all the names of love and power",
-      "why": "its first verse cannot be sung as Long Metre"
     },
     {
       "ref": "1:150",
@@ -1673,32 +1906,7 @@
     {
       "ref": "2:16",
       "first": "Lord, what a heaven of saving grace,",
-      "why": "no metre fits: at best 36 of 48 lines as Long Metre"
-    },
-    {
-      "ref": "2:22",
-      "first": "Terrible God, that reign'st on high,",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
-      "ref": "2:23",
-      "first": "Descend from heaven, immortal Dove,",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
-      "ref": "2:31",
-      "first": "Why should we start and fear to die?",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
-      "ref": "2:34",
-      "first": "Come, holy Spirit, heavenly Dove,",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:36",
-      "first": "Well, the Redeemer's gone",
-      "why": "its first verse cannot be sung as Short Metre"
+      "why": "no metre fits: at best 36 of 48 lines as Common Metre"
     },
     {
       "ref": "2:37",
@@ -1706,28 +1914,8 @@
       "why": "its first verse cannot be sung as Common Metre"
     },
     {
-      "ref": "2:39",
-      "first": "Our days, alas! our mortal days",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:42",
-      "first": "My God, what endless pleasures dwell",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
       "ref": "2:44",
       "first": "With holy fear and humble song,",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
-      "ref": "2:45",
-      "first": "Thy favours Lord, surprise our souls;",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
-      "ref": "2:47",
-      "first": "Now to the Lord a noble song!",
       "why": "its first verse cannot be sung as Long Metre"
     },
     {
@@ -1738,12 +1926,7 @@
     {
       "ref": "2:57",
       "first": "Lord, how secure and bless'd are they",
-      "why": "no metre fits: at best 35 of 52 lines as Common Metre"
-    },
-    {
-      "ref": "2:62",
-      "first": "Sing to the Lord, ye heavenly hosts,",
-      "why": "no metre fits: at best 19 of 24 lines as Common Metre"
+      "why": "no metre fits: at best 37 of 52 lines as Common Metre"
     },
     {
       "ref": "2:65",
@@ -1751,39 +1934,9 @@
       "why": "its first verse cannot be sung as Common Metre"
     },
     {
-      "ref": "2:70",
-      "first": "God of the seas, thy thundering voice",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
       "ref": "2:76",
       "first": "Hosanna to the Prince of Light,",
-      "why": "no metre fits: at best 33 of 48 lines as Long Metre"
-    },
-    {
-      "ref": "2:79",
-      "first": "Plung'd in a gulph of dark despair",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:81",
-      "first": "And now the scales have left mine eyes,",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:84",
-      "first": "Come, all harmonious tongues,",
-      "why": "its first verse cannot be sung as Short Metre"
-    },
-    {
-      "ref": "2:86",
-      "first": "Our sins, alas, how strong they be!",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:87",
-      "first": "How wond'rous great, how glorious bright",
-      "why": "no metre fits: at best 19 of 24 lines as Common Metre"
+      "why": "no metre fits: at best 35 of 48 lines as Common Metre"
     },
     {
       "ref": "2:88",
@@ -1803,56 +1956,6 @@
     {
       "ref": "2:100",
       "first": "How full of anguish is the thought,",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
-      "ref": "2:101",
-      "first": "When in the light of faith divine",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:102",
-      "first": "No, I'll repine at death no more,",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
-      "ref": "2:103",
-      "first": "Come happy souls, approach your God",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:107",
-      "first": "That awful day will surely come,",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:109",
-      "first": "Lord, we adore thy vast designs,",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
-      "ref": "2:110",
-      "first": "And must this body die?",
-      "why": "its first verse cannot be sung as Short Metre"
-    },
-    {
-      "ref": "2:113",
-      "first": "The majesty of Solomon!",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:128",
-      "first": "Bless'd with the joy of innocence",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:134",
-      "first": "The promise was divinely free,",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:135",
-      "first": "Behold the woman's promis'd seed!",
       "why": "its first verse cannot be sung as Long Metre"
     },
     {
@@ -1876,21 +1979,6 @@
       "why": "its first verse cannot be sung as Common Metre"
     },
     {
-      "ref": "2:150",
-      "first": "Sin has a thousand treacherous arts",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:153",
-      "first": "Sin like a venomous disease",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:156",
-      "first": "I hate the tempter and his charms,",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
       "ref": "2:158",
       "first": "Broad is the road that leads to death,",
       "why": "its first verse cannot be sung as Long Metre"
@@ -1901,24 +1989,9 @@
       "why": "its first verse cannot be sung as Common Metre"
     },
     {
-      "ref": "2:160",
-      "first": "Let the wild leopards of the wood",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
       "ref": "2:163",
       "first": "Dear Lord, behold our sore distress;",
       "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:166",
-      "first": "How shall I praise th' eternal God,",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
-      "ref": "2:167",
-      "first": "Great God, thy glories shall employ",
-      "why": "its first verse cannot be sung as Long Metre"
     },
     {
       "ref": "2:169",
@@ -1941,18 +2014,8 @@
       "why": "its first verse cannot be sung as Common Metre"
     },
     {
-      "ref": "3:5",
-      "first": "Let us adore th' eternal Word,",
-      "why": "its first verse cannot be sung as Common Metre"
-    },
-    {
       "ref": "3:10",
       "first": "Nature with open volume stands",
-      "why": "its first verse cannot be sung as Long Metre"
-    },
-    {
-      "ref": "3:14",
-      "first": "Now have our hearts embrac'd our God,",
       "why": "its first verse cannot be sung as Long Metre"
     },
     {
@@ -2013,19 +2076,9 @@
       "why": "no verses"
     },
     {
-      "ref": "3:42",
-      "first": "Hosanna to King David's Son,",
-      "why": "no metre fits: at best 6 of 8 lines as Long Metre"
-    },
-    {
       "ref": "3:43",
       "first": "Hosanna to the Prince of Grace,",
-      "why": "no metre fits: at best 6 of 8 lines as Common Metre"
-    },
-    {
-      "ref": "3:44",
-      "first": "To Christ th' anointed King",
-      "why": "no metre fits: at best 3 of 4 lines as Common Metre"
+      "why": "its first verse cannot be sung as Common Metre"
     },
     {
       "ref": "3:45",
@@ -2035,9 +2088,9 @@
   ],
   "counts": {
     "hymns": 360,
-    "written": 234,
+    "written": 287,
     "alreadyOurs": 4,
-    "skipped": 122,
+    "skipped": 69,
     "removed": 0
   }
 }

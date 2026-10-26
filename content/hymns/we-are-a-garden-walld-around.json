@@ -1,0 +1,94 @@
+{
+  "title": "We Are a Garden Wall'd Around",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "We Are a Garden Wall'd Around in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 74, headed “The church the garden of Christ, Cant. 4. 12 14 15, and 5. 1”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "We are a gar-den wall'd a-round, Cho-sen and made pe-cu-liar ground; A lit-tle spot in-clos'd by grace, Out of the world's wide wild-er-ness.",
+  "verses": [
+    {
+      "lines": [
+        "We are a garden wall'd around,",
+        "Chosen and made peculiar ground;",
+        "A little spot inclos'd by grace,",
+        "Out of the world's wide wilderness."
+      ]
+    },
+    {
+      "lines": [
+        "Like trees of myrrh and spice we stand,",
+        "Planted by God the Father's hand;",
+        "And all his springs in Sion flow",
+        "To make the young plantation grow."
+      ]
+    },
+    {
+      "lines": [
+        "Awake, O heavenly wind, and come,",
+        "Blow on this garden of perfume;",
+        "Spirit divine, descend and breathe",
+        "A gracious gale on plants beneath."
+      ]
+    },
+    {
+      "lines": [
+        "Make our best spices flow abroad",
+        "To entertain our Saviour God:",
+        "And faith, and love, and joy appear,",
+        "And every grace be active here."
+      ]
+    },
+    {
+      "lines": [
+        "Let my beloved come, and taste",
+        "His pleasant fruits at his own feast:",
+        "\"I come, my spouse, I come,\" he cries,",
+        "With love and pleasure in his eyes."
+      ]
+    },
+    {
+      "lines": [
+        "Our Lord into his garden comes,",
+        "Well pleas'd to smell our poor perfumes;",
+        "And calls us to a feast divine,",
+        "Sweeter than honey, milk, or wine."
+      ]
+    },
+    {
+      "lines": [
+        "\"Eat of the tree of life, my friends,",
+        "\"The blessings that my Father sends;",
+        "\"Your taste shall all my dainties prove,",
+        "\"And drink abundance of my love.\""
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, we will frequent thy board,",
+        "And sing the bounties of our Lord:",
+        "But the rich food on which we live",
+        "Demands more praise than tongues can give."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:74"
+}

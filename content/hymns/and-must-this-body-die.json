@@ -1,0 +1,78 @@
+{
+  "title": "And Must This Body Die",
+  "tune": "southwell",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "And Must This Body Die in Tonic Solfa to SOUTHWELL, doh is Ab: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 110, headed “Triumph over death in hope of the resurrection”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to SOUTHWELL; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "And must this bo-dy die? This mor-tal frame de-cay? And must these ac-tive limbs of mine Lie moul-dering in the clay?",
+  "verses": [
+    {
+      "lines": [
+        "And must this body die?",
+        "This mortal frame decay?",
+        "And must these active limbs of mine",
+        "Lie mouldering in the clay?"
+      ]
+    },
+    {
+      "lines": [
+        "Corruption, earth and worms,",
+        "Shall but refine this flesh,",
+        "Till my triumphant spirit comes",
+        "To put it on afresh."
+      ]
+    },
+    {
+      "lines": [
+        "God my Redeemer lives,",
+        "And often from the skies",
+        "Looks down, and watches all my dust,",
+        "Till he shall bid it rise."
+      ]
+    },
+    {
+      "lines": [
+        "Array'd in glorious grace",
+        "Shall these vile bodies shine,",
+        "And every shape and every face",
+        "Look heavenly and divine."
+      ]
+    },
+    {
+      "lines": [
+        "These lively hopes we owe",
+        "To Jesus' dying love;",
+        "We would adore his grace below,",
+        "And sing his power above."
+      ]
+    },
+    {
+      "lines": [
+        "Dear Lord, accept the praise",
+        "Of these our humble songs,",
+        "Till tunes of nobler sound we raise",
+        "With our immortal tongues."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to SOUTHWELL by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:110"
+}

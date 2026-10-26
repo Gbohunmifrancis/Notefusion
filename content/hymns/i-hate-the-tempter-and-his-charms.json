@@ -1,0 +1,86 @@
+{
+  "title": "I Hate the Tempter and His Charms",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "I Hate the Tempter and His Charms in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 156, headed “Presumption and despair; or, Satan's various temptations”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "I hate the temp-ter and his charms, I hate his flat-tering breath; The ser-pent takes a thou-sand forms To cheat our souls to death.",
+  "verses": [
+    {
+      "lines": [
+        "I hate the tempter and his charms,",
+        "I hate his flattering breath;",
+        "The serpent takes a thousand forms",
+        "To cheat our souls to death."
+      ]
+    },
+    {
+      "lines": [
+        "He feeds our hopes with airy dreams,",
+        "Or kills with slavish fear;",
+        "And holds us still in wide extremes,",
+        "Presumption, or despair."
+      ]
+    },
+    {
+      "lines": [
+        "Now he persuades, \"How easy 'tis",
+        "\"To walk the road to heaven;\"",
+        "Anon he swells our sins, and cries,",
+        "\"They cannot be forgiven.\""
+      ]
+    },
+    {
+      "lines": [
+        "He bids young sinners, \"Yet forbear",
+        "\"To think of God or death;",
+        "\"For prayer and devotion are",
+        "\"But melancholy breath.\""
+      ]
+    },
+    {
+      "lines": [
+        "He tells the aged, \"They must die,",
+        "\"And 'tis too late to pray;",
+        "\"In vain for mercy now they cry,",
+        "\"For they have lost their day.\""
+      ]
+    },
+    {
+      "lines": [
+        "Thus he supports his cruel throne",
+        "By mischief and deceit;",
+        "And drags the sons of Adam down",
+        "To darkness and the pit."
+      ]
+    },
+    {
+      "lines": [
+        "Almighty God, cut short his power,",
+        "Let him in darkness dwell;",
+        "And, that he vex the earth no more,",
+        "Confine him down to hell."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:156"
+}

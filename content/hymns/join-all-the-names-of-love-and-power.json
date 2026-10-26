@@ -1,0 +1,126 @@
+{
+  "title": "Join All the Names of Love and Power",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Join All the Names of Love and Power in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 12 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 149, headed “The offices of Christ, from several scriptures”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Join all the names of love and power That ev-er men or an-gels bore; All are too mean to speak his worth, Or set Im-man-uel's glo-ry forth.",
+  "verses": [
+    {
+      "lines": [
+        "Join all the names of love and power",
+        "That ever men or angels bore;",
+        "All are too mean to speak his worth,",
+        "Or set Immanuel's glory forth."
+      ]
+    },
+    {
+      "lines": [
+        "But O what condescending ways",
+        "He takes to teach his heavenly grace!",
+        "My eyes with joy and wonder see",
+        "What forms of love he bears for me."
+      ]
+    },
+    {
+      "lines": [
+        "The \"Angel of the covenant\" stands",
+        "With his commission in his hands,",
+        "Sent from his Father's milder throne,",
+        "To make the great Salvation known."
+      ]
+    },
+    {
+      "lines": [
+        "Great Prophet let me bless thy Name;",
+        "By thee the joyful tidings came,",
+        "Of wrath appeas'd, of sins forgiven,",
+        "Of hell subdu'd, and peace with heaven."
+      ]
+    },
+    {
+      "lines": [
+        "My bright Example, and my Guide,",
+        "I would be walking near thy side;",
+        "O let me never run astray,",
+        "Nor follow the forbidden way!"
+      ]
+    },
+    {
+      "lines": [
+        "I love my Shepherd, he shall keep",
+        "My wandering soul among his sheep:",
+        "He feeds his flock, he calls their names,",
+        "And in his bosom bears the lambs."
+      ]
+    },
+    {
+      "lines": [
+        "My surety undertakes my cause,",
+        "Answering his Father's broken laws;",
+        "Behold my soul at freedom set;",
+        "My surety paid the dreadful debt."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, my great High Priest has dy'd,",
+        "I seek no sacrifice beside;",
+        "His blood did once for all atone,",
+        "And now it pleads before the throne."
+      ]
+    },
+    {
+      "lines": [
+        "My advocate appears on high,",
+        "The Father lays his thunder by;",
+        "Not all that earth or hell can say,",
+        "Shall turn my Father's heart away."
+      ]
+    },
+    {
+      "lines": [
+        "My Lord, my Conqu'ror and my King,",
+        "Thy sceptre and thy sword I sing;",
+        "Thine is the victory, and I sit",
+        "A joyful subject at thy feet."
+      ]
+    },
+    {
+      "lines": [
+        "Aspire my soul, to glorious deeds,",
+        "The \"Captain of salvation\" leads;",
+        "March on, nor fear to win the day,",
+        "Tho' death and hell obstruct the way."
+      ]
+    },
+    {
+      "lines": [
+        "Should death and hell, and powers unknown",
+        "Put all their forms of mischief on,",
+        "I shall be safe; for Christ displays",
+        "Salvation in more sovereign ways."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:149"
+}

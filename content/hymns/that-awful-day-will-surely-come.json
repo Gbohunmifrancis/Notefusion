@@ -1,0 +1,94 @@
+{
+  "title": "That Awful Day Will Surely Come",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "That Awful Day Will Surely Come in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 107, headed “The everlasting absence of God intolerable”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "That aw-ful day will sure-ly come, Th'ap-point-ed hour makes haste, When I must stand be-fore my Judge, And pass the sol-emn test.",
+  "verses": [
+    {
+      "lines": [
+        "That awful day will surely come,",
+        "Th' appointed hour makes haste,",
+        "When I must stand before my Judge,",
+        "And pass the solemn test."
+      ]
+    },
+    {
+      "lines": [
+        "Thou lovely chief of all my joys,",
+        "Thou sovereign of my heart,",
+        "How could I bear to hear thy voice",
+        "Pronounce the sound, \"Depart?\""
+      ]
+    },
+    {
+      "lines": [
+        "The thunder of that dismal word,",
+        "Would so torment my ear,",
+        "'Twould tear my soul asunder, Lord,",
+        "With most tormenting fear."
+      ]
+    },
+    {
+      "lines": [
+        "What, to be banish'd from my life,",
+        "And yet forbid to die!",
+        "To linger in eternal pain,",
+        "Yet death for ever fly!"
+      ]
+    },
+    {
+      "lines": [
+        "O wretched state of deep despair,",
+        "To see my God remove,",
+        "And fix my doleful station where",
+        "I must not taste his Love."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, I throw my arms around,",
+        "And hang upon thy breast;",
+        "Without a gracious smile from thee",
+        "My spirit cannot rest."
+      ]
+    },
+    {
+      "lines": [
+        "O tell me that my worthless name",
+        "Is graven on thy hands;",
+        "Shew me some promise in thy book",
+        "Where my salvation stands!"
+      ]
+    },
+    {
+      "lines": [
+        "Give me one kind assuring word,",
+        "To sink my fears again,",
+        "And cheerfully my soul shall wait",
+        "Her threescore years and ten."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:107"
+}

@@ -1,0 +1,174 @@
+{
+  "title": "Go, Worship at Immanuel's Feet",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Go, Worship at Immanuel's Feet in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 18 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 146, headed “Characters of Christ, borrowed from inanimate things, in scripture”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "Go, wor-ship at Im-man-uel's feet, See in his face what won-ders meet; Earth is too nar-row to ex-press His worth, his glo-ry, or his grace.",
+  "verses": [
+    {
+      "lines": [
+        "Go, worship at Immanuel's feet,",
+        "See in his face what wonders meet;",
+        "Earth is too narrow to express",
+        "His worth, his glory, or his grace."
+      ]
+    },
+    {
+      "lines": [
+        "The whole creation can afford",
+        "But some faint shadows of my Lord:",
+        "Nature to make his beauties known",
+        "Must mingle colours not her own."
+      ]
+    },
+    {
+      "lines": [
+        "Is he compar'd to wine or bread?",
+        "Dear Lord, our souls would thus be fed;",
+        "That flesh, that dying blood of thine,",
+        "Is bread of life, is heavenly wine."
+      ]
+    },
+    {
+      "lines": [
+        "Is he a tree? The world receives",
+        "Salvation from his healing leaves;",
+        "That righteous branch, that fruitful bough,",
+        "Is David's root and offspring too."
+      ]
+    },
+    {
+      "lines": [
+        "Is he a rose? Not Sharon yields",
+        "Such fragrancy in all her fields:",
+        "Or if the lily he assume,",
+        "The vallies bless the rich perfume."
+      ]
+    },
+    {
+      "lines": [
+        "Is he a vine? His heavenly root",
+        "Supplies the boughs with life and fruit:",
+        "O let a lasting union join",
+        "My soul the branch to Christ the vine:"
+      ]
+    },
+    {
+      "lines": [
+        "Is he the head? Each member lives,",
+        "And owns the vital powers he gives;",
+        "The saints below, and saints above,",
+        "Join'd by his Spirit and his love."
+      ]
+    },
+    {
+      "lines": [
+        "Is he a fountain? There I bathe,",
+        "And heal the plague of sin and death",
+        "These waters all my soul renew,",
+        "And cleanse my spotted garments too."
+      ]
+    },
+    {
+      "lines": [
+        "Is he a fire? he'll purge my dross,",
+        "But the true gold sustains no loss;",
+        "Like a refiner shall he sit,",
+        "And tread the refuse with his feet."
+      ]
+    },
+    {
+      "lines": [
+        "Is he a rock? How firm he proves!",
+        "The rock of ages never moves;",
+        "Yet the sweet streams that from him flow",
+        "Attend us all the desert thro'."
+      ]
+    },
+    {
+      "lines": [
+        "Is he a way? He leads to God,",
+        "The path is drawn in lines of blood;",
+        "There would I walk with hope and zeal,",
+        "Till I arrive at Sion's hill."
+      ]
+    },
+    {
+      "lines": [
+        "Is he a door? I'll enter in",
+        "Behold the pastures large and green,",
+        "A paradise divinely fair,",
+        "None but the sheep have freedom there."
+      ]
+    },
+    {
+      "lines": [
+        "Is he design'd a corner-stone,",
+        "For men to build their heaven upon?",
+        "I'll make him my foundation too,",
+        "Nor fear the plots of hell below."
+      ]
+    },
+    {
+      "lines": [
+        "Is he a temple? I adore",
+        "Th'indwelling majesty and power;",
+        "And still to this most holy place,",
+        "Whene'er I pray, I turn my face."
+      ]
+    },
+    {
+      "lines": [
+        "Is he a star? He breaks the night,",
+        "Piercing the shades with dawning light;",
+        "I know his glories from afar,",
+        "I know the bright, the morning-star."
+      ]
+    },
+    {
+      "lines": [
+        "Is he a sun? His beams are grace,",
+        "His course is joy, and righteousness;",
+        "Nations rejoice when he appears",
+        "To chase their clouds, and dry their tears."
+      ]
+    },
+    {
+      "lines": [
+        "O let me climb those higher skies,",
+        "Where storms and darkness never rise!",
+        "There he displays his powers abroad,",
+        "And shines, and reigns th'incarnate God."
+      ]
+    },
+    {
+      "lines": [
+        "Nor earth, nor seas, nor sun, nor stars,",
+        "Nor heaven his full resemblance bears;",
+        "His beauties we can never trace,",
+        "Till we behold him face to face."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:146"
+}

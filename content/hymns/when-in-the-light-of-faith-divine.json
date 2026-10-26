@@ -1,0 +1,78 @@
+{
+  "title": "When in the Light of Faith Divine",
+  "tune": "winchester-old",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "When in the Light of Faith Divine in Tonic Solfa to WINCHESTER OLD, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 101, headed “The world's three great temptations”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to WINCHESTER OLD; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "When in the light of faith di-vine We look on things be-low, Hon-our, and gold, and sen-sual joy, How vain and dan-gerous too!",
+  "verses": [
+    {
+      "lines": [
+        "When in the light of faith divine",
+        "We look on things below,",
+        "Honour, and gold, and sensual joy,",
+        "How vain and dangerous too!"
+      ]
+    },
+    {
+      "lines": [
+        "Honour's a puff of noisy breath;",
+        "Yet men expose their blood,",
+        "And venture everlasting death",
+        "To gain that airy good."
+      ]
+    },
+    {
+      "lines": [
+        "Whilst others starve the nobler mind,",
+        "And feed on shining dust,",
+        "They rob the serpent of his food",
+        "T' indulge a sordid lust."
+      ]
+    },
+    {
+      "lines": [
+        "The pleasures that allure our sense",
+        "Are dangerous snares to souls;",
+        "There's but a drop of flattering sweet,",
+        "And dash'd with bitter bowls."
+      ]
+    },
+    {
+      "lines": [
+        "God is mine all-sufficient good,",
+        "My portion and my choice;",
+        "In him my vast desires are fill'd,",
+        "And all my powers rejoice."
+      ]
+    },
+    {
+      "lines": [
+        "In vain the world accosts my ear,",
+        "And tempts my heart anew;",
+        "I cannot buy your bliss so dear,",
+        "Nor part with heaven for you."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER OLD by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:101"
+}

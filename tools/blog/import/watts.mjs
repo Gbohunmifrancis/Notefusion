@@ -73,6 +73,8 @@ export function parseWatts(text) {
     if (/^(Doxologies\.|\*\*\* END|Book \d+\.)/.test(line)) { if (cur) { close(); hymns.push(cur); cur = null; } continue; }
     if (!cur) continue;
     if (!line) { if (inHeading && cur.heading.length) inHeading = false; close(); continue; }
+    if (/^\[\d+\]\s/.test(line)) continue;                                            // a footnote's text
+
     const start = /^\[?(\d+)\s+(.*)$/.exec(line);
     if (start) { inHeading = false; close(); stanza = [start[2]]; continue; }
     if (inHeading) { cur.heading.push(line); continue; }
@@ -81,7 +83,8 @@ export function parseWatts(text) {
   if (cur) { close(); hymns.push(cur); }
   // Watts' brackets mark verses that may be left out; the words are the same either way.
   // The transcription marks italics as _word_; an underlay reads "_" as a held note.
-  for (const h of hymns) h.verses = h.verses.map((v) => v.map((l) => l.replace(/[[\]_]/g, "").trim()).filter(Boolean));
+  // A footnote mark ("find [1]") is not sung.
+  for (const h of hymns) h.verses = h.verses.map((v) => v.map((l) => l.replace(/\s*\[\d+\]/g, "").replace(/[[\]_]/g, "").trim()).filter(Boolean));
   return hymns;
 }
 
@@ -209,4 +212,4 @@ function main() {
   runImport({ src, today, publish: args.includes("--publish"), dryRun: args.includes("--dry-run") });
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();

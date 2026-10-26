@@ -1,0 +1,70 @@
+{
+  "title": "Bless'd with the Joy of Innocence",
+  "tune": "st-peter",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Bless'd with the Joy of Innocence in Tonic Solfa to ST. PETER, doh is Eb: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 128, headed “Corrupt nature from Adam”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. PETER; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Bless'd with the joy of in-no-cence A-dam, our fa-ther, stood, Till he de-bas'd his soul to sense, And ate th'un-law-ful food.",
+  "verses": [
+    {
+      "lines": [
+        "Bless'd with the joy of innocence",
+        "Adam, our father, stood,",
+        "Till he debas'd his soul to sense,",
+        "And ate th' unlawful food."
+      ]
+    },
+    {
+      "lines": [
+        "Now we are born a sensual race,",
+        "To sinful joys inclin'd;",
+        "Reason has lost its native place,",
+        "And flesh enslaves the mind."
+      ]
+    },
+    {
+      "lines": [
+        "While flesh and sense and passion reigns,",
+        "Sin is the sweetest good:",
+        "We fancy music in our chains,",
+        "And so forget the load."
+      ]
+    },
+    {
+      "lines": [
+        "Great God, renew our ruin'd frame,",
+        "Our broken powers restore,",
+        "Inspire us with a heavenly flame,",
+        "And flesh shall reign no more."
+      ]
+    },
+    {
+      "lines": [
+        "Eternal Spirit, write thy law",
+        "Upon our inward parts,",
+        "And let the second Adam draw",
+        "His image on our hearts."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. PETER by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:128"
+}

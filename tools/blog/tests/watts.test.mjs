@@ -53,7 +53,7 @@ test("a hymn's metre is read off its lines, and its first verse is laid one syll
   assert.equal(metreOf(cm.verses, {}).metre, "CM");
   assert.equal(metreOf(lm.verses, {}).metre, "LM");
   assert.equal(underlayFor(cm.verses[0], "CM", {}),
-    "Be-hold the glo-ries of the Lamb A-midst his Fa-ther's throne Pre-pare new ho-nours for his name, And songs be-fore un-known.");
+    "Be-hold the glo-ries of the Lamb A-midst his Fa-ther's throne Pre-pare new hon-ours for his name, And songs be-fore un-known.");
   // "heavens" sung as one syllable, as the old books print "heav'ns".
   assert.match(underlayFor(lm.verses[0], "LM", {}), /^Ere the blue heavens were stretch'd a-broad,/);
 });
@@ -65,6 +65,24 @@ test("a line is fitted to its metre or refused, never forced", () => {
   assert.deepEqual(splitWord("glorious", { glorious: [3, 5] }), ["glo", "rious"]);   // how our hymns sing it wins
   assert.equal(vowelSyllables("loved"), 1);
   assert.equal(vowelSyllables("wanted"), 2);
+});
+
+test("a line is sung as the old books sang it: words run short, \"the\" run into a vowel, never a note with no vowel", () => {
+  const sung = (line, n) => fitLine(line, n, {})?.map((w) => w.join("-")).join(" ") ?? null;
+  assert.equal(sung("Calm on the listening ear of night", 8), "Calm on the lis-tening ear of night");     // "list'ning"
+  assert.equal(sung("Has my guardian been, my guide:", 7), "Has my guar-dian been, my guide:");
+  assert.equal(sung("Prayer before the eternal throne.", 7), "Prayer be-fore th'e-ter-nal throne.");
+  assert.equal(sung("Th' eternal uncreated mind?", 8), "Th'e-ter-nal un-cre-at-ed mind?");          // printed "th' eternal"
+  assert.equal(sung("The triumph of the cross", 5), null);                                           // never "triumph" as one
+  assert.ok(splitWord("memorial", {}).every((p) => /[aeiouy]/.test(p)));
+  for (const [word, n] of [["people", 2], ["millions", 2], ["breathes", 1], ["therefore", 2], ["loveliness", 3], ["journeying", 3], ["eyes", 1]]) {
+    assert.equal(vowelSyllables(word), n, word);
+  }
+});
+
+test("a footnote's mark and its text are not sung", () => {
+  const [h] = parseWatts("Hymn 2:170.\nGod incomprehensible.\n\n1 Can creatures to perfection find [1]\nTh' eternal uncreated mind?\nOr can the largest stretch of thought\nMeasure and search his nature out?\n[1] Job 11:7.\n");
+  assert.deepEqual(h.verses, [["Can creatures to perfection find", "Th' eternal uncreated mind?", "Or can the largest stretch of thought", "Measure and search his nature out?"]]);
 });
 
 test("a page keeps its tune from run to run, from its metre's list", () => {

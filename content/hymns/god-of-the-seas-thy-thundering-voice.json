@@ -1,0 +1,102 @@
+{
+  "title": "God of the Seas, Thy Thundering Voice",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "God of the Seas, Thy Thundering Voice in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 9 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 70, headed “God's dominion over the sea, Psalm 107. 23 &c”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "God of the seas, thy thun-dering voice Makes all the roar-ing waves re-joice, And one soft word of thy com-mand Can sink them si-lent in the sand.",
+  "verses": [
+    {
+      "lines": [
+        "God of the seas, thy thundering voice",
+        "Makes all the roaring waves rejoice,",
+        "And one soft word of thy command",
+        "Can sink them silent in the sand."
+      ]
+    },
+    {
+      "lines": [
+        "If but a Moses wave thy rod,",
+        "The sea divides, and owns its God:",
+        "The stormy floods their Maker knew,",
+        "And let his chosen armies thro'."
+      ]
+    },
+    {
+      "lines": [
+        "The scaly flocks amidst the sea,",
+        "To thee, their Lord, a tribute pay;",
+        "The meanest fish that swims the flood",
+        "Leaps up, and means a praise to God."
+      ]
+    },
+    {
+      "lines": [
+        "The larger monsters of the deep,",
+        "On thy commands attendance keep,",
+        "By thy permission sport and play,",
+        "And cleave along their foaming way."
+      ]
+    },
+    {
+      "lines": [
+        "If God his voice of tempest rears,",
+        "Leviathan lies still and fears,",
+        "Anon he lifts his nostrils high,",
+        "And spouts the ocean to the sky."
+      ]
+    },
+    {
+      "lines": [
+        "How is thy glorious power ador'd,",
+        "Amidst those watery nations, Lord!",
+        "Yet the bold men that trace the seas,",
+        "Bold men, refuse their Maker's praise."
+      ]
+    },
+    {
+      "lines": [
+        "What scenes of miracle they see,",
+        "And never tune a song to thee!",
+        "While on the flood they safely ride,",
+        "They curse the hand that smooths the tide."
+      ]
+    },
+    {
+      "lines": [
+        "Anon they plunge in watery graves,",
+        "And some drink death among the waves:",
+        "Yet the surviving crew blaspheme,",
+        "Nor own the God that rescu'd them."
+      ]
+    },
+    {
+      "lines": [
+        "O for some signal of thine hand!",
+        "Shake all the seas, Lord, shake the land,",
+        "Great Judge, descend, lest men deny",
+        "That there's a God that rules the sky."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:70"
+}

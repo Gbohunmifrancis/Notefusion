@@ -1,0 +1,94 @@
+{
+  "title": "All Mortal Vanities, Be Gone",
+  "tune": "melcombe",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "All Mortal Vanities, Be Gone in Tonic Solfa to MELCOMBE, doh is Eb: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 25, headed “A vision of the Lamb, Rev 5. 6-9”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to MELCOMBE; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "All mor-tal van-i-ties, be gone, Nor tempt my eyes, nor tire my ears, Be-hold a-midst th'e-ter-nal throne A vi-sion of the Lamb ap-pears.",
+  "verses": [
+    {
+      "lines": [
+        "All mortal vanities, be gone,",
+        "Nor tempt my eyes, nor tire my ears,",
+        "Behold amidst th' eternal throne",
+        "A vision of the Lamb appears."
+      ]
+    },
+    {
+      "lines": [
+        "Lo, he receives a sealed book",
+        "From him that sits upon the throne:",
+        "Jesus, my Lord, prevails to look",
+        "On dark decrees, and things unknown."
+      ]
+    },
+    {
+      "lines": [
+        "All the assembling saints around",
+        "Fall worshipping before the Lamb,",
+        "And in new songs of gospel-sound",
+        "Address their honours to his name,"
+      ]
+    },
+    {
+      "lines": [
+        "The joy, the shout, the harmony",
+        "Flies o'er the everlasting hills,",
+        "\"Worthy art thou alone,\" they cry,",
+        "\"To read the book, to loose the seals.\""
+      ]
+    },
+    {
+      "lines": [
+        "Our voices join the heavenly strain,",
+        "And with transporting pleasure sing,",
+        "\"Worthy the Lamb that once was slain,",
+        "\"To be our teacher and our king!\""
+      ]
+    },
+    {
+      "lines": [
+        "His words of prophecy reveal",
+        "Eternal counsels, deep designs;",
+        "His grace and vengeance shall fulfil",
+        "The peaceful and the dreadful lines."
+      ]
+    },
+    {
+      "lines": [
+        "Thou hast redeem'd our souls from hell",
+        "'With thine invaluable blood;",
+        "And wretches that did once rebel",
+        "Are now made favourites of their Cod."
+      ]
+    },
+    {
+      "lines": [
+        "Worthy for ever is the Lord,",
+        "That died for treasons not his own,",
+        "By every tongue to be ador'd,",
+        "And dwell upon his Father's throne."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to MELCOMBE by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:25"
+}

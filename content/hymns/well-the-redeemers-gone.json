@@ -1,0 +1,86 @@
+{
+  "title": "Well, the Redeemer's Gone",
+  "tune": "franconia",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Well, the Redeemer's Gone in Tonic Solfa to FRANCONIA, doh is Eb: the solfa with the words, staff notation, 7 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 36, headed “Christ's intercession”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Short Metre (6.6.8.6). This page sets the words to FRANCONIA; any other Short Metre tune fits them as well."
+  ],
+  "underlay": "Well, the Re-deem-er's gone T'ap-pear be-fore our God, To sprin-kle o'er the fla-ming throne With his a-ton-ing blood.",
+  "verses": [
+    {
+      "lines": [
+        "Well, the Redeemer's gone",
+        "T' appear before our God,",
+        "To sprinkle o'er the flaming throne",
+        "With his atoning blood."
+      ]
+    },
+    {
+      "lines": [
+        "No fiery vengeance now,",
+        "Nor burning wrath comes down;",
+        "If justice call for sinners' blood,",
+        "The Saviour shews his own."
+      ]
+    },
+    {
+      "lines": [
+        "Before his Father's eye",
+        "Our humble suit he moves,",
+        "The Father lays his thunder by,",
+        "And looks, and smiles, and loves."
+      ]
+    },
+    {
+      "lines": [
+        "Now may our joyful tongues",
+        "Our Maker's honour sing,",
+        "Jesus the priest receives our songs,",
+        "And bears them to the King."
+      ]
+    },
+    {
+      "lines": [
+        "We bow before his face,",
+        "And sound his glories high,",
+        "\"Hosanna to the God of grace",
+        "\"That lays his thunder by."
+      ]
+    },
+    {
+      "lines": [
+        "\"On earth thy mercy reigns,",
+        "\"And triumphs all above;\"",
+        "But, Lord how weak are mortal strains",
+        "To speak immortal love!"
+      ]
+    },
+    {
+      "lines": [
+        "How jarring and how low",
+        "Are all the notes we sing!",
+        "Sweet Saviour, tune our songs anew,",
+        "And they shall please the King."
+      ]
+    }
+  ],
+  "metre": "6 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to FRANCONIA by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:36"
+}

@@ -1,0 +1,78 @@
+{
+  "title": "What Equal Honours Shall We Bring",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "What Equal Honours Shall We Bring in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book I, collected from the Scriptures, hymn 63, headed “Christ's humiliation and exaltation, Rev. 5. 12”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "What e-qual hon-ours shall we bring To thee, O Lord our God, the Lamb, When all the notes that an-gels sing Are far in-fe-rior to thy Name?",
+  "verses": [
+    {
+      "lines": [
+        "What equal honours shall we bring",
+        "To thee, O Lord our God, the Lamb,",
+        "When all the notes that angels sing",
+        "Are far inferior to thy Name?"
+      ]
+    },
+    {
+      "lines": [
+        "Worthy is he that once was slain,",
+        "The Prince of Peace that groan'd and dy'd,",
+        "Worthy to rise, and live, and reign",
+        "At his Almighty Father's side."
+      ]
+    },
+    {
+      "lines": [
+        "Power and dominion are his due,",
+        "Who stood condemn'd at Pilate's bar:",
+        "Wisdom belongs to Jesus too,",
+        "Tho' he was charg'd with madness here."
+      ]
+    },
+    {
+      "lines": [
+        "All riches are his native right,",
+        "Yet he sustain'd amazing loss:",
+        "To him ascribe eternal might,",
+        "Who left his weakness on the cross."
+      ]
+    },
+    {
+      "lines": [
+        "Honour immortal must be paid,",
+        "Instead of scandal and of scorn:",
+        "While glory shines around his head,",
+        "And a bright crown without a thorn."
+      ]
+    },
+    {
+      "lines": [
+        "Blessings for ever on the Lamb,",
+        "Who bore the curse for wretched men:",
+        "Let angels sound his sacred Name,",
+        "And every creature say, Amen."
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:1:63"
+}

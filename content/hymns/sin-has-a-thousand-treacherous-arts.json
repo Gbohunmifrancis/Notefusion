@@ -1,0 +1,62 @@
+{
+  "title": "Sin Has a Thousand Treacherous Arts",
+  "tune": "york",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Sin Has a Thousand Treacherous Arts in Tonic Solfa to YORK, doh is F: the solfa with the words, staff notation, 4 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 150, headed “The deceitfulness of sin”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to YORK; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Sin has a thou-sand treach-erous arts To prac-tise on the mind; With flat-tering looks she tempts our hearts But leaves a sting be-hind.",
+  "verses": [
+    {
+      "lines": [
+        "Sin has a thousand treacherous arts",
+        "To practise on the mind;",
+        "With flattering looks she tempts our hearts",
+        "But leaves a sting behind."
+      ]
+    },
+    {
+      "lines": [
+        "With names of virtue she deceives",
+        "The aged and the young;",
+        "And while the heedless wretch believes,",
+        "She makes his fetters strong."
+      ]
+    },
+    {
+      "lines": [
+        "She pleads for all the joys she brings,",
+        "And gives a fair pretence;",
+        "But cheats the soul of heavenly things,",
+        "And chains it down to sense."
+      ]
+    },
+    {
+      "lines": [
+        "So on a tree divinely fair",
+        "Grew the forbidden food;",
+        "Our mother took the poison there,",
+        "And tainted all her blood."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to YORK by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:150"
+}

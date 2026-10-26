@@ -428,7 +428,8 @@ Each hymn's metre is read off its lines (Common, Long or Short; four-line verses
 tune of that metre that sings one syllable to a note (`TUNES` in watts.mjs, checked against the melodies at every run),
 picked by the page's slug so a page keeps its tune. Syllables come from `import/syllables.mjs`: how our own hymns already
 split a word, then the TeX English hyphenation patterns (the `hyphen` package), then the metre: a line must come to its
-metre's count, a word sung short in the old books ("heaven", "power") may give a syllable to one read short ("a-broad"),
+metre's count, a word sung short in the old books ("heaven", "power", "list'ning", "guard-ian") may give a syllable to
+one read short ("a-broad"), "the" may run into a word beginning with a vowel ("th'e-ter-nal", as the books print it),
 and a line that cannot be fitted honestly refuses the hymn (listed in `watts-report.json`, nothing written). A hymn we
 already have (first line, title or other title) is left alone. The pages carry `"setByMetre": true`, which keeps them out
 of hymn recognition (a hummed ST ANNE is offered "O God, Our Help", not every text sung to it) and out of the app's pack.

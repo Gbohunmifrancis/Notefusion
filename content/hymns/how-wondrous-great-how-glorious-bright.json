@@ -1,0 +1,78 @@
+{
+  "title": "How Wond'rous Great, How Glorious Bright",
+  "tune": "st-flavian",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "How Wond'rous Great, How Glorious Bright in Tonic Solfa to ST. FLAVIAN, doh is F: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 87, headed “The divine glories above our reason”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. FLAVIAN; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "How won-d'rous great, how glo-rious bright Must our Cre-a-tor be, Who dwells a-midst the daz-zling light Of vast in-fin-i-ty!",
+  "verses": [
+    {
+      "lines": [
+        "How wond'rous great, how glorious bright",
+        "Must our Creator be,",
+        "Who dwells amidst the dazzling light",
+        "Of vast infinity!"
+      ]
+    },
+    {
+      "lines": [
+        "Our soaring spirits upward rise",
+        "Tow'rd the celestial throne,",
+        "Fain would we see the blessed Three,",
+        "And the Almighty One."
+      ]
+    },
+    {
+      "lines": [
+        "Our reason stretches all its wings,",
+        "And climbs above the skies;",
+        "But still how far beneath thy feet",
+        "Our groveling reason lies!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, here we bend our humble souls,",
+        "And awfully adore,",
+        "For the weak pinions of our mind",
+        "Can stretch a thought no more."
+      ]
+    },
+    {
+      "lines": [
+        "Thy glories infinitely rise",
+        "Above our labouring tongue;",
+        "In vain the highest seraph tries",
+        "To form an equal song."
+      ]
+    },
+    {
+      "lines": [
+        "In humble notes our faith adores",
+        "The great mysterious King,",
+        "While angels strain their nobler powers,",
+        "And sweep th' immortal string."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. FLAVIAN by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:87"
+}

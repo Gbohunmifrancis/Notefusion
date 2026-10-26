@@ -1,0 +1,94 @@
+{
+  "title": "The Majesty of Solomon",
+  "tune": "caithness",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "The Majesty of Solomon in Tonic Solfa to CAITHNESS, doh is D: the solfa with the words, staff notation, 8 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 113, headed “The same”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to CAITHNESS; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "The maj-es-ty of So-lo-mon! How glo-rious to be-hold The ser-vants wait-ing round his throne, Th'i-vo-ry and the gold.",
+  "verses": [
+    {
+      "lines": [
+        "The majesty of Solomon!",
+        "How glorious to behold",
+        "The servants waiting round his throne,",
+        "The ivory and the gold."
+      ]
+    },
+    {
+      "lines": [
+        "But, mighty God, thy palace shines",
+        "With far superior beams;",
+        "Thine angel-guards are swift as winds,",
+        "Thy ministers are flames."
+      ]
+    },
+    {
+      "lines": [
+        "Soon as thine only Son had made",
+        "His entrance on this earth,",
+        "A shining army downward fled",
+        "To celebrate his birth."
+      ]
+    },
+    {
+      "lines": [
+        "And when oppress'd with pains and fears",
+        "On the cold ground he lies,",
+        "Behold a heavenly form appears",
+        "T' allay his agonies."
+      ]
+    },
+    {
+      "lines": [
+        "Now to the hands of Christ our King",
+        "Are all their legions given;",
+        "They wait upon his saints, and bring",
+        "His chosen heirs to heaven."
+      ]
+    },
+    {
+      "lines": [
+        "Pleasure and praise run thro' their host",
+        "To see a sinner turn;",
+        "Then Satan has a captive lost,",
+        "And Christ a subject born."
+      ]
+    },
+    {
+      "lines": [
+        "But there's an hour of brighter joy,",
+        "When he his angels sends",
+        "Obstinate rebels to destroy,",
+        "And gather in his friends."
+      ]
+    },
+    {
+      "lines": [
+        "O! could I say, without a doubt,",
+        "There shall my soul be found,",
+        "Then let the great archangel shout,",
+        "And the last trumpet sound."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to CAITHNESS by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:113"
+}

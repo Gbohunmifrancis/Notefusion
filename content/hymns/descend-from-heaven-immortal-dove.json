@@ -1,0 +1,78 @@
+{
+  "title": "Descend from Heaven, Immortal Dove",
+  "tune": "old-hundredth",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Descend from Heaven, Immortal Dove in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 6 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 23, headed “The sight of God and Christ in heaven”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+  ],
+  "underlay": "De-scend from heaven, im-mor-tal Dove, Stoop down and take us on thy wings, And mount and bear us far a-bove The reach of these in-fe-rior things.",
+  "verses": [
+    {
+      "lines": [
+        "Descend from heaven, immortal Dove,",
+        "Stoop down and take us on thy wings,",
+        "And mount and bear us far above",
+        "The reach of these inferior things."
+      ]
+    },
+    {
+      "lines": [
+        "Beyond, beyond this lower sky,",
+        "Up where eternal ages roll,",
+        "Where solid pleasures never die,",
+        "And fruits immortal feast the soul."
+      ]
+    },
+    {
+      "lines": [
+        "O for a sight, a pleasing sight",
+        "Of our almighty Father's throne!",
+        "There sits our Saviour crown'd with light",
+        "Cloth'd in a body like our own."
+      ]
+    },
+    {
+      "lines": [
+        "Adoring saints around him stand,",
+        "And thrones, and powers before him fall;",
+        "The God shines gracious thro' the man,",
+        "And sheds sweet glories on them all."
+      ]
+    },
+    {
+      "lines": [
+        "O what amazing joys they feel",
+        "While to their golden harps they sing,",
+        "And sit on every heavenly hill,",
+        "And spread the triumphs of their King!"
+      ]
+    },
+    {
+      "lines": [
+        "When shall the day, dear Lord, appear",
+        "That I shall mount to dwell above,",
+        "And stand and bow amongst them there,",
+        "And view thy face, and sing, and love!"
+      ]
+    }
+  ],
+  "metre": "8 8 8 8",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:23"
+}

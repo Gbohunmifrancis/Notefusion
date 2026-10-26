@@ -1,0 +1,70 @@
+{
+  "title": "Come, Holy Spirit, Heavenly Dove",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "Come, Holy Spirit, Heavenly Dove in Tonic Solfa to ST. AGNES, doh is G: the solfa with the words, staff notation, 5 verses and a piano.",
+  "about": [
+    "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 34, headed “Breathing after the Holy Spirit; or, Fervency of devotion desired”.",
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Common Metre (8.6.8.6). This page sets the words to ST. AGNES; any other Common Metre tune fits them as well."
+  ],
+  "underlay": "Come, ho-ly Spirit, heav-en-ly Dove, With all thy quick-ening powers, Kin-dle a flame of sa-cred love, In these cold hearts of ours.",
+  "verses": [
+    {
+      "lines": [
+        "Come, holy Spirit, heavenly Dove,",
+        "With all thy quickening powers,",
+        "Kindle a flame of sacred love,",
+        "In these cold hearts of ours."
+      ]
+    },
+    {
+      "lines": [
+        "Look, how we grovel here below,",
+        "Fond of these trifling toys;",
+        "Our souls can neither fly nor go",
+        "To reach eternal joys."
+      ]
+    },
+    {
+      "lines": [
+        "In vain we tune our formal songs,",
+        "In vain we strive to rise;",
+        "Hosannas languish on our tongues,",
+        "And our devotion dies."
+      ]
+    },
+    {
+      "lines": [
+        "Dear Lord! and shall we ever lie",
+        "At this poor dying rate?",
+        "Our love so faint, so cold to thee,",
+        "And thine to us so great?"
+      ]
+    },
+    {
+      "lines": [
+        "Come holy Spirit, heavenly Dove,",
+        "With all thy quickening powers;",
+        "Come shed abroad a Saviour's love,",
+        "And that shall kindle ours."
+      ]
+    }
+  ],
+  "metre": "8 6 8 6",
+  "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
+  "licence": "Public domain: Isaac Watts died in 1748.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to ST. AGNES by NoteFusion, as words-only hymn books were sung.",
+  "updated": "2026-10-26",
+  "reviewed": false,
+  "draft": false,
+  "setByMetre": true,
+  "importedFrom": "watts-1707:2:34"
+}

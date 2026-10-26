@@ -1,6 +1,6 @@
 {
-  "title": "Can Creatures to Perfection Find 1",
-  "tune": "old-hundredth",
+  "title": "Can Creatures to Perfection Find",
+  "tune": "winchester-new",
   "text": [
     {
       "name": "Isaac Watts",
@@ -10,16 +10,16 @@
     }
   ],
   "textPublished": 1707,
-  "description": "Can Creatures to Perfection Find 1 in Tonic Solfa to OLD HUNDREDTH, doh is G: the solfa with the words, staff notation, 8 verses and a piano.",
+  "description": "Can Creatures to Perfection Find in Tonic Solfa to WINCHESTER NEW, doh is C: the solfa with the words, staff notation, 8 verses and a piano.",
   "about": [
     "Isaac Watts wrote these words for his Hymns and Spiritual Songs (1707), Book II, composed on divine subjects, hymn 170, headed “God incomprehensible and sovereign”.",
-    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to OLD HUNDREDTH; any other Long Metre tune fits them as well."
+    "Watts' hymns were printed without tunes and sung to any tune of their metre, Long Metre (8.8.8.8). This page sets the words to WINCHESTER NEW; any other Long Metre tune fits them as well."
   ],
-  "underlay": "Can crea-tures to per-fec-tion find Th' e-ter-nal un-cre-ated mind? Or can the la-rgest stretch of thought Mea-sure and search his na-ture out?",
+  "underlay": "Can crea-tures to per-fec-tion find Th'e-ter-nal un-cre-at-ed mind? Or can the lar-gest stretch of thought Mea-sure and search his na-ture out?",
   "verses": [
     {
       "lines": [
-        "Can creatures to perfection find 1",
+        "Can creatures to perfection find",
         "Th' eternal uncreated mind?",
         "Or can the largest stretch of thought",
         "Measure and search his nature out?"
@@ -59,9 +59,9 @@
     },
     {
       "lines": [
-        "He frowns, 2 and darkness veils the moon;",
+        "He frowns, and darkness veils the moon;",
         "The fainting sun grows dim at noon;",
-        "The pillars 3 of heaven's starry roof",
+        "The pillars of heaven's starry roof",
         "Tremble and start at his reproof."
       ]
     },
@@ -85,7 +85,7 @@
   "metre": "8 8 8 8",
   "source": "Isaac Watts, Hymns and Spiritual Songs (1707)",
   "licence": "Public domain: Isaac Watts died in 1748.",
-  "credits": "Words by Isaac Watts (1674–1748), public domain; set to OLD HUNDREDTH by NoteFusion, as words-only hymn books were sung.",
+  "credits": "Words by Isaac Watts (1674–1748), public domain; set to WINCHESTER NEW by NoteFusion, as words-only hymn books were sung.",
   "updated": "2026-10-26",
   "reviewed": false,
   "draft": false,
