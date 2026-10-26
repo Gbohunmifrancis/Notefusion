@@ -24,7 +24,8 @@
     "f0_merge": false,
     "quantize_divisors": [
       2
-    ]
+    ],
+    "sixteenths": true
   },
   "corpus": {
     "kind": "vocal",

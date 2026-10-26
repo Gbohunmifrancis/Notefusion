@@ -24,7 +24,8 @@
     "f0_merge": false,
     "quantize_divisors": [
       2
-    ]
+    ],
+    "sixteenths": true
   },
   "corpus": {
     "n_cases": 43,
